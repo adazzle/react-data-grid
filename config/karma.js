@@ -11,7 +11,7 @@
 
 'use strict';
 
-var webpackConfig = require('../webpack.config.js');
+var webpackConfig = require('./webpack.config.js');
 var RewirePlugin = require("rewire-webpack");
 var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
@@ -25,8 +25,6 @@ module.exports = function (config) {
 
     files: [
       '../node_modules/es5-shim/es5-shim.js',
-      '../node_modules/es5-shim/es5-sham.js',
-      '../node_modules/es6-shim/es6-shim.js',
       '../test/Grid.spec.js'
     ],
 
