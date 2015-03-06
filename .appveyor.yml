@@ -1,6 +1,6 @@
 version: 1.0.{build}
 environment:
-  COVERALLS_REPO_TOKEN: ab4LZQwXbVRwQIn0MEHqaaOjidqu78RFQ
+  COVERALLS_REPO_TOKEN: 9RRu36GLfbnk5Ri6Y6FpoZU10CW6dlIfy
   COVERALLS_SERVICE_NAME: appveyor
 shallow_clone: true
 build_script:
