@@ -6,7 +6,7 @@
 	<meta name="description" content="">
 	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
 	<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-	<title>React Grid - Excel-like grid component built with React</title>
+	<title>ReactData Grid - Excel-like grid component built with React</title>
 
 	<link rel="shortcut icon" href="examples/assets/images/gt_favicon.png">
 
@@ -46,7 +46,7 @@
 	<header id="head">
 			<div class="container">
 				<div class="row">
-					<h1 class="lead">React Grid </h1>
+					<h1 class="lead">React Data Grid </h1>
 					<p class="tagline">Excel-like grid component built with React</p>
 					<p>
 						<a class="btn btn-default btn-lg" href="#demo" role="button">DEMO</a>
@@ -100,16 +100,16 @@
 					<h2>Quick Start </h2>
 					<h3 id="js-installation">Installation</h3>
 					<h4>Using Common JS</h4>
-					<p>React Grid is available in the npm repository. You can install it from the command line using the following commands</p>
+					<p>React Data Grid is available in the npm repository. You can install it from the command line using the following commands</p>
 					<p><kbd>npm install react --save</kbd></p>
-					<p><kbd>npm install adazzle-react-grid --save</kbd></p>
-					<p>Once downloaded, require both React and React Grid and you should be good to go</p>
+					<p><kbd>npm install react-data-grid --save</kbd></p>
+					<p>Once downloaded, require both React and React Data Grid and you should be good to go</p>
 					<div class="code-block js">
-						<pre>var React = require('react/addons'); </br>var ReactGrid = require('adazzle-react-grid');</pre>
+						<pre>var React = require('react/addons'); </br>var ReactDataGrid = require('react-data-grid');</pre>
 					</div>
 					<p>If you want to use extra features such as built in editors, formatters, toolbars and other plugins, you need to require the addons module instead</p>
 					<div class="code-block js">
-						<pre>var ReactGridAddons = require('adazzle-react-grid/addons');</pre>
+						<pre>var ReactDataGrid = require('react-data-grid/addons');</pre>
 					</div>
 					<br/>
 					<h4>Using Distribution Scripts</h4>
@@ -160,7 +160,7 @@ var rows = getRows(0,1000);
 						</div>
 						<p>Now simply invoke React.render(..):</p>
 						<div class="code-block js">
-							<pre>React.render(&lt;ReactGrid columns={columns} rows={rows} /&gt;, document.getElementById('example'))</pre>
+							<pre>React.render(&lt;ReactDataGrid columns={columns} rows={rows} /&gt;, document.getElementById('example'))</pre>
 						</div>
 					</div>
 				</div>
