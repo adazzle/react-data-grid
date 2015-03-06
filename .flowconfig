@@ -1,0 +1,4 @@
+[include]
+./node_modules/immutable
+./node_modules/react
+./src

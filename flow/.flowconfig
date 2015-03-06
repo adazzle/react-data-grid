@@ -1,0 +1,6 @@
+[include]
+../node_modules/immutable
+../node_modules/react
+../node_modules/ron-react-autocomplete
+../node_modules/moment
+../src

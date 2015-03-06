@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
+	<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+	<title>React Grid - Excel-like grid component built with React</title>
+
+	<link rel="shortcut icon" href="examples/assets/images/gt_favicon.png">
+
+	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-1.11.2.min.js"/>
+
+
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="assets/js/affix.js"></script>
+	<script src="assets/js/scrollspy.js"></script>
+	<!-- Custom styles for our template -->here
+	<link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen" >
+	<link rel="stylesheet" href="assets/css/main.css">
+	<link rel="stylesheet" href="build/reactGrid.css">
+
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="examples/assets/js/html5shiv.js"></script>
+	<script src="examples/assets/js/respond.min.js"></script>
+	<![endif]-->
+
+
+</head>
+
+<body class="home" data-spy="scroll" data-target=".bs-docs-sidebar">
+
+	<!-- Fixed navbar -->
+	<div id="navbarContainer">
+
+	</div>
+	<!-- /.navbar -->
+
+	<div class="container top-space">
+		<div class="row">
+ 			<div class="col-md-3 top-space" role="complementary">
+				<nav id="sidebar" class="bs-docs-sidebar hidden-print hidden-xs hidden-sm"  data-spy="affix" data-offset-top="0" data-offset-bottom="200">
+					<ul class="nav bs-docs-sidenav">
+
+						<li>
+							<a href="#js-getting-started">Getting Started</a>
+							<ul class="nav">
+								<li><a href="#js-installation">Installation</a></li>
+								<li><a href="#js-basic-example">Basic Example</a></li>
+							</ul>
+						</li>
+						<li>
+							<a href="#js-getting-started">API Reference</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<div class="col-md-9">
+				<h1 id="js-getting-started" class="page-header">Documentation</h1>
+				<div class="docs-section">
+				<h2>Getting Started </h2>
+				<h3 id="js-installation">Installation</h3>
+				<h4>Using Common JS</h4>
+				<p>React Grid is available in the npm repository. You can install it from the command line using the following commands</p>
+				<p><kbd>npm install react --save</kbd></p>
+				<p><kbd>npm install adazzle-react-grid --save</kbd></p>
+				<p>Once downloaded, require both React and React Grid and you should be good to go</p>
+				<div class="code-block js">
+				<pre>var React = require('react/addons'); </br>var ReactGrid = require('adazzle-react-grid');</pre>
+			</div>
+				<p>If you want to use extra features such as built in editors, formatters, toolbars and other plugins, you need to require the addons module instead</p>
+				<div class="code-block js">
+				<pre>var ReactGridAddons = require('adazzle-react-grid/addons');</pre>
+			</div>
+				<br/>
+				<h4>Using Distribution Scripts</h4>
+				<p>If you prefer not to use a module system, you can reference the distribution scripts directly in your html pages. First you need to download the scripts. This can be done in 3 ways, either download directly from github source, using npm as above or using bower <br/><kbd>bower install adazzle/react-grid --save</kbd></p>
+				<div class="code-block js">
+					<pre>&lt;script src="//fb.me/react-0.12.0.js"&gt;&lt;/script&gt;<br/>&lt;script type="text/javascript" src="react-grid/dist/reactGrid.js"&gt;&lt;/script&gt;</pre>
+				</div>
+
+				Or use ReactGridWithAddons.js to use advanced features
+				<div class="code-block js">
+					<pre>&lt;script type="text/javascript" src="react-grid/dist/ReactGridWithAddons.js"&gt;&lt;/script&gt;"</pre>
+				</div>
+				<h3 id="js-basic-example">A Simple Example</h3>
+				<p>The columns is a column specification, it provides information to grid on how to extract data for each of the column and how column should be represented and its features:</p>
+				<div class="code-block js">
+
+<pre>var columns = [
+	{
+		key: 'id',
+		name: 'ID',
+		width: '20%',
+		resizeable: true
+	},
+	{
+		key: 'title',
+		name: 'Title'
+	},
+	{
+		key: 'count',
+		name: 'Count',
+		width: '20%'
+	}
+]</pre>
+				</div>
+					<p>The rows property should be an array of objects whose property names match the key property of each column</p>
+					<div class="code-block js">
+<pre>var rows = function(start, end) {
+	var result = []
+	for (var i = start; i < end; i++) {
+		result.push({
+			id: i,
+			title: 'Title ' + i,
+			count: i * 1000
+		});
+	}
+	return result;
+};</pre>
+				</div>
+					<p>Now simply invoke React.render(..) on the ReactGrid component</p>
+					<div class="code-block js">
+						<pre>React.render(&lt;ReactGrid columns={columns} rows={rows} /&gt;, document.getElementById('example'))</pre>
+					</div>
+				</div>
+
+					<div class="docs-section">
+						<h1 id="js-api-refernce">API Reference</h1>
+						<h2>Grid Events</h2>
+						<h3>onRowUpdated</h3>
+						<div class="code-block function">
+								<pre><span class="nx">onRowUpdated</span><span class="p">(</span><span class="nx">e</span> <span class="nx">:RowUpdateEvent</span><span class="p">)</span></pre>
+						</div>
+
+						<div class="code-block flow">
+							<pre>/* @flow */<br/><code>type RowUpdateEvent = {rowIdx: number; updated: object; cellKey: string; keyCode: string};</code></pre>
+						</div>
+
+
+					<h3>onCellsDragged</h3>
+					<div class="code-block function">
+						<pre><span class="nx">onCellsDragged</span><span class="p">(</span><span class="nx">e</span> <span class="nx">:CellDragEvent</span><span class="p">)</span></pre>
+					</div>
+
+					<div class="code-block flow">
+						<pre>/* @flow */<br/><code>type CellDragEvent = {rowIdx: number; fromRow: number, toRow: number, value: any};</code></pre>
+					</div>
+
+					<h3>onCellCopyPaste</h3>
+					<div class="code-block function">
+						<pre><span class="nx">onCellCopyPaste</span><span class="p">(</span><span class="nx">e</span> <span class="nx">:CellCopyPasteEvent</span><span class="p">)</span></pre>
+					</div>
+
+					<div class="code-block flow">
+						<pre>/* @flow */<br/><code>type CellCopyPasteEvent = {rowIdx: number; value : any; fromRow: number; toRow: number; cellKey: string};</code></pre>
+					</div>
+
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- JavaScript srcs are placed at the end of the document so the pages load faster -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.js"></script>
+	<script src="build/shared.js"></script>
+	<script src="build/index.js"></script>
+	<script src="assets/js/dropdown.js"></script>
+</body>
+</html>
