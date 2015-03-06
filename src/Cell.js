@@ -23,7 +23,7 @@ var Cell = React.createClass({
     tabIndex : React.PropTypes.number,
     ref : React.PropTypes.string,
     column: React.PropTypes.shape(ExcelColumn).isRequired,
-    value: React.PropTypes.oneOf(React.PropTypes.string,React.PropTypes.number, React.PropTypes.object).isRequired,
+    value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object]).isRequired,
     isExpanded: React.PropTypes.bool,
     cellMetaData: React.PropTypes.shape({selected: React.PropTypes.object.isRequired, onCellClick: React.PropTypes.func}),
     handleDragStart: React.PropTypes.func,
@@ -44,9 +44,9 @@ var Cell = React.createClass({
 
   componentDidUpdate: function(prevProps: any, prevState: any) {
     this.checkFocus();
-    var dragged = this.props.dragged;
+    var dragged = this.props.cellMetaData.dragged;
     if(dragged && dragged.complete === true){
-      this.props.handleTerminateDrag();
+      this.props.cellMetaData.handleTerminateDrag();
     }
   },
 
@@ -55,7 +55,8 @@ var Cell = React.createClass({
     || this.props.value !== nextProps.value
     || this.props.height !== nextProps.height
     || this.props.rowIdx !== nextProps.rowIdx
-    || this.isCellSelectionChanging(nextProps);
+    || this.isCellSelectionChanging(nextProps)
+    || this.isDraggedCellChanging(nextProps);
   },
 
   getStyle(): {position:string; width: number; height: number; left: number} {
@@ -83,7 +84,7 @@ var Cell = React.createClass({
     return (
       <div {...this.props} className={className} style={style} onClick={this.onCellClick}>
       {cellContent}
-      <div className="drag-handle" draggable="true" onDragStart={this.props.handleDragStart}>
+      <div className="drag-handle" draggable="true">
       </div>
       </div>
     );
@@ -158,10 +159,9 @@ var Cell = React.createClass({
       'editing' : this.isActive(),
       'copied' : this.isCopied(),
       'active-drag-cell' : this.isSelected() || this.isDraggedOver(),
-      // 'active-drag-cell' : this.isSelected() || this.isDraggedOver(),
-      // 'is-dragged-over-up' :  !this.isSelected() && this.isDraggedOver() && this.props.rowIdx < this.props.dragged.rowIdx,
-      // 'is-dragged-over-down' :  !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > this.props.dragged.rowIdx,
-      // 'was-dragged-over' : this.wasDraggedOver()
+      'is-dragged-over-up' :  this.isDraggedOverUpwards(),
+      'is-dragged-over-down' :  this.isDraggedOverDownwards(),
+      'was-dragged-over' : this.wasDraggedOver()
     });
     return className + ' ' + extraClasses;
   },
@@ -178,7 +178,7 @@ var Cell = React.createClass({
   },
 
   isCopied : function(): boolean{
-    var copied = this.props.cellMetaData.copied
+    var copied = this.props.cellMetaData.copied;
     return (
       copied
       && copied.rowIdx === this.props.rowIdx
@@ -187,45 +187,48 @@ var Cell = React.createClass({
   },
 
   isDraggedOver(): boolean{
-  var dragged = this.props.cellMetaData.dragged
+  var dragged = this.props.cellMetaData.dragged;
     return (
+
       dragged &&
       dragged.overRowIdx === this.props.rowIdx
       && dragged.idx === this.props.idx
     )
   },
-  //
-  // wasDraggedOver(){
-  //   return (
-  //     this.props.dragged
-  //     && ((this.props.dragged.overRowIdx < this.props.rowIdx && this.props.rowIdx < this.props.dragged.rowIdx)
-  //     ||  (this.props.dragged.overRowIdx > this.props.rowIdx && this.props.rowIdx > this.props.dragged.rowIdx))
-  //     && this.props.dragged.idx === this.props.idx
-  //   );
-  // },
-  //
-  // handleDragStart(e){
-  //   var rowIdx = this.props.rowIdx;
-  //   var idx = this.props.idx;
-  //   this.props.handleDragStart({rowIdx : rowIdx, idx : idx, copiedText : this.props.value});
-  // },
-  //
-  // handleDragEnter(){
-  //   this.props.handleDragEnter(this.props.rowIdx);
-  // },
-  //
-  // handleDragEnd(){
-  //   this.props.handleDragEnd();
-  // },
-  //
-  // isDraggedCellChanging(nextProps){
-  //   if(this.props.dragged){
-  //     return (nextProps.dragged && this.props.idx === nextProps.dragged.idx)
-  //     || (this.props.dragged && this.props.idx === this.props.dragged.idx);
-  //   }else{
-  //     return false;
-  //   }
-  // }
+
+  wasDraggedOver(){
+    var dragged = this.props.cellMetaData.dragged;
+    return (
+      dragged
+      && ((dragged.overRowIdx < this.props.rowIdx && this.props.rowIdx < dragged.rowIdx)
+      ||  (dragged.overRowIdx > this.props.rowIdx && this.props.rowIdx > dragged.rowIdx))
+      && dragged.idx === this.props.idx
+    );
+  },
+
+  isDraggedCellChanging(nextProps){
+    var isChanging;
+    var dragged = this.props.cellMetaData.dragged;
+    var nextDragged = nextProps.cellMetaData.dragged;
+    if(dragged){
+      isChanging = (nextDragged && this.props.idx === nextDragged.idx)
+      || (dragged && this.props.idx === dragged.idx);
+      return isChanging;
+    }else{
+      return false;
+    }
+  },
+
+  isDraggedOverUpwards(){
+    var dragged = this.props.cellMetaData.dragged;
+    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx < dragged.rowIdx;
+  },
+
+  isDraggedOverDownwards(){
+    var dragged = this.props.cellMetaData.dragged;
+    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
+  }
+
 });
 
 function simpleCellFormatter(props: any): string {

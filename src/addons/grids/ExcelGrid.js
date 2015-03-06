@@ -27,6 +27,7 @@ type SelectedType = {
 type DraggedType = {
   idx: number;
   rowIdx: number;
+  value: string;
 };
 
 type ExcelGridProps = {
@@ -99,9 +100,12 @@ var ExcelGrid = React.createClass({
   render: function(): ?ReactElement {
     var cellMetaData = {
       selected : this.state.selected,
+      dragged : this.state.dragged,
       onCellClick : this.onCellClick,
       onCommit : this.onCellCommit,
-      copied : this.state.copied
+      copied : this.state.copied,
+      handleDragEnterRow : this.handleDragEnter,
+      handleTerminateDrag : this.handleTerminateDrag
     }
 
     var rows = this.filterRows();
@@ -109,21 +113,23 @@ var ExcelGrid = React.createClass({
     return(
       <div className="react-grid-Container">
       {toolbar}
-      <div className="react-grid-Main">
-      {(<BaseGrid
-        ref="base"
-        {...this.props}
-        length={this.props.rows.length}
-        headerRows={this.getHeaderRows()}
-        columns={this.getColumns()}
-        rows={rows}
-        cellMetaData={cellMetaData}
-        selectedRows={this.state.selectedRows}
-        expandedRows={this.state.expandedRows}
-        rowOffsetHeight={this.getRowOffsetHeight()}
-        minHeight={this.props.minHeight}
-        onViewportKeydown={this.onKeyDown} />)}
-        </div>
+        <div className="react-grid-Main">
+          <BaseGrid
+            ref="base"
+            {...this.props}
+            length={this.props.rows.length}
+            headerRows={this.getHeaderRows()}
+            columns={this.getColumns()}
+            rows={rows}
+            cellMetaData={cellMetaData}
+            selectedRows={this.state.selectedRows}
+            expandedRows={this.state.expandedRows}
+            rowOffsetHeight={this.getRowOffsetHeight()}
+            minHeight={this.props.minHeight}
+            onViewportKeydown={this.onKeyDown}
+            onViewportDragStart={this.onDragStart}
+            onViewportDragEnd={this.handleDragEnd}/>
+          </div>
         </div>
       )
   },
@@ -222,6 +228,12 @@ var ExcelGrid = React.createClass({
         this.handlePaste({value : value});
       }
     }
+  },
+
+  onDragStart(e: SyntheticEvent){
+    if(e.target)
+    var value = this.getSelectedValue();
+    this.handleDragStart({idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value});
   },
 
   moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number){
@@ -541,7 +553,7 @@ var ExcelGrid = React.createClass({
       var cellKey = this.getColumns()[this.state.selected.idx].key;
       fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-      if(this.props.onCellsDragged) { this.props.onCellsDragged({cellKey: cellKey , fromRow: fromRow, toRow : toRow, value : dragged.copiedText}); }
+      if(this.props.onCellsDragged) { this.props.onCellsDragged({cellKey: cellKey , fromRow: fromRow, toRow : toRow, value : dragged.value}); }
         this.setState({dragged : {complete : true}});
   },
 

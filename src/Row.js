@@ -54,7 +54,7 @@ var Row = React.createClass({
 
     var cells = this.getCells();
     return (
-      <div {...this.props} className={className} style={style}>
+      <div {...this.props} className={className} style={style} onDragEnter={this.handleDragEnter}>
         {React.isValidElement(this.props.row) ?
           this.props.row : cells}
       </div>
@@ -147,7 +147,7 @@ var Row = React.createClass({
   },
 
   willRowBeDraggedOver(props: any): boolean{
-    var dragged = props.cellRenderer.props.dragged;
+    var dragged = props.cellMetaData.dragged;
     return  dragged != null && (dragged.rowIdx || dragged.complete === true);
   },
 
@@ -160,9 +160,17 @@ var Row = React.createClass({
     return !(ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
     this.doesRowContainSelectedCell(this.props)          ||
     this.doesRowContainSelectedCell(nextProps)           ||
+    this.willRowBeDraggedOver(nextProps)                 ||
     nextProps.row !== this.props.row                     ||
     this.hasRowBeenCopied()                              ||
     nextProps.height !== this.props.height;
+  },
+
+  handleDragEnter(){
+    var handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
+    if(handleDragEnterRow){
+      handleDragEnterRow(this.props.idx);
+    }
   }
 
 });
