@@ -1,9 +1,3 @@
-
-/*!
-* Facebook React Starter Kit | https://github.com/kriasoft/react-starter-kit
-* Copyright (c) KriaSoft, LLC. All rights reserved. See LICENSE.txt
-*/
-
 /*
 * Karma configuration. For more information visit
 * http://karma-runner.github.io/0.12/config/configuration-file.html
@@ -74,6 +68,10 @@ module.exports = function (config) {
     }
   },
 
+  webpackMiddleware: {
+    noInfo: true
+  },
+  
   autoWatch: false,
 
   singleRun: true,

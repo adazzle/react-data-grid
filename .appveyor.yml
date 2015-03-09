@@ -15,6 +15,6 @@ build_script:
 
     gulp flow-win
 
-    gulp test --release
+    gulp test --release true
 
     gulp coveralls

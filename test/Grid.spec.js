@@ -47,7 +47,6 @@ describe('Grid', () => {
 
     component = TestUtils.renderIntoDocument(<Grid
       columns={columns}
-      length={1000}
       rows={getRows(0, 1000)}/>);
   });
 
@@ -59,25 +58,6 @@ describe('Grid', () => {
     var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGrid);
     expect(baseGrid).toBeDefined();
   });
-
-  describe("Grid Navigation", () => {
-    it("Cell Renderer can change selected cell", () => {
-      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGrid);
-      var cellRenderer = baseGrid.props.cellRenderer;
-      cellRenderer.props.onSelect({idx: 2, rowIdx: 1});
-      expect(component.state.selected.idx).toEqual(2);
-      expect(component.state.selected.rowIdx).toEqual(1);
-    });
-
-    it("cannot change selected cell to be outside of column range", () => {
-      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGrid);
-      var cellRenderer = baseGrid.props.cellRenderer;
-      cellRenderer.props.onSelect({idx: 4, rowIdx: 0});
-      expect(component.state.selected.idx).toEqual(0);
-    });
-  });
-
-
 
 
 });
