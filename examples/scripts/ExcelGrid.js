@@ -9,7 +9,7 @@
   var DropDownEditor      = Editors.DropDownEditor;
   var cx                  = React.addons.classSet;
   var cloneWithProps      = React.addons.cloneWithProps;
-  var FakeObjectDataStoreList = require('./FakeObjectDataStoreList');
+  var FakeObjectDataStore = require('./FakeObjectDataStore');
   var developers = ['Conor','Curtis','Danny','Joao','Mo','Rich'];
   var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
    { id : 10, title :'Durham'},
@@ -142,10 +142,11 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
     }
   ]
 
+
  var Component = React.createClass({displayName: 'component',
 
     getInitialState : function(){
-      return {rows : []};
+      return {rows : FakeObjectDataStore.createRows(2000)};
     },
 
     handleRowUpdated : function(commit){
@@ -182,13 +183,25 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
         var rows = React.addons.update(this.state.rows, {$push : [newRow]});
         this.setState({rows : rows});
     },
-    render: function() {
+
+    getRowAt(index){
+      if (index < 0 || index > this.getSize()){
+        return undefined;
+      }
+      return this.state.rows[index];
+    },
+
+    getSize() {
+      return this.state.rows.length;
+    },
+
+    render() {
       return (
             <Grid
               enableCellSelect={true}
               columns={columns}
-              rowGetter={FakeObjectDataStoreList.getObjectAt}
-              rowsCount={FakeObjectDataStoreList.getSize()}
+              rowGetter={this.getRowAt}
+              rowsCount={this.getSize()}
               onRowUpdated={this.handleRowUpdated}
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}

@@ -37,8 +37,16 @@ function getSize() {
   return SIZE;
 }
 
+function createRows(numberOfRows){
+  for (var i = 0; i < numberOfRows; i++){
+    _cache[i] = createFakeRowObjectData(i);
+  }
+  return _cache;
+}
+
 var FakeObjectDataListStore = {
-  getObjectAt: getObjectAt,
-  getSize: getSize,
+  getObjectAt : getObjectAt,
+  getSize     : getSize,
+  createRows  : createRows
 };
 module.exports = FakeObjectDataListStore;
