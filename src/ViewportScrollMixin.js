@@ -29,7 +29,7 @@ module.exports = {
 
   propTypes: {
     rowHeight: React.PropTypes.number,
-    totalRows: React.PropTypes.number.isRequired
+    rowsCount: React.PropTypes.number.isRequired
   },
 
   getDefaultProps(): { rowHeight: number } {
@@ -92,7 +92,7 @@ module.exports = {
         this.state.scrollLeft,
         height,
         this.props.rowHeight,
-        this.props.totalRows
+        this.props.rowsCount
       );
     }
   },

@@ -23,16 +23,22 @@ function createFakeRowObjectData(/*number*/ index) {
   };
 }
 
-function getRows(noRows){
-  var rows = [];
-  for (var i = 0; i < noRows; i++){
-    rows.push(createFakeRowObjectData(i));
+function getObjectAt(/*number*/ index) /*?object*/ {
+  if (index < 0 || index > SIZE){
+    return undefined;
   }
-  return rows;
+  if (_cache[index] === undefined) {
+    _cache[index] = createFakeRowObjectData(index);
+  }
+  return _cache[index];
+}
+
+function getSize() {
+  return SIZE;
 }
 
 var FakeObjectDataListStore = {
-  getRows: getRows
+  getObjectAt: getObjectAt,
+  getSize: getSize,
 };
-
 module.exports = FakeObjectDataListStore;

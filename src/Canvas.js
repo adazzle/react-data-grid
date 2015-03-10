@@ -22,8 +22,8 @@ var Canvas = React.createClass({
     height: PropTypes.number.isRequired,
     displayStart: PropTypes.number.isRequired,
     displayEnd: PropTypes.number.isRequired,
-    totalRows: PropTypes.number.isRequired,
-    rows: PropTypes.oneOfType([
+    rowsCount: PropTypes.number.isRequired,
+    rowGetter: PropTypes.oneOfType([
       PropTypes.func.isRequired,
       PropTypes.array.isRequired
     ]),
@@ -35,10 +35,9 @@ var Canvas = React.createClass({
     var displayStart = this.state.displayStart;
     var displayEnd = this.state.displayEnd;
     var rowHeight = this.props.rowHeight;
-    var length = this.props.totalRows;
+    var length = this.props.rowsCount;
 
-    var rows = this
-        .getRows(displayStart, displayEnd)
+    var rows = this.getRows(displayStart, displayEnd)
         .map((row, idx) => this.renderRow({
           key: displayStart + idx,
           ref: idx,
@@ -152,12 +151,12 @@ var Canvas = React.createClass({
   },
 
   componentWillReceiveProps(nextProps: any) {
-    if(nextProps.rows.length > this.props.rows.length){
-      this.getDOMNode().scrollTop =nextProps.rows.length * this.props.rowHeight;
+    if(nextProps.rowsCount > this.props.rowsCount){
+      this.getDOMNode().scrollTop =nextProps.rowsCount * this.props.rowHeight;
     }
     var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart
                         && nextProps.visibleEnd < this.state.displayEnd)
-                        || nextProps.totalRows !== this.props.totalRows
+                        || nextProps.rowsCount !== this.props.rowsCount
                         || nextProps.rowHeight !== this.props.rowHeight
                         || nextProps.columns !== this.props.columns
                         || nextProps.width !== this.props.width
@@ -187,10 +186,14 @@ var Canvas = React.createClass({
 
   getRows(displayStart: number, displayEnd: number): Array<any> {
     this._currentRowsRange = {start: displayStart, end: displayEnd};
-    if (Array.isArray(this.props.rows)) {
-      return this.props.rows.slice(displayStart, displayEnd);
+    if (Array.isArray(this.props.rowGetter)) {
+      return this.props.rowGetter.slice(displayStart, displayEnd);
     } else {
-      return this.props.rows(displayStart, displayEnd);
+      var rows = [];
+      for (var i = displayStart; i <= displayEnd; i++){
+        rows.push(this.props.rowGetter(i));
+      }
+      return rows;
     }
   },
 

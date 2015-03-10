@@ -36,7 +36,8 @@ type ExcelGridProps = {
   enableRowSelect: ?boolean;
   onRowUpdated: ?() => void;
   columns: Array<ExcelColumn>;
-  rows: Array<Row>;
+  rowGetter: () => Array<object>;
+  rowsCount: number;
   toolbar: ?any;
 };
 
@@ -59,7 +60,8 @@ var ExcelGrid = React.createClass({
     minHeight: React.PropTypes.number.isRequired,
     enableRowSelect: React.PropTypes.bool,
     onRowUpdated:React.PropTypes.func,
-    rows:React.PropTypes.arrayOf(Row).isRequired,
+    rowGetter: React.PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
+    rowsCount : React.PropTypes.func.isRequired,
     toolbar:React.PropTypes.element,
     enableCellSelect : React.PropTypes.bool,
     columns : React.PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
@@ -92,8 +94,8 @@ var ExcelGrid = React.createClass({
   },
 
   componentWillReceiveProps:function(nextProps: ExcelGridProps){
-    if(nextProps.rows.length  === this.props.rows.length + 1){
-      this.onAfterAddRow(nextProps.rows.length + 1);
+    if(nextProps.rowsCount  === this.props.rowsCount + 1){
+      this.onAfterAddRow(nextProps.rowsCount + 1);
     }
   },
 
@@ -108,7 +110,6 @@ var ExcelGrid = React.createClass({
       handleTerminateDrag : this.handleTerminateDrag
     }
 
-    var rows = this.filterRows();
     var toolbar = this.renderToolbar();
     return(
       <div className="react-grid-Container">
@@ -117,10 +118,10 @@ var ExcelGrid = React.createClass({
           <BaseGrid
             ref="base"
             {...this.props}
-            length={this.props.rows.length}
             headerRows={this.getHeaderRows()}
             columns={this.getColumns()}
-            rows={rows}
+            rowGetter={this.props.rowGetter}
+            rowsCount={this.props.rowsCount}
             cellMetaData={cellMetaData}
             selectedRows={this.state.selectedRows}
             expandedRows={this.state.expandedRows}
@@ -137,7 +138,7 @@ var ExcelGrid = React.createClass({
   renderToolbar(): ReactElement {
     var Toolbar = this.props.toolbar;
     if(React.isValidElement(Toolbar)){
-      return( React.addons.cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rows.length}));
+      return( React.addons.cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
     }
 
   },
@@ -150,7 +151,7 @@ var ExcelGrid = React.createClass({
         idx >= 0
         && rowIdx >= 0
         && idx < this.getColumns().length
-        && rowIdx < this.props.rows.length
+        && rowIdx < this.props.rowsCount
       ) {
         this.setState({selected: selected});
       }
@@ -249,7 +250,7 @@ var ExcelGrid = React.createClass({
     var idx = this.state.selected.idx;
     var cellOffset = this.props.enableRowSelect ? 1 : 0;
     var cellKey = this.props.columns[idx - cellOffset].key;
-    return this.props.rows[rowIdx][cellKey];
+    return this.props.rowGetter(rowIdx)[cellKey];
   },
 
   setActive(keyPressed: string){
@@ -372,21 +373,6 @@ var ExcelGrid = React.createClass({
     this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
   },
 
-  filterRows(): Array<Row>{
-    var rows = this.props.rows;
-    if(this.state.sortColumn){
-      rows = this.sortRows(rows);
-    }
-
-    if(this.hasFilters()){
-      rows = rows.map((r, i) => {r.key = i;return r;}).filter(this.isRowDisplayed);
-      if(this.props.onFilter){
-        this.props.onFilter(rows);
-      }
-    }
-    return rows;
-  },
-
   hasFilters(): boolean{
     var hasFilters = false;
     Object.keys(this.state.columnFilters).every(function(key){
@@ -478,25 +464,6 @@ var ExcelGrid = React.createClass({
     this.setState({sortDirection: direction, sortColumn: column.key});
   },
 
-  sortRows: function(rows: Array<Row>): Array<Row> {
-    //feels naughty
-    rows = [].concat(rows);
-    var sortColumn = this.state.sortColumn;
-    var sortDirection = this.state.sortDirection;
-    if(sortColumn != null && sortDirection !== null){
-      return rows.sort(function(row1, row2){
-        var k1 = row1[sortColumn], k2 = row2[sortColumn];
-        if(sortDirection === DEFINE_SORT.ASC){
-          return (k1 > k2) ? 1 : ( (k2 > k1) ? -1 : 0 );
-        }else if(sortDirection === DEFINE_SORT.DESC){
-          return (k1 > k2) ? -1 : ( (k2 > k1) ? 1 : 0 );
-        }
-      });
-    }else{
-      return rows;
-    }
-  },
-
   copyPasteEnabled: function(): boolean {
     return this.props.onCellCopyPaste !== null;
   },
@@ -531,7 +498,7 @@ var ExcelGrid = React.createClass({
         idx >= 0
         && rowIdx >= 0
         && idx < this.getColumns().length
-        && rowIdx < this.props.rows.length
+        && rowIdx < this.props.rowsCount
       ) {
         this.setState({dragged: dragged});
       }

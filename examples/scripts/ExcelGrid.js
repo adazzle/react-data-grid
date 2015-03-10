@@ -145,7 +145,7 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
  var Component = React.createClass({displayName: 'component',
 
     getInitialState : function(){
-      return {rows : FakeObjectDataStoreList.getRows(1000)};
+      return {rows : []};
     },
 
     handleRowUpdated : function(commit){
@@ -187,7 +187,8 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
             <Grid
               enableCellSelect={true}
               columns={columns}
-              rows={this.state.rows}
+              rowGetter={FakeObjectDataStoreList.getObjectAt}
+              rowsCount={FakeObjectDataStoreList.getSize()}
               onRowUpdated={this.handleRowUpdated}
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}
@@ -196,6 +197,7 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
               rowHeight={50}
               minHeight={600}
               />
+
       );
     }
   });

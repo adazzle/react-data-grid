@@ -23,7 +23,7 @@ var Grid = React.createClass({
   ],
 
   propTypes: {
-    rows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
+    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.arrayOf(ExcelColumn).isRequired,
     minHeight: PropTypes.number,
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
@@ -31,7 +31,7 @@ var Grid = React.createClass({
     rowRenderer: PropTypes.func,
     expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
-    totalRows: PropTypes.number,
+    rowsCount: PropTypes.number,
     onRows: PropTypes.func,
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown : PropTypes.func.isRequired,
@@ -66,16 +66,17 @@ var Grid = React.createClass({
               width={this.state.columns.width}
               rowHeight={this.props.rowHeight}
               rowRenderer={this.props.rowRenderer}
-              rows={this.props.rows}
+              rowGetter={this.props.rowGetter}
+              rowsCount={this.props.rowsCount}
               selectedRows={this.props.selectedRows}
               expandedRows={this.props.expandedRows}
-              totalRows={this.props.totalRows || this.props.rows.length}
               columns={this.state.columns}
               totalWidth={this.DOMMetrics.gridWidth()}
               onScroll={this.onScroll}
               onRows={this.props.onRows}
               cellMetaData={this.props.cellMetaData}
               rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
+              minHeight={this.props.minHeight}
               />
           </div>
       </div>

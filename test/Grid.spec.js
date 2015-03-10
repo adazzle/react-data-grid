@@ -44,10 +44,11 @@ describe('Grid', () => {
   });
 
   beforeEach(() => {
-
+    var rowsCount = 1000;
     component = TestUtils.renderIntoDocument(<Grid
       columns={columns}
-      rows={getRows(0, 1000)}/>);
+      rowGetter={getRows(0, rowsCount)}
+      rowsCount={rowsCount}/>);
   });
 
   it('should create a new instance of Grid', () => {
