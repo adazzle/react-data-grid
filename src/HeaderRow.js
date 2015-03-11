@@ -22,7 +22,7 @@ class HeaderRowStyle {
 var HeaderRow = React.createClass({
 
   propTypes: {
-    width: PropTypes.oneOf(PropTypes.number, PropTypes.string),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
     columns: PropTypes.arrayOf(ExcelColumn).isRequired,
     onColumnResize: PropTypes.func,

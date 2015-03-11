@@ -61,7 +61,7 @@ var ExcelGrid = React.createClass({
     enableRowSelect: React.PropTypes.bool,
     onRowUpdated:React.PropTypes.func,
     rowGetter: React.PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
-    rowsCount : React.PropTypes.func.isRequired,
+    rowsCount : React.PropTypes.number.isRequired,
     toolbar:React.PropTypes.element,
     enableCellSelect : React.PropTypes.bool,
     columns : React.PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,

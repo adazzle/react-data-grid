@@ -85,13 +85,12 @@ var Canvas = React.createClass({
   },
 
   renderRow(props: any) {
-    if(typeof this.props.rowRenderer === 'function') {
-      return this.props.rowRenderer.call(this,props);
+    var RowsRenderer = this.props.rowRenderer;
+    if(typeof RowsRenderer === 'function') {
+      return <RowsRenderer {...props}/>;
     }
     else if (React.isValidElement(this.props.rowRenderer)) {
       return cloneWithProps(this.props.rowRenderer, props);
-    } else {
-      return this.props.rowRenderer(props);
     }
   },
 
