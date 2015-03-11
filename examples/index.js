@@ -1,2 +1,2 @@
-var ExcelGrid = require('./scripts/ExcelGrid');
-React.render(<ExcelGrid/>, document.getElementById('excel-example'));
+var ReactDataGrid = require('./scripts/ReactDataGrid');
+React.render(<ReactDataGrid/>, document.getElementById('excel-example'));

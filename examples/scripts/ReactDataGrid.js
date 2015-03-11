@@ -218,7 +218,7 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
   if(typeof module !== 'undefined' && module.exports){
     module.exports = Component;
   }else{
-    this.ExcelGrid = Component;
+    this.ReactDataGrid = Component;
   }
 
 

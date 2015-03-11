@@ -30,7 +30,7 @@ type DraggedType = {
   value: string;
 };
 
-type ExcelGridProps = {
+type ReactDataGridProps = {
   rowHeight: number;
   minHeight: number;
   enableRowSelect: ?boolean;
@@ -53,7 +53,7 @@ type RowUpdateEvent = {
   rowIdx: number;
 };
 
-var ExcelGrid = React.createClass({
+var ReactDataGrid = React.createClass({
 
   propTypes: {
     rowHeight: React.PropTypes.number.isRequired,
@@ -93,7 +93,7 @@ var ExcelGrid = React.createClass({
     return initialState;
   },
 
-  componentWillReceiveProps:function(nextProps: ExcelGridProps){
+  componentWillReceiveProps:function(nextProps: ReactDataGridProps){
     if(nextProps.rowsCount  === this.props.rowsCount + 1){
       this.onAfterAddRow(nextProps.rowsCount + 1);
     }
@@ -532,4 +532,4 @@ var ExcelGrid = React.createClass({
 });
 
 
-module.exports = ExcelGrid;
+module.exports = ReactDataGrid;
