@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "0.12.3",
+  "version": "0.12.0",
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
@@ -16,16 +16,16 @@
     "grid"
   ],
   "dependencies": {
-    "es5-shim": "^4.0.3",
-    "highlight.js": "^8.4.0",
-    "jquery": "^2.1.1",
-    "object-assign": "^2.0.0",
     "react": "^0.12.1",
-    "react-highlight": "^0.4.1",
-    "react-router": "^0.11.6",
+    "es5-shim": "^4.0.3",
+    "object-assign": "^2.0.0",
     "ron-react-autocomplete": "1.0.3"
   },
   "devDependencies": {
+    "highlight.js": "^8.4.0",
+    "jquery": "^2.1.1",
+    "react-highlight": "^0.4.1",
+    "react-router": "^0.11.6",
     "6to5": "^1.14.13",
     "6to5-loader": "^0.2.3",
     "bootstrap": "^3.2.0",
