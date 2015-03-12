@@ -72,7 +72,6 @@ var Row = React.createClass({
         key:i,
         idx:i,
         rowIdx:this.props.idx,
-        filterRowIdx:this.props.row.key,
         value:this.getCellValue(column.key || i),
         column:column,
         height:this.getRowHeight(),
