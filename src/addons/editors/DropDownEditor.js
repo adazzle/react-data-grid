@@ -38,7 +38,7 @@ var DropDownEditor = React.createClass({
     return options;
   },
 
-  getValue(): string{
+  getValue(): Object{
     var updated = {};
     updated[this.props.column.key] = this.refs.select.getDOMNode().value;
     return updated;

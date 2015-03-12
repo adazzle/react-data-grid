@@ -36,9 +36,13 @@ type ReactDataGridProps = {
   enableRowSelect: ?boolean;
   onRowUpdated: ?() => void;
   columns: Array<ExcelColumn>;
-  rowGetter: () => Array<object>;
+  rowGetter: () => Array<any>;
   rowsCount: number;
   toolbar: ?any;
+  enableCellSelect: ?boolean;
+  onCellCopyPaste: ?() => any;
+  onCellsDragged: ?() => any;
+  onFilter: ?() => any;
 };
 
 type SortType = {ASC: string; DESC: string};
@@ -60,7 +64,7 @@ var ReactDataGrid = React.createClass({
     minHeight: React.PropTypes.number.isRequired,
     enableRowSelect: React.PropTypes.bool,
     onRowUpdated:React.PropTypes.func,
-    rowGetter: React.PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
+    rowGetter: React.PropTypes.func.isRequired,
     rowsCount : React.PropTypes.number.isRequired,
     toolbar:React.PropTypes.element,
     enableCellSelect : React.PropTypes.bool,
@@ -83,7 +87,7 @@ var ReactDataGrid = React.createClass({
     };
   },
 
-  getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: SortType; sortColumn: ExcelColumn; dragged: ?DraggedType } {
+  getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType } {
     var initialState = {selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
     if(this.props.enableCellSelect){
       initialState.selected = {rowIdx: 0, idx: 0};
@@ -212,7 +216,7 @@ var ReactDataGrid = React.createClass({
     }
   },
 
-  onPressKeyWithCtrl(e){
+  onPressKeyWithCtrl(e: SyntheticKeyboardEvent){
     var keys = {
       KeyCode_c : '99',
       KeyCode_C : '67',
@@ -223,9 +227,9 @@ var ReactDataGrid = React.createClass({
     var idx = this.state.selected.idx
     if(this.canEdit(idx)){
       var value = this.getSelectedValue();
-      if(e.keyCode == keys.KeyCode_c || e.keyCode == keys.KeyCode_C){
+      if(e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C){
         this.handleCopy({value : value});
-      }else if(e.keyCode == keys.KeyCode_v || e.keyCode == keys.KeyCode_V){
+      }else if(e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V){
         this.handlePaste({value : value});
       }
     }
@@ -414,7 +418,7 @@ var ReactDataGrid = React.createClass({
     this.setState({columnFilters : columnFilters, selected : null});
   },
 
-  getHeaderRows(): Array<ReactElement> {
+  getHeaderRows(): Array<{ref: string; height: number;}> {
     var rows = [{ref:"row", height: this.props.rowHeight}];
     if(this.state.canFilter === true){
       rows.push({
@@ -428,7 +432,7 @@ var ReactDataGrid = React.createClass({
 
   getRowOffsetHeight(): number{
     var offsetHeight = 0;
-    this.getHeaderRows().forEach((row) => offsetHeight += row.height );
+    this.getHeaderRows().forEach((row) => offsetHeight += parseFloat(row.height, 10) );
     return offsetHeight;
   },
 

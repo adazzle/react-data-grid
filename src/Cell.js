@@ -25,7 +25,7 @@ var Cell = React.createClass({
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     isExpanded: React.PropTypes.bool,
-    cellMetaData: React.PropTypes.shape({selected: React.PropTypes.object.isRequired, onCellClick: React.PropTypes.func}),
+    cellMetaData: React.PropTypes.shape({selected: React.PropTypes.object.isRequired, copied: React.PropTypes.object, dragged: React.PropTypes.object, onCellClick: React.PropTypes.func}).isRequired,
     handleDragStart: React.PropTypes.func,
     className: React.PropTypes.string
   },
@@ -91,10 +91,15 @@ var Cell = React.createClass({
   },
 
   renderCellContent(props: any): ReactElement {
-    var formatter = this.getFormatter();
-    var formatterTag = React.isValidElement(formatter) ? cloneWithProps(formatter, props) : formatter(props);
+    var CellContent;
+    var Formatter = this.getFormatter();
+    if(React.isValidElement(Formatter)){
+      CellContent = cloneWithProps(Formatter, props);
+    }else{
+      CellContent = <SimpleCellFormatter value={this.props.value}/>
+    }
     return (<div
-      className="react-grid-Cell__value">{formatterTag} {this.props.cellControls}</div>)
+      className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>)
     },
 
   isSelected: function(): boolean {
@@ -125,12 +130,12 @@ var Cell = React.createClass({
     }
   },
 
-  getFormatter(): ReactElement {
+  getFormatter(): ?ReactElement {
     var col = this.props.column;
     if(this.isActive()){
       return <EditorContainer rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
     }else{
-      return this.props.column.formatter || simpleCellFormatter;
+      return this.props.column.formatter;
     }
   },
 
@@ -177,7 +182,7 @@ var Cell = React.createClass({
     }
   },
 
-  isCopied : function(): boolean{
+  isCopied(): boolean{
     var copied = this.props.cellMetaData.copied;
     return (
       copied
@@ -196,7 +201,7 @@ var Cell = React.createClass({
     )
   },
 
-  wasDraggedOver(){
+  wasDraggedOver(): boolean{
     var dragged = this.props.cellMetaData.dragged;
     return (
       dragged
@@ -206,7 +211,7 @@ var Cell = React.createClass({
     );
   },
 
-  isDraggedCellChanging(nextProps){
+  isDraggedCellChanging(nextProps: any): boolean{
     var isChanging;
     var dragged = this.props.cellMetaData.dragged;
     var nextDragged = nextProps.cellMetaData.dragged;
@@ -219,20 +224,27 @@ var Cell = React.createClass({
     }
   },
 
-  isDraggedOverUpwards(){
+  isDraggedOverUpwards(): boolean{
     var dragged = this.props.cellMetaData.dragged;
     return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx < dragged.rowIdx;
   },
 
-  isDraggedOverDownwards(){
+  isDraggedOverDownwards(): boolean{
     var dragged = this.props.cellMetaData.dragged;
     return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
   }
 
 });
 
-function simpleCellFormatter(props: any): string {
-  return props.value;
-}
+var SimpleCellFormatter = React.createClass({
+
+  propTypes : {
+    value :  React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
+  },
+
+  render(): ?ReactElement{
+    return <span>{this.props.value}</span>
+  }
+})
 
 module.exports = Cell;
