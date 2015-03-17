@@ -133,7 +133,7 @@ var Cell = React.createClass({
   getFormatter(): ?ReactElement {
     var col = this.props.column;
     if(this.isActive()){
-      return <EditorContainer rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
+      return <EditorContainer rowData={this.props.rowData} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
     }else{
       return this.props.column.formatter;
     }
