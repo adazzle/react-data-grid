@@ -12,11 +12,11 @@ var getScrollbarSize  = require('./getScrollbarSize');
 var ExcelColumn  = require('./addons/grids/ExcelColumn');
 
 
-class HeaderRowStyle {
-  overflow: string;
-  width: string;
-  height: number;
-  position: string;
+var HeaderRowStyle  = {
+  overflow: React.PropTypes.string,
+  width: React.PropTypes.string,
+  height: React.PropTypes.number,
+  position: React.PropTypes.string
 };
 
 var HeaderRow = React.createClass({
