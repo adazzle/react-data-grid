@@ -6,11 +6,12 @@
  */
 'use strict';
 
-var React          = require('react/addons');
-var cx             = React.addons.classSet;
-var cloneWithProps = React.addons.cloneWithProps;
+var React           = require('react/addons');
+var cx              = React.addons.classSet;
+var cloneWithProps  = React.addons.cloneWithProps;
 var EditorContainer = require('./addons/editors/EditorContainer');
-var ExcelColumn  = require('./addons/grids/ExcelColumn');
+var ExcelColumn     = require('./addons/grids/ExcelColumn');
+var isFunction      = require('./addons/utils/isFunction');
 
 var Cell = React.createClass({
 
@@ -95,8 +96,14 @@ var Cell = React.createClass({
     var Formatter = this.getFormatter();
     if(React.isValidElement(Formatter)){
       CellContent = cloneWithProps(Formatter, props);
-    }else{
-      CellContent = <SimpleCellFormatter value={this.props.value}/>
+    }else if(isFunction(Formatter)){
+      try{
+        CellContent = <Formatter value={this.props.value}/>;
+      }catch(e){
+        CellContent = <SimpleCellFormatter value={this.props.value}/>;
+      }
+    } else {
+      CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
     return (<div
       className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>)
