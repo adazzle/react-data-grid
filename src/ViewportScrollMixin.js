@@ -42,13 +42,13 @@ module.exports = {
     return this.getGridState(this.props);
   },
 
-  getGridState(props: {rowHeight: number}): ViewportScrollState  {
-    var height = this.props.minHeight;
-    var renderedRowsCount = ceil(height / props.rowHeight);
+  getGridState(props: {rowHeight: number, rowsCount: number, minHeight: number}): ViewportScrollState  {
+	var renderedRowsCount = ceil(props.minHeight / props.rowHeight);
+	var totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
     return {
       displayStart: 0,
-      displayEnd: renderedRowsCount * 2,
-      height: height,
+      displayEnd: totalRowCount,
+      height: props.minHeight,
       scrollTop: 0,
       scrollLeft: 0
     };

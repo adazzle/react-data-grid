@@ -190,7 +190,7 @@ var Canvas = React.createClass({
       return this.props.rowGetter.slice(displayStart, displayEnd);
     } else {
       var rows = [];
-      for (var i = displayStart; i <= displayEnd; i++){
+      for (var i = displayStart; i < displayEnd; i++){
         rows.push(this.props.rowGetter(i));
       }
       return rows;
