@@ -98,7 +98,8 @@ var Canvas = React.createClass({
     return (
       <div key={key} style={{height: height}}>
         {this.props.columns.map(
-          (column, idx) => <div style={{width: column.width}} key={idx} />)}
+          (column, idx) => <div style={{width: column.width}} key={idx} />
+		)}
       </div>
     );
   },

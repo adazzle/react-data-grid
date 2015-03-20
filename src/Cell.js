@@ -26,7 +26,12 @@ var Cell = React.createClass({
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     isExpanded: React.PropTypes.bool,
-    cellMetaData: React.PropTypes.shape({selected: React.PropTypes.object.isRequired, copied: React.PropTypes.object, dragged: React.PropTypes.object, onCellClick: React.PropTypes.func}).isRequired,
+    cellMetaData: React.PropTypes.shape({
+		elected: React.PropTypes.object.isRequired, 
+		copied: React.PropTypes.object, 
+		dragged: React.PropTypes.object, 
+		onCellClick: React.PropTypes.func
+	}).isRequired,
     handleDragStart: React.PropTypes.func,
     className: React.PropTypes.string
   },
