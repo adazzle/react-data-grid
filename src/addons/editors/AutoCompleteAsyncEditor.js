@@ -11,10 +11,18 @@ var AutoCompleteEditor  = require('./AutoCompleteEditor');
 var AutoCompleteAsyncEditor =  React.createClass({
 
   propTypes : {
+	cacheResults: React.PropTypes.bool,
   	column: React.PropTypes.object,
   	editorRowMetaData: React.PropTypes.object,
+	height: React.PropTypes.number,
 	label: React.PropTypes.string,
-	searchSourceArgs: React.PropTypes.object
+	onCommit: React.PropTypes.func,
+	onKeyDown: React.PropTypes.func,
+	resultIdentifier: React.PropTypes.string,
+	searchSourceArgs: React.PropTypes.array,
+	searchSourceUrl: React.PropTypes.func,
+	value: React.PropTypes.string,
+	valueParams: React.PropTypes.arrayOf(React.PropTypes.string)
   },
 
   getSearchParams() {
@@ -59,7 +67,7 @@ var AutoCompleteAsyncEditor =  React.createClass({
     var regexp = new RegExp(searchTerm, 'i')
     var results = []
     var label = this.props.label ? this.props.label : 'title';
-    for (var i = 0, len = data.length; i < len; i++) {
+	for (var i = 0, len = data.length; i < len; i++) {
       if (regexp.exec(data[i][label])) {
         results.push(data[i])
       }

@@ -48,7 +48,15 @@ var EditorContainer = React.createClass({
   },
 
   createEditor(): ReactElement{
-    var editorProps = {ref: 'editor', column : this.props.column, onKeyDown : this.onKeyDown, value : this.getInitialValue(), onCommit : this.commit, editorRowMetaData : this.getEditorRowMetaData(), height : this.props.height};
+    var editorProps = {
+		ref: 'editor', 
+		column : this.props.column, 
+		onKeyDown : this.onKeyDown, 
+		value : this.getInitialValue(), 
+		onCommit : this.commit, 
+		editorRowMetaData : this.getEditorRowMetaData(), 
+		height : this.props.height
+	};
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){
       //return custom column editor or SimpleEditor if none specified
