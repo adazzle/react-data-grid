@@ -49,12 +49,12 @@ var EditorContainer = React.createClass({
 
   createEditor(): ReactElement{
     var editorProps = {
-		ref: 'editor', 
-		column : this.props.column, 
-		onKeyDown : this.onKeyDown, 
-		value : this.getInitialValue(), 
-		onCommit : this.commit, 
-		editorRowMetaData : this.getEditorRowMetaData(), 
+		ref: 'editor',
+		column : this.props.column,
+		onKeyDown : this.onKeyDown,
+		value : this.getInitialValue(),
+		onCommit : this.commit,
+		owMetaData : this.getRowMetaData(),
 		height : this.props.height
 	};
     var customEditor = this.props.column.editor;
@@ -62,7 +62,7 @@ var EditorContainer = React.createClass({
       //return custom column editor or SimpleEditor if none specified
       return React.addons.cloneWithProps(customEditor, editorProps);
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} editorRowMetaData={this.getRowMetaData()} />;
+      return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
     }
   },
 
