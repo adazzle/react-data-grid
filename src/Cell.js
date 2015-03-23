@@ -100,13 +100,10 @@ var Cell = React.createClass({
     var CellContent;
     var Formatter = this.getFormatter();
     if(React.isValidElement(Formatter)){
+      props.dependentValues = this.getFormatterDependencies()
       CellContent = cloneWithProps(Formatter, props);
     }else if(isFunction(Formatter)){
-      try{
-        CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies}/>;
-      }catch(e){
-        CellContent = <SimpleCellFormatter value={this.props.value}/>;
-      }
+        CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
