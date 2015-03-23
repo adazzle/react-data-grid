@@ -12,8 +12,7 @@ class ExcelColumn {
 var ExcelColumnShape = {
   name: React.PropTypes.string.isRequired,
   key: React.PropTypes.string.isRequired,
-  width: React.PropTypes.number.isRequired,
-  formatter: React.PropTypes.element
+  width: React.PropTypes.number.isRequired
 
 
 }
