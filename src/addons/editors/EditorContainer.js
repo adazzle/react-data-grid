@@ -62,16 +62,16 @@ var EditorContainer = React.createClass({
       //return custom column editor or SimpleEditor if none specified
       return React.addons.cloneWithProps(customEditor, editorProps);
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} editorRowMetaData={this.getEditorRowMetaData()} />;
+      return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} editorRowMetaData={this.getRowMetaData()} />;
     }
   },
 
-  getEditorRowMetaData(): ?any {
+  getRowMetaData(): ?any {
     //clone row data so editor cannot actually change this
     var columnName = this.props.column.ItemId;
     //convention based method to get corresponding Id or Name of any Name or Id property
-    if(typeof this.props.column.getEditorRowMetaData === 'function'){
-      return this.props.column.getEditorRowMetaData(this.props.rowData);
+    if(typeof this.props.column.getRowMetaData === 'function'){
+      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
     }
   },
 

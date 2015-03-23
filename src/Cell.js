@@ -27,9 +27,9 @@ var Cell = React.createClass({
     value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     isExpanded: React.PropTypes.bool,
     cellMetaData: React.PropTypes.shape({
-		elected: React.PropTypes.object.isRequired, 
-		copied: React.PropTypes.object, 
-		dragged: React.PropTypes.object, 
+		selected: React.PropTypes.object.isRequired,
+		copied: React.PropTypes.object,
+		dragged: React.PropTypes.object,
 		onCellClick: React.PropTypes.func
 	}).isRequired,
     handleDragStart: React.PropTypes.func,
@@ -103,7 +103,7 @@ var Cell = React.createClass({
       CellContent = cloneWithProps(Formatter, props);
     }else if(isFunction(Formatter)){
       try{
-        CellContent = <Formatter value={this.props.value}/>;
+        CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies}/>;
       }catch(e){
         CellContent = <SimpleCellFormatter value={this.props.value}/>;
       }
@@ -148,6 +148,15 @@ var Cell = React.createClass({
       return <EditorContainer rowData={this.props.rowData} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
     }else{
       return this.props.column.formatter;
+    }
+  },
+
+  getFormatterDependencies() {
+    //clone row data so editor cannot actually change this
+    var columnName = this.props.column.ItemId;
+    //convention based method to get corresponding Id or Name of any Name or Id property
+    if(typeof this.props.column.getRowMetaData === 'function'){
+      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
     }
   },
 
