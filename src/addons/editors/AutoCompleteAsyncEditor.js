@@ -13,7 +13,7 @@ var AutoCompleteAsyncEditor =  React.createClass({
   propTypes : {
 	cacheResults: React.PropTypes.bool,
   	column: React.PropTypes.object,
-  	editorRowMetaData: React.PropTypes.object,
+  	rowMetaData: React.PropTypes.object,
 	height: React.PropTypes.number,
 	label: React.PropTypes.string,
 	onCommit: React.PropTypes.func,
@@ -26,12 +26,12 @@ var AutoCompleteAsyncEditor =  React.createClass({
   },
 
   getSearchParams() {
-    var editorRowMetaData = this.props.editorRowMetaData;
+    var rowMetaData = this.props.rowMetaData;
     var searchParams =  this.props.searchSourceArgs.map(arg => {
-      if(!editorRowMetaData[arg]){
-        throw ("Cannot find Search Source Paramater " + arg + " in editorRowMetaData. You must add an entry for this in models/GridColumn.js")
+      if(!rowMetaData[arg]){
+        throw ("Cannot find Search Source Paramater " + arg + " in rowMetaData. You must add an entry for this in models/GridColumn.js")
       }
-      return editorRowMetaData[arg]
+      return rowMetaData[arg]
     });
     return searchParams;
   },
@@ -74,16 +74,15 @@ var AutoCompleteAsyncEditor =  React.createClass({
     }
     return results.slice(0, 100)
   },
-	  
+
   render() {
-    var value = typeof this.props.column.formatter === 'function' ? this.props.column.formatter(this.props) : this.props.value;
     return (
-      <AutoCompleteEditor 
-		ref="autocomplete" {...this.props} 
-		options={[]} 
-		search={this._searchRemote} 
-		value={value} 
-		label={this.props.label} 
+      <AutoCompleteEditor
+		ref="autocomplete" {...this.props}
+		options={[]}
+		search={this._searchRemote}
+		value={this.props.value}
+		label={this.props.label}
 		resultIdentifier={this.props.resultIdentifier}
 	  />
     )

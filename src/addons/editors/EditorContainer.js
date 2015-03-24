@@ -54,7 +54,7 @@ var EditorContainer = React.createClass({
 		onKeyDown : this.onKeyDown,
 		value : this.getInitialValue(),
 		onCommit : this.commit,
-		owMetaData : this.getRowMetaData(),
+		rowMetaData : this.getRowMetaData(),
 		height : this.props.height
 	};
     var customEditor = this.props.column.editor;
