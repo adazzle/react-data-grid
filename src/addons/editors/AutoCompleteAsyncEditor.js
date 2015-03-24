@@ -20,7 +20,7 @@ var AutoCompleteAsyncEditor =  React.createClass({
 	onKeyDown: React.PropTypes.func,
 	resultIdentifier: React.PropTypes.string,
 	searchSourceArgs: React.PropTypes.array,
-	searchSourceUrl: React.PropTypes.func,
+	searchUrl: React.PropTypes.func,
 	value: React.PropTypes.string,
 	valueParams: React.PropTypes.arrayOf(React.PropTypes.string)
   },
