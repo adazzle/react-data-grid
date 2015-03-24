@@ -109,6 +109,7 @@ var ReactDataGrid = React.createClass({
       dragged : this.state.dragged,
       onCellClick : this.onCellClick,
       onCommit : this.onCellCommit,
+      onCommitCancel : this.setInactive,
       copied : this.state.copied,
       handleDragEnterRow : this.handleDragEnter,
       handleTerminateDrag : this.handleTerminateDrag

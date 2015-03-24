@@ -87,6 +87,12 @@ var EditorContainer = React.createClass({
     this.commit({key : 'Tab'});
   },
 
+  onPressEscape(e: SyntheticKeyboardEvent){
+    e.stopPropagation();
+    e.preventDefault();
+    this.props.cellMetaData.onCommitCancel();
+  },
+
   onPressArrowDown(e: SyntheticKeyboardEvent){
     if(this.editorHasResults()){
       e.stopPropagation();
