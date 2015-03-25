@@ -28,7 +28,7 @@ var AutoCompleteAsyncEditor =  React.createClass({
   getSearchParams() {
     var rowMetaData = this.props.rowMetaData;
     var searchParams =  this.props.searchSourceArgs.map(arg => {
-      if(!rowMetaData[arg]){
+      if(rowMetaData[arg] == null){
         throw ("Cannot find Search Source Paramater " + arg + " in rowMetaData. You must add an entry for this in models/GridColumn.js")
       }
       return rowMetaData[arg]
