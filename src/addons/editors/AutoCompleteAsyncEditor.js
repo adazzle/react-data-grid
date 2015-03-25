@@ -76,12 +76,19 @@ var AutoCompleteAsyncEditor =  React.createClass({
   },
 
   render() {
+    var value;
+    var Formatter = this.props.column.formatter;
+    if(typeof Formatter === 'function' && typeof Formatter.format === 'function'){
+      value = Formatter.format(this.props.value);
+    }else{
+      value = this.props.value;
+    }
     return (
       <AutoCompleteEditor
 		ref="autocomplete" {...this.props}
 		options={[]}
 		search={this._searchRemote}
-		value={this.props.value}
+		value={value}
 		label={this.props.label}
 		resultIdentifier={this.props.resultIdentifier}
 	  />
