@@ -7,7 +7,7 @@
   var Toolbar             = ReactGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
-  var cx                  = React.addons.classSet;
+  var joinClasses          = require('classnames');
   var cloneWithProps      = React.addons.cloneWithProps;
   var FakeObjectDataStore = require('./FakeObjectDataStore');
   var developers = ['Conor','Curtis','Danny','Joao','Mo','Rich'];

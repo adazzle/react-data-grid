@@ -4,7 +4,7 @@
  */
 "use strict";
 
-var React             = require('react/addons');
+var React             = require('react');
 var PropTypes         = React.PropTypes;
 var shallowEqual      = require('./shallowEqual');
 var HeaderCell        = require('./HeaderCell');

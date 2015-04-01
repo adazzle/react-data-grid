@@ -6,7 +6,7 @@
  */
 'use strict';
 
-var React               = require('react/addons');
+var React               = require('react');
 var emptyFunction       = require('./emptyFunction');
 var shallowCloneObject  = require('./shallowCloneObject');
 

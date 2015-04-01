@@ -6,7 +6,7 @@
 //  */
 // 'use strict';
 //
-// var React                = require('react/addons');
+// var React                = require('react');
 // var BaseCell             = require('../../Cell');
 // var EditableMixin        = require('./mixins/EditableMixin');
 // var CopyableMixin        = require('./mixins/CopyableMixin');
@@ -15,7 +15,7 @@
 // var KeyboardHandlerMixin = require('./mixins/KeyboardHandlerMixin');
 // var isFunction           = require('../utils/isFunction');
 // var PropTypes            = React.PropTypes;
-// var cx                   = React.addons.classSet;
+// var joinClasses                   = React.addons.classSet;
 // var cloneWithProps       = React.addons.cloneWithProps;
 // var ExcelColumn          = require('../grids/ExcelColumn');
 //
@@ -83,7 +83,7 @@
 //     mixins : [SelectableMixin],
 //
 //     getCellClass : function(){
-//       return cx({
+//       return joinClasses({
 //         'selected' : this.isSelected()
 //       });
 //     },

@@ -4,10 +4,10 @@
  */
 "use strict";
 
-var React          = require('react/addons');
-var cx             = React.addons.classSet;
+var React          = require('react');
+var joinClasses     = require('classnames');
 var PropTypes      = React.PropTypes;
-var cloneWithProps = React.addons.cloneWithProps;
+var cloneWithProps = require('react/lib/cloneWithProps');
 var shallowEqual   = require('./shallowEqual');
 var emptyFunction  = require('./emptyFunction');
 var ScrollShim     = require('./ScrollShim');
@@ -76,7 +76,7 @@ var Canvas = React.createClass({
       <div
         style={style}
         onScroll={this.onScroll}
-        className={cx("react-grid-Canvas", this.props.className)}>
+        className={joinClasses("react-grid-Canvas", this.props.className)}>
         <div style={{width: this.props.width, overflow: 'hidden'}}>
           {rows}
         </div>

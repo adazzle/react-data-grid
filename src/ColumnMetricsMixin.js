@@ -3,7 +3,7 @@
 var ColumnMetrics        = require('./ColumnMetrics');
 var DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
-var PropTypes            = require('react/addons').PropTypes;
+var PropTypes            = require('react').PropTypes;
 
 
 type ColumnMetricsType = {

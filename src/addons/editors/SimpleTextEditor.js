@@ -6,8 +6,7 @@
  */
 'use strict';
 
-var React                   = require('react/addons');
-var cx                      = React.addons.classSet;
+var React                   = require('react');
 var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var ExcelColumn             = require('../grids/ExcelColumn');
 

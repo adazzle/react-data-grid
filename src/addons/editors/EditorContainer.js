@@ -6,12 +6,12 @@
 */
 'use strict';
 
-var React                   = require('react/addons');
-var cx                      = React.addons.classSet;
+var React                   = require('react');
+var joinClasses              = require('classnames');
 var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var SimpleTextEditor        = require('./SimpleTextEditor');
 var isFunction              = require('../utils/isFunction');
-var cloneWithProps          = React.addons.cloneWithProps;
+var cloneWithProps          = require('react/lib/cloneWithProps');
 
 
 var EditorContainer = React.createClass({
@@ -60,7 +60,7 @@ var EditorContainer = React.createClass({
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){
       //return custom column editor or SimpleEditor if none specified
-      return React.addons.cloneWithProps(customEditor, editorProps);
+      return cloneWithProps(customEditor, editorProps);
     }else{
       return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
     }
@@ -172,7 +172,7 @@ var EditorContainer = React.createClass({
   },
 
   getContainerClass(){
-    return cx({
+    return joinClasses({
       'has-error' : this.state.isInvalid === true
     })
   },

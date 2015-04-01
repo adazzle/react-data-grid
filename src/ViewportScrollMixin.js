@@ -1,6 +1,6 @@
 /* TODO@flow mixins */
 
-var React             = require('react/addons');
+var React             = require('react');
 var DOMMetrics        = require('./DOMMetrics');
 var getWindowSize     = require('./getWindowSize');
 

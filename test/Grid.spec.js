@@ -1,5 +1,5 @@
 'use strict';
-var React = require('react/addons');
+var React = require('react');
 var rewire = require('rewire');
 var Grid =  rewire('../src/addons/grids/ReactDataGrid.js');
 var BaseGrid = require('../src/Grid');

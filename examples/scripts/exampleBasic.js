@@ -1,5 +1,5 @@
 /* @flow */
-var React = require('react/addons');
+var React = require('react');
 var ReactGrid = require('../build/ReactGrid');
 var FakeObjectDataStore   = require('./FakeObjectDataStore');
 var QuickStartDescription = require('./components/QuickStartDescription');

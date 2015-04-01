@@ -6,12 +6,13 @@
  */
 "use strict";
 
-var React       = require('react/addons');
-var cx          = React.addons.classSet;
-var Draggable   = require('./Draggable');
-var PropTypes   = React.PropTypes;
-var ExcelColumn = require('./addons/grids/ExcelColumn');
-var ResizeHandle = React.createClass({
+var React          = require('react');
+var joinClasses     = require('classnames');
+var Draggable      = require('./Draggable');
+var cloneWithProps = require('react/lib/cloneWithProps');
+var PropTypes      = React.PropTypes;
+var ExcelColumn    = require('./addons/grids/ExcelColumn');
+var ResizeHandle   = React.createClass({
 
   style: {
     position: 'absolute',
@@ -40,12 +41,12 @@ var HeaderCell = React.createClass({
   },
 
   render(): ?ReactElement {
-    var className = cx({
+    var className = joinClasses({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
       'react-grid-HeaderCell--locked': this.props.column.locked
     });
-    className = cx(className, this.props.className);
+    className = joinClasses(className, this.props.className);
     var cell = this.getCell();
     return (
       <div className={className} style={this.getStyle()}>
@@ -63,7 +64,7 @@ var HeaderCell = React.createClass({
 
   getCell(): ReactComponent {
     if (React.isValidElement(this.props.renderer)) {
-      return React.addons.cloneWithProps(this.props.renderer, {column : this.props.column});
+      return cloneWithProps(this.props.renderer, {column : this.props.column});
     } else {
       return this.props.renderer({column: this.props.column});
     }

@@ -5,7 +5,7 @@
  */
 "use strict";
 
-var React                 = require('react/addons');
+var React                 = require('react');
 var PropTypes             = React.PropTypes;
 var BaseGrid              = require('../../Grid');
 var ExcelCell             = require('../cells/ExcelCell');

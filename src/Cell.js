@@ -6,9 +6,9 @@
  */
 'use strict';
 
-var React           = require('react/addons');
-var cx              = React.addons.classSet;
-var cloneWithProps  = React.addons.cloneWithProps;
+var React           = require('react');
+var joinClasses      = require('classnames');
+var cloneWithProps  = require('react/lib/cloneWithProps');
 var EditorContainer = require('./addons/editors/EditorContainer');
 var ExcelColumn     = require('./addons/grids/ExcelColumn');
 var isFunction      = require('./addons/utils/isFunction');
@@ -171,13 +171,13 @@ var Cell = React.createClass({
   },
 
   getCellClass : function(): string {
-    var className = cx(
+    var className = joinClasses(
       'react-grid-Cell',
       this.props.className,
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
 
-    var extraClasses = cx({
+    var extraClasses = joinClasses({
       'selected' : this.isSelected() && !this.isActive() ,
       'editing' : this.isActive(),
       'copied' : this.isCopied(),

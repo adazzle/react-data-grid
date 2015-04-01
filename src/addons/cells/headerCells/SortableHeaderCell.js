@@ -6,8 +6,8 @@
  */
 'use strict';
 
-var React              = require('react/addons');
-var cx             = React.addons.classSet;
+var React              = require('react');
+var joinClasses         = require('classnames');
 var ExcelColumn = require('../../grids/ExcelColumn');
 
 var SortableHeaderCell = React.createClass({
@@ -22,7 +22,7 @@ var SortableHeaderCell = React.createClass({
 
   getSortByClass : function(){
     var sorted = this.props.column.sorted;
-    return cx({
+    return joinClasses({
       'pull-right' : true,
       'glyphicon glyphicon-arrow-up' : sorted === 'ASC',
       'glyphicon glyphicon-arrow-down' : sorted === 'DESC'

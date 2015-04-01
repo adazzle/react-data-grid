@@ -17,11 +17,11 @@ webpackConfig = {
 		libraryTarget: "umd"
 	},
 	externals: {
-		"react/addons": {
+		"react": {
 			root : 'React',
-			commonjs : 'react/addons',
-			commonjs2 : 'react/addons',
-			amd : 'react/addons'
+			commonjs : 'react',
+			commonjs2 : 'react',
+			amd : 'react'
 		},
 		"moment" : "moment"
 	},

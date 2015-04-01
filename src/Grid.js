@@ -6,7 +6,7 @@
  */
 "use strict";
 
-var React                = require('react/addons');
+var React                = require('react');
 var PropTypes            = React.PropTypes;
 var Header               = require('./Header');
 var Viewport             = require('./Viewport');

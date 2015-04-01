@@ -1,5 +1,5 @@
 /* @flow */
-var React = require('react/addons');
+var React = require('react');
 var ReactGrid = require('../build/ReactGrid');
 var getRows   = require('./getRows');
 var RowsDescription = require('./components/RowsDescription')
