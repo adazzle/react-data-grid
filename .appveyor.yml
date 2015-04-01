@@ -13,8 +13,6 @@ build_script:
 
     npm install -g gulp
 
-    npm cache clean
-
     npm install
 
     gulp flow-win
@@ -22,3 +20,8 @@ build_script:
     gulp test --release true
 
     gulp coveralls
+
+cache:
+  - C:\Users\appveyor\AppData\Roaming\npm\node_modules -> package.json  # global npm modules
+  - C:\Users\appveyor\AppData\Roaming\npm-cache -> package.json         # npm cache
+  - node_modules -> package.json                                        # local npm modules
