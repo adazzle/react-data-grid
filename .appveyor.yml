@@ -7,6 +7,10 @@ build_script:
 - ps: >-
     Install-Product node 0.12.0 x64
 
+    npm -g install npm@2
+
+    set PATH=%APPDATA%\npm;%PATH%
+
     npm install -g gulp
 
     npm cache clean
