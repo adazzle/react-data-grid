@@ -8,7 +8,6 @@
 var React                 = require('react');
 var PropTypes             = React.PropTypes;
 var BaseGrid              = require('../../Grid');
-var ExcelCell             = require('../cells/ExcelCell');
 var Row                   = require('../../Row');
 var ExcelColumn           = require('./ExcelColumn');
 var merge                 = require('../../merge');
