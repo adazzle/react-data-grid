@@ -5,10 +5,9 @@
  */
 "use strict";
 
-var React                 = require('react/addons');
+var React                 = require('react');
 var PropTypes             = React.PropTypes;
 var BaseGrid              = require('../../Grid');
-var ExcelCell             = require('../cells/ExcelCell');
 var Row                   = require('../../Row');
 var ExcelColumn           = require('./ExcelColumn');
 var merge                 = require('../../merge');
@@ -16,8 +15,7 @@ var KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 var CheckboxEditor        = require('../editors/CheckboxEditor');
 var SortableHeaderCell    = require('../cells/headerCells/SortableHeaderCell');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
-
-var cloneWithProps = React.addons.cloneWithProps;
+var cloneWithProps        = require('react/lib/cloneWithProps');
 
 type SelectedType = {
   rowIdx: number;
@@ -109,6 +107,7 @@ var ReactDataGrid = React.createClass({
       dragged : this.state.dragged,
       onCellClick : this.onCellClick,
       onCommit : this.onCellCommit,
+      onCommitCancel : this.setInactive,
       copied : this.state.copied,
       handleDragEnterRow : this.handleDragEnter,
       handleTerminateDrag : this.handleTerminateDrag
@@ -142,7 +141,7 @@ var ReactDataGrid = React.createClass({
   renderToolbar(): ReactElement {
     var Toolbar = this.props.toolbar;
     if(React.isValidElement(Toolbar)){
-      return( React.addons.cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
+      return( cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
     }
 
   },

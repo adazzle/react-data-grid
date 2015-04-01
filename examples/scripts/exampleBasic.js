@@ -1,6 +1,6 @@
 /* @flow */
-var React = require('react/addons');
-var ReactGrid = require('../build/ReactGrid');
+var React = require('react');
+var ReactDataGrid = require('../build/react-data-grid');
 var FakeObjectDataStore   = require('./FakeObjectDataStore');
 var QuickStartDescription = require('./components/QuickStartDescription');
 
@@ -88,7 +88,7 @@ var Example = React.createClass({
     return(
       <div>
         <QuickStartDescription title="A Simple Example"/>
-        <ReactGrid rowGetter={FakeObjectDataStore.getObjectAt} rowsCount={1000} columns={columns}/>
+      <ReactDataGrid rowGetter={FakeObjectDataStore.getObjectAt} rowsCount={1000} columns={columns}/>
       </div>
       )
   }

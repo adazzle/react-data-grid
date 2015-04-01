@@ -4,10 +4,10 @@
  */
 "use strict";
 
-var React          = require('react/addons');
-var cx             = React.addons.classSet;
+var React          = require('react');
+var joinClasses     = require('classnames');
 var PropTypes      = React.PropTypes;
-var cloneWithProps = React.addons.cloneWithProps;
+var cloneWithProps = require('react/lib/cloneWithProps');
 var shallowEqual   = require('./shallowEqual');
 var emptyFunction  = require('./emptyFunction');
 var ScrollShim     = require('./ScrollShim');
@@ -28,7 +28,7 @@ var Canvas = React.createClass({
       PropTypes.array.isRequired
     ]),
     onRows: PropTypes.func,
-    columns: PropTypes.arrayOf(ExcelColumn).isRequired
+    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired
   },
 
   render(): ?ReactElement {
@@ -76,7 +76,7 @@ var Canvas = React.createClass({
       <div
         style={style}
         onScroll={this.onScroll}
-        className={cx("react-grid-Canvas", this.props.className)}>
+        className={joinClasses("react-grid-Canvas", this.props.className)}>
         <div style={{width: this.props.width, overflow: 'hidden'}}>
           {rows}
         </div>
@@ -98,7 +98,8 @@ var Canvas = React.createClass({
     return (
       <div key={key} style={{height: height}}>
         {this.props.columns.map(
-          (column, idx) => <div style={{width: column.width}} key={idx} />)}
+          (column, idx) => <div style={{width: column.width}} key={idx} />
+		)}
       </div>
     );
   },
@@ -189,7 +190,7 @@ var Canvas = React.createClass({
       return this.props.rowGetter.slice(displayStart, displayEnd);
     } else {
       var rows = [];
-      for (var i = displayStart; i <= displayEnd; i++){
+      for (var i = displayStart; i < displayEnd; i++){
         rows.push(this.props.rowGetter(i));
       }
       return rows;

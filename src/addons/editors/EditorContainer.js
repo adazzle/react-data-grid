@@ -6,12 +6,12 @@
 */
 'use strict';
 
-var React                   = require('react/addons');
-var cx                      = React.addons.classSet;
+var React                   = require('react');
+var joinClasses              = require('classnames');
 var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var SimpleTextEditor        = require('./SimpleTextEditor');
 var isFunction              = require('../utils/isFunction');
-var cloneWithProps          = React.addons.cloneWithProps;
+var cloneWithProps          = require('react/lib/cloneWithProps');
 
 
 var EditorContainer = React.createClass({
@@ -48,22 +48,30 @@ var EditorContainer = React.createClass({
   },
 
   createEditor(): ReactElement{
-    var editorProps = {ref: 'editor', column : this.props.column, onKeyDown : this.onKeyDown, value : this.getInitialValue(), onCommit : this.commit, editorRowMetaData : this.getEditorRowMetaData(), height : this.props.height};
+    var editorProps = {
+		ref: 'editor',
+		column : this.props.column,
+		onKeyDown : this.onKeyDown,
+		value : this.getInitialValue(),
+		onCommit : this.commit,
+		rowMetaData : this.getRowMetaData(),
+		height : this.props.height
+	};
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){
       //return custom column editor or SimpleEditor if none specified
-      return React.addons.cloneWithProps(customEditor, editorProps);
+      return cloneWithProps(customEditor, editorProps);
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} editorRowMetaData={this.getEditorRowMetaData()} />;
+      return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
     }
   },
 
-  getEditorRowMetaData(): ?any {
+  getRowMetaData(): ?any {
     //clone row data so editor cannot actually change this
     var columnName = this.props.column.ItemId;
     //convention based method to get corresponding Id or Name of any Name or Id property
-    if(typeof this.props.column.getEditorRowMetaData === 'function'){
-      return this.props.column.getEditorRowMetaData(this.props.rowData);
+    if(typeof this.props.column.getRowMetaData === 'function'){
+      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
     }
   },
 
@@ -77,6 +85,12 @@ var EditorContainer = React.createClass({
     e.stopPropagation();
     e.preventDefault();
     this.commit({key : 'Tab'});
+  },
+
+  onPressEscape(e: SyntheticKeyboardEvent){
+    e.stopPropagation();
+    e.preventDefault();
+    this.props.cellMetaData.onCommitCancel();
   },
 
   onPressArrowDown(e: SyntheticKeyboardEvent){
@@ -158,7 +172,7 @@ var EditorContainer = React.createClass({
   },
 
   getContainerClass(){
-    return cx({
+    return joinClasses({
       'has-error' : this.state.isInvalid === true
     })
   },

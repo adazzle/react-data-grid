@@ -6,7 +6,7 @@
  */
 "use strict";
 
-var React                = require('react/addons');
+var React                = require('react');
 var PropTypes            = React.PropTypes;
 var Header               = require('./Header');
 var Viewport             = require('./Viewport');
@@ -24,7 +24,7 @@ var Grid = React.createClass({
 
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
-    columns: PropTypes.arrayOf(ExcelColumn).isRequired,
+    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
     minHeight: PropTypes.number,
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowHeight: PropTypes.number,

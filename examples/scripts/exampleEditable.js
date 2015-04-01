@@ -1,6 +1,6 @@
 /* @flow */
-var React = require('react/addons');
-var ReactGrid = require('../build/ReactGrid');
+var React = require('react');
+var ReactDataGrid = require('../build/react-data-grid');
 var getRows   = require('./getRows');
 var RowsDescription = require('./components/RowsDescription')
 var HightlightMixin = require('./highlightMixin');
@@ -21,9 +21,9 @@ var Description = React.createClass({
           </pre>
       </div>
 
-      <p>One goal of ReactGrid is to allow the end user to manage the grid data how they want. ReactGrid just provides callbacks that can be listened to, to change data as needed. Here we will create our own editable grid React component, which will wrap ReactGrid. We need to hook onto ReactGrids onRowUpdatedEvent and update the row where the commit was made. Finally, make sure cell selection is enabled for the grid by passing enableCellSelect as prop</p>
+      <p>One goal of ReactDataGrid is to allow the end user to manage the grid data how they want. ReactDataGrid just provides callbacks that can be listened to, to change data as needed. Here we will create our own editable grid React component, which will wrap ReactDataGrid. We need to hook onto ReactDataGrid's onRowUpdatedEvent and update the row where the commit was made. Finally, make sure cell selection is enabled for the grid by passing enableCellSelect as prop</p>
       <div className="code-block js">
-        <pre><code className="javascript">{"var EditableGrid = React.createClass({\n\n   getInitialState : function(){\n     return {rows : getRows(0, 1000)};\n   },\n\n    handleRowUpdated : function(commit){\n     //merge the updated row values with the existing row\n     var rows = this.state.rows;\n     var updatedRow = React.addons.update(rows[commit.rowIdx], {$merge : commit.updated});\n     rows[commit.rowIdx] = updatedRow;\n     this.setState({rows:rows});\n   },\n\n  render : function(){\n    return(<ReactGrid \n       rows={getRows(0,100)} \n      columns={columns} \n      enableCellSelect={true} \n      onRowUpdated={this.handleRowUpdated}/> \n   );\n }\n});"}</code></pre>
+        <pre><code className="javascript">{"var EditableGrid = React.createClass({\n\n   getInitialState : function(){\n     return {rows : getRows(0, 1000)};\n   },\n\n    handleRowUpdated : function(commit){\n     //merge the updated row values with the existing row\n     var rows = this.state.rows;\n     var updatedRow = React.addons.update(rows[commit.rowIdx], {$merge : commit.updated});\n     rows[commit.rowIdx] = updatedRow;\n     this.setState({rows:rows});\n   },\n\n  render : function(){\n    return(<ReactDataGrid \n       rows={getRows(0,100)} \n      columns={columns} \n      enableCellSelect={true} \n      onRowUpdated={this.handleRowUpdated}/> \n   );\n }\n});"}</code></pre>
       </div>
       </div>
     );
@@ -64,7 +64,7 @@ var EditableGrid = React.createClass({
   },
 
   render : function(): ?ReactElement {
-    return(<ReactGrid rows={this.state.rows} columns={columns} enableCellSelect={true} onRowUpdated={this.handleRowUpdated}></ReactGrid>);
+    return(<ReactDataGrid rowGetter={FakeObjectDataStore.getObjectAt} columns={columns} enableCellSelect={true} onRowUpdated={this.handleRowUpdated}></ReactDataGrid>);
   }
 });
 

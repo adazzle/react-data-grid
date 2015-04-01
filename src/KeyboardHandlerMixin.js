@@ -7,11 +7,7 @@
 
 'use strict';
 
-var React = require('react/addons');
-var Perf = React.addons.Perf;
-
-var hasPerfStarted = false;
-
+var React = require('react');
 var KeyboardHandlerMixin = {
 
   propTypes : {

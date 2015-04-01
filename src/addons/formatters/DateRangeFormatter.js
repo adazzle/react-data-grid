@@ -7,8 +7,7 @@
  */
 'use strict';
 
-var React          = require('react/addons');
-var cx             = React.addons.classSet;
+var React          = require('react');
 var moment         = require('moment');
 var PropTypes = React.PropTypes;
 

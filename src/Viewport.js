@@ -6,7 +6,7 @@
  */
 'use strict';
 
-var React             = require('react/addons');
+var React             = require('react');
 var Canvas            = require('./Canvas');
 var PropTypes            = React.PropTypes;
 

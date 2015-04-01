@@ -1,1 +1,1 @@
-module.exports = require("./dist/ReactGrid");
+module.exports = require("./dist/react-data-grid");

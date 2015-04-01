@@ -1,1 +1,1 @@
-module.exports = require("./dist/ReactGridWithAddons");
+module.exports = require("./dist/react-data-grid-with-addons");

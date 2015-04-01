@@ -1,6 +1,6 @@
 'use strict';
 var gridHelpers = require('../browser/helpers.js');
-var React = require('react/addons');
+var React = require('react');
 var ReactTests = React.addons.TestUtils;
 var  Grid = require('../../src/Grid');
 var  Viewport = require('../../src/Viewport');

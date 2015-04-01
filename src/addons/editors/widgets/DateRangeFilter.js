@@ -4,10 +4,10 @@
  */
 'use strict';
 
-var React   = require('react/addons');
-var cx      = React.addons.classSet;
-var Moment 	= require('moment');
-var $				= require('jquery');
+var React   	 = require('react');
+var joinClasses = require('classnames');
+var Moment 		 = require('moment');
+var $					 = require('jquery');
 
 var DateRangePicker = function (element, options, cb) {
 

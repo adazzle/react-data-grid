@@ -6,8 +6,7 @@
  */
 'use strict';
 
-var React                   = require('react/addons');
-var cx                      = React.addons.classSet;
+var React                   = require('react');
 var DateRangeFilter         = require('./widgets/DateRangeFilter');
 var Moment                  = require('moment');
 

@@ -6,8 +6,8 @@
  */
 "use strict";
 
-var React               = require('react/addons');
-var cx                  = React.addons.classSet;
+var React               = require('react');
+var joinClasses          = require('classnames');
 var shallowCloneObject  = require('./shallowCloneObject');
 var ColumnMetrics       = require('./ColumnMetrics');
 var HeaderRow           = require('./HeaderRow');
@@ -27,7 +27,7 @@ var Header = React.createClass({
   render(): ?ReactElement {
     var state = this.state.resizing || this.props;
 
-    var className = cx({
+    var className = joinClasses({
       'react-grid-Header': true,
       'react-grid-Header--resizing': !!this.state.resizing
     });

@@ -6,11 +6,12 @@
  */
 'use strict';
 
-var React          = require('react/addons');
-var cx             = React.addons.classSet;
-var cloneWithProps = React.addons.cloneWithProps;
+var React           = require('react');
+var joinClasses      = require('classnames');
+var cloneWithProps  = require('react/lib/cloneWithProps');
 var EditorContainer = require('./addons/editors/EditorContainer');
-var ExcelColumn  = require('./addons/grids/ExcelColumn');
+var ExcelColumn     = require('./addons/grids/ExcelColumn');
+var isFunction      = require('./addons/utils/isFunction');
 
 var Cell = React.createClass({
 
@@ -25,7 +26,12 @@ var Cell = React.createClass({
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     isExpanded: React.PropTypes.bool,
-    cellMetaData: React.PropTypes.shape({selected: React.PropTypes.object.isRequired, copied: React.PropTypes.object, dragged: React.PropTypes.object, onCellClick: React.PropTypes.func}).isRequired,
+    cellMetaData: React.PropTypes.shape({
+		selected: React.PropTypes.object.isRequired,
+		copied: React.PropTypes.object,
+		dragged: React.PropTypes.object,
+		onCellClick: React.PropTypes.func
+	}).isRequired,
     handleDragStart: React.PropTypes.func,
     className: React.PropTypes.string
   },
@@ -94,9 +100,12 @@ var Cell = React.createClass({
     var CellContent;
     var Formatter = this.getFormatter();
     if(React.isValidElement(Formatter)){
+      props.dependentValues = this.getFormatterDependencies()
       CellContent = cloneWithProps(Formatter, props);
-    }else{
-      CellContent = <SimpleCellFormatter value={this.props.value}/>
+    }else if(isFunction(Formatter)){
+        CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
+    } else {
+      CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
     return (<div
       className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>)
@@ -139,6 +148,15 @@ var Cell = React.createClass({
     }
   },
 
+  getFormatterDependencies() {
+    //clone row data so editor cannot actually change this
+    var columnName = this.props.column.ItemId;
+    //convention based method to get corresponding Id or Name of any Name or Id property
+    if(typeof this.props.column.getRowMetaData === 'function'){
+      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
+    }
+  },
+
   onCellClick(){
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellClick != null) {
@@ -153,13 +171,13 @@ var Cell = React.createClass({
   },
 
   getCellClass : function(): string {
-    var className = cx(
+    var className = joinClasses(
       'react-grid-Cell',
       this.props.className,
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
 
-    var extraClasses = cx({
+    var extraClasses = joinClasses({
       'selected' : this.isSelected() && !this.isActive() ,
       'editing' : this.isActive(),
       'copied' : this.isCopied(),

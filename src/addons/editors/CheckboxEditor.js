@@ -4,8 +4,7 @@
  */
 'use strict';
 
-var React                   = require('react/addons');
-var cx                      = React.addons.classSet;
+var React                   = require('react');
 
 var CheckBoxEditor = React.createClass({
 

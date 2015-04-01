@@ -6,11 +6,11 @@
  */
 'use strict';
 
-var React          = require('react/addons');
-var cx             = React.addons.classSet;
-var Cell           = require('./Cell');
-var cloneWithProps = React.addons.cloneWithProps;
-var ColumnMetrics    = require('./ColumnMetrics');
+var React           = require('react');
+var joinClasses      = require('classnames');
+var Cell            = require('./Cell');
+var cloneWithProps  = require('react/lib/cloneWithProps');
+var ColumnMetrics   = require('./ColumnMetrics');
 
 type RowPropsType = {
   height: number;
@@ -42,9 +42,9 @@ var Row = React.createClass({
   },
 
   render(): ?ReactElement {
-    var className = cx(
+    var className = joinClasses(
       'react-grid-Row',
-      `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`
+      "react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}"
     );
 
     var style = {

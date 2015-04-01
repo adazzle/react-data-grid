@@ -4,7 +4,7 @@
  */
 "use strict";
 
-var React             = require('react/addons');
+var React             = require('react');
 var PropTypes         = React.PropTypes;
 var shallowEqual      = require('./shallowEqual');
 var HeaderCell        = require('./HeaderCell');
@@ -12,11 +12,11 @@ var getScrollbarSize  = require('./getScrollbarSize');
 var ExcelColumn  = require('./addons/grids/ExcelColumn');
 
 
-class HeaderRowStyle {
-  overflow: string;
-  width: string;
-  height: number;
-  position: string;
+var HeaderRowStyle  = {
+  overflow: React.PropTypes.string,
+  width: React.PropTypes.string,
+  height: React.PropTypes.number,
+  position: React.PropTypes.string
 };
 
 var HeaderRow = React.createClass({
@@ -24,7 +24,7 @@ var HeaderRow = React.createClass({
   propTypes: {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
-    columns: PropTypes.arrayOf(ExcelColumn).isRequired,
+    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
     onColumnResize: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle)
   },

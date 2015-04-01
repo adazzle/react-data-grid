@@ -7,8 +7,7 @@ overrides? getDefaultValue, getStyle, onKeyDown
  */
 'use strict';
 
-var React                   = require('react/addons');
-var cx                      = React.addons.classSet;
+var React                   = require('react');
 var ReactAutocomplete       = require('ron-react-autocomplete');
 var KeyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var ExcelColumn             = require('../grids/ExcelColumn');

@@ -8,7 +8,7 @@
 
 var shallowCloneObject            = require('./shallowCloneObject');
 var merge                         = require('./merge');
-var isValidElement = require('react/addons').isValidElement;
+var isValidElement = require('react').isValidElement;
 var sameColumn = require('./ColumnComparer');
 
 type ColumnMetricsType = {

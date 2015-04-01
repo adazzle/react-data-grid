@@ -6,9 +6,8 @@
  */
 'use strict';
 
-var React              = require('react/addons');
-var cx             = React.addons.classSet;
-var ExcelColumn = require('../../grids/ExcelColumn');
+var React              = require('react');
+var ExcelColumn        = require('../../grids/ExcelColumn');
 
 var FilterableHeaderCell = React.createClass({
 

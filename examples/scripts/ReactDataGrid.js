@@ -2,12 +2,12 @@
  * @jsx React.DOM
  */
 (function(){
-  var Grid                = ReactGrid.Grid;
-  var Editors             = ReactGrid.Editors;
-  var Toolbar             = ReactGrid.Toolbar;
+  var Grid                = ReactDataGrid.Grid;
+  var Editors             = ReactDataGrid.Editors;
+  var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
-  var cx                  = React.addons.classSet;
+  var joinClasses          = require('classnames');
   var cloneWithProps      = React.addons.cloneWithProps;
   var FakeObjectDataStore = require('./FakeObjectDataStore');
   var developers = ['Conor','Curtis','Danny','Joao','Mo','Rich'];
@@ -46,7 +46,7 @@
 var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
   function renderImage(cellData) {
-    var ImageFormatter = ReactGrid.Formatters.ImageFormatter;
+    var ImageFormatter = ReactDataGrid.Formatters.ImageFormatter;
     return <ImageFormatter src={cellData.value} />;
   }
 
