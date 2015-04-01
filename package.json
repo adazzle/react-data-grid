@@ -16,7 +16,7 @@
     "grid"
   ],
   "dependencies": {
-    "joinClasses": "^1.2.0",
+    "classnames": "^1.2.0",
     "es5-shim": "^4.0.3",
     "object-assign": "^2.0.0",
     "react": "~0.12.2",
