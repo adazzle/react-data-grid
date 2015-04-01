@@ -10,7 +10,7 @@ var App = React.createClass({
   render: function () {
     return (
       <div>
-      <h1 className="page-header">React Grid Examples</h1>
+      <h1 className="page-header">React Data Grid Examples</h1>
       <RouteHandler/>
       </div>
     );

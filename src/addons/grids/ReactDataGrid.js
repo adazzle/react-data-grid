@@ -16,8 +16,7 @@ var KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 var CheckboxEditor        = require('../editors/CheckboxEditor');
 var SortableHeaderCell    = require('../cells/headerCells/SortableHeaderCell');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
-
-var cloneWithProps = React.addons.cloneWithProps;
+var cloneWithProps        = require('react/lib/cloneWithProps');
 
 type SelectedType = {
   rowIdx: number;
@@ -143,7 +142,7 @@ var ReactDataGrid = React.createClass({
   renderToolbar(): ReactElement {
     var Toolbar = this.props.toolbar;
     if(React.isValidElement(Toolbar)){
-      return( React.addons.cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
+      return( cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
     }
 
   },
