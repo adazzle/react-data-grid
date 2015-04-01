@@ -4,3 +4,5 @@ Excel-like grid component built with React, with editors, keyboard navigation, c
 
 [![Coverage Status](https://coveralls.io/repos/adazzle/react-data-grid/badge.svg)](https://coveralls.io/r/adazzle/react-data-grid)
 [![npm version](https://badge.fury.io/js/react-data-grid.svg)](http://badge.fury.io/js/react-data-grid)
+![npm dependencies](https://david-dm.org/adazzle/react-data-grid.svg)
+
