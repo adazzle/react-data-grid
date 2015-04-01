@@ -3,23 +3,28 @@ environment:
   COVERALLS_REPO_TOKEN: 9RRu36GLfbnk5Ri6Y6FpoZU10CW6dlIfy
   COVERALLS_SERVICE_NAME: appveyor
 shallow_clone: true
-build_script:
-- ps: >-
-    Install-Product node 0.12.0 x64
 
-    npm -g install npm@2
+# Install scripts. (runs after repo cloning)
+install:
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version
+  - npm -g install npm@2
+  - set PATH=%APPDATA%\npm;%PATH%
+  - npm install -g gulp
+  - npm install
+  - gulp flow-win
 
-    set PATH=%APPDATA%\npm;%PATH%
+# Post-install test scripts.
+test_script:
+  # Output useful info for debugging.
+  - node --version
+  - npm --version
+  # run tests
+  - gulp test --release true
+  - gulp coveralls
 
-    npm install -g gulp
-
-    npm install
-
-    gulp flow-win
-
-    gulp test --release true
-
-    gulp coveralls
+# Don't actually build.
+build: off
 
 cache:
   - C:\Users\appveyor\AppData\Roaming\npm\node_modules -> package.json  # global npm modules
