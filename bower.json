@@ -1,8 +1,8 @@
 {
-  "name": "adazzle-react-grid",
+  "name": "react-data-grid",
   "main": "index.js",
   "version": "0.12.7",
-  "homepage": "https://github.com/adazzle/react-grid",
+  "homepage": "https://github.com/adazzle/react-data-grid",
   "authors": [
     "malonecj <malonecj@gmail.com>"
   ],

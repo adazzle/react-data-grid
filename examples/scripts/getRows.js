@@ -1,5 +1,5 @@
 /* @flow */
-var Row = require('../build/ReactGrid').Row;
+var Row = require('../build/react-data-grid').Row;
 module.exports = function(start: number, end: number): Array<Row> {
   var result = []
   for (var i = start; i < end; i++) {
