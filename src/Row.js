@@ -9,7 +9,6 @@
 var React           = require('react');
 var joinClasses      = require('classnames');
 var Cell            = require('./Cell');
-var cloneWithProps  = require('react/lib/cloneWithProps');
 var ColumnMetrics   = require('./ColumnMetrics');
 
 type RowPropsType = {
@@ -109,14 +108,8 @@ var Row = React.createClass({
   },
 
   renderCell(props: any): ReactElement {
-    if(typeof this.props.cellRenderer == 'function') {
-      this.props.cellRenderer.call(this, props);
-    }
-    if (React.isValidElement(this.props.cellRenderer)) {
-      return cloneWithProps(this.props.cellRenderer, props);
-    } else {
-      return this.props.cellRenderer(props);
-    }
+    var Cell = this.props.cellRenderer;
+    return <Cell {...props}/>
   },
 
   getDefaultProps(): {cellRenderer: Cell} {
