@@ -185,7 +185,7 @@ var EditorContainer = React.createClass({
 
   render(): ?ReactElement{
   return (
-      <div className={this.getContainerClass()}>
+      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown}>
       {this.createEditor()}
       {this.renderStatusIcon()}
       </div>

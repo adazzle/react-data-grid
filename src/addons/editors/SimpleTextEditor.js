@@ -9,34 +9,13 @@
 var React                   = require('react');
 var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var ExcelColumn             = require('../grids/ExcelColumn');
-
-class Editor extends React.Component {
-
-  getValue(): any{
-    var updated = {};
-    updated[this.props.column.key] = this.refs.input.getDOMNode().value;
-    return updated;
-  }
-
-  getInputNode(): HTMLInputElement{
-    return this.getDOMNode();
-  }
-
-}
-
-Editor.propTypes = {
-  onKeyDown : React.PropTypes.func.isRequired,
-  value : React.PropTypes.any.isRequired,
-  onBlur : React.PropTypes.func.isRequired,
-  column :  React.PropTypes.shape(ExcelColumn).isRequired
-}
+var EditorBase              = require('./EditorBase');
 
 
-
-class SimpleTextEditor extends Editor{
+class SimpleTextEditor extends EditorBase {
 
   render(): ?ReactElement {
-    return (<input ref="input" type="text" onBlur={this.props.onBlur} className="form-control" defaultValue={this.props.value} onKeyDown={this.props.onKeyDown} />);
+    return (<input type="text" className="form-control" defaultValue={this.props.value} />);
   }
 
 };
