@@ -6,28 +6,17 @@
  */
 'use strict';
 
-var React                   = require('react');
+var React      = require('react');
+var EditorBase = require('./EditorBase');
 
-var DropDownEditor = React.createClass({
-
-  propTypes : {
-    options : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    value : React.PropTypes.string.isRequired,
-    commit : React.PropTypes.func.isRequired
-  },
-
-  getStyle(): {width: string}{
-    return {
-      width : '100%'
-    }
-  },
+class DropDownEditor extends EditorBase{
 
   render(): ?ReactElement{
     return (
-      <select ref="select" style={this.getStyle()} defaultValue={this.props.value} onChange={this.onChange} >
+      <select ref="select" style={{width:'100%'}} defaultValue={this.props.value} onChange={this.props.onCommit} onClick={this.onClick} >
         {this.renderOptions()}
       </select>);
-  },
+  }
 
   renderOptions(): Array<ReactElement>{
     var options = [];
@@ -35,27 +24,22 @@ var DropDownEditor = React.createClass({
       options.push(<option key={name} value={name}  >{name}</option>);
     }, this);
     return options;
-  },
-
-  getValue(): Object{
-    var updated = {};
-    updated[this.props.column.key] = this.refs.select.getDOMNode().value;
-    return updated;
-  },
+  }
 
   getInputNode(): HTMLInputElement{
     return this.refs.select.getDOMNode();
-  },
-
-  onChange(){
-    this.props.onCommit({key : 'Enter'});
-  },
+  }
 
   onClick(e: Event){
     e.stopPropagation();
     e.preventDefault();
   }
 
-});
+};
+
+
+DropDownEditor.propTypes = {
+    options : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+}
 
 module.exports = DropDownEditor;

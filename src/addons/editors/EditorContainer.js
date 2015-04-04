@@ -49,7 +49,7 @@ var EditorContainer = React.createClass({
 
   createEditor(): ReactElement{
     var editorProps = {
-		ref: 'editor',
+    ref : (c) => this.editor = c,
 		column : this.props.column,
 		onKeyDown : this.onKeyDown,
 		value : this.getInitialValue(),
@@ -122,7 +122,10 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
-    if(isFunction(this.getEditor().hasResults)){
+    if(this.editor.getDOMNode()){
+
+    }
+    else if(isFunction(this.getEditor().hasResults)){
       return this.getEditor().hasResults();
     }else{
       return false;
@@ -130,9 +133,7 @@ var EditorContainer = React.createClass({
   },
 
   getEditor(): Editor {
-    //TODO need to check that this.refs.editor conforms to the type
-    //this function is basically just a type cast for the sake of flow
-    return this.refs.editor;
+    return this.editor;
   },
 
   commit(args: {key : string}){
@@ -186,8 +187,8 @@ var EditorContainer = React.createClass({
   render(): ?ReactElement{
   return (
       <div className={this.getContainerClass()} onKeyDown={this.onKeyDown}>
-      {this.createEditor()}
-      {this.renderStatusIcon()}
+        {this.createEditor()}
+        {this.renderStatusIcon()}
       </div>
     )
   },
