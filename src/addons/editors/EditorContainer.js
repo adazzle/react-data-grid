@@ -96,14 +96,12 @@ var EditorContainer = React.createClass({
   onPressArrowDown(e: SyntheticKeyboardEvent){
     if(this.editorHasResults()){
       e.stopPropagation();
-      e.preventDefault();
     }
   },
 
   onPressArrowUp(e: SyntheticKeyboardEvent){
     if(this.editorHasResults()){
       e.stopPropagation();
-      e.preventDefault();
     }
   },
 
@@ -122,8 +120,8 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
-    if(this.editor.getDOMNode()){
-
+    if(this.editor.getInputNode().tagName === 'SELECT'){
+      return true;
     }
     else if(isFunction(this.getEditor().hasResults)){
       return this.getEditor().hasResults();
