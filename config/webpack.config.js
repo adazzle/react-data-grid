@@ -21,6 +21,12 @@ module.exports = {
       commonjs2 : 'react',
       amd : 'react'
     },
+    "react/addons": {
+      root : 'React',
+      commonjs : 'react',
+      commonjs2 : 'react',
+      amd : 'react'
+    },
     "moment" : "moment"
   },
   module: {

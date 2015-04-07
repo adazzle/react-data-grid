@@ -19,7 +19,7 @@
     "classnames": "^1.2.0",
     "es5-shim": "^4.0.3",
     "object-assign": "^2.0.0",
-    "react": "~0.13.1",
+    "react": "~0.12.2",
     "ron-react-autocomplete": "1.0.5"
   },
   "devDependencies": {
