@@ -20,6 +20,7 @@
     "es5-shim": "^4.0.3",
     "object-assign": "^2.0.0",
     "react": "~0.13.1",
+    "react-select": "^0.4.5",
     "ron-react-autocomplete": "2.0.0"
   },
   "devDependencies": {

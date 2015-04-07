@@ -35,8 +35,10 @@ var EditorContainer = React.createClass({
     var inputNode = this.getInputNode();
     if(inputNode !== undefined){
       this.setTextInputFocus();
-      inputNode.className += ' editor-main';
-      inputNode.style.height = this.props.height - 1 + 'px';
+      if(this.editor.inheritContainerStyles()){
+        inputNode.className += ' editor-main';
+        inputNode.style.height = this.props.height - 1 + 'px';
+      }
     }
   },
 
@@ -48,8 +50,9 @@ var EditorContainer = React.createClass({
   },
 
   createEditor(): ReactElement{
+    var editorRef = (c) => this.editor = c;
     var editorProps = {
-    ref : (c) => this.editor = c,
+    ref : editorRef,
 		column : this.props.column,
 		onKeyDown : this.onKeyDown,
 		value : this.getInitialValue(),
@@ -62,7 +65,7 @@ var EditorContainer = React.createClass({
       //return custom column editor or SimpleEditor if none specified
       return cloneWithProps(customEditor, editorProps);
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
+      return <SimpleTextEditor ref={editorRef} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
     }
   },
 

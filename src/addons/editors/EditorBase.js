@@ -19,7 +19,16 @@ class EditorBase extends React.Component {
   }
 
   getInputNode(): HTMLInputElement{
-    return React.findDOMNode(this);
+    var domNode = React.findDOMNode(this);
+    if(domNode.tagName === 'INPUT'){
+      return domNode;
+    }else{
+      return domNode.querySelector("input:not([type=hidden])");
+    }
+  }
+
+  inheritContainerStyles(): boolean{
+    return true;
   }
 
 }
