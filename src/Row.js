@@ -67,18 +67,18 @@ var Row = React.createClass({
 
     for (var i = 0, len = this.props.columns.length; i < len; i++) {
       var column = this.props.columns[i];
-      var cell = this.renderCell({
-        ref:i,
-        key:i,
-        idx:i,
-        rowIdx:this.props.idx,
-        value:this.getCellValue(column.key || i),
-        column:column,
-        height:this.getRowHeight(),
-        formatter:column.formatter,
-        cellMetaData : this.props.cellMetaData,
-        //TODO passing the row to the cell??
-        rowData : this.props.row});
+      var CellRenderer = this.props.cellRenderer;
+      var cell = <CellRenderer
+                    ref={i}
+                    key={i}
+                    idx={i}
+                    rowIdx={this.props.idx}
+                    value={this.getCellValue(column.key || i)}
+                    column={column}
+                    height={this.getRowHeight()}
+                    formatter={column.formatter}
+                    cellMetaData={this.props.cellMetaData}
+                    rowData={this.props.row} />
       if (column.locked) {
         lockedCells.push(cell);
       } else {
@@ -104,18 +104,8 @@ var Row = React.createClass({
     if(key === 'select-row'){
       return this.props.isSelected;
     }else{
-      return this.props.row[key]
-    }
-  },
-
-  renderCell(props: any): ReactElement {
-    if(typeof this.props.cellRenderer == 'function') {
-      this.props.cellRenderer.call(this, props);
-    }
-    if (React.isValidElement(this.props.cellRenderer)) {
-      return cloneWithProps(this.props.cellRenderer, props);
-    } else {
-      return this.props.cellRenderer(props);
+      var val = this.props.row[key];
+      return !val ? '' : val;
     }
   },
 

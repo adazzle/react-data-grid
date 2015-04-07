@@ -22,13 +22,12 @@ var Draggable = React.createClass({
   render(): ?ReactElement {
     var Component = this.props.component;
     return (
-      <Component {...this.props}  onMouseDown={this.onMouseDown} />
+      <div {...this.props}  onMouseDown={this.onMouseDown} />
     );
   },
 
   getDefaultProps() {
     return {
-      component: React.DOM.div,
       onDragStart: emptyFunction.thatReturnsTrue,
       onDragEnd: emptyFunction,
       onDrag: emptyFunction
