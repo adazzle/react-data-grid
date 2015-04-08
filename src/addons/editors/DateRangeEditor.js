@@ -7,68 +7,87 @@
 'use strict';
 
 var React                   = require('react');
-var DateRangeFilter         = require('./widgets/DateRangeFilter');
-var Moment                  = require('moment');
-
-type DateRangeValue = { startDate: Date; endDate: Date};
+var DateRangePicker         = require('react-bootstrap-daterangepicker');
 
 var DateRangeEditor = React.createClass({
 
   PropTypes : {
-    format : React.PropTypes.string,
-    ranges : React.PropTypes.arrayOf(React.PropTypes.string),
-    value : React.PropTypes.shape({
-      startDate: React.PropTypes.Date.isRequired,
-      endDate: React.PropTypes.Date.isRequired
-    }).isRequired
+    onKeyDown : React.PropTypes.func.isRequired,
+    value : React.PropTypes.any.isRequired,
+    onBlur : React.PropTypes.func.isRequired,
+    //column :  React.PropTypes.shape(ExcelColumn).isRequired
   },
 
-  getDefaultProps(): {format: string; ranges: Array<Date>}{
+  getDefaultProps(): {format: string, defaultValue: string}{
     return {
-      format   : "YYYY-MM-DD",
-      ranges   : []
+      format       : 'DD MMM YYYY',
+      defaultValue : new moment().format('DD MMM YYYY')
     }
   },
 
-  rangeSeparatorChar : ' - ',
-
-  overrides : {
-      checkFocus : function(){
-          this.setTextInputFocus();
-      },
-      getInputNode(): HTMLElement{
-        return this.refs.datepicker.getDOMNode();
-      },
-      getValue(): DateRangeValue{
-        var dateToParse = this.getInputNode().value;
-        var dateRanges = dateToParse.split(this.rangeSeparatorChar);
-        if(dateRanges.length !== 2){
-          throw ("DateRangeEditor.getValue error : " + dateToParse + " is not in the correct format");
-        }
-        return {startDate : dateRanges[0].trim(), endDate : dateRanges[1].trim()}
-      }
+  getValue(): any{
+    var updated = {};
+    updated[this.props.column.key] = this.getInputNode().value;
+    return updated;
   },
 
-  isDateValid(date: Date): boolean{
-    return Moment(date, this.props.format, true).isValid();
+  getInputNode(): HTMLInputElement{
+    return this.getDOMNode().querySelector('input');
   },
 
-  validate(value: DateRangeValue): boolean{
-    return this.isDateValid(value.startDate)
-    && this.isDateValid(value.endDate)
-    && (Moment(value.startDate, this.props.format).isBefore(value.endDate)
-    || Moment(value.startDate, this.props.format).isSame(value.endDate));
+  componentWillMount(): any{
+    if (!this.props.value) {
+      this.props.value = this.props.defaultValue;
+    }
   },
 
-  handleDateFilterApply(startDate: string, endDate: string){
-    this.commit({value : {startDate : startDate, endDate : endDate}});
+  componentDidMount(): any{
+    //reposition the widget -- a hack but means it doesn't move
+    var $picker = $('.daterangepicker');
+    var currentTop = parseInt($picker.css('top').replace('px',''))
+    var newTop = currentTop + 23;
+    $picker.css('top', newTop);
+    $('.daterangepicker').show();
+  },
+
+  componentWillUnmount(): any{
+    this.props.onCommit({key : 'Enter'});
+  },
+
+  handleEvent: function (event, picker) {
+    switch(event.type) {
+      case 'apply':
+        var formattedDate = this.formatDate(picker.startDate);
+        this.getInputNode().value = formattedDate;
+        this.props.onCommit({key : 'Enter'});
+        break;
+    }
+  },
+
+  formatDate(date){
+    if(typeof date === 'string' && date !== ''){
+      return new moment(date).format(this.props.format);
+    }
+    if(moment.isMoment(date)){
+      return date.format(this.props.format);
+    }
+    if(typeof date === 'undefined'){
+      return '';
+    }
+    return date;
   },
 
   render(): ?ReactElement{
+    var formattedDate = this.formatDate(this.props.value);
     return (
-      <div style={this.getStyle()} onKeyDown={this.onKeyDown}>
-        <DateRangeFilter ref="datepicker" onApply={this.handleDateFilterApply}  format={this.props.format} ranges={this.props.ranges} startDate={this.props.value.startDate} endDate={this.props.value.endDate} />
-      </div>
+      <DateRangePicker
+      ref="dataPicker"
+      format={this.props.format}
+      startDate={formattedDate}
+      singleDatePicker={true}
+      onEvent={this.handleEvent}>
+        <input defaultValue={formattedDate}></input>
+      </DateRangePicker>
     );
   }
 

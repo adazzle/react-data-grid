@@ -56,7 +56,8 @@ var EditorContainer = React.createClass({
 		value : this.getInitialValue(),
 		onCommit : this.commit,
 		rowMetaData : this.getRowMetaData(),
-		height : this.props.height
+		height : this.props.height,
+        onBlur : this.commit
 	};
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){

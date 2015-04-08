@@ -7,6 +7,7 @@
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
+  var DateRangeEditor     = Editors.DateRangeEditor;
   var joinClasses          = require('classnames');
   var cloneWithProps      = React.addons.cloneWithProps;
   var FakeObjectDataStore = require('./FakeObjectDataStore');
@@ -105,10 +106,16 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
       width : 200
     },
     {
-      key: 'date',
-      name: 'Date',
-      editable:true,
-      width : 200
+      key: 'startDate',
+      name: 'Start Date',
+      editor: <DateRangeEditor />,
+      width: 200
+    },
+    {
+      key: 'endDate',
+      name: 'End Date',
+      editor: <DateRangeEditor />,
+      width: 200
     },
     {
       key: 'bs',
