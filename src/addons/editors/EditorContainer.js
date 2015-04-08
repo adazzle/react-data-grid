@@ -35,8 +35,10 @@ var EditorContainer = React.createClass({
     var inputNode = this.getInputNode();
     if(inputNode !== undefined){
       this.setTextInputFocus();
-      inputNode.className += ' editor-main';
-      inputNode.style.height = this.props.height - 1 + 'px';
+      if(!this.getEditor().disableContainerStyles){
+        inputNode.className += ' editor-main';
+        inputNode.style.height = this.props.height - 1 + 'px';
+      }
     }
   },
 
@@ -51,7 +53,6 @@ var EditorContainer = React.createClass({
     var editorProps = {
 		ref: 'editor',
 		column : this.props.column,
-		onKeyDown : this.onKeyDown,
 		value : this.getInitialValue(),
 		onCommit : this.commit,
 		rowMetaData : this.getRowMetaData(),
@@ -62,7 +63,7 @@ var EditorContainer = React.createClass({
       //return custom column editor or SimpleEditor if none specified
       return React.addons.cloneWithProps(customEditor, editorProps)
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
+      return <SimpleTextEditor ref={'editor'} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
     }
   },
 
@@ -122,6 +123,9 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
+    if(this.editor.getInputNode().tagName === 'SELECT'){
+      return true;
+    }
     if(isFunction(this.getEditor().hasResults)){
       return this.getEditor().hasResults();
     }else{
@@ -185,7 +189,7 @@ var EditorContainer = React.createClass({
 
   render(): ?ReactElement{
   return (
-      <div className={this.getContainerClass()}>
+      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown}>
       {this.createEditor()}
       {this.renderStatusIcon()}
       </div>

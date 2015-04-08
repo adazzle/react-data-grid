@@ -82,6 +82,13 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+.react-grid-Canvas.opaque .react-grid-Cell:not(.editing) {
+  opacity: 0.4;
+  transition: opacity .25s ease-in-out;
+  -moz-transition: opacity .25s ease-in-out;
+  -webkit-transition: opacity .25s ease-in-out;
+}
 .react-grid-Cell__value ul {
   margin-top: 0;
   margin-bottom: 0;
