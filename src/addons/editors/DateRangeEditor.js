@@ -8,6 +8,7 @@
 
 var React                   = require('react');
 var DateRangePicker         = require('react-bootstrap-daterangepicker');
+var ExcelColumn             = require('../grids/ExcelColumn');
 
 var DateRangeEditor = React.createClass({
 
@@ -15,10 +16,10 @@ var DateRangeEditor = React.createClass({
     onKeyDown : React.PropTypes.func.isRequired,
     value : React.PropTypes.any.isRequired,
     onBlur : React.PropTypes.func.isRequired,
-    //column :  React.PropTypes.shape(ExcelColumn).isRequired
+    column :  React.PropTypes.shape(ExcelColumn).isRequired
   },
 
-  getDefaultProps(): {format: string, defaultValue: string}{
+  getDefaultProps(): {format: string; defaultValue: string}{
     return {
       format       : 'DD MMM YYYY',
       defaultValue : new moment().format('DD MMM YYYY')
@@ -71,8 +72,8 @@ var DateRangeEditor = React.createClass({
     if(moment.isMoment(date)){
       return date.format(this.props.format);
     }
-    if(typeof date === 'undefined'){
-      return '';
+    if(typeof date === 'string' && date === '' || typeof date === 'undefined'){
+      return this.props.defaultValue;
     }
     return date;
   },
@@ -86,7 +87,7 @@ var DateRangeEditor = React.createClass({
       startDate={formattedDate}
       singleDatePicker={true}
       onEvent={this.handleEvent}>
-        <input defaultValue={formattedDate}></input>
+        <input defaultValue={this.props.value} placeholder={formattedDate}></input>
       </DateRangePicker>
     );
   }
