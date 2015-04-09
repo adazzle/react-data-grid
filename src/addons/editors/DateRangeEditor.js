@@ -26,6 +26,15 @@ var DateRangeEditor = React.createClass({
     }
   },
 
+  validate(toCommit): bool{
+    var key = this.props.column.key;
+    if (toCommit[key] !== '') {
+      var value = new moment(toCommit[key], 'DD MMM YYYY', true);
+      return value.isValid();
+    }
+    return true;
+  },
+
   getValue(): any{
     var updated = {};
     updated[this.props.column.key] = this.getInputNode().value;
@@ -36,12 +45,6 @@ var DateRangeEditor = React.createClass({
     return this.getDOMNode().querySelector('input');
   },
 
-  componentWillMount(): any{
-    if (!this.props.value) {
-      this.props.value = this.props.defaultValue;
-    }
-  },
-
   componentDidMount(): any{
     //reposition the widget -- a hack but means it doesn't move
     var $picker = $('.daterangepicker');
@@ -49,10 +52,6 @@ var DateRangeEditor = React.createClass({
     var newTop = currentTop + 23;
     $picker.css('top', newTop);
     $('.daterangepicker').show();
-  },
-
-  componentWillUnmount(): any{
-    this.props.onCommit({key : 'Enter'});
   },
 
   handleEvent: function (event, picker) {

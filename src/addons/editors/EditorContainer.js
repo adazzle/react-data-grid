@@ -43,10 +43,7 @@ var EditorContainer = React.createClass({
   },
 
   validateEditor(){
-    var editor = this.props.column.editor;
-    if(editor){
 
-    }
   },
 
   createEditor(): ReactElement{
@@ -124,11 +121,12 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
-    if(this.editor.getInputNode().tagName === 'SELECT'){
+    var editor = this.getEditor();
+    if(editor.getInputNode().tagName === 'SELECT'){
       return true;
     }
-    if(isFunction(this.getEditor().hasResults)){
-      return this.getEditor().hasResults();
+    if(isFunction(editor.hasResults)){
+      return editor.hasResults();
     }else{
       return false;
     }
@@ -149,8 +147,9 @@ var EditorContainer = React.createClass({
   },
 
   isNewValueValid(value: string): boolean{
-    if(isFunction(this.validate)){
-      var isValid = this.validate(value);
+    var editor = this.getEditor();
+    if(isFunction(editor.validate)){
+      var isValid = editor.validate(value);
       this.setState({isInvalid : !isValid});
       return isValid;
     }else{
