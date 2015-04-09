@@ -14,7 +14,7 @@ var ExcelColumn  = require('./addons/grids/ExcelColumn');
 
 var HeaderRowStyle  = {
   overflow: React.PropTypes.string,
-  width: React.PropTypes.string,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   height: React.PropTypes.number,
   position: React.PropTypes.string
 };
