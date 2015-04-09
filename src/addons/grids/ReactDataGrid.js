@@ -106,6 +106,7 @@ var ReactDataGrid = React.createClass({
       selected : this.state.selected,
       dragged : this.state.dragged,
       onCellClick : this.onCellClick,
+      onCellDoubleClick : this.onCellDoubleClick,
       onCommit : this.onCellCommit,
       onCommitCancel : this.setInactive,
       copied : this.state.copied,
@@ -171,6 +172,10 @@ var ReactDataGrid = React.createClass({
 
   onCellClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+  },
+
+  onCellDoubleClick: function(e: Event) {
+    this.setActive();
   },
 
   onPressArrowUp(e: SyntheticEvent){
