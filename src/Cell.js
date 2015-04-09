@@ -30,7 +30,8 @@ var Cell = React.createClass({
 		selected: React.PropTypes.object.isRequired,
 		copied: React.PropTypes.object,
 		dragged: React.PropTypes.object,
-		onCellClick: React.PropTypes.func
+		onCellClick: React.PropTypes.func,
+    onCellDoubleClick: React.PropTypes.func
 	}).isRequired,
     handleDragStart: React.PropTypes.func,
     className: React.PropTypes.string
@@ -88,7 +89,7 @@ var Cell = React.createClass({
     });
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick}>
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick}>
       {cellContent}
       <div className="drag-handle" draggable="true">
       </div>
@@ -161,6 +162,13 @@ var Cell = React.createClass({
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellClick != null) {
       meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
+    }
+  },
+
+  onCellDoubleClick(){
+    var meta = this.props.cellMetaData;
+    if(meta != null && meta.onCellDoubleClick != null) {
+      meta.onCellDoubleClick();
     }
   },
 
