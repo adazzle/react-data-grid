@@ -56,26 +56,21 @@ var DateRangeEditor = React.createClass({
   },
 
   handleEvent: function (event, picker) {
-    switch(event.type) {
-      case 'apply':
-        var formattedDate = this.formatDate(picker.startDate);
-        this.getInputNode().value = formattedDate;
-        this.props.onCommit({key : 'Enter'});
-        break;
+    if (event.type === 'apply') {
+      var formattedDate = this.formatDate(picker.startDate);
+      this.getInputNode().value = formattedDate;
+      this.props.onCommit({key : 'Enter'});
     }
   },
 
   formatDate(date){
-    if(typeof date === 'string' && date !== ''){
-      return new moment(date).format(this.props.format);
+    if(typeof date !== 'undefined'){
+      var value = new moment(date);
+      if(value.isValid()) {
+        return value.format(this.props.format);
+      }
     }
-    if(moment.isMoment(date)){
-      return date.format(this.props.format);
-    }
-    if(typeof date === 'string' && date === '' || typeof date === 'undefined'){
-      return this.props.defaultValue;
-    }
-    return date;
+    return this.props.defaultValue;
   },
 
   render(): ?ReactElement{
