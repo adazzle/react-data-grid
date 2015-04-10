@@ -47,12 +47,12 @@ var DateRangeEditor = React.createClass({
   },
 
   componentDidMount(): any{
-    //reposition the widget -- a hack but means it doesn't move
-    var $picker = $('.daterangepicker');
-    var currentTop = parseInt($picker.css('top').replace('px',''))
-    var newTop = currentTop + 23;
-    $picker.css('top', newTop);
-    $('.daterangepicker').show();
+    // for some reason the widget doesn't display on it's own
+    // maybe because it's nested?
+    var widget = document.querySelector('.daterangepicker');
+    if (widget) {
+      widget.style.display = "block";
+    }
   },
 
   handleEvent: function (event, picker) {
