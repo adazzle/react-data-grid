@@ -1,4 +1,5 @@
 var faker = require('faker');
+var moment = require('moment');
 faker.locale = 'en_GB';
 var SIZE = 2000;
 var _cache = [];
@@ -14,7 +15,8 @@ function createFakeRowObjectData(/*number*/ index) {
     lastName: faker.name.lastName(),
     street: faker.address.streetName(),
     zipCode: faker.address.zipCode(),
-    date: faker.date.past(),
+    startDate: moment(faker.date.past()).format('DD MMM YYYY'),
+    endDate: moment(faker.date.past()).format('DD MMM YYYY'),
     bs: faker.company.bs(),
     catchPhrase: faker.company.catchPhrase(),
     companyName: faker.company.companyName(),
