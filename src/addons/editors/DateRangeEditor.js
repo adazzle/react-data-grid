@@ -9,6 +9,7 @@
 var React                   = require('react');
 var DateRangePicker         = require('react-bootstrap-daterangepicker');
 var ExcelColumn             = require('../grids/ExcelColumn');
+var moment                  = require('moment');
 
 var DateRangeEditor = React.createClass({
 
