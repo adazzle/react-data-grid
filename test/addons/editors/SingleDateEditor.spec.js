@@ -1,20 +1,20 @@
 'use strict';
-var React           = require('react');
-var TestUtils       = require('react/lib/ReactTestUtils');
-var rewire          = require('rewire');
-var rewireModule    = require('../../rewireModule');
-var StubComponent   = require('../../stubComponent');
-var DateRangeEditor = rewire('../../../src/addons/editors/DateRangeEditor.js');
-var moment          = require('moment');
+var React            = require('react');
+var TestUtils        = require('react/lib/ReactTestUtils');
+var rewire           = require('rewire');
+var rewireModule     = require('../../rewireModule');
+var StubComponent    = require('../../stubComponent');
+var SingleDateEditor = rewire('../../../src/addons/editors/SingleDateEditor.js');
+var moment           = require('moment');
 
-describe('DateRangeEditor', () => {
+describe('SingleDateEditor', () => {
 
   var component;
   var DateRangePickerStub = StubComponent('DateRangePicker');
   var ExcelColumn = React.createFactory('div');
 
   // Configure local variable replacements for the module.
-  rewireModule(DateRangeEditor, {
+  rewireModule(SingleDateEditor, {
     ExcelColumn: ExcelColumn,
     DateRangePicker: DateRangePickerStub
   });
@@ -28,10 +28,10 @@ describe('DateRangeEditor', () => {
 
   describe('Basic tests', () => {
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<DateRangeEditor column={fakeColumn} onCommit={fakeCommitCb} />);
+      component = TestUtils.renderIntoDocument(<SingleDateEditor column={fakeColumn} onCommit={fakeCommitCb} />);
     });
 
-    it('should create a new instance of DateRangeEditor', () => {
+    it('should create a new instance of SingleDateEditor', () => {
       expect(component).toBeDefined();
     });
 
@@ -110,7 +110,7 @@ describe('DateRangeEditor', () => {
 
   describe('With typeof value === string', () => {
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<DateRangeEditor column={fakeColumn} value='10 September 2015' onCommit={fakeCommitCb} />);
+      component = TestUtils.renderIntoDocument(<SingleDateEditor column={fakeColumn} value='10 September 2015' onCommit={fakeCommitCb} />);
     });
 
     it('should pass the formatted value date down to the DateRangePicker as a prop', () => {
@@ -126,7 +126,7 @@ describe('DateRangeEditor', () => {
   describe('With moment.IsDate(value)', () => {
     beforeEach(() => {
       var date = new Date(2015,8,10);
-      component = TestUtils.renderIntoDocument(<DateRangeEditor column={fakeColumn} value={date} onCommit={fakeCommitCb} />);
+      component = TestUtils.renderIntoDocument(<SingleDateEditor column={fakeColumn} value={date} onCommit={fakeCommitCb} />);
     });
 
     it('should pass the formatted value date down to the DateRangePicker as a prop', () => {
@@ -142,7 +142,7 @@ describe('DateRangeEditor', () => {
   describe('With moment.IsMoment(value)', () => {
     beforeEach(() => {
       var date = new moment('9/10/15');
-      component = TestUtils.renderIntoDocument(<DateRangeEditor column={fakeColumn} value={date} onCommit={fakeCommitCb} />);
+      component = TestUtils.renderIntoDocument(<SingleDateEditor column={fakeColumn} value={date} onCommit={fakeCommitCb} />);
     });
 
     it('should pass the formatted value date down to the DateRangePicker as a prop', () => {

@@ -4,7 +4,7 @@ var Editors = {
   DropDownEditor   : require('./DropDownEditor'),
   SimpleTextEditor : require('./SimpleTextEditor'),
   AutoCompleteAsync: require('./AutoCompleteAsyncEditor'),
-  DateRangeEditor  : require('./DateRangeEditor')
+  SingleDateEditor : require('./SingleDateEditor')
 }
 
 module.exports = Editors;

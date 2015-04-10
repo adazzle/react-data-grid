@@ -11,7 +11,7 @@ var DateRangePicker         = require('react-bootstrap-daterangepicker');
 var ExcelColumn             = require('../grids/ExcelColumn');
 var moment                  = require('moment');
 
-var DateRangeEditor = React.createClass({
+var SingleDateEditor = React.createClass({
 
   PropTypes : {
     onKeyDown : React.PropTypes.func.isRequired,
@@ -89,4 +89,4 @@ var DateRangeEditor = React.createClass({
 
 });
 
-module.exports = DateRangeEditor;
+module.exports = SingleDateEditor;
