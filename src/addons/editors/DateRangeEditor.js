@@ -30,7 +30,7 @@ var DateRangeEditor = React.createClass({
   validate(toCommit): bool{
     var key = this.props.column.key;
     if (toCommit[key] !== '') {
-      var value = new moment(toCommit[key], 'DD MMM YYYY', true);
+      var value = new moment(toCommit[key], this.props.format, true);
       return value.isValid();
     }
     return true;
