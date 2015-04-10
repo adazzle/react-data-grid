@@ -3,7 +3,7 @@ var React = require('react');
 var rewire = require('rewire');
 var Grid =  rewire('../src/addons/grids/ReactDataGrid.js');
 var BaseGrid = require('../src/Grid');
-var TestUtils = React.addons.TestUtils;
+var TestUtils = require('react/lib/ReactTestUtils');
 var rewireModule = require("./rewireModule");
 
 var columns = [

@@ -6,11 +6,11 @@ var RELEASE = argv.release;
 
 
 gulp.task('test', ['dist'], function (cb) {
-  // var configFile = RELEASE ? '../../../config/karma.release.js' : '../../../config/karma.local.js';
-  // console.log('configFile =' + configFile);
-  // karma.start({
-  //   configFile: configFile,
-  //   singleRun: true
-  // }, cb);
-  cb()
+  var configFile = RELEASE ? '../../../config/karma.release.js' : '../../../config/karma.local.js';
+  console.log('configFile =' + configFile);
+  karma.start({
+    configFile: configFile,
+    singleRun: true
+  }, cb);
+  //cb()
 });
