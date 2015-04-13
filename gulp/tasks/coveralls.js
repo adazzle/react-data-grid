@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var gutil = require("gulp-util");
 
 gulp.task('coveralls', function (done) {
-  return submitToCoveralls('test/reports/coverage/report-lcov/lcov.info', function(){
+  return submitToCoveralls('test/coverage/report-lcov/lcov.info', function(){
   done();
   });
 });
