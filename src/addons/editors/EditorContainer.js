@@ -42,6 +42,10 @@ var EditorContainer = React.createClass({
     }
   },
 
+  componentWillUnmount(){
+    this.commit({key : 'Tab'});
+  },
+
   validateEditor(){
     var editor = this.props.column.editor;
     if(editor){
@@ -57,7 +61,8 @@ var EditorContainer = React.createClass({
 		onCommit : this.commit,
 		rowMetaData : this.getRowMetaData(),
 		height : this.props.height,
-    onBlur : this.commit
+    onBlur : this.commit,
+    onOverrideKeyDown : this.onKeyDown
 	};
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){

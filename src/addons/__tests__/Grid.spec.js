@@ -1,10 +1,9 @@
 'use strict';
 var React = require('react');
 var rewire = require('rewire');
-var Grid =  rewire('../src/addons/grids/ReactDataGrid.js');
-var BaseGrid = require('../src/Grid');
-var TestUtils = React.addons.TestUtils;
-var rewireModule = require("./rewireModule");
+var Grid =  rewire('../grids/ReactDataGrid.js');
+var TestUtils         = require('react/lib/ReactTestUtils');
+var rewireModule = require("../../../test/rewireModule");
 
 var columns = [
 {
@@ -55,10 +54,7 @@ describe('Grid', () => {
     expect(component).toBeDefined();
   });
 
-  it("should render a base grid with relevant props", () => {
-    var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGrid);
-    expect(baseGrid).toBeDefined();
-  });
+
 
 
 });

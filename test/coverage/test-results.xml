@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<testsuites>
+  <testsuite name="PhantomJS 1.9.8 (Windows 7)" package="" timestamp="2015-04-13T15:56:22" id="0" hostname="CHELSEA" tests="1" errors="0" failures="0" time="0.143">
+    <properties>
+      <property name="browser.fullName" value="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34"/>
+    </properties>
+    <testcase name="should create a new instance of Grid" time="0.143" classname="PhantomJS 1.9.8 (Windows 7).Grid"/>
+    <system-out><![CDATA[PhantomJS 1.9.8 (Windows 7) WARN: 'Warning: Invalid prop `rowGetter` of type `array` supplied to `ReactDataGrid`, expected `function`.'
+,PhantomJS 1.9.8 (Windows 7) WARN: 'Warning: Invalid prop `width` of type `string` supplied to `ReactDataGrid`, expected `number`.'
+,PhantomJS 1.9.8 (Windows 7) WARN: 'Warning: Invalid prop `width` of type `string` supplied to `Grid`, expected `number`. Check the render method of `ReactDataGrid`.'
+,PhantomJS 1.9.8 (Windows 7) WARN: 'Warning: Required prop `totalWidth` was not specified in `Viewport`. Check the render method of `Grid`.'
+
+]]></system-out>
+    <system-err/>
+  </testsuite>
+</testsuites>

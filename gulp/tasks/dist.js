@@ -2,7 +2,7 @@ var gulp      = require("gulp");
 var gutil     = require("gulp-util");
 var bundle   = require("./bundle");
 var uglify = require('gulp-uglify');
-var webpackConfig = require("../../config/webpack.config.js");
+var webpackConfig = require("../../config/webpack.js");
 var gulp = require('gulp');
 var rename = require('gulp-rename');
 
