@@ -34,7 +34,7 @@ module.exports = function (config) {
   function getBrowsers(){
     var browsers = ['PhantomJS'];
     if(RELEASE){
-      browsers = ['IE', 'Chrome', 'IE9']
+      browsers = ['Chrome']
     }else if(DEBUG){
       browsers = ['Chrome'];
     }
