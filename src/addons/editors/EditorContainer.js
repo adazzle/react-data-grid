@@ -19,8 +19,16 @@ var EditorContainer = React.createClass({
   mixins : [keyboardHandlerMixin],
 
   propTypes : {
-    cellMetaData : React.PropTypes.func.isRequired,
-    column : React.PropTypes.object.isRequired
+    rowData :React.PropTypes.object.isRequired,
+    value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+    cellMetaData: React.PropTypes.shape({
+      selected: React.PropTypes.object.isRequired,
+      copied: React.PropTypes.object,
+      dragged: React.PropTypes.object,
+      onCellClick: React.PropTypes.func
+    }).isRequired,
+    column : React.PropTypes.object.isRequired,
+    height : React.PropTypes.number.isRequired
   },
 
   getInitialState(){
@@ -232,6 +240,7 @@ var EditorContainer = React.createClass({
     if(!this.isKeyPrintable(keyCode)){
       this.getInputNode().focus();
       this.setCaretAtEndOfInput();
+      this.getInputNode().select();
     }else{
       this.getInputNode().select();
     }
