@@ -7,13 +7,15 @@ var SimpleTextEditor = require('../SimpleTextEditor');
 
 describe('Editor Container Tests', () => {
   var component;
+  var fakeColumn = {
+    name : 'col1',
+    key : 'col1',
+    width : 100
+  };
+
   beforeEach(() => {
 
-    var fakeColumn = {
-      name : 'col1',
-      key : 'col1',
-      width : 100
-    };
+
     var cellMetaData = {
       selected : {
         idx : 0,
@@ -56,6 +58,12 @@ describe('Editor Container Tests', () => {
 
     var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
     expect(isTextSelected(Editor.getInputNode())).toBeDefined();
+  });
+
+  it('should render the editor with the correct properties', () => {
+    var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
+    expect(Editor.props.value).toEqual('Adwolf');
+    expect(Editor.props.column).toEqual(fakeColumn);
   });
 
 
