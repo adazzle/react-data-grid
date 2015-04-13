@@ -4,7 +4,7 @@ var rewire       = require('rewire');
 var Grid         =  rewire('../grids/ReactDataGrid.js');
 var TestUtils    = require('react/lib/ReactTestUtils');
 var rewireModule = require("../../../test/rewireModule");
-var StubComonent = require("../../../test/StubComponent");
+var StubComponent = require("../../../test/StubComponent");
 
 var columns = [
 {
@@ -40,11 +40,10 @@ var rowGetter = function(i){
 
 describe('Grid', () => {
   var component;
-  var ExcelCell = React.createFactory('div');
+
   // Configure local variable replacements for the module.
   rewireModule(Grid, {
-    ExcelCell: ExcelCell,
-    BaseGrid : StubComonent('BaseGrid')
+    BaseGrid : StubComponent('BaseGrid')
   });
 
   beforeEach(() => {
