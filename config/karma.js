@@ -83,7 +83,7 @@ module.exports = function (config) {
     browserNoActivityTimeout: 1000000,
 
     // coverage reporter generates the coverage
-    reporters: ['junit', 'progress'],
+    reporters: ['junit', 'progress', 'coverage'],
 
 
     coverageReporter: {
@@ -115,7 +115,8 @@ module.exports = function (config) {
     'karma-ie-launcher',
     'karma-jasmine',
     'karma-webpack',
-    'karma-junit-reporter'
+    'karma-junit-reporter',
+    'karma-coverage'
     ],
 
     customLaunchers: {
