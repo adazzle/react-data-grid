@@ -20,6 +20,7 @@
     "es5-shim": "^4.0.3",
     "object-assign": "^2.0.0",
     "react": "~0.12.2",
+    "react-bootstrap-daterangepicker": "^0.2.4",
     "ron-react-autocomplete": "1.0.5"
   },
   "devDependencies": {

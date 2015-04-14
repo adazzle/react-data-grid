@@ -43,10 +43,7 @@ var EditorContainer = React.createClass({
   },
 
   validateEditor(){
-    var editor = this.props.column.editor;
-    if(editor){
 
-    }
   },
 
   createEditor(): ReactElement{
@@ -57,14 +54,14 @@ var EditorContainer = React.createClass({
 		onCommit : this.commit,
 		rowMetaData : this.getRowMetaData(),
 		height : this.props.height,
-    onBlur : this.commit
+        onBlur : this.commit
 	};
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){
       //return custom column editor or SimpleEditor if none specified
       return React.addons.cloneWithProps(customEditor, editorProps)
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onBlur={this.commit} value={this.getInitialValue()} rowMetaData={this.getRowMetaData()} />;
+      return <SimpleTextEditor ref={'editor'} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
     }
   },
 
@@ -124,11 +121,12 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
-    if(this.editor.getInputNode().tagName === 'SELECT'){
+    var editor = this.getEditor();
+    if(editor.getInputNode().tagName === 'SELECT'){
       return true;
     }
-    if(isFunction(this.getEditor().hasResults)){
-      return this.getEditor().hasResults();
+    if(isFunction(editor.hasResults)){
+      return editor.hasResults();
     }else{
       return false;
     }
@@ -149,8 +147,9 @@ var EditorContainer = React.createClass({
   },
 
   isNewValueValid(value: string): boolean{
-    if(isFunction(this.validate)){
-      var isValid = this.validate(value);
+    var editor = this.getEditor();
+    if(isFunction(editor.validate)){
+      var isValid = editor.validate(value);
       this.setState({isInvalid : !isValid});
       return isValid;
     }else{
@@ -190,7 +189,7 @@ var EditorContainer = React.createClass({
 
   render(): ?ReactElement{
   return (
-      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
+      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown}>
       {this.createEditor()}
       {this.renderStatusIcon()}
       </div>

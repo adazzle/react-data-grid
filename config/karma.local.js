@@ -18,11 +18,13 @@ module.exports = function (config) {
 
     files: [
       '../node_modules/es5-shim/es5-shim.js',
-      '../test/Grid.spec.js'
+      '../test/Grid.spec.js',
+      '../test/addons/editors/SingleDateEditor.spec.js'
     ],
 
     preprocessors: {
-      '../test/Grid.spec.js': ['webpack']
+      '../test/Grid.spec.js': ['webpack'],
+      '../test/addons/editors/SingleDateEditor.spec.js': ['webpack']
     },
 
     webpack: {
