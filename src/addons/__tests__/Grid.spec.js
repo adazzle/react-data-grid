@@ -40,24 +40,120 @@ var rowGetter = function(i){
 
 describe('Grid', () => {
   var component;
-
+  var BaseGridStub = StubComponent('BaseGrid');
   // Configure local variable replacements for the module.
   rewireModule(Grid, {
-    BaseGrid : StubComponent('BaseGrid')
+    BaseGrid : BaseGridStub
   });
+
+  var testProps = {
+    enableCellSelect: true,
+    columns:columns,
+    rowGetter:rowGetter,
+    rowsCount: _rows.length,
+    width:300,
+    onRowUpdated : function(update){}
+  }
 
   beforeEach(() => {
     var rowsCount = 1000;
-    component = TestUtils.renderIntoDocument(<Grid
-      columns={columns}
-      rowGetter={rowGetter}
-      rowsCount={_rows.length}
-      width={300}/>);
+    component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
   });
 
   it('should create a new instance of Grid', () => {
     expect(component).toBeDefined();
   });
+
+  it('should render a BaseGrid stub', () => {
+    var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+    expect(baseGrid).toBeDefined();
+  });
+
+  it("should be initialized with correct state", () => {
+    expect(component.state).toEqual({
+      selectedRows : [],
+      selected : {rowIdx : 0,  idx : 0},
+      copied : null,
+      canFilter : false,
+      expandedRows : [],
+      columnFilters : {},
+      sortDirection : null,
+      sortColumn : null,
+      dragged : null
+    });
+  });
+
+  describe("When cell selection disabled", () => {
+
+    it("grid should be initialized with selected state of {rowIdx : -1, idx : -1}", () => {
+      component = TestUtils.renderIntoDocument(<Grid
+        enableCellSelect={false}
+        columns={columns}
+        rowGetter={rowGetter}
+        rowsCount={_rows.length}
+        width={300}/>);
+      expect(component.state.selected).toEqual({
+        rowIdx : -1,
+        idx : -1
+      });
+    });
+
+  });
+
+  describe("Cell Meta Data", () => {
+
+    it('creates a cellMetaData object and passes to baseGrid as props', () => {
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var meta = baseGrid.props.cellMetaData;
+      expect(meta).toEqual(jasmine.objectContaining({
+        selected : {rowIdx : 0, idx : 0},
+        dragged  : null,
+        copied   : null
+      }));
+      expect(typeof meta.onCellClick === 'function').toBe(true);
+      expect(typeof meta.onCommit === 'function').toBe(true);
+      expect(typeof meta.onCommitCancel === 'function').toBe(true);
+      expect(typeof meta.handleDragEnterRow === 'function').toBe(true);
+      expect(typeof meta.handleTerminateDrag === 'function').toBe(true);
+    });
+
+    it("Changing Grid state should update cellMetaData", () => {
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var newState = {selected  : {idx : 2, rowIdx : 2}, dragged : {idx : 2, rowIdx : 2}}
+      component.setState(newState);
+      var meta = baseGrid.props.cellMetaData;
+      expect(meta).toEqual(jasmine.objectContaining(newState));
+    });
+
+    it("cell commit should trigger onRowUpdated with correct params", () => {
+      spyOn(testProps, 'onRowUpdated');
+      component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var meta = baseGrid.props.cellMetaData;
+      var fakeCellUpdate = {cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"}
+      meta.onCommit(fakeCellUpdate);
+      expect(testProps.onRowUpdated.callCount).toEqual(1);
+      expect(testProps.onRowUpdated.argsForCall[0][0]).toEqual({
+        cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"
+      })
+    });
+
+    it("cell commit should deactivate selected cell", () => {
+      component.setState({selected : {idx : 3, rowIdx : 3, active : true}});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var meta = baseGrid.props.cellMetaData;
+      var fakeCellUpdate = {cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"}
+      meta.onCommit(fakeCellUpdate);
+      expect(component.state.selected).toEqual({
+          idx : 3,
+          rowIdx : 3,
+          active : false
+        });
+    });
+
+  })
+
+
 
 
 
