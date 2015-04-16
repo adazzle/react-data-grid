@@ -265,16 +265,37 @@ describe('Grid', () => {
         expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : false });
       });
 
-      it("typing escape should set grid state inactive", () =>{
+      it("pressing escape should set grid state inactive", () =>{
         component.setState({selected : {idx : 1, rowIdx:1, active : true}})
         SimulateGridKeyDown(component, 'Escape');
         expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : false });
       });
 
-      it("typing enter should set grid state active", () =>{
+      it("pressing enter should set grid state active", () =>{
         component.setState({selected : {idx : 1, rowIdx:1, active : false}})
         SimulateGridKeyDown(component, 'Enter');
         expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : true, initialKeyCode : 'Enter' });
+      });
+
+      it("pressing delete should set grid state active", () =>{
+        component.setState({selected : {idx : 1, rowIdx:1, active : false}})
+        SimulateGridKeyDown(component, 'Delete');
+        expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : true, initialKeyCode : 'Delete' });
+      });
+
+      it("pressing backspace should set grid state active", () =>{
+        component.setState({selected : {idx : 1, rowIdx:1, active : false}})
+        SimulateGridKeyDown(component, 'Backspace');
+        expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : true, initialKeyCode : 'Backspace' });
+      });
+
+      it("typing a char should set grid state active and store the typed value", () =>{
+        component.setState({selected : {idx : 1, rowIdx:1, active : false}})
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        debugger;
+        var fakeEvent = {keyCode : 66, key :"Unidentified", preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : true, initialKeyCode : 66 });
       });
 
     });

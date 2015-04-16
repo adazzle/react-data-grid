@@ -97,7 +97,6 @@ var ReactDataGrid = React.createClass({
   },
 
   componentWillReceiveProps:function(nextProps: ReactDataGridProps){
-    debugger;
     if(nextProps.rowsCount  === this.props.rowsCount + 1){
       this.onAfterAddRow(nextProps.rowsCount + 1);
     }
