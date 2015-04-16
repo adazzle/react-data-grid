@@ -69,7 +69,8 @@ var ReactDataGrid = React.createClass({
     columns : React.PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
     onFilter : React.PropTypes.func,
     onCellCopyPaste : React.PropTypes.func,
-    onCellsDragged : React.PropTypes.func
+    onCellsDragged : React.PropTypes.func,
+    onAddFilter : React.PropTypes.func
   },
 
   mixins : [KeyboardHandlerMixin],
@@ -382,35 +383,17 @@ var ReactDataGrid = React.createClass({
     this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
   },
 
-  hasFilters(): boolean{
-    var hasFilters = false;
-    Object.keys(this.state.columnFilters).every(function(key){
-      var filter = this.state.columnFilters[key];
-      if(filter != null && filter != undefined && filter != ''){
-        hasFilters = true;
-        return false;
-      }
-      return true;
-    }, this);
-    return hasFilters;
-  },
-
   onToggleFilter(){
     this.setState({canFilter : !this.state.canFilter});
   },
 
-  handleAddFilter(filter: {columnKey: string; filterTerm: string }){
-    var columnFilters = this.state.columnFilters;
-    columnFilters[filter.columnKey] = filter.filterTerm;
-    this.setState({columnFilters : columnFilters, selected : null});
-  },
 
   getHeaderRows(): Array<{ref: string; height: number;}> {
     var rows = [{ref:"row", height: this.props.rowHeight}];
     if(this.state.canFilter === true){
       rows.push({
         ref:"filterRow",
-        headerCellRenderer : <FilterableHeaderCell onChange={this.handleAddFilter} column={this.props.column}/>,
+        headerCellRenderer : <FilterableHeaderCell onChange={this.props.onAddFilter} column={this.props.column}/>,
         height : 45
       });
     }

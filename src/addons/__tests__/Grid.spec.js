@@ -212,6 +212,12 @@ describe('Grid', () => {
         columns[1].editable = true;
       });
 
+      function SimulateGridKeyDown(component, key, ctrlKey){
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {key : key, keyCode :key, ctrlKey: ctrlKey, preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+      }
+
       it("double click on grid should activate current selected cell", () => {
         component.setState({selected : {idx : 1, rowIdx : 1}});
         var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
@@ -227,12 +233,10 @@ describe('Grid', () => {
         //arrange
         var selectedCellIndex = 1, selectedRowIndex = 1;
         component.setState({selected  : {idx : selectedCellIndex, rowIdx : selectedRowIndex}});
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
         var keyCode_c = '99';
         var expectedCellValue = _rows[selectedRowIndex].title;
         //act
-        var fakeEvent = {ctrlKey : true, keyCode : keyCode_c, preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, keyCode_c, true);
         //assert
         expect(component.state.textToCopy).toEqual(expectedCellValue);
         expect(component.state.copied).toEqual({idx : selectedCellIndex, rowIdx : selectedRowIndex});
@@ -248,9 +252,7 @@ describe('Grid', () => {
           copied     : {idx : 1, rowIdx : 1}
         });
         var keyCode_v = '118';
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {ctrlKey : true, keyCode : keyCode_v, preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, keyCode_v, true);
         expect(testProps.onCellCopyPaste).toHaveBeenCalled();
         expect(testProps.onCellCopyPaste.mostRecentCall.args[0]).toEqual({cellKey: "title", rowIdx: 5, value: "banana", fromRow: 1, toRow: 5})
       });
@@ -263,12 +265,16 @@ describe('Grid', () => {
         expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : false });
       });
 
-      it("typing escape  should set grid state inactive", () =>{
+      it("typing escape should set grid state inactive", () =>{
         component.setState({selected : {idx : 1, rowIdx:1, active : true}})
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {key : 'Escape', preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, 'Escape');
         expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : false });
+      });
+
+      it("typing enter should set grid state active", () =>{
+        component.setState({selected : {idx : 1, rowIdx:1, active : false}})
+        SimulateGridKeyDown(component, 'Enter');
+        expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : true, initialKeyCode : 'Enter' });
       });
 
     });
