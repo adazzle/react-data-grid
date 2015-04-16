@@ -70,6 +70,15 @@ describe('Grid', () => {
     expect(baseGrid).toBeDefined();
   });
 
+
+  it('should render a Toolbar if passed in as props to grid', () => {
+    var Toolbar = StubComponent('Toolbar');
+    component = TestUtils.renderIntoDocument(<Grid {...testProps} toolbar={<Toolbar/>} />);
+    var toolbarInstance = TestUtils.findRenderedComponentWithType(component, Toolbar);
+    expect(toolbarInstance).toBeDefined();
+  });
+
+
   it("should be initialized with correct state", () => {
     expect(component.state).toEqual({
       selectedRows : [],
@@ -301,6 +310,13 @@ describe('Grid', () => {
           rowIdx : 3,
           active : false
         });
+    });
+
+    it("Cell click should set selected state of grid", () =>{
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var meta = baseGrid.props.cellMetaData;
+      meta.onCellClick({idx : 2, rowIdx : 2 });
+      expect(component.state.selected).toEqual({idx : 2, rowIdx : 2 });
     });
 
   })

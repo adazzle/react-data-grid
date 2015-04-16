@@ -137,7 +137,7 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
-    if(this.editor.getInputNode().tagName === 'SELECT'){
+    if(this.getEditor().getInputNode().tagName === 'SELECT'){
       return true;
     }
     if(isFunction(this.getEditor().hasResults)){
@@ -237,13 +237,17 @@ var EditorContainer = React.createClass({
   setTextInputFocus(){
     var selected = this.props.cellMetaData.selected;
     var keyCode = selected.initialKeyCode;
-    if(!this.isKeyPrintable(keyCode)){
-      this.getInputNode().focus();
-      this.setCaretAtEndOfInput();
-      this.getInputNode().select();
-    }else{
-      this.getInputNode().select();
+    var inputNode = this.getInputNode();
+    if(inputNode.tagName === "INPUT"){
+      if(!this.isKeyPrintable(keyCode)){
+        inputNode.focus();
+        this.setCaretAtEndOfInput();
+        inputNode.select();
+      }else{
+        inputNode.select();
+      }
     }
+
   }
 
 });
