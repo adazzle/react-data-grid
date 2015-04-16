@@ -356,6 +356,15 @@ describe('Grid', () => {
         expect(testProps.onCellsDragged.argsForCall[0][0]).toEqual({cellKey: "title", fromRow: 2, toRow: 6, value: "apple"});
       });
 
+      it("terminating drag will clear drag state", () => {
+        component = TestUtils.renderIntoDocument(<Grid {...testProps}  />);
+        component.setState({ dragged : {idx : 1, rowIdx : 2, value : 'apple', overRowIdx : 6}});
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var meta = baseGrid.props.cellMetaData;
+        meta.handleTerminateDrag()
+        expect(component.state.dragged).toBe(null);
+      });
+
     });
 
     it("Adding a new row will set the selected cell to be on the last row", () =>{
