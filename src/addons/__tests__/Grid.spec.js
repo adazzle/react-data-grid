@@ -112,6 +112,10 @@ describe('Grid', () => {
 
   describe("User Interaction",() => {
 
+    afterEach(() => {
+      component.setState({selected  : {idx : 0, rowIdx : 0}});
+    });
+
     describe("When selected cell is in top corner of grid", () => {
 
       beforeEach(() => {
@@ -187,8 +191,6 @@ describe('Grid', () => {
       });
     });
 
-
-
     describe("When column is editable", () => {
 
       beforeEach(() => {
@@ -257,7 +259,15 @@ describe('Grid', () => {
       });
     });
 
-
+    it("Adding a new row will set the selected cell to be on the last row", () =>{
+      var newRow = {id: 1000, title: 'Title 1000', count: 1000};
+      _rows.push(newRow);
+      component.setProps({rowsCount:_rows.length});
+      expect(component.state.selected).toEqual({
+        idx : 1,
+        rowIdx : 1000
+      });
+    });
 
   })
 
