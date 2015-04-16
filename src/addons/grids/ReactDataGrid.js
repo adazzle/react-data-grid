@@ -241,7 +241,6 @@ var ReactDataGrid = React.createClass({
   },
 
   onDragStart(e: SyntheticEvent){
-    if(e.target)
     var value = this.getSelectedValue();
     this.handleDragStart({idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value});
   },

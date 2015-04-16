@@ -53,7 +53,8 @@ describe('Grid', () => {
     rowsCount: _rows.length,
     width:300,
     onRowUpdated : function(update){},
-    onCellCopyPaste : function(){}
+    onCellCopyPaste : function(){},
+    onCellsDragged : function(){}
   }
 
   beforeEach(() => {
@@ -292,7 +293,6 @@ describe('Grid', () => {
       it("typing a char should set grid state active and store the typed value", () =>{
         component.setState({selected : {idx : 1, rowIdx:1, active : false}})
         var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        debugger;
         var fakeEvent = {keyCode : 66, key :"Unidentified", preventDefault : function(){}, stopPropagation : function(){}};
         baseGrid.props.onViewportKeydown(fakeEvent);
         expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : true, initialKeyCode : 66 });
@@ -315,6 +315,47 @@ describe('Grid', () => {
           rowIdx : 1
         })
       });
+    });
+
+    describe("Drag events", () => {
+
+      it("dragging in grid will store drag rowIdx, idx and value of cell in state", () => {
+        component.setState({selected : {idx : 1, rowIdx : 2}});
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        baseGrid.props.onViewportDragStart();
+        expect(component.state.dragged).toEqual({
+          idx : 1,
+          rowIdx : 2,
+          value : _rows[2].title
+        })
+      });
+
+      it("dragging over a row will store the current rowIdx in grid state", () => {
+        //arrange
+        component.setState({selected : {idx : 1, rowIdx : 2}, dragged : {idx : 1, rowIdx : 2, value : 'apple', overRowIdx : 6}});
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var meta = baseGrid.props.cellMetaData;
+        //act
+        meta.handleDragEnterRow(4)
+        //assert
+        expect(component.state.dragged).toEqual({
+          idx : 1,
+          rowIdx : 2,
+          value : 'apple',
+          overRowIdx : 4
+        })
+      });
+
+      it("finishing drag will trigger onCellsDragged event and call it with correct params", () => {
+        spyOn(testProps, 'onCellsDragged');
+        component = TestUtils.renderIntoDocument(<Grid {...testProps}  />);
+        component.setState({selected : {idx : 1, rowIdx : 2}, dragged : {idx : 1, rowIdx : 2, value : 'apple', overRowIdx : 6}});
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        baseGrid.props.onViewportDragEnd();
+        expect(testProps.onCellsDragged).toHaveBeenCalled();
+        expect(testProps.onCellsDragged.argsForCall[0][0]).toEqual({cellKey: "title", fromRow: 2, toRow: 6, value: "apple"});
+      });
+
     });
 
     it("Adding a new row will set the selected cell to be on the last row", () =>{
