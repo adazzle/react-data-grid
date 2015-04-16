@@ -52,7 +52,8 @@ describe('Grid', () => {
     rowGetter:rowGetter,
     rowsCount: _rows.length,
     width:300,
-    onRowUpdated : function(update){}
+    onRowUpdated : function(update){},
+    onCellCopyPaste : function(){}
   }
 
   beforeEach(() => {
@@ -179,28 +180,75 @@ describe('Grid', () => {
 
 
 
-    it("if column is editable, double click on grid should ctivate current selected cell", () => {
-      component.setState({selected : {idx : 1, rowIdx : 1}});
-      columns[1].editable = true;
-      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-      baseGrid.props.onViewportDoubleClick();
-      expect(component.state.selected).toEqual({
-        idx : 1,
-        rowIdx : 1,
-        active : true
-      })
+    describe("When column is editable", () => {
+
+      beforeEach(() => {
+        columns[1].editable = true;
+      });
+
+      it("double click on grid should activate current selected cell", () => {
+        component.setState({selected : {idx : 1, rowIdx : 1}});
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        baseGrid.props.onViewportDoubleClick();
+        expect(component.state.selected).toEqual({
+          idx : 1,
+          rowIdx : 1,
+          active : true
+        })
+      });
+
+      it("copy a cell value should store the value in grid state", () => {
+        //arrange
+        var selectedCellIndex = 1, selectedRowIndex = 1;
+        component.setState({selected  : {idx : selectedCellIndex, rowIdx : selectedRowIndex}});
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var keyCode_c = '99';
+        var expectedCellValue = _rows[selectedRowIndex].title;
+        //act
+        var fakeEvent = {ctrlKey : true, keyCode : keyCode_c, preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        //assert
+        expect(component.state.textToCopy).toEqual(expectedCellValue);
+        expect(component.state.copied).toEqual({idx : selectedCellIndex, rowIdx : selectedRowIndex});
+      });
+
+      it("paste a cell value should call onCellCopyPaste of component with correct params", () => {
+        //arrange
+        spyOn(testProps, 'onCellCopyPaste');
+        component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+        component.setState({
+          textToCopy : 'banana',
+          selected   : {idx : 1, rowIdx : 5},
+          copied     : {idx : 1, rowIdx : 1}
+        });
+        var keyCode_v = '118';
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {ctrlKey : true, keyCode : keyCode_v, preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(testProps.onCellCopyPaste).toHaveBeenCalled();
+        expect(testProps.onCellCopyPaste.mostRecentCall.args[0]).toEqual({cellKey: "title", rowIdx: 5, value: "banana", fromRow: 1, toRow: 5})
+      });
+
     });
 
-    it("if column is not editable, double click on grid should not activate current selected cell", () => {
-      component.setState({selected : {idx : 1, rowIdx : 1}});
-      columns[1].editable = false;
-      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-      baseGrid.props.onViewportDoubleClick();
-      expect(component.state.selected).toEqual({
-        idx : 1,
-        rowIdx : 1
-      })
+    describe("When column is not editable", () => {
+      beforeEach(() => {
+        columns[1].editable = false;
+      });
+
+      it("double click on grid should not activate current selected cell", () => {
+        component.setState({selected : {idx : 1, rowIdx : 1}});
+        columns[1].editable = false;
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        baseGrid.props.onViewportDoubleClick();
+        expect(component.state.selected).toEqual({
+          idx : 1,
+          rowIdx : 1
+        })
+      });
     });
+
+
 
   })
 

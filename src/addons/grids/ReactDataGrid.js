@@ -230,11 +230,11 @@ var ReactDataGrid = React.createClass({
 
     var idx = this.state.selected.idx
     if(this.canEdit(idx)){
-      var value = this.getSelectedValue();
       if(e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C){
+        var value = this.getSelectedValue();
         this.handleCopy({value : value});
       }else if(e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V){
-        this.handlePaste({value : value});
+        this.handlePaste();
       }
     }
   },
