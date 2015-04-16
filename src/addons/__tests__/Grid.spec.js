@@ -255,6 +255,22 @@ describe('Grid', () => {
         expect(testProps.onCellCopyPaste.mostRecentCall.args[0]).toEqual({cellKey: "title", rowIdx: 5, value: "banana", fromRow: 1, toRow: 5})
       });
 
+      it("cell commit cancel should set grid state inactive", () =>{
+        component.setState({selected : {idx : 1, rowIdx:1, active : true}})
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var meta = baseGrid.props.cellMetaData;
+        meta.onCommitCancel();
+        expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : false });
+      });
+
+      it("typing escape  should set grid state inactive", () =>{
+        component.setState({selected : {idx : 1, rowIdx:1, active : true}})
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {key : 'Escape', preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : false });
+      });
+
     });
 
     describe("When column is not editable", () => {
@@ -343,6 +359,7 @@ describe('Grid', () => {
       meta.onCellClick({idx : 2, rowIdx : 2 });
       expect(component.state.selected).toEqual({idx : 2, rowIdx : 2 });
     });
+
 
   })
 
