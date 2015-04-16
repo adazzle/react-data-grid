@@ -395,24 +395,6 @@ var ReactDataGrid = React.createClass({
     return hasFilters;
   },
 
-  isRowDisplayed(row: Row): boolean{
-    var isRowDisplayed = null;
-    Object.keys(this.state.columnFilters).every(function(key){
-      var filter = this.state.columnFilters[key].toLowerCase();
-      var cellValue = row[key].toString().toLowerCase();
-      if(filter != null && filter != undefined && filter != '' && typeof cellValue === 'string'){
-        if(cellValue.indexOf(filter) > -1){
-          isRowDisplayed = true;
-        }else{
-          isRowDisplayed = false;
-          return false;
-        }
-      }
-      return true;
-    }, this);
-    return isRowDisplayed == null ? false : isRowDisplayed;
-  },
-
   onToggleFilter(){
     this.setState({canFilter : !this.state.canFilter});
   },

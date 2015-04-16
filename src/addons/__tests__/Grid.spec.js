@@ -78,6 +78,21 @@ describe('Grid', () => {
     expect(toolbarInstance).toBeDefined();
   });
 
+  it('onToggleFilter trigger of Toolbar should set filter state of grid and render a filterable header row', () => {
+    //arrange
+    var Toolbar = StubComponent('Toolbar');
+    component = TestUtils.renderIntoDocument(<Grid {...testProps} toolbar={<Toolbar/>} />);
+    var toolbarInstance = TestUtils.findRenderedComponentWithType(component, Toolbar);
+    //act
+    toolbarInstance.props.onToggleFilter();
+    //assert
+    var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+    expect(component.state.canFilter).toBe(true);
+    expect(baseGrid.props.headerRows.length).toEqual(2);
+    var filterableHeaderRow = baseGrid.props.headerRows[1];
+    expect(filterableHeaderRow.ref).toEqual("filterRow");
+  });
+
 
   it("should be initialized with correct state", () => {
     expect(component.state).toEqual({
