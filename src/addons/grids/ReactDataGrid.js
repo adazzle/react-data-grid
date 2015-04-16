@@ -106,7 +106,6 @@ var ReactDataGrid = React.createClass({
       selected : this.state.selected,
       dragged : this.state.dragged,
       onCellClick : this.onCellClick,
-      onCellDoubleClick : this.onCellDoubleClick,
       onCommit : this.onCellCommit,
       onCommitCancel : this.setInactive,
       copied : this.state.copied,
@@ -133,7 +132,8 @@ var ReactDataGrid = React.createClass({
             minHeight={this.props.minHeight}
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
-            onViewportDragEnd={this.handleDragEnd}/>
+            onViewportDragEnd={this.handleDragEnd}
+            onViewportDoubleClick={this.onCellDoubleClick}/>
           </div>
         </div>
       )

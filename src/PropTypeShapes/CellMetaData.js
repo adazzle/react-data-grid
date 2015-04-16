@@ -4,6 +4,5 @@ module.exports = {
   selected    : PropTypes.object.isRequired,
   copied      : PropTypes.object,
   dragged     : PropTypes.object,
-  onCellClick : PropTypes.func.isRequired,
-  onCellDoubleClick: PropTypes.func.isRequired
+  onCellClick : PropTypes.func.isRequired
 }

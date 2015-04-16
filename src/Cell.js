@@ -29,7 +29,8 @@ var Cell = React.createClass({
     isExpanded: React.PropTypes.bool,
     cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
     handleDragStart: React.PropTypes.func,
-    className: React.PropTypes.string
+    className: React.PropTypes.string,
+    rowData : React.PropTypes.object.isRequired
   },
 
   getDefaultProps : function(): {tabIndex: number; ref: string; isExpanded: boolean } {
@@ -84,7 +85,7 @@ var Cell = React.createClass({
     });
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick}>
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} >
       {cellContent}
       <div className="drag-handle" draggable="true">
       </div>

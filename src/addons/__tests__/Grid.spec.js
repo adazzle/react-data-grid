@@ -69,6 +69,29 @@ describe('Grid', () => {
     expect(baseGrid).toBeDefined();
   });
 
+  it("if column is editable, double click on grid should activate current selected cell", () => {
+    component.setState({selected : {idx : 1, rowIdx : 1}});
+    columns[1].editable = true;
+    var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+    baseGrid.props.onViewportDoubleClick();
+    expect(component.state.selected).toEqual({
+      idx : 1,
+      rowIdx : 1,
+      active : true
+    })
+  });
+
+  it("if column is not editable, double click on grid should not activate current selected cell", () => {
+    component.setState({selected : {idx : 1, rowIdx : 1}});
+    columns[1].editable = false;
+    var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+    baseGrid.props.onViewportDoubleClick();
+    expect(component.state.selected).toEqual({
+      idx : 1,
+      rowIdx : 1
+    })
+  });
+
   it("should be initialized with correct state", () => {
     expect(component.state).toEqual({
       selectedRows : [],
