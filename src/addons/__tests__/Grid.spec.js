@@ -69,29 +69,6 @@ describe('Grid', () => {
     expect(baseGrid).toBeDefined();
   });
 
-  it("if column is editable, double click on grid should activate current selected cell", () => {
-    component.setState({selected : {idx : 1, rowIdx : 1}});
-    columns[1].editable = true;
-    var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-    baseGrid.props.onViewportDoubleClick();
-    expect(component.state.selected).toEqual({
-      idx : 1,
-      rowIdx : 1,
-      active : true
-    })
-  });
-
-  it("if column is not editable, double click on grid should not activate current selected cell", () => {
-    component.setState({selected : {idx : 1, rowIdx : 1}});
-    columns[1].editable = false;
-    var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-    baseGrid.props.onViewportDoubleClick();
-    expect(component.state.selected).toEqual({
-      idx : 1,
-      rowIdx : 1
-    })
-  });
-
   it("should be initialized with correct state", () => {
     expect(component.state).toEqual({
       selectedRows : [],
@@ -122,6 +99,110 @@ describe('Grid', () => {
     });
 
   });
+
+  describe("User Interaction",() => {
+
+    describe("When selected cell is in top corner of grid", () => {
+
+      beforeEach(() => {
+        component.setState({selected  : {idx : 0, rowIdx : 0}});
+      });
+
+      it("on ArrowUp keyboard event should not change selected index", () => {
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {key : 'ArrowUp', preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(component.state.selected).toEqual({
+          idx : 0,
+          rowIdx : 0
+        });
+      });
+
+      it("on ArrowLeft keyboard event should not change selected index", () => {
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {key : 'ArrowLeft', preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(component.state.selected).toEqual({
+          idx : 0,
+          rowIdx : 0
+        });
+      });
+
+    });
+
+    describe("When selected cell has adjacent cells on all sides", () => {
+
+      beforeEach(() => {
+        component.setState({selected  : {idx : 1, rowIdx : 1}});
+      });
+
+      it("on ArrowRight keyboard event should increment selected cell index by 1", () => {
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {key : 'ArrowRight', preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(component.state.selected).toEqual({
+          idx : 2,
+          rowIdx : 1
+        });
+      });
+
+      it("on ArrowDown keyboard event should increment selected row index by 1", () => {
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {key : 'ArrowDown', preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(component.state.selected).toEqual({
+          idx : 1,
+          rowIdx : 2
+        });
+      });
+
+      it("on ArrowLeft keyboard event should decrement selected row index by 1", () => {
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {key : 'ArrowLeft', preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(component.state.selected).toEqual({
+          idx : 0,
+          rowIdx : 1
+        });
+      });
+
+      it("on ArrowUp keyboard event should decrement selected row index by 1", () => {
+        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+        var fakeEvent = {key : 'ArrowUp', preventDefault : function(){}, stopPropagation : function(){}};
+        baseGrid.props.onViewportKeydown(fakeEvent);
+        expect(component.state.selected).toEqual({
+          idx : 1,
+          rowIdx : 0
+        });
+      });
+    });
+
+
+
+    it("if column is editable, double click on grid should ctivate current selected cell", () => {
+      component.setState({selected : {idx : 1, rowIdx : 1}});
+      columns[1].editable = true;
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      baseGrid.props.onViewportDoubleClick();
+      expect(component.state.selected).toEqual({
+        idx : 1,
+        rowIdx : 1,
+        active : true
+      })
+    });
+
+    it("if column is not editable, double click on grid should not activate current selected cell", () => {
+      component.setState({selected : {idx : 1, rowIdx : 1}});
+      columns[1].editable = false;
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      baseGrid.props.onViewportDoubleClick();
+      expect(component.state.selected).toEqual({
+        idx : 1,
+        rowIdx : 1
+      })
+    });
+
+  })
 
   describe("Cell Meta Data", () => {
 
