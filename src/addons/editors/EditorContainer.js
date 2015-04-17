@@ -238,6 +238,7 @@ var EditorContainer = React.createClass({
     var selected = this.props.cellMetaData.selected;
     var keyCode = selected.initialKeyCode;
     var inputNode = this.getInputNode();
+    inputNode.focus();
     if(inputNode.tagName === "INPUT"){
       if(!this.isKeyPrintable(keyCode)){
         inputNode.focus();
