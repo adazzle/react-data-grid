@@ -42,10 +42,12 @@ describe('Grid', () => {
   var component;
   var BaseGridStub = StubComponent('BaseGrid');
   var CheckboxEditorStub = StubComponent('CheckboxEditor');
+  var SortableHeaderCellStub = StubComponent('SortableHeaderCell');
   // Configure local variable replacements for the module.
   rewireModule(Grid, {
     BaseGrid : BaseGridStub,
-    CheckboxEditor : CheckboxEditorStub
+    CheckboxEditor : CheckboxEditorStub,
+    SortableHeaderCell : SortableHeaderCellStub
   });
 
   var testProps = {
@@ -56,7 +58,8 @@ describe('Grid', () => {
     width:300,
     onRowUpdated : function(update){},
     onCellCopyPaste : function(){},
-    onCellsDragged : function(){}
+    onCellsDragged : function(){},
+    onGridSort : function(){}
   }
 
   beforeEach(() => {
@@ -190,13 +193,14 @@ describe('Grid', () => {
     });
 
     it("should be able to unselect an individual row ", () => {
-      component.setState({selected : [true, true, true, true]});
+      component.setState({selected : [null, true, true, true]});
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
       var selectRowCol = baseGrid.props.columns[0];
       selectRowCol.onRowSelect(3);
       expect(component.state.selectedRows[3]).toBe(true);
     });
   });
+
 
   describe("User Interaction",() => {
 
@@ -453,7 +457,9 @@ describe('Grid', () => {
   describe("Cell Meta Data", () => {
 
     function getCellMetaData(component){
+
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+
       return baseGrid.props.cellMetaData;
     }
 
@@ -526,6 +532,48 @@ describe('Grid', () => {
   })
 
 
+  describe("When column is sortable", () => {
+
+    var sortableColIdx =1;
+    beforeEach(() => {
+      columns[sortableColIdx].sortable = true;
+      component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+    })
+
+    afterEach(() => {
+      columns[sortableColIdx].sortable = false;
+    })
+
+    it("should provide column with a sortableHeaderRenderer", () => {
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var sortableColumn = baseGrid.props.columns[sortableColIdx];
+      expect(TestUtils.isElementOfType(sortableColumn.headerRenderer, SortableHeaderCellStub)).toBe(true);
+    });
+
+    it("should pass sort direction as props to headerRenderer when column is sortColumn", () => {
+      component.setState({sortDirection : 'ASC', sortColumn : columns[1].key});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var sortableHeaderRenderer = baseGrid.props.columns[sortableColIdx].headerRenderer;
+      expect(sortableHeaderRenderer.props.sortDirection).toEqual('ASC');
+    });
+
+    it("should call onGridSort when headerRender click", () => {
+      //arrange
+      spyOn(testProps, 'onGridSort');
+      component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+      component.setState({sortDirection : 'ASC', sortColumn : columns[1].key});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var sortableHeaderRenderer = baseGrid.props.columns[sortableColIdx].headerRenderer;
+      //act
+      sortableHeaderRenderer.props.onSort('title', 'DESC');
+      //assert
+      expect(testProps.onGridSort).toHaveBeenCalled();
+      expect(testProps.onGridSort.mostRecentCall.args[0]).toEqual('title');
+      expect(testProps.onGridSort.mostRecentCall.args[1]).toEqual('DESC');
+    });
+
+
+  });
 
 
 

@@ -46,7 +46,8 @@ type ReactDataGridProps = {
 type SortType = {ASC: string; DESC: string};
 var DEFINE_SORT = {
   ASC : 'ASC',
-  DESC : 'DESC'
+  DESC : 'DESC',
+  NONE  : 'NONE'
 }
 
 type RowUpdateEvent = {
@@ -400,33 +401,18 @@ var ReactDataGrid = React.createClass({
   getDecoratedColumns: function(columns: Array<ExcelColumn>): Array<ExcelColumn> {
     return this.props.columns.map(function(column) {
       column = Object.assign({}, column);
+
       if (column.sortable) {
-        column.headerRenderer = <SortableHeaderCell column={column}/>;
-        column.sortBy = this.sortBy;
-        if (this.state.sortColumn === column.key) {
-          column.sorted = this.state.sortDirection;
-        }else{
-          column.sorted = DEFINE_SORT.NONE;
-        }
+        var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
+        column.headerRenderer = <SortableHeaderCell columnKey={column.key} onSort={this.handleSort} sortDirection={sortDirection}/>;
       }
-      return column
+      return column;
     }, this);
   },
 
-  sortBy: function(column: ExcelColumn, direction: SortType) {
-    switch(direction){
-      case null:
-      case undefined:
-        direction = DEFINE_SORT.ASC;
-      break;
-      case DEFINE_SORT.ASC:
-        direction = DEFINE_SORT.DESC;
-      break;
-      case DEFINE_SORT.DESC:
-        direction = null;
-      break;
-    }
-    this.setState({sortDirection: direction, sortColumn: column.key});
+  handleSort: function(columnKey: string, direction: SortType) {
+    this.setState({sortDirection: direction, sortColumn: columnKey});
+    this.props.onGridSort(columnKey, direction);
   },
 
   copyPasteEnabled: function(): boolean {
