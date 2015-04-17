@@ -134,6 +134,10 @@ describe('Grid', () => {
       component = TestUtils.renderIntoDocument(<Grid {...testProps} enableRowSelect={true} />);
     });
 
+    afterEach(() => {
+      component.setState({selectedRows : []});
+    });
+
     it("should render an additional Select Row column", () => {
 
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
@@ -154,7 +158,6 @@ describe('Grid', () => {
       checkbox.checked = true;
       var fakeEvent = {currentTarget : checkbox};
       //act
-      debugger;
       headerCheckbox.props.onChange(fakeEvent);
       //assert
       var selectedRows = component.state.selectedRows;
@@ -169,12 +172,50 @@ describe('Grid', () => {
         expect(selected).toBe(false);
       });
     });
+
+    it("should be able to select an individual row when selected = false", () => {
+      component.setState({selected : [false, false, false, false]});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columns[0];
+      selectRowCol.onRowSelect(3);
+      expect(component.state.selectedRows[3]).toBe(true);
+    });
+
+    it("should be able to select an individual row when selected = null", () => {
+      component.setState({selected : [null, null, null, null]});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columns[0];
+      selectRowCol.onRowSelect(2);
+      expect(component.state.selectedRows[2]).toBe(true);
+    });
+
+    it("should be able to unselect an individual row ", () => {
+      component.setState({selected : [true, true, true, true]});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columns[0];
+      selectRowCol.onRowSelect(3);
+      expect(component.state.selectedRows[3]).toBe(true);
+    });
   });
 
   describe("User Interaction",() => {
 
     afterEach(() => {
       component.setState({selected  : {idx : 0, rowIdx : 0}});
+    });
+
+    function SimulateGridKeyDown(component, key, ctrlKey){
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var fakeEvent = {key : key, keyCode :key, ctrlKey: ctrlKey, preventDefault : function(){}, stopPropagation : function(){}};
+      baseGrid.props.onViewportKeydown(fakeEvent);
+    }
+
+    it("hitting TAB should decrement selected cell index by 1", () => {
+      SimulateGridKeyDown(component, 'Tab');
+      expect(component.state.selected).toEqual({
+        idx : 1,
+        rowIdx : 0
+      });
     });
 
     describe("When selected cell is in top corner of grid", () => {
@@ -184,9 +225,7 @@ describe('Grid', () => {
       });
 
       it("on ArrowUp keyboard event should not change selected index", () => {
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {key : 'ArrowUp', preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, 'ArrowUp');
         expect(component.state.selected).toEqual({
           idx : 0,
           rowIdx : 0
@@ -194,9 +233,7 @@ describe('Grid', () => {
       });
 
       it("on ArrowLeft keyboard event should not change selected index", () => {
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {key : 'ArrowLeft', preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, 'ArrowLeft');
         expect(component.state.selected).toEqual({
           idx : 0,
           rowIdx : 0
@@ -207,14 +244,13 @@ describe('Grid', () => {
 
     describe("When selected cell has adjacent cells on all sides", () => {
 
+
       beforeEach(() => {
         component.setState({selected  : {idx : 1, rowIdx : 1}});
       });
 
       it("on ArrowRight keyboard event should increment selected cell index by 1", () => {
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {key : 'ArrowRight', preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, 'ArrowRight');
         expect(component.state.selected).toEqual({
           idx : 2,
           rowIdx : 1
@@ -222,9 +258,7 @@ describe('Grid', () => {
       });
 
       it("on ArrowDown keyboard event should increment selected row index by 1", () => {
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {key : 'ArrowDown', preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, 'ArrowDown');
         expect(component.state.selected).toEqual({
           idx : 1,
           rowIdx : 2
@@ -232,9 +266,7 @@ describe('Grid', () => {
       });
 
       it("on ArrowLeft keyboard event should decrement selected row index by 1", () => {
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {key : 'ArrowLeft', preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, 'ArrowLeft');
         expect(component.state.selected).toEqual({
           idx : 0,
           rowIdx : 1
@@ -242,9 +274,7 @@ describe('Grid', () => {
       });
 
       it("on ArrowUp keyboard event should decrement selected row index by 1", () => {
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {key : 'ArrowUp', preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
+        SimulateGridKeyDown(component, 'ArrowUp');
         expect(component.state.selected).toEqual({
           idx : 1,
           rowIdx : 0
@@ -258,11 +288,7 @@ describe('Grid', () => {
         columns[1].editable = true;
       });
 
-      function SimulateGridKeyDown(component, key, ctrlKey){
-        var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-        var fakeEvent = {key : key, keyCode :key, ctrlKey: ctrlKey, preventDefault : function(){}, stopPropagation : function(){}};
-        baseGrid.props.onViewportKeydown(fakeEvent);
-      }
+
 
       it("double click on grid should activate current selected cell", () => {
         component.setState({selected : {idx : 1, rowIdx : 1}});
@@ -426,9 +452,13 @@ describe('Grid', () => {
 
   describe("Cell Meta Data", () => {
 
-    it('creates a cellMetaData object and passes to baseGrid as props', () => {
+    function getCellMetaData(component){
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-      var meta = baseGrid.props.cellMetaData;
+      return baseGrid.props.cellMetaData;
+    }
+
+    it('creates a cellMetaData object and passes to baseGrid as props', () => {
+      var meta = getCellMetaData(component)
       expect(meta).toEqual(jasmine.objectContaining({
         selected : {rowIdx : 0, idx : 0},
         dragged  : null,
@@ -452,8 +482,7 @@ describe('Grid', () => {
     it("cell commit should trigger onRowUpdated with correct params", () => {
       spyOn(testProps, 'onRowUpdated');
       component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-      var meta = baseGrid.props.cellMetaData;
+      var meta = getCellMetaData(component);
       var fakeCellUpdate = {cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"}
       meta.onCommit(fakeCellUpdate);
       expect(testProps.onRowUpdated.callCount).toEqual(1);
@@ -464,8 +493,7 @@ describe('Grid', () => {
 
     it("cell commit should deactivate selected cell", () => {
       component.setState({selected : {idx : 3, rowIdx : 3, active : true}});
-      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-      var meta = baseGrid.props.cellMetaData;
+      var meta = getCellMetaData(component);
       var fakeCellUpdate = {cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"}
       meta.onCommit(fakeCellUpdate);
       expect(component.state.selected).toEqual({
@@ -475,9 +503,21 @@ describe('Grid', () => {
         });
     });
 
+    it("cell commit after TAB should select next cell", () => {
+      component.setState({selected : {idx : 1, rowIdx : 1, active : true}});
+      var meta = getCellMetaData(component);
+      var fakeCellUpdate = {cellKey: "title", rowIdx: 1, updated: {title : 'some new title'}, keyCode: "Tab"}
+      meta.onCommit(fakeCellUpdate);
+      expect(component.state.selected).toEqual({
+        idx : 2,
+        rowIdx : 1,
+        active : false
+      });
+    });
+
+
     it("Cell click should set selected state of grid", () =>{
-      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-      var meta = baseGrid.props.cellMetaData;
+      var meta = getCellMetaData(component);
       meta.onCellClick({idx : 2, rowIdx : 2 });
       expect(component.state.selected).toEqual({idx : 2, rowIdx : 2 });
     });

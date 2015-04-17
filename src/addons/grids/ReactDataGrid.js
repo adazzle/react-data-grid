@@ -163,14 +163,6 @@ var ReactDataGrid = React.createClass({
     }
   },
 
-  isSelected: function(): boolean {
-    return (
-      this.props.selected
-      && this.props.selected.rowIdx === this.props.rowIdx
-      && this.props.selected.idx === this.props.idx
-    );
-  },
-
   onCellClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
   },
