@@ -177,7 +177,7 @@ describe('Grid', () => {
     });
 
     it("should be able to select an individual row when selected = false", () => {
-      component.setState({selected : [false, false, false, false]});
+      component.setState({selectedRows : [false, false, false, false]});
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
       var selectRowCol = baseGrid.props.columns[0];
       selectRowCol.onRowSelect(3);
@@ -185,7 +185,7 @@ describe('Grid', () => {
     });
 
     it("should be able to select an individual row when selected = null", () => {
-      component.setState({selected : [null, null, null, null]});
+      component.setState({selectedRows : [null, null, null, null]});
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
       var selectRowCol = baseGrid.props.columns[0];
       selectRowCol.onRowSelect(2);
@@ -193,11 +193,12 @@ describe('Grid', () => {
     });
 
     it("should be able to unselect an individual row ", () => {
-      component.setState({selected : [null, true, true, true]});
+      component.setState({selectedRows : [null, true, true, true]});
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
       var selectRowCol = baseGrid.props.columns[0];
+      debugger;
       selectRowCol.onRowSelect(3);
-      expect(component.state.selectedRows[3]).toBe(true);
+      expect(component.state.selectedRows[3]).toBe(false);
     });
   });
 

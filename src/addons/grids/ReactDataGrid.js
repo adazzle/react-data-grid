@@ -290,9 +290,9 @@ var ReactDataGrid = React.createClass({
       selected.idx += 1;
     }
     var expandedRows = this.state.expandedRows;
-    if(commit.changed && commit.changed.expandedHeight){
-      expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
-    }
+    // if(commit.changed && commit.changed.expandedHeight){
+    //   expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
+    // }
     this.setState({selected : selected, expandedRows : expandedRows});
     this.props.onRowUpdated(commit);
 
