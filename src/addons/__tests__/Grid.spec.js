@@ -41,9 +41,11 @@ var rowGetter = function(i){
 describe('Grid', () => {
   var component;
   var BaseGridStub = StubComponent('BaseGrid');
+  var CheckboxEditorStub = StubComponent('CheckboxEditor');
   // Configure local variable replacements for the module.
   rewireModule(Grid, {
-    BaseGrid : BaseGridStub
+    BaseGrid : BaseGridStub,
+    CheckboxEditor : CheckboxEditorStub
   });
 
   var testProps = {
@@ -124,6 +126,49 @@ describe('Grid', () => {
       });
     });
 
+  });
+
+  describe("When row selection enabled", () => {
+
+    beforeEach(() => {
+      component = TestUtils.renderIntoDocument(<Grid {...testProps} enableRowSelect={true} />);
+    });
+
+    it("should render an additional Select Row column", () => {
+
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columns[0];
+      expect(baseGrid.props.columns.length).toEqual(columns.length + 1);
+      expect(selectRowCol.key).toEqual('select-row');
+      expect(TestUtils.isElementOfType(selectRowCol.formatter, CheckboxEditorStub)).toBe(true);
+    });
+
+    it("clicking header checkbox should toggle select all rows", () => {
+      //arrange
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columns[0];
+      var headerCheckbox = selectRowCol.headerRenderer;
+      var checkbox = document.createElement('input');
+      checkbox.type = "checkbox";
+      checkbox.value = "value";
+      checkbox.checked = true;
+      var fakeEvent = {currentTarget : checkbox};
+      //act
+      debugger;
+      headerCheckbox.props.onChange(fakeEvent);
+      //assert
+      var selectedRows = component.state.selectedRows;
+      expect(selectedRows.length).toEqual(_rows.length);
+      selectedRows.forEach(function(selected){
+        expect(selected).toBe(true);
+      });
+      //trigger unselect
+      checkbox.checked = false;
+      headerCheckbox.props.onChange(fakeEvent);
+      component.state.selectedRows.forEach(function(selected){
+        expect(selected).toBe(false);
+      });
+    });
   });
 
   describe("User Interaction",() => {

@@ -321,13 +321,17 @@ var ReactDataGrid = React.createClass({
   },
 
   handleCheckboxChange : function(e: SyntheticEvent){
+    var allRowsSelected;
     if(e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true){
-      var selectedRows = this.props.rows.map(() => true);
-      this.setState({selectedRows : selectedRows});
+      allRowsSelected = true;
     }else{
-      var selectedRows = this.props.rows.map(() => false);
-      this.setState({selectedRows : selectedRows});
+      allRowsSelected = false;
     }
+    var selectedRows = [];
+    for(var i = 0; i < this.props.rowsCount; i++){
+      selectedRows.push(allRowsSelected);
+    }
+    this.setState({selectedRows : selectedRows});
   },
 
   handleRowSelect(row: Row){
