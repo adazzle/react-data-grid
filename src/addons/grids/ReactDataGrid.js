@@ -344,42 +344,39 @@ var ReactDataGrid = React.createClass({
     this.setState({selectedRows : selectedRows});
   },
 
-  expandRow(row: Row, newHeight: number): Array<Row>{
-    var expandedRows = this.state.expandedRows;
-    if(expandedRows[row]){
-      if(expandedRows[row]== null || expandedRows[row] < newHeight){
-        expandedRows[row] = newHeight;
-      }
-    }else{
-      expandedRows[row] = newHeight;
-    }
-    return expandedRows;
-  },
-
-  addRow(){
-
-  },
-
-  handleShowMore(row: Row, newHeight: number) {
-    var expandedRows = this.expandRow(row, newHeight);
-    this.setState({expandedRows : expandedRows});
-  },
-
-  handleShowLess(row: Row){
-    var expandedRows = this.state.expandedRows;
-    if(expandedRows[row]){
-        expandedRows[row] = false;
-    }
-    this.setState({expandedRows : expandedRows});
-  },
-
-  expandAllRows(){
-
-  },
-
-  collapseAllRows(){
-
-  },
+  //EXPAND ROW Functionality - removing for now till we decide on how best to implement
+  // expandRow(row: Row, newHeight: number): Array<Row>{
+  //   var expandedRows = this.state.expandedRows;
+  //   if(expandedRows[row]){
+  //     if(expandedRows[row]== null || expandedRows[row] < newHeight){
+  //       expandedRows[row] = newHeight;
+  //     }
+  //   }else{
+  //     expandedRows[row] = newHeight;
+  //   }
+  //   return expandedRows;
+  // },
+  //
+  // handleShowMore(row: Row, newHeight: number) {
+  //   var expandedRows = this.expandRow(row, newHeight);
+  //   this.setState({expandedRows : expandedRows});
+  // },
+  //
+  // handleShowLess(row: Row){
+  //   var expandedRows = this.state.expandedRows;
+  //   if(expandedRows[row]){
+  //       expandedRows[row] = false;
+  //   }
+  //   this.setState({expandedRows : expandedRows});
+  // },
+  //
+  // expandAllRows(){
+  //
+  // },
+  //
+  // collapseAllRows(){
+  //
+  // },
 
   onAfterAddRow:function(numberOfRows: number){
     this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
