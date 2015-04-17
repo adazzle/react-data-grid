@@ -354,6 +354,12 @@ describe('Grid', () => {
         expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : true, initialKeyCode : 'Enter' });
       });
 
+      it("pressing enter should set grid state active", () =>{
+        component.setState({selected : {idx : 0, rowIdx:0, active : false}})
+        SimulateGridKeyDown(component, 'Enter');
+        expect(component.state.selected).toEqual({idx : 1, rowIdx : 1, active : true, initialKeyCode : 'Enter' });
+      });
+
       it("pressing delete should set grid state active", () =>{
         component.setState({selected : {idx : 1, rowIdx:1, active : false}})
         SimulateGridKeyDown(component, 'Delete');
