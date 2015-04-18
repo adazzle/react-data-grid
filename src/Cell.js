@@ -6,12 +6,13 @@
  */
 'use strict';
 
-var React           = require('react');
-var joinClasses      = require('classnames');
-var cloneWithProps  = require('react/lib/cloneWithProps');
-var EditorContainer = require('./addons/editors/EditorContainer');
-var ExcelColumn     = require('./addons/grids/ExcelColumn');
-var isFunction      = require('./addons/utils/isFunction');
+var React             = require('react');
+var joinClasses       = require('classnames');
+var cloneWithProps    = require('react/lib/cloneWithProps');
+var EditorContainer   = require('./addons/editors/EditorContainer');
+var ExcelColumn       = require('./addons/grids/ExcelColumn');
+var isFunction        = require('./addons/utils/isFunction');
+var CellMetaDataShape = require('./PropTypeShapes/CellMetaData');
 
 var Cell = React.createClass({
 
@@ -26,14 +27,10 @@ var Cell = React.createClass({
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     isExpanded: React.PropTypes.bool,
-    cellMetaData: React.PropTypes.shape({
-		selected: React.PropTypes.object.isRequired,
-		copied: React.PropTypes.object,
-		dragged: React.PropTypes.object,
-		onCellClick: React.PropTypes.func
-	}).isRequired,
+    cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
     handleDragStart: React.PropTypes.func,
-    className: React.PropTypes.string
+    className: React.PropTypes.string,
+    rowData : React.PropTypes.object.isRequired
   },
 
   getDefaultProps : function(): {tabIndex: number; ref: string; isExpanded: boolean } {
@@ -88,7 +85,7 @@ var Cell = React.createClass({
     });
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick}>
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} >
       {cellContent}
       <div className="drag-handle" draggable="true">
       </div>
@@ -161,6 +158,13 @@ var Cell = React.createClass({
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellClick != null) {
       meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
+    }
+  },
+
+  onCellDoubleClick(){
+    var meta = this.props.cellMetaData;
+    if(meta != null && meta.onCellDoubleClick != null) {
+      meta.onCellDoubleClick();
     }
   },
 

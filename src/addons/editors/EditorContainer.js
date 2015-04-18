@@ -19,8 +19,16 @@ var EditorContainer = React.createClass({
   mixins : [keyboardHandlerMixin],
 
   propTypes : {
-    cellMetaData : React.PropTypes.func.isRequired,
-    column : React.PropTypes.object.isRequired
+    rowData :React.PropTypes.object.isRequired,
+    value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+    cellMetaData: React.PropTypes.shape({
+      selected: React.PropTypes.object.isRequired,
+      copied: React.PropTypes.object,
+      dragged: React.PropTypes.object,
+      onCellClick: React.PropTypes.func
+    }).isRequired,
+    column : React.PropTypes.object.isRequired,
+    height : React.PropTypes.number.isRequired
   },
 
   getInitialState(){
@@ -42,6 +50,10 @@ var EditorContainer = React.createClass({
     }
   },
 
+  componentWillUnmount(){
+    this.commit({key : 'Tab'});
+  },
+
   validateEditor(){
     var editor = this.props.column.editor;
     if(editor){
@@ -57,7 +69,8 @@ var EditorContainer = React.createClass({
 		onCommit : this.commit,
 		rowMetaData : this.getRowMetaData(),
 		height : this.props.height,
-    onBlur : this.commit
+    onBlur : this.commit,
+    onOverrideKeyDown : this.onKeyDown
 	};
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){
@@ -124,7 +137,7 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
-    if(this.editor.getInputNode().tagName === 'SELECT'){
+    if(this.getEditor().getInputNode().tagName === 'SELECT'){
       return true;
     }
     if(isFunction(this.getEditor().hasResults)){
@@ -224,12 +237,18 @@ var EditorContainer = React.createClass({
   setTextInputFocus(){
     var selected = this.props.cellMetaData.selected;
     var keyCode = selected.initialKeyCode;
-    if(!this.isKeyPrintable(keyCode)){
-      this.getInputNode().focus();
-      this.setCaretAtEndOfInput();
-    }else{
-      this.getInputNode().select();
+    var inputNode = this.getInputNode();
+    inputNode.focus();
+    if(inputNode.tagName === "INPUT"){
+      if(!this.isKeyPrintable(keyCode)){
+        inputNode.focus();
+        this.setCaretAtEndOfInput();
+        inputNode.select();
+      }else{
+        inputNode.select();
+      }
     }
+
   }
 
 });

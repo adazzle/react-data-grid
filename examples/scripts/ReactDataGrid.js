@@ -129,12 +129,6 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
       width : 200
     },
     {
-      key: 'words',
-      name: 'Words',
-      editable:true,
-      width : 200
-    },
-    {
       key: 'sentence',
       name: 'Sentence',
       editable:true,

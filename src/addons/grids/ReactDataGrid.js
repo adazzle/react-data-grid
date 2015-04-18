@@ -46,7 +46,8 @@ type ReactDataGridProps = {
 type SortType = {ASC: string; DESC: string};
 var DEFINE_SORT = {
   ASC : 'ASC',
-  DESC : 'DESC'
+  DESC : 'DESC',
+  NONE  : 'NONE'
 }
 
 type RowUpdateEvent = {
@@ -69,7 +70,8 @@ var ReactDataGrid = React.createClass({
     columns : React.PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
     onFilter : React.PropTypes.func,
     onCellCopyPaste : React.PropTypes.func,
-    onCellsDragged : React.PropTypes.func
+    onCellsDragged : React.PropTypes.func,
+    onAddFilter : React.PropTypes.func
   },
 
   mixins : [KeyboardHandlerMixin],
@@ -132,7 +134,8 @@ var ReactDataGrid = React.createClass({
             minHeight={this.props.minHeight}
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
-            onViewportDragEnd={this.handleDragEnd}/>
+            onViewportDragEnd={this.handleDragEnd}
+            onViewportDoubleClick={this.onCellDoubleClick}/>
           </div>
         </div>
       )
@@ -161,16 +164,12 @@ var ReactDataGrid = React.createClass({
     }
   },
 
-  isSelected: function(): boolean {
-    return (
-      this.props.selected
-      && this.props.selected.rowIdx === this.props.rowIdx
-      && this.props.selected.idx === this.props.idx
-    );
-  },
-
   onCellClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+  },
+
+  onCellDoubleClick: function(e: Event) {
+    this.setActive();
   },
 
   onPressArrowUp(e: SyntheticEvent){
@@ -225,17 +224,16 @@ var ReactDataGrid = React.createClass({
 
     var idx = this.state.selected.idx
     if(this.canEdit(idx)){
-      var value = this.getSelectedValue();
       if(e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C){
+        var value = this.getSelectedValue();
         this.handleCopy({value : value});
       }else if(e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V){
-        this.handlePaste({value : value});
+        this.handlePaste();
       }
     }
   },
 
   onDragStart(e: SyntheticEvent){
-    if(e.target)
     var value = this.getSelectedValue();
     this.handleDragStart({idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value});
   },
@@ -259,10 +257,7 @@ var ReactDataGrid = React.createClass({
   setActive(keyPressed: string){
     var rowIdx = this.state.selected.rowIdx;
     var idx = this.state.selected.idx;
-    if(this.props.columns[idx].key === 'select-row' && this.props.columns[idx].onRowSelect){
-      this.props.column.onRowSelect(rowIdx);
-    }
-    else if(this.canEdit(idx) && !this.isActive()){
+    if(this.canEdit(idx) && !this.isActive()){
       var selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active : true, initialKeyCode : keyPressed});
       this.setState({selected: selected});
     }
@@ -292,9 +287,9 @@ var ReactDataGrid = React.createClass({
       selected.idx += 1;
     }
     var expandedRows = this.state.expandedRows;
-    if(commit.changed && commit.changed.expandedHeight){
-      expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
-    }
+    // if(commit.changed && commit.changed.expandedHeight){
+    //   expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
+    // }
     this.setState({selected : selected, expandedRows : expandedRows});
     this.props.onRowUpdated(commit);
 
@@ -316,13 +311,17 @@ var ReactDataGrid = React.createClass({
   },
 
   handleCheckboxChange : function(e: SyntheticEvent){
+    var allRowsSelected;
     if(e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true){
-      var selectedRows = this.props.rows.map(() => true);
-      this.setState({selectedRows : selectedRows});
+      allRowsSelected = true;
     }else{
-      var selectedRows = this.props.rows.map(() => false);
-      this.setState({selectedRows : selectedRows});
+      allRowsSelected = false;
     }
+    var selectedRows = [];
+    for(var i = 0; i < this.props.rowsCount; i++){
+      selectedRows.push(allRowsSelected);
+    }
+    this.setState({selectedRows : selectedRows});
   },
 
   handleRowSelect(row: Row){
@@ -335,94 +334,55 @@ var ReactDataGrid = React.createClass({
     this.setState({selectedRows : selectedRows});
   },
 
-  expandRow(row: Row, newHeight: number): Array<Row>{
-    var expandedRows = this.state.expandedRows;
-    if(expandedRows[row]){
-      if(expandedRows[row]== null || expandedRows[row] < newHeight){
-        expandedRows[row] = newHeight;
-      }
-    }else{
-      expandedRows[row] = newHeight;
-    }
-    return expandedRows;
-  },
-
-  addRow(){
-
-  },
-
-  handleShowMore(row: Row, newHeight: number) {
-    var expandedRows = this.expandRow(row, newHeight);
-    this.setState({expandedRows : expandedRows});
-  },
-
-  handleShowLess(row: Row){
-    var expandedRows = this.state.expandedRows;
-    if(expandedRows[row]){
-        expandedRows[row] = false;
-    }
-    this.setState({expandedRows : expandedRows});
-  },
-
-  expandAllRows(){
-
-  },
-
-  collapseAllRows(){
-
-  },
+  //EXPAND ROW Functionality - removing for now till we decide on how best to implement
+  // expandRow(row: Row, newHeight: number): Array<Row>{
+  //   var expandedRows = this.state.expandedRows;
+  //   if(expandedRows[row]){
+  //     if(expandedRows[row]== null || expandedRows[row] < newHeight){
+  //       expandedRows[row] = newHeight;
+  //     }
+  //   }else{
+  //     expandedRows[row] = newHeight;
+  //   }
+  //   return expandedRows;
+  // },
+  //
+  // handleShowMore(row: Row, newHeight: number) {
+  //   var expandedRows = this.expandRow(row, newHeight);
+  //   this.setState({expandedRows : expandedRows});
+  // },
+  //
+  // handleShowLess(row: Row){
+  //   var expandedRows = this.state.expandedRows;
+  //   if(expandedRows[row]){
+  //       expandedRows[row] = false;
+  //   }
+  //   this.setState({expandedRows : expandedRows});
+  // },
+  //
+  // expandAllRows(){
+  //
+  // },
+  //
+  // collapseAllRows(){
+  //
+  // },
 
   onAfterAddRow:function(numberOfRows: number){
     this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
-  },
-
-  hasFilters(): boolean{
-    var hasFilters = false;
-    Object.keys(this.state.columnFilters).every(function(key){
-      var filter = this.state.columnFilters[key];
-      if(filter != null && filter != undefined && filter != ''){
-        hasFilters = true;
-        return false;
-      }
-      return true;
-    }, this);
-    return hasFilters;
-  },
-
-  isRowDisplayed(row: Row): boolean{
-    var isRowDisplayed = null;
-    Object.keys(this.state.columnFilters).every(function(key){
-      var filter = this.state.columnFilters[key].toLowerCase();
-      var cellValue = row[key].toString().toLowerCase();
-      if(filter != null && filter != undefined && filter != '' && typeof cellValue === 'string'){
-        if(cellValue.indexOf(filter) > -1){
-          isRowDisplayed = true;
-        }else{
-          isRowDisplayed = false;
-          return false;
-        }
-      }
-      return true;
-    }, this);
-    return isRowDisplayed == null ? false : isRowDisplayed;
   },
 
   onToggleFilter(){
     this.setState({canFilter : !this.state.canFilter});
   },
 
-  handleAddFilter(filter: {columnKey: string; filterTerm: string }){
-    var columnFilters = this.state.columnFilters;
-    columnFilters[filter.columnKey] = filter.filterTerm;
-    this.setState({columnFilters : columnFilters, selected : null});
-  },
 
   getHeaderRows(): Array<{ref: string; height: number;}> {
     var rows = [{ref:"row", height: this.props.rowHeight}];
     if(this.state.canFilter === true){
       rows.push({
         ref:"filterRow",
-        headerCellRenderer : <FilterableHeaderCell onChange={this.handleAddFilter} column={this.props.column}/>,
+        headerCellRenderer : <FilterableHeaderCell onChange={this.props.onAddFilter} column={this.props.column}/>,
         height : 45
       });
     }
@@ -438,33 +398,18 @@ var ReactDataGrid = React.createClass({
   getDecoratedColumns: function(columns: Array<ExcelColumn>): Array<ExcelColumn> {
     return this.props.columns.map(function(column) {
       column = Object.assign({}, column);
+
       if (column.sortable) {
-        column.headerRenderer = <SortableHeaderCell column={column}/>;
-        column.sortBy = this.sortBy;
-        if (this.state.sortColumn === column.key) {
-          column.sorted = this.state.sortDirection;
-        }else{
-          column.sorted = DEFINE_SORT.NONE;
-        }
+        var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
+        column.headerRenderer = <SortableHeaderCell columnKey={column.key} onSort={this.handleSort} sortDirection={sortDirection}/>;
       }
-      return column
+      return column;
     }, this);
   },
 
-  sortBy: function(column: ExcelColumn, direction: SortType) {
-    switch(direction){
-      case null:
-      case undefined:
-        direction = DEFINE_SORT.ASC;
-      break;
-      case DEFINE_SORT.ASC:
-        direction = DEFINE_SORT.DESC;
-      break;
-      case DEFINE_SORT.DESC:
-        direction = null;
-      break;
-    }
-    this.setState({sortDirection: direction, sortColumn: column.key});
+  handleSort: function(columnKey: string, direction: SortType) {
+    this.setState({sortDirection: direction, sortColumn: columnKey});
+    this.props.onGridSort(columnKey, direction);
   },
 
   copyPasteEnabled: function(): boolean {

@@ -36,7 +36,8 @@ var Grid = React.createClass({
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown : PropTypes.func.isRequired,
     onViewportDragStart : PropTypes.func.isRequired,
-    onViewportDragEnd : PropTypes.func.isRequired
+    onViewportDragEnd : PropTypes.func.isRequired,
+    onViewportDoubleClick : PropTypes.func.isRequired
   },
 
   getStyle: function(): { overflow: string; outline: number; position: string; minHeight: number } {
@@ -60,7 +61,7 @@ var Grid = React.createClass({
           totalWidth={this.DOMMetrics.gridWidth()}
           headerRows={headerRows}
           />
-          <div onKeyDown={this.props.onViewportKeydown}  onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+        <div onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
             <Viewport
               ref="viewport"
               width={this.state.columns.width}

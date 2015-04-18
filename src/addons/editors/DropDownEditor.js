@@ -7,13 +7,15 @@
 'use strict';
 
 var React                   = require('react');
+var ExcelColumn             = require('../grids/ExcelColumn');
 
 var DropDownEditor = React.createClass({
 
   propTypes : {
     options : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     value : React.PropTypes.string.isRequired,
-    commit : React.PropTypes.func.isRequired
+    onCommit : React.PropTypes.func.isRequired,
+    column : React.PropTypes.shape(ExcelColumn).isRequired
   },
 
   getStyle(): {width: string}{
