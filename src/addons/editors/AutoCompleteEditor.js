@@ -22,12 +22,14 @@ var AutoCompleteEditor = React.createClass({
   propTypes : {
     onCommit : React.PropTypes.func.isRequired,
     options : React.PropTypes.arrayOf(optionPropType).isRequired,
-    label : React.PropTypes.string,
+    label : React.PropTypes.any,
     value : React.PropTypes.any.isRequired,
     valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     resultIdentifier : React.PropTypes.string,
-    search : React.PropTypes.string
+    search : React.PropTypes.string,
+    height : React.PropTypes.string,
+    onKeyDown : React.PropTypes.func.isRequired
   },
 
   getDefaultProps(): {resultIdentifier: string}{
