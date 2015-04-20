@@ -25,7 +25,8 @@ describe('Header Unit Tests', () => {
     },
     totalWidth : 1000,
     height : 50,
-    headerRows : [{height : 50, ref : 'row'}]
+    headerRows : [{height : 50, ref : 'row'}],
+    onColumnResize : function(){}
   }
 
   beforeEach(() => {
@@ -38,6 +39,24 @@ describe('Header Unit Tests', () => {
 
   it('should initialize the state correctly', () => {
     expect(header.state.resizing).toEqual(null);
+  });
+
+
+  it('should render a default header row', () => {
+    var headerRows = TestUtils.scryRenderedComponentsWithType(header, HeaderRowStub);
+    expect(headerRows.length).toEqual(1);
+  });
+
+
+  it('header row drag end should trigger onColumnResize callback', () => {
+    var resizeColIdx = 1;
+    spyOn(testProps, 'onColumnResize');
+    header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
+    var headerRow = TestUtils.findRenderedComponentWithType(header, HeaderRowStub);
+    headerRow.props.onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
+    expect(testProps.onColumnResize).toHaveBeenCalled();
+    expect(testProps.onColumnResize.mostRecentCall.args[0]).toEqual(resizeColIdx);
+    expect(testProps.onColumnResize.mostRecentCall.args[1]).toEqual(200);
   });
 
 });
