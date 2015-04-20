@@ -19,7 +19,8 @@ var HeaderCell = React.createClass({
     renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
     column: PropTypes.shape(ExcelColumn).isRequired,
     onResize: PropTypes.func.isRequired,
-    height : PropTypes.number.isRequired
+    height : PropTypes.number.isRequired,
+    onResizeEnd : PropTypes.func.isRequired
   },
 
   render(): ?ReactElement {

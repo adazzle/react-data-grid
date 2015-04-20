@@ -5,12 +5,14 @@ var HeaderCell    = rewire('../HeaderCell');
 var TestUtils     = require('react/lib/ReactTestUtils');
 var rewireModule  = require("../../test/rewireModule");
 var StubComponent = require("../../test/StubComponent");
+var ResizeHandle  = require('../ResizeHandle');
+var Draggable     = require('../Draggable');
 
 describe('Header Cell Tests', () => {
   var headerCell;
+  // Configure local variable replacements for the module.
   var ResizeHandleStub = StubComponent('ResizeHandle');
 
-  // Configure local variable replacements for the module.
   rewireModule(HeaderCell, {
     ResizeHandle    : ResizeHandleStub
   });
@@ -23,6 +25,9 @@ describe('Header Cell Tests', () => {
     onResize : function(){
 
     },
+    onResizeEnd : function(){
+
+    },
     height :50
   }
 
@@ -32,6 +37,12 @@ describe('Header Cell Tests', () => {
 
   it('should create a new instance of HeaderCell', () => {
     expect(headerCell).toBeDefined();
+  });
+
+  it('should initialize the state correctly', () => {
+    expect(headerCell.state).toEqual(
+      {resizing : false}
+    );
   });
 
 
@@ -47,9 +58,51 @@ describe('Header Cell Tests', () => {
     });
 
     it("should render a resize handle", () => {
-
       var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
       expect(resizeHandle).toBeDefined();
+    });
+
+    it("start dragging handle should set resizing state to be true", () => {
+      var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
+      resizeHandle.props.onDragStart();
+      expect(headerCell.state.resizing).toBe(true);
+    });
+
+    it("dragging handle should call onResize callback with width and column", () => {
+      //arrange
+      var dragLength = 200;
+      spyOn(testProps, 'onResize');
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
+      var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
+      var fakeEvent = {pageX : dragLength};
+      //act
+      resizeHandle.props.onDrag(fakeEvent);
+      //assert
+      expect(testProps.onResize).toHaveBeenCalled();
+      expect(testProps.onResize.mostRecentCall.args[0]).toEqual(testProps.column);
+      expect(testProps.onResize.mostRecentCall.args[1]).toEqual(dragLength);
+    });
+
+    function SimulateDragEnd(dragLength){
+      var dragLength = dragLength;
+      var fakeEvent = {pageX : dragLength};
+      var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
+      resizeHandle.props.onDragEnd(fakeEvent);
+    };
+
+    it("finish dragging should reset resizing state", () => {
+      headerCell.setState({resizing : true});
+      SimulateDragEnd(250);
+      expect(headerCell.state.resizing).toBe(false);
+    });
+
+    it("finish dragging should call onResizeEnd with correct params", () => {
+      spyOn(testProps, 'onResizeEnd');
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
+      SimulateDragEnd(250);
+      expect(testProps.onResizeEnd).toHaveBeenCalled();
+      expect(testProps.onResizeEnd.mostRecentCall.args[0]).toEqual(testProps.column);
+      expect(testProps.onResizeEnd.mostRecentCall.args[1]).toEqual(250);
     });
 
   });
