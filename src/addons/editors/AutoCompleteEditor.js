@@ -28,7 +28,7 @@ var AutoCompleteEditor = React.createClass({
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     resultIdentifier : React.PropTypes.string,
     search : React.PropTypes.string,
-    height : React.PropTypes.string,
+    height : React.PropTypes.number,
     onKeyDown : React.PropTypes.func.isRequired
   },
 

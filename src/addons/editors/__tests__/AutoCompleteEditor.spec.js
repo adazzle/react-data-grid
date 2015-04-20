@@ -34,7 +34,7 @@ describe('AutoCompleteEditor', () => {
         column={fakeColumn}
         resultIdentifier='id'
         search='test'
-        height='30px'
+        height={30}
         onKeyDown={fakeCb}/>);
       });
 
