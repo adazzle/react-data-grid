@@ -8,39 +8,29 @@
 
 var React          = require('react');
 var joinClasses     = require('classnames');
-var Draggable      = require('./Draggable');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var PropTypes      = React.PropTypes;
 var ExcelColumn    = require('./addons/grids/ExcelColumn');
-var ResizeHandle   = React.createClass({
-
-  style: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 6,
-    height: '100%'
-  },
-
-  render(): ?ReactElement {
-    return (
-      <Draggable {...this.props}
-        className="react-grid-HeaderCell__resizeHandle"
-        style={this.style}
-        />
-    );
-  }
-});
+var ResizeHandle   = require('./ResizeHandle');
 
 var HeaderCell = React.createClass({
 
   propTypes: {
     renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
     column: PropTypes.shape(ExcelColumn).isRequired,
-    onResize: PropTypes.func
+    onResize: PropTypes.func.isRequired,
+    height : PropTypes.number.isRequired
   },
 
   render(): ?ReactElement {
+    var resizeHandle;
+    if(this.props.column.resizeable){
+      resizeHandle = <ResizeHandle
+      onDrag={this.onDrag}
+      onDragStart={this.onDragStart}
+      onDragEnd={this.onDragEnd}
+      />
+    }
     var className = joinClasses({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
@@ -51,13 +41,7 @@ var HeaderCell = React.createClass({
     return (
       <div className={className} style={this.getStyle()}>
         {cell}
-        {this.props.column.resizeable ?
-          <ResizeHandle
-            onDrag={this.onDrag}
-            onDragStart={this.onDragStart}
-            onDragEnd={this.onDragEnd}
-            /> :
-          null}
+        {{resizeHandle}}
       </div>
     );
   },

@@ -60,7 +60,8 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
       key: 'avartar',
       name: 'Avartar',
       width : 60,
-      formatter : renderImage
+      formatter : renderImage,
+      resizeable : true
     },
     {
       key: 'county',
