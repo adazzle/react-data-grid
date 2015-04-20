@@ -28,7 +28,6 @@
     "bootstrap": "^3.2.0",
     "browser-sync": "^2.2.2",
     "connect": "^2.24.3",
-    "coveralls": "^2.11.2",
     "del": "^1.1.1",
     "faker": "^2.1.2",
     "flow-bin": "~0.1.2",
