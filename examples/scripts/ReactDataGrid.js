@@ -43,7 +43,7 @@
    { id : 38, title :'Worcestershire'},
    { id : 39, title :'Yorkshire'}]
 
-var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
+var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
   function renderImage(cellData) {
     var ImageFormatter = ReactDataGrid.Formatters.ImageFormatter;

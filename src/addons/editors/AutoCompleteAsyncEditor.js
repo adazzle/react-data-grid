@@ -14,7 +14,7 @@ var AutoCompleteAsyncEditor =  React.createClass({
 	  cacheResults: React.PropTypes.bool,
   	column: React.PropTypes.object,
   	rowMetaData: React.PropTypes.object,
-  	height: React.PropTypes.number,
+  	height: React.PropTypes.string,
   	label: React.PropTypes.string,
   	onCommit: React.PropTypes.func,
   	onKeyDown: React.PropTypes.func,

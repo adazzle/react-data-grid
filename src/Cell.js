@@ -86,7 +86,7 @@ var Cell = React.createClass({
     });
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} >
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
       {cellContent}
       <div className="drag-handle" draggable="true">
       </div>
@@ -155,17 +155,29 @@ var Cell = React.createClass({
     }
   },
 
-  onCellClick(){
+  onCellClick(e: SyntheticMouseEvent){
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellClick != null) {
       meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
     }
   },
 
-  onCellDoubleClick(){
+  onCellDoubleClick(e: SyntheticMouseEvent){
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellDoubleClick != null) {
-      meta.onCellDoubleClick();
+      meta.onCellDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
     }
   },
 

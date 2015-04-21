@@ -110,6 +110,7 @@ var ReactDataGrid = React.createClass({
       selected : this.state.selected,
       dragged : this.state.dragged,
       onCellClick : this.onCellClick,
+      onCellDoubleClick : this.onCellDoubleClick,
       onCommit : this.onCellCommit,
       onCommitCancel : this.setInactive,
       copied : this.state.copied,
@@ -137,7 +138,7 @@ var ReactDataGrid = React.createClass({
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
-            onViewportDoubleClick={this.onCellDoubleClick}/>
+            onViewportDoubleClick={this.onViewportDoubleClick}/>
           </div>
         </div>
       )
@@ -153,15 +154,20 @@ var ReactDataGrid = React.createClass({
 
   onSelect: function(selected: SelectedType) {
     if(this.props.enableCellSelect){
-      var idx = selected.idx;
-      var rowIdx = selected.rowIdx;
-      if (
-        idx >= 0
-        && rowIdx >= 0
-        && idx < this.getColumns().length
-        && rowIdx < this.props.rowsCount
-      ) {
-        this.setState({selected: selected});
+      if (this.state.selected.rowIdx === selected.rowIdx
+       && this.state.selected.idx === selected.idx
+       && this.state.selected.active === true) {
+       } else {
+        var idx = selected.idx;
+        var rowIdx = selected.rowIdx;
+        if (
+          idx >= 0
+          && rowIdx >= 0
+          && idx < this.getColumns().length
+          && rowIdx < this.props.rowsCount
+        ) {
+          this.setState({selected: selected});
+        }
       }
     }
   },
@@ -170,7 +176,12 @@ var ReactDataGrid = React.createClass({
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
   },
 
-  onCellDoubleClick: function(e: Event) {
+  onCellDoubleClick: function(cell: SelectedType) {
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+    this.setActive('Enter');
+  },
+
+  onViewportDoubleClick: function(e: Event) {
     this.setActive();
   },
 

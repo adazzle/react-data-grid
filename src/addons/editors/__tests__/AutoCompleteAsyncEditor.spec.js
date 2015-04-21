@@ -35,7 +35,7 @@ describe('AutoCompleteEditorAsync', () => {
         cacheResults={true}
         column={fakeColumn}
         rowMetaData={fakeMetaData}
-        height={30}
+        height='30'
         label='title'
         onCommit={fakeCb}
         onKeyDown={fakeCb}
@@ -62,7 +62,7 @@ describe('AutoCompleteEditorAsync', () => {
 
       it('should spread its own props to the AutoCompleteEditor', () => {
         var Autocomplete = TestUtils.findRenderedComponentWithType(component, AutoCompleteEditorStub);
-        expect(Autocomplete.props.height).toBe(30);
+        expect(Autocomplete.props.height).toBe('30');
       });
 
       it('should pass an empty array of options to the AutoCompleteEditor', () => {

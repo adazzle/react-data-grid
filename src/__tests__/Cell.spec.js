@@ -40,7 +40,8 @@ describe('Cell Tests', () => {
     cellMetaData: testCellMetaData,
     handleDragStart: function(){},
     rowData : {name : 'Johnny Test', location : 'Wicklow', likesTesting :'Absolutely'},
-    height : 40
+    height : 40,
+    name : 'JT'
   }
 
   beforeEach(() => {
