@@ -54,14 +54,16 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
     {
       key: 'id',
       name: 'ID',
-      width : 80
+      width : 80,
+      fixed : true
     },
     {
       key: 'avartar',
       name: 'Avartar',
       width : 60,
       formatter : renderImage,
-      resizeable : true
+      resizeable : true,
+      fixed : true
     },
     {
       key: 'county',

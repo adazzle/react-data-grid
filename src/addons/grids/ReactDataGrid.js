@@ -10,13 +10,15 @@ var PropTypes             = React.PropTypes;
 var BaseGrid              = require('../../Grid');
 var Row                   = require('../../Row');
 var ExcelColumn           = require('./ExcelColumn');
-var merge                 = require('../../merge');
 var KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 var CheckboxEditor        = require('../editors/CheckboxEditor');
 var SortableHeaderCell    = require('../cells/headerCells/SortableHeaderCell');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
 var cloneWithProps        = require('react/lib/cloneWithProps');
 
+if(!Object.assign){
+  Object.assign = require('object-assign');
+}
 type SelectedType = {
   rowIdx: number;
   idx: number;
