@@ -55,6 +55,7 @@ var Cell = React.createClass({
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     return this.props.column.width !== nextProps.column.width
+    || this.props.column.left !== nextProps.column.left
     || this.props.value !== nextProps.value
     || this.props.height !== nextProps.height
     || this.props.rowIdx !== nextProps.rowIdx
