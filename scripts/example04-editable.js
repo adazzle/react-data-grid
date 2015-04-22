@@ -1,8 +1,11 @@
-var ReactGrid   = require('../build/react-data-grid');
+var ReactGrid             = require('../build/react-data-grid');
+var QuickStartDescription = require('../components/QuickStartDescription')
+var ReactPlayground       = require('../assets/js/ReactPlayground');
 
-function createRows(noOfRows){
+var EditableExample = `
+function createRows(numberOfRows){
   var _rows = [];
-  for (var i =1; i < noOfRows; i++) {
+  for (var i = 1; i < numberOfRows; i++) {
     _rows.push({
       id: i,
       title: 'Title ' + i,
@@ -11,6 +14,10 @@ function createRows(noOfRows){
   }
   return _rows;
 }
+
+var rowGetter = function(i){
+  return _rows[i];
+};
 
 var columns = [
 {
@@ -27,9 +34,9 @@ var columns = [
   name: 'Count',
   editable : true
 }
-]
+];
 
-module.exports = React.createClass({
+var Example = React.createClass({
 
   getInitialState : function(){
     return {rows : createRows(1000)}
@@ -48,17 +55,30 @@ module.exports = React.createClass({
 
   render:function(){
     return(
-      <div>
-        <h3>Editable Example</h3>
-        <ReactGrid
-          enableCellSelect={true}
-          columns={columns}
-          rowGetter={this.rowGetter}
-          rowsCount={this.state.rows.length}
-          minHeight={500}
-          onRowUpdated={this.handleRowUpdated} />
-      </div>
+      <ReactDataGrid
+      enableCellSelect={true}
+      columns={columns}
+      rowGetter={this.rowGetter}
+      rowsCount={this.state.rows.length}
+      minHeight={500}
+      onRowUpdated={this.handleRowUpdated} />
     )
   }
 
 });
+
+React.render(<Example />, mountNode);
+`;
+
+  module.exports = React.createClass({
+
+    render:function(){
+      return(
+        <div>
+          <h3>Editable Example</h3>
+          <ReactPlayground codeText={EditableExample} />
+        </div>
+      )
+    }
+
+  });
