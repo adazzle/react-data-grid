@@ -2,6 +2,7 @@
  * @jsx React.DOM
  */
 (function(){
+  var ReactDataGrid       = require('../build/react-data-grid-with-addons')
   var Grid                = ReactDataGrid.Grid;
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
@@ -55,15 +56,13 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       key: 'id',
       name: 'ID',
       width : 80,
-      fixed : true
     },
     {
       key: 'avartar',
       name: 'Avartar',
       width : 60,
       formatter : renderImage,
-      resizeable : true,
-      fixed : true
+      resizeable : true
     },
     {
       key: 'county',

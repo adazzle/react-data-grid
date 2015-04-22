@@ -10,7 +10,7 @@ module.exports = React.createClass({
           <a href="https://github.com/adazzle/react-grid/fork"><img className="github-ribbon" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png" alt="Fork me on GitHub"></img></a>
 
             <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span className="icon-bar"></span> <span className="icon-bar"></span> <span className="icon-bar"></span> </button>
-            <a className="navbar-brand" href="index.html#"><i className="fa fa-table fa-2"></i> React Grid</a>
+            <a className="navbar-brand" href="index.html#"><i className="fa fa-table fa-2"></i> React Data Grid</a>
           </div>
           <div className="navbar-collapse collapse">
             <ul className="nav navbar-nav pull-right">
@@ -21,6 +21,7 @@ module.exports = React.createClass({
                   <ul className="dropdown-menu">
                     <li><a href="examples.html#/basic">Basic Use</a></li>
                     <li><a href="examples.html#/editable">Editable Grid</a></li>
+                    <li><a href="examples.html#/all-the-features">All-The-Features Grid</a></li>
                     </ul>
                 </li>
             </ul>

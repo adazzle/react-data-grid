@@ -286,7 +286,7 @@ var ReactDataGrid = React.createClass({
   },
 
   canEdit(idx: number): boolean{
-    return (this.props.columns[idx].editor != null) || this.props.columns[idx].editable;
+    return this.props.enableCellSelect === true && ((this.props.columns[idx].editor != null) || this.props.columns[idx].editable);
   },
 
   isActive(): boolean{
@@ -317,7 +317,8 @@ var ReactDataGrid = React.createClass({
           onRowSelect :this.handleRowSelect,
           filterable : false,
           headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
-          width : 60
+        width : 60,
+        locked: true
         });
       }
       return cols;
