@@ -55,13 +55,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	var Navbar = __webpack_require__(80);
+	var Navbar = __webpack_require__(81);
 	React.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
 
 
 /***/ },
 
-/***/ 80:
+/***/ 81:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -87,6 +87,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  React.createElement("ul", {className: "dropdown-menu"}, 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/basic"}, "Basic Use")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editable"}, "Editable Grid")), 
+	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/resizable"}, "Resizable Grid")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/all-the-features"}, "All-The-Features Grid"))
 	                    )
 	                )

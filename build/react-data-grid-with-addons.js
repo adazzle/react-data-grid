@@ -2837,7 +2837,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  render:function()                {
 	    var resizeHandle;
-	    if(this.props.column.resizeable){
+	    if(this.props.column.resizable){
 	      resizeHandle = React.createElement(ResizeHandle, {
 	      onDrag: this.onDrag, 
 	      onDragStart: this.onDragStart, 
