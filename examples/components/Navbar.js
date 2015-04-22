@@ -20,8 +20,8 @@ module.exports = React.createClass({
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
                   <ul className="dropdown-menu">
                     <li><a href="examples.html#/basic">Basic Use</a></li>
-                    <li><a href="examples.html#/editable">Editable Grid</a></li>
                     <li><a href="examples.html#/resizable">Resizable Grid</a></li>
+                    <li><a href="examples.html#/editable">Editable Grid</a></li>
                     <li><a href="examples.html#/all-the-features">All-The-Features Grid</a></li>
                     </ul>
                 </li>
