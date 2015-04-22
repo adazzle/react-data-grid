@@ -9,7 +9,7 @@
 	<title>ReactData Grid - Excel-like grid component built with React</title>
 
 	<link rel="shortcut icon" href="examples/assets/images/gt_favicon.png">
-
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700"></link>
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css"></link>
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"></link>
@@ -20,7 +20,7 @@
 	<link rel="stylesheet" href="build/react-data-grid.css"></link>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.js"></script>
 	<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
 	<script src="build/libs.js"></script>
 	<script src="build/react-data-grid-with-addons.js"></script>
 
@@ -123,46 +123,6 @@
 						<pre>&lt;script type="text/javascript" src="react-data-grid/dist/react-data-grid-with-addons.js"&gt;&lt;/script&gt;"</pre>
 					</div>
 
-					<h3 id="js-basic-example">A Simple Example</h3>
-					<p>The columns is a column specification, it provides information to grid on how to extract data for each of the column and how column should be represented and its features:</p>
-					<div class="code-block js">
-
-<pre>var columns = [
-	{
-		key: 'id',
-		name: 'ID'
-	},
-	{
-		key: 'title',
-		name: 'Title'
-	},
-	{
-		key: 'count',
-		name: 'Count'
-	}
-	]</pre>
-						</div>
-						<p>The rows property should be an array of objects whose property names match the key property of each column</p>
-						<div class="code-block js">
-<pre>var getRows = function(start, end) {
-	var result = []
-	for (var i = start; i < end; i++) {
-		result.push({
-			id: i,
-			title: 'Title ' + i,
-			count: i * 1000
-		});
-	}
-	return result;
-};
-var rows = getRows(0,1000);
-</pre>
-						</div>
-						<p>Now simply invoke React.render(..):</p>
-						<div class="code-block js">
-							<pre>React.render(&lt;ReactDataGrid columns={columns} rows={rows} /&gt;, document.getElementById('example'))</pre>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>

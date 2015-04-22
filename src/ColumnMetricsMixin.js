@@ -46,9 +46,6 @@ module.exports = {
 
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
-      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
-        this.setState(this.getColumnMetricsType(nextProps));
-      } else {
         var index = {};
         this.state.columns.columns.forEach((c) => {
           index[c.key] = {width: c.width, left: c.left};
@@ -58,7 +55,6 @@ module.exports = {
         });
         this.setState({columns: nextColumns});
       }
-    }
   },
 
   getColumnMetricsType(props: ColumnMetricsType, initial: ?number): { columns: ColumnMetricsType; gridWidth: number } {

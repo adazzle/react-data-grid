@@ -25,7 +25,8 @@ var EditorContainer = React.createClass({
       selected: React.PropTypes.object.isRequired,
       copied: React.PropTypes.object,
       dragged: React.PropTypes.object,
-      onCellClick: React.PropTypes.func
+      onCellClick: React.PropTypes.func,
+      onCellDoubleClick: React.PropTypes.func
     }).isRequired,
     column : React.PropTypes.object.isRequired,
     height : React.PropTypes.number.isRequired
@@ -64,6 +65,7 @@ var EditorContainer = React.createClass({
   createEditor(): ReactElement{
     var editorProps = {
 		ref: 'editor',
+    name: 'editor',
 		column : this.props.column,
 		value : this.getInitialValue(),
 		onCommit : this.commit,

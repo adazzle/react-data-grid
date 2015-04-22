@@ -10,13 +10,15 @@ var PropTypes             = React.PropTypes;
 var BaseGrid              = require('../../Grid');
 var Row                   = require('../../Row');
 var ExcelColumn           = require('./ExcelColumn');
-var merge                 = require('../../merge');
 var KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 var CheckboxEditor        = require('../editors/CheckboxEditor');
 var SortableHeaderCell    = require('../cells/headerCells/SortableHeaderCell');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
 var cloneWithProps        = require('react/lib/cloneWithProps');
 
+if(!Object.assign){
+  Object.assign = require('object-assign');
+}
 type SelectedType = {
   rowIdx: number;
   idx: number;
@@ -108,6 +110,7 @@ var ReactDataGrid = React.createClass({
       selected : this.state.selected,
       dragged : this.state.dragged,
       onCellClick : this.onCellClick,
+      onCellDoubleClick : this.onCellDoubleClick,
       onCommit : this.onCellCommit,
       onCommitCancel : this.setInactive,
       copied : this.state.copied,
@@ -135,7 +138,7 @@ var ReactDataGrid = React.createClass({
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
-            onViewportDoubleClick={this.onCellDoubleClick}/>
+            onViewportDoubleClick={this.onViewportDoubleClick}/>
           </div>
         </div>
       )
@@ -151,15 +154,20 @@ var ReactDataGrid = React.createClass({
 
   onSelect: function(selected: SelectedType) {
     if(this.props.enableCellSelect){
-      var idx = selected.idx;
-      var rowIdx = selected.rowIdx;
-      if (
-        idx >= 0
-        && rowIdx >= 0
-        && idx < this.getColumns().length
-        && rowIdx < this.props.rowsCount
-      ) {
-        this.setState({selected: selected});
+      if (this.state.selected.rowIdx === selected.rowIdx
+       && this.state.selected.idx === selected.idx
+       && this.state.selected.active === true) {
+       } else {
+        var idx = selected.idx;
+        var rowIdx = selected.rowIdx;
+        if (
+          idx >= 0
+          && rowIdx >= 0
+          && idx < this.getColumns().length
+          && rowIdx < this.props.rowsCount
+        ) {
+          this.setState({selected: selected});
+        }
       }
     }
   },
@@ -168,7 +176,12 @@ var ReactDataGrid = React.createClass({
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
   },
 
-  onCellDoubleClick: function(e: Event) {
+  onCellDoubleClick: function(cell: SelectedType) {
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+    this.setActive('Enter');
+  },
+
+  onViewportDoubleClick: function(e: Event) {
     this.setActive();
   },
 
@@ -273,7 +286,7 @@ var ReactDataGrid = React.createClass({
   },
 
   canEdit(idx: number): boolean{
-    return (this.props.columns[idx].editor != null) || this.props.columns[idx].editable;
+    return this.props.enableCellSelect === true && ((this.props.columns[idx].editor != null) || this.props.columns[idx].editable);
   },
 
   isActive(): boolean{
@@ -304,7 +317,8 @@ var ReactDataGrid = React.createClass({
           onRowSelect :this.handleRowSelect,
           filterable : false,
           headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
-          width : 60
+        width : 60,
+        locked: true
         });
       }
       return cols;

@@ -7,7 +7,6 @@
 "use strict";
 
 var shallowCloneObject            = require('./shallowCloneObject');
-var merge                         = require('./merge');
 var isValidElement = require('react').isValidElement;
 var sameColumn = require('./ColumnComparer');
 

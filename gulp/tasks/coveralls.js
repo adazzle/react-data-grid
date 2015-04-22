@@ -3,7 +3,7 @@ var gutil = require("gulp-util");
 
 gulp.task('coveralls', function (done) {
   return submitToCoveralls('test/coverage/report-lcov/lcov.info', function(){
-  done();
+    done();
   });
 });
 
@@ -12,7 +12,7 @@ function submitToCoveralls(fileName, callback) {
   process.env.NODE_COVERALLS_DEBUG = '1'
   gutil.log(gutil.colors.cyan('Coveralls:', 'Submitting file to coveralls.io: ' + fileName));
 
-  var coveralls = require('coveralls');
+  var coveralls = require('avcoveralls');
   var run_at = process.env.COVERALLS_RUN_AT || JSON.stringify(new Date()).slice(1, -1);
   var options = {
     service_name : process.env.COVERALLS_SERVICE_NAME,
@@ -43,8 +43,7 @@ function submitToCoveralls(fileName, callback) {
     var runAt = process.env.COVERALLS_RUN_AT || JSON.stringify(new Date()).slice(1, -1)
     return cb(null, options);
   };
-  console.log('coverall options:');
-  console.log(JSON.stringify(options));
+
 
 
 

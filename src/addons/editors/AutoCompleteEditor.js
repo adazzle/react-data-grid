@@ -22,16 +22,19 @@ var AutoCompleteEditor = React.createClass({
   propTypes : {
     onCommit : React.PropTypes.func.isRequired,
     options : React.PropTypes.arrayOf(optionPropType).isRequired,
-    label : React.PropTypes.string,
+    label : React.PropTypes.any,
     value : React.PropTypes.any.isRequired,
     valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     resultIdentifier : React.PropTypes.string,
-    search : React.PropTypes.string
+    search : React.PropTypes.string,
+    height : React.PropTypes.string,
+    onKeyDown : React.PropTypes.func.isRequired
   },
 
   getDefaultProps(): {resultIdentifier: string}{
     return {
+      label: 'title',
       resultIdentifier : 'id'
     }
   },
@@ -55,9 +58,8 @@ var AutoCompleteEditor = React.createClass({
   },
 
   render(): ?ReactElement {
-    var label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete  search={this.props.search} ref="autoComplete" label={label} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
+      <ReactAutocomplete  search={this.props.search} ref="autoComplete" label={this.props.label} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
       </div>);
   },
 
@@ -71,7 +73,7 @@ var AutoCompleteEditor = React.createClass({
   },
 
   getLabel(item: any): string {
-    var label = this.props.label != null ? this.props.label : 'title';
+    var label = this.props.label;
     if (typeof label === "function") {
       return label(item);
     } else if (typeof label === "string") {

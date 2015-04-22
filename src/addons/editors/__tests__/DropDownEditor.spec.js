@@ -15,6 +15,7 @@ describe('DropDownEditor', () => {
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(<DropDownEditor
+        name={'DropDownEditor'}
         options={fakeOptions}
         value={'Choose a thing'}
         onCommit={fakeCommitCb}

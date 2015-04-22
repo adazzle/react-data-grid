@@ -8,7 +8,7 @@
 
 var React         = require('react');
 var PropTypes     = React.PropTypes;
-var emptyFunction = require('./emptyFunction');
+var emptyFunction = require('react/lib/emptyFunction');
 
 var Draggable = React.createClass({
 

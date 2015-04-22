@@ -26,7 +26,7 @@ var DropDownEditor = React.createClass({
 
   render(): ?ReactElement{
     return (
-      <select ref="select" style={this.getStyle()} defaultValue={this.props.value} onChange={this.onChange} >
+      <select ref="select" style={this.getStyle()} defaultValue={this.props.value} onChange={this.onChange} onClick={this.onClick} onDoubleClick={this.onDoubleClick} >
         {this.renderOptions()}
       </select>);
   },
@@ -56,6 +56,13 @@ var DropDownEditor = React.createClass({
   onClick(e: Event){
     e.stopPropagation();
     e.preventDefault();
+    this.getInputNode().focus();
+  },
+
+  onDoubleClick(e: Event){
+    e.stopPropagation();
+    e.preventDefault();
+    this.getInputNode().focus();
   }
 
 });

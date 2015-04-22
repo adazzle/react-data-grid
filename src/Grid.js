@@ -61,7 +61,7 @@ var Grid = React.createClass({
           totalWidth={this.DOMMetrics.gridWidth()}
           headerRows={headerRows}
           />
-        <div onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+        <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
             <Viewport
               ref="viewport"
               width={this.state.columns.width}
