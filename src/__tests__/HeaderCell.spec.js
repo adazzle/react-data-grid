@@ -52,15 +52,15 @@ describe('Header Cell Tests', () => {
   });
 
 
-  describe("When column is resizeable", () => {
+  describe("When column is resizable", () => {
 
     beforeEach(() => {
-      testProps.column.resizeable = true;
+      testProps.column.resizable = true;
       headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
     });
 
     afterEach(() => {
-      testProps.column.resizeable = false;
+      testProps.column.resizable = false;
     });
 
     it("should render a resize handle", () => {

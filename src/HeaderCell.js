@@ -25,7 +25,7 @@ var HeaderCell = React.createClass({
 
   render(): ?ReactElement {
     var resizeHandle;
-    if(this.props.column.resizeable){
+    if(this.props.column.resizable){
       resizeHandle = <ResizeHandle
       onDrag={this.onDrag}
       onDragStart={this.onDragStart}
