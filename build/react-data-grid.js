@@ -1,10 +1,10 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("react/addons"));
+		module.exports = factory(require("react"));
 	else if(typeof define === 'function' && define.amd)
-		define(["react/addons"], factory);
+		define(["react"], factory);
 	else if(typeof exports === 'object')
-		exports["ReactDataGrid"] = factory(require("react/addons"));
+		exports["ReactDataGrid"] = factory(require("react"));
 	else
 		root["ReactDataGrid"] = factory(root["React"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
@@ -55,12 +55,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
-	module.exports = {
-	  Grid       : __webpack_require__(32),
-	  Editors    : __webpack_require__(40),
-	  Formatters : __webpack_require__(42),
-	  Toolbar    : __webpack_require__(43)
-	}
+	'use strict';
+
+	var Grid = __webpack_require__(44);
+	var Row  = __webpack_require__(11);
+	var Cell = __webpack_require__(17);
+
+	module.exports = Grid;
+	module.exports.Row = Row;
+	module.exports.Cell = Cell;
 
 
 /***/ },
@@ -74,7 +77,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
-
+	var React = __webpack_require__(1);
 	function ExcelColumn(){"use strict";}
 	               
 	              
@@ -83,11 +86,220 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  
 
 
-	module.exports = ExcelColumn;
+
+	var ExcelColumnShape = {
+	  name: React.PropTypes.string.isRequired,
+	  key: React.PropTypes.string.isRequired,
+	  width: React.PropTypes.number.isRequired
+
+
+	}
+
+	module.exports = ExcelColumnShape;
 
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	function classNames() {
+		var classes = '';
+		var arg;
+
+		for (var i = 0; i < arguments.length; i++) {
+			arg = arguments[i];
+			if (!arg) {
+				continue;
+			}
+
+			if ('string' === typeof arg || 'number' === typeof arg) {
+				classes += ' ' + arg;
+			} else if (Object.prototype.toString.call(arg) === '[object Array]') {
+				classes += ' ' + classNames.apply(null, arg);
+			} else if ('object' === typeof arg) {
+				for (var key in arg) {
+					if (!arg.hasOwnProperty(key) || !arg[key]) {
+						continue;
+					}
+					classes += ' ' + key;
+				}
+			}
+		}
+		return classes.substr(1);
+	}
+
+	// safely export classNames in case the script is included directly on a page
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	}
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @typechecks
+	 * @providesModule cloneWithProps
+	 */
+
+	"use strict";
+
+	var ReactElement = __webpack_require__(21);
+	var ReactPropTransferer = __webpack_require__(22);
+
+	var keyOf = __webpack_require__(25);
+	var warning = __webpack_require__(8);
+
+	var CHILDREN_PROP = keyOf({children: null});
+
+	/**
+	 * Sometimes you want to change the props of a child passed to you. Usually
+	 * this is to add a CSS class.
+	 *
+	 * @param {object} child child component you'd like to clone
+	 * @param {object} props props you'd like to modify. They will be merged
+	 * as if you used `transferPropsTo()`.
+	 * @return {object} a clone of child with props merged in.
+	 */
+	function cloneWithProps(child, props) {
+	  if ("production" !== process.env.NODE_ENV) {
+	    ("production" !== process.env.NODE_ENV ? warning(
+	      !child.ref,
+	      'You are calling cloneWithProps() on a child with a ref. This is ' +
+	      'dangerous because you\'re creating a new child which will not be ' +
+	      'added as a ref to its parent.'
+	    ) : null);
+	  }
+
+	  var newProps = ReactPropTransferer.mergeProps(props, child.props);
+
+	  // Use `child.props.children` if it is provided.
+	  if (!newProps.hasOwnProperty(CHILDREN_PROP) &&
+	      child.props.hasOwnProperty(CHILDREN_PROP)) {
+	    newProps.children = child.props.children;
+	  }
+
+	  // The current API doesn't retain _owner and _context, which is why this
+	  // doesn't use ReactElement.cloneAndReplaceProps.
+	  return ReactElement.createElement(child.type, newProps);
+	}
+
+	module.exports = cloneWithProps;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule emptyFunction
+	 */
+
+	function makeEmptyFunction(arg) {
+	  return function() {
+	    return arg;
+	  };
+	}
+
+	/**
+	 * This function accepts and discards inputs; it has no side effects. This is
+	 * primarily useful idiomatically for overridable function endpoints which
+	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+	 */
+	function emptyFunction() {}
+
+	emptyFunction.thatReturns = makeEmptyFunction;
+	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+	emptyFunction.thatReturnsThis = function() { return this; };
+	emptyFunction.thatReturnsArgument = function(arg) { return arg; };
+
+	module.exports = emptyFunction;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// shim for using process in browser
+
+	var process = module.exports = {};
+	var queue = [];
+	var draining = false;
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    draining = true;
+	    var currentQueue;
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        var i = -1;
+	        while (++i < len) {
+	            currentQueue[i]();
+	        }
+	        len = queue.length;
+	    }
+	    draining = false;
+	}
+	process.nextTick = function (fun) {
+	    queue.push(fun);
+	    if (!draining) {
+	        setTimeout(drainQueue, 0);
+	    }
+	};
+
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	// TODO(shtylman)
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow: mixins */
@@ -100,10 +312,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Perf = React.addons.Perf;
-
-	var hasPerfStarted = false;
-
 	var KeyboardHandlerMixin = {
 
 	  propTypes : {
@@ -157,7 +365,55 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 4 */
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule warning
+	 */
+
+	"use strict";
+
+	var emptyFunction = __webpack_require__(5);
+
+	/**
+	 * Similar to invariant but only logs a warning if the condition is not met.
+	 * This can be used to log issues in development environments in critical
+	 * paths. Removing the logging code for production environments will keep the
+	 * same logic and follow the same code paths.
+	 */
+
+	var warning = emptyFunction;
+
+	if ("production" !== process.env.NODE_ENV) {
+	  warning = function(condition, format ) {for (var args=[],$__0=2,$__1=arguments.length;$__0<$__1;$__0++) args.push(arguments[$__0]);
+	    if (format === undefined) {
+	      throw new Error(
+	        '`warning(condition, format, ...args)` requires a warning ' +
+	        'message argument'
+	      );
+	    }
+
+	    if (!condition) {
+	      var argIndex = 0;
+	      console.warn('Warning: ' + format.replace(/%s/g, function()  {return args[argIndex++];}));
+	    }
+	  };
+	}
+
+	module.exports = warning;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -168,10 +424,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	"use strict";
 
-	var shallowCloneObject            = __webpack_require__(8);
-	var merge                         = __webpack_require__(9);
+	var shallowCloneObject            = __webpack_require__(12);
 	var isValidElement = __webpack_require__(1).isValidElement;
-	var sameColumn = __webpack_require__(16);
+	var sameColumn = __webpack_require__(27);
 
 	                          
 	                           
@@ -303,7 +558,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 5 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow mixin and invarient splat */
@@ -315,8 +570,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React               = __webpack_require__(1);
-	var emptyFunction       = __webpack_require__(7);
-	var shallowCloneObject  = __webpack_require__(8);
+	var emptyFunction       = __webpack_require__(5);
+	var shallowCloneObject  = __webpack_require__(12);
 
 	var contextTypes = {
 	  metricsComputator: React.PropTypes.object
@@ -473,7 +728,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 6 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow  */
@@ -484,11 +739,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var React          = __webpack_require__(1);
-	var cx             = React.addons.classSet;
-	var Cell           = __webpack_require__(11);
-	var cloneWithProps = React.addons.cloneWithProps;
-	var ColumnMetrics    = __webpack_require__(4);
+	var React           = __webpack_require__(1);
+	var joinClasses      = __webpack_require__(3);
+	var Cell            = __webpack_require__(17);
+	var cloneWithProps  = __webpack_require__(4);
+	var ColumnMetrics   = __webpack_require__(9);
 
 	                     
 	                 
@@ -520,9 +775,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render:function()                {
-	    var className = cx(
+	    var className = joinClasses(
 	      'react-grid-Row',
-	      ("react-grid-Row--" + (this.props.idx % 2 === 0 ? 'even' : 'odd'))
+	      "react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}"
 	    );
 
 	    var style = {
@@ -545,18 +800,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    for (var i = 0, len = this.props.columns.length; i < len; i++) {
 	      var column = this.props.columns[i];
-	      var cell = this.renderCell({
-	        ref:i,
-	        key:i,
-	        idx:i,
-	        rowIdx:this.props.idx,
-	        value:this.getCellValue(column.key || i),
-	        column:column,
-	        height:this.getRowHeight(),
-	        formatter:column.formatter,
-	        cellMetaData : this.props.cellMetaData,
-	        //TODO passing the row to the cell??
-	        rowData : this.props.row});
+	      var CellRenderer = this.props.cellRenderer;
+	      var cell = React.createElement(CellRenderer, {
+	                    ref: i, 
+	                    key: i, 
+	                    idx: i, 
+	                    rowIdx: this.props.idx, 
+	                    value: this.getCellValue(column.key || i), 
+	                    column: column, 
+	                    height: this.getRowHeight(), 
+	                    formatter: column.formatter, 
+	                    cellMetaData: this.props.cellMetaData, 
+	                    rowData: this.props.row})
 	      if (column.locked) {
 	        lockedCells.push(cell);
 	      } else {
@@ -582,18 +837,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if(key === 'select-row'){
 	      return this.props.isSelected;
 	    }else{
-	      return this.props.row[key]
-	    }
-	  },
-
-	  renderCell:function(props     )               {
-	    if(typeof this.props.cellRenderer == 'function') {
-	      this.props.cellRenderer.call(this, props);
-	    }
-	    if (React.isValidElement(this.props.cellRenderer)) {
-	      return cloneWithProps(this.props.cellRenderer, props);
-	    } else {
-	      return this.props.cellRenderer(props);
+	      var val = this.props.row[key];
+	      return !val ? '' : val;
 	    }
 	  },
 
@@ -656,59 +901,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule emptyFunction
-
-	 */
-	'use strict';
-
-	var copyProperties = __webpack_require__(34);
-
-	function makeEmptyFunction(arg) {
-	  return function() {
-	    return arg;
-	  };
-	}
-
-	/**
-	 * This function accepts and discards inputs; it has no side effects. This is
-	 * primarily useful idiomatically for overridable function endpoints which
-	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
-	 */
-	function emptyFunction() {}
-
-	copyProperties(emptyFunction, {
-	  thatReturns: makeEmptyFunction,
-	  thatReturnsFalse: makeEmptyFunction(false),
-	  thatReturnsTrue: makeEmptyFunction(true),
-	  thatReturnsNull: makeEmptyFunction(null),
-	  thatReturnsThis: function() { return this; },
-	  thatReturnsArgument: function(arg) { return arg; }
-	});
-
-	module.exports = emptyFunction;
-
-
-/***/ },
-/* 8 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -733,91 +926,130 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* @flow */
-	/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule merge
+	'use strict';
 
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				to[keys[i]] = from[keys[i]];
+			}
+		}
+
+		return to;
+	};
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule Object.assign
+	 */
+
+	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign
+
+	function assign(target, sources) {
+	  if (target == null) {
+	    throw new TypeError('Object.assign target cannot be null or undefined');
+	  }
+
+	  var to = Object(target);
+	  var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	  for (var nextIndex = 1; nextIndex < arguments.length; nextIndex++) {
+	    var nextSource = arguments[nextIndex];
+	    if (nextSource == null) {
+	      continue;
+	    }
+
+	    var from = Object(nextSource);
+
+	    // We don't currently support accessors nor proxies. Therefore this
+	    // copy cannot throw. If we ever supported this then we must handle
+	    // exceptions and side-effects. We don't support symbols so they won't
+	    // be transferred.
+
+	    for (var key in from) {
+	      if (hasOwnProperty.call(from, key)) {
+	        to[key] = from[key];
+	      }
+	    }
+	  }
+
+	  return to;
+	};
+
+	module.exports = assign;
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule shallowEqual
 	 */
 
 	"use strict";
 
 	/**
-	 * Shallow merges two structures into a return value, without mutating either.
+	 * Performs equality by iterating through keys on an object and returning
+	 * false when any key has values which are not strictly equal between
+	 * objA and objB. Returns true when the values of all keys are strictly equal.
 	 *
-	 * @param {?object} one Optional object with properties to merge from.
-	 * @param {?object} two Optional object with properties to merge from.
-	 * @return {object} The shallow extension of one by two.
+	 * @return {boolean}
 	 */
-	var merge = function(one     , two     )      {
-	  var result = {};
-	  if (one != null) {
-	    Object.assign(result, one);
-	  }
-	  if (two != null) {
-	    Object.assign(result, two);
-	  }
-	  return result;
-	};
-
-	function mergeFallback(obj1     ,obj2     )     {
-	    var obj3 = {};
-	    for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-	    for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
-	    return obj3;
-	}
-
-	module.exports = Object.assign ? merge : mergeFallback;
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	/**
-	 * @jsx React.DOM
-
-
-	 */
-	'use strict';
-
-	function shallowEqual(a     , b     )          {
-	  if (a === b) {
+	function shallowEqual(objA, objB) {
+	  if (objA === objB) {
 	    return true;
 	  }
-
-	  var k;
-
-	  for (k in a) {
-	    if (a.hasOwnProperty(k) &&
-	        (!b.hasOwnProperty(k) || a[k] !== b[k])) {
+	  var key;
+	  // Test for A's keys different from B.
+	  for (key in objA) {
+	    if (objA.hasOwnProperty(key) &&
+	        (!objB.hasOwnProperty(key) || objA[key] !== objB[key])) {
 	      return false;
 	    }
 	  }
-
-	  for (k in b) {
-	    if (b.hasOwnProperty(k) && !a.hasOwnProperty(k)) {
+	  // Test for B's keys missing from A.
+	  for (key in objB) {
+	    if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
 	      return false;
 	    }
 	  }
-
 	  return true;
 	}
 
@@ -825,7 +1057,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* @flow */
+	"use strict";
+
+	var isFunction = function(functionToCheck     )         {
+	    var getType = {};
+	    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+	}
+
+	module.exports = isFunction;
+
+
+/***/ },
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -836,11 +1083,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var React          = __webpack_require__(1);
-	var cx             = React.addons.classSet;
-	var cloneWithProps = React.addons.cloneWithProps;
-	var EditorContainer = __webpack_require__(31);
-	var ExcelColumn  = __webpack_require__(2);
+	var React             = __webpack_require__(1);
+	var joinClasses       = __webpack_require__(3);
+	var cloneWithProps    = __webpack_require__(4);
+	var EditorContainer   = __webpack_require__(43);
+	var ExcelColumn       = __webpack_require__(2);
+	var isFunction        = __webpack_require__(16);
+	var CellMetaDataShape = __webpack_require__(35);
 
 	var Cell = React.createClass({displayName: "Cell",
 
@@ -855,9 +1104,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    column: React.PropTypes.shape(ExcelColumn).isRequired,
 	    value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
 	    isExpanded: React.PropTypes.bool,
-	    cellMetaData: React.PropTypes.shape({selected: React.PropTypes.object.isRequired, copied: React.PropTypes.object, dragged: React.PropTypes.object, onCellClick: React.PropTypes.func}).isRequired,
+	    cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
 	    handleDragStart: React.PropTypes.func,
-	    className: React.PropTypes.string
+	    className: React.PropTypes.string,
+	    rowData : React.PropTypes.object.isRequired
 	  },
 
 	  getDefaultProps : function()                                                        {
@@ -882,6 +1132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  shouldComponentUpdate:function(nextProps     , nextState     )          {
 	    return this.props.column.width !== nextProps.column.width
+	    || this.props.column.left !== nextProps.column.left
 	    || this.props.value !== nextProps.value
 	    || this.props.height !== nextProps.height
 	    || this.props.rowIdx !== nextProps.rowIdx
@@ -912,7 +1163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 
 	    return (
-	      React.createElement("div", React.__spread({},  this.props, {className: className, style: style, onClick: this.onCellClick}), 
+	      React.createElement("div", React.__spread({},  this.props, {className: className, style: style, onClick: this.onCellClick, onDoubleClick: this.onCellDoubleClick}), 
 	      cellContent, 
 	      React.createElement("div", {className: "drag-handle", draggable: "true"}
 	      )
@@ -924,9 +1175,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var CellContent;
 	    var Formatter = this.getFormatter();
 	    if(React.isValidElement(Formatter)){
+	      props.dependentValues = this.getFormatterDependencies()
 	      CellContent = cloneWithProps(Formatter, props);
-	    }else{
-	      CellContent = React.createElement(SimpleCellFormatter, {value: this.props.value})
+	    }else if(isFunction(Formatter)){
+	        CellContent = React.createElement(Formatter, {value: this.props.value, dependentValues: this.getFormatterDependencies()});
+	    } else {
+	      CellContent = React.createElement(SimpleCellFormatter, {value: this.props.value});
 	    }
 	    return (React.createElement("div", {
 	      className: "react-grid-Cell__value"}, CellContent, " ", this.props.cellControls))
@@ -963,16 +1217,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getFormatter:function()                {
 	    var col = this.props.column;
 	    if(this.isActive()){
-	      return React.createElement(EditorContainer, {rowIdx: this.props.rowIdx, idx: this.props.idx, cellMetaData: this.props.cellMetaData, column: col, height: this.props.height});
+	      return React.createElement(EditorContainer, {rowData: this.props.rowData, rowIdx: this.props.rowIdx, idx: this.props.idx, cellMetaData: this.props.cellMetaData, column: col, height: this.props.height});
 	    }else{
 	      return this.props.column.formatter;
 	    }
 	  },
 
-	  onCellClick:function(){
+	  getFormatterDependencies:function() {
+	    //clone row data so editor cannot actually change this
+	    var columnName = this.props.column.ItemId;
+	    //convention based method to get corresponding Id or Name of any Name or Id property
+	    if(typeof this.props.column.getRowMetaData === 'function'){
+	      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
+	    }
+	  },
+
+	  onCellClick:function(e                     ){
+	    if (e && typeof e.preventDefault === 'function') {
+	      e.preventDefault();
+	    }
+	    if (e && typeof e.stopPropagation === 'function') {
+	      e.stopPropagation();
+	    }
 	    var meta = this.props.cellMetaData;
 	    if(meta != null && meta.onCellClick != null) {
 	      meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
+	    }
+	  },
+
+	  onCellDoubleClick:function(e                     ){
+	    if (e && typeof e.preventDefault === 'function') {
+	      e.preventDefault();
+	    }
+	    if (e && typeof e.stopPropagation === 'function') {
+	      e.stopPropagation();
+	    }
+	    var meta = this.props.cellMetaData;
+	    if(meta != null && meta.onCellDoubleClick != null) {
+	      meta.onCellDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
 	    }
 	  },
 
@@ -983,13 +1265,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getCellClass : function()         {
-	    var className = cx(
+	    var className = joinClasses(
 	      'react-grid-Cell',
 	      this.props.className,
 	      this.props.column.locked ? 'react-grid-Cell--locked' : null
 	    );
 
-	    var extraClasses = cx({
+	    var extraClasses = joinClasses({
 	      'selected' : this.isSelected() && !this.isActive() ,
 	      'editing' : this.isActive(),
 	      'copied' : this.isCopied(),
@@ -1081,7 +1363,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -1093,14 +1375,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React                   = __webpack_require__(1);
-	var cx                      = React.addons.classSet;
-	var keyboardHandlerMixin    = __webpack_require__(3);
+	var keyboardHandlerMixin    = __webpack_require__(7);
 	var ExcelColumn             = __webpack_require__(2);
 
 	var SimpleTextEditor = React.createClass({displayName: "SimpleTextEditor",
 
 	  propTypes : {
-	    onKeyDown : React.PropTypes.func.isRequired,
 	    value : React.PropTypes.any.isRequired,
 	    onBlur : React.PropTypes.func.isRequired,
 	    column :  React.PropTypes.shape(ExcelColumn).isRequired
@@ -1117,7 +1397,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render:function()                {
-	    return (React.createElement("input", {ref: "input", type: "text", onBlur: this.props.onBlur, className: "form-control", defaultValue: this.props.value, onKeyDown: this.props.onKeyDown}));
+	    return (React.createElement("input", {ref: "input", type: "text", onBlur: this.props.onBlur, className: "form-control", defaultValue: this.props.value}));
 	  }
 
 	});
@@ -1126,103 +1406,675 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactContext
+	 */
 
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
+	"use strict";
 
-		return Object(val);
-	}
+	var assign = __webpack_require__(14);
 
-	module.exports = Object.assign || function (target, source) {
-		var from;
-		var keys;
-		var to = ToObject(target);
+	/**
+	 * Keeps track of the current context.
+	 *
+	 * The context is automatically passed down the component ownership hierarchy
+	 * and is accessible via `this.context` on ReactCompositeComponents.
+	 */
+	var ReactContext = {
 
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
+	  /**
+	   * @internal
+	   * @type {object}
+	   */
+	  current: {},
 
-			for (var i = 0; i < keys.length; i++) {
-				to[keys[i]] = from[keys[i]];
-			}
-		}
+	  /**
+	   * Temporarily extends the current context while executing scopedCallback.
+	   *
+	   * A typical use case might look like
+	   *
+	   *  render: function() {
+	   *    var children = ReactContext.withContext({foo: 'foo'}, () => (
+	   *
+	   *    ));
+	   *    return <div>{children}</div>;
+	   *  }
+	   *
+	   * @param {object} newContext New context to merge into the existing context
+	   * @param {function} scopedCallback Callback to run with the new context
+	   * @return {ReactComponent|array<ReactComponent>}
+	   */
+	  withContext: function(newContext, scopedCallback) {
+	    var result;
+	    var previousContext = ReactContext.current;
+	    ReactContext.current = assign({}, previousContext, newContext);
+	    try {
+	      result = scopedCallback();
+	    } finally {
+	      ReactContext.current = previousContext;
+	    }
+	    return result;
+	  }
 
-		return to;
 	};
+
+	module.exports = ReactContext;
 
 
 /***/ },
-/* 14 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// shim for using process in browser
+	/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactCurrentOwner
+	 */
 
-	var process = module.exports = {};
-	var queue = [];
-	var draining = false;
+	"use strict";
 
-	function drainQueue() {
-	    if (draining) {
-	        return;
+	/**
+	 * Keeps track of the current owner.
+	 *
+	 * The current owner is the component who should own any components that are
+	 * currently being constructed.
+	 *
+	 * The depth indicate how many composite components are above this render level.
+	 */
+	var ReactCurrentOwner = {
+
+	  /**
+	   * @internal
+	   * @type {ReactComponent}
+	   */
+	  current: null
+
+	};
+
+	module.exports = ReactCurrentOwner;
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactElement
+	 */
+
+	"use strict";
+
+	var ReactContext = __webpack_require__(19);
+	var ReactCurrentOwner = __webpack_require__(20);
+
+	var warning = __webpack_require__(8);
+
+	var RESERVED_PROPS = {
+	  key: true,
+	  ref: true
+	};
+
+	/**
+	 * Warn for mutations.
+	 *
+	 * @internal
+	 * @param {object} object
+	 * @param {string} key
+	 */
+	function defineWarningProperty(object, key) {
+	  Object.defineProperty(object, key, {
+
+	    configurable: false,
+	    enumerable: true,
+
+	    get: function() {
+	      if (!this._store) {
+	        return null;
+	      }
+	      return this._store[key];
+	    },
+
+	    set: function(value) {
+	      ("production" !== process.env.NODE_ENV ? warning(
+	        false,
+	        'Don\'t set the ' + key + ' property of the component. ' +
+	        'Mutate the existing props object instead.'
+	      ) : null);
+	      this._store[key] = value;
 	    }
-	    draining = true;
-	    var currentQueue;
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        var i = -1;
-	        while (++i < len) {
-	            currentQueue[i]();
+
+	  });
+	}
+
+	/**
+	 * This is updated to true if the membrane is successfully created.
+	 */
+	var useMutationMembrane = false;
+
+	/**
+	 * Warn for mutations.
+	 *
+	 * @internal
+	 * @param {object} element
+	 */
+	function defineMutationMembrane(prototype) {
+	  try {
+	    var pseudoFrozenProperties = {
+	      props: true
+	    };
+	    for (var key in pseudoFrozenProperties) {
+	      defineWarningProperty(prototype, key);
+	    }
+	    useMutationMembrane = true;
+	  } catch (x) {
+	    // IE will fail on defineProperty
+	  }
+	}
+
+	/**
+	 * Base constructor for all React elements. This is only used to make this
+	 * work with a dynamic instanceof check. Nothing should live on this prototype.
+	 *
+	 * @param {*} type
+	 * @param {string|object} ref
+	 * @param {*} key
+	 * @param {*} props
+	 * @internal
+	 */
+	var ReactElement = function(type, key, ref, owner, context, props) {
+	  // Built-in properties that belong on the element
+	  this.type = type;
+	  this.key = key;
+	  this.ref = ref;
+
+	  // Record the component responsible for creating this element.
+	  this._owner = owner;
+
+	  // TODO: Deprecate withContext, and then the context becomes accessible
+	  // through the owner.
+	  this._context = context;
+
+	  if ("production" !== process.env.NODE_ENV) {
+	    // The validation flag and props are currently mutative. We put them on
+	    // an external backing store so that we can freeze the whole object.
+	    // This can be replaced with a WeakMap once they are implemented in
+	    // commonly used development environments.
+	    this._store = { validated: false, props: props };
+
+	    // We're not allowed to set props directly on the object so we early
+	    // return and rely on the prototype membrane to forward to the backing
+	    // store.
+	    if (useMutationMembrane) {
+	      Object.freeze(this);
+	      return;
+	    }
+	  }
+
+	  this.props = props;
+	};
+
+	// We intentionally don't expose the function on the constructor property.
+	// ReactElement should be indistinguishable from a plain object.
+	ReactElement.prototype = {
+	  _isReactElement: true
+	};
+
+	if ("production" !== process.env.NODE_ENV) {
+	  defineMutationMembrane(ReactElement.prototype);
+	}
+
+	ReactElement.createElement = function(type, config, children) {
+	  var propName;
+
+	  // Reserved names are extracted
+	  var props = {};
+
+	  var key = null;
+	  var ref = null;
+
+	  if (config != null) {
+	    ref = config.ref === undefined ? null : config.ref;
+	    if ("production" !== process.env.NODE_ENV) {
+	      ("production" !== process.env.NODE_ENV ? warning(
+	        config.key !== null,
+	        'createElement(...): Encountered component with a `key` of null. In ' +
+	        'a future version, this will be treated as equivalent to the string ' +
+	        '\'null\'; instead, provide an explicit key or use undefined.'
+	      ) : null);
+	    }
+	    // TODO: Change this back to `config.key === undefined`
+	    key = config.key == null ? null : '' + config.key;
+	    // Remaining properties are added to a new props object
+	    for (propName in config) {
+	      if (config.hasOwnProperty(propName) &&
+	          !RESERVED_PROPS.hasOwnProperty(propName)) {
+	        props[propName] = config[propName];
+	      }
+	    }
+	  }
+
+	  // Children can be more than one argument, and those are transferred onto
+	  // the newly allocated props object.
+	  var childrenLength = arguments.length - 2;
+	  if (childrenLength === 1) {
+	    props.children = children;
+	  } else if (childrenLength > 1) {
+	    var childArray = Array(childrenLength);
+	    for (var i = 0; i < childrenLength; i++) {
+	      childArray[i] = arguments[i + 2];
+	    }
+	    props.children = childArray;
+	  }
+
+	  // Resolve default props
+	  if (type && type.defaultProps) {
+	    var defaultProps = type.defaultProps;
+	    for (propName in defaultProps) {
+	      if (typeof props[propName] === 'undefined') {
+	        props[propName] = defaultProps[propName];
+	      }
+	    }
+	  }
+
+	  return new ReactElement(
+	    type,
+	    key,
+	    ref,
+	    ReactCurrentOwner.current,
+	    ReactContext.current,
+	    props
+	  );
+	};
+
+	ReactElement.createFactory = function(type) {
+	  var factory = ReactElement.createElement.bind(null, type);
+	  // Expose the type on the factory and the prototype so that it can be
+	  // easily accessed on elements. E.g. <Foo />.type === Foo.type.
+	  // This should not be named `constructor` since this may not be the function
+	  // that created the element, and it may not even be a constructor.
+	  factory.type = type;
+	  return factory;
+	};
+
+	ReactElement.cloneAndReplaceProps = function(oldElement, newProps) {
+	  var newElement = new ReactElement(
+	    oldElement.type,
+	    oldElement.key,
+	    oldElement.ref,
+	    oldElement._owner,
+	    oldElement._context,
+	    newProps
+	  );
+
+	  if ("production" !== process.env.NODE_ENV) {
+	    // If the key on the original is valid, then the clone is valid
+	    newElement._store.validated = oldElement._store.validated;
+	  }
+	  return newElement;
+	};
+
+	/**
+	 * @param {?object} object
+	 * @return {boolean} True if `object` is a valid component.
+	 * @final
+	 */
+	ReactElement.isValidElement = function(object) {
+	  // ReactTestUtils is often used outside of beforeEach where as React is
+	  // within it. This leads to two different instances of React on the same
+	  // page. To identify a element from a different React instance we use
+	  // a flag instead of an instanceof check.
+	  var isElement = !!(object && object._isReactElement);
+	  // if (isElement && !(object instanceof ReactElement)) {
+	  // This is an indicator that you're using multiple versions of React at the
+	  // same time. This will screw with ownership and stuff. Fix it, please.
+	  // TODO: We could possibly warn here.
+	  // }
+	  return isElement;
+	};
+
+	module.exports = ReactElement;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactPropTransferer
+	 */
+
+	"use strict";
+
+	var assign = __webpack_require__(14);
+	var emptyFunction = __webpack_require__(5);
+	var invariant = __webpack_require__(23);
+	var joinClasses = __webpack_require__(24);
+	var warning = __webpack_require__(8);
+
+	var didWarn = false;
+
+	/**
+	 * Creates a transfer strategy that will merge prop values using the supplied
+	 * `mergeStrategy`. If a prop was previously unset, this just sets it.
+	 *
+	 * @param {function} mergeStrategy
+	 * @return {function}
+	 */
+	function createTransferStrategy(mergeStrategy) {
+	  return function(props, key, value) {
+	    if (!props.hasOwnProperty(key)) {
+	      props[key] = value;
+	    } else {
+	      props[key] = mergeStrategy(props[key], value);
+	    }
+	  };
+	}
+
+	var transferStrategyMerge = createTransferStrategy(function(a, b) {
+	  // `merge` overrides the first object's (`props[key]` above) keys using the
+	  // second object's (`value`) keys. An object's style's existing `propA` would
+	  // get overridden. Flip the order here.
+	  return assign({}, b, a);
+	});
+
+	/**
+	 * Transfer strategies dictate how props are transferred by `transferPropsTo`.
+	 * NOTE: if you add any more exceptions to this list you should be sure to
+	 * update `cloneWithProps()` accordingly.
+	 */
+	var TransferStrategies = {
+	  /**
+	   * Never transfer `children`.
+	   */
+	  children: emptyFunction,
+	  /**
+	   * Transfer the `className` prop by merging them.
+	   */
+	  className: createTransferStrategy(joinClasses),
+	  /**
+	   * Transfer the `style` prop (which is an object) by merging them.
+	   */
+	  style: transferStrategyMerge
+	};
+
+	/**
+	 * Mutates the first argument by transferring the properties from the second
+	 * argument.
+	 *
+	 * @param {object} props
+	 * @param {object} newProps
+	 * @return {object}
+	 */
+	function transferInto(props, newProps) {
+	  for (var thisKey in newProps) {
+	    if (!newProps.hasOwnProperty(thisKey)) {
+	      continue;
+	    }
+
+	    var transferStrategy = TransferStrategies[thisKey];
+
+	    if (transferStrategy && TransferStrategies.hasOwnProperty(thisKey)) {
+	      transferStrategy(props, thisKey, newProps[thisKey]);
+	    } else if (!props.hasOwnProperty(thisKey)) {
+	      props[thisKey] = newProps[thisKey];
+	    }
+	  }
+	  return props;
+	}
+
+	/**
+	 * ReactPropTransferer are capable of transferring props to another component
+	 * using a `transferPropsTo` method.
+	 *
+	 * @class ReactPropTransferer
+	 */
+	var ReactPropTransferer = {
+
+	  TransferStrategies: TransferStrategies,
+
+	  /**
+	   * Merge two props objects using TransferStrategies.
+	   *
+	   * @param {object} oldProps original props (they take precedence)
+	   * @param {object} newProps new props to merge in
+	   * @return {object} a new object containing both sets of props merged.
+	   */
+	  mergeProps: function(oldProps, newProps) {
+	    return transferInto(assign({}, oldProps), newProps);
+	  },
+
+	  /**
+	   * @lends {ReactPropTransferer.prototype}
+	   */
+	  Mixin: {
+
+	    /**
+	     * Transfer props from this component to a target component.
+	     *
+	     * Props that do not have an explicit transfer strategy will be transferred
+	     * only if the target component does not already have the prop set.
+	     *
+	     * This is usually used to pass down props to a returned root component.
+	     *
+	     * @param {ReactElement} element Component receiving the properties.
+	     * @return {ReactElement} The supplied `component`.
+	     * @final
+	     * @protected
+	     */
+	    transferPropsTo: function(element) {
+	      ("production" !== process.env.NODE_ENV ? invariant(
+	        element._owner === this,
+	        '%s: You can\'t call transferPropsTo() on a component that you ' +
+	        'don\'t own, %s. This usually means you are calling ' +
+	        'transferPropsTo() on a component passed in as props or children.',
+	        this.constructor.displayName,
+	        typeof element.type === 'string' ?
+	        element.type :
+	        element.type.displayName
+	      ) : invariant(element._owner === this));
+
+	      if ("production" !== process.env.NODE_ENV) {
+	        if (!didWarn) {
+	          didWarn = true;
+	          ("production" !== process.env.NODE_ENV ? warning(
+	            false,
+	            'transferPropsTo is deprecated. ' +
+	            'See http://fb.me/react-transferpropsto for more information.'
+	          ) : null);
 	        }
-	        len = queue.length;
+	      }
+
+	      // Because elements are immutable we have to merge into the existing
+	      // props object rather than clone it.
+	      transferInto(element.props, this.props);
+
+	      return element;
 	    }
-	    draining = false;
+
+	  }
+	};
+
+	module.exports = ReactPropTransferer;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule invariant
+	 */
+
+	"use strict";
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var invariant = function(condition, format, a, b, c, d, e, f) {
+	  if ("production" !== process.env.NODE_ENV) {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  }
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error(
+	        'Minified exception occurred; use the non-minified dev environment ' +
+	        'for the full error message and additional helpful warnings.'
+	      );
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(
+	        'Invariant Violation: ' +
+	        format.replace(/%s/g, function() { return args[argIndex++]; })
+	      );
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	};
+
+	module.exports = invariant;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule joinClasses
+	 * @typechecks static-only
+	 */
+
+	"use strict";
+
+	/**
+	 * Combines multiple className strings into one.
+	 * http://jsperf.com/joinclasses-args-vs-array
+	 *
+	 * @param {...?string} classes
+	 * @return {string}
+	 */
+	function joinClasses(className/*, ... */) {
+	  if (!className) {
+	    className = '';
+	  }
+	  var nextClass;
+	  var argLength = arguments.length;
+	  if (argLength > 1) {
+	    for (var ii = 1; ii < argLength; ii++) {
+	      nextClass = arguments[ii];
+	      if (nextClass) {
+	        className = (className ? className + ' ' : '') + nextClass;
+	      }
+	    }
+	  }
+	  return className;
 	}
-	process.nextTick = function (fun) {
-	    queue.push(fun);
-	    if (!draining) {
-	        setTimeout(drainQueue, 0);
-	    }
-	};
 
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	// TODO(shtylman)
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
+	module.exports = joinClasses;
 
 
 /***/ },
-/* 15 */
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule keyOf
+	 */
+
+	/**
+	 * Allows extraction of a minified key. Let's the build system minify keys
+	 * without loosing the ability to dynamically use key strings as values
+	 * themselves. Pass in an object with a single key/val pair and it will return
+	 * you the string key of that single record. Suppose you want to grab the
+	 * value for a key 'className' inside of an object. Key/val minification may
+	 * have aliased that key to be 'xa12'. keyOf({className: null}) will return
+	 * 'xa12' in that case. Resolve keys you want to use once at startup time, then
+	 * reuse those resolutions.
+	 */
+	var keyOf = function(oneKeyObj) {
+	  var key;
+	  for (key in oneKeyObj) {
+	    if (!oneKeyObj.hasOwnProperty(key)) {
+	      continue;
+	    }
+	    return key;
+	  }
+	  return null;
+	};
+
+
+	module.exports = keyOf;
+
+
+/***/ },
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -1231,15 +2083,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	"use strict";
 
-	var React          = __webpack_require__(1);
-	var cx             = React.addons.classSet;
-	var PropTypes      = React.PropTypes;
-	var cloneWithProps = React.addons.cloneWithProps;
-	var shallowEqual   = __webpack_require__(10);
-	var emptyFunction  = __webpack_require__(7);
-	var ScrollShim     = __webpack_require__(24);
-	var Row            = __webpack_require__(6);
-	var ExcelColumn = __webpack_require__(2);
+	var React           = __webpack_require__(1);
+	var joinClasses     = __webpack_require__(3);
+	var PropTypes       = React.PropTypes;
+	var cloneWithProps  = __webpack_require__(4);
+	var shallowEqual    = __webpack_require__(15);
+	var emptyFunction   = __webpack_require__(5);
+	var ScrollShim      = __webpack_require__(37);
+	var Row             = __webpack_require__(11);
+	var ExcelColumn     = __webpack_require__(2);
+
 	var Canvas = React.createClass({displayName: "Canvas",
 	  mixins: [ScrollShim],
 
@@ -1255,7 +2108,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      PropTypes.array.isRequired
 	    ]),
 	    onRows: PropTypes.func,
-	    columns: PropTypes.arrayOf(ExcelColumn).isRequired
+	    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired
 	  },
 
 	  render:function()                {
@@ -1299,11 +2152,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      transform: 'translate3d(0, 0, 0)'
 	    };
 
+
 	    return (
 	      React.createElement("div", {
 	        style: style, 
 	        onScroll: this.onScroll, 
-	        className: cx("react-grid-Canvas", this.props.className)}, 
+	        className: joinClasses("react-grid-Canvas", this.props.className, {opaque : this.props.cellMetaData.selected && this.props.cellMetaData.selected.active})}, 
 	        React.createElement("div", {style: {width: this.props.width, overflow: 'hidden'}}, 
 	          rows
 	        )
@@ -1325,7 +2179,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return (
 	      React.createElement("div", {key: key, style: {height: height}}, 
 	        this.props.columns.map(
-	          function(column, idx)  {return React.createElement("div", {style: {width: column.width}, key: idx});})
+	          function(column, idx)  {return React.createElement("div", {style: {width: column.width}, key: idx});}
+			)
 	      )
 	    );
 	  },
@@ -1416,7 +2271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.props.rowGetter.slice(displayStart, displayEnd);
 	    } else {
 	      var rows = [];
-	      for (var i = displayStart; i <= displayEnd; i++){
+	      for (var i = displayStart; i < displayEnd; i++){
 	        rows.push(this.props.rowGetter(i));
 	      }
 	      return rows;
@@ -1452,7 +2307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow objects as a map */
@@ -1483,13 +2338,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow mixins */
 
-	var ColumnMetrics        = __webpack_require__(4);
-	var DOMMetrics           = __webpack_require__(5);
+	var ColumnMetrics        = __webpack_require__(9);
+	var DOMMetrics           = __webpack_require__(10);
 	Object.assign            = __webpack_require__(13);
 	var PropTypes            = __webpack_require__(1).PropTypes;
 
@@ -1534,9 +2389,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  componentWillReceiveProps:function(nextProps                   ) {
 	    if (nextProps.columns) {
-	      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
-	        this.setState(this.getColumnMetricsType(nextProps));
-	      } else {
 	        var index = {};
 	        this.state.columns.columns.forEach(function(c)  {
 	          index[c.key] = {width: c.width, left: c.left};
@@ -1546,7 +2398,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        this.setState({columns: nextColumns});
 	      }
-	    }
 	  },
 
 	  getColumnMetricsType:function(props                   , initial         )                                                    {
@@ -1573,7 +2424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow need   */
@@ -1586,7 +2437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React         = __webpack_require__(1);
 	var PropTypes     = React.PropTypes;
-	var emptyFunction = __webpack_require__(7);
+	var emptyFunction = __webpack_require__(5);
 
 	var Draggable = React.createClass({displayName: "Draggable",
 
@@ -1600,13 +2451,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render:function()                {
 	    var Component = this.props.component;
 	    return (
-	      React.createElement(Component, React.__spread({},  this.props, {onMouseDown: this.onMouseDown}))
+	      React.createElement("div", React.__spread({},  this.props, {onMouseDown: this.onMouseDown}))
 	    );
 	  },
 
 	  getDefaultProps:function() {
 	    return {
-	      component: React.DOM.div,
 	      onDragStart: emptyFunction.thatReturnsTrue,
 	      onDragEnd: emptyFunction,
 	      onDrag: emptyFunction
@@ -1668,7 +2518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 19 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -1681,11 +2531,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React                = __webpack_require__(1);
 	var PropTypes            = React.PropTypes;
-	var Header               = __webpack_require__(21);
-	var Viewport             = __webpack_require__(25);
-	var DOMMetrics           = __webpack_require__(5);
-	var GridScrollMixin      = __webpack_require__(20);
-	var ColumnMetricsMixin      = __webpack_require__(17);
+	var Header               = __webpack_require__(32);
+	var Viewport             = __webpack_require__(38);
+	var DOMMetrics           = __webpack_require__(10);
+	var GridScrollMixin      = __webpack_require__(31);
+	var ColumnMetricsMixin      = __webpack_require__(28);
 	var ExcelColumn = __webpack_require__(2);
 
 	var Grid = React.createClass({displayName: "Grid",
@@ -1697,7 +2547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  propTypes: {
 	    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
-	    columns: PropTypes.arrayOf(ExcelColumn).isRequired,
+	    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
 	    minHeight: PropTypes.number,
 	    headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	    rowHeight: PropTypes.number,
@@ -1709,7 +2559,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowOffsetHeight: PropTypes.number.isRequired,
 	    onViewportKeydown : PropTypes.func.isRequired,
 	    onViewportDragStart : PropTypes.func.isRequired,
-	    onViewportDragEnd : PropTypes.func.isRequired
+	    onViewportDragEnd : PropTypes.func.isRequired,
+	    onViewportDoubleClick : PropTypes.func.isRequired
 	  },
 
 	  getStyle: function()                                                                             {
@@ -1733,7 +2584,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          totalWidth: this.DOMMetrics.gridWidth(), 
 	          headerRows: headerRows}
 	          ), 
-	          React.createElement("div", {onKeyDown: this.props.onViewportKeydown, onDragStart: this.props.onViewportDragStart, onDragEnd: this.props.onViewportDragEnd}, 
+	        React.createElement("div", {ref: "viewPortContainer", onKeyDown: this.props.onViewportKeydown, onDoubleClick: this.props.onViewportDoubleClick, onDragStart: this.props.onViewportDragStart, onDragEnd: this.props.onViewportDragEnd}, 
 	            React.createElement(Viewport, {
 	              ref: "viewport", 
 	              width: this.state.columns.width, 
@@ -1768,7 +2619,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow mixins */
@@ -1808,7 +2659,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 21 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -1820,10 +2671,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 
 	var React               = __webpack_require__(1);
-	var cx                  = React.addons.classSet;
-	var shallowCloneObject  = __webpack_require__(8);
-	var ColumnMetrics       = __webpack_require__(4);
-	var HeaderRow           = __webpack_require__(23);
+	var joinClasses          = __webpack_require__(3);
+	var shallowCloneObject  = __webpack_require__(12);
+	var ColumnMetrics       = __webpack_require__(9);
+	var HeaderRow           = __webpack_require__(34);
 
 	               
 	               
@@ -1840,7 +2691,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render:function()                {
 	    var state = this.state.resizing || this.props;
 
-	    var className = cx({
+	    var className = joinClasses({
 	      'react-grid-Header': true,
 	      'react-grid-Header--resizing': !!this.state.resizing
 	    });
@@ -1923,10 +2774,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  getColumnPosition:function(column        )          {
 	    var state = this.state.resizing || this.props;
-	    var pos = state.columns.columns.indexOf(column);
+	    var pos = -1;
+	    state.columns.columns.forEach(function(c,idx)  {
+	      if(c.key === column.key){
+	        pos = idx;
+	      }
+	    });
 	    return pos === -1 ? null : pos;
 	  },
-
+	  
 	  onColumnResizeEnd:function(column        , width        ) {
 	    var pos = this.getColumnPosition(column);
 	    if (pos !== null && this.props.onColumnResize) {
@@ -1954,7 +2810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 22 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow unkwon */
@@ -1965,64 +2821,50 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	"use strict";
 
-	var React       = __webpack_require__(1);
-	var cx          = React.addons.classSet;
-	var Draggable   = __webpack_require__(18);
-	var PropTypes   = React.PropTypes;
-	var ExcelColumn = __webpack_require__(2);
-	var ResizeHandle = React.createClass({displayName: "ResizeHandle",
-
-	  style: {
-	    position: 'absolute',
-	    top: 0,
-	    right: 0,
-	    width: 6,
-	    height: '100%'
-	  },
-
-	  render:function()                {
-	    return (
-	      React.createElement(Draggable, React.__spread({},  this.props, 
-	        {className: "react-grid-HeaderCell__resizeHandle", 
-	        style: this.style})
-	        )
-	    );
-	  }
-	});
+	var React          = __webpack_require__(1);
+	var joinClasses     = __webpack_require__(3);
+	var cloneWithProps = __webpack_require__(4);
+	var PropTypes      = React.PropTypes;
+	var ExcelColumn    = __webpack_require__(2);
+	var ResizeHandle   = __webpack_require__(36);
 
 	var HeaderCell = React.createClass({displayName: "HeaderCell",
 
 	  propTypes: {
 	    renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
 	    column: PropTypes.shape(ExcelColumn).isRequired,
-	    onResize: PropTypes.func
+	    onResize: PropTypes.func.isRequired,
+	    height : PropTypes.number.isRequired,
+	    onResizeEnd : PropTypes.func.isRequired
 	  },
 
 	  render:function()                {
-	    var className = cx({
+	    var resizeHandle;
+	    if(this.props.column.resizeable){
+	      resizeHandle = React.createElement(ResizeHandle, {
+	      onDrag: this.onDrag, 
+	      onDragStart: this.onDragStart, 
+	      onDragEnd: this.onDragEnd}
+	      )
+	    }
+	    var className = joinClasses({
 	      'react-grid-HeaderCell': true,
 	      'react-grid-HeaderCell--resizing': this.state.resizing,
 	      'react-grid-HeaderCell--locked': this.props.column.locked
 	    });
-	    className = cx(className, this.props.className);
+	    className = joinClasses(className, this.props.className);
 	    var cell = this.getCell();
 	    return (
 	      React.createElement("div", {className: className, style: this.getStyle()}, 
 	        cell, 
-	        this.props.column.resizeable ?
-	          React.createElement(ResizeHandle, {
-	            onDrag: this.onDrag, 
-	            onDragStart: this.onDragStart, 
-	            onDragEnd: this.onDragEnd}
-	            ) :
-	          null
+	        {resizeHandle:resizeHandle}
 	      )
 	    );
 	  },
 
 	  getCell:function()                 {
 	    if (React.isValidElement(this.props.renderer)) {
-	      return React.addons.cloneWithProps(this.props.renderer, {column : this.props.column});
+	      return cloneWithProps(this.props.renderer, {column : this.props.column});
 	    } else {
 	      return this.props.renderer({column: this.props.column});
 	    }
@@ -2093,7 +2935,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 23 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -2104,25 +2946,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React             = __webpack_require__(1);
 	var PropTypes         = React.PropTypes;
-	var shallowEqual      = __webpack_require__(10);
-	var HeaderCell        = __webpack_require__(22);
-	var getScrollbarSize  = __webpack_require__(35);
+	var shallowEqual      = __webpack_require__(15);
+	var HeaderCell        = __webpack_require__(33);
+	var getScrollbarSize  = __webpack_require__(45);
 	var ExcelColumn  = __webpack_require__(2);
 
 
-	function HeaderRowStyle(){}
-	                   
-	                
-	                 
-	                   
-	;
+	var HeaderRowStyle  = {
+	  overflow: React.PropTypes.string,
+	  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+	  height: React.PropTypes.number,
+	  position: React.PropTypes.string
+	};
 
 	var HeaderRow = React.createClass({displayName: "HeaderRow",
 
 	  propTypes: {
 	    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	    height: PropTypes.number.isRequired,
-	    columns: PropTypes.arrayOf(ExcelColumn).isRequired,
+	    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
 	    onColumnResize: PropTypes.func,
 	    style: PropTypes.shape(HeaderRowStyle)
 	  },
@@ -2207,7 +3049,54 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var PropTypes = __webpack_require__(1).PropTypes;
+
+	module.exports = {
+	  selected    : PropTypes.object.isRequired,
+	  copied      : PropTypes.object,
+	  dragged     : PropTypes.object,
+	  onCellClick : PropTypes.func.isRequired
+	}
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React          = __webpack_require__(1);
+	var joinClasses     = __webpack_require__(3);
+	var Draggable      = __webpack_require__(29);
+	var cloneWithProps = __webpack_require__(4);
+	var PropTypes      = React.PropTypes;
+
+	var ResizeHandle   = React.createClass({displayName: "ResizeHandle",
+
+	  style: {
+	    position: 'absolute',
+	    top: 0,
+	    right: 0,
+	    width: 6,
+	    height: '100%'
+	  },
+
+	  render:function()                {
+	    return (
+	      React.createElement(Draggable, React.__spread({},  this.props, 
+	      {className: "react-grid-HeaderCell__resizeHandle", 
+	      style: this.style})
+	      )
+	  );
+	  }
+	});
+
+	module.exports = ResizeHandle;
+
+
+/***/ },
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow mixin not compatible and HTMLElement classList */
@@ -2224,7 +3113,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!this._scrollShim) {
 	      var size = this._scrollShimSize();
 	      var shim = document.createElement('div');
-	      shim.classList.add('react-grid-ScrollShim'); //flow - not compatible with HTMLElement
+	      if (shim.classList) {
+	      	shim.classList.add('react-grid-ScrollShim'); //flow - not compatible with HTMLElement
+		  }
+		  else {
+		  	shim.className += ' react-grid-ScrollShim';
+		  }
 	      shim.style.position = 'absolute';
 	      shim.style.top = 0;
 	      shim.style.left = 0;
@@ -2263,7 +3157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 25 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -2275,10 +3169,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React             = __webpack_require__(1);
-	var Canvas            = __webpack_require__(15);
+	var Canvas            = __webpack_require__(26);
 	var PropTypes            = React.PropTypes;
 
-	var ViewportScroll      = __webpack_require__(26);
+	var ViewportScroll      = __webpack_require__(39);
 
 
 
@@ -2366,14 +3260,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 26 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow mixins */
 
 	var React             = __webpack_require__(1);
-	var DOMMetrics        = __webpack_require__(5);
-	var getWindowSize     = __webpack_require__(36);
+	var DOMMetrics        = __webpack_require__(10);
+	var getWindowSize     = __webpack_require__(46);
 
 	var PropTypes            = React.PropTypes;
 	var min   = Math.min;
@@ -2413,13 +3307,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.getGridState(this.props);
 	  },
 
-	  getGridState:function(props                     )                       {
-	    var height = this.props.minHeight;
-	    var renderedRowsCount = ceil(height / props.rowHeight);
+	  getGridState:function(props                                                           )                       {
+		var renderedRowsCount = ceil(props.minHeight / props.rowHeight);
+		var totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
 	    return {
 	      displayStart: 0,
-	      displayEnd: renderedRowsCount * 2,
-	      height: height,
+	      displayEnd: totalRowCount,
+	      height: props.minHeight,
 	      scrollTop: 0,
 	      scrollLeft: 0
 	    };
@@ -2485,149 +3379,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// /* @flow */
-	// /**
-	//  * @jsx React.DOM
-	//
-	//
-	//  */
-	// 'use strict';
-	//
-	// var React                = require('react/addons');
-	// var BaseCell             = require('../../Cell');
-	// var EditableMixin        = require('./mixins/EditableMixin');
-	// var CopyableMixin        = require('./mixins/CopyableMixin');
-	// var DraggableMixin       = require('./mixins/DraggableMixin');
-	// var MixinHelper          = require('../utils/MixinHelper');
-	// var KeyboardHandlerMixin = require('./mixins/KeyboardHandlerMixin');
-	// var isFunction           = require('../utils/isFunction');
-	// var PropTypes            = React.PropTypes;
-	// var cx                   = React.addons.classSet;
-	// var cloneWithProps       = React.addons.cloneWithProps;
-	// var ExcelColumn          = require('../grids/ExcelColumn');
-	//
-	//
-	// var CellControls = React.createClass({
-	//
-	//   propTypes : {
-	//     column : React.PropTypes.shape(ExcelColumn).isRequired,
-	//     onClickEdit : React.PropTypes.func.isRequired,
-	//     onShowMore : React.PropTypes.func.isRequired,
-	//     onShowLess : React.PropTypes.func.isRequired,
-	//     height : React.PropTypes.number.isRequired,
-	//     value : React.PropTypes.any.isRequired,
-	//     rowIdx : React.PropTypes.number.isRequired
-	//   },
-	//
-	//   onClickEdit : function(e: Event){
-	//     e.stopPropagation();
-	//     e.preventDefault();
-	//     this.props.onClickEdit();
-	//   },
-	//
-	//   onShowMore : function(e: Event){
-	//     e.stopPropagation();
-	//     e.preventDefault();
-	//     var newHeight = this.props.column.getExpandedHeight(this.props.value);
-	//     this.props.onShowMore(this.props.rowIdx, newHeight);
-	//   },
-	//
-	//   onShowLess : function(e: Event){
-	//     e.stopPropagation();
-	//     e.preventDefault();
-	//     this.props.onShowLess(this.props.rowIdx);
-	//   },
-	//
-	//   shouldComponentUpdate(nextProps: any, nextState: any){
-	//     return this.props.height != nextProps.height;
-	//   },
-	//
-	//   renderShowMoreButton(): ?ReactElement {
-	//     if(isFunction(this.props.column.getExpandedHeight) && this.props.column.getExpandedHeight(this.props.value) > 0){
-	//       var newHeight = this.props.column.getExpandedHeight(this.props.value);
-	//       if(newHeight > this.props.height){
-	//         return <button type="button" className="btn btn-link btn-xs" onClick={this.onShowMore}>Show More</button>
-	//       }else{
-	//         return <button type="button" className="btn btn-link btn-xs" onClick={this.onShowLess}>Show Less</button>
-	//       }
-	//     }else{
-	//       return null;
-	//     }
-	//   },
-	//
-	//   render : function(): ?ReactElement {
-	//     return (<div className="pull-right btn-group">
-	//               {this.renderShowMoreButton()}
-	//               <button onClick={this.onClickEdit} type="button" className="btn btn-link btn-xs">Edit</button>
-	//             </div>)
-	//   }
-	//
-	// })
-	//
-	//
-	// var ExcelCell = React.createClass({
-	//
-	//     mixins : [SelectableMixin],
-	//
-	//     getCellClass : function(){
-	//       return cx({
-	//         'selected' : this.isSelected()
-	//       });
-	//     },
-	//
-	//   isActiveDragCell : function(): boolean{
-	//     return (this.isSelected() || this.isDraggedOver()) && !this.isActive();
-	//   },
-	//
-	//   isExpanded : function(): boolean{
-	//     var isExpanded = false;
-	//     if(isFunction(this.props.column.getExpandedHeight) && this.props.column.getExpandedHeight(this.props.value) > 0){
-	//       var newHeight = this.props.column.getExpandedHeight(this.props.value);
-	//       if(this.props.height >= newHeight){
-	//         isExpanded = true;
-	//       }else{
-	//         isExpanded = false;
-	//       }
-	//     }
-	//     return isExpanded;
-	//   },
-	//
-	//
-	//   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
-	//     return this.props.column.width !== nextProps.column.width
-	//     || this.props.value !== nextProps.value
-	//     || this.props.height !== nextProps.height
-	//     || this.props.rowIdx !== nextProps.rowIdx
-	//     || this.isCellSelectionChanging(nextProps);
-	//   },
-	//
-	//
-	//   render: function(): ?ReactElement {
-	//     return (
-	//       <BaseCell
-	//         {...this.props}
-	//         className={this.getCellClass()}
-	//         onClick={this.onClick}
-	//         onDoubleClick={this.onDoubleClick}
-	//         formatter={this.getFormatter()}
-	//         handleDragStart={this.handleDragStart}
-	//         onDragEnter={this.handleDragEnter}
-	//         onDragEnd={this.props.handleDragEnd}
-	//         cellControls={this.props.column.showCellControls && !this.isActive() ? <CellControls height={this.props.height} value={this.props.value} rowIdx={this.props.rowIdx} column={this.props.column} onShowMore={this.props.onShowMore} onShowLess={this.props.onShowLess} onClickEdit={this.setActive}/> : null}
-	//         isExpanded={this.isExpanded()}
-	//       />)
-	//   }
-	//
-	// })
-	//
-	// module.exports = ExcelCell;
-
-
-/***/ },
-/* 28 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow  */
@@ -2639,8 +3391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React              = __webpack_require__(1);
-	var cx             = React.addons.classSet;
-	var ExcelColumn = __webpack_require__(2);
+	var ExcelColumn        = __webpack_require__(2);
 
 	var FilterableHeaderCell = React.createClass({displayName: "FilterableHeaderCell",
 
@@ -2691,7 +3442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 29 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -2703,22 +3454,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React              = __webpack_require__(1);
-	var cx             = React.addons.classSet;
+	var joinClasses         = __webpack_require__(3);
 	var ExcelColumn = __webpack_require__(2);
 
 	var SortableHeaderCell = React.createClass({displayName: "SortableHeaderCell",
 	  propTypes: {
-	    column: React.PropTypes.shape(ExcelColumn).isRequired
+	    columnKey : React.PropTypes.string.isRequired,
+	    onSort    : React.PropTypes.func.isRequired,
+	    sortDirection : React.PropTypes.oneOf(['ASC', 'DESC', 'NONE'])
 	  },
+
 	  onClick: function() {
-	    this.props.column.sortBy(
-	      this.props.column,
-	      this.props.column.sorted);
+	    var direction;
+	    switch(this.props.sortDirection){
+	      case null:
+	      case undefined:
+	        direction = DEFINE_SORT.ASC;
+	      break;
+	      case DEFINE_SORT.ASC:
+	        direction = DEFINE_SORT.DESC;
+	      break;
+	      case DEFINE_SORT.DESC:
+	        direction = null;
+	      break;
+	    }
+	    this.props.onSort(
+	      this.props.columnKey,
+	      direction);
 	  },
 
 	  getSortByClass : function(){
-	    var sorted = this.props.column.sorted;
-	    return cx({
+	    var sorted = this.props.sortDirection;
+	    return joinClasses({
 	      'pull-right' : true,
 	      'glyphicon glyphicon-arrow-up' : sorted === 'ASC',
 	      'glyphicon glyphicon-arrow-down' : sorted === 'DESC'
@@ -2742,7 +3509,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 30 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -2752,7 +3519,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React                   = __webpack_require__(1);
-	var cx                      = React.addons.classSet;
 
 	var CheckBoxEditor = React.createClass({displayName: "CheckBoxEditor",
 
@@ -2780,7 +3546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 31 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -2792,11 +3558,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React                   = __webpack_require__(1);
-	var cx                      = React.addons.classSet;
-	var keyboardHandlerMixin    = __webpack_require__(3);
-	var SimpleTextEditor        = __webpack_require__(12);
-	var isFunction              = __webpack_require__(33);
-	var cloneWithProps          = React.addons.cloneWithProps;
+	var joinClasses              = __webpack_require__(3);
+	var keyboardHandlerMixin    = __webpack_require__(7);
+	var SimpleTextEditor        = __webpack_require__(18);
+	var isFunction              = __webpack_require__(16);
+	var cloneWithProps          = __webpack_require__(4);
 
 
 	var EditorContainer = React.createClass({displayName: "EditorContainer",
@@ -2804,8 +3570,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  mixins : [keyboardHandlerMixin],
 
 	  propTypes : {
-	    cellMetaData : React.PropTypes.func.isRequired,
-	    column : React.PropTypes.object.isRequired
+	    rowData :React.PropTypes.object.isRequired,
+	    value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+	    cellMetaData: React.PropTypes.shape({
+	      selected: React.PropTypes.object.isRequired,
+	      copied: React.PropTypes.object,
+	      dragged: React.PropTypes.object,
+	      onCellClick: React.PropTypes.func,
+	      onCellDoubleClick: React.PropTypes.func
+	    }).isRequired,
+	    column : React.PropTypes.object.isRequired,
+	    height : React.PropTypes.number.isRequired
 	  },
 
 	  getInitialState:function(){
@@ -2820,9 +3595,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var inputNode = this.getInputNode();
 	    if(inputNode !== undefined){
 	      this.setTextInputFocus();
-	      inputNode.className += ' editor-main';
-	      inputNode.style.height = this.props.height - 1 + 'px';
+	      if(!this.getEditor().disableContainerStyles){
+	        inputNode.className += ' editor-main';
+	        inputNode.style.height = this.props.height - 1 + 'px';
+	      }
 	    }
+	  },
+
+	  componentWillUnmount:function(){
+	    this.commit({key : 'Tab'});
 	  },
 
 	  validateEditor:function(){
@@ -2833,22 +3614,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  createEditor:function()              {
-	    var editorProps = {ref: 'editor', column : this.props.column, onKeyDown : this.onKeyDown, value : this.getInitialValue(), onCommit : this.commit, editorRowMetaData : this.getEditorRowMetaData(), height : this.props.height};
+	    var editorProps = {
+			ref: 'editor',
+	    name: 'editor',
+			column : this.props.column,
+			value : this.getInitialValue(),
+			onCommit : this.commit,
+			rowMetaData : this.getRowMetaData(),
+			height : this.props.height,
+	    onBlur : this.commit,
+	    onOverrideKeyDown : this.onKeyDown
+		};
 	    var customEditor = this.props.column.editor;
 	    if(customEditor && React.isValidElement(customEditor)){
 	      //return custom column editor or SimpleEditor if none specified
-	      return React.addons.cloneWithProps(customEditor, editorProps);
+	      return React.addons.cloneWithProps(customEditor, editorProps)
 	    }else{
-	      return React.createElement(SimpleTextEditor, {ref: 'editor', column: this.props.column, onKeyDown: this.onKeyDown, value: this.getInitialValue(), onBlur: this.commit, editorRowMetaData: this.getEditorRowMetaData()});
+	      return React.createElement(SimpleTextEditor, {ref: 'editor', column: this.props.column, onBlur: this.commit, value: this.getInitialValue(), rowMetaData: this.getRowMetaData()});
 	    }
 	  },
 
-	  getEditorRowMetaData:function()       {
+	  getRowMetaData:function()       {
 	    //clone row data so editor cannot actually change this
 	    var columnName = this.props.column.ItemId;
 	    //convention based method to get corresponding Id or Name of any Name or Id property
-	    if(typeof this.props.column.getEditorRowMetaData === 'function'){
-	      return this.props.column.getEditorRowMetaData(this.props.rowData);
+	    if(typeof this.props.column.getRowMetaData === 'function'){
+	      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
 	    }
 	  },
 
@@ -2862,6 +3653,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    e.stopPropagation();
 	    e.preventDefault();
 	    this.commit({key : 'Tab'});
+	  },
+
+	  onPressEscape:function(e                        ){
+	    e.stopPropagation();
+	    e.preventDefault();
+	    this.props.cellMetaData.onCommitCancel();
 	  },
 
 	  onPressArrowDown:function(e                        ){
@@ -2893,6 +3690,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  editorHasResults:function()         {
+	    if(this.getEditor().getInputNode().tagName === 'SELECT'){
+	      return true;
+	    }
 	    if(isFunction(this.getEditor().hasResults)){
 	      return this.getEditor().hasResults();
 	    }else{
@@ -2943,7 +3743,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getContainerClass:function(){
-	    return cx({
+	    return joinClasses({
 	      'has-error' : this.state.isInvalid === true
 	    })
 	  },
@@ -2956,7 +3756,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  render:function()               {
 	  return (
-	      React.createElement("div", {className: this.getContainerClass()}, 
+	      React.createElement("div", {className: this.getContainerClass(), onKeyDown: this.onKeyDown}, 
 	      this.createEditor(), 
 	      this.renderStatusIcon()
 	      )
@@ -2990,12 +3790,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  setTextInputFocus:function(){
 	    var selected = this.props.cellMetaData.selected;
 	    var keyCode = selected.initialKeyCode;
-	    if(!this.isKeyPrintable(keyCode)){
-	      this.getInputNode().focus();
-	      this.setCaretAtEndOfInput();
-	    }else{
-	      this.getInputNode().select();
+	    var inputNode = this.getInputNode();
+	    inputNode.focus();
+	    if(inputNode.tagName === "INPUT"){
+	      if(!this.isKeyPrintable(keyCode)){
+	        inputNode.focus();
+	        this.setCaretAtEndOfInput();
+	        inputNode.select();
+	      }else{
+	        inputNode.select();
+	      }
 	    }
+
 	  }
 
 	});
@@ -3004,7 +3810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 32 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -3016,18 +3822,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React                 = __webpack_require__(1);
 	var PropTypes             = React.PropTypes;
-	var BaseGrid              = __webpack_require__(19);
-	var ExcelCell             = __webpack_require__(27);
-	var Row                   = __webpack_require__(6);
+	var BaseGrid              = __webpack_require__(30);
+	var Row                   = __webpack_require__(11);
 	var ExcelColumn           = __webpack_require__(2);
-	var merge                 = __webpack_require__(9);
-	var KeyboardHandlerMixin  = __webpack_require__(3);
-	var CheckboxEditor        = __webpack_require__(30);
-	var SortableHeaderCell    = __webpack_require__(29);
-	var FilterableHeaderCell  = __webpack_require__(28);
+	var KeyboardHandlerMixin  = __webpack_require__(7);
+	var CheckboxEditor        = __webpack_require__(42);
+	var SortableHeaderCell    = __webpack_require__(41);
+	var FilterableHeaderCell  = __webpack_require__(40);
+	var cloneWithProps        = __webpack_require__(4);
 
-	var cloneWithProps = React.addons.cloneWithProps;
-
+	if(!Object.assign){
+	  Object.assign = __webpack_require__(13);
+	}
 	                     
 	                 
 	              
@@ -3057,7 +3863,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                                            
 	var DEFINE_SORT = {
 	  ASC : 'ASC',
-	  DESC : 'DESC'
+	  DESC : 'DESC',
+	  NONE  : 'NONE'
 	}
 
 	                       
@@ -3080,7 +3887,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    columns : React.PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
 	    onFilter : React.PropTypes.func,
 	    onCellCopyPaste : React.PropTypes.func,
-	    onCellsDragged : React.PropTypes.func
+	    onCellsDragged : React.PropTypes.func,
+	    onAddFilter : React.PropTypes.func
 	  },
 
 	  mixins : [KeyboardHandlerMixin],
@@ -3117,7 +3925,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      selected : this.state.selected,
 	      dragged : this.state.dragged,
 	      onCellClick : this.onCellClick,
+	      onCellDoubleClick : this.onCellDoubleClick,
 	      onCommit : this.onCellCommit,
+	      onCommitCancel : this.setInactive,
 	      copied : this.state.copied,
 	      handleDragEnterRow : this.handleDragEnter,
 	      handleTerminateDrag : this.handleTerminateDrag
@@ -3142,7 +3952,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            minHeight: this.props.minHeight, 
 	            onViewportKeydown: this.onKeyDown, 
 	            onViewportDragStart: this.onDragStart, 
-	            onViewportDragEnd: this.handleDragEnd}))
+	            onViewportDragEnd: this.handleDragEnd, 
+	            onViewportDoubleClick: this.onViewportDoubleClick}))
 	          )
 	        )
 	      )
@@ -3151,36 +3962,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderToolbar:function()               {
 	    var Toolbar = this.props.toolbar;
 	    if(React.isValidElement(Toolbar)){
-	      return( React.addons.cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
+	      return( cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
 	    }
 
 	  },
 
 	  onSelect: function(selected              ) {
 	    if(this.props.enableCellSelect){
-	      var idx = selected.idx;
-	      var rowIdx = selected.rowIdx;
-	      if (
-	        idx >= 0
-	        && rowIdx >= 0
-	        && idx < this.getColumns().length
-	        && rowIdx < this.props.rowsCount
-	      ) {
-	        this.setState({selected: selected});
+	      if (this.state.selected.rowIdx === selected.rowIdx
+	       && this.state.selected.idx === selected.idx
+	       && this.state.selected.active === true) {
+	       } else {
+	        var idx = selected.idx;
+	        var rowIdx = selected.rowIdx;
+	        if (
+	          idx >= 0
+	          && rowIdx >= 0
+	          && idx < this.getColumns().length
+	          && rowIdx < this.props.rowsCount
+	        ) {
+	          this.setState({selected: selected});
+	        }
 	      }
 	    }
 	  },
 
-	  isSelected: function()          {
-	    return (
-	      this.props.selected
-	      && this.props.selected.rowIdx === this.props.rowIdx
-	      && this.props.selected.idx === this.props.idx
-	    );
-	  },
-
 	  onCellClick: function(cell              ) {
 	    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+	  },
+
+	  onCellDoubleClick: function(cell              ) {
+	    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+	    this.setActive('Enter');
+	  },
+
+	  onViewportDoubleClick: function(e       ) {
+	    this.setActive();
 	  },
 
 	  onPressArrowUp:function(e                ){
@@ -3235,17 +4052,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var idx = this.state.selected.idx
 	    if(this.canEdit(idx)){
-	      var value = this.getSelectedValue();
 	      if(e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C){
+	        var value = this.getSelectedValue();
 	        this.handleCopy({value : value});
 	      }else if(e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V){
-	        this.handlePaste({value : value});
+	        this.handlePaste();
 	      }
 	    }
 	  },
 
 	  onDragStart:function(e                ){
-	    if(e.target)
 	    var value = this.getSelectedValue();
 	    this.handleDragStart({idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value});
 	  },
@@ -3269,10 +4085,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  setActive:function(keyPressed        ){
 	    var rowIdx = this.state.selected.rowIdx;
 	    var idx = this.state.selected.idx;
-	    if(this.props.columns[idx].key === 'select-row' && this.props.columns[idx].onRowSelect){
-	      this.props.column.onRowSelect(rowIdx);
-	    }
-	    else if(this.canEdit(idx) && !this.isActive()){
+	    if(this.canEdit(idx) && !this.isActive()){
 	      var selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active : true, initialKeyCode : keyPressed});
 	      this.setState({selected: selected});
 	    }
@@ -3288,7 +4101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  canEdit:function(idx        )         {
-	    return (this.props.columns[idx].editor != null) || this.props.columns[idx].editable;
+	    return this.props.enableCellSelect === true && ((this.props.columns[idx].editor != null) || this.props.columns[idx].editable);
 	  },
 
 	  isActive:function()         {
@@ -3302,9 +4115,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      selected.idx += 1;
 	    }
 	    var expandedRows = this.state.expandedRows;
-	    if(commit.changed && commit.changed.expandedHeight){
-	      expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
-	    }
+	    // if(commit.changed && commit.changed.expandedHeight){
+	    //   expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
+	    // }
 	    this.setState({selected : selected, expandedRows : expandedRows});
 	    this.props.onRowUpdated(commit);
 
@@ -3319,20 +4132,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	          onRowSelect :this.handleRowSelect,
 	          filterable : false,
 	          headerRenderer : React.createElement("input", {type: "checkbox", onChange: this.handleCheckboxChange}),
-	          width : 60
+	        width : 60,
+	        locked: true
 	        });
 	      }
 	      return cols;
 	  },
 
 	  handleCheckboxChange : function(e                ){
+	    var allRowsSelected;
 	    if(e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true){
-	      var selectedRows = this.props.rows.map(function()  {return true;});
-	      this.setState({selectedRows : selectedRows});
+	      allRowsSelected = true;
 	    }else{
-	      var selectedRows = this.props.rows.map(function()  {return false;});
-	      this.setState({selectedRows : selectedRows});
+	      allRowsSelected = false;
 	    }
+	    var selectedRows = [];
+	    for(var i = 0; i < this.props.rowsCount; i++){
+	      selectedRows.push(allRowsSelected);
+	    }
+	    this.setState({selectedRows : selectedRows});
 	  },
 
 	  handleRowSelect:function(row     ){
@@ -3345,94 +4163,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({selectedRows : selectedRows});
 	  },
 
-	  expandRow:function(row     , newHeight        )            {
-	    var expandedRows = this.state.expandedRows;
-	    if(expandedRows[row]){
-	      if(expandedRows[row]== null || expandedRows[row] < newHeight){
-	        expandedRows[row] = newHeight;
-	      }
-	    }else{
-	      expandedRows[row] = newHeight;
-	    }
-	    return expandedRows;
-	  },
-
-	  addRow:function(){
-
-	  },
-
-	  handleShowMore:function(row     , newHeight        ) {
-	    var expandedRows = this.expandRow(row, newHeight);
-	    this.setState({expandedRows : expandedRows});
-	  },
-
-	  handleShowLess:function(row     ){
-	    var expandedRows = this.state.expandedRows;
-	    if(expandedRows[row]){
-	        expandedRows[row] = false;
-	    }
-	    this.setState({expandedRows : expandedRows});
-	  },
-
-	  expandAllRows:function(){
-
-	  },
-
-	  collapseAllRows:function(){
-
-	  },
+	  //EXPAND ROW Functionality - removing for now till we decide on how best to implement
+	  // expandRow(row: Row, newHeight: number): Array<Row>{
+	  //   var expandedRows = this.state.expandedRows;
+	  //   if(expandedRows[row]){
+	  //     if(expandedRows[row]== null || expandedRows[row] < newHeight){
+	  //       expandedRows[row] = newHeight;
+	  //     }
+	  //   }else{
+	  //     expandedRows[row] = newHeight;
+	  //   }
+	  //   return expandedRows;
+	  // },
+	  //
+	  // handleShowMore(row: Row, newHeight: number) {
+	  //   var expandedRows = this.expandRow(row, newHeight);
+	  //   this.setState({expandedRows : expandedRows});
+	  // },
+	  //
+	  // handleShowLess(row: Row){
+	  //   var expandedRows = this.state.expandedRows;
+	  //   if(expandedRows[row]){
+	  //       expandedRows[row] = false;
+	  //   }
+	  //   this.setState({expandedRows : expandedRows});
+	  // },
+	  //
+	  // expandAllRows(){
+	  //
+	  // },
+	  //
+	  // collapseAllRows(){
+	  //
+	  // },
 
 	  onAfterAddRow:function(numberOfRows        ){
 	    this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
-	  },
-
-	  hasFilters:function()         {
-	    var hasFilters = false;
-	    Object.keys(this.state.columnFilters).every(function(key){
-	      var filter = this.state.columnFilters[key];
-	      if(filter != null && filter != undefined && filter != ''){
-	        hasFilters = true;
-	        return false;
-	      }
-	      return true;
-	    }, this);
-	    return hasFilters;
-	  },
-
-	  isRowDisplayed:function(row     )         {
-	    var isRowDisplayed = null;
-	    Object.keys(this.state.columnFilters).every(function(key){
-	      var filter = this.state.columnFilters[key].toLowerCase();
-	      var cellValue = row[key].toString().toLowerCase();
-	      if(filter != null && filter != undefined && filter != '' && typeof cellValue === 'string'){
-	        if(cellValue.indexOf(filter) > -1){
-	          isRowDisplayed = true;
-	        }else{
-	          isRowDisplayed = false;
-	          return false;
-	        }
-	      }
-	      return true;
-	    }, this);
-	    return isRowDisplayed == null ? false : isRowDisplayed;
 	  },
 
 	  onToggleFilter:function(){
 	    this.setState({canFilter : !this.state.canFilter});
 	  },
 
-	  handleAddFilter:function(filter                                          ){
-	    var columnFilters = this.state.columnFilters;
-	    columnFilters[filter.columnKey] = filter.filterTerm;
-	    this.setState({columnFilters : columnFilters, selected : null});
-	  },
 
 	  getHeaderRows:function()                                        {
 	    var rows = [{ref:"row", height: this.props.rowHeight}];
 	    if(this.state.canFilter === true){
 	      rows.push({
 	        ref:"filterRow",
-	        headerCellRenderer : React.createElement(FilterableHeaderCell, {onChange: this.handleAddFilter, column: this.props.column}),
+	        headerCellRenderer : React.createElement(FilterableHeaderCell, {onChange: this.props.onAddFilter, column: this.props.column}),
 	        height : 45
 	      });
 	    }
@@ -3448,33 +4227,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getDecoratedColumns: function(columns                    )                     {
 	    return this.props.columns.map(function(column) {
 	      column = Object.assign({}, column);
+
 	      if (column.sortable) {
-	        column.headerRenderer = React.createElement(SortableHeaderCell, {column: column});
-	        column.sortBy = this.sortBy;
-	        if (this.state.sortColumn === column.key) {
-	          column.sorted = this.state.sortDirection;
-	        }else{
-	          column.sorted = DEFINE_SORT.NONE;
-	        }
+	        var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
+	        column.headerRenderer = React.createElement(SortableHeaderCell, {columnKey: column.key, onSort: this.handleSort, sortDirection: sortDirection});
 	      }
-	      return column
+	      return column;
 	    }, this);
 	  },
 
-	  sortBy: function(column             , direction          ) {
-	    switch(direction){
-	      case null:
-	      case undefined:
-	        direction = DEFINE_SORT.ASC;
-	      break;
-	      case DEFINE_SORT.ASC:
-	        direction = DEFINE_SORT.DESC;
-	      break;
-	      case DEFINE_SORT.DESC:
-	        direction = null;
-	      break;
-	    }
-	    this.setState({sortDirection: direction, sortColumn: column.key});
+	  handleSort: function(columnKey        , direction          ) {
+	    this.setState({sortDirection: direction, sortColumn: columnKey});
+	    this.props.onGridSort(columnKey, direction);
 	  },
 
 	  copyPasteEnabled: function()          {
@@ -3549,85 +4313,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	"use strict";
-
-	var isFunction = function(functionToCheck     )         {
-	    var getType = {};
-	    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-	}
-
-	module.exports = isFunction;
-
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule copyProperties
-
-	 */
-	'use strict';
-
-	/**
-	 * Copy properties from one or more objects (up to 5) into the first object.
-	 * This is a shallow copy. It mutates the first object and also returns it.
-	 *
-	 * NOTE: `arguments` has a very significant performance penalty, which is why
-	 * we don't support unlimited arguments.
-	 */
-	function copyProperties(obj, a, b, c, d, e, f) {
-	  obj = obj || {};
-
-	  if (process.env.NODE_ENV) {
-	    if (f) {
-	      throw new Error('Too many arguments passed to copyProperties');
-	    }
-	  }
-
-	  var args = [a, b, c, d, e];
-	  var ii = 0, v;
-	  while (args[ii]) {
-	    v = args[ii++];
-	    for (var k in v) {
-	      obj[k] = v[k];
-	    }
-
-	    // IE ignores toString in object iteration.. See:
-	    // webreflection.blogspot.com/2007/07/quick-fix-internet-explorer-and.html
-	    if (v.hasOwnProperty && v.hasOwnProperty('toString') &&
-	        (typeof v.toString != 'undefined') && (obj.toString !== v.toString)) {
-	      obj.toString = v.toString;
-	    }
-	  }
-
-	  return obj;
-	}
-
-	module.exports = copyProperties;
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
-
-/***/ },
-/* 35 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow offsetWidth in HTMLElement */
@@ -3668,7 +4354,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 36 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
@@ -3703,805 +4389,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	module.exports = getWindowSize;
-
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	(function webpackUniversalModuleDefinition(root, factory) {
-		if(true)
-			module.exports = factory(__webpack_require__(1));
-		else if(typeof define === 'function' && define.amd)
-			define(["react/addons"], factory);
-		else if(typeof exports === 'object')
-			exports["ReactAutocomplete"] = factory(require("react/addons"));
-		else
-			root["ReactAutocomplete"] = factory(root["React"]);
-	})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
-	return /******/ (function(modules) { // webpackBootstrap
-	/******/ 	// The module cache
-	/******/ 	var installedModules = {};
-	/******/
-	/******/ 	// The require function
-	/******/ 	function __webpack_require__(moduleId) {
-	/******/
-	/******/ 		// Check if module is in cache
-	/******/ 		if(installedModules[moduleId])
-	/******/ 			return installedModules[moduleId].exports;
-	/******/
-	/******/ 		// Create a new module (and put it into the cache)
-	/******/ 		var module = installedModules[moduleId] = {
-	/******/ 			exports: {},
-	/******/ 			id: moduleId,
-	/******/ 			loaded: false
-	/******/ 		};
-	/******/
-	/******/ 		// Execute the module function
-	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-	/******/
-	/******/ 		// Flag the module as loaded
-	/******/ 		module.loaded = true;
-	/******/
-	/******/ 		// Return the exports of the module
-	/******/ 		return module.exports;
-	/******/ 	}
-	/******/
-	/******/
-	/******/ 	// expose the modules object (__webpack_modules__)
-	/******/ 	__webpack_require__.m = modules;
-	/******/
-	/******/ 	// expose the module cache
-	/******/ 	__webpack_require__.c = installedModules;
-	/******/
-	/******/ 	// __webpack_public_path__
-	/******/ 	__webpack_require__.p = "";
-	/******/
-	/******/ 	// Load entry module and return exports
-	/******/ 	return __webpack_require__(0);
-	/******/ })
-	/************************************************************************/
-	/******/ ([
-	/* 0 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		/**
-		 * @jsx React.DOM
-		 */
-		"use strict";
-
-		var React = __webpack_require__(1);
-		var cx = React.addons.classSet;
-
-		var Autocomplete = React.createClass({ displayName: "Autocomplete",
-
-		  propTypes: {
-		    options: React.PropTypes.any,
-		    search: React.PropTypes.func,
-		    resultRenderer: React.PropTypes.oneOfType([React.PropTypes.component, React.PropTypes.func]),
-		    value: React.PropTypes.object,
-		    onChange: React.PropTypes.func,
-		    onError: React.PropTypes.func
-		  },
-
-		  getDefaultProps: function () {
-		    return { search: searchArray };
-		  },
-
-		  getInitialState: function () {
-		    var searchTerm = this.props.searchTerm ? this.props.searchTerm : this.props.value ? this.props.value.title : "";
-		    return {
-		      results: [],
-		      showResults: false,
-		      showResultsInProgress: false,
-		      searchTerm: searchTerm,
-		      focusedValue: null
-		    };
-		  },
-
-		  getResultIdentifier: function (result) {
-		    if (this.props.resultIdentifier === undefined) {
-		      return result.id;
-		    } else {
-		      return result[this.props.resultIdentifier];
-		    }
-		  },
-
-
-		  render: function () {
-		    var className = cx(this.props.className, "react-autocomplete-Autocomplete", this.state.showResults ? "react-autocomplete-Autocomplete--resultsShown" : undefined);
-		    var style = {
-		      position: "relative",
-		      outline: "none"
-		    };
-		    return React.createElement("div", {
-		      tabIndex: "1",
-		      className: className,
-		      onFocus: this.onFocus,
-		      onBlur: this.onBlur,
-		      style: style }, React.createElement("input", {
-		      ref: "search",
-		      className: "react-autocomplete-Autocomplete__search",
-		      style: { width: "100%" },
-		      onClick: this.showAllResults,
-		      onChange: this.onQueryChange,
-		      onFocus: this.showAllResults,
-		      onBlur: this.onQueryBlur,
-		      onKeyDown: this.onQueryKeyDown,
-		      value: this.state.searchTerm }), React.createElement(Results, {
-		      className: "react-autocomplete-Autocomplete__results",
-		      onSelect: this.onValueChange,
-		      onFocus: this.onValueFocus,
-		      results: this.state.results,
-		      focusedValue: this.state.focusedValue,
-		      show: this.state.showResults,
-		      renderer: this.props.resultRenderer,
-		      label: this.props.label,
-		      resultIdentifier: this.props.resultIdentifier }));
-		  },
-
-		  componentWillReceiveProps: function (nextProps) {
-		    var searchTerm = nextProps.searchTerm ? nextProps.searchTerm : nextProps.value ? nextProps.value.title : "";
-		    this.setState({ searchTerm: searchTerm });
-		  },
-
-		  componentWillMount: function () {
-		    this.blurTimer = null;
-		  },
-
-		  /**
-		    * Show results for a search term value.
-		    *
-		    * This method doesn't update search term value itself.
-		    *
-		    * @param {Search} searchTerm
-		    */
-		  showResults: function (searchTerm) {
-		    this.setState({ showResultsInProgress: true });
-		    this.props.search(this.props.options, searchTerm.trim(), this.onSearchComplete);
-		  },
-
-		  showAllResults: function () {
-		    if (!this.state.showResultsInProgress && !this.state.showResults) {
-		      this.showResults("");
-		    }
-		  },
-
-		  onValueChange: function (value) {
-		    var state = {
-		      value: value,
-		      showResults: false
-		    };
-
-		    if (value) {
-		      state.searchTerm = value.title;
-		    }
-
-		    this.setState(state);
-
-		    if (this.props.onChange) {
-		      this.props.onChange(value);
-		    }
-		  },
-
-		  onSearchComplete: function (err, results) {
-		    if (err) {
-		      if (this.props.onError) {
-		        this.props.onError(err);
-		      } else {
-		        throw err;
-		      }
-		    }
-
-		    this.setState({
-		      showResultsInProgress: false,
-		      showResults: true,
-		      results: results
-		    });
-		  },
-
-		  onValueFocus: function (value) {
-		    this.setState({ focusedValue: value });
-		  },
-
-		  onQueryChange: function (e) {
-		    var searchTerm = e.target.value;
-		    this.setState({
-		      searchTerm: searchTerm,
-		      focusedValue: null
-		    });
-		    this.showResults(searchTerm);
-		  },
-
-		  onFocus: function () {
-		    if (this.blurTimer) {
-		      clearTimeout(this.blurTimer);
-		      this.blurTimer = null;
-		    }
-		    this.refs.search.getDOMNode().focus();
-		  },
-
-		  onBlur: function () {
-		    // wrap in setTimeout so we can catch a click on results
-		    this.blurTimer = setTimeout((function () {
-		      if (this.isMounted()) {
-		        this.setState({ showResults: false });
-		      }
-		    }).bind(this), 100);
-		  },
-
-		  onQueryKeyDown: function (e) {
-		    if (e.key === "Enter") {
-		      e.preventDefault();
-		      if (this.state.focusedValue) {
-		        this.onValueChange(this.state.focusedValue);
-		      }
-		    } else if (e.key === "ArrowUp" && this.state.showResults) {
-		      e.preventDefault();
-		      var prevIdx = Math.max(this.focusedValueIndex() - 1, 0);
-		      this.setState({
-		        focusedValue: this.state.results[prevIdx]
-		      });
-		    } else if (e.key === "ArrowDown") {
-		      e.preventDefault();
-		      if (this.state.showResults) {
-		        var nextIdx = Math.min(this.focusedValueIndex() + (this.state.showResults ? 1 : 0), this.state.results.length - 1);
-		        this.setState({
-		          showResults: true,
-		          focusedValue: this.state.results[nextIdx]
-		        });
-		      } else {
-		        this.showAllResults();
-		      }
-		    }
-		  },
-
-		  focusedValueIndex: function () {
-		    if (!this.state.focusedValue) {
-		      return -1;
-		    }
-		    for (var i = 0,
-		        len = this.state.results.length; i < len; i++) {
-		      if (this.getResultIdentifier(this.state.results[i]) === this.getResultIdentifier(this.state.focusedValue)) {
-		        return i;
-		      }
-		    }
-		    return -1;
-		  }
-		});
-
-		var Results = React.createClass({ displayName: "Results",
-
-		  getResultIdentifier: function (result) {
-		    if (this.props.resultIdentifier === undefined) {
-		      if (!result.id) {
-		        throw "id property not found on result. You must specify a resultIdentifier and pass as props to autocomplete component";
-		      }
-		      return result.id;
-		    } else {
-		      return result[this.props.resultIdentifier];
-		    }
-		  },
-
-		  render: function () {
-		    var style = {
-		      display: this.props.show ? "block" : "none",
-		      position: "absolute",
-		      listStyleType: "none"
-		    };
-		    var $__0 = this.props,
-		        className = $__0.className,
-		        props = (function (source, exclusion) {
-		      var rest = {};var hasOwn = Object.prototype.hasOwnProperty;if (source == null) {
-		        throw new TypeError();
-		      }for (var key in source) {
-		        if (hasOwn.call(source, key) && !hasOwn.call(exclusion, key)) {
-		          rest[key] = source[key];
-		        }
-		      }return rest;
-		    })($__0, { className: 1 });
-
-		    return React.createElement("ul", React.__spread({}, props, { style: style, className: className + " react-autocomplete-Results" }), this.props.results.map(this.renderResult));
-		  },
-
-		  renderResult: function (result) {
-		    var focused = this.props.focusedValue && this.getResultIdentifier(this.props.focusedValue) === this.getResultIdentifier(result);
-		    var renderer = this.props.renderer || Result;
-		    return renderer({
-		      ref: focused ? "focused" : undefined,
-		      key: this.getResultIdentifier(result),
-		      result: result,
-		      focused: focused,
-		      onMouseEnter: this.onMouseEnterResult,
-		      onClick: this.props.onSelect,
-		      label: this.props.label
-		    });
-		  },
-
-		  componentDidUpdate: function () {
-		    this.scrollToFocused();
-		  },
-
-		  componentDidMount: function () {
-		    this.scrollToFocused();
-		  },
-
-		  componentWillMount: function () {
-		    this.ignoreFocus = false;
-		  },
-
-		  scrollToFocused: function () {
-		    var focused = this.refs && this.refs.focused;
-		    if (focused) {
-		      var containerNode = this.getDOMNode();
-		      var scroll = containerNode.scrollTop;
-		      var height = containerNode.offsetHeight;
-
-		      var node = focused.getDOMNode();
-		      var top = node.offsetTop;
-		      var bottom = top + node.offsetHeight;
-
-		      // we update ignoreFocus to true if we change the scroll position so
-		      // the mouseover event triggered because of that won't have an
-		      // effect
-		      if (top < scroll) {
-		        this.ignoreFocus = true;
-		        containerNode.scrollTop = top;
-		      } else if (bottom - scroll > height) {
-		        this.ignoreFocus = true;
-		        containerNode.scrollTop = bottom - height;
-		      }
-		    }
-		  },
-
-		  onMouseEnterResult: function (e, result) {
-		    // check if we need to prevent the next onFocus event because it was
-		    // probably caused by a mouseover due to scroll position change
-		    if (this.ignoreFocus) {
-		      this.ignoreFocus = false;
-		    } else {
-		      // we need to make sure focused node is visible
-		      // for some reason mouse events fire on visible nodes due to
-		      // box-shadow
-		      var containerNode = this.getDOMNode();
-		      var scroll = containerNode.scrollTop;
-		      var height = containerNode.offsetHeight;
-
-		      var node = e.target;
-		      var top = node.offsetTop;
-		      var bottom = top + node.offsetHeight;
-
-		      if (bottom > scroll && top < scroll + height) {
-		        this.props.onFocus(result);
-		      }
-		    }
-		  }
-		});
-
-		var Result = React.createClass({ displayName: "Result",
-
-		  getDefaultProps: function () {
-		    return {
-		      label: function (result) {
-		        return result.title;
-		      }
-		    };
-		  },
-
-		  getLabel: function (result) {
-		    if (typeof this.props.label === "function") {
-		      return this.props.label(result);
-		    } else if (typeof this.props.label === "string") {
-		      return result[this.props.label];
-		    }
-		  },
-
-		  render: function () {
-		    var className = cx({
-		      "react-autocomplete-Result": true,
-		      "react-autocomplete-Result--active": this.props.focused
-		    });
-
-		    return React.createElement("li", {
-		      style: { listStyleType: "none" },
-		      className: className,
-		      onClick: this.onClick,
-		      onMouseEnter: this.onMouseEnter }, React.createElement("a", null, this.getLabel(this.props.result)));
-		  },
-
-		  onClick: function () {
-		    this.props.onClick(this.props.result);
-		  },
-
-		  onMouseEnter: function (e) {
-		    if (this.props.onMouseEnter) {
-		      this.props.onMouseEnter(e, this.props.result);
-		    }
-		  },
-
-		  shouldComponentUpdate: function (nextProps) {
-		    return nextProps.result.id !== this.props.result.id || nextProps.focused !== this.props.focused;
-		  }
-		});
-
-		/**
-		* Search options using specified search term treating options as an array
-		* of candidates.
-		*
-		* @param {Array.<Object>} options
-		* @param {String} searchTerm
-		* @param {Callback} cb
-		*/
-		function searchArray(options, searchTerm, cb) {
-		  if (!options) {
-		    return cb(null, []);
-		  }
-
-		  searchTerm = new RegExp(searchTerm, "i");
-
-		  var results = [];
-
-		  for (var i = 0,
-		      len = options.length; i < len; i++) {
-		    if (searchTerm.exec(options[i].title)) {
-		      results.push(options[i]);
-		    }
-		  }
-
-		  cb(null, results);
-		}
-
-		module.exports = Autocomplete;
-
-	/***/ },
-	/* 1 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
-
-	/***/ }
-	/******/ ])
-	});
-
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	/* Flow issues:
-	overrides? getDefaultValue, getStyle, onKeyDown
-	*/
-	/**
-	 * @jsx React.DOM
-	 */
-	'use strict';
-
-	var React                   = __webpack_require__(1);
-	var cx                      = React.addons.classSet;
-	var ReactAutocomplete       = __webpack_require__(37);
-	var KeyboardHandlerMixin    = __webpack_require__(3);
-	var ExcelColumn             = __webpack_require__(2);
-
-	var optionPropType = React.PropTypes.shape({
-	      id    :   React.PropTypes.required,
-	      title :   React.PropTypes.string
-	    });
-
-	var AutoCompleteEditor = React.createClass({displayName: "AutoCompleteEditor",
-
-	  propTypes : {
-	    onCommit : React.PropTypes.func.isRequired,
-	    options : React.PropTypes.arrayOf(optionPropType).isRequired,
-	    label : React.PropTypes.string,
-	    value : React.PropTypes.any.isRequired,
-	    valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
-	    column: React.PropTypes.shape(ExcelColumn).isRequired,
-	    resultIdentifier : React.PropTypes.string,
-	    search : React.PropTypes.string
-	  },
-
-	  getDefaultProps:function()                            {
-	    return {
-	      resultIdentifier : 'id'
-	    }
-	  },
-
-	  getValue:function()     {
-	    var value, updated = {};
-	    if(this.hasResults() && this.isFocusedOnSuggestion()){
-	      value = this.getLabel(this.refs.autoComplete.state.focusedValue);
-	      if(this.props.valueParams){
-	        value = this.constuctValueFromParams(this.refs.autoComplete.state.focusedValue, this.props.valueParams);
-	      }
-	    }else{
-	      value = this.refs.autoComplete.state.searchTerm;
-	    }
-	    updated[this.props.column.key] = value;
-	    return updated;
-	  },
-
-	  getInputNode:function()                  {
-	    return this.getDOMNode().getElementsByTagName("input")[0];
-	  },
-
-	  render:function()                {
-	    var label = this.props.label != null ? this.props.label : 'title';
-	    return (React.createElement("div", {height: this.props.height, onKeyDown: this.props.onKeyDown}, 
-	      React.createElement(ReactAutocomplete, {search: this.props.search, ref: "autoComplete", label: label, resultIdentifier: this.props.resultIdentifier, options: this.props.options, value: {title : this.props.value}})
-	      ));
-	  },
-
-	  hasResults:function()         {
-	    return this.refs.autoComplete.state.results.length > 0;
-	  },
-
-	  isFocusedOnSuggestion:function()         {
-	    var autoComplete = this.refs.autoComplete;
-	    return autoComplete.state.focusedValue != null;
-	  },
-
-	  getLabel:function(item     )         {
-	    var label = this.props.label != null ? this.props.label : 'title';
-	    if (typeof label === "function") {
-	      return label(item);
-	    } else if (typeof label === "string") {
-	      return item[label];
-	    }
-	  },
-
-	  constuctValueFromParams:function(obj     , props                )         {
-	    if(!props){
-	      return '';
-	    }
-	    var ret = [];
-	    for (var i = 0, ii = props.length; i < ii; i++) {
-	      ret.push(obj[props[i]]);
-	    }
-	    return ret.join('|');
-	  }
-	});
-
-	module.exports = AutoCompleteEditor;
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	/**
-	 * @jsx React.DOM
-
-
-	 */
-	'use strict';
-
-	var React                   = __webpack_require__(1);
-	var cx                      = React.addons.classSet;
-
-	var DropDownEditor = React.createClass({displayName: "DropDownEditor",
-
-	  propTypes : {
-	    options : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-	    value : React.PropTypes.string.isRequired,
-	    commit : React.PropTypes.func.isRequired
-	  },
-
-	  getStyle:function()                 {
-	    return {
-	      width : '100%'
-	    }
-	  },
-
-	  render:function()               {
-	    return (
-	      React.createElement("select", {ref: "select", style: this.getStyle(), defaultValue: this.props.value, onChange: this.onChange}, 
-	        this.renderOptions()
-	      ));
-	  },
-
-	  renderOptions:function()                     {
-	    var options = [];
-	    this.props.options.forEach(function(name){
-	      options.push(React.createElement("option", {key: name, value: name}, name));
-	    }, this);
-	    return options;
-	  },
-
-	  getValue:function()        {
-	    var updated = {};
-	    updated[this.props.column.key] = this.refs.select.getDOMNode().value;
-	    return updated;
-	  },
-
-	  getInputNode:function()                  {
-	    return this.refs.select.getDOMNode();
-	  },
-
-	  onChange:function(){
-	    this.props.onCommit({key : 'Enter'});
-	  },
-
-	  onClick:function(e       ){
-	    e.stopPropagation();
-	    e.preventDefault();
-	  }
-
-	});
-
-	module.exports = DropDownEditor;
-
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	var Editors = {
-	  AutoComplete     : __webpack_require__(38),
-	  DropDownEditor   : __webpack_require__(39),
-	  SimpleTextEditor : __webpack_require__(12)
-
-	}
-
-	module.exports = Editors;
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-
-	var PendingPool = {};
-	var ReadyPool = {};
-
-	var ImageFormatter = React.createClass({displayName: "ImageFormatter",
-	  propTypes: {
-	    src: React.PropTypes.string.isRequired,
-	  },
-
-	  getInitialState:function() {
-	    return {
-	      ready: false,
-	    };
-	  },
-
-	  componentWillMount:function() {
-	    this._load(this.props.src);
-	  },
-
-	  componentWillReceiveProps:function(nextProps) {
-	    if (nextProps.src !== this.props.src) {
-	      this.setState({src: null});
-	      this._load(nextProps.src);
-	    }
-	  },
-
-	  render:function() {
-	    var style = this.state.src ?
-	    { backgroundImage : 'url(' + this.state.src + ')'} :
-	    undefined;
-
-	    return React.createElement("div", {className: "react-grid-image", style: style});
-	  },
-
-	  _load:function(/*string*/ src) {
-	    if (ReadyPool[src]) {
-	      this.setState({src: src});
-	      return;
-	    }
-
-	    if (PendingPool[src]) {
-	      PendingPool[src].push(this._onLoad);
-	      return;
-	    }
-
-	    PendingPool[src] = [this._onLoad];
-
-	    var img = new Image();
-	    img.onload = function()  {
-	      PendingPool[src].forEach(/*function*/ function(callback)  {
-	        callback(src);
-	      });
-	      delete PendingPool[src];
-	      img.onload = null;
-	      src = undefined;
-	    };
-	    img.src = src;
-	  },
-
-	  _onLoad:function(/*string*/ src) {
-	    if (this.isMounted() && src === this.props.src) {
-	      this.setState({
-	        src: src,
-	      });
-	    }
-	  },
-	});
-
-
-	module.exports = ImageFormatter;
-
-
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	//not including this
-	//it currently requires the whole of moment, which we dont want to take as a dependency
-	var ImageFormatter = __webpack_require__(41);
-
-	var Formatters = {
-	  ImageFormatter : ImageFormatter
-	}
-
-	module.exports = Formatters;
-
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	/**
-	* @jsx React.DOM
-
-	*/
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var Row = __webpack_require__(6);
-
-	var Toolbar = React.createClass({displayName: "Toolbar",
-	  propTypes: {
-	    onAddRow : React.PropTypes.func,
-	    onToggleFilter : React.PropTypes.func.isRequired,
-	    enableFilter : React.PropTypes.bool,
-	    numberOfRows : React.PropTypes.number.isRequired
-	  },
-	  onAddRow:function(){
-	    if(this.props.onAddRow !== null && this.props.onAddRow instanceof Function){
-	      this.props.onAddRow({newRowIndex : this.props.numberOfRows});
-	    }
-	  },
-
-	  getDefaultProps:function()                         {
-	    return {
-	      enableAddRow : true
-	    }
-	  },
-
-	  renderAddRowButton:function()              {
-	    if(this.props.onAddRow){
-	      return(React.createElement("button", {type: "button", className: "btn", onClick: this.onAddRow}, 
-	        "Add Row"
-	      ))
-	    }
-	  },
-
-	  renderToggleFilterButton:function()              {
-	    if(this.props.enableFilter){
-	      return(  React.createElement("button", {type: "button", className: "btn", onClick: this.props.onToggleFilter}, 
-	      "Filter Rows"
-	      ))
-	    }
-	  },
-
-	  render:function()               {
-	    return (
-	      React.createElement("div", {className: "react-grid-Toolbar"}, 
-	        React.createElement("div", {className: "tools"}, 
-	          this.renderAddRowButton(), 
-	          this.renderToggleFilterButton()
-	        )
-	      ))
-	      }
-	});
-
-	module.exports = Toolbar;
 
 
 /***/ }

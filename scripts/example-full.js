@@ -2,12 +2,13 @@
  * @jsx React.DOM
  */
 (function(){
+  var ReactDataGrid       = require('../build/react-data-grid-with-addons')
   var Grid                = ReactDataGrid.Grid;
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
-  var cx                  = React.addons.classSet;
+  var joinClasses          = require('classnames');
   var cloneWithProps      = React.addons.cloneWithProps;
   var FakeObjectDataStore = require('./FakeObjectDataStore');
   var developers = ['Conor','Curtis','Danny','Joao','Mo','Rich'];
@@ -43,7 +44,7 @@
    { id : 38, title :'Worcestershire'},
    { id : 39, title :'Yorkshire'}]
 
-var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
+var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
   function renderImage(cellData) {
     var ImageFormatter = ReactDataGrid.Formatters.ImageFormatter;
@@ -54,13 +55,14 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
     {
       key: 'id',
       name: 'ID',
-      width : 80
+      width : 80,
     },
     {
       key: 'avartar',
       name: 'Avartar',
       width : 60,
-      formatter : renderImage
+      formatter : renderImage,
+      resizeable : true
     },
     {
       key: 'county',
@@ -125,12 +127,6 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
     {
       key: 'companyName',
       name: 'Company Name',
-      editable:true,
-      width : 200
-    },
-    {
-      key: 'words',
-      name: 'Words',
       editable:true,
       width : 200
     },

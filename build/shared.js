@@ -55,13 +55,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	var Navbar = __webpack_require__(152);
+	var Navbar = __webpack_require__(80);
 	React.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
 
 
 /***/ },
 
-/***/ 152:
+/***/ 80:
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -76,7 +76,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          React.createElement("a", {href: "https://github.com/adazzle/react-grid/fork"}, React.createElement("img", {className: "github-ribbon", src: "http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png", alt: "Fork me on GitHub"})), 
 
 	            React.createElement("button", {type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": ".navbar-collapse"}, React.createElement("span", {className: "icon-bar"}), " ", React.createElement("span", {className: "icon-bar"}), " ", React.createElement("span", {className: "icon-bar"}), " "), 
-	            React.createElement("a", {className: "navbar-brand", href: "index.html#"}, React.createElement("i", {className: "fa fa-table fa-2"}), " React Grid")
+	            React.createElement("a", {className: "navbar-brand", href: "index.html#"}, React.createElement("i", {className: "fa fa-table fa-2"}), " React Data Grid")
 	          ), 
 	          React.createElement("div", {className: "navbar-collapse collapse"}, 
 	            React.createElement("ul", {className: "nav navbar-nav pull-right"}, 
@@ -86,7 +86,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                React.createElement("a", {href: "#", className: "dropdown-toggle", "data-toggle": "dropdown"}, "Examples ", React.createElement("b", {className: "caret"})), 
 	                  React.createElement("ul", {className: "dropdown-menu"}, 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/basic"}, "Basic Use")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editable"}, "Editable Grid"))
+	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editable"}, "Editable Grid")), 
+	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/all-the-features"}, "All-The-Features Grid"))
 	                    )
 	                )
 	            )
