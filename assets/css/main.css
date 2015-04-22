@@ -65,6 +65,12 @@
 	background: transparent;
 }
 
+.header-logo{
+	width: 100px;
+	margin-top: -9px;
+	margin-right: 5px;
+}
+
 @media (max-width: 767px) {
 	#head {
 		min-height: 420px;
