@@ -1,5 +1,9 @@
-var ReactGrid   = require('../build/react-data-grid');
+
 var QuickStartDescription = require('../components/QuickStartDescription')
+var ReactPlayground       = require('../assets/js/ReactPlayground');
+
+
+var SimpleExample = `
 
 var _rows = [];
 for (var i = 1; i < 1000; i++) {
@@ -14,9 +18,6 @@ var rowGetter = function(i){
   return _rows[i];
 };
 
-var getRowCount = function(){
-  return _rows.length;
-}
 
 var columns = [
 {
@@ -33,17 +34,25 @@ var columns = [
 }
 ]
 
+var Example = React.createClass({
+  render: function() {
+    return  (<ReactDataGrid
+    columns={columns}
+    rowGetter={rowGetter}
+    rowsCount={_rows.length}
+    minHeight={500} />);
+  }
+});
+React.render(<Example />, mountNode);
+`;
+
 module.exports = React.createClass({
 
   render:function(){
     return(
       <div>
-      <QuickStartDescription title="A Simple Example"/>
-      <ReactGrid
-        columns={columns}
-        rowGetter={rowGetter}
-        rowsCount={_rows.length}
-        minHeight={500} />
+        <h3>A Simple Example</h3>
+        <ReactPlayground codeText={SimpleExample} />
       </div>
     )
   }
