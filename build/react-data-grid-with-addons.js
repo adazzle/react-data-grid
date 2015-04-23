@@ -55,12 +55,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
-	module.exports = {
-	  Grid       : __webpack_require__(44),
-	  Editors    : __webpack_require__(51),
-	  Formatters : __webpack_require__(53),
-	  Toolbar    : __webpack_require__(54)
-	}
+	module.exports = __webpack_require__(44);
+	module.exports.Editors = __webpack_require__(51);
+	module.exports.Formatters = __webpack_require__(53);
+	module.exports.Toolbar = __webpack_require__(54);
 
 
 /***/ },

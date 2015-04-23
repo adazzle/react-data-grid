@@ -413,12 +413,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	/***/ function(module, exports, __webpack_require__) {
 
 		/* @flow */
-		module.exports = {
-		  Grid       : __webpack_require__(44),
-		  Editors    : __webpack_require__(51),
-		  Formatters : __webpack_require__(53),
-		  Toolbar    : __webpack_require__(54)
-		}
+		module.exports = __webpack_require__(44);
+		module.exports.Editors = __webpack_require__(51);
+		module.exports.Formatters = __webpack_require__(53);
+		module.exports.Toolbar = __webpack_require__(54);
 
 
 	/***/ },
@@ -5767,7 +5765,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	(function(){
 	  var ReactDataGrid       = __webpack_require__(16)
-	  var Grid                = ReactDataGrid.Grid;
 	  var Editors             = ReactDataGrid.Editors;
 	  var Toolbar             = ReactDataGrid.Toolbar;
 	  var AutoCompleteEditor  = Editors.AutoComplete;
@@ -5957,7 +5954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    render:function() {
 	      return (
-	            React.createElement(Grid, {
+	            React.createElement(ReactDataGrid, {
 	              enableCellSelect: true, 
 	              columns: columns, 
 	              rowGetter: this.getRowAt, 

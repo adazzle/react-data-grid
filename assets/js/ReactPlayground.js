@@ -175,6 +175,9 @@ module.exports = React.createClass({
 
     return (
       <div className="playground">
+      <div className="playgroundPreview">
+      <div ref="mount" />
+      </div>
       <div>
       {JSXTab}
       {this.props.showCompiledJSTab && JSTab}
@@ -182,9 +185,7 @@ module.exports = React.createClass({
       <div className="playgroundCode">
       {isJS ? JSContent : JSXContent}
       </div>
-      <div className="playgroundPreview">
-      <div ref="mount" />
-      </div>
+
       </div>
     );
   },

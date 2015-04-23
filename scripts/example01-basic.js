@@ -14,6 +14,7 @@ for (var i = 1; i < 1000; i++) {
   });
 }
 
+//A rowGetter function is required by the grid to retrieve a row for a given index
 var rowGetter = function(i){
   return _rows[i];
 };
