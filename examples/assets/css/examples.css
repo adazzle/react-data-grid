@@ -283,7 +283,7 @@ small code,li code,p code {
   border-radius: 0 3px 3px 3px;
   float: left;
   overflow: hidden;
-  width : 35%;
+  width : 100%;
 }
 
 .playgroundPreview {
@@ -291,7 +291,7 @@ small code,li code,p code {
   border-radius: 3px;
   float: left;
   padding: 15px 20px;
-  width:65%;
+  width:100%;
 }
 
 .playgroundError {
