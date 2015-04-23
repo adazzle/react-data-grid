@@ -3,7 +3,6 @@
  */
 (function(){
   var ReactDataGrid       = require('../build/react-data-grid-with-addons')
-  var Grid                = ReactDataGrid.Grid;
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
@@ -193,7 +192,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
     render() {
       return (
-            <Grid
+            <ReactDataGrid
               enableCellSelect={true}
               columns={columns}
               rowGetter={this.getRowAt}

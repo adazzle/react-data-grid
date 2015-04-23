@@ -24,6 +24,7 @@ module.exports = React.createClass({
                     <li><a href="examples.html#/fixed">Frozen Columns</a></li>
                     <li><a href="examples.html#/editable">Editable Grid</a></li>
                     <li><a href="examples.html#/formatters">Custom Formatters</a></li>
+                    <li><a href="examples.html#/editors">Rich Cell Editors</a></li>
                     <li><a href="examples.html#/all-the-features">All-The-Features Grid</a></li>
                     </ul>
                 </li>
