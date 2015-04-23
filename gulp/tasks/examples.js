@@ -9,7 +9,8 @@ webpackConfig = {
 	entry: {
 		'index' : './examples/index.js',
 		'shared' : './examples/shared.js',
-		'examples' : './examples/examples.js'
+		'examples' : './examples/examples.js',
+		'documentation' : './examples/documentation.js'
 	},
 	output: {
 		path: path.join(__dirname, "../../examples/build"),

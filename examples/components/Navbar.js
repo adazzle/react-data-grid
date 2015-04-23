@@ -15,7 +15,13 @@ module.exports = React.createClass({
           <div className="navbar-collapse collapse">
             <ul className="nav navbar-nav pull-right">
               <li className="active"><a href="index.html#">Home</a></li>
-              <li><a href="documentation.html">Documentation</a></li>
+              <li className="dropdown">
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Documentation <b className="caret"></b></a>
+                <ul className="dropdown-menu">
+                  <li><a href="documentation.html#/gettingstarted">Getting Started</a></li>
+                  <li><a href="documentation.html#/apireference">API Reference</a></li>
+                </ul>
+              </li>
               <li className="dropdown">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
                   <ul className="dropdown-menu">
