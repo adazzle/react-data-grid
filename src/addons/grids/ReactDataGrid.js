@@ -134,6 +134,8 @@ var ReactDataGrid = React.createClass({
             selectedRows={this.state.selectedRows}
             expandedRows={this.state.expandedRows}
             rowOffsetHeight={this.getRowOffsetHeight()}
+            sortColumn={this.state.sortColumn}
+            sortDirection={this.state.sortDirection}
             minHeight={this.props.minHeight}
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
@@ -410,8 +412,8 @@ var ReactDataGrid = React.createClass({
   },
 
   getDecoratedColumns: function(columns: Array<ExcelColumn>): Array<ExcelColumn> {
-    return this.props.columns.map(function(column) {
-      column = Object.assign({}, column);
+    return this.props.columns.map(function(c) {
+      var column = Object.assign({}, c);
 
       if (column.sortable) {
         var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
