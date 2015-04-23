@@ -91,6 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editable"}, "Editable Grid")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/formatters"}, "Custom Formatters")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editors"}, "Rich Cell Editors")), 
+	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/sortable"}, "Sortable Grid")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/all-the-features"}, "All-The-Features Grid"))
 	                    )
 	                )

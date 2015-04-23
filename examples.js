@@ -7,6 +7,7 @@ var fixedColsExample = require('./scripts/example03-fixed-cols');
 var editableExample = require('./scripts/example04-editable');
 var formatterExample = require('./scripts/example05-custom-formatters');
 var editorsExample = require('./scripts/example06-built-in-editors');
+var sortableExample = require('./scripts/example08-sortable-cols');
 var fullExample = require('./scripts/example-full');
 
 var { Route, RouteHandler, Link } = ReactRouter;
@@ -30,6 +31,7 @@ var routes = (
       <Route name="editable" handler={editableExample}/>
       <Route name="formatters" handler={formatterExample}/>
       <Route name="editors" handler={editorsExample}/>
+      <Route name="sortable" handler={sortableExample}/>
       <Route name="all-the-features" handler={fullExample}/>
   </Route>
 );

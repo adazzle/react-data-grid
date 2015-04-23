@@ -353,7 +353,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 13 */,
 /* 14 */,
 /* 15 */,
-/* 16 */
+/* 16 */,
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -2909,6 +2910,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		    selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 		    rowsCount: PropTypes.number,
 		    onRows: PropTypes.func,
+		    sortColumn : React.PropTypes.string.isRequired,
+		    sortDirection : React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
 		    rowOffsetHeight: PropTypes.number.isRequired,
 		    onViewportKeydown : PropTypes.func.isRequired,
 		    onViewportDragStart : PropTypes.func.isRequired,
@@ -2935,7 +2938,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		          onColumnResize: this.onColumnResize, 
 		          height: this.props.rowHeight, 
 		          totalWidth: this.DOMMetrics.gridWidth(), 
-		          headerRows: headerRows}
+		          headerRows: headerRows, 
+		          sortColumn: this.props.sortColumn, 
+		          sortDirection: this.props.sortDirection}
 		          ), 
 		        React.createElement("div", {ref: "viewPortContainer", onKeyDown: this.props.onViewportKeydown, onDoubleClick: this.props.onViewportDoubleClick, onDragStart: this.props.onViewportDragStart, onDragEnd: this.props.onViewportDragEnd}, 
 		            React.createElement(Viewport, {
@@ -3062,8 +3067,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		    var update =  !(ColumnMetrics.sameColumns(this.props.columns.columns, nextProps.columns.columns, ColumnMetrics.sameColumn))
 		    || this.props.totalWidth != nextProps.totalWidth
 		    || (this.props.headerRows.length != nextProps.headerRows.length)
-		    || (this.state.resizing != nextState.resizing);
-
+		    || (this.state.resizing != nextState.resizing)
+		    || this.props.sortColumn != nextProps.sortColumn
+		    || this.props.sortDirection != nextProps.sortDirection;
 		    return update;
 		  },
 
@@ -3135,7 +3141,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		    });
 		    return pos === -1 ? null : pos;
 		  },
-		  
+
 		  onColumnResizeEnd:function(column        , width        ) {
 		    var pos = this.getColumnPosition(column);
 		    if (pos !== null && this.props.onColumnResize) {
@@ -3809,6 +3815,11 @@ return /******/ (function(modules) { // webpackBootstrap
 		var React              = __webpack_require__(1);
 		var joinClasses         = __webpack_require__(3);
 		var ExcelColumn = __webpack_require__(2);
+		var DEFINE_SORT = {
+		  ASC : 'ASC',
+		  DESC : 'DESC',
+		  NONE  : 'NONE'
+		}
 
 		var SortableHeaderCell = React.createClass({displayName: "SortableHeaderCell",
 		  propTypes: {
@@ -3822,13 +3833,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		    switch(this.props.sortDirection){
 		      case null:
 		      case undefined:
+		      case DEFINE_SORT.NONE:
 		        direction = DEFINE_SORT.ASC;
 		      break;
 		      case DEFINE_SORT.ASC:
 		        direction = DEFINE_SORT.DESC;
 		      break;
-		      case DEFINE_SORT.DESC:
-		        direction = null;
+		    case DEFINE_SORT.DESC:
+		        direction = DEFINE_SORT.NONE;
 		      break;
 		    }
 		    this.props.onSort(
@@ -3836,23 +3848,22 @@ return /******/ (function(modules) { // webpackBootstrap
 		      direction);
 		  },
 
-		  getSortByClass : function(){
-		    var sorted = this.props.sortDirection;
-		    return joinClasses({
-		      'pull-right' : true,
-		      'glyphicon glyphicon-arrow-up' : sorted === 'ASC',
-		      'glyphicon glyphicon-arrow-down' : sorted === 'DESC'
-		    });
+		  getSortByText : function(){
+		    var unicodeKeys = {
+		      'ASC' : '9650',
+		      'DESC' : '9660',
+		      'NONE' : ''
+		    }
+		    return String.fromCharCode(unicodeKeys[this.props.sortDirection]);
 		  },
 
 		  render: function()                {
-
 		    return (
 		      React.createElement("div", {
 		        onClick: this.onClick, 
 		        style: {cursor: 'pointer'}}, 
 		        this.props.column.name, 
-		        React.createElement("span", {className: this.getSortByClass()})
+		        React.createElement("span", {className: "pull-right"}, this.getSortByText())
 		      )
 		    );
 		  }
@@ -4302,6 +4313,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		            selectedRows: this.state.selectedRows, 
 		            expandedRows: this.state.expandedRows, 
 		            rowOffsetHeight: this.getRowOffsetHeight(), 
+		            sortColumn: this.state.sortColumn, 
+		            sortDirection: this.state.sortDirection, 
 		            minHeight: this.props.minHeight, 
 		            onViewportKeydown: this.onKeyDown, 
 		            onViewportDragStart: this.onDragStart, 
@@ -4578,8 +4591,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		  },
 
 		  getDecoratedColumns: function(columns                    )                     {
-		    return this.props.columns.map(function(column) {
-		      column = Object.assign({}, column);
+		    return this.props.columns.map(function(c) {
+		      var column = Object.assign({}, c);
 
 		      if (column.sortable) {
 		        var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
@@ -5698,7 +5711,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	;
 
 /***/ },
-/* 17 */,
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -5764,7 +5776,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @jsx React.DOM
 	 */
 	(function(){
-	  var ReactDataGrid       = __webpack_require__(16)
+	  var ReactDataGrid       = __webpack_require__(17)
 	  var Editors             = ReactDataGrid.Editors;
 	  var Toolbar             = ReactDataGrid.Toolbar;
 	  var AutoCompleteEditor  = Editors.AutoComplete;
