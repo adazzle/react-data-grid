@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      React.createElement("div", {className: "navbar navbar-fixed-top headroom"}, 
 	        React.createElement("div", {className: "container"}, 
 	          React.createElement("div", {className: "navbar-header"}, 
-	          React.createElement("a", {href: "https://github.com/adazzle/react-grid/fork"}, React.createElement("img", {className: "github-ribbon", src: "http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png", alt: "Fork me on GitHub"})), 
+	          React.createElement("a", {href: "https://github.com/adazzle/react-data-grid/fork"}, React.createElement("img", {className: "github-ribbon", src: "http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png", alt: "Fork me on GitHub"})), 
 
 	            React.createElement("button", {type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": ".navbar-collapse"}, React.createElement("span", {className: "icon-bar"}), " ", React.createElement("span", {className: "icon-bar"}), " ", React.createElement("span", {className: "icon-bar"}), " "), 
 	            React.createElement("a", {className: "navbar-brand", href: "https://www.adazzle.com"}, React.createElement("img", {className: "header-logo", src: "assets/images/AdazzleHeaderLogo.png"})), " ", React.createElement("a", {className: "navbar-brand", href: "index.html#"}, "React Data Grid")

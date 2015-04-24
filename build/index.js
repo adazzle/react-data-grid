@@ -110,7 +110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.company = __webpack_require__(39);
 	exports.image = __webpack_require__(43);
 	exports.lorem = __webpack_require__(73);
-	exports.helpers =  __webpack_require__(8);
+	exports.helpers =  __webpack_require__(10);
 	exports.date = __webpack_require__(40);
 	exports.random = __webpack_require__(76);
 	exports.finance = __webpack_require__(41);
@@ -163,7 +163,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */,
 /* 6 */,
 /* 7 */,
-/* 8 */
+/* 8 */,
+/* 9 */,
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var faker = __webpack_require__(3);
@@ -346,8 +348,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */,
-/* 10 */,
 /* 11 */,
 /* 12 */,
 /* 13 */,
@@ -6051,7 +6051,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Helpers = __webpack_require__(8);
+	var Helpers = __webpack_require__(10);
 	var faker = __webpack_require__(3);
 
 	var address = {
@@ -6294,7 +6294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Helpers = __webpack_require__(8),
+	var Helpers = __webpack_require__(10),
 	    faker = __webpack_require__(3);
 
 	var finance = {
@@ -47941,7 +47941,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var faker = __webpack_require__(3);
-	var Helpers = __webpack_require__(8);
+	var Helpers = __webpack_require__(10);
 
 	var lorem = {
 	    words: function (num) {

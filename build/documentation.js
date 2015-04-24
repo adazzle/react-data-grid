@@ -151,7 +151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = invariant;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
 /***/ },
 /* 5 */
@@ -342,7 +342,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(4);
-	var canUseDOM = __webpack_require__(12).canUseDOM;
+	var canUseDOM = __webpack_require__(14).canUseDOM;
 
 	var History = {
 
@@ -381,7 +381,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 8 */,
-/* 9 */
+/* 9 */,
+/* 10 */,
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -410,7 +412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(4);
@@ -431,7 +433,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var PropTypes = {
@@ -450,7 +452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -499,7 +501,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// shim for using process in browser
@@ -563,12 +565,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 14 */,
-/* 15 */,
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LocationActions = __webpack_require__(9);
+	var LocationActions = __webpack_require__(11);
 	var History = __webpack_require__(6);
 	var Path = __webpack_require__(5);
 
@@ -866,7 +866,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LocationActions = __webpack_require__(9);
+	var LocationActions = __webpack_require__(11);
 
 	/**
 	 * A scroll behavior that attempts to imitate the default behavior
@@ -900,8 +900,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var FakeNode = __webpack_require__(10);
-	var PropTypes = __webpack_require__(11);
+	var FakeNode = __webpack_require__(12);
+	var PropTypes = __webpack_require__(13);
 
 	/**
 	 * A <DefaultRoute> component is a special kind of <Route> that
@@ -931,8 +931,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var FakeNode = __webpack_require__(10);
-	var PropTypes = __webpack_require__(11);
+	var FakeNode = __webpack_require__(12);
+	var PropTypes = __webpack_require__(13);
 
 	/**
 	 * A <NotFoundRoute> is a special kind of <Route> that
@@ -963,8 +963,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var FakeNode = __webpack_require__(10);
-	var PropTypes = __webpack_require__(11);
+	var FakeNode = __webpack_require__(12);
+	var PropTypes = __webpack_require__(13);
 
 	/**
 	 * A <Redirect> component is a special kind of <Route> that always
@@ -993,7 +993,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var FakeNode = __webpack_require__(10);
+	var FakeNode = __webpack_require__(12);
 
 	/**
 	 * <Route> components specify components that are rendered to the page when the
@@ -1087,7 +1087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LocationActions = __webpack_require__(9);
+	var LocationActions = __webpack_require__(11);
 	var History = __webpack_require__(6);
 	var Path = __webpack_require__(5);
 
@@ -1435,10 +1435,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var warning = __webpack_require__(32);
 	var invariant = __webpack_require__(4);
-	var canUseDOM = __webpack_require__(12).canUseDOM;
+	var canUseDOM = __webpack_require__(14).canUseDOM;
 	var ImitateBrowserBehavior = __webpack_require__(20);
 	var RouteHandler = __webpack_require__(25);
-	var LocationActions = __webpack_require__(9);
+	var LocationActions = __webpack_require__(11);
 	var HashLocation = __webpack_require__(26);
 	var HistoryLocation = __webpack_require__(16);
 	var RefreshLocation = __webpack_require__(27);
@@ -1448,7 +1448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var createRoutesFromChildren = __webpack_require__(90);
 	var supportsHistory = __webpack_require__(94);
 	var Transition = __webpack_require__(89);
-	var PropTypes = __webpack_require__(11);
+	var PropTypes = __webpack_require__(13);
 	var Redirect = __webpack_require__(30);
 	var History = __webpack_require__(6);
 	var Cancellation = __webpack_require__(87);
@@ -1926,7 +1926,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = createRouter;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
 /***/ },
 /* 32 */
@@ -1974,7 +1974,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = warning;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
 /***/ },
 /* 33 */
@@ -3605,7 +3605,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(4);
-	var canUseDOM = __webpack_require__(12).canUseDOM;
+	var canUseDOM = __webpack_require__(14).canUseDOM;
 	var getWindowScrollPosition = __webpack_require__(91);
 
 	function shouldUpdateScroll(state, prevState) {
@@ -4132,7 +4132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(4);
-	var canUseDOM = __webpack_require__(12).canUseDOM;
+	var canUseDOM = __webpack_require__(14).canUseDOM;
 
 	/**
 	 * Returns the current scroll position of the window as { x, y }.
@@ -4756,7 +4756,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	}(__webpack_require__(7)));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
 /***/ },
 /* 103 */
@@ -5921,8 +5921,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        React.createElement("h2", null, "Getting Started "), 
 	        React.createElement("h3", {id: "js-installation"}, "Installation"), 
 	        React.createElement("h4", null, "Using Common JS"), 
-	        React.createElement("p", null, "React Grid is available in the npm repository. You can install it from the command line using the following commands"), 
-	        React.createElement("p", null, React.createElement("kbd", null, "npm install react --save")), 
+	        React.createElement("p", null, "React Data Grid is available in the npm repository. You can install it from the command line using the following commands"), 
 	        React.createElement("p", null, React.createElement("kbd", null, "npm install react-data-grid --save")), 
 	        React.createElement("p", null, "Once downloaded, require both React and React Grid and you should be good to go"), 
 	        React.createElement("div", {className: "code-block js"}, 
