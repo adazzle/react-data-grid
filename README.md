@@ -54,4 +54,4 @@ Please see [CONTRIBUTING](CONTRIBUTING.md)
 
 Credits 
 ------------
-This project has been built upon the great work done by [Prometheus Research](https://github.com/prometheusresearch). For the original project, please click [here]( https://github.com/prometheusresearch/react-grid)
+This project has been built upon the great work done by [Prometheus Research](https://github.com/prometheusresearch). For the original project, please click [here]( https://github.com/prometheusresearch/react-grid). It is released under {MIT](https://github.com/adazzle/react-data-grid/blob/master/LICENSE)
