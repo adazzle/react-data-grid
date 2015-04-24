@@ -10,7 +10,7 @@ module.exports = React.createClass({
           <a href="https://github.com/adazzle/react-grid/fork"><img className="github-ribbon" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png" alt="Fork me on GitHub"></img></a>
 
             <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span className="icon-bar"></span> <span className="icon-bar"></span> <span className="icon-bar"></span> </button>
-            <a className="navbar-brand" href="index.html#"><img className="header-logo" src="assets/images/AdazzleHeaderLogo.png" href="https://www.adazzle.com"/> React Data Grid</a>
+            <a className="navbar-brand" href="https://www.adazzle.com"><img className="header-logo" src="assets/images/AdazzleHeaderLogo.png" /></a> <a className="navbar-brand" href="index.html#">React Data Grid</a>
           </div>
           <div className="navbar-collapse collapse">
             <ul className="nav navbar-nav pull-right">

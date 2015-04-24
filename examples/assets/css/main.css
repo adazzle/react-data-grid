@@ -28,7 +28,7 @@
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: 2px solid #300000
+	border: 3px solid #eee;
 }
 
 .grid-examples h3 {
@@ -102,7 +102,7 @@
 .header-logo{
 	width: 100px;
 	margin-top: -9px;
-	margin-right: 5px;
+	margin-right: -4px;
 }
 
 @media (max-width: 767px) {
