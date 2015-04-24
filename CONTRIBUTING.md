@@ -1,3 +1,5 @@
+Use [Github issues](https://github.com/adazzle/react-data-grid/issues) for feature requests and bug reports.
+
 ### Tests
 
 All commits that fix bugs or add features need a test.
