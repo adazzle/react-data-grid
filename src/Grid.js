@@ -42,7 +42,8 @@ var Grid = React.createClass({
 
   getStyle: function(): { overflow: string; outline: number; position: string; minHeight: number } {
     return{
-      overflow: 'hidden',
+      overflowX: 'scroll',
+      overflowY: 'hidden',
       outline: 0,
       position: 'relative',
       minHeight: this.props.minHeight

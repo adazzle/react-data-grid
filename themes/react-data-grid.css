@@ -62,6 +62,7 @@
 }
 
 .react-grid-Grid {
+  overflow: scroll;
   background-color: #ffffff;
   border: 1px solid #dddddd;
 }
