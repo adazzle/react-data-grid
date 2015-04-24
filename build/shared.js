@@ -76,7 +76,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          React.createElement("a", {href: "https://github.com/adazzle/react-grid/fork"}, React.createElement("img", {className: "github-ribbon", src: "http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png", alt: "Fork me on GitHub"})), 
 
 	            React.createElement("button", {type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": ".navbar-collapse"}, React.createElement("span", {className: "icon-bar"}), " ", React.createElement("span", {className: "icon-bar"}), " ", React.createElement("span", {className: "icon-bar"}), " "), 
-	            React.createElement("a", {className: "navbar-brand", href: "index.html#"}, React.createElement("img", {className: "header-logo", src: "/assets/images/AdazzleHeaderLogo.png", href: "https://www.adazzle.com"}), " React Data Grid")
+	            React.createElement("a", {className: "navbar-brand", href: "index.html#"}, React.createElement("img", {className: "header-logo", src: "assets/images/AdazzleHeaderLogo.png", href: "https://www.adazzle.com"}), " React Data Grid")
 	          ), 
 	          React.createElement("div", {className: "navbar-collapse collapse"}, 
 	            React.createElement("ul", {className: "nav navbar-nav pull-right"}, 
