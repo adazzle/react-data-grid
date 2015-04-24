@@ -2,3 +2,4 @@
 =
 Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like http://adazzle.github.io/react-data-grid/  
 
+![alt tag](https://github.com/adazzle/react-data-grid/blob/master/examples/assets/images/datagrid.PNG?raw=true)
