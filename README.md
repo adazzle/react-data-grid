@@ -30,7 +30,7 @@ Features
 --------
 
 - Lightning fast virtual rendering
-- Can render hundreds of thousands of rows with no lag
+- [Can render hundreds of thousands of rows with no lag](http://adazzle.github.io/react-data-grid/examples.html#/million-rows)
 - Keyboard navigation
 - [Fully editable grid](http://adazzle.github.io/react-data-grid/examples.html#/editable)
 - [Rich cell editors like autocomplete, checkbox and dropdown editors, complete with keyboard navigation](http://adazzle.github.io/react-data-grid/examples.html#/editors)
