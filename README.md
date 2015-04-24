@@ -8,3 +8,7 @@ Contributing
 ------------
 
 Please see [CONTRIBUTING](CONTRIBUTING.md)
+
+Credits 
+------------
+This project has been built upon the great work done by [Prometheus Research](https://github.com/prometheusresearch). For the original project, please click [here]( https://github.com/prometheusresearch/react-grid)
