@@ -4,6 +4,49 @@ Excel-like grid component built with React, with editors, keyboard navigation, c
 
 ![alt tag](https://github.com/adazzle/react-data-grid/blob/master/examples/assets/images/datagrid.PNG?raw=true)
 
+Installation
+------------
+
+```sh
+npm install react-data-grid
+# or
+bower install react-data-grid
+```
+
+This library is written with CommonJS modules. If you are using
+browserify, webpack, or similar, you can consume it like anything else
+installed from npm.
+
+There is also a global build available on bower, find the library on
+`window.ReactDataGrid`.
+
+
+Overview 
+--------
+
+ReactDataGrid is an advanced JavaScript spreadsheet component built using React
+
+Features
+--------
+
+- Lightning fast virtual rendering
+- Can render hundreds of thousands of rows with no lag
+- Keyboard navigation
+- [Fully editable grid](http://adazzle.github.io/react-data-grid/examples.html#/editable)
+- [Rich cell editors like autocomplete, checkbox and dropdown editors, complete with keyboard navigation](http://adazzle.github.io/react-data-grid/examples.html#/editors)
+- Custom cell Editors - Easily create your own
+- [Custom cell Formatters](http://adazzle.github.io/react-data-grid/examples.html#/formatters)
+- [Frozen columns](http://adazzle.github.io/react-data-grid/examples.html#/fixed)
+- [Resizable columns](http://adazzle.github.io/react-data-grid/examples.html#/resizable)
+- [Sorting](http://adazzle.github.io/react-data-grid/examples.html#/sortable) 
+- Filtering
+- Copy and Paste values into other cells
+- Multiple cell updates using cell dragdown
+
+
+Check out the `examples` directory to see how simple previously complex UI
+and workflows are to create.
+
 Contributing
 ------------
 
