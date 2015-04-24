@@ -15,6 +15,12 @@
 	height : 600px;
 }
 
+.main-logo {
+	background: url(../images/rsz_adazzlelogo.png) no-repeat center;
+	height: 89px;
+	margin-bottom: -20px
+}
+
 .grid-examples {
 	position : relative;
 	top:200px;
