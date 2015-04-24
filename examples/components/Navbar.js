@@ -7,7 +7,7 @@ module.exports = React.createClass({
       <div className="navbar navbar-fixed-top headroom" >
         <div className="container">
           <div className="navbar-header">
-          <a href="https://github.com/adazzle/react-grid/fork"><img className="github-ribbon" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png" alt="Fork me on GitHub"></img></a>
+          <a href="https://github.com/adazzle/react-data-grid/fork"><img className="github-ribbon" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png" alt="Fork me on GitHub"></img></a>
 
             <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span className="icon-bar"></span> <span className="icon-bar"></span> <span className="icon-bar"></span> </button>
             <a className="navbar-brand" href="https://www.adazzle.com"><img className="header-logo" src="assets/images/AdazzleHeaderLogo.png" /></a> <a className="navbar-brand" href="index.html#">React Data Grid</a>
@@ -32,6 +32,7 @@ module.exports = React.createClass({
                     <li><a href="examples.html#/formatters">Custom Formatters</a></li>
                     <li><a href="examples.html#/editors">Rich Cell Editors</a></li>
                     <li><a href="examples.html#/sortable">Sortable Grid</a></li>
+                    <li><a href="examples.html#/fitlerable">Filterable Grid</a></li>
                     <li><a href="examples.html#/million-rows">One Million Rows</a></li>
                     <li><a href="examples.html#/all-the-features">All-The-Features Grid</a></li>
                     </ul>

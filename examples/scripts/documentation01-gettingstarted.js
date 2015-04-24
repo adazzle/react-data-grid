@@ -5,8 +5,7 @@ module.exports = React.createClass({
         <h2>Getting Started </h2>
         <h3 id="js-installation">Installation</h3>
         <h4>Using Common JS</h4>
-        <p>React Grid is available in the npm repository. You can install it from the command line using the following commands</p>
-        <p><kbd>npm install react --save</kbd></p>
+        <p>React Data Grid is available in the npm repository. You can install it from the command line using the following commands</p>
         <p><kbd>npm install react-data-grid --save</kbd></p>
         <p>Once downloaded, require both React and React Grid and you should be good to go</p>
         <div className="code-block js">

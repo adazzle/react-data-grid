@@ -5,6 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "gulp test",
+    "debug-test": "gulp test --debug true",
+    "examples": "gulp",
     "prepublish": "gulp dist"
   },
   "repository": {
