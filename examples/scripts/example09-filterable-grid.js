@@ -92,7 +92,7 @@ var Example = React.createClass({
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        toolbar={<Toolbar enableFilter={true}/>/>
+        toolbar={<Toolbar enableFilter={true}/>}/>
     )
   }
 
