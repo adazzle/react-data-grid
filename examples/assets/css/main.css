@@ -15,6 +15,12 @@
 	height : 600px;
 }
 
+.main-logo {
+	background: url(../images/AdazzleLogoWhite.png) no-repeat center;
+	height: 89px;
+	margin-bottom: -50px
+}
+
 .grid-examples {
 	position : relative;
 	top:200px;

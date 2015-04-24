@@ -8,6 +8,7 @@ var editableExample  = require('./scripts/example04-editable');
 var formatterExample = require('./scripts/example05-custom-formatters');
 var editorsExample   = require('./scripts/example06-built-in-editors');
 var sortableExample  = require('./scripts/example08-sortable-cols');
+var filterableExample  = require('./scripts/example09-filterable-grid');
 var millionRowsExample = require('./scripts/example10-one-million-rows');
 var fullExample = require('./scripts/example-full');
 
@@ -33,6 +34,7 @@ var routes = (
       <Route name="formatters" handler={formatterExample}/>
       <Route name="editors" handler={editorsExample}/>
       <Route name="sortable" handler={sortableExample}/>
+      <Route name="filterable" handler={filterableExample}/>
       <Route name="million-rows" handler={millionRowsExample}/>
       <Route name="all-the-features" handler={fullExample}/>
   </Route>
