@@ -33,6 +33,8 @@ var Grid = React.createClass({
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
+    sortColumn : React.PropTypes.string.isRequired,
+    sortDirection : React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown : PropTypes.func.isRequired,
     onViewportDragStart : PropTypes.func.isRequired,
@@ -60,6 +62,8 @@ var Grid = React.createClass({
           height={this.props.rowHeight}
           totalWidth={this.DOMMetrics.gridWidth()}
           headerRows={headerRows}
+          sortColumn={this.props.sortColumn}
+          sortDirection={this.props.sortDirection}
           />
         <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
             <Viewport

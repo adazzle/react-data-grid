@@ -45,8 +45,9 @@ var Header = React.createClass({
     var update =  !(ColumnMetrics.sameColumns(this.props.columns.columns, nextProps.columns.columns, ColumnMetrics.sameColumn))
     || this.props.totalWidth != nextProps.totalWidth
     || (this.props.headerRows.length != nextProps.headerRows.length)
-    || (this.state.resizing != nextState.resizing);
-
+    || (this.state.resizing != nextState.resizing)
+    || this.props.sortColumn != nextProps.sortColumn
+    || this.props.sortDirection != nextProps.sortDirection;
     return update;
   },
 
@@ -118,7 +119,7 @@ var Header = React.createClass({
     });
     return pos === -1 ? null : pos;
   },
-  
+
   onColumnResizeEnd(column: Column, width: number) {
     var pos = this.getColumnPosition(column);
     if (pos !== null && this.props.onColumnResize) {

@@ -9,6 +9,40 @@
 	font-weight: 300;
 }
 
+.main-grid {
+	background : url( ../images/datagrid.png) no-repeat center;
+	background-position-y:inherit;
+	height : 600px;
+}
+
+.grid-examples {
+	position : relative;
+	top:200px;
+	width : 500px;
+	display : block;
+	margin-left: auto;
+	margin-right : auto;
+	background-color:white;
+	padding: 5px;
+	background-color: white;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 3px solid #eee;
+}
+
+.grid-examples h3 {
+	text-align : center;
+}
+.grid-examples ul {
+	-moz-column-count : 2;
+	-moz-column-gap :20px;
+	-webkit-column-gap:20px;
+	-webkit-column-count:2;
+	column-count: 2;
+	column-gap: 20px;
+}
+
 #head.secondary {
 	height: 100px;
 	min-height: 100px;
@@ -68,7 +102,7 @@
 .header-logo{
 	width: 100px;
 	margin-top: -9px;
-	margin-right: 5px;
+	margin-right: -4px;
 }
 
 @media (max-width: 767px) {

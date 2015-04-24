@@ -40,32 +40,32 @@ var columns = [
 {
   key: 'task',
   name: 'Title',
-  editable : true
+  sortable : true
 },
 {
   key: 'priority',
   name: 'Priority',
-  editable : true
+  sortable : true
 },
 {
   key: 'issueType',
   name: 'Issue Type',
-  editable : true
+  sortable : true
 },
 {
   key: 'complete',
   name: '% Complete',
-  editable : true
+  sortable : true
 },
 {
   key: 'startDate',
   name: 'Start Date',
-  editable : true
+  sortable : true
 },
 {
   key: 'completeDate',
   name: 'Expected Complete',
-  editable : true
+  sortable : true
 }
 ]
 
@@ -73,29 +73,38 @@ var columns = [
 var Example = React.createClass({
 
   getInitialState : function(){
-    return {rows : createRows(1000)}
+    var originalRows = createRows(1000);
+    var rows = originalRows.slice(0);
+    //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
+    return {originalRows : originalRows, rows : rows};
   },
 
   rowGetter : function(rowIdx){
-    return this.state.rows[rowIdx]
+    return this.state.rows[rowIdx];
   },
 
-  handleRowUpdated : function(e){
-    //merge updated row with current row and rerender by setting state
-    var rows = this.state.rows;
-    Object.assign(rows[e.rowIdx], e.updated);
-    this.setState({rows:rows});
+  handleGridSort : function(sortColumn, sortDirection){
+
+    var comparer = function(a, b) {
+      if(sortDirection === 'ASC'){
+        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
+      }else if(sortDirection === 'DESC'){
+        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
+      }
+    }
+    var rows = sortDirection === 'NONE' ? this.state.originalRows.slice(0) : this.state.rows.sort(comparer);
+    this.setState({rows : rows});
   },
 
   render:function(){
     return(
       <ReactDataGrid
-      enableCellSelect={true}
-      columns={columns}
-      rowGetter={this.rowGetter}
-      rowsCount={this.state.rows.length}
-      minHeight={500}
-      onRowUpdated={this.handleRowUpdated} />
+        onGridSort={this.handleGridSort}
+        columns={columns}
+        rowGetter={this.rowGetter}
+        rowsCount={this.state.rows.length}
+        minHeight={500}
+        onRowUpdated={this.handleRowUpdated} />
     )
   }
 
@@ -104,15 +113,16 @@ var Example = React.createClass({
 React.render(<Example />, mountNode);
 `;
 
-  module.exports = React.createClass({
+module.exports = React.createClass({
 
-    render:function(){
-      return(
-        <div>
-          <h3>Editable Example</h3>
-          <ReactPlayground codeText={EditableExample} />
-        </div>
-      )
-    }
+  render:function(){
+    return(
+      <div>
+      <h3>Sortable Columns Example</h3>
+      <p>While ReactDataGrid doesnt not provide the ability to sort directly, it does provide hooks that allow you to provide your own sort function. This is done via the <code>onGridSort</code> prop. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Now when the header cell is clicked for that column, <code>onGridSort</code> will be triggered passing the column name and the sort direction.</p>
+      <ReactPlayground codeText={EditableExample} />
+      </div>
+    )
+  }
 
-  });
+});
