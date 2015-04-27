@@ -113,7 +113,8 @@ var Header = React.createClass({
     var state = this.state.resizing || this.props;
     var pos = -1;
     state.columns.columns.forEach((c,idx) => {
-      if(c.key === column.key){
+      var identifier = c.Id ? 'Id' : 'key';
+      if(c[identifier] === column[identifier]){
         pos = idx;
       }
     });
