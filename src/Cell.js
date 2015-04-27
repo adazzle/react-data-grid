@@ -106,7 +106,7 @@ var Cell = React.createClass({
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
     return (<div
-      className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>)
+      className="react-grid-Cell__value" title={this.props.value}>{CellContent} {this.props.cellControls}</div>)
     },
 
   isSelected: function(): boolean {

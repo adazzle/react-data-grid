@@ -40,7 +40,7 @@ var Viewport = React.createClass({
       bottom: 0,
       left: 0,
       right: 0,
-      overflow: 'hidden',
+      //overflow: 'hidden',
       position: 'absolute',
       top: this.props.rowOffsetHeight
     };
