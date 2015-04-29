@@ -46,15 +46,26 @@ module.exports = {
 
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
-        var index = {};
-        this.state.columns.columns.forEach((c) => {
-          index[c.key] = {width: c.width, left: c.left};
-        });
-        var nextColumns = Object.assign(this.state.columns, {
-          columns: nextProps.columns.map((c) => Object.assign(c, index[c.key]))
-        });
+      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
+        var columnMetrics = this.getColumnMetricsType(nextProps);
+        columnMetrics.columns = this.adjustColumnWidths(columnMetrics.columns);
+        this.setState(columnMetrics);
+      } else {
+        var nextColumns = this.adjustColumnWidths(nextProps);
         this.setState({columns: nextColumns});
       }
+    }
+  },
+
+  adjustColumnWidths(columns: ColumnMetricsType){
+    var index = {};
+    this.state.columns.columns.forEach((c) => {
+      index[c.key] = {width: c.width, left: c.left};
+    });
+    var nextColumns = Object.assign(this.state.columns, {
+      columns: columns.columns.map((c) => Object.assign(c, index[c.key]))
+    });
+    return nextColumns;
   },
 
   getColumnMetricsType(props: ColumnMetricsType, initial: ?number): { columns: ColumnMetricsType; gridWidth: number } {

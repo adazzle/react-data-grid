@@ -17,6 +17,9 @@
     "react",
     "grid"
   ],
+  "peerDependencies" : {
+    "react" : "~0.12.2"
+  },
   "dependencies": {
     "classnames": "^1.2.0",
     "es5-shim": "^4.0.3",
