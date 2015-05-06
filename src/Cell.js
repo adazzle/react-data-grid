@@ -189,6 +189,7 @@ var Cell = React.createClass({
 
   getCellClass : function(): string {
     var className = joinClasses(
+      this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
       this.props.column.locked ? 'react-grid-Cell--locked' : null

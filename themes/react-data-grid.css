@@ -404,3 +404,7 @@ textarea.react-autocomplete-Autocomplete__search {
   color: #262626;
   background-color: whitesmoke;
 }
+
+.react-grid-Cell.readonly {
+  background-color : black;
+}
