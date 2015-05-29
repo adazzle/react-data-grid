@@ -51,9 +51,7 @@ var EditorContainer = React.createClass({
     }
   },
 
-  componentWillUnmount(){
-    this.commit({key : 'Tab'});
-  },
+
 
   validateEditor(){
     var editor = this.props.column.editor;
