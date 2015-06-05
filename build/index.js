@@ -473,6 +473,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* 3 */
 	/***/ function(module, exports, __webpack_require__) {
 
+		var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+		  Copyright (c) 2015 Jed Watson.
+		  Licensed under the MIT License (MIT), see
+		  http://jedwatson.github.io/classnames
+		*/
+
 		function classNames() {
 			var classes = '';
 			var arg;
@@ -499,9 +505,16 @@ return /******/ (function(modules) { // webpackBootstrap
 			return classes.substr(1);
 		}
 
-		// safely export classNames in case the script is included directly on a page
+		// safely export classNames for node / browserify
 		if (typeof module !== 'undefined' && module.exports) {
 			module.exports = classNames;
+		}
+
+		// safely export classNames for RequireJS
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		}
 
 
@@ -1637,6 +1650,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  getCellClass : function()         {
 		    var className = joinClasses(
+		      this.props.column.cellClass,
 		      'react-grid-Cell',
 		      this.props.className,
 		      this.props.column.locked ? 'react-grid-Cell--locked' : null
@@ -2760,15 +2774,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  componentWillReceiveProps:function(nextProps                   ) {
 		    if (nextProps.columns) {
-		        var index = {};
-		        this.state.columns.columns.forEach(function(c)  {
-		          index[c.key] = {width: c.width, left: c.left};
-		        });
-		        var nextColumns = Object.assign(this.state.columns, {
-		          columns: nextProps.columns.map(function(c)  {return Object.assign(c, index[c.key]);})
-		        });
+		      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
+		        var columnMetrics = this.getColumnMetricsType(nextProps);
+		        columnMetrics.columns = this.adjustColumnWidths(columnMetrics.columns);
+		        this.setState(columnMetrics);
+		      } else {
+		        var nextColumns = this.adjustColumnWidths(nextProps);
 		        this.setState({columns: nextColumns});
 		      }
+		    }
+		  },
+
+		  adjustColumnWidths:function(columns                   ){
+		    var index = {};
+		    this.state.columns.columns.forEach(function(c)  {
+		      index[c.key] = {width: c.width, left: c.left};
+		    });
+		    var nextColumns = Object.assign(this.state.columns, {
+		      columns: columns.columns.map(function(c)  {return Object.assign(c, index[c.key]);})
+		    });
+		    return nextColumns;
 		  },
 
 		  getColumnMetricsType:function(props                   , initial         )                                                    {
@@ -3152,7 +3177,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		    var state = this.state.resizing || this.props;
 		    var pos = -1;
 		    state.columns.columns.forEach(function(c,idx)  {
-		      if(c.key === column.key){
+		      var identifier = 'key';
+		      if(c[identifier] === column[identifier]){
 		        pos = idx;
 		      }
 		    });
@@ -3741,13 +3767,13 @@ return /******/ (function(modules) { // webpackBootstrap
 		  componentWillReceiveProps:function(nextProps                                          ) {
 		    if (this.props.rowHeight !== nextProps.rowHeight) {
 		      this.setState(this.getGridState(nextProps));
-		    } else if (this.props.totalRows !== nextProps.totalRows) {
+		    } else if (this.props.rowsCount !== nextProps.rowsCount) {
 		      this.updateScroll(
 		        this.state.scrollTop,
 		        this.state.scrollLeft,
 		        this.state.height,
 		        nextProps.rowHeight,
-		        nextProps.totalRows
+		        nextProps.rowsCount
 		      );
 		    }
 		  }
@@ -3983,9 +4009,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		    }
 		  },
 
-		  componentWillUnmount:function(){
-		    this.commit({key : 'Tab'});
-		  },
+
 
 		  validateEditor:function(){
 		    var editor = this.props.column.editor;
@@ -4427,18 +4451,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  onPressKeyWithCtrl:function(e                        ){
 		    var keys = {
-		      KeyCode_c : '99',
-		      KeyCode_C : '67',
-		      KeyCode_V : '86',
-		      KeyCode_v : '118',
+		      KeyCode_c : 99,
+		      KeyCode_C : 67,
+		      KeyCode_V : 86,
+		      KeyCode_v : 118,
 		    }
 
 		    var idx = this.state.selected.idx
 		    if(this.canEdit(idx)){
-		      if(e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C){
+		      if(e.keyCode == keys.KeyCode_c || e.keyCode == keys.KeyCode_C){
 		        var value = this.getSelectedValue();
 		        this.handleCopy({value : value});
-		      }else if(e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V){
+		      }else if(e.keyCode == keys.KeyCode_v || e.keyCode == keys.KeyCode_V){
 		        this.handlePaste();
 		      }
 		    }
@@ -6015,6 +6039,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+
 	function classNames() {
 		var classes = '';
 		var arg;
@@ -6041,9 +6071,16 @@ return /******/ (function(modules) { // webpackBootstrap
 		return classes.substr(1);
 	}
 
-	// safely export classNames in case the script is included directly on a page
+	// safely export classNames for node / browserify
 	if (typeof module !== 'undefined' && module.exports) {
 		module.exports = classNames;
+	}
+
+	// safely export classNames for RequireJS
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+			return classNames;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	}
 
 

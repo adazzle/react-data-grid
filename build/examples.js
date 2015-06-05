@@ -1526,6 +1526,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* 3 */
 	/***/ function(module, exports, __webpack_require__) {
 
+		var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+		  Copyright (c) 2015 Jed Watson.
+		  Licensed under the MIT License (MIT), see
+		  http://jedwatson.github.io/classnames
+		*/
+
 		function classNames() {
 			var classes = '';
 			var arg;
@@ -1552,9 +1558,16 @@ return /******/ (function(modules) { // webpackBootstrap
 			return classes.substr(1);
 		}
 
-		// safely export classNames in case the script is included directly on a page
+		// safely export classNames for node / browserify
 		if (typeof module !== 'undefined' && module.exports) {
 			module.exports = classNames;
+		}
+
+		// safely export classNames for RequireJS
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		}
 
 
@@ -2690,6 +2703,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  getCellClass : function()         {
 		    var className = joinClasses(
+		      this.props.column.cellClass,
 		      'react-grid-Cell',
 		      this.props.className,
 		      this.props.column.locked ? 'react-grid-Cell--locked' : null
@@ -3813,15 +3827,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  componentWillReceiveProps:function(nextProps                   ) {
 		    if (nextProps.columns) {
-		        var index = {};
-		        this.state.columns.columns.forEach(function(c)  {
-		          index[c.key] = {width: c.width, left: c.left};
-		        });
-		        var nextColumns = Object.assign(this.state.columns, {
-		          columns: nextProps.columns.map(function(c)  {return Object.assign(c, index[c.key]);})
-		        });
+		      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
+		        var columnMetrics = this.getColumnMetricsType(nextProps);
+		        columnMetrics.columns = this.adjustColumnWidths(columnMetrics.columns);
+		        this.setState(columnMetrics);
+		      } else {
+		        var nextColumns = this.adjustColumnWidths(nextProps);
 		        this.setState({columns: nextColumns});
 		      }
+		    }
+		  },
+
+		  adjustColumnWidths:function(columns                   ){
+		    var index = {};
+		    this.state.columns.columns.forEach(function(c)  {
+		      index[c.key] = {width: c.width, left: c.left};
+		    });
+		    var nextColumns = Object.assign(this.state.columns, {
+		      columns: columns.columns.map(function(c)  {return Object.assign(c, index[c.key]);})
+		    });
+		    return nextColumns;
 		  },
 
 		  getColumnMetricsType:function(props                   , initial         )                                                    {
@@ -4205,7 +4230,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		    var state = this.state.resizing || this.props;
 		    var pos = -1;
 		    state.columns.columns.forEach(function(c,idx)  {
-		      if(c.key === column.key){
+		      var identifier = 'key';
+		      if(c[identifier] === column[identifier]){
 		        pos = idx;
 		      }
 		    });
@@ -4794,13 +4820,13 @@ return /******/ (function(modules) { // webpackBootstrap
 		  componentWillReceiveProps:function(nextProps                                          ) {
 		    if (this.props.rowHeight !== nextProps.rowHeight) {
 		      this.setState(this.getGridState(nextProps));
-		    } else if (this.props.totalRows !== nextProps.totalRows) {
+		    } else if (this.props.rowsCount !== nextProps.rowsCount) {
 		      this.updateScroll(
 		        this.state.scrollTop,
 		        this.state.scrollLeft,
 		        this.state.height,
 		        nextProps.rowHeight,
-		        nextProps.totalRows
+		        nextProps.rowsCount
 		      );
 		    }
 		  }
@@ -5036,9 +5062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		    }
 		  },
 
-		  componentWillUnmount:function(){
-		    this.commit({key : 'Tab'});
-		  },
+
 
 		  validateEditor:function(){
 		    var editor = this.props.column.editor;
@@ -5480,18 +5504,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  onPressKeyWithCtrl:function(e                        ){
 		    var keys = {
-		      KeyCode_c : '99',
-		      KeyCode_C : '67',
-		      KeyCode_V : '86',
-		      KeyCode_v : '118',
+		      KeyCode_c : 99,
+		      KeyCode_C : 67,
+		      KeyCode_V : 86,
+		      KeyCode_v : 118,
 		    }
 
 		    var idx = this.state.selected.idx
 		    if(this.canEdit(idx)){
-		      if(e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C){
+		      if(e.keyCode == keys.KeyCode_c || e.keyCode == keys.KeyCode_C){
 		        var value = this.getSelectedValue();
 		        this.handleCopy({value : value});
-		      }else if(e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V){
+		      }else if(e.keyCode == keys.KeyCode_v || e.keyCode == keys.KeyCode_V){
 		        this.handlePaste();
 		      }
 		    }
@@ -7016,68 +7040,149 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * By augmenting the instances, we can avoid modifying the `Uint8Array`
 	 * prototype.
 	 */
-	function Buffer (subject, encoding) {
-	  var self = this
-	  if (!(self instanceof Buffer)) return new Buffer(subject, encoding)
+	function Buffer (arg) {
+	  if (!(this instanceof Buffer)) {
+	    // Avoid going through an ArgumentsAdaptorTrampoline in the common case.
+	    if (arguments.length > 1) return new Buffer(arg, arguments[1])
+	    return new Buffer(arg)
+	  }
 
-	  var type = typeof subject
-	  var length
+	  this.length = 0
+	  this.parent = undefined
 
-	  if (type === 'number') {
-	    length = +subject
-	  } else if (type === 'string') {
-	    length = Buffer.byteLength(subject, encoding)
-	  } else if (type === 'object' && subject !== null) {
-	    // assume object is array-like
-	    if (subject.type === 'Buffer' && isArray(subject.data)) subject = subject.data
-	    length = +subject.length
-	  } else {
+	  // Common case.
+	  if (typeof arg === 'number') {
+	    return fromNumber(this, arg)
+	  }
+
+	  // Slightly less common case.
+	  if (typeof arg === 'string') {
+	    return fromString(this, arg, arguments.length > 1 ? arguments[1] : 'utf8')
+	  }
+
+	  // Unusual.
+	  return fromObject(this, arg)
+	}
+
+	function fromNumber (that, length) {
+	  that = allocate(that, length < 0 ? 0 : checked(length) | 0)
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+	    for (var i = 0; i < length; i++) {
+	      that[i] = 0
+	    }
+	  }
+	  return that
+	}
+
+	function fromString (that, string, encoding) {
+	  if (typeof encoding !== 'string' || encoding === '') encoding = 'utf8'
+
+	  // Assumption: byteLength() return value is always < kMaxLength.
+	  var length = byteLength(string, encoding) | 0
+	  that = allocate(that, length)
+
+	  that.write(string, encoding)
+	  return that
+	}
+
+	function fromObject (that, object) {
+	  if (Buffer.isBuffer(object)) return fromBuffer(that, object)
+
+	  if (isArray(object)) return fromArray(that, object)
+
+	  if (object == null) {
 	    throw new TypeError('must start with number, buffer, array or string')
 	  }
 
-	  if (length > kMaxLength) {
-	    throw new RangeError('Attempt to allocate Buffer larger than maximum size: 0x' +
-	      kMaxLength.toString(16) + ' bytes')
+	  if (typeof ArrayBuffer !== 'undefined' && object.buffer instanceof ArrayBuffer) {
+	    return fromTypedArray(that, object)
 	  }
 
-	  if (length < 0) length = 0
-	  else length >>>= 0 // coerce to uint32
+	  if (object.length) return fromArrayLike(that, object)
 
+	  return fromJsonObject(that, object)
+	}
+
+	function fromBuffer (that, buffer) {
+	  var length = checked(buffer.length) | 0
+	  that = allocate(that, length)
+	  buffer.copy(that, 0, 0, length)
+	  return that
+	}
+
+	function fromArray (that, array) {
+	  var length = checked(array.length) | 0
+	  that = allocate(that, length)
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	// Duplicate of fromArray() to keep fromArray() monomorphic.
+	function fromTypedArray (that, array) {
+	  var length = checked(array.length) | 0
+	  that = allocate(that, length)
+	  // Truncating the elements is probably not what people expect from typed
+	  // arrays with BYTES_PER_ELEMENT > 1 but it's compatible with the behavior
+	  // of the old Buffer constructor.
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	function fromArrayLike (that, array) {
+	  var length = checked(array.length) | 0
+	  that = allocate(that, length)
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	// Deserialize { type: 'Buffer', data: [1,2,3,...] } into a Buffer object.
+	// Returns a zero-length buffer for inputs that don't conform to the spec.
+	function fromJsonObject (that, object) {
+	  var array
+	  var length = 0
+
+	  if (object.type === 'Buffer' && isArray(object.data)) {
+	    array = object.data
+	    length = checked(array.length) | 0
+	  }
+	  that = allocate(that, length)
+
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	function allocate (that, length) {
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
-	    // Preferred: Return an augmented `Uint8Array` instance for best performance
-	    self = Buffer._augment(new Uint8Array(length)) // eslint-disable-line consistent-this
+	    // Return an augmented `Uint8Array` instance, for best performance
+	    that = Buffer._augment(new Uint8Array(length))
 	  } else {
-	    // Fallback: Return THIS instance of Buffer (created by `new`)
-	    self.length = length
-	    self._isBuffer = true
+	    // Fallback: Return an object instance of the Buffer class
+	    that.length = length
+	    that._isBuffer = true
 	  }
 
-	  var i
-	  if (Buffer.TYPED_ARRAY_SUPPORT && typeof subject.byteLength === 'number') {
-	    // Speed optimization -- use set if we're copying from a typed array
-	    self._set(subject)
-	  } else if (isArrayish(subject)) {
-	    // Treat array-ish objects as a byte array
-	    if (Buffer.isBuffer(subject)) {
-	      for (i = 0; i < length; i++) {
-	        self[i] = subject.readUInt8(i)
-	      }
-	    } else {
-	      for (i = 0; i < length; i++) {
-	        self[i] = ((subject[i] % 256) + 256) % 256
-	      }
-	    }
-	  } else if (type === 'string') {
-	    self.write(subject, 0, encoding)
-	  } else if (type === 'number' && !Buffer.TYPED_ARRAY_SUPPORT) {
-	    for (i = 0; i < length; i++) {
-	      self[i] = 0
-	    }
+	  var fromPool = length !== 0 && length <= Buffer.poolSize >>> 1
+	  if (fromPool) that.parent = rootParent
+
+	  return that
+	}
+
+	function checked (length) {
+	  // Note: cannot use `length < kMaxLength` here because that fails when
+	  // length is NaN (which is otherwise coerced to zero.)
+	  if (length >= kMaxLength) {
+	    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+	                         'size: 0x' + kMaxLength.toString(16) + ' bytes')
 	  }
-
-	  if (length > 0 && length <= Buffer.poolSize) self.parent = rootParent
-
-	  return self
+	  return length | 0
 	}
 
 	function SlowBuffer (subject, encoding) {
@@ -7101,11 +7206,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var x = a.length
 	  var y = b.length
-	  for (var i = 0, len = Math.min(x, y); i < len && a[i] === b[i]; i++) {}
+
+	  var i = 0
+	  var len = Math.min(x, y)
+	  while (i < len) {
+	    if (a[i] !== b[i]) break
+
+	    ++i
+	  }
+
 	  if (i !== len) {
 	    x = a[i]
 	    y = b[i]
 	  }
+
 	  if (x < y) return -1
 	  if (y < x) return 1
 	  return 0
@@ -7130,7 +7244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
-	Buffer.concat = function concat (list, totalLength) {
+	Buffer.concat = function concat (list, length) {
 	  if (!isArray(list)) throw new TypeError('list argument must be an Array of Buffers.')
 
 	  if (list.length === 0) {
@@ -7140,14 +7254,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  var i
-	  if (totalLength === undefined) {
-	    totalLength = 0
+	  if (length === undefined) {
+	    length = 0
 	    for (i = 0; i < list.length; i++) {
-	      totalLength += list[i].length
+	      length += list[i].length
 	    }
 	  }
 
-	  var buf = new Buffer(totalLength)
+	  var buf = new Buffer(length)
 	  var pos = 0
 	  for (i = 0; i < list.length; i++) {
 	    var item = list[i]
@@ -7157,36 +7271,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return buf
 	}
 
-	Buffer.byteLength = function byteLength (str, encoding) {
-	  var ret
-	  str = str + ''
+	function byteLength (string, encoding) {
+	  if (typeof string !== 'string') string = String(string)
+
+	  if (string.length === 0) return 0
+
 	  switch (encoding || 'utf8') {
 	    case 'ascii':
 	    case 'binary':
 	    case 'raw':
-	      ret = str.length
-	      break
+	      return string.length
 	    case 'ucs2':
 	    case 'ucs-2':
 	    case 'utf16le':
 	    case 'utf-16le':
-	      ret = str.length * 2
-	      break
+	      return string.length * 2
 	    case 'hex':
-	      ret = str.length >>> 1
-	      break
+	      return string.length >>> 1
 	    case 'utf8':
 	    case 'utf-8':
-	      ret = utf8ToBytes(str).length
-	      break
+	      return utf8ToBytes(string).length
 	    case 'base64':
-	      ret = base64ToBytes(str).length
-	      break
+	      return base64ToBytes(string).length
 	    default:
-	      ret = str.length
+	      return string.length
 	  }
-	  return ret
 	}
+	Buffer.byteLength = byteLength
 
 	// pre-set for values that may exist in the future
 	Buffer.prototype.length = undefined
@@ -7196,8 +7307,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	Buffer.prototype.toString = function toString (encoding, start, end) {
 	  var loweredCase = false
 
-	  start = start >>> 0
-	  end = end === undefined || end === Infinity ? this.length : end >>> 0
+	  start = start | 0
+	  end = end === undefined || end === Infinity ? this.length : end | 0
 
 	  if (!encoding) encoding = 'utf8'
 	  if (start < 0) start = 0
@@ -7339,13 +7450,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function utf8Write (buf, string, offset, length) {
-	  var charsWritten = blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
-	  return charsWritten
+	  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
 	}
 
 	function asciiWrite (buf, string, offset, length) {
-	  var charsWritten = blitBuffer(asciiToBytes(string), buf, offset, length)
-	  return charsWritten
+	  return blitBuffer(asciiToBytes(string), buf, offset, length)
 	}
 
 	function binaryWrite (buf, string, offset, length) {
@@ -7353,75 +7462,83 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function base64Write (buf, string, offset, length) {
-	  var charsWritten = blitBuffer(base64ToBytes(string), buf, offset, length)
-	  return charsWritten
+	  return blitBuffer(base64ToBytes(string), buf, offset, length)
 	}
 
-	function utf16leWrite (buf, string, offset, length) {
-	  var charsWritten = blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
-	  return charsWritten
+	function ucs2Write (buf, string, offset, length) {
+	  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
 	}
 
 	Buffer.prototype.write = function write (string, offset, length, encoding) {
-	  // Support both (string, offset, length, encoding)
-	  // and the legacy (string, encoding, offset, length)
-	  if (isFinite(offset)) {
-	    if (!isFinite(length)) {
+	  // Buffer#write(string)
+	  if (offset === undefined) {
+	    encoding = 'utf8'
+	    length = this.length
+	    offset = 0
+	  // Buffer#write(string, encoding)
+	  } else if (length === undefined && typeof offset === 'string') {
+	    encoding = offset
+	    length = this.length
+	    offset = 0
+	  // Buffer#write(string, offset[, length][, encoding])
+	  } else if (isFinite(offset)) {
+	    offset = offset | 0
+	    if (isFinite(length)) {
+	      length = length | 0
+	      if (encoding === undefined) encoding = 'utf8'
+	    } else {
 	      encoding = length
 	      length = undefined
 	    }
-	  } else {  // legacy
+	  // legacy write(string, encoding, offset, length) - remove in v0.13
+	  } else {
 	    var swap = encoding
 	    encoding = offset
-	    offset = length
+	    offset = length | 0
 	    length = swap
 	  }
 
-	  offset = Number(offset) || 0
+	  var remaining = this.length - offset
+	  if (length === undefined || length > remaining) length = remaining
 
-	  if (length < 0 || offset < 0 || offset > this.length) {
+	  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
 	    throw new RangeError('attempt to write outside buffer bounds')
 	  }
 
-	  var remaining = this.length - offset
-	  if (!length) {
-	    length = remaining
-	  } else {
-	    length = Number(length)
-	    if (length > remaining) {
-	      length = remaining
+	  if (!encoding) encoding = 'utf8'
+
+	  var loweredCase = false
+	  for (;;) {
+	    switch (encoding) {
+	      case 'hex':
+	        return hexWrite(this, string, offset, length)
+
+	      case 'utf8':
+	      case 'utf-8':
+	        return utf8Write(this, string, offset, length)
+
+	      case 'ascii':
+	        return asciiWrite(this, string, offset, length)
+
+	      case 'binary':
+	        return binaryWrite(this, string, offset, length)
+
+	      case 'base64':
+	        // Warning: maxLength not taken into account in base64Write
+	        return base64Write(this, string, offset, length)
+
+	      case 'ucs2':
+	      case 'ucs-2':
+	      case 'utf16le':
+	      case 'utf-16le':
+	        return ucs2Write(this, string, offset, length)
+
+	      default:
+	        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+	        encoding = ('' + encoding).toLowerCase()
+	        loweredCase = true
 	    }
 	  }
-	  encoding = String(encoding || 'utf8').toLowerCase()
-
-	  var ret
-	  switch (encoding) {
-	    case 'hex':
-	      ret = hexWrite(this, string, offset, length)
-	      break
-	    case 'utf8':
-	    case 'utf-8':
-	      ret = utf8Write(this, string, offset, length)
-	      break
-	    case 'ascii':
-	      ret = asciiWrite(this, string, offset, length)
-	      break
-	    case 'binary':
-	      ret = binaryWrite(this, string, offset, length)
-	      break
-	    case 'base64':
-	      ret = base64Write(this, string, offset, length)
-	      break
-	    case 'ucs2':
-	    case 'ucs-2':
-	    case 'utf16le':
-	    case 'utf-16le':
-	      ret = utf16leWrite(this, string, offset, length)
-	      break
-	    default:
-	      throw new TypeError('Unknown encoding: ' + encoding)
-	  }
-	  return ret
 	}
 
 	Buffer.prototype.toJSON = function toJSON () {
@@ -7544,8 +7661,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
-	  offset = offset >>> 0
-	  byteLength = byteLength >>> 0
+	  offset = offset | 0
+	  byteLength = byteLength | 0
 	  if (!noAssert) checkOffset(offset, byteLength, this.length)
 
 	  var val = this[offset]
@@ -7559,8 +7676,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
-	  offset = offset >>> 0
-	  byteLength = byteLength >>> 0
+	  offset = offset | 0
+	  byteLength = byteLength | 0
 	  if (!noAssert) {
 	    checkOffset(offset, byteLength, this.length)
 	  }
@@ -7608,8 +7725,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
-	  offset = offset >>> 0
-	  byteLength = byteLength >>> 0
+	  offset = offset | 0
+	  byteLength = byteLength | 0
 	  if (!noAssert) checkOffset(offset, byteLength, this.length)
 
 	  var val = this[offset]
@@ -7626,8 +7743,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
-	  offset = offset >>> 0
-	  byteLength = byteLength >>> 0
+	  offset = offset | 0
+	  byteLength = byteLength | 0
 	  if (!noAssert) checkOffset(offset, byteLength, this.length)
 
 	  var i = byteLength
@@ -7707,15 +7824,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
-	  byteLength = byteLength >>> 0
+	  offset = offset | 0
+	  byteLength = byteLength | 0
 	  if (!noAssert) checkInt(this, value, offset, byteLength, Math.pow(2, 8 * byteLength), 0)
 
 	  var mul = 1
 	  var i = 0
 	  this[offset] = value & 0xFF
 	  while (++i < byteLength && (mul *= 0x100)) {
-	    this[offset + i] = (value / mul) >>> 0 & 0xFF
+	    this[offset + i] = (value / mul) & 0xFF
 	  }
 
 	  return offset + byteLength
@@ -7723,15 +7840,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
-	  byteLength = byteLength >>> 0
+	  offset = offset | 0
+	  byteLength = byteLength | 0
 	  if (!noAssert) checkInt(this, value, offset, byteLength, Math.pow(2, 8 * byteLength), 0)
 
 	  var i = byteLength - 1
 	  var mul = 1
 	  this[offset + i] = value & 0xFF
 	  while (--i >= 0 && (mul *= 0x100)) {
-	    this[offset + i] = (value / mul) >>> 0 & 0xFF
+	    this[offset + i] = (value / mul) & 0xFF
 	  }
 
 	  return offset + byteLength
@@ -7739,7 +7856,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
 	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
 	  this[offset] = value
@@ -7756,7 +7873,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = value
@@ -7769,7 +7886,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 8)
@@ -7789,7 +7906,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset + 3] = (value >>> 24)
@@ -7804,7 +7921,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 24)
@@ -7819,13 +7936,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) {
-	    checkInt(
-	      this, value, offset, byteLength,
-	      Math.pow(2, 8 * byteLength - 1) - 1,
-	      -Math.pow(2, 8 * byteLength - 1)
-	    )
+	    var limit = Math.pow(2, 8 * byteLength - 1)
+
+	    checkInt(this, value, offset, byteLength, limit - 1, -limit)
 	  }
 
 	  var i = 0
@@ -7841,13 +7956,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) {
-	    checkInt(
-	      this, value, offset, byteLength,
-	      Math.pow(2, 8 * byteLength - 1) - 1,
-	      -Math.pow(2, 8 * byteLength - 1)
-	    )
+	    var limit = Math.pow(2, 8 * byteLength - 1)
+
+	    checkInt(this, value, offset, byteLength, limit - 1, -limit)
 	  }
 
 	  var i = byteLength - 1
@@ -7863,7 +7976,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
 	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
 	  if (value < 0) value = 0xff + value + 1
@@ -7873,7 +7986,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = value
@@ -7886,7 +7999,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 8)
@@ -7899,7 +8012,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = value
@@ -7914,7 +8027,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
 	  value = +value
-	  offset = offset >>> 0
+	  offset = offset | 0
 	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
 	  if (value < 0) value = 0xffffffff + value + 1
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
@@ -7967,11 +8080,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-	Buffer.prototype.copy = function copy (target, target_start, start, end) {
+	Buffer.prototype.copy = function copy (target, targetStart, start, end) {
 	  if (!start) start = 0
 	  if (!end && end !== 0) end = this.length
-	  if (target_start >= target.length) target_start = target.length
-	  if (!target_start) target_start = 0
+	  if (targetStart >= target.length) targetStart = target.length
+	  if (!targetStart) targetStart = 0
 	  if (end > 0 && end < start) end = start
 
 	  // Copy 0 bytes; we're done
@@ -7979,7 +8092,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (target.length === 0 || this.length === 0) return 0
 
 	  // Fatal error conditions
-	  if (target_start < 0) {
+	  if (targetStart < 0) {
 	    throw new RangeError('targetStart out of bounds')
 	  }
 	  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
@@ -7987,18 +8100,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // Are we oob?
 	  if (end > this.length) end = this.length
-	  if (target.length - target_start < end - start) {
-	    end = target.length - target_start + start
+	  if (target.length - targetStart < end - start) {
+	    end = target.length - targetStart + start
 	  }
 
 	  var len = end - start
 
 	  if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
 	    for (var i = 0; i < len; i++) {
-	      target[i + target_start] = this[i + start]
+	      target[i + targetStart] = this[i + start]
 	    }
 	  } else {
-	    target._set(this.subarray(start, start + len), target_start)
+	    target._set(this.subarray(start, start + len), targetStart)
 	  }
 
 	  return len
@@ -8143,12 +8256,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	function stringtrim (str) {
 	  if (str.trim) return str.trim()
 	  return str.replace(/^\s+|\s+$/g, '')
-	}
-
-	function isArrayish (subject) {
-	  return isArray(subject) || Buffer.isBuffer(subject) ||
-	      subject && typeof subject === 'object' &&
-	      typeof subject.length === 'number'
 	}
 
 	function toHex (n) {
@@ -8387,6 +8494,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* 3 */
 	/***/ function(module, exports, __webpack_require__) {
 
+		var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+		  Copyright (c) 2015 Jed Watson.
+		  Licensed under the MIT License (MIT), see
+		  http://jedwatson.github.io/classnames
+		*/
+
 		function classNames() {
 			var classes = '';
 			var arg;
@@ -8413,9 +8526,16 @@ return /******/ (function(modules) { // webpackBootstrap
 			return classes.substr(1);
 		}
 
-		// safely export classNames in case the script is included directly on a page
+		// safely export classNames for node / browserify
 		if (typeof module !== 'undefined' && module.exports) {
 			module.exports = classNames;
+		}
+
+		// safely export classNames for RequireJS
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 		}
 
 
@@ -9551,6 +9671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  getCellClass : function()         {
 		    var className = joinClasses(
+		      this.props.column.cellClass,
 		      'react-grid-Cell',
 		      this.props.className,
 		      this.props.column.locked ? 'react-grid-Cell--locked' : null
@@ -10674,15 +10795,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  componentWillReceiveProps:function(nextProps                   ) {
 		    if (nextProps.columns) {
-		        var index = {};
-		        this.state.columns.columns.forEach(function(c)  {
-		          index[c.key] = {width: c.width, left: c.left};
-		        });
-		        var nextColumns = Object.assign(this.state.columns, {
-		          columns: nextProps.columns.map(function(c)  {return Object.assign(c, index[c.key]);})
-		        });
+		      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
+		        var columnMetrics = this.getColumnMetricsType(nextProps);
+		        columnMetrics.columns = this.adjustColumnWidths(columnMetrics.columns);
+		        this.setState(columnMetrics);
+		      } else {
+		        var nextColumns = this.adjustColumnWidths(nextProps);
 		        this.setState({columns: nextColumns});
 		      }
+		    }
+		  },
+
+		  adjustColumnWidths:function(columns                   ){
+		    var index = {};
+		    this.state.columns.columns.forEach(function(c)  {
+		      index[c.key] = {width: c.width, left: c.left};
+		    });
+		    var nextColumns = Object.assign(this.state.columns, {
+		      columns: columns.columns.map(function(c)  {return Object.assign(c, index[c.key]);})
+		    });
+		    return nextColumns;
 		  },
 
 		  getColumnMetricsType:function(props                   , initial         )                                                    {
@@ -11066,7 +11198,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		    var state = this.state.resizing || this.props;
 		    var pos = -1;
 		    state.columns.columns.forEach(function(c,idx)  {
-		      if(c.key === column.key){
+		      var identifier = 'key';
+		      if(c[identifier] === column[identifier]){
 		        pos = idx;
 		      }
 		    });
@@ -11655,13 +11788,13 @@ return /******/ (function(modules) { // webpackBootstrap
 		  componentWillReceiveProps:function(nextProps                                          ) {
 		    if (this.props.rowHeight !== nextProps.rowHeight) {
 		      this.setState(this.getGridState(nextProps));
-		    } else if (this.props.totalRows !== nextProps.totalRows) {
+		    } else if (this.props.rowsCount !== nextProps.rowsCount) {
 		      this.updateScroll(
 		        this.state.scrollTop,
 		        this.state.scrollLeft,
 		        this.state.height,
 		        nextProps.rowHeight,
-		        nextProps.totalRows
+		        nextProps.rowsCount
 		      );
 		    }
 		  }
@@ -11897,9 +12030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		    }
 		  },
 
-		  componentWillUnmount:function(){
-		    this.commit({key : 'Tab'});
-		  },
+
 
 		  validateEditor:function(){
 		    var editor = this.props.column.editor;
@@ -12341,18 +12472,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  onPressKeyWithCtrl:function(e                        ){
 		    var keys = {
-		      KeyCode_c : '99',
-		      KeyCode_C : '67',
-		      KeyCode_V : '86',
-		      KeyCode_v : '118',
+		      KeyCode_c : 99,
+		      KeyCode_C : 67,
+		      KeyCode_V : 86,
+		      KeyCode_v : 118,
 		    }
 
 		    var idx = this.state.selected.idx
 		    if(this.canEdit(idx)){
-		      if(e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C){
+		      if(e.keyCode == keys.KeyCode_c || e.keyCode == keys.KeyCode_C){
 		        var value = this.getSelectedValue();
 		        this.handleCopy({value : value});
-		      }else if(e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V){
+		      }else if(e.keyCode == keys.KeyCode_v || e.keyCode == keys.KeyCode_V){
 		        this.handlePaste();
 		      }
 		    }
@@ -13929,6 +14060,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+
 	function classNames() {
 		var classes = '';
 		var arg;
@@ -13955,9 +14092,16 @@ return /******/ (function(modules) { // webpackBootstrap
 		return classes.substr(1);
 	}
 
-	// safely export classNames in case the script is included directly on a page
+	// safely export classNames for node / browserify
 	if (typeof module !== 'undefined' && module.exports) {
 		module.exports = classNames;
+	}
+
+	// safely export classNames for RequireJS
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+			return classNames;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	}
 
 
@@ -60256,18 +60400,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function blockLanguage(block) {
 	    var classes = (block.className + ' ' + (block.parentNode ? block.parentNode.className : '')).split(/\s+/);
 	    classes = classes.map(function(c) {return c.replace(/^lang(uage)?-/, '');});
-	    return classes.filter(function(c) {return getLanguage(c) || /no(-?)highlight/.test(c);})[0];
+	    return classes.filter(function(c) {return getLanguage(c) || /no(-?)highlight|plain|text/.test(c);})[0];
 	  }
 
 	  function inherit(parent, obj) {
-	    var result = {};
-	    for (var key in parent)
+	    var result = {}, key;
+	    for (key in parent)
 	      result[key] = parent[key];
 	    if (obj)
-	      for (var key in obj)
+	      for (key in obj)
 	        result[key] = obj[key];
 	    return result;
-	  };
+	  }
 
 	  /* Stream merging */
 
@@ -60383,7 +60527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    function langRe(value, global) {
-	      return RegExp(
+	      return new RegExp(
 	        reStr(value),
 	        'm' + (language.case_insensitive ? 'i' : '') + (global ? 'g' : '')
 	      );
@@ -60417,7 +60561,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        mode.keywords = compiled_keywords;
 	      }
-	      mode.lexemesRe = langRe(mode.lexemes || /\b[A-Za-z0-9_]+\b/, true);
+	      mode.lexemesRe = langRe(mode.lexemes || /\b\w+\b/, true);
 
 	      if (parent) {
 	        if (mode.beginKeywords) {
@@ -60463,7 +60607,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        .concat([mode.terminator_end, mode.illegal])
 	        .map(reStr)
 	        .filter(Boolean);
-	      mode.terminators = terminators.length ? langRe(terminators.join('|'), true) : {exec: function(s) {return null;}};
+	      mode.terminators = terminators.length ? langRe(terminators.join('|'), true) : {exec: function(/*s*/) {return null;}};
 	    }
 
 	    compileMode(language);
@@ -60490,6 +60634,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    function endOfMode(mode, lexeme) {
 	      if (testRe(mode.endRe, lexeme)) {
+	        while (mode.endsParent && mode.parent) {
+	          mode = mode.parent;
+	        }
 	        return mode;
 	      }
 	      if (mode.endsWithParent) {
@@ -60634,8 +60781,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    compileLanguage(language);
 	    var top = continuation || language;
 	    var continuations = {}; // keep continuations for sub-languages
-	    var result = '';
-	    for(var current = top; current != language; current = current.parent) {
+	    var result = '', current;
+	    for(current = top; current != language; current = current.parent) {
 	      if (current.className) {
 	        result = buildSpan(current.className, '', true) + result;
 	      }
@@ -60653,11 +60800,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        index = match.index + count;
 	      }
 	      processLexeme(value.substr(index));
-	      for(var current = top; current.parent; current = current.parent) { // close dangling modes
+	      for(current = top; current.parent; current = current.parent) { // close dangling modes
 	        if (current.className) {
 	          result += '</span>';
 	        }
-	      };
+	      }
 	      return {
 	        relevance: relevance,
 	        value: result,
@@ -60723,7 +60870,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 	  function fixMarkup(value) {
 	    if (options.tabReplace) {
-	      value = value.replace(/^((<[^>]+>|\t)+)/gm, function(match, p1, offset, s) {
+	      value = value.replace(/^((<[^>]+>|\t)+)/gm, function(match, p1 /*..., offset, s*/) {
 	        return p1.replace(/\t/g, options.tabReplace);
 	      });
 	    }
@@ -60737,11 +60884,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var language = currentLang ? aliases[currentLang] : resultLang,
 	        result   = [prevClassName.trim()];
 
-	    if (!prevClassName.match(/(\s|^)hljs(\s|$)/)) {
+	    if (!prevClassName.match(/\bhljs\b/)) {
 	      result.push('hljs');
 	    }
 
-	    if (language) {
+	    if (prevClassName.indexOf(language) === -1) {
 	      result.push(language);
 	    }
 
@@ -60754,7 +60901,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 	  function highlightBlock(block) {
 	    var language = blockLanguage(block);
-	    if (/no(-?)highlight/.test(language))
+	    if (/no(-?)highlight|plain|text/.test(language))
 	        return;
 
 	    var node;
@@ -60856,10 +61003,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  hljs.inherit = inherit;
 
 	  // Common regexps
-	  hljs.IDENT_RE = '[a-zA-Z][a-zA-Z0-9_]*';
-	  hljs.UNDERSCORE_IDENT_RE = '[a-zA-Z_][a-zA-Z0-9_]*';
+	  hljs.IDENT_RE = '[a-zA-Z]\\w*';
+	  hljs.UNDERSCORE_IDENT_RE = '[a-zA-Z_]\\w*';
 	  hljs.NUMBER_RE = '\\b\\d+(\\.\\d+)?';
-	  hljs.C_NUMBER_RE = '(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)'; // 0x..., 0..., decimal, float
+	  hljs.C_NUMBER_RE = '\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)'; // 0x..., 0..., decimal, float
 	  hljs.BINARY_NUMBER_RE = '\\b(0b[01]+)'; // 0b...
 	  hljs.RE_STARTERS_RE = '!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|-|-=|/=|/|:|;|<<|<<=|<=|<|===|==|=|>>>=|>>=|>=|>>>|>>|>|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~';
 
@@ -60882,21 +61029,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  hljs.PHRASAL_WORDS_MODE = {
 	    begin: /\b(a|an|the|are|I|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such)\b/
 	  };
-	  hljs.C_LINE_COMMENT_MODE = {
-	    className: 'comment',
-	    begin: '//', end: '$',
-	    contains: [hljs.PHRASAL_WORDS_MODE]
+	  hljs.COMMENT = function (begin, end, inherits) {
+	    var mode = hljs.inherit(
+	      {
+	        className: 'comment',
+	        begin: begin, end: end,
+	        contains: []
+	      },
+	      inherits || {}
+	    );
+	    mode.contains.push(hljs.PHRASAL_WORDS_MODE);
+	    return mode;
 	  };
-	  hljs.C_BLOCK_COMMENT_MODE = {
-	    className: 'comment',
-	    begin: '/\\*', end: '\\*/',
-	    contains: [hljs.PHRASAL_WORDS_MODE]
-	  };
-	  hljs.HASH_COMMENT_MODE = {
-	    className: 'comment',
-	    begin: '#', end: '$',
-	    contains: [hljs.PHRASAL_WORDS_MODE]
-	  };
+	  hljs.C_LINE_COMMENT_MODE = hljs.COMMENT('//', '$');
+	  hljs.C_BLOCK_COMMENT_MODE = hljs.COMMENT('/\\*', '\\*/');
+	  hljs.HASH_COMMENT_MODE = hljs.COMMENT('#', '$');
 	  hljs.NUMBER_MODE = {
 	    className: 'number',
 	    begin: hljs.NUMBER_RE,
@@ -60963,7 +61110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	hljs.registerLanguage('actionscript', __webpack_require__(128));
 	hljs.registerLanguage('apache', __webpack_require__(129));
 	hljs.registerLanguage('applescript', __webpack_require__(130));
-	hljs.registerLanguage('xml', __webpack_require__(238));
+	hljs.registerLanguage('xml', __webpack_require__(244));
 	hljs.registerLanguage('asciidoc', __webpack_require__(131));
 	hljs.registerLanguage('aspectj', __webpack_require__(132));
 	hljs.registerLanguage('autohotkey', __webpack_require__(133));
@@ -60980,97 +61127,103 @@ return /******/ (function(modules) { // webpackBootstrap
 	hljs.registerLanguage('cs', __webpack_require__(144));
 	hljs.registerLanguage('css', __webpack_require__(145));
 	hljs.registerLanguage('d', __webpack_require__(146));
-	hljs.registerLanguage('markdown', __webpack_require__(181));
+	hljs.registerLanguage('markdown', __webpack_require__(185));
 	hljs.registerLanguage('dart', __webpack_require__(147));
 	hljs.registerLanguage('delphi', __webpack_require__(148));
 	hljs.registerLanguage('diff', __webpack_require__(149));
 	hljs.registerLanguage('django', __webpack_require__(150));
-	hljs.registerLanguage('dos', __webpack_require__(151));
-	hljs.registerLanguage('dust', __webpack_require__(152));
-	hljs.registerLanguage('elixir', __webpack_require__(153));
-	hljs.registerLanguage('ruby', __webpack_require__(209));
-	hljs.registerLanguage('erb', __webpack_require__(154));
-	hljs.registerLanguage('erlang-repl', __webpack_require__(155));
-	hljs.registerLanguage('erlang', __webpack_require__(156));
-	hljs.registerLanguage('fix', __webpack_require__(157));
-	hljs.registerLanguage('fsharp', __webpack_require__(158));
-	hljs.registerLanguage('gcode', __webpack_require__(159));
-	hljs.registerLanguage('gherkin', __webpack_require__(160));
-	hljs.registerLanguage('glsl', __webpack_require__(161));
-	hljs.registerLanguage('go', __webpack_require__(162));
-	hljs.registerLanguage('gradle', __webpack_require__(163));
-	hljs.registerLanguage('groovy', __webpack_require__(164));
-	hljs.registerLanguage('haml', __webpack_require__(165));
-	hljs.registerLanguage('handlebars', __webpack_require__(166));
-	hljs.registerLanguage('haskell', __webpack_require__(167));
-	hljs.registerLanguage('haxe', __webpack_require__(168));
-	hljs.registerLanguage('http', __webpack_require__(169));
-	hljs.registerLanguage('ini', __webpack_require__(170));
-	hljs.registerLanguage('java', __webpack_require__(171));
-	hljs.registerLanguage('javascript', __webpack_require__(172));
-	hljs.registerLanguage('json', __webpack_require__(173));
-	hljs.registerLanguage('lasso', __webpack_require__(174));
-	hljs.registerLanguage('less', __webpack_require__(175));
-	hljs.registerLanguage('lisp', __webpack_require__(176));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(177));
-	hljs.registerLanguage('livescript', __webpack_require__(178));
-	hljs.registerLanguage('lua', __webpack_require__(179));
-	hljs.registerLanguage('makefile', __webpack_require__(180));
-	hljs.registerLanguage('mathematica', __webpack_require__(182));
-	hljs.registerLanguage('matlab', __webpack_require__(183));
-	hljs.registerLanguage('mel', __webpack_require__(184));
-	hljs.registerLanguage('mercury', __webpack_require__(185));
-	hljs.registerLanguage('mizar', __webpack_require__(186));
-	hljs.registerLanguage('monkey', __webpack_require__(187));
-	hljs.registerLanguage('nginx', __webpack_require__(188));
-	hljs.registerLanguage('nimrod', __webpack_require__(189));
-	hljs.registerLanguage('nix', __webpack_require__(190));
-	hljs.registerLanguage('nsis', __webpack_require__(191));
-	hljs.registerLanguage('objectivec', __webpack_require__(192));
-	hljs.registerLanguage('ocaml', __webpack_require__(193));
-	hljs.registerLanguage('oxygene', __webpack_require__(194));
-	hljs.registerLanguage('parser3', __webpack_require__(195));
-	hljs.registerLanguage('perl', __webpack_require__(196));
-	hljs.registerLanguage('php', __webpack_require__(197));
-	hljs.registerLanguage('powershell', __webpack_require__(198));
-	hljs.registerLanguage('processing', __webpack_require__(199));
-	hljs.registerLanguage('profile', __webpack_require__(200));
-	hljs.registerLanguage('protobuf', __webpack_require__(201));
-	hljs.registerLanguage('puppet', __webpack_require__(202));
-	hljs.registerLanguage('python', __webpack_require__(203));
-	hljs.registerLanguage('q', __webpack_require__(204));
-	hljs.registerLanguage('r', __webpack_require__(205));
-	hljs.registerLanguage('rib', __webpack_require__(206));
-	hljs.registerLanguage('roboconf', __webpack_require__(207));
-	hljs.registerLanguage('rsl', __webpack_require__(208));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(210));
-	hljs.registerLanguage('rust', __webpack_require__(211));
-	hljs.registerLanguage('scala', __webpack_require__(212));
-	hljs.registerLanguage('scheme', __webpack_require__(213));
-	hljs.registerLanguage('scilab', __webpack_require__(214));
-	hljs.registerLanguage('scss', __webpack_require__(215));
-	hljs.registerLanguage('smali', __webpack_require__(216));
-	hljs.registerLanguage('smalltalk', __webpack_require__(217));
-	hljs.registerLanguage('sml', __webpack_require__(218));
-	hljs.registerLanguage('sql', __webpack_require__(219));
-	hljs.registerLanguage('stata', __webpack_require__(220));
-	hljs.registerLanguage('step21', __webpack_require__(221));
-	hljs.registerLanguage('stylus', __webpack_require__(222));
-	hljs.registerLanguage('swift', __webpack_require__(223));
-	hljs.registerLanguage('tcl', __webpack_require__(224));
-	hljs.registerLanguage('tex', __webpack_require__(225));
-	hljs.registerLanguage('thrift', __webpack_require__(226));
-	hljs.registerLanguage('twig', __webpack_require__(227));
-	hljs.registerLanguage('typescript', __webpack_require__(228));
-	hljs.registerLanguage('vala', __webpack_require__(229));
-	hljs.registerLanguage('vbnet', __webpack_require__(230));
-	hljs.registerLanguage('vbscript', __webpack_require__(232));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(231));
-	hljs.registerLanguage('verilog', __webpack_require__(233));
-	hljs.registerLanguage('vhdl', __webpack_require__(234));
-	hljs.registerLanguage('vim', __webpack_require__(235));
-	hljs.registerLanguage('x86asm', __webpack_require__(236));
-	hljs.registerLanguage('xl', __webpack_require__(237));
+	hljs.registerLanguage('dockerfile', __webpack_require__(151));
+	hljs.registerLanguage('dos', __webpack_require__(152));
+	hljs.registerLanguage('dust', __webpack_require__(153));
+	hljs.registerLanguage('elixir', __webpack_require__(154));
+	hljs.registerLanguage('ruby', __webpack_require__(215));
+	hljs.registerLanguage('erb', __webpack_require__(155));
+	hljs.registerLanguage('erlang-repl', __webpack_require__(156));
+	hljs.registerLanguage('erlang', __webpack_require__(157));
+	hljs.registerLanguage('fix', __webpack_require__(158));
+	hljs.registerLanguage('fortran', __webpack_require__(159));
+	hljs.registerLanguage('fsharp', __webpack_require__(160));
+	hljs.registerLanguage('gcode', __webpack_require__(161));
+	hljs.registerLanguage('gherkin', __webpack_require__(162));
+	hljs.registerLanguage('glsl', __webpack_require__(163));
+	hljs.registerLanguage('go', __webpack_require__(164));
+	hljs.registerLanguage('gradle', __webpack_require__(165));
+	hljs.registerLanguage('groovy', __webpack_require__(166));
+	hljs.registerLanguage('haml', __webpack_require__(167));
+	hljs.registerLanguage('handlebars', __webpack_require__(168));
+	hljs.registerLanguage('haskell', __webpack_require__(169));
+	hljs.registerLanguage('haxe', __webpack_require__(170));
+	hljs.registerLanguage('http', __webpack_require__(171));
+	hljs.registerLanguage('ini', __webpack_require__(172));
+	hljs.registerLanguage('java', __webpack_require__(173));
+	hljs.registerLanguage('javascript', __webpack_require__(174));
+	hljs.registerLanguage('json', __webpack_require__(175));
+	hljs.registerLanguage('julia', __webpack_require__(176));
+	hljs.registerLanguage('kotlin', __webpack_require__(177));
+	hljs.registerLanguage('lasso', __webpack_require__(178));
+	hljs.registerLanguage('less', __webpack_require__(179));
+	hljs.registerLanguage('lisp', __webpack_require__(180));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(181));
+	hljs.registerLanguage('livescript', __webpack_require__(182));
+	hljs.registerLanguage('lua', __webpack_require__(183));
+	hljs.registerLanguage('makefile', __webpack_require__(184));
+	hljs.registerLanguage('mathematica', __webpack_require__(186));
+	hljs.registerLanguage('matlab', __webpack_require__(187));
+	hljs.registerLanguage('mel', __webpack_require__(188));
+	hljs.registerLanguage('mercury', __webpack_require__(189));
+	hljs.registerLanguage('mizar', __webpack_require__(190));
+	hljs.registerLanguage('monkey', __webpack_require__(191));
+	hljs.registerLanguage('nginx', __webpack_require__(192));
+	hljs.registerLanguage('nimrod', __webpack_require__(193));
+	hljs.registerLanguage('nix', __webpack_require__(194));
+	hljs.registerLanguage('nsis', __webpack_require__(195));
+	hljs.registerLanguage('objectivec', __webpack_require__(196));
+	hljs.registerLanguage('ocaml', __webpack_require__(197));
+	hljs.registerLanguage('oxygene', __webpack_require__(198));
+	hljs.registerLanguage('parser3', __webpack_require__(199));
+	hljs.registerLanguage('perl', __webpack_require__(200));
+	hljs.registerLanguage('pf', __webpack_require__(201));
+	hljs.registerLanguage('php', __webpack_require__(202));
+	hljs.registerLanguage('powershell', __webpack_require__(203));
+	hljs.registerLanguage('processing', __webpack_require__(204));
+	hljs.registerLanguage('profile', __webpack_require__(205));
+	hljs.registerLanguage('prolog', __webpack_require__(206));
+	hljs.registerLanguage('protobuf', __webpack_require__(207));
+	hljs.registerLanguage('puppet', __webpack_require__(208));
+	hljs.registerLanguage('python', __webpack_require__(209));
+	hljs.registerLanguage('q', __webpack_require__(210));
+	hljs.registerLanguage('r', __webpack_require__(211));
+	hljs.registerLanguage('rib', __webpack_require__(212));
+	hljs.registerLanguage('roboconf', __webpack_require__(213));
+	hljs.registerLanguage('rsl', __webpack_require__(214));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(216));
+	hljs.registerLanguage('rust', __webpack_require__(217));
+	hljs.registerLanguage('scala', __webpack_require__(218));
+	hljs.registerLanguage('scheme', __webpack_require__(219));
+	hljs.registerLanguage('scilab', __webpack_require__(220));
+	hljs.registerLanguage('scss', __webpack_require__(221));
+	hljs.registerLanguage('smali', __webpack_require__(222));
+	hljs.registerLanguage('smalltalk', __webpack_require__(223));
+	hljs.registerLanguage('sml', __webpack_require__(224));
+	hljs.registerLanguage('sql', __webpack_require__(225));
+	hljs.registerLanguage('stata', __webpack_require__(226));
+	hljs.registerLanguage('step21', __webpack_require__(227));
+	hljs.registerLanguage('stylus', __webpack_require__(228));
+	hljs.registerLanguage('swift', __webpack_require__(229));
+	hljs.registerLanguage('tcl', __webpack_require__(230));
+	hljs.registerLanguage('tex', __webpack_require__(231));
+	hljs.registerLanguage('thrift', __webpack_require__(232));
+	hljs.registerLanguage('twig', __webpack_require__(233));
+	hljs.registerLanguage('typescript', __webpack_require__(234));
+	hljs.registerLanguage('vala', __webpack_require__(235));
+	hljs.registerLanguage('vbnet', __webpack_require__(236));
+	hljs.registerLanguage('vbscript', __webpack_require__(238));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(237));
+	hljs.registerLanguage('verilog', __webpack_require__(239));
+	hljs.registerLanguage('vhdl', __webpack_require__(240));
+	hljs.registerLanguage('vim', __webpack_require__(241));
+	hljs.registerLanguage('x86asm', __webpack_require__(242));
+	hljs.registerLanguage('xl', __webpack_require__(243));
 
 	module.exports = hljs;
 
@@ -61303,16 +61456,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    begin: '\\(', end: '\\)',
 	    contains: ['self', hljs.C_NUMBER_MODE, STRING]
 	  };
+	  var COMMENT_MODE_1 = hljs.COMMENT('--', '$');
+	  var COMMENT_MODE_2 = hljs.COMMENT(
+	    '\\(\\*',
+	    '\\*\\)',
+	    {
+	      contains: ['self', COMMENT_MODE_1] //allow nesting
+	    }
+	  );
 	  var COMMENTS = [
-	    {
-	      className: 'comment',
-	      begin: '--', end: '$'
-	    },
-	    {
-	      className: 'comment',
-	      begin: '\\(\\*', end: '\\*\\)',
-	      contains: ['self', {begin: '--', end: '$'}] //allow nesting
-	    },
+	    COMMENT_MODE_1,
+	    COMMENT_MODE_2,
 	    hljs.HASH_COMMENT_MODE
 	  ];
 
@@ -61398,24 +61552,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = function(hljs) {
 	  return {
+	    aliases: ['adoc'],
 	    contains: [
 	      // block comment
-	      {
-	        className: 'comment',
-	        begin: '^/{4,}\\n',
-	        end: '\\n/{4,}$',
+	      hljs.COMMENT(
+	        '^/{4,}\\n',
+	        '\\n/{4,}$',
 	        // can also be done as...
-	        //begin: '^/{4,}$',
-	        //end: '^/{4,}$',
-	        relevance: 10
-	      },
+	        //'^/{4,}$',
+	        //'^/{4,}$',
+	        {
+	          relevance: 10
+	        }
+	      ),
 	      // line comment
-	      {
-	        className: 'comment',
-	        begin: '^//',
-	        end: '$',
-	        relevance: 0
-	      },
+	      hljs.COMMENT(
+	        '^//',
+	        '$',
+	        {
+	          relevance: 0
+	        }
+	      ),
 	      // title
 	      {
 	        className: 'title',
@@ -61598,7 +61755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'aspectOf adviceexecution proceed cflowbelow cflow initialization preinitialization ' +
 	    'staticinitialization withincode target within execution getWithinTypeName handler ' +
 	    'thisJoinPoint thisJoinPointStaticPart thisEnclosingJoinPointStaticPart declare parents '+
-	    'warning error soft precedence';
+	    'warning error soft precedence thisAspectInstance';
 	  var SHORTKEYS = 'get set args call';
 	  return {
 	    keywords : KEYWORDS,
@@ -61687,7 +61844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        // the function class is a bit different for AspectJ compared to the Java language
 	        className : 'function',
-	        begin : /\w+ +\w+(\.)?\w+\s*\([^\)]*\)\s*((throws)[\w\s\,]+)?[\{\;]/,
+	        begin : /\w+ +\w+(\.)?\w+\s*\([^\)]*\)\s*((throws)[\w\s,]+)?[\{;]/,
 	        returnBegin : true,
 	        end : /[{;=]/,
 	        keywords : KEYWORDS,
@@ -61734,11 +61891,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'escape',
 	    begin: '`[\\s\\S]'
 	  };
-	  var COMMENTS = {
-	    className: 'comment',
-	    begin: ';', end: '$',
-	    relevance: 0
-	  };
+	  var COMMENTS = hljs.COMMENT(
+	    ';',
+	    '$',
+	    {
+	      relevance: 0
+	    }
+	  );
 	  var BUILT_IN = [
 	    {
 	      className: 'built_in',
@@ -61826,7 +61985,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    contains: [
 	      hljs.C_BLOCK_COMMENT_MODE,
-	      {className: 'comment', begin: ';',  end: '$', relevance: 0},
+	      hljs.COMMENT(
+	        ';',
+	        '$',
+	        {
+	          relevance: 0
+	        }
+	      ),
 	      hljs.C_NUMBER_MODE, // 0x..., decimal, float
 	      hljs.BINARY_NUMBER_MODE, // 0b...
 	      {
@@ -61893,7 +62058,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'variable',
 	    variants: [
 	      {begin: /\$[\w\d#@][\w\d_]*/},
-	      {begin: /\$\{(.*?)\}/}
+	      {begin: /\$\{(.*?)}/}
 	    ]
 	  };
 	  var QUOTE_STRING = {
@@ -61977,13 +62142,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return {
 	    aliases: ['bf'],
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: '[^\\[\\]\\.,\\+\\-<> \r\n]',
-	        returnEnd: true,
-	        end: '[\\[\\]\\.,\\+\\-<> \r\n]',
-	        relevance: 0
-	      },
+	      hljs.COMMENT(
+	        '[^\\[\\]\\.,\\+\\-<> \r\n]',
+	        '[\\[\\]\\.,\\+\\-<> \r\n]',
+	        {
+	          returnEnd: true,
+	          relevance: 0
+	        }
+	      ),
 	      {
 	        className: 'title',
 	        begin: '[\\[\\]]',
@@ -62126,15 +62292,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    relevance: 0
 	  };
 	  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null});
-	  var COMMENT = {
-	    className: 'comment',
-	    begin: ';', end: '$',
-	    relevance: 0
-	  };
+	  var COMMENT = hljs.COMMENT(
+	    ';',
+	    '$',
+	    {
+	      relevance: 0
+	    }
+	  );
 	  var LITERAL = {
 	    className: 'literal',
 	    begin: /\b(true|false|nil)\b/
-	  }
+	  };
 	  var COLLECTION = {
 	    className: 'collection',
 	    begin: '[\\[\\{]', end: '[\\]\\}]'
@@ -62143,11 +62311,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'comment',
 	    begin: '\\^' + SYMBOL_RE
 	  };
-	  var HINT_COL = {
-	    className: 'comment',
-	    begin: '\\^\\{', end: '\\}'
-
-	  };
+	  var HINT_COL = hljs.COMMENT('\\^\\{', '\\}');
 	  var KEY = {
 	    className: 'attribute',
 	    begin: '[:]' + SYMBOL_RE
@@ -62168,7 +62332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  var DEFAULT_CONTAINS = [LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL, SYMBOL];
 
-	  LIST.contains = [{className: 'comment', begin: 'comment'}, NAME, BODY];
+	  LIST.contains = [hljs.COMMENT('comment', ''), NAME, BODY];
 	  BODY.contains = DEFAULT_CONTAINS;
 	  COLLECTION.contains = DEFAULT_CONTAINS;
 
@@ -62324,11 +62488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    keywords: KEYWORDS,
 	    illegal: /\/\*/,
 	    contains: EXPRESSIONS.concat([
-	      {
-	        className: 'comment',
-	        begin: '###', end: '###',
-	        contains: [hljs.PHRASAL_WORDS_MODE]
-	      },
+	      hljs.COMMENT('###', '###'),
 	      hljs.HASH_COMMENT_MODE,
 	      {
 	        className: 'function',
@@ -62386,16 +62546,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'do goto auto void enum else break extern using true class asm case typeid ' +
 	      'short reinterpret_cast|10 default double register explicit signed typename try this ' +
 	      'switch continue wchar_t inline delete alignof char16_t char32_t constexpr decltype ' +
-	      'noexcept nullptr static_assert thread_local restrict _Bool complex _Complex _Imaginary' +
-	      'intmax_t uintmax_t int8_t uint8_t int16_t uint16_t int32_t uint32_t  int64_t uint64_t' +
-	      'int_least8_t uint_least8_t int_least16_t uint_least16_t int_least32_t uint_least32_t' +
-	      'int_least64_t uint_least64_t int_fast8_t uint_fast8_t int_fast16_t uint_fast16_t int_fast32_t' +
-	      'uint_fast32_t int_fast64_t uint_fast64_t intptr_t uintptr_t atomic_bool atomic_char atomic_schar' +
-	      'atomic_uchar atomic_short atomic_ushort atomic_int atomic_uint atomic_long atomic_ulong atomic_llong' +
-	      'atomic_ullong atomic_wchar_t atomic_char16_t atomic_char32_t atomic_intmax_t atomic_uintmax_t' +
-	      'atomic_intptr_t atomic_uintptr_t atomic_size_t atomic_ptrdiff_t atomic_int_least8_t atomic_int_least16_t' +
-	      'atomic_int_least32_t atomic_int_least64_t atomic_uint_least8_t atomic_uint_least16_t atomic_uint_least32_t' +
-	      'atomic_uint_least64_t atomic_int_fast8_t atomic_int_fast16_t atomic_int_fast32_t atomic_int_fast64_t' +
+	      'noexcept nullptr static_assert thread_local restrict _Bool complex _Complex _Imaginary ' +
+	      'intmax_t uintmax_t int8_t uint8_t int16_t uint16_t int32_t uint32_t  int64_t uint64_t ' +
+	      'int_least8_t uint_least8_t int_least16_t uint_least16_t int_least32_t uint_least32_t ' +
+	      'int_least64_t uint_least64_t int_fast8_t uint_fast8_t int_fast16_t uint_fast16_t int_fast32_t ' +
+	      'uint_fast32_t int_fast64_t uint_fast64_t intptr_t uintptr_t atomic_bool atomic_char atomic_schar ' +
+	      'atomic_uchar atomic_short atomic_ushort atomic_int atomic_uint atomic_long atomic_ulong atomic_llong ' +
+	      'atomic_ullong atomic_wchar_t atomic_char16_t atomic_char32_t atomic_intmax_t atomic_uintmax_t ' +
+	      'atomic_intptr_t atomic_uintptr_t atomic_size_t atomic_ptrdiff_t atomic_int_least8_t atomic_int_least16_t ' +
+	      'atomic_int_least32_t atomic_int_least64_t atomic_uint_least8_t atomic_uint_least16_t atomic_uint_least32_t ' +
+	      'atomic_uint_least64_t atomic_int_fast8_t atomic_int_fast16_t atomic_int_fast32_t atomic_int_fast64_t ' +
 	      'atomic_uint_fast8_t atomic_uint_fast16_t atomic_uint_fast32_t atomic_uint_fast64_t',
 	    built_in: 'std string cin cout cerr clog stringstream istringstream ostringstream ' +
 	      'auto_ptr deque list queue stack vector map set bitset multiset multimap unordered_set ' +
@@ -62408,7 +62568,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'vfprintf vprintf vsprintf'
 	  };
 	  return {
-	    aliases: ['c', 'h', 'c++', 'h++'],
+	    aliases: ['c', 'cc', 'h', 'c++', 'h++', 'hpp'],
 	    keywords: CPP_KEYWORDS,
 	    illegal: '</',
 	    contains: [
@@ -62431,6 +62591,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        keywords: 'if else elif endif define undef warning error line pragma',
 	        contains: [
 	          {
+	            begin: /\\\n/, relevance: 0
+	          },
+	          {
 	            begin: 'include\\s*[<"]', end: '[>"]',
 	            keywords: 'include',
 	            illegal: '\\n'
@@ -62439,18 +62602,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        ]
 	      },
 	      {
-	        className: 'stl_container',
 	        begin: '\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<', end: '>',
 	        keywords: CPP_KEYWORDS,
 	        contains: ['self']
 	      },
 	      {
-	        begin: hljs.IDENT_RE + '::'
+	        begin: hljs.IDENT_RE + '::',
+	        keywords: CPP_KEYWORDS
 	      },
 	      {
-	        // Expression keywords prevent 'keyword Name(...)' from being
-	        // recognized as a function definition
-	        beginKeywords: 'new throw return',
+	        // Expression keywords prevent 'keyword Name(...) or else if(...)' from
+	        // being recognized as a function definition
+	        beginKeywords: 'new throw return else',
 	        relevance: 0
 	      },
 	      {
@@ -62488,9 +62651,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = function(hljs) {
 	  var KEYWORDS =
 	    // Normal keywords.
-	    'abstract as base bool break byte case catch char checked const continue decimal ' +
+	    'abstract as base bool break byte case catch char checked const continue decimal dynamic ' +
 	    'default delegate do double else enum event explicit extern false finally fixed float ' +
-	    'for foreach goto if implicit in int interface internal is lock long null ' +
+	    'for foreach goto if implicit in int interface internal is lock long null when ' +
 	    'object operator out override params private protected public readonly ref sbyte ' +
 	    'sealed short sizeof stackalloc static string struct switch this true try typeof ' +
 	    'uint ulong unchecked unsafe ushort using virtual volatile void while async ' +
@@ -62504,26 +62667,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    keywords: KEYWORDS,
 	    illegal: /::/,
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: '///', end: '$', returnBegin: true,
-	        contains: [
-	          {
-	            className: 'xmlDocTag',
-	            variants: [
-	              {
-	                begin: '///', relevance: 0
-	              },
-	              {
-	                begin: '<!--|-->'
-	              },
-	              {
-	                begin: '</?', end: '>'
-	              }
-	            ]
-	          }
-	        ]
-	      },
+	      hljs.COMMENT(
+	        '///',
+	        '$',
+	        {
+	          returnBegin: true,
+	          contains: [
+	            {
+	              className: 'xmlDocTag',
+	              variants: [
+	                {
+	                  begin: '///', relevance: 0
+	                },
+	                {
+	                  begin: '<!--|-->'
+	                },
+	                {
+	                  begin: '</?', end: '>'
+	                }
+	              ]
+	            }
+	          ]
+	        }
+	      ),
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.C_BLOCK_COMMENT_MODE,
 	      {
@@ -62598,26 +62764,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	    excludeEnd: true,
 	    end: '\\('
 	  };
+	  var RULE = {
+	    className: 'rule',
+	    begin: /[A-Z\_\.\-]+\s*:/, returnBegin: true, end: ';', endsWithParent: true,
+	    contains: [
+	      {
+	        className: 'attribute',
+	        begin: /\S/, end: ':', excludeEnd: true,
+	        starts: {
+	          className: 'value',
+	          endsWithParent: true, excludeEnd: true,
+	          contains: [
+	            FUNCTION,
+	            hljs.CSS_NUMBER_MODE,
+	            hljs.QUOTE_STRING_MODE,
+	            hljs.APOS_STRING_MODE,
+	            hljs.C_BLOCK_COMMENT_MODE,
+	            {
+	              className: 'hexcolor', begin: '#[0-9A-Fa-f]+'
+	            },
+	            {
+	              className: 'important', begin: '!important'
+	            }
+	          ]
+	        }
+	      }
+	    ]
+	  };
+
 	  return {
 	    case_insensitive: true,
-	    illegal: '[=/|\']',
+	    illegal: /[=\/|']/,
 	    contains: [
 	      hljs.C_BLOCK_COMMENT_MODE,
+	      RULE,
 	      {
-	        className: 'id', begin: '\\#[A-Za-z0-9_-]+'
+	        className: 'id', begin: /\#[A-Za-z0-9_-]+/
 	      },
 	      {
-	        className: 'class', begin: '\\.[A-Za-z0-9_-]+',
+	        className: 'class', begin: /\.[A-Za-z0-9_-]+/,
 	        relevance: 0
 	      },
 	      {
 	        className: 'attr_selector',
-	        begin: '\\[', end: '\\]',
+	        begin: /\[/, end: /\]/,
 	        illegal: '$'
 	      },
 	      {
 	        className: 'pseudo',
-	        begin: ':(:)?[a-zA-Z0-9\\_\\-\\+\\(\\)\\"\\\']+'
+	        begin: /:(:)?[a-zA-Z0-9\_\-\+\(\)"']+/
 	      },
 	      {
 	        className: 'at_rule',
@@ -62654,39 +62849,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        className: 'rules',
 	        begin: '{', end: '}',
-	        illegal: '[^\\s]',
+	        illegal: /\S/,
 	        relevance: 0,
 	        contains: [
 	          hljs.C_BLOCK_COMMENT_MODE,
-	          {
-	            className: 'rule',
-	            begin: '[^\\s]', returnBegin: true, end: ';', endsWithParent: true,
-	            contains: [
-	              {
-	                className: 'attribute',
-	                begin: '[A-Z\\_\\.\\-]+', end: ':',
-	                excludeEnd: true,
-	                illegal: '[^\\s]',
-	                starts: {
-	                  className: 'value',
-	                  endsWithParent: true, excludeEnd: true,
-	                  contains: [
-	                    FUNCTION,
-	                    hljs.CSS_NUMBER_MODE,
-	                    hljs.QUOTE_STRING_MODE,
-	                    hljs.APOS_STRING_MODE,
-	                    hljs.C_BLOCK_COMMENT_MODE,
-	                    {
-	                      className: 'hexcolor', begin: '#[0-9A-Fa-f]+'
-	                    },
-	                    {
-	                      className: 'important', begin: '!important'
-	                    }
-	                  ]
-	                }
-	              }
-	            ]
-	          }
+	          RULE,
 	        ]
 	      }
 	    ]
@@ -62924,13 +63091,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 	   * @type {Object}
 	   */
-	  var D_NESTING_COMMENT_MODE = {
-	    className: 'comment',
-	    begin: '\\/\\+',
-	    contains: ['self'],
-	    end: '\\+\\/',
-	    relevance: 10
-	  };
+	  var D_NESTING_COMMENT_MODE = hljs.COMMENT(
+	    '\\/\\+',
+	    '\\+\\/',
+	    {
+	      contains: ['self'],
+	      relevance: 10
+	    }
+	  );
 
 	  return {
 	    lexemes: hljs.UNDERSCORE_IDENT_RE,
@@ -63070,13 +63238,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'destructor write message program with read initialization except default nil if case cdecl in ' +
 	    'downto threadvar of try pascal const external constructor type public then implementation ' +
 	    'finally published procedure';
-	  var COMMENT =  {
-	    className: 'comment',
-	    variants: [
-	      {begin: /\{/, end: /\}/, relevance: 0},
-	      {begin: /\(\*/, end: /\*\)/, relevance: 10}
-	    ]
-	  };
+	  var COMMENT_MODES = [
+	    hljs.C_LINE_COMMENT_MODE,
+	    hljs.COMMENT(
+	      /\{/,
+	      /\}/,
+	      {
+	        relevance: 0
+	      }
+	    ),
+	    hljs.COMMENT(
+	      /\(\*/,
+	      /\*\)/,
+	      {
+	        relevance: 10
+	      }
+	    )
+	  ];
 	  var STRING = {
 	    className: 'string',
 	    begin: /'/, end: /'/,
@@ -63102,21 +63280,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        begin: /\(/, end: /\)/,
 	        keywords: KEYWORDS,
 	        contains: [STRING, CHAR_STRING]
-	      },
-	      COMMENT
-	    ]
+	      }
+	    ].concat(COMMENT_MODES)
 	  };
 	  return {
 	    case_insensitive: true,
 	    keywords: KEYWORDS,
 	    illegal: /"|\$[G-Zg-z]|\/\*|<\/|\|/,
 	    contains: [
-	      COMMENT, hljs.C_LINE_COMMENT_MODE,
 	      STRING, CHAR_STRING,
 	      hljs.NUMBER_MODE,
 	      CLASS,
 	      FUNCTION
-	    ]
+	    ].concat(COMMENT_MODES)
 	  };
 	};
 
@@ -63132,7 +63308,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'chunk',
 	        relevance: 10,
 	        variants: [
-	          {begin: /^\@\@ +\-\d+,\d+ +\+\d+,\d+ +\@\@$/},
+	          {begin: /^@@ +\-\d+,\d+ +\+\d+,\d+ +@@$/},
 	          {begin: /^\*\*\* +\d+,\d+ +\*\*\*\*$/},
 	          {begin: /^\-\-\- +\d+,\d+ +\-\-\-\-$/}
 	        ]
@@ -63171,7 +63347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = function(hljs) {
 	  var FILTER = {
 	    className: 'filter',
-	    begin: /\|[A-Za-z]+\:?/,
+	    begin: /\|[A-Za-z]+:?/,
 	    keywords:
 	      'truncatewords removetags linebreaksbr yesno get_digit timesince random striptags ' +
 	      'filesizeformat escape linebreaks length_is ljust rjust cut urlize fix_ampersands ' +
@@ -63192,14 +63368,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case_insensitive: true,
 	    subLanguage: 'xml', subLanguageMode: 'continuous',
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: /\{%\s*comment\s*%}/, end: /\{%\s*endcomment\s*%}/
-	      },
-	      {
-	        className: 'comment',
-	        begin: /\{#/, end: /#}/
-	      },
+	      hljs.COMMENT(/\{%\s*comment\s*%}/, /\{%\s*endcomment\s*%}/),
+	      hljs.COMMENT(/\{#/, /#}/),
 	      {
 	        className: 'template_tag',
 	        begin: /\{%/, end: /%}/,
@@ -63229,11 +63399,51 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  var COMMENT = {
-	    className: 'comment',
-	    begin: /@?rem\b/, end: /$/,
-	    relevance: 10
-	  };
+	  return {
+	    aliases: ['docker'],
+	    case_insensitive: true,
+	    keywords: {
+	      built_ins: 'from maintainer cmd expose add copy entrypoint volume user workdir onbuild run env'
+	    },
+	    contains: [
+	      hljs.HASH_COMMENT_MODE,
+	      {
+	        keywords : {
+	          built_in: 'run cmd entrypoint volume add copy workdir onbuild'
+	        },
+	        begin: /^ *(onbuild +)?(run|cmd|entrypoint|volume|add|copy|workdir) +/,
+	        starts: {
+	          end: /[^\\]\n/,
+	          subLanguage: 'bash', subLanguageMode: 'continuous'
+	        }
+	      },
+	      {
+	        keywords: {
+	          built_in: 'from maintainer expose env user onbuild'
+	        },
+	        begin: /^ *(onbuild +)?(from|maintainer|expose|env|user|onbuild) +/, end: /[^\\]\n/,
+	        contains: [
+	          hljs.APOS_STRING_MODE,
+	          hljs.QUOTE_STRING_MODE,
+	          hljs.NUMBER_MODE,
+	          hljs.HASH_COMMENT_MODE
+	        ]
+	      }
+	    ]
+	  }
+	};
+
+/***/ },
+/* 152 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(hljs) {
+	  var COMMENT = hljs.COMMENT(
+	    /@?rem\b/, /$/,
+	    {
+	      relevance: 10
+	    }
+	  );
 	  var LABEL = {
 	    className: 'label',
 	    begin: '^\\s*[A-Za-z._?][A-Za-z0-9_$#@~.?]*(:|\\s+label)',
@@ -63252,7 +63462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'comp compact convert date dir diskcomp diskcopy doskey erase fs ' +
 	        'find findstr format ftype graftabl help keyb label md mkdir mode more move path ' +
 	        'pause print popd pushd promt rd recover rem rename replace restore rmdir shift' +
-	        'sort start subst time title tree type ver verify vol',
+	        'sort start subst time title tree type ver verify vol'
 	    },
 	    contains: [
 	      {
@@ -63276,7 +63486,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 152 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63315,7 +63525,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63343,26 +63553,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    ]
 	  };
-	  var PARAMS = {
-	    endsWithParent: true, returnEnd: true,
-	    lexemes: ELIXIR_IDENT_RE,
-	    keywords: ELIXIR_KEYWORDS,
-	    relevance: 0
-	  };
 	  var FUNCTION = {
 	    className: 'function',
-	    beginKeywords: 'def defmacro', end: /\bdo\b/,
+	    beginKeywords: 'def defp defmacro', end: /\B\b/, // the mode is ended by the title
 	    contains: [
 	      hljs.inherit(hljs.TITLE_MODE, {
-	        begin: ELIXIR_METHOD_RE,
-	        starts: PARAMS
+	        begin: ELIXIR_IDENT_RE,
+	        endsParent: true
 	      })
 	    ]
 	  };
 	  var CLASS = hljs.inherit(FUNCTION, {
 	    className: 'class',
 	    beginKeywords: 'defmodule defrecord', end: /\bdo\b|$|;/
-	  })
+	  });
 	  var ELIXIR_DEFAULT_CONTAINS = [
 	    STRING,
 	    hljs.HASH_COMMENT_MODE,
@@ -63418,7 +63622,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  ];
 	  SUBST.contains = ELIXIR_DEFAULT_CONTAINS;
-	  PARAMS.contains = ELIXIR_DEFAULT_CONTAINS;
 
 	  return {
 	    lexemes: ELIXIR_IDENT_RE,
@@ -63428,17 +63631,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 154 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  return {
 	    subLanguage: 'xml', subLanguageMode: 'continuous',
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: '<%#', end: '%>',
-	      },
+	      hljs.COMMENT('<%#', '%>'),
 	      {
 	        begin: '<%[%=-]?', end: '[%-]?%>',
 	        subLanguage: 'ruby',
@@ -63450,7 +63650,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 155 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63467,10 +63667,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'prompt', begin: '^[0-9]+> ',
 	        relevance: 10
 	      },
-	      {
-	        className: 'comment',
-	        begin: '%', end: '$'
-	      },
+	      hljs.COMMENT('%', '$'),
 	      {
 	        className: 'number',
 	        begin: '\\b(\\d+#[a-fA-F0-9]+|\\d+(\\.\\d+)?([eE][-+]?\\d+)?)',
@@ -63505,7 +63702,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 156 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63519,10 +63716,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'false true'
 	  };
 
-	  var COMMENT = {
-	    className: 'comment',
-	    begin: '%', end: '$'
-	  };
+	  var COMMENT = hljs.COMMENT('%', '$');
 	  var NUMBER = {
 	    className: 'number',
 	    begin: '\\b(\\d+#[a-fA-F0-9]+|\\d+(\\.\\d+)?([eE][-+]?\\d+)?)',
@@ -63664,7 +63858,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 157 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63697,7 +63891,81 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 158 */
+/* 159 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(hljs) {
+	  var PARAMS = {
+	    className: 'params',
+	    begin: '\\(', end: '\\)'
+	  };
+
+	  var F_KEYWORDS = {
+	    constant: '.False. .True.',
+	    type: 'integer real character complex logical dimension allocatable|10 parameter ' +
+	      'external implicit|10 none double precision assign intent optional pointer ' +
+	      'target in out common equivalence data',
+	    keyword: 'kind do while private call intrinsic where elsewhere ' +
+	      'type endtype endmodule endselect endinterface end enddo endif if forall endforall only contains default return stop then ' +
+	      'public subroutine|10 function program .and. .or. .not. .le. .eq. .ge. .gt. .lt. ' +
+	      'goto save else use module select case ' +
+	      'access blank direct exist file fmt form formatted iostat name named nextrec number opened rec recl sequential status unformatted unit ' +
+	      'continue format pause cycle exit ' +
+	      'c_null_char c_alert c_backspace c_form_feed flush wait decimal round iomsg ' +
+	      'synchronous nopass non_overridable pass protected volatile abstract extends import ' +
+	      'non_intrinsic value deferred generic final enumerator class associate bind enum ' +
+	      'c_int c_short c_long c_long_long c_signed_char c_size_t c_int8_t c_int16_t c_int32_t c_int64_t c_int_least8_t c_int_least16_t ' +
+	      'c_int_least32_t c_int_least64_t c_int_fast8_t c_int_fast16_t c_int_fast32_t c_int_fast64_t c_intmax_t C_intptr_t c_float c_double ' +
+	      'c_long_double c_float_complex c_double_complex c_long_double_complex c_bool c_char c_null_ptr c_null_funptr ' +
+	      'c_new_line c_carriage_return c_horizontal_tab c_vertical_tab iso_c_binding c_loc c_funloc c_associated  c_f_pointer ' +
+	      'c_ptr c_funptr iso_fortran_env character_storage_size error_unit file_storage_size input_unit iostat_end iostat_eor ' +
+	      'numeric_storage_size output_unit c_f_procpointer ieee_arithmetic ieee_support_underflow_control ' +
+	      'ieee_get_underflow_mode ieee_set_underflow_mode newunit contiguous ' +
+	      'pad position action delim readwrite eor advance nml interface procedure namelist include sequence elemental pure',
+	    built_in: 'alog alog10 amax0 amax1 amin0 amin1 amod cabs ccos cexp clog csin csqrt dabs dacos dasin datan datan2 dcos dcosh ddim dexp dint ' +
+	      'dlog dlog10 dmax1 dmin1 dmod dnint dsign dsin dsinh dsqrt dtan dtanh float iabs idim idint idnint ifix isign max0 max1 min0 min1 sngl ' +
+	      'algama cdabs cdcos cdexp cdlog cdsin cdsqrt cqabs cqcos cqexp cqlog cqsin cqsqrt dcmplx dconjg derf derfc dfloat dgamma dimag dlgama ' +
+	      'iqint qabs qacos qasin qatan qatan2 qcmplx qconjg qcos qcosh qdim qerf qerfc qexp qgamma qimag qlgama qlog qlog10 qmax1 qmin1 qmod ' +
+	      'qnint qsign qsin qsinh qsqrt qtan qtanh abs acos aimag aint anint asin atan atan2 char cmplx conjg cos cosh exp ichar index int log ' +
+	      'log10 max min nint sign sin sinh sqrt tan tanh print write dim lge lgt lle llt mod nullify allocate deallocate ' +
+	      'adjustl adjustr all allocated any associated bit_size btest ceiling count cshift date_and_time digits dot_product ' +
+	      'eoshift epsilon exponent floor fraction huge iand ibclr ibits ibset ieor ior ishft ishftc lbound len_trim matmul ' +
+	      'maxexponent maxloc maxval merge minexponent minloc minval modulo mvbits nearest pack present product ' +
+	      'radix random_number random_seed range repeat reshape rrspacing scale scan selected_int_kind selected_real_kind ' +
+	      'set_exponent shape size spacing spread sum system_clock tiny transpose trim ubound unpack verify achar iachar transfer ' +
+	      'dble entry dprod cpu_time command_argument_count get_command get_command_argument get_environment_variable is_iostat_end ' +
+	      'ieee_arithmetic ieee_support_underflow_control ieee_get_underflow_mode ieee_set_underflow_mode ' +
+	      'is_iostat_eor move_alloc new_line selected_char_kind same_type_as extends_type_of'  +
+	      'acosh asinh atanh bessel_j0 bessel_j1 bessel_jn bessel_y0 bessel_y1 bessel_yn erf erfc erfc_scaled gamma log_gamma hypot norm2 ' +
+	      'atomic_define atomic_ref execute_command_line leadz trailz storage_size merge_bits ' +
+	      'bge bgt ble blt dshiftl dshiftr findloc iall iany iparity image_index lcobound ucobound maskl maskr ' +
+	      'num_images parity popcnt poppar shifta shiftl shiftr this_image'
+	  };
+	  return {
+	    case_insensitive: true,
+	    aliases: ['f90', 'f95'],
+	    keywords: F_KEYWORDS,
+	    contains: [
+	      hljs.inherit(hljs.APOS_STRING_MODE, {className: 'string', relevance: 0}),
+	      hljs.inherit(hljs.QUOTE_STRING_MODE,{className: 'string', relevance: 0}),
+	      {
+	        className: 'function',
+	        beginKeywords: 'subroutine function program',
+	        illegal: '[${=\\n]',
+	        contains: [hljs.UNDERSCORE_TITLE_MODE, PARAMS]
+	      },
+	      hljs.COMMENT('!', '$', {relevance: 0}),
+	      {
+	        className: 'number',
+	        begin: '(?=\\b|\\+|\\-|\\.)(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*)(?:[de][+-]?\\d+)?\\b\\.?',
+	        relevance: 0
+	      }
+	    ]
+	  };
+	};
+
+/***/ },
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63730,10 +63998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'string',
 	        begin: '"""', end: '"""'
 	      },
-	      {
-	        className: 'comment',
-	        begin: '\\(\\*', end: '\\*\\)'
-	      },
+	      hljs.COMMENT('\\(\\*', '\\*\\)'),
 	      {
 	        className: 'class',
 	        beginKeywords: 'type', end: '\\(|=|$', excludeEnd: true,
@@ -63760,7 +64025,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 159 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63781,12 +64046,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    var GCODE_CODE = [
 	        hljs.C_LINE_COMMENT_MODE,
-	        {
-	            className: 'comment',
-	            begin: /\(/, end: /\)/,
-	            contains: [hljs.PHRASAL_WORDS_MODE]
-	        },
 	        hljs.C_BLOCK_COMMENT_MODE,
+	        hljs.COMMENT(/\(/, /\)/),
 	        hljs.inherit(hljs.C_NUMBER_MODE, {begin: '([-+]?([0-9]*\\.?[0-9]+\\.?))|' + hljs.C_NUMBER_RE}),
 	        hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
 	        hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
@@ -63841,7 +64102,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 160 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function (hljs) {
@@ -63853,17 +64114,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'keyword',
 	        begin: '\\*'
 	      },
-	      {
-	        className: 'comment',
-	        begin: '@[^@\r\n\t ]+', end: '$'
-	      },
+	      hljs.COMMENT('@[^@\r\n\t ]+', '$'),
 	      {
 	        className: 'string',
 	        begin: '\\|', end: '\\$'
 	      },
 	      {
 	        className: 'variable',
-	        begin: '<', end: '>',
+	        begin: '<', end: '>'
 	      },
 	      hljs.HASH_COMMENT_MODE,
 	      {
@@ -63876,7 +64134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 161 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63974,7 +64232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 162 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64017,7 +64275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 163 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64056,7 +64314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 164 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64146,7 +64404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 165 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
@@ -64159,12 +64417,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        begin: '^!!!( (5|1\\.1|Strict|Frameset|Basic|Mobile|RDFa|XML\\b.*))?$',
 	        relevance: 10
 	      },
-	      {
-	        className: 'comment',
-	        // FIXME these comments should be allowed to span indented lines
-	        begin: '^\\s*(!=#|=#|-#|/).*$',
-	        relevance: 0
-	      },
+	      // FIXME these comments should be allowed to span indented lines
+	      hljs.COMMENT(
+	        '^\\s*(!=#|=#|-#|/).*$',
+	        false,
+	        {
+	          relevance: 0
+	        }
+	      ),
 	      {
 	        begin: '^\\s*(-|=|!=)(?!#)',
 	        starts: {
@@ -64272,7 +64532,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 166 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64309,20 +64569,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 167 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-
-	  var COMMENT = {
-	    className: 'comment',
-	    variants: [
-	      { begin: '--', end: '$' },
-	      { begin: '{-', end: '-}'
-	      , contains: ['self']
+	  var COMMENT_MODES = [
+	    hljs.COMMENT('--', '$'),
+	    hljs.COMMENT(
+	      '{-',
+	      '-}',
+	      {
+	        contains: ['self']
 	      }
-	    ]
-	  };
+	    )
+	  ];
 
 	  var PRAGMA = {
 	    className: 'pragma',
@@ -64346,11 +64606,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    illegal: '"',
 	    contains: [
 	      PRAGMA,
-	      COMMENT,
 	      PREPROCESSOR,
 	      {className: 'type', begin: '\\b[A-Z][\\w]*(\\((\\.\\.|,|\\w+)\\))?'},
 	      hljs.inherit(hljs.TITLE_MODE, {begin: '[_a-z][\\w\']*'})
-	    ]
+	    ].concat(COMMENT_MODES)
 	  };
 
 	  var RECORD = {
@@ -64374,14 +64633,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'module',
 	        begin: '\\bmodule\\b', end: 'where',
 	        keywords: 'module where',
-	        contains: [LIST, COMMENT],
+	        contains: [LIST].concat(COMMENT_MODES),
 	        illegal: '\\W\\.|;'
 	      },
 	      {
 	        className: 'import',
 	        begin: '\\bimport\\b', end: '$',
 	        keywords: 'import|0 qualified as hiding',
-	        contains: [LIST, COMMENT],
+	        contains: [LIST].concat(COMMENT_MODES),
 	        illegal: '\\W\\.|;'
 	      },
 
@@ -64389,30 +64648,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'class',
 	        begin: '^(\\s*)?(class|instance)\\b', end: 'where',
 	        keywords: 'class family instance where',
-	        contains: [CONSTRUCTOR, LIST, COMMENT]
+	        contains: [CONSTRUCTOR, LIST].concat(COMMENT_MODES)
 	      },
 	      {
 	        className: 'typedef',
 	        begin: '\\b(data|(new)?type)\\b', end: '$',
 	        keywords: 'data family type newtype deriving',
-	        contains: [PRAGMA, COMMENT, CONSTRUCTOR, LIST, RECORD]
+	        contains: [PRAGMA, CONSTRUCTOR, LIST, RECORD].concat(COMMENT_MODES)
 	      },
 	      {
 	        className: 'default',
 	        beginKeywords: 'default', end: '$',
-	        contains: [CONSTRUCTOR, LIST, COMMENT]
+	        contains: [CONSTRUCTOR, LIST].concat(COMMENT_MODES)
 	      },
 	      {
 	        className: 'infix',
 	        beginKeywords: 'infix infixl infixr', end: '$',
-	        contains: [hljs.C_NUMBER_MODE, COMMENT]
+	        contains: [hljs.C_NUMBER_MODE].concat(COMMENT_MODES)
 	      },
 	      {
 	        className: 'foreign',
 	        begin: '\\bforeign\\b', end: '$',
 	        keywords: 'foreign import export ccall stdcall cplusplus jvm ' +
 	                  'dotnet safe unsafe',
-	        contains: [CONSTRUCTOR, hljs.QUOTE_STRING_MODE, COMMENT]
+	        contains: [CONSTRUCTOR, hljs.QUOTE_STRING_MODE].concat(COMMENT_MODES)
 	      },
 	      {
 	        className: 'shebang',
@@ -64422,7 +64681,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // "Whitespaces".
 
 	      PRAGMA,
-	      COMMENT,
 	      PREPROCESSOR,
 
 	      // Literals and names.
@@ -64434,12 +64692,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      hljs.inherit(hljs.TITLE_MODE, {begin: '^[_a-z][\\w\']*'}),
 
 	      {begin: '->|<-'} // No markup, relevance booster
-	    ]
+	    ].concat(COMMENT_MODES)
 	  };
 	};
 
 /***/ },
-/* 168 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64504,11 +64762,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 169 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  return {
+	    aliases: ['https'],
 	    illegal: '\\S',
 	    contains: [
 	      {
@@ -64542,7 +64801,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 170 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64550,10 +64809,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case_insensitive: true,
 	    illegal: /\S/,
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: ';', end: '$'
-	      },
+	      hljs.COMMENT(';', '$'),
 	      {
 	        className: 'title',
 	        begin: '^\\[', end: '\\]'
@@ -64576,7 +64832,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 171 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64664,7 +64920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 172 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64672,9 +64928,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    aliases: ['js'],
 	    keywords: {
 	      keyword:
-	        'in if for while finally var new function do return void else break catch ' +
+	        'in of if for while finally var new function do return void else break catch ' +
 	        'instanceof with throw case default try this switch continue typeof delete ' +
-	        'let yield const class',
+	        'let yield const export super debugger as await',
 	      literal:
 	        'true false null undefined NaN Infinity',
 	      built_in:
@@ -64684,7 +64940,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'TypeError URIError Number Math Date String RegExp Array Float32Array ' +
 	        'Float64Array Int16Array Int32Array Int8Array Uint16Array Uint32Array ' +
 	        'Uint8Array Uint8ClampedArray ArrayBuffer DataView JSON Intl arguments require ' +
-	        'module console window document'
+	        'module console window document Symbol Set Map WeakSet WeakMap Proxy Reflect ' +
+	        'Promise'
 	    },
 	    contains: [
 	      {
@@ -64697,9 +64954,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      hljs.APOS_STRING_MODE,
 	      hljs.QUOTE_STRING_MODE,
+	      { // template string
+	        className: 'string',
+	        begin: '`', end: '`',
+	        contains: [
+	          hljs.BACKSLASH_ESCAPE,
+	          {
+	            className: 'subst',
+	            begin: '\\$\\{', end: '\\}'
+	          }
+	        ]
+	      },
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.C_BLOCK_COMMENT_MODE,
-	      hljs.C_NUMBER_MODE,
+	      {
+	        className: 'number',
+	        begin: '\\b(0[xXbBoO][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)', // 0x..., 0..., 0b..., 0o..., decimal, float
+	        relevance: 0
+	      },
 	      { // "value" container
 	        begin: '(' + hljs.RE_STARTERS_RE + '|\\b(case|return|throw)\\b)\\s*',
 	        keywords: 'return throw case',
@@ -64707,8 +64979,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          hljs.C_LINE_COMMENT_MODE,
 	          hljs.C_BLOCK_COMMENT_MODE,
 	          hljs.REGEXP_MODE,
-	          { // E4X
-	            begin: /</, end: />;/,
+	          { // E4X / JSX
+	            begin: /</, end: />\s*[);\]]/,
 	            relevance: 0,
 	            subLanguage: 'xml'
 	          }
@@ -64737,13 +65009,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        begin: '\\.' + hljs.IDENT_RE, relevance: 0 // hack: prevents detection of keywords after dots
+	      },
+	      // ECMAScript 6 modules import
+	      {
+	        beginKeywords: 'import', end: '[;$]',
+	        keywords: 'import from as',
+	        contains: [
+	          hljs.APOS_STRING_MODE,
+	          hljs.QUOTE_STRING_MODE
+	        ]
+	      },
+	      { // ES6 class
+	        className: 'class',
+	        beginKeywords: 'class', end: /[{;=]/, excludeEnd: true,
+	        illegal: /[:"\[\]]/,
+	        contains: [
+	          {beginKeywords: 'extends'},
+	          hljs.UNDERSCORE_TITLE_MODE
+	        ]
 	      }
 	    ]
 	  };
 	};
 
 /***/ },
-/* 173 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64785,7 +65075,276 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 174 */
+/* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(hljs) {
+	  // Since there are numerous special names in Julia, it is too much trouble
+	  // to maintain them by hand. Hence these names (i.e. keywords, literals and
+	  // built-ins) are automatically generated from Julia (v0.3.0) itself through
+	  // following scripts for each.
+
+	  var KEYWORDS = {
+	    // # keyword generator
+	    // println("\"in\",")
+	    // for kw in Base.REPLCompletions.complete_keyword("")
+	    //     println("\"$kw\",")
+	    // end
+	    keyword:
+	      'in abstract baremodule begin bitstype break catch ccall const continue do else elseif end export ' +
+	      'finally for function global if immutable import importall let local macro module quote return try type ' +
+	      'typealias using while',
+
+	    // # literal generator
+	    // println("\"true\",\n\"false\"")
+	    // for name in Base.REPLCompletions.completions("", 0)[1]
+	    //     try
+	    //         s = symbol(name)
+	    //         v = eval(s)
+	    //         if !isa(v, Function) &&
+	    //            !isa(v, DataType) &&
+	    //            !issubtype(typeof(v), Tuple) &&
+	    //            !isa(v, UnionType) &&
+	    //            !isa(v, Module) &&
+	    //            !isa(v, TypeConstructor) &&
+	    //            !isa(v, Colon)
+	    //             println("\"$name\",")
+	    //         end
+	    //     end
+	    // end
+	    literal:
+	      'true false ANY ARGS CPU_CORES C_NULL DL_LOAD_PATH DevNull ENDIAN_BOM ENV I|0 Inf Inf16 Inf32 ' +
+	      'InsertionSort JULIA_HOME LOAD_PATH MS_ASYNC MS_INVALIDATE MS_SYNC MergeSort NaN NaN16 NaN32 OS_NAME QuickSort ' +
+	      'RTLD_DEEPBIND RTLD_FIRST RTLD_GLOBAL RTLD_LAZY RTLD_LOCAL RTLD_NODELETE RTLD_NOLOAD RTLD_NOW RoundDown ' +
+	      'RoundFromZero RoundNearest RoundToZero RoundUp STDERR STDIN STDOUT VERSION WORD_SIZE catalan cglobal e eu ' +
+	      'eulergamma golden im nothing pi γ π φ',
+
+	    // # built_in generator:
+	    // for name in Base.REPLCompletions.completions("", 0)[1]
+	    //     try
+	    //         v = eval(symbol(name))
+	    //         if isa(v, DataType)
+	    //             println("\"$name\",")
+	    //         end
+	    //     end
+	    // end
+	    built_in:
+	      'ASCIIString AbstractArray AbstractRNG AbstractSparseArray Any ArgumentError Array Associative Base64Pipe ' +
+	      'Bidiagonal BigFloat BigInt BitArray BitMatrix BitVector Bool BoundsError Box CFILE Cchar Cdouble Cfloat Char ' +
+	      'CharString Cint Clong Clonglong ClusterManager Cmd Coff_t Colon Complex Complex128 Complex32 Complex64 ' +
+	      'Condition Cptrdiff_t Cshort Csize_t Cssize_t Cuchar Cuint Culong Culonglong Cushort Cwchar_t DArray DataType ' +
+	      'DenseArray Diagonal Dict DimensionMismatch DirectIndexString Display DivideError DomainError EOFError ' +
+	      'EachLine Enumerate ErrorException Exception Expr Factorization FileMonitor FileOffset Filter Float16 Float32 ' +
+	      'Float64 FloatRange FloatingPoint Function GetfieldNode GotoNode Hermitian IO IOBuffer IOStream IPv4 IPv6 ' +
+	      'InexactError Int Int128 Int16 Int32 Int64 Int8 IntSet Integer InterruptException IntrinsicFunction KeyError ' +
+	      'LabelNode LambdaStaticData LineNumberNode LoadError LocalProcess MIME MathConst MemoryError MersenneTwister ' +
+	      'Method MethodError MethodTable Module NTuple NewvarNode Nothing Number ObjectIdDict OrdinalRange ' +
+	      'OverflowError ParseError PollingFileWatcher ProcessExitedException ProcessGroup Ptr QuoteNode Range Range1 ' +
+	      'Ranges Rational RawFD Real Regex RegexMatch RemoteRef RepString RevString RopeString RoundingMode Set ' +
+	      'SharedArray Signed SparseMatrixCSC StackOverflowError Stat StatStruct StepRange String SubArray SubString ' +
+	      'SymTridiagonal Symbol SymbolNode Symmetric SystemError Task TextDisplay Timer TmStruct TopNode Triangular ' +
+	      'Tridiagonal Type TypeConstructor TypeError TypeName TypeVar UTF16String UTF32String UTF8String UdpSocket ' +
+	      'Uint Uint128 Uint16 Uint32 Uint64 Uint8 UndefRefError UndefVarError UniformScaling UnionType UnitRange ' +
+	      'Unsigned Vararg VersionNumber WString WeakKeyDict WeakRef Woodbury Zip'
+	  };
+
+	  // ref: http://julia.readthedocs.org/en/latest/manual/variables/#allowed-variable-names
+	  var VARIABLE_NAME_RE = "[A-Za-z_\\u00A1-\\uFFFF][A-Za-z_0-9\\u00A1-\\uFFFF]*";
+
+	  // placeholder for recursive self-reference
+	  var DEFAULT = { lexemes: VARIABLE_NAME_RE, keywords: KEYWORDS };
+
+	  var TYPE_ANNOTATION = {
+	    className: "type-annotation",
+	    begin: /::/
+	  };
+
+	  var SUBTYPE = {
+	    className: "subtype",
+	    begin: /<:/
+	  };
+
+	  // ref: http://julia.readthedocs.org/en/latest/manual/integers-and-floating-point-numbers/
+	  var NUMBER = {
+	    className: "number",
+	    // supported numeric literals:
+	    //  * binary literal (e.g. 0x10)
+	    //  * octal literal (e.g. 0o76543210)
+	    //  * hexadecimal literal (e.g. 0xfedcba876543210)
+	    //  * hexadecimal floating point literal (e.g. 0x1p0, 0x1.2p2)
+	    //  * decimal literal (e.g. 9876543210, 100_000_000)
+	    //  * floating pointe literal (e.g. 1.2, 1.2f, .2, 1., 1.2e10, 1.2e-10)
+	    begin: /(\b0x[\d_]*(\.[\d_]*)?|0x\.\d[\d_]*)p[-+]?\d+|\b0[box][a-fA-F0-9][a-fA-F0-9_]*|(\b\d[\d_]*(\.[\d_]*)?|\.\d[\d_]*)([eEfF][-+]?\d+)?/,
+	    relevance: 0
+	  };
+
+	  var CHAR = {
+	    className: "char",
+	    begin: /'(.|\\[xXuU][a-zA-Z0-9]+)'/
+	  };
+
+	  var INTERPOLATION = {
+	    className: 'subst',
+	    begin: /\$\(/, end: /\)/,
+	    keywords: KEYWORDS
+	  };
+
+	  var INTERPOLATED_VARIABLE = {
+	    className: 'variable',
+	    begin: "\\$" + VARIABLE_NAME_RE
+	  };
+
+	  // TODO: neatly escape normal code in string literal
+	  var STRING = {
+	    className: "string",
+	    contains: [hljs.BACKSLASH_ESCAPE, INTERPOLATION, INTERPOLATED_VARIABLE],
+	    variants: [
+	      { begin: /\w*"/, end: /"\w*/ },
+	      { begin: /\w*"""/, end: /"""\w*/ }
+	    ]
+	  };
+
+	  var COMMAND = {
+	    className: "string",
+	    contains: [hljs.BACKSLASH_ESCAPE, INTERPOLATION, INTERPOLATED_VARIABLE],
+	    begin: '`', end: '`'
+	  };
+
+	  var MACROCALL = {
+	    className: "macrocall",
+	    begin: "@" + VARIABLE_NAME_RE
+	  };
+
+	  var COMMENT = {
+	    className: "comment",
+	    variants: [
+	      { begin: "#=", end: "=#", relevance: 10 },
+	      { begin: '#', end: '$' }
+	    ]
+	  };
+
+	  DEFAULT.contains = [
+	    NUMBER,
+	    CHAR,
+	    TYPE_ANNOTATION,
+	    SUBTYPE,
+	    STRING,
+	    COMMAND,
+	    MACROCALL,
+	    COMMENT,
+	    hljs.HASH_COMMENT_MODE
+	  ];
+	  INTERPOLATION.contains = DEFAULT.contains;
+
+	  return DEFAULT;
+	};
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function (hljs) {
+	  var KEYWORDS = 'val var get set class trait object public open private protected ' +
+		'final enum if else do while for when break continue throw try catch finally ' +
+		'import package is as in return fun override default companion reified inline volatile transient native';
+	  
+	  return {
+	    keywords: {
+	      typename : 'Byte Short Char Int Long Boolean Float Double Void Unit Nothing',
+	      literal : 'true false null',
+	      keyword: KEYWORDS
+	    },
+	    contains : [
+	      hljs.C_LINE_COMMENT_MODE,
+	      {
+		  className: 'javadoc',
+		  begin: '/\\*\\*', end: '\\*//*',
+		  relevance: 0,
+		  contains: [
+		      {
+			  className: 'javadoctag', begin: '(^|\\s)@[A-Za-z]+'
+		      }
+		  ]
+	      },
+	      hljs.C_BLOCK_COMMENT_MODE,
+	      {
+		className: 'type',
+		begin: /</, end: />/,
+		returnBegin: true,
+		excludeEnd: false,
+		relevance: 0
+	      },
+	      {
+		className: 'function',
+		beginKeywords: 'fun', end: '[(]|$',
+		returnBegin: true,
+		excludeEnd : true,
+		keywords: KEYWORDS,
+		illegal: /fun\s+(<.*>)?[^\s\(]+(\s+[^\s\(]+)\s*=/,
+		relevance : 5,
+		contains: [
+		  {
+	            begin: hljs.UNDERSCORE_IDENT_RE + '\\s*\\(', returnBegin: true,
+	            relevance: 0,
+	            contains: [hljs.UNDERSCORE_TITLE_MODE]
+	          },
+		  {
+		    className : 'type',
+		    begin: /</, end : />/, keywords: 'reified',
+		    relevance: 0
+		  },
+	          {
+	            className: 'params',
+	            begin: /\(/, end: /\)/,
+	            keywords: KEYWORDS,
+	            relevance: 0,
+		    illegal : /\([^\(,\s:]+,/,
+	            contains: [
+		      {
+			className: 'typename',
+			begin: /:\s*/, end: /\s*[=\)]/, excludeBegin: true, returnEnd: true,
+			relevance: 0
+		      }
+	            ]
+	          },
+	          hljs.C_LINE_COMMENT_MODE,
+	          hljs.C_BLOCK_COMMENT_MODE
+		]
+	      },
+	      {
+		className: 'class',
+		beginKeywords: 'class trait', end: /[:\{(]|$/,
+		excludeEnd : true,
+		illegal: 'extends implements',
+		contains: [
+		  hljs.UNDERSCORE_TITLE_MODE,
+		  {
+		    className : 'type',
+		    begin: /</, end : />/, excludeBegin: true, excludeEnd: true,
+		    relevance: 0
+		  },
+		  {
+		    className : 'typename',
+		    begin : /[,:]\s*/, end : /[<\(,]|$/, excludeBegin: true, returnEnd: true
+		  }
+		]
+	      },
+	      {
+		className: 'variable', beginKeywords: 'var val', end : /\s*[=:$]/, excludeEnd: true
+	      },
+	      hljs.QUOTE_STRING_MODE,
+	      {
+		  className: 'shebang',
+		  begin: "^#!/usr/bin/env", end: '$',
+		  illegal: '\n'
+	      },
+	      hljs.C_NUMBER_MODE
+	    ]
+	  };
+	};
+
+/***/ },
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64820,11 +65379,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'skip split_thread sum take thread to trait type where with ' +
 	      'yield yieldhome'
 	  };
-	  var HTML_COMMENT = {
-	    className: 'comment',
-	    begin: '<!--', end: '-->',
-	    relevance: 0
-	  };
+	  var HTML_COMMENT = hljs.COMMENT(
+	    '<!--',
+	    '-->',
+	    {
+	      relevance: 0
+	    }
+	  );
 	  var LASSO_NOPROCESS = {
 	    className: 'preprocessor',
 	    begin: '\\[noprocess\\]',
@@ -64974,12 +65535,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 175 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE        = '[\\w-]+'; // yes, Less identifiers may begin with a digit
-	  var INTERP_IDENT_RE = '(' + IDENT_RE + '|@{' + IDENT_RE + '})+';
+	  var INTERP_IDENT_RE = '(' + IDENT_RE + '|@{' + IDENT_RE + '})';
 
 	  /* Generic Modes */
 
@@ -65028,7 +65589,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 
 	  var VALUE_WITH_RULESETS = VALUE.concat({
-	    begin: '{', end: '}', contains: RULES,
+	    begin: '{', end: '}', contains: RULES
 	  });
 
 	  var MIXIN_GUARD_MODE = {
@@ -65115,13 +65676,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 176 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  var LISP_IDENT_RE = '[a-zA-Z_\\-\\+\\*\\/\\<\\=\\>\\&\\#][a-zA-Z0-9_\\-\\+\\*\\/\\<\\=\\>\\&\\#!]*';
 	  var MEC_RE = '\\|[^]*?\\|';
-	  var LISP_SIMPLE_NUMBER_RE = '(\\-|\\+)?\\d+(\\.\\d+|\\/\\d+)?((d|e|f|l|s)(\\+|\\-)?\\d+)?';
+	  var LISP_SIMPLE_NUMBER_RE = '(\\-|\\+)?\\d+(\\.\\d+|\\/\\d+)?((d|e|f|l|s|D|E|F|L|S)(\\+|\\-)?\\d+)?';
 	  var SHEBANG = {
 	    className: 'shebang',
 	    begin: '^#!', end: '$'
@@ -65134,17 +65695,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'number',
 	    variants: [
 	      {begin: LISP_SIMPLE_NUMBER_RE, relevance: 0},
-	      {begin: '#b[0-1]+(/[0-1]+)?'},
-	      {begin: '#o[0-7]+(/[0-7]+)?'},
-	      {begin: '#x[0-9a-f]+(/[0-9a-f]+)?'},
-	      {begin: '#c\\(' + LISP_SIMPLE_NUMBER_RE + ' +' + LISP_SIMPLE_NUMBER_RE, end: '\\)'}
+	      {begin: '#(b|B)[0-1]+(/[0-1]+)?'},
+	      {begin: '#(o|O)[0-7]+(/[0-7]+)?'},
+	      {begin: '#(x|X)[0-9a-fA-F]+(/[0-9a-fA-F]+)?'},
+	      {begin: '#(c|C)\\(' + LISP_SIMPLE_NUMBER_RE + ' +' + LISP_SIMPLE_NUMBER_RE, end: '\\)'}
 	    ]
 	  };
 	  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null});
-	  var COMMENT = {
-	    className: 'comment',
-	    begin: ';', end: '$', relevance: 0
-	  };
+	  var COMMENT = hljs.COMMENT(
+	    ';', '$',
+	    {
+	      relevance: 0
+	    }
+	  );
 	  var VARIABLE = {
 	    className: 'variable',
 	    begin: '\\*', end: '\\*'
@@ -65153,16 +65716,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'keyword',
 	    begin: '[:&]' + LISP_IDENT_RE
 	  };
+	  var IDENT = {
+	    begin: LISP_IDENT_RE,
+	    relevance: 0
+	  };
 	  var MEC = {
 	    begin: MEC_RE
 	  };
 	  var QUOTED_LIST = {
 	    begin: '\\(', end: '\\)',
-	    contains: ['self', LITERAL, STRING, NUMBER]
+	    contains: ['self', LITERAL, STRING, NUMBER, IDENT]
 	  };
 	  var QUOTED = {
 	    className: 'quoted',
-	    contains: [NUMBER, STRING, VARIABLE, KEYWORD, QUOTED_LIST],
+	    contains: [NUMBER, STRING, VARIABLE, KEYWORD, QUOTED_LIST, IDENT],
 	    variants: [
 	      {
 	        begin: '[\'`]\\(', end: '\\)'
@@ -65178,11 +65745,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  var QUOTED_ATOM = {
 	    className: 'quoted',
-	    begin: '\'' + LISP_IDENT_RE
+	    variants: [
+	      {begin: '\'' + LISP_IDENT_RE},
+	      {begin: '#\'' + LISP_IDENT_RE + '(::' + LISP_IDENT_RE + ')*'}
+	    ]
 	  };
 	  var LIST = {
 	    className: 'list',
-	    begin: '\\(', end: '\\)'
+	    begin: '\\(\\s*', end: '\\)'
 	  };
 	  var BODY = {
 	    endsWithParent: true,
@@ -65198,7 +65768,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    BODY
 	  ];
-	  BODY.contains = [QUOTED, QUOTED_ATOM, LIST, LITERAL, NUMBER, STRING, COMMENT, VARIABLE, KEYWORD, MEC];
+	  BODY.contains = [QUOTED, QUOTED_ATOM, LIST, LITERAL, NUMBER, STRING, COMMENT, VARIABLE, KEYWORD, MEC, IDENT];
 
 	  return {
 	    illegal: /\S/,
@@ -65210,13 +65780,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      COMMENT,
 	      QUOTED,
 	      QUOTED_ATOM,
-	      LIST
+	      LIST,
+	      IDENT
 	    ]
 	  };
 	};
 
 /***/ },
-/* 177 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65224,19 +65795,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'variable', begin: '\\b[gtps][A-Z]+[A-Za-z0-9_\\-]*\\b|\\$_[A-Z]+',
 	    relevance: 0
 	  };
-	  var COMMENT = {
-	    className: 'comment', end: '$',
-	    variants: [
-	      hljs.C_BLOCK_COMMENT_MODE,
-	      hljs.HASH_COMMENT_MODE,
-	      {
-	        begin: '--'
-	      },
-	      {
-	        begin: '[^:]//'
-	      }
-	    ]
-	  };
+	  var COMMENT_MODES = [
+	    hljs.C_BLOCK_COMMENT_MODE,
+	    hljs.HASH_COMMENT_MODE,
+	    hljs.COMMENT('--', '$'),
+	    hljs.COMMENT('[^:]//', '$')
+	  ];
 	  var TITLE1 = hljs.inherit(hljs.TITLE_MODE, {
 	    variants: [
 	      {begin: '\\b_*rig[A-Z]+[A-Za-z0-9_\\-]*'},
@@ -65248,8 +65812,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case_insensitive: false,
 	    keywords: {
 	      keyword:
+	        '$_COOKIE $_FILES $_GET $_GET_BINARY $_GET_RAW $_POST $_POST_BINARY $_POST_RAW $_SESSION $_SERVER ' +
+	        'codepoint codepoints segment segments codeunit codeunits sentence sentences trueWord trueWords paragraph ' +
 	        'after byte bytes english the until http forever descending using line real8 with seventh ' +
-	        'for stdout finally element word fourth before black ninth sixth characters chars stderr ' +
+	        'for stdout finally element word words fourth before black ninth sixth characters chars stderr ' +
 	        'uInt1 uInt1s uInt2 uInt2s stdin string lines relative rel any fifth items from middle mid ' +
 	        'at else of catch then third it file milliseconds seconds second secs sec int1 int1s int4 ' +
 	        'int4s internet int2 int2s normal text item last long detailed effective uInt4 uInt4s repeat ' +
@@ -65267,18 +65833,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'div mod wrap and or bitAnd bitNot bitOr bitXor among not in a an within ' +
 	        'contains ends with begins the keys of keys',
 	      built_in:
-	        'put abs acos aliasReference annuity arrayDecode arrayEncode asin atan atan2 average avg base64Decode ' +
-	        'base64Encode baseConvert binaryDecode binaryEncode byteToNum cachedURL cachedURLs charToNum ' +
-	        'cipherNames commandNames compound compress constantNames cos date dateFormat decompress directories ' +
-	        'diskSpace DNSServers exp exp1 exp2 exp10 extents files flushEvents folders format functionNames global ' +
-	        'globals hasMemory hostAddress hostAddressToName hostName hostNameToAddress isNumber ISOToMac itemOffset ' +
+	        'put abs acos aliasReference annuity arrayDecode arrayEncode asin atan atan2 average avg avgDev base64Decode ' +
+	        'base64Encode baseConvert binaryDecode binaryEncode byteOffset byteToNum cachedURL cachedURLs charToNum ' +
+	        'cipherNames codepointOffset codepointProperty codepointToNum codeunitOffset commandNames compound compress ' +
+	        'constantNames cos date dateFormat decompress directories ' +
+	        'diskSpace DNSServers exp exp1 exp2 exp10 extents files flushEvents folders format functionNames geometricMean global ' +
+	        'globals hasMemory harmonicMean hostAddress hostAddressToName hostName hostNameToAddress isNumber ISOToMac itemOffset ' +
 	        'keys len length libURLErrorData libUrlFormData libURLftpCommand libURLLastHTTPHeaders libURLLastRHHeaders ' +
 	        'libUrlMultipartFormAddPart libUrlMultipartFormData libURLVersion lineOffset ln ln1 localNames log log2 log10 ' +
 	        'longFilePath lower macToISO matchChunk matchText matrixMultiply max md5Digest median merge millisec ' +
-	        'millisecs millisecond milliseconds min monthNames num number numToByte numToChar offset open openfiles ' +
-	        'openProcesses openProcessIDs openSockets paramCount param params peerAddress pendingMessages platform ' +
-	        'processID random randomBytes replaceText result revCreateXMLTree revCreateXMLTreeFromFile revCurrentRecord ' +
-	        'revCurrentRecordIsFirst revCurrentRecordIsLast revDatabaseColumnCount revDatabaseColumnIsNull ' +
+	        'millisecs millisecond milliseconds min monthNames nativeCharToNum normalizeText num number numToByte numToChar ' +
+	        'numToCodepoint numToNativeChar offset open openfiles openProcesses openProcessIDs openSockets ' +
+	        'paragraphOffset paramCount param params peerAddress pendingMessages platform popStdDev populationStandardDeviation ' +
+	        'populationVariance popVariance processID random randomBytes replaceText result revCreateXMLTree revCreateXMLTreeFromFile ' +
+	        'revCurrentRecord revCurrentRecordIsFirst revCurrentRecordIsLast revDatabaseColumnCount revDatabaseColumnIsNull ' +
 	        'revDatabaseColumnLengths revDatabaseColumnNames revDatabaseColumnNamed revDatabaseColumnNumbered ' +
 	        'revDatabaseColumnTypes revDatabaseConnectResult revDatabaseCursors revDatabaseID revDatabaseTableNames ' +
 	        'revDatabaseType revDataFromQuery revdb_closeCursor revdb_columnbynumber revdb_columncount revdb_columnisnull ' +
@@ -65287,24 +65855,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'revdb_disconnect revdb_execute revdb_iseof revdb_isbof revdb_movefirst revdb_movelast revdb_movenext ' +
 	        'revdb_moveprev revdb_query revdb_querylist revdb_recordcount revdb_rollback revdb_tablenames ' +
 	        'revGetDatabaseDriverPath revNumberOfRecords revOpenDatabase revOpenDatabases revQueryDatabase ' +
-	        'revQueryDatabaseBlob revQueryResult revQueryIsAtStart revQueryIsAtEnd revUnixFromMacPath ' +
-	        'revXMLAttribute revXMLAttributes revXMLAttributeValues revXMLChildContents revXMLChildNames ' +
-	        'revXMLFirstChild revXMLMatchingNode revXMLNextSibling revXMLNodeContents revXMLNumberOfChildren ' +
-	        'revXMLParent revXMLPreviousSibling revXMLRootNode revXMLRPC_CreateRequest revXMLRPC_Documents ' +
-	        'revXMLRPC_Error revXMLRPC_Execute revXMLRPC_GetHost revXMLRPC_GetMethod revXMLRPC_GetParam revXMLText ' +
+	        'revQueryDatabaseBlob revQueryResult revQueryIsAtStart revQueryIsAtEnd revUnixFromMacPath revXMLAttribute ' +
+	        'revXMLAttributes revXMLAttributeValues revXMLChildContents revXMLChildNames revXMLCreateTreeFromFileWithNamespaces ' +
+	        'revXMLCreateTreeWithNamespaces revXMLDataFromXPathQuery revXMLEvaluateXPath revXMLFirstChild revXMLMatchingNode ' +
+	        'revXMLNextSibling revXMLNodeContents revXMLNumberOfChildren revXMLParent revXMLPreviousSibling ' +
+	        'revXMLRootNode revXMLRPC_CreateRequest revXMLRPC_Documents revXMLRPC_Error ' +
+	        'revXMLRPC_GetHost revXMLRPC_GetMethod revXMLRPC_GetParam revXMLText revXMLRPC_Execute ' +
 	        'revXMLRPC_GetParamCount revXMLRPC_GetParamNode revXMLRPC_GetParamType revXMLRPC_GetPath revXMLRPC_GetPort ' +
 	        'revXMLRPC_GetProtocol revXMLRPC_GetRequest revXMLRPC_GetResponse revXMLRPC_GetSocket revXMLTree ' +
-	        'revXMLTrees revXMLValidateDTD revZipDescribeItem revZipEnumerateItems revZipOpenArchives round ' +
-	        'sec secs seconds sha1Digest shell shortFilePath sin specialFolderPath sqrt standardDeviation statRound ' +
-	        'stdDev sum sysError systemVersion tan tempName tick ticks time to toLower toUpper transpose trunc ' +
-	        'uniDecode uniEncode upper URLDecode URLEncode URLStatus value variableNames version waitDepth weekdayNames wordOffset ' +
-	        'add breakpoint cancel clear local variable file word line folder directory URL close socket process ' +
+	        'revXMLTrees revXMLValidateDTD revZipDescribeItem revZipEnumerateItems revZipOpenArchives round sampVariance ' +
+	        'sec secs seconds sentenceOffset sha1Digest shell shortFilePath sin specialFolderPath sqrt standardDeviation statRound ' +
+	        'stdDev sum sysError systemVersion tan tempName textDecode textEncode tick ticks time to tokenOffset toLower toUpper ' +
+	        'transpose truewordOffset trunc uniDecode uniEncode upper URLDecode URLEncode URLStatus uuid value variableNames ' +
+	        'variance version waitDepth weekdayNames wordOffset xsltApplyStylesheet xsltApplyStylesheetFromFile xsltLoadStylesheet ' +
+	        'xsltLoadStylesheetFromFile add breakpoint cancel clear local variable file word line folder directory URL close socket process ' +
 	        'combine constant convert create new alias folder directory decrypt delete variable word line folder ' +
 	        'directory URL dispatch divide do encrypt filter get include intersect kill libURLDownloadToFile ' +
 	        'libURLFollowHttpRedirects libURLftpUpload libURLftpUploadFile libURLresetAll libUrlSetAuthCallback ' +
 	        'libURLSetCustomHTTPHeaders libUrlSetExpect100 libURLSetFTPListCommand libURLSetFTPMode libURLSetFTPStopTime ' +
-	        'libURLSetStatusCallback load multiply socket process post seek rel relative read from process rename ' +
-	        'replace require resetAll revAddXMLNode revAppendXML revCloseCursor revCloseDatabase revCommitDatabase ' +
+	        'libURLSetStatusCallback load multiply socket prepare process post seek rel relative read from process rename ' +
+	        'replace require resetAll resolve revAddXMLNode revAppendXML revCloseCursor revCloseDatabase revCommitDatabase ' +
 	        'revCopyFile revCopyFolder revCopyXMLNode revDeleteFolder revDeleteXMLNode revDeleteAllXMLTrees ' +
 	        'revDeleteXMLTree revExecuteSQL revGoURL revInsertXMLNode revMoveFolder revMoveToFirstRecord revMoveToLastRecord ' +
 	        'revMoveToNextRecord revMoveToPreviousRecord revMoveToRecord revMoveXMLNode revPutIntoXMLNode revRollBackDatabase ' +
@@ -65313,7 +65883,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'revXMLRPC_SetMethod revXMLRPC_SetPort revXMLRPC_SetProtocol revXMLRPC_SetSocket revZipAddItemWithData ' +
 	        'revZipAddItemWithFile revZipAddUncompressedItemWithData revZipAddUncompressedItemWithFile revZipCancel ' +
 	        'revZipCloseArchive revZipDeleteItem revZipExtractItemToFile revZipExtractItemToVariable revZipSetProgressCallback ' +
-	        'revZipRenameItem revZipReplaceItemWithData revZipReplaceItemWithFile revZipOpenArchive send set sort split ' +
+	        'revZipRenameItem revZipReplaceItemWithData revZipReplaceItemWithFile revZipOpenArchive send set sort split start stop ' +
 	        'subtract union unload wait write'
 	    },
 	    contains: [
@@ -65377,19 +65947,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'preprocessor',
 	        begin: '\\?>'
 	      },
-	      COMMENT,
 	      hljs.APOS_STRING_MODE,
 	      hljs.QUOTE_STRING_MODE,
 	      hljs.BINARY_NUMBER_MODE,
 	      hljs.C_NUMBER_MODE,
 	      TITLE1
-	    ],
+	    ].concat(COMMENT_MODES),
 	    illegal: ';$|^\\[|^='
 	  };
 	};
 
 /***/ },
-/* 178 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65414,7 +65983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var TITLE = hljs.inherit(hljs.TITLE_MODE, {begin: JS_IDENT_RE});
 	  var SUBST = {
 	    className: 'subst',
-	    begin: /#\{/, end: /\}/,
+	    begin: /#\{/, end: /}/,
 	    keywords: KEYWORDS
 	  };
 	  var SUBST_SIMPLE = {
@@ -65500,10 +66069,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    keywords: KEYWORDS,
 	    illegal: /\/\*/,
 	    contains: EXPRESSIONS.concat([
-	      {
-	        className: 'comment',
-	        begin: '\\/\\*', end: '\\*\\/'
-	      },
+	      hljs.COMMENT('\\/\\*', '\\*\\/'),
 	      hljs.HASH_COMMENT_MODE,
 	      {
 	        className: 'function',
@@ -65547,7 +66113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 179 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65558,17 +66124,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    contains: ['self']
 	  };
 	  var COMMENTS = [
-	    {
-	      className: 'comment',
-	      begin: '--(?!' + OPENING_LONG_BRACKET + ')', end: '$'
-	    },
-	    {
-	      className: 'comment',
-	      begin: '--' + OPENING_LONG_BRACKET, end: CLOSING_LONG_BRACKET,
-	      contains: [LONG_BRACKETS],
-	      relevance: 10
-	    }
-	  ]
+	    hljs.COMMENT('--(?!' + OPENING_LONG_BRACKET + ')', '$'),
+	    hljs.COMMENT(
+	      '--' + OPENING_LONG_BRACKET,
+	      CLOSING_LONG_BRACKET,
+	      {
+	        contains: [LONG_BRACKETS],
+	        relevance: 10
+	      }
+	    )
+	  ];
 	  return {
 	    lexemes: hljs.UNDERSCORE_IDENT_RE,
 	    keywords: {
@@ -65608,7 +66173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 180 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65658,7 +66223,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 181 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65764,7 +66329,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 182 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65827,7 +66392,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 183 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65904,10 +66469,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'cell',
-	        begin: '\\{', end: /\}/,
+	        begin: '\\{', end: /}/,
 	        contains: COMMON_CONTAINS,
 	        relevance: 0,
-	        illegal: /:/,
 	        starts: TRANSPOSE
 	      },
 	      {
@@ -65916,16 +66480,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        relevance: 0,
 	        starts: TRANSPOSE
 	      },
-	      {
-	        className: 'comment',
-	        begin: '\\%', end: '$'
-	      }
+	      hljs.COMMENT('^\\s*\\%\\{\\s*$', '^\\s*\\%\\}\\s*$'),
+	      hljs.COMMENT('\\%', '$')
 	    ].concat(COMMON_CONTAINS)
 	  };
 	};
 
 /***/ },
-/* 184 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66159,7 +66721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 185 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66252,7 +66814,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 186 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66269,16 +66831,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'reflexivity irreflexivity connectedness uniqueness commutativity ' +
 	      'idempotence involutiveness projectivity',
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: '::', end: '$'
-	      }
+	      hljs.COMMENT('::', '$')
 	    ]
 	  };
 	};
 
 /***/ },
-/* 187 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66290,7 +66849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      hljs.NUMBER_MODE
 	    ]
-	  }
+	  };
 
 	  return {
 	    case_insensitive: true,
@@ -66305,21 +66864,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      literal: 'true false null and or shl shr mod'
 	    },
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: '#rem', end: '#end'
-	      },
-	      {
-	        className: 'comment',
-	        begin: "'", end: '$',
-	        relevance: 0
-	      },
+	      hljs.COMMENT('#rem', '#end'),
+	      hljs.COMMENT(
+	        "'",
+	        '$',
+	        {
+	          relevance: 0
+	        }
+	      ),
 	      {
 	        className: 'function',
 	        beginKeywords: 'function method', end: '[(=:]|$',
 	        illegal: /\n/,
 	        contains: [
-	          hljs.UNDERSCORE_TITLE_MODE,
+	          hljs.UNDERSCORE_TITLE_MODE
 	        ]
 	      },
 	      {
@@ -66361,7 +66919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 188 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66447,11 +67005,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 189 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  return {
+	    aliases: ['nim'],
 	    keywords: {
 	      keyword: 'addr and as asm bind block break|0 case|0 cast const|0 continue|0 converter discard distinct|10 div do elif else|0 end|0 enum|0 except export finally for from generic if|0 import|0 in include|0 interface is isnot|10 iterator|10 let|0 macro method|10 mixin mod nil not notin|10 object|0 of or out proc|10 ptr raise ref|10 return shl shr static template|10 try|0 tuple type|0 using|0 var|0 when while|0 with without xor yield',
 	      literal: 'shared guarded stdin stdout stderr result|10 true false'
@@ -66470,13 +67029,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'string',
 	        begin: /([a-zA-Z]\w*)?"""/,
 	        end: /"""/
-	      }, {
-	        className: 'string',
-	        begin: /"/,
-	        end: /"/,
-	        illegal: /\n/,
-	        contains: [{begin: /\\./}]
-	      }, {
+	      },
+	      hljs.QUOTE_STRING_MODE,
+	      {
 	        className: 'type',
 	        begin: /\b[A-Z]\w+\b/,
 	        relevance: 0
@@ -66506,7 +67061,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 190 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66519,7 +67074,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var ANTIQUOTE = {
 	    className: 'subst',
 	    begin: /\$\{/,
-	    end: /\}/,
+	    end: /}/,
 	    keywords: NIX_KEYWORDS
 	  };
 	  var ATTRS = {
@@ -66560,7 +67115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 191 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66626,11 +67181,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	          LANGUAGES
 	        ]
 	      },
-	      { // line comments
-	        className: 'comment',
-	        begin: ';', end: '$',
-	        relevance: 0
-	      },
+	      hljs.COMMENT(
+	        ';',
+	        '$',
+	        {
+	          relevance: 0
+	        }
+	      ),
 	      {
 	        className: 'function',
 	        beginKeywords: 'Function PageEx Section SectionGroup SubSection', end: '$'
@@ -66650,10 +67207,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 192 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
+	  var API_CLASS = {
+	    className: 'built_in',
+	    begin: '(AV|CA|CF|CG|CI|MK|MP|NS|UI)\\w+',
+	  };
 	  var OBJC_KEYWORDS = {
 	    keyword:
 	      'int float while char export sizeof typedef const struct for union ' +
@@ -66668,29 +67229,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    literal:
 	      'false true FALSE TRUE nil YES NO NULL',
 	    built_in:
-	      'NSString NSData NSDictionary CGRect CGPoint UIButton UILabel UITextView UIWebView MKMapView ' +
-	      'NSView NSViewController NSWindow NSWindowController NSSet NSUUID NSIndexSet ' +
-	      'UISegmentedControl NSObject UITableViewDelegate UITableViewDataSource NSThread ' +
-	      'UIActivityIndicator UITabbar UIToolBar UIBarButtonItem UIImageView NSAutoreleasePool ' +
-	      'UITableView BOOL NSInteger CGFloat NSException NSLog NSMutableString NSMutableArray ' +
-	      'NSMutableDictionary NSURL NSIndexPath CGSize UITableViewCell UIView UIViewController ' +
-	      'UINavigationBar UINavigationController UITabBarController UIPopoverController ' +
-	      'UIPopoverControllerDelegate UIImage NSNumber UISearchBar NSFetchedResultsController ' +
-	      'NSFetchedResultsChangeType UIScrollView UIScrollViewDelegate UIEdgeInsets UIColor ' +
-	      'UIFont UIApplication NSNotFound NSNotificationCenter NSNotification ' +
-	      'UILocalNotification NSBundle NSFileManager NSTimeInterval NSDate NSCalendar ' +
-	      'NSUserDefaults UIWindow NSRange NSArray NSError NSURLRequest NSURLConnection ' +
-	      'NSURLSession NSURLSessionDataTask NSURLSessionDownloadTask NSURLSessionUploadTask NSURLResponse' +
-	      'UIInterfaceOrientation MPMoviePlayerController dispatch_once_t ' +
-	      'dispatch_queue_t dispatch_sync dispatch_async dispatch_once'
+	      'BOOL dispatch_once_t dispatch_queue_t dispatch_sync dispatch_async dispatch_once'
 	  };
 	  var LEXEMES = /[a-zA-Z@][a-zA-Z0-9_]*/;
 	  var CLASS_KEYWORDS = '@interface @class @protocol @implementation';
 	  return {
 	    aliases: ['m', 'mm', 'objc', 'obj-c'],
-	    keywords: OBJC_KEYWORDS, lexemes: LEXEMES,
+	    keywords: OBJC_KEYWORDS,
+	    lexemes: LEXEMES,
 	    illegal: '</',
 	    contains: [
+	      API_CLASS,
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.C_BLOCK_COMMENT_MODE,
 	      hljs.C_NUMBER_MODE,
@@ -66741,7 +67290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 193 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66763,7 +67312,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /* (some) types in Pervasives */
 	        'in_channel out_channel ref',
 	      literal:
-	        'true false',
+	        'true false'
 	    },
 	    illegal: /\/\/|>>/,
 	    lexemes: '[a-z_]\\w*!?',
@@ -66772,19 +67321,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'literal',
 	        begin: '\\[(\\|\\|)?\\]|\\(\\)'
 	      },
-	      {
-	        className: 'comment',
-	        begin: '\\(\\*', end: '\\*\\)',
-	        contains: ['self'],
-	      },
+	      hljs.COMMENT(
+	        '\\(\\*',
+	        '\\*\\)',
+	        {
+	          contains: ['self']
+	        }
+	      ),
 	      { /* type variable */
 	        className: 'symbol',
-	        begin: '\'[A-Za-z_](?!\')[\\w\']*',
+	        begin: '\'[A-Za-z_](?!\')[\\w\']*'
 	        /* the grammar is ambiguous on how 'a'b should be interpreted but not the compiler */
 	      },
 	      { /* polymorphic variant */
 	        className: 'tag',
-	        begin: '`[A-Z][\\w\']*',
+	        begin: '`[A-Z][\\w\']*'
 	      },
 	      { /* module or constructor */
 	        className: 'type',
@@ -66813,7 +67364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 194 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66825,16 +67376,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'record reintroduce remove repeat require result reverse sealed select self sequence set shl shr skip static step soft take then to true try tuple '+
 	    'type union unit unsafe until uses using var virtual raises volatile where while with write xor yield await mapped deprecated stdcall cdecl pascal '+
 	    'register safecall overload library platform reference packed strict published autoreleasepool selector strong weak unretained';
-	  var CURLY_COMMENT =  {
-	    className: 'comment',
-	    begin: '{', end: '}',
-	    relevance: 0
-	  };
-	  var PAREN_COMMENT = {
-	    className: 'comment',
-	    begin: '\\(\\*', end: '\\*\\)',
-	    relevance: 10
-	  };
+	  var CURLY_COMMENT =  hljs.COMMENT(
+	    '{',
+	    '}',
+	    {
+	      relevance: 0
+	    }
+	  );
+	  var PAREN_COMMENT = hljs.COMMENT(
+	    '\\(\\*',
+	    '\\*\\)',
+	    {
+	      relevance: 10
+	    }
+	  );
 	  var STRING = {
 	    className: 'string',
 	    begin: '\'', end: '\'',
@@ -66882,28 +67437,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 195 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
+	  var CURLY_SUBCOMMENT = hljs.COMMENT(
+	    '{',
+	    '}',
+	    {
+	      contains: ['self']
+	    }
+	  );
 	  return {
 	    subLanguage: 'xml', relevance: 0,
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: '^#', end: '$'
-	      },
-	      {
-	        className: 'comment',
-	        begin: '\\^rem{', end: '}',
-	        relevance: 10,
-	        contains: [
-	          {
-	            begin: '{', end: '}',
-	            contains: ['self']
-	          }
-	        ]
-	      },
+	      hljs.COMMENT('^#', '$'),
+	      hljs.COMMENT(
+	        '\\^rem{',
+	        '}',
+	        {
+	          relevance: 10,
+	          contains: [
+	            CURLY_SUBCOMMENT
+	          ]
+	        }
+	      ),
 	      {
 	        className: 'preprocessor',
 	        begin: '^@(?:BASE|USE|CLASS|OPTIONS)$',
@@ -66931,7 +67489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 196 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66967,24 +67525,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'variable',
 	    variants: [
 	      {begin: /\$\d/},
-	      {begin: /[\$\%\@](\^\w\b|#\w+(\:\:\w+)*|{\w+}|\w+(\:\:\w*)*)/},
-	      {begin: /[\$\%\@][^\s\w{]/, relevance: 0}
+	      {begin: /[\$%@](\^\w\b|#\w+(::\w+)*|{\w+}|\w+(::\w*)*)/},
+	      {begin: /[\$%@][^\s\w{]/, relevance: 0}
 	    ]
 	  };
-	  var COMMENT = {
-	    className: 'comment',
-	    begin: '^(__END__|__DATA__)', end: '\\n$',
-	    relevance: 5
-	  };
+	  var COMMENT = hljs.COMMENT(
+	    '^(__END__|__DATA__)',
+	    '\\n$',
+	    {
+	      relevance: 5
+	    }
+	  );
 	  var STRING_CONTAINS = [hljs.BACKSLASH_ESCAPE, SUBST, VAR];
 	  var PERL_DEFAULT_CONTAINS = [
 	    VAR,
 	    hljs.HASH_COMMENT_MODE,
 	    COMMENT,
-	    {
-	      className: 'comment',
-	      begin: '^\\=\\w', end: '\\=cut', endsWithParent: true
-	    },
+	    hljs.COMMENT(
+	      '^\\=\\w',
+	      '\\=cut',
+	      {
+	        endsWithParent: true
+	      }
+	    ),
 	    METHOD,
 	    {
 	      className: 'string',
@@ -67084,7 +67647,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 197 */
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(hljs) {
+	  var MACRO = {
+	    className: 'variable',
+	    begin: /\$[\w\d#@][\w\d_]*/
+	  };
+	  var TABLE = {
+	    className: 'variable',
+	    begin: /</, end: />/
+	  };
+	  var QUOTE_STRING = {
+	    className: 'string',
+	    begin: /"/, end: /"/
+	  };
+
+	  return {
+	    aliases: ['pf.conf'],
+	    lexemes: /[a-z0-9_<>-]+/,
+	    keywords: {
+	      built_in: /* block match pass are "actions" in pf.conf(5), the rest are
+	                 * lexically similar top-level commands.
+	                 */
+	        'block match pass load anchor|5 antispoof|10 set table',
+	      keyword:
+	        'in out log quick on rdomain inet inet6 proto from port os to route' +
+	        'allow-opts divert-packet divert-reply divert-to flags group icmp-type' +
+	        'icmp6-type label once probability recieved-on rtable prio queue' +
+	        'tos tag tagged user keep fragment for os drop' +
+	        'af-to|10 binat-to|10 nat-to|10 rdr-to|10 bitmask least-stats random round-robin' +
+	        'source-hash static-port' +
+	        'dup-to reply-to route-to' +
+	        'parent bandwidth default min max qlimit' +
+	        'block-policy debug fingerprints hostid limit loginterface optimization' +
+	        'reassemble ruleset-optimization basic none profile skip state-defaults' +
+	        'state-policy timeout' +
+	        'const counters persist' +
+	        'no modulate synproxy state|5 floating if-bound no-sync pflow|10 sloppy' +
+	        'source-track global rule max-src-nodes max-src-states max-src-conn' +
+	        'max-src-conn-rate overload flush' +
+	        'scrub|5 max-mss min-ttl no-df|10 random-id',
+	      literal:
+	        'all any no-route self urpf-failed egress|5 unknown',
+	    },
+	    contains: [
+	      hljs.HASH_COMMENT_MODE,
+	      hljs.NUMBER_MODE,
+	      hljs.QUOTE_STRING_MODE,
+	      MACRO,
+	      TABLE,
+	    ]
+	  };
+	};
+
+/***/ },
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67124,22 +67743,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    contains: [
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.HASH_COMMENT_MODE,
-	      {
-	        className: 'comment',
-	        begin: '/\\*', end: '\\*/',
-	        contains: [
-	          {
-	            className: 'phpdoc',
-	            begin: '\\s@[A-Za-z]+'
-	          },
-	          PREPROCESSOR
-	        ]
-	      },
-	      {
-	          className: 'comment',
-	          begin: '__halt_compiler.+?;', endsWithParent: true,
-	          keywords: '__halt_compiler', lexemes: hljs.UNDERSCORE_IDENT_RE
-	      },
+	      hljs.COMMENT(
+	        '/\\*',
+	        '\\*/',
+	        {
+	          contains: [
+	            {
+	              className: 'phpdoc',
+	              begin: '\\s@[A-Za-z]+'
+	            },
+	            PREPROCESSOR
+	          ]
+	        }
+	      ),
+	      hljs.COMMENT(
+	        '__halt_compiler.+?;',
+	        false,
+	        {
+	          endsWithParent: true,
+	          keywords: '__halt_compiler',
+	          lexemes: hljs.UNDERSCORE_IDENT_RE
+	        }
+	      ),
 	      {
 	        className: 'string',
 	        begin: '<<<[\'"]?\\w+[\'"]?$', end: '^\\w+;',
@@ -67148,8 +67773,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      PREPROCESSOR,
 	      VARIABLE,
 	      {
-	        // swallow class members to avoid parsing them as keywords
-	        begin: /->+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/
+	        // swallow composed identifiers to avoid parsing them as keywords
+	        begin: /(::|->)+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/
 	      },
 	      {
 	        className: 'function',
@@ -67198,7 +67823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 198 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67254,7 +67879,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 199 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67306,7 +67931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 200 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67352,7 +67977,100 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 201 */
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(hljs) {
+
+	  var ATOM = {
+
+	    className: 'atom',
+	    begin: /[a-z][A-Za-z0-9_]*/,
+	    relevance: 0
+	  };
+
+	  var VAR = {
+
+	    className: 'name',
+	    variants: [
+	      {begin: /[A-Z][a-zA-Z0-9_]*/},
+	      {begin: /_[A-Za-z0-9_]*/},
+	    ],
+	    relevance: 0
+	  };
+
+	  var PARENTED = {
+
+	    begin: /\(/,
+	    end: /\)/,
+	    relevance: 0
+	  };
+
+	  var LIST = {
+
+	    begin: /\[/,
+	    end: /\]/
+	  };
+
+	  var LINE_COMMENT = {
+
+	    className: 'comment',
+	    begin: /%/, end: /$/,
+	    contains: [hljs.PHRASAL_WORDS_MODE]
+	  };
+
+	  var BACKTICK_STRING = {
+
+	    className: 'string',
+	    begin: /`/, end: /`/,
+	    contains: [hljs.BACKSLASH_ESCAPE]
+	  };
+
+	  var CHAR_CODE = {
+
+	    className: 'string', // 0'a etc.
+	    begin: /0\'(\\\'|.)/
+	  };
+
+	  var SPACE_CODE = {
+
+	    className: 'string',
+	    begin: /0\'\\s/ // 0'\s
+	  };
+
+	  var PRED_OP = { // relevance booster
+	    begin: /:-/
+	  };
+
+	  var inner = [
+
+	    ATOM,
+	    VAR,
+	    PARENTED,
+	    PRED_OP,
+	    LIST,
+	    LINE_COMMENT,
+	    hljs.C_BLOCK_COMMENT_MODE,
+	    hljs.QUOTE_STRING_MODE,
+	    hljs.APOS_STRING_MODE,
+	    BACKTICK_STRING,
+	    CHAR_CODE,
+	    SPACE_CODE,
+	    hljs.C_NUMBER_MODE
+	  ];
+
+	  PARENTED.contains = inner;
+	  LIST.contains = inner;
+
+	  return {
+	    contains: inner.concat([
+	      {begin: /\.$/} // relevance booster
+	    ])
+	  };
+	};
+
+/***/ },
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67393,7 +68111,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 202 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67445,10 +68163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'uptime_days uptime_hours uptime_seconds uuid virtual vlans xendomains zfs_version zonenae zones zpool_version'
 	  };
 
-	  var COMMENT = {
-	    className: 'comment',
-	    begin: '#', end: '$'
-	  };
+	  var COMMENT = hljs.COMMENT('#', '$');
 
 	  var STRING = {
 	    className: 'string',
@@ -67507,7 +68222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 203 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67581,7 +68296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          {className: 'class', beginKeywords: 'class'}
 	        ],
 	        end: /:/,
-	        illegal: /[${=;\n]/,
+	        illegal: /[${=;\n,]/,
 	        contains: [hljs.UNDERSCORE_TITLE_MODE, PARAMS]
 	      },
 	      {
@@ -67596,7 +68311,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 204 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67623,7 +68338,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 205 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67637,9 +68352,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        lexemes: IDENT_RE,
 	        keywords: {
 	          keyword:
-	            'function if in break next repeat else for return switch while try tryCatch|10 ' +
+	            'function if in break next repeat else for return switch while try tryCatch ' +
 	            'stop warning require library attach detach source setMethod setGeneric ' +
-	            'setGroupGeneric setClass ...|10',
+	            'setGroupGeneric setClass ...',
 	          literal:
 	            'NULL NA TRUE FALSE T F Inf NaN NA_integer_|10 NA_real_|10 NA_character_|10 ' +
 	            'NA_complex_|10'
@@ -67697,7 +68412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 206 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67728,7 +68443,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 207 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67792,7 +68507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 208 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67833,7 +68548,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 209 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67850,23 +68565,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'value',
 	    begin: '#<', end: '>'
 	  };
-	  var COMMENT = {
-	    className: 'comment',
-	    variants: [
+	  var COMMENT_MODES = [
+	    hljs.COMMENT(
+	      '#',
+	      '$',
 	      {
-	        begin: '#', end: '$',
 	        contains: [YARDOCTAG]
-	      },
+	      }
+	    ),
+	    hljs.COMMENT(
+	      '^\\=begin',
+	      '^\\=end',
 	      {
-	        begin: '^\\=begin', end: '^\\=end',
 	        contains: [YARDOCTAG],
 	        relevance: 10
-	      },
-	      {
-	        begin: '^__END__', end: '\\n$'
 	      }
-	    ]
-	  };
+	    ),
+	    hljs.COMMENT('^__END__', '\\n$')
+	  ];
 	  var SUBST = {
 	    className: 'subst',
 	    begin: '#\\{', end: '}',
@@ -67903,7 +68619,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var RUBY_DEFAULT_CONTAINS = [
 	    STRING,
 	    IRB_OBJECT,
-	    COMMENT,
 	    {
 	      className: 'class',
 	      beginKeywords: 'class module', end: '$|;',
@@ -67917,9 +68632,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            className: 'parent',
 	            begin: '(' + hljs.IDENT_RE + '::)?' + hljs.IDENT_RE
 	          }]
-	        },
-	        COMMENT
-	      ]
+	        }
+	      ].concat(COMMENT_MODES)
 	    },
 	    {
 	      className: 'function',
@@ -67927,9 +68641,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      relevance: 0,
 	      contains: [
 	        hljs.inherit(hljs.TITLE_MODE, {begin: RUBY_METHOD_RE}),
-	        PARAMS,
-	        COMMENT
-	      ]
+	        PARAMS
+	      ].concat(COMMENT_MODES)
 	    },
 	    {
 	      className: 'constant',
@@ -67960,7 +68673,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      begin: '(' + hljs.RE_STARTERS_RE + ')\\s*',
 	      contains: [
 	        IRB_OBJECT,
-	        COMMENT,
 	        {
 	          className: 'regexp',
 	          contains: [hljs.BACKSLASH_ESCAPE, SUBST],
@@ -67973,10 +68685,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            {begin: '%r\\[', end: '\\][a-z]*'}
 	          ]
 	        }
-	      ],
+	      ].concat(COMMENT_MODES),
 	      relevance: 0
 	    }
-	  ];
+	  ].concat(COMMENT_MODES);
+
 	  SUBST.contains = RUBY_DEFAULT_CONTAINS;
 	  PARAMS.contains = RUBY_DEFAULT_CONTAINS;
 
@@ -68004,12 +68717,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return {
 	    aliases: ['rb', 'gemspec', 'podspec', 'thor', 'irb'],
 	    keywords: RUBY_KEYWORDS,
-	    contains: [COMMENT].concat(IRB_DEFAULT).concat(RUBY_DEFAULT_CONTAINS)
+	    contains: COMMENT_MODES.concat(IRB_DEFAULT).concat(RUBY_DEFAULT_CONTAINS)
 	  };
 	};
 
 /***/ },
-/* 210 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68070,7 +68783,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 211 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68114,7 +68827,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'number',
-	        begin: /\b(0[xb][A-Za-z0-9_]+|[0-9_]+(\.[0-9_]+)?([eE][+-]?[0-9_]+)?)([uif](8|16|32|64)?)?/,
+	        begin: /\b(0[xbo][A-Fa-f0-9_]+|\d[\d_]*(\.[0-9_]+)?([eE][+-]?[0-9_]+)?)([uif](8|16|32|64|size))?/,
 	        relevance: 0
 	      },
 	      {
@@ -68124,7 +68837,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'preprocessor',
-	        begin: '#\\[', end: '\\]'
+	        begin: '#\\!?\\[', end: '\\]'
 	      },
 	      {
 	        beginKeywords: 'type', end: '(=|<)',
@@ -68147,7 +68860,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 212 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68177,7 +68890,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'title',
 	    begin: /[^0-9\n\t "'(),.`{}\[\]:;][^\n\t "'(),.`{}\[\]:;]+|[^0-9\n\t "'(),.`{}\[\]:;=]/,
 	    relevance: 0
-	  }
+	  };
 
 	  var CLASS = {
 	    className: 'class',
@@ -68224,7 +68937,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 213 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68298,13 +69011,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    end: '[^\\\\]"'
 	  };
 
-	  var COMMENT = {
-	    className: 'comment',
-	    variants: [
-	      { begin: ';',  end: '$', relevance: 0 },
-	      { begin: '#\\|', end: '\\|#' }
-	    ]
-	  };
+	  var COMMENT_MODES = [
+	    hljs.COMMENT(
+	      ';',
+	      '$',
+	      {
+	        relevance: 0
+	      }
+	    ),
+	    hljs.COMMENT('#\\|', '\\|#')
+	  ];
 
 	  var IDENT = {
 	    begin: SCHEME_IDENT_RE,
@@ -68338,16 +69054,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ]
 	  };
 
-	  BODY.contains = [LITERAL, NUMBER, STRING, COMMENT, IDENT, QUOTED_IDENT, LIST];
+	  BODY.contains = [LITERAL, NUMBER, STRING, IDENT, QUOTED_IDENT, LIST].concat(COMMENT_MODES);
 
 	  return {
 	    illegal: /\S/,
-	    contains: [SHEBANG, NUMBER, STRING, COMMENT, QUOTED_IDENT, LIST]
+	    contains: [SHEBANG, NUMBER, STRING, QUOTED_IDENT, LIST].concat(COMMENT_MODES)
 	  };
 	};
 
 /***/ },
-/* 214 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68400,16 +69116,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        relevance: 0,
 	        contains: COMMON_CONTAINS
 	      },
-	      {
-	        className: 'comment',
-	        begin: '//', end: '$'
-	      }
+	      hljs.COMMENT('//', '$')
 	    ].concat(COMMON_CONTAINS)
 	  };
 	};
 
 /***/ },
-/* 215 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68485,7 +69198,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      VARIABLE,
 	      {
 	        className: 'attribute',
-	        begin: '\\b(z-index|word-wrap|word-spacing|word-break|width|widows|white-space|visibility|vertical-align|unicode-bidi|transition-timing-function|transition-property|transition-duration|transition-delay|transition|transform-style|transform-origin|transform|top|text-underline-position|text-transform|text-shadow|text-rendering|text-overflow|text-indent|text-decoration-style|text-decoration-line|text-decoration-color|text-decoration|text-align-last|text-align|tab-size|table-layout|right|resize|quotes|position|pointer-events|perspective-origin|perspective|page-break-inside|page-break-before|page-break-after|padding-top|padding-right|padding-left|padding-bottom|padding|overflow-y|overflow-x|overflow-wrap|overflow|outline-width|outline-style|outline-offset|outline-color|outline|orphans|order|opacity|object-position|object-fit|normal|none|nav-up|nav-right|nav-left|nav-index|nav-down|min-width|min-height|max-width|max-height|mask|marks|margin-top|margin-right|margin-left|margin-bottom|margin|list-style-type|list-style-position|list-style-image|list-style|line-height|letter-spacing|left|justify-content|initial|inherit|ime-mode|image-orientation|image-resolution|image-rendering|icon|hyphens|height|font-weight|font-variant-ligatures|font-variant|font-style|font-stretch|font-size-adjust|font-size|font-language-override|font-kerning|font-feature-settings|font-family|font|float|flex-wrap|flex-shrink|flex-grow|flex-flow|flex-direction|flex-basis|flex|filter|empty-cells|display|direction|cursor|counter-reset|counter-increment|content|column-width|column-span|column-rule-width|column-rule-style|column-rule-color|column-rule|column-gap|column-fill|column-count|columns|color|clip-path|clip|clear|caption-side|break-inside|break-before|break-after|box-sizing|box-shadow|box-decoration-break|bottom|border-width|border-top-width|border-top-style|border-top-right-radius|border-top-left-radius|border-top-color|border-top|border-style|border-spacing|border-right-width|border-right-style|border-right-color|border-right|border-radius|border-left-width|border-left-style|border-left-color|border-left|border-image-width|border-image-source|border-image-slice|border-image-repeat|border-image-outset|border-image|border-color|border-collapse|border-bottom-width|border-bottom-style|border-bottom-right-radius|border-bottom-left-radius|border-bottom-color|border-bottom|border|background-size|background-repeat|background-position|background-origin|background-image|background-color|background-clip|background-attachment|background|backface-visibility|auto|animation-timing-function|animation-play-state|animation-name|animation-iteration-count|animation-fill-mode|animation-duration|animation-direction|animation-delay|animation|align-self|align-items|align-content)\\b',
+	        begin: '\\b(z-index|word-wrap|word-spacing|word-break|width|widows|white-space|visibility|vertical-align|unicode-bidi|transition-timing-function|transition-property|transition-duration|transition-delay|transition|transform-style|transform-origin|transform|top|text-underline-position|text-transform|text-shadow|text-rendering|text-overflow|text-indent|text-decoration-style|text-decoration-line|text-decoration-color|text-decoration|text-align-last|text-align|tab-size|table-layout|right|resize|quotes|position|pointer-events|perspective-origin|perspective|page-break-inside|page-break-before|page-break-after|padding-top|padding-right|padding-left|padding-bottom|padding|overflow-y|overflow-x|overflow-wrap|overflow|outline-width|outline-style|outline-offset|outline-color|outline|orphans|order|opacity|object-position|object-fit|normal|none|nav-up|nav-right|nav-left|nav-index|nav-down|min-width|min-height|max-width|max-height|mask|marks|margin-top|margin-right|margin-left|margin-bottom|margin|list-style-type|list-style-position|list-style-image|list-style|line-height|letter-spacing|left|justify-content|initial|inherit|ime-mode|image-orientation|image-resolution|image-rendering|icon|hyphens|height|font-weight|font-variant-ligatures|font-variant|font-style|font-stretch|font-size-adjust|font-size|font-language-override|font-kerning|font-feature-settings|font-family|font|float|flex-wrap|flex-shrink|flex-grow|flex-flow|flex-direction|flex-basis|flex|filter|empty-cells|display|direction|cursor|counter-reset|counter-increment|content|column-width|column-span|column-rule-width|column-rule-style|column-rule-color|column-rule|column-gap|column-fill|column-count|columns|color|clip-path|clip|clear|caption-side|break-inside|break-before|break-after|box-sizing|box-shadow|box-decoration-break|bottom|border-width|border-top-width|border-top-style|border-top-right-radius|border-top-left-radius|border-top-color|border-top|border-style|border-spacing|border-right-width|border-right-style|border-right-color|border-right|border-radius|border-left-width|border-left-style|border-left-color|border-left|border-image-width|border-image-source|border-image-slice|border-image-repeat|border-image-outset|border-image|border-color|border-collapse|border-bottom-width|border-bottom-style|border-bottom-right-radius|border-bottom-left-radius|border-bottom-color|border-bottom|border|background-size|background-repeat|background-position|background-origin|background-image|background-color|background-clip|background-attachment|background-blend-mode|background|backface-visibility|auto|animation-timing-function|animation-play-state|animation-name|animation-iteration-count|animation-fill-mode|animation-duration|animation-direction|animation-delay|animation|align-self|align-items|align-content)\\b',
 	        illegal: '[^\\s]'
 	      },
 	      {
@@ -68530,7 +69243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 216 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68545,11 +69258,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        begin: '"', end: '"',
 	        relevance: 0
 	      },
-	      {
-	        className: 'comment',
-	        begin: '#', end: '$',
-	        relevance: 0
-	      },
+	      hljs.COMMENT(
+	        '#',
+	        '$',
+	        {
+	          relevance: 0
+	        }
+	      ),
 	      {
 	        className: 'keyword',
 	        begin: '\\s*\\.end\\s[a-zA-Z0-9]*',
@@ -68615,7 +69330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 217 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68632,10 +69347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    aliases: ['st'],
 	    keywords: 'self super nil true false thisContext', // only 6
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: '"', end: '"'
-	      },
+	      hljs.COMMENT('"', '"'),
 	      hljs.APOS_STRING_MODE,
 	      {
 	        className: 'class',
@@ -68675,7 +69387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 218 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68692,7 +69404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /* built-in types according to basis library */
 	        'array bool char exn int list option order real ref string substring vector unit word',
 	      literal:
-	        'true false NONE SOME LESS EQUAL GREATER nil',
+	        'true false NONE SOME LESS EQUAL GREATER nil'
 	    },
 	    illegal: /\/\/|>>/,
 	    lexemes: '[a-z_]\\w*!?',
@@ -68701,19 +69413,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'literal',
 	        begin: '\\[(\\|\\|)?\\]|\\(\\)'
 	      },
-	      {
-	        className: 'comment',
-	        begin: '\\(\\*', end: '\\*\\)',
-	        contains: ['self', hljs.PHRASAL_WORDS_MODE],
-	      },
+	      hljs.COMMENT(
+	        '\\(\\*',
+	        '\\*\\)',
+	        {
+	          contains: ['self']
+	        }
+	      ),
 	      { /* type variable */
 	        className: 'symbol',
-	        begin: '\'[A-Za-z_](?!\')[\\w\']*',
+	        begin: '\'[A-Za-z_](?!\')[\\w\']*'
 	        /* the grammar is ambiguous on how 'a'b should be interpreted but not the compiler */
 	      },
 	      { /* polymorphic variant */
 	        className: 'tag',
-	        begin: '`[A-Z][\\w\']*',
+	        begin: '`[A-Z][\\w\']*'
 	      },
 	      { /* module or constructor */
 	        className: 'type',
@@ -68742,14 +69456,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 219 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  var COMMENT_MODE = {
-	    className: 'comment',
-	    begin: '--', end: '$'
-	  };
+	  var COMMENT_MODE = hljs.COMMENT('--', '$');
 	  return {
 	    case_insensitive: true,
 	    illegal: /[<>]/,
@@ -68761,7 +69472,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          'delete do handler insert load replace select truncate update set show pragma grant '+
 	          'merge describe use explain help declare prepare execute deallocate savepoint release '+
 	          'unlock purge reset change stop analyze cache flush optimize repair kill '+
-	          'install uninstall checksum restore check backup',
+	          'install uninstall checksum restore check backup revoke',
 	        end: /;/, endsWithParent: true,
 	        keywords: {
 	          keyword:
@@ -68849,7 +69560,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 220 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68861,40 +69572,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        className: 'label',
 	        variants: [
-	          {begin: "\\$\\{?[a-zA-Z_]+\\}?"},
-	          {begin: "`[a-zA-Z_]+'"}
+	          {begin: "\\$\\{?[a-zA-Z0-9_]+\\}?"},
+	          {begin: "`[a-zA-Z0-9_]+'"}
 
 	        ]
 	      },
 	      {
 	        className: 'string',
 	        variants: [
-	          {begin: '`".*"\''},
-	          {begin: '".*"'}
+	          {begin: '`"[^\r\n]*?"\''},
+	          {begin: '"[^\r\n"]*"'}
 	        ]
 	      },
 
 	      {
 	        className: 'literal',
 	        variants: [
-	          { begin: '\\b(abs|acos|asin|atan|atan2|atanh|ceil|cloglog|comb|cos|digamma|exp|floor|invcloglog|invlogit|ln|lnfact|lnfactorial|lngamma|log|log10|max|min|mod|reldif|round|sign|sin|sqrt|sum|tan|tanh|trigamma|trunc|betaden|Binomial|binorm|binormal|chi2|chi2tail|dgammapda|dgammapdada|dgammapdadx|dgammapdx|dgammapdxdx|F|Fden|Ftail|gammaden|gammap|ibeta|invbinomial|invchi2|invchi2tail|invF|invFtail|invgammap|invibeta|invnchi2|invnFtail|invnibeta|invnorm|invnormal|invttail|nbetaden|nchi2|nFden|nFtail|nibeta|norm|normal|normalden|normd|npnchi2|tden|ttail|uniform|abbrev|char|index|indexnot|length|lower|ltrim|match|plural|proper|real|regexm|regexr|regexs|reverse|rtrim|string|strlen|strlower|strltrim|strmatch|strofreal|strpos|strproper|strreverse|strrtrim|strtrim|strupper|subinstr|subinword|substr|trim|upper|word|wordcount|_caller|autocode|byteorder|chop|clip|cond|e|epsdouble|epsfloat|group|inlist|inrange|irecode|matrix|maxbyte|maxdouble|maxfloat|maxint|maxlong|mi|minbyte|mindouble|minfloat|minint|minlong|missing|r|recode|replay|return|s|scalar|d|date|day|dow|doy|halfyear|mdy|month|quarter|week|year|d|daily|dofd|dofh|dofm|dofq|dofw|dofy|h|halfyearly|hofd|m|mofd|monthly|q|qofd|quarterly|tin|twithin|w|weekly|wofd|y|yearly|yh|ym|yofd|yq|yw|cholesky|colnumb|colsof|corr|det|diag|diag0cnt|el|get|hadamard|I|inv|invsym|issym|issymmetric|J|matmissing|matuniform|mreldif|nullmat|rownumb|rowsof|sweep|syminv|trace|vec|vecdiag)(?=\\(|$)' },
-	        ]
-	      },
-	      {
-	        className: 'comment',
-	        variants: [
-	          { begin: '^\\*.*$' },
-	          hljs.C_LINE_COMMENT_MODE,
-	          hljs.C_BLOCK_COMMENT_MODE
+	          {
+	            begin: '\\b(abs|acos|asin|atan|atan2|atanh|ceil|cloglog|comb|cos|digamma|exp|floor|invcloglog|invlogit|ln|lnfact|lnfactorial|lngamma|log|log10|max|min|mod|reldif|round|sign|sin|sqrt|sum|tan|tanh|trigamma|trunc|betaden|Binomial|binorm|binormal|chi2|chi2tail|dgammapda|dgammapdada|dgammapdadx|dgammapdx|dgammapdxdx|F|Fden|Ftail|gammaden|gammap|ibeta|invbinomial|invchi2|invchi2tail|invF|invFtail|invgammap|invibeta|invnchi2|invnFtail|invnibeta|invnorm|invnormal|invttail|nbetaden|nchi2|nFden|nFtail|nibeta|norm|normal|normalden|normd|npnchi2|tden|ttail|uniform|abbrev|char|index|indexnot|length|lower|ltrim|match|plural|proper|real|regexm|regexr|regexs|reverse|rtrim|string|strlen|strlower|strltrim|strmatch|strofreal|strpos|strproper|strreverse|strrtrim|strtrim|strupper|subinstr|subinword|substr|trim|upper|word|wordcount|_caller|autocode|byteorder|chop|clip|cond|e|epsdouble|epsfloat|group|inlist|inrange|irecode|matrix|maxbyte|maxdouble|maxfloat|maxint|maxlong|mi|minbyte|mindouble|minfloat|minint|minlong|missing|r|recode|replay|return|s|scalar|d|date|day|dow|doy|halfyear|mdy|month|quarter|week|year|d|daily|dofd|dofh|dofm|dofq|dofw|dofy|h|halfyearly|hofd|m|mofd|monthly|q|qofd|quarterly|tin|twithin|w|weekly|wofd|y|yearly|yh|ym|yofd|yq|yw|cholesky|colnumb|colsof|corr|det|diag|diag0cnt|el|get|hadamard|I|inv|invsym|issym|issymmetric|J|matmissing|matuniform|mreldif|nullmat|rownumb|rowsof|sweep|syminv|trace|vec|vecdiag)(?=\\(|$)'
+	          }
 	        ]
 	      },
 
+	      hljs.COMMENT('^[ \t]*\\*.*$', false),
+	      hljs.C_LINE_COMMENT_MODE,
+	      hljs.C_BLOCK_COMMENT_MODE
 	    ]
 	  };
 	};
 
 /***/ },
-/* 221 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68913,12 +69621,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  var STEP21_CODE = [
 	    hljs.C_LINE_COMMENT_MODE,
-	    {
-	      className: 'comment',
-	      begin: '/\\*\\*!', end: '\\*/',
-	      contains: [hljs.PHRASAL_WORDS_MODE]
-	    },
 	    hljs.C_BLOCK_COMMENT_MODE,
+	    hljs.COMMENT('/\\*\\*!', '\\*/'),
 	    hljs.C_NUMBER_MODE,
 	    hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
 	    hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
@@ -68954,7 +69658,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 222 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69294,7 +69998,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    '#\\s', // markdown
 	    '\\*\\s', // markdown
 	    '===\\s', // markdown
-	    '\\|'
+	    '\\|',
+	    '%', // prolog
 	  ];
 
 	  return {
@@ -69400,7 +70105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 223 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69433,11 +70138,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    begin: '\\b[A-Z][\\w\']*',
 	    relevance: 0
 	  };
-	  var BLOCK_COMMENT = {
-	    className: 'comment',
-	    begin: '/\\*', end: '\\*/',
-	    contains: [hljs.PHRASAL_WORDS_MODE, 'self']
-	  };
+	  var BLOCK_COMMENT = hljs.COMMENT(
+	    '/\\*',
+	    '\\*/',
+	    {
+	      contains: ['self']
+	    }
+	  );
 	  var SUBST = {
 	    className: 'subst',
 	    begin: /\\\(/, end: '\\)',
@@ -69472,12 +70179,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }),
 	          {
 	            className: 'generics',
-	            begin: /\</, end: /\>/,
-	            illegal: /\>/
+	            begin: /</, end: />/,
+	            illegal: />/
 	          },
 	          {
 	            className: 'params',
-	            begin: /\(/, end: /\)/,
+	            begin: /\(/, end: /\)/, endsParent: true,
 	            keywords: SWIFT_KEYWORDS,
 	            contains: [
 	              'self',
@@ -69493,8 +70200,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'class',
-	        keywords: 'struct protocol class extension enum',
-	        begin: '(struct|protocol|class(?! (func|var))|extension|enum)',
+	        beginKeywords: 'struct protocol class extension enum',
+	        keywords: SWIFT_KEYWORDS,
 	        end: '\\{',
 	        excludeEnd: true,
 	        contains: [
@@ -69507,13 +70214,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  '@NSCopying|@NSManaged|@objc|@optional|@required|@auto_closure|' +
 	                  '@noreturn|@IBAction|@IBDesignable|@IBInspectable|@IBOutlet|' +
 	                  '@infix|@prefix|@postfix)'
-	      },
+	      }
 	    ]
 	  };
 	};
 
 /***/ },
-/* 224 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69532,13 +70239,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'tcl_wordBreakBefore tcltest tclvars tell time tm trace unknown unload unset update '+
 	      'uplevel upvar variable vwait while',
 	    contains: [
-	      {
-	        className: 'comment',
-	        variants: [
-	          {begin: ';[ \\t]*#', end: '$'},
-	          {begin: '^[ \\t]*#', end: '$'}
-	        ]
-	      },
+	      hljs.COMMENT(';[ \\t]*#', '$'),
+	      hljs.COMMENT('^[ \\t]*#', '$'),
 	      {
 	        beginKeywords: 'proc',
 	        end: '[\\{]',
@@ -69549,7 +70251,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            begin: '[ \\t\\n\\r]+(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*',
 	            end: '[ \\t\\n\\r]',
 	            endsWithParent: true,
-	            excludeEnd: true,
+	            excludeEnd: true
 	          }
 	        ]
 	      },
@@ -69559,12 +70261,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        variants: [
 	          {
 	            begin: '\\$(\\{)?(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*\\(([a-zA-Z0-9_])*\\)',
-	            end: '[^a-zA-Z0-9_\\}\\$]',
+	            end: '[^a-zA-Z0-9_\\}\\$]'
 	          },
 	          {
 	            begin: '\\$(\\{)?(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*',
-	            end: '(\\))?[^a-zA-Z0-9_\\}\\$]',
-	          },
+	            end: '(\\))?[^a-zA-Z0-9_\\}\\$]'
+	          }
 	        ]
 	      },
 	      {
@@ -69578,13 +70280,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        className: 'number',
 	        variants: [hljs.BINARY_NUMBER_MODE, hljs.C_NUMBER_MODE]
-	      },
+	      }
 	    ]
 	  }
 	};
 
 /***/ },
-/* 225 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69631,17 +70333,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        contains: [COMMAND1, COMMAND2, SPECIAL],
 	        relevance: 0
 	      },
-	      {
-	        className: 'comment',
-	        begin: '%', end: '$',
-	        relevance: 0
-	      }
+	      hljs.COMMENT(
+	        '%',
+	        '$',
+	        {
+	          relevance: 0
+	        }
+	      )
 	    ]
 	  };
 	};
 
 /***/ },
-/* 226 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69671,7 +70375,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        ]
 	      },
 	      {
-	        className: 'stl_container',
 	        begin: '\\b(set|list|map)\\s*<', end: '>',
 	        keywords: BUILT_IN_TYPES,
 	        contains: ['self']
@@ -69681,7 +70384,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 227 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69704,7 +70407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var FILTER = {
 	    className: 'filter',
-	    begin: /\|[A-Za-z]+\:?/,
+	    begin: /\|[A-Za-z_]+:?/,
 	    keywords:
 	      'abs batch capitalize convert_encoding date date_modify default ' +
 	      'escape first format join json_encode keys last length lower ' +
@@ -69725,10 +70428,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case_insensitive: true,
 	    subLanguage: 'xml', subLanguageMode: 'continuous',
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: /\{#/, end: /#}/
-	      },
+	      hljs.COMMENT(/\{#/, /#}/),
 	      {
 	        className: 'template_tag',
 	        begin: /\{%/, end: /%}/,
@@ -69745,7 +70445,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 228 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69756,7 +70456,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'in if for while finally var new function|0 do return void else break catch ' +
 	        'instanceof with throw case default try this switch continue typeof delete ' +
 	        'let yield const class public private get set super interface extends' +
-	        'static constructor implements enum export import declare',
+	        'static constructor implements enum export import declare type protected',
 	      literal:
 	        'true false null undefined NaN Infinity',
 	      built_in:
@@ -69766,7 +70466,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'TypeError URIError Number Math Date String RegExp Array Float32Array ' +
 	        'Float64Array Int16Array Int32Array Int8Array Uint16Array Uint32Array ' +
 	        'Uint8Array Uint8ClampedArray ArrayBuffer DataView JSON Intl arguments require ' +
-	        'module console window document any number boolean string void',
+	        'module console window document any number boolean string void'
 	    },
 	    contains: [
 	      {
@@ -69819,11 +70519,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'module',
-	        beginKeywords: 'module', end: /\{/, excludeEnd: true,
+	        beginKeywords: 'module', end: /\{/, excludeEnd: true
 	      },
 	      {
 	        className: 'interface',
-	        beginKeywords: 'interface', end: /\{/, excludeEnd: true,
+	        beginKeywords: 'interface', end: /\{/, excludeEnd: true
 	      },
 	      {
 	        begin: /\$[(.]/ // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
@@ -69836,7 +70536,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 229 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69895,7 +70595,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 230 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69925,20 +70625,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    illegal: '//|{|}|endif|gosub|variant|wend', /* reserved deprecated keywords */
 	    contains: [
 	      hljs.inherit(hljs.QUOTE_STRING_MODE, {contains: [{begin: '""'}]}),
-	      {
-	        className: 'comment',
-	        begin: '\'', end: '$', returnBegin: true,
-	        contains: [
-	          {
-	            className: 'xmlDocTag',
-	            begin: '\'\'\'|<!--|-->'
-	          },
-	          {
-	            className: 'xmlDocTag',
-	            begin: '</?', end: '>'
-	          }
+	      hljs.COMMENT(
+	        '\'',
+	        '$',
+	        {
+	          returnBegin: true,
+	          contains: [
+	            {
+	              className: 'xmlDocTag',
+	              begin: '\'\'\'|<!--|-->',
+	              contains: [hljs.PHRASAL_WORDS_MODE]
+	            },
+	            {
+	              className: 'xmlDocTag',
+	              begin: '</?', end: '>',
+	              contains: [hljs.PHRASAL_WORDS_MODE]
+	            }
 	          ]
-	      },
+	        }
+	      ),
 	      hljs.C_NUMBER_MODE,
 	      {
 	        className: 'preprocessor',
@@ -69950,7 +70655,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 231 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69966,7 +70671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 232 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69996,18 +70701,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    illegal: '//',
 	    contains: [
 	      hljs.inherit(hljs.QUOTE_STRING_MODE, {contains: [{begin: '""'}]}),
-	      {
-	        className: 'comment',
-	        begin: /'/, end: /$/,
-	        relevance: 0
-	      },
+	      hljs.COMMENT(
+	        /'/,
+	        /$/,
+	        {
+	          relevance: 0
+	        }
+	      ),
 	      hljs.C_NUMBER_MODE
 	    ]
 	  };
 	};
 
 /***/ },
-/* 233 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70061,10 +70768,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 234 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
+	  // Regular expression for VHDL numeric literals.
+
+	  // Decimal literal:
+	  var INTEGER_RE = '\\d(_|\\d)*';
+	  var EXPONENT_RE = '[eE][-+]?' + INTEGER_RE;
+	  var DECIMAL_LITERAL_RE = INTEGER_RE + '(\\.' + INTEGER_RE + ')?' + '(' + EXPONENT_RE + ')?';
+	  // Based literal:
+	  var BASED_INTEGER_RE = '\\w+';
+	  var BASED_LITERAL_RE = INTEGER_RE + '#' + BASED_INTEGER_RE + '(\\.' + BASED_INTEGER_RE + ')?' + '#' + '(' + EXPONENT_RE + ')?';
+
+	  var NUMBER_RE = '\\b(' + BASED_LITERAL_RE + '|' + DECIMAL_LITERAL_RE + ')';
+
 	  return {
 	    case_insensitive: true,
 	    keywords: {
@@ -70087,12 +70806,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    illegal: '{',
 	    contains: [
 	      hljs.C_BLOCK_COMMENT_MODE,        // VHDL-2008 block commenting.
-	      {
-	        className: 'comment',
-	        begin: '--', end: '$'
-	      },
+	      hljs.COMMENT('--', '$'),
 	      hljs.QUOTE_STRING_MODE,
-	      hljs.C_NUMBER_MODE,
+	      {
+	        className: 'number',
+	        begin: NUMBER_RE,
+	        relevance: 0
+	      },
 	      {
 	        className: 'literal',
 	        begin: '\'(U|X|0|1|Z|W|L|H|-)\'',
@@ -70104,11 +70824,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        contains: [hljs.BACKSLASH_ESCAPE]
 	      }
 	    ]
-	  }; // return
+	  };
 	};
 
 /***/ },
-/* 235 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70175,7 +70895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 236 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70247,12 +70967,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'float128l float128h __FLOAT_DAZ__ __FLOAT_ROUND__ __FLOAT__'
 	    },
 	    contains: [
-	      {
-	        className: 'comment',
-	        begin: ';',
-	        end: '$',
-	        relevance: 0
-	      },
+	      hljs.COMMENT(
+	        ';',
+	        '$',
+	        {
+	          relevance: 0
+	        }
+	      ),
 	      // Float number and x87 BCD
 	      {
 	        className: 'number',
@@ -70326,7 +71047,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 237 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70410,7 +71131,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 238 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70457,11 +71178,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        relevance: 10,
 	        contains: [{begin: '\\[', end: '\\]'}]
 	      },
-	      {
-	        className: 'comment',
-	        begin: '<!--', end: '-->',
-	        relevance: 10
-	      },
+	      hljs.COMMENT(
+	        '<!--',
+	        '-->',
+	        {
+	          relevance: 10
+	        }
+	      ),
 	      {
 	        className: 'cdata',
 	        begin: '<\\!\\[CDATA\\[', end: '\\]\\]>',
@@ -70491,7 +71214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        contains: [TAG_INTERNALS],
 	        starts: {
 	          end: '</script>', returnEnd: true,
-	          subLanguage: 'javascript'
+	          subLanguage: ''
 	        }
 	      },
 	      PHP,
