@@ -231,18 +231,18 @@ var ReactDataGrid = React.createClass({
 
   onPressKeyWithCtrl(e: SyntheticKeyboardEvent){
     var keys = {
-      KeyCode_c : '99',
-      KeyCode_C : '67',
-      KeyCode_V : '86',
-      KeyCode_v : '118',
+      KeyCode_c : 99,
+      KeyCode_C : 67,
+      KeyCode_V : 86,
+      KeyCode_v : 118,
     }
 
     var idx = this.state.selected.idx
     if(this.canEdit(idx)){
-      if(e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C){
+      if(e.keyCode == keys.KeyCode_c || e.keyCode == keys.KeyCode_C){
         var value = this.getSelectedValue();
         this.handleCopy({value : value});
-      }else if(e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V){
+      }else if(e.keyCode == keys.KeyCode_v || e.keyCode == keys.KeyCode_V){
         this.handlePaste();
       }
     }
