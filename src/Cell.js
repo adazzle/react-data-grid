@@ -41,9 +41,14 @@ var Cell = React.createClass({
     }
   },
 
+  getInitialState(){
+    return {isRowChanging: false, isCellValueChanging: false}
+  },
+
   componentDidMount: function() {
     this.checkFocus();
   },
+
 
   componentDidUpdate: function(prevProps: any, prevState: any) {
     this.checkFocus();
@@ -53,10 +58,14 @@ var Cell = React.createClass({
     }
   },
 
+  componentWillReceiveProps(nextProps){
+    this.setState({isRowChanging : this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value});
+  },
+
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     return this.props.column.width !== nextProps.column.width
     || this.props.column.left !== nextProps.column.left
-    || this.props.value !== nextProps.value
+    || this.props.rowData !== nextProps.rowData
     || this.props.height !== nextProps.height
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
@@ -105,9 +114,20 @@ var Cell = React.createClass({
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
-    return (<div
+    return (<div ref="cell"
       className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>)
-    },
+  },
+
+  isColumnSelected(){
+    var meta = this.props.cellMetaData;
+    if(meta == null || meta.selected == null) { return false; }
+
+    return (
+      meta.selected
+      && meta.selected.idx === this.props.idx
+    );
+
+  },
 
   isSelected: function(): boolean {
     var meta = this.props.cellMetaData;
@@ -140,10 +160,14 @@ var Cell = React.createClass({
   getFormatter(): ?ReactElement {
     var col = this.props.column;
     if(this.isActive()){
-      return <EditorContainer rowData={this.props.rowData} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
+      return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
     }else{
       return this.props.column.formatter;
     }
+  },
+
+  getRowData(){
+      return this.props.rowData.toJSON ? this.props.rowData.toJSON() : this.props.rowData;
   },
 
   getFormatterDependencies() {
@@ -151,7 +175,7 @@ var Cell = React.createClass({
     var columnName = this.props.column.ItemId;
     //convention based method to get corresponding Id or Name of any Name or Id property
     if(typeof this.props.column.getRowMetaData === 'function'){
-      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
+      return this.props.column.getRowMetaData(this.getRowData(), this.props.column);
     }
   },
 
@@ -194,7 +218,7 @@ var Cell = React.createClass({
       this.props.className,
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
-
+    var updateCellClass = this.getUpdateCellClass();
     var extraClasses = joinClasses({
       'selected' : this.isSelected() && !this.isActive() ,
       'editing' : this.isActive(),
@@ -204,9 +228,14 @@ var Cell = React.createClass({
       'is-dragged-over-down' :  this.isDraggedOverDownwards(),
       'was-dragged-over' : this.wasDraggedOver()
     });
-    return className + ' ' + extraClasses;
+    return joinClasses(className, extraClasses, updateCellClass);
   },
 
+  getUpdateCellClass() {
+    if(this.state.isRowChanging && this.props.selectedColumn != null){
+      return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+    }
+  },
 
   setScrollLeft(scrollLeft: number) {
     var ctrl: any = this; //flow on windows has an outdated react declaration, once that gets updated, we can remove this
