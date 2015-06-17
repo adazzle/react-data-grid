@@ -78,7 +78,7 @@ var Row = React.createClass({
                     height={this.getRowHeight()}
                     formatter={column.formatter}
                     cellMetaData={this.props.cellMetaData}
-                    rowData={this.props.row} />
+                    rowData={this.getRowData()} />
       if (column.locked) {
         lockedCells.push(cell);
       } else {
@@ -111,6 +111,10 @@ var Row = React.createClass({
       var val = this.props.row[key];
     }
     return !val ? '' : val;
+  },
+
+  getRowData(){
+    return this.props.row.toJSON ? this.props.row.toJSON() : this.props.row;
   },
 
   getDefaultProps(): {cellRenderer: Cell} {
