@@ -64,7 +64,7 @@ var Row = React.createClass({
   getCells(): Array<ReactElement> {
     var cells = [];
     var lockedCells = [];
-
+    var selectedColumn = this.getSelectedColumn();
     for (var i = 0, len = this.props.columns.length; i < len; i++) {
       var column = this.props.columns[i];
       var CellRenderer = this.props.cellRenderer;
@@ -78,7 +78,8 @@ var Row = React.createClass({
                     height={this.getRowHeight()}
                     formatter={column.formatter}
                     cellMetaData={this.props.cellMetaData}
-                    rowData={this.getRowData()} />
+                    rowData={this.props.row}
+                    selectedColumn={selectedColumn} />
       if (column.locked) {
         lockedCells.push(cell);
       } else {
@@ -167,6 +168,13 @@ var Row = React.createClass({
     var handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
     if(handleDragEnterRow){
       handleDragEnterRow(this.props.idx);
+    }
+  },
+
+  getSelectedColumn(){
+    var selected = this.props.cellMetaData.selected;
+    if(selected && selected.idx){
+        return this.props.columns[selected.idx];
     }
   }
 
