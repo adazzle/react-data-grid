@@ -57,6 +57,7 @@
     "gulp-uglify": "^1.0.2",
     "gulp-util": "^3.0.0",
     "highlight.js": "^8.4.0",
+    "immutable": "^3.7.3",
     "istanbul-instrumenter-loader": "^0.1.2",
     "jasmine-core": "^2.2.0",
     "jasmine-react": "^1.0.7",

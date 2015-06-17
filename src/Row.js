@@ -101,12 +101,16 @@ var Row = React.createClass({
   },
 
   getCellValue(key: number | string): any {
+    var val;
     if(key === 'select-row'){
       return this.props.isSelected;
-    }else{
-      var val = this.props.row[key];
-      return !val ? '' : val;
+    } else if (typeof this.props.row.get === 'function') {
+      val = this.props.row.get(key);
     }
+    else {
+      var val = this.props.row[key];
+    }
+    return !val ? '' : val;
   },
 
   getDefaultProps(): {cellRenderer: Cell} {
