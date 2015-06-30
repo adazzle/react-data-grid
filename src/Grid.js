@@ -12,6 +12,7 @@ var Header               = require('./Header');
 var Viewport             = require('./Viewport');
 var ExcelColumn = require('./addons/grids/ExcelColumn');
 var GridScrollMixin      = require('./GridScrollMixin');
+var DOMMetrics           = require('./DOMMetrics');
 
 var Grid = React.createClass({
 
@@ -26,7 +27,7 @@ var Grid = React.createClass({
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
-    sortColumn : React.PropTypes.string.isRequired,
+    sortColumn : React.PropTypes.string,
     sortDirection : React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown : PropTypes.func.isRequired,
@@ -36,7 +37,8 @@ var Grid = React.createClass({
   },
 
   mixins: [
-    GridScrollMixin
+    GridScrollMixin,
+    DOMMetrics.MetricsComputatorMixin
   ],
 
 
