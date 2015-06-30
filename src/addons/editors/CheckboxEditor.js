@@ -8,7 +8,6 @@ var React                   = require('react');
 
 var CheckBoxEditor = React.createClass({
 
-
   PropTypes : {
     value : React.PropTypes.bool.isRequired,
     rowIdx : React.PropTypes.number.isRequired
@@ -20,8 +19,7 @@ var CheckBoxEditor = React.createClass({
   },
 
   handleChange(e: Event){
-    e.stopPropagation();
-    this.props.column.onRowSelect(this.props.rowIdx)
+    this.props.column.onRowSelect(this.props.rowIdx, e);
   }
 });
 

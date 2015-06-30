@@ -23,14 +23,5 @@ describe('CheckboxEditor', () => {
         var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
         expect(Input.props.checked).toBe(true);
       });
-
-      it('should update if the value has changed', () => {
-        expect(component.shouldComponentUpdate({value: false})).toBe(true);
-      });
-
-      it('should not update if the value has not changed', () => {
-        expect(component.shouldComponentUpdate({value: true})).toBe(false);
-      });
-
   });
 });
