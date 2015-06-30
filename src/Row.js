@@ -79,7 +79,8 @@ var Row = React.createClass({
                     formatter={column.formatter}
                     cellMetaData={this.props.cellMetaData}
                     rowData={this.props.row}
-                    selectedColumn={selectedColumn} />
+                    selectedColumn={selectedColumn}
+                    isRowSelected={this.props.isSelected} />
       if (column.locked) {
         lockedCells.push(cell);
       } else {
@@ -154,13 +155,14 @@ var Row = React.createClass({
     return copied != null && copied.rowIdx === this.props.idx;
   },
 
-  shouldComponentUpdate(nextProps: any): boolean {
+  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     return !(ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
     this.doesRowContainSelectedCell(this.props)          ||
     this.doesRowContainSelectedCell(nextProps)           ||
     this.willRowBeDraggedOver(nextProps)                 ||
     nextProps.row !== this.props.row                     ||
     this.hasRowBeenCopied()                              ||
+    this.props.isSelected !== nextProps.isSelected       ||
     nextProps.height !== this.props.height;
   },
 

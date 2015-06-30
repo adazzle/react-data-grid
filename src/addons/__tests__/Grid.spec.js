@@ -180,7 +180,8 @@ describe('Grid', () => {
       component.setState({selectedRows : [false, false, false, false]});
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
       var selectRowCol = baseGrid.props.columns[0];
-      selectRowCol.onRowSelect(3);
+      var fakeEvent = {stopPropagation : function(){}};
+      selectRowCol.onRowSelect(3, fakeEvent);
       expect(component.state.selectedRows[3]).toBe(true);
     });
 
@@ -188,7 +189,8 @@ describe('Grid', () => {
       component.setState({selectedRows : [null, null, null, null]});
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
       var selectRowCol = baseGrid.props.columns[0];
-      selectRowCol.onRowSelect(2);
+      var fakeEvent = {stopPropagation : function(){}};
+      selectRowCol.onRowSelect(2, fakeEvent );
       expect(component.state.selectedRows[2]).toBe(true);
     });
 
@@ -197,7 +199,8 @@ describe('Grid', () => {
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
       var selectRowCol = baseGrid.props.columns[0];
       debugger;
-      selectRowCol.onRowSelect(3);
+      var fakeEvent = {stopPropagation : function(){}};
+      selectRowCol.onRowSelect(3, fakeEvent);
       expect(component.state.selectedRows[3]).toBe(false);
     });
   });

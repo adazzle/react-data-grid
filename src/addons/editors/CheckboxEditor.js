@@ -8,24 +8,19 @@ var React                   = require('react');
 
 var CheckBoxEditor = React.createClass({
 
-
   PropTypes : {
     value : React.PropTypes.bool.isRequired,
     rowIdx : React.PropTypes.number.isRequired
   },
 
   render(): ?ReactElement{
-    return (<input className="react-grid-CheckBox" type="checkbox" checked={this.props.value} onChange={this.handleChange} />);
+    var checked = this.props.value != null ? this.props.value : false;
+    return (<input className="react-grid-CheckBox" type="checkbox" checked={checked} onClick={this.handleChange} />);
   },
 
   handleChange(e: Event){
-    this.props.column.onRowSelect(this.props.rowIdx)
-  },
-
-  shouldComponentUpdate(nextProps: any, nextState: any): boolean{
-    return this.props.value != nextProps.value;
+    this.props.column.onRowSelect(this.props.rowIdx, e);
   }
-
 });
 
 module.exports = CheckBoxEditor;

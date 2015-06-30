@@ -316,7 +316,7 @@ var ReactDataGrid = React.createClass({
           key: 'select-row',
           name: '',
           formatter : <CheckboxEditor/>,
-          onRowSelect :this.handleRowSelect,
+          onRowSelect : this.handleRowSelect,
           filterable : false,
           headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
         width : 60,
@@ -340,14 +340,17 @@ var ReactDataGrid = React.createClass({
     this.setState({selectedRows : selectedRows});
   },
 
-  handleRowSelect(row: Row){
-    var selectedRows = this.state.selectedRows;
-    if(selectedRows[row] == null || selectedRows[row] == false){
-      selectedRows[row] = true;
-    }else{
-      selectedRows[row] = false;
+  handleRowSelect(row: Row, e: Event){
+    e.stopPropagation();
+    if(this.state.selectedRows != null && this.state.selectedRows.length > 0){
+      var selectedRows = this.state.selectedRows.slice();
+      if(selectedRows[row] == null || selectedRows[row] == false){
+        selectedRows[row] = true;
+      }else{
+        selectedRows[row] = false;
+      }
+      this.setState({selectedRows : selectedRows});
     }
-    this.setState({selectedRows : selectedRows});
   },
 
   //EXPAND ROW Functionality - removing for now till we decide on how best to implement
