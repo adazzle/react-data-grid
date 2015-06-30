@@ -51,19 +51,19 @@ module.exports = {
         columnMetrics.columns = this.adjustColumnWidths(columnMetrics.columns);
         this.setState(columnMetrics);
       } else {
-        var nextColumns = this.adjustColumnWidths(nextProps);
-        this.setState({columns: nextColumns});
+        var nextColumnStats = this.adjustColumnWidths(nextProps);
+        this.setState({columnMetrics: nextColumnStats});
       }
     }
   },
 
-  adjustColumnWidths(columns: ColumnMetricsType){
+  adjustColumnWidths(columnMetrics: ColumnMetricsType){
     var index = {};
-    this.state.columns.columns.forEach((c) => {
+    this.state.columnMetrics.columns.forEach((c) => {
       index[c.key] = {width: c.width, left: c.left};
     });
-    var nextColumns = Object.assign(this.state.columns, {
-      columns: columns.columns.map((c) => Object.assign(c, index[c.key]))
+    var nextColumns = Object.assign(this.state.columnMetrics, {
+      columns: columnMetrics.columns.map((c) => Object.assign(c, index[c.key]))
     });
     return nextColumns;
   },
@@ -71,7 +71,7 @@ module.exports = {
   getColumnMetricsType(props: ColumnMetricsType, initial: ?number): { columns: ColumnMetricsType; gridWidth: number } {
     var totalWidth = initial ? initial : this.DOMMetrics.gridWidth();
     return {
-      columns: ColumnMetrics.calculate({
+      columnMetrics: ColumnMetrics.calculate({
         columns: props.columns,
         totalWidth: totalWidth,
         minColumnWidth: props.minColumnWidth
@@ -85,7 +85,7 @@ module.exports = {
   },
 
   onColumnResize(index: number, width: number) {
-    var columns = ColumnMetrics.resizeColumn(this.state.columns, index, width);
+    var columns = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
     this.setState({columns});
   }
 };

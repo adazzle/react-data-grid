@@ -57,7 +57,7 @@ var Grid = React.createClass({
       <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
         <Header
           ref="header"
-          columns={this.state.columns}
+          columns={this.state.columnMetrics}
           onColumnResize={this.onColumnResize}
           height={this.props.rowHeight}
           totalWidth={this.DOMMetrics.gridWidth()}
@@ -68,14 +68,14 @@ var Grid = React.createClass({
         <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
             <Viewport
               ref="viewport"
-              width={this.state.columns.width}
+              width={this.state.columnMetrics.width}
               rowHeight={this.props.rowHeight}
               rowRenderer={this.props.rowRenderer}
               rowGetter={this.props.rowGetter}
               rowsCount={this.props.rowsCount}
               selectedRows={this.props.selectedRows}
               expandedRows={this.props.expandedRows}
-              columns={this.state.columns}
+              columns={this.state.columnMetrics}
               totalWidth={this.DOMMetrics.gridWidth()}
               onScroll={this.onScroll}
               onRows={this.props.onRows}
