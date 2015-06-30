@@ -341,7 +341,7 @@ var ReactDataGrid = React.createClass({
   },
 
   handleRowSelect(row: Row){
-    var selectedRows = this.state.selectedRows;
+    var selectedRows = this.state.selectedRows.slice(0);
     if(selectedRows[row] == null || selectedRows[row] == false){
       selectedRows[row] = true;
     }else{
