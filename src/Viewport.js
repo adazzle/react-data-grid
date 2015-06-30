@@ -20,7 +20,7 @@ var Viewport = React.createClass({
   propTypes: {
     rowOffsetHeight: PropTypes.number.isRequired,
     totalWidth: PropTypes.number.isRequired,
-    columns: PropTypes.shape({
+    columnMetrics: PropTypes.shape({
       width: PropTypes.number.isRequired,
       columns: PropTypes.array.isRequired,
     }),
@@ -51,12 +51,12 @@ var Viewport = React.createClass({
         <Canvas
           ref="canvas"
           totalWidth={this.props.totalWidth}
-          width={this.props.columns.width}
+          width={this.props.columnMetrics.width}
           rowGetter={this.props.rowGetter}
           rowsCount={this.props.rowsCount}
           selectedRows={this.props.selectedRows}
           expandedRows={this.props.expandedRows}
-          columns={this.props.columns.columns}
+          columns={this.props.columnMetrics.columns}
           rowRenderer={this.props.rowRenderer}
           visibleStart={this.state.visibleStart}
           visibleEnd={this.state.visibleEnd}
