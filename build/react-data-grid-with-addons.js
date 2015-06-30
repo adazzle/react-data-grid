@@ -805,7 +805,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getCells:function()                      {
 	    var cells = [];
 	    var lockedCells = [];
-
+	    var selectedColumn = this.getSelectedColumn();
 	    for (var i = 0, len = this.props.columns.length; i < len; i++) {
 	      var column = this.props.columns[i];
 	      var CellRenderer = this.props.cellRenderer;
@@ -819,7 +819,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    height: this.getRowHeight(), 
 	                    formatter: column.formatter, 
 	                    cellMetaData: this.props.cellMetaData, 
-	                    rowData: this.props.row})
+	                    rowData: this.props.row, 
+	                    selectedColumn: selectedColumn, 
+	                    isRowSelected: this.props.isSelected})
 	      if (column.locked) {
 	        lockedCells.push(cell);
 	      } else {
@@ -842,12 +844,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getCellValue:function(key                 )      {
+	    var val;
 	    if(key === 'select-row'){
 	      return this.props.isSelected;
-	    }else{
-	      var val = this.props.row[key];
-	      return !val ? '' : val;
+	    } else if (typeof this.props.row.get === 'function') {
+	      val = this.props.row.get(key);
 	    }
+	    else {
+	      var val = this.props.row[key];
+	    }
+	    return !val ? '' : val;
+	  },
+
+	  getRowData:function(){
+	    return this.props.row.toJSON ? this.props.row.toJSON() : this.props.row;
 	  },
 
 	  getDefaultProps:function()                       {
@@ -886,13 +896,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return copied != null && copied.rowIdx === this.props.idx;
 	  },
 
-	  shouldComponentUpdate:function(nextProps     )          {
+	  shouldComponentUpdate:function(nextProps     , nextState     )          {
 	    return !(ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
 	    this.doesRowContainSelectedCell(this.props)          ||
 	    this.doesRowContainSelectedCell(nextProps)           ||
 	    this.willRowBeDraggedOver(nextProps)                 ||
 	    nextProps.row !== this.props.row                     ||
 	    this.hasRowBeenCopied()                              ||
+	    this.props.isSelected !== nextProps.isSelected       ||
 	    nextProps.height !== this.props.height;
 	  },
 
@@ -900,6 +911,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
 	    if(handleDragEnterRow){
 	      handleDragEnterRow(this.props.idx);
+	    }
+	  },
+
+	  getSelectedColumn:function(){
+	    var selected = this.props.cellMetaData.selected;
+	    if(selected && selected.idx){
+	        return this.props.columns[selected.idx];
 	    }
 	  }
 
@@ -1126,9 +1144,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
+	  getInitialState:function(){
+	    return {isRowChanging: false, isCellValueChanging: false}
+	  },
+
 	  componentDidMount: function() {
 	    this.checkFocus();
 	  },
+
 
 	  componentDidUpdate: function(prevProps     , prevState     ) {
 	    this.checkFocus();
@@ -1138,14 +1161,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
+	  componentWillReceiveProps:function(nextProps){
+	    this.setState({isRowChanging : this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value});
+	  },
+
 	  shouldComponentUpdate:function(nextProps     , nextState     )          {
 	    return this.props.column.width !== nextProps.column.width
 	    || this.props.column.left !== nextProps.column.left
-	    || this.props.value !== nextProps.value
+	    || this.props.rowData !== nextProps.rowData
 	    || this.props.height !== nextProps.height
 	    || this.props.rowIdx !== nextProps.rowIdx
 	    || this.isCellSelectionChanging(nextProps)
-	    || this.isDraggedCellChanging(nextProps);
+	    || this.isDraggedCellChanging(nextProps)
+	    || this.props.isRowSelected !== nextProps.isRowSelected;
 	  },
 
 	  getStyle:function()                                                                 {
@@ -1190,9 +1218,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else {
 	      CellContent = React.createElement(SimpleCellFormatter, {value: this.props.value});
 	    }
-	    return (React.createElement("div", {
+	    return (React.createElement("div", {ref: "cell", 
 	      className: "react-grid-Cell__value"}, CellContent, " ", this.props.cellControls))
-	    },
+	  },
+
+	  isColumnSelected:function(){
+	    var meta = this.props.cellMetaData;
+	    if(meta == null || meta.selected == null) { return false; }
+
+	    return (
+	      meta.selected
+	      && meta.selected.idx === this.props.idx
+	    );
+
+	  },
 
 	  isSelected: function()          {
 	    var meta = this.props.cellMetaData;
@@ -1225,10 +1264,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getFormatter:function()                {
 	    var col = this.props.column;
 	    if(this.isActive()){
-	      return React.createElement(EditorContainer, {rowData: this.props.rowData, rowIdx: this.props.rowIdx, idx: this.props.idx, cellMetaData: this.props.cellMetaData, column: col, height: this.props.height});
+	      return React.createElement(EditorContainer, {rowData: this.getRowData(), rowIdx: this.props.rowIdx, idx: this.props.idx, cellMetaData: this.props.cellMetaData, column: col, height: this.props.height});
 	    }else{
 	      return this.props.column.formatter;
 	    }
+	  },
+
+	  getRowData:function(){
+	      return this.props.rowData.toJSON ? this.props.rowData.toJSON() : this.props.rowData;
 	  },
 
 	  getFormatterDependencies:function() {
@@ -1236,7 +1279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var columnName = this.props.column.ItemId;
 	    //convention based method to get corresponding Id or Name of any Name or Id property
 	    if(typeof this.props.column.getRowMetaData === 'function'){
-	      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
+	      return this.props.column.getRowMetaData(this.getRowData(), this.props.column);
 	    }
 	  },
 
@@ -1279,7 +1322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.props.className,
 	      this.props.column.locked ? 'react-grid-Cell--locked' : null
 	    );
-
+	    var updateCellClass = this.getUpdateCellClass();
 	    var extraClasses = joinClasses({
 	      'selected' : this.isSelected() && !this.isActive() ,
 	      'editing' : this.isActive(),
@@ -1289,9 +1332,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'is-dragged-over-down' :  this.isDraggedOverDownwards(),
 	      'was-dragged-over' : this.wasDraggedOver()
 	    });
-	    return className + ' ' + extraClasses;
+	    return joinClasses(className, extraClasses, updateCellClass);
 	  },
 
+	  getUpdateCellClass:function() {
+	    if(this.state.isRowChanging && this.props.selectedColumn != null){
+	      return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+	    }
+	  },
 
 	  setScrollLeft:function(scrollLeft        ) {
 	    var ctrl      = this; //flow on windows has an outdated react declaration, once that gets updated, we can remove this
@@ -3334,8 +3382,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getGridState:function(props                                                           )                       {
-		var renderedRowsCount = ceil(props.minHeight / props.rowHeight);
-		var totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
+		var renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
+		var totalRowCount = min(renderedRowsCount * 2 , props.rowsCount);
 	    return {
 	      displayStart: 0,
 	      displayEnd: totalRowCount,
@@ -3553,24 +3601,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var CheckBoxEditor = React.createClass({displayName: "CheckBoxEditor",
 
-
 	  PropTypes : {
 	    value : React.PropTypes.bool.isRequired,
 	    rowIdx : React.PropTypes.number.isRequired
 	  },
 
 	  render:function()               {
-	    return (React.createElement("input", {className: "react-grid-CheckBox", type: "checkbox", checked: this.props.value, onChange: this.handleChange}));
+	    var checked = this.props.value != null ? this.props.value : false;
+	    return (React.createElement("input", {className: "react-grid-CheckBox", type: "checkbox", checked: checked, onClick: this.handleChange}));
 	  },
 
 	  handleChange:function(e       ){
-	    this.props.column.onRowSelect(this.props.rowIdx)
-	  },
-
-	  shouldComponentUpdate:function(nextProps     , nextState     )         {
-	    return this.props.value != nextProps.value;
+	    this.props.column.onRowSelect(this.props.rowIdx, e);
 	  }
-
 	});
 
 	module.exports = CheckBoxEditor;
@@ -4160,7 +4203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          key: 'select-row',
 	          name: '',
 	          formatter : React.createElement(CheckboxEditor, null),
-	          onRowSelect :this.handleRowSelect,
+	          onRowSelect : this.handleRowSelect,
 	          filterable : false,
 	          headerRenderer : React.createElement("input", {type: "checkbox", onChange: this.handleCheckboxChange}),
 	        width : 60,
@@ -4184,14 +4227,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({selectedRows : selectedRows});
 	  },
 
-	  handleRowSelect:function(row     ){
-	    var selectedRows = this.state.selectedRows;
-	    if(selectedRows[row] == null || selectedRows[row] == false){
-	      selectedRows[row] = true;
-	    }else{
-	      selectedRows[row] = false;
+	  handleRowSelect:function(row     , e       ){
+	    e.stopPropagation();
+	    if(this.state.selectedRows != null && this.state.selectedRows.length > 0){
+	      var selectedRows = this.state.selectedRows.slice();
+	      if(selectedRows[row] == null || selectedRows[row] == false){
+	        selectedRows[row] = true;
+	      }else{
+	        selectedRows[row] = false;
+	      }
+	      this.setState({selectedRows : selectedRows});
 	    }
-	    this.setState({selectedRows : selectedRows});
 	  },
 
 	  //EXPAND ROW Functionality - removing for now till we decide on how best to implement

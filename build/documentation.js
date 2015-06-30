@@ -158,7 +158,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var invariant = __webpack_require__(4);
-	var merge = __webpack_require__(17).merge;
+	var merge = __webpack_require__(18).merge;
 	var qs = __webpack_require__(95);
 
 	var paramCompileMatcher = /:([a-zA-Z_$][a-zA-Z0-9_$]*)|[*.()\[\]\\+|{}^$]/g;
@@ -565,7 +565,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 16 */,
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var LocationActions = __webpack_require__(11);
@@ -665,7 +666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {// Load modules
@@ -811,7 +812,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33).Buffer))
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -862,7 +863,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 19 */,
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1218,7 +1218,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var HistoryLocation = __webpack_require__(16);
+	var HistoryLocation = __webpack_require__(17);
 	var History = __webpack_require__(6);
 	var Path = __webpack_require__(5);
 
@@ -1440,7 +1440,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var RouteHandler = __webpack_require__(25);
 	var LocationActions = __webpack_require__(11);
 	var HashLocation = __webpack_require__(26);
-	var HistoryLocation = __webpack_require__(16);
+	var HistoryLocation = __webpack_require__(17);
 	var RefreshLocation = __webpack_require__(27);
 	var NavigationContext = __webpack_require__(83);
 	var StateContext = __webpack_require__(86);
@@ -3468,7 +3468,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var classSet = __webpack_require__(104);
-	var assign = __webpack_require__(18);
+	var assign = __webpack_require__(19);
 	var Navigation = __webpack_require__(28);
 	var State = __webpack_require__(29);
 
@@ -3587,7 +3587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.RouteHandler = __webpack_require__(25);
 
 	exports.HashLocation = __webpack_require__(26);
-	exports.HistoryLocation = __webpack_require__(16);
+	exports.HistoryLocation = __webpack_require__(17);
 	exports.RefreshLocation = __webpack_require__(27);
 
 	exports.ImitateBrowserBehavior = __webpack_require__(20);
@@ -3777,7 +3777,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var assign = __webpack_require__(18);
+	var assign = __webpack_require__(19);
 	var Path = __webpack_require__(5);
 
 	function routeIsActive(activeRoutes, routeName) {
@@ -3908,7 +3908,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assign = __webpack_require__(18);
+	var assign = __webpack_require__(19);
 	var reversedArray = __webpack_require__(92);
 	var Redirect = __webpack_require__(30);
 	var Promise = __webpack_require__(88);
@@ -4358,7 +4358,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// Load modules
 
-	var Utils = __webpack_require__(17);
+	var Utils = __webpack_require__(18);
 
 
 	// Declare internals
@@ -4518,7 +4518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// Load modules
 
-	var Utils = __webpack_require__(17);
+	var Utils = __webpack_require__(18);
 
 
 	// Declare internals
@@ -6020,9 +6020,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        ), 
 	        React.createElement("br", null), 
 	        React.createElement("h4", null, "Using Distribution Scripts"), 
-	        React.createElement("p", null, "If you prefer not to use a module system, you can reference the distribution scripts directly in your html pages. First you need to download the scripts. This can be done in 3 ways, either download directly from github source, using npm as above or using bower", 
-	          React.createElement("br", null), 
-	          React.createElement("kbd", null, "bower install react-data-grid --save")
+	        React.createElement("p", null, "If you prefer not to use a module system, you can reference the distribution scripts directly in your html pages. First you need to download the scripts. This can be done in 3 ways, either download directly from github source, using npm as above" 
 	        ), 
 	        React.createElement("div", {className: "code-block js"}, 
 	          React.createElement("pre", null, "<script src=\"//fb.me/react-0.12.0.js\"></script>", React.createElement("br", null), "<script type=\"text/javascript\" src=\"react-data-grid/dist/react-data-grid.js\"></script>")
