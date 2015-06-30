@@ -12,7 +12,7 @@ shallow_clone: true
 install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
-  - npm -g install npm@2
+  - npm -g install npm@2.11.3
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g gulp
   - npm install
