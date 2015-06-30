@@ -35,7 +35,12 @@ describe('Base Grid Tests', () => {
   });
 
   var testProps = {
-    columns: helpers.columns,
+    columnMetrics : {
+      columns : helpers.columns,
+      minColumnWidth: 80,
+      totalWidth: true,
+      width: 2600
+    },
     headerRows : [],
     rowsCount : helpers.rowsCount(),
     rowGetter : helpers.rowGetter,

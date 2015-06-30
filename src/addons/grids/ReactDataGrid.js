@@ -15,6 +15,8 @@ var CheckboxEditor        = require('../editors/CheckboxEditor');
 var SortableHeaderCell    = require('../cells/headerCells/SortableHeaderCell');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
 var cloneWithProps        = require('react/lib/cloneWithProps');
+var DOMMetrics           = require('../../DOMMetrics');
+var ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
 
 if(!Object.assign){
   Object.assign = require('object-assign');
@@ -76,7 +78,12 @@ var ReactDataGrid = React.createClass({
     onAddFilter : React.PropTypes.func
   },
 
-  mixins : [KeyboardHandlerMixin],
+  mixins: [
+    ColumnMetricsMixin,
+    DOMMetrics.MetricsComputatorMixin,
+    KeyboardHandlerMixin
+  ],
+
 
   getDefaultProps(): {enableCellSelect: boolean} {
     return {
@@ -127,7 +134,7 @@ var ReactDataGrid = React.createClass({
             ref="base"
             {...this.props}
             headerRows={this.getHeaderRows()}
-            columns={this.getColumns()}
+            columnMetrics={this.state.columnMetrics}
             rowGetter={this.props.rowGetter}
             rowsCount={this.props.rowsCount}
             cellMetaData={cellMetaData}
@@ -137,6 +144,7 @@ var ReactDataGrid = React.createClass({
             sortColumn={this.state.sortColumn}
             sortDirection={this.state.sortDirection}
             minHeight={this.props.minHeight}
+            totalWidth={this.DOMMetrics.gridWidth()}
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}

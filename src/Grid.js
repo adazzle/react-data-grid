@@ -10,17 +10,10 @@ var React                = require('react');
 var PropTypes            = React.PropTypes;
 var Header               = require('./Header');
 var Viewport             = require('./Viewport');
-var DOMMetrics           = require('./DOMMetrics');
-var GridScrollMixin      = require('./GridScrollMixin');
-var ColumnMetricsMixin      = require('./ColumnMetricsMixin');
 var ExcelColumn = require('./addons/grids/ExcelColumn');
+var GridScrollMixin      = require('./GridScrollMixin');
 
 var Grid = React.createClass({
-  mixins: [
-    GridScrollMixin,
-    ColumnMetricsMixin,
-    DOMMetrics.MetricsComputatorMixin
-  ],
 
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
@@ -42,6 +35,11 @@ var Grid = React.createClass({
     onViewportDoubleClick : PropTypes.func.isRequired
   },
 
+  mixins: [
+    GridScrollMixin
+  ],
+
+
   getStyle: function(): { overflow: string; outline: number; position: string; minHeight: number } {
     return{
       overflow: 'hidden',
@@ -57,10 +55,10 @@ var Grid = React.createClass({
       <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
         <Header
           ref="header"
-          columns={this.state.columnMetrics}
+          columns={this.props.columnMetrics}
           onColumnResize={this.onColumnResize}
           height={this.props.rowHeight}
-          totalWidth={this.DOMMetrics.gridWidth()}
+          totalWidth={this.props.totalWidth}
           headerRows={headerRows}
           sortColumn={this.props.sortColumn}
           sortDirection={this.props.sortDirection}
@@ -68,15 +66,15 @@ var Grid = React.createClass({
         <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
             <Viewport
               ref="viewport"
-              width={this.state.columnMetrics.width}
+              width={this.props.columnMetrics.width}
               rowHeight={this.props.rowHeight}
               rowRenderer={this.props.rowRenderer}
               rowGetter={this.props.rowGetter}
               rowsCount={this.props.rowsCount}
               selectedRows={this.props.selectedRows}
               expandedRows={this.props.expandedRows}
-              columnMetrics={this.state.columnMetrics}
-              totalWidth={this.DOMMetrics.gridWidth()}
+              columnMetrics={this.props.columnMetrics}
+              totalWidth={this.props.totalWidth}
               onScroll={this.onScroll}
               onRows={this.props.onRows}
               cellMetaData={this.props.cellMetaData}
