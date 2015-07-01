@@ -11,7 +11,6 @@ describe('CheckboxEditor', () => {
  };
 
  describe('Basic tests', () => {
-
    beforeEach(() => {
      spyOn(testColumn, 'onRowSelect');
      component = TestUtils.renderIntoDocument(<CheckboxEditor
@@ -24,12 +23,12 @@ describe('CheckboxEditor', () => {
        expect(component).toBeDefined();
      });
 
-     it('should be selected or not based on props', () => {
+     it('should be selected if value prop is true', () => {
        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
        expect(Input.props.checked).toBe(true);
      });
 
-     it('should call onRowSelect with correct RowIdx when checkbox is checked', () => {
+     it('should call onRowSelect with correct RowIdx when checkbox is clicked', () => {
        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
        TestUtils.Simulate.click(Input.getDOMNode());
        expect(testColumn.onRowSelect).toHaveBeenCalled();
@@ -37,4 +36,19 @@ describe('CheckboxEditor', () => {
        expect(testColumn.onRowSelect.mostRecentCall.args[0]).toEqual(1, fakeEvent);
      });
  });
+
+ describe('Unchecked tests', () => {
+   beforeEach(() => {
+     component = TestUtils.renderIntoDocument(<CheckboxEditor
+       value={false}
+       rowIdx={1}
+       column={testColumn}/>);
+     });
+
+   it('should not be selected if value prop is false', () => {
+     var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
+     expect(Input.props.checked).toBe(false);
+   });
+ });
+
 });
