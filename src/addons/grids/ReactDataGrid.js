@@ -93,10 +93,19 @@ var ReactDataGrid = React.createClass({
     var initialState = {selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
     if(this.props.enableCellSelect){
       initialState.selected = {rowIdx: 0, idx: 0};
+      initialState.selectedRows = this.getInitialSelectedRows();
     }else{
       initialState.selected = {rowIdx: -1, idx: -1};
     }
     return initialState;
+  },
+
+  getInitialSelectedRows: function(){
+    var selectedRows = [];
+    for(var i = 0; i < this.props.rowsCount; i++){
+      selectedRows.push(false);
+    }
+    return selectedRows;
   },
 
   componentWillReceiveProps:function(nextProps: ReactDataGridProps){
