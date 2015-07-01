@@ -198,7 +198,6 @@ describe('Grid', () => {
       component.setState({selectedRows : [null, true, true, true]});
       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
       var selectRowCol = baseGrid.props.columns[0];
-      debugger;
       var fakeEvent = {stopPropagation : function(){}};
       selectRowCol.onRowSelect(3, fakeEvent);
       expect(component.state.selectedRows[3]).toBe(false);
