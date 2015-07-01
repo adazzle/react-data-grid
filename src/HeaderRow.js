@@ -10,7 +10,7 @@ var shallowEqual      = require('react/lib//shallowEqual');
 var HeaderCell        = require('./HeaderCell');
 var getScrollbarSize  = require('./getScrollbarSize');
 var ExcelColumn  = require('./addons/grids/ExcelColumn');
-
+var ColumnUtilsMixin  = require('./ColumnUtils');
 
 var HeaderRowStyle  = {
   overflow: React.PropTypes.string,
@@ -28,6 +28,8 @@ var HeaderRow = React.createClass({
     onColumnResize: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle)
   },
+
+  mixins: [ColumnUtilsMixin],
 
   render(): ?ReactElement {
     var cellsStyle = {
@@ -53,7 +55,7 @@ var HeaderRow = React.createClass({
     var lockedCells = [];
 
     for (var i = 0, len = this.props.columns.length; i < len; i++) {
-      var column = this.props.columns[i];
+      var column = this.getColumn(this.props.columns, i);
       var cell = (
         <HeaderCell
           ref={i}

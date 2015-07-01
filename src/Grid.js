@@ -57,7 +57,7 @@ var Grid = React.createClass({
       <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
         <Header
           ref="header"
-          columns={this.props.columnMetrics}
+          columnMetrics={this.props.columnMetrics}
           onColumnResize={this.onColumnResize}
           height={this.props.rowHeight}
           totalWidth={this.props.totalWidth}

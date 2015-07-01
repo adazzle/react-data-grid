@@ -40,10 +40,6 @@ module.exports = {
     };
   },
 
-  getInitialState(): ColumnMetricsType {
-    return this.getColumnMetricsType(this.props, true);
-  },
-
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
@@ -68,20 +64,42 @@ module.exports = {
     return nextColumns;
   },
 
-  getColumnMetricsType(props: ColumnMetricsType, initial: ?number): { columns: ColumnMetricsType; gridWidth: number } {
+  getColumnMetricsType(metrics: ColumnMetricsType, initial: ?number): { columns: ColumnMetricsType; gridWidth: number } {
     var totalWidth = initial ? initial : this.DOMMetrics.gridWidth();
-    return {
-      columnMetrics: ColumnMetrics.calculate({
-        columns: props.columns,
-        totalWidth: totalWidth,
-        minColumnWidth: props.minColumnWidth
-      }),
-      gridWidth: totalWidth
+    var currentMetrics = {
+      columns: metrics.columns,
+      totalWidth: totalWidth,
+      minColumnWidth: metrics.minColumnWidth
     };
+    var updatedMetrics
+    //if state has not yet been set or else if total width has changed then call recalculate
+    if(!this.state || (this.state && this.state.totalWidth !== totalWidth)){
+        updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
+    } else{
+      updatedMetrics = currentMetrics;
+    }
+    return updatedMetrics;
+  },
+
+  getColumn(columns, idx) {
+    if(Array.isArray(columns)){
+      return columns[idx];
+    }else if (typeof Immutable !== 'undefined') {
+      return columns.get(idx);
+    }
+  },
+
+  getColumnCount() {
+    var columns = this.state.columnMetrics.columns;
+    if(Array.isArray(columns)){
+      return columns.length;
+    }else if (typeof Immutable !== 'undefined') {
+      return columns.size;
+    }
   },
 
   metricsUpdated() {
-    this.setState(this.getColumnMetricsType(this.props));
+    this.setState({columnMetrics: this.getColumnMetricsType(this.props)});
   },
 
   onColumnResize(index: number, width: number) {

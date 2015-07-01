@@ -17,7 +17,7 @@ describe('Header Unit Tests', () => {
   });
 
   var testProps = {
-    columns : {
+    columnMetrics : {
       columns : helpers.columns,
       minColumnWidth: 80,
       totalWidth: true,

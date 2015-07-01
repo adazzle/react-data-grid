@@ -41,6 +41,8 @@ var Cell = React.createClass({
     }
   },
 
+
+
   getInitialState(){
     return {isRowChanging: false, isCellValueChanging: false}
   },

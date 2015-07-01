@@ -60,6 +60,7 @@ type RowUpdateEvent = {
   rowIdx: number;
 };
 
+
 var ReactDataGrid = React.createClass({
 
   propTypes: {
@@ -97,7 +98,9 @@ var ReactDataGrid = React.createClass({
   },
 
   getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType } {
-    var initialState = {selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
+    var gridColumns = this.setupGridColumns();
+    var columnMetrics = this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, true);
+    var initialState = {columnMetrics, selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
     if(this.props.enableCellSelect){
       initialState.selected = {rowIdx: 0, idx: 0};
     }else{
@@ -173,7 +176,7 @@ var ReactDataGrid = React.createClass({
         if (
           idx >= 0
           && rowIdx >= 0
-          && idx < this.getColumns().length
+          && idx < this.state.columnMetrics.columns.length
           && rowIdx < this.props.rowsCount
         ) {
           this.setState({selected: selected});
@@ -317,8 +320,10 @@ var ReactDataGrid = React.createClass({
     this.props.onRowUpdated(commit);
 
   },
-  getColumns : function(): Array<any>{
-    var cols = this.getDecoratedColumns(this.props.columns)
+
+  setupGridColumns : function(): Array<any>{
+
+    var cols = this.setColHeaderRenderers(this.props.columns);
     if(this.props.enableRowSelect){
         cols.unshift({
           key: 'select-row',
@@ -332,6 +337,16 @@ var ReactDataGrid = React.createClass({
         });
       }
       return cols;
+  },
+
+  setColHeaderRenderers: function(columns: Array<ExcelColumn>): Array<ExcelColumn> {
+    return this.props.columns.map(function(column) {
+      if (column.sortable) {
+        var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
+        column.headerRenderer = <SortableHeaderCell columnKey={column.key} onSort={this.handleSort} sortDirection={sortDirection}/>;
+      }
+      return column;
+    }, this);
   },
 
   handleCheckboxChange : function(e: SyntheticEvent){
@@ -422,18 +437,6 @@ var ReactDataGrid = React.createClass({
     return offsetHeight;
   },
 
-  getDecoratedColumns: function(columns: Array<ExcelColumn>): Array<ExcelColumn> {
-    return this.props.columns.map(function(c) {
-      var column = Object.assign({}, c);
-
-      if (column.sortable) {
-        var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
-        column.headerRenderer = <SortableHeaderCell columnKey={column.key} onSort={this.handleSort} sortDirection={sortDirection}/>;
-      }
-      return column;
-    }, this);
-  },
-
   handleSort: function(columnKey: string, direction: SortType) {
     this.setState({sortDirection: direction, sortColumn: columnKey});
     this.props.onGridSort(columnKey, direction);
@@ -454,7 +457,8 @@ var ReactDataGrid = React.createClass({
   handlePaste(){
     if(!this.copyPasteEnabled()) { return; }
       var selected = this.state.selected;
-      var cellKey = this.getColumns()[selected.idx].key;
+      debugger;
+      var cellKey = this.getColumn(this.state.columnMetrics.columns, this.state.selected.idx).key;
       if(this.props.onCellCopyPaste) {
         this.props.onCellCopyPaste({cellKey: cellKey , rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx});
       }
@@ -472,7 +476,7 @@ var ReactDataGrid = React.createClass({
       if (
         idx >= 0
         && rowIdx >= 0
-        && idx < this.getColumns().length
+        && idx < this.getColumnCount()
         && rowIdx < this.props.rowsCount
       ) {
         this.setState({dragged: dragged});
@@ -492,7 +496,7 @@ var ReactDataGrid = React.createClass({
       var fromRow, toRow;
       var selected = this.state.selected;
       var dragged = this.state.dragged;
-      var cellKey = this.getColumns()[this.state.selected.idx].key;
+      var cellKey = this.getColumn(this.state.columnMetrics.columns, this.state.selected.idx).key;
       fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       if(this.props.onCellsDragged) { this.props.onCellsDragged({cellKey: cellKey , fromRow: fromRow, toRow : toRow, value : dragged.value}); }

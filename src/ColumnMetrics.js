@@ -27,59 +27,60 @@ type Column = {
  *
  * @param {ColumnMetricsType} metrics
  */
-function calculate(metrics: ColumnMetricsType): ColumnMetricsType {
-  var width = 0;
-  var unallocatedWidth = metrics.totalWidth;
-
-  var deferredColumns = [];
-  var columns = metrics.columns.map(shallowCloneObject);
-
-  var i, len, column;
-
-  // compute width for columns which specify width
-  for (i = 0, len = columns.length; i < len; i++) {
-    column = columns[i];
-
-    if (column.width) {
-      if (/^([0-9]+)%$/.exec(column.width.toString())) {
-        column.width = Math.floor(
-          column.width / 100 * metrics.totalWidth);
+function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
+    var width = 0;
+    var unallocatedWidth = metrics.totalWidth;
+    var i, len, column;
+    var deferredColumns = [];
+    // compute width for columns which specify width
+    var columns = metrics.columns.map(column => {
+      var colWidth = column.width;
+      if (colWidth) {
+        if (/^([0-9]+)%$/.exec(colWidth.toString())) {
+          column.set('width', Math.floor(
+            colWidth / 100 * metrics.totalWidth));
+        }
+        unallocatedWidth -= colWidth;
+        width += colWidth;
+      } else {
+        deferredColumns.push(column);
       }
-      unallocatedWidth -= column.width;
+      return column;
+    });
+
+    // compute width for columns which doesn't specify width
+    for (i = 0, len = deferredColumns.length; i < len; i++) {
+      column = deferredColumns[i];
+
+      if (unallocatedWidth <= 0) {
+        column.width = metrics.minColumnWidth;
+      } else {
+        column.width = Math.floor(unallocatedWidth / deferredColumns.length);
+      }
       width += column.width;
-    } else {
-      deferredColumns.push(column);
     }
 
-  }
+    // compute left offset
+    columns = setColumnOffsets(columns);
 
-  // compute width for columns which doesn't specify width
-  for (i = 0, len = deferredColumns.length; i < len; i++) {
-    column = deferredColumns[i];
+    return {
+      columns,
+      width,
+      totalWidth: metrics.totalWidth,
+      minColumnWidth: metrics.minColumnWidth
+    };
+}
 
-    if (unallocatedWidth <= 0) {
-      column.width = metrics.minColumnWidth;
-    } else {
-      column.width = Math.floor(unallocatedWidth / deferredColumns.length);
-    }
-    width += column.width;
-  }
-
-  // compute left offset
+function setColumnOffsets(columns) {
   var left = 0;
-  for (i = 0, len = columns.length; i < len; i++) {
-    column = columns[i];
+  return columns.map(column => {
     column.left = left;
     left += column.width;
-  }
-
-  return {
-    columns,
-    width,
-    totalWidth: metrics.totalWidth,
-    minColumnWidth: metrics.minColumnWidth
-  };
+    return column;
+  });
 }
+
+
 
 /**
  * Update column metrics calculation by resizing a column.
@@ -98,10 +99,18 @@ function resizeColumn(metrics: ColumnMetricsType, index: number, width: number):
 
   metrics.columns.splice(index, 1, updatedColumn);
 
-  return calculate(metrics);
+  return recalculate(metrics);
+}
+
+function areColumnsImmutable(prevColumns: Array<Column>, nextColumns: Array<Column>) {
+  return (typeof Immutable !== 'undefined' && (prevColumns instanceof Immutable.List) && (nextColumns instanceof Immutable.List));
 }
 
 function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean): boolean {
+
+  if(areColumnsImmutable(prevColumns, nextColumns)) {
+    return prevColumns === nextColumns;
+  }
   var i, len, column;
   var prevColumnsByKey: { [key:string]: Column } = {};
   var nextColumnsByKey: { [key:string]: Column } = {};
@@ -136,4 +145,4 @@ function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sam
   return true;
 }
 
-module.exports = { calculate, resizeColumn, sameColumn, sameColumns };
+module.exports = { recalculate, resizeColumn, sameColumn, sameColumns };

@@ -26,7 +26,7 @@ for (var rowIdx = 1; rowIdx < 100; rowIdx++) {
 var Example = React.createClass({
 
   getInitialState : function(){
-    return {rows : Immutable.fromJS(_rows), cols: Immutable.fromJS(_cols)}
+    return {rows : Immutable.fromJS(_rows), cols: new Immutable.List(_cols)}
   },
 
   rowGetter : function(rowIdx){

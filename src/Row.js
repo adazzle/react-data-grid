@@ -11,6 +11,7 @@ var joinClasses      = require('classnames');
 var Cell            = require('./Cell');
 var cloneWithProps  = require('react/lib/cloneWithProps');
 var ColumnMetrics   = require('./ColumnMetrics');
+var ColumnUtilsMixin  = require('./ColumnUtils');
 
 type RowPropsType = {
   height: number;
@@ -41,6 +42,8 @@ var Row = React.createClass({
     expandedRows : React.PropTypes.arrayOf(React.PropTypes.object)
   },
 
+  mixins: [ColumnUtilsMixin],
+
   render(): ?ReactElement {
     var className = joinClasses(
       'react-grid-Row',
@@ -65,8 +68,9 @@ var Row = React.createClass({
     var cells = [];
     var lockedCells = [];
     var selectedColumn = this.getSelectedColumn();
-    for (var i = 0, len = this.props.columns.length; i < len; i++) {
-      var column = this.props.columns[i];
+
+    this.props.columns.forEach((column, i) => {
+
       var CellRenderer = this.props.cellRenderer;
       var cell = <CellRenderer
                     ref={i}
@@ -86,7 +90,7 @@ var Row = React.createClass({
       } else {
         cells.push(cell);
       }
-    }
+    });
 
     return cells.concat(lockedCells);
   },
@@ -176,7 +180,7 @@ var Row = React.createClass({
   getSelectedColumn(){
     var selected = this.props.cellMetaData.selected;
     if(selected && selected.idx){
-        return this.props.columns[selected.idx];
+      return this.getColumn(this.props.columns, selected.idx);
     }
   }
 
