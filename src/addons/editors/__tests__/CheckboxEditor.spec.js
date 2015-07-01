@@ -35,20 +35,14 @@ describe('CheckboxEditor', () => {
        var fakeEvent = {stopPropagation : function(){}};
        expect(testColumn.onRowSelect.mostRecentCall.args[0]).toEqual(1, fakeEvent);
      });
- });
 
- describe('Unchecked tests', () => {
-   beforeEach(() => {
-     component = TestUtils.renderIntoDocument(<CheckboxEditor
-       value={false}
-       rowIdx={1}
-       column={testColumn}/>);
+     it('should not be selected if value prop is false', () => {
+       component.setProps({value: false});
+       var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
+       expect(Input.props.checked).toBe(false);
      });
-
-   it('should not be selected if value prop is false', () => {
-     var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-     expect(Input.props.checked).toBe(false);
-   });
  });
+
+
 
 });
