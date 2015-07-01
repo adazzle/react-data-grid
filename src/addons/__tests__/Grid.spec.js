@@ -26,12 +26,16 @@ var columns = [
 
 
 var _rows = [];
+var _selectedRows = [];
+
 for (var i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
     title: 'Title ' + i,
     count: i * 1000
   });
+
+  _selectedRows.push(false);
 }
 
 var rowGetter = function(i){
@@ -101,8 +105,9 @@ describe('Grid', () => {
 
 
   it("should be initialized with correct state", () => {
+
     expect(component.state).toEqual({
-      selectedRows : [],
+      selectedRows : _selectedRows,
       selected : {rowIdx : 0,  idx : 0},
       copied : null,
       canFilter : false,
