@@ -25,7 +25,16 @@ describe('CheckboxEditor', () => {
 
      it('should be selected if value prop is true', () => {
        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-       expect(Input.props.checked).toBe(true);
+       var checkboxNode = Input.getDOMNode();
+       expect(checkboxNode.checked).toBe(true);
+     });
+
+     it('should not be selected if value prop is false', () => {
+       component.setProps({value: false});
+       var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
+       var checkboxNode = Input.getDOMNode();
+       debugger;
+       expect(checkboxNode.checked).toBe(false);
      });
 
      it('should call onRowSelect with correct RowIdx when checkbox is clicked', () => {
@@ -34,12 +43,6 @@ describe('CheckboxEditor', () => {
        expect(testColumn.onRowSelect).toHaveBeenCalled();
        var fakeEvent = {stopPropagation : function(){}};
        expect(testColumn.onRowSelect.mostRecentCall.args[0]).toEqual(1, fakeEvent);
-     });
-
-     it('should not be selected if value prop is false', () => {
-       component.setProps({value: false});
-       var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-       expect(Input.props.checked).toBe(false);
      });
  });
 
