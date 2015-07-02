@@ -33,7 +33,6 @@ describe('CheckboxEditor', () => {
        component.setProps({value: false});
        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
        var checkboxNode = Input.getDOMNode();
-       debugger;
        expect(checkboxNode.checked).toBe(false);
      });
 
