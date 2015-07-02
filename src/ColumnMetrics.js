@@ -81,7 +81,7 @@ function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
       if (unallocatedWidth <= 0) {
         column.width = minColumnWidth;
       } else {
-        column.width = Math.floor(unallocatedWidth / arr.length);
+        column.width = Math.floor(unallocatedWidth / (arr.size || arr.length));
       }
     }
     return column;
@@ -113,11 +113,7 @@ function areColumnsImmutable(prevColumns: Array<Column>, nextColumns: Array<Colu
   return (typeof Immutable !== 'undefined' && (prevColumns instanceof Immutable.List) && (nextColumns instanceof Immutable.List));
 }
 
-function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean): boolean {
-
-  if(areColumnsImmutable(prevColumns, nextColumns)) {
-    return prevColumns === nextColumns;
-  }
+function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean) {
   var i, len, column;
   var prevColumnsByKey: { [key:string]: Column } = {};
   var nextColumnsByKey: { [key:string]: Column } = {};
@@ -148,8 +144,15 @@ function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sam
       return false;
     }
   }
-
   return true;
+}
+
+function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean): boolean {
+  if(areColumnsImmutable(prevColumns, nextColumns)) {
+    return prevColumns === nextColumns;
+  }else{
+    return compareEachColumn(prevColumns, nextColumns, sameColumn);
+  }
 }
 
 module.exports = { recalculate, resizeColumn, sameColumn, sameColumns };
