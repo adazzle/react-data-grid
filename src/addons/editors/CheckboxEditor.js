@@ -6,7 +6,7 @@
 
 var React                   = require('react');
 
-var CheckBoxEditor = React.createClass({
+var CheckboxEditor = React.createClass({
 
   PropTypes : {
     value : React.PropTypes.bool.isRequired,
@@ -26,4 +26,4 @@ var CheckBoxEditor = React.createClass({
   }
 });
 
-module.exports = CheckBoxEditor;
+module.exports = CheckboxEditor;
