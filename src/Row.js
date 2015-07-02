@@ -133,11 +133,11 @@ var Row = React.createClass({
 
 
   setScrollLeft(scrollLeft: number) {
-    for (var i = 0, len = this.props.columns.length; i < len; i++) {
-      if (this.props.columns[i].locked) {
+    this.props.columns.forEach( (column, i) => {
+      if (column.locked) {
         this.refs[i].setScrollLeft(scrollLeft);
       }
-    }
+    });
   },
 
   doesRowContainSelectedCell(props: any): boolean{

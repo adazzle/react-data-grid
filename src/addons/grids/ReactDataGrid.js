@@ -340,9 +340,10 @@ var ReactDataGrid = React.createClass({
   },
 
   setColHeaderRenderers: function(columns: Array<ExcelColumn>): Array<ExcelColumn> {
+    var sortDirection
     return this.props.columns.map(function(column) {
       if (column.sortable) {
-        var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
+        var sortDirection = this.state && (this.state.sortColumn === column.key) ?  this.state.sortDirection : DEFINE_SORT.NONE;
         column.headerRenderer = <SortableHeaderCell columnKey={column.key} onSort={this.handleSort} sortDirection={sortDirection}/>;
       }
       return column;

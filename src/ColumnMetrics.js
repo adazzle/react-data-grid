@@ -28,37 +28,19 @@ type Column = {
  * @param {ColumnMetricsType} metrics
  */
 function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
-    var width = 0;
-    var unallocatedWidth = metrics.totalWidth;
-    var i, len, column;
-    var deferredColumns = [];
     // compute width for columns which specify width
-    var columns = metrics.columns.map(column => {
-      var colWidth = column.width;
-      if (colWidth) {
-        if (/^([0-9]+)%$/.exec(colWidth.toString())) {
-          column.set('width', Math.floor(
-            colWidth / 100 * metrics.totalWidth));
-        }
-        unallocatedWidth -= colWidth;
-        width += colWidth;
-      } else {
-        deferredColumns.push(column);
-      }
-      return column;
-    });
+    var columns = setColumnWidths(metrics.columns, metrics.totalWidth);
+
+    var unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => {
+      return w - column.width;
+    }, metrics.totalWidth);
+
+    var width = columns.filter(c => c.width).reduce((w, column) => {
+      return w + column.width;
+    }, 0);
 
     // compute width for columns which doesn't specify width
-    for (i = 0, len = deferredColumns.length; i < len; i++) {
-      column = deferredColumns[i];
-
-      if (unallocatedWidth <= 0) {
-        column.width = metrics.minColumnWidth;
-      } else {
-        column.width = Math.floor(unallocatedWidth / deferredColumns.length);
-      }
-      width += column.width;
-    }
+    columns = setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);
 
     // compute left offset
     columns = setColumnOffsets(columns);
@@ -80,6 +62,31 @@ function setColumnOffsets(columns) {
   });
 }
 
+function setColumnWidths(columns, totalWidth) {
+  return columns.map(column => {
+    var colInfo = Object.assign({}, column);
+    if(column.width){
+      if (/^([0-9]+)%$/.exec(column.width.toString())) {
+        colInfo.width = Math.floor(
+          column.width / 100 * totalWidth);
+      }
+    }
+    return colInfo;
+  });
+}
+
+function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
+  return columns.map((column, i, arr) => {
+    if(!column.width){
+      if (unallocatedWidth <= 0) {
+        column.width = minColumnWidth;
+      } else {
+        column.width = Math.floor(unallocatedWidth / arr.length);
+      }
+    }
+    return column;
+  });
+}
 
 
 /**
