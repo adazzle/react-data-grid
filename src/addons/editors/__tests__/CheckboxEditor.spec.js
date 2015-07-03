@@ -7,7 +7,7 @@ var CheckboxEditor = require('../CheckboxEditor');
 describe('CheckboxEditor', () => {
  var component;
  var testColumn = {
-   key: 'columnKey'
+   key: 'columnKey',
    onCellChange : function(){}
  };
 
@@ -42,10 +42,8 @@ describe('CheckboxEditor', () => {
        TestUtils.Simulate.click(Input.getDOMNode());
        expect(testColumn.onCellChange).toHaveBeenCalled();
        var fakeEvent = {stopPropagation : function(){}};
-       expect(testColumn.onCellChange.mostRecentCall.args[0]).toEqual(1, fakeEvent);
+       expect(testColumn.onCellChange.mostRecentCall.args[0]).toEqual(1, 'columnKey', fakeEvent);
      });
  });
-
-
 
 });
