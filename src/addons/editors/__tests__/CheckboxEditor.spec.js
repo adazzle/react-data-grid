@@ -7,12 +7,13 @@ var CheckboxEditor = require('../CheckboxEditor');
 describe('CheckboxEditor', () => {
  var component;
  var testColumn = {
-   onRowSelect : function(){}
+   key: 'columnKey'
+   onCellChange : function(){}
  };
 
  describe('Basic tests', () => {
    beforeEach(() => {
-     spyOn(testColumn, 'onRowSelect');
+     spyOn(testColumn, 'onCellChange');
      component = TestUtils.renderIntoDocument(<CheckboxEditor
        value={true}
        rowIdx={1}
@@ -36,12 +37,12 @@ describe('CheckboxEditor', () => {
        expect(checkboxNode.checked).toBe(false);
      });
 
-     it('should call onRowSelect with correct RowIdx when checkbox is clicked', () => {
+     it('should call onCellChange with correct rowIdx and columnKey when checkbox is clicked', () => {
        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
        TestUtils.Simulate.click(Input.getDOMNode());
-       expect(testColumn.onRowSelect).toHaveBeenCalled();
+       expect(testColumn.onCellChange).toHaveBeenCalled();
        var fakeEvent = {stopPropagation : function(){}};
-       expect(testColumn.onRowSelect.mostRecentCall.args[0]).toEqual(1, fakeEvent);
+       expect(testColumn.onCellChange.mostRecentCall.args[0]).toEqual(1, fakeEvent);
      });
  });
 
