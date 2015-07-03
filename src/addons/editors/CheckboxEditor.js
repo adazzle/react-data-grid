@@ -13,7 +13,7 @@ var CheckboxEditor = React.createClass({
     rowIdx : React.PropTypes.number.isRequired,
     column: React.PropTypes.shape({
       key: React.PropTypes.string.isRequired,
-      onCellSelect: React.PropTypes.func.isRequired
+      onCellChange: React.PropTypes.func.isRequired
     }).isRequired
   },
 
@@ -23,7 +23,7 @@ var CheckboxEditor = React.createClass({
   },
 
   handleChange(e: Event){
-    this.props.column.onCellSelect(this.props.rowIdx, this.props.column.key, e);
+    this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, e);
   }
 });
 

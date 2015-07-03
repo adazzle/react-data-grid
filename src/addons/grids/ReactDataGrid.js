@@ -324,7 +324,7 @@ var ReactDataGrid = React.createClass({
           key: 'select-row',
           name: '',
           formatter : <CheckboxEditor/>,
-          onCellSelect : this.handleRowSelect,
+          onCellChange : this.handleRowSelect,
           filterable : false,
           headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
         width : 60,
