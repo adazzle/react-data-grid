@@ -183,11 +183,10 @@ var Cell = React.createClass({
   onCellClick(e: SyntheticMouseEvent){
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellClick != null) {
+      //we DONT stopPropogation here - others may want to know about the click
+      //however, if we need to do that, we should do in a specific cell (ie close to the source that needs us to stop propoagation)
       if (e && typeof e.preventDefault === 'function') {
         e.preventDefault();
-      }
-      if (e && typeof e.stopPropagation === 'function') {
-        e.stopPropagation();
       }
       meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
     }
