@@ -47,6 +47,16 @@ describe('Header Unit Tests', () => {
     expect(headerRows.length).toEqual(1);
   });
 
+  it('header row drag start should set resize column state ', () => {
+    var resizeColIdx = 2;
+    var newWidth = 350;
+    header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
+    var headerRow = TestUtils.findRenderedComponentWithType(header, HeaderRowStub);
+    headerRow.props.onColumnResize(helpers.columns[resizeColIdx], newWidth);
+    expect(header.state.resizing.column.width).toEqual(newWidth);
+    expect(header.state.resizing.column.key).toEqual(helpers.columns[resizeColIdx].key);
+  });
+
 
   it('header row drag end should trigger onColumnResize callback', () => {
     var resizeColIdx = 1;
