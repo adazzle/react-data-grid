@@ -5,9 +5,9 @@ var TestUtils        = require('react/lib/ReactTestUtils');
 var SimpleTextEditor = require('../SimpleTextEditor');
 
 describe('SimpleTextEditor', () => {
-  var component;
 
   describe('Basic tests', () => {
+    var component;
 
     var fakeColumn = { key: 'text' };
     function fakeBlurCb() { return true; };
