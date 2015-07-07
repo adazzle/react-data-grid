@@ -12,19 +12,19 @@ describe('Editor Container Tests', () => {
       rowIdx :0
     }
   };
+  var component, container;
+  var fakeColumn = {
+    name : 'col1',
+    key : 'col1',
+    width : 100
+  };
+  var rowData={
+    col1 : 'I',
+    col2 : 'love',
+    col3 : 'Testing'
+  };
 
   describe("Basic render tests", () => {
-    var component, container;
-    var fakeColumn = {
-      name : 'col1',
-      key : 'col1',
-      width : 100
-    };
-    var rowData={
-      col1 : 'I',
-      col2 : 'love',
-      col3 : 'Testing'
-    };
 
     beforeEach(() => {
       //render into an actual div, not a detached one
@@ -78,6 +78,7 @@ describe('Editor Container Tests', () => {
   describe("keyboard events", () => {
 
       beforeEach(() => {
+        debugger
         cellMetaData.onCommit = function(value){};
         spyOn(cellMetaData, 'onCommit');
 
