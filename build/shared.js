@@ -99,7 +99,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editors"}, "Rich Cell Editors")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/sortable"}, "Sortable Grid")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/million-rows"}, "One Million Rows")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/all-the-features"}, "All-The-Features Grid"))
+	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/all-the-features"}, "All-The-Features Grid")), 
+	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/custom-row-renderer"}, "Custom Row Render"))
 	                    )
 	                )
 	            )

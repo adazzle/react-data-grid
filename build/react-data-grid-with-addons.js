@@ -59,6 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports.Editors = __webpack_require__(51);
 	module.exports.Formatters = __webpack_require__(53);
 	module.exports.Toolbar = __webpack_require__(54);
+	module.exports.Row = __webpack_require__(8);
 
 
 /***/ },
@@ -164,7 +165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ReactPropTransferer = __webpack_require__(22);
 
 	var keyOf = __webpack_require__(25);
-	var warning = __webpack_require__(8);
+	var warning = __webpack_require__(9);
 
 	var CHILDREN_PROP = keyOf({children: null});
 
@@ -376,369 +377,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2014, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule warning
-	 */
-
-	"use strict";
-
-	var emptyFunction = __webpack_require__(5);
-
-	/**
-	 * Similar to invariant but only logs a warning if the condition is not met.
-	 * This can be used to log issues in development environments in critical
-	 * paths. Removing the logging code for production environments will keep the
-	 * same logic and follow the same code paths.
-	 */
-
-	var warning = emptyFunction;
-
-	if ("production" !== process.env.NODE_ENV) {
-	  warning = function(condition, format ) {for (var args=[],$__0=2,$__1=arguments.length;$__0<$__1;$__0++) args.push(arguments[$__0]);
-	    if (format === undefined) {
-	      throw new Error(
-	        '`warning(condition, format, ...args)` requires a warning ' +
-	        'message argument'
-	      );
-	    }
-
-	    if (!condition) {
-	      var argIndex = 0;
-	      console.warn('Warning: ' + format.replace(/%s/g, function()  {return args[argIndex++];}));
-	    }
-	  };
-	}
-
-	module.exports = warning;
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* @flow */
-	/**
-	 * @jsx React.DOM
-
-
-	 */
-	"use strict";
-
-	var shallowCloneObject            = __webpack_require__(12);
-	var isValidElement = __webpack_require__(1).isValidElement;
-	var sameColumn = __webpack_require__(27);
-
-	                          
-	                           
-	                       
-	                           
-	  
-
-	               
-	              
-	               
-	                
-	  
-
-	/**
-	 * Update column metrics calculation.
-	 *
-	 * @param {ColumnMetricsType} metrics
-	 */
-	function calculate(metrics                   )                    {
-	  var width = 0;
-	  var unallocatedWidth = metrics.totalWidth;
-
-	  var deferredColumns = [];
-	  var columns = metrics.columns.map(shallowCloneObject);
-
-	  var i, len, column;
-
-	  // compute width for columns which specify width
-	  for (i = 0, len = columns.length; i < len; i++) {
-	    column = columns[i];
-
-	    if (column.width) {
-	      if (/^([0-9]+)%$/.exec(column.width.toString())) {
-	        column.width = Math.floor(
-	          column.width / 100 * metrics.totalWidth);
-	      }
-	      unallocatedWidth -= column.width;
-	      width += column.width;
-	    } else {
-	      deferredColumns.push(column);
-	    }
-
-	  }
-
-	  // compute width for columns which doesn't specify width
-	  for (i = 0, len = deferredColumns.length; i < len; i++) {
-	    column = deferredColumns[i];
-
-	    if (unallocatedWidth <= 0) {
-	      column.width = metrics.minColumnWidth;
-	    } else {
-	      column.width = Math.floor(unallocatedWidth / deferredColumns.length);
-	    }
-	    width += column.width;
-	  }
-
-	  // compute left offset
-	  var left = 0;
-	  for (i = 0, len = columns.length; i < len; i++) {
-	    column = columns[i];
-	    column.left = left;
-	    left += column.width;
-	  }
-
-	  return {
-	    columns:columns,
-	    width:width,
-	    totalWidth: metrics.totalWidth,
-	    minColumnWidth: metrics.minColumnWidth
-	  };
-	}
-
-	/**
-	 * Update column metrics calculation by resizing a column.
-	 *
-	 * @param {ColumnMetricsType} metrics
-	 * @param {Column} column
-	 * @param {number} width
-	 */
-	function resizeColumn(metrics                   , index        , width        )                    {
-	  var column = metrics.columns[index];
-	  metrics = shallowCloneObject(metrics);
-	  metrics.columns = metrics.columns.slice(0);
-
-	  var updatedColumn = shallowCloneObject(column);
-	  updatedColumn.width = Math.max(width, metrics.minColumnWidth);
-
-	  metrics.columns.splice(index, 1, updatedColumn);
-
-	  return calculate(metrics);
-	}
-
-	function sameColumns(prevColumns               , nextColumns               , sameColumn                                   )          {
-	  var i, len, column;
-	  var prevColumnsByKey                           = {};
-	  var nextColumnsByKey                           = {};
-
-
-	  if(prevColumns.length !== nextColumns.length){
-	    return false;
-	  }
-
-	  for (i = 0, len = prevColumns.length; i < len; i++) {
-	    column = prevColumns[i];
-	    prevColumnsByKey[column.key] = column;
-	  }
-
-	  for (i = 0, len = nextColumns.length; i < len; i++) {
-	    column = nextColumns[i];
-	    nextColumnsByKey[column.key] = column;
-	    var prevColumn = prevColumnsByKey[column.key];
-	    if (prevColumn === undefined || !sameColumn(prevColumn, column)) {
-	      return false;
-	    }
-	  }
-
-	  for (i = 0, len = prevColumns.length; i < len; i++) {
-	    column = prevColumns[i];
-	    var nextColumn = nextColumnsByKey[column.key];
-	    if (nextColumn === undefined) {
-	      return false;
-	    }
-	  }
-
-	  return true;
-	}
-
-	module.exports = { calculate:calculate, resizeColumn:resizeColumn, sameColumn:sameColumn, sameColumns:sameColumns };
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* TODO@flow mixin and invarient splat */
-	/**
-	 * @jsx React.DOM
-
-
-	 */
-	'use strict';
-
-	var React               = __webpack_require__(1);
-	var emptyFunction       = __webpack_require__(5);
-	var shallowCloneObject  = __webpack_require__(12);
-
-	var contextTypes = {
-	  metricsComputator: React.PropTypes.object
-	};
-
-	var MetricsComputatorMixin = {
-
-	  childContextTypes: contextTypes,
-
-	  getChildContext:function()                           {
-	    return {metricsComputator: this};
-	  },
-
-	  getMetricImpl:function(name        )      {
-	    return this._DOMMetrics.metrics[name].value;
-	  },
-
-	  registerMetricsImpl:function(component                , metrics     )                      {
-	    var getters = {};
-	    var s = this._DOMMetrics;
-
-	    for (var name in metrics) {
-	      if(s.metrics[name] !== undefined) {
-	          throw new Error('DOM metric ' + name + ' is already defined');
-	      }
-	      s.metrics[name] = {component:component, computator: metrics[name].bind(component)};
-	      getters[name] = this.getMetricImpl.bind(null, name);
-	    }
-
-	    if (s.components.indexOf(component) === -1) {
-	      s.components.push(component);
-	    }
-
-	    return getters;
-	  },
-
-	  unregisterMetricsFor:function(component                ) {
-	    var s = this._DOMMetrics;
-	    var idx = s.components.indexOf(component);
-
-	    if (idx > -1) {
-	      s.components.splice(idx, 1);
-
-	      var name;
-	      var metricsToDelete = {};
-
-	      for (name in s.metrics) {
-	        if (s.metrics[name].component === component) {
-	          metricsToDelete[name] = true;
-	        }
-	      }
-
-	      for (name in metricsToDelete) {
-	        delete s.metrics[name];
-	      }
-	    }
-	  },
-
-	  updateMetrics:function() {
-	    var s = this._DOMMetrics;
-
-	    var needUpdate = false;
-
-	    for (var name in s.metrics) {
-	      var newMetric = s.metrics[name].computator();
-	      if (newMetric !== s.metrics[name].value) {
-	        needUpdate = true;
-	      }
-	      s.metrics[name].value = newMetric;
-	    }
-
-	    if (needUpdate) {
-	      for (var i = 0, len = s.components.length; i < len; i++) {
-	        if (s.components[i].metricsUpdated) {
-	          s.components[i].metricsUpdated();
-	        }
-	      }
-	    }
-	  },
-
-	  componentWillMount:function() {
-	    this._DOMMetrics = {
-	      metrics: {},
-	      components: []
-	    };
-	  },
-
-	  componentDidMount:function() {
-	    if(window.addEventListener){
-	      window.addEventListener('resize', this.updateMetrics);
-	    }else{
-	      window.attachEvent('resize', this.updateMetrics);
-	    }
-	    this.updateMetrics();
-	  },
-
-	  componentWillUnmount:function() {
-	    window.removeEventListener('resize', this.updateMetrics);
-	  }
-
-	};
-
-	var MetricsMixin = {
-
-	  contextTypes: contextTypes,
-
-	  componentWillMount:function() {
-	    if (this.DOMMetrics) {
-	      this._DOMMetricsDefs = shallowCloneObject(this.DOMMetrics);
-
-	      this.DOMMetrics = {};
-	      for (var name in this._DOMMetricsDefs) {
-	        this.DOMMetrics[name] = emptyFunction;
-	      }
-	    }
-	  },
-
-	  componentDidMount:function() {
-	    if (this.DOMMetrics) {
-	      this.DOMMetrics = this.registerMetrics(this._DOMMetricsDefs);
-	    }
-	  },
-
-	  componentWillUnmount:function()      {
-	    if (!this.registerMetricsImpl) {
-	      return this.context.metricsComputator.unregisterMetricsFor(this);
-	    }
-	    if (this.hasOwnProperty('DOMMetrics')) {
-	        delete this.DOMMetrics;
-	    }
-	  },
-
-	  registerMetrics:function(metrics     )      {
-	    if (this.registerMetricsImpl) {
-	      return this.registerMetricsImpl(this, metrics);
-	    } else {
-	      return this.context.metricsComputator.registerMetricsImpl(this, metrics);
-	    }
-	  },
-
-	  getMetric:function(name        )      {
-	    if (this.getMetricImpl) {
-	      return this.getMetricImpl(name);
-	    } else {
-	      return this.context.metricsComputator.getMetricImpl(name);
-	    }
-	  }
-	};
-
-	module.exports = {
-	  MetricsComputatorMixin:MetricsComputatorMixin,
-	  MetricsMixin:MetricsMixin
-	};
-
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/* @flow  */
 	/**
 	 * @jsx React.DOM
@@ -751,7 +389,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var joinClasses      = __webpack_require__(3);
 	var Cell            = __webpack_require__(17);
 	var cloneWithProps  = __webpack_require__(4);
-	var ColumnMetrics   = __webpack_require__(9);
+	var ColumnMetrics   = __webpack_require__(10);
 
 	                     
 	                 
@@ -924,6 +562,369 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 	module.exports = Row;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule warning
+	 */
+
+	"use strict";
+
+	var emptyFunction = __webpack_require__(5);
+
+	/**
+	 * Similar to invariant but only logs a warning if the condition is not met.
+	 * This can be used to log issues in development environments in critical
+	 * paths. Removing the logging code for production environments will keep the
+	 * same logic and follow the same code paths.
+	 */
+
+	var warning = emptyFunction;
+
+	if ("production" !== process.env.NODE_ENV) {
+	  warning = function(condition, format ) {for (var args=[],$__0=2,$__1=arguments.length;$__0<$__1;$__0++) args.push(arguments[$__0]);
+	    if (format === undefined) {
+	      throw new Error(
+	        '`warning(condition, format, ...args)` requires a warning ' +
+	        'message argument'
+	      );
+	    }
+
+	    if (!condition) {
+	      var argIndex = 0;
+	      console.warn('Warning: ' + format.replace(/%s/g, function()  {return args[argIndex++];}));
+	    }
+	  };
+	}
+
+	module.exports = warning;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* @flow */
+	/**
+	 * @jsx React.DOM
+
+
+	 */
+	"use strict";
+
+	var shallowCloneObject            = __webpack_require__(12);
+	var isValidElement = __webpack_require__(1).isValidElement;
+	var sameColumn = __webpack_require__(27);
+
+	                          
+	                           
+	                       
+	                           
+	  
+
+	               
+	              
+	               
+	                
+	  
+
+	/**
+	 * Update column metrics calculation.
+	 *
+	 * @param {ColumnMetricsType} metrics
+	 */
+	function calculate(metrics                   )                    {
+	  var width = 0;
+	  var unallocatedWidth = metrics.totalWidth;
+
+	  var deferredColumns = [];
+	  var columns = metrics.columns.map(shallowCloneObject);
+
+	  var i, len, column;
+
+	  // compute width for columns which specify width
+	  for (i = 0, len = columns.length; i < len; i++) {
+	    column = columns[i];
+
+	    if (column.width) {
+	      if (/^([0-9]+)%$/.exec(column.width.toString())) {
+	        column.width = Math.floor(
+	          column.width / 100 * metrics.totalWidth);
+	      }
+	      unallocatedWidth -= column.width;
+	      width += column.width;
+	    } else {
+	      deferredColumns.push(column);
+	    }
+
+	  }
+
+	  // compute width for columns which doesn't specify width
+	  for (i = 0, len = deferredColumns.length; i < len; i++) {
+	    column = deferredColumns[i];
+
+	    if (unallocatedWidth <= 0) {
+	      column.width = metrics.minColumnWidth;
+	    } else {
+	      column.width = Math.floor(unallocatedWidth / deferredColumns.length);
+	    }
+	    width += column.width;
+	  }
+
+	  // compute left offset
+	  var left = 0;
+	  for (i = 0, len = columns.length; i < len; i++) {
+	    column = columns[i];
+	    column.left = left;
+	    left += column.width;
+	  }
+
+	  return {
+	    columns:columns,
+	    width:width,
+	    totalWidth: metrics.totalWidth,
+	    minColumnWidth: metrics.minColumnWidth
+	  };
+	}
+
+	/**
+	 * Update column metrics calculation by resizing a column.
+	 *
+	 * @param {ColumnMetricsType} metrics
+	 * @param {Column} column
+	 * @param {number} width
+	 */
+	function resizeColumn(metrics                   , index        , width        )                    {
+	  var column = metrics.columns[index];
+	  metrics = shallowCloneObject(metrics);
+	  metrics.columns = metrics.columns.slice(0);
+
+	  var updatedColumn = shallowCloneObject(column);
+	  updatedColumn.width = Math.max(width, metrics.minColumnWidth);
+
+	  metrics.columns.splice(index, 1, updatedColumn);
+
+	  return calculate(metrics);
+	}
+
+	function sameColumns(prevColumns               , nextColumns               , sameColumn                                   )          {
+	  var i, len, column;
+	  var prevColumnsByKey                           = {};
+	  var nextColumnsByKey                           = {};
+
+
+	  if(prevColumns.length !== nextColumns.length){
+	    return false;
+	  }
+
+	  for (i = 0, len = prevColumns.length; i < len; i++) {
+	    column = prevColumns[i];
+	    prevColumnsByKey[column.key] = column;
+	  }
+
+	  for (i = 0, len = nextColumns.length; i < len; i++) {
+	    column = nextColumns[i];
+	    nextColumnsByKey[column.key] = column;
+	    var prevColumn = prevColumnsByKey[column.key];
+	    if (prevColumn === undefined || !sameColumn(prevColumn, column)) {
+	      return false;
+	    }
+	  }
+
+	  for (i = 0, len = prevColumns.length; i < len; i++) {
+	    column = prevColumns[i];
+	    var nextColumn = nextColumnsByKey[column.key];
+	    if (nextColumn === undefined) {
+	      return false;
+	    }
+	  }
+
+	  return true;
+	}
+
+	module.exports = { calculate:calculate, resizeColumn:resizeColumn, sameColumn:sameColumn, sameColumns:sameColumns };
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* TODO@flow mixin and invarient splat */
+	/**
+	 * @jsx React.DOM
+
+
+	 */
+	'use strict';
+
+	var React               = __webpack_require__(1);
+	var emptyFunction       = __webpack_require__(5);
+	var shallowCloneObject  = __webpack_require__(12);
+
+	var contextTypes = {
+	  metricsComputator: React.PropTypes.object
+	};
+
+	var MetricsComputatorMixin = {
+
+	  childContextTypes: contextTypes,
+
+	  getChildContext:function()                           {
+	    return {metricsComputator: this};
+	  },
+
+	  getMetricImpl:function(name        )      {
+	    return this._DOMMetrics.metrics[name].value;
+	  },
+
+	  registerMetricsImpl:function(component                , metrics     )                      {
+	    var getters = {};
+	    var s = this._DOMMetrics;
+
+	    for (var name in metrics) {
+	      if(s.metrics[name] !== undefined) {
+	          throw new Error('DOM metric ' + name + ' is already defined');
+	      }
+	      s.metrics[name] = {component:component, computator: metrics[name].bind(component)};
+	      getters[name] = this.getMetricImpl.bind(null, name);
+	    }
+
+	    if (s.components.indexOf(component) === -1) {
+	      s.components.push(component);
+	    }
+
+	    return getters;
+	  },
+
+	  unregisterMetricsFor:function(component                ) {
+	    var s = this._DOMMetrics;
+	    var idx = s.components.indexOf(component);
+
+	    if (idx > -1) {
+	      s.components.splice(idx, 1);
+
+	      var name;
+	      var metricsToDelete = {};
+
+	      for (name in s.metrics) {
+	        if (s.metrics[name].component === component) {
+	          metricsToDelete[name] = true;
+	        }
+	      }
+
+	      for (name in metricsToDelete) {
+	        delete s.metrics[name];
+	      }
+	    }
+	  },
+
+	  updateMetrics:function() {
+	    var s = this._DOMMetrics;
+
+	    var needUpdate = false;
+
+	    for (var name in s.metrics) {
+	      var newMetric = s.metrics[name].computator();
+	      if (newMetric !== s.metrics[name].value) {
+	        needUpdate = true;
+	      }
+	      s.metrics[name].value = newMetric;
+	    }
+
+	    if (needUpdate) {
+	      for (var i = 0, len = s.components.length; i < len; i++) {
+	        if (s.components[i].metricsUpdated) {
+	          s.components[i].metricsUpdated();
+	        }
+	      }
+	    }
+	  },
+
+	  componentWillMount:function() {
+	    this._DOMMetrics = {
+	      metrics: {},
+	      components: []
+	    };
+	  },
+
+	  componentDidMount:function() {
+	    if(window.addEventListener){
+	      window.addEventListener('resize', this.updateMetrics);
+	    }else{
+	      window.attachEvent('resize', this.updateMetrics);
+	    }
+	    this.updateMetrics();
+	  },
+
+	  componentWillUnmount:function() {
+	    window.removeEventListener('resize', this.updateMetrics);
+	  }
+
+	};
+
+	var MetricsMixin = {
+
+	  contextTypes: contextTypes,
+
+	  componentWillMount:function() {
+	    if (this.DOMMetrics) {
+	      this._DOMMetricsDefs = shallowCloneObject(this.DOMMetrics);
+
+	      this.DOMMetrics = {};
+	      for (var name in this._DOMMetricsDefs) {
+	        this.DOMMetrics[name] = emptyFunction;
+	      }
+	    }
+	  },
+
+	  componentDidMount:function() {
+	    if (this.DOMMetrics) {
+	      this.DOMMetrics = this.registerMetrics(this._DOMMetricsDefs);
+	    }
+	  },
+
+	  componentWillUnmount:function()      {
+	    if (!this.registerMetricsImpl) {
+	      return this.context.metricsComputator.unregisterMetricsFor(this);
+	    }
+	    if (this.hasOwnProperty('DOMMetrics')) {
+	        delete this.DOMMetrics;
+	    }
+	  },
+
+	  registerMetrics:function(metrics     )      {
+	    if (this.registerMetricsImpl) {
+	      return this.registerMetricsImpl(this, metrics);
+	    } else {
+	      return this.context.metricsComputator.registerMetricsImpl(this, metrics);
+	    }
+	  },
+
+	  getMetric:function(name        )      {
+	    if (this.getMetricImpl) {
+	      return this.getMetricImpl(name);
+	    } else {
+	      return this.context.metricsComputator.getMetricImpl(name);
+	    }
+	  }
+	};
+
+	module.exports = {
+	  MetricsComputatorMixin:MetricsComputatorMixin,
+	  MetricsMixin:MetricsMixin
+	};
 
 
 /***/ },
@@ -1586,7 +1587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ReactContext = __webpack_require__(19);
 	var ReactCurrentOwner = __webpack_require__(20);
 
-	var warning = __webpack_require__(8);
+	var warning = __webpack_require__(9);
 
 	var RESERVED_PROPS = {
 	  key: true,
@@ -1836,7 +1837,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var emptyFunction = __webpack_require__(5);
 	var invariant = __webpack_require__(23);
 	var joinClasses = __webpack_require__(24);
-	var warning = __webpack_require__(8);
+	var warning = __webpack_require__(9);
 
 	var didWarn = false;
 
@@ -2147,7 +2148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var shallowEqual    = __webpack_require__(15);
 	var emptyFunction   = __webpack_require__(5);
 	var ScrollShim      = __webpack_require__(37);
-	var Row             = __webpack_require__(11);
+	var Row             = __webpack_require__(8);
 	var ExcelColumn     = __webpack_require__(2);
 
 	var Canvas = React.createClass({displayName: "Canvas",
@@ -2337,8 +2338,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  setScrollLeft:function(scrollLeft        ) {
 	    if (this._currentRowsLength !== 0) {
+	      if(!this.refs) return;
 	      for (var i = 0, len = this._currentRowsLength; i < len; i++) {
-	        if(this.refs[i]) {
+	        if(this.refs[i] && this.refs[i].setScrollLeft) {
 	          this.refs[i].setScrollLeft(scrollLeft);
 	        }
 	      }
@@ -2400,8 +2402,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* TODO@flow mixins */
 
-	var ColumnMetrics        = __webpack_require__(9);
-	var DOMMetrics           = __webpack_require__(10);
+	var ColumnMetrics        = __webpack_require__(10);
+	var DOMMetrics           = __webpack_require__(11);
 	Object.assign            = __webpack_require__(13);
 	var PropTypes            = __webpack_require__(1).PropTypes;
 
@@ -2601,7 +2603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var PropTypes            = React.PropTypes;
 	var Header               = __webpack_require__(32);
 	var Viewport             = __webpack_require__(38);
-	var DOMMetrics           = __webpack_require__(10);
+	var DOMMetrics           = __webpack_require__(11);
 	var GridScrollMixin      = __webpack_require__(31);
 	var ColumnMetricsMixin      = __webpack_require__(28);
 	var ExcelColumn = __webpack_require__(2);
@@ -2745,7 +2747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React               = __webpack_require__(1);
 	var joinClasses          = __webpack_require__(3);
 	var shallowCloneObject  = __webpack_require__(12);
-	var ColumnMetrics       = __webpack_require__(9);
+	var ColumnMetrics       = __webpack_require__(10);
 	var HeaderRow           = __webpack_require__(34);
 
 	               
@@ -3340,7 +3342,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* TODO@flow mixins */
 
 	var React             = __webpack_require__(1);
-	var DOMMetrics        = __webpack_require__(10);
+	var DOMMetrics        = __webpack_require__(11);
 	var getWindowSize     = __webpack_require__(46);
 
 	var PropTypes            = React.PropTypes;
@@ -3603,10 +3605,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  PropTypes : {
 	    value : React.PropTypes.bool.isRequired,
-	    rowIdx : React.PropTypes.number.isRequired
+	    rowIdx : React.PropTypes.number.isRequired,
+	    column: React.PropTypes.shape({
+	      onRowSelect: React.PropTypes.func.isRequired
+	    }).isRequired
 	  },
 
-	  render:function()               {
+	  render:function()                 {
 	    var checked = this.props.value != null ? this.props.value : false;
 	    return (React.createElement("input", {className: "react-grid-CheckBox", type: "checkbox", checked: checked, onClick: this.handleChange}));
 	  },
@@ -3895,7 +3900,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React                 = __webpack_require__(1);
 	var PropTypes             = React.PropTypes;
 	var BaseGrid              = __webpack_require__(30);
-	var Row                   = __webpack_require__(11);
+	var Row                   = __webpack_require__(8);
 	var ExcelColumn           = __webpack_require__(2);
 	var KeyboardHandlerMixin  = __webpack_require__(7);
 	var CheckboxEditor        = __webpack_require__(42);
@@ -3977,13 +3982,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getInitialState: function()                                                                                                                                                                                                                                           {
-	    var initialState = {selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
+	    var initialState = {selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
 	    if(this.props.enableCellSelect){
 	      initialState.selected = {rowIdx: 0, idx: 0};
 	    }else{
 	      initialState.selected = {rowIdx: -1, idx: -1};
 	    }
 	    return initialState;
+	  },
+
+	  getInitialSelectedRows: function(){
+	    var selectedRows = [];
+	    for(var i = 0; i < this.props.rowsCount; i++){
+	      selectedRows.push(false);
+	    }
+	    return selectedRows;
 	  },
 
 	  componentWillReceiveProps:function(nextProps                    ){
@@ -5365,7 +5378,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Row = __webpack_require__(11);
+	var Row = __webpack_require__(8);
 
 	var Toolbar = React.createClass({displayName: "Toolbar",
 	  propTypes: {

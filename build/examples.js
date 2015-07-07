@@ -67,6 +67,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var filterableExample  = __webpack_require__(123);
 	var millionRowsExample = __webpack_require__(124);
 	var immutableDataExample = __webpack_require__(125);
+	var customRowRenderer = __webpack_require__(126);
 	var fullExample = __webpack_require__(36);
 
 	var $__0=      ReactRouter,Route=$__0.Route,RouteHandler=$__0.RouteHandler,Link=$__0.Link;
@@ -94,7 +95,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      React.createElement(Route, {name: "filterable", handler: filterableExample}), 
 	      React.createElement(Route, {name: "million-rows", handler: millionRowsExample}), 
 	      React.createElement(Route, {name: "all-the-features", handler: fullExample}), 
-	      React.createElement(Route, {name: "immutable-data", handler: immutableDataExample})
+	      React.createElement(Route, {name: "immutable-data", handler: immutableDataExample}), 
+	      React.createElement(Route, {name: "custom-row-renderer", handler: customRowRenderer})
 	  )
 	);
 
@@ -451,48 +453,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var invariant = __webpack_require__(4);
-	var canUseDOM = __webpack_require__(14).canUseDOM;
-
-	var History = {
-
-	  /**
-	   * Sends the browser back one entry in the history.
-	   */
-	  back: function () {
-	    invariant(
-	      canUseDOM,
-	      'Cannot use History.back without a DOM'
-	    );
-
-	    // Do this first so that History.length will
-	    // be accurate in location change listeners.
-	    History.length -= 1;
-
-	    window.history.back();
-	  },
-
-	  /**
-	   * The current number of entries in the history.
-	   */
-	  length: 1
-
-	};
-
-	module.exports = History;
-
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function() { throw new Error("define cannot be used indirect"); };
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var IS_MOBILE = (
 	  navigator.userAgent.match(/Android/i)
 	  || navigator.userAgent.match(/webOS/i)
@@ -728,7 +688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var RowsDescription = __webpack_require__(113)
@@ -756,6 +716,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  }
 	});
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var invariant = __webpack_require__(4);
+	var canUseDOM = __webpack_require__(14).canUseDOM;
+
+	var History = {
+
+	  /**
+	   * Sends the browser back one entry in the history.
+	   */
+	  back: function () {
+	    invariant(
+	      canUseDOM,
+	      'Cannot use History.back without a DOM'
+	    );
+
+	    // Do this first so that History.length will
+	    // be accurate in location change listeners.
+	    History.length -= 1;
+
+	    window.history.back();
+	  },
+
+	  /**
+	   * The current number of entries in the history.
+	   */
+	  length: 1
+
+	};
+
+	module.exports = History;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
@@ -1187,7 +1189,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		'use strict';
 
 		var Grid = __webpack_require__(44);
-		var Row  = __webpack_require__(11);
+		var Row  = __webpack_require__(8);
 		var Cell = __webpack_require__(17);
 
 		module.exports = Grid;
@@ -1298,7 +1300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var ReactPropTransferer = __webpack_require__(22);
 
 		var keyOf = __webpack_require__(25);
-		var warning = __webpack_require__(8);
+		var warning = __webpack_require__(9);
 
 		var CHILDREN_PROP = keyOf({children: null});
 
@@ -1510,369 +1512,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* 8 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		/* WEBPACK VAR INJECTION */(function(process) {/**
-		 * Copyright 2014, Facebook, Inc.
-		 * All rights reserved.
-		 *
-		 * This source code is licensed under the BSD-style license found in the
-		 * LICENSE file in the root directory of this source tree. An additional grant
-		 * of patent rights can be found in the PATENTS file in the same directory.
-		 *
-		 * @providesModule warning
-		 */
-
-		"use strict";
-
-		var emptyFunction = __webpack_require__(5);
-
-		/**
-		 * Similar to invariant but only logs a warning if the condition is not met.
-		 * This can be used to log issues in development environments in critical
-		 * paths. Removing the logging code for production environments will keep the
-		 * same logic and follow the same code paths.
-		 */
-
-		var warning = emptyFunction;
-
-		if ("production" !== process.env.NODE_ENV) {
-		  warning = function(condition, format ) {for (var args=[],$__0=2,$__1=arguments.length;$__0<$__1;$__0++) args.push(arguments[$__0]);
-		    if (format === undefined) {
-		      throw new Error(
-		        '`warning(condition, format, ...args)` requires a warning ' +
-		        'message argument'
-		      );
-		    }
-
-		    if (!condition) {
-		      var argIndex = 0;
-		      console.warn('Warning: ' + format.replace(/%s/g, function()  {return args[argIndex++];}));
-		    }
-		  };
-		}
-
-		module.exports = warning;
-
-		/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-	/***/ },
-	/* 9 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		/* @flow */
-		/**
-		 * @jsx React.DOM
-
-
-		 */
-		"use strict";
-
-		var shallowCloneObject            = __webpack_require__(12);
-		var isValidElement = __webpack_require__(1).isValidElement;
-		var sameColumn = __webpack_require__(27);
-
-		                          
-		                           
-		                       
-		                           
-		  
-
-		               
-		              
-		               
-		                
-		  
-
-		/**
-		 * Update column metrics calculation.
-		 *
-		 * @param {ColumnMetricsType} metrics
-		 */
-		function calculate(metrics                   )                    {
-		  var width = 0;
-		  var unallocatedWidth = metrics.totalWidth;
-
-		  var deferredColumns = [];
-		  var columns = metrics.columns.map(shallowCloneObject);
-
-		  var i, len, column;
-
-		  // compute width for columns which specify width
-		  for (i = 0, len = columns.length; i < len; i++) {
-		    column = columns[i];
-
-		    if (column.width) {
-		      if (/^([0-9]+)%$/.exec(column.width.toString())) {
-		        column.width = Math.floor(
-		          column.width / 100 * metrics.totalWidth);
-		      }
-		      unallocatedWidth -= column.width;
-		      width += column.width;
-		    } else {
-		      deferredColumns.push(column);
-		    }
-
-		  }
-
-		  // compute width for columns which doesn't specify width
-		  for (i = 0, len = deferredColumns.length; i < len; i++) {
-		    column = deferredColumns[i];
-
-		    if (unallocatedWidth <= 0) {
-		      column.width = metrics.minColumnWidth;
-		    } else {
-		      column.width = Math.floor(unallocatedWidth / deferredColumns.length);
-		    }
-		    width += column.width;
-		  }
-
-		  // compute left offset
-		  var left = 0;
-		  for (i = 0, len = columns.length; i < len; i++) {
-		    column = columns[i];
-		    column.left = left;
-		    left += column.width;
-		  }
-
-		  return {
-		    columns:columns,
-		    width:width,
-		    totalWidth: metrics.totalWidth,
-		    minColumnWidth: metrics.minColumnWidth
-		  };
-		}
-
-		/**
-		 * Update column metrics calculation by resizing a column.
-		 *
-		 * @param {ColumnMetricsType} metrics
-		 * @param {Column} column
-		 * @param {number} width
-		 */
-		function resizeColumn(metrics                   , index        , width        )                    {
-		  var column = metrics.columns[index];
-		  metrics = shallowCloneObject(metrics);
-		  metrics.columns = metrics.columns.slice(0);
-
-		  var updatedColumn = shallowCloneObject(column);
-		  updatedColumn.width = Math.max(width, metrics.minColumnWidth);
-
-		  metrics.columns.splice(index, 1, updatedColumn);
-
-		  return calculate(metrics);
-		}
-
-		function sameColumns(prevColumns               , nextColumns               , sameColumn                                   )          {
-		  var i, len, column;
-		  var prevColumnsByKey                           = {};
-		  var nextColumnsByKey                           = {};
-
-
-		  if(prevColumns.length !== nextColumns.length){
-		    return false;
-		  }
-
-		  for (i = 0, len = prevColumns.length; i < len; i++) {
-		    column = prevColumns[i];
-		    prevColumnsByKey[column.key] = column;
-		  }
-
-		  for (i = 0, len = nextColumns.length; i < len; i++) {
-		    column = nextColumns[i];
-		    nextColumnsByKey[column.key] = column;
-		    var prevColumn = prevColumnsByKey[column.key];
-		    if (prevColumn === undefined || !sameColumn(prevColumn, column)) {
-		      return false;
-		    }
-		  }
-
-		  for (i = 0, len = prevColumns.length; i < len; i++) {
-		    column = prevColumns[i];
-		    var nextColumn = nextColumnsByKey[column.key];
-		    if (nextColumn === undefined) {
-		      return false;
-		    }
-		  }
-
-		  return true;
-		}
-
-		module.exports = { calculate:calculate, resizeColumn:resizeColumn, sameColumn:sameColumn, sameColumns:sameColumns };
-
-
-	/***/ },
-	/* 10 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		/* TODO@flow mixin and invarient splat */
-		/**
-		 * @jsx React.DOM
-
-
-		 */
-		'use strict';
-
-		var React               = __webpack_require__(1);
-		var emptyFunction       = __webpack_require__(5);
-		var shallowCloneObject  = __webpack_require__(12);
-
-		var contextTypes = {
-		  metricsComputator: React.PropTypes.object
-		};
-
-		var MetricsComputatorMixin = {
-
-		  childContextTypes: contextTypes,
-
-		  getChildContext:function()                           {
-		    return {metricsComputator: this};
-		  },
-
-		  getMetricImpl:function(name        )      {
-		    return this._DOMMetrics.metrics[name].value;
-		  },
-
-		  registerMetricsImpl:function(component                , metrics     )                      {
-		    var getters = {};
-		    var s = this._DOMMetrics;
-
-		    for (var name in metrics) {
-		      if(s.metrics[name] !== undefined) {
-		          throw new Error('DOM metric ' + name + ' is already defined');
-		      }
-		      s.metrics[name] = {component:component, computator: metrics[name].bind(component)};
-		      getters[name] = this.getMetricImpl.bind(null, name);
-		    }
-
-		    if (s.components.indexOf(component) === -1) {
-		      s.components.push(component);
-		    }
-
-		    return getters;
-		  },
-
-		  unregisterMetricsFor:function(component                ) {
-		    var s = this._DOMMetrics;
-		    var idx = s.components.indexOf(component);
-
-		    if (idx > -1) {
-		      s.components.splice(idx, 1);
-
-		      var name;
-		      var metricsToDelete = {};
-
-		      for (name in s.metrics) {
-		        if (s.metrics[name].component === component) {
-		          metricsToDelete[name] = true;
-		        }
-		      }
-
-		      for (name in metricsToDelete) {
-		        delete s.metrics[name];
-		      }
-		    }
-		  },
-
-		  updateMetrics:function() {
-		    var s = this._DOMMetrics;
-
-		    var needUpdate = false;
-
-		    for (var name in s.metrics) {
-		      var newMetric = s.metrics[name].computator();
-		      if (newMetric !== s.metrics[name].value) {
-		        needUpdate = true;
-		      }
-		      s.metrics[name].value = newMetric;
-		    }
-
-		    if (needUpdate) {
-		      for (var i = 0, len = s.components.length; i < len; i++) {
-		        if (s.components[i].metricsUpdated) {
-		          s.components[i].metricsUpdated();
-		        }
-		      }
-		    }
-		  },
-
-		  componentWillMount:function() {
-		    this._DOMMetrics = {
-		      metrics: {},
-		      components: []
-		    };
-		  },
-
-		  componentDidMount:function() {
-		    if(window.addEventListener){
-		      window.addEventListener('resize', this.updateMetrics);
-		    }else{
-		      window.attachEvent('resize', this.updateMetrics);
-		    }
-		    this.updateMetrics();
-		  },
-
-		  componentWillUnmount:function() {
-		    window.removeEventListener('resize', this.updateMetrics);
-		  }
-
-		};
-
-		var MetricsMixin = {
-
-		  contextTypes: contextTypes,
-
-		  componentWillMount:function() {
-		    if (this.DOMMetrics) {
-		      this._DOMMetricsDefs = shallowCloneObject(this.DOMMetrics);
-
-		      this.DOMMetrics = {};
-		      for (var name in this._DOMMetricsDefs) {
-		        this.DOMMetrics[name] = emptyFunction;
-		      }
-		    }
-		  },
-
-		  componentDidMount:function() {
-		    if (this.DOMMetrics) {
-		      this.DOMMetrics = this.registerMetrics(this._DOMMetricsDefs);
-		    }
-		  },
-
-		  componentWillUnmount:function()      {
-		    if (!this.registerMetricsImpl) {
-		      return this.context.metricsComputator.unregisterMetricsFor(this);
-		    }
-		    if (this.hasOwnProperty('DOMMetrics')) {
-		        delete this.DOMMetrics;
-		    }
-		  },
-
-		  registerMetrics:function(metrics     )      {
-		    if (this.registerMetricsImpl) {
-		      return this.registerMetricsImpl(this, metrics);
-		    } else {
-		      return this.context.metricsComputator.registerMetricsImpl(this, metrics);
-		    }
-		  },
-
-		  getMetric:function(name        )      {
-		    if (this.getMetricImpl) {
-		      return this.getMetricImpl(name);
-		    } else {
-		      return this.context.metricsComputator.getMetricImpl(name);
-		    }
-		  }
-		};
-
-		module.exports = {
-		  MetricsComputatorMixin:MetricsComputatorMixin,
-		  MetricsMixin:MetricsMixin
-		};
-
-
-	/***/ },
-	/* 11 */
-	/***/ function(module, exports, __webpack_require__) {
-
 		/* @flow  */
 		/**
 		 * @jsx React.DOM
@@ -1885,7 +1524,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var joinClasses      = __webpack_require__(3);
 		var Cell            = __webpack_require__(17);
 		var cloneWithProps  = __webpack_require__(4);
-		var ColumnMetrics   = __webpack_require__(9);
+		var ColumnMetrics   = __webpack_require__(10);
 
 		                     
 		                 
@@ -2058,6 +1697,369 @@ return /******/ (function(modules) { // webpackBootstrap
 		});
 
 		module.exports = Row;
+
+
+	/***/ },
+	/* 9 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		/* WEBPACK VAR INJECTION */(function(process) {/**
+		 * Copyright 2014, Facebook, Inc.
+		 * All rights reserved.
+		 *
+		 * This source code is licensed under the BSD-style license found in the
+		 * LICENSE file in the root directory of this source tree. An additional grant
+		 * of patent rights can be found in the PATENTS file in the same directory.
+		 *
+		 * @providesModule warning
+		 */
+
+		"use strict";
+
+		var emptyFunction = __webpack_require__(5);
+
+		/**
+		 * Similar to invariant but only logs a warning if the condition is not met.
+		 * This can be used to log issues in development environments in critical
+		 * paths. Removing the logging code for production environments will keep the
+		 * same logic and follow the same code paths.
+		 */
+
+		var warning = emptyFunction;
+
+		if ("production" !== process.env.NODE_ENV) {
+		  warning = function(condition, format ) {for (var args=[],$__0=2,$__1=arguments.length;$__0<$__1;$__0++) args.push(arguments[$__0]);
+		    if (format === undefined) {
+		      throw new Error(
+		        '`warning(condition, format, ...args)` requires a warning ' +
+		        'message argument'
+		      );
+		    }
+
+		    if (!condition) {
+		      var argIndex = 0;
+		      console.warn('Warning: ' + format.replace(/%s/g, function()  {return args[argIndex++];}));
+		    }
+		  };
+		}
+
+		module.exports = warning;
+
+		/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+	/***/ },
+	/* 10 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		/* @flow */
+		/**
+		 * @jsx React.DOM
+
+
+		 */
+		"use strict";
+
+		var shallowCloneObject            = __webpack_require__(12);
+		var isValidElement = __webpack_require__(1).isValidElement;
+		var sameColumn = __webpack_require__(27);
+
+		                          
+		                           
+		                       
+		                           
+		  
+
+		               
+		              
+		               
+		                
+		  
+
+		/**
+		 * Update column metrics calculation.
+		 *
+		 * @param {ColumnMetricsType} metrics
+		 */
+		function calculate(metrics                   )                    {
+		  var width = 0;
+		  var unallocatedWidth = metrics.totalWidth;
+
+		  var deferredColumns = [];
+		  var columns = metrics.columns.map(shallowCloneObject);
+
+		  var i, len, column;
+
+		  // compute width for columns which specify width
+		  for (i = 0, len = columns.length; i < len; i++) {
+		    column = columns[i];
+
+		    if (column.width) {
+		      if (/^([0-9]+)%$/.exec(column.width.toString())) {
+		        column.width = Math.floor(
+		          column.width / 100 * metrics.totalWidth);
+		      }
+		      unallocatedWidth -= column.width;
+		      width += column.width;
+		    } else {
+		      deferredColumns.push(column);
+		    }
+
+		  }
+
+		  // compute width for columns which doesn't specify width
+		  for (i = 0, len = deferredColumns.length; i < len; i++) {
+		    column = deferredColumns[i];
+
+		    if (unallocatedWidth <= 0) {
+		      column.width = metrics.minColumnWidth;
+		    } else {
+		      column.width = Math.floor(unallocatedWidth / deferredColumns.length);
+		    }
+		    width += column.width;
+		  }
+
+		  // compute left offset
+		  var left = 0;
+		  for (i = 0, len = columns.length; i < len; i++) {
+		    column = columns[i];
+		    column.left = left;
+		    left += column.width;
+		  }
+
+		  return {
+		    columns:columns,
+		    width:width,
+		    totalWidth: metrics.totalWidth,
+		    minColumnWidth: metrics.minColumnWidth
+		  };
+		}
+
+		/**
+		 * Update column metrics calculation by resizing a column.
+		 *
+		 * @param {ColumnMetricsType} metrics
+		 * @param {Column} column
+		 * @param {number} width
+		 */
+		function resizeColumn(metrics                   , index        , width        )                    {
+		  var column = metrics.columns[index];
+		  metrics = shallowCloneObject(metrics);
+		  metrics.columns = metrics.columns.slice(0);
+
+		  var updatedColumn = shallowCloneObject(column);
+		  updatedColumn.width = Math.max(width, metrics.minColumnWidth);
+
+		  metrics.columns.splice(index, 1, updatedColumn);
+
+		  return calculate(metrics);
+		}
+
+		function sameColumns(prevColumns               , nextColumns               , sameColumn                                   )          {
+		  var i, len, column;
+		  var prevColumnsByKey                           = {};
+		  var nextColumnsByKey                           = {};
+
+
+		  if(prevColumns.length !== nextColumns.length){
+		    return false;
+		  }
+
+		  for (i = 0, len = prevColumns.length; i < len; i++) {
+		    column = prevColumns[i];
+		    prevColumnsByKey[column.key] = column;
+		  }
+
+		  for (i = 0, len = nextColumns.length; i < len; i++) {
+		    column = nextColumns[i];
+		    nextColumnsByKey[column.key] = column;
+		    var prevColumn = prevColumnsByKey[column.key];
+		    if (prevColumn === undefined || !sameColumn(prevColumn, column)) {
+		      return false;
+		    }
+		  }
+
+		  for (i = 0, len = prevColumns.length; i < len; i++) {
+		    column = prevColumns[i];
+		    var nextColumn = nextColumnsByKey[column.key];
+		    if (nextColumn === undefined) {
+		      return false;
+		    }
+		  }
+
+		  return true;
+		}
+
+		module.exports = { calculate:calculate, resizeColumn:resizeColumn, sameColumn:sameColumn, sameColumns:sameColumns };
+
+
+	/***/ },
+	/* 11 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		/* TODO@flow mixin and invarient splat */
+		/**
+		 * @jsx React.DOM
+
+
+		 */
+		'use strict';
+
+		var React               = __webpack_require__(1);
+		var emptyFunction       = __webpack_require__(5);
+		var shallowCloneObject  = __webpack_require__(12);
+
+		var contextTypes = {
+		  metricsComputator: React.PropTypes.object
+		};
+
+		var MetricsComputatorMixin = {
+
+		  childContextTypes: contextTypes,
+
+		  getChildContext:function()                           {
+		    return {metricsComputator: this};
+		  },
+
+		  getMetricImpl:function(name        )      {
+		    return this._DOMMetrics.metrics[name].value;
+		  },
+
+		  registerMetricsImpl:function(component                , metrics     )                      {
+		    var getters = {};
+		    var s = this._DOMMetrics;
+
+		    for (var name in metrics) {
+		      if(s.metrics[name] !== undefined) {
+		          throw new Error('DOM metric ' + name + ' is already defined');
+		      }
+		      s.metrics[name] = {component:component, computator: metrics[name].bind(component)};
+		      getters[name] = this.getMetricImpl.bind(null, name);
+		    }
+
+		    if (s.components.indexOf(component) === -1) {
+		      s.components.push(component);
+		    }
+
+		    return getters;
+		  },
+
+		  unregisterMetricsFor:function(component                ) {
+		    var s = this._DOMMetrics;
+		    var idx = s.components.indexOf(component);
+
+		    if (idx > -1) {
+		      s.components.splice(idx, 1);
+
+		      var name;
+		      var metricsToDelete = {};
+
+		      for (name in s.metrics) {
+		        if (s.metrics[name].component === component) {
+		          metricsToDelete[name] = true;
+		        }
+		      }
+
+		      for (name in metricsToDelete) {
+		        delete s.metrics[name];
+		      }
+		    }
+		  },
+
+		  updateMetrics:function() {
+		    var s = this._DOMMetrics;
+
+		    var needUpdate = false;
+
+		    for (var name in s.metrics) {
+		      var newMetric = s.metrics[name].computator();
+		      if (newMetric !== s.metrics[name].value) {
+		        needUpdate = true;
+		      }
+		      s.metrics[name].value = newMetric;
+		    }
+
+		    if (needUpdate) {
+		      for (var i = 0, len = s.components.length; i < len; i++) {
+		        if (s.components[i].metricsUpdated) {
+		          s.components[i].metricsUpdated();
+		        }
+		      }
+		    }
+		  },
+
+		  componentWillMount:function() {
+		    this._DOMMetrics = {
+		      metrics: {},
+		      components: []
+		    };
+		  },
+
+		  componentDidMount:function() {
+		    if(window.addEventListener){
+		      window.addEventListener('resize', this.updateMetrics);
+		    }else{
+		      window.attachEvent('resize', this.updateMetrics);
+		    }
+		    this.updateMetrics();
+		  },
+
+		  componentWillUnmount:function() {
+		    window.removeEventListener('resize', this.updateMetrics);
+		  }
+
+		};
+
+		var MetricsMixin = {
+
+		  contextTypes: contextTypes,
+
+		  componentWillMount:function() {
+		    if (this.DOMMetrics) {
+		      this._DOMMetricsDefs = shallowCloneObject(this.DOMMetrics);
+
+		      this.DOMMetrics = {};
+		      for (var name in this._DOMMetricsDefs) {
+		        this.DOMMetrics[name] = emptyFunction;
+		      }
+		    }
+		  },
+
+		  componentDidMount:function() {
+		    if (this.DOMMetrics) {
+		      this.DOMMetrics = this.registerMetrics(this._DOMMetricsDefs);
+		    }
+		  },
+
+		  componentWillUnmount:function()      {
+		    if (!this.registerMetricsImpl) {
+		      return this.context.metricsComputator.unregisterMetricsFor(this);
+		    }
+		    if (this.hasOwnProperty('DOMMetrics')) {
+		        delete this.DOMMetrics;
+		    }
+		  },
+
+		  registerMetrics:function(metrics     )      {
+		    if (this.registerMetricsImpl) {
+		      return this.registerMetricsImpl(this, metrics);
+		    } else {
+		      return this.context.metricsComputator.registerMetricsImpl(this, metrics);
+		    }
+		  },
+
+		  getMetric:function(name        )      {
+		    if (this.getMetricImpl) {
+		      return this.getMetricImpl(name);
+		    } else {
+		      return this.context.metricsComputator.getMetricImpl(name);
+		    }
+		  }
+		};
+
+		module.exports = {
+		  MetricsComputatorMixin:MetricsComputatorMixin,
+		  MetricsMixin:MetricsMixin
+		};
 
 
 	/***/ },
@@ -2720,7 +2722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var ReactContext = __webpack_require__(19);
 		var ReactCurrentOwner = __webpack_require__(20);
 
-		var warning = __webpack_require__(8);
+		var warning = __webpack_require__(9);
 
 		var RESERVED_PROPS = {
 		  key: true,
@@ -2970,7 +2972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var emptyFunction = __webpack_require__(5);
 		var invariant = __webpack_require__(23);
 		var joinClasses = __webpack_require__(24);
-		var warning = __webpack_require__(8);
+		var warning = __webpack_require__(9);
 
 		var didWarn = false;
 
@@ -3281,7 +3283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var shallowEqual    = __webpack_require__(15);
 		var emptyFunction   = __webpack_require__(5);
 		var ScrollShim      = __webpack_require__(37);
-		var Row             = __webpack_require__(11);
+		var Row             = __webpack_require__(8);
 		var ExcelColumn     = __webpack_require__(2);
 
 		var Canvas = React.createClass({displayName: "Canvas",
@@ -3471,8 +3473,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  setScrollLeft:function(scrollLeft        ) {
 		    if (this._currentRowsLength !== 0) {
+		      if(!this.refs) return;
 		      for (var i = 0, len = this._currentRowsLength; i < len; i++) {
-		        if(this.refs[i]) {
+		        if(this.refs[i] && this.refs[i].setScrollLeft) {
 		          this.refs[i].setScrollLeft(scrollLeft);
 		        }
 		      }
@@ -3534,8 +3537,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		/* TODO@flow mixins */
 
-		var ColumnMetrics        = __webpack_require__(9);
-		var DOMMetrics           = __webpack_require__(10);
+		var ColumnMetrics        = __webpack_require__(10);
+		var DOMMetrics           = __webpack_require__(11);
 		Object.assign            = __webpack_require__(13);
 		var PropTypes            = __webpack_require__(1).PropTypes;
 
@@ -3735,7 +3738,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var PropTypes            = React.PropTypes;
 		var Header               = __webpack_require__(32);
 		var Viewport             = __webpack_require__(38);
-		var DOMMetrics           = __webpack_require__(10);
+		var DOMMetrics           = __webpack_require__(11);
 		var GridScrollMixin      = __webpack_require__(31);
 		var ColumnMetricsMixin      = __webpack_require__(28);
 		var ExcelColumn = __webpack_require__(2);
@@ -3879,7 +3882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var React               = __webpack_require__(1);
 		var joinClasses          = __webpack_require__(3);
 		var shallowCloneObject  = __webpack_require__(12);
-		var ColumnMetrics       = __webpack_require__(9);
+		var ColumnMetrics       = __webpack_require__(10);
 		var HeaderRow           = __webpack_require__(34);
 
 		               
@@ -4474,7 +4477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		/* TODO@flow mixins */
 
 		var React             = __webpack_require__(1);
-		var DOMMetrics        = __webpack_require__(10);
+		var DOMMetrics        = __webpack_require__(11);
 		var getWindowSize     = __webpack_require__(46);
 
 		var PropTypes            = React.PropTypes;
@@ -4737,10 +4740,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  PropTypes : {
 		    value : React.PropTypes.bool.isRequired,
-		    rowIdx : React.PropTypes.number.isRequired
+		    rowIdx : React.PropTypes.number.isRequired,
+		    column: React.PropTypes.shape({
+		      onRowSelect: React.PropTypes.func.isRequired
+		    }).isRequired
 		  },
 
-		  render:function()               {
+		  render:function()                 {
 		    var checked = this.props.value != null ? this.props.value : false;
 		    return (React.createElement("input", {className: "react-grid-CheckBox", type: "checkbox", checked: checked, onClick: this.handleChange}));
 		  },
@@ -5029,7 +5035,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var React                 = __webpack_require__(1);
 		var PropTypes             = React.PropTypes;
 		var BaseGrid              = __webpack_require__(30);
-		var Row                   = __webpack_require__(11);
+		var Row                   = __webpack_require__(8);
 		var ExcelColumn           = __webpack_require__(2);
 		var KeyboardHandlerMixin  = __webpack_require__(7);
 		var CheckboxEditor        = __webpack_require__(42);
@@ -5111,13 +5117,21 @@ return /******/ (function(modules) { // webpackBootstrap
 		  },
 
 		  getInitialState: function()                                                                                                                                                                                                                                           {
-		    var initialState = {selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
+		    var initialState = {selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
 		    if(this.props.enableCellSelect){
 		      initialState.selected = {rowIdx: 0, idx: 0};
 		    }else{
 		      initialState.selected = {rowIdx: -1, idx: -1};
 		    }
 		    return initialState;
+		  },
+
+		  getInitialSelectedRows: function(){
+		    var selectedRows = [];
+		    for(var i = 0; i < this.props.rowsCount; i++){
+		      selectedRows.push(false);
+		    }
+		    return selectedRows;
 		  },
 
 		  componentWillReceiveProps:function(nextProps                    ){
@@ -5612,7 +5626,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var LocationActions = __webpack_require__(11);
-	var History = __webpack_require__(6);
+	var History = __webpack_require__(8);
 	var Path = __webpack_require__(5);
 
 	/**
@@ -6130,7 +6144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var LocationActions = __webpack_require__(11);
-	var History = __webpack_require__(6);
+	var History = __webpack_require__(8);
 	var Path = __webpack_require__(5);
 
 	/**
@@ -6261,7 +6275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var HistoryLocation = __webpack_require__(17);
-	var History = __webpack_require__(6);
+	var History = __webpack_require__(8);
 	var Path = __webpack_require__(5);
 
 	/**
@@ -6492,7 +6506,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Transition = __webpack_require__(89);
 	var PropTypes = __webpack_require__(13);
 	var Redirect = __webpack_require__(30);
-	var History = __webpack_require__(6);
+	var History = __webpack_require__(8);
 	var Cancellation = __webpack_require__(87);
 	var Path = __webpack_require__(5);
 
@@ -7088,192 +7102,106 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * By augmenting the instances, we can avoid modifying the `Uint8Array`
 	 * prototype.
 	 */
-	function Buffer (arg) {
-	  if (!(this instanceof Buffer)) {
-	    // Avoid going through an ArgumentsAdaptorTrampoline in the common case.
-	    if (arguments.length > 1) return new Buffer(arg, arguments[1])
-	    return new Buffer(arg)
-	  }
+	function Buffer (subject, encoding, noZero) {
+	  if (!(this instanceof Buffer))
+	    return new Buffer(subject, encoding, noZero)
 
-	  this.length = 0
-	  this.parent = undefined
+	  var type = typeof subject
 
-	  // Common case.
-	  if (typeof arg === 'number') {
-	    return fromNumber(this, arg)
-	  }
-
-	  // Slightly less common case.
-	  if (typeof arg === 'string') {
-	    return fromString(this, arg, arguments.length > 1 ? arguments[1] : 'utf8')
-	  }
-
-	  // Unusual.
-	  return fromObject(this, arg)
-	}
-
-	function fromNumber (that, length) {
-	  that = allocate(that, length < 0 ? 0 : checked(length) | 0)
-	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
-	    for (var i = 0; i < length; i++) {
-	      that[i] = 0
-	    }
-	  }
-	  return that
-	}
-
-	function fromString (that, string, encoding) {
-	  if (typeof encoding !== 'string' || encoding === '') encoding = 'utf8'
-
-	  // Assumption: byteLength() return value is always < kMaxLength.
-	  var length = byteLength(string, encoding) | 0
-	  that = allocate(that, length)
-
-	  that.write(string, encoding)
-	  return that
-	}
-
-	function fromObject (that, object) {
-	  if (Buffer.isBuffer(object)) return fromBuffer(that, object)
-
-	  if (isArray(object)) return fromArray(that, object)
-
-	  if (object == null) {
+	  // Find the length
+	  var length
+	  if (type === 'number') {
+	    length = +subject
+	  } else if (type === 'string') {
+	    length = Buffer.byteLength(subject, encoding)
+	  } else if (type === 'object' && subject !== null) { // assume object is array-like
+	    if (subject.type === 'Buffer' && isArray(subject.data))
+	      subject = subject.data
+	    length = +subject.length
+	  } else {
 	    throw new TypeError('must start with number, buffer, array or string')
 	  }
 
-	  if (typeof ArrayBuffer !== 'undefined' && object.buffer instanceof ArrayBuffer) {
-	    return fromTypedArray(that, object)
-	  }
-
-	  if (object.length) return fromArrayLike(that, object)
-
-	  return fromJsonObject(that, object)
-	}
-
-	function fromBuffer (that, buffer) {
-	  var length = checked(buffer.length) | 0
-	  that = allocate(that, length)
-	  buffer.copy(that, 0, 0, length)
-	  return that
-	}
-
-	function fromArray (that, array) {
-	  var length = checked(array.length) | 0
-	  that = allocate(that, length)
-	  for (var i = 0; i < length; i += 1) {
-	    that[i] = array[i] & 255
-	  }
-	  return that
-	}
-
-	// Duplicate of fromArray() to keep fromArray() monomorphic.
-	function fromTypedArray (that, array) {
-	  var length = checked(array.length) | 0
-	  that = allocate(that, length)
-	  // Truncating the elements is probably not what people expect from typed
-	  // arrays with BYTES_PER_ELEMENT > 1 but it's compatible with the behavior
-	  // of the old Buffer constructor.
-	  for (var i = 0; i < length; i += 1) {
-	    that[i] = array[i] & 255
-	  }
-	  return that
-	}
-
-	function fromArrayLike (that, array) {
-	  var length = checked(array.length) | 0
-	  that = allocate(that, length)
-	  for (var i = 0; i < length; i += 1) {
-	    that[i] = array[i] & 255
-	  }
-	  return that
-	}
-
-	// Deserialize { type: 'Buffer', data: [1,2,3,...] } into a Buffer object.
-	// Returns a zero-length buffer for inputs that don't conform to the spec.
-	function fromJsonObject (that, object) {
-	  var array
-	  var length = 0
-
-	  if (object.type === 'Buffer' && isArray(object.data)) {
-	    array = object.data
-	    length = checked(array.length) | 0
-	  }
-	  that = allocate(that, length)
-
-	  for (var i = 0; i < length; i += 1) {
-	    that[i] = array[i] & 255
-	  }
-	  return that
-	}
-
-	function allocate (that, length) {
-	  if (Buffer.TYPED_ARRAY_SUPPORT) {
-	    // Return an augmented `Uint8Array` instance, for best performance
-	    that = Buffer._augment(new Uint8Array(length))
-	  } else {
-	    // Fallback: Return an object instance of the Buffer class
-	    that.length = length
-	    that._isBuffer = true
-	  }
-
-	  var fromPool = length !== 0 && length <= Buffer.poolSize >>> 1
-	  if (fromPool) that.parent = rootParent
-
-	  return that
-	}
-
-	function checked (length) {
-	  // Note: cannot use `length < kMaxLength` here because that fails when
-	  // length is NaN (which is otherwise coerced to zero.)
-	  if (length >= kMaxLength) {
+	  if (length > kMaxLength)
 	    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
-	                         'size: 0x' + kMaxLength.toString(16) + ' bytes')
+	      'size: 0x' + kMaxLength.toString(16) + ' bytes')
+
+	  if (length < 0)
+	    length = 0
+	  else
+	    length >>>= 0 // Coerce to uint32.
+
+	  var self = this
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    // Preferred: Return an augmented `Uint8Array` instance for best performance
+	    /*eslint-disable consistent-this */
+	    self = Buffer._augment(new Uint8Array(length))
+	    /*eslint-enable consistent-this */
+	  } else {
+	    // Fallback: Return THIS instance of Buffer (created by `new`)
+	    self.length = length
+	    self._isBuffer = true
 	  }
-	  return length | 0
+
+	  var i
+	  if (Buffer.TYPED_ARRAY_SUPPORT && typeof subject.byteLength === 'number') {
+	    // Speed optimization -- use set if we're copying from a typed array
+	    self._set(subject)
+	  } else if (isArrayish(subject)) {
+	    // Treat array-ish objects as a byte array
+	    if (Buffer.isBuffer(subject)) {
+	      for (i = 0; i < length; i++)
+	        self[i] = subject.readUInt8(i)
+	    } else {
+	      for (i = 0; i < length; i++)
+	        self[i] = ((subject[i] % 256) + 256) % 256
+	    }
+	  } else if (type === 'string') {
+	    self.write(subject, 0, encoding)
+	  } else if (type === 'number' && !Buffer.TYPED_ARRAY_SUPPORT && !noZero) {
+	    for (i = 0; i < length; i++) {
+	      self[i] = 0
+	    }
+	  }
+
+	  if (length > 0 && length <= Buffer.poolSize)
+	    self.parent = rootParent
+
+	  return self
 	}
 
-	function SlowBuffer (subject, encoding) {
-	  if (!(this instanceof SlowBuffer)) return new SlowBuffer(subject, encoding)
+	function SlowBuffer (subject, encoding, noZero) {
+	  if (!(this instanceof SlowBuffer))
+	    return new SlowBuffer(subject, encoding, noZero)
 
-	  var buf = new Buffer(subject, encoding)
+	  var buf = new Buffer(subject, encoding, noZero)
 	  delete buf.parent
 	  return buf
 	}
 
-	Buffer.isBuffer = function isBuffer (b) {
+	Buffer.isBuffer = function (b) {
 	  return !!(b != null && b._isBuffer)
 	}
 
-	Buffer.compare = function compare (a, b) {
-	  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+	Buffer.compare = function (a, b) {
+	  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b))
 	    throw new TypeError('Arguments must be Buffers')
-	  }
 
 	  if (a === b) return 0
 
 	  var x = a.length
 	  var y = b.length
-
-	  var i = 0
-	  var len = Math.min(x, y)
-	  while (i < len) {
-	    if (a[i] !== b[i]) break
-
-	    ++i
-	  }
-
+	  for (var i = 0, len = Math.min(x, y); i < len && a[i] === b[i]; i++) {}
 	  if (i !== len) {
 	    x = a[i]
 	    y = b[i]
 	  }
-
 	  if (x < y) return -1
 	  if (y < x) return 1
 	  return 0
 	}
 
-	Buffer.isEncoding = function isEncoding (encoding) {
+	Buffer.isEncoding = function (encoding) {
 	  switch (String(encoding).toLowerCase()) {
 	    case 'hex':
 	    case 'utf8':
@@ -7292,8 +7220,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
-	Buffer.concat = function concat (list, length) {
-	  if (!isArray(list)) throw new TypeError('list argument must be an Array of Buffers.')
+	Buffer.concat = function (list, totalLength) {
+	  if (!isArray(list)) throw new TypeError('Usage: Buffer.concat(list[, length])')
 
 	  if (list.length === 0) {
 	    return new Buffer(0)
@@ -7302,14 +7230,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  var i
-	  if (length === undefined) {
-	    length = 0
+	  if (totalLength === undefined) {
+	    totalLength = 0
 	    for (i = 0; i < list.length; i++) {
-	      length += list[i].length
+	      totalLength += list[i].length
 	    }
 	  }
 
-	  var buf = new Buffer(length)
+	  var buf = new Buffer(totalLength)
 	  var pos = 0
 	  for (i = 0; i < list.length; i++) {
 	    var item = list[i]
@@ -7319,44 +7247,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return buf
 	}
 
-	function byteLength (string, encoding) {
-	  if (typeof string !== 'string') string = String(string)
-
-	  if (string.length === 0) return 0
-
+	Buffer.byteLength = function (str, encoding) {
+	  var ret
+	  str = str + ''
 	  switch (encoding || 'utf8') {
 	    case 'ascii':
 	    case 'binary':
 	    case 'raw':
-	      return string.length
+	      ret = str.length
+	      break
 	    case 'ucs2':
 	    case 'ucs-2':
 	    case 'utf16le':
 	    case 'utf-16le':
-	      return string.length * 2
+	      ret = str.length * 2
+	      break
 	    case 'hex':
-	      return string.length >>> 1
+	      ret = str.length >>> 1
+	      break
 	    case 'utf8':
 	    case 'utf-8':
-	      return utf8ToBytes(string).length
+	      ret = utf8ToBytes(str).length
+	      break
 	    case 'base64':
-	      return base64ToBytes(string).length
+	      ret = base64ToBytes(str).length
+	      break
 	    default:
-	      return string.length
+	      ret = str.length
 	  }
+	  return ret
 	}
-	Buffer.byteLength = byteLength
 
 	// pre-set for values that may exist in the future
 	Buffer.prototype.length = undefined
 	Buffer.prototype.parent = undefined
 
 	// toString(encoding, start=0, end=buffer.length)
-	Buffer.prototype.toString = function toString (encoding, start, end) {
+	Buffer.prototype.toString = function (encoding, start, end) {
 	  var loweredCase = false
 
-	  start = start | 0
-	  end = end === undefined || end === Infinity ? this.length : end | 0
+	  start = start >>> 0
+	  end = end === undefined || end === Infinity ? this.length : end >>> 0
 
 	  if (!encoding) encoding = 'utf8'
 	  if (start < 0) start = 0
@@ -7388,84 +7319,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return utf16leSlice(this, start, end)
 
 	      default:
-	        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+	        if (loweredCase)
+	          throw new TypeError('Unknown encoding: ' + encoding)
 	        encoding = (encoding + '').toLowerCase()
 	        loweredCase = true
 	    }
 	  }
 	}
 
-	Buffer.prototype.equals = function equals (b) {
+	Buffer.prototype.equals = function (b) {
 	  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
 	  if (this === b) return true
 	  return Buffer.compare(this, b) === 0
 	}
 
-	Buffer.prototype.inspect = function inspect () {
+	Buffer.prototype.inspect = function () {
 	  var str = ''
 	  var max = exports.INSPECT_MAX_BYTES
 	  if (this.length > 0) {
 	    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
-	    if (this.length > max) str += ' ... '
+	    if (this.length > max)
+	      str += ' ... '
 	  }
 	  return '<Buffer ' + str + '>'
 	}
 
-	Buffer.prototype.compare = function compare (b) {
+	Buffer.prototype.compare = function (b) {
 	  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
 	  if (this === b) return 0
 	  return Buffer.compare(this, b)
 	}
 
-	Buffer.prototype.indexOf = function indexOf (val, byteOffset) {
-	  if (byteOffset > 0x7fffffff) byteOffset = 0x7fffffff
-	  else if (byteOffset < -0x80000000) byteOffset = -0x80000000
-	  byteOffset >>= 0
-
-	  if (this.length === 0) return -1
-	  if (byteOffset >= this.length) return -1
-
-	  // Negative offsets start from the end of the buffer
-	  if (byteOffset < 0) byteOffset = Math.max(this.length + byteOffset, 0)
-
-	  if (typeof val === 'string') {
-	    if (val.length === 0) return -1 // special case: looking for empty string always fails
-	    return String.prototype.indexOf.call(this, val, byteOffset)
-	  }
-	  if (Buffer.isBuffer(val)) {
-	    return arrayIndexOf(this, val, byteOffset)
-	  }
-	  if (typeof val === 'number') {
-	    if (Buffer.TYPED_ARRAY_SUPPORT && Uint8Array.prototype.indexOf === 'function') {
-	      return Uint8Array.prototype.indexOf.call(this, val, byteOffset)
-	    }
-	    return arrayIndexOf(this, [ val ], byteOffset)
-	  }
-
-	  function arrayIndexOf (arr, val, byteOffset) {
-	    var foundIndex = -1
-	    for (var i = 0; byteOffset + i < arr.length; i++) {
-	      if (arr[byteOffset + i] === val[foundIndex === -1 ? 0 : i - foundIndex]) {
-	        if (foundIndex === -1) foundIndex = i
-	        if (i - foundIndex + 1 === val.length) return byteOffset + foundIndex
-	      } else {
-	        foundIndex = -1
-	      }
-	    }
-	    return -1
-	  }
-
-	  throw new TypeError('val must be string, number or Buffer')
-	}
-
 	// `get` will be removed in Node 0.13+
-	Buffer.prototype.get = function get (offset) {
+	Buffer.prototype.get = function (offset) {
 	  console.log('.get() is deprecated. Access using array indexes instead.')
 	  return this.readUInt8(offset)
 	}
 
 	// `set` will be removed in Node 0.13+
-	Buffer.prototype.set = function set (v, offset) {
+	Buffer.prototype.set = function (v, offset) {
 	  console.log('.set() is deprecated. Access using array indexes instead.')
 	  return this.writeUInt8(v, offset)
 	}
@@ -7490,19 +7382,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    length = strLen / 2
 	  }
 	  for (var i = 0; i < length; i++) {
-	    var parsed = parseInt(string.substr(i * 2, 2), 16)
-	    if (isNaN(parsed)) throw new Error('Invalid hex string')
-	    buf[offset + i] = parsed
+	    var byte = parseInt(string.substr(i * 2, 2), 16)
+	    if (isNaN(byte)) throw new Error('Invalid hex string')
+	    buf[offset + i] = byte
 	  }
 	  return i
 	}
 
 	function utf8Write (buf, string, offset, length) {
-	  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+	  var charsWritten = blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+	  return charsWritten
 	}
 
 	function asciiWrite (buf, string, offset, length) {
-	  return blitBuffer(asciiToBytes(string), buf, offset, length)
+	  var charsWritten = blitBuffer(asciiToBytes(string), buf, offset, length)
+	  return charsWritten
 	}
 
 	function binaryWrite (buf, string, offset, length) {
@@ -7510,86 +7404,77 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function base64Write (buf, string, offset, length) {
-	  return blitBuffer(base64ToBytes(string), buf, offset, length)
+	  var charsWritten = blitBuffer(base64ToBytes(string), buf, offset, length)
+	  return charsWritten
 	}
 
-	function ucs2Write (buf, string, offset, length) {
-	  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+	function utf16leWrite (buf, string, offset, length) {
+	  var charsWritten = blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+	  return charsWritten
 	}
 
-	Buffer.prototype.write = function write (string, offset, length, encoding) {
-	  // Buffer#write(string)
-	  if (offset === undefined) {
-	    encoding = 'utf8'
-	    length = this.length
-	    offset = 0
-	  // Buffer#write(string, encoding)
-	  } else if (length === undefined && typeof offset === 'string') {
-	    encoding = offset
-	    length = this.length
-	    offset = 0
-	  // Buffer#write(string, offset[, length][, encoding])
-	  } else if (isFinite(offset)) {
-	    offset = offset | 0
-	    if (isFinite(length)) {
-	      length = length | 0
-	      if (encoding === undefined) encoding = 'utf8'
-	    } else {
+	Buffer.prototype.write = function (string, offset, length, encoding) {
+	  // Support both (string, offset, length, encoding)
+	  // and the legacy (string, encoding, offset, length)
+	  if (isFinite(offset)) {
+	    if (!isFinite(length)) {
 	      encoding = length
 	      length = undefined
 	    }
-	  // legacy write(string, encoding, offset, length) - remove in v0.13
-	  } else {
+	  } else {  // legacy
 	    var swap = encoding
 	    encoding = offset
-	    offset = length | 0
+	    offset = length
 	    length = swap
 	  }
 
-	  var remaining = this.length - offset
-	  if (length === undefined || length > remaining) length = remaining
+	  offset = Number(offset) || 0
 
-	  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+	  if (length < 0 || offset < 0 || offset > this.length)
 	    throw new RangeError('attempt to write outside buffer bounds')
-	  }
 
-	  if (!encoding) encoding = 'utf8'
-
-	  var loweredCase = false
-	  for (;;) {
-	    switch (encoding) {
-	      case 'hex':
-	        return hexWrite(this, string, offset, length)
-
-	      case 'utf8':
-	      case 'utf-8':
-	        return utf8Write(this, string, offset, length)
-
-	      case 'ascii':
-	        return asciiWrite(this, string, offset, length)
-
-	      case 'binary':
-	        return binaryWrite(this, string, offset, length)
-
-	      case 'base64':
-	        // Warning: maxLength not taken into account in base64Write
-	        return base64Write(this, string, offset, length)
-
-	      case 'ucs2':
-	      case 'ucs-2':
-	      case 'utf16le':
-	      case 'utf-16le':
-	        return ucs2Write(this, string, offset, length)
-
-	      default:
-	        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-	        encoding = ('' + encoding).toLowerCase()
-	        loweredCase = true
+	  var remaining = this.length - offset
+	  if (!length) {
+	    length = remaining
+	  } else {
+	    length = Number(length)
+	    if (length > remaining) {
+	      length = remaining
 	    }
 	  }
+	  encoding = String(encoding || 'utf8').toLowerCase()
+
+	  var ret
+	  switch (encoding) {
+	    case 'hex':
+	      ret = hexWrite(this, string, offset, length)
+	      break
+	    case 'utf8':
+	    case 'utf-8':
+	      ret = utf8Write(this, string, offset, length)
+	      break
+	    case 'ascii':
+	      ret = asciiWrite(this, string, offset, length)
+	      break
+	    case 'binary':
+	      ret = binaryWrite(this, string, offset, length)
+	      break
+	    case 'base64':
+	      ret = base64Write(this, string, offset, length)
+	      break
+	    case 'ucs2':
+	    case 'ucs-2':
+	    case 'utf16le':
+	    case 'utf-16le':
+	      ret = utf16leWrite(this, string, offset, length)
+	      break
+	    default:
+	      throw new TypeError('Unknown encoding: ' + encoding)
+	  }
+	  return ret
 	}
 
-	Buffer.prototype.toJSON = function toJSON () {
+	Buffer.prototype.toJSON = function () {
 	  return {
 	    type: 'Buffer',
 	    data: Array.prototype.slice.call(this._arr || this, 0)
@@ -7663,39 +7548,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return res
 	}
 
-	Buffer.prototype.slice = function slice (start, end) {
+	Buffer.prototype.slice = function (start, end) {
 	  var len = this.length
 	  start = ~~start
 	  end = end === undefined ? len : ~~end
 
 	  if (start < 0) {
 	    start += len
-	    if (start < 0) start = 0
+	    if (start < 0)
+	      start = 0
 	  } else if (start > len) {
 	    start = len
 	  }
 
 	  if (end < 0) {
 	    end += len
-	    if (end < 0) end = 0
+	    if (end < 0)
+	      end = 0
 	  } else if (end > len) {
 	    end = len
 	  }
 
-	  if (end < start) end = start
+	  if (end < start)
+	    end = start
 
 	  var newBuf
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    newBuf = Buffer._augment(this.subarray(start, end))
 	  } else {
 	    var sliceLen = end - start
-	    newBuf = new Buffer(sliceLen, undefined)
+	    newBuf = new Buffer(sliceLen, undefined, true)
 	    for (var i = 0; i < sliceLen; i++) {
 	      newBuf[i] = this[i + start]
 	    }
 	  }
 
-	  if (newBuf.length) newBuf.parent = this.parent || this
+	  if (newBuf.length)
+	    newBuf.parent = this.parent || this
 
 	  return newBuf
 	}
@@ -7704,58 +7593,62 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Need to make sure that buffer isn't trying to write out of bounds.
 	 */
 	function checkOffset (offset, ext, length) {
-	  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
-	  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+	  if ((offset % 1) !== 0 || offset < 0)
+	    throw new RangeError('offset is not uint')
+	  if (offset + ext > length)
+	    throw new RangeError('Trying to access beyond buffer length')
 	}
 
-	Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
-	  offset = offset | 0
-	  byteLength = byteLength | 0
-	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+	Buffer.prototype.readUIntLE = function (offset, byteLength, noAssert) {
+	  offset = offset >>> 0
+	  byteLength = byteLength >>> 0
+	  if (!noAssert)
+	    checkOffset(offset, byteLength, this.length)
 
 	  var val = this[offset]
 	  var mul = 1
 	  var i = 0
-	  while (++i < byteLength && (mul *= 0x100)) {
+	  while (++i < byteLength && (mul *= 0x100))
 	    val += this[offset + i] * mul
-	  }
 
 	  return val
 	}
 
-	Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
-	  offset = offset | 0
-	  byteLength = byteLength | 0
-	  if (!noAssert) {
+	Buffer.prototype.readUIntBE = function (offset, byteLength, noAssert) {
+	  offset = offset >>> 0
+	  byteLength = byteLength >>> 0
+	  if (!noAssert)
 	    checkOffset(offset, byteLength, this.length)
-	  }
 
 	  var val = this[offset + --byteLength]
 	  var mul = 1
-	  while (byteLength > 0 && (mul *= 0x100)) {
+	  while (byteLength > 0 && (mul *= 0x100))
 	    val += this[offset + --byteLength] * mul
-	  }
 
 	  return val
 	}
 
-	Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 1, this.length)
+	Buffer.prototype.readUInt8 = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 1, this.length)
 	  return this[offset]
 	}
 
-	Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 2, this.length)
+	Buffer.prototype.readUInt16LE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 2, this.length)
 	  return this[offset] | (this[offset + 1] << 8)
 	}
 
-	Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 2, this.length)
+	Buffer.prototype.readUInt16BE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 2, this.length)
 	  return (this[offset] << 8) | this[offset + 1]
 	}
 
-	Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 4, this.length)
+	Buffer.prototype.readUInt32LE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 4, this.length)
 
 	  return ((this[offset]) |
 	      (this[offset + 1] << 8) |
@@ -7763,104 +7656,117 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (this[offset + 3] * 0x1000000)
 	}
 
-	Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 4, this.length)
+	Buffer.prototype.readUInt32BE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 4, this.length)
 
 	  return (this[offset] * 0x1000000) +
-	    ((this[offset + 1] << 16) |
-	    (this[offset + 2] << 8) |
-	    this[offset + 3])
+	      ((this[offset + 1] << 16) |
+	      (this[offset + 2] << 8) |
+	      this[offset + 3])
 	}
 
-	Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
-	  offset = offset | 0
-	  byteLength = byteLength | 0
-	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+	Buffer.prototype.readIntLE = function (offset, byteLength, noAssert) {
+	  offset = offset >>> 0
+	  byteLength = byteLength >>> 0
+	  if (!noAssert)
+	    checkOffset(offset, byteLength, this.length)
 
 	  var val = this[offset]
 	  var mul = 1
 	  var i = 0
-	  while (++i < byteLength && (mul *= 0x100)) {
+	  while (++i < byteLength && (mul *= 0x100))
 	    val += this[offset + i] * mul
-	  }
 	  mul *= 0x80
 
-	  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+	  if (val >= mul)
+	    val -= Math.pow(2, 8 * byteLength)
 
 	  return val
 	}
 
-	Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
-	  offset = offset | 0
-	  byteLength = byteLength | 0
-	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+	Buffer.prototype.readIntBE = function (offset, byteLength, noAssert) {
+	  offset = offset >>> 0
+	  byteLength = byteLength >>> 0
+	  if (!noAssert)
+	    checkOffset(offset, byteLength, this.length)
 
 	  var i = byteLength
 	  var mul = 1
 	  var val = this[offset + --i]
-	  while (i > 0 && (mul *= 0x100)) {
+	  while (i > 0 && (mul *= 0x100))
 	    val += this[offset + --i] * mul
-	  }
 	  mul *= 0x80
 
-	  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+	  if (val >= mul)
+	    val -= Math.pow(2, 8 * byteLength)
 
 	  return val
 	}
 
-	Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 1, this.length)
-	  if (!(this[offset] & 0x80)) return (this[offset])
+	Buffer.prototype.readInt8 = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 1, this.length)
+	  if (!(this[offset] & 0x80))
+	    return (this[offset])
 	  return ((0xff - this[offset] + 1) * -1)
 	}
 
-	Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 2, this.length)
+	Buffer.prototype.readInt16LE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 2, this.length)
 	  var val = this[offset] | (this[offset + 1] << 8)
 	  return (val & 0x8000) ? val | 0xFFFF0000 : val
 	}
 
-	Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 2, this.length)
+	Buffer.prototype.readInt16BE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 2, this.length)
 	  var val = this[offset + 1] | (this[offset] << 8)
 	  return (val & 0x8000) ? val | 0xFFFF0000 : val
 	}
 
-	Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 4, this.length)
+	Buffer.prototype.readInt32LE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 4, this.length)
 
 	  return (this[offset]) |
-	    (this[offset + 1] << 8) |
-	    (this[offset + 2] << 16) |
-	    (this[offset + 3] << 24)
+	      (this[offset + 1] << 8) |
+	      (this[offset + 2] << 16) |
+	      (this[offset + 3] << 24)
 	}
 
-	Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 4, this.length)
+	Buffer.prototype.readInt32BE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 4, this.length)
 
 	  return (this[offset] << 24) |
-	    (this[offset + 1] << 16) |
-	    (this[offset + 2] << 8) |
-	    (this[offset + 3])
+	      (this[offset + 1] << 16) |
+	      (this[offset + 2] << 8) |
+	      (this[offset + 3])
 	}
 
-	Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 4, this.length)
+	Buffer.prototype.readFloatLE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 4, this.length)
 	  return ieee754.read(this, offset, true, 23, 4)
 	}
 
-	Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 4, this.length)
+	Buffer.prototype.readFloatBE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 4, this.length)
 	  return ieee754.read(this, offset, false, 23, 4)
 	}
 
-	Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 8, this.length)
+	Buffer.prototype.readDoubleLE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 8, this.length)
 	  return ieee754.read(this, offset, true, 52, 8)
 	}
 
-	Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
-	  if (!noAssert) checkOffset(offset, 8, this.length)
+	Buffer.prototype.readDoubleBE = function (offset, noAssert) {
+	  if (!noAssert)
+	    checkOffset(offset, 8, this.length)
 	  return ieee754.read(this, offset, false, 52, 8)
 	}
 
@@ -7870,42 +7776,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (offset + ext > buf.length) throw new RangeError('index out of range')
 	}
 
-	Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+	Buffer.prototype.writeUIntLE = function (value, offset, byteLength, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  byteLength = byteLength | 0
-	  if (!noAssert) checkInt(this, value, offset, byteLength, Math.pow(2, 8 * byteLength), 0)
+	  offset = offset >>> 0
+	  byteLength = byteLength >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, byteLength, Math.pow(2, 8 * byteLength), 0)
 
 	  var mul = 1
 	  var i = 0
 	  this[offset] = value & 0xFF
-	  while (++i < byteLength && (mul *= 0x100)) {
-	    this[offset + i] = (value / mul) & 0xFF
-	  }
+	  while (++i < byteLength && (mul *= 0x100))
+	    this[offset + i] = (value / mul) >>> 0 & 0xFF
 
 	  return offset + byteLength
 	}
 
-	Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+	Buffer.prototype.writeUIntBE = function (value, offset, byteLength, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  byteLength = byteLength | 0
-	  if (!noAssert) checkInt(this, value, offset, byteLength, Math.pow(2, 8 * byteLength), 0)
+	  offset = offset >>> 0
+	  byteLength = byteLength >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, byteLength, Math.pow(2, 8 * byteLength), 0)
 
 	  var i = byteLength - 1
 	  var mul = 1
 	  this[offset + i] = value & 0xFF
-	  while (--i >= 0 && (mul *= 0x100)) {
-	    this[offset + i] = (value / mul) & 0xFF
-	  }
+	  while (--i >= 0 && (mul *= 0x100))
+	    this[offset + i] = (value / mul) >>> 0 & 0xFF
 
 	  return offset + byteLength
 	}
 
-	Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+	Buffer.prototype.writeUInt8 = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 1, 0xff, 0)
 	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
 	  this[offset] = value
 	  return offset + 1
@@ -7919,29 +7826,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
-	Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+	Buffer.prototype.writeUInt16LE = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 2, 0xffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = value
 	    this[offset + 1] = (value >>> 8)
-	  } else {
-	    objectWriteUInt16(this, value, offset, true)
-	  }
+	  } else objectWriteUInt16(this, value, offset, true)
 	  return offset + 2
 	}
 
-	Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+	Buffer.prototype.writeUInt16BE = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 2, 0xffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 8)
 	    this[offset + 1] = value
-	  } else {
-	    objectWriteUInt16(this, value, offset, false)
-	  }
+	  } else objectWriteUInt16(this, value, offset, false)
 	  return offset + 2
 	}
 
@@ -7952,140 +7857,139 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
-	Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+	Buffer.prototype.writeUInt32LE = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 4, 0xffffffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset + 3] = (value >>> 24)
 	    this[offset + 2] = (value >>> 16)
 	    this[offset + 1] = (value >>> 8)
 	    this[offset] = value
-	  } else {
-	    objectWriteUInt32(this, value, offset, true)
-	  }
+	  } else objectWriteUInt32(this, value, offset, true)
 	  return offset + 4
 	}
 
-	Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+	Buffer.prototype.writeUInt32BE = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 4, 0xffffffff, 0)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 24)
 	    this[offset + 1] = (value >>> 16)
 	    this[offset + 2] = (value >>> 8)
 	    this[offset + 3] = value
-	  } else {
-	    objectWriteUInt32(this, value, offset, false)
-	  }
+	  } else objectWriteUInt32(this, value, offset, false)
 	  return offset + 4
 	}
 
-	Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+	Buffer.prototype.writeIntLE = function (value, offset, byteLength, noAssert) {
 	  value = +value
-	  offset = offset | 0
+	  offset = offset >>> 0
 	  if (!noAssert) {
-	    var limit = Math.pow(2, 8 * byteLength - 1)
-
-	    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+	    checkInt(this,
+	             value,
+	             offset,
+	             byteLength,
+	             Math.pow(2, 8 * byteLength - 1) - 1,
+	             -Math.pow(2, 8 * byteLength - 1))
 	  }
 
 	  var i = 0
 	  var mul = 1
 	  var sub = value < 0 ? 1 : 0
 	  this[offset] = value & 0xFF
-	  while (++i < byteLength && (mul *= 0x100)) {
+	  while (++i < byteLength && (mul *= 0x100))
 	    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
-	  }
 
 	  return offset + byteLength
 	}
 
-	Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+	Buffer.prototype.writeIntBE = function (value, offset, byteLength, noAssert) {
 	  value = +value
-	  offset = offset | 0
+	  offset = offset >>> 0
 	  if (!noAssert) {
-	    var limit = Math.pow(2, 8 * byteLength - 1)
-
-	    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+	    checkInt(this,
+	             value,
+	             offset,
+	             byteLength,
+	             Math.pow(2, 8 * byteLength - 1) - 1,
+	             -Math.pow(2, 8 * byteLength - 1))
 	  }
 
 	  var i = byteLength - 1
 	  var mul = 1
 	  var sub = value < 0 ? 1 : 0
 	  this[offset + i] = value & 0xFF
-	  while (--i >= 0 && (mul *= 0x100)) {
+	  while (--i >= 0 && (mul *= 0x100))
 	    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
-	  }
 
 	  return offset + byteLength
 	}
 
-	Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+	Buffer.prototype.writeInt8 = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 1, 0x7f, -0x80)
 	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
 	  if (value < 0) value = 0xff + value + 1
 	  this[offset] = value
 	  return offset + 1
 	}
 
-	Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+	Buffer.prototype.writeInt16LE = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 2, 0x7fff, -0x8000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = value
 	    this[offset + 1] = (value >>> 8)
-	  } else {
-	    objectWriteUInt16(this, value, offset, true)
-	  }
+	  } else objectWriteUInt16(this, value, offset, true)
 	  return offset + 2
 	}
 
-	Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+	Buffer.prototype.writeInt16BE = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 2, 0x7fff, -0x8000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 8)
 	    this[offset + 1] = value
-	  } else {
-	    objectWriteUInt16(this, value, offset, false)
-	  }
+	  } else objectWriteUInt16(this, value, offset, false)
 	  return offset + 2
 	}
 
-	Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+	Buffer.prototype.writeInt32LE = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = value
 	    this[offset + 1] = (value >>> 8)
 	    this[offset + 2] = (value >>> 16)
 	    this[offset + 3] = (value >>> 24)
-	  } else {
-	    objectWriteUInt32(this, value, offset, true)
-	  }
+	  } else objectWriteUInt32(this, value, offset, true)
 	  return offset + 4
 	}
 
-	Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+	Buffer.prototype.writeInt32BE = function (value, offset, noAssert) {
 	  value = +value
-	  offset = offset | 0
-	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+	  offset = offset >>> 0
+	  if (!noAssert)
+	    checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
 	  if (value < 0) value = 0xffffffff + value + 1
 	  if (Buffer.TYPED_ARRAY_SUPPORT) {
 	    this[offset] = (value >>> 24)
 	    this[offset + 1] = (value >>> 16)
 	    this[offset + 2] = (value >>> 8)
 	    this[offset + 3] = value
-	  } else {
-	    objectWriteUInt32(this, value, offset, false)
-	  }
+	  } else objectWriteUInt32(this, value, offset, false)
 	  return offset + 4
 	}
 
@@ -8096,77 +8000,76 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function writeFloat (buf, value, offset, littleEndian, noAssert) {
-	  if (!noAssert) {
+	  if (!noAssert)
 	    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
-	  }
 	  ieee754.write(buf, value, offset, littleEndian, 23, 4)
 	  return offset + 4
 	}
 
-	Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+	Buffer.prototype.writeFloatLE = function (value, offset, noAssert) {
 	  return writeFloat(this, value, offset, true, noAssert)
 	}
 
-	Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+	Buffer.prototype.writeFloatBE = function (value, offset, noAssert) {
 	  return writeFloat(this, value, offset, false, noAssert)
 	}
 
 	function writeDouble (buf, value, offset, littleEndian, noAssert) {
-	  if (!noAssert) {
+	  if (!noAssert)
 	    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
-	  }
 	  ieee754.write(buf, value, offset, littleEndian, 52, 8)
 	  return offset + 8
 	}
 
-	Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+	Buffer.prototype.writeDoubleLE = function (value, offset, noAssert) {
 	  return writeDouble(this, value, offset, true, noAssert)
 	}
 
-	Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+	Buffer.prototype.writeDoubleBE = function (value, offset, noAssert) {
 	  return writeDouble(this, value, offset, false, noAssert)
 	}
 
 	// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-	Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+	Buffer.prototype.copy = function (target, target_start, start, end) {
+	  var self = this // source
+
 	  if (!start) start = 0
 	  if (!end && end !== 0) end = this.length
-	  if (targetStart >= target.length) targetStart = target.length
-	  if (!targetStart) targetStart = 0
+	  if (target_start >= target.length) target_start = target.length
+	  if (!target_start) target_start = 0
 	  if (end > 0 && end < start) end = start
 
 	  // Copy 0 bytes; we're done
 	  if (end === start) return 0
-	  if (target.length === 0 || this.length === 0) return 0
+	  if (target.length === 0 || self.length === 0) return 0
 
 	  // Fatal error conditions
-	  if (targetStart < 0) {
+	  if (target_start < 0)
 	    throw new RangeError('targetStart out of bounds')
-	  }
-	  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+	  if (start < 0 || start >= self.length) throw new RangeError('sourceStart out of bounds')
 	  if (end < 0) throw new RangeError('sourceEnd out of bounds')
 
 	  // Are we oob?
-	  if (end > this.length) end = this.length
-	  if (target.length - targetStart < end - start) {
-	    end = target.length - targetStart + start
-	  }
+	  if (end > this.length)
+	    end = this.length
+	  if (target.length - target_start < end - start)
+	    end = target.length - target_start + start
 
 	  var len = end - start
 
 	  if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
 	    for (var i = 0; i < len; i++) {
-	      target[i + targetStart] = this[i + start]
+	      target[i + target_start] = this[i + start]
 	    }
 	  } else {
-	    target._set(this.subarray(start, start + len), targetStart)
+	    target._set(this.subarray(start, start + len), target_start)
 	  }
 
 	  return len
 	}
 
 	// fill(value, start=0, end=buffer.length)
-	Buffer.prototype.fill = function fill (value, start, end) {
+	Buffer.prototype.fill = function (value, start, end) {
 	  if (!value) value = 0
 	  if (!start) start = 0
 	  if (!end) end = this.length
@@ -8200,7 +8103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Creates a new `ArrayBuffer` with the *copied* memory of the buffer instance.
 	 * Added in Node 0.12. Only available in browsers that support ArrayBuffer.
 	 */
-	Buffer.prototype.toArrayBuffer = function toArrayBuffer () {
+	Buffer.prototype.toArrayBuffer = function () {
 	  if (typeof Uint8Array !== 'undefined') {
 	    if (Buffer.TYPED_ARRAY_SUPPORT) {
 	      return (new Buffer(this)).buffer
@@ -8224,11 +8127,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Augment a Uint8Array *instance* (not the Uint8Array class!) with Buffer methods
 	 */
-	Buffer._augment = function _augment (arr) {
+	Buffer._augment = function (arr) {
 	  arr.constructor = Buffer
 	  arr._isBuffer = true
 
-	  // save reference to original Uint8Array set method before overwriting
+	  // save reference to original Uint8Array get/set methods before overwriting
+	  arr._get = arr.get
 	  arr._set = arr.set
 
 	  // deprecated, will be removed in node 0.13+
@@ -8241,7 +8145,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  arr.toJSON = BP.toJSON
 	  arr.equals = BP.equals
 	  arr.compare = BP.compare
-	  arr.indexOf = BP.indexOf
 	  arr.copy = BP.copy
 	  arr.slice = BP.slice
 	  arr.readUIntLE = BP.readUIntLE
@@ -8304,6 +8207,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	function stringtrim (str) {
 	  if (str.trim) return str.trim()
 	  return str.replace(/^\s+|\s+$/g, '')
+	}
+
+	function isArrayish (subject) {
+	  return isArray(subject) || Buffer.isBuffer(subject) ||
+	      subject && typeof subject === 'object' &&
+	      typeof subject.length === 'number'
 	}
 
 	function toHex (n) {
@@ -8423,7 +8332,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function blitBuffer (src, dst, offset, length) {
 	  for (var i = 0; i < length; i++) {
-	    if ((i + offset >= dst.length) || (i >= src.length)) break
+	    if ((i + offset >= dst.length) || (i >= src.length))
+	      break
 	    dst[i + offset] = src[i]
 	  }
 	  return i
@@ -8504,6 +8414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		module.exports.Editors = __webpack_require__(51);
 		module.exports.Formatters = __webpack_require__(53);
 		module.exports.Toolbar = __webpack_require__(54);
+		module.exports.Row = __webpack_require__(8);
 
 
 	/***/ },
@@ -8609,7 +8520,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var ReactPropTransferer = __webpack_require__(22);
 
 		var keyOf = __webpack_require__(25);
-		var warning = __webpack_require__(8);
+		var warning = __webpack_require__(9);
 
 		var CHILDREN_PROP = keyOf({children: null});
 
@@ -8821,369 +8732,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* 8 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		/* WEBPACK VAR INJECTION */(function(process) {/**
-		 * Copyright 2014, Facebook, Inc.
-		 * All rights reserved.
-		 *
-		 * This source code is licensed under the BSD-style license found in the
-		 * LICENSE file in the root directory of this source tree. An additional grant
-		 * of patent rights can be found in the PATENTS file in the same directory.
-		 *
-		 * @providesModule warning
-		 */
-
-		"use strict";
-
-		var emptyFunction = __webpack_require__(5);
-
-		/**
-		 * Similar to invariant but only logs a warning if the condition is not met.
-		 * This can be used to log issues in development environments in critical
-		 * paths. Removing the logging code for production environments will keep the
-		 * same logic and follow the same code paths.
-		 */
-
-		var warning = emptyFunction;
-
-		if ("production" !== process.env.NODE_ENV) {
-		  warning = function(condition, format ) {for (var args=[],$__0=2,$__1=arguments.length;$__0<$__1;$__0++) args.push(arguments[$__0]);
-		    if (format === undefined) {
-		      throw new Error(
-		        '`warning(condition, format, ...args)` requires a warning ' +
-		        'message argument'
-		      );
-		    }
-
-		    if (!condition) {
-		      var argIndex = 0;
-		      console.warn('Warning: ' + format.replace(/%s/g, function()  {return args[argIndex++];}));
-		    }
-		  };
-		}
-
-		module.exports = warning;
-
-		/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-	/***/ },
-	/* 9 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		/* @flow */
-		/**
-		 * @jsx React.DOM
-
-
-		 */
-		"use strict";
-
-		var shallowCloneObject            = __webpack_require__(12);
-		var isValidElement = __webpack_require__(1).isValidElement;
-		var sameColumn = __webpack_require__(27);
-
-		                          
-		                           
-		                       
-		                           
-		  
-
-		               
-		              
-		               
-		                
-		  
-
-		/**
-		 * Update column metrics calculation.
-		 *
-		 * @param {ColumnMetricsType} metrics
-		 */
-		function calculate(metrics                   )                    {
-		  var width = 0;
-		  var unallocatedWidth = metrics.totalWidth;
-
-		  var deferredColumns = [];
-		  var columns = metrics.columns.map(shallowCloneObject);
-
-		  var i, len, column;
-
-		  // compute width for columns which specify width
-		  for (i = 0, len = columns.length; i < len; i++) {
-		    column = columns[i];
-
-		    if (column.width) {
-		      if (/^([0-9]+)%$/.exec(column.width.toString())) {
-		        column.width = Math.floor(
-		          column.width / 100 * metrics.totalWidth);
-		      }
-		      unallocatedWidth -= column.width;
-		      width += column.width;
-		    } else {
-		      deferredColumns.push(column);
-		    }
-
-		  }
-
-		  // compute width for columns which doesn't specify width
-		  for (i = 0, len = deferredColumns.length; i < len; i++) {
-		    column = deferredColumns[i];
-
-		    if (unallocatedWidth <= 0) {
-		      column.width = metrics.minColumnWidth;
-		    } else {
-		      column.width = Math.floor(unallocatedWidth / deferredColumns.length);
-		    }
-		    width += column.width;
-		  }
-
-		  // compute left offset
-		  var left = 0;
-		  for (i = 0, len = columns.length; i < len; i++) {
-		    column = columns[i];
-		    column.left = left;
-		    left += column.width;
-		  }
-
-		  return {
-		    columns:columns,
-		    width:width,
-		    totalWidth: metrics.totalWidth,
-		    minColumnWidth: metrics.minColumnWidth
-		  };
-		}
-
-		/**
-		 * Update column metrics calculation by resizing a column.
-		 *
-		 * @param {ColumnMetricsType} metrics
-		 * @param {Column} column
-		 * @param {number} width
-		 */
-		function resizeColumn(metrics                   , index        , width        )                    {
-		  var column = metrics.columns[index];
-		  metrics = shallowCloneObject(metrics);
-		  metrics.columns = metrics.columns.slice(0);
-
-		  var updatedColumn = shallowCloneObject(column);
-		  updatedColumn.width = Math.max(width, metrics.minColumnWidth);
-
-		  metrics.columns.splice(index, 1, updatedColumn);
-
-		  return calculate(metrics);
-		}
-
-		function sameColumns(prevColumns               , nextColumns               , sameColumn                                   )          {
-		  var i, len, column;
-		  var prevColumnsByKey                           = {};
-		  var nextColumnsByKey                           = {};
-
-
-		  if(prevColumns.length !== nextColumns.length){
-		    return false;
-		  }
-
-		  for (i = 0, len = prevColumns.length; i < len; i++) {
-		    column = prevColumns[i];
-		    prevColumnsByKey[column.key] = column;
-		  }
-
-		  for (i = 0, len = nextColumns.length; i < len; i++) {
-		    column = nextColumns[i];
-		    nextColumnsByKey[column.key] = column;
-		    var prevColumn = prevColumnsByKey[column.key];
-		    if (prevColumn === undefined || !sameColumn(prevColumn, column)) {
-		      return false;
-		    }
-		  }
-
-		  for (i = 0, len = prevColumns.length; i < len; i++) {
-		    column = prevColumns[i];
-		    var nextColumn = nextColumnsByKey[column.key];
-		    if (nextColumn === undefined) {
-		      return false;
-		    }
-		  }
-
-		  return true;
-		}
-
-		module.exports = { calculate:calculate, resizeColumn:resizeColumn, sameColumn:sameColumn, sameColumns:sameColumns };
-
-
-	/***/ },
-	/* 10 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		/* TODO@flow mixin and invarient splat */
-		/**
-		 * @jsx React.DOM
-
-
-		 */
-		'use strict';
-
-		var React               = __webpack_require__(1);
-		var emptyFunction       = __webpack_require__(5);
-		var shallowCloneObject  = __webpack_require__(12);
-
-		var contextTypes = {
-		  metricsComputator: React.PropTypes.object
-		};
-
-		var MetricsComputatorMixin = {
-
-		  childContextTypes: contextTypes,
-
-		  getChildContext:function()                           {
-		    return {metricsComputator: this};
-		  },
-
-		  getMetricImpl:function(name        )      {
-		    return this._DOMMetrics.metrics[name].value;
-		  },
-
-		  registerMetricsImpl:function(component                , metrics     )                      {
-		    var getters = {};
-		    var s = this._DOMMetrics;
-
-		    for (var name in metrics) {
-		      if(s.metrics[name] !== undefined) {
-		          throw new Error('DOM metric ' + name + ' is already defined');
-		      }
-		      s.metrics[name] = {component:component, computator: metrics[name].bind(component)};
-		      getters[name] = this.getMetricImpl.bind(null, name);
-		    }
-
-		    if (s.components.indexOf(component) === -1) {
-		      s.components.push(component);
-		    }
-
-		    return getters;
-		  },
-
-		  unregisterMetricsFor:function(component                ) {
-		    var s = this._DOMMetrics;
-		    var idx = s.components.indexOf(component);
-
-		    if (idx > -1) {
-		      s.components.splice(idx, 1);
-
-		      var name;
-		      var metricsToDelete = {};
-
-		      for (name in s.metrics) {
-		        if (s.metrics[name].component === component) {
-		          metricsToDelete[name] = true;
-		        }
-		      }
-
-		      for (name in metricsToDelete) {
-		        delete s.metrics[name];
-		      }
-		    }
-		  },
-
-		  updateMetrics:function() {
-		    var s = this._DOMMetrics;
-
-		    var needUpdate = false;
-
-		    for (var name in s.metrics) {
-		      var newMetric = s.metrics[name].computator();
-		      if (newMetric !== s.metrics[name].value) {
-		        needUpdate = true;
-		      }
-		      s.metrics[name].value = newMetric;
-		    }
-
-		    if (needUpdate) {
-		      for (var i = 0, len = s.components.length; i < len; i++) {
-		        if (s.components[i].metricsUpdated) {
-		          s.components[i].metricsUpdated();
-		        }
-		      }
-		    }
-		  },
-
-		  componentWillMount:function() {
-		    this._DOMMetrics = {
-		      metrics: {},
-		      components: []
-		    };
-		  },
-
-		  componentDidMount:function() {
-		    if(window.addEventListener){
-		      window.addEventListener('resize', this.updateMetrics);
-		    }else{
-		      window.attachEvent('resize', this.updateMetrics);
-		    }
-		    this.updateMetrics();
-		  },
-
-		  componentWillUnmount:function() {
-		    window.removeEventListener('resize', this.updateMetrics);
-		  }
-
-		};
-
-		var MetricsMixin = {
-
-		  contextTypes: contextTypes,
-
-		  componentWillMount:function() {
-		    if (this.DOMMetrics) {
-		      this._DOMMetricsDefs = shallowCloneObject(this.DOMMetrics);
-
-		      this.DOMMetrics = {};
-		      for (var name in this._DOMMetricsDefs) {
-		        this.DOMMetrics[name] = emptyFunction;
-		      }
-		    }
-		  },
-
-		  componentDidMount:function() {
-		    if (this.DOMMetrics) {
-		      this.DOMMetrics = this.registerMetrics(this._DOMMetricsDefs);
-		    }
-		  },
-
-		  componentWillUnmount:function()      {
-		    if (!this.registerMetricsImpl) {
-		      return this.context.metricsComputator.unregisterMetricsFor(this);
-		    }
-		    if (this.hasOwnProperty('DOMMetrics')) {
-		        delete this.DOMMetrics;
-		    }
-		  },
-
-		  registerMetrics:function(metrics     )      {
-		    if (this.registerMetricsImpl) {
-		      return this.registerMetricsImpl(this, metrics);
-		    } else {
-		      return this.context.metricsComputator.registerMetricsImpl(this, metrics);
-		    }
-		  },
-
-		  getMetric:function(name        )      {
-		    if (this.getMetricImpl) {
-		      return this.getMetricImpl(name);
-		    } else {
-		      return this.context.metricsComputator.getMetricImpl(name);
-		    }
-		  }
-		};
-
-		module.exports = {
-		  MetricsComputatorMixin:MetricsComputatorMixin,
-		  MetricsMixin:MetricsMixin
-		};
-
-
-	/***/ },
-	/* 11 */
-	/***/ function(module, exports, __webpack_require__) {
-
 		/* @flow  */
 		/**
 		 * @jsx React.DOM
@@ -9196,7 +8744,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var joinClasses      = __webpack_require__(3);
 		var Cell            = __webpack_require__(17);
 		var cloneWithProps  = __webpack_require__(4);
-		var ColumnMetrics   = __webpack_require__(9);
+		var ColumnMetrics   = __webpack_require__(10);
 
 		                     
 		                 
@@ -9369,6 +8917,369 @@ return /******/ (function(modules) { // webpackBootstrap
 		});
 
 		module.exports = Row;
+
+
+	/***/ },
+	/* 9 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		/* WEBPACK VAR INJECTION */(function(process) {/**
+		 * Copyright 2014, Facebook, Inc.
+		 * All rights reserved.
+		 *
+		 * This source code is licensed under the BSD-style license found in the
+		 * LICENSE file in the root directory of this source tree. An additional grant
+		 * of patent rights can be found in the PATENTS file in the same directory.
+		 *
+		 * @providesModule warning
+		 */
+
+		"use strict";
+
+		var emptyFunction = __webpack_require__(5);
+
+		/**
+		 * Similar to invariant but only logs a warning if the condition is not met.
+		 * This can be used to log issues in development environments in critical
+		 * paths. Removing the logging code for production environments will keep the
+		 * same logic and follow the same code paths.
+		 */
+
+		var warning = emptyFunction;
+
+		if ("production" !== process.env.NODE_ENV) {
+		  warning = function(condition, format ) {for (var args=[],$__0=2,$__1=arguments.length;$__0<$__1;$__0++) args.push(arguments[$__0]);
+		    if (format === undefined) {
+		      throw new Error(
+		        '`warning(condition, format, ...args)` requires a warning ' +
+		        'message argument'
+		      );
+		    }
+
+		    if (!condition) {
+		      var argIndex = 0;
+		      console.warn('Warning: ' + format.replace(/%s/g, function()  {return args[argIndex++];}));
+		    }
+		  };
+		}
+
+		module.exports = warning;
+
+		/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+	/***/ },
+	/* 10 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		/* @flow */
+		/**
+		 * @jsx React.DOM
+
+
+		 */
+		"use strict";
+
+		var shallowCloneObject            = __webpack_require__(12);
+		var isValidElement = __webpack_require__(1).isValidElement;
+		var sameColumn = __webpack_require__(27);
+
+		                          
+		                           
+		                       
+		                           
+		  
+
+		               
+		              
+		               
+		                
+		  
+
+		/**
+		 * Update column metrics calculation.
+		 *
+		 * @param {ColumnMetricsType} metrics
+		 */
+		function calculate(metrics                   )                    {
+		  var width = 0;
+		  var unallocatedWidth = metrics.totalWidth;
+
+		  var deferredColumns = [];
+		  var columns = metrics.columns.map(shallowCloneObject);
+
+		  var i, len, column;
+
+		  // compute width for columns which specify width
+		  for (i = 0, len = columns.length; i < len; i++) {
+		    column = columns[i];
+
+		    if (column.width) {
+		      if (/^([0-9]+)%$/.exec(column.width.toString())) {
+		        column.width = Math.floor(
+		          column.width / 100 * metrics.totalWidth);
+		      }
+		      unallocatedWidth -= column.width;
+		      width += column.width;
+		    } else {
+		      deferredColumns.push(column);
+		    }
+
+		  }
+
+		  // compute width for columns which doesn't specify width
+		  for (i = 0, len = deferredColumns.length; i < len; i++) {
+		    column = deferredColumns[i];
+
+		    if (unallocatedWidth <= 0) {
+		      column.width = metrics.minColumnWidth;
+		    } else {
+		      column.width = Math.floor(unallocatedWidth / deferredColumns.length);
+		    }
+		    width += column.width;
+		  }
+
+		  // compute left offset
+		  var left = 0;
+		  for (i = 0, len = columns.length; i < len; i++) {
+		    column = columns[i];
+		    column.left = left;
+		    left += column.width;
+		  }
+
+		  return {
+		    columns:columns,
+		    width:width,
+		    totalWidth: metrics.totalWidth,
+		    minColumnWidth: metrics.minColumnWidth
+		  };
+		}
+
+		/**
+		 * Update column metrics calculation by resizing a column.
+		 *
+		 * @param {ColumnMetricsType} metrics
+		 * @param {Column} column
+		 * @param {number} width
+		 */
+		function resizeColumn(metrics                   , index        , width        )                    {
+		  var column = metrics.columns[index];
+		  metrics = shallowCloneObject(metrics);
+		  metrics.columns = metrics.columns.slice(0);
+
+		  var updatedColumn = shallowCloneObject(column);
+		  updatedColumn.width = Math.max(width, metrics.minColumnWidth);
+
+		  metrics.columns.splice(index, 1, updatedColumn);
+
+		  return calculate(metrics);
+		}
+
+		function sameColumns(prevColumns               , nextColumns               , sameColumn                                   )          {
+		  var i, len, column;
+		  var prevColumnsByKey                           = {};
+		  var nextColumnsByKey                           = {};
+
+
+		  if(prevColumns.length !== nextColumns.length){
+		    return false;
+		  }
+
+		  for (i = 0, len = prevColumns.length; i < len; i++) {
+		    column = prevColumns[i];
+		    prevColumnsByKey[column.key] = column;
+		  }
+
+		  for (i = 0, len = nextColumns.length; i < len; i++) {
+		    column = nextColumns[i];
+		    nextColumnsByKey[column.key] = column;
+		    var prevColumn = prevColumnsByKey[column.key];
+		    if (prevColumn === undefined || !sameColumn(prevColumn, column)) {
+		      return false;
+		    }
+		  }
+
+		  for (i = 0, len = prevColumns.length; i < len; i++) {
+		    column = prevColumns[i];
+		    var nextColumn = nextColumnsByKey[column.key];
+		    if (nextColumn === undefined) {
+		      return false;
+		    }
+		  }
+
+		  return true;
+		}
+
+		module.exports = { calculate:calculate, resizeColumn:resizeColumn, sameColumn:sameColumn, sameColumns:sameColumns };
+
+
+	/***/ },
+	/* 11 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		/* TODO@flow mixin and invarient splat */
+		/**
+		 * @jsx React.DOM
+
+
+		 */
+		'use strict';
+
+		var React               = __webpack_require__(1);
+		var emptyFunction       = __webpack_require__(5);
+		var shallowCloneObject  = __webpack_require__(12);
+
+		var contextTypes = {
+		  metricsComputator: React.PropTypes.object
+		};
+
+		var MetricsComputatorMixin = {
+
+		  childContextTypes: contextTypes,
+
+		  getChildContext:function()                           {
+		    return {metricsComputator: this};
+		  },
+
+		  getMetricImpl:function(name        )      {
+		    return this._DOMMetrics.metrics[name].value;
+		  },
+
+		  registerMetricsImpl:function(component                , metrics     )                      {
+		    var getters = {};
+		    var s = this._DOMMetrics;
+
+		    for (var name in metrics) {
+		      if(s.metrics[name] !== undefined) {
+		          throw new Error('DOM metric ' + name + ' is already defined');
+		      }
+		      s.metrics[name] = {component:component, computator: metrics[name].bind(component)};
+		      getters[name] = this.getMetricImpl.bind(null, name);
+		    }
+
+		    if (s.components.indexOf(component) === -1) {
+		      s.components.push(component);
+		    }
+
+		    return getters;
+		  },
+
+		  unregisterMetricsFor:function(component                ) {
+		    var s = this._DOMMetrics;
+		    var idx = s.components.indexOf(component);
+
+		    if (idx > -1) {
+		      s.components.splice(idx, 1);
+
+		      var name;
+		      var metricsToDelete = {};
+
+		      for (name in s.metrics) {
+		        if (s.metrics[name].component === component) {
+		          metricsToDelete[name] = true;
+		        }
+		      }
+
+		      for (name in metricsToDelete) {
+		        delete s.metrics[name];
+		      }
+		    }
+		  },
+
+		  updateMetrics:function() {
+		    var s = this._DOMMetrics;
+
+		    var needUpdate = false;
+
+		    for (var name in s.metrics) {
+		      var newMetric = s.metrics[name].computator();
+		      if (newMetric !== s.metrics[name].value) {
+		        needUpdate = true;
+		      }
+		      s.metrics[name].value = newMetric;
+		    }
+
+		    if (needUpdate) {
+		      for (var i = 0, len = s.components.length; i < len; i++) {
+		        if (s.components[i].metricsUpdated) {
+		          s.components[i].metricsUpdated();
+		        }
+		      }
+		    }
+		  },
+
+		  componentWillMount:function() {
+		    this._DOMMetrics = {
+		      metrics: {},
+		      components: []
+		    };
+		  },
+
+		  componentDidMount:function() {
+		    if(window.addEventListener){
+		      window.addEventListener('resize', this.updateMetrics);
+		    }else{
+		      window.attachEvent('resize', this.updateMetrics);
+		    }
+		    this.updateMetrics();
+		  },
+
+		  componentWillUnmount:function() {
+		    window.removeEventListener('resize', this.updateMetrics);
+		  }
+
+		};
+
+		var MetricsMixin = {
+
+		  contextTypes: contextTypes,
+
+		  componentWillMount:function() {
+		    if (this.DOMMetrics) {
+		      this._DOMMetricsDefs = shallowCloneObject(this.DOMMetrics);
+
+		      this.DOMMetrics = {};
+		      for (var name in this._DOMMetricsDefs) {
+		        this.DOMMetrics[name] = emptyFunction;
+		      }
+		    }
+		  },
+
+		  componentDidMount:function() {
+		    if (this.DOMMetrics) {
+		      this.DOMMetrics = this.registerMetrics(this._DOMMetricsDefs);
+		    }
+		  },
+
+		  componentWillUnmount:function()      {
+		    if (!this.registerMetricsImpl) {
+		      return this.context.metricsComputator.unregisterMetricsFor(this);
+		    }
+		    if (this.hasOwnProperty('DOMMetrics')) {
+		        delete this.DOMMetrics;
+		    }
+		  },
+
+		  registerMetrics:function(metrics     )      {
+		    if (this.registerMetricsImpl) {
+		      return this.registerMetricsImpl(this, metrics);
+		    } else {
+		      return this.context.metricsComputator.registerMetricsImpl(this, metrics);
+		    }
+		  },
+
+		  getMetric:function(name        )      {
+		    if (this.getMetricImpl) {
+		      return this.getMetricImpl(name);
+		    } else {
+		      return this.context.metricsComputator.getMetricImpl(name);
+		    }
+		  }
+		};
+
+		module.exports = {
+		  MetricsComputatorMixin:MetricsComputatorMixin,
+		  MetricsMixin:MetricsMixin
+		};
 
 
 	/***/ },
@@ -10031,7 +9942,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var ReactContext = __webpack_require__(19);
 		var ReactCurrentOwner = __webpack_require__(20);
 
-		var warning = __webpack_require__(8);
+		var warning = __webpack_require__(9);
 
 		var RESERVED_PROPS = {
 		  key: true,
@@ -10281,7 +10192,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var emptyFunction = __webpack_require__(5);
 		var invariant = __webpack_require__(23);
 		var joinClasses = __webpack_require__(24);
-		var warning = __webpack_require__(8);
+		var warning = __webpack_require__(9);
 
 		var didWarn = false;
 
@@ -10592,7 +10503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var shallowEqual    = __webpack_require__(15);
 		var emptyFunction   = __webpack_require__(5);
 		var ScrollShim      = __webpack_require__(37);
-		var Row             = __webpack_require__(11);
+		var Row             = __webpack_require__(8);
 		var ExcelColumn     = __webpack_require__(2);
 
 		var Canvas = React.createClass({displayName: "Canvas",
@@ -10782,8 +10693,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  setScrollLeft:function(scrollLeft        ) {
 		    if (this._currentRowsLength !== 0) {
+		      if(!this.refs) return;
 		      for (var i = 0, len = this._currentRowsLength; i < len; i++) {
-		        if(this.refs[i]) {
+		        if(this.refs[i] && this.refs[i].setScrollLeft) {
 		          this.refs[i].setScrollLeft(scrollLeft);
 		        }
 		      }
@@ -10845,8 +10757,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		/* TODO@flow mixins */
 
-		var ColumnMetrics        = __webpack_require__(9);
-		var DOMMetrics           = __webpack_require__(10);
+		var ColumnMetrics        = __webpack_require__(10);
+		var DOMMetrics           = __webpack_require__(11);
 		Object.assign            = __webpack_require__(13);
 		var PropTypes            = __webpack_require__(1).PropTypes;
 
@@ -11046,7 +10958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var PropTypes            = React.PropTypes;
 		var Header               = __webpack_require__(32);
 		var Viewport             = __webpack_require__(38);
-		var DOMMetrics           = __webpack_require__(10);
+		var DOMMetrics           = __webpack_require__(11);
 		var GridScrollMixin      = __webpack_require__(31);
 		var ColumnMetricsMixin      = __webpack_require__(28);
 		var ExcelColumn = __webpack_require__(2);
@@ -11190,7 +11102,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var React               = __webpack_require__(1);
 		var joinClasses          = __webpack_require__(3);
 		var shallowCloneObject  = __webpack_require__(12);
-		var ColumnMetrics       = __webpack_require__(9);
+		var ColumnMetrics       = __webpack_require__(10);
 		var HeaderRow           = __webpack_require__(34);
 
 		               
@@ -11785,7 +11697,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		/* TODO@flow mixins */
 
 		var React             = __webpack_require__(1);
-		var DOMMetrics        = __webpack_require__(10);
+		var DOMMetrics        = __webpack_require__(11);
 		var getWindowSize     = __webpack_require__(46);
 
 		var PropTypes            = React.PropTypes;
@@ -12048,10 +11960,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		  PropTypes : {
 		    value : React.PropTypes.bool.isRequired,
-		    rowIdx : React.PropTypes.number.isRequired
+		    rowIdx : React.PropTypes.number.isRequired,
+		    column: React.PropTypes.shape({
+		      onRowSelect: React.PropTypes.func.isRequired
+		    }).isRequired
 		  },
 
-		  render:function()               {
+		  render:function()                 {
 		    var checked = this.props.value != null ? this.props.value : false;
 		    return (React.createElement("input", {className: "react-grid-CheckBox", type: "checkbox", checked: checked, onClick: this.handleChange}));
 		  },
@@ -12340,7 +12255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		var React                 = __webpack_require__(1);
 		var PropTypes             = React.PropTypes;
 		var BaseGrid              = __webpack_require__(30);
-		var Row                   = __webpack_require__(11);
+		var Row                   = __webpack_require__(8);
 		var ExcelColumn           = __webpack_require__(2);
 		var KeyboardHandlerMixin  = __webpack_require__(7);
 		var CheckboxEditor        = __webpack_require__(42);
@@ -12422,13 +12337,21 @@ return /******/ (function(modules) { // webpackBootstrap
 		  },
 
 		  getInitialState: function()                                                                                                                                                                                                                                           {
-		    var initialState = {selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
+		    var initialState = {selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
 		    if(this.props.enableCellSelect){
 		      initialState.selected = {rowIdx: 0, idx: 0};
 		    }else{
 		      initialState.selected = {rowIdx: -1, idx: -1};
 		    }
 		    return initialState;
+		  },
+
+		  getInitialSelectedRows: function(){
+		    var selectedRows = [];
+		    for(var i = 0; i < this.props.rowsCount; i++){
+		      selectedRows.push(false);
+		    }
+		    return selectedRows;
 		  },
 
 		  componentWillReceiveProps:function(nextProps                    ){
@@ -13810,7 +13733,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		'use strict';
 
 		var React = __webpack_require__(1);
-		var Row = __webpack_require__(11);
+		var Row = __webpack_require__(8);
 
 		var Toolbar = React.createClass({displayName: "Toolbar",
 		  propTypes: {
@@ -57035,7 +56958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.create = __webpack_require__(31);
 	exports.run = __webpack_require__(93);
 
-	exports.History = __webpack_require__(6);
+	exports.History = __webpack_require__(8);
 
 
 /***/ },
@@ -58032,7 +57955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		});
 
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	})(__webpack_require__(7));
+	})(__webpack_require__(9));
 
 
 /***/ },
@@ -58108,7 +58031,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		return Queue;
 
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(7)));
+	}(__webpack_require__(9)));
 
 
 /***/ },
@@ -58196,7 +58119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		return Scheduler;
 
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(7)));
+	}(__webpack_require__(9)));
 
 
 /***/ },
@@ -58273,7 +58196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		return nextTick;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(7)));
+	}(__webpack_require__(9)));
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
@@ -59076,7 +58999,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			return Promise;
 		};
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(7)));
+	}(__webpack_require__(9)));
 
 
 /***/ },
@@ -59430,7 +59353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO@flow */
-	var Highlight = __webpack_require__(127);
+	var Highlight = __webpack_require__(128);
 	module.exports = {
 	  componentDidMount : function(){
 	    this.highlight();
@@ -59501,8 +59424,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 
 	var SimpleExample = ("\n\nvar _rows = [];\nfor (var i = 1; i < 1000; i++) {\n  _rows.push({\n    id: i,\n    title: 'Title ' + i,\n    count: i * 1000\n  });\n}\n\n//A rowGetter function is required by the grid to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n\nvar columns = [\n{\n  key: 'id',\n  name: 'ID'\n},\n{\n  key: 'title',\n  name: 'Title'\n},\n{\n  key: 'count',\n  name: 'Count'\n}\n]\n\nvar Example = React.createClass({\n  render: function() {\n    return  (<ReactDataGrid\n    columns={columns}\n    rowGetter={rowGetter}\n    rowsCount={_rows.length}\n    minHeight={500} />);\n  }\n});\nReact.render(<Example />, mountNode);\n"
@@ -59568,8 +59491,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ReactGrid             = __webpack_require__(16);
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 	var ResizableExample = ("\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n};\n\nvar _rows = [];\nfor (var i = 1; i < 1000; i++) {\n  _rows.push({\n    id: i,\n    task: 'Task ' + i,\n    complete: Math.min(100, Math.round(Math.random() * 110)),\n    priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],\n    issueType : ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],\n    startDate: randomDate(new Date(2015, 3, 1), new Date()),\n    completeDate: randomDate(new Date(), new Date(2016, 0, 1))\n  });\n}\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID',\n  resizable : true\n\n},\n{\n  key: 'task',\n  name: 'Title',\n  resizable : true\n},\n{\n  key: 'priority',\n  name: 'Priority',\n  resizable : true\n},\n{\n  key: 'issueType',\n  name: 'Issue Type',\n  resizable : true\n},\n{\n  key: 'complete',\n  name: '% Complete',\n  resizable : true\n},\n{\n  key: 'startDate',\n  name: 'Start Date',\n  resizable : true\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete',\n  resizable : true\n}\n]\n\nReact.render(<ReactDataGrid\n  columns={columns}\n  rowGetter={rowGetter}\n  rowsCount={_rows.length}\n  minHeight={500} />, mountNode);\n"
 
@@ -59663,8 +59586,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ReactGrid             = __webpack_require__(16);
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 	var FixedExample = ("\n\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n};\n\nvar _rows = [];\nfor (var i = 1; i < 1000; i++) {\n  _rows.push({\n    id: i,\n    task: 'Task ' + i,\n    complete: Math.min(100, Math.round(Math.random() * 110)),\n    priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],\n    issueType : ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],\n    startDate: randomDate(new Date(2015, 3, 1), new Date()),\n    completeDate: randomDate(new Date(), new Date(2016, 0, 1))\n  });\n};\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID',\n  locked : true\n},\n{\n  key: 'task',\n  name: 'Title',\n  width: 200\n},\n{\n  key: 'priority',\n  name: 'Priority',\n  width: 200\n},\n{\n  key: 'issueType',\n  name: 'Issue Type',\n  width: 200\n},\n{\n  key: 'complete',\n  name: '% Complete',\n  width: 200\n},\n{\n  key: 'startDate',\n  name: 'Start Date',\n  width: 200\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete',\n  width: 200\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete',\n  width: 200\n}\n]\n\n\nReact.render(<ReactDataGrid\n  columns={columns}\n  rowGetter={rowGetter}\n  rowsCount={_rows.length}\n  minHeight={500} />, mountNode);\n"
 
@@ -59764,8 +59687,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ReactGrid             = __webpack_require__(16);
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 	var EditableExample = ("\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n}\n\n//helper to create a fixed number of rows\nfunction createRows(numberOfRows){\n  var _rows = [];\n  for (var i = 1; i < numberOfRows; i++) {\n    _rows.push({\n      id: i,\n      task: 'Task ' + i,\n      complete: Math.min(100, Math.round(Math.random() * 110)),\n      priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],\n      issueType : ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],\n      startDate: randomDate(new Date(2015, 3, 1), new Date()),\n      completeDate: randomDate(new Date(), new Date(2016, 0, 1))\n    });\n  }\n  return _rows;\n}\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID',\n  width: 80\n},\n{\n  key: 'task',\n  name: 'Title',\n  editable : true\n},\n{\n  key: 'priority',\n  name: 'Priority',\n  editable : true\n},\n{\n  key: 'issueType',\n  name: 'Issue Type',\n  editable : true\n},\n{\n  key: 'complete',\n  name: '% Complete',\n  editable : true\n},\n{\n  key: 'startDate',\n  name: 'Start Date',\n  editable : true\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete',\n  editable : true\n}\n]\n\n\nvar Example = React.createClass({\n\n  getInitialState : function(){\n    return {rows : createRows(1000)}\n  },\n\n  rowGetter : function(rowIdx){\n    return this.state.rows[rowIdx]\n  },\n\n  handleRowUpdated : function(e){\n    //merge updated row with current row and rerender by setting state\n    var rows = this.state.rows;\n    Object.assign(rows[e.rowIdx], e.updated);\n    this.setState({rows:rows});\n  },\n\n  render:function(){\n    return(\n      <ReactDataGrid\n      enableCellSelect={true}\n      columns={columns}\n      rowGetter={this.rowGetter}\n      rowsCount={this.state.rows.length}\n      minHeight={500}\n      onRowUpdated={this.handleRowUpdated} />\n    )\n  }\n\n});\n\nReact.render(<Example />, mountNode);\n"
 
@@ -59888,8 +59811,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 
 	var SimpleExample = ("\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n}\n\n//generate a fixed number of rows and set their properties\nvar _rows = [];\nfor (var i = 1; i < 100; i++) {\n  _rows.push({\n    id: i,\n    task: 'Task ' + i,\n    complete: Math.min(100, Math.round(Math.random() * 110)),\n    priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],\n    issueType : ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],\n    startDate: randomDate(new Date(2015, 3, 1), new Date()),\n    completeDate: randomDate(new Date(), new Date(2016, 0, 1))\n  });\n}\n\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n//Custom Formatter component\nvar PercentCompleteFormatter = React.createClass({\n  render:function(){\n    var percentComplete = this.props.value + '%';\n    return (\n      <div className=\"progress\" style={{marginTop:'20px'}}>\n        <div className=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"60\" aria-valuemin=\"0\" aria-valuemax=\"100\" style={{width:percentComplete}}>\n        {percentComplete}\n      </div>\n      </div>);\n    }\n  });\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID',\n  width: 80\n},\n{\n  key: 'task',\n  name: 'Title'\n},\n{\n  key: 'priority',\n  name: 'Priority'\n},\n{\n  key: 'issueType',\n  name: 'Issue Type'\n},\n{\n  key: 'complete',\n  name: '% Complete',\n  formatter : PercentCompleteFormatter\n},\n{\n  key: 'startDate',\n  name: 'Start Date'\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete'\n}\n]\n\nvar Example = React.createClass({\n  render: function() {\n    return  (<ReactDataGrid\n    columns={columns}\n    rowGetter={rowGetter}\n    rowsCount={_rows.length}\n    minHeight={500} />);\n  }\n});\nReact.render(<Example />, mountNode);\n"
@@ -59996,8 +59919,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 	var EditableExample = ("\n\n//options for priorities autocomplete editor\nvar priorities = [{id:0, title : 'Critical'}, {id:1, title : 'High'}, {id:2, title : 'Medium'}, {id:3, title : 'Low'}]\nvar AutoCompleteEditor = ReactDataGrid.Editors.AutoComplete;\nvar PrioritiesEditor = <AutoCompleteEditor options={priorities}/>\n\n//options for IssueType dropdown editor\nvar issueTypes = ['Bug', 'Improvement', 'Epic', 'Story'];\nvar DropDownEditor = ReactDataGrid.Editors.DropDownEditor;\nvar IssueTypesEditor = <DropDownEditor options={issueTypes}/>\n\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n}\n\n//helper to create a fixed number of rows\nfunction createRows(numberOfRows){\n  var _rows = [];\n  for (var i = 1; i < numberOfRows; i++) {\n    _rows.push({\n      id: i,\n      task: 'Task ' + i,\n      complete: Math.min(100, Math.round(Math.random() * 110)),\n      priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],\n      issueType : issueTypes[Math.floor((Math.random() * 3) + 1)],\n      startDate: randomDate(new Date(2015, 3, 1), new Date()),\n      completeDate: randomDate(new Date(), new Date(2016, 0, 1))\n    });\n  }\n  return _rows;\n}\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID',\n  width: 80\n},\n{\n  key: 'task',\n  name: 'Title',\n  editable : true\n},\n{\n  key : 'priority',\n  name : 'Priority',\n  editor : PrioritiesEditor\n},\n{\n  key : 'issueType',\n  name : 'Issue Type',\n  editor : IssueTypesEditor\n}\n]\n\n\nvar Example = React.createClass({\n\n  getInitialState : function(){\n    return {rows : createRows(1000)}\n  },\n\n  rowGetter : function(rowIdx){\n    return this.state.rows[rowIdx]\n  },\n\n  handleRowUpdated : function(e){\n    //merge updated row with current row and rerender by setting state\n    var rows = this.state.rows;\n    Object.assign(rows[e.rowIdx], e.updated);\n    this.setState({rows:rows});\n  },\n\n  render:function(){\n    return(\n      <ReactDataGrid\n      enableCellSelect={true}\n      columns={columns}\n      rowGetter={this.rowGetter}\n      rowsCount={this.state.rows.length}\n      minHeight={500}\n      onRowUpdated={this.handleRowUpdated} />\n    )\n  }\n\n});\n\nReact.render(<Example />, mountNode);\n"
 
@@ -60117,8 +60040,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ReactGrid             = __webpack_require__(16);
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 	var EditableExample = ("\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n}\n\n//helper to create a fixed number of rows\nfunction createRows(numberOfRows){\n  var _rows = [];\n  for (var i = 1; i < numberOfRows; i++) {\n    _rows.push({\n      id: i,\n      task: 'Task ' + i,\n      complete: Math.min(100, Math.round(Math.random() * 110)),\n      priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],\n      issueType : ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],\n      startDate: randomDate(new Date(2015, 3, 1), new Date()),\n      completeDate: randomDate(new Date(), new Date(2016, 0, 1))\n    });\n  }\n  return _rows;\n}\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID',\n  width: 80\n},\n{\n  key: 'task',\n  name: 'Title',\n  sortable : true\n},\n{\n  key: 'priority',\n  name: 'Priority',\n  sortable : true\n},\n{\n  key: 'issueType',\n  name: 'Issue Type',\n  sortable : true\n},\n{\n  key: 'complete',\n  name: '% Complete',\n  sortable : true\n},\n{\n  key: 'startDate',\n  name: 'Start Date',\n  sortable : true\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete',\n  sortable : true\n}\n]\n\n\nvar Example = React.createClass({\n\n  getInitialState : function(){\n    var originalRows = createRows(1000);\n    var rows = originalRows.slice(0);\n    //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting\n    return {originalRows : originalRows, rows : rows};\n  },\n\n  rowGetter : function(rowIdx){\n    return this.state.rows[rowIdx];\n  },\n\n  handleGridSort : function(sortColumn, sortDirection){\n\n    var comparer = function(a, b) {\n      if(sortDirection === 'ASC'){\n        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;\n      }else if(sortDirection === 'DESC'){\n        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;\n      }\n    }\n    var rows = sortDirection === 'NONE' ? this.state.originalRows.slice(0) : this.state.rows.sort(comparer);\n    this.setState({rows : rows});\n  },\n\n  render:function(){\n    return(\n      <ReactDataGrid\n        onGridSort={this.handleGridSort}\n        columns={columns}\n        rowGetter={this.rowGetter}\n        rowsCount={this.state.rows.length}\n        minHeight={500}\n        onRowUpdated={this.handleRowUpdated} />\n    )\n  }\n\n});\n\nReact.render(<Example />, mountNode);\n"
 
@@ -60251,8 +60174,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ReactGrid             = __webpack_require__(16);
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 	var EditableExample = ("\nvar Toolbar = ReactDataGrid.Toolbar;\n\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n}\n\n//helper to create a fixed number of rows\nfunction createRows(numberOfRows){\n  var _rows = [];\n  for (var i = 1; i < numberOfRows; i++) {\n    _rows.push({\n      id: i,\n      task: 'Task ' + i,\n      complete: Math.min(100, Math.round(Math.random() * 110)),\n      priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],\n      issueType : ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],\n      startDate: randomDate(new Date(2015, 3, 1), new Date()),\n      completeDate: randomDate(new Date(), new Date(2016, 0, 1))\n    });\n  }\n  return _rows;\n}\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID',\n  width: 80\n},\n{\n  key: 'task',\n  name: 'Title',\n  sortable : true\n},\n{\n  key: 'priority',\n  name: 'Priority',\n  sortable : true\n},\n{\n  key: 'issueType',\n  name: 'Issue Type',\n  sortable : true\n},\n{\n  key: 'complete',\n  name: '% Complete',\n  sortable : true\n},\n{\n  key: 'startDate',\n  name: 'Start Date',\n  sortable : true\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete',\n  sortable : true\n}\n]\n\n\nvar Example = React.createClass({\n\n  getInitialState : function(){\n    var originalRows = createRows(1000);\n    var rows = originalRows.slice(0);\n    //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting\n    return {originalRows : originalRows, rows : rows};\n  },\n\n  rowGetter : function(rowIdx){\n    return this.state.rows[rowIdx];\n  },\n\n  render:function(){\n    return(\n      <ReactDataGrid\n        columns={columns}\n        rowGetter={this.rowGetter}\n        rowsCount={this.state.rows.length}\n        minHeight={500}\n        toolbar={<Toolbar enableFilter={true}/>}/>\n    )\n  }\n\n});\n\nReact.render(<Example />, mountNode);\n"
 
@@ -60373,8 +60296,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ReactGrid             = __webpack_require__(16);
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
 
 	var millionRowsExample = ("\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n};\n\nvar _rows = [];\nfor (var i = 1; i < 1000000; i++) {\n  _rows.push({\n    id: i,\n    task: 'Task ' + i,\n    complete: 'a',\n    priority : 'b',\n    issueType : 'c'\n  });\n}\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID'\n\n},\n{\n  key: 'task',\n  name: 'Title'\n},\n{\n  key: 'priority',\n  name: 'Priority'\n},\n{\n  key: 'issueType',\n  name: 'Issue Type'\n},\n{\n  key: 'complete',\n  name: '% Complete'\n}\n]\n\nReact.render(<ReactDataGrid\n  columns={columns}\n  rowGetter={rowGetter}\n  rowsCount={_rows.length}\n  minHeight={500} />, mountNode);\n  "
 
@@ -60451,9 +60374,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ReactGrid             = __webpack_require__(16);
-	var QuickStartDescription = __webpack_require__(9)
-	var ReactPlayground       = __webpack_require__(8);
-	var Immutable = __webpack_require__(246);
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
+	var Immutable = __webpack_require__(241);
 
 	var immutableDataExample = ("\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n};\n\nvar _rows = [];\nvar _cols = [];\nfor(var j = 0; j < 50; j++){\n    _cols.push({key: 'col' + j, name: 'col' + j, width: 150});\n};\n\nfor (var rowIdx = 1; rowIdx < 100; rowIdx++) {\n  var row = {};\n  _cols.forEach(function(c, colIdx){\n    row[c.key] = '(' + colIdx + ',' + rowIdx + ')';\n  });\n  _rows.push(row);\n}\n\nvar Example = React.createClass({\n\n  getInitialState : function(){\n    return {rows : Immutable.fromJS(_rows), cols: Immutable.fromJS(_cols)}\n  },\n\n  rowGetter : function(rowIdx){\n    return this.state.rows.get(rowIdx)\n  },\n\n  handleRowUpdated : function(e){\n    //merge updated row with current row and rerender by setting state\n    var rows = this.state.rows;\n    Object.assign(rows[e.rowIdx], e.updated);\n    this.setState({rows:rows});\n  },\n\n  render:function(){\n    return(\n      <ReactDataGrid\n      enableCellSelect={true}\n      columns={this.state.cols}\n      rowGetter={this.rowGetter}\n      rowsCount={this.state.rows.size}\n      minHeight={500}\n      onRowUpdated={this.handleRowUpdated} />\n    )\n  }\n\n});\n\nReact.render(<Example />, mountNode);\n  "
 
@@ -60528,6 +60451,139 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var QuickStartDescription = __webpack_require__(7)
+	var ReactPlayground       = __webpack_require__(6);
+	//this leads to Row is undefined?
+	var Row                   = __webpack_require__(34).Row
+
+	var SimpleExample = ("\n\n//helper to generate a random date\nfunction randomDate(start, end) {\n  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();\n};\n\nvar _rows = [];\nfor (var i = 1; i < 1000; i++) {\n  _rows.push({\n    id: i,\n    task: 'Task ' + i,\n    complete: Math.min(100, Math.round(Math.random() * 110)),\n    priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],\n    issueType : ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],\n    startDate: randomDate(new Date(2015, 3, 1), new Date()),\n    completeDate: randomDate(new Date(), new Date(2016, 0, 1))\n  });\n};\n\n//function to retrieve a row for a given index\nvar rowGetter = function(i){\n  return _rows[i];\n};\n\n\n//Columns definition\nvar columns = [\n{\n  key: 'id',\n  name: 'ID',\n  locked : true\n},\n{\n  key: 'task',\n  name: 'Title',\n  width: 200\n},\n{\n  key: 'priority',\n  name: 'Priority',\n  width: 200\n},\n{\n  key: 'issueType',\n  name: 'Issue Type',\n  width: 200\n},\n{\n  key: 'complete',\n  name: '% Complete',\n  width: 200\n},\n{\n  key: 'startDate',\n  name: 'Start Date',\n  width: 200\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete',\n  width: 200\n},\n{\n  key: 'completeDate',\n  name: 'Expected Complete',\n  width: 200\n}\n]\n\n\n\n\nvar RowRenderer = React.createClass({\n  setScrollLeft: function(scrollBy) {\n    //if you want freeze columns to work, you need to make sure you implement this as apass through\n    this.refs.row.setScrollLeft(scrollBy);\n  },\n getRowStyle: function() {\n   return {\n     backgroundColor: this.getRowBackground()\n   }\n },\n getRowBackground: function() {\n   return this.props.idx % 2 ?  'green' : 'white'\n },\n render: function() {\n   //here we are just changing the style\n   //but we could replace this with anything we liked, cards, images, etc\n   //usually though it will just be a matter of wrapping a div, and then calling back through to the grid\n   return (<div style={this.getRowStyle()}><ReactDataGrid.Row ref=\"row\" {...this.props}/></div>)\n }\n});\n\nvar Example = React.createClass({\n  render: function() {\n    return  (<ReactDataGrid\n    columns={columns}\n    rowGetter={rowGetter}\n    rowsCount={_rows.length}\n    minHeight={500}\n    rowRenderer={RowRenderer}/>);\n  }\n});\nReact.render(<Example />, mountNode);\n"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	);
+
+	module.exports = React.createClass({displayName: "exports",
+
+	  render:function(){
+	    return(
+	      React.createElement("div", null, 
+	        React.createElement("h3", null, "Overriding the row renderer"), 
+	        React.createElement("p", null, "This shows how you can easily override the default row renderer"), 
+	        React.createElement("p", null, "Here we are just using that to wrap the default renderer, and then going back inot the 'normal' flow, just changing some backgrounds"), 
+	        React.createElement("p", null, "NOTE: if you want to use fixed columns as well, make sure you implement and pass through the call to setScrollLeft"), 
+	        React.createElement(ReactPlayground, {codeText: SimpleExample})
+	      )
+	    )
+	  }
+
+	});
+
+
+/***/ },
+/* 127 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/*
 	Syntax highlighting with language autodetection.
 	https://highlightjs.org/
@@ -60572,18 +60628,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function blockLanguage(block) {
 	    var classes = (block.className + ' ' + (block.parentNode ? block.parentNode.className : '')).split(/\s+/);
 	    classes = classes.map(function(c) {return c.replace(/^lang(uage)?-/, '');});
-	    return classes.filter(function(c) {return getLanguage(c) || /no(-?)highlight|plain|text/.test(c);})[0];
+	    return classes.filter(function(c) {return getLanguage(c) || /no(-?)highlight/.test(c);})[0];
 	  }
 
 	  function inherit(parent, obj) {
-	    var result = {}, key;
-	    for (key in parent)
+	    var result = {};
+	    for (var key in parent)
 	      result[key] = parent[key];
 	    if (obj)
-	      for (key in obj)
+	      for (var key in obj)
 	        result[key] = obj[key];
 	    return result;
-	  }
+	  };
 
 	  /* Stream merging */
 
@@ -60699,7 +60755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    function langRe(value, global) {
-	      return new RegExp(
+	      return RegExp(
 	        reStr(value),
 	        'm' + (language.case_insensitive ? 'i' : '') + (global ? 'g' : '')
 	      );
@@ -60733,7 +60789,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        mode.keywords = compiled_keywords;
 	      }
-	      mode.lexemesRe = langRe(mode.lexemes || /\b\w+\b/, true);
+	      mode.lexemesRe = langRe(mode.lexemes || /\b[A-Za-z0-9_]+\b/, true);
 
 	      if (parent) {
 	        if (mode.beginKeywords) {
@@ -60779,7 +60835,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        .concat([mode.terminator_end, mode.illegal])
 	        .map(reStr)
 	        .filter(Boolean);
-	      mode.terminators = terminators.length ? langRe(terminators.join('|'), true) : {exec: function(/*s*/) {return null;}};
+	      mode.terminators = terminators.length ? langRe(terminators.join('|'), true) : {exec: function(s) {return null;}};
 	    }
 
 	    compileMode(language);
@@ -60806,9 +60862,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    function endOfMode(mode, lexeme) {
 	      if (testRe(mode.endRe, lexeme)) {
-	        while (mode.endsParent && mode.parent) {
-	          mode = mode.parent;
-	        }
 	        return mode;
 	      }
 	      if (mode.endsWithParent) {
@@ -60953,8 +61006,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    compileLanguage(language);
 	    var top = continuation || language;
 	    var continuations = {}; // keep continuations for sub-languages
-	    var result = '', current;
-	    for(current = top; current != language; current = current.parent) {
+	    var result = '';
+	    for(var current = top; current != language; current = current.parent) {
 	      if (current.className) {
 	        result = buildSpan(current.className, '', true) + result;
 	      }
@@ -60972,11 +61025,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        index = match.index + count;
 	      }
 	      processLexeme(value.substr(index));
-	      for(current = top; current.parent; current = current.parent) { // close dangling modes
+	      for(var current = top; current.parent; current = current.parent) { // close dangling modes
 	        if (current.className) {
 	          result += '</span>';
 	        }
-	      }
+	      };
 	      return {
 	        relevance: relevance,
 	        value: result,
@@ -61042,7 +61095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 	  function fixMarkup(value) {
 	    if (options.tabReplace) {
-	      value = value.replace(/^((<[^>]+>|\t)+)/gm, function(match, p1 /*..., offset, s*/) {
+	      value = value.replace(/^((<[^>]+>|\t)+)/gm, function(match, p1, offset, s) {
 	        return p1.replace(/\t/g, options.tabReplace);
 	      });
 	    }
@@ -61056,11 +61109,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var language = currentLang ? aliases[currentLang] : resultLang,
 	        result   = [prevClassName.trim()];
 
-	    if (!prevClassName.match(/\bhljs\b/)) {
+	    if (!prevClassName.match(/(\s|^)hljs(\s|$)/)) {
 	      result.push('hljs');
 	    }
 
-	    if (prevClassName.indexOf(language) === -1) {
+	    if (language) {
 	      result.push(language);
 	    }
 
@@ -61073,7 +61126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 	  function highlightBlock(block) {
 	    var language = blockLanguage(block);
-	    if (/no(-?)highlight|plain|text/.test(language))
+	    if (/no(-?)highlight/.test(language))
 	        return;
 
 	    var node;
@@ -61175,10 +61228,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  hljs.inherit = inherit;
 
 	  // Common regexps
-	  hljs.IDENT_RE = '[a-zA-Z]\\w*';
-	  hljs.UNDERSCORE_IDENT_RE = '[a-zA-Z_]\\w*';
+	  hljs.IDENT_RE = '[a-zA-Z][a-zA-Z0-9_]*';
+	  hljs.UNDERSCORE_IDENT_RE = '[a-zA-Z_][a-zA-Z0-9_]*';
 	  hljs.NUMBER_RE = '\\b\\d+(\\.\\d+)?';
-	  hljs.C_NUMBER_RE = '\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)'; // 0x..., 0..., decimal, float
+	  hljs.C_NUMBER_RE = '(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)'; // 0x..., 0..., decimal, float
 	  hljs.BINARY_NUMBER_RE = '\\b(0b[01]+)'; // 0b...
 	  hljs.RE_STARTERS_RE = '!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|-|-=|/=|/|:|;|<<|<<=|<=|<|===|==|=|>>>=|>>=|>=|>>>|>>|>|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~';
 
@@ -61201,21 +61254,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  hljs.PHRASAL_WORDS_MODE = {
 	    begin: /\b(a|an|the|are|I|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such)\b/
 	  };
-	  hljs.COMMENT = function (begin, end, inherits) {
-	    var mode = hljs.inherit(
-	      {
-	        className: 'comment',
-	        begin: begin, end: end,
-	        contains: []
-	      },
-	      inherits || {}
-	    );
-	    mode.contains.push(hljs.PHRASAL_WORDS_MODE);
-	    return mode;
+	  hljs.C_LINE_COMMENT_MODE = {
+	    className: 'comment',
+	    begin: '//', end: '$',
+	    contains: [hljs.PHRASAL_WORDS_MODE]
 	  };
-	  hljs.C_LINE_COMMENT_MODE = hljs.COMMENT('//', '$');
-	  hljs.C_BLOCK_COMMENT_MODE = hljs.COMMENT('/\\*', '\\*/');
-	  hljs.HASH_COMMENT_MODE = hljs.COMMENT('#', '$');
+	  hljs.C_BLOCK_COMMENT_MODE = {
+	    className: 'comment',
+	    begin: '/\\*', end: '\\*/',
+	    contains: [hljs.PHRASAL_WORDS_MODE]
+	  };
+	  hljs.HASH_COMMENT_MODE = {
+	    className: 'comment',
+	    begin: '#', end: '$',
+	    contains: [hljs.PHRASAL_WORDS_MODE]
+	  };
 	  hljs.NUMBER_MODE = {
 	    className: 'number',
 	    begin: hljs.NUMBER_RE,
@@ -61273,134 +61326,128 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 127 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hljs = __webpack_require__(126);
+	var hljs = __webpack_require__(127);
 
-	hljs.registerLanguage('1c', __webpack_require__(128));
-	hljs.registerLanguage('actionscript', __webpack_require__(129));
-	hljs.registerLanguage('apache', __webpack_require__(130));
-	hljs.registerLanguage('applescript', __webpack_require__(131));
-	hljs.registerLanguage('xml', __webpack_require__(245));
-	hljs.registerLanguage('asciidoc', __webpack_require__(132));
-	hljs.registerLanguage('aspectj', __webpack_require__(133));
-	hljs.registerLanguage('autohotkey', __webpack_require__(134));
-	hljs.registerLanguage('avrasm', __webpack_require__(135));
-	hljs.registerLanguage('axapta', __webpack_require__(136));
-	hljs.registerLanguage('bash', __webpack_require__(137));
-	hljs.registerLanguage('brainfuck', __webpack_require__(138));
-	hljs.registerLanguage('capnproto', __webpack_require__(139));
-	hljs.registerLanguage('clojure', __webpack_require__(141));
-	hljs.registerLanguage('clojure-repl', __webpack_require__(140));
-	hljs.registerLanguage('cmake', __webpack_require__(142));
-	hljs.registerLanguage('coffeescript', __webpack_require__(143));
-	hljs.registerLanguage('cpp', __webpack_require__(144));
-	hljs.registerLanguage('cs', __webpack_require__(145));
-	hljs.registerLanguage('css', __webpack_require__(146));
-	hljs.registerLanguage('d', __webpack_require__(147));
-	hljs.registerLanguage('markdown', __webpack_require__(186));
-	hljs.registerLanguage('dart', __webpack_require__(148));
-	hljs.registerLanguage('delphi', __webpack_require__(149));
-	hljs.registerLanguage('diff', __webpack_require__(150));
-	hljs.registerLanguage('django', __webpack_require__(151));
-	hljs.registerLanguage('dockerfile', __webpack_require__(152));
+	hljs.registerLanguage('1c', __webpack_require__(129));
+	hljs.registerLanguage('actionscript', __webpack_require__(130));
+	hljs.registerLanguage('apache', __webpack_require__(131));
+	hljs.registerLanguage('applescript', __webpack_require__(132));
+	hljs.registerLanguage('xml', __webpack_require__(240));
+	hljs.registerLanguage('asciidoc', __webpack_require__(133));
+	hljs.registerLanguage('aspectj', __webpack_require__(134));
+	hljs.registerLanguage('autohotkey', __webpack_require__(135));
+	hljs.registerLanguage('avrasm', __webpack_require__(136));
+	hljs.registerLanguage('axapta', __webpack_require__(137));
+	hljs.registerLanguage('bash', __webpack_require__(138));
+	hljs.registerLanguage('brainfuck', __webpack_require__(139));
+	hljs.registerLanguage('capnproto', __webpack_require__(140));
+	hljs.registerLanguage('clojure', __webpack_require__(142));
+	hljs.registerLanguage('clojure-repl', __webpack_require__(141));
+	hljs.registerLanguage('cmake', __webpack_require__(143));
+	hljs.registerLanguage('coffeescript', __webpack_require__(144));
+	hljs.registerLanguage('cpp', __webpack_require__(145));
+	hljs.registerLanguage('cs', __webpack_require__(146));
+	hljs.registerLanguage('css', __webpack_require__(147));
+	hljs.registerLanguage('d', __webpack_require__(148));
+	hljs.registerLanguage('markdown', __webpack_require__(183));
+	hljs.registerLanguage('dart', __webpack_require__(149));
+	hljs.registerLanguage('delphi', __webpack_require__(150));
+	hljs.registerLanguage('diff', __webpack_require__(151));
+	hljs.registerLanguage('django', __webpack_require__(152));
 	hljs.registerLanguage('dos', __webpack_require__(153));
 	hljs.registerLanguage('dust', __webpack_require__(154));
 	hljs.registerLanguage('elixir', __webpack_require__(155));
-	hljs.registerLanguage('ruby', __webpack_require__(216));
+	hljs.registerLanguage('ruby', __webpack_require__(211));
 	hljs.registerLanguage('erb', __webpack_require__(156));
 	hljs.registerLanguage('erlang-repl', __webpack_require__(157));
 	hljs.registerLanguage('erlang', __webpack_require__(158));
 	hljs.registerLanguage('fix', __webpack_require__(159));
-	hljs.registerLanguage('fortran', __webpack_require__(160));
-	hljs.registerLanguage('fsharp', __webpack_require__(161));
-	hljs.registerLanguage('gcode', __webpack_require__(162));
-	hljs.registerLanguage('gherkin', __webpack_require__(163));
-	hljs.registerLanguage('glsl', __webpack_require__(164));
-	hljs.registerLanguage('go', __webpack_require__(165));
-	hljs.registerLanguage('gradle', __webpack_require__(166));
-	hljs.registerLanguage('groovy', __webpack_require__(167));
-	hljs.registerLanguage('haml', __webpack_require__(168));
-	hljs.registerLanguage('handlebars', __webpack_require__(169));
-	hljs.registerLanguage('haskell', __webpack_require__(170));
-	hljs.registerLanguage('haxe', __webpack_require__(171));
-	hljs.registerLanguage('http', __webpack_require__(172));
-	hljs.registerLanguage('ini', __webpack_require__(173));
-	hljs.registerLanguage('java', __webpack_require__(174));
-	hljs.registerLanguage('javascript', __webpack_require__(175));
-	hljs.registerLanguage('json', __webpack_require__(176));
-	hljs.registerLanguage('julia', __webpack_require__(177));
-	hljs.registerLanguage('kotlin', __webpack_require__(178));
-	hljs.registerLanguage('lasso', __webpack_require__(179));
-	hljs.registerLanguage('less', __webpack_require__(180));
-	hljs.registerLanguage('lisp', __webpack_require__(181));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(182));
-	hljs.registerLanguage('livescript', __webpack_require__(183));
-	hljs.registerLanguage('lua', __webpack_require__(184));
-	hljs.registerLanguage('makefile', __webpack_require__(185));
-	hljs.registerLanguage('mathematica', __webpack_require__(187));
-	hljs.registerLanguage('matlab', __webpack_require__(188));
-	hljs.registerLanguage('mel', __webpack_require__(189));
-	hljs.registerLanguage('mercury', __webpack_require__(190));
-	hljs.registerLanguage('mizar', __webpack_require__(191));
-	hljs.registerLanguage('monkey', __webpack_require__(192));
-	hljs.registerLanguage('nginx', __webpack_require__(193));
-	hljs.registerLanguage('nimrod', __webpack_require__(194));
-	hljs.registerLanguage('nix', __webpack_require__(195));
-	hljs.registerLanguage('nsis', __webpack_require__(196));
-	hljs.registerLanguage('objectivec', __webpack_require__(197));
-	hljs.registerLanguage('ocaml', __webpack_require__(198));
-	hljs.registerLanguage('oxygene', __webpack_require__(199));
-	hljs.registerLanguage('parser3', __webpack_require__(200));
-	hljs.registerLanguage('perl', __webpack_require__(201));
-	hljs.registerLanguage('pf', __webpack_require__(202));
-	hljs.registerLanguage('php', __webpack_require__(203));
-	hljs.registerLanguage('powershell', __webpack_require__(204));
-	hljs.registerLanguage('processing', __webpack_require__(205));
-	hljs.registerLanguage('profile', __webpack_require__(206));
-	hljs.registerLanguage('prolog', __webpack_require__(207));
-	hljs.registerLanguage('protobuf', __webpack_require__(208));
-	hljs.registerLanguage('puppet', __webpack_require__(209));
-	hljs.registerLanguage('python', __webpack_require__(210));
-	hljs.registerLanguage('q', __webpack_require__(211));
-	hljs.registerLanguage('r', __webpack_require__(212));
-	hljs.registerLanguage('rib', __webpack_require__(213));
-	hljs.registerLanguage('roboconf', __webpack_require__(214));
-	hljs.registerLanguage('rsl', __webpack_require__(215));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(217));
-	hljs.registerLanguage('rust', __webpack_require__(218));
-	hljs.registerLanguage('scala', __webpack_require__(219));
-	hljs.registerLanguage('scheme', __webpack_require__(220));
-	hljs.registerLanguage('scilab', __webpack_require__(221));
-	hljs.registerLanguage('scss', __webpack_require__(222));
-	hljs.registerLanguage('smali', __webpack_require__(223));
-	hljs.registerLanguage('smalltalk', __webpack_require__(224));
-	hljs.registerLanguage('sml', __webpack_require__(225));
-	hljs.registerLanguage('sql', __webpack_require__(226));
-	hljs.registerLanguage('stata', __webpack_require__(227));
-	hljs.registerLanguage('step21', __webpack_require__(228));
-	hljs.registerLanguage('stylus', __webpack_require__(229));
-	hljs.registerLanguage('swift', __webpack_require__(230));
-	hljs.registerLanguage('tcl', __webpack_require__(231));
-	hljs.registerLanguage('tex', __webpack_require__(232));
-	hljs.registerLanguage('thrift', __webpack_require__(233));
-	hljs.registerLanguage('twig', __webpack_require__(234));
-	hljs.registerLanguage('typescript', __webpack_require__(235));
-	hljs.registerLanguage('vala', __webpack_require__(236));
-	hljs.registerLanguage('vbnet', __webpack_require__(237));
-	hljs.registerLanguage('vbscript', __webpack_require__(239));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(238));
-	hljs.registerLanguage('verilog', __webpack_require__(240));
-	hljs.registerLanguage('vhdl', __webpack_require__(241));
-	hljs.registerLanguage('vim', __webpack_require__(242));
-	hljs.registerLanguage('x86asm', __webpack_require__(243));
-	hljs.registerLanguage('xl', __webpack_require__(244));
+	hljs.registerLanguage('fsharp', __webpack_require__(160));
+	hljs.registerLanguage('gcode', __webpack_require__(161));
+	hljs.registerLanguage('gherkin', __webpack_require__(162));
+	hljs.registerLanguage('glsl', __webpack_require__(163));
+	hljs.registerLanguage('go', __webpack_require__(164));
+	hljs.registerLanguage('gradle', __webpack_require__(165));
+	hljs.registerLanguage('groovy', __webpack_require__(166));
+	hljs.registerLanguage('haml', __webpack_require__(167));
+	hljs.registerLanguage('handlebars', __webpack_require__(168));
+	hljs.registerLanguage('haskell', __webpack_require__(169));
+	hljs.registerLanguage('haxe', __webpack_require__(170));
+	hljs.registerLanguage('http', __webpack_require__(171));
+	hljs.registerLanguage('ini', __webpack_require__(172));
+	hljs.registerLanguage('java', __webpack_require__(173));
+	hljs.registerLanguage('javascript', __webpack_require__(174));
+	hljs.registerLanguage('json', __webpack_require__(175));
+	hljs.registerLanguage('lasso', __webpack_require__(176));
+	hljs.registerLanguage('less', __webpack_require__(177));
+	hljs.registerLanguage('lisp', __webpack_require__(178));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(179));
+	hljs.registerLanguage('livescript', __webpack_require__(180));
+	hljs.registerLanguage('lua', __webpack_require__(181));
+	hljs.registerLanguage('makefile', __webpack_require__(182));
+	hljs.registerLanguage('mathematica', __webpack_require__(184));
+	hljs.registerLanguage('matlab', __webpack_require__(185));
+	hljs.registerLanguage('mel', __webpack_require__(186));
+	hljs.registerLanguage('mercury', __webpack_require__(187));
+	hljs.registerLanguage('mizar', __webpack_require__(188));
+	hljs.registerLanguage('monkey', __webpack_require__(189));
+	hljs.registerLanguage('nginx', __webpack_require__(190));
+	hljs.registerLanguage('nimrod', __webpack_require__(191));
+	hljs.registerLanguage('nix', __webpack_require__(192));
+	hljs.registerLanguage('nsis', __webpack_require__(193));
+	hljs.registerLanguage('objectivec', __webpack_require__(194));
+	hljs.registerLanguage('ocaml', __webpack_require__(195));
+	hljs.registerLanguage('oxygene', __webpack_require__(196));
+	hljs.registerLanguage('parser3', __webpack_require__(197));
+	hljs.registerLanguage('perl', __webpack_require__(198));
+	hljs.registerLanguage('php', __webpack_require__(199));
+	hljs.registerLanguage('powershell', __webpack_require__(200));
+	hljs.registerLanguage('processing', __webpack_require__(201));
+	hljs.registerLanguage('profile', __webpack_require__(202));
+	hljs.registerLanguage('protobuf', __webpack_require__(203));
+	hljs.registerLanguage('puppet', __webpack_require__(204));
+	hljs.registerLanguage('python', __webpack_require__(205));
+	hljs.registerLanguage('q', __webpack_require__(206));
+	hljs.registerLanguage('r', __webpack_require__(207));
+	hljs.registerLanguage('rib', __webpack_require__(208));
+	hljs.registerLanguage('roboconf', __webpack_require__(209));
+	hljs.registerLanguage('rsl', __webpack_require__(210));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(212));
+	hljs.registerLanguage('rust', __webpack_require__(213));
+	hljs.registerLanguage('scala', __webpack_require__(214));
+	hljs.registerLanguage('scheme', __webpack_require__(215));
+	hljs.registerLanguage('scilab', __webpack_require__(216));
+	hljs.registerLanguage('scss', __webpack_require__(217));
+	hljs.registerLanguage('smali', __webpack_require__(218));
+	hljs.registerLanguage('smalltalk', __webpack_require__(219));
+	hljs.registerLanguage('sml', __webpack_require__(220));
+	hljs.registerLanguage('sql', __webpack_require__(221));
+	hljs.registerLanguage('stata', __webpack_require__(222));
+	hljs.registerLanguage('step21', __webpack_require__(223));
+	hljs.registerLanguage('stylus', __webpack_require__(224));
+	hljs.registerLanguage('swift', __webpack_require__(225));
+	hljs.registerLanguage('tcl', __webpack_require__(226));
+	hljs.registerLanguage('tex', __webpack_require__(227));
+	hljs.registerLanguage('thrift', __webpack_require__(228));
+	hljs.registerLanguage('twig', __webpack_require__(229));
+	hljs.registerLanguage('typescript', __webpack_require__(230));
+	hljs.registerLanguage('vala', __webpack_require__(231));
+	hljs.registerLanguage('vbnet', __webpack_require__(232));
+	hljs.registerLanguage('vbscript', __webpack_require__(234));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(233));
+	hljs.registerLanguage('verilog', __webpack_require__(235));
+	hljs.registerLanguage('vhdl', __webpack_require__(236));
+	hljs.registerLanguage('vim', __webpack_require__(237));
+	hljs.registerLanguage('x86asm', __webpack_require__(238));
+	hljs.registerLanguage('xl', __webpack_require__(239));
 
 	module.exports = hljs;
 
 /***/ },
-/* 128 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs){
@@ -61490,7 +61537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 129 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -61568,7 +61615,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 130 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -61618,7 +61665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 131 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -61628,17 +61675,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    begin: '\\(', end: '\\)',
 	    contains: ['self', hljs.C_NUMBER_MODE, STRING]
 	  };
-	  var COMMENT_MODE_1 = hljs.COMMENT('--', '$');
-	  var COMMENT_MODE_2 = hljs.COMMENT(
-	    '\\(\\*',
-	    '\\*\\)',
-	    {
-	      contains: ['self', COMMENT_MODE_1] //allow nesting
-	    }
-	  );
 	  var COMMENTS = [
-	    COMMENT_MODE_1,
-	    COMMENT_MODE_2,
+	    {
+	      className: 'comment',
+	      begin: '--', end: '$'
+	    },
+	    {
+	      className: 'comment',
+	      begin: '\\(\\*', end: '\\*\\)',
+	      contains: ['self', {begin: '--', end: '$'}] //allow nesting
+	    },
 	    hljs.HASH_COMMENT_MODE
 	  ];
 
@@ -61719,32 +61765,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 132 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  return {
-	    aliases: ['adoc'],
 	    contains: [
 	      // block comment
-	      hljs.COMMENT(
-	        '^/{4,}\\n',
-	        '\\n/{4,}$',
+	      {
+	        className: 'comment',
+	        begin: '^/{4,}\\n',
+	        end: '\\n/{4,}$',
 	        // can also be done as...
-	        //'^/{4,}$',
-	        //'^/{4,}$',
-	        {
-	          relevance: 10
-	        }
-	      ),
+	        //begin: '^/{4,}$',
+	        //end: '^/{4,}$',
+	        relevance: 10
+	      },
 	      // line comment
-	      hljs.COMMENT(
-	        '^//',
-	        '$',
-	        {
-	          relevance: 0
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '^//',
+	        end: '$',
+	        relevance: 0
+	      },
 	      // title
 	      {
 	        className: 'title',
@@ -61915,7 +61958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 133 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function (hljs) {
@@ -61927,7 +61970,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'aspectOf adviceexecution proceed cflowbelow cflow initialization preinitialization ' +
 	    'staticinitialization withincode target within execution getWithinTypeName handler ' +
 	    'thisJoinPoint thisJoinPointStaticPart thisEnclosingJoinPointStaticPart declare parents '+
-	    'warning error soft precedence thisAspectInstance';
+	    'warning error soft precedence';
 	  var SHORTKEYS = 'get set args call';
 	  return {
 	    keywords : KEYWORDS,
@@ -62016,7 +62059,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        // the function class is a bit different for AspectJ compared to the Java language
 	        className : 'function',
-	        begin : /\w+ +\w+(\.)?\w+\s*\([^\)]*\)\s*((throws)[\w\s,]+)?[\{;]/,
+	        begin : /\w+ +\w+(\.)?\w+\s*\([^\)]*\)\s*((throws)[\w\s\,]+)?[\{\;]/,
 	        returnBegin : true,
 	        end : /[{;=]/,
 	        keywords : KEYWORDS,
@@ -62055,7 +62098,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 134 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62063,13 +62106,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'escape',
 	    begin: '`[\\s\\S]'
 	  };
-	  var COMMENTS = hljs.COMMENT(
-	    ';',
-	    '$',
-	    {
-	      relevance: 0
-	    }
-	  );
+	  var COMMENTS = {
+	    className: 'comment',
+	    begin: ';', end: '$',
+	    relevance: 0
+	  };
 	  var BUILT_IN = [
 	    {
 	      className: 'built_in',
@@ -62121,7 +62162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 135 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62157,13 +62198,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    contains: [
 	      hljs.C_BLOCK_COMMENT_MODE,
-	      hljs.COMMENT(
-	        ';',
-	        '$',
-	        {
-	          relevance: 0
-	        }
-	      ),
+	      {className: 'comment', begin: ';',  end: '$', relevance: 0},
 	      hljs.C_NUMBER_MODE, // 0x..., decimal, float
 	      hljs.BINARY_NUMBER_MODE, // 0b...
 	      {
@@ -62187,7 +62222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 136 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62222,7 +62257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 137 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62230,7 +62265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'variable',
 	    variants: [
 	      {begin: /\$[\w\d#@][\w\d_]*/},
-	      {begin: /\$\{(.*?)}/}
+	      {begin: /\$\{(.*?)\}/}
 	    ]
 	  };
 	  var QUOTE_STRING = {
@@ -62302,7 +62337,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 138 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs){
@@ -62314,14 +62349,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return {
 	    aliases: ['bf'],
 	    contains: [
-	      hljs.COMMENT(
-	        '[^\\[\\]\\.,\\+\\-<> \r\n]',
-	        '[\\[\\]\\.,\\+\\-<> \r\n]',
-	        {
-	          returnEnd: true,
-	          relevance: 0
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '[^\\[\\]\\.,\\+\\-<> \r\n]',
+	        returnEnd: true,
+	        end: '[\\[\\]\\.,\\+\\-<> \r\n]',
+	        relevance: 0
+	      },
 	      {
 	        className: 'title',
 	        begin: '[\\[\\]]',
@@ -62343,7 +62377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 139 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62396,7 +62430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 140 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62415,7 +62449,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 141 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62464,17 +62498,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    relevance: 0
 	  };
 	  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null});
-	  var COMMENT = hljs.COMMENT(
-	    ';',
-	    '$',
-	    {
-	      relevance: 0
-	    }
-	  );
+	  var COMMENT = {
+	    className: 'comment',
+	    begin: ';', end: '$',
+	    relevance: 0
+	  };
 	  var LITERAL = {
 	    className: 'literal',
 	    begin: /\b(true|false|nil)\b/
-	  };
+	  }
 	  var COLLECTION = {
 	    className: 'collection',
 	    begin: '[\\[\\{]', end: '[\\]\\}]'
@@ -62483,7 +62515,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'comment',
 	    begin: '\\^' + SYMBOL_RE
 	  };
-	  var HINT_COL = hljs.COMMENT('\\^\\{', '\\}');
+	  var HINT_COL = {
+	    className: 'comment',
+	    begin: '\\^\\{', end: '\\}'
+
+	  };
 	  var KEY = {
 	    className: 'attribute',
 	    begin: '[:]' + SYMBOL_RE
@@ -62504,7 +62540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  var DEFAULT_CONTAINS = [LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL, SYMBOL];
 
-	  LIST.contains = [hljs.COMMENT('comment', ''), NAME, BODY];
+	  LIST.contains = [{className: 'comment', begin: 'comment'}, NAME, BODY];
 	  BODY.contains = DEFAULT_CONTAINS;
 	  COLLECTION.contains = DEFAULT_CONTAINS;
 
@@ -62516,7 +62552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 142 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62559,7 +62595,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 143 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62660,7 +62696,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    keywords: KEYWORDS,
 	    illegal: /\/\*/,
 	    contains: EXPRESSIONS.concat([
-	      hljs.COMMENT('###', '###'),
+	      {
+	        className: 'comment',
+	        begin: '###', end: '###',
+	        contains: [hljs.PHRASAL_WORDS_MODE]
+	      },
 	      hljs.HASH_COMMENT_MODE,
 	      {
 	        className: 'function',
@@ -62707,7 +62747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 144 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62718,16 +62758,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'do goto auto void enum else break extern using true class asm case typeid ' +
 	      'short reinterpret_cast|10 default double register explicit signed typename try this ' +
 	      'switch continue wchar_t inline delete alignof char16_t char32_t constexpr decltype ' +
-	      'noexcept nullptr static_assert thread_local restrict _Bool complex _Complex _Imaginary ' +
-	      'intmax_t uintmax_t int8_t uint8_t int16_t uint16_t int32_t uint32_t  int64_t uint64_t ' +
-	      'int_least8_t uint_least8_t int_least16_t uint_least16_t int_least32_t uint_least32_t ' +
-	      'int_least64_t uint_least64_t int_fast8_t uint_fast8_t int_fast16_t uint_fast16_t int_fast32_t ' +
-	      'uint_fast32_t int_fast64_t uint_fast64_t intptr_t uintptr_t atomic_bool atomic_char atomic_schar ' +
-	      'atomic_uchar atomic_short atomic_ushort atomic_int atomic_uint atomic_long atomic_ulong atomic_llong ' +
-	      'atomic_ullong atomic_wchar_t atomic_char16_t atomic_char32_t atomic_intmax_t atomic_uintmax_t ' +
-	      'atomic_intptr_t atomic_uintptr_t atomic_size_t atomic_ptrdiff_t atomic_int_least8_t atomic_int_least16_t ' +
-	      'atomic_int_least32_t atomic_int_least64_t atomic_uint_least8_t atomic_uint_least16_t atomic_uint_least32_t ' +
-	      'atomic_uint_least64_t atomic_int_fast8_t atomic_int_fast16_t atomic_int_fast32_t atomic_int_fast64_t ' +
+	      'noexcept nullptr static_assert thread_local restrict _Bool complex _Complex _Imaginary' +
+	      'intmax_t uintmax_t int8_t uint8_t int16_t uint16_t int32_t uint32_t  int64_t uint64_t' +
+	      'int_least8_t uint_least8_t int_least16_t uint_least16_t int_least32_t uint_least32_t' +
+	      'int_least64_t uint_least64_t int_fast8_t uint_fast8_t int_fast16_t uint_fast16_t int_fast32_t' +
+	      'uint_fast32_t int_fast64_t uint_fast64_t intptr_t uintptr_t atomic_bool atomic_char atomic_schar' +
+	      'atomic_uchar atomic_short atomic_ushort atomic_int atomic_uint atomic_long atomic_ulong atomic_llong' +
+	      'atomic_ullong atomic_wchar_t atomic_char16_t atomic_char32_t atomic_intmax_t atomic_uintmax_t' +
+	      'atomic_intptr_t atomic_uintptr_t atomic_size_t atomic_ptrdiff_t atomic_int_least8_t atomic_int_least16_t' +
+	      'atomic_int_least32_t atomic_int_least64_t atomic_uint_least8_t atomic_uint_least16_t atomic_uint_least32_t' +
+	      'atomic_uint_least64_t atomic_int_fast8_t atomic_int_fast16_t atomic_int_fast32_t atomic_int_fast64_t' +
 	      'atomic_uint_fast8_t atomic_uint_fast16_t atomic_uint_fast32_t atomic_uint_fast64_t',
 	    built_in: 'std string cin cout cerr clog stringstream istringstream ostringstream ' +
 	      'auto_ptr deque list queue stack vector map set bitset multiset multimap unordered_set ' +
@@ -62740,7 +62780,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'vfprintf vprintf vsprintf'
 	  };
 	  return {
-	    aliases: ['c', 'cc', 'h', 'c++', 'h++', 'hpp'],
+	    aliases: ['c', 'h', 'c++', 'h++'],
 	    keywords: CPP_KEYWORDS,
 	    illegal: '</',
 	    contains: [
@@ -62763,9 +62803,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        keywords: 'if else elif endif define undef warning error line pragma',
 	        contains: [
 	          {
-	            begin: /\\\n/, relevance: 0
-	          },
-	          {
 	            begin: 'include\\s*[<"]', end: '[>"]',
 	            keywords: 'include',
 	            illegal: '\\n'
@@ -62774,18 +62811,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        ]
 	      },
 	      {
+	        className: 'stl_container',
 	        begin: '\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<', end: '>',
 	        keywords: CPP_KEYWORDS,
 	        contains: ['self']
 	      },
 	      {
-	        begin: hljs.IDENT_RE + '::',
-	        keywords: CPP_KEYWORDS
+	        begin: hljs.IDENT_RE + '::'
 	      },
 	      {
-	        // Expression keywords prevent 'keyword Name(...) or else if(...)' from
-	        // being recognized as a function definition
-	        beginKeywords: 'new throw return else',
+	        // Expression keywords prevent 'keyword Name(...)' from being
+	        // recognized as a function definition
+	        beginKeywords: 'new throw return',
 	        relevance: 0
 	      },
 	      {
@@ -62817,15 +62854,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 145 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS =
 	    // Normal keywords.
-	    'abstract as base bool break byte case catch char checked const continue decimal dynamic ' +
+	    'abstract as base bool break byte case catch char checked const continue decimal ' +
 	    'default delegate do double else enum event explicit extern false finally fixed float ' +
-	    'for foreach goto if implicit in int interface internal is lock long null when ' +
+	    'for foreach goto if implicit in int interface internal is lock long null ' +
 	    'object operator out override params private protected public readonly ref sbyte ' +
 	    'sealed short sizeof stackalloc static string struct switch this true try typeof ' +
 	    'uint ulong unchecked unsafe ushort using virtual volatile void while async ' +
@@ -62839,29 +62876,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    keywords: KEYWORDS,
 	    illegal: /::/,
 	    contains: [
-	      hljs.COMMENT(
-	        '///',
-	        '$',
-	        {
-	          returnBegin: true,
-	          contains: [
-	            {
-	              className: 'xmlDocTag',
-	              variants: [
-	                {
-	                  begin: '///', relevance: 0
-	                },
-	                {
-	                  begin: '<!--|-->'
-	                },
-	                {
-	                  begin: '</?', end: '>'
-	                }
-	              ]
-	            }
-	          ]
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '///', end: '$', returnBegin: true,
+	        contains: [
+	          {
+	            className: 'xmlDocTag',
+	            variants: [
+	              {
+	                begin: '///', relevance: 0
+	              },
+	              {
+	                begin: '<!--|-->'
+	              },
+	              {
+	                begin: '</?', end: '>'
+	              }
+	            ]
+	          }
+	        ]
+	      },
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.C_BLOCK_COMMENT_MODE,
 	      {
@@ -62924,7 +62958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 146 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -62936,55 +62970,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    excludeEnd: true,
 	    end: '\\('
 	  };
-	  var RULE = {
-	    className: 'rule',
-	    begin: /[A-Z\_\.\-]+\s*:/, returnBegin: true, end: ';', endsWithParent: true,
-	    contains: [
-	      {
-	        className: 'attribute',
-	        begin: /\S/, end: ':', excludeEnd: true,
-	        starts: {
-	          className: 'value',
-	          endsWithParent: true, excludeEnd: true,
-	          contains: [
-	            FUNCTION,
-	            hljs.CSS_NUMBER_MODE,
-	            hljs.QUOTE_STRING_MODE,
-	            hljs.APOS_STRING_MODE,
-	            hljs.C_BLOCK_COMMENT_MODE,
-	            {
-	              className: 'hexcolor', begin: '#[0-9A-Fa-f]+'
-	            },
-	            {
-	              className: 'important', begin: '!important'
-	            }
-	          ]
-	        }
-	      }
-	    ]
-	  };
-
 	  return {
 	    case_insensitive: true,
-	    illegal: /[=\/|']/,
+	    illegal: '[=/|\']',
 	    contains: [
 	      hljs.C_BLOCK_COMMENT_MODE,
-	      RULE,
 	      {
-	        className: 'id', begin: /\#[A-Za-z0-9_-]+/
+	        className: 'id', begin: '\\#[A-Za-z0-9_-]+'
 	      },
 	      {
-	        className: 'class', begin: /\.[A-Za-z0-9_-]+/,
+	        className: 'class', begin: '\\.[A-Za-z0-9_-]+',
 	        relevance: 0
 	      },
 	      {
 	        className: 'attr_selector',
-	        begin: /\[/, end: /\]/,
+	        begin: '\\[', end: '\\]',
 	        illegal: '$'
 	      },
 	      {
 	        className: 'pseudo',
-	        begin: /:(:)?[a-zA-Z0-9\_\-\+\(\)"']+/
+	        begin: ':(:)?[a-zA-Z0-9\\_\\-\\+\\(\\)\\"\\\']+'
 	      },
 	      {
 	        className: 'at_rule',
@@ -63021,11 +63026,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        className: 'rules',
 	        begin: '{', end: '}',
-	        illegal: /\S/,
+	        illegal: '[^\\s]',
 	        relevance: 0,
 	        contains: [
 	          hljs.C_BLOCK_COMMENT_MODE,
-	          RULE,
+	          {
+	            className: 'rule',
+	            begin: '[^\\s]', returnBegin: true, end: ';', endsWithParent: true,
+	            contains: [
+	              {
+	                className: 'attribute',
+	                begin: '[A-Z\\_\\.\\-]+', end: ':',
+	                excludeEnd: true,
+	                illegal: '[^\\s]',
+	                starts: {
+	                  className: 'value',
+	                  endsWithParent: true, excludeEnd: true,
+	                  contains: [
+	                    FUNCTION,
+	                    hljs.CSS_NUMBER_MODE,
+	                    hljs.QUOTE_STRING_MODE,
+	                    hljs.APOS_STRING_MODE,
+	                    hljs.C_BLOCK_COMMENT_MODE,
+	                    {
+	                      className: 'hexcolor', begin: '#[0-9A-Fa-f]+'
+	                    },
+	                    {
+	                      className: 'important', begin: '!important'
+	                    }
+	                  ]
+	                }
+	              }
+	            ]
+	          }
 	        ]
 	      }
 	    ]
@@ -63033,7 +63066,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 147 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = /**
@@ -63263,14 +63296,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 	   * @type {Object}
 	   */
-	  var D_NESTING_COMMENT_MODE = hljs.COMMENT(
-	    '\\/\\+',
-	    '\\+\\/',
-	    {
-	      contains: ['self'],
-	      relevance: 10
-	    }
-	  );
+	  var D_NESTING_COMMENT_MODE = {
+	    className: 'comment',
+	    begin: '\\/\\+',
+	    contains: ['self'],
+	    end: '\\+\\/',
+	    relevance: 10
+	  };
 
 	  return {
 	    lexemes: hljs.UNDERSCORE_IDENT_RE,
@@ -63295,7 +63327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 148 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function (hljs) {
@@ -63398,7 +63430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 149 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63410,23 +63442,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'destructor write message program with read initialization except default nil if case cdecl in ' +
 	    'downto threadvar of try pascal const external constructor type public then implementation ' +
 	    'finally published procedure';
-	  var COMMENT_MODES = [
-	    hljs.C_LINE_COMMENT_MODE,
-	    hljs.COMMENT(
-	      /\{/,
-	      /\}/,
-	      {
-	        relevance: 0
-	      }
-	    ),
-	    hljs.COMMENT(
-	      /\(\*/,
-	      /\*\)/,
-	      {
-	        relevance: 10
-	      }
-	    )
-	  ];
+	  var COMMENT =  {
+	    className: 'comment',
+	    variants: [
+	      {begin: /\{/, end: /\}/, relevance: 0},
+	      {begin: /\(\*/, end: /\*\)/, relevance: 10}
+	    ]
+	  };
 	  var STRING = {
 	    className: 'string',
 	    begin: /'/, end: /'/,
@@ -63452,24 +63474,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        begin: /\(/, end: /\)/,
 	        keywords: KEYWORDS,
 	        contains: [STRING, CHAR_STRING]
-	      }
-	    ].concat(COMMENT_MODES)
+	      },
+	      COMMENT
+	    ]
 	  };
 	  return {
 	    case_insensitive: true,
 	    keywords: KEYWORDS,
 	    illegal: /"|\$[G-Zg-z]|\/\*|<\/|\|/,
 	    contains: [
+	      COMMENT, hljs.C_LINE_COMMENT_MODE,
 	      STRING, CHAR_STRING,
 	      hljs.NUMBER_MODE,
 	      CLASS,
 	      FUNCTION
-	    ].concat(COMMENT_MODES)
+	    ]
 	  };
 	};
 
 /***/ },
-/* 150 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -63480,7 +63504,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'chunk',
 	        relevance: 10,
 	        variants: [
-	          {begin: /^@@ +\-\d+,\d+ +\+\d+,\d+ +@@$/},
+	          {begin: /^\@\@ +\-\d+,\d+ +\+\d+,\d+ +\@\@$/},
 	          {begin: /^\*\*\* +\d+,\d+ +\*\*\*\*$/},
 	          {begin: /^\-\-\- +\d+,\d+ +\-\-\-\-$/}
 	        ]
@@ -63513,13 +63537,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 151 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  var FILTER = {
 	    className: 'filter',
-	    begin: /\|[A-Za-z]+:?/,
+	    begin: /\|[A-Za-z]+\:?/,
 	    keywords:
 	      'truncatewords removetags linebreaksbr yesno get_digit timesince random striptags ' +
 	      'filesizeformat escape linebreaks length_is ljust rjust cut urlize fix_ampersands ' +
@@ -63540,8 +63564,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case_insensitive: true,
 	    subLanguage: 'xml', subLanguageMode: 'continuous',
 	    contains: [
-	      hljs.COMMENT(/\{%\s*comment\s*%}/, /\{%\s*endcomment\s*%}/),
-	      hljs.COMMENT(/\{#/, /#}/),
+	      {
+	        className: 'comment',
+	        begin: /\{%\s*comment\s*%}/, end: /\{%\s*endcomment\s*%}/
+	      },
+	      {
+	        className: 'comment',
+	        begin: /\{#/, end: /#}/
+	      },
 	      {
 	        className: 'template_tag',
 	        begin: /\{%/, end: /%}/,
@@ -63567,55 +63597,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 152 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(hljs) {
-	  return {
-	    aliases: ['docker'],
-	    case_insensitive: true,
-	    keywords: {
-	      built_ins: 'from maintainer cmd expose add copy entrypoint volume user workdir onbuild run env'
-	    },
-	    contains: [
-	      hljs.HASH_COMMENT_MODE,
-	      {
-	        keywords : {
-	          built_in: 'run cmd entrypoint volume add copy workdir onbuild'
-	        },
-	        begin: /^ *(onbuild +)?(run|cmd|entrypoint|volume|add|copy|workdir) +/,
-	        starts: {
-	          end: /[^\\]\n/,
-	          subLanguage: 'bash', subLanguageMode: 'continuous'
-	        }
-	      },
-	      {
-	        keywords: {
-	          built_in: 'from maintainer expose env user onbuild'
-	        },
-	        begin: /^ *(onbuild +)?(from|maintainer|expose|env|user|onbuild) +/, end: /[^\\]\n/,
-	        contains: [
-	          hljs.APOS_STRING_MODE,
-	          hljs.QUOTE_STRING_MODE,
-	          hljs.NUMBER_MODE,
-	          hljs.HASH_COMMENT_MODE
-	        ]
-	      }
-	    ]
-	  }
-	};
-
-/***/ },
 /* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  var COMMENT = hljs.COMMENT(
-	    /@?rem\b/, /$/,
-	    {
-	      relevance: 10
-	    }
-	  );
+	  var COMMENT = {
+	    className: 'comment',
+	    begin: /@?rem\b/, end: /$/,
+	    relevance: 10
+	  };
 	  var LABEL = {
 	    className: 'label',
 	    begin: '^\\s*[A-Za-z._?][A-Za-z0-9_$#@~.?]*(:|\\s+label)',
@@ -63634,7 +63624,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'comp compact convert date dir diskcomp diskcopy doskey erase fs ' +
 	        'find findstr format ftype graftabl help keyb label md mkdir mode more move path ' +
 	        'pause print popd pushd promt rd recover rem rename replace restore rmdir shift' +
-	        'sort start subst time title tree type ver verify vol'
+	        'sort start subst time title tree type ver verify vol',
 	    },
 	    contains: [
 	      {
@@ -63725,20 +63715,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    ]
 	  };
+	  var PARAMS = {
+	    endsWithParent: true, returnEnd: true,
+	    lexemes: ELIXIR_IDENT_RE,
+	    keywords: ELIXIR_KEYWORDS,
+	    relevance: 0
+	  };
 	  var FUNCTION = {
 	    className: 'function',
-	    beginKeywords: 'def defp defmacro', end: /\B\b/, // the mode is ended by the title
+	    beginKeywords: 'def defmacro', end: /\bdo\b/,
 	    contains: [
 	      hljs.inherit(hljs.TITLE_MODE, {
-	        begin: ELIXIR_IDENT_RE,
-	        endsParent: true
+	        begin: ELIXIR_METHOD_RE,
+	        starts: PARAMS
 	      })
 	    ]
 	  };
 	  var CLASS = hljs.inherit(FUNCTION, {
 	    className: 'class',
 	    beginKeywords: 'defmodule defrecord', end: /\bdo\b|$|;/
-	  });
+	  })
 	  var ELIXIR_DEFAULT_CONTAINS = [
 	    STRING,
 	    hljs.HASH_COMMENT_MODE,
@@ -63794,6 +63790,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  ];
 	  SUBST.contains = ELIXIR_DEFAULT_CONTAINS;
+	  PARAMS.contains = ELIXIR_DEFAULT_CONTAINS;
 
 	  return {
 	    lexemes: ELIXIR_IDENT_RE,
@@ -63810,7 +63807,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return {
 	    subLanguage: 'xml', subLanguageMode: 'continuous',
 	    contains: [
-	      hljs.COMMENT('<%#', '%>'),
+	      {
+	        className: 'comment',
+	        begin: '<%#', end: '%>',
+	      },
 	      {
 	        begin: '<%[%=-]?', end: '[%-]?%>',
 	        subLanguage: 'ruby',
@@ -63839,7 +63839,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'prompt', begin: '^[0-9]+> ',
 	        relevance: 10
 	      },
-	      hljs.COMMENT('%', '$'),
+	      {
+	        className: 'comment',
+	        begin: '%', end: '$'
+	      },
 	      {
 	        className: 'number',
 	        begin: '\\b(\\d+#[a-fA-F0-9]+|\\d+(\\.\\d+)?([eE][-+]?\\d+)?)',
@@ -63888,7 +63891,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'false true'
 	  };
 
-	  var COMMENT = hljs.COMMENT('%', '$');
+	  var COMMENT = {
+	    className: 'comment',
+	    begin: '%', end: '$'
+	  };
 	  var NUMBER = {
 	    className: 'number',
 	    begin: '\\b(\\d+#[a-fA-F0-9]+|\\d+(\\.\\d+)?([eE][-+]?\\d+)?)',
@@ -64067,80 +64073,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  var PARAMS = {
-	    className: 'params',
-	    begin: '\\(', end: '\\)'
-	  };
-
-	  var F_KEYWORDS = {
-	    constant: '.False. .True.',
-	    type: 'integer real character complex logical dimension allocatable|10 parameter ' +
-	      'external implicit|10 none double precision assign intent optional pointer ' +
-	      'target in out common equivalence data',
-	    keyword: 'kind do while private call intrinsic where elsewhere ' +
-	      'type endtype endmodule endselect endinterface end enddo endif if forall endforall only contains default return stop then ' +
-	      'public subroutine|10 function program .and. .or. .not. .le. .eq. .ge. .gt. .lt. ' +
-	      'goto save else use module select case ' +
-	      'access blank direct exist file fmt form formatted iostat name named nextrec number opened rec recl sequential status unformatted unit ' +
-	      'continue format pause cycle exit ' +
-	      'c_null_char c_alert c_backspace c_form_feed flush wait decimal round iomsg ' +
-	      'synchronous nopass non_overridable pass protected volatile abstract extends import ' +
-	      'non_intrinsic value deferred generic final enumerator class associate bind enum ' +
-	      'c_int c_short c_long c_long_long c_signed_char c_size_t c_int8_t c_int16_t c_int32_t c_int64_t c_int_least8_t c_int_least16_t ' +
-	      'c_int_least32_t c_int_least64_t c_int_fast8_t c_int_fast16_t c_int_fast32_t c_int_fast64_t c_intmax_t C_intptr_t c_float c_double ' +
-	      'c_long_double c_float_complex c_double_complex c_long_double_complex c_bool c_char c_null_ptr c_null_funptr ' +
-	      'c_new_line c_carriage_return c_horizontal_tab c_vertical_tab iso_c_binding c_loc c_funloc c_associated  c_f_pointer ' +
-	      'c_ptr c_funptr iso_fortran_env character_storage_size error_unit file_storage_size input_unit iostat_end iostat_eor ' +
-	      'numeric_storage_size output_unit c_f_procpointer ieee_arithmetic ieee_support_underflow_control ' +
-	      'ieee_get_underflow_mode ieee_set_underflow_mode newunit contiguous ' +
-	      'pad position action delim readwrite eor advance nml interface procedure namelist include sequence elemental pure',
-	    built_in: 'alog alog10 amax0 amax1 amin0 amin1 amod cabs ccos cexp clog csin csqrt dabs dacos dasin datan datan2 dcos dcosh ddim dexp dint ' +
-	      'dlog dlog10 dmax1 dmin1 dmod dnint dsign dsin dsinh dsqrt dtan dtanh float iabs idim idint idnint ifix isign max0 max1 min0 min1 sngl ' +
-	      'algama cdabs cdcos cdexp cdlog cdsin cdsqrt cqabs cqcos cqexp cqlog cqsin cqsqrt dcmplx dconjg derf derfc dfloat dgamma dimag dlgama ' +
-	      'iqint qabs qacos qasin qatan qatan2 qcmplx qconjg qcos qcosh qdim qerf qerfc qexp qgamma qimag qlgama qlog qlog10 qmax1 qmin1 qmod ' +
-	      'qnint qsign qsin qsinh qsqrt qtan qtanh abs acos aimag aint anint asin atan atan2 char cmplx conjg cos cosh exp ichar index int log ' +
-	      'log10 max min nint sign sin sinh sqrt tan tanh print write dim lge lgt lle llt mod nullify allocate deallocate ' +
-	      'adjustl adjustr all allocated any associated bit_size btest ceiling count cshift date_and_time digits dot_product ' +
-	      'eoshift epsilon exponent floor fraction huge iand ibclr ibits ibset ieor ior ishft ishftc lbound len_trim matmul ' +
-	      'maxexponent maxloc maxval merge minexponent minloc minval modulo mvbits nearest pack present product ' +
-	      'radix random_number random_seed range repeat reshape rrspacing scale scan selected_int_kind selected_real_kind ' +
-	      'set_exponent shape size spacing spread sum system_clock tiny transpose trim ubound unpack verify achar iachar transfer ' +
-	      'dble entry dprod cpu_time command_argument_count get_command get_command_argument get_environment_variable is_iostat_end ' +
-	      'ieee_arithmetic ieee_support_underflow_control ieee_get_underflow_mode ieee_set_underflow_mode ' +
-	      'is_iostat_eor move_alloc new_line selected_char_kind same_type_as extends_type_of'  +
-	      'acosh asinh atanh bessel_j0 bessel_j1 bessel_jn bessel_y0 bessel_y1 bessel_yn erf erfc erfc_scaled gamma log_gamma hypot norm2 ' +
-	      'atomic_define atomic_ref execute_command_line leadz trailz storage_size merge_bits ' +
-	      'bge bgt ble blt dshiftl dshiftr findloc iall iany iparity image_index lcobound ucobound maskl maskr ' +
-	      'num_images parity popcnt poppar shifta shiftl shiftr this_image'
-	  };
-	  return {
-	    case_insensitive: true,
-	    aliases: ['f90', 'f95'],
-	    keywords: F_KEYWORDS,
-	    contains: [
-	      hljs.inherit(hljs.APOS_STRING_MODE, {className: 'string', relevance: 0}),
-	      hljs.inherit(hljs.QUOTE_STRING_MODE,{className: 'string', relevance: 0}),
-	      {
-	        className: 'function',
-	        beginKeywords: 'subroutine function program',
-	        illegal: '[${=\\n]',
-	        contains: [hljs.UNDERSCORE_TITLE_MODE, PARAMS]
-	      },
-	      hljs.COMMENT('!', '$', {relevance: 0}),
-	      {
-	        className: 'number',
-	        begin: '(?=\\b|\\+|\\-|\\.)(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*)(?:[de][+-]?\\d+)?\\b\\.?',
-	        relevance: 0
-	      }
-	    ]
-	  };
-	};
-
-/***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(hljs) {
 	  var TYPEPARAM = {
 	    begin: '<', end: '>',
 	    contains: [
@@ -64170,7 +64102,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'string',
 	        begin: '"""', end: '"""'
 	      },
-	      hljs.COMMENT('\\(\\*', '\\*\\)'),
+	      {
+	        className: 'comment',
+	        begin: '\\(\\*', end: '\\*\\)'
+	      },
 	      {
 	        className: 'class',
 	        beginKeywords: 'type', end: '\\(|=|$', excludeEnd: true,
@@ -64197,7 +64132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 162 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64218,8 +64153,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    var GCODE_CODE = [
 	        hljs.C_LINE_COMMENT_MODE,
+	        {
+	            className: 'comment',
+	            begin: /\(/, end: /\)/,
+	            contains: [hljs.PHRASAL_WORDS_MODE]
+	        },
 	        hljs.C_BLOCK_COMMENT_MODE,
-	        hljs.COMMENT(/\(/, /\)/),
 	        hljs.inherit(hljs.C_NUMBER_MODE, {begin: '([-+]?([0-9]*\\.?[0-9]+\\.?))|' + hljs.C_NUMBER_RE}),
 	        hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
 	        hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
@@ -64274,7 +64213,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 163 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function (hljs) {
@@ -64286,14 +64225,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'keyword',
 	        begin: '\\*'
 	      },
-	      hljs.COMMENT('@[^@\r\n\t ]+', '$'),
+	      {
+	        className: 'comment',
+	        begin: '@[^@\r\n\t ]+', end: '$'
+	      },
 	      {
 	        className: 'string',
 	        begin: '\\|', end: '\\$'
 	      },
 	      {
 	        className: 'variable',
-	        begin: '<', end: '>'
+	        begin: '<', end: '>',
 	      },
 	      hljs.HASH_COMMENT_MODE,
 	      {
@@ -64306,7 +64248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 164 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64404,7 +64346,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 165 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64447,7 +64389,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 166 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64486,7 +64428,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 167 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64576,7 +64518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 168 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
@@ -64589,14 +64531,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        begin: '^!!!( (5|1\\.1|Strict|Frameset|Basic|Mobile|RDFa|XML\\b.*))?$',
 	        relevance: 10
 	      },
-	      // FIXME these comments should be allowed to span indented lines
-	      hljs.COMMENT(
-	        '^\\s*(!=#|=#|-#|/).*$',
-	        false,
-	        {
-	          relevance: 0
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        // FIXME these comments should be allowed to span indented lines
+	        begin: '^\\s*(!=#|=#|-#|/).*$',
+	        relevance: 0
+	      },
 	      {
 	        begin: '^\\s*(-|=|!=)(?!#)',
 	        starts: {
@@ -64704,7 +64644,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 169 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64741,20 +64681,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 170 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  var COMMENT_MODES = [
-	    hljs.COMMENT('--', '$'),
-	    hljs.COMMENT(
-	      '{-',
-	      '-}',
-	      {
-	        contains: ['self']
+
+	  var COMMENT = {
+	    className: 'comment',
+	    variants: [
+	      { begin: '--', end: '$' },
+	      { begin: '{-', end: '-}'
+	      , contains: ['self']
 	      }
-	    )
-	  ];
+	    ]
+	  };
 
 	  var PRAGMA = {
 	    className: 'pragma',
@@ -64778,10 +64718,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    illegal: '"',
 	    contains: [
 	      PRAGMA,
+	      COMMENT,
 	      PREPROCESSOR,
 	      {className: 'type', begin: '\\b[A-Z][\\w]*(\\((\\.\\.|,|\\w+)\\))?'},
 	      hljs.inherit(hljs.TITLE_MODE, {begin: '[_a-z][\\w\']*'})
-	    ].concat(COMMENT_MODES)
+	    ]
 	  };
 
 	  var RECORD = {
@@ -64805,14 +64746,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'module',
 	        begin: '\\bmodule\\b', end: 'where',
 	        keywords: 'module where',
-	        contains: [LIST].concat(COMMENT_MODES),
+	        contains: [LIST, COMMENT],
 	        illegal: '\\W\\.|;'
 	      },
 	      {
 	        className: 'import',
 	        begin: '\\bimport\\b', end: '$',
 	        keywords: 'import|0 qualified as hiding',
-	        contains: [LIST].concat(COMMENT_MODES),
+	        contains: [LIST, COMMENT],
 	        illegal: '\\W\\.|;'
 	      },
 
@@ -64820,30 +64761,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'class',
 	        begin: '^(\\s*)?(class|instance)\\b', end: 'where',
 	        keywords: 'class family instance where',
-	        contains: [CONSTRUCTOR, LIST].concat(COMMENT_MODES)
+	        contains: [CONSTRUCTOR, LIST, COMMENT]
 	      },
 	      {
 	        className: 'typedef',
 	        begin: '\\b(data|(new)?type)\\b', end: '$',
 	        keywords: 'data family type newtype deriving',
-	        contains: [PRAGMA, CONSTRUCTOR, LIST, RECORD].concat(COMMENT_MODES)
+	        contains: [PRAGMA, COMMENT, CONSTRUCTOR, LIST, RECORD]
 	      },
 	      {
 	        className: 'default',
 	        beginKeywords: 'default', end: '$',
-	        contains: [CONSTRUCTOR, LIST].concat(COMMENT_MODES)
+	        contains: [CONSTRUCTOR, LIST, COMMENT]
 	      },
 	      {
 	        className: 'infix',
 	        beginKeywords: 'infix infixl infixr', end: '$',
-	        contains: [hljs.C_NUMBER_MODE].concat(COMMENT_MODES)
+	        contains: [hljs.C_NUMBER_MODE, COMMENT]
 	      },
 	      {
 	        className: 'foreign',
 	        begin: '\\bforeign\\b', end: '$',
 	        keywords: 'foreign import export ccall stdcall cplusplus jvm ' +
 	                  'dotnet safe unsafe',
-	        contains: [CONSTRUCTOR, hljs.QUOTE_STRING_MODE].concat(COMMENT_MODES)
+	        contains: [CONSTRUCTOR, hljs.QUOTE_STRING_MODE, COMMENT]
 	      },
 	      {
 	        className: 'shebang',
@@ -64853,6 +64794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // "Whitespaces".
 
 	      PRAGMA,
+	      COMMENT,
 	      PREPROCESSOR,
 
 	      // Literals and names.
@@ -64864,12 +64806,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      hljs.inherit(hljs.TITLE_MODE, {begin: '^[_a-z][\\w\']*'}),
 
 	      {begin: '->|<-'} // No markup, relevance booster
-	    ].concat(COMMENT_MODES)
+	    ]
 	  };
 	};
 
 /***/ },
-/* 171 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64934,12 +64876,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 172 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  return {
-	    aliases: ['https'],
 	    illegal: '\\S',
 	    contains: [
 	      {
@@ -64973,7 +64914,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 173 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -64981,7 +64922,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case_insensitive: true,
 	    illegal: /\S/,
 	    contains: [
-	      hljs.COMMENT(';', '$'),
+	      {
+	        className: 'comment',
+	        begin: ';', end: '$'
+	      },
 	      {
 	        className: 'title',
 	        begin: '^\\[', end: '\\]'
@@ -65004,7 +64948,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 174 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65092,7 +65036,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 175 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65100,9 +65044,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    aliases: ['js'],
 	    keywords: {
 	      keyword:
-	        'in of if for while finally var new function do return void else break catch ' +
+	        'in if for while finally var new function do return void else break catch ' +
 	        'instanceof with throw case default try this switch continue typeof delete ' +
-	        'let yield const export super debugger as await',
+	        'let yield const class',
 	      literal:
 	        'true false null undefined NaN Infinity',
 	      built_in:
@@ -65112,8 +65056,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'TypeError URIError Number Math Date String RegExp Array Float32Array ' +
 	        'Float64Array Int16Array Int32Array Int8Array Uint16Array Uint32Array ' +
 	        'Uint8Array Uint8ClampedArray ArrayBuffer DataView JSON Intl arguments require ' +
-	        'module console window document Symbol Set Map WeakSet WeakMap Proxy Reflect ' +
-	        'Promise'
+	        'module console window document'
 	    },
 	    contains: [
 	      {
@@ -65126,24 +65069,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      hljs.APOS_STRING_MODE,
 	      hljs.QUOTE_STRING_MODE,
-	      { // template string
-	        className: 'string',
-	        begin: '`', end: '`',
-	        contains: [
-	          hljs.BACKSLASH_ESCAPE,
-	          {
-	            className: 'subst',
-	            begin: '\\$\\{', end: '\\}'
-	          }
-	        ]
-	      },
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.C_BLOCK_COMMENT_MODE,
-	      {
-	        className: 'number',
-	        begin: '\\b(0[xXbBoO][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)', // 0x..., 0..., 0b..., 0o..., decimal, float
-	        relevance: 0
-	      },
+	      hljs.C_NUMBER_MODE,
 	      { // "value" container
 	        begin: '(' + hljs.RE_STARTERS_RE + '|\\b(case|return|throw)\\b)\\s*',
 	        keywords: 'return throw case',
@@ -65151,8 +65079,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          hljs.C_LINE_COMMENT_MODE,
 	          hljs.C_BLOCK_COMMENT_MODE,
 	          hljs.REGEXP_MODE,
-	          { // E4X / JSX
-	            begin: /</, end: />\s*[);\]]/,
+	          { // E4X
+	            begin: /</, end: />;/,
 	            relevance: 0,
 	            subLanguage: 'xml'
 	          }
@@ -65181,31 +65109,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        begin: '\\.' + hljs.IDENT_RE, relevance: 0 // hack: prevents detection of keywords after dots
-	      },
-	      // ECMAScript 6 modules import
-	      {
-	        beginKeywords: 'import', end: '[;$]',
-	        keywords: 'import from as',
-	        contains: [
-	          hljs.APOS_STRING_MODE,
-	          hljs.QUOTE_STRING_MODE
-	        ]
-	      },
-	      { // ES6 class
-	        className: 'class',
-	        beginKeywords: 'class', end: /[{;=]/, excludeEnd: true,
-	        illegal: /[:"\[\]]/,
-	        contains: [
-	          {beginKeywords: 'extends'},
-	          hljs.UNDERSCORE_TITLE_MODE
-	        ]
 	      }
 	    ]
 	  };
 	};
 
 /***/ },
-/* 176 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65247,276 +65157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 177 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(hljs) {
-	  // Since there are numerous special names in Julia, it is too much trouble
-	  // to maintain them by hand. Hence these names (i.e. keywords, literals and
-	  // built-ins) are automatically generated from Julia (v0.3.0) itself through
-	  // following scripts for each.
-
-	  var KEYWORDS = {
-	    // # keyword generator
-	    // println("\"in\",")
-	    // for kw in Base.REPLCompletions.complete_keyword("")
-	    //     println("\"$kw\",")
-	    // end
-	    keyword:
-	      'in abstract baremodule begin bitstype break catch ccall const continue do else elseif end export ' +
-	      'finally for function global if immutable import importall let local macro module quote return try type ' +
-	      'typealias using while',
-
-	    // # literal generator
-	    // println("\"true\",\n\"false\"")
-	    // for name in Base.REPLCompletions.completions("", 0)[1]
-	    //     try
-	    //         s = symbol(name)
-	    //         v = eval(s)
-	    //         if !isa(v, Function) &&
-	    //            !isa(v, DataType) &&
-	    //            !issubtype(typeof(v), Tuple) &&
-	    //            !isa(v, UnionType) &&
-	    //            !isa(v, Module) &&
-	    //            !isa(v, TypeConstructor) &&
-	    //            !isa(v, Colon)
-	    //             println("\"$name\",")
-	    //         end
-	    //     end
-	    // end
-	    literal:
-	      'true false ANY ARGS CPU_CORES C_NULL DL_LOAD_PATH DevNull ENDIAN_BOM ENV I|0 Inf Inf16 Inf32 ' +
-	      'InsertionSort JULIA_HOME LOAD_PATH MS_ASYNC MS_INVALIDATE MS_SYNC MergeSort NaN NaN16 NaN32 OS_NAME QuickSort ' +
-	      'RTLD_DEEPBIND RTLD_FIRST RTLD_GLOBAL RTLD_LAZY RTLD_LOCAL RTLD_NODELETE RTLD_NOLOAD RTLD_NOW RoundDown ' +
-	      'RoundFromZero RoundNearest RoundToZero RoundUp STDERR STDIN STDOUT VERSION WORD_SIZE catalan cglobal e eu ' +
-	      'eulergamma golden im nothing pi γ π φ',
-
-	    // # built_in generator:
-	    // for name in Base.REPLCompletions.completions("", 0)[1]
-	    //     try
-	    //         v = eval(symbol(name))
-	    //         if isa(v, DataType)
-	    //             println("\"$name\",")
-	    //         end
-	    //     end
-	    // end
-	    built_in:
-	      'ASCIIString AbstractArray AbstractRNG AbstractSparseArray Any ArgumentError Array Associative Base64Pipe ' +
-	      'Bidiagonal BigFloat BigInt BitArray BitMatrix BitVector Bool BoundsError Box CFILE Cchar Cdouble Cfloat Char ' +
-	      'CharString Cint Clong Clonglong ClusterManager Cmd Coff_t Colon Complex Complex128 Complex32 Complex64 ' +
-	      'Condition Cptrdiff_t Cshort Csize_t Cssize_t Cuchar Cuint Culong Culonglong Cushort Cwchar_t DArray DataType ' +
-	      'DenseArray Diagonal Dict DimensionMismatch DirectIndexString Display DivideError DomainError EOFError ' +
-	      'EachLine Enumerate ErrorException Exception Expr Factorization FileMonitor FileOffset Filter Float16 Float32 ' +
-	      'Float64 FloatRange FloatingPoint Function GetfieldNode GotoNode Hermitian IO IOBuffer IOStream IPv4 IPv6 ' +
-	      'InexactError Int Int128 Int16 Int32 Int64 Int8 IntSet Integer InterruptException IntrinsicFunction KeyError ' +
-	      'LabelNode LambdaStaticData LineNumberNode LoadError LocalProcess MIME MathConst MemoryError MersenneTwister ' +
-	      'Method MethodError MethodTable Module NTuple NewvarNode Nothing Number ObjectIdDict OrdinalRange ' +
-	      'OverflowError ParseError PollingFileWatcher ProcessExitedException ProcessGroup Ptr QuoteNode Range Range1 ' +
-	      'Ranges Rational RawFD Real Regex RegexMatch RemoteRef RepString RevString RopeString RoundingMode Set ' +
-	      'SharedArray Signed SparseMatrixCSC StackOverflowError Stat StatStruct StepRange String SubArray SubString ' +
-	      'SymTridiagonal Symbol SymbolNode Symmetric SystemError Task TextDisplay Timer TmStruct TopNode Triangular ' +
-	      'Tridiagonal Type TypeConstructor TypeError TypeName TypeVar UTF16String UTF32String UTF8String UdpSocket ' +
-	      'Uint Uint128 Uint16 Uint32 Uint64 Uint8 UndefRefError UndefVarError UniformScaling UnionType UnitRange ' +
-	      'Unsigned Vararg VersionNumber WString WeakKeyDict WeakRef Woodbury Zip'
-	  };
-
-	  // ref: http://julia.readthedocs.org/en/latest/manual/variables/#allowed-variable-names
-	  var VARIABLE_NAME_RE = "[A-Za-z_\\u00A1-\\uFFFF][A-Za-z_0-9\\u00A1-\\uFFFF]*";
-
-	  // placeholder for recursive self-reference
-	  var DEFAULT = { lexemes: VARIABLE_NAME_RE, keywords: KEYWORDS };
-
-	  var TYPE_ANNOTATION = {
-	    className: "type-annotation",
-	    begin: /::/
-	  };
-
-	  var SUBTYPE = {
-	    className: "subtype",
-	    begin: /<:/
-	  };
-
-	  // ref: http://julia.readthedocs.org/en/latest/manual/integers-and-floating-point-numbers/
-	  var NUMBER = {
-	    className: "number",
-	    // supported numeric literals:
-	    //  * binary literal (e.g. 0x10)
-	    //  * octal literal (e.g. 0o76543210)
-	    //  * hexadecimal literal (e.g. 0xfedcba876543210)
-	    //  * hexadecimal floating point literal (e.g. 0x1p0, 0x1.2p2)
-	    //  * decimal literal (e.g. 9876543210, 100_000_000)
-	    //  * floating pointe literal (e.g. 1.2, 1.2f, .2, 1., 1.2e10, 1.2e-10)
-	    begin: /(\b0x[\d_]*(\.[\d_]*)?|0x\.\d[\d_]*)p[-+]?\d+|\b0[box][a-fA-F0-9][a-fA-F0-9_]*|(\b\d[\d_]*(\.[\d_]*)?|\.\d[\d_]*)([eEfF][-+]?\d+)?/,
-	    relevance: 0
-	  };
-
-	  var CHAR = {
-	    className: "char",
-	    begin: /'(.|\\[xXuU][a-zA-Z0-9]+)'/
-	  };
-
-	  var INTERPOLATION = {
-	    className: 'subst',
-	    begin: /\$\(/, end: /\)/,
-	    keywords: KEYWORDS
-	  };
-
-	  var INTERPOLATED_VARIABLE = {
-	    className: 'variable',
-	    begin: "\\$" + VARIABLE_NAME_RE
-	  };
-
-	  // TODO: neatly escape normal code in string literal
-	  var STRING = {
-	    className: "string",
-	    contains: [hljs.BACKSLASH_ESCAPE, INTERPOLATION, INTERPOLATED_VARIABLE],
-	    variants: [
-	      { begin: /\w*"/, end: /"\w*/ },
-	      { begin: /\w*"""/, end: /"""\w*/ }
-	    ]
-	  };
-
-	  var COMMAND = {
-	    className: "string",
-	    contains: [hljs.BACKSLASH_ESCAPE, INTERPOLATION, INTERPOLATED_VARIABLE],
-	    begin: '`', end: '`'
-	  };
-
-	  var MACROCALL = {
-	    className: "macrocall",
-	    begin: "@" + VARIABLE_NAME_RE
-	  };
-
-	  var COMMENT = {
-	    className: "comment",
-	    variants: [
-	      { begin: "#=", end: "=#", relevance: 10 },
-	      { begin: '#', end: '$' }
-	    ]
-	  };
-
-	  DEFAULT.contains = [
-	    NUMBER,
-	    CHAR,
-	    TYPE_ANNOTATION,
-	    SUBTYPE,
-	    STRING,
-	    COMMAND,
-	    MACROCALL,
-	    COMMENT,
-	    hljs.HASH_COMMENT_MODE
-	  ];
-	  INTERPOLATION.contains = DEFAULT.contains;
-
-	  return DEFAULT;
-	};
-
-/***/ },
-/* 178 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function (hljs) {
-	  var KEYWORDS = 'val var get set class trait object public open private protected ' +
-		'final enum if else do while for when break continue throw try catch finally ' +
-		'import package is as in return fun override default companion reified inline volatile transient native';
-	  
-	  return {
-	    keywords: {
-	      typename : 'Byte Short Char Int Long Boolean Float Double Void Unit Nothing',
-	      literal : 'true false null',
-	      keyword: KEYWORDS
-	    },
-	    contains : [
-	      hljs.C_LINE_COMMENT_MODE,
-	      {
-		  className: 'javadoc',
-		  begin: '/\\*\\*', end: '\\*//*',
-		  relevance: 0,
-		  contains: [
-		      {
-			  className: 'javadoctag', begin: '(^|\\s)@[A-Za-z]+'
-		      }
-		  ]
-	      },
-	      hljs.C_BLOCK_COMMENT_MODE,
-	      {
-		className: 'type',
-		begin: /</, end: />/,
-		returnBegin: true,
-		excludeEnd: false,
-		relevance: 0
-	      },
-	      {
-		className: 'function',
-		beginKeywords: 'fun', end: '[(]|$',
-		returnBegin: true,
-		excludeEnd : true,
-		keywords: KEYWORDS,
-		illegal: /fun\s+(<.*>)?[^\s\(]+(\s+[^\s\(]+)\s*=/,
-		relevance : 5,
-		contains: [
-		  {
-	            begin: hljs.UNDERSCORE_IDENT_RE + '\\s*\\(', returnBegin: true,
-	            relevance: 0,
-	            contains: [hljs.UNDERSCORE_TITLE_MODE]
-	          },
-		  {
-		    className : 'type',
-		    begin: /</, end : />/, keywords: 'reified',
-		    relevance: 0
-		  },
-	          {
-	            className: 'params',
-	            begin: /\(/, end: /\)/,
-	            keywords: KEYWORDS,
-	            relevance: 0,
-		    illegal : /\([^\(,\s:]+,/,
-	            contains: [
-		      {
-			className: 'typename',
-			begin: /:\s*/, end: /\s*[=\)]/, excludeBegin: true, returnEnd: true,
-			relevance: 0
-		      }
-	            ]
-	          },
-	          hljs.C_LINE_COMMENT_MODE,
-	          hljs.C_BLOCK_COMMENT_MODE
-		]
-	      },
-	      {
-		className: 'class',
-		beginKeywords: 'class trait', end: /[:\{(]|$/,
-		excludeEnd : true,
-		illegal: 'extends implements',
-		contains: [
-		  hljs.UNDERSCORE_TITLE_MODE,
-		  {
-		    className : 'type',
-		    begin: /</, end : />/, excludeBegin: true, excludeEnd: true,
-		    relevance: 0
-		  },
-		  {
-		    className : 'typename',
-		    begin : /[,:]\s*/, end : /[<\(,]|$/, excludeBegin: true, returnEnd: true
-		  }
-		]
-	      },
-	      {
-		className: 'variable', beginKeywords: 'var val', end : /\s*[=:$]/, excludeEnd: true
-	      },
-	      hljs.QUOTE_STRING_MODE,
-	      {
-		  className: 'shebang',
-		  begin: "^#!/usr/bin/env", end: '$',
-		  illegal: '\n'
-	      },
-	      hljs.C_NUMBER_MODE
-	    ]
-	  };
-	};
-
-/***/ },
-/* 179 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65551,13 +65192,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'skip split_thread sum take thread to trait type where with ' +
 	      'yield yieldhome'
 	  };
-	  var HTML_COMMENT = hljs.COMMENT(
-	    '<!--',
-	    '-->',
-	    {
-	      relevance: 0
-	    }
-	  );
+	  var HTML_COMMENT = {
+	    className: 'comment',
+	    begin: '<!--', end: '-->',
+	    relevance: 0
+	  };
 	  var LASSO_NOPROCESS = {
 	    className: 'preprocessor',
 	    begin: '\\[noprocess\\]',
@@ -65707,12 +65346,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 180 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE        = '[\\w-]+'; // yes, Less identifiers may begin with a digit
-	  var INTERP_IDENT_RE = '(' + IDENT_RE + '|@{' + IDENT_RE + '})';
+	  var INTERP_IDENT_RE = '(' + IDENT_RE + '|@{' + IDENT_RE + '})+';
 
 	  /* Generic Modes */
 
@@ -65761,7 +65400,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 
 	  var VALUE_WITH_RULESETS = VALUE.concat({
-	    begin: '{', end: '}', contains: RULES
+	    begin: '{', end: '}', contains: RULES,
 	  });
 
 	  var MIXIN_GUARD_MODE = {
@@ -65848,13 +65487,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 181 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  var LISP_IDENT_RE = '[a-zA-Z_\\-\\+\\*\\/\\<\\=\\>\\&\\#][a-zA-Z0-9_\\-\\+\\*\\/\\<\\=\\>\\&\\#!]*';
 	  var MEC_RE = '\\|[^]*?\\|';
-	  var LISP_SIMPLE_NUMBER_RE = '(\\-|\\+)?\\d+(\\.\\d+|\\/\\d+)?((d|e|f|l|s|D|E|F|L|S)(\\+|\\-)?\\d+)?';
+	  var LISP_SIMPLE_NUMBER_RE = '(\\-|\\+)?\\d+(\\.\\d+|\\/\\d+)?((d|e|f|l|s)(\\+|\\-)?\\d+)?';
 	  var SHEBANG = {
 	    className: 'shebang',
 	    begin: '^#!', end: '$'
@@ -65867,19 +65506,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'number',
 	    variants: [
 	      {begin: LISP_SIMPLE_NUMBER_RE, relevance: 0},
-	      {begin: '#(b|B)[0-1]+(/[0-1]+)?'},
-	      {begin: '#(o|O)[0-7]+(/[0-7]+)?'},
-	      {begin: '#(x|X)[0-9a-fA-F]+(/[0-9a-fA-F]+)?'},
-	      {begin: '#(c|C)\\(' + LISP_SIMPLE_NUMBER_RE + ' +' + LISP_SIMPLE_NUMBER_RE, end: '\\)'}
+	      {begin: '#b[0-1]+(/[0-1]+)?'},
+	      {begin: '#o[0-7]+(/[0-7]+)?'},
+	      {begin: '#x[0-9a-f]+(/[0-9a-f]+)?'},
+	      {begin: '#c\\(' + LISP_SIMPLE_NUMBER_RE + ' +' + LISP_SIMPLE_NUMBER_RE, end: '\\)'}
 	    ]
 	  };
 	  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null});
-	  var COMMENT = hljs.COMMENT(
-	    ';', '$',
-	    {
-	      relevance: 0
-	    }
-	  );
+	  var COMMENT = {
+	    className: 'comment',
+	    begin: ';', end: '$', relevance: 0
+	  };
 	  var VARIABLE = {
 	    className: 'variable',
 	    begin: '\\*', end: '\\*'
@@ -65888,20 +65525,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'keyword',
 	    begin: '[:&]' + LISP_IDENT_RE
 	  };
-	  var IDENT = {
-	    begin: LISP_IDENT_RE,
-	    relevance: 0
-	  };
 	  var MEC = {
 	    begin: MEC_RE
 	  };
 	  var QUOTED_LIST = {
 	    begin: '\\(', end: '\\)',
-	    contains: ['self', LITERAL, STRING, NUMBER, IDENT]
+	    contains: ['self', LITERAL, STRING, NUMBER]
 	  };
 	  var QUOTED = {
 	    className: 'quoted',
-	    contains: [NUMBER, STRING, VARIABLE, KEYWORD, QUOTED_LIST, IDENT],
+	    contains: [NUMBER, STRING, VARIABLE, KEYWORD, QUOTED_LIST],
 	    variants: [
 	      {
 	        begin: '[\'`]\\(', end: '\\)'
@@ -65917,14 +65550,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  var QUOTED_ATOM = {
 	    className: 'quoted',
-	    variants: [
-	      {begin: '\'' + LISP_IDENT_RE},
-	      {begin: '#\'' + LISP_IDENT_RE + '(::' + LISP_IDENT_RE + ')*'}
-	    ]
+	    begin: '\'' + LISP_IDENT_RE
 	  };
 	  var LIST = {
 	    className: 'list',
-	    begin: '\\(\\s*', end: '\\)'
+	    begin: '\\(', end: '\\)'
 	  };
 	  var BODY = {
 	    endsWithParent: true,
@@ -65940,7 +65570,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    BODY
 	  ];
-	  BODY.contains = [QUOTED, QUOTED_ATOM, LIST, LITERAL, NUMBER, STRING, COMMENT, VARIABLE, KEYWORD, MEC, IDENT];
+	  BODY.contains = [QUOTED, QUOTED_ATOM, LIST, LITERAL, NUMBER, STRING, COMMENT, VARIABLE, KEYWORD, MEC];
 
 	  return {
 	    illegal: /\S/,
@@ -65952,14 +65582,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      COMMENT,
 	      QUOTED,
 	      QUOTED_ATOM,
-	      LIST,
-	      IDENT
+	      LIST
 	    ]
 	  };
 	};
 
 /***/ },
-/* 182 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -65967,12 +65596,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'variable', begin: '\\b[gtps][A-Z]+[A-Za-z0-9_\\-]*\\b|\\$_[A-Z]+',
 	    relevance: 0
 	  };
-	  var COMMENT_MODES = [
-	    hljs.C_BLOCK_COMMENT_MODE,
-	    hljs.HASH_COMMENT_MODE,
-	    hljs.COMMENT('--', '$'),
-	    hljs.COMMENT('[^:]//', '$')
-	  ];
+	  var COMMENT = {
+	    className: 'comment', end: '$',
+	    variants: [
+	      hljs.C_BLOCK_COMMENT_MODE,
+	      hljs.HASH_COMMENT_MODE,
+	      {
+	        begin: '--'
+	      },
+	      {
+	        begin: '[^:]//'
+	      }
+	    ]
+	  };
 	  var TITLE1 = hljs.inherit(hljs.TITLE_MODE, {
 	    variants: [
 	      {begin: '\\b_*rig[A-Z]+[A-Za-z0-9_\\-]*'},
@@ -65984,10 +65620,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case_insensitive: false,
 	    keywords: {
 	      keyword:
-	        '$_COOKIE $_FILES $_GET $_GET_BINARY $_GET_RAW $_POST $_POST_BINARY $_POST_RAW $_SESSION $_SERVER ' +
-	        'codepoint codepoints segment segments codeunit codeunits sentence sentences trueWord trueWords paragraph ' +
 	        'after byte bytes english the until http forever descending using line real8 with seventh ' +
-	        'for stdout finally element word words fourth before black ninth sixth characters chars stderr ' +
+	        'for stdout finally element word fourth before black ninth sixth characters chars stderr ' +
 	        'uInt1 uInt1s uInt2 uInt2s stdin string lines relative rel any fifth items from middle mid ' +
 	        'at else of catch then third it file milliseconds seconds second secs sec int1 int1s int4 ' +
 	        'int4s internet int2 int2s normal text item last long detailed effective uInt4 uInt4s repeat ' +
@@ -66005,20 +65639,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'div mod wrap and or bitAnd bitNot bitOr bitXor among not in a an within ' +
 	        'contains ends with begins the keys of keys',
 	      built_in:
-	        'put abs acos aliasReference annuity arrayDecode arrayEncode asin atan atan2 average avg avgDev base64Decode ' +
-	        'base64Encode baseConvert binaryDecode binaryEncode byteOffset byteToNum cachedURL cachedURLs charToNum ' +
-	        'cipherNames codepointOffset codepointProperty codepointToNum codeunitOffset commandNames compound compress ' +
-	        'constantNames cos date dateFormat decompress directories ' +
-	        'diskSpace DNSServers exp exp1 exp2 exp10 extents files flushEvents folders format functionNames geometricMean global ' +
-	        'globals hasMemory harmonicMean hostAddress hostAddressToName hostName hostNameToAddress isNumber ISOToMac itemOffset ' +
+	        'put abs acos aliasReference annuity arrayDecode arrayEncode asin atan atan2 average avg base64Decode ' +
+	        'base64Encode baseConvert binaryDecode binaryEncode byteToNum cachedURL cachedURLs charToNum ' +
+	        'cipherNames commandNames compound compress constantNames cos date dateFormat decompress directories ' +
+	        'diskSpace DNSServers exp exp1 exp2 exp10 extents files flushEvents folders format functionNames global ' +
+	        'globals hasMemory hostAddress hostAddressToName hostName hostNameToAddress isNumber ISOToMac itemOffset ' +
 	        'keys len length libURLErrorData libUrlFormData libURLftpCommand libURLLastHTTPHeaders libURLLastRHHeaders ' +
 	        'libUrlMultipartFormAddPart libUrlMultipartFormData libURLVersion lineOffset ln ln1 localNames log log2 log10 ' +
 	        'longFilePath lower macToISO matchChunk matchText matrixMultiply max md5Digest median merge millisec ' +
-	        'millisecs millisecond milliseconds min monthNames nativeCharToNum normalizeText num number numToByte numToChar ' +
-	        'numToCodepoint numToNativeChar offset open openfiles openProcesses openProcessIDs openSockets ' +
-	        'paragraphOffset paramCount param params peerAddress pendingMessages platform popStdDev populationStandardDeviation ' +
-	        'populationVariance popVariance processID random randomBytes replaceText result revCreateXMLTree revCreateXMLTreeFromFile ' +
-	        'revCurrentRecord revCurrentRecordIsFirst revCurrentRecordIsLast revDatabaseColumnCount revDatabaseColumnIsNull ' +
+	        'millisecs millisecond milliseconds min monthNames num number numToByte numToChar offset open openfiles ' +
+	        'openProcesses openProcessIDs openSockets paramCount param params peerAddress pendingMessages platform ' +
+	        'processID random randomBytes replaceText result revCreateXMLTree revCreateXMLTreeFromFile revCurrentRecord ' +
+	        'revCurrentRecordIsFirst revCurrentRecordIsLast revDatabaseColumnCount revDatabaseColumnIsNull ' +
 	        'revDatabaseColumnLengths revDatabaseColumnNames revDatabaseColumnNamed revDatabaseColumnNumbered ' +
 	        'revDatabaseColumnTypes revDatabaseConnectResult revDatabaseCursors revDatabaseID revDatabaseTableNames ' +
 	        'revDatabaseType revDataFromQuery revdb_closeCursor revdb_columnbynumber revdb_columncount revdb_columnisnull ' +
@@ -66027,26 +65659,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'revdb_disconnect revdb_execute revdb_iseof revdb_isbof revdb_movefirst revdb_movelast revdb_movenext ' +
 	        'revdb_moveprev revdb_query revdb_querylist revdb_recordcount revdb_rollback revdb_tablenames ' +
 	        'revGetDatabaseDriverPath revNumberOfRecords revOpenDatabase revOpenDatabases revQueryDatabase ' +
-	        'revQueryDatabaseBlob revQueryResult revQueryIsAtStart revQueryIsAtEnd revUnixFromMacPath revXMLAttribute ' +
-	        'revXMLAttributes revXMLAttributeValues revXMLChildContents revXMLChildNames revXMLCreateTreeFromFileWithNamespaces ' +
-	        'revXMLCreateTreeWithNamespaces revXMLDataFromXPathQuery revXMLEvaluateXPath revXMLFirstChild revXMLMatchingNode ' +
-	        'revXMLNextSibling revXMLNodeContents revXMLNumberOfChildren revXMLParent revXMLPreviousSibling ' +
-	        'revXMLRootNode revXMLRPC_CreateRequest revXMLRPC_Documents revXMLRPC_Error ' +
-	        'revXMLRPC_GetHost revXMLRPC_GetMethod revXMLRPC_GetParam revXMLText revXMLRPC_Execute ' +
+	        'revQueryDatabaseBlob revQueryResult revQueryIsAtStart revQueryIsAtEnd revUnixFromMacPath ' +
+	        'revXMLAttribute revXMLAttributes revXMLAttributeValues revXMLChildContents revXMLChildNames ' +
+	        'revXMLFirstChild revXMLMatchingNode revXMLNextSibling revXMLNodeContents revXMLNumberOfChildren ' +
+	        'revXMLParent revXMLPreviousSibling revXMLRootNode revXMLRPC_CreateRequest revXMLRPC_Documents ' +
+	        'revXMLRPC_Error revXMLRPC_Execute revXMLRPC_GetHost revXMLRPC_GetMethod revXMLRPC_GetParam revXMLText ' +
 	        'revXMLRPC_GetParamCount revXMLRPC_GetParamNode revXMLRPC_GetParamType revXMLRPC_GetPath revXMLRPC_GetPort ' +
 	        'revXMLRPC_GetProtocol revXMLRPC_GetRequest revXMLRPC_GetResponse revXMLRPC_GetSocket revXMLTree ' +
-	        'revXMLTrees revXMLValidateDTD revZipDescribeItem revZipEnumerateItems revZipOpenArchives round sampVariance ' +
-	        'sec secs seconds sentenceOffset sha1Digest shell shortFilePath sin specialFolderPath sqrt standardDeviation statRound ' +
-	        'stdDev sum sysError systemVersion tan tempName textDecode textEncode tick ticks time to tokenOffset toLower toUpper ' +
-	        'transpose truewordOffset trunc uniDecode uniEncode upper URLDecode URLEncode URLStatus uuid value variableNames ' +
-	        'variance version waitDepth weekdayNames wordOffset xsltApplyStylesheet xsltApplyStylesheetFromFile xsltLoadStylesheet ' +
-	        'xsltLoadStylesheetFromFile add breakpoint cancel clear local variable file word line folder directory URL close socket process ' +
+	        'revXMLTrees revXMLValidateDTD revZipDescribeItem revZipEnumerateItems revZipOpenArchives round ' +
+	        'sec secs seconds sha1Digest shell shortFilePath sin specialFolderPath sqrt standardDeviation statRound ' +
+	        'stdDev sum sysError systemVersion tan tempName tick ticks time to toLower toUpper transpose trunc ' +
+	        'uniDecode uniEncode upper URLDecode URLEncode URLStatus value variableNames version waitDepth weekdayNames wordOffset ' +
+	        'add breakpoint cancel clear local variable file word line folder directory URL close socket process ' +
 	        'combine constant convert create new alias folder directory decrypt delete variable word line folder ' +
 	        'directory URL dispatch divide do encrypt filter get include intersect kill libURLDownloadToFile ' +
 	        'libURLFollowHttpRedirects libURLftpUpload libURLftpUploadFile libURLresetAll libUrlSetAuthCallback ' +
 	        'libURLSetCustomHTTPHeaders libUrlSetExpect100 libURLSetFTPListCommand libURLSetFTPMode libURLSetFTPStopTime ' +
-	        'libURLSetStatusCallback load multiply socket prepare process post seek rel relative read from process rename ' +
-	        'replace require resetAll resolve revAddXMLNode revAppendXML revCloseCursor revCloseDatabase revCommitDatabase ' +
+	        'libURLSetStatusCallback load multiply socket process post seek rel relative read from process rename ' +
+	        'replace require resetAll revAddXMLNode revAppendXML revCloseCursor revCloseDatabase revCommitDatabase ' +
 	        'revCopyFile revCopyFolder revCopyXMLNode revDeleteFolder revDeleteXMLNode revDeleteAllXMLTrees ' +
 	        'revDeleteXMLTree revExecuteSQL revGoURL revInsertXMLNode revMoveFolder revMoveToFirstRecord revMoveToLastRecord ' +
 	        'revMoveToNextRecord revMoveToPreviousRecord revMoveToRecord revMoveXMLNode revPutIntoXMLNode revRollBackDatabase ' +
@@ -66055,7 +65685,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'revXMLRPC_SetMethod revXMLRPC_SetPort revXMLRPC_SetProtocol revXMLRPC_SetSocket revZipAddItemWithData ' +
 	        'revZipAddItemWithFile revZipAddUncompressedItemWithData revZipAddUncompressedItemWithFile revZipCancel ' +
 	        'revZipCloseArchive revZipDeleteItem revZipExtractItemToFile revZipExtractItemToVariable revZipSetProgressCallback ' +
-	        'revZipRenameItem revZipReplaceItemWithData revZipReplaceItemWithFile revZipOpenArchive send set sort split start stop ' +
+	        'revZipRenameItem revZipReplaceItemWithData revZipReplaceItemWithFile revZipOpenArchive send set sort split ' +
 	        'subtract union unload wait write'
 	    },
 	    contains: [
@@ -66119,18 +65749,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'preprocessor',
 	        begin: '\\?>'
 	      },
+	      COMMENT,
 	      hljs.APOS_STRING_MODE,
 	      hljs.QUOTE_STRING_MODE,
 	      hljs.BINARY_NUMBER_MODE,
 	      hljs.C_NUMBER_MODE,
 	      TITLE1
-	    ].concat(COMMENT_MODES),
+	    ],
 	    illegal: ';$|^\\[|^='
 	  };
 	};
 
 /***/ },
-/* 183 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66155,7 +65786,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var TITLE = hljs.inherit(hljs.TITLE_MODE, {begin: JS_IDENT_RE});
 	  var SUBST = {
 	    className: 'subst',
-	    begin: /#\{/, end: /}/,
+	    begin: /#\{/, end: /\}/,
 	    keywords: KEYWORDS
 	  };
 	  var SUBST_SIMPLE = {
@@ -66241,7 +65872,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    keywords: KEYWORDS,
 	    illegal: /\/\*/,
 	    contains: EXPRESSIONS.concat([
-	      hljs.COMMENT('\\/\\*', '\\*\\/'),
+	      {
+	        className: 'comment',
+	        begin: '\\/\\*', end: '\\*\\/'
+	      },
 	      hljs.HASH_COMMENT_MODE,
 	      {
 	        className: 'function',
@@ -66285,7 +65919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 184 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66296,16 +65930,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    contains: ['self']
 	  };
 	  var COMMENTS = [
-	    hljs.COMMENT('--(?!' + OPENING_LONG_BRACKET + ')', '$'),
-	    hljs.COMMENT(
-	      '--' + OPENING_LONG_BRACKET,
-	      CLOSING_LONG_BRACKET,
-	      {
-	        contains: [LONG_BRACKETS],
-	        relevance: 10
-	      }
-	    )
-	  ];
+	    {
+	      className: 'comment',
+	      begin: '--(?!' + OPENING_LONG_BRACKET + ')', end: '$'
+	    },
+	    {
+	      className: 'comment',
+	      begin: '--' + OPENING_LONG_BRACKET, end: CLOSING_LONG_BRACKET,
+	      contains: [LONG_BRACKETS],
+	      relevance: 10
+	    }
+	  ]
 	  return {
 	    lexemes: hljs.UNDERSCORE_IDENT_RE,
 	    keywords: {
@@ -66345,7 +65980,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 185 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66395,7 +66030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 186 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66501,7 +66136,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 187 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66564,7 +66199,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 188 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66641,9 +66276,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'cell',
-	        begin: '\\{', end: /}/,
+	        begin: '\\{', end: /\}/,
 	        contains: COMMON_CONTAINS,
 	        relevance: 0,
+	        illegal: /:/,
 	        starts: TRANSPOSE
 	      },
 	      {
@@ -66652,14 +66288,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        relevance: 0,
 	        starts: TRANSPOSE
 	      },
-	      hljs.COMMENT('^\\s*\\%\\{\\s*$', '^\\s*\\%\\}\\s*$'),
-	      hljs.COMMENT('\\%', '$')
+	      {
+	        className: 'comment',
+	        begin: '\\%', end: '$'
+	      }
 	    ].concat(COMMON_CONTAINS)
 	  };
 	};
 
 /***/ },
-/* 189 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66893,7 +66531,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 190 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -66986,7 +66624,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 191 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67003,13 +66641,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'reflexivity irreflexivity connectedness uniqueness commutativity ' +
 	      'idempotence involutiveness projectivity',
 	    contains: [
-	      hljs.COMMENT('::', '$')
+	      {
+	        className: 'comment',
+	        begin: '::', end: '$'
+	      }
 	    ]
 	  };
 	};
 
 /***/ },
-/* 192 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67021,7 +66662,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      hljs.NUMBER_MODE
 	    ]
-	  };
+	  }
 
 	  return {
 	    case_insensitive: true,
@@ -67036,20 +66677,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      literal: 'true false null and or shl shr mod'
 	    },
 	    contains: [
-	      hljs.COMMENT('#rem', '#end'),
-	      hljs.COMMENT(
-	        "'",
-	        '$',
-	        {
-	          relevance: 0
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '#rem', end: '#end'
+	      },
+	      {
+	        className: 'comment',
+	        begin: "'", end: '$',
+	        relevance: 0
+	      },
 	      {
 	        className: 'function',
 	        beginKeywords: 'function method', end: '[(=:]|$',
 	        illegal: /\n/,
 	        contains: [
-	          hljs.UNDERSCORE_TITLE_MODE
+	          hljs.UNDERSCORE_TITLE_MODE,
 	        ]
 	      },
 	      {
@@ -67091,7 +66733,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 193 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67177,12 +66819,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 194 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
 	  return {
-	    aliases: ['nim'],
 	    keywords: {
 	      keyword: 'addr and as asm bind block break|0 case|0 cast const|0 continue|0 converter discard distinct|10 div do elif else|0 end|0 enum|0 except export finally for from generic if|0 import|0 in include|0 interface is isnot|10 iterator|10 let|0 macro method|10 mixin mod nil not notin|10 object|0 of or out proc|10 ptr raise ref|10 return shl shr static template|10 try|0 tuple type|0 using|0 var|0 when while|0 with without xor yield',
 	      literal: 'shared guarded stdin stdout stderr result|10 true false'
@@ -67201,9 +66842,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'string',
 	        begin: /([a-zA-Z]\w*)?"""/,
 	        end: /"""/
-	      },
-	      hljs.QUOTE_STRING_MODE,
-	      {
+	      }, {
+	        className: 'string',
+	        begin: /"/,
+	        end: /"/,
+	        illegal: /\n/,
+	        contains: [{begin: /\\./}]
+	      }, {
 	        className: 'type',
 	        begin: /\b[A-Z]\w+\b/,
 	        relevance: 0
@@ -67233,7 +66878,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 195 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67246,7 +66891,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var ANTIQUOTE = {
 	    className: 'subst',
 	    begin: /\$\{/,
-	    end: /}/,
+	    end: /\}/,
 	    keywords: NIX_KEYWORDS
 	  };
 	  var ATTRS = {
@@ -67287,7 +66932,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 196 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67353,13 +66998,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          LANGUAGES
 	        ]
 	      },
-	      hljs.COMMENT(
-	        ';',
-	        '$',
-	        {
-	          relevance: 0
-	        }
-	      ),
+	      { // line comments
+	        className: 'comment',
+	        begin: ';', end: '$',
+	        relevance: 0
+	      },
 	      {
 	        className: 'function',
 	        beginKeywords: 'Function PageEx Section SectionGroup SubSection', end: '$'
@@ -67379,14 +67022,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 197 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  var API_CLASS = {
-	    className: 'built_in',
-	    begin: '(AV|CA|CF|CG|CI|MK|MP|NS|UI)\\w+',
-	  };
 	  var OBJC_KEYWORDS = {
 	    keyword:
 	      'int float while char export sizeof typedef const struct for union ' +
@@ -67401,17 +67040,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    literal:
 	      'false true FALSE TRUE nil YES NO NULL',
 	    built_in:
-	      'BOOL dispatch_once_t dispatch_queue_t dispatch_sync dispatch_async dispatch_once'
+	      'NSString NSData NSDictionary CGRect CGPoint UIButton UILabel UITextView UIWebView MKMapView ' +
+	      'NSView NSViewController NSWindow NSWindowController NSSet NSUUID NSIndexSet ' +
+	      'UISegmentedControl NSObject UITableViewDelegate UITableViewDataSource NSThread ' +
+	      'UIActivityIndicator UITabbar UIToolBar UIBarButtonItem UIImageView NSAutoreleasePool ' +
+	      'UITableView BOOL NSInteger CGFloat NSException NSLog NSMutableString NSMutableArray ' +
+	      'NSMutableDictionary NSURL NSIndexPath CGSize UITableViewCell UIView UIViewController ' +
+	      'UINavigationBar UINavigationController UITabBarController UIPopoverController ' +
+	      'UIPopoverControllerDelegate UIImage NSNumber UISearchBar NSFetchedResultsController ' +
+	      'NSFetchedResultsChangeType UIScrollView UIScrollViewDelegate UIEdgeInsets UIColor ' +
+	      'UIFont UIApplication NSNotFound NSNotificationCenter NSNotification ' +
+	      'UILocalNotification NSBundle NSFileManager NSTimeInterval NSDate NSCalendar ' +
+	      'NSUserDefaults UIWindow NSRange NSArray NSError NSURLRequest NSURLConnection ' +
+	      'NSURLSession NSURLSessionDataTask NSURLSessionDownloadTask NSURLSessionUploadTask NSURLResponse' +
+	      'UIInterfaceOrientation MPMoviePlayerController dispatch_once_t ' +
+	      'dispatch_queue_t dispatch_sync dispatch_async dispatch_once'
 	  };
 	  var LEXEMES = /[a-zA-Z@][a-zA-Z0-9_]*/;
 	  var CLASS_KEYWORDS = '@interface @class @protocol @implementation';
 	  return {
 	    aliases: ['m', 'mm', 'objc', 'obj-c'],
-	    keywords: OBJC_KEYWORDS,
-	    lexemes: LEXEMES,
+	    keywords: OBJC_KEYWORDS, lexemes: LEXEMES,
 	    illegal: '</',
 	    contains: [
-	      API_CLASS,
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.C_BLOCK_COMMENT_MODE,
 	      hljs.C_NUMBER_MODE,
@@ -67462,7 +67113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 198 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67484,7 +67135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /* (some) types in Pervasives */
 	        'in_channel out_channel ref',
 	      literal:
-	        'true false'
+	        'true false',
 	    },
 	    illegal: /\/\/|>>/,
 	    lexemes: '[a-z_]\\w*!?',
@@ -67493,21 +67144,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'literal',
 	        begin: '\\[(\\|\\|)?\\]|\\(\\)'
 	      },
-	      hljs.COMMENT(
-	        '\\(\\*',
-	        '\\*\\)',
-	        {
-	          contains: ['self']
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '\\(\\*', end: '\\*\\)',
+	        contains: ['self'],
+	      },
 	      { /* type variable */
 	        className: 'symbol',
-	        begin: '\'[A-Za-z_](?!\')[\\w\']*'
+	        begin: '\'[A-Za-z_](?!\')[\\w\']*',
 	        /* the grammar is ambiguous on how 'a'b should be interpreted but not the compiler */
 	      },
 	      { /* polymorphic variant */
 	        className: 'tag',
-	        begin: '`[A-Z][\\w\']*'
+	        begin: '`[A-Z][\\w\']*',
 	      },
 	      { /* module or constructor */
 	        className: 'type',
@@ -67536,7 +67185,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 199 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67548,20 +67197,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'record reintroduce remove repeat require result reverse sealed select self sequence set shl shr skip static step soft take then to true try tuple '+
 	    'type union unit unsafe until uses using var virtual raises volatile where while with write xor yield await mapped deprecated stdcall cdecl pascal '+
 	    'register safecall overload library platform reference packed strict published autoreleasepool selector strong weak unretained';
-	  var CURLY_COMMENT =  hljs.COMMENT(
-	    '{',
-	    '}',
-	    {
-	      relevance: 0
-	    }
-	  );
-	  var PAREN_COMMENT = hljs.COMMENT(
-	    '\\(\\*',
-	    '\\*\\)',
-	    {
-	      relevance: 10
-	    }
-	  );
+	  var CURLY_COMMENT =  {
+	    className: 'comment',
+	    begin: '{', end: '}',
+	    relevance: 0
+	  };
+	  var PAREN_COMMENT = {
+	    className: 'comment',
+	    begin: '\\(\\*', end: '\\*\\)',
+	    relevance: 10
+	  };
 	  var STRING = {
 	    className: 'string',
 	    begin: '\'', end: '\'',
@@ -67609,31 +67254,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 200 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  var CURLY_SUBCOMMENT = hljs.COMMENT(
-	    '{',
-	    '}',
-	    {
-	      contains: ['self']
-	    }
-	  );
 	  return {
 	    subLanguage: 'xml', relevance: 0,
 	    contains: [
-	      hljs.COMMENT('^#', '$'),
-	      hljs.COMMENT(
-	        '\\^rem{',
-	        '}',
-	        {
-	          relevance: 10,
-	          contains: [
-	            CURLY_SUBCOMMENT
-	          ]
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '^#', end: '$'
+	      },
+	      {
+	        className: 'comment',
+	        begin: '\\^rem{', end: '}',
+	        relevance: 10,
+	        contains: [
+	          {
+	            begin: '{', end: '}',
+	            contains: ['self']
+	          }
+	        ]
+	      },
 	      {
 	        className: 'preprocessor',
 	        begin: '^@(?:BASE|USE|CLASS|OPTIONS)$',
@@ -67661,7 +67303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 201 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67697,29 +67339,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'variable',
 	    variants: [
 	      {begin: /\$\d/},
-	      {begin: /[\$%@](\^\w\b|#\w+(::\w+)*|{\w+}|\w+(::\w*)*)/},
-	      {begin: /[\$%@][^\s\w{]/, relevance: 0}
+	      {begin: /[\$\%\@](\^\w\b|#\w+(\:\:\w+)*|{\w+}|\w+(\:\:\w*)*)/},
+	      {begin: /[\$\%\@][^\s\w{]/, relevance: 0}
 	    ]
 	  };
-	  var COMMENT = hljs.COMMENT(
-	    '^(__END__|__DATA__)',
-	    '\\n$',
-	    {
-	      relevance: 5
-	    }
-	  );
+	  var COMMENT = {
+	    className: 'comment',
+	    begin: '^(__END__|__DATA__)', end: '\\n$',
+	    relevance: 5
+	  };
 	  var STRING_CONTAINS = [hljs.BACKSLASH_ESCAPE, SUBST, VAR];
 	  var PERL_DEFAULT_CONTAINS = [
 	    VAR,
 	    hljs.HASH_COMMENT_MODE,
 	    COMMENT,
-	    hljs.COMMENT(
-	      '^\\=\\w',
-	      '\\=cut',
-	      {
-	        endsWithParent: true
-	      }
-	    ),
+	    {
+	      className: 'comment',
+	      begin: '^\\=\\w', end: '\\=cut', endsWithParent: true
+	    },
 	    METHOD,
 	    {
 	      className: 'string',
@@ -67819,63 +67456,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 202 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(hljs) {
-	  var MACRO = {
-	    className: 'variable',
-	    begin: /\$[\w\d#@][\w\d_]*/
-	  };
-	  var TABLE = {
-	    className: 'variable',
-	    begin: /</, end: />/
-	  };
-	  var QUOTE_STRING = {
-	    className: 'string',
-	    begin: /"/, end: /"/
-	  };
-
-	  return {
-	    aliases: ['pf.conf'],
-	    lexemes: /[a-z0-9_<>-]+/,
-	    keywords: {
-	      built_in: /* block match pass are "actions" in pf.conf(5), the rest are
-	                 * lexically similar top-level commands.
-	                 */
-	        'block match pass load anchor|5 antispoof|10 set table',
-	      keyword:
-	        'in out log quick on rdomain inet inet6 proto from port os to route' +
-	        'allow-opts divert-packet divert-reply divert-to flags group icmp-type' +
-	        'icmp6-type label once probability recieved-on rtable prio queue' +
-	        'tos tag tagged user keep fragment for os drop' +
-	        'af-to|10 binat-to|10 nat-to|10 rdr-to|10 bitmask least-stats random round-robin' +
-	        'source-hash static-port' +
-	        'dup-to reply-to route-to' +
-	        'parent bandwidth default min max qlimit' +
-	        'block-policy debug fingerprints hostid limit loginterface optimization' +
-	        'reassemble ruleset-optimization basic none profile skip state-defaults' +
-	        'state-policy timeout' +
-	        'const counters persist' +
-	        'no modulate synproxy state|5 floating if-bound no-sync pflow|10 sloppy' +
-	        'source-track global rule max-src-nodes max-src-states max-src-conn' +
-	        'max-src-conn-rate overload flush' +
-	        'scrub|5 max-mss min-ttl no-df|10 random-id',
-	      literal:
-	        'all any no-route self urpf-failed egress|5 unknown',
-	    },
-	    contains: [
-	      hljs.HASH_COMMENT_MODE,
-	      hljs.NUMBER_MODE,
-	      hljs.QUOTE_STRING_MODE,
-	      MACRO,
-	      TABLE,
-	    ]
-	  };
-	};
-
-/***/ },
-/* 203 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -67915,28 +67496,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    contains: [
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.HASH_COMMENT_MODE,
-	      hljs.COMMENT(
-	        '/\\*',
-	        '\\*/',
-	        {
-	          contains: [
-	            {
-	              className: 'phpdoc',
-	              begin: '\\s@[A-Za-z]+'
-	            },
-	            PREPROCESSOR
-	          ]
-	        }
-	      ),
-	      hljs.COMMENT(
-	        '__halt_compiler.+?;',
-	        false,
-	        {
-	          endsWithParent: true,
-	          keywords: '__halt_compiler',
-	          lexemes: hljs.UNDERSCORE_IDENT_RE
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '/\\*', end: '\\*/',
+	        contains: [
+	          {
+	            className: 'phpdoc',
+	            begin: '\\s@[A-Za-z]+'
+	          },
+	          PREPROCESSOR
+	        ]
+	      },
+	      {
+	          className: 'comment',
+	          begin: '__halt_compiler.+?;', endsWithParent: true,
+	          keywords: '__halt_compiler', lexemes: hljs.UNDERSCORE_IDENT_RE
+	      },
 	      {
 	        className: 'string',
 	        begin: '<<<[\'"]?\\w+[\'"]?$', end: '^\\w+;',
@@ -67945,8 +67520,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      PREPROCESSOR,
 	      VARIABLE,
 	      {
-	        // swallow composed identifiers to avoid parsing them as keywords
-	        begin: /(::|->)+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/
+	        // swallow class members to avoid parsing them as keywords
+	        begin: /->+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/
 	      },
 	      {
 	        className: 'function',
@@ -67995,7 +67570,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 204 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68051,7 +67626,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 205 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68103,7 +67678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 206 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68149,100 +67724,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 207 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(hljs) {
-
-	  var ATOM = {
-
-	    className: 'atom',
-	    begin: /[a-z][A-Za-z0-9_]*/,
-	    relevance: 0
-	  };
-
-	  var VAR = {
-
-	    className: 'name',
-	    variants: [
-	      {begin: /[A-Z][a-zA-Z0-9_]*/},
-	      {begin: /_[A-Za-z0-9_]*/},
-	    ],
-	    relevance: 0
-	  };
-
-	  var PARENTED = {
-
-	    begin: /\(/,
-	    end: /\)/,
-	    relevance: 0
-	  };
-
-	  var LIST = {
-
-	    begin: /\[/,
-	    end: /\]/
-	  };
-
-	  var LINE_COMMENT = {
-
-	    className: 'comment',
-	    begin: /%/, end: /$/,
-	    contains: [hljs.PHRASAL_WORDS_MODE]
-	  };
-
-	  var BACKTICK_STRING = {
-
-	    className: 'string',
-	    begin: /`/, end: /`/,
-	    contains: [hljs.BACKSLASH_ESCAPE]
-	  };
-
-	  var CHAR_CODE = {
-
-	    className: 'string', // 0'a etc.
-	    begin: /0\'(\\\'|.)/
-	  };
-
-	  var SPACE_CODE = {
-
-	    className: 'string',
-	    begin: /0\'\\s/ // 0'\s
-	  };
-
-	  var PRED_OP = { // relevance booster
-	    begin: /:-/
-	  };
-
-	  var inner = [
-
-	    ATOM,
-	    VAR,
-	    PARENTED,
-	    PRED_OP,
-	    LIST,
-	    LINE_COMMENT,
-	    hljs.C_BLOCK_COMMENT_MODE,
-	    hljs.QUOTE_STRING_MODE,
-	    hljs.APOS_STRING_MODE,
-	    BACKTICK_STRING,
-	    CHAR_CODE,
-	    SPACE_CODE,
-	    hljs.C_NUMBER_MODE
-	  ];
-
-	  PARENTED.contains = inner;
-	  LIST.contains = inner;
-
-	  return {
-	    contains: inner.concat([
-	      {begin: /\.$/} // relevance booster
-	    ])
-	  };
-	};
-
-/***/ },
-/* 208 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68283,7 +67765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 209 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68335,7 +67817,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'uptime_days uptime_hours uptime_seconds uuid virtual vlans xendomains zfs_version zonenae zones zpool_version'
 	  };
 
-	  var COMMENT = hljs.COMMENT('#', '$');
+	  var COMMENT = {
+	    className: 'comment',
+	    begin: '#', end: '$'
+	  };
 
 	  var STRING = {
 	    className: 'string',
@@ -68394,7 +67879,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 210 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68468,7 +67953,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          {className: 'class', beginKeywords: 'class'}
 	        ],
 	        end: /:/,
-	        illegal: /[${=;\n,]/,
+	        illegal: /[${=;\n]/,
 	        contains: [hljs.UNDERSCORE_TITLE_MODE, PARAMS]
 	      },
 	      {
@@ -68483,7 +67968,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 211 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68510,7 +67995,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 212 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68524,9 +68009,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        lexemes: IDENT_RE,
 	        keywords: {
 	          keyword:
-	            'function if in break next repeat else for return switch while try tryCatch ' +
+	            'function if in break next repeat else for return switch while try tryCatch|10 ' +
 	            'stop warning require library attach detach source setMethod setGeneric ' +
-	            'setGroupGeneric setClass ...',
+	            'setGroupGeneric setClass ...|10',
 	          literal:
 	            'NULL NA TRUE FALSE T F Inf NaN NA_integer_|10 NA_real_|10 NA_character_|10 ' +
 	            'NA_complex_|10'
@@ -68584,7 +68069,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 213 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68615,7 +68100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 214 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68679,7 +68164,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 215 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68720,7 +68205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 216 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68737,24 +68222,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'value',
 	    begin: '#<', end: '>'
 	  };
-	  var COMMENT_MODES = [
-	    hljs.COMMENT(
-	      '#',
-	      '$',
+	  var COMMENT = {
+	    className: 'comment',
+	    variants: [
 	      {
+	        begin: '#', end: '$',
 	        contains: [YARDOCTAG]
-	      }
-	    ),
-	    hljs.COMMENT(
-	      '^\\=begin',
-	      '^\\=end',
+	      },
 	      {
+	        begin: '^\\=begin', end: '^\\=end',
 	        contains: [YARDOCTAG],
 	        relevance: 10
+	      },
+	      {
+	        begin: '^__END__', end: '\\n$'
 	      }
-	    ),
-	    hljs.COMMENT('^__END__', '\\n$')
-	  ];
+	    ]
+	  };
 	  var SUBST = {
 	    className: 'subst',
 	    begin: '#\\{', end: '}',
@@ -68791,6 +68275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var RUBY_DEFAULT_CONTAINS = [
 	    STRING,
 	    IRB_OBJECT,
+	    COMMENT,
 	    {
 	      className: 'class',
 	      beginKeywords: 'class module', end: '$|;',
@@ -68804,8 +68289,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            className: 'parent',
 	            begin: '(' + hljs.IDENT_RE + '::)?' + hljs.IDENT_RE
 	          }]
-	        }
-	      ].concat(COMMENT_MODES)
+	        },
+	        COMMENT
+	      ]
 	    },
 	    {
 	      className: 'function',
@@ -68813,8 +68299,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      relevance: 0,
 	      contains: [
 	        hljs.inherit(hljs.TITLE_MODE, {begin: RUBY_METHOD_RE}),
-	        PARAMS
-	      ].concat(COMMENT_MODES)
+	        PARAMS,
+	        COMMENT
+	      ]
 	    },
 	    {
 	      className: 'constant',
@@ -68845,6 +68332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      begin: '(' + hljs.RE_STARTERS_RE + ')\\s*',
 	      contains: [
 	        IRB_OBJECT,
+	        COMMENT,
 	        {
 	          className: 'regexp',
 	          contains: [hljs.BACKSLASH_ESCAPE, SUBST],
@@ -68857,11 +68345,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            {begin: '%r\\[', end: '\\][a-z]*'}
 	          ]
 	        }
-	      ].concat(COMMENT_MODES),
+	      ],
 	      relevance: 0
 	    }
-	  ].concat(COMMENT_MODES);
-
+	  ];
 	  SUBST.contains = RUBY_DEFAULT_CONTAINS;
 	  PARAMS.contains = RUBY_DEFAULT_CONTAINS;
 
@@ -68889,12 +68376,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return {
 	    aliases: ['rb', 'gemspec', 'podspec', 'thor', 'irb'],
 	    keywords: RUBY_KEYWORDS,
-	    contains: COMMENT_MODES.concat(IRB_DEFAULT).concat(RUBY_DEFAULT_CONTAINS)
+	    contains: [COMMENT].concat(IRB_DEFAULT).concat(RUBY_DEFAULT_CONTAINS)
 	  };
 	};
 
 /***/ },
-/* 217 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68955,7 +68442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 218 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -68999,7 +68486,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'number',
-	        begin: /\b(0[xbo][A-Fa-f0-9_]+|\d[\d_]*(\.[0-9_]+)?([eE][+-]?[0-9_]+)?)([uif](8|16|32|64|size))?/,
+	        begin: /\b(0[xb][A-Za-z0-9_]+|[0-9_]+(\.[0-9_]+)?([eE][+-]?[0-9_]+)?)([uif](8|16|32|64)?)?/,
 	        relevance: 0
 	      },
 	      {
@@ -69009,7 +68496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'preprocessor',
-	        begin: '#\\!?\\[', end: '\\]'
+	        begin: '#\\[', end: '\\]'
 	      },
 	      {
 	        beginKeywords: 'type', end: '(=|<)',
@@ -69032,7 +68519,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 219 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69062,7 +68549,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: 'title',
 	    begin: /[^0-9\n\t "'(),.`{}\[\]:;][^\n\t "'(),.`{}\[\]:;]+|[^0-9\n\t "'(),.`{}\[\]:;=]/,
 	    relevance: 0
-	  };
+	  }
 
 	  var CLASS = {
 	    className: 'class',
@@ -69109,7 +68596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 220 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69183,16 +68670,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    end: '[^\\\\]"'
 	  };
 
-	  var COMMENT_MODES = [
-	    hljs.COMMENT(
-	      ';',
-	      '$',
-	      {
-	        relevance: 0
-	      }
-	    ),
-	    hljs.COMMENT('#\\|', '\\|#')
-	  ];
+	  var COMMENT = {
+	    className: 'comment',
+	    variants: [
+	      { begin: ';',  end: '$', relevance: 0 },
+	      { begin: '#\\|', end: '\\|#' }
+	    ]
+	  };
 
 	  var IDENT = {
 	    begin: SCHEME_IDENT_RE,
@@ -69226,16 +68710,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ]
 	  };
 
-	  BODY.contains = [LITERAL, NUMBER, STRING, IDENT, QUOTED_IDENT, LIST].concat(COMMENT_MODES);
+	  BODY.contains = [LITERAL, NUMBER, STRING, COMMENT, IDENT, QUOTED_IDENT, LIST];
 
 	  return {
 	    illegal: /\S/,
-	    contains: [SHEBANG, NUMBER, STRING, QUOTED_IDENT, LIST].concat(COMMENT_MODES)
+	    contains: [SHEBANG, NUMBER, STRING, COMMENT, QUOTED_IDENT, LIST]
 	  };
 	};
 
 /***/ },
-/* 221 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69288,13 +68772,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        relevance: 0,
 	        contains: COMMON_CONTAINS
 	      },
-	      hljs.COMMENT('//', '$')
+	      {
+	        className: 'comment',
+	        begin: '//', end: '$'
+	      }
 	    ].concat(COMMON_CONTAINS)
 	  };
 	};
 
 /***/ },
-/* 222 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69370,7 +68857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      VARIABLE,
 	      {
 	        className: 'attribute',
-	        begin: '\\b(z-index|word-wrap|word-spacing|word-break|width|widows|white-space|visibility|vertical-align|unicode-bidi|transition-timing-function|transition-property|transition-duration|transition-delay|transition|transform-style|transform-origin|transform|top|text-underline-position|text-transform|text-shadow|text-rendering|text-overflow|text-indent|text-decoration-style|text-decoration-line|text-decoration-color|text-decoration|text-align-last|text-align|tab-size|table-layout|right|resize|quotes|position|pointer-events|perspective-origin|perspective|page-break-inside|page-break-before|page-break-after|padding-top|padding-right|padding-left|padding-bottom|padding|overflow-y|overflow-x|overflow-wrap|overflow|outline-width|outline-style|outline-offset|outline-color|outline|orphans|order|opacity|object-position|object-fit|normal|none|nav-up|nav-right|nav-left|nav-index|nav-down|min-width|min-height|max-width|max-height|mask|marks|margin-top|margin-right|margin-left|margin-bottom|margin|list-style-type|list-style-position|list-style-image|list-style|line-height|letter-spacing|left|justify-content|initial|inherit|ime-mode|image-orientation|image-resolution|image-rendering|icon|hyphens|height|font-weight|font-variant-ligatures|font-variant|font-style|font-stretch|font-size-adjust|font-size|font-language-override|font-kerning|font-feature-settings|font-family|font|float|flex-wrap|flex-shrink|flex-grow|flex-flow|flex-direction|flex-basis|flex|filter|empty-cells|display|direction|cursor|counter-reset|counter-increment|content|column-width|column-span|column-rule-width|column-rule-style|column-rule-color|column-rule|column-gap|column-fill|column-count|columns|color|clip-path|clip|clear|caption-side|break-inside|break-before|break-after|box-sizing|box-shadow|box-decoration-break|bottom|border-width|border-top-width|border-top-style|border-top-right-radius|border-top-left-radius|border-top-color|border-top|border-style|border-spacing|border-right-width|border-right-style|border-right-color|border-right|border-radius|border-left-width|border-left-style|border-left-color|border-left|border-image-width|border-image-source|border-image-slice|border-image-repeat|border-image-outset|border-image|border-color|border-collapse|border-bottom-width|border-bottom-style|border-bottom-right-radius|border-bottom-left-radius|border-bottom-color|border-bottom|border|background-size|background-repeat|background-position|background-origin|background-image|background-color|background-clip|background-attachment|background-blend-mode|background|backface-visibility|auto|animation-timing-function|animation-play-state|animation-name|animation-iteration-count|animation-fill-mode|animation-duration|animation-direction|animation-delay|animation|align-self|align-items|align-content)\\b',
+	        begin: '\\b(z-index|word-wrap|word-spacing|word-break|width|widows|white-space|visibility|vertical-align|unicode-bidi|transition-timing-function|transition-property|transition-duration|transition-delay|transition|transform-style|transform-origin|transform|top|text-underline-position|text-transform|text-shadow|text-rendering|text-overflow|text-indent|text-decoration-style|text-decoration-line|text-decoration-color|text-decoration|text-align-last|text-align|tab-size|table-layout|right|resize|quotes|position|pointer-events|perspective-origin|perspective|page-break-inside|page-break-before|page-break-after|padding-top|padding-right|padding-left|padding-bottom|padding|overflow-y|overflow-x|overflow-wrap|overflow|outline-width|outline-style|outline-offset|outline-color|outline|orphans|order|opacity|object-position|object-fit|normal|none|nav-up|nav-right|nav-left|nav-index|nav-down|min-width|min-height|max-width|max-height|mask|marks|margin-top|margin-right|margin-left|margin-bottom|margin|list-style-type|list-style-position|list-style-image|list-style|line-height|letter-spacing|left|justify-content|initial|inherit|ime-mode|image-orientation|image-resolution|image-rendering|icon|hyphens|height|font-weight|font-variant-ligatures|font-variant|font-style|font-stretch|font-size-adjust|font-size|font-language-override|font-kerning|font-feature-settings|font-family|font|float|flex-wrap|flex-shrink|flex-grow|flex-flow|flex-direction|flex-basis|flex|filter|empty-cells|display|direction|cursor|counter-reset|counter-increment|content|column-width|column-span|column-rule-width|column-rule-style|column-rule-color|column-rule|column-gap|column-fill|column-count|columns|color|clip-path|clip|clear|caption-side|break-inside|break-before|break-after|box-sizing|box-shadow|box-decoration-break|bottom|border-width|border-top-width|border-top-style|border-top-right-radius|border-top-left-radius|border-top-color|border-top|border-style|border-spacing|border-right-width|border-right-style|border-right-color|border-right|border-radius|border-left-width|border-left-style|border-left-color|border-left|border-image-width|border-image-source|border-image-slice|border-image-repeat|border-image-outset|border-image|border-color|border-collapse|border-bottom-width|border-bottom-style|border-bottom-right-radius|border-bottom-left-radius|border-bottom-color|border-bottom|border|background-size|background-repeat|background-position|background-origin|background-image|background-color|background-clip|background-attachment|background|backface-visibility|auto|animation-timing-function|animation-play-state|animation-name|animation-iteration-count|animation-fill-mode|animation-duration|animation-direction|animation-delay|animation|align-self|align-items|align-content)\\b',
 	        illegal: '[^\\s]'
 	      },
 	      {
@@ -69415,7 +68902,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 223 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69430,13 +68917,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        begin: '"', end: '"',
 	        relevance: 0
 	      },
-	      hljs.COMMENT(
-	        '#',
-	        '$',
-	        {
-	          relevance: 0
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '#', end: '$',
+	        relevance: 0
+	      },
 	      {
 	        className: 'keyword',
 	        begin: '\\s*\\.end\\s[a-zA-Z0-9]*',
@@ -69502,7 +68987,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 224 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69519,7 +69004,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    aliases: ['st'],
 	    keywords: 'self super nil true false thisContext', // only 6
 	    contains: [
-	      hljs.COMMENT('"', '"'),
+	      {
+	        className: 'comment',
+	        begin: '"', end: '"'
+	      },
 	      hljs.APOS_STRING_MODE,
 	      {
 	        className: 'class',
@@ -69559,7 +69047,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 225 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69576,7 +69064,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /* built-in types according to basis library */
 	        'array bool char exn int list option order real ref string substring vector unit word',
 	      literal:
-	        'true false NONE SOME LESS EQUAL GREATER nil'
+	        'true false NONE SOME LESS EQUAL GREATER nil',
 	    },
 	    illegal: /\/\/|>>/,
 	    lexemes: '[a-z_]\\w*!?',
@@ -69585,21 +69073,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        className: 'literal',
 	        begin: '\\[(\\|\\|)?\\]|\\(\\)'
 	      },
-	      hljs.COMMENT(
-	        '\\(\\*',
-	        '\\*\\)',
-	        {
-	          contains: ['self']
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '\\(\\*', end: '\\*\\)',
+	        contains: ['self', hljs.PHRASAL_WORDS_MODE],
+	      },
 	      { /* type variable */
 	        className: 'symbol',
-	        begin: '\'[A-Za-z_](?!\')[\\w\']*'
+	        begin: '\'[A-Za-z_](?!\')[\\w\']*',
 	        /* the grammar is ambiguous on how 'a'b should be interpreted but not the compiler */
 	      },
 	      { /* polymorphic variant */
 	        className: 'tag',
-	        begin: '`[A-Z][\\w\']*'
+	        begin: '`[A-Z][\\w\']*',
 	      },
 	      { /* module or constructor */
 	        className: 'type',
@@ -69628,11 +69114,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 226 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  var COMMENT_MODE = hljs.COMMENT('--', '$');
+	  var COMMENT_MODE = {
+	    className: 'comment',
+	    begin: '--', end: '$'
+	  };
 	  return {
 	    case_insensitive: true,
 	    illegal: /[<>]/,
@@ -69644,7 +69133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          'delete do handler insert load replace select truncate update set show pragma grant '+
 	          'merge describe use explain help declare prepare execute deallocate savepoint release '+
 	          'unlock purge reset change stop analyze cache flush optimize repair kill '+
-	          'install uninstall checksum restore check backup revoke',
+	          'install uninstall checksum restore check backup',
 	        end: /;/, endsWithParent: true,
 	        keywords: {
 	          keyword:
@@ -69732,7 +69221,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 227 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69744,37 +69233,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        className: 'label',
 	        variants: [
-	          {begin: "\\$\\{?[a-zA-Z0-9_]+\\}?"},
-	          {begin: "`[a-zA-Z0-9_]+'"}
+	          {begin: "\\$\\{?[a-zA-Z_]+\\}?"},
+	          {begin: "`[a-zA-Z_]+'"}
 
 	        ]
 	      },
 	      {
 	        className: 'string',
 	        variants: [
-	          {begin: '`"[^\r\n]*?"\''},
-	          {begin: '"[^\r\n"]*"'}
+	          {begin: '`".*"\''},
+	          {begin: '".*"'}
 	        ]
 	      },
 
 	      {
 	        className: 'literal',
 	        variants: [
-	          {
-	            begin: '\\b(abs|acos|asin|atan|atan2|atanh|ceil|cloglog|comb|cos|digamma|exp|floor|invcloglog|invlogit|ln|lnfact|lnfactorial|lngamma|log|log10|max|min|mod|reldif|round|sign|sin|sqrt|sum|tan|tanh|trigamma|trunc|betaden|Binomial|binorm|binormal|chi2|chi2tail|dgammapda|dgammapdada|dgammapdadx|dgammapdx|dgammapdxdx|F|Fden|Ftail|gammaden|gammap|ibeta|invbinomial|invchi2|invchi2tail|invF|invFtail|invgammap|invibeta|invnchi2|invnFtail|invnibeta|invnorm|invnormal|invttail|nbetaden|nchi2|nFden|nFtail|nibeta|norm|normal|normalden|normd|npnchi2|tden|ttail|uniform|abbrev|char|index|indexnot|length|lower|ltrim|match|plural|proper|real|regexm|regexr|regexs|reverse|rtrim|string|strlen|strlower|strltrim|strmatch|strofreal|strpos|strproper|strreverse|strrtrim|strtrim|strupper|subinstr|subinword|substr|trim|upper|word|wordcount|_caller|autocode|byteorder|chop|clip|cond|e|epsdouble|epsfloat|group|inlist|inrange|irecode|matrix|maxbyte|maxdouble|maxfloat|maxint|maxlong|mi|minbyte|mindouble|minfloat|minint|minlong|missing|r|recode|replay|return|s|scalar|d|date|day|dow|doy|halfyear|mdy|month|quarter|week|year|d|daily|dofd|dofh|dofm|dofq|dofw|dofy|h|halfyearly|hofd|m|mofd|monthly|q|qofd|quarterly|tin|twithin|w|weekly|wofd|y|yearly|yh|ym|yofd|yq|yw|cholesky|colnumb|colsof|corr|det|diag|diag0cnt|el|get|hadamard|I|inv|invsym|issym|issymmetric|J|matmissing|matuniform|mreldif|nullmat|rownumb|rowsof|sweep|syminv|trace|vec|vecdiag)(?=\\(|$)'
-	          }
+	          { begin: '\\b(abs|acos|asin|atan|atan2|atanh|ceil|cloglog|comb|cos|digamma|exp|floor|invcloglog|invlogit|ln|lnfact|lnfactorial|lngamma|log|log10|max|min|mod|reldif|round|sign|sin|sqrt|sum|tan|tanh|trigamma|trunc|betaden|Binomial|binorm|binormal|chi2|chi2tail|dgammapda|dgammapdada|dgammapdadx|dgammapdx|dgammapdxdx|F|Fden|Ftail|gammaden|gammap|ibeta|invbinomial|invchi2|invchi2tail|invF|invFtail|invgammap|invibeta|invnchi2|invnFtail|invnibeta|invnorm|invnormal|invttail|nbetaden|nchi2|nFden|nFtail|nibeta|norm|normal|normalden|normd|npnchi2|tden|ttail|uniform|abbrev|char|index|indexnot|length|lower|ltrim|match|plural|proper|real|regexm|regexr|regexs|reverse|rtrim|string|strlen|strlower|strltrim|strmatch|strofreal|strpos|strproper|strreverse|strrtrim|strtrim|strupper|subinstr|subinword|substr|trim|upper|word|wordcount|_caller|autocode|byteorder|chop|clip|cond|e|epsdouble|epsfloat|group|inlist|inrange|irecode|matrix|maxbyte|maxdouble|maxfloat|maxint|maxlong|mi|minbyte|mindouble|minfloat|minint|minlong|missing|r|recode|replay|return|s|scalar|d|date|day|dow|doy|halfyear|mdy|month|quarter|week|year|d|daily|dofd|dofh|dofm|dofq|dofw|dofy|h|halfyearly|hofd|m|mofd|monthly|q|qofd|quarterly|tin|twithin|w|weekly|wofd|y|yearly|yh|ym|yofd|yq|yw|cholesky|colnumb|colsof|corr|det|diag|diag0cnt|el|get|hadamard|I|inv|invsym|issym|issymmetric|J|matmissing|matuniform|mreldif|nullmat|rownumb|rowsof|sweep|syminv|trace|vec|vecdiag)(?=\\(|$)' },
+	        ]
+	      },
+	      {
+	        className: 'comment',
+	        variants: [
+	          { begin: '^\\*.*$' },
+	          hljs.C_LINE_COMMENT_MODE,
+	          hljs.C_BLOCK_COMMENT_MODE
 	        ]
 	      },
 
-	      hljs.COMMENT('^[ \t]*\\*.*$', false),
-	      hljs.C_LINE_COMMENT_MODE,
-	      hljs.C_BLOCK_COMMENT_MODE
 	    ]
 	  };
 	};
 
 /***/ },
-/* 228 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -69793,8 +69285,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  var STEP21_CODE = [
 	    hljs.C_LINE_COMMENT_MODE,
+	    {
+	      className: 'comment',
+	      begin: '/\\*\\*!', end: '\\*/',
+	      contains: [hljs.PHRASAL_WORDS_MODE]
+	    },
 	    hljs.C_BLOCK_COMMENT_MODE,
-	    hljs.COMMENT('/\\*\\*!', '\\*/'),
 	    hljs.C_NUMBER_MODE,
 	    hljs.inherit(hljs.APOS_STRING_MODE, {illegal: null}),
 	    hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
@@ -69830,7 +69326,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 229 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70170,8 +69666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    '#\\s', // markdown
 	    '\\*\\s', // markdown
 	    '===\\s', // markdown
-	    '\\|',
-	    '%', // prolog
+	    '\\|'
 	  ];
 
 	  return {
@@ -70277,7 +69772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 230 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70310,13 +69805,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    begin: '\\b[A-Z][\\w\']*',
 	    relevance: 0
 	  };
-	  var BLOCK_COMMENT = hljs.COMMENT(
-	    '/\\*',
-	    '\\*/',
-	    {
-	      contains: ['self']
-	    }
-	  );
+	  var BLOCK_COMMENT = {
+	    className: 'comment',
+	    begin: '/\\*', end: '\\*/',
+	    contains: [hljs.PHRASAL_WORDS_MODE, 'self']
+	  };
 	  var SUBST = {
 	    className: 'subst',
 	    begin: /\\\(/, end: '\\)',
@@ -70351,12 +69844,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }),
 	          {
 	            className: 'generics',
-	            begin: /</, end: />/,
-	            illegal: />/
+	            begin: /\</, end: /\>/,
+	            illegal: /\>/
 	          },
 	          {
 	            className: 'params',
-	            begin: /\(/, end: /\)/, endsParent: true,
+	            begin: /\(/, end: /\)/,
 	            keywords: SWIFT_KEYWORDS,
 	            contains: [
 	              'self',
@@ -70372,8 +69865,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'class',
-	        beginKeywords: 'struct protocol class extension enum',
-	        keywords: SWIFT_KEYWORDS,
+	        keywords: 'struct protocol class extension enum',
+	        begin: '(struct|protocol|class(?! (func|var))|extension|enum)',
 	        end: '\\{',
 	        excludeEnd: true,
 	        contains: [
@@ -70386,13 +69879,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  '@NSCopying|@NSManaged|@objc|@optional|@required|@auto_closure|' +
 	                  '@noreturn|@IBAction|@IBDesignable|@IBInspectable|@IBOutlet|' +
 	                  '@infix|@prefix|@postfix)'
-	      }
+	      },
 	    ]
 	  };
 	};
 
 /***/ },
-/* 231 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70411,8 +69904,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'tcl_wordBreakBefore tcltest tclvars tell time tm trace unknown unload unset update '+
 	      'uplevel upvar variable vwait while',
 	    contains: [
-	      hljs.COMMENT(';[ \\t]*#', '$'),
-	      hljs.COMMENT('^[ \\t]*#', '$'),
+	      {
+	        className: 'comment',
+	        variants: [
+	          {begin: ';[ \\t]*#', end: '$'},
+	          {begin: '^[ \\t]*#', end: '$'}
+	        ]
+	      },
 	      {
 	        beginKeywords: 'proc',
 	        end: '[\\{]',
@@ -70423,7 +69921,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            begin: '[ \\t\\n\\r]+(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*',
 	            end: '[ \\t\\n\\r]',
 	            endsWithParent: true,
-	            excludeEnd: true
+	            excludeEnd: true,
 	          }
 	        ]
 	      },
@@ -70433,12 +69931,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        variants: [
 	          {
 	            begin: '\\$(\\{)?(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*\\(([a-zA-Z0-9_])*\\)',
-	            end: '[^a-zA-Z0-9_\\}\\$]'
+	            end: '[^a-zA-Z0-9_\\}\\$]',
 	          },
 	          {
 	            begin: '\\$(\\{)?(::)?[a-zA-Z_]((::)?[a-zA-Z0-9_])*',
-	            end: '(\\))?[^a-zA-Z0-9_\\}\\$]'
-	          }
+	            end: '(\\))?[^a-zA-Z0-9_\\}\\$]',
+	          },
 	        ]
 	      },
 	      {
@@ -70452,13 +69950,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        className: 'number',
 	        variants: [hljs.BINARY_NUMBER_MODE, hljs.C_NUMBER_MODE]
-	      }
+	      },
 	    ]
 	  }
 	};
 
 /***/ },
-/* 232 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70505,19 +70003,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        contains: [COMMAND1, COMMAND2, SPECIAL],
 	        relevance: 0
 	      },
-	      hljs.COMMENT(
-	        '%',
-	        '$',
-	        {
-	          relevance: 0
-	        }
-	      )
+	      {
+	        className: 'comment',
+	        begin: '%', end: '$',
+	        relevance: 0
+	      }
 	    ]
 	  };
 	};
 
 /***/ },
-/* 233 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70547,6 +70043,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        ]
 	      },
 	      {
+	        className: 'stl_container',
 	        begin: '\\b(set|list|map)\\s*<', end: '>',
 	        keywords: BUILT_IN_TYPES,
 	        contains: ['self']
@@ -70556,7 +70053,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 234 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70579,7 +70076,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var FILTER = {
 	    className: 'filter',
-	    begin: /\|[A-Za-z_]+:?/,
+	    begin: /\|[A-Za-z]+\:?/,
 	    keywords:
 	      'abs batch capitalize convert_encoding date date_modify default ' +
 	      'escape first format join json_encode keys last length lower ' +
@@ -70600,7 +70097,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case_insensitive: true,
 	    subLanguage: 'xml', subLanguageMode: 'continuous',
 	    contains: [
-	      hljs.COMMENT(/\{#/, /#}/),
+	      {
+	        className: 'comment',
+	        begin: /\{#/, end: /#}/
+	      },
 	      {
 	        className: 'template_tag',
 	        begin: /\{%/, end: /%}/,
@@ -70617,7 +70117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 235 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70628,7 +70128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'in if for while finally var new function|0 do return void else break catch ' +
 	        'instanceof with throw case default try this switch continue typeof delete ' +
 	        'let yield const class public private get set super interface extends' +
-	        'static constructor implements enum export import declare type protected',
+	        'static constructor implements enum export import declare',
 	      literal:
 	        'true false null undefined NaN Infinity',
 	      built_in:
@@ -70638,7 +70138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'TypeError URIError Number Math Date String RegExp Array Float32Array ' +
 	        'Float64Array Int16Array Int32Array Int8Array Uint16Array Uint32Array ' +
 	        'Uint8Array Uint8ClampedArray ArrayBuffer DataView JSON Intl arguments require ' +
-	        'module console window document any number boolean string void'
+	        'module console window document any number boolean string void',
 	    },
 	    contains: [
 	      {
@@ -70691,11 +70191,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      {
 	        className: 'module',
-	        beginKeywords: 'module', end: /\{/, excludeEnd: true
+	        beginKeywords: 'module', end: /\{/, excludeEnd: true,
 	      },
 	      {
 	        className: 'interface',
-	        beginKeywords: 'interface', end: /\{/, excludeEnd: true
+	        beginKeywords: 'interface', end: /\{/, excludeEnd: true,
 	      },
 	      {
 	        begin: /\$[(.]/ // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
@@ -70708,7 +70208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 236 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70767,7 +70267,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 237 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70797,25 +70297,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    illegal: '//|{|}|endif|gosub|variant|wend', /* reserved deprecated keywords */
 	    contains: [
 	      hljs.inherit(hljs.QUOTE_STRING_MODE, {contains: [{begin: '""'}]}),
-	      hljs.COMMENT(
-	        '\'',
-	        '$',
-	        {
-	          returnBegin: true,
-	          contains: [
-	            {
-	              className: 'xmlDocTag',
-	              begin: '\'\'\'|<!--|-->',
-	              contains: [hljs.PHRASAL_WORDS_MODE]
-	            },
-	            {
-	              className: 'xmlDocTag',
-	              begin: '</?', end: '>',
-	              contains: [hljs.PHRASAL_WORDS_MODE]
-	            }
+	      {
+	        className: 'comment',
+	        begin: '\'', end: '$', returnBegin: true,
+	        contains: [
+	          {
+	            className: 'xmlDocTag',
+	            begin: '\'\'\'|<!--|-->'
+	          },
+	          {
+	            className: 'xmlDocTag',
+	            begin: '</?', end: '>'
+	          }
 	          ]
-	        }
-	      ),
+	      },
 	      hljs.C_NUMBER_MODE,
 	      {
 	        className: 'preprocessor',
@@ -70827,7 +70322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 238 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70843,7 +70338,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 239 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70873,20 +70368,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    illegal: '//',
 	    contains: [
 	      hljs.inherit(hljs.QUOTE_STRING_MODE, {contains: [{begin: '""'}]}),
-	      hljs.COMMENT(
-	        /'/,
-	        /$/,
-	        {
-	          relevance: 0
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: /'/, end: /$/,
+	        relevance: 0
+	      },
 	      hljs.C_NUMBER_MODE
 	    ]
 	  };
 	};
 
 /***/ },
-/* 240 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -70940,22 +70433,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 241 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
-	  // Regular expression for VHDL numeric literals.
-
-	  // Decimal literal:
-	  var INTEGER_RE = '\\d(_|\\d)*';
-	  var EXPONENT_RE = '[eE][-+]?' + INTEGER_RE;
-	  var DECIMAL_LITERAL_RE = INTEGER_RE + '(\\.' + INTEGER_RE + ')?' + '(' + EXPONENT_RE + ')?';
-	  // Based literal:
-	  var BASED_INTEGER_RE = '\\w+';
-	  var BASED_LITERAL_RE = INTEGER_RE + '#' + BASED_INTEGER_RE + '(\\.' + BASED_INTEGER_RE + ')?' + '#' + '(' + EXPONENT_RE + ')?';
-
-	  var NUMBER_RE = '\\b(' + BASED_LITERAL_RE + '|' + DECIMAL_LITERAL_RE + ')';
-
 	  return {
 	    case_insensitive: true,
 	    keywords: {
@@ -70978,13 +70459,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    illegal: '{',
 	    contains: [
 	      hljs.C_BLOCK_COMMENT_MODE,        // VHDL-2008 block commenting.
-	      hljs.COMMENT('--', '$'),
-	      hljs.QUOTE_STRING_MODE,
 	      {
-	        className: 'number',
-	        begin: NUMBER_RE,
-	        relevance: 0
+	        className: 'comment',
+	        begin: '--', end: '$'
 	      },
+	      hljs.QUOTE_STRING_MODE,
+	      hljs.C_NUMBER_MODE,
 	      {
 	        className: 'literal',
 	        begin: '\'(U|X|0|1|Z|W|L|H|-)\'',
@@ -70996,11 +70476,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        contains: [hljs.BACKSLASH_ESCAPE]
 	      }
 	    ]
-	  };
+	  }; // return
 	};
 
 /***/ },
-/* 242 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -71067,7 +70547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 243 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -71139,13 +70619,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'float128l float128h __FLOAT_DAZ__ __FLOAT_ROUND__ __FLOAT__'
 	    },
 	    contains: [
-	      hljs.COMMENT(
-	        ';',
-	        '$',
-	        {
-	          relevance: 0
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: ';',
+	        end: '$',
+	        relevance: 0
+	      },
 	      // Float number and x87 BCD
 	      {
 	        className: 'number',
@@ -71219,7 +70698,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 244 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -71303,7 +70782,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 245 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(hljs) {
@@ -71350,13 +70829,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        relevance: 10,
 	        contains: [{begin: '\\[', end: '\\]'}]
 	      },
-	      hljs.COMMENT(
-	        '<!--',
-	        '-->',
-	        {
-	          relevance: 10
-	        }
-	      ),
+	      {
+	        className: 'comment',
+	        begin: '<!--', end: '-->',
+	        relevance: 10
+	      },
 	      {
 	        className: 'cdata',
 	        begin: '<\\!\\[CDATA\\[', end: '\\]\\]>',
@@ -71386,7 +70863,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        contains: [TAG_INTERNALS],
 	        starts: {
 	          end: '</script>', returnEnd: true,
-	          subLanguage: ''
+	          subLanguage: 'javascript'
 	        }
 	      },
 	      PHP,
@@ -71410,7 +70887,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 246 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -72153,7 +71630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var src_Math__imul =
 	    typeof Math.imul === 'function' && Math.imul(0xffffffff, 2) === -2 ?
 	    Math.imul :
-	    function imul(a, b) {
+	    function src_Math__imul(a, b) {
 	      a = a | 0; // int
 	      b = b | 0; // int
 	      var c = a & 0xffff;
@@ -75905,6 +75382,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    isSuperset: function(iter) {
+	      iter = typeof iter.isSubset === 'function' ? iter : Iterable(iter);
 	      return iter.isSubset(this);
 	    },
 

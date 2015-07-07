@@ -1,6 +1,6 @@
 /*!
  * https://github.com/es-shims/es5-shim
- * @license es5-shim Copyright 2009-2015 by contributors, MIT License
+ * @license es5-shim Copyright 2009-2014 by contributors, MIT License
  * see https://github.com/es-shims/es5-shim/blob/master/LICENSE
  */
 
@@ -855,22 +855,25 @@ defineProperties(Date.prototype, {
     }
 }, hasNegativeDateBug);
 
+
 // ES5 15.9.5.44
 // http://es5.github.com/#x15.9.5.44
 // This function provides a String representation of a Date object for use by
 // JSON.stringify (15.12.3).
-var dateToJSONIsSupported = (function () {
-    try {
-        return Date.prototype.toJSON &&
-            new Date(NaN).toJSON() === null &&
-            new Date(negativeDate).toJSON().indexOf(negativeYearString) !== -1 &&
-            Date.prototype.toJSON.call({ // generic
-                toISOString: function () { return true; }
-            });
-    } catch (e) {
-        return false;
-    }
-}());
+var dateToJSONIsSupported = false;
+try {
+    dateToJSONIsSupported = (
+        Date.prototype.toJSON &&
+        new Date(NaN).toJSON() === null &&
+        new Date(negativeDate).toJSON().indexOf(negativeYearString) !== -1 &&
+        Date.prototype.toJSON.call({ // generic
+            toISOString: function () {
+                return true;
+            }
+        })
+    );
+} catch (e) {
+}
 if (!dateToJSONIsSupported) {
     Date.prototype.toJSON = function toJSON(key) {
         // When the toJSON method is called with argument key, the following
@@ -879,22 +882,23 @@ if (!dateToJSONIsSupported) {
         // 1.  Let O be the result of calling ToObject, giving it the this
         // value as its argument.
         // 2. Let tv be ES.ToPrimitive(O, hint Number).
-        var O = Object(this);
-        var tv = ES.ToPrimitive(O);
+        var o = Object(this),
+            tv = ES.ToPrimitive(o),
+            toISO;
         // 3. If tv is a Number and is not finite, return null.
         if (typeof tv === 'number' && !isFinite(tv)) {
             return null;
         }
         // 4. Let toISO be the result of calling the [[Get]] internal method of
         // O with argument "toISOString".
-        var toISO = O.toISOString;
+        toISO = o.toISOString;
         // 5. If IsCallable(toISO) is false, throw a TypeError exception.
-        if (!isCallable(toISO)) {
+        if (typeof toISO !== 'function') {
             throw new TypeError('toISOString property is not callable');
         }
         // 6. Return the result of calling the [[Call]] internal method of
         //  toISO with O as the this value and an empty argument list.
-        return toISO.call(O);
+        return toISO.call(o);
 
         // NOTE 1 The argument is ignored.
 
@@ -939,7 +943,7 @@ if (!Date.parse || doesNotParseY2KNewYear || acceptsInvalidDates || !supportsExt
                     length >= 1 ? new NativeDate(Y) :
                                   new NativeDate();
                 // Prevent mixups with unfixed Date object
-                defineProperties(date, { constructor: Date }, true);
+                date.constructor = Date;
                 return date;
             }
             return NativeDate.apply(this, arguments);
@@ -1068,6 +1072,7 @@ if (!Date.now) {
     };
 }
 
+
 //
 // Number
 // ======
@@ -1088,11 +1093,10 @@ var toFixedHelpers = {
   data: [0, 0, 0, 0, 0, 0],
   multiply: function multiply(n, c) {
       var i = -1;
-      var c2 = c;
       while (++i < toFixedHelpers.size) {
-          c2 += n * toFixedHelpers.data[i];
-          toFixedHelpers.data[i] = c2 % toFixedHelpers.base;
-          c2 = Math.floor(c2 / toFixedHelpers.base);
+          c += n * toFixedHelpers.data[i];
+          toFixedHelpers.data[i] = c % toFixedHelpers.base;
+          c = Math.floor(c / toFixedHelpers.base);
       }
   },
   divide: function divide(n) {
@@ -1123,14 +1127,13 @@ var toFixedHelpers = {
   },
   log: function log(x) {
       var n = 0;
-      var x2 = x;
-      while (x2 >= 4096) {
+      while (x >= 4096) {
           n += 12;
-          x2 /= 4096;
+          x /= 4096;
       }
-      while (x2 >= 2) {
+      while (x >= 2) {
           n += 1;
-          x2 /= 2;
+          x /= 2;
       }
       return n;
   }
@@ -1223,6 +1226,7 @@ defineProperties(NumberPrototype, {
     }
 }, hasToFixedBugs);
 
+
 //
 // String
 // ======
@@ -1266,19 +1270,19 @@ if (
                 return string_split.call(this, separator, limit);
             }
 
-            var output = [];
-            var flags = (separator.ignoreCase ? 'i' : '') +
+            var output = [],
+                flags = (separator.ignoreCase ? 'i' : '') +
                         (separator.multiline ? 'm' : '') +
                         (separator.extended ? 'x' : '') + // Proposed for ES6
                         (separator.sticky ? 'y' : ''), // Firefox 3+
                 lastLastIndex = 0,
                 // Make `global` and avoid `lastIndex` issues by working with a copy
                 separator2, match, lastIndex, lastLength;
-            var separatorCopy = new RegExp(separator.source, flags + 'g');
+            separator = new RegExp(separator.source, flags + 'g');
             string += ''; // Type-convert
             if (!compliantExecNpcg) {
                 // Doesn't need flags gy, but they don't hurt
-                separator2 = new RegExp('^' + separatorCopy.source + '$(?!\\s)', flags);
+                separator2 = new RegExp('^' + separator.source + '$(?!\\s)', flags);
             }
             /* Values for `limit`, per the spec:
              * If undefined: 4294967295 // Math.pow(2, 32) - 1
@@ -1287,12 +1291,12 @@ if (
              * If negative number: 4294967296 - Math.floor(Math.abs(limit))
              * If other: Type-convert, then use the above rules
              */
-            var splitLimit = typeof limit === 'undefined' ?
+            limit = typeof limit === 'undefined' ?
                 -1 >>> 0 : // Math.pow(2, 32) - 1
                 ES.ToUint32(limit);
-            match = separatorCopy.exec(string);
+            match = separator.exec(string);
             while (match) {
-                // `separatorCopy.lastIndex` is not reliable cross-browser
+                // `separator.lastIndex` is not reliable cross-browser
                 lastIndex = match.index + match[0].length;
                 if (lastIndex > lastLastIndex) {
                     output.push(string.slice(lastLastIndex, match.index));
@@ -1314,23 +1318,23 @@ if (
                     }
                     lastLength = match[0].length;
                     lastLastIndex = lastIndex;
-                    if (output.length >= splitLimit) {
+                    if (output.length >= limit) {
                         break;
                     }
                 }
-                if (separatorCopy.lastIndex === match.index) {
-                    separatorCopy.lastIndex++; // Avoid an infinite loop
+                if (separator.lastIndex === match.index) {
+                    separator.lastIndex++; // Avoid an infinite loop
                 }
-                match = separatorCopy.exec(string);
+                match = separator.exec(string);
             }
             if (lastLastIndex === string.length) {
-                if (lastLength || !separatorCopy.test('')) {
+                if (lastLength || !separator.test('')) {
                     output.push('');
                 }
             } else {
                 output.push(string.slice(lastLastIndex));
             }
-            return output.length > splitLimit ? output.slice(0, splitLimit) : output;
+            return output.length > limit ? output.slice(0, limit) : output;
         };
     }());
 
@@ -1386,11 +1390,11 @@ var string_substr = StringPrototype.substr;
 var hasNegativeSubstrBug = ''.substr && '0b'.substr(-1) !== 'b';
 defineProperties(StringPrototype, {
     substr: function substr(start, length) {
-        var normalizedStart = start;
-        if (start < 0) {
-            normalizedStart = Math.max(this.length + start, 0);
-        }
-        return string_substr.call(this, normalizedStart, length);
+        return string_substr.call(
+            this,
+            start < 0 ? ((start = this.length + start) < 0 ? 0 : start) : start,
+            length
+        );
     }
 }, hasNegativeSubstrBug);
 
@@ -1420,10 +1424,12 @@ if (parseInt(ws + '08') !== 8 || parseInt(ws + '0x16') !== 22) {
     /*global parseInt: true */
     parseInt = (function (origParseInt) {
         var hexRegex = /^0[xX]/;
-        return function parseInt(str, radix) {
-            var string = String(str).trim();
-            var defaultedRadix = Number(radix) || (hexRegex.test(string) ? 16 : 10);
-            return origParseInt(string, defaultedRadix);
+        return function parseIntES5(str, radix) {
+            str = String(str).trim();
+            if (!Number(radix)) {
+                radix = hexRegex.test(str) ? 16 : 10;
+            }
+            return origParseInt(str, radix);
         };
     }(parseInt));
 }
