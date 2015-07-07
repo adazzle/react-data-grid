@@ -151,7 +151,8 @@ var ReactDataGrid = React.createClass({
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
-            onViewportDoubleClick={this.onViewportDoubleClick}/>
+            onViewportDoubleClick={this.onViewportDoubleClick}
+            onColumnResize={this.onColumnResize}/>
           </div>
         </div>
       )
@@ -299,7 +300,8 @@ var ReactDataGrid = React.createClass({
   },
 
   canEdit(idx: number): boolean{
-    return this.props.enableCellSelect === true && ((this.props.columns[idx].editor != null) || this.props.columns[idx].editable);
+    var col = this.getColumn(this.props.columns, idx);
+    return this.props.enableCellSelect === true && ((col.editor != null) || col.editable);
   },
 
   isActive(): boolean{

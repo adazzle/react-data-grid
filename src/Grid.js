@@ -58,7 +58,7 @@ var Grid = React.createClass({
         <Header
           ref="header"
           columnMetrics={this.props.columnMetrics}
-          onColumnResize={this.onColumnResize}
+          onColumnResize={this.props.onColumnResize}
           height={this.props.rowHeight}
           totalWidth={this.props.totalWidth}
           headerRows={headerRows}

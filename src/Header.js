@@ -55,7 +55,7 @@ var Header = React.createClass({
     var columnMetrics = this.getColumnMetrics();
     var resizeColumn;
     if(this.state.resizing){
-      resizeColumn = this.state.resize.column;
+      resizeColumn = this.state.resizing.column;
     }
     var headerRows = [];
     this.props.headerRows.forEach((function(row, index){
@@ -98,17 +98,17 @@ var Header = React.createClass({
 
     if (pos != null) {
       var resizing = {
-        columns: shallowCloneObject(state.columns)
+        columnMetrics: shallowCloneObject(state.columnMetrics)
       };
       resizing.columnMetrics = ColumnMetrics.resizeColumn(
-          resizing.columns, pos, width);
+          resizing.columnMetrics, pos, width);
 
       // we don't want to influence scrollLeft while resizing
-      if (resizing.columns.totalWidth < state.columns.totalWidth) {
-        resizing.columns.totalWidth = state.columns.totalWidth;
+      if (resizing.columnMetrics.totalWidth < state.columnMetrics.totalWidth) {
+        resizing.columnMetrics.totalWidth = state.columnMetrics.totalWidth;
       }
 
-      resizing.column = resizing.columns.columns[pos];
+      resizing.column = resizing.columnMetrics.columns[pos];
       this.setState({resizing});
     }
   },
@@ -127,8 +127,7 @@ var Header = React.createClass({
     var columnMetrics = this.getColumnMetrics();
     var pos = -1;
     columnMetrics.columns.forEach((c,idx) => {
-      var identifier = 'key';
-      if(c[identifier] === column[identifier]){
+      if(c.key === column.key){
         pos = idx;
       }
     });

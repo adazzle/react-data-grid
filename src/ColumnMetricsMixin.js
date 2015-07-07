@@ -103,7 +103,7 @@ module.exports = {
   },
 
   onColumnResize(index: number, width: number) {
-    var columns = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
-    this.setState({columns});
+    var columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
+    this.setState({columnMetrics});
   }
 };
