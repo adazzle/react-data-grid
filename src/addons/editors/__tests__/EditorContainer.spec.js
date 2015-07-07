@@ -80,7 +80,22 @@ describe('Editor Container Tests', () => {
       beforeEach(() => {
         cellMetaData.onCommit = function(value){};
         spyOn(cellMetaData, 'onCommit');
+
+        //render into an actual div, not a detached one
+        //otherwise IE (11) gives an error when we try and setCaretAtEndOfInput
+        container = document.createElement('div');
+        document.body.appendChild(container);
+        component = React.render(<EditorContainer
+          rowData={rowData}
+          value={'Adwolf'}
+          cellMetaData={cellMetaData}
+          column={fakeColumn}
+          height={50}/>, container);
       });
+      afterEach(() => {
+        //remove our container
+        document.body.removeChild(container);
+      })
 
       it('hitting enter should call commit of cellMetaData', () => {
         var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
