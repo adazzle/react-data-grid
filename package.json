@@ -29,8 +29,6 @@
     "ron-react-autocomplete": "1.0.5"
   },
   "devDependencies": {
-    "6to5": "^1.14.13",
-    "6to5-loader": "^0.2.3",
     "avcoveralls": "^1.0.0",
     "babel-core": "^5.4.7",
     "babel-loader": "^5.1.3",
@@ -40,13 +38,11 @@
     "connect": "^2.24.3",
     "del": "^1.1.1",
     "faker": "^2.1.2",
-    "flow-bin": "~0.1.2",
     "gh-pages": "^0.2.0",
     "gulp": "^3.8.7",
     "gulp-changed": "^0.4.1",
     "gulp-concat": "^2.3.4",
     "gulp-flatten": "0.0.2",
-    "gulp-flowtype": "^0.4.1",
     "gulp-jasmine": "^0.3.0",
     "gulp-jshint": "^1.9.2",
     "gulp-less": "^1.3.3",
