@@ -12,7 +12,6 @@ var Row                   = require('../../Row');
 var ExcelColumn           = require('./ExcelColumn');
 var KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 var CheckboxEditor        = require('../editors/CheckboxEditor');
-var SortableHeaderCell    = require('../cells/headerCells/SortableHeaderCell');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
 var cloneWithProps        = require('react/lib/cloneWithProps');
 var DOMMetrics           = require('../../DOMMetrics');
@@ -47,12 +46,7 @@ type ReactDataGridProps = {
   onFilter: ?() => any;
 };
 
-type SortType = {ASC: string; DESC: string};
-var DEFINE_SORT = {
-  ASC : 'ASC',
-  DESC : 'DESC',
-  NONE  : 'NONE'
-}
+
 
 type RowUpdateEvent = {
   keyCode: string;
@@ -113,6 +107,9 @@ var ReactDataGrid = React.createClass({
     if(nextProps.rowsCount  === this.props.rowsCount + 1){
       this.onAfterAddRow(nextProps.rowsCount + 1);
     }
+    var gridColumns = this.setupGridColumns();
+    var columnMetrics = this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, true);
+    this.setState({columnMetrics});
   },
 
   render: function(): ?ReactElement {
@@ -146,6 +143,7 @@ var ReactDataGrid = React.createClass({
             rowOffsetHeight={this.getRowOffsetHeight()}
             sortColumn={this.state.sortColumn}
             sortDirection={this.state.sortDirection}
+            onSort={this.handleSort}
             minHeight={this.props.minHeight}
             totalWidth={this.DOMMetrics.gridWidth()}
             onViewportKeydown={this.onKeyDown}
@@ -325,7 +323,7 @@ var ReactDataGrid = React.createClass({
 
   setupGridColumns : function(): Array<any>{
 
-    var cols = this.setColHeaderRenderers(this.props.columns);
+    var cols = this.props.columns.slice(0);
     if(this.props.enableRowSelect){
         cols.unshift({
           key: 'select-row',
@@ -339,17 +337,6 @@ var ReactDataGrid = React.createClass({
         });
       }
       return cols;
-  },
-
-  setColHeaderRenderers: function(columns: Array<ExcelColumn>): Array<ExcelColumn> {
-    var sortDirection
-    return this.props.columns.map(function(column) {
-      if (column.sortable) {
-        var sortDirection = this.state && (this.state.sortColumn === column.key) ?  this.state.sortDirection : DEFINE_SORT.NONE;
-        column.headerRenderer = <SortableHeaderCell columnKey={column.key} onSort={this.handleSort} sortDirection={sortDirection}/>;
-      }
-      return column;
-    }, this);
   },
 
   handleCheckboxChange : function(e: SyntheticEvent){
@@ -441,8 +428,9 @@ var ReactDataGrid = React.createClass({
   },
 
   handleSort: function(columnKey: string, direction: SortType) {
-    this.setState({sortDirection: direction, sortColumn: columnKey});
-    this.props.onGridSort(columnKey, direction);
+    this.setState({sortDirection: direction, sortColumn: columnKey}, function(){
+      this.props.onGridSort(columnKey, direction);
+    });
   },
 
   copyPasteEnabled: function(): boolean {

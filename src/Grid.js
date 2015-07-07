@@ -64,6 +64,7 @@ var Grid = React.createClass({
           headerRows={headerRows}
           sortColumn={this.props.sortColumn}
           sortDirection={this.props.sortDirection}
+          onSort={this.props.onSort}
           />
         <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
             <Viewport

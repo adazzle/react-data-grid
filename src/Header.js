@@ -78,6 +78,9 @@ var Header = React.createClass({
         columns={columnMetrics.columns}
         resizing={resizeColumn}
         headerCellRenderer={row.headerCellRenderer}
+        sortColumn={this.props.sortColumn}
+        sortDirection={this.props.sortDirection}
+        onSort={this.props.onSort}
         />)
     }).bind(this));
     return headerRows;
