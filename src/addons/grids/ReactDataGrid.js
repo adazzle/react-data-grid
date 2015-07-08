@@ -260,7 +260,7 @@ var ReactDataGrid = React.createClass({
     var value = this.getSelectedValue();
     this.handleDragStart({idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value});
     //need to set dummy data for FF
-    e.dataTransfer.setData('text/plain', 'dummy');
+    if(e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
   },
 
   moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number){

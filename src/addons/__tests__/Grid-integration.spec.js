@@ -77,4 +77,27 @@ describe('Grid Integration', () => {
       });
     });
   });
+  describe('Editors', () => {
+    beforeEach(() => {
+      renderGrid();
+    });
+    it("Is Editable", () => {
+      var cell = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Cell__value')[5];
+
+      TestUtils.Simulate.click(cell);
+      TestUtils.Simulate.doubleClick(cell);
+      //get the editor
+      var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
+      editor.getDOMNode().value = 'Test'; //remember to set the value via the dom node, not the component!
+      TestUtils.Simulate.keyDown(editor,{ key: 'Enter' });
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Cell')[5].props.value).toEqual('Test');
+    });
+    it("Readonly is NOT Editable", () => {
+      var cell = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Cell')[1];
+      TestUtils.Simulate.doubleClick(cell);
+      //get the editor
+      var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input');
+      expect(editor.length).toBe(0);
+    });
+  });
 });
