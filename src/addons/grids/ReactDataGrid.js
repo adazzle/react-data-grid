@@ -259,6 +259,8 @@ var ReactDataGrid = React.createClass({
   onDragStart(e: SyntheticEvent){
     var value = this.getSelectedValue();
     this.handleDragStart({idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value});
+    //need to set dummy data for FF
+    e.dataTransfer.setData('text/plain', 'dummy');
   },
 
   moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number){
@@ -495,8 +497,10 @@ var ReactDataGrid = React.createClass({
       var cellKey = this.getColumns()[this.state.selected.idx].key;
       fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-      if(this.props.onCellsDragged) { this.props.onCellsDragged({cellKey: cellKey , fromRow: fromRow, toRow : toRow, value : dragged.value}); }
-        this.setState({dragged : {complete : true}});
+      if(this.props.onCellsDragged) {
+        this.props.onCellsDragged({cellKey: cellKey , fromRow: fromRow, toRow : toRow, value : dragged.value});
+      }
+      this.setState({dragged : {complete : true}});
   },
 
   handleTerminateDrag(){

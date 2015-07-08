@@ -2,7 +2,8 @@
  * @jsx React.DOM
  */
 (function(){
-  var ReactDataGrid       = require('../build/react-data-grid-with-addons')
+  var React       = require('react')
+  var ReactDataGrid       = require('../../src/addons')
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
@@ -160,6 +161,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
             rowToChange[e.cellKey] = e.value;
           }
         }
+        if(this.props.handleCellDrag) {this.props.handleCellDrag(e)}
         this.setState({rows:rows});
     },
 
@@ -215,6 +217,5 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
   }else{
     this.ReactDataGrid = Component;
   }
-
 
 }).call(this);

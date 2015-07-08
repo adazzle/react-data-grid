@@ -147,7 +147,7 @@ var Row = React.createClass({
 
   willRowBeDraggedOver(props: any): boolean{
     var dragged = props.cellMetaData.dragged;
-    return  dragged != null && (dragged.rowIdx || dragged.complete === true);
+    return  dragged != null && (dragged.rowIdx>=0 || dragged.complete === true);
   },
 
   hasRowBeenCopied(): boolean{

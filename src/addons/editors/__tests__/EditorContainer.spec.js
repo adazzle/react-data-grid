@@ -10,7 +10,8 @@ describe('Editor Container Tests', () => {
     selected : {
       idx : 0,
       rowIdx :0
-    }
+    },
+    onCommit: function() {}
   };
   var component, container;
   var fakeColumn = {
@@ -78,7 +79,6 @@ describe('Editor Container Tests', () => {
   describe("keyboard events", () => {
 
       beforeEach(() => {
-        debugger
         cellMetaData.onCommit = function(value){};
         spyOn(cellMetaData, 'onCommit');
 
