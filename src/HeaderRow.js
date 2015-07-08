@@ -34,7 +34,9 @@ var HeaderRow = React.createClass({
     height: PropTypes.number.isRequired,
     columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
     onColumnResize: PropTypes.func,
+    onSort: PropTypes.func.isRequired,
     style: PropTypes.shape(HeaderRowStyle)
+
   },
 
   mixins: [ColumnUtilsMixin],

@@ -50,7 +50,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     return <ImageFormatter src={cellData.value} />;
   }
 
-  var columns = [
+  var columns = new Immutable.List([
     {
       key: 'id',
       name: 'ID',
@@ -135,13 +135,14 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       editable:true,
       width : 200
     }
-  ]
+  ]);
 
 
  var Component = React.createClass({displayName: 'component',
 
     getInitialState : function(){
-      return {rows : FakeObjectDataStore.createRows(2000)};
+      var fakeRows = FakeObjectDataStore.createRows(2000);
+      return {rows : Immutable.fromJS(fakeRows)};
     },
 
     handleRowUpdated : function(commit){
