@@ -42,12 +42,10 @@ describe('Grid', () => {
   var component;
   var BaseGridStub = StubComponent('BaseGrid');
   var CheckboxEditorStub = StubComponent('CheckboxEditor');
-  var SortableHeaderCellStub = StubComponent('SortableHeaderCell');
   // Configure local variable replacements for the module.
   rewireModule(Grid, {
     BaseGrid : BaseGridStub,
-    CheckboxEditor : CheckboxEditorStub,
-    SortableHeaderCell : SortableHeaderCellStub
+    CheckboxEditor : CheckboxEditorStub
   });
 
   var testProps = {
