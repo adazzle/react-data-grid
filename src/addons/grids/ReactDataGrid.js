@@ -448,7 +448,7 @@ var ReactDataGrid = React.createClass({
   handlePaste(){
     if(!this.copyPasteEnabled()) { return; }
       var selected = this.state.selected;
-      debugger;
+      
       var cellKey = this.getColumn(this.state.columnMetrics.columns, this.state.selected.idx).key;
       if(this.props.onCellCopyPaste) {
         this.props.onCellCopyPaste({cellKey: cellKey , rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx});

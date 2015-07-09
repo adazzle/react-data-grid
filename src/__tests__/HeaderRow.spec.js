@@ -40,7 +40,7 @@ describe('Header Unit Tests', () => {
 
     var sortableColIdx =1;
     beforeEach(() => {
-      debugger;
+      
       testProps.columns[sortableColIdx].sortable = true;
       headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} />);
     })

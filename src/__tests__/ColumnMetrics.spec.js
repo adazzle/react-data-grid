@@ -49,14 +49,14 @@ describe('Column Metrics Tests', () => {
       });
 
       it('columns with same memory reference are equal', () => {
-                debugger;
+                
         var areColumnsEqual = ColumnMetrics.sameColumns(this.prevColumns, this.nextColumns, ColumnMetrics.sameColumn);
         expect(areColumnsEqual).toBe(true);
       });
 
       it('columns with same properties are not equal when objects have different memory reference', () => {
         var firstColWidth = this.prevColumns.get(0).width;
-        debugger;
+        
         this.nextColumns = this.nextColumns.update(0, (c) => {
           c.width = firstColWidth;
         });
