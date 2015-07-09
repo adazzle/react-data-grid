@@ -99,5 +99,21 @@ describe('Grid Integration', () => {
       var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input');
       expect(editor.length).toBe(0);
     });
+    // it("Can tab out of an Editor", () => {
+    //   var row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[3];
+    //   var cell = TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell__value')[5];
+    //
+    //   TestUtils.Simulate.click(cell);
+    //   TestUtils.Simulate.doubleClick(cell);
+    //   //get the editor
+    //   var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
+    //   editor.getDOMNode().value = 'Test'; //remember to set the value via the dom node, not the component!
+    //   TestUtils.Simulate.keyDown(editor,{ key: 'TAB' });
+    //   //TODO doesnt seem to actually tab, presumably due to default browser behaviour not kicking in?
+    //   expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell')[5].props.value).toEqual('Test');
+    //   //and should move to the next cell
+    //
+    //   expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'selected').props.rowIdx).toEqual(6);
+    // });
   });
 });
