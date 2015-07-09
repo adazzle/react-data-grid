@@ -229,7 +229,6 @@ var EditorContainer = React.createClass({
     if(inputNode.tagName === "INPUT"){
       if(!this.isKeyPrintable(keyCode)){
         inputNode.focus();
-        this.setCaretAtEndOfInput();
         inputNode.select();
       }else{
         inputNode.select();

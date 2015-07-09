@@ -28,21 +28,13 @@ describe('Editor Container Tests', () => {
   describe("Basic render tests", () => {
 
     beforeEach(() => {
-      //render into an actual div, not a detached one
-      //otherwise IE (11) gives an error when we try and setCaretAtEndOfInput
-      container = document.createElement('div');
-      document.body.appendChild(container);
-      component = React.render(<EditorContainer
+      component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
         value={'Adwolf'}
         cellMetaData={cellMetaData}
         column={fakeColumn}
-        height={50}/>, container);
+        height={50}/>);
     });
-    afterEach(() => {
-      //remove our container
-      document.body.removeChild(container);
-    })
     it('should create a new EditorContainer instance', () => {
       expect(component).toBeDefined();
     });
