@@ -78,33 +78,35 @@ var EditorContainer = React.createClass({
   },
 
   onPressEnter(e: SyntheticKeyboardEvent){
-    e.stopPropagation();
-    e.preventDefault();
+    //e.stopPropagation();
+    //e.preventDefault();
     this.commit({key : 'Enter'});
   },
 
   onPressTab(e: SyntheticKeyboardEvent){
-    e.preventDefault();
+    //e.preventDefault();
     this.commit({key : 'Tab'});
   },
 
   onPressEscape(e: SyntheticKeyboardEvent){
-    e.stopPropagation();
-    e.preventDefault();
+    //e.stopPropagation();
+    //e.preventDefault();
     this.props.cellMetaData.onCommitCancel();
   },
 
   onPressArrowDown(e: SyntheticKeyboardEvent){
     if(this.editorHasResults()){
+      //dont want to propogate as that then moves us round the grid
       e.stopPropagation();
-      e.preventDefault();
+      //e.preventDefault();
     }
   },
 
   onPressArrowUp(e: SyntheticKeyboardEvent){
     if(this.editorHasResults()){
+      //dont want to propogate as that then moves us round the grid
       e.stopPropagation();
-      e.preventDefault();
+      //e.preventDefault();
     }
   },
 

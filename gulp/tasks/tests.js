@@ -12,6 +12,6 @@ gulp.task('test', function (cb) {
   //hit f12 quickly, and you are done
   karma.start({
     configFile:  '../../../config/karma.js',
-    singleRun: false
+    singleRun: true
   }, cb);
 });

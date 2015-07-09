@@ -59,7 +59,7 @@ var Draggable = React.createClass({
     }
 
     if (e.stopPropagation) {
-      e.stopPropagation();
+      //e.stopPropagation();
     }
 
     if (e.preventDefault) {

@@ -54,14 +54,14 @@ var DropDownEditor = React.createClass({
   },
 
   onClick(e: Event){
-    e.stopPropagation();
-    e.preventDefault();
+    //e.stopPropagation();
+    //e.preventDefault();
     this.getInputNode().focus();
   },
 
   onDoubleClick(e: Event){
-    e.stopPropagation();
-    e.preventDefault();
+    //e.stopPropagation();
+    //e.preventDefault();
     this.getInputNode().focus();
   }
 
