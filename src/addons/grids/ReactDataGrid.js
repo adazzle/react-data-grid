@@ -94,13 +94,21 @@ var ReactDataGrid = React.createClass({
   getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType } {
     var gridColumns = this.setupGridColumns();
     var columnMetrics = this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, true);
-    var initialState = {columnMetrics, selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
+    var initialState = {columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
     if(this.props.enableCellSelect){
       initialState.selected = {rowIdx: 0, idx: 0};
     }else{
       initialState.selected = {rowIdx: -1, idx: -1};
     }
     return initialState;
+  },
+
+  getInitialSelectedRows: function(){
+    var selectedRows = [];
+    for(var i = 0; i < this.props.rowsCount; i++){
+      selectedRows.push(false);
+    }
+    return selectedRows;
   },
 
   componentWillReceiveProps:function(nextProps: ReactDataGridProps){
@@ -325,11 +333,12 @@ var ReactDataGrid = React.createClass({
 
     var cols = this.props.columns.slice(0);
     if(this.props.enableRowSelect){
+
         cols.unshift({
           key: 'select-row',
           name: '',
           formatter : <CheckboxEditor/>,
-          onRowSelect : this.handleRowSelect,
+          onCellChange : this.handleRowSelect,
           filterable : false,
           headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
         width : 60,
@@ -353,14 +362,16 @@ var ReactDataGrid = React.createClass({
     this.setState({selectedRows : selectedRows});
   },
 
-  handleRowSelect(row: Row, e: Event){
+// columnKey not used here as this function will select the whole row,
+// but needed to match the function signature in the CheckboxEditor
+  handleRowSelect(rowIdx: number, columnKey: string, e: Event){
     e.stopPropagation();
     if(this.state.selectedRows != null && this.state.selectedRows.length > 0){
       var selectedRows = this.state.selectedRows.slice();
-      if(selectedRows[row] == null || selectedRows[row] == false){
-        selectedRows[row] = true;
+      if(selectedRows[rowIdx] == null || selectedRows[rowIdx] == false){
+        selectedRows[rowIdx] = true;
       }else{
-        selectedRows[row] = false;
+        selectedRows[rowIdx] = false;
       }
       this.setState({selectedRows : selectedRows});
     }
@@ -448,7 +459,7 @@ var ReactDataGrid = React.createClass({
   handlePaste(){
     if(!this.copyPasteEnabled()) { return; }
       var selected = this.state.selected;
-      
+
       var cellKey = this.getColumn(this.state.columnMetrics.columns, this.state.selected.idx).key;
       if(this.props.onCellCopyPaste) {
         this.props.onCellCopyPaste({cellKey: cellKey , rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx});

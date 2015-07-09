@@ -202,8 +202,9 @@ var Canvas = React.createClass({
 
   setScrollLeft(scrollLeft: number) {
     if (this._currentRowsLength !== 0) {
+      if(!this.refs) return;
       for (var i = 0, len = this._currentRowsLength; i < len; i++) {
-        if(this.refs[i]) {
+        if(this.refs[i] && this.refs[i].setScrollLeft) {
           this.refs[i].setScrollLeft(scrollLeft);
         }
       }

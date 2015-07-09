@@ -26,12 +26,16 @@ var columns = [
 
 
 var _rows = [];
+var _selectedRows = [];
+
 for (var i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
     title: 'Title ' + i,
     count: i * 1000
   });
+
+  _selectedRows.push(false);
 }
 
 var rowGetter = function(i){
@@ -102,7 +106,7 @@ describe('Grid', () => {
 
     expect(component.state).toEqual({
       columnMetrics : { columns : [ { key : 'id', name : 'ID', width : 100, left : 0 }, { key : 'title', name : 'Title', width : 100, left : 100 }, { key : 'count', name : 'Count', width : 100, left : 200 } ], width : 300, totalWidth : -2, minColumnWidth : 80 },
-      selectedRows : [],
+      selectedRows : _selectedRows,
       selected : {rowIdx : 0,  idx : 0},
       copied : null,
       canFilter : false,
@@ -131,80 +135,78 @@ describe('Grid', () => {
 
   });
 
-  // describe("When row selection enabled", () => {
-  //
-  //   beforeEach(() => {
-  //     component = TestUtils.renderIntoDocument(<Grid {...testProps} enableRowSelect={true} />);
-  //   });
-  //
-  //   afterEach(() => {
-  //     component.setState({selectedRows : []});
-  //   });
-  //
-  //   it("should render an additional Select Row column", () => {
-  //
-  //     var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-  //     var selectRowCol = baseGrid.props.columns[0];
-  //     expect(baseGrid.props.columns.length).toEqual(columns.length + 1);
-  //     expect(selectRowCol.key).toEqual('select-row');
-  //     expect(TestUtils.isElementOfType(selectRowCol.formatter, CheckboxEditorStub)).toBe(true);
-  //   });
-  //
-  //   it("clicking header checkbox should toggle select all rows", () => {
-  //     //arrange
-  //     var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-  //     var selectRowCol = baseGrid.props.columns[0];
-  //     var headerCheckbox = selectRowCol.headerRenderer;
-  //     var checkbox = document.createElement('input');
-  //     checkbox.type = "checkbox";
-  //     checkbox.value = "value";
-  //     checkbox.checked = true;
-  //     var fakeEvent = {currentTarget : checkbox};
-  //     //act
-  //     headerCheckbox.props.onChange(fakeEvent);
-  //     //assert
-  //     var selectedRows = component.state.selectedRows;
-  //     expect(selectedRows.length).toEqual(_rows.length);
-  //     selectedRows.forEach(function(selected){
-  //       expect(selected).toBe(true);
-  //     });
-  //     //trigger unselect
-  //     checkbox.checked = false;
-  //     headerCheckbox.props.onChange(fakeEvent);
-  //     component.state.selectedRows.forEach(function(selected){
-  //       expect(selected).toBe(false);
-  //     });
-  //   });
-  //
-  //   it("should be able to select an individual row when selected = false", () => {
-  //     component.setState({selectedRows : [false, false, false, false]});
-  //     var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-  //     var selectRowCol = baseGrid.props.columns[0];
-  //     var fakeEvent = {stopPropagation : function(){}};
-  //     selectRowCol.onRowSelect(3, fakeEvent);
-  //     expect(component.state.selectedRows[3]).toBe(true);
-  //   });
-  //
-  //   it("should be able to select an individual row when selected = null", () => {
-  //     component.setState({selectedRows : [null, null, null, null]});
-  //     var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-  //     var selectRowCol = baseGrid.props.columns[0];
-  //     var fakeEvent = {stopPropagation : function(){}};
-  //     selectRowCol.onRowSelect(2, fakeEvent );
-  //     expect(component.state.selectedRows[2]).toBe(true);
-  //   });
-  //
-  //   it("should be able to unselect an individual row ", () => {
-  //     component.setState({selectedRows : [null, true, true, true]});
-  //     var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
-  //     var selectRowCol = baseGrid.props.columns[0];
-  //     
-  //     var fakeEvent = {stopPropagation : function(){}};
-  //     selectRowCol.onRowSelect(3, fakeEvent);
-  //     expect(component.state.selectedRows[3]).toBe(false);
-  //   });
-  // });
-  //
+  describe("When row selection enabled", () => {
+
+    beforeEach(() => {
+      component = TestUtils.renderIntoDocument(<Grid {...testProps} enableRowSelect={true} />);
+    });
+
+    afterEach(() => {
+      component.setState({selectedRows : []});
+    });
+
+    it("should render an additional Select Row column", () => {
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columnMetrics.columns[0];
+      expect(baseGrid.props.columnMetrics.columns.length).toEqual(columns.length + 1);
+      expect(selectRowCol.key).toEqual('select-row');
+      expect(TestUtils.isElementOfType(selectRowCol.formatter, CheckboxEditorStub)).toBe(true);
+    });
+
+    it("clicking header checkbox should toggle select all rows", () => {
+      //arrange
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columnMetrics.columns[0];
+      var headerCheckbox = selectRowCol.headerRenderer;
+      var checkbox = document.createElement('input');
+      checkbox.type = "checkbox";
+      checkbox.value = "value";
+      checkbox.checked = true;
+      var fakeEvent = {currentTarget : checkbox};
+      //act
+      headerCheckbox.props.onChange(fakeEvent);
+      //assert
+      var selectedRows = component.state.selectedRows;
+      expect(selectedRows.length).toEqual(_rows.length);
+      selectedRows.forEach(function(selected){
+        expect(selected).toBe(true);
+      });
+      //trigger unselect
+      checkbox.checked = false;
+      headerCheckbox.props.onChange(fakeEvent);
+      component.state.selectedRows.forEach(function(selected){
+        expect(selected).toBe(false);
+      });
+    });
+
+    it("should be able to select an individual row when selected = false", () => {
+      component.setState({selectedRows : [false, false, false, false]});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columnMetrics.columns[0];
+      var fakeEvent = {stopPropagation : function(){}};
+      selectRowCol.onCellChange(3, 'select-row', fakeEvent);
+      expect(component.state.selectedRows[3]).toBe(true);
+    });
+
+    it("should be able to select an individual row when selected = null", () => {
+      component.setState({selectedRows : [null, null, null, null]});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columnMetrics.columns[0];
+      var fakeEvent = {stopPropagation : function(){}};
+      selectRowCol.onCellChange(2, 'select-row', fakeEvent);
+      expect(component.state.selectedRows[2]).toBe(true);
+    });
+
+    it("should be able to unselect an individual row ", () => {
+      component.setState({selectedRows : [null, true, true, true]});
+      var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
+      var selectRowCol = baseGrid.props.columnMetrics.columns[0];
+      var fakeEvent = {stopPropagation : function(){}};
+      selectRowCol.onCellChange(3, 'select-row', fakeEvent);
+      expect(component.state.selectedRows[3]).toBe(false);
+    });
+  });
+
 
   describe("User Interaction",() => {
 

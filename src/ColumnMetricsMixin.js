@@ -99,7 +99,7 @@ module.exports = {
   },
 
   metricsUpdated() {
-    this.setState({columnMetrics: this.getColumnMetricsType(this.props)});
+    this.setState({columnMetrics: this.getColumnMetricsType(this.state.columnMetrics)});
   },
 
   onColumnResize(index: number, width: number) {

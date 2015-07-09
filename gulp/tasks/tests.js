@@ -6,9 +6,10 @@ var RELEASE = argv.release;
 
 
 gulp.task('test', function (cb) {
-
+  var singleRun = argv.debug ? false : true;
   karma.start({
     configFile:  '../../../config/karma.js',
-    singleRun: true
+    singleRun: singleRun,
+    debug: argv.debug
   }, cb);
 });
