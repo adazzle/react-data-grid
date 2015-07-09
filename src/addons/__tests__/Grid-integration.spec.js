@@ -99,21 +99,41 @@ describe('Grid Integration', () => {
       var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input');
       expect(editor.length).toBe(0);
     });
-    // it("Can tab out of an Editor", () => {
-    //   var row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[3];
-    //   var cell = TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell__value')[5];
-    //
-    //   TestUtils.Simulate.click(cell);
-    //   TestUtils.Simulate.doubleClick(cell);
-    //   //get the editor
-    //   var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
-    //   editor.getDOMNode().value = 'Test'; //remember to set the value via the dom node, not the component!
-    //   TestUtils.Simulate.keyDown(editor,{ key: 'TAB' });
-    //   //TODO doesnt seem to actually tab, presumably due to default browser behaviour not kicking in?
-    //   expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell')[5].props.value).toEqual('Test');
-    //   //and should move to the next cell
-    //
-    //   expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'selected').props.rowIdx).toEqual(6);
-    // });
+    it("Can tab out of an Editor", () => {
+      var row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[3];
+      var cell = TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell__value')[5];
+
+      TestUtils.Simulate.click(cell);
+      TestUtils.Simulate.doubleClick(cell);
+      //get the editor
+      var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
+      editor.getDOMNode().value = 'Test'; //remember to set the value via the dom node, not the component!
+      TestUtils.Simulate.keyDown(editor,{ key: 'Tab' });
+      //TODO doesnt seem to actually tab, presumably due to default browser behaviour not kicking in?
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell')[5].props.value).toEqual('Test');
+      //and should move to the next cell
+      var selected = TestUtils.scryRenderedDOMComponentsWithClass(row,'selected');
+      expect(selected.length).toEqual(1);
+      expect(selected[0].props.rowIdx).toEqual(3);
+      expect(selected[0].props.idx).toEqual(7); //note - idx is 1 based, not 0 based?
+    });
+    it("Can shift+tab out of an Editor", () => {
+      var row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[3];
+      var cell = TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell__value')[5];
+
+      TestUtils.Simulate.click(cell);
+      TestUtils.Simulate.doubleClick(cell);
+      //get the editor
+      var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
+      editor.getDOMNode().value = 'Test'; //remember to set the value via the dom node, not the component!
+      TestUtils.Simulate.keyDown(editor,{ key: 'Tab', shiftKey: true });
+      //TODO doesnt seem to actually tab, presumably due to default browser behaviour not kicking in?
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell')[5].props.value).toEqual('Test');
+      //and should move to the next cell
+      var selected = TestUtils.scryRenderedDOMComponentsWithClass(row,'selected');
+      expect(selected.length).toEqual(1);
+      expect(selected[0].props.rowIdx).toEqual(3);
+      expect(selected[0].props.idx).toEqual(5); //note - idx is 1 based, not 0 based?
+    });
   });
 });

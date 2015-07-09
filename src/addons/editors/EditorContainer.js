@@ -84,7 +84,6 @@ var EditorContainer = React.createClass({
   },
 
   onPressTab(e: SyntheticKeyboardEvent){
-    e.stopPropagation();
     e.preventDefault();
     this.commit({key : 'Tab'});
   },
