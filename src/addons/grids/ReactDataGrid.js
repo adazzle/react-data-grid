@@ -324,7 +324,7 @@ var ReactDataGrid = React.createClass({
           key: 'select-row',
           name: '',
           formatter : <CheckboxEditor/>,
-          onRowSelect : this.handleRowSelect,
+          onCellChange : this.handleRowSelect,
           filterable : false,
           headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
         width : 60,
@@ -348,14 +348,16 @@ var ReactDataGrid = React.createClass({
     this.setState({selectedRows : selectedRows});
   },
 
-  handleRowSelect(row: Row, e: Event){
+// columnKey not used here as this function will select the whole row,
+// but needed to match the function signature in the CheckboxEditor
+  handleRowSelect(rowIdx: number, columnKey: string, e: Event){
     e.stopPropagation();
     if(this.state.selectedRows != null && this.state.selectedRows.length > 0){
       var selectedRows = this.state.selectedRows.slice();
-      if(selectedRows[row] == null || selectedRows[row] == false){
-        selectedRows[row] = true;
+      if(selectedRows[rowIdx] == null || selectedRows[rowIdx] == false){
+        selectedRows[rowIdx] = true;
       }else{
-        selectedRows[row] = false;
+        selectedRows[rowIdx] = false;
       }
       this.setState({selectedRows : selectedRows});
     }
