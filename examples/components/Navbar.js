@@ -33,6 +33,7 @@ module.exports = React.createClass({
                     <li><a href="examples.html#/editors">Rich Cell Editors</a></li>
                     <li><a href="examples.html#/sortable">Sortable Grid</a></li>
                     <li><a href="examples.html#/million-rows">One Million Rows</a></li>
+                    <li><a href="examples.html#/immutable-data">Immutable Data Grid</a></li>
                     <li><a href="examples.html#/all-the-features">All-The-Features Grid</a></li>
                     <li><a href="examples.html#/custom-row-renderer">Custom Row Render</a></li>
                     </ul>

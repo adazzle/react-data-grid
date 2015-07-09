@@ -17,7 +17,7 @@ describe('Header Unit Tests', () => {
   });
 
   var testProps = {
-    columns : {
+    columnMetrics : {
       columns : helpers.columns,
       minColumnWidth: 80,
       totalWidth: true,
@@ -45,6 +45,16 @@ describe('Header Unit Tests', () => {
   it('should render a default header row', () => {
     var headerRows = TestUtils.scryRenderedComponentsWithType(header, HeaderRowStub);
     expect(headerRows.length).toEqual(1);
+  });
+
+  it('header row drag start should set resize column state ', () => {
+    var resizeColIdx = 2;
+    var newWidth = 350;
+    header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
+    var headerRow = TestUtils.findRenderedComponentWithType(header, HeaderRowStub);
+    headerRow.props.onColumnResize(helpers.columns[resizeColIdx], newWidth);
+    expect(header.state.resizing.column.width).toEqual(newWidth);
+    expect(header.state.resizing.column.key).toEqual(helpers.columns[resizeColIdx].key);
   });
 
 

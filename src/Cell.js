@@ -41,6 +41,8 @@ var Cell = React.createClass({
     }
   },
 
+
+
   getInitialState(){
     return {isRowChanging: false, isCellValueChanging: false}
   },
@@ -55,6 +57,9 @@ var Cell = React.createClass({
     var dragged = this.props.cellMetaData.dragged;
     if(dragged && dragged.complete === true){
       this.props.cellMetaData.handleTerminateDrag();
+    }
+    if(this.state.isRowChanging && this.props.selectedColumn != null){
+      this.applyUpdateClass();
     }
   },
 
@@ -219,7 +224,6 @@ var Cell = React.createClass({
       this.props.className,
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
-    var updateCellClass = this.getUpdateCellClass();
     var extraClasses = joinClasses({
       'selected' : this.isSelected() && !this.isActive() ,
       'editing' : this.isActive(),
@@ -229,12 +233,23 @@ var Cell = React.createClass({
       'is-dragged-over-down' :  this.isDraggedOverDownwards(),
       'was-dragged-over' : this.wasDraggedOver()
     });
-    return joinClasses(className, extraClasses, updateCellClass);
+    return joinClasses(className, extraClasses);
   },
 
   getUpdateCellClass() {
-    if(this.state.isRowChanging && this.props.selectedColumn != null){
-      return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+  },
+
+  applyUpdateClass() {
+    var updateCellClass = this.getUpdateCellClass();
+    // -> removing the class
+    if(updateCellClass != null) {
+      this.getDOMNode().classList.remove(updateCellClass);
+      // -> triggering reflow /* The actual magic */
+      // without this it wouldn't work. Try uncommenting the line and the transition won't be retriggered.
+      this.getDOMNode().offsetWidth = element.offsetWidth;
+      // -> and re-adding the class
+      this.getDOMNode().classList.add(updateCellClass);
     }
   },
 

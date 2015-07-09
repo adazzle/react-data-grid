@@ -27,59 +27,67 @@ type Column = {
  *
  * @param {ColumnMetricsType} metrics
  */
-function calculate(metrics: ColumnMetricsType): ColumnMetricsType {
-  var width = 0;
-  var unallocatedWidth = metrics.totalWidth;
+function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
+    // compute width for columns which specify width
+    var columns = setColumnWidths(metrics.columns, metrics.totalWidth);
 
-  var deferredColumns = [];
-  var columns = metrics.columns.map(shallowCloneObject);
+    var unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => {
+      return w - column.width;
+    }, metrics.totalWidth);
 
-  var i, len, column;
+    var width = columns.filter(c => c.width).reduce((w, column) => {
+      return w + column.width;
+    }, 0);
 
-  // compute width for columns which specify width
-  for (i = 0, len = columns.length; i < len; i++) {
-    column = columns[i];
+    // compute width for columns which doesn't specify width
+    columns = setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);
 
-    if (column.width) {
-      if (/^([0-9]+)%$/.exec(column.width.toString())) {
-        column.width = Math.floor(
-          column.width / 100 * metrics.totalWidth);
-      }
-      unallocatedWidth -= column.width;
-      width += column.width;
-    } else {
-      deferredColumns.push(column);
-    }
+    // compute left offset
+    columns = setColumnOffsets(columns);
 
-  }
+    return {
+      columns,
+      width,
+      totalWidth: metrics.totalWidth,
+      minColumnWidth: metrics.minColumnWidth
+    };
+}
 
-  // compute width for columns which doesn't specify width
-  for (i = 0, len = deferredColumns.length; i < len; i++) {
-    column = deferredColumns[i];
-
-    if (unallocatedWidth <= 0) {
-      column.width = metrics.minColumnWidth;
-    } else {
-      column.width = Math.floor(unallocatedWidth / deferredColumns.length);
-    }
-    width += column.width;
-  }
-
-  // compute left offset
+function setColumnOffsets(columns) {
   var left = 0;
-  for (i = 0, len = columns.length; i < len; i++) {
-    column = columns[i];
+  return columns.map(column => {
     column.left = left;
     left += column.width;
-  }
-
-  return {
-    columns,
-    width,
-    totalWidth: metrics.totalWidth,
-    minColumnWidth: metrics.minColumnWidth
-  };
+    return column;
+  });
 }
+
+function setColumnWidths(columns, totalWidth) {
+  return columns.map(column => {
+    var colInfo = Object.assign({}, column);
+    if(column.width){
+      if (/^([0-9]+)%$/.exec(column.width.toString())) {
+        colInfo.width = Math.floor(
+          column.width / 100 * totalWidth);
+      }
+    }
+    return colInfo;
+  });
+}
+
+function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
+  return columns.map((column, i, arr) => {
+    if(!column.width){
+      if (unallocatedWidth <= 0) {
+        column.width = minColumnWidth;
+      } else {
+        column.width = Math.floor(unallocatedWidth / (arr.size || arr.length));
+      }
+    }
+    return column;
+  });
+}
+
 
 /**
  * Update column metrics calculation by resizing a column.
@@ -98,10 +106,14 @@ function resizeColumn(metrics: ColumnMetricsType, index: number, width: number):
 
   metrics.columns.splice(index, 1, updatedColumn);
 
-  return calculate(metrics);
+  return recalculate(metrics);
 }
 
-function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean): boolean {
+function areColumnsImmutable(prevColumns: Array<Column>, nextColumns: Array<Column>) {
+  return (typeof Immutable !== 'undefined' && (prevColumns instanceof Immutable.List) && (nextColumns instanceof Immutable.List));
+}
+
+function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean) {
   var i, len, column;
   var prevColumnsByKey: { [key:string]: Column } = {};
   var nextColumnsByKey: { [key:string]: Column } = {};
@@ -132,8 +144,15 @@ function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sam
       return false;
     }
   }
-
   return true;
 }
 
-module.exports = { calculate, resizeColumn, sameColumn, sameColumns };
+function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean): boolean {
+  if(areColumnsImmutable(prevColumns, nextColumns)) {
+    return prevColumns === nextColumns;
+  }else{
+    return compareEachColumn(prevColumns, nextColumns, sameColumn);
+  }
+}
+
+module.exports = { recalculate, resizeColumn, sameColumn, sameColumns };

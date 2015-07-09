@@ -12,9 +12,10 @@ var Row                   = require('../../Row');
 var ExcelColumn           = require('./ExcelColumn');
 var KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 var CheckboxEditor        = require('../editors/CheckboxEditor');
-var SortableHeaderCell    = require('../cells/headerCells/SortableHeaderCell');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
 var cloneWithProps        = require('react/lib/cloneWithProps');
+var DOMMetrics           = require('../../DOMMetrics');
+var ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
 
 if(!Object.assign){
   Object.assign = require('object-assign');
@@ -45,18 +46,14 @@ type ReactDataGridProps = {
   onFilter: ?() => any;
 };
 
-type SortType = {ASC: string; DESC: string};
-var DEFINE_SORT = {
-  ASC : 'ASC',
-  DESC : 'DESC',
-  NONE  : 'NONE'
-}
+
 
 type RowUpdateEvent = {
   keyCode: string;
   changed: {expandedHeight: number};
   rowIdx: number;
 };
+
 
 var ReactDataGrid = React.createClass({
 
@@ -76,7 +73,12 @@ var ReactDataGrid = React.createClass({
     onAddFilter : React.PropTypes.func
   },
 
-  mixins : [KeyboardHandlerMixin],
+  mixins: [
+    ColumnMetricsMixin,
+    DOMMetrics.MetricsComputatorMixin,
+    KeyboardHandlerMixin
+  ],
+
 
   getDefaultProps(): {enableCellSelect: boolean} {
     return {
@@ -90,7 +92,9 @@ var ReactDataGrid = React.createClass({
   },
 
   getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType } {
-    var initialState = {selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
+    var gridColumns = this.setupGridColumns();
+    var columnMetrics = this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, true);
+    var initialState = {columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
     if(this.props.enableCellSelect){
       initialState.selected = {rowIdx: 0, idx: 0};
     }else{
@@ -111,6 +115,9 @@ var ReactDataGrid = React.createClass({
     if(nextProps.rowsCount  === this.props.rowsCount + 1){
       this.onAfterAddRow(nextProps.rowsCount + 1);
     }
+    var gridColumns = this.setupGridColumns();
+    var columnMetrics = this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, true);
+    this.setState({columnMetrics});
   },
 
   render: function(): ?ReactElement {
@@ -135,7 +142,7 @@ var ReactDataGrid = React.createClass({
             ref="base"
             {...this.props}
             headerRows={this.getHeaderRows()}
-            columns={this.getColumns()}
+            columnMetrics={this.state.columnMetrics}
             rowGetter={this.props.rowGetter}
             rowsCount={this.props.rowsCount}
             cellMetaData={cellMetaData}
@@ -144,11 +151,14 @@ var ReactDataGrid = React.createClass({
             rowOffsetHeight={this.getRowOffsetHeight()}
             sortColumn={this.state.sortColumn}
             sortDirection={this.state.sortDirection}
+            onSort={this.handleSort}
             minHeight={this.props.minHeight}
+            totalWidth={this.DOMMetrics.gridWidth()}
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
-            onViewportDoubleClick={this.onViewportDoubleClick}/>
+            onViewportDoubleClick={this.onViewportDoubleClick}
+            onColumnResize={this.onColumnResize}/>
           </div>
         </div>
       )
@@ -173,7 +183,7 @@ var ReactDataGrid = React.createClass({
         if (
           idx >= 0
           && rowIdx >= 0
-          && idx < this.getColumns().length
+          && idx < this.state.columnMetrics.columns.length
           && rowIdx < this.props.rowsCount
         ) {
           this.setState({selected: selected});
@@ -296,7 +306,8 @@ var ReactDataGrid = React.createClass({
   },
 
   canEdit(idx: number): boolean{
-    return this.props.enableCellSelect === true && ((this.props.columns[idx].editor != null) || this.props.columns[idx].editable);
+    var col = this.getColumn(this.props.columns, idx);
+    return this.props.enableCellSelect === true && ((col.editor != null) || col.editable);
   },
 
   isActive(): boolean{
@@ -317,9 +328,12 @@ var ReactDataGrid = React.createClass({
     this.props.onRowUpdated(commit);
 
   },
-  getColumns : function(): Array<any>{
-    var cols = this.getDecoratedColumns(this.props.columns)
+
+  setupGridColumns : function(): Array<any>{
+
+    var cols = this.props.columns.slice(0);
     if(this.props.enableRowSelect){
+
         cols.unshift({
           key: 'select-row',
           name: '',
@@ -424,21 +438,10 @@ var ReactDataGrid = React.createClass({
     return offsetHeight;
   },
 
-  getDecoratedColumns: function(columns: Array<ExcelColumn>): Array<ExcelColumn> {
-    return this.props.columns.map(function(c) {
-      var column = Object.assign({}, c);
-
-      if (column.sortable) {
-        var sortDirection = this.state.sortColumn === column.key ?  this.state.sortDirection : DEFINE_SORT.NONE;
-        column.headerRenderer = <SortableHeaderCell columnKey={column.key} onSort={this.handleSort} sortDirection={sortDirection}/>;
-      }
-      return column;
-    }, this);
-  },
-
   handleSort: function(columnKey: string, direction: SortType) {
-    this.setState({sortDirection: direction, sortColumn: columnKey});
-    this.props.onGridSort(columnKey, direction);
+    this.setState({sortDirection: direction, sortColumn: columnKey}, function(){
+      this.props.onGridSort(columnKey, direction);
+    });
   },
 
   copyPasteEnabled: function(): boolean {
@@ -456,7 +459,8 @@ var ReactDataGrid = React.createClass({
   handlePaste(){
     if(!this.copyPasteEnabled()) { return; }
       var selected = this.state.selected;
-      var cellKey = this.getColumns()[selected.idx].key;
+
+      var cellKey = this.getColumn(this.state.columnMetrics.columns, this.state.selected.idx).key;
       if(this.props.onCellCopyPaste) {
         this.props.onCellCopyPaste({cellKey: cellKey , rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx});
       }
@@ -474,7 +478,7 @@ var ReactDataGrid = React.createClass({
       if (
         idx >= 0
         && rowIdx >= 0
-        && idx < this.getColumns().length
+        && idx < this.getColumnCount()
         && rowIdx < this.props.rowsCount
       ) {
         this.setState({dragged: dragged});
@@ -494,7 +498,7 @@ var ReactDataGrid = React.createClass({
       var fromRow, toRow;
       var selected = this.state.selected;
       var dragged = this.state.dragged;
-      var cellKey = this.getColumns()[this.state.selected.idx].key;
+      var cellKey = this.getColumn(this.state.columnMetrics.columns, this.state.selected.idx).key;
       fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       if(this.props.onCellsDragged) { this.props.onCellsDragged({cellKey: cellKey , fromRow: fromRow, toRow : toRow, value : dragged.value}); }

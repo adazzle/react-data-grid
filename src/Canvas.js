@@ -162,6 +162,7 @@ var Canvas = React.createClass({
                         || nextProps.rowHeight !== this.props.rowHeight
                         || nextProps.columns !== this.props.columns
                         || nextProps.width !== this.props.width
+                        || nextProps.cellMetaData !== this.props.cellMetaData
                         || !shallowEqual(nextProps.style, this.props.style);
 
     if (shouldUpdate) {
