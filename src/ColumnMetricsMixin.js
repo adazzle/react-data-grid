@@ -40,6 +40,7 @@ module.exports = {
     };
   },
 
+
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
@@ -99,7 +100,13 @@ module.exports = {
   },
 
   metricsUpdated() {
-    this.setState({columnMetrics: this.getColumnMetricsType(this.state.columnMetrics)});
+    var columnMetrics = this.createColumnMetrics();
+    this.setState({columnMetrics});
+  },
+
+  createColumnMetrics(initialRun){
+    var gridColumns = this.setupGridColumns();
+    return this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, initialRun);
   },
 
   onColumnResize(index: number, width: number) {
