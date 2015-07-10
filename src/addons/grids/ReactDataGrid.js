@@ -264,7 +264,6 @@ var ReactDataGrid = React.createClass({
   },
 
   moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number){
-    //e.stopPropagation();
     // we need to prevent default as we control grid scroll
     //otherwise it moves every time you left/right which is janky
     e.preventDefault();
@@ -353,7 +352,6 @@ var ReactDataGrid = React.createClass({
   },
 
   handleRowSelect(row: Row, e: Event){
-    //e.stopPropagation();
     if(this.state.selectedRows != null && this.state.selectedRows.length > 0){
       var selectedRows = this.state.selectedRows.slice();
       if(selectedRows[row] == null || selectedRows[row] == false){

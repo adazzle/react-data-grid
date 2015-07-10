@@ -181,12 +181,6 @@ var Cell = React.createClass({
   },
 
   onCellClick(e: SyntheticMouseEvent){
-    if (e && typeof e.preventDefault === 'function') {
-      //e.preventDefault();
-    }
-    if (e && typeof e.stopPropagation === 'function') {
-      //e.stopPropagation();
-    }
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellClick != null) {
       meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
@@ -194,12 +188,6 @@ var Cell = React.createClass({
   },
 
   onCellDoubleClick(e: SyntheticMouseEvent){
-    if (e && typeof e.preventDefault === 'function') {
-      //e.preventDefault();
-    }
-    if (e && typeof e.stopPropagation === 'function') {
-      //e.stopPropagation();
-    }
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellDoubleClick != null) {
       meta.onCellDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx});

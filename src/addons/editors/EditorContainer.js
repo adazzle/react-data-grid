@@ -78,19 +78,14 @@ var EditorContainer = React.createClass({
   },
 
   onPressEnter(e: SyntheticKeyboardEvent){
-    //e.stopPropagation();
-    //e.preventDefault();
     this.commit({key : 'Enter'});
   },
 
   onPressTab(e: SyntheticKeyboardEvent){
-    //e.preventDefault();
     this.commit({key : 'Tab'});
   },
 
   onPressEscape(e: SyntheticKeyboardEvent){
-    //e.stopPropagation();
-    //e.preventDefault();
     this.props.cellMetaData.onCommitCancel();
   },
 
@@ -98,7 +93,6 @@ var EditorContainer = React.createClass({
     if(this.editorHasResults()){
       //dont want to propogate as that then moves us round the grid
       e.stopPropagation();
-      //e.preventDefault();
     }
     else {
       this.commit(e);

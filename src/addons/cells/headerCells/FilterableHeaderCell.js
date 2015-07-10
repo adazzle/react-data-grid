@@ -21,9 +21,6 @@ var FilterableHeaderCell = React.createClass({
   },
 
   handleChange(e: Event){
-    //e.preventDefault();
-    //e.stopPropagation();
-
     var val = e.target.value;
     this.setState({filterTerm : val });
     this.props.onChange({filterTerm : val, columnKey : this.props.column.key});
