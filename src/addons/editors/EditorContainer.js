@@ -103,7 +103,6 @@ var EditorContainer = React.createClass({
     if(this.editorHasResults()){
       //dont want to propogate as that then moves us round the grid
       e.stopPropagation();
-      //e.preventDefault();
     }
     else {
       this.commit(e);

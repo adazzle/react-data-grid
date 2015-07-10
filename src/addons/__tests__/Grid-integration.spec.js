@@ -51,17 +51,23 @@ describe('Grid Integration', () => {
       if(args.beforeEnd) {args.beforeEnd();}
       TestUtils.Simulate.dragEnd(to.getDOMNode());
 
-      return from;
+      return {from, to};
     }
-    it("Drags a column", () => {
+    iit("Drags a column", () => {
       //Arrange
       //get the cell to drag from / to
-      var from = simulateDrag({from:0,to:4,col:3})
+      var res = simulateDrag({from:0,to:4,col:3})
       //Assert
       //check onCellDrag called with correct data
       expect(handleCellDragSpy).toHaveBeenCalled();
       //Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
-      expect(handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: "title", fromRow: 0, toRow: 4, value: from.props.value});
+      var expected= res.from.props.value;
+      //chek our event returns the right data
+      expect(handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: "title", fromRow: 0, toRow: 4, value: expected});
+      //and the component
+      expect(res.to.props.value).toEqual(expected);
+      //and finally the rendered data
+      expect(TestUtils.findRenderedDOMComponentWithClass(res.to,'react-grid-Cell__value').getDOMNode().textContent).toEqual(expected);
     });
 
     it("Shows drag selector", () => {
