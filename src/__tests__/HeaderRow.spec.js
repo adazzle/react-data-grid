@@ -24,7 +24,8 @@ describe('Header Unit Tests', () => {
     onColumnResize : function(){},
     onSort: function(){},
     sortDirection : 'NONE',
-    sortColumn: null
+    sortColumn: null,
+    height: 35
   }
 
   beforeEach(() => {
@@ -40,7 +41,7 @@ describe('Header Unit Tests', () => {
 
     var sortableColIdx =1;
     beforeEach(() => {
-      
+
       testProps.columns[sortableColIdx].sortable = true;
       headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} />);
     })

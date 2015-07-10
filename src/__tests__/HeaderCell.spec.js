@@ -28,7 +28,8 @@ describe('Header Cell Tests', () => {
     onResizeEnd : function(){
 
     },
-    height :50
+    height :50,
+    name:'bla'
   }
 
   beforeEach(() => {

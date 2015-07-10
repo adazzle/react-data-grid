@@ -20,10 +20,7 @@ var Viewport = React.createClass({
   propTypes: {
     rowOffsetHeight: PropTypes.number.isRequired,
     totalWidth: PropTypes.number.isRequired,
-    columnMetrics: PropTypes.shape({
-      width: PropTypes.number.isRequired,
-      columns: PropTypes.array.isRequired,
-    }),
+    columnMetrics: PropTypes.object.isRequired,
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     selectedRows: PropTypes.array,
     expandedRows: PropTypes.array,

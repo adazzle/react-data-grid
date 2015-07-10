@@ -2,7 +2,8 @@
  * @jsx React.DOM
  */
 (function(){
-  var ReactDataGrid       = require('../build/react-data-grid-with-addons')
+  var React       = require('react')
+  var ReactDataGrid       = require('../../src/addons')
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
@@ -141,16 +142,16 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
  var Component = React.createClass({displayName: 'component',
 
     getInitialState : function(){
-      var fakeRows = FakeObjectDataStore.createRows(2000);
+      var fakeRows = FakeObjectDataStore.createRows(100);
       return {rows : Immutable.fromJS(fakeRows)};
     },
 
     handleRowUpdated : function(commit){
       //merge the updated row values with the existing row
-      var rows = this.state.rows;
-      var updatedRow = React.addons.update(rows[commit.rowIdx], {$merge : commit.updated});
-      rows[commit.rowIdx] = updatedRow;
-      this.setState({rows:rows});
+      var newRows = this.state.rows.update(commit.rowIdx, function(r) {
+        return r.merge(commit.updated);
+      });
+      this.setState({rows: newRows});
     },
 
     handleCellDrag : function(e){
@@ -161,6 +162,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
             rowToChange[e.cellKey] = e.value;
           }
         }
+        if(this.props.handleCellDrag) {this.props.handleCellDrag(e)}
         this.setState({rows:rows});
     },
 
@@ -216,6 +218,5 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
   }else{
     this.ReactDataGrid = Component;
   }
-
 
 }).call(this);
