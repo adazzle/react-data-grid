@@ -1,7 +1,7 @@
 'use strict';
 var React        = require('react');
 var TestUtils    = require('react/lib/ReactTestUtils');
-var ExampleGrid = require('../../../examples/scripts/example-full.js');
+var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
 describe('Grid Integration', () => {
   var component;
   var handleCellDragSpy =  jasmine.createSpy("handleCellDrag");

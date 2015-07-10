@@ -157,18 +157,18 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     handleCellDrag : function(e){
         var rows = this.state.rows;
         for (var i = e.fromRow; i <= e.toRow; i++){
-          var rowToChange = rows[i];
-          if(rowToChange){
-            rowToChange[e.cellKey] = e.value;
-          }
+          rows = rows.update(i, function(r){
+            return r.set(e.cellKey, e.value);
+          });
         }
         if(this.props.handleCellDrag) {this.props.handleCellDrag(e)}
         this.setState({rows:rows});
     },
 
     handleCellCopyPaste : function(e){
-      var rows = this.state.rows;
-      rows[e.toRow][e.cellKey] = e.value;
+      var rows = this.state.rows.update(e.toRow, function(r) {
+        return r.set(e.cellKey, e.value);
+      });
       this.setState({rows:rows});
     },
 
@@ -178,7 +178,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
         userStory: '',
         developer : '',
         epic : ''};
-        var rows = React.addons.update(this.state.rows, {$push : [newRow]});
+        var rows = this.state.rows.push(newRow);
         this.setState({rows : rows});
     },
 

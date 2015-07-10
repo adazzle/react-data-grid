@@ -12,7 +12,8 @@ var filterableExample  = require('./scripts/example09-filterable-grid');
 var millionRowsExample = require('./scripts/example10-one-million-rows');
 var immutableDataExample = require('./scripts/example11-immutable-data');
 var customRowRenderer = require('./scripts/example12-customRowRenderer');
-var fullExample = require('./scripts/example-full');
+var fullExample = require('./scripts/example13-all-features');
+var fullExampleImmutable = require('./scripts/example14-all-features-immutable');
 
 var { Route, RouteHandler, Link } = ReactRouter;
 
@@ -39,6 +40,7 @@ var routes = (
       <Route name="filterable" handler={filterableExample}/>
       <Route name="million-rows" handler={millionRowsExample}/>
       <Route name="all-the-features" handler={fullExample}/>
+      <Route name="all-features-immutable" handler={fullExampleImmutable}/>
       <Route name="immutable-data" handler={immutableDataExample}/>
       <Route name="custom-row-renderer" handler={customRowRenderer}/>
   </Route>
