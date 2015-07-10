@@ -330,7 +330,7 @@ var ReactDataGrid = React.createClass({
   },
 
   setupGridColumns : function(): Array<any>{
-    var cols = [];
+    var cols = this.props.columns.slice(0);
     if(this.props.enableRowSelect){
       var selectColumn = {
           key: 'select-row',
@@ -339,12 +339,11 @@ var ReactDataGrid = React.createClass({
           onCellChange : this.handleRowSelect,
           filterable : false,
           headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
-        width : 60,
-        locked: true
+          width : 60,
+          locked: true
       };
-      cols = this.props.columns.splice(0, 0, selectColumn );
-    }else {
-      cols = this.props.columns.slice(0);
+      var unshiftedCols = cols.unshift(selectColumn);
+      cols = unshiftedCols > 0 ? cols : unshiftedCols;
     }
     return cols;
   },
