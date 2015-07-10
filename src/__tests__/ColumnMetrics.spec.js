@@ -7,6 +7,64 @@ Object.assign = require('object-assign');
 
 describe('Column Metrics Tests', () => {
 
+  describe('Creating metrics', () => {
+
+    describe('When column width not set for all columns', () =>{
+
+      var columns = [
+      {
+        key   : 'id',
+        name  : 'ID',
+        width : 60
+      },
+      {
+        key: 'title',
+        name: 'Title'
+      },
+      {
+        key: 'count',
+        name: 'Count'
+      }];
+
+      if('should set the unset column widths based on the total width', () => {
+        var metrics = recalculate({column : columns, totalWidth: 300, minColumnWidth: 50})
+        expect(metrics.columns[0].width).toEqual(60);
+        expect(metrics.columns[1].width).toEqual(120);
+        expect(metrics.columns[2].width).toEqual(120);
+
+      });
+
+      if('should set the column left based on the column widths', () => {
+        var metrics = recalculate({column : columns, totalWidth: 300, minColumnWidth: 50})
+        expect(metrics.columns[0].left).toEqual(0);
+        expect(metrics.columns[1].left).toEqual(60);
+        expect(metrics.columns[2].left).toEqual(180);
+
+      });
+
+      describe('When column data is immutable js object', () => {
+        var immutableColumns = new Immutable.List(columns);
+
+        if('should set the unset column widths based on the total width', () => {
+          var metrics = recalculate({column : immutableColumns, totalWidth: 300, minColumnWidth: 50})
+          expect(metrics.columns[0].get('width')).toEqual(60);
+          expect(metrics.columns[1].get('width')).toEqual(120);
+          expect(metrics.columns[2].get('width')).toEqual(120);
+
+        });
+
+        if('should set the column left based on the column widths', () => {
+          var metrics = recalculate({column : immutableColumns, totalWidth: 300, minColumnWidth: 50})
+          expect(metrics.columns[0].get('left')).toEqual(0);
+          expect(metrics.columns[1].get('left')).toEqual(60);
+          expect(metrics.columns[2].get('left')).toEqual(180);
+
+        });
+      });
+
+    })
+  });
+
   describe('Comparing Columns', () => {
 
     describe('Using array of object literals', () => {
@@ -49,14 +107,14 @@ describe('Column Metrics Tests', () => {
       });
 
       it('columns with same memory reference are equal', () => {
-                
+
         var areColumnsEqual = ColumnMetrics.sameColumns(this.prevColumns, this.nextColumns, ColumnMetrics.sameColumn);
         expect(areColumnsEqual).toBe(true);
       });
 
       it('columns with same properties are not equal when objects have different memory reference', () => {
         var firstColWidth = this.prevColumns.get(0).width;
-        
+
         this.nextColumns = this.nextColumns.update(0, (c) => {
           c.width = firstColWidth;
         });
