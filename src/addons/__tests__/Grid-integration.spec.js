@@ -81,17 +81,7 @@ describe('Grid Integration', () => {
     beforeEach(() => {
       renderGrid();
     });
-    it("Is Editable", () => {
-      var cell = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Cell__value')[5];
 
-      TestUtils.Simulate.click(cell);
-      TestUtils.Simulate.doubleClick(cell);
-      //get the editor
-      var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
-      editor.getDOMNode().value = 'Test'; //remember to set the value via the dom node, not the component!
-      TestUtils.Simulate.keyDown(editor,{ key: 'Enter' });
-      expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Cell')[5].props.value).toEqual('Test');
-    });
     it("Readonly is NOT Editable", () => {
       var cell = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Cell')[1];
       TestUtils.Simulate.doubleClick(cell);
@@ -99,41 +89,110 @@ describe('Grid Integration', () => {
       var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input');
       expect(editor.length).toBe(0);
     });
-    it("Can tab out of an Editor", () => {
-      var row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[3];
-      var cell = TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell__value')[5];
-
-      TestUtils.Simulate.click(cell);
+    var changeCell = function(args) {
+      var row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[args.row];
+      var cell = TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell__value')[args.cell];
+      //activate it
+      TestUtils.Simulate.click(cell);// have to do click then doubleClick as thast what the browser would actually emit
       TestUtils.Simulate.doubleClick(cell);
       //get the editor
       var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
-      editor.getDOMNode().value = 'Test'; //remember to set the value via the dom node, not the component!
-      TestUtils.Simulate.keyDown(editor,{ key: 'Tab' });
-      //TODO doesnt seem to actually tab, presumably due to default browser behaviour not kicking in?
-      expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell')[5].props.value).toEqual('Test');
-      //and should move to the next cell
-      var selected = TestUtils.scryRenderedDOMComponentsWithClass(row,'selected');
+      editor.getDOMNode().value = args.val; //remember to set the value via the dom node, not the component!
+      TestUtils.Simulate.keyDown(editor,args.ev);
+      //Assert
+
+      if(!!args.expect.valChanged) expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell')[args.cell].props.value).toEqual(args.val);
+      //and should move to the appropriate cell/row
+      row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[args.expect.row];
+      var selected = TestUtils.scryRenderedDOMComponentsWithClass(row,args.expect.className || 'selected');
       expect(selected.length).toEqual(1);
-      expect(selected[0].props.rowIdx).toEqual(3);
-      expect(selected[0].props.idx).toEqual(7); //note - idx is 1 based, not 0 based?
+      expect(selected[0].props.rowIdx).toEqual(args.expect.row);
+      expect(selected[0].props.idx).toEqual(args.expect.cell + 1);
+      //note - idx is 1 based, not 0 based. We make that more sensible by adding 1, so your test cell idx matches up
+    }
+    it("Enter commits an edit", () => {
+      changeCell({
+        row:3,
+        cell:5,
+        val:'Test',
+        ev:{key:'Enter'},
+        expect:{row:3,cell:5}
+      })
+    });
+    it("Can tab out of an Editor", () => {
+      changeCell({
+        row:3,
+        cell:5,
+        val:'Test',
+        ev:{key:'Tab'},
+        expect:{row:3,cell:6}
+      })
     });
     it("Can shift+tab out of an Editor", () => {
-      var row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[3];
-      var cell = TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell__value')[5];
+      changeCell({
+        row:3,
+        cell:5,
+        val:'Test',
+        ev:{key:'Tab',shiftKey:true},
+        expect:{row:3,cell:4}
+      })
+    });
+    xit("Arrow Left doesnt commit your change if you are not at the start of the text", () => {
+      changeCell({
+        row:3,
+        cell:5,
+        val:'Test',
+        ev:{key:'ArrowLeft'},
+        expect:{row:3,cell:5,valChanged:false, className: 'editing'}
+      })
+    });
 
-      TestUtils.Simulate.click(cell);
-      TestUtils.Simulate.doubleClick(cell);
-      //get the editor
-      var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
-      editor.getDOMNode().value = 'Test'; //remember to set the value via the dom node, not the component!
-      TestUtils.Simulate.keyDown(editor,{ key: 'Tab', shiftKey: true });
-      //TODO doesnt seem to actually tab, presumably due to default browser behaviour not kicking in?
-      expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell')[5].props.value).toEqual('Test');
-      //and should move to the next cell
-      var selected = TestUtils.scryRenderedDOMComponentsWithClass(row,'selected');
-      expect(selected.length).toEqual(1);
-      expect(selected[0].props.rowIdx).toEqual(3);
-      expect(selected[0].props.idx).toEqual(5); //note - idx is 1 based, not 0 based?
+    it("Arrow Left does commit your change if you are at the start of the text", () => {
+      changeCell({
+        row:3,
+        cell:5,
+        val:'',
+        ev:{key:'ArrowLeft'},
+        expect:{row:3,cell:4}
+      })
+    });
+    it("Arrow Right commits your change when you are at the end of the text", () => {
+      changeCell({
+        row:3,
+        cell:5,
+        val:'Test',
+        ev:{key:'ArrowRight'},
+        expect:{row:3,cell:6}
+      })
+    });
+
+    it("Arrow Right doesnt commit your change when you are at the end of the text", () => {
+      changeCell({
+        row:3,
+        cell:5,
+        val:'Test',
+        //TODO need to move left then right?
+        ev:{key:'ArrowRight'},
+        expect:{row:3,cell:6}
+      })
+    });
+    it("Arrow Up commits your change", () => {
+      changeCell({
+        row:3,
+        cell:5,
+        val:'Test',
+        ev:{key:'ArrowUp'},
+        expect:{row:2,cell:5}
+      })
+    });
+    it("Arrow Down commits your change", () => {
+      changeCell({
+        row:3,
+        cell:5,
+        val:'Test',
+        ev:{key:'ArrowDown'},
+        expect:{row:4,cell:5}
+      })
     });
   });
 });
