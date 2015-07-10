@@ -184,11 +184,11 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       if (index < 0 || index > this.getSize()){
         return undefined;
       }
-      return this.state.rows[index];
+      return this.state.rows.get(index);
     },
 
     getSize() {
-      return this.state.rows.length;
+      return this.state.rows.size;
     },
 
     render() {
