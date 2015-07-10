@@ -45,7 +45,7 @@
 
 var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
-  var columns = [
+  var columns = new Immutable.List([
     {
       key: 'id',
       name: 'ID',
