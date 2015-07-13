@@ -17,6 +17,7 @@ var cloneWithProps        = require('react/lib/cloneWithProps');
 var DOMMetrics           = require('../../DOMMetrics');
 var ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
 var RowUtils = require('../../RowUtils');
+var ColumnUtils = require('../../ColumnUtils');
 
 if(!Object.assign){
   Object.assign = require('object-assign');
@@ -184,7 +185,7 @@ var ReactDataGrid = React.createClass({
         if (
           idx >= 0
           && rowIdx >= 0
-          && idx < this.state.columnMetrics.columns.length
+          && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
           && rowIdx < this.props.rowsCount
         ) {
           this.setState({selected: selected});
@@ -483,7 +484,7 @@ var ReactDataGrid = React.createClass({
       if (
         idx >= 0
         && rowIdx >= 0
-        && idx < this.getColumnCount()
+        && idx < this.getSize()
         && rowIdx < this.props.rowsCount
       ) {
         this.setState({dragged: dragged});
