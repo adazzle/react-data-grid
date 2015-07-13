@@ -2,203 +2,275 @@
 var React        = require('react');
 var TestUtils    = require('react/lib/ReactTestUtils');
 var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
-describe('Grid Integration', () => {
-  var component;
-  var handleCellDragSpy =  jasmine.createSpy("handleCellDrag");
-  var renderGrid = function() {
-    component = TestUtils.renderIntoDocument(<ExampleGrid handleCellDrag={handleCellDragSpy}/>);
+
+class GridRunner {
+  /* =====
+  SETUP
+  ======== */
+  constructor({renderIntoBody=false}) {
+    this.grid = this._renderGrid(renderIntoBody);
+    this.renderIntoBody=renderIntoBody;
   }
-  describe('Grid Setup', () => {
-    beforeEach(() => {
-      renderGrid();
+
+  _renderGrid(intoBody) {
+    this.handleCellDragSpy =  jasmine.createSpy("handleCellDrag");
+    return intoBody ?
+      React.render(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>, document.body)
+      : TestUtils.renderIntoDocument(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>);
+  }
+
+  dispose() {
+    if(this.renderIntoBody) {
+      React.unmountComponentAtNode(document.body);
+    }
+    this.grid = null;
+  }
+
+  /* =====
+  HELPERS
+  ======== */
+  //Helpers - these are just wrappers to run several steps
+  //NOTE: these are 'final' functions, ie they call dispose at the end
+  changeCell({select:{cell:selectCell,row:selectRow},val,ev,expectToSelect:{row:expectRow,cell:expectCell}}) {
+    this
+      .clickIntoEditor({cellIdx:selectCell,rowIdx:selectRow})
+      .setValue(val)
+      .keyDown(ev)
+      .hasCommitted(val)
+      .hasSelected({cellIdx:expectCell,rowIdx:expectRow})
+      .dispose();
+  }
+
+  /* =====
+  ACTIONS
+  ======== */
+  selectCell({cellIdx,rowIdx}) {
+    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
+    this.cell = TestUtils.scryRenderedDOMComponentsWithClass(this.row,'react-grid-Cell')[cellIdx];
+    TestUtils.Simulate.click(this.cell);
+  }
+  clickIntoEditor({cellIdx,rowIdx}) {
+    //activate it
+    // have to do click then doubleClick as thast what the browser would actually emit
+    this.selectCell({cellIdx,rowIdx})
+    TestUtils.Simulate.doubleClick(this.cell);
+    return this;
+  }
+  getEditor() {
+    return TestUtils.scryRenderedDOMComponentsWithTag(this.cell,'input')[0];
+  }
+  setValue(val) {
+    this.getEditor().getDOMNode().value = val;
+    //remember to set the value via the dom node, not the component!
+    return this;
+  }
+  //you MUST have set the grid to render into body to use this
+  //chrome (et al) dont do cursor positions unless you are properly visibile
+  setCursor(start,end=start) {
+    const input = this.getEditor().getDOMNode();
+    input.setSelectionRange(start,end);
+    expect(input.selectionStart).toEqual(start,`Couldnt set the cursor.
+            You probably havent rendered the grid into the *actual* dom.
+            You need to specify renderIntoBody:true in the constructor for GridRunner`)
+    return this;
+  }
+  keyDown(ev) {
+    TestUtils.Simulate.keyDown(this.getEditor(),ev);
+    return this;
+  }
+
+  drag({from, to, col,beforeDragEnter=null,beforeDragEnd=null}) {
+    this.selectCell({cellIdx:col,rowIdx:from})
+
+    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
+    let over = [];
+    over.push(this.row);
+    for(let i=from++;i<to;i++) {
+      over.push(TestUtils.scryRenderedDOMComponentsWithClass(rows[i],'react-grid-Cell')[col])
+    }
+    const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[to],'react-grid-Cell')[col];
+    over.push(toCell);
+
+    //Act
+    //do the drag
+    //Important: we need dragStart / dragEnter / dragEnd
+    TestUtils.Simulate.dragStart(this.row.getDOMNode());
+    if(beforeDragEnter) {beforeDragEnter();}
+
+    over.forEach((r) => {
+      TestUtils.Simulate.dragEnter(r.getDOMNode())
     });
+    if(beforeDragEnd) {beforeDragEnd();}
+    TestUtils.Simulate.dragEnd(toCell.getDOMNode());
+
+    return this;
+  }
+  /* =====
+  ASSERTS
+  ======== */
+  hasCommitted(val) {
+    expect(this.cell.props.value).toEqual(val);
+    return this;
+  }
+  isNotEditable() {
+    expect(this.getEditor()).toEqual(null);
+    return this;
+  }
+  isEditable() {
+    expect(this.getEditor()).not.toEqual(null);
+    return this;
+  }
+  hasSelected({rowIdx,cellIdx,expectedClass='selected'}) {
+    //and should move to the appropriate cell/row
+    const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
+    const selected = TestUtils.scryRenderedDOMComponentsWithClass(selectedRow,expectedClass);
+    expect(selected.length).toEqual(1);
+    expect(selected[0].props.rowIdx).toEqual(rowIdx);
+    expect(selected[0].props.idx).toEqual(cellIdx + 1);
+    //note - idx is 1 based, not 0 based.
+    //We make that more sensible by adding 1, so your test cell idx matches up
+    return this;
+  }
+  hasDragged({from,to,col,cellKey}) {
+    //check onCellDrag called with correct data
+    expect(this.handleCellDragSpy).toHaveBeenCalled();
+    //Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
+    var expected= this.cell.props.value;
+    //chek our event returns the right data
+    expect(this.handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
+    //and the component
+    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
+    const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[to],'react-grid-Cell')[col];
+
+    expect(toCell.props.value).toEqual(expected);
+    //and finally the rendered data
+    //use trim as we are reading from the dom so get some whitespace at the end
+    expect(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
+  }
+
+}
+
+
+describe('Grid Integration', () => {
+  describe('Grid Setup', () => {
     it("Creates the grid", () => {
-      expect(component).toBeDefined();
+      expect(new GridRunner({}).grid).toBeDefined();
     });
 
     it("Renders the grid", () => {
-      TestUtils.isDOMComponent(component);
+      TestUtils.isDOMComponent(new GridRunner({}).grid);
     })
 
     it("Renders 22 rows by default", () => {
-      expect(TestUtils.scryRenderedDOMComponentsWithClass(component, 'react-grid-Row').length).toEqual(22);
+      expect(TestUtils.scryRenderedDOMComponentsWithClass(new GridRunner({}).grid, 'react-grid-Row').length).toEqual(22);
     })
   });
   describe('Grid Drag', () => {
-    beforeEach(() => {
-      renderGrid();
-    });
-    var simulateDrag = function(args) {
-      var rows = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row');
-      var from = TestUtils.scryRenderedDOMComponentsWithClass(rows[args.from],'react-grid-Cell')[args.col];
-      var to = TestUtils.scryRenderedDOMComponentsWithClass(rows[args.to],'react-grid-Cell')[args.col];
-      var over = [];
-      over.push(from)
-      for(var i=args.from++;i<args.to;i++) {
-        over.push(TestUtils.scryRenderedDOMComponentsWithClass(rows[i],'react-grid-Cell')[args.col])
-      }
-      over.push(to);
-      //Act
-      //do the drag
-      //Important: we need dragStart / dragEnter / dragEnd
-      TestUtils.Simulate.click(from.getDOMNode());
-      TestUtils.Simulate.dragStart(from.getDOMNode());
-      if(args.beforeEnter) {args.beforeEnter();}
-
-      over.forEach((row) => {
-        TestUtils.Simulate.dragEnter(row.getDOMNode())
-      });
-      if(args.beforeEnd) {args.beforeEnd();}
-      TestUtils.Simulate.dragEnd(to.getDOMNode());
-
-      return {from, to};
-    }
-    it("Drags a column", () => {
-      //Arrange
-      //get the cell to drag from / to
-      var res = simulateDrag({from:0,to:4,col:3})
-      //Assert
-      //check onCellDrag called with correct data
-      expect(handleCellDragSpy).toHaveBeenCalled();
-      //Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
-      var expected= res.from.props.value;
-      //chek our event returns the right data
-      expect(handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: "title", fromRow: 0, toRow: 4, value: expected});
-      //and the component
-      expect(res.to.props.value).toEqual(expected);
-      //and finally the rendered data
-      //use trim as we are reading from the dom so get some whitespace at the end
-      expect(TestUtils.findRenderedDOMComponentWithClass(res.to,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
-    });
-
     it("Shows drag selector", () => {
-      //Arrange
-      //get the cell to drag from / to
-      var from = simulateDrag({
-        from:2,to:5,col:3,
-        beforeEnd: function() {
-          //check we have the right classes
-          expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'is-dragged-over-down').length).toEqual(1);
-          expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'was-dragged-over').length).toEqual(2);
-        }
-      });
+      new GridRunner({})
+      .drag({from:0,to:4,col:3,
+      beforeEnd: function() {
+        //check we have the right classes
+        expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'is-dragged-over-down').length).toEqual(1);
+        expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'was-dragged-over').length).toEqual(2);
+      }})
+    });
+    it("Drags a column", () => {
+      new GridRunner({})
+      .drag({from:0,to:4,col:3})
+      .hasDragged({from:0,to:4,col:3,cellKey:'title'})
     });
   });
   describe('Editors', () => {
-    beforeEach(() => {
-      renderGrid();
+    it("Readonly columns are NOT Editable", () => {
+      new GridRunner({})
+      .clickIntoEditor({cellIdx:1,rowIdx:3})
+      .isNotEditable();
     });
-
-    it("Readonly is NOT Editable", () => {
-      var cell = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Cell')[1];
-      TestUtils.Simulate.doubleClick(cell);
-      //get the editor
-      var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input');
-      expect(editor.length).toBe(0);
-    });
-    var changeCell = function(args) {
-      var row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[args.row];
-      var cell = TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell__value')[args.cell];
-      //activate it
-      TestUtils.Simulate.click(cell);// have to do click then doubleClick as thast what the browser would actually emit
-      TestUtils.Simulate.doubleClick(cell);
-      //get the editor
-      var editor = TestUtils.scryRenderedDOMComponentsWithTag(cell,'input')[0];
-      editor.getDOMNode().value = args.val; //remember to set the value via the dom node, not the component!
-      TestUtils.Simulate.keyDown(editor,args.ev);
-      //Assert
-
-      if(!!args.expect.valChanged) expect(TestUtils.scryRenderedDOMComponentsWithClass(row,'react-grid-Cell')[args.cell].props.value).toEqual(args.val);
-      //and should move to the appropriate cell/row
-      row = TestUtils.scryRenderedDOMComponentsWithClass(component,'react-grid-Row')[args.expect.row];
-      var selected = TestUtils.scryRenderedDOMComponentsWithClass(row,args.expect.className || 'selected');
-      expect(selected.length).toEqual(1);
-      expect(selected[0].props.rowIdx).toEqual(args.expect.row);
-      expect(selected[0].props.idx).toEqual(args.expect.cell + 1);
-      //note - idx is 1 based, not 0 based. We make that more sensible by adding 1, so your test cell idx matches up
-    }
     it("Enter commits an edit", () => {
-      changeCell({
-        row:3,
-        cell:5,
-        val:'Test',
-        ev:{key:'Enter'},
-        expect:{row:3,cell:5}
-      })
+      new GridRunner({})
+        .changeCell({
+          select: {row:3, cell:5},
+          val:'Test',
+          ev:{key:'Enter'},
+          expectToSelect: {row:3,cell:5}
+        })
+
     });
     it("Can tab out of an Editor", () => {
-      changeCell({
-        row:3,
-        cell:5,
+      new GridRunner({})
+      .changeCell({
+        select: {row:3, cell:5},
         val:'Test',
         ev:{key:'Tab'},
-        expect:{row:3,cell:6}
+        expectToSelect: {row:3,cell:6}
       })
     });
     it("Can shift+tab out of an Editor", () => {
-      changeCell({
-        row:3,
-        cell:5,
+      new GridRunner({})
+      .changeCell({
+        select: {row:3, cell:5},
         val:'Test',
         ev:{key:'Tab',shiftKey:true},
-        expect:{row:3,cell:4}
+        expectToSelect: {row:3,cell:4}
       })
     });
-    xit("Arrow Left doesnt commit your change if you are not at the start of the text", () => {
-      changeCell({
-        row:3,
-        cell:5,
-        val:'Test',
-        ev:{key:'ArrowLeft'},
-        expect:{row:3,cell:5,valChanged:false, className: 'editing'}
-      })
+    it("Arrow Left doesnt commit your change if you are not at the start of the text", () => {
+      new GridRunner({renderIntoBody: true})
+        .clickIntoEditor({rowIdx:3, cellIdx:5})
+        .setValue('Test')
+        .setCursor(2)
+        .keyDown({key:'ArrowLeft'})
+        .isEditable()
+        .dispose();
     });
 
     it("Arrow Left does commit your change if you are at the start of the text", () => {
-      changeCell({
-        row:3,
-        cell:5,
+      new GridRunner({})
+      //by default we are at pos 0 with a blank value
+      .changeCell({
+        select: {row:3, cell:5},
         val:'',
         ev:{key:'ArrowLeft'},
-        expect:{row:3,cell:4}
+        expectToSelect: {row:3,cell:4}
       })
     });
     it("Arrow Right commits your change when you are at the end of the text", () => {
-      changeCell({
-        row:3,
-        cell:5,
+      new GridRunner({})
+      //by default, cursor is at the end of the text
+      .changeCell({
+        select: {row:3, cell:5},
         val:'Test',
         ev:{key:'ArrowRight'},
-        expect:{row:3,cell:6}
+        expectToSelect: {row:3,cell:6}
       })
     });
 
     it("Arrow Right doesnt commit your change when you are at the end of the text", () => {
-      changeCell({
-        row:3,
-        cell:5,
-        val:'Test',
-        //TODO need to move left then right?
-        ev:{key:'ArrowRight'},
-        expect:{row:3,cell:6}
-      })
+      new GridRunner({renderIntoBody: true})
+        .clickIntoEditor({rowIdx:3, cellIdx:5})
+        .setValue('Test')
+        .setCursor(2)
+        .keyDown({key:'ArrowRight'})
+        .isEditable()
+        .dispose();
     });
     it("Arrow Up commits your change", () => {
-      changeCell({
-        row:3,
-        cell:5,
+      new GridRunner({})
+        .changeCell({
+        select: {row:3, cell:5},
         val:'Test',
         ev:{key:'ArrowUp'},
-        expect:{row:2,cell:5}
+        expectToSelect: {row:2,cell:5}
       })
     });
     it("Arrow Down commits your change", () => {
-      changeCell({
-        row:3,
-        cell:5,
+      new GridRunner({})
+        .changeCell({
+        select: {row:3, cell:5},
         val:'Test',
         ev:{key:'ArrowDown'},
-        expect:{row:4,cell:5}
+        expectToSelect: {row:4,cell:5}
       })
     });
   });
