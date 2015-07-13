@@ -113,11 +113,11 @@ class GridRunner {
     return this;
   }
   isNotEditable() {
-    expect(this.getEditor()).toEqual(null);
+    expect(this.getEditor()).toBe(undefined);
     return this;
   }
   isEditable() {
-    expect(this.getEditor()).not.toEqual(null);
+    expect(this.getEditor()).not.toBe(undefined);
     return this;
   }
   hasSelected({rowIdx,cellIdx,expectedClass='selected'}) {
@@ -184,7 +184,7 @@ describe('Grid Integration', () => {
   describe('Editors', () => {
     it("Readonly columns are NOT Editable", () => {
       new GridRunner({})
-      .clickIntoEditor({cellIdx:1,rowIdx:3})
+      .clickIntoEditor({cellIdx:0,rowIdx:3})
       .isNotEditable();
     });
     it("Enter commits an edit", () => {
@@ -236,14 +236,14 @@ describe('Grid Integration', () => {
       })
     });
     it("Arrow Right commits your change when you are at the end of the text", () => {
-      new GridRunner({})
-      //by default, cursor is at the end of the text
-      .changeCell({
-        select: {row:3, cell:5},
-        val:'Test',
-        ev:{key:'ArrowRight'},
-        expectToSelect: {row:3,cell:6}
-      })
+      new GridRunner({renderIntoBody: true})
+        .clickIntoEditor({rowIdx:3, cellIdx:5})
+        .setValue('Test')
+        .setCursor(4)
+        .keyDown({key:'ArrowRight'})
+        .hasCommitted('Test')
+        .hasSelected({rowIdx:3,cellIdx:6})
+        .dispose();
     });
 
     it("Arrow Right doesnt commit your change when you are at the end of the text", () => {
