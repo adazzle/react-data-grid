@@ -32,7 +32,7 @@ var HeaderRow = React.createClass({
   propTypes: {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
-    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
+    columns:  PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func.isRequired,
     style: PropTypes.shape(HeaderRowStyle)
@@ -73,7 +73,7 @@ var HeaderRow = React.createClass({
     var cells = [];
     var lockedCells = [];
 
-    for (var i = 0, len = this.getColumnCount(this.props.columns); i < len; i++) {
+    for (var i = 0, len = this.getSize(this.props.columns); i < len; i++) {
       var column = this.getColumn(this.props.columns, i);
       var cell = (
         <HeaderCell

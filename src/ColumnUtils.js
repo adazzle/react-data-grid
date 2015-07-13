@@ -8,7 +8,7 @@ module.exports = {
     }
   },
 
-  getColumnCount(columns) {
+  getSize(columns) {
     if(Array.isArray(columns)){
       return columns.length;
     }else if (typeof Immutable !== 'undefined') {

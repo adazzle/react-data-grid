@@ -90,7 +90,7 @@ module.exports = {
     }
   },
 
-  getColumnCount() {
+  getSize() {
     var columns = this.state.columnMetrics.columns;
     if(Array.isArray(columns)){
       return columns.length;
