@@ -1,155 +1,7 @@
 'use strict';
-var React        = require('react');
-var TestUtils    = require('react/lib/ReactTestUtils');
-var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
+import TestUtils from 'react/lib/ReactTestUtils';
+import GridRunner from './GridRunner';
 
-class GridRunner {
-  /* =====
-  SETUP
-  ======== */
-  constructor({renderIntoBody=false}) {
-    this.grid = this._renderGrid(renderIntoBody);
-    this.renderIntoBody=renderIntoBody;
-  }
-
-  _renderGrid(intoBody) {
-    this.handleCellDragSpy =  jasmine.createSpy("handleCellDrag");
-    return intoBody ?
-      React.render(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>, document.body)
-      : TestUtils.renderIntoDocument(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>);
-  }
-
-  dispose() {
-    if(this.renderIntoBody) {
-      React.unmountComponentAtNode(document.body);
-    }
-    this.grid = null;
-  }
-
-  /* =====
-  HELPERS
-  ======== */
-  //Helpers - these are just wrappers to run several steps
-  //NOTE: these are 'final' functions, ie they call dispose at the end
-  changeCell({select:{cell:selectCell,row:selectRow},val,ev,expectToSelect:{row:expectRow,cell:expectCell}}) {
-    this
-      .clickIntoEditor({cellIdx:selectCell,rowIdx:selectRow})
-      .setValue(val)
-      .keyDown(ev)
-      .hasCommitted(val)
-      .hasSelected({cellIdx:expectCell,rowIdx:expectRow})
-      .dispose();
-  }
-
-  /* =====
-  ACTIONS
-  ======== */
-  selectCell({cellIdx,rowIdx}) {
-    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
-    this.cell = TestUtils.scryRenderedDOMComponentsWithClass(this.row,'react-grid-Cell')[cellIdx];
-    TestUtils.Simulate.click(this.cell);
-    return this;
-  }
-  clickIntoEditor({cellIdx,rowIdx}) {
-    //activate it
-    // have to do click then doubleClick as thast what the browser would actually emit
-    this.selectCell({cellIdx,rowIdx})
-    TestUtils.Simulate.doubleClick(this.cell);
-    return this;
-  }
-  getEditor() {
-    return TestUtils.scryRenderedDOMComponentsWithTag(this.cell,'input')[0];
-  }
-  setValue(val) {
-    this.getEditor().getDOMNode().value = val;
-    //remember to set the value via the dom node, not the component!
-    return this;
-  }
-  //you MUST have set the grid to render into body to use this
-  //chrome (et al) dont do cursor positions unless you are properly visibile
-  setCursor(start,end=start) {
-    const input = this.getEditor().getDOMNode();
-    input.setSelectionRange(start,end);
-    expect(input.selectionStart).toEqual(start,`Couldnt set the cursor.
-            You probably havent rendered the grid into the *actual* dom.
-            You need to specify renderIntoBody:true in the constructor for GridRunner`)
-    return this;
-  }
-  keyDown(ev, element=this.getEditor()) {
-    TestUtils.Simulate.keyDown(element,ev);
-    return this;
-  }
-
-  drag({from, to, col,beforeDragEnter=null,beforeDragEnd=null}) {
-    this.selectCell({cellIdx:col,rowIdx:from})
-
-    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
-    let over = [];
-    over.push(this.row);
-    for(let i=from++;i<to;i++) {
-      over.push(TestUtils.scryRenderedDOMComponentsWithClass(rows[i],'react-grid-Cell')[col])
-    }
-    const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[to],'react-grid-Cell')[col];
-    over.push(toCell);
-
-    //Act
-    //do the drag
-    //Important: we need dragStart / dragEnter / dragEnd
-    TestUtils.Simulate.dragStart(this.row.getDOMNode());
-    if(beforeDragEnter) {beforeDragEnter();}
-
-    over.forEach((r) => {
-      TestUtils.Simulate.dragEnter(r.getDOMNode())
-    });
-    if(beforeDragEnd) {beforeDragEnd();}
-    TestUtils.Simulate.dragEnd(toCell.getDOMNode());
-
-    return this;
-  }
-  /* =====
-  ASSERTS
-  ======== */
-  hasCommitted(val) {
-    expect(this.cell.props.value).toEqual(val);
-    return this;
-  }
-  isNotEditable() {
-    expect(this.getEditor()).toBe(undefined);
-    return this;
-  }
-  isEditable() {
-    expect(this.getEditor()).not.toBe(undefined);
-    return this;
-  }
-  hasSelected({rowIdx,cellIdx,expectedClass='selected'}) {
-    //and should move to the appropriate cell/row
-    const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
-    const selected = TestUtils.scryRenderedDOMComponentsWithClass(selectedRow,expectedClass);
-    expect(selected.length).toEqual(1);
-    expect(selected[0].props.rowIdx).toEqual(rowIdx);
-    expect(selected[0].props.idx).toEqual(cellIdx + 1);
-    //note - idx is 1 based, not 0 based.
-    //We make that more sensible by adding 1, so your test cell idx matches up
-    return this;
-  }
-  hasDragged({from,to,col,cellKey}) {
-    //check onCellDrag called with correct data
-    expect(this.handleCellDragSpy).toHaveBeenCalled();
-    //Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
-    var expected= this.cell.props.value;
-    //chek our event returns the right data
-    expect(this.handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
-    //and the component
-    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
-    const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[to],'react-grid-Cell')[col];
-
-    expect(toCell.props.value).toEqual(expected);
-    //and finally the rendered data
-    //use trim as we are reading from the dom so get some whitespace at the end
-    expect(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
-  }
-
-}
 
 
 describe('Grid Integration', () => {
@@ -165,6 +17,20 @@ describe('Grid Integration', () => {
     it("Renders 22 rows by default", () => {
       expect(TestUtils.scryRenderedDOMComponentsWithClass(new GridRunner({}).grid, 'react-grid-Row').length).toEqual(22);
     })
+    
+    it("Renders the grid in under 1500ms", () => {
+      //this is obviously a bit of an arbitary number
+      //not strictly a test, as (duh) it depends on what machine and js engine (aka browser) you use
+      //but it works as a useful stop gap for anything that really kills perf.
+      //as we make any perf improvements, we shoudl update this number to get it as low as we can
+      //but dont think of this test as an form of performance benchmark, if this was a GCSE, I'd (hopefully) fail!
+      var start=new Date();
+      let grid = new GridRunner({renderIntoBody:true});
+      TestUtils.isDOMComponent(grid.grid);
+      expect(new Date() - start).not.toBeGreaterThan(1500);
+      grid.dispose();
+    })
+
   });
   describe('Grid Drag', () => {
     it("Shows drag selector", () => {
