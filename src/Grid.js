@@ -18,7 +18,7 @@ var Grid = React.createClass({
 
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
-    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired,
+    columns:  PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     minHeight: PropTypes.number,
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowHeight: PropTypes.number,

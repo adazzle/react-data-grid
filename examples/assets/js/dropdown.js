@@ -59,9 +59,6 @@
 
     var $this = $(this)
 
-    e.preventDefault()
-    e.stopPropagation()
-
     if ($this.is('.disabled, :disabled')) return
 
     var $parent  = getParent($this)

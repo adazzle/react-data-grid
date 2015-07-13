@@ -9,6 +9,7 @@
 var shallowCloneObject            = require('./shallowCloneObject');
 var isValidElement = require('react').isValidElement;
 var sameColumn = require('./ColumnComparer');
+var ColumnUtils = require('./ColumnUtils');
 
 type ColumnMetricsType = {
     columns: Array<Column>;
@@ -82,7 +83,7 @@ function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
       if (unallocatedWidth <= 0) {
         column.width = minColumnWidth;
       } else {
-        column.width = Math.floor(unallocatedWidth / (defferedColumns.size || defferedColumns.length));
+        column.width = Math.floor(unallocatedWidth / (ColumnUtils.getSize(defferedColumns)));
       }
     }
     return column;
@@ -120,16 +121,16 @@ function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column
   var nextColumnsByKey: { [key:string]: Column } = {};
 
 
-  if(prevColumns.length !== nextColumns.length){
+  if(ColumnUtils.getSize(prevColumns) !== ColumnUtils.getSize(nextColumns)){
     return false;
   }
 
-  for (i = 0, len = prevColumns.length; i < len; i++) {
+  for (i = 0, len = ColumnUtils.getSize(prevColumns); i < len; i++) {
     column = prevColumns[i];
     prevColumnsByKey[column.key] = column;
   }
 
-  for (i = 0, len = nextColumns.length; i < len; i++) {
+  for (i = 0, len = ColumnUtils.getSize(nextColumns); i < len; i++) {
     column = nextColumns[i];
     nextColumnsByKey[column.key] = column;
     var prevColumn = prevColumnsByKey[column.key];
@@ -138,7 +139,7 @@ function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column
     }
   }
 
-  for (i = 0, len = prevColumns.length; i < len; i++) {
+  for (i = 0, len = ColumnUtils.getSize(prevColumns); i < len; i++) {
     column = prevColumns[i];
     var nextColumn = nextColumnsByKey[column.key];
     if (nextColumn === undefined) {

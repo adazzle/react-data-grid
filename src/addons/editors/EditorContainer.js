@@ -78,33 +78,34 @@ var EditorContainer = React.createClass({
   },
 
   onPressEnter(e: SyntheticKeyboardEvent){
-    e.stopPropagation();
-    e.preventDefault();
     this.commit({key : 'Enter'});
   },
 
   onPressTab(e: SyntheticKeyboardEvent){
-    e.preventDefault();
     this.commit({key : 'Tab'});
   },
 
   onPressEscape(e: SyntheticKeyboardEvent){
-    e.stopPropagation();
-    e.preventDefault();
     this.props.cellMetaData.onCommitCancel();
   },
 
   onPressArrowDown(e: SyntheticKeyboardEvent){
     if(this.editorHasResults()){
+      //dont want to propogate as that then moves us round the grid
       e.stopPropagation();
-      e.preventDefault();
+    }
+    else {
+      this.commit(e);
     }
   },
 
   onPressArrowUp(e: SyntheticKeyboardEvent){
     if(this.editorHasResults()){
+      //dont want to propogate as that then moves us round the grid
       e.stopPropagation();
-      e.preventDefault();
+    }
+    else {
+      this.commit(e);
     }
   },
 
@@ -113,12 +114,18 @@ var EditorContainer = React.createClass({
     if(!this.isCaretAtBeginningOfInput()){
       e.stopPropagation();
     }
+    else {
+      this.commit(e);
+    }
   },
 
   onPressArrowRight(e: SyntheticKeyboardEvent){
     //prevent event propogation. this disables right cell navigation
     if(!this.isCaretAtEndOfInput()){
       e.stopPropagation();
+    }
+    else {
+      this.commit(e);
     }
   },
 
@@ -213,7 +220,8 @@ var EditorContainer = React.createClass({
 
   isCaretAtBeginningOfInput(): boolean{
     var inputNode = this.getInputNode();
-    return inputNode.selectionStart === 0;
+    return inputNode.selectionStart === inputNode.selectionEnd
+      && inputNode.selectionStart === 0;
   },
 
   isCaretAtEndOfInput(): boolean{
