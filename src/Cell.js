@@ -75,7 +75,8 @@ var Cell = React.createClass({
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
     || this.isDraggedCellChanging(nextProps)
-    || this.props.isRowSelected !== nextProps.isRowSelected;
+    || this.props.isRowSelected !== nextProps.isRowSelected
+    || this.isSelected();
   },
 
   getStyle(): {position:string; width: number; height: number; left: number} {
@@ -314,7 +315,7 @@ var SimpleCellFormatter = React.createClass({
     return <span>{this.props.value}</span>
   },
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
-      return nextProps.value === this.props.value;
+      return nextProps.value !== this.props.value;
   }
 
 })
