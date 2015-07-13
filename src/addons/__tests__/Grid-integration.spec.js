@@ -48,6 +48,7 @@ class GridRunner {
     this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
     this.cell = TestUtils.scryRenderedDOMComponentsWithClass(this.row,'react-grid-Cell')[cellIdx];
     TestUtils.Simulate.click(this.cell);
+    return this;
   }
   clickIntoEditor({cellIdx,rowIdx}) {
     //activate it
@@ -74,8 +75,8 @@ class GridRunner {
             You need to specify renderIntoBody:true in the constructor for GridRunner`)
     return this;
   }
-  keyDown(ev) {
-    TestUtils.Simulate.keyDown(this.getEditor(),ev);
+  keyDown(ev, element=this.getEditor()) {
+    TestUtils.Simulate.keyDown(element,ev);
     return this;
   }
 
@@ -181,6 +182,14 @@ describe('Grid Integration', () => {
       .hasDragged({from:0,to:4,col:3,cellKey:'title'})
     });
   });
+  describe('Grid Selection', () => {
+    it("Selects on click", () => {
+      new GridRunner({})
+      .selectCell({cellIdx:3,rowIdx:3})
+      .hasSelected({cellIdx:3,rowIdx:3})
+      .dispose();
+    });
+  });
   describe('Editors', () => {
     it("Readonly columns are NOT Editable", () => {
       new GridRunner({})
@@ -197,7 +206,30 @@ describe('Grid Integration', () => {
         })
 
     });
-    it("Can tab out of an Editor", () => {
+
+
+    it("Start editing by pressing a key", () => {
+      let grid=new GridRunner({});
+      grid.selectCell({rowIdx:3, cellIdx:5})
+        .keyDown({
+          keyCode:69 //letter 'e'
+        }, grid.cell )
+        .isEditable()
+        .keyDown({key:'Enter'})
+        .hasCommitted('E') //keydown ALWAYS upper case http://stackoverflow.com/questions/2263889/why-always-uppercase-in-my-code
+        .isNotEditable()
+        .dispose();
+
+    });
+    it("Start editing by pressing enter", () => {
+      let grid=new GridRunner({});
+        grid.selectCell({rowIdx:3, cellIdx:5})
+        .keyDown({key:'Enter'}, grid.cell)
+        .isEditable()
+        .dispose();
+
+    });
+   it("Can tab out of an Editor", () => {
       new GridRunner({})
       .changeCell({
         select: {row:3, cell:5},
