@@ -8,6 +8,7 @@ var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
 var RELEASE = !!argv.release;
 var DEBUG = !!argv.debug;
+var BROWSERS = argv.browsers;
 
 module.exports = function (config) {
 
@@ -33,8 +34,11 @@ module.exports = function (config) {
 
   function getBrowsers(){
     var browsers = ['PhantomJS'];
+    if(BROWSERS) {
+      return BROWSERS.split(',');
+    }
     if(RELEASE){
-      browsers = ['Chrome']
+      browsers = ['Chrome','Firefox','IE']
     }else if(DEBUG){
       browsers = ['Chrome'];
     }

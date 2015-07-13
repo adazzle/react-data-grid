@@ -243,7 +243,7 @@ var Cell = React.createClass({
   applyUpdateClass() {
     var updateCellClass = this.getUpdateCellClass();
     // -> removing the class
-    if(updateCellClass != null) {
+    if(updateCellClass != null && updateCellClass != "") {
       this.getDOMNode().classList.remove(updateCellClass);
       // -> triggering reflow /* The actual magic */
       // without this it wouldn't work. Try uncommenting the line and the transition won't be retriggered.

@@ -73,7 +73,7 @@ var HeaderRow = React.createClass({
     var cells = [];
     var lockedCells = [];
 
-    for (var i = 0, len = this.props.columns.length; i < len; i++) {
+    for (var i = 0, len = this.getColumnCount(this.props.columns); i < len; i++) {
       var column = this.getColumn(this.props.columns, i);
       var cell = (
         <HeaderCell

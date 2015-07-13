@@ -29,7 +29,7 @@ var Canvas = React.createClass({
       PropTypes.array.isRequired
     ]),
     onRows: PropTypes.func,
-    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired
+    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired
   },
 
   render(): ?ReactElement {

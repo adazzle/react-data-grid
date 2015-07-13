@@ -34,7 +34,7 @@ var Row = React.createClass({
 
   propTypes: {
     height: React.PropTypes.number.isRequired,
-    columns: React.PropTypes.array.isRequired,
+    columns: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.array]).isRequired,
     row: React.PropTypes.object.isRequired,
     cellRenderer: React.PropTypes.func,
     isSelected: React.PropTypes.bool,
@@ -151,7 +151,7 @@ var Row = React.createClass({
 
   willRowBeDraggedOver(props: any): boolean{
     var dragged = props.cellMetaData.dragged;
-    return  dragged != null && (dragged.rowIdx || dragged.complete === true);
+    return  dragged != null && (dragged.rowIdx>=0 || dragged.complete === true);
   },
 
   hasRowBeenCopied(): boolean{

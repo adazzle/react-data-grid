@@ -85,8 +85,10 @@ var HeaderCell = React.createClass({
     };
   },
 
-  onDragStart() {
+  onDragStart(e: SyntheticMouseEvent) {
     this.setState({resizing: true});
+    //need to set dummy data for FF
+    if(e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
   },
 
   onDrag(e: SyntheticMouseEvent) {

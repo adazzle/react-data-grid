@@ -36,10 +36,6 @@ var EditorContainer = React.createClass({
     return {isInvalid : false}
   },
 
-  componentWillMount(){
-      this.validateEditor();
-  },
-
   componentDidMount: function() {
     var inputNode = this.getInputNode();
     if(inputNode !== undefined){
@@ -48,15 +44,6 @@ var EditorContainer = React.createClass({
         inputNode.className += ' editor-main';
         inputNode.style.height = this.props.height - 1 + 'px';
       }
-    }
-  },
-
-
-
-  validateEditor(){
-    var editor = this.props.column.editor;
-    if(editor){
-
     }
   },
 
@@ -97,7 +84,6 @@ var EditorContainer = React.createClass({
   },
 
   onPressTab(e: SyntheticKeyboardEvent){
-    e.stopPropagation();
     e.preventDefault();
     this.commit({key : 'Tab'});
   },
@@ -242,7 +228,6 @@ var EditorContainer = React.createClass({
     if(inputNode.tagName === "INPUT"){
       if(!this.isKeyPrintable(keyCode)){
         inputNode.focus();
-        this.setCaretAtEndOfInput();
         inputNode.select();
       }else{
         inputNode.select();
