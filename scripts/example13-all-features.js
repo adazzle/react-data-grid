@@ -45,12 +45,7 @@
 
 var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
-  function renderImage(cellData) {
-    var ImageFormatter = ReactDataGrid.Formatters.ImageFormatter;
-    return <ImageFormatter src={cellData.value} />;
-  }
-
-  var columns = [
+  var columns = new Immutable.List([
     {
       key: 'id',
       name: 'ID',
@@ -60,7 +55,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       key: 'avartar',
       name: 'Avartar',
       width : 60,
-      formatter : renderImage,
+      formatter : ReactDataGrid.Formatters.ImageFormatter,
       resizeable : true
     },
     {
@@ -135,13 +130,14 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       editable:true,
       width : 200
     }
-  ]
+  ]);
 
 
  var Component = React.createClass({displayName: 'component',
 
     getInitialState : function(){
-      return {rows : FakeObjectDataStore.createRows(2000)};
+      var fakeRows = FakeObjectDataStore.createRows(2000);
+      return {rows :fakeRows};
     },
 
     handleRowUpdated : function(commit){
@@ -160,6 +156,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
             rowToChange[e.cellKey] = e.value;
           }
         }
+        if(this.props.handleCellDrag) {this.props.handleCellDrag(e)}
         this.setState({rows:rows});
     },
 

@@ -55,14 +55,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	var Navbar = __webpack_require__(112);
+	var Navbar = __webpack_require__(165);
 	React.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
 
 
 /***/ },
 
-/***/ 112:
-/***/ function(module, exports, __webpack_require__) {
+/***/ 165:
+/***/ function(module, exports) {
 
 	/**
 	* @jsx React.DOM
@@ -99,8 +99,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editors"}, "Rich Cell Editors")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/sortable"}, "Sortable Grid")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/million-rows"}, "One Million Rows")), 
+	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/immutable-data"}, "Immutable Data Grid")), 
 	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/all-the-features"}, "All-The-Features Grid")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/custom-row-renderer"}, "Custom Row Render"))
+	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/custom-row-renderer"}, "Custom Row Render")), 
+	                    React.createElement("li", null, 
+	                      React.createElement("a", {href: "examples.html#/all-features-immutable"}, "All-The-Features with Immutable Data")
+	                    )
 	                    )
 	                )
 	            )

@@ -12,7 +12,7 @@ function randomDate(start, end) {
 var _rows = [];
 var _cols = [];
 for(var j = 0; j < 50; j++){
-    _cols.push({key: 'col' + j, name: 'col' + j, width: 150});
+    _cols.push({key: 'col' + j, name: 'col' + j, width: 150, editable:true});
 };
 
 for (var rowIdx = 1; rowIdx < 100; rowIdx++) {
@@ -26,7 +26,7 @@ for (var rowIdx = 1; rowIdx < 100; rowIdx++) {
 var Example = React.createClass({
 
   getInitialState : function(){
-    return {rows : Immutable.fromJS(_rows), cols: Immutable.fromJS(_cols)}
+    return {rows : new Immutable.fromJS(_rows), cols: new Immutable.List(_cols)}
   },
 
   rowGetter : function(rowIdx){
@@ -35,8 +35,9 @@ var Example = React.createClass({
 
   handleRowUpdated : function(e){
     //merge updated row with current row and rerender by setting state
-    var rows = this.state.rows;
-    Object.assign(rows[e.rowIdx], e.updated);
+    var rows = this.state.rows.update(e.rowIdx, function(row){
+      return row.merge(e.updated);
+    });
     this.setState({rows:rows});
   },
 
