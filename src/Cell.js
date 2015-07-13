@@ -300,7 +300,7 @@ var SimpleCellFormatter = React.createClass({
     return <span>{this.props.value}</span>
   },
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
-      return nextProps.value === this.props.value;
+      return nextProps.value !== this.props.value;
   }
 
 })

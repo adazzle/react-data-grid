@@ -53,7 +53,7 @@ describe('Grid Integration', () => {
 
       return {from, to};
     }
-    iit("Drags a column", () => {
+    it("Drags a column", () => {
       //Arrange
       //get the cell to drag from / to
       var res = simulateDrag({from:0,to:4,col:3})
@@ -67,7 +67,8 @@ describe('Grid Integration', () => {
       //and the component
       expect(res.to.props.value).toEqual(expected);
       //and finally the rendered data
-      expect(TestUtils.findRenderedDOMComponentWithClass(res.to,'react-grid-Cell__value').getDOMNode().textContent).toEqual(expected);
+      //use trim as we are reading from the dom so get some whitespace at the end
+      expect(TestUtils.findRenderedDOMComponentWithClass(res.to,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
     });
 
     it("Shows drag selector", () => {
