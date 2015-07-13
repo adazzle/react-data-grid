@@ -75,7 +75,8 @@ var Cell = React.createClass({
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
     || this.isDraggedCellChanging(nextProps)
-    || this.props.isRowSelected !== nextProps.isRowSelected;
+    || this.props.isRowSelected !== nextProps.isRowSelected
+    || this.isSelected();
   },
 
   getStyle(): {position:string; width: number; height: number; left: number} {
@@ -186,12 +187,6 @@ var Cell = React.createClass({
   },
 
   onCellClick(e: SyntheticMouseEvent){
-    if (e && typeof e.preventDefault === 'function') {
-      e.preventDefault();
-    }
-    if (e && typeof e.stopPropagation === 'function') {
-      e.stopPropagation();
-    }
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellClick != null) {
       meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
@@ -199,12 +194,6 @@ var Cell = React.createClass({
   },
 
   onCellDoubleClick(e: SyntheticMouseEvent){
-    if (e && typeof e.preventDefault === 'function') {
-      e.preventDefault();
-    }
-    if (e && typeof e.stopPropagation === 'function') {
-      e.stopPropagation();
-    }
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellDoubleClick != null) {
       meta.onCellDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
@@ -318,14 +307,17 @@ var Cell = React.createClass({
 });
 
 var SimpleCellFormatter = React.createClass({
-
   propTypes : {
     value :  React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
   },
 
   render(): ?ReactElement{
     return <span>{this.props.value}</span>
+  },
+  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+      return nextProps.value !== this.props.value;
   }
+
 })
 
 module.exports = Cell;

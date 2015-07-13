@@ -5,7 +5,7 @@ var ReadyPool = {};
 
 var ImageFormatter = React.createClass({
   propTypes: {
-    src: React.PropTypes.string.isRequired,
+    value: React.PropTypes.string.isRequired,
   },
 
   getInitialState() {
@@ -15,19 +15,19 @@ var ImageFormatter = React.createClass({
   },
 
   componentWillMount() {
-    this._load(this.props.src);
+    this._load(this.props.value);
   },
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.src !== this.props.src) {
-      this.setState({src: null});
-      this._load(nextProps.src);
+    if (nextProps.value !== this.props.value) {
+      this.setState({value: null});
+      this._load(nextProps.value);
     }
   },
 
   render() {
-    var style = this.state.src ?
-    { backgroundImage : 'url(' + this.state.src + ')'} :
+    var style = this.state.value ?
+    { backgroundImage : 'url(' + this.state.value + ')'} :
     undefined;
 
     return <div className="react-grid-image" style={style} />;
@@ -35,7 +35,7 @@ var ImageFormatter = React.createClass({
 
   _load(/*string*/ src) {
     if (ReadyPool[src]) {
-      this.setState({src: src});
+      this.setState({value: src});
       return;
     }
 
@@ -59,9 +59,9 @@ var ImageFormatter = React.createClass({
   },
 
   _onLoad(/*string*/ src) {
-    if (this.isMounted() && src === this.props.src) {
+    if (this.isMounted() && src === this.props.value) {
       this.setState({
-        src: src,
+        value: src,
       });
     }
   },
