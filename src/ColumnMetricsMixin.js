@@ -45,7 +45,7 @@ module.exports = {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
         var columnMetrics = this.createColumnMetrics();
-        this.setState({columnMetrics: nextColumnStats});
+        this.setState({columnMetrics: columnMetrics});
       }
     }
   },
