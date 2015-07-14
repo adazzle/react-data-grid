@@ -44,11 +44,7 @@ module.exports = {
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
-        var columnMetrics = this.getColumnMetricsType(nextProps);
-        columnMetrics.columns = this.adjustColumnWidths(columnMetrics.columns);
-        this.setState(columnMetrics);
-      } else {
-        var nextColumnStats = this.adjustColumnWidths(nextProps);
+        var columnMetrics = this.createColumnMetrics();
         this.setState({columnMetrics: nextColumnStats});
       }
     }
