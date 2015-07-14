@@ -6,12 +6,13 @@
  */
 'use strict';
 
-var React           = require('react');
-var joinClasses      = require('classnames');
-var cloneWithProps  = require('react/lib/cloneWithProps');
-var EditorContainer = require('./addons/editors/EditorContainer');
-var ExcelColumn     = require('./addons/grids/ExcelColumn');
-var isFunction      = require('./addons/utils/isFunction');
+var React             = require('react');
+var joinClasses       = require('classnames');
+var cloneWithProps    = require('react/lib/cloneWithProps');
+var EditorContainer   = require('./addons/editors/EditorContainer');
+var ExcelColumn       = require('./addons/grids/ExcelColumn');
+var isFunction        = require('./addons/utils/isFunction');
+var CellMetaDataShape = require('./PropTypeShapes/CellMetaData');
 
 var Cell = React.createClass({
 
@@ -26,14 +27,10 @@ var Cell = React.createClass({
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     isExpanded: React.PropTypes.bool,
-    cellMetaData: React.PropTypes.shape({
-		selected: React.PropTypes.object.isRequired,
-		copied: React.PropTypes.object,
-		dragged: React.PropTypes.object,
-		onCellClick: React.PropTypes.func
-	}).isRequired,
+    cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
     handleDragStart: React.PropTypes.func,
-    className: React.PropTypes.string
+    className: React.PropTypes.string,
+    rowData : React.PropTypes.object.isRequired
   },
 
   getDefaultProps : function(): {tabIndex: number; ref: string; isExpanded: boolean } {
@@ -44,9 +41,16 @@ var Cell = React.createClass({
     }
   },
 
+
+
+  getInitialState(){
+    return {isRowChanging: false, isCellValueChanging: false}
+  },
+
   componentDidMount: function() {
     this.checkFocus();
   },
+
 
   componentDidUpdate: function(prevProps: any, prevState: any) {
     this.checkFocus();
@@ -54,15 +58,25 @@ var Cell = React.createClass({
     if(dragged && dragged.complete === true){
       this.props.cellMetaData.handleTerminateDrag();
     }
+    if(this.state.isRowChanging && this.props.selectedColumn != null){
+      this.applyUpdateClass();
+    }
+  },
+
+  componentWillReceiveProps(nextProps){
+    this.setState({isRowChanging : this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value});
   },
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     return this.props.column.width !== nextProps.column.width
-    || this.props.value !== nextProps.value
+    || this.props.column.left !== nextProps.column.left
+    || this.props.rowData !== nextProps.rowData
     || this.props.height !== nextProps.height
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
-    || this.isDraggedCellChanging(nextProps);
+    || this.isDraggedCellChanging(nextProps)
+    || this.props.isRowSelected !== nextProps.isRowSelected
+    || this.isSelected();
   },
 
   getStyle(): {position:string; width: number; height: number; left: number} {
@@ -88,7 +102,7 @@ var Cell = React.createClass({
     });
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick}>
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
       {cellContent}
       <div className="drag-handle" draggable="true">
       </div>
@@ -107,9 +121,20 @@ var Cell = React.createClass({
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
-    return (<div
+    return (<div ref="cell"
       className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>)
-    },
+  },
+
+  isColumnSelected(){
+    var meta = this.props.cellMetaData;
+    if(meta == null || meta.selected == null) { return false; }
+
+    return (
+      meta.selected
+      && meta.selected.idx === this.props.idx
+    );
+
+  },
 
   isSelected: function(): boolean {
     var meta = this.props.cellMetaData;
@@ -142,10 +167,14 @@ var Cell = React.createClass({
   getFormatter(): ?ReactElement {
     var col = this.props.column;
     if(this.isActive()){
-      return <EditorContainer rowData={this.props.rowData} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
+      return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
     }else{
       return this.props.column.formatter;
     }
+  },
+
+  getRowData(){
+      return this.props.rowData.toJSON ? this.props.rowData.toJSON() : this.props.rowData;
   },
 
   getFormatterDependencies() {
@@ -153,14 +182,21 @@ var Cell = React.createClass({
     var columnName = this.props.column.ItemId;
     //convention based method to get corresponding Id or Name of any Name or Id property
     if(typeof this.props.column.getRowMetaData === 'function'){
-      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
+      return this.props.column.getRowMetaData(this.getRowData(), this.props.column);
     }
   },
 
-  onCellClick(){
+  onCellClick(e: SyntheticMouseEvent){
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellClick != null) {
       meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
+    }
+  },
+
+  onCellDoubleClick(e: SyntheticMouseEvent){
+    var meta = this.props.cellMetaData;
+    if(meta != null && meta.onCellDoubleClick != null) {
+      meta.onCellDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
     }
   },
 
@@ -172,11 +208,11 @@ var Cell = React.createClass({
 
   getCellClass : function(): string {
     var className = joinClasses(
+      this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
-
     var extraClasses = joinClasses({
       'selected' : this.isSelected() && !this.isActive() ,
       'editing' : this.isActive(),
@@ -186,9 +222,25 @@ var Cell = React.createClass({
       'is-dragged-over-down' :  this.isDraggedOverDownwards(),
       'was-dragged-over' : this.wasDraggedOver()
     });
-    return className + ' ' + extraClasses;
+    return joinClasses(className, extraClasses);
   },
 
+  getUpdateCellClass() {
+    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+  },
+
+  applyUpdateClass() {
+    var updateCellClass = this.getUpdateCellClass();
+    // -> removing the class
+    if(updateCellClass != null && updateCellClass != "") {
+      this.getDOMNode().classList.remove(updateCellClass);
+      // -> triggering reflow /* The actual magic */
+      // without this it wouldn't work. Try uncommenting the line and the transition won't be retriggered.
+      this.getDOMNode().offsetWidth = element.offsetWidth;
+      // -> and re-adding the class
+      this.getDOMNode().classList.add(updateCellClass);
+    }
+  },
 
   setScrollLeft(scrollLeft: number) {
     var ctrl: any = this; //flow on windows has an outdated react declaration, once that gets updated, we can remove this
@@ -255,14 +307,17 @@ var Cell = React.createClass({
 });
 
 var SimpleCellFormatter = React.createClass({
-
   propTypes : {
     value :  React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
   },
 
   render(): ?ReactElement{
     return <span>{this.props.value}</span>
+  },
+  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+      return nextProps.value !== this.props.value;
   }
+
 })
 
 module.exports = Cell;

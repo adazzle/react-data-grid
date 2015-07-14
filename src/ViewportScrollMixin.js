@@ -43,8 +43,8 @@ module.exports = {
   },
 
   getGridState(props: {rowHeight: number; rowsCount: number; minHeight: number}): ViewportScrollState  {
-	var renderedRowsCount = ceil(props.minHeight / props.rowHeight);
-	var totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
+	var renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
+	var totalRowCount = min(renderedRowsCount * 2 , props.rowsCount);
     return {
       displayStart: 0,
       displayEnd: totalRowCount,
@@ -97,16 +97,16 @@ module.exports = {
     }
   },
 
-  componentWillReceiveProps(nextProps: { rowHeight: number; totalRows: number }) {
+  componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number }) {
     if (this.props.rowHeight !== nextProps.rowHeight) {
       this.setState(this.getGridState(nextProps));
-    } else if (this.props.totalRows !== nextProps.totalRows) {
+    } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
         this.state.scrollTop,
         this.state.scrollLeft,
         this.state.height,
         nextProps.rowHeight,
-        nextProps.totalRows
+        nextProps.rowsCount
       );
     }
   }

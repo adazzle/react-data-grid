@@ -5,12 +5,11 @@ var argv = require('minimist')(process.argv.slice(2));
 var RELEASE = argv.release;
 
 
-gulp.task('test', ['dist'], function (cb) {
-  // var configFile = RELEASE ? '../../../config/karma.release.js' : '../../../config/karma.local.js';
-  // console.log('configFile =' + configFile);
-  // karma.start({
-  //   configFile: configFile,
-  //   singleRun: true
-  // }, cb);
-  cb()
+gulp.task('test', function (cb) {
+  var singleRun = argv.debug ? false : true;
+  karma.start({
+    configFile:  '../../../config/karma.js',
+    singleRun: singleRun,
+    debug: argv.debug
+  }, cb);
 });

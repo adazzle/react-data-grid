@@ -7,7 +7,7 @@
 'use strict';
 
 var React               = require('react');
-var emptyFunction       = require('./emptyFunction');
+var emptyFunction       = require('react/lib/emptyFunction');
 var shallowCloneObject  = require('./shallowCloneObject');
 
 var contextTypes = {

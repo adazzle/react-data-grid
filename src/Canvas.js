@@ -4,15 +4,16 @@
  */
 "use strict";
 
-var React          = require('react');
+var React           = require('react');
 var joinClasses     = require('classnames');
-var PropTypes      = React.PropTypes;
-var cloneWithProps = require('react/lib/cloneWithProps');
-var shallowEqual   = require('./shallowEqual');
-var emptyFunction  = require('./emptyFunction');
-var ScrollShim     = require('./ScrollShim');
-var Row            = require('./Row');
-var ExcelColumn = require('./addons/grids/ExcelColumn');
+var PropTypes       = React.PropTypes;
+var cloneWithProps  = require('react/lib/cloneWithProps');
+var shallowEqual    = require('react/lib//shallowEqual');
+var emptyFunction   = require('react/lib/emptyFunction');
+var ScrollShim      = require('./ScrollShim');
+var Row             = require('./Row');
+var ExcelColumn     = require('./addons/grids/ExcelColumn');
+
 var Canvas = React.createClass({
   mixins: [ScrollShim],
 
@@ -28,7 +29,7 @@ var Canvas = React.createClass({
       PropTypes.array.isRequired
     ]),
     onRows: PropTypes.func,
-    columns: PropTypes.arrayOf(React.PropTypes.shape(ExcelColumn)).isRequired
+    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired
   },
 
   render(): ?ReactElement {
@@ -72,11 +73,12 @@ var Canvas = React.createClass({
       transform: 'translate3d(0, 0, 0)'
     };
 
+
     return (
       <div
         style={style}
         onScroll={this.onScroll}
-        className={joinClasses("react-grid-Canvas", this.props.className)}>
+        className={joinClasses("react-grid-Canvas", this.props.className, {opaque : this.props.cellMetaData.selected && this.props.cellMetaData.selected.active})}>
         <div style={{width: this.props.width, overflow: 'hidden'}}>
           {rows}
         </div>
@@ -160,6 +162,7 @@ var Canvas = React.createClass({
                         || nextProps.rowHeight !== this.props.rowHeight
                         || nextProps.columns !== this.props.columns
                         || nextProps.width !== this.props.width
+                        || nextProps.cellMetaData !== this.props.cellMetaData
                         || !shallowEqual(nextProps.style, this.props.style);
 
     if (shouldUpdate) {
@@ -199,8 +202,9 @@ var Canvas = React.createClass({
 
   setScrollLeft(scrollLeft: number) {
     if (this._currentRowsLength !== 0) {
+      if(!this.refs) return;
       for (var i = 0, len = this._currentRowsLength; i < len; i++) {
-        if(this.refs[i]) {
+        if(this.refs[i] && this.refs[i].setScrollLeft) {
           this.refs[i].setScrollLeft(scrollLeft);
         }
       }

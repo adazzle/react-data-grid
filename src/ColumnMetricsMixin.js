@@ -40,45 +40,77 @@ module.exports = {
     };
   },
 
-  getInitialState(): ColumnMetricsType {
-    return this.getColumnMetricsType(this.props, true);
-  },
 
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
-        this.setState(this.getColumnMetricsType(nextProps));
+        var columnMetrics = this.getColumnMetricsType(nextProps);
+        columnMetrics.columns = this.adjustColumnWidths(columnMetrics.columns);
+        this.setState(columnMetrics);
       } else {
-        var index = {};
-        this.state.columns.columns.forEach((c) => {
-          index[c.key] = {width: c.width, left: c.left};
-        });
-        var nextColumns = Object.assign(this.state.columns, {
-          columns: nextProps.columns.map((c) => Object.assign(c, index[c.key]))
-        });
-        this.setState({columns: nextColumns});
+        var nextColumnStats = this.adjustColumnWidths(nextProps);
+        this.setState({columnMetrics: nextColumnStats});
       }
     }
   },
 
-  getColumnMetricsType(props: ColumnMetricsType, initial: ?number): { columns: ColumnMetricsType; gridWidth: number } {
+  adjustColumnWidths(columnMetrics: ColumnMetricsType){
+    var index = {};
+    this.state.columnMetrics.columns.forEach((c) => {
+      index[c.key] = {width: c.width, left: c.left};
+    });
+    var nextColumns = Object.assign(this.state.columnMetrics, {
+      columns: columnMetrics.columns.map((c) => Object.assign(c, index[c.key]))
+    });
+    return nextColumns;
+  },
+
+  getColumnMetricsType(metrics: ColumnMetricsType, initial: ?number): { columns: ColumnMetricsType; gridWidth: number } {
     var totalWidth = initial ? initial : this.DOMMetrics.gridWidth();
-    return {
-      columns: ColumnMetrics.calculate({
-        columns: props.columns,
-        totalWidth: totalWidth,
-        minColumnWidth: props.minColumnWidth
-      }),
-      gridWidth: totalWidth
+    var currentMetrics = {
+      columns: metrics.columns,
+      totalWidth: totalWidth,
+      minColumnWidth: metrics.minColumnWidth
     };
+    var updatedMetrics
+    //if state has not yet been set or else if total width has changed then call recalculate
+    if(!this.state || (this.state && this.state.totalWidth !== totalWidth)){
+        updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
+    } else{
+      updatedMetrics = currentMetrics;
+    }
+    return updatedMetrics;
+  },
+
+  getColumn(columns, idx) {
+    if(Array.isArray(columns)){
+      return columns[idx];
+    }else if (typeof Immutable !== 'undefined') {
+      return columns.get(idx);
+    }
+  },
+
+  getSize() {
+    var columns = this.state.columnMetrics.columns;
+    if(Array.isArray(columns)){
+      return columns.length;
+    }else if (typeof Immutable !== 'undefined') {
+      return columns.size;
+    }
   },
 
   metricsUpdated() {
-    this.setState(this.getColumnMetricsType(this.props));
+    var columnMetrics = this.createColumnMetrics();
+    this.setState({columnMetrics});
+  },
+
+  createColumnMetrics(initialRun){
+    var gridColumns = this.setupGridColumns();
+    return this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, initialRun);
   },
 
   onColumnResize(index: number, width: number) {
-    var columns = ColumnMetrics.resizeColumn(this.state.columns, index, width);
-    this.setState({columns});
+    var columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
+    this.setState({columnMetrics});
   }
 };

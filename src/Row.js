@@ -10,6 +10,7 @@ var React           = require('react');
 var joinClasses      = require('classnames');
 var Cell            = require('./Cell');
 var ColumnMetrics   = require('./ColumnMetrics');
+var ColumnUtilsMixin  = require('./ColumnUtils');
 
 type RowPropsType = {
   height: number;
@@ -32,13 +33,15 @@ var Row = React.createClass({
 
   propTypes: {
     height: React.PropTypes.number.isRequired,
-    columns: React.PropTypes.array.isRequired,
+    columns: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.array]).isRequired,
     row: React.PropTypes.object.isRequired,
     cellRenderer: React.PropTypes.func,
     isSelected: React.PropTypes.bool,
     idx : React.PropTypes.number.isRequired,
     expandedRows : React.PropTypes.arrayOf(React.PropTypes.object)
   },
+
+  mixins: [ColumnUtilsMixin],
 
   render(): ?ReactElement {
     var className = joinClasses(
@@ -63,27 +66,30 @@ var Row = React.createClass({
   getCells(): Array<ReactElement> {
     var cells = [];
     var lockedCells = [];
+    var selectedColumn = this.getSelectedColumn();
 
-    for (var i = 0, len = this.props.columns.length; i < len; i++) {
-      var column = this.props.columns[i];
-      var cell = this.renderCell({
-        ref:i,
-        key:i,
-        idx:i,
-        rowIdx:this.props.idx,
-        value:this.getCellValue(column.key || i),
-        column:column,
-        height:this.getRowHeight(),
-        formatter:column.formatter,
-        cellMetaData : this.props.cellMetaData,
-        //TODO passing the row to the cell??
-        rowData : this.props.row});
+    this.props.columns.forEach((column, i) => {
+
+      var CellRenderer = this.props.cellRenderer;
+      var cell = <CellRenderer
+                    ref={i}
+                    key={i}
+                    idx={i}
+                    rowIdx={this.props.idx}
+                    value={this.getCellValue(column.key || i)}
+                    column={column}
+                    height={this.getRowHeight()}
+                    formatter={column.formatter}
+                    cellMetaData={this.props.cellMetaData}
+                    rowData={this.props.row}
+                    selectedColumn={selectedColumn}
+                    isRowSelected={this.props.isSelected} />
       if (column.locked) {
         lockedCells.push(cell);
       } else {
         cells.push(cell);
       }
-    }
+    });
 
     return cells.concat(lockedCells);
   },
@@ -100,16 +106,27 @@ var Row = React.createClass({
   },
 
   getCellValue(key: number | string): any {
+    var val;
     if(key === 'select-row'){
       return this.props.isSelected;
-    }else{
-      return this.props.row[key]
+    } else if (typeof this.props.row.get === 'function') {
+      val = this.props.row.get(key);
     }
+    else {
+      var val = this.props.row[key];
+    }
+    return !val ? '' : val;
   },
 
   renderCell(props: any): ReactElement {
-    var Cell = this.props.cellRenderer;
-    return <Cell {...props}/>
+    if(typeof this.props.cellRenderer == 'function') {
+      this.props.cellRenderer.call(this, props);
+    }
+    if (React.isValidElement(this.props.cellRenderer)) {
+      return cloneWithProps(this.props.cellRenderer, props);
+    } else {
+      return this.props.cellRenderer(props);
+    }
   },
 
   getDefaultProps(): {cellRenderer: Cell} {
@@ -122,11 +139,11 @@ var Row = React.createClass({
 
 
   setScrollLeft(scrollLeft: number) {
-    for (var i = 0, len = this.props.columns.length; i < len; i++) {
-      if (this.props.columns[i].locked) {
+    this.props.columns.forEach( (column, i) => {
+      if (column.locked) {
         this.refs[i].setScrollLeft(scrollLeft);
       }
-    }
+    });
   },
 
   doesRowContainSelectedCell(props: any): boolean{
@@ -140,7 +157,7 @@ var Row = React.createClass({
 
   willRowBeDraggedOver(props: any): boolean{
     var dragged = props.cellMetaData.dragged;
-    return  dragged != null && (dragged.rowIdx || dragged.complete === true);
+    return  dragged != null && (dragged.rowIdx>=0 || dragged.complete === true);
   },
 
   hasRowBeenCopied(): boolean{
@@ -148,13 +165,14 @@ var Row = React.createClass({
     return copied != null && copied.rowIdx === this.props.idx;
   },
 
-  shouldComponentUpdate(nextProps: any): boolean {
+  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     return !(ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
     this.doesRowContainSelectedCell(this.props)          ||
     this.doesRowContainSelectedCell(nextProps)           ||
     this.willRowBeDraggedOver(nextProps)                 ||
     nextProps.row !== this.props.row                     ||
     this.hasRowBeenCopied()                              ||
+    this.props.isSelected !== nextProps.isSelected       ||
     nextProps.height !== this.props.height;
   },
 
@@ -162,6 +180,13 @@ var Row = React.createClass({
     var handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
     if(handleDragEnterRow){
       handleDragEnterRow(this.props.idx);
+    }
+  },
+
+  getSelectedColumn(){
+    var selected = this.props.cellMetaData.selected;
+    if(selected && selected.idx){
+      return this.getColumn(this.props.columns, selected.idx);
     }
   }
 

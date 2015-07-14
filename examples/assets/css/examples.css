@@ -1,0 +1,489 @@
+.cm-s-solarized-light {
+  background-color: #f8f5ec;
+  color: #637c84;
+}
+
+.cm-s-solarized-light .emphasis {
+  font-weight: bold;
+}
+
+.cm-s-solarized-light .dotted {
+  border-bottom: 1px dotted #cb4b16;
+}
+
+.cm-s-solarized-light .CodeMirror-gutter {
+  background-color: #eee8d5;
+  border-right: 3px solid #eee8d5;
+}
+
+.cm-s-solarized-light .CodeMirror-gutter .CodeMirror-gutter-text {
+  color: #93a1a1;
+}
+
+.cm-s-solarized-light .CodeMirror-cursor {
+  border-left-color: #002b36 !important;
+}
+
+.cm-s-solarized-light .CodeMirror-matchingbracket {
+  color: #002b36;
+  background-color: #eee8d5;
+  box-shadow: 0 0 10px #eee8d5;
+  font-weight: bold;
+}
+
+.cm-s-solarized-light .CodeMirror-nonmatchingbracket {
+  color: #002b36;
+  background-color: #eee8d5;
+  box-shadow: 0 0 10px #eee8d5;
+  font-weight: bold;
+  color: #dc322f;
+  border-bottom: 1px dotted #cb4b16;
+}
+
+.cm-s-solarized-light span.cm-keyword {
+  color: #268bd2;
+}
+
+.cm-s-solarized-light span.cm-atom {
+  color: #2aa198;
+}
+
+.cm-s-solarized-light span.cm-number {
+  color: #586e75;
+}
+
+.cm-s-solarized-light span.cm-def {
+  color: #637c84;
+}
+
+.cm-s-solarized-light span.cm-variable {
+  color: #637c84;
+}
+
+.cm-s-solarized-light span.cm-variable-2 {
+  color: #b58900;
+}
+
+.cm-s-solarized-light span.cm-variable-3 {
+  color: #cb4b16;
+}
+
+.cm-s-solarized-light span.cm-comment {
+  color: #93a1a1;
+}
+
+.cm-s-solarized-light span.cm-property {
+  color: #637c84;
+}
+
+.cm-s-solarized-light span.cm-operator {
+  color: #657b83;
+}
+
+.cm-s-solarized-light span.cm-string {
+  color: #36958e;
+}
+
+.cm-s-solarized-light span.cm-error {
+  font-weight: bold;
+  border-bottom: 1px dotted #cb4b16;
+}
+
+.cm-s-solarized-light span.cm-bracket {
+  color: #cb4b16;
+}
+
+.cm-s-solarized-light span.cm-tag {
+  color: #657b83;
+}
+
+.cm-s-solarized-light span.cm-attribute {
+  color: #586e75;
+  font-weight: bold;
+}
+
+.cm-s-solarized-light span.cm-meta {
+  color: #268bd2;
+}
+
+.cm-s-solarized-dark {
+  background-color: #002b36;
+  color: #839496;
+}
+
+.cm-s-solarized-dark .emphasis {
+  font-weight: bold;
+}
+
+.cm-s-solarized-dark .dotted {
+  border-bottom: 1px dotted #cb4b16;
+}
+
+.cm-s-solarized-dark .CodeMirror-gutter {
+  background-color: #073642;
+  border-right: 3px solid #073642;
+}
+
+.cm-s-solarized-dark .CodeMirror-gutter .CodeMirror-gutter-text {
+  color: #586e75;
+}
+
+.cm-s-solarized-dark .CodeMirror-cursor {
+  border-left-color: #fdf6e3 !important;
+}
+
+.cm-s-solarized-dark .CodeMirror-matchingbracket {
+  color: #fdf6e3;
+  background-color: #073642;
+  box-shadow: 0 0 10px #073642;
+  font-weight: bold;
+}
+
+.cm-s-solarized-dark .CodeMirror-nonmatchingbracket {
+  color: #fdf6e3;
+  background-color: #073642;
+  box-shadow: 0 0 10px #073642;
+  font-weight: bold;
+  color: #dc322f;
+  border-bottom: 1px dotted #cb4b16;
+}
+
+.cm-s-solarized-dark span.cm-keyword {
+  color: #839496;
+  font-weight: bold;
+}
+
+.cm-s-solarized-dark span.cm-atom {
+  color: #2aa198;
+}
+
+.cm-s-solarized-dark span.cm-number {
+  color: #93a1a1;
+}
+
+.cm-s-solarized-dark span.cm-def {
+  color: #268bd2;
+}
+
+.cm-s-solarized-dark span.cm-variable {
+  color: #cb4b16;
+}
+
+.cm-s-solarized-dark span.cm-variable-2 {
+  color: #cb4b16;
+}
+
+.cm-s-solarized-dark span.cm-variable-3 {
+  color: #cb4b16;
+}
+
+.cm-s-solarized-dark span.cm-comment {
+  color: #586e75;
+}
+
+.cm-s-solarized-dark span.cm-property {
+  color: #b58900;
+}
+
+.cm-s-solarized-dark span.cm-operator {
+  color: #839496;
+}
+
+.cm-s-solarized-dark span.cm-string {
+  color: #6c71c4;
+}
+
+.cm-s-solarized-dark span.cm-error {
+  font-weight: bold;
+  border-bottom: 1px dotted #cb4b16;
+}
+
+.cm-s-solarized-dark span.cm-bracket {
+  color: #cb4b16;
+}
+
+.cm-s-solarized-dark span.cm-tag {
+  color: #839496;
+}
+
+.cm-s-solarized-dark span.cm-attribute {
+  color: #93a1a1;
+  font-weight: bold;
+}
+
+.cm-s-solarized-dark span.cm-meta {
+  color: #268bd2;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+div.CodeMirror pre,div.CodeMirror-linenumber,code {
+  font-family: 'source-code-pro', Menlo, Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+div.CodeMirror-linenumber {
+  text-align: right;
+}
+
+.CodeMirror,div.CodeMirror-gutters,div.highlight {
+  border: none;
+}
+
+.CodeMirror-readonly div.CodeMirror-cursor {
+  visibility: hidden;
+}
+
+small code,li code,p code {
+  color: #555;
+  background-color: rgba(0,0,0,0.04);
+  padding: 1px 3px;
+}
+
+.cm-s-default span.cm-string-2 {
+  color: inherit;
+}
+
+.playground:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.playground-tab {
+  border-bottom: none !important;
+  border-radius: 3px 3px 0 0;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #c2c0bc;
+  background-color: #f1ede4;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.playgroundCode,.playground-tab,.playgroundPreview {
+  border: 1px solid rgba(16,16,16,0.1);
+}
+
+.playground-tab-active {
+  color: #222;
+}
+
+.playgroundCode {
+  border-radius: 0 3px 3px 3px;
+  float: left;
+  overflow: hidden;
+  width : 100%;
+}
+
+.playgroundPreview {
+  background-color: white;
+  border-radius: 3px;
+  float: left;
+  padding: 15px 20px;
+  width:100%;
+}
+
+.playgroundError {
+  color: #c5695c;
+  font-size: 15px;
+}
+
+.MarkdownEditor textarea {
+  width: 100%;
+  height: 100px;
+}
+
+.MarkdownEditor .content {
+  white-space: pre-wrap;
+}
+
+.hll {
+  background-color: #f7ebc6;
+  border-left: 5px solid #f7d87c;
+  display: block;
+  margin-left: -14px;
+  margin-right: -14px;
+  padding-left: 9px;
+}
+
+.highlight .javascript .err {
+  background-color: transparent;
+  color: inherit;
+}
+
+.highlight {
+  position: relative;
+  margin-bottom: 14px;
+  padding: 30px 14px 14px;
+  border: none;
+  border-radius: 0;
+  overflow: auto;
+}
+
+.highlight pre {
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  background-color: transparent;
+  border: 0;
+}
+
+.highlight pre code {
+  display: block;
+  background: none;
+  padding: 0;
+}
+
+.highlight pre .lineno {
+  display: inline-block;
+  width: 22px;
+  padding-right: 5px;
+  margin-right: 10px;
+  color: #bebec5;
+  text-align: right;
+}
+
+.highlight:after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #c2c0bc;
+  background-color: #f1ede4;
+  content: "Code";
+}
+
+.downloadCenter {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 25px;
+}
+
+.downloadSection:hover {
+  text-decoration: none !important;
+}
+
+@media screen and (max-width: 960px) {
+  .nav-main {
+    position: static;
+  }
+
+  .container {
+    padding-top: 0;
+  }
+}
+
+.post {
+  margin-bottom: 30px;
+}
+
+.pagination {
+  margin-bottom: 30px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.pagination .next {
+  float: right;
+}
+
+div[data-twttr-id] iframe {
+  margin: 10px auto !important;
+  width: 100% !important;
+}
+
+.three-column:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.three-column>ul {
+  float: left;
+  margin-left: 30px;
+  width: 190px;
+}
+
+.three-column>ul:first-child {
+  margin-left: 20px;
+}
+
+.documentationContent .subHeader {
+  font-size: 24px;
+}
+
+.documentationContent h2 {
+  margin-top: 30px;
+}
+
+.documentationContent blockquote {
+  padding: 15px 30px 15px 15px;
+  margin: 20px 0;
+  background-color: rgba(204,122,111,0.1);
+  border-left: 5px solid rgba(191,87,73,0.2);
+}
+
+.documentationContent blockquote h4 {
+  margin-top: 0;
+}
+
+.documentationContent blockquote p {
+  margin-bottom: 0;
+}
+
+.documentationContent blockquote p:first-child {
+  font-weight: bold;
+  font-size: 17.5px;
+  line-height: 20px;
+  margin-top: 0;
+  text-rendering: optimizelegibility;
+}
+
+.docs-prevnext {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.jsxCompiler {
+  margin: 0 auto;
+  padding-top: 20px;
+  width: 1220px;
+}
+
+.jsxCompiler label.compiler-option {
+  display: block;
+  margin-top: 5px;
+}
+
+.jsxCompiler #jsxCompiler {
+  margin-top: 20px;
+}
+
+.jsxCompiler .playgroundPreview {
+  padding: 0;
+  width: 600px;
+}
+
+.jsxCompiler .playgroundPreview pre {
+  font-family: 'source-code-pro', Menlo, Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.jsxCompiler .playgroundError {
+  padding: 15px 20px;
+}

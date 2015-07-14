@@ -3,4 +3,5 @@ bower_components
 lib
 **/build
 test/reports
+test/coverage
 dist

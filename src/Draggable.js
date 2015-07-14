@@ -8,7 +8,7 @@
 
 var React         = require('react');
 var PropTypes     = React.PropTypes;
-var emptyFunction = require('./emptyFunction');
+var emptyFunction = require('react/lib/emptyFunction');
 
 var Draggable = React.createClass({
 
@@ -22,13 +22,12 @@ var Draggable = React.createClass({
   render(): ?ReactElement {
     var Component = this.props.component;
     return (
-      <Component {...this.props}  onMouseDown={this.onMouseDown} />
+      <div {...this.props}  onMouseDown={this.onMouseDown} />
     );
   },
 
   getDefaultProps() {
     return {
-      component: React.DOM.div,
       onDragStart: emptyFunction.thatReturnsTrue,
       onDragEnd: emptyFunction,
       onDrag: emptyFunction
@@ -57,10 +56,6 @@ var Draggable = React.createClass({
   onMouseMove(e: SyntheticEvent) {
     if (this.state.drag === null) {
       return;
-    }
-
-    if (e.stopPropagation) {
-      e.stopPropagation();
     }
 
     if (e.preventDefault) {
