@@ -4,7 +4,7 @@ var ColumnMetrics        = require('./ColumnMetrics');
 var DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
 var PropTypes            = require('react').PropTypes;
-
+var ColumnUtils = require('./ColumnUtils');
 
 type ColumnMetricsType = {
     columns: Array<Column>;
@@ -44,29 +44,24 @@ module.exports = {
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
-        var columnMetrics = this.getColumnMetricsType(nextProps);
-        columnMetrics.columns = this.adjustColumnWidths(columnMetrics.columns);
-        this.setState(columnMetrics);
-      } else {
-        var nextColumnStats = this.adjustColumnWidths(nextProps);
-        this.setState({columnMetrics: nextColumnStats});
+        var columnMetrics = this.createColumnMetrics();
+        this.setState({columnMetrics: columnMetrics});
       }
     }
   },
 
-  adjustColumnWidths(columnMetrics: ColumnMetricsType){
-    var index = {};
-    this.state.columnMetrics.columns.forEach((c) => {
-      index[c.key] = {width: c.width, left: c.left};
-    });
-    var nextColumns = Object.assign(this.state.columnMetrics, {
-      columns: columnMetrics.columns.map((c) => Object.assign(c, index[c.key]))
-    });
-    return nextColumns;
+  getTotalWidth() {
+    var totalWidth = 0;
+    if(this.isMounted()){
+      totalWidth = this.DOMMetrics.gridWidth();
+    } else {
+      totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;
+    }
+    return totalWidth;
   },
 
-  getColumnMetricsType(metrics: ColumnMetricsType, initial: ?number): { columns: ColumnMetricsType; gridWidth: number } {
-    var totalWidth = initial ? initial : this.DOMMetrics.gridWidth();
+  getColumnMetricsType(metrics: ColumnMetricsType): { columns: ColumnMetricsType } {
+    var totalWidth = this.getTotalWidth();
     var currentMetrics = {
       columns: metrics.columns,
       totalWidth: totalWidth,
@@ -74,7 +69,7 @@ module.exports = {
     };
     var updatedMetrics
     //if state has not yet been set or else if total width has changed then call recalculate
-    if(!this.state || (this.state && this.state.totalWidth !== totalWidth)){
+    if(!this.state || (this.state && this.state.columnMetrics.totalWidth !== totalWidth)){
         updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
     } else{
       updatedMetrics = currentMetrics;
