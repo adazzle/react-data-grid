@@ -50,17 +50,6 @@ module.exports = {
     }
   },
 
-  adjustColumnWidths(columnMetrics: ColumnMetricsType){
-    var index = {};
-    this.state.columnMetrics.columns.forEach((c) => {
-      index[c.key] = {width: c.width, left: c.left};
-    });
-    var nextColumns = Object.assign(this.state.columnMetrics, {
-      columns: columnMetrics.columns.map((c) => Object.assign(c, index[c.key]))
-    });
-    return nextColumns;
-  },
-
   getTotalWidth() {
     var totalWidth = 0;
     if(this.isMounted()){
