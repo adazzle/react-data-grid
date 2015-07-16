@@ -116,9 +116,6 @@ var ReactDataGrid = React.createClass({
     if(nextProps.rowsCount  === this.props.rowsCount + 1){
       this.onAfterAddRow(nextProps.rowsCount + 1);
     }
-    var gridColumns = this.setupGridColumns();
-    var columnMetrics = this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, true);
-    this.setState({columnMetrics});
   },
 
   render: function(): ?ReactElement {
