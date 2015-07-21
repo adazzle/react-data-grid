@@ -66,7 +66,7 @@ var titles = ['Mr.', 'Mrs.', 'Miss', 'Ms.'];
     {
       key: 'title',
       name: 'Title',
-      editor : <DropDownEditor options={labels}/>,
+      editor : <DropDownEditor options={titles}/>,
       width : 200
     },
     {
