@@ -40,11 +40,6 @@ describe('DropDownEditor', () => {
         expect(Select.props.defaultValue).toBe('Choose a thing');
       });
 
-      it('should pass the onChange function to the select node as a prop', () => {
-        var Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
-        expect(typeof Select.props.onChange).toBe('function');
-      });
-
       it('should render the options as ReactElements', () => {
         var firstOption = component.renderOptions()[0];
         expect(TestUtils.isElement(firstOption)).toBe(true);
