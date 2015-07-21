@@ -66,7 +66,7 @@ var HeaderCell = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    var node = this.getDOMNode();
+    var node = React.findDOMNode(this);
     node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
     node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
   },
@@ -109,7 +109,7 @@ var HeaderCell = React.createClass({
 
   getWidthFromMouseEvent(e: SyntheticMouseEvent): number {
     var right = e.pageX;
-    var left = this.getDOMNode().getBoundingClientRect().left;
+    var left = React.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   }
 });

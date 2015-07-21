@@ -23,7 +23,7 @@ var ScrollShim = {
       shim.style.left = 0;
       shim.style.width = `${size.width}px`;
       shim.style.height = `${size.height}px`;
-      this.getDOMNode().appendChild(shim);
+      React.findDOMNode(this).appendChild(shim);
       this._scrollShim = shim;
     }
     this._scheduleRemoveScrollShim();

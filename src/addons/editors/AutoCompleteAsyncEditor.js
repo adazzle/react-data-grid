@@ -43,7 +43,7 @@ var AutoCompleteAsyncEditor =  React.createClass({
   },
 
   getInputNode(): HTMLInputElement{
-    return this.getDOMNode().getElementsByTagName("input")[0];
+    return React.findDOMNode(this).getElementsByTagName("input")[0];
   },
 
   getValue(){

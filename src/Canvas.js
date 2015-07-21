@@ -154,7 +154,7 @@ var Canvas = React.createClass({
 
   componentWillReceiveProps(nextProps: any) {
     if(nextProps.rowsCount > this.props.rowsCount){
-      this.getDOMNode().scrollTop =nextProps.rowsCount * this.props.rowHeight;
+      React.findDOMNode(this).scrollTop =nextProps.rowsCount * this.props.rowHeight;
     }
     var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart
                         && nextProps.visibleEnd < this.state.displayEnd)
@@ -212,7 +212,7 @@ var Canvas = React.createClass({
   },
 
   getScroll(): {scrollTop: number; scrollLeft: number} {
-    var {scrollTop, scrollLeft} = this.getDOMNode();
+    var {scrollTop, scrollLeft} = React.findDOMNode(this);
     return {scrollTop, scrollLeft};
   },
 

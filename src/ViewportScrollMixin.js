@@ -23,7 +23,7 @@ module.exports = {
 
   DOMMetrics: {
     viewportHeight(): number {
-      return this.getDOMNode().offsetHeight;
+      return React.findDOMNode(this).offsetHeight;
     }
   },
 

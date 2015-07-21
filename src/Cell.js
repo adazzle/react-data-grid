@@ -202,7 +202,7 @@ var Cell = React.createClass({
 
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
-      this.getDOMNode().focus();
+      React.findDOMNode(this).focus();
     }
   },
 
@@ -233,19 +233,19 @@ var Cell = React.createClass({
     var updateCellClass = this.getUpdateCellClass();
     // -> removing the class
     if(updateCellClass != null && updateCellClass != "") {
-      this.getDOMNode().classList.remove(updateCellClass);
+      React.findDOMNode(this).classList.remove(updateCellClass);
       // -> triggering reflow /* The actual magic */
       // without this it wouldn't work. Try uncommenting the line and the transition won't be retriggered.
-      this.getDOMNode().offsetWidth = element.offsetWidth;
+      React.findDOMNode(this).offsetWidth = element.offsetWidth;
       // -> and re-adding the class
-      this.getDOMNode().classList.add(updateCellClass);
+      React.findDOMNode(this).classList.add(updateCellClass);
     }
   },
 
   setScrollLeft(scrollLeft: number) {
     var ctrl: any = this; //flow on windows has an outdated react declaration, once that gets updated, we can remove this
     if (ctrl.isMounted()) {
-      var node = this.getDOMNode();
+      var node = React.findDOMNode(this);
       var transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;
