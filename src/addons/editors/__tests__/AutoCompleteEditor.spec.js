@@ -127,7 +127,6 @@ describe('AutoCompleteEditor', () => {
 
       describe('Input Events', () => {
         it('clicking on an item should trigger commit', () => {
-          debugger;
           var Autocomplete = TestUtils.findRenderedComponentWithType(component, AutoCompleteEditor);
           var textInputEle = Autocomplete.getInputNode();
           // Click on input

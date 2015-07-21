@@ -4,8 +4,11 @@ var ColumnMetrics        = require('./ColumnMetrics');
 var DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
 var PropTypes            = require('react').PropTypes;
-var ColumnUtils = require('./ColumnUtils');
+<<<<<<< HEAD
 var React = require('react');
+=======
+var ColumnUtils = require('./ColumnUtils');
+>>>>>>> master
 
 type ColumnMetricsType = {
     columns: Array<Column>;
