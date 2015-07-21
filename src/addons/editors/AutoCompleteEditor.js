@@ -2,15 +2,10 @@
 /* Flow issues:
 overrides? getDefaultValue, getStyle, onKeyDown
 */
-/**
- * @jsx React.DOM
- */
 'use strict';
 
 var React                   = require('react');
 var ReactSelect             = require('react-select');
-var KeyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
-var ExcelColumn             = require('../grids/ExcelColumn');
 var EditorBase              = require('./EditorBase');
 
 var optionPropType = React.PropTypes.shape({
@@ -18,29 +13,16 @@ var optionPropType = React.PropTypes.shape({
       value :   React.PropTypes.string
     });
 
-var AutoCompleteEditor = React.createClass({
-
-  propTypes : {
-    onCommit : React.PropTypes.func.isRequired,
-    options : React.PropTypes.arrayOf(optionPropType).isRequired,
-    label : React.PropTypes.any,
-    value : React.PropTypes.any.isRequired,
-    valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
-    column: React.PropTypes.shape(ExcelColumn).isRequired,
-    resultIdentifier : React.PropTypes.string,
-    search : React.PropTypes.string,
-    height : React.PropTypes.string,
-    onKeyDown : React.PropTypes.func.isRequired
-  },
+var AutoCompleteEditor extends EditorBase {
 
   getDefaultProps(): {resultIdentifier: string}{
     return {
       label: 'title',
       resultIdentifier : 'id'
     }
-  },
+  }
 
-  getValue(): any{
+  getValue(): any {
     var value, updated = {};
     if(this.hasResults() && this.isFocusedOnSuggestion()){
       value = this.getLabel(this.refs.autoComplete.state.focusedOption);
@@ -49,23 +31,24 @@ var AutoCompleteEditor = React.createClass({
     }
     updated[this.props.column.key] = value;
     return updated;
-  },
+  }
 
   hasResults(): boolean{
-    return this.refs.autoComplete.state.filteredOptions > 0;
-  },
+    return false;
+  }
 
   render(): ?ReactElement {
     var label = this.props.label != null ? this.props.label : 'title';
-    return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete  search={this.props.search} ref="autoComplete" label={label} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
+    return (
+      <div height={this.props.height} onKeyDown={this.props.onKeyDown}>
+        <ReactSelect label={label} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
       </div>);
-  },
+  }
 
   isFocusedOnSuggestion(): boolean{
     var autoComplete = this.refs.autoComplete;
     return autoComplete.state.focusedOption != null;
-  },
+  }
 
   getLabel(item: any): string {
     var label = this.props.label != null ? this.props.label : 'title';
@@ -75,7 +58,7 @@ var AutoCompleteEditor = React.createClass({
       return item[label];
     }
   }
-});
+}
 
 AutoCompleteEditor.propTypes = {
     onCommit : React.PropTypes.func.isRequired,
