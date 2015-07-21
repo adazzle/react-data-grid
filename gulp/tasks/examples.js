@@ -5,7 +5,8 @@ var bundle		= require('./bundle');
 var gutil     = require("gulp-util");
 var path = require("path");
 
-webpackConfig = {
+webpackConfig = require('../../config/webpack');
+{
 	entry: {
 		'index' : './examples/index.js',
 		'shared' : './examples/shared.js',
@@ -17,6 +18,7 @@ webpackConfig = {
 		filename: "[name].js",
 		libraryTarget: "umd"
 	},
+	devtool: "#cheap-module-eval-source-map",
 	externals: {
 		"react": {
 			root : 'React',
@@ -34,15 +36,12 @@ webpackConfig = {
 	},
 	module: {
 		loaders: [
-		{ test: /\.js$/, loader: 'jsx-loader?stripTypes&harmony' } // loaders can take parameters as a querystring
-		]
-	},
-	plugins: [
-	new webpack.optimize.DedupePlugin(),
-
-	new webpack.optimize.OccurenceOrderPlugin(),
-	new webpack.optimize.AggressiveMergingPlugin()
-	]
+		{
+			test: /\.js$/,
+			exclude: /node_modules/,
+			loader: 'babel-loader?optional[]=runtime'
+		}]
+	}
 }
 
 

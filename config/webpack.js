@@ -14,6 +14,7 @@ module.exports = {
     library: ["ReactDataGrid"],
     libraryTarget: "umd"
   },
+  devtool: "#cheap-module-eval-source-map",
   externals: {
     "react": {
       root : 'React',
@@ -29,7 +30,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader?optional[]=runtime'
-      } 
+      }
     ]
   },
   plugins: [

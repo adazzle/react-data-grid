@@ -2,62 +2,45 @@
 /* Flow issues:
 overrides? getDefaultValue, getStyle, onKeyDown
 */
-'use strict';
 
-var React                   = require('react');
-var ReactSelect             = require('react-select');
-var EditorBase              = require('./EditorBase');
+import React from 'react';
+import ReactSelect from 'react-select';
+import EditorBase from './EditorBase';
 
-var optionPropType = React.PropTypes.shape({
+let optionPropType = React.PropTypes.shape({
       name    :   React.PropTypes.required,
       value :   React.PropTypes.string
     });
 
-var AutoCompleteEditor extends EditorBase {
-
-  getDefaultProps(): {resultIdentifier: string}{
-    return {
-      label: 'title',
-      resultIdentifier : 'id'
-    }
-  }
+class AutoCompleteEditor extends EditorBase {
 
   getValue(): any {
     var value, updated = {};
     if(this.hasResults() && this.isFocusedOnSuggestion()){
-      value = this.getLabel(this.refs.autoComplete.state.focusedOption);
+      value = this.select.state.focusedOption.value;
     }else{
-      value = this.refs.autoComplete.state.inputValue;
+      value = this.select.state.inputValue;
     }
     updated[this.props.column.key] = value;
     return updated;
   }
 
   hasResults(): boolean{
-    return false;
+    return this.select.state.isOpen && this.select.state.filteredOptions.length > 0;
   }
 
   render(): ?ReactElement {
-    var label = this.props.label != null ? this.props.label : 'title';
+    var selectRef = (c) => this.select = c;
     return (
       <div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-        <ReactSelect label={label} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
+        <ReactSelect ref={selectRef} options={this.props.options} value={this.props.value} />
       </div>);
   }
 
   isFocusedOnSuggestion(): boolean{
-    var autoComplete = this.refs.autoComplete;
-    return autoComplete.state.focusedOption != null;
+    return this.select.state.focusedOption != null;
   }
 
-  getLabel(item: any): string {
-    var label = this.props.label != null ? this.props.label : 'title';
-    if (typeof label === "function") {
-      return label(item);
-    } else if (typeof label === "string") {
-      return item[label];
-    }
-  }
 }
 
 AutoCompleteEditor.propTypes = {
@@ -66,7 +49,7 @@ AutoCompleteEditor.propTypes = {
     label : React.PropTypes.string,
     value : React.PropTypes.any.isRequired,
     valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
-    column: React.PropTypes.shape(ExcelColumn).isRequired,
+    column: React.PropTypes.object.isRequired,
     resultIdentifier : React.PropTypes.string,
     search : React.PropTypes.string
 };

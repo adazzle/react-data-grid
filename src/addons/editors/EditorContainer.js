@@ -50,7 +50,7 @@ var EditorContainer = React.createClass({
   createEditor(): ReactElement{
     var editorRef = (c) => this.editor = c;
     var editorProps = {
-		ref: 'editor',
+		ref: editorRef,
 		column : this.props.column,
 		value : this.getInitialValue(),
 		onCommit : this.commit,

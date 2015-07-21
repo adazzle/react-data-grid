@@ -315,7 +315,7 @@ input.react-grid-CheckBox {
 .Select-control {
   position: relative;
   overflow: hidden;
-  background-color: white;
+  background-color: #ffffff;
   border: 1px solid #cccccc;
   border-color: #d9d9d9 #cccccc #b3b3b3;
   border-radius: 4px;
@@ -335,7 +335,7 @@ input.react-grid-CheckBox {
 .is-open > .Select-control {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  background: white;
+  background: #ffffff;
   border-color: #b3b3b3 #cccccc #d9d9d9;
 }
 .is-open > .Select-control > .Select-arrow {
@@ -355,6 +355,7 @@ input.react-grid-CheckBox {
   position: absolute;
   top: 0;
   left: 0;
+  right: -15px;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -366,6 +367,8 @@ input.react-grid-CheckBox {
 .Select-input > input {
   cursor: default;
   background: none transparent;
+  box-shadow: none;
+  height: auto;
   border: 0 none;
   font-family: inherit;
   font-size: inherit;
@@ -382,9 +385,9 @@ input.react-grid-CheckBox {
   outline: none;
 }
 .Select-loading {
-  -webkit-animation: spin 400ms infinite linear;
-  -o-animation: spin 400ms infinite linear;
-  animation: spin 400ms infinite linear;
+  -webkit-animation: Select-animation-spin 400ms infinite linear;
+  -o-animation: Select-animation-spin 400ms infinite linear;
+  animation: Select-animation-spin 400ms infinite linear;
   width: 16px;
   height: 16px;
   box-sizing: border-box;
@@ -417,6 +420,16 @@ input.react-grid-CheckBox {
 .Select-clear > span {
   font-size: 1.1em;
 }
+.Select-arrow-zone {
+  content: " ";
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  cursor: pointer;
+}
 .Select-arrow {
   border-color: #999999 transparent transparent;
   border-style: solid;
@@ -429,11 +442,12 @@ input.react-grid-CheckBox {
   right: 10px;
   top: 14px;
   width: 0;
+  cursor: pointer;
 }
 .Select-menu-outer {
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
-  background-color: white;
+  background-color: #ffffff;
   border: 1px solid #cccccc;
   border-top-color: #e6e6e6;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
@@ -464,6 +478,10 @@ input.react-grid-CheckBox {
 .Select-option.is-focused {
   background-color: #f2f9fc;
   color: #333333;
+}
+.Select-option.is-disabled {
+  color: #cccccc;
+  cursor: not-allowed;
 }
 .Select-noresults {
   box-sizing: border-box;
@@ -517,28 +535,30 @@ input.react-grid-CheckBox {
   background-color: #ddeff7;
   color: #0077b3;
 }
-.react-autocomplete-Result > a {
-  text-decoration: none;
-}
-.react-autocomplete-Result--active {
-  color: #262626;
-  background-color: whitesmoke;
-}
-
-.react-grid-Cell.readonly {
-  background-color : black;
-}
 .Select-item-icon:active {
   background-color: #c9e6f2;
 }
-@keyframes spin {
+.Select.is-multi.is-disabled .Select-item {
+  background-color: #f2f2f2;
+  border: 1px solid #d9d9d9;
+  color: #888888;
+}
+.Select.is-multi.is-disabled .Select-item-icon {
+  cursor: not-allowed;
+  border-right: 1px solid #d9d9d9;
+}
+.Select.is-multi.is-disabled .Select-item-icon:hover,
+.Select.is-multi.is-disabled .Select-item-icon:focus,
+.Select.is-multi.is-disabled .Select-item-icon:active {
+  background-color: #f2f2f2;
+}
+@keyframes Select-animation-spin {
   to {
     transform: rotate(1turn);
   }
 }
-@-webkit-keyframes spin {
+@-webkit-keyframes Select-animation-spin {
   to {
     -webkit-transform: rotate(1turn);
   }
 }
-
