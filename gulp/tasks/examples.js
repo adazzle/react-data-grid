@@ -4,9 +4,9 @@ var webpack   = require("webpack");
 var bundle		= require('./bundle');
 var gutil     = require("gulp-util");
 var path = require("path");
+Object.assign = require('object-assign');
 
-webpackConfig = require('../../config/webpack');
-{
+var webpackConfig = Object.assign({}, require('../../config/webpack'),{
 	entry: {
 		'index' : './examples/index.js',
 		'shared' : './examples/shared.js',
@@ -17,32 +17,10 @@ webpackConfig = require('../../config/webpack');
 		path: path.join(__dirname, "../../examples/build"),
 		filename: "[name].js",
 		libraryTarget: "umd"
-	},
-	devtool: "#cheap-module-eval-source-map",
-	externals: {
-		"react": {
-			root : 'React',
-			commonjs : 'react',
-			commonjs2 : 'react',
-			amd : 'react'
-		},
-		"react/addons": {
-			root : 'React',
-			commonjs : 'react',
-			commonjs2 : 'react',
-			amd : 'react'
-		},
-		"moment" : "moment"
-	},
-	module: {
-		loaders: [
-		{
-			test: /\.js$/,
-			exclude: /node_modules/,
-			loader: 'babel-loader?optional[]=runtime'
-		}]
 	}
-}
+});
+
+
 
 
 gulp.task('script-deps',  function() {

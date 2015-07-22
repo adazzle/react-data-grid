@@ -2,8 +2,11 @@ var path = require("path");
 var webpack = require('webpack');
 var release = false;
 var path = require("path");
+var argv = require('minimist')(process.argv.slice(2));
+var RELEASE = argv.release;
 
-module.exports = {
+
+var config = {
   entry: {
     'react-data-grid' : './src/index',
     'react-data-grid-with-addons' : './src/addons/index'
@@ -14,7 +17,6 @@ module.exports = {
     library: ["ReactDataGrid"],
     libraryTarget: "umd"
   },
-  devtool: "#cheap-module-eval-source-map",
   externals: {
     "react": {
       root : 'React',
@@ -33,11 +35,6 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin()
-  ],
   postLoaders: [
   {
     test: /\.js$/,
@@ -45,3 +42,9 @@ module.exports = {
     loader: 'jshint'
   }]
 }
+
+if(!RELEASE){
+    config.devtool = "#cheap-module-eval-source-map";
+}
+
+module.exports = config;
