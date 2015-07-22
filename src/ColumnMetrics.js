@@ -99,7 +99,8 @@ function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
  * @param {number} width
  */
 function resizeColumn(metrics: ColumnMetricsType, index: number, width: number): ColumnMetricsType {
-  var column = metrics.columns[index];
+  // use get if we have it
+  var column = metrics.columns.get ? metrics.columns.get(index) : metrics.columns[index];
   metrics = shallowCloneObject(metrics);
   metrics.columns = metrics.columns.slice(0);
 
