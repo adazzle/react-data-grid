@@ -50,6 +50,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       key: 'id',
       name: 'ID',
       width : 80,
+      resizeable: true
     },
     {
       key: 'avartar',
@@ -62,73 +63,85 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       key: 'county',
       name: 'County',
       editor: <AutoCompleteEditor options={counties}/>,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'title',
       name: 'Title',
       editor : <DropDownEditor options={titles}/>,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'firstName',
       name: 'First Name',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'lastName',
       name: 'Last Name',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'email',
       name: 'Email',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'street',
       name: 'Street',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'zipCode',
       name: 'ZipCode',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'date',
       name: 'Date',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'bs',
       name: 'bs',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'catchPhrase',
       name: 'Catch Phrase',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'companyName',
       name: 'Company Name',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     },
     {
       key: 'sentence',
       name: 'Sentence',
       editable:true,
-      width : 200
+      width : 200,
+      resizeable: true
     }
   ]);
 
