@@ -106,7 +106,7 @@ function resizeColumn(metrics: ColumnMetricsType, index: number, width: number):
   var updatedColumn = shallowCloneObject(column);
   updatedColumn.width = Math.max(width, metrics.minColumnWidth);
 
-  metrics = ColumnUtils.updateMetrics(metrics, index, updatedColumn);
+  metrics = ColumnUtils.spliceColumn(metrics, index, updatedColumn);
 
   return recalculate(metrics);
 }

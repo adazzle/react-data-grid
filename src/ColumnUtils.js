@@ -8,7 +8,7 @@ module.exports = {
     }
   },
 
-  updateMetrics(metrics, idx, column){
+  spliceColumn(metrics, idx, column){
     if(Array.isArray(metrics.columns)){
       metrics.columns.splice(idx, 1, column);
     }else if (typeof Immutable !== 'undefined') {
