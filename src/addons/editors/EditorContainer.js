@@ -86,7 +86,12 @@ var EditorContainer = React.createClass({
   },
 
   onPressEscape(e: SyntheticKeyboardEvent){
-    this.props.cellMetaData.onCommitCancel();
+    if(!this.editorIsSelectOpen()){
+      this.props.cellMetaData.onCommitCancel();
+    } else {
+      // prevent event from bubbling if editor has results to select
+      e.stopPropagation();
+    }
   },
 
   onPressArrowDown(e: SyntheticKeyboardEvent){
@@ -135,6 +140,14 @@ var EditorContainer = React.createClass({
     }
     if(isFunction(this.getEditor().hasResults)){
       return this.getEditor().hasResults();
+    }else{
+      return false;
+    }
+  },
+
+  editorIsSelectOpen() {
+    if(isFunction(this.getEditor().isSelectOpen)){
+      return this.getEditor().isSelectOpen();
     }else{
       return false;
     }
