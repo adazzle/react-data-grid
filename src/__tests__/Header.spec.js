@@ -43,11 +43,44 @@ describe('Header Unit Tests', () => {
 
 
   it('should render a default header row', () => {
-    var headerRows = TestUtils.scryRenderedComponentsWithType(header, HeaderRowStub);
-    expect(headerRows.length).toEqual(1);
+    shouldRenderDefaultRow();
   });
 
   it('header row drag start should set resize column state ', () => {
+    shouldSetResizeState();
+  });
+
+  it('header row drag end should trigger onColumnResize callback', () => {
+    shouldTriggerOnColumnResize();
+  });
+
+  describe('When columns are immutable',  () => {
+    beforeEach(() => {
+      testProps.columnMetrics.columns = new Immutable.List(helpers.columns);
+      header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
+    });
+
+    it('should render a default header row', () => {
+      shouldRenderDefaultRow();
+  });
+
+  it('header row drag start should set resize column state ', () => {
+                  debugger;
+      shouldSetResizeState();
+    });
+
+    it('header row drag end should trigger onColumnResize callback', () => {
+
+      shouldTriggerOnColumnResize();
+    });
+  });
+
+  function shouldRenderDefaultRow() {
+    var headerRows = TestUtils.scryRenderedComponentsWithType(header, HeaderRowStub);
+    expect(headerRows.length).toEqual(1);
+  }
+
+  function shouldSetResizeState() {
     var resizeColIdx = 2;
     var newWidth = 350;
     header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
@@ -55,10 +88,10 @@ describe('Header Unit Tests', () => {
     headerRow.props.onColumnResize(helpers.columns[resizeColIdx], newWidth);
     expect(header.state.resizing.column.width).toEqual(newWidth);
     expect(header.state.resizing.column.key).toEqual(helpers.columns[resizeColIdx].key);
-  });
 
+  }
 
-  it('header row drag end should trigger onColumnResize callback', () => {
+  function shouldTriggerOnColumnResize() {
     var resizeColIdx = 1;
     spyOn(testProps, 'onColumnResize');
     header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
@@ -67,6 +100,6 @@ describe('Header Unit Tests', () => {
     expect(testProps.onColumnResize).toHaveBeenCalled();
     expect(testProps.onColumnResize.mostRecentCall.args[0]).toEqual(resizeColIdx);
     expect(testProps.onColumnResize.mostRecentCall.args[1]).toEqual(200);
-  });
 
+  }
 });
