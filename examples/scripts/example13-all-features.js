@@ -50,98 +50,98 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       key: 'id',
       name: 'ID',
       width : 80,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'avartar',
       name: 'Avartar',
       width : 60,
       formatter : ReactDataGrid.Formatters.ImageFormatter,
-      resizeable : true
+      resizable : true
     },
     {
       key: 'county',
       name: 'County',
       editor: <AutoCompleteEditor options={counties}/>,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'title',
       name: 'Title',
       editor : <DropDownEditor options={titles}/>,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'firstName',
       name: 'First Name',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'lastName',
       name: 'Last Name',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'email',
       name: 'Email',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'street',
       name: 'Street',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'zipCode',
       name: 'ZipCode',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'date',
       name: 'Date',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'bs',
       name: 'bs',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'catchPhrase',
       name: 'Catch Phrase',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'companyName',
       name: 'Company Name',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     },
     {
       key: 'sentence',
       name: 'Sentence',
       editable:true,
       width : 200,
-      resizeable: true
+      resizable: true
     }
   ]);
 
