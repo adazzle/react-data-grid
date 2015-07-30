@@ -48,6 +48,17 @@ describe('Grid Integration', () => {
       .hasDragged({from:0,to:4,col:3,cellKey:'title'})
     });
   });
+  // @jpdriver - commented out for now because this was a pain to write an integration test for
+  // we should rewrite the drag events not to attach to the window
+  //
+  // describe('Column Resize', () => {
+  //   it("Resizes a column on drag", () => {
+  //     let args = {idx:3,toWidth:200};
+  //     new GridRunner({})
+  //     .resize(args)
+  //     .hasBeenResized(args);
+  //   });
+  // });
   describe('Grid Selection', () => {
     it("Selects on click", () => {
       new GridRunner({})

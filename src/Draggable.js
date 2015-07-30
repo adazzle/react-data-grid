@@ -22,7 +22,9 @@ var Draggable = React.createClass({
   render(): ?ReactElement {
     var Component = this.props.component;
     return (
-      <div {...this.props}  onMouseDown={this.onMouseDown} />
+      <div {...this.props}
+        onMouseDown={this.onMouseDown}
+        className='react-grid-HeaderCell__draggable' />
     );
   },
 

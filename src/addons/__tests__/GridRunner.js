@@ -105,6 +105,42 @@ export default class GridRunner {
 
     return this;
   }
+  // @jpdriver - commented out for now because this was a pain to write an integration test for
+  // we should rewrite the drag events not to attach to the window
+  //
+  // resize({idx, toWidth}) {
+  //   let column = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-HeaderCell')[idx];
+  //   const resizeHeaderCellHandles = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-HeaderCell__draggable');
+  //   let draggable= resizeHeaderCellHandles[idx];
+  //   let mouseDownEvent = {
+  //     dataTransfer: {
+  //       setData:jasmine.createSpy()
+  //     }
+  //   };
+  //   let goToWidth = column.props.style.left + column.props.style.width + toWidth;
+  //
+  //   TestUtils.Simulate.mouseDown(draggable, mouseDownEvent);
+  //   this.triggerMouseEvent('mousemove', goToWidth);
+  //   this.triggerMouseEvent('mouseup', goToWidth);
+  //   return this;
+  // }
+  // hasBeenResized({idx, toWidth}) {
+  //   const hCell = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-HeaderCell')[0];
+  //   let expectedWidth = toWidth.toString() + 'px';
+  //   expect(hCell.getDOMNode().style.width).toBe(expectedWidth);
+  //   return this;
+  // }
+  // triggerMouseEvent (eventName, pageX) {
+  //   var $el = $(window);
+  //   var offset = $el.offset();
+  //   var event = jQuery.Event(eventName, {
+  //     which: 1,
+  //     pageX: pageX,
+  //     pageY: offset.top
+  //   });
+  //   $el.trigger(event);
+  // }
+  
   /* =====
   ASSERTS
   ======== */
