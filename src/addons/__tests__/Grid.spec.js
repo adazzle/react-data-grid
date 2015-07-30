@@ -535,7 +535,22 @@ describe('Grid', () => {
     });
 
 
-  })
+  });
+
+  it("changes to non metric column data should keep original metric information", () => {
+    debugger;
+    var newColumns = columns.slice(0).map(c => {
+      return Object.assign({}, c);
+    });
+    newColumns[0].editable = true;
+    var originalMetrics = Object.assign({}, component.state.columnMetrics);
+    component.setProps({columns : newColumns});
+    var columnMetrics = component.state.columnMetrics;
+    columnMetrics.columns.forEach((m, i) => {
+      expect(m.width).toEqual(originalMetrics.columns[i].width);
+      expect(m.left).toEqual(originalMetrics.columns[i].left);
+    })
+  });
 
 
 

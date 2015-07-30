@@ -67,13 +67,7 @@ module.exports = {
       totalWidth: totalWidth,
       minColumnWidth: metrics.minColumnWidth
     };
-    var updatedMetrics
-    //if state has not yet been set or else if total width has changed then call recalculate
-    if(!this.state || (this.state && this.state.columnMetrics.totalWidth !== totalWidth)){
-        updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
-    } else{
-      updatedMetrics = currentMetrics;
-    }
+    var updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
     return updatedMetrics;
   },
 

@@ -8,7 +8,6 @@
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
   var joinClasses          = require('classnames');
-  var cloneWithProps      = React.addons.cloneWithProps;
   var FakeObjectDataStore = require('./FakeObjectDataStore');
   var developers = ['Conor','Curtis','Danny','Joao','Mo','Rich'];
   var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
