@@ -65,7 +65,6 @@ describe('Header Unit Tests', () => {
   });
 
   it('header row drag start should set resize column state ', () => {
-                  debugger;
       shouldSetResizeState();
     });
 
