@@ -60,7 +60,7 @@
     "jshint-loader": "^0.8.3",
     "jshint-stylish": "^1.0.1",
     "jsx-loader": "^0.12.2",
-    "karma": "^0.12.24",
+    "karma": "^0.13.3",
     "karma-chrome-launcher": "^0.1.4",
     "karma-coverage": "^0.2.6",
     "karma-firefox-launcher": "^0.1.3",
