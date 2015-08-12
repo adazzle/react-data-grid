@@ -132,8 +132,11 @@ var ReactDataGrid = React.createClass({
     }
 
     var toolbar = this.renderToolbar();
+    var gridWidth = this.DOMMetrics.gridWidth();
+    var scrollOffset = 25;
+    var containerWidth = gridWidth  + scrollOffset;
     return(
-      <div className="react-grid-Container">
+      <div className="react-grid-Container" style={{width:containerWidth}}>
       {toolbar}
         <div className="react-grid-Main">
           <BaseGrid
@@ -152,7 +155,7 @@ var ReactDataGrid = React.createClass({
             sortDirection={this.state.sortDirection}
             onSort={this.handleSort}
             minHeight={this.props.minHeight}
-            totalWidth={this.DOMMetrics.gridWidth()}
+            totalWidth={gridWidth}
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}

@@ -61,14 +61,14 @@ var Canvas = React.createClass({
       rows.push(
         this.renderPlaceholder('bottom', (length - displayEnd) * rowHeight));
     }
-
+    var scrollOffset = 15;
     var style = {
       position: 'absolute',
       top: 0,
       left: 0,
       overflowX: 'auto',
       overflowY: 'scroll',
-      width: this.props.totalWidth,
+      width: this.props.totalWidth + scrollOffset,
       height: this.props.height,
       transform: 'translate3d(0, 0, 0)'
     };
