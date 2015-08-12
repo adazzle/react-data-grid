@@ -119,7 +119,7 @@ var ReactDataGrid = React.createClass({
 
   componentDidMount() {
     var scrollOffset = 0;
-    var canvas = this.getDOMNode().querySelector('react-grid-Canvas');
+    var canvas = this.getDOMNode().querySelector('.react-grid-Canvas');
     if(canvas != null){
         scrollOffset = canvas.offsetWidth - canvas.clientWidth;
     }
