@@ -64,7 +64,7 @@ var EditorContainer = React.createClass({
       //return custom column editor or SimpleEditor if none specified
       return React.addons.cloneWithProps(customEditor, editorProps)
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onBlur={this.commit} value={this.getInitialValue()} rowMetaData={this.getRowMetaData()} />;
+      return <SimpleTextEditor ref={'editor'} column={this.props.column} value={this.getInitialValue()} rowMetaData={this.getRowMetaData()} />;
     }
   },
 
