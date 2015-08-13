@@ -202,21 +202,6 @@ var EditorContainer = React.createClass({
     })
   },
 
-  renderStatusIcon(): ?ReactElement{
-    if(this.state.isInvalid === true){
-      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
-    }
-  },
-
-  render(): ?ReactElement{
-  return (
-      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
-      {this.createEditor()}
-      {this.renderStatusIcon()}
-      </div>
-    )
-  },
-
   setCaretAtEndOfInput(){
     var input = this.getInputNode();
     //taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
@@ -255,9 +240,22 @@ var EditorContainer = React.createClass({
         inputNode.select();
       }
     }
+  },
 
+  renderStatusIcon(): ?ReactElement{
+    if(this.state.isInvalid === true){
+      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
+    }
+  },
+
+  render(): ?ReactElement{
+  return (
+      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
+      {this.createEditor()}
+      {this.renderStatusIcon()}
+      </div>
+    )
   }
-
 });
 
 module.exports = EditorContainer;
