@@ -17,7 +17,7 @@ describe('Grid Integration', () => {
     it("Renders 22 rows by default", () => {
       expect(TestUtils.scryRenderedDOMComponentsWithClass(new GridRunner({}).grid, 'react-grid-Row').length).toEqual(22);
     })
-    
+
     it("Renders the grid in under 1500ms", () => {
       //this is obviously a bit of an arbitary number
       //not strictly a test, as (duh) it depends on what machine and js engine (aka browser) you use
@@ -124,6 +124,17 @@ describe('Grid Integration', () => {
         expectToSelect: {row:3,cell:4}
       })
     });
+
+    it('should commit editor changes on blur', () => {
+      new GridRunner({renderIntoBody: true})
+        .clickIntoEditor({ rowIdx: 3, cellIdx: 5})
+        .setValue('Test')
+        .selectCell({ rowIdx: 4, cellIdx: 3 })
+        .selectCell({ rowIdx: 3, cellIdx: 5 })
+        .hasCommitted('Test')
+        .dispose();
+    });
+
     it("Arrow Left doesnt commit your change if you are not at the start of the text", () => {
       new GridRunner({renderIntoBody: true})
         .clickIntoEditor({rowIdx:3, cellIdx:5})
@@ -131,7 +142,7 @@ describe('Grid Integration', () => {
         .setCursor(2)
         .keyDown({key:'ArrowLeft'})
         .isEditable()
-        .dispose();
+        ;//.dispose();
     });
 
     it("Arrow Left does commit your change if you are at the start of the text", () => {
@@ -155,14 +166,14 @@ describe('Grid Integration', () => {
         .dispose();
     });
 
-    it("Arrow Right doesnt commit your change when you are at the end of the text", () => {
+    it("Arrow Right doesnt commit your change when you are not at the end of the text", () => {
       new GridRunner({renderIntoBody: true})
         .clickIntoEditor({rowIdx:3, cellIdx:5})
         .setValue('Test')
         .setCursor(2)
         .keyDown({key:'ArrowRight'})
         .isEditable()
-        .dispose();
+        ;//.dispose();
     });
     it("Arrow Up commits your change", () => {
       new GridRunner({})
