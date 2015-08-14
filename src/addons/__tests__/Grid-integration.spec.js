@@ -142,7 +142,10 @@ describe('Grid Integration', () => {
         .setCursor(2)
         .keyDown({key:'ArrowLeft'})
         .isEditable()
-        ;//.dispose();
+        // Need to escape the editor here since dispose will prompt componentWillUnmount,
+        // committing the text and causing a re-render as the grid unmounts.
+        .keyDown({ key: 'Escape' })
+        .dispose();
     });
 
     it("Arrow Left does commit your change if you are at the start of the text", () => {
@@ -173,7 +176,10 @@ describe('Grid Integration', () => {
         .setCursor(2)
         .keyDown({key:'ArrowRight'})
         .isEditable()
-        ;//.dispose();
+        // Need to escape the editor here since dispose will prompt componentWillUnmount,
+        // committing the text and causing a re-render as the grid unmounts.
+        .keyDown({ key: 'Escape' })
+        .dispose();
     });
     it("Arrow Up commits your change", () => {
       new GridRunner({})
