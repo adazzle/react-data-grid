@@ -135,6 +135,7 @@ var Row = React.createClass({
   setScrollLeft(scrollLeft: number) {
     this.props.columns.forEach( (column, i) => {
       if (column.locked) {
+        if(!this.refs[i]) return;
         this.refs[i].setScrollLeft(scrollLeft);
       }
     });
