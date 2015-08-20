@@ -239,10 +239,9 @@ var Cell = React.createClass({
       // -> and re-adding the class
         cellDOMNode.classList.add(updateCellClass);
       }
-      else {
+      else if (cellDOMNode.className.indexOf(updateCellClass) === -1) {
         // IE9 doesn't support classList, nor (I think) altering element.className
         // without replacing it wholesale.
-        cellDOMNode.className = cellDOMNode.className.replace(updateCellClass, '');
         cellDOMNode.className = cellDOMNode.className + ' ' + updateCellClass;
       }
     }
