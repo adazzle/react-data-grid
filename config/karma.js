@@ -76,8 +76,6 @@ module.exports = function (config) {
     return preprocessors;
   }
 
-console.log(getFiles());
-
   config.set({
 
     basePath: path.join(__dirname, '../'),

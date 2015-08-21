@@ -17,7 +17,7 @@ describe('Grid Integration', () => {
     it("Renders 22 rows by default", () => {
       expect(TestUtils.scryRenderedDOMComponentsWithClass(new GridRunner({}).grid, 'react-grid-Row').length).toEqual(22);
     })
-
+    
     it("Renders the grid in under 1500ms", () => {
       //this is obviously a bit of an arbitary number
       //not strictly a test, as (duh) it depends on what machine and js engine (aka browser) you use
@@ -32,29 +32,6 @@ describe('Grid Integration', () => {
     })
 
   });
-
-  describe('Grid Copy and paste', () => {
-    it("copies a cell", () => {
-      new GridRunner({})
-      .selectCell({cellIdx:0, rowIdx: 1})
-      .copy()
-      .hasCopied({value: 'id_1', cellIdx:0, rowIdx: 1});
-    });
-
-    it("copying a second cell removes the copying style from first cell", () => {
-      let firstCellIdx = 0;
-      let gridRunner = new GridRunner({})
-      .selectCell({cellIdx:firstCellIdx, rowIdx: 1})
-      .copy();
-      let firstCell = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.row,'react-grid-Cell')[firstCellIdx];
-      expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(true);
-
-      gridRunner.selectCell({cellIdx:3, rowIdx:1})
-      .copy();
-      expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(false);
-    });
-  });
-
   describe('Grid Drag', () => {
     it("Shows drag selector", () => {
       new GridRunner({})
@@ -65,10 +42,18 @@ describe('Grid Integration', () => {
         expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'was-dragged-over').length).toEqual(2);
       }})
     });
-    it("Drags a column", () => {
+    it("Drags a column down", () => {
       new GridRunner({})
       .drag({from:0,to:4,col:3})
       .hasDragged({from:0,to:4,col:3,cellKey:'title'})
+    });
+
+    it("Drags a column up", () => {
+      new GridRunner({})
+      .drag({from:4, to:0, col:4})
+      // React-data-grid treats a drag up as a drag down, so need to assert using the
+      // drag down equivalent of our drag event.
+      .hasDragged({ from:0, to:4, col:4, cellKey: 'firstName' });
     });
   });
   // @jpdriver - commented out for now because this was a pain to write an integration test for
