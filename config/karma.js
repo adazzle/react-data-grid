@@ -103,6 +103,7 @@ module.exports = function (config) {
     // the default configuration
     junitReporter: {
       outputFile: 'test/coverage/test-results.xml',
+      outputDir: 'test/coverage',
       suite: ''
     },
 
