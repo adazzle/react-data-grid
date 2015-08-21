@@ -1,6 +1,7 @@
 var React        = require('react');
 var TestUtils    = require('react/lib/ReactTestUtils');
 var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
+var ReactDataGrid = require('../grids/ReactDataGrid');
 
 export default class GridRunner {
   /* =====
@@ -49,6 +50,7 @@ export default class GridRunner {
     TestUtils.Simulate.click(this.cell);
     return this;
   }
+
   clickIntoEditor({cellIdx,rowIdx}) {
     //activate it
     // have to do click then doubleClick as thast what the browser would actually emit
@@ -76,6 +78,11 @@ export default class GridRunner {
   }
   keyDown(ev, element=this.getEditor()) {
     TestUtils.Simulate.keyDown(element,ev);
+    return this;
+  }
+
+  copy() {
+    this.keyDown({keyCode: 67, ctrlKey: true}, this.cell.getDOMNode());
     return this;
   }
 
@@ -140,7 +147,7 @@ export default class GridRunner {
   //   });
   //   $el.trigger(event);
   // }
-  
+
   /* =====
   ASSERTS
   ======== */
@@ -166,6 +173,13 @@ export default class GridRunner {
     //note - idx is 1 based, not 0 based.
     //We make that more sensible by adding 1, so your test cell idx matches up
     return this;
+  }
+  hasCopied({cellIdx, rowIdx, value}) {
+    var baseGrid = TestUtils.findRenderedComponentWithType(this.grid, ReactDataGrid);
+    expect(baseGrid.state.copied.idx).toEqual(cellIdx + 1); // increment by 1 due to checckbox col
+    expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
+    expect(baseGrid.state.textToCopy).toEqual(value);
+    expect(this.cell.getDOMNode().className.indexOf(' copied ') > -1).toBe(true);
   }
   hasDragged({from,to,col,cellKey}) {
     //check onCellDrag called with correct data

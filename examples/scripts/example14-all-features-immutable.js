@@ -50,6 +50,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     {
       key: 'id',
       name: 'ID',
+      editable:true,
       width : 80,
       resizable: true
     },
@@ -204,6 +205,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     render() {
       return (
             <ReactDataGrid
+              ref='reactDataGrid'
               enableCellSelect={true}
               columns={columns}
               rowGetter={this.getRowAt}

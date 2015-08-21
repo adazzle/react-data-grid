@@ -75,6 +75,7 @@ var Cell = React.createClass({
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
     || this.isDraggedCellChanging(nextProps)
+    || this.isCopyCellChanging(nextProps)
     || this.props.isRowSelected !== nextProps.isRowSelected
     || this.isSelected();
   },
@@ -285,6 +286,19 @@ var Cell = React.createClass({
     if(dragged){
       isChanging = (nextDragged && this.props.idx === nextDragged.idx)
       || (dragged && this.props.idx === dragged.idx);
+      return isChanging;
+    }else{
+      return false;
+    }
+  },
+
+  isCopyCellChanging(nextProps: any): boolean{
+    var isChanging;
+    var copied = this.props.cellMetaData.copied;
+    var nextCopied = nextProps.cellMetaData.copied;
+    if(copied){
+      isChanging = ( nextCopied && this.props.idx ===  nextCopied.idx)
+      || (copied && this.props.idx === copied.idx);
       return isChanging;
     }else{
       return false;

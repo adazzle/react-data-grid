@@ -17,7 +17,7 @@ describe('Grid Integration', () => {
     it("Renders 22 rows by default", () => {
       expect(TestUtils.scryRenderedDOMComponentsWithClass(new GridRunner({}).grid, 'react-grid-Row').length).toEqual(22);
     })
-    
+
     it("Renders the grid in under 1500ms", () => {
       //this is obviously a bit of an arbitary number
       //not strictly a test, as (duh) it depends on what machine and js engine (aka browser) you use
@@ -32,6 +32,29 @@ describe('Grid Integration', () => {
     })
 
   });
+
+  ddescribe('Grid Copy and paste', () => {
+    iit("copies a cell", () => {
+      new GridRunner({})
+      .selectCell({cellIdx:0, rowIdx: 1})
+      .copy()
+      .hasCopied({value: 'id_1', cellIdx:0, rowIdx: 1});
+    });
+
+    iit("copying a second cell removes the copying style from first cell", () => {
+      let firstCellIdx = 0;
+      let gridRunner = new GridRunner({})
+      .selectCell({cellIdx:firstCellIdx, rowIdx: 1})
+      .copy();
+      let firstCell = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.row,'react-grid-Cell')[firstCellIdx];
+      expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(true);
+
+      gridRunner.selectCell({cellIdx:3, rowIdx:1})
+      .copy();
+      expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(false);
+    });
+  });
+
   describe('Grid Drag', () => {
     it("Shows drag selector", () => {
       new GridRunner({})

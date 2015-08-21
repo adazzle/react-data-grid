@@ -284,8 +284,7 @@ var ReactDataGrid = React.createClass({
   getSelectedValue(): string{
     var rowIdx = this.state.selected.rowIdx;
     var idx = this.state.selected.idx;
-    var cellOffset = this.props.enableRowSelect ? 1 : 0;
-    var cellKey = this.getColumn(this.props.columns, idx - cellOffset).key;
+    var cellKey = this.getColumn(this.props.columns, idx).key;
     var row = this.props.rowGetter(rowIdx);
     return RowUtils.get(row, cellKey);
   },
