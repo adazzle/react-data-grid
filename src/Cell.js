@@ -53,7 +53,7 @@ var Cell = React.createClass({
 
 
   componentDidUpdate: function(prevProps: any, prevState: any) {
-    this.checkFocus();
+    //this.checkFocus();
     var dragged = this.props.cellMetaData.dragged;
     if(dragged && dragged.complete === true){
       this.props.cellMetaData.handleTerminateDrag();
