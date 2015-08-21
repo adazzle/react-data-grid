@@ -42,10 +42,18 @@ describe('Grid Integration', () => {
         expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'was-dragged-over').length).toEqual(2);
       }})
     });
-    it("Drags a column", () => {
+    it("Drags a column down", () => {
       new GridRunner({})
       .drag({from:0,to:4,col:3})
       .hasDragged({from:0,to:4,col:3,cellKey:'title'})
+    });
+
+    it("Drags a column up", () => {
+      new GridRunner({})
+      .drag({from:4, to:0, col:4})
+      // React-data-grid treats a drag up as a drag down, so need to assert using the
+      // drag down equivalent of our drag event.
+      .hasDragged({ from:0, to:4, col:4, cellKey: 'firstName' });
     });
   });
   // @jpdriver - commented out for now because this was a pain to write an integration test for
