@@ -10,6 +10,7 @@ var RELEASE = !!argv.release;
 var DEBUG = !!argv.debug;
 var BROWSERS = argv.browsers;
 
+
 module.exports = function (config) {
 
   function getPostLoaders(){
@@ -45,19 +46,45 @@ module.exports = function (config) {
     return browsers;
   };
 
+  function getFiles() {
+    var files;
+    if(RELEASE === true) {
+      files = [
+     'node_modules/es5-shim/es5-shim.js',
+     'node_modules/es5-shim/es5-sham.js',
+     'test/FullTests.jsx'
+     ]
+    } else {
+    files = [
+     'node_modules/es5-shim/es5-shim.js',
+     'node_modules/es5-shim/es5-sham.js',
+     'test/unitTests.jsx'
+     ]
+    }
+    return files;
+  }
+
+  function getPreprocessors() {
+    var preprocessors;
+    if(RELEASE === true) {
+      preprocessors = {
+        'test/FullTests.jsx': ['webpack']
+      }
+    } else {
+      preprocessors = {'test/unitTests.jsx': ['webpack']}
+    }
+    return preprocessors;
+  }
+
+console.log(getFiles());
+
   config.set({
 
     basePath: path.join(__dirname, '../'),
 
-    files: [
-    'node_modules/es5-shim/es5-shim.js',
-    'node_modules/es5-shim/es5-sham.js',
-    'test/index.jsx'
-    ],
+    files: getFiles(),
 
-    preprocessors: {
-      'test/index.jsx': ['webpack']
-    },
+    preprocessors: getPreprocessors(),
 
     webpack: {
       module: {
