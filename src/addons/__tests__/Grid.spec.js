@@ -114,7 +114,8 @@ describe('Grid', () => {
       columnFilters : {},
       sortDirection : null,
       sortColumn : null,
-      dragged : null
+      dragged : null,
+      scrollOffset: 0
     });
   });
 
@@ -538,7 +539,6 @@ describe('Grid', () => {
   });
 
   it("changes to non metric column data should keep original metric information", () => {
-    debugger;
     var newColumns = columns.slice(0).map(c => {
       return Object.assign({}, c);
     });

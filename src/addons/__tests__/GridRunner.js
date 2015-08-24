@@ -188,14 +188,16 @@ export default class GridRunner {
     var expected= this.cell.props.value;
     //chek our event returns the right data
     expect(this.handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
-    //and the component
+    // Test all rows to check that value has copied correctly
     const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
-    const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[to],'react-grid-Cell')[col];
-
-    expect(toCell.props.value).toEqual(expected);
-    //and finally the rendered data
-    //use trim as we are reading from the dom so get some whitespace at the end
-    expect(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
+    for (let i = from, end = to; i <= end; i++) {
+      const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[i],'react-grid-Cell')[col];
+      // First the component
+      expect(toCell.props.value).toEqual(expected);
+      // and finally the rendered data
+      // (use trim as we are reading from the dom so get some whitespace at the end)
+      expect(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
+    }
   }
 
 }

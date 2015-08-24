@@ -53,7 +53,7 @@ var Cell = React.createClass({
 
 
   componentDidUpdate: function(prevProps: any, prevState: any) {
-    this.checkFocus();
+    //this.checkFocus();
     var dragged = this.props.cellMetaData.dragged;
     if(dragged && dragged.complete === true){
       this.props.cellMetaData.handleTerminateDrag();
@@ -234,9 +234,17 @@ var Cell = React.createClass({
     var updateCellClass = this.getUpdateCellClass();
     // -> removing the class
     if(updateCellClass != null && updateCellClass != "") {
-      this.getDOMNode().classList.remove(updateCellClass);
+      var cellDOMNode = this.getDOMNode();
+      if (cellDOMNode.classList) {
+        cellDOMNode.classList.remove(updateCellClass);
       // -> and re-adding the class
-      this.getDOMNode().classList.add(updateCellClass);
+        cellDOMNode.classList.add(updateCellClass);
+      }
+      else if (cellDOMNode.className.indexOf(updateCellClass) === -1) {
+        // IE9 doesn't support classList, nor (I think) altering element.className
+        // without replacing it wholesale.
+        cellDOMNode.className = cellDOMNode.className + ' ' + updateCellClass;
+      }
     }
   },
 
