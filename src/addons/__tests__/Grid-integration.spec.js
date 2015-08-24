@@ -17,7 +17,7 @@ describe('Grid Integration', () => {
     it("Renders 22 rows by default", () => {
       expect(TestUtils.scryRenderedDOMComponentsWithClass(new GridRunner({}).grid, 'react-grid-Row').length).toEqual(22);
     })
-    
+
     it("Renders the grid in under 1500ms", () => {
       //this is obviously a bit of an arbitary number
       //not strictly a test, as (duh) it depends on what machine and js engine (aka browser) you use
@@ -32,6 +32,23 @@ describe('Grid Integration', () => {
     })
 
   });
+
+  describe('Navigation', () => {
+
+    
+    it('header columns and cells stay in line', () => {
+        var gridRunner = new GridRunner({renderIntoBody:true})
+        .selectCell({cellIdx:14,rowIdx:0})
+        var firstRow = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid, 'react-grid-Row');
+        var firstRowCells = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid, 'react-grid-Cell');
+        var headerCells = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid,'react-grid-HeaderCell');
+        headerCells.forEach((hCell, i) => {
+          expect(hCell.props.style.left).toEqual(firstRowCells[i].props.style.left);
+        })
+    });
+
+  });
+
   describe('Grid Drag', () => {
     it("Shows drag selector", () => {
       new GridRunner({})
