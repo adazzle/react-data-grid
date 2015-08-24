@@ -14,7 +14,7 @@ var SimpleTextEditor = React.createClass({
 
   propTypes : {
     value : React.PropTypes.any.isRequired,
-    onBlur : React.PropTypes.func.isRequired,
+    onBlur : React.PropTypes.func,
     column :  React.PropTypes.shape(ExcelColumn).isRequired
   },
 

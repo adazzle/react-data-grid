@@ -32,6 +32,8 @@ var EditorContainer = React.createClass({
     height : React.PropTypes.number.isRequired
   },
 
+  changeCommitted: false,
+
   getInitialState(){
     return {isInvalid : false}
   },
@@ -64,7 +66,7 @@ var EditorContainer = React.createClass({
       //return custom column editor or SimpleEditor if none specified
       return React.addons.cloneWithProps(customEditor, editorProps)
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onBlur={this.commit} value={this.getInitialValue()} rowMetaData={this.getRowMetaData()} />;
+      return <SimpleTextEditor ref={'editor'} column={this.props.column} value={this.getInitialValue()} rowMetaData={this.getRowMetaData()} />;
     }
   },
 
@@ -166,6 +168,7 @@ var EditorContainer = React.createClass({
       var cellKey = this.props.column.key;
       this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated : updated, key : opts.key});
     }
+    this.changeCommitted = true;
   },
 
   isNewValueValid(value: string): boolean{
@@ -200,21 +203,6 @@ var EditorContainer = React.createClass({
     return joinClasses({
       'has-error' : this.state.isInvalid === true
     })
-  },
-
-  renderStatusIcon(): ?ReactElement{
-    if(this.state.isInvalid === true){
-      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
-    }
-  },
-
-  render(): ?ReactElement{
-  return (
-      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
-      {this.createEditor()}
-      {this.renderStatusIcon()}
-      </div>
-    )
   },
 
   setCaretAtEndOfInput(){
@@ -255,9 +243,28 @@ var EditorContainer = React.createClass({
         inputNode.select();
       }
     }
+  },
 
+  componentWillUnmount: function() {
+    if (!this.changeCommitted) {
+      this.commit({key:'Enter'});
+    }
+  },
+
+  renderStatusIcon(): ?ReactElement{
+    if(this.state.isInvalid === true){
+      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
+    }
+  },
+
+  render(): ?ReactElement{
+    return (
+      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
+      {this.createEditor()}
+      {this.renderStatusIcon()}
+      </div>
+    )
   }
-
 });
 
 module.exports = EditorContainer;

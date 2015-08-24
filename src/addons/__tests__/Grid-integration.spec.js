@@ -149,6 +149,17 @@ describe('Grid Integration', () => {
         expectToSelect: {row:3,cell:4}
       })
     });
+
+    it('should commit editor changes on blur', () => {
+      new GridRunner({renderIntoBody: true})
+        .clickIntoEditor({ rowIdx: 3, cellIdx: 5})
+        .setValue('Test')
+        .selectCell({ rowIdx: 4, cellIdx: 3 })
+        .selectCell({ rowIdx: 3, cellIdx: 5 })
+        .hasCommitted('Test')
+        .dispose();
+    });
+
     it("Arrow Left doesnt commit your change if you are not at the start of the text", () => {
       new GridRunner({renderIntoBody: true})
         .clickIntoEditor({rowIdx:3, cellIdx:5})
@@ -156,6 +167,9 @@ describe('Grid Integration', () => {
         .setCursor(2)
         .keyDown({key:'ArrowLeft'})
         .isEditable()
+        // Need to escape the editor here since dispose will prompt componentWillUnmount,
+        // committing the text and causing a re-render as the grid unmounts.
+        .keyDown({ key: 'Escape' })
         .dispose();
     });
 
@@ -180,13 +194,16 @@ describe('Grid Integration', () => {
         .dispose();
     });
 
-    it("Arrow Right doesnt commit your change when you are at the end of the text", () => {
+    it("Arrow Right doesnt commit your change when you are not at the end of the text", () => {
       new GridRunner({renderIntoBody: true})
         .clickIntoEditor({rowIdx:3, cellIdx:5})
         .setValue('Test')
         .setCursor(2)
         .keyDown({key:'ArrowRight'})
         .isEditable()
+        // Need to escape the editor here since dispose will prompt componentWillUnmount,
+        // committing the text and causing a re-render as the grid unmounts.
+        .keyDown({ key: 'Escape' })
         .dispose();
     });
     it("Arrow Up commits your change", () => {
