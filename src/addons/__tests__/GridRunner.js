@@ -178,7 +178,6 @@ export default class GridRunner {
     var baseGrid = TestUtils.findRenderedComponentWithType(this.grid, ReactDataGrid);
     expect(baseGrid.state.copied.idx).toEqual(cellIdx + 1); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
-    expect(baseGrid.state.textToCopy).toEqual(value);
     expect(this.cell.getDOMNode().className.indexOf(' copied ') > -1).toBe(true);
   }
   hasDragged({from,to,col,cellKey}) {

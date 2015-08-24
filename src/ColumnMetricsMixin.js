@@ -72,11 +72,10 @@ module.exports = {
   },
 
   getColumn(columns, idx) {
-    var cellOffset = this.props.enableRowSelect ? 1 : 0;
     if(Array.isArray(columns)){
-      return columns[idx - cellOffset];
+      return columns[idx];
     }else if (typeof Immutable !== 'undefined') {
-      return columns.get(idx - cellOffset);
+      return columns.get(idx);
     }
   },
 

@@ -30,6 +30,7 @@ webpackConfig = {
 			commonjs2 : 'react',
 			amd : 'react'
 		},
+		'faker':'faker',
 		"moment" : "moment"
 	},
 	module: {
@@ -38,10 +39,7 @@ webpackConfig = {
 		]
 	},
 	plugins: [
-	new webpack.optimize.DedupePlugin(),
 
-	new webpack.optimize.OccurenceOrderPlugin(),
-	new webpack.optimize.AggressiveMergingPlugin()
 	]
 }
 

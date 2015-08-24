@@ -1,4 +1,5 @@
 'use strict';
+
 import TestUtils from 'react/lib/ReactTestUtils';
 import GridRunner from './GridRunner';
 
@@ -37,13 +38,13 @@ describe('Grid Integration', () => {
   describe('Grid Copy and paste', () => {
     it("copies a cell", () => {
       new GridRunner({})
-      .selectCell({cellIdx:0, rowIdx: 1})
+      .selectCell({cellIdx:1, rowIdx: 1})
       .copy()
-      .hasCopied({value: 'id_1', cellIdx:0, rowIdx: 1});
+      .hasCopied({cellIdx:1, rowIdx: 1});
     });
 
     it("copying a second cell removes the copying style from first cell", () => {
-      let firstCellIdx = 0;
+      let firstCellIdx = 1;
       let gridRunner = new GridRunner({})
       .selectCell({cellIdx:firstCellIdx, rowIdx: 1})
       .copy();
