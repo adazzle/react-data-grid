@@ -36,7 +36,7 @@
     "bootstrap": "^3.2.0",
     "browser-sync": "^2.8.2",
     "del": "^1.1.1",
-    "faker": "^2.1.2",
+    "faker": "^3.0.1",
     "gh-pages": "^0.2.0",
     "gulp": "^3.8.7",
     "gulp-changed": "^0.4.1",
