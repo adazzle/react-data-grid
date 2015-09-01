@@ -301,264 +301,109 @@ input.react-grid-CheckBox {
   height: 40px;
   width: 40px;
 }
-
-/**
- * React Select
- * ============
- * Created by Jed Watson and Joss Mackison for KeystoneJS, http://www.keystonejs.com/
- * https://twitter.com/jedwatson https://twitter.com/jossmackison https://twitter.com/keystonejs
- * MIT License: https://github.com/keystonejs/react-select
-*/
-.Select {
-  position: relative;
-}
-.Select-control {
-  position: relative;
-  overflow: hidden;
-  background-color: #ffffff;
+.react-autocomplete-Autocomplete__search {
+  display: block;
+  width: 100%;
+  height: 36px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555555;
+  background-color: white;
+  background-image: none;
   border: 1px solid #cccccc;
-  border-color: #d9d9d9 #cccccc #b3b3b3;
   border-radius: 4px;
-  box-sizing: border-box;
-  color: #333333;
-  cursor: default;
-  outline: none;
-  padding: 8px 52px 8px 10px;
-  transition: all 200ms ease;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
-.Select-control:hover {
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+.react-autocomplete-Autocomplete__search:focus {
+  border-color: #a21618;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(162, 22, 24, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(162, 22, 24, 0.6);
 }
-.is-searchable.is-open > .Select-control {
-  cursor: text;
+.react-autocomplete-Autocomplete__search::-moz-placeholder {
+  color: #777777;
+  opacity: 1;
 }
-.is-open > .Select-control {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-  background: #ffffff;
-  border-color: #b3b3b3 #cccccc #d9d9d9;
+.react-autocomplete-Autocomplete__search:-ms-input-placeholder {
+  color: #777777;
 }
-.is-open > .Select-control > .Select-arrow {
-  border-color: transparent transparent #999999;
-  border-width: 0 5px 5px;
+.react-autocomplete-Autocomplete__search::-webkit-input-placeholder {
+  color: #777777;
 }
-.is-searchable.is-focused:not(.is-open) > .Select-control {
-  cursor: text;
+.react-autocomplete-Autocomplete__search[disabled],
+.react-autocomplete-Autocomplete__search[readonly],
+fieldset[disabled] .react-autocomplete-Autocomplete__search {
+  cursor: not-allowed;
+  background-color: #eeeeee;
+  opacity: 1;
 }
-.is-focused:not(.is-open) > .Select-control {
-  border-color: #0088cc #0099e6 #0099e6;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 5px -1px rgba(0, 136, 204, 0.5);
-}
-.Select-placeholder {
-  color: #aaaaaa;
-  padding: 8px 52px 8px 10px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: -15px;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.has-value > .Select-control > .Select-placeholder {
-  color: #333333;
-}
-.Select-input > input {
-  cursor: default;
-  background: none transparent;
-  box-shadow: none;
+textarea.react-autocomplete-Autocomplete__search {
   height: auto;
-  border: 0 none;
-  font-family: inherit;
-  font-size: inherit;
-  margin: 0;
-  padding: 0;
-  outline: none;
-  display: inline-block;
-  -webkit-appearance: none;
 }
-.is-focused .Select-input > input {
-  cursor: text;
-}
-.Select-control:not(.is-searchable) > .Select-input {
-  outline: none;
-}
-.Select-loading {
-  -webkit-animation: Select-animation-spin 400ms infinite linear;
-  -o-animation: Select-animation-spin 400ms infinite linear;
-  animation: Select-animation-spin 400ms infinite linear;
-  width: 16px;
-  height: 16px;
-  box-sizing: border-box;
-  border-radius: 50%;
-  border: 2px solid #cccccc;
-  border-right-color: #333333;
-  display: inline-block;
-  position: relative;
-  margin-top: -8px;
-  position: absolute;
-  right: 30px;
-  top: 50%;
-}
-.has-value > .Select-control > .Select-loading {
-  right: 46px;
-}
-.Select-clear {
-  color: #999999;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 16px;
-  padding: 6px 10px;
-  position: absolute;
-  right: 17px;
-  top: 0;
-}
-.Select-clear:hover {
-  color: #c0392b;
-}
-.Select-clear > span {
-  font-size: 1.1em;
-}
-.Select-arrow-zone {
-  content: " ";
-  display: block;
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 30px;
-  cursor: pointer;
-}
-.Select-arrow {
-  border-color: #999999 transparent transparent;
-  border-style: solid;
-  border-width: 5px 5px 0;
-  content: " ";
-  display: block;
-  height: 0;
-  margin-top: -ceil(2.5px);
-  position: absolute;
-  right: 10px;
-  top: 14px;
-  width: 0;
-  cursor: pointer;
-}
-.Select-menu-outer {
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-  border-top-color: #e6e6e6;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-  box-sizing: border-box;
-  margin-top: -1px;
-  max-height: 200px;
+.react-autocomplete-Autocomplete__results {
   position: absolute;
   top: 100%;
-  width: 100%;
+  left: 0;
   z-index: 1000;
-  -webkit-overflow-scrolling: touch;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  text-align: left;
+  background-color: white;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+  min-width: 250px;
+  width: 100%;
+  max-height: 200px;
+  overflow: auto;
 }
-.Select-menu {
-  max-height: 198px;
-  overflow-y: auto;
+.react-autocomplete-Autocomplete__results.pull-right {
+  right: 0;
+  left: auto;
 }
-.Select-option {
-  box-sizing: border-box;
-  color: #666666;
-  cursor: pointer;
+.react-autocomplete-Autocomplete__results .divider {
+  height: 1px;
+  margin: 10px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
+}
+.react-autocomplete-Autocomplete__results > li > a {
   display: block;
-  padding: 8px 10px;
-}
-.Select-option:last-child {
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-.Select-option.is-focused {
-  background-color: #f2f9fc;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.6;
   color: #333333;
+  white-space: nowrap;
 }
-.Select-option.is-disabled {
-  color: #cccccc;
-  cursor: not-allowed;
+.react-autocomplete-Autocomplete__results div.action-button {
+  display: block !important;
+  padding: 4px;
 }
-.Select-noresults {
-  box-sizing: border-box;
-  color: #999999;
-  cursor: default;
-  display: block;
-  padding: 8px 10px;
-}
-.Select.is-multi .Select-control {
-  padding: 2px 52px 2px 3px;
-}
-.Select.is-multi .Select-input {
-  vertical-align: middle;
-  border: 1px solid transparent;
-  margin: 2px;
-  padding: 3px 0;
-}
-.Select-item {
-  background-color: #f2f9fc;
-  border-radius: 2px;
-  border: 1px solid #c9e6f2;
-  color: #0088cc;
-  display: inline-block;
-  font-size: 1em;
-  margin: 2px;
-}
-.Select-item-icon,
-.Select-item-label {
-  display: inline-block;
-  vertical-align: middle;
-}
-.Select-item-label {
-  cursor: default;
-  border-bottom-right-radius: 2px;
-  border-top-right-radius: 2px;
-  padding: 3px 5px;
-}
-.Select-item-label .Select-item-label__a {
-  color: #0088cc;
+.react-autocomplete-Result {
   cursor: pointer;
 }
-.Select-item-icon {
-  cursor: pointer;
-  border-bottom-left-radius: 2px;
-  border-top-left-radius: 2px;
-  border-right: 1px solid #c9e6f2;
-  padding: 2px 5px 4px;
+.react-autocomplete-Result > a {
+  text-decoration: none;
 }
-.Select-item-icon:hover,
-.Select-item-icon:focus {
-  background-color: #ddeff7;
-  color: #0077b3;
+.react-autocomplete-Result--active {
+  color: #262626;
+  background-color: whitesmoke;
 }
-.Select-item-icon:active {
-  background-color: #c9e6f2;
-}
-.Select.is-multi.is-disabled .Select-item {
-  background-color: #f2f2f2;
-  border: 1px solid #d9d9d9;
-  color: #888888;
-}
-.Select.is-multi.is-disabled .Select-item-icon {
-  cursor: not-allowed;
-  border-right: 1px solid #d9d9d9;
-}
-.Select.is-multi.is-disabled .Select-item-icon:hover,
-.Select.is-multi.is-disabled .Select-item-icon:focus,
-.Select.is-multi.is-disabled .Select-item-icon:active {
-  background-color: #f2f2f2;
-}
-@keyframes Select-animation-spin {
-  to {
-    transform: rotate(1turn);
-  }
-}
-@-webkit-keyframes Select-animation-spin {
-  to {
-    -webkit-transform: rotate(1turn);
-  }
+
+.react-grid-Cell.readonly {
+  background-color : black;
 }

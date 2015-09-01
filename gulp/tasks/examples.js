@@ -6,9 +6,8 @@ var gutil     = require("gulp-util");
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var path = require("path");
-Object.assign = require('object-assign');
 
-var webpackConfig = Object.assign({}, require('../../config/webpack'),{
+webpackConfig = {
 	entry: {
 		'index' : './examples/index.js',
 		'shared' : './examples/shared.js',
