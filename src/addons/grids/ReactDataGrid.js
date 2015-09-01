@@ -86,16 +86,15 @@ var ReactDataGrid = React.createClass({
     return {
       enableCellSelect : false,
       tabIndex : -1,
-      ref : "cell",
       rowHeight: 35,
       enableRowSelect : false,
       minHeight : 350
     };
   },
 
-  getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType } {
+  getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType;  } {
     var columnMetrics = this.createColumnMetrics(true);
-    var initialState = {columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null}
+    var initialState = {columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null, scrollOffset: 0}
     if(this.props.enableCellSelect){
       initialState.selected = {rowIdx: 0, idx: 0};
     }else{
@@ -118,6 +117,15 @@ var ReactDataGrid = React.createClass({
     }
   },
 
+  componentDidMount() {
+    var scrollOffset = 0;
+    var canvas = this.getDOMNode().querySelector('.react-grid-Canvas');
+    if(canvas != null){
+        scrollOffset = canvas.offsetWidth - canvas.clientWidth;
+    }
+    this.setState({scrollOffset: scrollOffset});
+  },
+
   render: function(): ?ReactElement {
     var cellMetaData = {
       selected : this.state.selected,
@@ -131,9 +139,14 @@ var ReactDataGrid = React.createClass({
       handleTerminateDrag : this.handleTerminateDrag
     }
 
+
+
     var toolbar = this.renderToolbar();
+    var gridWidth = this.DOMMetrics.gridWidth();
+    var containerWidth = gridWidth  + this.state.scrollOffset;
+
     return(
-      <div className="react-grid-Container">
+      <div className="react-grid-Container" style={{width:containerWidth}}>
       {toolbar}
         <div className="react-grid-Main">
           <BaseGrid
@@ -152,7 +165,7 @@ var ReactDataGrid = React.createClass({
             sortDirection={this.state.sortDirection}
             onSort={this.handleSort}
             minHeight={this.props.minHeight}
-            totalWidth={this.DOMMetrics.gridWidth()}
+            totalWidth={gridWidth}
             onViewportKeydown={this.onKeyDown}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
@@ -284,8 +297,7 @@ var ReactDataGrid = React.createClass({
   getSelectedValue(): string{
     var rowIdx = this.state.selected.rowIdx;
     var idx = this.state.selected.idx;
-    var cellOffset = this.props.enableRowSelect ? 1 : 0;
-    var cellKey = this.getColumn(this.props.columns, idx - cellOffset).key;
+    var cellKey = this.getColumn(this.props.columns, idx).key;
     var row = this.props.rowGetter(rowIdx);
     return RowUtils.get(row, cellKey);
   },
@@ -320,7 +332,7 @@ var ReactDataGrid = React.createClass({
   onCellCommit(commit: RowUpdateEvent){
     var selected = Object.assign({}, this.state.selected);
     selected.active = false;
-    if (commit.keyCode === 'Tab') {
+    if (commit.key === 'Tab') {
       selected.idx += 1;
     }
     var expandedRows = this.state.expandedRows;

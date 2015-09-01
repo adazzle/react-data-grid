@@ -10,8 +10,6 @@
 var React = require('react');
 var KeyboardHandlerMixin = {
 
-  propTypes : {
-  },
 
   onKeyDown(e: SyntheticKeyboardEvent){
     if(this.isCtrlKeyHeldDown(e)){

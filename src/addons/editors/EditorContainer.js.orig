@@ -66,7 +66,11 @@ var EditorContainer = React.createClass({
       //return custom column editor or SimpleEditor if none specified
       return cloneWithProps(customEditor, editorProps)
     }else{
+<<<<<<< HEAD
       return <SimpleTextEditor ref={editorRef} column={this.props.column} onKeyDown={this.onKeyDown} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
+=======
+      return <SimpleTextEditor ref={'editor'} column={this.props.column} value={this.getInitialValue()} rowMetaData={this.getRowMetaData()} />;
+>>>>>>> master
     }
   },
 
@@ -200,6 +204,7 @@ var EditorContainer = React.createClass({
     })
   },
 
+<<<<<<< HEAD
   renderStatusIcon(): ?ReactElement{
     if(this.state.isInvalid === true){
       return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
@@ -208,13 +213,15 @@ var EditorContainer = React.createClass({
 
   render(): ?ReactElement{
   return (
-      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
+      <div className={this.getContainerClass()}>
       {this.createEditor()}
       {this.renderStatusIcon()}
       </div>
     )
   },
 
+=======
+>>>>>>> master
   setCaretAtEndOfInput(){
     var input = this.getInputNode();
     //taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element

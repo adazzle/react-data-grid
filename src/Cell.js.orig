@@ -234,6 +234,14 @@ var Cell = React.createClass({
     var updateCellClass = this.getUpdateCellClass();
     // -> removing the class
     if(updateCellClass != null && updateCellClass != "") {
+<<<<<<< HEAD
+      React.findDOMNode(this).classList.remove(updateCellClass);
+      // -> triggering reflow /* The actual magic */
+      // without this it wouldn't work. Try uncommenting the line and the transition won't be retriggered.
+      React.findDOMNode(this).offsetWidth = element.offsetWidth;
+      // -> and re-adding the class
+      React.findDOMNode(this).classList.add(updateCellClass);
+=======
       var cellDOMNode = this.getDOMNode();
       if (cellDOMNode.classList) {
         cellDOMNode.classList.remove(updateCellClass);
@@ -245,6 +253,7 @@ var Cell = React.createClass({
         // without replacing it wholesale.
         cellDOMNode.className = cellDOMNode.className + ' ' + updateCellClass;
       }
+>>>>>>> master
     }
   },
 

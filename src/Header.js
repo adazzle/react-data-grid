@@ -10,6 +10,7 @@ var React               = require('react');
 var joinClasses          = require('classnames');
 var shallowCloneObject  = require('./shallowCloneObject');
 var ColumnMetrics       = require('./ColumnMetrics');
+var ColumnUtils         = require('./ColumnUtils');
 var HeaderRow           = require('./HeaderRow');
 
 type Column = {
@@ -111,7 +112,7 @@ var Header = React.createClass({
         resizing.columnMetrics.totalWidth = state.columnMetrics.totalWidth;
       }
 
-      resizing.column = resizing.columnMetrics.columns[pos];
+      resizing.column = ColumnUtils.getColumn(resizing.columnMetrics.columns, pos);
       this.setState({resizing});
     }
   },

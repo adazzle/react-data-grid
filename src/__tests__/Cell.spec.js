@@ -96,7 +96,21 @@ describe('Cell Tests', () => {
         dependentVlaues : undefined
       });
     });
+
+    it('should append the update cell class to the dom node if present and cell is updated', () => {
+      var updateClass = 'highlight-cell';
+      testProps.column.getUpdateCellClass = () => updateClass;
+      var cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+      // force update
+      cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
+      var cellHasUpdateClass = cellInstance.getDOMNode().getAttribute('class').indexOf(updateClass) > -1;
+      expect(cellHasUpdateClass).toBe(true);
+    })
+
+
   });
+
+
 
 
 

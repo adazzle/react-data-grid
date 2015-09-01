@@ -25,19 +25,39 @@
     "classnames": "^1.2.0",
     "es5-shim": "^4.0.3",
     "object-assign": "^2.0.0",
+<<<<<<< HEAD
     "react": "~0.13.3",
     "react-select": "~0.5.5",
     "ron-react-autocomplete": "2.0.0"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
+    "babel-core": "~5.5.5",
+    "babel-eslint": "~3.1.11",
+    "babel-loader": "~5.1.4",
+    "babel-plugin-rewire": "0.1.5",
+    "babel-runtime": "~5.5.6",
+=======
+    "react": "~0.12.2",
+    "ron-react-autocomplete": "~1.0.6"
+  },
+  "devDependencies": {
+    "avcoveralls": "^1.0.0",
     "babel-core": "^5.8.20",
     "babel-loader": "^5.1.3",
     "babel-runtime": "^5.8.20",
+>>>>>>> master
     "bootstrap": "^3.2.0",
     "browser-sync": "^2.8.2",
     "del": "^1.1.1",
+<<<<<<< HEAD
+    "eslint": "^0.22.1",
+    "eslint-loader": "^0.12.0",
+    "eslint-plugin-react": "^2.5.0",
+    "faker": "^2.1.2",
+=======
     "faker": "^3.0.1",
+>>>>>>> master
     "gh-pages": "^0.2.0",
     "gulp": "^3.8.7",
     "gulp-changed": "^0.4.1",
@@ -77,8 +97,12 @@
     "mochify": "^0.11.3",
     "moment": "^2.10.6",
     "pretty-hrtime": "^0.2.1",
+<<<<<<< HEAD
+    "react-router": "^0.13.3",
+=======
     "react-highlight": "^0.4.1",
-    "react-router": "^0.11.6",
+    "react-router": "0.11.6",
+>>>>>>> master
     "react-tools": "^0.11.2",
     "rewire": "^2.1.3",
     "rewire-webpack": "^1.0.0",
