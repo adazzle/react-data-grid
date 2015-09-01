@@ -24,7 +24,6 @@ class DropDownEditor extends EditorBase {
   }
 
   render(): ?ReactElement{
-    debugger;
     return (
       <select style={this.getStyle()} defaultValue={this.props.value} onChange={this.onChange} >
         {this.renderOptions()}
