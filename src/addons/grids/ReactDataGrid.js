@@ -332,7 +332,7 @@ var ReactDataGrid = React.createClass({
   onCellCommit(commit: RowUpdateEvent){
     var selected = Object.assign({}, this.state.selected);
     selected.active = false;
-    if (commit.keyCode === 'Tab') {
+    if (commit.key === 'Tab') {
       selected.idx += 1;
     }
     var expandedRows = this.state.expandedRows;

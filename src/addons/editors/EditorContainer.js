@@ -172,8 +172,8 @@ var EditorContainer = React.createClass({
   },
 
   isNewValueValid(value: string): boolean{
-    if(isFunction(this.validate)){
-      var isValid = this.validate(value);
+    if(isFunction(this.getEditor().validate)){
+      var isValid = this.getEditor().validate(value);
       this.setState({isInvalid : !isValid});
       return isValid;
     }else{
@@ -246,7 +246,7 @@ var EditorContainer = React.createClass({
   },
 
   componentWillUnmount: function() {
-    if (!this.changeCommitted) {
+    if (!this.changeCommitted && !this.hasEscapeBeenPressed()) {
       this.commit({key:'Enter'});
     }
   },
@@ -255,6 +255,17 @@ var EditorContainer = React.createClass({
     if(this.state.isInvalid === true){
       return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
     }
+  },
+
+  hasEscapeBeenPressed() {
+    var pressed = false;
+    var escapeKey = 27;
+    if (window.event.keyCode === escapeKey) {
+      pressed = true;
+    } else if (window.event.which === escapeKey){
+      pressed  = true;
+    }
+    return pressed;
   },
 
   render(): ?ReactElement{
