@@ -57,8 +57,12 @@ var AutoCompleteEditor = React.createClass({
   render(): ?ReactElement {
     var label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete  search={this.props.search} ref="autoComplete" label={label} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
+      <ReactAutocomplete  search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
       </div>);
+  },
+
+  handleChange(){
+    this.props.onCommit();
   },
 
   hasResults(): boolean{
