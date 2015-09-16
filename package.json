@@ -36,6 +36,7 @@
     "bootstrap": "^3.2.0",
     "browser-sync": "^2.8.2",
     "del": "^1.1.1",
+    "eslint-plugin-react": "^3.3.2",
     "faker": "^3.0.1",
     "gh-pages": "^0.2.0",
     "gulp": "^3.8.7",
