@@ -3,7 +3,7 @@
  */
 (function(){
   var React       = require('react')
-  var ReactDataGrid       = require('../../src/addons')
+  var ReactDataGrid       = require('../../dist/react-data-grid-with-addons')
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;

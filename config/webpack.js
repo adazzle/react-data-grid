@@ -49,8 +49,5 @@ var config = {
   }]
 }
 
-if(!RELEASE){
-    config.devtool = "#cheap-module-eval-source-map";
-}
 
 module.exports = config;
