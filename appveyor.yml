@@ -7,6 +7,8 @@ environment:
   COVERALLS_SERVICE_JOB_ID  : $(APPVEYOR_BUILD_ID)
   COVERALLS_SERVICE_PULL_REQUEST : $(APPVEYOR_PULL_REQUEST_NUMBER)
 shallow_clone: true
+  access_token:
+    secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
 
 # Install scripts. (runs after repo cloning)
 install:
@@ -33,4 +35,13 @@ build: off
 cache:
   - C:\Users\appveyor\AppData\Roaming\npm\node_modules -> package.json  # global npm modules
   - C:\Users\appveyor\AppData\Roaming\npm-cache -> package.json         # npm cache
-  - node_modules -> package.json                                        # local npm modules
+  - node_modules -> package.json
+
+on_success:
+- ps: >-
+    if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
+       ./ci/publish/publishBranch.ps1
+    }
+    if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
+      ./ci/publish/publishMaster.ps1
+    }
