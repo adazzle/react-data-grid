@@ -62,12 +62,7 @@ var Canvas = React.createClass({
         this.renderPlaceholder('bottom', (length - displayEnd) * rowHeight));
     }
 
-    var scrollbarWidth = 0;
-    if(this.isMounted()){
-      // Get the scrollbar width
-     var canvas = this.getDOMNode();
-     scrollbarWidth  = canvas.offsetWidth - canvas.clientWidth;
-    }
+
 
 
     var style = {
@@ -76,7 +71,7 @@ var Canvas = React.createClass({
       left: 0,
       overflowX: 'auto',
       overflowY: 'scroll',
-      width: this.props.totalWidth + scrollbarWidth,
+      width: this.props.totalWidth + this.state.scrollbarWidth,
       height: this.props.height,
       transform: 'translate3d(0, 0, 0)'
     };
@@ -133,7 +128,8 @@ var Canvas = React.createClass({
     return {
       shouldUpdate: true,
       displayStart: this.props.displayStart,
-      displayEnd: this.props.displayEnd
+      displayEnd: this.props.displayEnd,
+      scrollbarWidth: 0
     };
   },
 
@@ -164,6 +160,7 @@ var Canvas = React.createClass({
     if(nextProps.rowsCount > this.props.rowsCount){
       React.findDOMNode(this).scrollTop =nextProps.rowsCount * this.props.rowHeight;
     }
+    var scrollbarWidth = this.getScrollbarWidth();
     var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart
                         && nextProps.visibleEnd < this.state.displayEnd)
                         || nextProps.rowsCount !== this.props.rowsCount
@@ -177,10 +174,11 @@ var Canvas = React.createClass({
       this.setState({
         shouldUpdate: true,
         displayStart: nextProps.displayStart,
-        displayEnd: nextProps.displayEnd
+        displayEnd: nextProps.displayEnd,
+        scrollbarWidth: scrollbarWidth
       });
     } else {
-      this.setState({shouldUpdate: false});
+      this.setState({shouldUpdate: false, scrollbarWidth: scrollbarWidth});
     }
   },
 
@@ -206,6 +204,14 @@ var Canvas = React.createClass({
       }
       return rows;
     }
+  },
+
+  getScrollbarWidth() {
+    var scrollbarWidth = 0;
+    // Get the scrollbar width
+    var canvas = this.getDOMNode();
+    scrollbarWidth  = canvas.offsetWidth - canvas.clientWidth;
+    return scrollbarWidth;
   },
 
   setScrollLeft(scrollLeft: number) {
