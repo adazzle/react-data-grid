@@ -260,10 +260,12 @@ var EditorContainer = React.createClass({
   hasEscapeBeenPressed() {
     var pressed = false;
     var escapeKey = 27;
-    if (window.event.keyCode === escapeKey) {
-      pressed = true;
-    } else if (window.event.which === escapeKey){
-      pressed  = true;
+    if(window.event) {
+      if (window.event.keyCode === escapeKey) {
+        pressed = true;
+      } else if (window.event.which === escapeKey){
+        pressed  = true;
+      }  
     }
     return pressed;
   },
