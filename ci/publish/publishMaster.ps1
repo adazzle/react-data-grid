@@ -16,7 +16,10 @@ Write-Host "Publishing $($currentVersion) to npm"
 if($?)
 {
   npm publish
-  npm dist-tag add @adazzle/adazzle-ui@"$($currentVersion)" master
+  if($?){
+    Write-Host "regenerating public site and examples"
+    gulp docs
+  }
 }
 
 exit $lastexitcode

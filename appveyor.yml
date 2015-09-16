@@ -6,9 +6,9 @@ environment:
   COVERALLS_GIT_BRANCH : $(APPVEYOR_REPO_BRANCH)
   COVERALLS_SERVICE_JOB_ID  : $(APPVEYOR_BUILD_ID)
   COVERALLS_SERVICE_PULL_REQUEST : $(APPVEYOR_PULL_REQUEST_NUMBER)
-shallow_clone: true
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
+shallow_clone: true
 
 # Install scripts. (runs after repo cloning)
 install:
