@@ -261,12 +261,6 @@ var EditorContainer = React.createClass({
     }
   },
 
-  renderStatusIcon(): ?ReactElement{
-    if(this.state.isInvalid === true){
-      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
-    }
-  },
-
   hasEscapeBeenPressed() {
     var pressed = false;
     var escapeKey = 27;
@@ -278,15 +272,6 @@ var EditorContainer = React.createClass({
       }
     }
     return pressed;
-  },
-
-  render(): ?ReactElement{
-    return (
-      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
-      {this.createEditor()}
-      {this.renderStatusIcon()}
-      </div>
-    )
   }
 });
 
