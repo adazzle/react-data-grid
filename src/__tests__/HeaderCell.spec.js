@@ -47,8 +47,9 @@ describe('Header Cell Tests', () => {
   });
 
   it('will render a custom renderer if supplied', () => {
+    debugger;
     var CustomRenderer = StubComponent('CustomRenderer');
-    headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps} renderer={CustomRenderer}/>);
+    headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps} renderer={<CustomRenderer/>}/>);
     expect(TestUtils.findRenderedComponentWithType(headerCell, CustomRenderer)).toBeDefined();
   });
 

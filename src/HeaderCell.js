@@ -24,6 +24,7 @@ var HeaderCell = React.createClass({
   },
 
   render(): ?ReactElement {
+    debugger;
     var resizeHandle;
     if(this.props.column.resizable){
       resizeHandle = <ResizeHandle
@@ -52,7 +53,7 @@ var HeaderCell = React.createClass({
       return cloneWithProps(this.props.renderer, {column : this.props.column});
     } else {
       var Renderer = this.props.renderer;
-      return this.props.renderer({column: this.props.column});
+      return <Renderer column={this.props.column}/>;
     }
   },
 
@@ -118,5 +119,20 @@ var HeaderCell = React.createClass({
 function simpleCellRenderer(props: {column: {name: string}}): ReactElement {
   return <div className="widget-HeaderCell__value">{props.column.name}</div>;
 }
+
+var SimpleCellFormatter = React.createClass({
+  propTypes : {
+    value :  React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
+  },
+
+  render(): ?ReactElement{
+    return <span>{this.props.value}</span>
+  },
+
+  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+      return nextProps.value !== this.props.value;
+  }
+
+})
 
 module.exports = HeaderCell;

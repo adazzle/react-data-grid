@@ -18,7 +18,6 @@ describe('AutoCompleteEditor integration', () => {
   var commitSpy = jasmine.createSpy();
 
     beforeEach(() => {
-      debugger;
       component = React.render(<AutoCompleteEditor
         onCommit={commitSpy}
         options={fakeOptions}
