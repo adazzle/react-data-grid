@@ -14,7 +14,13 @@ shallow_clone: true
 
 # Install scripts. (runs after repo cloning)
 install:
-  # Get the latest stable version of Node.js or io.js
+  - ps: >-
+      if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
+         Write-Host "Unencrypting npmrc file"
+         nuget install secure-file -ExcludeVersion
+         secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%
+      }
+    # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node 0
   - npm -g install npm@2.11.3
   - set PATH=%APPDATA%\npm;%PATH%
@@ -42,14 +48,8 @@ cache:
 on_success:
 - ps: >-
     if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
-       Write-Host "Unencrypting npmrc file"
-       nuget install secure-file -ExcludeVersion
-       secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%
        ./ci/publish/publishBranch.ps1
     }
     if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
-      Write-Host "Unencrypting npmrc file"
-      nuget install secure-file -ExcludeVersion
-      secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%
       ./ci/publish/publishMaster.ps1
     }
