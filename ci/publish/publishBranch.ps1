@@ -1,6 +1,3 @@
-Write-Host "Unencrypting npmrc file"
-nuget install secure-file -ExcludeVersion
-secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%
 $nextVersion = node ./ci/publish/getNextVersion
 git config --global credential.helper store
 git config --global push.default simple
