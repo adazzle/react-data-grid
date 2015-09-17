@@ -3,14 +3,13 @@
  */
 (function(){
   var React       = require('react')
-  var ReactDataGrid       = require('../../src/addons')
+  var ReactDataGrid       = require('../../dist/react-data-grid-with-addons')
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
   var joinClasses          = require('classnames');
   var FakeObjectDataStore = require('./FakeObjectDataStore');
-  var developers = ['Conor','Curtis','Danny','Joao','Mo','Rich'];
   var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
    { id : 10, title :'Durham'},
    { id : 11, title :'Essex'},
