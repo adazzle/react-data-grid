@@ -1,4 +1,7 @@
 version: 1.0.{build}
+# Fix line endings in Windows. (runs before repo cloning)
+init:
+  - git config --global core.autocrlf input
 environment:
   COVERALLS_REPO_TOKEN: 9RRu36GLfbnk5Ri6Y6FpoZU10CW6dlIfy
   COVERALLS_SERVICE_NAME: appveyor
@@ -10,7 +13,7 @@ environment:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
   npmrc_token:
     secure: tfiuuT9j31t1WJZU47yg5Q==
-shallow_clone: true
+
 
 # Install scripts. (runs after repo cloning)
 install:
