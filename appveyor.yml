@@ -30,7 +30,6 @@ test_script:
   # run tests
   - gulp test --release true
   - gulp coveralls
-  - gulp dist
 
 # Don't actually build.
 build: off
@@ -42,15 +41,9 @@ cache:
 
 on_success:
 - ps: >-
-    #download tool to decrpyt .npmrc.enc file
-    nuget install secure-file -ExcludeVersion
     if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
-      # Unencrypt npmrc file using secure variable - used later for autopublish
-       secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%
        ./ci/publish/publishBranch.ps1
     }
     if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
-      # Unencrypt npmrc file using secure variable - used later for autopublish
-      secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%
       ./ci/publish/publishMaster.ps1
     }
