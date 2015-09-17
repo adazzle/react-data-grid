@@ -203,7 +203,7 @@ var Cell = React.createClass({
 
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
-      this.getDOMNode().focus();
+      React.findDOMNode(this).focus();
     }
   },
 
@@ -251,7 +251,7 @@ var Cell = React.createClass({
   setScrollLeft(scrollLeft: number) {
     var ctrl: any = this; //flow on windows has an outdated react declaration, once that gets updated, we can remove this
     if (ctrl.isMounted()) {
-      var node = this.getDOMNode();
+      var node = React.findDOMNode(this);
       var transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;

@@ -93,7 +93,7 @@ describe('Editor Container Tests', () => {
 
       it('hitting enter should call commit of cellMetaData', () => {
         var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
-        TestUtils.Simulate.keyDown(Editor.getDOMNode(), {key: "Enter"});
+        TestUtils.Simulate.keyDown(Editor.getInputNode(), {key: "Enter"});
         expect(cellMetaData.onCommit).toHaveBeenCalled();
       });
 

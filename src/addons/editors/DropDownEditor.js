@@ -6,30 +6,29 @@
  */
 'use strict';
 
-var React                   = require('react');
-var ExcelColumn             = require('../grids/ExcelColumn');
+var React = require('react');
+var EditorBase = require('./EditorBase');
 
-var DropDownEditor = React.createClass({
+class DropDownEditor extends EditorBase {
 
-  propTypes : {
-    options : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    value : React.PropTypes.string.isRequired,
-    onCommit : React.PropTypes.func.isRequired,
-    column : React.PropTypes.shape(ExcelColumn).isRequired
-  },
+  getInputNode(): HTMLInputElement{
+    return React.findDOMNode(this);
+  }
 
-  getStyle(): {width: string}{
-    return {
-      width : '100%'
-    }
-  },
+  onClick(e: Event){
+    this.getInputNode().focus();
+  }
+
+  onDoubleClick(e: Event){
+    this.getInputNode().focus();
+  }
 
   render(): ?ReactElement{
     return (
-      <select ref="select" style={this.getStyle()} defaultValue={this.props.value} onChange={this.onChange} onClick={this.onClick} onDoubleClick={this.onDoubleClick} >
+      <select style={this.getStyle()} defaultValue={this.props.value} onChange={this.onChange} >
         {this.renderOptions()}
       </select>);
-  },
+  }
 
   renderOptions(): Array<ReactElement>{
     var options = [];
@@ -37,30 +36,13 @@ var DropDownEditor = React.createClass({
       options.push(<option key={name} value={name}  >{name}</option>);
     }, this);
     return options;
-  },
-
-  getValue(): Object{
-    var updated = {};
-    updated[this.props.column.key] = this.refs.select.getDOMNode().value;
-    return updated;
-  },
-
-  getInputNode(): HTMLInputElement{
-    return this.refs.select.getDOMNode();
-  },
-
-  onChange(){
-    this.props.onCommit({key : 'Enter'});
-  },
-
-  onClick(e: Event){
-    this.getInputNode().focus();
-  },
-
-  onDoubleClick(e: Event){
-    this.getInputNode().focus();
   }
 
-});
+};
+
+
+DropDownEditor.propTypes = {
+    options : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+}
 
 module.exports = DropDownEditor;

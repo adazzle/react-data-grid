@@ -180,7 +180,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
     handleAddRow : function(e){
       var newRow = {
-        id: e.newRowIndex,
+        value: e.newRowIndex,
         userStory: '',
         developer : '',
         epic : ''};

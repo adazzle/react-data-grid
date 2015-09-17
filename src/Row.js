@@ -9,7 +9,6 @@
 var React           = require('react');
 var joinClasses      = require('classnames');
 var Cell            = require('./Cell');
-var cloneWithProps  = require('react/lib/cloneWithProps');
 var ColumnMetrics   = require('./ColumnMetrics');
 var ColumnUtilsMixin  = require('./ColumnUtils');
 
@@ -118,8 +117,15 @@ var Row = React.createClass({
     return val;
   },
 
-  getRowData(){
-    return this.props.row.toJSON ? this.props.row.toJSON() : this.props.row;
+  renderCell(props: any): ReactElement {
+    if(typeof this.props.cellRenderer == 'function') {
+      this.props.cellRenderer.call(this, props);
+    }
+    if (React.isValidElement(this.props.cellRenderer)) {
+      return cloneWithProps(this.props.cellRenderer, props);
+    } else {
+      return this.props.cellRenderer(props);
+    }
   },
 
   getDefaultProps(): {cellRenderer: Cell} {

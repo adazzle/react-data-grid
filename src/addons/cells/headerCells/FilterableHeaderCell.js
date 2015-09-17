@@ -27,7 +27,7 @@ var FilterableHeaderCell = React.createClass({
   },
 
   componentDidUpdate(nextProps: any) {
-    var ele = this.getDOMNode();
+    var ele = React.findDOMNode(this);
     if(ele) ele.focus();
   },
 
