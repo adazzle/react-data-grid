@@ -2,7 +2,7 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define(factory);
+		define([], factory);
 	else {
 		var a = factory();
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
@@ -55,65 +55,236 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	var Navbar = __webpack_require__(165);
-	React.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
+	'use strict';
 
+	var Navbar = __webpack_require__(356);
+	React.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
 
 /***/ },
 
-/***/ 165:
+/***/ 356:
 /***/ function(module, exports) {
 
 	/**
 	* @jsx React.DOM
 	*/
-	module.exports = React.createClass({displayName: "exports",
-	  render : function(){
-	    return(
-	      React.createElement("div", {className: "navbar navbar-fixed-top headroom"}, 
-	        React.createElement("div", {className: "container"}, 
-	          React.createElement("div", {className: "navbar-header"}, 
-	          React.createElement("a", {href: "https://github.com/adazzle/react-data-grid/fork"}, React.createElement("img", {className: "github-ribbon", src: "http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png", alt: "Fork me on GitHub"})), 
+	"use strict";
 
-	            React.createElement("button", {type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": ".navbar-collapse"}, React.createElement("span", {className: "icon-bar"}), " ", React.createElement("span", {className: "icon-bar"}), " ", React.createElement("span", {className: "icon-bar"}), " "), 
-	            React.createElement("a", {className: "navbar-brand", href: "https://www.adazzle.com"}, React.createElement("img", {className: "header-logo", src: "assets/images/AdazzleHeaderLogo.png"})), " ", React.createElement("a", {className: "navbar-brand", href: "index.html#"}, "React Data Grid")
-	          ), 
-	          React.createElement("div", {className: "navbar-collapse collapse"}, 
-	            React.createElement("ul", {className: "nav navbar-nav pull-right"}, 
-	              React.createElement("li", {className: "active"}, React.createElement("a", {href: "index.html#"}, "Home")), 
-	              React.createElement("li", {className: "dropdown"}, 
-	                React.createElement("a", {href: "#", className: "dropdown-toggle", "data-toggle": "dropdown"}, "Documentation ", React.createElement("b", {className: "caret"})), 
-	                React.createElement("ul", {className: "dropdown-menu"}, 
-	                  React.createElement("li", null, React.createElement("a", {href: "documentation.html#/gettingstarted"}, "Getting Started")), 
-	                  React.createElement("li", null, React.createElement("a", {href: "documentation.html#/apireference"}, "API Reference"))
+	module.exports = React.createClass({
+	  displayName: "exports",
+
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      { className: "navbar navbar-fixed-top headroom" },
+	      React.createElement(
+	        "div",
+	        { className: "container" },
+	        React.createElement(
+	          "div",
+	          { className: "navbar-header" },
+	          React.createElement(
+	            "a",
+	            { href: "https://github.com/adazzle/react-data-grid/fork" },
+	            React.createElement("img", { className: "github-ribbon", src: "http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png", alt: "Fork me on GitHub" })
+	          ),
+	          React.createElement(
+	            "button",
+	            { type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": ".navbar-collapse" },
+	            React.createElement("span", { className: "icon-bar" }),
+	            " ",
+	            React.createElement("span", { className: "icon-bar" }),
+	            " ",
+	            React.createElement("span", { className: "icon-bar" }),
+	            " "
+	          ),
+	          React.createElement(
+	            "a",
+	            { className: "navbar-brand", href: "https://www.adazzle.com" },
+	            React.createElement("img", { className: "header-logo", src: "assets/images/AdazzleHeaderLogo.png" })
+	          ),
+	          " ",
+	          React.createElement(
+	            "a",
+	            { className: "navbar-brand", href: "index.html#" },
+	            "React Data Grid"
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "navbar-collapse collapse" },
+	          React.createElement(
+	            "ul",
+	            { className: "nav navbar-nav pull-right" },
+	            React.createElement(
+	              "li",
+	              { className: "active" },
+	              React.createElement(
+	                "a",
+	                { href: "index.html#" },
+	                "Home"
+	              )
+	            ),
+	            React.createElement(
+	              "li",
+	              { className: "dropdown" },
+	              React.createElement(
+	                "a",
+	                { href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" },
+	                "Documentation ",
+	                React.createElement("b", { className: "caret" })
+	              ),
+	              React.createElement(
+	                "ul",
+	                { className: "dropdown-menu" },
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "documentation.html#/gettingstarted" },
+	                    "Getting Started"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "documentation.html#/apireference" },
+	                    "API Reference"
+	                  )
 	                )
-	              ), 
-	              React.createElement("li", {className: "dropdown"}, 
-	                React.createElement("a", {href: "#", className: "dropdown-toggle", "data-toggle": "dropdown"}, "Examples ", React.createElement("b", {className: "caret"})), 
-	                  React.createElement("ul", {className: "dropdown-menu"}, 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/basic"}, "Basic Use")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/resizable"}, "Resizable Grid")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/fixed"}, "Frozen Columns")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editable"}, "Editable Grid")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/formatters"}, "Custom Formatters")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/editors"}, "Rich Cell Editors")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/sortable"}, "Sortable Grid")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/million-rows"}, "One Million Rows")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/immutable-data"}, "Immutable Data Grid")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/all-the-features"}, "All-The-Features Grid")), 
-	                    React.createElement("li", null, React.createElement("a", {href: "examples.html#/custom-row-renderer"}, "Custom Row Render")), 
-	                    React.createElement("li", null, 
-	                      React.createElement("a", {href: "examples.html#/all-features-immutable"}, "All-The-Features with Immutable Data")
-	                    )
-	                    )
+	              )
+	            ),
+	            React.createElement(
+	              "li",
+	              { className: "dropdown" },
+	              React.createElement(
+	                "a",
+	                { href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" },
+	                "Examples ",
+	                React.createElement("b", { className: "caret" })
+	              ),
+	              React.createElement(
+	                "ul",
+	                { className: "dropdown-menu" },
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/basic" },
+	                    "Basic Use"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/resizable" },
+	                    "Resizable Grid"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/fixed" },
+	                    "Frozen Columns"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/editable" },
+	                    "Editable Grid"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/formatters" },
+	                    "Custom Formatters"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/editors" },
+	                    "Rich Cell Editors"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/sortable" },
+	                    "Sortable Grid"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/million-rows" },
+	                    "One Million Rows"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/immutable-data" },
+	                    "Immutable Data Grid"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/all-the-features" },
+	                    "All-The-Features Grid"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/custom-row-renderer" },
+	                    "Custom Row Render"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/all-features-immutable" },
+	                    "All-The-Features with Immutable Data"
+	                  )
 	                )
+	              )
 	            )
 	          )
 	        )
-	    ))
+	      )
+	    );
 	  }
-	})
-
+	});
 
 /***/ }
 

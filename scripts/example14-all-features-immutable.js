@@ -9,7 +9,6 @@
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
   var joinClasses          = require('classnames');
-  var cloneWithProps      = React.addons.cloneWithProps;
   var FakeObjectDataStore = require('./FakeObjectDataStore');
   var developers = ['Conor','Curtis','Danny','Joao','Mo','Rich'];
   var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
@@ -51,86 +50,100 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     {
       key: 'id',
       name: 'ID',
+      editable:true,
       width : 80,
+      resizable: true
     },
     {
       key: 'avartar',
       name: 'Avartar',
       width : 60,
       formatter : ReactDataGrid.Formatters.ImageFormatter,
-      resizeable : true
+      resizable : true
     },
     {
       key: 'county',
       name: 'County',
       editor: <AutoCompleteEditor options={counties}/>,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'title',
       name: 'Title',
       editor : <DropDownEditor options={titles}/>,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'firstName',
       name: 'First Name',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'lastName',
       name: 'Last Name',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'email',
       name: 'Email',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'street',
       name: 'Street',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'zipCode',
       name: 'ZipCode',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'date',
       name: 'Date',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'bs',
       name: 'bs',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'catchPhrase',
       name: 'Catch Phrase',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'companyName',
       name: 'Company Name',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     },
     {
       key: 'sentence',
       name: 'Sentence',
       editable:true,
-      width : 200
+      width : 200,
+      resizable: true
     }
   ]);
 
@@ -192,6 +205,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     render() {
       return (
             <ReactDataGrid
+              ref='reactDataGrid'
               enableCellSelect={true}
               columns={columns}
               rowGetter={this.getRowAt}
