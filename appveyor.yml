@@ -16,7 +16,7 @@ shallow_clone: true
 install:
   # Unencrypt npmrc file using secure variable - used later for autopublish
   - nuget install secure-file -ExcludeVersion
-  - secure-file\tools\secure-file -decrypt npmrc.enc -secret %npmrc_token%
+  - secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node 0
   - npm -g install npm@2.11.3
@@ -33,6 +33,7 @@ test_script:
   # run tests
   - gulp test --release true
   - gulp coveralls
+  - gulp dist
 
 # Don't actually build.
 build: off
