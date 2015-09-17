@@ -14,8 +14,10 @@ shallow_clone: true
 
 # Install scripts. (runs after repo cloning)
 install:
-  - nuget install secure-file -ExcludeVersion
-  - ps: if($env:APPVEYOR_REPO_BRANCH -ne 'master') { secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%}
+  - ps: >-
+      if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
+        ./ci/publish/decrypt-npmrc.ps1
+      }
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node 0
   - npm -g install npm@2.11.3
