@@ -32,6 +32,7 @@ install:
   - npm install -g gulp
   - npm install
   - gulp flow-win
+  - gulp dist
 
 # Post-install test scripts.
 test_script:
