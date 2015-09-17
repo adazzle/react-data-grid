@@ -4,7 +4,7 @@ git config --global push.default simple
 Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
 git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
 git config --global user.email $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL
-git checkout $env:APPVEYOR_REPO_BRANCH
+git checkout master
 npm version patch --message "Version Bump [ci skip]"
 $currentVersion = node ./ci/publish/getCurrentVersion
 git commit --amend -m "Version Bump to $($currentVersion) [ci skip]"
