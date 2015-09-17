@@ -1,5 +1,3 @@
-nuget install secure-file -ExcludeVersion
-secure-file\tools\secure-file -decrypt .npmrc.enc -secret %npmrc_token%
 Write-Host "Merging to master. Attempting to bump version"
 git config --global credential.helper store
 git config --global push.default simple
