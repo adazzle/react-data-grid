@@ -8,10 +8,15 @@ environment:
   COVERALLS_SERVICE_PULL_REQUEST : $(APPVEYOR_PULL_REQUEST_NUMBER)
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
+  npmrc_token:
+    secure: tfiuuT9j31t1WJZU47yg5Q==
 shallow_clone: true
 
 # Install scripts. (runs after repo cloning)
 install:
+  # Unencrypt npmrc file using secure variable - used later for autopublish
+  - nuget install secure-file -ExcludeVersion
+  - secure-file\tools\secure-file -decrypt npmrc.enc -secret %npmrc_token%
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node 0
   - npm -g install npm@2.11.3
