@@ -14,8 +14,12 @@ shallow_clone: true
 
 # Install scripts. (runs after repo cloning)
 install:
+  # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
+        ./ci/publish/decrypt-npmrc.ps1
+      }
+      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
         ./ci/publish/decrypt-npmrc.ps1
       }
   # Get the latest stable version of Node.js or io.js
