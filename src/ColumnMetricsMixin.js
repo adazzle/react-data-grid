@@ -30,7 +30,7 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      return React.findDOMNode(this).offsetWidth - 2;
+      return React.findDOMNode(this).parentElement.offsetWidth;
     }
   },
 
