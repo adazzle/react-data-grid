@@ -10,6 +10,7 @@ var shallowCloneObject            = require('./shallowCloneObject');
 var isValidElement = require('react').isValidElement;
 var sameColumn = require('./ColumnComparer');
 var ColumnUtils = require('./ColumnUtils');
+var getScrollbarSize  = require('./getScrollbarSize');
 
 type ColumnMetricsType = {
     columns: Array<Column>;
@@ -35,6 +36,7 @@ function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
     var unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => {
       return w - column.width;
     }, metrics.totalWidth);
+    unallocatedWidth -= getScrollbarSize();
 
     var width = columns.filter(c => c.width).reduce((w, column) => {
       return w + column.width;
