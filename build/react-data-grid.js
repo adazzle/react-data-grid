@@ -1576,7 +1576,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render: function render() {
-	    debugger;
 	    var resizeHandle;
 	    if (this.props.column.resizable) {
 	      resizeHandle = React.createElement(ResizeHandle, {
