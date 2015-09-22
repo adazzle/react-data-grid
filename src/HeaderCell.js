@@ -24,7 +24,6 @@ var HeaderCell = React.createClass({
   },
 
   render(): ?ReactElement {
-    debugger;
     var resizeHandle;
     if(this.props.column.resizable){
       resizeHandle = <ResizeHandle
