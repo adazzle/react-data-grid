@@ -9,8 +9,7 @@ npm version $nextVersion --message "Version Bump : $($nextVersion) [ci skip]"
 Write-Host "Publishing $($nextVersion) to npm"
 if($?)
 {
-  npm publish . --tag $($nextVersion)
-  npm dist-tag add react-data-grid@"$($nextVersion)" $env:APPVEYOR_REPO_BRANCH
+  npm publish . --tag $env:APPVEYOR_REPO_BRANCH
 }
 
 exit $lastexitcode
