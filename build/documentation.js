@@ -991,7 +991,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Object$assign = __webpack_require__(18)['default'];
 
-	var _Object$keys = __webpack_require__(53)['default'];
+	var _Object$keys = __webpack_require__(52)['default'];
 
 	function ToObject(val) {
 		if (val == null) {
@@ -1118,7 +1118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var core = module.exports = {};
+	var core = module.exports = { version: '1.2.0' };
 	if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 /***/ },
@@ -1128,16 +1128,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	// 19.1.2.1 Object.assign(target, source, ...)
 	'use strict';
 
-	var _Symbol = __webpack_require__(25)['default'];
-
 	var _Object$assign = __webpack_require__(18)['default'];
 
-	var toObject = __webpack_require__(52),
-	    IObject = __webpack_require__(40),
-	    enumKeys = __webpack_require__(48);
+	var _Symbol = __webpack_require__(25)['default'];
 
+	var _Object$keys = __webpack_require__(52)['default'];
+
+	var toObject = __webpack_require__(55),
+	    IObject = __webpack_require__(40),
+	    enumKeys = __webpack_require__(48),
+	    has = __webpack_require__(28);
+
+	// should work with symbols and should have deterministic property order (V8 bug)
 	module.exports = __webpack_require__(30)(function () {
-	  return _Symbol() in _Object$assign({}); // Object.assign available and Symbol is native
+	  var a = _Object$assign,
+	      A = {},
+	      B = {},
+	      S = _Symbol(),
+	      K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function (k) {
+	    B[k] = k;
+	  });
+	  return a({}, A)[S] != 7 || _Object$keys(a({}, B)).join('') != K;
 	}) ? function assign(target, source) {
 	  // eslint-disable-line no-unused-vars
 	  var T = toObject(target),
@@ -1149,7 +1162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        length = keys.length,
 	        j = 0,
 	        key;
-	    while (length > j) T[key = keys[j++]] = S[key];
+	    while (length > j) if (has(S, key = keys[j++])) T[key] = S[key];
 	  }
 	  return T;
 	} : _Object$assign;
@@ -1183,6 +1196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    SUPPORT_DESC = __webpack_require__(29),
 	    $def = __webpack_require__(21),
 	    $redef = __webpack_require__(31),
+	    $fails = __webpack_require__(30),
 	    shared = __webpack_require__(34),
 	    setTag = __webpack_require__(35),
 	    uid = __webpack_require__(37),
@@ -1207,23 +1221,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    useNative = typeof $Symbol == 'function',
 	    ObjectProto = Object.prototype;
 
-	var setSymbolDesc = SUPPORT_DESC ? (function () {
-	  // fallback for old Android
-	  try {
-	    return _create(setDesc({}, HIDDEN, {
-	      get: function get() {
-	        return setDesc(this, HIDDEN, { value: false })[HIDDEN];
-	      }
-	    }))[HIDDEN] || setDesc;
-	  } catch (e) {
-	    return function (it, key, D) {
-	      var protoDesc = getDesc(ObjectProto, key);
-	      if (protoDesc) delete ObjectProto[key];
-	      setDesc(it, key, D);
-	      if (protoDesc && it !== ObjectProto) setDesc(ObjectProto, key, protoDesc);
-	    };
-	  }
-	})() : setDesc;
+	// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+	var setSymbolDesc = SUPPORT_DESC && $fails(function () {
+	  return _create(setDesc({}, 'a', {
+	    get: function get() {
+	      return setDesc(this, 'a', { value: 7 }).a;
+	    }
+	  })).a != 7;
+	}) ? function (it, key, D) {
+	  var protoDesc = getDesc(ObjectProto, key);
+	  if (protoDesc) delete ObjectProto[key];
+	  setDesc(it, key, D);
+	  if (protoDesc && it !== ObjectProto) setDesc(ObjectProto, key, protoDesc);
+	} : setDesc;
 
 	var wrap = function wrap(tag) {
 	  var sym = AllSymbols[tag] = _create($Symbol.prototype);
@@ -1311,9 +1321,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	// MS Edge converts symbol values to JSON as {}
-	// WebKit converts symbol values in objects to JSON as null
-	if (!useNative || __webpack_require__(30)(function () {
-	  return JSON.stringify([{ a: $Symbol() }, [$Symbol()]]) != '[{},[null]]';
+	if (!useNative || $fails(function () {
+	  return JSON.stringify([$Symbol()]) != '[null]';
 	})) $redef($Symbol.prototype, 'toJSON', function toJSON() {
 	  if (useNative && isObject(this)) return this;
 	});
@@ -1672,11 +1681,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 49 */
 /***/ function(module, exports) {
 
-	// http://jsperf.com/core-js-isobject
 	'use strict';
 
 	module.exports = function (it) {
-	  return it !== null && (typeof it == 'object' || typeof it == 'function');
+	  return typeof it === 'object' ? it !== null : typeof it === 'function';
 	};
 
 /***/ },
@@ -1703,6 +1711,38 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	module.exports = { "default": __webpack_require__(53), __esModule: true };
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	__webpack_require__(54);
+	module.exports = __webpack_require__(23).Object.keys;
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.14 Object.keys(O)
+	'use strict';
+
+	var toObject = __webpack_require__(55);
+
+	__webpack_require__(47)('keys', function ($keys) {
+	  return function keys(it) {
+	    return $keys(toObject(it));
+	  };
+	});
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// 7.1.13 ToObject(argument)
 	'use strict';
 
@@ -1710,38 +1750,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = function (it) {
 	  return Object(defined(it));
 	};
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	module.exports = { "default": __webpack_require__(54), __esModule: true };
-
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	__webpack_require__(55);
-	module.exports = __webpack_require__(23).Object.keys;
-
-/***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.14 Object.keys(O)
-	'use strict';
-
-	var toObject = __webpack_require__(52);
-
-	__webpack_require__(47)('keys', function ($keys) {
-	  return function keys(it) {
-	    return $keys(toObject(it));
-	  };
-	});
 
 /***/ },
 /* 56 */
@@ -1779,7 +1787,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _Object$keys = __webpack_require__(53)['default'];
+	var _Object$keys = __webpack_require__(52)['default'];
 
 	var Utils = __webpack_require__(59);
 
@@ -1876,7 +1884,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _Object$keys = __webpack_require__(53)['default'];
+	var _Object$keys = __webpack_require__(52)['default'];
 
 	var internals = {};
 
@@ -2001,7 +2009,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _Object$keys = __webpack_require__(53)['default'];
+	var _Object$keys = __webpack_require__(52)['default'];
 
 	var Utils = __webpack_require__(59);
 
