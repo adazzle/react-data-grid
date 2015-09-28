@@ -1,11 +1,10 @@
-# React Data Grid [![React Data Grid chat](https://react-data-grid.herokuapp.com/badge.svg)](https://react-data-grid.herokuapp.com/)
+# React Data Grid 
 [![Build status](https://ci.appveyor.com/api/projects/status/smciktvlkvp6r8w7/branch/master?svg=true)](https://ci.appveyor.com/project/adazzle/react-data-grid/branch/master)[![Coverage Status](https://coveralls.io/repos/adazzle/react-data-grid/badge.svg?branch=master)](https://coveralls.io/r/adazzle/react-data-grid?branch=master) [![npm version](https://badge.fury.io/js/react-data-grid.svg)](http://badge.fury.io/js/react-data-grid) 
 ![npm dependencies](https://david-dm.org/adazzle/react-data-grid.svg)
-<script  src="https://react-data-grid.yourdomain.com/slackin.js?large"></script>
+[![React Data Grid chat](https://react-data-grid.herokuapp.com/badge.svg)](https://react-data-grid.herokuapp.com/)
 
 Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like http://adazzle.github.io/react-data-grid/  
 ![react-data-grid](https://cloud.githubusercontent.com/assets/1432798/7348812/78063bd6-ecec-11e4-89d5-ffd327721cd7.PNG)
-
 
 
 Installation
