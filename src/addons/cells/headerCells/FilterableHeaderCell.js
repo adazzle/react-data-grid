@@ -45,7 +45,8 @@ var FilterableHeaderCell = React.createClass({
     if(this.props.column.filterable === false){
       return <span/>;
     }else{
-      return (<input type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>)
+      var input_key = 'header-filter-' + this.props.column.key;
+      return (<input key={input_key} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>)
     }
 
   }
