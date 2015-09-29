@@ -27,8 +27,13 @@ var FilterableHeaderCell = React.createClass({
   },
 
   componentDidUpdate(nextProps: any) {
+<<<<<<< HEAD
     var ele = this.getDOMNode();
+    if(ele) ele.focus();
+=======
+    var ele = React.findDOMNode(this);
     if(ele) ele.getElementsByTagName('input')[0].focus();
+>>>>>>> e487064... key did not work - fixed this hack I found
   },
 
   render: function(): ?ReactElement {
