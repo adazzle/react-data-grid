@@ -35,7 +35,7 @@ var FilterableHeaderCell = React.createClass({
     return (
       <div>
         <div className="form-group">
-          <this.renderInput/>
+          {this.renderInput()}
         </div>
       </div>
     );
