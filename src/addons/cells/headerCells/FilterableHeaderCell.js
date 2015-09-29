@@ -28,7 +28,11 @@ var FilterableHeaderCell = React.createClass({
 
   componentDidUpdate(nextProps: any) {
     var ele = React.findDOMNode(this);
-    if(ele) ele.getElementsByTagName('input')[0].focus();
+    if(ele) {
+      var input = ele.getElementsByTagName('input')[0];
+      if (input)
+        input.focus();
+    }
   },
 
   render: function(): ?ReactElement {
