@@ -91,7 +91,7 @@ describe('Editor Container Tests', () => {
         document.body.removeChild(container);
       })
 
-      iit('hitting enter should call commit of cellMetaData only once', () => {
+      it('hitting enter should call commit of cellMetaData only once', () => {
         var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
         TestUtils.Simulate.keyDown(Editor.getInputNode(), {key: "Enter"});
         expect(cellMetaData.onCommit).toHaveBeenCalled();
@@ -103,11 +103,7 @@ describe('Editor Container Tests', () => {
       //   TestUtils.Simulate.blur(component.getDOMNode());
       //   expect(cellMetaData.onCommit).toHaveBeenCalled();
       // });
-      //
-      // it('should only commit once', () => {
-      //   var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
-      //   TestUtils.Simulate.keyDown(Editor.getDOMNode(), {key: "Enter"});
-      //   expect(cellMetaData.onCommit.callCount).toEqual(1);
-      // });
+
+
   });
 });
