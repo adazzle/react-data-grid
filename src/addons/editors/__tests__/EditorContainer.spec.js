@@ -68,7 +68,7 @@ describe('Editor Container Tests', () => {
 
   });
 
-  describe("Events", () => {
+  ddescribe("Events", () => {
 
       beforeEach(() => {
         cellMetaData.onCommit = function(value){};
@@ -91,10 +91,11 @@ describe('Editor Container Tests', () => {
         document.body.removeChild(container);
       })
 
-      it('hitting enter should call commit of cellMetaData', () => {
+      iit('hitting enter should call commit of cellMetaData only once', () => {
         var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
         TestUtils.Simulate.keyDown(Editor.getInputNode(), {key: "Enter"});
         expect(cellMetaData.onCommit).toHaveBeenCalled();
+        expect(cellMetaData.onCommit.callCount).toEqual(1);
       });
 
       // it('should commit editor changes on blur', () => {
