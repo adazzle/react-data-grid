@@ -68,7 +68,7 @@ describe('Editor Container Tests', () => {
 
   });
 
-  ddescribe("Events", () => {
+  describe("Events", () => {
 
       beforeEach(() => {
         cellMetaData.onCommit = function(value){};
