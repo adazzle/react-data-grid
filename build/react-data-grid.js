@@ -3947,7 +3947,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //return custom column editor or SimpleEditor if none specified
 	      return cloneWithProps(customEditor, editorProps);
 	    } else {
-	      return React.createElement(SimpleTextEditor, { ref: editorRef, column: this.props.column, onKeyDown: this.onKeyDown, value: this.getInitialValue(), onBlur: this.commit, rowMetaData: this.getRowMetaData() });
+	      return React.createElement(SimpleTextEditor, { ref: editorRef, column: this.props.column, value: this.getInitialValue(), onBlur: this.commit, rowMetaData: this.getRowMetaData() });
 	    }
 	  },
 
@@ -4247,7 +4247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(SimpleTextEditor, [{
 	    key: 'render',
 	    value: function render() {
-	      return React.createElement('input', { ref: 'input', type: 'text', onBlur: this.props.onBlur, className: 'form-control', defaultValue: this.props.value, onKeyDown: this.props.onKeyDown });
+	      return React.createElement('input', { ref: 'input', type: 'text', onBlur: this.props.onBlur, className: 'form-control', defaultValue: this.props.value });
 	    }
 	  }]);
 
