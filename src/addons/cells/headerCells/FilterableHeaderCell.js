@@ -26,15 +26,6 @@ var FilterableHeaderCell = React.createClass({
     this.props.onChange({filterTerm : val, columnKey : this.props.column.key});
   },
 
-  componentDidUpdate(nextProps: any) {
-    var ele = React.findDOMNode(this);
-    if(ele) {
-      var input = ele.getElementsByTagName('input')[0];
-      if (input)
-        input.focus();
-    }
-  },
-
   render: function(): ?ReactElement {
     return (
       <div>
