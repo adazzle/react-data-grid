@@ -26,6 +26,18 @@ var FilterableHeaderCell = React.createClass({
     this.props.onChange({filterTerm : val, columnKey : this.props.column.key});
   },
 
+<<<<<<< HEAD
+  componentDidUpdate(nextProps: any) {
+    var ele = this.getDOMNode();
+    if(ele) {
+     var input = ele.getElementsByTagName('input')[0];
+     if (input)
+       input.focus();
+   }
+  },
+
+=======
+>>>>>>> b596cb1... removed focus hack
   render: function(): ?ReactElement {
     return (
       <div>
