@@ -21,10 +21,10 @@ module.exports = React.createClass({
         </div>
         <br/>
         <h4>Using Distribution Scripts</h4>
-        <p>If you prefer not to use a module system, you can reference the distribution scripts directly in your html pages. First you need to download the scripts. This can be done in 3 ways, either download directly from github source, using npm as above 
+        <p>If you prefer not to use a module system, you can reference the distribution scripts directly in your html pages. First you need to download the scripts. This can be done in 3 ways, either download directly from github source, using npm as above
         </p>
         <div className="code-block js">
-          <pre>&lt;script src="//fb.me/react-0.12.0.js"&gt;&lt;/script&gt;<br/>&lt;script type="text/javascript" src="react-data-grid/dist/react-data-grid.js"&gt;&lt;/script&gt;</pre>
+          <pre>&lt;script src="//fb.me/react-0.13.3.js"&gt;&lt;/script&gt;<br/>&lt;script type="text/javascript" src="react-data-grid/dist/react-data-grid.js"&gt;&lt;/script&gt;</pre>
         </div>
         <p>Or use react-data-grid-with-addons.js to use advanced features</p>
         <div className="code-block js">
