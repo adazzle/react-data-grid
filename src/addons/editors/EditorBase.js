@@ -26,7 +26,7 @@ class EditorBase extends React.Component {
 
   getInputNode(): HTMLInputElement{
     var domNode = React.findDOMNode(this);
-    if(domNode.tagName === 'INPUT'){
+    if(domNode.tagName === 'INPUT' || domNode.tagName === 'TEXTAREA'){
       return domNode;
     }else{
       return domNode.querySelector("input:not([type=hidden])");

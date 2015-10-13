@@ -159,6 +159,14 @@ var EditorContainer = React.createClass({
   commit(args: {key : string}){
     var opts = args || {};
     var updated = this.getEditor().getValue();
+    if (typeof updated === 'string') {
+      if (updated.indexOf('\n')) {
+        updated = updated.replace('\n','');
+      }
+      if (updated.indexOf('\r')) {
+        updated = updated.replace('\r','');
+      }
+    }
     if(this.isNewValueValid(updated)){
       var cellKey = this.props.column.key;
       this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated : updated, key : opts.key});

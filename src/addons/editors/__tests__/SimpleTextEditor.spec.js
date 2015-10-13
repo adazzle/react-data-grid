@@ -25,7 +25,7 @@ describe('SimpleTextEditor', () => {
       });
 
       it('should pass the onBlur fuction down to the input as a prop', () => {
-        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
+        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'textarea');
         expect(Input.props.onBlur()).toBe(true);
       });
 
