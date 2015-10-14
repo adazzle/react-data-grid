@@ -72,7 +72,8 @@ var ReactDataGrid = React.createClass({
     onFilter : React.PropTypes.func,
     onCellCopyPaste : React.PropTypes.func,
     onCellsDragged : React.PropTypes.func,
-    onAddFilter : React.PropTypes.func
+    onAddFilter : React.PropTypes.func,
+    onRowSelect : React.PropTypes.func
   },
 
   mixins: [
@@ -375,6 +376,7 @@ var ReactDataGrid = React.createClass({
       selectedRows.push(allRowsSelected);
     }
     this.setState({selectedRows : selectedRows});
+    this.handleRowSelectPropagation(selectedRows);
   },
 
 // columnKey not used here as this function will select the whole row,
@@ -382,13 +384,26 @@ var ReactDataGrid = React.createClass({
   handleRowSelect(rowIdx: number, columnKey: string, e: Event){
     e.stopPropagation();
     if(this.state.selectedRows != null && this.state.selectedRows.length > 0){
-      var selectedRows = this.state.selectedRows.slice();
-      if(selectedRows[rowIdx] == null || selectedRows[rowIdx] == false){
-        selectedRows[rowIdx] = true;
+      var rowSelectionStates = this.state.selectedRows.slice();
+      if(rowSelectionStates[rowIdx] == null || rowSelectionStates[rowIdx] == false){
+        rowSelectionStates[rowIdx] = true;
       }else{
-        selectedRows[rowIdx] = false;
+        rowSelectionStates[rowIdx] = false;
       }
-      this.setState({selectedRows : selectedRows});
+      this.setState({selectedRows : rowSelectionStates});
+      this.handleRowSelectPropagation(rowSelectionStates);
+    }
+  },
+  handleRowSelectPropagation(rowSelectionStates: Array){
+    if(this.props.onRowSelect !== null){
+      var selectedRows = [];
+      for(var i = 0; i < this.props.rowsCount; i++){
+        if(rowSelectionStates[i] === true){
+          var row = this.props.rowGetter(i);
+          selectedRows.push(row)
+        }
+      }
+      this.props.onRowSelect(selectedRows);
     }
   },
 
