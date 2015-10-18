@@ -1,6 +1,7 @@
 var React        = require('react');
 var TestUtils    = require('react/lib/ReactTestUtils');
 var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
+var ReactDataGrid = require('../grids/ReactDataGrid');
 
 export default class GridRunner {
   /* =====
@@ -49,6 +50,7 @@ export default class GridRunner {
     TestUtils.Simulate.click(this.cell);
     return this;
   }
+
   clickIntoEditor({cellIdx,rowIdx}) {
     //activate it
     // have to do click then doubleClick as thast what the browser would actually emit
@@ -76,6 +78,11 @@ export default class GridRunner {
   }
   keyDown(ev, element=this.getEditor()) {
     TestUtils.Simulate.keyDown(element,ev);
+    return this;
+  }
+
+  copy() {
+    this.keyDown({keyCode: 67, ctrlKey: true}, this.cell.getDOMNode());
     return this;
   }
 
@@ -140,7 +147,7 @@ export default class GridRunner {
   //   });
   //   $el.trigger(event);
   // }
-  
+
   /* =====
   ASSERTS
   ======== */
@@ -167,6 +174,12 @@ export default class GridRunner {
     //We make that more sensible by adding 1, so your test cell idx matches up
     return this;
   }
+  hasCopied({cellIdx, rowIdx, value}) {
+    var baseGrid = this.grid.refs.reactDataGrid;
+    expect(baseGrid.state.copied.idx).toEqual(cellIdx + 1); // increment by 1 due to checckbox col
+    expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
+    expect(this.cell.getDOMNode().className.indexOf(' copied ') > -1).toBe(true);
+  }
   hasDragged({from,to,col,cellKey}) {
     //check onCellDrag called with correct data
     expect(this.handleCellDragSpy).toHaveBeenCalled();
@@ -174,14 +187,16 @@ export default class GridRunner {
     var expected= this.cell.props.value;
     //chek our event returns the right data
     expect(this.handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
-    //and the component
+    // Test all rows to check that value has copied correctly
     const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
-    const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[to],'react-grid-Cell')[col];
-
-    expect(toCell.props.value).toEqual(expected);
-    //and finally the rendered data
-    //use trim as we are reading from the dom so get some whitespace at the end
-    expect(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
+    for (let i = from, end = to; i <= end; i++) {
+      const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[i],'react-grid-Cell')[col];
+      // First the component
+      expect(toCell.props.value).toEqual(expected);
+      // and finally the rendered data
+      // (use trim as we are reading from the dom so get some whitespace at the end)
+      expect(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
+    }
   }
 
 }

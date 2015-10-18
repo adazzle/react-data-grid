@@ -51,6 +51,7 @@ var HeaderCell = React.createClass({
     if (React.isValidElement(this.props.renderer)) {
       return cloneWithProps(this.props.renderer, {column : this.props.column});
     } else {
+      var Renderer = this.props.renderer;
       return this.props.renderer({column: this.props.column});
     }
   },
@@ -66,7 +67,7 @@ var HeaderCell = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    var node = this.getDOMNode();
+    var node = React.findDOMNode(this);
     node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
     node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
   },
@@ -109,7 +110,7 @@ var HeaderCell = React.createClass({
 
   getWidthFromMouseEvent(e: SyntheticMouseEvent): number {
     var right = e.pageX;
-    var left = this.getDOMNode().getBoundingClientRect().left;
+    var left = React.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   }
 });
@@ -117,5 +118,20 @@ var HeaderCell = React.createClass({
 function simpleCellRenderer(props: {column: {name: string}}): ReactElement {
   return <div className="widget-HeaderCell__value">{props.column.name}</div>;
 }
+
+var SimpleCellFormatter = React.createClass({
+  propTypes : {
+    value :  React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
+  },
+
+  render(): ?ReactElement{
+    return <span>{this.props.value}</span>
+  },
+
+  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+      return nextProps.value !== this.props.value;
+  }
+
+})
 
 module.exports = HeaderCell;

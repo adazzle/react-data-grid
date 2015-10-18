@@ -75,6 +75,7 @@ var Cell = React.createClass({
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
     || this.isDraggedCellChanging(nextProps)
+    || this.isCopyCellChanging(nextProps)
     || this.props.isRowSelected !== nextProps.isRowSelected
     || this.isSelected();
   },
@@ -202,7 +203,7 @@ var Cell = React.createClass({
 
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
-      this.getDOMNode().focus();
+      React.findDOMNode(this).focus();
     }
   },
 
@@ -233,16 +234,24 @@ var Cell = React.createClass({
     var updateCellClass = this.getUpdateCellClass();
     // -> removing the class
     if(updateCellClass != null && updateCellClass != "") {
-      this.getDOMNode().classList.remove(updateCellClass);
+      var cellDOMNode = this.getDOMNode();
+      if (cellDOMNode.classList) {
+        cellDOMNode.classList.remove(updateCellClass);
       // -> and re-adding the class
-      this.getDOMNode().classList.add(updateCellClass);
+        cellDOMNode.classList.add(updateCellClass);
+      }
+      else if (cellDOMNode.className.indexOf(updateCellClass) === -1) {
+        // IE9 doesn't support classList, nor (I think) altering element.className
+        // without replacing it wholesale.
+        cellDOMNode.className = cellDOMNode.className + ' ' + updateCellClass;
+      }
     }
   },
 
   setScrollLeft(scrollLeft: number) {
     var ctrl: any = this; //flow on windows has an outdated react declaration, once that gets updated, we can remove this
     if (ctrl.isMounted()) {
-      var node = this.getDOMNode();
+      var node = React.findDOMNode(this);
       var transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;
@@ -285,6 +294,19 @@ var Cell = React.createClass({
     if(dragged){
       isChanging = (nextDragged && this.props.idx === nextDragged.idx)
       || (dragged && this.props.idx === dragged.idx);
+      return isChanging;
+    }else{
+      return false;
+    }
+  },
+
+  isCopyCellChanging(nextProps: any): boolean{
+    var isChanging;
+    var copied = this.props.cellMetaData.copied;
+    var nextCopied = nextProps.cellMetaData.copied;
+    if(copied){
+      isChanging = ( nextCopied && this.props.idx ===  nextCopied.idx)
+      || (copied && this.props.idx === copied.idx);
       return isChanging;
     }else{
       return false;

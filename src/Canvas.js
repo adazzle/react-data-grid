@@ -62,13 +62,16 @@ var Canvas = React.createClass({
         this.renderPlaceholder('bottom', (length - displayEnd) * rowHeight));
     }
 
+
+
+
     var style = {
       position: 'absolute',
       top: 0,
       left: 0,
       overflowX: 'auto',
       overflowY: 'scroll',
-      width: this.props.totalWidth,
+      width: this.props.totalWidth + this.state.scrollbarWidth,
       height: this.props.height,
       transform: 'translate3d(0, 0, 0)'
     };
@@ -125,7 +128,8 @@ var Canvas = React.createClass({
     return {
       shouldUpdate: true,
       displayStart: this.props.displayStart,
-      displayEnd: this.props.displayEnd
+      displayEnd: this.props.displayEnd,
+      scrollbarWidth: 0
     };
   },
 
@@ -154,8 +158,9 @@ var Canvas = React.createClass({
 
   componentWillReceiveProps(nextProps: any) {
     if(nextProps.rowsCount > this.props.rowsCount){
-      this.getDOMNode().scrollTop =nextProps.rowsCount * this.props.rowHeight;
+      React.findDOMNode(this).scrollTop =nextProps.rowsCount * this.props.rowHeight;
     }
+    var scrollbarWidth = this.getScrollbarWidth();
     var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart
                         && nextProps.visibleEnd < this.state.displayEnd)
                         || nextProps.rowsCount !== this.props.rowsCount
@@ -169,10 +174,11 @@ var Canvas = React.createClass({
       this.setState({
         shouldUpdate: true,
         displayStart: nextProps.displayStart,
-        displayEnd: nextProps.displayEnd
+        displayEnd: nextProps.displayEnd,
+        scrollbarWidth: scrollbarWidth
       });
     } else {
-      this.setState({shouldUpdate: false});
+      this.setState({shouldUpdate: false, scrollbarWidth: scrollbarWidth});
     }
   },
 
@@ -200,6 +206,14 @@ var Canvas = React.createClass({
     }
   },
 
+  getScrollbarWidth() {
+    var scrollbarWidth = 0;
+    // Get the scrollbar width
+    var canvas = this.getDOMNode();
+    scrollbarWidth  = canvas.offsetWidth - canvas.clientWidth;
+    return scrollbarWidth;
+  },
+
   setScrollLeft(scrollLeft: number) {
     if (this._currentRowsLength !== 0) {
       if(!this.refs) return;
@@ -212,7 +226,7 @@ var Canvas = React.createClass({
   },
 
   getScroll(): {scrollTop: number; scrollLeft: number} {
-    var {scrollTop, scrollLeft} = this.getDOMNode();
+    var {scrollTop, scrollLeft} = React.findDOMNode(this);
     return {scrollTop, scrollLeft};
   },
 

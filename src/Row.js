@@ -9,7 +9,6 @@
 var React           = require('react');
 var joinClasses      = require('classnames');
 var Cell            = require('./Cell');
-var cloneWithProps  = require('react/lib/cloneWithProps');
 var ColumnMetrics   = require('./ColumnMetrics');
 var ColumnUtilsMixin  = require('./ColumnUtils');
 
@@ -108,19 +107,25 @@ var Row = React.createClass({
 
   getCellValue(key: number | string): any {
     var val;
-    if(key === 'select-row'){
+    if(key === 'select-row') {
       return this.props.isSelected;
     } else if (typeof this.props.row.get === 'function') {
       val = this.props.row.get(key);
+    } else {
+      val = this.props.row[key];
     }
-    else {
-      var val = this.props.row[key];
-    }
-    return !val ? '' : val;
+    return val;
   },
 
-  getRowData(){
-    return this.props.row.toJSON ? this.props.row.toJSON() : this.props.row;
+  renderCell(props: any): ReactElement {
+    if(typeof this.props.cellRenderer == 'function') {
+      this.props.cellRenderer.call(this, props);
+    }
+    if (React.isValidElement(this.props.cellRenderer)) {
+      return cloneWithProps(this.props.cellRenderer, props);
+    } else {
+      return this.props.cellRenderer(props);
+    }
   },
 
   getDefaultProps(): {cellRenderer: Cell} {
@@ -135,6 +140,7 @@ var Row = React.createClass({
   setScrollLeft(scrollLeft: number) {
     this.props.columns.forEach( (column, i) => {
       if (column.locked) {
+        if(!this.refs[i]) return;
         this.refs[i].setScrollLeft(scrollLeft);
       }
     });

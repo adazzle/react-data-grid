@@ -1,4 +1,7 @@
 version: 1.0.{build}
+# Fix line endings in Windows. (runs before repo cloning)
+init:
+  - git config --global core.autocrlf input
 environment:
   COVERALLS_REPO_TOKEN: 9RRu36GLfbnk5Ri6Y6FpoZU10CW6dlIfy
   COVERALLS_SERVICE_NAME: appveyor
@@ -6,10 +9,22 @@ environment:
   COVERALLS_GIT_BRANCH : $(APPVEYOR_REPO_BRANCH)
   COVERALLS_SERVICE_JOB_ID  : $(APPVEYOR_BUILD_ID)
   COVERALLS_SERVICE_PULL_REQUEST : $(APPVEYOR_PULL_REQUEST_NUMBER)
-shallow_clone: true
+  access_token:
+    secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
+  npmrc_token:
+    secure: kGPlcVTOCUp5QVkRPDUGHg==
+
 
 # Install scripts. (runs after repo cloning)
 install:
+  # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
+  - ps: >-
+      if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
+        ./ci/publish/decrypt-npmrc.ps1
+      }
+      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
+        ./ci/publish/decrypt-npmrc.ps1
+      }
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node 0
   - npm -g install npm@2.11.3
@@ -17,6 +32,7 @@ install:
   - npm install -g gulp
   - npm install
   - gulp flow
+  - gulp dist
 
 # Post-install test scripts.
 test_script:
@@ -33,4 +49,13 @@ build: off
 cache:
   - C:\Users\appveyor\AppData\Roaming\npm\node_modules -> package.json  # global npm modules
   - C:\Users\appveyor\AppData\Roaming\npm-cache -> package.json         # npm cache
-  - node_modules -> package.json                                        # local npm modules
+  - node_modules -> package.json
+
+on_success:
+- ps: >-
+    if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
+       ./ci/publish/publishBranch.ps1
+    }
+    if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
+      ./ci/publish/publishMaster.ps1
+    }

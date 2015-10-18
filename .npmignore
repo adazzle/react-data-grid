@@ -9,3 +9,12 @@ examples
 coveralls.yml
 gulpfile.js
 config
+.npmrc
+.npmrc.enc
+appveyor.yml
+bower.json
+CONTRIBUTING.md
+.flowconfig
+secure-file
+flow
+ci

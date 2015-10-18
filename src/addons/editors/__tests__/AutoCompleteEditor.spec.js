@@ -109,36 +109,4 @@ describe('AutoCompleteEditor', () => {
     });
   });
 
-  describe('Integration Tests', () => {
-
-    var commitSpy = jasmine.createSpy();
-
-    beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<AutoCompleteEditor
-        onCommit={commitSpy}
-        options={fakeOptions}
-        label='title'
-        valueParams={fakeParams}
-        column={fakeColumn}
-        resultIdentifier='id'
-        height={30}
-        onKeyDown={fakeCb}/>);
-      });
-
-      describe('Input Events', () => {
-        it('clicking on an item should trigger commit', () => {
-          var Autocomplete = TestUtils.findRenderedComponentWithType(component, AutoCompleteEditor);
-          var textInputEle = Autocomplete.getInputNode();
-          // Click on input
-          TestUtils.Simulate.click(textInputEle);
-          // Click on first result
-          TestUtils.Simulate.click(textInputEle.nextSibling.children[0]);
-          // Expect value to have been committed
-          expect(commitSpy).toHaveBeenCalled();
-          expect(commitSpy.callCount).toEqual(1);
-        });
-
-      });
-  });
-
 });

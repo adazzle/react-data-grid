@@ -103,7 +103,8 @@ describe('Cell Tests', () => {
       var cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       // force update
       cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
-      expect(cellInstance.getDOMNode().classList.contains(updateClass)).toBe(true);
+      var cellHasUpdateClass = cellInstance.getDOMNode().getAttribute('class').indexOf(updateClass) > -1;
+      expect(cellHasUpdateClass).toBe(true);
     })
 
 
