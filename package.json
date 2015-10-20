@@ -78,9 +78,6 @@
     "vinyl-source-stream": "^0.1.1",
     "webpack": "^1.7.2"
   },
-  "optionalDependencies": {
-    "gulp-flowtype": "^0.4.7"
-  },
   "author": "Adazzle",
   "license": "MIT",
   "bugs": {
