@@ -1,6 +1,5 @@
 var RowsDescription = require('./RowsDescription')
 var ColsDescription = require('./ColsDescription')
-var HightlightMixin = require('../assets/js/highlightMixin');
 
 module.exports = React.createClass({
 
