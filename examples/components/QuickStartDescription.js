@@ -3,8 +3,6 @@ var ColsDescription = require('./ColsDescription')
 
 module.exports = React.createClass({
 
-  mixins : [HightlightMixin],
-
   render : function(){
     return(
       <div>
