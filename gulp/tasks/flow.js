@@ -8,23 +8,25 @@ gulp.task('flow', function() {
       if(err) console.log('Error:' + err);
       if(stdout) console.log(stdout);
     });
-  } else {
-    //this is how we WANT to run flow
-    var flow = require('gulp-flowtype');
-
-    gulp.task('flow', function() {
-      return gulp.src('./flow')
-        .pipe(flow({
-            all: false,
-            weak: false,
-            declarations: './flow/libs',
-            killFlow: false,
-            beep: true,
-            generalErrorRegEx: /./
-        }));
-
-    })
   }
+
+  //if you are not on Windows and want to use Flow, run npm install gulp-flowtype and then uncomment these lines
+  //we haven't included gulp-flowtype in our package.json as it pulls the latest version of Flow from Facebook directly and does not download via npm
+  //this may be a security concern for some users
+   
+  //else {
+  //   var flow = require('gulp-flowtype');
+  //
+  //   return gulp.src('./flow')
+  //     .pipe(flow({
+  //         all: false,
+  //         weak: false,
+  //         declarations: './flow/libs',
+  //         killFlow: false,
+  //         beep: true,
+  //         generalErrorRegEx: /./
+  //     }));
+  // }
 });
 
 
