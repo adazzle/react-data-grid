@@ -31,7 +31,7 @@ install:
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g gulp
   - npm install
-  - gulp flow-win
+  - gulp flow
   - gulp dist
 
 # Post-install test scripts.
