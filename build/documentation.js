@@ -403,8 +403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 	'use strict';
 
-	var UNDEFINED = 'undefined';
-	var global = module.exports = typeof window != UNDEFINED && window.Math == Math ? window : typeof self != UNDEFINED && self.Math == Math ? self : Function('return this')();
+	var global = module.exports = typeof window != 'undefined' && window.Math == Math ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
 	if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 /***/ },
@@ -413,7 +412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var core = module.exports = { version: '1.2.1' };
+	var core = module.exports = { version: '1.2.2' };
 	if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 /***/ },
@@ -494,7 +493,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (!isObject(proto) && proto !== null) throw TypeError(proto + ": can't set as prototype!");
 	};
 	module.exports = {
-	  set: _Object$setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line no-proto
+	  set: _Object$setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
 	  (function (test, buggy, set) {
 	    try {
 	      set = __webpack_require__(25)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
@@ -1397,10 +1396,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Object$keys = __webpack_require__(62)['default'];
 
-	var toObject = __webpack_require__(65),
-	    IObject = __webpack_require__(9),
-	    enumKeys = __webpack_require__(59),
-	    has = __webpack_require__(45);
+	var $ = __webpack_require__(6),
+	    toObject = __webpack_require__(65),
+	    IObject = __webpack_require__(9);
 
 	// should work with symbols and should have deterministic property order (V8 bug)
 	module.exports = __webpack_require__(16)(function () {
@@ -1417,15 +1415,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	}) ? function assign(target, source) {
 	  // eslint-disable-line no-unused-vars
 	  var T = toObject(target),
-	      l = arguments.length,
-	      i = 1;
-	  while (l > i) {
-	    var S = IObject(arguments[i++]),
-	        keys = enumKeys(S),
+	      $$ = arguments,
+	      $$len = $$.length,
+	      index = 1,
+	      getKeys = $.getKeys,
+	      getSymbols = $.getSymbols,
+	      isEnum = $.isEnum;
+	  while ($$len > index) {
+	    var S = IObject($$[index++]),
+	        keys = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S),
 	        length = keys.length,
 	        j = 0,
 	        key;
-	    while (length > j) if (has(S, key = keys[j++])) T[key] = S[key];
+	    while (length > j) if (isEnum.call(S, key = keys[j++])) T[key] = S[key];
 	  }
 	  return T;
 	} : _Object$assign;
@@ -1468,7 +1470,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $names = __webpack_require__(55),
 	    enumKeys = __webpack_require__(59),
 	    isArray = __webpack_require__(60),
-	    isObject = __webpack_require__(23),
 	    anObject = __webpack_require__(24),
 	    toIObject = __webpack_require__(8),
 	    createDesc = __webpack_require__(49),
@@ -1569,9 +1570,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var $stringify = function stringify(it) {
 	  var args = [it],
 	      i = 1,
+	      $$ = arguments,
 	      replacer,
 	      $replacer;
-	  while (arguments.length > i) args.push(arguments[i++]);
+	  while ($$.length > i) args.push($$[i++]);
 	  replacer = args[1];
 	  if (typeof replacer == 'function') $replacer = replacer;
 	  if ($replacer || !isArray(replacer)) replacer = function (key, value) {
@@ -1593,7 +1595,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	if (!useNative) {
 	  $Symbol = function Symbol() {
 	    if (isSymbol(this)) throw TypeError('Symbol is not a constructor');
-	    return wrap(uid(arguments[0]));
+	    return wrap(uid(arguments.length > 0 ? arguments[0] : undefined));
 	  };
 	  $redef($Symbol.prototype, 'toString', function toString() {
 	    return this._k;
@@ -1760,12 +1762,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var has = __webpack_require__(45),
-	    hide = __webpack_require__(48),
+	var def = __webpack_require__(6).setDesc,
+	    has = __webpack_require__(45),
 	    TAG = __webpack_require__(52)('toStringTag');
 
 	module.exports = function (it, tag, stat) {
-	  if (it && !has(it = stat ? it : it.prototype, TAG)) hide(it, TAG, tag);
+	  if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
 	};
 
 /***/ },

@@ -119,6 +119,8 @@ var isPrimitive = function isPrimitive(input) {
     return input === null || (type !== 'object' && type !== 'function');
 };
 
+var isActualNaN = $Number.isNaN || function (x) { return x !== x; };
+
 var ES = {
     // ES5 9.4
     // http://es5.github.com/#x9.4
@@ -126,7 +128,7 @@ var ES = {
     /* replaceable with https://npmjs.com/package/es-abstract ES5.ToInteger */
     ToInteger: function ToInteger(num) {
         var n = +num;
-        if (n !== n) { // isNaN
+        if (isActualNaN(n)) {
             n = 0;
         } else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0)) {
             n = (n > 0 || -1) * Math.floor(Math.abs(n));
@@ -411,10 +413,10 @@ defineProperties(ArrayPrototype, {
             if (i in self) {
                 // Invoke the callback function with call, passing arguments:
                 // context, property value, property key, thisArg object
-                if (typeof T !== 'undefined') {
-                    callbackfn.call(T, self[i], i, object);
-                } else {
+                if (typeof T === 'undefined') {
                     callbackfn(self[i], i, object);
+                } else {
+                    callbackfn.call(T, self[i], i, object);
                 }
             }
         }
@@ -442,10 +444,10 @@ defineProperties(ArrayPrototype, {
 
         for (var i = 0; i < length; i++) {
             if (i in self) {
-                if (typeof T !== 'undefined') {
-                    result[i] = callbackfn.call(T, self[i], i, object);
-                } else {
+                if (typeof T === 'undefined') {
                     result[i] = callbackfn(self[i], i, object);
+                } else {
+                    result[i] = callbackfn.call(T, self[i], i, object);
                 }
             }
         }
@@ -844,6 +846,7 @@ var blacklistedKeys = {
     $console: true,
     $parent: true,
     $self: true,
+    $frame: true,
     $frames: true,
     $frameElement: true,
     $webkitIndexedDB: true,
@@ -1076,6 +1079,9 @@ if (doesNotParseY2KNewYear || acceptsInvalidDates || !supportsExtendedYears) {
     // an alternate object for the context.
     /* global Date: true */
     /* eslint-disable no-undef */
+    var maxSafeUnsigned32Bit = Math.pow(2, 31) - 1;
+    var secondsWithinMaxSafeUnsigned32Bit = Math.floor(maxSafeUnsigned32Bit / 1e3);
+    var hasSafariSignedIntBug = isActualNaN(new Date(1970, 0, 1, 0, 0, 0, maxSafeUnsigned32Bit + 1).getTime());
     Date = (function (NativeDate) {
     /* eslint-enable no-undef */
         // Date.length === 7
@@ -1083,13 +1089,22 @@ if (doesNotParseY2KNewYear || acceptsInvalidDates || !supportsExtendedYears) {
             var length = arguments.length;
             var date;
             if (this instanceof NativeDate) {
+                var seconds = s;
+                var millis = ms;
+                if (hasSafariSignedIntBug && length >= 7 && ms > maxSafeUnsigned32Bit) {
+                    // work around a Safari 8/9 bug where it treats the seconds as signed
+                    var msToShift = Math.floor(ms / maxSafeUnsigned32Bit) * maxSafeUnsigned32Bit;
+                    var sToShift = Math.floor(msToShift / 1e3);
+                    seconds += sToShift;
+                    millis -= sToShift * 1e3;
+                }
                 date = length === 1 && $String(Y) === Y ? // isString(Y)
                     // We explicitly pass it through parse:
                     new NativeDate(DateShim.parse(Y)) :
                     // We have to manually make calls depending on argument
                     // length here
-                    length >= 7 ? new NativeDate(Y, M, D, h, m, s, ms) :
-                    length >= 6 ? new NativeDate(Y, M, D, h, m, s) :
+                    length >= 7 ? new NativeDate(Y, M, D, h, m, seconds, millis) :
+                    length >= 6 ? new NativeDate(Y, M, D, h, m, seconds) :
                     length >= 5 ? new NativeDate(Y, M, D, h, m) :
                     length >= 4 ? new NativeDate(Y, M, D, h) :
                     length >= 3 ? new NativeDate(Y, M, D) :
@@ -1143,7 +1158,16 @@ if (doesNotParseY2KNewYear || acceptsInvalidDates || !supportsExtendedYears) {
         };
 
         var toUTC = function toUTC(t) {
-            return $Number(new NativeDate(1970, 0, 1, 0, 0, 0, t));
+            var s = 0;
+            var ms = t;
+            if (hasSafariSignedIntBug && ms > maxSafeUnsigned32Bit) {
+                // work around a Safari 8/9 bug where it treats the seconds as signed
+                var msToShift = Math.floor(ms / maxSafeUnsigned32Bit) * maxSafeUnsigned32Bit;
+                var sToShift = Math.floor(msToShift / 1e3);
+                s += sToShift;
+                ms -= sToShift * 1e3;
+            }
+            return $Number(new NativeDate(1970, 0, 1, 0, 0, s, ms));
         };
 
         // Copy any custom methods a 3rd party library may have added
@@ -1303,7 +1327,7 @@ defineProperties(NumberPrototype, {
 
         // Test for NaN and round fractionDigits down
         f = $Number(fractionDigits);
-        f = f !== f ? 0 : Math.floor(f);
+        f = isActualNaN(f) ? 0 : Math.floor(f);
 
         if (f < 0 || f > 20) {
             throw new RangeError('Number.toFixed called with invalid number of decimals');
@@ -1311,8 +1335,7 @@ defineProperties(NumberPrototype, {
 
         x = $Number(this);
 
-        // Test for NaN
-        if (x !== x) {
+        if (isActualNaN(x)) {
             return 'NaN';
         }
 
