@@ -8,9 +8,9 @@
 
 var React             = require('react');
 var Canvas            = require('./Canvas');
-var PropTypes            = React.PropTypes;
+var PropTypes         = React.PropTypes;
 
-var ViewportScroll      = require('./ViewportScrollMixin');
+var ViewportScroll    = require('./ViewportScrollMixin');
 
 
 
@@ -25,6 +25,7 @@ var Viewport = React.createClass({
     selectedRows: PropTypes.array,
     expandedRows: PropTypes.array,
     rowRenderer: PropTypes.func,
+    debounceRowRequestWait: PropTypes.number,
     rowsCount: PropTypes.number.isRequired,
     rowHeight: PropTypes.number.isRequired,
     onRows: PropTypes.func,
@@ -55,6 +56,7 @@ var Viewport = React.createClass({
           expandedRows={this.props.expandedRows}
           columns={this.props.columnMetrics.columns}
           rowRenderer={this.props.rowRenderer}
+          debounceRowRequestWait={this.props.debounceRowRequestWait}
           visibleStart={this.state.visibleStart}
           visibleEnd={this.state.visibleEnd}
           displayStart={this.state.displayStart}
@@ -64,6 +66,7 @@ var Viewport = React.createClass({
           rowHeight={this.props.rowHeight}
           onScroll={this.onScroll}
           onRows={this.props.onRows}
+          loadingRowRenderer={this.props.loadingRowRenderer}
           />
       </div>
     );

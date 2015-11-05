@@ -4,6 +4,7 @@
  */
 "use strict";
 
+var _               = require('lodash');
 var React           = require('react');
 var joinClasses     = require('classnames');
 var PropTypes       = React.PropTypes;
@@ -20,6 +21,7 @@ var Canvas = React.createClass({
   propTypes: {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     rowHeight: PropTypes.number.isRequired,
+    debounceRowRequestWait: PropTypes.number,
     height: PropTypes.number.isRequired,
     displayStart: PropTypes.number.isRequired,
     displayEnd: PropTypes.number.isRequired,
@@ -38,19 +40,34 @@ var Canvas = React.createClass({
     var rowHeight = this.props.rowHeight;
     var length = this.props.rowsCount;
 
-    var rows = this.getRows(displayStart, displayEnd)
-        .map((row, idx) => this.renderRow({
-          key: displayStart + idx,
-          ref: idx,
-          idx: displayStart + idx,
-          row: row,
-          height: rowHeight,
-          columns: this.props.columns,
-          isSelected : this.isRowSelected(displayStart + idx),
-          expandedRows : this.props.expandedRows,
-          cellMetaData : this.props.cellMetaData
-        }));
+    var loadingRowsAbove = [];
+    var loadingRowsBelow = [];
+    if(this.state.rows.length > 0) {
+      const firstRowPosition = _.first(this.state.rows).position;
+      const lastRowPosition = _.min([_.last(this.state.rows).position, length]);
+      loadingRowsAbove = this.renderLoadingRows(firstRowPosition, displayStart, rowHeight);
+      loadingRowsBelow = this.renderLoadingRows(displayEnd, (lastRowPosition + 1), rowHeight);
+    }
 
+    var populatedRows = this.state.rows.reduce((visibleRows, {position, row}, idx) => {
+      if (position < displayStart || position > displayEnd) return visibleRows;
+
+      visibleRows.push(this.renderRow({
+        key: position,
+        ref: idx,
+        idx: position,
+        row: row,
+        height: rowHeight,
+        columns: this.props.columns,
+        isSelected : this.isRowSelected(position),
+        expandedRows : this.props.expandedRows,
+        cellMetaData : this.props.cellMetaData
+      }));
+
+      return visibleRows;
+    }, []);
+
+    var rows = loadingRowsAbove.concat(populatedRows, loadingRowsBelow);
     this._currentRowsLength = rows.length;
 
     if (displayStart > 0) {
@@ -62,9 +79,6 @@ var Canvas = React.createClass({
         this.renderPlaceholder('bottom', (length - displayEnd) * rowHeight));
     }
 
-
-
-
     var style = {
       position: 'absolute',
       top: 0,
@@ -75,7 +89,6 @@ var Canvas = React.createClass({
       height: this.props.height,
       transform: 'translate3d(0, 0, 0)'
     };
-
 
     return (
       <div
@@ -99,12 +112,27 @@ var Canvas = React.createClass({
     }
   },
 
+  renderLoadingRow(position, rowHeight) {
+    const LoadingRow = this.props.loadingRowRenderer;
+    if (!_.isUndefined(LoadingRow)) {
+      return <LoadingRow height={rowHeight} key={position} idx={position} />;
+    }
+    return <div style={{height: rowHeight}} key={position} />;
+  },
+
+  renderLoadingRows(startPosition, basePosition, rowHeight) {
+    const count = (startPosition - basePosition);
+    return _.map(_.range(0, count), (idx) => {
+      return this.renderLoadingRow((basePosition + idx), rowHeight)
+    });
+  },
+
   renderPlaceholder(key: string, height: number): ?ReactElement {
     return (
       <div key={key} style={{height: height}}>
         {this.props.columns.map(
           (column, idx) => <div style={{width: column.width}} key={idx} />
-		)}
+        )}
       </div>
     );
   },
@@ -112,7 +140,8 @@ var Canvas = React.createClass({
   getDefaultProps() {
     return {
       rowRenderer: Row,
-      onRows: emptyFunction
+      onRows: emptyFunction,
+      debounceRowRequestWait: 50
     };
   },
 
@@ -129,7 +158,8 @@ var Canvas = React.createClass({
       shouldUpdate: true,
       displayStart: this.props.displayStart,
       displayEnd: this.props.displayEnd,
-      scrollbarWidth: 0
+      scrollbarWidth: 0,
+      rows: []
     };
   },
 
@@ -160,6 +190,8 @@ var Canvas = React.createClass({
     if(nextProps.rowsCount > this.props.rowsCount){
       React.findDOMNode(this).scrollTop =nextProps.rowsCount * this.props.rowHeight;
     }
+
+    this.debounceRowRequest();
     var scrollbarWidth = this.getScrollbarWidth();
     var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart
                         && nextProps.visibleEnd < this.state.displayEnd)
@@ -183,6 +215,7 @@ var Canvas = React.createClass({
   },
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+    if (!_.isEqual(nextProps, this.props)) return true;
     return !nextState || nextState.shouldUpdate;
   },
 
@@ -193,14 +226,37 @@ var Canvas = React.createClass({
     }
   },
 
+  debounceRowRequest() {
+    if (this.rowUpdateTimer) clearTimeout(this.rowUpdateTimer);
+
+    this.rowUpdateTimer = setTimeout(() => {
+      if (!this.isMounted()) return;
+      var newRows = this.getRows(this.state.displayStart, this.state.displayEnd);
+
+      var isDifferent = _.some(newRows, ({row, position}, index) => {
+        const stateRow = this.state.rows[index];
+        if (_.isUndefined(stateRow)) return true;
+        if (position !== stateRow.position) return true;
+        if (_.isFunction(row.equals)) return !row.equals(stateRow.row);
+        if (_.isFunction(stateRow.row.equals)) return !stateRow.row.equals(row);
+        return !_.isEqual(row, stateRow.row);
+      });
+
+      if (!isDifferent) return;
+      this.setState({rows: newRows, shouldUpdate: true});
+    }, this.props.debounceRowRequestWait);
+  },
+
   getRows(displayStart: number, displayEnd: number): Array<any> {
     this._currentRowsRange = {start: displayStart, end: displayEnd};
     if (Array.isArray(this.props.rowGetter)) {
-      return this.props.rowGetter.slice(displayStart, displayEnd);
+      return this.props.rowGetter.slice(displayStart, displayEnd).map((row, idx) => {
+        return {row, position: (displayStart + idx)};
+      });
     } else {
       var rows = [];
       for (var i = displayStart; i < displayEnd; i++){
-        rows.push(this.props.rowGetter(i));
+        rows.push({row: this.props.rowGetter(i), position: i});
       }
       return rows;
     }
