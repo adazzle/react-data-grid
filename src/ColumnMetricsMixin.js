@@ -45,7 +45,7 @@ module.exports = {
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
-        var columnMetrics = this.createColumnMetrics();
+        var columnMetrics = this.createColumnMetrics(nextProps);
         this.setState({columnMetrics: columnMetrics});
       }
     }
@@ -95,9 +95,9 @@ module.exports = {
     this.setState({columnMetrics});
   },
 
-  createColumnMetrics(initialRun){
-    var gridColumns = this.setupGridColumns();
-    return this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth}, initialRun);
+  createColumnMetrics(props = this.props){
+    var gridColumns = this.setupGridColumns(props);
+    return this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth});
   },
 
   onColumnResize(index: number, width: number) {
