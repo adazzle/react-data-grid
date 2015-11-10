@@ -176,7 +176,7 @@ export default class GridRunner {
   }
   hasCopied({cellIdx, rowIdx, value}) {
     var baseGrid = this.grid.refs.reactDataGrid;
-    expect(baseGrid.state.copied.idx).toEqual(cellIdx + 1); // increment by 1 due to checckbox col
+    expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
     expect(this.cell.getDOMNode().className.indexOf(' copied ') > -1).toBe(true);
   }

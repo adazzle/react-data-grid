@@ -297,6 +297,7 @@ describe('Grid', () => {
 
       beforeEach(() => {
         columns[1].editable = true;
+        component = TestUtils.renderIntoDocument(<Grid {...testProps} />);
       });
 
 
@@ -385,6 +386,7 @@ describe('Grid', () => {
     describe("When column is not editable", () => {
       beforeEach(() => {
         columns[1].editable = false;
+        component = TestUtils.renderIntoDocument(<Grid {...testProps} />);
       });
 
       it("double click on grid should not activate current selected cell", () => {

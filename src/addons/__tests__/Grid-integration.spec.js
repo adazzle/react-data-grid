@@ -36,8 +36,8 @@ describe('Grid Integration', () => {
   });
 
 
-  describe('Grid Copy and paste', () => {
-    it("copies a cell", () => {
+  ddescribe('Grid Copy and paste', () => {
+    iit("copies a cell", () => {
       new GridRunner({})
       .selectCell({cellIdx:1, rowIdx: 1})
       .copy()
