@@ -46,7 +46,7 @@ var Row = React.createClass({
   render(): ?ReactElement {
     var className = joinClasses(
       'react-grid-Row',
-      'react-grid-Row--' + this.props.idx % 2 === 0 ? 'even' : 'odd'
+      `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`
     );
 
     var style = {
@@ -73,7 +73,7 @@ var Row = React.createClass({
       var CellRenderer = this.props.cellRenderer;
       var cell = <CellRenderer
                     ref={i}
-                    key={i}
+                    key={`${column.key}-${i}`}
                     idx={i}
                     rowIdx={this.props.idx}
                     value={this.getCellValue(column.key || i)}
@@ -167,13 +167,13 @@ var Row = React.createClass({
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     return !(ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
-    this.doesRowContainSelectedCell(this.props)          ||
-    this.doesRowContainSelectedCell(nextProps)           ||
-    this.willRowBeDraggedOver(nextProps)                 ||
-    nextProps.row !== this.props.row                     ||
-    this.hasRowBeenCopied()                              ||
-    this.props.isSelected !== nextProps.isSelected       ||
-    nextProps.height !== this.props.height;
+           this.doesRowContainSelectedCell(this.props)                                                   ||
+           this.doesRowContainSelectedCell(nextProps)                                                    ||
+           this.willRowBeDraggedOver(nextProps)                                                          ||
+           nextProps.row !== this.props.row                                                              ||
+           this.hasRowBeenCopied()                                                                       ||
+           this.props.isSelected !== nextProps.isSelected                                                ||
+           nextProps.height !== this.props.height;
   },
 
   handleDragEnter(){
