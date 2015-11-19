@@ -77,7 +77,8 @@ var Cell = React.createClass({
     || this.isDraggedCellChanging(nextProps)
     || this.isCopyCellChanging(nextProps)
     || this.props.isRowSelected !== nextProps.isRowSelected
-    || this.isSelected();
+    || this.isSelected()
+    || this.props.value !== nextProps.value;
   },
 
   getStyle(): {position:string; width: number; height: number; left: number} {
