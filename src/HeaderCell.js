@@ -42,7 +42,7 @@ var HeaderCell = React.createClass({
     return (
       <div className={className} style={this.getStyle()}>
         {cell}
-        {{resizeHandle}}
+        {resizeHandle}
       </div>
     );
   },
