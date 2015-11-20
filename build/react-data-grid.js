@@ -1673,7 +1673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'div',
 	      { className: className, style: this.getStyle() },
 	      cell,
-	      { resizeHandle: resizeHandle }
+	      resizeHandle
 	    );
 	  },
 
@@ -2970,9 +2970,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render: function render() {
+	    var className = joinClasses({
+	      'react-grid-HeaderCell-sortable': true,
+	      'react-grid-HeaderCell-sortable--ascending': this.props.sortDirection === 'ASC',
+	      'react-grid-HeaderCell-sortable--descending': this.props.sortDirection === 'DESC'
+	    });
+
 	    return React.createElement(
 	      'div',
-	      {
+	      { className: className,
 	        onClick: this.onClick,
 	        style: { cursor: 'pointer' } },
 	      this.props.column.name,
