@@ -4737,7 +4737,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    if (this.props.rowHeight !== nextProps.rowHeight) {
+	    if (this.props.rowHeight !== nextProps.rowHeight || this.props.minHeight !== nextProps.minHeight) {
 	      this.setState(this.getGridState(nextProps));
 	    } else if (this.props.rowsCount !== nextProps.rowsCount) {
 	      this.updateScroll(this.state.scrollTop, this.state.scrollLeft, this.state.height, nextProps.rowHeight, nextProps.rowsCount);
