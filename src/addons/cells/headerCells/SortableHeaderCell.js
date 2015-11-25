@@ -52,8 +52,14 @@ var SortableHeaderCell = React.createClass({
   },
 
   render: function(): ?ReactElement {
+    var className = joinClasses({
+      'react-grid-HeaderCell-sortable': true,
+      'react-grid-HeaderCell-sortable--ascending': this.props.sortDirection === 'ASC',
+      'react-grid-HeaderCell-sortable--descending': this.props.sortDirection === 'DESC'
+    });
+
     return (
-      <div
+      <div className={className}
         onClick={this.onClick}
         style={{cursor: 'pointer'}}>
         {this.props.column.name}
