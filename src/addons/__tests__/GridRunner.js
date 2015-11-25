@@ -46,9 +46,20 @@ export default class GridRunner {
   ======== */
   selectCell({cellIdx,rowIdx}) {
     this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
-    this.cell = TestUtils.scryRenderedDOMComponentsWithClass(this.row,'react-grid-Cell')[cellIdx];
+    this.cell = this.getCells(this.row)[cellIdx];
     TestUtils.Simulate.click(this.cell);
     return this;
+  }
+
+  getCells(row) {
+    var cells = TestUtils.scryRenderedDOMComponentsWithClass(row, 'react-grid-Cell');
+    if(this.grid.refs.reactDataGrid.props.enableRowSelect) {
+      // the rowSelectCell exists on the end of the array returned from testUtils
+      var rowSelectCell = cells.pop();
+      // remove from end of array and put at beginning
+      cells.unshift(rowSelectCell);
+    }
+    return cells;
   }
 
   clickIntoEditor({cellIdx,rowIdx}) {
@@ -93,9 +104,9 @@ export default class GridRunner {
     let over = [];
     over.push(this.row);
     for(let i=from++;i<to;i++) {
-      over.push(TestUtils.scryRenderedDOMComponentsWithClass(rows[i],'react-grid-Cell')[col])
+      over.push(this.getCells(rows[i])[col]);
     }
-    const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[to],'react-grid-Cell')[col];
+    const toCell = this.getCells(rows[to])[col];
     over.push(toCell);
 
     //Act
@@ -169,9 +180,7 @@ export default class GridRunner {
     const selected = TestUtils.scryRenderedDOMComponentsWithClass(selectedRow,expectedClass);
     expect(selected.length).toEqual(1);
     expect(selected[0].props.rowIdx).toEqual(rowIdx);
-    expect(selected[0].props.idx).toEqual(cellIdx + 1);
-    //note - idx is 1 based, not 0 based.
-    //We make that more sensible by adding 1, so your test cell idx matches up
+    expect(selected[0].props.idx).toEqual(cellIdx);
     return this;
   }
   hasCopied({cellIdx, rowIdx, value}) {
@@ -190,7 +199,7 @@ export default class GridRunner {
     // Test all rows to check that value has copied correctly
     const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
     for (let i = from, end = to; i <= end; i++) {
-      const toCell = TestUtils.scryRenderedDOMComponentsWithClass(rows[i],'react-grid-Cell')[col];
+      const toCell = this.getCells(rows[i])[col];
       // First the component
       expect(toCell.props.value).toEqual(expected);
       // and finally the rendered data

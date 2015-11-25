@@ -37,11 +37,12 @@ describe('Grid Integration', () => {
 
 
   describe('Grid Copy and paste', () => {
+
     it("copies a cell", () => {
       new GridRunner({})
-      .selectCell({cellIdx:2, rowIdx: 2})
+      .selectCell({cellIdx:3, rowIdx: 3})
       .copy()
-      .hasCopied({cellIdx:2, rowIdx: 2});
+      .hasCopied({cellIdx:3, rowIdx: 3});
     });
 
     it("copying a second cell removes the copying style from first cell", () => {
@@ -49,7 +50,7 @@ describe('Grid Integration', () => {
       let gridRunner = new GridRunner({})
       .selectCell({cellIdx:firstCellIdx, rowIdx: 1})
       .copy();
-      let firstCell = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.row,'react-grid-Cell')[firstCellIdx];
+      let firstCell = gridRunner.getCells(gridRunner.row)[firstCellIdx];
       expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(true);
 
       gridRunner.selectCell({cellIdx:3, rowIdx:1})
@@ -77,7 +78,7 @@ describe('Grid Integration', () => {
   describe('Grid Drag', () => {
     it("Shows drag selector", () => {
       new GridRunner({})
-      .drag({from:0,to:4,col:3,
+      .drag({from:0,to:4,col:4,
       beforeEnd: function() {
         //check we have the right classes
         expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'is-dragged-over-down').length).toEqual(1);
@@ -85,17 +86,18 @@ describe('Grid Integration', () => {
       }})
     });
     it("Drags a column down", () => {
+      debugger;
       new GridRunner({})
-      .drag({from:0,to:4,col:3})
-      .hasDragged({from:0,to:4,col:3,cellKey:'title'})
+      .drag({from:0,to:4,col:4})
+      .hasDragged({from:0,to:4,col:4,cellKey:'title'})
     });
 
     it("Drags a column up", () => {
       new GridRunner({})
-      .drag({from:4, to:0, col:4})
+      .drag({from:4, to:0, col:5})
       // React-data-grid treats a drag up as a drag down, so need to assert using the
       // drag down equivalent of our drag event.
-      .hasDragged({ from:0, to:4, col:4, cellKey: 'firstName' });
+      .hasDragged({ from:0, to:4, col:5, cellKey: 'firstName' });
     });
   });
   // @jpdriver - commented out for now because this was a pain to write an integration test for
