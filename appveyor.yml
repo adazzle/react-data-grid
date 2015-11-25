@@ -41,9 +41,11 @@ test_script:
   - npm --version
   # run tests
   - gulp test --release true
+  - ps: ./test/uploadResults.ps1
   - gulp coveralls
 
-# Don't actually build.
+
+# Don't run MS build step
 build: off
 
 cache:
