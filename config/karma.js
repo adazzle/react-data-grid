@@ -48,7 +48,7 @@ module.exports = function (config) {
 
   function getFiles() {
     var files;
-    if(RELEASE === true) {
+    if(RELEASE === true ||  DEBUG === true) {
       files = [
      'node_modules/es5-shim/es5-shim.js',
      'node_modules/es5-shim/es5-sham.js',
@@ -66,7 +66,7 @@ module.exports = function (config) {
 
   function getPreprocessors() {
     var preprocessors;
-    if(RELEASE === true) {
+    if(RELEASE === true ||  DEBUG === true) {
       preprocessors = {
         'test/FullTests.jsx': ['webpack']
       }

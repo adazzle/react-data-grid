@@ -36,12 +36,12 @@ describe('Grid Integration', () => {
   });
 
 
-  ddescribe('Grid Copy and paste', () => {
-    iit("copies a cell", () => {
+  describe('Grid Copy and paste', () => {
+    it("copies a cell", () => {
       new GridRunner({})
-      .selectCell({cellIdx:1, rowIdx: 1})
+      .selectCell({cellIdx:2, rowIdx: 2})
       .copy()
-      .hasCopied({cellIdx:1, rowIdx: 1});
+      .hasCopied({cellIdx:2, rowIdx: 2});
     });
 
     it("copying a second cell removes the copying style from first cell", () => {
