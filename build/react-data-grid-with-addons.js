@@ -322,7 +322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getSelectedValue: function getSelectedValue() {
 	    var rowIdx = this.state.selected.rowIdx;
 	    var idx = this.state.selected.idx;
-	    var cellKey = this.getColumn(this.state.columnMetrics.columns, idx).key;
+	    var cellKey = this.getColumn(idx).key;
 	    var row = this.props.rowGetter(rowIdx);
 	    return RowUtils.get(row, cellKey);
 	  },
@@ -346,7 +346,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  canEdit: function canEdit(idx) {
-	    var col = this.getColumn(this.props.columns, idx);
+	    var col = this.getColumn(idx);
 	    return this.props.enableCellSelect === true && (col.editor != null || col.editable);
 	  },
 
@@ -504,7 +504,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var selected = this.state.selected;
 
-	    var cellKey = this.getColumn(this.state.columnMetrics.columns, this.state.selected.idx).key;
+	    var cellKey = this.getColumn(this.state.selected.idx).key;
 	    if (this.props.onCellCopyPaste) {
 	      this.props.onCellCopyPaste({ cellKey: cellKey, rowIdx: selected.rowIdx, value: this.state.textToCopy, fromRow: this.state.copied.rowIdx, toRow: selected.rowIdx });
 	    }
@@ -543,7 +543,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var fromRow, toRow;
 	    var selected = this.state.selected;
 	    var dragged = this.state.dragged;
-	    var cellKey = this.getColumn(this.state.columnMetrics.columns, this.state.selected.idx).key;
+	    var cellKey = this.getColumn(this.state.selected.idx).key;
 	    fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
 	    toRow = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
 	    if (this.props.onCellsDragged) {
@@ -5157,7 +5157,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return updatedMetrics;
 	  },
 
-	  getColumn: function getColumn(columns, idx) {
+	  getColumn: function getColumn(idx) {
+	    var columns = this.state.columnMetrics.columns;
 	    if (Array.isArray(columns)) {
 	      return columns[idx];
 	    } else if (typeof Immutable !== 'undefined') {

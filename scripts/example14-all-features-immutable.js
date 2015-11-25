@@ -49,7 +49,6 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     {
       key: 'id',
       name: 'ID',
-      editable:true,
       width : 80,
       resizable: true
     },
