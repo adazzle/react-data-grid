@@ -121,8 +121,9 @@ describe('Grid Integration', () => {
   });
   describe('Editors', () => {
     it("Readonly columns are NOT Editable", () => {
+      debugger;
       new GridRunner({})
-      .clickIntoEditor({cellIdx:0,rowIdx:3})
+      .clickIntoEditor({cellIdx:1,rowIdx:3})
       .isNotEditable();
     });
     it("Enter commits an edit", () => {
