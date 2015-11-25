@@ -46,14 +46,14 @@ describe('Grid Integration', () => {
     });
 
     it("copying a second cell removes the copying style from first cell", () => {
-      let firstCellIdx = 1;
+      let firstCellIdx = 3;
       let gridRunner = new GridRunner({})
       .selectCell({cellIdx:firstCellIdx, rowIdx: 1})
       .copy();
       let firstCell = gridRunner.getCells(gridRunner.row)[firstCellIdx];
       expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(true);
 
-      gridRunner.selectCell({cellIdx:3, rowIdx:1})
+      gridRunner.selectCell({cellIdx:4, rowIdx:1})
       .copy();
       expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(false);
     });
@@ -86,7 +86,7 @@ describe('Grid Integration', () => {
       }})
     });
     it("Drags a column down", () => {
-      debugger;
+
       new GridRunner({})
       .drag({from:0,to:4,col:4})
       .hasDragged({from:0,to:4,col:4,cellKey:'title'})
@@ -121,7 +121,7 @@ describe('Grid Integration', () => {
   });
   describe('Editors', () => {
     it("Readonly columns are NOT Editable", () => {
-      debugger;
+
       new GridRunner({})
       .clickIntoEditor({cellIdx:1,rowIdx:3})
       .isNotEditable();
