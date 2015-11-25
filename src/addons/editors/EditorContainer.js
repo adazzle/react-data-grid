@@ -32,6 +32,8 @@ var EditorContainer = React.createClass({
     height : React.PropTypes.number.isRequired
   },
 
+  changeCommitted: false,
+
   getInitialState(){
     return {isInvalid : false}
   },
@@ -48,9 +50,9 @@ var EditorContainer = React.createClass({
   },
 
   createEditor(): ReactElement{
+    var editorRef = (c) => this.editor = c;
     var editorProps = {
-		ref: 'editor',
-    name: 'editor',
+		ref: editorRef,
 		column : this.props.column,
 		value : this.getInitialValue(),
 		onCommit : this.commit,
@@ -62,9 +64,9 @@ var EditorContainer = React.createClass({
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){
       //return custom column editor or SimpleEditor if none specified
-      return React.addons.cloneWithProps(customEditor, editorProps)
+      return cloneWithProps(customEditor, editorProps)
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} onBlur={this.commit} value={this.getInitialValue()} rowMetaData={this.getRowMetaData()} />;
+      return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
     }
   },
 
@@ -135,9 +137,6 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
-    if(this.getEditor().getInputNode().tagName === 'SELECT'){
-      return true;
-    }
     if(isFunction(this.getEditor().hasResults)){
       return this.getEditor().hasResults();
     }else{
@@ -154,9 +153,7 @@ var EditorContainer = React.createClass({
   },
 
   getEditor(): Editor {
-    //TODO need to check that this.refs.editor conforms to the type
-    //this function is basically just a type cast for the sake of flow
-    return this.refs.editor;
+    return this.editor;
   },
 
   commit(args: {key : string}){
@@ -166,11 +163,12 @@ var EditorContainer = React.createClass({
       var cellKey = this.props.column.key;
       this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated : updated, key : opts.key});
     }
+    this.changeCommitted = true;
   },
 
   isNewValueValid(value: string): boolean{
-    if(isFunction(this.validate)){
-      var isValid = this.validate(value);
+    if(isFunction(this.getEditor().validate)){
+      var isValid = this.getEditor().validate(value);
       this.setState({isInvalid : !isValid});
       return isValid;
     }else{
@@ -255,9 +253,26 @@ var EditorContainer = React.createClass({
         inputNode.select();
       }
     }
+  },
 
+  componentWillUnmount: function() {
+    if (!this.changeCommitted && !this.hasEscapeBeenPressed()) {
+      this.commit({key:'Enter'});
+    }
+  },
+
+  hasEscapeBeenPressed() {
+    var pressed = false;
+    var escapeKey = 27;
+    if (window.event) {
+      if (window.event.keyCode === escapeKey) {
+        pressed = true;
+      } else if (window.event.which === escapeKey){
+        pressed  = true;
+      }
+    }
+    return pressed;
   }
-
 });
 
 module.exports = EditorContainer;

@@ -105,7 +105,7 @@ describe('Grid', () => {
   it("should be initialized with correct state", () => {
 
     expect(component.state).toEqual({
-      columnMetrics : { columns : [ { key : 'id', name : 'ID', width : 100, left : 0 }, { key : 'title', name : 'Title', width : 100, left : 100 }, { key : 'count', name : 'Count', width : 100, left : 200 } ], width : 300, totalWidth : -2, minColumnWidth : 80 },
+      columnMetrics : { columns : [ { key : 'id', name : 'ID', width : 100, left : 0 }, { key : 'title', name : 'Title', width : 100, left : 100 }, { key : 'count', name : 'Count', width : 100, left : 200 } ], width : 300, totalWidth : 0, minColumnWidth : 80 },
       selectedRows : _selectedRows,
       selected : {rowIdx : 0,  idx : 0},
       copied : null,
@@ -114,7 +114,8 @@ describe('Grid', () => {
       columnFilters : {},
       sortDirection : null,
       sortColumn : null,
-      dragged : null
+      dragged : null,
+      scrollOffset: 0
     });
   });
 
@@ -518,7 +519,7 @@ describe('Grid', () => {
     it("cell commit after TAB should select next cell", () => {
       component.setState({selected : {idx : 1, rowIdx : 1, active : true}});
       var meta = getCellMetaData(component);
-      var fakeCellUpdate = {cellKey: "title", rowIdx: 1, updated: {title : 'some new title'}, keyCode: "Tab"}
+      var fakeCellUpdate = {cellKey: "title", rowIdx: 1, updated: {title : 'some new title'}, key: "Tab"}
       meta.onCommit(fakeCellUpdate);
       expect(component.state.selected).toEqual({
         idx : 2,
@@ -538,7 +539,6 @@ describe('Grid', () => {
   });
 
   it("changes to non metric column data should keep original metric information", () => {
-    debugger;
     var newColumns = columns.slice(0).map(c => {
       return Object.assign({}, c);
     });

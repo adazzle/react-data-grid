@@ -37,37 +37,45 @@ var columns = [
 {
   key: 'id',
   name: 'ID',
-  width: 80
+  width: 80,
+  filterable: true,
+  filterKey: 'filter_id'
 },
 {
   key: 'task',
   name: 'Title',
-  sortable : true
+  filterable: true,
+  filterKey: 'filter_task'
 },
 {
   key: 'priority',
   name: 'Priority',
-  sortable : true
+  filterable: true,
+  filterKey: 'filter_priority'
 },
 {
   key: 'issueType',
   name: 'Issue Type',
-  sortable : true
+  filterable: true,
+  filterKey: 'filter_issueType'
 },
 {
   key: 'complete',
   name: '% Complete',
-  sortable : true
+  filterable: true,
+  filterKey: 'filter_complete'
 },
 {
   key: 'startDate',
   name: 'Start Date',
-  sortable : true
+  filterable: true,
+  filterKey: 'filter_startDate'
 },
 {
   key: 'completeDate',
   name: 'Expected Complete',
-  sortable : true
+  filterable: true,
+  filterKey: 'filter_completeDate'
 }
 ]
 
@@ -77,12 +85,58 @@ var Example = React.createClass({
   getInitialState : function(){
     var originalRows = createRows(1000);
     var rows = originalRows.slice(0);
+    for (var i = 0; i < rows.length; i++) {
+      for (var column_key in columns) {
+        var column = columns[column_key];
+        if (column.filterable)
+          rows[i][column.filterKey] = String(rows[i][column.key]).toLowerCase();
+      }
+    }
     //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
-    return {originalRows : originalRows, rows : rows};
+    return {originalRows : originalRows, rows : rows, filters : {}};
   },
 
   rowGetter : function(rowIdx){
     return this.state.rows[rowIdx];
+  },
+
+  filterRows : function(originalRows, filters) {
+    var rows = [];
+    for (var rowIdx = 0; rowIdx < originalRows.length; rowIdx++) {
+      var row = originalRows[rowIdx];
+      var include = true;
+
+      for (var column_key in filters) {
+        var column;
+        for (var colIdx = 0; colIdx < columns.length; colIdx++) {
+          if (columns[colIdx].key == column_key)
+            column = columns[colIdx]
+        }
+        if (!column)
+          continue;
+
+        var rowFilterValue = row[column.filterKey];
+        if (rowFilterValue.indexOf(filters[column_key]) == -1) {
+          include = false;
+          break;
+        }
+      }
+
+      if (include)
+        rows.push(row);
+    }
+    return rows;
+  },
+
+  handleFilterChange : function(filter){
+    this.setState(function(currentState) {
+      if (filter.filterTerm)
+        currentState.filters[filter.columnKey] = filter.filterTerm;
+      else
+        delete currentState.filters[filter.columnKey];
+      currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
+      return currentState;
+    });
   },
 
   render:function(){
@@ -92,7 +146,8 @@ var Example = React.createClass({
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        toolbar={<Toolbar enableFilter={true}/>}/>
+        toolbar={<Toolbar enableFilter={true}/>}
+        onAddFilter={this.handleFilterChange}/>
     )
   }
 
@@ -106,8 +161,8 @@ module.exports = React.createClass({
   render:function(){
     return(
       <div>
-      <h3>Sortable Columns Example</h3>
-      <p>While ReactDataGrid doesnt not provide the ability to sort directly, it does provide hooks that allow you to provide your own sort function. This is done via the <code>onGridSort</code> prop. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Now when the header cell is clicked for that column, <code>onGridSort</code> will be triggered passing the column name and the sort direction.</p>
+      <h3>Filterable Columns Example</h3>
+      <p>While ReactDataGrid doesn't not provide the ability to filter directly, it does provide hooks that allow you to provide your own filter function. This is done via the <code>onAddFilter</code> prop. To enable filtering for a given column, set <code>column.filterable = true</code> for that column. Now when the header cell has a new filter value entered for that column, <code>onAddFilter</code> will be triggered passing the filter key and value.</p>
       <ReactPlayground codeText={EditableExample} />
       </div>
     )

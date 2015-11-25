@@ -23,7 +23,7 @@ module.exports = {
 
   DOMMetrics: {
     viewportHeight(): number {
-      return this.getDOMNode().offsetHeight;
+      return React.findDOMNode(this).offsetHeight;
     }
   },
 
@@ -98,7 +98,8 @@ module.exports = {
   },
 
   componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number }) {
-    if (this.props.rowHeight !== nextProps.rowHeight) {
+    if (this.props.rowHeight !== nextProps.rowHeight ||
+        this.props.minHeight !== nextProps.minHeight) {
       this.setState(this.getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(

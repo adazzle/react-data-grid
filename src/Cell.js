@@ -53,7 +53,7 @@ var Cell = React.createClass({
 
 
   componentDidUpdate: function(prevProps: any, prevState: any) {
-    //this.checkFocus();
+    this.checkFocus();
     var dragged = this.props.cellMetaData.dragged;
     if(dragged && dragged.complete === true){
       this.props.cellMetaData.handleTerminateDrag();
@@ -75,6 +75,7 @@ var Cell = React.createClass({
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
     || this.isDraggedCellChanging(nextProps)
+    || this.isCopyCellChanging(nextProps)
     || this.props.isRowSelected !== nextProps.isRowSelected
     || this.isSelected();
   },
@@ -202,7 +203,7 @@ var Cell = React.createClass({
 
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
-      this.getDOMNode().focus();
+      React.findDOMNode(this).focus();
     }
   },
 
@@ -250,7 +251,7 @@ var Cell = React.createClass({
   setScrollLeft(scrollLeft: number) {
     var ctrl: any = this; //flow on windows has an outdated react declaration, once that gets updated, we can remove this
     if (ctrl.isMounted()) {
-      var node = this.getDOMNode();
+      var node = React.findDOMNode(this);
       var transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;
@@ -293,6 +294,19 @@ var Cell = React.createClass({
     if(dragged){
       isChanging = (nextDragged && this.props.idx === nextDragged.idx)
       || (dragged && this.props.idx === dragged.idx);
+      return isChanging;
+    }else{
+      return false;
+    }
+  },
+
+  isCopyCellChanging(nextProps: any): boolean{
+    var isChanging;
+    var copied = this.props.cellMetaData.copied;
+    var nextCopied = nextProps.cellMetaData.copied;
+    if(copied){
+      isChanging = ( nextCopied && this.props.idx ===  nextCopied.idx)
+      || (copied && this.props.idx === copied.idx);
       return isChanging;
     }else{
       return false;

@@ -24,11 +24,6 @@ describe('SimpleTextEditor', () => {
         expect(component).toBeDefined();
       });
 
-      it('should pass the value down to the input as a prop', () => {
-        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-        expect(Input.props.value).toBe('This is a test');
-      });
-
       it('should pass the onBlur fuction down to the input as a prop', () => {
         var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
         expect(Input.props.onBlur()).toBe(true);
