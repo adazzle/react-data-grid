@@ -1,15 +1,43 @@
-/**
- * @jsx React.DOM
- */
-(function(){
-  var ReactDataGrid       = require('../build/react-data-grid-with-addons')
+var QuickStartDescription = require('../components/QuickStartDescription')
+var ReactPlayground       = require('../assets/js/ReactPlayground');
+var faker = require('faker');
+
+var AllFeaturesExample = `
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
-  var joinClasses          = require('classnames');
-  var FakeObjectDataStore = require('./FakeObjectDataStore');
-  var developers = ['Conor','Curtis','Danny','Joao','Mo','Rich'];
+
+  faker.locale = 'en_GB';
+
+  function createFakeRowObjectData(/*number*/ index) {
+    return {
+      id: 'id_' + index,
+      avartar: faker.image.avatar(),
+      county: faker.address.county(),
+      email: faker.internet.email(),
+      title: faker.name.prefix(),
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      street: faker.address.streetName(),
+      zipCode: faker.address.zipCode(),
+      date: faker.date.past(),
+      bs: faker.company.bs(),
+      catchPhrase: faker.company.catchPhrase(),
+      companyName: faker.company.companyName(),
+      words: faker.lorem.words(),
+      sentence: faker.lorem.sentence()
+    };
+  }
+
+  function createRows(numberOfRows) {
+    var rows = [];
+    for (var i = 0; i < numberOfRows; i++) {
+      rows[i] = createFakeRowObjectData(i);
+    }
+    return rows;
+  }
+
   var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
    { id : 10, title :'Durham'},
    { id : 11, title :'Essex'},
@@ -42,9 +70,9 @@
    { id : 38, title :'Worcestershire'},
    { id : 39, title :'Yorkshire'}]
 
-var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
+  var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
-  var columns = new Immutable.List([
+  var columns = [
     {
       key: 'id',
       name: 'ID',
@@ -142,13 +170,13 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       width : 200,
       resizable: true
     }
-  ]);
+  ];
 
 
- var Component = React.createClass({displayName: 'component',
+ var Example = React.createClass({displayName: 'component',
 
     getInitialState : function(){
-      var fakeRows = FakeObjectDataStore.createRows(2000);
+      var fakeRows = createRows(2000);
       return {rows :fakeRows};
     },
 
@@ -218,12 +246,21 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       );
     }
   });
+  React.render(<Example />, mountNode);
+`;
 
-  if(typeof module !== 'undefined' && module.exports){
-    module.exports = Component;
-  }else{
-    this.ReactDataGrid = Component;
+
+module.exports = React.createClass({
+
+  render: function() {
+    return(
+      <div>
+        <h3>All the features grid</h3>
+        <p>This example demonstrates all the features from the previous examples. The ReactDataGrid with addons is globally available in this example so you need to have 'react-data-grid-with-addons.js' on the page or require('react-data-grid'/addons) if you are using Common JS.</p>
+        <p>Fake data is generated using the <a href="https://github.com/Marak/faker.js">Faker</a> library which is also a global variable in this example.</p>
+        <ReactPlayground codeText={AllFeaturesExample} />
+      </div>
+    )
   }
 
-
-}).call(this);
+});
