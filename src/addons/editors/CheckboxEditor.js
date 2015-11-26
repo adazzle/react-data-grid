@@ -19,7 +19,12 @@ var CheckboxEditor = React.createClass({
 
   render(): ? ReactElement {
     var checked = this.props.value != null ? this.props.value : false;
-    return (<input className="react-grid-CheckBox" type="checkbox" checked={checked} onClick={this.handleChange} />);
+    var checkboxName = 'checkbox' + this.props.rowIdx;
+    return (
+      <div className="react-grid-checkbox-container" onClick={this.handleChange}>
+          <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} />
+          <label for={checkboxName} className="react-grid-checkbox-label"></label>
+      </div>);
   },
 
   handleChange(e: Event){
