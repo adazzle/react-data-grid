@@ -42,7 +42,7 @@ Features
 - [Frozen columns](http://adazzle.github.io/react-data-grid/examples.html#/fixed)
 - [Resizable columns](http://adazzle.github.io/react-data-grid/examples.html#/resizable)
 - [Sorting](http://adazzle.github.io/react-data-grid/examples.html#/sortable) 
-- Filtering
+- [Filtering] (http://adazzle.github.io/react-data-grid/examples.html#/filterable) 
 - Copy and Paste values into other cells
 - Multiple cell updates using cell dragdown
 
