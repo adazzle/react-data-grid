@@ -38,44 +38,37 @@ var columns = [
   key: 'id',
   name: 'ID',
   width: 80,
-  filterable: true,
-  filterKey: 'filter_id'
+  filterable: true
 },
 {
   key: 'task',
   name: 'Title',
-  filterable: true,
-  filterKey: 'filter_task'
+  filterable: true
 },
 {
   key: 'priority',
   name: 'Priority',
-  filterable: true,
-  filterKey: 'filter_priority'
+  filterable: true
 },
 {
   key: 'issueType',
   name: 'Issue Type',
-  filterable: true,
-  filterKey: 'filter_issueType'
+  filterable: true
 },
 {
   key: 'complete',
   name: '% Complete',
-  filterable: true,
-  filterKey: 'filter_complete'
+  filterable: true
 },
 {
   key: 'startDate',
   name: 'Start Date',
-  filterable: true,
-  filterKey: 'filter_startDate'
+  filterable: true
 },
 {
   key: 'completeDate',
   name: 'Expected Complete',
-  filterable: true,
-  filterKey: 'filter_completeDate'
+  filterable: true
 }
 ]
 
@@ -85,13 +78,6 @@ var Example = React.createClass({
   getInitialState : function(){
     var originalRows = createRows(1000);
     var rows = originalRows.slice(0);
-    for (var i = 0; i < rows.length; i++) {
-      for (var column_key in columns) {
-        var column = columns[column_key];
-        if (column.filterable)
-          rows[i][column.filterKey] = String(rows[i][column.key]).toLowerCase();
-      }
-    }
     //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
     return {originalRows : originalRows, rows : rows, filters : {}};
   },
@@ -101,39 +87,28 @@ var Example = React.createClass({
   },
 
   filterRows : function(originalRows, filters) {
-    var rows = [];
-    for (var rowIdx = 0; rowIdx < originalRows.length; rowIdx++) {
-      var row = originalRows[rowIdx];
+    var rows = originalRows.filter(function(r){
       var include = true;
-
-      for (var column_key in filters) {
-        var column;
-        for (var colIdx = 0; colIdx < columns.length; colIdx++) {
-          if (columns[colIdx].key == column_key)
-            column = columns[colIdx]
-        }
-        if (!column)
-          continue;
-
-        var rowFilterValue = row[column.filterKey];
-        if (rowFilterValue.indexOf(filters[column_key]) == -1) {
-          include = false;
-          break;
+      for (var columnKey in filters) {
+        if(filters.hasOwnProperty(columnKey)) {
+          var rowValue = r[columnKey].toString().toLowerCase();
+          if(rowValue.indexOf(filters[columnKey].toLowerCase()) === -1) {
+            include = false;
+          }
         }
       }
-
-      if (include)
-        rows.push(row);
-    }
+      return include;
+    });
     return rows;
   },
 
   handleFilterChange : function(filter){
     this.setState(function(currentState) {
-      if (filter.filterTerm)
+      if (filter.filterTerm) {
         currentState.filters[filter.columnKey] = filter.filterTerm;
-      else
+      } else {
         delete currentState.filters[filter.columnKey];
+      }
       currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
       return currentState;
     });

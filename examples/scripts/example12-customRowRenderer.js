@@ -117,7 +117,7 @@ module.exports = React.createClass({
       <div>
         <h3>Overriding the row renderer</h3>
         <p>This shows how you can easily override the default row renderer</p>
-        <p>Here we are just using that to wrap the default renderer, and then going back inot the 'normal' flow, just changing some backgrounds</p>
+        <p>Here we are just using that to wrap the default renderer, and then going back into the 'normal' flow, just changing some backgrounds</p>
         <p>NOTE: if you want to use fixed columns as well, make sure you implement and pass through the call to setScrollLeft</p>
         <ReactPlayground codeText={SimpleExample} />
       </div>
