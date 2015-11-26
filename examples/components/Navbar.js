@@ -26,6 +26,7 @@ module.exports = React.createClass({
                     <li><a href="examples.html#/basic">Basic Use</a></li>
                     <li><a href="examples.html#/resizable">Resizable Grid</a></li>
                     <li><a href="examples.html#/fixed">Frozen Columns</a></li>
+                    <li><a href="examples.html#/row-select">Row Selection</a></li>
                     <li><a href="examples.html#/editable">Editable Grid</a></li>
                     <li><a href="examples.html#/formatters">Custom Formatters</a></li>
                     <li><a href="examples.html#/editors">Rich Cell Editors</a></li>

@@ -126,6 +126,7 @@ const Cell = React.createClass({
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
     let extraClasses = joinClasses({
+      'row-selected': this.props.isRowSelected,
       selected: this.isSelected() && !this.isActive(),
       editing: this.isActive(),
       copied: this.isCopied(),
