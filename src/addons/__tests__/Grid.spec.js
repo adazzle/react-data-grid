@@ -619,4 +619,24 @@ describe("Grid", function () {
       })
     });
   })
+
+  describe("Table width", function () {
+    beforeEach(function () {
+      this.tableElement = React.findDOMNode(this.component);
+    });
+
+    it("should generate the width based on the container size", function () {
+      expect(this.tableElement.style.width).toEqual('0px');
+    });
+
+    describe("providing table width as prop", function () {
+      beforeEach(function () {
+        this.component.setProps({ minWidth: 900 });
+      });
+
+      it("should set the width of the table", function () {
+        expect(this.tableElement.style.width).toEqual('900px');
+      });
+    });
+  });
 });
