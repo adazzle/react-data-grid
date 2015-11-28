@@ -144,9 +144,6 @@ var Canvas = React.createClass({
   },
 
   componentDidUpdate(nextProps: any) {
-    if (this._scroll !== {start: 0, end: 0}) {
-      this.setScrollLeft(this._scroll.scrollLeft);
-    }
     this.onRows();
   },
 
