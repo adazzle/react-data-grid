@@ -226,6 +226,9 @@ input.react-grid-CheckBox {
 .react-grid-HeaderCell--resizing .react-grid-HeaderCell__resizeHandle {
   background: #dddddd;
 }
+.react-grid-HeaderCell__draggable {
+    cursor: col-resize
+}
 .react-grid-ScrollShim {
   z-index: 10002;
 }
