@@ -216,18 +216,18 @@ var AllFeaturesExample = `
         this.setState({rows : rows});
     },
 
-    getRowAt(index){
+    getRowAt : function(index){
       if (index < 0 || index > this.getSize()){
         return undefined;
       }
       return this.state.rows[index];
     },
 
-    getSize() {
+    getSize : function() {
       return this.state.rows.length;
     },
 
-    render() {
+    render : function() {
       return (
             <ReactDataGrid
               enableCellSelect={true}
