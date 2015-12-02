@@ -5,6 +5,7 @@ var DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
 var PropTypes            = require('react').PropTypes;
 var ColumnUtils = require('./ColumnUtils');
+var React = require('react');
 
 type ColumnMetricsType = {
     columns: Array<Column>;
@@ -29,7 +30,7 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      return this.getDOMNode().offsetWidth - 2;
+      return React.findDOMNode(this).parentElement.offsetWidth;
     }
   },
 
@@ -71,7 +72,8 @@ module.exports = {
     return updatedMetrics;
   },
 
-  getColumn(columns, idx) {
+  getColumn(idx) {
+    var columns = this.state.columnMetrics.columns;
     if(Array.isArray(columns)){
       return columns[idx];
     }else if (typeof Immutable !== 'undefined') {

@@ -22,6 +22,7 @@ module.exports = React.createClass({
                   <li><a href="documentation.html#/apireference">API Reference</a></li>
                 </ul>
               </li>
+
               <li className="dropdown">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
                   <ul className="dropdown-menu">
@@ -32,6 +33,7 @@ module.exports = React.createClass({
                     <li><a href="examples.html#/formatters">Custom Formatters</a></li>
                     <li><a href="examples.html#/editors">Rich Cell Editors</a></li>
                     <li><a href="examples.html#/sortable">Sortable Grid</a></li>
+                    <li><a href="examples.html#/filterable">Filterable Grid</a></li>
                     <li><a href="examples.html#/million-rows">One Million Rows</a></li>
                     <li><a href="examples.html#/immutable-data">Immutable Data Grid</a></li>
                     <li><a href="examples.html#/all-the-features">All-The-Features Grid</a></li>

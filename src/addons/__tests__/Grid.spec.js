@@ -105,7 +105,7 @@ describe('Grid', () => {
   it("should be initialized with correct state", () => {
 
     expect(component.state).toEqual({
-      columnMetrics : { columns : [ { key : 'id', name : 'ID', width : 100, left : 0 }, { key : 'title', name : 'Title', width : 100, left : 100 }, { key : 'count', name : 'Count', width : 100, left : 200 } ], width : 300, totalWidth : -2, minColumnWidth : 80 },
+      columnMetrics : { columns : [ { key : 'id', name : 'ID', width : 100, left : 0 }, { key : 'title', name : 'Title', width : 100, left : 100 }, { key : 'count', name : 'Count', width : 100, left : 200 } ], width : 300, totalWidth : 0, minColumnWidth : 80 },
       selectedRows : _selectedRows,
       selected : {rowIdx : 0,  idx : 0},
       copied : null,
@@ -297,6 +297,7 @@ describe('Grid', () => {
 
       beforeEach(() => {
         columns[1].editable = true;
+        component = TestUtils.renderIntoDocument(<Grid {...testProps} />);
       });
 
 
@@ -385,6 +386,7 @@ describe('Grid', () => {
     describe("When column is not editable", () => {
       beforeEach(() => {
         columns[1].editable = false;
+        component = TestUtils.renderIntoDocument(<Grid {...testProps} />);
       });
 
       it("double click on grid should not activate current selected cell", () => {

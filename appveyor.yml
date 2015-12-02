@@ -12,7 +12,7 @@ environment:
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
   npmrc_token:
-    secure: tfiuuT9j31t1WJZU47yg5Q==
+    secure: kGPlcVTOCUp5QVkRPDUGHg==
 
 
 # Install scripts. (runs after repo cloning)
@@ -31,7 +31,7 @@ install:
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g gulp
   - npm install
-  - gulp flow-win
+  - gulp flow
   - gulp dist
 
 # Post-install test scripts.
@@ -41,9 +41,11 @@ test_script:
   - npm --version
   # run tests
   - gulp test --release true
+  - ps: ./test/uploadResults.ps1
   - gulp coveralls
 
-# Don't actually build.
+
+# Don't run MS build step
 build: off
 
 cache:

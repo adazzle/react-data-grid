@@ -50,9 +50,9 @@ var EditorContainer = React.createClass({
   },
 
   createEditor(): ReactElement{
+    var editorRef = (c) => this.editor = c;
     var editorProps = {
-		ref: 'editor',
-    name: 'editor',
+		ref: editorRef,
 		column : this.props.column,
 		value : this.getInitialValue(),
 		onCommit : this.commit,
@@ -64,9 +64,9 @@ var EditorContainer = React.createClass({
     var customEditor = this.props.column.editor;
     if(customEditor && React.isValidElement(customEditor)){
       //return custom column editor or SimpleEditor if none specified
-      return React.addons.cloneWithProps(customEditor, editorProps)
+      return cloneWithProps(customEditor, editorProps)
     }else{
-      return <SimpleTextEditor ref={'editor'} column={this.props.column} value={this.getInitialValue()} rowMetaData={this.getRowMetaData()} />;
+      return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
     }
   },
 
@@ -137,9 +137,6 @@ var EditorContainer = React.createClass({
   },
 
   editorHasResults(): boolean{
-    if(this.getEditor().getInputNode().tagName === 'SELECT'){
-      return true;
-    }
     if(isFunction(this.getEditor().hasResults)){
       return this.getEditor().hasResults();
     }else{
@@ -156,9 +153,7 @@ var EditorContainer = React.createClass({
   },
 
   getEditor(): Editor {
-    //TODO need to check that this.refs.editor conforms to the type
-    //this function is basically just a type cast for the sake of flow
-    return this.refs.editor;
+    return this.editor;
   },
 
   commit(args: {key : string}){
@@ -203,6 +198,21 @@ var EditorContainer = React.createClass({
     return joinClasses({
       'has-error' : this.state.isInvalid === true
     })
+  },
+
+  renderStatusIcon(): ?ReactElement{
+    if(this.state.isInvalid === true){
+      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
+    }
+  },
+
+  render(): ?ReactElement{
+  return (
+      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
+      {this.createEditor()}
+      {this.renderStatusIcon()}
+      </div>
+    )
   },
 
   setCaretAtEndOfInput(){
@@ -251,32 +261,17 @@ var EditorContainer = React.createClass({
     }
   },
 
-  renderStatusIcon(): ?ReactElement{
-    if(this.state.isInvalid === true){
-      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
-    }
-  },
-
   hasEscapeBeenPressed() {
     var pressed = false;
     var escapeKey = 27;
-    if(window.event) {
+    if (window.event) {
       if (window.event.keyCode === escapeKey) {
         pressed = true;
       } else if (window.event.which === escapeKey){
         pressed  = true;
-      }  
+      }
     }
     return pressed;
-  },
-
-  render(): ?ReactElement{
-    return (
-      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
-      {this.createEditor()}
-      {this.renderStatusIcon()}
-      </div>
-    )
   }
 });
 
