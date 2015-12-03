@@ -21,7 +21,8 @@ describe('Canvas Tests', () => {
     displayStart: 1,
     displayEnd: 10,
     rowsCount: 1,
-    columns: []
+    columns: [],
+    rowGetter: function() { return [] }
   }
 
   beforeEach(() => {
