@@ -38,7 +38,7 @@ describe("Grid", function () {
       this._selectedRows.push(false);
     }
 
-    this.noop = function(){};
+    this.noop = function () {};
     this.testProps = {
       enableCellSelect: true,
       columns: this.columns,
@@ -478,12 +478,12 @@ describe("Grid", function () {
 
     describe("Adding a new row", function () {
       it("should set the selected cell to be on the last row", function () {
-        var newRow = {id: 1000, title: "Title 1000", count: 1000};
+        var newRow = { id: 1000, title: "Title 1000", count: 1000 };
         this._rows.push(newRow);
         this.component.setProps({ rowsCount: this._rows.length });
         expect(this.component.state.selected).toEqual({
-          idx : 1,
-          rowIdx : 1000
+          idx: 1,
+          rowIdx: 1000
         });
       });
     });
@@ -493,15 +493,15 @@ describe("Grid", function () {
     it("should create a cellMetaData object and pass to baseGrid as props", function () {
       var meta = this.getCellMetaData();
       expect(meta).toEqual(jasmine.objectContaining({
-        selected : { rowIdx: 0, idx: 0 },
-        dragged  : null,
-        copied   : null
+        selected: { rowIdx: 0, idx: 0 },
+        dragged: null,
+        copied: null
       }));
-      expect(typeof meta.onCellClick === "function").toBe(true);
-      expect(typeof meta.onCommit === "function").toBe(true);
-      expect(typeof meta.onCommitCancel === "function").toBe(true);
-      expect(typeof meta.handleDragEnterRow === "function").toBe(true);
-      expect(typeof meta.handleTerminateDrag === "function").toBe(true);
+      expect(meta.onCellClick).toBeFunction();
+      expect(meta.onCommit).toBeFunction();
+      expect(meta.onCommitCancel).toBeFunction();
+      expect(meta.handleDragEnterRow).toBeFunction();
+      expect(meta.handleTerminateDrag).toBeFunction();
     });
 
     describe("Changing Grid state", function () {
@@ -572,6 +572,7 @@ describe("Grid", function () {
 
     it("should keep original metric information", function () {
       var columnMetrics = this.component.state.columnMetrics;
+      expect(columnMetrics.columns.length).toBeGreaterThan(1);
       columnMetrics.columns.forEach((column, index) => {
         expect(column.width).toEqual(this.originalMetrics.columns[index].width);
         expect(column.left).toEqual(this.originalMetrics.columns[index].left);

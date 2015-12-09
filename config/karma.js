@@ -134,7 +134,10 @@ module.exports = function (config) {
 
     autoWatch: false,
 
-    frameworks: ['jasmine'],
+    frameworks: [
+      'jasmine',
+      'jasmine-matchers'
+    ],
 
     browsers: getBrowsers(),
 
@@ -144,6 +147,7 @@ module.exports = function (config) {
     'karma-phantomjs-launcher-nonet',
     'karma-ie-launcher',
     'karma-jasmine',
+    'karma-jasmine-matchers',
     'karma-webpack',
     'karma-junit-reporter',
     'karma-coverage'
