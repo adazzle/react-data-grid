@@ -32,7 +32,8 @@ describe("Grid", function () {
       this._rows.push({
         id: i,
         title: `Title ${i}`,
-        count: i * 1000
+        count: i * 1000,
+        isOdd: !!(i % 2)
       });
 
       this._selectedRows.push(false);
@@ -190,7 +191,7 @@ describe("Grid", function () {
       });
     });
 
-    describe("when selected = false", function () {
+    describe("when selected is false", function () {
       beforeEach(function () {
         this.component.setState({ selectedRows: [false, false, false, false] });
         var selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -202,7 +203,7 @@ describe("Grid", function () {
       });
     });
 
-    describe("when selected = null", function () {
+    describe("when selected is null", function () {
       beforeEach(function () {
         this.component.setState({ selectedRows: [null, null, null, null] });
         var selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -214,7 +215,7 @@ describe("Grid", function () {
       });
     });
 
-    describe("when selected = true", function () {
+    describe("when selected is true", function () {
       beforeEach(function () {
         this.component.setState({ selectedRows: [null, true, true, true] });
         var selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -477,14 +478,53 @@ describe("Grid", function () {
     });
 
     describe("Adding a new row", function () {
-      it("should set the selected cell to be on the last row", function () {
+      beforeEach(function () {
         var newRow = { id: 1000, title: "Title 1000", count: 1000 };
         this._rows.push(newRow);
         this.component.setProps({ rowsCount: this._rows.length });
+      });
+
+      it("should set the selected cell to be on the last row", function () {
         expect(this.component.state.selected).toEqual({
           idx: 1,
           rowIdx: 1000
         });
+      });
+    });
+
+    describe("Adding a new column", function () {
+      beforeEach(function () {
+        const newColumn = { key: "isodd", name: "Is Odd", width: 100 };
+        const newColumns = Object.assign([], this.columns);
+        newColumns.splice(2, 0, newColumn);
+        this.component.setProps({ columns: newColumns });
+        this.columns = this.component.state.columnMetrics.columns;
+      });
+
+      it("should add column", function () {
+        expect(this.columns.length).toEqual(4);
+      });
+
+      it("should calculate column metrics for added column", function () {
+        expect(this.columns[2]).toEqual(jasmine.objectContaining({ key: "isodd", name: "Is Odd", width: 100 }));
+      });
+    });
+
+    describe("Remove a column", function () {
+      beforeEach(function() {
+        const newColumns = Object.assign([], this.columns);
+        newColumns.splice(1, 1);
+        this.component.setProps({ columns: newColumns });
+        this.columns = this.component.state.columnMetrics.columns;
+      });
+
+      it("should remove column", function () {
+        expect(this.columns.length).toEqual(2);
+      });
+
+      it("should no longer include metrics for removed column", function () {
+        expect(this.columns[0]).toEqual(jasmine.objectContaining({ key: "id", name: "ID", width: 100 }));
+        expect(this.columns[1]).toEqual(jasmine.objectContaining({ key: "count", name: "Count", width: 100 }));
       });
     });
   });
