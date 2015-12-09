@@ -1,42 +1,10 @@
 'use strict';
 var React         = require('react');
 var rewire        = require('rewire');
-var Grid          =  rewire('../grids/ReactDataGrid.js');
+var Grid          = rewire('../grids/ReactDataGrid.js');
 var TestUtils     = require('react/lib/ReactTestUtils');
 var rewireModule  = require("../../../test/rewireModule");
 var StubComponent = require("../../../test/StubComponent");
-
-var columns = [
-  {
-    key   : 'id',
-    name  : 'ID',
-    width : 100
-  },
-  {
-    key: 'title',
-    name: 'Title',
-    width : 100
-  },
-  {
-    key: 'count',
-    name: 'Count',
-    width : 100
-  }
-];
-
-var _rows = [];
-var _selectedRows = [];
-var rowGetter = (i) => _rows[i];
-
-for (var i = 0; i < 1000; i++) {
-  _rows.push({
-    id: i,
-    title: `Title ${i}`,
-    count: i * 1000
-  });
-
-  _selectedRows.push(false);
-}
 
 describe('Grid', function () {
   var BaseGridStub = StubComponent('BaseGrid');
@@ -48,20 +16,53 @@ describe('Grid', function () {
     CheckboxEditor : CheckboxEditorStub
   });
 
-  var testProps = {
-    enableCellSelect: true,
-    columns:columns,
-    rowGetter:rowGetter,
-    rowsCount: _rows.length,
-    width:300,
-    onRowUpdated : function(update){},
-    onCellCopyPaste : function(){},
-    onCellsDragged : function(){},
-    onGridSort : function(){}
-  }
-
   beforeEach(function () {
-    this.component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+    this.columns = [
+      {
+        key   : 'id',
+        name  : 'ID',
+        width : 100
+      },
+      {
+        key: 'title',
+        name: 'Title',
+        width : 100
+      },
+      {
+        key: 'count',
+        name: 'Count',
+        width : 100
+      }
+    ];
+
+    this._rows = [];
+    this._selectedRows = [];
+    this.rowGetter = (i) => this._rows[i];
+
+    for (var i = 0; i < 1000; i++) {
+      this._rows.push({
+        id: i,
+        title: `Title ${i}`,
+        count: i * 1000
+      });
+
+      this._selectedRows.push(false);
+    }
+
+    var noop = function(){};
+    this.testProps = {
+      enableCellSelect: true,
+      columns: this.columns,
+      rowGetter: this.rowGetter,
+      rowsCount: this._rows.length,
+      width: 300,
+      onRowUpdated: noop,
+      onCellCopyPaste: noop,
+      onCellsDragged: noop,
+      onGridSort: noop
+    };
+
+    this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps}/>);
   });
 
   it('should create a new instance of Grid', function () {
@@ -75,7 +76,7 @@ describe('Grid', function () {
 
   it('should render a Toolbar if passed in as props to grid', function () {
     var Toolbar = StubComponent('Toolbar');
-    this.component = TestUtils.renderIntoDocument(<Grid {...testProps} toolbar={<Toolbar/>} />);
+    this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps} toolbar={<Toolbar/>} />);
     var toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, Toolbar);
     expect(toolbarInstance).toBeDefined();
   });
@@ -83,7 +84,7 @@ describe('Grid', function () {
   it('onToggleFilter trigger of Toolbar should set filter state of grid and render a filterable header row', function () {
     //arrange
     var Toolbar = StubComponent('Toolbar');
-    this.component = TestUtils.renderIntoDocument(<Grid {...testProps} toolbar={<Toolbar/>} />);
+    this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps} toolbar={<Toolbar/>} />);
     var toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, Toolbar);
     //act
     toolbarInstance.props.onToggleFilter();
@@ -98,7 +99,7 @@ describe('Grid', function () {
   it("should be initialized with correct state", function () {
     expect(this.component.state).toEqual({
       columnMetrics : { columns : [ { key : 'id', name : 'ID', width : 100, left : 0 }, { key : 'title', name : 'Title', width : 100, left : 100 }, { key : 'count', name : 'Count', width : 100, left : 200 } ], width : 300, totalWidth : 0, minColumnWidth : 80 },
-      selectedRows : _selectedRows,
+      selectedRows : this._selectedRows,
       selected : {rowIdx : 0,  idx : 0},
       copied : null,
       canFilter : false,
@@ -116,9 +117,9 @@ describe('Grid', function () {
     it("grid should be initialized with selected state of {rowIdx : -1, idx : -1}", function () {
       this.component = TestUtils.renderIntoDocument(<Grid
         enableCellSelect={false}
-        columns={columns}
-        rowGetter={rowGetter}
-        rowsCount={_rows.length}
+        columns={this.columns}
+        rowGetter={this.rowGetter}
+        rowsCount={this._rows.length}
         width={300}/>);
       expect(this.component.state.selected).toEqual({
         rowIdx : -1,
@@ -130,7 +131,7 @@ describe('Grid', function () {
 
   describe("When row selection enabled", function () {
     beforeEach(function () {
-      this.component = TestUtils.renderIntoDocument(<Grid {...testProps} enableRowSelect={true} />);
+      this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps} enableRowSelect={true} />);
     });
 
     afterEach(function () {
@@ -140,7 +141,7 @@ describe('Grid', function () {
     it("should render an additional Select Row column", function () {
       var baseGrid = TestUtils.findRenderedComponentWithType(this.component, BaseGridStub);
       var selectRowCol = baseGrid.props.columnMetrics.columns[0];
-      expect(baseGrid.props.columnMetrics.columns.length).toEqual(columns.length + 1);
+      expect(baseGrid.props.columnMetrics.columns.length).toEqual(this.columns.length + 1);
       expect(selectRowCol.key).toEqual('select-row');
       expect(TestUtils.isElementOfType(selectRowCol.formatter, CheckboxEditorStub)).toBe(true);
     });
@@ -159,7 +160,7 @@ describe('Grid', function () {
       headerCheckbox.props.onChange(fakeEvent);
       //assert
       var selectedRows = this.component.state.selectedRows;
-      expect(selectedRows.length).toEqual(_rows.length);
+      expect(selectedRows.length).toEqual(this._rows.length);
       selectedRows.forEach(function(selected){
         expect(selected).toBe(true);
       });
@@ -282,8 +283,8 @@ describe('Grid', function () {
 
     describe("When column is editable", function () {
       beforeEach(function () {
-        columns[1].editable = true;
-        this.component = TestUtils.renderIntoDocument(<Grid {...testProps} />);
+        this.columns[1].editable = true;
+        this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps} />);
       });
 
       it("double click on grid should activate current selected cell", function () {
@@ -302,7 +303,7 @@ describe('Grid', function () {
         var selectedCellIndex = 1, selectedRowIndex = 1;
         this.component.setState({selected  : {idx : selectedCellIndex, rowIdx : selectedRowIndex}});
         var keyCode_c = '99';
-        var expectedCellValue = _rows[selectedRowIndex].title;
+        var expectedCellValue = this._rows[selectedRowIndex].title;
         //act
         SimulateGridKeyDown(this.component, keyCode_c, true);
         //assert
@@ -312,8 +313,8 @@ describe('Grid', function () {
 
       it("paste a cell value should call onCellCopyPaste of component with correct params", function () {
         //arrange
-        spyOn(testProps, 'onCellCopyPaste');
-        this.component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+        spyOn(this.testProps, 'onCellCopyPaste');
+        this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps}/>);
         this.component.setState({
           textToCopy : 'banana',
           selected   : {idx : 1, rowIdx : 5},
@@ -321,8 +322,8 @@ describe('Grid', function () {
         });
         var keyCode_v = '118';
         SimulateGridKeyDown(this.component, keyCode_v, true);
-        expect(testProps.onCellCopyPaste).toHaveBeenCalled();
-        expect(testProps.onCellCopyPaste.mostRecentCall.args[0]).toEqual({cellKey: "title", rowIdx: 5, value: "banana", fromRow: 1, toRow: 5})
+        expect(this.testProps.onCellCopyPaste).toHaveBeenCalled();
+        expect(this.testProps.onCellCopyPaste.mostRecentCall.args[0]).toEqual({cellKey: "title", rowIdx: 5, value: "banana", fromRow: 1, toRow: 5})
       });
 
       it("cell commit cancel should set grid state inactive", function () {
@@ -369,13 +370,13 @@ describe('Grid', function () {
 
     describe("When column is not editable", function () {
       beforeEach(function () {
-        columns[1].editable = false;
-        this.component = TestUtils.renderIntoDocument(<Grid {...testProps} />);
+        this.columns[1].editable = false;
+        this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps} />);
       });
 
       it("double click on grid should not activate current selected cell", function () {
         this.component.setState({selected : {idx : 1, rowIdx : 1}});
-        columns[1].editable = false;
+        this.columns[1].editable = false;
         var baseGrid = TestUtils.findRenderedComponentWithType(this.component, BaseGridStub);
         baseGrid.props.onViewportDoubleClick();
         expect(this.component.state.selected).toEqual({
@@ -394,7 +395,7 @@ describe('Grid', function () {
         expect(this.component.state.dragged).toEqual({
           idx : 1,
           rowIdx : 2,
-          value : _rows[2].title
+          value : this._rows[2].title
         })
       });
 
@@ -415,17 +416,17 @@ describe('Grid', function () {
       });
 
       it("finishing drag will trigger onCellsDragged event and call it with correct params", function () {
-        spyOn(testProps, 'onCellsDragged');
-        this.component = TestUtils.renderIntoDocument(<Grid {...testProps}  />);
+        spyOn(this.testProps, 'onCellsDragged');
+        this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps}  />);
         this.component.setState({selected : {idx : 1, rowIdx : 2}, dragged : {idx : 1, rowIdx : 2, value : 'apple', overRowIdx : 6}});
         var baseGrid = TestUtils.findRenderedComponentWithType(this.component, BaseGridStub);
         baseGrid.props.onViewportDragEnd();
-        expect(testProps.onCellsDragged).toHaveBeenCalled();
-        expect(testProps.onCellsDragged.argsForCall[0][0]).toEqual({cellKey: "title", fromRow: 2, toRow: 6, value: "apple"});
+        expect(this.testProps.onCellsDragged).toHaveBeenCalled();
+        expect(this.testProps.onCellsDragged.argsForCall[0][0]).toEqual({cellKey: "title", fromRow: 2, toRow: 6, value: "apple"});
       });
 
       it("terminating drag will clear drag state", function () {
-        this.component = TestUtils.renderIntoDocument(<Grid {...testProps}  />);
+        this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps}  />);
         this.component.setState({ dragged : {idx : 1, rowIdx : 2, value : 'apple', overRowIdx : 6}});
         var baseGrid = TestUtils.findRenderedComponentWithType(this.component, BaseGridStub);
         var meta = baseGrid.props.cellMetaData;
@@ -436,8 +437,8 @@ describe('Grid', function () {
 
     it("Adding a new row will set the selected cell to be on the last row", function () {
       var newRow = {id: 1000, title: 'Title 1000', count: 1000};
-      _rows.push(newRow);
-      this.component.setProps({rowsCount:_rows.length});
+      this._rows.push(newRow);
+      this.component.setProps({rowsCount: this._rows.length});
       expect(this.component.state.selected).toEqual({
         idx : 1,
         rowIdx : 1000
@@ -474,13 +475,13 @@ describe('Grid', function () {
     });
 
     it("cell commit should trigger onRowUpdated with correct params", function () {
-      spyOn(testProps, 'onRowUpdated');
-      this.component = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+      spyOn(this.testProps, 'onRowUpdated');
+      this.component = TestUtils.renderIntoDocument(<Grid {...this.testProps}/>);
       var meta = getCellMetaData(this.component);
       var fakeCellUpdate = {cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"}
       meta.onCommit(fakeCellUpdate);
-      expect(testProps.onRowUpdated.callCount).toEqual(1);
-      expect(testProps.onRowUpdated.argsForCall[0][0]).toEqual({
+      expect(this.testProps.onRowUpdated.callCount).toEqual(1);
+      expect(this.testProps.onRowUpdated.argsForCall[0][0]).toEqual({
         cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"
       })
     });
@@ -517,7 +518,7 @@ describe('Grid', function () {
   });
 
   it("changes to non metric column data should keep original metric information", function () {
-    var newColumns = columns.slice(0).map(column => Object.assign({}, column));
+    var newColumns = this.columns.slice(0).map(column => Object.assign({}, column));
     newColumns[0].editable = true;
     var originalMetrics = Object.assign({}, this.component.state.columnMetrics);
     this.component.setProps({columns : newColumns});
