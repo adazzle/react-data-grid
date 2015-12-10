@@ -32,8 +32,12 @@ class DropDownEditor extends EditorBase {
 
   renderOptions(): Array<ReactElement>{
     var options = [];
-    this.props.options.forEach(function(name){
-      options.push(<option key={name} value={name}  >{name}</option>);
+    this.props.options.forEach(function(name, value){
+      if (typeof value !== 'undefined' && value !== null) {
+        options.push(<option key={name} value={value}  >{name}</option>);
+      } else {
+        options.push(<option key={name} value={name}  >{name}</option>);
+      }
     }, this);
     return options;
   }
