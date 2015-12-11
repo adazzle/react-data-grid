@@ -5,15 +5,10 @@ var Canvas         = rewire('../Canvas');
 var TestUtils    = require('react/lib/ReactTestUtils');
 var rewireModule = require("../../test/rewireModule");
 var StubComponent = require("../../test/StubComponent");
+var jasmineReact = require("jasmine-react-helpers");
 
-ddescribe('Canvas Tests', () => {
+describe('Canvas Tests', () => {
   var testElement;
-  // Configure local variable replacements for the module.
-  var setScrollLeftSpy = jasmine.createSpy('setScrollLeftSpy')
-  rewireModule(Canvas, {
-    setScrollLeft: setScrollLeftSpy
-  });
-
 
   var testProps = {
     rowHeight: 25,
@@ -35,17 +30,17 @@ ddescribe('Canvas Tests', () => {
   });
 
   it('Should not call setScroll on render', () => {
-    setScrollLeftSpy.reset();
+    jasmineReact.spyOnClass(Canvas, "setScrollLeft");
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
-    expect(setScrollLeftSpy).not.toHaveBeenCalled();
+    expect(jasmineReact.classPrototype(Canvas).setScrollLeft).not.toHaveBeenCalled();
   });
 
   it('Should not call setScroll on update', () => {
+    jasmineReact.spyOnClass(Canvas, "setScrollLeft");
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
-    spyOn(testElement, 'setScrollLeft');
     //force an update
     testElement.componentDidUpdate(testProps);
-    expect(testElement.setScrollLeft).not.toHaveBeenCalled();
+    expect(jasmineReact.classPrototype(Canvas).setScrollLeft).not.toHaveBeenCalled();
   });
 
 
