@@ -76,6 +76,14 @@ module.exports = function (config) {
     return preprocessors;
   }
 
+  function lookupPhantomJS() {
+    try {
+      return require('phantomjs').path;
+    } catch(e){
+      return;
+    }
+  }
+
   config.set({
 
     basePath: path.join(__dirname, '../'),
@@ -167,6 +175,8 @@ module.exports = function (config) {
     phantomjsLauncher: {
       // configure PhantomJS executable for each platform
       cmd: {
+        linux: lookupPhantomJS(),
+        darwin: lookupPhantomJS(),
         win32: path.join(__dirname, '../test/browser/phantomjs.exe')
       }
     }
