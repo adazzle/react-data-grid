@@ -61,6 +61,7 @@ var ReactDataGrid = React.createClass({
 
   propTypes: {
     rowHeight: React.PropTypes.number.isRequired,
+    headerRowHeight: React.PropTypes.number,
     minHeight: React.PropTypes.number.isRequired,
     enableRowSelect: React.PropTypes.bool,
     onRowUpdated:React.PropTypes.func,
@@ -436,7 +437,7 @@ var ReactDataGrid = React.createClass({
 
 
   getHeaderRows(): Array<{ref: string; height: number;}> {
-    var rows = [{ref:"row", height: this.props.rowHeight}];
+    var rows = [{ref:"row", height: this.props.headerRowHeight || this.props.rowHeight}];
     if(this.state.canFilter === true){
       rows.push({
         ref:"filterRow",
