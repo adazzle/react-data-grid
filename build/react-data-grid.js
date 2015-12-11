@@ -7,7 +7,7 @@
 		exports["ReactDataGrid"] = factory(require("react"));
 	else
 		root["ReactDataGrid"] = factory(root["React"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_17__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_18__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -58,8 +58,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var Grid = __webpack_require__(1);
-	var Row = __webpack_require__(49);
-	var Cell = __webpack_require__(50);
+	var Row = __webpack_require__(50);
+	var Cell = __webpack_require__(51);
 
 	module.exports = Grid;
 	module.exports.Row = Row;
@@ -80,22 +80,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Object$assign = __webpack_require__(3)['default'];
 
-	var React = __webpack_require__(17);
+	var React = __webpack_require__(18);
 	var PropTypes = React.PropTypes;
-	var BaseGrid = __webpack_require__(18);
-	var Row = __webpack_require__(49);
-	var ExcelColumn = __webpack_require__(41);
-	var KeyboardHandlerMixin = __webpack_require__(52);
-	var CheckboxEditor = __webpack_require__(81);
-	var FilterableHeaderCell = __webpack_require__(82);
-	var cloneWithProps = __webpack_require__(29);
-	var DOMMetrics = __webpack_require__(78);
-	var ColumnMetricsMixin = __webpack_require__(83);
-	var RowUtils = __webpack_require__(85);
-	var ColumnUtils = __webpack_require__(24);
+	var BaseGrid = __webpack_require__(19);
+	var Row = __webpack_require__(50);
+	var ExcelColumn = __webpack_require__(42);
+	var KeyboardHandlerMixin = __webpack_require__(53);
+	var CheckboxEditor = __webpack_require__(80);
+	var FilterableHeaderCell = __webpack_require__(81);
+	var cloneWithProps = __webpack_require__(30);
+	var DOMMetrics = __webpack_require__(77);
+	var ColumnMetricsMixin = __webpack_require__(82);
+	var RowUtils = __webpack_require__(84);
+	var ColumnUtils = __webpack_require__(25);
 
 	if (!_Object$assign) {
-	  Object.assign = __webpack_require__(84);
+	  Object.assign = __webpack_require__(83);
 	}
 
 	var ReactDataGrid = React.createClass({
@@ -103,6 +103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  propTypes: {
 	    rowHeight: React.PropTypes.number.isRequired,
+	    headerRowHeight: React.PropTypes.number,
 	    minHeight: React.PropTypes.number.isRequired,
 	    enableRowSelect: React.PropTypes.bool,
 	    onRowUpdated: React.PropTypes.func,
@@ -130,7 +131,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getInitialState: function getInitialState() {
-	    var columnMetrics = this.createColumnMetrics(true);
+	    var columnMetrics = this.createColumnMetrics();
 	    var initialState = { columnMetrics: columnMetrics, selectedRows: this.getInitialSelectedRows(), copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0 };
 	    if (this.props.enableCellSelect) {
 	      initialState.selected = { rowIdx: 0, idx: 0 };
@@ -372,8 +373,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  setupGridColumns: function setupGridColumns() {
-	    var cols = this.props.columns.slice(0);
-	    if (this.props.enableRowSelect) {
+	    var props = arguments.length <= 0 || arguments[0] === undefined ? this.props : arguments[0];
+
+	    var cols = props.columns.slice(0);
+	    if (props.enableRowSelect) {
 	      var selectColumn = {
 	        key: 'select-row',
 	        name: '',
@@ -462,7 +465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getHeaderRows: function getHeaderRows() {
-	    var rows = [{ ref: "row", height: this.props.rowHeight }];
+	    var rows = [{ ref: "row", height: this.props.headerRowHeight || this.props.rowHeight }];
 	    if (this.state.canFilter === true) {
 	      rows.push({
 	        ref: "filterRow",
@@ -608,9 +611,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.3.1 Object.assign(target, source)
-	var $def = __webpack_require__(6);
+	var $export = __webpack_require__(6);
 
-	$def($def.S + $def.F, 'Object', {assign: __webpack_require__(9)});
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(11)});
 
 /***/ },
 /* 6 */
@@ -618,156 +621,141 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var global    = __webpack_require__(7)
 	  , core      = __webpack_require__(8)
+	  , ctx       = __webpack_require__(9)
 	  , PROTOTYPE = 'prototype';
-	var ctx = function(fn, that){
-	  return function(){
-	    return fn.apply(that, arguments);
-	  };
-	};
-	var $def = function(type, name, source){
-	  var key, own, out, exp
-	    , isGlobal = type & $def.G
-	    , isProto  = type & $def.P
-	    , target   = isGlobal ? global : type & $def.S
-	        ? global[name] : (global[name] || {})[PROTOTYPE]
-	    , exports  = isGlobal ? core : core[name] || (core[name] = {});
-	  if(isGlobal)source = name;
+
+	var $export = function(type, name, source){
+	  var IS_FORCED = type & $export.F
+	    , IS_GLOBAL = type & $export.G
+	    , IS_STATIC = type & $export.S
+	    , IS_PROTO  = type & $export.P
+	    , IS_BIND   = type & $export.B
+	    , IS_WRAP   = type & $export.W
+	    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
+	    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
+	    , key, own, out;
+	  if(IS_GLOBAL)source = name;
 	  for(key in source){
 	    // contains in native
-	    own = !(type & $def.F) && target && key in target;
+	    own = !IS_FORCED && target && key in target;
 	    if(own && key in exports)continue;
 	    // export native or passed
 	    out = own ? target[key] : source[key];
 	    // prevent global pollution for namespaces
-	    if(isGlobal && typeof target[key] != 'function')exp = source[key];
+	    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
 	    // bind timers to global for call from export context
-	    else if(type & $def.B && own)exp = ctx(out, global);
+	    : IS_BIND && own ? ctx(out, global)
 	    // wrap global constructors for prevent change them in library
-	    else if(type & $def.W && target[key] == out)!function(C){
-	      exp = function(param){
+	    : IS_WRAP && target[key] == out ? (function(C){
+	      var F = function(param){
 	        return this instanceof C ? new C(param) : C(param);
 	      };
-	      exp[PROTOTYPE] = C[PROTOTYPE];
-	    }(out);
-	    else exp = isProto && typeof out == 'function' ? ctx(Function.call, out) : out;
-	    // export
-	    exports[key] = exp;
-	    if(isProto)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+	      F[PROTOTYPE] = C[PROTOTYPE];
+	      return F;
+	    // make static versions for prototype methods
+	    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+	    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
 	  }
 	};
 	// type bitmap
-	$def.F = 1;  // forced
-	$def.G = 2;  // global
-	$def.S = 4;  // static
-	$def.P = 8;  // proto
-	$def.B = 16; // bind
-	$def.W = 32; // wrap
-	module.exports = $def;
+	$export.F = 1;  // forced
+	$export.G = 2;  // global
+	$export.S = 4;  // static
+	$export.P = 8;  // proto
+	$export.B = 16; // bind
+	$export.W = 32; // wrap
+	module.exports = $export;
 
 /***/ },
 /* 7 */
 /***/ function(module, exports) {
 
 	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-	var UNDEFINED = 'undefined';
-	var global = module.exports = typeof window != UNDEFINED && window.Math == Math
-	  ? window : typeof self != UNDEFINED && self.Math == Math ? self : Function('return this')();
+	var global = module.exports = typeof window != 'undefined' && window.Math == Math
+	  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
 	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
 
 /***/ },
 /* 8 */
 /***/ function(module, exports) {
 
-	var core = module.exports = {};
+	var core = module.exports = {version: '1.2.6'};
 	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 
 /***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.2.1 Object.assign(target, source, ...)
-	var toObject = __webpack_require__(10)
-	  , IObject  = __webpack_require__(12)
-	  , enumKeys = __webpack_require__(14);
+	// optional / simple context binding
+	var aFunction = __webpack_require__(10);
+	module.exports = function(fn, that, length){
+	  aFunction(fn);
+	  if(that === undefined)return fn;
+	  switch(length){
+	    case 1: return function(a){
+	      return fn.call(that, a);
+	    };
+	    case 2: return function(a, b){
+	      return fn.call(that, a, b);
+	    };
+	    case 3: return function(a, b, c){
+	      return fn.call(that, a, b, c);
+	    };
+	  }
+	  return function(/* ...args */){
+	    return fn.apply(that, arguments);
+	  };
+	};
 
-	module.exports = __webpack_require__(16)(function(){
-	  return Symbol() in Object.assign({}); // Object.assign available and Symbol is native
-	}) ? function assign(target, source){   // eslint-disable-line no-unused-vars
-	  var T = toObject(target)
-	    , l = arguments.length
-	    , i = 1;
-	  while(l > i){
-	    var S      = IObject(arguments[i++])
-	      , keys   = enumKeys(S)
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	module.exports = function(it){
+	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+	  return it;
+	};
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.1 Object.assign(target, source, ...)
+	var $        = __webpack_require__(12)
+	  , toObject = __webpack_require__(13)
+	  , IObject  = __webpack_require__(15);
+
+	// should work with symbols and should have deterministic property order (V8 bug)
+	module.exports = __webpack_require__(17)(function(){
+	  var a = Object.assign
+	    , A = {}
+	    , B = {}
+	    , S = Symbol()
+	    , K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function(k){ B[k] = k; });
+	  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+	  var T     = toObject(target)
+	    , $$    = arguments
+	    , $$len = $$.length
+	    , index = 1
+	    , getKeys    = $.getKeys
+	    , getSymbols = $.getSymbols
+	    , isEnum     = $.isEnum;
+	  while($$len > index){
+	    var S      = IObject($$[index++])
+	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
 	      , length = keys.length
 	      , j      = 0
 	      , key;
-	    while(length > j)T[key = keys[j++]] = S[key];
+	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
 	  }
 	  return T;
 	} : Object.assign;
 
 /***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.13 ToObject(argument)
-	var defined = __webpack_require__(11);
-	module.exports = function(it){
-	  return Object(defined(it));
-	};
-
-/***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	// 7.2.1 RequireObjectCoercible(argument)
-	module.exports = function(it){
-	  if(it == undefined)throw TypeError("Can't call method on  " + it);
-	  return it;
-	};
-
-/***/ },
 /* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// indexed object, fallback for non-array-like ES3 strings
-	var cof = __webpack_require__(13);
-	module.exports = 0 in Object('z') ? Object : function(it){
-	  return cof(it) == 'String' ? it.split('') : Object(it);
-	};
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	var toString = {}.toString;
-
-	module.exports = function(it){
-	  return toString.call(it).slice(8, -1);
-	};
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// all enumerable object keys, includes symbols
-	var $ = __webpack_require__(15);
-	module.exports = function(it){
-	  var keys       = $.getKeys(it)
-	    , getSymbols = $.getSymbols;
-	  if(getSymbols){
-	    var symbols = getSymbols(it)
-	      , isEnum  = $.isEnum
-	      , i       = 0
-	      , key;
-	    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))keys.push(key);
-	  }
-	  return keys;
-	};
-
-/***/ },
-/* 15 */
 /***/ function(module, exports) {
 
 	var $Object = Object;
@@ -785,7 +773,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(14);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	// 7.2.1 RequireObjectCoercible(argument)
+	module.exports = function(it){
+	  if(it == undefined)throw TypeError("Can't call method on  " + it);
+	  return it;
+	};
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// fallback for non-array-like ES3 and non-enumerable old V8 strings
+	var cof = __webpack_require__(16);
+	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+	  return cof(it) == 'String' ? it.split('') : Object(it);
+	};
+
+/***/ },
 /* 16 */
+/***/ function(module, exports) {
+
+	var toString = {}.toString;
+
+	module.exports = function(it){
+	  return toString.call(it).slice(8, -1);
+	};
+
+/***/ },
+/* 17 */
 /***/ function(module, exports) {
 
 	module.exports = function(exec){
@@ -797,13 +825,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_17__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_18__;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -816,13 +844,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = __webpack_require__(2)['default'];
 
-	var React = __webpack_require__(17);
+	var React = __webpack_require__(18);
 	var PropTypes = React.PropTypes;
-	var Header = __webpack_require__(19);
-	var Viewport = __webpack_require__(46);
-	var ExcelColumn = __webpack_require__(41);
-	var GridScrollMixin = __webpack_require__(80);
-	var DOMMetrics = __webpack_require__(78);
+	var Header = __webpack_require__(20);
+	var Viewport = __webpack_require__(47);
+	var ExcelColumn = __webpack_require__(42);
+	var GridScrollMixin = __webpack_require__(79);
+	var DOMMetrics = __webpack_require__(77);
 
 	var Grid = React.createClass({
 	  displayName: 'Grid',
@@ -909,7 +937,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Grid;
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -922,12 +950,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = __webpack_require__(2)['default'];
 
-	var React = __webpack_require__(17);
-	var joinClasses = __webpack_require__(20);
-	var shallowCloneObject = __webpack_require__(21);
-	var ColumnMetrics = __webpack_require__(22);
-	var ColumnUtils = __webpack_require__(24);
-	var HeaderRow = __webpack_require__(26);
+	var React = __webpack_require__(18);
+	var joinClasses = __webpack_require__(21);
+	var shallowCloneObject = __webpack_require__(22);
+	var ColumnMetrics = __webpack_require__(23);
+	var ColumnUtils = __webpack_require__(25);
+	var HeaderRow = __webpack_require__(27);
 
 	var Header = React.createClass({
 	  displayName: 'Header',
@@ -1081,7 +1109,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Header;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -1130,7 +1158,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	
@@ -1154,7 +1182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = shallowCloneObject;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1167,11 +1195,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Object$assign = __webpack_require__(3)['default'];
 
-	var shallowCloneObject = __webpack_require__(21);
-	var isValidElement = __webpack_require__(17).isValidElement;
-	var sameColumn = __webpack_require__(23);
-	var ColumnUtils = __webpack_require__(24);
-	var getScrollbarSize = __webpack_require__(25);
+	var shallowCloneObject = __webpack_require__(22);
+	var isValidElement = __webpack_require__(18).isValidElement;
+	var sameColumn = __webpack_require__(24);
+	var ColumnUtils = __webpack_require__(25);
+	var getScrollbarSize = __webpack_require__(26);
 
 	/**
 	 * Update column metrics calculation.
@@ -1314,13 +1342,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { recalculate: recalculate, resizeColumn: resizeColumn, sameColumn: sameColumn, sameColumns: sameColumns };
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO objects as a map */
 	'use strict';
 
-	var isValidElement = __webpack_require__(17).isValidElement;
+	var isValidElement = __webpack_require__(18).isValidElement;
 	module.exports = function sameColumn(a, b) {
 	  var k;
 
@@ -1345,7 +1373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1379,7 +1407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	/*  offsetWidth in HTMLElement */
@@ -1388,38 +1416,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	var size;
 
 	function getScrollbarSize() {
-	    if (size === undefined) {
+	  if (size === undefined) {
 
-	        var outer = document.createElement('div');
-	        outer.style.width = '50px';
-	        outer.style.height = '50px';
-	        outer.style.position = 'absolute';
-	        outer.style.top = '-200px';
-	        outer.style.left = '-200px';
+	    var outer = document.createElement('div');
+	    outer.style.width = '50px';
+	    outer.style.height = '50px';
+	    outer.style.position = 'absolute';
+	    outer.style.top = '-200px';
+	    outer.style.left = '-200px';
 
-	        var inner = document.createElement('div');
-	        inner.style.height = '100px';
-	        inner.style.width = '100%';
+	    var inner = document.createElement('div');
+	    inner.style.height = '100px';
+	    inner.style.width = '100%';
 
-	        outer.appendChild(inner);
-	        document.body.appendChild(outer);
+	    outer.appendChild(inner);
+	    document.body.appendChild(outer);
 
-	        var outerWidth = outer.clientWidth;
-	        outer.style.overflowY = 'scroll';
-	        var innerWidth = inner.clientWidth;
+	    var outerWidth = outer.clientWidth;
+	    outer.style.overflowY = 'scroll';
+	    var innerWidth = inner.clientWidth;
 
-	        document.body.removeChild(outer);
+	    document.body.removeChild(outer);
 
-	        size = outerWidth - innerWidth;
-	    }
+	    size = outerWidth - innerWidth;
+	  }
 
-	    return size;
+	  return size;
 	}
 
 	module.exports = getScrollbarSize;
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -1430,14 +1458,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = __webpack_require__(2)['default'];
 
-	var React = __webpack_require__(17);
+	var React = __webpack_require__(18);
 	var PropTypes = React.PropTypes;
-	var shallowEqual = __webpack_require__(27);
-	var HeaderCell = __webpack_require__(28);
-	var getScrollbarSize = __webpack_require__(25);
-	var ExcelColumn = __webpack_require__(41);
-	var ColumnUtilsMixin = __webpack_require__(24);
-	var SortableHeaderCell = __webpack_require__(45);
+	var shallowEqual = __webpack_require__(28);
+	var HeaderCell = __webpack_require__(29);
+	var getScrollbarSize = __webpack_require__(26);
+	var ExcelColumn = __webpack_require__(42);
+	var ColumnUtilsMixin = __webpack_require__(25);
+	var SortableHeaderCell = __webpack_require__(46);
 
 	var HeaderRowStyle = {
 	  overflow: React.PropTypes.string,
@@ -1551,7 +1579,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = HeaderRow;
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	/**
@@ -1599,7 +1627,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO unkwon */
@@ -1610,12 +1638,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	"use strict";
 
-	var React = __webpack_require__(17);
-	var joinClasses = __webpack_require__(20);
-	var cloneWithProps = __webpack_require__(29);
+	var React = __webpack_require__(18);
+	var joinClasses = __webpack_require__(21);
+	var cloneWithProps = __webpack_require__(30);
 	var PropTypes = React.PropTypes;
-	var ExcelColumn = __webpack_require__(41);
-	var ResizeHandle = __webpack_require__(43);
+	var ExcelColumn = __webpack_require__(42);
+	var ResizeHandle = __webpack_require__(44);
 
 	var HeaderCell = React.createClass({
 	  displayName: 'HeaderCell',
@@ -1752,7 +1780,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = HeaderCell;
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -1769,11 +1797,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var ReactElement = __webpack_require__(31);
-	var ReactPropTransferer = __webpack_require__(38);
+	var ReactElement = __webpack_require__(32);
+	var ReactPropTransferer = __webpack_require__(39);
 
-	var keyOf = __webpack_require__(40);
-	var warning = __webpack_require__(35);
+	var keyOf = __webpack_require__(41);
+	var warning = __webpack_require__(36);
 
 	var CHILDREN_PROP = keyOf({children: null});
 
@@ -1811,10 +1839,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = cloneWithProps;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)))
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -1911,7 +1939,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -1927,11 +1955,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var ReactContext = __webpack_require__(32);
-	var ReactCurrentOwner = __webpack_require__(37);
+	var ReactContext = __webpack_require__(33);
+	var ReactCurrentOwner = __webpack_require__(38);
 
-	var assign = __webpack_require__(33);
-	var warning = __webpack_require__(35);
+	var assign = __webpack_require__(34);
+	var warning = __webpack_require__(36);
 
 	var RESERVED_PROPS = {
 	  key: true,
@@ -2219,10 +2247,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = ReactElement;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)))
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -2238,9 +2266,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var assign = __webpack_require__(33);
-	var emptyObject = __webpack_require__(34);
-	var warning = __webpack_require__(35);
+	var assign = __webpack_require__(34);
+	var emptyObject = __webpack_require__(35);
+	var warning = __webpack_require__(36);
 
 	var didWarn = false;
 
@@ -2300,10 +2328,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = ReactContext;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)))
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
 	/**
@@ -2356,7 +2384,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -2380,10 +2408,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = emptyObject;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)))
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -2399,7 +2427,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
-	var emptyFunction = __webpack_require__(36);
+	var emptyFunction = __webpack_require__(37);
 
 	/**
 	 * Similar to invariant but only logs a warning if the condition is not met.
@@ -2446,10 +2474,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = warning;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)))
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports) {
 
 	/**
@@ -2487,7 +2515,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 	/**
@@ -2525,7 +2553,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2541,9 +2569,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var assign = __webpack_require__(33);
-	var emptyFunction = __webpack_require__(36);
-	var joinClasses = __webpack_require__(39);
+	var assign = __webpack_require__(34);
+	var emptyFunction = __webpack_require__(37);
+	var joinClasses = __webpack_require__(40);
 
 	/**
 	 * Creates a transfer strategy that will merge prop values using the supplied
@@ -2639,7 +2667,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports) {
 
 	/**
@@ -2684,7 +2712,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/**
@@ -2724,14 +2752,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _classCallCheck = __webpack_require__(42)['default'];
+	var _classCallCheck = __webpack_require__(43)['default'];
 
-	var React = __webpack_require__(17);
+	var React = __webpack_require__(18);
 
 	var ExcelColumn = function ExcelColumn() {
 	  _classCallCheck(this, ExcelColumn);
@@ -2747,7 +2775,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ExcelColumnShape;
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2761,17 +2789,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _extends = __webpack_require__(2)['default'];
 
-	var React = __webpack_require__(17);
-	var joinClasses = __webpack_require__(20);
-	var Draggable = __webpack_require__(44);
-	var cloneWithProps = __webpack_require__(29);
+	var React = __webpack_require__(18);
+	var joinClasses = __webpack_require__(21);
+	var Draggable = __webpack_require__(45);
+	var cloneWithProps = __webpack_require__(30);
 	var PropTypes = React.PropTypes;
 
 	var ResizeHandle = React.createClass({
@@ -2796,7 +2824,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ResizeHandle;
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*  need   */
@@ -2809,9 +2837,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = __webpack_require__(2)['default'];
 
-	var React = __webpack_require__(17);
+	var React = __webpack_require__(18);
 	var PropTypes = React.PropTypes;
-	var emptyFunction = __webpack_require__(36);
+	var emptyFunction = __webpack_require__(37);
 
 	var Draggable = React.createClass({
 	  displayName: 'Draggable',
@@ -2888,7 +2916,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Draggable;
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -2899,9 +2927,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var React = __webpack_require__(17);
-	var joinClasses = __webpack_require__(20);
-	var ExcelColumn = __webpack_require__(41);
+	var React = __webpack_require__(18);
+	var joinClasses = __webpack_require__(21);
+	var ExcelColumn = __webpack_require__(42);
 	var DEFINE_SORT = {
 	  ASC: 'ASC',
 	  DESC: 'DESC',
@@ -2969,7 +2997,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = SortableHeaderCell;
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -2980,11 +3008,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var React = __webpack_require__(17);
-	var Canvas = __webpack_require__(47);
+	var React = __webpack_require__(18);
+	var Canvas = __webpack_require__(48);
 	var PropTypes = React.PropTypes;
 
-	var ViewportScroll = __webpack_require__(77);
+	var ViewportScroll = __webpack_require__(76);
 
 	var Viewport = React.createClass({
 	  displayName: 'Viewport',
@@ -3063,7 +3091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Viewport;
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -3072,15 +3100,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	"use strict";
 
-	var React = __webpack_require__(17);
-	var joinClasses = __webpack_require__(20);
+	var React = __webpack_require__(18);
+	var joinClasses = __webpack_require__(21);
 	var PropTypes = React.PropTypes;
-	var cloneWithProps = __webpack_require__(29);
-	var shallowEqual = __webpack_require__(27);
-	var emptyFunction = __webpack_require__(36);
-	var ScrollShim = __webpack_require__(48);
-	var Row = __webpack_require__(49);
-	var ExcelColumn = __webpack_require__(41);
+	var cloneWithProps = __webpack_require__(30);
+	var shallowEqual = __webpack_require__(28);
+	var emptyFunction = __webpack_require__(37);
+	var ScrollShim = __webpack_require__(49);
+	var Row = __webpack_require__(50);
+	var ExcelColumn = __webpack_require__(42);
 
 	var Canvas = React.createClass({
 	  displayName: 'Canvas',
@@ -3308,7 +3336,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Canvas;
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO mixin not compatible and HTMLElement classList */
@@ -3319,7 +3347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var React = __webpack_require__(17);
+	var React = __webpack_require__(18);
 
 	var ScrollShim = {
 
@@ -3368,7 +3396,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ScrollShim;
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -3381,11 +3409,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = __webpack_require__(2)['default'];
 
-	var React = __webpack_require__(17);
-	var joinClasses = __webpack_require__(20);
-	var Cell = __webpack_require__(50);
-	var ColumnMetrics = __webpack_require__(22);
-	var ColumnUtilsMixin = __webpack_require__(24);
+	var React = __webpack_require__(18);
+	var joinClasses = __webpack_require__(21);
+	var Cell = __webpack_require__(51);
+	var ColumnMetrics = __webpack_require__(23);
+	var ColumnUtilsMixin = __webpack_require__(25);
 
 	var Row = React.createClass({
 	  displayName: 'Row',
@@ -3403,7 +3431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  mixins: [ColumnUtilsMixin],
 
 	  render: function render() {
-	    var className = joinClasses('react-grid-Row', 'react-grid-Row--' + this.props.idx % 2 === 0 ? 'even' : 'odd');
+	    var className = joinClasses('react-grid-Row', 'react-grid-Row--' + (this.props.idx % 2 === 0 ? 'even' : 'odd'));
 
 	    var style = {
 	      height: this.getRowHeight(this.props),
@@ -3430,7 +3458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var CellRenderer = _this.props.cellRenderer;
 	      var cell = React.createElement(CellRenderer, {
 	        ref: i,
-	        key: i,
+	        key: column.key + '-' + i,
 	        idx: i,
 	        rowIdx: _this.props.idx,
 	        value: _this.getCellValue(column.key || i),
@@ -3546,7 +3574,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Row;
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -3559,13 +3587,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = __webpack_require__(2)['default'];
 
-	var React = __webpack_require__(17);
-	var joinClasses = __webpack_require__(20);
-	var cloneWithProps = __webpack_require__(29);
-	var EditorContainer = __webpack_require__(51);
-	var ExcelColumn = __webpack_require__(41);
-	var isFunction = __webpack_require__(75);
-	var CellMetaDataShape = __webpack_require__(76);
+	var React = __webpack_require__(18);
+	var joinClasses = __webpack_require__(21);
+	var cloneWithProps = __webpack_require__(30);
+	var EditorContainer = __webpack_require__(52);
+	var ExcelColumn = __webpack_require__(42);
+	var isFunction = __webpack_require__(74);
+	var CellMetaDataShape = __webpack_require__(75);
 
 	var Cell = React.createClass({
 	  displayName: 'Cell',
@@ -3873,7 +3901,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Cell;
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -3884,12 +3912,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	*/
 	'use strict';
 
-	var React = __webpack_require__(17);
-	var joinClasses = __webpack_require__(20);
-	var keyboardHandlerMixin = __webpack_require__(52);
-	var SimpleTextEditor = __webpack_require__(53);
-	var isFunction = __webpack_require__(75);
-	var cloneWithProps = __webpack_require__(29);
+	var React = __webpack_require__(18);
+	var joinClasses = __webpack_require__(21);
+	var keyboardHandlerMixin = __webpack_require__(53);
+	var SimpleTextEditor = __webpack_require__(54);
+	var isFunction = __webpack_require__(74);
+	var cloneWithProps = __webpack_require__(30);
 
 	var EditorContainer = React.createClass({
 	  displayName: 'EditorContainer',
@@ -4154,7 +4182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = EditorContainer;
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO: mixins */
@@ -4166,7 +4194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var React = __webpack_require__(17);
+	var React = __webpack_require__(18);
 	var KeyboardHandlerMixin = {
 
 	  onKeyDown: function onKeyDown(e) {
@@ -4212,7 +4240,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = KeyboardHandlerMixin;
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -4223,18 +4251,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var _get = __webpack_require__(54)['default'];
+	var _get = __webpack_require__(55)['default'];
 
-	var _inherits = __webpack_require__(60)['default'];
+	var _inherits = __webpack_require__(61)['default'];
 
-	var _createClass = __webpack_require__(71)['default'];
+	var _createClass = __webpack_require__(70)['default'];
 
-	var _classCallCheck = __webpack_require__(42)['default'];
+	var _classCallCheck = __webpack_require__(43)['default'];
 
-	var React = __webpack_require__(17);
-	var keyboardHandlerMixin = __webpack_require__(52);
-	var ExcelColumn = __webpack_require__(41);
-	var EditorBase = __webpack_require__(74);
+	var React = __webpack_require__(18);
+	var keyboardHandlerMixin = __webpack_require__(53);
+	var ExcelColumn = __webpack_require__(42);
+	var EditorBase = __webpack_require__(73);
 
 	var SimpleTextEditor = (function (_EditorBase) {
 	  _inherits(SimpleTextEditor, _EditorBase);
@@ -4260,12 +4288,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = SimpleTextEditor;
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$getOwnPropertyDescriptor = __webpack_require__(55)["default"];
+	var _Object$getOwnPropertyDescriptor = __webpack_require__(56)["default"];
 
 	exports["default"] = function get(_x, _x2, _x3) {
 	  var _again = true;
@@ -4274,7 +4302,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var object = _x,
 	        property = _x2,
 	        receiver = _x3;
-	    desc = parent = getter = undefined;
 	    _again = false;
 	    if (object === null) object = Function.prototype;
 
@@ -4290,6 +4317,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _x2 = property;
 	        _x3 = receiver;
 	        _again = true;
+	        desc = parent = undefined;
 	        continue _function;
 	      }
 	    } else if ("value" in desc) {
@@ -4309,67 +4337,69 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(56), __esModule: true };
-
-/***/ },
 /* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(15);
-	__webpack_require__(57);
-	module.exports = function getOwnPropertyDescriptor(it, key){
-	  return $.getDesc(it, key);
-	};
+	module.exports = { "default": __webpack_require__(57), __esModule: true };
 
 /***/ },
 /* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-	var toIObject = __webpack_require__(58);
+	var $ = __webpack_require__(12);
+	__webpack_require__(58);
+	module.exports = function getOwnPropertyDescriptor(it, key){
+	  return $.getDesc(it, key);
+	};
 
-	__webpack_require__(59)('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor){
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
+	var toIObject = __webpack_require__(59);
+
+	__webpack_require__(60)('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor){
 	  return function getOwnPropertyDescriptor(it, key){
 	    return $getOwnPropertyDescriptor(toIObject(it), key);
 	  };
 	});
 
 /***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(12)
-	  , defined = __webpack_require__(11);
-	module.exports = function(it){
-	  return IObject(defined(it));
-	};
-
-/***/ },
 /* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// most Object methods by ES6 should accept primitives
-	module.exports = function(KEY, exec){
-	  var $def = __webpack_require__(6)
-	    , fn   = (__webpack_require__(8).Object || {})[KEY] || Object[KEY]
-	    , exp  = {};
-	  exp[KEY] = exec(fn);
-	  $def($def.S + $def.F * __webpack_require__(16)(function(){ fn(1); }), 'Object', exp);
+	// to indexed object, toObject with fallback for non-array-like ES3 strings
+	var IObject = __webpack_require__(15)
+	  , defined = __webpack_require__(14);
+	module.exports = function(it){
+	  return IObject(defined(it));
 	};
 
 /***/ },
 /* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// most Object methods by ES6 should accept primitives
+	var $export = __webpack_require__(6)
+	  , core    = __webpack_require__(8)
+	  , fails   = __webpack_require__(17);
+	module.exports = function(KEY, exec){
+	  var fn  = (core.Object || {})[KEY] || Object[KEY]
+	    , exp = {};
+	  exp[KEY] = exec(fn);
+	  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
+	};
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
-	var _Object$create = __webpack_require__(61)["default"];
+	var _Object$create = __webpack_require__(62)["default"];
 
-	var _Object$setPrototypeOf = __webpack_require__(63)["default"];
+	var _Object$setPrototypeOf = __webpack_require__(64)["default"];
 
 	exports["default"] = function (subClass, superClass) {
 	  if (typeof superClass !== "function" && superClass !== null) {
@@ -4390,131 +4420,97 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(62), __esModule: true };
-
-/***/ },
 /* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(15);
-	module.exports = function create(P, D){
-	  return $.create(P, D);
-	};
+	module.exports = { "default": __webpack_require__(63), __esModule: true };
 
 /***/ },
 /* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(64), __esModule: true };
+	var $ = __webpack_require__(12);
+	module.exports = function create(P, D){
+	  return $.create(P, D);
+	};
 
 /***/ },
 /* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(65);
-	module.exports = __webpack_require__(8).Object.setPrototypeOf;
+	module.exports = { "default": __webpack_require__(65), __esModule: true };
 
 /***/ },
 /* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.3.19 Object.setPrototypeOf(O, proto)
-	var $def = __webpack_require__(6);
-	$def($def.S, 'Object', {setPrototypeOf: __webpack_require__(66).set});
+	__webpack_require__(66);
+	module.exports = __webpack_require__(8).Object.setPrototypeOf;
 
 /***/ },
 /* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// 19.1.3.19 Object.setPrototypeOf(O, proto)
+	var $export = __webpack_require__(6);
+	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(67).set});
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// Works with __proto__ only. Old v8 can't work with null proto objects.
 	/* eslint-disable no-proto */
-	var getDesc  = __webpack_require__(15).getDesc
-	  , isObject = __webpack_require__(67)
-	  , anObject = __webpack_require__(68);
+	var getDesc  = __webpack_require__(12).getDesc
+	  , isObject = __webpack_require__(68)
+	  , anObject = __webpack_require__(69);
 	var check = function(O, proto){
 	  anObject(O);
 	  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
 	};
 	module.exports = {
-	  set: Object.setPrototypeOf || ('__proto__' in {} // eslint-disable-line
-	    ? function(buggy, set){
-	        try {
-	          set = __webpack_require__(69)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
-	          set({}, []);
-	        } catch(e){ buggy = true; }
-	        return function setPrototypeOf(O, proto){
-	          check(O, proto);
-	          if(buggy)O.__proto__ = proto;
-	          else set(O, proto);
-	          return O;
-	        };
-	      }()
-	    : undefined),
+	  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
+	    function(test, buggy, set){
+	      try {
+	        set = __webpack_require__(9)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
+	        set(test, []);
+	        buggy = !(test instanceof Array);
+	      } catch(e){ buggy = true; }
+	      return function setPrototypeOf(O, proto){
+	        check(O, proto);
+	        if(buggy)O.__proto__ = proto;
+	        else set(O, proto);
+	        return O;
+	      };
+	    }({}, false) : undefined),
 	  check: check
 	};
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports) {
 
-	// http://jsperf.com/core-js-isobject
 	module.exports = function(it){
-	  return it !== null && (typeof it == 'object' || typeof it == 'function');
-	};
-
-/***/ },
-/* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isObject = __webpack_require__(67);
-	module.exports = function(it){
-	  if(!isObject(it))throw TypeError(it + ' is not an object!');
-	  return it;
+	  return typeof it === 'object' ? it !== null : typeof it === 'function';
 	};
 
 /***/ },
 /* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// optional / simple context binding
-	var aFunction = __webpack_require__(70);
-	module.exports = function(fn, that, length){
-	  aFunction(fn);
-	  if(that === undefined)return fn;
-	  switch(length){
-	    case 1: return function(a){
-	      return fn.call(that, a);
-	    };
-	    case 2: return function(a, b){
-	      return fn.call(that, a, b);
-	    };
-	    case 3: return function(a, b, c){
-	      return fn.call(that, a, b, c);
-	    };
-	  } return function(/* ...args */){
-	      return fn.apply(that, arguments);
-	    };
-	};
-
-/***/ },
-/* 70 */
-/***/ function(module, exports) {
-
+	var isObject = __webpack_require__(68);
 	module.exports = function(it){
-	  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+	  if(!isObject(it))throw TypeError(it + ' is not an object!');
 	  return it;
 	};
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$defineProperty = __webpack_require__(72)["default"];
+	var _Object$defineProperty = __webpack_require__(71)["default"];
 
 	exports["default"] = (function () {
 	  function defineProperties(target, props) {
@@ -4538,22 +4534,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 
 /***/ },
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(72), __esModule: true };
+
+/***/ },
 /* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(73), __esModule: true };
-
-/***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $ = __webpack_require__(15);
+	var $ = __webpack_require__(12);
 	module.exports = function defineProperty(it, key, desc){
 	  return $.setDesc(it, key, desc);
 	};
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -4564,17 +4560,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var _get = __webpack_require__(54)['default'];
+	var _get = __webpack_require__(55)['default'];
 
-	var _inherits = __webpack_require__(60)['default'];
+	var _inherits = __webpack_require__(61)['default'];
 
-	var _createClass = __webpack_require__(71)['default'];
+	var _createClass = __webpack_require__(70)['default'];
 
-	var _classCallCheck = __webpack_require__(42)['default'];
+	var _classCallCheck = __webpack_require__(43)['default'];
 
-	var React = __webpack_require__(17);
-	var keyboardHandlerMixin = __webpack_require__(52);
-	var ExcelColumn = __webpack_require__(41);
+	var React = __webpack_require__(18);
+	var keyboardHandlerMixin = __webpack_require__(53);
+	var ExcelColumn = __webpack_require__(42);
 
 	var EditorBase = (function (_React$Component) {
 	  _inherits(EditorBase, _React$Component);
@@ -4630,7 +4626,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = EditorBase;
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports) {
 
 	
@@ -4644,12 +4640,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isFunction;
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var PropTypes = __webpack_require__(17).PropTypes;
+	var PropTypes = __webpack_require__(18).PropTypes;
 
 	module.exports = {
 	  selected: PropTypes.object.isRequired,
@@ -4659,16 +4655,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO mixins */
 
 	'use strict';
 
-	var React = __webpack_require__(17);
-	var DOMMetrics = __webpack_require__(78);
-	var getWindowSize = __webpack_require__(79);
+	var React = __webpack_require__(18);
+	var DOMMetrics = __webpack_require__(77);
+	var getWindowSize = __webpack_require__(78);
 
 	var PropTypes = React.PropTypes;
 	var min = Math.min;
@@ -4753,7 +4749,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO mixin and invarient splat */
@@ -4764,9 +4760,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var React = __webpack_require__(17);
-	var emptyFunction = __webpack_require__(36);
-	var shallowCloneObject = __webpack_require__(21);
+	var React = __webpack_require__(18);
+	var emptyFunction = __webpack_require__(37);
+	var shallowCloneObject = __webpack_require__(22);
 
 	var contextTypes = {
 	  metricsComputator: React.PropTypes.object
@@ -4922,7 +4918,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports) {
 
 	
@@ -4959,7 +4955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = getWindowSize;
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports) {
 
 	/* TODO mixins */
@@ -5000,7 +4996,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -5009,7 +5005,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var React = __webpack_require__(17);
+	var React = __webpack_require__(18);
 
 	var CheckboxEditor = React.createClass({
 	  displayName: 'CheckboxEditor',
@@ -5036,7 +5032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = CheckboxEditor;
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -5047,8 +5043,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	var React = __webpack_require__(17);
-	var ExcelColumn = __webpack_require__(41);
+	var React = __webpack_require__(18);
+	var ExcelColumn = __webpack_require__(42);
 
 	var FilterableHeaderCell = React.createClass({
 	  displayName: 'FilterableHeaderCell',
@@ -5093,21 +5089,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = FilterableHeaderCell;
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* TODO mixins */
 
 	'use strict';
 
-	var _classCallCheck = __webpack_require__(42)['default'];
+	var _classCallCheck = __webpack_require__(43)['default'];
 
-	var ColumnMetrics = __webpack_require__(22);
-	var DOMMetrics = __webpack_require__(78);
-	Object.assign = __webpack_require__(84);
-	var PropTypes = __webpack_require__(17).PropTypes;
-	var ColumnUtils = __webpack_require__(24);
-	var React = __webpack_require__(17);
+	var ColumnMetrics = __webpack_require__(23);
+	var DOMMetrics = __webpack_require__(77);
+	Object.assign = __webpack_require__(83);
+	var PropTypes = __webpack_require__(18).PropTypes;
+	var ColumnUtils = __webpack_require__(25);
+	var React = __webpack_require__(18);
 
 	var Column = function Column() {
 	  _classCallCheck(this, Column);
@@ -5140,7 +5136,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	    if (nextProps.columns) {
 	      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)) {
-	        var columnMetrics = this.createColumnMetrics();
+	        var columnMetrics = this.createColumnMetrics(nextProps);
 	        this.setState({ columnMetrics: columnMetrics });
 	      }
 	    }
@@ -5190,9 +5186,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ columnMetrics: columnMetrics });
 	  },
 
-	  createColumnMetrics: function createColumnMetrics(initialRun) {
-	    var gridColumns = this.setupGridColumns();
-	    return this.getColumnMetricsType({ columns: gridColumns, minColumnWidth: this.props.minColumnWidth }, initialRun);
+	  createColumnMetrics: function createColumnMetrics() {
+	    var props = arguments.length <= 0 || arguments[0] === undefined ? this.props : arguments[0];
+
+	    var gridColumns = this.setupGridColumns(props);
+	    return this.getColumnMetricsType({ columns: gridColumns, minColumnWidth: this.props.minColumnWidth });
 	  },
 
 	  onColumnResize: function onColumnResize(index, width) {
@@ -5202,7 +5200,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5234,7 +5232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 85 */
+/* 84 */
 /***/ function(module, exports) {
 
 	'use strict';

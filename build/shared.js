@@ -57,12 +57,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var Navbar = __webpack_require__(160);
+	var Navbar = __webpack_require__(164);
 	React.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
 
 /***/ },
 
-/***/ 160:
+/***/ 164:
 /***/ function(module, exports) {
 
 	/**
