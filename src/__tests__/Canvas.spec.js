@@ -6,13 +6,13 @@ var TestUtils    = require('react/lib/ReactTestUtils');
 var rewireModule = require("../../test/rewireModule");
 var StubComponent = require("../../test/StubComponent");
 
-describe('Canvas Tests', () => {
+ddescribe('Canvas Tests', () => {
   var testElement;
   // Configure local variable replacements for the module.
+  var setScrollLeftSpy = jasmine.createSpy('setScrollLeftSpy')
   rewireModule(Canvas, {
-
+    setScrollLeft: setScrollLeftSpy
   });
-
 
 
   var testProps = {
@@ -22,21 +22,30 @@ describe('Canvas Tests', () => {
     displayEnd: 10,
     rowsCount: 1,
     columns: [],
-    rowGetter: function() { return [] }
+    rowGetter: function() { return [] },
+    cellMetaData: {}
   }
 
   beforeEach(() => {
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
   });
 
-  it('should create a new instance of Cell', () => {
+  it('should create a new instance of Canvas', () => {
     expect(testElement).toBeDefined();
   });
 
   it('Should not call setScroll on render', () => {
-    spyOn(Canvas, 'setScrollLeft');
+    setScrollLeftSpy.reset();
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
-    expect(Canvas.setScrollLeft).not.toHaveBeenCalled();
+    expect(setScrollLeftSpy).not.toHaveBeenCalled();
+  });
+
+  it('Should not call setScroll on update', () => {
+    testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
+    spyOn(testElement, 'setScrollLeft');
+    //force an update
+    testElement.componentDidUpdate(testProps);
+    expect(testElement.setScrollLeft).not.toHaveBeenCalled();
   });
 
 
