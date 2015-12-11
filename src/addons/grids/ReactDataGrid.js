@@ -93,7 +93,7 @@ var ReactDataGrid = React.createClass({
   },
 
   getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType;  } {
-    var columnMetrics = this.createColumnMetrics(true);
+    var columnMetrics = this.createColumnMetrics();
     var initialState = {columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null, scrollOffset: 0}
     if(this.props.enableCellSelect){
       initialState.selected = {rowIdx: 0, idx: 0};
@@ -344,9 +344,9 @@ var ReactDataGrid = React.createClass({
 
   },
 
-  setupGridColumns : function(): Array<any>{
-    var cols = this.props.columns.slice(0);
-    if(this.props.enableRowSelect){
+  setupGridColumns : function(props = this.props): Array<any>{
+    var cols = props.columns.slice(0);
+    if(props.enableRowSelect){
       var selectColumn = {
           key: 'select-row',
           name: '',
