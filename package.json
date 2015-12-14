@@ -19,7 +19,7 @@
     "react-component"
   ],
   "peerDependencies": {
-    "react": "~0.13.3"
+    "react": "^0.13.3"
   },
   "dependencies": {
     "classnames": "^1.2.0",
