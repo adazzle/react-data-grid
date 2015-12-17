@@ -54,7 +54,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     },
     {
       key: 'avartar',
-      name: 'Avartar',
+      name: 'Avatar',
       width : 60,
       formatter : ReactDataGrid.Formatters.ImageFormatter,
       resizable : true

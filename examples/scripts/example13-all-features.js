@@ -77,98 +77,112 @@ var AllFeaturesExample = `
       key: 'id',
       name: 'ID',
       width : 80,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'avartar',
-      name: 'Avartar',
+      name: 'Avatar',
       width : 60,
       formatter : ReactDataGrid.Formatters.ImageFormatter,
-      resizable : true
+      resizable : true,
+      filterable: true
     },
     {
       key: 'county',
       name: 'County',
       editor: <AutoCompleteEditor options={counties}/>,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'title',
       name: 'Title',
       editor : <DropDownEditor options={titles}/>,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'firstName',
       name: 'First Name',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'lastName',
       name: 'Last Name',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'email',
       name: 'Email',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'street',
       name: 'Street',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'zipCode',
       name: 'ZipCode',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'date',
       name: 'Date',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'bs',
       name: 'bs',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'catchPhrase',
       name: 'Catch Phrase',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'companyName',
       name: 'Company Name',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'sentence',
       name: 'Sentence',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     }
   ];
 
@@ -176,8 +190,10 @@ var AllFeaturesExample = `
  var Example = React.createClass({displayName: 'component',
 
     getInitialState : function(){
-      var fakeRows = createRows(2000);
-      return {rows :fakeRows};
+      var originalRows = createRows(1000);
+      var rows = originalRows.slice(0);
+      //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
+      return {originalRows : originalRows, rows : rows, filters: {}};
     },
 
     handleRowUpdated : function(commit){
@@ -227,6 +243,34 @@ var AllFeaturesExample = `
       return this.state.rows.length;
     },
 
+    filterRows : function(originalRows, filters) {
+      var rows = originalRows.filter(function(r){
+        var include = true;
+        for (var columnKey in filters) {
+          if(filters.hasOwnProperty(columnKey)) {
+            var rowValue = r[columnKey].toString().toLowerCase();
+            if(rowValue.indexOf(filters[columnKey].toLowerCase()) === -1) {
+              include = false;
+            }
+          }
+        }
+        return include;
+      });
+      return rows;
+    },
+
+    handleFilterChange : function(filter){
+      this.setState(function(currentState) {
+        if (filter.filterTerm) {
+          currentState.filters[filter.columnKey] = filter.filterTerm;
+        } else {
+          delete currentState.filters[filter.columnKey];
+        }
+        currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
+        return currentState;
+      });
+    },
+
     render() {
       return (
             <ReactDataGrid
@@ -237,7 +281,8 @@ var AllFeaturesExample = `
               onRowUpdated={this.handleRowUpdated}
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}
-              toolbar={<Toolbar onAddRow={this.handleAddRow}/>}
+              toolbar={<Toolbar onAddRow={this.handleAddRow} enableFilter={true}/>}
+              onAddFilter={this.handleFilterChange}
               enableRowSelect={true}
               rowHeight={50}
               minHeight={600}
