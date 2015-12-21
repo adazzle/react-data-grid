@@ -216,7 +216,8 @@ var Cell = React.createClass({
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
-      this.props.column.locked ? 'react-grid-Cell--locked' : null
+      this.props.column.locked === 'left' ? 'react-grid-Cell--locked-left' : null,
+      this.props.column.locked === 'right' ? 'react-grid-Cell--locked-right' : null
     );
     var extraClasses = joinClasses({
       'selected' : this.isSelected() && !this.isActive() ,

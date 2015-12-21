@@ -104,8 +104,11 @@
 .react-grid-Row:hover .react-grid-Cell {
   background-color: #f2f2f2;
 }
-.react-grid-Cell--locked:last-of-type {
+.react-grid-Cell--locked-left:last-of-type {
   border-right: 1px solid #dddddd;
+  box-shadow: none;
+}
+.react-grid-Cell--locked-right {
   border-left: 2px dotted #dddddd;
   box-shadow: none;
 }
