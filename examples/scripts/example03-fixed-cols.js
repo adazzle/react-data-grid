@@ -82,7 +82,7 @@ module.exports = React.createClass({
     return(
       <div>
         <h3>Frozen Columns Example</h3>
-        <p>To make a given column frozen, set <code>column.locked = true</code>. In this example, the ID columns has been frozen and will remain in position as you scroll horizontally</p>
+        <p>To make a given column frozen, set <code>column.locked = 'left'</code> to fix the column to the left, and set <code>column.locked = 'right'</code> to lock the column to the right. In this example, the ID columns has been frozen and will remain in position as you scroll horizontally</p>
         <ReactPlayground codeText={FixedExample} />
       </div>
     )
