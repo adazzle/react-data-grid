@@ -12,6 +12,7 @@ var getScrollbarSize  = require('./getScrollbarSize');
 var ExcelColumn  = require('./addons/grids/ExcelColumn');
 var ColumnUtilsMixin  = require('./ColumnUtils');
 var SortableHeaderCell    = require('./addons/cells/headerCells/SortableHeaderCell');
+var RowScrollMixin = require('./RowScrollMixin');
 
 var HeaderRowStyle  = {
   overflow: React.PropTypes.string,
@@ -39,7 +40,7 @@ var HeaderRow = React.createClass({
 
   },
 
-  mixins: [ColumnUtilsMixin],
+  mixins: [ColumnUtilsMixin, RowScrollMixin],
 
   render(): ?ReactElement {
     var cellsStyle = {
@@ -95,14 +96,6 @@ var HeaderRow = React.createClass({
     }
 
     return cells.concat(lockedCells);
-  },
-
-  setScrollLeft(scrollLeft: number) {
-    this.props.columns.forEach( (column, i) => {
-      if (column.locked) {
-        this.refs[i].setScrollLeft(scrollLeft);
-      }
-    });
   },
 
 

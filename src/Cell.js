@@ -13,6 +13,7 @@ var EditorContainer   = require('./addons/editors/EditorContainer');
 var ExcelColumn       = require('./addons/grids/ExcelColumn');
 var isFunction        = require('./addons/utils/isFunction');
 var CellMetaDataShape = require('./PropTypeShapes/CellMetaData');
+var CellScrollMixin = require('./CellScrollMixin');
 
 var Cell = React.createClass({
 
@@ -32,6 +33,8 @@ var Cell = React.createClass({
     className: React.PropTypes.string,
     rowData : React.PropTypes.object.isRequired
   },
+
+  mixins: [CellScrollMixin],
 
   getDefaultProps : function(): {tabIndex: number; ref: string; isExpanded: boolean } {
     return {
@@ -246,16 +249,6 @@ var Cell = React.createClass({
         // without replacing it wholesale.
         cellDOMNode.className = cellDOMNode.className + ' ' + updateCellClass;
       }
-    }
-  },
-
-  setScrollLeft(scrollLeft: number) {
-    var ctrl: any = this; //flow on windows has an outdated react declaration, once that gets updated, we can remove this
-    if (ctrl.isMounted()) {
-      var node = this.getDOMNode();
-      var transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-      node.style.webkitTransform = transform;
-      node.style.transform = transform;
     }
   },
 

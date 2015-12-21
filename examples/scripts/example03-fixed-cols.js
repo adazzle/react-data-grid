@@ -33,7 +33,7 @@ var columns = [
 {
   key: 'id',
   name: 'ID',
-  locked : true
+  locked: 'left'
 },
 {
   key: 'task',
@@ -63,12 +63,8 @@ var columns = [
 {
   key: 'completeDate',
   name: 'Expected Complete',
-  width: 200
-},
-{
-  key: 'completeDate',
-  name: 'Expected Complete',
-  width: 200
+  width: 200,
+  locked: 'right'
 }
 ]
 
