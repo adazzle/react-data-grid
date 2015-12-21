@@ -48,7 +48,8 @@ var Canvas = React.createClass({
           columns: this.props.columns,
           isSelected : this.isRowSelected(displayStart + idx),
           expandedRows : this.props.expandedRows,
-          cellMetaData : this.props.cellMetaData
+          cellMetaData : this.props.cellMetaData,
+          gridWidth: this.props.totalWidth
         }));
 
     this._currentRowsLength = rows.length;
@@ -219,7 +220,7 @@ var Canvas = React.createClass({
       if(!this.refs) return;
       for (var i = 0, len = this._currentRowsLength; i < len; i++) {
         if(this.refs[i] && this.refs[i].setScrollLeft) {
-          this.refs[i].setScrollLeft(scrollLeft);
+          this.refs[i].setScrollLeft(scrollLeft, this.props.totalWidth);
         }
       }
     }
