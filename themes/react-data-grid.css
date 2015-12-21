@@ -106,7 +106,7 @@
 }
 .react-grid-Cell--locked:last-of-type {
   border-right: 1px solid #dddddd;
-  border-left: 1px solid #dddddd;
+  border-left: 2px dotted #dddddd;
   box-shadow: none;
 }
 .react-grid-Cell.editing {
@@ -223,7 +223,7 @@ input.react-grid-CheckBox {
 }
 .react-grid-HeaderCell--locked:last-of-type {
   box-shadow: none;
-  border-left: 1px dotted #dddddd;
+  border-left: 2px dotted #dddddd;
 }
 .react-grid-HeaderCell--resizing .react-grid-HeaderCell__resizeHandle {
   background: #dddddd;
