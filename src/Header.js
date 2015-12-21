@@ -148,7 +148,7 @@ var Header = React.createClass({
   setScrollLeft(scrollLeft: number) {
     var node = this.refs.row.getDOMNode();
     node.scrollLeft = scrollLeft;
-    this.refs.row.setScrollLeft(scrollLeft);
+    this.refs.row.setScrollLeft(scrollLeft, this.props.totalWidth);
   },
 
   getCombinedHeaderHeights(until: ?number): number {
