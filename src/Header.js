@@ -149,6 +149,11 @@ var Header = React.createClass({
     var node = this.refs.row.getDOMNode();
     node.scrollLeft = scrollLeft;
     this.refs.row.setScrollLeft(scrollLeft);
+    if (this.refs.filterRow) {
+      var nodeFilters = this.refs.filterRow.getDOMNode();
+      nodeFilters.scrollLeft = scrollLeft;
+      this.refs.filterRow.setScrollLeft(scrollLeft);
+    }
   },
 
   getCombinedHeaderHeights(until: ?number): number {
