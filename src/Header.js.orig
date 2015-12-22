@@ -148,12 +148,16 @@ var Header = React.createClass({
   setScrollLeft(scrollLeft: number) {
     var node = this.refs.row.getDOMNode();
     node.scrollLeft = scrollLeft;
+<<<<<<< HEAD
+    this.refs.row.setScrollLeft(scrollLeft, this.props.totalWidth);
+=======
     this.refs.row.setScrollLeft(scrollLeft);
     if (this.refs.filterRow) {
       var nodeFilters = this.refs.filterRow.getDOMNode();
       nodeFilters.scrollLeft = scrollLeft;
       this.refs.filterRow.setScrollLeft(scrollLeft);
     }
+>>>>>>> 8bf6254... fix header filter scroll
   },
 
   getCombinedHeaderHeights(until: ?number): number {
