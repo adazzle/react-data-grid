@@ -29,11 +29,11 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      var width = React.findDOMNode(this).parentElement.offsetWidth;
+      var width = this.getDOMNode().parentElement.offsetWidth;
       if (width == 0) {
         if (this.isMounted() && this.getDOMNode().parentOffset == null && this.props.columns) {
           for (var c = 0, cL = this.props.columns.length; c < cL; c++) {
-            width += this.props.columns[c].width;
+            width += ColumnUtils.getColumn(this.props.columns, c).width;
           }
         }
       }
