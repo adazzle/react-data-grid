@@ -105,6 +105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowHeight: React.PropTypes.number.isRequired,
 	    headerRowHeight: React.PropTypes.number,
 	    minHeight: React.PropTypes.number.isRequired,
+	    minWidth: React.PropTypes.number,
 	    enableRowSelect: React.PropTypes.bool,
 	    onRowUpdated: React.PropTypes.func,
 	    rowGetter: React.PropTypes.func.isRequired,
@@ -178,7 +179,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    var toolbar = this.renderToolbar();
-	    var containerWidth = this.DOMMetrics.gridWidth();
+	    var containerWidth = this.props.minWidth || this.DOMMetrics.gridWidth();
 	    var gridWidth = containerWidth - this.state.scrollOffset;
 
 	    return React.createElement(
@@ -1084,6 +1085,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var node = this.refs.row.getDOMNode();
 	    node.scrollLeft = scrollLeft;
 	    this.refs.row.setScrollLeft(scrollLeft);
+	    if (this.refs.filterRow) {
+	      var nodeFilters = this.refs.filterRow.getDOMNode();
+	      nodeFilters.scrollLeft = scrollLeft;
+	      this.refs.filterRow.setScrollLeft(scrollLeft);
+	    }
 	  },
 
 	  getCombinedHeaderHeights: function getCombinedHeaderHeights(until) {
@@ -3238,7 +3244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  componentDidUpdate: function componentDidUpdate(nextProps) {
-	    if (this._scroll !== { start: 0, end: 0 }) {
+	    if (this._scroll.scrollTop !== 0 && this._scroll.scrollLeft !== 0) {
 	      this.setScrollLeft(this._scroll.scrollLeft);
 	    }
 	    this.onRows();

@@ -831,7 +831,12 @@ defineProperties(ArrayPrototype, {
 }, !spliceWorksWithLargeSparseArrays || !spliceWorksWithSmallSparseArrays);
 
 var originalJoin = ArrayPrototype.join;
-var hasStringJoinBug = Array.prototype.join.call('123', ',') !== '1,2,3';
+var hasStringJoinBug;
+try {
+    hasStringJoinBug = Array.prototype.join.call('123', ',') !== '1,2,3';
+} catch (e) {
+    hasStringJoinBug = true;
+}
 if (hasStringJoinBug) {
     defineProperties(ArrayPrototype, {
         join: function join(separator) {
