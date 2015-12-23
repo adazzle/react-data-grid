@@ -198,7 +198,8 @@ var ReactDataGrid = React.createClass({
           && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
           && rowIdx < this.props.rowsCount
         ) {
-          var column = this.getColumn(this.state.columnMetrics.columns, idx);
+          var idx = this.props.enableRowSelect ? idx -1 : idx;
+          var column = this.getColumn(this.props.columns, idx);
           if(this.canEdit(idx) && column.autoEdit) {
              selected.active = true;
           }
@@ -300,7 +301,7 @@ var ReactDataGrid = React.createClass({
 
   getSelectedValue(): string{
     var rowIdx = this.state.selected.rowIdx;
-    var idx = this.state.selected.idx;
+    var idx = this.props.enableRowSelect ? this.state.selected.idx -1 : this.state.selected.idx;
     var cellKey = this.getColumn(this.props.columns, idx).key;
     var row = this.props.rowGetter(rowIdx);
     return RowUtils.get(row, cellKey);
