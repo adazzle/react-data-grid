@@ -5931,7 +5931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function render() {
 	      return React.createElement(
 	        'select',
-	        { style: this.getStyle(), defaultValue: this.props.value, onChange: this.onChange },
+	        { style: this.getStyle(), defaultValue: this.props.value, onBlur: this.props.onBlur, onChange: this.onChange },
 	        this.renderOptions()
 	      );
 	    }
