@@ -7,26 +7,27 @@ var rewireModule  = require("../../test/rewireModule");
 var StubComponent = require("../../test/StubComponent");
 var helpers       = require('./GridPropHelpers');
 
+var testElement;
+var headerScrollLeft
+var HeaderStub = React.createClass({
+  setScrollLeft(scroll){
+  },
+  render(){
+    return(<div></div>)
+  }
+});
+var ViewportStub = React.createClass({
+  setScrollLeft(scroll){
+  },
+  getScroll(){
+    return {scrollLeft : 0}
+  },
+  render(){
+    return(<div></div>)
+  }
+});
+
 describe('Base Grid Tests', () => {
-  var testElement;
-  var headerScrollLeft
-  var HeaderStub = React.createClass({
-    setScrollLeft(scroll){
-    },
-    render(){
-      return(<div></div>)
-    }
-  });
-  var ViewportStub = React.createClass({
-    setScrollLeft(scroll){
-    },
-    getScroll(){
-      return {scrollLeft : 0}
-    },
-    render(){
-      return(<div></div>)
-    }
-  });
 
   // Configure local variable replacements for the module.
   rewireModule(Grid, {
@@ -34,24 +35,24 @@ describe('Base Grid Tests', () => {
     Viewport : ViewportStub
   });
 
-  var testProps = {
-    columnMetrics : {
-      columns : helpers.columns,
-      minColumnWidth: 80,
-      totalWidth: true,
-      width: 2600
-    },
-    headerRows : [],
-    rowsCount : helpers.rowsCount(),
-    rowGetter : helpers.rowGetter,
-    rowOffsetHeight : 50,
-    selectedRows : [],
-    minHeight : 600,
-    onViewportKeydown : function(){},
-    onViewportDragStart : function(){},
-    onViewportDragEnd : function(){},
-    onViewportDoubleClick : function(){}
-  }
+    var testProps = {
+        columnMetrics : {
+            columns : helpers.columns,
+            minColumnWidth: 80,
+            totalWidth: true,
+            width: 2600
+        },
+        headerRows : [],
+        rowsCount : helpers.rowsCount(),
+        rowGetter : helpers.rowGetter,
+        rowOffsetHeight : 50,
+        selectedRows : [],
+        minHeight : 600,
+        onViewportKeydown : function(){},
+        onViewportDragStart : function(){},
+        onViewportDragEnd : function(){},
+        onViewportDoubleClick : function(){}
+    };
 
   beforeEach(() => {
     var rowsCount = 1000;
@@ -97,5 +98,46 @@ describe('Base Grid Tests', () => {
 
 
 
+
+});
+
+describe('Empty Grid Tests', () => {
+
+    rewireModule(Grid, {
+      Header   : HeaderStub
+    });
+
+    var EmptyRowsView = React.createClass({
+     render: function() {
+       return (<div>Nothing to show</div>)
+     }
+    });
+
+    var testProps = {
+        columnMetrics : {
+            columns : helpers.columns,
+        },
+        headerRows : [],
+        rowsCount : 0,
+        rowGetter : function() {
+            return [];
+        },
+        minHeight : 600,
+        emptyRowsView: EmptyRowsView
+    };
+
+    beforeEach(() => {
+      var rowsCount = 0;
+      testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+    });
+
+    it('should create a new instance of Grid', () => {
+      expect(testElement).toBeDefined();
+    });
+
+    it('should not have any viewport', () => {
+      expect(testElement.refs.viewPortContainer).not.toBeDefined();
+      expect(testElement.refs.emptyView).toBeDefined();
+    });
 
 });
