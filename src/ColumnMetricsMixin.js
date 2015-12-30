@@ -29,18 +29,7 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      var width = 0;
-      var el = this.getDOMNode();
-      if (el.offsetWidth > 0) {
-        width = el.offsetWidth - 2;
-      } else {
-        if (this.isMounted() && this.getDOMNode().parentOffset == null && this.props.columns) {
-          for (var c = 0, cL = this.props.columns.length; c < cL; c++) {
-            width += this.props.columns[c].width;
-          }
-        }
-      }
-      return width;
+      return this.getDOMNode().offsetWidth - 2;
     }
   },
 
