@@ -38,6 +38,7 @@ module.exports = React.createClass({
                     <li><a href="examples.html#/immutable-data">Immutable Data Grid</a></li>
                     <li><a href="examples.html#/all-the-features">All-The-Features Grid</a></li>
                     <li><a href="examples.html#/custom-row-renderer">Custom Row Render</a></li>
+                    <li><a href="examples.html#/custom-row-renderer">Empty Rows</a></li>
                     <li>
                       <a href="examples.html#/all-features-immutable">All-The-Features with Immutable Data</a>
                     </li>
