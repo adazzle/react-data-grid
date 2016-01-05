@@ -375,6 +375,9 @@ var ReactDataGrid = React.createClass({
       selectedRows.push(allRowsSelected);
     }
     this.setState({selectedRows : selectedRows});
+    if(this.props.onRowSelect){
+      this.props.onRowSelect(selectedRows);
+    }
   },
 
 // columnKey not used here as this function will select the whole row,
@@ -389,6 +392,9 @@ var ReactDataGrid = React.createClass({
         selectedRows[rowIdx] = false;
       }
       this.setState({selectedRows : selectedRows});
+      if(this.props.onRowSelect){
+        this.props.onRowSelect(selectedRows);
+      }
     }
   },
 
