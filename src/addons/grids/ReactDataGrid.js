@@ -142,8 +142,8 @@ var ReactDataGrid = React.createClass({
 
 
     var toolbar = this.renderToolbar();
-    var containerWidth = this.DOMMetrics.gridWidth();
-    var gridWidth = containerWidth - this.state.scrollOffset;
+    var gridWidth = this.DOMMetrics.gridWidth();
+    var containerWidth = gridWidth  + this.state.scrollOffset;
 
     return(
       <div className="react-grid-Container" style={{width:containerWidth}}>
@@ -198,11 +198,6 @@ var ReactDataGrid = React.createClass({
           && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
           && rowIdx < this.props.rowsCount
         ) {
-          var idx = this.props.enableRowSelect ? idx -1 : idx;
-          var column = this.getColumn(this.props.columns, idx);
-          if(this.canEdit(idx) && column.autoEdit) {
-             selected.active = true;
-          }
           this.setState({selected: selected});
         }
       }
@@ -301,7 +296,7 @@ var ReactDataGrid = React.createClass({
 
   getSelectedValue(): string{
     var rowIdx = this.state.selected.rowIdx;
-    var idx = this.props.enableRowSelect ? this.state.selected.idx -1 : this.state.selected.idx;
+    var idx = this.state.selected.idx;
     var cellKey = this.getColumn(this.props.columns, idx).key;
     var row = this.props.rowGetter(rowIdx);
     return RowUtils.get(row, cellKey);
@@ -380,6 +375,9 @@ var ReactDataGrid = React.createClass({
       selectedRows.push(allRowsSelected);
     }
     this.setState({selectedRows : selectedRows});
+    if(this.props.onRowSelect){
+      this.props.onRowSelect(selectedRows);
+    }
   },
 
 // columnKey not used here as this function will select the whole row,
@@ -394,6 +392,9 @@ var ReactDataGrid = React.createClass({
         selectedRows[rowIdx] = false;
       }
       this.setState({selectedRows : selectedRows});
+      if(this.props.onRowSelect){
+        this.props.onRowSelect(selectedRows);
+      }
     }
   },
 
@@ -432,7 +433,7 @@ var ReactDataGrid = React.createClass({
   // },
 
   onAfterAddRow:function(numberOfRows: number){
-    //this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
+    this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
   },
 
   onToggleFilter(){
