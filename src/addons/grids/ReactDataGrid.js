@@ -185,24 +185,29 @@ var ReactDataGrid = React.createClass({
   },
 
   onSelect: function(selected: SelectedType) {
-    if(this.props.enableCellSelect){
-      if (this.state.selected.rowIdx === selected.rowIdx
-       && this.state.selected.idx === selected.idx
-       && this.state.selected.active === true) {
-       } else {
-        var idx = selected.idx;
-        var rowIdx = selected.rowIdx;
-        if (
-          idx >= 0
-          && rowIdx >= 0
-          && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
-          && rowIdx < this.props.rowsCount
-        ) {
-          this.setState({selected: selected});
-        }
-      }
-    }
-  },
+     if(this.props.enableCellSelect){
+       if (this.state.selected.rowIdx === selected.rowIdx
+        && this.state.selected.idx === selected.idx
+        && this.state.selected.active === true) {
+        } else {
+         var idx = selected.idx;
+         var rowIdx = selected.rowIdx;
+         if (
+           idx >= 0
+           && rowIdx >= 0
+           && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
+           && rowIdx < this.props.rowsCount
+         ) {
+           var idx = this.props.enableRowSelect ? idx -1 : idx;
+           var column = this.getColumn(this.props.columns, idx);
+           if(this.canEdit(idx) && column.autoEdit) {
+              selected.active = true;
+           }
+           this.setState({selected: selected});
+         }
+       }
+     }
+   },
 
   onCellClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
@@ -296,7 +301,7 @@ var ReactDataGrid = React.createClass({
 
   getSelectedValue(): string{
     var rowIdx = this.state.selected.rowIdx;
-    var idx = this.state.selected.idx;
+    var idx = this.props.enableRowSelect ? this.state.selected.idx -1 : this.state.selected.idx;
     var cellKey = this.getColumn(this.props.columns, idx).key;
     var row = this.props.rowGetter(rowIdx);
     return RowUtils.get(row, cellKey);
