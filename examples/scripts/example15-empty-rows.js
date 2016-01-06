@@ -2,9 +2,7 @@
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 
-
 var EmptyRowsExample = `
-
 var _rows = [];
 var rowGetter = function(i){
   return _rows[i];
@@ -48,13 +46,13 @@ React.render(<Example />, mountNode);
 
 module.exports = React.createClass({
 
-  render:function(){
-    return(
+  render: function() {
+    return (
       <div>
         <h3>Empty Rows Example</h3>
         <ReactPlayground codeText={EmptyRowsExample} />
       </div>
-    )
+    );
   }
 
 });

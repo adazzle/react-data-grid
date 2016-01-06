@@ -69,7 +69,7 @@ var Grid = React.createClass({
           sortDirection={this.props.sortDirection}
           onSort={this.props.onSort}
           />
-          {this.props.rowsCount >= 1 || (this.props.rowsCount ===0 && !this.props.emptyRowsView) ?
+          {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
                   ref="viewport"
@@ -103,7 +103,7 @@ var Grid = React.createClass({
       rowHeight: 35,
       minHeight: 350
     };
-  },
+  }
 });
 
 module.exports = Grid;
