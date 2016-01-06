@@ -433,7 +433,7 @@ var ReactDataGrid = React.createClass({
   // },
 
   onAfterAddRow:function(numberOfRows: number){
-    this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
+    //this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
   },
 
   onToggleFilter(){
