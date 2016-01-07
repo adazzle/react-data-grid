@@ -198,8 +198,7 @@ var ReactDataGrid = React.createClass({
            && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
            && rowIdx < this.props.rowsCount
          ) {
-           var idx = this.props.enableRowSelect ? idx -1 : idx;
-           var column = this.getColumn(this.props.columns, idx);
+           var column = this.getColumn(this.state.columnMetrics.columns, idx);
            if(this.canEdit(idx) && column.autoEdit) {
               selected.active = true;
            }
@@ -301,15 +300,15 @@ var ReactDataGrid = React.createClass({
 
   getSelectedValue(): string{
     var rowIdx = this.state.selected.rowIdx;
-    var idx = this.props.enableRowSelect ? this.state.selected.idx -1 : this.state.selected.idx;
-    var cellKey = this.getColumn(this.props.columns, idx).key;
+    var idx = this.state.selected.idx;
+    var cellKey = this.getColumn(this.state.columnMetrics.columns, idx).key;
     var row = this.props.rowGetter(rowIdx);
     return RowUtils.get(row, cellKey);
   },
 
   setActive(keyPressed: string){
     var rowIdx = this.state.selected.rowIdx;
-    var idx = this.props.enableRowSelect ? this.state.selected.idx - 1 : this.state.selected.idx;
+    var idx = this.state.selected.idx;
     if(this.canEdit(idx) && !this.isActive()){
       var selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active : true, initialKeyCode : keyPressed});
       this.setState({selected: selected});
@@ -326,7 +325,7 @@ var ReactDataGrid = React.createClass({
   },
 
   canEdit(idx: number): boolean{
-    var col = this.getColumn(this.props.columns, idx);
+    var col = this.getColumn(this.state.columnMetrics.columns, idx);
     return this.props.enableCellSelect === true && ((col.editor != null) || col.editable);
   },
 
@@ -481,6 +480,8 @@ var ReactDataGrid = React.createClass({
       var copied = {idx : selected.idx, rowIdx : selected.rowIdx};
       this.setState({textToCopy:textToCopy, copied : copied});
   },
+
+
 
   handlePaste(){
     if(!this.copyPasteEnabled()) { return; }
