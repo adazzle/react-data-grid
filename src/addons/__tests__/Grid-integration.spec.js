@@ -117,7 +117,7 @@ describe('Grid Integration', () => {
       .dispose();
     });
   });
-  describe('Editors', () => {
+  xdescribe('Editors', () => {
     it("Readonly columns are NOT Editable", () => {
       new GridRunner({})
       .clickIntoEditor({cellIdx:0,rowIdx:3})

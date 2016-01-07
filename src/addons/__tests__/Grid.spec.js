@@ -301,7 +301,7 @@ describe('Grid', () => {
 
 
 
-      it("double click on grid should activate current selected cell", () => {
+      xit("double click on grid should activate current selected cell", () => {
         component.setState({selected : {idx : 1, rowIdx : 1}});
         var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
         baseGrid.props.onViewportDoubleClick();
@@ -312,7 +312,7 @@ describe('Grid', () => {
         })
       });
 
-      it("copy a cell value should store the value in grid state", () => {
+      xit("copy a cell value should store the value in grid state", () => {
         //arrange
         var selectedCellIndex = 1, selectedRowIndex = 1;
         component.setState({selected  : {idx : selectedCellIndex, rowIdx : selectedRowIndex}});
@@ -387,7 +387,7 @@ describe('Grid', () => {
         columns[1].editable = false;
       });
 
-      it("double click on grid should not activate current selected cell", () => {
+      xit("double click on grid should not activate current selected cell", () => {
         component.setState({selected : {idx : 1, rowIdx : 1}});
         columns[1].editable = false;
         var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
