@@ -309,7 +309,7 @@ var ReactDataGrid = React.createClass({
 
   setActive(keyPressed: string){
     var rowIdx = this.state.selected.rowIdx;
-    var idx = this.state.selected.idx;
+    var idx = this.props.enableRowSelect ? this.state.selected.idx - 1 : this.state.selected.idx;
     if(this.canEdit(idx) && !this.isActive()){
       var selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active : true, initialKeyCode : keyPressed});
       this.setState({selected: selected});
