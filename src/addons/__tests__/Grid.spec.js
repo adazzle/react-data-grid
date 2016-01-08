@@ -1,6 +1,6 @@
 "use strict";
 var React = require("react");
-var ReactDOM = require("react-dom");
+var ReactDOM = require('react-dom');
 var rewire = require("rewire");
 var Grid = rewire("../grids/ReactDataGrid.js");
 var TestUtils = require("react/lib/ReactTestUtils");

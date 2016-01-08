@@ -1,6 +1,5 @@
 var mergeInto = require("../../src/mergeInto");
 var Grid = require('../../src/Grid');
-var React = require('react');
 var ReactDOM = require('react-dom');
 
 var data = [];

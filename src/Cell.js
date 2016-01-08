@@ -7,7 +7,7 @@
 'use strict';
 
 var React             = require('react');
-var ReactDOM          = require('react-dom');
+var ReactDOM = require('react-dom');
 var joinClasses       = require('classnames');
 var EditorContainer   = require('./addons/editors/EditorContainer');
 var ExcelColumn       = require('./addons/grids/ExcelColumn');
@@ -117,7 +117,7 @@ var Cell = React.createClass({
     if(React.isValidElement(Formatter)){
       props.dependentValues = this.getFormatterDependencies()
       CellContent = React.cloneElement(Formatter, props);
-    }else if(isFunction(Formatter)){
+    } else if(isFunction(Formatter)) {
         CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
@@ -331,7 +331,9 @@ var SimpleCellFormatter = React.createClass({
   },
 
   render(): ?ReactElement{
-    return <span>{this.props.value}</span>
+    // objects like dates will throw when specified as children
+    // so cast to a string
+    return <span>{'' + this.props.value}</span>
   },
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
       return nextProps.value !== this.props.value;

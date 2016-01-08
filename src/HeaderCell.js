@@ -7,7 +7,7 @@
 "use strict";
 
 var React          = require('react');
-var ReactDOM       = require('react-dom');
+var ReactDOM = require('react-dom');
 var joinClasses     = require('classnames');
 var PropTypes      = React.PropTypes;
 var ExcelColumn    = require('./addons/grids/ExcelColumn');

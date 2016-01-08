@@ -1,6 +1,6 @@
 var React        = require('react');
-var ReactDOM     = require('react-dom');
-var TestUtils    = require('react/lib/ReactTestUtils');
+var ReactDOM = require('react-dom');
+var TestUtils    = require('react-addons-test-utils');
 var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
 var ReactDataGrid = require('../grids/ReactDataGrid');
 
@@ -16,13 +16,13 @@ export default class GridRunner {
   _renderGrid(intoBody) {
     this.handleCellDragSpy =  jasmine.createSpy("handleCellDrag");
     return intoBody ?
-      React.render(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>, document.body)
+      ReactDOM.render(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>, document.body)
       : TestUtils.renderIntoDocument(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>);
   }
 
   dispose() {
     if(this.renderIntoBody) {
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.unmountComponentAtNode(document.body);
     }
     this.grid = null;
   }

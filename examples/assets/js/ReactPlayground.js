@@ -207,7 +207,7 @@ module.exports = React.createClass({
       var mountNode = this.refs.mount;
 
       try {
-        React.unmountComponentAtNode(mountNode);
+        ReactDOM.unmountComponentAtNode(mountNode);
       } catch (e) { }
 
       try {

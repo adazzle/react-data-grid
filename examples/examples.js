@@ -1,4 +1,5 @@
 var React = require('react');
+window.React = React;
 var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
 

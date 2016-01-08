@@ -39,7 +39,7 @@ class DropDownEditor extends EditorBase {
     return options;
   }
 
-};
+}
 
 
 DropDownEditor.propTypes = {

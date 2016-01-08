@@ -246,7 +246,7 @@ var AllFeaturesExample = `
       );
     }
   });
-  React.render(<Example />, mountNode);
+  ReactDOM.render(<Example />, mountNode);
 `;
 
 

@@ -3,8 +3,7 @@ var React        = require('react');
 var ReactDOM     = require('react-dom');
 var rewire       = require('rewire');
 var Cell         = rewire('../Cell');
-var TestUtils    = require('react/lib/ReactTestUtils');
-var PropTestUtils = require('../../test/PropTestUtils');
+var TestUtils    = require('react-addons-test-utils');
 var rewireModule = require("../../test/rewireModule");
 var StubComponent = require("../../test/StubComponent");
 var Immutable    = require('immutable');
@@ -37,7 +36,7 @@ describe('Cell Tests', () => {
     rowIdx : 0,
     idx : 1,
     tabIndex : 1,
-    column: {name : 'Cat Stevens', key : 'catStevens', width : 100},
+    column: {},
     value: 'Wicklow',
     isExpanded: false,
     cellMetaData: testCellMetaData,
@@ -71,7 +70,6 @@ describe('Cell Tests', () => {
     expect(formatterInstance.props.value).toEqual('Wicklow');
   });
 
-
   describe('When cell is active', () => {
 
     beforeEach(() => {
@@ -87,8 +85,8 @@ describe('Cell Tests', () => {
       testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       var editorContainerInstance = TestUtils.findRenderedComponentWithType(testElement, EditorContainerStub);
       expect(editorContainerInstance).toBeDefined();
-      var expectedProps = Immutable.Map(editorContainerInstance.props).toJS();
-      expect(expectedProps).toEqual({
+
+      var props = {
         value : 'Wicklow',
         column : testProps.column,
         isExpanded : false,
@@ -97,17 +95,24 @@ describe('Cell Tests', () => {
         idx : testProps.idx,
         cellMetaData : testProps.cellMetaData,
         height : testProps.height,
-        dependentVlaues : undefined
-      });
+        dependentValues : undefined
+      }
+
+      expect(Object.keys(props).sort())
+        .toEqual(Object.keys(editorContainerInstance.props).sort())
+
+      Object.keys(props).forEach(k => {
+        expect(props[k]).toEqual(editorContainerInstance.props[k])
+      })
     });
 
     it('should append the update cell class to the dom node if present and cell is updated', () => {
       var updateClass = 'highlight-cell';
       testProps.column.getUpdateCellClass = () => updateClass;
-      var cellInstance = new PropTestUtils(Cell, testProps);
+      var cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       // force update
       cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
-      var cellHasUpdateClass = ReactDOM.findDOMNode(cellInstance.component).getAttribute('class').indexOf(updateClass) > -1;
+      var cellHasUpdateClass = cellInstance.getDOMNode().getAttribute('class').indexOf(updateClass) > -1;
       expect(cellHasUpdateClass).toBe(true);
     })
 

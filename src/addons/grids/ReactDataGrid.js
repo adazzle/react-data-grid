@@ -6,7 +6,7 @@
 "use strict";
 
 var React                 = require('react');
-var ReactDOM              = require('react-dom');
+var ReactDOM = require('react-dom');
 var PropTypes             = React.PropTypes;
 var BaseGrid              = require('../../Grid');
 var Row                   = require('../../Row');
@@ -143,7 +143,11 @@ var ReactDataGrid = React.createClass({
 
     var toolbar = this.renderToolbar();
     var containerWidth = this.props.minWidth || this.DOMMetrics.gridWidth();
-    var gridWidth = containerWidth - this.state.scrollOffset;
+    var gridWidth = containerWidth  - this.state.scrollOffset;
+
+    //if NaN without coercion
+    if (gridWidth !== gridWidth)
+      gridWidth = 0;
 
     return(
       <div className="react-grid-Container" style={{width:containerWidth}}>
@@ -179,7 +183,7 @@ var ReactDataGrid = React.createClass({
   renderToolbar(): ReactElement {
     var Toolbar = this.props.toolbar;
     if(React.isValidElement(Toolbar)){
-      return( React.cloneElement(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
+      return( React.cloneElement(Toolbar, { onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
     }
 
   },

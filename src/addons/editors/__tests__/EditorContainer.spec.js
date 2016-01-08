@@ -3,7 +3,7 @@ var React            = require('react');
 var ReactDOM         = require('react-dom');
 var rewire           = require('rewire');
 var EditorContainer  = rewire('../EditorContainer.js');
-var TestUtils        = require('react/lib/ReactTestUtils');
+var TestUtils        = require('react-addons-test-utils');
 var SimpleTextEditor = require('../SimpleTextEditor');
 
 describe('Editor Container Tests', () => {
@@ -79,7 +79,7 @@ describe('Editor Container Tests', () => {
         //otherwise IE (11) gives an error when we try and setCaretAtEndOfInput
         container = document.createElement('div');
         document.body.appendChild(container);
-        component = React.render(<EditorContainer
+        component = ReactDOM.render(<EditorContainer
           rowData={rowData}
           value={'Adwolf'}
           cellMetaData={cellMetaData}

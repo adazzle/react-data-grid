@@ -1,2 +1,5 @@
+var React = require('react')
+var ReactDom = require('react-dom')
 var Navbar = require('./components/Navbar');
-ReactDOM.render(<Navbar/>, document.getElementById('navbarContainer'));
+
+ReactDom.render(<Navbar/>, document.getElementById('navbarContainer'));

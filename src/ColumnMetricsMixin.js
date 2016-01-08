@@ -5,7 +5,6 @@ var DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
 var PropTypes            = require('react').PropTypes;
 var ColumnUtils = require('./ColumnUtils');
-var React = require('react');
 var ReactDOM = require('react-dom');
 
 type ColumnMetricsType = {
@@ -57,7 +56,8 @@ module.exports = {
 
   getTotalWidth() {
     var totalWidth = 0;
-    if(this._mounted){
+    // avoid the warning about checking in render
+    if(this._mounted) {
       totalWidth = this.DOMMetrics.gridWidth();
     } else {
       totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;
@@ -66,7 +66,7 @@ module.exports = {
   },
 
   getColumnMetricsType(metrics: ColumnMetricsType): { columns: ColumnMetricsType } {
-    var totalWidth = this.getTotalWidth();
+    var totalWidth = metrics.totalWidth || this.getTotalWidth();
     var currentMetrics = {
       columns: metrics.columns,
       totalWidth: totalWidth,
@@ -101,7 +101,11 @@ module.exports = {
 
   createColumnMetrics(props = this.props){
     var gridColumns = this.setupGridColumns(props);
-    return this.getColumnMetricsType({columns:gridColumns, minColumnWidth: this.props.minColumnWidth});
+    return this.getColumnMetricsType({
+      columns:gridColumns,
+      minColumnWidth: this.props.minColumnWidth,
+      totalWidth: props.minWidth
+    });
   },
 
   onColumnResize(index: number, width: number) {

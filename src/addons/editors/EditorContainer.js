@@ -7,7 +7,7 @@
 'use strict';
 
 var React                   = require('react');
-var joinClasses              = require('classnames');
+var joinClasses             = require('classnames');
 var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var SimpleTextEditor        = require('./SimpleTextEditor');
 var isFunction              = require('../utils/isFunction');

@@ -4,15 +4,15 @@
  */
 "use strict";
 
-var React              = require('react');
-var ReactDOM           = require('react-dom');
-var joinClasses        = require('classnames');
-var PropTypes          = React.PropTypes;
-var shallowCloneObject = require('./shallowCloneObject');
-var emptyFunction      = require('fbjs/lib/emptyFunction');
-var ScrollShim         = require('./ScrollShim');
-var Row                = require('./Row');
-var ExcelColumn        = require('./addons/grids/ExcelColumn');
+var React           = require('react');
+var ReactDOM        = require('react-dom');
+var joinClasses     = require('classnames');
+var PropTypes       = React.PropTypes;
+var shallowEqual    = require('fbjs/lib/shallowEqual');
+var emptyFunction   = require('fbjs/lib/emptyFunction');
+var ScrollShim      = require('./ScrollShim');
+var Row             = require('./Row');
+var ExcelColumn     = require('./addons/grids/ExcelColumn');
 
 var Canvas = React.createClass({
   mixins: [ScrollShim],

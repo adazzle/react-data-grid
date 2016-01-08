@@ -5,7 +5,7 @@
 'use strict';
 
 var React   	 = require('react');
-var ReactDOM   = require('react-dom');
+var ReactDOM = require('react-dom');
 var joinClasses = require('classnames');
 var Moment 		 = require('moment');
 var $					 = require('jquery');
