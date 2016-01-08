@@ -127,7 +127,7 @@ var Canvas = React.createClass({
      var rowKeyValue = row.get ? row.get(this.props.rowKey) : row[this.props.rowKey]
      return r[this.props.rowKey] === rowKeyValue;
    });
-   return selectedRows.length > 0 && selectedRow[0].isSelected;
+   return selectedRows.length > 0 && selectedRows[0].isSelected;
   },
 
   _currentRowsLength : 0,
