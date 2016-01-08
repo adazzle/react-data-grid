@@ -121,7 +121,8 @@ var Example = React.createClass({
         rowsCount={this.state.rows.length}
         minHeight={500}
         toolbar={<Toolbar enableFilter={true}/>}
-        onAddFilter={this.handleFilterChange}/>
+        onAddFilter={this.handleFilterChange}
+        enableCellSelect={true}/>
     )
   }
 
