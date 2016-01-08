@@ -88,13 +88,14 @@ var ReactDataGrid = React.createClass({
       tabIndex : -1,
       rowHeight: 35,
       enableRowSelect : false,
-      minHeight : 350
+      minHeight : 350,
+      rowKey: 'id'
     };
   },
 
   getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType;  } {
     var columnMetrics = this.createColumnMetrics(true);
-    var initialState = {columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null, scrollOffset: 0}
+    var initialState = {columnMetrics, selectedRows : [], copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null, scrollOffset: 0}
     if(this.props.enableCellSelect){
       initialState.selected = {rowIdx: 0, idx: 0};
     }else{
@@ -104,17 +105,10 @@ var ReactDataGrid = React.createClass({
   },
 
   getInitialSelectedRows: function(){
-    var selectedRows = [];
-    for(var i = 0; i < this.props.rowsCount; i++){
-      selectedRows.push(false);
-    }
+    var selectedRows = this.props.rows.map(r => {
+      r.isSelected = false;
+    });
     return selectedRows;
-  },
-
-  componentWillReceiveProps:function(nextProps: ReactDataGridProps){
-    if(nextProps.rowsCount  === this.props.rowsCount + 1){
-      this.onAfterAddRow(nextProps.rowsCount + 1);
-    }
   },
 
   componentDidMount() {
@@ -152,13 +146,14 @@ var ReactDataGrid = React.createClass({
           <BaseGrid
             ref="base"
             {...this.props}
+            rowKey={this.props.rowKey}
             headerRows={this.getHeaderRows()}
             columnMetrics={this.state.columnMetrics}
             rowGetter={this.props.rowGetter}
             rowsCount={this.props.rowsCount}
             rowHeight={this.props.rowHeight}
             cellMetaData={cellMetaData}
-            selectedRows={this.state.selectedRows}
+            selectedRows={this.state.selectedRows.filter(r => r.isSelected === true)}
             expandedRows={this.state.expandedRows}
             rowOffsetHeight={this.getRowOffsetHeight()}
             sortColumn={this.state.sortColumn}
@@ -359,7 +354,10 @@ var ReactDataGrid = React.createClass({
           filterable : false,
           headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
           width : 60,
-          locked: true
+          locked: true,
+          getRowMetaData: function(rowData){
+            return rowData;
+          }
       };
       var unshiftedCols = cols.unshift(selectColumn);
       cols = unshiftedCols > 0 ? cols : unshiftedCols;
@@ -386,19 +384,25 @@ var ReactDataGrid = React.createClass({
 
 // columnKey not used here as this function will select the whole row,
 // but needed to match the function signature in the CheckboxEditor
-  handleRowSelect(rowIdx: number, columnKey: string, e: Event){
+  handleRowSelect(rowIdx: number, columnKey: string, rowData, e: Event){
     e.stopPropagation();
-    if(this.state.selectedRows != null && this.state.selectedRows.length > 0){
-      var selectedRows = this.state.selectedRows.slice();
-      if(selectedRows[rowIdx] == null || selectedRows[rowIdx] == false){
-        selectedRows[rowIdx] = true;
-      }else{
-        selectedRows[rowIdx] = false;
+    var selectedRows = this.state.selectedRows.slice(0);
+    var selectedRow = selectedRows.find(r => {
+      if(r[this.props.rowKey] === rowData[this.props.rowKey]){
+        return true;
+      }else {
+        return false;
       }
-      this.setState({selectedRows : selectedRows});
-      if(this.props.onRowSelect){
-        this.props.onRowSelect(selectedRows);
-      }
+    });
+    if (selectedRow) {
+      selectedRow.isSelected = !selectedRow.isSelected;
+    } else {
+      rowData.isSelected = true;
+      selectedRows.push(rowData);
+    }
+    this.setState({selectedRows})
+    if (this.props.onRowSelect) {
+      this.props.onRowSelect(this.state.selectedRows.filter(r => r.isSelected === true));
     }
   },
 
