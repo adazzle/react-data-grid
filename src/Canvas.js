@@ -123,11 +123,11 @@ var Canvas = React.createClass({
   },
 
   isRowSelected(row): boolean{
-   var selectedRow = this.props.selectedRows.find(r => {
+   var selectedRows = this.props.selectedRows.filter(r => {
      var rowKeyValue = row.get ? row.get(this.props.rowKey) : row[this.props.rowKey]
      return r[this.props.rowKey] === rowKeyValue;
    });
-   return selectedRow && selectedRow.isSelected;
+   return selectedRows.length > 0 && selectedRow[0].isSelected;
   },
 
   _currentRowsLength : 0,
