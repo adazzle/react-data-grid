@@ -5,6 +5,7 @@
 'use strict';
 
 var React   	 = require('react');
+var ReactDOM = require('react-dom');
 var joinClasses = require('classnames');
 var Moment 		 = require('moment');
 var $					 = require('jquery');
@@ -1110,7 +1111,7 @@ var DateRangeFilter = React.createClass({
 
 	componentDidMount : function(){
 		//initialise jQuery date range widget -
-		var $calendarNode = $(this.refs.calendar.getDOMNode())
+		var $calendarNode = $(ReactDOM.findDOMNode(this.refs.calendar))
 		var $calendar = $calendarNode.daterangepicker({ranges : this.props.ranges, format : this.props.format, opens : 'left', locale: { cancelLabel: 'Clear' }, applyClass : 'btn-primary'  });
 		this.calendar = $calendar.data('daterangepicker');
 		if(this.props.startDate){

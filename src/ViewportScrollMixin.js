@@ -1,6 +1,7 @@
 /* TODO@flow mixins */
 
 var React             = require('react');
+var ReactDOM = require('react-dom');
 var DOMMetrics        = require('./DOMMetrics');
 var getWindowSize     = require('./getWindowSize');
 
@@ -23,7 +24,7 @@ module.exports = {
 
   DOMMetrics: {
     viewportHeight(): number {
-      return React.findDOMNode(this).offsetHeight;
+      return ReactDOM.findDOMNode(this).offsetHeight;
     }
   },
 

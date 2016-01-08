@@ -5,7 +5,7 @@ var DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
 var PropTypes            = require('react').PropTypes;
 var ColumnUtils = require('./ColumnUtils');
-var React = require('react');
+var ReactDOM = require('react-dom');
 
 type ColumnMetricsType = {
     columns: Array<Column>;
@@ -30,7 +30,7 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      return React.findDOMNode(this).parentElement.offsetWidth;
+      return ReactDOM.findDOMNode(this).parentElement.offsetWidth;
     }
   },
 
@@ -41,6 +41,9 @@ module.exports = {
     };
   },
 
+  componentWillMount() {
+    this._mounted = true;
+  },
 
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
@@ -54,7 +57,8 @@ module.exports = {
 
   getTotalWidth() {
     var totalWidth = 0;
-    if(this.isMounted()){
+    // avoid the warning about checking in render
+    if(this._mounted) {
       totalWidth = this.DOMMetrics.gridWidth();
     } else {
       totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;

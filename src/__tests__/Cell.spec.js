@@ -2,7 +2,7 @@
 var React        = require('react');
 var rewire       = require('rewire');
 var Cell         = rewire('../Cell');
-var TestUtils    = require('react/lib/ReactTestUtils');
+var TestUtils    = require('react-addons-test-utils');
 var rewireModule = require("../../test/rewireModule");
 var StubComponent = require("../../test/StubComponent");
 
@@ -68,7 +68,6 @@ describe('Cell Tests', () => {
     expect(formatterInstance.props.value).toEqual('Wicklow');
   });
 
-
   describe('When cell is active', () => {
 
     beforeEach(() => {
@@ -84,7 +83,8 @@ describe('Cell Tests', () => {
       testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       var editorContainerInstance = TestUtils.findRenderedComponentWithType(testElement, EditorContainerStub);
       expect(editorContainerInstance).toBeDefined();
-      expect(editorContainerInstance.props).toEqual({
+
+      var props = {
         value : 'Wicklow',
         column : testProps.column,
         isExpanded : false,
@@ -93,8 +93,15 @@ describe('Cell Tests', () => {
         idx : testProps.idx,
         cellMetaData : testProps.cellMetaData,
         height : testProps.height,
-        dependentVlaues : undefined
-      });
+        dependentValues : undefined
+      }
+
+      expect(Object.keys(props).sort())
+        .toEqual(Object.keys(editorContainerInstance.props).sort())
+
+      Object.keys(props).forEach(k => {
+        expect(props[k]).toEqual(editorContainerInstance.props[k])
+      })
     });
 
     it('should append the update cell class to the dom node if present and cell is updated', () => {

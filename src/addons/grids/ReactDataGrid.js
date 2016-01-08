@@ -6,6 +6,7 @@
 "use strict";
 
 var React                 = require('react');
+var ReactDOM = require('react-dom');
 var PropTypes             = React.PropTypes;
 var BaseGrid              = require('../../Grid');
 var Row                   = require('../../Row');
@@ -13,7 +14,6 @@ var ExcelColumn           = require('./ExcelColumn');
 var KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 var CheckboxEditor        = require('../editors/CheckboxEditor');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
-var cloneWithProps        = require('react/lib/cloneWithProps');
 var DOMMetrics           = require('../../DOMMetrics');
 var ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
 var RowUtils = require('../../RowUtils');
@@ -121,7 +121,7 @@ var ReactDataGrid = React.createClass({
 
   componentDidMount() {
     var scrollOffset = 0;
-    var canvas = this.getDOMNode().querySelector('.react-grid-Canvas');
+    var canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
     if(canvas != null){
         scrollOffset = canvas.offsetWidth - canvas.clientWidth;
     }
@@ -143,7 +143,11 @@ var ReactDataGrid = React.createClass({
 
     var toolbar = this.renderToolbar();
     var containerWidth = this.props.minWidth || this.DOMMetrics.gridWidth();
-    var gridWidth = containerWidth - this.state.scrollOffset;
+    var gridWidth = containerWidth  - this.state.scrollOffset;
+
+    //if NaN without coercion
+    if (gridWidth !== gridWidth)
+      gridWidth = 0;
 
     return(
       <div className="react-grid-Container" style={{width:containerWidth}}>
@@ -179,7 +183,7 @@ var ReactDataGrid = React.createClass({
   renderToolbar(): ReactElement {
     var Toolbar = this.props.toolbar;
     if(React.isValidElement(Toolbar)){
-      return( cloneWithProps(Toolbar, {onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
+      return( React.cloneElement(Toolbar, { onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
     }
 
   },

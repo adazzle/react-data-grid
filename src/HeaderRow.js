@@ -6,7 +6,7 @@
 
 var React             = require('react');
 var PropTypes         = React.PropTypes;
-var shallowEqual      = require('react/lib//shallowEqual');
+var shallowEqual      = require('fbjs/lib/shallowEqual');
 var HeaderCell        = require('./HeaderCell');
 var getScrollbarSize  = require('./getScrollbarSize');
 var ExcelColumn  = require('./addons/grids/ExcelColumn');

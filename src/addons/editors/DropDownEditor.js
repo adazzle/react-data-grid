@@ -7,12 +7,13 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var EditorBase = require('./EditorBase');
 
 class DropDownEditor extends EditorBase {
 
   getInputNode(): HTMLInputElement{
-    return React.findDOMNode(this);
+    return ReactDOM.findDOMNode(this);
   }
 
   onClick(e: Event){
@@ -38,7 +39,7 @@ class DropDownEditor extends EditorBase {
     return options;
   }
 
-};
+}
 
 
 DropDownEditor.propTypes = {

@@ -7,6 +7,7 @@
 'use strict';
 
 var React                   = require('react');
+var ReactDOM = require('react-dom');
 var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var ExcelColumn             = require('../grids/ExcelColumn');
 
@@ -25,7 +26,7 @@ class EditorBase extends React.Component {
   }
 
   getInputNode(): HTMLInputElement{
-    var domNode = React.findDOMNode(this);
+    var domNode = ReactDOM.findDOMNode(this);
     if(domNode.tagName === 'INPUT'){
       return domNode;
     }else{

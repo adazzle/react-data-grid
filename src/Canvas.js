@@ -5,11 +5,11 @@
 "use strict";
 
 var React           = require('react');
+var ReactDOM        = require('react-dom');
 var joinClasses     = require('classnames');
 var PropTypes       = React.PropTypes;
-var cloneWithProps  = require('react/lib/cloneWithProps');
-var shallowEqual    = require('react/lib//shallowEqual');
-var emptyFunction   = require('react/lib/emptyFunction');
+var shallowEqual    = require('fbjs/lib/shallowEqual');
+var emptyFunction   = require('fbjs/lib/emptyFunction');
 var ScrollShim      = require('./ScrollShim');
 var Row             = require('./Row');
 var ExcelColumn     = require('./addons/grids/ExcelColumn');
@@ -95,7 +95,7 @@ var Canvas = React.createClass({
       return <RowsRenderer {...props}/>;
     }
     else if (React.isValidElement(this.props.rowRenderer)) {
-      return cloneWithProps(this.props.rowRenderer, props);
+      return React.cloneElement(this.props.rowRenderer, props);
     }
   },
 
@@ -158,7 +158,7 @@ var Canvas = React.createClass({
 
   componentWillReceiveProps(nextProps: any) {
     if(nextProps.rowsCount > this.props.rowsCount){
-      React.findDOMNode(this).scrollTop =nextProps.rowsCount * this.props.rowHeight;
+      ReactDOM.findDOMNode(this).scrollTop =nextProps.rowsCount * this.props.rowHeight;
     }
     var scrollbarWidth = this.getScrollbarWidth();
     var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart
@@ -209,7 +209,7 @@ var Canvas = React.createClass({
   getScrollbarWidth() {
     var scrollbarWidth = 0;
     // Get the scrollbar width
-    var canvas = this.getDOMNode();
+    var canvas = ReactDOM.findDOMNode(this);
     scrollbarWidth  = canvas.offsetWidth - canvas.clientWidth;
     return scrollbarWidth;
   },
@@ -226,7 +226,7 @@ var Canvas = React.createClass({
   },
 
   getScroll(): {scrollTop: number; scrollLeft: number} {
-    var {scrollTop, scrollLeft} = React.findDOMNode(this);
+    var {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
     return {scrollTop, scrollLeft};
   },
 
