@@ -2,7 +2,6 @@
 
 var ColumnMetrics        = require('./ColumnMetrics');
 var DOMMetrics           = require('./DOMMetrics');
-Object.assign            = require('object-assign');
 var PropTypes            = require('react').PropTypes;
 var ColumnUtils = require('./ColumnUtils');
 var ReactDOM = require('react-dom');
@@ -50,7 +49,7 @@ module.exports = {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality) ||
           nextProps.minWidth !== this.props.minWidth) {
         var columnMetrics = this.createColumnMetrics(nextProps);
-        this.setState({columnMetrics: columnMetrics});
+        this.setState({ columnMetrics: columnMetrics });
       }
     }
   },
@@ -58,9 +57,10 @@ module.exports = {
   getTotalWidth() {
     var totalWidth = 0;
     // avoid the warning about checking in render
-    if(this._mounted) {
+    if (this._mounted) {
       totalWidth = this.DOMMetrics.gridWidth();
-    } else {
+    }
+    else {
       totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;
     }
     return totalWidth;
@@ -79,38 +79,40 @@ module.exports = {
 
   getColumn(idx) {
     var columns = this.state.columnMetrics.columns;
-    if(Array.isArray(columns)){
+    if (Array.isArray(columns)) {
       return columns[idx];
-    }else if (typeof Immutable !== 'undefined') {
+    }
+    else if (typeof Immutable !== 'undefined') {
       return columns.get(idx);
     }
   },
 
   getSize() {
     var columns = this.state.columnMetrics.columns;
-    if(Array.isArray(columns)){
+    if (Array.isArray(columns)) {
       return columns.length;
-    }else if (typeof Immutable !== 'undefined') {
+    }
+    else if (typeof Immutable !== 'undefined') {
       return columns.size;
     }
   },
 
   metricsUpdated() {
     var columnMetrics = this.createColumnMetrics();
-    this.setState({columnMetrics});
+    this.setState({ columnMetrics });
   },
 
-  createColumnMetrics(props = this.props){
+  createColumnMetrics(props = this.props) {
     var gridColumns = this.setupGridColumns(props);
     return this.getColumnMetricsType({
       columns:gridColumns,
-      minColumnWidth: this.props.minColumnWidth,
+      minColumnWidth: props.minColumnWidth,
       totalWidth: props.minWidth
     });
   },
 
   onColumnResize(index: number, width: number) {
     var columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
-    this.setState({columnMetrics});
+    this.setState({ columnMetrics });
   }
 };

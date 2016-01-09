@@ -1,11 +1,5 @@
 /* @flow  */
-/**
- * @jsx React.DOM
-
-
- */
 'use strict';
-
 var React              = require('react');
 var ExcelColumn        = require('../../grids/ExcelColumn');
 
@@ -16,14 +10,14 @@ var FilterableHeaderCell = React.createClass({
     column: React.PropTypes.shape(ExcelColumn).isRequired
   },
 
-  getInitialState(): {filterTerm: string}{
-    return {filterTerm : ''}
+  getInitialState(): {filterTerm: string} {
+    return { filterTerm : '' }
   },
 
-  handleChange(e: Event){
+  handleChange(e: Event) {
     var val = e.target.value;
-    this.setState({filterTerm : val });
-    this.props.onChange({filterTerm : val, columnKey : this.props.column.key});
+    this.setState({ filterTerm : val });
+    this.props.onChange({ filterTerm : val, columnKey : this.props.column.key });
   },
 
   render: function(): ?ReactElement {
@@ -37,9 +31,10 @@ var FilterableHeaderCell = React.createClass({
   },
 
   renderInput : function(): ?ReactElement {
-    if(this.props.column.filterable === false){
+    if (this.props.column.filterable === false) {
       return <span/>;
-    }else{
+    }
+    else {
       var input_key = 'header-filter-' + this.props.column.key;
       return (<input key={input_key} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>)
     }

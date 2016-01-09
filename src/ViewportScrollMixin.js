@@ -3,9 +3,6 @@
 var React             = require('react');
 var ReactDOM = require('react-dom');
 var DOMMetrics        = require('./DOMMetrics');
-var getWindowSize     = require('./getWindowSize');
-
-var PropTypes            = React.PropTypes;
 var min   = Math.min;
 var max   = Math.max;
 var floor = Math.floor;
@@ -102,7 +99,8 @@ module.exports = {
     if (this.props.rowHeight !== nextProps.rowHeight ||
         this.props.minHeight !== nextProps.minHeight) {
       this.setState(this.getGridState(nextProps));
-    } else if (this.props.rowsCount !== nextProps.rowsCount) {
+    }
+    else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
         this.state.scrollTop,
         this.state.scrollLeft,

@@ -11,7 +11,7 @@ describe('DropDownEditor', () => {
 
     var fakeOptions = ['option1', 'option2', 'option3'];
     var fakeColumn = { key: 'selected' };
-    function fakeCommitCb(keyEvent) { return true; }
+    function fakeCommitCb() { return true; }
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(<DropDownEditor

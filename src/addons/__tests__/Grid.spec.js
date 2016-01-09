@@ -194,7 +194,7 @@ describe('Grid', function () {
 
     describe('when selected is false', function () {
       beforeEach(function () {
-        this.component.setState({ selectedRows: [false, false, false, false] });
+        this.component.setState({ selectedRows: [false, false, false, false]});
         var selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(3, 'select-row', this.buildFakeEvent());
       });
@@ -206,7 +206,7 @@ describe('Grid', function () {
 
     describe('when selected is null', function () {
       beforeEach(function () {
-        this.component.setState({ selectedRows: [null, null, null, null] });
+        this.component.setState({ selectedRows: [null, null, null, null]});
         var selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(2, 'select-row', this.buildFakeEvent());
       });
@@ -218,7 +218,7 @@ describe('Grid', function () {
 
     describe('when selected is true', function () {
       beforeEach(function () {
-        this.component.setState({ selectedRows: [null, true, true, true] });
+        this.component.setState({ selectedRows: [null, true, true, true]});
         var selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(3, 'select-row', this.buildFakeEvent());
       });
@@ -237,7 +237,7 @@ describe('Grid', function () {
 
     describe('When selected cell is in top corner of grid', function () {
       beforeEach(function () {
-        this.component.setState({ selected: { idx: 0, rowIdx: 0 } });
+        this.component.setState({ selected: { idx: 0, rowIdx: 0 }});
       });
 
       it('on ArrowUp keyboard event should not change selected index', function () {
@@ -253,7 +253,7 @@ describe('Grid', function () {
 
     describe('When selected cell has adjacent cells on all sides', function () {
       beforeEach(function () {
-        this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+        this.component.setState({ selected: { idx: 1, rowIdx: 1 }});
       });
 
       it('on ArrowRight keyboard event should increment selected cell index by 1', function () {
@@ -286,7 +286,7 @@ describe('Grid', function () {
 
       describe('double click on grid', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1 }});
           this.getBaseGrid().props.onViewportDoubleClick();
         });
 
@@ -298,7 +298,7 @@ describe('Grid', function () {
       describe('copy a cell value', function () {
         beforeEach(function () {
           const cCharacterKeyCode = 99;
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1 }});
           this.simulateGridKeyDown(cCharacterKeyCode, true);
         });
 
@@ -336,7 +336,7 @@ describe('Grid', function () {
 
       describe('cell commit cancel', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true }});
           this.getCellMetaData().onCommitCancel();
         });
 
@@ -347,7 +347,7 @@ describe('Grid', function () {
 
       describe('pressing escape', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true }});
           this.simulateGridKeyDown('Escape');
         });
 
@@ -358,7 +358,7 @@ describe('Grid', function () {
 
       describe('pressing enter', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
           this.simulateGridKeyDown('Enter');
         });
 
@@ -369,7 +369,7 @@ describe('Grid', function () {
 
       describe('pressing delete', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
           this.simulateGridKeyDown('Delete');
         });
 
@@ -380,7 +380,7 @@ describe('Grid', function () {
 
       describe('pressing backspace', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
           this.simulateGridKeyDown('Backspace');
         });
 
@@ -392,7 +392,7 @@ describe('Grid', function () {
       describe('typing a char', function () {
         beforeEach(function () {
           const fakeEvent = this.buildFakeEvent({ keyCode: 66, key: 'Unidentified' });
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
           this.getBaseGrid().props.onViewportKeydown(fakeEvent);
         });
 
@@ -411,7 +411,7 @@ describe('Grid', function () {
 
       describe('double click on grid ', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1 }});
           this.getBaseGrid().props.onViewportDoubleClick();
         });
 
@@ -425,7 +425,7 @@ describe('Grid', function () {
 
       describe('dragging in grid', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 2 } });
+          this.component.setState({ selected: { idx: 1, rowIdx: 2 }});
           this.getBaseGrid().props.onViewportDragStart();
         });
 
@@ -468,7 +468,7 @@ describe('Grid', function () {
 
       describe('terminating drag', function () {
         beforeEach(function () {
-          this.component.setState({ dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 } });
+          this.component.setState({ dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 }});
           this.getCellMetaData().handleTerminateDrag()
         });
 
@@ -566,7 +566,7 @@ describe('Grid', function () {
       beforeEach(function () {
         spyOn(this.testProps, 'onRowUpdated');
         this.component.setProps({ onRowUpdated: this.testProps.onRowUpdated });
-        this.component.setState({ selected: { idx: 3, rowIdx: 3, active: true } });
+        this.component.setState({ selected: { idx: 3, rowIdx: 3, active: true }});
         this.getCellMetaData().onCommit(this.buildFakeCellUodate());
       });
 
@@ -583,7 +583,7 @@ describe('Grid', function () {
 
     describe("cell commit after 'Tab'", function () {
       beforeEach(function () {
-        this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true } });
+        this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true }});
         this.getCellMetaData().onCommit(this.buildFakeCellUodate({ key: 'Tab' }));
       });
 

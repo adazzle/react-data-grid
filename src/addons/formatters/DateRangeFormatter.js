@@ -1,10 +1,4 @@
 /* @flow */
-/**
-
- * @jsx React.DOM
-
-
- */
 'use strict';
 
 var React          = require('react');
@@ -22,23 +16,24 @@ var DateRangeFormatter = React.createClass({
     displayFormat : PropTypes.string
   },
 
-  getDefaultProps() : {inputFormat: string; displayFormat: string; value: {startDate: ?Date; endDate: ?Date }}{
+  getDefaultProps() : {inputFormat: string; displayFormat: string; value: {startDate: ?Date; endDate: ?Date }} {
     return {
       inputFormat : 'YYYY-MM-DD',
       displayFormat : 'YYYY-MM-DD',
-      value : {startDate : null, endDate : null}
+      value : { startDate : null, endDate : null }
     }
   },
 
-  formatDate(date: Date | moment): string{
-    if(moment.isMoment(date)){
+  formatDate(date: Date | moment): string {
+    if (moment.isMoment(date)) {
       return moment(date).format(this.props.displayFormat);
-    }else{
+    }
+    else {
       return moment(date, this.props.inputFormat).format(this.props.displayFormat);
     }
   },
 
-  render(): ?ReactElement{
+  render(): ?ReactElement {
     var startDate = this.props.value.startDate;
     var endDate = this.props.value.endDate;
     return (<span>{startDate} to {endDate}</span>);

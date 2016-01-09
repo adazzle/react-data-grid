@@ -1,5 +1,4 @@
 var React = require('react');
-
 var PendingPool = {};
 var ReadyPool = {};
 
@@ -20,14 +19,14 @@ var ImageFormatter = React.createClass({
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
-      this.setState({value: null});
+      this.setState({ value: null });
       this._load(nextProps.value);
     }
   },
 
   render() {
     var style = this.state.value ?
-    { backgroundImage : 'url(' + this.state.value + ')'} :
+    { backgroundImage : 'url(' + this.state.value + ')' } :
     undefined;
 
     return <div className="react-grid-image" style={style} />;
@@ -35,7 +34,7 @@ var ImageFormatter = React.createClass({
 
   _load(/*string*/ src) {
     if (ReadyPool[src]) {
-      this.setState({value: src});
+      this.setState({ value: src });
       return;
     }
 

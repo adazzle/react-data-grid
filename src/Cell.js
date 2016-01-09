@@ -1,9 +1,4 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
-
- */
 'use strict';
 
 var React             = require('react');
@@ -25,7 +20,12 @@ var Cell = React.createClass({
     tabIndex : React.PropTypes.number,
     ref : React.PropTypes.string,
     column: React.PropTypes.shape(ExcelColumn).isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+    value: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number,
+      React.PropTypes.object,
+      React.PropTypes.bool
+    ]).isRequired,
     isExpanded: React.PropTypes.bool,
     cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
     handleDragStart: React.PropTypes.func,
@@ -33,7 +33,7 @@ var Cell = React.createClass({
     rowData : React.PropTypes.object.isRequired
   },
 
-  getDefaultProps : function(): {tabIndex: number; ref: string; isExpanded: boolean } {
+  getDefaultProps(): {tabIndex: number; ref: string; isExpanded: boolean } {
     return {
       tabIndex : -1,
       ref : 'cell',
@@ -43,31 +43,31 @@ var Cell = React.createClass({
 
 
 
-  getInitialState(){
-    return {isRowChanging: false, isCellValueChanging: false}
+  getInitialState() {
+    return { isRowChanging: false, isCellValueChanging: false }
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.checkFocus();
   },
 
 
-  componentDidUpdate: function(prevProps: any, prevState: any) {
+  componentDidUpdate() {
     this.checkFocus();
     var dragged = this.props.cellMetaData.dragged;
-    if(dragged && dragged.complete === true){
+    if (dragged && dragged.complete === true) {
       this.props.cellMetaData.handleTerminateDrag();
     }
-    if(this.state.isRowChanging && this.props.selectedColumn != null){
+    if (this.state.isRowChanging && this.props.selectedColumn != null) {
       this.applyUpdateClass();
     }
   },
 
-  componentWillReceiveProps(nextProps){
-    this.setState({isRowChanging : this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value});
+  componentWillReceiveProps(nextProps) {
+    this.setState({ isRowChanging : this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value });
   },
 
-  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+  shouldComponentUpdate(nextProps: any): boolean {
     return this.props.column.width !== nextProps.column.width
     || this.props.column.left !== nextProps.column.left
     || this.props.rowData !== nextProps.rowData
@@ -103,10 +103,15 @@ var Cell = React.createClass({
     });
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
-      {cellContent}
-      <div className="drag-handle" draggable="true">
-      </div>
+      <div
+        {...this.props}
+        className={className}
+        style={style}
+        onClick={this.onCellClick}
+        onDoubleClick={this.onCellDoubleClick}
+      >
+        {cellContent}
+        <div className="drag-handle" draggable="true"/>
       </div>
     );
   },
@@ -114,21 +119,23 @@ var Cell = React.createClass({
   renderCellContent(props: any): ReactElement {
     var CellContent;
     var Formatter = this.getFormatter();
-    if(React.isValidElement(Formatter)){
+    if (React.isValidElement(Formatter)) {
       props.dependentValues = this.getFormatterDependencies()
       CellContent = React.cloneElement(Formatter, props);
-    } else if(isFunction(Formatter)) {
+    }
+    else if (isFunction(Formatter)) {
         CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
-    } else {
+    }
+    else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
     return (<div ref="cell"
       className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>)
   },
 
-  isColumnSelected(){
+  isColumnSelected() {
     var meta = this.props.cellMetaData;
-    if(meta == null || meta.selected == null) { return false; }
+    if (meta == null || meta.selected == null) { return false; }
 
     return (
       meta.selected
@@ -137,9 +144,9 @@ var Cell = React.createClass({
 
   },
 
-  isSelected: function(): boolean {
+  isSelected(): boolean {
     var meta = this.props.cellMetaData;
-    if(meta == null || meta.selected == null) { return false; }
+    if (meta == null || meta.selected == null) { return false; }
 
     return (
       meta.selected
@@ -148,66 +155,66 @@ var Cell = React.createClass({
     );
   },
 
-  isActive(): boolean{
+  isActive(): boolean {
     var meta = this.props.cellMetaData;
-    if(meta == null || meta.selected == null) { return false; }
+    if (meta == null || meta.selected == null) { return false; }
     return this.isSelected() && meta.selected.active === true;
   },
 
   isCellSelectionChanging(nextProps: {idx: number; cellMetaData: {selected: {idx: number}}}): boolean {
     var meta = this.props.cellMetaData;
-    if(meta == null || meta.selected == null) { return false; }
+    if (meta == null || meta.selected == null) { return false; }
     var nextSelected = nextProps.cellMetaData.selected;
-    if(meta.selected && nextSelected){
+    if (meta.selected && nextSelected) {
       return this.props.idx === nextSelected.idx || this.props.idx === meta.selected.idx;
-    }else{
+    }
+    else {
       return true;
     }
   },
 
   getFormatter(): ?ReactElement {
     var col = this.props.column;
-    if(this.isActive()){
+    if (this.isActive()) {
       return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
-    }else{
+    }
+    else {
       return this.props.column.formatter;
     }
   },
 
-  getRowData(){
+  getRowData() {
       return this.props.rowData.toJSON ? this.props.rowData.toJSON() : this.props.rowData;
   },
 
   getFormatterDependencies() {
-    //clone row data so editor cannot actually change this
-    var columnName = this.props.column.ItemId;
     //convention based method to get corresponding Id or Name of any Name or Id property
-    if(typeof this.props.column.getRowMetaData === 'function'){
+    if (typeof this.props.column.getRowMetaData === 'function') {
       return this.props.column.getRowMetaData(this.getRowData(), this.props.column);
     }
   },
 
-  onCellClick(e: SyntheticMouseEvent){
+  onCellClick() {
     var meta = this.props.cellMetaData;
-    if(meta != null && meta.onCellClick != null) {
-      meta.onCellClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
+    if (meta != null && meta.onCellClick != null) {
+      meta.onCellClick({ rowIdx : this.props.rowIdx, idx : this.props.idx });
     }
   },
 
-  onCellDoubleClick(e: SyntheticMouseEvent){
+  onCellDoubleClick() {
     var meta = this.props.cellMetaData;
-    if(meta != null && meta.onCellDoubleClick != null) {
-      meta.onCellDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
+    if (meta != null && meta.onCellDoubleClick != null) {
+      meta.onCellDoubleClick({ rowIdx : this.props.rowIdx, idx : this.props.idx });
     }
   },
 
-  checkFocus: function() {
+  checkFocus() {
     if (this.isSelected() && !this.isActive()) {
       ReactDOM.findDOMNode(this).focus();
     }
   },
 
-  getCellClass : function(): string {
+  getCellClass (): string {
     var className = joinClasses(
       this.props.column.cellClass,
       'react-grid-Cell',
@@ -227,13 +234,18 @@ var Cell = React.createClass({
   },
 
   getUpdateCellClass() {
-    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+    return this.props.column.getUpdateCellClass
+      ? this.props.column.getUpdateCellClass(
+        this.props.selectedColumn,
+        this.props.column,
+        this.state.isCellValueChanging
+      ) : '';
   },
 
   applyUpdateClass() {
     var updateCellClass = this.getUpdateCellClass();
     // -> removing the class
-    if(updateCellClass != null && updateCellClass != '') {
+    if (updateCellClass != null && updateCellClass != '') {
       var cellDOMNode = ReactDOM.findDOMNode(this);
       if (cellDOMNode.classList) {
         cellDOMNode.classList.remove(updateCellClass);
@@ -258,7 +270,7 @@ var Cell = React.createClass({
     }
   },
 
-  isCopied(): boolean{
+  isCopied(): boolean {
     var copied = this.props.cellMetaData.copied;
     return (
       copied
@@ -267,7 +279,7 @@ var Cell = React.createClass({
     );
   },
 
-  isDraggedOver(): boolean{
+  isDraggedOver(): boolean {
   var dragged = this.props.cellMetaData.dragged;
     return (
 
@@ -277,7 +289,7 @@ var Cell = React.createClass({
     )
   },
 
-  wasDraggedOver(): boolean{
+  wasDraggedOver(): boolean {
     var dragged = this.props.cellMetaData.dragged;
     return (
       dragged
@@ -287,38 +299,40 @@ var Cell = React.createClass({
     );
   },
 
-  isDraggedCellChanging(nextProps: any): boolean{
+  isDraggedCellChanging(nextProps: any): boolean {
     var isChanging;
     var dragged = this.props.cellMetaData.dragged;
     var nextDragged = nextProps.cellMetaData.dragged;
-    if(dragged){
+    if (dragged) {
       isChanging = (nextDragged && this.props.idx === nextDragged.idx)
       || (dragged && this.props.idx === dragged.idx);
       return isChanging;
-    }else{
+    }
+    else {
       return false;
     }
   },
 
-  isCopyCellChanging(nextProps: any): boolean{
+  isCopyCellChanging(nextProps: any): boolean {
     var isChanging;
     var copied = this.props.cellMetaData.copied;
     var nextCopied = nextProps.cellMetaData.copied;
-    if(copied){
+    if (copied) {
       isChanging = ( nextCopied && this.props.idx ===  nextCopied.idx)
       || (copied && this.props.idx === copied.idx);
       return isChanging;
-    }else{
+    }
+    else {
       return false;
     }
   },
 
-  isDraggedOverUpwards(): boolean{
+  isDraggedOverUpwards(): boolean {
     var dragged = this.props.cellMetaData.dragged;
     return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx < dragged.rowIdx;
   },
 
-  isDraggedOverDownwards(): boolean{
+  isDraggedOverDownwards(): boolean {
     var dragged = this.props.cellMetaData.dragged;
     return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
   }
@@ -327,15 +341,20 @@ var Cell = React.createClass({
 
 var SimpleCellFormatter = React.createClass({
   propTypes : {
-    value :  React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
+    value :  React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number,
+      React.PropTypes.object,
+      React.PropTypes.bool
+    ]).isRequired
   },
 
-  render(): ?ReactElement{
+  render(): ?ReactElement {
     // objects like dates will throw when specified as children
     // so cast to a string
     return <span>{'' + this.props.value}</span>
   },
-  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+  shouldComponentUpdate(nextProps: any): boolean {
       return nextProps.value !== this.props.value;
   }
 

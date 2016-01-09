@@ -1,13 +1,8 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
-
- */
 "use strict";
 
 var shallowCloneObject            = require('./shallowCloneObject');
-var isValidElement = require('react').isValidElement;
+var Immutable = require('immutable')
 var sameColumn = require('./ColumnComparer');
 var ColumnUtils = require('./ColumnUtils');
 var getScrollbarSize  = require('./getScrollbarSize');
@@ -68,7 +63,7 @@ function setColumnOffsets(columns) {
 function setColumnWidths(columns, totalWidth) {
   return columns.map(column => {
     var colInfo = Object.assign({}, column);
-    if(column.width){
+    if (column.width) {
       if (/^([0-9]+)%$/.exec(column.width.toString())) {
         colInfo.width = Math.floor(
           column.width / 100 * totalWidth);
@@ -81,10 +76,11 @@ function setColumnWidths(columns, totalWidth) {
 function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
   var defferedColumns = columns.filter(c => !c.width);
   return columns.map(column => {
-    if(!column.width){
+    if (!column.width) {
       if (unallocatedWidth <= 0) {
         column.width = minColumnWidth;
-      } else {
+      }
+      else {
         column.width = Math.floor(unallocatedWidth / (ColumnUtils.getSize(defferedColumns)));
       }
     }
@@ -123,7 +119,7 @@ function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column
   var nextColumnsByKey: { [key:string]: Column } = {};
 
 
-  if(ColumnUtils.getSize(prevColumns) !== ColumnUtils.getSize(nextColumns)){
+  if (ColumnUtils.getSize(prevColumns) !== ColumnUtils.getSize(nextColumns)) {
     return false;
   }
 
@@ -152,9 +148,10 @@ function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column
 }
 
 function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean): boolean {
-  if(areColumnsImmutable(prevColumns, nextColumns)) {
+  if (areColumnsImmutable(prevColumns, nextColumns)) {
     return prevColumns === nextColumns;
-  }else{
+  }
+  else {
     return compareEachColumn(prevColumns, nextColumns, sameColumn);
   }
 }

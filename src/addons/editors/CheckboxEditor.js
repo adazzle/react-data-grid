@@ -22,7 +22,7 @@ var CheckboxEditor = React.createClass({
     return (<input className="react-grid-CheckBox" type="checkbox" checked={checked} onClick={this.handleChange} />);
   },
 
-  handleChange(e: Event){
+  handleChange(e: Event) {
     this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, e);
   }
 });

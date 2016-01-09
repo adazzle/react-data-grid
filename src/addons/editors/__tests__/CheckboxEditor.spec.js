@@ -8,7 +8,7 @@ describe('CheckboxEditor', () => {
  var component;
  var testColumn = {
    key: 'columnKey',
-   onCellChange : function(){}
+   onCellChange : function() {}
  };
 
  describe('Basic tests', () => {
@@ -31,7 +31,7 @@ describe('CheckboxEditor', () => {
      });
 
      it('should not be selected if value prop is false', () => {
-       component.setProps({value: false});
+       component.setProps({ value: false });
        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
        var checkboxNode = Input.getDOMNode();
        expect(checkboxNode.checked).toBe(false);
@@ -41,7 +41,7 @@ describe('CheckboxEditor', () => {
        var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
        TestUtils.Simulate.click(Input.getDOMNode());
        expect(testColumn.onCellChange).toHaveBeenCalled();
-       var fakeEvent = {stopPropagation : function(){}};
+       var fakeEvent = { stopPropagation : function() {}};
        expect(testColumn.onCellChange.mostRecentCall.args[0]).toEqual(1, 'columnKey', fakeEvent);
      });
  });

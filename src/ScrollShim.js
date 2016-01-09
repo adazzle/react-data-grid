@@ -15,11 +15,11 @@ var ScrollShim = {
       var size = this._scrollShimSize();
       var shim = document.createElement('div');
       if (shim.classList) {
-      	shim.classList.add('react-grid-ScrollShim'); //flow - not compatible with HTMLElement
-	  }
-	  else {
-	  	shim.className += ' react-grid-ScrollShim';
-	  }
+        shim.classList.add('react-grid-ScrollShim'); //flow - not compatible with HTMLElement
+      }
+      else {
+        shim.className += ' react-grid-ScrollShim';
+      }
       shim.style.position = 'absolute';
       shim.style.top = 0;
       shim.style.left = 0;

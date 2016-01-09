@@ -1,60 +1,15 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
- */
 "use strict";
-
-var React                 = require('react');
+var React = require('react');
 var ReactDOM = require('react-dom');
-var PropTypes             = React.PropTypes;
-var BaseGrid              = require('../../Grid');
-var Row                   = require('../../Row');
-var ExcelColumn           = require('./ExcelColumn');
-var KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
-var CheckboxEditor        = require('../editors/CheckboxEditor');
+var BaseGrid = require('../../Grid');
+var KeyboardHandlerMixin = require('../../KeyboardHandlerMixin');
+var CheckboxEditor  = require('../editors/CheckboxEditor');
 var FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
-var DOMMetrics           = require('../../DOMMetrics');
-var ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
+var DOMMetrics = require('../../DOMMetrics');
+var ColumnMetricsMixin = require('../../ColumnMetricsMixin');
 var RowUtils = require('../../RowUtils');
 var ColumnUtils = require('../../ColumnUtils');
-
-if(!Object.assign){
-  Object.assign = require('object-assign');
-}
-type SelectedType = {
-  rowIdx: number;
-  idx: number;
-};
-
-type DraggedType = {
-  idx: number;
-  rowIdx: number;
-  value: string;
-};
-
-type ReactDataGridProps = {
-  rowHeight: number;
-  minHeight: number;
-  enableRowSelect: ?boolean;
-  onRowUpdated: ?() => void;
-  columns: Array<ExcelColumn>;
-  rowGetter: () => Array<any>;
-  rowsCount: number;
-  toolbar: ?any;
-  enableCellSelect: ?boolean;
-  onCellCopyPaste: ?() => any;
-  onCellsDragged: ?() => any;
-  onFilter: ?() => any;
-};
-
-
-
-type RowUpdateEvent = {
-  keyCode: string;
-  changed: {expandedHeight: number};
-  rowIdx: number;
-};
 
 
 var ReactDataGrid = React.createClass({
@@ -94,27 +49,38 @@ var ReactDataGrid = React.createClass({
     };
   },
 
-  getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType;  } {
+  getInitialState: function(): {
+    selected: SelectedType;
+    copied: ?{idx: number; rowIdx: number};
+    selectedRows: Array<Row>;
+    expandedRows: Array<Row>;
+    canFilter: boolean; 
+    columnFilters: any;
+    sortDirection: ?SortType;
+    sortColumn: ?ExcelColumn;
+    dragged: ?DraggedType;
+  } {
     var columnMetrics = this.createColumnMetrics();
-    var initialState = {columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null, scrollOffset: 0}
-    if(this.props.enableCellSelect){
-      initialState.selected = {rowIdx: 0, idx: 0};
-    }else{
-      initialState.selected = {rowIdx: -1, idx: -1};
+    var initialState = { columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null, scrollOffset: 0 }
+    if (this.props.enableCellSelect) {
+      initialState.selected = { rowIdx: 0, idx: 0 };
+    }
+    else {
+      initialState.selected = { rowIdx: -1, idx: -1 };
     }
     return initialState;
   },
 
-  getInitialSelectedRows: function(){
+  getInitialSelectedRows: function() {
     var selectedRows = [];
-    for(var i = 0; i < this.props.rowsCount; i++){
+    for (var i = 0; i < this.props.rowsCount; i++) {
       selectedRows.push(false);
     }
     return selectedRows;
   },
 
-  componentWillReceiveProps:function(nextProps: ReactDataGridProps){
-    if(nextProps.rowsCount  === this.props.rowsCount + 1){
+  componentWillReceiveProps:function(nextProps: ReactDataGridProps) {
+    if (nextProps.rowsCount  === this.props.rowsCount + 1) {
       this.onAfterAddRow(nextProps.rowsCount + 1);
     }
   },
@@ -122,10 +88,10 @@ var ReactDataGrid = React.createClass({
   componentDidMount() {
     var scrollOffset = 0;
     var canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
-    if(canvas != null){
+    if (canvas != null) {
         scrollOffset = canvas.offsetWidth - canvas.clientWidth;
     }
-    this.setState({scrollOffset: scrollOffset});
+    this.setState({ scrollOffset: scrollOffset });
   },
 
   render: function(): ?ReactElement {
@@ -150,7 +116,7 @@ var ReactDataGrid = React.createClass({
       gridWidth = 0;
 
     return(
-      <div className="react-grid-Container" style={{width:containerWidth}}>
+      <div className="react-grid-Container" style={{ width:containerWidth }}>
       {toolbar}
         <div className="react-grid-Main">
           <BaseGrid
@@ -182,18 +148,19 @@ var ReactDataGrid = React.createClass({
 
   renderToolbar(): ReactElement {
     var Toolbar = this.props.toolbar;
-    if(React.isValidElement(Toolbar)){
-      return( React.cloneElement(Toolbar, { onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount}));
+    if (React.isValidElement(Toolbar)) {
+      return( React.cloneElement(Toolbar, { onToggleFilter : this.onToggleFilter, numberOfRows : this.props.rowsCount }));
     }
 
   },
 
-  onSelect: function(selected: SelectedType) {
-    if(this.props.enableCellSelect){
-      if (this.state.selected.rowIdx === selected.rowIdx
-       && this.state.selected.idx === selected.idx
-       && this.state.selected.active === true) {
-       } else {
+  onSelect(selected: SelectedType) {
+    if (this.props.enableCellSelect) {
+      if (!(
+           this.state.selected.rowIdx === selected.rowIdx
+        && this.state.selected.idx === selected.idx
+        && this.state.selected.active === true
+      )) {
         var idx = selected.idx;
         var rowIdx = selected.rowIdx;
         if (
@@ -202,68 +169,68 @@ var ReactDataGrid = React.createClass({
           && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
           && rowIdx < this.props.rowsCount
         ) {
-          this.setState({selected: selected});
+          this.setState({ selected: selected });
         }
       }
     }
   },
 
   onCellClick: function(cell: SelectedType) {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
   },
 
   onCellDoubleClick: function(cell: SelectedType) {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
     this.setActive('Enter');
   },
 
-  onViewportDoubleClick: function(e: Event) {
+  onViewportDoubleClick: function() {
     this.setActive();
   },
 
-  onPressArrowUp(e: SyntheticEvent){
+  onPressArrowUp(e: SyntheticEvent) {
     this.moveSelectedCell(e, -1, 0);
   },
 
-  onPressArrowDown(e: SyntheticEvent){
+  onPressArrowDown(e: SyntheticEvent) {
     this.moveSelectedCell(e, 1, 0);
   },
 
-  onPressArrowLeft(e: SyntheticEvent){
+  onPressArrowLeft(e: SyntheticEvent) {
     this.moveSelectedCell(e, 0, -1);
   },
 
-  onPressArrowRight(e: SyntheticEvent){
+  onPressArrowRight(e: SyntheticEvent) {
     this.moveSelectedCell(e, 0, 1);
   },
 
-  onPressTab(e: SyntheticEvent){
+  onPressTab(e: SyntheticEvent) {
     this.moveSelectedCell(e, 0, e.shiftKey ? -1 : 1);
   },
 
-  onPressEnter(e: SyntheticKeyboardEvent){
+  onPressEnter(e: SyntheticKeyboardEvent) {
     this.setActive(e.key);
   },
 
-  onPressDelete(e: SyntheticKeyboardEvent){
+  onPressDelete(e: SyntheticKeyboardEvent) {
     this.setActive(e.key);
   },
 
-  onPressEscape(e: SyntheticKeyboardEvent){
+  onPressEscape(e: SyntheticKeyboardEvent) {
     this.setInactive(e.key);
   },
 
-  onPressBackspace(e: SyntheticKeyboardEvent){
+  onPressBackspace(e: SyntheticKeyboardEvent) {
     this.setActive(e.key);
   },
 
-  onPressChar(e: SyntheticKeyboardEvent){
-    if(this.isKeyPrintable(e.keyCode)){
+  onPressChar(e: SyntheticKeyboardEvent) {
+    if (this.isKeyPrintable(e.keyCode)) {
       this.setActive(e.keyCode);
     }
   },
 
-  onPressKeyWithCtrl(e: SyntheticKeyboardEvent){
+  onPressKeyWithCtrl(e: SyntheticKeyboardEvent) {
     var keys = {
       KeyCode_c : 99,
       KeyCode_C : 67,
@@ -272,33 +239,34 @@ var ReactDataGrid = React.createClass({
     }
 
     var idx = this.state.selected.idx
-    if(this.canEdit(idx)){
-      if(e.keyCode == keys.KeyCode_c || e.keyCode == keys.KeyCode_C){
+    if (this.canEdit(idx)) {
+      if (e.keyCode == keys.KeyCode_c || e.keyCode == keys.KeyCode_C) {
         var value = this.getSelectedValue();
-        this.handleCopy({value : value});
-      }else if(e.keyCode == keys.KeyCode_v || e.keyCode == keys.KeyCode_V){
+        this.handleCopy({ value : value });
+      }
+      else if (e.keyCode == keys.KeyCode_v || e.keyCode == keys.KeyCode_V) {
         this.handlePaste();
       }
     }
   },
 
-  onDragStart(e: SyntheticEvent){
+  onDragStart(e: SyntheticEvent) {
     var value = this.getSelectedValue();
-    this.handleDragStart({idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value});
+    this.handleDragStart({ idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value });
     //need to set dummy data for FF
-    if(e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
+    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
   },
 
-  moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number){
+  moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number) {
     // we need to prevent default as we control grid scroll
     //otherwise it moves every time you left/right which is janky
     e.preventDefault();
     var rowIdx = this.state.selected.rowIdx + rowDelta;
     var idx = this.state.selected.idx + cellDelta;
-    this.onSelect({idx: idx, rowIdx: rowIdx});
+    this.onSelect({ idx: idx, rowIdx: rowIdx });
   },
 
-  getSelectedValue(): string{
+  getSelectedValue(): string {
     var rowIdx = this.state.selected.rowIdx;
     var idx = this.state.selected.idx;
     var cellKey = this.getColumn(idx).key;
@@ -306,34 +274,34 @@ var ReactDataGrid = React.createClass({
     return RowUtils.get(row, cellKey);
   },
 
-  setActive(keyPressed: string){
+  setActive(keyPressed: string) {
     var rowIdx = this.state.selected.rowIdx;
     var idx = this.state.selected.idx;
-    if(this.canEdit(idx) && !this.isActive()){
-      var selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active : true, initialKeyCode : keyPressed});
-      this.setState({selected: selected});
+    if (this.canEdit(idx) && !this.isActive()) {
+      var selected = Object.assign(this.state.selected, { idx: idx, rowIdx: rowIdx, active : true, initialKeyCode : keyPressed });
+      this.setState({ selected: selected });
     }
   },
 
-  setInactive(){
+  setInactive() {
     var rowIdx = this.state.selected.rowIdx;
     var idx =this.state.selected.idx;
-    if(this.canEdit(idx) && this.isActive()){
-      var selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active : false});
-      this.setState({selected: selected});
+    if (this.canEdit(idx) && this.isActive()) {
+      var selected = Object.assign(this.state.selected, { idx: idx, rowIdx: rowIdx, active : false });
+      this.setState({ selected: selected });
     }
   },
 
-  canEdit(idx: number): boolean{
+  canEdit(idx: number): boolean {
     var col = this.getColumn(idx);
     return this.props.enableCellSelect === true && ((col.editor != null) || col.editable);
   },
 
-  isActive(): boolean{
+  isActive(): boolean {
     return this.state.selected.active === true;
   },
 
-  onCellCommit(commit: RowUpdateEvent){
+  onCellCommit(commit: RowUpdateEvent) {
     var selected = Object.assign({}, this.state.selected);
     selected.active = false;
     if (commit.key === 'Tab') {
@@ -343,14 +311,14 @@ var ReactDataGrid = React.createClass({
     // if(commit.changed && commit.changed.expandedHeight){
     //   expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
     // }
-    this.setState({selected : selected, expandedRows : expandedRows});
+    this.setState({ selected : selected, expandedRows : expandedRows });
     this.props.onRowUpdated(commit);
 
   },
 
-  setupGridColumns : function(props = this.props): Array<any>{
+  setupGridColumns : function(props = this.props): Array<any> {
     var cols = props.columns.slice(0);
-    if(props.enableRowSelect){
+    if (props.enableRowSelect) {
       var selectColumn = {
           key: 'select-row',
           name: '',
@@ -367,32 +335,34 @@ var ReactDataGrid = React.createClass({
     return cols;
   },
 
-  handleCheckboxChange : function(e: SyntheticEvent){
+  handleCheckboxChange : function(e: SyntheticEvent) {
     var allRowsSelected;
-    if(e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true){
+    if (e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true) {
       allRowsSelected = true;
-    }else{
+    }
+    else {
       allRowsSelected = false;
     }
     var selectedRows = [];
-    for(var i = 0; i < this.props.rowsCount; i++){
+    for (var i = 0; i < this.props.rowsCount; i++) {
       selectedRows.push(allRowsSelected);
     }
-    this.setState({selectedRows : selectedRows});
+    this.setState({ selectedRows : selectedRows });
   },
 
 // columnKey not used here as this function will select the whole row,
 // but needed to match the function signature in the CheckboxEditor
-  handleRowSelect(rowIdx: number, columnKey: string, e: Event){
+  handleRowSelect(rowIdx: number, columnKey: string, e: Event) {
     e.stopPropagation();
-    if(this.state.selectedRows != null && this.state.selectedRows.length > 0){
+    if (this.state.selectedRows != null && this.state.selectedRows.length > 0) {
       var selectedRows = this.state.selectedRows.slice();
-      if(selectedRows[rowIdx] == null || selectedRows[rowIdx] == false){
+      if (selectedRows[rowIdx] == null || selectedRows[rowIdx] == false) {
         selectedRows[rowIdx] = true;
-      }else{
+      }
+      else {
         selectedRows[rowIdx] = false;
       }
-      this.setState({selectedRows : selectedRows});
+      this.setState({ selectedRows : selectedRows });
     }
   },
 
@@ -430,18 +400,18 @@ var ReactDataGrid = React.createClass({
   //
   // },
 
-  onAfterAddRow:function(numberOfRows: number){
-    this.setState({selected : {idx : 1, rowIdx : numberOfRows - 2}});
+  onAfterAddRow:function(numberOfRows: number) {
+    this.setState({ selected : { idx : 1, rowIdx : numberOfRows - 2 }});
   },
 
-  onToggleFilter(){
-    this.setState({canFilter : !this.state.canFilter});
+  onToggleFilter() {
+    this.setState({ canFilter : !this.state.canFilter });
   },
 
 
   getHeaderRows(): Array<{ref: string; height: number;}> {
-    var rows = [{ref:'row', height: this.props.headerRowHeight || this.props.rowHeight}];
-    if(this.state.canFilter === true){
+    var rows = [{ ref:'row', height: this.props.headerRowHeight || this.props.rowHeight }];
+    if (this.state.canFilter === true) {
       rows.push({
         ref:'filterRow',
         headerCellRenderer : <FilterableHeaderCell onChange={this.props.onAddFilter} column={this.props.column}/>,
@@ -451,14 +421,14 @@ var ReactDataGrid = React.createClass({
     return rows;
   },
 
-  getRowOffsetHeight(): number{
+  getRowOffsetHeight(): number {
     var offsetHeight = 0;
     this.getHeaderRows().forEach((row) => offsetHeight += parseFloat(row.height, 10) );
     return offsetHeight;
   },
 
   handleSort: function(columnKey: string, direction: SortType) {
-    this.setState({sortDirection: direction, sortColumn: columnKey}, function(){
+    this.setState({ sortDirection: direction, sortColumn: columnKey }, function() {
       this.props.onGridSort(columnKey, direction);
     });
   },
@@ -467,31 +437,31 @@ var ReactDataGrid = React.createClass({
     return this.props.onCellCopyPaste !== null;
   },
 
-  handleCopy(args: {value: string}){
-    if(!this.copyPasteEnabled()) { return; }
+  handleCopy(args: {value: string}) {
+    if (!this.copyPasteEnabled()) { return; }
       var textToCopy = args.value;
       var selected = this.state.selected;
-      var copied = {idx : selected.idx, rowIdx : selected.rowIdx};
-      this.setState({textToCopy:textToCopy, copied : copied});
+      var copied = { idx : selected.idx, rowIdx : selected.rowIdx };
+      this.setState({ textToCopy:textToCopy, copied : copied });
   },
 
-  handlePaste(){
-    if(!this.copyPasteEnabled()) { return; }
+  handlePaste() {
+    if (!this.copyPasteEnabled()) { return; }
       var selected = this.state.selected;
 
       var cellKey = this.getColumn(this.state.selected.idx).key;
-      if(this.props.onCellCopyPaste) {
-        this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx});
+      if (this.props.onCellCopyPaste) {
+        this.props.onCellCopyPaste({ cellKey: cellKey, rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx });
       }
-      this.setState({copied : null});
+      this.setState({ copied : null });
   },
 
   dragEnabled: function(): boolean {
     return this.props.onCellsDragged !== null;
   },
 
-  handleDragStart(dragged: DraggedType){
-    if(!this.dragEnabled()) { return; }
+  handleDragStart(dragged: DraggedType) {
+    if (!this.dragEnabled()) { return; }
       var idx = dragged.idx;
       var rowIdx = dragged.rowIdx;
       if (
@@ -500,35 +470,34 @@ var ReactDataGrid = React.createClass({
         && idx < this.getSize()
         && rowIdx < this.props.rowsCount
       ) {
-        this.setState({dragged: dragged});
+        this.setState({ dragged: dragged });
       }
   },
 
-  handleDragEnter(row: any){
-    if(!this.dragEnabled()) { return; }
-      var selected = this.state.selected;
-      var dragged = this.state.dragged;
-      dragged.overRowIdx = row;
-      this.setState({dragged : dragged});
+  handleDragEnter(row: any) {
+    if (!this.dragEnabled()) return;
+    var dragged = this.state.dragged;
+    dragged.overRowIdx = row;
+    this.setState({ dragged : dragged });
   },
 
-  handleDragEnd(){
-    if(!this.dragEnabled()) { return; }
+  handleDragEnd() {
+    if (!this.dragEnabled()) { return; }
       var fromRow, toRow;
       var selected = this.state.selected;
       var dragged = this.state.dragged;
       var cellKey = this.getColumn(this.state.selected.idx).key;
       fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-      if(this.props.onCellsDragged) {
-        this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow : toRow, value : dragged.value});
+      if (this.props.onCellsDragged) {
+        this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow : toRow, value : dragged.value });
       }
-      this.setState({dragged : {complete : true}});
+      this.setState({ dragged : { complete : true }});
   },
 
-  handleTerminateDrag(){
-    if(!this.dragEnabled()) { return; }
-      this.setState({dragged: null});
+  handleTerminateDrag() {
+    if (!this.dragEnabled()) { return; }
+      this.setState({ dragged: null });
   }
 
 });

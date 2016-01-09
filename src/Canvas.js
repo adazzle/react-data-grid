@@ -1,9 +1,5 @@
 /* @flow */
-/**
- * @jsx React.DOM
- */
 "use strict";
-
 var React           = require('react');
 var ReactDOM        = require('react-dom');
 var joinClasses     = require('classnames');
@@ -12,7 +8,6 @@ var shallowEqual    = require('fbjs/lib/shallowEqual');
 var emptyFunction   = require('fbjs/lib/emptyFunction');
 var ScrollShim      = require('./ScrollShim');
 var Row             = require('./Row');
-var ExcelColumn     = require('./addons/grids/ExcelColumn');
 
 var Canvas = React.createClass({
   mixins: [ScrollShim],
@@ -81,8 +76,13 @@ var Canvas = React.createClass({
       <div
         style={style}
         onScroll={this.onScroll}
-        className={joinClasses('react-grid-Canvas', this.props.className, {opaque : this.props.cellMetaData.selected && this.props.cellMetaData.selected.active})}>
-        <div style={{width: this.props.width, overflow: 'hidden'}}>
+        className={joinClasses('react-grid-Canvas',
+          this.props.className, {
+            opaque : this.props.cellMetaData.selected && this.props.cellMetaData.selected.active
+          })
+        }
+      >
+        <div style={{ width: this.props.width, overflow: 'hidden' }}>
           {rows}
         </div>
       </div>
@@ -91,7 +91,7 @@ var Canvas = React.createClass({
 
   renderRow(props: any) {
     var RowsRenderer = this.props.rowRenderer;
-    if(typeof RowsRenderer === 'function') {
+    if (typeof RowsRenderer === 'function') {
       return <RowsRenderer {...props}/>;
     }
     else if (React.isValidElement(this.props.rowRenderer)) {
@@ -101,9 +101,9 @@ var Canvas = React.createClass({
 
   renderPlaceholder(key: string, height: number): ?ReactElement {
     return (
-      <div key={key} style={{height: height}}>
+      <div key={key} style={{ height: height }}>
         {this.props.columns.map(
-          (column, idx) => <div style={{width: column.width}} key={idx} />
+          (column, idx) => <div style={{ width: column.width }} key={idx} />
 		)}
       </div>
     );
@@ -116,7 +116,7 @@ var Canvas = React.createClass({
     };
   },
 
-  isRowSelected(rowIdx: number): boolean{
+  isRowSelected(rowIdx: number): boolean {
    return this.props.selectedRows && this.props.selectedRows[rowIdx] === true;
   },
 
@@ -135,15 +135,15 @@ var Canvas = React.createClass({
 
   componentWillMount() {
     this._currentRowsLength = 0;
-    this._currentRowsRange = {start: 0, end: 0};
-    this._scroll = {scrollTop : 0, scrollLeft: 0};
+    this._currentRowsRange = { start: 0, end: 0 };
+    this._scroll = { scrollTop : 0, scrollLeft: 0 };
   },
 
   componentDidMount() {
     this.onRows();
   },
 
-  componentDidUpdate(nextProps: any) {
+  componentDidUpdate() {
     if (this._scroll.scrollTop !== 0 && this._scroll.scrollLeft !== 0) {
       this.setScrollLeft(this._scroll.scrollLeft);
     }
@@ -152,12 +152,12 @@ var Canvas = React.createClass({
 
   componentWillUnmount() {
     this._currentRowsLength = 0;
-    this._currentRowsRange = {start: 0, end: 0};
-    this._scroll = {scrollTop : 0, scrollLeft: 0};
+    this._currentRowsRange = { start: 0, end: 0 };
+    this._scroll = { scrollTop : 0, scrollLeft: 0 };
   },
 
   componentWillReceiveProps(nextProps: any) {
-    if(nextProps.rowsCount > this.props.rowsCount){
+    if (nextProps.rowsCount > this.props.rowsCount) {
       ReactDOM.findDOMNode(this).scrollTop =nextProps.rowsCount * this.props.rowHeight;
     }
     var scrollbarWidth = this.getScrollbarWidth();
@@ -177,8 +177,9 @@ var Canvas = React.createClass({
         displayEnd: nextProps.displayEnd,
         scrollbarWidth: scrollbarWidth
       });
-    } else {
-      this.setState({shouldUpdate: false, scrollbarWidth: scrollbarWidth});
+    }
+    else {
+      this.setState({ shouldUpdate: false, scrollbarWidth: scrollbarWidth });
     }
   },
 
@@ -187,19 +188,20 @@ var Canvas = React.createClass({
   },
 
   onRows() {
-    if (this._currentRowsRange !== {start: 0, end: 0}) {
+    if (this._currentRowsRange !== { start: 0, end: 0 }) {
       this.props.onRows(this._currentRowsRange);
-      this._currentRowsRange = {start: 0, end: 0};
+      this._currentRowsRange = { start: 0, end: 0 };
     }
   },
 
   getRows(displayStart: number, displayEnd: number): Array<any> {
-    this._currentRowsRange = {start: displayStart, end: displayEnd};
+    this._currentRowsRange = { start: displayStart, end: displayEnd };
     if (Array.isArray(this.props.rowGetter)) {
       return this.props.rowGetter.slice(displayStart, displayEnd);
-    } else {
+    }
+    else {
       var rows = [];
-      for (var i = displayStart; i < displayEnd; i++){
+      for (var i = displayStart; i < displayEnd; i++) {
         rows.push(this.props.rowGetter(i));
       }
       return rows;
@@ -216,9 +218,9 @@ var Canvas = React.createClass({
 
   setScrollLeft(scrollLeft: number) {
     if (this._currentRowsLength !== 0) {
-      if(!this.refs) return;
+      if (!this.refs) return;
       for (var i = 0, len = this._currentRowsLength; i < len; i++) {
-        if(this.refs[i] && this.refs[i].setScrollLeft) {
+        if (this.refs[i] && this.refs[i].setScrollLeft) {
           this.refs[i].setScrollLeft(scrollLeft);
         }
       }
@@ -226,14 +228,14 @@ var Canvas = React.createClass({
   },
 
   getScroll(): {scrollTop: number; scrollLeft: number} {
-    var {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
-    return {scrollTop, scrollLeft};
+    var { scrollTop, scrollLeft } = ReactDOM.findDOMNode(this);
+    return { scrollTop, scrollLeft };
   },
 
   onScroll(e: any) {
     this.appendScrollShim();
-    var {scrollTop, scrollLeft} = e.target;
-    var scroll = {scrollTop, scrollLeft};
+    var { scrollTop, scrollLeft } = e.target;
+    var scroll = { scrollTop, scrollLeft };
     this._scroll = scroll;
     this.props.onScroll(scroll);
   }

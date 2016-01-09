@@ -1,16 +1,10 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
-
- */
 "use strict";
 
 var React                = require('react');
 var PropTypes            = React.PropTypes;
 var Header               = require('./Header');
 var Viewport             = require('./Viewport');
-var ExcelColumn = require('./addons/grids/ExcelColumn');
 var GridScrollMixin      = require('./GridScrollMixin');
 var DOMMetrics           = require('./DOMMetrics');
 
@@ -52,7 +46,7 @@ var Grid = React.createClass({
   },
 
   render(): ?ReactElement {
-    var headerRows = this.props.headerRows || [{ref : 'row'}];
+    var headerRows = this.props.headerRows || [{ ref : 'row' }];
     return (
       <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
         <Header

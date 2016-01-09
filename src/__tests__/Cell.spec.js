@@ -20,15 +20,15 @@ describe('Cell Tests', () => {
 
 
   var testCellMetaData = {
-      selected : {idx : 2, rowIdx : 3},
+      selected : { idx : 2, rowIdx : 3 },
       dragged : null,
-      onCellClick : function(){},
-      onCellDoubleClick : function(){},
-      onCommit : function(){},
-      onCommitCancel : function(){},
+      onCellClick : function() {},
+      onCellDoubleClick : function() {},
+      onCommit : function() {},
+      onCommitCancel : function() {},
       copied : null,
-      handleDragEnterRow : function(){},
-      handleTerminateDrag : function(){}
+      handleDragEnterRow : function() {},
+      handleTerminateDrag : function() {}
   }
   var testProps = {
     rowIdx : 0,
@@ -38,14 +38,13 @@ describe('Cell Tests', () => {
     value: 'Wicklow',
     isExpanded: false,
     cellMetaData: testCellMetaData,
-    handleDragStart: function(){},
-    rowData : {name : 'Johnny Test', location : 'Wicklow', likesTesting :'Absolutely'},
+    handleDragStart: function() {},
+    rowData : { name : 'Johnny Test', location : 'Wicklow', likesTesting :'Absolutely' },
     height : 40,
     name : 'JT'
   }
 
   beforeEach(() => {
-    var rowsCount = 1000;
     testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
   });
 
@@ -109,7 +108,7 @@ describe('Cell Tests', () => {
       testProps.column.getUpdateCellClass = () => updateClass;
       var cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       // force update
-      cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
+      cellInstance.setProps({ rowData: {}, selectedColumn: testProps.column });
       var cellHasUpdateClass = cellInstance.getDOMNode().getAttribute('class').indexOf(updateClass) > -1;
       expect(cellHasUpdateClass).toBe(true);
     })

@@ -27,7 +27,7 @@ describe('Grid Integration', () => {
       //as we make any perf improvements, we shoudl update this number to get it as low as we can
       //but dont think of this test as an form of performance benchmark, if this was a GCSE, I'd (hopefully) fail!
       var start=new Date();
-      let grid = new GridRunner({renderIntoBody:true});
+      let grid = new GridRunner({ renderIntoBody:true });
       TestUtils.isDOMComponent(grid.grid);
       expect(new Date() - start).not.toBeGreaterThan(1500);
       grid.dispose();
@@ -40,20 +40,20 @@ describe('Grid Integration', () => {
 
     it('copies a cell', () => {
       new GridRunner({})
-      .selectCell({cellIdx:3, rowIdx: 3})
+      .selectCell({ cellIdx:3, rowIdx: 3 })
       .copy()
-      .hasCopied({cellIdx:3, rowIdx: 3});
+      .hasCopied({ cellIdx:3, rowIdx: 3 });
     });
 
     it('copying a second cell removes the copying style from first cell', () => {
       let firstCellIdx = 3;
       let gridRunner = new GridRunner({})
-      .selectCell({cellIdx:firstCellIdx, rowIdx: 1})
+      .selectCell({ cellIdx:firstCellIdx, rowIdx: 1 })
       .copy();
       let firstCell = gridRunner.getCells(gridRunner.row)[firstCellIdx];
       expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(true);
 
-      gridRunner.selectCell({cellIdx:4, rowIdx:1})
+      gridRunner.selectCell({ cellIdx:4, rowIdx:1 })
       .copy();
       expect(firstCell.getDOMNode().className.indexOf(' copied') > -1).toBe(false);
     });
@@ -63,9 +63,8 @@ describe('Grid Integration', () => {
   describe('Navigation', () => {
 
     it('header columns and cells stay in line', () => {
-      var gridRunner = new GridRunner({renderIntoBody:true})
-      .selectCell({cellIdx:14, rowIdx:0})
-      var firstRow = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid, 'react-grid-Row');
+      var gridRunner = new GridRunner({ renderIntoBody:true })
+      .selectCell({ cellIdx:14, rowIdx:0 })
       var firstRowCells = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid, 'react-grid-Cell');
       var headerCells = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid, 'react-grid-HeaderCell');
       headerCells.forEach((hCell, i) => {
@@ -78,26 +77,27 @@ describe('Grid Integration', () => {
   describe('Grid Drag', () => {
     it('Shows drag selector', () => {
       new GridRunner({})
-      .drag({from:0, to:4, col:4,
-      beforeEnd: function() {
-        //check we have the right classes
-        expect(TestUtils.scryRenderedDOMComponentsWithClass(component, 'is-dragged-over-down').length).toEqual(1);
-        expect(TestUtils.scryRenderedDOMComponentsWithClass(component, 'was-dragged-over').length).toEqual(2);
-      }})
+        .drag({ from:0, to:4, col:4,
+
+        beforeEnd: function(component) {
+          //check we have the right classes
+          expect(TestUtils.scryRenderedDOMComponentsWithClass(component, 'is-dragged-over-down').length).toEqual(1);
+          expect(TestUtils.scryRenderedDOMComponentsWithClass(component, 'was-dragged-over').length).toEqual(2);
+        }})
     });
     it('Drags a column down', () => {
 
       new GridRunner({})
-      .drag({from:0, to:4, col:4})
-      .hasDragged({from:0, to:4, col:4, cellKey:'title'})
+        .drag({ from:0, to:4, col:4 })
+        .hasDragged({ from:0, to:4, col:4, cellKey:'title' })
     });
 
     it('Drags a column up', () => {
       new GridRunner({})
-      .drag({from:4, to:0, col:5})
-      // React-data-grid treats a drag up as a drag down, so need to assert using the
-      // drag down equivalent of our drag event.
-      .hasDragged({ from:0, to:4, col:5, cellKey: 'firstName' });
+        .drag({ from:4, to:0, col:5 })
+        // React-data-grid treats a drag up as a drag down, so need to assert using the
+        // drag down equivalent of our drag event.
+        .hasDragged({ from:0, to:4, col:5, cellKey: 'firstName' });
     });
   });
   // @jpdriver - commented out for now because this was a pain to write an integration test for
@@ -114,8 +114,8 @@ describe('Grid Integration', () => {
   describe('Grid Selection', () => {
     it('Selects on click', () => {
       new GridRunner({})
-      .selectCell({cellIdx:3, rowIdx:3})
-      .hasSelected({cellIdx:3, rowIdx:3})
+      .selectCell({ cellIdx:3, rowIdx:3 })
+      .hasSelected({ cellIdx:3, rowIdx:3 })
       .dispose();
     });
   });
@@ -123,16 +123,16 @@ describe('Grid Integration', () => {
     it('Readonly columns are NOT Editable', () => {
 
       new GridRunner({})
-      .clickIntoEditor({cellIdx:1, rowIdx:3})
+      .clickIntoEditor({ cellIdx:1, rowIdx:3 })
       .isNotEditable();
     });
     it('Enter commits an edit', () => {
       new GridRunner({})
         .changeCell({
-          select: {row:3, cell:5},
+          select: { row:3, cell:5 },
           val:'Test',
-          ev:{key:'Enter'},
-          expectToSelect: {row:3, cell:5}
+          ev:{ key:'Enter' },
+          expectToSelect: { row:3, cell:5 }
         })
 
     });
@@ -140,12 +140,12 @@ describe('Grid Integration', () => {
 
     it('Start editing by pressing a key', () => {
       let grid=new GridRunner({});
-      grid.selectCell({rowIdx:3, cellIdx:5})
+      grid.selectCell({ rowIdx:3, cellIdx:5 })
         .keyDown({
           keyCode:69 //letter 'e'
         }, grid.cell )
         .isEditable()
-        .keyDown({key:'Enter'})
+        .keyDown({ key:'Enter' })
         .hasCommitted('E') //keydown ALWAYS upper case http://stackoverflow.com/questions/2263889/why-always-uppercase-in-my-code
         .isNotEditable()
         .dispose();
@@ -153,8 +153,8 @@ describe('Grid Integration', () => {
     });
     it('Start editing by pressing enter', () => {
       let grid=new GridRunner({});
-        grid.selectCell({rowIdx:3, cellIdx:5})
-        .keyDown({key:'Enter'}, grid.cell)
+        grid.selectCell({ rowIdx:3, cellIdx:5 })
+        .keyDown({ key:'Enter' }, grid.cell)
         .isEditable()
         .dispose();
 
@@ -162,25 +162,25 @@ describe('Grid Integration', () => {
    it('Can tab out of an Editor', () => {
       new GridRunner({})
       .changeCell({
-        select: {row:3, cell:5},
+        select: { row:3, cell:5 },
         val:'Test',
-        ev:{key:'Tab'},
-        expectToSelect: {row:3, cell:6}
+        ev:{ key:'Tab' },
+        expectToSelect: { row:3, cell:6 }
       })
     });
     it('Can shift+tab out of an Editor', () => {
       new GridRunner({})
       .changeCell({
-        select: {row:3, cell:5},
+        select: { row:3, cell:5 },
         val:'Test',
-        ev:{key:'Tab', shiftKey:true},
-        expectToSelect: {row:3, cell:4}
+        ev:{ key:'Tab', shiftKey:true },
+        expectToSelect: { row:3, cell:4 }
       })
     });
 
     it('should commit editor changes on blur', () => {
-      new GridRunner({renderIntoBody: true})
-        .clickIntoEditor({ rowIdx: 3, cellIdx: 5})
+      new GridRunner({ renderIntoBody: true })
+        .clickIntoEditor({ rowIdx: 3, cellIdx: 5 })
         .setValue('Test')
         .selectCell({ rowIdx: 4, cellIdx: 3 })
         .selectCell({ rowIdx: 3, cellIdx: 5 })
@@ -189,11 +189,11 @@ describe('Grid Integration', () => {
     });
 
     it('Arrow Left doesnt commit your change if you are not at the start of the text', () => {
-      new GridRunner({renderIntoBody: true})
-        .clickIntoEditor({rowIdx:3, cellIdx:5})
+      new GridRunner({ renderIntoBody: true })
+        .clickIntoEditor({ rowIdx:3, cellIdx:5 })
         .setValue('Test')
         .setCursor(2)
-        .keyDown({key:'ArrowLeft'})
+        .keyDown({ key:'ArrowLeft' })
         .isEditable()
         // Need to escape the editor here since dispose will prompt componentWillUnmount,
         // committing the text and causing a re-render as the grid unmounts.
@@ -205,29 +205,29 @@ describe('Grid Integration', () => {
       new GridRunner({})
       //by default we are at pos 0 with a blank value
       .changeCell({
-        select: {row:3, cell:5},
+        select: { row:3, cell:5 },
         val:'',
-        ev:{key:'ArrowLeft'},
-        expectToSelect: {row:3, cell:4}
+        ev:{ key:'ArrowLeft' },
+        expectToSelect: { row:3, cell:4 }
       })
     });
     it('Arrow Right commits your change when you are at the end of the text', () => {
-      new GridRunner({renderIntoBody: true})
-        .clickIntoEditor({rowIdx:3, cellIdx:5})
+      new GridRunner({ renderIntoBody: true })
+        .clickIntoEditor({ rowIdx:3, cellIdx:5 })
         .setValue('Test')
         .setCursor(4)
-        .keyDown({key:'ArrowRight'})
+        .keyDown({ key:'ArrowRight' })
         .hasCommitted('Test')
-        .hasSelected({rowIdx:3, cellIdx:6})
+        .hasSelected({ rowIdx:3, cellIdx:6 })
         .dispose();
     });
 
     it('Arrow Right doesnt commit your change when you are not at the end of the text', () => {
-      new GridRunner({renderIntoBody: true})
-        .clickIntoEditor({rowIdx:3, cellIdx:5})
+      new GridRunner({ renderIntoBody: true })
+        .clickIntoEditor({ rowIdx:3, cellIdx:5 })
         .setValue('Test')
         .setCursor(2)
-        .keyDown({key:'ArrowRight'})
+        .keyDown({ key:'ArrowRight' })
         .isEditable()
         // Need to escape the editor here since dispose will prompt componentWillUnmount,
         // committing the text and causing a re-render as the grid unmounts.
@@ -237,19 +237,19 @@ describe('Grid Integration', () => {
     it('Arrow Up commits your change', () => {
       new GridRunner({})
         .changeCell({
-        select: {row:3, cell:5},
+        select: { row:3, cell:5 },
         val:'Test',
-        ev:{key:'ArrowUp'},
-        expectToSelect: {row:2, cell:5}
+        ev:{ key:'ArrowUp' },
+        expectToSelect: { row:2, cell:5 }
       })
     });
     it('Arrow Down commits your change', () => {
       new GridRunner({})
         .changeCell({
-        select: {row:3, cell:5},
+        select: { row:3, cell:5 },
         val:'Test',
-        ev:{key:'ArrowDown'},
-        expectToSelect: {row:4, cell:5}
+        ev:{ key:'ArrowDown' },
+        expectToSelect: { row:4, cell:5 }
       })
     });
   });

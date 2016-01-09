@@ -1,14 +1,13 @@
-var React        = require('react');
+var React = require('react');
 var ReactDOM = require('react-dom');
-var TestUtils    = require('react-addons-test-utils');
+var TestUtils = require('react-addons-test-utils');
 var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
-var ReactDataGrid = require('../grids/ReactDataGrid');
 
 export default class GridRunner {
   /* =====
   SETUP
   ======== */
-  constructor({renderIntoBody=false}) {
+  constructor({ renderIntoBody=false }) {
     this.grid = this._renderGrid(renderIntoBody);
     this.renderIntoBody=renderIntoBody;
   }
@@ -21,7 +20,7 @@ export default class GridRunner {
   }
 
   dispose() {
-    if(this.renderIntoBody) {
+    if (this.renderIntoBody) {
       ReactDOM.unmountComponentAtNode(document.body);
     }
     this.grid = null;
@@ -32,20 +31,20 @@ export default class GridRunner {
   ======== */
   //Helpers - these are just wrappers to run several steps
   //NOTE: these are 'final' functions, ie they call dispose at the end
-  changeCell({select:{cell:selectCell, row:selectRow}, val, ev, expectToSelect:{row:expectRow, cell:expectCell}}) {
+  changeCell({ select:{ cell:selectCell, row:selectRow }, val, ev, expectToSelect:{ row:expectRow, cell:expectCell }}) {
     this
-      .clickIntoEditor({cellIdx:selectCell, rowIdx:selectRow})
+      .clickIntoEditor({ cellIdx:selectCell, rowIdx:selectRow })
       .setValue(val)
       .keyDown(ev)
       .hasCommitted(val)
-      .hasSelected({cellIdx:expectCell, rowIdx:expectRow})
+      .hasSelected({ cellIdx:expectCell, rowIdx:expectRow })
       .dispose();
   }
 
   /* =====
   ACTIONS
   ======== */
-  selectCell({cellIdx, rowIdx}) {
+  selectCell({ cellIdx, rowIdx }) {
     this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
     this.cell = this.getCells(this.row)[cellIdx];
     TestUtils.Simulate.click(this.cell);
@@ -54,7 +53,7 @@ export default class GridRunner {
 
   getCells(row) {
     var cells = TestUtils.scryRenderedDOMComponentsWithClass(row, 'react-grid-Cell');
-    if(this.grid.refs.reactDataGrid.props.enableRowSelect) {
+    if (this.grid.refs.reactDataGrid.props.enableRowSelect) {
       // the rowSelectCell exists on the end of the array returned from testUtils
       var rowSelectCell = cells.pop();
       // remove from end of array and put at beginning
@@ -63,10 +62,10 @@ export default class GridRunner {
     return cells;
   }
 
-  clickIntoEditor({cellIdx, rowIdx}) {
+  clickIntoEditor({ cellIdx, rowIdx }) {
     //activate it
     // have to do click then doubleClick as thast what the browser would actually emit
-    this.selectCell({cellIdx, rowIdx})
+    this.selectCell({ cellIdx, rowIdx })
     TestUtils.Simulate.doubleClick(this.cell);
     return this;
   }
@@ -94,17 +93,17 @@ export default class GridRunner {
   }
 
   copy() {
-    this.keyDown({keyCode: 67, ctrlKey: true}, this.cell.getDOMNode());
+    this.keyDown({ keyCode: 67, ctrlKey: true }, this.cell.getDOMNode());
     return this;
   }
 
-  drag({from, to, col, beforeDragEnter=null, beforeDragEnd=null}) {
-    this.selectCell({cellIdx:col, rowIdx:from})
+  drag({ from, to, col, beforeDragEnter=null, beforeDragEnd=null }) {
+    this.selectCell({ cellIdx:col, rowIdx:from })
 
     const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row');
     let over = [];
     over.push(this.row);
-    for(let i=from++;i<to;i++) {
+    for (let i=from++;i<to;i++) {
       over.push(this.getCells(rows[i])[col]);
     }
     const toCell = this.getCells(rows[to])[col];
@@ -114,12 +113,12 @@ export default class GridRunner {
     //do the drag
     //Important: we need dragStart / dragEnter / dragEnd
     TestUtils.Simulate.dragStart(this.row.getDOMNode());
-    if(beforeDragEnter) {beforeDragEnter();}
+    if (beforeDragEnter) {beforeDragEnter();}
 
     over.forEach((r) => {
       TestUtils.Simulate.dragEnter(r.getDOMNode())
     });
-    if(beforeDragEnd) {beforeDragEnd();}
+    if (beforeDragEnd) {beforeDragEnd(this.grid);}
     TestUtils.Simulate.dragEnd(toCell.getDOMNode());
 
     return this;
@@ -175,7 +174,7 @@ export default class GridRunner {
     expect(this.getEditor()).not.toBe(undefined);
     return this;
   }
-  hasSelected({rowIdx, cellIdx, expectedClass='selected'}) {
+  hasSelected({ rowIdx, cellIdx, expectedClass='selected' }) {
     //and should move to the appropriate cell/row
     const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
     const selected = TestUtils.scryRenderedDOMComponentsWithClass(selectedRow, expectedClass);
@@ -184,19 +183,19 @@ export default class GridRunner {
     expect(selected[0].props.idx).toEqual(cellIdx);
     return this;
   }
-  hasCopied({cellIdx, rowIdx, value}) {
+  hasCopied({ cellIdx, rowIdx }) {
     var baseGrid = this.grid.refs.reactDataGrid;
     expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
     expect(this.cell.getDOMNode().className.indexOf(' copied ') > -1).toBe(true);
   }
-  hasDragged({from, to, col, cellKey}) {
+  hasDragged({ from, to, col, cellKey }) {
     //check onCellDrag called with correct data
     expect(this.handleCellDragSpy).toHaveBeenCalled();
     //Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
     var expected= this.cell.props.value;
     //chek our event returns the right data
-    expect(this.handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
+    expect(this.handleCellDragSpy.argsForCall[0][0]).toEqual({ cellKey: cellKey, fromRow: from, toRow: to, value: expected });
     // Test all rows to check that value has copied correctly
     const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row');
     for (let i = from, end = to; i <= end; i++) {

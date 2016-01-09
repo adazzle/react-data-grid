@@ -9,7 +9,6 @@ var PropTypes         = React.PropTypes;
 var shallowEqual      = require('fbjs/lib/shallowEqual');
 var HeaderCell        = require('./HeaderCell');
 var getScrollbarSize  = require('./getScrollbarSize');
-var ExcelColumn  = require('./addons/grids/ExcelColumn');
 var ColumnUtilsMixin  = require('./ColumnUtils');
 var SortableHeaderCell    = require('./addons/cells/headerCells/SortableHeaderCell');
 
@@ -60,11 +59,12 @@ var HeaderRow = React.createClass({
     );
   },
 
-  getHeaderRenderer(column){
+  getHeaderRenderer(column) {
     if (column.sortable) {
       var sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : DEFINE_SORT.NONE;
       return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection}/>;
-    }else{
+    }
+    else {
       return this.props.headerCellRenderer || column.headerRenderer || this.props.cellRenderer;
     }
   },
@@ -89,7 +89,8 @@ var HeaderRow = React.createClass({
       );
       if (column.locked) {
         lockedCells.push(cell);
-      } else {
+      }
+      else {
         cells.push(cell);
       }
     }

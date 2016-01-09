@@ -1,9 +1,3 @@
-/* TODO@flow mixin and invarient splat */
-/**
- * @jsx React.DOM
-
-
- */
 'use strict';
 
 var React               = require('react');
@@ -19,7 +13,7 @@ var MetricsComputatorMixin = {
   childContextTypes: contextTypes,
 
   getChildContext(): {metricsComputator: any} {
-    return {metricsComputator: this};
+    return { metricsComputator: this };
   },
 
   getMetricImpl(name: string): any {
@@ -31,10 +25,10 @@ var MetricsComputatorMixin = {
     var s = this._DOMMetrics;
 
     for (var name in metrics) {
-      if(s.metrics[name] !== undefined) {
+      if (s.metrics[name] !== undefined) {
           throw new Error('DOM metric ' + name + ' is already defined');
       }
-      s.metrics[name] = {component, computator: metrics[name].bind(component)};
+      s.metrics[name] = { component, computator: metrics[name].bind(component) };
       getters[name] = this.getMetricImpl.bind(null, name);
     }
 
@@ -97,9 +91,10 @@ var MetricsComputatorMixin = {
   },
 
   componentDidMount() {
-    if(window.addEventListener){
+    if (window.addEventListener) {
       window.addEventListener('resize', this.updateMetrics);
-    }else{
+    }
+    else {
       window.attachEvent('resize', this.updateMetrics);
     }
     this.updateMetrics();
@@ -144,7 +139,8 @@ var MetricsMixin = {
   registerMetrics(metrics: any): any {
     if (this.registerMetricsImpl) {
       return this.registerMetricsImpl(this, metrics);
-    } else {
+    }
+    else {
       return this.context.metricsComputator.registerMetricsImpl(this, metrics);
     }
   },
@@ -152,7 +148,8 @@ var MetricsMixin = {
   getMetric(name: string): any {
     if (this.getMetricImpl) {
       return this.getMetricImpl(name);
-    } else {
+    }
+    else {
       return this.context.metricsComputator.getMetricImpl(name);
     }
   }

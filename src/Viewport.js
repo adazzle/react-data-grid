@@ -1,9 +1,4 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
-
- */
 'use strict';
 
 var React             = require('react');
@@ -82,7 +77,7 @@ var Viewport = React.createClass({
     );
 
     if (this.props.onScroll) {
-      this.props.onScroll({scrollTop: scroll.scrollTop, scrollLeft: scroll.scrollLeft});
+      this.props.onScroll({ scrollTop: scroll.scrollTop, scrollLeft: scroll.scrollLeft });
     }
   },
 

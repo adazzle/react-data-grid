@@ -1,8 +1,8 @@
 'use strict';
 var KeyboardHandlerMixin = {
 
-  onKeyDown(e: SyntheticKeyboardEvent){
-    if(this.isCtrlKeyHeldDown(e)){
+  onKeyDown(e: SyntheticKeyboardEvent) {
+    if (this.isCtrlKeyHeldDown(e)) {
       this.checkAndCall('onPressKeyWithCtrl', e);
     }
     else if (this.isKeyExplicitlyHandled(e.key)) {
@@ -10,13 +10,14 @@ var KeyboardHandlerMixin = {
       //this allows multiple mixins to listen to onKeyDown events and somewhat reduces methodName clashing
       var callBack = 'onPress' + e.key;
       this.checkAndCall(callBack, e);
-    } else if(this.isKeyPrintable(e.keyCode)) {
+    }
+    else if (this.isKeyPrintable(e.keyCode)) {
       this.checkAndCall('onPressChar', e);
     }
   },
 
   //taken from http://stackoverflow.com/questions/12467240/determine-if-javascript-e-keycode-is-a-printable-non-control-character
-  isKeyPrintable(keycode: number): boolean{
+  isKeyPrintable(keycode: number): boolean {
     var valid =
         (keycode > 47 && keycode < 58)   || // number keys
         keycode == 32 || keycode == 13   || // spacebar & return key(s) (if you want to allow carriage returns)
@@ -28,16 +29,16 @@ var KeyboardHandlerMixin = {
     return valid;
   },
 
-  isKeyExplicitlyHandled(key: string): boolean{
+  isKeyExplicitlyHandled(key: string): boolean {
     return typeof this['onPress' + key] === 'function';
   },
 
-  isCtrlKeyHeldDown(e: SyntheticKeyboardEvent): boolean{
+  isCtrlKeyHeldDown(e: SyntheticKeyboardEvent): boolean {
     return e.ctrlKey === true && e.key !== 'Control';
   },
 
-  checkAndCall(methodName: string, args: any){
-    if(typeof this[methodName] === 'function'){
+  checkAndCall(methodName: string, args: any) {
+    if (typeof this[methodName] === 'function') {
       this[methodName](args);
     }
   }

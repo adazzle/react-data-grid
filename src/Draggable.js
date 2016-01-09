@@ -1,11 +1,5 @@
 /* @flow need   */
-/**
- * @jsx React.DOM
-
-
- */
 'use strict';
-
 var React         = require('react');
 var PropTypes     = React.PropTypes;
 var emptyFunction = require('fbjs/lib/emptyFunction');
@@ -16,11 +10,10 @@ var Draggable = React.createClass({
     onDragStart: PropTypes.func,
     onDragEnd: PropTypes.func,
     onDrag: PropTypes.func,
-    component: PropTypes.oneOfType([PropTypes.func, PropTypes.constructor])
+    component: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
   },
 
   render(): ?ReactElement {
-    var Component = this.props.component;
     return (
       <div {...this.props}
         onMouseDown={this.onMouseDown}
@@ -52,7 +45,7 @@ var Draggable = React.createClass({
     window.addEventListener('mouseup', this.onMouseUp);
     window.addEventListener('mousemove', this.onMouseMove);
 
-    this.setState({drag});
+    this.setState({ drag });
   },
 
   onMouseMove(e: SyntheticEvent) {
@@ -70,7 +63,7 @@ var Draggable = React.createClass({
   onMouseUp(e: SyntheticEvent) {
     this.cleanUp();
     this.props.onDragEnd(e, this.state.drag);
-    this.setState({drag: null});
+    this.setState({ drag: null });
   },
 
   componentWillUnmount() {

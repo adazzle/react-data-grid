@@ -1,12 +1,8 @@
 /* @flow */
-/**
-* @jsx React.DOM
 
-*/
 'use strict';
 
 var React = require('react');
-var Row = require('../../Row');
 
 var Toolbar = React.createClass({
   propTypes: {
@@ -15,35 +11,35 @@ var Toolbar = React.createClass({
     enableFilter : React.PropTypes.bool,
     numberOfRows : React.PropTypes.number.isRequired
   },
-  onAddRow(){
-    if(this.props.onAddRow !== null && this.props.onAddRow instanceof Function){
-      this.props.onAddRow({newRowIndex : this.props.numberOfRows});
+  onAddRow() {
+    if (this.props.onAddRow !== null && this.props.onAddRow instanceof Function) {
+      this.props.onAddRow({ newRowIndex : this.props.numberOfRows });
     }
   },
 
-  getDefaultProps(): {enableAddRow: boolean}{
+  getDefaultProps(): {enableAddRow: boolean} {
     return {
       enableAddRow : true
     }
   },
 
-  renderAddRowButton(): ReactElement{
-    if(this.props.onAddRow){
+  renderAddRowButton(): ReactElement {
+    if (this.props.onAddRow) {
       return(<button type="button" className="btn" onClick={this.onAddRow}>
         Add Row
       </button>)
     }
   },
 
-  renderToggleFilterButton(): ReactElement{
-    if(this.props.enableFilter){
+  renderToggleFilterButton(): ReactElement {
+    if (this.props.enableFilter) {
       return(  <button type="button" className="btn" onClick={this.props.onToggleFilter}>
       Filter Rows
       </button>)
     }
   },
 
-  render(): ?ReactElement{
+  render(): ?ReactElement {
     return (
       <div className="react-grid-Toolbar">
         <div className="tools">

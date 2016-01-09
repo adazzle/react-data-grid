@@ -1,14 +1,8 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
-
- */
 'use strict';
 
-var React              = require('react');
-var joinClasses         = require('classnames');
-var ExcelColumn = require('../../grids/ExcelColumn');
+var React = require('react');
+var joinClasses  = require('classnames');
 var DEFINE_SORT = {
   ASC : 'ASC',
   DESC : 'DESC',
@@ -24,7 +18,7 @@ var SortableHeaderCell = React.createClass({
 
   onClick: function() {
     var direction;
-    switch(this.props.sortDirection){
+    switch (this.props.sortDirection) {
       case null:
       case undefined:
       case DEFINE_SORT.NONE:
@@ -42,7 +36,7 @@ var SortableHeaderCell = React.createClass({
       direction);
   },
 
-  getSortByText : function(){
+  getSortByText : function() {
     var unicodeKeys = {
       'ASC' : '9650',
       'DESC' : '9660',
@@ -61,7 +55,7 @@ var SortableHeaderCell = React.createClass({
     return (
       <div className={className}
         onClick={this.onClick}
-        style={{cursor: 'pointer'}}>
+        style={{ cursor: 'pointer' }}>
         {this.props.column.name}
         <span className="pull-right">{this.getSortByText()}</span>
       </div>

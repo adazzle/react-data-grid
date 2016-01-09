@@ -35,7 +35,7 @@ var Header = React.createClass({
     );
   },
 
-  shouldComponentUpdate : function(nextProps: any, nextState: any): boolean{
+  shouldComponentUpdate : function(nextProps: any, nextState: any): boolean {
     var update =  !(ColumnMetrics.sameColumns(
       this.props.columnMetrics.columns,
       nextProps.columnMetrics.columns, ColumnMetrics.sameColumn)
@@ -48,14 +48,14 @@ var Header = React.createClass({
     return update;
   },
 
-  getHeaderRows(): Array<HeaderRow>{
+  getHeaderRows(): Array<HeaderRow> {
     var columnMetrics = this.getColumnMetrics();
     var resizeColumn;
-    if(this.state.resizing){
+    if (this.state.resizing) {
       resizeColumn = this.state.resizing.column;
     }
     var headerRows = [];
-    this.props.headerRows.forEach((function(row, index){
+    this.props.headerRows.forEach((row, index) => {
       var headerRowStyle = {
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
@@ -64,31 +64,33 @@ var Header = React.createClass({
         overflow : 'hidden'
       };
 
-      headerRows.push(<HeaderRow
-        key={row.ref}
-        ref={row.ref}
-        style={headerRowStyle}
-        onColumnResize={this.onColumnResize}
-        onColumnResizeEnd={this.onColumnResizeEnd}
-        width={columnMetrics.width}
-        height={row.height || this.props.height}
-        columns={columnMetrics.columns}
-        resizing={resizeColumn}
-        headerCellRenderer={row.headerCellRenderer}
-        sortColumn={this.props.sortColumn}
-        sortDirection={this.props.sortDirection}
-        onSort={this.props.onSort}
-        />)
-    }).bind(this));
+      headerRows.push(
+        <HeaderRow
+          key={row.ref}
+          ref={row.ref}
+          style={headerRowStyle}
+          onColumnResize={this.onColumnResize}
+          onColumnResizeEnd={this.onColumnResizeEnd}
+          width={columnMetrics.width}
+          height={row.height || this.props.height}
+          columns={columnMetrics.columns}
+          resizing={resizeColumn}
+          headerCellRenderer={row.headerCellRenderer}
+          sortColumn={this.props.sortColumn}
+          sortDirection={this.props.sortDirection}
+          onSort={this.props.onSort}
+        />
+      )
+    });
     return headerRows;
   },
 
   getInitialState(): {resizing: any} {
-    return {resizing: null};
+    return { resizing: null };
   },
 
   componentWillReceiveProps() {
-    this.setState({resizing: null});
+    this.setState({ resizing: null });
   },
 
   onColumnResize(column: Column, width: number) {
@@ -109,15 +111,16 @@ var Header = React.createClass({
       }
 
       resizing.column = ColumnUtils.getColumn(resizing.columnMetrics.columns, pos);
-      this.setState({resizing});
+      this.setState({ resizing });
     }
   },
 
   getColumnMetrics() {
     var columnMetrics;
-    if(this.state.resizing){
+    if (this.state.resizing) {
       columnMetrics = this.state.resizing.columnMetrics;
-    }else{
+    }
+    else {
       columnMetrics = this.props.columnMetrics;
     }
     return columnMetrics;
@@ -127,7 +130,7 @@ var Header = React.createClass({
     var columnMetrics = this.getColumnMetrics();
     var pos = -1;
     columnMetrics.columns.forEach((c, idx) => {
-      if(c.key === column.key){
+      if (c.key === column.key) {
         pos = idx;
       }
     });

@@ -1,9 +1,4 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
-
- */
 'use strict';
 
 function shallowCloneObject(obj: any): any {

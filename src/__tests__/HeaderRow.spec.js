@@ -21,8 +21,8 @@ describe('Header Unit Tests', () => {
 
   var testProps = {
     columns : helpers.columns,
-    onColumnResize : function(){},
-    onSort: function(){},
+    onColumnResize : function() {},
+    onSort: function() {},
     sortDirection : 'NONE',
     sortColumn: null,
     height: 35

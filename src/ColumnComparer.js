@@ -1,7 +1,7 @@
 /* TODO@flow objects as a map */
 var isValidElement = require('react').isValidElement;
-module.exports =
-function sameColumn(a: Column, b: Column): boolean {
+
+module.exports = function sameColumn(a: Column, b: Column): boolean {
   var k;
 
   for (k in a) {

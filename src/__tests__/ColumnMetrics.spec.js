@@ -1,8 +1,7 @@
 'use strict';
 var rewire = require('rewire');
 var ColumnMetrics = rewire('../ColumnMetrics');
-var Immutable = window.Immutable = require('Immutable');
-Object.assign = require('object-assign');
+var Immutable = require('Immutable');
 
 describe('Column Metrics Tests', () => {
 
@@ -45,7 +44,7 @@ describe('Column Metrics Tests', () => {
         var immutableColumns = new Immutable.List(columns);
 
         it('should set the unset column widths based on the total width', () => {
-          var metrics = ColumnMetrics.recalculate({columns: immutableColumns, totalWidth: 300 + 17, minColumnWidth: 50})
+          var metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth: 300 + 17, minColumnWidth: 50 })
           expect(metrics.columns[0].get('width')).toEqual(60);
           expect(metrics.columns[1].get('width')).toEqual(120);
           expect(metrics.columns[2].get('width')).toEqual(120);
@@ -53,7 +52,7 @@ describe('Column Metrics Tests', () => {
         })
 
         it('should set the column left based on the column widths', () => {
-          var metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth: 300 + 17, minColumnWidth: 50})
+          var metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth: 300 + 17, minColumnWidth: 50 })
 
           expect(metrics.columns[0].get('left')).toEqual(0);
           expect(metrics.columns[1].get('left')).toEqual(60);

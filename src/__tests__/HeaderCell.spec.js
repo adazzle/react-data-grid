@@ -5,8 +5,6 @@ var HeaderCell    = rewire('../HeaderCell');
 var TestUtils     = require('react-addons-test-utils');
 var rewireModule  = require('../../test/rewireModule');
 var StubComponent = require('../../test/StubComponent');
-var ResizeHandle  = require('../ResizeHandle');
-var Draggable     = require('../Draggable');
 
 describe('Header Cell Tests', () => {
   var headerCell;
@@ -22,10 +20,10 @@ describe('Header Cell Tests', () => {
       width : 150,
       left : 300
     },
-    onResize : function(){
+    onResize : function() {
 
     },
-    onResizeEnd : function(){
+    onResizeEnd : function() {
 
     },
     height :50,
@@ -42,7 +40,7 @@ describe('Header Cell Tests', () => {
 
   it('should initialize the state correctly', () => {
     expect(headerCell.state).toEqual(
-      {resizing : false}
+      { resizing : false }
     );
   });
 
@@ -81,7 +79,7 @@ describe('Header Cell Tests', () => {
       spyOn(testProps, 'onResize');
       headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
       var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
-      var fakeEvent = {pageX : dragLength};
+      var fakeEvent = { pageX : dragLength };
       //act
       resizeHandle.props.onDrag(fakeEvent);
       //assert
@@ -90,15 +88,14 @@ describe('Header Cell Tests', () => {
       expect(testProps.onResize.mostRecentCall.args[1]).toEqual(dragLength);
     });
 
-    function SimulateDragEnd(dragLength){
-      var dragLength = dragLength;
-      var fakeEvent = {pageX : dragLength};
+    function SimulateDragEnd(dragLength) {
+      var fakeEvent = { pageX : dragLength };
       var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
       resizeHandle.props.onDragEnd(fakeEvent);
     }
 
     it('finish dragging should reset resizing state', () => {
-      headerCell.setState({resizing : true});
+      headerCell.setState({ resizing : true });
       SimulateDragEnd(250);
       expect(headerCell.state.resizing).toBe(false);
     });

@@ -35,8 +35,9 @@
   "dependencies": {
     "classnames": "^1.2.0",
     "eslint-plugin-babel": "^3.0.0",
+    "fbjs": "0.6.1",
     "object-assign": "^2.0.0",
-    "fbjs": "0.6.1"
+    "ron-react-autocomplete": "^2.0.1"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",

@@ -3,8 +3,6 @@ var React        = require('react');
 var rewire       = require('rewire');
 var Canvas         = rewire('../Canvas');
 var TestUtils    = require('react-addons-test-utils');
-var rewireModule = require('../../test/rewireModule');
-var StubComponent = require('../../test/StubComponent');
 
 describe('Canvas Tests', () => {
   var testElement;

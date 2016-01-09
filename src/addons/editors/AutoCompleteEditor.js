@@ -10,7 +10,6 @@ overrides? getDefaultValue, getStyle, onKeyDown
 var React                   = require('react');
 var ReactDOM = require('react-dom');
 var ReactAutocomplete       = require('ron-react-autocomplete');
-var KeyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var ExcelColumn             = require('../grids/ExcelColumn');
 
 var optionPropType = React.PropTypes.shape({
@@ -31,46 +30,47 @@ var AutoCompleteEditor = React.createClass({
     search : React.PropTypes.string
   },
 
-  getDefaultProps(): {resultIdentifier: string}{
+  getDefaultProps(): {resultIdentifier: string} {
     return {
       resultIdentifier : 'id'
     }
   },
 
-  getValue(): any{
+  getValue(): any {
     var value, updated = {};
-    if(this.hasResults() && this.isFocusedOnSuggestion()){
+    if (this.hasResults() && this.isFocusedOnSuggestion()) {
       value = this.getLabel(this.refs.autoComplete.state.focusedValue);
-      if(this.props.valueParams){
+      if (this.props.valueParams) {
         value = this.constuctValueFromParams(this.refs.autoComplete.state.focusedValue, this.props.valueParams);
       }
-    }else{
+    }
+    else {
       value = this.refs.autoComplete.state.searchTerm;
     }
     updated[this.props.column.key] = value;
     return updated;
   },
 
-  getInputNode(): HTMLInputElement{
+  getInputNode(): HTMLInputElement {
     return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
   },
 
   render(): ?ReactElement {
     var label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete  search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
+      <ReactAutocomplete  search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{ title : this.props.value }} />
       </div>);
   },
 
-  handleChange(){
+  handleChange() {
     this.props.onCommit();
   },
 
-  hasResults(): boolean{
+  hasResults(): boolean {
     return this.refs.autoComplete.state.results.length > 0;
   },
 
-  isFocusedOnSuggestion(): boolean{
+  isFocusedOnSuggestion(): boolean {
     var autoComplete = this.refs.autoComplete;
     return autoComplete.state.focusedValue != null;
   },
@@ -79,13 +79,14 @@ var AutoCompleteEditor = React.createClass({
     var label = this.props.label != null ? this.props.label : 'title';
     if (typeof label === 'function') {
       return label(item);
-    } else if (typeof label === 'string') {
+    }
+    else if (typeof label === 'string') {
       return item[label];
     }
   },
 
   constuctValueFromParams(obj: any, props: ?Array<string>): string {
-    if(!props){
+    if (!props) {
       return '';
     }
     var ret = [];

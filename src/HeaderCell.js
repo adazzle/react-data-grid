@@ -1,9 +1,3 @@
-/* TODO@flow unkwon */
-/**
- * @jsx React.DOM
-
-
- */
 "use strict";
 
 var React          = require('react');
@@ -25,12 +19,14 @@ var HeaderCell = React.createClass({
 
   render(): ?ReactElement {
     var resizeHandle;
-    if(this.props.column.resizable){
-      resizeHandle = <ResizeHandle
-      onDrag={this.onDrag}
-      onDragStart={this.onDragStart}
-      onDragEnd={this.onDragEnd}
-      />
+    if (this.props.column.resizable) {
+      resizeHandle = (
+        <ResizeHandle
+          onDrag={this.onDrag}
+          onDragStart={this.onDragStart}
+          onDragEnd={this.onDragEnd}
+        />
+      )
     }
     var className = joinClasses({
       'react-grid-HeaderCell': true,
@@ -49,10 +45,10 @@ var HeaderCell = React.createClass({
 
   getCell(): ReactComponent {
     if (React.isValidElement(this.props.renderer)) {
-      return React.cloneElement(this.props.renderer, {column : this.props.column});
-    } else {
-      var Renderer = this.props.renderer;
-      return this.props.renderer({column: this.props.column});
+      return React.cloneElement(this.props.renderer, { column : this.props.column });
+    }
+    else {
+      return this.props.renderer({ column: this.props.column });
     }
   },
 
@@ -63,7 +59,7 @@ var HeaderCell = React.createClass({
   },
 
   getInitialState(): {resizing: boolean} {
-    return {resizing: false};
+    return { resizing: false };
   },
 
   setScrollLeft(scrollLeft: number) {
@@ -87,14 +83,14 @@ var HeaderCell = React.createClass({
   },
 
   onDragStart(e: SyntheticMouseEvent) {
-    this.setState({resizing: true});
+    this.setState({ resizing: true });
     //need to set dummy data for FF
-    if(e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
+    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
   },
 
   onDrag(e: SyntheticMouseEvent) {
     var resize = this.props.onResize || null; //for flows sake, doesnt recognise a null check direct
-    if(resize) {
+    if (resize) {
       var width = this.getWidthFromMouseEvent(e);
       if (width > 0) {
         resize(this.props.column, width);
@@ -105,7 +101,7 @@ var HeaderCell = React.createClass({
   onDragEnd(e: SyntheticMouseEvent) {
     var width = this.getWidthFromMouseEvent(e);
     this.props.onResizeEnd(this.props.column, width);
-    this.setState({resizing: false});
+    this.setState({ resizing: false });
   },
 
   getWidthFromMouseEvent(e: SyntheticMouseEvent): number {
@@ -119,19 +115,5 @@ function simpleCellRenderer(props: {column: {name: string}}): ReactElement {
   return <div className="widget-HeaderCell__value">{props.column.name}</div>;
 }
 
-var SimpleCellFormatter = React.createClass({
-  propTypes : {
-    value :  React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
-  },
-
-  render(): ?ReactElement{
-    return <span>{this.props.value}</span>
-  },
-
-  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
-      return nextProps.value !== this.props.value;
-  }
-
-})
 
 module.exports = HeaderCell;

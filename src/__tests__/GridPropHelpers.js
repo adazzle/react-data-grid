@@ -24,10 +24,10 @@ module.exports = {
     width : 100
   }
   ],
-  rowGetter : function(i){
+  rowGetter : function(i) {
     return _rows[i];
   },
-  rowsCount : function(){
+  rowsCount : function() {
     return _rows.length;
   }
 }

@@ -1,40 +1,34 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
-
- */
 'use strict';
-
 var React                   = require('react');
 var ReactDOM = require('react-dom');
-var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var ExcelColumn             = require('../grids/ExcelColumn');
 
 class EditorBase extends React.Component {
 
-  getStyle(): {width: string}{
+  getStyle(): {width: string} {
     return {
       width : '100%'
     }
   }
 
-  getValue(): any{
+  getValue(): any {
     var updated = {};
     updated[this.props.column.key] = this.getInputNode().value;
     return updated;
   }
 
-  getInputNode(): HTMLInputElement{
+  getInputNode(): HTMLInputElement {
     var domNode = ReactDOM.findDOMNode(this);
-    if(domNode.tagName === 'INPUT'){
+    if (domNode.tagName === 'INPUT') {
       return domNode;
-    }else{
+    }
+    else {
       return domNode.querySelector('input:not([type=hidden])');
     }
   }
 
-  inheritContainerStyles(): boolean{
+  inheritContainerStyles(): boolean {
     return true;
   }
 

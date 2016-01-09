@@ -2,6 +2,7 @@
 var React         = require('react');
 var rewire        = require('rewire');
 var Header        = rewire('../Header');
+var Immutable = require('Immutable');
 var TestUtils     = require('react-addons-test-utils');
 var rewireModule  = require('../../test/rewireModule');
 var StubComponent = require('../../test/StubComponent');
@@ -25,8 +26,8 @@ describe('Header Unit Tests', () => {
     },
     totalWidth : 1000,
     height : 50,
-    headerRows : [{height : 50, ref : 'row'}],
-    onColumnResize : function(){}
+    headerRows : [{ height : 50, ref : 'row' }],
+    onColumnResize : function() {}
   }
 
   beforeEach(() => {

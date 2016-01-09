@@ -246,7 +246,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setActive('Enter');
 	  },
 
-	  onViewportDoubleClick: function onViewportDoubleClick(e) {
+	  onViewportDoubleClick: function onViewportDoubleClick() {
 	    this.setActive();
 	  },
 
@@ -469,10 +469,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getHeaderRows: function getHeaderRows() {
-	    var rows = [{ ref: "row", height: this.props.headerRowHeight || this.props.rowHeight }];
+	    var rows = [{ ref: 'row', height: this.props.headerRowHeight || this.props.rowHeight }];
 	    if (this.state.canFilter === true) {
 	      rows.push({
-	        ref: "filterRow",
+	        ref: 'filterRow',
 	        headerCellRenderer: React.createElement(FilterableHeaderCell, { onChange: this.props.onAddFilter, column: this.props.column }),
 	        height: 45
 	      });
@@ -951,11 +951,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	/**
-	 * @jsx React.DOM
-
-
-	 */
 	"use strict";
 
 	var _extends = __webpack_require__(2)['default'];
@@ -979,12 +974,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render: function render() {
-	    var state = this.state.resizing || this.props;
-
 	    var className = joinClasses({
 	      'react-grid-Header': true,
 	      'react-grid-Header--resizing': !!this.state.resizing
 	    });
+
 	    var headerRows = this.getHeaderRows();
 
 	    return React.createElement(
@@ -1038,7 +1032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return { resizing: null };
 	  },
 
-	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	  componentWillReceiveProps: function componentWillReceiveProps() {
 	    this.setState({ resizing: null });
 	  },
 
@@ -1278,7 +1272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var defferedColumns = columns.filter(function (c) {
 	    return !c.width;
 	  });
-	  return columns.map(function (column, i, arr) {
+	  return columns.map(function (column) {
 	    if (!column.width) {
 	      if (unallocatedWidth <= 0) {
 	        column.width = minColumnWidth;
@@ -1848,9 +1842,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = __webpack_require__(2)['default'];
 
 	var React = __webpack_require__(18);
-	var joinClasses = __webpack_require__(22);
 	var Draggable = __webpack_require__(34);
-	var PropTypes = React.PropTypes;
 
 	var ResizeHandle = React.createClass({
 	  displayName: 'ResizeHandle',
@@ -2268,7 +2260,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      {
 	        style: style,
 	        onScroll: this.onScroll,
-	        className: joinClasses("react-grid-Canvas", this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active }) },
+	        className: joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active }) },
 	      React.createElement(
 	        'div',
 	        { style: { width: this.props.width, overflow: 'hidden' } },
@@ -2561,7 +2553,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        cellMetaData: _this.props.cellMetaData,
 	        rowData: _this.props.row,
 	        selectedColumn: selectedColumn,
-	        isRowSelected: _this.props.isSelected });
+	        isRowSelected: _this.props.isSelected
+	      });
 	      if (column.locked) {
 	        lockedCells.push(cell);
 	      } else {
@@ -2600,7 +2593,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.props.cellRenderer.call(this, props);
 	    }
 	    if (React.isValidElement(this.props.cellRenderer)) {
-	      return cloneWithProps(this.props.cellRenderer, props);
+	      return React.cloneElement(this.props.cellRenderer, props);
 	    } else {
 	      return this.props.cellRenderer(props);
 	    }
@@ -2644,7 +2637,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return copied != null && copied.rowIdx === this.props.idx;
 	  },
 
-	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
 	    return !ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn) || this.doesRowContainSelectedCell(this.props) || this.doesRowContainSelectedCell(nextProps) || this.willRowBeDraggedOver(nextProps) || nextProps.row !== this.props.row || this.hasRowBeenCopied() || this.props.isSelected !== nextProps.isSelected || nextProps.height !== this.props.height;
 	  },
 
@@ -2711,7 +2704,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      tabIndex: -1,
-	      ref: "cell",
+	      ref: 'cell',
 	      isExpanded: false
 	    };
 	  },
@@ -2896,7 +2889,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  applyUpdateClass: function applyUpdateClass() {
 	    var updateCellClass = this.getUpdateCellClass();
 	    // -> removing the class
-	    if (updateCellClass != null && updateCellClass != "") {
+	    if (updateCellClass != null && updateCellClass != '') {
 	      var cellDOMNode = ReactDOM.findDOMNode(this);
 	      if (cellDOMNode.classList) {
 	        cellDOMNode.classList.remove(updateCellClass);
@@ -3070,24 +3063,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //return custom column editor or SimpleEditor if none specified
 	      return React.cloneElement(customEditor, editorProps);
 	    } else {
-	      return React.createElement(SimpleTextEditor, { ref: editorRef, column: this.props.column, value: this.getInitialValue(), onBlur: this.commit, rowMetaData: this.getRowMetaData() });
+	      return React.createElement(SimpleTextEditor, {
+	        ref: editorRef,
+	        column: this.props.column,
+	        value: this.getInitialValue(),
+	        onBlur: this.commit,
+	        rowMetaData: this.getRowMetaData()
+	      });
 	    }
 	  },
 
 	  getRowMetaData: function getRowMetaData() {
-	    //clone row data so editor cannot actually change this
-	    var columnName = this.props.column.ItemId;
 	    //convention based method to get corresponding Id or Name of any Name or Id property
 	    if (typeof this.props.column.getRowMetaData === 'function') {
 	      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
 	    }
 	  },
 
-	  onPressEnter: function onPressEnter(e) {
-	    this.commit({ key: 'Enter' });
+	  onPressEnter: function onPressEnter() {
+	    if (!this.editorIsSelectOpen()) {
+	      this.commit({ key: 'Enter' });
+	    }
 	  },
 
-	  onPressTab: function onPressTab(e) {
+	  onPressTab: function onPressTab() {
 	    this.commit({ key: 'Tab' });
 	  },
 
@@ -3161,7 +3160,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var updated = this.getEditor().getValue();
 	    if (this.isNewValueValid(updated)) {
 	      var cellKey = this.props.column.key;
-	      this.props.cellMetaData.onCommit({ cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key });
+	      this.props.cellMetaData.onCommit({
+	        cellKey: cellKey,
+	        updated: updated,
+	        rowIdx: this.props.rowIdx,
+	        key: opts.key
+	      });
 	    }
 	    this.changeCommitted = true;
 	  },
@@ -3243,7 +3247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var keyCode = selected.initialKeyCode;
 	    var inputNode = this.getInputNode();
 	    inputNode.focus();
-	    if (inputNode.tagName === "INPUT") {
+	    if (inputNode.tagName === 'INPUT') {
 	      if (!this.isKeyPrintable(keyCode)) {
 	        inputNode.focus();
 	        inputNode.select();
@@ -3277,18 +3281,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* TODO: mixins */
-	/**
-	 * @jsx React.DOM
-
-
-	 */
+/***/ function(module, exports) {
 
 	'use strict';
-
-	var React = __webpack_require__(18);
 	var KeyboardHandlerMixin = {
 
 	  onKeyDown: function onKeyDown(e) {
@@ -3321,7 +3316,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  isCtrlKeyHeldDown: function isCtrlKeyHeldDown(e) {
-	    return e.ctrlKey === true && e.key !== "Control";
+	    return e.ctrlKey === true && e.key !== 'Control';
 	  },
 
 	  checkAndCall: function checkAndCall(methodName, args) {
@@ -3369,8 +3364,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  return SimpleTextEditor;
 	})(EditorBase);
-
-	;
 
 	module.exports = SimpleTextEditor;
 
@@ -3534,7 +3527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (domNode.tagName === 'INPUT') {
 	      return domNode;
 	    } else {
-	      return domNode.querySelector("input:not([type=hidden])");
+	      return domNode.querySelector('input:not([type=hidden])');
 	    }
 	  };
 
@@ -4039,8 +4032,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Column = function Column() {
 	  _classCallCheck(this, Column);
 	};
-
-	;
 
 	module.exports = {
 	  mixins: [DOMMetrics.MetricsMixin],
