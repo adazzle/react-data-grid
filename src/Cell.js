@@ -25,7 +25,7 @@ var Cell = React.createClass({
     tabIndex : React.PropTypes.number,
     ref : React.PropTypes.string,
     column: React.PropTypes.shape(ExcelColumn).isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     isExpanded: React.PropTypes.bool,
     cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
     handleDragStart: React.PropTypes.func,
@@ -36,7 +36,7 @@ var Cell = React.createClass({
   getDefaultProps : function(): {tabIndex: number; ref: string; isExpanded: boolean } {
     return {
       tabIndex : -1,
-      ref : "cell",
+      ref : 'cell',
       isExpanded: false
     }
   },
@@ -215,7 +215,7 @@ var Cell = React.createClass({
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
     var extraClasses = joinClasses({
-      'selected' : this.isSelected() && !this.isActive() ,
+      'selected' : this.isSelected() && !this.isActive(),
       'editing' : this.isActive(),
       'copied' : this.isCopied(),
       'active-drag-cell' : this.isSelected() || this.isDraggedOver(),
@@ -233,7 +233,7 @@ var Cell = React.createClass({
   applyUpdateClass() {
     var updateCellClass = this.getUpdateCellClass();
     // -> removing the class
-    if(updateCellClass != null && updateCellClass != "") {
+    if(updateCellClass != null && updateCellClass != '') {
       var cellDOMNode = ReactDOM.findDOMNode(this);
       if (cellDOMNode.classList) {
         cellDOMNode.classList.remove(updateCellClass);
@@ -327,7 +327,7 @@ var Cell = React.createClass({
 
 var SimpleCellFormatter = React.createClass({
   propTypes : {
-    value :  React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
+    value :  React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
   },
 
   render(): ?ReactElement{

@@ -26,7 +26,7 @@ var DateRangeEditor = React.createClass({
 
   getDefaultProps(): {format: string; ranges: Array<Date>}{
     return {
-      format   : "YYYY-MM-DD",
+      format   : 'YYYY-MM-DD',
       ranges   : []
     }
   },
@@ -44,7 +44,7 @@ var DateRangeEditor = React.createClass({
         var dateToParse = this.getInputNode().value;
         var dateRanges = dateToParse.split(this.rangeSeparatorChar);
         if(dateRanges.length !== 2){
-          throw ("DateRangeEditor.getValue error : " + dateToParse + " is not in the correct format");
+          throw ('DateRangeEditor.getValue error : ' + dateToParse + ' is not in the correct format');
         }
         return {startDate : dateRanges[0].trim(), endDate : dateRanges[1].trim()}
       }

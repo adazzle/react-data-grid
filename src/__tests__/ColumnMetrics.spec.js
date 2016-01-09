@@ -1,5 +1,4 @@
 'use strict';
-var React         = require('react');
 var rewire = require('rewire');
 var ColumnMetrics = rewire('../ColumnMetrics');
 var Immutable = window.Immutable = require('Immutable');
@@ -26,41 +25,42 @@ describe('Column Metrics Tests', () => {
         name: 'Count'
       }];
 
-      if('should set the unset column widths based on the total width', () => {
-        var metrics = recalculate({column : columns, totalWidth: 300, minColumnWidth: 50})
+      it('should set the unset column widths based on the total width', () => {
+        var metrics = ColumnMetrics.recalculate({ columns, totalWidth: 300 + 17, minColumnWidth: 50 })
         expect(metrics.columns[0].width).toEqual(60);
         expect(metrics.columns[1].width).toEqual(120);
         expect(metrics.columns[2].width).toEqual(120);
 
-      });
+      })
 
-      if('should set the column left based on the column widths', () => {
-        var metrics = recalculate({column : columns, totalWidth: 300, minColumnWidth: 50})
+      it('should set the column left based on the column widths', () => {
+        var metrics = ColumnMetrics.recalculate({ columns, totalWidth: 300 + 17, minColumnWidth: 50 })
         expect(metrics.columns[0].left).toEqual(0);
         expect(metrics.columns[1].left).toEqual(60);
         expect(metrics.columns[2].left).toEqual(180);
 
-      });
+      })
 
-      describe('When column data is immutable js object', () => {
+      xdescribe('When column data is immutable js object', () => {
         var immutableColumns = new Immutable.List(columns);
 
-        if('should set the unset column widths based on the total width', () => {
-          var metrics = recalculate({column : immutableColumns, totalWidth: 300, minColumnWidth: 50})
+        it('should set the unset column widths based on the total width', () => {
+          var metrics = ColumnMetrics.recalculate({columns: immutableColumns, totalWidth: 300 + 17, minColumnWidth: 50})
           expect(metrics.columns[0].get('width')).toEqual(60);
           expect(metrics.columns[1].get('width')).toEqual(120);
           expect(metrics.columns[2].get('width')).toEqual(120);
 
-        });
+        })
 
-        if('should set the column left based on the column widths', () => {
-          var metrics = recalculate({column : immutableColumns, totalWidth: 300, minColumnWidth: 50})
+        it('should set the column left based on the column widths', () => {
+          var metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth: 300 + 17, minColumnWidth: 50})
+
           expect(metrics.columns[0].get('left')).toEqual(0);
           expect(metrics.columns[1].get('left')).toEqual(60);
           expect(metrics.columns[2].get('left')).toEqual(180);
 
-        });
-      });
+        })
+      })
 
     })
   });
@@ -68,7 +68,7 @@ describe('Column Metrics Tests', () => {
   describe('Comparing Columns', () => {
 
     describe('Using array of object literals', () => {
-      let prevColumns,nextColumns;
+      let prevColumns, nextColumns;
       beforeEach(() => {
         var helpers = require('./GridPropHelpers');
         prevColumns = helpers.columns;
@@ -91,7 +91,7 @@ describe('Column Metrics Tests', () => {
       it('should call compareEachColumn when comparing columns', () => {
         var compareEachColumnSpy = jasmine.createSpy();
         ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
-        var areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
+        ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
         expect(compareEachColumnSpy).toHaveBeenCalled();
         expect(compareEachColumnSpy.callCount).toEqual(1);
       });
@@ -99,7 +99,7 @@ describe('Column Metrics Tests', () => {
     });
 
     describe('Using ImmutableJs Lists', () => {
-      let prevColumns,nextColumns;
+      let prevColumns, nextColumns;
 
       beforeEach(() => {
         var helpers = require('./GridPropHelpers');
@@ -134,18 +134,10 @@ describe('Column Metrics Tests', () => {
       it('should not call compareEachColumn when comparing columns', () => {
         var compareEachColumnSpy = jasmine.createSpy();
         ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
-        var areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
+        ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
         expect(compareEachColumnSpy).not.toHaveBeenCalled();
         expect(compareEachColumnSpy.callCount).toEqual(0);
       });
-
     });
-
   });
-
-
-
-
-
-
 });

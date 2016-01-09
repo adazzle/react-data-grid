@@ -1,7 +1,5 @@
 var React          = require('react');
-var joinClasses     = require('classnames');
 var Draggable      = require('./Draggable');
-var PropTypes      = React.PropTypes;
 
 var ResizeHandle   = React.createClass({
 
@@ -16,10 +14,10 @@ var ResizeHandle   = React.createClass({
   render(): ?ReactElement {
     return (
       <Draggable {...this.props}
-      className="react-grid-HeaderCell__resizeHandle"
-      style={this.style}
+        className="react-grid-HeaderCell__resizeHandle"
+        style={this.style}
       />
-  );
+    );
   }
 });
 

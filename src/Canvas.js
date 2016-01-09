@@ -81,7 +81,7 @@ var Canvas = React.createClass({
       <div
         style={style}
         onScroll={this.onScroll}
-        className={joinClasses("react-grid-Canvas", this.props.className, {opaque : this.props.cellMetaData.selected && this.props.cellMetaData.selected.active})}>
+        className={joinClasses('react-grid-Canvas', this.props.className, {opaque : this.props.cellMetaData.selected && this.props.cellMetaData.selected.active})}>
         <div style={{width: this.props.width, overflow: 'hidden'}}>
           {rows}
         </div>

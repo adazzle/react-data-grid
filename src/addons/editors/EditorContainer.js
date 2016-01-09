@@ -19,7 +19,7 @@ var EditorContainer = React.createClass({
 
   propTypes : {
     rowData :React.PropTypes.object.isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     cellMetaData: React.PropTypes.shape({
       selected: React.PropTypes.object.isRequired,
       copied: React.PropTypes.object,
@@ -244,7 +244,7 @@ var EditorContainer = React.createClass({
     var keyCode = selected.initialKeyCode;
     var inputNode = this.getInputNode();
     inputNode.focus();
-    if(inputNode.tagName === "INPUT"){
+    if(inputNode.tagName === 'INPUT'){
       if(!this.isKeyPrintable(keyCode)){
         inputNode.focus();
         inputNode.select();

@@ -17,7 +17,7 @@ class Column {
   key: string;
   left: number;
   width: number;
-};
+}
 
 module.exports = {
   mixins: [DOMMetrics.MetricsMixin],

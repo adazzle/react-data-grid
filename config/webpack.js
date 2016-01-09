@@ -1,10 +1,9 @@
 var path = require("path");
 var webpack = require('webpack');
-var release = false;
-var path = require("path");
 var argv = require('minimist')(process.argv.slice(2));
 var RELEASE = argv.release;
 
+var assign = require('object-assign')
 
 var config = {
   entry: {
@@ -47,13 +46,19 @@ var config = {
       }
     ]
   },
-  postLoaders: [
-  {
-    test: /\.js$/,
-    exclude: /node_modules|testData/,
-    loader: 'jshint'
-  }]
+  plugins: [
+    new webpack.optimize.DedupePlugin()
+  ]
 }
 
+var prod = assign({}, config)
 
-module.exports = config;
+prod.output = assign({}, config.output, { filename: "[name].min.js"});
+prod.plugins = prod.plugins.concat([
+  new webpack.optimize.OccurenceOrderPlugin(),
+  new webpack.optimize.UglifyJsPlugin({ compress: {
+    warnings: false }
+  })
+])
+
+module.exports = [config, prod]

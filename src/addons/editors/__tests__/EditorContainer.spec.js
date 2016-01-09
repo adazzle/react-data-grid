@@ -26,7 +26,7 @@ describe('Editor Container Tests', () => {
     col3 : 'Testing'
   };
 
-  describe("Basic render tests", () => {
+  describe('Basic render tests', () => {
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(<EditorContainer
@@ -48,9 +48,9 @@ describe('Editor Container Tests', () => {
     it('should select the text of the default input when the editor is rendered', () => {
 
       function isTextSelected(input) {
-        if (typeof input.selectionStart == "number") {
+        if (typeof input.selectionStart == 'number') {
           return input.selectionStart == 0 && input.selectionEnd == input.value.length;
-        } else if (typeof document.selection != "undefined") {
+        } else if (typeof document.selection != 'undefined') {
           input.focus();
           return document.selection.createRange().text == input.value;
         }
@@ -69,7 +69,7 @@ describe('Editor Container Tests', () => {
 
   });
 
-  describe("Events", () => {
+  describe('Events', () => {
 
       beforeEach(() => {
         cellMetaData.onCommit = function(value){};
@@ -94,7 +94,7 @@ describe('Editor Container Tests', () => {
 
       it('hitting enter should call commit of cellMetaData only once', () => {
         var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
-        TestUtils.Simulate.keyDown(Editor.getInputNode(), {key: "Enter"});
+        TestUtils.Simulate.keyDown(Editor.getInputNode(), {key: 'Enter'});
         expect(cellMetaData.onCommit).toHaveBeenCalled();
         expect(cellMetaData.onCommit.callCount).toEqual(1);
       });

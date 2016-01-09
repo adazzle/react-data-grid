@@ -30,7 +30,7 @@ class EditorBase extends React.Component {
     if(domNode.tagName === 'INPUT'){
       return domNode;
     }else{
-      return domNode.querySelector("input:not([type=hidden])");
+      return domNode.querySelector('input:not([type=hidden])');
     }
   }
 

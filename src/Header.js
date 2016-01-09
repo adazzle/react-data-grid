@@ -1,14 +1,8 @@
 /* @flow */
-/**
- * @jsx React.DOM
-
-
- */
 "use strict";
-
 var React               = require('react');
-var ReactDOM = require('react-dom');
-var joinClasses          = require('classnames');
+var ReactDOM            = require('react-dom');
+var joinClasses         = require('classnames');
 var shallowCloneObject  = require('./shallowCloneObject');
 var ColumnMetrics       = require('./ColumnMetrics');
 var ColumnUtils         = require('./ColumnUtils');
@@ -27,16 +21,14 @@ var Header = React.createClass({
   },
 
   render(): ?ReactElement {
-    var state = this.state.resizing || this.props;
-
     var className = joinClasses({
       'react-grid-Header': true,
       'react-grid-Header--resizing': !!this.state.resizing
     });
+
     var headerRows = this.getHeaderRows();
 
     return (
-
       <div {...this.props} style={this.getStyle()} className={className}>
         {headerRows}
       </div>
@@ -44,7 +36,10 @@ var Header = React.createClass({
   },
 
   shouldComponentUpdate : function(nextProps: any, nextState: any): boolean{
-    var update =  !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
+    var update =  !(ColumnMetrics.sameColumns(
+      this.props.columnMetrics.columns,
+      nextProps.columnMetrics.columns, ColumnMetrics.sameColumn)
+    )
     || this.props.totalWidth != nextProps.totalWidth
     || (this.props.headerRows.length != nextProps.headerRows.length)
     || (this.state.resizing != nextState.resizing)
@@ -92,7 +87,7 @@ var Header = React.createClass({
     return {resizing: null};
   },
 
-  componentWillReceiveProps(nextProps: any) {
+  componentWillReceiveProps() {
     this.setState({resizing: null});
   },
 
@@ -131,7 +126,7 @@ var Header = React.createClass({
   getColumnPosition(column: Column): ?number {
     var columnMetrics = this.getColumnMetrics();
     var pos = -1;
-    columnMetrics.columns.forEach((c,idx) => {
+    columnMetrics.columns.forEach((c, idx) => {
       if(c.key === column.key){
         pos = idx;
       }

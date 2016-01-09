@@ -7,20 +7,20 @@ import GridRunner from './GridRunner';
 
 describe('Grid Integration', () => {
   describe('Grid Setup', () => {
-    it("Creates the grid", () => {
+    it('Creates the grid', () => {
       expect(new GridRunner({}).grid).toBeDefined();
     });
 
-    it("Renders the grid", () => {
+    it('Renders the grid', () => {
       TestUtils.isDOMComponent(new GridRunner({}).grid);
     })
 
-    it("Renders 22 rows by default", () => {
+    it('Renders 22 rows by default', () => {
       expect(TestUtils.scryRenderedDOMComponentsWithClass(new GridRunner({}).grid, 'react-grid-Row').length).toEqual(22);
     })
 
     //the results of this test are so variable that it keeps failing the build. ignoring for now
-    xit("Renders the grid in under 1500ms", () => {
+    xit('Renders the grid in under 1500ms', () => {
       //this is obviously a bit of an arbitary number
       //not strictly a test, as (duh) it depends on what machine and js engine (aka browser) you use
       //but it works as a useful stop gap for anything that really kills perf.
@@ -38,14 +38,14 @@ describe('Grid Integration', () => {
 
   describe('Grid Copy and paste', () => {
 
-    it("copies a cell", () => {
+    it('copies a cell', () => {
       new GridRunner({})
       .selectCell({cellIdx:3, rowIdx: 3})
       .copy()
       .hasCopied({cellIdx:3, rowIdx: 3});
     });
 
-    it("copying a second cell removes the copying style from first cell", () => {
+    it('copying a second cell removes the copying style from first cell', () => {
       let firstCellIdx = 3;
       let gridRunner = new GridRunner({})
       .selectCell({cellIdx:firstCellIdx, rowIdx: 1})
@@ -64,10 +64,10 @@ describe('Grid Integration', () => {
 
     it('header columns and cells stay in line', () => {
       var gridRunner = new GridRunner({renderIntoBody:true})
-      .selectCell({cellIdx:14,rowIdx:0})
+      .selectCell({cellIdx:14, rowIdx:0})
       var firstRow = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid, 'react-grid-Row');
       var firstRowCells = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid, 'react-grid-Cell');
-      var headerCells = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid,'react-grid-HeaderCell');
+      var headerCells = TestUtils.scryRenderedDOMComponentsWithClass(gridRunner.grid, 'react-grid-HeaderCell');
       headerCells.forEach((hCell, i) => {
         expect(hCell.props.style.left).toEqual(firstRowCells[i].props.style.left);
       })
@@ -76,23 +76,23 @@ describe('Grid Integration', () => {
 
 
   describe('Grid Drag', () => {
-    it("Shows drag selector", () => {
+    it('Shows drag selector', () => {
       new GridRunner({})
-      .drag({from:0,to:4,col:4,
+      .drag({from:0, to:4, col:4,
       beforeEnd: function() {
         //check we have the right classes
-        expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'is-dragged-over-down').length).toEqual(1);
-        expect(TestUtils.scryRenderedDOMComponentsWithClass(component,'was-dragged-over').length).toEqual(2);
+        expect(TestUtils.scryRenderedDOMComponentsWithClass(component, 'is-dragged-over-down').length).toEqual(1);
+        expect(TestUtils.scryRenderedDOMComponentsWithClass(component, 'was-dragged-over').length).toEqual(2);
       }})
     });
-    it("Drags a column down", () => {
+    it('Drags a column down', () => {
 
       new GridRunner({})
-      .drag({from:0,to:4,col:4})
-      .hasDragged({from:0,to:4,col:4,cellKey:'title'})
+      .drag({from:0, to:4, col:4})
+      .hasDragged({from:0, to:4, col:4, cellKey:'title'})
     });
 
-    it("Drags a column up", () => {
+    it('Drags a column up', () => {
       new GridRunner({})
       .drag({from:4, to:0, col:5})
       // React-data-grid treats a drag up as a drag down, so need to assert using the
@@ -112,33 +112,33 @@ describe('Grid Integration', () => {
   //   });
   // });
   describe('Grid Selection', () => {
-    it("Selects on click", () => {
+    it('Selects on click', () => {
       new GridRunner({})
-      .selectCell({cellIdx:3,rowIdx:3})
-      .hasSelected({cellIdx:3,rowIdx:3})
+      .selectCell({cellIdx:3, rowIdx:3})
+      .hasSelected({cellIdx:3, rowIdx:3})
       .dispose();
     });
   });
   describe('Editors', () => {
-    it("Readonly columns are NOT Editable", () => {
+    it('Readonly columns are NOT Editable', () => {
 
       new GridRunner({})
-      .clickIntoEditor({cellIdx:1,rowIdx:3})
+      .clickIntoEditor({cellIdx:1, rowIdx:3})
       .isNotEditable();
     });
-    it("Enter commits an edit", () => {
+    it('Enter commits an edit', () => {
       new GridRunner({})
         .changeCell({
           select: {row:3, cell:5},
           val:'Test',
           ev:{key:'Enter'},
-          expectToSelect: {row:3,cell:5}
+          expectToSelect: {row:3, cell:5}
         })
 
     });
 
 
-    it("Start editing by pressing a key", () => {
+    it('Start editing by pressing a key', () => {
       let grid=new GridRunner({});
       grid.selectCell({rowIdx:3, cellIdx:5})
         .keyDown({
@@ -151,7 +151,7 @@ describe('Grid Integration', () => {
         .dispose();
 
     });
-    it("Start editing by pressing enter", () => {
+    it('Start editing by pressing enter', () => {
       let grid=new GridRunner({});
         grid.selectCell({rowIdx:3, cellIdx:5})
         .keyDown({key:'Enter'}, grid.cell)
@@ -159,22 +159,22 @@ describe('Grid Integration', () => {
         .dispose();
 
     });
-   it("Can tab out of an Editor", () => {
+   it('Can tab out of an Editor', () => {
       new GridRunner({})
       .changeCell({
         select: {row:3, cell:5},
         val:'Test',
         ev:{key:'Tab'},
-        expectToSelect: {row:3,cell:6}
+        expectToSelect: {row:3, cell:6}
       })
     });
-    it("Can shift+tab out of an Editor", () => {
+    it('Can shift+tab out of an Editor', () => {
       new GridRunner({})
       .changeCell({
         select: {row:3, cell:5},
         val:'Test',
-        ev:{key:'Tab',shiftKey:true},
-        expectToSelect: {row:3,cell:4}
+        ev:{key:'Tab', shiftKey:true},
+        expectToSelect: {row:3, cell:4}
       })
     });
 
@@ -188,7 +188,7 @@ describe('Grid Integration', () => {
         .dispose();
     });
 
-    it("Arrow Left doesnt commit your change if you are not at the start of the text", () => {
+    it('Arrow Left doesnt commit your change if you are not at the start of the text', () => {
       new GridRunner({renderIntoBody: true})
         .clickIntoEditor({rowIdx:3, cellIdx:5})
         .setValue('Test')
@@ -201,28 +201,28 @@ describe('Grid Integration', () => {
         .dispose();
     });
 
-    it("Arrow Left does commit your change if you are at the start of the text", () => {
+    it('Arrow Left does commit your change if you are at the start of the text', () => {
       new GridRunner({})
       //by default we are at pos 0 with a blank value
       .changeCell({
         select: {row:3, cell:5},
         val:'',
         ev:{key:'ArrowLeft'},
-        expectToSelect: {row:3,cell:4}
+        expectToSelect: {row:3, cell:4}
       })
     });
-    it("Arrow Right commits your change when you are at the end of the text", () => {
+    it('Arrow Right commits your change when you are at the end of the text', () => {
       new GridRunner({renderIntoBody: true})
         .clickIntoEditor({rowIdx:3, cellIdx:5})
         .setValue('Test')
         .setCursor(4)
         .keyDown({key:'ArrowRight'})
         .hasCommitted('Test')
-        .hasSelected({rowIdx:3,cellIdx:6})
+        .hasSelected({rowIdx:3, cellIdx:6})
         .dispose();
     });
 
-    it("Arrow Right doesnt commit your change when you are not at the end of the text", () => {
+    it('Arrow Right doesnt commit your change when you are not at the end of the text', () => {
       new GridRunner({renderIntoBody: true})
         .clickIntoEditor({rowIdx:3, cellIdx:5})
         .setValue('Test')
@@ -234,22 +234,22 @@ describe('Grid Integration', () => {
         .keyDown({ key: 'Escape' })
         .dispose();
     });
-    it("Arrow Up commits your change", () => {
+    it('Arrow Up commits your change', () => {
       new GridRunner({})
         .changeCell({
         select: {row:3, cell:5},
         val:'Test',
         ev:{key:'ArrowUp'},
-        expectToSelect: {row:2,cell:5}
+        expectToSelect: {row:2, cell:5}
       })
     });
-    it("Arrow Down commits your change", () => {
+    it('Arrow Down commits your change', () => {
       new GridRunner({})
         .changeCell({
         select: {row:3, cell:5},
         val:'Test',
         ev:{key:'ArrowDown'},
-        expectToSelect: {row:4,cell:5}
+        expectToSelect: {row:4, cell:5}
       })
     });
   });

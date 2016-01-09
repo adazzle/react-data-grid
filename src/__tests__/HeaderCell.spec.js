@@ -3,8 +3,8 @@ var React         = require('react');
 var rewire        = require('rewire');
 var HeaderCell    = rewire('../HeaderCell');
 var TestUtils     = require('react-addons-test-utils');
-var rewireModule  = require("../../test/rewireModule");
-var StubComponent = require("../../test/StubComponent");
+var rewireModule  = require('../../test/rewireModule');
+var StubComponent = require('../../test/StubComponent');
 var ResizeHandle  = require('../ResizeHandle');
 var Draggable     = require('../Draggable');
 
@@ -53,7 +53,7 @@ describe('Header Cell Tests', () => {
   });
 
 
-  describe("When column is resizable", () => {
+  describe('When column is resizable', () => {
 
     beforeEach(() => {
       testProps.column.resizable = true;
@@ -64,18 +64,18 @@ describe('Header Cell Tests', () => {
       testProps.column.resizable = false;
     });
 
-    it("should render a resize handle", () => {
+    it('should render a resize handle', () => {
       var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
       expect(resizeHandle).toBeDefined();
     });
 
-    it("start dragging handle should set resizing state to be true", () => {
+    it('start dragging handle should set resizing state to be true', () => {
       var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
       resizeHandle.props.onDragStart();
       expect(headerCell.state.resizing).toBe(true);
     });
 
-    it("dragging handle should call onResize callback with width and column", () => {
+    it('dragging handle should call onResize callback with width and column', () => {
       //arrange
       var dragLength = 200;
       spyOn(testProps, 'onResize');
@@ -95,15 +95,15 @@ describe('Header Cell Tests', () => {
       var fakeEvent = {pageX : dragLength};
       var resizeHandle = TestUtils.findRenderedComponentWithType(headerCell, ResizeHandleStub);
       resizeHandle.props.onDragEnd(fakeEvent);
-    };
+    }
 
-    it("finish dragging should reset resizing state", () => {
+    it('finish dragging should reset resizing state', () => {
       headerCell.setState({resizing : true});
       SimulateDragEnd(250);
       expect(headerCell.state.resizing).toBe(false);
     });
 
-    it("finish dragging should call onResizeEnd with correct params", () => {
+    it('finish dragging should call onResizeEnd with correct params', () => {
       spyOn(testProps, 'onResizeEnd');
       headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
       SimulateDragEnd(250);

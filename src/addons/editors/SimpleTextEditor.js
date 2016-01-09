@@ -18,6 +18,6 @@ class SimpleTextEditor extends EditorBase {
     return (<input ref="input" type="text" onBlur={this.props.onBlur} className="form-control" defaultValue={this.props.value} />);
   }
 
-};
+}
 
 module.exports = SimpleTextEditor;

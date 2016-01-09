@@ -121,7 +121,7 @@ function simpleCellRenderer(props: {column: {name: string}}): ReactElement {
 
 var SimpleCellFormatter = React.createClass({
   propTypes : {
-    value :  React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
+    value :  React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
   },
 
   render(): ?ReactElement{

@@ -903,11 +903,11 @@ DateRangePicker.prototype = {
 				for (var m = 0; m < 12; m++) {
 						if ((!inMinYear || m >= minDate.month()) && (!inMaxYear || m <= maxDate.month())) {
 								monthHtml += "<option value='" + m + "'" +
-										(m === currentMonth ? " selected='selected'" : "") +
-										">" + this.locale.monthNames[m] + "</option>";
+										(m === currentMonth ? " selected='selected'" : '') +
+										'>' + this.locale.monthNames[m] + '</option>';
 						}
 				}
-				monthHtml += "</select>";
+				monthHtml += '</select>';
 
 				var currentYear = selected.year();
 				var maxYear = (maxDate && maxDate.year()) || (currentYear + 5);
@@ -942,7 +942,7 @@ DateRangePicker.prototype = {
 						html += '<th></th>';
 				}
 
-				var dateHtml = this.locale.monthNames[calendar[1][1].month()] + calendar[1][1].format(" YYYY");
+				var dateHtml = this.locale.monthNames[calendar[1][1].month()] + calendar[1][1].format(' YYYY');
 
 				if (this.showDropdowns) {
 						dateHtml = this.renderDropdowns(calendar[1][1], minDate, maxDate);
@@ -1089,7 +1089,7 @@ $.fn.daterangepicker = function (options, cb) {
 
 var validateDate = function(props, propName, componentName) {
 			if(!moment(props).isValid()){
-				throw(propName + " must be a valid date");
+				throw(propName + ' must be a valid date');
 			}
 		}
 
@@ -1133,7 +1133,7 @@ var DateRangeFilter = React.createClass({
 			//return moment instances for start and end date ranges
 			this.props.onApply(picker.startDate, picker.endDate);
 		}
-		this.setState({dateRange : picker.startDate.format(picker.format) + " - " + picker.endDate.format(picker.format)})
+		this.setState({dateRange : picker.startDate.format(picker.format) + ' - ' + picker.endDate.format(picker.format)})
 	},
 
 	handleClear : function(){

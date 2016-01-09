@@ -3,8 +3,8 @@ var React         = require('react');
 var rewire        = require('rewire');
 var HeaderRow        = rewire('../HeaderRow');
 var TestUtils     = require('react-addons-test-utils');
-var rewireModule  = require("../../test/rewireModule");
-var StubComponent = require("../../test/StubComponent");
+var rewireModule  = require('../../test/rewireModule');
+var StubComponent = require('../../test/StubComponent');
 var helpers       = require('./GridPropHelpers');
 
 describe('Header Unit Tests', () => {
@@ -37,7 +37,7 @@ describe('Header Unit Tests', () => {
   });
 
 
-  describe("When column is sortable", () => {
+  describe('When column is sortable', () => {
 
     var sortableColIdx =1;
     beforeEach(() => {
@@ -50,20 +50,20 @@ describe('Header Unit Tests', () => {
       testProps.columns[sortableColIdx].sortable = false;
     })
 
-    it("should provide column with a sortableHeaderRenderer", () => {
+    it('should provide column with a sortableHeaderRenderer', () => {
       var headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
 
       expect(TestUtils.isElementOfType(headerCells[sortableColIdx].props.renderer, SortableHeaderCellStub)).toBe(true);
     });
 
-    it("should pass sort direction as props to headerRenderer when column is sortColumn", () => {
+    it('should pass sort direction as props to headerRenderer when column is sortColumn', () => {
       headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} sortDirection={'ASC'} />);
       var headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
       var sortableHeaderRenderer = headerCells[sortableColIdx].props.renderer;
       expect(sortableHeaderRenderer.props.sortDirection).toEqual('ASC');
     });
 
-    it("should call onSort when headerRender triggers sort", () => {
+    it('should call onSort when headerRender triggers sort', () => {
       //arrange
       spyOn(testProps, 'onSort');
       headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} sortDirection={'ASC'} />);

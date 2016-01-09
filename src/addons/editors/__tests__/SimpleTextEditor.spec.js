@@ -10,7 +10,7 @@ describe('SimpleTextEditor', () => {
     var component;
 
     var fakeColumn = { key: 'text' };
-    function fakeBlurCb() { return true; };
+    function fakeBlurCb() { return true; }
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(<SimpleTextEditor

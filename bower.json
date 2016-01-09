@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "main": "index.js",
+  "main": "dist/react-data-grid.js",
   "version": "0.12.4",
   "homepage": "https://github.com/adazzle/react-data-grid",
   "authors": [

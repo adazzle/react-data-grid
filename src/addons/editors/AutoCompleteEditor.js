@@ -52,7 +52,7 @@ var AutoCompleteEditor = React.createClass({
   },
 
   getInputNode(): HTMLInputElement{
-    return ReactDOM.findDOMNode(this).getElementsByTagName("input")[0];
+    return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
   },
 
   render(): ?ReactElement {
@@ -77,9 +77,9 @@ var AutoCompleteEditor = React.createClass({
 
   getLabel(item: any): string {
     var label = this.props.label != null ? this.props.label : 'title';
-    if (typeof label === "function") {
+    if (typeof label === 'function') {
       return label(item);
-    } else if (typeof label === "string") {
+    } else if (typeof label === 'string') {
       return item[label];
     }
   },

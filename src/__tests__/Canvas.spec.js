@@ -3,8 +3,8 @@ var React        = require('react');
 var rewire       = require('rewire');
 var Canvas         = rewire('../Canvas');
 var TestUtils    = require('react-addons-test-utils');
-var rewireModule = require("../../test/rewireModule");
-var StubComponent = require("../../test/StubComponent");
+var rewireModule = require('../../test/rewireModule');
+var StubComponent = require('../../test/StubComponent');
 
 describe('Canvas Tests', () => {
   var testElement;
@@ -30,7 +30,7 @@ describe('Canvas Tests', () => {
 
   it('Should not call setScroll on render', () => {
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
-    spyOn(testElement, "setScrollLeft");
+    spyOn(testElement, 'setScrollLeft');
     expect(testElement.setScrollLeft).not.toHaveBeenCalled();
   });
 
@@ -38,7 +38,7 @@ describe('Canvas Tests', () => {
 
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
     //force an update
-    spyOn(testElement, "setScrollLeft");
+    spyOn(testElement, 'setScrollLeft');
     testElement.componentDidUpdate(testProps);
     expect(testElement.setScrollLeft).not.toHaveBeenCalled();
   });

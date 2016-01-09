@@ -45,7 +45,7 @@ module.exports = {
 
   getGridState(props: {rowHeight: number; rowsCount: number; minHeight: number}): ViewportScrollState  {
 	var renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
-	var totalRowCount = min(renderedRowsCount * 2 , props.rowsCount);
+	var totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
     return {
       displayStart: 0,
       displayEnd: totalRowCount,

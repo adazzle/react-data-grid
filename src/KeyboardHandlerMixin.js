@@ -1,15 +1,5 @@
-/* TODO@flow: mixins */
-/**
- * @jsx React.DOM
-
-
- */
-
 'use strict';
-
-var React = require('react');
 var KeyboardHandlerMixin = {
-
 
   onKeyDown(e: SyntheticKeyboardEvent){
     if(this.isCtrlKeyHeldDown(e)){
@@ -20,7 +10,7 @@ var KeyboardHandlerMixin = {
       //this allows multiple mixins to listen to onKeyDown events and somewhat reduces methodName clashing
       var callBack = 'onPress' + e.key;
       this.checkAndCall(callBack, e);
-    }else if(this.isKeyPrintable(e.keyCode)){
+    } else if(this.isKeyPrintable(e.keyCode)) {
       this.checkAndCall('onPressChar', e);
     }
   },
@@ -43,7 +33,7 @@ var KeyboardHandlerMixin = {
   },
 
   isCtrlKeyHeldDown(e: SyntheticKeyboardEvent): boolean{
-    return e.ctrlKey === true && e.key !== "Control";
+    return e.ctrlKey === true && e.key !== 'Control';
   },
 
   checkAndCall(methodName: string, args: any){

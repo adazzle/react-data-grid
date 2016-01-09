@@ -440,10 +440,10 @@ var ReactDataGrid = React.createClass({
 
 
   getHeaderRows(): Array<{ref: string; height: number;}> {
-    var rows = [{ref:"row", height: this.props.headerRowHeight || this.props.rowHeight}];
+    var rows = [{ref:'row', height: this.props.headerRowHeight || this.props.rowHeight}];
     if(this.state.canFilter === true){
       rows.push({
-        ref:"filterRow",
+        ref:'filterRow',
         headerCellRenderer : <FilterableHeaderCell onChange={this.props.onAddFilter} column={this.props.column}/>,
         height : 45
       });
@@ -481,7 +481,7 @@ var ReactDataGrid = React.createClass({
 
       var cellKey = this.getColumn(this.state.selected.idx).key;
       if(this.props.onCellCopyPaste) {
-        this.props.onCellCopyPaste({cellKey: cellKey , rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx});
+        this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx});
       }
       this.setState({copied : null});
   },
@@ -521,7 +521,7 @@ var ReactDataGrid = React.createClass({
       fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       if(this.props.onCellsDragged) {
-        this.props.onCellsDragged({cellKey: cellKey , fromRow: fromRow, toRow : toRow, value : dragged.value});
+        this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow : toRow, value : dragged.value});
       }
       this.setState({dragged : {complete : true}});
   },

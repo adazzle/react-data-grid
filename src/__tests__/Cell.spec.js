@@ -3,8 +3,8 @@ var React        = require('react');
 var rewire       = require('rewire');
 var Cell         = rewire('../Cell');
 var TestUtils    = require('react-addons-test-utils');
-var rewireModule = require("../../test/rewireModule");
-var StubComponent = require("../../test/StubComponent");
+var rewireModule = require('../../test/rewireModule');
+var StubComponent = require('../../test/StubComponent');
 
 describe('Cell Tests', () => {
   var testElement;
@@ -54,7 +54,7 @@ describe('Cell Tests', () => {
   });
 
   it('should render a SimpleCellFormatter with value', () => {
-    var formatter = TestUtils.findRenderedComponentWithType(testElement,SimpleCellFormatterStub );
+    var formatter = TestUtils.findRenderedComponentWithType(testElement, SimpleCellFormatterStub );
     expect(testElement).toBeDefined();
     expect(formatter.props.value).toEqual('Wicklow');
   });
@@ -63,7 +63,7 @@ describe('Cell Tests', () => {
     var CustomFormatter = StubComponent('CustomFormatter');
     testProps.column.formatter = CustomFormatter;
     testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
-    var formatterInstance = TestUtils.findRenderedComponentWithType(testElement,CustomFormatter);
+    var formatterInstance = TestUtils.findRenderedComponentWithType(testElement, CustomFormatter);
     expect(testElement).toBeDefined();
     expect(formatterInstance.props.value).toEqual('Wicklow');
   });

@@ -14,7 +14,7 @@ export default class GridRunner {
   }
 
   _renderGrid(intoBody) {
-    this.handleCellDragSpy =  jasmine.createSpy("handleCellDrag");
+    this.handleCellDragSpy =  jasmine.createSpy('handleCellDrag');
     return intoBody ?
       ReactDOM.render(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>, document.body)
       : TestUtils.renderIntoDocument(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>);
@@ -32,21 +32,21 @@ export default class GridRunner {
   ======== */
   //Helpers - these are just wrappers to run several steps
   //NOTE: these are 'final' functions, ie they call dispose at the end
-  changeCell({select:{cell:selectCell,row:selectRow},val,ev,expectToSelect:{row:expectRow,cell:expectCell}}) {
+  changeCell({select:{cell:selectCell, row:selectRow}, val, ev, expectToSelect:{row:expectRow, cell:expectCell}}) {
     this
-      .clickIntoEditor({cellIdx:selectCell,rowIdx:selectRow})
+      .clickIntoEditor({cellIdx:selectCell, rowIdx:selectRow})
       .setValue(val)
       .keyDown(ev)
       .hasCommitted(val)
-      .hasSelected({cellIdx:expectCell,rowIdx:expectRow})
+      .hasSelected({cellIdx:expectCell, rowIdx:expectRow})
       .dispose();
   }
 
   /* =====
   ACTIONS
   ======== */
-  selectCell({cellIdx,rowIdx}) {
-    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
+  selectCell({cellIdx, rowIdx}) {
+    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
     this.cell = this.getCells(this.row)[cellIdx];
     TestUtils.Simulate.click(this.cell);
     return this;
@@ -63,15 +63,15 @@ export default class GridRunner {
     return cells;
   }
 
-  clickIntoEditor({cellIdx,rowIdx}) {
+  clickIntoEditor({cellIdx, rowIdx}) {
     //activate it
     // have to do click then doubleClick as thast what the browser would actually emit
-    this.selectCell({cellIdx,rowIdx})
+    this.selectCell({cellIdx, rowIdx})
     TestUtils.Simulate.doubleClick(this.cell);
     return this;
   }
   getEditor() {
-    return TestUtils.scryRenderedDOMComponentsWithTag(this.cell,'input')[0];
+    return TestUtils.scryRenderedDOMComponentsWithTag(this.cell, 'input')[0];
   }
   setValue(val) {
     this.getEditor().getDOMNode().value = val;
@@ -80,16 +80,16 @@ export default class GridRunner {
   }
   //you MUST have set the grid to render into body to use this
   //chrome (et al) dont do cursor positions unless you are properly visibile
-  setCursor(start,end=start) {
+  setCursor(start, end=start) {
     const input = this.getEditor().getDOMNode();
-    input.setSelectionRange(start,end);
-    expect(input.selectionStart).toEqual(start,`Couldnt set the cursor.
+    input.setSelectionRange(start, end);
+    expect(input.selectionStart).toEqual(start, `Couldnt set the cursor.
             You probably havent rendered the grid into the *actual* dom.
             You need to specify renderIntoBody:true in the constructor for GridRunner`)
     return this;
   }
   keyDown(ev, element=this.getEditor()) {
-    TestUtils.Simulate.keyDown(element,ev);
+    TestUtils.Simulate.keyDown(element, ev);
     return this;
   }
 
@@ -98,10 +98,10 @@ export default class GridRunner {
     return this;
   }
 
-  drag({from, to, col,beforeDragEnter=null,beforeDragEnd=null}) {
-    this.selectCell({cellIdx:col,rowIdx:from})
+  drag({from, to, col, beforeDragEnter=null, beforeDragEnd=null}) {
+    this.selectCell({cellIdx:col, rowIdx:from})
 
-    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
+    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row');
     let over = [];
     over.push(this.row);
     for(let i=from++;i<to;i++) {
@@ -175,10 +175,10 @@ export default class GridRunner {
     expect(this.getEditor()).not.toBe(undefined);
     return this;
   }
-  hasSelected({rowIdx,cellIdx,expectedClass='selected'}) {
+  hasSelected({rowIdx, cellIdx, expectedClass='selected'}) {
     //and should move to the appropriate cell/row
-    const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
-    const selected = TestUtils.scryRenderedDOMComponentsWithClass(selectedRow,expectedClass);
+    const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
+    const selected = TestUtils.scryRenderedDOMComponentsWithClass(selectedRow, expectedClass);
     expect(selected.length).toEqual(1);
     expect(selected[0].props.rowIdx).toEqual(rowIdx);
     expect(selected[0].props.idx).toEqual(cellIdx);
@@ -190,7 +190,7 @@ export default class GridRunner {
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
     expect(this.cell.getDOMNode().className.indexOf(' copied ') > -1).toBe(true);
   }
-  hasDragged({from,to,col,cellKey}) {
+  hasDragged({from, to, col, cellKey}) {
     //check onCellDrag called with correct data
     expect(this.handleCellDragSpy).toHaveBeenCalled();
     //Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
@@ -198,14 +198,14 @@ export default class GridRunner {
     //chek our event returns the right data
     expect(this.handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
     // Test all rows to check that value has copied correctly
-    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row');
+    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row');
     for (let i = from, end = to; i <= end; i++) {
       const toCell = this.getCells(rows[i])[col];
       // First the component
       expect(toCell.props.value).toEqual(expected);
       // and finally the rendered data
       // (use trim as we are reading from the dom so get some whitespace at the end)
-      expect(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
+      expect(TestUtils.findRenderedDOMComponentWithClass(toCell, 'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
     }
   }
 
