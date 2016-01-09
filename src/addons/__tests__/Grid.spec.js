@@ -550,6 +550,11 @@ describe('Grid', function () {
   });
 
   describe('Cell Meta Data', function () {
+    beforeEach(function () {
+      this.columns[1] = Object.assign({ editable: true }, this.columns[1]);
+      this.createComponent({ columns: this.columns });
+    })
+
     it('should create a cellMetaData object and pass to baseGrid as props', function () {
       var meta = this.getCellMetaData();
       expect(meta).toEqual(jasmine.objectContaining({
@@ -589,7 +594,7 @@ describe('Grid', function () {
         this.setProps({
           onRowUpdated: this.testProps.onRowUpdated,
           defaultActive: true,
-          defaultSelectedCell: [3, 3]
+          defaultSelectedCell: [1, 1]
         });
 
         this.getCellMetaData().onCommit(this.buildFakeCellUodate());
@@ -602,7 +607,7 @@ describe('Grid', function () {
       });
 
       it('should deactivate selected cell', function () {
-        expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 3, active: false });
+        expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: false });
       });
     });
 
