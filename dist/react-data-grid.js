@@ -389,7 +389,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onCellCommit: function onCellCommit(commit) {
 	    this.setInactive();
 	    if (commit.key === 'Tab') {
-	      this.moveSelectedCell(null, 0, -1);
+	      this.moveSelectedCell(null, 0, 1);
 	    }
 
 	    this.props.onRowUpdated(commit);

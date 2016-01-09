@@ -120,17 +120,27 @@ var Cell = React.createClass({
     var CellContent;
     var Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
-      props.dependentValues = this.getFormatterDependencies()
-      CellContent = React.cloneElement(Formatter, props);
+      CellContent = React.cloneElement(Formatter, {
+        ...props,
+        dependentValues: this.getFormatterDependencies()
+      });
     }
     else if (isFunction(Formatter)) {
-        CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
+      CellContent = <Formatter {...props} dependentValues={this.getFormatterDependencies()}/>;
     }
     else {
-      CellContent = <SimpleCellFormatter value={this.props.value}/>;
+      CellContent = <SimpleCellFormatter value={props.value}/>;
     }
-    return (<div ref="cell"
-      className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>)
+    
+    return (
+      <div
+        ref="cell"
+        className="react-grid-Cell__value"
+      >
+        { CellContent }
+        {this.props.cellControls}
+      </div>
+    )
   },
 
   isColumnSelected() {
@@ -176,7 +186,16 @@ var Cell = React.createClass({
   getFormatter(): ?ReactElement {
     var col = this.props.column;
     if (this.isActive()) {
-      return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
+      return (
+        <EditorContainer
+          rowData={this.getRowData()}
+          rowIdx={this.props.rowIdx}
+          idx={this.props.idx}
+          cellMetaData={this.props.cellMetaData}
+          column={col}
+          height={this.props.height}
+        />
+      );
     }
     else {
       return this.props.column.formatter;
@@ -280,9 +299,8 @@ var Cell = React.createClass({
   },
 
   isDraggedOver(): boolean {
-  var dragged = this.props.cellMetaData.dragged;
+    var dragged = this.props.cellMetaData.dragged;
     return (
-
       dragged &&
       dragged.overRowIdx === this.props.rowIdx
       && dragged.idx === this.props.idx
@@ -314,13 +332,12 @@ var Cell = React.createClass({
   },
 
   isCopyCellChanging(nextProps: any): boolean {
-    var isChanging;
     var copied = this.props.cellMetaData.copied;
     var nextCopied = nextProps.cellMetaData.copied;
+
     if (copied) {
-      isChanging = ( nextCopied && this.props.idx ===  nextCopied.idx)
-      || (copied && this.props.idx === copied.idx);
-      return isChanging;
+      return (nextCopied && this.props.idx ===  nextCopied.idx)
+          || (copied && this.props.idx === copied.idx);
     }
     else {
       return false;
