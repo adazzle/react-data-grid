@@ -2,17 +2,19 @@
 var KeyboardHandlerMixin = {
 
   onKeyDown(e: SyntheticKeyboardEvent) {
-    if (this.isCtrlKeyHeldDown(e)) {
-      this.checkAndCall('onPressKeyWithCtrl', e);
-    }
-    else if (this.isKeyExplicitlyHandled(e.key)) {
-      //break up individual keyPress events to have their own specific callbacks
-      //this allows multiple mixins to listen to onKeyDown events and somewhat reduces methodName clashing
-      var callBack = 'onPress' + e.key;
-      this.checkAndCall(callBack, e);
-    }
-    else if (this.isKeyPrintable(e.keyCode)) {
-      this.checkAndCall('onPressChar', e);
+    if (!this.shouldPreventKeyDown || !this.shouldPreventKeyDown(e)) {
+      if (this.isCtrlKeyHeldDown(e)) {
+        this.checkAndCall('onPressKeyWithCtrl', e);
+      }
+      else if (this.isKeyExplicitlyHandled(e.key)) {
+        //break up individual keyPress events to have their own specific callbacks
+        //this allows multiple mixins to listen to onKeyDown events and somewhat reduces methodName clashing
+        var callBack = 'onPress' + e.key;
+        this.checkAndCall(callBack, e);
+      }
+      else if (this.isKeyPrintable(e.keyCode)) {
+        this.checkAndCall('onPressChar', e);
+      }
     }
   },
 

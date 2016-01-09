@@ -3,6 +3,7 @@
 var React                   = require('react');
 var ReactDOM = require('react-dom');
 var ExcelColumn             = require('../grids/ExcelColumn');
+var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 
 class EditorBase extends React.Component {
 
@@ -26,6 +27,13 @@ class EditorBase extends React.Component {
     else {
       return domNode.querySelector('input:not([type=hidden])');
     }
+  }
+
+  focus() {
+    var inputNode = this.getInputNode();
+
+    if (typeof inputNode.focus === 'function')
+      inputNode.focus();
   }
 
   inheritContainerStyles(): boolean {

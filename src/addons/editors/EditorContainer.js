@@ -1,20 +1,27 @@
 /* @flow */
 'use strict';
-
 var React                   = require('react');
 var joinClasses             = require('classnames');
 var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var SimpleTextEditor        = require('./SimpleTextEditor');
 var isFunction              = require('../utils/isFunction');
 
+let checkAndCallOnEditor =
+  (ctx, fn, ...args) => isFunction(ctx.getEditor()[fn]) ? ctx.getEditor()[fn](...args) : false;
+
 
 var EditorContainer = React.createClass({
 
-  mixins : [keyboardHandlerMixin],
+  mixins: [keyboardHandlerMixin],
 
-  propTypes : {
-    rowData :React.PropTypes.object.isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+  propTypes: {
+    rowData: React.PropTypes.object.isRequired,
+    value: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number,
+      React.PropTypes.object,
+      React.PropTypes.bool
+    ]).isRequired,
     cellMetaData: React.PropTypes.shape({
       selected: React.PropTypes.object.isRequired,
       copied: React.PropTypes.object,
@@ -22,8 +29,8 @@ var EditorContainer = React.createClass({
       onCellClick: React.PropTypes.func,
       onCellDoubleClick: React.PropTypes.func
     }).isRequired,
-    column : React.PropTypes.object.isRequired,
-    height : React.PropTypes.number.isRequired
+    column: React.PropTypes.object.isRequired,
+    height: React.PropTypes.number.isRequired
   },
 
   changeCommitted: false,
@@ -35,7 +42,7 @@ var EditorContainer = React.createClass({
   componentDidMount: function() {
     var inputNode = this.getInputNode();
     if (inputNode !== undefined) {
-      this.setTextInputFocus();
+      checkAndCallOnEditor(this, 'focus', this.props.cellMetaData);
       if (!this.getEditor().disableContainerStyles) {
         inputNode.className += ' editor-main';
         inputNode.style.height = this.props.height - 1 + 'px';
@@ -46,15 +53,15 @@ var EditorContainer = React.createClass({
   createEditor(): ReactElement {
     var editorRef = (c) => this.editor = c;
     var editorProps = {
-		ref: editorRef,
-		column : this.props.column,
-		value : this.getInitialValue(),
-		onCommit : this.commit,
-		rowMetaData : this.getRowMetaData(),
-		height : this.props.height,
-    onBlur : this.commit,
-    onOverrideKeyDown : this.onKeyDown
-	};
+      ref: editorRef,
+      column : this.props.column,
+      value : this.getInitialValue(),
+      onCommit : this.commit,
+      rowMetaData : this.getRowMetaData(),
+      height : this.props.height,
+      onBlur : this.commit,
+      onOverrideKeyDown : this.onKeyDown
+    };
     var customEditor = this.props.column.editor;
     if (customEditor && React.isValidElement(customEditor)) {
       //return custom column editor or SimpleEditor if none specified
@@ -140,22 +147,16 @@ var EditorContainer = React.createClass({
     }
   },
 
+  shouldPreventKeyDown(e: SyntheticKeyboardEvent): boolean {
+    return checkAndCallOnEditor(this, 'shouldPreventKeyDown', e)
+  },
+
   editorHasResults(): boolean {
-    if (isFunction(this.getEditor().hasResults)) {
-      return this.getEditor().hasResults();
-    }
-    else {
-      return false;
-    }
+    return checkAndCallOnEditor(this, 'hasResults')
   },
 
   editorIsSelectOpen() {
-    if (isFunction(this.getEditor().isSelectOpen)) {
-      return this.getEditor().isSelectOpen();
-    }
-    else {
-      return false;
-    }
+    return checkAndCallOnEditor(this, 'isSelectOpen')
   },
 
   getEditor(): Editor {
@@ -179,7 +180,7 @@ var EditorContainer = React.createClass({
 
   isNewValueValid(value: string): boolean {
     if (isFunction(this.getEditor().validate)) {
-      var isValid = this.getEditor().validate(value);
+      var isValid = checkAndCallOnEditor(this, 'validate', value)
       this.setState({ isInvalid : !isValid });
       return isValid;
     }
@@ -195,6 +196,7 @@ var EditorContainer = React.createClass({
   getInitialValue(): string {
     var selected = this.props.cellMetaData.selected;
     var keyCode = selected.initialKeyCode;
+
     if (keyCode === 'Delete' || keyCode === 'Backspace') {
       return '';
     }
@@ -221,28 +223,28 @@ var EditorContainer = React.createClass({
   },
 
   render(): ?ReactElement {
-  return (
+    return (
       <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
-      {this.createEditor()}
-      {this.renderStatusIcon()}
+        {this.createEditor()}
+        {this.renderStatusIcon()}
       </div>
     )
   },
 
-  setCaretAtEndOfInput() {
-    var input = this.getInputNode();
-    //taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-    var txtLength = input.value.length;
-    if (input.setSelectionRange) {
-      input.setSelectionRange(txtLength, txtLength);
-    }
-    else if (input.createTextRange) {
-      var fieldRange = input.createTextRange();
-      fieldRange.moveStart('character', txtLength);
-      fieldRange.collapse();
-      fieldRange.select();
-    }
-  },
+  // setCaretAtEndOfInput() {
+  //   var input = this.getInputNode();
+  //   //taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+  //   var txtLength = input.value.length;
+  //   if (input.setSelectionRange) {
+  //     input.setSelectionRange(txtLength, txtLength);
+  //   }
+  //   else if (input.createTextRange) {
+  //     var fieldRange = input.createTextRange();
+  //     fieldRange.moveStart('character', txtLength);
+  //     fieldRange.collapse();
+  //     fieldRange.select();
+  //   }
+  // },
 
   isCaretAtBeginningOfInput(): boolean {
     var inputNode = this.getInputNode();
@@ -253,22 +255,6 @@ var EditorContainer = React.createClass({
   isCaretAtEndOfInput(): boolean {
     var inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
-  },
-
-  setTextInputFocus() {
-    var selected = this.props.cellMetaData.selected;
-    var keyCode = selected.initialKeyCode;
-    var inputNode = this.getInputNode();
-    inputNode.focus();
-    if (inputNode.tagName === 'INPUT') {
-      if (!this.isKeyPrintable(keyCode)) {
-        inputNode.focus();
-        inputNode.select();
-      }
-      else {
-        inputNode.select();
-      }
-    }
   },
 
   componentWillUnmount: function() {
