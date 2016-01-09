@@ -1,8 +1,8 @@
 /* @flow */
+/*global Immutable */
 "use strict";
 
-var shallowCloneObject            = require('./shallowCloneObject');
-var Immutable = require('immutable')
+var shallowCloneObject = require('./shallowCloneObject');
 var sameColumn = require('./ColumnComparer');
 var ColumnUtils = require('./ColumnUtils');
 var getScrollbarSize  = require('./getScrollbarSize');
@@ -109,8 +109,10 @@ function resizeColumn(metrics: ColumnMetricsType, index: number, width: number):
   return recalculate(metrics);
 }
 
-function areColumnsImmutable(prevColumns: Array<Column>, nextColumns: Array<Column>) {
-  return (typeof Immutable !== 'undefined' && (prevColumns instanceof Immutable.List) && (nextColumns instanceof Immutable.List));
+function areColumnsImmutable(prevColumns, nextColumns) {
+  return typeof Immutable !== 'undefined'
+      && Immutable.List.isList(prevColumns)
+      && Immutable.List.isList(nextColumns);
 }
 
 function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean) {

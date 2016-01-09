@@ -38,7 +38,6 @@ var ReactDataGrid = React.createClass({
     KeyboardHandlerMixin
   ],
 
-
   getDefaultProps(): {enableCellSelect: boolean} {
     return {
       enableCellSelect : false,
@@ -54,14 +53,25 @@ var ReactDataGrid = React.createClass({
     copied: ?{idx: number; rowIdx: number};
     selectedRows: Array<Row>;
     expandedRows: Array<Row>;
-    canFilter: boolean; 
+    canFilter: boolean;
     columnFilters: any;
     sortDirection: ?SortType;
     sortColumn: ?ExcelColumn;
     dragged: ?DraggedType;
   } {
     var columnMetrics = this.createColumnMetrics();
-    var initialState = { columnMetrics, selectedRows : this.getInitialSelectedRows(), copied : null, expandedRows : [], canFilter : false, columnFilters : {}, sortDirection: null, sortColumn: null, dragged : null, scrollOffset: 0 }
+    var initialState = {
+      columnMetrics,
+      selectedRows: this.getInitialSelectedRows(),
+      copied: null,
+      expandedRows: [],
+      canFilter: false,
+      columnFilters: {},
+      sortDirection: null,
+      sortColumn: null,
+      dragged: null,
+      scrollOffset: 0
+    }
     if (this.props.enableCellSelect) {
       initialState.selected = { rowIdx: 0, idx: 0 };
     }
@@ -96,15 +106,15 @@ var ReactDataGrid = React.createClass({
 
   render: function(): ?ReactElement {
     var cellMetaData = {
-      selected : this.state.selected,
-      dragged : this.state.dragged,
-      onCellClick : this.onCellClick,
-      onCellDoubleClick : this.onCellDoubleClick,
-      onCommit : this.onCellCommit,
-      onCommitCancel : this.setInactive,
-      copied : this.state.copied,
-      handleDragEnterRow : this.handleDragEnter,
-      handleTerminateDrag : this.handleTerminateDrag
+      selected: this.state.selected,
+      dragged: this.state.dragged,
+      onCellClick: this.onCellClick,
+      onCellDoubleClick: this.onCellDoubleClick,
+      onCommit: this.onCellCommit,
+      onCommitCancel: this.setInactive,
+      copied: this.state.copied,
+      handleDragEnterRow: this.handleDragEnter,
+      handleTerminateDrag: this.handleTerminateDrag
     }
 
     var toolbar = this.renderToolbar();
@@ -278,8 +288,14 @@ var ReactDataGrid = React.createClass({
     var rowIdx = this.state.selected.rowIdx;
     var idx = this.state.selected.idx;
     if (this.canEdit(idx) && !this.isActive()) {
-      var selected = Object.assign(this.state.selected, { idx: idx, rowIdx: rowIdx, active : true, initialKeyCode : keyPressed });
-      this.setState({ selected: selected });
+      this.setState({
+        selected: Object.assign(this.state.selected, {
+          idx, 
+          rowIdx,
+          active: true,
+          initialKeyCode: keyPressed
+        })
+      });
     }
   },
 
@@ -482,17 +498,19 @@ var ReactDataGrid = React.createClass({
   },
 
   handleDragEnd() {
-    if (!this.dragEnabled()) { return; }
-      var fromRow, toRow;
-      var selected = this.state.selected;
-      var dragged = this.state.dragged;
-      var cellKey = this.getColumn(this.state.selected.idx).key;
-      fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-      toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-      if (this.props.onCellsDragged) {
-        this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow : toRow, value : dragged.value });
-      }
-      this.setState({ dragged : { complete : true }});
+    if (!this.dragEnabled())
+      return;
+
+    var fromRow, toRow;
+    var selected = this.state.selected;
+    var dragged = this.state.dragged;
+    var cellKey = this.getColumn(this.state.selected.idx).key;
+    fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+    toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+    if (this.props.onCellsDragged) {
+      this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow : toRow, value : dragged.value });
+    }
+    this.setState({ dragged : { complete : true }});
   },
 
   handleTerminateDrag() {

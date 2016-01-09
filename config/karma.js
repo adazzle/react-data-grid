@@ -101,7 +101,10 @@ module.exports = function (config) {
         extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
       },
       plugins: [
-      new RewirePlugin()
+        new webpack.ProvidePlugin({
+          Immutable: 'immutable'
+        }),
+        new RewirePlugin(),
       ]
     },
 

@@ -1,7 +1,7 @@
+/*global Immutable */
 'use strict';
 var rewire = require('rewire');
 var ColumnMetrics = rewire('../ColumnMetrics');
-var Immutable = require('Immutable');
 
 describe('Column Metrics Tests', () => {
 
@@ -102,12 +102,11 @@ describe('Column Metrics Tests', () => {
 
       beforeEach(() => {
         var helpers = require('./GridPropHelpers');
-        prevColumns = new Immutable.List(helpers.columns);
+        prevColumns = Immutable.List(helpers.columns);
         nextColumns = prevColumns;
       });
 
       it('columns with same memory reference are equal', () => {
-
         var areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
         expect(areColumnsEqual).toBe(true);
       });

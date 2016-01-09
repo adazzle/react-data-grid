@@ -1,8 +1,8 @@
+/*global Immutable */
 'use strict';
 var React         = require('react');
 var rewire        = require('rewire');
 var Header        = rewire('../Header');
-var Immutable = require('Immutable');
 var TestUtils     = require('react-addons-test-utils');
 var rewireModule  = require('../../test/rewireModule');
 var StubComponent = require('../../test/StubComponent');
