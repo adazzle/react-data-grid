@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
 <testsuites>
-  <testsuite name="PhantomJS 1.9.8 (Windows 7 0.0.0)" package="" timestamp="2016-01-09T15:31:40" id="0" hostname="L15HQ3444" tests="108" errors="0" failures="0" time="0.61">
+  <testsuite name="PhantomJS 1.9.8 (Windows 7 0.0.0)" package="" timestamp="2016-01-09T18:07:09" id="0" hostname="L15HQ3444" tests="108" errors="0" failures="0" time="0.651">
     <properties>
       <property name="browser.fullName" value="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.8 Safari/534.34"/>
     </properties>
     <testcase name="should create a new instance of Canvas" time="0.018" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Canvas Tests"/>
-    <testcase name="Should not call setScroll on render" time="0.012" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Canvas Tests"/>
-    <testcase name="Should not call setScroll on update" time="0.019" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Canvas Tests"/>
+    <testcase name="Should not call setScroll on render" time="0.013" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Canvas Tests"/>
+    <testcase name="Should not call setScroll on update" time="0.021" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Canvas Tests"/>
     <testcase name="should create a new instance of Cell" time="0.005" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Cell Tests"/>
-    <testcase name="should render a SimpleCellFormatter with value" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Cell Tests"/>
-    <testcase name="should render a custom formatter when specified on column" time="0.005" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Cell Tests"/>
+    <testcase name="should render a SimpleCellFormatter with value" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Cell Tests"/>
+    <testcase name="should render a custom formatter when specified on column" time="0.004" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Cell Tests"/>
     <testcase name="should render an EditorContainer instead of a formatter" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Cell Tests When cell is active"/>
-    <testcase name="should append the update cell class to the dom node if present and cell is updated" time="0.013" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Cell Tests When cell is active"/>
-    <testcase name="should set the unset column widths based on the total width" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Creating metrics When column width not set for all columns"/>
+    <testcase name="should append the update cell class to the dom node if present and cell is updated" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Cell Tests When cell is active"/>
+    <testcase name="should set the unset column widths based on the total width" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Creating metrics When column width not set for all columns"/>
     <testcase name="should set the column left based on the column widths" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Creating metrics When column width not set for all columns"/>
-    <testcase name="columns with same properties should be equal" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using array of object literals"/>
+    <testcase name="columns with same properties should be equal" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using array of object literals"/>
     <testcase name="changing a single property in one column will make columns unequal" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using array of object literals"/>
-    <testcase name="should call compareEachColumn when comparing columns" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using array of object literals"/>
+    <testcase name="should call compareEachColumn when comparing columns" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using array of object literals"/>
     <testcase name="columns with same memory reference are equal" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using ImmutableJs Lists"/>
-    <testcase name="columns with same properties are not equal when objects have different memory reference" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using ImmutableJs Lists"/>
+    <testcase name="columns with same properties are not equal when objects have different memory reference" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using ImmutableJs Lists"/>
     <testcase name="changing a single property in one column will make columns unequal" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using ImmutableJs Lists"/>
     <testcase name="should not call compareEachColumn when comparing columns" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Column Metrics Tests Comparing Columns Using ImmutableJs Lists"/>
     <testcase name="should create a new instance of Grid" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Base Grid Tests"/>
@@ -26,91 +26,91 @@
     <testcase name="doubleclick in viewport should call props.onViewportDoubleClick" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Base Grid Tests"/>
     <testcase name="dragstart in viewport should call props.onViewportDoubleClick" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Base Grid Tests"/>
     <testcase name="dragend in viewport should call props.onViewportDragEnd" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Base Grid Tests"/>
-    <testcase name="should create a new instance of Header" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
-    <testcase name="should initialize the state correctly" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
-    <testcase name="should render a default header row" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
-    <testcase name="header row drag start should set resize column state " time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
+    <testcase name="should create a new instance of Header" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
+    <testcase name="should initialize the state correctly" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
+    <testcase name="should render a default header row" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
+    <testcase name="header row drag start should set resize column state " time="0.004" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
     <testcase name="header row drag end should trigger onColumnResize callback" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
     <testcase name="should render a default header row" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests When columns are immutable"/>
     <testcase name="header row drag start should set resize column state " time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests When columns are immutable"/>
-    <testcase name="header row drag end should trigger onColumnResize callback" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests When columns are immutable"/>
-    <testcase name="should create a new instance of HeaderCell" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests"/>
+    <testcase name="header row drag end should trigger onColumnResize callback" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests When columns are immutable"/>
+    <testcase name="should create a new instance of HeaderCell" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests"/>
     <testcase name="should initialize the state correctly" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests"/>
     <testcase name="will render a custom renderer if supplied" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests"/>
-    <testcase name="should render a resize handle" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests When column is resizable"/>
+    <testcase name="should render a resize handle" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests When column is resizable"/>
     <testcase name="start dragging handle should set resizing state to be true" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests When column is resizable"/>
-    <testcase name="dragging handle should call onResize callback with width and column" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests When column is resizable"/>
+    <testcase name="dragging handle should call onResize callback with width and column" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests When column is resizable"/>
     <testcase name="finish dragging should reset resizing state" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests When column is resizable"/>
-    <testcase name="finish dragging should call onResizeEnd with correct params" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests When column is resizable"/>
+    <testcase name="finish dragging should call onResizeEnd with correct params" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Cell Tests When column is resizable"/>
     <testcase name="should create a new instance of HeaderRow" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests"/>
     <testcase name="should provide column with a sortableHeaderRenderer" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests When column is sortable"/>
     <testcase name="should pass sort direction as props to headerRenderer when column is sortColumn" time="0.004" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests When column is sortable"/>
-    <testcase name="should call onSort when headerRender triggers sort" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests When column is sortable"/>
-    <testcase name="should create a new instance of Grid" time="0.005" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid"/>
+    <testcase name="should call onSort when headerRender triggers sort" time="0.004" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Header Unit Tests When column is sortable"/>
+    <testcase name="should create a new instance of Grid" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid"/>
     <testcase name="should render a BaseGrid stub" time="0.004" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid"/>
-    <testcase name="should be initialized with correct state" time="0.004" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid"/>
+    <testcase name="should be initialized with correct state" time="0.005" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid"/>
     <testcase name="should render a Toolbar" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid if passed in as props to grid"/>
-    <testcase name="should set filter state of grid and render a filterable header row" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid if passed in as props to grid onToggleFilter trigger of Toolbar"/>
-    <testcase name="grid should be initialized with selected state of {rowIdx : -1, idx : -1}" time="0.015" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When cell selection disabled"/>
-    <testcase name="should render an additional Select Row column" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled"/>
-    <testcase name="should select all rows" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled checking header checkbox"/>
-    <testcase name="should deselect all rows" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled checking header checkbox and then unchecking header checkbox"/>
-    <testcase name="should be able to select an individual row" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled when selected is false"/>
+    <testcase name="should set filter state of grid and render a filterable header row" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid if passed in as props to grid onToggleFilter trigger of Toolbar"/>
+    <testcase name="grid should be initialized with selected state of {rowIdx : -1, idx : -1}" time="0.017" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When cell selection disabled"/>
+    <testcase name="should render an additional Select Row column" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled"/>
+    <testcase name="should select all rows" time="0.012" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled checking header checkbox"/>
+    <testcase name="should deselect all rows" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled checking header checkbox and then unchecking header checkbox"/>
+    <testcase name="should be able to select an individual row" time="0.008" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled when selected is false"/>
     <testcase name="should be able to select an individual row" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled when selected is null"/>
-    <testcase name="should be able to unselect an individual row " time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled when selected is true"/>
-    <testcase name="hitting TAB should decrement selected cell index by 1" time="0.005" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction"/>
+    <testcase name="should be able to unselect an individual row " time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid When row selection enabled when selected is true"/>
+    <testcase name="hitting TAB should decrement selected cell index by 1" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction"/>
     <testcase name="on ArrowUp keyboard event should not change selected index" time="0.008" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell is in top corner of grid"/>
-    <testcase name="on ArrowLeft keyboard event should not change selected index" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell is in top corner of grid"/>
-    <testcase name="on ArrowRight keyboard event should increment selected cell index by 1" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell has adjacent cells on all sides"/>
-    <testcase name="on ArrowDown keyboard event should increment selected row index by 1" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell has adjacent cells on all sides"/>
-    <testcase name="on ArrowLeft keyboard event should decrement selected row index by 1" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell has adjacent cells on all sides"/>
-    <testcase name="on ArrowUp keyboard event should decrement selected row index by 1" time="0.024" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell has adjacent cells on all sides"/>
-    <testcase name="should activate current selected cell" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable double click on grid"/>
-    <testcase name="should store the value in grid state" time="0.015" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable copy a cell value"/>
-    <testcase name="should call onCellCopyPaste of component with correct params" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable paste a cell value"/>
-    <testcase name="should set grid state inactive" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable cell commit cancel"/>
-    <testcase name="should set grid state inactive" time="0.012" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable pressing escape"/>
-    <testcase name="should set grid state active" time="0.012" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable pressing enter"/>
-    <testcase name="should set grid state active" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable pressing delete"/>
+    <testcase name="on ArrowLeft keyboard event should not change selected index" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell is in top corner of grid"/>
+    <testcase name="on ArrowRight keyboard event should increment selected cell index by 1" time="0.02" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell has adjacent cells on all sides"/>
+    <testcase name="on ArrowDown keyboard event should increment selected row index by 1" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell has adjacent cells on all sides"/>
+    <testcase name="on ArrowLeft keyboard event should decrement selected row index by 1" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell has adjacent cells on all sides"/>
+    <testcase name="on ArrowUp keyboard event should decrement selected row index by 1" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When selected cell has adjacent cells on all sides"/>
+    <testcase name="should activate current selected cell" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable double click on grid"/>
+    <testcase name="should store the value in grid state" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable copy a cell value"/>
+    <testcase name="should call onCellCopyPaste of component with correct params" time="0.015" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable paste a cell value"/>
+    <testcase name="should set grid state inactive" time="0.013" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable cell commit cancel"/>
+    <testcase name="should set grid state inactive" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable pressing escape"/>
+    <testcase name="should set grid state active" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable pressing enter"/>
+    <testcase name="should set grid state active" time="0.016" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable pressing delete"/>
     <testcase name="should set grid state active" time="0.013" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable pressing backspace"/>
-    <testcase name="should set grid state active and store the typed value" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable typing a char"/>
-    <testcase name="should not activate current selected cell" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is not editable double click on grid "/>
-    <testcase name="should store drag rowIdx, idx and value of cell in state" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Drag events dragging in grid"/>
-    <testcase name="should store the current rowIdx in grid state" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Drag events dragging over a row"/>
-    <testcase name="should trigger onCellsDragged event and call it with correct params" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Drag events finishing drag"/>
-    <testcase name="should clear drag state" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Drag events terminating drag"/>
-    <testcase name="should set the selected cell to be on the last row" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Adding a new row"/>
-    <testcase name="should add column" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Adding a new column"/>
-    <testcase name="should calculate column metrics for added column" time="0.025" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Adding a new column"/>
-    <testcase name="should remove column" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Remove a column"/>
-    <testcase name="should no longer include metrics for removed column" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Remove a column"/>
-    <testcase name="should create a cellMetaData object and pass to baseGrid as props" time="0.008" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data"/>
-    <testcase name=" should update cellMetaData" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data Changing Grid state"/>
+    <testcase name="should set grid state active and store the typed value" time="0.012" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is editable typing a char"/>
+    <testcase name="should not activate current selected cell" time="0.025" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction When column is not editable double click on grid "/>
+    <testcase name="should store drag rowIdx, idx and value of cell in state" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Drag events dragging in grid"/>
+    <testcase name="should store the current rowIdx in grid state" time="0.011" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Drag events dragging over a row"/>
+    <testcase name="should trigger onCellsDragged event and call it with correct params" time="0.012" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Drag events finishing drag"/>
+    <testcase name="should clear drag state" time="0.008" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Drag events terminating drag"/>
+    <testcase name="should set the selected cell to be on the last row" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Adding a new row"/>
+    <testcase name="should add column" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Adding a new column"/>
+    <testcase name="should calculate column metrics for added column" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Adding a new column"/>
+    <testcase name="should remove column" time="0.012" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Remove a column"/>
+    <testcase name="should no longer include metrics for removed column" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid User Interaction Remove a column"/>
+    <testcase name="should create a cellMetaData object and pass to baseGrid as props" time="0.005" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data"/>
+    <testcase name="should update cellMetaData" time="0.008" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data Changing Grid state"/>
     <testcase name="should trigger onRowUpdated with correct params" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data cell commit"/>
-    <testcase name="should deactivate selected cell" time="0.008" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data cell commit"/>
-    <testcase name="should select next cell" time="0.007" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data cell commit after &apos;Tab&apos;"/>
+    <testcase name="should deactivate selected cell" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data cell commit"/>
+    <testcase name="should select next cell" time="0.01" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data cell commit after &apos;Tab&apos;"/>
     <testcase name="should set selected state of grid" time="0.006" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Cell Meta Data Cell click"/>
     <testcase name="should keep original metric information" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid changes to non metric column data"/>
-    <testcase name="should generate the width based on the container size" time="0.008" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Table width"/>
-    <testcase name="should set the width of the table" time="0.008" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Table width providing table width as prop"/>
+    <testcase name="should generate the width based on the container size" time="0.005" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Table width"/>
+    <testcase name="should set the width of the table" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Grid Table width providing table width as prop"/>
     <testcase name="should create a new CheckboxEditor instance" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).CheckboxEditor Basic tests"/>
-    <testcase name="should be selected if value prop is true" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).CheckboxEditor Basic tests"/>
-    <testcase name="should not be selected if value prop is false" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).CheckboxEditor Basic tests"/>
-    <testcase name="should call onCellChange with correct rowIdx and columnKey when checkbox is clicked" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).CheckboxEditor Basic tests"/>
+    <testcase name="should be selected if value prop is true" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).CheckboxEditor Basic tests"/>
+    <testcase name="should not be selected if value prop is false" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).CheckboxEditor Basic tests"/>
+    <testcase name="should call onCellChange with correct rowIdx and columnKey when checkbox is clicked" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).CheckboxEditor Basic tests"/>
     <testcase name="should create a new DropDownEditor instance" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).DropDownEditor Basic tests"/>
     <testcase name="should return 100% as its width" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).DropDownEditor Basic tests"/>
-    <testcase name="should pass width=100% to the select node as a prop" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).DropDownEditor Basic tests"/>
+    <testcase name="should pass width=100% to the select node as a prop" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).DropDownEditor Basic tests"/>
     <testcase name="should pass the value to the select node as a prop" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).DropDownEditor Basic tests"/>
     <testcase name="should render the options as ReactElements" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).DropDownEditor Basic tests"/>
     <testcase name="should pass the option name as the key and value of each ReactElement" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).DropDownEditor Basic tests"/>
     <testcase name="should return the selected option on getValue" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).DropDownEditor Basic tests"/>
     <testcase name="should create a new EditorContainer instance" time="0.003" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Editor Container Tests Basic render tests"/>
-    <testcase name="should render a simpleTextEditor if no column.editor property" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Editor Container Tests Basic render tests"/>
+    <testcase name="should render a simpleTextEditor if no column.editor property" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Editor Container Tests Basic render tests"/>
     <testcase name="should select the text of the default input when the editor is rendered" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Editor Container Tests Basic render tests"/>
     <testcase name="should render the editor with the correct properties" time="0.002" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Editor Container Tests Basic render tests"/>
-    <testcase name="hitting enter should call commit of cellMetaData only once" time="0.009" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Editor Container Tests Events"/>
+    <testcase name="hitting enter should call commit of cellMetaData only once" time="0.005" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).Editor Container Tests Events"/>
     <testcase name="should create a new SimpleTextEditor instance" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).SimpleTextEditor Basic tests"/>
-    <testcase name="should pass the onBlur fuction down to the input as a prop" time="0.001" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).SimpleTextEditor Basic tests"/>
+    <testcase name="should pass the onBlur fuction down to the input as a prop" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).SimpleTextEditor Basic tests"/>
     <testcase name="should return the value when getValue is called" time="0" classname="PhantomJS 1.9.8 (Windows 7 0.0.0).SimpleTextEditor Basic tests"/>
     <system-out><![CDATA[PhantomJS 1.9.8 (Windows 7 0.0.0) ERROR: 'Warning: Failed propType: Invalid prop `row` of type `array` supplied to `Row`, expected `object`. Check the render method of `Canvas`.'
 ,PhantomJS 1.9.8 (Windows 7 0.0.0) ERROR: 'Warning: Failed propType: Required prop `column.name` was not specified in `Cell`.'

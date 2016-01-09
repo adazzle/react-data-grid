@@ -18,7 +18,12 @@
     "SyntheticKeyboardEvent": true,
   },
   "extends": "eslint:recommended",
-
+  "ecmaFeatures": {
+    "blockBindings": true,
+    "forOf": true,
+    "jsx": true,
+    "spread": true
+  },
   "rules": {
     "constructor-super": 2,
     "comma-spacing": 2,

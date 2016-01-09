@@ -12,6 +12,8 @@ describe('Grid', function () {
   var BaseGridStub = StubComponent('BaseGrid');
   var CheckboxEditorStub = StubComponent('CheckboxEditor');
 
+  var activeInfo = { active: false };
+
   // Configure local variable replacements for the module.
   rewireModule(Grid, {
     BaseGrid : BaseGridStub,
@@ -82,8 +84,14 @@ describe('Grid', function () {
     }
 
     var buildProps = (addedProps) => Object.assign({}, this.testProps, addedProps);
+
+    this.setProps = (newProps) => {
+      this.component = this.createComponent({ ...this.outer.props, ...newProps })
+    }
+
     this.createComponent = (addedProps) => {
-      return TestUtils.renderIntoDocument(<Grid {...buildProps(addedProps)}/>);
+      this.outer = TestUtils.renderIntoDocument(<Grid {...buildProps(addedProps)}/>);
+      return this.outer.refs.inner
     };
 
     this.component = this.createComponent();
@@ -141,7 +149,10 @@ describe('Grid', function () {
     });
 
     it('grid should be initialized with selected state of {rowIdx : -1, idx : -1}', function () {
-      expect(this.component.state.selected).toEqual({ rowIdx : -1, idx : -1 });
+      expect(this.component.state.selected).toEqual({
+        rowIdx : -1, idx : -1,
+        ...activeInfo
+      });
     });
   });
 
@@ -232,48 +243,48 @@ describe('Grid', function () {
   describe('User Interaction', function () {
     it('hitting TAB should decrement selected cell index by 1', function () {
       this.simulateGridKeyDown('Tab');
-      expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 0 });
+      expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 0, ...activeInfo });
     });
 
     describe('When selected cell is in top corner of grid', function () {
       beforeEach(function () {
-        this.component.setState({ selected: { idx: 0, rowIdx: 0 }});
+        this.component = this.createComponent({ defaultSelectedCell: [0, 0]});
       });
 
       it('on ArrowUp keyboard event should not change selected index', function () {
         this.simulateGridKeyDown('ArrowUp');
-        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0, ...activeInfo });
       });
 
       it('on ArrowLeft keyboard event should not change selected index', function () {
         this.simulateGridKeyDown('ArrowLeft');
-        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0, ...activeInfo });
       });
     });
 
     describe('When selected cell has adjacent cells on all sides', function () {
       beforeEach(function () {
-        this.component.setState({ selected: { idx: 1, rowIdx: 1 }});
+        this.component = this.createComponent({ defaultSelectedCell: [1, 1]});
       });
 
       it('on ArrowRight keyboard event should increment selected cell index by 1', function () {
         this.simulateGridKeyDown('ArrowRight');
-        expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 1 });
+        expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 1, ...activeInfo });
       });
 
       it('on ArrowDown keyboard event should increment selected row index by 1', function () {
         this.simulateGridKeyDown('ArrowDown');
-        expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 2 });
+        expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 2, ...activeInfo });
       });
 
       it('on ArrowLeft keyboard event should decrement selected row index by 1', function () {
         this.simulateGridKeyDown('ArrowLeft');
-        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
+        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1, ...activeInfo });
       });
 
       it('on ArrowUp keyboard event should decrement selected row index by 1', function () {
         this.simulateGridKeyDown('ArrowUp');
-        expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 0 });
+        expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 0, ...activeInfo });
       });
     });
 
@@ -281,12 +292,11 @@ describe('Grid', function () {
       beforeEach(function () {
         const editableColumn = Object.assign({ editable: true }, this.columns[1]);
         this.columns[1] = editableColumn;
-        this.component = this.createComponent({ columns: this.columns });
+        this.component = this.createComponent({ columns: this.columns, defaultSelectedCell: [1, 1]});
       });
 
       describe('double click on grid', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 }});
           this.getBaseGrid().props.onViewportDoubleClick();
         });
 
@@ -298,7 +308,6 @@ describe('Grid', function () {
       describe('copy a cell value', function () {
         beforeEach(function () {
           const cCharacterKeyCode = 99;
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 }});
           this.simulateGridKeyDown(cCharacterKeyCode, true);
         });
 
@@ -313,10 +322,14 @@ describe('Grid', function () {
         beforeEach(function () {
           const vCharacterKeyCode = 118;
           spyOn(this.testProps, 'onCellCopyPaste');
-          this.component.setProps({ onCellCopyPaste: this.testProps.onCellCopyPaste });
+          this.component = this.createComponent({
+            onCellCopyPaste: this.testProps.onCellCopyPaste,
+            defaultSelectedCell: [1, 5]
+          });
+
+          this.setProps({  });
           this.component.setState({
             textToCopy: 'banana',
-            selected: { idx: 1, rowIdx: 5 },
             copied: { idx: 1, rowIdx: 1 }
           });
           this.simulateGridKeyDown(vCharacterKeyCode, true);
@@ -336,7 +349,7 @@ describe('Grid', function () {
 
       describe('cell commit cancel', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true }});
+          this.setProps({ defaultActive: true });
           this.getCellMetaData().onCommitCancel();
         });
 
@@ -347,7 +360,7 @@ describe('Grid', function () {
 
       describe('pressing escape', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true }});
+          this.setProps({ defaultActive: true });
           this.simulateGridKeyDown('Escape');
         });
 
@@ -358,7 +371,8 @@ describe('Grid', function () {
 
       describe('pressing enter', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
+          this.setProps({ defaultActive: false });
+          //this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
           this.simulateGridKeyDown('Enter');
         });
 
@@ -369,7 +383,7 @@ describe('Grid', function () {
 
       describe('pressing delete', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
+          this.setProps({ defaultActive: false });
           this.simulateGridKeyDown('Delete');
         });
 
@@ -380,7 +394,7 @@ describe('Grid', function () {
 
       describe('pressing backspace', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
+          this.setProps({ defaultActive: false });
           this.simulateGridKeyDown('Backspace');
         });
 
@@ -392,12 +406,12 @@ describe('Grid', function () {
       describe('typing a char', function () {
         beforeEach(function () {
           const fakeEvent = this.buildFakeEvent({ keyCode: 66, key: 'Unidentified' });
-          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false }});
+          this.setProps({ defaultActive: false });
           this.getBaseGrid().props.onViewportKeydown(fakeEvent);
         });
 
         it('should set grid state active and store the typed value', function () {
-          expect(this.component.state.selected).toEqual({ idx : 1, rowIdx : 1, active : true, initialKeyCode : 66 });
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true, initialKeyCode: 66 });
         });
       });
     });
@@ -406,17 +420,16 @@ describe('Grid', function () {
       beforeEach(function () {
         const uneditableColumn = Object.assign({ editable: false }, this.columns[1]);
         this.columns[1] = uneditableColumn;
-        this.component = this.createComponent({ columns: this.columns });
+        this.component = this.createComponent({ columns: this.columns, defaultSelectedCell: [1, 1]});
       });
 
       describe('double click on grid ', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 }});
           this.getBaseGrid().props.onViewportDoubleClick();
         });
 
         it('should not activate current selected cell', function () {
-          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1 });
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, ...activeInfo });
         });
       });
     });
@@ -425,7 +438,7 @@ describe('Grid', function () {
 
       describe('dragging in grid', function () {
         beforeEach(function () {
-          this.component.setState({ selected: { idx: 1, rowIdx: 2 }});
+          this.setProps({ defaultSelectedCell: [1, 2]});
           this.getBaseGrid().props.onViewportDragStart();
         });
 
@@ -437,8 +450,8 @@ describe('Grid', function () {
 
       describe('dragging over a row', function () {
         beforeEach(function () {
+          this.setProps({ defaultSelectedCell: [1, 2]});
           this.component.setState({
-            selected: { idx: 1, rowIdx: 2 },
             dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 }
           });
           this.getCellMetaData().handleDragEnterRow(4)
@@ -452,9 +465,12 @@ describe('Grid', function () {
       describe('finishing drag', function () {
         beforeEach(function () {
           spyOn(this.testProps, 'onCellsDragged');
-          this.component.setProps({ onCellsDragged: this.testProps.onCellsDragged });
+          this.setProps({
+            onCellsDragged: this.testProps.onCellsDragged,
+            defaultSelectedCell: [1, 2]
+          });
+
           this.component.setState({
-            selected: { idx: 1, rowIdx: 2 },
             dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 }
           });
           this.getBaseGrid().props.onViewportDragEnd();
@@ -462,7 +478,8 @@ describe('Grid', function () {
 
         it('should trigger onCellsDragged event and call it with correct params', function () {
           expect(this.component.props.onCellsDragged).toHaveBeenCalled();
-          expect(this.component.props.onCellsDragged.argsForCall[0][0]).toEqual({ cellKey: 'title', fromRow: 2, toRow: 6, value: 'apple' });
+          expect(this.component.props.onCellsDragged.argsForCall[0][0])
+            .toEqual({ cellKey: 'title', fromRow: 2, toRow: 6, value: 'apple' });
         });
       });
 
@@ -478,17 +495,19 @@ describe('Grid', function () {
       });
     });
 
+    // JQ: I don't actually think this is behavior we want?
     describe('Adding a new row', function () {
       beforeEach(function () {
         var newRow = { id: 1000, title: 'Title 1000', count: 1000 };
         this._rows.push(newRow);
-        this.component.setProps({ rowsCount: this._rows.length });
+        this.outer.setProps({ rowsCount: this._rows.length });
       });
 
       it('should set the selected cell to be on the last row', function () {
         expect(this.component.state.selected).toEqual({
           idx: 1,
-          rowIdx: 1000
+          rowIdx: 1000,
+          ...activeInfo
         });
       });
     });
@@ -498,7 +517,7 @@ describe('Grid', function () {
         const newColumn = { key: 'isodd', name: 'Is Odd', width: 100 };
         const newColumns = Object.assign([], this.columns);
         newColumns.splice(2, 0, newColumn);
-        this.component.setProps({ columns: newColumns });
+        this.setProps({ columns: newColumns });
         this.columns = this.component.state.columnMetrics.columns;
       });
 
@@ -515,7 +534,7 @@ describe('Grid', function () {
       beforeEach(function() {
         const newColumns = Object.assign([], this.columns);
         newColumns.splice(1, 1);
-        this.component.setProps({ columns: newColumns });
+        this.setProps({ columns: newColumns });
         this.columns = this.component.state.columnMetrics.columns;
       });
 
@@ -534,7 +553,7 @@ describe('Grid', function () {
     it('should create a cellMetaData object and pass to baseGrid as props', function () {
       var meta = this.getCellMetaData();
       expect(meta).toEqual(jasmine.objectContaining({
-        selected: { rowIdx: 0, idx: 0 },
+        selected: { rowIdx: 0, idx: 0, ...activeInfo },
         dragged: null,
         copied: null
       }));
@@ -547,16 +566,18 @@ describe('Grid', function () {
 
     describe('Changing Grid state', function () {
       beforeEach(function () {
-        var newState = {
-          selected: { idx: 2, rowIdx: 2 },
+        this.setProps({
+          defaultSelectedCell: [2, 2]
+        });
+
+        this.component.setState({
           dragged: { idx: 2, rowIdx: 2 }
-        };
-        this.component.setState(newState);
+        });
       });
 
-      it(' should update cellMetaData', function () {
+      it('should update cellMetaData', function () {
         expect(this.getCellMetaData()).toEqual(jasmine.objectContaining({
-          selected: { idx: 2, rowIdx: 2 },
+          selected: { idx: 2, rowIdx: 2, ...activeInfo },
           dragged: { idx: 2, rowIdx: 2 }
         }));
       });
@@ -565,8 +586,12 @@ describe('Grid', function () {
     describe('cell commit', function () {
       beforeEach(function () {
         spyOn(this.testProps, 'onRowUpdated');
-        this.component.setProps({ onRowUpdated: this.testProps.onRowUpdated });
-        this.component.setState({ selected: { idx: 3, rowIdx: 3, active: true }});
+        this.setProps({
+          onRowUpdated: this.testProps.onRowUpdated,
+          defaultActive: true,
+          defaultSelectedCell: [3, 3]
+        });
+
         this.getCellMetaData().onCommit(this.buildFakeCellUodate());
       });
 
@@ -583,7 +608,11 @@ describe('Grid', function () {
 
     describe("cell commit after 'Tab'", function () {
       beforeEach(function () {
-        this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true }});
+        this.setProps({
+          defaultActive: true,
+          defaultSelectedCell: [1, 1]
+        });
+
         this.getCellMetaData().onCommit(this.buildFakeCellUodate({ key: 'Tab' }));
       });
 
@@ -598,7 +627,7 @@ describe('Grid', function () {
       });
 
       it('should set selected state of grid', function () {
-        expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 2 });
+        expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 2, active: false });
       });
     });
   });
@@ -608,7 +637,7 @@ describe('Grid', function () {
       this.originalMetrics = Object.assign({}, this.component.state.columnMetrics);
       const editableColumn = Object.assign({ editable: true }, this.columns[0]);
       this.columns[0] = editableColumn;
-      this.component.setProps({ columns: this.columns });
+      this.setProps({ columns: this.columns });
     });
 
     it('should keep original metric information', function () {
@@ -622,21 +651,17 @@ describe('Grid', function () {
   })
 
   describe('Table width', function () {
-    beforeEach(function () {
-      this.tableElement = ReactDOM.findDOMNode(this.component);
-    });
-
     it('should generate the width based on the container size', function () {
-      expect(this.tableElement.style.width).toEqual('0px');
+      expect(ReactDOM.findDOMNode(this.component).style.width).toEqual('0px');
     });
 
     describe('providing table width as prop', function () {
       beforeEach(function () {
-        this.component.setProps({ minWidth: 900 });
+        this.setProps({ minWidth: 900 });
       });
 
       it('should set the width of the table', function () {
-        expect(this.tableElement.style.width).toEqual('900px');
+        expect(ReactDOM.findDOMNode(this.component).style.width).toEqual('900px');
       });
     });
   });

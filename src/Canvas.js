@@ -57,9 +57,6 @@ var Canvas = React.createClass({
         this.renderPlaceholder('bottom', (length - displayEnd) * rowHeight));
     }
 
-
-
-
     var style = {
       position: 'absolute',
       top: 0,
@@ -70,7 +67,6 @@ var Canvas = React.createClass({
       height: this.props.height,
       transform: 'translate3d(0, 0, 0)'
     };
-
 
     return (
       <div
@@ -102,9 +98,9 @@ var Canvas = React.createClass({
   renderPlaceholder(key: string, height: number): ?ReactElement {
     return (
       <div key={key} style={{ height: height }}>
-        {this.props.columns.map(
-          (column, idx) => <div style={{ width: column.width }} key={idx} />
-		)}
+      { this.props.columns.map((column, idx) =>
+          <div style={{ width: column.width }} key={idx} />
+      )}
       </div>
     );
   },

@@ -24,7 +24,8 @@ module.exports = function (stateValues) {
     selectedRows: [],
     selected: {
       rowIdx: 0,
-      idx: 0
+      idx: 0,
+      active: false
     },
     copied: null,
     canFilter: false,
