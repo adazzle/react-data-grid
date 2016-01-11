@@ -146,11 +146,11 @@ var Header = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    var node = this.refs.row.getDOMNode();
+    var node = this.refs.row;
     node.scrollLeft = scrollLeft;
     this.refs.row.setScrollLeft(scrollLeft);
     if (this.refs.filterRow) {
-      var nodeFilters = this.refs.filterRow.getDOMNode();
+      var nodeFilters = this.refs.filterRow;
       nodeFilters.scrollLeft = scrollLeft;
       this.refs.filterRow.setScrollLeft(scrollLeft);
     }

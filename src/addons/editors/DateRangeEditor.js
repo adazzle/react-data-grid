@@ -37,7 +37,7 @@ var DateRangeEditor = React.createClass({
           this.setTextInputFocus();
       },
       getInputNode(): HTMLElement{
-        return this.refs.datepicker.getDOMNode();
+        return this.refs.datepicker;
       },
       getValue(): DateRangeValue{
         var dateToParse = this.getInputNode().value;
