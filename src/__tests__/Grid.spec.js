@@ -1,5 +1,6 @@
 'use strict';
 var React         = require('react');
+var ReactDOM      = require('react-dom');
 var rewire        = require('rewire');
 var Grid          = rewire('../Grid');
 var TestUtils     = require('react/lib/ReactTestUtils');
@@ -66,7 +67,7 @@ describe('Base Grid Tests', () => {
   it("keyboard input in viewport should call props.onViewportKeydown", () => {
     spyOn(testProps, 'onViewportKeydown');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    var viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
+    var viewportContainerNode = ReactDOM.findDOMNode(testElement.refs.viewPortContainer);
     TestUtils.Simulate.keyDown(viewportContainerNode, {key: "Enter"});
     expect(testProps.onViewportKeydown).toHaveBeenCalled();
   });
@@ -74,7 +75,7 @@ describe('Base Grid Tests', () => {
   it("doubleclick in viewport should call props.onViewportDoubleClick" ,() => {
     spyOn(testProps, 'onViewportDoubleClick');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    var viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
+    var viewportContainerNode = ReactDOM.findDOMNode(testElement.refs.viewPortContainer);
     TestUtils.Simulate.doubleClick(viewportContainerNode);
     expect(testProps.onViewportDoubleClick).toHaveBeenCalled();
   });
@@ -82,7 +83,7 @@ describe('Base Grid Tests', () => {
   it("dragstart in viewport should call props.onViewportDoubleClick" ,() => {
     spyOn(testProps, 'onViewportDragStart');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    var viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
+    var viewportContainerNode = ReactDOM.findDOMNode(testElement.refs.viewPortContainer);
     TestUtils.Simulate.dragStart(viewportContainerNode);
     expect(testProps.onViewportDragStart).toHaveBeenCalled();
   });
@@ -90,7 +91,7 @@ describe('Base Grid Tests', () => {
   it("dragend in viewport should call props.onViewportDragEnd" ,() => {
     spyOn(testProps, 'onViewportDragEnd');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    var viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
+    var viewportContainerNode = ReactDOM.findDOMNode(testElement.refs.viewPortContainer);
     TestUtils.Simulate.dragEnd(viewportContainerNode);
     expect(testProps.onViewportDragEnd).toHaveBeenCalled();
   });

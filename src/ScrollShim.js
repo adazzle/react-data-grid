@@ -7,6 +7,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var ScrollShim = {
 
@@ -25,7 +26,7 @@ var ScrollShim = {
       shim.style.left = 0;
       shim.style.width = `${size.width}px`;
       shim.style.height = `${size.height}px`;
-      React.findDOMNode(this).appendChild(shim);
+      ReactDOM.findDOMNode(this).appendChild(shim);
       this._scrollShim = shim;
     }
     this._scheduleRemoveScrollShim();

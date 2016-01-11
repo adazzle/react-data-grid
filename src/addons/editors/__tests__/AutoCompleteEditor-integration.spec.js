@@ -1,6 +1,7 @@
 'use strict';
 
 var React              = require('react');
+var ReactDOM           = require('react-dom');
 var TestUtils          = require('react/lib/ReactTestUtils');
 var rewire             = require('rewire');
 var rewireModule       = require('../../../../test/rewireModule');
@@ -18,7 +19,7 @@ describe('AutoCompleteEditor integration', () => {
   var commitSpy = jasmine.createSpy();
 
     beforeEach(() => {
-      component = React.render(<AutoCompleteEditor
+      component = ReactDOM.render(<AutoCompleteEditor
         onCommit={commitSpy}
         options={fakeOptions}
         label='title'

@@ -1,5 +1,6 @@
 'use strict';
 var React            = require('react');
+var ReactDOM         = require('react-dom');
 var rewire           = require('rewire');
 var EditorContainer  = rewire('../EditorContainer.js');
 var TestUtils        = require('react/lib/ReactTestUtils');
@@ -100,7 +101,7 @@ describe('Editor Container Tests', () => {
 
       // it('should commit editor changes on blur', () => {
       //   let textEdtr = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
-      //   TestUtils.Simulate.blur(component.getDOMNode());
+      //   TestUtils.Simulate.blur(ReactDOM.findDOMNode(component));
       //   expect(cellMetaData.onCommit).toHaveBeenCalled();
       // });
 

@@ -8,6 +8,7 @@ overrides? getDefaultValue, getStyle, onKeyDown
 'use strict';
 
 var React                   = require('react');
+var ReactDOM                = require('react-dom');
 var ReactAutocomplete       = require('ron-react-autocomplete');
 var KeyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 var ExcelColumn             = require('../grids/ExcelColumn');
@@ -51,7 +52,7 @@ var AutoCompleteEditor = React.createClass({
   },
 
   getInputNode(): HTMLInputElement{
-    return this.getDOMNode().getElementsByTagName("input")[0];
+    return ReactDOM.findDOMNode(this).getElementsByTagName("input")[0];
   },
 
   render(): ?ReactElement {

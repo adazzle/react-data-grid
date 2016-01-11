@@ -1,4 +1,5 @@
 var React        = require('react');
+var ReactDOM     = require('react-dom');
 var TestUtils    = require('react/lib/ReactTestUtils');
 var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
 var ReactDataGrid = require('../grids/ReactDataGrid');
@@ -73,14 +74,14 @@ export default class GridRunner {
     return TestUtils.scryRenderedDOMComponentsWithTag(this.cell,'input')[0];
   }
   setValue(val) {
-    this.getEditor().getDOMNode().value = val;
+    ReactDOM.findDOMNode(this.getEditor()).value = val;
     //remember to set the value via the dom node, not the component!
     return this;
   }
   //you MUST have set the grid to render into body to use this
   //chrome (et al) dont do cursor positions unless you are properly visibile
   setCursor(start,end=start) {
-    const input = this.getEditor().getDOMNode();
+    const input = ReactDOM.findDOMNode(this.getEditor());
     input.setSelectionRange(start,end);
     expect(input.selectionStart).toEqual(start,`Couldnt set the cursor.
             You probably havent rendered the grid into the *actual* dom.
@@ -93,7 +94,7 @@ export default class GridRunner {
   }
 
   copy() {
-    this.keyDown({keyCode: 67, ctrlKey: true}, this.cell.getDOMNode());
+    this.keyDown({keyCode: 67, ctrlKey: true}, ReactDOM.findDOMNode(this.cell));
     return this;
   }
 
@@ -112,14 +113,14 @@ export default class GridRunner {
     //Act
     //do the drag
     //Important: we need dragStart / dragEnter / dragEnd
-    TestUtils.Simulate.dragStart(this.row.getDOMNode());
+    TestUtils.Simulate.dragStart(ReactDOM.findDOMNode(this.row));
     if(beforeDragEnter) {beforeDragEnter();}
 
     over.forEach((r) => {
-      TestUtils.Simulate.dragEnter(r.getDOMNode())
+      TestUtils.Simulate.dragEnter(ReactDOM.findDOMNode(r))
     });
     if(beforeDragEnd) {beforeDragEnd();}
-    TestUtils.Simulate.dragEnd(toCell.getDOMNode());
+    TestUtils.Simulate.dragEnd(ReactDOM.findDOMNode(toCell));
 
     return this;
   }
@@ -145,7 +146,7 @@ export default class GridRunner {
   // hasBeenResized({idx, toWidth}) {
   //   const hCell = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-HeaderCell')[0];
   //   let expectedWidth = toWidth.toString() + 'px';
-  //   expect(hCell.getDOMNode().style.width).toBe(expectedWidth);
+  //   expect(ReactDOM.findDOMNode(hCell)).style.width).toBe(expectedWidth);
   //   return this;
   // }
   // triggerMouseEvent (eventName, pageX) {
@@ -187,7 +188,7 @@ export default class GridRunner {
     var baseGrid = this.grid.refs.reactDataGrid;
     expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
-    expect(this.cell.getDOMNode().className.indexOf(' copied ') > -1).toBe(true);
+    expect(ReactDOM.findDOMNode(this.cell).className.indexOf(' copied ') > -1).toBe(true);
   }
   hasDragged({from,to,col,cellKey}) {
     //check onCellDrag called with correct data
@@ -204,7 +205,7 @@ export default class GridRunner {
       expect(toCell.props.value).toEqual(expected);
       // and finally the rendered data
       // (use trim as we are reading from the dom so get some whitespace at the end)
-      expect(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value').getDOMNode().textContent.trim()).toEqual(expected.trim());
+      expect(ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value')).textContent.trim()).toEqual(expected.trim());
     }
   }
 

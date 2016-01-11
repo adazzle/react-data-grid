@@ -107,7 +107,7 @@ var Example = React.createClass({
     rowRenderer={RowRenderer}/>);
   }
 });
-React.render(<Example />, mountNode);
+ReactDOM.render(<Example />, mountNode);
 `;
 
 module.exports = React.createClass({

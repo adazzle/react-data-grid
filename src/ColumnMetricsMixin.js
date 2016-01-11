@@ -6,6 +6,7 @@ Object.assign            = require('object-assign');
 var PropTypes            = require('react').PropTypes;
 var ColumnUtils = require('./ColumnUtils');
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 type ColumnMetricsType = {
     columns: Array<Column>;
@@ -30,7 +31,7 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      return React.findDOMNode(this).parentElement.offsetWidth;
+      return ReactDOM.findDOMNode(this).parentElement.offsetWidth;
     }
   },
 

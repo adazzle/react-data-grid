@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
 
 var basicExample     = require('./scripts/example01-basic');
@@ -47,5 +48,5 @@ var routes = (
 );
 
 ReactRouter.run(routes, function (Handler) {
-  React.render(<Handler/>, document.getElementById('example'));
+  ReactDOM.render(<Handler/>, document.getElementById('example'));
 });
