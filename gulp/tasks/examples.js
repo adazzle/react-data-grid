@@ -41,7 +41,7 @@ webpackConfig = {
 		]
 	},
 	plugins: [
-
+		"transform-react-jsx"
 	]
 }
 
