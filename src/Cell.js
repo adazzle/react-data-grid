@@ -111,6 +111,7 @@ var Cell = React.createClass({
         onDoubleClick={this.onCellDoubleClick}
       >
         {cellContent}
+        {this.props.children}
         <div className="drag-handle" draggable="true"/>
       </div>
     );
@@ -131,7 +132,7 @@ var Cell = React.createClass({
     else {
       CellContent = <SimpleCellFormatter value={props.value}/>;
     }
-    
+
     return (
       <div
         ref="cell"
@@ -198,7 +199,7 @@ var Cell = React.createClass({
       );
     }
     else {
-      return this.props.column.formatter;
+      return col.formatter;
     }
   },
 
