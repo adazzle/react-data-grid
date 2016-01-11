@@ -1,10 +1,13 @@
 'use strict';
 var React        = require('react');
+var ReactDOM     = require('react-dom');
 var rewire       = require('rewire');
 var Cell         = rewire('../Cell');
 var TestUtils    = require('react/lib/ReactTestUtils');
+var PropTestUtils = require('../../test/PropTestUtils');
 var rewireModule = require("../../test/rewireModule");
 var StubComponent = require("../../test/StubComponent");
+var Immutable    = require('immutable');
 
 describe('Cell Tests', () => {
   var testElement;
@@ -34,7 +37,7 @@ describe('Cell Tests', () => {
     rowIdx : 0,
     idx : 1,
     tabIndex : 1,
-    column: {},
+    column: {name : 'Cat Stevens', key : 'catStevens', width : 100},
     value: 'Wicklow',
     isExpanded: false,
     cellMetaData: testCellMetaData,
@@ -84,7 +87,8 @@ describe('Cell Tests', () => {
       testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       var editorContainerInstance = TestUtils.findRenderedComponentWithType(testElement, EditorContainerStub);
       expect(editorContainerInstance).toBeDefined();
-      expect(editorContainerInstance.props).toEqual({
+      var expectedProps = Immutable.Map(editorContainerInstance.props).toJS();
+      expect(expectedProps).toEqual({
         value : 'Wicklow',
         column : testProps.column,
         isExpanded : false,
@@ -100,10 +104,10 @@ describe('Cell Tests', () => {
     it('should append the update cell class to the dom node if present and cell is updated', () => {
       var updateClass = 'highlight-cell';
       testProps.column.getUpdateCellClass = () => updateClass;
-      var cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+      var cellInstance = new PropTestUtils(Cell, testProps);
       // force update
       cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
-      var cellHasUpdateClass = cellInstance.getDOMNode().getAttribute('class').indexOf(updateClass) > -1;
+      var cellHasUpdateClass = ReactDOM.findDOMNode(cellInstance.component).getAttribute('class').indexOf(updateClass) > -1;
       expect(cellHasUpdateClass).toBe(true);
     })
 
