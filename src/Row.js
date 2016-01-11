@@ -122,7 +122,7 @@ var Row = React.createClass({
       this.props.cellRenderer.call(this, props);
     }
     if (React.isValidElement(this.props.cellRenderer)) {
-      return cloneWithProps(this.props.cellRenderer, props);
+      return React.cloneElement(this.props.cellRenderer, props);
     } else {
       return this.props.cellRenderer(props);
     }

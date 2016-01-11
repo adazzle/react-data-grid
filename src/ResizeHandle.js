@@ -1,7 +1,6 @@
 var React          = require('react');
 var joinClasses     = require('classnames');
 var Draggable      = require('./Draggable');
-var cloneWithProps = require('react/lib/cloneWithProps');
 var PropTypes      = React.PropTypes;
 
 var ResizeHandle   = React.createClass({
