@@ -19,6 +19,8 @@ describe('Header Cell Tests', () => {
 
   var testProps = {
     column : {
+      name : 'Cat Stevens',
+      key : 'catStevens',
       width : 150,
       left : 300
     },

@@ -17,7 +17,7 @@ describe('Canvas Tests', () => {
     displayEnd: 10,
     rowsCount: 1,
     columns: [],
-    rowGetter: function() { return [] },
+    rowGetter: function() { return {} },
     cellMetaData: {}
   }
 
