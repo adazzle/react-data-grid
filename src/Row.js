@@ -23,6 +23,7 @@ var Row = React.createClass({
 
   render(): ?ReactElement {
     var className = joinClasses(
+      this.props.className,
       'react-grid-Row',
       `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`
     );
