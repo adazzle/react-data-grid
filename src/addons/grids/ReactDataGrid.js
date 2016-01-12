@@ -402,7 +402,7 @@ var ReactDataGrid = React.createClass({
     }
     this.setState({selectedRows})
     if (this.props.onRowSelect) {
-      this.props.onRowSelect(this.state.selectedRows.filter(r => r.isSelected === true));
+      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
     }
   },
 
