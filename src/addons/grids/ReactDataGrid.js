@@ -373,8 +373,9 @@ var ReactDataGrid = React.createClass({
       allRowsSelected = false;
     }
     var selectedRows = [];
-    for(var i = 0; i < this.props.rowsCount; i++){
-      selectedRows.push(allRowsSelected);
+    for (var i = 0; i < this.props.rowsCount; i++) {
+      var row = Object.assign({}, this.props.rowGetter(i), {isSelected: allRowsSelected});
+      selectedRows.push(row);
     }
     this.setState({selectedRows : selectedRows});
     if(this.props.onRowSelect){
