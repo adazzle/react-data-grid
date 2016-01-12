@@ -23,6 +23,7 @@ var Grid = React.createClass({
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowHeight: PropTypes.number,
     rowRenderer: PropTypes.func,
+    emptyRowsView: PropTypes.func,
     expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowsCount: PropTypes.number,
@@ -53,6 +54,8 @@ var Grid = React.createClass({
 
   render(): ?ReactElement {
     var headerRows = this.props.headerRows || [{ref : 'row'}];
+    var EmptyRowsView = this.props.emptyRowsView;
+
     return (
       <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
         <Header
@@ -66,25 +69,31 @@ var Grid = React.createClass({
           sortDirection={this.props.sortDirection}
           onSort={this.props.onSort}
           />
-        <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
-            <Viewport
-              ref="viewport"
-              width={this.props.columnMetrics.width}
-              rowHeight={this.props.rowHeight}
-              rowRenderer={this.props.rowRenderer}
-              rowGetter={this.props.rowGetter}
-              rowsCount={this.props.rowsCount}
-              selectedRows={this.props.selectedRows}
-              expandedRows={this.props.expandedRows}
-              columnMetrics={this.props.columnMetrics}
-              totalWidth={this.props.totalWidth}
-              onScroll={this.onScroll}
-              onRows={this.props.onRows}
-              cellMetaData={this.props.cellMetaData}
-              rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
-              minHeight={this.props.minHeight}
-              />
-          </div>
+          {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
+            <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+                <Viewport
+                  ref="viewport"
+                  width={this.props.columnMetrics.width}
+                  rowHeight={this.props.rowHeight}
+                  rowRenderer={this.props.rowRenderer}
+                  rowGetter={this.props.rowGetter}
+                  rowsCount={this.props.rowsCount}
+                  selectedRows={this.props.selectedRows}
+                  expandedRows={this.props.expandedRows}
+                  columnMetrics={this.props.columnMetrics}
+                  totalWidth={this.props.totalWidth}
+                  onScroll={this.onScroll}
+                  onRows={this.props.onRows}
+                  cellMetaData={this.props.cellMetaData}
+                  rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
+                  minHeight={this.props.minHeight}
+                />
+            </div>
+        :
+            <div ref="emptyView" className="react-grid-Empty">
+                <EmptyRowsView />
+            </div>
+        }
       </div>
     );
   },
@@ -94,7 +103,7 @@ var Grid = React.createClass({
       rowHeight: 35,
       minHeight: 350
     };
-  },
+  }
 });
 
 module.exports = Grid;
