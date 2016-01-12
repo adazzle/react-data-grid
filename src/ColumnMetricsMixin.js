@@ -30,7 +30,15 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      return React.findDOMNode(this).parentElement.offsetWidth;
+      var width = React.findDOMNode(this).parentElement.offsetWidth;
+      if (width == 0) {
+        if (this.isMounted() && this.getDOMNode().parentOffset == null && this.props.columns) {
+          for (var c = 0, cL = this.props.columns.length; c < cL; c++) {
+            width += this.props.columns[c].width;
+          }
+        }
+      }
+      return width;
     }
   },
 
@@ -54,7 +62,9 @@ module.exports = {
 
   getTotalWidth() {
     var totalWidth = 0;
-    if(this.isMounted()){
+    // also check parentOffset to see if element is visible (see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent)
+    // without this check, mounted but invisible grids (ie rendered into a parent with display:none) set their totalWidth incorrectly
+    if(this.isMounted() && this.getDOMNode().parentOffset){
       totalWidth = this.DOMMetrics.gridWidth();
     } else {
       totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;
