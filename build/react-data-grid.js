@@ -863,6 +863,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	    rowHeight: PropTypes.number,
 	    rowRenderer: PropTypes.func,
+	    emptyRowsView: PropTypes.func,
 	    expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	    selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	    rowsCount: PropTypes.number,
@@ -889,6 +890,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  render: function render() {
 	    var headerRows = this.props.headerRows || [{ ref: 'row' }];
+	    var EmptyRowsView = this.props.emptyRowsView;
+
 	    return React.createElement(
 	      'div',
 	      _extends({}, this.props, { style: this.getStyle(), className: 'react-grid-Grid' }),
@@ -903,7 +906,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        sortDirection: this.props.sortDirection,
 	        onSort: this.props.onSort
 	      }),
-	      React.createElement(
+	      this.props.rowsCount >= 1 || this.props.rowsCount === 0 && !this.props.emptyRowsView ? React.createElement(
 	        'div',
 	        { ref: 'viewPortContainer', onKeyDown: this.props.onViewportKeydown, onDoubleClick: this.props.onViewportDoubleClick, onDragStart: this.props.onViewportDragStart, onDragEnd: this.props.onViewportDragEnd },
 	        React.createElement(Viewport, {
@@ -923,6 +926,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          rowOffsetHeight: this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length,
 	          minHeight: this.props.minHeight
 	        })
+	      ) : React.createElement(
+	        'div',
+	        { ref: 'emptyView', className: 'react-grid-Empty' },
+	        React.createElement(EmptyRowsView, null)
 	      )
 	    );
 	  },
@@ -4970,7 +4977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = {
 
 	  componentDidMount: function componentDidMount() {
-	    this._scrollLeft = this.refs.viewport.getScroll().scrollLeft;
+	    this._scrollLeft = this.refs.viewport ? this.refs.viewport.getScroll().scrollLeft : 0;
 	    this._onScroll();
 	  },
 
@@ -4996,7 +5003,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _onScroll: function _onScroll() {
 	    if (this._scrollLeft !== undefined) {
 	      this.refs.header.setScrollLeft(this._scrollLeft);
-	      this.refs.viewport.setScrollLeft(this._scrollLeft);
+	      if (this.refs.viewport) {
+	        this.refs.viewport.setScrollLeft(this._scrollLeft);
+	      }
 	    }
 	  }
 	};
