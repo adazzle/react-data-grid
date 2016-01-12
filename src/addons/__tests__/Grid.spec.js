@@ -169,13 +169,13 @@ describe("When row selection enabled", () => {
       var selectedRows = component.state.selectedRows;
       expect(selectedRows.length).toEqual(_rows.length);
       selectedRows.forEach(function(selected){
-        expect(selected).toBe(true);
+        expect(selected.isSelected).toBe(true);
       });
       //trigger unselect
       checkbox.checked = false;
       headerCheckbox.props.onChange(fakeEvent);
       component.state.selectedRows.forEach(function(selected){
-        expect(selected).toBe(false);
+        expect(selected.isSelected).toBe(false);
       });
     });
 
