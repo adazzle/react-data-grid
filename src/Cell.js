@@ -203,7 +203,31 @@ var Cell = React.createClass({
 
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
-      React.findDOMNode(this).focus();
+      // determine the parent viewport element of this cell
+      var parent_viewport = React.findDOMNode(this);
+      while (parent_viewport != null && parent_viewport.className.indexOf('react-grid-Viewport') == -1) {
+        parent_viewport = parent_viewport.parentElement;
+      }
+      var focus_in_grid = false;
+      // if the focus is on the body of the document, the user won't mind if we focus them on a cell
+      if (document.activeElement.nodeName.toLowerCase() == 'body') {
+        focus_in_grid = true;
+      // otherwise
+      } else {
+        // only pull focus if the currently focused element is contained within the viewport
+        if (parent_viewport) {
+          var focused_parent = document.activeElement;
+          while (focused_parent != null) {
+            if (focused_parent == parent_viewport) {
+              focus_in_grid = true;
+              break;
+            }
+            focused_parent = focused_parent.parentElement;
+          }
+        }
+      }
+      if (focus_in_grid)
+        React.findDOMNode(this).focus();
     }
   },
 
