@@ -59,26 +59,32 @@ var Grid = React.createClass({
           sortColumn={this.props.sortColumn}
           sortDirection={this.props.sortDirection}
           onSort={this.props.onSort}
+        />
+        <div
+          ref="viewPortContainer"
+          onKeyDown={this.props.onViewportKeydown}
+          onDoubleClick={this.props.onViewportDoubleClick}
+          onDragStart={this.props.onViewportDragStart}
+          onDragEnd={this.props.onViewportDragEnd}
+        >
+          <Viewport
+            ref="viewport"
+            width={this.props.columnMetrics.width}
+            rowHeight={this.props.rowHeight}
+            rowRenderer={this.props.rowRenderer}
+            rowGetter={this.props.rowGetter}
+            rowsCount={this.props.rowsCount}
+            selectedRows={this.props.selectedRows}
+            expandedRows={this.props.expandedRows}
+            columnMetrics={this.props.columnMetrics}
+            totalWidth={this.props.totalWidth}
+            onScroll={this.onScroll}
+            onRows={this.props.onRows}
+            cellMetaData={this.props.cellMetaData}
+            rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
+            minHeight={this.props.minHeight}
           />
-        <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
-            <Viewport
-              ref="viewport"
-              width={this.props.columnMetrics.width}
-              rowHeight={this.props.rowHeight}
-              rowRenderer={this.props.rowRenderer}
-              rowGetter={this.props.rowGetter}
-              rowsCount={this.props.rowsCount}
-              selectedRows={this.props.selectedRows}
-              expandedRows={this.props.expandedRows}
-              columnMetrics={this.props.columnMetrics}
-              totalWidth={this.props.totalWidth}
-              onScroll={this.onScroll}
-              onRows={this.props.onRows}
-              cellMetaData={this.props.cellMetaData}
-              rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
-              minHeight={this.props.minHeight}
-              />
-          </div>
+        </div>
       </div>
     );
   },

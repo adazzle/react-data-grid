@@ -15,7 +15,7 @@ describe('SimpleTextEditor', () => {
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(<SimpleTextEditor
         value={'This is a test'}
-        onBlur={fakeBlurCb}
+        onCommit={fakeBlurCb}
         column={fakeColumn}
         />);
       });
@@ -24,7 +24,7 @@ describe('SimpleTextEditor', () => {
         expect(component).toBeDefined();
       });
 
-      it('should pass the onBlur fuction down to the input as a prop', () => {
+      it('should commit onBlur', () => {
         var Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
         expect(Input.props.onBlur()).toBe(true);
       });

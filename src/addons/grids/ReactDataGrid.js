@@ -351,10 +351,10 @@ var ReactDataGrid = React.createClass({
       var selectColumn = {
           key: 'select-row',
           name: '',
-          formatter : props.selectRowRenderer || <CheckboxEditor/>,
-          onCellChange : this.handleRowSelect,
-          filterable : false,
-          headerRenderer : <input type="checkbox" onChange={this.handleCheckboxChange} />,
+          formatter: props.selectRowRenderer || <CheckboxEditor/>,
+          onCellChange: this.handleRowSelect,
+          filterable: false,
+          headerRenderer: <input type="checkbox" onChange={this.handleCheckboxChange} />,
           width : 60,
           locked: true
       };
@@ -363,12 +363,6 @@ var ReactDataGrid = React.createClass({
     }
     return cols;
   },
-
-  // getSelectRowCell(props) {
-  //   let Renderer = props.rowSelectRenderer || <CheckboxEditor/>;
-  //
-  //   if (React.isValidElement(Renderer))
-  // },
 
   handleCheckboxChange : function(e: SyntheticEvent) {
     var allRowsSelected;
@@ -397,7 +391,7 @@ var ReactDataGrid = React.createClass({
       else {
         selectedRows[rowIdx] = false;
       }
-      this.setState({ selectedRows : selectedRows });
+      this.setState({ selectedRows });
     }
   },
 
@@ -455,7 +449,13 @@ var ReactDataGrid = React.createClass({
 
       var cellKey = this.getColumn(this.state.selected.idx).key;
       if (this.props.onCellCopyPaste) {
-        this.props.onCellCopyPaste({ cellKey: cellKey, rowIdx: selected.rowIdx, value : this.state.textToCopy, fromRow : this.state.copied.rowIdx, toRow : selected.rowIdx });
+        this.props.onCellCopyPaste({
+          cellKey,
+          rowIdx: selected.rowIdx,
+          value: this.state.textToCopy,
+          fromRow: this.state.copied.rowIdx,
+          toRow : selected.rowIdx
+        });
       }
       this.setState({ copied : null });
   },

@@ -34,8 +34,7 @@ describe('Cell Tests', () => {
     rowIdx : 0,
     idx : 1,
     tabIndex : 1,
-    column: {},
-    value: 'Wicklow',
+    column: { key: 'location' },
     isExpanded: false,
     cellMetaData: testCellMetaData,
     handleDragStart: function() {},
@@ -91,8 +90,7 @@ describe('Cell Tests', () => {
         rowIdx : testProps.rowIdx,
         idx : testProps.idx,
         cellMetaData : testProps.cellMetaData,
-        height : testProps.height,
-        dependentValues : undefined
+        height : testProps.height
       }
 
       expect(Object.keys(props).sort())

@@ -12,8 +12,8 @@ class SimpleTextEditor extends EditorBase {
       <input
         ref="input"
         type="text"
-        onBlur={this.props.onBlur}
         className="form-control"
+        onBlur={this.props.onCommit}
         defaultValue={this.props.value}
       />
     );

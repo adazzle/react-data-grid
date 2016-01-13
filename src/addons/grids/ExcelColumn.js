@@ -2,7 +2,7 @@
 var React = require('react');
 
 var ExcelColumnShape = {
-  name: React.PropTypes.string.isRequired,
+  name: React.PropTypes.string,
   key: React.PropTypes.string.isRequired,
   width: React.PropTypes.number.isRequired
 }

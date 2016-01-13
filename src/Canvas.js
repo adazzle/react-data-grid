@@ -113,7 +113,7 @@ var Canvas = React.createClass({
   },
 
   isRowSelected(rowIdx: number): boolean {
-   return this.props.selectedRows && this.props.selectedRows[rowIdx] === true;
+    return this.props.selectedRows && this.props.selectedRows[rowIdx] === true;
   },
 
   _currentRowsLength : 0,
@@ -154,7 +154,7 @@ var Canvas = React.createClass({
 
   componentWillReceiveProps(nextProps: any) {
     if (nextProps.rowsCount > this.props.rowsCount) {
-      ReactDOM.findDOMNode(this).scrollTop =nextProps.rowsCount * this.props.rowHeight;
+      ReactDOM.findDOMNode(this).scrollTop = nextProps.rowsCount * this.props.rowHeight;
     }
     var scrollbarWidth = this.getScrollbarWidth();
     var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart

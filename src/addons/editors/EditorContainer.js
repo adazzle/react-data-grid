@@ -16,12 +16,6 @@ var EditorContainer = React.createClass({
 
   propTypes: {
     rowData: React.PropTypes.object.isRequired,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number,
-      React.PropTypes.object,
-      React.PropTypes.bool
-    ]).isRequired,
     cellMetaData: React.PropTypes.shape({
       selected: React.PropTypes.object.isRequired,
       copied: React.PropTypes.object,
@@ -40,61 +34,38 @@ var EditorContainer = React.createClass({
   },
 
   componentDidMount: function() {
-    var inputNode = this.getInputNode();
-    if (inputNode !== undefined) {
-      checkAndCallOnEditor(this, 'focus', this.props.cellMetaData);
-      if (!this.getEditor().disableContainerStyles) {
-        inputNode.className += ' editor-main';
-        inputNode.style.height = this.props.height - 1 + 'px';
-      }
-    }
+    checkAndCallOnEditor(this, 'editorWillMount', this.props.cellMetaData);
   },
 
   createEditor(): ReactElement {
-    var editorRef = (c) => this.editor = c;
-    var editorProps = {
-      ref: editorRef,
-      column : this.props.column,
-      value : this.getInitialValue(),
-      onCommit : this.commit,
-      rowMetaData : this.getRowMetaData(),
-      height : this.props.height,
-      onBlur : this.commit,
-      onOverrideKeyDown : this.onKeyDown
-    };
     var customEditor = this.props.column.editor;
-    if (customEditor && React.isValidElement(customEditor)) {
-      //return custom column editor or SimpleEditor if none specified
-      return React.cloneElement(customEditor, editorProps)
-    }
-    else {
-      return (
-        <SimpleTextEditor
-          ref={editorRef}
-          column={this.props.column}
-          value={this.getInitialValue()}
-          onBlur={this.commit}
-          rowMetaData={this.getRowMetaData()}
-        />
-      );
-    }
-  },
+    var editorProps = {
+      ref: c => this.editor = c,
+      column: this.props.column,
+      value: this.getInitialValue(),
+      onCommit: this.commit,
+      rowData: this.props.rowData,
+      height: this.props.height
+    };
 
-  getRowMetaData(): ?any {
-    //convention based method to get corresponding Id or Name of any Name or Id property
-    if (typeof this.props.column.getRowMetaData === 'function') {
-      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
+    if (customEditor) {
+      if (React.isValidElement(customEditor))
+        return React.cloneElement(customEditor, editorProps)
+      else if (typeof customEditor === 'function')
+        return customEditor(editorProps)
     }
+
+    return <SimpleTextEditor {...editorProps} />;
   },
 
   onPressEnter() {
     if (!this.editorIsSelectOpen()) {
-      this.commit({ key : 'Enter' });
+      this.commit({ key: 'Enter' });
     }
   },
 
   onPressTab() {
-    this.commit({ key : 'Tab' });
+    this.commit({ key: 'Tab' });
   },
 
   onPressEscape(e: SyntheticKeyboardEvent) {
@@ -159,7 +130,7 @@ var EditorContainer = React.createClass({
     return checkAndCallOnEditor(this, 'isSelectOpen')
   },
 
-  getEditor(): Editor {
+  getEditor() {
     return this.editor;
   },
 
@@ -207,7 +178,6 @@ var EditorContainer = React.createClass({
       var text = keyCode ? String.fromCharCode(keyCode) : this.props.value;
       return text;
     }
-
   },
 
   getContainerClass() {
@@ -231,30 +201,22 @@ var EditorContainer = React.createClass({
     )
   },
 
-  // setCaretAtEndOfInput() {
-  //   var input = this.getInputNode();
-  //   //taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-  //   var txtLength = input.value.length;
-  //   if (input.setSelectionRange) {
-  //     input.setSelectionRange(txtLength, txtLength);
-  //   }
-  //   else if (input.createTextRange) {
-  //     var fieldRange = input.createTextRange();
-  //     fieldRange.moveStart('character', txtLength);
-  //     fieldRange.collapse();
-  //     fieldRange.select();
-  //   }
-  // },
-
   isCaretAtBeginningOfInput(): boolean {
     var inputNode = this.getInputNode();
+
+    if (!inputNode || inputNode.tagName !== 'INPUT')
+      return true
+
     return inputNode.selectionStart === inputNode.selectionEnd
       && inputNode.selectionStart === 0;
   },
 
   isCaretAtEndOfInput(): boolean {
     var inputNode = this.getInputNode();
-    return inputNode.selectionStart === inputNode.value.length;
+    if (!inputNode || inputNode.tagName !== 'INPUT')
+      return true
+
+    return inputNode.selectionStart === (inputNode.value || '').length;
   },
 
   componentWillUnmount: function() {

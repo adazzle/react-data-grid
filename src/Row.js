@@ -56,7 +56,6 @@ var Row = React.createClass({
           key={`${column.key}-${i}`}
           idx={i}
           rowIdx={this.props.idx}
-          value={this.getCellValue(column.key || i)}
           column={column}
           height={this.getRowHeight()}
           formatter={column.formatter}
@@ -86,20 +85,6 @@ var Row = React.createClass({
       }
     }
     return this.props.height;
-  },
-
-  getCellValue(key: number | string): any {
-    var val;
-    if (key === 'select-row') {
-      return this.props.isSelected;
-    }
-    else if (typeof this.props.row.get === 'function') {
-      val = this.props.row.get(key);
-    }
-    else {
-      val = this.props.row[key];
-    }
-    return val;
   },
 
   renderCell(props: any): ReactElement {
