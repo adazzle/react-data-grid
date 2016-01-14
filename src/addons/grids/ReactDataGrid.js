@@ -459,11 +459,15 @@ var ReactDataGrid = React.createClass({
     if(this.state.canFilter === true){
       rows.push({
         ref:"filterRow",
-        headerCellRenderer : <FilterableHeaderCell onChange={this.props.onAddFilter} column={this.props.column}/>,
+        headerCellRenderer : <FilterableHeaderCell onChange={this.props.onAddFilter} column={this.props.column} onTab={this.onFilterTab} />,
         height : 45
       });
     }
     return rows;
+  },
+
+  onFilterTab(e) {
+    this.forceUpdate();
   },
 
   getRowOffsetHeight(): number{

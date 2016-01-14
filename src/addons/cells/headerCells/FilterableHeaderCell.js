@@ -26,6 +26,12 @@ var FilterableHeaderCell = React.createClass({
     this.props.onChange({filterTerm : val, columnKey : this.props.column.key});
   },
 
+  onKeyDown(e) {
+    if (e.key === 'Tab') {
+        this.props.onTab();
+    }
+  },
+
   render: function(): ?ReactElement {
     return (
       <div>
@@ -41,7 +47,7 @@ var FilterableHeaderCell = React.createClass({
       return <span/>;
     }else{
       var input_key = 'header-filter-' + this.props.column.key;
-      return (<input key={input_key} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>)
+      return (<input key={input_key} type="text" className="form-control input-sm" placeholder="Search" onKeyDown={this.onKeyDown} value={this.state.filterTerm} onChange={this.handleChange}/>)
     }
 
   }
