@@ -446,6 +446,10 @@ var ReactDataGrid = React.createClass({
   },
 
   onToggleFilter(){
+    var canFilter = !this.state.canFilter;
+    if(!canFilter && this.props.onClearFilters) {
+      this.props.onClearFilters();
+    }
     this.setState({canFilter : !this.state.canFilter});
   },
 
