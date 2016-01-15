@@ -92,7 +92,41 @@ describe('Base Grid Tests', () => {
     expect(testProps.onViewportDragEnd).toHaveBeenCalled();
   });
 
+  describe('Empty Grid Tests', () => {
+    var EmptyRowsView = React.createClass({
+      render: function() {
+        return (<div>Nothing to show</div>);
+      }
+    });
 
+    var testProps = {
+      columnMetrics: {
+        columns: helpers.columns
+      },
+      headerRows: [],
+      rowsCount: 0,
+      rowGetter: function() {
+        return [];
+      },
+      minHeight: 600,
+      emptyRowsView: EmptyRowsView
+    };
+    rewireModule(Grid, {
+      Header: HeaderStub
+    });
 
+    beforeEach(() => {
+      testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
+    });
 
+    it('should create a new instance of Grid', () => {
+      expect(testElement).toBeDefined();
+    });
+
+    it('should not have any viewport', () => {
+      expect(testElement.refs.viewPortContainer).not.toBeDefined();
+      expect(testElement.refs.emptyView).toBeDefined();
+    });
+  });
+  
 });
