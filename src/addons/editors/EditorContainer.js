@@ -135,8 +135,13 @@ var EditorContainer = React.createClass({
   },
 
   commit(args: {key : string}) {
-    var opts = args || {};
-    var updated = this.getEditor().getValue();
+    var opts = args || {}
+      , editor = this.getEditor()
+      , updated;
+
+    if (editor.getValue)
+      updated = editor.getValue();
+
     if (this.isNewValueValid(updated)) {
       var cellKey = this.props.column.key;
       this.props.cellMetaData.onCommit({
@@ -161,7 +166,8 @@ var EditorContainer = React.createClass({
   },
 
   getInputNode(): HTMLInputElement {
-    return this.getEditor().getInputNode();
+    return this.getEditor().getInputNode
+      && this.getEditor().getInputNode();
   },
 
   getInitialValue(): string {

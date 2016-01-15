@@ -1,9 +1,8 @@
 /* @flow */
 'use strict';
-var React                   = require('react');
+var React = require('react');
 var ReactDOM = require('react-dom');
-var ExcelColumn             = require('../grids/ExcelColumn');
-var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
+var ExcelColumn = require('../grids/ExcelColumn');
 
 class EditorBase extends React.Component {
 
@@ -35,19 +34,12 @@ class EditorBase extends React.Component {
     if (typeof inputNode.focus === 'function')
       inputNode.focus();
   }
-
-  inheritContainerStyles(): boolean {
-    return true;
-  }
-
 }
 
 EditorBase.propTypes = {
-  onKeyDown : React.PropTypes.func.isRequired,
-  value : React.PropTypes.any.isRequired,
-  onBlur : React.PropTypes.func.isRequired,
+  value : React.PropTypes.any,
   column :  React.PropTypes.shape(ExcelColumn).isRequired,
-  commit : React.PropTypes.func.isRequired
+  onCommit : React.PropTypes.func.isRequired
 }
 
 
