@@ -228,7 +228,24 @@ var Canvas = React.createClass({
     return { scrollTop, scrollLeft };
   },
 
+  setScroll(scrollTop, scrollLeft): {scrollTop: number; scrollLeft: number} {
+    var current = this.getScroll();
+    scrollTop = scrollTop == null ? current.scrollTop : scrollTop
+    scrollLeft = scrollLeft == null ? current.scrollLeft : scrollLeft
+
+    let node = ReactDOM.findDOMNode(this)
+
+    if (scrollTop !== current.scrollTop)
+      node.scrollTop = scrollTop
+
+    if (scrollLeft !== current.scrollLeft) {
+      node.scrollLeft = scrollLeft
+    }
+  },
+
   onScroll(e: any) {
+    if (e.target !== ReactDOM.findDOMNode(this))
+      return
     this.appendScrollShim();
     var { scrollTop, scrollLeft } = e.target;
     var scroll = { scrollTop, scrollLeft };
