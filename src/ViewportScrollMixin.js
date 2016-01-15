@@ -1,8 +1,9 @@
 /* TODO@flow mixins */
 
-var React             = require('react');
+var React = require('react');
 var ReactDOM = require('react-dom');
-var DOMMetrics        = require('./DOMMetrics');
+var DOMMetrics = require('./DOMMetrics');
+var getScrollbarSize = require('./getScrollbarSize');
 var min   = Math.min;
 var max   = Math.max;
 var floor = Math.floor;
@@ -50,6 +51,37 @@ module.exports = {
       scrollTop: 0,
       scrollLeft: 0
     };
+  },
+
+  scrollToCell([x, y], props = this.props) {
+    let { rowHeight, rowsCount, columnMetrics } = props;
+    let columns = columnMetrics.columns;
+    let { height, width, scrollTop, scrollLeft } = this.state;
+
+    let cellTop = Math.min(y, rowsCount) * rowHeight
+      , scrollBar = columnMetrics.width > columnMetrics.totalWidth
+          ? getScrollbarSize() : 0
+
+    cellTop = cellTop < scrollTop // moving up
+      ? cellTop
+      : (cellTop + rowHeight) > (scrollTop + height)// moving down
+          ? cellTop + rowHeight - height + scrollBar
+          : null
+
+    let column = columns[x]
+    let cellLeft = column.locked ? 0 : column.left
+
+    let lockedLeft = columns
+      .filter(c => c.locked)
+      .reduce((left, c) => left + c.width, 0)
+
+    cellLeft = cellLeft < (scrollLeft + lockedLeft) // moving left
+      ? Math.max(0, cellLeft - lockedLeft)
+      : (cellLeft + column.width) > (scrollLeft + width) //moving right
+        ? (cellLeft + column.width) - width
+        : null
+
+    return { scrollTop: cellTop, scrollLeft: cellLeft }
   },
 
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number) {

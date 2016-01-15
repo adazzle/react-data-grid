@@ -26,6 +26,23 @@ var Viewport = React.createClass({
     onScroll: PropTypes.func,
     minHeight : PropTypes.number
   },
+
+  componentWillReceiveProps(nextProps) {
+    let { cellMetaData } = nextProps;
+
+    if (this.selectedCellChanged(cellMetaData)) {
+      let { selected: { rowIdx, idx }} = cellMetaData
+      let { scrollTop, scrollLeft } = this.scrollToCell([idx, rowIdx], nextProps)
+
+      cancelAnimationFrame(this._raf)
+      this._raf = requestAnimationFrame(() => {
+        if (this.isMounted())
+          this.refs.canvas.setScroll(scrollTop, scrollLeft)
+      })
+
+    }
+  },
+
   render(): ?ReactElement {
     var style = {
       padding: 0,
@@ -83,7 +100,13 @@ var Viewport = React.createClass({
 
   setScrollLeft(scrollLeft: number) {
     this.refs.canvas.setScrollLeft(scrollLeft);
-  }
+  },
+
+  selectedCellChanged(cellMetaData) {
+    let oldMeta = this.props.cellMetaData;
+    return oldMeta.selected.rowIdx !== cellMetaData.selected.rowIdx
+        || oldMeta.selected.idx !== cellMetaData.selected.idx
+  },
 });
 
 module.exports = Viewport;
