@@ -113,6 +113,8 @@ var Canvas = React.createClass({
   },
 
   renderLoadingRow(position, rowHeight) {
+    if (this.scrollingHighVerticalDistance()) return null;
+
     const LoadingRow = this.props.loadingRowRenderer;
     if (!_.isUndefined(LoadingRow)) {
       return <LoadingRow height={rowHeight} key={position} idx={position} />;
@@ -151,7 +153,7 @@ var Canvas = React.createClass({
 
   _currentRowsLength : 0,
   _currentRowsRange : { start: 0, end: 0 },
-  _scroll : { scrollTop : 0, scrollLeft: 0 },
+  _scroll : { scrollTop : 0, scrollLeft: 0, changeTop: 0, changeLeft: 0 },
 
   getInitialState() {
     return {
@@ -286,10 +288,18 @@ var Canvas = React.createClass({
     return {scrollTop, scrollLeft};
   },
 
+  scrollingHighVerticalDistance() {
+    var numberOfRows = 10;
+    return Math.abs(this._scroll.changeTop) > (numberOfRows * this.props.rowHeight);
+  },
+
   onScroll(e: any) {
     this.appendScrollShim();
     var {scrollTop, scrollLeft} = e.target;
-    var scroll = {scrollTop, scrollLeft};
+    var changeTop = (scrollTop - this._scroll.scrollTop);
+    var changeLeft = (scrollLeft - this._scroll.scrollLeft);
+    var scroll = {scrollTop, scrollLeft, changeTop, changeLeft};
+
     this._scroll = scroll;
     this.props.onScroll(scroll);
   }
