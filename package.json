@@ -80,7 +80,7 @@
     "vinyl-source-stream": "^0.1.1",
     "webpack": "^1.7.2"
   },
-  "author": "Adazzle",
+  "author": "adazzle",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/adazzle/react-data-grid/issues"
