@@ -35,6 +35,7 @@ var Canvas = React.createClass({
   render(): ?ReactElement {
     var displayStart = this.state.displayStart;
     var displayEnd = this.state.displayEnd;
+    console.log('Render rows ' + displayStart + ' to ' +  displayEnd);
     var rowHeight = this.props.rowHeight;
     var length = this.props.rowsCount;
 
@@ -186,6 +187,7 @@ var Canvas = React.createClass({
   },
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
+    console.log('Canvas updating? ' + (!nextState || nextState.shouldUpdate))
     return !nextState || nextState.shouldUpdate;
   },
 

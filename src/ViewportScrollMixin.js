@@ -71,6 +71,7 @@ module.exports = {
         visibleStart + renderedRowsCount * 2,
         length);
 
+  console.log('UpdateScroll Visible=' + visibleStart + ':' + visibleEnd + ' Display=' + displayStart + ':' + displayEnd)
     var nextScrollState = {
       visibleStart,
       visibleEnd,

@@ -20,6 +20,7 @@ module.exports = {
 
   onScroll(props: {scrollLeft: number}) {
     if (this._scrollLeft !== props.scrollLeft) {
+      console.log('Grid - scroll left from ' + this._scrollLeft + ' to ' + props.scrollLeft)
       this._scrollLeft = props.scrollLeft;
       this._onScroll();
     }

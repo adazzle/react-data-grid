@@ -52,6 +52,7 @@ var Grid = React.createClass({
   },
 
   render(): ?ReactElement {
+    console.log('Render Grid')
     var headerRows = this.props.headerRows || [{ref : 'row'}];
     return (
       <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
