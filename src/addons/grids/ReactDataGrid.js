@@ -130,7 +130,8 @@ var ReactDataGrid = React.createClass({
       onCommitCancel : this.setInactive,
       copied : this.state.copied,
       handleDragEnterRow : this.handleDragEnter,
-      handleTerminateDrag : this.handleTerminateDrag
+      handleTerminateDrag : this.handleTerminateDrag,
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick
     }
 
 
@@ -212,6 +213,12 @@ var ReactDataGrid = React.createClass({
     this.setActive('Enter');
   },
 
+  onDragHandleDoubleClick(e) {
+    if(this.props.onDragHandleDoubleClick) {
+      this.props.onDragHandleDoubleClick(e);
+    }
+  },
+
   onViewportDoubleClick: function(e: Event) {
     this.setActive();
   },
@@ -281,7 +288,14 @@ var ReactDataGrid = React.createClass({
     var value = this.getSelectedValue();
     this.handleDragStart({idx: this.state.selected.idx, rowIdx : this.state.selected.rowIdx, value : value});
     //need to set dummy data for FF
-    if(e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
+
+    if (e && e.dataTransfer) {
+      if (e.dataTransfer.setData) {
+      e.dataTransfer.dropEffect = 'move';
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', 'dummy');
+      }
+    }
   },
 
   moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number){

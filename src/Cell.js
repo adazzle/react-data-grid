@@ -106,10 +106,10 @@ var Cell = React.createClass({
       isExpanded : this.props.isExpanded
     });
 
-    var dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true"><span style={{"display":"none"}}></span></div> : null;
+    var dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{"display":"none"}}></span></div> : null;
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver} >
       {cellContent}
       {dragHandle}
       </div>
@@ -203,10 +203,24 @@ var Cell = React.createClass({
     }
   },
 
+  onDragOver: function(e) {
+    e.preventDefault();
+    // Logic here
+    console.log('onDragOver');
+  },
+
   onCellDoubleClick(e: SyntheticMouseEvent){
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellDoubleClick != null) {
       meta.onCellDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx});
+    }
+  },
+
+  onDragHandleDoubleClick(e) {
+    e.stopPropagation();
+    var meta = this.props.cellMetaData;
+    if(meta != null && meta.onCellDoubleClick != null) {
+      meta.onDragHandleDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx, rowData: this.getRowData()});
     }
   },
 
