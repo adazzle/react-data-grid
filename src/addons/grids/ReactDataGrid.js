@@ -117,6 +117,12 @@ var ReactDataGrid = React.createClass({
     if(nextProps.rowsCount  === this.props.rowsCount + 1){
       this.onAfterAddRow(nextProps.rowsCount + 1);
     }
+    if(nextProps.sortColumn){
+      this.setState({ sortColumn: nextProps.sortColumn });
+    }
+    if(nextProps.sortDirection){
+      this.setState({ sortDirection: nextProps.sortDirection });
+    }
   },
 
   componentDidMount() {
