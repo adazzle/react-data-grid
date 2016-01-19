@@ -106,7 +106,7 @@ var Cell = React.createClass({
       isExpanded : this.props.isExpanded
     });
 
-    var dragHandle = !this.isActive() ? <div className="drag-handle" draggable="true"><span style={{"display":"none"}}></span></div> : null;
+    var dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true"><span style={{"display":"none"}}></span></div> : null;
 
     return (
       <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
@@ -157,6 +157,10 @@ var Cell = React.createClass({
     var meta = this.props.cellMetaData;
     if(meta == null || meta.selected == null) { return false; }
     return this.isSelected() && meta.selected.active === true;
+  },
+
+  canEdit(): boolean{
+    return (this.props.column.editor != null) || this.props.column.editable;
   },
 
   isCellSelectionChanging(nextProps: {idx: number; cellMetaData: {selected: {idx: number}}}): boolean {
