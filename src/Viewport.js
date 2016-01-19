@@ -29,7 +29,8 @@ var Viewport = React.createClass({
     rowHeight: PropTypes.number.isRequired,
     onRows: PropTypes.func,
     onScroll: PropTypes.func,
-    minHeight : PropTypes.number
+    minHeight : PropTypes.number,
+    rowScrollTimeout: PropTypes.number
   },
   render(): ?ReactElement {
     var style = {
@@ -64,6 +65,7 @@ var Viewport = React.createClass({
           rowHeight={this.props.rowHeight}
           onScroll={this.onScroll}
           onRows={this.props.onRows}
+          rowScrollTimeout={this.props.rowScrollTimeout}
           />
       </div>
     );

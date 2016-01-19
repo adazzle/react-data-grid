@@ -29,13 +29,13 @@ var Canvas = React.createClass({
       PropTypes.array.isRequired
     ]),
     onRows: PropTypes.func,
-    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired
+    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    rowScrollTimeout: PropTypes.number
   },
 
   render(): ?ReactElement {
     var displayStart = this.state.displayStart;
     var displayEnd = this.state.displayEnd;
-    console.log('Render rows ' + displayStart + ' to ' +  displayEnd);
     var rowHeight = this.props.rowHeight;
     var length = this.props.rowsCount;
 
@@ -97,6 +97,12 @@ var Canvas = React.createClass({
   },
 
   renderRow(props: any) {
+    if(this.state.scrollingTimeout !== null) {
+      //in the midst of a rapid scroll, so we render placeholders
+      //the actual render is then queued (through a timeout)
+      //this avoids us redering a bunch of rows that a user is trying to scroll past
+      return this.renderScrollingPlaceholder(props)
+    }
     var RowsRenderer = this.props.rowRenderer;
     if(typeof RowsRenderer === 'function') {
       return <RowsRenderer {...props}/>;
@@ -105,8 +111,21 @@ var Canvas = React.createClass({
       return cloneWithProps(this.props.rowRenderer, props);
     }
   },
-
+  renderScrollingPlaceholder(props: any): ?ReactElement {
+    //here we are just rendering empty cells
+    //we may want to allow a user to inject this, and/or just render the cells that are in view
+    //for now though we essentially are doing a (very lightweight) row + cell with empty content
+    return (
+      <div key={props.key} style={{height: props.height, overflow:'hidden'}} className="react-grid-Row">
+        {this.props.columns.map(
+          (col, idx) => <div style={{width: col.width, height: props.height, left: col.left, position:'absolute'}} key={idx} className="react-grid-Cell"/>
+        )}
+      </div>
+    );
+  },
   renderPlaceholder(key: string, height: number): ?ReactElement {
+    //just renders empty cells
+    //if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
     return (
       <div key={key} style={{height: height}}>
         {this.props.columns.map(
@@ -119,7 +138,8 @@ var Canvas = React.createClass({
   getDefaultProps() {
     return {
       rowRenderer: Row,
-      onRows: emptyFunction
+      onRows: emptyFunction,
+      rowScrollTimeout: 0
     };
   },
 
@@ -127,15 +147,16 @@ var Canvas = React.createClass({
    return this.props.selectedRows && this.props.selectedRows[rowIdx] === true;
   },
 
+  //TODO shouldnt this go in state?
   _currentRowsLength : 0,
   _currentRowsRange : { start: 0, end: 0 },
   _scroll : { scrollTop : 0, scrollLeft: 0 },
 
   getInitialState() {
     return {
-      shouldUpdate: true,
       displayStart: this.props.displayStart,
-      displayEnd: this.props.displayEnd
+      displayEnd: this.props.displayEnd,
+      scrollingTimeout: null
     };
   },
 
@@ -166,29 +187,27 @@ var Canvas = React.createClass({
     if(nextProps.rowsCount > this.props.rowsCount){
       this.getDOMNode().scrollTop =nextProps.rowsCount * this.props.rowHeight;
     }
-    var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart
-                        && nextProps.visibleEnd < this.state.displayEnd)
-                        || nextProps.rowsCount !== this.props.rowsCount
-                        || nextProps.rowHeight !== this.props.rowHeight
-                        || nextProps.columns !== this.props.columns
-                        || nextProps.width !== this.props.width
-                        || nextProps.cellMetaData !== this.props.cellMetaData
-                        || !shallowEqual(nextProps.style, this.props.style);
 
-    if (shouldUpdate) {
+    if (nextProps.displayStart !== this.state.displayStart
+    || nextProps.displayEnd !== this.state.displayEnd) {
       this.setState({
-        shouldUpdate: true,
         displayStart: nextProps.displayStart,
         displayEnd: nextProps.displayEnd
       });
-    } else {
-      this.setState({shouldUpdate: false});
     }
   },
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
-    console.log('Canvas updating? ' + (!nextState || nextState.shouldUpdate))
-    return !nextState || nextState.shouldUpdate;
+    let shouldUpdate=nextState.displayStart !== this.state.displayStart
+      || nextState.displayEnd !== this.state.displayEnd
+      || nextState.scrollingTimeout !== this.state.scrollingTimeout
+      || nextProps.rowsCount !== this.props.rowsCount
+      || nextProps.rowHeight !== this.props.rowHeight
+      || nextProps.columns !== this.props.columns
+      || nextProps.width !== this.props.width
+      || nextProps.cellMetaData !== this.props.cellMetaData
+      || !shallowEqual(nextProps.style, this.props.style);
+      return shouldUpdate;
   },
 
   onRows() {
@@ -231,9 +250,32 @@ var Canvas = React.createClass({
     this.appendScrollShim();
     var {scrollTop, scrollLeft} = e.target;
     var scroll = {scrollTop, scrollLeft};
+    //check how far we have scrolled, and if this means we are being taken out of range
+    let scrollYRange = Math.abs(this._scroll.scrollTop - scroll.scrollTop)/this.props.rowHeight;
+    let scrolledOutOfRange = scrollYRange > (this.props.displayEnd - this.props.displayStart);
+
     this._scroll = scroll;
     this.props.onScroll(scroll);
-  }
+    //if we go out of range, we queue the actual render, just rendering cheap placeholders
+    //avoiding rendering anything expensive while a user scrolls down
+    if(scrolledOutOfRange && this.props.rowScrollTimeout > 0) {
+      var scrollTO = this.state.scrollingTimeout;
+      if(scrollTO) {
+        clearTimeout(scrollTO);
+      }
+      //queue up, and set state to clear the TO so we render the rows (not placeholders)
+      scrollTO = setTimeout(() => {
+        if(this.state.scrollingTimeout !== null) {
+
+          this.setState({scrollingTimeout:null})
+        }
+      }, this.props.rowScrollTimeout);
+
+      this.setState({scrollingTimeout: scrollTO});
+    }
+  },
+
+
 });
 
 

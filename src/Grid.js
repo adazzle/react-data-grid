@@ -33,7 +33,8 @@ var Grid = React.createClass({
     onViewportKeydown : PropTypes.func.isRequired,
     onViewportDragStart : PropTypes.func.isRequired,
     onViewportDragEnd : PropTypes.func.isRequired,
-    onViewportDoubleClick : PropTypes.func.isRequired
+    onViewportDoubleClick : PropTypes.func.isRequired,
+    rowScrollTimeout: PropTypes.number
   },
 
   mixins: [
@@ -52,7 +53,6 @@ var Grid = React.createClass({
   },
 
   render(): ?ReactElement {
-    console.log('Render Grid')
     var headerRows = this.props.headerRows || [{ref : 'row'}];
     return (
       <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
@@ -84,6 +84,7 @@ var Grid = React.createClass({
               cellMetaData={this.props.cellMetaData}
               rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
               minHeight={this.props.minHeight}
+              rowScrollTimeout={this.props.rowScrollTimeout}
               />
           </div>
       </div>
