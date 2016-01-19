@@ -106,11 +106,12 @@ var Cell = React.createClass({
       isExpanded : this.props.isExpanded
     });
 
+    var dragHandle = !this.isActive() ? <div className="drag-handle" draggable="true"><span style={{"display":"none"}}></span></div> : null;
+
     return (
       <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
       {cellContent}
-      <div className="drag-handle" draggable="true">
-      </div>
+      {dragHandle}
       </div>
     );
   },
@@ -246,7 +247,7 @@ var Cell = React.createClass({
     var extraClasses = joinClasses({
       'selected' : this.isSelected() && !this.isActive() ,
       'editing' : this.isActive(),
-      'copied' : this.isCopied(),
+      'copied' : this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'active-drag-cell' : this.isSelected() || this.isDraggedOver(),
       'is-dragged-over-up' :  this.isDraggedOverUpwards(),
       'is-dragged-over-down' :  this.isDraggedOverDownwards(),
