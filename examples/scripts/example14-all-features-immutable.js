@@ -182,7 +182,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     },
 
     handleDragHandleDoubleClick(e) {
-      console.log(e);
+
     },
 
     handleAddRow : function(e){

@@ -206,7 +206,7 @@ var Cell = React.createClass({
   onDragOver: function(e) {
     e.preventDefault();
     // Logic here
-    console.log('onDragOver');
+
   },
 
   onCellDoubleClick(e: SyntheticMouseEvent){
