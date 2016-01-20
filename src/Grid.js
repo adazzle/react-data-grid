@@ -10,7 +10,7 @@ var React                = require('react');
 var PropTypes            = React.PropTypes;
 var Header               = require('./Header');
 var Viewport             = require('./Viewport');
-var ExcelColumn = require('./addons/grids/ExcelColumn');
+var ExcelColumn          = require('./addons/grids/ExcelColumn');
 var GridScrollMixin      = require('./GridScrollMixin');
 var DOMMetrics           = require('./DOMMetrics');
 
@@ -24,6 +24,7 @@ var Grid = React.createClass({
     rowHeight: PropTypes.number,
     rowRenderer: PropTypes.func,
     emptyRowsView: PropTypes.func,
+    debounceRowRequestWait: PropTypes.number,
     expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowsCount: PropTypes.number,
@@ -76,6 +77,8 @@ var Grid = React.createClass({
                   width={this.props.columnMetrics.width}
                   rowHeight={this.props.rowHeight}
                   rowRenderer={this.props.rowRenderer}
+                  debounceRowRequestWait={this.props.debounceRowRequestWait}
+                  loadingRowRenderer={this.props.loadingRowRenderer}
                   rowGetter={this.props.rowGetter}
                   rowsCount={this.props.rowsCount}
                   selectedRows={this.props.selectedRows}
