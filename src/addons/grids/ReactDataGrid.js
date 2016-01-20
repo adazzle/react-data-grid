@@ -89,7 +89,8 @@ var ReactDataGrid = React.createClass({
       rowHeight: 35,
       enableRowSelect : false,
       minHeight : 350,
-      rowKey: 'id'
+      rowKey: 'id',
+      rowScrollTimeout: 0
     };
   },
 
@@ -166,7 +167,8 @@ var ReactDataGrid = React.createClass({
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
             onViewportDoubleClick={this.onViewportDoubleClick}
-            onColumnResize={this.onColumnResize}/>
+            onColumnResize={this.onColumnResize}
+            rowScrollTimeout={this.props.rowScrollTimeout}/>
           </div>
         </div>
       )

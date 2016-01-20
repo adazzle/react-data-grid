@@ -188,9 +188,6 @@ var Canvas = React.createClass({
   },
 
   componentWillReceiveProps(nextProps: any) {
-    if(nextProps.rowsCount > this.props.rowsCount){
-      this.getDOMNode().scrollTop =nextProps.rowsCount * this.props.rowHeight;
-    }
 
     if (nextProps.displayStart !== this.state.displayStart
     || nextProps.displayEnd !== this.state.displayEnd) {
