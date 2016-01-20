@@ -294,6 +294,40 @@ describe("Grid", function () {
         });
       });
 
+      describe("when auto edit is enabled", function () {
+        beforeEach(function () {
+          const editableColumn = Object.assign({ editable: true, autoEdit: true }, this.columns[1]);
+          this.columns[1] = editableColumn;
+          this.component = this.createComponent({ columns: this.columns });
+        });
+
+        it("clicking into cell should activate current selected cell", function () {
+          this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1 });
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true });
+        });
+
+
+        it("navigate right into cell should activate current selected cell", function () {
+          this.component.setState({ selected: { idx: 0, rowIdx: 1 } });
+          this.simulateGridKeyDown("ArrowRight");
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true });
+        });
+
+        it("navigate left into cell should activate current selected cell", function () {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 } });
+          this.simulateGridKeyDown("ArrowLeft");
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true });
+        });
+
+        it("tabbbing into cell should activate current selected cell", function () {
+          this.component.setState({ selected: { idx: 0, rowIdx: 1 } });
+          this.simulateGridKeyDown("Tab");
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true });
+        });
+
+
+      });
+
       describe("copy a cell value", function () {
         beforeEach(function () {
           const cCharacterKeyCode = 99;
