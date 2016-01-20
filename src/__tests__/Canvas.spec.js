@@ -29,13 +29,13 @@ describe('Canvas Tests', () => {
     expect(testElement).toBeDefined();
   });
 
-  it('Should not call setScroll on render', () => {
+  xit('Should not call setScroll on render', () => {
     jasmineReact.spyOnClass(Canvas, "setScrollLeft");
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
     expect(jasmineReact.classPrototype(Canvas).setScrollLeft).not.toHaveBeenCalled();
   });
 
-  it('Should not call setScroll on update', () => {
+  xit('Should not call setScroll on update', () => {
     jasmineReact.spyOnClass(Canvas, "setScrollLeft");
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
     //force an update
