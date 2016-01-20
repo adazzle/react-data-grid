@@ -33,7 +33,8 @@ var Grid = React.createClass({
     onViewportKeydown : PropTypes.func.isRequired,
     onViewportDragStart : PropTypes.func.isRequired,
     onViewportDragEnd : PropTypes.func.isRequired,
-    onViewportDoubleClick : PropTypes.func.isRequired
+    onViewportDoubleClick : PropTypes.func.isRequired,
+    rowScrollTimeout: PropTypes.number
   },
 
   mixins: [
@@ -69,6 +70,7 @@ var Grid = React.createClass({
         <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
             <Viewport
               ref="viewport"
+              rowKey={this.props.rowKey}
               width={this.props.columnMetrics.width}
               rowHeight={this.props.rowHeight}
               rowRenderer={this.props.rowRenderer}
@@ -83,6 +85,7 @@ var Grid = React.createClass({
               cellMetaData={this.props.cellMetaData}
               rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
               minHeight={this.props.minHeight}
+              rowScrollTimeout={this.props.rowScrollTimeout}
               />
           </div>
       </div>

@@ -29,7 +29,9 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      return this.getDOMNode().offsetWidth - 2;
+      var width = this.getDOMNode().parentElement.offsetWidth;
+      // if rendered inside a parent with display:none offsetWidth is 0 so use '100%' instead
+      return width !== 0 ? width : '100%';
     }
   },
 
@@ -52,7 +54,7 @@ module.exports = {
 
   getTotalWidth() {
     var totalWidth = 0;
-    if(this.isMounted()){
+    if(this.isMounted()) {
       totalWidth = this.DOMMetrics.gridWidth();
     } else {
       totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;

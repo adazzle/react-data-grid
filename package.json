@@ -6,8 +6,7 @@
   "scripts": {
     "test": "gulp test",
     "debug-test": "gulp test --debug true",
-    "examples": "gulp",
-    "prepublish": "gulp dist"
+    "examples": "gulp"
   },
   "repository": {
     "type": "git",

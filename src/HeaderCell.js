@@ -12,6 +12,7 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 var PropTypes      = React.PropTypes;
 var ExcelColumn    = require('./addons/grids/ExcelColumn');
 var ResizeHandle   = require('./ResizeHandle');
+var CellScrollMixin = require('./CellScrollMixin');
 
 var HeaderCell = React.createClass({
 
@@ -22,6 +23,8 @@ var HeaderCell = React.createClass({
     height : PropTypes.number.isRequired,
     onResizeEnd : PropTypes.func.isRequired
   },
+
+  mixins: [CellScrollMixin],
 
   render(): ?ReactElement {
     var resizeHandle;
@@ -115,7 +118,7 @@ var HeaderCell = React.createClass({
 });
 
 function simpleCellRenderer(props: {column: {name: string}}): ReactElement {
-  return <div className="widget-HeaderCell__value">{props.column.name}</div>;
+  return <div className="widget-HeaderCell__value" title={props.column.name}>{props.column.name}</div>;
 }
 
 module.exports = HeaderCell;

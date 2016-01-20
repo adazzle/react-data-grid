@@ -70,7 +70,7 @@ module.exports = {
     var displayEnd = min(
         visibleStart + renderedRowsCount * 2,
         length);
-
+        
     var nextScrollState = {
       visibleStart,
       visibleEnd,

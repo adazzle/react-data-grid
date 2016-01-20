@@ -12,6 +12,9 @@ var Cell            = require('./Cell');
 var cloneWithProps  = require('react/lib/cloneWithProps');
 var ColumnMetrics   = require('./ColumnMetrics');
 var ColumnUtilsMixin  = require('./ColumnUtils');
+var RowScrollMixin = require('./RowScrollMixin');
+
+
 
 type RowPropsType = {
   height: number;
@@ -42,7 +45,7 @@ var Row = React.createClass({
     expandedRows : React.PropTypes.arrayOf(React.PropTypes.object)
   },
 
-  mixins: [ColumnUtilsMixin],
+  mixins: [ColumnUtilsMixin, RowScrollMixin],
 
   render(): ?ReactElement {
     var className = joinClasses(
@@ -128,16 +131,6 @@ var Row = React.createClass({
       isSelected: false,
       height : 35
     };
-  },
-
-
-  setScrollLeft(scrollLeft: number) {
-    this.props.columns.forEach( (column, i) => {
-      if (column.locked) {
-        if(!this.refs[i]) return;
-        this.refs[i].setScrollLeft(scrollLeft);
-      }
-    });
   },
 
   doesRowContainSelectedCell(props: any): boolean{

@@ -37,37 +37,38 @@ var columns = [
 {
   key: 'id',
   name: 'ID',
-  width: 80
+  width: 80,
+  filterable: true
 },
 {
   key: 'task',
   name: 'Title',
-  sortable : true
+  filterable: true
 },
 {
   key: 'priority',
   name: 'Priority',
-  sortable : true
+  filterable: true
 },
 {
   key: 'issueType',
   name: 'Issue Type',
-  sortable : true
+  filterable: true
 },
 {
   key: 'complete',
   name: '% Complete',
-  sortable : true
+  filterable: true
 },
 {
   key: 'startDate',
   name: 'Start Date',
-  sortable : true
+  filterable: true
 },
 {
   key: 'completeDate',
   name: 'Expected Complete',
-  sortable : true
+  filterable: true
 }
 ]
 
@@ -78,11 +79,38 @@ var Example = React.createClass({
     var originalRows = createRows(1000);
     var rows = originalRows.slice(0);
     //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
-    return {originalRows : originalRows, rows : rows};
+    return {originalRows : originalRows, rows : rows, filters : {}};
   },
 
   rowGetter : function(rowIdx){
     return this.state.rows[rowIdx];
+  },
+
+  filterRows : function(originalRows, filters) {
+    var rows = originalRows.filter(function(r){
+      var include = true;
+      for (var columnKey in filters) {
+        if(filters.hasOwnProperty(columnKey)) {
+          var rowValue = r[columnKey].toString().toLowerCase();
+          if(rowValue.indexOf(filters[columnKey].toLowerCase()) === -1) {
+            include = false;
+          }
+        }
+      }
+      return include;
+    });
+    return rows;
+  },
+
+  handleFilterChange : function(filter) {
+    var currentState = this.state;
+    if (filter.filterTerm) {
+      currentState.filters[filter.columnKey] = filter.filterTerm;
+    } else {
+      delete currentState.filters[filter.columnKey];
+    }
+    var rows = this.filterRows(currentState.originalRows, currentState.filters);
+    this.setState({rows: rows})
   },
 
   render:function(){
@@ -92,7 +120,10 @@ var Example = React.createClass({
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        toolbar={<Toolbar enableFilter={true}/>}/>
+        enableRowSelect={true}
+        toolbar={<Toolbar enableFilter={true}/>}
+        onAddFilter={this.handleFilterChange}
+        enableCellSelect={true}/>
     )
   }
 
@@ -106,8 +137,8 @@ module.exports = React.createClass({
   render:function(){
     return(
       <div>
-      <h3>Sortable Columns Example</h3>
-      <p>While ReactDataGrid doesnt not provide the ability to sort directly, it does provide hooks that allow you to provide your own sort function. This is done via the <code>onGridSort</code> prop. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Now when the header cell is clicked for that column, <code>onGridSort</code> will be triggered passing the column name and the sort direction.</p>
+      <h3>Filterable Columns Example</h3>
+      <p>While ReactDataGrid doesn't not provide the ability to filter directly, it does provide hooks that allow you to provide your own filter function. This is done via the <code>onAddFilter</code> prop. To enable filtering for a given column, set <code>column.filterable = true</code> for that column. Now when the header cell has a new filter value entered for that column, <code>onAddFilter</code> will be triggered passing the filter key and value.</p>
       <ReactPlayground codeText={EditableExample} />
       </div>
     )
