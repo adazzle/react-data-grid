@@ -47,7 +47,7 @@ var Canvas = React.createClass({
           row: row,
           height: rowHeight,
           columns: this.props.columns,
-          isSelected : this.isRowSelected(displayStart + idx),
+          isSelected : this.isRowSelected(row),
           expandedRows : this.props.expandedRows,
           cellMetaData : this.props.cellMetaData,
           gridWidth: this.props.totalWidth
@@ -143,8 +143,12 @@ var Canvas = React.createClass({
     };
   },
 
-  isRowSelected(rowIdx: number): boolean{
-   return this.props.selectedRows && this.props.selectedRows[rowIdx] === true;
+  isRowSelected(row): boolean{
+   var selectedRows = this.props.selectedRows.filter(r => {
+     var rowKeyValue = row.get ? row.get(this.props.rowKey) : row[this.props.rowKey]
+     return r[this.props.rowKey] === rowKeyValue;
+   });
+   return selectedRows.length > 0 && selectedRows[0].isSelected;
   },
 
   //TODO shouldnt this go in state?

@@ -70,6 +70,7 @@ var Grid = React.createClass({
         <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
             <Viewport
               ref="viewport"
+              rowKey={this.props.rowKey}
               width={this.props.columnMetrics.width}
               rowHeight={this.props.rowHeight}
               rowRenderer={this.props.rowRenderer}

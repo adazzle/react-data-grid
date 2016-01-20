@@ -23,7 +23,7 @@ var CheckboxEditor = React.createClass({
   },
 
   handleChange(e: Event){
-    this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, e);
+    this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, this.props.dependentValues, e);
   }
 });
 

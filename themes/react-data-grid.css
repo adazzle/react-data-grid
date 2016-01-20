@@ -165,7 +165,6 @@ select.editor-main[disabled],
 select.editor-main[readonly],
 fieldset[disabled] .react-grid-Cell input.editor-main,
 fieldset[disabled] select.editor-main {
-  cursor: not-allowed;
   background-color: #eeeeee;
   opacity: 1;
 }
@@ -267,7 +266,28 @@ input.react-grid-CheckBox {
   border-bottom: 0px;
   z-index: 8;
   cursor: crosshair;
+  cursor: -webkit-grab;
 }
+
+.react-grid-Cell.active-drag-cell:hover .drag-handle {
+  position: absolute;
+  bottom: -8px;
+  right: -7px;
+  background: white;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #66afe9;
+  /* border-right: 0px; */
+  /* border-bottom: 0px; */
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -webkit-grab;
+}
+
+.react-grid-Cell.active-drag-cell:hover .drag-handle .glyphicon-arrow-down {
+  display: 'block'
+}
+
 .react-grid-Cell.is-dragged-over-down {
   border-right: 1px dashed black;
   border-left: 1px dashed black;
@@ -344,7 +364,6 @@ input.react-grid-CheckBox {
 .react-autocomplete-Autocomplete__search[disabled],
 .react-autocomplete-Autocomplete__search[readonly],
 fieldset[disabled] .react-autocomplete-Autocomplete__search {
-  cursor: not-allowed;
   background-color: #eeeeee;
   opacity: 1;
 }
@@ -412,4 +431,19 @@ textarea.react-autocomplete-Autocomplete__search {
 
 .react-grid-Cell.readonly {
   background-color : black;
+}
+
+.react-grid-Cell.strikethrough {
+  color: red;
+  text-decoration: line-through;
+}
+
+.react-grid-Cell.no-border {
+  border: none;
+}
+
+.react-grid-Cell.bottom-border {
+  border-top-style: none;
+  border-right-style: none;
+  border-bottom: 1px solid #dddddd;
 }

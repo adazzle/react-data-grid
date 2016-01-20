@@ -29,7 +29,9 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      return this.getDOMNode().parentElement.offsetWidth;
+      var width = this.getDOMNode().parentElement.offsetWidth;
+      // if rendered inside a parent with display:none offsetWidth is 0 so use '100%' instead
+      return width !== 0 ? width : '100%';
     }
   },
 

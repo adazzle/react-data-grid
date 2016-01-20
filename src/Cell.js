@@ -106,11 +106,12 @@ var Cell = React.createClass({
       isExpanded : this.props.isExpanded
     });
 
+    var dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{"display":"none"}}></span></div> : null;
+
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver} >
       {cellContent}
-      <div className="drag-handle" draggable="true">
-      </div>
+      {dragHandle}
       </div>
     );
   },
@@ -158,6 +159,10 @@ var Cell = React.createClass({
     return this.isSelected() && meta.selected.active === true;
   },
 
+  canEdit(): boolean{
+    return (this.props.column.editor != null) || this.props.column.editable;
+  },
+
   isCellSelectionChanging(nextProps: {idx: number; cellMetaData: {selected: {idx: number}}}): boolean {
     var meta = this.props.cellMetaData;
     if(meta == null || meta.selected == null) { return false; }
@@ -198,6 +203,12 @@ var Cell = React.createClass({
     }
   },
 
+  onDragOver: function(e) {
+    e.preventDefault();
+    // Logic here
+    console.log('onDragOver');
+  },
+
   onCellDoubleClick(e: SyntheticMouseEvent){
     var meta = this.props.cellMetaData;
     if(meta != null && meta.onCellDoubleClick != null) {
@@ -205,9 +216,41 @@ var Cell = React.createClass({
     }
   },
 
+  onDragHandleDoubleClick(e) {
+    e.stopPropagation();
+    var meta = this.props.cellMetaData;
+    if(meta != null && meta.onCellDoubleClick != null) {
+      meta.onDragHandleDoubleClick({rowIdx : this.props.rowIdx, idx : this.props.idx, rowData: this.getRowData()});
+    }
+  },
+
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
-      this.getDOMNode().focus();
+      // determine the parent viewport element of this cell
+      var parent_viewport = this.getDOMNode();
+      while (parent_viewport != null && parent_viewport.className.indexOf('react-grid-Viewport') == -1) {
+        parent_viewport = parent_viewport.parentElement;
+      }
+      var focus_in_grid = false;
+      // if the focus is on the body of the document, the user won't mind if we focus them on a cell
+      if (document.activeElement && document.activeElement.nodeName.toLowerCase() == 'body') {
+        focus_in_grid = true;
+      // otherwise
+      } else {
+        // only pull focus if the currently focused element is contained within the viewport
+        if (parent_viewport) {
+          var focused_parent = document.activeElement;
+          while (focused_parent != null) {
+            if (focused_parent == parent_viewport) {
+              focus_in_grid = true;
+              break;
+            }
+            focused_parent = focused_parent.parentElement;
+          }
+        }
+      }
+      if (focus_in_grid)
+        this.getDOMNode().focus();
     }
   },
 
@@ -222,7 +265,7 @@ var Cell = React.createClass({
     var extraClasses = joinClasses({
       'selected' : this.isSelected() && !this.isActive() ,
       'editing' : this.isActive(),
-      'copied' : this.isCopied(),
+      'copied' : this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'active-drag-cell' : this.isSelected() || this.isDraggedOver(),
       'is-dragged-over-up' :  this.isDraggedOverUpwards(),
       'is-dragged-over-down' :  this.isDraggedOverDownwards(),

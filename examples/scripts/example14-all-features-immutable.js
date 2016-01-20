@@ -181,6 +181,10 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       this.setState({rows:rows});
     },
 
+    handleDragHandleDoubleClick(e) {
+      console.log(e);
+    },
+
     handleAddRow : function(e){
       var newRow = {
         id: e.newRowIndex,
@@ -213,6 +217,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
               onRowUpdated={this.handleRowUpdated}
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}
+              onDragHandleDoubleClick={this.handleDragHandleDoubleClick}
               toolbar={<Toolbar onAddRow={this.handleAddRow}/>}
               enableRowSelect={true}
               rowHeight={50}
