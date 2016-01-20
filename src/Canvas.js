@@ -115,10 +115,18 @@ var Canvas = React.createClass({
     //here we are just rendering empty cells
     //we may want to allow a user to inject this, and/or just render the cells that are in view
     //for now though we essentially are doing a (very lightweight) row + cell with empty content
+    let styles = {
+      row:{height: props.height, overflow:'hidden'},
+      cell:{height: props.height, position:'absolute'},
+      placeholder:{backgroundColor: 'rgba(211, 211, 211, 0.45)', width:'60%', height:Math.floor(props.height * 0.3)}
+    }
     return (
-      <div key={props.key} style={{height: props.height, overflow:'hidden'}} className="react-grid-Row">
+      <div key={props.key} style={styles.row} className="react-grid-Row">
         {this.props.columns.map(
-          (col, idx) => <div style={{width: col.width, height: props.height, left: col.left, position:'absolute'}} key={idx} className="react-grid-Cell"/>
+          (col, idx) =>
+              <div style={{width: col.width, left: col.left, ...styles.cell}} key={idx} className="react-grid-Cell">
+                <div style={{width : Math.floor(col.width * 0.6), ...styles.placeholder}}></div>
+              </div>
         )}
       </div>
     );
