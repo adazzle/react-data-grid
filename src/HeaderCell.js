@@ -15,9 +15,41 @@ const HeaderCell = React.createClass({
     renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
     column: PropTypes.shape(ExcelColumn).isRequired,
     onResize: PropTypes.func.isRequired,
-    height: PropTypes.number.isRequired,
-    onResizeEnd: PropTypes.func.isRequired,
-    className: PropTypes.string
+    height : PropTypes.number.isRequired,
+    onResizeEnd : PropTypes.func.isRequired
+  },
+
+  render(): ?ReactElement {
+    var resizeHandle;
+    if(this.props.column.resizable){
+      resizeHandle = <ResizeHandle
+      onDrag={this.onDrag}
+      onDragStart={this.onDragStart}
+      onDragEnd={this.onDragEnd}
+      />
+    }
+    var className = joinClasses({
+      'react-grid-HeaderCell': true,
+      'react-grid-HeaderCell--resizing': this.state.resizing,
+      'react-grid-HeaderCell--locked': this.props.column.locked
+    });
+    className = joinClasses(className, this.props.className, this.props.column.cellClass);
+    var cell = this.getCell();
+    return (
+      <div className={className} style={this.getStyle()}>
+        {cell}
+        {resizeHandle}
+      </div>
+    );
+  },
+
+  getCell(): ReactComponent {
+    if (React.isValidElement(this.props.renderer)) {
+      return cloneWithProps(this.props.renderer, {column : this.props.column});
+    } else {
+      var Renderer = this.props.renderer;
+      return this.props.renderer({column: this.props.column});
+    }
   },
 
   getDefaultProps(): {renderer: ReactComponent | (props: {column: {name: string}}) => ReactElement} {

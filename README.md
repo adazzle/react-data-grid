@@ -7,7 +7,6 @@ Excel-like grid component built with React, with editors, keyboard navigation, c
 ![react-data-grid](https://cloud.githubusercontent.com/assets/1432798/7348812/78063bd6-ecec-11e4-89d5-ffd327721cd7.PNG)
 
 
-
 Installation
 ------------
 
@@ -16,7 +15,6 @@ npm install react-data-grid
 # or
 bower install react-data-grid
 ```
-
 
 This library is written with CommonJS modules. If you are using
 browserify, webpack, or similar, you can consume it like anything else
