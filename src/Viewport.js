@@ -1,20 +1,10 @@
-/* @flow */
-/**
- * @jsx React.DOM
+const React                = require('react');
+const Canvas               = require('./Canvas');
+const ViewportScroll       = require('./ViewportScrollMixin');
+const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
+const PropTypes            = React.PropTypes;
 
-
- */
-'use strict';
-
-var React             = require('react');
-var Canvas            = require('./Canvas');
-var PropTypes            = React.PropTypes;
-
-var ViewportScroll      = require('./ViewportScrollMixin');
-
-
-
-var Viewport = React.createClass({
+const Viewport = React.createClass({
   mixins: [ViewportScroll],
 
   propTypes: {
@@ -29,10 +19,33 @@ var Viewport = React.createClass({
     rowHeight: PropTypes.number.isRequired,
     onRows: PropTypes.func,
     onScroll: PropTypes.func,
-    minHeight : PropTypes.number
+    minHeight: PropTypes.number,
+    cellMetaData: PropTypes.shape(cellMetaDataShape)
   },
+
+  onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
+    this.updateScroll(
+      scroll.scrollTop, scroll.scrollLeft,
+      this.state.height,
+      this.props.rowHeight,
+      this.props.rowsCount
+    );
+
+    if (this.props.onScroll) {
+      this.props.onScroll({scrollTop: scroll.scrollTop, scrollLeft: scroll.scrollLeft});
+    }
+  },
+
+  getScroll(): {scrollLeft: number; scrollTop: number} {
+    return this.refs.canvas.getScroll();
+  },
+
+  setScrollLeft(scrollLeft: number) {
+    this.refs.canvas.setScrollLeft(scrollLeft);
+  },
+
   render(): ?ReactElement {
-    var style = {
+    let style = {
       padding: 0,
       bottom: 0,
       left: 0,
@@ -67,27 +80,6 @@ var Viewport = React.createClass({
           />
       </div>
     );
-  },
-
-  getScroll(): {scrollLeft: number; scrollTop: number} {
-    return this.refs.canvas.getScroll();
-  },
-
-  onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
-    this.updateScroll(
-      scroll.scrollTop, scroll.scrollLeft,
-      this.state.height,
-      this.props.rowHeight,
-      this.props.rowsCount
-    );
-
-    if (this.props.onScroll) {
-      this.props.onScroll({scrollTop: scroll.scrollTop, scrollLeft: scroll.scrollLeft});
-    }
-  },
-
-  setScrollLeft(scrollLeft: number) {
-    this.refs.canvas.setScrollLeft(scrollLeft);
   }
 });
 

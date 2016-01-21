@@ -1,22 +1,7 @@
-/* @flow */
-/**
- * @jsx React.DOM
-
-
- */
-"use strict";
-
-var shallowCloneObject            = require('./shallowCloneObject');
-var isValidElement = require('react').isValidElement;
-var sameColumn = require('./ColumnComparer');
-var ColumnUtils = require('./ColumnUtils');
-var getScrollbarSize  = require('./getScrollbarSize');
-
-type ColumnMetricsType = {
-    columns: Array<Column>;
-    totalWidth: number;
-    minColumnWidth: number;
-};
+const shallowCloneObject = require('./shallowCloneObject');
+const sameColumn = require('./ColumnComparer');
+const ColumnUtils = require('./ColumnUtils');
+const getScrollbarSize  = require('./getScrollbarSize');
 
 type Column = {
   key: string;
@@ -24,51 +9,16 @@ type Column = {
   width: number;
 };
 
-/**
- * Update column metrics calculation.
- *
- * @param {ColumnMetricsType} metrics
- */
-function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
-    // compute width for columns which specify width
-    var columns = setColumnWidths(metrics.columns, metrics.totalWidth);
-
-    var unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => {
-      return w - column.width;
-    }, metrics.totalWidth);
-    unallocatedWidth -= getScrollbarSize();
-
-    var width = columns.filter(c => c.width).reduce((w, column) => {
-      return w + column.width;
-    }, 0);
-
-    // compute width for columns which doesn't specify width
-    columns = setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);
-
-    // compute left offset
-    columns = setColumnOffsets(columns);
-
-    return {
-      columns,
-      width,
-      totalWidth: metrics.totalWidth,
-      minColumnWidth: metrics.minColumnWidth
-    };
-}
-
-function setColumnOffsets(columns) {
-  var left = 0;
-  return columns.map(column => {
-    column.left = left;
-    left += column.width;
-    return column;
-  });
-}
+type ColumnMetricsType = {
+    columns: Array<Column>;
+    totalWidth: number;
+    minColumnWidth: number;
+};
 
 function setColumnWidths(columns, totalWidth) {
   return columns.map(column => {
-    var colInfo = Object.assign({}, column);
-    if(column.width){
+    let colInfo = Object.assign({}, column);
+    if (column.width) {
       if (/^([0-9]+)%$/.exec(column.width.toString())) {
         colInfo.width = Math.floor(
           column.width / 100 * totalWidth);
@@ -79,9 +29,9 @@ function setColumnWidths(columns, totalWidth) {
 }
 
 function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
-  var defferedColumns = columns.filter(c => !c.width);
-  return columns.map((column, i, arr) => {
-    if(!column.width){
+  let defferedColumns = columns.filter(c => !c.width);
+  return columns.map((column) => {
+    if (!column.width) {
       if (unallocatedWidth <= 0) {
         column.width = minColumnWidth;
       } else {
@@ -92,6 +42,46 @@ function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
   });
 }
 
+function setColumnOffsets(columns) {
+  let left = 0;
+  return columns.map(column => {
+    column.left = left;
+    left += column.width;
+    return column;
+  });
+}
+
+/**
+ * Update column metrics calculation.
+ *
+ * @param {ColumnMetricsType} metrics
+ */
+function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
+    // compute width for columns which specify width
+  let columns = setColumnWidths(metrics.columns, metrics.totalWidth);
+
+  let unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => {
+    return w - column.width;
+  }, metrics.totalWidth);
+  unallocatedWidth -= getScrollbarSize();
+
+  let width = columns.filter(c => c.width).reduce((w, column) => {
+    return w + column.width;
+  }, 0);
+
+  // compute width for columns which doesn't specify width
+  columns = setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);
+
+  // compute left offset
+  columns = setColumnOffsets(columns);
+
+  return {
+    columns,
+    width,
+    totalWidth: metrics.totalWidth,
+    minColumnWidth: metrics.minColumnWidth
+  };
+}
 
 /**
  * Update column metrics calculation by resizing a column.
@@ -101,29 +91,31 @@ function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
  * @param {number} width
  */
 function resizeColumn(metrics: ColumnMetricsType, index: number, width: number): ColumnMetricsType {
-  var column = ColumnUtils.getColumn(metrics.columns, index);
-  metrics = shallowCloneObject(metrics);
-  metrics.columns = metrics.columns.slice(0);
+  let column = ColumnUtils.getColumn(metrics.columns, index);
+  let metricsClone = shallowCloneObject(metrics);
+  metricsClone.columns = metrics.columns.slice(0);
 
-  var updatedColumn = shallowCloneObject(column);
-  updatedColumn.width = Math.max(width, metrics.minColumnWidth);
+  let updatedColumn = shallowCloneObject(column);
+  updatedColumn.width = Math.max(width, metricsClone.minColumnWidth);
 
-  metrics = ColumnUtils.spliceColumn(metrics, index, updatedColumn);
+  metricsClone = ColumnUtils.spliceColumn(metricsClone, index, updatedColumn);
 
-  return recalculate(metrics);
+  return recalculate(metricsClone);
 }
 
 function areColumnsImmutable(prevColumns: Array<Column>, nextColumns: Array<Column>) {
   return (typeof Immutable !== 'undefined' && (prevColumns instanceof Immutable.List) && (nextColumns instanceof Immutable.List));
 }
 
-function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean) {
-  var i, len, column;
-  var prevColumnsByKey: { [key:string]: Column } = {};
-  var nextColumnsByKey: { [key:string]: Column } = {};
+function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column>, isSameColumn: (a: Column, b: Column) => boolean) {
+  let i;
+  let len;
+  let column;
+  let prevColumnsByKey: { [key:string]: Column } = {};
+  let nextColumnsByKey: { [key:string]: Column } = {};
 
 
-  if(ColumnUtils.getSize(prevColumns) !== ColumnUtils.getSize(nextColumns)){
+  if (ColumnUtils.getSize(prevColumns) !== ColumnUtils.getSize(nextColumns)) {
     return false;
   }
 
@@ -135,15 +127,15 @@ function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column
   for (i = 0, len = ColumnUtils.getSize(nextColumns); i < len; i++) {
     column = nextColumns[i];
     nextColumnsByKey[column.key] = column;
-    var prevColumn = prevColumnsByKey[column.key];
-    if (prevColumn === undefined || !sameColumn(prevColumn, column)) {
+    let prevColumn = prevColumnsByKey[column.key];
+    if (prevColumn === undefined || !isSameColumn(prevColumn, column)) {
       return false;
     }
   }
 
   for (i = 0, len = ColumnUtils.getSize(prevColumns); i < len; i++) {
     column = prevColumns[i];
-    var nextColumn = nextColumnsByKey[column.key];
+    let nextColumn = nextColumnsByKey[column.key];
     if (nextColumn === undefined) {
       return false;
     }
@@ -151,12 +143,12 @@ function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column
   return true;
 }
 
-function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean): boolean {
-  if(areColumnsImmutable(prevColumns, nextColumns)) {
+function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, isSameColumn: (a: Column, b: Column) => boolean): boolean {
+  if (areColumnsImmutable(prevColumns, nextColumns)) {
     return prevColumns === nextColumns;
-  }else{
-    return compareEachColumn(prevColumns, nextColumns, sameColumn);
   }
+
+  return compareEachColumn(prevColumns, nextColumns, isSameColumn);
 }
 
 module.exports = { recalculate, resizeColumn, sameColumn, sameColumns };

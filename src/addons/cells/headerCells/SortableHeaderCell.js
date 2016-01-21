@@ -1,40 +1,33 @@
-/* @flow */
-/**
- * @jsx React.DOM
+const React              = require('react');
+const joinClasses         = require('classnames');
+const DEFINE_SORT = {
+  ASC: 'ASC',
+  DESC: 'DESC',
+  NONE: 'NONE'
+};
 
-
- */
-'use strict';
-
-var React              = require('react');
-var joinClasses         = require('classnames');
-var ExcelColumn = require('../../grids/ExcelColumn');
-var DEFINE_SORT = {
-  ASC : 'ASC',
-  DESC : 'DESC',
-  NONE  : 'NONE'
-}
-
-var SortableHeaderCell = React.createClass({
+const SortableHeaderCell = React.createClass({
   propTypes: {
-    columnKey : React.PropTypes.string.isRequired,
-    onSort    : React.PropTypes.func.isRequired,
-    sortDirection : React.PropTypes.oneOf(['ASC', 'DESC', 'NONE'])
+    columnKey: React.PropTypes.string.isRequired,
+    column: React.PropTypes.object({ name: React.PropTypes.string }),
+    onSort: React.PropTypes.func.isRequired,
+    sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE'])
   },
 
   onClick: function() {
-    var direction;
-    switch(this.props.sortDirection){
-      case null:
-      case undefined:
-      case DEFINE_SORT.NONE:
-        direction = DEFINE_SORT.ASC;
+    let direction;
+    switch (this.props.sortDirection) {
+    default:
+    case null:
+    case undefined:
+    case DEFINE_SORT.NONE:
+      direction = DEFINE_SORT.ASC;
       break;
-      case DEFINE_SORT.ASC:
-        direction = DEFINE_SORT.DESC;
+    case DEFINE_SORT.ASC:
+      direction = DEFINE_SORT.DESC;
       break;
     case DEFINE_SORT.DESC:
-        direction = DEFINE_SORT.NONE;
+      direction = DEFINE_SORT.NONE;
       break;
     }
     this.props.onSort(
@@ -42,17 +35,17 @@ var SortableHeaderCell = React.createClass({
       direction);
   },
 
-  getSortByText : function(){
-    var unicodeKeys = {
-      'ASC' : '9650',
-      'DESC' : '9660',
-      'NONE' : ''
-    }
+  getSortByText: function() {
+    let unicodeKeys = {
+      ASC: '9650',
+      DESC: '9660',
+      NONE: ''
+    };
     return String.fromCharCode(unicodeKeys[this.props.sortDirection]);
   },
 
   render: function(): ?ReactElement {
-    var className = joinClasses({
+    let className = joinClasses({
       'react-grid-HeaderCell-sortable': true,
       'react-grid-HeaderCell-sortable--ascending': this.props.sortDirection === 'ASC',
       'react-grid-HeaderCell-sortable--descending': this.props.sortDirection === 'DESC'

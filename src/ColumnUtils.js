@@ -1,15 +1,15 @@
 module.exports = {
 
   getColumn(columns, idx) {
-    if(Array.isArray(columns)){
+    if (Array.isArray(columns)) {
       return columns[idx];
     }else if (typeof Immutable !== 'undefined') {
       return columns.get(idx);
     }
   },
 
-  spliceColumn(metrics, idx, column){
-    if(Array.isArray(metrics.columns)){
+  spliceColumn(metrics, idx, column) {
+    if (Array.isArray(metrics.columns)) {
       metrics.columns.splice(idx, 1, column);
     }else if (typeof Immutable !== 'undefined') {
       metrics.columns = metrics.columns.splice(idx, 1, column);
@@ -18,10 +18,10 @@ module.exports = {
   },
 
   getSize(columns) {
-    if(Array.isArray(columns)){
+    if (Array.isArray(columns)) {
       return columns.length;
-    }else if (typeof Immutable !== 'undefined') {
+    } else if (typeof Immutable !== 'undefined') {
       return columns.size;
     }
-  },
-}
+  }
+};

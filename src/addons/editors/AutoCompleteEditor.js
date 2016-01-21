@@ -1,97 +1,92 @@
-/* @flow */
-/* Flow issues:
-overrides? getDefaultValue, getStyle, onKeyDown
-*/
-/**
- * @jsx React.DOM
- */
-'use strict';
+const React                   = require('react');
+const ReactAutocomplete       = require('ron-react-autocomplete');
+const ExcelColumn             = require('../grids/ExcelColumn');
 
-var React                   = require('react');
-var ReactAutocomplete       = require('ron-react-autocomplete');
-var KeyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
-var ExcelColumn             = require('../grids/ExcelColumn');
+let optionPropType = React.PropTypes.shape({
+  id: React.PropTypes.required,
+  title: React.PropTypes.string
+});
 
-var optionPropType = React.PropTypes.shape({
-      id    :   React.PropTypes.required,
-      title :   React.PropTypes.string
-    });
+const AutoCompleteEditor = React.createClass({
 
-var AutoCompleteEditor = React.createClass({
-
-  propTypes : {
-    onCommit : React.PropTypes.func.isRequired,
-    options : React.PropTypes.arrayOf(optionPropType).isRequired,
-    label : React.PropTypes.string,
-    value : React.PropTypes.any.isRequired,
+  propTypes: {
+    onCommit: React.PropTypes.func.isRequired,
+    options: React.PropTypes.arrayOf(optionPropType).isRequired,
+    label: React.PropTypes.string,
+    value: React.PropTypes.any.isRequired,
+    height: React.PropTypes.number,
     valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
     column: React.PropTypes.shape(ExcelColumn).isRequired,
-    resultIdentifier : React.PropTypes.string,
-    search : React.PropTypes.string
+    resultIdentifier: React.PropTypes.string,
+    search: React.PropTypes.string,
+    onKeyDown: React.PropTypes.func
   },
 
-  getDefaultProps(): {resultIdentifier: string}{
+  getDefaultProps(): {resultIdentifier: string} {
     return {
-      resultIdentifier : 'id'
-    }
+      resultIdentifier: 'id'
+    };
   },
 
-  getValue(): any{
-    var value, updated = {};
-    if(this.hasResults() && this.isFocusedOnSuggestion()){
+  handleChange() {
+    this.props.onCommit();
+  },
+
+  getValue(): any {
+    let value;
+    let updated = {};
+    if (this.hasResults() && this.isFocusedOnSuggestion()) {
       value = this.getLabel(this.refs.autoComplete.state.focusedValue);
-      if(this.props.valueParams){
+      if (this.props.valueParams) {
         value = this.constuctValueFromParams(this.refs.autoComplete.state.focusedValue, this.props.valueParams);
       }
-    }else{
+    } else {
       value = this.refs.autoComplete.state.searchTerm;
     }
+
     updated[this.props.column.key] = value;
     return updated;
   },
 
-  getInputNode(): HTMLInputElement{
-    return this.getDOMNode().getElementsByTagName("input")[0];
-  },
-
-  render(): ?ReactElement {
-    var label = this.props.label != null ? this.props.label : 'title';
-    return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete  search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title : this.props.value}} />
-      </div>);
-  },
-
-  handleChange(){
-    this.props.onCommit();
-  },
-
-  hasResults(): boolean{
-    return this.refs.autoComplete.state.results.length > 0;
-  },
-
-  isFocusedOnSuggestion(): boolean{
-    var autoComplete = this.refs.autoComplete;
-    return autoComplete.state.focusedValue != null;
+  getInputNode(): HTMLInputElement {
+    return this.getDOMNode().getElementsByTagName('input')[0];
   },
 
   getLabel(item: any): string {
-    var label = this.props.label != null ? this.props.label : 'title';
-    if (typeof label === "function") {
+    let label = this.props.label != null ? this.props.label : 'title';
+    if (typeof label === 'function') {
       return label(item);
-    } else if (typeof label === "string") {
+    } else if (typeof label === 'string') {
       return item[label];
     }
   },
 
+  hasResults(): boolean {
+    return this.refs.autoComplete.state.results.length > 0;
+  },
+
+  isFocusedOnSuggestion(): boolean {
+    let autoComplete = this.refs.autoComplete;
+    return autoComplete.state.focusedValue != null;
+  },
+
   constuctValueFromParams(obj: any, props: ?Array<string>): string {
-    if(!props){
+    if (!props) {
       return '';
     }
-    var ret = [];
-    for (var i = 0, ii = props.length; i < ii; i++) {
+
+    let ret = [];
+    for (let i = 0, ii = props.length; i < ii; i++) {
       ret.push(obj[props[i]]);
     }
     return ret.join('|');
+  },
+
+  render(): ?ReactElement {
+    let label = this.props.label != null ? this.props.label : 'title';
+    return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
+      <ReactAutocomplete search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title: this.props.value}} />
+      </div>);
   }
 });
 

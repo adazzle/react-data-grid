@@ -1,35 +1,31 @@
-/*eslint no-var:0, no-console:0 */
-'use strict';
-var React         = require('react');
-var rewire        = require('rewire');
-var Grid          = rewire('../Grid');
-var TestUtils     = require('react/lib/ReactTestUtils');
-var rewireModule  = require('../../test/rewireModule');
-var helpers       = require('./GridPropHelpers');
+const React         = require('react');
+const rewire        = require('rewire');
+const Grid          = rewire('../Grid');
+const TestUtils     = require('react/lib/ReactTestUtils');
+const rewireModule  = require('../../test/rewireModule');
+const helpers       = require('./GridPropHelpers');
 
-var testElement;
-var HeaderStub = React.createClass({
+let testElement;
+let HeaderStub = React.createClass({
+  setScrollLeft() {
+  },
   render() {
     return (<div></div>);
-  },
-  setScrollLeft(scroll) {
-    console.log('setScrollLeft: ', scroll);
   }
 });
-var ViewportStub = React.createClass({
+let ViewportStub = React.createClass({
   getScroll() {
     return {scrollLeft: 0};
   },
+  setScrollLeft() {
+  },
   render() {
     return (<div></div>);
-  },
-  setScrollLeft(scroll) {
-    console.log('setScrollLeft: ', scroll);
   }
 });
 
 describe('Base Grid Tests', () => {
-  var testProps = {
+  let testProps = {
     columnMetrics: {
       columns: helpers.columns,
       minColumnWidth: 80,
@@ -48,7 +44,7 @@ describe('Base Grid Tests', () => {
     onViewportDoubleClick: function() {}
   };
 
-  // Configure local variable replacements for the module.
+  // Configure local letiable replacements for the module.
   rewireModule(Grid, {
     Header: HeaderStub,
     Viewport: ViewportStub
@@ -64,7 +60,7 @@ describe('Base Grid Tests', () => {
 
 
   it('keyboard input in viewport should call props.onViewportKeydown', () => {
-    var viewportContainerNode;
+    let viewportContainerNode;
     spyOn(testProps, 'onViewportKeydown');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
     viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
@@ -73,7 +69,7 @@ describe('Base Grid Tests', () => {
   });
 
   it('doubleclick in viewport should call props.onViewportDoubleClick', () => {
-    var viewportContainerNode;
+    let viewportContainerNode;
     spyOn(testProps, 'onViewportDoubleClick');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
     viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
@@ -82,7 +78,7 @@ describe('Base Grid Tests', () => {
   });
 
   it('dragstart in viewport should call props.onViewportDoubleClick', () => {
-    var viewportContainerNode;
+    let viewportContainerNode;
     spyOn(testProps, 'onViewportDragStart');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
     viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
@@ -91,7 +87,7 @@ describe('Base Grid Tests', () => {
   });
 
   it('dragend in viewport should call props.onViewportDragEnd', () => {
-    var viewportContainerNode;
+    let viewportContainerNode;
     spyOn(testProps, 'onViewportDragEnd');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
     viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
@@ -101,13 +97,13 @@ describe('Base Grid Tests', () => {
 });
 
 describe('Empty Grid Tests', () => {
-  var EmptyRowsView = React.createClass({
+  let EmptyRowsView = React.createClass({
     render: function() {
       return (<div>Nothing to show</div>);
     }
   });
 
-  var testProps = {
+  let testProps = {
     columnMetrics: {
       columns: helpers.columns
     },

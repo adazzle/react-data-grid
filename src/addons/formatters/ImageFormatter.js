@@ -1,16 +1,16 @@
-var React = require('react');
+const React = require('react');
 
-var PendingPool = {};
-var ReadyPool = {};
+let PendingPool = {};
+let ReadyPool = {};
 
-var ImageFormatter = React.createClass({
+const ImageFormatter = React.createClass({
   propTypes: {
-    value: React.PropTypes.string.isRequired,
+    value: React.PropTypes.string.isRequired
   },
 
   getInitialState() {
     return {
-      ready: false,
+      ready: false
     };
   },
 
@@ -25,46 +25,47 @@ var ImageFormatter = React.createClass({
     }
   },
 
+  _load(src) {
+    let imageSrc = src;
+    if (ReadyPool[imageSrc]) {
+      this.setState({value: imageSrc});
+      return;
+    }
+
+    if (PendingPool[imageSrc]) {
+      PendingPool[imageSrc].push(this._onLoad);
+      return;
+    }
+
+    PendingPool[imageSrc] = [this._onLoad];
+
+    let img = new Image();
+    img.onload = () => {
+      PendingPool[imageSrc].forEach(callback => {
+        callback(imageSrc);
+      });
+      delete PendingPool[imageSrc];
+      img.onload = null;
+      imageSrc = undefined;
+    };
+    img.src = imageSrc;
+  },
+
+  _onLoad(src) {
+    if (this.isMounted() && src === this.props.value) {
+      this.setState({
+        value: src
+      });
+    }
+  },
+
   render() {
-    var style = this.state.value ?
-    { backgroundImage : 'url(' + this.state.value + ')'} :
+    let style = this.state.value ?
+    { backgroundImage: 'url(' + this.state.value + ')'} :
     undefined;
 
     return <div className="react-grid-image" style={style} />;
-  },
-
-  _load(/*string*/ src) {
-    if (ReadyPool[src]) {
-      this.setState({value: src});
-      return;
-    }
-
-    if (PendingPool[src]) {
-      PendingPool[src].push(this._onLoad);
-      return;
-    }
-
-    PendingPool[src] = [this._onLoad];
-
-    var img = new Image();
-    img.onload = () => {
-      PendingPool[src].forEach(/*function*/ callback => {
-        callback(src);
-      });
-      delete PendingPool[src];
-      img.onload = null;
-      src = undefined;
-    };
-    img.src = src;
-  },
-
-  _onLoad(/*string*/ src) {
-    if (this.isMounted() && src === this.props.value) {
-      this.setState({
-        value: src,
-      });
-    }
-  },
+  }
 });
 
 

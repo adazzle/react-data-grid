@@ -1,25 +1,18 @@
-/* @flow */
-/**
- * @jsx React.DOM
+const React                = require('react');
+const PropTypes            = React.PropTypes;
+const Header               = require('./Header');
+const Viewport             = require('./Viewport');
+const GridScrollMixin      = require('./GridScrollMixin');
+const DOMMetrics           = require('./DOMMetrics');
+const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 
-
- */
-"use strict";
-
-var React                = require('react');
-var PropTypes            = React.PropTypes;
-var Header               = require('./Header');
-var Viewport             = require('./Viewport');
-var ExcelColumn = require('./addons/grids/ExcelColumn');
-var GridScrollMixin      = require('./GridScrollMixin');
-var DOMMetrics           = require('./DOMMetrics');
-
-var Grid = React.createClass({
-
+const Grid = React.createClass({
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
-    columns:  PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    columnMetrics: PropTypes.shape,
     minHeight: PropTypes.number,
+    totalWidth: PropTypes.number,
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowHeight: PropTypes.number,
     rowRenderer: PropTypes.func,
@@ -28,13 +21,16 @@ var Grid = React.createClass({
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
-    sortColumn : React.PropTypes.string,
-    sortDirection : React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
+    sortColumn: React.PropTypes.string,
+    sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     rowOffsetHeight: PropTypes.number.isRequired,
-    onViewportKeydown : PropTypes.func.isRequired,
-    onViewportDragStart : PropTypes.func.isRequired,
-    onViewportDragEnd : PropTypes.func.isRequired,
-    onViewportDoubleClick : PropTypes.func.isRequired
+    onViewportKeydown: PropTypes.func.isRequired,
+    onViewportDragStart: PropTypes.func.isRequired,
+    onViewportDragEnd: PropTypes.func.isRequired,
+    onViewportDoubleClick: PropTypes.func.isRequired,
+    onColumnResize: PropTypes.func,
+    onSort: PropTypes.func,
+    cellMetaData: PropTypes.shape(cellMetaDataShape)
   },
 
   mixins: [
@@ -42,19 +38,25 @@ var Grid = React.createClass({
     DOMMetrics.MetricsComputatorMixin
   ],
 
+  getDefaultProps() {
+    return {
+      rowHeight: 35,
+      minHeight: 350
+    };
+  },
 
   getStyle: function(): { overflow: string; outline: number; position: string; minHeight: number } {
-    return{
+    return {
       overflow: 'hidden',
       outline: 0,
       position: 'relative',
       minHeight: this.props.minHeight
-    }
+    };
   },
 
   render(): ?ReactElement {
-    var headerRows = this.props.headerRows || [{ref : 'row'}];
-    var EmptyRowsView = this.props.emptyRowsView;
+    let headerRows = this.props.headerRows || [{ref: 'row'}];
+    let EmptyRowsView = this.props.emptyRowsView;
 
     return (
       <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
@@ -96,13 +98,6 @@ var Grid = React.createClass({
         }
       </div>
     );
-  },
-
-  getDefaultProps() {
-    return {
-      rowHeight: 35,
-      minHeight: 350
-    };
   }
 });
 
