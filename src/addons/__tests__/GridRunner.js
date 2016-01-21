@@ -102,9 +102,9 @@ export default class GridRunner {
     const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row');
     let over = [];
     over.push(this.row);
-    let formIterator = form;
+    let fromIterator = from;
 
-    for (let i = formIterator++; i < to; i++) {
+    for (let i = fromIterator++; i < to; i++) {
       over.push(this.getCells(rows[i])[col]);
     }
     const toCell = this.getCells(rows[to])[col];

@@ -53,9 +53,11 @@ let MetricsComputatorMixin = {
         }
       }
 
-      metricsToDelete.forEach((metricName) => {
-        delete s.metrics[metricName];
-      });
+      for (name in metricsToDelete) {
+        if (metricsToDelete.hasOwnProperty(name)) {
+          delete s.metrics[name];
+        }
+      }
     }
   },
 
@@ -65,7 +67,7 @@ let MetricsComputatorMixin = {
     let needUpdate = false;
 
     for (let name in s.metrics) {
-      if (name == null) continue;
+      if (!s.metrics.hasOwnProperty(name)) continue;
 
       let newMetric = s.metrics[name].computator();
       if (newMetric !== s.metrics[name].value) {
@@ -114,7 +116,7 @@ let MetricsMixin = {
 
       this.DOMMetrics = {};
       for (let name in this._DOMMetricsDefs) {
-        if (name == null) continue;
+        if (!this._DOMMetricsDefs.hasOwnProperty(name)) continue;
 
         this.DOMMetrics[name] = emptyFunction;
       }
