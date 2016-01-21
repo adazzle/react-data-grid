@@ -24,14 +24,23 @@ type Column = {
   width: number;
 };
 
+function isImmutable(value, structure) {
+  return typeof Immutable !== 'undefined' &&
+         Immutable[structure] !== 'undefined' &&
+         (value instanceof Immutable[structure]);
+}
+
 /**
  * Update column metrics calculation.
  *
  * @param {ColumnMetricsType} metrics
  */
 function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
+    var isImmutableColumns = isImmutable(metrics.columns, 'List');
+    var providedColumns = isImmutableColumns ? metrics.columns.toJS() : metrics.columns;
+
     // compute width for columns which specify width
-    var columns = setColumnWidths(metrics.columns, metrics.totalWidth);
+    var columns = setColumnWidths(providedColumns, metrics.totalWidth);
 
     var unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => {
       return w - column.width;
@@ -66,28 +75,45 @@ function setColumnOffsets(columns) {
 }
 
 function setColumnWidths(columns, totalWidth) {
-  return columns.map(column => {
-    var colInfo = Object.assign({}, column);
-    if(column.width){
-      if (/^([0-9]+)%$/.exec(column.width.toString())) {
-        colInfo.width = Math.floor(
-          column.width / 100 * totalWidth);
-      }
+  return columns.map(columnData => {
+    var column = Object.assign({}, columnData);
+
+    if (column.width && /^([0-9]+)%$/.exec(column.width.toString())) {
+      column.width = Math.floor(parseInt(column.width, 10) / 100 * totalWidth);
     }
-    return colInfo;
+
+    return column;
   });
 }
 
-function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
+function setDefferedColumnWidths(columns, initialUnallocatedWidth, minColumnWidth) {
   var defferedColumns = columns.filter(c => !c.width);
+  var deferredColumnsCount = ColumnUtils.getSize(defferedColumns);
+  var unallocatedWidth = initialUnallocatedWidth;
+  var addColumnToUnallocated = (column) => {
+    unallocatedWidth += column.width;
+    deferredColumnsCount += 1;
+  };
+  var removeColumnFromUnallocated = (column) => {
+    unallocatedWidth -= column.width;
+    deferredColumnsCount -= 1;
+  };
+
   return columns.map((column, i, arr) => {
-    if(!column.width){
-      if (unallocatedWidth <= 0) {
-        column.width = minColumnWidth;
-      } else {
-        column.width = Math.floor(unallocatedWidth / (ColumnUtils.getSize(defferedColumns)));
-      }
+    var unallocatedColumnWidth = (deferredColumnsCount !== 0) ? Math.floor(unallocatedWidth / deferredColumnsCount) : 0;
+
+    if (column.width && !column.minWidth) return column;
+
+    if (column.minWidth) {
+      if (column.width) addColumnToUnallocated(column);
+      column.width = Math.max(column.minWidth, unallocatedColumnWidth, column.width || 0);
+      removeColumnFromUnallocated(column);
+    } else if (unallocatedWidth <= 0) {
+      column.width = minColumnWidth;
+    } else {
+      column.width = unallocatedColumnWidth;
     }
+
     return column;
   });
 }
@@ -114,7 +140,7 @@ function resizeColumn(metrics: ColumnMetricsType, index: number, width: number):
 }
 
 function areColumnsImmutable(prevColumns: Array<Column>, nextColumns: Array<Column>) {
-  return (typeof Immutable !== 'undefined' && (prevColumns instanceof Immutable.List) && (nextColumns instanceof Immutable.List));
+  return isImmutable(prevColumns, 'List') && isImmutable(nextColumns, 'List');
 }
 
 function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column>, sameColumn: (a: Column, b: Column) => boolean) {
