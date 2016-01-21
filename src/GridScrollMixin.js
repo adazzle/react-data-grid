@@ -2,7 +2,7 @@
 module.exports = {
 
   componentDidMount() {
-    this._scrollLeft = this.refs.viewport.getScroll().scrollLeft;
+    this._scrollLeft = this.refs.viewport ? this.refs.viewport.getScroll().scrollLeft : 0;
     this._onScroll();
   },
 
@@ -28,7 +28,9 @@ module.exports = {
   _onScroll() {
     if (this._scrollLeft !== undefined) {
       this.refs.header.setScrollLeft(this._scrollLeft);
-      this.refs.viewport.setScrollLeft(this._scrollLeft);
+      if (this.refs.viewport) {
+        this.refs.viewport.setScrollLeft(this._scrollLeft);
+      }
     }
   }
 };

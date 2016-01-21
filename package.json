@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "0.13.27",
+  "version": "0.13.33",
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
@@ -83,7 +83,7 @@
     "vinyl-source-stream": "^0.1.1",
     "webpack": "^1.12.10"
   },
-  "author": "Adazzle",
+  "author": "adazzle",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/adazzle/react-data-grid/issues"
