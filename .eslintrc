@@ -1,4 +1,7 @@
 {
+  "plugins": [
+    "react"
+  ],
   "parser": "babel-eslint",
   "env": {
     "browser": true,
@@ -87,11 +90,11 @@
     "dot-notation": [2, {            // http://eslint.org/docs/rules/dot-notation
       "allowKeywords": true
     }],
-    "eqeqeq": 2,                     // http://eslint.org/docs/rules/eqeqeq
+    "eqeqeq": [2, "allow-null"],     // http://eslint.org/docs/rules/eqeqeq
     "guard-for-in": 2,               // http://eslint.org/docs/rules/guard-for-in
     "no-caller": 2,                  // http://eslint.org/docs/rules/no-caller
     "no-else-return": 2,             // http://eslint.org/docs/rules/no-else-return
-    "no-eq-null": 1,                 // http://eslint.org/docs/rules/no-eq-null
+    "no-eq-null": 0,                 // http://eslint.org/docs/rules/no-eq-null
     "no-eval": 2,                    // http://eslint.org/docs/rules/no-eval
     "no-extend-native": 2,           // http://eslint.org/docs/rules/no-extend-native
     "no-extra-bind": 2,              // http://eslint.org/docs/rules/no-extra-bind
@@ -206,6 +209,7 @@
         "/^on.+$/",
         "/^handle.+$/",
         "/^get.+$/",
+        "/^((?!render).)*$/",
         "/^render.+$/",
         "render"
       ]
