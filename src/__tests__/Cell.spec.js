@@ -34,7 +34,7 @@ describe('Cell Tests', () => {
     rowIdx : 0,
     idx : 1,
     tabIndex : 1,
-    column: {},
+    column: {key: "location", name: "Location"},
     value: 'Wicklow',
     isExpanded: false,
     cellMetaData: testCellMetaData,
@@ -66,6 +66,9 @@ describe('Cell Tests', () => {
     var formatterInstance = TestUtils.findRenderedComponentWithType(testElement,CustomFormatter);
     expect(testElement).toBeDefined();
     expect(formatterInstance.props.value).toEqual('Wicklow');
+    expect(formatterInstance.props.column.key).toEqual("location")
+    expect(formatterInstance.props.rowData.name).toEqual("Johnny Test");
+
   });
 
 
