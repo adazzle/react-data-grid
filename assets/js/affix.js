@@ -8,7 +8,7 @@
 
 
 +function ($) {
-  'use strict';
+  
 
   // AFFIX CLASS DEFINITION
   // ======================
