@@ -7,7 +7,7 @@ describe('AutoCompleteEditor integration', () => {
   function fakeCb() { return true; }
   let fakeOptions = [{id: 1, title: 'test-result1'}, {id: 2, title: 'test-result2'}];
   let fakeParams = ['param1', 'param2', 'param3'];
-  let fakeColumn = { key: 'autocomplete' };
+  let fakeColumn = { key: 'autocomplete', name: 'name', width: 0 };
   let commitSpy = jasmine.createSpy();
 
   beforeEach(() => {
@@ -16,6 +16,7 @@ describe('AutoCompleteEditor integration', () => {
       options={fakeOptions}
       label= "title"
       valueParams={fakeParams}
+      value= "value"
       column={fakeColumn}
       resultIdentifier="id"
       height={30}

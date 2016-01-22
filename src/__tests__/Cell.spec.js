@@ -33,7 +33,11 @@ describe('Cell Tests', () => {
     rowIdx: 0,
     idx: 1,
     tabIndex: 1,
-    column: {},
+    column: {
+      name: 'name',
+      key: 'key',
+      width: 0
+    },
     value: 'Wicklow',
     isExpanded: false,
     cellMetaData: testCellMetaData,

@@ -17,7 +17,9 @@ describe('Header Cell Tests', () => {
   let testProps = {
     column: {
       width: 150,
-      left: 300
+      left: 300,
+      name: 'bla',
+      key: 'bla'
     },
     onResize: function() {
     },

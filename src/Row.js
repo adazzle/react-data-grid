@@ -11,7 +11,7 @@ const Row = React.createClass({
   propTypes: {
     height: PropTypes.number.isRequired,
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
-    row: PropTypes.object.isRequired,
+    row: PropTypes.any.isRequired,
     cellRenderer: PropTypes.func,
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     isSelected: PropTypes.bool,

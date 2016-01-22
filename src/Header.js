@@ -12,7 +12,7 @@ type Column = {
 
 const Header = React.createClass({
   propTypes: {
-    columnMetrics: PropTypes.shape({  width: PropTypes.number.isRequired, columns: PropTypes.array }).isRequired,
+    columnMetrics: PropTypes.shape({  width: PropTypes.number.isRequired, columns: PropTypes.any }).isRequired,
     totalWidth: PropTypes.number,
     height: PropTypes.number.isRequired,
     headerRows: PropTypes.array.isRequired,

@@ -68,7 +68,7 @@ const EditorContainer = React.createClass({
       return cloneWithProps(customEditor, editorProps);
     }
 
-    return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
+    return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
   },
 
   onPressEnter() {
@@ -258,7 +258,7 @@ const EditorContainer = React.createClass({
 
   render(): ?ReactElement {
     return (
-        <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
+        <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} commit={this.commit}>
         {this.createEditor()}
         {this.renderStatusIcon()}
         </div>

@@ -48,7 +48,8 @@ describe('Grid', function() {
       onRowUpdated: this.noop,
       onCellCopyPaste: this.noop,
       onCellsDragged: this.noop,
-      onGridSort: this.noop
+      onGridSort: this.noop,
+      onAddFilter: () => {}
     };
 
     this.buildFakeEvent = (addedData) => {

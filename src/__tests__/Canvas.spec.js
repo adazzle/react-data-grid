@@ -16,7 +16,17 @@ describe('Canvas Tests', () => {
     rowsCount: 1,
     columns: [],
     rowGetter: function() { return []; },
-    cellMetaData: {}
+    cellMetaData: {
+      selected: {},
+      dragged: {},
+      onCellClick: () => {},
+      onCellDoubleClick: () => {},
+      onCommit: () => {},
+      onCommitCancel: () => {},
+      copied: {},
+      handleDragEnterRow: () => {},
+      handleTerminateDrag: () => {}
+    }
   };
 
   beforeEach(() => {

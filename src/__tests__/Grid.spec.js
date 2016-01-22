@@ -109,11 +109,16 @@ describe('Empty Grid Tests', () => {
     },
     headerRows: [],
     rowsCount: 0,
+    rowOffsetHeight: 50,
     rowGetter: function() {
       return [];
     },
     minHeight: 600,
-    emptyRowsView: EmptyRowsView
+    emptyRowsView: EmptyRowsView,
+    onViewportKeydown: () => {},
+    onViewportDragStart: () => {},
+    onViewportDragEnd: () => {},
+    onViewportDoubleClick: () => {}
   };
   rewireModule(Grid, {
     Header: HeaderStub

@@ -14,11 +14,7 @@ const HeaderRowStyle  = {
   position: React.PropTypes.string
 };
 
-const DEFINE_SORT = {
-  ASC: 'ASC',
-  DESC: 'DESC',
-  NONE: 'NONE'
-};
+const DEFINE_SORT = ['ASC', 'DESC', 'NONE'];
 
 const HeaderRow = React.createClass({
   propTypes: {

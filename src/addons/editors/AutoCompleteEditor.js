@@ -12,7 +12,7 @@ const AutoCompleteEditor = React.createClass({
   propTypes: {
     onCommit: React.PropTypes.func.isRequired,
     options: React.PropTypes.arrayOf(optionPropType).isRequired,
-    label: React.PropTypes.string,
+    label: React.PropTypes.any,
     value: React.PropTypes.any.isRequired,
     height: React.PropTypes.number,
     valueParams: React.PropTypes.arrayOf(React.PropTypes.string),

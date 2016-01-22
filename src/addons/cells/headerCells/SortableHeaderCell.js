@@ -9,7 +9,7 @@ const DEFINE_SORT = {
 const SortableHeaderCell = React.createClass({
   propTypes: {
     columnKey: React.PropTypes.string.isRequired,
-    column: React.PropTypes.object({ name: React.PropTypes.string }),
+    column: React.PropTypes.shape({ name: React.PropTypes.string }),
     onSort: React.PropTypes.func.isRequired,
     sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE'])
   },

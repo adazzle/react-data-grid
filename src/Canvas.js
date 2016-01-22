@@ -15,7 +15,7 @@ const Canvas = React.createClass({
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     rowHeight: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    width: PropTypes.number.isRequired,
+    width: PropTypes.number,
     totalWidth: PropTypes.number,
     style: PropTypes.string,
     className: PropTypes.string,
@@ -30,7 +30,7 @@ const Canvas = React.createClass({
     onRows: PropTypes.func,
     onScroll: PropTypes.func,
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
-    cellMetaData: PropTypes.shape(cellMetaDataShape),
+    cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
     selectedRows: PropTypes.array
   },
 
@@ -134,7 +134,7 @@ const Canvas = React.createClass({
   getScrollbarWidth() {
     let scrollbarWidth = 0;
     // Get the scrollbar width
-    let canvas = this.getDOMNode();
+    let canvas = React.findDOMNode(this);
     scrollbarWidth  = canvas.offsetWidth - canvas.clientWidth;
     return scrollbarWidth;
   },
