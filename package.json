@@ -35,6 +35,7 @@
     "babel-core": "^5.8.34",
     "babel-eslint": "^4.1.6",
     "babel-loader": "^5.4.0",
+    "babel-plugin-transform-react-jsx": "^6.4.0",
     "babel-runtime": "^5.8.34",
     "bootstrap": "^3.2.0",
     "browser-sync": "^2.9.0",

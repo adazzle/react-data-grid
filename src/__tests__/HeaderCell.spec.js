@@ -9,7 +9,6 @@ describe('Header Cell Tests', () => {
   // Configure local constiable replacements for the module.
   let ResizeHandleStub = new StubComponent('ResizeHandle');
   let headerCell;
-  
   rewireModule(HeaderCell, {
     ResizeHandle: ResizeHandleStub
   });
