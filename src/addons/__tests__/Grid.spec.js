@@ -1,5 +1,4 @@
 const React = require('react');
-var ReactDOM = require('react-dom');
 const rewire = require('rewire');
 const Grid = rewire('../grids/ReactDataGrid.js');
 const TestUtils = require('react/lib/ReactTestUtils');

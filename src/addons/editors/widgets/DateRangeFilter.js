@@ -1154,19 +1154,20 @@ let DateRangeFilter = React.createClass({
     endDate: validateDate
   },
 
-	componentDidMount : function(){
-		//initialise jQuery date range widget -
-		var $calendarNode = $(this.refs.calendar.getDOMNode())
-		var $calendar = $calendarNode.daterangepicker({ranges : this.props.ranges, format : this.props.format, opens : 'left', locale: { cancelLabel: 'Clear' }, applyClass : 'btn-primary'  });
-		this.calendar = $calendar.data('daterangepicker');
-		if(this.props.startDate){
-			this.calendar.setStartDate(this.props.startDate);
-		}
-		if(this.props.endDate){
-			this.calendar.setEndDate(this.props.endDate);
-		}
-		$calendar.on('apply.daterangepicker', this.handleApply).on('cancel.daterangepicker', this.handleClear);
-	},
+  componentDidMount: function() {
+    // initialise jQuery date range widget -
+    let $calendarNode = $(this.refs.calendar.getDOMNode());
+    let $calendar = $calendarNode.daterangepicker({ranges: this.props.ranges, format: this.props.format, opens: 'left', locale: { cancelLabel: 'Clear' }, applyClass: 'btn-primary'  });
+    this.calendar = $calendar.data('daterangepicker');
+    if (this.props.startDate) {
+      this.calendar.setStartDate(this.props.startDate);
+    }
+    if (this.props.endDate) {
+      this.calendar.setEndDate(this.props.endDate);
+    }
+
+    $calendar.on('apply.daterangepicker', this.handleApply).on('cancel.daterangepicker', this.handleClear);
+  },
 
   componentWillUnmount: function() {
     // destroy widget on unMount

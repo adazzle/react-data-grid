@@ -1,4 +1,3 @@
-const React = require('react');
 
 let ScrollShim = {
 

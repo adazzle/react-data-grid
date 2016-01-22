@@ -1,18 +1,15 @@
-'use strict';
-var React         = require('react');
-var rewire        = require('rewire');
-var HeaderCell    = rewire('../HeaderCell');
-var TestUtils     = require('react-addons-test-utils');
-var rewireModule  = require("../../test/rewireModule");
-var StubComponent = require("../../test/StubComponent");
-var ResizeHandle  = require('../ResizeHandle');
-var Draggable     = require('../Draggable');
+const React         = require('react');
+const rewire        = require('rewire');
+const HeaderCell    = rewire('../HeaderCell');
+const TestUtils     = require('react/lib/ReactTestUtils');
+const rewireModule  = require('../../test/rewireModule');
+const StubComponent = require('../../test/StubComponent');
 
 describe('Header Cell Tests', () => {
-  var headerCell;
-  // Configure local variable replacements for the module.
-  var ResizeHandleStub = StubComponent('ResizeHandle');
-
+  // Configure local constiable replacements for the module.
+  let ResizeHandleStub = new StubComponent('ResizeHandle');
+  let headerCell;
+  
   rewireModule(HeaderCell, {
     ResizeHandle: ResizeHandleStub
   });

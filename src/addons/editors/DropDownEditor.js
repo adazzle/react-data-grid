@@ -1,14 +1,10 @@
-/* @flow */
-/**
- * @jsx React.DOM
- */
-
 const React = require('react');
 const EditorBase = require('./EditorBase');
+import ReactDOM from 'react-dom';
 
 class DropDownEditor extends EditorBase {
 
-  getInputNode(): HTMLInputElement{
+  getInputNode() {
     return ReactDOM.findDOMNode(this);
   }
 

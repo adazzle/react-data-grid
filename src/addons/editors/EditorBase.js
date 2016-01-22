@@ -16,9 +16,9 @@ class EditorBase extends React.Component {
     return updated;
   }
 
-  getInputNode(): HTMLInputElement{
-    var domNode = ReactDOM.findDOMNode(this);
-    if(domNode.tagName === 'INPUT'){
+  getInputNode() {
+    let domNode = ReactDOM.findDOMNode(this);
+    if (domNode.tagName === 'INPUT') {
       return domNode;
     }
 

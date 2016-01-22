@@ -1,5 +1,4 @@
 const React          = require('react');
-const ReactDOM = require('react-dom');
 const joinClasses    = require('classnames');
 const cloneWithProps = require('react/lib/cloneWithProps');
 const ExcelColumn    = require('./addons/grids/ExcelColumn');

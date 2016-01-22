@@ -1,7 +1,6 @@
 
 
 const React          = require('react');
-const ReactDOM       = require('react-dom');
 const TestUtils      = require('react/lib/ReactTestUtils');
 const CheckboxEditor = require('../CheckboxEditor');
 

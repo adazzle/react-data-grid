@@ -1,13 +1,9 @@
-/*eslint no-var:0, no-console:0 */
-'use strict';
-var React         = require('react');
-var ReactDOM      = require('react-dom');
-var rewire        = require('rewire');
-var Grid          = rewire('../Grid');
-var TestUtils     = require('react-addons-test-utils');
-var rewireModule  = require("../../test/rewireModule");
-var StubComponent = require("../../test/StubComponent");
-var helpers       = require('./GridPropHelpers');
+const React         = require('react');
+const rewire        = require('rewire');
+const Grid          = rewire('../Grid');
+const TestUtils     = require('react-addons-test-utils');
+const helpers       = require('./GridPropHelpers');
+const rewireModule = require('../../test/rewireModule');
 
 let testElement;
 let HeaderStub = React.createClass({
@@ -67,8 +63,8 @@ describe('Base Grid Tests', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportKeydown');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    var viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
-    TestUtils.Simulate.keyDown(viewportContainerNode, {key: "Enter"});
+    viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
+    TestUtils.Simulate.keyDown(viewportContainerNode, {key: 'Enter'});
     expect(testProps.onViewportKeydown).toHaveBeenCalled();
   });
 
@@ -76,7 +72,7 @@ describe('Base Grid Tests', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportDoubleClick');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    var viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
+    viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
     TestUtils.Simulate.doubleClick(viewportContainerNode);
     expect(testProps.onViewportDoubleClick).toHaveBeenCalled();
   });
@@ -85,7 +81,7 @@ describe('Base Grid Tests', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportDragStart');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    var viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
+    viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
     TestUtils.Simulate.dragStart(viewportContainerNode);
     expect(testProps.onViewportDragStart).toHaveBeenCalled();
   });
@@ -94,7 +90,7 @@ describe('Base Grid Tests', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportDragEnd');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    var viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
+    viewportContainerNode = testElement.refs.viewPortContainer.getDOMNode();
     TestUtils.Simulate.dragEnd(viewportContainerNode);
     expect(testProps.onViewportDragEnd).toHaveBeenCalled();
   });

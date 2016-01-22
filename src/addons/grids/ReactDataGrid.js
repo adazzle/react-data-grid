@@ -1,12 +1,4 @@
-/* @flow */
-/**
- * @jsx React.DOM
-
- */
-
 const React                 = require('react');
-var ReactDOM = require('react-dom');
-var PropTypes             = React.PropTypes;
 const BaseGrid              = require('../../Grid');
 const Row                   = require('../../Row');
 const ExcelColumn           = require('./ExcelColumn');

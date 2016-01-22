@@ -3,8 +3,8 @@ const DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
 const PropTypes            = require('react').PropTypes;
 const ColumnUtils = require('./ColumnUtils');
-const React = require('react');
-var ReactDOM = require('react-dom');
+import ReactDOM from 'react-dom';
+
 
 class Column {
   key: string;

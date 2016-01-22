@@ -1,5 +1,5 @@
 const React        = require('react');
-var ReactDOM = require('react-dom');
+const ReactDOM = require('react-dom');
 const TestUtils    = require('react/lib/ReactTestUtils');
 const ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
 
@@ -20,7 +20,7 @@ export default class GridRunner {
   }
 
   dispose() {
-    if(this.renderIntoBody) {
+    if (this.renderIntoBody) {
       ReactDOM.unmountComponentAtNode(document.body);
     }
     this.grid = null;
@@ -44,7 +44,7 @@ export default class GridRunner {
   /* =====
   ACTIONS
   ======== */
-  selectCell({cellIdx,rowIdx}) {
+  selectCell({cellIdx, rowIdx}) {
     this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
     this.cell = this.getCells(this.row)[cellIdx];
     TestUtils.Simulate.click(this.cell);
@@ -52,8 +52,8 @@ export default class GridRunner {
   }
 
   getCells(row) {
-    var cells = Array.from(row.querySelectorAll('.react-grid-Cell'));
-    if(this.grid.refs.reactDataGrid.props.enableRowSelect) {
+    let cells = Array.from(row.querySelectorAll('.react-grid-Cell'));
+    if (this.grid.refs.reactDataGrid.props.enableRowSelect) {
       // the rowSelectCell exists on the end of the array returned from testUtils
       let rowSelectCell = cells.pop();
       // remove from end of array and put at beginning
@@ -74,15 +74,15 @@ export default class GridRunner {
   }
   setValue(val) {
     ReactDOM.findDOMNode(this.getEditor()).value = val;
-    //remember to set the value via the dom node, not the component!
+    // remember to set the value via the dom node, not the component!
     return this;
   }
-  //you MUST have set the grid to render into body to use this
-  //chrome (et al) dont do cursor positions unless you are properly visibile
-  setCursor(start,end=start) {
+  // you MUST have set the grid to render into body to use this
+  // chrome (et al) dont do cursor positions unless you are properly visibile
+  setCursor(start, end = start) {
     const input = ReactDOM.findDOMNode(this.getEditor());
-    input.setSelectionRange(start,end);
-    expect(input.selectionStart).toEqual(start,`Couldnt set the cursor.
+    input.setSelectionRange(start, end);
+    expect(input.selectionStart).toEqual(start, `Couldnt set the cursor.
             You probably havent rendered the grid into the *actual* dom.
             You need to specify renderIntoBody:true in the constructor for GridRunner`);
     return this;
@@ -111,16 +111,16 @@ export default class GridRunner {
     const toCell = this.getCells(rows[to])[col];
     over.push(toCell);
 
-    //Act
-    //do the drag
-    //Important: we need dragStart / dragEnter / dragEnd
+    // Act
+    // do the drag
+    // Important: we need dragStart / dragEnter / dragEnd
     TestUtils.Simulate.dragStart(ReactDOM.findDOMNode(this.row));
-    if(beforeDragEnter) {beforeDragEnter();}
+    if (beforeDragEnter) {beforeDragEnter();}
 
     over.forEach((r) => {
-      TestUtils.Simulate.dragEnter(ReactDOM.findDOMNode(r))
+      TestUtils.Simulate.dragEnter(ReactDOM.findDOMNode(r));
     });
-    if(beforeDragEnd) {beforeDragEnd();}
+    if (beforeDragEnd) {beforeDragEnd();}
     TestUtils.Simulate.dragEnd(ReactDOM.findDOMNode(toCell));
 
     return this;
@@ -176,10 +176,10 @@ export default class GridRunner {
     expect(this.getEditor()).not.toBe(null);
     return this;
   }
-  hasSelected({rowIdx,cellIdx,expectedClass='.selected'}) {
-    //and should move to the appropriate cell/row
-    const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
-    const selected = selectedRow.querySelector(expectedClass);;
+  hasSelected({rowIdx, cellIdx, expectedClass = '.selected'}) {
+    // and should move to the appropriate cell/row
+    const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
+    const selected = selectedRow.querySelector(expectedClass);
     expect(selected.props.rowIdx).toEqual(rowIdx);
     expect(selected.props.idx).toEqual(cellIdx);
     return this;

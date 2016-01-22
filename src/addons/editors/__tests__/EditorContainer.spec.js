@@ -1,6 +1,5 @@
 
 const React            = require('react');
-var ReactDOM         = require('react-dom');
 const rewire           = require('rewire');
 const EditorContainer  = rewire('../EditorContainer.js');
 const TestUtils        = require('react/lib/ReactTestUtils');
@@ -74,17 +73,17 @@ describe('Editor Container Tests', () => {
       cellMetaData.onCommit = function() {};
       spyOn(cellMetaData, 'onCommit');
 
-        //render into an actual div, not a detached one
-        //otherwise IE (11) gives an error when we try and setCaretAtEndOfInput
-        container = document.createElement('div');
-        document.body.appendChild(container);
-        component = ReactDOM.render(<EditorContainer
-          rowData={rowData}
-          value={'Adwolf'}
-          cellMetaData={cellMetaData}
-          column={fakeColumn}
-          height={50}/>, container);
-      });
+      // render into an actual div, not a detached one
+      // otherwise IE (11) gives an error when we try and setCaretAtEndOfInput
+      container = document.createElement('div');
+      document.body.appendChild(container);
+      component = React.render(<EditorContainer
+        rowData={rowData}
+        value={'Adwolf'}
+        cellMetaData={cellMetaData}
+        column={fakeColumn}
+        height={50}/>, container);
+    });
 
     afterEach(() => {
       // remove our container
