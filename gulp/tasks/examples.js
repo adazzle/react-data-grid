@@ -37,14 +37,8 @@ webpackConfig = {
 	},
 	module: {
 		loaders: [
-		{
-			test: /\.js$/,
-			loader: 'babel-loader?optional[]=runtime',
-			exclude: [
-				/node_modules/
-			]
-		 } // loaders can take parameters as a querystring
-		]
+		    { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"}
+		  ]
 	},
 	plugins: []
 }
