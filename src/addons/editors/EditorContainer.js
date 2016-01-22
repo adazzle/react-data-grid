@@ -1,94 +1,86 @@
-/* @flow */
-/**
-* @jsx React.DOM
+const React                   = require('react');
+const joinClasses              = require('classnames');
+const keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
+const SimpleTextEditor        = require('./SimpleTextEditor');
+const isFunction              = require('../utils/isFunction');
+const cloneWithProps          = require('react/lib/cloneWithProps');
 
 
-*/
-'use strict';
+const EditorContainer = React.createClass({
+  mixins: [keyboardHandlerMixin],
 
-var React                   = require('react');
-var joinClasses              = require('classnames');
-var keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
-var SimpleTextEditor        = require('./SimpleTextEditor');
-var isFunction              = require('../utils/isFunction');
-var cloneWithProps          = require('react/lib/cloneWithProps');
-
-
-var EditorContainer = React.createClass({
-
-  mixins : [keyboardHandlerMixin],
-
-  propTypes : {
-    rowData :React.PropTypes.object.isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string,React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+  propTypes: {
+    rowIdx: React.PropTypes.number,
+    rowData: React.PropTypes.object.isRequired,
+    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     cellMetaData: React.PropTypes.shape({
       selected: React.PropTypes.object.isRequired,
       copied: React.PropTypes.object,
       dragged: React.PropTypes.object,
       onCellClick: React.PropTypes.func,
-      onCellDoubleClick: React.PropTypes.func
+      onCellDoubleClick: React.PropTypes.func,
+      onCommitCancel: React.PropTypes.func,
+      onCommit: React.PropTypes.func
     }).isRequired,
-    column : React.PropTypes.object.isRequired,
-    height : React.PropTypes.number.isRequired
+    column: React.PropTypes.object.isRequired,
+    height: React.PropTypes.number.isRequired
   },
 
   changeCommitted: false,
 
-  getInitialState(){
-    return {isInvalid : false}
+  getInitialState() {
+    return {isInvalid: false};
   },
 
   componentDidMount: function() {
-    var inputNode = this.getInputNode();
-    if(inputNode !== undefined){
+    let inputNode = this.getInputNode();
+    if (inputNode !== undefined) {
       this.setTextInputFocus();
-      if(!this.getEditor().disableContainerStyles){
+      if (!this.getEditor().disableContainerStyles) {
         inputNode.className += ' editor-main';
         inputNode.style.height = this.props.height - 1 + 'px';
       }
     }
   },
 
-  createEditor(): ReactElement{
-    var editorRef = (c) => this.editor = c;
-    var editorProps = {
-		ref: editorRef,
-		column : this.props.column,
-		value : this.getInitialValue(),
-		onCommit : this.commit,
-		rowMetaData : this.getRowMetaData(),
-		height : this.props.height,
-    onBlur : this.commit,
-    onOverrideKeyDown : this.onKeyDown
-	};
-    var customEditor = this.props.column.editor;
-    if(customEditor && React.isValidElement(customEditor)){
-      //return custom column editor or SimpleEditor if none specified
-      return cloneWithProps(customEditor, editorProps)
-    }else{
-      return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} />;
+  componentWillUnmount: function() {
+    if (!this.changeCommitted && !this.hasEscapeBeenPressed()) {
+      this.commit({key: 'Enter'});
     }
   },
 
-  getRowMetaData(): ?any {
-    //clone row data so editor cannot actually change this
-    var columnName = this.props.column.ItemId;
-    //convention based method to get corresponding Id or Name of any Name or Id property
-    if(typeof this.props.column.getRowMetaData === 'function'){
-      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
+  createEditor(): ReactElement {
+    let editorRef = (c) => this.editor = c;
+    let editorProps = {
+      ref: editorRef,
+      column: this.props.column,
+      value: this.getInitialValue(),
+      onCommit: this.commit,
+      rowMetaData: this.getRowMetaData(),
+      height: this.props.height,
+      onBlur: this.commit,
+      onOverrideKeyDown: this.onKeyDown
+    };
+
+    let customEditor = this.props.column.editor;
+    if (customEditor && React.isValidElement(customEditor)) {
+      // return custom column editor or SimpleEditor if none specified
+      return cloneWithProps(customEditor, editorProps);
     }
+
+    return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
   },
 
-  onPressEnter(e: SyntheticKeyboardEvent){
-    this.commit({key : 'Enter'});
+  onPressEnter() {
+    this.commit({key: 'Enter'});
   },
 
-  onPressTab(e: SyntheticKeyboardEvent){
-    this.commit({key : 'Tab'});
+  onPressTab() {
+    this.commit({key: 'Tab'});
   },
 
-  onPressEscape(e: SyntheticKeyboardEvent){
-    if(!this.editorIsSelectOpen()){
+  onPressEscape(e: SyntheticKeyboardEvent) {
+    if (!this.editorIsSelectOpen()) {
       this.props.cellMetaData.onCommitCancel();
     } else {
       // prevent event from bubbling if editor has results to select
@@ -96,59 +88,63 @@ var EditorContainer = React.createClass({
     }
   },
 
-  onPressArrowDown(e: SyntheticKeyboardEvent){
-    if(this.editorHasResults()){
-      //dont want to propogate as that then moves us round the grid
+  onPressArrowDown(e: SyntheticKeyboardEvent) {
+    if (this.editorHasResults()) {
+      // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
-    }
-    else {
+    } else {
       this.commit(e);
     }
   },
 
-  onPressArrowUp(e: SyntheticKeyboardEvent){
-    if(this.editorHasResults()){
-      //dont want to propogate as that then moves us round the grid
+  onPressArrowUp(e: SyntheticKeyboardEvent) {
+    if (this.editorHasResults()) {
+      // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
-    }
-    else {
+    } else {
       this.commit(e);
     }
   },
 
-  onPressArrowLeft(e: SyntheticKeyboardEvent){
-    //prevent event propogation. this disables left cell navigation
-    if(!this.isCaretAtBeginningOfInput()){
+  onPressArrowLeft(e: SyntheticKeyboardEvent) {
+    // prevent event propogation. this disables left cell navigation
+    if (!this.isCaretAtBeginningOfInput()) {
       e.stopPropagation();
-    }
-    else {
+    } else {
       this.commit(e);
     }
   },
 
-  onPressArrowRight(e: SyntheticKeyboardEvent){
-    //prevent event propogation. this disables right cell navigation
-    if(!this.isCaretAtEndOfInput()){
+  onPressArrowRight(e: SyntheticKeyboardEvent) {
+    // prevent event propogation. this disables right cell navigation
+    if (!this.isCaretAtEndOfInput()) {
       e.stopPropagation();
-    }
-    else {
+    } else {
       this.commit(e);
     }
   },
 
-  editorHasResults(): boolean{
-    if(isFunction(this.getEditor().hasResults)){
+  editorHasResults(): boolean {
+    if (isFunction(this.getEditor().hasResults)) {
       return this.getEditor().hasResults();
-    }else{
-      return false;
     }
+
+    return false;
   },
 
   editorIsSelectOpen() {
-    if(isFunction(this.getEditor().isSelectOpen)){
+    if (isFunction(this.getEditor().isSelectOpen)) {
       return this.getEditor().isSelectOpen();
-    }else{
-      return false;
+    }
+
+    return false;
+  },
+
+  getRowMetaData(): ?any {
+    // clone row data so editor cannot actually change this
+    // convention based method to get corresponding Id or Name of any Name or Id property
+    if (typeof this.props.column.getRowMetaData === 'function') {
+      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
     }
   },
 
@@ -156,122 +152,117 @@ var EditorContainer = React.createClass({
     return this.editor;
   },
 
-  commit(args: {key : string}){
-    var opts = args || {};
-    var updated = this.getEditor().getValue();
-    if(this.isNewValueValid(updated)){
-      var cellKey = this.props.column.key;
-      this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated : updated, key : opts.key});
-    }
-    this.changeCommitted = true;
-  },
-
-  isNewValueValid(value: string): boolean{
-    if(isFunction(this.getEditor().validate)){
-      var isValid = this.getEditor().validate(value);
-      this.setState({isInvalid : !isValid});
-      return isValid;
-    }else{
-      return true;
-    }
-  },
-
-  getInputNode(): HTMLInputElement{
+  getInputNode(): HTMLInputElement {
     return this.getEditor().getInputNode();
   },
 
-  getInitialValue(): string{
-    var selected = this.props.cellMetaData.selected;
-    var keyCode = selected.initialKeyCode;
-    if(keyCode === 'Delete' || keyCode === 'Backspace'){
+  getInitialValue(): string {
+    let selected = this.props.cellMetaData.selected;
+    let keyCode = selected.initialKeyCode;
+    if (keyCode === 'Delete' || keyCode === 'Backspace') {
       return '';
-    }else if(keyCode === 'Enter'){
+    } else if (keyCode === 'Enter') {
       return this.props.value;
-    }else{
-      var text = keyCode ? String.fromCharCode(keyCode) : this.props.value;
-      return text;
     }
 
+    let text = keyCode ? String.fromCharCode(keyCode) : this.props.value;
+    return text;
   },
 
-  getContainerClass(){
+  getContainerClass() {
     return joinClasses({
-      'has-error' : this.state.isInvalid === true
-    })
+      'has-error': this.state.isInvalid === true
+    });
   },
 
-  renderStatusIcon(): ?ReactElement{
-    if(this.state.isInvalid === true){
-      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>
+  commit(args: {key : string}) {
+    let opts = args || {};
+    let updated = this.getEditor().getValue();
+    if (this.isNewValueValid(updated)) {
+      let cellKey = this.props.column.key;
+      this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
     }
+
+    this.changeCommitted = true;
   },
 
-  render(): ?ReactElement{
-  return (
-      <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} >
-      {this.createEditor()}
-      {this.renderStatusIcon()}
-      </div>
-    )
+  isNewValueValid(value: string): boolean {
+    if (isFunction(this.getEditor().validate)) {
+      let isValid = this.getEditor().validate(value);
+      this.setState({isInvalid: !isValid});
+
+      return isValid;
+    }
+
+    return true;
   },
 
-  setCaretAtEndOfInput(){
-    var input = this.getInputNode();
-    //taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-    var txtLength = input.value.length;
-    if(input.setSelectionRange){
+  setCaretAtEndOfInput() {
+    let input = this.getInputNode();
+    // taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+    let txtLength = input.value.length;
+    if (input.setSelectionRange) {
       input.setSelectionRange(txtLength, txtLength);
-    }else if(input.createTextRange){
-      var fieldRange = input.createTextRange();
+    } else if (input.createTextRange) {
+      let fieldRange = input.createTextRange();
       fieldRange.moveStart('character', txtLength);
       fieldRange.collapse();
       fieldRange.select();
     }
   },
 
-  isCaretAtBeginningOfInput(): boolean{
-    var inputNode = this.getInputNode();
+  isCaretAtBeginningOfInput(): boolean {
+    let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.selectionEnd
       && inputNode.selectionStart === 0;
   },
 
-  isCaretAtEndOfInput(): boolean{
-    var inputNode = this.getInputNode();
+  isCaretAtEndOfInput(): boolean {
+    let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
   },
 
-  setTextInputFocus(){
-    var selected = this.props.cellMetaData.selected;
-    var keyCode = selected.initialKeyCode;
-    var inputNode = this.getInputNode();
+  setTextInputFocus() {
+    let selected = this.props.cellMetaData.selected;
+    let keyCode = selected.initialKeyCode;
+    let inputNode = this.getInputNode();
     inputNode.focus();
-    if(inputNode.tagName === "INPUT"){
-      if(!this.isKeyPrintable(keyCode)){
+    if (inputNode.tagName === 'INPUT') {
+      if (!this.isKeyPrintable(keyCode)) {
         inputNode.focus();
         inputNode.select();
-      }else{
+      } else {
         inputNode.select();
       }
-    }
-  },
-
-  componentWillUnmount: function() {
-    if (!this.changeCommitted && !this.hasEscapeBeenPressed()) {
-      this.commit({key:'Enter'});
     }
   },
 
   hasEscapeBeenPressed() {
-    var pressed = false;
-    var escapeKey = 27;
+    let pressed = false;
+    let escapeKey = 27;
     if (window.event) {
       if (window.event.keyCode === escapeKey) {
         pressed = true;
-      } else if (window.event.which === escapeKey){
+      } else if (window.event.which === escapeKey) {
         pressed  = true;
       }
     }
     return pressed;
+  },
+
+  renderStatusIcon(): ?ReactElement {
+    if (this.state.isInvalid === true) {
+      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>;
+    }
+  },
+
+  render(): ?ReactElement {
+    return (
+        <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} commit={this.commit}>
+        {this.createEditor()}
+        {this.renderStatusIcon()}
+        </div>
+      );
   }
 });
 

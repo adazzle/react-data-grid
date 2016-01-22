@@ -1,25 +1,16 @@
-/* TODO@flow mixin not compatible and HTMLElement classList */
-/**
- * @jsx React.DOM
+const React = require('react');
 
-
- */
-'use strict';
-
-var React = require('react');
-
-var ScrollShim = {
+let ScrollShim = {
 
   appendScrollShim() {
     if (!this._scrollShim) {
-      var size = this._scrollShimSize();
-      var shim = document.createElement('div');
+      let size = this._scrollShimSize();
+      let shim = document.createElement('div');
       if (shim.classList) {
-      	shim.classList.add('react-grid-ScrollShim'); //flow - not compatible with HTMLElement
-	  }
-	  else {
-	  	shim.className += ' react-grid-ScrollShim';
-	  }
+        shim.classList.add('react-grid-ScrollShim'); // flow - not compatible with HTMLElement
+      } else {
+        shim.className += ' react-grid-ScrollShim';
+      }
       shim.style.position = 'absolute';
       shim.style.top = 0;
       shim.style.left = 0;

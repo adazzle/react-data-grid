@@ -146,7 +146,7 @@
 //       component.setState({selectedRows : [null, true, true, true]});
 //       var baseGrid = TestUtils.findRenderedComponentWithType(component, BaseGridStub);
 //       var selectRowCol = baseGrid.props.columns[0];
-//       
+//
 //       selectRowCol.onRowSelect(3);
 //       expect(component.state.selectedRows[3]).toBe(false);
 //     });

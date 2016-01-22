@@ -1,5 +1,3 @@
-'use strict';
-
 class DataStore {
 
   constructor(rows) {
@@ -7,7 +5,7 @@ class DataStore {
   }
 
   getObjectAt(index)  {
-    if (index < 0 || index > SIZE){
+    if (index < 0 || index > SIZE) {
       return undefined;
     }
     return _cache[index];
@@ -16,7 +14,6 @@ class DataStore {
   getSize() {
     return this._cache.length;
   }
-
 }
 
 module.exports = DataStore;

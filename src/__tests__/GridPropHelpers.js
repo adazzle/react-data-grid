@@ -1,5 +1,5 @@
-var _rows = [];
-for (var i = 0; i < 1000; i++) {
+let _rows = [];
+for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
     title: 'Title ' + i,
@@ -7,27 +7,26 @@ for (var i = 0; i < 1000; i++) {
   });
 }
 module.exports = {
-  columns : [
-  {
-    key   : 'id',
-    name  : 'ID',
-    width : 100
+  columns: [{
+    key: 'id',
+    name: 'ID',
+    width: 100
   },
   {
     key: 'title',
     name: 'Title',
-    width : 100
+    width: 100
   },
   {
     key: 'count',
     name: 'Count',
-    width : 100
+    width: 100
   }
   ],
-  rowGetter : function(i){
+  rowGetter: function(i) {
     return _rows[i];
   },
-  rowsCount : function(){
+  rowsCount: function() {
     return _rows.length;
   }
-}
+};

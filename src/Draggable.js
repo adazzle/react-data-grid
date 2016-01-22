@@ -1,31 +1,13 @@
-/* @flow need   */
-/**
- * @jsx React.DOM
+const React         = require('react');
+const PropTypes     = React.PropTypes;
+const emptyFunction = require('react/lib/emptyFunction');
 
-
- */
-'use strict';
-
-var React         = require('react');
-var PropTypes     = React.PropTypes;
-var emptyFunction = require('react/lib/emptyFunction');
-
-var Draggable = React.createClass({
-
+const Draggable = React.createClass({
   propTypes: {
     onDragStart: PropTypes.func,
     onDragEnd: PropTypes.func,
     onDrag: PropTypes.func,
     component: PropTypes.oneOfType([PropTypes.func, PropTypes.constructor])
-  },
-
-  render(): ?ReactElement {
-    var Component = this.props.component;
-    return (
-      <div {...this.props}
-        onMouseDown={this.onMouseDown}
-        className='react-grid-HeaderCell__draggable' />
-    );
   },
 
   getDefaultProps() {
@@ -42,8 +24,12 @@ var Draggable = React.createClass({
     };
   },
 
+  componentWillUnmount() {
+    this.cleanUp();
+  },
+
   onMouseDown(e: SyntheticMouseEvent) {
-    var drag = this.props.onDragStart(e);
+    let drag = this.props.onDragStart(e);
 
     if (drag === null && e.button !== 0) {
       return;
@@ -73,13 +59,17 @@ var Draggable = React.createClass({
     this.setState({drag: null});
   },
 
-  componentWillUnmount() {
-    this.cleanUp();
-  },
-
   cleanUp() {
     window.removeEventListener('mouseup', this.onMouseUp);
     window.removeEventListener('mousemove', this.onMouseMove);
+  },
+
+  render(): ?ReactElement {
+    return (
+      <div {...this.props}
+        onMouseDown={this.onMouseDown}
+        className="react-grid-HeaderCell__draggable" />
+    );
   }
 });
 

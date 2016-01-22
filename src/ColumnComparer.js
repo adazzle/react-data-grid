@@ -1,8 +1,8 @@
-/* TODO@flow objects as a map */
-var isValidElement = require('react').isValidElement;
+let isValidElement = require('react').isValidElement;
+
 module.exports =
 function sameColumn(a: Column, b: Column): boolean {
-  var k;
+  let k;
 
   for (k in a) {
     if (a.hasOwnProperty(k)) {
