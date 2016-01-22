@@ -1,0 +1,74 @@
+<<<<<<< HEAD
+'use strict';
+var React        = require('react');
+var rewire       = require('rewire');
+var Canvas         = rewire('../Canvas');
+var TestUtils    = require('react-addons-test-utils');
+var rewireModule = require("../../test/rewireModule");
+var StubComponent = require("../../test/StubComponent");
+=======
+
+const React        = require('react');
+const rewire       = require('rewire');
+const Canvas       = rewire('../Canvas');
+const TestUtils    = require('react/lib/ReactTestUtils');
+const jasmineReact = require('jasmine-react-helpers');
+>>>>>>> master
+
+describe('Canvas Tests', () => {
+  let testElement;
+
+  let testProps = {
+    rowHeight: 25,
+    height: 200,
+    displayStart: 1,
+    displayEnd: 10,
+    rowsCount: 1,
+    columns: [],
+    rowGetter: function() { return []; },
+    cellMetaData: {
+      selected: {},
+      dragged: {},
+      onCellClick: () => {},
+      onCellDoubleClick: () => {},
+      onCommit: () => {},
+      onCommitCancel: () => {},
+      copied: {},
+      handleDragEnterRow: () => {},
+      handleTerminateDrag: () => {}
+    }
+  };
+
+  beforeEach(() => {
+    testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
+  });
+
+  it('should create a new instance of Canvas', () => {
+    expect(testElement).toBeDefined();
+  });
+
+  it('Should not call setScroll on render', () => {
+<<<<<<< HEAD
+=======
+    jasmineReact.spyOnClass(Canvas, 'setScrollLeft');
+>>>>>>> master
+    testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
+    spyOn(testElement, "setScrollLeft");
+    expect(testElement.setScrollLeft).not.toHaveBeenCalled();
+  });
+
+  it('Should not call setScroll on update', () => {
+<<<<<<< HEAD
+
+    testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
+    //force an update
+    spyOn(testElement, "setScrollLeft");
+=======
+    jasmineReact.spyOnClass(Canvas, 'setScrollLeft');
+    testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
+    // force an update
+>>>>>>> master
+    testElement.componentDidUpdate(testProps);
+    expect(testElement.setScrollLeft).not.toHaveBeenCalled();
+  });
+});

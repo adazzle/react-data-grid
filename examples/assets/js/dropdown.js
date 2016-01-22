@@ -8,7 +8,7 @@
 
 
 +function ($) {
-  'use strict';
+  
 
   // DROPDOWN CLASS DEFINITION
   // =========================

@@ -1,14 +1,10 @@
 /* @flow */
 /**
  * @jsx React.DOM
-
-
  */
-'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var EditorBase = require('./EditorBase');
+const React = require('react');
+const EditorBase = require('./EditorBase');
 
 class DropDownEditor extends EditorBase {
 
@@ -16,34 +12,32 @@ class DropDownEditor extends EditorBase {
     return ReactDOM.findDOMNode(this);
   }
 
-  onClick(e: Event){
+  onClick() {
     this.getInputNode().focus();
   }
 
-  onDoubleClick(e: Event){
+  onDoubleClick() {
     this.getInputNode().focus();
   }
 
-  render(): ?ReactElement{
+  render(): ?ReactElement {
     return (
       <select style={this.getStyle()} defaultValue={this.props.value} onBlur={this.props.onBlur} onChange={this.onChange} >
         {this.renderOptions()}
       </select>);
   }
 
-  renderOptions(): Array<ReactElement>{
-    var options = [];
-    this.props.options.forEach(function(name){
+  renderOptions(): Array<ReactElement> {
+    let options = [];
+    this.props.options.forEach(function(name) {
       options.push(<option key={name} value={name}  >{name}</option>);
     }, this);
     return options;
   }
-
 }
-
 
 DropDownEditor.propTypes = {
-    options : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-}
+  options: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
+};
 
 module.exports = DropDownEditor;

@@ -1,3 +1,3 @@
 module.exports = {
-  DataStore : require('./DataStore')
-}
+  DataStore: require('./DataStore')
+};

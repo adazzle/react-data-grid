@@ -16,9 +16,19 @@ describe('Canvas Tests', () => {
     displayEnd: 10,
     rowsCount: 1,
     columns: [],
-    rowGetter: function() { return [] },
-    cellMetaData: {}
-  }
+    rowGetter: function() { return []; },
+    cellMetaData: {
+      selected: {},
+      dragged: {},
+      onCellClick: () => {},
+      onCellDoubleClick: () => {},
+      onCommit: () => {},
+      onCommitCancel: () => {},
+      copied: {},
+      handleDragEnterRow: () => {},
+      handleTerminateDrag: () => {}
+    }
+  };
 
   beforeEach(() => {
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
@@ -42,6 +52,4 @@ describe('Canvas Tests', () => {
     testElement.componentDidUpdate(testProps);
     expect(testElement.setScrollLeft).not.toHaveBeenCalled();
   });
-
-
 });

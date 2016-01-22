@@ -1,4 +1,4 @@
-module.exports = function (stateValues) {
+module.exports = function(stateValues) {
   return Object.assign({
     columnMetrics: {
       columns: [{

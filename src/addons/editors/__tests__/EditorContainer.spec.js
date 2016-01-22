@@ -1,33 +1,36 @@
-'use strict';
-var React            = require('react');
+
+const React            = require('react');
 var ReactDOM         = require('react-dom');
-var rewire           = require('rewire');
-var EditorContainer  = rewire('../EditorContainer.js');
-var TestUtils        = require('react-addons-test-utils');
-var SimpleTextEditor = require('../SimpleTextEditor');
+const rewire           = require('rewire');
+const EditorContainer  = rewire('../EditorContainer.js');
+const TestUtils        = require('react/lib/ReactTestUtils');
+const SimpleTextEditor = require('../SimpleTextEditor');
 
 describe('Editor Container Tests', () => {
-  var cellMetaData = {
-    selected : {
-      idx : 0,
-      rowIdx :0
+  let cellMetaData = {
+    selected: {
+      idx: 0,
+      rowIdx: 0
     },
     onCommit: function() {}
   };
-  var component, container;
-  var fakeColumn = {
-    name : 'col1',
-    key : 'col1',
-    width : 100
-  };
-  var rowData={
-    col1 : 'I',
-    col2 : 'love',
-    col3 : 'Testing'
+
+  let component;
+  let container;
+
+  let fakeColumn = {
+    name: 'col1',
+    key: 'col1',
+    width: 100
   };
 
-  describe("Basic render tests", () => {
+  let rowData = {
+    col1: 'I',
+    col2: 'love',
+    col3: 'Testing'
+  };
 
+  describe('Basic render tests', () => {
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
@@ -41,39 +44,35 @@ describe('Editor Container Tests', () => {
     });
 
     it('should render a simpleTextEditor if no column.editor property', () => {
-      var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
-      expect(Editor).toBeDefined();
+      let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
+      expect(editor).toBeDefined();
     });
 
     it('should select the text of the default input when the editor is rendered', () => {
-
       function isTextSelected(input) {
-        if (typeof input.selectionStart == "number") {
-          return input.selectionStart == 0 && input.selectionEnd == input.value.length;
-        } else if (typeof document.selection != "undefined") {
+        if (typeof input.selectionStart === 'number') {
+          return input.selectionStart === 0 && input.selectionEnd === input.value.length;
+        } else if (typeof document.selection !== 'undefined') {
           input.focus();
-          return document.selection.createRange().text == input.value;
+          return document.selection.createRange().text === input.value;
         }
       }
 
-      var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
-      expect(isTextSelected(Editor.getInputNode())).toBeDefined();
+      let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
+      expect(isTextSelected(editor.getInputNode())).toBeDefined();
     });
 
     it('should render the editor with the correct properties', () => {
-      var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
-      expect(Editor.props.value).toEqual('Adwolf');
-      expect(Editor.props.column).toEqual(fakeColumn);
+      let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
+      expect(editor.props.value).toEqual('Adwolf');
+      expect(editor.props.column).toEqual(fakeColumn);
     });
-
-
   });
 
-  describe("Events", () => {
-
-      beforeEach(() => {
-        cellMetaData.onCommit = function(value){};
-        spyOn(cellMetaData, 'onCommit');
+  describe('Events', () => {
+    beforeEach(() => {
+      cellMetaData.onCommit = function() {};
+      spyOn(cellMetaData, 'onCommit');
 
         //render into an actual div, not a detached one
         //otherwise IE (11) gives an error when we try and setCaretAtEndOfInput
@@ -87,24 +86,16 @@ describe('Editor Container Tests', () => {
           height={50}/>, container);
       });
 
-      afterEach(() => {
-        //remove our container
-        document.body.removeChild(container);
-      })
+    afterEach(() => {
+      // remove our container
+      document.body.removeChild(container);
+    });
 
-      it('hitting enter should call commit of cellMetaData only once', () => {
-        var Editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor)
-        TestUtils.Simulate.keyDown(Editor.getInputNode(), {key: "Enter"});
-        expect(cellMetaData.onCommit).toHaveBeenCalled();
-        expect(cellMetaData.onCommit.callCount).toEqual(1);
-      });
-
-      // it('should commit editor changes on blur', () => {
-      //   let textEdtr = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
-      //   TestUtils.Simulate.blur(ReactDOM.findDOMNode(component));
-      //   expect(cellMetaData.onCommit).toHaveBeenCalled();
-      // });
-
-
+    it('hitting enter should call commit of cellMetaData only once', () => {
+      let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
+      TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'Enter'});
+      expect(cellMetaData.onCommit).toHaveBeenCalled();
+      expect(cellMetaData.onCommit.callCount).toEqual(1);
+    });
   });
 });

@@ -1,0 +1,197 @@
+<<<<<<< HEAD
+/* TODO@flow unkwon */
+/**
+ * @jsx React.DOM
+
+
+ */
+"use strict";
+
+var React          = require('react');
+var ReactDOM = require('react-dom');
+var joinClasses     = require('classnames');
+var PropTypes      = React.PropTypes;
+var ExcelColumn    = require('./addons/grids/ExcelColumn');
+var ResizeHandle   = require('./ResizeHandle');
+=======
+const React          = require('react');
+const joinClasses    = require('classnames');
+const cloneWithProps = require('react/lib/cloneWithProps');
+const ExcelColumn    = require('./addons/grids/ExcelColumn');
+const ResizeHandle   = require('./ResizeHandle');
+const PropTypes      = React.PropTypes;
+
+function simpleCellRenderer(objArgs: {column: {name: string}}): ReactElement {
+  return <div className="widget-HeaderCell__value">{objArgs.column.name}</div>;
+}
+>>>>>>> master
+
+const HeaderCell = React.createClass({
+
+  propTypes: {
+    renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
+    column: PropTypes.shape(ExcelColumn).isRequired,
+    onResize: PropTypes.func.isRequired,
+<<<<<<< HEAD
+    height : PropTypes.number.isRequired,
+    onResizeEnd : PropTypes.func.isRequired
+  },
+
+  render(): ?ReactElement {
+    var resizeHandle;
+    if(this.props.column.resizable){
+      resizeHandle = <ResizeHandle
+      onDrag={this.onDrag}
+      onDragStart={this.onDragStart}
+      onDragEnd={this.onDragEnd}
+      />
+    }
+    var className = joinClasses({
+      'react-grid-HeaderCell': true,
+      'react-grid-HeaderCell--resizing': this.state.resizing,
+      'react-grid-HeaderCell--locked': this.props.column.locked
+    });
+    className = joinClasses(className, this.props.className, this.props.column.cellClass);
+    var cell = this.getCell();
+    return (
+      <div className={className} style={this.getStyle()}>
+        {cell}
+        {resizeHandle}
+      </div>
+    );
+  },
+
+  getCell(): ReactComponent {
+    if (React.isValidElement(this.props.renderer)) {
+      return React.cloneElement(this.props.renderer, {column : this.props.column});
+    } else {
+      var Renderer = this.props.renderer;
+      return this.props.renderer({column: this.props.column});
+    }
+=======
+    height: PropTypes.number.isRequired,
+    onResizeEnd: PropTypes.func.isRequired,
+    className: PropTypes.string
+>>>>>>> master
+  },
+
+  getDefaultProps(): {renderer: ReactComponent | (props: {column: {name: string}}) => ReactElement} {
+    return {
+      renderer: simpleCellRenderer
+    };
+  },
+
+  getInitialState(): {resizing: boolean} {
+    return {resizing: false};
+  },
+
+<<<<<<< HEAD
+  setScrollLeft(scrollLeft: number) {
+    var node = ReactDOM.findDOMNode(this);
+    node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+    node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+  },
+
+  getStyle(): {width:number; left: number; display: string; position: string; overflow: string; height: number; margin: number; textOverflow: string; whiteSpace: string } {
+    return {
+      width: this.props.column.width,
+      left: this.props.column.left,
+      display: 'inline-block',
+      position: 'absolute',
+      overflow: 'hidden',
+      height: this.props.height,
+      margin: 0,
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    };
+  },
+
+=======
+>>>>>>> master
+  onDragStart(e: SyntheticMouseEvent) {
+    this.setState({resizing: true});
+    // need to set dummy data for FF
+    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
+  },
+
+  onDrag(e: SyntheticMouseEvent) {
+    let resize = this.props.onResize || null; // for flows sake, doesnt recognise a null check direct
+    if (resize) {
+      let width = this.getWidthFromMouseEvent(e);
+      if (width > 0) {
+        resize(this.props.column, width);
+      }
+    }
+  },
+
+  onDragEnd(e: SyntheticMouseEvent) {
+    let width = this.getWidthFromMouseEvent(e);
+    this.props.onResizeEnd(this.props.column, width);
+    this.setState({resizing: false});
+  },
+
+  getWidthFromMouseEvent(e: SyntheticMouseEvent): number {
+<<<<<<< HEAD
+    var right = e.pageX;
+    var left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
+=======
+    let right = e.pageX;
+    let left = React.findDOMNode(this).getBoundingClientRect().left;
+>>>>>>> master
+    return right - left;
+  },
+
+  getCell(): ReactComponent {
+    if (React.isValidElement(this.props.renderer)) {
+      return cloneWithProps(this.props.renderer, {column: this.props.column});
+    }
+
+    return this.props.renderer({column: this.props.column});
+  },
+
+  getStyle(): {width:number; left: number; display: string; position: string; overflow: string; height: number; margin: number; textOverflow: string; whiteSpace: string } {
+    return {
+      width: this.props.column.width,
+      left: this.props.column.left,
+      display: 'inline-block',
+      position: 'absolute',
+      overflow: 'hidden',
+      height: this.props.height,
+      margin: 0,
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    };
+  },
+
+  setScrollLeft(scrollLeft: number) {
+    let node = React.findDOMNode(this);
+    node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+    node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+  },
+
+  render(): ?ReactElement {
+    let resizeHandle;
+    if (this.props.column.resizable) {
+      resizeHandle = (<ResizeHandle
+      onDrag={this.onDrag}
+      onDragStart={this.onDragStart}
+      onDragEnd={this.onDragEnd}
+      />);
+    }
+    let className = joinClasses({
+      'react-grid-HeaderCell': true,
+      'react-grid-HeaderCell--resizing': this.state.resizing,
+      'react-grid-HeaderCell--locked': this.props.column.locked
+    });
+    className = joinClasses(className, this.props.className, this.props.column.cellClass);
+    let cell = this.getCell();
+    return (
+      <div className={className} style={this.getStyle()}>
+        {cell}
+        {resizeHandle}
+      </div>
+    );
+  }
+});
+
+module.exports = HeaderCell;
