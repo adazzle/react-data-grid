@@ -11,9 +11,9 @@ var Row = require('../../Row');
 var Toolbar = React.createClass({
   propTypes: {
     onAddRow : React.PropTypes.func,
-    onToggleFilter : React.PropTypes.func.isRequired,
+    onToggleFilter : React.PropTypes.func,
     enableFilter : React.PropTypes.bool,
-    numberOfRows : React.PropTypes.number.isRequired
+    numberOfRows : React.PropTypes.number
   },
   onAddRow(){
     if(this.props.onAddRow !== null && this.props.onAddRow instanceof Function){

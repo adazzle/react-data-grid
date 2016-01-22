@@ -168,7 +168,7 @@ var Canvas = React.createClass({
                         || nextProps.columns !== this.props.columns
                         || nextProps.width !== this.props.width
                         || nextProps.cellMetaData !== this.props.cellMetaData
-                        || shallowCloneObject(nextProps.style) !== shallowCloneObject(this.props.style);
+                        || !shallowEqual(nextProps.style, this.props.style);
 
     if (shouldUpdate) {
       this.setState({

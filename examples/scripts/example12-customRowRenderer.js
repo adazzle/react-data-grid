@@ -83,11 +83,11 @@ var RowRenderer = React.createClass({
   },
  getRowStyle: function() {
    return {
-     backgroundColor: this.getRowBackground()
+     color: this.getRowBackground()
    }
  },
  getRowBackground: function() {
-   return this.props.idx % 2 ?  'green' : 'white'
+   return this.props.idx % 2 ?  'green' : 'blue'
  },
  render: function() {
    //here we are just changing the style

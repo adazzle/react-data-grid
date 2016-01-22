@@ -6,7 +6,7 @@
 
 var React             = require('react');
 var PropTypes         = React.PropTypes;
-var shallowEqual      = require('react/lib/shallowCompare');
+var shallowEqual    = require('fbjs/lib/shallowEqual');
 var HeaderCell        = require('./HeaderCell');
 var getScrollbarSize  = require('./getScrollbarSize');
 var ExcelColumn  = require('./addons/grids/ExcelColumn');
@@ -111,7 +111,7 @@ var HeaderRow = React.createClass({
       nextProps.width !== this.props.width
       || nextProps.height !== this.props.height
       || nextProps.columns !== this.props.columns
-      || shallowCloneObject(nextProps.style) !== shallowCloneObject(this.props.style)
+      || !shallowEqual(nextProps.style, this.props.style)
       || this.props.sortColumn != nextProps.sortColumn
       || this.props.sortDirection != nextProps.sortDirection
     );

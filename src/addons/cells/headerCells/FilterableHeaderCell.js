@@ -13,7 +13,7 @@ var FilterableHeaderCell = React.createClass({
 
   propTypes: {
     onChange: React.PropTypes.func.isRequired,
-    column: React.PropTypes.shape(ExcelColumn).isRequired
+    column: React.PropTypes.shape(ExcelColumn)
   },
 
   getInitialState(): {filterTerm: string}{
