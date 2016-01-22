@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var TestUtils    = require('react-addons-test-utils');
 var ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
 var ReactDataGrid = require('../grids/ReactDataGrid');
+var Row = require('../../Row');
 
 export default class GridRunner {
   /* =====
@@ -46,14 +47,14 @@ export default class GridRunner {
   ACTIONS
   ======== */
   selectCell({cellIdx,rowIdx}) {
-    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
+    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
     this.cell = this.getCells(this.row)[cellIdx];
     TestUtils.Simulate.click(this.cell);
     return this;
   }
 
   getCells(row) {
-    var cells = TestUtils.scryRenderedDOMComponentsWithClass(row, 'react-grid-Cell');
+    var cells = Array.from(row.querySelectorAll('.react-grid-Cell'));
     if(this.grid.refs.reactDataGrid.props.enableRowSelect) {
       // the rowSelectCell exists on the end of the array returned from testUtils
       var rowSelectCell = cells.pop();
@@ -71,7 +72,7 @@ export default class GridRunner {
     return this;
   }
   getEditor() {
-    return TestUtils.scryRenderedDOMComponentsWithTag(this.cell,'input')[0];
+    return this.cell.querySelector('input');
   }
   setValue(val) {
     ReactDOM.findDOMNode(this.getEditor()).value = val;
@@ -168,20 +169,19 @@ export default class GridRunner {
     return this;
   }
   isNotEditable() {
-    expect(this.getEditor()).toBe(undefined);
+    expect(this.getEditor()).toBe(null);
     return this;
   }
   isEditable() {
-    expect(this.getEditor()).not.toBe(undefined);
+    expect(this.getEditor()).not.toBe(null);
     return this;
   }
-  hasSelected({rowIdx,cellIdx,expectedClass='selected'}) {
+  hasSelected({rowIdx,cellIdx,expectedClass='.selected'}) {
     //and should move to the appropriate cell/row
     const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid,'react-grid-Row')[rowIdx];
-    const selected = TestUtils.scryRenderedDOMComponentsWithClass(selectedRow,expectedClass);
-    expect(selected.length).toEqual(1);
-    expect(selected[0].props.rowIdx).toEqual(rowIdx);
-    expect(selected[0].props.idx).toEqual(cellIdx);
+    const selected = selectedRow.querySelector(expectedClass);;
+    expect(selected.props.rowIdx).toEqual(rowIdx);
+    expect(selected.props.idx).toEqual(cellIdx);
     return this;
   }
   hasCopied({cellIdx, rowIdx, value}) {
@@ -205,7 +205,7 @@ export default class GridRunner {
       expect(toCell.props.value).toEqual(expected);
       // and finally the rendered data
       // (use trim as we are reading from the dom so get some whitespace at the end)
-      expect(ReactDOM.findDOMNode(TestUtils.findRenderedDOMComponentWithClass(toCell,'react-grid-Cell__value')).textContent.trim()).toEqual(expected.trim());
+      expect(ReactDOM.findDOMNode(toCell.querySelector('.react-grid-Cell__value')).textContent.trim()).toEqual(expected.trim());
     }
   }
 
