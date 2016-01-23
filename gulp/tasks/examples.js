@@ -7,6 +7,7 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var path = require("path");
 
+console.log(path.resolve(__dirname, '../../src'))
 webpackConfig = {
 	entry: {
 		'index' : './examples/index.js',
@@ -19,30 +20,27 @@ webpackConfig = {
 		filename: "[name].js",
 		libraryTarget: "umd"
 	},
+	resolve: {
+		alias: {
+			react: path.resolve('./node_modules/react'),
+      'react-dom': path.resolve('./node_modules/react-dom'),
+			'react-data-grid': path.join(__dirname, "/../../dist/react-data-grid"),
+			'react-data-grid-with-addons': path.join(__dirname, "/../../dist/react-data-grid-with-addons"),
+		}
+	},
 	externals: {
-		"react": {
-			root : 'React',
-			commonjs : 'react',
-			commonjs2 : 'react',
-			amd : 'react'
-		},
-		"react/addons": {
-			root : 'React',
-			commonjs : 'react',
-			commonjs2 : 'react',
-			amd : 'react'
-		},
-		'faker':'faker',
-		"moment" : "moment"
+		"react": 'React',
+    "react/addons": 'React',
+    "react-dom": 'ReactDOM',
+		'faker': 'faker',
+		"moment": "moment"
 	},
 	module: {
 		loaders: [
-		{ test: /\.js$/, loader: 'babel-loader?optional[]=runtime' } // loaders can take parameters as a querystring
-		]
+		    { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"}
+		  ]
 	},
-	plugins: [
-
-	]
+	plugins: []
 }
 
 

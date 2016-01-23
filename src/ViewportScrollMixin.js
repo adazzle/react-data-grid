@@ -1,4 +1,5 @@
 const React             = require('react');
+const ReactDOM = require('react-dom');
 const DOMMetrics        = require('./DOMMetrics');
 const min   = Math.min;
 const max   = Math.max;
@@ -18,7 +19,7 @@ module.exports = {
 
   DOMMetrics: {
     viewportHeight(): number {
-      return React.findDOMNode(this).offsetHeight;
+      return ReactDOM.findDOMNode(this).offsetHeight;
     }
   },
 

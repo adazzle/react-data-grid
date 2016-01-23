@@ -1,4 +1,5 @@
 const React                   = require('react');
+const ReactDOM = require('react-dom');
 const ExcelColumn             = require('../grids/ExcelColumn');
 
 class EditorBase extends React.Component {
@@ -15,9 +16,8 @@ class EditorBase extends React.Component {
     return updated;
   }
 
-  getInputNode(): HTMLInputElement {
-    let domNode = React.findDOMNode(this);
-
+  getInputNode() {
+    let domNode = ReactDOM.findDOMNode(this);
     if (domNode.tagName === 'INPUT') {
       return domNode;
     }

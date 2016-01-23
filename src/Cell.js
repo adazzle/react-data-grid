@@ -1,4 +1,5 @@
 const React             = require('react');
+const ReactDOM = require('react-dom');
 const joinClasses       = require('classnames');
 const cloneWithProps    = require('react/lib/cloneWithProps');
 const EditorContainer   = require('./addons/editors/EditorContainer');
@@ -183,7 +184,7 @@ const Cell = React.createClass({
     let updateCellClass = this.getUpdateCellClass();
     // -> removing the class
     if (updateCellClass != null && updateCellClass !== '') {
-      let cellDOMNode = this.getDOMNode();
+      let cellDOMNode = ReactDOM.findDOMNode(this);
       if (cellDOMNode.classList) {
         cellDOMNode.classList.remove(updateCellClass);
       // -> and re-adding the class

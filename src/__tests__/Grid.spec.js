@@ -1,9 +1,9 @@
 const React         = require('react');
 const rewire        = require('rewire');
 const Grid          = rewire('../Grid');
-const TestUtils     = require('react/lib/ReactTestUtils');
-const rewireModule  = require('../../test/rewireModule');
+const TestUtils     = require('react-addons-test-utils');
 const helpers       = require('./GridPropHelpers');
+const rewireModule = require('../../test/rewireModule');
 
 let testElement;
 let HeaderStub = React.createClass({

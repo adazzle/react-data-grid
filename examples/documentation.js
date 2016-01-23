@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
 
 var gettingStarted = require('./scripts/documentation01-gettingstarted');
@@ -25,5 +26,5 @@ var routes = (
 );
 
 ReactRouter.run(routes, function (Handler) {
-  React.render(<Handler/>, document.getElementById('documentation'));
+  ReactDOM.render(<Handler/>, document.getElementById('documentation'));
 });
