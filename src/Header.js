@@ -1,71 +1,88 @@
-/* @flow */
-/**
- * @jsx React.DOM
-
-
- */
-"use strict";
-
-var React               = require('react');
-var joinClasses          = require('classnames');
-var shallowCloneObject  = require('./shallowCloneObject');
-var ColumnMetrics       = require('./ColumnMetrics');
-var ColumnUtils         = require('./ColumnUtils');
-var HeaderRow           = require('./HeaderRow');
+const React               = require('react');
+const joinClasses         = require('classnames');
+const shallowCloneObject  = require('./shallowCloneObject');
+const ColumnMetrics       = require('./ColumnMetrics');
+const ColumnUtils         = require('./ColumnUtils');
+const HeaderRow           = require('./HeaderRow');
+const PropTypes           = React.PropTypes;
 
 type Column = {
   width: number
 }
 
-var Header = React.createClass({
+const Header = React.createClass({
   propTypes: {
-    columnMetrics: React.PropTypes.shape({  width: React.PropTypes.number.isRequired }).isRequired,
-    totalWidth: React.PropTypes.number,
-    height: React.PropTypes.number.isRequired,
-    headerRows : React.PropTypes.array.isRequired
+    columnMetrics: PropTypes.shape({  width: PropTypes.number.isRequired, columns: PropTypes.any }).isRequired,
+    totalWidth: PropTypes.number,
+    height: PropTypes.number.isRequired,
+    headerRows: PropTypes.array.isRequired,
+    sortColumn: PropTypes.string,
+    sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
+    onSort: PropTypes.func,
+    onColumnResize: PropTypes.func
   },
 
-  render(): ?ReactElement {
-    var state = this.state.resizing || this.props;
-
-    var className = joinClasses({
-      'react-grid-Header': true,
-      'react-grid-Header--resizing': !!this.state.resizing
-    });
-    var headerRows = this.getHeaderRows();
-
-    return (
-
-      <div {...this.props} style={this.getStyle()} className={className}>
-        {headerRows}
-      </div>
-    );
+  getInitialState(): {resizing: any} {
+    return {resizing: null};
   },
 
-  shouldComponentUpdate : function(nextProps: any, nextState: any): boolean{
-    var update =  !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
-    || this.props.totalWidth != nextProps.totalWidth
-    || (this.props.headerRows.length != nextProps.headerRows.length)
-    || (this.state.resizing != nextState.resizing)
-    || this.props.sortColumn != nextProps.sortColumn
-    || this.props.sortDirection != nextProps.sortDirection;
+  componentWillReceiveProps() {
+    this.setState({resizing: null});
+  },
+
+  shouldComponentUpdate: function(nextProps: any, nextState: any): boolean {
+    let update =  !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
+    || this.props.totalWidth !== nextProps.totalWidth
+    || (this.props.headerRows.length !== nextProps.headerRows.length)
+    || (this.state.resizing !== nextState.resizing)
+    || this.props.sortColumn !== nextProps.sortColumn
+    || this.props.sortDirection !== nextProps.sortDirection;
     return update;
   },
 
-  getHeaderRows(): Array<HeaderRow>{
-    var columnMetrics = this.getColumnMetrics();
-    var resizeColumn;
-    if(this.state.resizing){
+  onColumnResize(column: Column, width: number) {
+    let state = this.state.resizing || this.props;
+
+    let pos = this.getColumnPosition(column);
+
+    if (pos != null) {
+      let resizing = {
+        columnMetrics: shallowCloneObject(state.columnMetrics)
+      };
+      resizing.columnMetrics = ColumnMetrics.resizeColumn(
+          resizing.columnMetrics, pos, width);
+
+      // we don't want to influence scrollLeft while resizing
+      if (resizing.columnMetrics.totalWidth < state.columnMetrics.totalWidth) {
+        resizing.columnMetrics.totalWidth = state.columnMetrics.totalWidth;
+      }
+
+      resizing.column = ColumnUtils.getColumn(resizing.columnMetrics.columns, pos);
+      this.setState({resizing});
+    }
+  },
+
+  onColumnResizeEnd(column: Column, width: number) {
+    let pos = this.getColumnPosition(column);
+    if (pos !== null && this.props.onColumnResize) {
+      this.props.onColumnResize(pos, width || column.width);
+    }
+  },
+
+  getHeaderRows(): Array<HeaderRow> {
+    let columnMetrics = this.getColumnMetrics();
+    let resizeColumn;
+    if (this.state.resizing) {
       resizeColumn = this.state.resizing.column;
     }
-    var headerRows = [];
-    this.props.headerRows.forEach((function(row, index){
-      var headerRowStyle = {
+    let headerRows = [];
+    this.props.headerRows.forEach((row, index) => {
+      let headerRowStyle = {
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
         left: 0,
         width: this.props.totalWidth,
-        overflow : 'hidden'
+        overflow: 'hidden'
       };
 
       headerRows.push(<HeaderRow
@@ -82,87 +99,40 @@ var Header = React.createClass({
         sortColumn={this.props.sortColumn}
         sortDirection={this.props.sortDirection}
         onSort={this.props.onSort}
-        />)
-    }).bind(this));
+        />);
+    });
     return headerRows;
   },
 
-  getInitialState(): {resizing: any} {
-    return {resizing: null};
-  },
-
-  componentWillReceiveProps(nextProps: any) {
-    this.setState({resizing: null});
-  },
-
-  onColumnResize(column: Column, width: number) {
-    var state = this.state.resizing || this.props;
-
-    var pos = this.getColumnPosition(column);
-
-    if (pos != null) {
-      var resizing = {
-        columnMetrics: shallowCloneObject(state.columnMetrics)
-      };
-      resizing.columnMetrics = ColumnMetrics.resizeColumn(
-          resizing.columnMetrics, pos, width);
-
-      // we don't want to influence scrollLeft while resizing
-      if (resizing.columnMetrics.totalWidth < state.columnMetrics.totalWidth) {
-        resizing.columnMetrics.totalWidth = state.columnMetrics.totalWidth;
-      }
-
-      resizing.column = ColumnUtils.getColumn(resizing.columnMetrics.columns, pos);
-      this.setState({resizing});
-    }
-  },
-
   getColumnMetrics() {
-    var columnMetrics;
-    if(this.state.resizing){
+    let columnMetrics;
+    if (this.state.resizing) {
       columnMetrics = this.state.resizing.columnMetrics;
-    }else{
+    } else {
       columnMetrics = this.props.columnMetrics;
     }
     return columnMetrics;
   },
 
   getColumnPosition(column: Column): ?number {
-    var columnMetrics = this.getColumnMetrics();
-    var pos = -1;
-    columnMetrics.columns.forEach((c,idx) => {
-      if(c.key === column.key){
+    let columnMetrics = this.getColumnMetrics();
+    let pos = -1;
+    columnMetrics.columns.forEach((c, idx) => {
+      if (c.key === column.key) {
         pos = idx;
       }
     });
     return pos === -1 ? null : pos;
   },
 
-  onColumnResizeEnd(column: Column, width: number) {
-    var pos = this.getColumnPosition(column);
-    if (pos !== null && this.props.onColumnResize) {
-      this.props.onColumnResize(pos, width || column.width);
-    }
-  },
-
-  setScrollLeft(scrollLeft: number) {
-    var node = this.refs.row.getDOMNode();
-    node.scrollLeft = scrollLeft;
-    this.refs.row.setScrollLeft(scrollLeft);
-    if (this.refs.filterRow) {
-      var nodeFilters = this.refs.filterRow.getDOMNode();
-      nodeFilters.scrollLeft = scrollLeft;
-      this.refs.filterRow.setScrollLeft(scrollLeft);
-    }
-  },
-
   getCombinedHeaderHeights(until: ?number): number {
-    var stop_at = this.props.headerRows.length;
-    if (typeof until != 'undefined')
-      stop_at = until;
+    let stopAt = this.props.headerRows.length;
+    if (typeof until !== 'undefined') {
+      stopAt = until;
+    }
 
-    var height = 0;
-    for (var index = 0; index < stop_at; index++) {
+    let height = 0;
+    for (let index = 0; index < stopAt; index++) {
       height += this.props.headerRows[index].height || this.props.height;
     }
     return height;
@@ -172,10 +142,35 @@ var Header = React.createClass({
     return {
       position: 'relative',
       height: this.getCombinedHeaderHeights(),
-      overflow : 'hidden'
+      overflow: 'hidden'
     };
   },
-});
 
+  setScrollLeft(scrollLeft: number) {
+    let node = this.refs.row.getDOMNode();
+    node.scrollLeft = scrollLeft;
+    this.refs.row.setScrollLeft(scrollLeft);
+    if (this.refs.filterRow) {
+      let nodeFilters = this.refs.filterRow.getDOMNode();
+      nodeFilters.scrollLeft = scrollLeft;
+      this.refs.filterRow.setScrollLeft(scrollLeft);
+    }
+  },
+
+  render(): ?ReactElement {
+    let className = joinClasses({
+      'react-grid-Header': true,
+      'react-grid-Header--resizing': !!this.state.resizing
+    });
+    let headerRows = this.getHeaderRows();
+
+    return (
+
+      <div {...this.props} style={this.getStyle()} className={className}>
+        {headerRows}
+      </div>
+    );
+  }
+});
 
 module.exports = Header;

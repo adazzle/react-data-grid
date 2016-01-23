@@ -1,20 +1,12 @@
-/* TODO@flow mixin and invarient splat */
-/**
- * @jsx React.DOM
+const React               = require('react');
+const emptyFunction       = require('react/lib/emptyFunction');
+const shallowCloneObject  = require('./shallowCloneObject');
 
-
- */
-'use strict';
-
-var React               = require('react');
-var emptyFunction       = require('react/lib/emptyFunction');
-var shallowCloneObject  = require('./shallowCloneObject');
-
-var contextTypes = {
+let contextTypes = {
   metricsComputator: React.PropTypes.object
 };
 
-var MetricsComputatorMixin = {
+let MetricsComputatorMixin = {
 
   childContextTypes: contextTypes,
 
@@ -27,12 +19,12 @@ var MetricsComputatorMixin = {
   },
 
   registerMetricsImpl(component: ReactComponent, metrics: any): {[key:string]: any} {
-    var getters = {};
-    var s = this._DOMMetrics;
+    let getters = {};
+    let s = this._DOMMetrics;
 
-    for (var name in metrics) {
-      if(s.metrics[name] !== undefined) {
-          throw new Error('DOM metric ' + name + ' is already defined');
+    for (let name in metrics) {
+      if (s.metrics[name] !== undefined) {
+        throw new Error('DOM metric ' + name + ' is already defined');
       }
       s.metrics[name] = {component, computator: metrics[name].bind(component)};
       getters[name] = this.getMetricImpl.bind(null, name);
@@ -46,14 +38,14 @@ var MetricsComputatorMixin = {
   },
 
   unregisterMetricsFor(component: ReactComponent) {
-    var s = this._DOMMetrics;
-    var idx = s.components.indexOf(component);
+    let s = this._DOMMetrics;
+    let idx = s.components.indexOf(component);
 
     if (idx > -1) {
       s.components.splice(idx, 1);
 
-      var name;
-      var metricsToDelete = {};
+      let name;
+      let metricsToDelete = {};
 
       for (name in s.metrics) {
         if (s.metrics[name].component === component) {
@@ -62,18 +54,22 @@ var MetricsComputatorMixin = {
       }
 
       for (name in metricsToDelete) {
-        delete s.metrics[name];
+        if (metricsToDelete.hasOwnProperty(name)) {
+          delete s.metrics[name];
+        }
       }
     }
   },
 
   updateMetrics() {
-    var s = this._DOMMetrics;
+    let s = this._DOMMetrics;
 
-    var needUpdate = false;
+    let needUpdate = false;
 
-    for (var name in s.metrics) {
-      var newMetric = s.metrics[name].computator();
+    for (let name in s.metrics) {
+      if (!s.metrics.hasOwnProperty(name)) continue;
+
+      let newMetric = s.metrics[name].computator();
       if (newMetric !== s.metrics[name].value) {
         needUpdate = true;
       }
@@ -81,7 +77,7 @@ var MetricsComputatorMixin = {
     }
 
     if (needUpdate) {
-      for (var i = 0, len = s.components.length; i < len; i++) {
+      for (let i = 0, len = s.components.length; i < len; i++) {
         if (s.components[i].metricsUpdated) {
           s.components[i].metricsUpdated();
         }
@@ -97,9 +93,9 @@ var MetricsComputatorMixin = {
   },
 
   componentDidMount() {
-    if(window.addEventListener){
+    if (window.addEventListener) {
       window.addEventListener('resize', this.updateMetrics);
-    }else{
+    } else {
       window.attachEvent('resize', this.updateMetrics);
     }
     this.updateMetrics();
@@ -108,10 +104,9 @@ var MetricsComputatorMixin = {
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateMetrics);
   }
-
 };
 
-var MetricsMixin = {
+let MetricsMixin = {
 
   contextTypes: contextTypes,
 
@@ -120,7 +115,9 @@ var MetricsMixin = {
       this._DOMMetricsDefs = shallowCloneObject(this.DOMMetrics);
 
       this.DOMMetrics = {};
-      for (var name in this._DOMMetricsDefs) {
+      for (let name in this._DOMMetricsDefs) {
+        if (!this._DOMMetricsDefs.hasOwnProperty(name)) continue;
+
         this.DOMMetrics[name] = emptyFunction;
       }
     }
@@ -137,24 +134,24 @@ var MetricsMixin = {
       return this.context.metricsComputator.unregisterMetricsFor(this);
     }
     if (this.hasOwnProperty('DOMMetrics')) {
-        delete this.DOMMetrics;
+      delete this.DOMMetrics;
     }
   },
 
   registerMetrics(metrics: any): any {
     if (this.registerMetricsImpl) {
       return this.registerMetricsImpl(this, metrics);
-    } else {
-      return this.context.metricsComputator.registerMetricsImpl(this, metrics);
     }
+
+    return this.context.metricsComputator.registerMetricsImpl(this, metrics);
   },
 
   getMetric(name: string): any {
     if (this.getMetricImpl) {
       return this.getMetricImpl(name);
-    } else {
-      return this.context.metricsComputator.getMetricImpl(name);
     }
+
+    return this.context.metricsComputator.getMetricImpl(name);
   }
 };
 

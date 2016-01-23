@@ -1,22 +1,20 @@
-/* TODO@flow mixins */
-
-var ColumnMetrics        = require('./ColumnMetrics');
-var DOMMetrics           = require('./DOMMetrics');
+const ColumnMetrics        = require('./ColumnMetrics');
+const DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
-var PropTypes            = require('react').PropTypes;
-var ColumnUtils = require('./ColumnUtils');
-var React = require('react');
-
-type ColumnMetricsType = {
-    columns: Array<Column>;
-    totalWidth: number;
-    minColumnWidth: number;
-};
+const PropTypes            = require('react').PropTypes;
+const ColumnUtils = require('./ColumnUtils');
+const React = require('react');
 
 class Column {
   key: string;
   left: number;
   width: number;
+}
+
+type ColumnMetricsType = {
+    columns: Array<Column>;
+    totalWidth: number;
+    minColumnWidth: number;
 };
 
 module.exports = {
@@ -46,15 +44,15 @@ module.exports = {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality) ||
           nextProps.minWidth !== this.props.minWidth) {
-        var columnMetrics = this.createColumnMetrics(nextProps);
+        let columnMetrics = this.createColumnMetrics(nextProps);
         this.setState({columnMetrics: columnMetrics});
       }
     }
   },
 
   getTotalWidth() {
-    var totalWidth = 0;
-    if(this.isMounted()){
+    let totalWidth = 0;
+    if (this.isMounted()) {
       totalWidth = this.DOMMetrics.gridWidth();
     } else {
       totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;
@@ -63,19 +61,19 @@ module.exports = {
   },
 
   getColumnMetricsType(metrics: ColumnMetricsType): { columns: ColumnMetricsType } {
-    var totalWidth = metrics.totalWidth || this.getTotalWidth();
-    var currentMetrics = {
+    let totalWidth = metrics.totalWidth || this.getTotalWidth();
+    let currentMetrics = {
       columns: metrics.columns,
       totalWidth: totalWidth,
       minColumnWidth: metrics.minColumnWidth
     };
-    var updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
+    let updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
     return updatedMetrics;
   },
 
   getColumn(idx) {
-    var columns = this.state.columnMetrics.columns;
-    if(Array.isArray(columns)){
+    let columns = this.state.columnMetrics.columns;
+    if (Array.isArray(columns)) {
       return columns[idx];
     }else if (typeof Immutable !== 'undefined') {
       return columns.get(idx);
@@ -83,8 +81,8 @@ module.exports = {
   },
 
   getSize() {
-    var columns = this.state.columnMetrics.columns;
-    if(Array.isArray(columns)){
+    let columns = this.state.columnMetrics.columns;
+    if (Array.isArray(columns)) {
       return columns.length;
     }else if (typeof Immutable !== 'undefined') {
       return columns.size;
@@ -92,21 +90,21 @@ module.exports = {
   },
 
   metricsUpdated() {
-    var columnMetrics = this.createColumnMetrics();
+    let columnMetrics = this.createColumnMetrics();
     this.setState({columnMetrics});
   },
 
-  createColumnMetrics(props = this.props){
-    var gridColumns = this.setupGridColumns(props);
+  createColumnMetrics(props = this.props) {
+    let gridColumns = this.setupGridColumns(props);
     return this.getColumnMetricsType({
-      columns:gridColumns,
+      columns: gridColumns,
       minColumnWidth: this.props.minColumnWidth,
       totalWidth: props.minWidth
     });
   },
 
   onColumnResize(index: number, width: number) {
-    var columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
+    let columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
     this.setState({columnMetrics});
   }
 };

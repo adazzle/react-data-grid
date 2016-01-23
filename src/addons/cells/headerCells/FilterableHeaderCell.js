@@ -1,29 +1,30 @@
-/* @flow  */
-/**
- * @jsx React.DOM
+const React              = require('react');
+const ExcelColumn        = require('../../grids/ExcelColumn');
 
-
- */
-'use strict';
-
-var React              = require('react');
-var ExcelColumn        = require('../../grids/ExcelColumn');
-
-var FilterableHeaderCell = React.createClass({
+const FilterableHeaderCell = React.createClass({
 
   propTypes: {
     onChange: React.PropTypes.func.isRequired,
-    column: React.PropTypes.shape(ExcelColumn).isRequired
+    column: React.PropTypes.shape(ExcelColumn)
   },
 
-  getInitialState(): {filterTerm: string}{
-    return {filterTerm : ''}
+  getInitialState(): {filterTerm: string} {
+    return {filterTerm: ''};
   },
 
-  handleChange(e: Event){
-    var val = e.target.value;
-    this.setState({filterTerm : val });
-    this.props.onChange({filterTerm : val, columnKey : this.props.column.key});
+  handleChange(e: Event) {
+    let val = e.target.value;
+    this.setState({filterTerm: val });
+    this.props.onChange({filterTerm: val, columnKey: this.props.column.key});
+  },
+
+  renderInput: function(): ?ReactElement {
+    if (this.props.column.filterable === false) {
+      return <span/>;
+    }
+
+    let inputKey = 'header-filter-' + this.props.column.key;
+    return (<input key={inputKey} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>);
   },
 
   render: function(): ?ReactElement {
@@ -34,16 +35,6 @@ var FilterableHeaderCell = React.createClass({
         </div>
       </div>
     );
-  },
-
-  renderInput : function(): ?ReactElement {
-    if(this.props.column.filterable === false){
-      return <span/>;
-    }else{
-      var input_key = 'header-filter-' + this.props.column.key;
-      return (<input key={input_key} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>)
-    }
-
   }
 });
 

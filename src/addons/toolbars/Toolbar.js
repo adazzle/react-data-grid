@@ -3,55 +3,54 @@
 * @jsx React.DOM
 
 */
-'use strict';
 
-var React = require('react');
-var Row = require('../../Row');
+const React = require('react');
 
-var Toolbar = React.createClass({
+const Toolbar = React.createClass({
   propTypes: {
-    onAddRow : React.PropTypes.func,
-    onToggleFilter : React.PropTypes.func.isRequired,
-    enableFilter : React.PropTypes.bool,
-    numberOfRows : React.PropTypes.number.isRequired
+    onAddRow: React.PropTypes.func,
+    onToggleFilter: React.PropTypes.func.isRequired,
+    enableFilter: React.PropTypes.bool,
+    numberOfRows: React.PropTypes.number.isRequired
   },
-  onAddRow(){
-    if(this.props.onAddRow !== null && this.props.onAddRow instanceof Function){
-      this.props.onAddRow({newRowIndex : this.props.numberOfRows});
+
+  onAddRow() {
+    if (this.props.onAddRow !== null && this.props.onAddRow instanceof Function) {
+      this.props.onAddRow({newRowIndex: this.props.numberOfRows});
     }
   },
 
-  getDefaultProps(): {enableAddRow: boolean}{
+  getDefaultProps(): {enableAddRow: boolean} {
     return {
-      enableAddRow : true
-    }
+      enableAddRow: true
+    };
   },
 
-  renderAddRowButton(): ReactElement{
-    if(this.props.onAddRow){
-      return(<button type="button" className="btn" onClick={this.onAddRow}>
+  renderAddRowButton(): ReactElement {
+    if (this.props.onAddRow ) {
+      return (<button type="button" className="btn" onClick={this.onAddRow}>
         Add Row
-      </button>)
+      </button>);
     }
   },
 
-  renderToggleFilterButton(): ReactElement{
-    if(this.props.enableFilter){
-      return(  <button type="button" className="btn" onClick={this.props.onToggleFilter}>
+  renderToggleFilterButton(): ReactElement {
+    if (this.props.enableFilter) {
+      return (<button type="button" className="btn" onClick={this.props.onToggleFilter}>
       Filter Rows
-      </button>)
+    </button>);
     }
   },
 
-  render(): ?ReactElement{
+  render(): ?ReactElement {
     return (
       <div className="react-grid-Toolbar">
         <div className="tools">
           {this.renderAddRowButton()}
           {this.renderToggleFilterButton()}
         </div>
-      </div>)
-      }
+      </div>);
+  }
 });
 
 module.exports = Toolbar;

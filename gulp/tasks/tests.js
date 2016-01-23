@@ -5,7 +5,7 @@ var argv = require('minimist')(process.argv.slice(2));
 var RELEASE = argv.release;
 
 
-gulp.task('test', function (done) {
+function testTaskRunner(done) {
   var debug = argv.debug;
   var singleRun = debug ? false : true;
 
@@ -15,4 +15,13 @@ gulp.task('test', function (done) {
     debug: debug
   }, done);
   karmaServer.start();
+}
+
+gulp.task('buildTest', function(done) {
+  testTaskRunner(done);
+});
+
+// Run build before testing on local environment.
+gulp.task('test', ['dist'], function(done) {
+  testTaskRunner(done);
 });
