@@ -1,6 +1,5 @@
 const React         = require('react');
 const PropTypes     = React.PropTypes;
-const emptyFunction = require('react/lib/emptyFunction');
 
 const Draggable = React.createClass({
   propTypes: {
@@ -12,9 +11,9 @@ const Draggable = React.createClass({
 
   getDefaultProps() {
     return {
-      onDragStart: emptyFunction.thatReturnsTrue,
-      onDragEnd: emptyFunction,
-      onDrag: emptyFunction
+      onDragStart: () => true,
+      onDragEnd: () => {},
+      onDrag: () => {}
     };
   },
 

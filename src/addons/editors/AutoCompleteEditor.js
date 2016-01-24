@@ -48,8 +48,8 @@ const AutoCompleteEditor = React.createClass({
     return updated;
   },
 
-  getInputNode(): HTMLInputElement {
-    return this.getDOMNode().getElementsByTagName('input')[0];
+  getInputNode() {
+    return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
   },
 
   getLabel(item: any): string {

@@ -1,5 +1,4 @@
 const React               = require('react');
-const emptyFunction       = require('react/lib/emptyFunction');
 const shallowCloneObject  = require('./shallowCloneObject');
 
 let contextTypes = {
@@ -118,7 +117,7 @@ let MetricsMixin = {
       for (let name in this._DOMMetricsDefs) {
         if (!this._DOMMetricsDefs.hasOwnProperty(name)) continue;
 
-        this.DOMMetrics[name] = emptyFunction;
+        this.DOMMetrics[name] = () => {};
       }
     }
   },

@@ -35,6 +35,13 @@ Please update the docs with any API changes, the code and docs should
 always be in sync.
 
 ### Development
+Prerequisite setup from project root:
+```
+sudo npm install -g gulp
+sudo npm install -g phantomjs
+npm install
+export PHANTOMJS_BIN=`which phantomjs`
+```
 
 - `npm test` will fire up a karma test runner and run tests in Phantom JS
 - `npm run debug-test` will fire up a karma test runner and run tests in chrome. This can be used for debugging purposes

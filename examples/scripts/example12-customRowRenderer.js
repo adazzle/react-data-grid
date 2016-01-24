@@ -1,7 +1,7 @@
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 //this leads to Row is undefined?
-var Row                   = require('../build/react-data-grid-with-addons').Row
+var Row                   = require('react-data-grid-with-addons').Row
 
 var SimpleExample = `
 
@@ -83,11 +83,11 @@ var RowRenderer = React.createClass({
   },
  getRowStyle: function() {
    return {
-     backgroundColor: this.getRowBackground()
+     color: this.getRowBackground()
    }
  },
  getRowBackground: function() {
-   return this.props.idx % 2 ?  'green' : 'white'
+   return this.props.idx % 2 ?  'green' : 'blue'
  },
  render: function() {
    //here we are just changing the style
@@ -107,7 +107,7 @@ var Example = React.createClass({
     rowRenderer={RowRenderer}/>);
   }
 });
-React.render(<Example />, mountNode);
+ReactDOM.render(<Example />, mountNode);
 `;
 
 module.exports = React.createClass({

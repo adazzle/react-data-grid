@@ -1,9 +1,3 @@
-/* @flow */
-/**
- * @jsx React.DOM
-
- */
-
 const React                 = require('react');
 const BaseGrid              = require('../../Grid');
 const Row                   = require('../../Row');

@@ -59,7 +59,9 @@ const EditorContainer = React.createClass({
       rowMetaData: this.getRowMetaData(),
       height: this.props.height,
       onBlur: this.commit,
-      onOverrideKeyDown: this.onKeyDown
+      onOverrideKeyDown: this.onKeyDown,
+      rowData: this.props.rowData,
+      rowIdx: this.props.rowIdx
     };
 
     let customEditor = this.props.column.editor;
@@ -213,12 +215,18 @@ const EditorContainer = React.createClass({
 
   isCaretAtBeginningOfInput(): boolean {
     let inputNode = this.getInputNode();
+    if (inputNode === undefined){
+      return false;
+    }
     return inputNode.selectionStart === inputNode.selectionEnd
       && inputNode.selectionStart === 0;
   },
 
   isCaretAtEndOfInput(): boolean {
     let inputNode = this.getInputNode();
+    if (inputNode === undefined){
+      return false;
+    }
     return inputNode.selectionStart === inputNode.value.length;
   },
 

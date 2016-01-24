@@ -2,8 +2,7 @@ const React           = require('react');
 const joinClasses     = require('classnames');
 const PropTypes       = React.PropTypes;
 const cloneWithProps  = require('react/lib/cloneWithProps');
-const shallowEqual    = require('react/lib//shallowEqual');
-const emptyFunction   = require('react/lib/emptyFunction');
+const shallowEqual    = require('fbjs/lib/shallowEqual');
 const ScrollShim      = require('./ScrollShim');
 const Row             = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
@@ -37,7 +36,7 @@ const Canvas = React.createClass({
   getDefaultProps() {
     return {
       rowRenderer: Row,
-      onRows: emptyFunction
+      onRows: () => {}
     };
   },
 
@@ -61,9 +60,6 @@ const Canvas = React.createClass({
   },
 
   componentWillReceiveProps(nextProps: any) {
-    if (nextProps.rowsCount > this.props.rowsCount) {
-      React.findDOMNode(this).scrollTop = nextProps.rowsCount * this.props.rowHeight;
-    }
     let scrollbarWidth = this.getScrollbarWidth();
     let shouldUpdate = !(nextProps.visibleStart > this.state.displayStart
                         && nextProps.visibleEnd < this.state.displayEnd)
