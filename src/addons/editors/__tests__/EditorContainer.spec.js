@@ -68,7 +68,7 @@ describe('Editor Container Tests', () => {
       expect(editor.props.column).toEqual(fakeColumn);
       expect(editor.props.rowData.col2).toEqual('love');  // aw
       expect(editor.props.column.randomAttachedData.k).toEqual('some user attached object');
-      expect(editor.props.rowIdx).toEqual(0)
+      expect(editor.props.rowIdx).toEqual(0);
     });
   });
 
