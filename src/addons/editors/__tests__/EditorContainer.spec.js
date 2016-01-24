@@ -66,8 +66,8 @@ describe('Editor Container Tests', () => {
       let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
       expect(editor.props.value).toEqual('Adwolf');
       expect(editor.props.column).toEqual(fakeColumn);
-      expect(editor.props.rowData.col2).toEqual('love')  // aw
-      expect(editor.props.column.randomAttachedData.k).toEqual('some user attached object')
+      expect(editor.props.rowData.col2).toEqual('love');  // aw
+      expect(editor.props.column.randomAttachedData.k).toEqual('some user attached object');
     });
   });
 

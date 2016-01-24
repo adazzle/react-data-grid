@@ -59,7 +59,7 @@ const EditorContainer = React.createClass({
       rowMetaData: this.getRowMetaData(),
       height: this.props.height,
       onBlur: this.commit,
-      onOverrideKeyDown: this.onKeyDown
+      onOverrideKeyDown: this.onKeyDown,
       rowData: this.props.rowData
     };
 
