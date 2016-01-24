@@ -219,6 +219,9 @@ const EditorContainer = React.createClass({
 
   isCaretAtEndOfInput(): boolean {
     let inputNode = this.getInputNode();
+    if (inputNode === undefined){
+      return false;
+    }
     return inputNode.selectionStart === inputNode.value.length;
   },
 
