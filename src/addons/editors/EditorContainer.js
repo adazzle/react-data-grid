@@ -60,7 +60,8 @@ const EditorContainer = React.createClass({
       height: this.props.height,
       onBlur: this.commit,
       onOverrideKeyDown: this.onKeyDown,
-      rowData: this.props.rowData
+      rowData: this.props.rowData,
+      rowIdx: this.props.rowIdx
     };
 
     let customEditor = this.props.column.editor;
