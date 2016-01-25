@@ -1,3 +1,4 @@
+import ReactDOM from 'react-dom';
 
 let ScrollShim = {
 
