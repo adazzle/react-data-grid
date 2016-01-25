@@ -10,7 +10,6 @@ const Row                   = require('../../Row');
 const ExcelColumn           = require('./ExcelColumn');
 const KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 const CheckboxEditor        = require('../editors/CheckboxEditor');
-const FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
 const cloneWithProps        = require('react/lib/cloneWithProps');
 const DOMMetrics           = require('../../DOMMetrics');
 const ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
@@ -343,7 +342,8 @@ const ReactDataGrid = React.createClass({
     if (this.state.canFilter === true) {
       rows.push({
         ref: 'filterRow',
-        headerCellRenderer: <FilterableHeaderCell onChange={this.props.onAddFilter} />,
+        filterable: true,
+        onFilterChange: this.props.onAddFilter,
         height: 45
       });
     }
