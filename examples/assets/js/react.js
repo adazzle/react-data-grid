@@ -171,7 +171,7 @@ var focusNode = _dereq_(119);
 var AutoFocusMixin = {
   componentDidMount: function() {
     if (this.props.autoFocus) {
-      focusNode(React.findDOMNode(this));
+      focusNode(ReactDOM.findDOMNode(this));
     }
   }
 };
@@ -4062,7 +4062,7 @@ var LocalEventTrapMixin = {
     ("production" !== "development" ? invariant(this.isMounted(), 'Must be mounted to trap events') : invariant(this.isMounted()));
     // If a component renders to null or if another component fatals and causes
     // the state of the tree to be corrupted, `node` here can be null.
-    var node = React.findDOMNode(this);
+    var node = ReactDOM.findDOMNode(this);
     ("production" !== "development" ? invariant(
       node,
       'LocalEventTrapMixin.trapBubbledEvent(...): Requires node to be rendered.'
@@ -8289,18 +8289,18 @@ var ReactDOMInput = ReactClass.createClass({
   },
 
   componentDidMount: function() {
-    var id = ReactMount.getID(React.findDOMNode(this));
+    var id = ReactMount.getID(ReactDOM.findDOMNode(this));
     instancesByReactID[id] = this;
   },
 
   componentWillUnmount: function() {
-    var rootNode = React.findDOMNode(this);
+    var rootNode = ReactDOM.findDOMNode(this);
     var id = ReactMount.getID(rootNode);
     delete instancesByReactID[id];
   },
 
   componentDidUpdate: function(prevProps, prevState, prevContext) {
-    var rootNode = React.findDOMNode(this);
+    var rootNode = ReactDOM.findDOMNode(this);
     if (this.props.checked != null) {
       DOMPropertyOperations.setValueForProperty(
         rootNode,
@@ -8330,7 +8330,7 @@ var ReactDOMInput = ReactClass.createClass({
 
     var name = this.props.name;
     if (this.props.type === 'radio' && name != null) {
-      var rootNode = React.findDOMNode(this);
+      var rootNode = ReactDOM.findDOMNode(this);
       var queryRoot = rootNode;
 
       while (queryRoot.parentNode) {
@@ -9053,7 +9053,7 @@ var ReactDOMTextarea = ReactClass.createClass({
   componentDidUpdate: function(prevProps, prevState, prevContext) {
     var value = LinkedValueUtils.getValue(this);
     if (value != null) {
-      var rootNode = React.findDOMNode(this);
+      var rootNode = ReactDOM.findDOMNode(this);
       // Cast `value` to a string to ensure the value is set correctly. While
       // browsers typically do this as necessary, jsdom doesn't.
       DOMPropertyOperations.setValueForProperty(rootNode, 'value', '' + value);

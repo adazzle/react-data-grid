@@ -1,4 +1,5 @@
 const React           = require('react');
+const ReactDOM = require('react-dom');
 const joinClasses     = require('classnames');
 const PropTypes       = React.PropTypes;
 const shallowEqual    = require('fbjs/lib/shallowEqual');
@@ -129,13 +130,13 @@ const Canvas = React.createClass({
   getScrollbarWidth() {
     let scrollbarWidth = 0;
     // Get the scrollbar width
-    let canvas = React.findDOMNode(this);
+    let canvas = ReactDOM.findDOMNode(this);
     scrollbarWidth  = canvas.offsetWidth - canvas.clientWidth;
     return scrollbarWidth;
   },
 
   getScroll(): {scrollTop: number; scrollLeft: number} {
-    let {scrollTop, scrollLeft} = React.findDOMNode(this);
+    let {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
     return {scrollTop, scrollLeft};
   },
 
