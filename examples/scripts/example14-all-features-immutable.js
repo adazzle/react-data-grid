@@ -1,6 +1,3 @@
-/**
- * @jsx React.DOM
- */
 (function(){
   var React       = require('react')
   var ReactDataGrid       = require('../build/react-data-grid-with-addons')

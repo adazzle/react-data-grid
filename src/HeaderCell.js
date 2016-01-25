@@ -1,6 +1,5 @@
 const React          = require('react');
 const joinClasses    = require('classnames');
-const cloneWithProps = require('react/lib/cloneWithProps');
 const ExcelColumn    = require('./addons/grids/ExcelColumn');
 const ResizeHandle   = require('./ResizeHandle');
 const PropTypes      = React.PropTypes;
@@ -60,7 +59,7 @@ const HeaderCell = React.createClass({
 
   getCell(): ReactComponent {
     if (React.isValidElement(this.props.renderer)) {
-      return cloneWithProps(this.props.renderer, {column: this.props.column});
+      return React.cloneElement(this.props.renderer, {column: this.props.column});
     }
 
     return this.props.renderer({column: this.props.column});

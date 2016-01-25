@@ -1,7 +1,6 @@
 const React             = require('react');
 const ReactDOM = require('react-dom');
 const joinClasses       = require('classnames');
-const cloneWithProps    = require('react/lib/cloneWithProps');
 const EditorContainer   = require('./addons/editors/EditorContainer');
 const ExcelColumn       = require('./addons/grids/ExcelColumn');
 const isFunction        = require('./addons/utils/isFunction');
@@ -281,7 +280,7 @@ const Cell = React.createClass({
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
       props.dependentValues = this.getFormatterDependencies();
-      CellContent = cloneWithProps(Formatter, props);
+      CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
       CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
     } else {

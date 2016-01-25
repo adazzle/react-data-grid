@@ -1,7 +1,6 @@
 const React           = require('react');
 const joinClasses     = require('classnames');
 const PropTypes       = React.PropTypes;
-const cloneWithProps  = require('react/lib/cloneWithProps');
 const shallowEqual    = require('fbjs/lib/shallowEqual');
 const ScrollShim      = require('./ScrollShim');
 const Row             = require('./Row');
@@ -166,7 +165,7 @@ const Canvas = React.createClass({
     }
 
     if (React.isValidElement(this.props.rowRenderer)) {
-      return cloneWithProps(this.props.rowRenderer, props);
+      return React.cloneElement(this.props.rowRenderer, props);
     }
   },
 
