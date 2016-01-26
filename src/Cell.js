@@ -1,6 +1,6 @@
 const React             = require('react');
+const ReactDOM = require('react-dom');
 const joinClasses       = require('classnames');
-const cloneWithProps    = require('react/lib/cloneWithProps');
 const EditorContainer   = require('./addons/editors/EditorContainer');
 const ExcelColumn       = require('./addons/grids/ExcelColumn');
 const isFunction        = require('./addons/utils/isFunction');
@@ -183,7 +183,7 @@ const Cell = React.createClass({
     let updateCellClass = this.getUpdateCellClass();
     // -> removing the class
     if (updateCellClass != null && updateCellClass !== '') {
-      let cellDOMNode = this.getDOMNode();
+      let cellDOMNode = ReactDOM.findDOMNode(this);
       if (cellDOMNode.classList) {
         cellDOMNode.classList.remove(updateCellClass);
       // -> and re-adding the class
@@ -199,7 +199,7 @@ const Cell = React.createClass({
   setScrollLeft(scrollLeft: number) {
     let ctrl: any = this; // flow on windows has an outdated react declaration, once that gets updated, we can remove this
     if (ctrl.isMounted()) {
-      let node = React.findDOMNode(this);
+      let node = ReactDOM.findDOMNode(this);
       let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;
@@ -271,7 +271,7 @@ const Cell = React.createClass({
 
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
-      React.findDOMNode(this).focus();
+      ReactDOM.findDOMNode(this).focus();
     }
   },
 
@@ -280,7 +280,7 @@ const Cell = React.createClass({
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
       props.dependentValues = this.getFormatterDependencies();
-      CellContent = cloneWithProps(Formatter, props);
+      CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
       CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
     } else {

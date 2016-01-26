@@ -73,7 +73,7 @@ var columns = [
 ]
 
 
-React.render(<ReactDataGrid
+ReactDOM.render(<ReactDataGrid
   columns={columns}
   rowGetter={rowGetter}
   rowsCount={_rows.length}

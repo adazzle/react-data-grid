@@ -1,9 +1,3 @@
-/* @flow */
-/**
- * @jsx React.DOM
-
- */
-
 const React                 = require('react');
 const BaseGrid              = require('../../Grid');
 const Row                   = require('../../Row');
@@ -11,7 +5,6 @@ const ExcelColumn           = require('./ExcelColumn');
 const KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 const CheckboxEditor        = require('../editors/CheckboxEditor');
 const FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
-const cloneWithProps        = require('react/lib/cloneWithProps');
 const DOMMetrics           = require('../../DOMMetrics');
 const ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
 const RowUtils = require('../../RowUtils');
@@ -434,7 +427,7 @@ const ReactDataGrid = React.createClass({
   renderToolbar(): ReactElement {
     let Toolbar = this.props.toolbar;
     if (React.isValidElement(Toolbar)) {
-      return ( cloneWithProps(Toolbar, {onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
+      return ( React.cloneElement(Toolbar, {onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
     }
   },
 

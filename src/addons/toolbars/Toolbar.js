@@ -1,9 +1,3 @@
-/* @flow */
-/**
-* @jsx React.DOM
-
-*/
-
 const React = require('react');
 
 const Toolbar = React.createClass({
