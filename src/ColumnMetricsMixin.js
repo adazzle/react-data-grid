@@ -3,7 +3,8 @@ const DOMMetrics           = require('./DOMMetrics');
 Object.assign            = require('object-assign');
 const PropTypes            = require('react').PropTypes;
 const ColumnUtils = require('./ColumnUtils');
-const React = require('react');
+import ReactDOM from 'react-dom';
+
 
 class Column {
   key: string;
@@ -28,7 +29,7 @@ module.exports = {
 
   DOMMetrics: {
     gridWidth(): number {
-      return React.findDOMNode(this).parentElement.offsetWidth;
+      return ReactDOM.findDOMNode(this).parentElement.offsetWidth;
     }
   },
 
@@ -39,6 +40,9 @@ module.exports = {
     };
   },
 
+  componentWillMount() {
+    this._mounted = true;
+  },
 
   componentWillReceiveProps(nextProps: ColumnMetricsType) {
     if (nextProps.columns) {
@@ -52,7 +56,7 @@ module.exports = {
 
   getTotalWidth() {
     let totalWidth = 0;
-    if (this.isMounted()) {
+    if (this._mounted) {
       totalWidth = this.DOMMetrics.gridWidth();
     } else {
       totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;

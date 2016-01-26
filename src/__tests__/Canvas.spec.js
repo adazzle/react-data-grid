@@ -1,9 +1,7 @@
-
-const React        = require('react');
-const rewire       = require('rewire');
-const Canvas       = rewire('../Canvas');
-const TestUtils    = require('react/lib/ReactTestUtils');
-const jasmineReact = require('jasmine-react-helpers');
+let React        = require('react');
+let rewire       = require('rewire');
+let Canvas         = rewire('../Canvas');
+let TestUtils    = require('react-addons-test-utils');
 
 describe('Canvas Tests', () => {
   let testElement;
@@ -38,16 +36,16 @@ describe('Canvas Tests', () => {
   });
 
   it('Should not call setScroll on render', () => {
-    jasmineReact.spyOnClass(Canvas, 'setScrollLeft');
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
-    expect(jasmineReact.classPrototype(Canvas).setScrollLeft).not.toHaveBeenCalled();
+    spyOn(testElement, 'setScrollLeft');
+    expect(testElement.setScrollLeft).not.toHaveBeenCalled();
   });
 
   it('Should not call setScroll on update', () => {
-    jasmineReact.spyOnClass(Canvas, 'setScrollLeft');
     testElement = TestUtils.renderIntoDocument(<Canvas {...testProps}/>);
     // force an update
+    spyOn(testElement, 'setScrollLeft');
     testElement.componentDidUpdate(testProps);
-    expect(jasmineReact.classPrototype(Canvas).setScrollLeft).not.toHaveBeenCalled();
+    expect(testElement.setScrollLeft).not.toHaveBeenCalled();
   });
 });

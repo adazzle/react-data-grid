@@ -3,7 +3,6 @@ const joinClasses              = require('classnames');
 const keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
 const isFunction              = require('../utils/isFunction');
-const cloneWithProps          = require('react/lib/cloneWithProps');
 
 
 const EditorContainer = React.createClass({
@@ -65,7 +64,7 @@ const EditorContainer = React.createClass({
     let customEditor = this.props.column.editor;
     if (customEditor && React.isValidElement(customEditor)) {
       // return custom column editor or SimpleEditor if none specified
-      return cloneWithProps(customEditor, editorProps);
+      return React.cloneElement(customEditor, editorProps);
     }
 
     return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;

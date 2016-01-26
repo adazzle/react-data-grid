@@ -1,8 +1,3 @@
-/* TODO@flow jquery.... */
-/**
- * @jsx React.DOM
- */
-
 const React = require('react');
 const Moment 		 = require('moment');
 const $					 = require('jquery');

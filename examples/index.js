@@ -1,2 +1,7 @@
+var React = require('react')
+var ReactDom = require('react-dom')
+
+window.React = React;
+
 var ReactDataGrid = require('./scripts/example14-all-features-immutable');
-React.render(<ReactDataGrid/>, document.getElementById('excel-example'));
+ReactDom.render(<ReactDataGrid/>, document.getElementById('excel-example'));

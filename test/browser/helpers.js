@@ -1,6 +1,6 @@
 var mergeInto = require("../../src/mergeInto");
 var Grid = require('../../src/Grid');
-var React = require('react');
+var ReactDOM = require('react-dom');
 
 var data = [];
 for (var i = 0; i < 2000; i++) {
@@ -65,7 +65,7 @@ var getGrid = function(args) {
   return Grid({columns:args.columns, rows: args.rows, length: args.dataLength, height: args.height});
 };
 var renderGrid = function(args) {
-    return React.render(getGrid(args),
+    return ReactDOM.render(getGrid(args),
       document.getElementById(args.containerId));
 };
 module.exports = {

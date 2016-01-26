@@ -6,10 +6,9 @@ const rewireModule  = require('../../test/rewireModule');
 const StubComponent = require('../../test/StubComponent');
 
 describe('Header Cell Tests', () => {
-  let headerCell;
-  // Configure local letiable replacements for the module.
+  // Configure local constiable replacements for the module.
   let ResizeHandleStub = new StubComponent('ResizeHandle');
-
+  let headerCell;
   rewireModule(HeaderCell, {
     ResizeHandle: ResizeHandleStub
   });

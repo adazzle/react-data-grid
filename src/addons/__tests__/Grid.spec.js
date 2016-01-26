@@ -1,4 +1,5 @@
 const React = require('react');
+const ReactDOM = require('react-dom');
 const rewire = require('rewire');
 const Grid = rewire('../grids/ReactDataGrid.js');
 const TestUtils = require('react/lib/ReactTestUtils');
@@ -621,7 +622,7 @@ describe('Grid', function() {
 
   describe('Table width', function() {
     beforeEach(function() {
-      this.tableElement = React.findDOMNode(this.component);
+      this.tableElement = ReactDOM.findDOMNode(this.component);
     });
 
     it('should generate the width based on the container size', function() {

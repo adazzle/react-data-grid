@@ -2,9 +2,9 @@ module.exports = React.createClass({
   render : function(){
     return(
       <div>
-        <p>Now simply invoke React.render(..):</p>
+        <p>Now simply invoke ReactDOM.render(..):</p>
         <div className="code-block js">
-          <pre>{"React.render(&lt;ReactDataGrid columns={columns} rows={rows} /&gt;, document.getElementById('example'))"}</pre>
+          <pre>{"ReactDOM.render(&lt;ReactDataGrid columns={columns} rows={rows} /&gt;, document.getElementById('example'))"}</pre>
         </div>
       </div>)
     }
