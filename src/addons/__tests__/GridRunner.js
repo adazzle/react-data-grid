@@ -52,7 +52,13 @@ export default class GridRunner {
   }
 
   getCells(row) {
-    let cells = Array.from(row.querySelectorAll('.react-grid-Cell'));
+    let allCells = row.querySelectorAll('.react-grid-Cell');
+    let cells = [];
+
+    for (let i = 0; i < allCells.length; i++) {
+      cells[i] = allCells[i];
+    }
+
     if (this.grid.refs.reactDataGrid.props.enableRowSelect) {
       // the rowSelectCell exists on the end of the array returned from testUtils
       let rowSelectCell = cells.pop();
