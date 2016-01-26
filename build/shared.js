@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory(require("React"), require("ReactDOM"));
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
+		define(["React", "ReactDOM"], factory);
 	else {
-		var a = factory();
+		var a = typeof exports === 'object' ? factory(require("React"), require("ReactDOM")) : factory(root["React"], root["ReactDOM"]);
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
-})(this, function() {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -57,17 +57,31 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var Navbar = __webpack_require__(165);
-	React.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
+	var React = __webpack_require__(1);
+	var ReactDom = __webpack_require__(2);
+	var Navbar = __webpack_require__(75);
+
+	ReactDom.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
 
 /***/ },
 
-/***/ 165:
+/***/ 1:
 /***/ function(module, exports) {
 
-	/**
-	* @jsx React.DOM
-	*/
+	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+
+/***/ },
+
+/***/ 2:
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
+
+/***/ },
+
+/***/ 75:
+/***/ function(module, exports) {
+
 	"use strict";
 
 	module.exports = React.createClass({

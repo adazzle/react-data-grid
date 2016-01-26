@@ -14,7 +14,7 @@ function createFakeRowObjectData(/*number*/ index) {
     lastName: faker.name.lastName(),
     street: faker.address.streetName(),
     zipCode: faker.address.zipCode(),
-    date: faker.date.past(),
+    date: faker.date.past().toLocaleDateString(),
     bs: faker.company.bs(),
     catchPhrase: faker.company.catchPhrase(),
     companyName: faker.company.companyName(),
