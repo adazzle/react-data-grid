@@ -33,6 +33,7 @@ install:
   - npm install
   - gulp flow
   - gulp dist
+  - gulp examples
 
 # Post-install test scripts.
 test_script:
