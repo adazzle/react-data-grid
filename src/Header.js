@@ -14,7 +14,7 @@ type Column = {
 const Header = React.createClass({
   propTypes: {
     columnMetrics: PropTypes.shape({  width: PropTypes.number.isRequired, columns: PropTypes.any }).isRequired,
-    totalWidth: PropTypes.number,
+    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
     headerRows: PropTypes.array.isRequired,
     sortColumn: PropTypes.string,

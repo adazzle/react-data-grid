@@ -15,7 +15,7 @@ const Canvas = React.createClass({
     rowHeight: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     width: PropTypes.number,
-    totalWidth: PropTypes.number,
+    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     style: PropTypes.string,
     className: PropTypes.string,
     displayStart: PropTypes.number.isRequired,

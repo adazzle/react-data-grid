@@ -9,7 +9,7 @@ const Viewport = React.createClass({
 
   propTypes: {
     rowOffsetHeight: PropTypes.number.isRequired,
-    totalWidth: PropTypes.number.isRequired,
+    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     columnMetrics: PropTypes.object.isRequired,
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     selectedRows: PropTypes.array,
