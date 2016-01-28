@@ -81,7 +81,7 @@
     "minimist": "^1.1.0",
     "moment": "^2.10.6",
     "pretty-hrtime": "^0.2.1",
-    "react": "~0.14.06",
+    "react": "~0.14.6",
     "react-addons-test-utils": "^0.14.6",
     "react-dom": "~0.14.6",
     "react-router": "^0.13.3",
