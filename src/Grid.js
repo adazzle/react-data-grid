@@ -10,9 +10,9 @@ const Grid = React.createClass({
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-    columnMetrics: PropTypes.shape,
+    columnMetrics: PropTypes.object,
     minHeight: PropTypes.number,
-    totalWidth: PropTypes.number,
+    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowHeight: PropTypes.number,
     rowRenderer: PropTypes.func,

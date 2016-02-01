@@ -15,7 +15,7 @@ const Canvas = React.createClass({
     rowHeight: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     width: PropTypes.number,
-    totalWidth: PropTypes.number,
+    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     style: PropTypes.string,
     className: PropTypes.string,
     displayStart: PropTypes.number.isRequired,
@@ -216,7 +216,7 @@ const Canvas = React.createClass({
       left: 0,
       overflowX: 'auto',
       overflowY: 'scroll',
-      width: this.props.totalWidth + this.state.scrollbarWidth,
+      width: this.props.totalWidth,
       height: this.props.height,
       transform: 'translate3d(0, 0, 0)'
     };

@@ -448,6 +448,16 @@ const ReactDataGrid = React.createClass({
     let containerWidth = this.props.minWidth || this.DOMMetrics.gridWidth();
     let gridWidth = containerWidth - this.state.scrollOffset;
 
+    // depending on the current lifecycle stage, gridWidth() may not initialize correctly
+    // this also handles cases where it always returns undefined -- such as when inside a div with display:none
+    // eg Bootstrap tabs and collapses
+    if (typeof containerWidth === 'undefined' || isNaN(containerWidth)) {
+      containerWidth = '100%';
+    }
+    if (typeof gridWidth === 'undefined' || isNaN(gridWidth)) {
+      gridWidth = '100%';
+    }
+
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}>
         {toolbar}
