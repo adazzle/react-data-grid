@@ -88,6 +88,18 @@ const Cell = React.createClass({
     }
   },
 
+  onDragHandleDoubleClick(e) {
+    e.stopPropagation();
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellDoubleClick != null) {
+      meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData()});
+    }
+  },
+
+  onDragOver: function(e) {
+    e.preventDefault();
+  },
+
   getStyle(): {position:string; width: number; height: number; left: number} {
     let style = {
       position: 'absolute',
@@ -128,7 +140,7 @@ const Cell = React.createClass({
     let extraClasses = joinClasses({
       selected: this.isSelected() && !this.isActive(),
       editing: this.isActive(),
-      copied: this.isCopied(),
+      copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'active-drag-cell': this.isSelected() || this.isDraggedOver(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
@@ -275,6 +287,10 @@ const Cell = React.createClass({
     }
   },
 
+  canEdit() {
+    return (this.props.column.editor != null) || this.props.column.editable;
+  },
+
   renderCellContent(props: any): ReactElement {
     let CellContent;
     let Formatter = this.getFormatter();
@@ -302,11 +318,12 @@ const Cell = React.createClass({
       isExpanded: this.props.isExpanded
     });
 
+    let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
+
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver}>
       {cellContent}
-      <div className="drag-handle" draggable="true">
-      </div>
+      {dragHandle}
       </div>
     );
   }
