@@ -29,6 +29,9 @@ module.exports = React.createClass({
                     <li><a href="examples.html#/editable">Editable Grid</a></li>
                     <li><a href="examples.html#/formatters">Custom Formatters</a></li>
                     <li><a href="examples.html#/editors">Rich Cell Editors</a></li>
+                    <li>
+                      <a href="examples.html#/cell-drag">Cell drag down/Fill Column</a>
+                    </li>
                     <li><a href="examples.html#/sortable">Sortable Grid</a></li>
                     <li><a href="examples.html#/filterable">Filterable Grid</a></li>
                     <li><a href="examples.html#/million-rows">One Million Rows</a></li>

@@ -9,6 +9,8 @@ function randomDate(start, end) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
 }
 
+var issueTypes = ['Bug', 'Improvement', 'Epic', 'Story'];
+
 //helper to create a fixed number of rows
 function createRows(numberOfRows){
   var _rows = [];
@@ -73,6 +75,27 @@ var Example = React.createClass({
     this.setState({rows:rows});
   },
 
+  handleCellDrag : function(e){
+    var rows = this.state.rows.slice(0);
+    for (var i = e.fromRow; i <= e.toRow; i++){
+      var rowToUpdate = rows[i];
+      rowToUpdate[e.cellKey] = e.value;
+    }
+    this.setState({rows:rows});
+  },
+
+  handleDragHandleDoubleClick: function(e) {
+    var rows = this.state.rows.map(function(r){
+      return Object.assign({}, r);
+    });
+    var column = columns[e.idx];
+    for (var i = e.rowIdx; i <= rows.length - 1; i++){
+      var rowToUpdate = rows[i];
+      rowToUpdate[column.key] = e.rowData[column.key];
+    }
+    this.setState({rows:rows});
+  },
+
   render:function(){
     return(
       <ReactDataGrid
@@ -80,6 +103,8 @@ var Example = React.createClass({
       columns={columns}
       rowGetter={this.rowGetter}
       rowsCount={this.state.rows.length}
+      onDragHandleDoubleClick={this.handleDragHandleDoubleClick}
+      onCellsDragged={this.handleCellDrag}
       minHeight={500}
       onRowUpdated={this.handleRowUpdated} />
     )
@@ -96,7 +121,8 @@ ReactDOM.render(<Example />, mountNode);
       return(
         <div>
           <h3>Cell Drag Down Example</h3>
-          <p></p>
+          <p>This example demonstrates how you can easily update multiple cells by dragging from the drag handle of an editable cell.</p>
+          <p>Alternatively by double clicking on the drag handle, you can update all the cells underneath the active cell.</p>
           <ReactPlayground codeText={EditableExample} />
         </div>
       )

@@ -69,7 +69,8 @@ const ReactDataGrid = React.createClass({
     onCellCopyPaste: React.PropTypes.func,
     onCellsDragged: React.PropTypes.func,
     onAddFilter: React.PropTypes.func,
-    onGridSort: React.PropTypes.func
+    onGridSort: React.PropTypes.func,
+    onDragHandleDoubleClick: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -210,7 +211,13 @@ const ReactDataGrid = React.createClass({
     let value = this.getSelectedValue();
     this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
     // need to set dummy data for FF
-    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
+    if (e && e.dataTransfer) {
+      if (e.dataTransfer.setData) {
+        e.dataTransfer.dropEffect = 'move';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', 'dummy');
+      }
+    }
   },
 
   onAfterAddRow: function(numberOfRows: number) {
@@ -219,6 +226,12 @@ const ReactDataGrid = React.createClass({
 
   onToggleFilter() {
     this.setState({ canFilter: !this.state.canFilter });
+  },
+
+  onDragHandleDoubleClick(e) {
+    if (this.props.onDragHandleDoubleClick) {
+      this.props.onDragHandleDoubleClick(e);
+    }
   },
 
   handleDragStart(dragged: DraggedType) {
@@ -441,7 +454,8 @@ const ReactDataGrid = React.createClass({
       onCommitCancel: this.setInactive,
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
-      handleTerminateDrag: this.handleTerminateDrag
+      handleTerminateDrag: this.handleTerminateDrag,
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick
     };
 
     let toolbar = this.renderToolbar();
