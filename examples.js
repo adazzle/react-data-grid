@@ -17,6 +17,7 @@ var customRowRenderer = require('./scripts/example12-customRowRenderer');
 var fullExample = require('./scripts/example13-all-features');
 var fullExampleImmutable = require('./scripts/example14-all-features-immutable');
 var emptyRowsExample = require('./scripts/example15-empty-rows');
+var cellDragDownExample  = require('./scripts/example16-cell-drag-down');
 
 var { Route, RouteHandler, Link } = ReactRouter;
 
@@ -47,6 +48,7 @@ var routes = (
       <Route name="immutable-data" handler={immutableDataExample}/>
       <Route name="custom-row-renderer" handler={customRowRenderer}/>
       <Route name="empty-rows" handler={emptyRowsExample}/>
+      <Route name="cell-drag" handler={cellDragDownExample}/>
   </Route>
 );
 

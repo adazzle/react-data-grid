@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(1);
 	var ReactDom = __webpack_require__(2);
-	var Navbar = __webpack_require__(75);
+	var Navbar = __webpack_require__(76);
 
 	ReactDom.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
 
@@ -79,7 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 75:
+/***/ 76:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -235,6 +235,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    "a",
 	                    { href: "examples.html#/editors" },
 	                    "Rich Cell Editors"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/cell-drag" },
+	                    "Cell drag down/Fill Column"
 	                  )
 	                ),
 	                React.createElement(

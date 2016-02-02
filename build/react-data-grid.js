@@ -109,7 +109,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onCellCopyPaste: React.PropTypes.func,
 	    onCellsDragged: React.PropTypes.func,
 	    onAddFilter: React.PropTypes.func,
-	    onGridSort: React.PropTypes.func
+	    onGridSort: React.PropTypes.func,
+	    onDragHandleDoubleClick: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -231,7 +232,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var value = this.getSelectedValue();
 	    this.handleDragStart({ idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value });
 	    // need to set dummy data for FF
-	    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
+	    if (e && e.dataTransfer) {
+	      if (e.dataTransfer.setData) {
+	        e.dataTransfer.dropEffect = 'move';
+	        e.dataTransfer.effectAllowed = 'move';
+	        e.dataTransfer.setData('text/plain', 'dummy');
+	      }
+	    }
 	  },
 
 	  onAfterAddRow: function onAfterAddRow(numberOfRows) {
@@ -240,6 +247,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  onToggleFilter: function onToggleFilter() {
 	    this.setState({ canFilter: !this.state.canFilter });
+	  },
+	  onDragHandleDoubleClick: function onDragHandleDoubleClick(e) {
+	    if (this.props.onDragHandleDoubleClick) {
+	      this.props.onDragHandleDoubleClick(e);
+	    }
 	  },
 	  handleDragStart: function handleDragStart(dragged) {
 	    if (!this.dragEnabled()) {
@@ -459,7 +471,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onCommitCancel: this.setInactive,
 	      copied: this.state.copied,
 	      handleDragEnterRow: this.handleDragEnter,
-	      handleTerminateDrag: this.handleTerminateDrag
+	      handleTerminateDrag: this.handleTerminateDrag,
+	      onDragHandleDoubleClick: this.onDragHandleDoubleClick
 	    };
 
 	    var toolbar = this.renderToolbar();
@@ -2245,6 +2258,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      meta.onCellDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx });
 	    }
 	  },
+	  onDragHandleDoubleClick: function onDragHandleDoubleClick(e) {
+	    e.stopPropagation();
+	    var meta = this.props.cellMetaData;
+	    if (meta != null && meta.onCellDoubleClick != null) {
+	      meta.onDragHandleDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData() });
+	    }
+	  },
+
+	  onDragOver: function onDragOver(e) {
+	    e.preventDefault();
+	  },
+
 	  getStyle: function getStyle() {
 	    var style = {
 	      position: 'absolute',
@@ -2277,7 +2302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var extraClasses = joinClasses({
 	      selected: this.isSelected() && !this.isActive(),
 	      editing: this.isActive(),
-	      copied: this.isCopied(),
+	      copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
 	      'active-drag-cell': this.isSelected() || this.isDraggedOver(),
 	      'is-dragged-over-up': this.isDraggedOverUpwards(),
 	      'is-dragged-over-down': this.isDraggedOverDownwards(),
@@ -2399,6 +2424,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
+	  canEdit: function canEdit() {
+	    return this.props.column.editor != null || this.props.column.editable;
+	  },
 	  renderCellContent: function renderCellContent(props) {
 	    var CellContent = undefined;
 	    var Formatter = this.getFormatter();
@@ -2431,11 +2459,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      isExpanded: this.props.isExpanded
 	    });
 
+	    var dragHandle = !this.isActive() && this.canEdit() ? React.createElement(
+	      'div',
+	      { className: 'drag-handle', draggable: 'true', onDoubleClick: this.onDragHandleDoubleClick },
+	      React.createElement('span', { style: { display: 'none' } })
+	    ) : null;
+
 	    return React.createElement(
 	      'div',
-	      _extends({}, this.props, { className: className, style: style, onClick: this.onCellClick, onDoubleClick: this.onCellDoubleClick }),
+	      _extends({}, this.props, { className: className, style: style, onClick: this.onCellClick, onDoubleClick: this.onCellDoubleClick, onDragOver: this.onDragOver }),
 	      cellContent,
-	      React.createElement('div', { className: 'drag-handle', draggable: 'true' })
+	      dragHandle
 	    );
 	  }
 	});
