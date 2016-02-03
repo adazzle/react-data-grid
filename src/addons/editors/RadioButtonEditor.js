@@ -26,5 +26,4 @@ var RadioButtonEditor = React.createClass({
     this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, this.props.dependentValues, e);
   }
 });
-
 module.exports = RadioButtonEditor;

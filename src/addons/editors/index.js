@@ -4,7 +4,7 @@ var Editors = {
   DropDownEditor: require("./DropDownEditor"),
   SimpleTextEditor: require("./SimpleTextEditor"),
   AutoCompleteAsync: require("./AutoCompleteAsyncEditor"),
-  CheckboxEditor: require("./CheckboxEditor")
+  CheckboxEditor: require("./CheckboxEditor"),
   RadioButtonEditor: require("./RadioButtonEditor")
 };
 
