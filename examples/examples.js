@@ -15,6 +15,7 @@ var immutableDataExample = require('./scripts/example11-immutable-data');
 var customRowRenderer = require('./scripts/example12-customRowRenderer');
 var fullExample = require('./scripts/example13-all-features');
 var fullExampleImmutable = require('./scripts/example14-all-features-immutable');
+var singleSelectGrid = require('./scripts/example15-single-select-grid');
 
 var { Route, RouteHandler, Link } = ReactRouter;
 
@@ -45,6 +46,7 @@ var routes = (
       <Route name="all-features-immutable" handler={fullExampleImmutable}/>
       <Route name="immutable-data" handler={immutableDataExample}/>
       <Route name="custom-row-renderer" handler={customRowRenderer}/>
+      <Route name="single-select-grid" handler={singleSelectGrid}/>
   </Route>
 );
 

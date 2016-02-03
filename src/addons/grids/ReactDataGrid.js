@@ -62,7 +62,7 @@ var ReactDataGrid = React.createClass({
   propTypes: {
     rowHeight: React.PropTypes.number.isRequired,
     minHeight: React.PropTypes.number.isRequired,
-    enableRowSelect: React.PropTypes.bool,
+    enableRowSelect: React.PropTypes.oneOf([true, false, 'multi', 'single']),
     onRowUpdated:React.PropTypes.func,
     rowGetter: React.PropTypes.func.isRequired,
     rowsCount : React.PropTypes.number.isRequired,
