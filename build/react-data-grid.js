@@ -7,7 +7,7 @@
 		exports["ReactDataGrid"] = factory(require("react"), require("react-dom"));
 	else
 		root["ReactDataGrid"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_5__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,7 +73,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(2);
-	var BaseGrid = __webpack_require__(3);
+	var ReactDOM = __webpack_require__(3);
+	var BaseGrid = __webpack_require__(4);
 	var Row = __webpack_require__(22);
 	var ExcelColumn = __webpack_require__(15);
 	var KeyboardHandlerMixin = __webpack_require__(25);
@@ -110,7 +111,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onCellsDragged: React.PropTypes.func,
 	    onAddFilter: React.PropTypes.func,
 	    onGridSort: React.PropTypes.func,
-	    onDragHandleDoubleClick: React.PropTypes.func
+	    onDragHandleDoubleClick: React.PropTypes.func,
+	    onRowSelect: React.PropTypes.func,
+	    rowKey: React.PropTypes.string
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -119,13 +122,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      tabIndex: -1,
 	      rowHeight: 35,
 	      enableRowSelect: false,
-	      minHeight: 350
+	      minHeight: 350,
+	      rowKey: 'id'
 	    };
 	  },
 
 	  getInitialState: function getInitialState() {
 	    var columnMetrics = this.createColumnMetrics();
-	    var initialState = { columnMetrics: columnMetrics, selectedRows: this.getInitialSelectedRows(), copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0 };
+	    var initialState = { columnMetrics: columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0 };
 	    if (this.props.enableCellSelect) {
 	      initialState.selected = { rowIdx: 0, idx: 0 };
 	    } else {
@@ -321,18 +325,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 
+	  getSelectedRow: function getSelectedRow(rows, key) {
+	    var _this = this;
+
+	    var selectedRow = rows.filter(function (r) {
+	      if (r[_this.props.rowKey] === key) {
+	        return true;
+	      }
+	      return false;
+	    });
+	    if (selectedRow.length > 0) {
+	      return selectedRow[0];
+	    }
+	  },
+
 	  // columnKey not used here as this function will select the whole row,
 	  // but needed to match the function signature in the CheckboxEditor
-	  handleRowSelect: function handleRowSelect(rowIdx, columnKey, e) {
+	  handleRowSelect: function handleRowSelect(rowIdx, columnKey, rowData, e) {
 	    e.stopPropagation();
-	    if (this.state.selectedRows !== null && this.state.selectedRows.length > 0) {
-	      var _selectedRows = this.state.selectedRows.slice();
-	      if (_selectedRows[rowIdx] === null || _selectedRows[rowIdx] === false) {
-	        _selectedRows[rowIdx] = true;
-	      } else {
-	        _selectedRows[rowIdx] = false;
-	      }
-	      this.setState({ selectedRows: _selectedRows });
+	    var selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
+	    var selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
+	    if (selectedRow) {
+	      selectedRow.isSelected = !selectedRow.isSelected;
+	    } else {
+	      rowData.isSelected = true;
+	      selectedRows.push(rowData);
+	    }
+	    this.setState({ selectedRows: selectedRows });
+	    if (this.props.onRowSelect) {
+	      this.props.onRowSelect(selectedRows.filter(function (r) {
+	        return r.isSelected === true;
+	      }));
 	    }
 	  },
 
@@ -345,14 +368,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var selectedRows = [];
 	    for (var i = 0; i < this.props.rowsCount; i++) {
-	      selectedRows.push(allRowsSelected);
+	      var row = Object.assign({}, this.props.rowGetter(i), { isSelected: allRowsSelected });
+	      selectedRows.push(row);
 	    }
 	    this.setState({ selectedRows: selectedRows });
+	    if (typeof this.props.onRowSelect === 'function') {
+	      this.props.onRowSelect(selectedRows.filter(function (r) {
+	        return r.isSelected === true;
+	      }));
+	    }
 	  },
 
 	  getScrollOffSet: function getScrollOffSet() {
 	    var scrollOffset = 0;
-	    var canvas = this.getDOMNode().querySelector('.react-grid-Canvas');
+	    var canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
 	    if (canvas) {
 	      scrollOffset = canvas.offsetWidth - canvas.clientWidth;
 	    }
@@ -430,15 +459,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var cols = props.columns.slice(0);
 	    var unshiftedCols = {};
 	    if (props.enableRowSelect) {
+	      var headerRenderer = props.enableRowSelect === 'single' ? null : React.createElement('input', { type: 'checkbox', onChange: this.handleCheckboxChange });
 	      var selectColumn = {
 	        key: 'select-row',
 	        name: '',
 	        formatter: React.createElement(CheckboxEditor, null),
 	        onCellChange: this.handleRowSelect,
 	        filterable: false,
-	        headerRenderer: React.createElement('input', { type: 'checkbox', onChange: this.handleCheckboxChange }),
+	        headerRenderer: headerRenderer,
 	        width: 60,
-	        locked: true
+	        locked: true,
+	        getRowMetaData: function getRowMetaData(rowData) {
+	          return rowData;
+	        }
 	      };
 	      unshiftedCols = cols.unshift(selectColumn);
 	      cols = unshiftedCols > 0 ? cols : unshiftedCols;
@@ -499,13 +532,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        React.createElement(BaseGrid, _extends({
 	          ref: 'base'
 	        }, this.props, {
+	          rowKey: this.props.rowKey,
 	          headerRows: this.getHeaderRows(),
 	          columnMetrics: this.state.columnMetrics,
 	          rowGetter: this.props.rowGetter,
 	          rowsCount: this.props.rowsCount,
 	          rowHeight: this.props.rowHeight,
 	          cellMetaData: cellMetaData,
-	          selectedRows: this.state.selectedRows,
+	          selectedRows: this.state.selectedRows.filter(function (r) {
+	            return r.isSelected === true;
+	          }),
 	          expandedRows: this.state.expandedRows,
 	          rowOffsetHeight: this.getRowOffsetHeight(),
 	          sortColumn: this.state.sortColumn,
@@ -533,6 +569,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -541,7 +583,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var PropTypes = React.PropTypes;
-	var Header = __webpack_require__(4);
+	var Header = __webpack_require__(5);
 	var Viewport = __webpack_require__(19);
 	var GridScrollMixin = __webpack_require__(33);
 	var DOMMetrics = __webpack_require__(32);
@@ -573,7 +615,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onViewportDoubleClick: PropTypes.func.isRequired,
 	    onColumnResize: PropTypes.func,
 	    onSort: PropTypes.func,
-	    cellMetaData: PropTypes.shape(cellMetaDataShape)
+	    cellMetaData: PropTypes.shape(cellMetaDataShape),
+	    rowKey: PropTypes.string.isRequired
 	  },
 
 	  mixins: [GridScrollMixin, DOMMetrics.MetricsComputatorMixin],
@@ -617,6 +660,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        { ref: 'viewPortContainer', onKeyDown: this.props.onViewportKeydown, onDoubleClick: this.props.onViewportDoubleClick, onDragStart: this.props.onViewportDragStart, onDragEnd: this.props.onViewportDragEnd },
 	        React.createElement(Viewport, {
 	          ref: 'viewport',
+	          rowKey: this.props.rowKey,
 	          width: this.props.columnMetrics.width,
 	          rowHeight: this.props.rowHeight,
 	          rowRenderer: this.props.rowRenderer,
@@ -644,7 +688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Grid;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -652,7 +696,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(5);
+	var ReactDOM = __webpack_require__(3);
 	var joinClasses = __webpack_require__(6);
 	var shallowCloneObject = __webpack_require__(7);
 	var ColumnMetrics = __webpack_require__(8);
@@ -812,12 +856,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 	module.exports = Header;
-
-/***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
 
 /***/ },
 /* 6 */
@@ -1324,7 +1362,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(5);
+	var ReactDOM = __webpack_require__(3);
 	var joinClasses = __webpack_require__(6);
 	var ExcelColumn = __webpack_require__(15);
 	var ResizeHandle = __webpack_require__(16);
@@ -1667,7 +1705,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onRows: PropTypes.func,
 	    onScroll: PropTypes.func,
 	    minHeight: PropTypes.number,
-	    cellMetaData: PropTypes.shape(cellMetaDataShape)
+	    cellMetaData: PropTypes.shape(cellMetaDataShape),
+	    rowKey: PropTypes.string.isRequired
 	  },
 
 	  onScroll: function onScroll(scroll) {
@@ -1700,6 +1739,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        style: style },
 	      React.createElement(Canvas, {
 	        ref: 'canvas',
+	        rowKey: this.props.rowKey,
 	        totalWidth: this.props.totalWidth,
 	        width: this.props.columnMetrics.width,
 	        rowGetter: this.props.rowGetter,
@@ -1731,7 +1771,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(5);
+	var ReactDOM = __webpack_require__(3);
 	var joinClasses = __webpack_require__(6);
 	var PropTypes = React.PropTypes;
 	var shallowEqual = __webpack_require__(13);
@@ -1761,13 +1801,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onScroll: PropTypes.func,
 	    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 	    cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
-	    selectedRows: PropTypes.array
+	    selectedRows: PropTypes.array,
+	    rowKey: React.PropTypes.string
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      rowRenderer: Row,
-	      onRows: function onRows() {}
+	      onRows: function onRows() {},
+	      selectedRows: []
 	    };
 	  },
 	  getInitialState: function getInitialState() {
@@ -1858,8 +1900,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return { scrollTop: scrollTop, scrollLeft: scrollLeft };
 	  },
-	  isRowSelected: function isRowSelected(rowIdx) {
-	    return this.props.selectedRows && this.props.selectedRows[rowIdx] === true;
+	  isRowSelected: function isRowSelected(row) {
+	    var _this = this;
+
+	    var selectedRows = this.props.selectedRows.filter(function (r) {
+	      var rowKeyValue = row.get ? row.get(_this.props.rowKey) : row[_this.props.rowKey];
+	      return r[_this.props.rowKey] === rowKeyValue;
+	    });
+	    return selectedRows.length > 0 && selectedRows[0].isSelected;
 	  },
 
 	  _currentRowsLength: 0,
@@ -1896,7 +1944,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 	  render: function render() {
-	    var _this = this;
+	    var _this2 = this;
 
 	    var displayStart = this.state.displayStart;
 	    var displayEnd = this.state.displayEnd;
@@ -1904,16 +1952,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var length = this.props.rowsCount;
 
 	    var rows = this.getRows(displayStart, displayEnd).map(function (row, idx) {
-	      return _this.renderRow({
+	      return _this2.renderRow({
 	        key: displayStart + idx,
 	        ref: idx,
 	        idx: displayStart + idx,
 	        row: row,
 	        height: rowHeight,
-	        columns: _this.props.columns,
-	        isSelected: _this.isRowSelected(displayStart + idx),
-	        expandedRows: _this.props.expandedRows,
-	        cellMetaData: _this.props.cellMetaData
+	        columns: _this2.props.columns,
+	        isSelected: _this2.isRowSelected(row),
+	        expandedRows: _this2.props.expandedRows,
+	        cellMetaData: _this2.props.cellMetaData
 	      });
 	    });
 
@@ -1961,7 +2009,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _reactDom = __webpack_require__(5);
+	var _reactDom = __webpack_require__(3);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -2153,7 +2201,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.props.cellRenderer(props);
 	  },
 	  render: function render() {
-	    var className = joinClasses('react-grid-Row', 'react-grid-Row--' + (this.props.idx % 2 === 0 ? 'even' : 'odd'));
+	    var className = joinClasses('react-grid-Row', 'react-grid-Row--' + (this.props.idx % 2 === 0 ? 'even' : 'odd'), { 'row-selected': this.props.isSelected });
 
 	    var style = {
 	      height: this.getRowHeight(this.props),
@@ -2180,7 +2228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(5);
+	var ReactDOM = __webpack_require__(3);
 	var joinClasses = __webpack_require__(6);
 	var EditorContainer = __webpack_require__(24);
 	var ExcelColumn = __webpack_require__(15);
@@ -2300,6 +2348,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getCellClass: function getCellClass() {
 	    var className = joinClasses(this.props.column.cellClass, 'react-grid-Cell', this.props.className, this.props.column.locked ? 'react-grid-Cell--locked' : null);
 	    var extraClasses = joinClasses({
+	      'row-selected': this.props.isRowSelected,
 	      selected: this.isSelected() && !this.isActive(),
 	      editing: this.isActive(),
 	      copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
@@ -2831,7 +2880,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(5);
+	var ReactDOM = __webpack_require__(3);
 	var ExcelColumn = __webpack_require__(15);
 
 	var EditorBase = function (_React$Component) {
@@ -2956,7 +3005,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(5);
+	var ReactDOM = __webpack_require__(3);
 	var DOMMetrics = __webpack_require__(32);
 	var min = Math.min;
 	var max = Math.max;
@@ -3230,12 +3279,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(2);
 
 	var CheckboxEditor = React.createClass({
-	  displayName: "CheckboxEditor",
+	  displayName: 'CheckboxEditor',
 
 	  propTypes: {
 	    value: React.PropTypes.bool.isRequired,
@@ -3243,15 +3292,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    column: React.PropTypes.shape({
 	      key: React.PropTypes.string.isRequired,
 	      onCellChange: React.PropTypes.func.isRequired
-	    }).isRequired
+	    }).isRequired,
+	    dependentValues: React.PropTypes.object
 	  },
 
 	  handleChange: function handleChange(e) {
-	    this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, e);
+	    this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, this.props.dependentValues, e);
 	  },
 	  render: function render() {
 	    var checked = this.props.value != null ? this.props.value : false;
-	    return React.createElement("input", { className: "react-grid-CheckBox", type: "checkbox", checked: checked, onClick: this.handleChange, onChange: this.handleChange });
+	    var checkboxName = 'checkbox' + this.props.rowIdx;
+	    return React.createElement(
+	      'div',
+	      { className: 'react-grid-checkbox-container', onClick: this.handleChange },
+	      React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: checkboxName, checked: checked }),
+	      React.createElement('label', { htmlFor: checkboxName, className: 'react-grid-checkbox-label' })
+	    );
 	  }
 	});
 
@@ -3313,7 +3369,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _reactDom = __webpack_require__(5);
+	var _reactDom = __webpack_require__(3);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 

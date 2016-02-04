@@ -51,9 +51,12 @@ var routes = (
       <Route name="immutable-data" handler={immutableDataExample}/>
       <Route name="custom-row-renderer" handler={customRowRenderer}/>
       <Route name="empty-rows" handler={emptyRowsExample}/>
-      <Route name="cell-drag" handler={cellDragDownExample}/>
+<<<<<<< HEAD
       <Route name="multi-row-select" handler={rowSelectExample}/>
       <Route name="single-row-select" handler={singleRowSelectExample}/>
+=======
+      <Route name="cell-drag" handler={cellDragDownExample}/>
+>>>>>>> master
   </Route>
 );
 
