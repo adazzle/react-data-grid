@@ -200,7 +200,7 @@ const Canvas = React.createClass({
           row: row,
           height: rowHeight,
           columns: this.props.columns,
-          isSelected: this.isRowSelected(displayStart + idx),
+          isSelected: this.isRowSelected(row),
           expandedRows: this.props.expandedRows,
           cellMetaData: this.props.cellMetaData
         }));

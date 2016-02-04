@@ -338,7 +338,7 @@ textareaselect.editor-main {
 }
 
 .react-grid-Row.row-selected .react-grid-Cell{
- background-color: yellow;
+ background-color: rgba(16, 126, 219, 0.15);
 }
 
 

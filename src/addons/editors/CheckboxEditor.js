@@ -8,11 +8,12 @@ const CheckboxEditor = React.createClass({
     column: React.PropTypes.shape({
       key: React.PropTypes.string.isRequired,
       onCellChange: React.PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    dependentValues: React.PropTypes.object
   },
 
   handleChange(e: Event) {
-    this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, e);
+    this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, this.props.dependentValues, e);
   },
 
   render(): ? ReactElement {
