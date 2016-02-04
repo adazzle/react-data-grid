@@ -1,4 +1,5 @@
 const React                 = require('react');
+const ReactDOM = require('react-dom');
 const BaseGrid              = require('../../Grid');
 const Row                   = require('../../Row');
 const ExcelColumn           = require('./ExcelColumn');
@@ -87,7 +88,7 @@ const ReactDataGrid = React.createClass({
 
   getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType;  } {
     let columnMetrics = this.createColumnMetrics();
-    let initialState = {columnMetrics, selectedRows: this.getInitialSelectedRows(), copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0 };
+    let initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0 };
     if (this.props.enableCellSelect) {
       initialState.selected = {rowIdx: 0, idx: 0};
     } else {
@@ -290,17 +291,24 @@ const ReactDataGrid = React.createClass({
     });
   },
 
-  // columnKey not used here as this function will select the whole row,
-  // but needed to match the function signature in the CheckboxEditor
-  handleRowSelect(rowIdx: number, columnKey: string, e: Event) {
-    e.stopPropagation();
-    let selectedRows = this.state.selectedRows.slice(0);
-    let selectedRow = selectedRows.find(r => {
-      if (r[this.props.rowKey] === rowData[this.props.rowKey]) {
+  getSelectedRow(rows, key) {
+    let selectedRow = rows.filter(r => {
+      if (r[this.props.rowKey] === key) {
         return true;
       }
       return false;
     });
+    if (selectedRow.length > 0) {
+      return selectedRow[0];
+    }
+  },
+
+  // columnKey not used here as this function will select the whole row,
+  // but needed to match the function signature in the CheckboxEditor
+  handleRowSelect(rowIdx: number, columnKey: string, rowData, e: Event) {
+    e.stopPropagation();
+    let selectedRows = this.state.selectedRows.slice(0);
+    let selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
     if (selectedRow) {
       selectedRow.isSelected = !selectedRow.isSelected;
     } else {
@@ -322,7 +330,6 @@ const ReactDataGrid = React.createClass({
     }
     let selectedRows = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
-      selectedRows.push(allRowsSelected);
       let row = Object.assign({}, this.props.rowGetter(i), {isSelected: allRowsSelected});
       selectedRows.push(row);
     }
@@ -334,7 +341,7 @@ const ReactDataGrid = React.createClass({
 
   getScrollOffSet() {
     let scrollOffset = 0;
-    let canvas = this.getDOMNode().querySelector('.react-grid-Canvas');
+    let canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
     if (canvas) {
       scrollOffset = canvas.offsetWidth - canvas.clientWidth;
     }
@@ -423,7 +430,8 @@ const ReactDataGrid = React.createClass({
         filterable: false,
         headerRenderer: <input type="checkbox" onChange={this.handleCheckboxChange} />,
         width: 60,
-        locked: true
+        locked: true,
+        getRowMetaData: (rowData) => rowData
       };
       unshiftedCols = cols.unshift(selectColumn);
       cols = unshiftedCols > 0 ? cols : unshiftedCols;
@@ -481,13 +489,14 @@ const ReactDataGrid = React.createClass({
           <BaseGrid
             ref="base"
             {...this.props}
+            rowKey={this.props.rowKey}
             headerRows={this.getHeaderRows()}
             columnMetrics={this.state.columnMetrics}
             rowGetter={this.props.rowGetter}
             rowsCount={this.props.rowsCount}
             rowHeight={this.props.rowHeight}
             cellMetaData={cellMetaData}
-            selectedRows={this.state.selectedRows}
+            selectedRows={this.state.selectedRows.filter(r => r.isSelected === true)}
             expandedRows={this.state.expandedRows}
             rowOffsetHeight={this.getRowOffsetHeight()}
             sortColumn={this.state.sortColumn}

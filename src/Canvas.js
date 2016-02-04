@@ -37,7 +37,8 @@ const Canvas = React.createClass({
   getDefaultProps() {
     return {
       rowRenderer: Row,
-      onRows: () => {}
+      onRows: () => {},
+      selectedRows: []
     };
   },
 
