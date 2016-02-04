@@ -36,13 +36,27 @@ var columns = [
 ]
 
 var Example = React.createClass({
+
+  getInitialState: function() {
+    return {selectedRows: []}
+  },
+
+  onRowSelect: function(rows) {
+    this.setState({selectedRows: rows});
+  },
+
   render: function() {
-    return  (<ReactDataGrid
+    let rowText = this.state.selectedRows.length === 1 ? 'row' : 'rows';
+    return  (<div>
+      <span>{this.state.selectedRows.length} {rowText} selected</span>
+      <ReactDataGrid
+    rowKey='id'
     columns={columns}
     rowGetter={rowGetter}
     rowsCount={_rows.length}
-    enableRowSelect={true}
-    minHeight={500} />);
+    enableRowSelect='multi'
+    minHeight={500}
+    onRowSelect={this.onRowSelect} /></div>);
   }
 });
 React.render(<Example />, mountNode);
@@ -53,7 +67,9 @@ module.exports = React.createClass({
   render:function(){
     return(
       <div>
-        <h3>Row Select</h3>
+        <h3>Multiple Row Select</h3>
+        <p>By setting enableRowSelect='multi' and passing a rowKey property to determine the name of the unique id of each row, you can enable multi row select</p>
+        <p>Each time a row is clicked, onRowSelect prop will be called passing the array of selected rows</p>
         <ReactPlayground codeText={SimpleExample} />
       </div>
     )

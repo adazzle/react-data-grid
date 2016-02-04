@@ -18,7 +18,9 @@ var fullExample = require('./scripts/example13-all-features');
 var fullExampleImmutable = require('./scripts/example14-all-features-immutable');
 var emptyRowsExample = require('./scripts/example15-empty-rows');
 
-var rowSelectExample = require('./scripts/example15-row-select');
+var rowSelectExample = require('./scripts/example16-row-select');
+var singleRowSelectExample = require('./scripts/example17-single-row-select');
+
 var { Route, RouteHandler, Link } = ReactRouter;
 
 var App = React.createClass({
@@ -48,7 +50,8 @@ var routes = (
       <Route name="immutable-data" handler={immutableDataExample}/>
       <Route name="custom-row-renderer" handler={customRowRenderer}/>
       <Route name="empty-rows" handler={emptyRowsExample}/>
-      <Route name="row-select" handler={rowSelectExample}/>
+      <Route name="multi-row-select" handler={rowSelectExample}/>
+      <Route name="single-row-select" handler={singleRowSelectExample}/>
   </Route>
 );
 

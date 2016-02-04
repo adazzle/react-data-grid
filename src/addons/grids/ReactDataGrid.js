@@ -307,7 +307,7 @@ const ReactDataGrid = React.createClass({
   // but needed to match the function signature in the CheckboxEditor
   handleRowSelect(rowIdx: number, columnKey: string, rowData, e: Event) {
     e.stopPropagation();
-    let selectedRows = this.state.selectedRows.slice(0);
+    let selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
     let selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
     if (selectedRow) {
       selectedRow.isSelected = !selectedRow.isSelected;
@@ -335,7 +335,7 @@ const ReactDataGrid = React.createClass({
     }
     this.setState({selectedRows: selectedRows});
     if (typeof this.props.onRowSelect === 'function') {
-      this.props.onRowSelect(selectedRows);
+      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
     }
   },
 
@@ -422,13 +422,14 @@ const ReactDataGrid = React.createClass({
     let cols = props.columns.slice(0);
     let unshiftedCols = {};
     if (props.enableRowSelect) {
+      let headerRenderer = props.enableRowSelect === 'single' ? null :  <input type="checkbox" onChange={this.handleCheckboxChange} />;
       let selectColumn = {
         key: 'select-row',
         name: '',
         formatter: <CheckboxEditor/>,
         onCellChange: this.handleRowSelect,
         filterable: false,
-        headerRenderer: <input type="checkbox" onChange={this.handleCheckboxChange} />,
+        headerRenderer: headerRenderer,
         width: 60,
         locked: true,
         getRowMetaData: (rowData) => rowData
