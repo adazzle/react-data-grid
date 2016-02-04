@@ -69,7 +69,9 @@ const ReactDataGrid = React.createClass({
     onCellCopyPaste: React.PropTypes.func,
     onCellsDragged: React.PropTypes.func,
     onAddFilter: React.PropTypes.func,
-    onGridSort: React.PropTypes.func
+    onGridSort: React.PropTypes.func,
+    onRowSelect: React.PropTypes.func,
+    rowKey: React.PropTypes.string
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -78,7 +80,8 @@ const ReactDataGrid = React.createClass({
       tabIndex: -1,
       rowHeight: 35,
       enableRowSelect: false,
-      minHeight: 350
+      minHeight: 350,
+      rowKey: 'id'
     };
   },
 
@@ -291,14 +294,22 @@ const ReactDataGrid = React.createClass({
   // but needed to match the function signature in the CheckboxEditor
   handleRowSelect(rowIdx: number, columnKey: string, e: Event) {
     e.stopPropagation();
-    if (this.state.selectedRows !== null && this.state.selectedRows.length > 0) {
-      let selectedRows = this.state.selectedRows.slice();
-      if (selectedRows[rowIdx] === null || selectedRows[rowIdx] === false) {
-        selectedRows[rowIdx] = true;
-      } else {
-        selectedRows[rowIdx] = false;
+    let selectedRows = this.state.selectedRows.slice(0);
+    let selectedRow = selectedRows.find(r => {
+      if (r[this.props.rowKey] === rowData[this.props.rowKey]) {
+        return true;
       }
-      this.setState({selectedRows: selectedRows});
+      return false;
+    });
+    if (selectedRow) {
+      selectedRow.isSelected = !selectedRow.isSelected;
+    } else {
+      rowData.isSelected = true;
+      selectedRows.push(rowData);
+    }
+    this.setState({selectedRows});
+    if (this.props.onRowSelect) {
+      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
     }
   },
 
@@ -312,8 +323,13 @@ const ReactDataGrid = React.createClass({
     let selectedRows = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
       selectedRows.push(allRowsSelected);
+      let row = Object.assign({}, this.props.rowGetter(i), {isSelected: allRowsSelected});
+      selectedRows.push(row);
     }
     this.setState({selectedRows: selectedRows});
+    if (typeof this.props.onRowSelect === 'function') {
+      this.props.onRowSelect(selectedRows);
+    }
   },
 
   getScrollOffSet() {
