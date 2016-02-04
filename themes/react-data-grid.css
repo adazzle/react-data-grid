@@ -307,7 +307,28 @@ textareaselect.editor-main {
   border-bottom: 0px;
   z-index: 8;
   cursor: crosshair;
+  cursor: -webkit-grab;
 }
+
+.react-grid-Cell.active-drag-cell:hover .drag-handle {
+  position: absolute;
+  bottom: -8px;
+  right: -7px;
+  background: white;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #66afe9;
+  /* border-right: 0px; */
+  /* border-bottom: 0px; */
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -webkit-grab;
+}
+
+.react-grid-Cell.active-drag-cell:hover .drag-handle .glyphicon-arrow-down {
+  display: 'block'
+}
+
 .react-grid-Cell.is-dragged-over-down {
   border-right: 1px dashed black;
   border-left: 1px dashed black;
