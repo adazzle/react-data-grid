@@ -71,7 +71,7 @@ const ReactDataGrid = React.createClass({
     onCellsDragged: React.PropTypes.func,
     onAddFilter: React.PropTypes.func,
     onGridSort: React.PropTypes.func,
-    onDragHandleDoubleClick: React.PropTypes.func
+    onDragHandleDoubleClick: React.PropTypes.func,
     onRowSelect: React.PropTypes.func,
     rowKey: React.PropTypes.string
   },
