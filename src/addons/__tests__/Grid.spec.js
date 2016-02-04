@@ -7,6 +7,7 @@ const rewireModule = require('../../../test/rewireModule');
 const StubComponent = require('../../../test/StubComponent');
 const mockStateObject = require('./data/MockStateObject');
 
+
 describe('Grid', function() {
   let BaseGridStub = new StubComponent('BaseGrid');
   let CheckboxEditorStub = new StubComponent('CheckboxEditor');
@@ -35,8 +36,6 @@ describe('Grid', function() {
         count: i * 1000,
         isOdd: !!(i % 2)
       });
-
-      this._selectedRows.push(false);
     }
 
     this.noop = function() {};
@@ -50,7 +49,8 @@ describe('Grid', function() {
       onCellCopyPaste: this.noop,
       onCellsDragged: this.noop,
       onGridSort: this.noop,
-      onAddFilter: () => {}
+      onAddFilter: () => {},
+      rowKey: 'id'
     };
 
     this.buildFakeEvent = (addedData) => {
@@ -174,7 +174,7 @@ describe('Grid', function() {
         expect(selectedRows.length).toEqual(this._rows.length);
 
         expect(selectedRows.length).toBeGreaterThan(1);
-        selectedRows.forEach((selected) => expect(selected).toBe(true));
+        selectedRows.forEach((selected) => expect(selected.isSelected).toBe(true));
       });
 
       describe('and then unchecking header checkbox', function() {
@@ -187,44 +187,44 @@ describe('Grid', function() {
           let selectedRows = this.component.state.selectedRows;
 
           expect(selectedRows.length).toBeGreaterThan(1);
-          selectedRows.forEach((selected) => expect(selected).toBe(false));
+          selectedRows.forEach((selected) => expect(selected.isSelected).toBe(false));
         });
       });
     });
 
     describe('when selected is false', function() {
       beforeEach(function() {
-        this.component.setState({ selectedRows: [false, false, false, false] });
+        this.component.setState({selectedRows: [{id: 0, isSelected: false}, {id: 1, isSelected: false}, {id: 2, isSelected: false}, {id: 3, isSelected: false}]});
         let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-        selectRowCol.onCellChange(3, 'select-row', this.buildFakeEvent());
+        selectRowCol.onCellChange(3, 'select-row',  this._rows[3], this.buildFakeEvent());
       });
 
       it('should be able to select an individual row', function() {
-        expect(this.component.state.selectedRows[3]).toBe(true);
+        expect(this.component.state.selectedRows[3].isSelected).toBe(true);
       });
     });
 
     describe('when selected is null', function() {
       beforeEach(function() {
-        this.component.setState({ selectedRows: [null, null, null, null] });
+        this.component.setState({selectedRows: [{id: 0, isSelected: null}, {id: 1, isSelected: null}, {id: 2, isSelected: null}, {id: 3, isSelected: null}]});
         let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-        selectRowCol.onCellChange(2, 'select-row', this.buildFakeEvent());
+        selectRowCol.onCellChange(2, 'select-row', this._rows[2], this.buildFakeEvent());
       });
 
       it('should be able to select an individual row', function() {
-        expect(this.component.state.selectedRows[2]).toBe(true);
+        expect(this.component.state.selectedRows[2].isSelected).toBe(true);
       });
     });
 
     describe('when selected is true', function() {
       beforeEach(function() {
-        this.component.setState({ selectedRows: [null, true, true, true] });
+        this.component.setState({selectedRows: [{id: 0, isSelected: null}, {id: 1, isSelected: true}, {id: 2, isSelected: true}, {id: 3, isSelected: true}]});
         let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-        selectRowCol.onCellChange(3, 'select-row', this.buildFakeEvent());
+        selectRowCol.onCellChange(3, 'select-row', this._rows[3], this.buildFakeEvent());
       });
 
       it('should be able to unselect an individual row ', function() {
-        expect(this.component.state.selectedRows[3]).toBe(false);
+        expect(this.component.state.selectedRows[3].isSelected).toBe(false);
       });
     });
   });

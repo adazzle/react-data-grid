@@ -20,7 +20,8 @@ const Viewport = React.createClass({
     onRows: PropTypes.func,
     onScroll: PropTypes.func,
     minHeight: PropTypes.number,
-    cellMetaData: PropTypes.shape(cellMetaDataShape)
+    cellMetaData: PropTypes.shape(cellMetaDataShape),
+    rowKey: PropTypes.string.isRequired
   },
 
   onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
@@ -60,6 +61,7 @@ const Viewport = React.createClass({
         style={style}>
         <Canvas
           ref="canvas"
+          rowKey={this.props.rowKey}
           totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}
           rowGetter={this.props.rowGetter}
