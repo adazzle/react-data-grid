@@ -1,4 +1,5 @@
 const React = require('react');
+const ReactDOM = require('react-dom');
 const Moment = require('moment');
 const DateRangeFilter = require('./widgets/DateRangeFilter');
 type DateRangeValue = { startDate: Date; endDate: Date};
@@ -28,7 +29,7 @@ const DateRangeEditor = React.createClass({
       this.setTextInputFocus();
     },
     getInputNode(): HTMLElement {
-      return this.refs.datepicker.getDOMNode();
+      return ReactDOM.findDOMNode(this.refs.datepicker);
     },
     getValue(): DateRangeValue {
       let dateToParse = this.getInputNode().value;
