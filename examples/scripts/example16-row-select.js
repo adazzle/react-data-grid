@@ -46,7 +46,7 @@ var Example = React.createClass({
   },
 
   render: function() {
-    let rowText = this.state.selectedRows.length === 1 ? 'row' : 'rows';
+    var rowText = this.state.selectedRows.length === 1 ? 'row' : 'rows';
     return  (<div>
       <span>{this.state.selectedRows.length} {rowText} selected</span>
       <ReactDataGrid
