@@ -835,7 +835,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.scrollLeft = scrollLeft;
 	    this.refs.row.setScrollLeft(scrollLeft);
 	    if (this.refs.filterRow) {
-	      var nodeFilters = this.refs.filterRow.getDOMNode();
+	      var nodeFilters = ReactDOM.findDOMNode(this.refs.filterRow);
 	      nodeFilters.scrollLeft = scrollLeft;
 	      this.refs.filterRow.setScrollLeft(scrollLeft);
 	    }
