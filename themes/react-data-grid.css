@@ -72,6 +72,7 @@
   background-color: #ffffff;
   padding-left: 8px;
   padding-right: 8px;
+  border-right: 1px solid #eee;
   border-top: 1px solid #dddddd;
 }
 .react-grid-Cell:not(.editing) .react-grid-Cell__value {
@@ -341,9 +342,6 @@ textareaselect.editor-main {
 }
 .react-grid-Cell.is-dragged-over-up .drag-handle {
   top: -5px;
-}
-.react-grid-Cell {
-  border-right: 1px solid #eee;
 }
 
 .react-grid-Cell:hover {
