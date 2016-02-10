@@ -73,6 +73,8 @@
   padding-left: 8px;
   padding-right: 8px;
   border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+  border-right: 1px solid #eee;
 }
 .react-grid-Cell:not(.editing) .react-grid-Cell__value {
   white-space: nowrap;
@@ -101,6 +103,11 @@
   background: rgba(0, 0, 255, 0.2) !important;
   -webkit-transition: 0.5s background;
 }
+.react-grid-Row {
+  /* Negative margin to counter cell border-bottom */
+  margin-bottom: -1px;
+}
+
 .react-grid-Row:hover .react-grid-Cell {
   background-color: #f2f2f2;
 }
@@ -341,9 +348,6 @@ textareaselect.editor-main {
 }
 .react-grid-Cell.is-dragged-over-up .drag-handle {
   top: -5px;
-}
-.react-grid-Cell {
-  border-right: 1px solid #eee;
 }
 
 .react-grid-Cell:hover {
