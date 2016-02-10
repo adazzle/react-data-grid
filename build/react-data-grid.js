@@ -89,8 +89,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Object.assign = __webpack_require__(37);
 	}
 
+
 	var ReactDataGrid = React.createClass({
 	  displayName: 'ReactDataGrid',
+
 
 	  mixins: [ColumnMetricsMixin, DOMMetrics.MetricsComputatorMixin, KeyboardHandlerMixin],
 
@@ -126,6 +128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowKey: 'id'
 	    };
 	  },
+
 
 	  getInitialState: function getInitialState() {
 	    var columnMetrics = this.createColumnMetrics();
@@ -245,6 +248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
+
 	  onAfterAddRow: function onAfterAddRow(numberOfRows) {
 	    this.setState({ selected: { idx: 1, rowIdx: numberOfRows - 2 } });
 	  },
@@ -319,6 +323,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ textToCopy: textToCopy, copied: copied });
 	  },
 
+
 	  handleSort: function handleSort(columnKey, direction) {
 	    this.setState({ sortDirection: direction, sortColumn: columnKey }, function () {
 	      this.props.onGridSort(columnKey, direction);
@@ -339,6 +344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
+
 	  // columnKey not used here as this function will select the whole row,
 	  // but needed to match the function signature in the CheckboxEditor
 	  handleRowSelect: function handleRowSelect(rowIdx, columnKey, rowData, e) {
@@ -358,6 +364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }));
 	    }
 	  },
+
 
 	  handleCheckboxChange: function handleCheckboxChange(e) {
 	    var allRowsSelected = undefined;
@@ -406,6 +413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return rows;
 	  },
 
+
 	  getInitialSelectedRows: function getInitialSelectedRows() {
 	    var selectedRows = [];
 	    for (var i = 0; i < this.props.rowsCount; i++) {
@@ -453,6 +461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.state.selected.active === true;
 	  },
 
+
 	  setupGridColumns: function setupGridColumns() {
 	    var props = arguments.length <= 0 || arguments[0] === undefined ? this.props : arguments[0];
 
@@ -493,6 +502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return React.cloneElement(Toolbar, { onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount });
 	    }
 	  },
+
 
 	  render: function render() {
 	    var cellMetaData = {
@@ -628,6 +638,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 
+
 	  getStyle: function getStyle() {
 	    return {
 	      overflow: 'hidden',
@@ -724,6 +735,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  componentWillReceiveProps: function componentWillReceiveProps() {
 	    this.setState({ resizing: null });
 	  },
+
 
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
 	    var update = !ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn) || this.props.totalWidth !== nextProps.totalWidth || this.props.headerRows.length !== nextProps.headerRows.length || this.state.resizing !== nextState.resizing || this.props.sortColumn !== nextProps.sortColumn || this.props.sortDirection !== nextProps.sortDirection;
@@ -1379,6 +1391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var HeaderCell = React.createClass({
 	  displayName: 'HeaderCell',
 
+
 	  propTypes: {
 	    renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
 	    column: PropTypes.shape(ExcelColumn).isRequired,
@@ -1910,6 +1923,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return selectedRows.length > 0 && selectedRows[0].isSelected;
 	  },
 
+
 	  _currentRowsLength: 0,
 	  _currentRowsRange: { start: 0, end: 0 },
 	  _scroll: { scrollTop: 0, scrollLeft: 0 },
@@ -2076,6 +2090,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Row = React.createClass({
 	  displayName: 'Row',
 
+
 	  propTypes: {
 	    height: PropTypes.number.isRequired,
 	    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
@@ -2239,6 +2254,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Cell = React.createClass({
 	  displayName: 'Cell',
 
+
 	  propTypes: {
 	    rowIdx: React.PropTypes.number.isRequired,
 	    idx: React.PropTypes.number.isRequired,
@@ -2272,6 +2288,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return { isRowChanging: false, isCellValueChanging: false };
 	  },
 
+
 	  componentDidMount: function componentDidMount() {
 	    this.checkFocus();
 	  },
@@ -2279,6 +2296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	    this.setState({ isRowChanging: this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value });
 	  },
+
 
 	  componentDidUpdate: function componentDidUpdate() {
 	    this.checkFocus();
@@ -2314,6 +2332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
+
 	  onDragOver: function onDragOver(e) {
 	    e.preventDefault();
 	  },
@@ -2345,6 +2364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
+
 	  getCellClass: function getCellClass() {
 	    var className = joinClasses(this.props.column.cellClass, 'react-grid-Cell', this.props.className, this.props.column.locked ? 'react-grid-Cell--locked' : null);
 	    var extraClasses = joinClasses({
@@ -2371,6 +2391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return meta.selected && meta.selected.idx === this.props.idx;
 	  },
+
 
 	  isSelected: function isSelected() {
 	    var meta = this.props.cellMetaData;
@@ -2467,9 +2488,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
 	  },
 
+
 	  checkFocus: function checkFocus() {
 	    if (this.isSelected() && !this.isActive()) {
-	      ReactDOM.findDOMNode(this).focus();
+	      // determine the parent viewport element of this cell
+	      var parentViewport = React.findDOMNode(this);
+	      while (parentViewport != null && parentViewport.className.indexOf('react-grid-Viewport') === -1) {
+	        parentViewport = parentViewport.parentElement;
+	      }
+	      var focusInGrid = false;
+	      // if the focus is on the body of the document, the user won't mind if we focus them on a cell
+	      if (document.activeElement == null || document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body') {
+	        focusInGrid = true;
+	        // otherwise
+	      } else {
+	          // only pull focus if the currently focused element is contained within the viewport
+	          if (parentViewport) {
+	            var focusedParent = document.activeElement;
+	            while (focusedParent != null) {
+	              if (focusedParent === parentViewport) {
+	                focusInGrid = true;
+	                break;
+	              }
+	              focusedParent = focusedParent.parentElement;
+	            }
+	          }
+	        }
+	      if (focusInGrid) {
+	        React.findDOMNode(this).focus();
+	      }
 	    }
 	  },
 
@@ -2564,6 +2611,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getInitialState: function getInitialState() {
 	    return { isInvalid: false };
 	  },
+
 
 	  componentDidMount: function componentDidMount() {
 	    var inputNode = this.getInputNode();
@@ -2800,6 +2848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.checkAndCall('onPressChar', e);
 	    }
 	  },
+
 
 	  // taken from http://stackoverflow.com/questions/12467240/determine-if-javascript-e-keycode-is-a-printable-non-control-character
 	  isKeyPrintable: function isKeyPrintable(keycode) {
@@ -3286,6 +3335,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var CheckboxEditor = React.createClass({
 	  displayName: 'CheckboxEditor',
 
+
 	  propTypes: {
 	    value: React.PropTypes.bool.isRequired,
 	    rowIdx: React.PropTypes.number.isRequired,
@@ -3325,6 +3375,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var FilterableHeaderCell = React.createClass({
 	  displayName: 'FilterableHeaderCell',
 
+
 	  propTypes: {
 	    onChange: React.PropTypes.func.isRequired,
 	    column: React.PropTypes.shape(ExcelColumn)
@@ -3338,6 +3389,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ filterTerm: val });
 	    this.props.onChange({ filterTerm: val, columnKey: this.props.column.key });
 	  },
+
 
 	  renderInput: function renderInput() {
 	    if (this.props.column.filterable === false) {
