@@ -290,7 +290,7 @@ const Cell = React.createClass({
       }
       let focusInGrid = false;
       // if the focus is on the body of the document, the user won't mind if we focus them on a cell
-      if (document.activeElement.nodeName.toLowerCase() === 'body') {
+      if ((document.activeElement == null) || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body')) {
         focusInGrid = true;
         // otherwise
       } else {
