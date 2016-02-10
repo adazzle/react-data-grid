@@ -73,7 +73,7 @@
   padding-left: 8px;
   padding-right: 8px;
   border-right: 1px solid #eee;
-  border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
 }
 .react-grid-Cell:not(.editing) .react-grid-Cell__value {
   white-space: nowrap;
@@ -250,6 +250,7 @@ textareaselect.editor-main {
   padding: 8px;
   font-weight: bold;
   border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
 }
 .react-grid-HeaderCell__value {
   white-space: nowrap;
