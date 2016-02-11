@@ -47,7 +47,7 @@ class DropDownEditor extends EditorBase {
 
 
 DropDownEditor.propTypes = {
-    options : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  options: React.PropTypes.arrayOf(React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.objectOf({ id: React.PropTypes.string, title: React.PropTypes.string, meta: React.PropTypes.string })])).isRequired;
 }
 
 module.exports = DropDownEditor;
