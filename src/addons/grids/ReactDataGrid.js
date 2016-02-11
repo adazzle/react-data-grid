@@ -73,7 +73,8 @@ const ReactDataGrid = React.createClass({
     onGridSort: React.PropTypes.func,
     onDragHandleDoubleClick: React.PropTypes.func,
     onRowSelect: React.PropTypes.func,
-    rowKey: React.PropTypes.string
+    rowKey: React.PropTypes.string,
+    rowScrollTimeout: React.PropTypes.number
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -83,7 +84,8 @@ const ReactDataGrid = React.createClass({
       rowHeight: 35,
       enableRowSelect: false,
       minHeight: 350,
-      rowKey: 'id'
+      rowKey: 'id',
+      rowScrollTimeout: 0
     };
   },
 
@@ -96,12 +98,6 @@ const ReactDataGrid = React.createClass({
       initialState.selected = {rowIdx: -1, idx: -1};
     }
     return initialState;
-  },
-
-  componentWillReceiveProps: function(nextProps: ReactDataGridProps) {
-    if (nextProps.rowsCount  === this.props.rowsCount + 1) {
-      this.onAfterAddRow(nextProps.rowsCount + 1);
-    }
   },
 
   onSelect: function(selected: SelectedType) {
@@ -222,10 +218,6 @@ const ReactDataGrid = React.createClass({
         e.dataTransfer.setData('text/plain', 'dummy');
       }
     }
-  },
-
-  onAfterAddRow: function(numberOfRows: number) {
-    this.setState({selected: { idx: 1, rowIdx: numberOfRows - 2 }});
   },
 
   onToggleFilter() {
@@ -523,7 +515,8 @@ const ReactDataGrid = React.createClass({
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
             onViewportDoubleClick={this.onViewportDoubleClick}
-            onColumnResize={this.onColumnResize}/>
+            onColumnResize={this.onColumnResize}
+            rowScrollTimeout={this.props.rowScrollTimeout}/>
           </div>
         </div>
       );
