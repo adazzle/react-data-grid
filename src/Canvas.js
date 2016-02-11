@@ -5,6 +5,7 @@ const PropTypes       = React.PropTypes;
 const ScrollShim      = require('./ScrollShim');
 const Row             = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+import shallowEqual from 'fbjs/lib/shallowEqual';
 
 const Canvas = React.createClass({
   mixins: [ScrollShim],

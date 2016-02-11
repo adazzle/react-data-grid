@@ -305,7 +305,7 @@ const ReactDataGrid = React.createClass({
       rowData.isSelected = true;
       selectedRows.push(rowData);
     }
-    this.setState({selectedRows});
+    this.setState({selectedRows: selectedRows, selected: {rowIdx: rowIdx, idx: 0}});
     if (this.props.onRowSelect) {
       this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
     }
