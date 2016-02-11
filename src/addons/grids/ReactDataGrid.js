@@ -25,21 +25,6 @@ type DraggedType = {
   value: string;
 };
 
-type ReactDataGridProps = {
-  rowHeight: number;
-  minHeight: number;
-  enableRowSelect: ?boolean;
-  onRowUpdated: ?() => void;
-  columns: Array<ExcelColumn>;
-  rowGetter: () => Array<any>;
-  rowsCount: number;
-  toolbar: ?any;
-  enableCellSelect: ?boolean;
-  onCellCopyPaste: ?() => any;
-  onCellsDragged: ?() => any;
-  onFilter: ?() => any;
-};
-
 type RowUpdateEvent = {
   keyCode: string;
   changed: {expandedHeight: number};

@@ -45,10 +45,9 @@ const Canvas = React.createClass({
 
   getInitialState() {
     return {
-      shouldUpdate: true,
       displayStart: this.props.displayStart,
       displayEnd: this.props.displayEnd,
-      scrollbarWidth: 0
+      scrollingTimeout: null
     };
   },
 
@@ -73,7 +72,16 @@ const Canvas = React.createClass({
   },
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
-    return !nextState || nextState.shouldUpdate;
+    let shouldUpdate = nextState.displayStart !== this.state.displayStart
+  || nextState.displayEnd !== this.state.displayEnd
+  || nextState.scrollingTimeout !== this.state.scrollingTimeout
+  || nextProps.rowsCount !== this.props.rowsCount
+  || nextProps.rowHeight !== this.props.rowHeight
+  || nextProps.columns !== this.props.columns
+  || nextProps.width !== this.props.width
+  || nextProps.cellMetaData !== this.props.cellMetaData
+  || !shallowEqual(nextProps.style, this.props.style);
+    return shouldUpdate;
   },
 
   componentWillUnmount() {
