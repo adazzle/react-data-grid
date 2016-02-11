@@ -477,21 +477,6 @@ describe('Grid', function() {
       });
     });
 
-    describe('Adding a new row', function() {
-      beforeEach(function() {
-        let newRow = { id: 1000, title: 'Title 1000', count: 1000 };
-        this._rows.push(newRow);
-        this.component.setProps({ rowsCount: this._rows.length });
-      });
-
-      it('should set the selected cell to be on the last row', function() {
-        expect(this.component.state.selected).toEqual({
-          idx: 1,
-          rowIdx: 1000
-        });
-      });
-    });
-
     describe('Adding a new column', function() {
       beforeEach(function() {
         const newColumn = { key: 'isodd', name: 'Is Odd', width: 100 };
