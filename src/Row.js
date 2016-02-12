@@ -100,6 +100,8 @@ const Row = React.createClass({
     let val;
     if (key === 'select-row') {
       return this.props.isSelected;
+    } else if (key === 'expand-row') {
+      return this.props.row.childRows !== null;
     } else if (typeof this.props.row.get === 'function') {
       val = this.props.row.get(key);
     } else {
