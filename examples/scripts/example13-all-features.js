@@ -241,6 +241,7 @@ var AllFeaturesExample = `
               enableRowSelect={true}
               rowHeight={50}
               minHeight={600}
+              rowScrollTimeout={200}
               />
 
       );
