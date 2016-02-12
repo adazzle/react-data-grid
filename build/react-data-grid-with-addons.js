@@ -113,7 +113,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onGridSort: React.PropTypes.func,
 	    onDragHandleDoubleClick: React.PropTypes.func,
 	    onRowSelect: React.PropTypes.func,
-	    rowKey: React.PropTypes.string
+	    rowKey: React.PropTypes.string,
+	    rowScrollTimeout: React.PropTypes.number
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -123,7 +124,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowHeight: 35,
 	      enableRowSelect: false,
 	      minHeight: 350,
-	      rowKey: 'id'
+	      rowKey: 'id',
+	      rowScrollTimeout: 0
 	    };
 	  },
 
@@ -137,12 +139,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      initialState.selected = { rowIdx: -1, idx: -1 };
 	    }
 	    return initialState;
-	  },
-
-	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    if (nextProps.rowsCount === this.props.rowsCount + 1) {
-	      this.onAfterAddRow(nextProps.rowsCount + 1);
-	    }
 	  },
 
 	  onSelect: function onSelect(selected) {
@@ -245,12 +241,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  },
-
-
-	  onAfterAddRow: function onAfterAddRow(numberOfRows) {
-	    this.setState({ selected: { idx: 1, rowIdx: numberOfRows - 2 } });
-	  },
-
 	  onToggleFilter: function onToggleFilter() {
 	    this.setState({ canFilter: !this.state.canFilter });
 	  },
@@ -355,7 +345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowData.isSelected = true;
 	      selectedRows.push(rowData);
 	    }
-	    this.setState({ selectedRows: selectedRows });
+	    this.setState({ selectedRows: selectedRows, selected: { rowIdx: rowIdx, idx: 0 } });
 	    if (this.props.onRowSelect) {
 	      this.props.onRowSelect(selectedRows.filter(function (r) {
 	        return r.isSelected === true;
@@ -561,7 +551,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          onViewportDragStart: this.onDragStart,
 	          onViewportDragEnd: this.handleDragEnd,
 	          onViewportDoubleClick: this.onViewportDoubleClick,
-	          onColumnResize: this.onColumnResize }))
+	          onColumnResize: this.onColumnResize,
+	          rowScrollTimeout: this.props.rowScrollTimeout }))
 	      )
 	    );
 	  }
@@ -624,7 +615,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onColumnResize: PropTypes.func,
 	    onSort: PropTypes.func,
 	    cellMetaData: PropTypes.shape(cellMetaDataShape),
-	    rowKey: PropTypes.string.isRequired
+	    rowKey: PropTypes.string.isRequired,
+	    rowScrollTimeout: PropTypes.number
 	  },
 
 	  mixins: [GridScrollMixin, DOMMetrics.MetricsComputatorMixin],
@@ -683,7 +675,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          onRows: this.props.onRows,
 	          cellMetaData: this.props.cellMetaData,
 	          rowOffsetHeight: this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length,
-	          minHeight: this.props.minHeight
+	          minHeight: this.props.minHeight,
+	          rowScrollTimeout: this.props.rowScrollTimeout
 	        })
 	      ) : React.createElement(
 	        'div',
@@ -1717,7 +1710,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onScroll: PropTypes.func,
 	    minHeight: PropTypes.number,
 	    cellMetaData: PropTypes.shape(cellMetaDataShape),
-	    rowKey: PropTypes.string.isRequired
+	    rowKey: PropTypes.string.isRequired,
+	    rowScrollTimeout: PropTypes.number
 	  },
 
 	  onScroll: function onScroll(scroll) {
@@ -1759,15 +1753,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        expandedRows: this.props.expandedRows,
 	        columns: this.props.columnMetrics.columns,
 	        rowRenderer: this.props.rowRenderer,
-	        visibleStart: this.state.visibleStart,
-	        visibleEnd: this.state.visibleEnd,
 	        displayStart: this.state.displayStart,
 	        displayEnd: this.state.displayEnd,
 	        cellMetaData: this.props.cellMetaData,
 	        height: this.state.height,
 	        rowHeight: this.props.rowHeight,
 	        onScroll: this.onScroll,
-	        onRows: this.props.onRows
+	        onRows: this.props.onRows,
+	        rowScrollTimeout: this.props.rowScrollTimeout
 	      })
 	    );
 	  }
@@ -1781,14 +1774,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var _shallowEqual = __webpack_require__(13);
+
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
 	var joinClasses = __webpack_require__(6);
 	var PropTypes = React.PropTypes;
-	var shallowEqual = __webpack_require__(13);
 	var ScrollShim = __webpack_require__(21);
 	var Row = __webpack_require__(22);
 	var cellMetaDataShape = __webpack_require__(29);
+
 
 	var Canvas = React.createClass({
 	  displayName: 'Canvas',
@@ -1813,22 +1812,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 	    cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
 	    selectedRows: PropTypes.array,
-	    rowKey: React.PropTypes.string
+	    rowKey: React.PropTypes.string,
+	    rowScrollTimeout: React.PropTypes.number
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      rowRenderer: Row,
 	      onRows: function onRows() {},
-	      selectedRows: []
+	      selectedRows: [],
+	      rowScrollTimeout: 0
 	    };
 	  },
 	  getInitialState: function getInitialState() {
 	    return {
-	      shouldUpdate: true,
 	      displayStart: this.props.displayStart,
 	      displayEnd: this.props.displayEnd,
-	      scrollbarWidth: 0
+	      scrollingTimeout: null
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
@@ -1840,22 +1840,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.onRows();
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    var scrollbarWidth = this.getScrollbarWidth();
-	    var shouldUpdate = !(nextProps.visibleStart > this.state.displayStart && nextProps.visibleEnd < this.state.displayEnd) || nextProps.rowsCount !== this.props.rowsCount || nextProps.rowHeight !== this.props.rowHeight || nextProps.columns !== this.props.columns || nextProps.width !== this.props.width || nextProps.cellMetaData !== this.props.cellMetaData || !shallowEqual(nextProps.style, this.props.style);
-
-	    if (shouldUpdate) {
+	    if (nextProps.displayStart !== this.state.displayStart || nextProps.displayEnd !== this.state.displayEnd) {
 	      this.setState({
-	        shouldUpdate: true,
 	        displayStart: nextProps.displayStart,
-	        displayEnd: nextProps.displayEnd,
-	        scrollbarWidth: scrollbarWidth
+	        displayEnd: nextProps.displayEnd
 	      });
-	    } else {
-	      this.setState({ shouldUpdate: false, scrollbarWidth: scrollbarWidth });
 	    }
 	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
-	    return !nextState || nextState.shouldUpdate;
+	    var shouldUpdate = nextState.displayStart !== this.state.displayStart || nextState.displayEnd !== this.state.displayEnd || nextState.scrollingTimeout !== this.state.scrollingTimeout || nextProps.rowsCount !== this.props.rowsCount || nextProps.rowHeight !== this.props.rowHeight || nextProps.columns !== this.props.columns || nextProps.width !== this.props.width || nextProps.cellMetaData !== this.props.cellMetaData || !(0, _shallowEqual2.default)(nextProps.style, this.props.style);
+	    return shouldUpdate;
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this._currentRowsLength = 0;
@@ -1875,14 +1869,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  onScroll: function onScroll(e) {
+	    var _this = this;
+
 	    this.appendScrollShim();
 	    var _e$target = e.target;
 	    var scrollTop = _e$target.scrollTop;
 	    var scrollLeft = _e$target.scrollLeft;
 
 	    var scroll = { scrollTop: scrollTop, scrollLeft: scrollLeft };
+	    // check how far we have scrolled, and if this means we are being taken out of range
+	    var scrollYRange = Math.abs(this._scroll.scrollTop - scroll.scrollTop) / this.props.rowHeight;
+	    var scrolledOutOfRange = scrollYRange > this.props.displayEnd - this.props.displayStart;
+
 	    this._scroll = scroll;
 	    this.props.onScroll(scroll);
+	    // if we go out of range, we queue the actual render, just rendering cheap placeholders
+	    // avoiding rendering anything expensive while a user scrolls down
+	    if (scrolledOutOfRange && this.props.rowScrollTimeout > 0) {
+	      var scrollTO = this.state.scrollingTimeout;
+	      if (scrollTO) {
+	        clearTimeout(scrollTO);
+	      }
+	      // queue up, and set state to clear the TO so we render the rows (not placeholders)
+	      scrollTO = setTimeout(function () {
+	        if (_this.state.scrollingTimeout !== null) {
+	          _this.setState({ scrollingTimeout: null });
+	        }
+	      }, this.props.rowScrollTimeout);
+
+	      this.setState({ scrollingTimeout: scrollTO });
+	    }
 	  },
 	  getRows: function getRows(displayStart, displayEnd) {
 	    this._currentRowsRange = { start: displayStart, end: displayEnd };
@@ -1912,11 +1928,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return { scrollTop: scrollTop, scrollLeft: scrollLeft };
 	  },
 	  isRowSelected: function isRowSelected(row) {
-	    var _this = this;
+	    var _this2 = this;
 
 	    var selectedRows = this.props.selectedRows.filter(function (r) {
-	      var rowKeyValue = row.get ? row.get(_this.props.rowKey) : row[_this.props.rowKey];
-	      return r[_this.props.rowKey] === rowKeyValue;
+	      var rowKeyValue = row.get ? row.get(_this2.props.rowKey) : row[_this2.props.rowKey];
+	      return r[_this2.props.rowKey] === rowKeyValue;
 	    });
 	    return selectedRows.length > 0 && selectedRows[0].isSelected;
 	  },
@@ -1937,6 +1953,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  renderRow: function renderRow(props) {
+	    if (this.state.scrollingTimeout !== null) {
+	      // in the midst of a rapid scroll, so we render placeholders
+	      // the actual render is then queued (through a timeout)
+	      // this avoids us redering a bunch of rows that a user is trying to scroll past
+	      return this.renderScrollingPlaceholder(props);
+	    }
 	    var RowsRenderer = this.props.rowRenderer;
 	    if (typeof RowsRenderer === 'function') {
 	      return React.createElement(RowsRenderer, props);
@@ -1946,7 +1968,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return React.cloneElement(this.props.rowRenderer, props);
 	    }
 	  },
+	  renderScrollingPlaceholder: function renderScrollingPlaceholder(props) {
+	    // here we are just rendering empty cells
+	    // we may want to allow a user to inject this, and/or just render the cells that are in view
+	    // for now though we essentially are doing a (very lightweight) row + cell with empty content
+	    var styles = {
+	      row: { height: props.height, overflow: 'hidden' },
+	      cell: { height: props.height, position: 'absolute' },
+	      placeholder: { backgroundColor: 'rgba(211, 211, 211, 0.45)', width: '60%', height: Math.floor(props.height * 0.3) }
+	    };
+	    return React.createElement(
+	      'div',
+	      { key: props.key, style: styles.row, className: 'react-grid-Row' },
+	      this.props.columns.map(function (col, idx) {
+	        return React.createElement(
+	          'div',
+	          { style: Object.assign(styles.cell, { width: col.width, left: col.left }), key: idx, className: 'react-grid-Cell' },
+	          React.createElement('div', { style: Object.assign(styles.placeholder, { width: Math.floor(col.width * 0.6) }) })
+	        );
+	      })
+	    );
+	  },
 	  renderPlaceholder: function renderPlaceholder(key, height) {
+	    // just renders empty cells
+	    // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
 	    return React.createElement(
 	      'div',
 	      { key: key, style: { height: height } },
@@ -1956,7 +2001,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 	  render: function render() {
-	    var _this2 = this;
+	    var _this3 = this;
 
 	    var displayStart = this.state.displayStart;
 	    var displayEnd = this.state.displayEnd;
@@ -1964,16 +2009,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var length = this.props.rowsCount;
 
 	    var rows = this.getRows(displayStart, displayEnd).map(function (row, idx) {
-	      return _this2.renderRow({
+	      return _this3.renderRow({
 	        key: displayStart + idx,
 	        ref: idx,
 	        idx: displayStart + idx,
 	        row: row,
 	        height: rowHeight,
-	        columns: _this2.props.columns,
-	        isSelected: _this2.isRowSelected(row),
-	        expandedRows: _this2.props.expandedRows,
-	        cellMetaData: _this2.props.cellMetaData
+	        columns: _this3.props.columns,
+	        isSelected: _this3.isRowSelected(row),
+	        expandedRows: _this3.props.expandedRows,
+	        cellMetaData: _this3.props.cellMetaData
 	      });
 	    });
 
@@ -2490,7 +2535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  checkFocus: function checkFocus() {
 	    if (this.isSelected() && !this.isActive()) {
 	      // determine the parent viewport element of this cell
-	      var parentViewport = React.findDOMNode(this);
+	      var parentViewport = ReactDOM.findDOMNode(this);
 	      while (parentViewport != null && parentViewport.className.indexOf('react-grid-Viewport') === -1) {
 	        parentViewport = parentViewport.parentElement;
 	      }
@@ -2513,7 +2558,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        }
 	      if (focusInGrid) {
-	        React.findDOMNode(this).focus();
+	        ReactDOM.findDOMNode(this).focus();
 	      }
 	    }
 	  },
@@ -2747,11 +2792,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var opts = args || {};
 	    var updated = this.getEditor().getValue();
 	    if (this.isNewValueValid(updated)) {
+	      this.changeCommitted = true;
 	      var cellKey = this.props.column.key;
 	      this.props.cellMetaData.onCommit({ cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key });
 	    }
-
-	    this.changeCommitted = true;
 	  },
 	  isNewValueValid: function isNewValueValid(value) {
 	    if (isFunction(this.getEditor().validate)) {
@@ -3036,8 +3080,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  render: function render() {
 	    return React.createElement(
-	      'span',
-	      null,
+	      'div',
+	      { title: this.props.value },
 	      this.props.value
 	    );
 	  }
@@ -3335,12 +3379,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  propTypes: {
-	    value: React.PropTypes.bool.isRequired,
-	    rowIdx: React.PropTypes.number.isRequired,
+	    value: React.PropTypes.bool,
+	    rowIdx: React.PropTypes.number,
 	    column: React.PropTypes.shape({
-	      key: React.PropTypes.string.isRequired,
-	      onCellChange: React.PropTypes.func.isRequired
-	    }).isRequired,
+	      key: React.PropTypes.string,
+	      onCellChange: React.PropTypes.func
+	    }),
 	    dependentValues: React.PropTypes.object
 	  },
 
@@ -3609,13 +3653,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  propTypes: {
-	    onCommit: React.PropTypes.func.isRequired,
-	    options: React.PropTypes.arrayOf(optionPropType).isRequired,
+	    onCommit: React.PropTypes.func,
+	    options: React.PropTypes.arrayOf(optionPropType),
 	    label: React.PropTypes.any,
-	    value: React.PropTypes.any.isRequired,
+	    value: React.PropTypes.any,
 	    height: React.PropTypes.number,
 	    valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
-	    column: React.PropTypes.shape(ExcelColumn).isRequired,
+	    column: React.PropTypes.shape(ExcelColumn),
 	    resultIdentifier: React.PropTypes.string,
 	    search: React.PropTypes.string,
 	    onKeyDown: React.PropTypes.func
@@ -4369,9 +4413,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  propTypes: {
 	    onAddRow: React.PropTypes.func,
-	    onToggleFilter: React.PropTypes.func.isRequired,
+	    onToggleFilter: React.PropTypes.func,
 	    enableFilter: React.PropTypes.bool,
-	    numberOfRows: React.PropTypes.number.isRequired
+	    numberOfRows: React.PropTypes.number
 	  },
 
 	  onAddRow: function onAddRow() {
