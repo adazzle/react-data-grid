@@ -18,6 +18,7 @@ var fullExample = require('./scripts/example13-all-features');
 var fullExampleImmutable = require('./scripts/example14-all-features-immutable');
 var emptyRowsExample = require('./scripts/example15-empty-rows');
 var cellDragDownExample  = require('./scripts/example16-cell-drag-down');
+var expandableRowsExample = require('./scripts/example17-expandable-rows');
 
 var rowSelectExample = require('./scripts/example16-row-select');
 var singleRowSelectExample = require('./scripts/example17-single-row-select');
@@ -54,6 +55,7 @@ var routes = (
       <Route name="cell-drag" handler={cellDragDownExample}/>
       <Route name="multi-row-select" handler={rowSelectExample}/>
       <Route name="single-row-select" handler={singleRowSelectExample}/>
+      <Route name="expandable-rows" handler={expandableRowsExample}/>
   </Route>
 );
 

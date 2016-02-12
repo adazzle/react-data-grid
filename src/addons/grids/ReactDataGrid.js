@@ -5,6 +5,7 @@ const Row                   = require('../../Row');
 const ExcelColumn           = require('./ExcelColumn');
 const KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 const CheckboxEditor        = require('../editors/CheckboxEditor');
+const ExpandFormatter       = require('../formatters/ExpandFormatter');
 const FilterableHeaderCell  = require('../cells/headerCells/FilterableHeaderCell');
 const DOMMetrics           = require('../../DOMMetrics');
 const ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
@@ -45,6 +46,8 @@ const ReactDataGrid = React.createClass({
     minHeight: React.PropTypes.number.isRequired,
     minWidth: React.PropTypes.number,
     enableRowSelect: React.PropTypes.bool,
+    enableRowExpand: React.PropTypes.bool,
+    onRowExpand: React.PropTypes.func,
     onRowUpdated: React.PropTypes.func,
     rowGetter: React.PropTypes.func.isRequired,
     rowsCount: React.PropTypes.number.isRequired,
@@ -68,6 +71,7 @@ const ReactDataGrid = React.createClass({
       tabIndex: -1,
       rowHeight: 35,
       enableRowSelect: false,
+      enableRowExpand: false,
       minHeight: 350,
       rowKey: 'id',
       rowScrollTimeout: 0
@@ -425,6 +429,19 @@ const ReactDataGrid = React.createClass({
         getRowMetaData: (rowData) => rowData
       };
       unshiftedCols = cols.unshift(selectColumn);
+      cols = unshiftedCols > 0 ? cols : unshiftedCols;
+    }
+    if (props.enableRowExpand) {
+      let expandColumn = {
+        key: 'expand-row',
+        name: '',
+        formatter: <ExpandFormatter onRowExpand={this.props.onRowExpand} />,
+        filterable: false,
+        getRowMetaData: (row) => row,
+        width: 60,
+        locked: true
+      };
+      unshiftedCols = cols.unshift(expandColumn);
       cols = unshiftedCols > 0 ? cols : unshiftedCols;
     }
     return cols;
