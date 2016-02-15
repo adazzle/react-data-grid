@@ -11,6 +11,7 @@ var formatterExample = require('./scripts/example05-custom-formatters');
 var editorsExample   = require('./scripts/example06-built-in-editors');
 var sortableExample  = require('./scripts/example08-sortable-cols');
 var filterableExample  = require('./scripts/example09-filterable-grid');
+var filterableSortablExample = require('./scripts/example16-filterable-sortable-grid');
 var millionRowsExample = require('./scripts/example10-one-million-rows');
 var immutableDataExample = require('./scripts/example11-immutable-data');
 var customRowRenderer = require('./scripts/example12-customRowRenderer');
@@ -45,6 +46,7 @@ var routes = (
       <Route name="editors" handler={editorsExample}/>
       <Route name="sortable" handler={sortableExample}/>
       <Route name="filterable" handler={filterableExample}/>
+      <Route name="filterable-sortable" handler={filterableSortablExample} />
       <Route name="million-rows" handler={millionRowsExample}/>
       <Route name="all-the-features" handler={fullExample}/>
       <Route name="all-features-immutable" handler={fullExampleImmutable}/>

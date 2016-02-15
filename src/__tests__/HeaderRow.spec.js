@@ -12,10 +12,12 @@ describe('Header Unit Tests', () => {
   // Configure local letiable replacements for the module.
   let SortableHeaderCellStub = new StubComponent('SortableHeaderCell');
   let HeaderCellStub = new StubComponent('HeaderCell');
+  let FilterableHeaderCellStub = new StubComponent('FilterableHeaderCell');
 
   rewireModule(HeaderRow, {
     SortableHeaderCell: SortableHeaderCellStub,
-    HeaderCell: HeaderCellStub
+    HeaderCell: HeaderCellStub,
+    FilterableHeaderCell: FilterableHeaderCellStub
   });
 
   let testProps = {
@@ -35,7 +37,7 @@ describe('Header Unit Tests', () => {
     expect(headerRow).toBeDefined();
   });
 
-  describe('When column is sortable', () => {
+  describe('When column is sortable and headerCellRenderer not provided', () => {
     let sortableColIdx = 1;
     beforeEach(() => {
       testProps.columns[sortableColIdx].sortable = true;
@@ -70,6 +72,41 @@ describe('Header Unit Tests', () => {
       expect(testProps.onSort).toHaveBeenCalled();
       expect(testProps.onSort.mostRecentCall.args[0]).toEqual('title');
       expect(testProps.onSort.mostRecentCall.args[1]).toEqual('DESC');
+    });
+  });
+
+  describe('When column is sortable and filterable', () => {
+    let sortableAndFilterableColIdx = 1;
+
+    describe('When row is filterable', () => {
+      beforeEach(() => {
+        testProps.columns[sortableAndFilterableColIdx].sortable = true;
+        testProps.columns[sortableAndFilterableColIdx].filterable = true;
+        headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableAndFilterableColIdx].key} filterable={true} onFilterChange={() => {}}/>);
+      });
+
+      it('should provide column with a filterableHeaderRenderer', () => {
+        let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
+        expect(TestUtils.isElementOfType(headerCells[sortableAndFilterableColIdx].props.renderer, FilterableHeaderCellStub)).toBe(true);
+      });
+    });
+
+    describe('When row is not filterable', () => {
+      beforeEach(() => {
+        testProps.columns[sortableAndFilterableColIdx].sortable = true;
+        testProps.columns[sortableAndFilterableColIdx].filterable = true;
+        headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableAndFilterableColIdx].key}/>);
+      });
+
+      it('should provide column with a sortableHeaderRenderer', () => {
+        let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
+        expect(TestUtils.isElementOfType(headerCells[sortableAndFilterableColIdx].props.renderer, SortableHeaderCellStub)).toBe(true);
+      });
+    });
+
+    afterEach(() => {
+      testProps.columns[sortableAndFilterableColIdx].sortable = false;
+      testProps.columns[sortableAndFilterableColIdx].filterable = false;
     });
   });
 });
