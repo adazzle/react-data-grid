@@ -1,17 +1,11 @@
-/* @flow */
-/**
-* @jsx React.DOM
-
-*/
-
 const React = require('react');
 
 const Toolbar = React.createClass({
   propTypes: {
     onAddRow: React.PropTypes.func,
-    onToggleFilter: React.PropTypes.func.isRequired,
+    onToggleFilter: React.PropTypes.func,
     enableFilter: React.PropTypes.bool,
-    numberOfRows: React.PropTypes.number.isRequired
+    numberOfRows: React.PropTypes.number
   },
 
   onAddRow() {

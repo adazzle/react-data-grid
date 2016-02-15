@@ -1,9 +1,10 @@
-const React        = require('react');
-const rewire       = require('rewire');
-const Cell         = rewire('../Cell');
-const TestUtils    = require('react/lib/ReactTestUtils');
-const rewireModule = require('../../test/rewireModule');
-const StubComponent = require('../../test/StubComponent');
+let React        = require('react');
+let ReactDOM     = require('react-dom');
+let rewire       = require('rewire');
+let Cell         = rewire('../Cell');
+let TestUtils    = require('react-addons-test-utils');
+let rewireModule = require('../../test/rewireModule');
+let StubComponent = require('../../test/StubComponent');
 
 describe('Cell Tests', () => {
   let testElement;
@@ -33,15 +34,11 @@ describe('Cell Tests', () => {
     rowIdx: 0,
     idx: 1,
     tabIndex: 1,
-    column: {
-      name: 'name',
-      key: 'key',
-      width: 0
-    },
+    column: {},
     value: 'Wicklow',
     isExpanded: false,
     cellMetaData: testCellMetaData,
-    handleDragStart: function() {},
+    handleDragStart: () => {},
     rowData: {name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Absolutely'},
     height: 40,
     name: 'JT'
@@ -70,7 +67,6 @@ describe('Cell Tests', () => {
     expect(formatterInstance.props.value).toEqual('Wicklow');
   });
 
-
   describe('When cell is active', () => {
     beforeEach(() => {
       testCellMetaData.selected = {
@@ -85,7 +81,7 @@ describe('Cell Tests', () => {
       testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       let editorContainerInstance = TestUtils.findRenderedComponentWithType(testElement, EditorContainerStub);
       expect(editorContainerInstance).toBeDefined();
-      expect(editorContainerInstance.props).toEqual({
+      let props = {
         value: 'Wicklow',
         column: testProps.column,
         isExpanded: false,
@@ -94,7 +90,14 @@ describe('Cell Tests', () => {
         idx: testProps.idx,
         cellMetaData: testProps.cellMetaData,
         height: testProps.height,
-        dependentVlaues: undefined
+        dependentValues: undefined
+      };
+
+      expect(Object.keys(props).sort())
+        .toEqual(Object.keys(editorContainerInstance.props).sort());
+
+      Object.keys(props).forEach(k => {
+        expect(props[k]).toEqual(editorContainerInstance.props[k]);
       });
     });
 
@@ -104,7 +107,7 @@ describe('Cell Tests', () => {
       let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       // force update
       cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
-      let cellHasUpdateClass = cellInstance.getDOMNode().getAttribute('class').indexOf(updateClass) > -1;
+      let cellHasUpdateClass = ReactDOM.findDOMNode(cellInstance).getAttribute('class').indexOf(updateClass) > -1;
       expect(cellHasUpdateClass).toBe(true);
     });
   });

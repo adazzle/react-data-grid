@@ -119,6 +119,7 @@ var Example = React.createClass({
       <ReactDataGrid
         columns={columns}
         rowGetter={this.rowGetter}
+        enableCellSelect={true}
         rowsCount={this.state.rows.length}
         minHeight={500}
         toolbar={<Toolbar enableFilter={true}/>}
@@ -128,7 +129,7 @@ var Example = React.createClass({
 
 });
 
-React.render(<Example />, mountNode);
+ReactDOM.render(<Example />, mountNode);
 `;
 
 module.exports = React.createClass({

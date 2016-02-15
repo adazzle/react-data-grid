@@ -1,6 +1,6 @@
 const React             = require('react');
+const ReactDOM = require('react-dom');
 const joinClasses       = require('classnames');
-const cloneWithProps    = require('react/lib/cloneWithProps');
 const EditorContainer   = require('./addons/editors/EditorContainer');
 const ExcelColumn       = require('./addons/grids/ExcelColumn');
 const isFunction        = require('./addons/utils/isFunction');
@@ -88,6 +88,18 @@ const Cell = React.createClass({
     }
   },
 
+  onDragHandleDoubleClick(e) {
+    e.stopPropagation();
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellDoubleClick != null) {
+      meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData()});
+    }
+  },
+
+  onDragOver: function(e) {
+    e.preventDefault();
+  },
+
   getStyle(): {position:string; width: number; height: number; left: number} {
     let style = {
       position: 'absolute',
@@ -126,9 +138,10 @@ const Cell = React.createClass({
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
     let extraClasses = joinClasses({
+      'row-selected': this.props.isRowSelected,
       selected: this.isSelected() && !this.isActive(),
       editing: this.isActive(),
-      copied: this.isCopied(),
+      copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'active-drag-cell': this.isSelected() || this.isDraggedOver(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
@@ -183,7 +196,7 @@ const Cell = React.createClass({
     let updateCellClass = this.getUpdateCellClass();
     // -> removing the class
     if (updateCellClass != null && updateCellClass !== '') {
-      let cellDOMNode = this.getDOMNode();
+      let cellDOMNode = ReactDOM.findDOMNode(this);
       if (cellDOMNode.classList) {
         cellDOMNode.classList.remove(updateCellClass);
       // -> and re-adding the class
@@ -199,7 +212,7 @@ const Cell = React.createClass({
   setScrollLeft(scrollLeft: number) {
     let ctrl: any = this; // flow on windows has an outdated react declaration, once that gets updated, we can remove this
     if (ctrl.isMounted()) {
-      let node = React.findDOMNode(this);
+      let node = ReactDOM.findDOMNode(this);
       let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;
@@ -271,8 +284,37 @@ const Cell = React.createClass({
 
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
-      React.findDOMNode(this).focus();
+      // determine the parent viewport element of this cell
+      let parentViewport = ReactDOM.findDOMNode(this);
+      while (parentViewport != null && parentViewport.className.indexOf('react-grid-Viewport') === -1) {
+        parentViewport = parentViewport.parentElement;
+      }
+      let focusInGrid = false;
+      // if the focus is on the body of the document, the user won't mind if we focus them on a cell
+      if ((document.activeElement == null) || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body')) {
+        focusInGrid = true;
+        // otherwise
+      } else {
+        // only pull focus if the currently focused element is contained within the viewport
+        if (parentViewport) {
+          let focusedParent = document.activeElement;
+          while (focusedParent != null) {
+            if (focusedParent === parentViewport) {
+              focusInGrid = true;
+              break;
+            }
+            focusedParent = focusedParent.parentElement;
+          }
+        }
+      }
+      if (focusInGrid) {
+        ReactDOM.findDOMNode(this).focus();
+      }
     }
+  },
+
+  canEdit() {
+    return (this.props.column.editor != null) || this.props.column.editable;
   },
 
   renderCellContent(props: any): ReactElement {
@@ -280,7 +322,7 @@ const Cell = React.createClass({
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
       props.dependentValues = this.getFormatterDependencies();
-      CellContent = cloneWithProps(Formatter, props);
+      CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
       CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
     } else {
@@ -302,11 +344,12 @@ const Cell = React.createClass({
       isExpanded: this.props.isExpanded
     });
 
+    let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
+
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} >
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver}>
       {cellContent}
-      <div className="drag-handle" draggable="true">
-      </div>
+      {dragHandle}
       </div>
     );
   }

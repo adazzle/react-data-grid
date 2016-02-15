@@ -1,9 +1,6 @@
-/**
- * @jsx React.DOM
- */
 (function(){
   var React       = require('react')
-  var ReactDataGrid       = require('../../dist/react-data-grid-with-addons')
+  var ReactDataGrid       = require('../build/react-data-grid-with-addons')
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
@@ -62,7 +59,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     {
       key: 'county',
       name: 'County',
-      editor: <AutoCompleteEditor options={counties}/>,
+      editor: <AutoCompleteEditor options={counties} onCommit={() => {}} column={{name:'county', key:'county', width: 200}} value='wicklow'/>,
       width : 200,
       resizable: true
     },
@@ -211,7 +208,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
               onRowUpdated={this.handleRowUpdated}
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}
-              toolbar={<Toolbar onAddRow={this.handleAddRow}/>}
+              toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={()=>{}} numberOfRows={this.getSize()}/>}
               enableRowSelect={true}
               rowHeight={50}
               minHeight={600}

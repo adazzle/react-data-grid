@@ -1,4 +1,5 @@
 const React               = require('react');
+const ReactDOM            = require('react-dom');
 const joinClasses         = require('classnames');
 const shallowCloneObject  = require('./shallowCloneObject');
 const ColumnMetrics       = require('./ColumnMetrics');
@@ -13,7 +14,7 @@ type Column = {
 const Header = React.createClass({
   propTypes: {
     columnMetrics: PropTypes.shape({  width: PropTypes.number.isRequired, columns: PropTypes.any }).isRequired,
-    totalWidth: PropTypes.number,
+    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
     headerRows: PropTypes.array.isRequired,
     sortColumn: PropTypes.string,
@@ -148,11 +149,11 @@ const Header = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    let node = this.refs.row.getDOMNode();
+    let node = ReactDOM.findDOMNode(this.refs.row);
     node.scrollLeft = scrollLeft;
     this.refs.row.setScrollLeft(scrollLeft);
     if (this.refs.filterRow) {
-      let nodeFilters = this.refs.filterRow.getDOMNode();
+      let nodeFilters =  ReactDOM.findDOMNode(this.refs.filterRow);
       nodeFilters.scrollLeft = scrollLeft;
       this.refs.filterRow.setScrollLeft(scrollLeft);
     }

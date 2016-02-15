@@ -1,4 +1,6 @@
 var React = require('react');
+window.React = React;
+var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
 
 var basicExample     = require('./scripts/example01-basic');
@@ -16,6 +18,10 @@ var customRowRenderer = require('./scripts/example12-customRowRenderer');
 var fullExample = require('./scripts/example13-all-features');
 var fullExampleImmutable = require('./scripts/example14-all-features-immutable');
 var emptyRowsExample = require('./scripts/example15-empty-rows');
+var cellDragDownExample  = require('./scripts/example16-cell-drag-down');
+
+var rowSelectExample = require('./scripts/example16-row-select');
+var singleRowSelectExample = require('./scripts/example17-single-row-select');
 
 var { Route, RouteHandler, Link } = ReactRouter;
 
@@ -47,9 +53,12 @@ var routes = (
       <Route name="immutable-data" handler={immutableDataExample}/>
       <Route name="custom-row-renderer" handler={customRowRenderer}/>
       <Route name="empty-rows" handler={emptyRowsExample}/>
+      <Route name="cell-drag" handler={cellDragDownExample}/>
+      <Route name="multi-row-select" handler={rowSelectExample}/>
+      <Route name="single-row-select" handler={singleRowSelectExample}/>
   </Route>
 );
 
 ReactRouter.run(routes, function (Handler) {
-  React.render(<Handler/>, document.getElementById('example'));
+  ReactDOM.render(<Handler/>, document.getElementById('example'));
 });

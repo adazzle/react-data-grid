@@ -141,7 +141,7 @@ const Row = React.createClass({
       this.props.cellRenderer.call(this, props);
     }
     if (React.isValidElement(this.props.cellRenderer)) {
-      return cloneWithProps(this.props.cellRenderer, props);
+      return React.cloneElement(this.props.cellRenderer, props);
     }
 
     return this.props.cellRenderer(props);
@@ -150,7 +150,8 @@ const Row = React.createClass({
   render(): ?ReactElement {
     let className = joinClasses(
       'react-grid-Row',
-      `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`
+      `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
+      {'row-selected': this.props.isSelected}
     );
 
     let style = {

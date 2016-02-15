@@ -9,7 +9,7 @@ const Viewport = React.createClass({
 
   propTypes: {
     rowOffsetHeight: PropTypes.number.isRequired,
-    totalWidth: PropTypes.number.isRequired,
+    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     columnMetrics: PropTypes.object.isRequired,
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     selectedRows: PropTypes.array,
@@ -20,7 +20,9 @@ const Viewport = React.createClass({
     onRows: PropTypes.func,
     onScroll: PropTypes.func,
     minHeight: PropTypes.number,
-    cellMetaData: PropTypes.shape(cellMetaDataShape)
+    cellMetaData: PropTypes.shape(cellMetaDataShape),
+    rowKey: PropTypes.string.isRequired,
+    rowScrollTimeout: PropTypes.number
   },
 
   onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
@@ -60,6 +62,7 @@ const Viewport = React.createClass({
         style={style}>
         <Canvas
           ref="canvas"
+          rowKey={this.props.rowKey}
           totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}
           rowGetter={this.props.rowGetter}
@@ -68,8 +71,6 @@ const Viewport = React.createClass({
           expandedRows={this.props.expandedRows}
           columns={this.props.columnMetrics.columns}
           rowRenderer={this.props.rowRenderer}
-          visibleStart={this.state.visibleStart}
-          visibleEnd={this.state.visibleEnd}
           displayStart={this.state.displayStart}
           displayEnd={this.state.displayEnd}
           cellMetaData={this.props.cellMetaData}
@@ -77,6 +78,7 @@ const Viewport = React.createClass({
           rowHeight={this.props.rowHeight}
           onScroll={this.onScroll}
           onRows={this.props.onRows}
+          rowScrollTimeout={this.props.rowScrollTimeout}
           />
       </div>
     );

@@ -104,10 +104,7 @@
 .react-grid-Row:hover .react-grid-Cell {
   background-color: #f2f2f2;
 }
-.react-grid-Cell--locked:last-of-type {
-  border-right: 1px solid #dddddd;
-  box-shadow: none;
-}
+
 .react-grid-Cell.editing {
   padding: 0;
   overflow: visible !important;
@@ -170,12 +167,57 @@ textareaselect.editor-main {
   height: auto;
 }
 
-input.react-grid-CheckBox {
-  display: block;
-  margin: 0;
-  margin-left: auto;
-  margin-right: auto;
+.react-grid-checkbox-container {
+    cursor: pointer;
 }
+
+.react-grid-checkbox, .radio-custom {
+    opacity: 0;
+    position: absolute;
+}
+
+.react-grid-checkbox, .react-grid-checkbox-label, .radio-custom, .radio-custom-label {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.react-grid-checkbox-label, .radio-custom-label {
+    position: relative;
+}
+
+.react-grid-checkbox + .react-grid-checkbox-label:before, .radio-custom + .radio-custom-label:before {
+    content: '';
+    background: #fff;
+    border: 2px solid #ddd;
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+}
+
+.react-grid-checkbox:checked + .react-grid-checkbox-label:before {
+    background: rebeccapurple;
+    box-shadow: inset 0px 0px 0px 4px #fff;
+}
+
+.radio-custom + .radio-custom-label:before {
+    border-radius: 50%;
+}
+
+.radio-custom:checked + .radio-custom-label:before {
+    background: #ccc;
+    box-shadow: inset 0px 0px 0px 4px #fff;
+}
+
+
+.react-grid-checkbox:focus + .react-grid-checkbox-label, .radio-custom:focus + .radio-custom-label {
+  outline: 1px solid #ddd; /* focus style */
+}
+
+
 .react-grid-HeaderCell input[type='checkbox'] {
   display: block;
   margin: 0;
@@ -265,7 +307,28 @@ input.react-grid-CheckBox {
   border-bottom: 0px;
   z-index: 8;
   cursor: crosshair;
+  cursor: -webkit-grab;
 }
+
+.react-grid-Cell.active-drag-cell:hover .drag-handle {
+  position: absolute;
+  bottom: -8px;
+  right: -7px;
+  background: white;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #66afe9;
+  /* border-right: 0px; */
+  /* border-bottom: 0px; */
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -webkit-grab;
+}
+
+.react-grid-Cell.active-drag-cell:hover .drag-handle .glyphicon-arrow-down {
+  display: 'block'
+}
+
 .react-grid-Cell.is-dragged-over-down {
   border-right: 1px dashed black;
   border-left: 1px dashed black;
@@ -282,9 +345,7 @@ input.react-grid-CheckBox {
 .react-grid-Cell {
   border-right: 1px solid #eee;
 }
-.react-grid-Cell:last-child {
-  border-right: none;
-}
+
 .react-grid-Cell:hover {
   background: #eee;
 }
@@ -295,6 +356,16 @@ input.react-grid-CheckBox {
 }
 .react-grid-Cell:focus {
   outline: none;
+}
+
+.react-grid-Row.row-selected .react-grid-Cell{
+ background-color: rgba(16, 126, 219, 0.15);
+}
+
+
+.react-grid-Cell--locked:last-of-type {
+  border-right: 1px solid #dddddd;
+  box-shadow: none;
 }
 
 .react-grid-image {

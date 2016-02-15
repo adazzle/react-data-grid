@@ -12,9 +12,9 @@ module.exports = React.createClass({
       <ColsDescription/>
       <RowsDescription/>
 
-      <p>Now simply invoke React.render(..) passing the array of rows and columns as props</p>
+      <p>Now simply invoke ReactDOM.render(..) passing the array of rows and columns as props</p>
       <div className="code-block js">
-      <pre><code className="javascript">{"React.render(<ReactDataGrid columns={columns} rowGetter={rowGetter} rowsCount={rowsCount()} minHeight={500} />, document.getElementById('example'))"}</code></pre>
+      <pre><code className="javascript">{"ReactDOM.render(<ReactDataGrid columns={columns} rowGetter={rowGetter} rowsCount={rowsCount()} minHeight={500} />, document.getElementById('example'))"}</code></pre>
       </div>
       </div>
     );

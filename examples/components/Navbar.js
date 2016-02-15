@@ -1,6 +1,3 @@
-/**
-* @jsx React.DOM
-*/
 module.exports = React.createClass({
   render : function(){
     return(
@@ -29,9 +26,14 @@ module.exports = React.createClass({
                     <li><a href="examples.html#/basic">Basic Use</a></li>
                     <li><a href="examples.html#/resizable">Resizable Grid</a></li>
                     <li><a href="examples.html#/fixed">Frozen Columns</a></li>
+                    <li><a href="examples.html#/single-row-select">Single Row Selection</a></li>
+                    <li><a href="examples.html#/multi-row-select">Multiple Row Selection</a></li>
                     <li><a href="examples.html#/editable">Editable Grid</a></li>
                     <li><a href="examples.html#/formatters">Custom Formatters</a></li>
                     <li><a href="examples.html#/editors">Rich Cell Editors</a></li>
+                    <li>
+                      <a href="examples.html#/cell-drag">Cell drag down/Fill Column</a>
+                    </li>
                     <li><a href="examples.html#/sortable">Sortable Grid</a></li>
                     <li><a href="examples.html#/filterable">Filterable Grid</a></li>
                     <li><a href="examples.html#/filterable-sortable">Filterable Sortable Grid</a></li>

@@ -1,6 +1,6 @@
 const React          = require('react');
+const ReactDOM      = require('react-dom');
 const joinClasses    = require('classnames');
-const cloneWithProps = require('react/lib/cloneWithProps');
 const ExcelColumn    = require('./addons/grids/ExcelColumn');
 const ResizeHandle   = require('./ResizeHandle');
 const PropTypes      = React.PropTypes;
@@ -54,13 +54,13 @@ const HeaderCell = React.createClass({
 
   getWidthFromMouseEvent(e: SyntheticMouseEvent): number {
     let right = e.pageX;
-    let left = React.findDOMNode(this).getBoundingClientRect().left;
+    let left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   },
 
   getCell(): ReactComponent {
     if (React.isValidElement(this.props.renderer)) {
-      return cloneWithProps(this.props.renderer, {column: this.props.column});
+      return React.cloneElement(this.props.renderer, {column: this.props.column});
     }
 
     return this.props.renderer({column: this.props.column});
@@ -81,7 +81,7 @@ const HeaderCell = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    let node = React.findDOMNode(this);
+    let node = ReactDOM.findDOMNode(this);
     node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
     node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
   },

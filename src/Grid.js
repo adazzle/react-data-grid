@@ -10,9 +10,9 @@ const Grid = React.createClass({
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-    columnMetrics: PropTypes.shape,
+    columnMetrics: PropTypes.object,
     minHeight: PropTypes.number,
-    totalWidth: PropTypes.number,
+    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowHeight: PropTypes.number,
     rowRenderer: PropTypes.func,
@@ -30,7 +30,9 @@ const Grid = React.createClass({
     onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
-    cellMetaData: PropTypes.shape(cellMetaDataShape)
+    cellMetaData: PropTypes.shape(cellMetaDataShape),
+    rowKey: PropTypes.string.isRequired,
+    rowScrollTimeout: PropTypes.number
   },
 
   mixins: [
@@ -75,6 +77,7 @@ const Grid = React.createClass({
             <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
                   ref="viewport"
+                  rowKey={this.props.rowKey}
                   width={this.props.columnMetrics.width}
                   rowHeight={this.props.rowHeight}
                   rowRenderer={this.props.rowRenderer}
@@ -89,6 +92,7 @@ const Grid = React.createClass({
                   cellMetaData={this.props.cellMetaData}
                   rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
                   minHeight={this.props.minHeight}
+                  rowScrollTimeout={this.props.rowScrollTimeout}
                 />
             </div>
         :

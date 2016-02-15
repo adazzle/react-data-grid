@@ -38,13 +38,15 @@ var columns = [
 var Example = React.createClass({
   render: function() {
     return  (<ReactDataGrid
+    rowKey='id'
     columns={columns}
     rowGetter={rowGetter}
     rowsCount={_rows.length}
+    enableRowSelect='single'
     minHeight={500} />);
   }
 });
-ReactDOM.render(<Example />, mountNode);
+React.render(<Example />, mountNode);
 `;
 
 module.exports = React.createClass({
@@ -52,7 +54,9 @@ module.exports = React.createClass({
   render:function(){
     return(
       <div>
-        <h3>A Simple Example</h3>
+        <h3>Single Row Select</h3>
+        <p>By setting enableRowSelect='single' and passing a rowKey property to determine the name of the unique id of each row, you can enable single row select</p>
+        <p>Each time a row is clicked, onRowSelect prop will be called passing the selected row</p>
         <ReactPlayground codeText={SimpleExample} />
       </div>
     )

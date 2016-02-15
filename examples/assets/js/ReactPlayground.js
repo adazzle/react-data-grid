@@ -30,7 +30,7 @@ var CodeMirrorEditor = React.createClass({
   componentDidMount: function() {
     if (IS_MOBILE) return;
 
-    this.editor = CodeMirror.fromTextArea(this.refs.editor.getDOMNode(), {
+    this.editor = CodeMirror.fromTextArea(this.refs.editor, {
       mode: 'javascript',
       lineNumbers: this.props.lineNumbers,
       lineWrapping: true,
@@ -204,16 +204,16 @@ module.exports = React.createClass({
     },
 
     executeCode: function() {
-      var mountNode = this.refs.mount.getDOMNode();
+      var mountNode = this.refs.mount;
 
       try {
-        React.unmountComponentAtNode(mountNode);
+        ReactDOM.unmountComponentAtNode(mountNode);
       } catch (e) { }
 
       try {
         var compiledCode = this.compileCode();
         if (this.props.renderCode) {
-          React.render(
+          ReactDOM.render(
             <CodeMirrorEditor codeText={compiledCode} readOnly={true} />,
             mountNode
           );
@@ -222,7 +222,7 @@ module.exports = React.createClass({
         }
       } catch (err) {
         this.setTimeout(function() {
-          React.render(
+          ReactDOM.render(
             <div className="playgroundError">{err.toString()}</div>,
             mountNode
           );

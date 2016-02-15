@@ -21,7 +21,7 @@ var AllFeaturesExample = `
       lastName: faker.name.lastName(),
       street: faker.address.streetName(),
       zipCode: faker.address.zipCode(),
-      date: faker.date.past(),
+      date: faker.date.past().toLocaleDateString(),
       bs: faker.company.bs(),
       catchPhrase: faker.company.catchPhrase(),
       companyName: faker.company.companyName(),
@@ -241,12 +241,13 @@ var AllFeaturesExample = `
               enableRowSelect={true}
               rowHeight={50}
               minHeight={600}
+              rowScrollTimeout={200}
               />
 
       );
     }
   });
-  React.render(<Example />, mountNode);
+  ReactDOM.render(<Example />, mountNode);
 `;
 
 

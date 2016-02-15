@@ -1,16 +1,10 @@
-/* @flow */
-/**
- * @jsx React.DOM
-
- */
-
 const React                 = require('react');
+const ReactDOM = require('react-dom');
 const BaseGrid              = require('../../Grid');
 const Row                   = require('../../Row');
 const ExcelColumn           = require('./ExcelColumn');
 const KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 const CheckboxEditor        = require('../editors/CheckboxEditor');
-const cloneWithProps        = require('react/lib/cloneWithProps');
 const DOMMetrics           = require('../../DOMMetrics');
 const ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
 const RowUtils = require('../../RowUtils');
@@ -28,21 +22,6 @@ type DraggedType = {
   idx: number;
   rowIdx: number;
   value: string;
-};
-
-type ReactDataGridProps = {
-  rowHeight: number;
-  minHeight: number;
-  enableRowSelect: ?boolean;
-  onRowUpdated: ?() => void;
-  columns: Array<ExcelColumn>;
-  rowGetter: () => Array<any>;
-  rowsCount: number;
-  toolbar: ?any;
-  enableCellSelect: ?boolean;
-  onCellCopyPaste: ?() => any;
-  onCellsDragged: ?() => any;
-  onFilter: ?() => any;
 };
 
 type RowUpdateEvent = {
@@ -75,7 +54,11 @@ const ReactDataGrid = React.createClass({
     onCellCopyPaste: React.PropTypes.func,
     onCellsDragged: React.PropTypes.func,
     onAddFilter: React.PropTypes.func,
-    onGridSort: React.PropTypes.func
+    onGridSort: React.PropTypes.func,
+    onDragHandleDoubleClick: React.PropTypes.func,
+    onRowSelect: React.PropTypes.func,
+    rowKey: React.PropTypes.string,
+    rowScrollTimeout: React.PropTypes.number
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -84,25 +67,21 @@ const ReactDataGrid = React.createClass({
       tabIndex: -1,
       rowHeight: 35,
       enableRowSelect: false,
-      minHeight: 350
+      minHeight: 350,
+      rowKey: 'id',
+      rowScrollTimeout: 0
     };
   },
 
   getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType;  } {
     let columnMetrics = this.createColumnMetrics();
-    let initialState = {columnMetrics, selectedRows: this.getInitialSelectedRows(), copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0 };
+    let initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0 };
     if (this.props.enableCellSelect) {
       initialState.selected = {rowIdx: 0, idx: 0};
     } else {
       initialState.selected = {rowIdx: -1, idx: -1};
     }
     return initialState;
-  },
-
-  componentWillReceiveProps: function(nextProps: ReactDataGridProps) {
-    if (nextProps.rowsCount  === this.props.rowsCount + 1) {
-      this.onAfterAddRow(nextProps.rowsCount + 1);
-    }
   },
 
   onSelect: function(selected: SelectedType) {
@@ -216,15 +195,23 @@ const ReactDataGrid = React.createClass({
     let value = this.getSelectedValue();
     this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
     // need to set dummy data for FF
-    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
-  },
-
-  onAfterAddRow: function(numberOfRows: number) {
-    this.setState({selected: { idx: 1, rowIdx: numberOfRows - 2 }});
+    if (e && e.dataTransfer) {
+      if (e.dataTransfer.setData) {
+        e.dataTransfer.dropEffect = 'move';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', 'dummy');
+      }
+    }
   },
 
   onToggleFilter() {
     this.setState({ canFilter: !this.state.canFilter });
+  },
+
+  onDragHandleDoubleClick(e) {
+    if (this.props.onDragHandleDoubleClick) {
+      this.props.onDragHandleDoubleClick(e);
+    }
   },
 
   handleDragStart(dragged: DraggedType) {
@@ -293,18 +280,33 @@ const ReactDataGrid = React.createClass({
     });
   },
 
+  getSelectedRow(rows, key) {
+    let selectedRow = rows.filter(r => {
+      if (r[this.props.rowKey] === key) {
+        return true;
+      }
+      return false;
+    });
+    if (selectedRow.length > 0) {
+      return selectedRow[0];
+    }
+  },
+
   // columnKey not used here as this function will select the whole row,
   // but needed to match the function signature in the CheckboxEditor
-  handleRowSelect(rowIdx: number, columnKey: string, e: Event) {
+  handleRowSelect(rowIdx: number, columnKey: string, rowData, e: Event) {
     e.stopPropagation();
-    if (this.state.selectedRows !== null && this.state.selectedRows.length > 0) {
-      let selectedRows = this.state.selectedRows.slice();
-      if (selectedRows[rowIdx] === null || selectedRows[rowIdx] === false) {
-        selectedRows[rowIdx] = true;
-      } else {
-        selectedRows[rowIdx] = false;
-      }
-      this.setState({selectedRows: selectedRows});
+    let selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
+    let selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
+    if (selectedRow) {
+      selectedRow.isSelected = !selectedRow.isSelected;
+    } else {
+      rowData.isSelected = true;
+      selectedRows.push(rowData);
+    }
+    this.setState({selectedRows: selectedRows, selected: {rowIdx: rowIdx, idx: 0}});
+    if (this.props.onRowSelect) {
+      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
     }
   },
 
@@ -317,14 +319,18 @@ const ReactDataGrid = React.createClass({
     }
     let selectedRows = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
-      selectedRows.push(allRowsSelected);
+      let row = Object.assign({}, this.props.rowGetter(i), {isSelected: allRowsSelected});
+      selectedRows.push(row);
     }
     this.setState({selectedRows: selectedRows});
+    if (typeof this.props.onRowSelect === 'function') {
+      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
+    }
   },
 
   getScrollOffSet() {
     let scrollOffset = 0;
-    let canvas = this.getDOMNode().querySelector('.react-grid-Canvas');
+    let canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
     if (canvas) {
       scrollOffset = canvas.offsetWidth - canvas.clientWidth;
     }
@@ -406,15 +412,17 @@ const ReactDataGrid = React.createClass({
     let cols = props.columns.slice(0);
     let unshiftedCols = {};
     if (props.enableRowSelect) {
+      let headerRenderer = props.enableRowSelect === 'single' ? null :  <input type="checkbox" onChange={this.handleCheckboxChange} />;
       let selectColumn = {
         key: 'select-row',
         name: '',
         formatter: <CheckboxEditor/>,
         onCellChange: this.handleRowSelect,
         filterable: false,
-        headerRenderer: <input type="checkbox" onChange={this.handleCheckboxChange} />,
+        headerRenderer: headerRenderer,
         width: 60,
-        locked: true
+        locked: true,
+        getRowMetaData: (rowData) => rowData
       };
       unshiftedCols = cols.unshift(selectColumn);
       cols = unshiftedCols > 0 ? cols : unshiftedCols;
@@ -434,7 +442,7 @@ const ReactDataGrid = React.createClass({
   renderToolbar(): ReactElement {
     let Toolbar = this.props.toolbar;
     if (React.isValidElement(Toolbar)) {
-      return ( cloneWithProps(Toolbar, {onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
+      return ( React.cloneElement(Toolbar, {onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
     }
   },
 
@@ -448,12 +456,23 @@ const ReactDataGrid = React.createClass({
       onCommitCancel: this.setInactive,
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
-      handleTerminateDrag: this.handleTerminateDrag
+      handleTerminateDrag: this.handleTerminateDrag,
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick
     };
 
     let toolbar = this.renderToolbar();
     let containerWidth = this.props.minWidth || this.DOMMetrics.gridWidth();
     let gridWidth = containerWidth - this.state.scrollOffset;
+
+    // depending on the current lifecycle stage, gridWidth() may not initialize correctly
+    // this also handles cases where it always returns undefined -- such as when inside a div with display:none
+    // eg Bootstrap tabs and collapses
+    if (typeof containerWidth === 'undefined' || isNaN(containerWidth)) {
+      containerWidth = '100%';
+    }
+    if (typeof gridWidth === 'undefined' || isNaN(gridWidth)) {
+      gridWidth = '100%';
+    }
 
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}>
@@ -462,13 +481,14 @@ const ReactDataGrid = React.createClass({
           <BaseGrid
             ref="base"
             {...this.props}
+            rowKey={this.props.rowKey}
             headerRows={this.getHeaderRows()}
             columnMetrics={this.state.columnMetrics}
             rowGetter={this.props.rowGetter}
             rowsCount={this.props.rowsCount}
             rowHeight={this.props.rowHeight}
             cellMetaData={cellMetaData}
-            selectedRows={this.state.selectedRows}
+            selectedRows={this.state.selectedRows.filter(r => r.isSelected === true)}
             expandedRows={this.state.expandedRows}
             rowOffsetHeight={this.getRowOffsetHeight()}
             sortColumn={this.state.sortColumn}
@@ -480,7 +500,8 @@ const ReactDataGrid = React.createClass({
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
             onViewportDoubleClick={this.onViewportDoubleClick}
-            onColumnResize={this.onColumnResize}/>
+            onColumnResize={this.onColumnResize}
+            rowScrollTimeout={this.props.rowScrollTimeout}/>
           </div>
         </div>
       );
