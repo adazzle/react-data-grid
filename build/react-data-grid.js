@@ -57,8 +57,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var Grid = __webpack_require__(1);
-	var Row = __webpack_require__(22);
-	var Cell = __webpack_require__(23);
+	var Row = __webpack_require__(24);
+	var Cell = __webpack_require__(25);
 
 	module.exports = Grid;
 	module.exports.Row = Row;
@@ -75,18 +75,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
 	var BaseGrid = __webpack_require__(4);
-	var Row = __webpack_require__(22);
+	var Row = __webpack_require__(24);
 	var ExcelColumn = __webpack_require__(15);
-	var KeyboardHandlerMixin = __webpack_require__(25);
-	var CheckboxEditor = __webpack_require__(34);
-	var FilterableHeaderCell = __webpack_require__(35);
-	var DOMMetrics = __webpack_require__(32);
-	var ColumnMetricsMixin = __webpack_require__(36);
-	var RowUtils = __webpack_require__(38);
+	var KeyboardHandlerMixin = __webpack_require__(27);
+	var CheckboxEditor = __webpack_require__(36);
+	var DOMMetrics = __webpack_require__(34);
+	var ColumnMetricsMixin = __webpack_require__(37);
+	var RowUtils = __webpack_require__(39);
 	var ColumnUtils = __webpack_require__(10);
 
 	if (!Object.assign) {
-	  Object.assign = __webpack_require__(37);
+	  Object.assign = __webpack_require__(38);
 	}
 
 
@@ -396,7 +395,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.state.canFilter === true) {
 	      rows.push({
 	        ref: 'filterRow',
-	        headerCellRenderer: React.createElement(FilterableHeaderCell, { onChange: this.props.onAddFilter }),
+	        filterable: true,
+	        onFilterChange: this.props.onAddFilter,
 	        height: 45
 	      });
 	    }
@@ -585,10 +585,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var PropTypes = React.PropTypes;
 	var Header = __webpack_require__(5);
-	var Viewport = __webpack_require__(19);
-	var GridScrollMixin = __webpack_require__(33);
-	var DOMMetrics = __webpack_require__(32);
-	var cellMetaDataShape = __webpack_require__(29);
+	var Viewport = __webpack_require__(21);
+	var GridScrollMixin = __webpack_require__(35);
+	var DOMMetrics = __webpack_require__(34);
+	var cellMetaDataShape = __webpack_require__(31);
 
 	var Grid = React.createClass({
 	  displayName: 'Grid',
@@ -789,7 +789,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        height: row.height || _this.props.height,
 	        columns: columnMetrics.columns,
 	        resizing: resizeColumn,
-	        headerCellRenderer: row.headerCellRenderer,
+	        filterable: row.filterable,
+	        onFilterChange: row.onFilterChange,
 	        sortColumn: _this.props.sortColumn,
 	        sortDirection: _this.props.sortDirection,
 	        onSort: _this.props.onSort
@@ -1197,6 +1198,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ExcelColumn = __webpack_require__(15);
 	var ColumnUtilsMixin = __webpack_require__(10);
 	var SortableHeaderCell = __webpack_require__(18);
+	var FilterableHeaderCell = __webpack_require__(19);
+	var HeaderCellType = __webpack_require__(20);
+
 	var PropTypes = React.PropTypes;
 
 	var HeaderRowStyle = {
@@ -1223,6 +1227,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    sortDirection: React.PropTypes.oneOf(DEFINE_SORT),
 	    cellRenderer: PropTypes.func,
 	    headerCellRenderer: PropTypes.func,
+	    filterable: PropTypes.bool,
+	    onFilterChange: PropTypes.func,
 	    resizing: PropTypes.func
 	  },
 
@@ -1231,13 +1237,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
 	    return nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextProps.columns !== this.props.columns || !shallowEqual(nextProps.style, this.props.style) || this.props.sortColumn !== nextProps.sortColumn || this.props.sortDirection !== nextProps.sortDirection;
 	  },
-	  getHeaderRenderer: function getHeaderRenderer(column) {
-	    if (column.sortable) {
-	      var sortDirection = this.props.sortColumn === column.key ? this.props.sortDirection : DEFINE_SORT.NONE;
-	      return React.createElement(SortableHeaderCell, { columnKey: column.key, onSort: this.props.onSort, sortDirection: sortDirection });
+	  getHeaderCellType: function getHeaderCellType(column) {
+	    if (column.filterable) {
+	      if (this.props.filterable) return HeaderCellType.FILTERABLE;
 	    }
 
-	    return this.props.headerCellRenderer || column.headerRenderer || this.props.cellRenderer;
+	    if (column.sortable) return HeaderCellType.SORTABLE;
+
+	    return HeaderCellType.NONE;
+	  },
+	  getFilterableHeaderCell: function getFilterableHeaderCell() {
+	    return React.createElement(FilterableHeaderCell, { onChange: this.props.onFilterChange });
+	  },
+	  getSortableHeaderCell: function getSortableHeaderCell(column) {
+	    var sortDirection = this.props.sortColumn === column.key ? this.props.sortDirection : DEFINE_SORT.NONE;
+	    return React.createElement(SortableHeaderCell, { columnKey: column.key, onSort: this.props.onSort, sortDirection: sortDirection });
+	  },
+	  getHeaderRenderer: function getHeaderRenderer(column) {
+	    var headerCellType = this.getHeaderCellType(column);
+	    var renderer = undefined;
+
+	    switch (headerCellType) {
+	      case HeaderCellType.SORTABLE:
+	        renderer = this.getSortableHeaderCell(column);
+	        break;
+	      case HeaderCellType.FILTERABLE:
+	        renderer = this.getFilterableHeaderCell();
+	        break;
+	      default:
+	        break;
+	    }
+
+	    return renderer;
 	  },
 	  getStyle: function getStyle() {
 	    return {
@@ -1489,7 +1520,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ExcelColumnShape = {
 	  name: React.PropTypes.string.isRequired,
 	  key: React.PropTypes.string.isRequired,
-	  width: React.PropTypes.number.isRequired
+	  width: React.PropTypes.number.isRequired,
+	  filterable: React.PropTypes.bool
 	};
 
 	module.exports = ExcelColumnShape;
@@ -1688,9 +1720,75 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var Canvas = __webpack_require__(20);
-	var ViewportScroll = __webpack_require__(31);
-	var cellMetaDataShape = __webpack_require__(29);
+	var ExcelColumn = __webpack_require__(15);
+
+	var FilterableHeaderCell = React.createClass({
+	  displayName: 'FilterableHeaderCell',
+
+
+	  propTypes: {
+	    onChange: React.PropTypes.func.isRequired,
+	    column: React.PropTypes.shape(ExcelColumn)
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return { filterTerm: '' };
+	  },
+	  handleChange: function handleChange(e) {
+	    var val = e.target.value;
+	    this.setState({ filterTerm: val });
+	    this.props.onChange({ filterTerm: val, columnKey: this.props.column.key });
+	  },
+
+
+	  renderInput: function renderInput() {
+	    if (this.props.column.filterable === false) {
+	      return React.createElement('span', null);
+	    }
+
+	    var inputKey = 'header-filter-' + this.props.column.key;
+	    return React.createElement('input', { key: inputKey, type: 'text', className: 'form-control input-sm', placeholder: 'Search', value: this.state.filterTerm, onChange: this.handleChange });
+	  },
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        this.renderInput()
+	      )
+	    );
+	  }
+	});
+
+	module.exports = FilterableHeaderCell;
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var HeaderCellType = {
+	  SORTABLE: 0,
+	  FILTERABLE: 1,
+	  NONE: 2
+	};
+
+	module.exports = HeaderCellType;
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(2);
+	var Canvas = __webpack_require__(22);
+	var ViewportScroll = __webpack_require__(33);
+	var cellMetaDataShape = __webpack_require__(31);
 	var PropTypes = React.PropTypes;
 
 	var Viewport = React.createClass({
@@ -1771,7 +1869,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Viewport;
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1786,9 +1884,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ReactDOM = __webpack_require__(3);
 	var joinClasses = __webpack_require__(6);
 	var PropTypes = React.PropTypes;
-	var ScrollShim = __webpack_require__(21);
-	var Row = __webpack_require__(22);
-	var cellMetaDataShape = __webpack_require__(29);
+	var ScrollShim = __webpack_require__(23);
+	var Row = __webpack_require__(24);
+	var cellMetaDataShape = __webpack_require__(31);
 
 
 	var Canvas = React.createClass({
@@ -2063,7 +2161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Canvas;
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2117,7 +2215,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ScrollShim;
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2126,10 +2224,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var joinClasses = __webpack_require__(6);
-	var Cell = __webpack_require__(23);
+	var Cell = __webpack_require__(25);
 	var ColumnMetrics = __webpack_require__(8);
 	var ColumnUtilsMixin = __webpack_require__(10);
-	var cellMetaDataShape = __webpack_require__(29);
+	var cellMetaDataShape = __webpack_require__(31);
 	var PropTypes = React.PropTypes;
 
 	var Row = React.createClass({
@@ -2280,7 +2378,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Row;
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2290,11 +2388,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
 	var joinClasses = __webpack_require__(6);
-	var EditorContainer = __webpack_require__(24);
+	var EditorContainer = __webpack_require__(26);
 	var ExcelColumn = __webpack_require__(15);
-	var isFunction = __webpack_require__(28);
-	var CellMetaDataShape = __webpack_require__(29);
-	var SimpleCellFormatter = __webpack_require__(30);
+	var isFunction = __webpack_require__(30);
+	var CellMetaDataShape = __webpack_require__(31);
+	var SimpleCellFormatter = __webpack_require__(32);
 
 	var Cell = React.createClass({
 	  displayName: 'Cell',
@@ -2618,16 +2716,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Cell;
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
 	var joinClasses = __webpack_require__(6);
-	var keyboardHandlerMixin = __webpack_require__(25);
-	var SimpleTextEditor = __webpack_require__(26);
-	var isFunction = __webpack_require__(28);
+	var keyboardHandlerMixin = __webpack_require__(27);
+	var SimpleTextEditor = __webpack_require__(28);
+	var isFunction = __webpack_require__(30);
 
 	var EditorContainer = React.createClass({
 	  displayName: 'EditorContainer',
@@ -2874,7 +2972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = EditorContainer;
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2921,7 +3019,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = KeyboardHandlerMixin;
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2935,7 +3033,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(2);
-	var EditorBase = __webpack_require__(27);
+	var EditorBase = __webpack_require__(29);
 
 	var SimpleTextEditor = function (_EditorBase) {
 	  _inherits(SimpleTextEditor, _EditorBase);
@@ -2959,7 +3057,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = SimpleTextEditor;
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3030,7 +3128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = EditorBase;
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3043,7 +3141,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isFunction;
 
 /***/ },
-/* 29 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3063,7 +3161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3092,14 +3190,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = SimpleCellFormatter;
 
 /***/ },
-/* 31 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
-	var DOMMetrics = __webpack_require__(32);
+	var DOMMetrics = __webpack_require__(34);
 	var min = Math.min;
 	var max = Math.max;
 	var floor = Math.floor;
@@ -3177,7 +3275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 32 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3333,7 +3431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 33 */
+/* 35 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3369,7 +3467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 34 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3408,59 +3506,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = CheckboxEditor;
 
 /***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(2);
-	var ExcelColumn = __webpack_require__(15);
-
-	var FilterableHeaderCell = React.createClass({
-	  displayName: 'FilterableHeaderCell',
-
-
-	  propTypes: {
-	    onChange: React.PropTypes.func.isRequired,
-	    column: React.PropTypes.shape(ExcelColumn)
-	  },
-
-	  getInitialState: function getInitialState() {
-	    return { filterTerm: '' };
-	  },
-	  handleChange: function handleChange(e) {
-	    var val = e.target.value;
-	    this.setState({ filterTerm: val });
-	    this.props.onChange({ filterTerm: val, columnKey: this.props.column.key });
-	  },
-
-
-	  renderInput: function renderInput() {
-	    if (this.props.column.filterable === false) {
-	      return React.createElement('span', null);
-	    }
-
-	    var inputKey = 'header-filter-' + this.props.column.key;
-	    return React.createElement('input', { key: inputKey, type: 'text', className: 'form-control input-sm', placeholder: 'Search', value: this.state.filterTerm, onChange: this.handleChange });
-	  },
-
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        { className: 'form-group' },
-	        this.renderInput()
-	      )
-	    );
-	  }
-	});
-
-	module.exports = FilterableHeaderCell;
-
-/***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3474,8 +3520,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var ColumnMetrics = __webpack_require__(8);
-	var DOMMetrics = __webpack_require__(32);
-	Object.assign = __webpack_require__(37);
+	var DOMMetrics = __webpack_require__(34);
+	Object.assign = __webpack_require__(38);
 	var PropTypes = __webpack_require__(2).PropTypes;
 	var ColumnUtils = __webpack_require__(10);
 
@@ -3571,7 +3617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3603,7 +3649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 	'use strict';

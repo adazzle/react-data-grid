@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(1);
 	var ReactDom = __webpack_require__(2);
-	var Navbar = __webpack_require__(78);
+	var Navbar = __webpack_require__(79);
 
 	ReactDom.render(React.createElement(Navbar, null), document.getElementById('navbarContainer'));
 
@@ -79,7 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 78:
+/***/ 79:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -280,6 +280,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    "a",
 	                    { href: "examples.html#/filterable" },
 	                    "Filterable Grid"
+	                  )
+	                ),
+	                React.createElement(
+	                  "li",
+	                  null,
+	                  React.createElement(
+	                    "a",
+	                    { href: "examples.html#/filterable-sortable" },
+	                    "Filterable Sortable Grid"
 	                  )
 	                ),
 	                React.createElement(

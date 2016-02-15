@@ -45,7 +45,8 @@ var $Array = Array;
 var ArrayPrototype = $Array.prototype;
 var $Object = Object;
 var ObjectPrototype = $Object.prototype;
-var FunctionPrototype = Function.prototype;
+var $Function = Function;
+var FunctionPrototype = $Function.prototype;
 var $String = String;
 var StringPrototype = $String.prototype;
 var $Number = Number;
@@ -55,6 +56,7 @@ var array_splice = ArrayPrototype.splice;
 var array_push = ArrayPrototype.push;
 var array_unshift = ArrayPrototype.unshift;
 var array_concat = ArrayPrototype.concat;
+var array_join = ArrayPrototype.join;
 var call = FunctionPrototype.call;
 var apply = FunctionPrototype.apply;
 var max = Math.max;
@@ -63,10 +65,13 @@ var min = Math.min;
 // Having a toString local variable name breaks in Opera so use to_string.
 var to_string = ObjectPrototype.toString;
 
+/* global Symbol */
+/* eslint-disable one-var-declaration-per-line */
 var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
 var isCallable; /* inlined from https://npmjs.com/is-callable */ var fnToStr = Function.prototype.toString, tryFunctionObject = function tryFunctionObject(value) { try { fnToStr.call(value); return true; } catch (e) { return false; } }, fnClass = '[object Function]', genClass = '[object GeneratorFunction]'; isCallable = function isCallable(value) { if (typeof value !== 'function') { return false; } if (hasToStringTag) { return tryFunctionObject(value); } var strClass = to_string.call(value); return strClass === fnClass || strClass === genClass; };
 var isRegex; /* inlined from https://npmjs.com/is-regex */ var regexExec = RegExp.prototype.exec, tryRegexExec = function tryRegexExec(value) { try { regexExec.call(value); return true; } catch (e) { return false; } }, regexClass = '[object RegExp]'; isRegex = function isRegex(value) { if (typeof value !== 'object') { return false; } return hasToStringTag ? tryRegexExec(value) : to_string.call(value) === regexClass; };
 var isString; /* inlined from https://npmjs.com/is-string */ var strValue = String.prototype.valueOf, tryStringObject = function tryStringObject(value) { try { strValue.call(value); return true; } catch (e) { return false; } }, stringClass = '[object String]'; isString = function isString(value) { if (typeof value === 'string') { return true; } if (typeof value !== 'object') { return false; } return hasToStringTag ? tryStringObject(value) : to_string.call(value) === stringClass; };
+/* eslint-enable one-var-declaration-per-line */
 
 /* inlined from http://npmjs.com/define-properties */
 var supportsDescriptors = $Object.defineProperty && (function () {
@@ -226,7 +231,8 @@ defineProperties(FunctionPrototype, {
                 // 5. Return the result of calling the [[Construct]] internal
                 //   method of target providing args as the arguments.
 
-                var result = target.apply(
+                var result = apply.call(
+                    target,
                     this,
                     array_concat.call(args, array_slice.call(arguments))
                 );
@@ -255,7 +261,8 @@ defineProperties(FunctionPrototype, {
                 //   providing args as the arguments.
 
                 // equiv: target.call(this, ...boundArgs, ...args)
-                return target.apply(
+                return apply.call(
+                    target,
                     that,
                     array_concat.call(args, array_slice.call(arguments))
                 );
@@ -285,7 +292,7 @@ defineProperties(FunctionPrototype, {
         // for ex.) all use of eval or Function costructor throws an exception.
         // However in all of these environments Function.prototype.bind exists
         // and so this code will never be executed.
-        bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this, arguments); }')(binder);
+        bound = $Function('binder', 'return function (' + array_join.call(boundArgs, ',') + '){ return binder.apply(this, arguments); }')(binder);
 
         if (target.prototype) {
             Empty.prototype = target.prototype;
@@ -796,7 +803,8 @@ defineProperties(ArrayPrototype, {
         var to;
         if (itemCount < actualDeleteCount) {
             k = actualStart;
-            while (k < (len - actualDeleteCount)) {
+            var maxK = len - actualDeleteCount;
+            while (k < maxK) {
                 from = $String(k + actualDeleteCount);
                 to = $String(k + itemCount);
                 if (owns(O, from)) {
@@ -807,7 +815,8 @@ defineProperties(ArrayPrototype, {
                 k += 1;
             }
             k = len;
-            while (k > (len - actualDeleteCount + itemCount)) {
+            var minK = len - actualDeleteCount + itemCount;
+            while (k > minK) {
                 delete O[k - 1];
                 k -= 1;
             }
@@ -1107,7 +1116,7 @@ var originalGetUTCHours = call.bind(Date.prototype.getUTCHours);
 var originalGetUTCMinutes = call.bind(Date.prototype.getUTCMinutes);
 var originalGetUTCSeconds = call.bind(Date.prototype.getUTCSeconds);
 var originalGetUTCMilliseconds = call.bind(Date.prototype.getUTCMilliseconds);
-var dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+var dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 var monthName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var daysInMonth = function daysInMonth(month, year) {
     return originalGetDate(new Date(year, month, 0));
@@ -1376,7 +1385,9 @@ if (doesNotParseY2KNewYear || acceptsInvalidDates || !supportsExtendedYears) {
     /* eslint-disable no-undef */
     var maxSafeUnsigned32Bit = Math.pow(2, 31) - 1;
     var hasSafariSignedIntBug = isActualNaN(new Date(1970, 0, 1, 0, 0, 0, maxSafeUnsigned32Bit + 1).getTime());
+    /* eslint-disable no-implicit-globals */
     Date = (function (NativeDate) {
+    /* eslint-enable no-implicit-globals */
     /* eslint-enable no-undef */
         // Date.length === 7
         var DateShim = function Date(Y, M, D, h, m, s, ms) {
@@ -1575,7 +1586,8 @@ var toFixedHelpers = {
       }
   },
   divide: function divide(n) {
-      var i = toFixedHelpers.size, c = 0;
+      var i = toFixedHelpers.size;
+      var c = 0;
       while (--i >= 0) {
           c += toFixedHelpers.data[i];
           toFixedHelpers.data[i] = Math.floor(c / n);
