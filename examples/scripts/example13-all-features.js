@@ -222,7 +222,7 @@ var AllFeaturesExample = `
               rowsCount={this.getSize()}
               onGridRowsUpdated={this.handleGridRowsUpdated}
               toolbar={<Toolbar onAddRow={this.handleAddRow}/>}
-              enableRowSelect={true}
+              enableRowSelect={'multi'}
               rowHeight={50}
               minHeight={600}
               rowScrollTimeout={200}

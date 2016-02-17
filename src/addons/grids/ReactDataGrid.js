@@ -43,7 +43,7 @@ const ReactDataGrid = React.createClass({
     headerRowHeight: React.PropTypes.number,
     minHeight: React.PropTypes.number.isRequired,
     minWidth: React.PropTypes.number,
-    enableRowSelect: React.PropTypes.bool,
+    enableRowSelect: React.PropTypes.string,
     onRowUpdated: React.PropTypes.func,
     rowGetter: React.PropTypes.func.isRequired,
     rowsCount: React.PropTypes.number.isRequired,
@@ -67,7 +67,7 @@ const ReactDataGrid = React.createClass({
       enableCellSelect: false,
       tabIndex: -1,
       rowHeight: 35,
-      enableRowSelect: false,
+      enableRowSelect: 'false',
       minHeight: 350,
       rowKey: 'id',
       rowScrollTimeout: 0
@@ -470,7 +470,7 @@ const ReactDataGrid = React.createClass({
     let cols = props.columns.slice(0);
     let unshiftedCols = {};
     if (props.enableRowSelect) {
-      let headerRenderer = props.enableRowSelect === 'single' ? null :  <input type="checkbox" onChange={this.handleCheckboxChange} />;
+      let headerRenderer = props.enableRowSelect === 'multi' ? <input type="checkbox" onChange={this.handleCheckboxChange} /> : null;
       let selectColumn = {
         key: 'select-row',
         name: '',

@@ -84,7 +84,7 @@
 //   describe("When row selection enabled", () => {
 //
 //     beforeEach(() => {
-//       component = TestUtils.renderIntoDocument(<Grid {...testProps} enableRowSelect={true} />);
+//       component = TestUtils.renderIntoDocument(<Grid {...testProps} enableRowSelect={'multi'} />);
 //     });
 //
 //     afterEach(() => {

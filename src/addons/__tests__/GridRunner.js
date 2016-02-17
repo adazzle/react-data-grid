@@ -59,7 +59,7 @@ export default class GridRunner {
       cells[i] = allCells[i];
     }
 
-    if (this.grid.refs.reactDataGrid.props.enableRowSelect) {
+    if (['multi', 'single'].indexOf(this.grid.refs.reactDataGrid.props.enableRowSelect) !== -1) {
       // the rowSelectCell exists on the end of the array returned from testUtils
       let rowSelectCell = cells.pop();
       // remove from end of array and put at beginning
