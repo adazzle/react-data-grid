@@ -72,6 +72,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
 	var BaseGrid = __webpack_require__(4);
@@ -113,6 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onAddFilter: React.PropTypes.func,
 	    onGridSort: React.PropTypes.func,
 	    onDragHandleDoubleClick: React.PropTypes.func,
+	    onGridRowsUpdated: React.PropTypes.func,
 	    onRowSelect: React.PropTypes.func,
 	    rowKey: React.PropTypes.string,
 	    rowScrollTimeout: React.PropTypes.number
@@ -228,7 +231,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    //   expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
 	    // }
 	    this.setState({ selected: selected, expandedRows: expandedRows });
-	    this.props.onRowUpdated(commit);
+
+	    if (this.props.onRowUpdated) {
+	      this.props.onRowUpdated(commit);
+	    }
+
+	    var targetRow = commit.rowIdx;
+
+	    if (this.props.onGridRowsUpdated) {
+	      this.props.onGridRowsUpdated({
+	        cellKey: commit.cellKey,
+	        fromRow: targetRow,
+	        toRow: targetRow,
+	        updated: commit.updated,
+	        action: 'cellUpdate' });
+	    }
 	  },
 	  onDragStart: function onDragStart(e) {
 	    var value = this.getSelectedValue();
@@ -248,6 +265,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onDragHandleDoubleClick: function onDragHandleDoubleClick(e) {
 	    if (this.props.onDragHandleDoubleClick) {
 	      this.props.onDragHandleDoubleClick(e);
+	    }
+
+	    if (this.props.onGridRowsUpdated) {
+	      var cellKey = this.getColumn(e.idx).key;
+
+	      var updated = _defineProperty({}, cellKey, e.rowData[cellKey]);
+
+	      this.props.onGridRowsUpdated({
+	        cellKey: cellKey,
+	        fromRow: e.rowIdx,
+	        toRow: this.props.rowsCount - 1,
+	        updated: updated,
+	        action: 'columnFill' });
 	    }
 	  },
 	  handleDragStart: function handleDragStart(dragged) {
@@ -274,6 +304,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.props.onCellsDragged) {
 	      this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
 	    }
+	    if (this.props.onGridRowsUpdated) {
+	      var updated = _defineProperty({}, cellKey, dragged.value);
+
+	      this.props.onGridRowsUpdated({
+	        cellKey: cellKey,
+	        fromRow: fromRow,
+	        toRow: toRow,
+	        updated: updated,
+	        action: 'cellDrag' });
+	    }
 	    this.setState({ dragged: { complete: true } });
 	  },
 	  handleDragEnter: function handleDragEnter(row) {
@@ -296,10 +336,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var selected = this.state.selected;
 	    var cellKey = this.getColumn(this.state.selected.idx).key;
+	    var textToCopy = this.state.textToCopy;
+	    var toRow = selected.rowIdx;
 
 	    if (this.props.onCellCopyPaste) {
-	      this.props.onCellCopyPaste({ cellKey: cellKey, rowIdx: selected.rowIdx, value: this.state.textToCopy, fromRow: this.state.copied.rowIdx, toRow: selected.rowIdx });
+	      this.props.onCellCopyPaste({ cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: this.state.copied.rowIdx, toRow: toRow });
 	    }
+
+	    if (this.props.onGridRowsUpdated) {
+	      var updated = _defineProperty({}, cellKey, textToCopy);
+
+	      this.props.onGridRowsUpdated({
+	        cellKey: cellKey,
+	        fromRow: toRow,
+	        toRow: toRow,
+	        updated: updated,
+	        action: 'copyPaste' });
+	    }
+
 	    this.setState({ copied: null });
 	  },
 	  handleCopy: function handleCopy(args) {

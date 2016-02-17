@@ -180,30 +180,16 @@ var AllFeaturesExample = `
       return {rows :fakeRows};
     },
 
-    handleRowUpdated : function(commit){
-      //merge the updated row values with the existing row
+    handleGridRowsUpdated : function(updatedRowData) {
       var rows = this.state.rows;
-      var updatedRow = React.addons.update(rows[commit.rowIdx], {$merge : commit.updated});
-      rows[commit.rowIdx] = updatedRow;
-      this.setState({rows:rows});
-    },
 
-    handleCellDrag : function(e){
-        var rows = this.state.rows;
-        for (var i = e.fromRow; i <= e.toRow; i++){
-          var rowToChange = rows[i];
-          if(rowToChange){
-            rowToChange[e.cellKey] = e.value;
-          }
-        }
-        if(this.props.handleCellDrag) {this.props.handleCellDrag(e)}
-        this.setState({rows:rows});
-    },
+      for (var i = updatedRowData.fromRow; i <= updatedRowData.toRow; i++) {
+        var rowToUpdate = rows[i];
+        var updatedRow = React.addons.update(rowToUpdate, {$merge: updatedRowData.updated});
+        rows[i] = updatedRow;
+      }
 
-    handleCellCopyPaste : function(e){
-      var rows = this.state.rows;
-      rows[e.toRow][e.cellKey] = e.value;
-      this.setState({rows:rows});
+      this.setState({rows: rows});
     },
 
     handleAddRow : function(e){
@@ -234,9 +220,7 @@ var AllFeaturesExample = `
               columns={columns}
               rowGetter={this.getRowAt}
               rowsCount={this.getSize()}
-              onRowUpdated={this.handleRowUpdated}
-              onCellsDragged={this.handleCellDrag}
-              onCellCopyPaste={this.handleCellCopyPaste}
+              onGridRowsUpdated={this.handleGridRowsUpdated}
               toolbar={<Toolbar onAddRow={this.handleAddRow}/>}
               enableRowSelect={true}
               rowHeight={50}
