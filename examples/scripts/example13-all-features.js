@@ -238,7 +238,7 @@ var AllFeaturesExample = `
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}
               toolbar={<Toolbar onAddRow={this.handleAddRow}/>}
-              enableRowSelect={true}
+              enableRowSelect={'multi'}
               rowHeight={50}
               minHeight={600}
               rowScrollTimeout={200}

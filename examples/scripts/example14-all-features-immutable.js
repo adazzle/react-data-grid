@@ -209,7 +209,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}
               toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={()=>{}} numberOfRows={this.getSize()}/>}
-              enableRowSelect={true}
+              enableRowSelect={'multi'}
               rowHeight={50}
               minHeight={600}
               />

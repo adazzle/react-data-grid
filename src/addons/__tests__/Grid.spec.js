@@ -147,7 +147,7 @@ describe('Grid', function() {
 
   describe('When row selection enabled', function() {
     beforeEach(function() {
-      this.component = this.createComponent({ enableRowSelect: true });
+      this.component = this.createComponent({ enableRowSelect: 'multi' });
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
