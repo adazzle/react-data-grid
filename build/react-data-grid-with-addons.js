@@ -4338,11 +4338,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function renderOptions() {
 	      var options = [];
 	      this.props.options.forEach(function (name) {
-	        options.push(React.createElement(
-	          'option',
-	          { key: name, value: name },
-	          name
-	        ));
+	        if (typeof name === 'string') {
+	          options.push(React.createElement(
+	            'option',
+	            { key: name, value: name },
+	            name
+	          ));
+	        } else {
+	          options.push(React.createElement(
+	            'option',
+	            { key: name.id, value: name.value, title: name.title },
+	            name.value
+	          ));
+	        }
 	      }, this);
 	      return options;
 	    }
@@ -4352,7 +4360,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(EditorBase);
 
 	DropDownEditor.propTypes = {
-	  options: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
+	  options: React.PropTypes.arrayOf(React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.objectOf({ id: React.PropTypes.string, title: React.PropTypes.string, meta: React.PropTypes.string })])).isRequired
 	};
 
 	module.exports = DropDownEditor;
