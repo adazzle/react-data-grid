@@ -3740,6 +3740,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
+	var ReactDOM = __webpack_require__(3);
 	var ReactAutocomplete = __webpack_require__(42);
 	var ExcelColumn = __webpack_require__(15);
 
