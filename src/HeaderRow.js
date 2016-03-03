@@ -57,6 +57,8 @@ const HeaderRow = React.createClass({
 
     if (column.sortable) return HeaderCellType.SORTABLE;
 
+    if (column.key === 'select-row') return HeaderCellType.CHECKBOX;
+
     return HeaderCellType.NONE;
   },
 
@@ -79,6 +81,11 @@ const HeaderRow = React.createClass({
       break;
     case HeaderCellType.FILTERABLE:
       renderer = this.getFilterableHeaderCell();
+      break;
+    case HeaderCellType.CHECKBOX:
+      if (column.headerRenderer) {
+        renderer = column.headerRenderer;
+      }
       break;
     default:
       break;
