@@ -46,7 +46,7 @@ var Example = React.createClass({
     minHeight={500} />);
   }
 });
-React.render(<Example />, mountNode);
+ReactDOM.render(<Example />, mountNode);
 `;
 
 module.exports = React.createClass({
