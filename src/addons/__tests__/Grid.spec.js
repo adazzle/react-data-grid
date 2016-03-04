@@ -164,7 +164,7 @@ describe('Grid', function() {
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
 
-        this.headerCheckbox = this.selectRowCol.headerRenderer;
+        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
         this.headerCheckbox.props.onChange(this.fakeEvent);
       });
