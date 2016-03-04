@@ -13,6 +13,7 @@ describe('Header Unit Tests', () => {
   let SortableHeaderCellStub = new StubComponent('SortableHeaderCell');
   let HeaderCellStub = new StubComponent('HeaderCell');
   let FilterableHeaderCellStub = new StubComponent('FilterableHeaderCell');
+  let CustomHeaderStub = new StubComponent('CustomHeader');
 
   rewireModule(HeaderRow, {
     SortableHeaderCell: SortableHeaderCellStub,
@@ -107,6 +108,23 @@ describe('Header Unit Tests', () => {
     afterEach(() => {
       testProps.columns[sortableAndFilterableColIdx].sortable = false;
       testProps.columns[sortableAndFilterableColIdx].filterable = false;
+    });
+  });
+
+  describe('When column has a headerRenderer', () => {
+    let customColumnIdx = 1;
+    beforeEach(() => {
+      testProps.columns[customColumnIdx].headerRenderer = <CustomHeaderStub />;
+      headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} />);
+    });
+
+    it('should render custom column header', () => {
+      let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
+      expect(TestUtils.isElementOfType(headerCells[customColumnIdx].props.renderer, CustomHeaderStub)).toBe(true);
+    });
+
+    afterEach(() => {
+      testProps.columns[customColumnIdx].headerRenderer = null;
     });
   });
 });

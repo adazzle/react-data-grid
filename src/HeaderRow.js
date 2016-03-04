@@ -70,20 +70,23 @@ const HeaderRow = React.createClass({
   },
 
   getHeaderRenderer(column) {
-    let headerCellType = this.getHeaderCellType(column);
     let renderer;
+    if (typeof column.headerRenderer !== 'undefined') {
+      renderer = column.headerRenderer;
+    } else {
+      let headerCellType = this.getHeaderCellType(column);
 
-    switch (headerCellType) {
-    case HeaderCellType.SORTABLE:
-      renderer = this.getSortableHeaderCell(column);
-      break;
-    case HeaderCellType.FILTERABLE:
-      renderer = this.getFilterableHeaderCell();
-      break;
-    default:
-      break;
+      switch (headerCellType) {
+      case HeaderCellType.SORTABLE:
+        renderer = this.getSortableHeaderCell(column);
+        break;
+      case HeaderCellType.FILTERABLE:
+        renderer = this.getFilterableHeaderCell();
+        break;
+      default:
+        break;
+      }
     }
-
     return renderer;
   },
 
