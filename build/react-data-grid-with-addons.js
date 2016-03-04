@@ -100,7 +100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    headerRowHeight: React.PropTypes.number,
 	    minHeight: React.PropTypes.number.isRequired,
 	    minWidth: React.PropTypes.number,
-	    enableRowSelect: React.PropTypes.bool,
+	    enableRowSelect: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]),
 	    onRowUpdated: React.PropTypes.func,
 	    rowGetter: React.PropTypes.func.isRequired,
 	    rowsCount: React.PropTypes.number.isRequired,
@@ -510,7 +510,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var cols = props.columns.slice(0);
 	    var unshiftedCols = {};
 	    if (props.enableRowSelect) {
-	      var headerRenderer = props.enableRowSelect === 'single' ? null : React.createElement('input', { type: 'checkbox', onChange: this.handleCheckboxChange });
+	      var headerRenderer = props.enableRowSelect === 'single' ? null : React.createElement(
+	        'div',
+	        { className: 'react-grid-checkbox-container' },
+	        React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: 'select-all-checkbox', onChange: this.handleCheckboxChange }),
+	        React.createElement('label', { htmlFor: 'select-all-checkbox', className: 'react-grid-checkbox-label' })
+	      );
 	      var selectColumn = {
 	        key: 'select-row',
 	        name: '',
@@ -1296,6 +1301,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (column.sortable) return HeaderCellType.SORTABLE;
 
+	    if (column.key === 'select-row') return HeaderCellType.CHECKBOX;
+
 	    return HeaderCellType.NONE;
 	  },
 	  getFilterableHeaderCell: function getFilterableHeaderCell() {
@@ -1315,6 +1322,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        break;
 	      case HeaderCellType.FILTERABLE:
 	        renderer = this.getFilterableHeaderCell();
+	        break;
+	      case HeaderCellType.CHECKBOX:
+	        if (column.headerRenderer) {
+	          renderer = column.headerRenderer;
+	        }
 	        break;
 	      default:
 	        break;
@@ -1826,7 +1838,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var HeaderCellType = {
 	  SORTABLE: 0,
 	  FILTERABLE: 1,
-	  NONE: 2
+	  NONE: 2,
+	  CHECKBOX: 3
 	};
 
 	module.exports = HeaderCellType;
