@@ -292,8 +292,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!this.dragEnabled()) {
 	      return;
 	    }
-	    var fromRow = undefined;
-	    var toRow = undefined;
+	    var fromRow = void 0;
+	    var toRow = void 0;
 	    var selected = this.state.selected;
 	    var dragged = this.state.dragged;
 	    var cellKey = this.getColumn(this.state.selected.idx).key;
@@ -408,7 +408,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  handleCheckboxChange: function handleCheckboxChange(e) {
-	    var allRowsSelected = undefined;
+	    var allRowsSelected = void 0;
 	    if (e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true) {
 	      allRowsSelected = true;
 	    } else {
@@ -822,7 +822,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this = this;
 
 	    var columnMetrics = this.getColumnMetrics();
-	    var resizeColumn = undefined;
+	    var resizeColumn = void 0;
 	    if (this.state.resizing) {
 	      resizeColumn = this.state.resizing.column;
 	    }
@@ -856,7 +856,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return headerRows;
 	  },
 	  getColumnMetrics: function getColumnMetrics() {
-	    var columnMetrics = undefined;
+	    var columnMetrics = void 0;
 	    if (this.state.resizing) {
 	      columnMetrics = this.state.resizing.columnMetrics;
 	    } else {
@@ -1096,9 +1096,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function compareEachColumn(prevColumns, nextColumns, isSameColumn) {
-	  var i = undefined;
-	  var len = undefined;
-	  var column = undefined;
+	  var i = void 0;
+	  var len = void 0;
+	  var column = void 0;
 	  var prevColumnsByKey = {};
 	  var nextColumnsByKey = {};
 
@@ -1149,7 +1149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var isValidElement = __webpack_require__(2).isValidElement;
 
 	module.exports = function sameColumn(a, b) {
-	  var k = undefined;
+	  var k = void 0;
 
 	  for (k in a) {
 	    if (a.hasOwnProperty(k)) {
@@ -1208,7 +1208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var size = undefined;
+	var size = void 0;
 
 	function getScrollbarSize() {
 	  if (size === undefined) {
@@ -1314,7 +1314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  getHeaderRenderer: function getHeaderRenderer(column) {
 	    var headerCellType = this.getHeaderCellType(column);
-	    var renderer = undefined;
+	    var renderer = void 0;
 
 	    switch (headerCellType) {
 	      case HeaderCellType.SORTABLE:
@@ -1547,7 +1547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.style.transform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
 	  },
 	  render: function render() {
-	    var resizeHandle = undefined;
+	    var resizeHandle = void 0;
 	    if (this.props.column.resizable) {
 	      resizeHandle = React.createElement(ResizeHandle, {
 	        onDrag: this.onDrag,
@@ -1726,7 +1726,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  onClick: function onClick() {
-	    var direction = undefined;
+	    var direction = void 0;
 	    switch (this.props.sortDirection) {
 	      default:
 	      case null:
@@ -2377,7 +2377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.props.height;
 	  },
 	  getCellValue: function getCellValue(key) {
-	    var val = undefined;
+	    var val = void 0;
 	    if (key === 'select-row') {
 	      return this.props.isSelected;
 	    } else if (typeof this.props.row.get === 'function') {
@@ -2667,7 +2667,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return dragged && (dragged.overRowIdx < this.props.rowIdx && this.props.rowIdx < dragged.rowIdx || dragged.overRowIdx > this.props.rowIdx && this.props.rowIdx > dragged.rowIdx) && dragged.idx === this.props.idx;
 	  },
 	  isDraggedCellChanging: function isDraggedCellChanging(nextProps) {
-	    var isChanging = undefined;
+	    var isChanging = void 0;
 	    var dragged = this.props.cellMetaData.dragged;
 	    var nextDragged = nextProps.cellMetaData.dragged;
 	    if (dragged) {
@@ -2678,7 +2678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return false;
 	  },
 	  isCopyCellChanging: function isCopyCellChanging(nextProps) {
-	    var isChanging = undefined;
+	    var isChanging = void 0;
 	    var copied = this.props.cellMetaData.copied;
 	    var nextCopied = nextProps.cellMetaData.copied;
 	    if (copied) {
@@ -2732,7 +2732,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.props.column.editor != null || this.props.column.editable;
 	  },
 	  renderCellContent: function renderCellContent(props) {
-	    var CellContent = undefined;
+	    var CellContent = void 0;
 	    var Formatter = this.getFormatter();
 	    if (React.isValidElement(Formatter)) {
 	      props.dependentValues = this.getFormatterDependencies();
@@ -3387,7 +3387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (idx > -1) {
 	      s.components.splice(idx, 1);
 
-	      var name = undefined;
+	      var name = void 0;
 	      var metricsToDelete = {};
 
 	      for (name in s.metrics) {
@@ -3788,7 +3788,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.props.onCommit();
 	  },
 	  getValue: function getValue() {
-	    var value = undefined;
+	    var value = void 0;
 	    var updated = {};
 	    if (this.hasResults() && this.isFocusedOnSuggestion()) {
 	      value = this.getLabel(this.refs.autoComplete.state.focusedValue);
