@@ -78,6 +78,10 @@ var Viewport = React.createClass({
   },
 
   onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
+    if (this.props.canScrollX === false) {
+      scroll.scrollLeft = 0;
+    }
+
     this.updateScroll(
       scroll.scrollTop, scroll.scrollLeft,
       this.state.height,
