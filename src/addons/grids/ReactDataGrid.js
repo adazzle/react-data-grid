@@ -73,7 +73,8 @@ const ReactDataGrid = React.createClass({
     onGridSort: React.PropTypes.func,
     onDragHandleDoubleClick: React.PropTypes.func,
     onRowSelect: React.PropTypes.func,
-    rowKey: React.PropTypes.string
+    rowKey: React.PropTypes.string,
+    onClearFilters: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -230,6 +231,9 @@ const ReactDataGrid = React.createClass({
 
   onToggleFilter() {
     this.setState({ canFilter: !this.state.canFilter });
+    if (this.state.canFilter === false && this.props.onClearFilters) {
+      this.props.onClearFilters();
+    }
   },
 
   onDragHandleDoubleClick(e) {
