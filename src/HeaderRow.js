@@ -5,6 +5,9 @@ const getScrollbarSize  = require('./getScrollbarSize');
 const ExcelColumn  = require('./addons/grids/ExcelColumn');
 const ColumnUtilsMixin  = require('./ColumnUtils');
 const SortableHeaderCell    = require('./addons/cells/headerCells/SortableHeaderCell');
+const FilterableHeaderCell  = require('./addons/cells/headerCells/FilterableHeaderCell');
+const HeaderCellType = require('./HeaderCellType');
+
 const PropTypes         = React.PropTypes;
 
 const HeaderRowStyle  = {
@@ -29,6 +32,8 @@ const HeaderRow = React.createClass({
     sortDirection: React.PropTypes.oneOf(DEFINE_SORT),
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
+    filterable: PropTypes.bool,
+    onFilterChange: PropTypes.func,
     resizing: PropTypes.func
   },
 
@@ -45,13 +50,48 @@ const HeaderRow = React.createClass({
     );
   },
 
-  getHeaderRenderer(column) {
-    if (column.sortable) {
-      let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : DEFINE_SORT.NONE;
-      return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection}/>;
+  getHeaderCellType(column) {
+    if (column.filterable) {
+      if (this.props.filterable) return HeaderCellType.FILTERABLE;
     }
 
-    return this.props.headerCellRenderer || column.headerRenderer || this.props.cellRenderer;
+    if (column.sortable) return HeaderCellType.SORTABLE;
+
+    if (column.key === 'select-row') return HeaderCellType.CHECKBOX;
+
+    return HeaderCellType.NONE;
+  },
+
+  getFilterableHeaderCell() {
+    return <FilterableHeaderCell onChange={this.props.onFilterChange} />;
+  },
+
+  getSortableHeaderCell(column) {
+    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : DEFINE_SORT.NONE;
+    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection}/>;
+  },
+
+  getHeaderRenderer(column) {
+    let headerCellType = this.getHeaderCellType(column);
+    let renderer;
+
+    switch (headerCellType) {
+    case HeaderCellType.SORTABLE:
+      renderer = this.getSortableHeaderCell(column);
+      break;
+    case HeaderCellType.FILTERABLE:
+      renderer = this.getFilterableHeaderCell();
+      break;
+    case HeaderCellType.CHECKBOX:
+      if (column.headerRenderer) {
+        renderer = column.headerRenderer;
+      }
+      break;
+    default:
+      break;
+    }
+
+    return renderer;
   },
 
   getStyle(): HeaderRowStyle {

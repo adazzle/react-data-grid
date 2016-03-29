@@ -10,7 +10,7 @@ const SimpleCellFormatter = React.createClass({
   },
 
   render(): ?ReactElement {
-    return <span>{this.props.value}</span>;
+    return <div title={this.props.value}>{this.props.value}</div>;
   }
 });
 

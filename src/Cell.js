@@ -71,7 +71,8 @@ const Cell = React.createClass({
     || this.isDraggedCellChanging(nextProps)
     || this.isCopyCellChanging(nextProps)
     || this.props.isRowSelected !== nextProps.isRowSelected
-    || this.isSelected();
+    || this.isSelected()
+    || this.props.value !== nextProps.value;
   },
 
   onCellClick() {
@@ -285,7 +286,7 @@ const Cell = React.createClass({
   checkFocus: function() {
     if (this.isSelected() && !this.isActive()) {
       // determine the parent viewport element of this cell
-      let parentViewport = React.findDOMNode(this);
+      let parentViewport = ReactDOM.findDOMNode(this);
       while (parentViewport != null && parentViewport.className.indexOf('react-grid-Viewport') === -1) {
         parentViewport = parentViewport.parentElement;
       }
@@ -308,7 +309,7 @@ const Cell = React.createClass({
         }
       }
       if (focusInGrid) {
-        React.findDOMNode(this).focus();
+        ReactDOM.findDOMNode(this).focus();
       }
     }
   },

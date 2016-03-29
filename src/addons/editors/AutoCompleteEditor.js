@@ -1,4 +1,5 @@
 const React                   = require('react');
+const ReactDOM                = require('react-dom');
 const ReactAutocomplete       = require('ron-react-autocomplete');
 const ExcelColumn             = require('../grids/ExcelColumn');
 
@@ -10,13 +11,13 @@ let optionPropType = React.PropTypes.shape({
 const AutoCompleteEditor = React.createClass({
 
   propTypes: {
-    onCommit: React.PropTypes.func.isRequired,
-    options: React.PropTypes.arrayOf(optionPropType).isRequired,
+    onCommit: React.PropTypes.func,
+    options: React.PropTypes.arrayOf(optionPropType),
     label: React.PropTypes.any,
-    value: React.PropTypes.any.isRequired,
+    value: React.PropTypes.any,
     height: React.PropTypes.number,
     valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
-    column: React.PropTypes.shape(ExcelColumn).isRequired,
+    column: React.PropTypes.shape(ExcelColumn),
     resultIdentifier: React.PropTypes.string,
     search: React.PropTypes.string,
     onKeyDown: React.PropTypes.func

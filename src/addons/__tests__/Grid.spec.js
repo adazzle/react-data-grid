@@ -164,7 +164,7 @@ describe('Grid', function() {
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
 
-        this.headerCheckbox = this.selectRowCol.headerRenderer;
+        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
         this.headerCheckbox.props.onChange(this.fakeEvent);
       });
@@ -473,21 +473,6 @@ describe('Grid', function() {
 
         it('should clear drag state', function() {
           expect(this.component.state.dragged).toBe(null);
-        });
-      });
-    });
-
-    describe('Adding a new row', function() {
-      beforeEach(function() {
-        let newRow = { id: 1000, title: 'Title 1000', count: 1000 };
-        this._rows.push(newRow);
-        this.component.setProps({ rowsCount: this._rows.length });
-      });
-
-      it('should set the selected cell to be on the last row', function() {
-        expect(this.component.state.selected).toEqual({
-          idx: 1,
-          rowIdx: 1000
         });
       });
     });

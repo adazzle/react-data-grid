@@ -59,7 +59,7 @@ var Example = React.createClass({
     onRowSelect={this.onRowSelect} /></div>);
   }
 });
-React.render(<Example />, mountNode);
+ReactDOM.render(<Example />, mountNode);
 `;
 
 module.exports = React.createClass({
