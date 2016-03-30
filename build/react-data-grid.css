@@ -54,10 +54,7 @@
   background-color: #ffffff;
   color: inherit;
   padding: 0px;
-  border-color: #e7eaec;
-  border-image: none;
-  border-style: solid solid none;
-  border-width: 1px;
+  outline: 1px solid #e7eaec;
   clear : both;
 }
 

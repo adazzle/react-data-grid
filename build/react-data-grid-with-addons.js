@@ -116,7 +116,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onGridRowsUpdated: React.PropTypes.func,
 	    onRowSelect: React.PropTypes.func,
 	    rowKey: React.PropTypes.string,
-	    rowScrollTimeout: React.PropTypes.number
+	    rowScrollTimeout: React.PropTypes.number,
+	    onClearFilters: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -259,6 +260,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  onToggleFilter: function onToggleFilter() {
 	    this.setState({ canFilter: !this.state.canFilter });
+	    if (this.state.canFilter === false && this.props.onClearFilters) {
+	      this.props.onClearFilters();
+	    }
 	  },
 	  onDragHandleDoubleClick: function onDragHandleDoubleClick(e) {
 	    if (this.props.onDragHandleDoubleClick) {
