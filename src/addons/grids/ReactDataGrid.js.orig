@@ -59,8 +59,11 @@ const ReactDataGrid = React.createClass({
     onGridRowsUpdated: React.PropTypes.func,
     onRowSelect: React.PropTypes.func,
     rowKey: React.PropTypes.string,
-    rowScrollTimeout: React.PropTypes.number,
+<<<<<<< HEAD
     onClearFilters: React.PropTypes.func
+=======
+    rowScrollTimeout: React.PropTypes.number
+>>>>>>> master
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
