@@ -214,6 +214,16 @@ var AllFeaturesExample = `
     },
 
     render : function() {
+      var self = this;
+
+      columns.forEach(function(column){
+        column.onClick = function(rowId){
+          var rowData = self.getRowAt(rowId);
+
+          console.log(rowData);
+        }
+      });
+
       return (
             <ReactDataGrid
               enableCellSelect={true}
