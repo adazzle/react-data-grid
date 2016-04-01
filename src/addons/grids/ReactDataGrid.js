@@ -533,10 +533,10 @@ const ReactDataGrid = React.createClass({
     // depending on the current lifecycle stage, gridWidth() may not initialize correctly
     // this also handles cases where it always returns undefined -- such as when inside a div with display:none
     // eg Bootstrap tabs and collapses
-    if (typeof containerWidth === 'undefined' || isNaN(containerWidth)) {
+    if (typeof containerWidth === 'undefined' || isNaN(containerWidth) || containerWidth === 0) {
       containerWidth = '100%';
     }
-    if (typeof gridWidth === 'undefined' || isNaN(gridWidth)) {
+    if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
 

@@ -611,7 +611,7 @@ describe('Grid', function() {
     });
 
     it('should generate the width based on the container size', function() {
-      expect(this.tableElement.style.width).toEqual('0px');
+      expect(this.tableElement.style.width).toEqual('100%');
     });
 
     describe('providing table width as prop', function() {
