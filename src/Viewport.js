@@ -54,8 +54,7 @@ const Viewport = React.createClass({
       right: 0,
       overflow: 'hidden',
       position: 'absolute',
-      top: this.props.rowOffsetHeight,
-      height: this.state.height
+      top: this.props.rowOffsetHeight
     };
     return (
       <div
