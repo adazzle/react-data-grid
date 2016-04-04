@@ -1,0 +1,26 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'start' ]
+2 info using npm@2.11.3
+3 info using node@v0.12.7
+4 verbose stack Error: missing script: start
+4 verbose stack     at run (C:\Program Files\nodejs\node_modules\npm\lib\run-script.js:142:19)
+4 verbose stack     at C:\Program Files\nodejs\node_modules\npm\lib\run-script.js:58:5
+4 verbose stack     at C:\Program Files\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:345:5
+4 verbose stack     at checkBinReferences_ (C:\Program Files\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:309:45)
+4 verbose stack     at final (C:\Program Files\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:343:3)
+4 verbose stack     at then (C:\Program Files\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:113:5)
+4 verbose stack     at C:\Program Files\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:300:12
+4 verbose stack     at evalmachine.<anonymous>:334:14
+4 verbose stack     at C:\Program Files\nodejs\node_modules\npm\node_modules\graceful-fs\graceful-fs.js:102:5
+4 verbose stack     at FSReqWrap.oncomplete (evalmachine.<anonymous>:95:15)
+5 verbose cwd C:\Users\james.portelli\Documents\GitHub\react-data-grid
+6 error Windows_NT 6.3.9600
+7 error argv "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "start"
+8 error node v0.12.7
+9 error npm  v2.11.3
+10 error missing script: start
+11 error If you need help, you may report this error at:
+11 error     <https://github.com/npm/npm/issues>
+12 verbose exit [ 1, true ]
