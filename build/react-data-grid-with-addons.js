@@ -3339,7 +3339,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.setState(this.getGridState(nextProps));
 	    } else if (this.props.rowsCount !== nextProps.rowsCount) {
 	      this.updateScroll(this.state.scrollTop, this.state.scrollLeft, this.state.height, nextProps.rowHeight, nextProps.rowsCount);
-	    }
+	      // Added to fix the hiding of the bottom scrollbar when showing the filters.
+	    } else if (this.props.rowOffsetHeight !== nextProps.rowOffsetHeight) {
+	        // The value of height can be positive or negative and will be added to the current height to cater for changes in the header height (due to the filer)
+	        var _height = this.props.rowOffsetHeight - nextProps.rowOffsetHeight;
+
+	        this.updateScroll(this.state.scrollTop, this.state.scrollLeft, this.state.height + _height, nextProps.rowHeight, nextProps.rowsCount);
+	      }
 	  }
 	};
 
