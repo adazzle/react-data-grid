@@ -69,7 +69,8 @@
   background-color: #ffffff;
   padding-left: 8px;
   padding-right: 8px;
-  border-top: 1px solid #dddddd;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #dddddd;
 }
 .react-grid-Cell:not(.editing) .react-grid-Cell__value {
   white-space: nowrap;
@@ -246,6 +247,7 @@ textareaselect.editor-main {
   padding: 8px;
   font-weight: bold;
   border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
 }
 .react-grid-HeaderCell__value {
   white-space: nowrap;
@@ -338,9 +340,6 @@ textareaselect.editor-main {
 }
 .react-grid-Cell.is-dragged-over-up .drag-handle {
   top: -5px;
-}
-.react-grid-Cell {
-  border-right: 1px solid #eee;
 }
 
 .react-grid-Cell:hover {
