@@ -3786,7 +3786,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    column: React.PropTypes.shape(ExcelColumn),
 	    resultIdentifier: React.PropTypes.string,
 	    search: React.PropTypes.string,
-	    onKeyDown: React.PropTypes.func
+	    onKeyDown: React.PropTypes.func,
+	    onFocus: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -3846,7 +3847,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return React.createElement(
 	      'div',
 	      { height: this.props.height, onKeyDown: this.props.onKeyDown },
-	      React.createElement(ReactAutocomplete, { search: this.props.search, ref: 'autoComplete', label: label, onChange: this.handleChange, resultIdentifier: this.props.resultIdentifier, options: this.props.options, value: { title: this.props.value } })
+	      React.createElement(ReactAutocomplete, { search: this.props.search, ref: 'autoComplete', label: label, onChange: this.handleChange, onFocus: this.props.onFocus, resultIdentifier: this.props.resultIdentifier, options: this.props.options, value: { title: this.props.value } })
 	    );
 	  }
 	});
@@ -3926,7 +3927,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		    resultRenderer: React.PropTypes.oneOfType([React.PropTypes.component, React.PropTypes.func]),
 		    value: React.PropTypes.object,
 		    onChange: React.PropTypes.func,
-		    onError: React.PropTypes.func
+		    onError: React.PropTypes.func,
+		    onFocus: React.PropTypes.func
 		  },
 
 		  getDefaultProps: function () {
@@ -3970,7 +3972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		      style: { width: "100%" },
 		      onClick: this.showAllResults,
 		      onChange: this.onQueryChange,
-		      onFocus: this.showAllResults,
+		      onFocus: this.onSearchInputFocus,
 		      onBlur: this.onQueryBlur,
 		      onKeyDown: this.onQueryKeyDown,
 		      value: this.state.searchTerm }), React.createElement(Results, {
@@ -4064,6 +4066,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		      this.blurTimer = null;
 		    }
 		    this.refs.search.getDOMNode().focus();
+		  },
+
+		  onSearchInputFocus: function () {
+		    if (this.props.onFocus) {
+		      this.props.onFocus();
+		    }
+
+		    this.showAllResults();
 		  },
 
 		  onBlur: function () {
