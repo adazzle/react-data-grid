@@ -20,7 +20,8 @@ const AutoCompleteEditor = React.createClass({
     column: React.PropTypes.shape(ExcelColumn),
     resultIdentifier: React.PropTypes.string,
     search: React.PropTypes.string,
-    onKeyDown: React.PropTypes.func
+    onKeyDown: React.PropTypes.func,
+    onFocus: React.PropTypes.func
   },
 
   getDefaultProps(): {resultIdentifier: string} {
@@ -86,7 +87,7 @@ const AutoCompleteEditor = React.createClass({
   render(): ?ReactElement {
     let label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title: this.props.value}} />
+      <ReactAutocomplete search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title: this.props.value}} />
       </div>);
   }
 });
