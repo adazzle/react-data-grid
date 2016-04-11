@@ -66,13 +66,13 @@ var min = Math.min;
 var to_string = ObjectPrototype.toString;
 
 /* global Symbol */
-/* eslint-disable one-var-declaration-per-line, no-redeclare */
+/* eslint-disable one-var-declaration-per-line, no-redeclare, max-statements-per-line */
 var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
 var isCallable; /* inlined from https://npmjs.com/is-callable */ var fnToStr = Function.prototype.toString, constructorRegex = /^\s*class /, isES6ClassFn = function isES6ClassFn(value) { try { var fnStr = fnToStr.call(value); var singleStripped = fnStr.replace(/\/\/.*\n/g, ''); var multiStripped = singleStripped.replace(/\/\*[.\s\S]*\*\//g, ''); var spaceStripped = multiStripped.replace(/\n/mg, ' ').replace(/ {2}/g, ' '); return constructorRegex.test(spaceStripped); } catch (e) { return false; /* not a function */ } }, tryFunctionObject = function tryFunctionObject(value) { try { if (isES6ClassFn(value)) { return false; } fnToStr.call(value); return true; } catch (e) { return false; } }, fnClass = '[object Function]', genClass = '[object GeneratorFunction]', isCallable = function isCallable(value) { if (!value) { return false; } if (typeof value !== 'function' && typeof value !== 'object') { return false; } if (hasToStringTag) { return tryFunctionObject(value); } if (isES6ClassFn(value)) { return false; } var strClass = to_string.call(value); return strClass === fnClass || strClass === genClass; };
 
 var isRegex; /* inlined from https://npmjs.com/is-regex */ var regexExec = RegExp.prototype.exec, tryRegexExec = function tryRegexExec(value) { try { regexExec.call(value); return true; } catch (e) { return false; } }, regexClass = '[object RegExp]'; isRegex = function isRegex(value) { if (typeof value !== 'object') { return false; } return hasToStringTag ? tryRegexExec(value) : to_string.call(value) === regexClass; };
 var isString; /* inlined from https://npmjs.com/is-string */ var strValue = String.prototype.valueOf, tryStringObject = function tryStringObject(value) { try { strValue.call(value); return true; } catch (e) { return false; } }, stringClass = '[object String]'; isString = function isString(value) { if (typeof value === 'string') { return true; } if (typeof value !== 'object') { return false; } return hasToStringTag ? tryStringObject(value) : to_string.call(value) === stringClass; };
-/* eslint-enable one-var-declaration-per-line, no-redeclare */
+/* eslint-enable one-var-declaration-per-line, no-redeclare, max-statements-per-line */
 
 /* inlined from http://npmjs.com/define-properties */
 var supportsDescriptors = $Object.defineProperty && (function () {
@@ -396,7 +396,9 @@ var properlyBoxesContext = function properlyBoxed(method) {
     if (method) {
         try {
             method.call('foo', function (_, __, context) {
-                if (typeof context !== 'object') { properlyBoxesNonStrict = false; }
+                if (typeof context !== 'object') {
+                    properlyBoxesNonStrict = false;
+                }
             });
 
             method.call([1], function () {
@@ -564,7 +566,9 @@ defineProperties(ArrayPrototype, {
 // https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Objects/Array/reduce
 var reduceCoercesToObject = false;
 if (ArrayPrototype.reduce) {
-    reduceCoercesToObject = typeof ArrayPrototype.reduce.call('es5', function (_, __, ___, list) { return list; }) === 'object';
+    reduceCoercesToObject = typeof ArrayPrototype.reduce.call('es5', function (_, __, ___, list) {
+        return list;
+    }) === 'object';
 }
 defineProperties(ArrayPrototype, {
     reduce: function reduce(callbackfn/*, initialValue*/) {
@@ -615,7 +619,9 @@ defineProperties(ArrayPrototype, {
 // https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Objects/Array/reduceRight
 var reduceRightCoercesToObject = false;
 if (ArrayPrototype.reduceRight) {
-    reduceRightCoercesToObject = typeof ArrayPrototype.reduceRight.call('es5', function (_, __, ___, list) { return list; }) === 'object';
+    reduceRightCoercesToObject = typeof ArrayPrototype.reduceRight.call('es5', function (_, __, ___, list) {
+        return list;
+    }) === 'object';
 }
 defineProperties(ArrayPrototype, {
     reduceRight: function reduceRight(callbackfn/*, initial*/) {
@@ -2011,8 +2017,10 @@ if (supportsDescriptors) {
     var ensureNonEnumerable = function (obj, prop) {
         if (isEnum(obj, prop)) {
             var desc = Object.getOwnPropertyDescriptor(obj, prop);
-            desc.enumerable = false;
-            Object.defineProperty(obj, prop, desc);
+            if (desc.configurable) {
+              desc.enumerable = false;
+              Object.defineProperty(obj, prop, desc);
+            }
         }
     };
     ensureNonEnumerable(Error.prototype, 'message');

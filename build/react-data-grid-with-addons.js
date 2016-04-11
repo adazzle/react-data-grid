@@ -1586,7 +1586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 
 	var ExcelColumnShape = {
-	  name: React.PropTypes.string.isRequired,
+	  name: React.PropTypes.node.isRequired,
 	  key: React.PropTypes.string.isRequired,
 	  width: React.PropTypes.number.isRequired,
 	  filterable: React.PropTypes.bool
@@ -1724,7 +1724,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  propTypes: {
 	    columnKey: React.PropTypes.string.isRequired,
-	    column: React.PropTypes.shape({ name: React.PropTypes.string }),
+	    column: React.PropTypes.shape({ name: React.PropTypes.node }),
 	    onSort: React.PropTypes.func.isRequired,
 	    sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE'])
 	  },
