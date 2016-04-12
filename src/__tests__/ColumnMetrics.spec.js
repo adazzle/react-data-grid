@@ -1,6 +1,6 @@
 const rewire = require('rewire');
 const ColumnMetrics = rewire('../ColumnMetrics');
-const Immutable = window.Immutable = require('Immutable');
+const Immutable = window.Immutable = require('immutable');
 Object.assign = require('object-assign');
 
 describe('Column Metrics Tests', () => {
