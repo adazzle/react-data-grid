@@ -86,26 +86,6 @@ const ReactDataGrid = React.createClass({
     return initialState;
   },
 
-  componentWillMount: function() {
-    console.log("Mounting");
-  },
-
-  componentDidMount: function() {
-    console.log("Mounted");
-  },
-
-  componentWillUnmount: function() {
-    console.log("Unmounting");
-  },
-
-  componentWillUpdate: function(nextProps, nextState) {
-    console.log(nextProps);
-  },
-
-  componentDidUpdate: function(prevProps, prevState) {
-    console.log(prevProps);
-  },
-
   onSelect: function(selected: SelectedType) {
     if (this.props.enableCellSelect) {
       if (this.state.selected.rowIdx !== selected.rowIdx
