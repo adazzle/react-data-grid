@@ -164,7 +164,7 @@ describe('Grid', function() {
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
 
-        this.headerCheckbox = this.selectRowCol.headerRenderer;
+        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
         this.headerCheckbox.props.onChange(this.fakeEvent);
       });
@@ -611,7 +611,7 @@ describe('Grid', function() {
     });
 
     it('should generate the width based on the container size', function() {
-      expect(this.tableElement.style.width).toEqual('0px');
+      expect(this.tableElement.style.width).toEqual('100%');
     });
 
     describe('providing table width as prop', function() {

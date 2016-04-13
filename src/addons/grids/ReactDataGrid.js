@@ -43,7 +43,7 @@ const ReactDataGrid = React.createClass({
     headerRowHeight: React.PropTypes.number,
     minHeight: React.PropTypes.number.isRequired,
     minWidth: React.PropTypes.number,
-    enableRowSelect: React.PropTypes.bool,
+    enableRowSelect: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]),
     onRowUpdated: React.PropTypes.func,
     rowGetter: React.PropTypes.func.isRequired,
     rowsCount: React.PropTypes.number.isRequired,
@@ -59,7 +59,8 @@ const ReactDataGrid = React.createClass({
     onGridRowsUpdated: React.PropTypes.func,
     onRowSelect: React.PropTypes.func,
     rowKey: React.PropTypes.string,
-    rowScrollTimeout: React.PropTypes.number
+    rowScrollTimeout: React.PropTypes.number,
+    onClearFilters: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -221,6 +222,9 @@ const ReactDataGrid = React.createClass({
 
   onToggleFilter() {
     this.setState({ canFilter: !this.state.canFilter });
+    if (this.state.canFilter === false && this.props.onClearFilters) {
+      this.props.onClearFilters();
+    }
   },
 
   onDragHandleDoubleClick(e) {
@@ -470,7 +474,11 @@ const ReactDataGrid = React.createClass({
     let cols = props.columns.slice(0);
     let unshiftedCols = {};
     if (props.enableRowSelect) {
-      let headerRenderer = props.enableRowSelect === 'single' ? null :  <input type="checkbox" onChange={this.handleCheckboxChange} />;
+      let headerRenderer = props.enableRowSelect === 'single' ? null :
+      <div className="react-grid-checkbox-container">
+        <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" onChange={this.handleCheckboxChange} />
+        <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
+      </div>;
       let selectColumn = {
         key: 'select-row',
         name: '',
@@ -525,10 +533,10 @@ const ReactDataGrid = React.createClass({
     // depending on the current lifecycle stage, gridWidth() may not initialize correctly
     // this also handles cases where it always returns undefined -- such as when inside a div with display:none
     // eg Bootstrap tabs and collapses
-    if (typeof containerWidth === 'undefined' || isNaN(containerWidth)) {
+    if (typeof containerWidth === 'undefined' || isNaN(containerWidth) || containerWidth === 0) {
       containerWidth = '100%';
     }
-    if (typeof gridWidth === 'undefined' || isNaN(gridWidth)) {
+    if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
 

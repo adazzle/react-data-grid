@@ -54,10 +54,7 @@
   background-color: #ffffff;
   color: inherit;
   padding: 0px;
-  border-color: #e7eaec;
-  border-image: none;
-  border-style: solid solid none;
-  border-width: 1px;
+  outline: 1px solid #e7eaec;
   clear : both;
 }
 
@@ -72,7 +69,8 @@
   background-color: #ffffff;
   padding-left: 8px;
   padding-right: 8px;
-  border-top: 1px solid #dddddd;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #dddddd;
 }
 .react-grid-Cell:not(.editing) .react-grid-Cell__value {
   white-space: nowrap;
@@ -219,13 +217,13 @@ textareaselect.editor-main {
 
 
 .react-grid-HeaderCell input[type='checkbox'] {
-  display: block;
-  margin: 0;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+  z-index: 99999;
+}
+.react-grid-HeaderCell > .react-grid-checkbox-container {
+   padding: 0px 10px;
+}
+.react-grid-HeaderCell > .react-grid-checkbox-container > .react-grid-checkbox-label {
+   margin : 0;
 }
 .react-grid-Header {
   box-shadow: 0px 0px 4px 0px #dddddd;
@@ -249,6 +247,7 @@ textareaselect.editor-main {
   padding: 8px;
   font-weight: bold;
   border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
 }
 .react-grid-HeaderCell__value {
   white-space: nowrap;
@@ -341,9 +340,6 @@ textareaselect.editor-main {
 }
 .react-grid-Cell.is-dragged-over-up .drag-handle {
   top: -5px;
-}
-.react-grid-Cell {
-  border-right: 1px solid #eee;
 }
 
 .react-grid-Cell:hover {

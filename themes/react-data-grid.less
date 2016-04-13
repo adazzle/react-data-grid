@@ -76,14 +76,16 @@
   margin-right: auto;
 }
 
-.react-grid-HeaderCell input[type='checkbox']{
-   display: block;
+.react-grid-HeaderCell input[type='checkbox'] {
+  z-index: 99999;
+}
+
+.react-grid-HeaderCell > .react-grid-checkbox-container {
+   padding: 0px 10px;
+}
+
+.react-grid-HeaderCell > .react-grid-checkbox-container > .react-grid-checkbox-label {
    margin : 0;
-   margin-left: auto;
-   margin-right: auto;
-   position : relative;
-   top : 50%;
-   transform : translateY(-50%);
 }
 
 .react-grid-Header {

@@ -93,7 +93,7 @@ module.exports = {
     }
   },
 
-  componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number }) {
+  componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number }) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
         this.props.minHeight !== nextProps.minHeight) {
       this.setState(this.getGridState(nextProps));
@@ -102,6 +102,18 @@ module.exports = {
         this.state.scrollTop,
         this.state.scrollLeft,
         this.state.height,
+        nextProps.rowHeight,
+        nextProps.rowsCount
+      );
+      // Added to fix the hiding of the bottom scrollbar when showing the filters.
+    } else if (this.props.rowOffsetHeight !== nextProps.rowOffsetHeight) {
+      // The value of height can be positive or negative and will be added to the current height to cater for changes in the header height (due to the filer)
+      let height = this.props.rowOffsetHeight - nextProps.rowOffsetHeight;
+
+      this.updateScroll(
+        this.state.scrollTop,
+        this.state.scrollLeft,
+        this.state.height + height,
         nextProps.rowHeight,
         nextProps.rowsCount
       );

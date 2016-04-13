@@ -12,17 +12,11 @@ Installation
 
 ```sh
 npm install react-data-grid
-# or
-bower install react-data-grid
 ```
 
 This library is written with CommonJS modules. If you are using
 browserify, webpack, or similar, you can consume it like anything else
 installed from npm.
-
-There is also a global build available on bower, find the library on
-`window.ReactDataGrid`.
-
 
 Overview 
 --------
