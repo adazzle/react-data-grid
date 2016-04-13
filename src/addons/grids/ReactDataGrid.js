@@ -6,7 +6,6 @@ const ExcelColumn           = require('./ExcelColumn');
 const KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
 const CheckboxEditor        = require('../editors/CheckboxEditor');
 const DOMMetrics           = require('../../DOMMetrics');
-const ColumnMetrics         = require('../../ColumnMetrics');
 const ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
 const RowUtils = require('../../RowUtils');
 const ColumnUtils = require('../../ColumnUtils');
@@ -87,15 +86,24 @@ const ReactDataGrid = React.createClass({
     return initialState;
   },
 
-  componentWillReceiveProps: function(nextProps) {
-    // We must check if the columns have changed so that we can update the columns saved in the columnMetrics state
-    if (nextProps.columns) {
-      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn) ||
-          nextProps.minWidth !== this.props.minWidth) {
-        let columnMetrics = this.createColumnMetrics(nextProps);
-        this.setState({columnMetrics: columnMetrics});
-      }
-    }
+  componentWillMount: function() {
+    console.log("Mounting");
+  },
+
+  componentDidMount: function() {
+    console.log("Mounted");
+  },
+
+  componentWillUnmount: function() {
+    console.log("Unmounting");
+  },
+
+  componentWillUpdate: function(nextProps, nextState) {
+    console.log(nextProps);
+  },
+
+  componentDidUpdate: function(prevProps, prevState) {
+    console.log(prevProps);
   },
 
   onSelect: function(selected: SelectedType) {
