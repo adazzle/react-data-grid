@@ -71,7 +71,7 @@ const HeaderRow = React.createClass({
   },
 
   getFilterableHeaderCell() {
-    return <FilterableHeaderCell onFocus={this.changeActiveColumn} onChange={this.props.onFilterChange} />;
+    return <FilterableHeaderCell onChange={this.props.onFilterChange} />;
   },
 
   getSortableHeaderCell(column) {
@@ -139,26 +139,6 @@ const HeaderRow = React.createClass({
     return cells.concat(lockedCells);
   },
 
-  changeActiveColumn(_column) {
-    let total = 0;
-    for (let i = 0; i < this.props.columns.length; i++) {
-      total += this.props.columns[i].width;
-      if (this.props.columns[i].key === _column.columnName) {
-        break;
-      }
-    }
-    if (total > this.props.totalWidth) {
-      total = total - this.props.totalWidth;
-    } else {
-      total = 0;
-    }
-    this.setState({scrollLeft: total});
-  },
-
-  onScroll() {
-    this.props.onScroll({scrollLeft: this.state.scrollLeft});
-  },
-
   setScrollLeft(scrollLeft: number) {
     this.props.columns.forEach( (column, i) => {
       if (column.locked) {
@@ -178,7 +158,7 @@ const HeaderRow = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.props} className="react-grid-HeaderRow" onScroll={this.onScroll}>
+      <div {...this.props} className="react-grid-HeaderRow">
         <div style={cellsStyle}>
           {cells}
         </div>

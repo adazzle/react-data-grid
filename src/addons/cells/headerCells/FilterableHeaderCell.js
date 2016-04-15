@@ -5,16 +5,11 @@ const FilterableHeaderCell = React.createClass({
 
   propTypes: {
     onChange: React.PropTypes.func.isRequired,
-    column: React.PropTypes.shape(ExcelColumn),
-    onFocus: React.PropTypes.func
+    column: React.PropTypes.shape(ExcelColumn)
   },
 
   getInitialState(): {filterTerm: string} {
     return {filterTerm: ''};
-  },
-
-  onFocus() {
-    this.props.onFocus({columnName: this.props.column.key});
   },
 
   handleChange(e: Event) {
