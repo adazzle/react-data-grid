@@ -34,7 +34,8 @@ const HeaderRow = React.createClass({
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
     onFilterChange: PropTypes.func,
-    resizing: PropTypes.func
+    resizing: PropTypes.func,
+    onScroll: PropTypes.func
   },
 
   mixins: [ColumnUtilsMixin],
@@ -146,7 +147,7 @@ const HeaderRow = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.props}  className="react-grid-HeaderRow">
+      <div {...this.props} className="react-grid-HeaderRow" onScroll={this.props.onScroll}>
         <div style={cellsStyle}>
           {cells}
         </div>

@@ -106,8 +106,12 @@ const Canvas = React.createClass({
   },
 
   onScroll(e: any) {
+    if (this.getDOMNode() !== e.target) {
+      return;
+    }
     this.appendScrollShim();
-    let {scrollTop, scrollLeft} = e.target;
+    let scrollLeft = e.target.scrollLeft;
+    let scrollTop = e.target.scrollTop || this._scroll.scrollTop;
     let scroll = {scrollTop, scrollLeft};
     // check how far we have scrolled, and if this means we are being taken out of range
     let scrollYRange = Math.abs(this._scroll.scrollTop - scroll.scrollTop) / this.props.rowHeight;

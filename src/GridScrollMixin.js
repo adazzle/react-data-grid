@@ -17,10 +17,21 @@ module.exports = {
     this._scrollLeft = undefined;
   },
 
-  onScroll(props: {scrollLeft: number}) {
+  onScroll(props) {
     if (this._scrollLeft !== props.scrollLeft) {
       this._scrollLeft = props.scrollLeft;
       this._onScroll();
+    }
+  },
+
+  onHeaderScroll(e) {
+    let scrollLeft = e.target.scrollLeft;
+    if (this._scrollLeft !== scrollLeft) {
+      this._scrollLeft = scrollLeft;
+      this.refs.header.setScrollLeft(scrollLeft);
+      let canvas = ReactDOM.findDOMNode(this.refs.viewport.refs.canvas);
+      canvas.scrollLeft = scrollLeft;
+      this.refs.viewport.refs.canvas.setScrollLeft(scrollLeft);
     }
   },
 
