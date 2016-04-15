@@ -93,7 +93,6 @@ const Header = React.createClass({
         style={headerRowStyle}
         onColumnResize={this.onColumnResize}
         onColumnResizeEnd={this.onColumnResizeEnd}
-        totalWidth={this.props.totalWidth}
         width={columnMetrics.width}
         height={row.height || this.props.height}
         columns={columnMetrics.columns}

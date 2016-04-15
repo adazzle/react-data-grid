@@ -35,8 +35,7 @@ const HeaderRow = React.createClass({
     filterable: PropTypes.bool,
     onFilterChange: PropTypes.func,
     resizing: PropTypes.func,
-    onScroll: PropTypes.func,
-    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    onScroll: PropTypes.func
   },
 
   mixins: [ColumnUtilsMixin],
@@ -50,12 +49,6 @@ const HeaderRow = React.createClass({
       || this.props.sortColumn !== nextProps.sortColumn
       || this.props.sortDirection !== nextProps.sortDirection
     );
-  },
-
-  getInitialState() {
-    return {
-      scrollLeft: 0
-    };
   },
 
   getHeaderCellType(column) {
