@@ -72,11 +72,10 @@ const HeaderRow = React.createClass({
 
   getHeaderRenderer(column) {
     let renderer;
-    if (typeof column.headerRenderer !== 'undefined') {
+    if (column.headerRenderer) {
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);
-
       switch (headerCellType) {
       case HeaderCellType.SORTABLE:
         renderer = this.getSortableHeaderCell(column);
