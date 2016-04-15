@@ -717,7 +717,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        headerRows: headerRows,
 	        sortColumn: this.props.sortColumn,
 	        sortDirection: this.props.sortDirection,
-	        onSort: this.props.onSort
+	        onSort: this.props.onSort,
+	        onScroll: this.onHeaderScroll
 	      }),
 	      this.props.rowsCount >= 1 || this.props.rowsCount === 0 && !this.props.emptyRowsView ? React.createElement(
 	        'div',
@@ -780,7 +781,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    sortColumn: PropTypes.string,
 	    sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
 	    onSort: PropTypes.func,
-	    onColumnResize: PropTypes.func
+	    onColumnResize: PropTypes.func,
+	    onScroll: PropTypes.func
 	  },
 
 	  getInitialState: function getInitialState() {
@@ -854,7 +856,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        onFilterChange: row.onFilterChange,
 	        sortColumn: _this.props.sortColumn,
 	        sortDirection: _this.props.sortDirection,
-	        onSort: _this.props.onSort
+	        onSort: _this.props.onSort,
+	        onScroll: _this.props.onScroll
 	      }));
 	    });
 	    return headerRows;
@@ -1290,7 +1293,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    headerCellRenderer: PropTypes.func,
 	    filterable: PropTypes.bool,
 	    onFilterChange: PropTypes.func,
-	    resizing: PropTypes.func
+	    resizing: PropTypes.func,
+	    onScroll: PropTypes.func
 	  },
 
 	  mixins: [ColumnUtilsMixin],
@@ -1316,11 +1320,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  getHeaderRenderer: function getHeaderRenderer(column) {
 	    var renderer = void 0;
-	    if (typeof column.headerRenderer !== 'undefined') {
+	    if (column.headerRenderer) {
 	      renderer = column.headerRenderer;
 	    } else {
 	      var headerCellType = this.getHeaderCellType(column);
-
 	      switch (headerCellType) {
 	        case HeaderCellType.SORTABLE:
 	          renderer = this.getSortableHeaderCell(column);
@@ -1388,7 +1391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var cells = this.getCells();
 	    return React.createElement(
 	      'div',
-	      _extends({}, this.props, { className: 'react-grid-HeaderRow' }),
+	      _extends({}, this.props, { className: 'react-grid-HeaderRow', onScroll: this.props.onScroll }),
 	      React.createElement(
 	        'div',
 	        { style: cellsStyle },
@@ -2036,11 +2039,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onScroll: function onScroll(e) {
 	    var _this = this;
 
+	    if (this.getDOMNode() !== e.target) {
+	      return;
+	    }
 	    this.appendScrollShim();
-	    var _e$target = e.target;
-	    var scrollTop = _e$target.scrollTop;
-	    var scrollLeft = _e$target.scrollLeft;
-
+	    var scrollLeft = e.target.scrollLeft;
+	    var scrollTop = e.target.scrollTop || this._scroll.scrollTop;
 	    var scroll = { scrollTop: scrollTop, scrollLeft: scrollLeft };
 	    // check how far we have scrolled, and if this means we are being taken out of range
 	    var scrollYRange = Math.abs(this._scroll.scrollTop - scroll.scrollTop) / this.props.rowHeight;
@@ -3525,6 +3529,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this._scrollLeft !== props.scrollLeft) {
 	      this._scrollLeft = props.scrollLeft;
 	      this._onScroll();
+	    }
+	  },
+	  onHeaderScroll: function onHeaderScroll(e) {
+	    var scrollLeft = e.target.scrollLeft;
+	    if (this._scrollLeft !== scrollLeft) {
+	      this._scrollLeft = scrollLeft;
+	      this.refs.header.setScrollLeft(scrollLeft);
+	      var canvas = ReactDOM.findDOMNode(this.refs.viewport.refs.canvas);
+	      canvas.scrollLeft = scrollLeft;
+	      this.refs.viewport.refs.canvas.setScrollLeft(scrollLeft);
 	    }
 	  },
 	  _onScroll: function _onScroll() {
