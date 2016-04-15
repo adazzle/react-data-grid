@@ -1305,8 +1305,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (column.sortable) return HeaderCellType.SORTABLE;
 
-	    if (column.key === 'select-row') return HeaderCellType.CHECKBOX;
-
 	    return HeaderCellType.NONE;
 	  },
 	  getFilterableHeaderCell: function getFilterableHeaderCell() {
@@ -1317,25 +1315,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return React.createElement(SortableHeaderCell, { columnKey: column.key, onSort: this.props.onSort, sortDirection: sortDirection });
 	  },
 	  getHeaderRenderer: function getHeaderRenderer(column) {
-	    var headerCellType = this.getHeaderCellType(column);
 	    var renderer = void 0;
+	    if (typeof column.headerRenderer !== 'undefined') {
+	      renderer = column.headerRenderer;
+	    } else {
+	      var headerCellType = this.getHeaderCellType(column);
 
-	    switch (headerCellType) {
-	      case HeaderCellType.SORTABLE:
-	        renderer = this.getSortableHeaderCell(column);
-	        break;
-	      case HeaderCellType.FILTERABLE:
-	        renderer = this.getFilterableHeaderCell();
-	        break;
-	      case HeaderCellType.CHECKBOX:
-	        if (column.headerRenderer) {
-	          renderer = column.headerRenderer;
-	        }
-	        break;
-	      default:
-	        break;
+	      switch (headerCellType) {
+	        case HeaderCellType.SORTABLE:
+	          renderer = this.getSortableHeaderCell(column);
+	          break;
+	        case HeaderCellType.FILTERABLE:
+	          renderer = this.getFilterableHeaderCell();
+	          break;
+	        default:
+	          break;
+	      }
 	    }
-
 	    return renderer;
 	  },
 	  getStyle: function getStyle() {
