@@ -71,7 +71,7 @@ const HeaderRow = React.createClass({
 
   getHeaderRenderer(column) {
     let renderer;
-    if (typeof column.headerRenderer !== 'undefined') {
+    if (column.headerRenderer) {
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);
@@ -81,11 +81,6 @@ const HeaderRow = React.createClass({
         break;
       case HeaderCellType.FILTERABLE:
         renderer = this.getFilterableHeaderCell();
-        break;
-      case HeaderCellType.CHECKBOX:
-        if (column.headerRenderer) {
-          renderer = column.headerRenderer;
-        }
         break;
       default:
         break;
