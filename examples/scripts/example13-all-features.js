@@ -84,91 +84,104 @@ var AllFeaturesExample = `
       name: 'Avartar',
       width : 60,
       formatter : ReactDataGrid.Formatters.ImageFormatter,
-      resizable : true
+      resizable : true,
+      filterable: true
     },
     {
       key: 'county',
       name: 'County',
       editor: <AutoCompleteEditor options={counties}/>,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'title',
       name: 'Title',
       editor : <DropDownEditor options={titles}/>,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'firstName',
       name: 'First Name',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'lastName',
       name: 'Last Name',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'email',
       name: 'Email',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'street',
       name: 'Street',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'zipCode',
       name: 'ZipCode',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'date',
       name: 'Date',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'bs',
       name: 'bs',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'catchPhrase',
       name: 'Catch Phrase',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'companyName',
       name: 'Company Name',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     },
     {
       key: 'sentence',
       name: 'Sentence',
       editable:true,
       width : 200,
-      resizable: true
+      resizable: true,
+      filterable: true
     }
   ];
 
@@ -221,7 +234,7 @@ var AllFeaturesExample = `
               rowGetter={this.getRowAt}
               rowsCount={this.getSize()}
               onGridRowsUpdated={this.handleGridRowsUpdated}
-              toolbar={<Toolbar onAddRow={this.handleAddRow}/>}
+              toolbar={<Toolbar enableFilter={true} onAddRow={this.handleAddRow}/>}
               enableRowSelect={true}
               rowHeight={50}
               minHeight={600}

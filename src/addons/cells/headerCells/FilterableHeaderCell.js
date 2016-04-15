@@ -5,11 +5,16 @@ const FilterableHeaderCell = React.createClass({
 
   propTypes: {
     onChange: React.PropTypes.func.isRequired,
-    column: React.PropTypes.shape(ExcelColumn)
+    column: React.PropTypes.shape(ExcelColumn),
+    onFocus: React.PropTypes.func
   },
 
   getInitialState(): {filterTerm: string} {
     return {filterTerm: ''};
+  },
+
+  onFocus() {
+    this.props.onFocus({columnName: this.props.column.key});
   },
 
   handleChange(e: Event) {
@@ -24,7 +29,7 @@ const FilterableHeaderCell = React.createClass({
     }
 
     let inputKey = 'header-filter-' + this.props.column.key;
-    return (<input key={inputKey} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>);
+    return (<input key={inputKey} onFocus={this.onFocus} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>);
   },
 
   render: function(): ?ReactElement {
