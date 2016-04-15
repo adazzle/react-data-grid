@@ -84,7 +84,8 @@ var AllFeaturesExample = `
       name: 'Avartar',
       width : 60,
       formatter : ReactDataGrid.Formatters.ImageFormatter,
-      resizable : true
+      resizable : true,
+      headerRenderer: <ReactDataGrid.Formatters.ImageFormatter value={faker.image.cats()} />
     },
     {
       key: 'county',

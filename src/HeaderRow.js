@@ -57,8 +57,6 @@ const HeaderRow = React.createClass({
 
     if (column.sortable) return HeaderCellType.SORTABLE;
 
-    if (column.key === 'select-row') return HeaderCellType.CHECKBOX;
-
     return HeaderCellType.NONE;
   },
 
@@ -72,25 +70,23 @@ const HeaderRow = React.createClass({
   },
 
   getHeaderRenderer(column) {
-    let headerCellType = this.getHeaderCellType(column);
     let renderer;
+    if (typeof column.headerRenderer !== 'undefined') {
+      renderer = column.headerRenderer;
+    } else {
+      let headerCellType = this.getHeaderCellType(column);
 
-    switch (headerCellType) {
-    case HeaderCellType.SORTABLE:
-      renderer = this.getSortableHeaderCell(column);
-      break;
-    case HeaderCellType.FILTERABLE:
-      renderer = this.getFilterableHeaderCell();
-      break;
-    case HeaderCellType.CHECKBOX:
-      if (column.headerRenderer) {
-        renderer = column.headerRenderer;
+      switch (headerCellType) {
+      case HeaderCellType.SORTABLE:
+        renderer = this.getSortableHeaderCell(column);
+        break;
+      case HeaderCellType.FILTERABLE:
+        renderer = this.getFilterableHeaderCell();
+        break;
+      default:
+        break;
       }
-      break;
-    default:
-      break;
     }
-
     return renderer;
   },
 
