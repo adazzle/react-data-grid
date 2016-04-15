@@ -75,13 +75,17 @@ const HeaderRow = React.createClass({
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);
-
       switch (headerCellType) {
       case HeaderCellType.SORTABLE:
         renderer = this.getSortableHeaderCell(column);
         break;
       case HeaderCellType.FILTERABLE:
         renderer = this.getFilterableHeaderCell();
+        break;
+      case HeaderCellType.CHECKBOX:
+        if (column.headerRenderer) {
+          renderer = column.headerRenderer;
+        }
         break;
       default:
         break;
