@@ -71,7 +71,7 @@ const Draggable = React.createClass({
     return (
       <div {...this.props}
         onMouseDown={this.onMouseDown}
-        onTouchStart={this.onMouseDown},
+        onTouchStart={this.onMouseDown}
         className="react-grid-HeaderCell__draggable" />
     );
   }
