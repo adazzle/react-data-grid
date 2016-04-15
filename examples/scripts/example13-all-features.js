@@ -112,7 +112,7 @@ var AllFeaturesExample = `
       name: 'Last Name',
       editable:true,
       width : 200,
-      resizable: true      
+      resizable: true
     },
     {
       key: 'email',

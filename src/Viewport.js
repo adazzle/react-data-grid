@@ -43,7 +43,6 @@ const Viewport = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    this.setState({scrollLeft});
     this.refs.canvas.setScrollLeft(scrollLeft);
   },
 
