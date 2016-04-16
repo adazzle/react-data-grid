@@ -90,6 +90,7 @@ const Header = React.createClass({
       headerRows.push(<HeaderRow
         key={row.ref}
         ref={row.ref}
+        rowType={row.rowType}
         style={headerRowStyle}
         onColumnResize={this.onColumnResize}
         onColumnResizeEnd={this.onColumnResizeEnd}
