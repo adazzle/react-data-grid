@@ -22,7 +22,8 @@ const Viewport = React.createClass({
     minHeight: PropTypes.number,
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
-    rowScrollTimeout: PropTypes.number
+    rowScrollTimeout: PropTypes.number,
+    setToolbarDisplayInfo: PropTypes.func
   },
 
   onScroll(scroll: {scrollTop: number; scrollLeft: number}) {

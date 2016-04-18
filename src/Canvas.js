@@ -111,12 +111,11 @@ const Canvas = React.createClass({
     }
     this.appendScrollShim();
     let scrollLeft = e.target.scrollLeft;
-    let scrollTop = e.target.scrollTop || this._scroll.scrollTop;
+    let scrollTop = e.target.scrollTop;
     let scroll = {scrollTop, scrollLeft};
     // check how far we have scrolled, and if this means we are being taken out of range
     let scrollYRange = Math.abs(this._scroll.scrollTop - scroll.scrollTop) / this.props.rowHeight;
     let scrolledOutOfRange = scrollYRange > (this.props.displayEnd - this.props.displayStart);
-
     this._scroll = scroll;
     this.props.onScroll(scroll);
     // if we go out of range, we queue the actual render, just rendering cheap placeholders
