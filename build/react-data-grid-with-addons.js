@@ -447,13 +447,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return offsetHeight;
 	  },
 	  getHeaderRows: function getHeaderRows() {
-	    var rows = [{ ref: 'row', height: this.props.headerRowHeight || this.props.rowHeight }];
+	    var rows = [{ ref: 'row', height: this.props.headerRowHeight || this.props.rowHeight, rowType: 'header' }];
 	    if (this.state.canFilter === true) {
 	      rows.push({
 	        ref: 'filterRow',
 	        filterable: true,
 	        onFilterChange: this.props.onAddFilter,
-	        height: 45
+	        height: 45,
+	        rowType: 'filter'
 	      });
 	    }
 	    return rows;
@@ -845,6 +846,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      headerRows.push(React.createElement(HeaderRow, {
 	        key: row.ref,
 	        ref: row.ref,
+	        rowType: row.rowType,
 	        style: headerRowStyle,
 	        onColumnResize: _this.onColumnResize,
 	        onColumnResizeEnd: _this.onColumnResizeEnd,
@@ -1294,7 +1296,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    filterable: PropTypes.bool,
 	    onFilterChange: PropTypes.func,
 	    resizing: PropTypes.func,
-	    onScroll: PropTypes.func
+	    onScroll: PropTypes.func,
+	    rowType: PropTypes.string
 	  },
 
 	  mixins: [ColumnUtilsMixin],
@@ -1351,12 +1354,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    for (var i = 0, len = this.getSize(this.props.columns); i < len; i++) {
 	      var column = this.getColumn(this.props.columns, i);
+	      var _renderer = this.getHeaderRenderer(column);
+	      if (column.key === 'select-row' && this.props.rowType === 'filter') {
+	        _renderer = React.createElement('div', null);
+	      }
 	      var cell = React.createElement(HeaderCell, {
 	        ref: i,
 	        key: i,
 	        height: this.props.height,
 	        column: column,
-	        renderer: this.getHeaderRenderer(column),
+	        renderer: _renderer,
 	        resizing: this.props.resizing === column,
 	        onResize: this.props.onColumnResize,
 	        onResizeEnd: this.props.onColumnResizeEnd
@@ -3620,7 +3627,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  propTypes: {
 	    columns: PropTypes.arrayOf(Column),
 	    minColumnWidth: PropTypes.number,
-	    columnEquality: PropTypes.func
+	    columnEquality: PropTypes.func,
+	    onColumnResize: PropTypes.func
 	  },
 
 	  DOMMetrics: {
@@ -3698,6 +3706,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onColumnResize: function onColumnResize(index, width) {
 	    var columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
 	    this.setState({ columnMetrics: columnMetrics });
+	    if (this.props.onColumnResize) {
+	      this.props.onColumnResize(index, width);
+	    }
 	  }
 	};
 
