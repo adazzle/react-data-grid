@@ -27,8 +27,9 @@
     "es5-shim": "^4.0.3",
     "fbjs": "^0.6.1",
     "object-assign": "^2.0.0",
-    "up": "^0.7.0",
-    "ron-react-autocomplete": "^3.0.0"
+    "react-contextmenu": "^1.4.0",
+    "ron-react-autocomplete": "^3.0.0",
+    "up": "^0.7.0"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
