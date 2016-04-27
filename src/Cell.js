@@ -27,7 +27,8 @@ const Cell = React.createClass({
     handleDragStart: React.PropTypes.func,
     className: React.PropTypes.string,
     cellControls: React.PropTypes.any,
-    rowData: React.PropTypes.object.isRequired
+    rowData: React.PropTypes.object.isRequired,
+    expandableOptions: React.PropTypes.object.isRequired
   },
 
   getDefaultProps: function(): {tabIndex: number; ref: string; isExpanded: boolean } {
@@ -86,6 +87,15 @@ const Cell = React.createClass({
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellDoubleClick != null) {
       meta.onCellDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx});
+    }
+  },
+
+  onCellExpand(e) {
+    e.stopPropagation();
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellExpand != null) {
+      let expanded = !this.props.expandableOptions.expanded;
+      meta.onCellExpand({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expanded: expanded});
     }
   },
 
@@ -318,7 +328,7 @@ const Cell = React.createClass({
     return (this.props.column.editor != null) || this.props.column.editable;
   },
 
-  renderCellContent(props: any): ReactElement {
+  renderCellContent(props) {
     let CellContent;
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
@@ -329,11 +339,15 @@ const Cell = React.createClass({
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
-    return (<div ref="cell"
-      className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>);
+    let cellExpander;
+    if (this.props.expandableOptions && this.props.expandableOptions.canExpand) {
+      cellExpander = (<span style={{float: 'left'}} onClick={this.onCellExpand}>{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>);
+    }
+    return (<div  ref="cell"
+      className="react-grid-Cell__value">{cellExpander}<span style={{float: 'left'}}>{CellContent}</span> {this.props.cellControls} </div>);
   },
 
-  render(): ?ReactElement {
+  render() {
     let style = this.getStyle();
 
     let className = this.getCellClass();

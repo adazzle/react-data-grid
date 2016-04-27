@@ -32,7 +32,8 @@ const Canvas = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
     selectedRows: PropTypes.array,
     rowKey: React.PropTypes.string,
-    rowScrollTimeout: React.PropTypes.number
+    rowScrollTimeout: React.PropTypes.number,
+    getSubRowDetails: PropTypes.func
   },
 
   getDefaultProps() {
@@ -137,6 +138,15 @@ const Canvas = React.createClass({
     }
   },
 
+  getSubRows(row) {
+    let subRowDetails = this.props.getSubRowDetails(row);
+    if (subRowDetails.expanded === true) {
+      return subRowDetails.children.map(r => {
+        return {row: r};
+      });
+    }
+  },
+
   getRows(displayStart: number, displayEnd: number): Array<any> {
     this._currentRowsRange = {start: displayStart, end: displayEnd};
     if (Array.isArray(this.props.rowGetter)) {
@@ -145,7 +155,16 @@ const Canvas = React.createClass({
 
     let rows = [];
     for (let i = displayStart; i < displayEnd; i++) {
-      rows.push(this.props.rowGetter(i));
+      let row = this.props.rowGetter(i);
+      if (this.props.getSubRowDetails) {
+        let subRowDetails = this.props.getSubRowDetails(row, i);
+        rows.push({row: this.props.rowGetter(i), subRowDetails: subRowDetails});
+        if (subRowDetails.expanded) {
+          rows = rows.concat(this.getSubRows(row));
+        }
+      } else {
+        rows.push({row: this.props.rowGetter(i)});
+      }
     }
     return rows;
   },
@@ -243,16 +262,17 @@ const Canvas = React.createClass({
     let length = this.props.rowsCount;
 
     let rows = this.getRows(displayStart, displayEnd)
-        .map((row, idx) => this.renderRow({
+        .map((r, idx) => this.renderRow({
           key: displayStart + idx,
           ref: idx,
           idx: displayStart + idx,
-          row: row,
+          row: r.row,
           height: rowHeight,
           columns: this.props.columns,
-          isSelected: this.isRowSelected(row),
+          isSelected: this.isRowSelected(r.row),
           expandedRows: this.props.expandedRows,
-          cellMetaData: this.props.cellMetaData
+          cellMetaData: this.props.cellMetaData,
+          subRowDetails: r.subRowDetails
         }));
 
     this._currentRowsLength = rows.length;
