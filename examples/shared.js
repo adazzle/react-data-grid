@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import Navbar from './components/Navbar';
-import ExamplesData from './examplesData';
+import ExampleScripts from './scripts';
 
-ReactDom.render(<Navbar exampleLinks={ExamplesData} />, document.getElementById('navbarContainer'));
+ReactDom.render(<Navbar exampleLinks={ExampleScripts} />, document.getElementById('navbarContainer'));

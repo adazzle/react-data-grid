@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactRouter, {Route, RouteHandler} from 'react-router';
 import ExampleList from './components/ExampleList';
-import ExamplesData from './examplesData';
 import ExampleScripts from './scripts';
 
 window.React = React;
@@ -18,8 +17,8 @@ class App extends React.Component {
   }
 }
 
-let allRoutes = ExamplesData.map(e => {
-  let routeHandler = ExampleScripts[e.scriptFileName];
+let allRoutes = ExampleScripts.map(e => {
+  let routeHandler = e.module;
   return <Route name={e.hashLocation} handler={routeHandler} />;
 });
 
@@ -32,4 +31,4 @@ let routes = (
 ReactRouter.run(routes, function(Handler) {
   ReactDOM.render(<Handler />, document.getElementById('example'));
 });
-ReactDOM.render(<ExampleList links={ExamplesData} className="nav bs-docs-sidenav" />, document.getElementById('grid-examples-div'));
+ReactDOM.render(<ExampleList links={ExampleScripts} className="nav bs-docs-sidenav" />, document.getElementById('grid-examples-div'));
