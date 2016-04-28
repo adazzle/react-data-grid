@@ -106,7 +106,7 @@ const Canvas = React.createClass({
   },
 
   onScroll(e: any) {
-    if (this.getDOMNode() !== e.target) {
+    if (ReactDOM.findDOMNode(this) !== e.target) {
       return;
     }
     this.appendScrollShim();
