@@ -60,7 +60,8 @@ const ReactDataGrid = React.createClass({
     onRowSelect: React.PropTypes.func,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
-    onClearFilters: React.PropTypes.func
+    onClearFilters: React.PropTypes.func,
+    contextMenu: React.PropTypes.element
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -573,7 +574,8 @@ const ReactDataGrid = React.createClass({
             onViewportDragEnd={this.handleDragEnd}
             onViewportDoubleClick={this.onViewportDoubleClick}
             onColumnResize={this.onColumnResize}
-            rowScrollTimeout={this.props.rowScrollTimeout}/>
+            rowScrollTimeout={this.props.rowScrollTimeout}
+            contextMenu={this.props.contextMenu} />
           </div>
         </div>
       );
