@@ -147,7 +147,7 @@ const Cell = React.createClass({
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
-      selected: this.isSelected() && !this.isActive(),
+      selected: this.isSelected() && !this.isActive() && this.isCellSelectEnabled(),
       editing: this.isActive(),
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'active-drag-cell': this.isSelected() || this.isDraggedOver(),
@@ -164,7 +164,7 @@ const Cell = React.createClass({
 
   isColumnSelected() {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
 
     return (
       meta.selected
@@ -174,7 +174,7 @@ const Cell = React.createClass({
 
   isSelected: function(): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
 
     return (
       meta.selected
@@ -185,19 +185,25 @@ const Cell = React.createClass({
 
   isActive(): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
     return this.isSelected() && meta.selected.active === true;
   },
 
   isCellSelectionChanging(nextProps: {idx: number; cellMetaData: {selected: {idx: number}}}): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
     let nextSelected = nextProps.cellMetaData.selected;
     if (meta.selected && nextSelected) {
       return this.props.idx === nextSelected.idx || this.props.idx === meta.selected.idx;
     }
 
     return true;
+  },
+
+  isCellSelectEnabled() {
+    let meta = this.props.cellMetaData;
+    if (meta == null) { return false; }
+    return meta.enableCellSelect;
   },
 
   applyUpdateClass() {

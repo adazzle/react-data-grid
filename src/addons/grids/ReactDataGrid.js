@@ -88,20 +88,18 @@ const ReactDataGrid = React.createClass({
   },
 
   onSelect: function(selected: SelectedType) {
-    if (this.props.enableCellSelect) {
-      if (this.state.selected.rowIdx !== selected.rowIdx
-        || this.state.selected.idx !== selected.idx
-        || this.state.selected.active === false) {
-        let idx = selected.idx;
-        let rowIdx = selected.rowIdx;
-        if (
-            idx >= 0
-            && rowIdx >= 0
-            && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
-            && rowIdx < this.props.rowsCount
-          ) {
-          this.setState({selected: selected});
-        }
+    if (this.state.selected.rowIdx !== selected.rowIdx
+      || this.state.selected.idx !== selected.idx
+      || this.state.selected.active === false) {
+      let idx = selected.idx;
+      let rowIdx = selected.rowIdx;
+      if (
+          idx >= 0
+          && rowIdx >= 0
+          && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
+          && rowIdx < this.props.rowsCount
+        ) {
+        this.setState({selected: selected});
       }
     }
   },
@@ -530,7 +528,8 @@ const ReactDataGrid = React.createClass({
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
       handleTerminateDrag: this.handleTerminateDrag,
-      onDragHandleDoubleClick: this.onDragHandleDoubleClick
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
+      enableCellSelect: this.props.enableCellSelect
     };
 
     let toolbar = this.renderToolbar();
