@@ -82,6 +82,13 @@ const Cell = React.createClass({
     }
   },
 
+  onCellContextMenu() {
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellContextMenu != null) {
+      meta.onCellContextMenu({rowIdx: this.props.rowIdx, idx: this.props.idx});
+    }
+  },
+
   onCellDoubleClick() {
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellDoubleClick != null) {
@@ -348,7 +355,7 @@ const Cell = React.createClass({
     let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver}>
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onContextMenu={this.onCellContextMenu} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver}>
       {cellContent}
       {dragHandle}
       </div>
