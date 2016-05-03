@@ -3,7 +3,9 @@ import ReactPlayground from '../assets/js/ReactPlayground';
 
 let example = `
 // Import the necessary modules.
-var {ContextMenu, MenuItem, SubMenu} = ReactDataGrid.Menu;
+var ContextMenu = ReactDataGrid.Menu.ContextMenu;
+var MenuItem = ReactDataGrid.Menu.MenuItem;
+var SubMenu = ReactDataGrid.Menu.SubMenu;
 
 var _rows = [];
 for (var i = 1; i < 1000; i++) {
@@ -31,13 +33,13 @@ var columns = [
 
 // Create the React Data Grid and pass your context menu to the contextMenu property.
 var Example = React.createClass({
-  getInitialState() {
+  getInitialState: function() {
     return {rows: _rows};
   },
-  rowGetter(rowIdx) {
+  rowGetter: function(rowIdx) {
     return this.state.rows[rowIdx];
   },
-  handleMenuItemClick(e, data) {
+  handleMenuItemClick: function(e, data) {
     switch (data.action) {
       case 'Delete Row':
         this.deleteRow(data.rowIdx);
@@ -50,11 +52,11 @@ var Example = React.createClass({
         break;
     }
   },
-  deleteRow(rowIdx) {
+  deleteRow: function(rowIdx) {
     this.state.rows.splice(rowIdx, 1);
     this.setState({rows: this.state.rows});
   },
-  insertRow(rowIdx) {
+  insertRow: function(rowIdx) {
     var newRow = {
       id: 0,
       title: 'New at ' + (rowIdx + 1),
@@ -63,7 +65,7 @@ var Example = React.createClass({
     this.state.rows.splice(rowIdx, 0, newRow);
     this.setState({rows: this.state.rows});
   },
-  render() {
+  render: function() {
     return (
       <ReactDataGrid
         contextMenu={<MyContextMenu onItemClick={this.handleMenuItemClick} />}
@@ -77,13 +79,13 @@ var Example = React.createClass({
 
 // Create the context menu.
 // Use this.props.rowIdx and this.props.idx to get the row/column where the menu is shown.
-const MyContextMenu = React.createClass({
-  onItemClick(e, data) {
+var MyContextMenu = React.createClass({
+  onItemClick: function(e, data) {
     if (this.props.onItemClick) {
       this.props.onItemClick(e, data);
     }
   },
-  render() {
+  render: function() {
     return (
       <ContextMenu>
         <MenuItem data={{action: 'Delete Row', rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onItemClick}>Delete Row</MenuItem>
