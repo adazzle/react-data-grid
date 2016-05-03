@@ -221,10 +221,13 @@ const ReactDataGrid = React.createClass({
   },
 
   onToggleFilter() {
-    this.setState({ canFilter: !this.state.canFilter });
-    if (this.state.canFilter === false && this.props.onClearFilters) {
-      this.props.onClearFilters();
-    }
+    // setState() does not immediately mutate this.state but creates a pending state transition. 
+    // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
+    this.setState({ canFilter: !this.state.canFilter }, function() {      
+      if (this.state.canFilter === false && this.props.onClearFilters) {
+        this.props.onClearFilters();
+      }
+    }.bind(this));    
   },
 
   onDragHandleDoubleClick(e) {
