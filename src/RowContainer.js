@@ -41,3 +41,4 @@ SimpleRowContainer.propTypes = {
 let ContextMenuRowContainer = ContextMenuLayer('reactDataGridContextMenu')(SimpleRowContainer);
 
 export default RowContainer;
+export {SimpleRowContainer, ContextMenuRowContainer};
