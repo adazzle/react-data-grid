@@ -12,7 +12,7 @@ class ReactDataGridContextMenu extends React.Component {
 }
 
 ReactDataGridContextMenu.propTypes = {
-  children: PropTypes.array
+  children: PropTypes.node
 };
 
 export default ReactDataGridContextMenu;
