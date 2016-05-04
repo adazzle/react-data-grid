@@ -2048,7 +2048,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  onScroll: function onScroll(e) {
 	    var _this = this;
 
-	    if (this.getDOMNode() !== e.target) {
+	    if (ReactDOM.findDOMNode(this) !== e.target) {
 	      return;
 	    }
 	    this.appendScrollShim();
