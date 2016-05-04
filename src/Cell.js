@@ -75,17 +75,17 @@ const Cell = React.createClass({
     || this.props.value !== nextProps.value;
   },
 
-  onCellClick() {
+  onCellClick(e) {
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellClick != null) {
-      meta.onCellClick({rowIdx: this.props.rowIdx, idx: this.props.idx});
+      meta.onCellClick({rowIdx: this.props.rowIdx, idx: this.props.idx}, e);
     }
   },
 
-  onCellDoubleClick() {
+  onCellDoubleClick(e) {
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellDoubleClick != null) {
-      meta.onCellDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx});
+      meta.onCellDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx}, e);
     }
   },
 

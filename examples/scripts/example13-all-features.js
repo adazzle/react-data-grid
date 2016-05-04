@@ -189,8 +189,10 @@ var AllFeaturesExample = `
     getColumns: function() {
       var clonedColumns = columns.slice();
       clonedColumns[2].events = {
-        onClick: function() {
-          this.refs.grid.setActive('Enter');
+        onClick: function(ev, args) {
+          var idx = args.idx;
+          var rowIdx = args.rowIdx;
+          this.refs.grid.openCellEditor(rowIdx, idx);
         }.bind(this)
       }
 

@@ -18,6 +18,12 @@ type SelectedType = {
   idx: number;
 };
 
+type ColumnEvent = {
+  name: string,
+  rowIdx: number;
+  idx: number;
+}
+
 type DraggedType = {
   idx: number;
   rowIdx: number;
@@ -91,7 +97,7 @@ const ReactDataGrid = React.createClass({
     return previouslySelected.rowIdx !== selected.rowIdx || previouslySelected.idx !== selected.idx || previouslySelected.active === false;
   },
 
-  onSelect: function(selected: SelectedType, associatedEvent: string) {
+  onSelect: function(selected: SelectedType) {
     if (!this.props.enableCellSelect) {
       return;
     }
@@ -101,32 +107,38 @@ const ReactDataGrid = React.createClass({
       let rowIdx = selected.rowIdx;
 
       if (idx >= 0 && rowIdx >= 0 && idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && rowIdx < this.props.rowsCount) {
-        this.setState({selected: selected}, () => {
-          this.onColumnEvent(associatedEvent);
-        });
-      }
-    } else {
-      this.onColumnEvent(associatedEvent);
-    }
-  },
-
-  onColumnEvent: function(columnEvent: string) {
-    if (columnEvent) {
-      let column = this.getColumn(this.state.selected.idx);
-
-      if (column && column.events && column.events[columnEvent] && typeof column.events[columnEvent] === 'function') {
-        column.events[columnEvent]();
+        this.setState({selected: selected});
       }
     }
   },
 
-  onCellClick: function(cell: SelectedType) {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx}, 'onClick');
+  onColumnEvent: function(ev :SyntheticEvent, columnEvent: ColumnEvent) {
+    let {idx, name} = columnEvent;
+
+    if (name && idx) {
+      let column = this.getColumn(idx);
+
+      if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
+        let eventArgs = {
+          rowIdx: columnEvent.rowIdx,
+          idx,
+          column
+        };
+
+        column.events[name](ev, eventArgs);
+      }
+    }
   },
 
-  onCellDoubleClick: function(cell: SelectedType) {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx}, 'onDoubleClick');
+  onCellClick: function(cell: SelectedType, e: SyntheticEvent) {
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+    this.onColumnEvent(e, {rowIdx: cell.rowIdx, idx: cell.idx, name: 'onClick'});
+  },
+
+  onCellDoubleClick: function(cell: SelectedType, e: SyntheticEvent) {
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
     this.setActive('Enter');
+    this.onColumnEvent(e, {rowIdx: cell.rowIdx, idx: cell.idx, name: 'onDoubleClick'});
   },
 
   onViewportDoubleClick: function() {
@@ -457,6 +469,17 @@ const ReactDataGrid = React.createClass({
     let rowIdx = this.state.selected.rowIdx + rowDelta;
     let idx = this.state.selected.idx + cellDelta;
     this.onSelect({idx: idx, rowIdx: rowIdx});
+  },
+
+  openCellEditor(rowIdx, idx) {
+    let selected = {rowIdx, idx};
+    if (this.hasSelectedCellChanged(selected)) {
+      this.setState({selected}, () => {
+        this.setActive('Enter');
+      });
+    } else {
+      this.setActive('Enter');
+    }
   },
 
   setActive(keyPressed: string) {
