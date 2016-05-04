@@ -145,7 +145,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
 var MyContextMenu = React.createClass({
   onItemClick: function(e, data) {
-    alert('Row: ' + (data.rowIdx + 1) + ', Column: ' + (data.idx + 1);
+    alert('Row: ' + (data.rowIdx + 1) + ', Column: ' + (data.idx + 1));
   },
   render: function() {
     return (
