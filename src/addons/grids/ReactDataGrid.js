@@ -86,31 +86,46 @@ const ReactDataGrid = React.createClass({
     return initialState;
   },
 
-  onSelect: function(selected: SelectedType) {
-    if (this.props.enableCellSelect) {
-      if (this.state.selected.rowIdx !== selected.rowIdx
-        || this.state.selected.idx !== selected.idx
-        || this.state.selected.active === false) {
-        let idx = selected.idx;
-        let rowIdx = selected.rowIdx;
-        if (
-            idx >= 0
-            && rowIdx >= 0
-            && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
-            && rowIdx < this.props.rowsCount
-          ) {
-          this.setState({selected: selected});
-        }
+  hasSelectedCellChanged: function(selected: SelectedType) {
+    let previouslySelected = Object.assign({}, this.state.selected);
+    return previouslySelected.rowIdx !== selected.rowIdx || previouslySelected.idx !== selected.idx || previouslySelected.active === false;
+  },
+
+  onSelect: function(selected: SelectedType, associatedEvent: string) {
+    if (!this.props.enableCellSelect) {
+      return;
+    }
+
+    if (this.hasSelectedCellChanged(selected)) {
+      let idx = selected.idx;
+      let rowIdx = selected.rowIdx;
+
+      if (idx >= 0 && rowIdx >= 0 && idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && rowIdx < this.props.rowsCount) {
+        this.setState({selected: selected}, () => {
+          this.onColumnEvent(associatedEvent);
+        });
+      }
+    } else {
+      this.onColumnEvent(associatedEvent);
+    }
+  },
+
+  onColumnEvent: function(columnEvent: string) {
+    if (columnEvent) {
+      let column = this.getColumn(this.state.selected.idx);
+
+      if (column && column.events && column.events[columnEvent] && typeof column.events[columnEvent] === 'function') {
+        column.events[columnEvent]();
       }
     }
   },
 
   onCellClick: function(cell: SelectedType) {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx}, 'onClick');
   },
 
   onCellDoubleClick: function(cell: SelectedType) {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx}, 'onDoubleClick');
     this.setActive('Enter');
   },
 
