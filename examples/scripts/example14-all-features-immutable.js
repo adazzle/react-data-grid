@@ -7,6 +7,7 @@
   var DropDownEditor      = Editors.DropDownEditor;
   var joinClasses          = require('classnames');
   var FakeObjectDataStore = require('./FakeObjectDataStore');
+  var {ContextMenu, MenuItem} = ReactDataGrid.Menu;
   var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
    { id : 10, title :'Durham'},
    { id : 11, title :'Essex'},
@@ -142,6 +143,18 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     }
   ]);
 
+var MyContextMenu = React.createClass({
+  onItemClick: function(e, data) {
+    alert('Row: ' + (data.rowIdx + 1) + ', Column: ' + (data.idx + 1);
+  },
+  render: function() {
+    return (
+      <ContextMenu>
+        <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onItemClick}>Select Cell</MenuItem>
+      </ContextMenu>
+    );
+  }
+});
 
  var Component = React.createClass({displayName: 'component',
 
@@ -200,6 +213,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
     render() {
       return (
             <ReactDataGrid
+              contextMenu={<MyContextMenu />}
               ref='reactDataGrid'
               enableCellSelect={true}
               columns={columns}
