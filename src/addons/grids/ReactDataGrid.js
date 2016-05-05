@@ -492,7 +492,7 @@ const ReactDataGrid = React.createClass({
 
   canEdit(idx: number): boolean {
     const col = this.getColumn(idx);
-    return this.props.enableCellEdit === true && !!col.editor;
+    return this.props.enableCellEdit && (!!col.editor || col.editable)
   },
 
   isActive(): boolean {
