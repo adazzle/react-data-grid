@@ -130,15 +130,13 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  onCellClick: function(cell: SelectedType, e: SyntheticEvent) {
+  onCellClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
-    this.onColumnEvent(e, {rowIdx: cell.rowIdx, idx: cell.idx, name: 'onClick'});
   },
 
-  onCellDoubleClick: function(cell: SelectedType, e: SyntheticEvent) {
+  onCellDoubleClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
     this.setActive('Enter');
-    this.onColumnEvent(e, {rowIdx: cell.rowIdx, idx: cell.idx, name: 'onDoubleClick'});
   },
 
   onViewportDoubleClick: function() {
@@ -562,7 +560,8 @@ const ReactDataGrid = React.createClass({
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
       handleTerminateDrag: this.handleTerminateDrag,
-      onDragHandleDoubleClick: this.onDragHandleDoubleClick
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
+      onColumnEvent: this.onColumnEvent
     };
 
     let toolbar = this.renderToolbar();

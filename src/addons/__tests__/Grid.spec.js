@@ -23,7 +23,7 @@ describe('Grid', function() {
       { key: 'id', name: 'ID', width: 100 },
       { key: 'title', name: 'Title', width: 100 },
       { key: 'count', name: 'Count', width: 100 },
-      { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}}}
+      { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}, onDragOver: () => {}}}
     ];
 
     this._rows = [];
@@ -597,30 +597,35 @@ describe('Grid', function() {
         let events = this.testProps.columns[3].events;
         spyOn(events, 'onClick');
         spyOn(events, 'onDoubleClick');
-        this.getCellMetaData().onCellClick({idx: eventColumnIdx, rowIdx: eventColumnRowIdx});
+        spyOn(events, 'onDragOver');
       });
 
       it('should call an event when there is one', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
         expect(columnWithEvent.events.onClick).toHaveBeenCalled();
       });
 
       it('should call the correct event', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
         expect(columnWithEvent.events.onClick).toHaveBeenCalled();
         expect(columnWithEvent.events.onDoubleClick).not.toHaveBeenCalled();
       });
 
       it('should call double click event on double click', function() {
-        this.getCellMetaData().onCellDoubleClick({idx: eventColumnIdx, rowIdx: eventColumnRowIdx});
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onDoubleClick'});
 
         expect(columnWithEvent.events.onDoubleClick).toHaveBeenCalled();
       });
 
-      it('should call click event on click', function() {
-        expect(columnWithEvent.events.onClick).toHaveBeenCalled();
+      it('should call drag over event on drag over click', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onDragOver'});
+
+        expect(columnWithEvent.events.onDragOver).toHaveBeenCalled();
       });
 
       it('should call the event when there is one with the correct args', function() {
-        expect(columnWithEvent.events.onClick.mostRecentCall.args).toEqual([undefined, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+        expect(columnWithEvent.events.onClick.mostRecentCall.args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
       });
     });
   });

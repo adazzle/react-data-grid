@@ -7,6 +7,16 @@ const isFunction        = require('./addons/utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./addons/formatters/SimpleCellFormatter');
 
+const CLICK_EVENT_DEFAULT_TYPE = 'click';
+const DOUBLE_CLICK_EVENT_DEFAULT_TYPE = 'dblclick';
+const DRAG_OVER_EVENT_DEFAULT_TYPE = 'dragover';
+
+const EVENT_FRIENDLY_NAMES = {
+  [CLICK_EVENT_DEFAULT_TYPE]: 'Click',
+  [DOUBLE_CLICK_EVENT_DEFAULT_TYPE]: 'DoubleClick',
+  [DRAG_OVER_EVENT_DEFAULT_TYPE]: 'DragOver'
+};
+
 const Cell = React.createClass({
 
   propTypes: {
@@ -97,7 +107,7 @@ const Cell = React.createClass({
     }
   },
 
-  onDragOver: function(e) {
+  onCellDragOver: function(e) {
     e.preventDefault();
   },
 
@@ -318,6 +328,34 @@ const Cell = React.createClass({
     return (this.props.column.editor != null) || this.props.column.editable;
   },
 
+  columnEventDispatcher(e) {
+    let eventName = EVENT_FRIENDLY_NAMES[e.type];
+
+    if (!eventName) {
+      return;
+    }
+
+    let eventHandler = 'onCell' + eventName;
+    let eventNativeHandlerName = 'on' + eventName;
+
+    this.handleCellEvent(e, eventHandler, eventNativeHandlerName);
+  },
+
+  handleCellEvent(e, eventHandler, name) {
+    if (!this[eventHandler] || typeof this[eventHandler] !== 'function') {
+      return;
+    }
+
+    let cellInfo = {rowIdx: this.props.rowIdx, idx: this.props.idx};
+    this[eventHandler](e, cellInfo);
+
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onColumnEvent) {
+      let eventInfo = Object.assign(cellInfo, {name});
+      meta.onColumnEvent(e, eventInfo);
+    }
+  },
+
   renderCellContent(props: any): ReactElement {
     let CellContent;
     let Formatter = this.getFormatter();
@@ -348,7 +386,7 @@ const Cell = React.createClass({
     let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
 
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver}>
+      <div {...this.props} className={className} style={style} onClick={this.columnEventDispatcher} onDoubleClick={this.columnEventDispatcher} onDragOver={this.columnEventDispatcher}>
       {cellContent}
       {dragHandle}
       </div>
