@@ -22,7 +22,8 @@ describe('Grid', function() {
     this.columns = [
       { key: 'id', name: 'ID', width: 100 },
       { key: 'title', name: 'Title', width: 100 },
-      { key: 'count', name: 'Count', width: 100 }
+      { key: 'count', name: 'Count', width: 100 },
+      { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}}}
     ];
 
     this._rows = [];
@@ -100,7 +101,7 @@ describe('Grid', function() {
   it('should be initialized with correct state', function() {
     expect(this.component.state).toEqual(mockStateObject({
       selectedRows: this._selectedRows
-    }));
+    }, this.columns[3].events));
   });
 
   describe('if passed in as props to grid', function() {
@@ -487,7 +488,7 @@ describe('Grid', function() {
       });
 
       it('should add column', function() {
-        expect(this.columns.length).toEqual(4);
+        expect(this.columns.length).toEqual(5);
       });
 
       it('should calculate column metrics for added column', function() {
@@ -504,7 +505,7 @@ describe('Grid', function() {
       });
 
       it('should remove column', function() {
-        expect(this.columns.length).toEqual(2);
+        expect(this.columns.length).toEqual(3);
       });
 
       it('should no longer include metrics for removed column', function() {
@@ -583,6 +584,43 @@ describe('Grid', function() {
 
       it('should set selected state of grid', function() {
         expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 2 });
+      });
+    });
+
+    describe('Column events', function() {
+      let columnWithEvent;
+      const eventColumnIdx = 3;
+      const eventColumnRowIdx = 2;
+
+      beforeEach(function() {
+        columnWithEvent = this.component.state.columnMetrics.columns[3];
+        let events = this.testProps.columns[3].events;
+        spyOn(events, 'onClick');
+        spyOn(events, 'onDoubleClick');
+        this.getCellMetaData().onCellClick({idx: eventColumnIdx, rowIdx: eventColumnRowIdx});
+      });
+
+      it('should call an event when there is one', function() {
+        expect(columnWithEvent.events.onClick).toHaveBeenCalled();
+      });
+
+      it('should call the correct event', function() {
+        expect(columnWithEvent.events.onClick).toHaveBeenCalled();
+        expect(columnWithEvent.events.onDoubleClick).not.toHaveBeenCalled();
+      });
+
+      it('should call double click event on double click', function() {
+        this.getCellMetaData().onCellDoubleClick({idx: eventColumnIdx, rowIdx: eventColumnRowIdx});
+
+        expect(columnWithEvent.events.onDoubleClick).toHaveBeenCalled();
+      });
+
+      it('should call click event on click', function() {
+        expect(columnWithEvent.events.onClick).toHaveBeenCalled();
+      });
+
+      it('should call the event when there is one with the correct args', function() {
+        expect(columnWithEvent.events.onClick.mostRecentCall.args).toEqual([undefined, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
       });
     });
   });

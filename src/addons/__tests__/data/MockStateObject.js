@@ -1,4 +1,4 @@
-module.exports = function(stateValues) {
+module.exports = function(stateValues, events) {
   return Object.assign({
     columnMetrics: {
       columns: [{
@@ -16,8 +16,14 @@ module.exports = function(stateValues) {
         name: 'Count',
         width: 100,
         left: 200
+      }, {
+        key: 'country',
+        name: 'Country',
+        width: 100,
+        left: 300,
+        events: events
       }],
-      width: 300,
+      width: 400,
       totalWidth: 0,
       minColumnWidth: 80
     },
