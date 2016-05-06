@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "0.14.27",
+  "version": "0.14.29",
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
@@ -28,8 +28,7 @@
     "fbjs": "^0.6.1",
     "object-assign": "^2.0.0",
     "react-contextmenu": "^1.4.0",
-    "ron-react-autocomplete": "^3.0.0",
-    "up": "^0.7.0"
+    "ron-react-autocomplete": "^3.0.0"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
