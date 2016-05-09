@@ -1,4 +1,5 @@
 import {MenuItem, monitor, SubMenu, connect} from 'react-contextmenu';
 import ContextMenu from './ContextMenu';
+import MenuHeader from './MenuHeader';
 
-export {ContextMenu, MenuItem, monitor, SubMenu, connect};
+export {ContextMenu, MenuHeader, MenuItem, monitor, SubMenu, connect};
