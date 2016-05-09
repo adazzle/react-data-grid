@@ -77,21 +77,21 @@ const Cell = React.createClass({
 
   onCellClick() {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellClick != null) {
+    if (meta != null && typeof(meta.onCellClick) === 'function') {
       meta.onCellClick({rowIdx: this.props.rowIdx, idx: this.props.idx});
     }
   },
 
   onCellContextMenu() {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellContextMenu != null) {
+    if (meta != null && typeof(meta.onCellContextMenu) === 'function') {
       meta.onCellContextMenu({rowIdx: this.props.rowIdx, idx: this.props.idx});
     }
   },
 
   onCellDoubleClick() {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick != null) {
+    if (meta != null && typeof(meta.onCellDoubleClick) === 'function') {
       meta.onCellDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx});
     }
   },
@@ -99,7 +99,7 @@ const Cell = React.createClass({
   onDragHandleDoubleClick(e) {
     e.stopPropagation();
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick != null) {
+    if (meta != null && typeof(meta.onDragHandleDoubleClick != null) === 'function') {
       meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData()});
     }
   },
