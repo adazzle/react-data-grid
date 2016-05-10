@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {ContextMenuLayer} from 'react-contextmenu';
 
-class RowContainer extends React.Component {
+class RowsContainer extends React.Component {
   hasContextMenu() {
     return this.props.contextMenu && React.isValidElement(this.props.contextMenu);
   }
@@ -9,21 +9,21 @@ class RowContainer extends React.Component {
   renderRowsWithContextMenu() {
     let newProps = {rowIdx: this.props.rowIdx, idx: this.props.idx};
     let contextMenu = React.cloneElement(this.props.contextMenu, newProps);
-    return (<div><ContextMenuRowContainer {...this.props} />{contextMenu}</div>);
+    return (<div><ContextMenuRowsContainer {...this.props} />{contextMenu}</div>);
   }
 
   render() {
-    return this.hasContextMenu() ? this.renderRowsWithContextMenu() : <SimpleRowContainer {...this.props} />;
+    return this.hasContextMenu() ? this.renderRowsWithContextMenu() : <SimpleRowsContainer {...this.props} />;
   }
 }
 
-RowContainer.propTypes = {
+RowsContainer.propTypes = {
   contextMenu: PropTypes.element,
   rowIdx: PropTypes.number,
   idx: PropTypes.number
 };
 
-class SimpleRowContainer extends React.Component {
+class SimpleRowsContainer extends React.Component {
   render() {
     return (
       <div style={{width: this.props.width, overflow: 'hidden'}}>
@@ -33,12 +33,12 @@ class SimpleRowContainer extends React.Component {
   }
 }
 
-SimpleRowContainer.propTypes = {
+SimpleRowsContainer.propTypes = {
   width: PropTypes.number,
   rows: PropTypes.array
 };
 
-let ContextMenuRowContainer = ContextMenuLayer('reactDataGridContextMenu')(SimpleRowContainer);
+let ContextMenuRowsContainer = ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
 
-export default RowContainer;
-export {SimpleRowContainer, ContextMenuRowContainer};
+export default RowsContainer;
+export {SimpleRowsContainer, ContextMenuRowsContainer};

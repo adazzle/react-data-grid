@@ -6,7 +6,7 @@ const ScrollShim      = require('./ScrollShim');
 const Row             = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import shallowEqual from 'fbjs/lib/shallowEqual';
-import RowContainer from './RowContainer';
+import RowsContainer from './RowsContainer';
 
 const Canvas = React.createClass({
   mixins: [ScrollShim],
@@ -284,7 +284,7 @@ const Canvas = React.createClass({
         style={style}
         onScroll={this.onScroll}
         className={joinClasses('react-grid-Canvas', this.props.className, {opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active})}>
-        <RowContainer
+        <RowsContainer
           width={this.props.width}
           rows={rows}
           contextMenu={this.props.contextMenu}
