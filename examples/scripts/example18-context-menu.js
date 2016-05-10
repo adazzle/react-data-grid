@@ -39,22 +39,15 @@ var Example = React.createClass({
   rowGetter: function(rowIdx) {
     return this.state.rows[rowIdx];
   },
-  handleMenuItemClick: function(e, data) {
-    switch (data.action) {
-      case 'Delete Row':
-        this.deleteRow(data.rowIdx);
-        break;
-      case 'Insert Row Above':
-      	this.insertRow(data.rowIdx);
-        break;
-      case 'Insert Row Below':
-      	this.insertRow(data.rowIdx + 1);
-        break;
-    }
-  },
-  deleteRow: function(rowIdx) {
-    this.state.rows.splice(rowIdx, 1);
+  deleteRow: function(e, data) {
+    this.state.rows.splice(data.rowIdx, 1);
     this.setState({rows: this.state.rows});
+  },
+  insertRowAbove: function(e, data) {
+    this.insertRow(data.rowIdx);
+  },
+  insertRowBelow: function(e, data) {
+    this.insertRow(data.rowIdx + 1);
   },
   insertRow: function(rowIdx) {
     var newRow = {
@@ -68,7 +61,7 @@ var Example = React.createClass({
   render: function() {
     return (
       <ReactDataGrid
-        contextMenu={<MyContextMenu onItemClick={this.handleMenuItemClick} />}
+        contextMenu={<MyContextMenu onRowDelete={this.deleteRow} onRowInsertAbove={this.insertRowAbove} onRowInsertBelow={this.insertRowBelow} />}
         columns={columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
@@ -80,18 +73,28 @@ var Example = React.createClass({
 // Create the context menu.
 // Use this.props.rowIdx and this.props.idx to get the row/column where the menu is shown.
 var MyContextMenu = React.createClass({
-  onItemClick: function(e, data) {
-    if (this.props.onItemClick) {
-      this.props.onItemClick(e, data);
+  onRowDelete: function(e, data) {
+    if (typeof(this.props.onRowDelete) === 'function') {
+      this.props.onRowDelete(e, data);
+    }
+  },
+  onRowInsertAbove: function(e, data) {
+    if (typeof(this.props.onRowInsertAbove) === 'function') {
+      this.props.onRowInsertAbove(e, data);
+    }
+  },
+  onRowInsertBelow: function(e, data) {
+    if (typeof(this.props.onRowInsertBelow) === 'function') {
+      this.props.onRowInsertBelow(e, data);
     }
   },
   render: function() {
     return (
       <ContextMenu>
-        <MenuItem data={{action: 'Delete Row', rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onItemClick}>Delete Row</MenuItem>
+        <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowDelete}>Delete Row</MenuItem>
         <SubMenu title="Insert Row">
-          <MenuItem data={{action: 'Insert Row Above', rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onItemClick}>Above</MenuItem>
-          <MenuItem data={{action: 'Insert Row Below', rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onItemClick}>Below</MenuItem>
+          <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowInsertAbove}>Above</MenuItem>
+          <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowInsertBelow}>Below</MenuItem>
         </SubMenu>
       </ContextMenu>
     );
