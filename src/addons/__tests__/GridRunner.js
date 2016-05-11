@@ -44,6 +44,32 @@ export default class GridRunner {
   /* =====
   ACTIONS
   ======== */
+  rightClickCell({cellIdx, rowIdx}) {
+    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
+    this.cell = this.getCells(this.row)[cellIdx];
+    TestUtils.Simulate.contextMenu(this.cell);
+    return this;
+  }
+
+  getContextMenu() {
+    let menus = document.getElementsByClassName('react-context-menu');
+    return menus.length > 0 ? menus[menus.length - 1] : undefined;
+  }
+
+  getContextMenuItem() {
+    let menuItems = document.getElementsByClassName('react-context-menu-link');
+    return menuItems.length > 0 ? menuItems[menuItems.length - 1] : undefined;
+  }
+
+  isContextMenuVisible() {
+    return this.getContextMenu() !== undefined;
+  }
+
+  clickContextMenuLink() {
+    TestUtils.Simulate.click(this.getContextMenuItem());
+    return this;
+  }
+
   selectCell({cellIdx, rowIdx}) {
     this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
     this.cell = this.getCells(this.row)[cellIdx];

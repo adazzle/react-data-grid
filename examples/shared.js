@@ -1,5 +1,6 @@
-var React = require('react')
-var ReactDom = require('react-dom')
-var Navbar = require('./components/Navbar');
+import React from 'react';
+import ReactDom from 'react-dom';
+import Navbar from './components/Navbar';
+import ExampleScripts from './scripts';
 
-ReactDom.render(<Navbar/>, document.getElementById('navbarContainer'));
+ReactDom.render(<Navbar exampleLinks={ExampleScripts} />, document.getElementById('navbarContainer'));

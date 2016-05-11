@@ -126,6 +126,14 @@ const Row = React.createClass({
     return false;
   },
 
+  isContextMenuDisplayed() {
+    let selected = this.props.cellMetaData.selected;
+    if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
+      return true;
+    }
+    return false;
+  },
+
   willRowBeDraggedOver(props: any): boolean {
     let dragged = props.cellMetaData.dragged;
     return  dragged != null && (dragged.rowIdx >= 0 || dragged.complete === true);
@@ -151,7 +159,10 @@ const Row = React.createClass({
     let className = joinClasses(
       'react-grid-Row',
       `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
-      {'row-selected': this.props.isSelected}
+      {
+        'row-selected': this.props.isSelected,
+        'row-context-menu': this.isContextMenuDisplayed()
+      }
     );
 
     let style = {

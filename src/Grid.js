@@ -32,7 +32,8 @@ const Grid = React.createClass({
     onSort: PropTypes.func,
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
-    rowScrollTimeout: PropTypes.number
+    rowScrollTimeout: PropTypes.number,
+    contextMenu: PropTypes.element
   },
 
   mixins: [
@@ -94,6 +95,7 @@ const Grid = React.createClass({
                   rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
+                  contextMenu={this.props.contextMenu}
                 />
             </div>
         :
