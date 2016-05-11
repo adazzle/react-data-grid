@@ -470,6 +470,10 @@ const ReactDataGrid = React.createClass({
   },
 
   openCellEditor(rowIdx, idx) {
+    if (!this.canEdit(idx)) {
+      return;
+    }
+
     let selected = {rowIdx, idx};
     if (this.hasSelectedCellChanged(selected)) {
       this.setState({selected}, () => {
