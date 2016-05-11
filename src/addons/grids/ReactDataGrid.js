@@ -506,10 +506,14 @@ const ReactDataGrid = React.createClass({
     return this.props.onCellsDragged !== null;
   },
 
+  setToolbarDisplayInfo(_startRow, _endRow) {
+    this.setState({startRow: _startRow, endRow: _endRow});
+  },
+
   renderToolbar(): ReactElement {
     let Toolbar = this.props.toolbar;
     if (React.isValidElement(Toolbar)) {
-      return ( React.cloneElement(Toolbar, {onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
+      return ( React.cloneElement(Toolbar, {onToggleFilter: this.onToggleFilter, rowsInfo: {start: this.state.startRow, end: this.state.endRow, total: this.props.rowsCount}}));
     }
   },
 
@@ -568,7 +572,8 @@ const ReactDataGrid = React.createClass({
             onViewportDragEnd={this.handleDragEnd}
             onViewportDoubleClick={this.onViewportDoubleClick}
             onColumnResize={this.onColumnResize}
-            rowScrollTimeout={this.props.rowScrollTimeout}/>
+            rowScrollTimeout={this.props.rowScrollTimeout}
+            setToolbarDisplayInfo={this.setToolbarDisplayInfo}/>
           </div>
         </div>
       );

@@ -50,6 +50,10 @@
   margin-top: -6px;
 }
 
+.react-grid-Toolbar .display-text {
+  float: left;
+}
+
 .react-grid-Main {
   background-color: #ffffff;
   color: inherit;

@@ -76,8 +76,8 @@ module.exports = {
       scrollTop,
       scrollLeft
     };
-
     this.setState(nextScrollState);
+    this.props.setToolbarDisplayInfo(visibleStart + 1, visibleEnd);
   },
 
   metricsUpdated() {
