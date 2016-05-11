@@ -18,6 +18,12 @@ type SelectedType = {
   idx: number;
 };
 
+type ColumnEvent = {
+  name: string,
+  rowIdx: number;
+  idx: number;
+}
+
 type DraggedType = {
   idx: number;
   rowIdx: number;
@@ -87,17 +93,39 @@ const ReactDataGrid = React.createClass({
     return initialState;
   },
 
+  hasSelectedCellChanged: function(selected: SelectedType) {
+    let previouslySelected = Object.assign({}, this.state.selected);
+    return previouslySelected.rowIdx !== selected.rowIdx || previouslySelected.idx !== selected.idx || previouslySelected.active === false;
+  },
+
   onContextMenuHide: function() {
     document.removeEventListener('click', this.onContextMenuHide);
     let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
     this.setState({selected: newSelected});
   },
 
+  onColumnEvent: function(ev :SyntheticEvent, columnEvent: ColumnEvent) {
+    let {idx, name} = columnEvent;
+
+    if (name && idx) {
+      let column = this.getColumn(idx);
+
+      if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
+        let eventArgs = {
+          rowIdx: columnEvent.rowIdx,
+          idx,
+          column
+        };
+
+        column.events[name](ev, eventArgs);
+      }
+    }
+  },
+
   onSelect: function(selected: SelectedType) {
     if (this.state.selected.rowIdx !== selected.rowIdx
       || this.state.selected.idx !== selected.idx
-      || this.state.selected.active === false
-      || selected.contextMenuDisplayed) {
+      || this.state.selected.active === false) {
       let idx = selected.idx;
       let rowIdx = selected.rowIdx;
       if (
@@ -457,6 +485,21 @@ const ReactDataGrid = React.createClass({
     this.onSelect({idx: idx, rowIdx: rowIdx});
   },
 
+  openCellEditor(rowIdx, idx) {
+    if (!this.canEdit(idx)) {
+      return;
+    }
+
+    let selected = {rowIdx, idx};
+    if (this.hasSelectedCellChanged(selected)) {
+      this.setState({selected}, () => {
+        this.setActive('Enter');
+      });
+    } else {
+      this.setActive('Enter');
+    }
+  },
+
   setActive(keyPressed: string) {
     let rowIdx = this.state.selected.rowIdx;
     let idx = this.state.selected.idx;
@@ -539,7 +582,8 @@ const ReactDataGrid = React.createClass({
       handleDragEnterRow: this.handleDragEnter,
       handleTerminateDrag: this.handleTerminateDrag,
       onDragHandleDoubleClick: this.onDragHandleDoubleClick,
-      enableCellSelect: this.props.enableCellSelect
+      enableCellSelect: this.props.enableCellSelect,
+      onColumnEvent: this.onColumnEvent
     };
 
     let toolbar = this.renderToolbar();
