@@ -99,7 +99,12 @@ var AllFeaturesExample = `
       name: 'Title',
       editor : <DropDownEditor options={titles}/>,
       width : 200,
-      resizable: true
+      resizable: true,
+      events: {
+        onDoubleClick: function() {
+           console.log("The user double clicked on title column");
+        }
+      }
     },
     {
       key: 'firstName',
@@ -181,6 +186,19 @@ var AllFeaturesExample = `
       return {rows :fakeRows};
     },
 
+    getColumns: function() {
+      var clonedColumns = columns.slice();
+      clonedColumns[2].events = {
+        onClick: function(ev, args) {
+          var idx = args.idx;
+          var rowIdx = args.rowIdx;
+          this.refs.grid.openCellEditor(rowIdx, idx);
+        }.bind(this)
+      }
+
+      return clonedColumns;
+    },
+
     handleGridRowsUpdated : function(updatedRowData) {
       var rows = this.state.rows;
 
@@ -217,8 +235,9 @@ var AllFeaturesExample = `
     render : function() {
       return (
             <ReactDataGrid
+              ref='grid'
               enableCellSelect={true}
-              columns={columns}
+              columns={this.getColumns()}
               rowGetter={this.getRowAt}
               rowsCount={this.getSize()}
               onGridRowsUpdated={this.handleGridRowsUpdated}

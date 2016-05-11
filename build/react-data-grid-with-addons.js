@@ -146,14 +146,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return initialState;
 	  },
 
+	  hasSelectedCellChanged: function hasSelectedCellChanged(selected) {
+	    var previouslySelected = Object.assign({}, this.state.selected);
+	    return previouslySelected.rowIdx !== selected.rowIdx || previouslySelected.idx !== selected.idx || previouslySelected.active === false;
+	  },
+
 	  onContextMenuHide: function onContextMenuHide() {
 	    document.removeEventListener('click', this.onContextMenuHide);
 	    var newSelected = Object.assign({}, this.state.selected, { contextMenuDisplayed: false });
 	    this.setState({ selected: newSelected });
 	  },
 
+	  onColumnEvent: function onColumnEvent(ev, columnEvent) {
+	    var idx = columnEvent.idx;
+	    var name = columnEvent.name;
+
+
+	    if (name && idx) {
+	      var column = this.getColumn(idx);
+
+	      if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
+	        var eventArgs = {
+	          rowIdx: columnEvent.rowIdx,
+	          idx: idx,
+	          column: column
+	        };
+
+	        column.events[name](ev, eventArgs);
+	      }
+	    }
+	  },
+
 	  onSelect: function onSelect(selected) {
-	    if (this.state.selected.rowIdx !== selected.rowIdx || this.state.selected.idx !== selected.idx || this.state.selected.active === false || selected.contextMenuDisplayed) {
+	    if (this.state.selected.rowIdx !== selected.rowIdx || this.state.selected.idx !== selected.idx || this.state.selected.active === false) {
 	      var _idx = selected.idx;
 	      var _rowIdx = selected.rowIdx;
 	      if (_idx >= 0 && _rowIdx >= 0 && _idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && _rowIdx < this.props.rowsCount) {
@@ -497,6 +522,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var idx = this.state.selected.idx + cellDelta;
 	    this.onSelect({ idx: idx, rowIdx: rowIdx });
 	  },
+	  openCellEditor: function openCellEditor(rowIdx, idx) {
+	    var _this2 = this;
+
+	    if (!this.canEdit(idx)) {
+	      return;
+	    }
+
+	    var selected = { rowIdx: rowIdx, idx: idx };
+	    if (this.hasSelectedCellChanged(selected)) {
+	      this.setState({ selected: selected }, function () {
+	        _this2.setActive('Enter');
+	      });
+	    } else {
+	      this.setActive('Enter');
+	    }
+	  },
 	  setActive: function setActive(keyPressed) {
 	    var rowIdx = this.state.selected.rowIdx;
 	    var idx = this.state.selected.idx;
@@ -582,7 +623,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      handleDragEnterRow: this.handleDragEnter,
 	      handleTerminateDrag: this.handleTerminateDrag,
 	      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
-	      enableCellSelect: this.props.enableCellSelect
+	      enableCellSelect: this.props.enableCellSelect,
+	      onColumnEvent: this.onColumnEvent
 	    };
 
 	    var toolbar = this.renderToolbar();
@@ -6227,10 +6269,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
 	    return this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.rowData !== nextProps.rowData || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.value !== nextProps.value;
 	  },
-	  onCellClick: function onCellClick() {
+	  onCellClick: function onCellClick(e) {
 	    var meta = this.props.cellMetaData;
-	    if (meta != null && typeof meta.onCellClick === 'function') {
-	      meta.onCellClick({ rowIdx: this.props.rowIdx, idx: this.props.idx });
+	    if (meta != null && meta.onCellClick && typeof meta.onCellClick === 'function') {
+	      meta.onCellClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
 	    }
 	  },
 	  onCellContextMenu: function onCellContextMenu() {
@@ -6239,17 +6281,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      meta.onCellContextMenu({ rowIdx: this.props.rowIdx, idx: this.props.idx });
 	    }
 	  },
-	  onCellDoubleClick: function onCellDoubleClick() {
+	  onCellDoubleClick: function onCellDoubleClick(e) {
 	    var meta = this.props.cellMetaData;
-	    if (meta != null && typeof meta.onCellDoubleClick === 'function') {
-	      meta.onCellDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx });
+	    if (meta != null && meta.onCellDoubleClick && typeof meta.onCellDoubleClick === 'function') {
+	      meta.onCellDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
 	    }
 	  },
 	  onDragHandleDoubleClick: function onDragHandleDoubleClick(e) {
 	    e.stopPropagation();
 	    var meta = this.props.cellMetaData;
 	    if (meta != null && typeof (meta.onDragHandleDoubleClick != null) === 'function') {
-	      meta.onDragHandleDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData() });
+	      meta.onDragHandleDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e: e });
 	    }
 	  },
 
@@ -6451,6 +6493,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	  canEdit: function canEdit() {
 	    return this.props.column.editor != null || this.props.column.editable;
 	  },
+	  createColumEventCallBack: function createColumEventCallBack(onColumnEvent, info) {
+	    return function (e) {
+	      onColumnEvent(e, info);
+	    };
+	  },
+	  createCellEventCallBack: function createCellEventCallBack(gridEvent, columnEvent) {
+	    return function (e) {
+	      gridEvent(e);
+	      columnEvent(e);
+	    };
+	  },
+	  createEventDTO: function createEventDTO(gridEvents, columnEvents, onColumnEvent) {
+	    var allEvents = Object.assign({}, gridEvents);
+
+	    for (var eventKey in columnEvents) {
+	      if (columnEvents.hasOwnProperty(eventKey)) {
+	        var event = columnEvents[event];
+	        var eventInfo = { rowIdx: this.props.rowIdx, idx: this.props.idx, name: eventKey };
+	        var eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
+
+	        if (allEvents.hasOwnProperty(eventKey)) {
+	          var currentEvent = allEvents[eventKey];
+	          allEvents[eventKey] = this.createCellEventCallBack(currentEvent, eventCallback);
+	        } else {
+	          allEvents[eventKey] = eventCallback;
+	        }
+	      }
+	    }
+
+	    return allEvents;
+	  },
+	  getEvents: function getEvents() {
+	    var columnEvents = this.props.column ? Object.assign({}, this.props.column.events) : undefined;
+	    var onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
+	    var gridEvents = {
+	      onClick: this.onCellClick,
+	      onDoubleClick: this.onCellDoubleClick,
+	      onDragOver: this.onDragOver
+	    };
+
+	    if (!columnEvents || !onColumnEvent) {
+	      return gridEvents;
+	    }
+
+	    return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
+	  },
 	  renderCellContent: function renderCellContent(props) {
 	    var CellContent = void 0;
 	    var Formatter = this.getFormatter();
@@ -6488,10 +6576,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      { className: 'drag-handle', draggable: 'true', onDoubleClick: this.onDragHandleDoubleClick },
 	      React.createElement('span', { style: { display: 'none' } })
 	    ) : null;
-
+	    var events = this.getEvents();
 	    return React.createElement(
 	      'div',
-	      _extends({}, this.props, { className: className, style: style, onClick: this.onCellClick, onContextMenu: this.onCellContextMenu, onDoubleClick: this.onCellDoubleClick, onDragOver: this.onDragOver }),
+	      _extends({}, this.props, { className: className, style: style, onContextMenu: this.onCellContextMenu }, events),
 	      cellContent,
 	      dragHandle
 	    );
