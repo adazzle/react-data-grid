@@ -318,8 +318,8 @@ const Cell = React.createClass({
     return (this.props.column.editor != null) || this.props.column.editable;
   },
 
-  createEventCallBack(e, onColumnEvent, info) {
-    return () => {
+  createEventCallBack(onColumnEvent, info) {
+    return (e) => {
       onColumnEvent(e, info);
     };
   },
@@ -331,7 +331,7 @@ const Cell = React.createClass({
       if (columnEvents.hasOwnProperty(eventKey)) {
         let event = columnEvents[event];
         let eventInfo = {rowIdx: this.props.rowIdx, idx: this.props.idx, name: eventKey};
-        let eventCallback = this.createEventCallBack(e, onColumnEvent, eventInfo);
+        let eventCallback = this.createEventCallBack(onColumnEvent, eventInfo);
 
         if (allEvents.hasOwnProperty(eventKey)) {
           let currentEvent = allEvents[eventKey];
