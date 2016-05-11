@@ -77,14 +77,21 @@ const Cell = React.createClass({
 
   onCellClick(e) {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellClick != null) {
+    if (meta != null && meta.onCellClick && typeof(meta.onCellClick) === 'function') {
       meta.onCellClick({rowIdx: this.props.rowIdx, idx: this.props.idx}, e);
+    }
+  },
+
+  onCellContextMenu() {
+    let meta = this.props.cellMetaData;
+    if (meta != null && typeof(meta.onCellContextMenu) === 'function') {
+      meta.onCellContextMenu({rowIdx: this.props.rowIdx, idx: this.props.idx});
     }
   },
 
   onCellDoubleClick(e) {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick != null) {
+    if (meta != null && meta.onCellDoubleClick && typeof(meta.onCellDoubleClick) === 'function') {
       meta.onCellDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx}, e);
     }
   },
@@ -92,8 +99,8 @@ const Cell = React.createClass({
   onDragHandleDoubleClick(e) {
     e.stopPropagation();
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick != null) {
-      meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData()});
+    if (meta != null && typeof(meta.onDragHandleDoubleClick != null) === 'function') {
+      meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e});
     }
   },
 
@@ -140,7 +147,7 @@ const Cell = React.createClass({
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
-      selected: this.isSelected() && !this.isActive(),
+      selected: this.isSelected() && !this.isActive() && this.isCellSelectEnabled(),
       editing: this.isActive(),
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'active-drag-cell': this.isSelected() || this.isDraggedOver(),
@@ -157,7 +164,7 @@ const Cell = React.createClass({
 
   isColumnSelected() {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
 
     return (
       meta.selected
@@ -167,7 +174,7 @@ const Cell = React.createClass({
 
   isSelected: function(): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
 
     return (
       meta.selected
@@ -178,19 +185,25 @@ const Cell = React.createClass({
 
   isActive(): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
     return this.isSelected() && meta.selected.active === true;
   },
 
   isCellSelectionChanging(nextProps: {idx: number; cellMetaData: {selected: {idx: number}}}): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
     let nextSelected = nextProps.cellMetaData.selected;
     if (meta.selected && nextSelected) {
       return this.props.idx === nextSelected.idx || this.props.idx === meta.selected.idx;
     }
 
     return true;
+  },
+
+  isCellSelectEnabled() {
+    let meta = this.props.cellMetaData;
+    if (meta == null) { return false; }
+    return meta.enableCellSelect;
   },
 
   applyUpdateClass() {
@@ -394,7 +407,7 @@ const Cell = React.createClass({
     let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
     let events = this.getEvents();
     return (
-      <div {...this.props} className={className} style={style} {...events}>
+      <div {...this.props} className={className} style={style} onContextMenu={this.onCellContextMenu} {...events}>
       {cellContent}
       {dragHandle}
       </div>

@@ -66,7 +66,8 @@ const ReactDataGrid = React.createClass({
     onRowSelect: React.PropTypes.func,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
-    onClearFilters: React.PropTypes.func
+    onClearFilters: React.PropTypes.func,
+    contextMenu: React.PropTypes.element
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -97,19 +98,10 @@ const ReactDataGrid = React.createClass({
     return previouslySelected.rowIdx !== selected.rowIdx || previouslySelected.idx !== selected.idx || previouslySelected.active === false;
   },
 
-  onSelect: function(selected: SelectedType) {
-    if (!this.props.enableCellSelect) {
-      return;
-    }
-
-    if (this.hasSelectedCellChanged(selected)) {
-      let idx = selected.idx;
-      let rowIdx = selected.rowIdx;
-
-      if (idx >= 0 && rowIdx >= 0 && idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && rowIdx < this.props.rowsCount) {
-        this.setState({selected: selected});
-      }
-    }
+  onContextMenuHide: function() {
+    document.removeEventListener('click', this.onContextMenuHide);
+    let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
+    this.setState({selected: newSelected});
   },
 
   onColumnEvent: function(ev :SyntheticEvent, columnEvent: ColumnEvent) {
@@ -130,8 +122,32 @@ const ReactDataGrid = React.createClass({
     }
   },
 
+  onSelect: function(selected: SelectedType) {
+    if (this.state.selected.rowIdx !== selected.rowIdx
+      || this.state.selected.idx !== selected.idx
+      || this.state.selected.active === false) {
+      let idx = selected.idx;
+      let rowIdx = selected.rowIdx;
+      if (
+          idx >= 0
+          && rowIdx >= 0
+          && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
+          && rowIdx < this.props.rowsCount
+        ) {
+        this.setState({selected: selected});
+      }
+    }
+  },
+
   onCellClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+  },
+
+  onCellContextMenu: function(cell: SelectedType) {
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx, contextMenuDisplayed: this.props.contextMenu});
+    if (this.props.contextMenu) {
+      document.addEventListener('click', this.onContextMenuHide);
+    }
   },
 
   onCellDoubleClick: function(cell: SelectedType) {
@@ -558,6 +574,7 @@ const ReactDataGrid = React.createClass({
       selected: this.state.selected,
       dragged: this.state.dragged,
       onCellClick: this.onCellClick,
+      onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onCommit: this.onCellCommit,
       onCommitCancel: this.setInactive,
@@ -565,6 +582,7 @@ const ReactDataGrid = React.createClass({
       handleDragEnterRow: this.handleDragEnter,
       handleTerminateDrag: this.handleTerminateDrag,
       onDragHandleDoubleClick: this.onDragHandleDoubleClick,
+      enableCellSelect: this.props.enableCellSelect,
       onColumnEvent: this.onColumnEvent
     };
 
@@ -609,7 +627,8 @@ const ReactDataGrid = React.createClass({
             onViewportDragEnd={this.handleDragEnd}
             onViewportDoubleClick={this.onViewportDoubleClick}
             onColumnResize={this.onColumnResize}
-            rowScrollTimeout={this.props.rowScrollTimeout}/>
+            rowScrollTimeout={this.props.rowScrollTimeout}
+            contextMenu={this.props.contextMenu} />
           </div>
         </div>
       );

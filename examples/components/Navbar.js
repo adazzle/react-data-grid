@@ -1,6 +1,9 @@
-module.exports = React.createClass({
-  render : function(){
-    return(
+import React, {PropTypes} from 'react';
+import ExampleList from './ExampleList';
+
+class Navbar extends React.Component {
+  render() {
+    return (
       <div className="navbar navbar-fixed-top headroom" >
         <div className="container">
           <div className="navbar-header">
@@ -21,35 +24,19 @@ module.exports = React.createClass({
               </li>
 
               <li className="dropdown">
-                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
-                  <ul className="dropdown-menu">
-                    <li><a href="examples.html#/basic">Basic Use</a></li>
-                    <li><a href="examples.html#/resizable">Resizable Grid</a></li>
-                    <li><a href="examples.html#/fixed">Frozen Columns</a></li>
-                    <li><a href="examples.html#/single-row-select">Single Row Selection</a></li>
-                    <li><a href="examples.html#/multi-row-select">Multiple Row Selection</a></li>
-                    <li><a href="examples.html#/editable">Editable Grid</a></li>
-                    <li><a href="examples.html#/formatters">Custom Formatters</a></li>
-                    <li><a href="examples.html#/editors">Rich Cell Editors</a></li>
-                    <li>
-                      <a href="examples.html#/cell-drag">Cell drag down/Fill Column</a>
-                    </li>
-                    <li><a href="examples.html#/sortable">Sortable Grid</a></li>
-                    <li><a href="examples.html#/filterable">Filterable Grid</a></li>
-                    <li><a href="examples.html#/filterable-sortable">Filterable Sortable Grid</a></li>
-                    <li><a href="examples.html#/million-rows">One Million Rows</a></li>
-                    <li><a href="examples.html#/immutable-data">Immutable Data Grid</a></li>
-                    <li><a href="examples.html#/all-the-features">All-The-Features Grid</a></li>
-                    <li><a href="examples.html#/custom-row-renderer">Custom Row Render</a></li>
-                    <li><a href="examples.html#/custom-row-renderer">Empty Rows</a></li>
-                    <li>
-                      <a href="examples.html#/all-features-immutable">All-The-Features with Immutable Data</a>
-                    </li>
-                    </ul>
-                </li>
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>  
+                <ExampleList links={this.props.exampleLinks} className="dropdown-menu" />
+              </li>
             </ul>
           </div>
         </div>
-    </div>)
+      </div>
+    );
   }
-})
+}
+
+Navbar.propTypes = {
+  exampleLinks: PropTypes.array.isRequired
+};
+
+export default Navbar;

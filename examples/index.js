@@ -1,7 +1,8 @@
-var React = require('react')
-var ReactDom = require('react-dom')
+import React from 'react';
+import ReactDom from 'react-dom';
+import ExampleList from './components/ExampleList';
+import ExampleScripts from './scripts';
 
 window.React = React;
 
-var ReactDataGrid = require('./scripts/example14-all-features-immutable');
-ReactDom.render(<ReactDataGrid/>, document.getElementById('excel-example'));
+ReactDom.render(<ExampleList links={ExampleScripts} className="nav bs-docs-sidenav" />, document.getElementById('grid-examples-div'));
