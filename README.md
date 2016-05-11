@@ -40,6 +40,7 @@ Features
 - [Context Menu] (http://adazzle.github.io/react-data-grid/examples.html#/context-menu)
 - Copy and Paste values into other cells
 - [Multiple cell updates using cell dragdown] (http://adazzle.github.io/react-data-grid/examples.html#/cell-drag-down)
+- [Association of events of individual columns] (http://adazzle.github.io/react-data-grid/examples.html#/column-events)
 
 
 Check out the `examples` directory to see how simple previously complex UI
