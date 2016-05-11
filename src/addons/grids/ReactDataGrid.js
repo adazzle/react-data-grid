@@ -406,13 +406,14 @@ const ReactDataGrid = React.createClass({
   },
 
   getHeaderRows(): Array<{ref: string; height: number;}> {
-    let rows = [{ ref: 'row', height: this.props.headerRowHeight || this.props.rowHeight }];
+    let rows = [{ ref: 'row', height: this.props.headerRowHeight || this.props.rowHeight, rowType: 'header' }];
     if (this.state.canFilter === true) {
       rows.push({
         ref: 'filterRow',
         filterable: true,
         onFilterChange: this.props.onAddFilter,
-        height: 45
+        height: 45,
+        rowType: 'filter'
       });
     }
     return rows;

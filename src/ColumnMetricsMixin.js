@@ -24,7 +24,8 @@ module.exports = {
   propTypes: {
     columns: PropTypes.arrayOf(Column),
     minColumnWidth: PropTypes.number,
-    columnEquality: PropTypes.func
+    columnEquality: PropTypes.func,
+    onColumnResize: PropTypes.func
   },
 
   DOMMetrics: {
@@ -110,5 +111,8 @@ module.exports = {
   onColumnResize(index: number, width: number) {
     let columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
     this.setState({columnMetrics});
+    if (this.props.onColumnResize) {
+      this.props.onColumnResize(index, width);
+    }
   }
 };
