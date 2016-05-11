@@ -87,10 +87,17 @@ const ReactDataGrid = React.createClass({
     return initialState;
   },
 
+  onContextMenuHide: function() {
+    document.removeEventListener('click', this.onContextMenuHide);
+    let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
+    this.setState({selected: newSelected});
+  },
+
   onSelect: function(selected: SelectedType) {
     if (this.state.selected.rowIdx !== selected.rowIdx
       || this.state.selected.idx !== selected.idx
-      || this.state.selected.active === false) {
+      || this.state.selected.active === false
+      || selected.contextMenuDisplayed) {
       let idx = selected.idx;
       let rowIdx = selected.rowIdx;
       if (
@@ -109,7 +116,10 @@ const ReactDataGrid = React.createClass({
   },
 
   onCellContextMenu: function(cell: SelectedType) {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx, contextMenuDisplayed: this.props.contextMenu});
+    if (this.props.contextMenu) {
+      document.addEventListener('click', this.onContextMenuHide);
+    }
   },
 
   onCellDoubleClick: function(cell: SelectedType) {
