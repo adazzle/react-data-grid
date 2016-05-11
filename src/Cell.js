@@ -7,16 +7,6 @@ const isFunction        = require('./addons/utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./addons/formatters/SimpleCellFormatter');
 
-const CLICK_EVENT_DEFAULT_TYPE = 'click';
-const DOUBLE_CLICK_EVENT_DEFAULT_TYPE = 'dblclick';
-const DRAG_OVER_EVENT_DEFAULT_TYPE = 'dragover';
-
-const EVENT_FRIENDLY_NAMES = {
-  [CLICK_EVENT_DEFAULT_TYPE]: 'Click',
-  [DOUBLE_CLICK_EVENT_DEFAULT_TYPE]: 'DoubleClick',
-  [DRAG_OVER_EVENT_DEFAULT_TYPE]: 'DragOver'
-};
-
 const Cell = React.createClass({
 
   propTypes: {
@@ -107,7 +97,7 @@ const Cell = React.createClass({
     }
   },
 
-  onCellDragOver: function(e) {
+  onDragOver: function(e) {
     e.preventDefault();
   },
 
@@ -328,32 +318,50 @@ const Cell = React.createClass({
     return (this.props.column.editor != null) || this.props.column.editable;
   },
 
-  columnEventDispatcher(e) {
-    let eventName = EVENT_FRIENDLY_NAMES[e.type];
-
-    if (!eventName) {
-      return;
-    }
-
-    let eventHandler = 'onCell' + eventName;
-    let eventNativeHandlerName = 'on' + eventName;
-
-    this.handleCellEvent(e, eventHandler, eventNativeHandlerName);
+  createEventCallBack(e, onColumnEvent, info) {
+    return () => {
+      onColumnEvent(e, info);
+    };
   },
 
-  handleCellEvent(e, eventHandler, name) {
-    if (!this[eventHandler] || typeof this[eventHandler] !== 'function') {
-      return;
+  createEventDTO(gridEvents, columnEvents, onColumnEvent) {
+    let allEvents = Object.assign({}, gridEvents);
+
+    for (let eventKey in columnEvents) {
+      if (columnEvents.hasOwnProperty(eventKey)) {
+        let event = columnEvents[event];
+        let eventInfo = {rowIdx: this.props.rowIdx, idx: this.props.idx, name: eventKey};
+        let eventCallback = this.createEventCallBack(e, onColumnEvent, eventInfo);
+
+        if (allEvents.hasOwnProperty(eventKey)) {
+          let currentEvent = allEvents[eventKey];
+          allEvents[eventKey] = (e) => {
+            currentEvent(e);
+            eventCallback(e);
+          };
+        } else {
+          allEvents[eventKey] = eventCallback;
+        }
+      }
     }
 
-    let cellInfo = {rowIdx: this.props.rowIdx, idx: this.props.idx};
-    this[eventHandler](e, cellInfo);
+    return allEvents;
+  },
 
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onColumnEvent) {
-      let eventInfo = Object.assign(cellInfo, {name});
-      meta.onColumnEvent(e, eventInfo);
+  getEvents() {
+    let columnEvents = this.props.column ? Object.assign({}, this.props.column.events) : undefined;
+    let onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
+    let gridEvents = {
+      onClick: this.onCellClick,
+      onDoubleClick: this.onCellDoubleClick,
+      onDragOver: this.onDragOver
+    };
+
+    if (!columnEvents || !onColumnEvent) {
+      return gridEvents;
     }
+
+    return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
   },
 
   renderCellContent(props: any): ReactElement {
@@ -384,9 +392,9 @@ const Cell = React.createClass({
     });
 
     let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
-
+    let events = this.getEvents();
     return (
-      <div {...this.props} className={className} style={style} onClick={this.columnEventDispatcher} onDoubleClick={this.columnEventDispatcher} onDragOver={this.columnEventDispatcher}>
+      <div {...this.props} className={className} style={style} {...events}>
       {cellContent}
       {dragHandle}
       </div>
