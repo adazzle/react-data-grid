@@ -20,7 +20,7 @@ describe('Grid', function() {
 
   beforeEach(function() {
     this.columns = [
-      { key: 'id', name: 'ID', width: 100 },
+      { key: 'id', name: 'ID', width: 100, events: { onClick: () => {}} },
       { key: 'title', name: 'Title', width: 100 },
       { key: 'count', name: 'Count', width: 100 },
       { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}, onDragOver: () => {}}}
@@ -99,9 +99,10 @@ describe('Grid', function() {
   });
 
   it('should be initialized with correct state', function() {
+    let events = [this.columns[0].events, this.columns[1].events, this.columns[2].events, this.columns[3].events];
     expect(this.component.state).toEqual(mockStateObject({
       selectedRows: this._selectedRows
-    }, this.columns[3].events));
+    }, events));
   });
 
   describe('if passed in as props to grid', function() {
@@ -626,6 +627,16 @@ describe('Grid', function() {
       it('should call the event when there is one with the correct args', function() {
         this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
         expect(columnWithEvent.events.onClick.mostRecentCall.args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
+      });
+
+      it('events should work for the first column', function() {
+        const firstColumnIdx = 0;
+        let firstColumn = this.component.state.columnMetrics.columns[firstColumnIdx];
+        let firstColumnEvents = this.testProps.columns[firstColumnIdx].events;
+        spyOn(firstColumnEvents, 'onClick');
+        this.getCellMetaData().onColumnEvent({}, {idx: firstColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+
+        expect(firstColumn.events.onClick).toHaveBeenCalled();
       });
     });
   });

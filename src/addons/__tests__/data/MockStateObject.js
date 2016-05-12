@@ -5,7 +5,8 @@ module.exports = function(stateValues, events) {
         key: 'id',
         name: 'ID',
         width: 100,
-        left: 0
+        left: 0,
+        events: events[0]
       }, {
         key: 'title',
         name: 'Title',
@@ -21,7 +22,7 @@ module.exports = function(stateValues, events) {
         name: 'Country',
         width: 100,
         left: 300,
-        events: events
+        events: events[3]
       }],
       width: 400,
       totalWidth: 0,
