@@ -583,7 +583,8 @@ const ReactDataGrid = React.createClass({
       handleTerminateDrag: this.handleTerminateDrag,
       onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       enableCellSelect: this.props.enableCellSelect,
-      onColumnEvent: this.onColumnEvent
+      onColumnEvent: this.onColumnEvent,
+      openCellEditor: this.openCellEditor
     };
 
     let toolbar = this.renderToolbar();
