@@ -107,7 +107,7 @@ const ReactDataGrid = React.createClass({
   onColumnEvent: function(ev :SyntheticEvent, columnEvent: ColumnEvent) {
     let {idx, name} = columnEvent;
 
-    if (name && idx) {
+    if (name && typeof idx !== 'undefined') {
       let column = this.getColumn(idx);
 
       if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
@@ -583,7 +583,8 @@ const ReactDataGrid = React.createClass({
       handleTerminateDrag: this.handleTerminateDrag,
       onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       enableCellSelect: this.props.enableCellSelect,
-      onColumnEvent: this.onColumnEvent
+      onColumnEvent: this.onColumnEvent,
+      openCellEditor: this.openCellEditor
     };
 
     let toolbar = this.renderToolbar();
