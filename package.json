@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "0.14.34",
+  "version": "0.14.35",
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
