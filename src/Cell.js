@@ -328,6 +328,9 @@ const Cell = React.createClass({
   },
 
   canEdit() {
+    if (this.props.column != null && typeof(this.props.column) === 'function') {
+      return this.props.column(this.props.rowData);
+    }
     return (this.props.column.editor != null) || this.props.column.editable;
   },
 
