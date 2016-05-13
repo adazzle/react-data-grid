@@ -163,7 +163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var name = columnEvent.name;
 
 
-	    if (name && idx) {
+	    if (name && typeof idx !== 'undefined') {
 	      var column = this.getColumn(idx);
 
 	      if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
@@ -625,7 +625,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      handleTerminateDrag: this.handleTerminateDrag,
 	      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
 	      enableCellSelect: this.props.enableCellSelect,
-	      onColumnEvent: this.onColumnEvent
+	      onColumnEvent: this.onColumnEvent,
+	      openCellEditor: this.openCellEditor
 	    };
 
 	    var toolbar = this.renderToolbar();
@@ -1356,7 +1357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    headerCellRenderer: PropTypes.func,
 	    filterable: PropTypes.bool,
 	    onFilterChange: PropTypes.func,
-	    resizing: PropTypes.func,
+	    resizing: PropTypes.object,
 	    onScroll: PropTypes.func,
 	    rowType: PropTypes.string
 	  },
