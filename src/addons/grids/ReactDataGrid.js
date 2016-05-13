@@ -67,7 +67,8 @@ const ReactDataGrid = React.createClass({
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
     onClearFilters: React.PropTypes.func,
-    contextMenu: React.PropTypes.element
+    contextMenu: React.PropTypes.element,
+    enableCellSelectionLoop: React.PropTypes.bool
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -78,7 +79,8 @@ const ReactDataGrid = React.createClass({
       enableRowSelect: false,
       minHeight: 350,
       rowKey: 'id',
-      rowScrollTimeout: 0
+      rowScrollTimeout: 0,
+      enableCellSelectionLoop: false
     };
   },
 
@@ -480,9 +482,27 @@ const ReactDataGrid = React.createClass({
     // we need to prevent default as we control grid scroll
     // otherwise it moves every time you left/right which is janky
     e.preventDefault();
-    let rowIdx = this.state.selected.rowIdx + rowDelta;
+    let rowIdx = this.state.selected.rowIdx;
     let idx = this.state.selected.idx + cellDelta;
-    this.onSelect({idx: idx, rowIdx: rowIdx});
+    const {enableCellSelectionLoop} = this.props;
+    if (cellDelta > 0){
+        if (this.state.selected.idx === this.props.columns.length - 1 && this.state.selected.rowIdx < this.props.rowsCount -1) {
+          if (!enableCellSelectionLoop) {
+            rowDelta = rowDelta + 1;
+          }
+          idx = 0;
+        }
+    } else if (cellDelta < 0){
+        if (this.state.selected.idx === 0 && this.state.selected.rowIdx > 0) {
+          if (!enableCellSelectionLoop) {
+            rowDelta = rowDelta - 1;
+          }
+          idx = 0;
+            idx = this.props.columns.length - 1;
+        }
+    }
+    rowIdx = rowIdx + rowDelta;
+    this.onSelect({ idx: idx, rowIdx: rowIdx });
   },
 
   openCellEditor(rowIdx, idx) {

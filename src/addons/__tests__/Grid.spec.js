@@ -230,7 +230,58 @@ describe('Grid', function() {
       });
     });
   });
-
+  
+  describe('Cell Navigation', function() {
+    describe('when cell selection looping is disabled', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({enableCellSelectionLoop: false, enableCellSelect: true});
+      });
+      
+      describe('when on last cell', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should move to first cell in next row', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 2 });
+        });
+      });
+      describe('when on first cell', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 2 } });
+        });
+        it('selection should move to last cell in previous row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+    });
+    describe('when cell selection looping is enabled', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({enableCellSelectionLoop: true, enableCellSelect: true});
+      });
+      
+      describe('when on last cell with selection looping', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should move to first cell in same row', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
+        });
+      });
+      describe('when on first cell with selection looping', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 2 } });
+        });
+        it('selection should move to last cell in same row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 2 });
+        });
+      });
+    });
+  });
+  
   describe('User Interaction', function() {
     it('hitting TAB should decrement selected cell index by 1', function() {
       this.simulateGridKeyDown('Tab');
