@@ -34,7 +34,7 @@ const HeaderRow = React.createClass({
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
     onFilterChange: PropTypes.func,
-    resizing: PropTypes.func,
+    resizing: PropTypes.object,
     onScroll: PropTypes.func,
     rowType: PropTypes.string
   },
