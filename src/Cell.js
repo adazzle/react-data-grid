@@ -94,8 +94,7 @@ const Cell = React.createClass({
     e.stopPropagation();
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellExpand != null) {
-      let expanded = !this.props.expandableOptions.expanded;
-      meta.onCellExpand({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expanded: expanded});
+      meta.onCellExpand({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expandArgs: this.props.expandableOptions});
     }
   },
 
@@ -340,11 +339,13 @@ const Cell = React.createClass({
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
     let cellExpander;
+    let marginLeft = this.props.expandableOptions ? (this.props.expandableOptions.treeDepth * 30) : 0;
+    let marginLeftCell = this.props.expandableOptions ? (this.props.expandableOptions.treeDepth * 10) : 0;
     if (this.props.expandableOptions && this.props.expandableOptions.canExpand) {
-      cellExpander = (<span style={{float: 'left'}} onClick={this.onCellExpand}>{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>);
+      cellExpander = (<span style={{float: 'left', marginLeft: marginLeft}} onClick={this.onCellExpand}>{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>);
     }
     return (<div  ref="cell"
-      className="react-grid-Cell__value">{cellExpander}<span style={{float: 'left'}}>{CellContent}</span> {this.props.cellControls} </div>);
+      className="react-grid-Cell__value">{cellExpander}<span style={{float: 'left', marginLeft: marginLeftCell}}>{CellContent}</span> {this.props.cellControls} </div>);
   },
 
   render() {

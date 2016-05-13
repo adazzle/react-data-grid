@@ -147,24 +147,46 @@ const Canvas = React.createClass({
     }
   },
 
+  addSubRows(rowsInput, row, i, displayEnd, treeDepth) {
+    let subRowDetails = this.props.getSubRowDetails(row) || {};
+    let rows = rowsInput;
+    let increment = i;
+    if (increment < displayEnd) {
+      subRowDetails.treeDepth = treeDepth;
+      rows.push({row, subRowDetails});
+      increment++;
+    }
+    if (subRowDetails && subRowDetails.expanded) {
+      let subRows = this.getSubRows(row);
+      subRows.forEach(sr => {
+        let result = this.addSubRows(rows, sr.row, increment, displayEnd, treeDepth + 1);
+        rows = result.rows;
+        increment = result.increment;
+      });
+    }
+    return {rows, increment};
+  },
+
   getRows(displayStart: number, displayEnd: number): Array<any> {
     this._currentRowsRange = {start: displayStart, end: displayEnd};
     if (Array.isArray(this.props.rowGetter)) {
       return this.props.rowGetter.slice(displayStart, displayEnd);
     }
-
     let rows = [];
-    for (let i = displayStart; i < displayEnd; i++) {
-      let row = this.props.rowGetter(i);
+    let rowFetchIndex = displayStart;
+    let i = displayStart;
+    while (i < displayEnd) {
+      let row = this.props.rowGetter(rowFetchIndex);
       if (this.props.getSubRowDetails) {
-        let subRowDetails = this.props.getSubRowDetails(row, i);
-        rows.push({row: this.props.rowGetter(i), subRowDetails: subRowDetails});
-        if (subRowDetails.expanded) {
-          rows = rows.concat(this.getSubRows(row));
-        }
+        let treeDepth = 0;
+        let result = this.addSubRows(rows, row, i, displayEnd, treeDepth);
+        rows = result.rows;
+        i = result.increment;
       } else {
-        rows.push({row: this.props.rowGetter(i)});
+        rows.push({row: row});
+        i++;
       }
+      rowFetchIndex++;
     }
     return rows;
   },
