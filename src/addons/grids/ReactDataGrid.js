@@ -13,6 +13,7 @@ const ColumnUtils = require('../../ColumnUtils');
 if (!Object.assign) {
   Object.assign = require('object-assign');
 }
+
 type SelectedType = {
   rowIdx: number;
   idx: number;
@@ -67,7 +68,27 @@ const ReactDataGrid = React.createClass({
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
     onClearFilters: React.PropTypes.func,
-    contextMenu: React.PropTypes.element
+    contextMenu: React.PropTypes.element,
+    rowSelection: React.PropTypes.shape({
+      showCheckbox: React.PropTypes.bool,
+      multiSelect: React.PropTypes.bool, // enables shift select, ctrl + click,
+      onRowsSelected: React.PropTypes.func,
+      onRowsDeselected: React.PropTypes.func,
+      selectBy: React.PropTypes.oneOfType([
+        React.PropTypes.shape({
+          indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+        }),
+        React.PropTypes.shape({
+          isSelectedKey: React.PropTypes.string.isRequired
+        }),
+        React.PropTypes.shape({
+          keys: React.PropTypes.shape({
+            values: React.PropTypes.array.isRequired,
+            rowKey: React.PropTypes.string.isRequired
+          }).isRequired
+        })
+      ]).isRequired
+    })
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -399,17 +420,30 @@ const ReactDataGrid = React.createClass({
   // but needed to match the function signature in the CheckboxEditor
   handleRowSelect(rowIdx: number, columnKey: string, rowData, e: Event) {
     e.stopPropagation();
-    let selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
-    let selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
-    if (selectedRow) {
-      selectedRow.isSelected = !selectedRow.isSelected;
-    } else {
-      rowData.isSelected = true;
-      selectedRows.push(rowData);
-    }
-    this.setState({selectedRows: selectedRows, selected: {rowIdx: rowIdx, idx: 0}});
-    if (this.props.onRowSelect) {
-      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
+    
+    // New rowSelection handlers
+    if (this.props.rowSelection && this.props.rowSelection.selectBy) { 
+      let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
+      let isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
+      
+      if (isPreviouslySelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
+        this.props.rowSelection.onRowsDeselected([{rowIdx, row: rowData}]);
+      } else if (!isPreviouslySelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
+        this.props.rowSelection.onRowsSelected([{rowIdx, row: rowData}]);
+      }
+    } else { // Fallback to old onRowSelect handler
+      let selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
+      let selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
+      if (selectedRow) {
+        selectedRow.isSelected = !selectedRow.isSelected;
+      } else {
+        rowData.isSelected = true;
+        selectedRows.push(rowData);
+      }
+      this.setState({selectedRows: selectedRows, selected: {rowIdx: rowIdx, idx: 0}});
+      if (this.props.onRowSelect) {
+        this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
+      }
     }
   },
 
@@ -459,7 +493,6 @@ const ReactDataGrid = React.createClass({
     }
     return rows;
   },
-
   getInitialSelectedRows: function() {
     let selectedRows = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
@@ -467,7 +500,20 @@ const ReactDataGrid = React.createClass({
     }
     return selectedRows;
   },
-
+  getRowSelectionProps() {
+    if(this.props.rowSelection) {
+      return this.props.rowSelection.selectBy;
+    }
+    
+    return null;
+  },
+  getSelectedRows() {
+    if(this.props.rowSelection) {
+      return null;
+    }
+      
+    return this.state.selectedRows.filter(r => r.isSelected === true);
+  },
   getSelectedValue(): string {
     let rowIdx = this.state.selected.rowIdx;
     let idx = this.state.selected.idx;
@@ -614,7 +660,8 @@ const ReactDataGrid = React.createClass({
             rowsCount={this.props.rowsCount}
             rowHeight={this.props.rowHeight}
             cellMetaData={cellMetaData}
-            selectedRows={this.state.selectedRows.filter(r => r.isSelected === true)}
+            selectedRows={this.getSelectedRows()}
+            rowSelection={this.getRowSelectionProps()}
             expandedRows={this.state.expandedRows}
             rowOffsetHeight={this.getRowOffsetHeight()}
             sortColumn={this.state.sortColumn}

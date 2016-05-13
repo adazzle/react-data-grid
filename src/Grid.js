@@ -96,6 +96,7 @@ const Grid = React.createClass({
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
                   contextMenu={this.props.contextMenu}
+                  rowSelection={this.props.rowSelection}
                 />
             </div>
         :

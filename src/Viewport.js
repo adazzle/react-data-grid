@@ -81,6 +81,7 @@ const Viewport = React.createClass({
           onRows={this.props.onRows}
           rowScrollTimeout={this.props.rowScrollTimeout}
           contextMenu={this.props.contextMenu}
+          rowSelection={this.props.rowSelection}
           />
       </div>
     );
