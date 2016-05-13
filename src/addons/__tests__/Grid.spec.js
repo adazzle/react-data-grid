@@ -230,13 +230,13 @@ describe('Grid', function() {
       });
     });
   });
-  
+
   describe('Cell Navigation', function() {
     describe('when cell selection looping is disabled', function() {
       beforeEach(function() {
         this.component = this.createComponent({enableCellSelectionLoop: false, enableCellSelect: true});
       });
-      
+
       describe('when on last cell', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
@@ -256,11 +256,12 @@ describe('Grid', function() {
         });
       });
     });
+
     describe('when cell selection looping is enabled', function() {
       beforeEach(function() {
         this.component = this.createComponent({enableCellSelectionLoop: true, enableCellSelect: true});
       });
-      
+
       describe('when on last cell with selection looping', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
@@ -281,7 +282,7 @@ describe('Grid', function() {
       });
     });
   });
-  
+
   describe('User Interaction', function() {
     it('hitting TAB should decrement selected cell index by 1', function() {
       this.simulateGridKeyDown('Tab');

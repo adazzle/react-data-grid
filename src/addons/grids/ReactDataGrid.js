@@ -484,24 +484,24 @@ const ReactDataGrid = React.createClass({
     e.preventDefault();
     let rowIdx = this.state.selected.rowIdx;
     let idx = this.state.selected.idx + cellDelta;
-    const {enableCellSelectionLoop} = this.props;
-    if (cellDelta > 0){
-        if (this.state.selected.idx === this.props.columns.length - 1 && this.state.selected.rowIdx < this.props.rowsCount -1) {
-          if (!enableCellSelectionLoop) {
-            rowDelta = rowDelta + 1;
-          }
-          idx = 0;
+    let _rowDelta = rowDelta;
+    const { enableCellSelectionLoop } = this.props;
+    if (cellDelta > 0) {
+      if (this.state.selected.idx === this.props.columns.length - 1 && this.state.selected.rowIdx < this.props.rowsCount - 1) {
+        if (!enableCellSelectionLoop) {
+          _rowDelta = rowDelta + 1;
         }
-    } else if (cellDelta < 0){
-        if (this.state.selected.idx === 0 && this.state.selected.rowIdx > 0) {
-          if (!enableCellSelectionLoop) {
-            rowDelta = rowDelta - 1;
-          }
-          idx = 0;
-            idx = this.props.columns.length - 1;
+        idx = 0;
+      }
+    } else if (cellDelta < 0) {
+      if (this.state.selected.idx === 0 && this.state.selected.rowIdx > 0) {
+        if (!enableCellSelectionLoop) {
+          _rowDelta = rowDelta - 1;
         }
+        idx = this.props.columns.length - 1;
+      }
     }
-    rowIdx = rowIdx + rowDelta;
+    rowIdx = rowIdx + _rowDelta;
     this.onSelect({ idx: idx, rowIdx: rowIdx });
   },
 
