@@ -1,4 +1,5 @@
-
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 const React                 = require('react');
 const ReactDOM = require('react-dom');
 const BaseGrid              = require('../../Grid');
@@ -69,7 +70,7 @@ const ReactDataGrid = React.createClass({
     rowScrollTimeout: React.PropTypes.number,
     contextMenu: React.PropTypes.element,
     onClearFilters: React.PropTypes.func,
-    onCellExpand: React.PropTypes.onCellExpand,
+    onCellExpand: React.PropTypes.func,
     enableDragAndDrop: React.PropTypes.bool
   },
 
@@ -485,11 +486,6 @@ const ReactDataGrid = React.createClass({
     return RowUtils.get(row, cellKey);
   },
 
-  getBaseGrid() {
-    let {enableDragAndDrop} = this.props;
-    return enableDragAndDrop ? DragDropContext(HTML5Backend)(BaseGrid) : BaseGrid;
-  },
-
   moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number) {
     // we need to prevent default as we control grid scroll
     // otherwise it moves every time you left/right which is janky
@@ -579,7 +575,7 @@ const ReactDataGrid = React.createClass({
   renderToolbar(): ReactElement {
     let Toolbar = this.props.toolbar;
     if (React.isValidElement(Toolbar)) {
-      return ( React.cloneElement(Toolbar, {onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
+      return ( React.cloneElement(Toolbar, {columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
     }
   },
 
@@ -615,12 +611,12 @@ const ReactDataGrid = React.createClass({
     if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
-    let Grid = BaseGrid;
+
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}>
         {toolbar}
         <div className="react-grid-Main">
-          <Grid
+          <BaseGrid
             ref="base"
             {...this.props}
             rowKey={this.props.rowKey}
@@ -652,4 +648,4 @@ const ReactDataGrid = React.createClass({
 });
 
 
-module.exports = ReactDataGrid;
+module.exports = DragDropContext(HTML5Backend)(ReactDataGrid);

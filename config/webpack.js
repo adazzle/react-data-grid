@@ -44,6 +44,7 @@ var config = {
       
     ]
   },
+  plugins: [new webpack.DefinePlugin({'global': 'window'})],    
   postLoaders: [
   {
     test: /\.js$/,

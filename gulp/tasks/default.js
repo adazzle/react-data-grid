@@ -1,5 +1,5 @@
 var gulp = require('gulp');
 
-gulp.task('default', ['clean', 'buildTest', 'eslint'], function() {
+gulp.task('default', ['clean', 'eslint'], function() {
   gulp.start('watch');
 });

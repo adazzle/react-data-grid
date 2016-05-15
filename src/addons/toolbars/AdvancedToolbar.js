@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
-import GroupedColumnsPanel from './GroupedColumnsPanel';
+import React, {PropTypes, Component} from 'react';
 
 const propTypes = {
-
+  children: PropTypes.array
 };
 
 const defaultProps = {
@@ -13,7 +12,7 @@ class AdvancedToolbar extends Component {
   render() {
     return (
       <div className="react-grid-Toolbar">
-        <GroupedColumnsPanel/>
+        {this.props.children}
         <div className="tools">
 
         </div>

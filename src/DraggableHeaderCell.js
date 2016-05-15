@@ -12,25 +12,31 @@ class DraggableHeaderCell extends Component {
   }
 
   render() {
-    const { connectDragSource} = this.props;
-    return connectDragSource(<HeaderCell {...this.props}/>);
+    const { connectDragSource, connectDragPreview} = this.props;
+    connectDragPreview(<span>dsfdsfds</span>);
+    return connectDragSource(<div style={{cursor: 'move'}}><HeaderCell {...this.props}/></div>);
   }
 }
 
 DraggableHeaderCell.propTypes = {
-  connectDragSource: PropTypes.func
+  connectDragSource: PropTypes.func,
+  connectDragPreview: PropTypes.func
 };
 
 function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
+    connectDragPreview: connect.dragPreview()
   };
 }
 
 const headerCellSource = {
-  beginDrag() {
-    return {};
+  beginDrag(props) {
+    return props.column;
+  },
+  endDrag(props) {
+    return props.column;
   }
 };
 

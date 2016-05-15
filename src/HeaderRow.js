@@ -111,7 +111,7 @@ const HeaderRow = React.createClass({
       if (column.key === 'select-row' && this.props.rowType === 'filter') {
         _renderer = <div></div>;
       }
-      let HeaderCell = column.isDraggable ? DraggableHeaderCell : BaseHeaderCell;
+      let HeaderCell = column.draggable ? DraggableHeaderCell : BaseHeaderCell;
       let cell = (
         <HeaderCell
           ref={i}

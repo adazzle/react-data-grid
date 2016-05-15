@@ -5,7 +5,7 @@ var faker = require('faker');
 var AllFeaturesExample = `
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.ToolsPanel.AdvancedToolbar;
-
+  var GroupedColumnsPanel = ReactDataGrid.ToolsPanel.GroupedColumnsPanel;
   faker.locale = 'en_GB';
 
   function createFakeRowObjectData(/*number*/ index) {
@@ -36,7 +36,6 @@ var AllFeaturesExample = `
     return rows;
   }
 
-  
   var columns = [
     {
       key: 'id',
@@ -125,12 +124,19 @@ var AllFeaturesExample = `
     }
   ];
 
+ var CustomToolbar = React.createClass({
+   render() {
+     return (<Toolbar>
+       <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded}/>
+       </Toolbar>);
+   }
+ });
 
  var Example = React.createClass({displayName: 'component',
 
     getInitialState : function(){
       var fakeRows = createRows(2000);
-      return {rows :fakeRows};
+      return {rows :fakeRows, groupBy: ['county']};
     },
 
     getRowAt : function(index){
@@ -144,15 +150,24 @@ var AllFeaturesExample = `
       return this.state.rows.length;
     },
 
+   onColumnGroupAdded: function(colName) {
+      let columnGroups = this.state.groupBy.slice(0);
+      if(columnGroups.indexOf(colName) === -1) {
+        columnGroups.push(colName);
+      }
+      this.setState({groupBy: columnGroups});
+    },
+
     render : function() {
       return (
             <ReactDataGrid
               ref='grid'
               enableCellSelect={true}
-              columns={this.getColumns()}
+              enableDragAndDrop={true}
+              columns={columns}
               rowGetter={this.getRowAt}
               rowsCount={this.getSize()}
-              toolbar={<Toolbar />}
+              toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded}/>}
               rowHeight={50}
               minHeight={600}
               />
