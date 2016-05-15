@@ -1,15 +1,19 @@
 import React, {Component} from 'react';
-
+import { DropTarget } from 'react-dnd';
+import {DragItemTypes} from '../../Constants';
 const propTypes = {
-
+  isOver: PropTypes.bool.isRequired,
+  connectDropTarget: PropTypes.func
 };
 
 const defaultProps = {
+
 };
 
 class GroupedColumnsPanel extends Component {
   render() {
-    return (
+    const { connectDropTarget} = this.props;
+    return connectDropTarget(
         <div>Drag columns here to enable grouping</div>);
   }
 }
@@ -17,4 +21,17 @@ class GroupedColumnsPanel extends Component {
 GroupedColumnsPanel.defaultProps = defaultProps;
 GroupedColumnsPanel.propTypes = propTypes;
 
-export default GroupedColumnsPanel;
+const columnTarget = {
+  drop(props) {
+    console.log(props);
+  }
+};
+
+function collect(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  };
+}
+
+export default DropTarget(DragItemTypes.Column, columnTarget, collect)(GroupedColumnsPanel);

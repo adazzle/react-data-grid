@@ -1,5 +1,3 @@
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 const React                = require('react');
 const PropTypes            = React.PropTypes;
 const Header               = require('./Header');
@@ -35,8 +33,7 @@ const Grid = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
-    contextMenu: PropTypes.element
-    rowScrollTimeout: PropTypes.number
+    contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func
   },
 
@@ -113,4 +110,4 @@ const Grid = React.createClass({
   }
 });
 
-module.exports = DragDropContext(HTML5Backend)(Grid);
+module.exports = Grid;

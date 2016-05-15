@@ -1,3 +1,5 @@
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 const React                 = require('react');
 const ReactDOM = require('react-dom');
 const BaseGrid              = require('../../Grid');
@@ -66,10 +68,10 @@ const ReactDataGrid = React.createClass({
     onRowSelect: React.PropTypes.func,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
+    contextMenu: React.PropTypes.element,
     onClearFilters: React.PropTypes.func,
-    contextMenu: React.PropTypes.element
-    onClearFilters: React.PropTypes.func
-    onCellExpand: React.PropTypes.onCellExpand
+    onCellExpand: React.PropTypes.onCellExpand,
+    enableDragAndDrop: React.PropTypes.bool
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -484,6 +486,11 @@ const ReactDataGrid = React.createClass({
     return RowUtils.get(row, cellKey);
   },
 
+  getBaseGrid() {
+    let {enableDragAndDrop} = this.props;
+    return enableDragAndDrop ? DragDropContext(HTML5Backend)(BaseGrid) : BaseGrid;
+  },
+
   moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number) {
     // we need to prevent default as we control grid scroll
     // otherwise it moves every time you left/right which is janky
@@ -577,7 +584,7 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  render: function(): ?ReactElement {
+  render() {
     let cellMetaData = {
       selected: this.state.selected,
       dragged: this.state.dragged,
@@ -589,11 +596,10 @@ const ReactDataGrid = React.createClass({
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
       handleTerminateDrag: this.handleTerminateDrag,
-      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       enableCellSelect: this.props.enableCellSelect,
       onColumnEvent: this.onColumnEvent,
-      openCellEditor: this.openCellEditor
-      onDragHandleDoubleClick: this.onDragHandleDoubleClick
+      openCellEditor: this.openCellEditor,
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       onCellExpand: this.onCellExpand
     };
 
@@ -610,12 +616,12 @@ const ReactDataGrid = React.createClass({
     if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
-
+    let Grid = this.getBaseGrid();
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}>
         {toolbar}
         <div className="react-grid-Main">
-          <BaseGrid
+          <Grid
             ref="base"
             {...this.props}
             rowKey={this.props.rowKey}

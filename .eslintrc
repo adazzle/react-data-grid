@@ -151,7 +151,7 @@
     "new-cap": [2, {                 // http://eslint.org/docs/rules/new-cap
       "newIsCap": true,
       newIsCapExceptions : ['moment'],
-      capIsNewExceptions : ['ContextMenuLayer']
+      capIsNewExceptions : ['ContextMenuLayer', 'DragSource', 'DropTarget', 'DragDropContext']
     }],
     "no-multiple-empty-lines": [2, { // http://eslint.org/docs/rules/no-multiple-empty-lines
       "max": 2

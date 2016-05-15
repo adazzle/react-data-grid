@@ -23,8 +23,7 @@ const Viewport = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
-    contextMenu: PropTypes.element
-    rowScrollTimeout: PropTypes.number
+    contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func
   },
 

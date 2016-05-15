@@ -1,6 +1,7 @@
+import DraggableHeaderCell from './DraggableHeaderCell';
 const React             = require('react');
 const shallowEqual    = require('fbjs/lib/shallowEqual');
-const HeaderCell        = require('./HeaderCell');
+const BaseHeaderCell        = require('./HeaderCell');
 const getScrollbarSize  = require('./getScrollbarSize');
 const ExcelColumn  = require('./addons/grids/ExcelColumn');
 const ColumnUtilsMixin  = require('./ColumnUtils');
@@ -110,6 +111,7 @@ const HeaderRow = React.createClass({
       if (column.key === 'select-row' && this.props.rowType === 'filter') {
         _renderer = <div></div>;
       }
+      let HeaderCell = column.isDraggable ? DraggableHeaderCell : BaseHeaderCell;
       let cell = (
         <HeaderCell
           ref={i}

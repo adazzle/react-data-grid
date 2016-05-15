@@ -34,8 +34,7 @@ const Canvas = React.createClass({
     selectedRows: PropTypes.array,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
-    contextMenu: PropTypes.element
-    rowScrollTimeout: React.PropTypes.number
+    contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func
   },
 
