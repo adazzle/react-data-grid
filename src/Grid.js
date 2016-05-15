@@ -1,3 +1,5 @@
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 const React                = require('react');
 const PropTypes            = React.PropTypes;
 const Header               = require('./Header');
@@ -111,4 +113,4 @@ const Grid = React.createClass({
   }
 });
 
-module.exports = Grid;
+module.exports = DragDropContext(HTML5Backend)(Grid);
