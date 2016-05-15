@@ -346,17 +346,20 @@ const Cell = React.createClass({
     return (this.props.column.editor != null) || this.props.column.editable;
   },
 
+<<<<<<< HEAD
   canExpand() {
     return this.props.expandableOptions && this.props.expandableOptions.canExpand;
   },
 
- createColumEventCallBack(onColumnEvent, info) {
+  renderCellContent(props) {
+=======
+  createColumEventCallBack(onColumnEvent, info) {
     return (e) => {
       onColumnEvent(e, info);
     };
   },
 
-   createCellEventCallBack(gridEvent, columnEvent) {
+  createCellEventCallBack(gridEvent, columnEvent) {
     return (e) => {
       gridEvent(e);
       columnEvent(e);
@@ -400,8 +403,9 @@ const Cell = React.createClass({
     return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
   },
 
-  renderCellContent(props: any): ReactElement {    let CellContent;
-    let CellContent;    
+  renderCellContent(props: any): ReactElement {
+>>>>>>> master
+    let CellContent;
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
       props.dependentValues = this.getFormatterDependencies();
@@ -436,7 +440,11 @@ const Cell = React.createClass({
     let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
     let events = this.getEvents();
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver}>
+<<<<<<< HEAD
+      <div {...this.props} className={className} style={style} onKeyDown={this.onCellKeyDown} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver}>
+=======
+      <div {...this.props} className={className} style={style} onContextMenu={this.onCellContextMenu} {...events}>
+>>>>>>> master
       {cellContent}
       {dragHandle}
       </div>

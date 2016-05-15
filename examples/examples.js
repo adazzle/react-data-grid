@@ -19,7 +19,7 @@ class App extends React.Component {
 
 let allRoutes = ExampleScripts.map(e => {
   let routeHandler = e.module;
-  return <Route name={e.hashLocation} handler={routeHandler} />;
+  return <Route key={e.hashLocation} name={e.hashLocation} handler={routeHandler} />;
 });
 
 let routes = (

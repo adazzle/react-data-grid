@@ -33,9 +33,11 @@ const Grid = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
-    contextMenu: PropTypes.element
-    rowScrollTimeout: PropTypes.number
+<<<<<<< HEAD
     getSubRowDetails: PropTypes.func
+=======
+    contextMenu: PropTypes.element
+>>>>>>> master
   },
 
   mixins: [
@@ -97,8 +99,11 @@ const Grid = React.createClass({
                   rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
-                  contextMenu={this.props.contextMenu}
+<<<<<<< HEAD
                   getSubRowDetails={this.props.getSubRowDetails}
+=======
+                  contextMenu={this.props.contextMenu}
+>>>>>>> master
                 />
             </div>
         :

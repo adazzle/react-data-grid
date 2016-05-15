@@ -99,7 +99,8 @@
   background: rgba(0, 0, 255, 0.2) !important;
   -webkit-transition: 0.5s background;
 }
-.react-grid-Row:hover .react-grid-Cell {
+.react-grid-Row:hover .react-grid-Cell,
+.react-grid-Row.row-context-menu .react-grid-Cell {
   background-color: #f2f2f2;
 }
 
