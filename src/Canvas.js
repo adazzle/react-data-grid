@@ -7,6 +7,7 @@ const Row             = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
+import RowGroup from './RowGroup';
 
 const Canvas = React.createClass({
   mixins: [ScrollShim],
@@ -230,6 +231,10 @@ const Canvas = React.createClass({
   },
 
   renderRow(props: any) {
+    let row = props.row;
+    if (row.__metaData && row.__metaData.isGroup) {
+      return <RowGroup name={row.name} {...row.__metaData}/>;
+    }
     if (this.state.scrollingTimeout !== null) {
       // in the midst of a rapid scroll, so we render placeholders
       // the actual render is then queued (through a timeout)
