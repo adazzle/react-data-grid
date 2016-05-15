@@ -5,6 +5,7 @@ var faker = require('faker');
 var AllFeaturesExample = `
   var Editors             = ReactDataGrid.Editors;
   var Toolbar             = ReactDataGrid.ToolsPanel.AdvancedToolbar;
+  var DataView = ReactDataGrid.DataView;
   var GroupedColumnsPanel = ReactDataGrid.ToolsPanel.GroupedColumnsPanel;
   faker.locale = 'en_GB';
 
@@ -136,18 +137,16 @@ var AllFeaturesExample = `
 
     getInitialState : function(){
       var fakeRows = createRows(2000);
-      return {rows :fakeRows, groupBy: ['county']};
+      return {rows: fakeRows, groupBy: ['county']};
     },
 
     getRowAt : function(index){
-      if (index < 0 || index > this.getSize()){
-        return undefined;
-      }
-      return this.state.rows[index];
+      var rows = DataView.getRows(this.state.rows, {groupBy: this.state.groupBy});
+      return rows[index];
     },
 
     getSize : function() {
-      return this.state.rows.length;
+      return DataView.getSize(this.state.rows, {groupBy: this.state.groupBy});
     },
 
    onColumnGroupAdded: function(colName) {
