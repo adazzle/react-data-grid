@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PropTypes, Component} from 'react';
 import { DropTarget } from 'react-dnd';
 import {DragItemTypes} from '../../Constants';
 const propTypes = {

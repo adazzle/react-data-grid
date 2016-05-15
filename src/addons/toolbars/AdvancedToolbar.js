@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import GroupedColumnsPanel from 'GroupedColumnsPanel';
+import GroupedColumnsPanel from './GroupedColumnsPanel';
 
 const propTypes = {
 

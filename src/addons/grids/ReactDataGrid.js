@@ -1,5 +1,4 @@
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+
 const React                 = require('react');
 const ReactDOM = require('react-dom');
 const BaseGrid              = require('../../Grid');
@@ -616,7 +615,7 @@ const ReactDataGrid = React.createClass({
     if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
-    let Grid = this.getBaseGrid();
+    let Grid = BaseGrid;
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}>
         {toolbar}
