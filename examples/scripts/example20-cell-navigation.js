@@ -78,8 +78,7 @@ ReactDOM.render(<ReactDataGrid
   rowGetter={rowGetter}
   rowsCount={_rows.length}
   minHeight={500}
-  enableCellSelect={true}
-  enableCellSelectionLoop={false} />, mountNode);
+  enableCellSelect={true}/>, mountNode);
 `;
 
 module.exports = React.createClass({
@@ -87,9 +86,10 @@ module.exports = React.createClass({
   render:function(){
     return(
       <div>
-        <h3>Column Navigation Example</h3>
-        <p>By setting enableCellSelectionLoop={true}, you enable looping round the same row when navigation goes beyond the first/last cells.</p>
-        <p>The default behavior is to jump to the next/previous row.</p>
+        <h3>Column Navigation Modes Example</h3>
+        <p>By setting <code>cellNavigationMode = 'loopOverRow'</code>, you enable looping round the same row when navigation goes beyond the first/last cells.</p>
+        <p>Setting <code>cellNavigationMode = 'changeRow'</code>, would make the selection jump to the next/previous row.</p>
+        <p>The default behavior is to do nothing.</p>
         <ReactPlayground codeText={NavigationExample} />
       </div>
     )

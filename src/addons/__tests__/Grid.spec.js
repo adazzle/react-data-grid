@@ -232,12 +232,37 @@ describe('Grid', function() {
   });
 
   describe('Cell Navigation', function() {
-    describe('when cell selection looping is disabled', function() {
+    describe('when cell navigation is configured to default, none', function() {
       beforeEach(function() {
-        this.component = this.createComponent({enableCellSelectionLoop: false, enableCellSelect: true});
+        this.component = this.createComponent({enableCellSelect: true});
       });
 
-      describe('when on last cell', function() {
+      describe('when on last cell in a row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should stay on cell', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+      describe('when on first cell in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 1 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
+        });
+      });
+    });
+
+    describe('when cell navigation is configured to change rows', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({cellNavigationMode: 'changeRow', enableCellSelect: true});
+      });
+
+      describe('when on last cell in a row that\'s not the last', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
         });
@@ -246,7 +271,16 @@ describe('Grid', function() {
           expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 2 });
         });
       });
-      describe('when on first cell', function() {
+      describe('when on last cell in last row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 999 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 999 });
+        });
+      });
+      describe('when on first cell in a row that\'s not the first', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 0, rowIdx: 2 } });
         });
@@ -255,14 +289,23 @@ describe('Grid', function() {
           expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
         });
       });
+      describe('when on first cell in the first row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 0 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+        });
+      });
     });
 
-    describe('when cell selection looping is enabled', function() {
+    describe('when cell navigation is configured to loop over cells in row', function() {
       beforeEach(function() {
-        this.component = this.createComponent({enableCellSelectionLoop: true, enableCellSelect: true});
+        this.component = this.createComponent({cellNavigationMode: 'loopOverRow', enableCellSelect: true});
       });
 
-      describe('when on last cell with selection looping', function() {
+      describe('when on last cell, looping enabled', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
         });
@@ -271,13 +314,31 @@ describe('Grid', function() {
           expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
         });
       });
-      describe('when on first cell with selection looping', function() {
+      describe('when on last cell in last row with looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 999 } });
+        });
+        it('selection should move to first cell in same row', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 999 });
+        });
+      });
+      describe('when on first cell with looping enabled', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 0, rowIdx: 2 } });
         });
         it('selection should move to last cell in same row', function() {
           this.simulateGridKeyDown('ArrowLeft');
           expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 2 });
+        });
+      });
+      describe('when on first cell in first row with looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 0 } });
+        });
+        it('selection should move to last cell in same row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 0 });
         });
       });
     });
