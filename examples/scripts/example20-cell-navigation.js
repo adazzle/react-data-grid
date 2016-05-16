@@ -78,7 +78,8 @@ ReactDOM.render(<ReactDataGrid
   rowGetter={rowGetter}
   rowsCount={_rows.length}
   minHeight={500}
-  enableCellSelect={true}/>, mountNode);
+  enableCellSelect={true}
+  cellNavigationMode="changeRow" />, mountNode);
 `;
 
 module.exports = React.createClass({
