@@ -84,7 +84,7 @@ const Cell = React.createClass({
 
   onCellContextMenu() {
     let meta = this.props.cellMetaData;
-    if (meta != null && typeof(meta.onCellContextMenu) === 'function') {
+    if (meta != null && meta.onCellContextMenu && typeof(meta.onCellContextMenu) === 'function') {
       meta.onCellContextMenu({rowIdx: this.props.rowIdx, idx: this.props.idx});
     }
   },
@@ -99,7 +99,7 @@ const Cell = React.createClass({
   onDragHandleDoubleClick(e) {
     e.stopPropagation();
     let meta = this.props.cellMetaData;
-    if (meta != null && typeof(meta.onDragHandleDoubleClick != null) === 'function') {
+    if (meta != null && meta.onDragHandleDoubleClick && typeof(meta.onDragHandleDoubleClick) === 'function') {
       meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e});
     }
   },
