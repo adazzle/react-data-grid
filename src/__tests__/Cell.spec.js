@@ -131,6 +131,31 @@ describe('Cell Tests', () => {
       it('should have a onDragOver event associated', () => {
         expect(cellEvents.hasOwnProperty('onDragOver')).toBe(true);
       });
+
+      describe('Cell Metadata', () => {
+        describe('When Action is defined on CellMetaData', () => {
+          it('should call metaData onCellClick when it is defined', () => {
+            // Arrange
+            testCellMetaData.onCellClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            // Act
+            cellInstance.onCellClick();
+
+            // Assert
+            expect(testCellMetaData.onCellClick).toHaveBeenCalled();
+          });
+
+          it('should call metaData onDragHandleDoubleClick when it is defined', () => {
+            testCellMetaData.onDragHandleDoubleClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onDragHandleDoubleClick(new Event('click'));
+
+            expect(testCellMetaData.onDragHandleDoubleClick).toHaveBeenCalled();
+          });
+        });
+      });
     });
 
     describe('Column events', () => {
