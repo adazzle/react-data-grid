@@ -327,6 +327,10 @@ const Cell = React.createClass({
     }
   },
 
+  // CHECK -- This code is pretty much duplicated in React-Data-Grid.js.
+  // Seems this canEdit function was created by when carrying out the work on 'implement column fill with example' by Conor
+  // Logic extented to allow for functions to be passed down in column.editable
+  // this allows us to deicde whether we can be edting from a cell level
   canEdit() {
     if (this.props.column.editable != null && typeof(this.props.column.editable) === 'function') {
       return this.props.column.editable(this.props.rowData);

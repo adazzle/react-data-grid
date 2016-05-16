@@ -517,9 +517,14 @@ const ReactDataGrid = React.createClass({
       this.setState({selected: selected});
     }
   },
-
+    
+  // Logic extented to allow for functions to be passed down in column.editable
+  // this allows us to deicde whether we can be edting from a cell level
   canEdit(idx: number): boolean {
     let col = this.getColumn(idx);
+    if (col.editable != null && typeof(col.editable) === 'function') {
+      return this.props.enableCellSelect === true && col.editable(this.props.rowGetter(this.state.selected.rowIdx));
+    }
     return this.props.enableCellSelect === true && ((col.editor != null) || col.editable);
   },
 
