@@ -99,7 +99,7 @@ const Cell = React.createClass({
   onDragHandleDoubleClick(e) {
     e.stopPropagation();
     let meta = this.props.cellMetaData;
-    if (meta != null && typeof(meta.onDragHandleDoubleClick != null) === 'function') {
+    if (meta != null && typeof(meta.onDragHandleDoubleClick) === 'function') {
       meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e});
     }
   },
