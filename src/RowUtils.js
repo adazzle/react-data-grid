@@ -14,6 +14,7 @@ let RowUtils = {
     } else if (isSelectedKey && rowData && typeof isSelectedKey === 'string') {
       return rowData[isSelectedKey];
     }
+    return false;
   }
 };
 

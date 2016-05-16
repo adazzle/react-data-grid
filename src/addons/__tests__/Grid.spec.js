@@ -148,7 +148,7 @@ describe('Grid', function() {
 
   describe('When row selection enabled', function() {
     beforeEach(function() {
-      this.component = this.createComponent({ enableRowSelect: true });
+      this.component = this.createComponent({ enableRowSelect: true});
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -227,6 +227,45 @@ describe('Grid', function() {
       it('should be able to unselect an individual row ', function() {
         expect(this.component.state.selectedRows[3].isSelected).toBe(false);
       });
+    });
+  });
+
+  describe('When selection enabled and using rowSelection props', function() {
+    beforeEach(function() {
+      let self = this;
+      this._selectedRows = [];
+      this._deselectedRows = [];
+      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
+      let columns = [{name: 'Id', key: 'id'}];
+      let rowGetter = function(i) {
+        return self.rows[i];
+      };
+      this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {isSelectedKey: 'isSelected'},
+        onRowsSelected: function(selectedRows) {
+          self._selectedRows = selectedRows;
+        },
+        onRowsDeselected: function(deselectedRows) {
+          self._deselectedRows = deselectedRows;
+        }
+      }});
+      this.baseGrid = this.getBaseGrid();
+      this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+    });
+
+    it('should call rowSelection.onRowsSelected when row selected', function() {
+      let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+
+      selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+
+      expect(this._selectedRows.length).toBe(1);
+    });
+
+    it('should call rowSelection.onRowsDeselected when row de-selected', function() {
+      let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+
+      selectRowCol.onCellChange(0, '',  this.rows[0], this.buildFakeEvent());
+
+      expect(this._deselectedRows.length).toBe(1);
     });
   });
 

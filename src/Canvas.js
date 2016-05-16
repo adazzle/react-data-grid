@@ -181,7 +181,7 @@ const Canvas = React.createClass({
   },
 
   isRowSelected(idx, row, displayStart, displayEnd): boolean {
-    
+
     // Use selectedRows if set
     if (this.props.selectedRows !== null) {
       let selectedRows = this.props.selectedRows.filter(r => {
@@ -190,13 +190,13 @@ const Canvas = React.createClass({
       });
       return selectedRows.length > 0 && selectedRows[0].isSelected;
     }
-   
+
     // Else use new rowSelection props
     if (this.props.rowSelection) {
       let {keys, indexes, isSelectedKey} = this.props.rowSelection;
       return RowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
     }
-    
+
     return false;
   },
 
