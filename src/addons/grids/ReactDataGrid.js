@@ -67,7 +67,8 @@ const ReactDataGrid = React.createClass({
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
     onClearFilters: React.PropTypes.func,
-    contextMenu: React.PropTypes.element
+    contextMenu: React.PropTypes.element,
+    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow'])
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -78,7 +79,8 @@ const ReactDataGrid = React.createClass({
       enableRowSelect: false,
       minHeight: 350,
       rowKey: 'id',
-      rowScrollTimeout: 0
+      rowScrollTimeout: 0,
+      cellNavigationMode: 'none'
     };
   },
 
@@ -480,9 +482,58 @@ const ReactDataGrid = React.createClass({
     // we need to prevent default as we control grid scroll
     // otherwise it moves every time you left/right which is janky
     e.preventDefault();
-    let rowIdx = this.state.selected.rowIdx + rowDelta;
+    let rowIdx;
+    let idx;
+    const { cellNavigationMode } = this.props;
+    if (cellNavigationMode !== 'none') {
+      ({idx, rowIdx} = this.calculateNextSelectionPosition(cellNavigationMode, cellDelta, rowDelta));
+    } else {
+      rowIdx = this.state.selected.rowIdx + rowDelta;
+      idx = this.state.selected.idx + cellDelta;
+    }
+    this.onSelect({ idx: idx, rowIdx: rowIdx });
+  },
+
+  calculateNextSelectionPosition(cellNavigationMode: string, cellDelta: number, rowDelta: number) {
+    let _rowDelta = rowDelta;
     let idx = this.state.selected.idx + cellDelta;
-    this.onSelect({idx: idx, rowIdx: rowIdx});
+    if (cellDelta > 0) {
+      if (this.isAtLastCellInRow()) {
+        if (cellNavigationMode === 'changeRow') {
+          _rowDelta = this.isAtLastRow() ? rowDelta : rowDelta + 1;
+          idx = this.isAtLastRow() ? idx : 0;
+        } else {
+          idx = 0;
+        }
+      }
+    } else if (cellDelta < 0) {
+      if (this.isAtFirstCellInRow()) {
+        if (cellNavigationMode === 'changeRow') {
+          _rowDelta = this.isAtFirstRow() ? rowDelta : rowDelta - 1;
+          idx = this.isAtFirstRow() ? 0 : this.props.columns.length - 1;
+        } else {
+          idx = this.props.columns.length - 1;
+        }
+      }
+    }
+    let rowIdx = this.state.selected.rowIdx + _rowDelta;
+    return {idx, rowIdx};
+  },
+
+  isAtLastCellInRow() {
+    return this.state.selected.idx === this.props.columns.length - 1;
+  },
+
+  isAtLastRow() {
+    return this.state.selected.rowIdx === this.props.rowsCount - 1;
+  },
+
+  isAtFirstCellInRow() {
+    return this.state.selected.idx === 0;
+  },
+
+  isAtFirstRow() {
+    return this.state.selected.rowIdx === 0;
   },
 
   openCellEditor(rowIdx, idx) {
