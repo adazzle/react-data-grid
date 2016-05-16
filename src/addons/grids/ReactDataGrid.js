@@ -494,7 +494,7 @@ const ReactDataGrid = React.createClass({
     this.onSelect({ idx: idx, rowIdx: rowIdx });
   },
 
-  calculateNextSelectionPosition(cellNavigationMode: any, cellDelta: number, rowDelta: number) {
+  calculateNextSelectionPosition(cellNavigationMode: string, cellDelta: number, rowDelta: number) {
     let _rowDelta = rowDelta;
     let idx = this.state.selected.idx + cellDelta;
     if (cellDelta > 0) {
