@@ -209,8 +209,13 @@ const ReactDataGrid = React.createClass({
       KeyCode_v: 118
     };
 
+    let rowIdx = this.state.selected.rowIdx;
+    let row = this.props.rowGetter(rowIdx);
+
     let idx = this.state.selected.idx;
-    if (this.canEdit(idx)) {
+    let col = this.getColumn(idx);
+
+    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
       if (e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C) {
         let value = this.getSelectedValue();
         this.handleCopy({ value: value });
@@ -486,7 +491,10 @@ const ReactDataGrid = React.createClass({
   },
 
   openCellEditor(rowIdx, idx) {
-    if (!this.canEdit(idx)) {
+    let row = this.props.rowGetter(rowIdx);
+    let col = this.getColumn(idx);
+
+    if (!ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
       return;
     }
 
@@ -502,8 +510,12 @@ const ReactDataGrid = React.createClass({
 
   setActive(keyPressed: string) {
     let rowIdx = this.state.selected.rowIdx;
+    let row = this.props.rowGetter(rowIdx);
+
     let idx = this.state.selected.idx;
-    if (this.canEdit(idx) && !this.isActive()) {
+    let col = this.getColumn(idx);
+
+    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && !this.isActive()) {
       let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
       this.setState({selected: selected});
     }
@@ -511,21 +523,15 @@ const ReactDataGrid = React.createClass({
 
   setInactive() {
     let rowIdx = this.state.selected.rowIdx;
+    let row = this.props.rowGetter(rowIdx);
+
     let idx = this.state.selected.idx;
-    if (this.canEdit(idx) && this.isActive()) {
+    let col = this.getColumn(idx);
+
+    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && this.isActive()) {
       let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
       this.setState({selected: selected});
     }
-  },
-    
-  // Logic extented to allow for functions to be passed down in column.editable
-  // this allows us to deicde whether we can be edting from a cell level
-  canEdit(idx: number): boolean {
-    let col = this.getColumn(idx);
-    if (col.editable != null && typeof(col.editable) === 'function') {
-      return this.props.enableCellSelect === true && col.editable(this.props.rowGetter(this.state.selected.rowIdx));
-    }
-    return this.props.enableCellSelect === true && ((col.editor != null) || col.editable);
   },
 
   isActive(): boolean {
