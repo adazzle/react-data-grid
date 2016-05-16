@@ -119,7 +119,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowKey: React.PropTypes.string,
 	    rowScrollTimeout: React.PropTypes.number,
 	    onClearFilters: React.PropTypes.func,
-	    contextMenu: React.PropTypes.element
+	    contextMenu: React.PropTypes.element,
+	    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow'])
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -130,7 +131,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      enableRowSelect: false,
 	      minHeight: 350,
 	      rowKey: 'id',
-	      rowScrollTimeout: 0
+	      rowScrollTimeout: 0,
+	      cellNavigationMode: 'none'
 	    };
 	  },
 
@@ -518,9 +520,57 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // we need to prevent default as we control grid scroll
 	    // otherwise it moves every time you left/right which is janky
 	    e.preventDefault();
-	    var rowIdx = this.state.selected.rowIdx + rowDelta;
-	    var idx = this.state.selected.idx + cellDelta;
+	    var rowIdx = void 0;
+	    var idx = void 0;
+	    var cellNavigationMode = this.props.cellNavigationMode;
+
+	    if (cellNavigationMode !== 'none') {
+	      var _calculateNextSelecti = this.calculateNextSelectionPosition(cellNavigationMode, cellDelta, rowDelta);
+
+	      idx = _calculateNextSelecti.idx;
+	      rowIdx = _calculateNextSelecti.rowIdx;
+	    } else {
+	      rowIdx = this.state.selected.rowIdx + rowDelta;
+	      idx = this.state.selected.idx + cellDelta;
+	    }
 	    this.onSelect({ idx: idx, rowIdx: rowIdx });
+	  },
+	  calculateNextSelectionPosition: function calculateNextSelectionPosition(cellNavigationMode, cellDelta, rowDelta) {
+	    var _rowDelta = rowDelta;
+	    var idx = this.state.selected.idx + cellDelta;
+	    if (cellDelta > 0) {
+	      if (this.isAtLastCellInRow()) {
+	        if (cellNavigationMode === 'changeRow') {
+	          _rowDelta = this.isAtLastRow() ? rowDelta : rowDelta + 1;
+	          idx = this.isAtLastRow() ? idx : 0;
+	        } else {
+	          idx = 0;
+	        }
+	      }
+	    } else if (cellDelta < 0) {
+	      if (this.isAtFirstCellInRow()) {
+	        if (cellNavigationMode === 'changeRow') {
+	          _rowDelta = this.isAtFirstRow() ? rowDelta : rowDelta - 1;
+	          idx = this.isAtFirstRow() ? 0 : this.props.columns.length - 1;
+	        } else {
+	          idx = this.props.columns.length - 1;
+	        }
+	      }
+	    }
+	    var rowIdx = this.state.selected.rowIdx + _rowDelta;
+	    return { idx: idx, rowIdx: rowIdx };
+	  },
+	  isAtLastCellInRow: function isAtLastCellInRow() {
+	    return this.state.selected.idx === this.props.columns.length - 1;
+	  },
+	  isAtLastRow: function isAtLastRow() {
+	    return this.state.selected.rowIdx === this.props.rowsCount - 1;
+	  },
+	  isAtFirstCellInRow: function isAtFirstCellInRow() {
+	    return this.state.selected.idx === 0;
+	  },
+	  isAtFirstRow: function isAtFirstRow() {
+	    return this.state.selected.rowIdx === 0;
 	  },
 	  openCellEditor: function openCellEditor(rowIdx, idx) {
 	    var _this2 = this;
