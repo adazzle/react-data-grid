@@ -22,6 +22,7 @@ describe('Cell Tests', () => {
     selected: {idx: 2, rowIdx: 3},
     dragged: null,
     onCellClick: function() {},
+    onCellContextMenu: function() {},
     onCellDoubleClick: function() {},
     onCommit: function() {},
     onCommitCancel: function() {},
@@ -150,9 +151,27 @@ describe('Cell Tests', () => {
             testCellMetaData.onDragHandleDoubleClick = jasmine.createSpy();
             let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
 
-            cellInstance.onDragHandleDoubleClick(new Event('click'));
+            cellInstance.onDragHandleDoubleClick(document.createEvent('Event'));
 
             expect(testCellMetaData.onDragHandleDoubleClick).toHaveBeenCalled();
+          });
+
+          it('should call metaData onCellContextMenu if defined', () => {
+            testCellMetaData.onCellContextMenu = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onCellContextMenu();
+
+            expect(testCellMetaData.onCellContextMenu).toHaveBeenCalled();
+          });
+
+          it('should call metaData onCellDoubleClick if defined', () => {
+            testCellMetaData.onCellDoubleClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onCellDoubleClick();
+
+            expect(testCellMetaData.onCellDoubleClick).toHaveBeenCalled();
           });
         });
       });
