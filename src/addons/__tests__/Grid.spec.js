@@ -253,21 +253,93 @@ describe('Grid', function() {
     });
 
     it('should call rowSelection.onRowsSelected when row selected', function() {
-      let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-
-      selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
-
+      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
       expect(this._selectedRows.length).toBe(1);
+      expect(this._selectedRows[0].rowIdx).toBe(1);
+      expect(this._selectedRows[0].row).toBe(this.rows[1]);
     });
 
     it('should call rowSelection.onRowsDeselected when row de-selected', function() {
-      let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-
-      selectRowCol.onCellChange(0, '',  this.rows[0], this.buildFakeEvent());
-
+      this.selectRowCol.onCellChange(0, '',  this.rows[0], this.buildFakeEvent());
       expect(this._deselectedRows.length).toBe(1);
+      expect(this._deselectedRows[0].rowIdx).toBe(0);
+      expect(this._deselectedRows[0].row).toBe(this.rows[0]);
+    });
+
+    describe('checking header checkbox', function() {
+      beforeEach(function() {
+        let self = this;
+        this._selectedRows = [];
+        this._deselectedRows = [];
+        this.rows = [{id: '1'}, {id: '2'}];
+        let columns = [{name: 'Id', key: 'id'}];
+        let rowGetter = function(i) {
+          return self.rows[i];
+        };
+        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: []},
+          onRowsSelected: function(selectedRows) {
+            self._selectedRows = selectedRows;
+          },
+          onRowsDeselected: function(deselectedRows) {
+            self._deselectedRows = deselectedRows;
+          }
+        }});
+
+        this.baseGrid = this.getBaseGrid();
+        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+
+        // header checkbox
+        let checkboxWrapper = document.createElement('div');
+        checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
+        this.checkbox = checkboxWrapper.querySelector('input');
+        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
+        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
+        this.headerCheckbox.props.onChange(this.fakeEvent);
+      });
+
+      it('should call rowSelection.onRowsSelected with all rows', function() {
+        expect(this._selectedRows.length).toBe(2);
+      });
+    });
+
+    describe('un-checking header checkbox', function() {
+      beforeEach(function() {
+        let self = this;
+        this._selectedRows = [];
+        this._deselectedRows = [];
+        this.rows = [{id: '1'}, {id: '2'}];
+        let columns = [{name: 'Id', key: 'id'}];
+        let rowGetter = function(i) {
+          return self.rows[i];
+        };
+        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: [0, 1]},
+          onRowsSelected: function(selectedRows) {
+            self._selectedRows = selectedRows;
+          },
+          onRowsDeselected: function(deselectedRows) {
+            self._deselectedRows = deselectedRows;
+          }
+        }});
+
+        this.baseGrid = this.getBaseGrid();
+        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+
+        // header checkbox
+        let checkboxWrapper = document.createElement('div');
+        checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
+        this.checkbox = checkboxWrapper.querySelector('input');
+        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
+      });
+
+      it('then unchecking should call rowSelection.onRowsDeselected with all rows', function() {
+        this.checkbox.checked = false;
+        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
+        this.headerCheckbox.props.onChange(this.fakeEvent);
+        expect(this._deselectedRows.length).toBe(2);
+      });
     });
   });
+
 
   describe('User Interaction', function() {
     it('hitting TAB should decrement selected cell index by 1', function() {

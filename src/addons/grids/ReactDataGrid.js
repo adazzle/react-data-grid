@@ -420,12 +420,12 @@ const ReactDataGrid = React.createClass({
   // but needed to match the function signature in the CheckboxEditor
   handleRowSelect(rowIdx: number, columnKey: string, rowData, e: Event) {
     e.stopPropagation();
-    
+
     // New rowSelection handlers
-    if (this.props.rowSelection && this.props.rowSelection.selectBy) { 
+    if (this.props.rowSelection && this.props.rowSelection.selectBy) {
       let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
       let isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
-      
+
       if (isPreviouslySelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
         this.props.rowSelection.onRowsDeselected([{rowIdx, row: rowData}]);
       } else if (!isPreviouslySelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
@@ -454,14 +454,45 @@ const ReactDataGrid = React.createClass({
     } else {
       allRowsSelected = false;
     }
-    let selectedRows = [];
-    for (let i = 0; i < this.props.rowsCount; i++) {
-      let row = Object.assign({}, this.props.rowGetter(i), {isSelected: allRowsSelected});
-      selectedRows.push(row);
-    }
-    this.setState({selectedRows: selectedRows});
-    if (typeof this.props.onRowSelect === 'function') {
-      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
+        // New rowSelection handlers
+    if (this.props.rowSelection && this.props.rowSelection.selectBy) {
+      let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
+
+      if (allRowsSelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
+        let selectedRows = [];
+        for (let i = 0; i < this.props.rowsCount; i++) {
+          let rowData = this.props.rowGetter(i);
+          if (!RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
+            selectedRows.push({rowIdx: i, row: rowData});
+          }
+        }
+
+        if (selectedRows.length > 0) {
+          this.props.rowSelection.onRowsSelected(selectedRows);
+        }
+      } else if (!allRowsSelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
+        let deselectedRows = [];
+        for (let i = 0; i < this.props.rowsCount; i++) {
+          let rowData = this.props.rowGetter(i);
+          if (RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
+            deselectedRows.push({rowIdx: i, row: rowData});
+          }
+        }
+
+        if (deselectedRows.length > 0) {
+          this.props.rowSelection.onRowsDeselected(deselectedRows);
+        }
+      }
+    } else {
+      let selectedRows = [];
+      for (let i = 0; i < this.props.rowsCount; i++) {
+        let row = Object.assign({}, this.props.rowGetter(i), {isSelected: allRowsSelected});
+        selectedRows.push(row);
+      }
+      this.setState({selectedRows: selectedRows});
+      if (typeof this.props.onRowSelect === 'function') {
+        this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
+      }
     }
   },
 
@@ -504,14 +535,14 @@ const ReactDataGrid = React.createClass({
     if(this.props.rowSelection) {
       return this.props.rowSelection.selectBy;
     }
-    
+
     return null;
   },
   getSelectedRows() {
     if(this.props.rowSelection) {
       return null;
     }
-      
+
     return this.state.selectedRows.filter(r => r.isSelected === true);
   },
   getSelectedValue(): string {
