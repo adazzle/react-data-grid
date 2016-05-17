@@ -31,6 +31,6 @@ module.exports = {
     if (col.editable != null && typeof(col.editable) === 'function') {
       return enableCellSelect === true && col.editable(rowData);
     }
-    return enableCellSelect === true && ((col.editor != null) || col.editable);
+    return enableCellSelect === true && (!!col.editor || !!col.editable);
   }
 };
