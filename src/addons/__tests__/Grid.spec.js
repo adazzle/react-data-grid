@@ -344,12 +344,12 @@ describe('Grid', function() {
     });
   });
 
- describe('When selection enabled and using rowSelection props', function() {
+  describe('When selection enabled and using rowSelection props', function() {
     beforeEach(function() {
       let self = this;
       this._selectedRows = [];
       this._deselectedRows = [];
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
+      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}, {id: '3', isSelected: false}, {id: '4', isSelected: false}];
       let columns = [{name: 'Id', key: 'id'}];
       let rowGetter = function(i) {
         return self.rows[i];
@@ -379,6 +379,20 @@ describe('Grid', function() {
       expect(this._deselectedRows[0].rowIdx).toBe(0);
       expect(this._deselectedRows[0].row).toBe(this.rows[0]);
     });
+
+
+    it('should set lastRowIdxUiSelected state', function() {
+      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      expect(this.component.state.lastRowIdxUiSelected).toEqual(1);
+    });
+
+
+    it('should set lastRowIdxUiSelected state', function() {
+      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      expect(this.component.state.lastRowIdxUiSelected).toEqual(1);
+    });
+
+
 
     describe('checking header checkbox', function() {
       beforeEach(function() {
@@ -901,6 +915,31 @@ describe('Grid', function() {
       it('should set the width of the table', function() {
         expect(this.tableElement.style.width).toEqual('900px');
       });
+    });
+  });
+
+  describe('onRowClick handler', function() {
+    beforeEach(function() {
+      let self = this;
+      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
+      let columns = [{name: 'Id', key: 'id'}];
+      let rowGetter = function(i) {
+        return self.rows[i];
+      };
+
+      this.rowClicked = {};
+      this.rowClicks = 0;
+
+      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row) {
+        self.rowClicked = row;
+        self.rowClicks++;
+      }});
+    });
+
+    it('calls handler when row (cell) clicked', function() {
+      this.getCellMetaData().onCellClick({ idx: 0, rowIdx: 1 });
+      expect(this.rowClicks).toBe(1);
+      expect(this.rowClicked).toBe(this.rows[1]);
     });
   });
 });

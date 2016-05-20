@@ -40,6 +40,8 @@ module.exports = function(stateValues, events) {
     sortDirection: null,
     sortColumn: null,
     dragged: null,
-    scrollOffset: 0
+    scrollOffset: 0,
+    keysDown: {},
+    lastRowIdxUiSelected: -1
   }, stateValues);
 };
