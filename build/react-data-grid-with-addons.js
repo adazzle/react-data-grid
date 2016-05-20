@@ -299,10 +299,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  onToggleFilter: function onToggleFilter() {
-	    this.setState({ canFilter: !this.state.canFilter });
-	    if (this.state.canFilter === false && this.props.onClearFilters) {
-	      this.props.onClearFilters();
-	    }
+	    var _this = this;
+
+	    // setState() does not immediately mutate this.state but creates a pending state transition.
+	    // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
+	    this.setState({ canFilter: !this.state.canFilter }, function () {
+	      if (_this.state.canFilter === false && _this.props.onClearFilters) {
+	        _this.props.onClearFilters();
+	      }
+	    });
 	  },
 	  onDragHandleDoubleClick: function onDragHandleDoubleClick(e) {
 	    if (this.props.onDragHandleDoubleClick) {
@@ -416,10 +421,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getSelectedRow: function getSelectedRow(rows, key) {
-	    var _this = this;
+	    var _this2 = this;
 
 	    var selectedRow = rows.filter(function (r) {
-	      if (r[_this.props.rowKey] === key) {
+	      if (r[_this2.props.rowKey] === key) {
 	        return true;
 	      }
 	      return false;
@@ -573,7 +578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.state.selected.rowIdx === 0;
 	  },
 	  openCellEditor: function openCellEditor(rowIdx, idx) {
-	    var _this2 = this;
+	    var _this3 = this;
 
 	    if (!this.canEdit(idx)) {
 	      return;
@@ -582,7 +587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var selected = { rowIdx: rowIdx, idx: idx };
 	    if (this.hasSelectedCellChanged(selected)) {
 	      this.setState({ selected: selected }, function () {
-	        _this2.setActive('Enter');
+	        _this3.setActive('Enter');
 	      });
 	    } else {
 	      this.setActive('Enter');
