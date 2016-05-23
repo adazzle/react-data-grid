@@ -140,8 +140,10 @@ const ReactDataGrid = React.createClass({
         ) {
         const oldSelection = this.state.selected;
         this.setState({selected: selected}, () => {
-          if (this.props.onCellSelected) {
+          if (typeof this.props.onCellDeSelected === 'function') {
             this.props.onCellDeSelected(oldSelection);
+          }
+          if (typeof this.props.onCellSelected === 'function') {
             this.props.onCellSelected(selected);
           }
         });
