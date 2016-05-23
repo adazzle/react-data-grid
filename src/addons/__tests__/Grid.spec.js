@@ -343,7 +343,38 @@ describe('Grid', function() {
       });
     });
   });
+  describe('Cell Selection/DeSelection handlers', function() {
+    describe('when cell selection/deselection handlers are passed', function() {
+      beforeEach(function() {
+        const extraProps = { onCellSelected: this.noop, onCellDeSelected: this.noop };
+        spyOn(extraProps, 'onCellSelected');
+        spyOn(extraProps, 'onCellDeSelected');
+        this.component = this.createComponent(extraProps);
+      });
 
+      describe('cell is selected', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { rowIdx: 1, idx: 2 } });
+        });
+        it('deselection handler should have been called', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.props.onCellDeSelected).toHaveBeenCalled();
+          expect(this.component.props.onCellDeSelected.mostRecentCall.args[0]).toEqual({
+            rowIdx: 1,
+            idx: 2
+          });
+        });
+        it('selection handler should have been called', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.props.onCellSelected).toHaveBeenCalled();
+          expect(this.component.props.onCellSelected.mostRecentCall.args[0]).toEqual({
+            rowIdx: 1,
+            idx: 3
+          });
+        });
+      });
+    });
+  });
   describe('User Interaction', function() {
     it('hitting TAB should decrement selected cell index by 1', function() {
       this.simulateGridKeyDown('Tab');
