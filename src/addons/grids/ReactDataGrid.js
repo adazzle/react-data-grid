@@ -68,7 +68,9 @@ const ReactDataGrid = React.createClass({
     rowScrollTimeout: React.PropTypes.number,
     onClearFilters: React.PropTypes.func,
     contextMenu: React.PropTypes.element,
-    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow'])
+    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
+    onCellSelected: React.PropTypes.func,
+    onCellDeSelected: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -136,7 +138,13 @@ const ReactDataGrid = React.createClass({
           && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
           && rowIdx < this.props.rowsCount
         ) {
-        this.setState({selected: selected});
+        const oldSelection = this.state.selected;
+        this.setState({selected: selected}, () => {
+          if (this.props.onCellSelected) {
+            this.props.onCellDeSelected(oldSelection);
+            this.props.onCellSelected(selected);
+          }
+        });
       }
     }
   },
@@ -264,10 +272,13 @@ const ReactDataGrid = React.createClass({
   },
 
   onToggleFilter() {
-    this.setState({ canFilter: !this.state.canFilter });
-    if (this.state.canFilter === false && this.props.onClearFilters) {
-      this.props.onClearFilters();
-    }
+    // setState() does not immediately mutate this.state but creates a pending state transition.
+    // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
+    this.setState({ canFilter: !this.state.canFilter }, () => {
+      if (this.state.canFilter === false && this.props.onClearFilters) {
+        this.props.onClearFilters();
+      }
+    });
   },
 
   onDragHandleDoubleClick(e) {
@@ -409,10 +420,11 @@ const ReactDataGrid = React.createClass({
       rowData.isSelected = true;
       selectedRows.push(rowData);
     }
-    this.setState({selectedRows: selectedRows, selected: {rowIdx: rowIdx, idx: 0}});
-    if (this.props.onRowSelect) {
-      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
-    }
+    this.setState({selectedRows: selectedRows, selected: {rowIdx: rowIdx, idx: 0}}, () => {
+      if (this.props.onRowSelect) {
+        this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
+      }
+    });
   },
 
   handleCheckboxChange: function(e: SyntheticEvent) {
