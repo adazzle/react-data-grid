@@ -82,6 +82,13 @@ describe('Grid', function() {
       this.getBaseGrid().props.onViewportKeydown(fakeEvent);
     };
 
+    this.simulateGridKeyDownWithKeyCode = (keyCode) => {
+      let fakeEvent = this.buildFakeEvent({
+        keyCode: keyCode
+      });
+      this.getBaseGrid().props.onViewportKeydown(fakeEvent);
+    };
+
     let buildProps = (addedProps) => Object.assign({}, this.testProps, addedProps);
     this.createComponent = (addedProps) => {
       return TestUtils.renderIntoDocument(<Grid {...buildProps(addedProps)}/>);
@@ -354,7 +361,7 @@ describe('Grid', function() {
       let rowGetter = function(i) {
         return self.rows[i];
       };
-      this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {isSelectedKey: 'isSelected'},
+      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {enableShiftSelect: true, selectBy: {isSelectedKey: 'isSelected'},
         onRowsSelected: function(selectedRows) {
           self._selectedRows = selectedRows;
         },
@@ -387,11 +394,22 @@ describe('Grid', function() {
     });
 
 
-    it('should set lastRowIdxUiSelected state', function() {
+    it('should select range when shift selecting below selected row', function() {
       this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
-      expect(this.component.state.lastRowIdxUiSelected).toEqual(1);
+      expect(this._selectedRows.length).toEqual(1);
+      this.simulateGridKeyDownWithKeyCode(16);
+      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
+      expect(this._selectedRows.length).toEqual(2);
     });
 
+
+    it('should select range when shift selecting above selected row', function() {
+      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
+      expect(this._selectedRows.length).toEqual(1);
+      this.simulateGridKeyDownWithKeyCode(16);
+      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      expect(this._selectedRows.length).toEqual(2);
+    });
 
 
     describe('checking header checkbox', function() {
