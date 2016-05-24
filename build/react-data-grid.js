@@ -250,8 +250,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      KeyCode_v: 118
 	    };
 
+	    var rowIdx = this.state.selected.rowIdx;
+	    var row = this.props.rowGetter(rowIdx);
+
 	    var idx = this.state.selected.idx;
-	    if (this.canEdit(idx)) {
+	    var col = this.getColumn(idx);
+
+	    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
 	      if (e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C) {
 	        var _value = this.getSelectedValue();
 	        this.handleCopy({ value: _value });
@@ -581,7 +586,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  openCellEditor: function openCellEditor(rowIdx, idx) {
 	    var _this3 = this;
 
-	    if (!this.canEdit(idx)) {
+	    var row = this.props.rowGetter(rowIdx);
+	    var col = this.getColumn(idx);
+
+	    if (!ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
 	      return;
 	    }
 
@@ -596,23 +604,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  setActive: function setActive(keyPressed) {
 	    var rowIdx = this.state.selected.rowIdx;
+	    var row = this.props.rowGetter(rowIdx);
+
 	    var idx = this.state.selected.idx;
-	    if (this.canEdit(idx) && !this.isActive()) {
+	    var col = this.getColumn(idx);
+
+	    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && !this.isActive()) {
 	      var _selected = Object.assign(this.state.selected, { idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed });
 	      this.setState({ selected: _selected });
 	    }
 	  },
 	  setInactive: function setInactive() {
 	    var rowIdx = this.state.selected.rowIdx;
+	    var row = this.props.rowGetter(rowIdx);
+
 	    var idx = this.state.selected.idx;
-	    if (this.canEdit(idx) && this.isActive()) {
+	    var col = this.getColumn(idx);
+
+	    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && this.isActive()) {
 	      var _selected2 = Object.assign(this.state.selected, { idx: idx, rowIdx: rowIdx, active: false });
 	      this.setState({ selected: _selected2 });
 	    }
-	  },
-	  canEdit: function canEdit(idx) {
-	    var col = this.getColumn(idx);
-	    return this.props.enableCellSelect === true && (col.editor != null || col.editable);
 	  },
 	  isActive: function isActive() {
 	    return this.state.selected.active === true;
@@ -1325,6 +1337,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else if (typeof Immutable !== 'undefined') {
 	      return columns.size;
 	    }
+	  },
+
+
+	  // Logic extented to allow for functions to be passed down in column.editable
+	  // this allows us to deicde whether we can be edting from a cell level
+	  canEdit: function canEdit(col, rowData, enableCellSelect) {
+	    if (col.editable != null && typeof col.editable === 'function') {
+	      return enableCellSelect === true && col.editable(rowData);
+	    }
+	    return enableCellSelect === true && (!!col.editor || !!col.editable);
 	  }
 	};
 
@@ -6271,6 +6293,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var isFunction = __webpack_require__(93);
 	var CellMetaDataShape = __webpack_require__(94);
 	var SimpleCellFormatter = __webpack_require__(95);
+	var ColumnUtils = __webpack_require__(10);
 
 	var Cell = React.createClass({
 	  displayName: 'Cell',
@@ -6554,9 +6577,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
-	  canEdit: function canEdit() {
-	    return this.props.column.editor != null || this.props.column.editable;
-	  },
 	  createColumEventCallBack: function createColumEventCallBack(onColumnEvent, info) {
 	    return function (e) {
 	      onColumnEvent(e, info);
@@ -6635,7 +6655,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      isExpanded: this.props.isExpanded
 	    });
 
-	    var dragHandle = !this.isActive() && this.canEdit() ? React.createElement(
+	    var dragHandle = !this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect) ? React.createElement(
 	      'div',
 	      { className: 'drag-handle', draggable: 'true', onDoubleClick: this.onDragHandleDoubleClick },
 	      React.createElement('span', { style: { display: 'none' } })
