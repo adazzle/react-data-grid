@@ -6103,7 +6103,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    isSelected: PropTypes.bool,
 	    idx: PropTypes.number.isRequired,
 	    key: PropTypes.string,
-	    expandedRows: PropTypes.arrayOf(PropTypes.object)
+	    expandedRows: PropTypes.arrayOf(PropTypes.object),
+	    extraClasses: PropTypes.string
 	  },
 
 	  mixins: [ColumnUtilsMixin],
@@ -6125,9 +6126,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  getSelectedColumn: function getSelectedColumn() {
-	    var selected = this.props.cellMetaData.selected;
-	    if (selected && selected.idx) {
-	      return this.getColumn(this.props.columns, selected.idx);
+	    if (this.props.cellMetaData) {
+	      var selected = this.props.cellMetaData.selected;
+	      if (selected && selected.idx) {
+	        return this.getColumn(this.props.columns, selected.idx);
+	      }
 	    }
 	  },
 	  getCells: function getCells() {
@@ -6137,27 +6140,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var lockedCells = [];
 	    var selectedColumn = this.getSelectedColumn();
 
-	    this.props.columns.forEach(function (column, i) {
-	      var CellRenderer = _this.props.cellRenderer;
-	      var cell = React.createElement(CellRenderer, {
-	        ref: i,
-	        key: column.key + '-' + i,
-	        idx: i,
-	        rowIdx: _this.props.idx,
-	        value: _this.getCellValue(column.key || i),
-	        column: column,
-	        height: _this.getRowHeight(),
-	        formatter: column.formatter,
-	        cellMetaData: _this.props.cellMetaData,
-	        rowData: _this.props.row,
-	        selectedColumn: selectedColumn,
-	        isRowSelected: _this.props.isSelected });
-	      if (column.locked) {
-	        lockedCells.push(cell);
-	      } else {
-	        cells.push(cell);
-	      }
-	    });
+	    if (this.props.columns) {
+	      this.props.columns.forEach(function (column, i) {
+	        var CellRenderer = _this.props.cellRenderer;
+	        var cell = React.createElement(CellRenderer, {
+	          ref: i,
+	          key: column.key + '-' + i,
+	          idx: i,
+	          rowIdx: _this.props.idx,
+	          value: _this.getCellValue(column.key || i),
+	          column: column,
+	          height: _this.getRowHeight(),
+	          formatter: column.formatter,
+	          cellMetaData: _this.props.cellMetaData,
+	          rowData: _this.props.row,
+	          selectedColumn: selectedColumn,
+	          isRowSelected: _this.props.isSelected });
+	        if (column.locked) {
+	          lockedCells.push(cell);
+	        } else {
+	          cells.push(cell);
+	        }
+	      });
+	    }
 
 	    return cells.concat(lockedCells);
 	  },
@@ -6201,9 +6206,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return false;
 	  },
 	  isContextMenuDisplayed: function isContextMenuDisplayed() {
-	    var selected = this.props.cellMetaData.selected;
-	    if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
-	      return true;
+	    if (this.props.cellMetaData) {
+	      var selected = this.props.cellMetaData.selected;
+	      if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
+	        return true;
+	      }
 	    }
 	    return false;
 	  },
@@ -6229,7 +6236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var className = joinClasses('react-grid-Row', 'react-grid-Row--' + (this.props.idx % 2 === 0 ? 'even' : 'odd'), {
 	      'row-selected': this.props.isSelected,
 	      'row-context-menu': this.isContextMenuDisplayed()
-	    });
+	    }, this.props.extraClasses);
 
 	    var style = {
 	      height: this.getRowHeight(this.props),
