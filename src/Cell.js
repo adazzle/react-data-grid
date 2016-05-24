@@ -75,25 +75,32 @@ const Cell = React.createClass({
     || this.props.value !== nextProps.value;
   },
 
-  onCellClick() {
+  onCellClick(e) {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellClick != null) {
-      meta.onCellClick({rowIdx: this.props.rowIdx, idx: this.props.idx});
+    if (meta != null && meta.onCellClick && typeof(meta.onCellClick) === 'function') {
+      meta.onCellClick({rowIdx: this.props.rowIdx, idx: this.props.idx}, e);
     }
   },
 
-  onCellDoubleClick() {
+  onCellContextMenu() {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick != null) {
-      meta.onCellDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx});
+    if (meta != null && meta.onCellContextMenu && typeof(meta.onCellContextMenu) === 'function') {
+      meta.onCellContextMenu({rowIdx: this.props.rowIdx, idx: this.props.idx});
+    }
+  },
+
+  onCellDoubleClick(e) {
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellDoubleClick && typeof(meta.onCellDoubleClick) === 'function') {
+      meta.onCellDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx}, e);
     }
   },
 
   onDragHandleDoubleClick(e) {
     e.stopPropagation();
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick != null) {
-      meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData()});
+    if (meta != null && meta.onDragHandleDoubleClick && typeof(meta.onDragHandleDoubleClick) === 'function') {
+      meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e});
     }
   },
 
@@ -140,7 +147,7 @@ const Cell = React.createClass({
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
-      selected: this.isSelected() && !this.isActive(),
+      selected: this.isSelected() && !this.isActive() && this.isCellSelectEnabled(),
       editing: this.isActive(),
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'active-drag-cell': this.isSelected() || this.isDraggedOver(),
@@ -157,7 +164,7 @@ const Cell = React.createClass({
 
   isColumnSelected() {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
 
     return (
       meta.selected
@@ -167,7 +174,7 @@ const Cell = React.createClass({
 
   isSelected: function(): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
 
     return (
       meta.selected
@@ -178,19 +185,25 @@ const Cell = React.createClass({
 
   isActive(): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
     return this.isSelected() && meta.selected.active === true;
   },
 
   isCellSelectionChanging(nextProps: {idx: number; cellMetaData: {selected: {idx: number}}}): boolean {
     let meta = this.props.cellMetaData;
-    if (meta == null || meta.selected == null) { return false; }
+    if (meta == null) { return false; }
     let nextSelected = nextProps.cellMetaData.selected;
     if (meta.selected && nextSelected) {
       return this.props.idx === nextSelected.idx || this.props.idx === meta.selected.idx;
     }
 
     return true;
+  },
+
+  isCellSelectEnabled() {
+    let meta = this.props.cellMetaData;
+    if (meta == null) { return false; }
+    return meta.enableCellSelect;
   },
 
   applyUpdateClass() {
@@ -318,6 +331,56 @@ const Cell = React.createClass({
     return (this.props.column.editor != null) || this.props.column.editable;
   },
 
+  createColumEventCallBack(onColumnEvent, info) {
+    return (e) => {
+      onColumnEvent(e, info);
+    };
+  },
+
+  createCellEventCallBack(gridEvent, columnEvent) {
+    return (e) => {
+      gridEvent(e);
+      columnEvent(e);
+    };
+  },
+
+  createEventDTO(gridEvents, columnEvents, onColumnEvent) {
+    let allEvents = Object.assign({}, gridEvents);
+
+    for (let eventKey in columnEvents) {
+      if (columnEvents.hasOwnProperty(eventKey)) {
+        let event = columnEvents[event];
+        let eventInfo = {rowIdx: this.props.rowIdx, idx: this.props.idx, name: eventKey};
+        let eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
+
+        if (allEvents.hasOwnProperty(eventKey)) {
+          let currentEvent = allEvents[eventKey];
+          allEvents[eventKey] = this.createCellEventCallBack(currentEvent, eventCallback);
+        } else {
+          allEvents[eventKey] = eventCallback;
+        }
+      }
+    }
+
+    return allEvents;
+  },
+
+  getEvents() {
+    let columnEvents = this.props.column ? Object.assign({}, this.props.column.events) : undefined;
+    let onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
+    let gridEvents = {
+      onClick: this.onCellClick,
+      onDoubleClick: this.onCellDoubleClick,
+      onDragOver: this.onDragOver
+    };
+
+    if (!columnEvents || !onColumnEvent) {
+      return gridEvents;
+    }
+
+    return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
+  },
+
   renderCellContent(props: any): ReactElement {
     let CellContent;
     let Formatter = this.getFormatter();
@@ -346,9 +409,9 @@ const Cell = React.createClass({
     });
 
     let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
-
+    let events = this.getEvents();
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onDragOver={this.onDragOver}>
+      <div {...this.props} className={className} style={style} onContextMenu={this.onCellContextMenu} {...events}>
       {cellContent}
       {dragHandle}
       </div>

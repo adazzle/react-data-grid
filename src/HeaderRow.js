@@ -34,8 +34,9 @@ const HeaderRow = React.createClass({
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
     onFilterChange: PropTypes.func,
-    resizing: PropTypes.func,
-    onScroll: PropTypes.func
+    resizing: PropTypes.object,
+    onScroll: PropTypes.func,
+    rowType: PropTypes.string
   },
 
   mixins: [ColumnUtilsMixin],
@@ -105,13 +106,17 @@ const HeaderRow = React.createClass({
 
     for (let i = 0, len = this.getSize(this.props.columns); i < len; i++) {
       let column = this.getColumn(this.props.columns, i);
+      let _renderer = this.getHeaderRenderer(column);
+      if (column.key === 'select-row' && this.props.rowType === 'filter') {
+        _renderer = <div></div>;
+      }
       let cell = (
         <HeaderCell
           ref={i}
           key={i}
           height={this.props.height}
           column={column}
-          renderer={this.getHeaderRenderer(column)}
+          renderer={_renderer}
           resizing={this.props.resizing === column}
           onResize={this.props.onColumnResize}
           onResizeEnd={this.props.onColumnResizeEnd}

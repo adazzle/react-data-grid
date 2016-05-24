@@ -20,9 +20,10 @@ describe('Grid', function() {
 
   beforeEach(function() {
     this.columns = [
-      { key: 'id', name: 'ID', width: 100 },
+      { key: 'id', name: 'ID', width: 100, events: { onClick: () => {}} },
       { key: 'title', name: 'Title', width: 100 },
-      { key: 'count', name: 'Count', width: 100 }
+      { key: 'count', name: 'Count', width: 100 },
+      { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}, onDragOver: () => {}}}
     ];
 
     this._rows = [];
@@ -98,9 +99,10 @@ describe('Grid', function() {
   });
 
   it('should be initialized with correct state', function() {
+    let events = [this.columns[0].events, this.columns[1].events, this.columns[2].events, this.columns[3].events];
     expect(this.component.state).toEqual(mockStateObject({
       selectedRows: this._selectedRows
-    }));
+    }, events));
   });
 
   describe('if passed in as props to grid', function() {
@@ -225,6 +227,119 @@ describe('Grid', function() {
 
       it('should be able to unselect an individual row ', function() {
         expect(this.component.state.selectedRows[3].isSelected).toBe(false);
+      });
+    });
+  });
+
+  describe('Cell Navigation', function() {
+    describe('when cell navigation is configured to default, none', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({enableCellSelect: true});
+      });
+
+      describe('when on last cell in a row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should stay on cell', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+      describe('when on first cell in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 1 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
+        });
+      });
+    });
+
+    describe('when cell navigation is configured to change rows', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({cellNavigationMode: 'changeRow', enableCellSelect: true});
+      });
+
+      describe('when on last cell in a row that\'s not the last', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should move to first cell in next row', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 2 });
+        });
+      });
+      describe('when on last cell in last row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 999 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 999 });
+        });
+      });
+      describe('when on first cell in a row that\'s not the first', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 2 } });
+        });
+        it('selection should move to last cell in previous row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+      describe('when on first cell in the first row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 0 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+        });
+      });
+    });
+
+    describe('when cell navigation is configured to loop over cells in row', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({cellNavigationMode: 'loopOverRow', enableCellSelect: true});
+      });
+
+      describe('when on last cell, looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should move to first cell in same row', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
+        });
+      });
+      describe('when on last cell in last row with looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 999 } });
+        });
+        it('selection should move to first cell in same row', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 999 });
+        });
+      });
+      describe('when on first cell with looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 2 } });
+        });
+        it('selection should move to last cell in same row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 2 });
+        });
+      });
+      describe('when on first cell in first row with looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 0 } });
+        });
+        it('selection should move to last cell in same row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 0 });
+        });
       });
     });
   });
@@ -487,7 +602,7 @@ describe('Grid', function() {
       });
 
       it('should add column', function() {
-        expect(this.columns.length).toEqual(4);
+        expect(this.columns.length).toEqual(5);
       });
 
       it('should calculate column metrics for added column', function() {
@@ -504,7 +619,7 @@ describe('Grid', function() {
       });
 
       it('should remove column', function() {
-        expect(this.columns.length).toEqual(2);
+        expect(this.columns.length).toEqual(3);
       });
 
       it('should no longer include metrics for removed column', function() {
@@ -583,6 +698,58 @@ describe('Grid', function() {
 
       it('should set selected state of grid', function() {
         expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 2 });
+      });
+    });
+
+    describe('Column events', function() {
+      let columnWithEvent;
+      const eventColumnIdx = 3;
+      const eventColumnRowIdx = 2;
+
+      beforeEach(function() {
+        columnWithEvent = this.component.state.columnMetrics.columns[3];
+        let events = this.testProps.columns[3].events;
+        spyOn(events, 'onClick');
+        spyOn(events, 'onDoubleClick');
+        spyOn(events, 'onDragOver');
+      });
+
+      it('should call an event when there is one', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+        expect(columnWithEvent.events.onClick).toHaveBeenCalled();
+      });
+
+      it('should call the correct event', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+        expect(columnWithEvent.events.onClick).toHaveBeenCalled();
+        expect(columnWithEvent.events.onDoubleClick).not.toHaveBeenCalled();
+      });
+
+      it('should call double click event on double click', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onDoubleClick'});
+
+        expect(columnWithEvent.events.onDoubleClick).toHaveBeenCalled();
+      });
+
+      it('should call drag over event on drag over click', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onDragOver'});
+
+        expect(columnWithEvent.events.onDragOver).toHaveBeenCalled();
+      });
+
+      it('should call the event when there is one with the correct args', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+        expect(columnWithEvent.events.onClick.mostRecentCall.args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
+      });
+
+      it('events should work for the first column', function() {
+        const firstColumnIdx = 0;
+        let firstColumn = this.component.state.columnMetrics.columns[firstColumnIdx];
+        let firstColumnEvents = this.testProps.columns[firstColumnIdx].events;
+        spyOn(firstColumnEvents, 'onClick');
+        this.getCellMetaData().onColumnEvent({}, {idx: firstColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+
+        expect(firstColumn.events.onClick).toHaveBeenCalled();
       });
     });
   });

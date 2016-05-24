@@ -6,6 +6,7 @@ const ScrollShim      = require('./ScrollShim');
 const Row             = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import shallowEqual from 'fbjs/lib/shallowEqual';
+import RowsContainer from './RowsContainer';
 
 const Canvas = React.createClass({
   mixins: [ScrollShim],
@@ -32,7 +33,8 @@ const Canvas = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
     selectedRows: PropTypes.array,
     rowKey: React.PropTypes.string,
-    rowScrollTimeout: React.PropTypes.number
+    rowScrollTimeout: React.PropTypes.number,
+    contextMenu: PropTypes.element
   },
 
   getDefaultProps() {
@@ -106,12 +108,12 @@ const Canvas = React.createClass({
   },
 
   onScroll(e: any) {
-    if (this.getDOMNode() !== e.target) {
+    if (ReactDOM.findDOMNode(this) !== e.target) {
       return;
     }
     this.appendScrollShim();
     let scrollLeft = e.target.scrollLeft;
-    let scrollTop = e.target.scrollTop || this._scroll.scrollTop;
+    let scrollTop = e.target.scrollTop;
     let scroll = {scrollTop, scrollLeft};
     // check how far we have scrolled, and if this means we are being taken out of range
     let scrollYRange = Math.abs(this._scroll.scrollTop - scroll.scrollTop) / this.props.rowHeight;
@@ -282,9 +284,12 @@ const Canvas = React.createClass({
         style={style}
         onScroll={this.onScroll}
         className={joinClasses('react-grid-Canvas', this.props.className, {opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active})}>
-        <div style={{width: this.props.width, overflow: 'hidden'}}>
-          {rows}
-        </div>
+        <RowsContainer
+          width={this.props.width}
+          rows={rows}
+          contextMenu={this.props.contextMenu}
+          rowIdx={this.props.cellMetaData.selected.rowIdx}
+          idx={this.props.cellMetaData.selected.idx} />
       </div>
     );
   }

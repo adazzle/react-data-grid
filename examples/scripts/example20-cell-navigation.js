@@ -2,7 +2,8 @@ var ReactGrid             = require('../build/react-data-grid');
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 
-var ResizableExample = `
+var NavigationExample = `
+
 //helper to generate a random date
 function randomDate(start, end) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
@@ -19,7 +20,7 @@ for (var i = 1; i < 1000; i++) {
     startDate: randomDate(new Date(2015, 3, 1), new Date()),
     completeDate: randomDate(new Date(), new Date(2016, 0, 1))
   });
-}
+};
 
 //function to retrieve a row for a given index
 var rowGetter = function(i){
@@ -32,46 +33,53 @@ var columns = [
 {
   key: 'id',
   name: 'ID',
-  resizable : true,
-  width : 40
+  locked : true
 },
 {
   key: 'task',
   name: 'Title',
-  resizable : true
+  width: 200
 },
 {
   key: 'priority',
   name: 'Priority',
-  resizable : true
+  width: 200
 },
 {
   key: 'issueType',
   name: 'Issue Type',
-  resizable : true
+  width: 200
 },
 {
   key: 'complete',
   name: '% Complete',
-  resizable : true
+  width: 200
 },
 {
   key: 'startDate',
   name: 'Start Date',
-  resizable : true
+  width: 200
 },
 {
   key: 'completeDate',
   name: 'Expected Complete',
-  resizable : true
+  width: 200
+},
+{
+  key: 'completeDate',
+  name: 'Expected Complete',
+  width: 200
 }
 ]
+
 
 ReactDOM.render(<ReactDataGrid
   columns={columns}
   rowGetter={rowGetter}
   rowsCount={_rows.length}
-  minHeight={500} />, mountNode);
+  minHeight={500}
+  enableCellSelect={true}
+  cellNavigationMode="changeRow" />, mountNode);
 `;
 
 module.exports = React.createClass({
@@ -79,12 +87,11 @@ module.exports = React.createClass({
   render:function(){
     return(
       <div>
-        <h3>Resizable Columns Example</h3>
-        <p>To make a given column resizable, set <code>column.resizable = true</code></p>
-        <p>If you need to know when a column has been resized, use the <code>onColumnResize</code> prop. This will be triggered when a column is
-        resized and will report the column index and its new width. These can be saved on the back-end and used to restore column widths when
-        the component is initialized, by setting <code>width</code> key in each column.</p>
-        <ReactPlayground codeText={ResizableExample} />
+        <h3>Column Navigation Modes Example</h3>
+        <p>By setting <code>cellNavigationMode = 'loopOverRow'</code>, you enable looping round the same row when navigation goes beyond the first/last cells.</p>
+        <p>Setting <code>cellNavigationMode = 'changeRow'</code>, would make the selection jump to the next/previous row.</p>
+        <p>The default behavior is to do nothing.</p>
+        <ReactPlayground codeText={NavigationExample} />
       </div>
     )
   }

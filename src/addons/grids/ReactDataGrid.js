@@ -18,6 +18,12 @@ type SelectedType = {
   idx: number;
 };
 
+type ColumnEvent = {
+  name: string,
+  rowIdx: number;
+  idx: number;
+}
+
 type DraggedType = {
   idx: number;
   rowIdx: number;
@@ -60,7 +66,9 @@ const ReactDataGrid = React.createClass({
     onRowSelect: React.PropTypes.func,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
-    onClearFilters: React.PropTypes.func
+    onClearFilters: React.PropTypes.func,
+    contextMenu: React.PropTypes.element,
+    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow'])
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -71,7 +79,8 @@ const ReactDataGrid = React.createClass({
       enableRowSelect: false,
       minHeight: 350,
       rowKey: 'id',
-      rowScrollTimeout: 0
+      rowScrollTimeout: 0,
+      cellNavigationMode: 'none'
     };
   },
 
@@ -86,27 +95,61 @@ const ReactDataGrid = React.createClass({
     return initialState;
   },
 
+  hasSelectedCellChanged: function(selected: SelectedType) {
+    let previouslySelected = Object.assign({}, this.state.selected);
+    return previouslySelected.rowIdx !== selected.rowIdx || previouslySelected.idx !== selected.idx || previouslySelected.active === false;
+  },
+
+  onContextMenuHide: function() {
+    document.removeEventListener('click', this.onContextMenuHide);
+    let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
+    this.setState({selected: newSelected});
+  },
+
+  onColumnEvent: function(ev :SyntheticEvent, columnEvent: ColumnEvent) {
+    let {idx, name} = columnEvent;
+
+    if (name && typeof idx !== 'undefined') {
+      let column = this.getColumn(idx);
+
+      if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
+        let eventArgs = {
+          rowIdx: columnEvent.rowIdx,
+          idx,
+          column
+        };
+
+        column.events[name](ev, eventArgs);
+      }
+    }
+  },
+
   onSelect: function(selected: SelectedType) {
-    if (this.props.enableCellSelect) {
-      if (this.state.selected.rowIdx !== selected.rowIdx
-        || this.state.selected.idx !== selected.idx
-        || this.state.selected.active === false) {
-        let idx = selected.idx;
-        let rowIdx = selected.rowIdx;
-        if (
-            idx >= 0
-            && rowIdx >= 0
-            && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
-            && rowIdx < this.props.rowsCount
-          ) {
-          this.setState({selected: selected});
-        }
+    if (this.state.selected.rowIdx !== selected.rowIdx
+      || this.state.selected.idx !== selected.idx
+      || this.state.selected.active === false) {
+      let idx = selected.idx;
+      let rowIdx = selected.rowIdx;
+      if (
+          idx >= 0
+          && rowIdx >= 0
+          && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
+          && rowIdx < this.props.rowsCount
+        ) {
+        this.setState({selected: selected});
       }
     }
   },
 
   onCellClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
+  },
+
+  onCellContextMenu: function(cell: SelectedType) {
+    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx, contextMenuDisplayed: this.props.contextMenu});
+    if (this.props.contextMenu) {
+      document.addEventListener('click', this.onContextMenuHide);
+    }
   },
 
   onCellDoubleClick: function(cell: SelectedType) {
@@ -221,10 +264,13 @@ const ReactDataGrid = React.createClass({
   },
 
   onToggleFilter() {
-    this.setState({ canFilter: !this.state.canFilter });
-    if (this.state.canFilter === false && this.props.onClearFilters) {
-      this.props.onClearFilters();
-    }
+    // setState() does not immediately mutate this.state but creates a pending state transition. 
+    // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
+    this.setState({ canFilter: !this.state.canFilter }, () => {      
+      if (this.state.canFilter === false && this.props.onClearFilters) {
+        this.props.onClearFilters();
+      }
+    });    
   },
 
   onDragHandleDoubleClick(e) {
@@ -406,13 +452,14 @@ const ReactDataGrid = React.createClass({
   },
 
   getHeaderRows(): Array<{ref: string; height: number;}> {
-    let rows = [{ ref: 'row', height: this.props.headerRowHeight || this.props.rowHeight }];
+    let rows = [{ ref: 'row', height: this.props.headerRowHeight || this.props.rowHeight, rowType: 'header' }];
     if (this.state.canFilter === true) {
       rows.push({
         ref: 'filterRow',
         filterable: true,
         onFilterChange: this.props.onAddFilter,
-        height: 45
+        height: 45,
+        rowType: 'filter'
       });
     }
     return rows;
@@ -438,9 +485,73 @@ const ReactDataGrid = React.createClass({
     // we need to prevent default as we control grid scroll
     // otherwise it moves every time you left/right which is janky
     e.preventDefault();
-    let rowIdx = this.state.selected.rowIdx + rowDelta;
+    let rowIdx;
+    let idx;
+    const { cellNavigationMode } = this.props;
+    if (cellNavigationMode !== 'none') {
+      ({idx, rowIdx} = this.calculateNextSelectionPosition(cellNavigationMode, cellDelta, rowDelta));
+    } else {
+      rowIdx = this.state.selected.rowIdx + rowDelta;
+      idx = this.state.selected.idx + cellDelta;
+    }
+    this.onSelect({ idx: idx, rowIdx: rowIdx });
+  },
+
+  calculateNextSelectionPosition(cellNavigationMode: string, cellDelta: number, rowDelta: number) {
+    let _rowDelta = rowDelta;
     let idx = this.state.selected.idx + cellDelta;
-    this.onSelect({idx: idx, rowIdx: rowIdx});
+    if (cellDelta > 0) {
+      if (this.isAtLastCellInRow()) {
+        if (cellNavigationMode === 'changeRow') {
+          _rowDelta = this.isAtLastRow() ? rowDelta : rowDelta + 1;
+          idx = this.isAtLastRow() ? idx : 0;
+        } else {
+          idx = 0;
+        }
+      }
+    } else if (cellDelta < 0) {
+      if (this.isAtFirstCellInRow()) {
+        if (cellNavigationMode === 'changeRow') {
+          _rowDelta = this.isAtFirstRow() ? rowDelta : rowDelta - 1;
+          idx = this.isAtFirstRow() ? 0 : this.props.columns.length - 1;
+        } else {
+          idx = this.props.columns.length - 1;
+        }
+      }
+    }
+    let rowIdx = this.state.selected.rowIdx + _rowDelta;
+    return {idx, rowIdx};
+  },
+
+  isAtLastCellInRow() {
+    return this.state.selected.idx === this.props.columns.length - 1;
+  },
+
+  isAtLastRow() {
+    return this.state.selected.rowIdx === this.props.rowsCount - 1;
+  },
+
+  isAtFirstCellInRow() {
+    return this.state.selected.idx === 0;
+  },
+
+  isAtFirstRow() {
+    return this.state.selected.rowIdx === 0;
+  },
+
+  openCellEditor(rowIdx, idx) {
+    if (!this.canEdit(idx)) {
+      return;
+    }
+
+    let selected = {rowIdx, idx};
+    if (this.hasSelectedCellChanged(selected)) {
+      this.setState({selected}, () => {
+        this.setActive('Enter');
+      });
+    } else {
+      this.setActive('Enter');
+    }
   },
 
   setActive(keyPressed: string) {
@@ -517,13 +628,17 @@ const ReactDataGrid = React.createClass({
       selected: this.state.selected,
       dragged: this.state.dragged,
       onCellClick: this.onCellClick,
+      onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onCommit: this.onCellCommit,
       onCommitCancel: this.setInactive,
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
       handleTerminateDrag: this.handleTerminateDrag,
-      onDragHandleDoubleClick: this.onDragHandleDoubleClick
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
+      enableCellSelect: this.props.enableCellSelect,
+      onColumnEvent: this.onColumnEvent,
+      openCellEditor: this.openCellEditor
     };
 
     let toolbar = this.renderToolbar();
@@ -567,7 +682,8 @@ const ReactDataGrid = React.createClass({
             onViewportDragEnd={this.handleDragEnd}
             onViewportDoubleClick={this.onViewportDoubleClick}
             onColumnResize={this.onColumnResize}
-            rowScrollTimeout={this.props.rowScrollTimeout}/>
+            rowScrollTimeout={this.props.rowScrollTimeout}
+            contextMenu={this.props.contextMenu} />
           </div>
         </div>
       );

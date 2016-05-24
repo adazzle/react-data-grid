@@ -3,7 +3,7 @@ import GridRunner from './GridRunner';
 import ReactDOM from 'react-dom';
 
 describe('Grid Integration', () => {
-  describe('Grid Setup', () => {
+  describe('Setup', () => {
     it('Creates the grid', () => {
       expect(new GridRunner({}).grid).toBeDefined();
     });
@@ -31,7 +31,7 @@ describe('Grid Integration', () => {
     });
   });
 
-  describe('Grid Copy and paste', () => {
+  describe('Copy and paste', () => {
     it('copies a cell', () => {
       new GridRunner({})
       .selectCell({cellIdx: 3, rowIdx: 3})
@@ -65,7 +65,7 @@ describe('Grid Integration', () => {
     });
   });
 
-  describe('Grid Drag', () => {
+  describe('Drag', () => {
     it('Shows drag selector', () => {
       new GridRunner({})
       .drag({from: 0, to: 4, col: 4,
@@ -101,7 +101,7 @@ describe('Grid Integration', () => {
   //     .hasBeenResized(args);
   //   });
   // });
-  describe('Grid Selection', () => {
+  describe('Selection', () => {
     it('Selects on click', () => {
       new GridRunner({})
       .selectCell({cellIdx: 3, rowIdx: 3})
@@ -245,6 +245,48 @@ describe('Grid Integration', () => {
           ev: {key: 'ArrowDown'},
           expectToSelect: {row: 4, cell: 5}
         });
+    });
+  });
+
+  describe('Context Menu', () => {
+    let grid = {};
+    let fakeRowIdx = 3;
+    let fakeIdx = 5;
+
+    beforeEach(() => {
+      grid = new GridRunner({});
+    });
+
+    afterEach(() => {
+      grid.dispose();
+    });
+
+    it('should show context menu on right click', () => {
+      grid.rightClickCell({cellIdx: fakeIdx, rowIdx: fakeRowIdx});
+      expect(grid.isContextMenuVisible()).toEqual(true);
+    });
+
+    it('should hide context menu on selecting menu item', () => {
+      grid.clickContextMenuLink();
+      expect(grid.isContextMenuVisible()).toEqual(false);
+    });
+
+    // Please note: this test will fail if the MenuItem's inner text in example14-all-features-immutable is changed.
+    it('should get row and column indexes from context menu', () => {
+      grid.rightClickCell({cellIdx: fakeIdx, rowIdx: fakeRowIdx});
+      let menuItem = grid.getContextMenuItem();
+      let idxs = menuItem.innerText.split(',');
+      expect(fakeRowIdx).toEqual(parseInt(idxs[0], 10));
+      expect(fakeIdx).toEqual(parseInt(idxs[1], 10));
+    });
+
+    // In ContextMenuWrapper's componentWillReceiveProps the function getMenuPosition is called with a delay
+    // (window.requestAnimationFrame || setTimeout). This causes timing issues when you have both 'right click on cell' (open menu)
+    // and 'click on menu item' (close menu) in the same test. To avoid this we need to close the menu after each right click
+    // in a separate test.
+    it('should hide context menu', () => {
+      grid.clickContextMenuLink();
+      expect(grid.isContextMenuVisible()).toEqual(false);
     });
   });
 });

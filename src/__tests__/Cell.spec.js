@@ -22,12 +22,14 @@ describe('Cell Tests', () => {
     selected: {idx: 2, rowIdx: 3},
     dragged: null,
     onCellClick: function() {},
+    onCellContextMenu: function() {},
     onCellDoubleClick: function() {},
     onCommit: function() {},
     onCommitCancel: function() {},
     copied: null,
     handleDragEnterRow: function() {},
-    handleTerminateDrag: function() {}
+    handleTerminateDrag: function() {},
+    onColumnEvent: function() {}
   };
 
   let testProps = {
@@ -109,6 +111,112 @@ describe('Cell Tests', () => {
       cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
       let cellHasUpdateClass = ReactDOM.findDOMNode(cellInstance).getAttribute('class').indexOf(updateClass) > -1;
       expect(cellHasUpdateClass).toBe(true);
+    });
+
+    describe('Default events', () => {
+      let cellEvents;
+
+      beforeEach(() => {
+        let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+        cellEvents = cellInstance.getEvents();
+      });
+
+      it('should have a onClick event associated', () => {
+        expect(cellEvents.hasOwnProperty('onClick')).toBe(true);
+      });
+
+      it('should have a onDoubleClick event associated', () => {
+        expect(cellEvents.hasOwnProperty('onDoubleClick')).toBe(true);
+      });
+
+      it('should have a onDragOver event associated', () => {
+        expect(cellEvents.hasOwnProperty('onDragOver')).toBe(true);
+      });
+
+      describe('Cell Metadata', () => {
+        describe('When Action is defined on CellMetaData', () => {
+          it('should call metaData onCellClick when it is defined', () => {
+            // Arrange
+            testCellMetaData.onCellClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            // Act
+            cellInstance.onCellClick();
+
+            // Assert
+            expect(testCellMetaData.onCellClick).toHaveBeenCalled();
+          });
+
+          it('should call metaData onDragHandleDoubleClick when it is defined', () => {
+            testCellMetaData.onDragHandleDoubleClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onDragHandleDoubleClick(document.createEvent('Event'));
+
+            expect(testCellMetaData.onDragHandleDoubleClick).toHaveBeenCalled();
+          });
+
+          it('should call metaData onCellContextMenu if defined', () => {
+            testCellMetaData.onCellContextMenu = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onCellContextMenu();
+
+            expect(testCellMetaData.onCellContextMenu).toHaveBeenCalled();
+          });
+
+          it('should call metaData onCellDoubleClick if defined', () => {
+            testCellMetaData.onCellDoubleClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onCellDoubleClick();
+
+            expect(testCellMetaData.onCellDoubleClick).toHaveBeenCalled();
+          });
+        });
+      });
+    });
+
+    describe('Column events', () => {
+      let cellEvents;
+      const COLUMN_ON_KEY_PRESS_EVENT_KEY = 'onKeyPress';
+
+      beforeEach(() => {
+        testProps.column.events = {
+          [COLUMN_ON_KEY_PRESS_EVENT_KEY]: () => {},
+          onClick: () => {},
+          onDragOver: () => {}
+        };
+
+        let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+        cellEvents = cellInstance.getEvents();
+      });
+
+      it('should contain the default grid events', () => {
+        expect(cellEvents.hasOwnProperty('onClick')).toBe(true);
+        expect(cellEvents.hasOwnProperty('onDoubleClick')).toBe(true);
+        expect(cellEvents.hasOwnProperty('onDragOver')).toBe(true);
+      });
+
+      it('should add the column events to cell events', () => {
+        expect(cellEvents.hasOwnProperty(COLUMN_ON_KEY_PRESS_EVENT_KEY)).toBe(true);
+      });
+
+      it('should not add any extra keys', () => {
+        expect(Object.keys(cellEvents).length).toBe(4);
+      });
+
+      it('should support cell and column events at the same time', () => {
+        // Arrange.
+        let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+        cellInstance.createCellEventCallBack = jasmine.createSpy();
+
+        // Act.
+        cellEvents = cellInstance.getEvents();
+
+        // Assert.
+        expect(cellInstance.createCellEventCallBack).toHaveBeenCalled();
+      });
     });
   });
 });
