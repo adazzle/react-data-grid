@@ -17,7 +17,8 @@ const Row = React.createClass({
     isSelected: PropTypes.bool,
     idx: PropTypes.number.isRequired,
     key: PropTypes.string,
-    expandedRows: PropTypes.arrayOf(PropTypes.object)
+    expandedRows: PropTypes.arrayOf(PropTypes.object),
+    extraClasses: PropTypes.string
   },
 
   mixins: [ColumnUtilsMixin],
@@ -49,9 +50,11 @@ const Row = React.createClass({
   },
 
   getSelectedColumn() {
-    let selected = this.props.cellMetaData.selected;
-    if (selected && selected.idx) {
-      return this.getColumn(this.props.columns, selected.idx);
+    if (this.props.cellMetaData) {
+      let selected = this.props.cellMetaData.selected;
+      if (selected && selected.idx) {
+        return this.getColumn(this.props.columns, selected.idx);
+      }
     }
   },
 
@@ -60,27 +63,29 @@ const Row = React.createClass({
     let lockedCells = [];
     let selectedColumn = this.getSelectedColumn();
 
-    this.props.columns.forEach((column, i) => {
-      let CellRenderer = this.props.cellRenderer;
-      let cell = (<CellRenderer
-                    ref={i}
-                    key={`${column.key}-${i}`}
-                    idx={i}
-                    rowIdx={this.props.idx}
-                    value={this.getCellValue(column.key || i)}
-                    column={column}
-                    height={this.getRowHeight()}
-                    formatter={column.formatter}
-                    cellMetaData={this.props.cellMetaData}
-                    rowData={this.props.row}
-                    selectedColumn={selectedColumn}
-                    isRowSelected={this.props.isSelected} />);
-      if (column.locked) {
-        lockedCells.push(cell);
-      } else {
-        cells.push(cell);
-      }
-    });
+    if (this.props.columns) {
+      this.props.columns.forEach((column, i) => {
+        let CellRenderer = this.props.cellRenderer;
+        let cell = (<CellRenderer
+                      ref={i}
+                      key={`${column.key}-${i}`}
+                      idx={i}
+                      rowIdx={this.props.idx}
+                      value={this.getCellValue(column.key || i)}
+                      column={column}
+                      height={this.getRowHeight()}
+                      formatter={column.formatter}
+                      cellMetaData={this.props.cellMetaData}
+                      rowData={this.props.row}
+                      selectedColumn={selectedColumn}
+                      isRowSelected={this.props.isSelected} />);
+        if (column.locked) {
+          lockedCells.push(cell);
+        } else {
+          cells.push(cell);
+        }
+      });
+    }
 
     return cells.concat(lockedCells);
   },
@@ -127,9 +132,11 @@ const Row = React.createClass({
   },
 
   isContextMenuDisplayed() {
-    let selected = this.props.cellMetaData.selected;
-    if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
-      return true;
+    if (this.props.cellMetaData) {
+      let selected = this.props.cellMetaData.selected;
+      if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
+        return true;
+      }
     }
     return false;
   },
@@ -162,7 +169,8 @@ const Row = React.createClass({
       {
         'row-selected': this.props.isSelected,
         'row-context-menu': this.isContextMenuDisplayed()
-      }
+      },
+      this.props.extraClasses
     );
 
     let style = {
