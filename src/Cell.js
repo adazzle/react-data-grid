@@ -6,6 +6,7 @@ const ExcelColumn       = require('./addons/grids/ExcelColumn');
 const isFunction        = require('./addons/utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./addons/formatters/SimpleCellFormatter');
+const ColumnUtils = require('./ColumnUtils');
 
 const Cell = React.createClass({
 
@@ -327,10 +328,6 @@ const Cell = React.createClass({
     }
   },
 
-  canEdit() {
-    return (this.props.column.editor != null) || this.props.column.editable;
-  },
-
   createColumEventCallBack(onColumnEvent, info) {
     return (e) => {
       onColumnEvent(e, info);
@@ -408,7 +405,7 @@ const Cell = React.createClass({
       isExpanded: this.props.isExpanded
     });
 
-    let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
+    let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
     let events = this.getEvents();
     return (
       <div {...this.props} className={className} style={style} onContextMenu={this.onCellContextMenu} {...events}>
