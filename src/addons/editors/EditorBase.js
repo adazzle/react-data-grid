@@ -12,7 +12,9 @@ class EditorBase extends React.Component {
 
   getValue(): any {
     let updated = {};
-    updated[this.props.column.key] = this.getInputNode().value;
+    const node = this.getInputNode();
+    const value = (node.type === 'checkbox') ? node.checked : node.value;
+    updated[this.props.column.key] = value;
     return updated;
   }
 
