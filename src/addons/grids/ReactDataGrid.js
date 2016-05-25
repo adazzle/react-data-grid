@@ -68,7 +68,9 @@ const ReactDataGrid = React.createClass({
     rowScrollTimeout: React.PropTypes.number,
     onClearFilters: React.PropTypes.func,
     contextMenu: React.PropTypes.element,
-    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow'])
+    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
+    onCellSelected: React.PropTypes.func,
+    onCellDeSelected: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -136,7 +138,15 @@ const ReactDataGrid = React.createClass({
           && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
           && rowIdx < this.props.rowsCount
         ) {
-        this.setState({selected: selected});
+        const oldSelection = this.state.selected;
+        this.setState({selected: selected}, () => {
+          if (typeof this.props.onCellDeSelected === 'function') {
+            this.props.onCellDeSelected(oldSelection);
+          }
+          if (typeof this.props.onCellSelected === 'function') {
+            this.props.onCellSelected(selected);
+          }
+        });
       }
     }
   },
@@ -269,13 +279,13 @@ const ReactDataGrid = React.createClass({
   },
 
   onToggleFilter() {
-    // setState() does not immediately mutate this.state but creates a pending state transition. 
+    // setState() does not immediately mutate this.state but creates a pending state transition.
     // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
-    this.setState({ canFilter: !this.state.canFilter }, () => {      
+    this.setState({ canFilter: !this.state.canFilter }, () => {
       if (this.state.canFilter === false && this.props.onClearFilters) {
         this.props.onClearFilters();
       }
-    });    
+    });
   },
 
   onDragHandleDoubleClick(e) {
