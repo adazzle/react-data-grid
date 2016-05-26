@@ -60,7 +60,7 @@ const HeaderCell = React.createClass({
 
   getCell(): ReactComponent {
     if (React.isValidElement(this.props.renderer)) {
-      return React.cloneElement(this.props.renderer, {column: this.props.column});
+      return React.cloneElement(this.props.renderer, {column: this.props.column, height: this.props.height});
     }
 
     return this.props.renderer({column: this.props.column});
