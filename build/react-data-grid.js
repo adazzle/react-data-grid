@@ -121,7 +121,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowScrollTimeout: React.PropTypes.number,
 	    onClearFilters: React.PropTypes.func,
 	    contextMenu: React.PropTypes.element,
-	    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow'])
+	    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
+	    onCellSelected: React.PropTypes.func,
+	    onCellDeSelected: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -181,11 +183,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  onSelect: function onSelect(selected) {
+	    var _this = this;
+
 	    if (this.state.selected.rowIdx !== selected.rowIdx || this.state.selected.idx !== selected.idx || this.state.selected.active === false) {
 	      var _idx = selected.idx;
 	      var _rowIdx = selected.rowIdx;
 	      if (_idx >= 0 && _rowIdx >= 0 && _idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && _rowIdx < this.props.rowsCount) {
-	        this.setState({ selected: selected });
+	        (function () {
+	          var oldSelection = _this.state.selected;
+	          _this.setState({ selected: selected }, function () {
+	            if (typeof _this.props.onCellDeSelected === 'function') {
+	              _this.props.onCellDeSelected(oldSelection);
+	            }
+	            if (typeof _this.props.onCellSelected === 'function') {
+	              _this.props.onCellSelected(selected);
+	            }
+	          });
+	        })();
 	      }
 	    }
 	  },
@@ -305,13 +319,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  onToggleFilter: function onToggleFilter() {
-	    var _this = this;
+	    var _this2 = this;
 
 	    // setState() does not immediately mutate this.state but creates a pending state transition.
 	    // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
 	    this.setState({ canFilter: !this.state.canFilter }, function () {
-	      if (_this.state.canFilter === false && _this.props.onClearFilters) {
-	        _this.props.onClearFilters();
+	      if (_this2.state.canFilter === false && _this2.props.onClearFilters) {
+	        _this2.props.onClearFilters();
 	      }
 	    });
 	  },
@@ -427,10 +441,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getSelectedRow: function getSelectedRow(rows, key) {
-	    var _this2 = this;
+	    var _this3 = this;
 
 	    var selectedRow = rows.filter(function (r) {
-	      if (r[_this2.props.rowKey] === key) {
+	      if (r[_this3.props.rowKey] === key) {
 	        return true;
 	      }
 	      return false;
@@ -584,7 +598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.state.selected.rowIdx === 0;
 	  },
 	  openCellEditor: function openCellEditor(rowIdx, idx) {
-	    var _this3 = this;
+	    var _this4 = this;
 
 	    var row = this.props.rowGetter(rowIdx);
 	    var col = this.getColumn(idx);
@@ -596,7 +610,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var selected = { rowIdx: rowIdx, idx: idx };
 	    if (this.hasSelectedCellChanged(selected)) {
 	      this.setState({ selected: selected }, function () {
-	        _this3.setActive('Enter');
+	        _this4.setActive('Enter');
 	      });
 	    } else {
 	      this.setActive('Enter');
@@ -1672,7 +1686,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  getCell: function getCell() {
 	    if (React.isValidElement(this.props.renderer)) {
-	      return React.cloneElement(this.props.renderer, { column: this.props.column });
+	      return React.cloneElement(this.props.renderer, { column: this.props.column, height: this.props.height });
 	    }
 
 	    return this.props.renderer({ column: this.props.column });
