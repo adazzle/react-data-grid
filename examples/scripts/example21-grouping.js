@@ -128,7 +128,7 @@ var AllFeaturesExample = `
  var CustomToolbar = React.createClass({
    render() {
      return (<Toolbar>
-       <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded}/>
+       <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>
        </Toolbar>);
    }
  });
@@ -137,7 +137,7 @@ var AllFeaturesExample = `
 
     getInitialState : function(){
       var fakeRows = createRows(2000);
-      return {rows: fakeRows, groupBy: ['county']};
+      return {rows: fakeRows, groupBy: ['county'], expandedRows: {county: {'South Yorkshire' : expanded: false}}};
     },
 
     getRowAt : function(index){
@@ -146,7 +146,7 @@ var AllFeaturesExample = `
     },
 
     getSize : function() {
-      return DataView.getSize(this.state.rows, {groupBy: this.state.groupBy});
+      return DataView.getSize(this.state.rows, {groupBy: this.state.groupBy, expandedRows: this.state.expandedRows});
     },
 
    onColumnGroupAdded: function(colName) {
@@ -155,6 +155,18 @@ var AllFeaturesExample = `
         columnGroups.push(colName);
       }
       this.setState({groupBy: columnGroups});
+    },
+    
+    onColumnGroupDeleted: function (name) {
+      let columnGroups = this.state.groupBy.filter(function(g){return g !== name});
+      this.setState({groupBy: columnGroups});
+    },
+    
+    onRowExpandToggle: function(args){
+      let expandedRows = Object.assign({}, this.state.expandedRows);
+      expandedRows[args.columnGroupName] = {};
+      expandedRows[args.columnGroupName][args.name] = {isExpanded: args.isExpanded};
+      this.setState({expandedRows: expandedRows});
     },
 
     render : function() {
@@ -166,7 +178,8 @@ var AllFeaturesExample = `
               columns={columns}
               rowGetter={this.getRowAt}
               rowsCount={this.getSize()}
-              toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded}/>}
+              onRowExpandToggle={this.onRowExpandToggle}
+              toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted}/>}
               rowHeight={50}
               minHeight={600}
               />
@@ -183,8 +196,8 @@ module.exports = React.createClass({
   render: function() {
     return(
       <div>
-        <h3>All the features grid</h3>
-        <p>This example demonstrates all the features from the previous examples. The ReactDataGrid with addons is globally available in this example so you need to have 'react-data-grid-with-addons.js' on the page or require('react-data-grid'/addons) if you are using Common JS.</p>
+        <h3>Row Grouping Example</h3>
+        <p>This example demonstrates how to group rows by column name. The ReactDataGrid with addons is globally available in this example so you need to have 'react-data-grid-with-addons.js' on the page or require('react-data-grid'/addons) if you are using Common JS.</p>
         <p>Fake data is generated using the <a href="https://github.com/Marak/faker.js">Faker</a> library which is also a global variable in this example.</p>
         <ReactPlayground codeText={AllFeaturesExample} />
       </div>

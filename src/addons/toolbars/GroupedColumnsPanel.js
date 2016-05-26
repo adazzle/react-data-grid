@@ -7,7 +7,8 @@ const propTypes = {
   canDrop: PropTypes.bool.isRequired,
   groupBy: PropTypes.array,
   noColumnsSelectedMessage: PropTypes.string,
-  panelDescription: PropTypes.string
+  panelDescription: PropTypes.string,
+  onColumnGroupDeleted: PropTypes.func
 };
 
 const defaultProps = {
@@ -24,13 +25,14 @@ class GroupedColumn extends Component {
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap'
     };
-    return (<button style={{width: '100px'}} className="btn grouped-col-btn"><span style={style}>{this.props.name}</span>
-    <icon className="glyphicon glyphicon-trash" style={{float: 'right'}}></icon></button>);
+    return (<button  className="btn grouped-col-btn btn-sm"><span style={style}>{this.props.name}</span>
+    <span className="glyphicon glyphicon-trash" style={{float: 'right', paddingLeft: '5px'}} onClick={this.props.onColumnGroupDeleted.bind(this, this.props.name)}></span></button>);
   }
 }
 
 GroupedColumn.propTypes = {
-  name: PropTypes.object.isRequired
+  name: PropTypes.object.isRequired,
+  onColumnGroupDeleted: PropTypes.func
 };
 
 class GroupedColumnsPanel extends Component {
@@ -45,7 +47,7 @@ class GroupedColumnsPanel extends Component {
 
   renderGroupedColumns() {
     return this.props.groupBy.map(c => {
-      return (<GroupedColumn name={c}/>);
+      return (<GroupedColumn name={c} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>);
     });
   }
 

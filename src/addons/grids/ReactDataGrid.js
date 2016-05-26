@@ -71,7 +71,8 @@ const ReactDataGrid = React.createClass({
     contextMenu: React.PropTypes.element,
     onClearFilters: React.PropTypes.func,
     onCellExpand: React.PropTypes.func,
-    enableDragAndDrop: React.PropTypes.bool
+    enableDragAndDrop: React.PropTypes.bool,
+    onRowExpandToggle: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -296,6 +297,12 @@ const ReactDataGrid = React.createClass({
   onCellExpand(args) {
     if (this.props.onCellExpand) {
       this.props.onCellExpand(args);
+    }
+  },
+
+  onRowExpandToggle(args) {
+    if (typeof this.props.onRowExpandToggle === 'function') {
+      this.props.onRowExpandToggle(args);
     }
   },
 
@@ -595,7 +602,8 @@ const ReactDataGrid = React.createClass({
       onColumnEvent: this.onColumnEvent,
       openCellEditor: this.openCellEditor,
       onDragHandleDoubleClick: this.onDragHandleDoubleClick,
-      onCellExpand: this.onCellExpand
+      onCellExpand: this.onCellExpand,
+      onRowExpandToggle: this.onRowExpandToggle
     };
 
     let toolbar = this.renderToolbar();

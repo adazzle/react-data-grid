@@ -114,11 +114,6 @@
   background-color: #f2f2f2;
 }
 
-.react-grid-row-group {
-  background-color:  #428bca;
-  color: white;
-}
-
 .react-grid-Cell.editing {
   padding: 0;
   overflow: visible !important;
@@ -374,6 +369,9 @@ textareaselect.editor-main {
  background-color: #DBECFA;
 }
 
+.react-grid-Row.row-selected{
+ background-color: #DBECFA;
+}
 
 .react-grid-Cell--locked:last-of-type {
   border-right: 1px solid #dddddd;

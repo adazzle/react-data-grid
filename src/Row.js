@@ -29,7 +29,7 @@ const Row = React.createClass({
 
   mixins: [ColumnUtilsMixin],
 
-  getDefaultProps(): {cellRenderer: Cell} {
+  getDefaultProps() {
     return {
       cellRenderer: Cell,
       isSelected: false,
