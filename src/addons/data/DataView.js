@@ -10,7 +10,8 @@ const DataView = {
     let dataviewRows = rows;
     let groupedColumns = options.groupBy;
     if (groupedColumns && groupedColumns.length > 0) {
-      dataviewRows = getFlattenedGroupedRows({rows, groupedColumns});
+      let expandedRows = options.expandedRows;
+      dataviewRows = getFlattenedGroupedRows({rows, groupedColumns, expandedRows});
     }
     return dataviewRows;
   }

@@ -11,9 +11,9 @@ export default class RowGrouper {
     this.expandedRows = expandedRows;
   }
 
-  isRowExpanded(columnName) {
+  isRowExpanded(columnName, name) {
     let isExpanded = true;
-    expandedRowGroup = expandedRows[columnName];
+    let expandedRowGroup = this.expandedRows[columnName];
     if (expandedRowGroup && expandedRowGroup[name]) {
       isExpanded = expandedRowGroup[name].isExpanded;
     }
@@ -26,21 +26,24 @@ export default class RowGrouper {
     let columnName = this.columns[columnIndex];
     let groupedRows = groupBy(rows, columnName);
     Object.keys(groupedRows).forEach(r => {
-      let rowGroupHeader = {name: r, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: this.isRowExpanded(columnName), columnGroupName: columnName}};
+      let isExpanded = this.isRowExpanded(columnName, r);
+      let rowGroupHeader = {name: r, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName}};
       dataviewRows.push(rowGroupHeader);
-      nextColumnIndex = columnIndex + 1;
-      if (this.columns.length > nextColumnIndex) {
-        dataviewRows = dataviewRows.concat(this.groupRowsByColumn(groupedRows[r], nextColumnIndex));
-        nextColumnIndex = columnIndex - 1;
-      } else {
-        dataviewRows = dataviewRows.concat(groupedRows[r]);
+      if (isExpanded) {
+        nextColumnIndex = columnIndex + 1;
+        if (this.columns.length > nextColumnIndex) {
+          dataviewRows = dataviewRows.concat(this.groupRowsByColumn(groupedRows[r], nextColumnIndex));
+          nextColumnIndex = columnIndex - 1;
+        } else {
+          dataviewRows = dataviewRows.concat(groupedRows[r]);
+        }
       }
     });
     return dataviewRows;
   }
 }
 
-export const getFlattenedGroupedRows = createSelector([getInputRows, getGroupedColumns, getExpandedRows], (rows, groupedColumns) => {
+export const getFlattenedGroupedRows = createSelector([getInputRows, getGroupedColumns, getExpandedRows], (rows, groupedColumns, expandedRows) => {
   let rowGrouper = new RowGrouper(groupedColumns, expandedRows);
   return rowGrouper.groupRowsByColumn(rows, 0);
 });
