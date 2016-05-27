@@ -1,6 +1,8 @@
 import React, {PropTypes, Component} from 'react';
 import { DropTarget } from 'react-dnd';
 import {DragItemTypes} from '../../Constants';
+import GroupedColumnButton from './GroupedColumnButton';
+
 const propTypes = {
   isOver: PropTypes.bool.isRequired,
   connectDropTarget: PropTypes.func,
@@ -16,25 +18,6 @@ const defaultProps = {
   panelDescription: 'Drag a column header here to group by that column'
 };
 
-
-class GroupedColumn extends Component {
-  render() {
-    let style = {
-      width: '80px',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap'
-    };
-    return (<button  className="btn grouped-col-btn btn-sm"><span style={style}>{this.props.name}</span>
-    <span className="glyphicon glyphicon-trash" style={{float: 'right', paddingLeft: '5px'}} onClick={this.props.onColumnGroupDeleted.bind(this, this.props.name)}></span></button>);
-  }
-}
-
-GroupedColumn.propTypes = {
-  name: PropTypes.object.isRequired,
-  onColumnGroupDeleted: PropTypes.func
-};
-
 class GroupedColumnsPanel extends Component {
   constructor() {
     super();
@@ -47,7 +30,7 @@ class GroupedColumnsPanel extends Component {
 
   renderGroupedColumns() {
     return this.props.groupBy.map(c => {
-      return (<GroupedColumn name={c} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>);
+      return (<GroupedColumnButton name={c} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>);
     });
   }
 
