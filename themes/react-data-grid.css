@@ -373,6 +373,14 @@ textareaselect.editor-main {
  background-color: #DBECFA;
 }
 
+.react-grid-Row .row-selected{
+ background-color: #DBECFA;
+}
+
+.react-grid-row-group .row-expand-icon:hover {
+  color: #777777;
+}
+
 .react-grid-Cell--locked:last-of-type {
   border-right: 1px solid #dddddd;
   box-shadow: none;
