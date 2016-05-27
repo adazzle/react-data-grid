@@ -6,6 +6,7 @@ const ExcelColumn  = require('./addons/grids/ExcelColumn');
 const ColumnUtilsMixin  = require('./ColumnUtils');
 const SortableHeaderCell    = require('./addons/cells/headerCells/SortableHeaderCell');
 const FilterableHeaderCell  = require('./addons/cells/headerCells/FilterableHeaderCell');
+const NumberFilterableHeaderCell = require('./addons/cells/headerCells/NumberFilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
 
 const PropTypes         = React.PropTypes;
@@ -33,6 +34,7 @@ const HeaderRow = React.createClass({
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
+    numberfilterable: PropTypes.bool,
     onFilterChange: PropTypes.func,
     resizing: PropTypes.object,
     onScroll: PropTypes.func,
@@ -53,17 +55,23 @@ const HeaderRow = React.createClass({
   },
 
   getHeaderCellType(column) {
+      
     if (column.filterable) {
-      if (this.props.filterable) return HeaderCellType.FILTERABLE;
-    }
-
+         if (this.props.numberfilterable){
+             return HeaderCellType.NUMBERFILTERABLE;
+         }else{
+            if (this.props.filterable) return HeaderCellType.FILTERABLE;
+         }
+    } 
     if (column.sortable) return HeaderCellType.SORTABLE;
-
     return HeaderCellType.NONE;
   },
 
+  getNumberFilterableHeaderCell() {
+      return <NumberFilterableHeaderCell onChange={this.props.onFilterChange} />;
+  },
   getFilterableHeaderCell() {
-    return <FilterableHeaderCell onChange={this.props.onFilterChange} />;
+    return <FilterableHeaderCell onChange={this.props.onFilterChange} />;   
   },
 
   getSortableHeaderCell(column) {
@@ -76,16 +84,22 @@ const HeaderRow = React.createClass({
     if (column.headerRenderer) {
       renderer = column.headerRenderer;
     } else {
+       
       let headerCellType = this.getHeaderCellType(column);
+         
       switch (headerCellType) {
-      case HeaderCellType.SORTABLE:
-        renderer = this.getSortableHeaderCell(column);
-        break;
-      case HeaderCellType.FILTERABLE:
-        renderer = this.getFilterableHeaderCell();
-        break;
-      default:
-        break;
+          case HeaderCellType.SORTABLE:
+            renderer = this.getSortableHeaderCell(column);
+            break;
+          case HeaderCellType.FILTERABLE:           
+            renderer = this.getFilterableHeaderCell();
+            break;
+          case HeaderCellType.NUMBERFILTERABLE:               
+            renderer = this.getNumberFilterableHeaderCell();      
+            break;
+
+          default:
+            break;
       }
     }
     return renderer;
@@ -107,6 +121,7 @@ const HeaderRow = React.createClass({
     for (let i = 0, len = this.getSize(this.props.columns); i < len; i++) {
       let column = this.getColumn(this.props.columns, i);
       let _renderer = this.getHeaderRenderer(column);
+      
       if (column.key === 'select-row' && this.props.rowType === 'filter') {
         _renderer = <div></div>;
       }

@@ -375,7 +375,6 @@ const ReactDataGrid = React.createClass({
         updated: updated,
         action: 'copyPaste'});
     }
-
     this.setState({copied: null});
   },
 
@@ -462,6 +461,7 @@ const ReactDataGrid = React.createClass({
       rows.push({
         ref: 'filterRow',
         filterable: true,
+        numberfilterable: true,
         onFilterChange: this.props.onAddFilter,
         height: 45,
         rowType: 'filter'
@@ -607,6 +607,7 @@ const ReactDataGrid = React.createClass({
         formatter: <CheckboxEditor/>,
         onCellChange: this.handleRowSelect,
         filterable: false,
+        numberfilterable: false,
         headerRenderer: headerRenderer,
         width: 60,
         locked: true,
