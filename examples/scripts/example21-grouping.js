@@ -137,11 +137,11 @@ var AllFeaturesExample = `
 
     getInitialState : function(){
       var fakeRows = createRows(2000);
-      return {rows: fakeRows, groupBy: ['county'], expandedRows: {county: {'South Yorkshire' : expanded: false}}};
+      return {rows: fakeRows, groupBy: ['county'], expandedRows: {county: {'South Yorkshire' : {expanded: false}}}};
     },
 
     getRowAt : function(index){
-      var rows = DataView.getRows(this.state.rows, {groupBy: this.state.groupBy});
+      var rows = DataView.getRows(this.state.rows, {groupBy: this.state.groupBy, expandedRows: this.state.expandedRows});
       return rows[index];
     },
 
@@ -164,8 +164,8 @@ var AllFeaturesExample = `
     
     onRowExpandToggle: function(args){
       let expandedRows = Object.assign({}, this.state.expandedRows);
-      expandedRows[args.columnGroupName] = {};
-      expandedRows[args.columnGroupName][args.name] = {isExpanded: args.isExpanded};
+      expandedRows[args.columnGroupName] = Object.assign({}, expandedRows[args.columnGroupName]);
+      expandedRows[args.columnGroupName][args.name] = {isExpanded: args.shouldExpand};
       this.setState({expandedRows: expandedRows});
     },
 
@@ -197,8 +197,9 @@ module.exports = React.createClass({
     return(
       <div>
         <h3>Row Grouping Example</h3>
-        <p>This example demonstrates how to group rows by column name. The ReactDataGrid with addons is globally available in this example so you need to have 'react-data-grid-with-addons.js' on the page or require('react-data-grid'/addons) if you are using Common JS.</p>
-        <p>Fake data is generated using the <a href="https://github.com/Marak/faker.js">Faker</a> library which is also a global variable in this example.</p>
+        <p>This example demonstrates how to group rows by column name. Drag a column header to group rows by that column.</p>
+        <p>To expand and close a row group, you can use either the mouse or keyboard</p>
+        <p>Press <strong>Enter</strong> or <strong>Left Arrow</strong> or <strong>Right Arrow</strong> to toggle whether a row is expanded or not</p>
         <ReactPlayground codeText={AllFeaturesExample} />
       </div>
     )
