@@ -11,6 +11,7 @@ class RowGroup extends Component {
     this.onClick = this.onClick.bind(this);
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onRowExpandClick = this.onRowExpandClick.bind(this);
   }
 
   componentDidMount() {
@@ -50,6 +51,10 @@ class RowGroup extends Component {
     }
   }
 
+  onRowExpandClick() {
+    this.onRowExpandToggle(!this.props.isExpanded);
+  }
+
   onRowExpandToggle(expand) {
     let shouldExpand = expand == null ? !this.props.isExpanded : expand;
     let meta = this.props.cellMetaData;
@@ -84,7 +89,7 @@ class RowGroup extends Component {
     };
     return (
       <div style={style} className={this.getClassName()} onClick={this.onClick} onKeyDown={this.onKeyDown} tabIndex={-1}>
-        <span style={{float: 'left', marginLeft: marginLeft}} onClick={this.onRowExpandToggle} >{this.props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
+        <span className="row-expand-icon" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={this.onRowExpandClick} >{this.props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
         <strong>{this.props.columnGroupName} : {this.props.name}</strong>
       </div>
     );
