@@ -2,10 +2,91 @@ var ReactGrid             = require('../build/react-data-grid');
 var _             = require('../build/underscore');
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
-var NumberFilterRenderer = require('../components/NumberFilterRenderer');
 
 var EditableExample = `
 var Toolbar = ReactDataGrid.Toolbar;
+
+var NumberFilterRenderer = React.createClass({
+
+  propTypes: {
+    onChange: React.PropTypes.func.isRequired
+  },
+
+  getInitialState : function(){
+    return {filterTerm: '', filterCriterias:[]};
+  },                                                 
+      
+  handleChange: function(e) {
+    let val = e.target.value;
+    let spiltedFilterValues = val.split(",");         
+    let filterCriterias = [];   
+    if(isNaN(spiltedFilterValues)){
+        for (let filterVal in spiltedFilterValues) {        
+            if(spiltedFilterValues[filterVal]){       
+                let contentString = spiltedFilterValues[filterVal];
+                if(contentString.indexOf("-")!=-1){               
+                    let strSplit = contentString.split("-");
+                    let minNumber = parseFloat(strSplit[0]);
+                    let maxNumber = parseFloat(strSplit[1]);
+                    if(maxNumber){
+                        if(maxNumber > minNumber){
+                            filterCriterias.push({contentString:contentString, opr:"-", filterableNumber:minNumber, maxNumber:maxNumber});
+                        }else{
+                            filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:minNumber});
+                        }
+                    }else{
+                        filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:minNumber});
+                    }
+                }else if(contentString.indexOf(">")!= -1){                       
+                    let strSplit = contentString.split(">");
+                    let filterableNumber = strSplit[1];  
+                    if(filterableNumber){
+                        filterCriterias.push({contentString:contentString, opr:">", filterableNumber:filterableNumber});
+                    }else{
+                        filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:filterableNumber});
+                    }
+                }else if(contentString.indexOf("<")!= -1){       
+                    let filterableContent = contentString.split("<");
+                    let filterableNumber = filterableContent[1];  
+                    if(filterableNumber){
+                       filterCriterias.push({contentString:contentString, opr:"<", filterableNumber:filterableNumber});
+                    }else{
+                        filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:filterableNumber});
+                    }
+                }else{                                    
+                    filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:contentString});
+                }
+            }
+        }
+    }else{        
+        filterCriterias.push({contentString:val, opr:"==", filterableNumber:val});
+    }
+    console.log(val);
+    console.log(this.props.column.key);
+    console.log(filterCriterias);
+    this.setState({filterTerm: val,  filterCriterias:filterCriterias});
+    //this.props.onChange({filterTerm: val, columnKey: this.props.column.key, filterCriterias:filterCriterias});
+  },
+
+  renderInput: function() {
+    if (this.props.column.filterable === false) {
+      return <span/>;
+    }
+
+    let inputKey = 'header-filter-' + this.props.column.key;
+    return (<input key={inputKey} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>);
+  },
+
+  render: function() {
+    return (
+      <div>
+        <div className="form-group">
+          {this.renderInput()}
+        </div>
+      </div>
+    );
+  }
+});
 
 //helper to generate a random date
 function randomDate(start, end) {
@@ -64,7 +145,7 @@ var columns = [
   name: '% Complete',
   sortable : true,
   filterable: true,
-  filterHeaderRenderer: <NumberFilterRenderer />
+  filterHeaderRenderer: <NumberFilterRenderer onChange={this.props.onFilterChange}/>
 },
 {
   key: 'startDate',
@@ -79,6 +160,7 @@ var columns = [
   filterable: true
 }
 ]
+
 
 var Example = React.createClass({
 
@@ -126,6 +208,7 @@ var Example = React.createClass({
     });
     return rows;
   },
+
   filterNumRows : function(originalRows, filters, filterableNumber, maxNumber, opr) {
     var rows = originalRows.filter(function(r){
       var include = true;      
@@ -154,7 +237,7 @@ var Example = React.createClass({
     return rows;
   },
 
-  handleFilterChange : function(filter){    
+  handleFilterChangeNum : function(filter){   
     this.setState(function(currentState) {
       if (filter.filterTerm) {
         currentState.filters[filter.columnKey] = filter.filterTerm;
@@ -178,6 +261,19 @@ var Example = React.createClass({
         }
     });
   },
+  
+  handleFilterChange : function(filter){
+    this.setState(function(currentState) {
+      if (filter.filterTerm) {
+        currentState.filters[filter.columnKey] = filter.filterTerm;
+      } else {
+        delete currentState.filters[filter.columnKey];
+      }
+      currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
+      return currentState;
+    });
+  },
+
   render:function(){
     return(
       <ReactDataGrid
