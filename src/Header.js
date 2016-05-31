@@ -99,7 +99,6 @@ const Header = React.createClass({
         columns={columnMetrics.columns}
         resizing={resizeColumn}
         filterable={row.filterable}
-        numberfilterable={row.numberfilterable}
         onFilterChange={row.onFilterChange}
         sortColumn={this.props.sortColumn}
         sortDirection={this.props.sortDirection}

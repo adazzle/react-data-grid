@@ -6,7 +6,6 @@ const ExcelColumn  = require('./addons/grids/ExcelColumn');
 const ColumnUtilsMixin  = require('./ColumnUtils');
 const SortableHeaderCell    = require('./addons/cells/headerCells/SortableHeaderCell');
 const FilterableHeaderCell  = require('./addons/cells/headerCells/FilterableHeaderCell');
-const NumberFilterableHeaderCell = require('./addons/cells/headerCells/NumberFilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
 
 const PropTypes         = React.PropTypes;
@@ -34,7 +33,6 @@ const HeaderRow = React.createClass({
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
-    numberfilterable: PropTypes.bool,
     onFilterChange: PropTypes.func,
     resizing: PropTypes.object,
     onScroll: PropTypes.func,
@@ -56,22 +54,17 @@ const HeaderRow = React.createClass({
 
   getHeaderCellType(column) {
       
-    if (column.filterable) {
-         if (this.props.numberfilterable){
-             return HeaderCellType.NUMBERFILTERABLE;
-         }else{
+    if (column.filterable) {         
             if (this.props.filterable) return HeaderCellType.FILTERABLE;
-         }
     } 
     if (column.sortable) return HeaderCellType.SORTABLE;
     return HeaderCellType.NONE;
   },
-
-  getNumberFilterableHeaderCell() {
-      return <NumberFilterableHeaderCell onChange={this.props.onFilterChange} />;
-  },
+ 
   getFilterableHeaderCell() {
-    return <FilterableHeaderCell onChange={this.props.onFilterChange} />;   
+     console.log(FilterHeaderRenderer);
+    let FilterHeaderRenderer = this.props.filterHeaderRenderer;
+      return FilterHeaderRenderer ? <FilterHeaderRenderer  onChange={this.props.onFilterChange} />: <FilterableHeaderCell onChange={this.props.onFilterChange} />; 
   },
 
   getSortableHeaderCell(column) {
@@ -93,10 +86,7 @@ const HeaderRow = React.createClass({
             break;
           case HeaderCellType.FILTERABLE:           
             renderer = this.getFilterableHeaderCell();
-            break;
-          case HeaderCellType.NUMBERFILTERABLE:               
-            renderer = this.getNumberFilterableHeaderCell();      
-            break;
+            break;         
 
           default:
             break;

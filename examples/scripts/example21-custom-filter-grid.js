@@ -2,6 +2,7 @@ var ReactGrid             = require('../build/react-data-grid');
 var _             = require('../build/underscore');
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
+var NumberFilterRenderer = require('../components/NumberFilterRenderer');
 
 var EditableExample = `
 var Toolbar = ReactDataGrid.Toolbar;
@@ -63,7 +64,7 @@ var columns = [
   name: '% Complete',
   sortable : true,
   filterable: true,
-  numberfilterable: true
+  filterHeaderRenderer: <NumberFilterRenderer />
 },
 {
   key: 'startDate',
@@ -125,24 +126,23 @@ var Example = React.createClass({
     });
     return rows;
   },
-
-  filterNumRows : function(originalRows, filters, firstNumer, secondNumber, opr) {
+  filterNumRows : function(originalRows, filters, filterableNumber, maxNumber, opr) {
     var rows = originalRows.filter(function(r){
       var include = true;      
       for (var columnKey in filters) {
         if(filters.hasOwnProperty(columnKey)) {  
             if(opr=='-'){
-                if(parseInt(r[columnKey]) >= firstNumer && parseInt(r[columnKey]) <= secondNumber){}else{     
+                if(parseInt(r[columnKey]) >= filterableNumber && parseInt(r[columnKey]) <= maxNumber){}else{     
                     include = false;
                 }
             }else if(opr=='>'){
-                if(!(parseInt(r[columnKey]) > firstNumer)){include = false;}
+                if(!(parseInt(r[columnKey]) > filterableNumber)){include = false;}
             }else if(opr=='<'){               
-                if(parseInt(r[columnKey]) < firstNumer){}else{     
+                if(parseInt(r[columnKey]) < filterableNumber){}else{     
                     include = false;
                 }
-            }else if(opr=='string'){                
-                if(parseInt(r[columnKey]) == firstNumer){                 
+            }else if(opr=='=='){                
+                if(parseInt(r[columnKey]) == filterableNumber){                 
                 }else{                
                     include = false;
                 }  
@@ -165,13 +165,12 @@ var Example = React.createClass({
             currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
             return currentState;
         }else{
-            var tmpStrArray = filter.filterArray;        
-            var tmpCurrentState = [];  
-           
-            for (var tmpStrArrayVal in tmpStrArray) {        
-                if(tmpStrArray[tmpStrArrayVal]){            
-                    var contentString = tmpStrArray[tmpStrArrayVal];                   
-                    tmpCurrentState.push(this.filterNumRows(currentState.originalRows, currentState.filters, contentString.firstNumber, contentString.secondNumber,contentString.opr));                     
+            var filterCriterias = filter.filterCriterias;        
+            var tmpCurrentState = []; 
+            for (var filterCriteriasVal in filterCriterias) {        
+                if(filterCriterias[filterCriteriasVal]){            
+                    var contentString = filterCriterias[filterCriteriasVal];                   
+                    tmpCurrentState.push(this.filterNumRows(currentState.originalRows, currentState.filters, contentString.filterableNumber, contentString.maxNumber,contentString.opr));                    
                 }
             }
             currentState.rows = _.unique(_.flatten(tmpCurrentState));
