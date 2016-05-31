@@ -137,7 +137,7 @@ var AllFeaturesExample = `
 
     getInitialState : function(){
       var fakeRows = createRows(2000);
-      return {rows: fakeRows, groupBy: ['county'], expandedRows: {county: {'South Yorkshire' : {expanded: false}}}};
+      return {rows: fakeRows, groupBy: [], expandedRows: {}};
     },
 
     getRowAt : function(index){
