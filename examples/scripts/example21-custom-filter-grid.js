@@ -1,12 +1,12 @@
-var ReactGrid             = require('../build/react-data-grid');
-var _             = require('../build/underscore');
-var QuickStartDescription = require('../components/QuickStartDescription')
-var ReactPlayground       = require('../assets/js/ReactPlayground');
+let ReactGrid             = require('../build/react-data-grid');
+let _             = require('../build/underscore');
+let QuickStartDescription = require('../components/QuickStartDescription')
+let ReactPlayground       = require('../assets/js/ReactPlayground');
 
-var EditableExample = `
-var Toolbar = ReactDataGrid.Toolbar;
+let EditableExample = `
+let Toolbar = ReactDataGrid.Toolbar;
 
-var NumberFilterRenderer = React.createClass({
+let NumberFilterRenderer = React.createClass({
 
   propTypes: {
     onChange: React.PropTypes.func.isRequired
@@ -15,57 +15,51 @@ var NumberFilterRenderer = React.createClass({
   getInitialState : function(){
     return {filterTerm: '', filterCriterias:[]};
   },                                                 
-      
+  isNumericRange: function(contentString) {
+        let inputRange = contentString.split("-"), opr="";
+        let minNumber = parseFloat(inputRange[0]);
+        let maxNumber = parseFloat(inputRange[1]);
+        if(maxNumber){
+            if(maxNumber > minNumber){
+                opr = "-";                
+            }else{
+                opr = "==";                
+            }
+        }else{
+            opr = "==";           
+        }
+        return {contentString:contentString, opr:opr, filterableNumber:minNumber, maxNumber:maxNumber};
+  },
+  isGreaterLesser: function(contentString, srcOpr) {
+        let inputRange = contentString.split(srcOpr), opr="";
+        let filterableNumber = inputRange[1];  
+        if(filterableNumber){
+            opr = srcOpr;            
+        }else{
+            opr = "==";            
+        }
+        return {contentString:contentString, opr:opr, filterableNumber:filterableNumber}
+  },
   handleChange: function(e) {
     let val = e.target.value;
-    let spiltedFilterValues = val.split(",");         
-    let filterCriterias = [];   
-    if(isNaN(spiltedFilterValues)){
-        for (let filterVal in spiltedFilterValues) {        
-            if(spiltedFilterValues[filterVal]){       
-                let contentString = spiltedFilterValues[filterVal];
-                if(contentString.indexOf("-")!=-1){               
-                    let strSplit = contentString.split("-");
-                    let minNumber = parseFloat(strSplit[0]);
-                    let maxNumber = parseFloat(strSplit[1]);
-                    if(maxNumber){
-                        if(maxNumber > minNumber){
-                            filterCriterias.push({contentString:contentString, opr:"-", filterableNumber:minNumber, maxNumber:maxNumber});
-                        }else{
-                            filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:minNumber});
-                        }
-                    }else{
-                        filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:minNumber});
-                    }
-                }else if(contentString.indexOf(">")!= -1){                       
-                    let strSplit = contentString.split(">");
-                    let filterableNumber = strSplit[1];  
-                    if(filterableNumber){
-                        filterCriterias.push({contentString:contentString, opr:">", filterableNumber:filterableNumber});
-                    }else{
-                        filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:filterableNumber});
-                    }
-                }else if(contentString.indexOf("<")!= -1){       
-                    let filterableContent = contentString.split("<");
-                    let filterableNumber = filterableContent[1];  
-                    if(filterableNumber){
-                       filterCriterias.push({contentString:contentString, opr:"<", filterableNumber:filterableNumber});
-                    }else{
-                        filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:filterableNumber});
-                    }
-                }else{                                    
-                    filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:contentString});
-                }
+    let spiltedFilterValues = val.split(","), filterCriterias = [];          
+   
+    for (let filterVal in spiltedFilterValues) {        
+        if(spiltedFilterValues[filterVal]){       
+            let contentString = spiltedFilterValues[filterVal];
+            if(contentString.indexOf("-")!=-1){               
+                filterCriterias.push(this.isNumericRange(contentString));
+            }else if(contentString.indexOf(">")!= -1){
+                filterCriterias.push(this.isGreaterLesser(contentString, ">"));                    
+            }else if(contentString.indexOf("<")!= -1){       
+                filterCriterias.push(this.isGreaterLesser(contentString, "<"));
+            }else{                                    
+                filterCriterias.push({contentString:contentString, opr:"==", filterableNumber:contentString});
             }
         }
-    }else{        
-        filterCriterias.push({contentString:val, opr:"==", filterableNumber:val});
-    }
-    console.log(val);
-    console.log(this.props.column.key);
-    console.log(filterCriterias);
+    }    
     this.setState({filterTerm: val,  filterCriterias:filterCriterias});
-    //this.props.onChange({filterTerm: val, columnKey: this.props.column.key, filterCriterias:filterCriterias});
+    this.props.onChange({filterTerm: val, columnKey: this.props.column.key, filterCriterias:filterCriterias, filterType:'numeric'});
   },
 
   renderInput: function() {
@@ -95,8 +89,8 @@ function randomDate(start, end) {
 
 //helper to create a fixed number of rows
 function createRows(numberOfRows){
-  var _rows = [];
-  for (var i = 1; i < numberOfRows; i++) {
+  let _rows = [];
+  for (let i = 1; i < numberOfRows; i++) {
     _rows.push({
       id: i,
       task: 'Task ' + i,
@@ -111,12 +105,12 @@ function createRows(numberOfRows){
 }
 
 //function to retrieve a row for a given index
-var rowGetter = function(i){
+let rowGetter = function(i){
   return _rows[i];
 };
 
 //Columns definition
-var columns = [
+let columns = [
 {
   key: 'id',
   name: 'ID',
@@ -145,7 +139,7 @@ var columns = [
   name: '% Complete',
   sortable : true,
   filterable: true,
-  filterHeaderRenderer: <NumberFilterRenderer onChange={this.props.onFilterChange}/>
+  filterHeaderRenderer: NumberFilterRenderer
 },
 {
   key: 'startDate',
@@ -162,11 +156,11 @@ var columns = [
 ]
 
 
-var Example = React.createClass({
+let Example = React.createClass({
 
   getInitialState : function(){
-    var originalRows = createRows(1000);
-    var rows = originalRows.slice(0);
+    let originalRows = createRows(1000);
+    let rows = originalRows.slice(0);
     //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
     return {originalRows : originalRows, rows : rows, filters : {}};
   },
@@ -176,101 +170,74 @@ var Example = React.createClass({
   },
 
   handleGridSort : function(sortColumn, sortDirection){
-    var comparer = function(a, b) {
+    let comparer = function(a, b) {
       if(sortDirection === 'ASC'){
         return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
       }else if(sortDirection === 'DESC'){
         return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
       }
     }
-    var rows;
+    let rows;
     if (sortDirection === 'NONE') {
-      var originalRows = this.state.originalRows;
+      let originalRows = this.state.originalRows;
       rows = this.filterRows(originalRows, this.state.filters);
     } else {
       rows = this.state.rows.sort(comparer);
     }
     this.setState({rows : rows});
   },
-
-  filterRows : function(originalRows, filters) {
-    var rows = originalRows.filter(function(r){
-      var include = true;
-      for (var columnKey in filters) {
-        if(filters.hasOwnProperty(columnKey)) {
-          var rowValue = r[columnKey].toString().toLowerCase();            
-          if(rowValue.indexOf(filters[columnKey].toLowerCase()) === -1) {
-            include = false;
-          }
-        }
-      }
-      return include;
-    });
-    return rows;
-  },
-
-  filterNumRows : function(originalRows, filters, filterableNumber, maxNumber, opr) {
-    var rows = originalRows.filter(function(r){
-      var include = true;      
-      for (var columnKey in filters) {
-        if(filters.hasOwnProperty(columnKey)) {  
-            if(opr=='-'){
-                if(parseInt(r[columnKey]) >= filterableNumber && parseInt(r[columnKey]) <= maxNumber){}else{     
-                    include = false;
-                }
-            }else if(opr=='>'){
-                if(!(parseInt(r[columnKey]) > filterableNumber)){include = false;}
-            }else if(opr=='<'){               
-                if(parseInt(r[columnKey]) < filterableNumber){}else{     
-                    include = false;
-                }
-            }else if(opr=='=='){                
-                if(parseInt(r[columnKey]) == filterableNumber){                 
-                }else{                
-                    include = false;
-                }  
-            }       
-        }
-      }
-      return include;
-    });
-    return rows;
-  },
-
-  handleFilterChangeNum : function(filter){   
-    this.setState(function(currentState) {
-      if (filter.filterTerm) {
-        currentState.filters[filter.columnKey] = filter.filterTerm;
-      } else {
-        delete currentState.filters[filter.columnKey];
-      }   
-        if(filter.filterTerm==''){
-            currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
-            return currentState;
-        }else{
-            var filterCriterias = filter.filterCriterias;        
-            var tmpCurrentState = []; 
-            for (var filterCriteriasVal in filterCriterias) {        
-                if(filterCriterias[filterCriteriasVal]){            
-                    var contentString = filterCriterias[filterCriteriasVal];                   
-                    tmpCurrentState.push(this.filterNumRows(currentState.originalRows, currentState.filters, contentString.filterableNumber, contentString.maxNumber,contentString.opr));                    
-                }
+  filterConditionCheck : function(source, min, max, opr, gridValue) {
+        switch(opr) {
+                case '-':
+                    return (parseFloat(source) >=min && parseFloat(source) <=max) ? true : false;       
+                    break;
+                case '>':
+                    return (parseFloat(source) > min) ? true : false;                    
+                    break;
+                case '<':
+                    return (parseFloat(source) < min) ? true : false;                    
+                    break;
+                case '==':
+                    return (parseFloat(source) == min) ? true : false;                       
+                    break;
+                default:
+                    let rowValue = source.toString().toLowerCase();            
+                   return (rowValue.indexOf(gridValue.toLowerCase()) === -1) ? false : true;  
             }
-            currentState.rows = _.unique(_.flatten(tmpCurrentState));
-            return currentState;
-        }
-    });
   },
-  
-  handleFilterChange : function(filter){
+  filterRows : function(originalRows, filters, filterableNumber, maxNumber, opr) {
+    let _this = this;
+    let rows = originalRows.filter(function(r){
+      let include = true;      
+      for (let columnKey in filters) {
+        if(filters.hasOwnProperty(columnKey)) {             
+            include = _this.filterConditionCheck(r[columnKey], filterableNumber, maxNumber, opr, filters[columnKey]);            
+        }
+      } 
+      return include;
+    });
+    
+    return rows;
+  },
+  handleFilterChange : function(filter){     
     this.setState(function(currentState) {
       if (filter.filterTerm) {
         currentState.filters[filter.columnKey] = filter.filterTerm;
       } else {
         delete currentState.filters[filter.columnKey];
+      }    
+      if(filter.filterTerm=='' || filter.filterType!='numeric'){
+            currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);                
+      }else if(filter.filterType=='numeric'){       
+            let filterCriterias = filter.filterCriterias, tmpCurrentState = [], _this=this;         
+            _.each(filterCriterias, function(contentString){
+                if(contentString){                                      
+                    tmpCurrentState.push(_this.filterRows(currentState.originalRows, currentState.filters, contentString.filterableNumber, contentString.maxNumber,contentString.opr)); 
+                }
+            });                       
+           currentState.rows = _.unique(_.flatten(tmpCurrentState));           
       }
-      currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
-      return currentState;
+       return currentState;
     });
   },
 
