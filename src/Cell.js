@@ -160,7 +160,9 @@ const Cell = React.createClass({
   },
 
   getUpdateCellClass() {
-    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+    return this.props.column.getUpdateCellClass
+      ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging, this.state.isRowChanging)
+      : '';
   },
 
   isColumnSelected() {
