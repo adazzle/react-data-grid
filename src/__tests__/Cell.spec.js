@@ -108,7 +108,8 @@ describe('Cell Tests', () => {
       testProps.column.getUpdateCellClass = () => updateClass;
       let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       // force update
-      cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
+      let newValue = 'London';
+      cellInstance.setProps({value: newValue, selectedColumn: testProps.column});
       let cellHasUpdateClass = ReactDOM.findDOMNode(cellInstance).getAttribute('class').indexOf(updateClass) > -1;
       expect(cellHasUpdateClass).toBe(true);
     });
