@@ -40,7 +40,9 @@ const Cell = React.createClass({
   },
 
   getInitialState() {
-    return {isRowChanging: false, isCellValueChanging: false};
+    return {
+      isCellValueChanging: false
+    };
   },
 
   componentDidMount: function() {
@@ -48,7 +50,9 @@ const Cell = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    this.setState({isRowChanging: this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value});
+    this.setState({
+      isCellValueChanging: this.props.value !== nextProps.value
+    });
   },
 
   componentDidUpdate: function() {
@@ -57,7 +61,7 @@ const Cell = React.createClass({
     if (dragged && dragged.complete === true) {
       this.props.cellMetaData.handleTerminateDrag();
     }
-    if (this.state.isRowChanging && this.props.selectedColumn != null) {
+    if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
       this.applyUpdateClass();
     }
   },
@@ -65,7 +69,6 @@ const Cell = React.createClass({
   shouldComponentUpdate(nextProps: any): boolean {
     return this.props.column.width !== nextProps.column.width
     || this.props.column.left !== nextProps.column.left
-    || this.props.rowData !== nextProps.rowData
     || this.props.height !== nextProps.height
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
@@ -160,7 +163,9 @@ const Cell = React.createClass({
   },
 
   getUpdateCellClass() {
-    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+    return this.props.column.getUpdateCellClass
+      ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging)
+      : '';
   },
 
   isColumnSelected() {
