@@ -6343,7 +6343,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getInitialState: function getInitialState() {
-	    return { isRowChanging: false, isCellValueChanging: false };
+	    return {
+	      isCellValueChanging: false,
+	      oldRowData: {},
+	      newRowData: {}
+	    };
 	  },
 
 
@@ -6352,7 +6356,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    this.setState({ isRowChanging: this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value });
+	    this.setState({
+	      isCellValueChanging: this.props.value !== nextProps.value,
+	      oldRowData: this.props.rowData,
+	      newRowData: nextProps.rowData
+	    });
 	  },
 
 
@@ -6362,13 +6370,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (dragged && dragged.complete === true) {
 	      this.props.cellMetaData.handleTerminateDrag();
 	    }
-	    if (this.state.isRowChanging && this.props.selectedColumn != null) {
+	    if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
 	      this.applyUpdateClass();
 	    }
 	  },
 
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    return this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.rowData !== nextProps.rowData || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.value !== nextProps.value;
+	    return this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.value !== nextProps.value;
 	  },
 	  onCellClick: function onCellClick(e) {
 	    var meta = this.props.cellMetaData;
@@ -6445,7 +6453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getUpdateCellClass: function getUpdateCellClass() {
-	    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+	    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging, this.state.oldRowData, this.state.newRowData) : '';
 	  },
 	  isColumnSelected: function isColumnSelected() {
 	    var meta = this.props.cellMetaData;
