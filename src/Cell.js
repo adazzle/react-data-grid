@@ -41,7 +41,9 @@ const Cell = React.createClass({
 
   getInitialState() {
     return {
-      isCellValueChanging: false
+      isCellValueChanging: false,
+      oldRowData: {},
+      newRowData: {}
     };
   },
 
@@ -51,7 +53,9 @@ const Cell = React.createClass({
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      isCellValueChanging: this.props.value !== nextProps.value
+      isCellValueChanging: this.props.value !== nextProps.value,
+      oldRowData: this.props.rowData,
+      newRowData: nextProps.rowData
     });
   },
 
@@ -164,7 +168,7 @@ const Cell = React.createClass({
 
   getUpdateCellClass() {
     return this.props.column.getUpdateCellClass
-      ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging)
+      ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging, this.state.oldRowData, this.state.newRowData)
       : '';
   },
 
