@@ -53,7 +53,7 @@ const HeaderCell = React.createClass({
   },
 
   getWidthFromMouseEvent(e: SyntheticMouseEvent): number {
-    let right = e.pageX;
+    let right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
     let left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   },
