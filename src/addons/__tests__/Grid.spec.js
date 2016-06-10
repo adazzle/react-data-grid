@@ -255,6 +255,15 @@ describe('Grid', function() {
           expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
         });
       });
+      describe('when row selection is enabled and positionned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
     });
 
     describe('when cell navigation is configured to change rows', function() {
@@ -298,6 +307,15 @@ describe('Grid', function() {
           expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
         });
       });
+      describe('when row selection is enabled and positionned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
     });
 
     describe('when cell navigation is configured to loop over cells in row', function() {
@@ -339,6 +357,15 @@ describe('Grid', function() {
         it('selection should move to last cell in same row', function() {
           this.simulateGridKeyDown('ArrowLeft');
           expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 0 });
+        });
+      });
+      describe('when row selection enabled and positionned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
         });
       });
     });

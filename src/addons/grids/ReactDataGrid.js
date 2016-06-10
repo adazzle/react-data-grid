@@ -512,11 +512,17 @@ const ReactDataGrid = React.createClass({
     this.onSelect({ idx: idx, rowIdx: rowIdx });
   },
 
+  getNbrColumns() {
+    const {columns, enableRowSelect} = this.props;
+    return enableRowSelect ? columns.length + 1 : columns.length;
+  },
+
   calculateNextSelectionPosition(cellNavigationMode: string, cellDelta: number, rowDelta: number) {
     let _rowDelta = rowDelta;
     let idx = this.state.selected.idx + cellDelta;
+    const nbrColumns = this.getNbrColumns();
     if (cellDelta > 0) {
-      if (this.isAtLastCellInRow()) {
+      if (this.isAtLastCellInRow(nbrColumns)) {
         if (cellNavigationMode === 'changeRow') {
           _rowDelta = this.isAtLastRow() ? rowDelta : rowDelta + 1;
           idx = this.isAtLastRow() ? idx : 0;
@@ -528,9 +534,9 @@ const ReactDataGrid = React.createClass({
       if (this.isAtFirstCellInRow()) {
         if (cellNavigationMode === 'changeRow') {
           _rowDelta = this.isAtFirstRow() ? rowDelta : rowDelta - 1;
-          idx = this.isAtFirstRow() ? 0 : this.props.columns.length - 1;
+          idx = this.isAtFirstRow() ? 0 : nbrColumns - 1;
         } else {
-          idx = this.props.columns.length - 1;
+          idx = nbrColumns - 1;
         }
       }
     }
@@ -538,8 +544,8 @@ const ReactDataGrid = React.createClass({
     return {idx, rowIdx};
   },
 
-  isAtLastCellInRow() {
-    return this.state.selected.idx === this.props.columns.length - 1;
+  isAtLastCellInRow(nbrColumns) {
+    return this.state.selected.idx === nbrColumns - 1;
   },
 
   isAtLastRow() {
