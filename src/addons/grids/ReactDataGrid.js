@@ -385,7 +385,6 @@ const ReactDataGrid = React.createClass({
         updated: updated,
         action: 'copyPaste'});
     }
-
     this.setState({copied: null});
   },
 
