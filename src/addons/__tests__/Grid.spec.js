@@ -262,6 +262,15 @@ describe('Grid', function() {
           expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
         });
       });
+      describe('when row selection is enabled and positionned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
     });
 
     describe('when cell navigation is configured to change rows', function() {
@@ -305,6 +314,15 @@ describe('Grid', function() {
           expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
         });
       });
+      describe('when row selection is enabled and positionned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
     });
 
     describe('when cell navigation is configured to loop over cells in row', function() {
@@ -346,6 +364,48 @@ describe('Grid', function() {
         it('selection should move to last cell in same row', function() {
           this.simulateGridKeyDown('ArrowLeft');
           expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 0 });
+        });
+      });
+
+      describe('when row selection enabled and positionned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+    });
+  });
+  describe('Cell Selection/DeSelection handlers', function() {
+    describe('when cell selection/deselection handlers are passed', function() {
+      beforeEach(function() {
+        const extraProps = { onCellSelected: this.noop, onCellDeSelected: this.noop };
+        spyOn(extraProps, 'onCellSelected');
+        spyOn(extraProps, 'onCellDeSelected');
+        this.component = this.createComponent(extraProps);
+      });
+
+      describe('cell is selected', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { rowIdx: 1, idx: 2 } });
+        });
+        it('deselection handler should have been called', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.props.onCellDeSelected).toHaveBeenCalled();
+          expect(this.component.props.onCellDeSelected.mostRecentCall.args[0]).toEqual({
+            rowIdx: 1,
+            idx: 2
+          });
+        });
+        it('selection handler should have been called', function() {
+          this.simulateGridKeyDown('Tab');
+          expect(this.component.props.onCellSelected).toHaveBeenCalled();
+          expect(this.component.props.onCellSelected.mostRecentCall.args[0]).toEqual({
+            rowIdx: 1,
+            idx: 3
+          });
         });
       });
     });
@@ -485,8 +545,6 @@ describe('Grid', function() {
       });
     });
   });
-
-
 
   describe('User Interaction', function() {
     it('hitting TAB should decrement selected cell index by 1', function() {

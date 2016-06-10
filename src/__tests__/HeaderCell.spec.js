@@ -42,12 +42,21 @@ describe('Header Cell Tests', () => {
     );
   });
 
-  it('will render a custom renderer if supplied', () => {
-    let CustomRenderer = new StubComponent('CustomRenderer');
-    headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps} renderer={<CustomRenderer/>}/>);
-    expect(TestUtils.findRenderedComponentWithType(headerCell, CustomRenderer)).toBeDefined();
-  });
+  describe('When custom render is supplied', () => {
+    it('will render', () => {
+      let CustomRenderer = new StubComponent('CustomRenderer');
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps} renderer={<CustomRenderer/>}/>);
+      expect(TestUtils.findRenderedComponentWithType(headerCell, CustomRenderer)).toBeDefined();
+    });
 
+    it('will have height passed in props', () => {
+      let CustomRenderer = new StubComponent('CustomRenderer');
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps} renderer={<CustomRenderer/>}/>);
+      let cr = TestUtils.findRenderedComponentWithType(headerCell, CustomRenderer);
+      expect(cr).toBeDefined();
+      expect(cr.props.height).toBe(testProps.height);
+    });
+  });
 
   describe('When column is resizable', () => {
     beforeEach(() => {

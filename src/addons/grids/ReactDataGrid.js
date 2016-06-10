@@ -71,6 +71,8 @@ const ReactDataGrid = React.createClass({
     onClearFilters: React.PropTypes.func,
     contextMenu: React.PropTypes.element,
     cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
+    onCellSelected: React.PropTypes.func,
+    onCellDeSelected: React.PropTypes.func,
     rowSelection: React.PropTypes.shape({
       enableShiftSelect: React.PropTypes.bool,
       onRowsSelected: React.PropTypes.func,
@@ -161,7 +163,15 @@ const ReactDataGrid = React.createClass({
           && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
           && rowIdx < this.props.rowsCount
         ) {
-        this.setState({selected: selected});
+        const oldSelection = this.state.selected;
+        this.setState({selected: selected}, () => {
+          if (typeof this.props.onCellDeSelected === 'function') {
+            this.props.onCellDeSelected(oldSelection);
+          }
+          if (typeof this.props.onCellSelected === 'function') {
+            this.props.onCellSelected(selected);
+          }
+        });
       }
     }
   },
@@ -240,8 +250,13 @@ const ReactDataGrid = React.createClass({
       KeyCode_v: 118
     };
 
+    let rowIdx = this.state.selected.rowIdx;
+    let row = this.props.rowGetter(rowIdx);
+
     let idx = this.state.selected.idx;
-    if (this.canEdit(idx)) {
+    let col = this.getColumn(idx);
+
+    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
       if (e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C) {
         let value = this.getSelectedValue();
         this.handleCopy({ value: value });
@@ -293,10 +308,13 @@ const ReactDataGrid = React.createClass({
   },
 
   onToggleFilter() {
-    this.setState({ canFilter: !this.state.canFilter });
-    if (this.state.canFilter === false && this.props.onClearFilters) {
-      this.props.onClearFilters();
-    }
+    // setState() does not immediately mutate this.state but creates a pending state transition.
+    // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
+    this.setState({ canFilter: !this.state.canFilter }, () => {
+      if (this.state.canFilter === false && this.props.onClearFilters) {
+        this.props.onClearFilters();
+      }
+    });
   },
 
   onDragHandleDoubleClick(e) {
@@ -637,11 +655,17 @@ const ReactDataGrid = React.createClass({
     this.onSelect({ idx: idx, rowIdx: rowIdx });
   },
 
+  getNbrColumns() {
+    const {columns, enableRowSelect} = this.props;
+    return enableRowSelect ? columns.length + 1 : columns.length;
+  },
+
   calculateNextSelectionPosition(cellNavigationMode: string, cellDelta: number, rowDelta: number) {
     let _rowDelta = rowDelta;
     let idx = this.state.selected.idx + cellDelta;
+    const nbrColumns = this.getNbrColumns();
     if (cellDelta > 0) {
-      if (this.isAtLastCellInRow()) {
+      if (this.isAtLastCellInRow(nbrColumns)) {
         if (cellNavigationMode === 'changeRow') {
           _rowDelta = this.isAtLastRow() ? rowDelta : rowDelta + 1;
           idx = this.isAtLastRow() ? idx : 0;
@@ -653,9 +677,9 @@ const ReactDataGrid = React.createClass({
       if (this.isAtFirstCellInRow()) {
         if (cellNavigationMode === 'changeRow') {
           _rowDelta = this.isAtFirstRow() ? rowDelta : rowDelta - 1;
-          idx = this.isAtFirstRow() ? 0 : this.props.columns.length - 1;
+          idx = this.isAtFirstRow() ? 0 : nbrColumns - 1;
         } else {
-          idx = this.props.columns.length - 1;
+          idx = nbrColumns - 1;
         }
       }
     }
@@ -663,8 +687,8 @@ const ReactDataGrid = React.createClass({
     return {idx, rowIdx};
   },
 
-  isAtLastCellInRow() {
-    return this.state.selected.idx === this.props.columns.length - 1;
+  isAtLastCellInRow(nbrColumns) {
+    return this.state.selected.idx === nbrColumns - 1;
   },
 
   isAtLastRow() {
@@ -680,7 +704,10 @@ const ReactDataGrid = React.createClass({
   },
 
   openCellEditor(rowIdx, idx) {
-    if (!this.canEdit(idx)) {
+    let row = this.props.rowGetter(rowIdx);
+    let col = this.getColumn(idx);
+
+    if (!ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
       return;
     }
 
@@ -696,8 +723,12 @@ const ReactDataGrid = React.createClass({
 
   setActive(keyPressed: string) {
     let rowIdx = this.state.selected.rowIdx;
+    let row = this.props.rowGetter(rowIdx);
+
     let idx = this.state.selected.idx;
-    if (this.canEdit(idx) && !this.isActive()) {
+    let col = this.getColumn(idx);
+
+    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && !this.isActive()) {
       let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
       this.setState({selected: selected});
     }
@@ -705,16 +736,15 @@ const ReactDataGrid = React.createClass({
 
   setInactive() {
     let rowIdx = this.state.selected.rowIdx;
+    let row = this.props.rowGetter(rowIdx);
+
     let idx = this.state.selected.idx;
-    if (this.canEdit(idx) && this.isActive()) {
+    let col = this.getColumn(idx);
+
+    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && this.isActive()) {
       let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
       this.setState({selected: selected});
     }
-  },
-
-  canEdit(idx: number): boolean {
-    let col = this.getColumn(idx);
-    return this.props.enableCellSelect === true && ((col.editor != null) || col.editable);
   },
 
   isActive(): boolean {

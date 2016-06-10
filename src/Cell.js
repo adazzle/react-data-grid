@@ -6,6 +6,7 @@ const ExcelColumn       = require('./addons/grids/ExcelColumn');
 const isFunction        = require('./addons/utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./addons/formatters/SimpleCellFormatter');
+const ColumnUtils = require('./ColumnUtils');
 
 const Cell = React.createClass({
 
@@ -39,7 +40,11 @@ const Cell = React.createClass({
   },
 
   getInitialState() {
-    return {isRowChanging: false, isCellValueChanging: false};
+    return {
+      isCellValueChanging: false,
+      oldRowData: {},
+      newRowData: {}
+    };
   },
 
   componentDidMount: function() {
@@ -47,7 +52,11 @@ const Cell = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    this.setState({isRowChanging: this.props.rowData !== nextProps.rowData, isCellValueChanging: this.props.value !== nextProps.value});
+    this.setState({
+      isCellValueChanging: this.props.value !== nextProps.value,
+      oldRowData: this.props.rowData,
+      newRowData: nextProps.rowData
+    });
   },
 
   componentDidUpdate: function() {
@@ -56,7 +65,7 @@ const Cell = React.createClass({
     if (dragged && dragged.complete === true) {
       this.props.cellMetaData.handleTerminateDrag();
     }
-    if (this.state.isRowChanging && this.props.selectedColumn != null) {
+    if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
       this.applyUpdateClass();
     }
   },
@@ -64,7 +73,6 @@ const Cell = React.createClass({
   shouldComponentUpdate(nextProps: any): boolean {
     return this.props.column.width !== nextProps.column.width
     || this.props.column.left !== nextProps.column.left
-    || this.props.rowData !== nextProps.rowData
     || this.props.height !== nextProps.height
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
@@ -159,7 +167,9 @@ const Cell = React.createClass({
   },
 
   getUpdateCellClass() {
-    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
+    return this.props.column.getUpdateCellClass
+      ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging, this.state.oldRowData, this.state.newRowData)
+      : '';
   },
 
   isColumnSelected() {
@@ -327,10 +337,6 @@ const Cell = React.createClass({
     }
   },
 
-  canEdit() {
-    return (this.props.column.editor != null) || this.props.column.editable;
-  },
-
   createColumEventCallBack(onColumnEvent, info) {
     return (e) => {
       onColumnEvent(e, info);
@@ -408,7 +414,7 @@ const Cell = React.createClass({
       isExpanded: this.props.isExpanded
     });
 
-    let dragHandle = (!this.isActive() && this.canEdit()) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
+    let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
     let events = this.getEvents();
     return (
       <div {...this.props} className={className} style={style} onContextMenu={this.onCellContextMenu} {...events}>
