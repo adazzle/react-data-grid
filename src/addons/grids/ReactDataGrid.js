@@ -152,6 +152,19 @@ const ReactDataGrid = React.createClass({
   },
 
   onCellClick: function(cell: SelectedType) {
+    // This allows you to define an onClick handler in your column definition object
+    //  Once done so, you will receive the callback with the row number that was clicked
+    let actualCellClicked = cell.idx;
+
+    if (this.props.enableCellSelect) {
+      actualCellClicked = cell.idx - 1;
+    }
+
+    if (this.props.columns[actualCellClicked]
+      && typeof this.props.columns[actualCellClicked].onClick === 'function') {
+      this.props.columns[actualCellClicked].onClick(cell.rowIdx);
+    }
+
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
   },
 
