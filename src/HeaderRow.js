@@ -36,7 +36,8 @@ const HeaderRow = React.createClass({
     onFilterChange: PropTypes.func,
     resizing: PropTypes.object,
     onScroll: PropTypes.func,
-    rowType: PropTypes.string
+    rowType: PropTypes.string,
+    filterHeaderRenderer: PropTypes.oneOfType([PropTypes.element, PropTypes.object])
   },
 
   mixins: [ColumnUtilsMixin],
@@ -53,17 +54,16 @@ const HeaderRow = React.createClass({
   },
 
   getHeaderCellType(column) {
-    if (column.filterable) {
-      if (this.props.filterable) return HeaderCellType.FILTERABLE;
-    }
-
+    if (column.filterable) {         
+        if (this.props.filterable) return HeaderCellType.FILTERABLE;
+    } 
     if (column.sortable) return HeaderCellType.SORTABLE;
-
     return HeaderCellType.NONE;
   },
-
-  getFilterableHeaderCell() {
-    return <FilterableHeaderCell onChange={this.props.onFilterChange} />;
+ 
+  getFilterableHeaderCell(column) { 
+    let FilterHeaderRenderer = column.filterHeaderRenderer; 
+      return FilterHeaderRenderer ? <FilterHeaderRenderer  onChange={this.props.onFilterChange} /> : <FilterableHeaderCell onChange={this.props.onFilterChange} />; 
   },
 
   getSortableHeaderCell(column) {
@@ -78,14 +78,15 @@ const HeaderRow = React.createClass({
     } else {
       let headerCellType = this.getHeaderCellType(column);
       switch (headerCellType) {
-      case HeaderCellType.SORTABLE:
-        renderer = this.getSortableHeaderCell(column);
-        break;
-      case HeaderCellType.FILTERABLE:
-        renderer = this.getFilterableHeaderCell();
-        break;
-      default:
-        break;
+          case HeaderCellType.SORTABLE:
+            renderer = this.getSortableHeaderCell(column);
+            break;
+          case HeaderCellType.FILTERABLE:           
+            renderer = this.getFilterableHeaderCell(column);
+            break;         
+
+          default:
+            break;
       }
     }
     return renderer;
@@ -107,9 +108,11 @@ const HeaderRow = React.createClass({
     for (let i = 0, len = this.getSize(this.props.columns); i < len; i++) {
       let column = this.getColumn(this.props.columns, i);
       let _renderer = this.getHeaderRenderer(column);
+      
       if (column.key === 'select-row' && this.props.rowType === 'filter') {
         _renderer = <div></div>;
       }
+     
       let cell = (
         <HeaderCell
           ref={i}
@@ -120,6 +123,7 @@ const HeaderRow = React.createClass({
           resizing={this.props.resizing === column}
           onResize={this.props.onColumnResize}
           onResizeEnd={this.props.onColumnResizeEnd}
+          filterHeaderRenderer={column.filterHeaderRenderer?column.filterHeaderRenderer:null}
           />
       );
       if (column.locked) {
