@@ -32,5 +32,12 @@ module.exports = {
       return enableCellSelect === true && col.editable(rowData);
     }
     return enableCellSelect === true && (!!col.editor || !!col.editable);
+  },
+
+  canAdvancedEdit(col, rowData, enableCellSelect) {
+    if (col.allowAdvancedEditing == null || typeof(col.allowAdvancedEditing) === 'undefined') {
+      return this.canEdit(col, rowData, enableCellSelect);
+    }
+    return col.allowAdvancedEditing;
   }
 };
