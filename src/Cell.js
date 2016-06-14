@@ -29,7 +29,7 @@ const Cell = React.createClass({
     className: React.PropTypes.string,
     cellControls: React.PropTypes.any,
     rowData: React.PropTypes.object.isRequired,
-    forceUpdate: PropTypes.bool
+    forceUpdate:  React.PropTypes.bool
   },
 
   getDefaultProps: function(): {tabIndex: number; ref: string; isExpanded: boolean } {
