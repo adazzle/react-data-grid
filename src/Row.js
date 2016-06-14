@@ -18,7 +18,8 @@ const Row = React.createClass({
     idx: PropTypes.number.isRequired,
     key: PropTypes.string,
     expandedRows: PropTypes.arrayOf(PropTypes.object),
-    extraClasses: PropTypes.string
+    extraClasses: PropTypes.string,
+    forceUpdate: PropTypes.bool
   },
 
   mixins: [ColumnUtilsMixin],
@@ -39,7 +40,8 @@ const Row = React.createClass({
            nextProps.row !== this.props.row                                                              ||
            this.hasRowBeenCopied()                                                                       ||
            this.props.isSelected !== nextProps.isSelected                                                ||
-           nextProps.height !== this.props.height;
+           nextProps.height !== this.props.height                                                        ||
+           this.props.forceUpdate === true;
   },
 
   handleDragEnter() {
