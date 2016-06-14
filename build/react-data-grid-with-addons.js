@@ -559,11 +559,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    this.onSelect({ idx: idx, rowIdx: rowIdx });
 	  },
+	  getNbrColumns: function getNbrColumns() {
+	    var _props = this.props;
+	    var columns = _props.columns;
+	    var enableRowSelect = _props.enableRowSelect;
+
+	    return enableRowSelect ? columns.length + 1 : columns.length;
+	  },
 	  calculateNextSelectionPosition: function calculateNextSelectionPosition(cellNavigationMode, cellDelta, rowDelta) {
 	    var _rowDelta = rowDelta;
 	    var idx = this.state.selected.idx + cellDelta;
+	    var nbrColumns = this.getNbrColumns();
 	    if (cellDelta > 0) {
-	      if (this.isAtLastCellInRow()) {
+	      if (this.isAtLastCellInRow(nbrColumns)) {
 	        if (cellNavigationMode === 'changeRow') {
 	          _rowDelta = this.isAtLastRow() ? rowDelta : rowDelta + 1;
 	          idx = this.isAtLastRow() ? idx : 0;
@@ -575,17 +583,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.isAtFirstCellInRow()) {
 	        if (cellNavigationMode === 'changeRow') {
 	          _rowDelta = this.isAtFirstRow() ? rowDelta : rowDelta - 1;
-	          idx = this.isAtFirstRow() ? 0 : this.props.columns.length - 1;
+	          idx = this.isAtFirstRow() ? 0 : nbrColumns - 1;
 	        } else {
-	          idx = this.props.columns.length - 1;
+	          idx = nbrColumns - 1;
 	        }
 	      }
 	    }
 	    var rowIdx = this.state.selected.rowIdx + _rowDelta;
 	    return { idx: idx, rowIdx: rowIdx };
 	  },
-	  isAtLastCellInRow: function isAtLastCellInRow() {
-	    return this.state.selected.idx === this.props.columns.length - 1;
+	  isAtLastCellInRow: function isAtLastCellInRow(nbrColumns) {
+	    return this.state.selected.idx === nbrColumns - 1;
 	  },
 	  isAtLastRow: function isAtLastRow() {
 	    return this.state.selected.rowIdx === this.props.rowsCount - 1;
@@ -1679,7 +1687,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ resizing: false });
 	  },
 	  getWidthFromMouseEvent: function getWidthFromMouseEvent(e) {
-	    var right = e.pageX;
+	    var right = e.pageX || e.touches && e.touches[0] && e.touches[0].pageX || e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX;
 	    var left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
 	    return right - left;
 	  },
@@ -1831,6 +1839,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    window.addEventListener('mouseup', this.onMouseUp);
 	    window.addEventListener('mousemove', this.onMouseMove);
+	    window.addEventListener('touchend', this.onMouseUp);
+	    window.addEventListener('touchmove', this.onMouseMove);
 
 	    this.setState({ drag: drag });
 	  },
@@ -1853,10 +1863,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  cleanUp: function cleanUp() {
 	    window.removeEventListener('mouseup', this.onMouseUp);
 	    window.removeEventListener('mousemove', this.onMouseMove);
+	    window.removeEventListener('touchend', this.onMouseUp);
+	    window.removeEventListener('touchmove', this.onMouseMove);
 	  },
 	  render: function render() {
 	    return React.createElement('div', _extends({}, this.props, {
 	      onMouseDown: this.onMouseDown,
+	      onTouchStart: this.onMouseDown,
 	      className: 'react-grid-HeaderCell__draggable' }));
 	  }
 	});
@@ -6140,7 +6153,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    idx: PropTypes.number.isRequired,
 	    key: PropTypes.string,
 	    expandedRows: PropTypes.arrayOf(PropTypes.object),
-	    extraClasses: PropTypes.string
+	    extraClasses: PropTypes.string,
+	    forceUpdate: PropTypes.bool
 	  },
 
 	  mixins: [ColumnUtilsMixin],
@@ -6153,7 +6167,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    return !ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn) || this.doesRowContainSelectedCell(this.props) || this.doesRowContainSelectedCell(nextProps) || this.willRowBeDraggedOver(nextProps) || nextProps.row !== this.props.row || this.hasRowBeenCopied() || this.props.isSelected !== nextProps.isSelected || nextProps.height !== this.props.height;
+	    return !ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn) || this.doesRowContainSelectedCell(this.props) || this.doesRowContainSelectedCell(nextProps) || this.willRowBeDraggedOver(nextProps) || nextProps.row !== this.props.row || this.hasRowBeenCopied() || this.props.isSelected !== nextProps.isSelected || nextProps.height !== this.props.height || this.props.forceUpdate === true;
 	  },
 	  handleDragEnter: function handleDragEnter() {
 	    var handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
@@ -6330,7 +6344,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    handleDragStart: React.PropTypes.func,
 	    className: React.PropTypes.string,
 	    cellControls: React.PropTypes.any,
-	    rowData: React.PropTypes.object.isRequired
+	    rowData: React.PropTypes.object.isRequired,
+	    forceUpdate: React.PropTypes.bool
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -6375,7 +6390,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    return this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.value !== nextProps.value;
+	    return this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.value !== nextProps.value || this.props.forceUpdate === true;
 	  },
 	  onCellClick: function onCellClick(e) {
 	    var meta = this.props.cellMetaData;
