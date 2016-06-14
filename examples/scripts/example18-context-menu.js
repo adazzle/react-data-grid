@@ -111,7 +111,7 @@ class ContextMenuExample extends React.Component {
         <h3>Context Menu Example</h3>
         <p>
           To use a context menu on the grid, create a <code>ReactDataGrid.Menu.ContextMenu</code> and then set the <code>contextMenu</code> prop of the grid to this context menu.
-          Please note you must use the <code>react-data-grid-with-addons.js</code> package to create the context menu.
+          Please note you must include the <code>react-data-grid.ui-plugins.js</code> package to create the context menu.
         </p>
         <p>If you need to know the row and column index where the context menu is shown, use the context menu's <code>rowIdx</code> and <code>idx</code> props.</p>
         <p>Credits: the context menu we use is <a href="https://github.com/vkbansal/react-contextmenu">react-contextmenu</a> by <a href="https://github.com/vkbansal">Vivek Kumar Bansal</a>.</p>

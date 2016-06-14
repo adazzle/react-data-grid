@@ -261,7 +261,7 @@ module.exports = React.createClass({
     return(
       <div>
         <h3>All the features grid</h3>
-        <p>This example demonstrates all the features from the previous examples. The ReactDataGrid with addons is globally available in this example so you need to have 'react-data-grid-with-addons.js' on the page or require('react-data-grid'/addons) if you are using Common JS.</p>
+        <p>This example demonstrates all the features from the previous examples.</p>
         <p>Fake data is generated using the <a href="https://github.com/Marak/faker.js">Faker</a> library which is also a global variable in this example.</p>
         <ReactPlayground codeText={AllFeaturesExample} />
       </div>

@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import {ContextMenuLayer} from 'react-contextmenu';
+import UIPlugins from './addons';
 
 class RowsContainer extends React.Component {
   hasContextMenu() {
@@ -38,7 +38,9 @@ SimpleRowsContainer.propTypes = {
   rows: PropTypes.array
 };
 
-let ContextMenuRowsContainer = ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
-
+let ContextMenuRowsContainer;
+if (UIPlugins) {
+  ContextMenuRowsContainer = UIPlugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
+}
 export default RowsContainer;
 export {SimpleRowsContainer, ContextMenuRowsContainer};

@@ -105,7 +105,7 @@ ReactDOM.render(<Example />, mountNode);
       return(
         <div>
           <h3>Built-In Cell Editor Example</h3>
-          <p>This example uses the built in <strong>Autocomplete</strong> editor for the priorities column and the <strong>DropdownEditor</strong> for the IssueType column. <strong>You must be using the <code>react-data-grid-with-addons.js</code> package to use the built in editors.</strong></p>
+          <p>This example uses the built in <strong>Autocomplete</strong> editor for the priorities column and the <strong>DropdownEditor</strong> for the IssueType column. <strong>You must include the <code>react-data-grid.ui-plugins.js</code> package to use the built in editors.</strong></p>
           <ReactPlayground codeText={EditableExample} />
         </div>
       )
