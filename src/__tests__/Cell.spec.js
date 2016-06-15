@@ -22,6 +22,7 @@ describe('Cell Tests', () => {
     selected: {idx: 2, rowIdx: 3},
     dragged: null,
     onCellClick: function() {},
+    onCellContextMenu: function() {},
     onCellDoubleClick: function() {},
     onCommit: function() {},
     onCommitCancel: function() {},
@@ -107,7 +108,8 @@ describe('Cell Tests', () => {
       testProps.column.getUpdateCellClass = () => updateClass;
       let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
       // force update
-      cellInstance.setProps({rowData: {}, selectedColumn: testProps.column});
+      let newValue = 'London';
+      cellInstance.setProps({value: newValue, selectedColumn: testProps.column});
       let cellHasUpdateClass = ReactDOM.findDOMNode(cellInstance).getAttribute('class').indexOf(updateClass) > -1;
       expect(cellHasUpdateClass).toBe(true);
     });
@@ -130,6 +132,49 @@ describe('Cell Tests', () => {
 
       it('should have a onDragOver event associated', () => {
         expect(cellEvents.hasOwnProperty('onDragOver')).toBe(true);
+      });
+
+      describe('Cell Metadata', () => {
+        describe('When Action is defined on CellMetaData', () => {
+          it('should call metaData onCellClick when it is defined', () => {
+            // Arrange
+            testCellMetaData.onCellClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            // Act
+            cellInstance.onCellClick();
+
+            // Assert
+            expect(testCellMetaData.onCellClick).toHaveBeenCalled();
+          });
+
+          it('should call metaData onDragHandleDoubleClick when it is defined', () => {
+            testCellMetaData.onDragHandleDoubleClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onDragHandleDoubleClick(document.createEvent('Event'));
+
+            expect(testCellMetaData.onDragHandleDoubleClick).toHaveBeenCalled();
+          });
+
+          it('should call metaData onCellContextMenu if defined', () => {
+            testCellMetaData.onCellContextMenu = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onCellContextMenu();
+
+            expect(testCellMetaData.onCellContextMenu).toHaveBeenCalled();
+          });
+
+          it('should call metaData onCellDoubleClick if defined', () => {
+            testCellMetaData.onCellDoubleClick = jasmine.createSpy();
+            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+
+            cellInstance.onCellDoubleClick();
+
+            expect(testCellMetaData.onCellDoubleClick).toHaveBeenCalled();
+          });
+        });
       });
     });
 
