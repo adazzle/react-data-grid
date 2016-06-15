@@ -24,7 +24,9 @@ const Row = React.createClass({
     idx: PropTypes.number.isRequired,
     key: PropTypes.string,
     expandedRows: PropTypes.arrayOf(PropTypes.object),
-    subRowDetails: PropTypes.object
+    extraClasses: PropTypes.string,
+    forceUpdate: PropTypes.bool,
+ subRowDetails: PropTypes.object
   },
 
   mixins: [ColumnUtilsMixin],
@@ -45,7 +47,8 @@ const Row = React.createClass({
            nextProps.row !== this.props.row                                                              ||
            this.hasRowBeenCopied()                                                                       ||
            this.props.isSelected !== nextProps.isSelected                                                ||
-           nextProps.height !== this.props.height;
+           nextProps.height !== this.props.height                                                        ||
+           this.props.forceUpdate === true;
   },
 
   handleDragEnter() {
@@ -56,9 +59,11 @@ const Row = React.createClass({
   },
 
   getSelectedColumn() {
-    let selected = this.props.cellMetaData.selected;
-    if (selected && selected.idx) {
-      return this.getColumn(this.props.columns, selected.idx);
+    if (this.props.cellMetaData) {
+      let selected = this.props.cellMetaData.selected;
+      if (selected && selected.idx) {
+        return this.getColumn(this.props.columns, selected.idx);
+      }
     }
   },
 
@@ -89,8 +94,7 @@ const Row = React.createClass({
                     cellMetaData={this.props.cellMetaData}
                     rowData={this.props.row}
                     selectedColumn={selectedColumn}
-                    isRowSelected={this.props.isSelected}
-                    expandableOptions={this.getExpandableOptions(column.key)} />);
+                    isRowSelected={this.props.isSelected} />);
       if (column.locked) {
         lockedCells.push(cell);
       } else {
@@ -143,9 +147,11 @@ const Row = React.createClass({
   },
 
   isContextMenuDisplayed() {
-    let selected = this.props.cellMetaData.selected;
-    if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
-      return true;
+    if (this.props.cellMetaData) {
+      let selected = this.props.cellMetaData.selected;
+      if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
+        return true;
+      }
     }
     return false;
   },
@@ -182,7 +188,8 @@ const Row = React.createClass({
       {
         'row-selected': this.props.isSelected,
         'row-context-menu': this.isContextMenuDisplayed()
-      }
+      },
+      this.props.extraClasses
     );
 
     let style = {
