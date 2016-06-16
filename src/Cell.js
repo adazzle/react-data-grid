@@ -29,7 +29,7 @@ const Cell = React.createClass({
     className: React.PropTypes.string,
     cellControls: React.PropTypes.any,
     rowData: React.PropTypes.object.isRequired,
-    forceUpdate:  React.PropTypes.bool
+    forceUpdate: React.PropTypes.bool
   },
 
   getDefaultProps: function(): {tabIndex: number; ref: string; isExpanded: boolean } {
@@ -42,9 +42,7 @@ const Cell = React.createClass({
 
   getInitialState() {
     return {
-      isCellValueChanging: false,
-      oldRowData: {},
-      newRowData: {}
+      isCellValueChanging: false
     };
   },
 
@@ -54,9 +52,7 @@ const Cell = React.createClass({
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      isCellValueChanging: this.props.value !== nextProps.value,
-      oldRowData: this.props.rowData,
-      newRowData: nextProps.rowData
+      isCellValueChanging: this.props.value !== nextProps.value
     });
   },
 
@@ -170,7 +166,7 @@ const Cell = React.createClass({
 
   getUpdateCellClass() {
     return this.props.column.getUpdateCellClass
-      ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging, this.state.oldRowData, this.state.newRowData)
+      ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging)
       : '';
   },
 
