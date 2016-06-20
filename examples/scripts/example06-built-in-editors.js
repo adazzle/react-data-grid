@@ -5,12 +5,12 @@ var EditableExample = `
 
 //options for priorities autocomplete editor
 var priorities = [{id:0, title : 'Critical'}, {id:1, title : 'High'}, {id:2, title : 'Medium'}, {id:3, title : 'Low'}]
-var AutoCompleteEditor = ReactDataGrid.Editors.AutoComplete;
+var AutoCompleteEditor = ReactDataGridPlugins.Editors.AutoComplete;
 var PrioritiesEditor = <AutoCompleteEditor options={priorities}/>
 
 //options for IssueType dropdown editor
 var issueTypes = ['Bug', 'Improvement', 'Epic', 'Story'];
-var DropDownEditor = ReactDataGrid.Editors.DropDownEditor;
+var DropDownEditor = ReactDataGridPlugins.Editors.DropDownEditor;
 var IssueTypesEditor = <DropDownEditor options={issueTypes}/>
 
 //helper to generate a random date

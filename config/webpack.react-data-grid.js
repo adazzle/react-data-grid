@@ -25,8 +25,7 @@ var config = Object.assign({}, commonConfig, {
 			commonjs : 'react-dom',
 			commonjs2 : 'react-dom',
 			amd : 'react-dom'
-		},
-    "./addons" : "UIPlugins"
+		}
   }
  }
 );

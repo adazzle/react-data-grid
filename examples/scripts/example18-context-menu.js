@@ -3,9 +3,9 @@ import ReactPlayground from '../assets/js/ReactPlayground';
 
 let example = `
 // Import the necessary modules.
-var ContextMenu = ReactDataGrid.Menu.ContextMenu;
-var MenuItem = ReactDataGrid.Menu.MenuItem;
-var SubMenu = ReactDataGrid.Menu.SubMenu;
+var ContextMenu = ReactDataGridPlugins.Menu.ContextMenu;
+var MenuItem = ReactDataGridPlugins.Menu.MenuItem;
+var SubMenu = ReactDataGridPlugins.Menu.SubMenu;
 
 var _rows = [];
 for (var i = 1; i < 1000; i++) {

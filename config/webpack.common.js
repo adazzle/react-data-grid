@@ -20,8 +20,7 @@ var config = {
 			commonjs2 : 'react-dom',
 			amd : 'react-dom'
 		},
-    "moment" : "moment",
-    "redux": "redux"
+    "moment" : "moment"
   },
   module: {
     loaders: [
@@ -29,6 +28,11 @@ var config = {
       
     ]
   },
+  plugins: [
+      new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.OccurenceOrderPlugin(),
+      new webpack.optimize.AggressiveMergingPlugin()
+    ],
   postLoaders: [
   {
     test: /\.js$/,

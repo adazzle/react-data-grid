@@ -23,9 +23,8 @@ webpackConfig = {
 	resolve: {
 		alias: {
 			react: path.resolve('./node_modules/react'),
-      'react-dom': path.resolve('./node_modules/react-dom'),
-			'react-data-grid': path.join(__dirname, "/../../dist/react-data-grid"),
-			'react-data-grid.ui-plugins': path.join(__dirname, "/../../dist/react-data-grid.ui-plugins"),
+      		'react-dom': path.resolve('./node_modules/react-dom'),
+			'react-data-grid': path.join(__dirname, "/../../dist/react-data-grid")
 		}
 	},
 	externals: {

@@ -3,10 +3,10 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 var faker = require('faker');
 
 var AllFeaturesExample = `
-  var Editors             = ReactDataGrid.Editors;
-  var Toolbar             = ReactDataGrid.Toolbar;
-  var AutoCompleteEditor  = Editors.AutoComplete;
-  var DropDownEditor      = Editors.DropDownEditor;
+  var Editors             = ReactDataGridPlugins.Editors;
+  var Toolbar             = ReactDataGridPlugins.Toolbar;
+  var AutoCompleteEditor  = ReactDataGridPlugins.Editors.AutoComplete;
+  var DropDownEditor      = ReactDataGridPlugins.Editors.DropDownEditor;
 
   faker.locale = 'en_GB';
 
@@ -83,9 +83,9 @@ var AllFeaturesExample = `
       key: 'avartar',
       name: 'Avartar',
       width : 60,
-      formatter : ReactDataGrid.Formatters.ImageFormatter,
+      formatter : ReactDataGridPlugins.Formatters.ImageFormatter,
       resizable : true,
-      headerRenderer: <ReactDataGrid.Formatters.ImageFormatter value={faker.image.cats()} />
+      headerRenderer: <ReactDataGridPlugins.Formatters.ImageFormatter value={faker.image.cats()} />
     },
     {
       key: 'county',
