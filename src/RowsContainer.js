@@ -14,20 +14,31 @@ SimpleRowsContainer.propTypes = {
 };
 
 class RowsContainer extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {ContextMenuContainer: this.getContextMenuContainer()};
+    this.hasContextMenu = this.hasContextMenu.bind(this);
+    this.renderRowsWithContextMenu = this.renderRowsWithContextMenu.bind(this);
+    this.getContextMenuContainer = this.getContextMenuContainer.bind(this);
+  }
+
+  getContextMenuContainer() {
+    if (!(window.ReactDataGridPlugins && window.ReactDataGridPlugins)) {
+      throw new ('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
+    }
+    return ReactDataGridPlugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
+  }
+
   hasContextMenu() {
     return this.props.contextMenu && React.isValidElement(this.props.contextMenu);
   }
 
   renderRowsWithContextMenu() {
+    let ContextMenuRowsContainer = this.state.ContextMenuContainer;
     let newProps = {rowIdx: this.props.rowIdx, idx: this.props.idx};
     let contextMenu = React.cloneElement(this.props.contextMenu, newProps);
     // Initialise the context menu if it is available
-    let ContextMenuRowsContainer;
-    if (window.ReactDataGridPlugins && window.ReactDataGridPlugins) {
-      ContextMenuRowsContainer = ReactDataGridPlugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
-    } else {
-      throw new ('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
-    }
     return (<div><ContextMenuRowsContainer {...this.props} />{contextMenu}</div>);
   }
 

@@ -1,5 +1,6 @@
 (function(){
-  var React       = require('react')
+  var React       = require('react');
+  var ReactDataGrid = require('../build/react-data-grid');
   var UIPlugins       = require('../build/react-data-grid.ui-plugins');
   var Editors             = ReactDataGridPlugins.Editors;
   var Toolbar             = ReactDataGridPlugins.Toolbar;
