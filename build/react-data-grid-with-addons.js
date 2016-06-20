@@ -3764,7 +3764,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var modalStyle = {
 	    position: "fixed",
 	    zIndex: 1040,
-	    top: 0, bottom: 0, left: 0, right: 0
+	    top: 0,
+	    bottom: 0,
+	    left: 0,
+	    right: 0
 	},
 	    backdropStyle = _extends({}, modalStyle, {
 	    zIndex: "auto",
@@ -3790,12 +3793,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var wrapper = window.requestAnimationFrame || setTimeout;
 
 	            wrapper(function () {
-	                return _this.setState(_this.getMenuPosition(nextProps.x, nextProps.y));
+	                _this.setState(_this.getMenuPosition(nextProps.x, nextProps.y));
+	                _this.menu.parentNode.addEventListener("contextmenu", _this.hideMenu);
 	            });
 	        }
 	    },
 	    shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
 	        return this.props.isVisible !== nextProps.visible;
+	    },
+	    hideMenu: function hideMenu(e) {
+	        e.preventDefault();
+	        this.menu.parentNode.removeEventListener("contextmenu", this.hideMenu);
+	        _monitor2.default.hideMenu();
 	    },
 	    getMenuPosition: function getMenuPosition(x, y) {
 	        var scrollX = document.documentElement.scrollTop;
@@ -3888,7 +3897,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        });
 	    }
-	};
+	}; /* eslint-disable object-property-newline */
 
 /***/ },
 /* 45 */
@@ -5514,6 +5523,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    attributes: {}
 	                };
 	            },
+
+	            mouseDown: false,
+	            handleMouseDown: function handleMouseDown(event) {
+	                var _this = this;
+
+	                if (this.props.holdToDisplay >= 0 && event.button === 0) {
+	                    event.persist();
+
+	                    this.mouseDown = true;
+	                    setTimeout(function () {
+	                        if (_this.mouseDown) _this.handleContextClick(event);
+	                    }, this.props.holdToDisplay);
+	                }
+	            },
+	            handleTouchstart: function handleTouchstart(event) {
+	                var _this2 = this;
+
+	                event.persist();
+
+	                this.mouseDown = true;
+	                setTimeout(function () {
+	                    if (_this2.mouseDown) _this2.handleContextClick(event);
+	                }, this.props.holdToDisplay);
+	            },
+	            handleTouchEnd: function handleTouchEnd(event) {
+	                event.preventDefault();
+	                this.mouseDown = false;
+	            },
+	            handleMouseUp: function handleMouseUp(event) {
+	                if (event.button === 0) {
+	                    this.mouseDown = false;
+	                }
+	            },
 	            handleContextClick: function handleContextClick(event) {
 	                var currentItem = typeof configure === "function" ? configure(this.props) : {};
 
@@ -5521,11 +5563,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                event.preventDefault();
 
+	                var xPos = event.clientX || event.touches && event.touches[0].pageX,
+	                    yPos = event.clientY || event.touches && event.touches[0].pageY;
+
 	                _store2.default.dispatch({
 	                    type: "SET_PARAMS",
 	                    data: {
-	                        x: event.clientX,
-	                        y: event.clientY,
+	                        x: xPos,
+	                        y: yPos,
 	                        currentItem: currentItem,
 	                        isVisible: typeof identifier === "function" ? identifier(this.props) : identifier
 	                    }
@@ -5545,6 +5590,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                attributes.className = "react-context-menu-wrapper " + className;
 	                attributes.onContextMenu = this.handleContextClick;
+	                attributes.onMouseDown = this.handleMouseDown;
+	                attributes.onMouseUp = this.handleMouseUp;
+	                attributes.onTouchStart = this.handleTouchstart;
+	                attributes.onTouchEnd = this.handleTouchEnd;
+	                attributes.onMouseOut = this.handleMouseUp;
 
 	                return _react2.default.createElement(renderTag, attributes, _react2.default.createElement(Component, props));
 	            }
@@ -5876,6 +5926,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
 	        return this.state.isVisible !== nextState.visible;
+	    },
+	    componentWillUnmount: function componentWillUnmount() {
+	        if (this.opentimer) clearTimeout(this.opentimer);
+
+	        if (this.closetimer) clearTimeout(this.closetimer);
 	    },
 	    handleClick: function handleClick(e) {
 	        e.preventDefault();
@@ -6799,6 +6854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: this.getInitialValue(),
 	      onCommit: this.commit,
 	      rowMetaData: this.getRowMetaData(),
+	      rowData: this.props.rowData,
 	      height: this.props.height,
 	      onBlur: this.commit,
 	      onOverrideKeyDown: this.onKeyDown
