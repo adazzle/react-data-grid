@@ -82,6 +82,7 @@
     "merge-stream": "^0.1.5",
     "minimist": "^1.1.0",
     "moment": "^2.10.6",
+    "object-assign": "^2.1.1",
     "pretty-hrtime": "^0.2.1",
     "react": "~0.14.6",
     "react-addons-test-utils": "^0.14.6",

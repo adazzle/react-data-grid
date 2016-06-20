@@ -1,7 +1,7 @@
 var path = require("path");
 var webpack = require('webpack');
 var commonConfig = require('./webpack.common');
-
+Object.assign = Object.assign || require('object-assign');
 
 var config = Object.assign({}, commonConfig, {
   entry: {
