@@ -26,9 +26,9 @@ module.exports = React.createClass({
         <div className="code-block js">
           <pre>&lt;script src="//fb.me/react-0.14.6.js"&gt;&lt;/script&gt;<br/>&lt;script type="text/javascript" src="react-data-grid/dist/react-data-grid.js"&gt;&lt;/script&gt;</pre>
         </div>
-        <p>Or use react-data-grid-with-addons.js to use advanced features</p>
+        <p>Or use react-data-grid.ui-plugins.js to use advanced features</p>
         <div className="code-block js">
-          <pre>&lt;script type="text/javascript" src="react-data-grid/dist/react-data-grid-with-addons.js"&gt;&lt;/script&gt;</pre>
+          <pre>&lt;script type="text/javascript" src="react-data-grid/dist/react-data-grid.ui-plugins.js"&gt;&lt;/script&gt;</pre>
         </div>
       </div>
     );

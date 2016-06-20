@@ -1,4 +1,4 @@
-const Grid = require('./addons/grids/ReactDataGrid');
+const Grid = require('./ReactDataGrid');
 const Row  = require('./Row');
 const Cell = require('./Cell');
 

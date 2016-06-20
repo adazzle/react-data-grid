@@ -23,9 +23,8 @@ webpackConfig = {
 	resolve: {
 		alias: {
 			react: path.resolve('./node_modules/react'),
-      'react-dom': path.resolve('./node_modules/react-dom'),
-			'react-data-grid': path.join(__dirname, "/../../dist/react-data-grid"),
-			'react-data-grid-with-addons': path.join(__dirname, "/../../dist/react-data-grid-with-addons"),
+      		'react-dom': path.resolve('./node_modules/react-dom'),
+			'react-data-grid': path.join(__dirname, "/../../dist/react-data-grid")
 		}
 	},
 	externals: {
@@ -63,17 +62,17 @@ gulp.task("copy-dist", ['dist'], function(){
 });
 
 gulp.task('minify-examples', ['copy-dist'], function(){
-	  gulp.src('./examples/build/react-data-grid-with-addons.js')
-    .pipe(uglify())
-    .pipe(rename('react-data-grid-with-addons.min.js'))
-    .pipe(gulp.dest('./examples/build'))
-    .on('error', gutil.log);
+	//   gulp.src('./examples/build/react-data-grid-with-addons.js')
+    // .pipe(uglify())
+    // .pipe(rename('react-data-grid-with-addons.min.js'))
+    // .pipe(gulp.dest('./examples/build'))
+    // .on('error', gutil.log);
 
-    gulp.src('./examples/build/react-data-grid.js')
-    .pipe(uglify())
-    .pipe(rename('react-data-grid.min.js'))
-    .pipe(gulp.dest('./examples/build'))
-    .on('error', gutil.log);
+    // gulp.src('./examples/build/react-data-grid.js')
+    // .pipe(uglify())
+    // .pipe(rename('react-data-grid.min.js'))
+    // .pipe(gulp.dest('./examples/build'))
+    // .on('error', gutil.log);
 });
 
 // task
