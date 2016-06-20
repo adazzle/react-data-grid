@@ -50,9 +50,7 @@ test_script:
 build: off
 
 cache:
-  - C:\Users\appveyor\AppData\Roaming\npm\node_modules -> package.json  # global npm modules
-  - C:\Users\appveyor\AppData\Roaming\npm-cache -> package.json         # npm cache
-  - node_modules -> package.json
+  - '%AppData%\npm-cache -> package.json'
 
 on_success:
 - ps: >-
