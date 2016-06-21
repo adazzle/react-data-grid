@@ -73,6 +73,16 @@ const ReactDataGrid = React.createClass({
     onCellDeSelected: React.PropTypes.func
   },
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.enableCellSelect === true &&
+      this.state.selected.rowIdx === -1 &&
+      this.state.selected.idx === -1) {
+      this.setState({
+        selected: {rowIdx: 0, idx: 0}
+      });
+    }
+  },
+
   getDefaultProps(): {enableCellSelect: boolean} {
     return {
       enableCellSelect: false,
