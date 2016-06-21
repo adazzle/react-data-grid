@@ -1,10 +1,10 @@
-import UIPlugins from '../addons';
+import {Menu} from '../addons';
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
 import RowsContainer from '../RowsContainer';
 
 
-let ReactDataGridContextMenu = UIPlugins.Menu.ContextMenu;
+let ReactDataGridContextMenu = Menu.ContextMenu;
 
 describe('Rows Container', () => {
   describe('without context menu', () => {
