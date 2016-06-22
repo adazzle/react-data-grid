@@ -22,6 +22,6 @@ gulp.task('buildTest', function(done) {
 });
 
 // Run build before testing on local environment.
-gulp.task('test', ['dist'], function(done) {
+gulp.task('test', ['dist', 'examples'], function(done) {
   testTaskRunner(done);
 });

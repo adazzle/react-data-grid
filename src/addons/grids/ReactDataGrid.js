@@ -289,9 +289,11 @@ const ReactDataGrid = React.createClass({
   },
 
   onDragHandleDoubleClick(e) {
-    if (this.props.onDragHandleDoubleClick) {
-      this.props.onDragHandleDoubleClick(e);
-    }
+    if (!this.dragEnabled()) { return; }
+
+    // if (this.props.onDragHandleDoubleClick) {
+    //   this.props.onDragHandleDoubleClick(e);
+    // }
 
     if (this.props.onGridRowsUpdated) {
       let cellKey = this.getColumn(e.idx).key;
@@ -332,9 +334,11 @@ const ReactDataGrid = React.createClass({
     let cellKey = this.getColumn(this.state.selected.idx).key;
     fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
     toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-    if (this.props.onCellsDragged) {
-      this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
-    }
+
+    // if (this.props.onCellsDragged) {
+    //   this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
+    // }
+
     if (this.props.onGridRowsUpdated) {
       let updated = {
         [cellKey]: dragged.value
@@ -369,9 +373,9 @@ const ReactDataGrid = React.createClass({
     let textToCopy = this.state.textToCopy;
     let toRow = selected.rowIdx;
 
-    if (this.props.onCellCopyPaste) {
-      this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: this.state.copied.rowIdx, toRow: toRow});
-    }
+    // if (this.props.onCellCopyPaste) {
+    //   this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: this.state.copied.rowIdx, toRow: toRow});
+    // }
 
     if (this.props.onGridRowsUpdated) {
       let updated = {
@@ -390,7 +394,7 @@ const ReactDataGrid = React.createClass({
   },
 
   handleCopy(args: {value: string}) {
-    if (!this.copyPasteEnabled()) { return; }
+    if (!this.copyPasteEnabled(this.state.selected.idx)) { return; }
     let textToCopy = args.value;
     let selected = this.state.selected;
     let copied = {idx: selected.idx, rowIdx: selected.rowIdx};
@@ -636,11 +640,21 @@ const ReactDataGrid = React.createClass({
 
 
   copyPasteEnabled: function(): boolean {
-    return this.props.onCellCopyPaste !== null;
+    let col = this.getColumn(this.state.selected.idx);
+    let row = this.props.rowGetter(this.state.selected.rowIdx);
+
+    return ColumnUtils.canAdvancedEdit(col, row, this.props.enableCellSelect);
+
+    // return this.props.onCellCopyPaste !== null;
   },
 
   dragEnabled: function(): boolean {
-    return this.props.onCellsDragged !== null;
+    let col = this.getColumn(this.state.selected.idx);
+    let row = this.props.rowGetter(this.state.selected.rowIdx);
+
+    return ColumnUtils.canAdvancedEdit(col, row, this.props.enableCellSelect);
+
+    // return this.props.onCellsDragged !== null;
   },
 
   renderToolbar(): ReactElement {

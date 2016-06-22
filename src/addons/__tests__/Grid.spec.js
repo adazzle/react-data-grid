@@ -47,8 +47,7 @@ describe('Grid', function() {
       rowsCount: this._rows.length,
       width: 300,
       onRowUpdated: this.noop,
-      onCellCopyPaste: this.noop,
-      onCellsDragged: this.noop,
+      onGridRowsUpdated: this.noop,
       onGridSort: this.noop,
       onAddFilter: () => {},
       rowKey: 'id'
@@ -485,8 +484,8 @@ describe('Grid', function() {
       describe('paste a cell value', function() {
         beforeEach(function() {
           const vCharacterKeyCode = 118;
-          spyOn(this.testProps, 'onCellCopyPaste');
-          this.component.setProps({ onCellCopyPaste: this.testProps.onCellCopyPaste });
+          spyOn(this.testProps, 'onGridRowsUpdated');
+          this.component.setProps({ onGridRowsUpdated: this.testProps.onGridRowsUpdated });
           this.component.setState({
             textToCopy: 'banana',
             selected: { idx: 1, rowIdx: 5 },
@@ -495,14 +494,14 @@ describe('Grid', function() {
           this.simulateGridKeyDown(vCharacterKeyCode, true);
         });
 
-        it('should call onCellCopyPaste of component with correct params', function() {
-          expect(this.component.props.onCellCopyPaste).toHaveBeenCalled();
-          expect(this.component.props.onCellCopyPaste.mostRecentCall.args[0]).toEqual({
+        it('should call onGridRowsUpdated of component with correct params', function() {
+          expect(this.component.props.onGridRowsUpdated).toHaveBeenCalled();
+          expect(this.component.props.onGridRowsUpdated.mostRecentCall.args[0]).toEqual({
             cellKey: 'title',
-            rowIdx: 5,
-            value: 'banana',
-            fromRow: 1,
-            toRow: 5
+            fromRow: 5,
+            toRow: 5,
+            updated: {title: 'banana'},
+            action: 'copyPaste'
           });
         });
       });
@@ -595,6 +594,12 @@ describe('Grid', function() {
     });
 
     describe('Drag events', function() {
+      beforeEach(function() {
+        const editableColumn = Object.assign({ editable: true }, this.columns[1]);
+        this.columns[1] = editableColumn;
+        this.component = this.createComponent({ columns: this.columns });
+      });
+
       describe('dragging in grid', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 1, rowIdx: 2 } });
@@ -623,8 +628,8 @@ describe('Grid', function() {
 
       describe('finishing drag', function() {
         beforeEach(function() {
-          spyOn(this.testProps, 'onCellsDragged');
-          this.component.setProps({ onCellsDragged: this.testProps.onCellsDragged });
+          spyOn(this.testProps, 'onGridRowsUpdated');
+          this.component.setProps({ onGridRowsUpdated: this.testProps.onGridRowsUpdated });
           this.component.setState({
             selected: { idx: 1, rowIdx: 2 },
             dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 }
@@ -632,15 +637,21 @@ describe('Grid', function() {
           this.getBaseGrid().props.onViewportDragEnd();
         });
 
-        it('should trigger onCellsDragged event and call it with correct params', function() {
-          expect(this.component.props.onCellsDragged).toHaveBeenCalled();
-          expect(this.component.props.onCellsDragged.argsForCall[0][0]).toEqual({ cellKey: 'title', fromRow: 2, toRow: 6, value: 'apple' });
+        it('should trigger onGridRowsUpdated event and call it with correct params', function() {
+          expect(this.component.props.onGridRowsUpdated).toHaveBeenCalled();
+          expect(this.component.props.onGridRowsUpdated.argsForCall[0][0]).toEqual({
+            cellKey: 'title',
+            fromRow: 2,
+            toRow: 6,
+            updated: {title: 'apple'},
+            action: 'cellDrag'
+          });
         });
       });
 
       describe('terminating drag', function() {
         beforeEach(function() {
-          this.component.setState({ dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 } });
+          this.component.setState({selected: { idx: 1, rowIdx: 2 }, dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 } });
           this.getCellMetaData().handleTerminateDrag();
         });
 
