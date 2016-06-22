@@ -15,10 +15,21 @@ var conf = {
   apiDocsFilePath: apiDocsDir + 'docs.json',
   extension: ['js', 'jsx'],
   ignoreDir: null,
-  markdownDir: './docs/markdowns/'
+  markdownDir: './docs/markdowns/',
+  docsIndexFilePath: './docs/readme.md'
 };
 
 // Builders.
+function createIndexPage(docs) {
+  var markdown = '# API Docs\n';
+  for (var i = 0; i < docs.length; i++) {
+    var file = docs[i];
+    markdown += '- [' + file + '](' + generalUtils.getComponentName(file) + '.md)\n';
+  }
+
+  fs.writeFileSync(conf.docsIndexFilePath, markdown);
+}
+
 function buildDocs(api) {
   try {
     mkdirp(conf.markdownDir);
@@ -30,6 +41,8 @@ function buildDocs(api) {
         fs.writeFileSync(conf.markdownDir + name + '.md', markdown);
       }
     }
+
+    createIndexPage(Object.keys(api));
   } catch (ex) {
     generalUtils.writeError(ex);
   }
