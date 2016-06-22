@@ -41,7 +41,7 @@ function buildDocs(api) {
       if (markdown) {
         var docPath = conf.markdownDir + name + '.md';
         fs.writeFileSync(docPath, markdown);
-        allDocPaths.push(docPath);
+        allDocPaths.push(docPath.slice(1));
       }
     }
 
