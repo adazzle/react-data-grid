@@ -32,17 +32,20 @@ function createIndexPage(docs) {
 
 function buildDocs(api) {
   try {
+    var allDocPaths = [];
     mkdirp(conf.markdownDir);
     for (var filepath in api) {
       var name = generalUtils.getComponentName(filepath);
       var markdown = generateMarkdown(name, api[filepath]);
 
       if (markdown) {
-        fs.writeFileSync(conf.markdownDir + name + '.md', markdown);
+        var docPath = conf.markdownDir + name + '.md';
+        fs.writeFileSync(docPath, markdown);
+        allDocPaths.push(docPath);
       }
     }
 
-    createIndexPage(Object.keys(api));
+    createIndexPage(allDocPaths);
   } catch (ex) {
     generalUtils.writeError(ex);
   }
