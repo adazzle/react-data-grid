@@ -24,7 +24,7 @@ function createIndexPage(docs) {
   var markdown = '# API Docs\n';
   for (var i = 0; i < docs.length; i++) {
     var file = docs[i];
-    markdown += '- [' + file + '](' + generalUtils.getComponentName(file) + '.md)\n';
+    markdown += '- [' + generalUtils.getComponentName(file) + '](' + file + ')\n';
   }
 
   fs.writeFileSync(conf.docsIndexFilePath, markdown);
