@@ -16,17 +16,27 @@ var conf = {
   extension: ['js', 'jsx'],
   ignoreDir: null,
   markdownDir: './docs/markdowns/',
-  docsIndexFilePath: './docs/readme.md'
+  docsIndexFilePath: './docs/readme.md',
+  docsExamplesFilePath: './examples/assets/js/docs.js'
 };
 
 // Builders.
-function createIndexPage(docs) {
+function createDocumentContainerPages(docs) {
   var markdown = '# API Docs\n';
+  var documentsList = [];
+
   for (var i = 0; i < docs.length; i++) {
     var file = docs[i];
-    markdown += '- [' + generalUtils.getComponentName(file) + '](' + file + ')\n';
+    var fileName = generalUtils.getComponentName(file);
+
+    markdown += '- [' + fileName + '](' + file + ')\n';
+    documentsList.push({
+      name: fileName,
+      path: file
+    });
   }
 
+  fs.writeFileSync(conf.docsExamplesFilePath, 'var generatedDocs = ' + JSON.stringify(documentsList));
   fs.writeFileSync(conf.docsIndexFilePath, markdown);
 }
 
@@ -45,7 +55,7 @@ function buildDocs(api) {
       }
     }
 
-    createIndexPage(allDocPaths);
+    createDocumentContainerPages(allDocPaths);
   } catch (ex) {
     generalUtils.writeError(ex);
   }
