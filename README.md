@@ -20,8 +20,26 @@ installed from npm.
 
 Overview 
 --------
-
 ReactDataGrid is an advanced JavaScript spreadsheet component built using React
+
+Exported Modules
+--------
+ReactDataGrid exposes two possible modules, `react-data-grid` and `react-data-grid/addons`.
+
+What's included in each module depends on ReactDataGrid's version you're using.
+
+- ### 0.X.X
+
+  - You can import `react-data-grid` **or** `react-data-grid/addons`  depending if you want to have access to the add-ons or not. 
+  - `react-data-grid/addons` contains `react-data-grid` and that **creates a dependency** that can be hard to manage.
+  - `react-data-grid/addons` points to `react-data-grid-with-addons.js` on dist folder. 
+  - ##### Know Issues:
+    -  Some external dependencies in `react-data-grid/addons` don't offer support for older browsers like **IE8**, if the module is imported globally all the JS will be damaged.
+
+- ### 1.0.0
+   - You can import `react-data-grid` **and** `react-data-grid/addons`  depending if you want to use only the basic grid or the add-ons. 
+  - Both modules are **completely independent and can be used separately**.
+  - `react-data-grid/addons` points to `react-data-grid.ui-plugins.js`` on dist folder. 
 
 Features
 --------
