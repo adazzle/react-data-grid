@@ -24,8 +24,8 @@ class RowsContainer extends React.Component {
   }
 
   getContextMenuContainer() {
-    if (!(window.ReactDataGridPlugins && window.ReactDataGridPlugins)) {
-      throw new ('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
+    if (!window.ReactDataGridPlugins) {
+      throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
     }
     return window.ReactDataGridPlugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
   }
