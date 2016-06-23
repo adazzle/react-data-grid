@@ -82,7 +82,8 @@ const Cell = React.createClass({
     || this.props.isRowSelected !== nextProps.isRowSelected
     || this.isSelected()
     || this.props.value !== nextProps.value
-    || this.props.forceUpdate === true;
+    || this.props.forceUpdate === true
+    || this.props.className !== nextProps.className;
   },
 
   onCellClick(e) {
