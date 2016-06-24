@@ -85,6 +85,7 @@
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
+    "node-dir": "^0.1.12",
     "pretty-hrtime": "^0.2.1",
     "react": "~0.14.6",
     "react-addons-test-utils": "^0.14.6",
