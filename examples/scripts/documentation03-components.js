@@ -4,6 +4,10 @@ var DocumentContainer = React.createClass({
     documentPath: React.PropTypes.string.isRequired
   },
 
+  componentDidMount() {
+    this.getDocumentContent();
+  },
+
   componentDidUpdate() {
     this.getDocumentContent();
   },
@@ -16,22 +20,24 @@ var DocumentContainer = React.createClass({
     $.ajax({
       url: this.props.documentPath,
       success: function(documentContent) {
-        this.setState({ documentContent: documentContent });
+        this.setState({ documentContent: this.getMarkdownAsHtml(documentContent) });
       }.bind(this)
     });
   },
 
-  renderMarkdownAsHtml() {
-    return {
-      __html: markdown.toHTML(this.state.documentContent)
-    };
+  getHtml(content) {
+    return { __html: content };
+  },
+
+  getMarkdownAsHtml(documentContent) {
+    return markdown.toHTML(documentContent);
   },
 
   render: function() {
     return (
       <div>
         <h3>{ this.props.documentName }</h3>
-        <div dangerouslySetInnerHTML={ this.renderMarkdownAsHtml() }></div>
+        <div dangerouslySetInnerHTML={ this.getHtml(this.state.documentContent) }></div>
       </div>);
   }
 });
@@ -50,9 +56,10 @@ var ComponentDocs = React.createClass({
     var docsToRender = [];
     for (var key in generatedDocs) {
       if (generatedDocs.hasOwnProperty(key)) {
+        var className = key === this.state.selectedDocumentIndex ? 'active' : '';
         var doc = generatedDocs[key];
         docsToRender.push(
-          <li role="presentation">
+          <li role="presentation" className={className}>
             <a href="#" onClick={function(index, e) { this.onNavBarClicked(index, e); }.bind(this, key) }>{doc.name}</a>
           </li>);
       }
