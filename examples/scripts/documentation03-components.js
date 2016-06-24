@@ -1,54 +1,52 @@
 var DocumentContainer = React.createClass({
   propTypes: {
+    documentContent: React.PropTypes.string.isRequired,
     documentName: React.PropTypes.string.isRequired,
     documentPath: React.PropTypes.string.isRequired
-  },
-
-  componentDidMount() {
-    this.getDocumentContent();
-  },
-
-  componentDidUpdate() {
-    this.getDocumentContent();
   },
 
   getInitialState() {
     return { documentContent: 'Loading'};
   },
 
-  getDocumentContent() {
-    $.ajax({
-      url: this.props.documentPath,
-      success: function(documentContent) {
-        this.setState({ documentContent: this.getMarkdownAsHtml(documentContent) });
-      }.bind(this)
-    });
+  getHtml() {
+    return { __html: this.getMarkdownAsHtml() };
   },
 
-  getHtml(content) {
-    return { __html: content };
-  },
-
-  getMarkdownAsHtml(documentContent) {
-    return markdown.toHTML(documentContent);
+  getMarkdownAsHtml() {
+    return markdown.toHTML(this.props.documentContent);
   },
 
   render: function() {
     return (
-      <div>
+      <div className={'pull-left'} style={ {marginLeft: '100px'} }>
         <h3>{ this.props.documentName }</h3>
-        <div dangerouslySetInnerHTML={ this.getHtml(this.state.documentContent) }></div>
+        <div dangerouslySetInnerHTML={ this.getHtml() }></div>
       </div>);
   }
 });
 
 var ComponentDocs = React.createClass({
   getInitialState: function() {
-    return { selectedDocumentIndex: 0 };
+    return { selectedDocumentIndex: 0, documentContent: '' };
+  },
+
+  componentDidMount() {
+    this.getDocumentContent(0);
+  },
+
+  getDocumentContent(key) {
+    var documentPath = generatedDocs[key].path;
+    $.ajax({
+      url: documentPath,
+      success: function(documentContent) {
+        this.setState({ documentContent: documentContent, selectedDocumentIndex: key });
+      }.bind(this)
+    });
   },
 
   onNavBarClicked: function(key, e) {
-    this.setState({ selectedDocumentIndex: key });
+    this.getDocumentContent(key);
     e.preventDefault();
   },
 
@@ -70,7 +68,7 @@ var ComponentDocs = React.createClass({
 
   renderNavBar() {
     return (
-      <ul className="nav nav-tabs">
+      <ul className="nav nav-pills nav-stacked pull-left">
         { this.getComponentDocs() }
       </ul>);
   },
@@ -82,6 +80,7 @@ var ComponentDocs = React.createClass({
         <h1 id="js-api-refernce">Components Docs</h1>
         { this.renderNavBar() }
         <DocumentContainer
+          documentContent={this.state.documentContent}
           documentName={generatedDocs[selectedDocumentIndex].name}
           documentPath={generatedDocs[selectedDocumentIndex].path}/>
       </div>
