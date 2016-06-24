@@ -1,10 +1,11 @@
 var gulp = require('gulp');
-var fs = require('fs');
+var fs = require('fs-extra');
 var generateMarkdown = require('../../docs/utils/generateMarkdown');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var generalUtils = require('../../docs/utils/generalUtils');
 var del = require('del');
+var runSequence = require('run-sequence');
 
 // Configuration.
 var apiDocsDir = './docs/api/';
@@ -16,6 +17,7 @@ var conf = {
   extension: ['js', 'jsx'],
   ignoreDir: null,
   markdownDir: './docs/markdowns/',
+  exampleDocsDir: './examples/docs/markdowns/',
   docsIndexFilePath: './docs/readme.md',
   docsExamplesFilePath: './examples/assets/js/docs.js'
 };
@@ -61,8 +63,19 @@ function buildDocs(api) {
   }
 }
 
+function copyDocsToExamples() {
+  mkdirp(conf.exampleDocsDir);
+  fs.copy(conf.markdownDir, conf.exampleDocsDir, function(err) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Documents copied to examples!');
+    }
+  });
+}
+
 // Tasks.
-var task = gulp.task('docs:markdown', ['docs:api'], function(done) {
+var task = gulp.task('docs:markdown', function(done) {
   buildDocs(JSON.parse(fs.readFileSync(conf.apiDocsFilePath)));
   done();
 });
@@ -75,9 +88,20 @@ task = gulp.task('docs:api', function(done) {
   }, conf.extension, conf.ignoreDir);
 });
 
+task = gulp.task('docs:create', ['docs:api'], function(done) {
+  runSequence(['docs:markdown'], function() {
+    done();
+  });
+});
+
 var docsToClean = [conf.apiDocsDir, conf.markdownDir];
 task = gulp.task('docs:clean',  del.bind(null, docsToClean));
 
-task = gulp.task('docs:regenerate', ['docs:clean', 'docs:markdown']);
+task = gulp.task('docs:regenerate', ['docs:clean'], function(done) {
+  runSequence(['docs:create'], function() {
+    done();
+    copyDocsToExamples();
+  });
+});
 
 module.exports = task;

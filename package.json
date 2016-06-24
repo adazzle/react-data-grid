@@ -26,9 +26,11 @@
     "classnames": "^1.2.0",
     "es5-shim": "^4.0.3",
     "fbjs": "^0.6.1",
+    "fs-extra": "^0.30.0",
     "object-assign": "^2.0.0",
     "react-contextmenu": "^1.5.0",
-    "ron-react-autocomplete": "^3.0.0"
+    "ron-react-autocomplete": "^3.0.0",
+    "run-sequence": "^1.2.1"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
