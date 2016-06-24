@@ -5,10 +5,6 @@ var DocumentContainer = React.createClass({
     documentPath: React.PropTypes.string.isRequired
   },
 
-  getInitialState() {
-    return { documentContent: 'Loading'};
-  },
-
   getHtml() {
     return { __html: this.getMarkdownAsHtml() };
   },
