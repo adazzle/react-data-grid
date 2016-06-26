@@ -3620,7 +3620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      React.createElement(
 	        "p",
 	        null,
-	        "Or use react-data-grid-with-addons.js to use advanced features"
+	        "Or include react-data-grid.ui-plugins.js to use advanced features"
 	      ),
 	      React.createElement(
 	        "div",
@@ -3628,7 +3628,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        React.createElement(
 	          "pre",
 	          null,
-	          "<script type=\"text/javascript\" src=\"react-data-grid/dist/react-data-grid-with-addons.js\"></script>"
+	          "<script type=\"text/javascript\" src=\"react-data-grid/dist/react-data-grid.ui-plugins.js\"></script>"
 	        )
 	      )
 	    );

@@ -4,8 +4,8 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 
 var SimpleExample = `
 
-var SimpleCheckboxEditor = ReactDataGrid.Editors.SimpleCheckboxEditor;
-var SimpleCheckboxFormatter = ReactDataGrid.Editors.SimpleCheckboxFormatter;
+var SimpleCheckboxEditor = ReactDataGridPlugins.Editors.SimpleCheckboxEditor;
+var SimpleCheckboxFormatter = ReactDataGridPlugins.Editors.SimpleCheckboxFormatter;
 var _rows = [];
 for (var i = 1; i < 1000; i++) {
   _rows.push({

@@ -2,8 +2,8 @@ import React from 'react';
 import ReactPlayground from '../assets/js/ReactPlayground';
 
 let example = `
-var Editors             = ReactDataGrid.Editors;
-var DropDownEditor      = Editors.DropDownEditor;
+var Editors             = ReactDataGridPlugins.Editors;
+var DropDownEditor      = ReactDataGridPlugins.Editors.DropDownEditor;
 
 var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
