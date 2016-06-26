@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "0.14.46",
+  "version": "1.0.0",
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "es5-shim": "^4.0.3",
     "fbjs": "^0.6.1",
     "object-assign": "^2.0.0",
-    "react-contextmenu": "^1.5.0",
+    "react-contextmenu": "^1.6.2",
     "ron-react-autocomplete": "^3.0.0"
   },
   "devDependencies": {
@@ -82,6 +82,7 @@
     "merge-stream": "^0.1.5",
     "minimist": "^1.1.0",
     "moment": "^2.10.6",
+    "object-assign": "^2.1.1",
     "pretty-hrtime": "^0.2.1",
     "react": "~0.14.6",
     "react-addons-test-utils": "^0.14.6",

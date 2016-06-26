@@ -1,5 +1,5 @@
 const React              = require('react');
-const ExcelColumn        = require('../../grids/ExcelColumn');
+const ExcelColumn        = require('../../../PropTypeShapes/ExcelColumn');
 
 const FilterableHeaderCell = React.createClass({
 

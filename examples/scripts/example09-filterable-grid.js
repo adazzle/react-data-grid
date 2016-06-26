@@ -3,7 +3,7 @@ var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 
 var EditableExample = `
-var Toolbar = ReactDataGrid.Toolbar;
+var Toolbar = ReactDataGridPlugins.Toolbar;
 
 //helper to generate a random date
 function randomDate(start, end) {

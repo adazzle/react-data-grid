@@ -1,13 +1,14 @@
 (function(){
-  var React       = require('react')
-  var ReactDataGrid       = require('../build/react-data-grid-with-addons')
-  var Editors             = ReactDataGrid.Editors;
-  var Toolbar             = ReactDataGrid.Toolbar;
+  var React       = require('react');
+  var ReactDataGrid = require('../build/react-data-grid');
+  var UIPlugins       = require('../build/react-data-grid.ui-plugins');
+  var Editors             = ReactDataGridPlugins.Editors;
+  var Toolbar             = ReactDataGridPlugins.Toolbar;
   var AutoCompleteEditor  = Editors.AutoComplete;
   var DropDownEditor      = Editors.DropDownEditor;
   var joinClasses          = require('classnames');
   var FakeObjectDataStore = require('./FakeObjectDataStore');
-  var {ContextMenu, MenuItem} = ReactDataGrid.Menu;
+  var {ContextMenu, MenuItem} = ReactDataGridPlugins.Menu;
   var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
    { id : 10, title :'Durham'},
    { id : 11, title :'Essex'},
@@ -54,7 +55,7 @@ var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
       key: 'avartar',
       name: 'Avartar',
       width : 60,
-      formatter : ReactDataGrid.Formatters.ImageFormatter,
+      formatter : ReactDataGridPlugins.Formatters.ImageFormatter,
       resizable : true
     },
     {

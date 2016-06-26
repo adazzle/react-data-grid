@@ -1,14 +1,14 @@
 const React                 = require('react');
 const ReactDOM = require('react-dom');
-const BaseGrid              = require('../../Grid');
-const Row                   = require('../../Row');
-const ExcelColumn           = require('./ExcelColumn');
-const KeyboardHandlerMixin  = require('../../KeyboardHandlerMixin');
-const CheckboxEditor        = require('../editors/CheckboxEditor');
-const DOMMetrics           = require('../../DOMMetrics');
-const ColumnMetricsMixin      = require('../../ColumnMetricsMixin');
-const RowUtils = require('../../RowUtils');
-const ColumnUtils = require('../../ColumnUtils');
+const BaseGrid              = require('./Grid');
+const Row                   = require('./Row');
+const ExcelColumn           = require('./PropTypeShapes/ExcelColumn');
+const KeyboardHandlerMixin  = require('./KeyboardHandlerMixin');
+const CheckboxEditor        = require('./addons/editors/CheckboxEditor');
+const DOMMetrics           = require('./DOMMetrics');
+const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
+const RowUtils = require('./RowUtils');
+const ColumnUtils = require('./ColumnUtils');
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
