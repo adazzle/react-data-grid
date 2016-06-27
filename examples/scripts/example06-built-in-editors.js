@@ -5,12 +5,12 @@ var EditableExample = `
 
 //options for priorities autocomplete editor
 var priorities = [{id:0, title : 'Critical'}, {id:1, title : 'High'}, {id:2, title : 'Medium'}, {id:3, title : 'Low'}]
-var AutoCompleteEditor = ReactDataGrid.Editors.AutoComplete;
+var AutoCompleteEditor = ReactDataGridPlugins.Editors.AutoComplete;
 var PrioritiesEditor = <AutoCompleteEditor options={priorities}/>
 
 //options for IssueType dropdown editor
 var issueTypes = ['Bug', 'Improvement', 'Epic', 'Story'];
-var DropDownEditor = ReactDataGrid.Editors.DropDownEditor;
+var DropDownEditor = ReactDataGridPlugins.Editors.DropDownEditor;
 var IssueTypesEditor = <DropDownEditor options={issueTypes}/>
 
 //helper to generate a random date
@@ -105,7 +105,7 @@ ReactDOM.render(<Example />, mountNode);
       return(
         <div>
           <h3>Built-In Cell Editor Example</h3>
-          <p>This example uses the built in <strong>Autocomplete</strong> editor for the priorities column and the <strong>DropdownEditor</strong> for the IssueType column. <strong>You must be using the <code>react-data-grid-with-addons.js</code> package to use the built in editors.</strong></p>
+          <p>This example uses the built in <strong>Autocomplete</strong> editor for the priorities column and the <strong>DropdownEditor</strong> for the IssueType column. <strong>You must include the <code>react-data-grid.ui-plugins.js</code> package to use the built in editors.</strong></p>
           <ReactPlayground codeText={EditableExample} />
         </div>
       )

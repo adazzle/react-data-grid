@@ -1,7 +1,7 @@
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 //this leads to Row is undefined?
-var Row                   = require('react-data-grid-with-addons').Row
+var Row                   = require('react-data-grid').Row
 
 var SimpleExample = `
 

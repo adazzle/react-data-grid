@@ -1,7 +1,10 @@
+import {Menu} from '../addons';
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import RowsContainer, {ContextMenuRowsContainer, SimpleRowsContainer} from '../RowsContainer';
-import ReactDataGridContextMenu from '../addons/menu/ContextMenu';
+import RowsContainer from '../RowsContainer';
+
+
+let ReactDataGridContextMenu = Menu.ContextMenu;
 
 describe('Rows Container', () => {
   describe('without context menu', () => {
@@ -13,16 +16,6 @@ describe('Rows Container', () => {
 
     it('should create a new RowsContainer instance', () => {
       expect(componentWithoutContextMenu).toBeDefined();
-    });
-
-    it('should render one SimpleRowsContainer component', () => {
-      let simpleRowsContainer = ReactTestUtils.findRenderedComponentWithType(componentWithoutContextMenu, SimpleRowsContainer);
-      expect(simpleRowsContainer).toBeDefined();
-    });
-
-    it('should not render a ContextMenuRowsContainer component', () => {
-      let contextMenuRowsContainers = ReactTestUtils.scryRenderedComponentsWithType(componentWithoutContextMenu, ContextMenuRowsContainer);
-      expect(contextMenuRowsContainers.length).toEqual(0);
     });
   });
 
@@ -42,16 +35,6 @@ describe('Rows Container', () => {
 
     it('should create a new RowsContainer instance', () => {
       expect(componentWithContextMenu).toBeDefined();
-    });
-
-    it('should render one ContextMenuRowsContainer component', () => {
-      let contextMenuRowsContainer = ReactTestUtils.findRenderedComponentWithType(componentWithContextMenu, ContextMenuRowsContainer);
-      expect(contextMenuRowsContainer).toBeDefined();
-    });
-
-    it('should render one SimpleRowsContainer component', () => {
-      let simpleRowsContainer = ReactTestUtils.findRenderedComponentWithType(componentWithContextMenu, SimpleRowsContainer);
-      expect(simpleRowsContainer).toBeDefined();
     });
 
     it('should render the context menu', () => {
