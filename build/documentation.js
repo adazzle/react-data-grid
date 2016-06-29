@@ -62,6 +62,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var gettingStarted = __webpack_require__(47);
 	var apiReference = __webpack_require__(48);
+	var componentsDocs = __webpack_require__(49);
 
 	var Route = ReactRouter.Route;
 	var RouteHandler = ReactRouter.RouteHandler;
@@ -89,7 +90,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Route,
 	  { handler: App },
 	  React.createElement(Route, { name: 'gettingstarted', handler: gettingStarted }),
-	  React.createElement(Route, { name: 'apireference', handler: apiReference })
+	  React.createElement(Route, { name: 'apireference', handler: apiReference }),
+	  React.createElement(Route, { name: 'componentsDocs', handler: componentsDocs })
 	);
 
 	ReactRouter.run(routes, function (Handler) {
@@ -3827,6 +3829,122 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  }
 	});
+
+/***/ },
+/* 49 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var DocumentContainer = React.createClass({
+	  displayName: 'DocumentContainer',
+
+	  propTypes: {
+	    documentContent: React.PropTypes.string.isRequired,
+	    documentName: React.PropTypes.string.isRequired,
+	    documentPath: React.PropTypes.string.isRequired
+	  },
+
+	  getHtml: function getHtml() {
+	    return { __html: this.getMarkdownAsHtml() };
+	  },
+	  getMarkdownAsHtml: function getMarkdownAsHtml() {
+	    return markdown.toHTML(this.props.documentContent);
+	  },
+
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'pull-left', style: { marginLeft: '100px' } },
+	      React.createElement(
+	        'h3',
+	        null,
+	        this.props.documentName
+	      ),
+	      React.createElement('div', { dangerouslySetInnerHTML: this.getHtml() })
+	    );
+	  }
+	});
+
+	var ComponentDocs = React.createClass({
+	  displayName: 'ComponentDocs',
+
+	  getInitialState: function getInitialState() {
+	    return { selectedDocumentIndex: 0, documentContent: '' };
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    this.getDocumentContent(0);
+	  },
+	  getDocumentContent: function getDocumentContent(key) {
+	    var documentPath = generatedDocs[key].path;
+	    $.ajax({
+	      url: documentPath,
+	      success: function (documentContent) {
+	        this.setState({ documentContent: documentContent, selectedDocumentIndex: key });
+	      }.bind(this)
+	    });
+	  },
+
+
+	  onNavBarClicked: function onNavBarClicked(key, e) {
+	    this.getDocumentContent(key);
+	    e.preventDefault();
+	  },
+
+	  getComponentDocs: function getComponentDocs() {
+	    var docsToRender = [];
+	    for (var key in generatedDocs) {
+	      if (generatedDocs.hasOwnProperty(key)) {
+	        var className = key === this.state.selectedDocumentIndex ? 'active' : '';
+	        var doc = generatedDocs[key];
+	        docsToRender.push(React.createElement(
+	          'li',
+	          { role: 'presentation', className: className },
+	          React.createElement(
+	            'a',
+	            { href: '#', onClick: function (index, e) {
+	                this.onNavBarClicked(index, e);
+	              }.bind(this, key) },
+	            doc.name
+	          )
+	        ));
+	      }
+	    }
+
+	    return docsToRender;
+	  },
+
+	  renderNavBar: function renderNavBar() {
+	    return React.createElement(
+	      'ul',
+	      { className: 'nav nav-pills nav-stacked pull-left' },
+	      this.getComponentDocs()
+	    );
+	  },
+
+
+	  render: function render() {
+	    var selectedDocumentIndex = this.state.selectedDocumentIndex;
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h1',
+	        { id: 'js-api-refernce' },
+	        'Components Docs'
+	      ),
+	      this.renderNavBar(),
+	      React.createElement(DocumentContainer, {
+	        documentContent: this.state.documentContent,
+	        documentName: generatedDocs[selectedDocumentIndex].name,
+	        documentPath: generatedDocs[selectedDocumentIndex].path })
+	    );
+	  }
+	});
+
+	module.exports = ComponentDocs;
 
 /***/ }
 /******/ ])
