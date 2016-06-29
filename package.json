@@ -26,9 +26,11 @@
     "classnames": "^1.2.0",
     "es5-shim": "^4.0.3",
     "fbjs": "^0.6.1",
+    "fs-extra": "^0.30.0",
     "object-assign": "^2.0.0",
     "react-contextmenu": "^1.6.2",
-    "ron-react-autocomplete": "^3.0.0"
+    "ron-react-autocomplete": "^3.0.0",
+    "run-sequence": "^1.2.1"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
@@ -81,11 +83,14 @@
     "karma-webpack": "^1.7.0",
     "merge-stream": "^0.1.5",
     "minimist": "^1.1.0",
+    "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
     "object-assign": "^2.1.1",
+    "node-dir": "^0.1.12",
     "pretty-hrtime": "^0.2.1",
     "react": "~0.14.6",
     "react-addons-test-utils": "^0.14.6",
+    "react-docgen": "^2.8.2",
     "react-dom": "~0.14.6",
     "react-router": "^0.13.3",
     "rewire": "^2.1.3",

@@ -20,6 +20,7 @@ class Navbar extends React.Component {
                 <ul className="dropdown-menu">
                   <li><a href="documentation.html#/gettingstarted">Getting Started</a></li>
                   <li><a href="documentation.html#/apireference">API Reference</a></li>
+                  <li><a href="documentation.html#/componentsDocs">Component Documentation</a></li>
                 </ul>
               </li>
 
