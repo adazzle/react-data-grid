@@ -21,7 +21,9 @@ const Header = React.createClass({
     sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     onSort: PropTypes.func,
     onColumnResize: PropTypes.func,
-    onScroll: PropTypes.func
+    onScroll: PropTypes.func,
+    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
+    rowsCount: PropTypes.number.isRequired
   },
 
   getInitialState(): {resizing: any} {
@@ -104,6 +106,9 @@ const Header = React.createClass({
         sortDirection={this.props.sortDirection}
         onSort={this.props.onSort}
         onScroll={this.props.onScroll}
+        rowsCount={this.props.rowsCount}
+        rowGetter={this.props.rowGetter}
+
         />);
     });
     return headerRows;
