@@ -34,7 +34,7 @@ function createDocumentContainerPages(docs) {
     markdown += '- [' + fileName + '](' + file + ')\n';
     documentsList.push({
       name: fileName,
-      path: file
+      path: '.' + file
     });
   }
 
