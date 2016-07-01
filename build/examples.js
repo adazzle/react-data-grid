@@ -10968,7 +10968,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _react2['default'].createElement(
 	            'code',
 	            null,
-	            'ReactDataGrid.Menu.ContextMenu'
+	            'ReactDataGridPlugins.Menu.ContextMenu'
 	          ),
 	          ' and then set the ',
 	          _react2['default'].createElement(
