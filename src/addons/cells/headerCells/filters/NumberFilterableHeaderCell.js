@@ -20,29 +20,38 @@ class NumberFilterableHeaderCell extends React.Component {
 
   componentDidUpdate() {
     this.attachTooltip();
+    this.state = this.getRows();
   }
 
   attachTooltip() {
-    $('[data-toggle="tooltip"]').tooltip();
+    if ($) {
+      $('[data-toggle="tooltip"]').tooltip();
+    }
   }
 
   getRows() {
     let originalRows = [];
     let minValue = Number.MAX_SAFE_INTEGER;
     let maxValue = 0;
+    let allValues = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
       originalRows[i] = this.props.rowGetter(i);
-      if (minValue > this.props.rowGetter(i)[this.props.column.key]) {
-        minValue = this.props.rowGetter(i)[this.props.column.key];
+      if (!isNaN(this.props.rowGetter(i)[this.props.column.key]) && minValue > this.props.rowGetter(i)[this.props.column.key]) {
+        minValue = parseInt(this.props.rowGetter(i)[this.props.column.key], 10);
       }
-      if (maxValue < this.props.rowGetter(i)[this.props.column.key]) {
-        maxValue = this.props.rowGetter(i)[this.props.column.key];
+      if (!isNaN(this.props.rowGetter(i)[this.props.column.key]) && maxValue < this.props.rowGetter(i)[this.props.column.key]) {
+        maxValue = parseInt(this.props.rowGetter(i)[this.props.column.key], 10);
+      }
+      if (!isNaN(this.props.rowGetter(i)[this.props.column.key])) {
+        allValues.push(parseInt(this.props.rowGetter(i)[this.props.column.key], 10));
       }
     }
-    return { originalRows, minValue, maxValue };
+    allValues = allValues.sort(function(a, b) { return a - b; });
+
+    return { originalRows, minValue, maxValue, allValues };
   }
 
-  getNumericValues(value, minValue, maxValue) {
+  getNumericValues(value) {
     let returnList = [];
     let greaterThenBegin = -1;
     let lessThenBegin = -1;
@@ -68,18 +77,26 @@ class NumberFilterableHeaderCell extends React.Component {
         if (obj.indexOf('-') > 0) { // handle dash
           let begin = parseInt(obj.split('-')[0], 10);
           let end = parseInt(obj.split('-')[1], 10);
-          for (let i = begin; i <= end; i++) {
-            returnList.push(i);
+          for (let objValue of this.state.allValues) {
+            if (begin <= objValue && objValue <= end) {
+              returnList.push(objValue);
+            }
           }
         } else if (obj.indexOf('>') > -1) { // handle greater then
           let begin = parseInt(obj.split('>')[1], 10);
-          for (let i = begin; i <= (intersection ? lessThenBegin : maxValue); i++) {
-            returnList.push(i);
+          let _maxValue = (greaterThenBegin > this.state.maxValue ? greaterThenBegin : this.state.maxValue);
+          for (let objValue of this.state.allValues) {
+            if (begin <= objValue && objValue <= (intersection ? lessThenBegin : _maxValue)) {
+              returnList.push(objValue);
+            }
           }
         } else if (obj.indexOf('<') > -1) { // handle less then
           let end = parseInt(obj.split('<')[1], 10);
-          for (let i = (intersection ? greaterThenBegin : minValue); i <= end; i++) {
-            returnList.push(i);
+          let _minValue = (lessThenBegin < this.state.minValue ? lessThenBegin : this.state.minValue);
+          for (let objValue of this.state.allValues) {
+            if ((intersection ? greaterThenBegin : _minValue) <= objValue && objValue <= end) {
+              returnList.push(objValue);
+            }
           }
         } else { // handle normal values
           returnList.push(parseInt(obj, 10));
@@ -105,7 +122,7 @@ class NumberFilterableHeaderCell extends React.Component {
 
   handleChange(e) {
     let value = e.target.value;
-    let returnList = this.getNumericValues(value, this.state.minValue, this.state.maxValue);
+    let returnList = this.getNumericValues(value);
     this.props.onChange({filterTerm: returnList, column: this.props.column});
   }
 
