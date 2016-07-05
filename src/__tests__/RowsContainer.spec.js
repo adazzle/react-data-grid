@@ -11,7 +11,7 @@ describe('Rows Container', () => {
     let componentWithoutContextMenu = {};
 
     beforeEach(() => {
-      componentWithoutContextMenu = ReactTestUtils.renderIntoDocument(<RowsContainer />);
+      componentWithoutContextMenu = ReactTestUtils.renderIntoDocument(<RowsContainer window={{ ReactDataGridPlugins: undefined }} />);
     });
 
     it('should create a new RowsContainer instance', () => {
