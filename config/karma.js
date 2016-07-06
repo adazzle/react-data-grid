@@ -39,7 +39,7 @@ module.exports = function (config) {
       return BROWSERS.split(',');
     }
     if(RELEASE){
-      browsers = ['Chrome','Firefox','IE']
+      browsers = ['Chrome', 'Firefox', 'IE', 'IE9'];
     }else if(DEBUG){
       browsers = ['Chrome'];
     }
