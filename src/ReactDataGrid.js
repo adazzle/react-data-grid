@@ -9,7 +9,7 @@ const DOMMetrics           = require('./DOMMetrics');
 const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
-const KeyCodes = require('../../KeyCodes');
+const KeyCodes = require('./KeyCodes');
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
@@ -497,7 +497,7 @@ const ReactDataGrid = React.createClass({
     let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
     let isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
 
-    this.setState({lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx});
+    this.setState({lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: {rowIdx: rowIdx, idx: 0}});
 
     if (isPreviouslySelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
       this.props.rowSelection.onRowsDeselected([{rowIdx, row: rowData}]);
@@ -618,14 +618,14 @@ const ReactDataGrid = React.createClass({
     return selectedRows;
   },
   getRowSelectionProps() {
-    if(this.props.rowSelection) {
+    if (this.props.rowSelection) {
       return this.props.rowSelection.selectBy;
     }
 
     return null;
   },
   getSelectedRows() {
-    if(this.props.rowSelection) {
+    if (this.props.rowSelection) {
       return null;
     }
 

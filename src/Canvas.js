@@ -180,7 +180,7 @@ const Canvas = React.createClass({
     return {scrollTop, scrollLeft};
   },
 
-  isRowSelected(idx, row, displayStart, displayEnd): boolean {
+  isRowSelected(idx, row): boolean {
     // Use selectedRows if set
     if (this.props.selectedRows !== null) {
       let selectedRows = this.props.selectedRows.filter(r => {

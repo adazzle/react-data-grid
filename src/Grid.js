@@ -19,6 +19,26 @@ const Grid = React.createClass({
     emptyRowsView: PropTypes.func,
     expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
+    rowSelection: React.PropTypes.shape({
+      enableShiftSelect: React.PropTypes.bool,
+      onRowsSelected: React.PropTypes.func,
+      onRowsDeselected: React.PropTypes.func,
+      showCheckbox: React.PropTypes.bool,
+      selectBy: React.PropTypes.oneOfType([
+        React.PropTypes.shape({
+          indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+        }),
+        React.PropTypes.shape({
+          isSelectedKey: React.PropTypes.string.isRequired
+        }),
+        React.PropTypes.shape({
+          keys: React.PropTypes.shape({
+            values: React.PropTypes.array.isRequired,
+            rowKey: React.PropTypes.string.isRequired
+          }).isRequired
+        })
+      ]).isRequired
+    }),
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
     sortColumn: React.PropTypes.string,
