@@ -3262,25 +3262,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	var RowsContainer = function (_React$Component) {
 	  _inherits(RowsContainer, _React$Component);
 
-	  function RowsContainer() {
+	  function RowsContainer(props) {
 	    _classCallCheck(this, RowsContainer);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RowsContainer).call(this));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RowsContainer).call(this, props));
 
-	    _this.state = { ContextMenuContainer: _this.getContextMenuContainer() };
+	    _this.plugins = props.window ? props.window.ReactDataGridPlugins : window.ReactDataGridPlugins;
 	    _this.hasContextMenu = _this.hasContextMenu.bind(_this);
 	    _this.renderRowsWithContextMenu = _this.renderRowsWithContextMenu.bind(_this);
 	    _this.getContextMenuContainer = _this.getContextMenuContainer.bind(_this);
+	    _this.state = { ContextMenuContainer: _this.getContextMenuContainer(props) };
 	    return _this;
 	  }
 
 	  _createClass(RowsContainer, [{
 	    key: 'getContextMenuContainer',
 	    value: function getContextMenuContainer() {
-	      if (!window.ReactDataGridPlugins) {
-	        throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
+	      if (this.hasContextMenu()) {
+	        if (!this.plugins) {
+	          throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
+	        }
+	        return this.plugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
 	      }
-	      return window.ReactDataGridPlugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
 	    }
 	  }, {
 	    key: 'hasContextMenu',
@@ -3314,7 +3317,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	RowsContainer.propTypes = {
 	  contextMenu: _react.PropTypes.element,
 	  rowIdx: _react.PropTypes.number,
-	  idx: _react.PropTypes.number
+	  idx: _react.PropTypes.number,
+	  window: _react.PropTypes.object
 	};
 
 	exports['default'] = RowsContainer;
