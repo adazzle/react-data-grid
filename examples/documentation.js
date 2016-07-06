@@ -4,6 +4,7 @@ var ReactRouter = require('react-router');
 
 var gettingStarted = require('./scripts/documentation01-gettingstarted');
 var apiReference = require('./scripts/documentation02-apireference');
+var componentsDocs = require('./scripts/documentation03-components');
 
 var { Route, RouteHandler, Link } = ReactRouter;
 
@@ -20,8 +21,9 @@ var App = React.createClass({
 
 var routes = (
   <Route handler={App}>
-      <Route name="gettingstarted" handler={gettingStarted}/>
-      <Route name="apireference" handler={apiReference}/>
+      <Route name="gettingstarted" handler={gettingStarted} />
+      <Route name="apireference" handler={apiReference} />
+      <Route name="componentsDocs" handler={componentsDocs} />
   </Route>
 );
 
