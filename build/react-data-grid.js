@@ -2470,8 +2470,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(2);
 	var BaseGrid = __webpack_require__(21);
@@ -2733,9 +2731,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (this.props.onGridRowsUpdated) {
+	      var _updated;
+
 	      var cellKey = this.getColumn(e.idx).key;
 
-	      var updated = _defineProperty({}, cellKey, e.rowData[cellKey]);
+	      var updated = (_updated = {}, _updated[cellKey] = e.rowData[cellKey], _updated);
 
 	      this.props.onGridRowsUpdated({
 	        cellKey: cellKey,
@@ -2770,7 +2770,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
 	    }
 	    if (this.props.onGridRowsUpdated) {
-	      var updated = _defineProperty({}, cellKey, dragged.value);
+	      var _updated2;
+
+	      var updated = (_updated2 = {}, _updated2[cellKey] = dragged.value, _updated2);
 
 	      this.props.onGridRowsUpdated({
 	        cellKey: cellKey,
@@ -2809,7 +2811,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (this.props.onGridRowsUpdated) {
-	      var updated = _defineProperty({}, cellKey, textToCopy);
+	      var _updated3;
+
+	      var updated = (_updated3 = {}, _updated3[cellKey] = textToCopy, _updated3);
 
 	      this.props.onGridRowsUpdated({
 	        cellKey: cellKey,
@@ -3227,12 +3231,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 	exports.SimpleRowsContainer = undefined;
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
@@ -3265,7 +3265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function RowsContainer(props) {
 	    _classCallCheck(this, RowsContainer);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RowsContainer).call(this, props));
+	    var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
 
 	    _this.plugins = props.window ? props.window.ReactDataGridPlugins : window.ReactDataGridPlugins;
 	    _this.hasContextMenu = _this.hasContextMenu.bind(_this);
@@ -3275,41 +3275,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _this;
 	  }
 
-	  _createClass(RowsContainer, [{
-	    key: 'getContextMenuContainer',
-	    value: function getContextMenuContainer() {
-	      if (this.hasContextMenu()) {
-	        if (!this.plugins) {
-	          throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
-	        }
-	        return this.plugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
+	  RowsContainer.prototype.getContextMenuContainer = function getContextMenuContainer() {
+	    if (this.hasContextMenu()) {
+	      if (!this.plugins) {
+	        throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
 	      }
+	      return this.plugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
 	    }
-	  }, {
-	    key: 'hasContextMenu',
-	    value: function hasContextMenu() {
-	      return this.props.contextMenu && _react2['default'].isValidElement(this.props.contextMenu);
-	    }
-	  }, {
-	    key: 'renderRowsWithContextMenu',
-	    value: function renderRowsWithContextMenu() {
-	      var ContextMenuRowsContainer = this.state.ContextMenuContainer;
-	      var newProps = { rowIdx: this.props.rowIdx, idx: this.props.idx };
-	      var contextMenu = _react2['default'].cloneElement(this.props.contextMenu, newProps);
-	      // Initialise the context menu if it is available
-	      return _react2['default'].createElement(
-	        'div',
-	        null,
-	        _react2['default'].createElement(ContextMenuRowsContainer, this.props),
-	        contextMenu
-	      );
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return this.hasContextMenu() ? this.renderRowsWithContextMenu() : _react2['default'].createElement(SimpleRowsContainer, this.props);
-	    }
-	  }]);
+	  };
+
+	  RowsContainer.prototype.hasContextMenu = function hasContextMenu() {
+	    return this.props.contextMenu && _react2['default'].isValidElement(this.props.contextMenu);
+	  };
+
+	  RowsContainer.prototype.renderRowsWithContextMenu = function renderRowsWithContextMenu() {
+	    var ContextMenuRowsContainer = this.state.ContextMenuContainer;
+	    var newProps = { rowIdx: this.props.rowIdx, idx: this.props.idx };
+	    var contextMenu = _react2['default'].cloneElement(this.props.contextMenu, newProps);
+	    // Initialise the context menu if it is available
+	    return _react2['default'].createElement(
+	      'div',
+	      null,
+	      _react2['default'].createElement(ContextMenuRowsContainer, this.props),
+	      contextMenu
+	    );
+	  };
+
+	  RowsContainer.prototype.render = function render() {
+	    return this.hasContextMenu() ? this.renderRowsWithContextMenu() : _react2['default'].createElement(SimpleRowsContainer, this.props);
+	  };
 
 	  return RowsContainer;
 	}(_react2['default'].Component);
@@ -3733,8 +3727,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -3751,39 +3743,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function EditorBase() {
 	    _classCallCheck(this, EditorBase);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(EditorBase).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
 	  }
 
-	  _createClass(EditorBase, [{
-	    key: 'getStyle',
-	    value: function getStyle() {
-	      return {
-	        width: '100%'
-	      };
-	    }
-	  }, {
-	    key: 'getValue',
-	    value: function getValue() {
-	      var updated = {};
-	      updated[this.props.column.key] = this.getInputNode().value;
-	      return updated;
-	    }
-	  }, {
-	    key: 'getInputNode',
-	    value: function getInputNode() {
-	      var domNode = ReactDOM.findDOMNode(this);
-	      if (domNode.tagName === 'INPUT') {
-	        return domNode;
-	      }
+	  EditorBase.prototype.getStyle = function getStyle() {
+	    return {
+	      width: '100%'
+	    };
+	  };
 
-	      return domNode.querySelector('input:not([type=hidden])');
+	  EditorBase.prototype.getValue = function getValue() {
+	    var updated = {};
+	    updated[this.props.column.key] = this.getInputNode().value;
+	    return updated;
+	  };
+
+	  EditorBase.prototype.getInputNode = function getInputNode() {
+	    var domNode = ReactDOM.findDOMNode(this);
+	    if (domNode.tagName === 'INPUT') {
+	      return domNode;
 	    }
-	  }, {
-	    key: 'inheritContainerStyles',
-	    value: function inheritContainerStyles() {
-	      return true;
-	    }
-	  }]);
+
+	    return domNode.querySelector('input:not([type=hidden])');
+	  };
+
+	  EditorBase.prototype.inheritContainerStyles = function inheritContainerStyles() {
+	    return true;
+	  };
 
 	  return EditorBase;
 	}(React.Component);
@@ -4061,8 +4047,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -4078,15 +4062,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SimpleTextEditor() {
 	    _classCallCheck(this, SimpleTextEditor);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SimpleTextEditor).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _EditorBase.apply(this, arguments));
 	  }
 
-	  _createClass(SimpleTextEditor, [{
-	    key: 'render',
-	    value: function render() {
-	      return React.createElement('input', { ref: 'input', type: 'text', onBlur: this.props.onBlur, className: 'form-control', defaultValue: this.props.value });
-	    }
-	  }]);
+	  SimpleTextEditor.prototype.render = function render() {
+	    return React.createElement('input', { ref: 'input', type: 'text', onBlur: this.props.onBlur, className: 'form-control', defaultValue: this.props.value });
+	  };
 
 	  return SimpleTextEditor;
 	}(EditorBase);
