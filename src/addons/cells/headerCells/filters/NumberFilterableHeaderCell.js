@@ -8,9 +8,6 @@ class NumberFilterableHeaderCell extends React.Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.getRows = this.getRows.bind(this);
     this.getNumericValues = this.getNumericValues.bind(this);
-  }
-
-  componentWillMount() {
     this.state = this.getRows();
   }
 
@@ -32,7 +29,7 @@ class NumberFilterableHeaderCell extends React.Component {
   getRows() {
     let originalRows = [];
     let minValue = Number.MAX_SAFE_INTEGER;
-    let maxValue = 0;
+    let maxValue = Number.MIN_SAFE_INTEGER;
     let allValues = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
       originalRows[i] = this.props.rowGetter(i);
@@ -122,8 +119,9 @@ class NumberFilterableHeaderCell extends React.Component {
 
   handleChange(e) {
     let value = e.target.value;
-    let returnList = this.getNumericValues(value);
-    this.props.onChange({filterTerm: returnList, column: this.props.column});
+    let filters = this.getNumericValues(value);
+    this.setState({filters});
+    this.props.onChange({filterTerm: filters, column: this.props.column, rawValue: value});
   }
 
   render() {

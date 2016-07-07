@@ -80,7 +80,11 @@ var Example = React.createClass({
     return {originalRows : originalRows	, rows : rows, filters : {}};
   },
 
-  rowGetter : function(rowIdx){
+  rowGetter: function(rowIdx){
+    return this.state.originalRows[rowIdx];
+  },
+
+  viewRowGetter: function(rowIdx) {
     return this.state.rows[rowIdx];
   },
 
@@ -123,11 +127,14 @@ var Example = React.createClass({
         columns={columns}
         rowGetter={this.rowGetter}
         enableCellSelect={true}
-        rowsCount={this.state.rows.length}
+        rowsCount={this.state.originalRows.length}
         minHeight={500}
         toolbar={<Toolbar enableFilter={true}/>}
-        onAddFilter={this.handleFilterChange}/>
-    )
+        onAddFilter={this.handleFilterChange}
+        viewRowsCount={this.state.rows.length}
+        viewRowGetter={this.viewRowGetter}
+        />
+    );
   }
 
 });

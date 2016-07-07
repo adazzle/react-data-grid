@@ -33,7 +33,9 @@ const Grid = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
-    contextMenu: PropTypes.element
+    contextMenu: PropTypes.element,
+    viewRowGetter: React.PropTypes.func,
+    viewRowsCount: React.PropTypes.number
   },
 
   mixins: [
@@ -85,8 +87,8 @@ const Grid = React.createClass({
                   width={this.props.columnMetrics.width}
                   rowHeight={this.props.rowHeight}
                   rowRenderer={this.props.rowRenderer}
-                  rowGetter={this.props.rowGetter}
-                  rowsCount={this.props.rowsCount}
+                  rowGetter={this.props.viewRowGetter || this.props.rowGetter}
+                  rowsCount={this.props.viewRowsCount || this.props.rowsCount}
                   selectedRows={this.props.selectedRows}
                   expandedRows={this.props.expandedRows}
                   columnMetrics={this.props.columnMetrics}

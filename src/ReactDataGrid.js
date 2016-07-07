@@ -70,7 +70,9 @@ const ReactDataGrid = React.createClass({
     contextMenu: React.PropTypes.element,
     cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
     onCellSelected: React.PropTypes.func,
-    onCellDeSelected: React.PropTypes.func
+    onCellDeSelected: React.PropTypes.func,
+    viewRowsCount: React.PropTypes.number,
+    viewRowGetter: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -710,10 +712,12 @@ const ReactDataGrid = React.createClass({
             onViewportDoubleClick={this.onViewportDoubleClick}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
-            contextMenu={this.props.contextMenu} />
-          </div>
+            contextMenu={this.props.contextMenu}
+            viewRowGetter={this.props.viewRowGetter}
+            viewRowsCount={this.props.viewRowsCount} />
         </div>
-      );
+      </div>
+    );
   }
 });
 
