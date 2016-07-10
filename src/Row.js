@@ -91,7 +91,6 @@ const Row = React.createClass({
                       value={this.getCellValue(column.key || i)}
                       column={column}
                       height={this.getRowHeight()}
-                      formatter={column.formatter}
                       cellMetaData={this.props.cellMetaData}
                       rowData={this.props.row}
                       selectedColumn={selectedColumn}
@@ -185,6 +184,13 @@ const Row = React.createClass({
   },
 
   render(): ?ReactElement {
+    const divProps = Object.keys(this.props).reduce((props, key) => {
+      if (['columns', 'row', 'cellRenderer', 'cellMetaData', 'isSelected', 'idx', 'key', 'expandedRows', 'extraClasses', 'forceUpdate', 'subRowDetails'].indexOf(key) >= 0) {
+        return props;
+      }
+      props[key] = this.props[key];
+      return props;
+    }, {});
     let className = joinClasses(
       'react-grid-Row',
       `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
@@ -202,7 +208,7 @@ const Row = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.props} className={className} style={style} onDragEnter={this.handleDragEnter}>
+      <div {...divProps} className={className} style={style} onDragEnter={this.handleDragEnter}>
         {React.isValidElement(this.props.row) ?
           this.props.row : cells}
       </div>

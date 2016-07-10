@@ -165,6 +165,13 @@ const Header = React.createClass({
   },
 
   render(): ?ReactElement {
+    const divProps = Object.keys(this.props).reduce((props, key) => {
+      if (['columnMetrics', 'totalWidth', 'headerRows', 'sortColumn', 'sortDirection', 'onSort', 'onColumnResize', 'onScroll', 'draggableHeaderCell'].indexOf(key) >= 0) {
+        return props;
+      }
+      props[key] = this.props[key];
+      return props;
+    }, {});
     let className = joinClasses({
       'react-grid-Header': true,
       'react-grid-Header--resizing': !!this.state.resizing
@@ -173,7 +180,7 @@ const Header = React.createClass({
 
     return (
 
-      <div {...this.props} style={this.getStyle()} className={className}>
+      <div {...divProps} style={this.getStyle()} className={className}>
         {headerRows}
       </div>
     );

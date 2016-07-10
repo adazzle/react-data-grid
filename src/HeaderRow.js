@@ -142,6 +142,13 @@ const HeaderRow = React.createClass({
   },
 
   render(): ?ReactElement {
+    const divProps = Object.keys(this.props).reduce((props, key) => {
+      if (['columns', 'onColumnResize', 'onSort', 'onColumnResizeEnd', 'sortColumn', 'sortDirection', 'cellRenderer', 'headerCellRenderer', 'filterable', 'onFilterChange', 'resizing', 'onScroll', 'rowType', 'draggableHeaderCell'].indexOf(key) >= 0) {
+        return props;
+      }
+      props[key] = this.props[key];
+      return props;
+    }, {});
     let cellsStyle = {
       width: this.props.width ? (this.props.width + getScrollbarSize()) : '100%',
       height: this.props.height,
@@ -152,7 +159,7 @@ const HeaderRow = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.props} className="react-grid-HeaderRow" onScroll={this.props.onScroll}>
+      <div {...divProps} className="react-grid-HeaderRow" onScroll={this.props.onScroll}>
         <div style={cellsStyle}>
           {cells}
         </div>

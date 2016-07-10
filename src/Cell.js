@@ -430,6 +430,13 @@ const Cell = React.createClass({
   },
 
   render() {
+    const divProps = Object.keys(this.props).reduce((props, key) => {
+      if (['rowIdx', 'idx', 'selectedColumn', 'ref', 'column', 'isExpanded', 'isRowSelected', 'cellMetaData', 'handleDragStart', 'cellControls', 'rowData', 'forceUpdate', 'expandableOptions'].indexOf(key) >= 0) {
+        return props;
+      }
+      props[key] = this.props[key];
+      return props;
+    }, {});
     let style = this.getStyle();
 
     let className = this.getCellClass();
@@ -444,7 +451,7 @@ const Cell = React.createClass({
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
     let events = this.getEvents();
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onContextMenu={this.onCellContextMenu} onDragOver={this.onDragOver} {...events}>
+      <div {...divProps} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onContextMenu={this.onCellContextMenu} onDragOver={this.onDragOver} {...events}>
       {cellContent}
       {dragHandle}
       </div>
