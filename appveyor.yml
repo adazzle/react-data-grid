@@ -25,9 +25,8 @@ install:
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
         ./ci/publish/decrypt-npmrc.ps1
       }
-  # Get the latest stable version of Node.js or io.js
-  - ps: Install-Product node 0
-  - npm -g install npm@2.11.3
+  # Get the latest stable version of LTS
+  - ps: Install-Product node 4
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g gulp
   - npm install
@@ -50,9 +49,7 @@ test_script:
 build: off
 
 cache:
-  - C:\Users\appveyor\AppData\Roaming\npm\node_modules -> package.json  # global npm modules
-  - C:\Users\appveyor\AppData\Roaming\npm-cache -> package.json         # npm cache
-  - node_modules -> package.json
+  - '%AppData%\npm-cache -> package.json'
 
 on_success:
 - ps: >-

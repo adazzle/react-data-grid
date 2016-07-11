@@ -1,7 +1,7 @@
 const React          = require('react');
 const ReactDOM      = require('react-dom');
 const joinClasses    = require('classnames');
-const ExcelColumn    = require('./addons/grids/ExcelColumn');
+const ExcelColumn    = require('./PropTypeShapes/ExcelColumn');
 const ResizeHandle   = require('./ResizeHandle');
 const PropTypes      = React.PropTypes;
 
@@ -53,14 +53,14 @@ const HeaderCell = React.createClass({
   },
 
   getWidthFromMouseEvent(e: SyntheticMouseEvent): number {
-    let right = e.pageX;
+    let right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
     let left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   },
 
   getCell(): ReactComponent {
     if (React.isValidElement(this.props.renderer)) {
-      return React.cloneElement(this.props.renderer, {column: this.props.column});
+      return React.cloneElement(this.props.renderer, {column: this.props.column, height: this.props.height});
     }
 
     return this.props.renderer({column: this.props.column});

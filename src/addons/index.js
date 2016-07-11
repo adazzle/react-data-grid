@@ -1,8 +1,9 @@
-module.exports = require('./grids/ReactDataGrid');
-module.exports.Editors = require('./editors');
-module.exports.Formatters = require('./formatters');
-module.exports.Toolbar = require('./toolbars/Toolbar');
-module.exports.Row = require('../Row');
-module.exports.Menu = require('./menu');
-module.exports.ToolsPanel = require('./toolbars');
-module.exports.DataView = require('./data/DataView');
+const Editors = require('./editors');
+const Formatters = require('./formatters');
+const Toolbar = require('./toolbars/Toolbar');
+const ToolsPanel = require('./toolbars');
+const DataView = require('./data/DataView');
+const Menu = require('./menu');
+
+window.ReactDataGridPlugins = {Editors, Formatters, Toolbar, Menu};
+export {Editors, Formatters, Toolbar, Menu, DataView, ToolsPanel};

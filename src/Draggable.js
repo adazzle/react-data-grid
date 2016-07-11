@@ -36,6 +36,8 @@ const Draggable = React.createClass({
 
     window.addEventListener('mouseup', this.onMouseUp);
     window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('touchend', this.onMouseUp);
+    window.addEventListener('touchmove', this.onMouseMove);
 
     this.setState({drag});
   },
@@ -61,12 +63,15 @@ const Draggable = React.createClass({
   cleanUp() {
     window.removeEventListener('mouseup', this.onMouseUp);
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('touchend', this.onMouseUp);
+    window.removeEventListener('touchmove', this.onMouseMove);
   },
 
   render(): ?ReactElement {
     return (
       <div {...this.props}
         onMouseDown={this.onMouseDown}
+        onTouchStart={this.onMouseDown}
         className="react-grid-HeaderCell__draggable" />
     );
   }

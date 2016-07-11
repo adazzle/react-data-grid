@@ -1,3 +1,5 @@
+const ReactDOM = require('react-dom');
+
 module.exports = {
 
   componentDidMount() {
