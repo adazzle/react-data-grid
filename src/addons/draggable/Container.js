@@ -4,8 +4,11 @@ import { DragDropContext } from 'react-dnd';
 import DraggableHeaderCell from './DraggableHeaderCell';
 
 const DraggableContainer = ({children}) => {
-  let Grid = children;
-  return <Grid draggableHeaderCell={DraggableHeaderCell} />;
+  let Grid = React.Children.map(children, (child) => {
+    return React.cloneElement(child, {draggableHeaderCell: DraggableHeaderCell});
+  });
+
+  return <div>{Grid}</div>;
 };
 
 export default DragDropContext(HTML5Backend)(DraggableContainer);

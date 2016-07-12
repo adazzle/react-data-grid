@@ -7,6 +7,7 @@ var GroupingExample = `
   var Toolbar             = ReactDataGridPlugins.ToolsPanel.AdvancedToolbar;
   var DataView = ReactDataGridPlugins.DataView;
   var GroupedColumnsPanel = ReactDataGridPlugins.ToolsPanel.GroupedColumnsPanel;
+  var DraggableContainer = ReactDataGridPlugins.Draggable.Container;
   faker.locale = 'en_GB';
 
   function createFakeRowObjectData(/*number*/ index) {
@@ -171,6 +172,7 @@ var GroupingExample = `
 
     render : function() {
       return (
+        <DraggableContainer>
             <ReactDataGrid
               ref='grid'
               enableCellSelect={true}
@@ -183,7 +185,7 @@ var GroupingExample = `
               rowHeight={50}
               minHeight={600}
               />
-
+        </DraggableContainer>
       );
     }
   });

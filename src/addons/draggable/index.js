@@ -1,3 +1,5 @@
 import Container from './Container';
 import DraggableHeaderCell from './DraggableHeaderCell';
-export {Container, DraggableHeaderCell};
+export default {Container, DraggableHeaderCell};
+
+
