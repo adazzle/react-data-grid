@@ -1,4 +1,3 @@
-import DraggableHeaderCell from './DraggableHeaderCell';
 const React             = require('react');
 const shallowEqual    = require('fbjs/lib/shallowEqual');
 const BaseHeaderCell        = require('./HeaderCell');
@@ -37,7 +36,8 @@ const HeaderRow = React.createClass({
     onFilterChange: PropTypes.func,
     resizing: PropTypes.object,
     onScroll: PropTypes.func,
-    rowType: PropTypes.string
+    rowType: PropTypes.string,
+    draggableHeaderCell: PropTypes.func
   },
 
   mixins: [ColumnUtilsMixin],
@@ -104,14 +104,13 @@ const HeaderRow = React.createClass({
   getCells(): Array<HeaderCell> {
     let cells = [];
     let lockedCells = [];
-
     for (let i = 0, len = this.getSize(this.props.columns); i < len; i++) {
       let column = this.getColumn(this.props.columns, i);
       let _renderer = this.getHeaderRenderer(column);
       if (column.key === 'select-row' && this.props.rowType === 'filter') {
         _renderer = <div></div>;
       }
-      let HeaderCell = column.draggable ? DraggableHeaderCell : BaseHeaderCell;
+      let HeaderCell = column.draggable ? this.props.draggableHeaderCell : BaseHeaderCell;
       let cell = (
         <HeaderCell
           ref={i}

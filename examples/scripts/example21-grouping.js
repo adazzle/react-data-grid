@@ -2,11 +2,11 @@ var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 var faker = require('faker');
 
-var AllFeaturesExample = `
-  var Editors             = ReactDataGrid.Editors;
-  var Toolbar             = ReactDataGrid.ToolsPanel.AdvancedToolbar;
-  var DataView = ReactDataGrid.DataView;
-  var GroupedColumnsPanel = ReactDataGrid.ToolsPanel.GroupedColumnsPanel;
+var GroupingExample = `
+  var Editors             = ReactDataGridPlugins.Editors;
+  var Toolbar             = ReactDataGridPlugins.ToolsPanel.AdvancedToolbar;
+  var DataView = ReactDataGridPlugins.DataView;
+  var GroupedColumnsPanel = ReactDataGridPlugins.ToolsPanel.GroupedColumnsPanel;
   faker.locale = 'en_GB';
 
   function createFakeRowObjectData(/*number*/ index) {
@@ -48,7 +48,7 @@ var AllFeaturesExample = `
       key: 'avartar',
       name: 'Avartar',
       width : 60,
-      formatter : ReactDataGrid.Formatters.ImageFormatter,
+      formatter : ReactDataGridPlugins.Formatters.ImageFormatter,
       draggable : true
     },
     {
@@ -200,7 +200,7 @@ module.exports = React.createClass({
         <p>This example demonstrates how to group rows by column name. Drag a column header to group rows by that column.</p>
         <p>To expand and close a row group, you can use either the mouse or keyboard</p>
         <p>Press <strong>Enter</strong> or <strong>Left Arrow</strong> or <strong>Right Arrow</strong> to toggle whether a row is expanded or not</p>
-        <ReactPlayground codeText={AllFeaturesExample} />
+        <ReactPlayground codeText={GroupingExample} />
       </div>
     )
   }

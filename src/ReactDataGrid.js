@@ -1,5 +1,3 @@
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
 const React                 = require('react');
 const ReactDOM = require('react-dom');
 const BaseGrid              = require('./Grid');
@@ -68,7 +66,6 @@ const ReactDataGrid = React.createClass({
     onRowSelect: React.PropTypes.func,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
-    contextMenu: React.PropTypes.element,
     onClearFilters: React.PropTypes.func,
     contextMenu: React.PropTypes.element,
     cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
@@ -76,7 +73,8 @@ const ReactDataGrid = React.createClass({
     onCellDeSelected: React.PropTypes.func,
     onCellExpand: React.PropTypes.func,
     enableDragAndDrop: React.PropTypes.bool,
-    onRowExpandToggle: React.PropTypes.func
+    onRowExpandToggle: React.PropTypes.func,
+    draggableHeaderCell: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -738,4 +736,4 @@ const ReactDataGrid = React.createClass({
 });
 
 
-module.exports = DragDropContext(HTML5Backend)(ReactDataGrid);
+module.exports = ReactDataGrid;
