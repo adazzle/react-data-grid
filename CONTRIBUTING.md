@@ -20,12 +20,12 @@ discussed. This will also allow us to better coordinate our efforts, prevent dup
 and help you to craft the change so that it is successfully accepted into the project.
 * **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
 
-### Docs
+## Docs
 
 Please update the docs with any API changes, the code and docs should
 always be in sync.
 
-### Development
+## Development
 
 - `npm test` will fire up a karma test runner and run tests in Phantom JS
 - `npm run debug-test` will fire up a karma test runner and run tests in chrome. This can be used for debugging purposes
