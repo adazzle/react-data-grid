@@ -26,6 +26,11 @@ type: `union(array|object)`
 type: `element`
 
 
+### `draggableHeaderCell`
+
+type: `func`
+
+
 ### `emptyRowsView`
 
 type: `func`
@@ -34,6 +39,11 @@ type: `func`
 ### `expandedRows`
 
 type: `union(array|func)`
+
+
+### `getSubRowDetails`
+
+type: `func`
 
 
 ### `headerRows`

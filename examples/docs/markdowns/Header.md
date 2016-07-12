@@ -11,6 +11,11 @@ Props
 type: `shape[object Object]`
 
 
+### `draggableHeaderCell`
+
+type: `func`
+
+
 ### `headerRows` (required)
 
 type: `array`

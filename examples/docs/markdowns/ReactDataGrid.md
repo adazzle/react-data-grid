@@ -22,10 +22,20 @@ type: `union(object|array)`
 type: `element`
 
 
+### `draggableHeaderCell`
+
+type: `func`
+
+
 ### `enableCellSelect`
 
 type: `bool`
 defaultValue: `false`
+
+
+### `enableDragAndDrop`
+
+type: `bool`
 
 
 ### `enableRowSelect`
@@ -65,6 +75,11 @@ type: `func`
 type: `func`
 
 
+### `onCellExpand`
+
+type: `func`
+
+
 ### `onCellSelected`
 
 type: `func`
@@ -96,6 +111,11 @@ type: `func`
 
 
 ### `onGridSort`
+
+type: `func`
+
+
+### `onRowExpandToggle`
 
 type: `func`
 
