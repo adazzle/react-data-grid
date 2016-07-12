@@ -1,40 +1,31 @@
 Use [Github issues](https://github.com/adazzle/react-data-grid/issues) for feature requests and bug reports.
 
-### Tests
+## <a name="question"></a> Got a Question or Problem?
 
-All commits that fix bugs or add features need a test.
+If you have questions about how to *use* react-data-grid, please direct them to [StackOverflow][stackoverflow]. We are also available on our Slack channel
 
-`<blink>` Do not merge code without tests.`</blink>`
+## <a name="issue"></a> Found an Issue?
+If you find a bug in the source code or a mistake in the documentation, you can help us by
+[submitting an issue](#submit-issue) to our [GitHub Repository][github]. Even better, you can
+[submit a Pull Request](#submit-pr) with a fix.
 
-### Commit Subjects for Public API Changes
+## <a name="feature"></a> Want a Feature?
+You can *request* a new feature by [submitting an issue](#submit-issue) to our [GitHub
+Repository][github]. If you would like to *implement* a new feature, please submit an issue with
+a proposal for your work first, to be sure that we can use it. 
+Please consider what kind of change it is:
 
-If your patch **changes the API or fixes a bug** please use one of the
-following prefixes in your commit subject:
+* For a **Major Feature**, first open an issue and outline your proposal so that it can be
+discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
+and help you to craft the change so that it is successfully accepted into the project.
+* **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
 
-- `[fixed] ...`
-- `[changed] ...`
-- `[added] ...`
-- `[removed] ...`
-
-That ensures the subject line of your commit makes it into the
-auto-generated changelog. Do not use these tags if your change doesn't
-fix a bug and doesn't change the public API.
-
-Commits with changed, added, or removed, should probably be reviewed by
-another collaborator.
-
-#### When using `[changed]` or `[removed]`...
-
-Please include an upgrade path with example code in the commit message.
-If it doesn't make sense to do this, then it doesn't make sense to use
-`[changed]` or `[removed]` :)
-
-### Docs
+## Docs
 
 Please update the docs with any API changes, the code and docs should
 always be in sync.
 
-### Development
+## Development
 
 - `npm test` will fire up a karma test runner and run tests in Phantom JS
 - `npm run debug-test` will fire up a karma test runner and run tests in chrome. This can be used for debugging purposes
