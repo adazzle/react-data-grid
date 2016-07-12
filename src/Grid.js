@@ -33,7 +33,9 @@ const Grid = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
-    contextMenu: PropTypes.element
+    contextMenu: PropTypes.element,
+    getSubRowDetails: PropTypes.func,
+    draggableHeaderCell: PropTypes.func
   },
 
   mixins: [
@@ -72,6 +74,7 @@ const Grid = React.createClass({
           headerRows={headerRows}
           sortColumn={this.props.sortColumn}
           sortDirection={this.props.sortDirection}
+          draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
           onScroll={this.onHeaderScroll}
           />
@@ -96,6 +99,7 @@ const Grid = React.createClass({
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
                   contextMenu={this.props.contextMenu}
+                  getSubRowDetails={this.props.getSubRowDetails}
                 />
             </div>
         :

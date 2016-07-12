@@ -70,7 +70,11 @@ const ReactDataGrid = React.createClass({
     contextMenu: React.PropTypes.element,
     cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
     onCellSelected: React.PropTypes.func,
-    onCellDeSelected: React.PropTypes.func
+    onCellDeSelected: React.PropTypes.func,
+    onCellExpand: React.PropTypes.func,
+    enableDragAndDrop: React.PropTypes.bool,
+    onRowExpandToggle: React.PropTypes.func,
+    draggableHeaderCell: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -306,6 +310,18 @@ const ReactDataGrid = React.createClass({
         toRow: this.props.rowsCount - 1,
         updated: updated,
         action: 'columnFill'});
+    }
+  },
+
+  onCellExpand(args) {
+    if (this.props.onCellExpand) {
+      this.props.onCellExpand(args);
+    }
+  },
+
+  onRowExpandToggle(args) {
+    if (typeof this.props.onRowExpandToggle === 'function') {
+      this.props.onRowExpandToggle(args);
     }
   },
 
@@ -646,11 +662,11 @@ const ReactDataGrid = React.createClass({
   renderToolbar(): ReactElement {
     let Toolbar = this.props.toolbar;
     if (React.isValidElement(Toolbar)) {
-      return ( React.cloneElement(Toolbar, {onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
+      return ( React.cloneElement(Toolbar, {columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
     }
   },
 
-  render: function(): ?ReactElement {
+  render() {
     let cellMetaData = {
       selected: this.state.selected,
       dragged: this.state.dragged,
@@ -662,10 +678,12 @@ const ReactDataGrid = React.createClass({
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
       handleTerminateDrag: this.handleTerminateDrag,
-      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       enableCellSelect: this.props.enableCellSelect,
       onColumnEvent: this.onColumnEvent,
-      openCellEditor: this.openCellEditor
+      openCellEditor: this.openCellEditor,
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
+      onCellExpand: this.onCellExpand,
+      onRowExpandToggle: this.onRowExpandToggle
     };
 
     let toolbar = this.renderToolbar();

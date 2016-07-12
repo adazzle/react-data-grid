@@ -29,7 +29,8 @@ const Cell = React.createClass({
     className: React.PropTypes.string,
     cellControls: React.PropTypes.any,
     rowData: React.PropTypes.object.isRequired,
-    forceUpdate: React.PropTypes.bool
+    forceUpdate: React.PropTypes.bool,
+    expandableOptions: React.PropTypes.object.isRequired
   },
 
   getDefaultProps: function(): {tabIndex: number; ref: string; isExpanded: boolean } {
@@ -102,6 +103,20 @@ const Cell = React.createClass({
     }
   },
 
+  onCellExpand(e) {
+    e.stopPropagation();
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellExpand != null) {
+      meta.onCellExpand({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expandArgs: this.props.expandableOptions});
+    }
+  },
+
+  onCellKeyDown(e) {
+    if (this.canExpand() && e.key === 'Enter') {
+      this.onCellExpand(e);
+    }
+  },
+
   onDragHandleDoubleClick(e) {
     e.stopPropagation();
     let meta = this.props.cellMetaData;
@@ -124,7 +139,7 @@ const Cell = React.createClass({
     return style;
   },
 
-  getFormatter(): ?ReactElement {
+  getFormatter() {
     let col = this.props.column;
     if (this.isActive()) {
       return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
@@ -335,6 +350,14 @@ const Cell = React.createClass({
     }
   },
 
+  canEdit() {
+    return (this.props.column.editor != null) || this.props.column.editable;
+  },
+
+  canExpand() {
+    return this.props.expandableOptions && this.props.expandableOptions.canExpand;
+  },
+
   createColumEventCallBack(onColumnEvent, info) {
     return (e) => {
       onColumnEvent(e, info);
@@ -385,7 +408,7 @@ const Cell = React.createClass({
     return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
   },
 
-  renderCellContent(props: any): ReactElement {
+  renderCellContent(props) {
     let CellContent;
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
@@ -396,11 +419,17 @@ const Cell = React.createClass({
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
-    return (<div ref="cell"
-      className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>);
+    let cellExpander;
+    let marginLeft = this.props.expandableOptions ? (this.props.expandableOptions.treeDepth * 30) : 0;
+    let marginLeftCell = this.props.expandableOptions ? (this.props.expandableOptions.treeDepth * 10) : 0;
+    if (this.canExpand()) {
+      cellExpander = (<span style={{float: 'left', marginLeft: marginLeft}} onClick={this.onCellExpand} >{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>);
+    }
+    return (<div  ref="cell"
+      className="react-grid-Cell__value">{cellExpander}<span style={{float: 'left', marginLeft: marginLeftCell}}>{CellContent}</span> {this.props.cellControls} </div>);
   },
 
-  render(): ?ReactElement {
+  render() {
     let style = this.getStyle();
 
     let className = this.getCellClass();
@@ -415,7 +444,7 @@ const Cell = React.createClass({
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
     let events = this.getEvents();
     return (
-      <div {...this.props} className={className} style={style} onContextMenu={this.onCellContextMenu} {...events}>
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onContextMenu={this.onCellContextMenu} onDragOver={this.onDragOver} {...events}>
       {cellContent}
       {dragHandle}
       </div>
