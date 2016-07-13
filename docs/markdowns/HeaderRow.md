@@ -16,6 +16,11 @@ type: `func`
 type: `union(array|object)`
 
 
+### `draggableHeaderCell`
+
+type: `func`
+
+
 ### `filterable`
 
 type: `bool`

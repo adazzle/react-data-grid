@@ -41,6 +41,11 @@ type: `number`
 type: `array`
 
 
+### `getSubRowDetails`
+
+type: `func`
+
+
 ### `height` (required)
 
 type: `number`

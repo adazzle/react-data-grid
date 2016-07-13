@@ -31,7 +31,8 @@ var config = {
   plugins: [
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.OccurenceOrderPlugin(),
-      new webpack.optimize.AggressiveMergingPlugin()
+      new webpack.optimize.AggressiveMergingPlugin(),
+      new webpack.DefinePlugin({'global': 'window'})
     ],
   postLoaders: [
   {

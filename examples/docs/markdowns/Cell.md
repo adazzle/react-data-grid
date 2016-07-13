@@ -26,6 +26,11 @@ type: `string`
 type: `shapeunknown`
 
 
+### `expandableOptions` (required)
+
+type: `object`
+
+
 ### `forceUpdate`
 
 type: `bool`
