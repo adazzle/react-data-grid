@@ -3191,7 +3191,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var headerRenderer = props.enableRowSelect === 'single' ? null : React.createElement(
 	        'div',
 	        { className: 'react-grid-checkbox-container' },
-	        React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: 'select-all-checkbox', onChange: this.handleCheckboxChange }),
+	        React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: 'select-all-checkbox', id: 'select-all-checkbox', onChange: this.handleCheckboxChange }),
 	        React.createElement('label', { htmlFor: 'select-all-checkbox', className: 'react-grid-checkbox-label' })
 	      );
 	      var selectColumn = {
