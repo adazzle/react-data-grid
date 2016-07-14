@@ -5,3 +5,4 @@ lib
 test/reports
 test/coverage
 dist
+.npmrc
