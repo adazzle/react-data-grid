@@ -17,7 +17,6 @@ environment:
 
 # Install scripts. (runs after repo cloning)
 install:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
@@ -26,7 +25,7 @@ install:
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
         ./ci/publish/decrypt-npmrc.ps1
       }
-  # Get the latest stable version of LTS
+  - ps: Install-Product node 5
   - npm cache clean
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g gulp
