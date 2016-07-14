@@ -27,8 +27,8 @@ install:
       }
   # Get the latest stable version of LTS
   - ps: Install-Product node 4
-  - set PATH=%APPDATA%\npm;%PATH%
   - npm cache clean
+  - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g gulp
   - npm install
   - gulp flow
@@ -49,8 +49,8 @@ test_script:
 # Don't run MS build step
 build: off
 
-#cache:
-#  - '%AppData%\npm-cache -> package.json'
+cache:
+  - '%AppData%\npm-cache -> package.json'
 
 on_success:
 - ps: >-
