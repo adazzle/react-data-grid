@@ -1,5 +1,10 @@
 import {getFlattenedGroupedRows} from './RowGrouper';
 import {getFilteredRows} from './RowFilterer';
+import { createSelector } from 'reselect';
+
+const getRows = createSelector([getFilteredRows, getFlattenedGroupedRows], (rows, rows1, rows2) => {
+
+});
 
 const DataView = {
 
@@ -8,7 +13,7 @@ const DataView = {
   },
 
   getRows(rows, options) {
-    let dataviewRows = rows;
+    let dataviewRows = [];
     let groupedColumns = options.groupBy;
     let filters = options.filters;
     if (groupedColumns && groupedColumns.length > 0) {
