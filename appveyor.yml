@@ -17,8 +17,7 @@ environment:
 
 # Install scripts. (runs after repo cloning)
 install:
-  - git clone https://github.com/appveyor/ci.git folder-name
-  - ps: . .\folder-name\scripts\enable-rdp.ps1
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
@@ -58,6 +57,3 @@ on_success:
     if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
       ./ci/publish/publishMaster.ps1
     }
-
-on_finish:
-- ps: $blockRdp = $true;
