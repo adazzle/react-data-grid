@@ -1,8 +1,4 @@
-const groupBy = {};
-import { createSelector } from 'reselect';
-const getInputRows = (state) => state.rows;
-const getGroupedColumns = (state) => state.groupedColumns;
-const getExpandedRows = (state) => state.expandedRows;
+import groupBy from 'lodash/groupby';
 
 export default class RowGrouper {
 
@@ -43,7 +39,3 @@ export default class RowGrouper {
   }
 }
 
-export const getFlattenedGroupedRows = createSelector([getInputRows, getGroupedColumns, getExpandedRows], (rows, groupedColumns, expandedRows) => {
-  let rowGrouper = new RowGrouper(groupedColumns, expandedRows);
-  return rowGrouper.groupRowsByColumn(rows, 0);
-});
