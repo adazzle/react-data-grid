@@ -29,7 +29,7 @@ install:
   - npm cache clean
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g gulp
-  - npm install
+  - npm install --force
   - gulp flow
   - gulp dist
   - gulp examples
