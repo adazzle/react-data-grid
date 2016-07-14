@@ -17,6 +17,8 @@ environment:
 
 # Install scripts. (runs after repo cloning)
 install:
+  - git clone https://github.com/appveyor/ci.git folder-name
+  - ps: . .\folder-name\scripts\enable-rdp.ps1
   # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
