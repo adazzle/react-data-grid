@@ -1,4 +1,4 @@
-import {groupBy} from 'lodash';
+import groupBy from 'lodash/groupby';
 import { createSelector } from 'reselect';
 const getInputRows = (state) => state.rows;
 const getGroupedColumns = (state) => state.groupedColumns;
