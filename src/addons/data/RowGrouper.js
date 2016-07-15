@@ -1,6 +1,6 @@
 import groupBy from 'lodash/groupby';
 
-export default class RowGrouper {
+class RowGrouper {
 
   constructor(columns, expandedRows) {
     this.columns = columns.slice(0);
@@ -39,3 +39,4 @@ export default class RowGrouper {
   }
 }
 
+export default RowGrouper;

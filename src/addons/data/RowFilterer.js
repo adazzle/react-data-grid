@@ -1,7 +1,4 @@
-export const filterRows = (filters, rows = []) => {
-  if (!filters) {
-    return rows;
-  }
+const filterRows = (filters, rows = []) => {
   return rows.filter(r => {
     let include = true;
     for (let columnKey in filters) {
@@ -19,3 +16,5 @@ export const filterRows = (filters, rows = []) => {
     return include;
   });
 };
+
+export default filterRows;
