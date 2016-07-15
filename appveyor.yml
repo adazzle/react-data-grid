@@ -12,7 +12,7 @@ environment:
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
   npmrc_token:
-    secure: kGPlcVTOCUp5QVkRPDUGHg==
+    secure: /9XWoCG/xQ2+rJpht0B5kA==
 
 
 # Install scripts. (runs after repo cloning)
