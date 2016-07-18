@@ -44,5 +44,5 @@ const groupRows = (rows, groupedColumns, expandedRows) => {
   return rowGrouper.groupRowsByColumn(rows, 0);
 };
 
-export default groupRows;
+module.exports = groupRows;
 
