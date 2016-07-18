@@ -39,4 +39,10 @@ class RowGrouper {
   }
 }
 
-export default RowGrouper;
+const groupRows = (rows, groupedColumns, expandedRows) => {
+  let rowGrouper = new RowGrouper(groupedColumns, expandedRows);
+  return rowGrouper.groupRowsByColumn(rows, 0);
+};
+
+export default groupRows;
+

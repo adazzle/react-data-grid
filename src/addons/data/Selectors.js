@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import isEmptyObject from '../utils/isEmptyObject';
-const RowGrouper = require('./RowGrouper');
+import isEmptyArray from '../utils/isEmptyArray';
+const groupRows = require('./RowGrouper');
 const filterRows = require('./RowFilterer');
 
 const getInputRows = (state) => state.rows;
@@ -13,17 +14,16 @@ const getFilteredRows = createSelector([ getFilters, getInputRows ], (filters, r
 });
 
 
-const getGroupedColumns = (state) => state.groupedColumns;
+const getGroupedColumns = (state) => state.groupBy;
 const getExpandedRows = (state) => state.expandedRows;
 const getFlattenedGroupedRows = createSelector([getFilteredRows, getGroupedColumns, getExpandedRows], (rows, groupedColumns, expandedRows) => {
-  if (!groupedColumns || isEmptyObject(groupedColumns)) {
+  if (!groupedColumns || isEmptyObject(groupedColumns) || isEmptyArray(groupedColumns)) {
     return rows;
   }
-  let rowGrouper = new RowGrouper(groupedColumns, expandedRows);
-  return rowGrouper.groupRowsByColumn(rows, 0);
+  return groupRows(rows, groupedColumns, expandedRows);
 });
 
 const Selectors = {
-  getRows: getFlattenedGroupedRows
+  selectRows: getFlattenedGroupedRows
 };
 module.exports = Selectors;
