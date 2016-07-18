@@ -3,6 +3,7 @@ import isEmptyObject from '../utils/isEmptyObject';
 import isEmptyArray from '../utils/isEmptyArray';
 const groupRows = require('./RowGrouper');
 const filterRows = require('./RowFilterer');
+const sortRows = require('./RowSorter');
 
 const getInputRows = (state) => state.rows;
 const getFilters = (state) => state.filters;
@@ -13,9 +14,18 @@ const getFilteredRows = createSelector([getFilters, getInputRows], (filters, row
   return filterRows(filters, rows);
 });
 
+const getSortColumn = state => state.sortColumn;
+const getSortDirection = state => state.sortDirection;
+const getSortedRows = createSelector([getFilteredRows, getSortColumn, getSortDirection], (rows, sortColumn, sortDirection) => {
+  if (!sortDirection && !sortColumn) {
+    return rows;
+  }
+  return sortRows(rows, sortColumn, sortDirection);
+});
+
 const getGroupedColumns = (state) => state.groupBy;
 const getExpandedRows = (state) => state.expandedRows;
-const getFlattenedGroupedRows = createSelector([getFilteredRows, getGroupedColumns, getExpandedRows], (rows, groupedColumns, expandedRows = {}) => {
+const getFlattenedGroupedRows = createSelector([getSortedRows, getGroupedColumns, getExpandedRows], (rows, groupedColumns, expandedRows = {}) => {
   if (!groupedColumns || isEmptyObject(groupedColumns) || isEmptyArray(groupedColumns)) {
     return rows;
   }
