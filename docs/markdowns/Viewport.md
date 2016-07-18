@@ -26,6 +26,11 @@ type: `element`
 type: `array`
 
 
+### `getSubRowDetails`
+
+type: `func`
+
+
 ### `minHeight`
 
 type: `number`

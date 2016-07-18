@@ -24,6 +24,46 @@
         "returns": null
       },
       {
+        "name": "getSubRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "row",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "addSubRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "rowsInput",
+            "type": null
+          },
+          {
+            "name": "row",
+            "type": null
+          },
+          {
+            "name": "i",
+            "type": null
+          },
+          {
+            "name": "displayEnd",
+            "type": null
+          },
+          {
+            "name": "treeDepth",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "getRows",
         "docblock": null,
         "modifiers": [],
@@ -369,6 +409,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "getSubRowDetails": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -396,6 +443,30 @@
       },
       {
         "name": "onCellDoubleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onCellExpand",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onCellKeyDown",
         "docblock": null,
         "modifiers": [],
         "params": [
@@ -480,12 +551,7 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement",
-            "nullable": true
-          }
-        }
+        "returns": null
       },
       {
         "name": "getRowData",
@@ -739,6 +805,20 @@
         "returns": null
       },
       {
+        "name": "canEdit",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "canExpand",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "createColumEventCallBack",
         "docblock": null,
         "modifiers": [],
@@ -804,16 +884,10 @@
         "params": [
           {
             "name": "props",
-            "type": {
-              "name": "any"
-            }
+            "type": null
           }
         ],
-        "returns": {
-          "type": {
-            "name": "ReactElement"
-          }
-        }
+        "returns": null
       }
     ],
     "props": {
@@ -968,6 +1042,13 @@
           "name": "bool"
         },
         "required": false,
+        "description": ""
+      },
+      "expandableOptions": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
         "description": ""
       }
     }
@@ -1382,6 +1463,20 @@
         },
         "required": false,
         "description": ""
+      },
+      "getSubRowDetails": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "draggableHeaderCell": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -1668,6 +1763,13 @@
         "description": ""
       },
       "onScroll": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "draggableHeaderCell": {
         "type": {
           "name": "func"
         },
@@ -1974,7 +2076,7 @@
             "name": "Array",
             "elements": [
               {
-                "name": "HeaderCell"
+                "name": "unknown"
               }
             ],
             "raw": "Array<HeaderCell>"
@@ -2149,6 +2251,13 @@
       "rowType": {
         "type": {
           "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
+      "draggableHeaderCell": {
+        "type": {
+          "name": "func"
         },
         "required": false,
         "description": ""
@@ -2645,6 +2754,30 @@
         "params": [
           {
             "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onCellExpand",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "args",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onRowExpandToggle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "args",
             "type": null
           }
         ],
@@ -3348,6 +3481,34 @@
         "required": false,
         "description": ""
       },
+      "onCellExpand": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "enableDragAndDrop": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onRowExpandToggle": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "draggableHeaderCell": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "tabIndex": {
         "defaultValue": {
           "value": "-1",
@@ -3375,6 +3536,18 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
+        "returns": null
+      },
+      {
+        "name": "getCellRenderer",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "columnKey",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
@@ -3501,6 +3674,18 @@
         }
       },
       {
+        "name": "getExpandableOptions",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "columnKey",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "renderCell",
         "docblock": null,
         "modifiers": [],
@@ -3619,6 +3804,133 @@
           "name": "bool"
         },
         "required": false,
+        "description": ""
+      },
+      "subRowDetails": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\RowGroup.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "isSelected",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "onClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onKeyDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onRowExpandClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "onRowExpandToggle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "expand",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getClassName",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "checkFocus",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "name": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": ""
+      },
+      "columnGroupName": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": ""
+      },
+      "isExpanded": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
+        "description": ""
+      },
+      "treeDepth": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "cellMetaData": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "idx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
         "description": ""
       }
     }
@@ -3832,6 +4144,13 @@
       "contextMenu": {
         "type": {
           "name": "element"
+        },
+        "required": false,
+        "description": ""
+      },
+      "getSubRowDetails": {
+        "type": {
+          "name": "func"
         },
         "required": false,
         "description": ""
@@ -5202,6 +5521,45 @@
       "children": {
         "type": {
           "name": "any"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\toolbars\\AdvancedToolbar.js": {
+    "description": "",
+    "methods": [],
+    "props": {
+      "children": {
+        "type": {
+          "name": "array"
+        },
+        "required": false,
+        "description": ""
+      },
+      "enableAddRow": {
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      }
+    }
+  },
+  "src\\addons\\toolbars\\GroupedColumnButton.js": {
+    "description": "",
+    "methods": [],
+    "props": {
+      "name": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
+        "description": ""
+      },
+      "onColumnGroupDeleted": {
+        "type": {
+          "name": "func"
         },
         "required": false,
         "description": ""
