@@ -6,15 +6,12 @@ const filterRows = require('./RowFilterer');
 
 const getInputRows = (state) => state.rows;
 const getFilters = (state) => state.filters;
-
-
-const getFilteredRows = createSelector([ getFilters, getInputRows ], (filters, rows = []) => {
+const getFilteredRows = createSelector([getFilters, getInputRows], (filters, rows = []) => {
   if (!filters || isEmptyObject(filters)) {
     return rows;
   }
   return filterRows(filters, rows);
 });
-
 
 const getGroupedColumns = (state) => state.groupBy;
 const getExpandedRows = (state) => state.expandedRows;
@@ -25,10 +22,7 @@ const getFlattenedGroupedRows = createSelector([getFilteredRows, getGroupedColum
   return groupRows(rows, groupedColumns, expandedRows);
 });
 
-
-
-
 const Selectors = {
-  selectRows: getFlattenedGroupedRows
+  getRows: getFlattenedGroupedRows
 };
 module.exports = Selectors;

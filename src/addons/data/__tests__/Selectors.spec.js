@@ -30,15 +30,13 @@ function selectPerRow(rows, options) {
   for (let i = 0; i < rows.length; i++) {
     let filters = options.filters;
     let groupBy = options.groupBy;
-    Selectors.selectRows({ rows, filters, groupBy });
+    Selectors.getRows({ rows, filters, groupBy });
   }
 }
 
 
 function executeSpyTests(fn) {
-
   describe('When filters are defined', () => {
-
     let options = { filters: { title: '1' } };
 
     it('should call filterRows the correct number of times', () => {
@@ -48,7 +46,6 @@ function executeSpyTests(fn) {
   });
 
   describe('When filters are undefined', () => {
-
     let options = {};
 
     it('should not call filterRows', () => {
@@ -58,7 +55,6 @@ function executeSpyTests(fn) {
   });
 
   describe('When filters are an empty object', () => {
-
     let options = { filters: {} };
 
     it('should not call filterRows', () => {
@@ -68,7 +64,6 @@ function executeSpyTests(fn) {
   });
 
   describe('When groupBy is defined', () => {
-
     let options = { groupBy: ['title'] };
 
     it('should call groupBy only once', () => {
@@ -78,7 +73,6 @@ function executeSpyTests(fn) {
   });
 
   describe('When groupBy is undefined', () => {
-
     let options = {};
 
     it('should not call groupBy', () => {
@@ -88,7 +82,6 @@ function executeSpyTests(fn) {
   });
 
   describe('When groupBy is an empty object', () => {
-
     let options = { groupBy: {} };
 
     it('should not call groupBy', () => {
@@ -98,7 +91,6 @@ function executeSpyTests(fn) {
   });
 
   describe('When groupBy is an empty array', () => {
-
     let options = { groupBy: [] };
 
     it('should not call groupBy', () => {
@@ -108,8 +100,7 @@ function executeSpyTests(fn) {
   });
 }
 
-
-ddescribe('Grid Selectors', () => {
+describe('Grid Selectors', () => {
   let rows;
 
   describe('Spy Tests', () => {
@@ -123,7 +114,6 @@ ddescribe('Grid Selectors', () => {
     });
 
     describe('Calling getRows multiple times for the same array of rows', () => {
-
       const testSelectRows = (options) => {
         let expectedComputations = 1;
         selectPerRow(rows, options);
@@ -134,7 +124,6 @@ ddescribe('Grid Selectors', () => {
     });
 
     describe('After adding a new row', () => {
-
       const testAfterAddRows = (options) => {
         let expectedComputations = 1;
         selectPerRow(rows, options);
@@ -150,7 +139,6 @@ ddescribe('Grid Selectors', () => {
     });
 
     describe('After removing a new row', () => {
-
       const testAfterRemoveRows = (options) => {
         let expectedComputations = 1;
         selectPerRow(rows, options);
@@ -165,7 +153,6 @@ ddescribe('Grid Selectors', () => {
     });
 
     describe('After updating a row', () => {
-
       const testAfterRemoveRows = (options) => {
         let expectedComputations = 1;
         selectPerRow(rows, options);
@@ -187,21 +174,21 @@ ddescribe('Grid Selectors', () => {
 
     it('can filter on a single column', () => {
       let filters = { title: '1' };
-      let computedRows = Selectors.selectRows({ rows, filters });
+      let computedRows = Selectors.getRows({ rows, filters });
       expect(computedRows.length).toBe(1);
       expect(computedRows[0].title).toBe('Title 1');
     });
 
     it('can filter on multiple columns', () => {
       let filters = { title: 'title', count: '2000' };
-      let computedRows = Selectors.selectRows({ rows, filters });
+      let computedRows = Selectors.getRows({ rows, filters });
       expect(computedRows.length).toBe(1);
       expect(computedRows[0].count).toBe(2000);
     });
 
     it('can group by a single column', () => {
       let groupBy = ['title'];
-      let computedRows = Selectors.selectRows({ rows, groupBy });
+      let computedRows = Selectors.getRows({ rows, groupBy });
       expect(computedRows.length).toBe(6);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[0].name).toEqual('Title 0');
@@ -214,7 +201,7 @@ ddescribe('Grid Selectors', () => {
 
     it('can group by multiple columns', () => {
       let groupBy = ['title', 'count', 'id'];
-      let computedRows = Selectors.selectRows({ rows, groupBy });
+      let computedRows = Selectors.getRows({ rows, groupBy });
       expect(computedRows.length).toBe(12);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[1].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'count', isExpanded: true, isGroup: true, treeDepth: 1 }));
@@ -225,7 +212,7 @@ ddescribe('Grid Selectors', () => {
     it('can filter and then group by column', () => {
       let filters = { title: '1' };
       let groupBy = ['title'];
-      let computedRows = Selectors.selectRows({ rows, filters, groupBy });
+      let computedRows = Selectors.getRows({ rows, filters, groupBy });
       expect(computedRows.length).toBe(2);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[0].name).toEqual('Title 1');

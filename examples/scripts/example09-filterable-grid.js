@@ -4,7 +4,7 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 
 var FilterableExample = `
 var Toolbar = ReactDataGridPlugins.Toolbar;
-var DataView = ReactDataGridPlugins.DataView;
+var Selectors = ReactDataGridPlugins.Data.Selectors;
 //helper to generate a random date
 function randomDate(start, end) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
@@ -81,7 +81,7 @@ var Example = React.createClass({
   },
 
   getRows : function() {
-    return DataView.getRows(this.state.rows, {filters: this.state.filters});
+    return Selectors.getRows(this.state);
   },
 
   getSize : function() {
@@ -94,14 +94,13 @@ var Example = React.createClass({
   },
 
   handleFilterChange : function(filter){
-    this.setState(function(currentState) {
-      if (filter.filterTerm) {
-        currentState.filters[filter.columnKey] = filter.filterTerm;
-      } else {
-        delete currentState.filters[filter.columnKey];
-      }
-      return currentState;
-    });
+    let newFilters = Object.assign({}, this.state.filters);
+    if (filter.filterTerm) {
+      newFilters[filter.columnKey] = filter.filterTerm;
+    } else {
+     delete newFilters[filter.columnKey];
+    }
+    this.setState({filters: newFilters});
   },
 
   render:function(){
