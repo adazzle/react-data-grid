@@ -81,12 +81,17 @@ const Header = React.createClass({
     }
     let headerRows = [];
     this.props.headerRows.forEach((row, index) => {
+      let rowHeight = 'auto';
+      if (row.rowType === 'filter') {
+        rowHeight = '500px';
+      }
       let headerRowStyle = {
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
         left: 0,
         width: this.props.totalWidth,
-        overflow: 'hidden'
+        overflowX: 'hidden',
+        minHeight: rowHeight
       };
 
       headerRows.push(<HeaderRow
@@ -151,8 +156,7 @@ const Header = React.createClass({
   getStyle(): {position: string; height: number} {
     return {
       position: 'relative',
-      height: this.getCombinedHeaderHeights(),
-      overflow: 'hidden'
+      height: this.getCombinedHeaderHeights()
     };
   },
 
