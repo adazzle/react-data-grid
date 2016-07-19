@@ -5,7 +5,7 @@ var faker = require('faker');
 var GroupingExample = `
   var Editors             = ReactDataGridPlugins.Editors;
   var Toolbar             = ReactDataGridPlugins.ToolsPanel.AdvancedToolbar;
-  var DataView = ReactDataGridPlugins.DataView;
+  var Selectors = ReactDataGridPlugins.Data.Selectors;
   var GroupedColumnsPanel = ReactDataGridPlugins.ToolsPanel.GroupedColumnsPanel;
   var DraggableContainer = ReactDataGridPlugins.Draggable.Container;
   faker.locale = 'en_GB';
@@ -141,13 +141,18 @@ var GroupingExample = `
       return {rows: fakeRows, groupBy: [], expandedRows: {}};
     },
 
+    getRows: function() {
+      var rows = Selectors.getRows(this.state);
+      return rows;
+    },
+
     getRowAt : function(index){
-      var rows = DataView.getRows(this.state.rows, {groupBy: this.state.groupBy, expandedRows: this.state.expandedRows});
+      var rows = this.getRows();
       return rows[index];
     },
 
     getSize : function() {
-      return DataView.getSize(this.state.rows, {groupBy: this.state.groupBy, expandedRows: this.state.expandedRows});
+      return this.getRows().length;
     },
 
    onColumnGroupAdded: function(colName) {

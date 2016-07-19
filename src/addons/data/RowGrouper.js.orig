@@ -1,4 +1,11 @@
 import groupBy from 'lodash/groupby';
+<<<<<<< HEAD
+=======
+import { createSelector } from 'reselect';
+const getInputRows = (state) => state.rows;
+const getGroupedColumns = (state) => state.groupedColumns;
+const getExpandedRows = (state) => state.expandedRows;
+>>>>>>> master
 
 class RowGrouper {
 
