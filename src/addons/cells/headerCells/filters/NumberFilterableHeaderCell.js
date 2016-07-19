@@ -17,7 +17,10 @@ class NumberFilterableHeaderCell extends React.Component {
 
   componentDidUpdate() {
     this.attachTooltip();
-    this.state = this.getRows();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.getRows(nextProps));
   }
 
   attachTooltip() {
@@ -26,21 +29,27 @@ class NumberFilterableHeaderCell extends React.Component {
     }
   }
 
-  getRows() {
+  getRows(nextProps) {
+    let props = nextProps || this.props;
     let originalRows = [];
     let minValue = Number.MAX_SAFE_INTEGER;
     let maxValue = Number.MIN_SAFE_INTEGER;
     let allValues = [];
-    for (let i = 0; i < this.props.rowsCount; i++) {
-      originalRows[i] = this.props.rowGetter(i);
-      if (!isNaN(this.props.rowGetter(i)[this.props.column.key]) && minValue > this.props.rowGetter(i)[this.props.column.key]) {
-        minValue = parseInt(this.props.rowGetter(i)[this.props.column.key], 10);
-      }
-      if (!isNaN(this.props.rowGetter(i)[this.props.column.key]) && maxValue < this.props.rowGetter(i)[this.props.column.key]) {
-        maxValue = parseInt(this.props.rowGetter(i)[this.props.column.key], 10);
-      }
-      if (!isNaN(this.props.rowGetter(i)[this.props.column.key])) {
-        allValues.push(parseInt(this.props.rowGetter(i)[this.props.column.key], 10));
+    for (let i = 0; i < Number.MAX_SAFE_INTEGER; i++) {
+      let originalRow = props.rowGetter(i, true);
+      if (originalRow !== undefined) {
+        originalRows[i] = originalRow;
+        if (!isNaN(props.rowGetter(i, true)[props.column.key]) && minValue > props.rowGetter(i, true)[props.column.key]) {
+          minValue = parseInt(props.rowGetter(i, true)[props.column.key], 10);
+        }
+        if (!isNaN(props.rowGetter(i, true)[props.column.key]) && maxValue < props.rowGetter(i, true)[props.column.key]) {
+          maxValue = parseInt(props.rowGetter(i, true)[props.column.key], 10);
+        }
+        if (!isNaN(props.rowGetter(i, true)[props.column.key])) {
+          allValues.push(parseInt(props.rowGetter(i, true)[props.column.key], 10));
+        }
+      } else {
+        break;
       }
     }
     allValues = allValues.sort(function(a, b) { return a - b; });

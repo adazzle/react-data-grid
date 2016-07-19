@@ -17,7 +17,7 @@ describe('Header Row Unit Tests', () => {
 
   rewireModule(HeaderRow, {
     SortableHeaderCell: SortableHeaderCellStub,
-    HeaderCell: HeaderCellStub,
+    BaseHeaderCell: HeaderCellStub,
     FilterableHeaderCell: FilterableHeaderCellStub
   });
 

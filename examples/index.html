@@ -120,11 +120,11 @@
 					<p><kbd>npm install react-data-grid --save</kbd></p>
 					<p>Once downloaded, require both React and React Data Grid and you should be good to go</p>
 					<div class="code-block js">
-						<pre>var React = require('react'); </br>var ReactDataGrid = require('react-data-grid');</pre>
+						<pre>import React from 'react'; </br>import ReactDataGrid from 'react-data-grid';</pre>
 					</div>
-					<p>If you want to use extra features such as built in editors, formatters, toolbars and other plugins, you need to require the addons module instead</p>
+					<p>If you want to use extra features such as built in editors, formatters, toolbars and other plugins, you need to require the addons module as well</p>
 					<div class="code-block js">
-						<pre>var ReactDataGrid = require('react-data-grid/addons');</pre>
+						<pre>import ReactDataGridPlugins from 'react-data-grid/addons';</pre>
 					</div>
 					<br/>
 					<h4>Using Distribution Scripts</h4>
@@ -133,7 +133,7 @@
 						<pre>&lt;script src="//fb.me/react-0.14.6.js"&gt;&lt;/script&gt;<br/>&lt;script type="text/javascript" src="react-data-grid/dist/react-data-grid.js"&gt;&lt;/script&gt;</pre>
 					</div>
 
-					And include react-data-grid.ui-plugins.js to use advanced features
+					And include react-data-grid.ui-plugins.js to use advanced features. Plugins will be availble on the ReactDataGridPlugins namespace
 					<div class="code-block js">
 						<pre>&lt;script type="text/javascript" src="react-data-grid/dist/react-data-grid.ui-plugins.js"&gt;&lt;/script&gt;"</pre>
 					</div>

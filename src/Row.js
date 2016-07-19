@@ -6,6 +6,12 @@ const ColumnUtilsMixin  = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const PropTypes = React.PropTypes;
 
+const CellExpander = React.createClass({
+  render() {
+    return (<Cell {...this.props}/>);
+  }
+});
+
 const Row = React.createClass({
 
   propTypes: {
@@ -19,12 +25,13 @@ const Row = React.createClass({
     key: PropTypes.string,
     expandedRows: PropTypes.arrayOf(PropTypes.object),
     extraClasses: PropTypes.string,
-    forceUpdate: PropTypes.bool
+    forceUpdate: PropTypes.bool,
+    subRowDetails: PropTypes.object
   },
 
   mixins: [ColumnUtilsMixin],
 
-  getDefaultProps(): {cellRenderer: Cell} {
+  getDefaultProps() {
     return {
       cellRenderer: Cell,
       isSelected: false,
@@ -60,6 +67,14 @@ const Row = React.createClass({
     }
   },
 
+  getCellRenderer(columnKey) {
+    let CellRenderer = this.props.cellRenderer;
+    if (this.props.subRowDetails && this.props.subRowDetails.field === columnKey) {
+      return CellExpander;
+    }
+    return CellRenderer;
+  },
+
   getCells(): Array<ReactElement> {
     let cells = [];
     let lockedCells = [];
@@ -80,7 +95,8 @@ const Row = React.createClass({
                       cellMetaData={this.props.cellMetaData}
                       rowData={this.props.row}
                       selectedColumn={selectedColumn}
-                      isRowSelected={this.props.isSelected} />);
+                      isRowSelected={this.props.isSelected}
+                      expandableOptions={this.getExpandableOptions(column.key)} />);
         if (column.locked) {
           lockedCells.push(cell);
         } else {
@@ -151,6 +167,10 @@ const Row = React.createClass({
   hasRowBeenCopied(): boolean {
     let copied = this.props.cellMetaData.copied;
     return copied != null && copied.rowIdx === this.props.idx;
+  },
+
+  getExpandableOptions(columnKey) {
+    return {canExpand: this.props.subRowDetails && this.props.subRowDetails.field === columnKey, expanded: this.props.subRowDetails && this.props.subRowDetails.expanded, children: this.props.subRowDetails && this.props.subRowDetails.children, treeDepth: this.props.subRowDetails ? this.props.subRowDetails.treeDepth : 0 };
   },
 
   renderCell(props: any): ReactElement {

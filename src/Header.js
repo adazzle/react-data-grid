@@ -22,6 +22,7 @@ const Header = React.createClass({
     onSort: PropTypes.func,
     onColumnResize: PropTypes.func,
     onScroll: PropTypes.func,
+    draggableHeaderCell: PropTypes.func,
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     rowsCount: PropTypes.number.isRequired
   },
@@ -105,6 +106,7 @@ const Header = React.createClass({
         height={row.height || this.props.height}
         columns={columnMetrics.columns}
         resizing={resizeColumn}
+        draggableHeaderCell={this.props.draggableHeaderCell}
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}
         sortColumn={this.props.sortColumn}

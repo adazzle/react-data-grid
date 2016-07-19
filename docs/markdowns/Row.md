@@ -63,3 +63,8 @@ type: `string`
 
 type: `any`
 
+
+### `subRowDetails`
+
+type: `object`
+

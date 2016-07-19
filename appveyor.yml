@@ -25,8 +25,8 @@ install:
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
         ./ci/publish/decrypt-npmrc.ps1
       }
-  # Get the latest stable version of LTS
-  - ps: Install-Product node 4
+  - ps: Install-Product node 5
+  - npm cache clean
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g gulp
   - npm install
@@ -48,14 +48,11 @@ test_script:
 # Don't run MS build step
 build: off
 
-cache:
-  - '%AppData%\npm-cache -> package.json'
+#cache:
+#  - '%AppData%\npm-cache -> package.json'
 
 on_success:
 - ps: >-
-    if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
-       ./ci/publish/publishBranch.ps1
-    }
     if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
       ./ci/publish/publishMaster.ps1
     }

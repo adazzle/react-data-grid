@@ -7,6 +7,7 @@ const Row             = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
+import RowGroup from './RowGroup';
 
 const Canvas = React.createClass({
   mixins: [ScrollShim],
@@ -34,7 +35,8 @@ const Canvas = React.createClass({
     selectedRows: PropTypes.array,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
-    contextMenu: PropTypes.element
+    contextMenu: PropTypes.element,
+    getSubRowDetails: PropTypes.func
   },
 
   getDefaultProps() {
@@ -139,15 +141,55 @@ const Canvas = React.createClass({
     }
   },
 
+  getSubRows(row) {
+    let subRowDetails = this.props.getSubRowDetails(row);
+    if (subRowDetails.expanded === true) {
+      return subRowDetails.children.map(r => {
+        return {row: r};
+      });
+    }
+  },
+
+  addSubRows(rowsInput, row, i, displayEnd, treeDepth) {
+    let subRowDetails = this.props.getSubRowDetails(row) || {};
+    let rows = rowsInput;
+    let increment = i;
+    if (increment < displayEnd) {
+      subRowDetails.treeDepth = treeDepth;
+      rows.push({row, subRowDetails});
+      increment++;
+    }
+    if (subRowDetails && subRowDetails.expanded) {
+      let subRows = this.getSubRows(row);
+      subRows.forEach(sr => {
+        let result = this.addSubRows(rows, sr.row, increment, displayEnd, treeDepth + 1);
+        rows = result.rows;
+        increment = result.increment;
+      });
+    }
+    return {rows, increment};
+  },
+
   getRows(displayStart: number, displayEnd: number): Array<any> {
     this._currentRowsRange = {start: displayStart, end: displayEnd};
     if (Array.isArray(this.props.rowGetter)) {
       return this.props.rowGetter.slice(displayStart, displayEnd);
     }
-
     let rows = [];
-    for (let i = displayStart; i < displayEnd; i++) {
-      rows.push(this.props.rowGetter(i));
+    let rowFetchIndex = displayStart;
+    let i = displayStart;
+    while (i < displayEnd) {
+      let row = this.props.rowGetter(rowFetchIndex);
+      if (this.props.getSubRowDetails) {
+        let treeDepth = 0;
+        let result = this.addSubRows(rows, row, i, displayEnd, treeDepth);
+        rows = result.rows;
+        i = result.increment;
+      } else {
+        rows.push({row: row});
+        i++;
+      }
+      rowFetchIndex++;
     }
     return rows;
   },
@@ -189,6 +231,10 @@ const Canvas = React.createClass({
   },
 
   renderRow(props: any) {
+    let row = props.row;
+    if (row.__metaData && row.__metaData.isGroup) {
+      return <RowGroup name={row.name} {...row.__metaData} idx={props.idx} cellMetaData={this.props.cellMetaData}/>;
+    }
     if (this.state.scrollingTimeout !== null) {
       // in the midst of a rapid scroll, so we render placeholders
       // the actual render is then queued (through a timeout)
@@ -245,16 +291,17 @@ const Canvas = React.createClass({
     let length = this.props.rowsCount;
 
     let rows = this.getRows(displayStart, displayEnd)
-        .map((row, idx) => this.renderRow({
+        .map((r, idx) => this.renderRow({
           key: displayStart + idx,
           ref: idx,
           idx: displayStart + idx,
-          row: row,
+          row: r.row,
           height: rowHeight,
           columns: this.props.columns,
-          isSelected: this.isRowSelected(row),
+          isSelected: this.isRowSelected(r.row),
           expandedRows: this.props.expandedRows,
-          cellMetaData: this.props.cellMetaData
+          cellMetaData: this.props.cellMetaData,
+          subRowDetails: r.subRowDetails
         }));
 
     this._currentRowsLength = rows.length;

@@ -34,8 +34,8 @@ const Grid = React.createClass({
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
     contextMenu: PropTypes.element,
-    viewRowGetter: React.PropTypes.func,
-    viewRowsCount: React.PropTypes.number
+    getSubRowDetails: PropTypes.func,
+    draggableHeaderCell: PropTypes.func
   },
 
   mixins: [
@@ -74,6 +74,7 @@ const Grid = React.createClass({
           headerRows={headerRows}
           sortColumn={this.props.sortColumn}
           sortDirection={this.props.sortDirection}
+          draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
           onScroll={this.onHeaderScroll}
           rowGetter={this.props.rowGetter}
@@ -87,8 +88,8 @@ const Grid = React.createClass({
                   width={this.props.columnMetrics.width}
                   rowHeight={this.props.rowHeight}
                   rowRenderer={this.props.rowRenderer}
-                  rowGetter={this.props.viewRowGetter || this.props.rowGetter}
-                  rowsCount={this.props.viewRowsCount || this.props.rowsCount}
+                  rowGetter={this.props.rowGetter}
+                  rowsCount={this.props.rowsCount}
                   selectedRows={this.props.selectedRows}
                   expandedRows={this.props.expandedRows}
                   columnMetrics={this.props.columnMetrics}
@@ -100,6 +101,7 @@ const Grid = React.createClass({
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
                   contextMenu={this.props.contextMenu}
+                  getSubRowDetails={this.props.getSubRowDetails}
                 />
             </div>
         :

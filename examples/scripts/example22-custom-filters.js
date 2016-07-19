@@ -5,6 +5,7 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 var EditableExample = `
 var Toolbar = ReactDataGridPlugins.Toolbar;
 var NumberFilterableHeaderCell = ReactDataGridPlugins.CustomFilters.NumberFilterableHeaderCell;
+var Selectors = ReactDataGridPlugins.Data.Selectors;
 
 //helper to generate a random date
 function randomDate(start, end) {
@@ -74,51 +75,31 @@ var columns = [
 var Example = React.createClass({
 
   getInitialState : function() {
-    var originalRows = createRows(1000);
-    var rows = originalRows.slice(0);
-    //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
-    return {originalRows : originalRows	, rows : rows, filters : {}};
+    var rows = createRows(1000);
+    return {rows : rows, filters : {}};
   },
 
-  rowGetter: function(rowIdx){
-    return this.state.originalRows[rowIdx];
+  rowGetter : function(index, disableFilter){
+    var state = this.state;
+    if (disableFilter === true) {
+      state = Object.assign(state, {filters: {}});
+    }
+    var rows = Selectors.getRows(state);
+    return rows[index];
   },
 
-  viewRowGetter: function(rowIdx) {
-    return this.state.rows[rowIdx];
+  rowsCount : function() {
+    return Selectors.getRows(this.state).length;
   },
 
-  filterRows : function(originalRows, filters) {
-    var rows = originalRows.filter(function(r){
-      var include = true;
-      for (var columnKey in filters) {
-        if(filters.hasOwnProperty(columnKey) && typeof filters[columnKey] === 'string') {
-          var rowValue = r[columnKey].toString().toLowerCase();
-          if(rowValue.indexOf(filters[columnKey].toLowerCase()) === -1) {
-            include = false;
-          }
-        } else if(filters.hasOwnProperty(columnKey) && filters[columnKey] !== undefined && filters[columnKey].length > 0) {
-          var rowValue = r[columnKey];
-          if(filters[columnKey].indexOf(rowValue) === -1) {
-            include = false;
-          }
-        }
-      }
-      return include;
-    });
-    return rows;
-  },
-
-  handleFilterChange(filter) {
-    this.setState(function(currentState) {
-      if (filter.filterTerm) {
-        currentState.filters[filter.column.key] = filter.filterTerm;
-      } else {
-        delete currentState.filters[filter.column.key];
-      }
-      currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
-      return currentState;
-    });
+  handleFilterChange : function(filter){
+    let newFilters = Object.assign({}, this.state.filters);
+    if (filter.filterTerm) {
+      newFilters[filter.column.key] = filter.filterTerm;
+    } else {
+     delete newFilters[filter.column.key];
+    }
+    this.setState({filters: newFilters});
   },
 
   render:function(){
@@ -127,12 +108,10 @@ var Example = React.createClass({
         columns={columns}
         rowGetter={this.rowGetter}
         enableCellSelect={true}
-        rowsCount={this.state.originalRows.length}
+        rowsCount={this.rowsCount()}
         minHeight={500}
         toolbar={<Toolbar enableFilter={true}/>}
         onAddFilter={this.handleFilterChange}
-        viewRowsCount={this.state.rows.length}
-        viewRowGetter={this.viewRowGetter}
         />
     );
   }
