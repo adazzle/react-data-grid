@@ -26,35 +26,37 @@ class NumberFilterableHeaderCell extends React.Component {
   attachTooltip() {
     if ($) {
       $('[data-toggle="tooltip"]').tooltip();
+    } else if (jQuery) {
+      jQuery('[data-toggle="tooltip"]').tooltip();
     }
+  }
+
+  filterValues(row, columnFilter, columnKey) {
+    // implement default filter logic
+    let value = parseInt(row[columnKey], 10);
+    if (columnFilter.filterTerm.indexOf(value) === -1) {
+      return false;
+    }
+    return true;
   }
 
   getRows(nextProps) {
     let props = nextProps || this.props;
-    let originalRows = [];
     let minValue = Number.MAX_SAFE_INTEGER;
     let maxValue = Number.MIN_SAFE_INTEGER;
-    let allValues = [];
-    for (let i = 0; i < Number.MAX_SAFE_INTEGER; i++) {
-      let originalRow = props.rowGetter(i, true);
-      if (originalRow !== undefined) {
-        originalRows[i] = originalRow;
-        if (!isNaN(props.rowGetter(i, true)[props.column.key]) && minValue > props.rowGetter(i, true)[props.column.key]) {
-          minValue = parseInt(props.rowGetter(i, true)[props.column.key], 10);
-        }
-        if (!isNaN(props.rowGetter(i, true)[props.column.key]) && maxValue < props.rowGetter(i, true)[props.column.key]) {
-          maxValue = parseInt(props.rowGetter(i, true)[props.column.key], 10);
-        }
-        if (!isNaN(props.rowGetter(i, true)[props.column.key])) {
-          allValues.push(parseInt(props.rowGetter(i, true)[props.column.key], 10));
-        }
-      } else {
-        break;
+    let allRowsValues = this.props.getValidFilterValues(props.column.key);
+    allRowsValues = allRowsValues.sort(function(a, b) { return a - b; });
+    for (let i = 0; i < allRowsValues.length; i++) {
+      let value = parseInt(allRowsValues[i], 10);
+      if (minValue > value) {
+        minValue = parseInt(value, 10);
       }
+      if (maxValue < value) {
+        maxValue = parseInt(value, 10);
+      }
+      allRowsValues[i] = value;
     }
-    allValues = allValues.sort(function(a, b) { return a - b; });
-
-    return { originalRows, minValue, maxValue, allValues };
+    return { minValue, maxValue, allRowsValues };
   }
 
   getNumericValues(value) {
@@ -83,7 +85,7 @@ class NumberFilterableHeaderCell extends React.Component {
         if (obj.indexOf('-') > 0) { // handle dash
           let begin = parseInt(obj.split('-')[0], 10);
           let end = parseInt(obj.split('-')[1], 10);
-          for (let objValue of this.state.allValues) {
+          for (let objValue of this.state.allRowsValues) {
             if (begin <= objValue && objValue <= end) {
               returnList.push(objValue);
             }
@@ -91,7 +93,7 @@ class NumberFilterableHeaderCell extends React.Component {
         } else if (obj.indexOf('>') > -1) { // handle greater then
           let begin = parseInt(obj.split('>')[1], 10);
           let _maxValue = (greaterThenBegin > this.state.maxValue ? greaterThenBegin : this.state.maxValue);
-          for (let objValue of this.state.allValues) {
+          for (let objValue of this.state.allRowsValues) {
             if (begin <= objValue && objValue <= (intersection ? lessThenBegin : _maxValue)) {
               returnList.push(objValue);
             }
@@ -99,7 +101,7 @@ class NumberFilterableHeaderCell extends React.Component {
         } else if (obj.indexOf('<') > -1) { // handle less then
           let end = parseInt(obj.split('<')[1], 10);
           let _minValue = (lessThenBegin < this.state.minValue ? lessThenBegin : this.state.minValue);
-          for (let objValue of this.state.allValues) {
+          for (let objValue of this.state.allRowsValues) {
             if ((intersection ? greaterThenBegin : _minValue) <= objValue && objValue <= end) {
               returnList.push(objValue);
             }
@@ -129,8 +131,7 @@ class NumberFilterableHeaderCell extends React.Component {
   handleChange(e) {
     let value = e.target.value;
     let filters = this.getNumericValues(value);
-    this.setState({filters});
-    this.props.onChange({filterTerm: filters, column: this.props.column, rawValue: value});
+    this.props.onChange({filterTerm: (filters.length > 0 ? filters : null), column: this.props.column, rawValue: value, filterValues: this.filterValues });
   }
 
   render() {
@@ -162,8 +163,7 @@ class NumberFilterableHeaderCell extends React.Component {
 NumberFilterableHeaderCell.propTypes = {
   onChange: React.PropTypes.func.isRequired,
   column: React.PropTypes.shape(ExcelColumn),
-  rowGetter: React.PropTypes.oneOfType([React.PropTypes.array, React.PropTypes.func]).isRequired,
-  rowsCount: React.PropTypes.number.isRequired
+  getValidFilterValues: React.PropTypes.func
 };
 
 module.exports = NumberFilterableHeaderCell;

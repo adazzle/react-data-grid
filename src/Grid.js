@@ -35,7 +35,8 @@ const Grid = React.createClass({
     rowScrollTimeout: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
-    draggableHeaderCell: PropTypes.func
+    draggableHeaderCell: PropTypes.func,
+    getValidFilterValues: PropTypes.func
   },
 
   mixins: [
@@ -77,8 +78,7 @@ const Grid = React.createClass({
           draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
           onScroll={this.onHeaderScroll}
-          rowGetter={this.props.rowGetter}
-          rowsCount={this.props.rowsCount}
+          getValidFilterValues={this.props.getValidFilterValues}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>

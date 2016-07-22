@@ -4,7 +4,7 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 
 var EditableExample = `
 var Toolbar = ReactDataGridPlugins.Toolbar;
-var NumberFilterableHeaderCell = ReactDataGridPlugins.CustomFilters.NumberFilterableHeaderCell;
+var CustomFilters = ReactDataGridPlugins.CustomFilters;
 var Selectors = ReactDataGridPlugins.Data.Selectors;
 
 //helper to generate a random date
@@ -36,7 +36,7 @@ var columns = [
     name: 'ID',
     width: 120,
     filterable: true,
-    filterRenderer: NumberFilterableHeaderCell
+    filterRenderer: CustomFilters.NumberFilterableHeaderCell
   },
   {
     key: 'task',
@@ -46,18 +46,20 @@ var columns = [
   {
     key: 'priority',
     name: 'Priority',
-    filterable: true
+    filterable: true,
+    filterRenderer: CustomFilters.AutoCompleteFilterableHeaderCell
   },
   {
     key: 'issueType',
     name: 'Issue Type',
-    filterable: true
+    filterable: true,
+    filterRenderer: CustomFilters.AutoCompleteFilterableHeaderCell
   },
   {
     key: 'complete',
     name: '% Complete',
     filterable: true,
-    filterRenderer: NumberFilterableHeaderCell
+    filterRenderer: CustomFilters.NumberFilterableHeaderCell
   },
   {
     key: 'startDate',
@@ -79,13 +81,8 @@ var Example = React.createClass({
     return {rows : rows, filters : {}};
   },
 
-  rowGetter : function(index, disableFilter){
-    var state = this.state;
-    if (disableFilter === true) {
-      state = Object.assign(state, {filters: {}});
-    }
-    var rows = Selectors.getRows(state);
-    return rows[index];
+  rowGetter : function(index){
+    return Selectors.getRows(this.state)[index];
   },
 
   rowsCount : function() {
@@ -95,11 +92,16 @@ var Example = React.createClass({
   handleFilterChange : function(filter){
     let newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
-      newFilters[filter.column.key] = filter.filterTerm;
+      newFilters[filter.column.key] = filter;
     } else {
      delete newFilters[filter.column.key];
     }
     this.setState({filters: newFilters});
+  },
+
+  getValidFilterValues(columnId) {
+    let values = this.state.rows.map(r => r[columnId]);
+    return values.filter((item, i, a) => { return i == a.indexOf(item); });
   },
 
   render:function(){
@@ -112,6 +114,7 @@ var Example = React.createClass({
         minHeight={500}
         toolbar={<Toolbar enableFilter={true}/>}
         onAddFilter={this.handleFilterChange}
+        getValidFilterValues={this.getValidFilterValues}
         />
     );
   }

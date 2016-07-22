@@ -23,8 +23,7 @@ const Header = React.createClass({
     onColumnResize: PropTypes.func,
     onScroll: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
-    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
-    rowsCount: PropTypes.number.isRequired
+    getValidFilterValues: PropTypes.func
   },
 
   getInitialState(): {resizing: any} {
@@ -113,9 +112,7 @@ const Header = React.createClass({
         sortDirection={this.props.sortDirection}
         onSort={this.props.onSort}
         onScroll={this.props.onScroll}
-        rowsCount={this.props.rowsCount}
-        rowGetter={this.props.rowGetter}
-
+        getValidFilterValues={this.props.getValidFilterValues}
         />);
     });
     return headerRows;

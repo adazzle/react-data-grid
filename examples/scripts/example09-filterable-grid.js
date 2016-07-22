@@ -96,7 +96,7 @@ var Example = React.createClass({
   handleFilterChange : function(filter){
     let newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
-      newFilters[filter.column.key] = filter.filterTerm;
+      newFilters[filter.column.key] = filter;
     } else {
      delete newFilters[filter.column.key];
     }
