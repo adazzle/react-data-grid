@@ -104,6 +104,10 @@ var Example = React.createClass({
     return values.filter((item, i, a) => { return i == a.indexOf(item); });
   },
 
+  handleOnClearFilters() {
+    this.setState({ filters: {} });
+  },
+
   render:function(){
     return(
       <ReactDataGrid
@@ -115,6 +119,7 @@ var Example = React.createClass({
         toolbar={<Toolbar enableFilter={true}/>}
         onAddFilter={this.handleFilterChange}
         getValidFilterValues={this.getValidFilterValues}
+        onClearFilters={this.handleOnClearFilters}
         />
     );
   }
