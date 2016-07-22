@@ -33,7 +33,7 @@ class AutoCompleteFilterableHeaderCell extends React.Component {
       include = false;
     } else if (!isEmptyArray(columnFilter.filterTerm)) {
       for (let prop of columnFilter.filterTerm) {
-        if (row[columnKey].trim().toLowerCase().indexOf(prop.value.trim().toLowerCase()) === -1) {
+        if (row[columnKey].trim().toLowerCase().indexOf(prop.value.trim().toLowerCase()) === -1 || row[columnKey] !== prop.value) {
           include = false;
         } else {
           include = true;
