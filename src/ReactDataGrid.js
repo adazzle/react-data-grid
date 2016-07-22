@@ -773,7 +773,7 @@ const ReactDataGrid = React.createClass({
     if ((props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       let headerRenderer = props.enableRowSelect === 'single' ? null :
       <div className="react-grid-checkbox-container">
-        <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" onChange={this.handleCheckboxChange} />
+        <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" onChange={this.handleCheckboxChange} />
         <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
       </div>;
       let selectColumn = {

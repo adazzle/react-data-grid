@@ -176,10 +176,6 @@ textareaselect.editor-main {
   height: auto;
 }
 
-.react-grid-checkbox-container {
-    cursor: pointer;
-}
-
 .react-grid-checkbox, .radio-custom {
     opacity: 0;
     position: absolute;
