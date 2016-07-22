@@ -70,17 +70,6 @@ const Cell = React.createClass({
   },
 
   shouldComponentUpdate(nextProps: any): boolean {
-    let currentColumn = this.props.column;
-    let hasChangedDependentValues = false;
-
-    if (currentColumn.getRowMetaData) {
-      let currentRowMetaData = currentColumn.getRowMetaData(this.getRowData(), currentColumn);
-      let nextColumn = nextProps.column;
-      let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
-
-      hasChangedDependentValues = !isEqual(currentRowMetaData, nextRowMetaData);
-    }
-
     return this.props.column.width !== nextProps.column.width
     || this.props.column.left !== nextProps.column.left
     || this.props.height !== nextProps.height
@@ -92,7 +81,7 @@ const Cell = React.createClass({
     || this.isSelected()
     || this.props.value !== nextProps.value
     || this.props.forceUpdate === true
-    || hasChangedDependentValues;
+    || this.hasChangedDependentValues(nextProps);
   },
 
   onCellClick(e) {
@@ -240,6 +229,21 @@ const Cell = React.createClass({
     let meta = this.props.cellMetaData;
     if (meta == null) { return false; }
     return meta.enableCellSelect;
+  },
+
+  hasChangedDependentValues(nextProps) {
+    let currentColumn = this.props.column;
+    let hasChangedDependentValues = false;
+
+    if (currentColumn.getRowMetaData) {
+      let currentRowMetaData = currentColumn.getRowMetaData(this.getRowData(), currentColumn);
+      let nextColumn = nextProps.column;
+      let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
+
+      hasChangedDependentValues = !isEqual(currentRowMetaData, nextRowMetaData);
+    }
+
+    return hasChangedDependentValues;
   },
 
   applyUpdateClass() {
