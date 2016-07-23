@@ -42,8 +42,8 @@ class NumberFilterableHeaderCell extends React.Component {
 
   getRows(nextProps) {
     let props = nextProps || this.props;
-    let minValue = Number.MAX_SAFE_INTEGER;
-    let maxValue = Number.MIN_SAFE_INTEGER;
+    let minValue = Number.MIN_VALUE;
+    let maxValue = Number.MAX_VALUE;
     let allRowsValues = this.props.getValidFilterValues(props.column.key);
     allRowsValues = allRowsValues.sort(function(a, b) { return a - b; });
     for (let i = 0; i < allRowsValues.length; i++) {
