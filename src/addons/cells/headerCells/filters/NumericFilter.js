@@ -1,7 +1,7 @@
 import React from 'react';
 import ExcelColumn from '../../../../PropTypeShapes/ExcelColumn';
 
-class NumberFilterableHeaderCell extends React.Component {
+class NumericFilter extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -160,10 +160,10 @@ class NumberFilterableHeaderCell extends React.Component {
   }
 }
 
-NumberFilterableHeaderCell.propTypes = {
+NumericFilter.propTypes = {
   onChange: React.PropTypes.func.isRequired,
   column: React.PropTypes.shape(ExcelColumn),
   getValidFilterValues: React.PropTypes.func
 };
 
-module.exports = NumberFilterableHeaderCell;
+module.exports = NumericFilter;

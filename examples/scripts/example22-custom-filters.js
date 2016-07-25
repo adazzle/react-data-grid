@@ -4,7 +4,7 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 
 var EditableExample = `
 var Toolbar = ReactDataGridPlugins.Toolbar;
-var CustomFilters = ReactDataGridPlugins.CustomFilters;
+var Filters = ReactDataGridPlugins.Filters;
 var Selectors = ReactDataGridPlugins.Data.Selectors;
 
 //helper to generate a random date
@@ -36,7 +36,7 @@ var columns = [
     name: 'ID',
     width: 120,
     filterable: true,
-    filterRenderer: CustomFilters.NumberFilterableHeaderCell
+    filterRenderer: Filters.NumberFilterableHeaderCell
   },
   {
     key: 'task',
@@ -47,19 +47,19 @@ var columns = [
     key: 'priority',
     name: 'Priority',
     filterable: true,
-    filterRenderer: CustomFilters.AutoCompleteFilterableHeaderCell
+    filterRenderer: Filters.AutoCompleteFilterableHeaderCell
   },
   {
     key: 'issueType',
     name: 'Issue Type',
     filterable: true,
-    filterRenderer: CustomFilters.AutoCompleteFilterableHeaderCell
+    filterRenderer: Filters.AutoCompleteFilterableHeaderCell
   },
   {
     key: 'complete',
     name: '% Complete',
     filterable: true,
-    filterRenderer: CustomFilters.NumberFilterableHeaderCell
+    filterRenderer: Filters.NumberFilterableHeaderCell
   },
   {
     key: 'startDate',

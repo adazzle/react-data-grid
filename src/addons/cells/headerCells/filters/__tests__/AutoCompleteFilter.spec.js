@@ -1,6 +1,6 @@
 import React from 'react';
 import TestUtils from 'react/lib/ReactTestUtils';
-import AutoCompleteFilterableHeaderCell from '../AutoCompleteFilterableHeaderCell';
+import AutoCompleteFilter from '../AutoCompleteFilter';
 
 function createRows() {
   let rows = [];
@@ -18,7 +18,7 @@ function fakeGetValidFilterValues() {
   return options;
 }
 
-describe('AutoCompleteFilterableHeaderCell', () => {
+describe('AutoCompleteFilter', () => {
   let component;
   let rows;
 
@@ -28,7 +28,7 @@ describe('AutoCompleteFilterableHeaderCell', () => {
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
-        <AutoCompleteFilterableHeaderCell
+        <AutoCompleteFilter
         onChange={fakeOnChange}
         column={fakeColumn}
         getValidFilterValues={fakeGetValidFilterValues}
@@ -36,7 +36,7 @@ describe('AutoCompleteFilterableHeaderCell', () => {
       rows = createRows();
     });
 
-    it('should create a new AutoCompleteFilterableHeaderCell instance', () => {
+    it('should create a new AutoCompleteFilter instance', () => {
       expect(component).toBeDefined();
     });
 

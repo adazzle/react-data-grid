@@ -1,12 +1,12 @@
 import React from 'react';
 import TestUtils from 'react/lib/ReactTestUtils';
-import NumberFilterableHeaderCell from '../NumberFilterableHeaderCell';
+import NumericFilter from '../NumericFilter';
 import {jQuery, $} from 'jquery';
 
 window.jQuery = jQuery;
 window.$ = $;
 
-describe('NumberFilterableHeaderCell', () => {
+describe('NumericFilter', () => {
   let component;
 
   describe('Basic tests', () => {
@@ -18,14 +18,14 @@ describe('NumberFilterableHeaderCell', () => {
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
-        <NumberFilterableHeaderCell
+        <NumericFilter
         onChange={fakeOnChange}
         column={fakeColumn}
         getValidFilterValues={fakeGetValidFilterValues}
         />);
     });
 
-    it('should create a new NumberFilterableHeaderCell instance', () => {
+    it('should create a new NumericFilter instance', () => {
       expect(component).toBeDefined();
     });
   });

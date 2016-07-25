@@ -1,9 +1,9 @@
-import NumberFilterableHeaderCell from './NumberFilterableHeaderCell';
-import AutoCompleteFilterableHeaderCell from './AutoCompleteFilterableHeaderCell';
+import NumericFilter from './NumericFilter';
+import AutoCompleteFilter from './AutoCompleteFilter';
 
-const CustomFilters = {
-  NumberFilterableHeaderCell: NumberFilterableHeaderCell,
-  AutoCompleteFilterableHeaderCell: AutoCompleteFilterableHeaderCell
+const Filters = {
+  NumericFilter: NumericFilter,
+  AutoCompleteFilter: AutoCompleteFilter
 };
 
-module.exports = CustomFilters;
+module.exports = Filters;

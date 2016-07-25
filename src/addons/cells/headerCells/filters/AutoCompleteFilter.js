@@ -3,7 +3,7 @@ import ExcelColumn from '../../../../PropTypeShapes/ExcelColumn';
 import Select from 'react-select';
 import isEmptyArray from '../../../utils/isEmptyArray';
 
-class AutoCompleteFilterableHeaderCell extends React.Component {
+class AutoCompleteFilter extends React.Component {
   constructor(props) {
     super(props);
     this.getOptions = this.getOptions.bind(this);
@@ -69,10 +69,10 @@ class AutoCompleteFilterableHeaderCell extends React.Component {
   }
 }
 
-AutoCompleteFilterableHeaderCell.propTypes = {
+AutoCompleteFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
   column: React.PropTypes.shape(ExcelColumn),
   getValidFilterValues: PropTypes.func
 };
 
-export default AutoCompleteFilterableHeaderCell;
+export default AutoCompleteFilter;
