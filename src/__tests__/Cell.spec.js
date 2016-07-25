@@ -5,6 +5,7 @@ let Cell         = rewire('../Cell');
 let TestUtils    = require('react-addons-test-utils');
 let rewireModule = require('../../test/rewireModule');
 let StubComponent = require('../../test/StubComponent');
+Object.assign = require('object-assign');
 
 let testCellMetaData = {
   selected: {idx: 2, rowIdx: 3},
