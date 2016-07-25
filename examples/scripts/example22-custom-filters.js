@@ -36,7 +36,7 @@ var columns = [
     name: 'ID',
     width: 120,
     filterable: true,
-    filterRenderer: Filters.NumberFilterableHeaderCell
+    filterRenderer: Filters.NumericFilter
   },
   {
     key: 'task',
@@ -47,19 +47,19 @@ var columns = [
     key: 'priority',
     name: 'Priority',
     filterable: true,
-    filterRenderer: Filters.AutoCompleteFilterableHeaderCell
+    filterRenderer: Filters.AutoCompleteFilter
   },
   {
     key: 'issueType',
     name: 'Issue Type',
     filterable: true,
-    filterRenderer: Filters.AutoCompleteFilterableHeaderCell
+    filterRenderer: Filters.AutoCompleteFilter
   },
   {
     key: 'complete',
     name: '% Complete',
     filterable: true,
-    filterRenderer: Filters.NumberFilterableHeaderCell
+    filterRenderer: Filters.NumericFilter
   },
   {
     key: 'startDate',
