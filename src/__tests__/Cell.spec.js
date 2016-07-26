@@ -1,11 +1,11 @@
 let React        = require('react');
 let rewire       = require('rewire');
 let Cell         = rewire('../Cell');
-let TestUtils    = require('react-addons-test-utils');
 let rewireModule = require('../../test/rewireModule');
 let StubComponent = require('../../test/StubComponent');
 import { mount } from 'enzyme';
 import isEqual from 'lodash/isEqual';
+Object.assign = require('object-assign');
 
 let testCellMetaData = {
   selected: {idx: 2, rowIdx: 3},
@@ -95,6 +95,72 @@ describe('Cell Tests', () => {
     let formatterInstance = testElement.find(CustomFormatter);
     expect(testElement).toBeDefined();
     expect(formatterInstance.props().value).toEqual('Wicklow');
+  });
+
+  describe('isDraggedCellChanging tests', () => {
+    let DEFAULT_NEXT_PROPS = {
+      cellMetaData: { }
+    };
+
+    it('should be false if no cell was dragged', () => {
+      testElement = renderComponent({
+        cellMetaData: {
+          dragged: undefined
+        }
+      });
+
+      expect(testElement.node.isDraggedCellChanging(DEFAULT_NEXT_PROPS)).toBeFalsy();
+    });
+
+    it('should be true if the cell is about to be dragged', () => {
+      testElement = renderComponent({
+        cellMetaData: {
+          dragged: { }
+        }
+      });
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, {
+        cellMetaData: {
+          dragged: {
+            idx: testProps.idx
+          }
+        }
+      });
+
+      expect(testElement.node.isDraggedCellChanging(nextProps)).toBeTruthy();
+    });
+
+    it('should be true if the cell is currently dragged ', () => {
+      testElement = renderComponent({
+        cellMetaData: {
+          dragged: {
+            idx: testProps.idx
+          }
+        }
+      });
+
+      expect(testElement.node.isDraggedCellChanging(DEFAULT_NEXT_PROPS)).toBeTruthy();
+    });
+
+    it('should be false if the cell is not currently dragged and not about to be dragged', () => {
+      testElement = renderComponent({
+        cellMetaData: {
+          dragged: {
+            idx: testProps.idx + 1
+          }
+        }
+      });
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, {
+        cellMetaData: {
+          dragged: {
+            idx: testProps.idx - 1
+          }
+        }
+      });
+
+      expect(testElement.node.isDraggedCellChanging(nextProps)).toBeFalsy();
+    });
   });
 
   describe('When cell is active', () => {
