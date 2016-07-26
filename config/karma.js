@@ -93,6 +93,7 @@ module.exports = function (config) {
     preprocessors: getPreprocessors(),
 
     webpack: {
+      devtool: 'inline-source-map',
       module: {
         loaders: webpackConfig.module.loaders,
         postLoaders : getPostLoaders()
@@ -102,7 +103,12 @@ module.exports = function (config) {
       },
       plugins: [
       new RewirePlugin()
-      ]
+      ],
+      externals: {
+        'cheerio': 'window',
+        'react/lib/ExecutionEnvironment': true,
+        'react/lib/ReactContext': true
+      }
     },
 
     webpackServer: {
