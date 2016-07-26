@@ -105,12 +105,27 @@ type: `func`
 type: `func`
 
 
+### `onGridKeyDown`
+
+type: `func`
+
+
+### `onGridKeyUp`
+
+type: `func`
+
+
 ### `onGridRowsUpdated`
 
 type: `func`
 
 
 ### `onGridSort`
+
+type: `func`
+
+
+### `onRowClick`
 
 type: `func`
 
@@ -151,6 +166,11 @@ defaultValue: `'id'`
 
 type: `number`
 defaultValue: `0`
+
+
+### `rowSelection`
+
+type: `shape[object Object]`
 
 
 ### `rowsCount` (required)
