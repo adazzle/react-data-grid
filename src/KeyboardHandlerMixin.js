@@ -1,4 +1,7 @@
 let KeyboardHandlerMixin = {
+  getInitialState() {
+    return {keysDown: {}};
+  },
   onKeyDown(e: SyntheticKeyboardEvent) {
     if (this.isCtrlKeyHeldDown(e)) {
       this.checkAndCall('onPressKeyWithCtrl', e);
@@ -10,6 +13,35 @@ let KeyboardHandlerMixin = {
     } else if (this.isKeyPrintable(e.keyCode)) {
       this.checkAndCall('onPressChar', e);
     }
+
+    // Track which keys are currently down for shift clicking etc
+    let keysDown = this.state.keysDown || {};
+    keysDown[e.keyCode] = true;
+    this.setState({keysDown});
+
+    if (this.props.onGridKeyDown && typeof this.props.onGridKeyDown === 'function') {
+      this.props.onGridKeyDown(e);
+    }
+  },
+
+  onKeyUp(e) {
+    // Track which keys are currently down for shift clicking etc
+    let keysDown = this.state.keysDown || {};
+    delete keysDown[e.keyCode];
+    this.setState({keysDown});
+
+    if (this.props.onGridKeyUp && typeof this.props.onGridKeyUp === 'function') {
+      this.props.onGridKeyUp(e);
+    }
+  },
+  isKeyDown(keyCode) {
+    if (!this.state.keysDown) return false;
+    return keyCode in this.state.keysDown;
+  },
+
+  isSingleKeyDown(keyCode) {
+    if (!this.state.keysDown) return false;
+    return keyCode in this.state.keysDown && Object.keys(this.state.keysDown).length === 1;
   },
 
   // taken from http://stackoverflow.com/questions/12467240/determine-if-javascript-e-keycode-is-a-printable-non-control-character
