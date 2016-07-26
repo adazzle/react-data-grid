@@ -78,16 +78,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Row = __webpack_require__(26);
 	var ExcelColumn = __webpack_require__(15);
 	var KeyboardHandlerMixin = __webpack_require__(29);
-	var CheckboxEditor = __webpack_require__(38);
-	var DOMMetrics = __webpack_require__(36);
-	var ColumnMetricsMixin = __webpack_require__(39);
-	var RowUtils = __webpack_require__(41);
+	var CheckboxEditor = __webpack_require__(39);
+	var DOMMetrics = __webpack_require__(37);
+	var ColumnMetricsMixin = __webpack_require__(40);
+	var RowUtils = __webpack_require__(35);
 	var ColumnUtils = __webpack_require__(10);
+	var KeyCodes = __webpack_require__(42);
 
 	if (!Object.assign) {
-	  Object.assign = __webpack_require__(40);
+	  Object.assign = __webpack_require__(41);
 	}
-
 
 	var ReactDataGrid = React.createClass({
 	  displayName: 'ReactDataGrid',
@@ -125,7 +125,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onCellExpand: React.PropTypes.func,
 	    enableDragAndDrop: React.PropTypes.bool,
 	    onRowExpandToggle: React.PropTypes.func,
-	    draggableHeaderCell: React.PropTypes.func
+	    draggableHeaderCell: React.PropTypes.func,
+	    rowSelection: React.PropTypes.shape({
+	      enableShiftSelect: React.PropTypes.bool,
+	      onRowsSelected: React.PropTypes.func,
+	      onRowsDeselected: React.PropTypes.func,
+	      showCheckbox: React.PropTypes.bool,
+	      selectBy: React.PropTypes.oneOfType([React.PropTypes.shape({
+	        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+	      }), React.PropTypes.shape({
+	        isSelectedKey: React.PropTypes.string.isRequired
+	      }), React.PropTypes.shape({
+	        keys: React.PropTypes.shape({
+	          values: React.PropTypes.array.isRequired,
+	          rowKey: React.PropTypes.string.isRequired
+	        }).isRequired
+	      })]).isRequired
+	    }),
+	    onRowClick: React.PropTypes.func,
+	    onGridKeyUp: React.PropTypes.func,
+	    onGridKeyDown: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -144,7 +163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  getInitialState: function getInitialState() {
 	    var columnMetrics = this.createColumnMetrics();
-	    var initialState = { columnMetrics: columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0 };
+	    var initialState = { columnMetrics: columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1 };
 	    if (this.props.enableCellSelect) {
 	      initialState.selected = { rowIdx: 0, idx: 0 };
 	    } else {
@@ -208,6 +227,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  onCellClick: function onCellClick(cell) {
 	    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
+
+	    if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
+	      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx));
+	    }
 	  },
 
 	  onCellContextMenu: function onCellContextMenu(cell) {
@@ -471,25 +494,105 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return selectedRow[0];
 	    }
 	  },
+	  useNewRowSelection: function useNewRowSelection() {
+	    return this.props.rowSelection && this.props.rowSelection.selectBy;
+	  },
 
+	  // return false if not a shift select so can be handled as normal row selection
+	  handleShiftSelect: function handleShiftSelect(rowIdx) {
+	    if (this.state.lastRowIdxUiSelected > -1 && this.isSingleKeyDown(KeyCodes.Shift)) {
+	      var _props$rowSelection$s = this.props.rowSelection.selectBy;
+	      var keys = _props$rowSelection$s.keys;
+	      var indexes = _props$rowSelection$s.indexes;
+	      var isSelectedKey = _props$rowSelection$s.isSelectedKey;
+
+	      var isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, this.props.rowGetter(rowIdx), rowIdx);
+
+	      if (isPreviouslySelected) return false;
+
+	      var handled = false;
+
+	      if (rowIdx > this.state.lastRowIdxUiSelected) {
+	        var rowsSelected = [];
+
+	        for (var i = this.state.lastRowIdxUiSelected + 1; i <= rowIdx; i++) {
+	          rowsSelected.push({ rowIdx: i, row: this.props.rowGetter(i) });
+	        }
+
+	        if (typeof this.props.rowSelection.onRowsSelected === 'function') {
+	          this.props.rowSelection.onRowsSelected(rowsSelected);
+	        }
+
+	        handled = true;
+	      } else if (rowIdx < this.state.lastRowIdxUiSelected) {
+	        var _rowsSelected = [];
+
+	        for (var _i = rowIdx; _i <= this.state.lastRowIdxUiSelected - 1; _i++) {
+	          _rowsSelected.push({ rowIdx: _i, row: this.props.rowGetter(_i) });
+	        }
+
+	        if (typeof this.props.rowSelection.onRowsSelected === 'function') {
+	          this.props.rowSelection.onRowsSelected(_rowsSelected);
+	        }
+
+	        handled = true;
+	      }
+
+	      if (handled) {
+	        this.setState({ lastRowIdxUiSelected: rowIdx });
+	      }
+
+	      return handled;
+	    }
+
+	    return false;
+	  },
+	  handleNewRowSelect: function handleNewRowSelect(rowIdx, rowData) {
+	    var _props$rowSelection$s2 = this.props.rowSelection.selectBy;
+	    var keys = _props$rowSelection$s2.keys;
+	    var indexes = _props$rowSelection$s2.indexes;
+	    var isSelectedKey = _props$rowSelection$s2.isSelectedKey;
+
+	    var isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
+
+	    this.setState({ lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: { rowIdx: rowIdx, idx: 0 } });
+
+	    if (isPreviouslySelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
+	      this.props.rowSelection.onRowsDeselected([{ rowIdx: rowIdx, row: rowData }]);
+	    } else if (!isPreviouslySelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
+	      this.props.rowSelection.onRowsSelected([{ rowIdx: rowIdx, row: rowData }]);
+	    }
+	  },
 
 	  // columnKey not used here as this function will select the whole row,
 	  // but needed to match the function signature in the CheckboxEditor
 	  handleRowSelect: function handleRowSelect(rowIdx, columnKey, rowData, e) {
 	    e.stopPropagation();
-	    var selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
-	    var selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
-	    if (selectedRow) {
-	      selectedRow.isSelected = !selectedRow.isSelected;
+
+	    if (this.useNewRowSelection()) {
+	      if (this.props.rowSelection.enableShiftSelect === true) {
+	        if (!this.handleShiftSelect(rowIdx)) {
+	          this.handleNewRowSelect(rowIdx, rowData);
+	        }
+	      } else {
+	        this.handleNewRowSelect(rowIdx, rowData);
+	      }
 	    } else {
-	      rowData.isSelected = true;
-	      selectedRows.push(rowData);
-	    }
-	    this.setState({ selectedRows: selectedRows, selected: { rowIdx: rowIdx, idx: 0 } });
-	    if (this.props.onRowSelect) {
-	      this.props.onRowSelect(selectedRows.filter(function (r) {
-	        return r.isSelected === true;
-	      }));
+	      // Fallback to old onRowSelect handler
+	      var _selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
+	      var selectedRow = this.getSelectedRow(_selectedRows, rowData[this.props.rowKey]);
+	      if (selectedRow) {
+	        selectedRow.isSelected = !selectedRow.isSelected;
+	      } else {
+	        rowData.isSelected = true;
+	        _selectedRows.push(rowData);
+	      }
+	      this.setState({ selectedRows: _selectedRows, selected: { rowIdx: rowIdx, idx: 0 } });
+	      if (this.props.onRowSelect) {
+	        this.props.onRowSelect(_selectedRows.filter(function (r) {
+	          return r.isSelected === true;
+	        }));
+	      }
 	    }
 	  },
 
@@ -501,16 +604,50 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else {
 	      allRowsSelected = false;
 	    }
-	    var selectedRows = [];
-	    for (var i = 0; i < this.props.rowsCount; i++) {
-	      var row = Object.assign({}, this.props.rowGetter(i), { isSelected: allRowsSelected });
-	      selectedRows.push(row);
-	    }
-	    this.setState({ selectedRows: selectedRows });
-	    if (typeof this.props.onRowSelect === 'function') {
-	      this.props.onRowSelect(selectedRows.filter(function (r) {
-	        return r.isSelected === true;
-	      }));
+	    if (this.useNewRowSelection()) {
+	      var _props$rowSelection$s3 = this.props.rowSelection.selectBy;
+	      var keys = _props$rowSelection$s3.keys;
+	      var indexes = _props$rowSelection$s3.indexes;
+	      var isSelectedKey = _props$rowSelection$s3.isSelectedKey;
+
+
+	      if (allRowsSelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
+	        var _selectedRows2 = [];
+	        for (var i = 0; i < this.props.rowsCount; i++) {
+	          var rowData = this.props.rowGetter(i);
+	          if (!RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
+	            _selectedRows2.push({ rowIdx: i, row: rowData });
+	          }
+	        }
+
+	        if (_selectedRows2.length > 0) {
+	          this.props.rowSelection.onRowsSelected(_selectedRows2);
+	        }
+	      } else if (!allRowsSelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
+	        var deselectedRows = [];
+	        for (var _i2 = 0; _i2 < this.props.rowsCount; _i2++) {
+	          var _rowData = this.props.rowGetter(_i2);
+	          if (RowUtils.isRowSelected(keys, indexes, isSelectedKey, _rowData, _i2)) {
+	            deselectedRows.push({ rowIdx: _i2, row: _rowData });
+	          }
+	        }
+
+	        if (deselectedRows.length > 0) {
+	          this.props.rowSelection.onRowsDeselected(deselectedRows);
+	        }
+	      }
+	    } else {
+	      var _selectedRows3 = [];
+	      for (var _i3 = 0; _i3 < this.props.rowsCount; _i3++) {
+	        var row = Object.assign({}, this.props.rowGetter(_i3), { isSelected: allRowsSelected });
+	        _selectedRows3.push(row);
+	      }
+	      this.setState({ selectedRows: _selectedRows3 });
+	      if (typeof this.props.onRowSelect === 'function') {
+	        this.props.onRowSelect(_selectedRows3.filter(function (r) {
+	          return r.isSelected === true;
+	        }));
+	      }
 	    }
 	  },
 
@@ -543,7 +680,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return rows;
 	  },
 
-
 	  getInitialSelectedRows: function getInitialSelectedRows() {
 	    var selectedRows = [];
 	    for (var i = 0; i < this.props.rowsCount; i++) {
@@ -551,7 +687,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return selectedRows;
 	  },
+	  getRowSelectionProps: function getRowSelectionProps() {
+	    if (this.props.rowSelection) {
+	      return this.props.rowSelection.selectBy;
+	    }
 
+	    return null;
+	  },
+	  getSelectedRows: function getSelectedRows() {
+	    if (this.props.rowSelection) {
+	      return null;
+	    }
+
+	    return this.state.selectedRows.filter(function (r) {
+	      return r.isSelected === true;
+	    });
+	  },
 	  getSelectedValue: function getSelectedValue() {
 	    var rowIdx = this.state.selected.rowIdx;
 	    var idx = this.state.selected.idx;
@@ -676,7 +827,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var cols = props.columns.slice(0);
 	    var unshiftedCols = {};
-	    if (props.enableRowSelect) {
+	    if (props.enableRowSelect && !this.props.rowSelection || props.rowSelection && props.rowSelection.showCheckbox !== false) {
 	      var headerRenderer = props.enableRowSelect === 'single' ? null : React.createElement(
 	        'div',
 	        { className: 'react-grid-checkbox-container' },
@@ -767,9 +918,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          rowsCount: this.props.rowsCount,
 	          rowHeight: this.props.rowHeight,
 	          cellMetaData: cellMetaData,
-	          selectedRows: this.state.selectedRows.filter(function (r) {
-	            return r.isSelected === true;
-	          }),
+	          selectedRows: this.getSelectedRows(),
+	          rowSelection: this.getRowSelectionProps(),
 	          expandedRows: this.state.expandedRows,
 	          rowOffsetHeight: this.getRowOffsetHeight(),
 	          sortColumn: this.state.sortColumn,
@@ -778,6 +928,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          minHeight: this.props.minHeight,
 	          totalWidth: gridWidth,
 	          onViewportKeydown: this.onKeyDown,
+	          onViewportKeyup: this.onKeyUp,
 	          onViewportDragStart: this.onDragStart,
 	          onViewportDragEnd: this.handleDragEnd,
 	          onViewportDoubleClick: this.onViewportDoubleClick,
@@ -815,8 +966,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var PropTypes = React.PropTypes;
 	var Header = __webpack_require__(5);
 	var Viewport = __webpack_require__(21);
-	var GridScrollMixin = __webpack_require__(37);
-	var DOMMetrics = __webpack_require__(36);
+	var GridScrollMixin = __webpack_require__(38);
+	var DOMMetrics = __webpack_require__(37);
 	var cellMetaDataShape = __webpack_require__(33);
 
 	var Grid = React.createClass({
@@ -834,12 +985,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    emptyRowsView: PropTypes.func,
 	    expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	    selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
+	    rowSelection: React.PropTypes.shape({
+	      enableShiftSelect: React.PropTypes.bool,
+	      onRowsSelected: React.PropTypes.func,
+	      onRowsDeselected: React.PropTypes.func,
+	      showCheckbox: React.PropTypes.bool,
+	      selectBy: React.PropTypes.oneOfType([React.PropTypes.shape({
+	        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+	      }), React.PropTypes.shape({
+	        isSelectedKey: React.PropTypes.string.isRequired
+	      }), React.PropTypes.shape({
+	        keys: React.PropTypes.shape({
+	          values: React.PropTypes.array.isRequired,
+	          rowKey: React.PropTypes.string.isRequired
+	        }).isRequired
+	      })]).isRequired
+	    }),
 	    rowsCount: PropTypes.number,
 	    onRows: PropTypes.func,
 	    sortColumn: React.PropTypes.string,
 	    sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
 	    rowOffsetHeight: PropTypes.number.isRequired,
 	    onViewportKeydown: PropTypes.func.isRequired,
+	    onViewportKeyup: PropTypes.func,
 	    onViewportDragStart: PropTypes.func.isRequired,
 	    onViewportDragEnd: PropTypes.func.isRequired,
 	    onViewportDoubleClick: PropTypes.func.isRequired,
@@ -894,7 +1062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }),
 	      this.props.rowsCount >= 1 || this.props.rowsCount === 0 && !this.props.emptyRowsView ? React.createElement(
 	        'div',
-	        { ref: 'viewPortContainer', onKeyDown: this.props.onViewportKeydown, onDoubleClick: this.props.onViewportDoubleClick, onDragStart: this.props.onViewportDragStart, onDragEnd: this.props.onViewportDragEnd },
+	        { ref: 'viewPortContainer', tabIndex: '0', onKeyDown: this.props.onViewportKeydown, onKeyUp: this.props.onViewportKeyup, onDoubleClick: this.props.onViewportDoubleClick, onDragStart: this.props.onViewportDragStart, onDragEnd: this.props.onViewportDragEnd },
 	        React.createElement(Viewport, {
 	          ref: 'viewport',
 	          rowKey: this.props.rowKey,
@@ -914,6 +1082,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          minHeight: this.props.minHeight,
 	          rowScrollTimeout: this.props.rowScrollTimeout,
 	          contextMenu: this.props.contextMenu,
+	          rowSelection: this.props.rowSelection,
 	          getSubRowDetails: this.props.getSubRowDetails
 	        })
 	      ) : React.createElement(
@@ -2053,7 +2222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var Canvas = __webpack_require__(22);
-	var ViewportScroll = __webpack_require__(35);
+	var ViewportScroll = __webpack_require__(36);
 	var cellMetaDataShape = __webpack_require__(33);
 	var PropTypes = React.PropTypes;
 
@@ -2068,6 +2237,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    columnMetrics: PropTypes.object.isRequired,
 	    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
 	    selectedRows: PropTypes.array,
+	    rowSelection: React.PropTypes.shape({
+	      enableShiftSelect: React.PropTypes.bool,
+	      onRowsSelected: React.PropTypes.func,
+	      onRowsDeselected: React.PropTypes.func,
+	      showCheckbox: React.PropTypes.bool,
+	      selectBy: React.PropTypes.oneOfType([React.PropTypes.shape({
+	        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+	      }), React.PropTypes.shape({
+	        isSelectedKey: React.PropTypes.string.isRequired
+	      }), React.PropTypes.shape({
+	        keys: React.PropTypes.shape({
+	          values: React.PropTypes.array.isRequired,
+	          rowKey: React.PropTypes.string.isRequired
+	        }).isRequired
+	      })]).isRequired
+	    }),
 	    expandedRows: PropTypes.array,
 	    rowRenderer: PropTypes.func,
 	    rowsCount: PropTypes.number.isRequired,
@@ -2130,6 +2315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        onRows: this.props.onRows,
 	        rowScrollTimeout: this.props.rowScrollTimeout,
 	        contextMenu: this.props.contextMenu,
+	        rowSelection: this.props.rowSelection,
 	        getSubRowDetails: this.props.getSubRowDetails
 	      })
 	    );
@@ -2167,6 +2353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ScrollShim = __webpack_require__(25);
 	var Row = __webpack_require__(26);
 	var cellMetaDataShape = __webpack_require__(33);
+	var RowUtils = __webpack_require__(35);
 
 
 	var Canvas = React.createClass({
@@ -2195,7 +2382,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowKey: React.PropTypes.string,
 	    rowScrollTimeout: React.PropTypes.number,
 	    contextMenu: PropTypes.element,
-	    getSubRowDetails: PropTypes.func
+	    getSubRowDetails: PropTypes.func,
+	    rowSelection: React.PropTypes.oneOfType([React.PropTypes.shape({
+	      indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+	    }), React.PropTypes.shape({
+	      isSelectedKey: React.PropTypes.string.isRequired
+	    }), React.PropTypes.shape({
+	      keys: React.PropTypes.shape({
+	        values: React.PropTypes.array.isRequired,
+	        rowKey: React.PropTypes.string.isRequired
+	      }).isRequired
+	    })])
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -2350,14 +2547,29 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return { scrollTop: scrollTop, scrollLeft: scrollLeft };
 	  },
-	  isRowSelected: function isRowSelected(row) {
+	  isRowSelected: function isRowSelected(idx, row) {
 	    var _this3 = this;
 
-	    var selectedRows = this.props.selectedRows.filter(function (r) {
-	      var rowKeyValue = row.get ? row.get(_this3.props.rowKey) : row[_this3.props.rowKey];
-	      return r[_this3.props.rowKey] === rowKeyValue;
-	    });
-	    return selectedRows.length > 0 && selectedRows[0].isSelected;
+	    // Use selectedRows if set
+	    if (this.props.selectedRows !== null) {
+	      var selectedRows = this.props.selectedRows.filter(function (r) {
+	        var rowKeyValue = row.get ? row.get(_this3.props.rowKey) : row[_this3.props.rowKey];
+	        return r[_this3.props.rowKey] === rowKeyValue;
+	      });
+	      return selectedRows.length > 0 && selectedRows[0].isSelected;
+	    }
+
+	    // Else use new rowSelection props
+	    if (this.props.rowSelection) {
+	      var _props$rowSelection = this.props.rowSelection;
+	      var keys = _props$rowSelection.keys;
+	      var indexes = _props$rowSelection.indexes;
+	      var isSelectedKey = _props$rowSelection.isSelectedKey;
+
+	      return RowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
+	    }
+
+	    return false;
 	  },
 
 
@@ -2443,7 +2655,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        row: r.row,
 	        height: rowHeight,
 	        columns: _this4.props.columns,
-	        isSelected: _this4.isRowSelected(r.row),
+	        isSelected: _this4.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
 	        expandedRows: _this4.props.expandedRows,
 	        cellMetaData: _this4.props.cellMetaData,
 	        subRowDetails: r.subRowDetails
@@ -3065,7 +3277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    return this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.value !== nextProps.value || this.props.forceUpdate === true;
+	    return this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.value !== nextProps.value || this.props.forceUpdate === true || this.props.className !== nextProps.className;
 	  },
 	  onCellClick: function onCellClick(e) {
 	    var meta = this.props.cellMetaData;
@@ -3681,6 +3893,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var KeyboardHandlerMixin = {
+	  getInitialState: function getInitialState() {
+	    return { keysDown: {} };
+	  },
 	  onKeyDown: function onKeyDown(e) {
 	    if (this.isCtrlKeyHeldDown(e)) {
 	      this.checkAndCall('onPressKeyWithCtrl', e);
@@ -3692,6 +3907,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else if (this.isKeyPrintable(e.keyCode)) {
 	      this.checkAndCall('onPressChar', e);
 	    }
+
+	    // Track which keys are currently down for shift clicking etc
+	    var keysDown = this.state.keysDown || {};
+	    keysDown[e.keyCode] = true;
+	    this.setState({ keysDown: keysDown });
+
+	    if (this.props.onGridKeyDown && typeof this.props.onGridKeyDown === 'function') {
+	      this.props.onGridKeyDown(e);
+	    }
+	  },
+	  onKeyUp: function onKeyUp(e) {
+	    // Track which keys are currently down for shift clicking etc
+	    var keysDown = this.state.keysDown || {};
+	    delete keysDown[e.keyCode];
+	    this.setState({ keysDown: keysDown });
+
+	    if (this.props.onGridKeyUp && typeof this.props.onGridKeyUp === 'function') {
+	      this.props.onGridKeyUp(e);
+	    }
+	  },
+	  isKeyDown: function isKeyDown(keyCode) {
+	    if (!this.state.keysDown) return false;
+	    return keyCode in this.state.keysDown;
+	  },
+	  isSingleKeyDown: function isSingleKeyDown(keyCode) {
+	    if (!this.state.keysDown) return false;
+	    return keyCode in this.state.keysDown && Object.keys(this.state.keysDown).length === 1;
 	  },
 
 
@@ -3881,13 +4123,41 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 35 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var RowUtils = {
+	  get: function get(row, property) {
+	    if (typeof row.get === 'function') {
+	      return row.get(property);
+	    }
+
+	    return row[property];
+	  },
+	  isRowSelected: function isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx) {
+	    if (indexes && Object.prototype.toString.call(indexes) === '[object Array]') {
+	      return indexes.indexOf(rowIdx) > -1;
+	    } else if (keys && keys.rowKey && keys.values && Object.prototype.toString.call(keys.values) === '[object Array]') {
+	      return keys.values.indexOf(rowData[keys.rowKey]) > -1;
+	    } else if (isSelectedKey && rowData && typeof isSelectedKey === 'string') {
+	      return rowData[isSelectedKey];
+	    }
+	    return false;
+	  }
+	};
+
+	module.exports = RowUtils;
+
+/***/ },
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
-	var DOMMetrics = __webpack_require__(36);
+	var DOMMetrics = __webpack_require__(37);
 	var min = Math.min;
 	var max = Math.max;
 	var floor = Math.floor;
@@ -3916,12 +4186,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.getGridState(this.props);
 	  },
 	  getGridState: function getGridState(props) {
+	    var canvasHeight = props.minHeight - props.rowOffsetHeight;
 	    var renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
 	    var totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
 	    return {
 	      displayStart: 0,
 	      displayEnd: totalRowCount,
-	      height: props.minHeight,
+	      height: canvasHeight,
 	      scrollTop: 0,
 	      scrollLeft: 0
 	    };
@@ -3971,7 +4242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4127,7 +4398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4175,7 +4446,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4214,7 +4485,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = CheckboxEditor;
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4228,8 +4499,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var ColumnMetrics = __webpack_require__(8);
-	var DOMMetrics = __webpack_require__(36);
-	Object.assign = __webpack_require__(40);
+	var DOMMetrics = __webpack_require__(37);
+	Object.assign = __webpack_require__(41);
 	var PropTypes = __webpack_require__(2).PropTypes;
 	var ColumnUtils = __webpack_require__(10);
 
@@ -4329,7 +4600,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4361,22 +4632,110 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
-	var RowUtils = {
-	  get: function get(row, property) {
-	    if (typeof row.get === 'function') {
-	      return row.get(property);
-	    }
-
-	    return row[property];
-	  }
+	module.exports = {
+	  Backspace: 8,
+	  Tab: 9,
+	  Enter: 13,
+	  Shift: 16,
+	  Ctrl: 17,
+	  Alt: 18,
+	  PauseBreak: 19,
+	  CapsLock: 20,
+	  Escape: 27,
+	  PageUp: 33,
+	  PageDown: 34,
+	  End: 35,
+	  Home: 36,
+	  LeftArrow: 37,
+	  UpArrow: 38,
+	  RightArrow: 39,
+	  DownArrow: 40,
+	  Insert: 45,
+	  Delete: 46,
+	  0: 48,
+	  1: 49,
+	  2: 50,
+	  3: 51,
+	  4: 52,
+	  5: 53,
+	  6: 54,
+	  7: 55,
+	  8: 56,
+	  9: 57,
+	  a: 65,
+	  b: 66,
+	  c: 67,
+	  d: 68,
+	  e: 69,
+	  f: 70,
+	  g: 71,
+	  h: 72,
+	  i: 73,
+	  j: 74,
+	  k: 75,
+	  l: 76,
+	  m: 77,
+	  n: 78,
+	  o: 79,
+	  p: 80,
+	  q: 81,
+	  r: 82,
+	  s: 83,
+	  t: 84,
+	  u: 85,
+	  v: 86,
+	  w: 87,
+	  x: 88,
+	  y: 89,
+	  z: 90,
+	  LeftWindowKey: 91,
+	  RightWindowKey: 92,
+	  SelectKey: 93,
+	  NumPad0: 96,
+	  NumPad1: 97,
+	  NumPad2: 98,
+	  NumPad3: 99,
+	  NumPad4: 100,
+	  NumPad5: 101,
+	  NumPad6: 102,
+	  NumPad7: 103,
+	  NumPad8: 104,
+	  NumPad9: 105,
+	  Multiply: 106,
+	  Add: 107,
+	  Subtract: 109,
+	  DecimalPoint: 110,
+	  Divide: 111,
+	  F1: 112,
+	  F2: 113,
+	  F3: 114,
+	  F4: 115,
+	  F5: 116,
+	  F6: 117,
+	  F7: 118,
+	  F8: 119,
+	  F9: 120,
+	  F10: 121,
+	  F12: 123,
+	  NumLock: 144,
+	  ScrollLock: 145,
+	  SemiColon: 186,
+	  EqualSign: 187,
+	  Comma: 188,
+	  Dash: 189,
+	  Period: 190,
+	  ForwardSlash: 191,
+	  GraveAccent: 192,
+	  OpenBracket: 219,
+	  BackSlash: 220,
+	  CloseBracket: 221,
+	  SingleQuote: 222
 	};
-
-	module.exports = RowUtils;
 
 /***/ }
 /******/ ])

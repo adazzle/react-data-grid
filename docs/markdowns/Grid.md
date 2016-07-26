@@ -92,6 +92,11 @@ type: `func`
 type: `func`
 
 
+### `onViewportKeyup`
+
+type: `func`
+
+
 ### `rowGetter` (required)
 
 type: `union(array|func)`
@@ -121,6 +126,11 @@ type: `func`
 ### `rowScrollTimeout`
 
 type: `number`
+
+
+### `rowSelection`
+
+type: `shape[object Object]`
 
 
 ### `rowsCount`
