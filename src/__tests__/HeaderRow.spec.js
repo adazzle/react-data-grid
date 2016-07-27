@@ -86,7 +86,7 @@ describe('Header Row Unit Tests', () => {
         headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableAndFilterableColIdx].key} filterable={true} onFilterChange={() => {}}/>);
       });
 
-      xit('should provide column with a filterableHeaderRenderer', () => {
+      it('should provide column with a filterableHeaderRenderer', () => {
         let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
         expect(TestUtils.isElementOfType(headerCells[sortableAndFilterableColIdx].props.renderer, FilterableHeaderCellStub)).toBe(true);
       });

@@ -6,7 +6,7 @@ import {jQuery, $} from 'jquery';
 window.jQuery = jQuery;
 window.$ = $;
 
-ddescribe('NumericFilter', () => {
+describe('NumericFilter', () => {
   let component;
 
   describe('Basic tests', () => {

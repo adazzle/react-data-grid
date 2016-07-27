@@ -275,7 +275,9 @@ describe('Grid Integration', () => {
     it('should get row and column indexes from context menu', () => {
       grid.rightClickCell({cellIdx: fakeIdx, rowIdx: fakeRowIdx});
       let menuItem = grid.getContextMenuItem();
-      let idxs = menuItem.innerText.split(',');
+      // Using this alternative for firefox tests
+      let menuItemValue = menuItem.innerText !== undefined ? menuItem.innerText : menuItem.textContent;
+      let idxs = menuItemValue.split(',');
       expect(fakeRowIdx).toEqual(parseInt(idxs[0], 10));
       expect(fakeIdx).toEqual(parseInt(idxs[1], 10));
     });

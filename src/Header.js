@@ -81,6 +81,7 @@ const Header = React.createClass({
     }
     let headerRows = [];
     this.props.headerRows.forEach((row, index) => {
+      // To allow header filters to be visible
       let rowHeight = 'auto';
       if (row.rowType === 'filter') {
         rowHeight = '500px';

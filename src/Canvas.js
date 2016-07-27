@@ -317,20 +317,18 @@ const Canvas = React.createClass({
     let length = this.props.rowsCount;
 
     let rows = this.getRows(displayStart, displayEnd)
-        .map((r, idx) => {
-          return this.renderRow({
-            key: displayStart + idx,
-            ref: idx,
-            idx: displayStart + idx,
-            row: r.row,
-            height: rowHeight,
-            columns: this.props.columns,
-            isSelected: this.isRowSelected(r.row),
-            expandedRows: this.props.expandedRows,
-            cellMetaData: this.props.cellMetaData,
-            subRowDetails: r.subRowDetails
-          });
-        });
+        .map((r, idx) => this.renderRow({
+          key: displayStart + idx,
+          ref: idx,
+          idx: displayStart + idx,
+          row: r.row,
+          height: rowHeight,
+          columns: this.props.columns,
+          isSelected: this.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
+          expandedRows: this.props.expandedRows,
+          cellMetaData: this.props.cellMetaData,
+          subRowDetails: r.subRowDetails
+        }));
 
     this._currentRowsLength = rows.length;
 
