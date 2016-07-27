@@ -137,6 +137,10 @@
         "modifiers": [],
         "params": [
           {
+            "name": "idx",
+            "type": null
+          },
+          {
             "name": "row",
             "type": null
           }
@@ -413,6 +417,55 @@
       "getSubRowDetails": {
         "type": {
           "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowSelection": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "shape",
+              "value": {
+                "indexes": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "number"
+                  },
+                  "required": true
+                }
+              }
+            },
+            {
+              "name": "shape",
+              "value": {
+                "isSelectedKey": {
+                  "name": "string",
+                  "required": true
+                }
+              }
+            },
+            {
+              "name": "shape",
+              "value": {
+                "keys": {
+                  "name": "shape",
+                  "value": {
+                    "values": {
+                      "name": "array",
+                      "required": true
+                    },
+                    "rowKey": {
+                      "name": "string",
+                      "required": true
+                    }
+                  },
+                  "required": true
+                }
+              }
+            }
+          ]
         },
         "required": false,
         "description": ""
@@ -1344,6 +1397,77 @@
         "required": false,
         "description": ""
       },
+      "rowSelection": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "enableShiftSelect": {
+              "name": "bool",
+              "required": false
+            },
+            "onRowsSelected": {
+              "name": "func",
+              "required": false
+            },
+            "onRowsDeselected": {
+              "name": "func",
+              "required": false
+            },
+            "showCheckbox": {
+              "name": "bool",
+              "required": false
+            },
+            "selectBy": {
+              "name": "union",
+              "value": [
+                {
+                  "name": "shape",
+                  "value": {
+                    "indexes": {
+                      "name": "arrayOf",
+                      "value": {
+                        "name": "number"
+                      },
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "isSelectedKey": {
+                      "name": "string",
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "keys": {
+                      "name": "shape",
+                      "value": {
+                        "values": {
+                          "name": "array",
+                          "required": true
+                        },
+                        "rowKey": {
+                          "name": "string",
+                          "required": true
+                        }
+                      },
+                      "required": true
+                    }
+                  }
+                }
+              ],
+              "required": true
+            }
+          }
+        },
+        "required": false,
+        "description": ""
+      },
       "rowsCount": {
         "type": {
           "name": "number"
@@ -1398,6 +1522,13 @@
           "name": "func"
         },
         "required": true,
+        "description": ""
+      },
+      "onViewportKeyup": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
         "description": ""
       },
       "onViewportDragStart": {
@@ -2925,6 +3056,41 @@
         "returns": null
       },
       {
+        "name": "useNewRowSelection",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleShiftSelect",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "rowIdx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleNewRowSelect",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "rowIdx",
+            "type": null
+          },
+          {
+            "name": "rowData",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "handleRowSelect",
         "docblock": null,
         "modifiers": [],
@@ -3027,6 +3193,20 @@
       },
       {
         "name": "getInitialSelectedRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getRowSelectionProps",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getSelectedRows",
         "docblock": null,
         "modifiers": [],
         "params": [],
@@ -3503,6 +3683,98 @@
         "description": ""
       },
       "draggableHeaderCell": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowSelection": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "enableShiftSelect": {
+              "name": "bool",
+              "required": false
+            },
+            "onRowsSelected": {
+              "name": "func",
+              "required": false
+            },
+            "onRowsDeselected": {
+              "name": "func",
+              "required": false
+            },
+            "showCheckbox": {
+              "name": "bool",
+              "required": false
+            },
+            "selectBy": {
+              "name": "union",
+              "value": [
+                {
+                  "name": "shape",
+                  "value": {
+                    "indexes": {
+                      "name": "arrayOf",
+                      "value": {
+                        "name": "number"
+                      },
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "isSelectedKey": {
+                      "name": "string",
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "keys": {
+                      "name": "shape",
+                      "value": {
+                        "values": {
+                          "name": "array",
+                          "required": true
+                        },
+                        "rowKey": {
+                          "name": "string",
+                          "required": true
+                        }
+                      },
+                      "required": true
+                    }
+                  }
+                }
+              ],
+              "required": true
+            }
+          }
+        },
+        "required": false,
+        "description": ""
+      },
+      "onRowClick": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onGridKeyUp": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onGridKeyDown": {
         "type": {
           "name": "func"
         },
@@ -4066,6 +4338,77 @@
       "selectedRows": {
         "type": {
           "name": "array"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowSelection": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "enableShiftSelect": {
+              "name": "bool",
+              "required": false
+            },
+            "onRowsSelected": {
+              "name": "func",
+              "required": false
+            },
+            "onRowsDeselected": {
+              "name": "func",
+              "required": false
+            },
+            "showCheckbox": {
+              "name": "bool",
+              "required": false
+            },
+            "selectBy": {
+              "name": "union",
+              "value": [
+                {
+                  "name": "shape",
+                  "value": {
+                    "indexes": {
+                      "name": "arrayOf",
+                      "value": {
+                        "name": "number"
+                      },
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "isSelectedKey": {
+                      "name": "string",
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "keys": {
+                      "name": "shape",
+                      "value": {
+                        "values": {
+                          "name": "array",
+                          "required": true
+                        },
+                        "rowKey": {
+                          "name": "string",
+                          "required": true
+                        }
+                      },
+                      "required": true
+                    }
+                  }
+                }
+              ],
+              "required": true
+            }
+          }
         },
         "required": false,
         "description": ""
