@@ -5,6 +5,7 @@ const PropTypes       = React.PropTypes;
 const ScrollShim      = require('./ScrollShim');
 const Row             = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+const RowUtils        = require('./RowUtils');
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
@@ -36,7 +37,21 @@ const Canvas = React.createClass({
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
     contextMenu: PropTypes.element,
-    getSubRowDetails: PropTypes.func
+    getSubRowDetails: PropTypes.func,
+    rowSelection: React.PropTypes.oneOfType([
+      React.PropTypes.shape({
+        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+      }),
+      React.PropTypes.shape({
+        isSelectedKey: React.PropTypes.string.isRequired
+      }),
+      React.PropTypes.shape({
+        keys: React.PropTypes.shape({
+          values: React.PropTypes.array.isRequired,
+          rowKey: React.PropTypes.string.isRequired
+        }).isRequired
+      })
+    ])
   },
 
   getDefaultProps() {
@@ -207,12 +222,23 @@ const Canvas = React.createClass({
     return {scrollTop, scrollLeft};
   },
 
-  isRowSelected(row): boolean {
-    let selectedRows = this.props.selectedRows.filter(r => {
-      let rowKeyValue = row.get ? row.get(this.props.rowKey) : row[this.props.rowKey];
-      return r[this.props.rowKey] === rowKeyValue;
-    });
-    return selectedRows.length > 0 && selectedRows[0].isSelected;
+  isRowSelected(idx, row): boolean {
+    // Use selectedRows if set
+    if (this.props.selectedRows !== null) {
+      let selectedRows = this.props.selectedRows.filter(r => {
+        let rowKeyValue = row.get ? row.get(this.props.rowKey) : row[this.props.rowKey];
+        return r[this.props.rowKey] === rowKeyValue;
+      });
+      return selectedRows.length > 0 && selectedRows[0].isSelected;
+    }
+
+    // Else use new rowSelection props
+    if (this.props.rowSelection) {
+      let {keys, indexes, isSelectedKey} = this.props.rowSelection;
+      return RowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
+    }
+
+    return false;
   },
 
   _currentRowsLength: 0,
@@ -298,7 +324,7 @@ const Canvas = React.createClass({
           row: r.row,
           height: rowHeight,
           columns: this.props.columns,
-          isSelected: this.isRowSelected(r.row),
+          isSelected: this.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
           expandedRows: this.props.expandedRows,
           cellMetaData: this.props.cellMetaData,
           subRowDetails: r.subRowDetails

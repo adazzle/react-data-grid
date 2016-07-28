@@ -82,6 +82,13 @@ describe('Grid', function() {
       this.getBaseGrid().props.onViewportKeydown(fakeEvent);
     };
 
+    this.simulateGridKeyDownWithKeyCode = (keyCode) => {
+      let fakeEvent = this.buildFakeEvent({
+        keyCode: keyCode
+      });
+      this.getBaseGrid().props.onViewportKeydown(fakeEvent);
+    };
+
     let buildProps = (addedProps) => Object.assign({}, this.testProps, addedProps);
     this.createComponent = (addedProps) => {
       return TestUtils.renderIntoDocument(<Grid {...buildProps(addedProps)}/>);
@@ -149,7 +156,7 @@ describe('Grid', function() {
 
   describe('When row selection enabled', function() {
     beforeEach(function() {
-      this.component = this.createComponent({ enableRowSelect: true });
+      this.component = this.createComponent({ enableRowSelect: true});
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -359,6 +366,7 @@ describe('Grid', function() {
           expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 0 });
         });
       });
+
       describe('when row selection enabled and positionned on cell before last in row', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
@@ -402,6 +410,142 @@ describe('Grid', function() {
       });
     });
   });
+
+  describe('When selection enabled and using rowSelection props', function() {
+    beforeEach(function() {
+      let self = this;
+      this._selectedRows = [];
+      this._deselectedRows = [];
+      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}, {id: '3', isSelected: false}, {id: '4', isSelected: false}];
+      let columns = [{name: 'Id', key: 'id'}];
+      let rowGetter = function(i) {
+        return self.rows[i];
+      };
+      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {enableShiftSelect: true, selectBy: {isSelectedKey: 'isSelected'},
+        onRowsSelected: function(selectedRows) {
+          self._selectedRows = selectedRows;
+        },
+        onRowsDeselected: function(deselectedRows) {
+          self._deselectedRows = deselectedRows;
+        }
+      }});
+      this.baseGrid = this.getBaseGrid();
+      this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+    });
+
+    it('should call rowSelection.onRowsSelected when row selected', function() {
+      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      expect(this._selectedRows.length).toBe(1);
+      expect(this._selectedRows[0].rowIdx).toBe(1);
+      expect(this._selectedRows[0].row).toBe(this.rows[1]);
+    });
+
+    it('should call rowSelection.onRowsDeselected when row de-selected', function() {
+      this.selectRowCol.onCellChange(0, '',  this.rows[0], this.buildFakeEvent());
+      expect(this._deselectedRows.length).toBe(1);
+      expect(this._deselectedRows[0].rowIdx).toBe(0);
+      expect(this._deselectedRows[0].row).toBe(this.rows[0]);
+    });
+
+
+    it('should set lastRowIdxUiSelected state', function() {
+      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      expect(this.component.state.lastRowIdxUiSelected).toEqual(1);
+    });
+
+
+    it('should select range when shift selecting below selected row', function() {
+      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      expect(this._selectedRows.length).toEqual(1);
+      this.simulateGridKeyDownWithKeyCode(16);
+      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
+      expect(this._selectedRows.length).toEqual(2);
+    });
+
+
+    it('should select range when shift selecting above selected row', function() {
+      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
+      expect(this._selectedRows.length).toEqual(1);
+      this.simulateGridKeyDownWithKeyCode(16);
+      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      expect(this._selectedRows.length).toEqual(2);
+    });
+
+
+    describe('checking header checkbox', function() {
+      beforeEach(function() {
+        let self = this;
+        this._selectedRows = [];
+        this._deselectedRows = [];
+        this.rows = [{id: '1'}, {id: '2'}];
+        let columns = [{name: 'Id', key: 'id'}];
+        let rowGetter = function(i) {
+          return self.rows[i];
+        };
+        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: []},
+          onRowsSelected: function(selectedRows) {
+            self._selectedRows = selectedRows;
+          },
+          onRowsDeselected: function(deselectedRows) {
+            self._deselectedRows = deselectedRows;
+          }
+        }});
+
+        this.baseGrid = this.getBaseGrid();
+        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+
+        // header checkbox
+        let checkboxWrapper = document.createElement('div');
+        checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
+        this.checkbox = checkboxWrapper.querySelector('input');
+        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
+        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
+        this.headerCheckbox.props.onChange(this.fakeEvent);
+      });
+
+      it('should call rowSelection.onRowsSelected with all rows', function() {
+        expect(this._selectedRows.length).toBe(2);
+      });
+    });
+
+    describe('un-checking header checkbox', function() {
+      beforeEach(function() {
+        let self = this;
+        this._selectedRows = [];
+        this._deselectedRows = [];
+        this.rows = [{id: '1'}, {id: '2'}];
+        let columns = [{name: 'Id', key: 'id'}];
+        let rowGetter = function(i) {
+          return self.rows[i];
+        };
+        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: [0, 1]},
+          onRowsSelected: function(selectedRows) {
+            self._selectedRows = selectedRows;
+          },
+          onRowsDeselected: function(deselectedRows) {
+            self._deselectedRows = deselectedRows;
+          }
+        }});
+
+        this.baseGrid = this.getBaseGrid();
+        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+
+        // header checkbox
+        let checkboxWrapper = document.createElement('div');
+        checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
+        this.checkbox = checkboxWrapper.querySelector('input');
+        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
+      });
+
+      it('then unchecking should call rowSelection.onRowsDeselected with all rows', function() {
+        this.checkbox.checked = false;
+        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
+        this.headerCheckbox.props.onChange(this.fakeEvent);
+        expect(this._deselectedRows.length).toBe(2);
+      });
+    });
+  });
+
   describe('User Interaction', function() {
     it('hitting TAB should decrement selected cell index by 1', function() {
       this.simulateGridKeyDown('Tab');
@@ -847,6 +991,31 @@ describe('Grid', function() {
       it('should set the width of the table', function() {
         expect(this.tableElement.style.width).toEqual('900px');
       });
+    });
+  });
+
+  describe('onRowClick handler', function() {
+    beforeEach(function() {
+      let self = this;
+      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
+      let columns = [{name: 'Id', key: 'id'}];
+      let rowGetter = function(i) {
+        return self.rows[i];
+      };
+
+      this.rowClicked = {};
+      this.rowClicks = 0;
+
+      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row) {
+        self.rowClicked = row;
+        self.rowClicks++;
+      }});
+    });
+
+    it('calls handler when row (cell) clicked', function() {
+      this.getCellMetaData().onCellClick({ idx: 0, rowIdx: 1 });
+      expect(this.rowClicks).toBe(1);
+      expect(this.rowClicked).toBe(this.rows[1]);
     });
   });
 });

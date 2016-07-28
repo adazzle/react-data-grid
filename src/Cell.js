@@ -81,6 +81,7 @@ const Cell = React.createClass({
     || this.isSelected()
     || this.props.value !== nextProps.value
     || this.props.forceUpdate === true
+    || this.props.className !== nextProps.className
     || this.hasChangedDependentValues(nextProps);
   },
 
