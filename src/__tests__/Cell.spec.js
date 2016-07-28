@@ -5,6 +5,39 @@ let Cell         = rewire('../Cell');
 let TestUtils    = require('react-addons-test-utils');
 let rewireModule = require('../../test/rewireModule');
 let StubComponent = require('../../test/StubComponent');
+Object.assign = require('object-assign');
+
+let testCellMetaData = {
+  selected: {idx: 2, rowIdx: 3},
+  dragged: null,
+  onCellClick: function() {},
+  onCellContextMenu: function() {},
+  onCellDoubleClick: function() {},
+  onCommit: function() {},
+  onCommitCancel: function() {},
+  copied: null,
+  handleDragEnterRow: function() {},
+  handleTerminateDrag: function() {},
+  onColumnEvent: function() {}
+};
+
+let testProps = {
+  rowIdx: 0,
+  idx: 1,
+  tabIndex: 1,
+  column: {},
+  value: 'Wicklow',
+  isExpanded: false,
+  cellMetaData: testCellMetaData,
+  handleDragStart: () => {},
+  rowData: {name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Absolutely'},
+  height: 40,
+  name: 'JT'
+};
+
+const renderCell = (extraProps) => {
+  return TestUtils.renderIntoDocument(<Cell {...testProps} {...extraProps} />);
+};
 
 describe('Cell Tests', () => {
   let testElement;
@@ -18,36 +51,8 @@ describe('Cell Tests', () => {
     SimpleCellFormatter: SimpleCellFormatterStub
   });
 
-  let testCellMetaData = {
-    selected: {idx: 2, rowIdx: 3},
-    dragged: null,
-    onCellClick: function() {},
-    onCellContextMenu: function() {},
-    onCellDoubleClick: function() {},
-    onCommit: function() {},
-    onCommitCancel: function() {},
-    copied: null,
-    handleDragEnterRow: function() {},
-    handleTerminateDrag: function() {},
-    onColumnEvent: function() {}
-  };
-
-  let testProps = {
-    rowIdx: 0,
-    idx: 1,
-    tabIndex: 1,
-    column: {},
-    value: 'Wicklow',
-    isExpanded: false,
-    cellMetaData: testCellMetaData,
-    handleDragStart: () => {},
-    rowData: {name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Absolutely'},
-    height: 40,
-    name: 'JT'
-  };
-
   beforeEach(() => {
-    testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+    testElement = renderCell();
   });
 
   it('should create a new instance of Cell', () => {
@@ -63,10 +68,44 @@ describe('Cell Tests', () => {
   it('should render a custom formatter when specified on column', () => {
     let CustomFormatter = new StubComponent('CustomFormatter');
     testProps.column.formatter = CustomFormatter;
-    testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+    testElement = renderCell();
     let formatterInstance = TestUtils.findRenderedComponentWithType(testElement, CustomFormatter);
     expect(testElement).toBeDefined();
     expect(formatterInstance.props.value).toEqual('Wicklow');
+  });
+
+  describe('hasChangedDependentValues tests', () => {
+    describe('when column getRowMetaData is not defined', () => {
+      it('should return false', () => {
+        testElement = renderCell();
+        expect(testElement.hasChangedDependentValues()).toBe(false);
+      });
+    });
+
+    describe('when column getRowMetaData is defined', () => {
+      const getRowMetaData = rowData => rowData;
+      let columnWithGetRowMetaData = { column: { getRowMetaData }};
+      let propsWithColumnGetRowMetaData = Object.assign({}, testProps, columnWithGetRowMetaData);
+
+      beforeEach(() => {
+        testElement = renderCell(columnWithGetRowMetaData);
+      });
+
+      it('should return false when the dependentValues are equal', () => {
+        let nextProps = propsWithColumnGetRowMetaData;
+
+        expect(testElement.hasChangedDependentValues(nextProps)).toBe(false);
+      });
+
+      it('should return true when the dependentValues are different', () => {
+        let nextProps = Object.assign(
+          {},
+          propsWithColumnGetRowMetaData,
+          { rowData: { name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Every Day!' }});
+
+        expect(testElement.hasChangedDependentValues(nextProps)).toBe(true);
+      });
+    });
   });
 
   describe('When cell is active', () => {
@@ -76,11 +115,11 @@ describe('Cell Tests', () => {
         rowIdx: testProps.rowIdx,
         active: true
       };
-      testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+      testElement = renderCell();
     });
 
     it('should render an EditorContainer instead of a formatter', () => {
-      testElement = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+      testElement = renderCell();
       let editorContainerInstance = TestUtils.findRenderedComponentWithType(testElement, EditorContainerStub);
       expect(editorContainerInstance).toBeDefined();
       let props = {
@@ -106,7 +145,7 @@ describe('Cell Tests', () => {
     it('should append the update cell class to the dom node if present and cell is updated', () => {
       let updateClass = 'highlight-cell';
       testProps.column.getUpdateCellClass = () => updateClass;
-      let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+      let cellInstance = renderCell();
       // force update
       let newValue = 'London';
       cellInstance.setProps({value: newValue, selectedColumn: testProps.column});
@@ -118,7 +157,7 @@ describe('Cell Tests', () => {
       let cellEvents;
 
       beforeEach(() => {
-        let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps}/>);
+        let cellInstance = renderCell();
         cellEvents = cellInstance.getEvents();
       });
 
@@ -139,7 +178,7 @@ describe('Cell Tests', () => {
           it('should call metaData onCellClick when it is defined', () => {
             // Arrange
             testCellMetaData.onCellClick = jasmine.createSpy();
-            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+            let cellInstance = renderCell();
 
             // Act
             cellInstance.onCellClick();
@@ -150,7 +189,7 @@ describe('Cell Tests', () => {
 
           it('should call metaData onDragHandleDoubleClick when it is defined', () => {
             testCellMetaData.onDragHandleDoubleClick = jasmine.createSpy();
-            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+            let cellInstance = renderCell();
 
             cellInstance.onDragHandleDoubleClick(document.createEvent('Event'));
 
@@ -159,7 +198,7 @@ describe('Cell Tests', () => {
 
           it('should call metaData onCellContextMenu if defined', () => {
             testCellMetaData.onCellContextMenu = jasmine.createSpy();
-            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+            let cellInstance = renderCell();
 
             cellInstance.onCellContextMenu();
 
@@ -168,7 +207,7 @@ describe('Cell Tests', () => {
 
           it('should call metaData onCellDoubleClick if defined', () => {
             testCellMetaData.onCellDoubleClick = jasmine.createSpy();
-            let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+            let cellInstance = renderCell();
 
             cellInstance.onCellDoubleClick();
 
@@ -189,7 +228,7 @@ describe('Cell Tests', () => {
           onDragOver: () => {}
         };
 
-        let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+        let cellInstance = renderCell();
         cellEvents = cellInstance.getEvents();
       });
 
@@ -209,7 +248,7 @@ describe('Cell Tests', () => {
 
       it('should support cell and column events at the same time', () => {
         // Arrange.
-        let cellInstance = TestUtils.renderIntoDocument(<Cell {...testProps} />);
+        let cellInstance = renderCell();
         cellInstance.createCellEventCallBack = jasmine.createSpy();
 
         // Act.
