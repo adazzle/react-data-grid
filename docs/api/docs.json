@@ -610,7 +610,12 @@
         "name": "getRowData",
         "docblock": null,
         "modifiers": [],
-        "params": [],
+        "params": [
+          {
+            "name": "props",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
@@ -736,6 +741,18 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
+        "returns": null
+      },
+      {
+        "name": "hasChangedDependentValues",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "nextProps",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
