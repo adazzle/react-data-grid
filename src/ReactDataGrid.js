@@ -332,7 +332,8 @@ const ReactDataGrid = React.createClass({
     }
 
     if (this.props.onGridRowsUpdated) {
-      this.onGridRowsUpdated(this.getColumn(e.idx).key, e.rowIdx, this.props.rowsCount - 1, {[cellKey]: e.rowData[cellKey]}, 'columnFill');
+      let cellKey = this.getColumn(e.idx).key;
+      this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, {[cellKey]: e.rowData[cellKey]}, 'columnFill');
     }
   },
 
