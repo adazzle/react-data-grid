@@ -10,6 +10,7 @@ const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
+import AppConstants from './AppConstants';
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
@@ -294,7 +295,7 @@ const ReactDataGrid = React.createClass({
         fromRow: targetRow,
         toRow: targetRow,
         updated: commit.updated,
-        action: 'cellUpdate'});
+        action: AppConstants.UpdateActions.CELL_UPDATE});
     }
   },
 
@@ -338,7 +339,7 @@ const ReactDataGrid = React.createClass({
         fromRow: e.rowIdx,
         toRow: this.props.rowsCount - 1,
         updated: updated,
-        action: 'columnFill'});
+        action: AppConstants.UpdateActions.COLUMN_FILL});
     }
   },
 
@@ -390,7 +391,7 @@ const ReactDataGrid = React.createClass({
         fromRow: fromRow,
         toRow: toRow,
         updated: updated,
-        action: 'cellDrag'});
+        action: AppConstants.UpdateActions.CELL_DRAG});
     }
     this.setState({dragged: {complete: true}});
   },
@@ -428,7 +429,7 @@ const ReactDataGrid = React.createClass({
         fromRow: toRow,
         toRow: toRow,
         updated: updated,
-        action: 'copyPaste'});
+        action: AppConstants.UpdateActions.COPY_PASTE});
     }
 
     this.setState({copied: null});
