@@ -14,16 +14,18 @@ const Toolbar = React.createClass({
     }
   },
 
-  getDefaultProps(): {enableAddRow: boolean} {
+  getDefaultProps(): {enableAddRow: boolean, addRowButtonText: String, filterRowsButtonText: String} {
     return {
-      enableAddRow: true
+      enableAddRow: true,
+      addRowButtonText: "Add Row",
+      filterRowsButtonText: "Filter Rows"
     };
   },
 
   renderAddRowButton(): ReactElement {
     if (this.props.onAddRow ) {
       return (<button type="button" className="btn" onClick={this.onAddRow}>
-        Add Row
+        {this.props.addRowButtonText}
       </button>);
     }
   },
@@ -31,7 +33,7 @@ const Toolbar = React.createClass({
   renderToggleFilterButton(): ReactElement {
     if (this.props.enableFilter) {
       return (<button type="button" className="btn" onClick={this.props.onToggleFilter}>
-      Filter Rows
+      {this.props.filterRowsButtonText}
     </button>);
     }
   },
