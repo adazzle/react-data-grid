@@ -3,11 +3,14 @@ const filterRows = (filters, rows = []) => {
     let include = true;
     for (let columnKey in filters) {
       if (filters.hasOwnProperty(columnKey)) {
-        if (!r[columnKey]) {
+        let colFilter = filters[columnKey];
+        // check if custom filter function exists
+        if (colFilter.filterValues && typeof colFilter.filterValues === 'function' && !colFilter.filterValues(r, colFilter, columnKey)) {
           include = false;
-        } else {
+        } else if (typeof colFilter.filterTerm === 'string') {
+          // default filter action
           let rowValue = r[columnKey].toString().toLowerCase();
-          if (rowValue.indexOf(filters[columnKey].toLowerCase()) === -1) {
+          if (rowValue.indexOf(colFilter.filterTerm.toLowerCase()) === -1) {
             include = false;
           }
         }
