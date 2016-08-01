@@ -45,6 +45,9 @@ const onCellClick = jasmine.createSpy();
 const onDragHandleDoubleClick = jasmine.createSpy();
 const onCellContextMenu = jasmine.createSpy();
 const onCellDoubleClick = jasmine.createSpy();
+const DEFAULT_NEXT_PROPS = {
+  cellMetaData: { }
+};
 
 const getCellMetaDataWithEvents = () => {
   return Object.assign(
@@ -98,10 +101,6 @@ describe('Cell Tests', () => {
   });
 
   describe('isDraggedCellChanging tests', () => {
-    let DEFAULT_NEXT_PROPS = {
-      cellMetaData: { }
-    };
-
     it('should be false if no cell was dragged', () => {
       testElement = renderComponent({
         cellMetaData: {
@@ -193,6 +192,94 @@ describe('Cell Tests', () => {
 
         expect(testElement.node.hasChangedDependentValues(nextProps)).toBeTruthy();
       });
+    });
+  });
+
+  describe('isCellSelectionChanging tests', () => {
+    const getSelectedCellMetadata = (selected) => {
+      return {
+        cellMetaData: {
+          selected
+        }
+      };
+    };
+
+    it('should be true if no cell is selected', () => {
+      testElement = renderComponent(getSelectedCellMetadata(undefined));
+
+      expect(testElement.node.isCellSelectionChanging(DEFAULT_NEXT_PROPS)).toBeTruthy();
+    });
+
+    it('should be false if no cell will be selected', () => {
+      testElement = renderComponent(getSelectedCellMetadata({ idx: testProps.idx }));
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, getSelectedCellMetadata(undefined));
+
+      expect(testElement.node.isCellSelectionChanging(nextProps)).toBeTruthy();
+    });
+
+    it('should be true when the next selected cell is the current cell', () => {
+      testElement = renderComponent(getSelectedCellMetadata({ idx: testProps.idx + 1 }));
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, getSelectedCellMetadata({ idx: testProps.idx }));
+
+      expect(testElement.node.isCellSelectionChanging(nextProps)).toBeTruthy();
+    });
+
+    it('should be true when the current cell is selected', () => {
+      testElement = renderComponent(getSelectedCellMetadata({ idx: testProps.idx }));
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, getSelectedCellMetadata({ idx: testProps.idx }));
+
+      expect(testElement.node.isCellSelectionChanging(nextProps)).toBeTruthy();
+    });
+
+    it('should be false when current cell is not selected and is not going to be selected', () => {
+      testElement = renderComponent(getSelectedCellMetadata({ idx: testProps.idx + 1}));
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, getSelectedCellMetadata({ idx: testProps.idx - 1}));
+
+      expect(testElement.node.isCellSelectionChanging(nextProps)).toBeFalsy();
+    });
+  });
+
+  describe('isCopyCellChanging tests', () => {
+    const getCopiedCellMetadata = (copied) => {
+      return {
+        cellMetaData: {
+          copied
+        }
+      };
+    };
+
+    it('should be false if there is no copied cell', () => {
+      testElement = renderComponent(getCopiedCellMetadata(undefined));
+
+      expect(testElement.node.isCopyCellChanging(DEFAULT_NEXT_PROPS)).toBeFalsy();
+    });
+
+    it('should be true if the next copied cell is the current cell', () => {
+      testElement = renderComponent(getCopiedCellMetadata({ idx: testProps.idx + 1}));
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, getCopiedCellMetadata({ idx: testProps.idx }));
+
+      expect(testElement.node.isCopyCellChanging(nextProps)).toBeTruthy();
+    });
+
+    it('should be true if the current cell is copied', () => {
+      testElement = renderComponent(getCopiedCellMetadata({ idx: testProps.idx }));
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, getCopiedCellMetadata({ idx: testProps.idx + 1}));
+
+      expect(testElement.node.isCopyCellChanging(nextProps)).toBeTruthy();
+    });
+
+    it('should be false if the current cell is not copied and is not about to be copied', () => {
+      testElement = renderComponent(getCopiedCellMetadata({ idx: testProps.idx + 1}));
+
+      let nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, getCopiedCellMetadata({ idx: testProps.idx + 1}));
+
+      expect(testElement.node.isCopyCellChanging(nextProps)).toBeFalsy();
     });
   });
 
