@@ -19,12 +19,33 @@ const Grid = React.createClass({
     emptyRowsView: PropTypes.func,
     expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
+    rowSelection: React.PropTypes.shape({
+      enableShiftSelect: React.PropTypes.bool,
+      onRowsSelected: React.PropTypes.func,
+      onRowsDeselected: React.PropTypes.func,
+      showCheckbox: React.PropTypes.bool,
+      selectBy: React.PropTypes.oneOfType([
+        React.PropTypes.shape({
+          indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+        }),
+        React.PropTypes.shape({
+          isSelectedKey: React.PropTypes.string.isRequired
+        }),
+        React.PropTypes.shape({
+          keys: React.PropTypes.shape({
+            values: React.PropTypes.array.isRequired,
+            rowKey: React.PropTypes.string.isRequired
+          }).isRequired
+        })
+      ]).isRequired
+    }),
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
     sortColumn: React.PropTypes.string,
     sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,
+    onViewportKeyup: PropTypes.func,
     onViewportDragStart: PropTypes.func.isRequired,
     onViewportDragEnd: PropTypes.func.isRequired,
     onViewportDoubleClick: PropTypes.func.isRequired,
@@ -79,7 +100,7 @@ const Grid = React.createClass({
           onScroll={this.onHeaderScroll}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
-            <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+            <div ref="viewPortContainer" tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
                   ref="viewport"
                   rowKey={this.props.rowKey}
@@ -99,6 +120,7 @@ const Grid = React.createClass({
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
                   contextMenu={this.props.contextMenu}
+                  rowSelection={this.props.rowSelection}
                   getSubRowDetails={this.props.getSubRowDetails}
                 />
             </div>

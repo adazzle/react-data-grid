@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 const React             = require('react');
 const ReactDOM = require('react-dom');
 const joinClasses       = require('classnames');
@@ -79,7 +80,9 @@ const Cell = React.createClass({
     || this.props.isRowSelected !== nextProps.isRowSelected
     || this.isSelected()
     || this.props.value !== nextProps.value
-    || this.props.forceUpdate === true;
+    || this.props.forceUpdate === true
+    || this.props.className !== nextProps.className
+    || this.hasChangedDependentValues(nextProps);
   },
 
   onCellClick(e) {
@@ -148,8 +151,8 @@ const Cell = React.createClass({
     return this.props.column.formatter;
   },
 
-  getRowData() {
-    return this.props.rowData.toJSON ? this.props.rowData.toJSON() : this.props.rowData;
+  getRowData(props = this.props) {
+    return props.rowData.toJSON ? props.rowData.toJSON() : props.rowData;
   },
 
   getFormatterDependencies() {
@@ -227,6 +230,21 @@ const Cell = React.createClass({
     let meta = this.props.cellMetaData;
     if (meta == null) { return false; }
     return meta.enableCellSelect;
+  },
+
+  hasChangedDependentValues(nextProps) {
+    let currentColumn = this.props.column;
+    let hasChangedDependentValues = false;
+
+    if (currentColumn.getRowMetaData) {
+      let currentRowMetaData = currentColumn.getRowMetaData(this.getRowData(), currentColumn);
+      let nextColumn = nextProps.column;
+      let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
+
+      hasChangedDependentValues = !isEqual(currentRowMetaData, nextRowMetaData);
+    }
+
+    return hasChangedDependentValues;
   },
 
   applyUpdateClass() {

@@ -76,6 +76,11 @@ type: `func`
 type: `number`
 
 
+### `rowSelection`
+
+type: `shape[object Object]`
+
+
 ### `rowsCount` (required)
 
 type: `number`

@@ -163,6 +163,39 @@ describe('Cell Tests', () => {
     });
   });
 
+  describe('hasChangedDependentValues tests', () => {
+    describe('when column getRowMetaData is not defined', () => {
+      it('should return false', () => {
+        expect(testElement.node.hasChangedDependentValues()).toBeFalsy();
+      });
+    });
+
+    describe('when column getRowMetaData is defined', () => {
+      const getRowMetaData = rowData => rowData;
+      let columnWithGetRowMetaData = { column: { getRowMetaData }};
+      let propsWithColumnGetRowMetaData = Object.assign({}, testProps, columnWithGetRowMetaData);
+
+      beforeEach(() => {
+        testElement = renderComponent(columnWithGetRowMetaData);
+      });
+
+      it('should return false when the dependentValues are equal', () => {
+        let nextProps = propsWithColumnGetRowMetaData;
+
+        expect(testElement.node.hasChangedDependentValues(nextProps)).toBeFalsy();
+      });
+
+      it('should return true when the dependentValues are different', () => {
+        let nextProps = Object.assign(
+          {},
+          propsWithColumnGetRowMetaData,
+          { rowData: { name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Every Day!' }});
+
+        expect(testElement.node.hasChangedDependentValues(nextProps)).toBeTruthy();
+      });
+    });
+  });
+
   describe('When cell is active', () => {
     const ACTIVE_CELL_METADATA_PROPS = Object.assign(
       { },

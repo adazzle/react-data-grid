@@ -52,7 +52,12 @@ build: off
 #  - '%AppData%\npm-cache -> package.json'
 
 on_success:
+# If it is not a scheduled build/pr build and the current branch is master publish a new package.
+# If it is not build on master publish npm tag.
 - ps: >-
     if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
       ./ci/publish/publishMaster.ps1
+    }
+    if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
+      ./ci/publish/publishBranch.ps1
     }
