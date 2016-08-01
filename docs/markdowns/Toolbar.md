@@ -30,3 +30,10 @@ type: `func`
 
 type: `func`
 
+### `addRowButtonText`
+
+defaultValue: `"Add Row"`
+
+### `filterRowsButtonText`
+
+defaultValue: `"Filter Rows"`
