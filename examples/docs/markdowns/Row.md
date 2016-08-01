@@ -54,11 +54,6 @@ type: `bool`
 defaultValue: `false`
 
 
-### `key`
-
-type: `string`
-
-
 ### `row` (required)
 
 type: `any`

@@ -6,6 +6,11 @@
 Props
 -----
 
+### `addRowButtonText`
+
+defaultValue: `"Add Row"`
+
+
 ### `enableAddRow`
 
 defaultValue: `true`
@@ -14,6 +19,11 @@ defaultValue: `true`
 ### `enableFilter`
 
 type: `bool`
+
+
+### `filterRowsButtonText`
+
+defaultValue: `"Filter Rows"`
 
 
 ### `numberOfRows`
@@ -30,10 +40,3 @@ type: `func`
 
 type: `func`
 
-### `addRowButtonText`
-
-defaultValue: `"Add Row"`
-
-### `filterRowsButtonText`
-
-defaultValue: `"Filter Rows"`

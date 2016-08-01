@@ -4064,13 +4064,6 @@
         "required": true,
         "description": ""
       },
-      "key": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
       "expandedRows": {
         "type": {
           "name": "arrayOf",
@@ -5991,6 +5984,18 @@
       "enableAddRow": {
         "defaultValue": {
           "value": "true",
+          "computed": false
+        }
+      },
+      "addRowButtonText": {
+        "defaultValue": {
+          "value": "\"Add Row\"",
+          "computed": false
+        }
+      },
+      "filterRowsButtonText": {
+        "defaultValue": {
+          "value": "\"Filter Rows\"",
           "computed": false
         }
       }
