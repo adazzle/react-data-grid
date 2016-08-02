@@ -16,6 +16,11 @@ type: `shape[object Object]`
 type: `func`
 
 
+### `getValidFilterValues`
+
+type: `func`
+
+
 ### `headerRows` (required)
 
 type: `array`

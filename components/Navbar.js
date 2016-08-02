@@ -14,7 +14,7 @@ class Navbar extends React.Component {
           </div>
           <div className="navbar-collapse collapse">
             <ul className="nav navbar-nav pull-right">
-              <li className="active"><a href="index.html#">Home</a></li>
+              <li className="active"><a href="index.html">Home</a></li>
               <li className="dropdown">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">Documentation <b className="caret"></b></a>
                 <ul className="dropdown-menu">
@@ -25,7 +25,7 @@ class Navbar extends React.Component {
               </li>
 
               <li className="dropdown">
-                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>  
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
                 <ExampleList links={this.props.exampleLinks} className="dropdown-menu" />
               </li>
             </ul>

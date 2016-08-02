@@ -133,6 +133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    enableDragAndDrop: React.PropTypes.bool,
 	    onRowExpandToggle: React.PropTypes.func,
 	    draggableHeaderCell: React.PropTypes.func,
+	    getValidFilterValues: React.PropTypes.func,
 	    rowSelection: React.PropTypes.shape({
 	      enableShiftSelect: React.PropTypes.bool,
 	      onRowsSelected: React.PropTypes.func,
@@ -311,6 +312,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  },
+	  onGridRowsUpdated: function onGridRowsUpdated(cellKey, fromRow, toRow, updated, action) {
+	    var rowIds = [];
+
+	    for (var i = fromRow; i <= toRow; i++) {
+	      rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
+	    }
+
+	    this.props.onGridRowsUpdated({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, rowIds: rowIds, updated: updated, action: action });
+	  },
 	  onCellCommit: function onCellCommit(commit) {
 	    var selected = Object.assign({}, this.state.selected);
 	    selected.active = false;
@@ -330,12 +340,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var targetRow = commit.rowIdx;
 
 	    if (this.props.onGridRowsUpdated) {
-	      this.props.onGridRowsUpdated({
-	        cellKey: commit.cellKey,
-	        fromRow: targetRow,
-	        toRow: targetRow,
-	        updated: commit.updated,
-	        action: _AppConstants2['default'].UpdateActions.CELL_UPDATE });
+	      this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, _AppConstants2['default'].UpdateActions.CELL_UPDATE);
 	    }
 	  },
 	  onDragStart: function onDragStart(e) {
@@ -367,18 +372,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (this.props.onGridRowsUpdated) {
-	      var _updated;
+	      var _onGridRowsUpdated;
 
 	      var cellKey = this.getColumn(e.idx).key;
-
-	      var updated = (_updated = {}, _updated[cellKey] = e.rowData[cellKey], _updated);
-
-	      this.props.onGridRowsUpdated({
-	        cellKey: cellKey,
-	        fromRow: e.rowIdx,
-	        toRow: this.props.rowsCount - 1,
-	        updated: updated,
-	        action: _AppConstants2['default'].UpdateActions.COLUMN_FILL });
+	      this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, (_onGridRowsUpdated = {}, _onGridRowsUpdated[cellKey] = e.rowData[cellKey], _onGridRowsUpdated), _AppConstants2['default'].UpdateActions.COLUMN_FILL);
 	    }
 	  },
 	  onCellExpand: function onCellExpand(args) {
@@ -415,18 +412,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.props.onCellsDragged) {
 	      this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
 	    }
+
 	    if (this.props.onGridRowsUpdated) {
-	      var _updated2;
+	      var _onGridRowsUpdated2;
 
-	      var updated = (_updated2 = {}, _updated2[cellKey] = dragged.value, _updated2);
-
-	      this.props.onGridRowsUpdated({
-	        cellKey: cellKey,
-	        fromRow: fromRow,
-	        toRow: toRow,
-	        updated: updated,
-	        action: _AppConstants2['default'].UpdateActions.CELL_DRAG });
+	      this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated2 = {}, _onGridRowsUpdated2[cellKey] = dragged.value, _onGridRowsUpdated2), _AppConstants2['default'].UpdateActions.CELL_DRAG);
 	    }
+
 	    this.setState({ dragged: { complete: true } });
 	  },
 	  handleDragEnter: function handleDragEnter(row) {
@@ -457,16 +449,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (this.props.onGridRowsUpdated) {
-	      var _updated3;
+	      var _onGridRowsUpdated3;
 
-	      var updated = (_updated3 = {}, _updated3[cellKey] = textToCopy, _updated3);
-
-	      this.props.onGridRowsUpdated({
-	        cellKey: cellKey,
-	        fromRow: toRow,
-	        toRow: toRow,
-	        updated: updated,
-	        action: _AppConstants2['default'].UpdateActions.COPY_PASTE });
+	      this.onGridRowsUpdated(cellKey, toRow, toRow, (_onGridRowsUpdated3 = {}, _onGridRowsUpdated3[cellKey] = textToCopy, _onGridRowsUpdated3), _AppConstants2['default'].UpdateActions.COPY_PASTE);
 	    }
 
 	    this.setState({ copied: null });
@@ -1158,7 +1143,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowScrollTimeout: PropTypes.number,
 	    contextMenu: PropTypes.element,
 	    getSubRowDetails: PropTypes.func,
-	    draggableHeaderCell: PropTypes.func
+	    draggableHeaderCell: PropTypes.func,
+	    getValidFilterValues: PropTypes.func
 	  },
 
 	  mixins: [GridScrollMixin, DOMMetrics.MetricsComputatorMixin],
@@ -1198,7 +1184,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        sortDirection: this.props.sortDirection,
 	        draggableHeaderCell: this.props.draggableHeaderCell,
 	        onSort: this.props.onSort,
-	        onScroll: this.onHeaderScroll
+	        onScroll: this.onHeaderScroll,
+	        getValidFilterValues: this.props.getValidFilterValues
 	      }),
 	      this.props.rowsCount >= 1 || this.props.rowsCount === 0 && !this.props.emptyRowsView ? React.createElement(
 	        'div',
@@ -1266,7 +1253,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onSort: PropTypes.func,
 	    onColumnResize: PropTypes.func,
 	    onScroll: PropTypes.func,
-	    draggableHeaderCell: PropTypes.func
+	    draggableHeaderCell: PropTypes.func,
+	    getValidFilterValues: PropTypes.func
 	  },
 
 	  getInitialState: function getInitialState() {
@@ -1318,12 +1306,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var headerRows = [];
 	    this.props.headerRows.forEach(function (row, index) {
+	      // To allow header filters to be visible
+	      var rowHeight = 'auto';
+	      if (row.rowType === 'filter') {
+	        rowHeight = '500px';
+	      }
 	      var headerRowStyle = {
 	        position: 'absolute',
 	        top: _this.getCombinedHeaderHeights(index),
 	        left: 0,
 	        width: _this.props.totalWidth,
-	        overflow: 'hidden'
+	        overflowX: 'hidden',
+	        minHeight: rowHeight
 	      };
 
 	      headerRows.push(React.createElement(HeaderRow, {
@@ -1343,7 +1337,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        sortColumn: _this.props.sortColumn,
 	        sortDirection: _this.props.sortDirection,
 	        onSort: _this.props.onSort,
-	        onScroll: _this.props.onScroll
+	        onScroll: _this.props.onScroll,
+	        getValidFilterValues: _this.props.getValidFilterValues
 	      }));
 	    });
 	    return headerRows;
@@ -1382,8 +1377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getStyle: function getStyle() {
 	    return {
 	      position: 'relative',
-	      height: this.getCombinedHeaderHeights(),
-	      overflow: 'hidden'
+	      height: this.getCombinedHeaderHeights()
 	    };
 	  },
 	  setScrollLeft: function setScrollLeft(scrollLeft) {
@@ -1809,8 +1803,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return HeaderCellType.NONE;
 	  },
-	  getFilterableHeaderCell: function getFilterableHeaderCell() {
-	    return React.createElement(FilterableHeaderCell, { onChange: this.props.onFilterChange });
+	  getFilterableHeaderCell: function getFilterableHeaderCell(column) {
+	    var FilterRenderer = FilterableHeaderCell;
+	    if (column.filterRenderer !== undefined) {
+	      FilterRenderer = column.filterRenderer;
+	    }
+	    return React.createElement(FilterRenderer, _extends({}, this.props, { onChange: this.props.onFilterChange }));
 	  },
 	  getSortableHeaderCell: function getSortableHeaderCell(column) {
 	    var sortDirection = this.props.sortColumn === column.key ? this.props.sortDirection : DEFINE_SORT.NONE;
@@ -1827,7 +1825,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          renderer = this.getSortableHeaderCell(column);
 	          break;
 	        case HeaderCellType.FILTERABLE:
-	          renderer = this.getFilterableHeaderCell();
+	          renderer = this.getFilterableHeaderCell(column);
 	          break;
 	        default:
 	          break;
@@ -2039,7 +2037,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      left: this.props.column.left,
 	      display: 'inline-block',
 	      position: 'absolute',
-	      overflow: 'hidden',
 	      height: this.props.height,
 	      margin: 0,
 	      textOverflow: 'ellipsis',
@@ -2311,7 +2308,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  handleChange: function handleChange(e) {
 	    var val = e.target.value;
 	    this.setState({ filterTerm: val });
-	    this.props.onChange({ filterTerm: val, columnKey: this.props.column.key });
+	    this.props.onChange({ filterTerm: val, column: this.props.column });
 	  },
 
 
