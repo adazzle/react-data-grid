@@ -12,6 +12,8 @@
 - [Viewport](/docs/markdowns/Viewport.md)
 - [FilterableHeaderCell](/docs/markdowns/FilterableHeaderCell.md)
 - [SortableHeaderCell](/docs/markdowns/SortableHeaderCell.md)
+- [AutoCompleteFilter](/docs/markdowns/AutoCompleteFilter.md)
+- [NumericFilter](/docs/markdowns/NumericFilter.md)
 - [AutoCompleteEditor](/docs/markdowns/AutoCompleteEditor.md)
 - [AutoCompleteTokensEditor](/docs/markdowns/AutoCompleteTokensEditor.md)
 - [CheckboxEditor](/docs/markdowns/CheckboxEditor.md)

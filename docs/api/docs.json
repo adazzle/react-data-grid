@@ -1625,6 +1625,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -1923,6 +1930,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -2176,7 +2190,12 @@
         "name": "getFilterableHeaderCell",
         "docblock": null,
         "modifiers": [],
-        "params": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
@@ -2814,6 +2833,34 @@
               "name": "SyntheticKeyboardEvent",
               "alias": "SyntheticKeyboardEvent"
             }
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onGridRowsUpdated",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "cellKey",
+            "type": null
+          },
+          {
+            "name": "fromRow",
+            "type": null
+          },
+          {
+            "name": "toRow",
+            "type": null
+          },
+          {
+            "name": "updated",
+            "type": null
+          },
+          {
+            "name": "action",
+            "type": null
           }
         ],
         "returns": null
@@ -3700,6 +3747,13 @@
         "description": ""
       },
       "draggableHeaderCell": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "getValidFilterValues": {
         "type": {
           "name": "func"
         },
@@ -4622,6 +4676,164 @@
               "computed": false
             }
           ]
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\cells\\headerCells\\filters\\AutoCompleteFilter.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "getOptions",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "newProps",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "filterValues",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "row",
+            "type": null
+          },
+          {
+            "name": "columnFilter",
+            "type": null
+          },
+          {
+            "name": "columnKey",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleChange",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "value",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "onChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "column": {
+        "type": {
+          "name": "shape",
+          "value": "unknown"
+        },
+        "required": false,
+        "description": ""
+      },
+      "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\cells\\headerCells\\filters\\NumericFilter.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "attachTooltip",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "filterValues",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "row",
+            "type": null
+          },
+          {
+            "name": "columnFilter",
+            "type": null
+          },
+          {
+            "name": "columnKey",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getRules",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "value",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleKeyPress",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleChange",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "onChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "column": {
+        "type": {
+          "name": "shape",
+          "value": "unknown"
         },
         "required": false,
         "description": ""

@@ -46,6 +46,11 @@ type: `union(array|func)`
 type: `func`
 
 
+### `getValidFilterValues`
+
+type: `func`
+
+
 ### `headerRows`
 
 type: `union(array|func)`
