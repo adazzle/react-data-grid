@@ -119,7 +119,7 @@ var Example = React.createClass({
         onGridSort={this.handleGridSort}
         columns={columns}
         rowGetter={this.rowGetter}
-        rowsCount={this.state.rows.length}
+        rowsCount={this.getSize()}
         minHeight={500}
         onRowUpdated={this.handleRowUpdated}
         toolbar={<Toolbar enableFilter={true}/>}

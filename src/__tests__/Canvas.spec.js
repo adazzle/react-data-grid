@@ -55,7 +55,7 @@ describe('Canvas Tests', () => {
     describe('selectBy index', () => {
       it('renders row selected', () => {
         let columns = [{key: 'id', name: 'ID'}];
-        let rowGetter = () => { return {'id': 1}; };
+        let rowGetter = () => { return {id: 1}; };
 
         let props = Object.assign({}, testProps, {displayStart: 0, displayEnd: 1, columns, rowGetter, rowsCount: 1, rowSelection: {indexes: [0]}});
         testElement = TestUtils.renderIntoDocument(<Canvas {...props}/>);
@@ -69,7 +69,7 @@ describe('Canvas Tests', () => {
     describe('selectBy keys', () => {
       it('renders row selected', () => {
         let columns = [{key: 'id', name: 'ID'}];
-        let rowGetter = () => { return {'id': 1}; };
+        let rowGetter = () => { return {id: 1}; };
 
         let props = Object.assign({}, testProps, {displayStart: 0, displayEnd: 1, columns, rowGetter, rowsCount: 1, rowSelection: {keys: {rowKey: 'id', values: [1]}}});
         testElement = TestUtils.renderIntoDocument(<Canvas {...props}/>);
@@ -84,7 +84,7 @@ describe('Canvas Tests', () => {
     describe('selectBy `isSelectedKey`', () => {
       it('renders row selected', () => {
         let columns = [{key: 'id', name: 'ID'}];
-        let rowGetter = (i) => { return i === 0 ? {'id': 1, 'isSelected': true} : null; };
+        let rowGetter = (i) => { return i === 0 ? {id: 1, isSelected: true} : null; };
 
         let props = Object.assign({}, testProps, {displayStart: 0, displayEnd: 1, columns, rowGetter, rowsCount: 1, rowSelection: {isSelectedKey: 'isSelected'}});
         testElement = TestUtils.renderIntoDocument(<Canvas {...props}/>);
