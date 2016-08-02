@@ -9312,18 +9312,20 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(3);
 
 	var Toolbar = React.createClass({
-	  displayName: "Toolbar",
+	  displayName: 'Toolbar',
 
 	  propTypes: {
 	    onAddRow: React.PropTypes.func,
 	    onToggleFilter: React.PropTypes.func,
 	    enableFilter: React.PropTypes.bool,
-	    numberOfRows: React.PropTypes.number
+	    numberOfRows: React.PropTypes.number,
+	    addRowButtonText: React.PropTypes.string,
+	    filterRowsButtonText: React.PropTypes.string
 	  },
 
 	  onAddRow: function onAddRow() {
@@ -9334,15 +9336,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      enableAddRow: true,
-	      addRowButtonText: "Add Row",
-	      filterRowsButtonText: "Filter Rows"
+	      addRowButtonText: 'Add Row',
+	      filterRowsButtonText: 'Filter Rows'
 	    };
 	  },
 	  renderAddRowButton: function renderAddRowButton() {
 	    if (this.props.onAddRow) {
 	      return React.createElement(
-	        "button",
-	        { type: "button", className: "btn", onClick: this.onAddRow },
+	        'button',
+	        { type: 'button', className: 'btn', onClick: this.onAddRow },
 	        this.props.addRowButtonText
 	      );
 	    }
@@ -9350,19 +9352,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderToggleFilterButton: function renderToggleFilterButton() {
 	    if (this.props.enableFilter) {
 	      return React.createElement(
-	        "button",
-	        { type: "button", className: "btn", onClick: this.props.onToggleFilter },
+	        'button',
+	        { type: 'button', className: 'btn', onClick: this.props.onToggleFilter },
 	        this.props.filterRowsButtonText
 	      );
 	    }
 	  },
 	  render: function render() {
 	    return React.createElement(
-	      "div",
-	      { className: "react-grid-Toolbar" },
+	      'div',
+	      { className: 'react-grid-Toolbar' },
 	      React.createElement(
-	        "div",
-	        { className: "tools" },
+	        'div',
+	        { className: 'tools' },
 	        this.renderAddRowButton(),
 	        this.renderToggleFilterButton()
 	      )
