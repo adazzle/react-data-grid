@@ -741,30 +741,30 @@ const ReactDataGrid = React.createClass({
     let canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
     if (canvas) {
       let left = 0;
+      let locked = 0;
+
       for (let i = 0; i < colIdx; i++) {
-        let column = this.props.columns[i];
-        if (column && column.width) {
-          left += column.width;
+        let column = this.getColumn(i);
+        if (column) {
+          if (column.width) {
+            left += column.width;
+          }
+          if (column.locked) {
+            locked += column.width;
+          }
         }
       }
 
-      let selectedColumn = this.props.columns[colIdx];
+      let selectedColumn = this.getColumn(colIdx);
       if (selectedColumn) {
-        let padding = selectedColumn.width / 2;
-        let currentScroll = canvas.scrollLeft;
-        let canvasWidth = canvas.clientWidth;
-        let center =  canvasWidth / 2.0;
-        let scrollLeft = left - center;
-        let actualScrollToCenter = scrollLeft - currentScroll;
+        let scrollLeft = left - locked - canvas.scrollLeft;
+        let scrollRight =  left + selectedColumn.width - canvas.scrollLeft;
 
-        if (actualScrollToCenter > 0) {
-          actualScrollToCenter = actualScrollToCenter + padding;
-        } else if (actualScrollToCenter < 0) {
-          actualScrollToCenter = actualScrollToCenter - padding;
-        }
-
-        if (Math.abs(actualScrollToCenter) > center) {
-          canvas.scrollLeft = scrollLeft;
+        if (scrollLeft < 0) {
+          canvas.scrollLeft += scrollLeft;
+        } else if (scrollRight > canvas.clientWidth) {
+          let scrollAmount =  scrollRight - canvas.clientWidth;
+          canvas.scrollLeft += scrollAmount;
         }
       }
     }
