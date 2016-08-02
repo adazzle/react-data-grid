@@ -195,9 +195,6 @@ const Canvas = React.createClass({
     let i = displayStart;
     while (i < displayEnd) {
       let row = this.props.rowGetter(rowFetchIndex);
-      if (row === undefined) {
-        break;
-      }
       if (this.props.getSubRowDetails) {
         let treeDepth = 0;
         let result = this.addSubRows(rows, row, i, displayEnd, treeDepth);
