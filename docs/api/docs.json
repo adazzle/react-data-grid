@@ -6146,22 +6146,14 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement"
-          }
-        }
+        "returns": null
       },
       {
         "name": "renderToggleFilterButton",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement"
-          }
-        }
+        "returns": null
       }
     ],
     "props": {
@@ -6193,21 +6185,31 @@
         "required": false,
         "description": ""
       },
-      "enableAddRow": {
-        "defaultValue": {
-          "value": "true",
-          "computed": false
-        }
-      },
       "addRowButtonText": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
         "defaultValue": {
-          "value": "\"Add Row\"",
+          "value": "'Add Row'",
           "computed": false
         }
       },
       "filterRowsButtonText": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
         "defaultValue": {
-          "value": "\"Filter Rows\"",
+          "value": "'Filter Rows'",
+          "computed": false
+        }
+      },
+      "enableAddRow": {
+        "defaultValue": {
+          "value": "true",
           "computed": false
         }
       }

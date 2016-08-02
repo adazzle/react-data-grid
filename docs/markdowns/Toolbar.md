@@ -8,7 +8,8 @@ Props
 
 ### `addRowButtonText`
 
-defaultValue: `"Add Row"`
+type: `string`
+defaultValue: `'Add Row'`
 
 
 ### `enableAddRow`
@@ -23,7 +24,8 @@ type: `bool`
 
 ### `filterRowsButtonText`
 
-defaultValue: `"Filter Rows"`
+type: `string`
+defaultValue: `'Filter Rows'`
 
 
 ### `numberOfRows`
