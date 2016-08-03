@@ -130,6 +130,13 @@
 	color : white;
 }
 
+.navbar a:hover {
+	color : #111;
+}
+
+.nav .open a {
+  color: #111;
+}
 
 /* Autohide navbar */
 .slideUp {

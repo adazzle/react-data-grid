@@ -37,11 +37,18 @@ function selectPerRow(rows, options) {
 
 function executeSpyTests(fn) {
   describe('When filters are defined', () => {
-    let options = { filters: { title: '1' } };
+    let options = { filters: { title: { filterTerm: '1' } } };
 
     it('should call filterRows the correct number of times', () => {
       let expectedComputations = fn(options);
       expect(filterSpy.callCount).toBe(expectedComputations);
+    });
+
+    it('should have filterTerm in every filter object', () => {
+      let filters = options.filters;
+      for (let i = 0; i < filters.length; i++) {
+        expect(filter.filterTerm).toBeDefined();
+      }
     });
   });
 
@@ -173,14 +180,14 @@ describe('Grid Selectors', () => {
     });
 
     it('can filter on a single column', () => {
-      let filters = { title: '1' };
+      let filters = { title: { filterTerm: '1' } };
       let computedRows = Selectors.getRows({ rows, filters });
       expect(computedRows.length).toBe(1);
       expect(computedRows[0].title).toBe('Title 1');
     });
 
     it('can filter on multiple columns', () => {
-      let filters = { title: 'title', count: '2000' };
+      let filters = { title: { filterTerm: 'title' }, count: { filterTerm: '2000' } };
       let computedRows = Selectors.getRows({ rows, filters });
       expect(computedRows.length).toBe(1);
       expect(computedRows[0].count).toBe(2000);
@@ -210,7 +217,7 @@ describe('Grid Selectors', () => {
     });
 
     it('can filter and then group by column', () => {
-      let filters = { title: '1' };
+      let filters = { title: { filterTerm: '1' } };
       let groupBy = ['title'];
       let computedRows = Selectors.getRows({ rows, filters, groupBy });
       expect(computedRows.length).toBe(2);

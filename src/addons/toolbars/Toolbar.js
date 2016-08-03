@@ -5,7 +5,9 @@ const Toolbar = React.createClass({
     onAddRow: React.PropTypes.func,
     onToggleFilter: React.PropTypes.func,
     enableFilter: React.PropTypes.bool,
-    numberOfRows: React.PropTypes.number
+    numberOfRows: React.PropTypes.number,
+    addRowButtonText: React.PropTypes.string,
+    filterRowsButtonText: React.PropTypes.string
   },
 
   onAddRow() {
@@ -14,29 +16,31 @@ const Toolbar = React.createClass({
     }
   },
 
-  getDefaultProps(): {enableAddRow: boolean} {
+  getDefaultProps() {
     return {
-      enableAddRow: true
+      enableAddRow: true,
+      addRowButtonText: 'Add Row',
+      filterRowsButtonText: 'Filter Rows'
     };
   },
 
-  renderAddRowButton(): ReactElement {
+  renderAddRowButton() {
     if (this.props.onAddRow ) {
       return (<button type="button" className="btn" onClick={this.onAddRow}>
-        Add Row
+        {this.props.addRowButtonText}
       </button>);
     }
   },
 
-  renderToggleFilterButton(): ReactElement {
+  renderToggleFilterButton() {
     if (this.props.enableFilter) {
       return (<button type="button" className="btn" onClick={this.props.onToggleFilter}>
-      Filter Rows
+      {this.props.filterRowsButtonText}
     </button>);
     }
   },
 
-  render(): ?ReactElement {
+  render() {
     return (
       <div className="react-grid-Toolbar">
         <div className="tools">

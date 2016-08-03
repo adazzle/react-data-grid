@@ -10,6 +10,7 @@ const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
+import AppConstants from './AppConstants';
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
@@ -77,6 +78,7 @@ const ReactDataGrid = React.createClass({
     enableDragAndDrop: React.PropTypes.bool,
     onRowExpandToggle: React.PropTypes.func,
     draggableHeaderCell: React.PropTypes.func,
+    getValidFilterValues: React.PropTypes.func,
     rowSelection: React.PropTypes.shape({
       enableShiftSelect: React.PropTypes.bool,
       onRowsSelected: React.PropTypes.func,
@@ -270,6 +272,16 @@ const ReactDataGrid = React.createClass({
     }
   },
 
+  onGridRowsUpdated(cellKey, fromRow, toRow, updated, action) {
+    let rowIds = [];
+
+    for (let i = fromRow; i <= toRow; i++) {
+      rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
+    }
+
+    this.props.onGridRowsUpdated({cellKey, fromRow, toRow, rowIds, updated, action});
+  },
+
   onCellCommit(commit: RowUpdateEvent) {
     let selected = Object.assign({}, this.state.selected);
     selected.active = false;
@@ -289,12 +301,7 @@ const ReactDataGrid = React.createClass({
     let targetRow = commit.rowIdx;
 
     if (this.props.onGridRowsUpdated) {
-      this.props.onGridRowsUpdated({
-        cellKey: commit.cellKey,
-        fromRow: targetRow,
-        toRow: targetRow,
-        updated: commit.updated,
-        action: 'cellUpdate'});
+      this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
     }
   },
 
@@ -328,17 +335,7 @@ const ReactDataGrid = React.createClass({
 
     if (this.props.onGridRowsUpdated) {
       let cellKey = this.getColumn(e.idx).key;
-
-      let updated = {
-        [cellKey]: e.rowData[cellKey]
-      };
-
-      this.props.onGridRowsUpdated({
-        cellKey: cellKey,
-        fromRow: e.rowIdx,
-        toRow: this.props.rowsCount - 1,
-        updated: updated,
-        action: 'columnFill'});
+      this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, {[cellKey]: e.rowData[cellKey]}, AppConstants.UpdateActions.COLUMN_FILL);
     }
   },
 
@@ -380,18 +377,11 @@ const ReactDataGrid = React.createClass({
     if (this.props.onCellsDragged) {
       this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
     }
-    if (this.props.onGridRowsUpdated) {
-      let updated = {
-        [cellKey]: dragged.value
-      };
 
-      this.props.onGridRowsUpdated({
-        cellKey: cellKey,
-        fromRow: fromRow,
-        toRow: toRow,
-        updated: updated,
-        action: 'cellDrag'});
+    if (this.props.onGridRowsUpdated) {
+      this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
     }
+
     this.setState({dragged: {complete: true}});
   },
 
@@ -419,16 +409,7 @@ const ReactDataGrid = React.createClass({
     }
 
     if (this.props.onGridRowsUpdated) {
-      let updated = {
-        [cellKey]: textToCopy
-      };
-
-      this.props.onGridRowsUpdated({
-        cellKey: cellKey,
-        fromRow: toRow,
-        toRow: toRow,
-        updated: updated,
-        action: 'copyPaste'});
+      this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE);
     }
 
     this.setState({copied: null});

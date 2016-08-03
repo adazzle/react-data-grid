@@ -106,9 +106,9 @@ var Example = React.createClass({
   handleFilterChange : function(filter){
     let newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
-      newFilters[filter.columnKey] = filter.filterTerm;
+      newFilters[filter.column.key] = filter;
     } else {
-     delete newFilters[filter.columnKey];
+     delete newFilters[filter.column.key];
     }
     this.setState({filters: newFilters});
   },
@@ -119,7 +119,7 @@ var Example = React.createClass({
         onGridSort={this.handleGridSort}
         columns={columns}
         rowGetter={this.rowGetter}
-        rowsCount={this.state.rows.length}
+        rowsCount={this.getSize()}
         minHeight={500}
         onRowUpdated={this.handleRowUpdated}
         toolbar={<Toolbar enableFilter={true}/>}

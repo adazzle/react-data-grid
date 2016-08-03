@@ -310,7 +310,7 @@ const Canvas = React.createClass({
     );
   },
 
-  render(): ?ReactElement {
+  render() {
     let displayStart = this.state.displayStart;
     let displayEnd = this.state.displayEnd;
     let rowHeight = this.props.rowHeight;

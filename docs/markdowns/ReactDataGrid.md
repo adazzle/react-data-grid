@@ -44,6 +44,11 @@ type: `union(bool|string)`
 defaultValue: `false`
 
 
+### `getValidFilterValues`
+
+type: `func`
+
+
 ### `headerRowHeight`
 
 type: `number`
