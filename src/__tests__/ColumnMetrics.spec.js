@@ -1,11 +1,21 @@
+import getScrollbarSize from '../getScrollbarSize';
+import GridPropHelpers from './GridPropHelpers';
 const rewire = require('rewire');
 const ColumnMetrics = rewire('../ColumnMetrics');
 const Immutable = window.Immutable = require('immutable');
 Object.assign = require('object-assign');
 
+const getAvailableWidthPerColumn = (totalWidth, consumedWidth, numberOfcolumns) => {
+  let availableWidth = totalWidth - getScrollbarSize() - consumedWidth;
+  availableWidth = availableWidth % numberOfcolumns === 0 ? availableWidth : availableWidth - 1;
+
+  return availableWidth / numberOfcolumns;
+};
+
 describe('Column Metrics Tests', () => {
   describe('Creating metrics', () => {
     describe('When column width not set for all columns', () =>{
+      const totalWidth = 300;
       let columns = [{
         key: 'id',
         name: 'ID',
@@ -18,35 +28,43 @@ describe('Column Metrics Tests', () => {
         name: 'Count'
       }];
 
-      xit('should set the unset column widths based on the total width', () => {
-        let metrics = recalculate({column: columns, totalWidth: 300, minColumnWidth: 50});
+      it('should set the unset column widths based on the total width', () => {
+        let metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
+        let expectedCalculatedWidth = getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+
         expect(metrics.columns[0].width).toEqual(60);
-        expect(metrics.columns[1].width).toEqual(120);
-        expect(metrics.columns[2].width).toEqual(120);
+        expect(metrics.columns[1].width).toEqual(expectedCalculatedWidth);
+        expect(metrics.columns[2].width).toEqual(expectedCalculatedWidth);
       });
 
-      xit('should set the column left based on the column widths', () => {
-        let metrics = recalculate({column: columns, totalWidth: 300, minColumnWidth: 50});
+      it('should set the column left based on the column widths', () => {
+        let metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
+        let expectedLeftValue = columns[0].width + getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+
         expect(metrics.columns[0].left).toEqual(0);
-        expect(metrics.columns[1].left).toEqual(60);
-        expect(metrics.columns[2].left).toEqual(180);
+        expect(metrics.columns[1].left).toEqual(columns[0].width);
+        expect(metrics.columns[2].left).toEqual(expectedLeftValue);
       });
 
       describe('When column data is immutable js object', () => {
         let immutableColumns = new Immutable.List(columns);
 
-        xit('should set the unset column widths based on the total width', () => {
-          let metrics = recalculate({column: immutableColumns, totalWidth: 300, minColumnWidth: 50});
-          expect(metrics.columns[0].get('width')).toEqual(60);
-          expect(metrics.columns[1].get('width')).toEqual(120);
-          expect(metrics.columns[2].get('width')).toEqual(120);
+        it('should set the unset column widths based on the total width', () => {
+          let metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth: 300, minColumnWidth: 50 });
+          let expectedCalculatedWidth = getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+
+          expect(metrics.columns.get(0).width).toEqual(60);
+          expect(metrics.columns.get(1).width).toEqual(expectedCalculatedWidth);
+          expect(metrics.columns.get(2).width).toEqual(expectedCalculatedWidth);
         });
 
-        xit('should set the column left based on the column widths', () => {
-          let metrics = recalculate({column: immutableColumns, totalWidth: 300, minColumnWidth: 50});
-          expect(metrics.columns[0].get('left')).toEqual(0);
-          expect(metrics.columns[1].get('left')).toEqual(60);
-          expect(metrics.columns[2].get('left')).toEqual(180);
+        it('should set the column left based on the column widths', () => {
+          let metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth: 300, minColumnWidth: 50 });
+          let expectedLeftValue = columns[0].width + getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+
+          expect(metrics.columns.get(0).left).toEqual(0);
+          expect(metrics.columns.get(1).left).toEqual(columns[0].width);
+          expect(metrics.columns.get(2).left).toEqual(expectedLeftValue);
         });
       });
     });
@@ -57,22 +75,21 @@ describe('Column Metrics Tests', () => {
       let prevColumns;
       let nextColumns;
       beforeEach(() => {
-        let helpers = require('./GridPropHelpers');
-        prevColumns = helpers.columns;
-        nextColumns = helpers.columns.map(c => {
+        prevColumns = GridPropHelpers.columns;
+        nextColumns = GridPropHelpers.columns.map(c => {
           return Object.assign({}, c);
         });
       });
 
       it('columns with same properties should be equal', () => {
         let areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
-        expect(areColumnsEqual).toBe(true);
+        expect(areColumnsEqual).toBeTruthy();
       });
 
       it('changing a single property in one column will make columns unequal', () => {
         nextColumns[0].width = 101;
         let areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
-        expect(areColumnsEqual).toBe(false);
+        expect(areColumnsEqual).toBeFalsy();
       });
 
       it('should call compareEachColumn when comparing columns', () => {
@@ -89,14 +106,13 @@ describe('Column Metrics Tests', () => {
       let nextColumns;
 
       beforeEach(() => {
-        let helpers = require('./GridPropHelpers');
-        prevColumns = new Immutable.List(helpers.columns);
+        prevColumns = new Immutable.List(GridPropHelpers.columns);
         nextColumns = prevColumns;
       });
 
       it('columns with same memory reference are equal', () => {
         let areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
-        expect(areColumnsEqual).toBe(true);
+        expect(areColumnsEqual).toBeTruthy();
       });
 
       it('columns with same properties are not equal when objects have different memory reference', () => {
@@ -106,7 +122,7 @@ describe('Column Metrics Tests', () => {
           c.width = firstColWidth;
         });
         let areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
-        expect(areColumnsEqual).toBe(false);
+        expect(areColumnsEqual).toBeFalsy();
       });
 
       it('changing a single property in one column will make columns unequal', () => {
@@ -114,7 +130,7 @@ describe('Column Metrics Tests', () => {
           c.width = 101;
         });
         let areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
-        expect(areColumnsEqual).toBe(false);
+        expect(areColumnsEqual).toBeFalsy();
       });
 
       it('should not call compareEachColumn when comparing columns', () => {
