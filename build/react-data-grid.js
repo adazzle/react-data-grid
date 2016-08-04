@@ -6704,9 +6704,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var KeyboardHandlerMixin = {
-	  getInitialState: function getInitialState() {
-	    return { keysDown: {} };
-	  },
 	  onKeyDown: function onKeyDown(e) {
 	    if (this.isCtrlKeyHeldDown(e)) {
 	      this.checkAndCall('onPressKeyWithCtrl', e);
@@ -6720,9 +6717,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    // Track which keys are currently down for shift clicking etc
-	    var keysDown = this.state.keysDown || {};
-	    keysDown[e.keyCode] = true;
-	    this.setState({ keysDown: keysDown });
+	    this._keysDown = this._keysDown || {};
+	    this._keysDown[e.keyCode] = true;
 
 	    if (this.props.onGridKeyDown && typeof this.props.onGridKeyDown === 'function') {
 	      this.props.onGridKeyDown(e);
@@ -6730,21 +6726,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  onKeyUp: function onKeyUp(e) {
 	    // Track which keys are currently down for shift clicking etc
-	    var keysDown = this.state.keysDown || {};
-	    delete keysDown[e.keyCode];
-	    this.setState({ keysDown: keysDown });
+	    this._keysDown = this._keysDown || {};
+	    delete this._keysDown[e.keyCode];
 
 	    if (this.props.onGridKeyUp && typeof this.props.onGridKeyUp === 'function') {
 	      this.props.onGridKeyUp(e);
 	    }
 	  },
 	  isKeyDown: function isKeyDown(keyCode) {
-	    if (!this.state.keysDown) return false;
-	    return keyCode in this.state.keysDown;
+	    if (!this._keysDown) return false;
+	    return keyCode in this._keysDown;
 	  },
 	  isSingleKeyDown: function isSingleKeyDown(keyCode) {
-	    if (!this.state.keysDown) return false;
-	    return keyCode in this.state.keysDown && Object.keys(this.state.keysDown).length === 1;
+	    if (!this._keysDown) return false;
+	    return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
 	  },
 
 
