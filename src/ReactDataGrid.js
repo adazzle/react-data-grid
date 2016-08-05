@@ -718,6 +718,39 @@ const ReactDataGrid = React.createClass({
     }
   },
 
+  scrollToColumn(colIdx) {
+    let canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
+    if (canvas) {
+      let left = 0;
+      let locked = 0;
+
+      for (let i = 0; i < colIdx; i++) {
+        let column = this.getColumn(i);
+        if (column) {
+          if (column.width) {
+            left += column.width;
+          }
+          if (column.locked) {
+            locked += column.width;
+          }
+        }
+      }
+
+      let selectedColumn = this.getColumn(colIdx);
+      if (selectedColumn) {
+        let scrollLeft = left - locked - canvas.scrollLeft;
+        let scrollRight =  left + selectedColumn.width - canvas.scrollLeft;
+
+        if (scrollLeft < 0) {
+          canvas.scrollLeft += scrollLeft;
+        } else if (scrollRight > canvas.clientWidth) {
+          let scrollAmount =  scrollRight - canvas.clientWidth;
+          canvas.scrollLeft += scrollAmount;
+        }
+      }
+    }
+  },
+
   setActive(keyPressed: string) {
     let rowIdx = this.state.selected.rowIdx;
     let row = this.props.rowGetter(rowIdx);
@@ -727,7 +760,7 @@ const ReactDataGrid = React.createClass({
 
     if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && !this.isActive()) {
       let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
-      this.setState({selected: selected});
+      this.setState({selected: selected}, this.scrollToColumn(idx));
     }
   },
 

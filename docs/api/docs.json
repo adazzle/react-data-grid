@@ -3397,6 +3397,18 @@
         "returns": null
       },
       {
+        "name": "scrollToColumn",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "colIdx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "setActive",
         "docblock": null,
         "modifiers": [],
