@@ -785,6 +785,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.setActive('Enter');
 	    }
 	  },
+	  scrollToColumn: function scrollToColumn(colIdx) {
+	    var canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
+	    if (canvas) {
+	      var left = 0;
+	      var locked = 0;
+
+	      for (var i = 0; i < colIdx; i++) {
+	        var column = this.getColumn(i);
+	        if (column) {
+	          if (column.width) {
+	            left += column.width;
+	          }
+	          if (column.locked) {
+	            locked += column.width;
+	          }
+	        }
+	      }
+
+	      var selectedColumn = this.getColumn(colIdx);
+	      if (selectedColumn) {
+	        var scrollLeft = left - locked - canvas.scrollLeft;
+	        var scrollRight = left + selectedColumn.width - canvas.scrollLeft;
+
+	        if (scrollLeft < 0) {
+	          canvas.scrollLeft += scrollLeft;
+	        } else if (scrollRight > canvas.clientWidth) {
+	          var scrollAmount = scrollRight - canvas.clientWidth;
+	          canvas.scrollLeft += scrollAmount;
+	        }
+	      }
+	    }
+	  },
 	  setActive: function setActive(keyPressed) {
 	    var rowIdx = this.state.selected.rowIdx;
 	    var row = this.props.rowGetter(rowIdx);
@@ -794,7 +826,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && !this.isActive()) {
 	      var _selected = Object.assign(this.state.selected, { idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed });
-	      this.setState({ selected: _selected });
+	      this.setState({ selected: _selected }, this.scrollToColumn(idx));
 	    }
 	  },
 	  setInactive: function setInactive() {
