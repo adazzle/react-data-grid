@@ -46,6 +46,11 @@ type: `union(array|func)`
 type: `func`
 
 
+### `getValidFilterValues`
+
+type: `func`
+
+
 ### `headerRows`
 
 type: `union(array|func)`
@@ -92,9 +97,19 @@ type: `func`
 type: `func`
 
 
+### `onViewportKeyup`
+
+type: `func`
+
+
 ### `rowGetter` (required)
 
 type: `union(array|func)`
+
+
+### `rowGroupRenderer`
+
+type: `func`
 
 
 ### `rowHeight`
@@ -121,6 +136,11 @@ type: `func`
 ### `rowScrollTimeout`
 
 type: `number`
+
+
+### `rowSelection`
+
+type: `shape[object Object]`
 
 
 ### `rowsCount`

@@ -22,7 +22,6 @@ const Row = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     isSelected: PropTypes.bool,
     idx: PropTypes.number.isRequired,
-    key: PropTypes.string,
     expandedRows: PropTypes.arrayOf(PropTypes.object),
     extraClasses: PropTypes.string,
     forceUpdate: PropTypes.bool,
@@ -110,8 +109,8 @@ const Row = React.createClass({
 
   getRowHeight(): number {
     let rows = this.props.expandedRows || null;
-    if (rows && this.props.key) {
-      let row = rows[this.props.key] || null;
+    if (rows && this.props.idx) {
+      let row = rows[this.props.idx] || null;
       if (row) {
         return row.height;
       }

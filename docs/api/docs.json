@@ -137,6 +137,10 @@
         "modifiers": [],
         "params": [
           {
+            "name": "idx",
+            "type": null
+          },
+          {
             "name": "row",
             "type": null
           }
@@ -416,6 +420,62 @@
         },
         "required": false,
         "description": ""
+      },
+      "rowSelection": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "shape",
+              "value": {
+                "indexes": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "number"
+                  },
+                  "required": true
+                }
+              }
+            },
+            {
+              "name": "shape",
+              "value": {
+                "isSelectedKey": {
+                  "name": "string",
+                  "required": true
+                }
+              }
+            },
+            {
+              "name": "shape",
+              "value": {
+                "keys": {
+                  "name": "shape",
+                  "value": {
+                    "values": {
+                      "name": "array",
+                      "required": true
+                    },
+                    "rowKey": {
+                      "name": "string",
+                      "required": true
+                    }
+                  },
+                  "required": true
+                }
+              }
+            }
+          ]
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowGroupRenderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -557,7 +617,12 @@
         "name": "getRowData",
         "docblock": null,
         "modifiers": [],
-        "params": [],
+        "params": [
+          {
+            "name": "props",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
@@ -683,6 +748,18 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
+        "returns": null
+      },
+      {
+        "name": "hasChangedDependentValues",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "nextProps",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
@@ -1344,6 +1421,77 @@
         "required": false,
         "description": ""
       },
+      "rowSelection": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "enableShiftSelect": {
+              "name": "bool",
+              "required": false
+            },
+            "onRowsSelected": {
+              "name": "func",
+              "required": false
+            },
+            "onRowsDeselected": {
+              "name": "func",
+              "required": false
+            },
+            "showCheckbox": {
+              "name": "bool",
+              "required": false
+            },
+            "selectBy": {
+              "name": "union",
+              "value": [
+                {
+                  "name": "shape",
+                  "value": {
+                    "indexes": {
+                      "name": "arrayOf",
+                      "value": {
+                        "name": "number"
+                      },
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "isSelectedKey": {
+                      "name": "string",
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "keys": {
+                      "name": "shape",
+                      "value": {
+                        "values": {
+                          "name": "array",
+                          "required": true
+                        },
+                        "rowKey": {
+                          "name": "string",
+                          "required": true
+                        }
+                      },
+                      "required": true
+                    }
+                  }
+                }
+              ],
+              "required": true
+            }
+          }
+        },
+        "required": false,
+        "description": ""
+      },
       "rowsCount": {
         "type": {
           "name": "number"
@@ -1398,6 +1546,13 @@
           "name": "func"
         },
         "required": true,
+        "description": ""
+      },
+      "onViewportKeyup": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
         "description": ""
       },
       "onViewportDragStart": {
@@ -1472,6 +1627,20 @@
         "description": ""
       },
       "draggableHeaderCell": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowGroupRenderer": {
         "type": {
           "name": "func"
         },
@@ -1775,6 +1944,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -2028,7 +2204,12 @@
         "name": "getFilterableHeaderCell",
         "docblock": null,
         "modifiers": [],
-        "params": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          }
+        ],
         "returns": null
       },
       {
@@ -2671,6 +2852,34 @@
         "returns": null
       },
       {
+        "name": "onGridRowsUpdated",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "cellKey",
+            "type": null
+          },
+          {
+            "name": "fromRow",
+            "type": null
+          },
+          {
+            "name": "toRow",
+            "type": null
+          },
+          {
+            "name": "updated",
+            "type": null
+          },
+          {
+            "name": "action",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "onCellCommit",
         "docblock": null,
         "modifiers": [],
@@ -2925,6 +3134,41 @@
         "returns": null
       },
       {
+        "name": "useNewRowSelection",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleShiftSelect",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "rowIdx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleNewRowSelect",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "rowIdx",
+            "type": null
+          },
+          {
+            "name": "rowData",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "handleRowSelect",
         "docblock": null,
         "modifiers": [],
@@ -3027,6 +3271,20 @@
       },
       {
         "name": "getInitialSelectedRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getRowSelectionProps",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getSelectedRows",
         "docblock": null,
         "modifiers": [],
         "params": [],
@@ -3147,6 +3405,18 @@
           },
           {
             "name": "idx",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "scrollToColumn",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "colIdx",
             "type": null
           }
         ],
@@ -3509,6 +3779,112 @@
         "required": false,
         "description": ""
       },
+      "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowSelection": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "enableShiftSelect": {
+              "name": "bool",
+              "required": false
+            },
+            "onRowsSelected": {
+              "name": "func",
+              "required": false
+            },
+            "onRowsDeselected": {
+              "name": "func",
+              "required": false
+            },
+            "showCheckbox": {
+              "name": "bool",
+              "required": false
+            },
+            "selectBy": {
+              "name": "union",
+              "value": [
+                {
+                  "name": "shape",
+                  "value": {
+                    "indexes": {
+                      "name": "arrayOf",
+                      "value": {
+                        "name": "number"
+                      },
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "isSelectedKey": {
+                      "name": "string",
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "keys": {
+                      "name": "shape",
+                      "value": {
+                        "values": {
+                          "name": "array",
+                          "required": true
+                        },
+                        "rowKey": {
+                          "name": "string",
+                          "required": true
+                        }
+                      },
+                      "required": true
+                    }
+                  }
+                }
+              ],
+              "required": true
+            }
+          }
+        },
+        "required": false,
+        "description": ""
+      },
+      "onRowClick": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onGridKeyUp": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onGridKeyDown": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowGroupRenderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "tabIndex": {
         "defaultValue": {
           "value": "-1",
@@ -3775,13 +4151,6 @@
         "required": true,
         "description": ""
       },
-      "key": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
       "expandedRows": {
         "type": {
           "name": "arrayOf",
@@ -3932,6 +4301,17 @@
         },
         "required": true,
         "description": ""
+      },
+      "renderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "(props) => {\r\n  let treeDepth = props.treeDepth || 0;\r\n  let marginLeft = treeDepth * 20;\r\n\r\n  return (\r\n    <div>\r\n      <span className=\"row-expand-icon\" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>\r\n      <strong>{props.columnGroupName} : {props.name}</strong>\r\n    </div>);\r\n}",
+          "computed": false
+        }
       }
     }
   },
@@ -4070,6 +4450,77 @@
         "required": false,
         "description": ""
       },
+      "rowSelection": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "enableShiftSelect": {
+              "name": "bool",
+              "required": false
+            },
+            "onRowsSelected": {
+              "name": "func",
+              "required": false
+            },
+            "onRowsDeselected": {
+              "name": "func",
+              "required": false
+            },
+            "showCheckbox": {
+              "name": "bool",
+              "required": false
+            },
+            "selectBy": {
+              "name": "union",
+              "value": [
+                {
+                  "name": "shape",
+                  "value": {
+                    "indexes": {
+                      "name": "arrayOf",
+                      "value": {
+                        "name": "number"
+                      },
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "isSelectedKey": {
+                      "name": "string",
+                      "required": true
+                    }
+                  }
+                },
+                {
+                  "name": "shape",
+                  "value": {
+                    "keys": {
+                      "name": "shape",
+                      "value": {
+                        "values": {
+                          "name": "array",
+                          "required": true
+                        },
+                        "rowKey": {
+                          "name": "string",
+                          "required": true
+                        }
+                      },
+                      "required": true
+                    }
+                  }
+                }
+              ],
+              "required": true
+            }
+          }
+        },
+        "required": false,
+        "description": ""
+      },
       "expandedRows": {
         "type": {
           "name": "array"
@@ -4149,6 +4600,13 @@
         "description": ""
       },
       "getSubRowDetails": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowGroupRenderer": {
         "type": {
           "name": "func"
         },
@@ -4269,6 +4727,164 @@
               "computed": false
             }
           ]
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\cells\\headerCells\\filters\\AutoCompleteFilter.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "getOptions",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "newProps",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "filterValues",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "row",
+            "type": null
+          },
+          {
+            "name": "columnFilter",
+            "type": null
+          },
+          {
+            "name": "columnKey",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleChange",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "value",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "onChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "column": {
+        "type": {
+          "name": "shape",
+          "value": "unknown"
+        },
+        "required": false,
+        "description": ""
+      },
+      "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\cells\\headerCells\\filters\\NumericFilter.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "attachTooltip",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "filterValues",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "row",
+            "type": null
+          },
+          {
+            "name": "columnFilter",
+            "type": null
+          },
+          {
+            "name": "columnKey",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getRules",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "value",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleKeyPress",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleChange",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "onChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "column": {
+        "type": {
+          "name": "shape",
+          "value": "unknown"
         },
         "required": false,
         "description": ""
@@ -5581,22 +6197,14 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement"
-          }
-        }
+        "returns": null
       },
       {
         "name": "renderToggleFilterButton",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement"
-          }
-        }
+        "returns": null
       }
     ],
     "props": {
@@ -5627,6 +6235,28 @@
         },
         "required": false,
         "description": ""
+      },
+      "addRowButtonText": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "'Add Row'",
+          "computed": false
+        }
+      },
+      "filterRowsButtonText": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "'Filter Rows'",
+          "computed": false
+        }
       },
       "enableAddRow": {
         "defaultValue": {

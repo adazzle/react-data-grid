@@ -4,6 +4,7 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 
 var EditableExample = `
 var Toolbar = ReactDataGridPlugins.Toolbar;
+var Selectors = ReactDataGridPlugins.Data.Selectors;
 
 //helper to generate a random date
 function randomDate(start, end) {
@@ -80,64 +81,41 @@ var columns = [
 var Example = React.createClass({
 
   getInitialState : function(){
-    var originalRows = createRows(1000);
-    var rows = originalRows.slice(0);
-    //store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
-    return {originalRows : originalRows, rows : rows, filters : {}};
+    var rows = createRows(1000);
+    return {rows : rows, filters : {}, sortColumn: null, sortDirection: null};
+  },
+
+  getRows : function() {
+    return Selectors.getRows(this.state);
+  },
+
+  getSize : function() {
+    return this.getRows().length;
   },
 
   rowGetter : function(rowIdx){
-    return this.state.rows[rowIdx];
+    var rows = this.getRows();
+    return rows[rowIdx];
   },
 
-  handleGridSort : function(sortColumn, sortDirection){
-
-    var comparer = function(a, b) {
-      if(sortDirection === 'ASC'){
-        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
-      }else if(sortDirection === 'DESC'){
-        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
-      }
-    }
-
-    var rows;
-
-    if (sortDirection === 'NONE') {
-      var originalRows = this.state.originalRows;
-      rows = this.filterRows(originalRows, this.state.filters);
-    } else {
-      rows = this.state.rows.sort(comparer);
-    }
-
-    this.setState({rows : rows});
-  },
-
-  filterRows : function(originalRows, filters) {
-    var rows = originalRows.filter(function(r){
-      var include = true;
-      for (var columnKey in filters) {
-        if(filters.hasOwnProperty(columnKey)) {
-          var rowValue = r[columnKey].toString().toLowerCase();
-          if(rowValue.indexOf(filters[columnKey].toLowerCase()) === -1) {
-            include = false;
-          }
-        }
-      }
-      return include;
-    });
-    return rows;
+  handleGridSort : function(sortColumn, sortDirection) {
+    var state = Object.assign({}, this.state, {sortColumn: sortColumn, sortDirection: sortDirection});
+    this.setState(state);
   },
 
   handleFilterChange : function(filter){
-    this.setState(function(currentState) {
-      if (filter.filterTerm) {
-        currentState.filters[filter.columnKey] = filter.filterTerm;
-      } else {
-        delete currentState.filters[filter.columnKey];
-      }
-      currentState.rows = this.filterRows(currentState.originalRows, currentState.filters);
-      return currentState;
-    });
+    let newFilters = Object.assign({}, this.state.filters);
+    if (filter.filterTerm) {
+      newFilters[filter.column.key] = filter;
+    } else {
+     delete newFilters[filter.column.key];
+    }
+    this.setState({filters: newFilters});
+  },
+
+  onClearFilters: function(){
+    //all filters removed
+    this.setState({filters: {} });
   },
 
   render:function(){
@@ -146,11 +124,13 @@ var Example = React.createClass({
         onGridSort={this.handleGridSort}
         columns={columns}
         rowGetter={this.rowGetter}
-        rowsCount={this.state.rows.length}
+        rowsCount={this.getSize()}
         minHeight={500}
         onRowUpdated={this.handleRowUpdated}
         toolbar={<Toolbar enableFilter={true}/>}
-        onAddFilter={this.handleFilterChange} />
+        onAddFilter={this.handleFilterChange}
+        onClearFilters={this.onClearFilters} 
+        />
     )
   }
 

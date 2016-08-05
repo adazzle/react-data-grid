@@ -10,6 +10,33 @@ let KeyboardHandlerMixin = {
     } else if (this.isKeyPrintable(e.keyCode)) {
       this.checkAndCall('onPressChar', e);
     }
+
+    // Track which keys are currently down for shift clicking etc
+    this._keysDown = this._keysDown || {};
+    this._keysDown[e.keyCode] = true;
+
+    if (this.props.onGridKeyDown && typeof this.props.onGridKeyDown === 'function') {
+      this.props.onGridKeyDown(e);
+    }
+  },
+
+  onKeyUp(e) {
+    // Track which keys are currently down for shift clicking etc
+    this._keysDown = this._keysDown || {};
+    delete this._keysDown[e.keyCode];
+
+    if (this.props.onGridKeyUp && typeof this.props.onGridKeyUp === 'function') {
+      this.props.onGridKeyUp(e);
+    }
+  },
+  isKeyDown(keyCode) {
+    if (!this._keysDown) return false;
+    return keyCode in this._keysDown;
+  },
+
+  isSingleKeyDown(keyCode) {
+    if (!this._keysDown) return false;
+    return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
   },
 
   // taken from http://stackoverflow.com/questions/12467240/determine-if-javascript-e-keycode-is-a-printable-non-control-character

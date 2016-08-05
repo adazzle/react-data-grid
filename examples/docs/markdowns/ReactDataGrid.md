@@ -44,6 +44,11 @@ type: `union(bool|string)`
 defaultValue: `false`
 
 
+### `getValidFilterValues`
+
+type: `func`
+
+
 ### `headerRowHeight`
 
 type: `number`
@@ -105,12 +110,27 @@ type: `func`
 type: `func`
 
 
+### `onGridKeyDown`
+
+type: `func`
+
+
+### `onGridKeyUp`
+
+type: `func`
+
+
 ### `onGridRowsUpdated`
 
 type: `func`
 
 
 ### `onGridSort`
+
+type: `func`
+
+
+### `onRowClick`
 
 type: `func`
 
@@ -135,6 +155,11 @@ type: `func`
 type: `func`
 
 
+### `rowGroupRenderer`
+
+type: `func`
+
+
 ### `rowHeight` (required)
 
 type: `number`
@@ -151,6 +176,11 @@ defaultValue: `'id'`
 
 type: `number`
 defaultValue: `0`
+
+
+### `rowSelection`
+
+type: `shape[object Object]`
 
 
 ### `rowsCount` (required)

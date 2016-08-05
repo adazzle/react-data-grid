@@ -72,7 +72,6 @@ const HeaderCell = React.createClass({
       left: this.props.column.left,
       display: 'inline-block',
       position: 'absolute',
-      overflow: 'hidden',
       height: this.props.height,
       margin: 0,
       textOverflow: 'ellipsis',

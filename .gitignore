@@ -6,3 +6,4 @@ test/reports
 test/coverage
 dist
 .npmrc
+**.orig

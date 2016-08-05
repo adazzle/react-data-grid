@@ -67,6 +67,11 @@ type: `func`
 type: `union(func|array)`
 
 
+### `rowGroupRenderer`
+
+type: `func`
+
+
 ### `rowHeight` (required)
 
 type: `number`
@@ -87,6 +92,11 @@ defaultValue: `require('./Row')`
 
 type: `number`
 defaultValue: `0`
+
+
+### `rowSelection`
+
+type: `union(shape|shape|shape)`
 
 
 ### `rowsCount` (required)

@@ -5,7 +5,7 @@ var faker = require('faker');
 var GroupingExample = `
   var Editors             = ReactDataGridPlugins.Editors;
   var Toolbar             = ReactDataGridPlugins.ToolsPanel.AdvancedToolbar;
-  var DataView = ReactDataGridPlugins.DataView;
+  var Selectors = ReactDataGridPlugins.Data.Selectors;
   var GroupedColumnsPanel = ReactDataGridPlugins.ToolsPanel.GroupedColumnsPanel;
   var DraggableContainer = ReactDataGridPlugins.Draggable.Container;
   faker.locale = 'en_GB';
@@ -141,13 +141,18 @@ var GroupingExample = `
       return {rows: fakeRows, groupBy: [], expandedRows: {}};
     },
 
+    getRows: function() {
+      var rows = Selectors.getRows(this.state);
+      return rows;
+    },
+
     getRowAt : function(index){
-      var rows = DataView.getRows(this.state.rows, {groupBy: this.state.groupBy, expandedRows: this.state.expandedRows});
+      var rows = this.getRows();
       return rows[index];
     },
 
     getSize : function() {
-      return DataView.getSize(this.state.rows, {groupBy: this.state.groupBy, expandedRows: this.state.expandedRows});
+      return this.getRows().length;
     },
 
    onColumnGroupAdded: function(colName) {
@@ -202,6 +207,8 @@ module.exports = React.createClass({
         <p>This example demonstrates how to group rows by column name. Drag a column header to group rows by that column.</p>
         <p>To expand and close a row group, you can use either the mouse or keyboard</p>
         <p>Press <strong>Enter</strong> or <strong>Left Arrow</strong> or <strong>Right Arrow</strong> to toggle whether a row is expanded or not</p>
+        <p>This feature also supports a custom Renderer, by using a renderer you can render some fancy custom html in the row gorup.</p>
+        <p>To use a renderer just inject your component with <code>rowGroupRenderer</code> prop in the grid.</p>
         <ReactPlayground codeText={GroupingExample} />
       </div>
     )

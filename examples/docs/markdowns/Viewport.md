@@ -51,6 +51,11 @@ type: `func`
 type: `union(array|func)`
 
 
+### `rowGroupRenderer`
+
+type: `func`
+
+
 ### `rowHeight` (required)
 
 type: `number`
@@ -74,6 +79,11 @@ type: `func`
 ### `rowScrollTimeout`
 
 type: `number`
+
+
+### `rowSelection`
+
+type: `shape[object Object]`
 
 
 ### `rowsCount` (required)

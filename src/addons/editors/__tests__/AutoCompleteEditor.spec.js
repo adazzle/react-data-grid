@@ -105,4 +105,30 @@ describe('AutoCompleteEditor', () => {
       });
     });
   });
+
+  describe('interactions', () => {
+    it('should render', () => {
+      component = TestUtils.renderIntoDocument(<AutoCompleteEditor
+      onCommit={fakeCb}
+      options={fakeOptions}
+      label="title"
+      value="value"
+      valueParams={fakeParams}
+      column={fakeColumn}
+      resultIdentifier="id"
+      search={() => true}
+      height={30}
+      onKeyDown={fakeCb}/>);
+
+      expect(component).toBeDefined();
+
+      // type a key!
+      let node = component.getInputNode();
+      node.value = 'a';
+      TestUtils.Simulate.change(node);
+      TestUtils.Simulate.keyDown(node, {key: 'Enter', keyCode: 13, which: 13});
+
+      expect(component.getValue()).toEqual({autocomplete: 'a'});
+    });
+  });
 });

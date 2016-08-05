@@ -22,7 +22,8 @@ const Header = React.createClass({
     onSort: PropTypes.func,
     onColumnResize: PropTypes.func,
     onScroll: PropTypes.func,
-    draggableHeaderCell: PropTypes.func
+    draggableHeaderCell: PropTypes.func,
+    getValidFilterValues: PropTypes.func
   },
 
   getInitialState(): {resizing: any} {
@@ -80,12 +81,18 @@ const Header = React.createClass({
     }
     let headerRows = [];
     this.props.headerRows.forEach((row, index) => {
+      // To allow header filters to be visible
+      let rowHeight = 'auto';
+      if (row.rowType === 'filter') {
+        rowHeight = '500px';
+      }
       let headerRowStyle = {
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
         left: 0,
         width: this.props.totalWidth,
-        overflow: 'hidden'
+        overflowX: 'hidden',
+        minHeight: rowHeight
       };
 
       headerRows.push(<HeaderRow
@@ -106,6 +113,7 @@ const Header = React.createClass({
         sortDirection={this.props.sortDirection}
         onSort={this.props.onSort}
         onScroll={this.props.onScroll}
+        getValidFilterValues={this.props.getValidFilterValues}
         />);
     });
     return headerRows;
@@ -148,8 +156,7 @@ const Header = React.createClass({
   getStyle(): {position: string; height: number} {
     return {
       position: 'relative',
-      height: this.getCombinedHeaderHeights(),
-      overflow: 'hidden'
+      height: this.getCombinedHeaderHeights()
     };
   },
 
