@@ -469,6 +469,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "rowGroupRenderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -1627,6 +1634,13 @@
         "description": ""
       },
       "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowGroupRenderer": {
         "type": {
           "name": "func"
         },
@@ -3864,6 +3878,13 @@
         "required": false,
         "description": ""
       },
+      "rowGroupRenderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "tabIndex": {
         "defaultValue": {
           "value": "-1",
@@ -4280,6 +4301,17 @@
         },
         "required": true,
         "description": ""
+      },
+      "renderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "(props) => {\r\n  let treeDepth = props.treeDepth || 0;\r\n  let marginLeft = treeDepth * 20;\r\n\r\n  return (\r\n    <div>\r\n      <span className=\"row-expand-icon\" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>\r\n      <strong>{props.columnGroupName} : {props.name}</strong>\r\n    </div>);\r\n}",
+          "computed": false
+        }
       }
     }
   },
@@ -4568,6 +4600,13 @@
         "description": ""
       },
       "getSubRowDetails": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowGroupRenderer": {
         "type": {
           "name": "func"
         },

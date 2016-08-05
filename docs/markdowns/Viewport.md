@@ -51,6 +51,11 @@ type: `func`
 type: `union(array|func)`
 
 
+### `rowGroupRenderer`
+
+type: `func`
+
+
 ### `rowHeight` (required)
 
 type: `number`
