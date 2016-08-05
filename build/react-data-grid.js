@@ -152,7 +152,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }),
 	    onRowClick: React.PropTypes.func,
 	    onGridKeyUp: React.PropTypes.func,
-	    onGridKeyDown: React.PropTypes.func
+	    onGridKeyDown: React.PropTypes.func,
+	    rowGroupRenderer: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -1176,7 +1177,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    contextMenu: PropTypes.element,
 	    getSubRowDetails: PropTypes.func,
 	    draggableHeaderCell: PropTypes.func,
-	    getValidFilterValues: PropTypes.func
+	    getValidFilterValues: PropTypes.func,
+	    rowGroupRenderer: PropTypes.func
 	  },
 
 	  mixins: [GridScrollMixin, DOMMetrics.MetricsComputatorMixin],
@@ -1242,7 +1244,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          rowScrollTimeout: this.props.rowScrollTimeout,
 	          contextMenu: this.props.contextMenu,
 	          rowSelection: this.props.rowSelection,
-	          getSubRowDetails: this.props.getSubRowDetails
+	          getSubRowDetails: this.props.getSubRowDetails,
+	          rowGroupRenderer: this.props.rowGroupRenderer
 	        })
 	      ) : React.createElement(
 	        'div',
@@ -2433,7 +2436,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowKey: PropTypes.string.isRequired,
 	    rowScrollTimeout: PropTypes.number,
 	    contextMenu: PropTypes.element,
-	    getSubRowDetails: PropTypes.func
+	    getSubRowDetails: PropTypes.func,
+	    rowGroupRenderer: PropTypes.func
 	  },
 
 	  onScroll: function onScroll(scroll) {
@@ -2485,7 +2489,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rowScrollTimeout: this.props.rowScrollTimeout,
 	        contextMenu: this.props.contextMenu,
 	        rowSelection: this.props.rowSelection,
-	        getSubRowDetails: this.props.getSubRowDetails
+	        getSubRowDetails: this.props.getSubRowDetails,
+	        rowGroupRenderer: this.props.rowGroupRenderer
 	      })
 	    );
 	  }
@@ -2561,7 +2566,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        values: React.PropTypes.array.isRequired,
 	        rowKey: React.PropTypes.string.isRequired
 	      }).isRequired
-	    })])
+	    })]),
+	    rowGroupRenderer: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -2759,7 +2765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderRow: function renderRow(props) {
 	    var row = props.row;
 	    if (row.__metaData && row.__metaData.isGroup) {
-	      return React.createElement(_RowGroup2['default'], _extends({ name: row.name }, row.__metaData, { idx: props.idx, cellMetaData: this.props.cellMetaData }));
+	      return React.createElement(_RowGroup2['default'], _extends({ name: row.name }, row.__metaData, { row: props.row, idx: props.idx, cellMetaData: this.props.cellMetaData, renderer: this.props.rowGroupRenderer }));
 	    }
 	    if (this.state.scrollingTimeout !== null) {
 	      // in the midst of a rapid scroll, so we render placeholders
@@ -3067,8 +3073,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  RowGroup.prototype.render = function render() {
-	    var treeDepth = this.props.treeDepth || 0;
-	    var marginLeft = treeDepth * 20;
 	    var style = {
 	      height: '50px',
 	      overflow: 'hidden',
@@ -3076,21 +3080,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      paddingTop: '15px',
 	      paddingLeft: '5px'
 	    };
+	    var rowGroupRendererProps = Object.assign({ onRowExpandClick: this.onRowExpandClick }, this.props);
+
 	    return _react2['default'].createElement(
 	      'div',
 	      { style: style, className: this.getClassName(), onClick: this.onClick, onKeyDown: this.onKeyDown, tabIndex: -1 },
-	      _react2['default'].createElement(
-	        'span',
-	        { className: 'row-expand-icon', style: { float: 'left', marginLeft: marginLeft, cursor: 'pointer' }, onClick: this.onRowExpandClick },
-	        this.props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')
-	      ),
-	      _react2['default'].createElement(
-	        'strong',
-	        null,
-	        this.props.columnGroupName,
-	        ' : ',
-	        this.props.name
-	      )
+	      _react2['default'].createElement(this.props.renderer, rowGroupRendererProps)
 	    );
 	  };
 
@@ -3104,7 +3099,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	  treeDepth: _react.PropTypes.number.isRequired,
 	  height: _react.PropTypes.number.isRequired,
 	  cellMetaData: _react.PropTypes.object,
-	  idx: _react.PropTypes.number.isRequired
+	  idx: _react.PropTypes.number.isRequired,
+	  renderer: _react.PropTypes.func
+	};
+
+	var DefaultRowGroupRenderer = function DefaultRowGroupRenderer(props) {
+	  var treeDepth = props.treeDepth || 0;
+	  var marginLeft = treeDepth * 20;
+
+	  return _react2['default'].createElement(
+	    'div',
+	    null,
+	    _react2['default'].createElement(
+	      'span',
+	      { className: 'row-expand-icon', style: { float: 'left', marginLeft: marginLeft, cursor: 'pointer' }, onClick: props.onRowExpandClick },
+	      props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')
+	    ),
+	    _react2['default'].createElement(
+	      'strong',
+	      null,
+	      props.columnGroupName,
+	      ' : ',
+	      props.name
+	    )
+	  );
+	};
+
+	DefaultRowGroupRenderer.propTypes = {
+	  onRowExpandClick: _react.PropTypes.func.isRequired,
+	  isExpanded: _react.PropTypes.bool.isRequired,
+	  treeDepth: _react.PropTypes.number.isRequired,
+	  name: _react.PropTypes.string.isRequired,
+	  columnGroupName: _react.PropTypes.string.isRequired
+	};
+
+	RowGroup.defaultProps = {
+	  renderer: DefaultRowGroupRenderer
 	};
 
 	exports['default'] = RowGroup;
