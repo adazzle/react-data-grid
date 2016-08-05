@@ -155,6 +155,11 @@ type: `func`
 type: `func`
 
 
+### `rowGroupRenderer`
+
+type: `func`
+
+
 ### `rowHeight` (required)
 
 type: `number`
