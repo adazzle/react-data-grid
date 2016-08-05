@@ -6,7 +6,7 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 var SimpleExample = `
 var Example = React.createClass({
   getInitialState: function(){
-    let rows = [];
+    var rows = [];
     for (var i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -39,7 +39,7 @@ var Example = React.createClass({
     this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))});
   },
   onRowsDeselected: function(rows) {
-    let rowIndexes = rows.map(r => r.rowIdx);
+    var rowIndexes = rows.map(r => r.rowIdx);
     this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1 )});
   },
   render: function() {

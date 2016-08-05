@@ -156,7 +156,7 @@ var GroupingExample = `
     },
 
    onColumnGroupAdded: function(colName) {
-      let columnGroups = this.state.groupBy.slice(0);
+      var columnGroups = this.state.groupBy.slice(0);
       if(columnGroups.indexOf(colName) === -1) {
         columnGroups.push(colName);
       }
@@ -164,12 +164,12 @@ var GroupingExample = `
     },
     
     onColumnGroupDeleted: function (name) {
-      let columnGroups = this.state.groupBy.filter(function(g){return g !== name});
+      var columnGroups = this.state.groupBy.filter(function(g){return g !== name});
       this.setState({groupBy: columnGroups});
     },
     
     onRowExpandToggle: function(args){
-      let expandedRows = Object.assign({}, this.state.expandedRows);
+      var expandedRows = Object.assign({}, this.state.expandedRows);
       expandedRows[args.columnGroupName] = Object.assign({}, expandedRows[args.columnGroupName]);
       expandedRows[args.columnGroupName][args.name] = {isExpanded: args.shouldExpand};
       this.setState({expandedRows: expandedRows});
