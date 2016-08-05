@@ -113,6 +113,11 @@ var Example = React.createClass({
     this.setState({filters: newFilters});
   },
 
+  onClearFilters: function(){
+    //all filters removed
+    this.setState({filters: {} });
+  },
+
   render:function(){
     return(
       <ReactDataGrid
@@ -123,7 +128,9 @@ var Example = React.createClass({
         minHeight={500}
         onRowUpdated={this.handleRowUpdated}
         toolbar={<Toolbar enableFilter={true}/>}
-        onAddFilter={this.handleFilterChange} />
+        onAddFilter={this.handleFilterChange}
+        onClearFilters={this.onClearFilters} 
+        />
     )
   }
 
