@@ -58,7 +58,7 @@ const Grid = React.createClass({
     getSubRowDetails: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
-    groupHeaderRenderer: PropTypes.func
+    rowGroupRenderer: PropTypes.func
   },
 
   mixins: [
@@ -125,7 +125,7 @@ const Grid = React.createClass({
                   contextMenu={this.props.contextMenu}
                   rowSelection={this.props.rowSelection}
                   getSubRowDetails={this.props.getSubRowDetails}
-                  groupHeaderRenderer={this.props.groupHeaderRenderer}
+                  rowGroupRenderer={this.props.rowGroupRenderer}
                 />
             </div>
         :

@@ -102,7 +102,7 @@ const ReactDataGrid = React.createClass({
     onRowClick: React.PropTypes.func,
     onGridKeyUp: React.PropTypes.func,
     onGridKeyDown: React.PropTypes.func,
-    groupHeaderRenderer: React.PropTypes.func
+    rowGroupRenderer: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
