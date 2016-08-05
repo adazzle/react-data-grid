@@ -444,7 +444,7 @@ const Cell = React.createClass({
       cellExpander = (<span style={{float: 'left', marginLeft: marginLeft}} onClick={this.onCellExpand} >{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>);
     }
     return (<div  ref="cell"
-      className="react-grid-Cell__value">{cellExpander}<span style={{float: 'left', marginLeft: marginLeftCell}}>{CellContent}</span> {this.props.cellControls} </div>);
+      className="react-grid-Cell__value">{cellExpander}<span style={{float: 'left', marginLeft: marginLeftCell, width: '100%'}}>{CellContent}</span> {this.props.cellControls} </div>);
   },
 
   render() {
