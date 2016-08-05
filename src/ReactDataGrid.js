@@ -101,7 +101,8 @@ const ReactDataGrid = React.createClass({
     }),
     onRowClick: React.PropTypes.func,
     onGridKeyUp: React.PropTypes.func,
-    onGridKeyDown: React.PropTypes.func
+    onGridKeyDown: React.PropTypes.func,
+    rowActionsCell: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -784,16 +785,17 @@ const ReactDataGrid = React.createClass({
   setupGridColumns: function(props = this.props): Array<any> {
     let cols = props.columns.slice(0);
     let unshiftedCols = {};
-    if ((props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
+    if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       let headerRenderer = props.enableRowSelect === 'single' ? null :
       <div className="react-grid-checkbox-container">
         <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" onChange={this.handleCheckboxChange} />
         <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
       </div>;
+      let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
       let selectColumn = {
         key: 'select-row',
         name: '',
-        formatter: <CheckboxEditor/>,
+        formatter: <Formatter/>,
         onCellChange: this.handleRowSelect,
         filterable: false,
         headerRenderer: headerRenderer,

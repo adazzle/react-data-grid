@@ -379,6 +379,9 @@ textareaselect.editor-main {
   color: #777777;
 }
 
+.react-grid-row-index {
+    padding: 0 18px;
+}
 .react-grid-Cell--locked:last-of-type {
   border-right: 1px solid #dddddd;
   box-shadow: none;

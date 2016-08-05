@@ -1,5 +1,6 @@
 import Container from './Container';
 import DraggableHeaderCell from './DraggableHeaderCell';
-export default {Container, DraggableHeaderCell};
+import RowActionsCell from './RowActionsCell';
+export default {Container, DraggableHeaderCell, RowActionsCell};
 
 
