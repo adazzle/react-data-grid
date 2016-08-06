@@ -60,7 +60,7 @@ describe('DropDownEditor', () => {
     let fakeOptions = [
       { id: '1', value: 'option1', title: 'Option 1' },
       { id: '2', value: 'option2', text: 'Option Two' },
-      { id: '3', value: 'option3', title: 'Option 3', text: 'Option Three' },
+      { id: '3', value: 'option3', title: 'Option 3', text: 'Option Three' }
     ];
     let fakeColumn = { key: 'selected' };
     function fakeCommitCb() { return true; }
@@ -97,6 +97,5 @@ describe('DropDownEditor', () => {
       expect(option.props.title).toBe('Option 3');
       expect(option.props.children).toBe('Option Three');
     });
-    
   });
 });
