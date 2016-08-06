@@ -68,7 +68,7 @@ const EditorContainer = React.createClass({
       return React.cloneElement(CustomEditor, editorProps);
     }
     if (isFunction(CustomEditor)) {
-      return <CustomEditor ref={editorRef} {...editorProps} />
+      return <CustomEditor ref={editorRef} {...editorProps} />;
     }
 
     return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;

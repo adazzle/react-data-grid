@@ -1,6 +1,5 @@
 
 const React            = require('react');
-const ReactDOM         = require('react-dom');
 const rewire           = require('rewire');
 const EditorContainer  = rewire('../EditorContainer.js');
 const TestUtils        = require('react/lib/ReactTestUtils');
@@ -71,16 +70,9 @@ describe('Editor Container Tests', () => {
   });
 
   describe('Custom Editors', () => {
-
     class TestEditor extends EditorBase {
-      getInputNode() {
-        return ReactDOM.findDOMNode(this);
-      }
       render() {
-        return <input ref="node" type="text" id="testpassed" />;
-      }
-      hasResults() {
-        return true;
+        return <input type="text" id="testpassed" />;
       }
     }
 
