@@ -6508,6 +6508,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var React = __webpack_require__(5);
 	var joinClasses = __webpack_require__(9);
 	var keyboardHandlerMixin = __webpack_require__(116);
@@ -6578,10 +6580,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onOverrideKeyDown: this.onKeyDown
 	    };
 
-	    var customEditor = this.props.column.editor;
-	    if (customEditor && React.isValidElement(customEditor)) {
-	      // return custom column editor or SimpleEditor if none specified
-	      return React.cloneElement(customEditor, editorProps);
+	    var CustomEditor = this.props.column.editor;
+	    // return custom column editor or SimpleEditor if none specified
+	    if (React.isValidElement(CustomEditor)) {
+	      return React.cloneElement(CustomEditor, editorProps);
+	    }
+	    if (isFunction(CustomEditor)) {
+	      return React.createElement(CustomEditor, _extends({ ref: editorRef }, editorProps));
 	    }
 
 	    return React.createElement(SimpleTextEditor, { ref: editorRef, column: this.props.column, value: this.getInitialValue(), onBlur: this.commit, rowMetaData: this.getRowMetaData(), onKeyDown: function onKeyDown() {}, commit: function commit() {} });
