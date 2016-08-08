@@ -1,4 +1,11 @@
+import isImmutableCollection from '../utils/isImmutableCollection';
+
+function getRowCellStringValue(isImmutable, r, columnKey) {
+  return (isImmutable ? r.get(columnKey) : r[columnKey]).toString().toLowerCase();
+}
+
 const filterRows = (filters, rows = []) => {
+  const isImmutable = isImmutableCollection(rows);
   return rows.filter(r => {
     let include = true;
     for (let columnKey in filters) {
@@ -9,7 +16,7 @@ const filterRows = (filters, rows = []) => {
           include = false;
         } else if (typeof colFilter.filterTerm === 'string') {
           // default filter action
-          let rowValue = r[columnKey].toString().toLowerCase();
+          let rowValue = getRowCellStringValue(isImmutable, r, columnKey);
           if (rowValue.indexOf(colFilter.filterTerm.toLowerCase()) === -1) {
             include = false;
           }

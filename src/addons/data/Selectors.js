@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import isEmptyObject from '../utils/isEmptyObject';
 import isEmptyArray from '../utils/isEmptyArray';
+
 const groupRows = require('./RowGrouper');
 const filterRows = require('./RowFilterer');
 const sortRows = require('./RowSorter');
