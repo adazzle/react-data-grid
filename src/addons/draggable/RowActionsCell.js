@@ -8,15 +8,21 @@ class RowActionsCell extends React.Component {
     super(props);
   }
 
+  renderRowIndex() {
+    return (<div className="rdg-row-index">
+      { this.props.rowIdx + 1 }
+    </div>);
+  }
+
   render() {
+    let isSelected = this.props.value;
+    let editorClass = isSelected ? 'rdg-actions-checkbox selected' : 'rdg-actions-checkbox';
     const {connectDragSource, connectDragPreview} = this.props;
     return connectDragPreview(connectDragSource(
       <div className="rdg-drag-row-handle">
-        <div className="rdg-row-index">
-          { this.props.rowIdx + 1 }
-        </div>
-        <div className="rdg-actions-checkbox">
-          <CheckboxEditor/>
+        {!isSelected ? this.renderRowIndex() : null}
+        <div className={editorClass}>
+          <CheckboxEditor column={this.props.column} rowIdx={this.props.rowIdx} dependentValues={this.props.dependentValues} value={this.props.value}/>
         </div>
       </div>));
   }
@@ -27,7 +33,10 @@ RowActionsCell.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
-  isRowHovered: PropTypes.bool
+  isRowHovered: PropTypes.bool,
+  column: PropTypes.object,
+  dependentValues: PropTypes.object,
+  value: PropTypes.bool
 };
 
 RowActionsCell.defaultProps = {

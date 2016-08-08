@@ -128,6 +128,10 @@
   display: none;
 }
 
+.rdg-actions-checkbox.selected {
+  display: block;
+}
+
 .react-grid-Row:hover .rdg-actions-checkbox {
   display: block;
 }
@@ -528,6 +532,7 @@ textarea.react-autocomplete-Autocomplete__search {
 }
 
 .rdg-drag-row-handle {
+  width: 100%;
    background-image: url("data:image/svg+xml;base64, PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjx
 zdmcgd2lkdGg9IjlweCIgaGVpZ2h0PSIyOXB4IiB2aWV3Qm94PSIwIDAgOSAyOSIgdmVyc2lvbj
 0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJod
