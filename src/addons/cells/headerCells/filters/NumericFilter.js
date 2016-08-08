@@ -38,7 +38,13 @@ class NumericFilter extends React.Component {
     let result = false;
     // implement default filter logic
     let value = parseInt(row[columnKey], 10);
-    for (let rule of columnFilter.filterTerm) {
+    for (let ruleKey in columnFilter.filterTerm) {
+      if (!columnFilter.filterTerm.hasOwnProperty(ruleKey)) {
+        continue;
+      }
+
+      let rule = columnFilter.filterTerm[ruleKey];
+
       switch (rule.type) {
       case RuleType.Number:
         if (rule.value === value) {
@@ -77,7 +83,12 @@ class NumericFilter extends React.Component {
     let list = value.split(',');
     if (list.length > 0) {
       // handle each value with comma
-      for (let obj of list) {
+      for (let key in list) {
+        if (!list.hasOwnProperty(key)) {
+          continue;
+        }
+
+        let obj = list[key];
         if (obj.indexOf('-') > 0) { // handle dash
           let begin = parseInt(obj.split('-')[0], 10);
           let end = parseInt(obj.split('-')[1], 10);
