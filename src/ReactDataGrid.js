@@ -805,7 +805,8 @@ const ReactDataGrid = React.createClass({
         headerRenderer: headerRenderer,
         width: 60,
         locked: true,
-        getRowMetaData: (rowData) => rowData
+        getRowMetaData: (rowData) => rowData,
+        cellClass: 'rdg-row-actions-cell'
       };
       unshiftedCols = cols.unshift(selectColumn);
       cols = unshiftedCols > 0 ? cols : unshiftedCols;

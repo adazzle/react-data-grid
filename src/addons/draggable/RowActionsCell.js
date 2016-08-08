@@ -19,7 +19,8 @@ class RowActionsCell extends React.Component {
     let editorClass = isSelected ? 'rdg-actions-checkbox selected' : 'rdg-actions-checkbox';
     const {connectDragSource, connectDragPreview} = this.props;
     return connectDragPreview(connectDragSource(
-      <div className="rdg-drag-row-handle">
+      <div>
+        <div className="rdg-drag-row-handle"></div>
         {!isSelected ? this.renderRowIndex() : null}
         <div className={editorClass}>
           <CheckboxEditor column={this.props.column} rowIdx={this.props.rowIdx} dependentValues={this.props.dependentValues} value={this.props.value}/>
