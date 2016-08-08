@@ -30,6 +30,10 @@ const Row = React.createClass({
 
   mixins: [ColumnUtilsMixin],
 
+  getInitialState: function() {
+    return {isRowHovered: false};
+  },
+
   getDefaultProps() {
     return {
       cellRenderer: Cell,
@@ -47,6 +51,7 @@ const Row = React.createClass({
            this.hasRowBeenCopied()                                                                       ||
            this.props.isSelected !== nextProps.isSelected                                                ||
            nextProps.height !== this.props.height                                                        ||
+           this.state.isRowHovered === true                                                              ||
            this.props.forceUpdate === true;
   },
 
@@ -95,7 +100,8 @@ const Row = React.createClass({
                       rowData={this.props.row}
                       selectedColumn={selectedColumn}
                       isRowSelected={this.props.isSelected}
-                      expandableOptions={this.getExpandableOptions(column.key)} />);
+                      expandableOptions={this.getExpandableOptions(column.key)}
+                      isRowHovered={this.state.isRowHovered} />);
         if (column.locked) {
           lockedCells.push(cell);
         } else {

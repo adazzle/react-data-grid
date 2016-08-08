@@ -4,8 +4,7 @@
 const ImageFormatter = require('./ImageFormatter');
 
 const Formatters = {
-  ImageFormatter: ImageFormatter,
-  Row
+  ImageFormatter: ImageFormatter
 };
 
 module.exports = Formatters;

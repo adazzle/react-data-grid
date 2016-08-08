@@ -352,6 +352,10 @@ const ReactDataGrid = React.createClass({
     }
   },
 
+  onRowHover(rowIdx) {
+    this.setState({hoveredRowIdx: rowIdx});
+  },
+
   handleDragStart(dragged: DraggedType) {
     if (!this.dragEnabled()) { return; }
     let idx = dragged.idx;
@@ -829,6 +833,7 @@ const ReactDataGrid = React.createClass({
     let cellMetaData = {
       selected: this.state.selected,
       dragged: this.state.dragged,
+      hoveredRowIdx: this.state.hoveredRowIdx,
       onCellClick: this.onCellClick,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
@@ -842,7 +847,8 @@ const ReactDataGrid = React.createClass({
       openCellEditor: this.openCellEditor,
       onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       onCellExpand: this.onCellExpand,
-      onRowExpandToggle: this.onRowExpandToggle
+      onRowExpandToggle: this.onRowExpandToggle,
+      onRowHover: this.onRowHover
     };
 
     let toolbar = this.renderToolbar();

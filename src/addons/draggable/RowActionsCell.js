@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
+import CheckboxEditor from '../editors/CheckboxEditor';
 
 class RowActionsCell extends React.Component {
 
@@ -10,10 +11,14 @@ class RowActionsCell extends React.Component {
   render() {
     const {connectDragSource, connectDragPreview} = this.props;
     return connectDragPreview(connectDragSource(
-      <div className="react-grid-row-index">
-        { this.props.rowIdx + 1 }
-      </div>
-    ));
+      <div className="rdg-drag-row-handle">
+        <div className="rdg-row-index">
+          { this.props.rowIdx + 1 }
+        </div>
+        <div className="rdg-actions-checkbox">
+          <CheckboxEditor/>
+        </div>
+      </div>));
   }
 }
 
@@ -21,7 +26,8 @@ RowActionsCell.propTypes = {
   rowIdx: PropTypes.number.isRequired,
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired
+  isDragging: PropTypes.bool.isRequired,
+  isRowHovered: PropTypes.bool
 };
 
 RowActionsCell.defaultProps = {

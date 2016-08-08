@@ -323,6 +323,7 @@ const Canvas = React.createClass({
           idx: displayStart + idx,
           row: r.row,
           height: rowHeight,
+          onMouseOver: this.onMouseOver,
           columns: this.props.columns,
           isSelected: this.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
           expandedRows: this.props.expandedRows,

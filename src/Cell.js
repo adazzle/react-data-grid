@@ -31,7 +31,8 @@ const Cell = React.createClass({
     cellControls: React.PropTypes.any,
     rowData: React.PropTypes.object.isRequired,
     forceUpdate: React.PropTypes.bool,
-    expandableOptions: React.PropTypes.object.isRequired
+    expandableOptions: React.PropTypes.object.isRequired,
+    isRowHovered: React.PropTypes.bool
   },
 
   getDefaultProps: function(): {tabIndex: number; ref: string; isExpanded: boolean } {
@@ -81,6 +82,7 @@ const Cell = React.createClass({
     || this.isSelected()
     || this.props.value !== nextProps.value
     || this.props.forceUpdate === true
+    || this.props.isRowHovered === true
     || this.props.className !== nextProps.className
     || this.hasChangedDependentValues(nextProps);
   },
@@ -456,13 +458,14 @@ const Cell = React.createClass({
       value: this.props.value,
       column: this.props.column,
       rowIdx: this.props.rowIdx,
-      isExpanded: this.props.isExpanded
+      isExpanded: this.props.isExpanded,
+      isRowHovered: this.props.isRowHovered
     });
 
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
     let events = this.getEvents();
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onContextMenu={this.onCellContextMenu} onDragOver={this.onDragOver} {...events}>
+      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onMouseOver={this.onMouseOver} onContextMenu={this.onCellContextMenu} onDragOver={this.onDragOver} {...events}>
       {cellContent}
       {dragHandle}
       </div>
