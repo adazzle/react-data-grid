@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 const rows = [{ colOne: 'v1', colTwo: 'b1' },
               { colOne: 'v2', colTwo: 'b2' },
               { colOne: 'v1', colTwo: 'b3' }];
-const grpDetails = { grpColumns: ['colOne'], expRows: {} };
+const grpDetails = { grpColumns: ['colOne', 'colTwo'], expRows: {} };
 
 ddescribe('Row Grouper', () => {
   it('It can group an array of rows (no expanded rows) - correct number of header elements', () => {

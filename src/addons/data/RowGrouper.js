@@ -1,13 +1,12 @@
-import groupBy from 'lodash/groupby';
 import isImmutableCollection from '../utils/isImmutableCollection';
-import {List} from 'immutable';
+import Resolver from './RowGrouperResolver';
 
 class RowGrouper {
 
-  constructor(columns, expandedRows) {
+  constructor(columns, expandedRows, isImmutable = false) {
     this.columns = columns.slice(0);
     this.expandedRows = expandedRows;
-    this.isImmutable = null;
+    this.resolver = new Resolver(isImmutable);
   }
 
   isRowExpanded(columnName, name) {
@@ -20,42 +19,35 @@ class RowGrouper {
   }
 
   groupRowsByColumn(rows, columnIndex = 0) {
-    if (!this.isImmutable) { this.isImmutable = isImmutableCollection(rows); }
-
-    let dataviewRows = this.isImmutable ? new List() : [];
     let nextColumnIndex = columnIndex;
     let columnName = this.columns[columnIndex];
-    let groupedRows = this.isImmutable ? rows.groupBy(x => x.get(columnName)) : groupBy(rows, columnName);
-    let keysCollection = this.isImmutable ? groupedRows.keys() : Object.keys(groupedRows);
+    let groupedRows = this.resolver.getGroupedRows(rows, columnName);
+    let keys = this.resolver.getGroupKeys(groupedRows);
 
-    for(const key of keysCollection) {
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
       let isExpanded = this.isRowExpanded(columnName, key);
       let rowGroupHeader = {name: key, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName}};
 
-      if (!this.isImmutable) {
-        dataviewRows.push(rowGroupHeader);
-      } else {
-        dataviewRows = dataviewRows.push(rowGroupHeader);
-      }
+      this.resolver.addHeaderRow(rowGroupHeader);
 
       if (isExpanded) {
         nextColumnIndex = columnIndex + 1;
         if (this.columns.length > nextColumnIndex) {
-          dataviewRows = dataviewRows.concat(this.groupingFunc(this.isImmutable ? groupedRows.get(key) : groupedRows[key], nextColumnIndex));
+          this.resolver.addRows(this.groupRowsByColumn(this.resolver.getRowObj(groupedRows, key), nextColumnIndex));
           nextColumnIndex = columnIndex - 1;
         } else {
-          dataviewRows = dataviewRows.concat(this.isImmutable ? groupedRows.get(key) : groupedRows[key]);
+          this.resolver.addRows(this.resolver.getRowObj(groupedRows, key));
         }
       }
     }
-    return dataviewRows;
+    return this.resolver.dataviewRows;
   }
 }
 
 const groupRows = (rows, groupedColumns, expandedRows) => {
-  let rowGrouper = new RowGrouper(groupedColumns, expandedRows);
+  let rowGrouper = new RowGrouper(groupedColumns, expandedRows, isImmutableCollection(rows));
   return rowGrouper.groupRowsByColumn(rows, 0);
 };
 
 module.exports = groupRows;
-

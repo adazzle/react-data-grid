@@ -10,12 +10,12 @@ ddescribe('Row Sorter', () => {
   it('It can sort an array of rows', () => {
     let sortResult = sortRows(rows, sortDetails.sortColumn, sortDetails.sortDirection);
 
-    expect(sortResult[1].colTwo).toBe('b3');
+    expect(sortResult[rows.length - 1].colTwo).toBe('b2');
   });
 
   it('It can sort an immutable js list of rows', () => {
     let immutableList = Immutable.fromJS(rows);
     let sortResult = sortRows(immutableList, sortDetails.sortColumn, sortDetails.sortDirection);
-    expect(sortResult.toJS()[1].colTwo).toBe('b3');
+    expect(sortResult.get(rows.length - 1).get('colTwo')).toBe('b2');
   });
 });
