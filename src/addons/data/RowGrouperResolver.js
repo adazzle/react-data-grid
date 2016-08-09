@@ -8,7 +8,7 @@ export default class RowGrouperResolver {
     const retriever = new ValueRetriever(isImmutable);
 
     this.isImmutable = isImmutable;
-    this.dataviewRows = isImmutable ? new List() : [];
+    this.dataviewRows = () => { return this.isImmutable ? new List() : []; };
     this.getRowObj = retriever.getValue;
   }
 
@@ -34,14 +34,12 @@ export default class RowGrouperResolver {
     return getKeys(groupedRows);
   }
 
-  addHeaderRow(rowGroupHeader) {
-    let dvRows = this.dataviewRows.push(rowGroupHeader);
+  addHeaderRow(rowGroupHeader, dataviewRows) {
+    let rows = dataviewRows;
+    let dvRows = rows.push(rowGroupHeader);
     if (this.isImmutable) {
-      this.dataviewRows = dvRows;
+      return dvRows;
     }
-  }
-
-  addRows(rows) {
-    this.dataviewRows = this.dataviewRows.concat(rows);
+    return rows;
   }
 }

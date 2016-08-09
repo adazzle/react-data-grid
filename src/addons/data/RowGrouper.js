@@ -23,25 +23,26 @@ class RowGrouper {
     let columnName = this.columns[columnIndex];
     let groupedRows = this.resolver.getGroupedRows(rows, columnName);
     let keys = this.resolver.getGroupKeys(groupedRows);
+    let dataviewRows = this.resolver.dataviewRows();
 
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
       let isExpanded = this.isRowExpanded(columnName, key);
       let rowGroupHeader = {name: key, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName}};
 
-      this.resolver.addHeaderRow(rowGroupHeader);
+      dataviewRows = this.resolver.addHeaderRow(rowGroupHeader, dataviewRows);
 
       if (isExpanded) {
         nextColumnIndex = columnIndex + 1;
         if (this.columns.length > nextColumnIndex) {
-          this.resolver.addRows(this.groupRowsByColumn(this.resolver.getRowObj(groupedRows, key), nextColumnIndex));
+          dataviewRows = dataviewRows.concat(this.groupRowsByColumn(this.resolver.getRowObj(groupedRows, key), nextColumnIndex));
           nextColumnIndex = columnIndex - 1;
         } else {
-          this.resolver.addRows(this.resolver.getRowObj(groupedRows, key));
+          dataviewRows = dataviewRows.concat(this.resolver.getRowObj(groupedRows, key));
         }
       }
     }
-    return this.resolver.dataviewRows;
+    return dataviewRows;
   }
 }
 
