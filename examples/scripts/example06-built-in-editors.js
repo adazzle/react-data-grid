@@ -17,7 +17,10 @@ var issueTypes = [
   { id: 'story', value: 'story', text: 'Story', title: 'Story' }
 ];
 var DropDownEditor = ReactDataGridPlugins.Editors.DropDownEditor;
-var IssueTypesEditor = <DropDownEditor options={issueTypes}/>
+var IssueTypesEditor = <DropDownEditor options={issueTypes}/>;
+
+var DropDownFormatter = ReactDataGridPlugins.Formatters.DropDownFormatter;
+var IssueTypesFormatter = <DropDownFormatter options={issueTypes}/>;
 
 //helper to generate a random date
 function randomDate(start, end) {
@@ -66,7 +69,8 @@ var columns = [
 {
   key : 'issueType',
   name : 'Issue Type',
-  editor : IssueTypesEditor
+  editor : IssueTypesEditor,
+  formatter: IssueTypesFormatter
 }
 ]
 
