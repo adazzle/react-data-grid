@@ -1,4 +1,8 @@
+import ValueRetriever from '../utils/mixedTypeValueRetriever';
+import isImmutableCollection from '../utils/isImmutableCollection';
+
 const filterRows = (filters, rows = []) => {
+  const retriever = new ValueRetriever(isImmutableCollection(rows));
   return rows.filter(r => {
     let include = true;
     for (let columnKey in filters) {
@@ -9,7 +13,7 @@ const filterRows = (filters, rows = []) => {
           include = false;
         } else if (typeof colFilter.filterTerm === 'string') {
           // default filter action
-          let rowValue = r[columnKey].toString().toLowerCase();
+          let rowValue = retriever.getValue(r, columnKey).toString().toLowerCase();
           if (rowValue.indexOf(colFilter.filterTerm.toLowerCase()) === -1) {
             include = false;
           }
