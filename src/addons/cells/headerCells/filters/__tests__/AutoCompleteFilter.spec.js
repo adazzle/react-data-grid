@@ -4,8 +4,10 @@ import AutoCompleteFilter from '../AutoCompleteFilter';
 
 function createRows() {
   let rows = [];
-  for (let i = 1; i <= 2; i++) {
-    rows.push({ id: i, title: 'Title ' + i, count: i * 1000 });
+  const NUMBER_OF_ROWS = 2;
+  for (let i = 1; i <= NUMBER_OF_ROWS; i++) {
+    let title = `Title ${i} of ${NUMBER_OF_ROWS}`;
+    rows.push({ id: i, title, count: i * 1000 });
   }
   return rows;
 }
@@ -50,27 +52,39 @@ describe('AutoCompleteFilter', () => {
     });
 
     describe('When filtering a row', () => {
-      it('with undefined value', () => {
+      const columnKey = 'title';
+
+      const filterValues = (columnFilter) => {
+        return component.filterValues(rows[0], columnFilter, columnKey);
+      };
+
+      it('should handle undefineds', () => {
         let request = component.filterValues(rows[0], null, null);
-        expect(request).toBe(false);
+        expect(request).toBeFalsy();
       });
-      it('with valid value to filter', () => {
+
+      it('should filter valid values', () => {
         let columnFilter = { filterTerm: [ {value: '1'} ] };
-        let columnKey = 'title';
-        let request = component.filterValues(rows[0], columnFilter, columnKey);
-        expect(request).toEqual(true);
+        let request = filterValues(columnFilter);
+        expect(request).toBeTruthy();
       });
-      it('with invalid value to filter', () => {
-        let columnFilter = { filterTerm: [ {value: '2'} ] };
-        let columnKey = 'title';
-        let request = component.filterValues(rows[0], columnFilter, columnKey);
-        expect(request).toEqual(false);
+
+      it('should handle invalid values', () => {
+        let columnFilter = { filterTerm: [ {value: '3'} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeFalsy();
       });
-      it('with empty value to filter', () => {
+
+      it('should handle empty values', () => {
         let columnFilter = { filterTerm: [ {value: ''} ] };
-        let columnKey = 'title';
-        let request = component.filterValues(rows[0], columnFilter, columnKey);
-        expect(request).toEqual(false);
+        let request = filterValues(columnFilter);
+        expect(request).toBeFalsy();
+      });
+
+      it('should be a full match when filter match is the first word', () => {
+        let columnFilter = { filterTerm: [ {value: 'Title 1'} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeFalsy();
       });
     });
   });

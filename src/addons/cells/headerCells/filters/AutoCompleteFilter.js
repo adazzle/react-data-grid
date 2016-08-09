@@ -27,20 +27,34 @@ class AutoCompleteFilter extends React.Component {
     return options;
   }
 
+  columnValueContainsSearchTerms(columnValue, filterTerms) {
+    let columnValueContainsSearchTerms = false;
+
+    for (let key in filterTerms) {
+      if (!filterTerms.hasOwnProperty(key)) {
+        continue;
+      }
+
+      let filterTermValue = filterTerms[key].value;
+
+      let checkValueIndex = columnValue.trim().toLowerCase().indexOf(filterTermValue.trim().toLowerCase());
+      let columnMatchesSearch = checkValueIndex !== -1 && (checkValueIndex !== 0 || columnValue === filterTermValue);
+
+      if (columnMatchesSearch) {
+        columnValueContainsSearchTerms = true;
+        break;
+      }
+    }
+
+    return columnValueContainsSearchTerms;
+  }
+
   filterValues(row, columnFilter, columnKey) {
     let include = true;
     if (columnFilter === null) {
       include = false;
     } else if (!isEmptyArray(columnFilter.filterTerm)) {
-      for (let prop of columnFilter.filterTerm) {
-        let checkValueIndex = row[columnKey].trim().toLowerCase().indexOf(prop.value.trim().toLowerCase());
-        if (checkValueIndex === -1 || (checkValueIndex === 0 && row[columnKey] !== prop.value)) {
-          include = false;
-        } else {
-          include = true;
-          break;
-        }
-      }
+      include = this.columnValueContainsSearchTerms(row[columnKey], columnFilter.filterTerm);
     }
     return include;
   }

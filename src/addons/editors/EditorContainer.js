@@ -62,10 +62,13 @@ const EditorContainer = React.createClass({
       onOverrideKeyDown: this.onKeyDown
     };
 
-    let customEditor = this.props.column.editor;
-    if (customEditor && React.isValidElement(customEditor)) {
-      // return custom column editor or SimpleEditor if none specified
-      return React.cloneElement(customEditor, editorProps);
+    let CustomEditor = this.props.column.editor;
+    // return custom column editor or SimpleEditor if none specified
+    if (React.isValidElement(CustomEditor)) {
+      return React.cloneElement(CustomEditor, editorProps);
+    }
+    if (isFunction(CustomEditor)) {
+      return <CustomEditor ref={editorRef} {...editorProps} />;
     }
 
     return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;

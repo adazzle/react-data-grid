@@ -4749,6 +4749,22 @@
         "returns": null
       },
       {
+        "name": "columnValueContainsSearchTerms",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "columnValue",
+            "type": null
+          },
+          {
+            "name": "filterTerms",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "filterValues",
         "docblock": null,
         "modifiers": [],
