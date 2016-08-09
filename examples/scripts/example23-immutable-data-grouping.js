@@ -36,7 +36,6 @@ var ImmutableGroupingExample = `
  var Example = React.createClass({displayName: 'component',
 
     getInitialState : function(){
-      //var fakeRows = createRows(2000);
       return { 
         rows : new Immutable.fromJS(_rows), 
         cols: new Immutable.List(_cols), 
