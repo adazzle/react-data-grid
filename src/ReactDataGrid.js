@@ -307,14 +307,17 @@ const ReactDataGrid = React.createClass({
   },
 
   onDragStart(e: SyntheticEvent) {
-    let value = this.getSelectedValue();
-    this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
-    // need to set dummy data for FF
-    if (e && e.dataTransfer) {
-      if (e.dataTransfer.setData) {
-        e.dataTransfer.dropEffect = 'move';
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', 'dummy');
+    let idx = this.state.selected.idx;
+    if (idx > -1) {
+      let value = this.getSelectedValue();
+      this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
+      // need to set dummy data for FF
+      if (e && e.dataTransfer) {
+        if (e.dataTransfer.setData) {
+          e.dataTransfer.dropEffect = 'move';
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', 'dummy');
+        }
       }
     }
   },
@@ -371,7 +374,7 @@ const ReactDataGrid = React.createClass({
   },
 
   handleDragEnd() {
-    if (!this.dragEnabled()) { return; }
+    if (!this.dragEnabled() || this.state.selected.idx === -1) { return; }
     let fromRow;
     let toRow;
     let selected = this.state.selected;
@@ -391,7 +394,7 @@ const ReactDataGrid = React.createClass({
   },
 
   handleDragEnter(row: any) {
-    if (!this.dragEnabled()) { return; }
+    if (!this.dragEnabled() || this.state.dragged == null) { return; }
     let dragged = this.state.dragged;
     dragged.overRowIdx = row;
     this.setState({dragged: dragged});

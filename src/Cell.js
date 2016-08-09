@@ -1,10 +1,10 @@
 import isEqual from 'lodash/isEqual';
-const React             = require('react');
+const React = require('react');
 const ReactDOM = require('react-dom');
-const joinClasses       = require('classnames');
-const EditorContainer   = require('./addons/editors/EditorContainer');
-const ExcelColumn       = require('./PropTypeShapes/ExcelColumn');
-const isFunction        = require('./addons/utils/isFunction');
+const joinClasses = require('classnames');
+const EditorContainer = require('./addons/editors/EditorContainer');
+const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
+const isFunction = require('./addons/utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./addons/formatters/SimpleCellFormatter');
 const ColumnUtils = require('./ColumnUtils');
@@ -35,7 +35,7 @@ const Cell = React.createClass({
     isRowHovered: React.PropTypes.bool
   },
 
-  getDefaultProps: function(): {tabIndex: number; ref: string; isExpanded: boolean } {
+  getDefaultProps() {
     return {
       tabIndex: -1,
       ref: 'cell',
@@ -49,7 +49,7 @@ const Cell = React.createClass({
     };
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.checkFocus();
   },
 
@@ -59,7 +59,7 @@ const Cell = React.createClass({
     });
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     this.checkFocus();
     let dragged = this.props.cellMetaData.dragged;
     if (dragged && dragged.complete === true) {
@@ -70,41 +70,41 @@ const Cell = React.createClass({
     }
   },
 
-  shouldComponentUpdate(nextProps: any): boolean {
+  shouldComponentUpdate(nextProps) {
     return this.props.column.width !== nextProps.column.width
-    || this.props.column.left !== nextProps.column.left
-    || this.props.height !== nextProps.height
-    || this.props.rowIdx !== nextProps.rowIdx
-    || this.isCellSelectionChanging(nextProps)
-    || this.isDraggedCellChanging(nextProps)
-    || this.isCopyCellChanging(nextProps)
-    || this.props.isRowSelected !== nextProps.isRowSelected
-    || this.isSelected()
-    || this.props.value !== nextProps.value
-    || this.props.forceUpdate === true
-    || this.props.isRowHovered === true
-    || this.props.className !== nextProps.className
-    || this.hasChangedDependentValues(nextProps);
+      || this.props.column.left !== nextProps.column.left
+      || this.props.height !== nextProps.height
+      || this.props.rowIdx !== nextProps.rowIdx
+      || this.isCellSelectionChanging(nextProps)
+      || this.isDraggedCellChanging(nextProps)
+      || this.isCopyCellChanging(nextProps)
+      || this.props.isRowSelected !== nextProps.isRowSelected
+      || this.isSelected()
+      || this.props.value !== nextProps.value
+      || this.props.forceUpdate === true
+      || this.props.isRowHovered === true
+      || this.props.className !== nextProps.className
+      || this.hasChangedDependentValues(nextProps);
   },
 
   onCellClick(e) {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellClick && typeof(meta.onCellClick) === 'function') {
-      meta.onCellClick({rowIdx: this.props.rowIdx, idx: this.props.idx}, e);
+    if (meta != null && meta.onCellClick && typeof (meta.onCellClick) === 'function') {
+      meta.onCellClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
     }
   },
 
   onCellContextMenu() {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellContextMenu && typeof(meta.onCellContextMenu) === 'function') {
-      meta.onCellContextMenu({rowIdx: this.props.rowIdx, idx: this.props.idx});
+    if (meta != null && meta.onCellContextMenu && typeof (meta.onCellContextMenu) === 'function') {
+      meta.onCellContextMenu({ rowIdx: this.props.rowIdx, idx: this.props.idx });
     }
   },
 
   onCellDoubleClick(e) {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick && typeof(meta.onCellDoubleClick) === 'function') {
-      meta.onCellDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx}, e);
+    if (meta != null && meta.onCellDoubleClick && typeof (meta.onCellDoubleClick) === 'function') {
+      meta.onCellDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
     }
   },
 
@@ -112,7 +112,7 @@ const Cell = React.createClass({
     e.stopPropagation();
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellExpand != null) {
-      meta.onCellExpand({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expandArgs: this.props.expandableOptions});
+      meta.onCellExpand({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expandArgs: this.props.expandableOptions });
     }
   },
 
@@ -125,16 +125,16 @@ const Cell = React.createClass({
   onDragHandleDoubleClick(e) {
     e.stopPropagation();
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onDragHandleDoubleClick && typeof(meta.onDragHandleDoubleClick) === 'function') {
-      meta.onDragHandleDoubleClick({rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e});
+    if (meta != null && meta.onDragHandleDoubleClick && typeof (meta.onDragHandleDoubleClick) === 'function') {
+      meta.onDragHandleDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e });
     }
   },
 
-  onDragOver: function(e) {
+  onDragOver(e) {
     e.preventDefault();
   },
 
-  getStyle(): {position:string; width: number; height: number; left: number} {
+  getStyle() {
     let style = {
       position: 'absolute',
       width: this.props.column.width,
@@ -147,7 +147,7 @@ const Cell = React.createClass({
   getFormatter() {
     let col = this.props.column;
     if (this.isActive()) {
-      return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
+      return <EditorContainer rowData={this.getRowData() } rowIdx={this.props.rowIdx} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
     }
 
     return this.props.column.formatter;
@@ -164,7 +164,7 @@ const Cell = React.createClass({
     }
   },
 
-  getCellClass: function(): string {
+  getCellClass() {
     let className = joinClasses(
       this.props.column.cellClass,
       'react-grid-Cell',
@@ -200,7 +200,7 @@ const Cell = React.createClass({
     );
   },
 
-  isSelected: function(): boolean {
+  isSelected() {
     let meta = this.props.cellMetaData;
     if (meta == null) { return false; }
 
@@ -211,13 +211,13 @@ const Cell = React.createClass({
     );
   },
 
-  isActive(): boolean {
+  isActive() {
     let meta = this.props.cellMetaData;
     if (meta == null) { return false; }
     return this.isSelected() && meta.selected.active === true;
   },
 
-  isCellSelectionChanging(nextProps: {idx: number; cellMetaData: {selected: {idx: number}}}): boolean {
+  isCellSelectionChanging(nextProps: { idx: number; cellMetaData: { selected: { idx: number } } }): boolean {
     let meta = this.props.cellMetaData;
     if (meta == null) { return false; }
     let nextSelected = nextProps.cellMetaData.selected;
@@ -256,7 +256,7 @@ const Cell = React.createClass({
       let cellDOMNode = ReactDOM.findDOMNode(this);
       if (cellDOMNode.classList) {
         cellDOMNode.classList.remove(updateCellClass);
-      // -> and re-adding the class
+        // -> and re-adding the class
         cellDOMNode.classList.add(updateCellClass);
       } else if (cellDOMNode.className.indexOf(updateCellClass) === -1) {
         // IE9 doesn't support classList, nor (I think) altering element.className
@@ -299,7 +299,7 @@ const Cell = React.createClass({
     return (
       dragged
       && ((dragged.overRowIdx < this.props.rowIdx && this.props.rowIdx < dragged.rowIdx)
-      ||  (dragged.overRowIdx > this.props.rowIdx && this.props.rowIdx > dragged.rowIdx))
+        || (dragged.overRowIdx > this.props.rowIdx && this.props.rowIdx > dragged.rowIdx))
       && dragged.idx === this.props.idx
     );
   },
@@ -310,7 +310,7 @@ const Cell = React.createClass({
     let nextDragged = nextProps.cellMetaData.dragged;
     if (dragged) {
       isChanging = (nextDragged && this.props.idx === nextDragged.idx)
-      || (dragged && this.props.idx === dragged.idx);
+        || (dragged && this.props.idx === dragged.idx);
       return isChanging;
     }
 
@@ -322,8 +322,8 @@ const Cell = React.createClass({
     let copied = this.props.cellMetaData.copied;
     let nextCopied = nextProps.cellMetaData.copied;
     if (copied) {
-      isChanging = ( nextCopied && this.props.idx ===  nextCopied.idx)
-      || (copied && this.props.idx === copied.idx);
+      isChanging = (nextCopied && this.props.idx === nextCopied.idx)
+        || (copied && this.props.idx === copied.idx);
       return isChanging;
     }
     return false;
@@ -339,7 +339,7 @@ const Cell = React.createClass({
     return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
   },
 
-  checkFocus: function() {
+  checkFocus() {
     if (this.isSelected() && !this.isActive()) {
       // determine the parent viewport element of this cell
       let parentViewport = ReactDOM.findDOMNode(this);
@@ -397,7 +397,7 @@ const Cell = React.createClass({
     for (let eventKey in columnEvents) {
       if (columnEvents.hasOwnProperty(eventKey)) {
         let event = columnEvents[event];
-        let eventInfo = {rowIdx: this.props.rowIdx, idx: this.props.idx, name: eventKey};
+        let eventInfo = { rowIdx: this.props.rowIdx, idx: this.props.idx, name: eventKey };
         let eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
 
         if (allEvents.hasOwnProperty(eventKey)) {
@@ -418,8 +418,13 @@ const Cell = React.createClass({
     let gridEvents = {
       onClick: this.onCellClick,
       onDoubleClick: this.onCellDoubleClick,
-      onDragOver: this.onDragOver
+      onContextMenu: this.onCellContextMenu
     };
+
+    if (this.canEdit()) {
+      gridEvents.onDragOver = this.onDragOver;
+    }
+
 
     if (!columnEvents || !onColumnEvent) {
       return gridEvents;
@@ -435,14 +440,14 @@ const Cell = React.createClass({
       props.dependentValues = this.getFormatterDependencies();
       CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()}/>;
+      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies() }/>;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
     let cellExpander;
     let marginLeft = this.props.expandableOptions ? (this.props.expandableOptions.treeDepth * 30) : 0;
     if (this.canExpand()) {
-      cellExpander = (<span style={{float: 'left', marginLeft: marginLeft}} onClick={this.onCellExpand} >{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>);
+      cellExpander = (<span style={{ float: 'left', marginLeft: marginLeft }} onClick={this.onCellExpand} >{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658') }</span>);
     }
     return (<div  ref="cell"
       className="react-grid-Cell__value">{cellExpander}<span >{CellContent}</span> {this.props.cellControls} </div>);
@@ -461,12 +466,13 @@ const Cell = React.createClass({
       isRowHovered: this.props.isRowHovered
     });
 
-    let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
+    let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
     let events = this.getEvents();
+
     return (
-      <div {...this.props} className={className} style={style} onClick={this.onCellClick} onDoubleClick={this.onCellDoubleClick} onMouseOver={this.onMouseOver} onContextMenu={this.onCellContextMenu} onDragOver={this.onDragOver} {...events}>
-      {cellContent}
-      {dragHandle}
+      <div {...this.props} className={className} style={style}   {...events}>
+        {cellContent}
+        {dragHandle}
       </div>
     );
   }

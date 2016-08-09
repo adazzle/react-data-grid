@@ -35,11 +35,6 @@ function createRows(numberOfRows){
   return _rows;
 }
 
-//function to retrieve a row for a given index
-var rowGetter = function(i){
-  return _rows[i];
-};
-
 //Columns definition
 var columns = [
 {

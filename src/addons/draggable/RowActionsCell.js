@@ -10,22 +10,24 @@ class RowActionsCell extends React.Component {
 
   getRowPreview() {
     let rowData = this.props.dependentValues;
-    let td = '';
+    let cells = '';
+    let width = 100;
+    let left = 0;
     for (let property in rowData) {
       if (rowData.hasOwnProperty(property)) {
-        td += `<td>${rowData[property]}</td>`;
+        cells += `<td style="height:35px; background-color: white; border: 1px solid #eee; width: 80px; padding: 5px">${rowData[property]}</td>`;
+        left += width;
       }
     }
-    return `<table class="table"><tr>${td}</tr></table>`;
+    return `<tr>${cells}</tr>`;
   }
 
   createDragPreview() {
     let canvas = document.createElement('canvas');
     let ctx = canvas.getContext('2d');
-    console.log(this.getRowPreview());
-    let data = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
+    let data = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="40" style="cursor: -webkit-grabbing">' +
       '<foreignObject width="100%" height="100%">' +
-      '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:40px">' +
+      '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:28px; background-color: white; opacity: 1; ">' +
       this.getRowPreview() +
       '</div>' +
       '</foreignObject>' +
@@ -96,10 +98,10 @@ function collect(connect, monitor) {
 
 const rowIndexSource = {
   beginDrag(props) {
-    return { rowIdx: props.rowIdx };
+    return { idx: props.rowIdx, data: props.dependentValues };
   },
   endDrag(props) {
-    return { rowIdx: props.rowIdx };
+    return { idx: props.rowIdx, data: props.dependentValues };
   }
 };
 
