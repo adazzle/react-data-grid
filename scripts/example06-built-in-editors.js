@@ -9,9 +9,18 @@ var AutoCompleteEditor = ReactDataGridPlugins.Editors.AutoComplete;
 var PrioritiesEditor = <AutoCompleteEditor options={priorities}/>
 
 //options for IssueType dropdown editor
-var issueTypes = ['Bug', 'Improvement', 'Epic', 'Story'];
+//these can either be an array of strings, or an object that matches the schema below.
+var issueTypes = [
+  { id: 'bug', value: 'bug', text: 'Bug', title: 'Bug' },
+  { id: 'improvement', value: 'improvement', text: 'Improvement', title: 'Improvement' },
+  { id: 'epic', value: 'epic', text: 'Epic', title: 'Epic' },
+  { id: 'story', value: 'story', text: 'Story', title: 'Story' }
+];
 var DropDownEditor = ReactDataGridPlugins.Editors.DropDownEditor;
-var IssueTypesEditor = <DropDownEditor options={issueTypes}/>
+var IssueTypesEditor = <DropDownEditor options={issueTypes}/>;
+
+var DropDownFormatter = ReactDataGridPlugins.Formatters.DropDownFormatter;
+var IssueTypesFormatter = <DropDownFormatter options={issueTypes}/>;
 
 //helper to generate a random date
 function randomDate(start, end) {
@@ -27,7 +36,7 @@ function createRows(numberOfRows){
       task: 'Task ' + i,
       complete: Math.min(100, Math.round(Math.random() * 110)),
       priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
-      issueType : issueTypes[Math.floor((Math.random() * 3) + 1)],
+      issueType : issueTypes[Math.floor((Math.random() * 3) + 1)].value,
       startDate: randomDate(new Date(2015, 3, 1), new Date()),
       completeDate: randomDate(new Date(), new Date(2016, 0, 1))
     });
@@ -60,7 +69,8 @@ var columns = [
 {
   key : 'issueType',
   name : 'Issue Type',
-  editor : IssueTypesEditor
+  editor : IssueTypesEditor,
+  formatter: IssueTypesFormatter
 }
 ]
 
