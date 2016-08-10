@@ -23,7 +23,7 @@ class RowGrouper {
     let columnName = this.columns[columnIndex];
     let groupedRows = this.resolver.getGroupedRows(rows, columnName);
     let keys = this.resolver.getGroupKeys(groupedRows);
-    let dataviewRows = this.resolver.dataviewRows();
+    let dataviewRows = this.resolver.initRowsCollection();
 
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];

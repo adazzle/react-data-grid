@@ -5,11 +5,12 @@ import getMixedTypeValueRetriever from '../utils/mixedTypeValueRetriever';
 export default class RowGrouperResolver {
 
   constructor(isImmutable) {
-    const retriever = getMixedTypeValueRetriever(isImmutable);
-
     this.isImmutable = isImmutable;
-    this.dataviewRows = () => { return this.isImmutable ? new List() : []; };
-    this.getRowObj = retriever.getValue;
+    this.getRowObj = getMixedTypeValueRetriever(isImmutable).getValue;
+  }
+
+  initRowsCollection() {
+    return this.isImmutable ? new List() : [];
   }
 
   getGroupedRows(rows, columnName) {
