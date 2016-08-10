@@ -95,6 +95,7 @@
     "pretty-hrtime": "^0.2.1",
     "react": "~0.14.6",
     "react-addons-test-utils": "^0.14.6",
+    "react-addons-transition-group": "^15.3.0",
     "react-docgen": "^2.8.2",
     "react-dom": "~0.14.6",
     "react-router": "^0.13.3",
