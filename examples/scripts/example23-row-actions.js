@@ -1,6 +1,6 @@
 
 var QuickStartDescription = require('../components/QuickStartDescription')
-var ReactPlayground       = require('../assets/js/ReactPlayground');
+var ReactPlayground = require('../assets/js/ReactPlayground');
 
 
 var RowActionsExample = `
@@ -61,7 +61,7 @@ let RowRenderer = DropTargetRowContainer(ReactDataGrid.Row);
 var Example = React.createClass({
 
   getInitialState : function(){
-    return {rows : createRows(1000)}
+    return {rows : createRows(1000), selectedIds: [1, 2]}
   },
 
   rowGetter : function(rowIdx){
@@ -76,6 +76,14 @@ var Example = React.createClass({
     this.setState({rows: rows});
   },
 
+  onRowsSelected: function(rows) {
+    console.log(rows);
+  },
+
+  onRowsDeselected: function(rows) {
+
+  },
+
   render: function() {
     return  (
     <DraggableContainer>
@@ -86,7 +94,16 @@ var Example = React.createClass({
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        rowRenderer={<RowRenderer onRowDrop={this.reorderRow}/>}/>
+        rowRenderer={<RowRenderer onRowDrop={this.reorderRow}/>}
+        rowSelection={{
+          showCheckbox: true,
+          enableShiftSelect: true,
+          onRowsSelected: this.onRowsSelected,
+          onRowsDeselected: this.onRowsDeselected,
+          selectBy: {
+            keys: {rowKey: 'id', values: this.state.selectedIds}
+          }
+        }}/>
     </DraggableContainer>);
   }
 });
@@ -95,8 +112,8 @@ ReactDOM.render(<Example />, mountNode);
 
 module.exports = React.createClass({
 
-  render:function(){
-    return(
+  render: function () {
+    return (
       <div>
         <h3>A Simple Example</h3>
         <ReactPlayground codeText={RowActionsExample} />
