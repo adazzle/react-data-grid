@@ -34,7 +34,7 @@ const EditorContainer = React.createClass({
   componentDidMount: function() {
     let inputNode = this.getInputNode();
     if (inputNode !== undefined) {
-      this.setTextInputFocus();
+      this.setTextInputFocus(inputNode);
       if (!this.getEditor().disableContainerStyles) {
         inputNode.className += ' editor-main';
         inputNode.style.height = this.props.height - 1 + 'px';
@@ -111,7 +111,7 @@ const EditorContainer = React.createClass({
 
   onPressArrowLeft(e: SyntheticKeyboardEvent) {
     // prevent event propogation. this disables left cell navigation
-    if (!this.isCaretAtBeginningOfInput()) {
+    if (this.isElemTextInput(e.target) && !this.isCaretAtBeginningOfInput()) {
       e.stopPropagation();
     } else {
       this.commit(e);
@@ -120,11 +120,15 @@ const EditorContainer = React.createClass({
 
   onPressArrowRight(e: SyntheticKeyboardEvent) {
     // prevent event propogation. this disables right cell navigation
-    if (!this.isCaretAtEndOfInput()) {
+    if (this.isElemTextInput(e.target) && !this.isCaretAtEndOfInput()) {
       e.stopPropagation();
     } else {
       this.commit(e);
     }
+  },
+
+  isElemTextInput(element): boolean {
+    return element && element.type === 'text';
   },
 
   editorHasResults(): boolean {
@@ -224,10 +228,9 @@ const EditorContainer = React.createClass({
     return inputNode.selectionStart === inputNode.value.length;
   },
 
-  setTextInputFocus() {
+  setTextInputFocus(inputNode) {
     let selected = this.props.cellMetaData.selected;
     let keyCode = selected.initialKeyCode;
-    let inputNode = this.getInputNode();
     inputNode.focus();
     if (inputNode.tagName === 'INPUT') {
       if (!this.isKeyPrintable(keyCode)) {

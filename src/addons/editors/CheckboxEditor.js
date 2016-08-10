@@ -1,4 +1,5 @@
 const React = require('react');
+const ReactDOM = require('react-dom');
 
 const CheckboxEditor = React.createClass({
 
@@ -10,6 +11,14 @@ const CheckboxEditor = React.createClass({
       onCellChange: React.PropTypes.func
     }),
     dependentValues: React.PropTypes.object
+  },
+
+  getValue(){
+    return this.getInputNode().value;
+  },
+
+  getInputNode() {
+    return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
   },
 
   handleChange(e: Event) {
