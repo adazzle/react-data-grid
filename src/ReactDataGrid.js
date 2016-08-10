@@ -797,7 +797,7 @@ const ReactDataGrid = React.createClass({
       let selectColumn = {
         key: 'select-row',
         name: '',
-        formatter: <Formatter enableRowSelect={this.props.rowSelection != null}/>,
+        formatter: <Formatter rowSelection={this.props.rowSelection}/>,
         onCellChange: this.handleRowSelect,
         filterable: false,
         headerRenderer: headerRenderer,
