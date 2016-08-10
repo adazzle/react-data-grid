@@ -7,7 +7,7 @@ const SimpleTextEditor = require('../SimpleTextEditor');
 const EditorBase       = require('../EditorBase');
 const CheckboxEditor = require('../CheckboxEditor');
 
-ddescribe('Editor Container Tests', () => {
+describe('Editor Container Tests', () => {
   let cellMetaData = {
     selected: {
       idx: 0,
