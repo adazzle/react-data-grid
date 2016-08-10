@@ -123,6 +123,7 @@ const Cell = React.createClass({
       height: this.props.height,
       left: this.props.column.left
     };
+    console.log(this.props.column.width);
     return style;
   },
 

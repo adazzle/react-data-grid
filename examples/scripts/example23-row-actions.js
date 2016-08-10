@@ -42,18 +42,16 @@ var columns = [
 },
 {
   key: 'task',
-  name: 'Title',
-  width: 200
+  name: 'Title'
 },
 {
   key : 'priority',
-  name : 'Priority',
-  width: 200
+  name : 'Priority'
 },
 {
   key : 'issueType',
-  name : 'Issue Type',
-  width: 200
+  name : 'Issue Type'
+
 }
 ]
 
