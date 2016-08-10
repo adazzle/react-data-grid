@@ -42,15 +42,18 @@ var columns = [
 },
 {
   key: 'task',
-  name: 'Title'
+  name: 'Title',
+  width: 200
 },
 {
   key : 'priority',
-  name : 'Priority'
+  name : 'Priority',
+  width: 200
 },
 {
   key : 'issueType',
-  name : 'Issue Type'
+  name : 'Issue Type',
+  width: 200
 }
 ]
 
@@ -79,6 +82,7 @@ var Example = React.createClass({
     return  (
     <DraggableContainer>
       <ReactDataGrid
+        enableCellSelection={true}
         rowActionsCell={RowActionsCell}
         columns={columns}
         rowGetter={this.rowGetter}

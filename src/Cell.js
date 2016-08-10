@@ -31,8 +31,7 @@ const Cell = React.createClass({
     cellControls: React.PropTypes.any,
     rowData: React.PropTypes.object.isRequired,
     forceUpdate: React.PropTypes.bool,
-    expandableOptions: React.PropTypes.object.isRequired,
-    isRowHovered: React.PropTypes.bool
+    expandableOptions: React.PropTypes.object.isRequired
   },
 
   getDefaultProps() {
@@ -68,23 +67,6 @@ const Cell = React.createClass({
     if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
       this.applyUpdateClass();
     }
-  },
-
-  shouldComponentUpdate(nextProps) {
-    return this.props.column.width !== nextProps.column.width
-      || this.props.column.left !== nextProps.column.left
-      || this.props.height !== nextProps.height
-      || this.props.rowIdx !== nextProps.rowIdx
-      || this.isCellSelectionChanging(nextProps)
-      || this.isDraggedCellChanging(nextProps)
-      || this.isCopyCellChanging(nextProps)
-      || this.props.isRowSelected !== nextProps.isRowSelected
-      || this.isSelected()
-      || this.props.value !== nextProps.value
-      || this.props.forceUpdate === true
-      || this.props.isRowHovered === true
-      || this.props.className !== nextProps.className
-      || this.hasChangedDependentValues(nextProps);
   },
 
   onCellClick(e) {
@@ -462,8 +444,7 @@ const Cell = React.createClass({
       value: this.props.value,
       column: this.props.column,
       rowIdx: this.props.rowIdx,
-      isExpanded: this.props.isExpanded,
-      isRowHovered: this.props.isRowHovered
+      isExpanded: this.props.isExpanded
     });
 
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;

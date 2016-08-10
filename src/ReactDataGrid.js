@@ -355,12 +355,8 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  onRowHover(rowIdx) {
-    this.setState({hoveredRowIdx: rowIdx});
-  },
-
   handleDragStart(dragged: DraggedType) {
-    if (!this.dragEnabled()) { return; }
+    if (!this.dragEnabled() || this.state.selected.idx === -1) { return; }
     let idx = dragged.idx;
     let rowIdx = dragged.rowIdx;
     if (
@@ -389,7 +385,6 @@ const ReactDataGrid = React.createClass({
     if (this.props.onGridRowsUpdated) {
       this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
     }
-
     this.setState({dragged: {complete: true}});
   },
 
