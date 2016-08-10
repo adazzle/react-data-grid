@@ -1,8 +1,8 @@
-import ValueRetriever from '../utils/mixedTypeValueRetriever';
+import getMixedTypeValueRetriever from '../utils/mixedTypeValueRetriever';
 import isImmutableCollection from '../utils/isImmutableCollection';
 
 const sortRows = (rows, sortColumn, sortDirection) => {
-  const retriever = new ValueRetriever(isImmutableCollection(rows));
+  const retriever = getMixedTypeValueRetriever(isImmutableCollection(rows));
   let comparer = (a, b) => {
     if (sortDirection === 'ASC') {
       return (retriever.getValue(a, sortColumn) > retriever.getValue(b, sortColumn)) ? 1 : -1;

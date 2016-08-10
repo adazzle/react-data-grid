@@ -1,11 +1,11 @@
 import {List} from 'immutable';
 import groupBy from 'lodash/groupBy';
-import ValueRetriever from '../utils/mixedTypeValueRetriever';
+import getMixedTypeValueRetriever from '../utils/mixedTypeValueRetriever';
 
 export default class RowGrouperResolver {
 
   constructor(isImmutable) {
-    const retriever = new ValueRetriever(isImmutable);
+    const retriever = getMixedTypeValueRetriever(isImmutable);
 
     this.isImmutable = isImmutable;
     this.dataviewRows = () => { return this.isImmutable ? new List() : []; };
