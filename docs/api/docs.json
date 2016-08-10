@@ -5414,7 +5414,7 @@
               },
               {
                 "name": "custom",
-                "raw": "React.PropTypes.objectOf({ id: React.PropTypes.string, title: React.PropTypes.string, meta: React.PropTypes.string })"
+                "raw": "React.PropTypes.objectOf({\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n})"
               }
             ]
           }
@@ -6065,6 +6065,38 @@
           "value": "'YYYY-MM-DD'",
           "computed": false
         }
+      }
+    }
+  },
+  "src\\addons\\formatters\\DropDownFormatter.js": {
+    "description": "",
+    "methods": [],
+    "props": {
+      "options": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "union",
+            "value": [
+              {
+                "name": "string"
+              },
+              {
+                "name": "custom",
+                "raw": "React.PropTypes.objectOf({\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n})"
+              }
+            ]
+          }
+        },
+        "required": true,
+        "description": ""
+      },
+      "value": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": ""
       }
     }
   },
