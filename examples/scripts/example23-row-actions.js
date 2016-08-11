@@ -7,6 +7,7 @@ var RowActionsExample = `
 var RowActionsCell = ReactDataGridPlugins.Draggable.RowActionsCell;
 var DraggableContainer = ReactDataGridPlugins.Draggable.Container;
 var DropTargetRowContainer = ReactDataGridPlugins.Draggable.DropTargetRowContainer;
+var Selectors = ReactDataGridPlugins.Data.Selectors;
 
 var priorities = [{id:0, title : 'Critical'}, {id:1, title : 'High'}, {id:2, title : 'Medium'}, {id:3, title : 'Low'}]
 var issueTypes = ['Bug', 'Improvement', 'Epic', 'Story'];
@@ -64,16 +65,33 @@ var Example = React.createClass({
     return {rows : createRows(1000), selectedIds: [1, 2]}
   },
 
+  getDefaultProps: function() {
+    return {rowKey: 'id'}
+  },
+
   rowGetter : function(rowIdx){
     return this.state.rows[rowIdx];
   },
 
-  reorderRow: function(e) {
-    let rows = this.state.rows.slice(0);
-    var fromRow = rows[e.rowSource.idx];
-    rows[e.rowSource.idx] = rows[e.rowTarget.idx];
-    rows[e.rowTarget.idx] = fromRow;
-    this.setState({rows: rows});
+  isDraggedRowSelected: function(selectedRows, rowDragSource) {
+    if (selectedRows && selectedRows.length > 0) {
+      let key = this.props.rowKey;
+      return selectedRows.filter(function(r) {
+        return r[key] === rowDragSource.data[key];
+      }).length > 0;
+    }
+    return false;
+  },
+
+  reorderRows: function(e) {
+    let selectedRows = Selectors.getSelectedRowsByKey({rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows});
+    let draggedRows = this.isDraggedRowSelected(selectedRows, e.rowSource) ? selectedRows : [e.rowSource.data];
+    let undraggedRows = this.state.rows.filter(function(r) {
+      return draggedRows.indexOf(r) === -1;
+    });
+    var args = [e.rowTarget.idx, 0].concat(draggedRows);
+    Array.prototype.splice.apply(undraggedRows, args);
+    this.setState({rows: undraggedRows});
   },
 
   onRowsSelected: function(rows) {
@@ -94,14 +112,14 @@ var Example = React.createClass({
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        rowRenderer={<RowRenderer onRowDrop={this.reorderRow}/>}
+        rowRenderer={<RowRenderer onRowDrop={this.reorderRows}/>}
         rowSelection={{
           showCheckbox: true,
           enableShiftSelect: true,
           onRowsSelected: this.onRowsSelected,
           onRowsDeselected: this.onRowsDeselected,
           selectBy: {
-            keys: {rowKey: 'id', values: this.state.selectedIds}
+            keys: {rowKey: this.props.rowKey, values: this.state.selectedIds}
           }
         }}/>
     </DraggableContainer>);

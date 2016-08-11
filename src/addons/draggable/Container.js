@@ -5,13 +5,12 @@ import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
 
 const DraggableContainer = ({children}) => {
-  let Grid = React.Children.map(children, (child) => {
+  let grid = React.Children.map(children, (child) => {
     return React.cloneElement(child, { draggableHeaderCell: DraggableHeaderCell });
-  });
-
+  })[0];
   return (<div>
-    {Grid}
-    <RowDragLayer/>
+    {grid}
+    <RowDragLayer rowSelection={grid.props.rowSelection} rowsCount={grid.props.rowsCount} rowGetter={grid.props.rowGetter}/>
   </div>);
 };
 

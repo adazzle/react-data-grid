@@ -20,7 +20,6 @@ function getPlugins() {
 };
 
 var config = {
-  devtool: 'source-map',
   debug: !RELEASE,
   externals: {
     "react": {
