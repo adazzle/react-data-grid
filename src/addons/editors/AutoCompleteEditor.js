@@ -21,7 +21,8 @@ const AutoCompleteEditor = React.createClass({
     resultIdentifier: React.PropTypes.string,
     search: React.PropTypes.string,
     onKeyDown: React.PropTypes.func,
-    onFocus: React.PropTypes.func
+    onFocus: React.PropTypes.func,
+    editorDisplayValue: React.PropTypes.func
   },
 
   getDefaultProps(): {resultIdentifier: string} {
@@ -48,6 +49,17 @@ const AutoCompleteEditor = React.createClass({
 
     updated[this.props.column.key] = value;
     return updated;
+  },
+
+  getEditorDisplayValue() {
+    let displayValue = {title: ''};
+    let { column, value, editorDisplayValue } = this.props;
+    if (editorDisplayValue && typeof editorDisplayValue === 'function') {
+      displayValue.title = editorDisplayValue(column, value);
+    } else {
+      displayValue.title = value;
+    }
+    return displayValue;
   },
 
   getInputNode() {
@@ -87,7 +99,7 @@ const AutoCompleteEditor = React.createClass({
   render(): ?ReactElement {
     let label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={{title: this.props.value}} />
+      <ReactAutocomplete search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
       </div>);
   }
 });
