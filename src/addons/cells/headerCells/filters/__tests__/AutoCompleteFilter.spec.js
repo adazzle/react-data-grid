@@ -48,7 +48,7 @@ describe('AutoCompleteFilter', () => {
       expect(component).toBeDefined();
     });
 
-    it('should handle', () => {
+    it('should handle change', () => {
       let value = [{ value: '1' }];
       component.handleChange(value);
       expect(component.state.filters).toEqual(value);
