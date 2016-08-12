@@ -56,9 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 	exports.Filters = exports.Draggable = exports.ToolsPanel = exports.Data = exports.Menu = exports.Toolbar = exports.Formatters = exports.Editors = undefined;
 
 	var _draggable = __webpack_require__(1);
@@ -92,9 +90,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 
 	var _Container = __webpack_require__(2);
 
@@ -114,9 +110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 
 	var _react = __webpack_require__(3);
 
@@ -7866,11 +7860,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.__esModule = true;
 
 	var _Constants = __webpack_require__(154);
 
@@ -7898,55 +7888,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function DraggableHeaderCell() {
 	    _classCallCheck(this, DraggableHeaderCell);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(DraggableHeaderCell).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _Component.apply(this, arguments));
 	  }
 
-	  _createClass(DraggableHeaderCell, [{
-	    key: 'componentDidMount',
-	    value: function () {
-	      function componentDidMount() {
-	        var connectDragPreview = this.props.connectDragPreview;
-	        var img = new Image();
-	        img.src = './assets/images/drag_column_full.png';
-	        img.onload = function () {
-	          connectDragPreview(img);
-	        };
-	      }
+	  DraggableHeaderCell.prototype.componentDidMount = function componentDidMount() {
+	    var connectDragPreview = this.props.connectDragPreview;
+	    var img = new Image();
+	    img.src = './assets/images/drag_column_full.png';
+	    img.onload = function () {
+	      connectDragPreview(img);
+	    };
+	  };
 
-	      return componentDidMount;
-	    }()
-	  }, {
-	    key: 'setScrollLeft',
-	    value: function () {
-	      function setScrollLeft(scrollLeft) {
-	        var node = ReactDOM.findDOMNode(this);
-	        node.style.webkitTransform = 'translate3d(' + String(scrollLeft) + 'px, 0px, 0px)';
-	        node.style.transform = 'translate3d(' + String(scrollLeft) + 'px, 0px, 0px)';
-	      }
+	  DraggableHeaderCell.prototype.setScrollLeft = function setScrollLeft(scrollLeft) {
+	    var node = ReactDOM.findDOMNode(this);
+	    node.style.webkitTransform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
+	    node.style.transform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
+	  };
 
-	      return setScrollLeft;
-	    }()
-	  }, {
-	    key: 'render',
-	    value: function () {
-	      function render() {
-	        var _props = this.props;
-	        var connectDragSource = _props.connectDragSource;
-	        var isDragging = _props.isDragging;
+	  DraggableHeaderCell.prototype.render = function render() {
+	    var _props = this.props;
+	    var connectDragSource = _props.connectDragSource;
+	    var isDragging = _props.isDragging;
 
-	        if (isDragging) {
-	          return null;
-	        }
-	        return connectDragSource(_react2['default'].createElement(
-	          'div',
-	          { style: { cursor: 'move' } },
-	          _react2['default'].createElement(_HeaderCell2['default'], this.props)
-	        ));
-	      }
-
-	      return render;
-	    }()
-	  }]);
+	    if (isDragging) {
+	      return null;
+	    }
+	    return connectDragSource(_react2['default'].createElement(
+	      'div',
+	      { style: { cursor: 'move' } },
+	      _react2['default'].createElement(_HeaderCell2['default'], this.props)
+	    ));
+	  };
 
 	  return DraggableHeaderCell;
 	}(_react.Component);
@@ -7966,20 +7939,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	var headerCellSource = {
-	  beginDrag: function () {
-	    function beginDrag(props) {
-	      return props.column;
-	    }
-
-	    return beginDrag;
-	  }(),
-	  endDrag: function () {
-	    function endDrag(props) {
-	      return props.column;
-	    }
-
-	    return endDrag;
-	  }()
+	  beginDrag: function beginDrag(props) {
+	    return props.column;
+	  },
+	  endDrag: function endDrag(props) {
+	    return props.column;
+	  }
 	};
 
 	exports['default'] = (0, _reactDnd.DragSource)(_Constants.DragItemTypes.Column, headerCellSource, collect)(DraggableHeaderCell);
@@ -7990,9 +7955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 	var DragItemTypes = exports.DragItemTypes = {
 	  Column: 'column'
 	};
@@ -8031,125 +7994,85 @@ return /******/ (function(modules) { // webpackBootstrap
 	    className: PropTypes.string
 	  },
 
-	  getDefaultProps: function () {
-	    function getDefaultProps() {
-	      return {
-	        renderer: simpleCellRenderer
-	      };
-	    }
-
-	    return getDefaultProps;
-	  }(),
-	  getInitialState: function () {
-	    function getInitialState() {
-	      return { resizing: false };
-	    }
-
-	    return getInitialState;
-	  }(),
-	  onDragStart: function () {
-	    function onDragStart(e) {
-	      this.setState({ resizing: true });
-	      // need to set dummy data for FF
-	      if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
-	    }
-
-	    return onDragStart;
-	  }(),
-	  onDrag: function () {
-	    function onDrag(e) {
-	      var resize = this.props.onResize || null; // for flows sake, doesnt recognise a null check direct
-	      if (resize) {
-	        var _width = this.getWidthFromMouseEvent(e);
-	        if (_width > 0) {
-	          resize(this.props.column, _width);
-	        }
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      renderer: simpleCellRenderer
+	    };
+	  },
+	  getInitialState: function getInitialState() {
+	    return { resizing: false };
+	  },
+	  onDragStart: function onDragStart(e) {
+	    this.setState({ resizing: true });
+	    // need to set dummy data for FF
+	    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
+	  },
+	  onDrag: function onDrag(e) {
+	    var resize = this.props.onResize || null; // for flows sake, doesnt recognise a null check direct
+	    if (resize) {
+	      var _width = this.getWidthFromMouseEvent(e);
+	      if (_width > 0) {
+	        resize(this.props.column, _width);
 	      }
 	    }
-
-	    return onDrag;
-	  }(),
-	  onDragEnd: function () {
-	    function onDragEnd(e) {
-	      var width = this.getWidthFromMouseEvent(e);
-	      this.props.onResizeEnd(this.props.column, width);
-	      this.setState({ resizing: false });
+	  },
+	  onDragEnd: function onDragEnd(e) {
+	    var width = this.getWidthFromMouseEvent(e);
+	    this.props.onResizeEnd(this.props.column, width);
+	    this.setState({ resizing: false });
+	  },
+	  getWidthFromMouseEvent: function getWidthFromMouseEvent(e) {
+	    var right = e.pageX || e.touches && e.touches[0] && e.touches[0].pageX || e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX;
+	    var left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
+	    return right - left;
+	  },
+	  getCell: function getCell() {
+	    if (React.isValidElement(this.props.renderer)) {
+	      return React.cloneElement(this.props.renderer, { column: this.props.column, height: this.props.height });
 	    }
 
-	    return onDragEnd;
-	  }(),
-	  getWidthFromMouseEvent: function () {
-	    function getWidthFromMouseEvent(e) {
-	      var right = e.pageX || e.touches && e.touches[0] && e.touches[0].pageX || e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX;
-	      var left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
-	      return right - left;
-	    }
-
-	    return getWidthFromMouseEvent;
-	  }(),
-	  getCell: function () {
-	    function getCell() {
-	      if (React.isValidElement(this.props.renderer)) {
-	        return React.cloneElement(this.props.renderer, { column: this.props.column, height: this.props.height });
-	      }
-
-	      return this.props.renderer({ column: this.props.column });
-	    }
-
-	    return getCell;
-	  }(),
-	  getStyle: function () {
-	    function getStyle() {
-	      return {
-	        width: this.props.column.width,
-	        left: this.props.column.left,
-	        display: 'inline-block',
-	        position: 'absolute',
-	        height: this.props.height,
-	        margin: 0,
-	        textOverflow: 'ellipsis',
-	        whiteSpace: 'nowrap'
-	      };
-	    }
-
-	    return getStyle;
-	  }(),
-	  setScrollLeft: function () {
-	    function setScrollLeft(scrollLeft) {
-	      var node = ReactDOM.findDOMNode(this);
-	      node.style.webkitTransform = 'translate3d(' + String(scrollLeft) + 'px, 0px, 0px)';
-	      node.style.transform = 'translate3d(' + String(scrollLeft) + 'px, 0px, 0px)';
-	    }
-
-	    return setScrollLeft;
-	  }(),
-	  render: function () {
-	    function render() {
-	      var resizeHandle = void 0;
-	      if (this.props.column.resizable) {
-	        resizeHandle = React.createElement(ResizeHandle, {
-	          onDrag: this.onDrag,
-	          onDragStart: this.onDragStart,
-	          onDragEnd: this.onDragEnd
-	        });
-	      }
-	      var className = joinClasses({
-	        'react-grid-HeaderCell': true,
-	        'react-grid-HeaderCell--resizing': this.state.resizing,
-	        'react-grid-HeaderCell--locked': this.props.column.locked
+	    return this.props.renderer({ column: this.props.column });
+	  },
+	  getStyle: function getStyle() {
+	    return {
+	      width: this.props.column.width,
+	      left: this.props.column.left,
+	      display: 'inline-block',
+	      position: 'absolute',
+	      height: this.props.height,
+	      margin: 0,
+	      textOverflow: 'ellipsis',
+	      whiteSpace: 'nowrap'
+	    };
+	  },
+	  setScrollLeft: function setScrollLeft(scrollLeft) {
+	    var node = ReactDOM.findDOMNode(this);
+	    node.style.webkitTransform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
+	    node.style.transform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
+	  },
+	  render: function render() {
+	    var resizeHandle = void 0;
+	    if (this.props.column.resizable) {
+	      resizeHandle = React.createElement(ResizeHandle, {
+	        onDrag: this.onDrag,
+	        onDragStart: this.onDragStart,
+	        onDragEnd: this.onDragEnd
 	      });
-	      className = joinClasses(className, this.props.className, this.props.column.cellClass);
-	      var cell = this.getCell();
-	      return React.createElement(
-	        'div',
-	        { className: className, style: this.getStyle() },
-	        cell,
-	        resizeHandle
-	      );
 	    }
-
-	    return render;
-	  }()
+	    var className = joinClasses({
+	      'react-grid-HeaderCell': true,
+	      'react-grid-HeaderCell--resizing': this.state.resizing,
+	      'react-grid-HeaderCell--locked': this.props.column.locked
+	    });
+	    className = joinClasses(className, this.props.className, this.props.column.cellClass);
+	    var cell = this.getCell();
+	    return React.createElement(
+	      'div',
+	      { className: className, style: this.getStyle() },
+	      cell,
+	      resizeHandle
+	    );
+	  }
 	});
 
 	module.exports = HeaderCell;
@@ -8248,16 +8171,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    height: '100%'
 	  },
 
-	  render: function () {
-	    function render() {
-	      return React.createElement(Draggable, _extends({}, this.props, {
-	        className: 'react-grid-HeaderCell__resizeHandle',
-	        style: this.style
-	      }));
-	    }
-
-	    return render;
-	  }()
+	  render: function render() {
+	    return React.createElement(Draggable, _extends({}, this.props, {
+	      className: 'react-grid-HeaderCell__resizeHandle',
+	      style: this.style
+	    }));
+	  }
 	});
 
 	module.exports = ResizeHandle;
@@ -8283,109 +8202,65 @@ return /******/ (function(modules) { // webpackBootstrap
 	    component: PropTypes.oneOfType([PropTypes.func, PropTypes.constructor])
 	  },
 
-	  getDefaultProps: function () {
-	    function getDefaultProps() {
-	      return {
-	        onDragStart: function () {
-	          function onDragStart() {
-	            return true;
-	          }
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      onDragStart: function onDragStart() {
+	        return true;
+	      },
+	      onDragEnd: function onDragEnd() {},
+	      onDrag: function onDrag() {}
+	    };
+	  },
+	  getInitialState: function getInitialState() {
+	    return {
+	      drag: null
+	    };
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.cleanUp();
+	  },
+	  onMouseDown: function onMouseDown(e) {
+	    var drag = this.props.onDragStart(e);
 
-	          return onDragStart;
-	        }(),
-	        onDragEnd: function () {
-	          function onDragEnd() {}
-
-	          return onDragEnd;
-	        }(),
-	        onDrag: function () {
-	          function onDrag() {}
-
-	          return onDrag;
-	        }()
-	      };
+	    if (drag === null && e.button !== 0) {
+	      return;
 	    }
 
-	    return getDefaultProps;
-	  }(),
-	  getInitialState: function () {
-	    function getInitialState() {
-	      return {
-	        drag: null
-	      };
+	    window.addEventListener('mouseup', this.onMouseUp);
+	    window.addEventListener('mousemove', this.onMouseMove);
+	    window.addEventListener('touchend', this.onMouseUp);
+	    window.addEventListener('touchmove', this.onMouseMove);
+
+	    this.setState({ drag: drag });
+	  },
+	  onMouseMove: function onMouseMove(e) {
+	    if (this.state.drag === null) {
+	      return;
 	    }
 
-	    return getInitialState;
-	  }(),
-	  componentWillUnmount: function () {
-	    function componentWillUnmount() {
-	      this.cleanUp();
+	    if (e.preventDefault) {
+	      e.preventDefault();
 	    }
 
-	    return componentWillUnmount;
-	  }(),
-	  onMouseDown: function () {
-	    function onMouseDown(e) {
-	      var drag = this.props.onDragStart(e);
-
-	      if (drag === null && e.button !== 0) {
-	        return;
-	      }
-
-	      window.addEventListener('mouseup', this.onMouseUp);
-	      window.addEventListener('mousemove', this.onMouseMove);
-	      window.addEventListener('touchend', this.onMouseUp);
-	      window.addEventListener('touchmove', this.onMouseMove);
-
-	      this.setState({ drag: drag });
-	    }
-
-	    return onMouseDown;
-	  }(),
-	  onMouseMove: function () {
-	    function onMouseMove(e) {
-	      if (this.state.drag === null) {
-	        return;
-	      }
-
-	      if (e.preventDefault) {
-	        e.preventDefault();
-	      }
-
-	      this.props.onDrag(e);
-	    }
-
-	    return onMouseMove;
-	  }(),
-	  onMouseUp: function () {
-	    function onMouseUp(e) {
-	      this.cleanUp();
-	      this.props.onDragEnd(e, this.state.drag);
-	      this.setState({ drag: null });
-	    }
-
-	    return onMouseUp;
-	  }(),
-	  cleanUp: function () {
-	    function cleanUp() {
-	      window.removeEventListener('mouseup', this.onMouseUp);
-	      window.removeEventListener('mousemove', this.onMouseMove);
-	      window.removeEventListener('touchend', this.onMouseUp);
-	      window.removeEventListener('touchmove', this.onMouseMove);
-	    }
-
-	    return cleanUp;
-	  }(),
-	  render: function () {
-	    function render() {
-	      return React.createElement('div', _extends({}, this.props, {
-	        onMouseDown: this.onMouseDown,
-	        onTouchStart: this.onMouseDown,
-	        className: 'react-grid-HeaderCell__draggable' }));
-	    }
-
-	    return render;
-	  }()
+	    this.props.onDrag(e);
+	  },
+	  onMouseUp: function onMouseUp(e) {
+	    this.cleanUp();
+	    this.props.onDragEnd(e, this.state.drag);
+	    this.setState({ drag: null });
+	  },
+	  cleanUp: function cleanUp() {
+	    window.removeEventListener('mouseup', this.onMouseUp);
+	    window.removeEventListener('mousemove', this.onMouseMove);
+	    window.removeEventListener('touchend', this.onMouseUp);
+	    window.removeEventListener('touchmove', this.onMouseMove);
+	  },
+	  render: function render() {
+	    return React.createElement('div', _extends({}, this.props, {
+	      onMouseDown: this.onMouseDown,
+	      onTouchStart: this.onMouseDown,
+	      className: 'react-grid-HeaderCell__draggable' }));
+	  }
 	});
 
 	module.exports = Draggable;
@@ -8440,120 +8315,80 @@ return /******/ (function(modules) { // webpackBootstrap
 	    editorDisplayValue: React.PropTypes.func
 	  },
 
-	  getDefaultProps: function () {
-	    function getDefaultProps() {
-	      return {
-	        resultIdentifier: 'id'
-	      };
-	    }
-
-	    return getDefaultProps;
-	  }(),
-	  handleChange: function () {
-	    function handleChange() {
-	      this.props.onCommit();
-	    }
-
-	    return handleChange;
-	  }(),
-	  getValue: function () {
-	    function getValue() {
-	      var value = void 0;
-	      var updated = {};
-	      if (this.hasResults() && this.isFocusedOnSuggestion()) {
-	        value = this.getLabel(this.refs.autoComplete.state.focusedValue);
-	        if (this.props.valueParams) {
-	          value = this.constuctValueFromParams(this.refs.autoComplete.state.focusedValue, this.props.valueParams);
-	        }
-	      } else {
-	        value = this.refs.autoComplete.state.searchTerm;
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      resultIdentifier: 'id'
+	    };
+	  },
+	  handleChange: function handleChange() {
+	    this.props.onCommit();
+	  },
+	  getValue: function getValue() {
+	    var value = void 0;
+	    var updated = {};
+	    if (this.hasResults() && this.isFocusedOnSuggestion()) {
+	      value = this.getLabel(this.refs.autoComplete.state.focusedValue);
+	      if (this.props.valueParams) {
+	        value = this.constuctValueFromParams(this.refs.autoComplete.state.focusedValue, this.props.valueParams);
 	      }
-
-	      updated[this.props.column.key] = value;
-	      return updated;
+	    } else {
+	      value = this.refs.autoComplete.state.searchTerm;
 	    }
 
-	    return getValue;
-	  }(),
-	  getEditorDisplayValue: function () {
-	    function getEditorDisplayValue() {
-	      var displayValue = { title: '' };
-	      var _props = this.props;
-	      var column = _props.column;
-	      var value = _props.value;
-	      var editorDisplayValue = _props.editorDisplayValue;
+	    updated[this.props.column.key] = value;
+	    return updated;
+	  },
+	  getEditorDisplayValue: function getEditorDisplayValue() {
+	    var displayValue = { title: '' };
+	    var _props = this.props;
+	    var column = _props.column;
+	    var value = _props.value;
+	    var editorDisplayValue = _props.editorDisplayValue;
 
-	      if (editorDisplayValue && typeof editorDisplayValue === 'function') {
-	        displayValue.title = editorDisplayValue(column, value);
-	      } else {
-	        displayValue.title = value;
-	      }
-	      return displayValue;
+	    if (editorDisplayValue && typeof editorDisplayValue === 'function') {
+	      displayValue.title = editorDisplayValue(column, value);
+	    } else {
+	      displayValue.title = value;
+	    }
+	    return displayValue;
+	  },
+	  getInputNode: function getInputNode() {
+	    return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
+	  },
+	  getLabel: function getLabel(item) {
+	    var label = this.props.label != null ? this.props.label : 'title';
+	    if (typeof label === 'function') {
+	      return label(item);
+	    } else if (typeof label === 'string') {
+	      return item[label];
+	    }
+	  },
+	  hasResults: function hasResults() {
+	    return this.refs.autoComplete.state.results.length > 0;
+	  },
+	  isFocusedOnSuggestion: function isFocusedOnSuggestion() {
+	    var autoComplete = this.refs.autoComplete;
+	    return autoComplete.state.focusedValue != null;
+	  },
+	  constuctValueFromParams: function constuctValueFromParams(obj, props) {
+	    if (!props) {
+	      return '';
 	    }
 
-	    return getEditorDisplayValue;
-	  }(),
-	  getInputNode: function () {
-	    function getInputNode() {
-	      return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
+	    var ret = [];
+	    for (var i = 0, ii = props.length; i < ii; i++) {
+	      ret.push(obj[props[i]]);
 	    }
-
-	    return getInputNode;
-	  }(),
-	  getLabel: function () {
-	    function getLabel(item) {
-	      var label = this.props.label != null ? this.props.label : 'title';
-	      if (typeof label === 'function') {
-	        return label(item);
-	      } else if (typeof label === 'string') {
-	        return item[label];
-	      }
-	    }
-
-	    return getLabel;
-	  }(),
-	  hasResults: function () {
-	    function hasResults() {
-	      return this.refs.autoComplete.state.results.length > 0;
-	    }
-
-	    return hasResults;
-	  }(),
-	  isFocusedOnSuggestion: function () {
-	    function isFocusedOnSuggestion() {
-	      var autoComplete = this.refs.autoComplete;
-	      return autoComplete.state.focusedValue != null;
-	    }
-
-	    return isFocusedOnSuggestion;
-	  }(),
-	  constuctValueFromParams: function () {
-	    function constuctValueFromParams(obj, props) {
-	      if (!props) {
-	        return '';
-	      }
-
-	      var ret = [];
-	      for (var i = 0, ii = props.length; i < ii; i++) {
-	        ret.push(obj[props[i]]);
-	      }
-	      return ret.join('|');
-	    }
-
-	    return constuctValueFromParams;
-	  }(),
-	  render: function () {
-	    function render() {
-	      var label = this.props.label != null ? this.props.label : 'title';
-	      return React.createElement(
-	        'div',
-	        { height: this.props.height, onKeyDown: this.props.onKeyDown },
-	        React.createElement(ReactAutocomplete, { search: this.props.search, ref: 'autoComplete', label: label, onChange: this.handleChange, onFocus: this.props.onFocus, resultIdentifier: this.props.resultIdentifier, options: this.props.options, value: this.getEditorDisplayValue() })
-	      );
-	    }
-
-	    return render;
-	  }()
+	    return ret.join('|');
+	  },
+	  render: function render() {
+	    var label = this.props.label != null ? this.props.label : 'title';
+	    return React.createElement(
+	      'div',
+	      { height: this.props.height, onKeyDown: this.props.onKeyDown },
+	      React.createElement(ReactAutocomplete, { search: this.props.search, ref: 'autoComplete', label: label, onChange: this.handleChange, onFocus: this.props.onFocus, resultIdentifier: this.props.resultIdentifier, options: this.props.options, value: this.getEditorDisplayValue() })
+	    );
+	  }
 	});
 
 	module.exports = AutoCompleteEditor;
@@ -9075,8 +8910,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _reactDom = __webpack_require__(156);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
@@ -9098,75 +8931,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function DropDownEditor() {
 	    _classCallCheck(this, DropDownEditor);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(DropDownEditor).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _EditorBase.apply(this, arguments));
 	  }
 
-	  _createClass(DropDownEditor, [{
-	    key: 'getInputNode',
-	    value: function () {
-	      function getInputNode() {
-	        return _reactDom2['default'].findDOMNode(this);
-	      }
+	  DropDownEditor.prototype.getInputNode = function getInputNode() {
+	    return _reactDom2['default'].findDOMNode(this);
+	  };
 
-	      return getInputNode;
-	    }()
-	  }, {
-	    key: 'onClick',
-	    value: function () {
-	      function onClick() {
-	        this.getInputNode().focus();
-	      }
+	  DropDownEditor.prototype.onClick = function onClick() {
+	    this.getInputNode().focus();
+	  };
 
-	      return onClick;
-	    }()
-	  }, {
-	    key: 'onDoubleClick',
-	    value: function () {
-	      function onDoubleClick() {
-	        this.getInputNode().focus();
-	      }
+	  DropDownEditor.prototype.onDoubleClick = function onDoubleClick() {
+	    this.getInputNode().focus();
+	  };
 
-	      return onDoubleClick;
-	    }()
-	  }, {
-	    key: 'render',
-	    value: function () {
-	      function render() {
-	        return React.createElement(
-	          'select',
-	          { style: this.getStyle(), defaultValue: this.props.value, onBlur: this.props.onBlur, onChange: this.onChange },
-	          this.renderOptions()
-	        );
-	      }
+	  DropDownEditor.prototype.render = function render() {
+	    return React.createElement(
+	      'select',
+	      { style: this.getStyle(), defaultValue: this.props.value, onBlur: this.props.onBlur, onChange: this.onChange },
+	      this.renderOptions()
+	    );
+	  };
 
-	      return render;
-	    }()
-	  }, {
-	    key: 'renderOptions',
-	    value: function () {
-	      function renderOptions() {
-	        var options = [];
-	        this.props.options.forEach(function (name) {
-	          if (typeof name === 'string') {
-	            options.push(React.createElement(
-	              'option',
-	              { key: name, value: name },
-	              name
-	            ));
-	          } else {
-	            options.push(React.createElement(
-	              'option',
-	              { key: name.id, value: name.value, title: name.title },
-	              name.text || name.value
-	            ));
-	          }
-	        }, this);
-	        return options;
+	  DropDownEditor.prototype.renderOptions = function renderOptions() {
+	    var options = [];
+	    this.props.options.forEach(function (name) {
+	      if (typeof name === 'string') {
+	        options.push(React.createElement(
+	          'option',
+	          { key: name, value: name },
+	          name
+	        ));
+	      } else {
+	        options.push(React.createElement(
+	          'option',
+	          { key: name.id, value: name.value, title: name.title },
+	          name.text || name.value
+	        ));
 	      }
-
-	      return renderOptions;
-	    }()
-	  }]);
+	    }, this);
+	    return options;
+	  };
 
 	  return DropDownEditor;
 	}(EditorBase);
@@ -9188,8 +8994,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -9206,55 +9010,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function EditorBase() {
 	    _classCallCheck(this, EditorBase);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(EditorBase).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
 	  }
 
-	  _createClass(EditorBase, [{
-	    key: 'getStyle',
-	    value: function () {
-	      function getStyle() {
-	        return {
-	          width: '100%'
-	        };
-	      }
+	  EditorBase.prototype.getStyle = function getStyle() {
+	    return {
+	      width: '100%'
+	    };
+	  };
 
-	      return getStyle;
-	    }()
-	  }, {
-	    key: 'getValue',
-	    value: function () {
-	      function getValue() {
-	        var updated = {};
-	        updated[this.props.column.key] = this.getInputNode().value;
-	        return updated;
-	      }
+	  EditorBase.prototype.getValue = function getValue() {
+	    var updated = {};
+	    updated[this.props.column.key] = this.getInputNode().value;
+	    return updated;
+	  };
 
-	      return getValue;
-	    }()
-	  }, {
-	    key: 'getInputNode',
-	    value: function () {
-	      function getInputNode() {
-	        var domNode = ReactDOM.findDOMNode(this);
-	        if (domNode.tagName === 'INPUT') {
-	          return domNode;
-	        }
+	  EditorBase.prototype.getInputNode = function getInputNode() {
+	    var domNode = ReactDOM.findDOMNode(this);
+	    if (domNode.tagName === 'INPUT') {
+	      return domNode;
+	    }
 
-	        return domNode.querySelector('input:not([type=hidden])');
-	      }
+	    return domNode.querySelector('input:not([type=hidden])');
+	  };
 
-	      return getInputNode;
-	    }()
-	  }, {
-	    key: 'inheritContainerStyles',
-	    value: function () {
-	      function inheritContainerStyles() {
-	        return true;
-	      }
-
-	      return inheritContainerStyles;
-	    }()
-	  }]);
+	  EditorBase.prototype.inheritContainerStyles = function inheritContainerStyles() {
+	    return true;
+	  };
 
 	  return EditorBase;
 	}(React.Component);
@@ -9275,8 +9057,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -9292,19 +9072,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SimpleTextEditor() {
 	    _classCallCheck(this, SimpleTextEditor);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SimpleTextEditor).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _EditorBase.apply(this, arguments));
 	  }
 
-	  _createClass(SimpleTextEditor, [{
-	    key: 'render',
-	    value: function () {
-	      function render() {
-	        return React.createElement('input', { ref: 'input', type: 'text', onBlur: this.props.onBlur, className: 'form-control', defaultValue: this.props.value });
-	      }
-
-	      return render;
-	    }()
-	  }]);
+	  SimpleTextEditor.prototype.render = function render() {
+	    return React.createElement('input', { ref: 'input', type: 'text', onBlur: this.props.onBlur, className: 'form-control', defaultValue: this.props.value });
+	  };
 
 	  return SimpleTextEditor;
 	}(EditorBase);
@@ -9333,27 +9106,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    dependentValues: React.PropTypes.object
 	  },
 
-	  handleChange: function () {
-	    function handleChange(e) {
-	      this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, this.props.dependentValues, e);
-	    }
-
-	    return handleChange;
-	  }(),
-	  render: function () {
-	    function render() {
-	      var checked = this.props.value != null ? this.props.value : false;
-	      var checkboxName = 'checkbox' + this.props.rowIdx;
-	      return React.createElement(
-	        'div',
-	        { className: 'react-grid-checkbox-container', onClick: this.handleChange },
-	        React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: checkboxName, checked: checked }),
-	        React.createElement('label', { htmlFor: checkboxName, className: 'react-grid-checkbox-label' })
-	      );
-	    }
-
-	    return render;
-	  }()
+	  handleChange: function handleChange(e) {
+	    this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, this.props.dependentValues, e);
+	  },
+	  render: function render() {
+	    var checked = this.props.value != null ? this.props.value : false;
+	    var checkboxName = 'checkbox' + this.props.rowIdx;
+	    return React.createElement(
+	      'div',
+	      { className: 'react-grid-checkbox-container', onClick: this.handleChange },
+	      React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: checkboxName, checked: checked }),
+	      React.createElement('label', { htmlFor: checkboxName, className: 'react-grid-checkbox-label' })
+	    );
+	  }
 	});
 
 	module.exports = CheckboxEditor;
@@ -9394,81 +9159,57 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: React.PropTypes.string.isRequired
 	  },
 
-	  getInitialState: function () {
-	    function getInitialState() {
-	      return {
-	        ready: false
-	      };
+	  getInitialState: function getInitialState() {
+	    return {
+	      ready: false
+	    };
+	  },
+	  componentWillMount: function componentWillMount() {
+	    this._load(this.props.value);
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    if (nextProps.value !== this.props.value) {
+	      this.setState({ value: null });
+	      this._load(nextProps.value);
+	    }
+	  },
+	  _load: function _load(src) {
+	    var imageSrc = src;
+	    if (ReadyPool[imageSrc]) {
+	      this.setState({ value: imageSrc });
+	      return;
 	    }
 
-	    return getInitialState;
-	  }(),
-	  componentWillMount: function () {
-	    function componentWillMount() {
-	      this._load(this.props.value);
+	    if (PendingPool[imageSrc]) {
+	      PendingPool[imageSrc].push(this._onLoad);
+	      return;
 	    }
 
-	    return componentWillMount;
-	  }(),
-	  componentWillReceiveProps: function () {
-	    function componentWillReceiveProps(nextProps) {
-	      if (nextProps.value !== this.props.value) {
-	        this.setState({ value: null });
-	        this._load(nextProps.value);
-	      }
+	    PendingPool[imageSrc] = [this._onLoad];
+
+	    var img = new Image();
+	    img.onload = function () {
+	      PendingPool[imageSrc].forEach(function (callback) {
+	        callback(imageSrc);
+	      });
+	      delete PendingPool[imageSrc];
+	      img.onload = null;
+	      imageSrc = undefined;
+	    };
+	    img.src = imageSrc;
+	  },
+	  _onLoad: function _onLoad(src) {
+	    if (this.isMounted() && src === this.props.value) {
+	      this.setState({
+	        value: src
+	      });
 	    }
+	  },
+	  render: function render() {
+	    var style = this.state.value ? { backgroundImage: 'url(' + this.state.value + ')' } : undefined;
 
-	    return componentWillReceiveProps;
-	  }(),
-	  _load: function () {
-	    function _load(src) {
-	      var imageSrc = src;
-	      if (ReadyPool[imageSrc]) {
-	        this.setState({ value: imageSrc });
-	        return;
-	      }
-
-	      if (PendingPool[imageSrc]) {
-	        PendingPool[imageSrc].push(this._onLoad);
-	        return;
-	      }
-
-	      PendingPool[imageSrc] = [this._onLoad];
-
-	      var img = new Image();
-	      img.onload = function () {
-	        PendingPool[imageSrc].forEach(function (callback) {
-	          callback(imageSrc);
-	        });
-	        delete PendingPool[imageSrc];
-	        img.onload = null;
-	        imageSrc = undefined;
-	      };
-	      img.src = imageSrc;
-	    }
-
-	    return _load;
-	  }(),
-	  _onLoad: function () {
-	    function _onLoad(src) {
-	      if (this.isMounted() && src === this.props.value) {
-	        this.setState({
-	          value: src
-	        });
-	      }
-	    }
-
-	    return _onLoad;
-	  }(),
-	  render: function () {
-	    function render() {
-	      var style = this.state.value ? { backgroundImage: 'url(' + this.state.value + ')' } : undefined;
-
-	      return React.createElement('div', { className: 'react-grid-image', style: style });
-	    }
-
-	    return render;
-	  }()
+	    return React.createElement('div', { className: 'react-grid-image', style: style });
+	  }
 	});
 
 	module.exports = ImageFormatter;
@@ -9496,33 +9237,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: React.PropTypes.string.isRequired
 	  },
 
-	  shouldComponentUpdate: function () {
-	    function shouldComponentUpdate(nextProps) {
-	      return nextProps.value !== this.props.value;
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
+	    return nextProps.value !== this.props.value;
+	  },
+	  render: function render() {
+	    var value = this.props.value;
+	    var option = this.props.options.filter(function (v) {
+	      return v === value || v.value === value;
+	    })[0];
+	    if (!option) {
+	      option = value;
 	    }
-
-	    return shouldComponentUpdate;
-	  }(),
-	  render: function () {
-	    function render() {
-	      var value = this.props.value;
-	      var option = this.props.options.filter(function (v) {
-	        return v === value || v.value === value;
-	      })[0];
-	      if (!option) {
-	        option = value;
-	      }
-	      var title = option.title || option.value || option;
-	      var text = option.text || option.value || option;
-	      return React.createElement(
-	        'div',
-	        { title: title },
-	        text
-	      );
-	    }
-
-	    return render;
-	  }()
+	    var title = option.title || option.value || option;
+	    var text = option.text || option.value || option;
+	    return React.createElement(
+	      'div',
+	      { title: title },
+	      text
+	    );
+	  }
 	});
 
 	module.exports = DropDownFormatter;
@@ -9547,68 +9280,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	    filterRowsButtonText: React.PropTypes.string
 	  },
 
-	  onAddRow: function () {
-	    function onAddRow() {
-	      if (this.props.onAddRow !== null && this.props.onAddRow instanceof Function) {
-	        this.props.onAddRow({ newRowIndex: this.props.numberOfRows });
-	      }
+	  onAddRow: function onAddRow() {
+	    if (this.props.onAddRow !== null && this.props.onAddRow instanceof Function) {
+	      this.props.onAddRow({ newRowIndex: this.props.numberOfRows });
 	    }
-
-	    return onAddRow;
-	  }(),
-	  getDefaultProps: function () {
-	    function getDefaultProps() {
-	      return {
-	        enableAddRow: true,
-	        addRowButtonText: 'Add Row',
-	        filterRowsButtonText: 'Filter Rows'
-	      };
-	    }
-
-	    return getDefaultProps;
-	  }(),
-	  renderAddRowButton: function () {
-	    function renderAddRowButton() {
-	      if (this.props.onAddRow) {
-	        return React.createElement(
-	          'button',
-	          { type: 'button', className: 'btn', onClick: this.onAddRow },
-	          this.props.addRowButtonText
-	        );
-	      }
-	    }
-
-	    return renderAddRowButton;
-	  }(),
-	  renderToggleFilterButton: function () {
-	    function renderToggleFilterButton() {
-	      if (this.props.enableFilter) {
-	        return React.createElement(
-	          'button',
-	          { type: 'button', className: 'btn', onClick: this.props.onToggleFilter },
-	          this.props.filterRowsButtonText
-	        );
-	      }
-	    }
-
-	    return renderToggleFilterButton;
-	  }(),
-	  render: function () {
-	    function render() {
+	  },
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      enableAddRow: true,
+	      addRowButtonText: 'Add Row',
+	      filterRowsButtonText: 'Filter Rows'
+	    };
+	  },
+	  renderAddRowButton: function renderAddRowButton() {
+	    if (this.props.onAddRow) {
 	      return React.createElement(
-	        'div',
-	        { className: 'react-grid-Toolbar' },
-	        React.createElement(
-	          'div',
-	          { className: 'tools' },
-	          this.renderAddRowButton(),
-	          this.renderToggleFilterButton()
-	        )
+	        'button',
+	        { type: 'button', className: 'btn', onClick: this.onAddRow },
+	        this.props.addRowButtonText
 	      );
 	    }
-
-	    return render;
-	  }()
+	  },
+	  renderToggleFilterButton: function renderToggleFilterButton() {
+	    if (this.props.enableFilter) {
+	      return React.createElement(
+	        'button',
+	        { type: 'button', className: 'btn', onClick: this.props.onToggleFilter },
+	        this.props.filterRowsButtonText
+	      );
+	    }
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'react-grid-Toolbar' },
+	      React.createElement(
+	        'div',
+	        { className: 'tools' },
+	        this.renderAddRowButton(),
+	        this.renderToggleFilterButton()
+	      )
+	    );
+	  }
 	});
 
 	module.exports = Toolbar;
@@ -9619,9 +9332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 	exports.GroupedColumnsPanel = exports.AdvancedToolbar = undefined;
 
 	var _AdvancedToolbar = __webpack_require__(173);
@@ -9643,11 +9354,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.__esModule = true;
 
 	var _react = __webpack_require__(3);
 
@@ -9675,24 +9382,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function AdvancedToolbar() {
 	    _classCallCheck(this, AdvancedToolbar);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(AdvancedToolbar).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _Component.apply(this, arguments));
 	  }
 
-	  _createClass(AdvancedToolbar, [{
-	    key: "render",
-	    value: function () {
-	      function render() {
-	        return _react2["default"].createElement(
-	          "div",
-	          { className: "react-grid-Toolbar" },
-	          this.props.children,
-	          _react2["default"].createElement("div", { className: "tools" })
-	        );
-	      }
-
-	      return render;
-	    }()
-	  }]);
+	  AdvancedToolbar.prototype.render = function render() {
+	    return _react2["default"].createElement(
+	      "div",
+	      { className: "react-grid-Toolbar" },
+	      this.props.children,
+	      _react2["default"].createElement("div", { className: "tools" })
+	    );
+	  };
 
 	  return AdvancedToolbar;
 	}(_react.Component);
@@ -9708,11 +9408,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.__esModule = true;
 
 	var _react = __webpack_require__(3);
 
@@ -9755,78 +9451,56 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function GroupedColumnsPanel() {
 	    _classCallCheck(this, GroupedColumnsPanel);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(GroupedColumnsPanel).call(this));
+	    return _possibleConstructorReturn(this, _Component.call(this));
 	  }
 
-	  _createClass(GroupedColumnsPanel, [{
-	    key: 'getPanelInstructionMessage',
-	    value: function () {
-	      function getPanelInstructionMessage() {
-	        var groupBy = this.props.groupBy;
+	  GroupedColumnsPanel.prototype.getPanelInstructionMessage = function getPanelInstructionMessage() {
+	    var groupBy = this.props.groupBy;
 
-	        return groupBy && groupBy.length > 0 ? this.props.panelDescription : this.props.noColumnsSelectedMessage;
-	      }
+	    return groupBy && groupBy.length > 0 ? this.props.panelDescription : this.props.noColumnsSelectedMessage;
+	  };
 
-	      return getPanelInstructionMessage;
-	    }()
-	  }, {
-	    key: 'renderGroupedColumns',
-	    value: function () {
-	      function renderGroupedColumns() {
-	        var _this2 = this;
+	  GroupedColumnsPanel.prototype.renderGroupedColumns = function renderGroupedColumns() {
+	    var _this2 = this;
 
-	        return this.props.groupBy.map(function (c) {
-	          return _react2['default'].createElement(_GroupedColumnButton2['default'], { name: c, onColumnGroupDeleted: _this2.props.onColumnGroupDeleted });
-	        });
-	      }
+	    return this.props.groupBy.map(function (c) {
+	      return _react2['default'].createElement(_GroupedColumnButton2['default'], { name: c, onColumnGroupDeleted: _this2.props.onColumnGroupDeleted });
+	    });
+	  };
 
-	      return renderGroupedColumns;
-	    }()
-	  }, {
-	    key: 'renderOverlay',
-	    value: function () {
-	      function renderOverlay(color) {
-	        return _react2['default'].createElement('div', { style: {
-	            position: 'absolute',
-	            top: 0,
-	            left: 0,
-	            height: '100%',
-	            width: '100%',
-	            zIndex: 1,
-	            opacity: 0.5,
-	            backgroundColor: color
-	          } });
-	      }
+	  GroupedColumnsPanel.prototype.renderOverlay = function renderOverlay(color) {
+	    return _react2['default'].createElement('div', { style: {
+	        position: 'absolute',
+	        top: 0,
+	        left: 0,
+	        height: '100%',
+	        width: '100%',
+	        zIndex: 1,
+	        opacity: 0.5,
+	        backgroundColor: color
+	      } });
+	  };
 
-	      return renderOverlay;
-	    }()
-	  }, {
-	    key: 'render',
-	    value: function () {
-	      function render() {
-	        var _props = this.props;
-	        var connectDropTarget = _props.connectDropTarget;
-	        var isOver = _props.isOver;
-	        var canDrop = _props.canDrop;
+	  GroupedColumnsPanel.prototype.render = function render() {
+	    var _props = this.props;
+	    var connectDropTarget = _props.connectDropTarget;
+	    var isOver = _props.isOver;
+	    var canDrop = _props.canDrop;
 
-	        return connectDropTarget(_react2['default'].createElement(
-	          'div',
-	          { style: { padding: '2px', position: 'relative', margin: '-10px', display: 'inline-block', border: '1px solid #eee' } },
-	          this.renderGroupedColumns(),
-	          ' ',
-	          _react2['default'].createElement(
-	            'span',
-	            null,
-	            this.getPanelInstructionMessage()
-	          ),
-	          isOver && canDrop && this.renderOverlay('yellow'),
-	          !isOver && canDrop && this.renderOverlay('#DBECFA')
-	        ));
-	      }
-
-	      return render;
-	    }()
-	  }]);
+	    return connectDropTarget(_react2['default'].createElement(
+	      'div',
+	      { style: { padding: '2px', position: 'relative', margin: '-10px', display: 'inline-block', border: '1px solid #eee' } },
+	      this.renderGroupedColumns(),
+	      ' ',
+	      _react2['default'].createElement(
+	        'span',
+	        null,
+	        this.getPanelInstructionMessage()
+	      ),
+	      isOver && canDrop && this.renderOverlay('yellow'),
+	      !isOver && canDrop && this.renderOverlay('#DBECFA')
+	    ));
+	  };
 
 	  return GroupedColumnsPanel;
 	}(_react.Component);
@@ -9835,17 +9509,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	GroupedColumnsPanel.propTypes = propTypes;
 
 	var columnTarget = {
-	  drop: function () {
-	    function drop(props, monitor) {
-	      // Obtain the dragged item
-	      var item = monitor.getItem();
-	      if (typeof props.onColumnGroupAdded === 'function') {
-	        props.onColumnGroupAdded(item.key);
-	      }
+	  drop: function drop(props, monitor) {
+	    // Obtain the dragged item
+	    var item = monitor.getItem();
+	    if (typeof props.onColumnGroupAdded === 'function') {
+	      props.onColumnGroupAdded(item.key);
 	    }
-
-	    return drop;
-	  }()
+	  }
 	};
 
 	function collect(connect, monitor) {
@@ -9865,11 +9535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.__esModule = true;
 
 	var _react = __webpack_require__(3);
 
@@ -9889,34 +9555,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function GroupedColumnButton() {
 	    _classCallCheck(this, GroupedColumnButton);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(GroupedColumnButton).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _Component.apply(this, arguments));
 	  }
 
-	  _createClass(GroupedColumnButton, [{
-	    key: 'render',
-	    value: function () {
-	      function render() {
-	        var style = {
-	          width: '80px',
-	          overflow: 'hidden',
-	          textOverflow: 'ellipsis',
-	          whiteSpace: 'nowrap'
-	        };
-	        return _react2['default'].createElement(
-	          'button',
-	          { className: 'btn grouped-col-btn btn-sm' },
-	          _react2['default'].createElement(
-	            'span',
-	            { style: style },
-	            this.props.name
-	          ),
-	          _react2['default'].createElement('span', { className: 'glyphicon glyphicon-trash', style: { float: 'right', paddingLeft: '5px' }, onClick: this.props.onColumnGroupDeleted.bind(this, this.props.name) })
-	        );
-	      }
-
-	      return render;
-	    }()
-	  }]);
+	  GroupedColumnButton.prototype.render = function render() {
+	    var style = {
+	      width: '80px',
+	      overflow: 'hidden',
+	      textOverflow: 'ellipsis',
+	      whiteSpace: 'nowrap'
+	    };
+	    return _react2['default'].createElement(
+	      'button',
+	      { className: 'btn grouped-col-btn btn-sm' },
+	      _react2['default'].createElement(
+	        'span',
+	        { style: style },
+	        this.props.name
+	      ),
+	      _react2['default'].createElement('span', { className: 'glyphicon glyphicon-trash', style: { float: 'right', paddingLeft: '5px' }, onClick: this.props.onColumnGroupDeleted.bind(this, this.props.name) })
+	    );
+	  };
 
 	  return GroupedColumnButton;
 	}(_react.Component);
@@ -10135,9 +9794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 	function isEmpty(obj) {
 	  return Object.keys(obj).length === 0 && obj.constructor === Object;
 	}
@@ -10150,9 +9807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 	var isEmptyArray = function isEmptyArray(obj) {
 	  return Array.isArray(obj) && obj.length === 0;
 	};
@@ -10163,8 +9818,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _lodash = __webpack_require__(182);
 
@@ -10182,52 +9835,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.expandedRows = expandedRows;
 	  }
 
-	  _createClass(RowGrouper, [{
-	    key: 'isRowExpanded',
-	    value: function () {
-	      function isRowExpanded(columnName, name) {
-	        var isExpanded = true;
-	        var expandedRowGroup = this.expandedRows[columnName];
-	        if (expandedRowGroup && expandedRowGroup[name]) {
-	          isExpanded = expandedRowGroup[name].isExpanded;
+	  RowGrouper.prototype.isRowExpanded = function isRowExpanded(columnName, name) {
+	    var isExpanded = true;
+	    var expandedRowGroup = this.expandedRows[columnName];
+	    if (expandedRowGroup && expandedRowGroup[name]) {
+	      isExpanded = expandedRowGroup[name].isExpanded;
+	    }
+	    return isExpanded;
+	  };
+
+	  RowGrouper.prototype.groupRowsByColumn = function groupRowsByColumn(rows) {
+	    var _this = this;
+
+	    var columnIndex = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+	    var nextColumnIndex = columnIndex;
+	    var dataviewRows = [];
+	    var columnName = this.columns[columnIndex];
+	    var groupedRows = (0, _lodash2['default'])(rows, columnName);
+	    Object.keys(groupedRows).forEach(function (r) {
+	      var isExpanded = _this.isRowExpanded(columnName, r);
+	      var rowGroupHeader = { name: r, __metaData: { isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName } };
+	      dataviewRows.push(rowGroupHeader);
+	      if (isExpanded) {
+	        nextColumnIndex = columnIndex + 1;
+	        if (_this.columns.length > nextColumnIndex) {
+	          dataviewRows = dataviewRows.concat(_this.groupRowsByColumn(groupedRows[r], nextColumnIndex));
+	          nextColumnIndex = columnIndex - 1;
+	        } else {
+	          dataviewRows = dataviewRows.concat(groupedRows[r]);
 	        }
-	        return isExpanded;
 	      }
-
-	      return isRowExpanded;
-	    }()
-	  }, {
-	    key: 'groupRowsByColumn',
-	    value: function () {
-	      function groupRowsByColumn(rows) {
-	        var _this = this;
-
-	        var columnIndex = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-
-	        var nextColumnIndex = columnIndex;
-	        var dataviewRows = [];
-	        var columnName = this.columns[columnIndex];
-	        var groupedRows = (0, _lodash2['default'])(rows, columnName);
-	        Object.keys(groupedRows).forEach(function (r) {
-	          var isExpanded = _this.isRowExpanded(columnName, r);
-	          var rowGroupHeader = { name: r, __metaData: { isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName } };
-	          dataviewRows.push(rowGroupHeader);
-	          if (isExpanded) {
-	            nextColumnIndex = columnIndex + 1;
-	            if (_this.columns.length > nextColumnIndex) {
-	              dataviewRows = dataviewRows.concat(_this.groupRowsByColumn(groupedRows[r], nextColumnIndex));
-	              nextColumnIndex = columnIndex - 1;
-	            } else {
-	              dataviewRows = dataviewRows.concat(groupedRows[r]);
-	            }
-	          }
-	        });
-	        return dataviewRows;
-	      }
-
-	      return groupRowsByColumn;
-	    }()
-	  }]);
+	    });
+	    return dataviewRows;
+	  };
 
 	  return RowGrouper;
 	}();
@@ -12750,9 +12391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
+	exports.__esModule = true;
 	exports.ContextMenuLayer = exports.connect = exports.SubMenu = exports.monitor = exports.MenuItem = exports.MenuHeader = exports.ContextMenu = undefined;
 
 	var _reactContextmenu = __webpack_require__(187);
@@ -15768,11 +15407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.__esModule = true;
 
 	var _react = __webpack_require__(3);
 
@@ -15794,23 +15429,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ReactDataGridContextMenu() {
 	    _classCallCheck(this, ReactDataGridContextMenu);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ReactDataGridContextMenu).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
 	  }
 
-	  _createClass(ReactDataGridContextMenu, [{
-	    key: 'render',
-	    value: function () {
-	      function render() {
-	        return _react2['default'].createElement(
-	          _reactContextmenu.ContextMenu,
-	          { identifier: 'reactDataGridContextMenu' },
-	          this.props.children
-	        );
-	      }
-
-	      return render;
-	    }()
-	  }]);
+	  ReactDataGridContextMenu.prototype.render = function render() {
+	    return _react2['default'].createElement(
+	      _reactContextmenu.ContextMenu,
+	      { identifier: 'reactDataGridContextMenu' },
+	      this.props.children
+	    );
+	  };
 
 	  return ReactDataGridContextMenu;
 	}(_react2['default'].Component);
@@ -15827,11 +15455,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.__esModule = true;
 
 	var _react = __webpack_require__(3);
 
@@ -15851,23 +15475,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function MenuHeader() {
 	    _classCallCheck(this, MenuHeader);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(MenuHeader).apply(this, arguments));
+	    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
 	  }
 
-	  _createClass(MenuHeader, [{
-	    key: "render",
-	    value: function () {
-	      function render() {
-	        return _react2["default"].createElement(
-	          "div",
-	          { className: "react-context-menu-header" },
-	          this.props.children
-	        );
-	      }
-
-	      return render;
-	    }()
-	  }]);
+	  MenuHeader.prototype.render = function render() {
+	    return _react2["default"].createElement(
+	      "div",
+	      { className: "react-context-menu-header" },
+	      this.props.children
+	    );
+	  };
 
 	  return MenuHeader;
 	}(_react2["default"].Component);
@@ -15907,8 +15524,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _react = __webpack_require__(3);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -15938,7 +15553,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function NumericFilter(props) {
 	    _classCallCheck(this, NumericFilter);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NumericFilter).call(this, props));
+	    var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
 
 	    _this.handleChange = _this.handleChange.bind(_this);
 	    _this.handleKeyPress = _this.handleKeyPress.bind(_this);
@@ -15946,192 +15561,150 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _this;
 	  }
 
-	  _createClass(NumericFilter, [{
-	    key: 'componentDidMount',
-	    value: function () {
-	      function componentDidMount() {
-	        this.attachTooltip();
+	  NumericFilter.prototype.componentDidMount = function componentDidMount() {
+	    this.attachTooltip();
+	  };
+
+	  NumericFilter.prototype.componentDidUpdate = function componentDidUpdate() {
+	    this.attachTooltip();
+	  };
+
+	  NumericFilter.prototype.attachTooltip = function attachTooltip() {
+	    if ($) {
+	      $('[data-toggle="tooltip"]').tooltip();
+	    } else if (jQuery) {
+	      jQuery('[data-toggle="tooltip"]').tooltip();
+	    }
+	  };
+
+	  NumericFilter.prototype.filterValues = function filterValues(row, columnFilter, columnKey) {
+	    if (columnFilter.filterTerm == null) {
+	      return true;
+	    }
+	    var result = false;
+	    // implement default filter logic
+	    var value = parseInt(row[columnKey], 10);
+	    for (var ruleKey in columnFilter.filterTerm) {
+	      if (!columnFilter.filterTerm.hasOwnProperty(ruleKey)) {
+	        continue;
 	      }
 
-	      return componentDidMount;
-	    }()
-	  }, {
-	    key: 'componentDidUpdate',
-	    value: function () {
-	      function componentDidUpdate() {
-	        this.attachTooltip();
-	      }
+	      var rule = columnFilter.filterTerm[ruleKey];
 
-	      return componentDidUpdate;
-	    }()
-	  }, {
-	    key: 'attachTooltip',
-	    value: function () {
-	      function attachTooltip() {
-	        if ($) {
-	          $('[data-toggle="tooltip"]').tooltip();
-	        } else if (jQuery) {
-	          jQuery('[data-toggle="tooltip"]').tooltip();
-	        }
-	      }
-
-	      return attachTooltip;
-	    }()
-	  }, {
-	    key: 'filterValues',
-	    value: function () {
-	      function filterValues(row, columnFilter, columnKey) {
-	        if (columnFilter.filterTerm == null) {
-	          return true;
-	        }
-	        var result = false;
-	        // implement default filter logic
-	        var value = parseInt(row[columnKey], 10);
-	        for (var ruleKey in columnFilter.filterTerm) {
-	          if (!columnFilter.filterTerm.hasOwnProperty(ruleKey)) {
-	            continue;
+	      switch (rule.type) {
+	        case RuleType.Number:
+	          if (rule.value === value) {
+	            result = true;
 	          }
-
-	          var rule = columnFilter.filterTerm[ruleKey];
-
-	          switch (rule.type) {
-	            case RuleType.Number:
-	              if (rule.value === value) {
-	                result = true;
-	              }
-	              break;
-	            case RuleType.GreaterThen:
-	              if (rule.value <= value) {
-	                result = true;
-	              }
-	              break;
-	            case RuleType.LessThen:
-	              if (rule.value >= value) {
-	                result = true;
-	              }
-	              break;
-	            case RuleType.Range:
-	              if (rule.begin <= value && rule.end >= value) {
-	                result = true;
-	              }
-	              break;
-	            default:
-	              // do nothing
-	              break;
+	          break;
+	        case RuleType.GreaterThen:
+	          if (rule.value <= value) {
+	            result = true;
 	          }
-	        }
-	        return result;
-	      }
-
-	      return filterValues;
-	    }()
-	  }, {
-	    key: 'getRules',
-	    value: function () {
-	      function getRules(value) {
-	        var rules = [];
-	        if (value === '') {
-	          return rules;
-	        }
-	        // check comma
-	        var list = value.split(',');
-	        if (list.length > 0) {
-	          // handle each value with comma
-	          for (var key in list) {
-	            if (!list.hasOwnProperty(key)) {
-	              continue;
-	            }
-
-	            var obj = list[key];
-	            if (obj.indexOf('-') > 0) {
-	              // handle dash
-	              var begin = parseInt(obj.split('-')[0], 10);
-	              var end = parseInt(obj.split('-')[1], 10);
-	              rules.push({ type: RuleType.Range, begin: begin, end: end });
-	            } else if (obj.indexOf('>') > -1) {
-	              // handle greater then
-	              var _begin = parseInt(obj.split('>')[1], 10);
-	              rules.push({ type: RuleType.GreaterThen, value: _begin });
-	            } else if (obj.indexOf('<') > -1) {
-	              // handle less then
-	              var _end = parseInt(obj.split('<')[1], 10);
-	              rules.push({ type: RuleType.LessThen, value: _end });
-	            } else {
-	              // handle normal values
-	              var numericValue = parseInt(obj, 10);
-	              rules.push({ type: RuleType.Number, value: numericValue });
-	            }
+	          break;
+	        case RuleType.LessThen:
+	          if (rule.value >= value) {
+	            result = true;
 	          }
+	          break;
+	        case RuleType.Range:
+	          if (rule.begin <= value && rule.end >= value) {
+	            result = true;
+	          }
+	          break;
+	        default:
+	          // do nothing
+	          break;
+	      }
+	    }
+	    return result;
+	  };
+
+	  NumericFilter.prototype.getRules = function getRules(value) {
+	    var rules = [];
+	    if (value === '') {
+	      return rules;
+	    }
+	    // check comma
+	    var list = value.split(',');
+	    if (list.length > 0) {
+	      // handle each value with comma
+	      for (var key in list) {
+	        if (!list.hasOwnProperty(key)) {
+	          continue;
 	        }
-	        return rules;
-	      }
 
-	      return getRules;
-	    }()
-	  }, {
-	    key: 'handleKeyPress',
-	    value: function () {
-	      function handleKeyPress(e) {
-	        // Validate the input
-	        var regex = '>|<|-|,|([0-9])';
-	        var result = RegExp(regex).test(e.key);
-	        if (result === false) {
-	          e.preventDefault();
+	        var obj = list[key];
+	        if (obj.indexOf('-') > 0) {
+	          // handle dash
+	          var begin = parseInt(obj.split('-')[0], 10);
+	          var end = parseInt(obj.split('-')[1], 10);
+	          rules.push({ type: RuleType.Range, begin: begin, end: end });
+	        } else if (obj.indexOf('>') > -1) {
+	          // handle greater then
+	          var _begin = parseInt(obj.split('>')[1], 10);
+	          rules.push({ type: RuleType.GreaterThen, value: _begin });
+	        } else if (obj.indexOf('<') > -1) {
+	          // handle less then
+	          var _end = parseInt(obj.split('<')[1], 10);
+	          rules.push({ type: RuleType.LessThen, value: _end });
+	        } else {
+	          // handle normal values
+	          var numericValue = parseInt(obj, 10);
+	          rules.push({ type: RuleType.Number, value: numericValue });
 	        }
 	      }
+	    }
+	    return rules;
+	  };
 
-	      return handleKeyPress;
-	    }()
-	  }, {
-	    key: 'handleChange',
-	    value: function () {
-	      function handleChange(e) {
-	        var value = e.target.value;
-	        var filters = this.getRules(value);
-	        this.props.onChange({ filterTerm: filters.length > 0 ? filters : null, column: this.props.column, rawValue: value, filterValues: this.filterValues });
-	      }
+	  NumericFilter.prototype.handleKeyPress = function handleKeyPress(e) {
+	    // Validate the input
+	    var regex = '>|<|-|,|([0-9])';
+	    var result = RegExp(regex).test(e.key);
+	    if (result === false) {
+	      e.preventDefault();
+	    }
+	  };
 
-	      return handleChange;
-	    }()
-	  }, {
-	    key: 'render',
-	    value: function () {
-	      function render() {
-	        var inputKey = 'header-filter-' + this.props.column.key;
-	        var columnStyle = {
-	          float: 'left',
-	          marginRight: 5,
-	          maxWidth: '80%'
-	        };
-	        var badgeStyle = {
-	          cursor: 'help'
-	        };
+	  NumericFilter.prototype.handleChange = function handleChange(e) {
+	    var value = e.target.value;
+	    var filters = this.getRules(value);
+	    this.props.onChange({ filterTerm: filters.length > 0 ? filters : null, column: this.props.column, rawValue: value, filterValues: this.filterValues });
+	  };
 
-	        var tooltipText = '<table><tbody><tr><td colspan="2"><strong>Input Methods:</strong></td></tr><tr><td><strong>- &nbsp;</strong></td><td style="text-align:left">Range</td></tr><tr><td><strong>> &nbsp;</strong></td><td style="text-align:left"> Greater Then</td></tr><tr><td><strong>< &nbsp;</strong></td><td style="text-align:left"> Less Then</td></tr></tbody>';
+	  NumericFilter.prototype.render = function render() {
+	    var inputKey = 'header-filter-' + this.props.column.key;
+	    var columnStyle = {
+	      float: 'left',
+	      marginRight: 5,
+	      maxWidth: '80%'
+	    };
+	    var badgeStyle = {
+	      cursor: 'help'
+	    };
 
-	        return _react2['default'].createElement(
-	          'div',
-	          null,
-	          _react2['default'].createElement(
-	            'div',
-	            { style: columnStyle },
-	            _react2['default'].createElement('input', { key: inputKey, type: 'text', placeholder: 'e.g. 3,10-15,>20', className: 'form-control input-sm', onChange: this.handleChange, onKeyPress: this.handleKeyPress })
-	          ),
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'input-sm' },
-	            _react2['default'].createElement(
-	              'span',
-	              { className: 'badge', style: badgeStyle, 'data-toggle': 'tooltip', 'data-container': 'body', 'data-html': 'true', title: tooltipText },
-	              '?'
-	            )
-	          )
-	        );
-	      }
+	    var tooltipText = '<table><tbody><tr><td colspan="2"><strong>Input Methods:</strong></td></tr><tr><td><strong>- &nbsp;</strong></td><td style="text-align:left">Range</td></tr><tr><td><strong>> &nbsp;</strong></td><td style="text-align:left"> Greater Then</td></tr><tr><td><strong>< &nbsp;</strong></td><td style="text-align:left"> Less Then</td></tr></tbody>';
 
-	      return render;
-	    }()
-	  }]);
+	    return _react2['default'].createElement(
+	      'div',
+	      null,
+	      _react2['default'].createElement(
+	        'div',
+	        { style: columnStyle },
+	        _react2['default'].createElement('input', { key: inputKey, type: 'text', placeholder: 'e.g. 3,10-15,>20', className: 'form-control input-sm', onChange: this.handleChange, onKeyPress: this.handleKeyPress })
+	      ),
+	      _react2['default'].createElement(
+	        'div',
+	        { className: 'input-sm' },
+	        _react2['default'].createElement(
+	          'span',
+	          { className: 'badge', style: badgeStyle, 'data-toggle': 'tooltip', 'data-container': 'body', 'data-html': 'true', title: tooltipText },
+	          '?'
+	        )
+	      )
+	    );
+	  };
 
 	  return NumericFilter;
 	}(_react2['default'].Component);
@@ -16148,11 +15721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.__esModule = true;
 
 	var _react = __webpack_require__(3);
 
@@ -16184,7 +15753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function AutoCompleteFilter(props) {
 	    _classCallCheck(this, AutoCompleteFilter);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AutoCompleteFilter).call(this, props));
+	    var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
 
 	    _this.getOptions = _this.getOptions.bind(_this);
 	    _this.handleChange = _this.handleChange.bind(_this);
@@ -16193,108 +15762,76 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _this;
 	  }
 
-	  _createClass(AutoCompleteFilter, [{
-	    key: 'componentWillReceiveProps',
-	    value: function () {
-	      function componentWillReceiveProps(newProps) {
-	        this.setState({ options: this.getOptions(newProps) });
+	  AutoCompleteFilter.prototype.componentWillReceiveProps = function componentWillReceiveProps(newProps) {
+	    this.setState({ options: this.getOptions(newProps) });
+	  };
+
+	  AutoCompleteFilter.prototype.getOptions = function getOptions(newProps) {
+	    var props = newProps || this.props;
+	    var options = props.getValidFilterValues(props.column.key);
+	    options = options.map(function (o) {
+	      if (typeof o === 'string') {
+	        return { value: o, label: o };
+	      }
+	      return o;
+	    });
+	    return options;
+	  };
+
+	  AutoCompleteFilter.prototype.columnValueContainsSearchTerms = function columnValueContainsSearchTerms(columnValue, filterTerms) {
+	    var columnValueContainsSearchTerms = false;
+
+	    for (var key in filterTerms) {
+	      if (!filterTerms.hasOwnProperty(key)) {
+	        continue;
 	      }
 
-	      return componentWillReceiveProps;
-	    }()
-	  }, {
-	    key: 'getOptions',
-	    value: function () {
-	      function getOptions(newProps) {
-	        var props = newProps || this.props;
-	        var options = props.getValidFilterValues(props.column.key);
-	        options = options.map(function (o) {
-	          if (typeof o === 'string') {
-	            return { value: o, label: o };
-	          }
-	          return o;
-	        });
-	        return options;
+	      var filterTermValue = filterTerms[key].value;
+
+	      var checkValueIndex = columnValue.trim().toLowerCase().indexOf(filterTermValue.trim().toLowerCase());
+	      var columnMatchesSearch = checkValueIndex !== -1 && (checkValueIndex !== 0 || columnValue === filterTermValue);
+
+	      if (columnMatchesSearch) {
+	        columnValueContainsSearchTerms = true;
+	        break;
 	      }
+	    }
 
-	      return getOptions;
-	    }()
-	  }, {
-	    key: 'columnValueContainsSearchTerms',
-	    value: function () {
-	      function columnValueContainsSearchTerms(columnValue, filterTerms) {
-	        var columnValueContainsSearchTerms = false;
+	    return columnValueContainsSearchTerms;
+	  };
 
-	        for (var key in filterTerms) {
-	          if (!filterTerms.hasOwnProperty(key)) {
-	            continue;
-	          }
+	  AutoCompleteFilter.prototype.filterValues = function filterValues(row, columnFilter, columnKey) {
+	    var include = true;
+	    if (columnFilter === null) {
+	      include = false;
+	    } else if (!(0, _isEmptyArray2['default'])(columnFilter.filterTerm)) {
+	      include = this.columnValueContainsSearchTerms(row[columnKey], columnFilter.filterTerm);
+	    }
+	    return include;
+	  };
 
-	          var filterTermValue = filterTerms[key].value;
+	  AutoCompleteFilter.prototype.handleChange = function handleChange(value) {
+	    var filters = value;
+	    this.setState({ filters: filters });
+	    this.props.onChange({ filterTerm: filters, column: this.props.column, rawValue: value, filterValues: this.filterValues });
+	  };
 
-	          var checkValueIndex = columnValue.trim().toLowerCase().indexOf(filterTermValue.trim().toLowerCase());
-	          var columnMatchesSearch = checkValueIndex !== -1 && (checkValueIndex !== 0 || columnValue === filterTermValue);
-
-	          if (columnMatchesSearch) {
-	            columnValueContainsSearchTerms = true;
-	            break;
-	          }
-	        }
-
-	        return columnValueContainsSearchTerms;
-	      }
-
-	      return columnValueContainsSearchTerms;
-	    }()
-	  }, {
-	    key: 'filterValues',
-	    value: function () {
-	      function filterValues(row, columnFilter, columnKey) {
-	        var include = true;
-	        if (columnFilter === null) {
-	          include = false;
-	        } else if (!(0, _isEmptyArray2['default'])(columnFilter.filterTerm)) {
-	          include = this.columnValueContainsSearchTerms(row[columnKey], columnFilter.filterTerm);
-	        }
-	        return include;
-	      }
-
-	      return filterValues;
-	    }()
-	  }, {
-	    key: 'handleChange',
-	    value: function () {
-	      function handleChange(value) {
-	        var filters = value;
-	        this.setState({ filters: filters });
-	        this.props.onChange({ filterTerm: filters, column: this.props.column, rawValue: value, filterValues: this.filterValues });
-	      }
-
-	      return handleChange;
-	    }()
-	  }, {
-	    key: 'render',
-	    value: function () {
-	      function render() {
-	        var filterName = 'filter-' + this.props.column.key;
-	        return _react2['default'].createElement(
-	          'div',
-	          { style: { width: this.props.column.width * 0.9 } },
-	          _react2['default'].createElement(_reactSelect2['default'], {
-	            name: filterName,
-	            options: this.state.options,
-	            placeholder: this.state.placeholder,
-	            onChange: this.handleChange,
-	            escapeClearsValue: true,
-	            multi: true,
-	            value: this.state.filters
-	          })
-	        );
-	      }
-
-	      return render;
-	    }()
-	  }]);
+	  AutoCompleteFilter.prototype.render = function render() {
+	    var filterName = 'filter-' + this.props.column.key;
+	    return _react2['default'].createElement(
+	      'div',
+	      { style: { width: this.props.column.width * 0.9 } },
+	      _react2['default'].createElement(_reactSelect2['default'], {
+	        name: filterName,
+	        options: this.state.options,
+	        placeholder: this.state.placeholder,
+	        onChange: this.handleChange,
+	        escapeClearsValue: true,
+	        multi: true,
+	        value: this.state.filters
+	      })
+	    );
+	  };
 
 	  return AutoCompleteFilter;
 	}(_react2['default'].Component);

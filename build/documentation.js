@@ -72,22 +72,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	var App = React.createClass({
 	  displayName: 'App',
 
-	  render: function () {
-	    function render() {
-	      return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'h1',
-	          { className: 'page-header' },
-	          'Documentation'
-	        ),
-	        React.createElement(RouteHandler, null)
-	      );
-	    }
-
-	    return render;
-	  }()
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h1',
+	        { className: 'page-header' },
+	        'Documentation'
+	      ),
+	      React.createElement(RouteHandler, null)
+	    );
+	  }
 	});
 
 	var routes = React.createElement(
@@ -3533,111 +3529,107 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = React.createClass({
 	  displayName: "exports",
 
-	  render: function () {
-	    function render() {
-	      return React.createElement(
-	        "div",
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement(
+	        "h2",
+	        null,
+	        "Getting Started "
+	      ),
+	      React.createElement(
+	        "h3",
+	        { id: "js-installation" },
+	        "Installation"
+	      ),
+	      React.createElement(
+	        "h4",
+	        null,
+	        "Using Common JS"
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        "React Data Grid is available in the npm repository. You can install it from the command line using the following commands"
+	      ),
+	      React.createElement(
+	        "p",
 	        null,
 	        React.createElement(
-	          "h2",
+	          "kbd",
 	          null,
-	          "Getting Started "
-	        ),
-	        React.createElement(
-	          "h3",
-	          { id: "js-installation" },
-	          "Installation"
-	        ),
-	        React.createElement(
-	          "h4",
-	          null,
-	          "Using Common JS"
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "React Data Grid is available in the npm repository. You can install it from the command line using the following commands"
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          React.createElement(
-	            "kbd",
-	            null,
-	            "npm install react-data-grid --save"
-	          )
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Once downloaded, require both React and React Grid and you should be good to go"
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block js" },
-	          React.createElement(
-	            "pre",
-	            null,
-	            "var React = require('react');",
-	            React.createElement("br", null),
-	            "var ReactDataGrid = require('react-data-grid');"
-	          )
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "If you want to use extra features such as built in editors, formatters, toolbars and other plugins, you need to require the addons module instead"
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block js" },
-	          React.createElement(
-	            "pre",
-	            null,
-	            "var ReactDataGrid = require('react-data-grid/addons');"
-	          )
-	        ),
-	        React.createElement("br", null),
-	        React.createElement(
-	          "h4",
-	          null,
-	          "Using Distribution Scripts"
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "If you prefer not to use a module system, you can reference the distribution scripts directly in your html pages. First you need to download the scripts. This can be done in 3 ways, either download directly from github source, using npm as above"
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block js" },
-	          React.createElement(
-	            "pre",
-	            null,
-	            "<script src=\"//fb.me/react-0.14.6.js\"></script>",
-	            React.createElement("br", null),
-	            "<script type=\"text/javascript\" src=\"react-data-grid/dist/react-data-grid.js\"></script>"
-	          )
-	        ),
-	        React.createElement(
-	          "p",
-	          null,
-	          "Or include react-data-grid.ui-plugins.js to use advanced features"
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block js" },
-	          React.createElement(
-	            "pre",
-	            null,
-	            "<script type=\"text/javascript\" src=\"react-data-grid/dist/react-data-grid.ui-plugins.js\"></script>"
-	          )
+	          "npm install react-data-grid --save"
 	        )
-	      );
-	    }
-
-	    return render;
-	  }()
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        "Once downloaded, require both React and React Grid and you should be good to go"
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block js" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          "var React = require('react');",
+	          React.createElement("br", null),
+	          "var ReactDataGrid = require('react-data-grid');"
+	        )
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        "If you want to use extra features such as built in editors, formatters, toolbars and other plugins, you need to require the addons module instead"
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block js" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          "var ReactDataGrid = require('react-data-grid/addons');"
+	        )
+	      ),
+	      React.createElement("br", null),
+	      React.createElement(
+	        "h4",
+	        null,
+	        "Using Distribution Scripts"
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        "If you prefer not to use a module system, you can reference the distribution scripts directly in your html pages. First you need to download the scripts. This can be done in 3 ways, either download directly from github source, using npm as above"
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block js" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          "<script src=\"//fb.me/react-0.14.6.js\"></script>",
+	          React.createElement("br", null),
+	          "<script type=\"text/javascript\" src=\"react-data-grid/dist/react-data-grid.js\"></script>"
+	        )
+	      ),
+	      React.createElement(
+	        "p",
+	        null,
+	        "Or include react-data-grid.ui-plugins.js to use advanced features"
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block js" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          "<script type=\"text/javascript\" src=\"react-data-grid/dist/react-data-grid.ui-plugins.js\"></script>"
+	        )
+	      )
+	    );
+	  }
 	});
 
 /***/ },
@@ -3653,188 +3645,184 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = React.createClass({
 	  displayName: "exports",
 
-	  render: function () {
-	    function render() {
-	      return React.createElement(
-	        "div",
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement(
+	        "h1",
+	        { id: "js-api-refernce" },
+	        "API Reference"
+	      ),
+	      React.createElement(
+	        "h2",
 	        null,
+	        "Grid Events"
+	      ),
+	      React.createElement(
+	        "h3",
+	        null,
+	        "onRowUpdated"
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block function" },
 	        React.createElement(
-	          "h1",
-	          { id: "js-api-refernce" },
-	          "API Reference"
-	        ),
-	        React.createElement(
-	          "h2",
+	          "pre",
 	          null,
-	          "Grid Events"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          "onRowUpdated"
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block function" },
 	          React.createElement(
-	            "pre",
-	            null,
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              "onRowUpdated"
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "p" },
-	              "("
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              "e"
-	            ),
-	            " ",
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              ":RowUpdateEvent"
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "p" },
-	              ")"
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block flow" },
+	            "span",
+	            { className: "nx" },
+	            "onRowUpdated"
+	          ),
 	          React.createElement(
-	            "pre",
-	            null,
-	            "/* @flow */",
-	            React.createElement("br", null),
-	            React.createElement(
-	              "code",
-	              null,
-	              RowUpdateEventString
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          "onCellsDragged"
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block function" },
+	            "span",
+	            { className: "p" },
+	            "("
+	          ),
 	          React.createElement(
-	            "pre",
-	            null,
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              "onCellsDragged"
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "p" },
-	              "("
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              "e"
-	            ),
-	            " ",
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              ":CellDragEvent"
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "p" },
-	              ")"
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block flow" },
+	            "span",
+	            { className: "nx" },
+	            "e"
+	          ),
+	          " ",
 	          React.createElement(
-	            "pre",
-	            null,
-	            "/* @flow */",
-	            React.createElement("br", null),
-	            React.createElement(
-	              "code",
-	              null,
-	              CellDragEventString
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          "onCellCopyPaste"
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block function" },
+	            "span",
+	            { className: "nx" },
+	            ":RowUpdateEvent"
+	          ),
 	          React.createElement(
-	            "pre",
-	            null,
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              "onCellCopyPaste"
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "p" },
-	              "("
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              "e"
-	            ),
-	            " ",
-	            React.createElement(
-	              "span",
-	              { className: "nx" },
-	              ":CellCopyPasteEvent"
-	            ),
-	            React.createElement(
-	              "span",
-	              { className: "p" },
-	              ")"
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "code-block flow" },
-	          React.createElement(
-	            "pre",
-	            null,
-	            "/* @flow */",
-	            React.createElement("br", null),
-	            React.createElement(
-	              "code",
-	              null,
-	              CellCopyPasteEventString
-	            )
+	            "span",
+	            { className: "p" },
+	            ")"
 	          )
 	        )
-	      );
-	    }
-
-	    return render;
-	  }()
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block flow" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          "/* @flow */",
+	          React.createElement("br", null),
+	          React.createElement(
+	            "code",
+	            null,
+	            RowUpdateEventString
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        "h3",
+	        null,
+	        "onCellsDragged"
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block function" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          React.createElement(
+	            "span",
+	            { className: "nx" },
+	            "onCellsDragged"
+	          ),
+	          React.createElement(
+	            "span",
+	            { className: "p" },
+	            "("
+	          ),
+	          React.createElement(
+	            "span",
+	            { className: "nx" },
+	            "e"
+	          ),
+	          " ",
+	          React.createElement(
+	            "span",
+	            { className: "nx" },
+	            ":CellDragEvent"
+	          ),
+	          React.createElement(
+	            "span",
+	            { className: "p" },
+	            ")"
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block flow" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          "/* @flow */",
+	          React.createElement("br", null),
+	          React.createElement(
+	            "code",
+	            null,
+	            CellDragEventString
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        "h3",
+	        null,
+	        "onCellCopyPaste"
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block function" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          React.createElement(
+	            "span",
+	            { className: "nx" },
+	            "onCellCopyPaste"
+	          ),
+	          React.createElement(
+	            "span",
+	            { className: "p" },
+	            "("
+	          ),
+	          React.createElement(
+	            "span",
+	            { className: "nx" },
+	            "e"
+	          ),
+	          " ",
+	          React.createElement(
+	            "span",
+	            { className: "nx" },
+	            ":CellCopyPasteEvent"
+	          ),
+	          React.createElement(
+	            "span",
+	            { className: "p" },
+	            ")"
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "code-block flow" },
+	        React.createElement(
+	          "pre",
+	          null,
+	          "/* @flow */",
+	          React.createElement("br", null),
+	          React.createElement(
+	            "code",
+	            null,
+	            CellCopyPasteEventString
+	          )
+	        )
+	      )
+	    );
+	  }
 	});
 
 /***/ },
@@ -3852,143 +3840,103 @@ return /******/ (function(modules) { // webpackBootstrap
 	    documentPath: React.PropTypes.string.isRequired
 	  },
 
-	  getHtml: function () {
-	    function getHtml() {
-	      return { __html: this.getMarkdownAsHtml() };
-	    }
-
-	    return getHtml;
-	  }(),
-	  getMarkdownAsHtml: function () {
-	    function getMarkdownAsHtml() {
-	      return markdown.toHTML(this.props.documentContent);
-	    }
-
-	    return getMarkdownAsHtml;
-	  }(),
+	  getHtml: function getHtml() {
+	    return { __html: this.getMarkdownAsHtml() };
+	  },
+	  getMarkdownAsHtml: function getMarkdownAsHtml() {
+	    return markdown.toHTML(this.props.documentContent);
+	  },
 
 
-	  render: function () {
-	    function render() {
-	      return React.createElement(
-	        'div',
-	        { className: 'pull-left', style: { marginLeft: '100px' } },
-	        React.createElement(
-	          'h3',
-	          null,
-	          this.props.documentName
-	        ),
-	        React.createElement('div', { dangerouslySetInnerHTML: this.getHtml() })
-	      );
-	    }
-
-	    return render;
-	  }()
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'pull-left', style: { marginLeft: '100px' } },
+	      React.createElement(
+	        'h3',
+	        null,
+	        this.props.documentName
+	      ),
+	      React.createElement('div', { dangerouslySetInnerHTML: this.getHtml() })
+	    );
+	  }
 	});
 
 	var ComponentDocs = React.createClass({
 	  displayName: 'ComponentDocs',
 
-	  getInitialState: function () {
-	    function getInitialState() {
-	      return { selectedDocumentIndex: 0, documentContent: '' };
-	    }
+	  getInitialState: function getInitialState() {
+	    return { selectedDocumentIndex: 0, documentContent: '' };
+	  },
 
-	    return getInitialState;
-	  }(),
-
-	  componentDidMount: function () {
-	    function componentDidMount() {
-	      this.getDocumentContent(0);
-	    }
-
-	    return componentDidMount;
-	  }(),
-	  getDocumentContent: function () {
-	    function getDocumentContent(key) {
-	      var documentPath = generatedDocs[key].path;
-	      $.ajax({
-	        url: documentPath,
-	        success: function (documentContent) {
-	          this.setState({ documentContent: documentContent, selectedDocumentIndex: key });
-	        }.bind(this)
-	      });
-	    }
-
-	    return getDocumentContent;
-	  }(),
+	  componentDidMount: function componentDidMount() {
+	    this.getDocumentContent(0);
+	  },
+	  getDocumentContent: function getDocumentContent(key) {
+	    var documentPath = generatedDocs[key].path;
+	    $.ajax({
+	      url: documentPath,
+	      success: function (documentContent) {
+	        this.setState({ documentContent: documentContent, selectedDocumentIndex: key });
+	      }.bind(this)
+	    });
+	  },
 
 
-	  onNavBarClicked: function () {
-	    function onNavBarClicked(key, e) {
-	      this.getDocumentContent(key);
-	      e.preventDefault();
-	    }
+	  onNavBarClicked: function onNavBarClicked(key, e) {
+	    this.getDocumentContent(key);
+	    e.preventDefault();
+	  },
 
-	    return onNavBarClicked;
-	  }(),
-
-	  getComponentDocs: function () {
-	    function getComponentDocs() {
-	      var docsToRender = [];
-	      for (var key in generatedDocs) {
-	        if (generatedDocs.hasOwnProperty(key)) {
-	          var className = key === this.state.selectedDocumentIndex ? 'active' : '';
-	          var doc = generatedDocs[key];
-	          docsToRender.push(React.createElement(
-	            'li',
-	            { role: 'presentation', className: className },
-	            React.createElement(
-	              'a',
-	              { href: '#', onClick: function (index, e) {
-	                  this.onNavBarClicked(index, e);
-	                }.bind(this, key) },
-	              doc.name
-	            )
-	          ));
-	        }
+	  getComponentDocs: function getComponentDocs() {
+	    var docsToRender = [];
+	    for (var key in generatedDocs) {
+	      if (generatedDocs.hasOwnProperty(key)) {
+	        var className = key === this.state.selectedDocumentIndex ? 'active' : '';
+	        var doc = generatedDocs[key];
+	        docsToRender.push(React.createElement(
+	          'li',
+	          { role: 'presentation', className: className },
+	          React.createElement(
+	            'a',
+	            { href: '#', onClick: function (index, e) {
+	                this.onNavBarClicked(index, e);
+	              }.bind(this, key) },
+	            doc.name
+	          )
+	        ));
 	      }
-
-	      return docsToRender;
 	    }
 
-	    return getComponentDocs;
-	  }(),
+	    return docsToRender;
+	  },
 
-	  renderNavBar: function () {
-	    function renderNavBar() {
-	      return React.createElement(
-	        'ul',
-	        { className: 'nav nav-pills nav-stacked pull-left' },
-	        this.getComponentDocs()
-	      );
-	    }
-
-	    return renderNavBar;
-	  }(),
+	  renderNavBar: function renderNavBar() {
+	    return React.createElement(
+	      'ul',
+	      { className: 'nav nav-pills nav-stacked pull-left' },
+	      this.getComponentDocs()
+	    );
+	  },
 
 
-	  render: function () {
-	    function render() {
-	      var selectedDocumentIndex = this.state.selectedDocumentIndex;
-	      return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'h1',
-	          { id: 'js-api-refernce' },
-	          'Components Docs'
-	        ),
-	        this.renderNavBar(),
-	        React.createElement(DocumentContainer, {
-	          documentContent: this.state.documentContent,
-	          documentName: generatedDocs[selectedDocumentIndex].name,
-	          documentPath: generatedDocs[selectedDocumentIndex].path })
-	      );
-	    }
-
-	    return render;
-	  }()
+	  render: function render() {
+	    var selectedDocumentIndex = this.state.selectedDocumentIndex;
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h1',
+	        { id: 'js-api-refernce' },
+	        'Components Docs'
+	      ),
+	      this.renderNavBar(),
+	      React.createElement(DocumentContainer, {
+	        documentContent: this.state.documentContent,
+	        documentName: generatedDocs[selectedDocumentIndex].name,
+	        documentPath: generatedDocs[selectedDocumentIndex].path })
+	    );
+	  }
 	});
 
 	module.exports = ComponentDocs;
