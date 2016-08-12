@@ -451,7 +451,7 @@ describe('Cell Tests', () => {
       });
 
       it('should not add any extra keys', () => {
-        expect(Object.keys(cellEvents).length).toBe(4);
+        expect(Object.keys(cellEvents).length).toBe(5);
       });
 
       it('should call onKeyPress column event', () => {

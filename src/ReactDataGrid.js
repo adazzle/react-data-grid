@@ -102,7 +102,6 @@ const ReactDataGrid = React.createClass({
     onRowClick: React.PropTypes.func,
     onGridKeyUp: React.PropTypes.func,
     onGridKeyDown: React.PropTypes.func,
-    rowGroupRenderer: React.PropTypes.func,
     rowActionsCell: React.PropTypes.func
   },
 
@@ -357,7 +356,7 @@ const ReactDataGrid = React.createClass({
   },
 
   handleDragStart(dragged: DraggedType) {
-    if (!this.dragEnabled() || this.state.selected.idx === -1) { return; }
+    if (!this.dragEnabled()) { return; }
     let idx = dragged.idx;
     let rowIdx = dragged.rowIdx;
     if (
@@ -366,13 +365,12 @@ const ReactDataGrid = React.createClass({
         && idx < this.getSize()
         && rowIdx < this.props.rowsCount
       ) {
-        console.log('dhandleDragStart');
       this.setState({ dragged: dragged });
     }
   },
 
   handleDragEnd() {
-    if (!this.dragEnabled() || this.state.selected.idx === -1) { return; }
+    if (!this.dragEnabled()) { return; }
     let fromRow;
     let toRow;
     let selected = this.state.selected;
@@ -394,7 +392,6 @@ const ReactDataGrid = React.createClass({
     if (!this.dragEnabled() || this.state.dragged == null) { return; }
     let dragged = this.state.dragged;
     dragged.overRowIdx = row;
-    console.log('handleDragEnter');
     this.setState({dragged: dragged});
   },
 
@@ -866,7 +863,6 @@ const ReactDataGrid = React.createClass({
     if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
-  console.log(this.state.dragged);
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}>
         {toolbar}
