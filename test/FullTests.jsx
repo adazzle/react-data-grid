@@ -1,2 +1,2 @@
-var testsContext = require.context("../src", true, /^.*\.(spec|integration-spec)$/);
+var testsContext = require.context("../src", true, /^.*\.(spec)$/);
 testsContext.keys().forEach(testsContext);

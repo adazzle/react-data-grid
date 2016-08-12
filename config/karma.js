@@ -68,7 +68,7 @@ module.exports = function (config) {
     var preprocessors;
     if(RELEASE === true ||  DEBUG === true) {
       preprocessors = {
-        'test/unitTests.jsx': ['webpack']
+        'test/FullTests.jsx': ['webpack']
       }
     } else {
       preprocessors = {'test/unitTests.jsx': ['webpack']}
