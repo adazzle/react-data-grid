@@ -3,7 +3,6 @@
     "plugins": [
         'transform-class-properties',
         'transform-es3-member-expression-literals',
-        'transform-es3-property-literals',
-        'transform-es2015-object-super'
+        'transform-es3-property-literals'
     ]
 }
