@@ -8476,7 +8476,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    resultIdentifier: React.PropTypes.string,
 	    search: React.PropTypes.string,
 	    onKeyDown: React.PropTypes.func,
-	    onFocus: React.PropTypes.func
+	    onFocus: React.PropTypes.func,
+	    editorDisplayValue: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function () {
@@ -8513,6 +8514,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    return getValue;
+	  }(),
+	  getEditorDisplayValue: function () {
+	    function getEditorDisplayValue() {
+	      var displayValue = { title: '' };
+	      var _props = this.props;
+	      var column = _props.column;
+	      var value = _props.value;
+	      var editorDisplayValue = _props.editorDisplayValue;
+
+	      if (editorDisplayValue && typeof editorDisplayValue === 'function') {
+	        displayValue.title = editorDisplayValue(column, value);
+	      } else {
+	        displayValue.title = value;
+	      }
+	      return displayValue;
+	    }
+
+	    return getEditorDisplayValue;
 	  }(),
 	  getInputNode: function () {
 	    function getInputNode() {
@@ -8569,7 +8588,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return React.createElement(
 	        'div',
 	        { height: this.props.height, onKeyDown: this.props.onKeyDown },
-	        React.createElement(ReactAutocomplete, { search: this.props.search, ref: 'autoComplete', label: label, onChange: this.handleChange, onFocus: this.props.onFocus, resultIdentifier: this.props.resultIdentifier, options: this.props.options, value: { title: this.props.value } })
+	        React.createElement(ReactAutocomplete, { search: this.props.search, ref: 'autoComplete', label: label, onChange: this.handleChange, onFocus: this.props.onFocus, resultIdentifier: this.props.resultIdentifier, options: this.props.options, value: this.getEditorDisplayValue() })
 	      );
 	    }
 
