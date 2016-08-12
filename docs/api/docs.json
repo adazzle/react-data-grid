@@ -4929,6 +4929,13 @@
         }
       },
       {
+        "name": "getEditorDisplayValue",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "getInputNode",
         "docblock": null,
         "modifiers": [],
@@ -5091,6 +5098,13 @@
         "description": ""
       },
       "onFocus": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "editorDisplayValue": {
         "type": {
           "name": "func"
         },
