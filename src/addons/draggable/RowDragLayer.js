@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
 import Selectors from '../data/Selectors';
 
@@ -29,7 +29,7 @@ function getItemStyles(props) {
   };
 }
 
-class CustomDragLayer {
+class CustomDragLayer extends Component {
 
   isDraggedRowSelected(selectedRows) {
     let {item, rowSelection} = this.props;
@@ -74,7 +74,7 @@ class CustomDragLayer {
     if (item != null) {
       for (let c in item) {
         if (item.hasOwnProperty(c)) {
-          cells.push(<td key={`dragged-cell-${rowIdx}-${c}`} className="react-grid-Cell">{item[c]}</td>);
+          cells.push(<td key={`dragged-cell-${rowIdx}-${c}`} className="react-grid-Cell" style={{padding: '5px'}}>{item[c]}</td>);
         }
       }
     }

@@ -95,11 +95,12 @@ var Example = React.createClass({
   },
 
   onRowsSelected: function(rows) {
-    console.log(rows);
+    this.setState({selectedIds: this.state.selectedIds.concat(rows.map(r => r.row[this.props.rowKey]))});
   },
 
   onRowsDeselected: function(rows) {
-
+    let rowIds = rows.map(r =>  r.row[this.props.rowKey]);
+    this.setState({selectedIds: this.state.selectedIds.filter(i => rowIds.indexOf(i) === -1 )});
   },
 
   render: function() {
@@ -133,7 +134,7 @@ module.exports = React.createClass({
   render: function () {
     return (
       <div>
-        <h3>A Simple Example</h3>
+        <h3>Row Reordering</h3>
         <ReactPlayground codeText={RowActionsExample} />
       </div>
     )

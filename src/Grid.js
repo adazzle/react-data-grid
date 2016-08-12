@@ -15,30 +15,24 @@ const Grid = React.createClass({
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowHeight: PropTypes.number,
-    rowRenderer: PropTypes.func,
+    rowRenderer: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     emptyRowsView: PropTypes.func,
     expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
-    rowSelection: React.PropTypes.shape({
-      enableShiftSelect: React.PropTypes.bool,
-      onRowsSelected: React.PropTypes.func,
-      onRowsDeselected: React.PropTypes.func,
-      showCheckbox: React.PropTypes.bool,
-      selectBy: React.PropTypes.oneOfType([
-        React.PropTypes.shape({
-          indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
-        }),
-        React.PropTypes.shape({
-          isSelectedKey: React.PropTypes.string.isRequired
-        }),
-        React.PropTypes.shape({
-          keys: React.PropTypes.shape({
-            values: React.PropTypes.array.isRequired,
-            rowKey: React.PropTypes.string.isRequired
-          }).isRequired
-        })
-      ]).isRequired
-    }),
+    rowSelection: React.PropTypes.oneOfType([
+      React.PropTypes.shape({
+        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+      }),
+      React.PropTypes.shape({
+        isSelectedKey: React.PropTypes.string.isRequired
+      }),
+      React.PropTypes.shape({
+        keys: React.PropTypes.shape({
+          values: React.PropTypes.array.isRequired,
+          rowKey: React.PropTypes.string.isRequired
+        }).isRequired
+      })
+    ]),
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
     sortColumn: React.PropTypes.string,

@@ -8,6 +8,7 @@ class RowActionsCell extends React.Component {
     super(props);
   }
 
+
   renderRowIndex() {
     return (<div className="rdg-row-index">
       { this.props.rowIdx + 1 }
