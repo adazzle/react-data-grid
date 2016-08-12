@@ -25,8 +25,14 @@ describe('AutoCompleteFilter', () => {
   let rows;
 
   describe('Basic tests', () => {
+    const columnKey = 'title';
+
     let fakeColumn = { name: 'Titles', key: 'title', width: 100 };
-    function fakeOnChange() { return true; }
+
+    function fakeOnChange(obj) {
+      obj.filterValues(rows[0], obj, columnKey);
+      return true;
+    }
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
@@ -42,6 +48,12 @@ describe('AutoCompleteFilter', () => {
       expect(component).toBeDefined();
     });
 
+    it('should handle change', () => {
+      let value = [{ value: '1' }];
+      component.handleChange(value);
+      expect(component.state.filters).toEqual(value);
+    });
+
     it('When options are valid', () => {
       let request = component.getOptions();
       let result = [
@@ -52,8 +64,6 @@ describe('AutoCompleteFilter', () => {
     });
 
     describe('When filtering a row', () => {
-      const columnKey = 'title';
-
       const filterValues = (columnFilter) => {
         return component.filterValues(rows[0], columnFilter, columnKey);
       };
