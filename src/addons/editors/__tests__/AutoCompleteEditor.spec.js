@@ -131,4 +131,20 @@ describe('AutoCompleteEditor', () => {
       expect(component.getValue()).toEqual({autocomplete: 'a'});
     });
   });
+  describe('With editorDisplayValue prop', () => {
+    beforeEach(() => {
+      component = TestUtils.renderIntoDocument(<AutoCompleteEditor
+        options={fakeOptions}
+        value="value"
+        editorDisplayValue={(col, val) => col.key + val}
+        column={fakeColumn}/>);
+    });
+
+    it('should create a new AutoCompleteEditor instance', () => {
+      expect(component).toBeDefined();
+    });
+    it('should pass the value returned by editorDisplayValue prop to ReachAutocomplete as a prop', () => {
+      expect(component.refs.autoComplete.props.value.title).toEqual(fakeColumn.key + 'value');
+    });
+  });
 });

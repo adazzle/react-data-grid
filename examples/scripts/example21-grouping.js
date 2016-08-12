@@ -156,7 +156,7 @@ var GroupingExample = `
     },
 
    onColumnGroupAdded: function(colName) {
-      let columnGroups = this.state.groupBy.slice(0);
+      var columnGroups = this.state.groupBy.slice(0);
       if(columnGroups.indexOf(colName) === -1) {
         columnGroups.push(colName);
       }
@@ -164,12 +164,12 @@ var GroupingExample = `
     },
     
     onColumnGroupDeleted: function (name) {
-      let columnGroups = this.state.groupBy.filter(function(g){return g !== name});
+      var columnGroups = this.state.groupBy.filter(function(g){return g !== name});
       this.setState({groupBy: columnGroups});
     },
     
     onRowExpandToggle: function(args){
-      let expandedRows = Object.assign({}, this.state.expandedRows);
+      var expandedRows = Object.assign({}, this.state.expandedRows);
       expandedRows[args.columnGroupName] = Object.assign({}, expandedRows[args.columnGroupName]);
       expandedRows[args.columnGroupName][args.name] = {isExpanded: args.shouldExpand};
       this.setState({expandedRows: expandedRows});
@@ -207,6 +207,8 @@ module.exports = React.createClass({
         <p>This example demonstrates how to group rows by column name. Drag a column header to group rows by that column.</p>
         <p>To expand and close a row group, you can use either the mouse or keyboard</p>
         <p>Press <strong>Enter</strong> or <strong>Left Arrow</strong> or <strong>Right Arrow</strong> to toggle whether a row is expanded or not</p>
+        <p>This feature also supports a custom Renderer, by using a renderer you can render some fancy custom html in the row gorup.</p>
+        <p>To use a renderer just inject your component with <code>rowGroupRenderer</code> prop in the grid.</p>
         <ReactPlayground codeText={GroupingExample} />
       </div>
     )

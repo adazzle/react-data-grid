@@ -94,13 +94,18 @@ var Example = React.createClass({
   },
 
   handleFilterChange : function(filter){
-    let newFilters = Object.assign({}, this.state.filters);
+    var newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
     } else {
      delete newFilters[filter.column.key];
     }
     this.setState({filters: newFilters});
+  },
+
+  onClearFilters: function(){
+    //all filters removed
+    this.setState({filters: {} });
   },
 
   render:function(){
@@ -112,10 +117,11 @@ var Example = React.createClass({
         rowsCount={this.getSize()}
         minHeight={500}
         toolbar={<Toolbar enableFilter={true}/>}
-        onAddFilter={this.handleFilterChange}/>
+        onAddFilter={this.handleFilterChange}
+        onClearFilters={this.onClearFilters}
+        />
     )
   }
-
 });
 
 ReactDOM.render(<Example />, mountNode);

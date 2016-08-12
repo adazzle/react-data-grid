@@ -4,6 +4,7 @@ const rewire           = require('rewire');
 const EditorContainer  = rewire('../EditorContainer.js');
 const TestUtils        = require('react/lib/ReactTestUtils');
 const SimpleTextEditor = require('../SimpleTextEditor');
+const EditorBase       = require('../EditorBase');
 
 describe('Editor Container Tests', () => {
   let cellMetaData = {
@@ -65,6 +66,51 @@ describe('Editor Container Tests', () => {
       let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
       expect(editor.props.value).toEqual('Adwolf');
       expect(editor.props.column).toEqual(fakeColumn);
+    });
+  });
+
+  describe('Custom Editors', () => {
+    class TestEditor extends EditorBase {
+      render() {
+        return <input type="text" id="testpassed" />;
+      }
+    }
+
+    let column;
+    beforeEach(() => {
+      column = {
+        key: 'col1',
+        name: 'col1',
+        width: 100
+      };
+    });
+
+    it('should render element custom editors', () => {
+      column.editor = <TestEditor />;
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={'SupernaviX'}
+        cellMetaData={cellMetaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
+      expect(editor).toBeDefined();
+      expect(editor.props.value).toBeDefined();
+      expect(editor.props.onCommit).toBeDefined();
+    });
+
+    it('should render component custom editors', () => {
+      column.editor = TestEditor;
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={'SupernaviX'}
+        cellMetaData={cellMetaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
+      expect(editor).toBeDefined();
+      expect(editor.props.value).toBeDefined();
+      expect(editor.props.onCommit).toBeDefined();
     });
   });
 

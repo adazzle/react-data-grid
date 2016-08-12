@@ -23,6 +23,7 @@
 - [EditorContainer](/docs/markdowns/EditorContainer.md)
 - [DateRangeFilter](/docs/markdowns/DateRangeFilter.md)
 - [DateRangeFormatter](/docs/markdowns/DateRangeFormatter.md)
+- [DropDownFormatter](/docs/markdowns/DropDownFormatter.md)
 - [ImageFormatter](/docs/markdowns/ImageFormatter.md)
 - [SimpleCellFormatter](/docs/markdowns/SimpleCellFormatter.md)
 - [ContextMenu](/docs/markdowns/ContextMenu.md)

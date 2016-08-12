@@ -469,6 +469,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "rowGroupRenderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -1627,6 +1634,13 @@
         "description": ""
       },
       "getValidFilterValues": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowGroupRenderer": {
         "type": {
           "name": "func"
         },
@@ -3864,6 +3878,13 @@
         "required": false,
         "description": ""
       },
+      "rowGroupRenderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "tabIndex": {
         "defaultValue": {
           "value": "-1",
@@ -4280,6 +4301,17 @@
         },
         "required": true,
         "description": ""
+      },
+      "renderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "(props) => {\r\n  let treeDepth = props.treeDepth || 0;\r\n  let marginLeft = treeDepth * 20;\r\n\r\n  return (\r\n    <div>\r\n      <span className=\"row-expand-icon\" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>\r\n      <strong>{props.columnGroupName} : {props.name}</strong>\r\n    </div>);\r\n}",
+          "computed": false
+        }
       }
     }
   },
@@ -4573,6 +4605,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "rowGroupRenderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -4704,6 +4743,22 @@
         "params": [
           {
             "name": "newProps",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "columnValueContainsSearchTerms",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "columnValue",
+            "type": null
+          },
+          {
+            "name": "filterTerms",
             "type": null
           }
         ],
@@ -4874,6 +4929,13 @@
         }
       },
       {
+        "name": "getEditorDisplayValue",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "getInputNode",
         "docblock": null,
         "modifiers": [],
@@ -5036,6 +5098,13 @@
         "description": ""
       },
       "onFocus": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "editorDisplayValue": {
         "type": {
           "name": "func"
         },
@@ -5359,7 +5428,7 @@
               },
               {
                 "name": "custom",
-                "raw": "React.PropTypes.objectOf({ id: React.PropTypes.string, title: React.PropTypes.string, meta: React.PropTypes.string })"
+                "raw": "React.PropTypes.objectOf({\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n})"
               }
             ]
           }
@@ -6010,6 +6079,38 @@
           "value": "'YYYY-MM-DD'",
           "computed": false
         }
+      }
+    }
+  },
+  "src\\addons\\formatters\\DropDownFormatter.js": {
+    "description": "",
+    "methods": [],
+    "props": {
+      "options": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "union",
+            "value": [
+              {
+                "name": "string"
+              },
+              {
+                "name": "custom",
+                "raw": "React.PropTypes.objectOf({\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n})"
+              }
+            ]
+          }
+        },
+        "required": true,
+        "description": ""
+      },
+      "value": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": ""
       }
     }
   },

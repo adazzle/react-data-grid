@@ -11,6 +11,11 @@ Props
 type: `shapeunknown`
 
 
+### `editorDisplayValue`
+
+type: `func`
+
+
 ### `height`
 
 type: `number`
