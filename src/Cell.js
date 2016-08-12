@@ -400,13 +400,9 @@ const Cell = React.createClass({
     let gridEvents = {
       onClick: this.onCellClick,
       onDoubleClick: this.onCellDoubleClick,
-      onContextMenu: this.onCellContextMenu
+      onContextMenu: this.onCellContextMenu,
+      onDragOver: this.onDragOver
     };
-
-    if (this.canEdit()) {
-      gridEvents.onDragOver = this.onDragOver;
-    }
-
 
     if (!columnEvents || !onColumnEvent) {
       return gridEvents;
