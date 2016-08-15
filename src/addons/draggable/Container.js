@@ -16,13 +16,14 @@ class DraggableContainer extends Component {
     let grid = this.renderGrid();
     return (<div>
       {grid}
-      <RowDragLayer rowSelection={grid.props.rowSelection} rowsCount={grid.props.rowsCount} rowGetter={grid.props.rowGetter}/>
+      <RowDragLayer rowSelection={grid.props.rowSelection} rowsCount={grid.props.rowsCount} rowGetter={this.props.getDragPreviewRow || grid.props.rowGetter}/>
     </div>);
   }
 }
 
 DraggableContainer.propTypes = {
-  children: React.PropTypes.element.isRequired
+  children: React.PropTypes.element.isRequired,
+  getDragPreviewRow: React.PropTypes.func
 };
 
 export default DragDropContext(HTML5Backend)(DraggableContainer);
