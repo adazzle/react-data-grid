@@ -22,7 +22,7 @@ const Cell = React.createClass({
     tabIndex: React.PropTypes.number,
     ref: React.PropTypes.string,
     column: React.PropTypes.shape(ExcelColumn).isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]),
     isExpanded: React.PropTypes.bool,
     isRowSelected: React.PropTypes.bool,
     cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
@@ -449,7 +449,6 @@ const Cell = React.createClass({
   },
 
   render() {
-    console.log(this.getDefaultProps());
     let style = this.getStyle();
 
     let className = this.getCellClass();
