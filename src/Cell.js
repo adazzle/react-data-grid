@@ -448,6 +448,8 @@ const Cell = React.createClass({
   },
 
   render() {
+    console.log(this.getDefaultProps());
+    
     let style = this.getStyle();
 
     let className = this.getCellClass();
