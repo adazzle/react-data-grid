@@ -38,8 +38,7 @@ const Cell = React.createClass({
     return {
       tabIndex: -1,
       ref: 'cell',
-      isExpanded: false,
-      value: ''
+      isExpanded: false
     };
   },
 
@@ -449,6 +448,8 @@ const Cell = React.createClass({
   },
 
   render() {
+    console.log(this.getDefaultProps());
+    
     let style = this.getStyle();
 
     let className = this.getCellClass();
