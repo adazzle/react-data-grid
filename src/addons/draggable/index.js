@@ -1,4 +1,4 @@
-import Container from './Container';
+import Container from './DragDropContainer';
 import DraggableHeaderCell from './DraggableHeaderCell';
 import RowActionsCell from './RowActionsCell';
 import DropTargetRowContainer from './DropTargetRowContainer';
