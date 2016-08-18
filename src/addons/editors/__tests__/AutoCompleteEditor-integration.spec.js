@@ -37,7 +37,7 @@ describe('AutoCompleteEditor integration', () => {
       TestUtils.Simulate.click(textInputEle.nextSibling.children[0]);
       // Expect value to have been committed
       expect(commitSpy).toHaveBeenCalled();
-      expect(commitSpy.callCount).toEqual(1);
+      expect(commitSpy.calls.count()).toEqual(1);
     });
   });
 });

@@ -90,8 +90,8 @@ describe('Header Cell Tests', () => {
       resizeHandle.props.onDrag(fakeEvent);
       // assert
       expect(testProps.onResize).toHaveBeenCalled();
-      expect(testProps.onResize.mostRecentCall.args[0]).toEqual(testProps.column);
-      expect(testProps.onResize.mostRecentCall.args[1]).toEqual(dragLength);
+      expect(testProps.onResize.calls.mostRecent().args[0]).toEqual(testProps.column);
+      expect(testProps.onResize.calls.mostRecent().args[1]).toEqual(dragLength);
     });
 
     function simulateDragEnd(dragLength) {
@@ -111,8 +111,8 @@ describe('Header Cell Tests', () => {
       headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
       simulateDragEnd(250);
       expect(testProps.onResizeEnd).toHaveBeenCalled();
-      expect(testProps.onResizeEnd.mostRecentCall.args[0]).toEqual(testProps.column);
-      expect(testProps.onResizeEnd.mostRecentCall.args[1]).toEqual(250);
+      expect(testProps.onResizeEnd.calls.mostRecent().args[0]).toEqual(testProps.column);
+      expect(testProps.onResizeEnd.calls.mostRecent().args[1]).toEqual(250);
     });
   });
 });

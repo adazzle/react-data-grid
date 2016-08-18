@@ -57,9 +57,9 @@ describe('<DropTargetRowContainer />', () => {
     backend.simulateHover([rowTargetId]);
     backend.simulateDrop();
     expect(props.onRowDrop).toHaveBeenCalled();
-    expect(props.onRowDrop.callCount).toEqual(1);
-    let rowSource = props.onRowDrop.calls[0].args[0].rowSource;
-    let rowTarget = props.onRowDrop.calls[0].args[0].rowTarget;
+    expect(props.onRowDrop.calls.count()).toEqual(1);
+    let rowSource = props.onRowDrop.calls.first().args[0].rowSource;
+    let rowTarget = props.onRowDrop.calls.first().args[0].rowTarget;
     expect(rowSource).toEqual(draggedRowItem);
     expect(rowTarget.idx).toEqual(1);
     expect(rowTarget.data).toEqual(props.row);

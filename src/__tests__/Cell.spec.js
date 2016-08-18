@@ -300,10 +300,10 @@ describe('Cell Tests', () => {
     });
 
     beforeEach(() => {
-      onCellClick.reset();
-      onCellDoubleClick.reset();
-      onCellContextMenu.reset();
-      onDragHandleDoubleClick.reset();
+      onCellClick.calls.reset();
+      onCellDoubleClick.calls.reset();
+      onCellContextMenu.calls.reset();
+      onDragHandleDoubleClick.calls.reset();
     });
 
     it('should render an EditorContainer instead of a formatter', () => {
@@ -435,9 +435,9 @@ describe('Cell Tests', () => {
       });
 
       afterEach(() => {
-        columnEventOnClick.reset();
-        columnEventOnDoubleClick.reset();
-        columnEventOnKeyPress.reset();
+        columnEventOnClick.calls.reset();
+        columnEventOnDoubleClick.calls.reset();
+        columnEventOnKeyPress.calls.reset();
       });
 
       it('should contain the default grid events', () => {
@@ -476,7 +476,7 @@ describe('Cell Tests', () => {
       it('should call a column events with the correct params', () => {
         testElement.simulate('click');
 
-        let eventArgs = columnEventOnClick.calls[0].args;
+        let eventArgs = columnEventOnClick.calls.first().args;
 
         expect(eventArgs[1]).toEqual({
           column,
