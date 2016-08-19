@@ -5,7 +5,7 @@ import jasmineEnzyme from 'jasmine-enzyme';
 import RowDragLayer from '../RowDragLayer';
 import DraggableHeaderCell from '../DraggableHeaderCell';
 
-fdescribe('<DragDropContainer />', () => {
+describe('<DragDropContainer />', () => {
   let wrapper;
 
   const childProps = {
