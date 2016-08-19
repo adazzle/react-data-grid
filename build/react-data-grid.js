@@ -153,7 +153,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onRowClick: React.PropTypes.func,
 	    onGridKeyUp: React.PropTypes.func,
 	    onGridKeyDown: React.PropTypes.func,
-	    rowGroupRenderer: React.PropTypes.func
+	    rowGroupRenderer: React.PropTypes.func,
+	    rowActionsCell: React.PropTypes.func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -345,14 +346,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  onDragStart: function onDragStart(e) {
-	    var value = this.getSelectedValue();
-	    this.handleDragStart({ idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value });
-	    // need to set dummy data for FF
-	    if (e && e.dataTransfer) {
-	      if (e.dataTransfer.setData) {
-	        e.dataTransfer.dropEffect = 'move';
-	        e.dataTransfer.effectAllowed = 'move';
-	        e.dataTransfer.setData('text/plain', 'dummy');
+	    var idx = this.state.selected.idx;
+	    if (idx > -1) {
+	      var _value2 = this.getSelectedValue();
+	      this.handleDragStart({ idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: _value2 });
+	      // need to set dummy data for FF
+	      if (e && e.dataTransfer) {
+	        if (e.dataTransfer.setData) {
+	          e.dataTransfer.dropEffect = 'move';
+	          e.dataTransfer.effectAllowed = 'move';
+	          e.dataTransfer.setData('text/plain', 'dummy');
+	        }
 	      }
 	    }
 	  },
@@ -419,11 +423,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated2 = {}, _onGridRowsUpdated2[cellKey] = dragged.value, _onGridRowsUpdated2), _AppConstants2['default'].UpdateActions.CELL_DRAG);
 	    }
-
 	    this.setState({ dragged: { complete: true } });
 	  },
 	  handleDragEnter: function handleDragEnter(row) {
-	    if (!this.dragEnabled()) {
+	    if (!this.dragEnabled() || this.state.dragged == null) {
 	      return;
 	    }
 	    var dragged = this.state.dragged;
@@ -852,17 +855,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var cols = props.columns.slice(0);
 	    var unshiftedCols = {};
-	    if (props.enableRowSelect && !this.props.rowSelection || props.rowSelection && props.rowSelection.showCheckbox !== false) {
+	    if (this.props.rowActionsCell || props.enableRowSelect && !this.props.rowSelection || props.rowSelection && props.rowSelection.showCheckbox !== false) {
 	      var headerRenderer = props.enableRowSelect === 'single' ? null : React.createElement(
 	        'div',
 	        { className: 'react-grid-checkbox-container' },
 	        React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: 'select-all-checkbox', id: 'select-all-checkbox', onChange: this.handleCheckboxChange }),
 	        React.createElement('label', { htmlFor: 'select-all-checkbox', className: 'react-grid-checkbox-label' })
 	      );
+	      var Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
 	      var selectColumn = {
 	        key: 'select-row',
 	        name: '',
-	        formatter: React.createElement(CheckboxEditor, null),
+	        formatter: React.createElement(Formatter, { rowSelection: this.props.rowSelection }),
 	        onCellChange: this.handleRowSelect,
 	        filterable: false,
 	        headerRenderer: headerRenderer,
@@ -870,7 +874,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        locked: true,
 	        getRowMetaData: function getRowMetaData(rowData) {
 	          return rowData;
-	        }
+	        },
+	        cellClass: 'rdg-row-actions-cell'
 	      };
 	      unshiftedCols = cols.unshift(selectColumn);
 	      cols = unshiftedCols > 0 ? cols : unshiftedCols;
@@ -883,7 +888,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  dragEnabled: function dragEnabled() {
-	    return this.props.onCellsDragged !== null;
+	    return this.props.onCellsDragged !== undefined;
 	  },
 
 	  renderToolbar: function renderToolbar() {
@@ -896,6 +901,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var cellMetaData = {
 	      selected: this.state.selected,
 	      dragged: this.state.dragged,
+	      hoveredRowIdx: this.state.hoveredRowIdx,
 	      onCellClick: this.onCellClick,
 	      onCellContextMenu: this.onCellContextMenu,
 	      onCellDoubleClick: this.onCellDoubleClick,
@@ -909,7 +915,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      openCellEditor: this.openCellEditor,
 	      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
 	      onCellExpand: this.onCellExpand,
-	      onRowExpandToggle: this.onRowExpandToggle
+	      onRowExpandToggle: this.onRowExpandToggle,
+	      onRowHover: this.onRowHover
 	    };
 
 	    var toolbar = this.renderToolbar();
@@ -925,7 +932,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
 	      gridWidth = '100%';
 	    }
-
 	    return React.createElement(
 	      'div',
 	      { className: 'react-grid-Container', style: { width: containerWidth } },
@@ -1139,26 +1145,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	    headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	    rowHeight: PropTypes.number,
-	    rowRenderer: PropTypes.func,
+	    rowRenderer: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
 	    emptyRowsView: PropTypes.func,
 	    expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	    selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
-	    rowSelection: React.PropTypes.shape({
-	      enableShiftSelect: React.PropTypes.bool,
-	      onRowsSelected: React.PropTypes.func,
-	      onRowsDeselected: React.PropTypes.func,
-	      showCheckbox: React.PropTypes.bool,
-	      selectBy: React.PropTypes.oneOfType([React.PropTypes.shape({
-	        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
-	      }), React.PropTypes.shape({
-	        isSelectedKey: React.PropTypes.string.isRequired
-	      }), React.PropTypes.shape({
-	        keys: React.PropTypes.shape({
-	          values: React.PropTypes.array.isRequired,
-	          rowKey: React.PropTypes.string.isRequired
-	        }).isRequired
-	      })]).isRequired
-	    }),
+	    rowSelection: React.PropTypes.oneOfType([React.PropTypes.shape({
+	      indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+	    }), React.PropTypes.shape({
+	      isSelectedKey: React.PropTypes.string.isRequired
+	    }), React.PropTypes.shape({
+	      keys: React.PropTypes.shape({
+	        values: React.PropTypes.array.isRequired,
+	        rowKey: React.PropTypes.string.isRequired
+	      }).isRequired
+	    })]),
 	    rowsCount: PropTypes.number,
 	    onRows: PropTypes.func,
 	    sortColumn: React.PropTypes.string,
@@ -2409,24 +2409,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    columnMetrics: PropTypes.object.isRequired,
 	    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
 	    selectedRows: PropTypes.array,
-	    rowSelection: React.PropTypes.shape({
-	      enableShiftSelect: React.PropTypes.bool,
-	      onRowsSelected: React.PropTypes.func,
-	      onRowsDeselected: React.PropTypes.func,
-	      showCheckbox: React.PropTypes.bool,
-	      selectBy: React.PropTypes.oneOfType([React.PropTypes.shape({
-	        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
-	      }), React.PropTypes.shape({
-	        isSelectedKey: React.PropTypes.string.isRequired
-	      }), React.PropTypes.shape({
-	        keys: React.PropTypes.shape({
-	          values: React.PropTypes.array.isRequired,
-	          rowKey: React.PropTypes.string.isRequired
-	        }).isRequired
-	      })]).isRequired
-	    }),
+	    rowSelection: React.PropTypes.oneOfType([React.PropTypes.shape({
+	      indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+	    }), React.PropTypes.shape({
+	      isSelectedKey: React.PropTypes.string.isRequired
+	    }), React.PropTypes.shape({
+	      keys: React.PropTypes.shape({
+	        values: React.PropTypes.array.isRequired,
+	        rowKey: React.PropTypes.string.isRequired
+	      }).isRequired
+	    })]),
 	    expandedRows: PropTypes.array,
-	    rowRenderer: PropTypes.func,
+	    rowRenderer: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
 	    rowsCount: PropTypes.number.isRequired,
 	    rowHeight: PropTypes.number.isRequired,
 	    onRows: PropTypes.func,
@@ -2829,6 +2823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        idx: displayStart + idx,
 	        row: r.row,
 	        height: rowHeight,
+	        onMouseOver: _this4.onMouseOver,
 	        columns: _this4.props.columns,
 	        isSelected: _this4.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
 	        expandedRows: _this4.props.expandedRows,
@@ -2900,7 +2895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var SimpleRowsContainer = function SimpleRowsContainer(props) {
 	  return _react2['default'].createElement(
 	    'div',
-	    { style: { width: props.width, overflow: 'hidden' } },
+	    { style: { overflow: 'hidden' } },
 	    props.rows
 	  );
 	};
@@ -3231,7 +3226,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    expandedRows: PropTypes.arrayOf(PropTypes.object),
 	    extraClasses: PropTypes.string,
 	    forceUpdate: PropTypes.bool,
-	    subRowDetails: PropTypes.object
+	    subRowDetails: PropTypes.object,
+	    isRowHovered: PropTypes.bool
 	  },
 
 	  mixins: [ColumnUtilsMixin],
@@ -3450,25 +3446,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      isExpanded: false
 	    };
 	  },
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      isCellValueChanging: false
 	    };
 	  },
-
-
 	  componentDidMount: function componentDidMount() {
 	    this.checkFocus();
 	  },
-
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	    this.setState({
 	      isCellValueChanging: this.props.value !== nextProps.value
 	    });
 	  },
-
-
 	  componentDidUpdate: function componentDidUpdate() {
 	    this.checkFocus();
 	    var dragged = this.props.cellMetaData.dragged;
@@ -3479,7 +3469,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.applyUpdateClass();
 	    }
 	  },
-
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
 	    return this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.value !== nextProps.value || this.props.forceUpdate === true || this.props.className !== nextProps.className || this.hasChangedDependentValues(nextProps);
 	  },
@@ -3520,12 +3509,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      meta.onDragHandleDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e: e });
 	    }
 	  },
-
-
 	  onDragOver: function onDragOver(e) {
 	    e.preventDefault();
 	  },
-
 	  getStyle: function getStyle() {
 	    var style = {
 	      position: 'absolute',
@@ -3554,8 +3540,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.props.column.getRowMetaData(this.getRowData(), this.props.column);
 	    }
 	  },
-
-
 	  getCellClass: function getCellClass() {
 	    var className = joinClasses(this.props.column.cellClass, 'react-grid-Cell', this.props.className, this.props.column.locked ? 'react-grid-Cell--locked' : null);
 	    var extraClasses = joinClasses({
@@ -3570,7 +3554,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	    return joinClasses(className, extraClasses);
 	  },
-
 	  getUpdateCellClass: function getUpdateCellClass() {
 	    return this.props.column.getUpdateCellClass ? this.props.column.getUpdateCellClass(this.props.selectedColumn, this.props.column, this.state.isCellValueChanging) : '';
 	  },
@@ -3582,8 +3565,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return meta.selected && meta.selected.idx === this.props.idx;
 	  },
-
-
 	  isSelected: function isSelected() {
 	    var meta = this.props.cellMetaData;
 	    if (meta == null) {
@@ -3592,7 +3573,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return meta.selected && meta.selected.rowIdx === this.props.rowIdx && meta.selected.idx === this.props.idx;
 	  },
-
 	  isActive: function isActive() {
 	    var meta = this.props.cellMetaData;
 	    if (meta == null) {
@@ -3699,8 +3679,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var dragged = this.props.cellMetaData.dragged;
 	    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
 	  },
-
-
 	  checkFocus: function checkFocus() {
 	    if (this.isSelected() && !this.isActive()) {
 	      // determine the parent viewport element of this cell
@@ -3731,7 +3709,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  },
-
 	  canEdit: function canEdit() {
 	    return this.props.column.editor != null || this.props.column.editable;
 	  },
@@ -3775,6 +3752,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var gridEvents = {
 	      onClick: this.onCellClick,
 	      onDoubleClick: this.onCellDoubleClick,
+	      onContextMenu: this.onCellContextMenu,
 	      onDragOver: this.onDragOver
 	    };
 
@@ -3797,7 +3775,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var cellExpander = void 0;
 	    var marginLeft = this.props.expandableOptions ? this.props.expandableOptions.treeDepth * 30 : 0;
-	    var marginLeftCell = this.props.expandableOptions ? this.props.expandableOptions.treeDepth * 10 : 0;
 	    if (this.canExpand()) {
 	      cellExpander = React.createElement(
 	        'span',
@@ -3812,7 +3789,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      cellExpander,
 	      React.createElement(
 	        'span',
-	        { style: { float: 'left', marginLeft: marginLeftCell, width: '100%' } },
+	        null,
 	        CellContent
 	      ),
 	      ' ',
@@ -3838,9 +3815,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      React.createElement('span', { style: { display: 'none' } })
 	    ) : null;
 	    var events = this.getEvents();
+
 	    return React.createElement(
 	      'div',
-	      _extends({}, this.props, { className: className, style: style, onClick: this.onCellClick, onDoubleClick: this.onCellDoubleClick, onContextMenu: this.onCellContextMenu, onDragOver: this.onDragOver }, events),
+	      _extends({}, this.props, { className: className, style: style }, events),
 	      cellContent,
 	      dragHandle
 	    );
