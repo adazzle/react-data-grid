@@ -102,7 +102,8 @@ const ReactDataGrid = React.createClass({
     onRowClick: React.PropTypes.func,
     onGridKeyUp: React.PropTypes.func,
     onGridKeyDown: React.PropTypes.func,
-    rowGroupRenderer: React.PropTypes.func
+    rowGroupRenderer: React.PropTypes.func,
+    rowActionsCell: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -307,14 +308,17 @@ const ReactDataGrid = React.createClass({
   },
 
   onDragStart(e: SyntheticEvent) {
-    let value = this.getSelectedValue();
-    this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
-    // need to set dummy data for FF
-    if (e && e.dataTransfer) {
-      if (e.dataTransfer.setData) {
-        e.dataTransfer.dropEffect = 'move';
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', 'dummy');
+    let idx = this.state.selected.idx;
+    if (idx > -1) {
+      let value = this.getSelectedValue();
+      this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
+      // need to set dummy data for FF
+      if (e && e.dataTransfer) {
+        if (e.dataTransfer.setData) {
+          e.dataTransfer.dropEffect = 'move';
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', 'dummy');
+        }
       }
     }
   },
@@ -382,12 +386,11 @@ const ReactDataGrid = React.createClass({
     if (this.props.onGridRowsUpdated) {
       this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
     }
-
     this.setState({dragged: {complete: true}});
   },
 
   handleDragEnter(row: any) {
-    if (!this.dragEnabled()) { return; }
+    if (!this.dragEnabled() || this.state.dragged == null) { return; }
     let dragged = this.state.dragged;
     dragged.overRowIdx = row;
     this.setState({dragged: dragged});
@@ -785,22 +788,24 @@ const ReactDataGrid = React.createClass({
   setupGridColumns: function(props = this.props): Array<any> {
     let cols = props.columns.slice(0);
     let unshiftedCols = {};
-    if ((props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
+    if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       let headerRenderer = props.enableRowSelect === 'single' ? null :
       <div className="react-grid-checkbox-container">
         <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" onChange={this.handleCheckboxChange} />
         <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
       </div>;
+      let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
       let selectColumn = {
         key: 'select-row',
         name: '',
-        formatter: <CheckboxEditor/>,
+        formatter: <Formatter rowSelection={this.props.rowSelection}/>,
         onCellChange: this.handleRowSelect,
         filterable: false,
         headerRenderer: headerRenderer,
         width: 60,
         locked: true,
-        getRowMetaData: (rowData) => rowData
+        getRowMetaData: (rowData) => rowData,
+        cellClass: 'rdg-row-actions-cell'
       };
       unshiftedCols = cols.unshift(selectColumn);
       cols = unshiftedCols > 0 ? cols : unshiftedCols;
@@ -814,7 +819,7 @@ const ReactDataGrid = React.createClass({
   },
 
   dragEnabled: function(): boolean {
-    return this.props.onCellsDragged !== null;
+    return this.props.onCellsDragged !== undefined;
   },
 
   renderToolbar(): ReactElement {
@@ -828,6 +833,7 @@ const ReactDataGrid = React.createClass({
     let cellMetaData = {
       selected: this.state.selected,
       dragged: this.state.dragged,
+      hoveredRowIdx: this.state.hoveredRowIdx,
       onCellClick: this.onCellClick,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
@@ -841,7 +847,8 @@ const ReactDataGrid = React.createClass({
       openCellEditor: this.openCellEditor,
       onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       onCellExpand: this.onCellExpand,
-      onRowExpandToggle: this.onRowExpandToggle
+      onRowExpandToggle: this.onRowExpandToggle,
+      onRowHover: this.onRowHover
     };
 
     let toolbar = this.renderToolbar();
@@ -857,7 +864,6 @@ const ReactDataGrid = React.createClass({
     if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
-
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}>
         {toolbar}

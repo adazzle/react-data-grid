@@ -32,7 +32,18 @@ const getFlattenedGroupedRows = createSelector([getSortedRows, getGroupedColumns
   return groupRows(rows, groupedColumns, expandedRows);
 });
 
+const getSelectedKeys = (state) => state.selectedKeys;
+const getRowKey = (state) => state.rowKey;
+const getSelectedRowsByKey = createSelector([getRowKey, getSelectedKeys, getInputRows], (rowKey, selectedKeys, rows = []) => {
+  return selectedKeys.map(k => {
+    return rows.filter(r => {
+      return r[rowKey] === k;
+    })[0];
+  });
+});
+
 const Selectors = {
-  getRows: getFlattenedGroupedRows
+  getRows: getFlattenedGroupedRows,
+  getSelectedRowsByKey: getSelectedRowsByKey
 };
 module.exports = Selectors;

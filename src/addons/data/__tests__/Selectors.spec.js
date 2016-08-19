@@ -41,7 +41,7 @@ function executeSpyTests(fn) {
 
     it('should call filterRows the correct number of times', () => {
       let expectedComputations = fn(options);
-      expect(filterSpy.callCount).toBe(expectedComputations);
+      expect(filterSpy.calls.count()).toBe(expectedComputations);
     });
 
     it('should have filterTerm in every filter object', () => {
@@ -57,7 +57,7 @@ function executeSpyTests(fn) {
 
     it('should not call filterRows', () => {
       fn(options);
-      expect(filterSpy.callCount).toBe(0);
+      expect(filterSpy.calls.count()).toBe(0);
     });
   });
 
@@ -66,7 +66,7 @@ function executeSpyTests(fn) {
 
     it('should not call filterRows', () => {
       fn(options);
-      expect(filterSpy.callCount).toBe(0);
+      expect(filterSpy.calls.count()).toBe(0);
     });
   });
 
@@ -75,7 +75,7 @@ function executeSpyTests(fn) {
 
     it('should call groupBy only once', () => {
       let expectedComputations = fn(options);
-      expect(groupRowsSpy.callCount).toBe(expectedComputations);
+      expect(groupRowsSpy.calls.count()).toBe(expectedComputations);
     });
   });
 
@@ -84,7 +84,7 @@ function executeSpyTests(fn) {
 
     it('should not call groupBy', () => {
       fn(options);
-      expect(groupRowsSpy.callCount).toBe(0);
+      expect(groupRowsSpy.calls.count()).toBe(0);
     });
   });
 
@@ -93,7 +93,7 @@ function executeSpyTests(fn) {
 
     it('should not call groupBy', () => {
       fn(options);
-      expect(groupRowsSpy.callCount).toBe(0);
+      expect(groupRowsSpy.calls.count()).toBe(0);
     });
   });
 
@@ -102,7 +102,7 @@ function executeSpyTests(fn) {
 
     it('should not call groupBy', () => {
       fn(options);
-      expect(groupRowsSpy.callCount).toBe(0);
+      expect(groupRowsSpy.calls.count()).toBe(0);
     });
   });
 }

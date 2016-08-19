@@ -50,8 +50,8 @@ describe('Header Unit Tests', () => {
     let headerRow = TestUtils.findRenderedComponentWithType(header, HeaderRowStub);
     headerRow.props.onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
     expect(testProps.onColumnResize).toHaveBeenCalled();
-    expect(testProps.onColumnResize.mostRecentCall.args[0]).toEqual(resizeColIdx);
-    expect(testProps.onColumnResize.mostRecentCall.args[1]).toEqual(200);
+    expect(testProps.onColumnResize.calls.mostRecent().args[0]).toEqual(resizeColIdx);
+    expect(testProps.onColumnResize.calls.mostRecent().args[1]).toEqual(200);
   }
 
   beforeEach(() => {

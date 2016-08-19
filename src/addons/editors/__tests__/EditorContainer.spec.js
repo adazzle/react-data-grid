@@ -140,7 +140,7 @@ describe('Editor Container Tests', () => {
       let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
       TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'Enter'});
       expect(cellMetaData.onCommit).toHaveBeenCalled();
-      expect(cellMetaData.onCommit.callCount).toEqual(1);
+      expect(cellMetaData.onCommit.calls.count()).toEqual(1);
     });
   });
 });

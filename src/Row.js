@@ -25,7 +25,8 @@ const Row = React.createClass({
     expandedRows: PropTypes.arrayOf(PropTypes.object),
     extraClasses: PropTypes.string,
     forceUpdate: PropTypes.bool,
-    subRowDetails: PropTypes.object
+    subRowDetails: PropTypes.object,
+    isRowHovered: PropTypes.bool
   },
 
   mixins: [ColumnUtilsMixin],
@@ -38,7 +39,7 @@ const Row = React.createClass({
     };
   },
 
-  shouldComponentUpdate(nextProps: any): boolean {
+  shouldComponentUpdate(nextProps: any) {
     return !(ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
            this.doesRowContainSelectedCell(this.props)                                                   ||
            this.doesRowContainSelectedCell(nextProps)                                                    ||

@@ -71,8 +71,8 @@ describe('Header Row Unit Tests', () => {
       sortableHeaderRenderer.props.onSort('title', 'DESC');
       // assert
       expect(testProps.onSort).toHaveBeenCalled();
-      expect(testProps.onSort.mostRecentCall.args[0]).toEqual('title');
-      expect(testProps.onSort.mostRecentCall.args[1]).toEqual('DESC');
+      expect(testProps.onSort.calls.mostRecent().args[0]).toEqual('title');
+      expect(testProps.onSort.calls.mostRecent().args[1]).toEqual('DESC');
     });
   });
 
