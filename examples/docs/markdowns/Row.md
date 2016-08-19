@@ -48,6 +48,11 @@ defaultValue: `35`
 type: `number`
 
 
+### `isRowHovered`
+
+type: `bool`
+
+
 ### `isSelected`
 
 type: `bool`

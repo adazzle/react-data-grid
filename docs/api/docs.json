@@ -566,45 +566,7 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "signature",
-            "type": "object",
-            "raw": "{position:string; width: number; height: number; left: number}",
-            "signature": {
-              "properties": [
-                {
-                  "key": "position",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "width",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "height",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "left",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                }
-              ]
-            }
-          }
-        }
+        "returns": null
       },
       {
         "name": "getFormatter",
@@ -637,11 +599,7 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "string"
-          }
-        }
+        "returns": null
       },
       {
         "name": "getUpdateCellClass",
@@ -662,22 +620,14 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
+        "returns": null
       },
       {
         "name": "isActive",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
+        "returns": null
       },
       {
         "name": "isCellSelectionChanging",
@@ -689,7 +639,7 @@
             "type": {
               "name": "signature",
               "type": "object",
-              "raw": "{idx: number; cellMetaData: {selected: {idx: number}}}",
+              "raw": "{ idx: number; cellMetaData: { selected: { idx: number } } }",
               "signature": {
                 "properties": [
                   {
@@ -704,7 +654,7 @@
                     "value": {
                       "name": "signature",
                       "type": "object",
-                      "raw": "{selected: {idx: number}}",
+                      "raw": "{ selected: { idx: number } }",
                       "signature": {
                         "properties": [
                           {
@@ -712,7 +662,7 @@
                             "value": {
                               "name": "signature",
                               "type": "object",
-                              "raw": "{idx: number}",
+                              "raw": "{ idx: number }",
                               "signature": {
                                 "properties": [
                                   {
@@ -1379,7 +1329,15 @@
       },
       "rowRenderer": {
         "type": {
-          "name": "func"
+          "name": "union",
+          "value": [
+            {
+              "name": "element"
+            },
+            {
+              "name": "func"
+            }
+          ]
         },
         "required": false,
         "description": ""
@@ -1423,71 +1381,49 @@
       },
       "rowSelection": {
         "type": {
-          "name": "shape",
-          "value": {
-            "enableShiftSelect": {
-              "name": "bool",
-              "required": false
+          "name": "union",
+          "value": [
+            {
+              "name": "shape",
+              "value": {
+                "indexes": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "number"
+                  },
+                  "required": true
+                }
+              }
             },
-            "onRowsSelected": {
-              "name": "func",
-              "required": false
+            {
+              "name": "shape",
+              "value": {
+                "isSelectedKey": {
+                  "name": "string",
+                  "required": true
+                }
+              }
             },
-            "onRowsDeselected": {
-              "name": "func",
-              "required": false
-            },
-            "showCheckbox": {
-              "name": "bool",
-              "required": false
-            },
-            "selectBy": {
-              "name": "union",
-              "value": [
-                {
+            {
+              "name": "shape",
+              "value": {
+                "keys": {
                   "name": "shape",
                   "value": {
-                    "indexes": {
-                      "name": "arrayOf",
-                      "value": {
-                        "name": "number"
-                      },
+                    "values": {
+                      "name": "array",
                       "required": true
-                    }
-                  }
-                },
-                {
-                  "name": "shape",
-                  "value": {
-                    "isSelectedKey": {
+                    },
+                    "rowKey": {
                       "name": "string",
                       "required": true
                     }
-                  }
-                },
-                {
-                  "name": "shape",
-                  "value": {
-                    "keys": {
-                      "name": "shape",
-                      "value": {
-                        "values": {
-                          "name": "array",
-                          "required": true
-                        },
-                        "rowKey": {
-                          "name": "string",
-                          "required": true
-                        }
-                      },
-                      "required": true
-                    }
-                  }
+                  },
+                  "required": true
                 }
-              ],
-              "required": true
+              }
             }
-          }
+          ]
         },
         "required": false,
         "description": ""
@@ -3885,6 +3821,13 @@
         "required": false,
         "description": ""
       },
+      "rowActionsCell": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "tabIndex": {
         "defaultValue": {
           "value": "-1",
@@ -4181,6 +4124,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "isRowHovered": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -4452,71 +4402,49 @@
       },
       "rowSelection": {
         "type": {
-          "name": "shape",
-          "value": {
-            "enableShiftSelect": {
-              "name": "bool",
-              "required": false
+          "name": "union",
+          "value": [
+            {
+              "name": "shape",
+              "value": {
+                "indexes": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "number"
+                  },
+                  "required": true
+                }
+              }
             },
-            "onRowsSelected": {
-              "name": "func",
-              "required": false
+            {
+              "name": "shape",
+              "value": {
+                "isSelectedKey": {
+                  "name": "string",
+                  "required": true
+                }
+              }
             },
-            "onRowsDeselected": {
-              "name": "func",
-              "required": false
-            },
-            "showCheckbox": {
-              "name": "bool",
-              "required": false
-            },
-            "selectBy": {
-              "name": "union",
-              "value": [
-                {
+            {
+              "name": "shape",
+              "value": {
+                "keys": {
                   "name": "shape",
                   "value": {
-                    "indexes": {
-                      "name": "arrayOf",
-                      "value": {
-                        "name": "number"
-                      },
+                    "values": {
+                      "name": "array",
                       "required": true
-                    }
-                  }
-                },
-                {
-                  "name": "shape",
-                  "value": {
-                    "isSelectedKey": {
+                    },
+                    "rowKey": {
                       "name": "string",
                       "required": true
                     }
-                  }
-                },
-                {
-                  "name": "shape",
-                  "value": {
-                    "keys": {
-                      "name": "shape",
-                      "value": {
-                        "values": {
-                          "name": "array",
-                          "required": true
-                        },
-                        "rowKey": {
-                          "name": "string",
-                          "required": true
-                        }
-                      },
-                      "required": true
-                    }
-                  }
+                  },
+                  "required": true
                 }
-              ],
-              "required": true
+              }
             }
-          }
+          ]
         },
         "required": false,
         "description": ""
@@ -4530,7 +4458,15 @@
       },
       "rowRenderer": {
         "type": {
-          "name": "func"
+          "name": "union",
+          "value": [
+            {
+              "name": "element"
+            },
+            {
+              "name": "func"
+            }
+          ]
         },
         "required": false,
         "description": ""
