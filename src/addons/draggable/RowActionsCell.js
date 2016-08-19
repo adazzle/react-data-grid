@@ -4,11 +4,6 @@ import CheckboxEditor from '../editors/CheckboxEditor';
 
 class RowActionsCell extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
-
   renderRowIndex() {
     return (<div className="rdg-row-index">
       { this.props.rowIdx + 1 }

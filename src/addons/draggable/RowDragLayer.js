@@ -54,6 +54,7 @@ class CustomDragLayer extends Component {
     let {rowSelection} = this.props;
     if (rowSelection && rowSelection.selectBy.keys) {
       let rows = this.getRows();
+      console.log('get rows');
       let {rowKey, values} = rowSelection.selectBy.keys;
       let selectedRows = Selectors.getSelectedRowsByKey({rowKey: rowKey, selectedKeys: values, rows: rows});
       draggedRows = this.isDraggedRowSelected(selectedRows) ? selectedRows : [this.props.rowGetter(this.props.item.idx)];
