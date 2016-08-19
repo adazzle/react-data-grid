@@ -7,7 +7,7 @@ var webpackPluginsConfig = require("../../config/webpack.ui-plugins.js");
 var gulp = require('gulp');
 var rename = require('gulp-rename');
 
-gulp.task("dist", function(callback) {
+gulp.task("dist", ['styles'], function(callback) {
 
   var onBundle = function(){
     gulp.src('dist/react-data-grid.ui-plugins.js')
