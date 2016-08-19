@@ -135,6 +135,7 @@ module.exports = React.createClass({
     return (
       <div>
         <h3>Row Reordering</h3>
+        <p>This examples demonstrates how single or multiple rows can be dragged to a different positions using components from Draggable React Addons</p> 
         <ReactPlayground codeText={RowActionsExample} />
       </div>
     )
