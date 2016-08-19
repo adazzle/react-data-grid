@@ -69,6 +69,22 @@ const Cell = React.createClass({
     }
   },
 
+  shouldComponentUpdate(nextProps: any): boolean {
+    return this.props.column.width !== nextProps.column.width
+    || this.props.column.left !== nextProps.column.left
+    || this.props.height !== nextProps.height
+    || this.props.rowIdx !== nextProps.rowIdx
+    || this.isCellSelectionChanging(nextProps)
+    || this.isDraggedCellChanging(nextProps)
+    || this.isCopyCellChanging(nextProps)
+    || this.props.isRowSelected !== nextProps.isRowSelected
+    || this.isSelected()
+    || this.props.value !== nextProps.value
+    || this.props.forceUpdate === true
+    || this.props.className !== nextProps.className
+    || this.hasChangedDependentValues(nextProps);
+  },
+
   onCellClick(e) {
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellClick && typeof (meta.onCellClick) === 'function') {
