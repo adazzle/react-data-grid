@@ -819,7 +819,7 @@ const ReactDataGrid = React.createClass({
   },
 
   dragEnabled: function(): boolean {
-    return this.props.onCellsDragged !== null;
+    return this.props.onCellsDragged !== undefined;
   },
 
   renderToolbar(): ReactElement {

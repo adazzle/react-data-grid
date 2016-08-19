@@ -6,6 +6,14 @@ import RowDragLayer from './RowDragLayer';
 
 class DraggableContainer extends Component {
 
+  getRows(rowsCount, rowGetter) {
+    let rows = [];
+    for (let j = 0; j < rowsCount; j++) {
+      rows.push(rowGetter(j));
+    }
+    return rows;
+  }
+
   renderGrid() {
     return React.Children.map(this.props.children, (child) => {
       return React.cloneElement(child, { draggableHeaderCell: DraggableHeaderCell });
@@ -14,9 +22,12 @@ class DraggableContainer extends Component {
 
   render() {
     let grid = this.renderGrid();
+    let rowGetter = this.props.getDragPreviewRow || grid.props.rowGetter;
+    let rowsCount = grid.props.rowsCount;
+    let rows = this.getRows(rowsCount, rowGetter);
     return (<div>
       {grid}
-      <RowDragLayer rowSelection={grid.props.rowSelection} rowsCount={grid.props.rowsCount} rowGetter={this.props.getDragPreviewRow || grid.props.rowGetter}/>
+      <RowDragLayer rowSelection={grid.props.rowSelection} rows={rows}/>
     </div>);
   }
 }

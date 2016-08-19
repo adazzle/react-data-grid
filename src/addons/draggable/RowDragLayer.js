@@ -40,26 +40,16 @@ class CustomDragLayer extends Component {
     return false;
   }
 
-  getRows() {
-    let rows = [];
-    let {rowsCount, rowGetter} = this.props;
-    for (let j = 0; j < rowsCount; j++) {
-      rows.push(rowGetter(j));
-    }
-    return rows;
-  }
-
   getDraggedRows() {
     let draggedRows;
     let {rowSelection} = this.props;
     if (rowSelection && rowSelection.selectBy.keys) {
-      let rows = this.getRows();
-      console.log('get rows');
+      let rows = this.props.rows;
       let {rowKey, values} = rowSelection.selectBy.keys;
       let selectedRows = Selectors.getSelectedRowsByKey({rowKey: rowKey, selectedKeys: values, rows: rows});
-      draggedRows = this.isDraggedRowSelected(selectedRows) ? selectedRows : [this.props.rowGetter(this.props.item.idx)];
+      draggedRows = this.isDraggedRowSelected(selectedRows) ? selectedRows : [this.props.rows[this.props.item.idx]];
     } else {
-      draggedRows = [this.props.rowGetter(this.props.item.idx)];
+      draggedRows = [this.props.rows[this.props.item.idx]];
     }
     return draggedRows;
   }
@@ -106,9 +96,8 @@ CustomDragLayer.propTypes = {
     y: PropTypes.number.isRequired
   }),
   isDragging: PropTypes.bool.isRequired,
-  rowGetter: PropTypes.func.isRequired,
-  rowsCount: PropTypes.number.isRequired,
-  rowSelection: PropTypes.object
+  rowSelection: PropTypes.object,
+  rows: PropTypes.array.isRequired
 };
 
 function collect(monitor) {

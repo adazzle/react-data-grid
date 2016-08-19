@@ -5,12 +5,12 @@ import jasmineEnzyme from 'jasmine-enzyme';
 import RowDragLayer from '../RowDragLayer';
 import DraggableHeaderCell from '../DraggableHeaderCell';
 
-describe('<DragDropContainer />', () => {
+fdescribe('<DragDropContainer />', () => {
   let wrapper;
 
   const childProps = {
-    rowsCount: 10,
-    rowGetter: r2 => r2
+    rowsCount: 2,
+    rowGetter: index => index
   };
 
   const GridStub = () => <div/>;
@@ -32,7 +32,7 @@ describe('<DragDropContainer />', () => {
   it('should render a RowDragLayer', () => {
     let rowDragLayer = wrapper.find(RowDragLayer);
     expect(rowDragLayer).toBePresent();
-    expect(rowDragLayer).toHaveProp('rowGetter', childProps.rowGetter);
+    expect(rowDragLayer).toHaveProp('rows', [0, 1]);
   });
 
   it('should correctly render child grid component when passed in', () => {
@@ -41,13 +41,13 @@ describe('<DragDropContainer />', () => {
     expect(gridStub).toHaveProp('draggableHeaderCell', DraggableHeaderCell);
   });
 
-  it('getDragPreviewRow should override default rowGetter', () => {
+  it('getDragPreviewRow should override rowGetter to provide rows to rowDragLayer', () => {
     const props = {
-      getDragPreviewRow: r => r
+      getDragPreviewRow: index => index + 'a'
     };
     render(props);
     let rowDragLayer = wrapper.find(RowDragLayer);
     expect(rowDragLayer).toBePresent();
-    expect(rowDragLayer).toHaveProp('rowGetter', props.getDragPreviewRow);
+    expect(rowDragLayer).toHaveProp('rows', ['0a', '1a']);
   });
 });
