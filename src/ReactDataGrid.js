@@ -406,14 +406,15 @@ const ReactDataGrid = React.createClass({
     let selected = this.state.selected;
     let cellKey = this.getColumn(this.state.selected.idx).key;
     let textToCopy = this.state.textToCopy;
+    let fromRow = this.state.copied.rowIdx;
     let toRow = selected.rowIdx;
 
     if (this.props.onCellCopyPaste) {
-      this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: this.state.copied.rowIdx, toRow: toRow});
+      this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: fromRow, toRow: toRow});
     }
 
     if (this.props.onGridRowsUpdated) {
-      this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE);
+      this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE);
     }
 
     this.setState({copied: null});
