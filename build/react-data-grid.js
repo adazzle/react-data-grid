@@ -446,16 +446,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var selected = this.state.selected;
 	    var cellKey = this.getColumn(this.state.selected.idx).key;
 	    var textToCopy = this.state.textToCopy;
+	    var fromRow = this.state.copied.rowIdx;
 	    var toRow = selected.rowIdx;
 
 	    if (this.props.onCellCopyPaste) {
-	      this.props.onCellCopyPaste({ cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: this.state.copied.rowIdx, toRow: toRow });
+	      this.props.onCellCopyPaste({ cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: fromRow, toRow: toRow });
 	    }
 
 	    if (this.props.onGridRowsUpdated) {
 	      var _onGridRowsUpdated3;
 
-	      this.onGridRowsUpdated(cellKey, toRow, toRow, (_onGridRowsUpdated3 = {}, _onGridRowsUpdated3[cellKey] = textToCopy, _onGridRowsUpdated3), _AppConstants2['default'].UpdateActions.COPY_PASTE);
+	      this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated3 = {}, _onGridRowsUpdated3[cellKey] = textToCopy, _onGridRowsUpdated3), _AppConstants2['default'].UpdateActions.COPY_PASTE);
 	    }
 
 	    this.setState({ copied: null });
@@ -3443,7 +3444,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return {
 	      tabIndex: -1,
 	      ref: 'cell',
-	      isExpanded: false
+	      isExpanded: false,
+	      value: ''
 	    };
 	  },
 	  getInitialState: function getInitialState() {
