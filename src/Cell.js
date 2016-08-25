@@ -38,7 +38,8 @@ const Cell = React.createClass({
     return {
       tabIndex: -1,
       ref: 'cell',
-      isExpanded: false
+      isExpanded: false,
+      value: ''
     };
   },
 
