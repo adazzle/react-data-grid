@@ -1008,7 +1008,11 @@
           ]
         },
         "required": true,
-        "description": ""
+        "description": "",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
       },
       "isExpanded": {
         "type": {
