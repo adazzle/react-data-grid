@@ -58,7 +58,7 @@ const EditorContainer = React.createClass({
       rowMetaData: this.getRowMetaData(),
       rowData: this.props.rowData,
       height: this.props.height,
-      onfocusout: this.commit,
+      onBlur: this.commit,
       onOverrideKeyDown: this.onKeyDown
     };
 
@@ -260,7 +260,7 @@ const EditorContainer = React.createClass({
 
   render(): ?ReactElement {
     return (
-        <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} commit={this.commit}>
+        <div className={this.getContainerClass()} onBlur={this.commit} onKeyDown={this.onKeyDown} commit={this.commit}>
         {this.createEditor()}
         {this.renderStatusIcon()}
         </div>
