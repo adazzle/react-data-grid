@@ -71,7 +71,7 @@ const EditorContainer = React.createClass({
       return <CustomEditor ref={editorRef} {...editorProps} />;
     }
 
-    return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
+    return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onfocusout={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
   },
 
   onPressEnter() {
