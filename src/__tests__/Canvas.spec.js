@@ -71,7 +71,7 @@ describe('Canvas Tests', () => {
 
     describe('selectBy keys', () => {
       it('renders row selected', () => {
-        let rowGetter = () => { return {'id': 1}; };
+        let rowGetter = () => { return {id: 1}; };
 
         let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
         testElement = renderComponent(props);
@@ -84,7 +84,7 @@ describe('Canvas Tests', () => {
 
     describe('selectBy `isSelectedKey`', () => {
       it('renders row selected', () => {
-        let rowGetter = (i) => { return i === 0 ? {'id': 1, 'isSelected': true} : null; };
+        let rowGetter = (i) => { return i === 0 ? {id: 1, isSelected: true} : null; };
 
         let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected'} };
         testElement = renderComponent(props);
