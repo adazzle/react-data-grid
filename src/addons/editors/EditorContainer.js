@@ -187,12 +187,10 @@ const EditorContainer = React.createClass({
       this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
     }
   },
-
   isNewValueValid(value: string): boolean {
     if (isFunction(this.getEditor().validate)) {
       let isValid = this.getEditor().validate(value);
       this.setState({isInvalid: !isValid});
-
       return isValid;
     }
 
@@ -222,6 +220,13 @@ const EditorContainer = React.createClass({
   isCaretAtEndOfInput(): boolean {
     let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
+  },
+
+  handleBlur(e) {
+    e.stopPropagation();
+    let inputNode = this.getInputNode();
+    console.log(inputNode, document.activeElement);
+    this.commit();
   },
 
   setTextInputFocus() {
@@ -260,9 +265,9 @@ const EditorContainer = React.createClass({
 
   render(): ?ReactElement {
     return (
-        <div className={this.getContainerClass()} onBlur={this.commit} onKeyDown={this.onKeyDown} commit={this.commit}>
-        {this.createEditor()}
-        {this.renderStatusIcon()}
+        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} commit={this.commit}>
+          {this.createEditor()}
+          {this.renderStatusIcon()}
         </div>
       );
   }
