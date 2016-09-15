@@ -407,13 +407,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!this.dragEnabled()) {
 	      return;
 	    }
-	    var fromRow = void 0;
-	    var toRow = void 0;
 	    var selected = this.state.selected;
 	    var dragged = this.state.dragged;
 	    var cellKey = this.getColumn(this.state.selected.idx).key;
-	    fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-	    toRow = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+	    var fromRow = selected.rowIdx;
+	    var toRow = dragged.overRowIdx;
 	    if (this.props.onCellsDragged) {
 	      this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
 	    }
