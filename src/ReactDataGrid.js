@@ -372,13 +372,11 @@ const ReactDataGrid = React.createClass({
 
   handleDragEnd() {
     if (!this.dragEnabled()) { return; }
-    let fromRow;
-    let toRow;
     let selected = this.state.selected;
     let dragged = this.state.dragged;
     let cellKey = this.getColumn(this.state.selected.idx).key;
-    fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-    toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+    let fromRow = selected.rowIdx;
+    let toRow   = dragged.overRowIdx;
     if (this.props.onCellsDragged) {
       this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
     }
