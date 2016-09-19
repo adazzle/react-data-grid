@@ -36,7 +36,8 @@ const HeaderRow = React.createClass({
     onFilterChange: PropTypes.func,
     resizing: PropTypes.object,
     onScroll: PropTypes.func,
-    rowType: PropTypes.string
+    rowType: PropTypes.string,
+    isFlexibleHeight: PropTypes.bool
   },
 
   mixins: [ColumnUtilsMixin],
@@ -92,12 +93,18 @@ const HeaderRow = React.createClass({
   },
 
   getStyle(): HeaderRowStyle {
-    return {
+    let style = {
       overflow: 'hidden',
       width: '100%',
       height: this.props.height,
       position: 'absolute'
     };
+
+    if (this.props.isFlexibleHeight) {
+      style.display = 'table-row';
+    }
+
+    return style;
   },
 
   getCells(): Array<HeaderCell> {
@@ -120,6 +127,7 @@ const HeaderRow = React.createClass({
           resizing={this.props.resizing === column}
           onResize={this.props.onColumnResize}
           onResizeEnd={this.props.onColumnResizeEnd}
+          isFlexibleHeight={this.props.isFlexibleHeight}
           />
       );
       if (column.locked) {

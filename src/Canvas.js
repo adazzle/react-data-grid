@@ -34,7 +34,8 @@ const Canvas = React.createClass({
     selectedRows: PropTypes.array,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
-    contextMenu: PropTypes.element
+    contextMenu: PropTypes.element,
+    isFlexibleHeight: PropTypes.bool
   },
 
   getDefaultProps() {
@@ -42,7 +43,8 @@ const Canvas = React.createClass({
       rowRenderer: Row,
       onRows: () => {},
       selectedRows: [],
-      rowScrollTimeout: 0
+      rowScrollTimeout: 0,
+      isFlexibleHeight: false
     };
   },
 
@@ -251,6 +253,7 @@ const Canvas = React.createClass({
           idx: displayStart + idx,
           row: row,
           height: rowHeight,
+          isFlexibleHeight: this.props.isFlexibleHeight,
           columns: this.props.columns,
           isSelected: this.isRowSelected(row),
           expandedRows: this.props.expandedRows,
@@ -289,7 +292,8 @@ const Canvas = React.createClass({
           rows={rows}
           contextMenu={this.props.contextMenu}
           rowIdx={this.props.cellMetaData.selected.rowIdx}
-          idx={this.props.cellMetaData.selected.idx} />
+          idx={this.props.cellMetaData.selected.idx}
+          isFlexibleHeight={this.props.isFlexibleHeight} />
       </div>
     );
   }

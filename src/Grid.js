@@ -33,7 +33,8 @@ const Grid = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
-    contextMenu: PropTypes.element
+    contextMenu: PropTypes.element,
+    isFlexibleHeight: PropTypes.bool
   },
 
   mixins: [
@@ -44,7 +45,8 @@ const Grid = React.createClass({
   getDefaultProps() {
     return {
       rowHeight: 35,
-      minHeight: 350
+      minHeight: 350,
+      isFlexibleHeight: false
     };
   },
 
@@ -74,6 +76,7 @@ const Grid = React.createClass({
           sortDirection={this.props.sortDirection}
           onSort={this.props.onSort}
           onScroll={this.onHeaderScroll}
+          isFlexibleHeight={this.props.isFlexibleHeight}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div ref="viewPortContainer" onKeyDown={this.props.onViewportKeydown} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
@@ -96,6 +99,7 @@ const Grid = React.createClass({
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
                   contextMenu={this.props.contextMenu}
+                  isFlexibleHeight={this.props.isFlexibleHeight}
                 />
             </div>
         :

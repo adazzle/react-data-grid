@@ -70,7 +70,8 @@ const ReactDataGrid = React.createClass({
     contextMenu: React.PropTypes.element,
     cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
     onCellSelected: React.PropTypes.func,
-    onCellDeSelected: React.PropTypes.func
+    onCellDeSelected: React.PropTypes.func,
+    isFlexibleHeight: React.PropTypes.bool
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -682,6 +683,13 @@ const ReactDataGrid = React.createClass({
       gridWidth = '100%';
     }
 
+    // Remove the width from the column metrics
+    let columnMetrics = this.state.columnMetrics;
+    if (this.props.isFlexibleHeight) {
+      columnMetrics = Object.assign({}, this.state.columnMetrics);
+      columnMetrics.width = null;
+    }
+
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}>
         {toolbar}
@@ -691,7 +699,7 @@ const ReactDataGrid = React.createClass({
             {...this.props}
             rowKey={this.props.rowKey}
             headerRows={this.getHeaderRows()}
-            columnMetrics={this.state.columnMetrics}
+            columnMetrics={columnMetrics}
             rowGetter={this.props.rowGetter}
             rowsCount={this.props.rowsCount}
             rowHeight={this.props.rowHeight}
@@ -710,7 +718,8 @@ const ReactDataGrid = React.createClass({
             onViewportDoubleClick={this.onViewportDoubleClick}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
-            contextMenu={this.props.contextMenu} />
+            contextMenu={this.props.contextMenu}
+            isFlexibleHeight={this.props.isFlexibleHeight} />
           </div>
         </div>
       );

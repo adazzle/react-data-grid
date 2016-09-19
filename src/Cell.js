@@ -22,6 +22,7 @@ const Cell = React.createClass({
     ref: React.PropTypes.string,
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+    isFlexibleHeight: React.PropTypes.bool,
     isExpanded: React.PropTypes.bool,
     isRowSelected: React.PropTypes.bool,
     cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
@@ -36,7 +37,8 @@ const Cell = React.createClass({
     return {
       tabIndex: -1,
       ref: 'cell',
-      isExpanded: false
+      isExpanded: false,
+      isFlexibleHeight: false
     };
   },
 
@@ -116,11 +118,17 @@ const Cell = React.createClass({
 
   getStyle(): {position:string; width: number; height: number; left: number} {
     let style = {
-      position: 'absolute',
       width: this.props.column.width,
-      height: this.props.height,
       left: this.props.column.left
     };
+
+    if (!this.props.isFlexibleHeight) {
+      style.position = 'absolute';
+      style.height = this.props.height;
+    } else {
+      style.display = 'table-cell';
+    }
+
     return style;
   },
 
@@ -396,8 +404,15 @@ const Cell = React.createClass({
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value}/>;
     }
+
+    let style = {};
+    if (this.props.isFlexibleHeight) {
+      style.transform = 'translateY(0)';
+      style.whiteSpace = 'inherit';
+    }
+
     return (<div ref="cell"
-      className="react-grid-Cell__value">{CellContent} {this.props.cellControls}</div>);
+      className="react-grid-Cell__value" style={style}>{CellContent} {this.props.cellControls}</div>);
   },
 
   render(): ?ReactElement {
@@ -412,10 +427,16 @@ const Cell = React.createClass({
       isExpanded: this.props.isExpanded
     });
 
+    let props = this.props;
+    if (this.props.isFlexibleHeight) {
+      props = Object.assign({}, props);
+      delete props.height;
+    }
+
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{display: 'none'}}></span></div> : null;
     let events = this.getEvents();
     return (
-      <div {...this.props} className={className} style={style} onContextMenu={this.onCellContextMenu} {...events}>
+      <div {...props} className={className} style={style} onContextMenu={this.onCellContextMenu} {...events}>
       {cellContent}
       {dragHandle}
       </div>

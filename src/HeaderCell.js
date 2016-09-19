@@ -17,12 +17,14 @@ const HeaderCell = React.createClass({
     onResize: PropTypes.func.isRequired,
     height: PropTypes.number.isRequired,
     onResizeEnd: PropTypes.func.isRequired,
-    className: PropTypes.string
+    className: PropTypes.string,
+    isFlexibleHeight: PropTypes.bool
   },
 
   getDefaultProps(): {renderer: ReactComponent | (props: {column: {name: string}}) => ReactElement} {
     return {
-      renderer: simpleCellRenderer
+      renderer: simpleCellRenderer,
+      isFlexibleHeight: false
     };
   },
 
@@ -67,17 +69,25 @@ const HeaderCell = React.createClass({
   },
 
   getStyle(): {width:number; left: number; display: string; position: string; overflow: string; height: number; margin: number; textOverflow: string; whiteSpace: string } {
-    return {
+    let style = {
       width: this.props.column.width,
       left: this.props.column.left,
       display: 'inline-block',
-      position: 'absolute',
       overflow: 'hidden',
-      height: this.props.height,
       margin: 0,
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap'
+      textOverflow: 'ellipsis'
     };
+
+    if (!this.props.isFlexibleHeight) {
+      style.position = 'absolute';
+      style.height = this.props.height;
+      style.whiteSpace = 'nowrap';
+    } else {
+      style.display = 'table-cell';
+      style.whiteSpace = 'pre-wrap';
+    }
+
+    return style;
   },
 
   setScrollLeft(scrollLeft: number) {

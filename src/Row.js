@@ -15,6 +15,7 @@ const Row = React.createClass({
     cellRenderer: PropTypes.func,
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     isSelected: PropTypes.bool,
+    isFlexibleHeight: PropTypes.bool,
     idx: PropTypes.number.isRequired,
     key: PropTypes.string,
     expandedRows: PropTypes.arrayOf(PropTypes.object),
@@ -28,7 +29,8 @@ const Row = React.createClass({
     return {
       cellRenderer: Cell,
       isSelected: false,
-      height: 35
+      height: 35,
+      isFlexibleHeight: false
     };
   },
 
@@ -80,7 +82,8 @@ const Row = React.createClass({
                       cellMetaData={this.props.cellMetaData}
                       rowData={this.props.row}
                       selectedColumn={selectedColumn}
-                      isRowSelected={this.props.isSelected} />);
+                      isRowSelected={this.props.isSelected}
+                      isFlexibleHeight={this.props.isFlexibleHeight} />);
         if (column.locked) {
           lockedCells.push(cell);
         } else {
@@ -176,13 +179,24 @@ const Row = React.createClass({
     );
 
     let style = {
-      height: this.getRowHeight(this.props),
       overflow: 'hidden'
     };
 
+    if (!this.props.isFlexibleHeight) {
+      style.height = this.getRowHeight(this.props);
+    } else {
+      style.display = 'table-row';
+    }
+
+    let props = this.props;
+    if (this.props.isFlexibleHeight) {
+      props = Object.assign({}, props);
+      delete props.height;
+    }
+
     let cells = this.getCells();
     return (
-      <div {...this.props} className={className} style={style} onDragEnter={this.handleDragEnter}>
+      <div {...props} className={className} style={style} onDragEnter={this.handleDragEnter}>
         {React.isValidElement(this.props.row) ?
           this.props.row : cells}
       </div>
