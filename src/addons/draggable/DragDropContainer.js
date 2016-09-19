@@ -24,10 +24,11 @@ class DraggableContainer extends Component {
     let grid = this.renderGrid();
     let rowGetter = this.props.getDragPreviewRow || grid.props.rowGetter;
     let rowsCount = grid.props.rowsCount;
+    let columns = grid.props.columns;
     let rows = this.getRows(rowsCount, rowGetter);
     return (<div>
       {grid}
-      <RowDragLayer rowSelection={grid.props.rowSelection} rows={rows}/>
+      <RowDragLayer rowSelection={grid.props.rowSelection} rows={rows} columns={columns} />
     </div>);
   }
 }
