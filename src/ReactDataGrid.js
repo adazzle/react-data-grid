@@ -818,7 +818,7 @@ const ReactDataGrid = React.createClass({
   },
 
   dragEnabled: function(): boolean {
-    return this.props.onCellsDragged !== undefined;
+    return this.props.onGridRowsUpdated !== undefined || this.props.onCellsDragged !== undefined;
   },
 
   renderToolbar(): ReactElement {
