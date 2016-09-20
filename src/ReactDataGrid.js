@@ -375,8 +375,8 @@ const ReactDataGrid = React.createClass({
     let selected = this.state.selected;
     let dragged = this.state.dragged;
     let cellKey = this.getColumn(this.state.selected.idx).key;
-    let fromRow = selected.rowIdx;
-    let toRow   = dragged.overRowIdx;
+    let fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+    let toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
     if (this.props.onCellsDragged) {
       this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
     }
@@ -412,7 +412,7 @@ const ReactDataGrid = React.createClass({
     }
 
     if (this.props.onGridRowsUpdated) {
-      this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE);
+      this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE);
     }
 
     this.setState({copied: null});
@@ -818,7 +818,7 @@ const ReactDataGrid = React.createClass({
   },
 
   dragEnabled: function(): boolean {
-    return this.props.onCellsDragged !== undefined;
+    return this.props.onGridRowsUpdated !== undefined || this.props.onCellsDragged !== undefined;
   },
 
   renderToolbar(): ReactElement {
