@@ -32,34 +32,7 @@ const EditorContainer = React.createClass({
     return {isInvalid: false};
   },
 
-  componentDidUpdate: function() {
-    // let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
-    // let nl = ReactDOM.findDOMNode(this).getElementsByTagName('*');
-    // let children =  Array.prototype.slice.call(nl);
-    let nodeIterator = document.createNodeIterator(ReactDOM.findDOMNode(this));
-    let elems = [];
-    let currentNode;
-    while (currentNode = nodeIterator.nextNode()) {
-      elems.push(currentNode);
-    }
-    elems.forEach((el) => {
-      el.classList.add('no-blur');
-    });
-  },
-
   componentDidMount: function() {
-     // let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
-    // let nl = ReactDOM.findDOMNode(this).getElementsByTagName('*');
-    // let children =  Array.prototype.slice.call(nl);
-    let nodeIterator = document.createNodeIterator(ReactDOM.findDOMNode(this));
-    let elems = [];
-    let currentNode;
-    while (currentNode = nodeIterator.nextNode()) {
-      elems.push(currentNode);
-    }
-    elems.forEach((el) => {
-      el.classList.add('no-blur');
-    });
     let inputNode = this.getInputNode();
     if (inputNode !== undefined) {
       this.setTextInputFocus();
@@ -252,7 +225,7 @@ const EditorContainer = React.createClass({
 
   handleBlur(e) {
     e.stopPropagation();
-    if (e.relatedTarget === null || e.relatedTarget.className.indexOf('no-blur') === -1 ) {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
       this.commit(e);
     }
   },
