@@ -2758,7 +2758,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderRow: function renderRow(props) {
 	    var row = props.row;
 	    if (row.__metaData && row.__metaData.isGroup) {
-	      return React.createElement(_RowGroup2['default'], _extends({ name: row.name }, row.__metaData, { row: props.row, idx: props.idx, cellMetaData: this.props.cellMetaData, renderer: this.props.rowGroupRenderer }));
+	      return React.createElement(_RowGroup2['default'], _extends({
+	        key: props.key,
+	        name: row.name
+	      }, row.__metaData, {
+	        row: props.row,
+	        idx: props.idx,
+	        height: props.height,
+	        cellMetaData: this.props.cellMetaData,
+	        renderer: this.props.rowGroupRenderer
+	      }));
 	    }
 	    if (this.state.scrollingTimeout !== null) {
 	      // in the midst of a rapid scroll, so we render placeholders

@@ -12897,7 +12897,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this2 = this;
 
 	    return this.props.groupBy.map(function (c) {
-	      return _react2['default'].createElement(_GroupedColumnButton2['default'], { name: c, onColumnGroupDeleted: _this2.props.onColumnGroupDeleted });
+	      return _react2['default'].createElement(_GroupedColumnButton2['default'], { key: c, name: c, onColumnGroupDeleted: _this2.props.onColumnGroupDeleted });
 	    });
 	  };
 
@@ -13006,7 +13006,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        { style: style },
 	        this.props.name
 	      ),
-	      _react2['default'].createElement('span', { className: 'glyphicon glyphicon-trash', style: { float: 'right', paddingLeft: '5px' }, onClick: this.props.onColumnGroupDeleted.bind(this, this.props.name) })
+	      _react2['default'].createElement('span', {
+	        className: 'glyphicon glyphicon-trash',
+	        style: { float: 'right', paddingLeft: '5px' },
+	        onClick: this.props.onColumnGroupDeleted.bind(null, this.props.name) })
 	    );
 	  };
 
@@ -13017,7 +13020,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	GroupedColumnButton.propTypes = {
-	  name: _react.PropTypes.object.isRequired,
+	  name: _react.PropTypes.string.isRequired,
 	  onColumnGroupDeleted: _react.PropTypes.func
 	};
 
