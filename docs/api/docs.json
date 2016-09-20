@@ -6170,7 +6170,7 @@
     "props": {
       "name": {
         "type": {
-          "name": "object"
+          "name": "string"
         },
         "required": true,
         "description": ""
