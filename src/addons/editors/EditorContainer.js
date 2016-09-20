@@ -33,7 +33,8 @@ const EditorContainer = React.createClass({
   },
 
   componentDidUpdate: function() {
-    let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
+    // let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
+    let nl = ReactDOM.findDOMNode(this).getElementsByTagName('*');
     let children =  Array.prototype.slice.call(nl);
     children.forEach((el) => {
       el.classList.add('no-blur');
@@ -41,7 +42,8 @@ const EditorContainer = React.createClass({
   },
 
   componentDidMount: function() {
-    let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
+    // let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
+    let nl = ReactDOM.findDOMNode(this).getElementsByTagName('*');
     let children =  Array.prototype.slice.call(nl);
     children.forEach((el) => {
       el.classList.add('no-blur');
