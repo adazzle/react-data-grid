@@ -1,4 +1,5 @@
 const React                   = require('react');
+const ReactDOM                = require('react-dom');
 const joinClasses              = require('classnames');
 const keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
