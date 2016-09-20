@@ -34,18 +34,30 @@ const EditorContainer = React.createClass({
 
   componentDidUpdate: function() {
     // let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
-    let nl = ReactDOM.findDOMNode(this).getElementsByTagName('*');
-    let children =  Array.prototype.slice.call(nl);
-    children.forEach((el) => {
+    // let nl = ReactDOM.findDOMNode(this).getElementsByTagName('*');
+    // let children =  Array.prototype.slice.call(nl);
+    let nodeIterator = document.createNodeIterator(ReactDOM.findDOMNode(this));
+    let elems = [];
+    let currentNode;
+    while (currentNode = nodeIterator.nextNode()) {
+      elems.push(currentNode);
+    }
+    elems.forEach((el) => {
       el.classList.add('no-blur');
     });
   },
 
   componentDidMount: function() {
-    // let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
-    let nl = ReactDOM.findDOMNode(this).getElementsByTagName('*');
-    let children =  Array.prototype.slice.call(nl);
-    children.forEach((el) => {
+     // let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
+    // let nl = ReactDOM.findDOMNode(this).getElementsByTagName('*');
+    // let children =  Array.prototype.slice.call(nl);
+    let nodeIterator = document.createNodeIterator(ReactDOM.findDOMNode(this));
+    let elems = [];
+    let currentNode;
+    while (currentNode = nodeIterator.nextNode()) {
+      elems.push(currentNode);
+    }
+    elems.forEach((el) => {
       el.classList.add('no-blur');
     });
     let inputNode = this.getInputNode();
