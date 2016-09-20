@@ -260,7 +260,16 @@ const Canvas = React.createClass({
   renderRow(props: any) {
     let row = props.row;
     if (row.__metaData && row.__metaData.isGroup) {
-      return <RowGroup name={row.name} {...row.__metaData} row={props.row} idx={props.idx} cellMetaData={this.props.cellMetaData} renderer={this.props.rowGroupRenderer}/>;
+      return (<RowGroup
+        key={props.key}
+        name={row.name}
+        {...row.__metaData}
+        row={props.row}
+        idx={props.idx}
+        height={props.height}
+        cellMetaData={this.props.cellMetaData}
+        renderer={this.props.rowGroupRenderer}
+      />);
     }
     if (this.state.scrollingTimeout !== null) {
       // in the midst of a rapid scroll, so we render placeholders
