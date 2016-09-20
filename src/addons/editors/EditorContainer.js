@@ -31,7 +31,20 @@ const EditorContainer = React.createClass({
     return {isInvalid: false};
   },
 
+  componentDidUpdate: function() {
+    let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
+    let children =  Array.prototype.slice.call(nl);
+    children.forEach((el) => {
+      el.classList.add('no-blur');
+    });
+  },
+
   componentDidMount: function() {
+    let nl = ReactDOM.findDOMNode(this).querySelectorAll(`*`);
+    let children =  Array.prototype.slice.call(nl);
+    children.forEach((el) => {
+      el.classList.add('no-blur');
+    });
     let inputNode = this.getInputNode();
     if (inputNode !== undefined) {
       this.setTextInputFocus();
@@ -224,9 +237,9 @@ const EditorContainer = React.createClass({
 
   handleBlur(e) {
     e.stopPropagation();
-    let inputNode = this.getInputNode();
-    console.log(inputNode, document.activeElement);
-    this.commit();
+    if (e.relatedTarget === null || e.relatedTarget.className.indexOf('no-blur') === -1 ) {
+      this.commit(e);
+    }
   },
 
   setTextInputFocus() {
