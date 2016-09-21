@@ -70,7 +70,7 @@ describe('Editor Container Tests', () => {
     });
   });
 
-  fdescribe('Custom Editors', () => {
+  describe('Custom Editors', () => {
     class TestEditor extends EditorBase {
       render() {
         return <div><input type="text" id="testpassed" /> <div> <input type="text" id="input2"/><button id="test-button" /></div> </div>;
