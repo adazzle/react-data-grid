@@ -70,7 +70,7 @@ describe('Editor Container Tests', () => {
     });
   });
 
-  describe('Custom Editors', () => {
+  fdescribe('Custom Editors', () => {
     class TestEditor extends EditorBase {
       render() {
         return <div><input type="text" id="testpassed" /> <div> <input type="text" id="input2"/><button id="test-button" /></div> </div>;
@@ -124,7 +124,7 @@ describe('Editor Container Tests', () => {
         height={50}/>);
       let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
       spyOn(component, 'commit');
-      TestUtils.Simulate.blur(ReactDOM.findDOMNode(component));
+      TestUtils.Simulate.blur(ReactDOM.findDOMNode(component), {relatedTarget: document.body, currentTarget: ReactDOM.findDOMNode(component)});
       expect(component.commit).toHaveBeenCalled();
     });
 
