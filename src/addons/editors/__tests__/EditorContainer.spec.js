@@ -1,5 +1,6 @@
 
 const React            = require('react');
+const ReactDOM         = require('react-dom');
 const rewire           = require('rewire');
 const EditorContainer  = rewire('../EditorContainer.js');
 const TestUtils        = require('react/lib/ReactTestUtils');
@@ -69,82 +70,78 @@ describe('Editor Container Tests', () => {
     });
   });
 
-  // fdescribe('Custom Editors', () => {
-  //   class TestEditor extends EditorBase {
-  //     render() {
-  //       return <div><input type="text" id="testpassed" /> <div> <input type="text" id="input2"/><button id="test-button" /></div> </div>;
-  //     }
-  //   }
+  describe('Custom Editors', () => {
+    class TestEditor extends EditorBase {
+      render() {
+        return <div><input type="text" id="testpassed" /> <div> <input type="text" id="input2"/><button id="test-button" /></div> </div>;
+      }
+    }
 
-  //   let column;
-  //   beforeEach(() => {
-  //     column = {
-  //       key: 'col1',
-  //       name: 'col1',
-  //       width: 100
-  //     };
-  //   });
+    let column;
+    beforeEach(() => {
+      column = {
+        key: 'col1',
+        name: 'col1',
+        width: 100
+      };
+    });
 
-  //   it('should render element custom editors', () => {
-  //     column.editor = <TestEditor />;
-  //     component = TestUtils.renderIntoDocument(<EditorContainer
-  //       rowData={rowData}
-  //       value={'SupernaviX'}
-  //       cellMetaData={cellMetaData}
-  //       column={column}
-  //       height={50}/>);
-  //     let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
-  //     expect(editor).toBeDefined();
-  //     expect(editor.props.value).toBeDefined();
-  //     expect(editor.props.onCommit).toBeDefined();
-  //   });
+    it('should render element custom editors', () => {
+      column.editor = <TestEditor />;
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={'SupernaviX'}
+        cellMetaData={cellMetaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
+      expect(editor).toBeDefined();
+      expect(editor.props.value).toBeDefined();
+      expect(editor.props.onCommit).toBeDefined();
+    });
 
-  //   it('should render component custom editors', () => {
-  //     column.editor = TestEditor;
-  //     component = TestUtils.renderIntoDocument(<EditorContainer
-  //       rowData={rowData}
-  //       value={'SupernaviX'}
-  //       cellMetaData={cellMetaData}
-  //       column={column}
-  //       height={50}/>);
-  //     let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
-  //     expect(editor).toBeDefined();
-  //     expect(editor.props.value).toBeDefined();
-  //     expect(editor.props.onCommit).toBeDefined();
-  //   });
+    it('should render component custom editors', () => {
+      column.editor = TestEditor;
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={'SupernaviX'}
+        cellMetaData={cellMetaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
+      expect(editor).toBeDefined();
+      expect(editor.props.value).toBeDefined();
+      expect(editor.props.onCommit).toBeDefined();
+    });
 
-  //   it('should commit if any element outside the editor is clicked', () => {
-  //     column.editor = <TestEditor />;
-  //     component = TestUtils.renderIntoDocument(<EditorContainer
-  //       rowData={rowData}
-  //       value={'SupernaviX'}
-  //       cellMetaData={cellMetaData}
-  //       column={column}
-  //       height={50}
-  //       />);
+    it('should commit if any element outside the editor is clicked', () => {
+      column.editor = <TestEditor />;
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={'SupernaviX'}
+        cellMetaData={cellMetaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
+      spyOn(component, 'commit');
+      TestUtils.Simulate.blur(ReactDOM.findDOMNode(component));
+      expect(component.commit).toHaveBeenCalled();
+    });
 
-  //     let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
-  //     TestUtils.Simulate.click(document.body);
-  //     expect(editor).toBeUndefined();
-  //   });
-
-  //   it('should not commit if any element inside the editor is clicked', () => {
-  //     cellMetaData.onCommit = function() {};
-  //     spyOn(cellMetaData, 'onCommit');
-
-  //     column.editor = <TestEditor />;
-  //     component = TestUtils.renderIntoDocument(<EditorContainer
-  //       rowData={rowData}
-  //       value={'SupernaviX'}
-  //       cellMetaData={cellMetaData}
-  //       column={column}
-  //       height={50}
-  //       />);
-  //     let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
-
-  //     TestUtils.Simulate.click(document.querySelector('#test-button'));
-  //     expect(cellMetaData.onCommit.calls.count()).toEqual(0);    });
-  // });
+    it('should not commit if any element inside the editor is clicked', () => {
+      column.editor = <TestEditor />;
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={'SupernaviX'}
+        cellMetaData={cellMetaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
+      spyOn(component, 'commit');
+      TestUtils.Simulate.click(ReactDOM.findDOMNode(editor));
+      expect(component.commit.calls.count()).toEqual(0);
+    });
+  });
 
   describe('Events', () => {
     beforeEach(() => {
