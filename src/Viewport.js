@@ -39,7 +39,9 @@ const Viewport = React.createClass({
     rowScrollTimeout: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
-    rowGroupRenderer: PropTypes.func
+    rowGroupRenderer: PropTypes.func,
+    handleDragEnd: PropTypes.func.isRequired,
+    handleDragStart: PropTypes.func.isRequired
   },
 
   onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
@@ -100,6 +102,8 @@ const Viewport = React.createClass({
           rowSelection={this.props.rowSelection}
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
+          handleDragStart={this.props.handleDragStart}
+          handleDragEnd={this.props.handleDragEnd}
         />
       </div>
     );
