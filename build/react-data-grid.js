@@ -6398,6 +6398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(5);
+	var ReactDOM = __webpack_require__(6);
 	var joinClasses = __webpack_require__(9);
 	var keyboardHandlerMixin = __webpack_require__(112);
 	var SimpleTextEditor = __webpack_require__(113);
@@ -6581,7 +6582,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (isFunction(this.getEditor().validate)) {
 	      var isValid = this.getEditor().validate(value);
 	      this.setState({ isInvalid: !isValid });
-
 	      return isValid;
 	    }
 
@@ -6607,6 +6607,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  isCaretAtEndOfInput: function isCaretAtEndOfInput() {
 	    var inputNode = this.getInputNode();
 	    return inputNode.selectionStart === inputNode.value.length;
+	  },
+	  handleBlur: function handleBlur(e) {
+	    e.stopPropagation();
+	    // commit if cliked anywhere outside editor
+	    // prevent commit if any element inside editor is clicked or if the active cell is clicked
+	    if (e.relatedTarget !== null) {
+	      if (!e.currentTarget.contains(e.relatedTarget) && !(e.relatedTarget.classList.contains('editing') && e.relatedTarget.classList.contains('react-grid-Cell'))) {
+	        this.commit(e);
+	      }
+	    } else {
+	      if (!e.currentTarget.contains(e.relatedTarget)) {
+	        this.commit(e);
+	      }
+	    }
 	  },
 	  setTextInputFocus: function setTextInputFocus() {
 	    var selected = this.props.cellMetaData.selected;
@@ -6640,9 +6654,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  render: function render() {
+	    var divStyle = {
+	      display: 'inline-block',
+	      width: '200px',
+	      height: '200px'
+	    };
 	    return React.createElement(
 	      'div',
-	      { className: this.getContainerClass(), onKeyDown: this.onKeyDown, commit: this.commit },
+	      { style: divStyle, className: this.getContainerClass(), onBlur: this.handleBlur, onKeyDown: this.onKeyDown, commit: this.commit },
 	      this.createEditor(),
 	      this.renderStatusIcon()
 	    );
