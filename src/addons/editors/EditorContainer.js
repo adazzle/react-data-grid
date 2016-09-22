@@ -1,4 +1,5 @@
 const React                   = require('react');
+const ReactDOM                = require('react-dom');
 const joinClasses              = require('classnames');
 const keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
@@ -187,12 +188,10 @@ const EditorContainer = React.createClass({
       this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
     }
   },
-
   isNewValueValid(value: string): boolean {
     if (isFunction(this.getEditor().validate)) {
       let isValid = this.getEditor().validate(value);
       this.setState({isInvalid: !isValid});
-
       return isValid;
     }
 
@@ -222,6 +221,21 @@ const EditorContainer = React.createClass({
   isCaretAtEndOfInput(): boolean {
     let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
+  },
+
+  handleBlur(e) {
+    e.stopPropagation();
+    // commit if cliked anywhere outside editor
+    // prevent commit if any element inside editor is clicked or if the active cell is clicked
+    if (e.relatedTarget !== null) {
+      if (!e.currentTarget.contains(e.relatedTarget) && !(e.relatedTarget.classList.contains('editing') && e.relatedTarget.classList.contains('react-grid-Cell')))  {
+        this.commit(e);
+      }
+    }else  {
+      if (!e.currentTarget.contains(e.relatedTarget)) {
+        this.commit(e);
+      }
+    }
   },
 
   setTextInputFocus() {
@@ -259,10 +273,15 @@ const EditorContainer = React.createClass({
   },
 
   render(): ?ReactElement {
+    let divStyle = {
+      display: 'inline-block',
+      width: '200px',
+      height: '200px'
+    };
     return (
-        <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} commit={this.commit}>
-        {this.createEditor()}
-        {this.renderStatusIcon()}
+        <div style={divStyle} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} commit={this.commit}>
+          {this.createEditor()}
+          {this.renderStatusIcon()}
         </div>
       );
   }
