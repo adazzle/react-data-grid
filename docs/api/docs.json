@@ -5722,6 +5722,18 @@
         }
       },
       {
+        "name": "handleBlur",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "setTextInputFocus",
         "docblock": null,
         "modifiers": [],
