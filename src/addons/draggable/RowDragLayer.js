@@ -55,19 +55,25 @@ class CustomDragLayer extends Component {
   }
 
   renderDraggedRows() {
+    const columns = this.props.columns;
     return this.getDraggedRows().map((r, i) => {
-      return <tr key={`dragged-row-${i}`}>{this.renderDraggedCells(r, i) }</tr>;
+      return <tr key={`dragged-row-${i}`}>{this.renderDraggedCells(r, i, columns) }</tr>;
     });
   }
 
-  renderDraggedCells(item, rowIdx) {
+  renderDraggedCells(item, rowIdx, columns) {
     let cells = [];
     if (item != null) {
-      for (let c in item) {
-        if (item.hasOwnProperty(c)) {
-          cells.push(<td key={`dragged-cell-${rowIdx}-${c}`} className="react-grid-Cell" style={{padding: '5px'}}>{item[c]}</td>);
+      columns.forEach( c => {
+        if (item.hasOwnProperty(c.key)) {
+          if (c.formatter) {
+            const Formatter = c.formatter;
+            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{padding: '5px'}}><Formatter value={item[c.key]} /></td>);
+          } else {
+            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{padding: '5px'}}>{item[c.key]}</td>);
+          }
         }
-      }
+      });
     }
     return cells;
   }
@@ -97,7 +103,8 @@ CustomDragLayer.propTypes = {
   }),
   isDragging: PropTypes.bool.isRequired,
   rowSelection: PropTypes.object,
-  rows: PropTypes.array.isRequired
+  rows: PropTypes.array.isRequired,
+  columns: PropTypes.array.isRequired
 };
 
 function collect(monitor) {
