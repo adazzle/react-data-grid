@@ -173,12 +173,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var grid = this.renderGrid();
 	    var rowGetter = this.props.getDragPreviewRow || grid.props.rowGetter;
 	    var rowsCount = grid.props.rowsCount;
+	    var columns = grid.props.columns;
 	    var rows = this.getRows(rowsCount, rowGetter);
 	    return _react2['default'].createElement(
 	      'div',
 	      null,
 	      grid,
-	      _react2['default'].createElement(_RowDragLayer2['default'], { rowSelection: grid.props.rowSelection, rows: rows })
+	      _react2['default'].createElement(_RowDragLayer2['default'], { rowSelection: grid.props.rowSelection, rows: rows, columns: columns })
 	    );
 	  };
 
@@ -8681,27 +8682,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	  CustomDragLayer.prototype.renderDraggedRows = function renderDraggedRows() {
 	    var _this2 = this;
 
+	    var columns = this.props.columns;
 	    return this.getDraggedRows().map(function (r, i) {
 	      return _react2['default'].createElement(
 	        'tr',
 	        { key: 'dragged-row-' + i },
-	        _this2.renderDraggedCells(r, i)
+	        _this2.renderDraggedCells(r, i, columns)
 	      );
 	    });
 	  };
 
-	  CustomDragLayer.prototype.renderDraggedCells = function renderDraggedCells(item, rowIdx) {
+	  CustomDragLayer.prototype.renderDraggedCells = function renderDraggedCells(item, rowIdx, columns) {
 	    var cells = [];
 	    if (item != null) {
-	      for (var c in item) {
-	        if (item.hasOwnProperty(c)) {
-	          cells.push(_react2['default'].createElement(
-	            'td',
-	            { key: 'dragged-cell-' + rowIdx + '-' + c, className: 'react-grid-Cell', style: { padding: '5px' } },
-	            item[c]
-	          ));
+	      columns.forEach(function (c) {
+	        if (item.hasOwnProperty(c.key)) {
+	          if (c.formatter) {
+	            var Formatter = c.formatter;
+	            cells.push(_react2['default'].createElement(
+	              'td',
+	              { key: 'dragged-cell-' + rowIdx + '-' + c.key, className: 'react-grid-Cell', style: { padding: '5px' } },
+	              _react2['default'].createElement(Formatter, { value: item[c.key] })
+	            ));
+	          } else {
+	            cells.push(_react2['default'].createElement(
+	              'td',
+	              { key: 'dragged-cell-' + rowIdx + '-' + c.key, className: 'react-grid-Cell', style: { padding: '5px' } },
+	              item[c.key]
+	            ));
+	          }
 	        }
-	      }
+	      });
 	    }
 	    return cells;
 	  };
@@ -8744,7 +8755,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }),
 	  isDragging: _react.PropTypes.bool.isRequired,
 	  rowSelection: _react.PropTypes.object,
-	  rows: _react.PropTypes.array.isRequired
+	  rows: _react.PropTypes.array.isRequired,
+	  columns: _react.PropTypes.array.isRequired
 	};
 
 	function collect(monitor) {

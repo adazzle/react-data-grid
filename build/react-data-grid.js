@@ -874,7 +874,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        getRowMetaData: function getRowMetaData(rowData) {
 	          return rowData;
 	        },
-	        cellClass: 'rdg-row-actions-cell'
+	        cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''
 	      };
 	      unshiftedCols = cols.unshift(selectColumn);
 	      cols = unshiftedCols > 0 ? cols : unshiftedCols;
