@@ -236,7 +236,6 @@ const EditorContainer = React.createClass({
         this.commit(e);
       }
     }
-    React.findDOMNode(this).focus();
   },
 
   setTextInputFocus() {
@@ -274,13 +273,8 @@ const EditorContainer = React.createClass({
   },
 
   render(): ?ReactElement {
-    let divStyle = {
-      display: 'inline-block',
-      width: '200px',
-      height: '200px'
-    };
     return (
-        <div style={divStyle} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} commit={this.commit}>
+        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} commit={this.commit}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>
