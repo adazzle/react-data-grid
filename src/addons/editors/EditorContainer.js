@@ -227,7 +227,7 @@ const EditorContainer = React.createClass({
     e.stopPropagation();
     // commit if cliked anywhere outside editor
     // prevent commit if any element inside editor is clicked or if the active cell is clicked
-    if (e.relatedTarget === null) {
+    if (e.relatedTarget === null || e.relatedTarget.classList.contains('react-grid-Viewport')) {
       this.commit(e);
     }
     if (e.relatedTarget !== null) {
@@ -239,6 +239,7 @@ const EditorContainer = React.createClass({
         this.commit(e);
       }
     }
+    e.relatedTarget.addEventListener('blur', handleBlur);
   },
 
   setTextInputFocus() {
