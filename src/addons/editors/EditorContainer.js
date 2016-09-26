@@ -225,13 +225,15 @@ const EditorContainer = React.createClass({
 
   handleBlur(e) {
     e.stopPropagation();
+    e.preventDefault();
+
     // commit if cliked anywhere outside editor
     // prevent commit if any element inside editor is clicked or if the active cell is clicked
     if (e.relatedTarget !== null) {
       if (!e.currentTarget.contains(e.relatedTarget) && !(e.relatedTarget.classList.contains('editing') && e.relatedTarget.classList.contains('react-grid-Cell')))  {
         this.commit(e);
       }
-    }else  {
+    } else  {
       if (!e.currentTarget.contains(e.relatedTarget)) {
         this.commit(e);
       }
