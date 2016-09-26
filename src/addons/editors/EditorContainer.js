@@ -233,7 +233,7 @@ const EditorContainer = React.createClass({
       if (!e.currentTarget.contains(e.relatedTarget) && !(e.relatedTarget.classList.contains('editing') && e.relatedTarget.classList.contains('react-grid-Cell')))  {
         this.commit(e);
       }
-    }else  {
+    } else  {
       if (!e.currentTarget.contains(e.relatedTarget)) {
         this.commit(e);
       }
