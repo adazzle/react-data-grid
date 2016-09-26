@@ -225,6 +225,8 @@ const EditorContainer = React.createClass({
 
   handleBlur(e) {
     e.stopPropagation();
+    e.preventDefault();
+
     // commit if cliked anywhere outside editor
     // prevent commit if any element inside editor is clicked or if the active cell is clicked
     if (e.relatedTarget !== null) {
