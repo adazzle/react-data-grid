@@ -229,14 +229,15 @@ const EditorContainer = React.createClass({
     // prevent commit if any element inside editor is clicked or if the active cell is clicked
     if (e.relatedTarget !== null) {
       if (!e.currentTarget.contains(e.relatedTarget) && !(e.relatedTarget.classList.contains('editing') && e.relatedTarget.classList.contains('react-grid-Cell')))  {
+        e.preventDefault();
         this.commit(e);
       }
     }else  {
       if (!e.currentTarget.contains(e.relatedTarget)) {
+        e.preventDefault();
         this.commit(e);
       }
     }
-    ReactDOM.findDOMNode(e.currentTarget).focus();
   },
 
   setTextInputFocus() {
