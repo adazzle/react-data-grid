@@ -239,7 +239,7 @@ const EditorContainer = React.createClass({
         this.commit(e);
       }
     }
-    e.relatedTarget.addEventListener('blur', handleBlur);
+    e.relatedTarget.addEventListener('blur', this.handleBlur);
   },
 
   setTextInputFocus() {
