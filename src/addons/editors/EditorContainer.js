@@ -236,6 +236,7 @@ const EditorContainer = React.createClass({
         this.commit(e);
       }
     }
+    ReactDOM.findDOMNode(e.currentTarget).focus();
   },
 
   setTextInputFocus() {
