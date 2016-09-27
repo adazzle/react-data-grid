@@ -223,23 +223,27 @@ const EditorContainer = React.createClass({
     return inputNode.selectionStart === inputNode.value.length;
   },
 
+  isViewportOrBodyClicked(e) {
+    return (e.relatedTarget === null || e.relatedTarget.classList.contains('react-grid-Viewport'));
+  },
+
+  isClickInisdeEditor(e) {
+    return (e.currentTarget.contains(e.relatedTarget) || (e.relatedTarget.classList.contains('editing') || e.relatedTarget.classList.contains('react-grid-Cell')));
+  },
+
   handleBlur(e) {
     e.stopPropagation();
-    // commit if cliked anywhere outside editor
-    // prevent commit if any element inside editor is clicked or if the active cell is clicked
-    if (e.relatedTarget === null || e.relatedTarget.classList.contains('react-grid-Viewport')) {
+
+    if (isViewportOrBodyClicked(e) || (!isClickInisdeEditor(e))) {
       this.commit(e);
     }
-    if (e.relatedTarget !== null) {
-      if (!e.currentTarget.contains(e.relatedTarget) && !(e.relatedTarget.classList.contains('editing') && e.relatedTarget.classList.contains('react-grid-Cell')))  {
-        this.commit(e);
-      }
-    }else  {
-      if (!e.currentTarget.contains(e.relatedTarget)) {
-        this.commit(e);
-      }
+        // attachblur listner to elements contained in the editor
+    if ( isClickInisdeEditor(e) ) {
+      e.relatedTarget.addEventListener('blur', (e2) => {
+        e.relatedTarget.removeEventListener('blur');
+        this.handleBlur(e2);
+      });
     }
-    e.relatedTarget.addEventListener('blur', this.handleBlur);
   },
 
   setTextInputFocus() {
