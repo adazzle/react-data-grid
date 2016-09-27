@@ -122,7 +122,6 @@ describe('Editor Container Tests', () => {
         cellMetaData={cellMetaData}
         column={column}
         height={50}/>);
-      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
       spyOn(component, 'commit');
       TestUtils.Simulate.blur(ReactDOM.findDOMNode(component), {relatedTarget: document.body, currentTarget: ReactDOM.findDOMNode(component)});
       expect(component.commit).toHaveBeenCalled();
