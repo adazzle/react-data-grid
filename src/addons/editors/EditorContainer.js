@@ -240,7 +240,7 @@ const EditorContainer = React.createClass({
       // attach blur listner to elements contained in the editor
     if ( this.isClickInisdeEditor(e) ) {
       e.relatedTarget.addEventListener('blur', (e2) => {
-        e2.currentTarget.removeEventListener('blur');
+        e2.currentTarget.removeEventListener('blur', this.handleBlur);
         this.handleBlur(e2);
       });
     }
