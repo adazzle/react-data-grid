@@ -223,23 +223,34 @@ const EditorContainer = React.createClass({
     return inputNode.selectionStart === inputNode.value.length;
   },
 
-  isViewportOrBodyClicked(e) {
-    return (e.relatedTarget === null || e.relatedTarget.classList.contains('react-grid-Viewport'));
+  isBodyClicked(e) {
+    return (e.relatedTarget === null);
+  },
+
+  isViewportClicked(e) {
+    return (e.relatedTarget.classList.contains('react-grid-Viewport'));
   },
 
   isClickInisdeEditor(e) {
+
     return (e.currentTarget.contains(e.relatedTarget) || (e.relatedTarget.classList.contains('editing') || e.relatedTarget.classList.contains('react-grid-Cell')));
   },
 
   handleBlur(e) {
     e.stopPropagation();
 
-    if (this.isViewportOrBodyClicked(e) || (!this.isClickInisdeEditor(e))) {
+    if (isBodyClicked(e)) {
       this.commit(e);
     }
+
+    if (!isBodyClicked(e)) { // prevent null reference
+      if (this.isViewportClicked(e) || (!this.isClickInisdeEditor(e))) {
+        this.commit(e);
+      }
       // attach blur listner to elements contained in the editor
-    if ( this.isClickInisdeEditor(e) ) {
-      e.relatedTarget.addEventListener('blur', this.handleBlur );
+      if ( this.isClickInisdeEditor(e) ) {
+        e.relatedTarget.addEventListener('blur', this.handleBlur);
+      }
     }
   },
 
