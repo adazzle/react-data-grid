@@ -234,11 +234,11 @@ const EditorContainer = React.createClass({
   handleBlur(e) {
     e.stopPropagation();
 
-    if (isViewportOrBodyClicked(e) || (!isClickInisdeEditor(e))) {
+    if (this.isViewportOrBodyClicked(e) || (!this.isClickInisdeEditor(e))) {
       this.commit(e);
     }
-        // attachblur listner to elements contained in the editor
-    if ( isClickInisdeEditor(e) ) {
+      // attach blur listner to elements contained in the editor
+    if ( this.isClickInisdeEditor(e) ) {
       e.relatedTarget.addEventListener('blur', (e2) => {
         e.relatedTarget.removeEventListener('blur');
         this.handleBlur(e2);
