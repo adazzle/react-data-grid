@@ -1,5 +1,4 @@
 const React                   = require('react');
-const ReactDOM                = require('react-dom');
 const joinClasses              = require('classnames');
 const keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
@@ -232,13 +231,13 @@ const EditorContainer = React.createClass({
   },
 
   isClickInisdeEditor(e) {
-
     return (e.currentTarget.contains(e.relatedTarget) || (e.relatedTarget.classList.contains('editing') || e.relatedTarget.classList.contains('react-grid-Cell')));
   },
 
   handleBlur(e) {
     e.stopPropagation();
-
+		e.target.removeEventListener('blur', this.handleBlur);
+    
     if (this.isBodyClicked(e)) {
       this.commit(e);
     }
@@ -248,7 +247,7 @@ const EditorContainer = React.createClass({
         this.commit(e);
       }
       // attach blur listner to elements contained in the editor
-      if ( this.isClickInisdeEditor(e) ) {
+      if ( this.isClickInisdeEditor(e) && !this.isViewportClicked(e) ) {
         e.relatedTarget.addEventListener('blur', this.handleBlur);
       }
     }
