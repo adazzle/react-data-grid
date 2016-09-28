@@ -23,6 +23,8 @@ const Canvas = React.createClass({
     className: PropTypes.string,
     displayStart: PropTypes.number.isRequired,
     displayEnd: PropTypes.number.isRequired,
+    colDisplayStart: PropTypes.number.isRequired,
+    colDisplayEnd: PropTypes.number.isRequired,
     rowsCount: PropTypes.number.isRequired,
     rowGetter: PropTypes.oneOfType([
       PropTypes.func.isRequired,
@@ -101,7 +103,8 @@ const Canvas = React.createClass({
   || nextProps.columns !== this.props.columns
   || nextProps.width !== this.props.width
   || nextProps.cellMetaData !== this.props.cellMetaData
-  || !shallowEqual(nextProps.style, this.props.style);
+  || !shallowEqual(nextProps.style, this.props.style)
+  || this.props.colDisplayStart !== nextProps.colDisplayStart;
     return shouldUpdate;
   },
 
@@ -338,7 +341,9 @@ const Canvas = React.createClass({
           isSelected: this.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
           expandedRows: this.props.expandedRows,
           cellMetaData: this.props.cellMetaData,
-          subRowDetails: r.subRowDetails
+          subRowDetails: r.subRowDetails,
+          colDisplayStart: this.props.colDisplayStart,
+          colDisplayEnd: this.props.colDisplayEnd
         }));
 
     this._currentRowsLength = rows.length;

@@ -26,7 +26,10 @@ const Row = React.createClass({
     extraClasses: PropTypes.string,
     forceUpdate: PropTypes.bool,
     subRowDetails: PropTypes.object,
-    isRowHovered: PropTypes.bool
+    isRowHovered: PropTypes.bool,
+    colDisplayStart: PropTypes.number.isRequired,
+    colDisplayEnd: PropTypes.number.isRequired
+
   },
 
   mixins: [ColumnUtilsMixin],
@@ -48,7 +51,9 @@ const Row = React.createClass({
            this.hasRowBeenCopied()                                                                       ||
            this.props.isSelected !== nextProps.isSelected                                                ||
            nextProps.height !== this.props.height                                                        ||
-           this.props.forceUpdate === true;
+           this.props.forceUpdate === true                                                               ||
+           this.props.colDisplayStart !== nextProps.colDisplayStart                                      ||
+           this.props.colDisplayEnd !== nextProps.colDisplayEnd;
   },
 
   handleDragEnter() {
@@ -78,17 +83,19 @@ const Row = React.createClass({
   getCells(): Array<ReactElement> {
     let cells = [];
     let lockedCells = [];
+    let {colDisplayStart, colDisplayEnd} = this.props;
     let selectedColumn = this.getSelectedColumn();
-
-    if (this.props.columns) {
-      this.props.columns.forEach((column, i) => {
+    let visibleColumns = this.props.columns.slice(colDisplayStart, colDisplayEnd);
+    if (visibleColumns) {
+      visibleColumns.forEach((column, i) => {
+        let index = colDisplayStart + i;
         let CellRenderer = this.props.cellRenderer;
         let cell = (<CellRenderer
-                      ref={i}
-                      key={`${column.key}-${i}`}
-                      idx={i}
+                      ref={index}
+                      key={`row-${this.props.idx}-${column.key}-${index}`}
+                      idx={index}
                       rowIdx={this.props.idx}
-                      value={this.getCellValue(column.key || i)}
+                      value={this.getCellValue(column.key || index)}
                       column={column}
                       height={this.getRowHeight()}
                       formatter={column.formatter}
@@ -197,7 +204,8 @@ const Row = React.createClass({
 
     let style = {
       height: this.getRowHeight(this.props),
-      overflow: 'hidden'
+      overflow: 'hidden',
+      width: '7500px'
     };
 
     let cells = this.getCells();

@@ -1,3 +1,4 @@
+import ColumnUtils from './ColumnUtils';
 const React             = require('react');
 const ReactDOM = require('react-dom');
 const DOMMetrics        = require('./DOMMetrics');
@@ -20,6 +21,9 @@ module.exports = {
   DOMMetrics: {
     viewportHeight(): number {
       return ReactDOM.findDOMNode(this).offsetHeight;
+    },
+    viewportWidth(): number {
+      return ReactDOM.findDOMNode(this).offsetWidth;
     }
   },
 
@@ -30,7 +34,9 @@ module.exports = {
 
   getDefaultProps(): { rowHeight: number } {
     return {
-      rowHeight: 30
+      rowHeight: 30,
+      leftNumberOverflowColumns: 1,
+      rightNumberOverflowColumns: 3
     };
   },
 
@@ -42,16 +48,51 @@ module.exports = {
     let canvasHeight = props.minHeight - props.rowOffsetHeight;
     let renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
     let totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
+    let colDisplayStart = this.getDisplayStartColIndex(0);
+    let colDisplayEnd = this.getDisplayEndColIndex(colDisplayStart);
     return {
       displayStart: 0,
       displayEnd: totalRowCount,
       height: canvasHeight,
+      width: this.props.columnMetrics.totalWidth,
       scrollTop: 0,
-      scrollLeft: 0
+      scrollLeft: 0,
+      colDisplayStart: colDisplayStart,
+      colDisplayEnd: colDisplayEnd
     };
   },
 
-  updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number) {
+  getDisplayStartColIndex(scrollLeft) {
+    let remainingScroll = scrollLeft;
+    let columnIndex = -1;
+    while (remainingScroll >= 0) {
+      columnIndex++;
+      remainingScroll -= ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex).width;
+    }
+    return columnIndex - this.getLeftNumberOverflowColumns(columnIndex);
+  },
+
+  getLeftNumberOverflowColumns(displayStart) {
+    return displayStart - this.props.leftNumberOverflowColumns < 0 ? displayStart : this.props.leftNumberOverflowColumns;
+  },
+
+  getRightNumberOverflowColumns(displayEnd) {
+    let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
+    let rightSideColumnsRemaining = totalNumberColumns - displayEnd;
+    return displayEnd + this.props.rightNumberOverflowColumns < totalNumberColumns ? this.props.rightNumberOverflowColumns : rightSideColumnsRemaining;
+  },
+
+  getDisplayEndColIndex(displayStart, width) {
+    let remainingWidth = width > 0 ? width : this.props.columnMetrics.totalWidth;
+    let columnIndex = displayStart + this.getLeftNumberOverflowColumns(displayStart) - 1;
+    while (remainingWidth > 0) {
+      columnIndex++;
+      remainingWidth -= ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex).width;
+    }
+    return columnIndex + this.getRightNumberOverflowColumns(columnIndex);
+  },
+
+  updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
     let renderedRowsCount = ceil(height / rowHeight);
 
     let visibleStart = floor(scrollTop / rowHeight);
@@ -68,6 +109,9 @@ module.exports = {
         visibleStart + renderedRowsCount * 2,
         length);
 
+    let colDisplayStart = this.getDisplayStartColIndex(scrollLeft);
+    let colDisplayEnd = this.getDisplayEndColIndex(colDisplayStart, width);
+
     let nextScrollState = {
       visibleStart,
       visibleEnd,
@@ -75,7 +119,9 @@ module.exports = {
       displayEnd,
       height,
       scrollTop,
-      scrollLeft
+      scrollLeft,
+      colDisplayStart,
+      colDisplayEnd
     };
 
     this.setState(nextScrollState);
@@ -83,13 +129,15 @@ module.exports = {
 
   metricsUpdated() {
     let height = this.DOMMetrics.viewportHeight();
+    let width = this.DOMMetrics.viewportWidth();
     if (height) {
       this.updateScroll(
         this.state.scrollTop,
         this.state.scrollLeft,
         height,
         this.props.rowHeight,
-        this.props.rowsCount
+        this.props.rowsCount,
+        width
       );
     }
   },
