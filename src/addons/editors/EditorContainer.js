@@ -1,5 +1,4 @@
 const React                   = require('react');
-const ReactDOM                = require('react-dom');
 const joinClasses              = require('classnames');
 const keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
@@ -223,18 +222,29 @@ const EditorContainer = React.createClass({
     return inputNode.selectionStart === inputNode.value.length;
   },
 
+  isBodyClicked(e) {
+    return (e.relatedTarget === null);
+  },
+
+  isViewportClicked(e) {
+    return (e.relatedTarget.classList.contains('react-grid-Viewport'));
+  },
+
+  isClickInisdeEditor(e) {
+    return (e.currentTarget.contains(e.relatedTarget) || (e.relatedTarget.classList.contains('editing') || e.relatedTarget.classList.contains('react-grid-Cell')));
+  },
+
   handleBlur(e) {
     e.stopPropagation();
-    // commit if cliked anywhere outside editor
-    // prevent commit if any element inside editor is clicked or if the active cell is clicked
-    if (e.relatedTarget !== null) {
-      if (!e.currentTarget.contains(e.relatedTarget) && !(e.relatedTarget.classList.contains('editing') && e.relatedTarget.classList.contains('react-grid-Cell')))  {
-        this.commit(e);
-      }
-    }else  {
-      if (!e.currentTarget.contains(e.relatedTarget)) {
-        this.commit(e);
-      }
+    if (this.isBodyClicked(e)) {
+	    this.commit(e);
+	  }
+
+	  if (!this.isBodyClicked(e)) {
+	    // prevent null reference
+	    if (this.isViewportClicked(e) || !this.isClickInisdeEditor(e)) {
+	      this.commit(e);
+	    }
     }
   },
 
@@ -273,13 +283,8 @@ const EditorContainer = React.createClass({
   },
 
   render(): ?ReactElement {
-    let divStyle = {
-      display: 'inline-block',
-      width: '200px',
-      height: '200px'
-    };
     return (
-        <div style={divStyle} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} commit={this.commit}>
+        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} commit={this.commit}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>
