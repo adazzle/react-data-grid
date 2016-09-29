@@ -3604,7 +3604,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var MapCache = __webpack_require__(56);
 
-	/** Used as the `TypeError` message for "Functions" methods. */
+	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
 
 	/**
@@ -6239,9 +6239,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// Safari 6 and 6.1 for desktop, iPad, and iPhone are the only browsers that
 	// have WebKitMutationObserver but not un-prefixed MutationObserver.
-	// Must use `global` instead of `window` to work in both frames and web
+	// Must use `global` or `self` instead of `window` to work in both frames and web
 	// workers. `global` is a provision of Browserify, Mr, Mrs, or Mop.
-	var BrowserMutationObserver = (window).MutationObserver || (window).WebKitMutationObserver;
+
+	/* globals self */
+	var scope = typeof (window) !== "undefined" ? (window) : self;
+	var BrowserMutationObserver = scope.MutationObserver || scope.WebKitMutationObserver;
 
 	// MutationObservers are desirable because they have high priority and work
 	// reliably everywhere they are implemented.
@@ -8582,7 +8585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.__esModule = true;
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _react = __webpack_require__(3);
 
@@ -8799,7 +8802,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return state.filters;
 	};
 	var getFilteredRows = (0, _reselect.createSelector)([getFilters, getInputRows], function (filters) {
-	  var rows = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	  var rows = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
 	  if (!filters || (0, _isEmptyObject2['default'])(filters)) {
 	    return rows;
@@ -8827,7 +8830,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return state.expandedRows;
 	};
 	var getFlattenedGroupedRows = (0, _reselect.createSelector)([getSortedRows, getGroupedColumns, getExpandedRows], function (rows, groupedColumns) {
-	  var expandedRows = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+	  var expandedRows = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
 	  if (!groupedColumns || (0, _isEmptyObject2['default'])(groupedColumns) || (0, _isEmptyArray2['default'])(groupedColumns)) {
 	    return rows;
@@ -8842,7 +8845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return state.rowKey;
 	};
 	var getSelectedRowsByKey = (0, _reselect.createSelector)([getRowKey, getSelectedKeys, getInputRows], function (rowKey, selectedKeys) {
-	  var rows = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+	  var rows = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
 	  return selectedKeys.map(function (k) {
 	    return rows.filter(function (r) {
@@ -9032,7 +9035,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  RowGrouper.prototype.groupRowsByColumn = function groupRowsByColumn(rows) {
 	    var _this = this;
 
-	    var columnIndex = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	    var columnIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
 	    var nextColumnIndex = columnIndex;
 	    var dataviewRows = [];
@@ -11464,7 +11467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var filterRows = function filterRows(filters) {
-	  var rows = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	  var rows = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
 	  return rows.filter(function (r) {
 	    var include = true;

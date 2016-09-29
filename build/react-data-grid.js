@@ -850,7 +850,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  setupGridColumns: function setupGridColumns() {
-	    var props = arguments.length <= 0 || arguments[0] === undefined ? this.props : arguments[0];
+	    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
 
 	    var cols = props.columns.slice(0);
 	    var unshiftedCols = {};
@@ -3533,13 +3533,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getFormatter: function getFormatter() {
 	    var col = this.props.column;
 	    if (this.isActive()) {
-	      return React.createElement(EditorContainer, { rowData: this.getRowData(), rowIdx: this.props.rowIdx, idx: this.props.idx, cellMetaData: this.props.cellMetaData, column: col, height: this.props.height });
+	      return React.createElement(EditorContainer, { rowData: this.getRowData(), rowIdx: this.props.rowIdx, value: this.props.value, idx: this.props.idx, cellMetaData: this.props.cellMetaData, column: col, height: this.props.height });
 	    }
 
 	    return this.props.column.formatter;
 	  },
 	  getRowData: function getRowData() {
-	    var props = arguments.length <= 0 || arguments[0] === undefined ? this.props : arguments[0];
+	    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
 
 	    return props.rowData.toJSON ? props.rowData.toJSON() : props.rowData;
 	  },
@@ -6398,7 +6398,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(5);
-	var ReactDOM = __webpack_require__(6);
 	var joinClasses = __webpack_require__(9);
 	var keyboardHandlerMixin = __webpack_require__(112);
 	var SimpleTextEditor = __webpack_require__(113);
@@ -6608,16 +6607,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var inputNode = this.getInputNode();
 	    return inputNode.selectionStart === inputNode.value.length;
 	  },
+	  isBodyClicked: function isBodyClicked(e) {
+	    return e.relatedTarget === null;
+	  },
+	  isViewportClicked: function isViewportClicked(e) {
+	    return e.relatedTarget.classList.contains('react-grid-Viewport');
+	  },
+	  isClickInisdeEditor: function isClickInisdeEditor(e) {
+	    return e.currentTarget.contains(e.relatedTarget) || e.relatedTarget.classList.contains('editing') || e.relatedTarget.classList.contains('react-grid-Cell');
+	  },
 	  handleBlur: function handleBlur(e) {
 	    e.stopPropagation();
-	    // commit if cliked anywhere outside editor
-	    // prevent commit if any element inside editor is clicked or if the active cell is clicked
-	    if (e.relatedTarget !== null) {
-	      if (!e.currentTarget.contains(e.relatedTarget) && !(e.relatedTarget.classList.contains('editing') && e.relatedTarget.classList.contains('react-grid-Cell'))) {
-	        this.commit(e);
-	      }
-	    } else {
-	      if (!e.currentTarget.contains(e.relatedTarget)) {
+	    if (this.isBodyClicked(e)) {
+	      this.commit(e);
+	    }
+
+	    if (!this.isBodyClicked(e)) {
+	      // prevent null reference
+	      if (this.isViewportClicked(e) || !this.isClickInisdeEditor(e)) {
 	        this.commit(e);
 	      }
 	    }
@@ -6654,14 +6661,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  render: function render() {
-	    var divStyle = {
-	      display: 'inline-block',
-	      width: '200px',
-	      height: '200px'
-	    };
 	    return React.createElement(
 	      'div',
-	      { style: divStyle, className: this.getContainerClass(), onBlur: this.handleBlur, onKeyDown: this.onKeyDown, commit: this.commit },
+	      { className: this.getContainerClass(), onBlur: this.handleBlur, onKeyDown: this.onKeyDown, commit: this.commit },
 	      this.createEditor(),
 	      this.renderStatusIcon()
 	    );
@@ -7360,7 +7362,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ columnMetrics: columnMetrics });
 	  },
 	  createColumnMetrics: function createColumnMetrics() {
-	    var props = arguments.length <= 0 || arguments[0] === undefined ? this.props : arguments[0];
+	    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
 
 	    var gridColumns = this.setupGridColumns(props);
 	    return this.getColumnMetricsType({
