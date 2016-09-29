@@ -5602,8 +5602,7 @@
         "params": [],
         "returns": {
           "type": {
-            "name": "any",
-            "nullable": true
+            "name": "any"
           }
         }
       },
