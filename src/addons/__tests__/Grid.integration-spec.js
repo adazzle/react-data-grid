@@ -2,7 +2,7 @@ import TestUtils from 'react/lib/ReactTestUtils';
 import GridRunner from './GridRunner';
 import ReactDOM from 'react-dom';
 
-describe('Grid Integration', () => {
+xdescribe('Grid Integration', () => {
   describe('Setup', () => {
     it('Creates the grid', () => {
       expect(new GridRunner({}).grid).toBeDefined();
