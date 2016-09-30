@@ -449,6 +449,10 @@ const Cell = React.createClass({
   },
 
   render() {
+    if (this.props.column.hidden) {
+      return null;
+    }
+
     let style = this.getStyle();
 
     let className = this.getCellClass();
