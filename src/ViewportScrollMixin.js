@@ -49,7 +49,6 @@ module.exports = {
     let canvasHeight = props.minHeight - props.rowOffsetHeight;
     let renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
     let totalRowCount = min(renderedRowsCount * this.props.rowOverFlow, props.rowsCount);
-    let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     return {
       displayStart: 0,
       displayEnd: totalRowCount,
@@ -77,9 +76,15 @@ module.exports = {
     let columnIndex = displayStart;
     let columnCount = 0;
     while (remainingWidth > 0) {
+      let column = ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex);
+
+      if (!column) {
+        break;
+      }
+
       columnCount++;
       columnIndex++;
-      remainingWidth -= ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex - 1).width;
+      remainingWidth -= column.width;
     }
     return columnCount;
   },
