@@ -76,9 +76,15 @@ module.exports = {
     let columnIndex = displayStart;
     let columnCount = 0;
     while (remainingWidth > 0) {
+      let column = ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex);
+
+      if (!column) {
+        break;
+      }
+
       columnCount++;
       columnIndex++;
-      remainingWidth -= ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex - 1).width;
+      remainingWidth -= column.width;
     }
     return columnCount;
   },
