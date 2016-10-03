@@ -105,7 +105,8 @@ const Row = React.createClass({
       rowData={this.props.row}
       selectedColumn={selectedColumn}
       isRowSelected={this.props.isSelected}
-      expandableOptions={this.getExpandableOptions(column.key) } />);
+      expandableOptions={this.getExpandableOptions(column.key) }
+      isScrolling={this.props.isScrolling} />);
   },
 
   getCell(column, index, selectedColumn) {
@@ -126,7 +127,7 @@ const Row = React.createClass({
     let lockedCells = [];
     let {colDisplayStart, colDisplayEnd} = this.props;
     let selectedColumn = this.getSelectedColumn();
-    let visibleColumns = this.props.columns.slice(colDisplayStart, colDisplayEnd);
+    let visibleColumns = this.props.columns.slice(colDisplayStart, colDisplayEnd - 1);
     if (visibleColumns) {
       visibleColumns.forEach((column, i) => {
         let index = colDisplayStart + i;

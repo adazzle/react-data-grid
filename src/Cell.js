@@ -31,7 +31,8 @@ const Cell = React.createClass({
     cellControls: React.PropTypes.any,
     rowData: React.PropTypes.object.isRequired,
     forceUpdate: React.PropTypes.bool,
-    expandableOptions: React.PropTypes.object.isRequired
+    expandableOptions: React.PropTypes.object.isRequired,
+    isScrolling: React.PropTypes.isRequired
   },
 
   getDefaultProps() {
@@ -119,6 +120,10 @@ const Cell = React.createClass({
     if (this.canExpand() && e.key === 'Enter') {
       this.onCellExpand(e);
     }
+  },
+
+  onFocus(e) {
+    console.log(e);
   },
 
   onDragHandleDoubleClick(e) {
@@ -338,6 +343,10 @@ const Cell = React.createClass({
     return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
   },
 
+  isScrollingWithMouse() {
+    return this.props.isScrolling;
+  },
+
   checkFocus() {
     if (this.isSelected() && !this.isActive()) {
       // determine the parent viewport element of this cell
@@ -461,10 +470,9 @@ const Cell = React.createClass({
     });
 
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
-    let events = this.getEvents();
-
+    let events = this.getEvents() || {};
     return (
-      <div {...this.props} className={className} style={style}   {...events}>
+      <div {...this.props} onFocus={this.onFocus} className={className} style={style}   {...events}>
         {cellContent}
         {dragHandle}
       </div>

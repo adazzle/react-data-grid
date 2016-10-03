@@ -49,7 +49,6 @@ module.exports = {
     let canvasHeight = props.minHeight - props.rowOffsetHeight;
     let renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
     let totalRowCount = min(renderedRowsCount * this.props.rowOverFlow, props.rowsCount);
-    let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     return {
       displayStart: 0,
       displayEnd: totalRowCount,
@@ -96,7 +95,7 @@ module.exports = {
     let displayStart = max(0, visibleStart - renderedRowsCount * this.props.rowOverFlow);
     let displayEnd = min(visibleStart + renderedRowsCount * this.props.rowOverFlow, length);
     let colDisplayStart = max(0, visibleColStart - 2);
-    let colDisplayEnd = min(visibleColStart + renderedColumnCount + 4, totalNumberColumns);
+    let colDisplayEnd = min(visibleColStart + ceil(renderedColumnCount * 2), totalNumberColumns);
 
 
     let nextScrollState = {
