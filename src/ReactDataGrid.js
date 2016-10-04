@@ -103,7 +103,8 @@ const ReactDataGrid = React.createClass({
     onGridKeyUp: React.PropTypes.func,
     onGridKeyDown: React.PropTypes.func,
     rowGroupRenderer: React.PropTypes.func,
-    rowActionsCell: React.PropTypes.func
+    rowActionsCell: React.PropTypes.func,
+    onCellSelect: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -201,7 +202,7 @@ const ReactDataGrid = React.createClass({
 
   onCellDoubleClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
-    this.setActive('Enter');
+    // this.setActive('Enter');
   },
 
   onViewportDoubleClick: function() {
@@ -759,11 +760,18 @@ const ReactDataGrid = React.createClass({
     let row = this.props.rowGetter(rowIdx);
 
     let idx = this.state.selected.idx;
-    let col = this.getColumn(idx);
+    let column = this.getColumn(idx);
 
-    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && !this.isActive()) {
+    if (ColumnUtils.canEdit(column, row, this.props.enableCellSelect) && !this.isActive()) {
       let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
-      this.setState({selected: selected}, this.scrollToColumn(idx));
+      let showEditor = true;
+      if (typeof this.props.onCellSelect === 'function') {
+        let args = Object.assign({ row, column }, selected);
+        showEditor = this.props.onCellSelect(args);
+      }
+      if (showEditor !== false) {
+        this.setState({selected: selected}, this.scrollToColumn(idx));
+      }
     }
   },
 
