@@ -104,7 +104,8 @@ const ReactDataGrid = React.createClass({
     onGridKeyDown: React.PropTypes.func,
     rowGroupRenderer: React.PropTypes.func,
     rowActionsCell: React.PropTypes.func,
-    onCellSelect: React.PropTypes.func
+    onCheckCellIsEditable: React.PropTypes.func
+    /* called before cell is set active, returns a boolean to determine whether cell is editable */
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -765,9 +766,9 @@ const ReactDataGrid = React.createClass({
     if (ColumnUtils.canEdit(column, row, this.props.enableCellSelect) && !this.isActive()) {
       let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
       let showEditor = true;
-      if (typeof this.props.onCellSelect === 'function') {
-        let args = Object.assign({ row, column }, selected);
-        showEditor = this.props.onCellSelect(args);
+      if (typeof this.props.onCheckCellIsEditable === 'function') {
+        let args = Object.assign({}, { row, column }, selected);
+        showEditor = this.props.onCheckCellIsEditable(args);
       }
       if (showEditor !== false) {
         this.setState({selected: selected}, this.scrollToColumn(idx));
