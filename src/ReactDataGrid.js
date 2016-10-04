@@ -202,7 +202,7 @@ const ReactDataGrid = React.createClass({
 
   onCellDoubleClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
-    // this.setActive('Enter');
+    this.setActive('Enter');
   },
 
   onViewportDoubleClick: function() {
