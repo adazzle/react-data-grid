@@ -37,7 +37,7 @@ module.exports = {
       rowHeight: 30,
       colOverFlow: 1.5,
       rowOverFlow: 2,
-      scrollingResetTimeInterval: 150
+      scrollingResetTimeInterval: 300
     };
   },
 
@@ -92,16 +92,16 @@ module.exports = {
 
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
     let isScrolling = true;
-    this.setScrollStateAfterDelay();
+    //this.setScrollStateAfterDelay();
     let renderedRowsCount = ceil(height / rowHeight);
     let visibleStart = floor(scrollTop / rowHeight);
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     let visibleColStart = this.getVisibleColStart(scrollLeft);
     let renderedColumnCount = this.getRenderedColumnCount(visibleColStart, width);
-    let displayStart = max(0, visibleStart - renderedRowsCount * this.props.rowOverFlow);
-    let displayEnd = min(visibleStart + renderedRowsCount * this.props.rowOverFlow, length);
+    let displayStart = max(0, visibleStart - renderedRowsCount * 1.2);
+    let displayEnd = min(visibleStart + renderedRowsCount * 1.2, length);
     let colDisplayStart = max(0, visibleColStart - 2);
-    let colDisplayEnd = min(visibleColStart + ceil(renderedColumnCount * 2), totalNumberColumns);
+    let colDisplayEnd = totalNumberColumns;
 
 
     let nextScrollState = {
@@ -131,6 +131,7 @@ module.exports = {
   },
 
   handleScrollStop() {
+    console.log('stop scrolling');
     this.setState({isScrolling: false});
   },
 

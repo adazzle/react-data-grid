@@ -123,7 +123,7 @@ const Cell = React.createClass({
   },
 
   onFocus(e) {
-    console.log(e);
+    // console.log(e);
   },
 
   onDragHandleDoubleClick(e) {
