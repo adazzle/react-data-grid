@@ -79,6 +79,11 @@ export default class GridRunner {
     return this;
   }
 
+  getCell({cellIdx, rowIdx}) {
+    let row = ReactDOM.findDOMNode(this.grid).querySelectorAll('.react-grid-Row')[rowIdx];
+    return row.querySelectorAll('.react-grid-Cell')[cellIdx];
+  }
+
   getCells(row) {
     let allCells = row.querySelectorAll('.react-grid-Cell');
     let cells = [];

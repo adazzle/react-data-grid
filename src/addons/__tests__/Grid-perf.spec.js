@@ -17,7 +17,7 @@ const doScroll = (i, total, gridRunner, onComplete) => {
     doScroll(i + 1, total, gridRunner, onComplete);
   } catch (ex) {
     setTimeout(() => {
-      doScroll(i + 1, total, gridRunner, onComplete);
+      doScroll(i, total, gridRunner, onComplete);
     }, 1);
   }
 };
@@ -28,7 +28,7 @@ fdescribe('Grid peformance tests', () => {
   beforeEach(() => {
     grid = new GridRunner({renderIntoBody: true, GridUnderTest: ImmutableGrid});
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
   });
 
   afterEach(() => {
