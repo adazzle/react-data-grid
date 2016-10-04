@@ -122,7 +122,7 @@ const Cell = React.createClass({
     }
   },
 
-  onFocus(e) {
+  onFocus() {
     // console.log(e);
   },
 

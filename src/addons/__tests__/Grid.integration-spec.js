@@ -1,7 +1,7 @@
 import TestUtils from 'react/lib/ReactTestUtils';
 import GridRunner from './GridRunner';
 import ReactDOM from 'react-dom';
-import ReactPerf from 'react-addons-perf';
+
 
 xdescribe('Grid Integration', () => {
   describe('Setup', () => {
@@ -246,56 +246,6 @@ xdescribe('Grid Integration', () => {
           ev: {key: 'ArrowDown'},
           expectToSelect: {row: 4, cell: 5}
         });
-    });
-  });
-
-  const doScroll = (i, total, gridRunner, onComplete) => {
-    if (i === total) {
-      onComplete();
-      return;
-    }
-
-    let cell;
-    try {
-      cell = gridRunner.getCell({cellIdx: 1, rowIdx: i});
-      gridRunner.keyDown({key: 'ArrowDown'}, cell);
-
-      doScroll(i + 1, total, gridRunner, onComplete);
-    } catch (ex) {
-      setTimeout(() => {
-        doScroll(i + 1, total, gridRunner, onComplete);
-      }, 1);
-    }
-  };
-
-  fdescribe('Grid peformance tests', () => {
-    let grid = {};
-    beforeEach(() => {
-      grid = new GridRunner({});
-    });
-
-    afterEach(() => {
-      grid.dispose();
-    });
-
-    it('should not waste instances on scroll', (done) => {
-      const ROWS_TO_SCROLL = 500;
-      grid.selectCell({cellIdx: 1, rowIdx: 0});
-      ReactPerf.start();
-      const onScrollComplete = () => {
-        ReactPerf.stop();
-        let measurements = ReactPerf.getLastMeasurements();
-
-        let summary = ReactPerf.getMeasurementsSummaryMap(measurements);
-        console.log(summary);
-        expect(summary[0].Instances <= 3618).toBe(true);
-        expect(summary[1].Instances <= 683).toBe(true);
-        expect(summary[2].Instances <= 135).toBe(true);
-        expect(summary[3].Instances <= 27).toBe(true);
-        done();
-      };
-
-      doScroll(0, ROWS_TO_SCROLL, grid, onScrollComplete);
     });
   });
 

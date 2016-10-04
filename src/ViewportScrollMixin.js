@@ -90,16 +90,16 @@ module.exports = {
   },
 
 
-  updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
+  updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number) {
     let isScrolling = true;
-    //this.setScrollStateAfterDelay();
+    // this.setScrollStateAfterDelay();
     let renderedRowsCount = ceil(height / rowHeight);
     let visibleStart = floor(scrollTop / rowHeight);
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     let visibleColStart = this.getVisibleColStart(scrollLeft);
-    let renderedColumnCount = this.getRenderedColumnCount(visibleColStart, width);
+    // let renderedColumnCount = this.getRenderedColumnCount(visibleColStart, width);
     let displayStart = max(0, visibleStart - renderedRowsCount * 1.2);
-    let displayEnd = min(visibleStart + renderedRowsCount * 1.2, length);
+    let displayEnd = min(visibleStart + renderedRowsCount * 2, length);
     let colDisplayStart = max(0, visibleColStart - 2);
     let colDisplayEnd = totalNumberColumns;
 
