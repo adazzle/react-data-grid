@@ -1,8 +1,8 @@
-const React                = require('react');
-const Canvas               = require('./Canvas');
-const ViewportScroll       = require('./ViewportScrollMixin');
-const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
-const PropTypes            = React.PropTypes;
+const React = require('react');
+const Canvas = require('./Canvas');
+const ViewportScroll = require('./ViewportScrollMixin');
+const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+const PropTypes = React.PropTypes;
 
 const Viewport = React.createClass({
   mixins: [ViewportScroll],
@@ -42,7 +42,7 @@ const Viewport = React.createClass({
     rowGroupRenderer: PropTypes.func
   },
 
-  onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
+  onScroll(scroll: { scrollTop: number; scrollLeft: number }) {
     this.updateScroll(
       scroll.scrollTop, scroll.scrollLeft,
       this.state.height,
@@ -51,11 +51,11 @@ const Viewport = React.createClass({
     );
 
     if (this.props.onScroll) {
-      this.props.onScroll({scrollTop: scroll.scrollTop, scrollLeft: scroll.scrollLeft});
+      this.props.onScroll({ scrollTop: scroll.scrollTop, scrollLeft: scroll.scrollLeft });
     }
   },
 
-  getScroll(): {scrollLeft: number; scrollTop: number} {
+  getScroll(): { scrollLeft: number; scrollTop: number } {
     return this.refs.canvas.getScroll();
   },
 
@@ -76,32 +76,35 @@ const Viewport = React.createClass({
     return (
       <div
         className="react-grid-Viewport"
-        style={style}>
-        <Canvas
-          ref="canvas"
-          rowKey={this.props.rowKey}
-          totalWidth={this.props.totalWidth}
-          width={this.props.columnMetrics.width}
-          rowGetter={this.props.rowGetter}
-          rowsCount={this.props.rowsCount}
-          selectedRows={this.props.selectedRows}
-          expandedRows={this.props.expandedRows}
-          columns={this.props.columnMetrics.columns}
-          rowRenderer={this.props.rowRenderer}
-          displayStart={this.state.displayStart}
-          displayEnd={this.state.displayEnd}
-          cellMetaData={this.props.cellMetaData}
-          height={this.state.height}
-          rowHeight={this.props.rowHeight}
-          onScroll={this.onScroll}
-          onRows={this.props.onRows}
-          rowScrollTimeout={this.props.rowScrollTimeout}
-          contextMenu={this.props.contextMenu}
-          rowSelection={this.props.rowSelection}
-          getSubRowDetails={this.props.getSubRowDetails}
-          rowGroupRenderer={this.props.rowGroupRenderer}
-        />
-      </div>
+        style={ style } >
+  <Canvas
+    ref="canvas"
+    rowKey={this.props.rowKey}
+    totalWidth={this.props.totalWidth}
+    width={this.props.columnMetrics.width}
+    rowGetter={this.props.rowGetter}
+    rowsCount={this.props.rowsCount}
+    selectedRows={this.props.selectedRows}
+    expandedRows={this.props.expandedRows}
+    columns={this.props.columnMetrics.columns }
+    rowRenderer={this.props.rowRenderer}
+    displayStart={this.state.displayStart}
+    displayEnd={this.state.displayEnd}
+    colDisplayStart={this.state.colDisplayStart}
+    colDisplayEnd={this.state.colDisplayEnd}
+    cellMetaData={this.props.cellMetaData}
+    height={this.state.height}
+    rowHeight={this.props.rowHeight}
+    onScroll={this.onScroll}
+    onRows={this.props.onRows}
+    rowScrollTimeout={this.props.rowScrollTimeout}
+    contextMenu={this.props.contextMenu}
+    rowSelection={this.props.rowSelection}
+    getSubRowDetails={this.props.getSubRowDetails}
+    rowGroupRenderer={this.props.rowGroupRenderer}
+    isScrolling={this.state.isScrolling}
+    />
+      </div >
     );
   }
 });

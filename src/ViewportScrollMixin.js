@@ -1,3 +1,4 @@
+import ColumnUtils from './ColumnUtils';
 const React             = require('react');
 const ReactDOM = require('react-dom');
 const DOMMetrics        = require('./DOMMetrics');
@@ -20,6 +21,9 @@ module.exports = {
   DOMMetrics: {
     viewportHeight(): number {
       return ReactDOM.findDOMNode(this).offsetHeight;
+    },
+    viewportWidth(): number {
+      return ReactDOM.findDOMNode(this).offsetWidth;
     }
   },
 
@@ -30,7 +34,10 @@ module.exports = {
 
   getDefaultProps(): { rowHeight: number } {
     return {
-      rowHeight: 30
+      rowHeight: 30,
+      colOverFlow: 1.5,
+      rowOverFlow: 2,
+      scrollingResetTimeInterval: 300
     };
   },
 
@@ -41,55 +48,104 @@ module.exports = {
   getGridState(props: {rowHeight: number; rowsCount: number; minHeight: number}): ViewportScrollState  {
     let canvasHeight = props.minHeight - props.rowOffsetHeight;
     let renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
-    let totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
+    let totalRowCount = min(renderedRowsCount * this.props.rowOverFlow, props.rowsCount);
     return {
       displayStart: 0,
       displayEnd: totalRowCount,
       height: canvasHeight,
+      width: props.columnMetrics.totalWidth,
       scrollTop: 0,
-      scrollLeft: 0
+      scrollLeft: 0,
+      colDisplayStart: 0,
+      colDisplayEnd: 0
     };
   },
 
+  getVisibleColStart(scrollLeft) {
+    let remainingScroll = scrollLeft;
+    let columnIndex = -1;
+    while (remainingScroll >= 0) {
+      columnIndex ++;
+      remainingScroll -= ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex).width;
+    }
+    return columnIndex;
+  },
+
+  getRenderedColumnCount(displayStart, width) {
+    let remainingWidth = width > 0 ? width : this.props.columnMetrics.totalWidth;
+    let columnIndex = displayStart;
+    let columnCount = 0;
+    while (remainingWidth > 0) {
+      let column = ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex);
+
+      if (!column) {
+        break;
+      }
+
+      columnCount++;
+      columnIndex++;
+      remainingWidth -= column.width;
+    }
+    return columnCount;
+  },
+
+
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number) {
+    let isScrolling = true;
+    // this.setScrollStateAfterDelay();
     let renderedRowsCount = ceil(height / rowHeight);
-
     let visibleStart = floor(scrollTop / rowHeight);
+    let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
+    let visibleColStart = this.getVisibleColStart(scrollLeft);
+    // let renderedColumnCount = this.getRenderedColumnCount(visibleColStart, width);
+    let displayStart = max(0, visibleStart - renderedRowsCount * 1.2);
+    let displayEnd = min(visibleStart + renderedRowsCount * 2, length);
+    let colDisplayStart = max(0, visibleColStart - 2);
+    let colDisplayEnd = totalNumberColumns;
 
-    let visibleEnd = min(
-        visibleStart + renderedRowsCount,
-        length);
-
-    let displayStart = max(
-        0,
-        visibleStart - renderedRowsCount * 2);
-
-    let displayEnd = min(
-        visibleStart + renderedRowsCount * 2,
-        length);
 
     let nextScrollState = {
-      visibleStart,
-      visibleEnd,
+      isScrolling,
       displayStart,
       displayEnd,
       height,
       scrollTop,
-      scrollLeft
+      scrollLeft,
+      colDisplayStart,
+      colDisplayEnd
     };
-
     this.setState(nextScrollState);
+  },
+
+  setScrollStateAfterDelay() {
+    const {scrollingResetTimeInterval} = this.props;
+
+    if (this._handleScrollStopTimeoutId) {
+      clearTimeout(this._handleScrollStopTimeoutId);
+    }
+
+    this._handleScrollStopTimeoutId = setTimeout(
+      this.handleScrollStop,
+      scrollingResetTimeInterval
+    );
+  },
+
+  handleScrollStop() {
+    console.log('stop scrolling');
+    this.setState({isScrolling: false});
   },
 
   metricsUpdated() {
     let height = this.DOMMetrics.viewportHeight();
+    let width = this.DOMMetrics.viewportWidth();
     if (height) {
       this.updateScroll(
         this.state.scrollTop,
         this.state.scrollLeft,
         height,
         this.props.rowHeight,
-        this.props.rowsCount
+        this.props.rowsCount,
+        width
       );
     }
   },

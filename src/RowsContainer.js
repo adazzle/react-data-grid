@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 
 const SimpleRowsContainer = (props) => {
   return (
-    <div style={{overflow: 'hidden'}}>
+    <div>
       {props.rows}
     </div>
   );
@@ -45,7 +45,7 @@ class RowsContainer extends React.Component {
   }
 
   render() {
-    return this.hasContextMenu() ? this.renderRowsWithContextMenu() : <SimpleRowsContainer {...this.props} />;
+    return <div style={{width: this.props.width, position: 'absolute', top: '0px', left: '0px'}}> {this.hasContextMenu() ? this.renderRowsWithContextMenu() : <SimpleRowsContainer {...this.props} />}</div>;
   }
 }
 
@@ -53,7 +53,8 @@ RowsContainer.propTypes = {
   contextMenu: PropTypes.element,
   rowIdx: PropTypes.number,
   idx: PropTypes.number,
-  window: PropTypes.object
+  window: PropTypes.object,
+  width: PropTypes.number
 };
 
 export default RowsContainer;

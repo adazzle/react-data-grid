@@ -1,8 +1,8 @@
-const React           = require('react');
-const joinClasses      = require('classnames');
-const Cell            = require('./Cell');
-const ColumnMetrics   = require('./ColumnMetrics');
-const ColumnUtilsMixin  = require('./ColumnUtils');
+const React = require('react');
+const joinClasses = require('classnames');
+const Cell = require('./Cell');
+const ColumnMetrics = require('./ColumnMetrics');
+const ColumnUtilsMixin = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const PropTypes = React.PropTypes;
 
@@ -26,10 +26,16 @@ const Row = React.createClass({
     extraClasses: PropTypes.string,
     forceUpdate: PropTypes.bool,
     subRowDetails: PropTypes.object,
-    isRowHovered: PropTypes.bool
+    isRowHovered: PropTypes.bool,
+    colDisplayStart: PropTypes.number.isRequired,
+    colDisplayEnd: PropTypes.number.isRequired,
+    isScrolling: PropTypes.bool.isRequired,
+    width: PropTypes.number.isRequired
   },
 
   mixins: [ColumnUtilsMixin],
+
+  _cellCache: {},
 
   getDefaultProps() {
     return {
@@ -39,16 +45,25 @@ const Row = React.createClass({
     };
   },
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isScrolling === false) {
+      // Throw away cell cache once scrolling is complete
+      this._cellCache = {};
+    }
+  },
+
   shouldComponentUpdate(nextProps: any) {
     return !(ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
-           this.doesRowContainSelectedCell(this.props)                                                   ||
-           this.doesRowContainSelectedCell(nextProps)                                                    ||
-           this.willRowBeDraggedOver(nextProps)                                                          ||
-           nextProps.row !== this.props.row                                                              ||
-           this.hasRowBeenCopied()                                                                       ||
-           this.props.isSelected !== nextProps.isSelected                                                ||
-           nextProps.height !== this.props.height                                                        ||
-           this.props.forceUpdate === true;
+      this.doesRowContainSelectedCell(this.props) ||
+      this.doesRowContainSelectedCell(nextProps) ||
+      this.willRowBeDraggedOver(nextProps) ||
+      nextProps.row !== this.props.row ||
+      this.hasRowBeenCopied() ||
+      this.props.isSelected !== nextProps.isSelected ||
+      nextProps.height !== this.props.height ||
+      this.props.forceUpdate === true ||
+      this.props.colDisplayStart !== nextProps.colDisplayStart ||
+      this.props.colDisplayEnd !== nextProps.colDisplayEnd;
   },
 
   handleDragEnter() {
@@ -75,28 +90,48 @@ const Row = React.createClass({
     return CellRenderer;
   },
 
+  createCell(key, column, index, selectedColumn) {
+    let CellRenderer = this.props.cellRenderer;
+    return (<CellRenderer
+      ref={index}
+      key={key}
+      idx={index}
+      rowIdx={this.props.idx}
+      value={this.getCellValue(column.key || index) }
+      column={column}
+      height={this.getRowHeight() }
+      formatter={column.formatter}
+      cellMetaData={this.props.cellMetaData}
+      rowData={this.props.row}
+      selectedColumn={selectedColumn}
+      isRowSelected={this.props.isSelected}
+      expandableOptions={this.getExpandableOptions(column.key) }
+      isScrolling={this.props.isScrolling} />);
+  },
+
+  getCell(column, index, selectedColumn) {
+    // if scrolling, check if cell exists in cache
+    let key = `row-${this.props.idx}-${column.key}-${index}`;
+    // if (this.props.isScrolling && this._cellCache[key]) {
+    //   return this._cellCache[key];
+    // }
+    let cell = this.createCell(key, column, index, selectedColumn);
+    // if (this.props.isScrolling) {
+    //   this._cellCache[key] = cell;
+    // }
+    return cell;
+  },
+
   getCells(): Array<ReactElement> {
     let cells = [];
     let lockedCells = [];
+    let {colDisplayStart, colDisplayEnd} = this.props;
     let selectedColumn = this.getSelectedColumn();
-
-    if (this.props.columns) {
-      this.props.columns.forEach((column, i) => {
-        let CellRenderer = this.props.cellRenderer;
-        let cell = (<CellRenderer
-                      ref={i}
-                      key={`${column.key}-${i}`}
-                      idx={i}
-                      rowIdx={this.props.idx}
-                      value={this.getCellValue(column.key || i)}
-                      column={column}
-                      height={this.getRowHeight()}
-                      formatter={column.formatter}
-                      cellMetaData={this.props.cellMetaData}
-                      rowData={this.props.row}
-                      selectedColumn={selectedColumn}
-                      isRowSelected={this.props.isSelected}
-                      expandableOptions={this.getExpandableOptions(column.key)} />);
+    let visibleColumns = this.props.columns.slice(colDisplayStart, colDisplayEnd - 1);
+    if (visibleColumns) {
+      visibleColumns.forEach((column, i) => {
+        let index = colDisplayStart + i;
+        let cell = this.getCell(column, index, selectedColumn);
         if (column.locked) {
           lockedCells.push(cell);
         } else {
@@ -104,7 +139,6 @@ const Row = React.createClass({
         }
       });
     }
-
     return cells.concat(lockedCells);
   },
 
@@ -132,7 +166,7 @@ const Row = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    this.props.columns.forEach( (column, i) => {
+    this.props.columns.forEach((column, i) => {
       if (column.locked) {
         if (!this.refs[i]) return;
         this.refs[i].setScrollLeft(scrollLeft);
@@ -161,7 +195,7 @@ const Row = React.createClass({
 
   willRowBeDraggedOver(props: any): boolean {
     let dragged = props.cellMetaData.dragged;
-    return  dragged != null && (dragged.rowIdx >= 0 || dragged.complete === true);
+    return dragged != null && (dragged.rowIdx >= 0 || dragged.complete === true);
   },
 
   hasRowBeenCopied(): boolean {
@@ -170,7 +204,7 @@ const Row = React.createClass({
   },
 
   getExpandableOptions(columnKey) {
-    return {canExpand: this.props.subRowDetails && this.props.subRowDetails.field === columnKey, expanded: this.props.subRowDetails && this.props.subRowDetails.expanded, children: this.props.subRowDetails && this.props.subRowDetails.children, treeDepth: this.props.subRowDetails ? this.props.subRowDetails.treeDepth : 0 };
+    return { canExpand: this.props.subRowDetails && this.props.subRowDetails.field === columnKey, expanded: this.props.subRowDetails && this.props.subRowDetails.expanded, children: this.props.subRowDetails && this.props.subRowDetails.children, treeDepth: this.props.subRowDetails ? this.props.subRowDetails.treeDepth : 0 };
   },
 
   renderCell(props: any): ReactElement {
@@ -197,15 +231,18 @@ const Row = React.createClass({
 
     let style = {
       height: this.getRowHeight(this.props),
-      overflow: 'hidden'
+      overflow: 'hidden',
+      width: this.props.width
     };
 
     let cells = this.getCells();
     return (
-      <div {...this.props} className={className} style={style} onDragEnter={this.handleDragEnter}>
-        {React.isValidElement(this.props.row) ?
-          this.props.row : cells}
-      </div>
+      <div {...this.props} className = { className } style= { style } onDragEnter= { this.handleDragEnter } >
+  {
+    React.isValidElement(this.props.row) ?
+      this.props.row : cells
+  }
+      </div >
     );
   }
 });
