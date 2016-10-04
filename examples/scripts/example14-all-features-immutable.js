@@ -233,7 +233,7 @@ var MyContextMenu = React.createClass({
     }
   });
 
-  if(typeof module !== 'undefined' && module.exports){
+  if(typeof module !== 'undefined' && module.exports) {
     module.exports = Component;
   }else{
     this.ReactDataGrid = Component;

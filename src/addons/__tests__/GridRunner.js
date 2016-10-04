@@ -7,16 +7,18 @@ export default class GridRunner {
   /* =====
   SETUP
   ======== */
-  constructor({renderIntoBody = false}) {
-    this.grid = this._renderGrid(renderIntoBody);
+  constructor({renderIntoBody = false, GridUnderTest = ExampleGrid}) {
     this.renderIntoBody = renderIntoBody;
+    this.example = GridUnderTest;
+    this.grid = this._renderGrid(renderIntoBody);
   }
 
   _renderGrid(intoBody) {
+    let Example = this.example;
     this.handleCellDragSpy = jasmine.createSpy('handleCellDrag');
     return intoBody ?
-      ReactDOM.render(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>, document.body)
-      : TestUtils.renderIntoDocument(<ExampleGrid handleCellDrag={this.handleCellDragSpy}/>);
+      ReactDOM.render(<Example handleCellDrag={this.handleCellDragSpy}/>, document.body)
+      : TestUtils.renderIntoDocument(<Example handleCellDrag={this.handleCellDragSpy}/>);
   }
 
   dispose() {
@@ -85,12 +87,12 @@ export default class GridRunner {
       cells[i] = allCells[i];
     }
 
-    if (this.grid.refs.reactDataGrid.props.enableRowSelect) {
-      // the rowSelectCell exists on the end of the array returned from testUtils
-      let rowSelectCell = cells.pop();
-      // remove from end of array and put at beginning
-      cells.unshift(rowSelectCell);
-    }
+    // if (this.grid.refs.reactDataGrid.props.enableRowSelect) {
+    //   // the rowSelectCell exists on the end of the array returned from testUtils
+    //   let rowSelectCell = cells.pop();
+    //   // remove from end of array and put at beginning
+    //   cells.unshift(rowSelectCell);
+    // }
     return cells;
   }
 
