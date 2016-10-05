@@ -13,7 +13,6 @@ const doScroll = (i, total, gridRunner, onComplete) => {
   try {
     cell = gridRunner.getCell({ cellIdx: 1, rowIdx: i });
     gridRunner.keyDown({ key: 'ArrowDown' }, cell);
-
     doScroll(i + 1, total, gridRunner, onComplete);
   } catch (ex) {
     setTimeout(() => {
@@ -37,7 +36,7 @@ fdescribe('Grid peformance tests', () => {
   });
 
   it('should not waste instances on scroll', (done) => {
-    const ROWS_TO_SCROLL = 100;
+    const ROWS_TO_SCROLL = 27;
     grid.selectCell({cellIdx: 1, rowIdx: 0});
     ReactPerf.start();
     const onScrollComplete = () => {

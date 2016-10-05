@@ -10,6 +10,16 @@ import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 
+class OverflowRow extends React.Component {
+  render() {
+    return (<div tabIndex="-1" style={{border: '1px solid #eee', height: this.props.height + 'px'}} width="100%" className="react-grid-Row"></div>);
+  }
+}
+
+OverflowRow.propTypes = {
+  height: React.PropTypes.number
+};
+
 const Canvas = React.createClass({
   mixins: [ScrollShim],
 
@@ -23,6 +33,8 @@ const Canvas = React.createClass({
     className: PropTypes.string,
     displayStart: PropTypes.number.isRequired,
     displayEnd: PropTypes.number.isRequired,
+    visibleStart: PropTypes.number.isRequired,
+    visibleEnd: PropTypes.number.isRequired,
     rowsCount: PropTypes.number.isRequired,
     rowGetter: PropTypes.oneOfType([
       PropTypes.func.isRequired,
@@ -259,6 +271,12 @@ const Canvas = React.createClass({
 
   renderRow(props: any) {
     let row = props.row;
+    console.log('id =' + props.idx);
+    console.log('start = ' + props.visibleStart);
+    console.log('end = ' + props.visibleEnd);
+    if (props.idx < props.visibleStart || props.idx > props.visibleEnd) {
+      return <OverflowRow height={props.height} idx={props.idx} cellMetaData={props.cellMetaData}>Overflow row</OverflowRow>;
+    }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
         key={props.key}
@@ -331,6 +349,8 @@ const Canvas = React.createClass({
           key: displayStart + idx,
           ref: idx,
           idx: displayStart + idx,
+          visibleStart: this.props.visibleStart,
+          visibleEnd: this.props.visibleEnd,
           row: r.row,
           height: rowHeight,
           onMouseOver: this.onMouseOver,
