@@ -819,7 +819,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var apply = __webpack_require__(7),
 	    assignInDefaults = __webpack_require__(8),
 	    assignInWith = __webpack_require__(10),
-	    baseRest = __webpack_require__(15);
+	    baseRest = __webpack_require__(26);
 
 	/**
 	 * Assigns own and inherited enumerable string keyed properties of source
@@ -958,7 +958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var copyObject = __webpack_require__(11),
-	    createAssigner = __webpack_require__(14),
+	    createAssigner = __webpack_require__(25),
 	    keysIn = __webpack_require__(37);
 
 	/**
@@ -1079,10 +1079,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 13 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	/** Built-in value references. */
-	var defineProperty = Object.defineProperty;
+	var defineProperty = __webpack_require__(14);
 
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -1113,235 +1112,25 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(15),
-	    isIterateeCall = __webpack_require__(33);
+	var getNative = __webpack_require__(15);
 
-	/**
-	 * Creates a function like `_.assign`.
-	 *
-	 * @private
-	 * @param {Function} assigner The function to assign values.
-	 * @returns {Function} Returns the new assigner function.
-	 */
-	function createAssigner(assigner) {
-	  return baseRest(function(object, sources) {
-	    var index = -1,
-	        length = sources.length,
-	        customizer = length > 1 ? sources[length - 1] : undefined,
-	        guard = length > 2 ? sources[2] : undefined;
+	var defineProperty = (function() {
+	  try {
+	    var func = getNative(Object, 'defineProperty');
+	    func({}, '', {});
+	    return func;
+	  } catch (e) {}
+	}());
 
-	    customizer = (assigner.length > 3 && typeof customizer == 'function')
-	      ? (length--, customizer)
-	      : undefined;
-
-	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-	      customizer = length < 3 ? undefined : customizer;
-	      length = 1;
-	    }
-	    object = Object(object);
-	    while (++index < length) {
-	      var source = sources[index];
-	      if (source) {
-	        assigner(object, source, index, customizer);
-	      }
-	    }
-	    return object;
-	  });
-	}
-
-	module.exports = createAssigner;
+	module.exports = defineProperty;
 
 
 /***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(16),
-	    overRest = __webpack_require__(17),
-	    setToString = __webpack_require__(18);
-
-	/**
-	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseRest(func, start) {
-	  return setToString(overRest(func, start, identity), func + '');
-	}
-
-	module.exports = baseRest;
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	/**
-	 * This method returns the first argument it receives.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Util
-	 * @param {*} value Any value.
-	 * @returns {*} Returns `value`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 *
-	 * console.log(_.identity(object) === object);
-	 * // => true
-	 */
-	function identity(value) {
-	  return value;
-	}
-
-	module.exports = identity;
-
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var apply = __webpack_require__(7);
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeMax = Math.max;
-
-	/**
-	 * A specialized version of `baseRest` which transforms the rest array.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @param {Function} transform The rest array transform.
-	 * @returns {Function} Returns the new function.
-	 */
-	function overRest(func, start, transform) {
-	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-	  return function() {
-	    var args = arguments,
-	        index = -1,
-	        length = nativeMax(args.length - start, 0),
-	        array = Array(length);
-
-	    while (++index < length) {
-	      array[index] = args[start + index];
-	    }
-	    index = -1;
-	    var otherArgs = Array(start + 1);
-	    while (++index < start) {
-	      otherArgs[index] = args[index];
-	    }
-	    otherArgs[start] = transform(array);
-	    return apply(func, this, otherArgs);
-	  };
-	}
-
-	module.exports = overRest;
-
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseSetToString = __webpack_require__(19),
-	    shortOut = __webpack_require__(32);
-
-	/**
-	 * Sets the `toString` method of `func` to return `string`.
-	 *
-	 * @private
-	 * @param {Function} func The function to modify.
-	 * @param {Function} string The `toString` result.
-	 * @returns {Function} Returns `func`.
-	 */
-	var setToString = shortOut(baseSetToString);
-
-	module.exports = setToString;
-
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var constant = __webpack_require__(20),
-	    identity = __webpack_require__(16),
-	    nativeDefineProperty = __webpack_require__(21);
-
-	/**
-	 * The base implementation of `setToString` without support for hot loop shorting.
-	 *
-	 * @private
-	 * @param {Function} func The function to modify.
-	 * @param {Function} string The `toString` result.
-	 * @returns {Function} Returns `func`.
-	 */
-	var baseSetToString = !nativeDefineProperty ? identity : function(func, string) {
-	  return nativeDefineProperty(func, 'toString', {
-	    'configurable': true,
-	    'enumerable': false,
-	    'value': constant(string),
-	    'writable': true
-	  });
-	};
-
-	module.exports = baseSetToString;
-
-
-/***/ },
-/* 20 */
-/***/ function(module, exports) {
-
-	/**
-	 * Creates a function that returns `value`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 2.4.0
-	 * @category Util
-	 * @param {*} value The value to return from the new function.
-	 * @returns {Function} Returns the new constant function.
-	 * @example
-	 *
-	 * var objects = _.times(2, _.constant({ 'a': 1 }));
-	 *
-	 * console.log(objects);
-	 * // => [{ 'a': 1 }, { 'a': 1 }]
-	 *
-	 * console.log(objects[0] === objects[1]);
-	 * // => true
-	 */
-	function constant(value) {
-	  return function() {
-	    return value;
-	  };
-	}
-
-	module.exports = constant;
-
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var getNative = __webpack_require__(22);
-
-	/* Built-in method references that are verified to be native. */
-	var nativeDefineProperty = getNative(Object, 'defineProperty');
-
-	module.exports = nativeDefineProperty;
-
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseIsNative = __webpack_require__(23),
-	    getValue = __webpack_require__(31);
+	var baseIsNative = __webpack_require__(16),
+	    getValue = __webpack_require__(24);
 
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -1360,13 +1149,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 23 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(24),
-	    isMasked = __webpack_require__(26),
-	    isObject = __webpack_require__(25),
-	    toSource = __webpack_require__(30);
+	var isFunction = __webpack_require__(17),
+	    isMasked = __webpack_require__(19),
+	    isObject = __webpack_require__(18),
+	    toSource = __webpack_require__(23);
 
 	/**
 	 * Used to match `RegExp`
@@ -1413,14 +1202,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(25);
+	var isObject = __webpack_require__(18);
 
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]',
-	    genTag = '[object GeneratorFunction]';
+	    genTag = '[object GeneratorFunction]',
+	    proxyTag = '[object Proxy]';
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1453,14 +1243,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // The use of `Object#toString` avoids issues with the `typeof` operator
 	  // in Safari 8-9 which returns 'object' for typed array and other constructors.
 	  var tag = isObject(value) ? objectToString.call(value) : '';
-	  return tag == funcTag || tag == genTag;
+	  return tag == funcTag || tag == genTag || tag == proxyTag;
 	}
 
 	module.exports = isFunction;
 
 
 /***/ },
-/* 25 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1497,10 +1287,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 26 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(27);
+	var coreJsData = __webpack_require__(20);
 
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -1523,10 +1313,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 27 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(28);
+	var root = __webpack_require__(21);
 
 	/** Used to detect overreaching core-js shims. */
 	var coreJsData = root['__core-js_shared__'];
@@ -1535,10 +1325,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 28 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(29);
+	var freeGlobal = __webpack_require__(22);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -1550,7 +1340,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 29 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** Detect free variable `global` from Node.js. */
@@ -1560,7 +1350,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 30 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -1592,7 +1382,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 31 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/**
@@ -1608,6 +1398,221 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	module.exports = getValue;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseRest = __webpack_require__(26),
+	    isIterateeCall = __webpack_require__(33);
+
+	/**
+	 * Creates a function like `_.assign`.
+	 *
+	 * @private
+	 * @param {Function} assigner The function to assign values.
+	 * @returns {Function} Returns the new assigner function.
+	 */
+	function createAssigner(assigner) {
+	  return baseRest(function(object, sources) {
+	    var index = -1,
+	        length = sources.length,
+	        customizer = length > 1 ? sources[length - 1] : undefined,
+	        guard = length > 2 ? sources[2] : undefined;
+
+	    customizer = (assigner.length > 3 && typeof customizer == 'function')
+	      ? (length--, customizer)
+	      : undefined;
+
+	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+	      customizer = length < 3 ? undefined : customizer;
+	      length = 1;
+	    }
+	    object = Object(object);
+	    while (++index < length) {
+	      var source = sources[index];
+	      if (source) {
+	        assigner(object, source, index, customizer);
+	      }
+	    }
+	    return object;
+	  });
+	}
+
+	module.exports = createAssigner;
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var identity = __webpack_require__(27),
+	    overRest = __webpack_require__(28),
+	    setToString = __webpack_require__(29);
+
+	/**
+	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseRest(func, start) {
+	  return setToString(overRest(func, start, identity), func + '');
+	}
+
+	module.exports = baseRest;
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	/**
+	 * This method returns the first argument it receives.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Util
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 *
+	 * console.log(_.identity(object) === object);
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+
+	module.exports = identity;
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var apply = __webpack_require__(7);
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeMax = Math.max;
+
+	/**
+	 * A specialized version of `baseRest` which transforms the rest array.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @param {Function} transform The rest array transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overRest(func, start, transform) {
+	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+	  return function() {
+	    var args = arguments,
+	        index = -1,
+	        length = nativeMax(args.length - start, 0),
+	        array = Array(length);
+
+	    while (++index < length) {
+	      array[index] = args[start + index];
+	    }
+	    index = -1;
+	    var otherArgs = Array(start + 1);
+	    while (++index < start) {
+	      otherArgs[index] = args[index];
+	    }
+	    otherArgs[start] = transform(array);
+	    return apply(func, this, otherArgs);
+	  };
+	}
+
+	module.exports = overRest;
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseSetToString = __webpack_require__(30),
+	    shortOut = __webpack_require__(32);
+
+	/**
+	 * Sets the `toString` method of `func` to return `string`.
+	 *
+	 * @private
+	 * @param {Function} func The function to modify.
+	 * @param {Function} string The `toString` result.
+	 * @returns {Function} Returns `func`.
+	 */
+	var setToString = shortOut(baseSetToString);
+
+	module.exports = setToString;
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var constant = __webpack_require__(31),
+	    defineProperty = __webpack_require__(14),
+	    identity = __webpack_require__(27);
+
+	/**
+	 * The base implementation of `setToString` without support for hot loop shorting.
+	 *
+	 * @private
+	 * @param {Function} func The function to modify.
+	 * @param {Function} string The `toString` result.
+	 * @returns {Function} Returns `func`.
+	 */
+	var baseSetToString = !defineProperty ? identity : function(func, string) {
+	  return defineProperty(func, 'toString', {
+	    'configurable': true,
+	    'enumerable': false,
+	    'value': constant(string),
+	    'writable': true
+	  });
+	};
+
+	module.exports = baseSetToString;
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	/**
+	 * Creates a function that returns `value`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 2.4.0
+	 * @category Util
+	 * @param {*} value The value to return from the new function.
+	 * @returns {Function} Returns the new constant function.
+	 * @example
+	 *
+	 * var objects = _.times(2, _.constant({ 'a': 1 }));
+	 *
+	 * console.log(objects);
+	 * // => [{ 'a': 1 }, { 'a': 1 }]
+	 *
+	 * console.log(objects[0] === objects[1]);
+	 * // => true
+	 */
+	function constant(value) {
+	  return function() {
+	    return value;
+	  };
+	}
+
+	module.exports = constant;
 
 
 /***/ },
@@ -1660,7 +1665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var eq = __webpack_require__(9),
 	    isArrayLike = __webpack_require__(34),
 	    isIndex = __webpack_require__(36),
-	    isObject = __webpack_require__(25);
+	    isObject = __webpack_require__(18);
 
 	/**
 	 * Checks if the given arguments are from an iteratee call.
@@ -1693,7 +1698,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(24),
+	var isFunction = __webpack_require__(17),
 	    isLength = __webpack_require__(35);
 
 	/**
@@ -2068,7 +2073,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(25),
+	var isObject = __webpack_require__(18),
 	    isPrototype = __webpack_require__(45),
 	    nativeKeysIn = __webpack_require__(46);
 
@@ -2256,7 +2261,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseFlatten = __webpack_require__(50),
-	    baseRest = __webpack_require__(15),
+	    baseRest = __webpack_require__(26),
 	    baseUniq = __webpack_require__(54),
 	    isArrayLikeObject = __webpack_require__(41);
 
@@ -2383,7 +2388,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(28);
+	var root = __webpack_require__(21);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -2630,7 +2635,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(22);
+	var getNative = __webpack_require__(15);
 
 	/* Built-in method references that are verified to be native. */
 	var nativeCreate = getNative(Object, 'create');
@@ -2963,8 +2968,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(22),
-	    root = __webpack_require__(28);
+	var getNative = __webpack_require__(15),
+	    root = __webpack_require__(21);
 
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -3360,8 +3365,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(22),
-	    root = __webpack_require__(28);
+	var getNative = __webpack_require__(15),
+	    root = __webpack_require__(21);
 
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -3421,7 +3426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseDifference = __webpack_require__(93),
-	    baseRest = __webpack_require__(15),
+	    baseRest = __webpack_require__(26),
 	    isArrayLikeObject = __webpack_require__(41);
 
 	/**
@@ -4879,7 +4884,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _lodashIsArray2 = _interopRequireDefault(_lodashIsArray);
 
-	var _lodashIsObject = __webpack_require__(25);
+	var _lodashIsObject = __webpack_require__(18);
 
 	var _lodashIsObject2 = _interopRequireDefault(_lodashIsObject);
 
@@ -5396,7 +5401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayFilter = __webpack_require__(124),
-	    baseRest = __webpack_require__(15),
+	    baseRest = __webpack_require__(26),
 	    baseXor = __webpack_require__(125),
 	    isArrayLikeObject = __webpack_require__(41);
 
@@ -5498,7 +5503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var arrayMap = __webpack_require__(94),
 	    baseIntersection = __webpack_require__(127),
-	    baseRest = __webpack_require__(15),
+	    baseRest = __webpack_require__(26),
 	    castArrayLikeObject = __webpack_require__(128);
 
 	/**
@@ -14017,6 +14022,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    backdrop: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.bool, _react2.default.PropTypes.oneOf(['static'])]),
 
 	    /**
+	     * A function that returns a backdrop component. Useful for custom
+	     * backdrop rendering.
+	     *
+	     * ```js
+	     *  renderBackdrop={props => <MyBackdrop {...props} />}
+	     * ```
+	     */
+	    renderBackdrop: _react2.default.PropTypes.func,
+
+	    /**
 	     * A callback fired when the escape key, if specified in `keyboard`, is pressed.
 	     */
 	    onEscapeKeyUp: _react2.default.PropTypes.func,
@@ -14114,8 +14129,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Callback fired after the Modal finishes transitioning out
 	     */
-	    onExited: _react2.default.PropTypes.func
+	    onExited: _react2.default.PropTypes.func,
 
+	    /**
+	     * A ModalManager instance used to track and manage the state of open
+	     * Modals. Useful when customizing how modals interact within a container
+	     */
+	    manager: _react2.default.PropTypes.object.isRequired
 	  }),
 
 	  getDefaultProps: function getDefaultProps() {
@@ -14127,7 +14147,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      keyboard: true,
 	      autoFocus: true,
 	      enforceFocus: true,
-	      onHide: noop
+	      onHide: noop,
+	      manager: modalManager,
+	      renderBackdrop: function renderBackdrop(props) {
+	        return _react2.default.createElement('div', props);
+	      }
 	    };
 	  },
 	  getInitialState: function getInitialState() {
@@ -14208,12 +14232,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 	  renderBackdrop: function renderBackdrop() {
+	    var _this = this;
+
 	    var _props2 = this.props;
+	    var backdropStyle = _props2.backdropStyle;
+	    var backdropClassName = _props2.backdropClassName;
+	    var renderBackdrop = _props2.renderBackdrop;
 	    var Transition = _props2.transition;
 	    var backdropTransitionTimeout = _props2.backdropTransitionTimeout;
 
 
-	    var backdrop = _react2.default.createElement('div', { ref: 'backdrop',
+	    var backdropRef = function backdropRef(ref) {
+	      return _this.backdrop = ref;
+	    };
+
+	    var backdrop = _react2.default.createElement('div', {
+	      ref: backdropRef,
 	      style: this.props.backdropStyle,
 	      className: this.props.backdropClassName,
 	      onClick: this.handleBackdropClick
@@ -14226,7 +14260,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          'in': this.props.show,
 	          timeout: backdropTransitionTimeout
 	        },
-	        backdrop
+	        renderBackdrop({
+	          ref: backdropRef,
+	          style: backdropStyle,
+	          className: backdropClassName,
+	          onClick: this.handleBackdropClick
+	        })
 	      );
 	    }
 
@@ -14275,7 +14314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var doc = (0, _ownerDocument2.default)(this);
 	    var container = (0, _getContainer2.default)(this.props.container, doc.body);
 
-	    modalManager.add(this, container, this.props.containerClassName);
+	    this.props.manager.add(this, container, this.props.containerClassName);
 
 	    this._onDocumentKeyupListener = (0, _addEventListener2.default)(doc, 'keyup', this.handleDocumentKeyUp);
 
@@ -14288,7 +14327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  onHide: function onHide() {
-	    modalManager.remove(this);
+	    this.props.manager.remove(this);
 
 	    this._onDocumentKeyupListener.remove();
 
@@ -14382,11 +14421,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return node && node.lastChild;
 	  },
 	  isTopModal: function isTopModal() {
-	    return modalManager.isTopModal(this);
+	    return this.props.manager.isTopModal(this);
 	  }
 	});
 
-	Modal.manager = modalManager;
+	Modal.Manager = _ModalManager2.default;
 
 	exports.default = Modal;
 	module.exports = exports['default'];
@@ -14688,11 +14727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (this._overlayInstance) {
-	      if (this._overlayInstance.getWrappedDOMNode) {
-	        return this._overlayInstance.getWrappedDOMNode();
-	      } else {
-	        return _reactDom2.default.findDOMNode(this._overlayInstance);
-	      }
+	      return _reactDom2.default.findDOMNode(this._overlayInstance);
 	    }
 
 	    return null;
@@ -14817,6 +14852,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	}
 
+	function setContainerStyle(state, container) {
+	  var style = { overflow: 'hidden' };
+
+	  // we are only interested in the actual `style` here
+	  // becasue we will override it
+	  state.style = {
+	    overflow: container.style.overflow,
+	    paddingRight: container.style.paddingRight
+	  };
+
+	  if (state.overflowing) {
+	    // use computed style, here to get the real padding
+	    // to add our scrollbar width
+	    style.paddingRight = parseInt((0, _style2.default)(container, 'paddingRight') || 0, 10) + (0, _scrollbarSize2.default)() + 'px';
+	  }
+
+	  (0, _style2.default)(container, style);
+	}
+
+	function removeContainerStyle(_ref, container) {
+	  var style = _ref.style;
+
+
+	  Object.keys(style).forEach(function (key) {
+	    return container.style[key] = style[key];
+	  });
+	}
 	/**
 	 * Proper state managment for containers and the modals in those containers.
 	 *
@@ -14825,11 +14887,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var ModalManager = function () {
 	  function ModalManager() {
-	    var hideSiblingNodes = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+	    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+	    var _ref2$hideSiblingNode = _ref2.hideSiblingNodes;
+	    var hideSiblingNodes = _ref2$hideSiblingNode === undefined ? true : _ref2$hideSiblingNode;
+	    var _ref2$handleContainer = _ref2.handleContainerOverflow;
+	    var handleContainerOverflow = _ref2$handleContainer === undefined ? true : _ref2$handleContainer;
 
 	    _classCallCheck(this, ModalManager);
 
 	    this.hideSiblingNodes = hideSiblingNodes;
+	    this.handleContainerOverflow = handleContainerOverflow;
 	    this.modals = [];
 	    this.containers = [];
 	    this.data = [];
@@ -14861,24 +14929,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        modals: [modal],
 	        //right now only the first modal of a container will have its classes applied
 	        classes: className ? className.split(/\s+/) : [],
-	        //we are only interested in the actual `style` here becasue we will override it
-	        style: {
-	          overflow: container.style.overflow,
-	          paddingRight: container.style.paddingRight
-	        }
+
+	        overflowing: (0, _isOverflowing2.default)(container)
 	      };
 
-	      var style = { overflow: 'hidden' };
-
-	      data.overflowing = (0, _isOverflowing2.default)(container);
-
-	      if (data.overflowing) {
-	        // use computed style, here to get the real padding
-	        // to add our scrollbar width
-	        style.paddingRight = parseInt((0, _style2.default)(container, 'paddingRight') || 0, 10) + (0, _scrollbarSize2.default)() + 'px';
+	      if (this.handleContainerOverflow) {
+	        setContainerStyle(data, container);
 	      }
-
-	      (0, _style2.default)(container, style);
 
 	      data.classes.forEach(_class2.default.addClass.bind(null, container));
 
@@ -14905,13 +14962,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.modals.splice(modalIdx, 1);
 
 	      // if that was the last modal in a container,
-	      // clean up the container stylinhg.
+	      // clean up the container
 	      if (data.modals.length === 0) {
-	        Object.keys(data.style).forEach(function (key) {
-	          return container.style[key] = data.style[key];
-	        });
-
 	        data.classes.forEach(_class2.default.removeClass.bind(null, container));
+
+	        if (this.handleContainerOverflow) {
+	          removeContainerStyle(data, container);
+	        }
 
 	        if (this.hideSiblingNodes) {
 	          (0, _manageAriaHidden.showSiblings)(container, modal.mountNode);
@@ -15326,11 +15383,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	exports.default = function (node, event, handler) {
-	  (0, _on2.default)(node, event, handler);
+	exports.default = function (node, event, handler, capture) {
+	  (0, _on2.default)(node, event, handler, capture);
+
 	  return {
 	    remove: function remove() {
-	      (0, _off2.default)(node, event, handler);
+	      (0, _off2.default)(node, event, handler, capture);
 	    }
 	  };
 	};
