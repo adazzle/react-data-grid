@@ -81,7 +81,7 @@ const Row = React.createClass({
     let selectedColumn = this.getSelectedColumn();
 
     if (this.props.columns) {
-      this.props.columns.forEach((column, i) => {
+      this.props.columns.slice(0, 15).forEach((column, i) => {
         let CellRenderer = this.props.cellRenderer;
         let cell = (<CellRenderer
                       ref={i}
