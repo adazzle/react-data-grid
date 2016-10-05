@@ -36,7 +36,7 @@ const doScroll = (xx, yy, total, gridRunner, onComplete, scrollType) => {
 
   setTimeout(() => {
     doScroll(x, y, total, gridRunner, onComplete, scrollType);
-  }, 100);
+  }, 1);
 };
 
 const doHorizontalScroll = (x, y, total, gridRunner, onComplete) => {
@@ -75,11 +75,11 @@ fdescribe('Grid peformance tests', () => {
 
   describe('Vertical Scroll', () => {
     it('should not waste instances on scroll', (done) => {
-      const ROWS_TO_SCROLL = 100;
+      const ROWS_TO_SCROLL = 95;
       grid.selectCell({cellIdx: 0, rowIdx: 0});
       ReactPerf.start();
 
-      doVerticalScroll(0, 0, ROWS_TO_SCROLL, grid, onScrollComplete.bind(done), ScrollType.VERTICAL);
+      doVerticalScroll(0, 0, ROWS_TO_SCROLL, grid, onScrollComplete.bind(null, done), ScrollType.VERTICAL);
     });
   });
 
@@ -89,7 +89,7 @@ fdescribe('Grid peformance tests', () => {
       grid.selectCell({cellIdx: 0, rowIdx: 0});
       ReactPerf.start();
 
-      doHorizontalScroll(0, 0, COLUMNS_TO_SCROLL, grid, onScrollComplete.bind(done), ScrollType.HORIZONTAL);
+      doHorizontalScroll(0, 0, COLUMNS_TO_SCROLL, grid, onScrollComplete.bind(null, done), ScrollType.HORIZONTAL);
     });
   });
 });

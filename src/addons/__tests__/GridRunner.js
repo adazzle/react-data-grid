@@ -80,8 +80,12 @@ export default class GridRunner {
   }
 
   getCell({cellIdx, rowIdx}) {
-    let row = ReactDOM.findDOMNode(this.grid).querySelectorAll('.react-grid-Row')[rowIdx];
-    return row.querySelectorAll('.react-grid-Cell')[cellIdx];
+    const { displayStart, colDisplayStart } = this.grid.refs.reactDataGrid.refs.base.refs.viewport.state;
+    let rowPosition = rowIdx - displayStart;
+    let columnPosition = cellIdx - colDisplayStart;
+
+    let row = ReactDOM.findDOMNode(this.grid).querySelectorAll('.react-grid-Row')[rowPosition];
+    return row.querySelectorAll('.react-grid-Cell')[columnPosition];
   }
 
   getCells(row) {

@@ -58,16 +58,4 @@ var Example = React.createClass({
 
 
 
-module.exports = React.createClass({
-
-  render: function() {
-    return (
-      <div>
-        <h3>Immutable Data Example</h3>
-        <p></p>
-        <Example/>
-      </div>
-    );
-  }
-
-});
+module.exports = Example;
