@@ -3832,6 +3832,13 @@
         "required": false,
         "description": ""
       },
+      "onCheckCellIsEditable": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "tabIndex": {
         "defaultValue": {
           "value": "-1",
