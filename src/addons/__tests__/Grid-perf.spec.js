@@ -3,22 +3,60 @@ import GridRunner from './GridRunner';
 import { SummaryParser } from './performance/PerformanceUtils';
 const ImmutableGrid = require('../../../examples/scripts/example11-immutable-data');
 
-const doScroll = (i, total, gridRunner, onComplete) => {
-  if (i === total) {
+const ScrollType = {
+  VERTICAL: 0,
+  HORIZONTAL: 1
+};
+
+const NAVIGATION_BY_SCROLLTYPE = {
+  [ScrollType.VERTICAL]: {
+    key: 'ArrowDown',
+    getNext: (x, y) => { return { y: y + 1, x }; },
+    shouldStop: (x, y, expected) => y === expected
+  },
+  [ScrollType.HORIZONTAL]: {
+    key: 'ArrowRight',
+    getNext: (x, y) => { return { y, x: x + 1 }; },
+    shouldStop: (x, y, expected) => x === expected
+  }
+};
+
+const doScroll = (xx, yy, total, gridRunner, onComplete, scrollType) => {
+  const { key, getNext, shouldStop } = NAVIGATION_BY_SCROLLTYPE[scrollType];
+
+  if (shouldStop(xx, yy, total)) {
     onComplete();
     return;
   }
 
-  let cell;
-  try {
-    cell = gridRunner.getCell({ cellIdx: 1, rowIdx: i });
-    gridRunner.keyDown({ key: 'ArrowDown' }, cell);
-    doScroll(i + 1, total, gridRunner, onComplete);
-  } catch (ex) {
-    setTimeout(() => {
-      doScroll(i, total, gridRunner, onComplete);
-    }, 1);
-  }
+  let cell = gridRunner.getCell({ cellIdx: xx, rowIdx: yy });
+  gridRunner.keyDown({ key }, cell);
+
+  const { x, y } = getNext(xx, yy);
+
+  setTimeout(() => {
+    doScroll(x, y, total, gridRunner, onComplete, scrollType);
+  }, 1);
+};
+
+const doHorizontalScroll = (x, y, total, gridRunner, onComplete) => {
+  doScroll(x, y, total, gridRunner, onComplete, ScrollType.HORIZONTAL);
+};
+
+const doVerticalScroll = (x, y, total, gridRunner, onComplete) => {
+  doScroll(x, y, total, gridRunner, onComplete, ScrollType.VERTICAL);
+};
+
+const onScrollComplete = (done) => {
+  ReactPerf.stop();
+  let measurements = ReactPerf.getLastMeasurements();
+
+  let summary = ReactPerf.getMeasurementsSummaryMap(measurements);
+  ReactPerf.printWasted(measurements);
+  let summaryParser = new SummaryParser(summary);
+
+  expect(summaryParser.getByComponent('Cell').wastedInstances <= 1000).toBeTruthy();
+  done();
 };
 
 fdescribe('Grid peformance tests', () => {
@@ -35,22 +73,23 @@ fdescribe('Grid peformance tests', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
   });
 
-  it('should not waste instances on scroll', (done) => {
-    const ROWS_TO_SCROLL = 27;
-    grid.selectCell({cellIdx: 1, rowIdx: 0});
-    ReactPerf.start();
-    const onScrollComplete = () => {
-      ReactPerf.stop();
-      let measurements = ReactPerf.getLastMeasurements();
+  describe('Vertical Scroll', () => {
+    it('should not waste instances on scroll', (done) => {
+      const ROWS_TO_SCROLL = 95;
+      grid.selectCell({cellIdx: 0, rowIdx: 0});
+      ReactPerf.start();
 
-      let summary = ReactPerf.getMeasurementsSummaryMap(measurements);
-      ReactPerf.printWasted(measurements);
-      let summaryParser = new SummaryParser(summary);
+      doVerticalScroll(0, 0, ROWS_TO_SCROLL, grid, onScrollComplete.bind(null, done), ScrollType.VERTICAL);
+    });
+  });
 
-      expect(summaryParser.getByComponent('Cell').wastedInstances <= 1000).toBeTruthy();
-      done();
-    };
+  describe('Horizontal scroll', () => {
+    it('should not waste instances on scroll', (done) => {
+      const COLUMNS_TO_SCROLL = 20;
+      grid.selectCell({cellIdx: 0, rowIdx: 0});
+      ReactPerf.start();
 
-    doScroll(0, ROWS_TO_SCROLL, grid, onScrollComplete);
+      doHorizontalScroll(0, 0, COLUMNS_TO_SCROLL, grid, onScrollComplete.bind(null, done), ScrollType.HORIZONTAL);
+    });
   });
 });
