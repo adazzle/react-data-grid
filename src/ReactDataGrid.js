@@ -785,7 +785,14 @@ const ReactDataGrid = React.createClass({
   },
 
   setupGridColumns: function(props = this.props): Array<any> {
-    let cols = props.columns.slice(0);
+    const { columns } = props;
+    if (this._cachedColumns === columns) {
+      return this._cachedComputedColumns;
+    }
+
+    this._cachedColumns = columns;
+
+    let cols = columns.slice(0);
     let unshiftedCols = {};
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       let headerRenderer = props.enableRowSelect === 'single' ? null :
@@ -809,7 +816,9 @@ const ReactDataGrid = React.createClass({
       unshiftedCols = cols.unshift(selectColumn);
       cols = unshiftedCols > 0 ? cols : unshiftedCols;
     }
-    return cols;
+    this._cachedComputedColumns = cols;
+
+    return this._cachedComputedColumns;
   },
 
 
