@@ -50,6 +50,8 @@ const Row = React.createClass({
            this.doesRowContainSelectedCell(nextProps)                                                    ||
            this.willRowBeDraggedOver(nextProps)                                                          ||
            nextProps.row !== this.props.row                                                              ||
+           this.props.colDisplayStart !== nextProps.colDisplayStart                                      ||
+           this.props.colDisplayEnd !== nextProps.colDisplayEnd                                          ||
            this.hasRowBeenCopied()                                                                       ||
            this.props.isSelected !== nextProps.isSelected                                                ||
            nextProps.height !== this.props.height                                                        ||

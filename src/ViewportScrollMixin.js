@@ -21,6 +21,9 @@ module.exports = {
   DOMMetrics: {
     viewportHeight(): number {
       return ReactDOM.findDOMNode(this).offsetHeight;
+    },
+    viewportWidth(): number {
+      return ReactDOM.findDOMNode(this).offsetWidth;
     }
   },
 
@@ -59,8 +62,8 @@ module.exports = {
     };
   },
 
-  getRenderedColumnCount(displayStart) {
-    let remainingWidth = this.props.columnMetrics.totalWidth > 0 ? this.props.columnMetrics.totalWidth : 0;
+  getRenderedColumnCount(displayStart, width) {
+    let remainingWidth = width > 0 ? width : this.props.columnMetrics.totalWidth;
     let columnIndex = displayStart;
     let columnCount = 0;
     while (remainingWidth > 0) {
@@ -87,7 +90,7 @@ module.exports = {
     return columnIndex;
   },
 
-  updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number) {
+  updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
     let renderedRowsCount = ceil(height / rowHeight);
 
     let visibleStart = floor(scrollTop / rowHeight);
@@ -106,7 +109,7 @@ module.exports = {
 
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     let colVisibleStart = this.getVisibleColStart(scrollLeft);
-    let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart);
+    let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
     let colVisibleEnd = colVisibleStart + renderedColumnCount;
     let colDisplayStart = max(0, colVisibleStart - 2);
     let colDisplayEnd = min(colVisibleStart + renderedColumnCount * 2, totalNumberColumns);
@@ -130,13 +133,15 @@ module.exports = {
 
   metricsUpdated() {
     let height = this.DOMMetrics.viewportHeight();
+    let width = this.DOMMetrics.viewportWidth();
     if (height) {
       this.updateScroll(
         this.state.scrollTop,
         this.state.scrollLeft,
         height,
         this.props.rowHeight,
-        this.props.rowsCount
+        this.props.rowsCount,
+        width
       );
     }
   },

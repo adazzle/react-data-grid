@@ -2,6 +2,11 @@ import React from 'react';
 
 class OverflowCell extends React.Component {
 
+  constructor() {
+    super();
+    this.checkFocus = this.checkFocus.bind(this);
+  }
+
   componentDidMount() {
     this.checkFocus();
   }
@@ -12,6 +17,7 @@ class OverflowCell extends React.Component {
 
   checkFocus() {
     if (this.isSelected()) {
+      console.log(this.props.idx);
       ReactDOM.findDOMNode(this).focus();
     }
   }
@@ -22,7 +28,7 @@ class OverflowCell extends React.Component {
 
     return (
       meta.selected
-      && meta.selected.rowIdx === this.props.idx && meta.selected.idx === this.props.idx
+      && meta.selected.rowIdx === this.props.rowIdx && meta.selected.idx === this.props.idx
     );
   }
 
