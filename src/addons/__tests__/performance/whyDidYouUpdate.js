@@ -43,7 +43,6 @@ const deepDiff = (o1, o2, p, notifyLevel) => {
   }
 };
 
-
 const whyDidYouUpdate = (WrappedComponent, notifyLevel = NOTIFY_LEVELS.NONE) => {
   return class WhyDidYouUpdateComponentWrapper extends Component {
     componentDidUpdate(prevProps, prevState) {
@@ -59,7 +58,7 @@ const whyDidYouUpdate = (WrappedComponent, notifyLevel = NOTIFY_LEVELS.NONE) => 
     }
 
     render() {
-      return <WrappedComponent {...this.props} />;
+      return <WrappedComponent {...this.props} {...this.state} />;
     }
   };
 };

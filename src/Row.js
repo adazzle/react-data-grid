@@ -6,6 +6,7 @@ const ColumnMetrics   = require('./ColumnMetrics');
 const ColumnUtilsMixin  = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const PropTypes = React.PropTypes;
+// import whyDidYouUpdate, { NOTIFY_LEVELS } from './addons/__tests__/performance/whyDidYouUpdate';
 
 const CellExpander = React.createClass({
   render() {
@@ -82,23 +83,27 @@ const Row = React.createClass({
 
   getCell(column, i, selectedColumn) {
     let CellRenderer = this.props.cellRenderer;
-    if (i < this.props.colVisibleStart || i > this.props.colVisibleEnd) {
-      return <OverflowCell idx={i} rowIdx={this.props.idx}  column={column} cellMetaData={this.props.cellMetaData} height={this.getRowHeight()}/>;
+    const { colVisibleStart, colVisibleEnd, idx, cellMetaData } = this.props;
+    const { key, formatter } = column;
+    const baseCellProps = { key: `${key}-${idx}`, idx: i, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
+
+    if (i < colVisibleStart || i > colVisibleEnd) {
+      return <OverflowCell {...baseCellProps} />;
     }
-    let cell = (<CellRenderer
-                      ref={i}
-                      key={`${column.key}-${i}`}
-                      idx={i}
-                      rowIdx={this.props.idx}
-                      value={this.getCellValue(column.key || i)}
-                      column={column}
-                      height={this.getRowHeight()}
-                      formatter={column.formatter}
-                      cellMetaData={this.props.cellMetaData}
-                      rowData={this.props.row}
-                      selectedColumn={selectedColumn}
-                      isRowSelected={this.props.isSelected}
-                      expandableOptions={this.getExpandableOptions(column.key)} />);
+
+    const { row, isSelected } = this.props;
+
+    let cell = (
+      <CellRenderer
+        {...baseCellProps}
+        ref={i}
+        value={this.getCellValue(key || i)}
+        formatter={formatter}
+        rowData={row}
+        selectedColumn={selectedColumn}
+        isRowSelected={isSelected}
+        expandableOptions={this.getExpandableOptions(key)} />);
+
     return cell;
   },
 
