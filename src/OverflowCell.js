@@ -17,7 +17,6 @@ class OverflowCell extends React.Component {
 
   checkFocus() {
     if (this.isSelected()) {
-      console.log(this.props.idx);
       ReactDOM.findDOMNode(this).focus();
     }
   }

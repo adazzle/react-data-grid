@@ -2,7 +2,20 @@ import React from 'react';
 
 class OverflowRow extends React.Component {
 
+  constructor() {
+    super();
+    this.checkFocus = this.checkFocus.bind(this);
+  }
+
   componentDidMount() {
+    this.checkFocus();
+  }
+
+  componentDidUpdate() {
+    this.checkFocus();
+  }
+
+  checkFocus() {
     if (this.isSelected()) {
       ReactDOM.findDOMNode(this).focus();
     }

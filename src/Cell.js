@@ -8,7 +8,6 @@ const isFunction = require('./addons/utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./addons/formatters/SimpleCellFormatter');
 const ColumnUtils = require('./ColumnUtils');
-import whyDidYouUpdate, { NOTIFY_LEVELS } from './addons/__tests__/performance/whyDidYouUpdate';
 
 const Cell = React.createClass({
 
@@ -45,7 +44,6 @@ const Cell = React.createClass({
   },
 
   getInitialState() {
-    console.log('getInitialState');
     return {
       isCellValueChanging: false
     };
@@ -62,7 +60,6 @@ const Cell = React.createClass({
   },
 
   componentDidUpdate() {
-    console.log('Updated');
     this.checkFocus();
     let dragged = this.props.cellMetaData.dragged;
     if (dragged && dragged.complete === true) {
@@ -87,24 +84,6 @@ const Cell = React.createClass({
     || this.props.forceUpdate === true
     || this.props.className !== nextProps.className
     || this.hasChangedDependentValues(nextProps);
-
-    if (shouldUpdate === true) {
-      const { value, column, height } = this.props;
-
-      let cavemanDebugObject = {
-        value,
-        height: height !== nextProps.height,
-        width: column.width !== nextProps.column.width,
-        left: column.left !== nextProps.column.left,
-        isCellChanging: this.isCellSelectionChanging(nextProps),
-        isDraggedCellChanging: this.isDraggedCellChanging(nextProps),
-        isCopyCellChanging: this.isCopyCellChanging(nextProps),
-        isSelected: this.isSelected(nextProps),
-        hasChangedDependentValues: this.hasChangedDependentValues(nextProps)
-      };
-
-      console.log(cavemanDebugObject);
-    }
 
     return shouldUpdate;
   },
@@ -272,7 +251,6 @@ const Cell = React.createClass({
   },
 
   applyUpdateClass() {
-    console.log('updateClass');
     let updateCellClass = this.getUpdateCellClass();
     // -> removing the class
     if (updateCellClass != null && updateCellClass !== '') {
@@ -290,7 +268,6 @@ const Cell = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    console.log('setScrollLeft');
     let ctrl: any = this; // flow on windows has an outdated react declaration, once that gets updated, we can remove this
     if (ctrl.isMounted()) {
       let node = ReactDOM.findDOMNode(this);
@@ -497,4 +474,4 @@ const Cell = React.createClass({
   }
 });
 
-module.exports = whyDidYouUpdate(Cell, NOTIFY_LEVELS.WARNING);
+module.exports = Cell;
