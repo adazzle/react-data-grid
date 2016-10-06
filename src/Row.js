@@ -6,7 +6,6 @@ const ColumnMetrics   = require('./ColumnMetrics');
 const ColumnUtilsMixin  = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const PropTypes = React.PropTypes;
-// import whyDidYouUpdate, { NOTIFY_LEVELS } from './addons/__tests__/performance/whyDidYouUpdate';
 
 const CellExpander = React.createClass({
   render() {
@@ -94,19 +93,17 @@ const Row = React.createClass({
     }
 
     const { row, isSelected } = this.props;
+    const cellProps = {
+      ref: key,
+      value: this.getCellValue(key || i),
+      rowData: row,
+      isRowSelected: isSelected,
+      expandableOptions: this.getExpandableOptions(key),
+      selectedColumn,
+      formatter
+    };
 
-    let cell = (
-      <CellRenderer
-        {...baseCellProps}
-        ref={i}
-        value={this.getCellValue(key || i)}
-        formatter={formatter}
-        rowData={row}
-        selectedColumn={selectedColumn}
-        isRowSelected={isSelected}
-        expandableOptions={this.getExpandableOptions(key)} />);
-
-    return cell;
+    return <CellRenderer {...baseCellProps} {...cellProps} />;
   },
 
   getCells(): Array<ReactElement> {
