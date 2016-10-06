@@ -95,8 +95,10 @@ module.exports = {
   },
 
   metricsUpdated() {
-    let columnMetrics = this.createColumnMetrics();
-    this.setState({columnMetrics});
+    if (this._cachedColumns !== this.props.columns) {
+      let columnMetrics = this.createColumnMetrics();
+      this.setState({columnMetrics});
+    }
   },
 
   createColumnMetrics(props = this.props) {
