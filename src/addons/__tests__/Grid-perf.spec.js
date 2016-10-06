@@ -75,7 +75,7 @@ fdescribe('Grid peformance tests', () => {
 
   describe('Vertical Scroll', () => {
     it('should not waste instances on scroll', (done) => {
-      const ROWS_TO_SCROLL = 95;
+      const ROWS_TO_SCROLL = 1200;
       grid.selectCell({cellIdx: 0, rowIdx: 0});
       ReactPerf.start();
 

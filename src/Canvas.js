@@ -102,14 +102,14 @@ const Canvas = React.createClass({
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     let shouldUpdate = nextState.displayStart !== this.state.displayStart
-      || nextState.displayEnd !== this.state.displayEnd
-      || nextState.scrollingTimeout !== this.state.scrollingTimeout
-      || nextProps.rowsCount !== this.props.rowsCount
-      || nextProps.rowHeight !== this.props.rowHeight
-      || nextProps.columns !== this.props.columns
-      || nextProps.width !== this.props.width
-      || nextProps.cellMetaData !== this.props.cellMetaData
-      || !shallowEqual(nextProps.style, this.props.style);
+  || nextState.displayEnd !== this.state.displayEnd
+  || nextState.scrollingTimeout !== this.state.scrollingTimeout
+  || nextProps.rowsCount !== this.props.rowsCount
+  || nextProps.rowHeight !== this.props.rowHeight
+  || nextProps.columns !== this.props.columns
+  || nextProps.width !== this.props.width
+  || nextProps.cellMetaData !== this.props.cellMetaData
+  || !shallowEqual(nextProps.style, this.props.style);
     return shouldUpdate;
   },
 
@@ -292,7 +292,28 @@ const Canvas = React.createClass({
     }
   },
 
-  renderPlaceholder(key: string, height: number) {
+  renderScrollingPlaceholder(props: any): ?ReactElement {
+    // here we are just rendering empty cells
+    // we may want to allow a user to inject this, and/or just render the cells that are in view
+    // for now though we essentially are doing a (very lightweight) row + cell with empty content
+    let styles = {
+      row: {height: props.height, overflow: 'hidden'},
+      cell: {height: props.height, position: 'absolute'},
+      placeholder: {backgroundColor: 'rgba(211, 211, 211, 0.45)', width: '60%', height: Math.floor(props.height * 0.3)}
+    };
+    return (
+      <div key={props.key} style={styles.row} className="react-grid-Row">
+        {this.props.columns.map(
+          (col, idx) =>
+              <div style={Object.assign(styles.cell, {width: col.width, left: col.left})} key={idx} className="react-grid-Cell">
+                <div style={Object.assign(styles.placeholder, {width: Math.floor(col.width * 0.6)})}></div>
+              </div>
+        )}
+      </div>
+    );
+  },
+
+  renderPlaceholder(key: string, height: number): ?ReactElement {
     // just renders empty cells
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
     return (<div key={ key } style={{ height: height }}>
@@ -306,10 +327,8 @@ const Canvas = React.createClass({
   },
 
   render() {
-    let displayStart = this.state.displayStart;
-    let displayEnd = this.state.displayEnd;
-    let rowHeight = this.props.rowHeight;
-    let length = this.props.rowsCount;
+    const { displayStart, displayEnd } = this.state;
+    const { rowHeight, rowsCount } = this.props;
 
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
@@ -338,9 +357,9 @@ const Canvas = React.createClass({
       rows.unshift(this.renderPlaceholder('top', displayStart * rowHeight));
     }
 
-    if (length - displayEnd > 0) {
+    if (rowsCount - displayEnd > 0) {
       rows.push(
-        this.renderPlaceholder('bottom', (length - displayEnd) * rowHeight));
+        this.renderPlaceholder('bottom', (rowsCount - displayEnd) * rowHeight));
     }
 
     let style = {
