@@ -1,10 +1,11 @@
-const React             = require('react');
+import ColumnUtils from './ColumnUtils';
+const React = require('react');
 const ReactDOM = require('react-dom');
-const DOMMetrics        = require('./DOMMetrics');
-const min   = Math.min;
-const max   = Math.max;
+const DOMMetrics = require('./DOMMetrics');
+const min = Math.min;
+const max = Math.max;
 const floor = Math.floor;
-const ceil  = Math.ceil;
+const ceil = Math.ceil;
 
 type ViewportScrollState = {
   displayStart: number;
@@ -38,17 +39,52 @@ module.exports = {
     return this.getGridState(this.props);
   },
 
-  getGridState(props: {rowHeight: number; rowsCount: number; minHeight: number}): ViewportScrollState  {
+  getGridState(props: { rowHeight: number; rowsCount: number; minHeight: number }): ViewportScrollState {
+    let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     let canvasHeight = props.minHeight - props.rowOffsetHeight;
     let renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
     let totalRowCount = min(renderedRowsCount * 2, props.rowsCount);
     return {
       displayStart: 0,
       displayEnd: totalRowCount,
+      visibleStart: 0,
+      visibleEnd: totalRowCount,
       height: canvasHeight,
       scrollTop: 0,
-      scrollLeft: 0
+      scrollLeft: 0,
+      colVisibleStart: 0,
+      colVisibleEnd: totalNumberColumns,
+      colDisplayStart: 0,
+      colDisplayEnd: totalNumberColumns
     };
+  },
+
+  getRenderedColumnCount(displayStart) {
+    let remainingWidth = this.props.columnMetrics.totalWidth > 0 ? this.props.columnMetrics.totalWidth : 0;
+    let columnIndex = displayStart;
+    let columnCount = 0;
+    while (remainingWidth > 0) {
+      let column = ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex);
+
+      if (!column) {
+        break;
+      }
+
+      columnCount++;
+      columnIndex++;
+      remainingWidth -= column.width;
+    }
+    return columnCount;
+  },
+
+  getVisibleColStart(scrollLeft) {
+    let remainingScroll = scrollLeft;
+    let columnIndex = -1;
+    while (remainingScroll >= 0) {
+      columnIndex ++;
+      remainingScroll -= ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex).width;
+    }
+    return columnIndex;
   },
 
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number) {
@@ -57,16 +93,23 @@ module.exports = {
     let visibleStart = floor(scrollTop / rowHeight);
 
     let visibleEnd = min(
-        visibleStart + renderedRowsCount,
-        length);
+      visibleStart + renderedRowsCount,
+      length);
 
     let displayStart = max(
-        0,
-        visibleStart - renderedRowsCount * 2);
+      0,
+      visibleStart - renderedRowsCount * 2);
 
     let displayEnd = min(
-        visibleStart + renderedRowsCount * 2,
-        length);
+      visibleStart + renderedRowsCount * 2,
+      length);
+
+    let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
+    let colVisibleStart = this.getVisibleColStart(scrollLeft);
+    let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart);
+    let colVisibleEnd = colVisibleStart + renderedColumnCount;
+    let colDisplayStart = max(0, colVisibleStart - 2);
+    let colDisplayEnd = min(colVisibleStart + renderedColumnCount * 2, totalNumberColumns);
 
     let nextScrollState = {
       visibleStart,
@@ -75,7 +118,11 @@ module.exports = {
       displayEnd,
       height,
       scrollTop,
-      scrollLeft
+      scrollLeft,
+      colVisibleStart,
+      colVisibleEnd,
+      colDisplayStart,
+      colDisplayEnd
     };
 
     this.setState(nextScrollState);
@@ -96,7 +143,7 @@ module.exports = {
 
   componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number }) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
-        this.props.minHeight !== nextProps.minHeight) {
+      this.props.minHeight !== nextProps.minHeight) {
       this.setState(this.getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(

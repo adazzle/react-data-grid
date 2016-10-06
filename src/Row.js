@@ -1,3 +1,4 @@
+import OverflowCell from './OverflowCell';
 const React           = require('react');
 const joinClasses      = require('classnames');
 const Cell            = require('./Cell');
@@ -26,7 +27,11 @@ const Row = React.createClass({
     extraClasses: PropTypes.string,
     forceUpdate: PropTypes.bool,
     subRowDetails: PropTypes.object,
-    isRowHovered: PropTypes.bool
+    isRowHovered: PropTypes.bool,
+    colVisibleStart: PropTypes.number.isRequired,
+    colVisibleEnd: PropTypes.number.isRequired,
+    colDisplayStart: PropTypes.number.isRequired,
+    colDisplayEnd: PropTypes.number.isRequired
   },
 
   mixins: [ColumnUtilsMixin],
@@ -75,15 +80,12 @@ const Row = React.createClass({
     return CellRenderer;
   },
 
-  getCells(): Array<ReactElement> {
-    let cells = [];
-    let lockedCells = [];
-    let selectedColumn = this.getSelectedColumn();
-
-    if (this.props.columns) {
-      this.props.columns.slice(0, 15).forEach((column, i) => {
-        let CellRenderer = this.props.cellRenderer;
-        let cell = (<CellRenderer
+  getCell(column, i, selectedColumn) {
+    let CellRenderer = this.props.cellRenderer;
+    if (i < this.props.colVisibleStart || i > this.props.colVisibleEnd) {
+      return <OverflowCell idx={i} rowIdx={this.props.idx}  column={column} cellMetaData={this.props.cellMetaData} height={this.getRowHeight()}/>;
+    }
+    let cell = (<CellRenderer
                       ref={i}
                       key={`${column.key}-${i}`}
                       idx={i}
@@ -97,6 +99,16 @@ const Row = React.createClass({
                       selectedColumn={selectedColumn}
                       isRowSelected={this.props.isSelected}
                       expandableOptions={this.getExpandableOptions(column.key)} />);
+    return cell;
+  },
+
+  getCells(): Array<ReactElement> {
+    let cells = [];
+    let lockedCells = [];
+    let selectedColumn = this.getSelectedColumn();
+    if (this.props.columns) {
+      this.props.columns.forEach((column, i) => {
+        let cell = this.getCell(column, i, selectedColumn);
         if (column.locked) {
           lockedCells.push(cell);
         } else {
