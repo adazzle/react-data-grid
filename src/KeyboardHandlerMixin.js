@@ -14,7 +14,6 @@ let KeyboardHandlerMixin = {
     // Track which keys are currently down for shift clicking etc
     this._keysDown = this._keysDown || {};
     this._keysDown[e.keyCode] = true;
-
     if (this.props.onGridKeyDown && typeof this.props.onGridKeyDown === 'function') {
       this.props.onGridKeyDown(e);
     }

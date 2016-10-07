@@ -7,9 +7,25 @@ class OverflowCell extends React.Component {
     this.checkFocus = this.checkFocus.bind(this);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.isCellSelectionChanging(nextProps);
+  }
+
   componentDidMount() {
     this.checkFocus();
   }
+
+  isCellSelectionChanging(nextProps: { idx: number; cellMetaData: { selected: { idx: number } } }): boolean {
+    let meta = this.props.cellMetaData;
+    if (meta == null) { return false; }
+    let nextSelected = nextProps.cellMetaData.selected;
+    if (meta.selected && nextSelected) {
+      return this.props.idx === nextSelected.idx || this.props.idx === meta.selected.idx;
+    }
+
+    return true;
+  }
+
 
   componentDidUpdate() {
     this.checkFocus();

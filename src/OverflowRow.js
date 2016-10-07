@@ -7,11 +7,16 @@ class OverflowRow extends React.Component {
     this.checkFocus = this.checkFocus.bind(this);
   }
 
-  componentDidMount() {
-    this.checkFocus();
+  shouldComponentUpdate(nextProps) {
+    let meta = this.props.cellMetaData;
+    return this.props.cellMetaData.
   }
 
   componentDidUpdate() {
+    this.checkFocus();
+  }
+  
+  componentDidMount() {
     this.checkFocus();
   }
 

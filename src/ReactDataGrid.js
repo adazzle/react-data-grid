@@ -838,6 +838,7 @@ const ReactDataGrid = React.createClass({
   },
 
   render() {
+
     let cellMetaData = {
       selected: this.state.selected,
       dragged: this.state.dragged,
@@ -856,7 +857,8 @@ const ReactDataGrid = React.createClass({
       onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       onCellExpand: this.onCellExpand,
       onRowExpandToggle: this.onRowExpandToggle,
-      onRowHover: this.onRowHover
+      onRowHover: this.onRowHover,
+      isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38)
     };
 
     let toolbar = this.renderToolbar();

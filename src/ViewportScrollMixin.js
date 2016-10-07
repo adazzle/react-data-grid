@@ -93,7 +93,7 @@ module.exports = {
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
     let renderedRowsCount = ceil(height / rowHeight);
 
-    let visibleStart = floor(scrollTop / rowHeight);
+    let visibleStart = max(0, floor(scrollTop / rowHeight) - 2);
 
     let visibleEnd = min(
       visibleStart + renderedRowsCount,
