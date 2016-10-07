@@ -32,7 +32,7 @@ class OverflowCell extends React.Component {
   }
 
   checkFocus() {
-    if (this.isSelected()) {
+    if (this.isSelected() && this.props.cellMetaData.isScrollingHoriztonallyWithKeyboard) {
       ReactDOM.findDOMNode(this).focus();
     }
   }

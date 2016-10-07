@@ -91,12 +91,13 @@ module.exports = {
   },
 
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
+    let visibleBuffer = 2;
     let renderedRowsCount = ceil(height / rowHeight);
 
-    let visibleStart = max(0, floor(scrollTop / rowHeight) - 2);
+    let visibleStart = max(0, floor(scrollTop / rowHeight) - visibleBuffer);
 
     let visibleEnd = min(
-      visibleStart + renderedRowsCount,
+      visibleStart + renderedRowsCount + visibleBuffer,
       length);
 
     let displayStart = max(
