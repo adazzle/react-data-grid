@@ -24,7 +24,7 @@ OverflowCell.isSelected = (props) => {
 
   const { selected } = cellMetaData;
 
-  return selected && selected.rowIdx === rowIdx && selected.idx === idx; 
+  return selected && selected.rowIdx === rowIdx && selected.idx === idx;
 };
 
 OverflowCell.isScrolling = props => props.cellMetaData.isScrollingHoriztonallyWithKeyboard;
@@ -37,4 +37,6 @@ OverflowCell.propTypes = {
   cellMetaData: React.PropTypes.object
 };
 
+const OverflowCellComponent = OverflowCell;
 export default focusableComponentWrapper(OverflowCell);
+export { OverflowCellComponent };

@@ -13,7 +13,7 @@ OverflowRow.isSelected = props => {
 
   const { selected } = cellMetaData;
 
-  return selected & selected.rowIdx === idx;
+  return selected && selected.rowIdx === idx;
 };
 
 OverflowRow.isScrolling = props => props.cellMetaData.isScrollingVerticallyWithKeyboard;
@@ -24,4 +24,6 @@ OverflowRow.propTypes = {
   cellMetaData: React.PropTypes.object
 };
 
+const OverflowRowComponent = OverflowRow;
 export default focusableComponentWrapper(OverflowRow);
+export { OverflowRowComponent };
