@@ -1,35 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import focusableComponentWrapper from './focusableComponentWrapper';
 
 class OverflowRow extends React.Component {
+  isSelected(props = this.props) {
+    const { cellMetaData, idx } = props;
+    if (cellMetaData == null) { return false; }
 
-  constructor() {
-    super();
-    this.checkFocus = this.checkFocus.bind(this);
-  }
+    const { selected } = cellMetaData;
 
-  componentDidMount() {
-    this.checkFocus();
-  }
-
-  componentDidUpdate() {
-    this.checkFocus();
-  }
-
-  checkFocus() {
-    if (this.isSelected() && this.props.cellMetaData.isScrollingVerticallyWithKeyboard) {
-      ReactDOM.findDOMNode(this).focus();
-    }
-  }
-
-  isSelected() {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-
-    return (
-      meta.selected
-      && meta.selected.rowIdx === this.props.idx
-    );
+    return selected & selected.rowIdx === idx;
   }
 
   render() {
@@ -43,4 +22,4 @@ OverflowRow.propTypes = {
   cellMetaData: React.PropTypes.object
 };
 
-export default OverflowRow;
+export default focusableComponentWrapper(OverflowRow);

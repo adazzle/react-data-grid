@@ -1,51 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import focusableComponentWrapper from './focusableComponentWrapper';
 
 class OverflowCell extends React.Component {
+  isSelected(props = this.props) {
+    const { cellMetaData, rowIdx, idx }  = props;
+    if (cellMetaData == null) { return false; }
 
-  constructor() {
-    super();
-    this.checkFocus = this.checkFocus.bind(this);
-  }
+    const { selected } = cellMetaData;
 
-  shouldComponentUpdate(nextProps) {
-    return this.isCellSelectionChanging(nextProps);
-  }
-
-  componentDidMount() {
-    this.checkFocus();
-  }
-
-  isCellSelectionChanging(nextProps: { idx: number; cellMetaData: { selected: { idx: number } } }): boolean {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-    let nextSelected = nextProps.cellMetaData.selected;
-    if (meta.selected && nextSelected) {
-      return this.props.idx === nextSelected.idx || this.props.idx === meta.selected.idx;
-    }
-
-    return true;
-  }
-
-
-  componentDidUpdate() {
-    this.checkFocus();
-  }
-
-  checkFocus() {
-    if (this.isSelected() && this.props.cellMetaData.isScrollingHoriztonallyWithKeyboard) {
-      ReactDOM.findDOMNode(this).focus();
-    }
-  }
-
-  isSelected() {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-
-    return (
-      meta.selected
-      && meta.selected.rowIdx === this.props.rowIdx && meta.selected.idx === this.props.idx
-    );
+    return selected && selected.rowIdx === rowIdx && selected.idx === idx;
   }
 
   getStyle() {
@@ -72,4 +35,4 @@ OverflowCell.propTypes = {
   cellMetaData: React.PropTypes.object
 };
 
-export default OverflowCell;
+export default focusableComponentWrapper(OverflowCell);
