@@ -1,13 +1,14 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import OverflowRow, { OverflowRowComponent } from '../OverflowRow';
+import FocusableComponentTestRunner from './FocusableComponentTestRunner';
 
 const createSelectedCell = () => {
   let rowIdx = 0;
   let idx = 0;
   let selected = { rowIdx, idx };
 
-  return { cellMetaData: { selected }, rowIdx, idx };
+  return { cellMetaData: { selected, isScrollingVerticallyWithKeyboard: false }, rowIdx, idx };
 };
 
 fdescribe('OverflowRow', () => {
@@ -34,4 +35,14 @@ fdescribe('OverflowRow', () => {
       expect(isSelected).toBeFalsy();
     });
   });
+
+  const initalSelectedCell = createSelectedCell();
+
+  new FocusableComponentTestRunner({
+    Component: OverflowRow,
+    props: initalSelectedCell,
+    getNewSelection: ({ rowIdx, idx }) => {
+      return { rowIdx: rowIdx + 1, idx };
+    }
+  }).run();
 });

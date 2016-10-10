@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 import OverflowCell, { OverflowCellComponent } from '../OverflowCell';
+import FocusableComponentTestRunner from './FocusableComponentTestRunner';
 
 const renderOverflowCell = p => mount(<OverflowCell {...p} />);
 const DEFAULT_COLUMN = { width: 50, left: 100 };
@@ -12,7 +13,7 @@ const createSelectedCell = () => {
   let idx = 0;
   let selected = { rowIdx, idx };
 
-  return { cellMetaData: { selected }, rowIdx, idx };
+  return { cellMetaData: { selected, isScrollingHoriztonallyWithKeyboard: false }, rowIdx, idx };
 };
 
 fdescribe('OverflowCell', () => {
@@ -63,4 +64,14 @@ fdescribe('OverflowCell', () => {
       expect(isSelected).toBeFalsy();
     });
   });
+
+  const initalSelectedCell = createSelectedCell();
+
+  new FocusableComponentTestRunner({
+    Component: OverflowCell,
+    props: Object.assign({ }, DEFAULT_PROPS, initalSelectedCell),
+    getNewSelection: ({ rowIdx, idx }) => {
+      return { rowIdx, idx: idx + 1 };
+    }
+  }).run();
 });
