@@ -1,10 +1,13 @@
 const sortRows = (rows, sortColumn, sortDirection) => {
+  let sortDirectionSign = sortDirection === 'ASC' ? 1 : -1;
   let comparer = (a, b) => {
-    if (sortDirection === 'ASC') {
-      return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
-    } else if (sortDirection === 'DESC') {
-      return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
+    if (a[sortColumn] === b[sortColumn]) {
+      return 0;
     }
+    if (a[sortColumn] > b[sortColumn]) {
+      return sortDirectionSign;
+    }
+    return -sortDirectionSign;
   };
   if (sortDirection === 'NONE') {
     return rows;
