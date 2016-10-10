@@ -84,7 +84,7 @@ const Row = React.createClass({
       this.props.columns.forEach((column, i) => {
         let CellRenderer = this.props.cellRenderer;
         let cell = (<CellRenderer
-                      ref={i}
+                      ref={`cell-${i}`}
                       key={`${column.key}-${i}`}
                       idx={i}
                       rowIdx={this.props.idx}
@@ -131,11 +131,11 @@ const Row = React.createClass({
     return val;
   },
 
-  setScrollLeft(scrollLeft: number) {
+  setScrollLeft(scrollLeft: number) { // vv
     this.props.columns.forEach( (column, i) => {
       if (column.locked) {
-        if (!this.refs[i]) return;
-        this.refs[i].setScrollLeft(scrollLeft);
+        if (!this.refs[`cell-${i}`]) return;
+        this.refs[`cell-${i}`].setScrollLeft(scrollLeft);
       }
     });
   },
