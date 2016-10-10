@@ -11,7 +11,7 @@ const focusableComponentWrapper = WrappedComponent => {
       }
 
       shouldComponentUpdate(nextProps) {
-        return this.isSelected() !== this.isSelected(nextProps);
+        return WrappedComponent.isSelected(this.props) !== WrappedComponent.isSelected(nextProps);
       }
 
       componentDidMount() {
@@ -22,10 +22,8 @@ const focusableComponentWrapper = WrappedComponent => {
         this.checkFocus();
       }
 
-      isSelected() { }
-
       checkFocus() {
-        if (this.isSelected() && this.props.cellMetaData.isScrollingVerticallyWithKeyboard) {
+        if (WrappedComponent.isSelected(this.props) && WrappedComponent.isScrolling(this.props)) {
           ReactDOM.findDOMNode(this).focus();
         }
       }

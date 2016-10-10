@@ -2,15 +2,6 @@ import React from 'react';
 import focusableComponentWrapper from './focusableComponentWrapper';
 
 class OverflowCell extends React.Component {
-  isSelected(props = this.props) {
-    const { cellMetaData, rowIdx, idx }  = props;
-    if (cellMetaData == null) { return false; }
-
-    const { selected } = cellMetaData;
-
-    return selected && selected.rowIdx === rowIdx && selected.idx === idx;
-  }
-
   getStyle() {
     let style = {
       position: 'absolute',
@@ -26,6 +17,17 @@ class OverflowCell extends React.Component {
     return (<div tabIndex="-1" style={this.getStyle() } width="100%" className="react-grid-Cell"></div>);
   }
 }
+
+OverflowCell.isSelected = (props) => {
+  const { cellMetaData, rowIdx, idx }  = props;
+  if (cellMetaData == null) { return false; }
+
+  const { selected } = cellMetaData;
+
+  return selected && selected.rowIdx === rowIdx && selected.idx === idx; 
+};
+
+OverflowCell.isScrolling = props => props.cellMetaData.isScrollingHoriztonallyWithKeyboard;
 
 OverflowCell.propTypes = {
   rowIdx: React.PropTypes.number,
