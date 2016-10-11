@@ -1,6 +1,6 @@
 import sortRows from '../RowSorter';
 
-fdescribe('RowSorter', () => {
+describe('RowSorter', () => {
   let rows = [
     { number: 0,  text: 'Z' },
     { number: -1, text: 'A' },
