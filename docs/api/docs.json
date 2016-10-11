@@ -4773,13 +4773,6 @@
     "description": "",
     "methods": [
       {
-        "name": "attachTooltip",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
         "name": "filterValues",
         "docblock": null,
         "modifiers": [],
@@ -4850,6 +4843,283 @@
           "value": "unknown"
         },
         "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\draggable\\DragDropContainer.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "getRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "rowsCount",
+            "type": null
+          },
+          {
+            "name": "rowGetter",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderGrid",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "children": {
+        "type": {
+          "name": "element"
+        },
+        "required": true,
+        "description": ""
+      },
+      "getDragPreviewRow": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\draggable\\DraggableHeaderCell.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "setScrollLeft",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "scrollLeft",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "connectDragSource": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "connectDragPreview": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "isDragging": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\draggable\\RowActionsCell.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "renderRowIndex",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "rowIdx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "connectDragSource": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "connectDragPreview": {
+        "type": {
+          "name": "func"
+        },
+        "required": true,
+        "description": ""
+      },
+      "isDragging": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
+        "description": ""
+      },
+      "isRowHovered": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "column": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "dependentValues": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "value": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowSelection": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\draggable\\RowDragLayer.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "isDraggedRowSelected",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "selectedRows",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getDraggedRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderDraggedRows",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderDraggedCells",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "item",
+            "type": null
+          },
+          {
+            "name": "rowIdx",
+            "type": null
+          },
+          {
+            "name": "columns",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "item": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "itemType": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
+      "currentOffset": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "x": {
+              "name": "number",
+              "required": true
+            },
+            "y": {
+              "name": "number",
+              "required": true
+            }
+          }
+        },
+        "required": false,
+        "description": ""
+      },
+      "isDragging": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
+        "description": ""
+      },
+      "rowSelection": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rows": {
+        "type": {
+          "name": "array"
+        },
+        "required": true,
+        "description": ""
+      },
+      "columns": {
+        "type": {
+          "name": "array"
+        },
+        "required": true,
         "description": ""
       }
     }
@@ -6228,6 +6498,96 @@
         },
         "required": true,
         "description": ""
+      },
+      "onColumnGroupDeleted": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src\\addons\\toolbars\\GroupedColumnsPanel.js": {
+    "description": "",
+    "methods": [
+      {
+        "name": "getPanelInstructionMessage",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderGroupedColumns",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "renderOverlay",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "color",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "isOver": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
+        "description": ""
+      },
+      "connectDropTarget": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "canDrop": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
+        "description": ""
+      },
+      "groupBy": {
+        "type": {
+          "name": "array"
+        },
+        "required": false,
+        "description": ""
+      },
+      "noColumnsSelectedMessage": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "'Drag a column header here to group by that column'",
+          "computed": false
+        }
+      },
+      "panelDescription": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "'Drag a column header here to group by that column'",
+          "computed": false
+        }
       },
       "onColumnGroupDeleted": {
         "type": {
