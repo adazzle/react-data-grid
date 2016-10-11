@@ -1,4 +1,4 @@
-import sortRows from '../RowSorter';
+import sortRows, {comparer} from '../RowSorter';
 
 describe('RowSorter', () => {
   let rows = [
@@ -52,6 +52,24 @@ describe('RowSorter', () => {
       for (let i = 0; i < rowsSorted.length - 1; i++) {
         expect(rowsSorted[i].text >= rowsSorted[i + 1].text).toBe(true);
       }
+    });
+  });
+
+  describe('comparer', () => {
+    it('should import comparer', () => {
+      expect(comparer).toBeDefined();
+    });
+
+    it('should return 1 if greater than', () => {
+      expect(comparer(1, 0)).toBe(1);
+    });
+
+    it('should return -1 if lower than', () => {
+      expect(comparer(0, 1)).toBe(-1);
+    });
+
+    it('should return 0 if equal', () => {
+      expect(comparer(0, 0)).toBe(0);
     });
   });
 });
