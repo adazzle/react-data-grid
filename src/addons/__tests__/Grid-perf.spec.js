@@ -59,7 +59,7 @@ const onScrollComplete = (done) => {
   done();
 };
 
-fdescribe('Grid peformance tests', () => {
+xdescribe('Grid peformance tests', () => {
   let originalTimeout;
   let grid = {};
   beforeEach(() => {

@@ -2,6 +2,8 @@ const React        = require('react');
 const ReactDOM = require('react-dom');
 const TestUtils    = require('react/lib/ReactTestUtils');
 const ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
+import { mount } from 'enzyme';
+import Row from '../../Row';
 
 export default class GridRunner {
   /* =====
@@ -10,15 +12,17 @@ export default class GridRunner {
   constructor({renderIntoBody = false, GridUnderTest = ExampleGrid}) {
     this.renderIntoBody = renderIntoBody;
     this.example = GridUnderTest;
-    this.grid = this._renderGrid(renderIntoBody);
+    this.gridWrapper = this._renderGrid(renderIntoBody);
+    this.grid = this.gridWrapper.node;
   }
 
   _renderGrid(intoBody) {
     let Example = this.example;
     this.handleCellDragSpy = jasmine.createSpy('handleCellDrag');
-    return intoBody ?
-      ReactDOM.render(<Example handleCellDrag={this.handleCellDragSpy}/>, document.body)
-      : TestUtils.renderIntoDocument(<Example handleCellDrag={this.handleCellDragSpy}/>);
+    let options = intoBody ? { attachTo: document.body } : { };
+    let gridWrapper = mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
+
+    return gridWrapper;
   }
 
   dispose() {
@@ -47,8 +51,8 @@ export default class GridRunner {
   ACTIONS
   ======== */
   rightClickCell({cellIdx, rowIdx}) {
-    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
-    this.cell = this.getCells(this.row)[cellIdx];
+    this.row = this.getRow(rowIdx);
+    this.cell = this.getCell({ cellIdx, rowIdx });
     TestUtils.Simulate.contextMenu(this.cell);
     return this;
   }
@@ -72,36 +76,60 @@ export default class GridRunner {
     return this;
   }
 
-  selectCell({cellIdx, rowIdx}) {
-    this.row = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
-    this.cell = this.getCells(this.row)[cellIdx];
+  selectCell(coords) {
+    this.row = this.getRow(coords.rowIdx);
+    this.cell = this.getCell(coords);
     TestUtils.Simulate.click(this.cell);
     return this;
   }
 
-  getCell({cellIdx, rowIdx}) {
-    const { displayStart, colDisplayStart } = this.grid.refs.reactDataGrid.refs.base.refs.viewport.state;
-    let rowPosition = rowIdx - displayStart;
-    let columnPosition = cellIdx - colDisplayStart;
+  getDisplayInfo() {
+    const { displayStart, colDisplayStart, displayEnd, colDisplayEnd } = this.grid.refs.reactDataGrid.refs.base.refs.viewport.state;
 
-    let row = ReactDOM.findDOMNode(this.grid).querySelectorAll('.react-grid-Row')[rowPosition];
-    return row.querySelectorAll('.react-grid-Cell')[columnPosition];
+    return { displayStart, colDisplayStart, displayEnd, colDisplayEnd };
+  }
+
+  getRealPosition(originalCellIdx, originalRowIdx ) {
+    const { displayStart, colDisplayStart } = this.getDisplayInfo();
+    let relativeCellIdx = originalCellIdx - colDisplayStart;
+    let relativeRowIdx = originalRowIdx - displayStart;
+
+    return { relativeCellIdx, relativeRowIdx };
+  }
+
+  getRenderedRows() {
+    return this.gridWrapper.find('.react-grid-Row');
+  }
+
+  getRenderedHeaderCells() {
+    return ReactDOM.findDOMNode(this.grid).querySelectorAll('.react-grid-HeaderCell');
+  }
+
+  getRow(rowIdx) {
+    const { relativeRowIdx } = this.getRealPosition(0, rowIdx);
+
+    return this.getRenderedRows().get(relativeRowIdx);
+  }
+
+  getCell({cellIdx, rowIdx}) {
+    const { relativeCellIdx } = this.getRealPosition(cellIdx, rowIdx);
+
+    let row = this.getRow(rowIdx);
+    return this.getCellsFromRow(row)[relativeCellIdx];
+  }
+
+  getCellsFromRow(row) {
+    return row.querySelectorAll('.react-grid-Cell');
   }
 
   getCells(row) {
-    let allCells = row.querySelectorAll('.react-grid-Cell');
+    let allCells = this.getCellsFromRow(row);
     let cells = [];
 
     for (let i = 0; i < allCells.length; i++) {
       cells[i] = allCells[i];
     }
 
-    // if (this.grid.refs.reactDataGrid.props.enableRowSelect) {
-    //   // the rowSelectCell exists on the end of the array returned from testUtils
-    //   let rowSelectCell = cells.pop();
-    //   // remove from end of array and put at beginning
-    //   cells.unshift(rowSelectCell);
-    // }
     return cells;
   }
 
@@ -141,17 +169,17 @@ export default class GridRunner {
   }
 
   drag({from, to, col, beforeDragEnter = null, beforeDragEnd = null}) {
-    this.selectCell({cellIdx: col, rowIdx: from});
+    this.selectCell({cellIdx: col - 1, rowIdx: from});
 
-    const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row');
+    const rows = this.getRenderedRows();
     let over = [];
     over.push(this.row);
     let fromIterator = from;
 
     for (let i = fromIterator++; i < to; i++) {
-      over.push(this.getCells(rows[i])[col]);
+      over.push(this.getCells(rows.get(i))[col]);
     }
-    const toCell = this.getCells(rows[to])[col];
+    const toCell = this.getCells(rows.get(to))[col];
     over.push(toCell);
 
     // Act
@@ -168,41 +196,6 @@ export default class GridRunner {
 
     return this;
   }
-  // @jpdriver - commented out for now because this was a pain to write an integration test for
-  // we should rewrite the drag events not to attach to the window
-  //
-  // resize({idx, toWidth}) {
-  //   let column = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-HeaderCell')[idx];
-  //   const resizeHeaderCellHandles = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-HeaderCell__draggable');
-  //   let draggable= resizeHeaderCellHandles[idx];
-  //   let mouseDownEvent = {
-  //     dataTransfer: {
-  //       setData:jasmine.createSpy()
-  //     }
-  //   };
-  //   let goToWidth = column.props.style.left + column.props.style.width + toWidth;
-  //
-  //   TestUtils.Simulate.mouseDown(draggable, mouseDownEvent);
-  //   this.triggerMouseEvent('mousemove', goToWidth);
-  //   this.triggerMouseEvent('mouseup', goToWidth);
-  //   return this;
-  // }
-  // hasBeenResized({idx, toWidth}) {
-  //   const hCell = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-HeaderCell')[0];
-  //   let expectedWidth = toWidth.toString() + 'px';
-  //   expect(ReactDOM.findDOMNode(hCell)).style.width).toBe(expectedWidth);
-  //   return this;
-  // }
-  // triggerMouseEvent (eventName, pageX) {
-  //   let $el = $(window);
-  //   let offset = $el.offset();
-  //   let event = jQuery.Event(eventName, {
-  //     which: 1,
-  //     pageX: pageX,
-  //     pageY: offset.top
-  //   });
-  //   $el.trigger(event);
-  // }
 
   /* =====
   ASSERTS
@@ -221,15 +214,15 @@ export default class GridRunner {
   }
   hasSelected({rowIdx, cellIdx, expectedClass = '.selected'}) {
     // and should move to the appropriate cell/row
-    const selectedRow = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row')[rowIdx];
+    const selectedRow = this.getRow(rowIdx);
     const selected = selectedRow.querySelector(expectedClass);
     expect(selected.props.rowIdx).toEqual(rowIdx);
-    expect(selected.props.idx).toEqual(cellIdx);
+    expect(selected.props.idx).toEqual(cellIdx + 1);
     return this;
   }
   hasCopied({cellIdx, rowIdx}) {
     let baseGrid = this.grid.refs.reactDataGrid;
-    expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
+    expect(baseGrid.state.copied.idx).toEqual(cellIdx + 1); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
     expect(ReactDOM.findDOMNode(this.cell).className.indexOf(' copied ') > -1).toBe(true);
   }
@@ -243,7 +236,7 @@ export default class GridRunner {
     // Test all rows to check that value has copied correctly
     const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row');
     for (let i = from, end = to; i <= end; i++) {
-      const toCell = this.getCells(rows[i])[col];
+      const toCell = this.getCells(rows[i])[col - 1];
       // First the component
       expect(toCell.props.value).toEqual(expected);
       // and finally the rendered data

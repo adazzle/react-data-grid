@@ -11,7 +11,7 @@ const createSelectedCell = () => {
   return { cellMetaData: { selected, isScrollingVerticallyWithKeyboard: false }, rowIdx, idx };
 };
 
-fdescribe('OverflowRow', () => {
+describe('OverflowRow', () => {
   describe('render tests', () => {
     it('should render without crashing', () => {
       const overflowCellElementWrapper = mount(<OverflowRow />);

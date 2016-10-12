@@ -16,7 +16,7 @@ const createSelectedCell = () => {
   return { cellMetaData: { selected, isScrollingHoriztonallyWithKeyboard: false }, rowIdx, idx };
 };
 
-fdescribe('OverflowCell', () => {
+describe('OverflowCell', () => {
   let overflowCellElementWrapper;
 
   describe('render tests', () => {
