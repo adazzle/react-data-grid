@@ -3816,6 +3816,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 	  render: function render() {
+	    if (this.props.column.hidden) {
+	      return null;
+	    }
+
 	    var style = this.getStyle();
 
 	    var className = this.getCellClass();
