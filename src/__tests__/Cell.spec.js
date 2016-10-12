@@ -160,6 +160,12 @@ describe('Cell Tests', () => {
 
       expect(testElement.node.isDraggedCellChanging(nextProps)).toBeFalsy();
     });
+
+    it('should render null when hidden', () => {
+      let column = { hidden: true };
+      testElement = renderComponent({ column });
+      expect(testElement.html()).toBe(null);
+    });
   });
 
   describe('hasChangedDependentValues tests', () => {
