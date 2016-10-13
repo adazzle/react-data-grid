@@ -3,7 +3,6 @@ const ReactDOM = require('react-dom');
 const TestUtils    = require('react/lib/ReactTestUtils');
 const ExampleGrid = require('../../../examples/scripts/example14-all-features-immutable');
 import { mount } from 'enzyme';
-import Row from '../../Row';
 
 export default class GridRunner {
   /* =====

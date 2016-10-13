@@ -15,7 +15,7 @@ describe('Grid Integration', () => {
     gridRunner.dispose();
   });
 
-  fdescribe('Setup', () => {
+  describe('Setup', () => {
     it('Creates the grid', () => {
       expect(grid).toBeDefined();
     });
@@ -32,7 +32,7 @@ describe('Grid Integration', () => {
     });
   });
 
-  fdescribe('Copy and paste', () => {
+  describe('Copy and paste', () => {
     it('copies a cell', () => {
       gridRunner
         .selectCell({cellIdx: 3, rowIdx: 3})
@@ -53,7 +53,7 @@ describe('Grid Integration', () => {
     });
   });
 
-  fdescribe('Navigation', () => {
+  describe('Navigation', () => {
     it('header columns and cells stay in line', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
       gridRunner.selectCell({cellIdx: 14, rowIdx: 0});
@@ -67,7 +67,7 @@ describe('Grid Integration', () => {
     });
   });
 
-  fdescribe('Drag', () => {
+  describe('Drag', () => {
     it('Shows drag selector', () => {
       gridRunner.drag({
         from: 0,
@@ -94,7 +94,7 @@ describe('Grid Integration', () => {
     });
   });
 
-  fdescribe('Selection', () => {
+  describe('Selection', () => {
     it('Selects on click', () => {
       gridRunner.selectCell({cellIdx: 3, rowIdx: 3})
         .hasSelected({cellIdx: 3, rowIdx: 3})
@@ -102,7 +102,7 @@ describe('Grid Integration', () => {
     });
   });
 
-  fdescribe('Editors', () => {
+  describe('Editors', () => {
     it('Readonly columns are NOT Editable', () => {
       gridRunner.clickIntoEditor({cellIdx: 1, rowIdx: 3})
         .isNotEditable();
@@ -231,7 +231,7 @@ describe('Grid Integration', () => {
     });
   });
 
-  fdescribe('Context Menu', () => {
+  describe('Context Menu', () => {
     let fakeRowIdx = 3;
     let fakeIdx = 5;
 
