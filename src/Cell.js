@@ -37,7 +37,6 @@ const Cell = React.createClass({
   getDefaultProps() {
     return {
       tabIndex: -1,
-      ref: 'cell',
       isExpanded: false,
       value: ''
     };
@@ -444,8 +443,7 @@ const Cell = React.createClass({
     if (this.canExpand()) {
       cellExpander = (<span style={{ float: 'left', marginLeft: marginLeft }} onClick={this.onCellExpand} >{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658') }</span>);
     }
-    return (<div  ref="cell"
-      className="react-grid-Cell__value">{cellExpander}<span >{CellContent}</span> {this.props.cellControls} </div>);
+    return (<div className="react-grid-Cell__value">{cellExpander}<span >{CellContent}</span> {this.props.cellControls} </div>);
   },
 
   render() {
