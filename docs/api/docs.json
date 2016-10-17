@@ -166,6 +166,18 @@
         "returns": null
       },
       {
+        "name": "getRowByRef",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "i",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "renderRow",
         "docblock": null,
         "modifiers": [],
@@ -975,11 +987,7 @@
           "name": "string"
         },
         "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'cell'",
-          "computed": false
-        }
+        "description": ""
       },
       "column": {
         "type": {
