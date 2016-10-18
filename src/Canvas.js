@@ -250,11 +250,21 @@ const Canvas = React.createClass({
     if (this._currentRowsLength !== 0) {
       if (!this.refs) return;
       for (let i = 0, len = this._currentRowsLength; i < len; i++) {
-        if (this.refs[i] && this.refs[i].setScrollLeft) {
-          this.refs[i].setScrollLeft(scrollLeft);
+        let row = this.getRowByRef(i);
+        if (row && row.setScrollLeft) {
+          row.setScrollLeft(scrollLeft);
         }
       }
     }
+  },
+
+  getRowByRef(i) {
+    // check if wrapped with React DND drop target
+    let wrappedRow = this.refs[i].getDecoratedComponentInstance ? this.refs[i].getDecoratedComponentInstance(i) : null;
+    if (wrappedRow) {
+      return wrappedRow.refs.row;
+    }
+    return this.refs[i];
   },
 
   renderRow(props: any) {

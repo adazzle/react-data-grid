@@ -2,6 +2,7 @@ const shallowCloneObject = require('./shallowCloneObject');
 const sameColumn = require('./ColumnComparer');
 const ColumnUtils = require('./ColumnUtils');
 const getScrollbarSize  = require('./getScrollbarSize');
+const isColumnsImmutable  = require('./isColumnsImmutable');
 
 type Column = {
   key: string;
@@ -104,7 +105,7 @@ function resizeColumn(metrics: ColumnMetricsType, index: number, width: number):
 }
 
 function areColumnsImmutable(prevColumns: Array<Column>, nextColumns: Array<Column>) {
-  return (typeof Immutable !== 'undefined' && (prevColumns instanceof Immutable.List) && (nextColumns instanceof Immutable.List));
+  return isColumnsImmutable(prevColumns) && isColumnsImmutable(nextColumns);
 }
 
 function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column>, isSameColumn: (a: Column, b: Column) => boolean) {

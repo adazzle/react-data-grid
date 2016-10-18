@@ -3,6 +3,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
+import isColumnsImmutable from '../../isColumnsImmutable';
 
 class DraggableContainer extends Component {
 
@@ -28,7 +29,7 @@ class DraggableContainer extends Component {
     let rows = this.getRows(rowsCount, rowGetter);
     return (<div>
       {grid}
-      <RowDragLayer rowSelection={grid.props.rowSelection} rows={rows} columns={columns} />
+      <RowDragLayer rowSelection={grid.props.rowSelection} rows={rows} columns={isColumnsImmutable(columns) ? columns.toArray() : columns} />
     </div>);
   }
 }

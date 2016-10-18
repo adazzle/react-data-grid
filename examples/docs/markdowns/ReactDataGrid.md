@@ -95,6 +95,11 @@ type: `func`
 type: `func`
 
 
+### `onCheckCellIsEditable`
+
+type: `func`
+
+
 ### `onClearFilters`
 
 type: `func`
