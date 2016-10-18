@@ -97,4 +97,5 @@ defaultValue: `-1`
 ### `value` (required)
 
 type: `union(string|number|object|bool)`
+defaultValue: `''`
 

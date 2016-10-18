@@ -272,7 +272,7 @@
 //         var keyCode_v = '118';
 //         SimulateGridKeyDown(component, keyCode_v, true);
 //         expect(testProps.onCellCopyPaste).toHaveBeenCalled();
-//         expect(testProps.onCellCopyPaste.mostRecentCall.args[0]).toEqual({cellKey: "title", rowIdx: 5, value: "banana", fromRow: 1, toRow: 5})
+//         expect(testProps.onCellCopyPaste.calls.mostRecent().args[0]).toEqual({cellKey: "title", rowIdx: 5, value: "banana", fromRow: 1, toRow: 5})
 //       });
 //
 //       it("cell commit cancel should set grid state inactive", () =>{
@@ -373,7 +373,7 @@
 //       var meta = getCellMetaData(component);
 //       var fakeCellUpdate = {cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"}
 //       meta.onCommit(fakeCellUpdate);
-//       expect(testProps.onRowUpdated.callCount).toEqual(1);
+//       expect(testProps.onRowUpdated.calls.count()).toEqual(1);
 //       expect(testProps.onRowUpdated.argsForCall[0][0]).toEqual({
 //         cellKey: "title", rowIdx: 0, updated: {title : 'some new title'}, key: "Enter"
 //       })
@@ -450,8 +450,8 @@
 //       sortableHeaderRenderer.props.onSort('title', 'DESC');
 //       //assert
 //       expect(testProps.onGridSort).toHaveBeenCalled();
-//       expect(testProps.onGridSort.mostRecentCall.args[0]).toEqual('title');
-//       expect(testProps.onGridSort.mostRecentCall.args[1]).toEqual('DESC');
+//       expect(testProps.onGridSort.calls.mostRecent().args[0]).toEqual('title');
+//       expect(testProps.onGridSort.calls.mostRecent().args[1]).toEqual('DESC');
 //     });
 //
 //

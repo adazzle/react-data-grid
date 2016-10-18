@@ -394,7 +394,7 @@ describe('Grid', function() {
         it('deselection handler should have been called', function() {
           this.simulateGridKeyDown('Tab');
           expect(this.component.props.onCellDeSelected).toHaveBeenCalled();
-          expect(this.component.props.onCellDeSelected.mostRecentCall.args[0]).toEqual({
+          expect(this.component.props.onCellDeSelected.calls.mostRecent().args[0]).toEqual({
             rowIdx: 1,
             idx: 2
           });
@@ -402,7 +402,7 @@ describe('Grid', function() {
         it('selection handler should have been called', function() {
           this.simulateGridKeyDown('Tab');
           expect(this.component.props.onCellSelected).toHaveBeenCalled();
-          expect(this.component.props.onCellSelected.mostRecentCall.args[0]).toEqual({
+          expect(this.component.props.onCellSelected.calls.mostRecent().args[0]).toEqual({
             rowIdx: 1,
             idx: 3
           });
@@ -608,7 +608,7 @@ describe('Grid', function() {
         });
 
         it('should activate current selected cell', function() {
-          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true });
+          expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: 1, rowIdx: 1, active: true }));
         });
       });
 
@@ -641,7 +641,7 @@ describe('Grid', function() {
 
         it('should call onCellCopyPaste of component with correct params', function() {
           expect(this.component.props.onCellCopyPaste).toHaveBeenCalled();
-          expect(this.component.props.onCellCopyPaste.mostRecentCall.args[0]).toEqual({
+          expect(this.component.props.onCellCopyPaste.calls.mostRecent().args[0]).toEqual({
             cellKey: 'title',
             rowIdx: 5,
             value: 'banana',
@@ -778,7 +778,7 @@ describe('Grid', function() {
 
         it('should trigger onCellsDragged event and call it with correct params', function() {
           expect(this.component.props.onCellsDragged).toHaveBeenCalled();
-          expect(this.component.props.onCellsDragged.argsForCall[0][0]).toEqual({ cellKey: 'title', fromRow: 2, toRow: 6, value: 'apple' });
+          expect(this.component.props.onCellsDragged.calls.argsFor(0)[0]).toEqual({ cellKey: 'title', fromRow: 2, toRow: 6, value: 'apple' });
         });
       });
 
@@ -873,12 +873,12 @@ describe('Grid', function() {
 
       it('should trigger onRowUpdated with correct params', function() {
         const onRowUpdated = this.component.props.onRowUpdated;
-        expect(onRowUpdated.callCount).toEqual(1);
-        expect(onRowUpdated.argsForCall[0][0]).toEqual(this.buildFakeCellUodate());
+        expect(onRowUpdated.calls.count()).toEqual(1);
+        expect(onRowUpdated.calls.first().args[0]).toEqual(this.buildFakeCellUodate());
       });
 
       it('should deactivate selected cell', function() {
-        expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 3, active: false });
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: 3, rowIdx: 3, active: false }));
       });
     });
 
@@ -941,7 +941,7 @@ describe('Grid', function() {
 
       it('should call the event when there is one with the correct args', function() {
         this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
-        expect(columnWithEvent.events.onClick.mostRecentCall.args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
+        expect(columnWithEvent.events.onClick.calls.mostRecent().args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
       });
 
       it('events should work for the first column', function() {

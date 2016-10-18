@@ -6,7 +6,7 @@ const rows = [{ colOne: 'v1', colTwo: 'b1' },
               { colOne: 'v1', colTwo: 'b3' }];
 const sortDetails = { sortColumn: 'colOne', sortDirection: 'ASC'};
 
-ddescribe('Row Sorter', () => {
+describe('Row Sorter', () => {
   it('It can sort an array of rows', () => {
     let sortResult = sortRows(rows, sortDetails.sortColumn, sortDetails.sortDirection);
 

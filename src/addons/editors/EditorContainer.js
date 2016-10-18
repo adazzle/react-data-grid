@@ -143,7 +143,7 @@ const EditorContainer = React.createClass({
     return false;
   },
 
-  getRowMetaData(): ?any {
+  getRowMetaData(): any {
     // clone row data so editor cannot actually change this
     // convention based method to get corresponding Id or Name of any Name or Id property
     if (typeof this.props.column.getRowMetaData === 'function') {
@@ -187,12 +187,10 @@ const EditorContainer = React.createClass({
       this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
     }
   },
-
   isNewValueValid(value: string): boolean {
     if (isFunction(this.getEditor().validate)) {
       let isValid = this.getEditor().validate(value);
       this.setState({isInvalid: !isValid});
-
       return isValid;
     }
 
@@ -222,6 +220,32 @@ const EditorContainer = React.createClass({
   isCaretAtEndOfInput(): boolean {
     let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
+  },
+
+  isBodyClicked(e) {
+    return (e.relatedTarget === null);
+  },
+
+  isViewportClicked(e) {
+    return (e.relatedTarget.classList.contains('react-grid-Viewport'));
+  },
+
+  isClickInisdeEditor(e) {
+    return (e.currentTarget.contains(e.relatedTarget) || (e.relatedTarget.classList.contains('editing') || e.relatedTarget.classList.contains('react-grid-Cell')));
+  },
+
+  handleBlur(e) {
+    e.stopPropagation();
+    if (this.isBodyClicked(e)) {
+      this.commit(e);
+    }
+
+    if (!this.isBodyClicked(e)) {
+	    // prevent null reference
+      if (this.isViewportClicked(e) || !this.isClickInisdeEditor(e)) {
+        this.commit(e);
+      }
+    }
   },
 
   setTextInputFocus() {
@@ -260,9 +284,9 @@ const EditorContainer = React.createClass({
 
   render(): ?ReactElement {
     return (
-        <div className={this.getContainerClass()} onKeyDown={this.onKeyDown} commit={this.commit}>
-        {this.createEditor()}
-        {this.renderStatusIcon()}
+        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} commit={this.commit}>
+          {this.createEditor()}
+          {this.renderStatusIcon()}
         </div>
       );
   }

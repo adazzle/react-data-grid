@@ -566,45 +566,7 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "signature",
-            "type": "object",
-            "raw": "{position:string; width: number; height: number; left: number}",
-            "signature": {
-              "properties": [
-                {
-                  "key": "position",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "width",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "height",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "left",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                }
-              ]
-            }
-          }
-        }
+        "returns": null
       },
       {
         "name": "getFormatter",
@@ -637,11 +599,7 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "string"
-          }
-        }
+        "returns": null
       },
       {
         "name": "getUpdateCellClass",
@@ -662,22 +620,14 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
+        "returns": null
       },
       {
         "name": "isActive",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
+        "returns": null
       },
       {
         "name": "isCellSelectionChanging",
@@ -689,7 +639,7 @@
             "type": {
               "name": "signature",
               "type": "object",
-              "raw": "{idx: number; cellMetaData: {selected: {idx: number}}}",
+              "raw": "{ idx: number; cellMetaData: { selected: { idx: number } } }",
               "signature": {
                 "properties": [
                   {
@@ -704,7 +654,7 @@
                     "value": {
                       "name": "signature",
                       "type": "object",
-                      "raw": "{selected: {idx: number}}",
+                      "raw": "{ selected: { idx: number } }",
                       "signature": {
                         "properties": [
                           {
@@ -712,7 +662,7 @@
                             "value": {
                               "name": "signature",
                               "type": "object",
-                              "raw": "{idx: number}",
+                              "raw": "{ idx: number }",
                               "signature": {
                                 "properties": [
                                   {
@@ -1058,7 +1008,11 @@
           ]
         },
         "required": true,
-        "description": ""
+        "description": "",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
       },
       "isExpanded": {
         "type": {
@@ -1379,7 +1333,15 @@
       },
       "rowRenderer": {
         "type": {
-          "name": "func"
+          "name": "union",
+          "value": [
+            {
+              "name": "element"
+            },
+            {
+              "name": "func"
+            }
+          ]
         },
         "required": false,
         "description": ""
@@ -1423,71 +1385,49 @@
       },
       "rowSelection": {
         "type": {
-          "name": "shape",
-          "value": {
-            "enableShiftSelect": {
-              "name": "bool",
-              "required": false
+          "name": "union",
+          "value": [
+            {
+              "name": "shape",
+              "value": {
+                "indexes": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "number"
+                  },
+                  "required": true
+                }
+              }
             },
-            "onRowsSelected": {
-              "name": "func",
-              "required": false
+            {
+              "name": "shape",
+              "value": {
+                "isSelectedKey": {
+                  "name": "string",
+                  "required": true
+                }
+              }
             },
-            "onRowsDeselected": {
-              "name": "func",
-              "required": false
-            },
-            "showCheckbox": {
-              "name": "bool",
-              "required": false
-            },
-            "selectBy": {
-              "name": "union",
-              "value": [
-                {
+            {
+              "name": "shape",
+              "value": {
+                "keys": {
                   "name": "shape",
                   "value": {
-                    "indexes": {
-                      "name": "arrayOf",
-                      "value": {
-                        "name": "number"
-                      },
+                    "values": {
+                      "name": "array",
                       "required": true
-                    }
-                  }
-                },
-                {
-                  "name": "shape",
-                  "value": {
-                    "isSelectedKey": {
+                    },
+                    "rowKey": {
                       "name": "string",
                       "required": true
                     }
-                  }
-                },
-                {
-                  "name": "shape",
-                  "value": {
-                    "keys": {
-                      "name": "shape",
-                      "value": {
-                        "values": {
-                          "name": "array",
-                          "required": true
-                        },
-                        "rowKey": {
-                          "name": "string",
-                          "required": true
-                        }
-                      },
-                      "required": true
-                    }
-                  }
+                  },
+                  "required": true
                 }
-              ],
-              "required": true
+              }
             }
-          }
+          ]
         },
         "required": false,
         "description": ""
@@ -3885,6 +3825,13 @@
         "required": false,
         "description": ""
       },
+      "rowActionsCell": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "tabIndex": {
         "defaultValue": {
           "value": "-1",
@@ -4181,6 +4128,13 @@
         },
         "required": false,
         "description": ""
+      },
+      "isRowHovered": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
       }
     }
   },
@@ -4452,71 +4406,49 @@
       },
       "rowSelection": {
         "type": {
-          "name": "shape",
-          "value": {
-            "enableShiftSelect": {
-              "name": "bool",
-              "required": false
+          "name": "union",
+          "value": [
+            {
+              "name": "shape",
+              "value": {
+                "indexes": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "number"
+                  },
+                  "required": true
+                }
+              }
             },
-            "onRowsSelected": {
-              "name": "func",
-              "required": false
+            {
+              "name": "shape",
+              "value": {
+                "isSelectedKey": {
+                  "name": "string",
+                  "required": true
+                }
+              }
             },
-            "onRowsDeselected": {
-              "name": "func",
-              "required": false
-            },
-            "showCheckbox": {
-              "name": "bool",
-              "required": false
-            },
-            "selectBy": {
-              "name": "union",
-              "value": [
-                {
+            {
+              "name": "shape",
+              "value": {
+                "keys": {
                   "name": "shape",
                   "value": {
-                    "indexes": {
-                      "name": "arrayOf",
-                      "value": {
-                        "name": "number"
-                      },
+                    "values": {
+                      "name": "array",
                       "required": true
-                    }
-                  }
-                },
-                {
-                  "name": "shape",
-                  "value": {
-                    "isSelectedKey": {
+                    },
+                    "rowKey": {
                       "name": "string",
                       "required": true
                     }
-                  }
-                },
-                {
-                  "name": "shape",
-                  "value": {
-                    "keys": {
-                      "name": "shape",
-                      "value": {
-                        "values": {
-                          "name": "array",
-                          "required": true
-                        },
-                        "rowKey": {
-                          "name": "string",
-                          "required": true
-                        }
-                      },
-                      "required": true
-                    }
-                  }
+                  },
+                  "required": true
                 }
-              ],
-              "required": true
+              }
             }
-          }
+          ]
         },
         "required": false,
         "description": ""
@@ -4530,7 +4462,15 @@
       },
       "rowRenderer": {
         "type": {
-          "name": "func"
+          "name": "union",
+          "value": [
+            {
+              "name": "element"
+            },
+            {
+              "name": "func"
+            }
+          ]
         },
         "required": false,
         "description": ""
@@ -4929,6 +4869,13 @@
         }
       },
       {
+        "name": "getEditorDisplayValue",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "getInputNode",
         "docblock": null,
         "modifiers": [],
@@ -5091,6 +5038,13 @@
         "description": ""
       },
       "onFocus": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "editorDisplayValue": {
         "type": {
           "name": "func"
         },
@@ -5414,7 +5368,7 @@
               },
               {
                 "name": "custom",
-                "raw": "React.PropTypes.objectOf({ id: React.PropTypes.string, title: React.PropTypes.string, meta: React.PropTypes.string })"
+                "raw": "React.PropTypes.objectOf({\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n})"
               }
             ]
           }
@@ -5648,8 +5602,7 @@
         "params": [],
         "returns": {
           "type": {
-            "name": "any",
-            "nullable": true
+            "name": "any"
           }
         }
       },
@@ -5766,6 +5719,54 @@
             "name": "boolean"
           }
         }
+      },
+      {
+        "name": "isBodyClicked",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "isViewportClicked",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "isClickInisdeEditor",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleBlur",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
       },
       {
         "name": "setTextInputFocus",
@@ -6068,6 +6069,38 @@
       }
     }
   },
+  "src\\addons\\formatters\\DropDownFormatter.js": {
+    "description": "",
+    "methods": [],
+    "props": {
+      "options": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "union",
+            "value": [
+              {
+                "name": "string"
+              },
+              {
+                "name": "custom",
+                "raw": "React.PropTypes.objectOf({\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n})"
+              }
+            ]
+          }
+        },
+        "required": true,
+        "description": ""
+      },
+      "value": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": ""
+      }
+    }
+  },
   "src\\addons\\formatters\\ImageFormatter.js": {
     "description": "",
     "methods": [
@@ -6184,7 +6217,7 @@
     "props": {
       "name": {
         "type": {
-          "name": "object"
+          "name": "string"
         },
         "required": true,
         "description": ""

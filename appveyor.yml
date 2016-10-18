@@ -25,9 +25,10 @@ install:
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
         ./ci/publish/decrypt-npmrc.ps1
       }
-  - ps: Install-Product node 5
-  - npm cache clean
+  - ps: Install-Product node 4
+  - npm -g install npm@3
   - set PATH=%APPDATA%\npm;%PATH%
+  - npm cache clean
   - npm install -g gulp
   - npm install
   - gulp flow

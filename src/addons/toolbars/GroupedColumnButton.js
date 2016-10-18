@@ -8,12 +8,19 @@ export default class GroupedColumnButton extends Component {
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap'
     };
-    return (<button  className="btn grouped-col-btn btn-sm"><span style={style}>{this.props.name}</span>
-    <span className="glyphicon glyphicon-trash" style={{float: 'right', paddingLeft: '5px'}} onClick={this.props.onColumnGroupDeleted.bind(this, this.props.name)}></span></button>);
+    return (
+      <button  className="btn grouped-col-btn btn-sm"><span style={style}>{this.props.name}</span>
+        <span
+          className="glyphicon glyphicon-trash"
+          style={{float: 'right', paddingLeft: '5px'}}
+          onClick={this.props.onColumnGroupDeleted.bind(null, this.props.name)}>
+        </span>
+      </button>
+    );
   }
 }
 
 GroupedColumnButton.propTypes = {
-  name: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
   onColumnGroupDeleted: PropTypes.func
 };

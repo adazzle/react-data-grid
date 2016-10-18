@@ -150,6 +150,11 @@ type: `func`
 type: `func`
 
 
+### `rowActionsCell`
+
+type: `func`
+
+
 ### `rowGetter` (required)
 
 type: `func`

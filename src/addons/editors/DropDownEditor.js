@@ -29,7 +29,7 @@ class DropDownEditor extends EditorBase {
       if (typeof(name) === 'string') {
         options.push(<option key={name} value={name}>{name}</option>);
       } else {
-        options.push(<option key={name.id} value={name.value} title={name.title}  >{name.value}</option>);
+        options.push(<option key={name.id} value={name.value} title={name.title}  >{name.text || name.value}</option>);
       }
     }, this);
     return options;
@@ -39,7 +39,12 @@ class DropDownEditor extends EditorBase {
 DropDownEditor.propTypes = {
   options: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.objectOf({ id: React.PropTypes.string, title: React.PropTypes.string, meta: React.PropTypes.string })
+    React.PropTypes.objectOf({
+      id: React.PropTypes.string,
+      title: React.PropTypes.string,
+      value: React.PropTypes.string,
+      text: React.PropTypes.string
+    })
   ])).isRequired
 };
 

@@ -97,7 +97,7 @@ describe('Column Metrics Tests', () => {
         ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
         ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
         expect(compareEachColumnSpy).toHaveBeenCalled();
-        expect(compareEachColumnSpy.callCount).toEqual(1);
+        expect(compareEachColumnSpy.calls.count()).toEqual(1);
       });
     });
 
@@ -138,7 +138,7 @@ describe('Column Metrics Tests', () => {
         ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
         ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
         expect(compareEachColumnSpy).not.toHaveBeenCalled();
-        expect(compareEachColumnSpy.callCount).toEqual(0);
+        expect(compareEachColumnSpy.calls.count()).toEqual(0);
       });
     });
   });

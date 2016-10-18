@@ -6,7 +6,7 @@ const rows = [{ colOne: 'v1', colTwo: 'b1' },
               { colOne: 'v3', colTwo: 'b3' }];
 const filters = { colOne: { filterTerm: 'v1' }};
 
-ddescribe('Row Filterer', () => {
+describe('Row Filterer', () => {
   it('It can filter arrays of rows', () => {
     let filterResult = filterRows(filters, rows);
     expect(filterResult.length).toBe(1);
