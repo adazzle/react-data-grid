@@ -246,13 +246,15 @@ const Canvas = React.createClass({
   _currentRowsRange: { start: 0, end: 0 },
   _scroll: { scrollTop: 0, scrollLeft: 0 },
 
-  setScrollLeft(scrollLeft: number) {
+   setScrollLeft(scrollLeft: number) {
     if (this._currentRowsLength !== 0) {
       if (!this.refs) return;
       for (let i = 0, len = this._currentRowsLength; i < len; i++) {
-        let row = this.getRowByRef(i);
-        if (row && row.setScrollLeft) {
-          row.setScrollLeft(scrollLeft);
+        if (this.refs[i]) {
+          let row = this.getRowByRef(i);
+          if (row && row.setScrollLeft) {
+            row.setScrollLeft(scrollLeft);
+          }
         }
       }
     }
