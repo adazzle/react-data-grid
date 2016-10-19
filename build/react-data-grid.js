@@ -2769,9 +2769,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this._currentRowsLength !== 0) {
 	      if (!this.refs) return;
 	      for (var i = 0, len = this._currentRowsLength; i < len; i++) {
-	        var row = this.getRowByRef(i);
-	        if (row && row.setScrollLeft) {
-	          row.setScrollLeft(scrollLeft);
+	        if (this.refs[i]) {
+	          var row = this.getRowByRef(i);
+	          if (row && row.setScrollLeft) {
+	            row.setScrollLeft(scrollLeft);
+	          }
 	        }
 	      }
 	    }
