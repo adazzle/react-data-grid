@@ -270,7 +270,7 @@ const Canvas = React.createClass({
   renderRow(props: any) {
     let row = props.row;
     if (props.idx < props.visibleStart || props.idx > props.visibleEnd) {
-      return <OverflowRow height={props.height} idx={props.idx} cellMetaData={props.cellMetaData}/>;
+      return <OverflowRow key={props.key} height={props.height} idx={props.idx} cellMetaData={props.cellMetaData}/>;
     }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
@@ -294,7 +294,7 @@ const Canvas = React.createClass({
     }
   },
 
-  renderScrollingPlaceholder(props: any): ?ReactElement {
+  renderScrollingPlaceholder(props: any) {
     // here we are just rendering empty cells
     // we may want to allow a user to inject this, and/or just render the cells that are in view
     // for now though we essentially are doing a (very lightweight) row + cell with empty content
@@ -334,7 +334,7 @@ const Canvas = React.createClass({
 
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
-        key: displayStart + idx,
+        key: `row-${displayStart + idx}`,
         ref: idx,
         idx: displayStart + idx,
         visibleStart: this.props.visibleStart,

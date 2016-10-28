@@ -155,7 +155,7 @@ describe('Grid Integration', () => {
       });
     });
 
-    it('should commit editor changes on blur', () => {
+    fit('should commit editor changes on blur', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
       gridRunner.clickIntoEditor({ rowIdx: 3, cellIdx: 5})
         .setValue('Test')

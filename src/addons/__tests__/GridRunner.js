@@ -78,7 +78,7 @@ export default class GridRunner {
   selectCell(coords) {
     this.row = this.getRow(coords.rowIdx);
     this.cell = this.getCell(coords);
-    TestUtils.Simulate.click(this.cell);
+    this.cell.simulate('click');
     return this;
   }
 
@@ -97,7 +97,8 @@ export default class GridRunner {
   }
 
   getRenderedRows() {
-    return this.gridWrapper.find('.react-grid-Row');
+    // find rows by displayName
+    return this.gridWrapper.find('Row');
   }
 
   getRenderedHeaderCells() {
@@ -107,18 +108,18 @@ export default class GridRunner {
   getRow(rowIdx) {
     const { relativeRowIdx } = this.getRealPosition(0, rowIdx);
 
-    return this.getRenderedRows().get(relativeRowIdx);
+    return this.getRenderedRows().at(relativeRowIdx);
   }
 
   getCell({cellIdx, rowIdx}) {
     const { relativeCellIdx } = this.getRealPosition(cellIdx, rowIdx);
 
     let row = this.getRow(rowIdx);
-    return this.getCellsFromRow(row)[relativeCellIdx];
+    return this.getCellsFromRow(row).at(relativeCellIdx);
   }
 
   getCellsFromRow(row) {
-    return row.querySelectorAll('.react-grid-Cell');
+    return row.find('Cell');
   }
 
   getCells(row) {
@@ -140,10 +141,10 @@ export default class GridRunner {
     return this;
   }
   getEditor() {
-    return this.cell.querySelector('input');
+    return this.cell.find('input');
   }
   setValue(val) {
-    ReactDOM.findDOMNode(this.getEditor()).value = val;
+    this.getEditor().node.value = val;
     // remember to set the value via the dom node, not the component!
     return this;
   }
@@ -200,7 +201,7 @@ export default class GridRunner {
   ASSERTS
   ======== */
   hasCommitted(val) {
-    expect(this.cell.props.value).toEqual(val);
+    expect(this.cell.props().value).toEqual(val);
     return this;
   }
   isNotEditable() {
@@ -229,7 +230,7 @@ export default class GridRunner {
     // check onCellDrag called with correct data
     expect(this.handleCellDragSpy).toHaveBeenCalled();
     // Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
-    let expected = this.cell.props.value;
+    let expected = this.cell.props().value;
     // chek our event returns the right data
     expect(this.handleCellDragSpy.calls.first().args[0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
     // Test all rows to check that value has copied correctly
@@ -237,7 +238,7 @@ export default class GridRunner {
     for (let i = from, end = to; i <= end; i++) {
       const toCell = this.getCells(rows[i])[col - 1];
       // First the component
-      expect(toCell.props.value).toEqual(expected);
+      expect(toCell.props().value).toEqual(expected);
       // and finally the rendered data
       // (use trim as we are reading from the dom so get some whitespace at the end)
       expect(ReactDOM.findDOMNode(toCell.querySelector('.react-grid-Cell__value')).textContent.trim()).toEqual(expected.trim());
