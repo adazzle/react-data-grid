@@ -14,7 +14,7 @@ for (var j = 0; j < 50; j++) {
   _cols.push({ key: 'col' + j, name: 'col' + j, width: 150, editable: true });
 }
 
-for (var rowIdx = 1; rowIdx < 2000; rowIdx++) {
+for (var rowIdx = 1; rowIdx < 300; rowIdx++) {
   var row = {};
   _cols.forEach(function(c, colIdx) {
     row[c.key] = '(' + colIdx + ',' + rowIdx + ')';
@@ -58,4 +58,16 @@ var Example = React.createClass({
 
 
 
-module.exports = Example;
+module.exports = React.createClass({
+
+  render: function() {
+    return (
+      <div>
+        <h3>Immutable Data Example</h3>
+        <p></p>
+        <Example/>
+      </div>
+    );
+  }
+
+});

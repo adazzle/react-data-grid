@@ -13,10 +13,10 @@ var execSync = require('child_process').execSync,
  */
 function getNextVersion(version, branchName, buildNumber){
   var nextVersion = semver.major(version) + "." + semver.minor(version) + "." + semver.patch(version) + "-" + branchName + buildNumber;
-  if(semver.valid(nextVersion)){
+  if(semver.valid(nextVersion)) {
     return nextVersion;
   } else{
-    console.error(next + " is not a valid npm version");
+    console.error(nextVersion + " is not a valid npm version");
   }
 }
 
