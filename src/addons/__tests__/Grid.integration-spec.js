@@ -2,7 +2,7 @@ import TestUtils from 'react/lib/ReactTestUtils';
 import GridRunner from './GridRunner';
 import ReactDOM from 'react-dom';
 
-fdescribe('Grid Integration', () => {
+describe('Grid Integration', () => {
   let gridRunner;
   let grid;
 
@@ -90,8 +90,8 @@ fdescribe('Grid Integration', () => {
     });
   });
 
-  describe('Editors', () => {
-    it('Readonly columns are NOT Editable', () => {
+  fdescribe('Editors', () => {
+    fit('Readonly columns are NOT Editable', () => {
       gridRunner.clickIntoEditor({cellIdx: 1, rowIdx: 3})
         .isNotEditable();
     });

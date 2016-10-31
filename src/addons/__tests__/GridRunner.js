@@ -159,7 +159,7 @@ export default class GridRunner {
     return this;
   }
   keyDown(ev, element = this.getEditor()) {
-    TestUtils.Simulate.keyDown(element, ev);
+    element.simulate('keyDown', ev);
     return this;
   }
 
@@ -215,9 +215,9 @@ export default class GridRunner {
   hasSelected({rowIdx, cellIdx, expectedClass = '.selected'}) {
     // and should move to the appropriate cell/row
     const selectedRow = this.getRow(rowIdx);
-    const selected = selectedRow.querySelector(expectedClass);
-    expect(selected.props.rowIdx).toEqual(rowIdx);
-    expect(selected.props.idx).toEqual(cellIdx);
+    const selected = selectedRow.find(expectedClass);
+    expect(selected.props().rowIdx).toEqual(rowIdx);
+    expect(selected.props().idx).toEqual(cellIdx);
     return this;
   }
   hasCopied({cellIdx, rowIdx}) {
