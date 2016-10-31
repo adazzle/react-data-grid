@@ -8,7 +8,7 @@ Props
 
 ### `cellMetaData` (required)
 
-type: `shapeunknown`
+type: `shaperequire('./PropTypeShapes/CellMetaDataShape')`
 
 
 ### `className`

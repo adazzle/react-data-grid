@@ -64,9 +64,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var apiReference = __webpack_require__(47);
 	var componentsDocs = __webpack_require__(48);
 
-	var Route = ReactRouter.Route;
-	var RouteHandler = ReactRouter.RouteHandler;
-	var Link = ReactRouter.Link;
+	var Route = ReactRouter.Route,
+	    RouteHandler = ReactRouter.RouteHandler,
+	    Link = ReactRouter.Link;
 
 
 	var App = React.createClass({

@@ -13,7 +13,7 @@ type: `any`
 
 ### `cellMetaData` (required)
 
-type: `shapeunknown`
+type: `shaperequire('./PropTypeShapes/CellMetaDataShape')`
 
 
 ### `className`
@@ -23,7 +23,7 @@ type: `string`
 
 ### `column` (required)
 
-type: `shapeunknown`
+type: `shaperequire('./PropTypeShapes/ExcelColumn')`
 
 
 ### `expandableOptions` (required)
