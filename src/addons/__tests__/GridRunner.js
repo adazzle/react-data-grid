@@ -119,7 +119,7 @@ export default class GridRunner {
   }
 
   getCellsFromRow(row) {
-    return row.find('Cell');
+    return row.find('Cell'); // don't return locked checkbox select cell'
   }
 
   getCells(row) {
@@ -137,7 +137,7 @@ export default class GridRunner {
     // activate it
     // have to do click then doubleClick as thast what the browser would actually emit
     this.selectCell({cellIdx, rowIdx});
-    TestUtils.Simulate.doubleClick(this.cell);
+    this.cell.simulate('doubleClick');
     return this;
   }
   getEditor() {
@@ -164,7 +164,7 @@ export default class GridRunner {
   }
 
   copy() {
-    this.keyDown({keyCode: 67, ctrlKey: true}, ReactDOM.findDOMNode(this.cell));
+    this.keyDown({keyCode: 67, ctrlKey: true}, ReactDOM.findDOMNode(this.cell.node));
     return this;
   }
 
@@ -217,14 +217,14 @@ export default class GridRunner {
     const selectedRow = this.getRow(rowIdx);
     const selected = selectedRow.querySelector(expectedClass);
     expect(selected.props.rowIdx).toEqual(rowIdx);
-    expect(selected.props.idx).toEqual(cellIdx + 1);
+    expect(selected.props.idx).toEqual(cellIdx);
     return this;
   }
   hasCopied({cellIdx, rowIdx}) {
     let baseGrid = this.grid.refs.reactDataGrid;
-    expect(baseGrid.state.copied.idx).toEqual(cellIdx + 1); // increment by 1 due to checckbox col
+    expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
-    expect(ReactDOM.findDOMNode(this.cell).className.indexOf(' copied ') > -1).toBe(true);
+    expect(ReactDOM.findDOMNode(this.cell.node).className.indexOf(' copied ') > -1).toBe(true);
   }
   hasDragged({from, to, col, cellKey}) {
     // check onCellDrag called with correct data

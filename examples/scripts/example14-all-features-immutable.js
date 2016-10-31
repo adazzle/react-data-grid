@@ -224,7 +224,6 @@ var MyContextMenu = React.createClass({
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}
               toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={()=>{}} numberOfRows={this.getSize()}/>}
-              enableRowSelect={true}
               rowHeight={50}
               minHeight={600}
               />

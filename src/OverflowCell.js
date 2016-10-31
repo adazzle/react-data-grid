@@ -37,6 +37,8 @@ OverflowCell.propTypes = {
   cellMetaData: React.PropTypes.object
 };
 
+OverflowCell.displayName = 'Cell';
+
 const OverflowCellComponent = OverflowCell;
 export default focusableComponentWrapper(OverflowCell);
 export { OverflowCellComponent };

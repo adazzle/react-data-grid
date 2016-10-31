@@ -2,7 +2,7 @@ import TestUtils from 'react/lib/ReactTestUtils';
 import GridRunner from './GridRunner';
 import ReactDOM from 'react-dom';
 
-describe('Grid Integration', () => {
+fdescribe('Grid Integration', () => {
   let gridRunner;
   let grid;
 
@@ -13,6 +13,8 @@ describe('Grid Integration', () => {
 
   afterEach(() => {
     gridRunner.dispose();
+    gridRunner = null;
+    grid = null;
   });
 
   describe('Setup', () => {
@@ -44,26 +46,12 @@ describe('Grid Integration', () => {
       let firstCellIdx = 3;
       gridRunner.selectCell({cellIdx: firstCellIdx, rowIdx: 1}).copy();
 
-      let firstCell = gridRunner.getCells(gridRunner.row)[firstCellIdx];
-      expect(ReactDOM.findDOMNode(firstCell).className.indexOf(' copied') > -1).toBe(true);
+      let firstCell = gridRunner.getCell({cellIdx: firstCellIdx, rowIdx: 1});
+      expect(ReactDOM.findDOMNode(firstCell.node).className.indexOf(' copied') > -1).toBe(true);
 
       gridRunner.selectCell({cellIdx: 4, rowIdx: 1})
       .copy();
-      expect(ReactDOM.findDOMNode(firstCell).className.indexOf(' copied') > -1).toBe(false);
-    });
-  });
-
-  describe('Navigation', () => {
-    it('header columns and cells stay in line', () => {
-      gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.selectCell({cellIdx: 14, rowIdx: 0});
-      let firstRow = gridRunner.getRow(0);
-      let firstRowCells = gridRunner.getCellsFromRow(firstRow);
-      let headerCells = gridRunner.getRenderedHeaderCells();
-
-      headerCells.forEach((hCell, i) => {
-        expect(hCell.style.left).toEqual(firstRowCells[i].style.left);
-      });
+      expect(ReactDOM.findDOMNode(firstCell.node).className.indexOf(' copied') > -1).toBe(false);
     });
   });
 
@@ -155,8 +143,8 @@ describe('Grid Integration', () => {
       });
     });
 
-    fit('should commit editor changes on blur', () => {
-      gridRunner = new GridRunner({renderIntoBody: true});
+    it('should commit editor changes on blur', () => {
+      gridRunner = new GridRunner({});
       gridRunner.clickIntoEditor({ rowIdx: 3, cellIdx: 5})
         .setValue('Test')
         .selectCell({ rowIdx: 4, cellIdx: 3 })
