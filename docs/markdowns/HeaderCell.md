@@ -13,7 +13,7 @@ type: `string`
 
 ### `column` (required)
 
-type: `shapeunknown`
+type: `shaperequire('./PropTypeShapes/ExcelColumn')`
 
 
 ### `height` (required)

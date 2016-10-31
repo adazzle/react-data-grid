@@ -385,7 +385,8 @@
       "cellMetaData": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('./PropTypeShapes/CellMetaDataShape')",
+          "computed": true
         },
         "required": true,
         "description": ""
@@ -992,7 +993,8 @@
       "column": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('./PropTypeShapes/ExcelColumn')",
+          "computed": true
         },
         "required": true,
         "description": ""
@@ -1043,7 +1045,8 @@
       "cellMetaData": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('./PropTypeShapes/CellMetaDataShape')",
+          "computed": true
         },
         "required": true,
         "description": ""
@@ -1541,7 +1544,8 @@
       "cellMetaData": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('./PropTypeShapes/CellMetaDataShape')",
+          "computed": true
         },
         "required": false,
         "description": ""
@@ -2098,7 +2102,8 @@
       "column": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('./PropTypeShapes/ExcelColumn')",
+          "computed": true
         },
         "required": true,
         "description": ""
@@ -2329,8 +2334,20 @@
       "sortDirection": {
         "type": {
           "name": "enum",
-          "computed": true,
-          "value": "DEFINE_SORT"
+          "value": [
+            {
+              "value": "'ASC'",
+              "computed": false
+            },
+            {
+              "value": "'DESC'",
+              "computed": false
+            },
+            {
+              "value": "'NONE'",
+              "computed": false
+            }
+          ]
         },
         "required": false,
         "description": ""
@@ -4090,7 +4107,8 @@
       "cellMetaData": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('./PropTypeShapes/CellMetaDataShape')",
+          "computed": true
         },
         "required": false,
         "description": ""
@@ -4528,7 +4546,8 @@
       "cellMetaData": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('./PropTypeShapes/CellMetaDataShape')",
+          "computed": true
         },
         "required": false,
         "description": ""
@@ -4612,7 +4631,8 @@
       "column": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('../../../PropTypeShapes/ExcelColumn')",
+          "computed": true
         },
         "required": false,
         "description": ""
@@ -4682,173 +4702,6 @@
               "computed": false
             }
           ]
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\cells\\headerCells\\filters\\AutoCompleteFilter.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "getOptions",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "newProps",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "columnValueContainsSearchTerms",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "columnValue",
-            "type": null
-          },
-          {
-            "name": "filterTerms",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "filterValues",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "row",
-            "type": null
-          },
-          {
-            "name": "columnFilter",
-            "type": null
-          },
-          {
-            "name": "columnKey",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "handleChange",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "value",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "onChange": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": "unknown"
-        },
-        "required": false,
-        "description": ""
-      },
-      "getValidFilterValues": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\cells\\headerCells\\filters\\NumericFilter.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "filterValues",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "row",
-            "type": null
-          },
-          {
-            "name": "columnFilter",
-            "type": null
-          },
-          {
-            "name": "columnKey",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getRules",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "value",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "handleKeyPress",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "handleChange",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "onChange": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": "unknown"
         },
         "required": false,
         "description": ""
@@ -5292,7 +5145,8 @@
       "column": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('../../PropTypeShapes/ExcelColumn')",
+          "computed": true
         },
         "required": false,
         "description": ""
@@ -5652,8 +5506,11 @@
                 "name": "string"
               },
               {
-                "name": "custom",
-                "raw": "React.PropTypes.objectOf({\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n})"
+                "name": "objectOf",
+                "value": {
+                  "name": "custom",
+                  "raw": "{\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n}"
+                }
               }
             ]
           }
@@ -5745,7 +5602,8 @@
       "column": {
         "type": {
           "name": "shape",
-          "value": "unknown"
+          "value": "require('../../PropTypeShapes/ExcelColumn')",
+          "computed": true
         },
         "required": true,
         "description": ""
@@ -6368,8 +6226,11 @@
                 "name": "string"
               },
               {
-                "name": "custom",
-                "raw": "React.PropTypes.objectOf({\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n})"
+                "name": "objectOf",
+                "value": {
+                  "name": "custom",
+                  "raw": "{\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n}"
+                }
               }
             ]
           }

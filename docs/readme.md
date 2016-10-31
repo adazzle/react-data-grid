@@ -12,8 +12,6 @@
 - [Viewport](/docs/markdowns/Viewport.md)
 - [FilterableHeaderCell](/docs/markdowns/FilterableHeaderCell.md)
 - [SortableHeaderCell](/docs/markdowns/SortableHeaderCell.md)
-- [AutoCompleteFilter](/docs/markdowns/AutoCompleteFilter.md)
-- [NumericFilter](/docs/markdowns/NumericFilter.md)
 - [DragDropContainer](/docs/markdowns/DragDropContainer.md)
 - [DraggableHeaderCell](/docs/markdowns/DraggableHeaderCell.md)
 - [RowActionsCell](/docs/markdowns/RowActionsCell.md)

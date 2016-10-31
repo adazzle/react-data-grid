@@ -78,7 +78,7 @@ type: `string`
 
 ### `sortDirection`
 
-type: `enumDEFINE_SORT`
+type: `enum('ASC'|'DESC'|'NONE')`
 
 
 ### `style`

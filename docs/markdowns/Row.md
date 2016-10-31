@@ -8,7 +8,7 @@ Props
 
 ### `cellMetaData`
 
-type: `shapeunknown`
+type: `shaperequire('./PropTypeShapes/CellMetaDataShape')`
 
 
 ### `cellRenderer`
