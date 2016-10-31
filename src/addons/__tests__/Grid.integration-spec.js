@@ -90,9 +90,9 @@ describe('Grid Integration', () => {
     });
   });
 
-  fdescribe('Editors', () => {
-    fit('Readonly columns are NOT Editable', () => {
-      gridRunner.clickIntoEditor({cellIdx: 1, rowIdx: 3})
+  describe('Editors', () => {
+    it('Readonly columns are NOT Editable', () => {
+      gridRunner.clickIntoEditor({cellIdx: 0, rowIdx: 3})
         .isNotEditable();
     });
 
@@ -155,7 +155,7 @@ describe('Grid Integration', () => {
 
     it('Arrow Left doesnt commit your change if you are not at the start of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 5})
+      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
         .setValue('Test')
         .setCursor(2)
         .keyDown({key: 'ArrowLeft'})
@@ -169,27 +169,27 @@ describe('Grid Integration', () => {
     it('Arrow Left does commit your change if you are at the start of the text', () => {
       // by default we are at pos 0 with a blank value
       gridRunner.changeCell({
-        select: {row: 3, cell: 5},
+        select: {row: 3, cell: 4},
         val: '',
         ev: {key: 'ArrowLeft'},
-        expectToSelect: {row: 3, cell: 4}
+        expectToSelect: {row: 3, cell: 3}
       });
     });
 
     it('Arrow Right commits your change when you are at the end of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 5})
+      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
         .setValue('Test')
         .setCursor(4)
         .keyDown({key: 'ArrowRight'})
         .hasCommitted('Test')
-        .hasSelected({rowIdx: 3, cellIdx: 6})
+        .hasSelected({rowIdx: 3, cellIdx: 5})
         .dispose();
     });
 
     it('Arrow Right doesnt commit your change when you are not at the end of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 5})
+      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
         .setValue('Test')
         .setCursor(2)
         .keyDown({key: 'ArrowRight'})
@@ -202,19 +202,19 @@ describe('Grid Integration', () => {
 
     it('Arrow Up commits your change', () => {
       gridRunner.changeCell({
-        select: {row: 3, cell: 5},
+        select: {row: 3, cell: 4},
         val: 'Test',
         ev: {key: 'ArrowUp'},
-        expectToSelect: {row: 2, cell: 5}
+        expectToSelect: {row: 2, cell: 4}
       });
     });
 
     it('Arrow Down commits your change', () => {
       gridRunner.changeCell({
-        select: {row: 3, cell: 5},
+        select: {row: 3, cell: 4},
         val: 'Test',
         ev: {key: 'ArrowDown'},
-        expectToSelect: {row: 4, cell: 5}
+        expectToSelect: {row: 4, cell: 4}
       });
     });
   });
@@ -235,7 +235,7 @@ describe('Grid Integration', () => {
 
     // Please note: this test will fail if the MenuItem's inner text in example14-all-features-immutable is changed.
     it('should get row and column indexes from context menu', () => {
-      gridRunner.rightClickCell({cellIdx: fakeIdx - 1, rowIdx: fakeRowIdx});
+      gridRunner.rightClickCell({cellIdx: fakeIdx, rowIdx: fakeRowIdx});
       let menuItem = gridRunner.getContextMenuItem();
       // Using this alternative for firefox tests
       let menuItemValue = menuItem.innerText !== undefined ? menuItem.innerText : menuItem.textContent;
