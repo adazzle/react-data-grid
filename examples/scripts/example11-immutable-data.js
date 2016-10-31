@@ -14,7 +14,7 @@ for (var j = 0; j < 50; j++) {
   _cols.push({ key: 'col' + j, name: 'col' + j, width: 150, editable: true });
 }
 
-for (var rowIdx = 1; rowIdx < 100; rowIdx++) {
+for (var rowIdx = 1; rowIdx < 300; rowIdx++) {
   var row = {};
   _cols.forEach(function(c, colIdx) {
     row[c.key] = '(' + colIdx + ',' + rowIdx + ')';
