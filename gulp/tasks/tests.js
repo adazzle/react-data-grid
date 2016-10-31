@@ -15,19 +15,6 @@ function testTaskRunner(done) {
     debug: debug
   }, done);
 
-  karmaServer.on('browser_error', function (browser, err) {
-    gutil.log('Karma Run Failed: ' + err.message);
-    throw err;
-  });
-
-  karmaServer.on('run_complete', function (browsers, results) {
-    if (results.failed) {
-      throw new Error('Karma: Tests Failed');
-    }
-    gutil.log('Karma Run Complete: No Failures');
-    done();
-  });
-
   karmaServer.start();
 }
 
