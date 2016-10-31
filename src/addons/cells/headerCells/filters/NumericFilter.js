@@ -15,22 +15,6 @@ class NumericFilter extends React.Component {
     this.getRules = this.getRules.bind(this);
   }
 
-  componentDidMount() {
-    this.attachTooltip();
-  }
-
-  componentDidUpdate() {
-    this.attachTooltip();
-  }
-
-  attachTooltip() {
-    if ($) {
-      $('[data-toggle="tooltip"]').tooltip();
-    } else if (jQuery) {
-      jQuery('[data-toggle="tooltip"]').tooltip();
-    }
-  }
-
   filterValues(row, columnFilter, columnKey) {
     if (columnFilter.filterTerm == null) {
       return true;
@@ -133,7 +117,7 @@ class NumericFilter extends React.Component {
       cursor: 'help'
     };
 
-    let tooltipText = '<table><tbody><tr><td colspan="2"><strong>Input Methods:</strong></td></tr><tr><td><strong>- &nbsp;</strong></td><td style="text-align:left">Range</td></tr><tr><td><strong>> &nbsp;</strong></td><td style="text-align:left"> Greater Then</td></tr><tr><td><strong>< &nbsp;</strong></td><td style="text-align:left"> Less Then</td></tr></tbody>';
+    let tooltipText = 'Input Methods: Range (x-y), Greater Then (>x), Less Then (<y)';
 
     return (
       <div>
@@ -141,7 +125,7 @@ class NumericFilter extends React.Component {
           <input key={inputKey} type="text" placeholder="e.g. 3,10-15,>20" className="form-control input-sm" onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
         </div>
         <div className="input-sm">
-          <span className="badge" style={badgeStyle} data-toggle="tooltip" data-container="body" data-html="true" title={tooltipText}>?</span>
+          <span className="badge" style={badgeStyle} title={tooltipText}>?</span>
         </div>
       </div>
     );

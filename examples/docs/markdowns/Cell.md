@@ -65,7 +65,6 @@ type: `bool`
 ### `ref`
 
 type: `string`
-defaultValue: `'cell'`
 
 
 ### `rowData` (required)

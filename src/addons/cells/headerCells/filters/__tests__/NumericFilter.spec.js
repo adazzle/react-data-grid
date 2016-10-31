@@ -1,10 +1,6 @@
 import React from 'react';
 import TestUtils from 'react/lib/ReactTestUtils';
 import NumericFilter from '../NumericFilter';
-import {jQuery, $} from 'jquery';
-
-window.jQuery = jQuery;
-window.$ = $;
 
 describe('NumericFilter', () => {
   let component;
