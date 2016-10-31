@@ -202,7 +202,7 @@ const Row = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.props} className={className} style={style} onDragEnter={this.handleDragEnter}>
+      <div className={className} style={style} onDragEnter={this.handleDragEnter}>
         {React.isValidElement(this.props.row) ?
           this.props.row : cells}
       </div>
