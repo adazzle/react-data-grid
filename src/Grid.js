@@ -97,7 +97,7 @@ const Grid = React.createClass({
           getValidFilterValues={this.props.getValidFilterValues}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
-            <div ref="viewPortContainer" tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+            <div ref="viewPortContainer" tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}>
                 <Viewport
                   ref="viewport"
                   rowKey={this.props.rowKey}
@@ -111,6 +111,8 @@ const Grid = React.createClass({
                   columnMetrics={this.props.columnMetrics}
                   totalWidth={this.props.totalWidth}
                   onScroll={this.onScroll}
+                  handleDragEnd={this.props.onViewportDragEnd}
+                  handleDragStart={this.props.onViewportDragStart}
                   onRows={this.props.onRows}
                   cellMetaData={this.props.cellMetaData}
                   rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}

@@ -52,7 +52,9 @@ const Canvas = React.createClass({
         }).isRequired
       })
     ]),
-    rowGroupRenderer: React.PropTypes.func
+    rowGroupRenderer: React.PropTypes.func,
+    handleDragStart: React.PropTypes.func.isRequired,
+    handleDragEnd: React.PropTypes.func.isRequired
   },
 
   getDefaultProps() {
@@ -275,6 +277,8 @@ const Canvas = React.createClass({
       return (<RowGroup
         key={props.key}
         name={row.name}
+        handleDragEnd={props.handleDragEnd}
+        handleDragStart={props.handleDragStart}
         {...row.__metaData}
         row={props.row}
         idx={props.idx}
@@ -343,6 +347,8 @@ const Canvas = React.createClass({
           key: displayStart + idx,
           ref: idx,
           idx: displayStart + idx,
+          handleDragStart: this.props.handleDragStart,
+          handleDragEnd: this.props.handleDragEnd,
           row: r.row,
           height: rowHeight,
           onMouseOver: this.onMouseOver,

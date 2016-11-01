@@ -26,7 +26,9 @@ const Row = React.createClass({
     extraClasses: PropTypes.string,
     forceUpdate: PropTypes.bool,
     subRowDetails: PropTypes.object,
-    isRowHovered: PropTypes.bool
+    isRowHovered: PropTypes.bool,
+    handleDragEnd: PropTypes.func.isRequired,
+    handleDragStart: PropTypes.func.isRequired
   },
 
   mixins: [ColumnUtilsMixin],
@@ -87,6 +89,8 @@ const Row = React.createClass({
                       ref={`cell-${i}`}
                       key={`${column.key}-${i}`}
                       idx={i}
+                      handleDragEnd={this.props.handleDragEnd}
+                      handleDragStart={this.props.handleDragStart}
                       rowIdx={this.props.idx}
                       value={this.getCellValue(column.key || i)}
                       column={column}
