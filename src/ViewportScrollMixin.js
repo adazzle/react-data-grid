@@ -92,6 +92,7 @@ module.exports = {
 
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
     let visibleBuffer = 2;
+    let displayBuffer = 1.5;
     let renderedRowsCount = ceil(height / rowHeight);
 
     let visibleStart = max(0, floor(scrollTop / rowHeight) - visibleBuffer);
@@ -102,10 +103,10 @@ module.exports = {
 
     let displayStart = max(
       0,
-      visibleStart - renderedRowsCount * 2);
+      visibleStart - parseInt(renderedRowsCount * visibleBuffer, 10));
 
     let displayEnd = min(
-      visibleStart + renderedRowsCount * 2,
+      visibleStart + parseInt(renderedRowsCount * visibleBuffer, 10),
       length);
 
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
@@ -113,7 +114,7 @@ module.exports = {
     let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
     let colVisibleEnd = colVisibleStart + renderedColumnCount;
     let colDisplayStart = max(0, colVisibleStart - 2);
-    let colDisplayEnd = min(colVisibleStart + renderedColumnCount * 2, totalNumberColumns);
+    let colDisplayEnd = min(colVisibleStart + parseInt(renderedColumnCount * displayBuffer, 10), totalNumberColumns);
 
     let nextScrollState = {
       visibleStart,

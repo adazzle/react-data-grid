@@ -63,7 +63,7 @@ const Viewport = React.createClass({
     this.refs.canvas.setScrollLeft(scrollLeft);
   },
 
-  render(): ?ReactElement {
+  render() {
     let style = {
       padding: 0,
       bottom: 0,
