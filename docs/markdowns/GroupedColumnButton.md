@@ -8,7 +8,7 @@ Props
 
 ### `name` (required)
 
-type: `object`
+type: `string`
 
 
 ### `onColumnGroupDeleted`

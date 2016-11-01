@@ -1,4 +1,4 @@
-import groupBy from 'lodash/groupby';
+import groupBy from 'lodash.groupby';
 
 class RowGrouper {
 
@@ -45,4 +45,3 @@ const groupRows = (rows, groupedColumns, expandedRows) => {
 };
 
 module.exports = groupRows;
-

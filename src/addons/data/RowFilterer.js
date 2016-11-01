@@ -9,8 +9,12 @@ const filterRows = (filters, rows = []) => {
           include = false;
         } else if (typeof colFilter.filterTerm === 'string') {
           // default filter action
-          let rowValue = r[columnKey].toString().toLowerCase();
-          if (rowValue.indexOf(colFilter.filterTerm.toLowerCase()) === -1) {
+          let rowValue = r[columnKey];
+          if (rowValue) {
+            if (rowValue.toString().toLowerCase().indexOf(colFilter.filterTerm.toLowerCase()) === -1) {
+              include = false;
+            }
+          } else {
             include = false;
           }
         }

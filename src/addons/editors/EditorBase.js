@@ -40,3 +40,4 @@ EditorBase.propTypes = {
 };
 
 module.exports = EditorBase;
+

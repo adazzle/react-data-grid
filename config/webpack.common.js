@@ -20,6 +20,7 @@ function getPlugins() {
 };
 
 var config = {
+  debug: !RELEASE,
   externals: {
     "react": {
       root : 'React',

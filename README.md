@@ -53,16 +53,16 @@ Features
 --------
 
 - Lightning fast virtual rendering
-- [Can render hundreds of thousands of rows with no lag](http://adazzle.github.io/react-data-grid/examples.html#/million-rows)
+- [Can render hundreds of thousands of rows with no lag](http://adazzle.github.io/react-data-grid/examples.html#/one-million-rows)
 - Keyboard navigation
 - [Fully editable grid](http://adazzle.github.io/react-data-grid/examples.html#/editable)
-- [Rich cell editors like autocomplete, checkbox and dropdown editors, complete with keyboard navigation](http://adazzle.github.io/react-data-grid/examples.html#/editors)
+- [Rich cell editors like autocomplete, checkbox and dropdown editors, complete with keyboard navigation](http://adazzle.github.io/react-data-grid/examples.html#/built-in-editors)
 - Custom cell Editors - Easily create your own
-- [Custom cell Formatters](http://adazzle.github.io/react-data-grid/examples.html#/formatters)
-- [Frozen columns](http://adazzle.github.io/react-data-grid/examples.html#/fixed)
-- [Resizable columns](http://adazzle.github.io/react-data-grid/examples.html#/resizable)
-- [Sorting](http://adazzle.github.io/react-data-grid/examples.html#/sortable) 
-- [Filtering] (http://adazzle.github.io/react-data-grid/examples.html#/filterable) 
+- [Custom cell Formatters](http://adazzle.github.io/react-data-grid/examples.html#/custom-formatters)
+- [Frozen columns](http://adazzle.github.io/react-data-grid/examples.html#/fixed-cols)
+- [Resizable columns](http://adazzle.github.io/react-data-grid/examples.html#/resizable-cols)
+- [Sorting](http://adazzle.github.io/react-data-grid/examples.html#/sortable-cols) 
+- [Filtering] (http://adazzle.github.io/react-data-grid/examples.html#/filterable-sortable-grid) 
 - [Context Menu] (http://adazzle.github.io/react-data-grid/examples.html#/context-menu)
 - Copy and Paste values into other cells
 - [Multiple cell updates using cell dragdown] (http://adazzle.github.io/react-data-grid/examples.html#/cell-drag-down)

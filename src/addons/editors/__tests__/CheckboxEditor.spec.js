@@ -41,7 +41,7 @@ describe('CheckboxEditor', () => {
       TestUtils.Simulate.click(ReactDOM.findDOMNode(Input));
       expect(testColumn.onCellChange).toHaveBeenCalled();
       let fakeEvent = {stopPropagation: function() {}};
-      expect(testColumn.onCellChange.mostRecentCall.args[0]).toEqual(1, 'columnKey', fakeEvent);
+      expect(testColumn.onCellChange.calls.mostRecent().args[0]).toEqual(1, 'columnKey', fakeEvent);
     });
   });
 });

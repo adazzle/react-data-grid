@@ -228,7 +228,7 @@ export default class GridRunner {
     // Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
     let expected = this.cell.props.value;
     // chek our event returns the right data
-    expect(this.handleCellDragSpy.argsForCall[0][0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
+    expect(this.handleCellDragSpy.calls.first().args[0]).toEqual({cellKey: cellKey, fromRow: from, toRow: to, value: expected});
     // Test all rows to check that value has copied correctly
     const rows = TestUtils.scryRenderedDOMComponentsWithClass(this.grid, 'react-grid-Row');
     for (let i = from, end = to; i <= end; i++) {

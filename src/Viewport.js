@@ -13,28 +13,22 @@ const Viewport = React.createClass({
     columnMetrics: PropTypes.object.isRequired,
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     selectedRows: PropTypes.array,
-    rowSelection: React.PropTypes.shape({
-      enableShiftSelect: React.PropTypes.bool,
-      onRowsSelected: React.PropTypes.func,
-      onRowsDeselected: React.PropTypes.func,
-      showCheckbox: React.PropTypes.bool,
-      selectBy: React.PropTypes.oneOfType([
-        React.PropTypes.shape({
-          indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
-        }),
-        React.PropTypes.shape({
-          isSelectedKey: React.PropTypes.string.isRequired
-        }),
-        React.PropTypes.shape({
-          keys: React.PropTypes.shape({
-            values: React.PropTypes.array.isRequired,
-            rowKey: React.PropTypes.string.isRequired
-          }).isRequired
-        })
-      ]).isRequired
-    }),
+    rowSelection: React.PropTypes.oneOfType([
+      React.PropTypes.shape({
+        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+      }),
+      React.PropTypes.shape({
+        isSelectedKey: React.PropTypes.string.isRequired
+      }),
+      React.PropTypes.shape({
+        keys: React.PropTypes.shape({
+          values: React.PropTypes.array.isRequired,
+          rowKey: React.PropTypes.string.isRequired
+        }).isRequired
+      })
+    ]),
     expandedRows: PropTypes.array,
-    rowRenderer: PropTypes.func,
+    rowRenderer: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     rowsCount: PropTypes.number.isRequired,
     rowHeight: PropTypes.number.isRequired,
     onRows: PropTypes.func,

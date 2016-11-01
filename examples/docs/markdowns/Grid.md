@@ -130,7 +130,7 @@ type: `number`
 
 ### `rowRenderer`
 
-type: `func`
+type: `union(element|func)`
 
 
 ### `rowScrollTimeout`
@@ -140,7 +140,7 @@ type: `number`
 
 ### `rowSelection`
 
-type: `shape[object Object]`
+type: `union(shape|shape|shape)`
 
 
 ### `rowsCount`
