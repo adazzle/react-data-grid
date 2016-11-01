@@ -1,6 +1,6 @@
 import React from 'react';
 import Viewport from '../Viewport';
-import { shallow, mount } from 'enzyme';
+import { shallow} from 'enzyme';
 import helpers from './GridPropHelpers';
 
 let viewportProps = {
