@@ -241,14 +241,14 @@ const EditorContainer = React.createClass({
   handleBlur(e) {
     e.stopPropagation();
     if (this.isBodyClicked(e)) {
-	    this.commit(e);
-	  }
+      this.commit(e);
+    }
 
-	  if (!this.isBodyClicked(e)) {
+    if (!this.isBodyClicked(e)) {
 	    // prevent null reference
-	    if (this.isViewportClicked(e) || !this.isClickInisdeEditor(e)) {
-	      this.commit(e);
-	    }
+      if (this.isViewportClicked(e) || !this.isClickInisdeEditor(e)) {
+        this.commit(e);
+      }
     }
   },
 
