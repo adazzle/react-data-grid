@@ -6,7 +6,7 @@ import rowComparer from '../../RowComparer';
 let rowDropTarget = (Row) => class extends React.Component {
 
   shouldComponentUpdate(nextProps) {
-    return rowComparer(this.props, nextProps) || this.props.isOver !== nextProps.isOver || this.props.canDrop !== nextProps.canDrop;
+    return rowComparer(this.props, nextProps);
   }
 
   moveRow() {
@@ -50,4 +50,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default (Row) => DropTarget('Row', target, collect)(rowDropTarget(Row));
+export default (Row) => DropTarget('Row', target, collect, {arePropsEqual: rowComparer})(rowDropTarget(Row));

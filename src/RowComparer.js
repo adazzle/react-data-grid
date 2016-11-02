@@ -29,6 +29,8 @@ export const shouldRowUpdate = (currentProps, nextProps) => {
     hasRowBeenCopied(currentProps) ||
     currentProps.isSelected !== nextProps.isSelected ||
     nextProps.height !== currentProps.height ||
+    this.props.isOver !== nextProps.isOver ||
+    this.props.canDrop !== nextProps.canDrop ||
     currentProps.forceUpdate === true;
 };
 
