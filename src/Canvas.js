@@ -15,8 +15,6 @@ import OverflowRow from './OverflowRow';
 const Canvas = React.createClass({
   mixins: [ScrollShim],
 
-  _rowsCache: {},
-
   propTypes: {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     rowHeight: PropTypes.number.isRequired,
@@ -94,9 +92,6 @@ const Canvas = React.createClass({
   },
 
   componentWillReceiveProps(nextProps: any) {
-    if (nextProps.isScrolling === false) {
-      this._rowsCache = {};
-    }
     if (nextProps.displayStart !== this.state.displayStart
       || nextProps.displayEnd !== this.state.displayEnd) {
       this.setState({
@@ -267,15 +262,11 @@ const Canvas = React.createClass({
 
   renderRow(props: any) {
     let row = props.row;
-    let RowComponent = this._rowsCache[row.key];
-    if (RowComponent) {
-      RowComponent = RowComponent;
-    }
     if (props.idx < props.visibleStart || props.idx > props.visibleEnd) {
-      RowComponent = <OverflowRow key={props.key} height={props.height} idx={props.idx} cellMetaData={props.cellMetaData}/>;
+      return <OverflowRow key={props.key} height={props.height} idx={props.idx} cellMetaData={props.cellMetaData}/>;
     }
     if (row.__metaData && row.__metaData.isGroup) {
-      RowComponent = (<RowGroup
+      return (<RowGroup
         key={props.key}
         name={row.name}
         {...row.__metaData}
@@ -288,14 +279,12 @@ const Canvas = React.createClass({
     }
     let RowsRenderer = this.props.rowRenderer;
     if (typeof RowsRenderer === 'function') {
-      RowComponent = <RowsRenderer {...props}/>;
+      return <RowsRenderer {...props}/>;
     }
 
     if (React.isValidElement(this.props.rowRenderer)) {
-      RowComponent = React.cloneElement(this.props.rowRenderer, props);
+      return React.cloneElement(this.props.rowRenderer, props);
     }
-    this._rowsCache[row.key] = RowComponent;
-    return RowComponent;
   },
 
   renderPlaceholder(key: string, height: number): ?ReactElement {
