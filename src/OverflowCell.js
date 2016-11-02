@@ -27,7 +27,7 @@ OverflowCell.isSelected = (props) => {
   return selected && selected.rowIdx === rowIdx && selected.idx === idx;
 };
 
-OverflowCell.isScrolling = props => props.cellMetaData.isScrollingHoriztonallyWithKeyboard;
+OverflowCell.isScrolling = props => props.cellMetaData.isScrollingHorizontallyWithKeyboard;
 
 OverflowCell.propTypes = {
   rowIdx: React.PropTypes.number,

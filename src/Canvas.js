@@ -60,7 +60,8 @@ const Canvas = React.createClass({
         }).isRequired
       })
     ]),
-    rowGroupRenderer: React.PropTypes.func
+    rowGroupRenderer: React.PropTypes.func,
+    isScrolling: React.PropTypes.bool
   },
 
   getDefaultProps() {
@@ -321,7 +322,8 @@ const Canvas = React.createClass({
         colVisibleStart: this.props.colVisibleStart,
         colVisibleEnd: this.props.colVisibleEnd,
         colDisplayStart: this.props.colDisplayStart,
-        colDisplayEnd: this.props.colDisplayEnd
+        colDisplayEnd: this.props.colDisplayEnd,
+        isScrolling: this.props.isScrolling
       }));
 
     this._currentRowsLength = rows.length;

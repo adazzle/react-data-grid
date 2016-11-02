@@ -13,7 +13,7 @@ const createSelectedCell = () => {
   let idx = 0;
   let selected = { rowIdx, idx };
 
-  return { cellMetaData: { selected, isScrollingHoriztonallyWithKeyboard: false }, rowIdx, idx };
+  return { cellMetaData: { selected, isScrollingHorizontallyWithKeyboard: false }, rowIdx, idx };
 };
 
 describe('OverflowCell', () => {

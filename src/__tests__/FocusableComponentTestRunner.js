@@ -106,7 +106,7 @@ class FocusableComponentTestRunner {
 
     it('should not focus when scrolling but not selected', () => {
       const selected = this._getNewSelection(this._props);
-      let cellMetaData = { selected, isScrollingVerticallyWithKeyboard: true, isScrollingHoriztonallyWithKeyboard: true };
+      let cellMetaData = { selected, isScrollingVerticallyWithKeyboard: true, isScrollingHorizontallyWithKeyboard: true };
 
       this._componentWrapper = mount(<this._Component {...this._props} cellMetaData={cellMetaData} />);
 
@@ -114,7 +114,7 @@ class FocusableComponentTestRunner {
     });
 
     it('should focus when scrolling and selected', () => {
-      let cellMetaData = Object.assign({ }, this._props.cellMetaData, { isScrollingVerticallyWithKeyboard: true, isScrollingHoriztonallyWithKeyboard: true });
+      let cellMetaData = Object.assign({ }, this._props.cellMetaData, { isScrollingVerticallyWithKeyboard: true, isScrollingHorizontallyWithKeyboard: true });
 
       this._componentWrapper = mount(<this._Component {...this._props} cellMetaData={cellMetaData} />);
 

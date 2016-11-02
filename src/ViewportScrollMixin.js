@@ -87,13 +87,33 @@ module.exports = {
     let remainingScroll = scrollLeft;
     let columnIndex = -1;
     while (remainingScroll >= 0) {
-      columnIndex ++;
+      columnIndex++;
       remainingScroll -= ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex).width;
     }
     return columnIndex;
   },
 
+  resetScrollStateAfterDelay() {
+    if (this.resetScrollStateTimeoutId) {
+      clearTimeout(this.resetScrollStateTimeoutId);
+    }
+
+    this.resetScrollStateTimeoutId = setTimeout(
+      this.resetScrollStateAfterDelayCallback,
+      500
+    );
+  },
+
+  resetScrollStateAfterDelayCallback() {
+    this.resetScrollStateTimeoutId = null;
+    this.setState({
+      isScrolling: false
+    });
+  },
+
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
+    let isScrolling = true;
+    this.resetScrollStateAfterDelay();
     let visibleBuffer = 2;
     let displayBuffer = 1.5;
     let renderedRowsCount = ceil(height / rowHeight);
@@ -130,7 +150,8 @@ module.exports = {
       colVisibleStart,
       colVisibleEnd,
       colDisplayStart,
-      colDisplayEnd
+      colDisplayEnd,
+      isScrolling
     };
 
     this.setState(nextScrollState);

@@ -31,7 +31,8 @@ const Row = React.createClass({
     colVisibleStart: PropTypes.number.isRequired,
     colVisibleEnd: PropTypes.number.isRequired,
     colDisplayStart: PropTypes.number.isRequired,
-    colDisplayEnd: PropTypes.number.isRequired
+    colDisplayEnd: PropTypes.number.isRequired,
+    isScrolling: React.PropTypes.bool.isRequired
   },
 
   mixins: [ColumnUtilsMixin],
@@ -90,7 +91,8 @@ const Row = React.createClass({
       isRowSelected: isSelected,
       expandableOptions: this.getExpandableOptions(key),
       selectedColumn,
-      formatter
+      formatter,
+      isScrolling: this.props.isScrolling
     };
 
     return <CellRenderer {...baseCellProps} {...cellProps} />;
