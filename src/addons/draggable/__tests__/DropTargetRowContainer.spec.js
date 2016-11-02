@@ -51,7 +51,7 @@ describe('<DropTargetRowContainer />', () => {
     expect(wrapper.find(fakeRow).length).toEqual(1);
   });
 
-  fit('should call onRowDrop with correct parameters when source is dropped', () => {
+  it('should call onRowDrop with correct parameters when source is dropped', () => {
     let rowTargetKey = Object.keys(registry.handlers).filter(k => registry.handlers[k].monitor && registry.handlers[k].monitor.targetId)[0];
     let rowTargetId = registry.handlers[rowTargetKey].monitor.targetId;
     let draggedRowItem = { idx: 3, data: { id: 11, country: 'Ireland', county: 'Wicklow' }};
