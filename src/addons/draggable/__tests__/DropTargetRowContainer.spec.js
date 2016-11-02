@@ -4,6 +4,7 @@ import TestBackend from 'react-dnd-test-backend';
 import {DragDropContext} from 'react-dnd';
 import dropTargetRowContainer from '../DropTargetRowContainer';
 import {DragTestSource} from './TestDragSources';
+import helpers from '../../../__tests__/GridPropHelpers';
 
 class fakeRow extends Component {
   render() {
@@ -33,7 +34,9 @@ describe('<DropTargetRowContainer />', () => {
   let props = {
     onRowDrop: jasmine.createSpy(),
     idx: 1,
-    row: {id: 5, country: 'England'}
+    row: {id: 5, country: 'England'},
+    columns: helpers.columns,
+    cellMetaData: helpers.cellMetaData
   };
 
   beforeEach(() => {
@@ -48,7 +51,7 @@ describe('<DropTargetRowContainer />', () => {
     expect(wrapper.find(fakeRow).length).toEqual(1);
   });
 
-  it('should call onRowDrop with correct parameters when source is dropped', () => {
+  fit('should call onRowDrop with correct parameters when source is dropped', () => {
     let rowTargetKey = Object.keys(registry.handlers).filter(k => registry.handlers[k].monitor && registry.handlers[k].monitor.targetId)[0];
     let rowTargetId = registry.handlers[rowTargetKey].monitor.targetId;
     let draggedRowItem = { idx: 3, data: { id: 11, country: 'Ireland', county: 'Wicklow' }};
