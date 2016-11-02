@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropTarget } from 'react-dnd';
+import rowComparer from '../../RowComparer';
 
 let rowDropTarget = (Row) => class extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    return rowComparer(this.props, nextProps) || this.props.isOver !== nextProps.isOver || this.props.canDrop !== nextProps.canDrop;
+  }
 
   moveRow() {
     ReactDOM.findDOMNode(this).classList.add('slideUp');
