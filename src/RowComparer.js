@@ -18,7 +18,7 @@ function hasRowBeenCopied(props) {
   return copied != null && copied.rowIdx === props.idx;
 }
 
-const RowComparer = (currentProps, nextProps) => {
+export const shouldRowUpdate = (currentProps, nextProps) => {
   return !(ColumnMetrics.sameColumns(currentProps.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
     doesRowContainSelectedCell(currentProps) ||
     doesRowContainSelectedCell(nextProps) ||
@@ -32,4 +32,4 @@ const RowComparer = (currentProps, nextProps) => {
     currentProps.forceUpdate === true;
 };
 
-export default RowComparer;
+export default shouldRowUpdate;
