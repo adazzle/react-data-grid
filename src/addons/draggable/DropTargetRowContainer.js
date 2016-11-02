@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropTarget } from 'react-dnd';
-import rowComparer from '../../RowComparer';
+import shouldRowUpdate from '../../RowComparer';
 
 let rowDropTarget = (Row) => class extends React.Component {
 
   shouldComponentUpdate(nextProps) {
-    return rowComparer(this.props, nextProps);
+    return shouldRowUpdate(nextProps, this.props);
   }
 
   moveRow() {
@@ -50,4 +50,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default (Row) => DropTarget('Row', target, collect, {arePropsEqual: rowComparer})(rowDropTarget(Row));
+export default (Row) => DropTarget('Row', target, collect, {arePropsEqual: (nextProps, currentProps) => !shouldRowUpdate(nextProps, currentProps)})(rowDropTarget(Row));

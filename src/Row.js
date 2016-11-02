@@ -45,7 +45,7 @@ const Row = React.createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    return rowComparer(this.props, nextProps);
+    return rowComparer(nextProps, this.props);
   },
 
   handleDragEnter() {

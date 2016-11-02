@@ -18,7 +18,7 @@ function hasRowBeenCopied(props) {
   return copied != null && copied.rowIdx === props.idx;
 }
 
-export const shouldRowUpdate = (currentProps, nextProps) => {
+export const shouldRowUpdate = (nextProps, currentProps) => {
   return !(ColumnMetrics.sameColumns(currentProps.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
     doesRowContainSelectedCell(currentProps) ||
     doesRowContainSelectedCell(nextProps) ||
@@ -29,8 +29,8 @@ export const shouldRowUpdate = (currentProps, nextProps) => {
     hasRowBeenCopied(currentProps) ||
     currentProps.isSelected !== nextProps.isSelected ||
     nextProps.height !== currentProps.height ||
-    this.props.isOver !== nextProps.isOver ||
-    this.props.canDrop !== nextProps.canDrop ||
+    currentProps.isOver !== nextProps.isOver ||
+    currentProps.canDrop !== nextProps.canDrop ||
     currentProps.forceUpdate === true;
 };
 
