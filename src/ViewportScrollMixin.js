@@ -133,10 +133,10 @@ module.exports = {
       length);
 
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
-    let colVisibleStart = this.getVisibleColStart(scrollLeft);
+    let colVisibleStart = max(0, this.getVisibleColStart(scrollLeft));
     let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
     let colVisibleEnd = colVisibleStart + renderedColumnCount;
-    let colDisplayStart = max(0, colVisibleStart - 2);
+    let colDisplayStart = max(0, colVisibleStart - 4);
     let colDisplayEnd = min(colVisibleStart + parseInt(renderedColumnCount * displayBuffer, 10), totalNumberColumns);
 
     let nextScrollState = {

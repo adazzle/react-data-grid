@@ -55,7 +55,8 @@ describe('<Viewport />', () => {
       scrollLeft: scrollLeft,
       scrollTop: scrollTop,
       visibleEnd: 20,
-      visibleStart: 3
+      visibleStart: 3,
+      isScrolling: true
     });
   });
 });

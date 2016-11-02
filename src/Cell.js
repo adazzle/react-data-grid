@@ -140,7 +140,8 @@ const Cell = React.createClass({
       position: 'absolute',
       width: this.props.column.width,
       height: this.props.height,
-      left: this.props.column.left
+      left: this.props.column.left,
+      contain: 'layout'
     };
     return style;
   },
