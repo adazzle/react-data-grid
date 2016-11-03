@@ -84,7 +84,6 @@ const Cell = React.createClass({
     || this.props.forceUpdate === true
     || this.props.className !== nextProps.className
     || this.hasChangedDependentValues(nextProps);
-
     return shouldUpdate;
   },
 
@@ -175,10 +174,8 @@ const Cell = React.createClass({
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
-      selected: this.isSelected() && !this.isActive() && this.isCellSelectEnabled(),
       editing: this.isActive(),
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
-      'active-drag-cell': this.isSelected() || this.isDraggedOver(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
       'was-dragged-over': this.wasDraggedOver()

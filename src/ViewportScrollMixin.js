@@ -114,30 +114,23 @@ module.exports = {
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
     let isScrolling = true;
     this.resetScrollStateAfterDelay();
-    let visibleBuffer = 2;
-    let displayBuffer = 1.5;
+
     let renderedRowsCount = ceil(height / rowHeight);
 
-    let visibleStart = max(0, floor(scrollTop / rowHeight) - visibleBuffer);
+    let visibleStart = max(0, floor(scrollTop / rowHeight));
 
-    let visibleEnd = min(
-      visibleStart + renderedRowsCount + visibleBuffer,
-      length);
+    let visibleEnd = min(visibleStart + renderedRowsCount, length);
 
-    let displayStart = max(
-      0,
-      visibleStart - parseInt(renderedRowsCount * visibleBuffer, 10));
+    let displayStart = max(0, visibleStart - this.props.overScan.rowsStart);
 
-    let displayEnd = min(
-      visibleStart + parseInt(renderedRowsCount * visibleBuffer, 10),
-      length);
+    let displayEnd = min(visibleEnd + this.props.overScan.rowsEnd, length);
 
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     let colVisibleStart = max(0, this.getVisibleColStart(scrollLeft));
     let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
     let colVisibleEnd = colVisibleStart + renderedColumnCount;
-    let colDisplayStart = max(0, colVisibleStart - 4);
-    let colDisplayEnd = min(colVisibleStart + parseInt(renderedColumnCount * displayBuffer, 10), totalNumberColumns);
+    let colDisplayStart = max(0, colVisibleStart - this.props.overScan.colsStart);
+    let colDisplayEnd = min(colVisibleEnd + this.props.overScan.colsEnd, totalNumberColumns);
 
     let nextScrollState = {
       visibleStart,

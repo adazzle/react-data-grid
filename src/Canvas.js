@@ -9,8 +9,6 @@ const RowUtils = require('./RowUtils');
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
-import OverflowRow from './OverflowRow';
-
 
 const Canvas = React.createClass({
   mixins: [ScrollShim],
@@ -262,9 +260,6 @@ const Canvas = React.createClass({
 
   renderRow(props: any) {
     let row = props.row;
-    if (props.idx < props.visibleStart || props.idx > props.visibleEnd) {
-      return <OverflowRow key={props.key} height={props.height} idx={props.idx} cellMetaData={props.cellMetaData}/>;
-    }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
         key={props.key}

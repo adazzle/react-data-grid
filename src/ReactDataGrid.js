@@ -104,8 +104,9 @@ const ReactDataGrid = React.createClass({
     onGridKeyDown: React.PropTypes.func,
     rowGroupRenderer: React.PropTypes.func,
     rowActionsCell: React.PropTypes.func,
-    onCheckCellIsEditable: React.PropTypes.func
+    onCheckCellIsEditable: React.PropTypes.func,
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
+    overScan: React.PropTypes.object
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -117,7 +118,13 @@ const ReactDataGrid = React.createClass({
       minHeight: 350,
       rowKey: 'id',
       rowScrollTimeout: 0,
-      cellNavigationMode: 'none'
+      cellNavigationMode: 'none',
+      overScan: {
+        colsStart: 5,
+        colsEnd: 5,
+        rowsStart: 5,
+        rowsEnd: 5
+      }
     };
   },
 
@@ -913,7 +920,8 @@ const ReactDataGrid = React.createClass({
             onViewportDoubleClick={this.onViewportDoubleClick}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
-            contextMenu={this.props.contextMenu} />
+            contextMenu={this.props.contextMenu}
+            overScan={this.props.overScan} />
           </div>
         </div>
       );
