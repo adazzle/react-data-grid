@@ -86,6 +86,28 @@
   border-right: 1px solid #eee;
   border-bottom: 1px solid #dddddd;
 }
+
+.react-grid-Cell:focus {
+  border-color: #66afe9;
+  border: 2px solid #66afe9;
+  outline: 2px solid #66afe9;
+}
+
+.react-grid-Cell:focus .drag-handle {
+  position: absolute;
+  bottom: -5px;
+  right: -4px;
+  background: #66afe9;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #fff;
+  border-right: 0px;
+  border-bottom: 0px;
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -webkit-grab;
+}
+
 .react-grid-Cell:not(.editing) .react-grid-Cell__value {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -210,6 +232,7 @@ select.editor-main {
 select.editor-main:focus {
   border-color: #66afe9;
   border: 2px solid #66afe9;
+  outline: 2px solid #66afe9;
   background: #eee;
   border-radius: 4px;
 }
@@ -360,7 +383,7 @@ textareaselect.editor-main {
   border-left: 1px dashed black;
 }
 
-.react-grid-Cell.active-drag-cell:hover .drag-handle {
+.react-grid-Cell:hover:focus .drag-handle {
   position: absolute;
   bottom: -8px;
   right: -7px;
@@ -375,7 +398,7 @@ textareaselect.editor-main {
   cursor: -webkit-grab;
 }
 
-.react-grid-Cell.active-drag-cell:hover .drag-handle .glyphicon-arrow-down {
+.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down {
   display: 'block'
 }
 

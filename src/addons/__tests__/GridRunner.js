@@ -212,19 +212,17 @@ export default class GridRunner {
     expect(editor.nodes.length > 0).toBe(true);
     return this;
   }
-  hasSelected({rowIdx, cellIdx, expectedClass = '.selected'}) {
+  hasSelected({rowIdx, cellIdx}) {
     // and should move to the appropriate cell/row
-    const selectedRow = this.getRow(rowIdx);
-    const selected = selectedRow.find(expectedClass);
-    expect(selected.props().rowIdx).toEqual(rowIdx);
-    expect(selected.props().idx).toEqual(cellIdx);
+    let cell = this.getCell({cellIdx, rowIdx});
+    expect(cell.node.isSelected()).toBe(true);
     return this;
   }
   hasCopied({cellIdx, rowIdx}) {
     let baseGrid = this.grid.refs.reactDataGrid;
     expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
-    expect(ReactDOM.findDOMNode(this.cell.node).className.indexOf(' copied ') > -1).toBe(true);
+    expect(ReactDOM.findDOMNode(this.cell.node).className.indexOf('copied') > -1).toBe(true);
   }
   hasDragged({from, to, col, cellKey}) {
     // check onCellDrag called with correct data

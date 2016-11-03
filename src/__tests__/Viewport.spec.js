@@ -9,7 +9,7 @@ let viewportProps = {
   columnMetrics: {
     columns: helpers.columns,
     minColumnWidth: 80,
-    totalWidth: true,
+    totalWidth: 2600,
     width: 2600
   },
   rowGetter: () => { },
@@ -17,6 +17,12 @@ let viewportProps = {
   rowHeight: 35,
   onScroll: () => { },
   minHeight: 500,
+  overScan: {
+    colsStart: 5,
+    colsEnd: 5,
+    rowsStart: 5,
+    rowsEnd: 5
+  },
   cellMetaData: {
     selected: {},
     dragged: {},
@@ -45,17 +51,17 @@ describe('<Viewport />', () => {
     let Canvas = wrapper.find('Canvas');
     Canvas.props().onScroll({ scrollTop, scrollLeft});
     expect(wrapper.state()).toEqual({
-      colDisplayEnd: 1,
+      colDisplayEnd: 3,
       colDisplayStart: 0,
-      colVisibleEnd: 1,
+      colVisibleEnd: 3,
       colVisibleStart: 0,
-      displayEnd: 33,
+      displayEnd: 25,
       displayStart: 0,
       height: viewportProps.minHeight,
       scrollLeft: scrollLeft,
       scrollTop: scrollTop,
       visibleEnd: 20,
-      visibleStart: 3,
+      visibleStart: 5,
       isScrolling: true
     });
   });

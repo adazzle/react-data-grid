@@ -47,11 +47,11 @@ describe('Grid Integration', () => {
       gridRunner.selectCell({cellIdx: firstCellIdx, rowIdx: 1}).copy();
 
       let firstCell = gridRunner.getCell({cellIdx: firstCellIdx, rowIdx: 1});
-      expect(ReactDOM.findDOMNode(firstCell.node).className.indexOf(' copied') > -1).toBe(true);
+      expect(ReactDOM.findDOMNode(firstCell.node).className.indexOf('copied') > -1).toBe(true);
 
       gridRunner.selectCell({cellIdx: 4, rowIdx: 1})
       .copy();
-      expect(ReactDOM.findDOMNode(firstCell.node).className.indexOf(' copied') > -1).toBe(false);
+      expect(ReactDOM.findDOMNode(firstCell.node).className.indexOf('copied') > -1).toBe(false);
     });
   });
 
