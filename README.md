@@ -42,7 +42,7 @@ We have made a major change to this in v1, so please read below.
  This solves for the issues above, as well as laying the groundwork for allowing more fine grained imports.
  This will allow you to simply include `react-data-grid/addons` to get everything, but also to include single addons (a la lodash)
   - If you just want the basic grid import `react-data-grid`
-  - If you want the addons (ruich editors, etc) import `react-data-grid` **and** `react-data-grid/addons`
+  - If you want the addons (rich editors, etc) import `react-data-grid` **and** `react-data-grid/addons`
   - Both modules are **completely independent and can be used separately**.
   - `react-data-grid/addons` points to `react-data-grid.ui-plugins.js`` on dist folder. 
 
