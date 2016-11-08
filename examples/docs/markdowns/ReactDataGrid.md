@@ -155,6 +155,17 @@ type: `func`
 type: `func`
 
 
+### `overScan`
+
+type: `object`
+defaultValue: `{
+  colsStart: 5,
+  colsEnd: 5,
+  rowsStart: 5,
+  rowsEnd: 5
+}`
+
+
 ### `rowActionsCell`
 
 type: `func`

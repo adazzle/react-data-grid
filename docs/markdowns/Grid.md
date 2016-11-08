@@ -102,6 +102,11 @@ type: `func`
 type: `func`
 
 
+### `overScan`
+
+type: `object`
+
+
 ### `rowGetter` (required)
 
 type: `union(array|func)`

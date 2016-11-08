@@ -62,6 +62,11 @@ defaultValue: `false`
 type: `bool`
 
 
+### `isScrolling` (required)
+
+type: `bool`
+
+
 ### `ref`
 
 type: `string`

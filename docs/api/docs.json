@@ -109,7 +109,7 @@
           "type": {
             "name": "signature",
             "type": "object",
-            "raw": "{scrollTop: number; scrollLeft: number}",
+            "raw": "{ scrollTop: number; scrollLeft: number }",
             "signature": {
               "properties": [
                 {
@@ -190,25 +190,6 @@
           }
         ],
         "returns": null
-      },
-      {
-        "name": "renderScrollingPlaceholder",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "props",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "ReactElement",
-            "nullable": true
-          }
-        }
       },
       {
         "name": "renderPlaceholder",
@@ -320,6 +301,48 @@
         "required": true,
         "description": ""
       },
+      "visibleStart": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "visibleEnd": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "colVisibleStart": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "colVisibleEnd": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "colDisplayStart": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "colDisplayEnd": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
       "rowsCount": {
         "type": {
           "name": "number"
@@ -356,7 +379,7 @@
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "() => {}",
+          "value": "() => { }",
           "computed": false
         }
       },
@@ -486,6 +509,13 @@
       "rowGroupRenderer": {
         "type": {
           "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "isScrolling": {
+        "type": {
+          "name": "bool"
         },
         "required": false,
         "description": ""
@@ -1092,6 +1122,13 @@
         },
         "required": true,
         "description": ""
+      },
+      "isScrolling": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
+        "description": ""
       }
     }
   },
@@ -1595,6 +1632,13 @@
       "rowGroupRenderer": {
         "type": {
           "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "overScan": {
+        "type": {
+          "name": "object"
         },
         "required": false,
         "description": ""
@@ -3864,6 +3908,17 @@
         "required": false,
         "description": ""
       },
+      "overScan": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "{\r\n  colsStart: 5,\r\n  colsEnd: 5,\r\n  rowsStart: 5,\r\n  rowsEnd: 5\r\n}",
+          "computed": false
+        }
+      },
       "tabIndex": {
         "defaultValue": {
           "value": "-1",
@@ -3906,32 +3961,38 @@
         "returns": null
       },
       {
+        "name": "getCell",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          },
+          {
+            "name": "i",
+            "type": null
+          },
+          {
+            "name": "selectedColumn",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "getCells",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "Array",
-            "elements": [
-              {
-                "name": "ReactElement"
-              }
-            ],
-            "raw": "Array<ReactElement>"
-          }
-        }
+        "returns": null
       },
       {
         "name": "getRowHeight",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "number"
-          }
-        }
+        "returns": null
       },
       {
         "name": "getCellValue",
@@ -3940,57 +4001,10 @@
         "params": [
           {
             "name": "key",
-            "type": {
-              "name": "union",
-              "raw": "number | string",
-              "elements": [
-                {
-                  "name": "number"
-                },
-                {
-                  "name": "string"
-                }
-              ]
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "any"
-          }
-        }
-      },
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": {
-              "name": "number"
-            }
+            "type": null
           }
         ],
         "returns": null
-      },
-      {
-        "name": "doesRowContainSelectedCell",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "props",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
       },
       {
         "name": "isContextMenuDisplayed",
@@ -3998,35 +4012,6 @@
         "modifiers": [],
         "params": [],
         "returns": null
-      },
-      {
-        "name": "willRowBeDraggedOver",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "props",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "hasRowBeenCopied",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
       },
       {
         "name": "getExpandableOptions",
@@ -4041,22 +4026,28 @@
         "returns": null
       },
       {
+        "name": "setScrollLeft",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "scrollLeft",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "renderCell",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
             "name": "props",
-            "type": {
-              "name": "any"
-            }
+            "type": null
           }
         ],
-        "returns": {
-          "type": {
-            "name": "ReactElement"
-          }
-        }
+        "returns": null
       }
     ],
     "props": {
@@ -4167,6 +4158,41 @@
           "name": "bool"
         },
         "required": false,
+        "description": ""
+      },
+      "colVisibleStart": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "colVisibleEnd": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "colDisplayStart": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "colDisplayEnd": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "isScrolling": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
         "description": ""
       }
     }

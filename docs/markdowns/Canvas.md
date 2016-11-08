@@ -16,6 +16,26 @@ type: `shaperequire('./PropTypeShapes/CellMetaDataShape')`
 type: `string`
 
 
+### `colDisplayEnd` (required)
+
+type: `number`
+
+
+### `colDisplayStart` (required)
+
+type: `number`
+
+
+### `colVisibleEnd` (required)
+
+type: `number`
+
+
+### `colVisibleStart` (required)
+
+type: `number`
+
+
 ### `columns` (required)
 
 type: `union(object|array)`
@@ -51,10 +71,15 @@ type: `func`
 type: `number`
 
 
+### `isScrolling`
+
+type: `bool`
+
+
 ### `onRows`
 
 type: `func`
-defaultValue: `() => {}`
+defaultValue: `() => { }`
 
 
 ### `onScroll`
@@ -118,6 +143,16 @@ type: `string`
 ### `totalWidth`
 
 type: `union(number|string)`
+
+
+### `visibleEnd` (required)
+
+type: `number`
+
+
+### `visibleStart` (required)
+
+type: `number`
 
 
 ### `width`
