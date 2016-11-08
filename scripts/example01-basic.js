@@ -2,9 +2,6 @@
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 
-
-var SimpleExample = `
-
 var _rows = [];
 for (var i = 1; i < 1000; i++) {
   _rows.push({
@@ -44,18 +41,12 @@ var Example = React.createClass({
     minHeight={500} />);
   }
 });
-ReactDOM.render(<Example />, mountNode);
-`;
+
 
 module.exports = React.createClass({
 
   render:function(){
-    return(
-      <div>
-        <h3>A Simple Example</h3>
-        <ReactPlayground codeText={SimpleExample} />
-      </div>
-    )
+    return <Example />;
   }
 
 });
