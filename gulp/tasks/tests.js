@@ -10,18 +10,19 @@ function testTaskRunner(done) {
   var singleRun = debug ? false : true;
 
   var karmaServer = new karma({
-    configFile:  '../../../config/karma.js',
+    configFile: '../../../config/karma.js',
     singleRun: singleRun,
     debug: debug
   }, done);
+
   karmaServer.start();
 }
 
-gulp.task('buildTest', function(done) {
+gulp.task('buildTest', function (done) {
   testTaskRunner(done);
 });
 
 // Run build before testing on local environment.
-gulp.task('test', ['dist'], function(done) {
+gulp.task('test', ['dist'], function (done) {
   testTaskRunner(done);
 });

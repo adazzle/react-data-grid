@@ -28,5 +28,10 @@ module.exports = {
   },
   rowsCount: function() {
     return _rows.length;
+  },
+  cellMetaData: {
+    selected: { idx: 2, rowIdx: 3 },
+    dragged: null,
+    copied: null
   }
 };

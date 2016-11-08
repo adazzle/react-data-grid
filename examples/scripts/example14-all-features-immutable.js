@@ -224,7 +224,6 @@ var MyContextMenu = React.createClass({
               onCellsDragged={this.handleCellDrag}
               onCellCopyPaste={this.handleCellCopyPaste}
               toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={()=>{}} numberOfRows={this.getSize()}/>}
-              enableRowSelect={true}
               rowHeight={50}
               minHeight={600}
               />
@@ -233,7 +232,7 @@ var MyContextMenu = React.createClass({
     }
   });
 
-  if(typeof module !== 'undefined' && module.exports){
+  if(typeof module !== 'undefined' && module.exports) {
     module.exports = Component;
   }else{
     this.ReactDataGrid = Component;

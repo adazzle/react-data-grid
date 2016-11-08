@@ -63,7 +63,7 @@ const Viewport = React.createClass({
     this.refs.canvas.setScrollLeft(scrollLeft);
   },
 
-  render(): ?ReactElement {
+  render() {
     let style = {
       padding: 0,
       bottom: 0,
@@ -90,6 +90,12 @@ const Viewport = React.createClass({
           rowRenderer={this.props.rowRenderer}
           displayStart={this.state.displayStart}
           displayEnd={this.state.displayEnd}
+          visibleStart={this.state.visibleStart}
+          visibleEnd={this.state.visibleEnd}
+          colVisibleStart={this.state.colVisibleStart}
+          colVisibleEnd={this.state.colVisibleEnd}
+          colDisplayStart={this.state.colDisplayStart}
+          colDisplayEnd={this.state.colDisplayEnd}
           cellMetaData={this.props.cellMetaData}
           height={this.state.height}
           rowHeight={this.props.rowHeight}
@@ -100,6 +106,7 @@ const Viewport = React.createClass({
           rowSelection={this.props.rowSelection}
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
+          isScrolling={this.state.isScrolling}
         />
       </div>
     );

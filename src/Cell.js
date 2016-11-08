@@ -31,7 +31,8 @@ const Cell = React.createClass({
     cellControls: React.PropTypes.any,
     rowData: React.PropTypes.object.isRequired,
     forceUpdate: React.PropTypes.bool,
-    expandableOptions: React.PropTypes.object.isRequired
+    expandableOptions: React.PropTypes.object.isRequired,
+    isScrolling: React.PropTypes.bool.isRequired
   },
 
   getDefaultProps() {
@@ -70,7 +71,7 @@ const Cell = React.createClass({
   },
 
   shouldComponentUpdate(nextProps: any): boolean {
-    return this.props.column.width !== nextProps.column.width
+    let shouldUpdate = this.props.column.width !== nextProps.column.width
     || this.props.column.left !== nextProps.column.left
     || this.props.height !== nextProps.height
     || this.props.rowIdx !== nextProps.rowIdx
@@ -83,6 +84,7 @@ const Cell = React.createClass({
     || this.props.forceUpdate === true
     || this.props.className !== nextProps.className
     || this.hasChangedDependentValues(nextProps);
+    return shouldUpdate;
   },
 
   onCellClick(e) {
@@ -137,7 +139,8 @@ const Cell = React.createClass({
       position: 'absolute',
       width: this.props.column.width,
       height: this.props.height,
-      left: this.props.column.left
+      left: this.props.column.left,
+      contain: 'layout'
     };
     return style;
   },
@@ -171,10 +174,8 @@ const Cell = React.createClass({
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
-      selected: this.isSelected() && !this.isActive() && this.isCellSelectEnabled(),
       editing: this.isActive(),
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
-      'active-drag-cell': this.isSelected() || this.isDraggedOver(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
       'was-dragged-over': this.wasDraggedOver()
@@ -339,32 +340,10 @@ const Cell = React.createClass({
 
   checkFocus() {
     if (this.isSelected() && !this.isActive()) {
-      // determine the parent viewport element of this cell
-      let parentViewport = ReactDOM.findDOMNode(this);
-      while (parentViewport != null && parentViewport.className.indexOf('react-grid-Viewport') === -1) {
-        parentViewport = parentViewport.parentElement;
+      if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
+        return;
       }
-      let focusInGrid = false;
-      // if the focus is on the body of the document, the user won't mind if we focus them on a cell
-      if ((document.activeElement == null) || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body')) {
-        focusInGrid = true;
-        // otherwise
-      } else {
-        // only pull focus if the currently focused element is contained within the viewport
-        if (parentViewport) {
-          let focusedParent = document.activeElement;
-          while (focusedParent != null) {
-            if (focusedParent === parentViewport) {
-              focusInGrid = true;
-              break;
-            }
-            focusedParent = focusedParent.parentElement;
-          }
-        }
-      }
-      if (focusInGrid) {
-        ReactDOM.findDOMNode(this).focus();
-      }
+      ReactDOM.findDOMNode(this).focus();
     }
   },
 

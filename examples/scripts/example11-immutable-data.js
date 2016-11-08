@@ -48,7 +48,7 @@ var Example = React.createClass({
         columns={this.state.cols}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.size}
-        minHeight={500}
+        minHeight={1200}
         onRowUpdated={this.handleRowUpdated} />
     );
   }

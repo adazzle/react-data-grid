@@ -4,6 +4,7 @@ import TestBackend from 'react-dnd-test-backend';
 import {DragDropContext} from 'react-dnd';
 import dropTargetRowContainer from '../DropTargetRowContainer';
 import {DragTestSource} from './TestDragSources';
+import helpers from '../../../__tests__/GridPropHelpers';
 
 class fakeRow extends Component {
   render() {
@@ -33,7 +34,9 @@ describe('<DropTargetRowContainer />', () => {
   let props = {
     onRowDrop: jasmine.createSpy(),
     idx: 1,
-    row: {id: 5, country: 'England'}
+    row: {id: 5, country: 'England'},
+    columns: helpers.columns,
+    cellMetaData: helpers.cellMetaData
   };
 
   beforeEach(() => {
