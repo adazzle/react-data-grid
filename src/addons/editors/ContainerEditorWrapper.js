@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 // howvever when doing this.getEditor() in react-data-grid we get a react
 // componenet wrapped by the redux connect function and thus wont have access
 // to the required methods.
-export default (ContainerEditor) => {
+module.exports = (ContainerEditor) => {
   return class ContainerEditorWrapper extends Component {
     getInputNode() {
       return this.editorRef.getInputNode();
