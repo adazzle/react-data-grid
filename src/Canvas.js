@@ -110,6 +110,8 @@ const Canvas = React.createClass({
       || nextProps.cellMetaData !== this.props.cellMetaData
       || this.props.colDisplayStart !== nextProps.colDisplayStart
       || this.props.colDisplayEnd !== nextProps.colDisplayEnd
+      || this.props.colVisibleStart !== nextProps.colVisibleStart
+      || this.props.colVisibleEnd !== nextProps.colVisibleEnd
       || !shallowEqual(nextProps.style, this.props.style);
     return shouldUpdate;
   },
