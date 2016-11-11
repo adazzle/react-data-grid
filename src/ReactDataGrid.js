@@ -247,6 +247,7 @@ const ReactDataGrid = React.createClass({
 
   onPressEscape(e: SyntheticKeyboardEvent) {
     this.setInactive(e.key);
+    this.handleCancelCopy();
   },
 
   onPressBackspace(e: SyntheticKeyboardEvent) {
@@ -409,7 +410,7 @@ const ReactDataGrid = React.createClass({
   },
 
   handlePaste() {
-    if (!this.copyPasteEnabled()) { return; }
+    if (!this.copyPasteEnabled() || !(this.state.copied)) { return; }
     let selected = this.state.selected;
     let cellKey = this.getColumn(this.state.selected.idx).key;
     let textToCopy = this.state.textToCopy;
@@ -423,7 +424,9 @@ const ReactDataGrid = React.createClass({
     if (this.props.onGridRowsUpdated) {
       this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE);
     }
+  },
 
+  handleCancelCopy() {
     this.setState({copied: null});
   },
 
@@ -779,6 +782,7 @@ const ReactDataGrid = React.createClass({
       }
       if (showEditor !== false) {
         this.setState({selected: selected}, this.scrollToColumn(idx));
+        this.handleCancelCopy();
       }
     }
   },
