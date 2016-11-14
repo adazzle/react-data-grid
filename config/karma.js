@@ -124,6 +124,8 @@ module.exports = function (config) {
     },
 
     browserNoActivityTimeout: 1000000,
+    browserDisconnectTimeout: 5000,
+    browserDisconnectTolerance: 3,
 
     // coverage reporter generates the coverage
     reporters: ['junit', 'progress', 'coverage'],
