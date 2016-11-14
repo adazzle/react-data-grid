@@ -180,7 +180,7 @@ const Header = React.createClass({
 
     return (
 
-      <div {...this.props} style={this.getStyle()} className={className}>
+      <div style={this.getStyle()} className={className}>
         {headerRows}
       </div>
     );
