@@ -13,9 +13,7 @@ function testTaskRunner(done) {
     configFile: '../../../config/karma.js',
     singleRun: singleRun,
     debug: debug
-  }, function() {
-      done();
-  });
+  }, done);
 
   karmaServer.start();
 }
