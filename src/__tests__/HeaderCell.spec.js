@@ -42,6 +42,27 @@ describe('Header Cell Tests', () => {
     );
   });
 
+  describe('shouldComponentUpdate method', () => {
+    it('should return true if the column width property is updated (which can happen if column width is not set explicitly)', () => {
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
+      let nextProps = Object.assign({}, testProps, {column: Object.assign({}, testProps.column, {width: 100})})
+      let nextState = Object.assign({}, headerCell.state)
+      expect(headerCell.shouldComponentUpdate(nextProps, nextState)).toBe(true)
+    });
+    it('should return true if the column left property is updated (which can happen if column width is not set explicitly)', () => {
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
+      let nextProps = Object.assign({}, testProps, {column: Object.assign({}, testProps.column, {left: 100})})
+      let nextState = Object.assign({}, headerCell.state)
+      expect(headerCell.shouldComponentUpdate(nextProps, nextState)).toBe(true)
+    });
+    it('should return false if the column left and width properties are not updated', () => {
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...testProps}/>);
+      let nextProps = Object.assign({}, testProps)
+      let nextState = Object.assign({}, headerCell.state)
+      expect(headerCell.shouldComponentUpdate(nextProps, nextState)).toBe(false)
+    });
+  });
+
   describe('When custom render is supplied', () => {
     it('will render', () => {
       let CustomRenderer = new StubComponent('CustomRenderer');
