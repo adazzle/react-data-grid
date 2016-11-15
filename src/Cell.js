@@ -343,7 +343,10 @@ const Cell = React.createClass({
       if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
         return;
       }
-      ReactDOM.findDOMNode(this).focus();
+      let cellDOMNode = ReactDOM.findDOMNode(this);
+      if (cellDOMNode) {
+        cellDOMNode.focus();
+      }
     }
   },
 
