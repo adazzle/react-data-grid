@@ -291,6 +291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  onPressEscape: function onPressEscape(e) {
 	    this.setInactive(e.key);
+	    this.handleCancelCopy();
 	  },
 	  onPressBackspace: function onPressBackspace(e) {
 	    this.setActive(e.key);
@@ -447,7 +448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ dragged: null });
 	  },
 	  handlePaste: function handlePaste() {
-	    if (!this.copyPasteEnabled()) {
+	    if (!this.copyPasteEnabled() || !this.state.copied) {
 	      return;
 	    }
 	    var selected = this.state.selected;
@@ -465,7 +466,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.onGridRowsUpdated(cellKey, toRow, toRow, (_onGridRowsUpdated3 = {}, _onGridRowsUpdated3[cellKey] = textToCopy, _onGridRowsUpdated3), _AppConstants2['default'].UpdateActions.COPY_PASTE);
 	    }
-
+	  },
+	  handleCancelCopy: function handleCancelCopy() {
 	    this.setState({ copied: null });
 	  },
 	  handleCopy: function handleCopy(args) {
@@ -845,6 +847,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      if (showEditor !== false) {
 	        this.setState({ selected: _selected }, this.scrollToColumn(idx));
+	        this.handleCancelCopy();
 	      }
 	    }
 	  },
