@@ -6,6 +6,7 @@ const EditorContainer  = rewire('../EditorContainer.js');
 const TestUtils        = require('react/lib/ReactTestUtils');
 const SimpleTextEditor = require('../SimpleTextEditor');
 const EditorBase       = require('../EditorBase');
+const CheckboxEditor = require('../CheckboxEditor');
 
 describe('Editor Container Tests', () => {
   let cellMetaData = {
@@ -82,8 +83,39 @@ describe('Editor Container Tests', () => {
       column = {
         key: 'col1',
         name: 'col1',
-        width: 100
+        width: 100,
+        onCellChange: function() {}
       };
+    });
+
+    it('should render element custom editors - CheckboxEditor', () => {
+      column.editor = <CheckboxEditor rowIdx={1} idx={1}/>;
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={false}
+        cellMetaData={cellMetaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, CheckboxEditor);
+      expect(editor).toBeDefined();
+      expect(editor.props.value).toBeDefined();
+      expect(editor.props.onCommit).toBeDefined();
+    });
+
+    it('should correctly handle keyDown (left and right arrow) events', () => {
+      spyOn(cellMetaData, 'onCommit');
+      column.editor = <CheckboxEditor rowIdx={1} idx={1}/>;
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={false}
+        cellMetaData={cellMetaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, CheckboxEditor);
+      TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'ArrowRight'});
+      expect(cellMetaData.onCommit).toHaveBeenCalled();
+      TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'ArrowLeft'});
+      expect(cellMetaData.onCommit).toHaveBeenCalled();
     });
 
     it('should render element custom editors', () => {
