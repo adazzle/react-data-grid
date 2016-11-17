@@ -448,7 +448,7 @@ const Cell = React.createClass({
     let events = this.getEvents();
 
     return (
-      <div {...this.props} className={className} style={style}   {...events}>
+      <div className={className} style={style}   {...events}>
         {cellContent}
         {dragHandle}
       </div>

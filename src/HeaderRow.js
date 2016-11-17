@@ -156,7 +156,7 @@ const HeaderRow = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.props} className="react-grid-HeaderRow" onScroll={this.props.onScroll}>
+      <div className="react-grid-HeaderRow" onScroll={this.props.onScroll}>
         <div style={cellsStyle}>
           {cells}
         </div>

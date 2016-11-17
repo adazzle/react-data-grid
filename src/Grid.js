@@ -82,7 +82,7 @@ const Grid = React.createClass({
     let EmptyRowsView = this.props.emptyRowsView;
 
     return (
-      <div {...this.props} style={this.getStyle()} className="react-grid-Grid">
+      <div style={this.getStyle()} className="react-grid-Grid">
         <Header
           ref="header"
           columnMetrics={this.props.columnMetrics}
