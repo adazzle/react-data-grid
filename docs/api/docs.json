@@ -3079,6 +3079,13 @@
         "returns": null
       },
       {
+        "name": "handleCancelCopy",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "handleCopy",
         "docblock": null,
         "modifiers": [],
