@@ -13,6 +13,10 @@ class FakeContainer extends React.Component {
     render() { return (<FakeComponent ref={this.props.refCallback} />); }
 }
 
+FakeContainer.propTypes = {
+  refCallback: React.PropTypes.func.IsRequired
+};
+
 describe('ContainerEditorWrapper', () => {
   describe('Basic tests', () => {
     it('should create a new ContainerEditorWrapper instance wrapping the passed in component', () => {
