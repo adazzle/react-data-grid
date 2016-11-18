@@ -6,10 +6,10 @@ git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
 git config --global user.email $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL
 git checkout master
 
---docs task currently broken needs investigation
---gulp docs:regenerate
---git add -A
---git commit -m "Docs Regeneration"
+#docs task currently broken needs investigation
+#gulp docs:regenerate
+#git add -A
+#git commit -m "Docs Regeneration"
 
 npm version patch --message "Version Bump [ci skip]"
 $currentVersion = node ./ci/publish/getCurrentVersion
