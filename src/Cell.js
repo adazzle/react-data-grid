@@ -8,6 +8,10 @@ const isFunction = require('./addons/utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./addons/formatters/SimpleCellFormatter');
 const ColumnUtils = require('./ColumnUtils');
+const createObjectWithProperties = require('./createObjectWithProperties');
+
+// The list of the propTypes that we want to include in the Cell div
+const knownDivPropertyKeys = ['height', 'tabIndex', 'value'];
 
 const Cell = React.createClass({
 
@@ -409,6 +413,10 @@ const Cell = React.createClass({
     return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
   },
 
+  getKnownDivProps() {
+    return createObjectWithProperties(this.props, knownDivPropertyKeys);
+  },
+
   renderCellContent(props) {
     let CellContent;
     let Formatter = this.getFormatter();
@@ -448,7 +456,7 @@ const Cell = React.createClass({
     let events = this.getEvents();
 
     return (
-      <div {...this.props} className={className} style={style}   {...events}>
+      <div {...this.getKnownDivProps()} className={className} style={style}   {...events}>
         {cellContent}
         {dragHandle}
       </div>

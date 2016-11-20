@@ -7,6 +7,7 @@ const ColumnUtilsMixin  = require('./ColumnUtils');
 const SortableHeaderCell    = require('./addons/cells/headerCells/SortableHeaderCell');
 const FilterableHeaderCell  = require('./addons/cells/headerCells/FilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
+const createObjectWithProperties = require('./createObjectWithProperties');
 
 const PropTypes         = React.PropTypes;
 
@@ -19,11 +20,14 @@ const HeaderRowStyle  = {
 
 const DEFINE_SORT = ['ASC', 'DESC', 'NONE'];
 
+// The list of the propTypes that we want to include in the HeaderRow div
+const knownDivPropertyKeys = ['width', 'height', 'style', 'onScroll'];
+
 const HeaderRow = React.createClass({
   propTypes: {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
-    columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func.isRequired,
     onColumnResizeEnd: PropTypes.func,
@@ -145,6 +149,10 @@ const HeaderRow = React.createClass({
     });
   },
 
+  getKnownDivProps() {
+    return createObjectWithProperties(this.props, knownDivPropertyKeys);
+  },
+
   render(): ?ReactElement {
     let cellsStyle = {
       width: this.props.width ? (this.props.width + getScrollbarSize()) : '100%',
@@ -156,7 +164,7 @@ const HeaderRow = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.props} className="react-grid-HeaderRow" onScroll={this.props.onScroll}>
+      <div {...this.getKnownDivProps()} className="react-grid-HeaderRow">
         <div style={cellsStyle}>
           {cells}
         </div>

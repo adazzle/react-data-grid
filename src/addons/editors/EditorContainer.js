@@ -284,7 +284,7 @@ const EditorContainer = React.createClass({
 
   render(): ?ReactElement {
     return (
-        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} commit={this.commit}>
+        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>

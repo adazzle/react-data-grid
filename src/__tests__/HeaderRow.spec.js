@@ -5,6 +5,7 @@ const rewireModule  = require('../../test/rewireModule');
 const StubComponent = require('../../test/StubComponent');
 const helpers       = require('./GridPropHelpers');
 const HeaderRow     = rewire('../HeaderRow');
+import { shallow } from 'enzyme';
 
 describe('Header Row Unit Tests', () => {
   let headerRow;
@@ -125,6 +126,103 @@ describe('Header Row Unit Tests', () => {
 
     afterEach(() => {
       testProps.columns[customColumnIdx].headerRenderer = null;
+    });
+  });
+
+  describe('Rendering HeaderRow component', () => {
+    const renderComponent = (props) => {
+      const wrapper = shallow(<HeaderRow {...props} />);
+      return wrapper;
+    };
+
+    const onScroll = jasmine.createSpy();
+
+    const requiredProps = {
+      height: 35,
+      columns: helpers.columns,
+      onSort: jasmine.createSpy()
+    };
+
+    const allProperties = {
+      width: 200,
+      height: 35,
+      columns: helpers.columns,
+      onColumnResize: jasmine.createSpy(),
+      onSort: jasmine.createSpy(),
+      onColumnResizeEnd: jasmine.createSpy(),
+      style: {overflow: 'scroll',
+        width: 201,
+        height: 36,
+        position: 'relative'
+      },
+      sortColumn: 'sortColumnValue',
+      sortDirection: 'NONE',
+      cellRenderer: jasmine.createSpy(),
+      headerCellRenderer: jasmine.createSpy(),
+      filterable: true,
+      onFilterChange: jasmine.createSpy(),
+      resizing: {key: 'value'},
+      onScroll,
+      rowType: 'rowTypeValue',
+      draggableHeaderCell: jasmine.createSpy()
+    };
+
+    it('passes classname property', () => {
+      const wrapper = renderComponent(requiredProps);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.hasClass('react-grid-HeaderRow'));
+    });
+    it('passes width if available from props', () => {
+      const wrapper = renderComponent(allProperties);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().width).toBe(200);
+    });
+    it('does not pass width if not available from props', () => {
+      const wrapper = renderComponent(requiredProps);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().width).toBeUndefined();
+    });
+    it('passes height property', () => {
+      const wrapper = renderComponent(allProperties);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().height).toBe(35);
+    });
+    it('passes style property, if available from props', () => {
+      const wrapper = renderComponent(allProperties);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().style).toBe(allProperties.style);
+    });
+    it('does not pass style if not available from props', () => {
+      const wrapper = renderComponent(requiredProps);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().style).toBeUndefined();
+    });
+    it('passes onScroll property, if available from props', () => {
+      const wrapper = renderComponent(allProperties);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().onScroll).toBe(onScroll);
+    });
+    it('does not pass onScroll if not available from props', () => {
+      const wrapper = renderComponent(requiredProps);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().onScoll).toBeUndefined();
+    });
+    it('does not pass unknown properties to the div', () => {
+      const wrapper = renderComponent(allProperties);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().columns).toBeUndefined();
+      expect(headerRowDiv.props().onColumnResize).toBeUndefined();
+      expect(headerRowDiv.props().onSort).toBeUndefined();
+      expect(headerRowDiv.props().onColumnResizeEnd).toBeUndefined();
+      expect(headerRowDiv.props().sortColumn).toBeUndefined();
+      expect(headerRowDiv.props().sortDirection).toBeUndefined();
+      expect(headerRowDiv.props().cellRenderer).toBeUndefined();
+      expect(headerRowDiv.props().headerCellRenderer).toBeUndefined();
+      expect(headerRowDiv.props().filterable).toBeUndefined();
+      expect(headerRowDiv.props().onFilterChange).toBeUndefined();
+      expect(headerRowDiv.props().resizing).toBeUndefined();
+      expect(headerRowDiv.props().rowType).toBeUndefined();
+      expect(headerRowDiv.props().draggableHeaderCell).toBeUndefined();
     });
   });
 });

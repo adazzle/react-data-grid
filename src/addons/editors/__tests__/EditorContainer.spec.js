@@ -6,6 +6,7 @@ const EditorContainer  = rewire('../EditorContainer.js');
 const TestUtils        = require('react/lib/ReactTestUtils');
 const SimpleTextEditor = require('../SimpleTextEditor');
 const EditorBase       = require('../EditorBase');
+import { shallow } from 'enzyme';
 
 describe('Editor Container Tests', () => {
   let cellMetaData = {
@@ -67,6 +68,26 @@ describe('Editor Container Tests', () => {
       let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
       expect(editor.props.value).toEqual('Adwolf');
       expect(editor.props.column).toEqual(fakeColumn);
+    });
+
+    it('should render the editor container div with correct properties', () => {
+      const renderComponent = (props) => {
+        const wrapper = shallow(<EditorContainer {...props} />);
+        return wrapper;
+      };
+      const props = {
+        rowData: rowData,
+        value: 'Adwolf',
+        cellMetaData: cellMetaData,
+        column: fakeColumn,
+        height: 50
+      };
+      let editorDiv = renderComponent(props).find('div').at(0);
+      expect(Object.keys(editorDiv.props()).length).toBe(4);
+      expect(editorDiv.props().className).toBeDefined();
+      expect(editorDiv.props().onBlur).toBeDefined();
+      expect(editorDiv.props().onKeyDown).toBeDefined();
+      expect(editorDiv.props().children).toBeDefined();
     });
   });
 
