@@ -65,4 +65,29 @@ describe('<Viewport />', () => {
       isScrolling: true
     });
   });
+
+  it('should update when given different number of columns', () => {
+    const wrapper = shallow(<Viewport {...viewportProps} />);
+    let extraColumn = {
+      key: 'description',
+      name: 'Description',
+      width: 100
+    };
+    let updatedColumns = helpers.columns.concat(extraColumn);
+    let newProps = Object.assign({}, viewportProps, {columnMetrics: Object.assign({}, viewportProps.columnMetrics, {columns: updatedColumns})});
+    wrapper.setProps(newProps);
+    expect(wrapper.state()).toEqual({
+      colDisplayEnd: updatedColumns.length,
+      colDisplayStart: 0,
+      colVisibleEnd: updatedColumns.length,
+      colVisibleStart: 0,
+      displayEnd: 50,
+      displayStart: 0,
+      height: viewportProps.minHeight,
+      scrollLeft: 0,
+      scrollTop: 0,
+      visibleEnd: 50,
+      visibleStart: 0
+    });
+  });
 });

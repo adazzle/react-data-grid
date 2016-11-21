@@ -43,7 +43,7 @@ module.exports = {
   },
 
   getGridState(props: { rowHeight: number; rowsCount: number; minHeight: number }): ViewportScrollState {
-    let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
+    let totalNumberColumns = ColumnUtils.getSize(props.columnMetrics.columns);
     let canvasHeight = props.minHeight - props.rowOffsetHeight;
     let renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
     let totalRowCount = min(renderedRowsCount * 4, props.rowsCount);
@@ -167,7 +167,8 @@ module.exports = {
 
   componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number }) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
-      this.props.minHeight !== nextProps.minHeight) {
+      this.props.minHeight !== nextProps.minHeight ||
+      ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
       this.setState(this.getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
