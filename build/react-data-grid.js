@@ -7434,7 +7434,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this.getGridState(this.props);
 	  },
 	  getGridState: function getGridState(props) {
-	    var totalNumberColumns = _ColumnUtils2['default'].getSize(this.props.columnMetrics.columns);
+	    var totalNumberColumns = _ColumnUtils2['default'].getSize(props.columnMetrics.columns);
 	    var canvasHeight = props.minHeight - props.rowOffsetHeight;
 	    var renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
 	    var totalRowCount = min(renderedRowsCount * 4, props.rowsCount);
@@ -7540,7 +7540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    if (this.props.rowHeight !== nextProps.rowHeight || this.props.minHeight !== nextProps.minHeight) {
+	    if (this.props.rowHeight !== nextProps.rowHeight || this.props.minHeight !== nextProps.minHeight || _ColumnUtils2['default'].getSize(this.props.columnMetrics.columns) !== _ColumnUtils2['default'].getSize(nextProps.columnMetrics.columns)) {
 	      this.setState(this.getGridState(nextProps));
 	    } else if (this.props.rowsCount !== nextProps.rowsCount) {
 	      this.updateScroll(this.state.scrollTop, this.state.scrollLeft, this.state.height, nextProps.rowHeight, nextProps.rowsCount);
