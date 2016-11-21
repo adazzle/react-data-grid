@@ -5,6 +5,7 @@ const TestUtils     = require('react/lib/ReactTestUtils');
 const rewireModule  = require('../../test/rewireModule');
 const StubComponent = require('../../test/StubComponent');
 const helpers       = require('./GridPropHelpers');
+import { shallow } from 'enzyme';
 
 describe('Header Unit Tests', () => {
   let header;
@@ -94,6 +95,79 @@ describe('Header Unit Tests', () => {
 
     it('header row drag end should trigger onColumnResize callback', () => {
       shouldTriggerOnColumnResize();
+    });
+  });
+
+  describe('Rendering Header component', () => {
+    const renderComponent = (props) => {
+      const wrapper = shallow(<Header {...props} />);
+      return wrapper;
+    };
+    let testRequiredProps = {
+      columnMetrics: {
+        columns: helpers.columns,
+        minColumnWidth: 81,
+        totalWidth: true,
+        width: 2601
+      },
+      height: 51,
+      headerRows: [{height: 51, ref: 'row'}]
+    };
+    let testAllProps = {
+      columnMetrics: {
+        columns: helpers.columns,
+        minColumnWidth: 80,
+        totalWidth: true,
+        width: 2600
+      },
+      totalWidth: 1000,
+      height: 50,
+      headerRows: [{height: 50, ref: 'row'}],
+      sortColumn: 'sortColumnValue',
+      sortDirection: 'DESC',
+      onSort: jasmine.createSpy(),
+      onColumnResize: jasmine.createSpy(),
+      onScroll: jasmine.createSpy(),
+      draggableHeaderCell: jasmine.createSpy(),
+      getValidFilterValues: jasmine.createSpy()
+    };
+    it('passes classname property', () => {
+      const wrapper = renderComponent(testAllProps);
+      const headerDiv = wrapper.find('div');
+      expect(headerDiv.hasClass('react-grid-Header'));
+    });
+    it('passes style property', () => {
+      const wrapper = renderComponent(testAllProps);
+      const headerDiv = wrapper.find('div');
+      expect(headerDiv.props().style).toBeDefined();
+    });
+    it('passes height property', () => {
+      const wrapper = renderComponent(testAllProps);
+      const headerDiv = wrapper.find('div');
+      expect(headerDiv.props().height).toBe(50);
+    });
+    it('passes onScroll property, if available from props', () => {
+      const wrapper = renderComponent(testAllProps);
+      const headerDiv = wrapper.find('div');
+      expect(headerDiv.props().onScroll).toBe(testAllProps.onScroll);
+    });
+    it('does not pass onScroll properties if it is not available from props', () => {
+      const wrapper = renderComponent(testRequiredProps);
+      const headerDiv = wrapper.find('div');
+      expect(headerDiv.props().onScroll).toBeUndefined();
+    });
+    it('does not pass unknown properties to the div', () => {
+      const wrapper = renderComponent(testAllProps);
+      const headerDiv = wrapper.find('div');
+      expect(headerDiv.props().columnMetrics).toBeUndefined();
+      expect(headerDiv.props().totalWidth).toBeUndefined();
+      expect(headerDiv.props().headerRows).toBeUndefined();
+      expect(headerDiv.props().sortColumn).toBeUndefined();
+      expect(headerDiv.props().sortDirection).toBeUndefined();
+      expect(headerDiv.props().onSort).toBeUndefined();
+      expect(headerDiv.props().onColumnResize).toBeUndefined();
+      expect(headerDiv.props().draggableHeaderCell).toBeUndefined();
+      expect(headerDiv.props().getValidFilterValues).toBeUndefined();
     });
   });
 });

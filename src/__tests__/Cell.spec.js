@@ -3,9 +3,10 @@ let rewire       = require('rewire');
 let Cell         = rewire('../Cell');
 let rewireModule = require('../../test/rewireModule');
 let StubComponent = require('../../test/StubComponent');
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import isEqual from 'lodash/isEqual';
 Object.assign = require('object-assign');
+import * as helpers from './GridPropHelpers';
 
 let testCellMetaData = {
   selected: {idx: 2, rowIdx: 3},
@@ -490,6 +491,127 @@ describe('Cell Tests', () => {
           idx: testProps.idx
         });
       });
+    });
+  });
+
+  describe('Rendering Cell component', () => {
+    const shallowRenderComponent = (props) => {
+      const wrapper = shallow(<Cell {...props} />);
+      return wrapper;
+    };
+
+    const requiredProperties = {
+      rowIdx: 18,
+      idx: 19,
+      column: helpers.columns[0],
+      row: {key: 'value'},
+      value: 'requiredValue',
+      cellMetaData: {
+        selected: {idx: 2, rowIdx: 3},
+        dragged: null,
+        onCellClick: jasmine.createSpy(),
+        onCellContextMenu: jasmine.createSpy(),
+        onCellDoubleClick: jasmine.createSpy(),
+        onCommit: jasmine.createSpy(),
+        onCommitCancel: jasmine.createSpy(),
+        copied: null,
+        handleDragEnterRow: jasmine.createSpy(),
+        handleTerminateDrag: jasmine.createSpy(),
+        onColumnEvent: jasmine.createSpy()
+      },
+      rowData: helpers.rowGetter(11),
+      expandableOptions: {key: 'reqValue'},
+      isScrolling: false
+    };
+
+    const allProperties = {
+      rowIdx: 20,
+      idx: 21,
+      selected: {idx: 18},
+      height: 35,
+      tabIndex: 12,
+      ref: 'cellRef',
+      column: helpers.columns[1],
+      value: 'allValue',
+      isExpanded: true,
+      isRowSelected: false,
+      cellMetaData: {
+        selected: {idx: 2, rowIdx: 3},
+        dragged: null,
+        onCellClick: jasmine.createSpy(),
+        onCellContextMenu: jasmine.createSpy(),
+        onCellDoubleClick: jasmine.createSpy(),
+        onCommit: jasmine.createSpy(),
+        onCommitCancel: jasmine.createSpy(),
+        copied: null,
+        handleDragEnterRow: jasmine.createSpy(),
+        handleTerminateDrag: jasmine.createSpy(),
+        onColumnEvent: jasmine.createSpy()
+      },
+      handleDragStart: jasmine.createSpy(),
+      className: 'a-class-name',
+      cellControls: 'something',
+      rowData: helpers.rowGetter(10),
+      extraClasses: 'extra-classes',
+      forceUpdate: false,
+      expandableOptions: {key: 'value'},
+      isScrolling: true
+    };
+
+
+    it('passes classname property', () => {
+      const wrapper = shallowRenderComponent(requiredProperties);
+      const cellDiv = wrapper.find('div').at(0);
+      expect(cellDiv.hasClass('react-grid-Cell'));
+    });
+    it('passes style property', () => {
+      const wrapper = shallowRenderComponent(requiredProperties);
+      const cellDiv = wrapper.find('div').at(0);
+      expect(cellDiv.props().style).toBeDefined();
+    });
+    it('passes height property if available from props', () => {
+      const wrapper = shallowRenderComponent(allProperties);
+      const cellDiv = wrapper.find('div').at(0);
+      expect(cellDiv.props().height).toBe(35);
+    });
+    it('does not pass height property if not available from props', () => {
+      const wrapper = shallowRenderComponent(requiredProperties);
+      const cellDiv = wrapper.find('div').at(0);
+      expect(cellDiv.props().height).toBeUndefined();
+    });
+    it('passes tabIndex property if available from props', () => {
+      const wrapper = shallowRenderComponent(allProperties);
+      const cellDiv = wrapper.find('div').at(0);
+      expect(cellDiv.props().tabIndex).toBe(12);
+    });
+    it('passes tabIndex if not available from props, because it is set as a default', () => {
+      const wrapper = shallowRenderComponent(requiredProperties);
+      const cellDiv = wrapper.find('div').at(0);
+      expect(cellDiv.props().tabIndex).toBe(-1);
+    });
+    it('passes value property', () => {
+      const wrapper = shallowRenderComponent(requiredProperties);
+      const cellDiv = wrapper.find('div').at(0);
+      expect(cellDiv.props().value).toBe('requiredValue');
+    });
+    it('does not pass unknown properties to the div', () => {
+      const wrapper = shallowRenderComponent(allProperties);
+      const cellDiv = wrapper.find('div').at(0);
+      expect(cellDiv.props().rowIdx).toBeUndefined();
+      expect(cellDiv.props().idx).toBeUndefined();
+      expect(cellDiv.props().selected).toBeUndefined();
+      expect(cellDiv.props().selectedColumn).toBeUndefined();
+      expect(cellDiv.props().ref).toBeUndefined();
+      expect(cellDiv.props().column).toBeUndefined();
+      expect(cellDiv.props().isExpanded).toBeUndefined();
+      expect(cellDiv.props().isRowSelected).toBeUndefined();
+      expect(cellDiv.props().cellMetaData).toBeUndefined();
+      expect(cellDiv.props().handleDragStart).toBeUndefined();
+      expect(cellDiv.props().cellControls).toBeUndefined();
+      expect(cellDiv.props().rowData).toBeUndefined();
+      expect(cellDiv.props().forceUpdate).toBeUndefined();
+      expect(cellDiv.props().expandableOptions).toBeUndefined();
+      expect(cellDiv.props().isScrolling).toBeUndefined();
     });
   });
 });

@@ -4,6 +4,7 @@ const HeaderCell    = rewire('../HeaderCell');
 const TestUtils     = require('react/lib/ReactTestUtils');
 const rewireModule  = require('../../test/rewireModule');
 const StubComponent = require('../../test/StubComponent');
+import SortableHeaderCell from '../addons/cells/headerCells/SortableHeaderCell';
 
 describe('Header Cell Tests', () => {
   // Configure local constiable replacements for the module.
@@ -134,6 +135,30 @@ describe('Header Cell Tests', () => {
       expect(testProps.onResizeEnd).toHaveBeenCalled();
       expect(testProps.onResizeEnd.calls.mostRecent().args[0]).toEqual(testProps.column);
       expect(testProps.onResizeEnd.calls.mostRecent().args[1]).toEqual(250);
+    });
+  });
+
+  describe('getCell method', () => {
+    it('pass the column as property to cell renderer if it is a function', () => {
+      let rendererFunction = jasmine.createSpy();
+      let props = Object.assign({}, testProps, {renderer: rendererFunction});
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...props}/>);
+      headerCell.getCell();
+      expect(rendererFunction.calls.argsFor(0)[0]).toEqual({column: props.column});
+    });
+    it('should not pass the column as property to cell renderer if it is an HTML element', () => {
+      let renderer = <div>Value</div>;
+      let props = Object.assign({}, testProps, {renderer: renderer});
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...props}/>);
+      let cell = headerCell.getCell();
+      expect(cell.props.column).toBeUndefined();
+    });
+    it('should pass the column as property to cell renderer if it is a React class', () => {
+      let renderer = <SortableHeaderCell columnKey="colKey" onSort={jasmine.createSpy()} />;
+      let props = Object.assign({}, testProps, {renderer: renderer});
+      headerCell = TestUtils.renderIntoDocument(<HeaderCell {...props}/>);
+      let cell = headerCell.getCell();
+      expect(cell.props.column).toBe(props.column);
     });
   });
 });

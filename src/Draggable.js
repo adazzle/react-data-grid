@@ -1,12 +1,17 @@
 const React         = require('react');
 const PropTypes     = React.PropTypes;
+const createObjectWithProperties = require('./createObjectWithProperties');
+
+// The list of the propTypes that we want to include in the Draggable div
+const knownDivPropertyKeys = ['onDragStart', 'onDragEnd', 'onDrag', 'style'];
 
 const Draggable = React.createClass({
   propTypes: {
     onDragStart: PropTypes.func,
     onDragEnd: PropTypes.func,
     onDrag: PropTypes.func,
-    component: PropTypes.oneOfType([PropTypes.func, PropTypes.constructor])
+    component: PropTypes.oneOfType([PropTypes.func, PropTypes.constructor]),
+    style: PropTypes.object
   },
 
   getDefaultProps() {
@@ -67,9 +72,13 @@ const Draggable = React.createClass({
     window.removeEventListener('touchmove', this.onMouseMove);
   },
 
+  getKnownDivProps() {
+    return createObjectWithProperties(this.props, knownDivPropertyKeys);
+  },
+
   render(): ?ReactElement {
     return (
-      <div {...this.props}
+      <div {...this.getKnownDivProps()}
         onMouseDown={this.onMouseDown}
         onTouchStart={this.onMouseDown}
         className="react-grid-HeaderCell__draggable" />

@@ -65,9 +65,12 @@ const HeaderCell = React.createClass({
 
   getCell(): ReactComponent {
     if (React.isValidElement(this.props.renderer)) {
+      // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
+      if (typeof this.props.renderer.type === 'string') {
+        return React.cloneElement(this.props.renderer, {height: this.props.height});
+      }
       return React.cloneElement(this.props.renderer, {column: this.props.column, height: this.props.height});
     }
-
     return this.props.renderer({column: this.props.column});
   },
 

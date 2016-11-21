@@ -6,10 +6,14 @@ const ColumnMetrics       = require('./ColumnMetrics');
 const ColumnUtils         = require('./ColumnUtils');
 const HeaderRow           = require('./HeaderRow');
 const PropTypes           = React.PropTypes;
+const createObjectWithProperties = require('./createObjectWithProperties');
 
 type Column = {
   width: number
 }
+
+// The list of the propTypes that we want to include in the Header div
+const knownDivPropertyKeys = ['height', 'onScroll'];
 
 const Header = React.createClass({
   propTypes: {
@@ -171,6 +175,10 @@ const Header = React.createClass({
     }
   },
 
+  getKnownDivProps() {
+    return createObjectWithProperties(this.props, knownDivPropertyKeys);
+  },
+
   render(): ?ReactElement {
     let className = joinClasses({
       'react-grid-Header': true,
@@ -179,8 +187,7 @@ const Header = React.createClass({
     let headerRows = this.getHeaderRows();
 
     return (
-
-      <div {...this.props} style={this.getStyle()} className={className}>
+      <div {...this.getKnownDivProps()} style={this.getStyle()} className={className}>
         {headerRows}
       </div>
     );

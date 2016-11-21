@@ -6,12 +6,16 @@ const Cell = require('./Cell');
 const ColumnUtilsMixin = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const PropTypes = React.PropTypes;
+const createObjectWithProperties = require('./createObjectWithProperties');
 
 const CellExpander = React.createClass({
   render() {
     return (<Cell {...this.props}/>);
   }
 });
+
+// The list of the propTypes that we want to include in the Row div
+const knownDivPropertyKeys = ['height'];
 
 const Row = React.createClass({
 
@@ -162,6 +166,10 @@ const Row = React.createClass({
     });
   },
 
+  getKnownDivProps() {
+    return createObjectWithProperties(this.props, knownDivPropertyKeys);
+  },
+
   renderCell(props) {
     if (typeof this.props.cellRenderer === 'function') {
       this.props.cellRenderer.call(this, props);
@@ -192,7 +200,7 @@ const Row = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.props} className = { className } style= { style } onDragEnter= { this.handleDragEnter } >
+      <div {...this.getKnownDivProps()} className = { className } style= { style } onDragEnter= { this.handleDragEnter } >
         {
           React.isValidElement(this.props.row) ?
             this.props.row : cells
