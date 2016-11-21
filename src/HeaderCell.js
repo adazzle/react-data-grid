@@ -32,7 +32,7 @@ const HeaderCell = React.createClass({
   },
 
   shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState) && (this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left);
+    return shallowCompare(this, nextProps, nextState) && (this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.column.name !== nextProps.column.name || this.props.column.cellClass !== nextProps.column.cellClass);
   },
 
   onDragStart(e: SyntheticMouseEvent) {

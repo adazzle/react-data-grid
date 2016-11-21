@@ -77,6 +77,7 @@ const Cell = React.createClass({
   shouldComponentUpdate(nextProps: any): boolean {
     let shouldUpdate = this.props.column.width !== nextProps.column.width
     || this.props.column.left !== nextProps.column.left
+    || this.props.column.cellClass !== nextProps.column.cellClass
     || this.props.height !== nextProps.height
     || this.props.rowIdx !== nextProps.rowIdx
     || this.isCellSelectionChanging(nextProps)
