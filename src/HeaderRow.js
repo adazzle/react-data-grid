@@ -18,8 +18,6 @@ const HeaderRowStyle  = {
   position: React.PropTypes.string
 };
 
-const DEFINE_SORT = ['ASC', 'DESC', 'NONE'];
-
 // The list of the propTypes that we want to include in the HeaderRow div
 const knownDivPropertyKeys = ['width', 'height', 'style', 'onScroll'];
 
@@ -33,7 +31,7 @@ const HeaderRow = React.createClass({
     onColumnResizeEnd: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle),
     sortColumn: PropTypes.string,
-    sortDirection: React.PropTypes.oneOf(DEFINE_SORT),
+    sortDirection: React.PropTypes.oneOf(SortableHeaderCell.DEFINE_SORT),
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
@@ -76,7 +74,7 @@ const HeaderRow = React.createClass({
   },
 
   getSortableHeaderCell(column) {
-    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : DEFINE_SORT.NONE;
+    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
     return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection}/>;
   },
 
