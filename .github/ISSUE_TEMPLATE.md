@@ -1,3 +1,37 @@
+> **HAVE YOU ALREADY SEARCHED FOR SIMILAR ISSUES? PLEASE HELP US OUT AND DOUBLE-CHECK FIRST!**
+
+> **ALSO, PLEASE DON'T BE THAT PERSON WHO DELETES THIS TEMPLATE. IT'S HERE FOR A REASON.**
+
+> **THANKS!**
+
+**WHICH VERSION OF REACT ARE YOU USING?**
+```
+Officially Supported:
+[ ] v0.14.x
+```
+
+```
+Community Supported:
+[ ] v15.0.x
+```
+
+**WHICH BROWSER ARE YOU USING?**
+
+```
+Officially Supported:
+[ ] IE 9 / IE 10 / IE 11
+[ ] Edge
+[ ] Chrome
+```
+
+```
+Should work:
+[ ] Firefox
+[ ] Safari
+```
+
+--------
+
 **I'm submitting a ...**  (check one with "x")
 ```
 [ ] bug report
