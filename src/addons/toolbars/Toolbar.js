@@ -8,7 +8,7 @@ const Toolbar = React.createClass({
     numberOfRows: React.PropTypes.number,
     addRowButtonText: React.PropTypes.string,
     filterRowsButtonText: React.PropTypes.string,
-    children: React.PropTypes.element
+    children: React.PropTypes.any
   },
 
   onAddRow() {
