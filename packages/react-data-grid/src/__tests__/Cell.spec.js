@@ -1,12 +1,12 @@
 let React        = require('react');
 let rewire       = require('rewire');
 let Cell         = rewire('../Cell');
-let rewireModule = require('../../test/rewireModule');
-let StubComponent = require('../../test/StubComponent');
+let rewireModule = require('../../../../test/rewireModule');
+let StubComponent = require('../../../../test/StubComponent');
 import { mount, shallow } from 'enzyme';
 import isEqual from 'lodash/isEqual';
 Object.assign = require('object-assign');
-import * as helpers from './GridPropHelpers';
+import * as helpers from '../helpers/test/GridPropHelpers';
 
 let testCellMetaData = {
   selected: {idx: 2, rowIdx: 3},

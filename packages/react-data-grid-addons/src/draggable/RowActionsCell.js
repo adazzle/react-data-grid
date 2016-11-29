@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
-import CheckboxEditor from '../editors/CheckboxEditor';
+import CheckboxEditor from '../../../react-data-grid/src/editors/CheckboxEditor';
 
 class RowActionsCell extends React.Component {
 

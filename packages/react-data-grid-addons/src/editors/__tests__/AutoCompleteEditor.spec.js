@@ -3,8 +3,8 @@
 let React              = require('react');
 let TestUtils          = require('react/lib/ReactTestUtils');
 let rewire             = require('rewire');
-let rewireModule       = require('../../../../test/rewireModule');
-let StubComponent      = require('../../../../test/StubComponent');
+let rewireModule       = require('../../../../../test/rewireModule');
+let StubComponent      = require('../../../../../test/StubComponent');
 let AutoCompleteEditor = rewire('../AutoCompleteEditor');
 
 describe('AutoCompleteEditor', () => {

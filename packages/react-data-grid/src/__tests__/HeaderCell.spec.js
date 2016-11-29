@@ -2,9 +2,9 @@ const React         = require('react');
 const rewire        = require('rewire');
 const HeaderCell    = rewire('../HeaderCell');
 const TestUtils     = require('react/lib/ReactTestUtils');
-const rewireModule  = require('../../test/rewireModule');
-const StubComponent = require('../../test/StubComponent');
-import SortableHeaderCell from '../addons/cells/headerCells/SortableHeaderCell';
+const rewireModule  = require('../../../../test/rewireModule');
+const StubComponent = require('../../../../test/StubComponent');
+import SortableHeaderCell from '../cells/headerCells/SortableHeaderCell';
 
 describe('Header Cell Tests', () => {
   // Configure local constiable replacements for the module.

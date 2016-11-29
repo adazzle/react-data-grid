@@ -5,7 +5,7 @@ Object.assign = Object.assign || require('object-assign');
 
 var config = Object.assign({}, commonConfig, {
   entry: {
-    'react-data-grid.ui-plugins': './src/addons/index'
+    'react-data-grid.ui-plugins': './packages/react-data-grid-addons/src/'
   },
   output: {
     path: path.join(__dirname, "../dist"),

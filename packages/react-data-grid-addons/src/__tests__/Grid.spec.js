@@ -1,10 +1,10 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const rewire = require('rewire');
-const Grid = rewire('../../ReactDataGrid.js');
+const Grid = rewire('../../../react-data-grid/src/ReactDataGrid.js');
 const TestUtils = require('react/lib/ReactTestUtils');
-const rewireModule = require('../../../test/rewireModule');
-const StubComponent = require('../../../test/StubComponent');
+const rewireModule = require('../../../../test/rewireModule');
+const StubComponent = require('../../../../test/StubComponent');
 const mockStateObject = require('./data/MockStateObject');
 
 

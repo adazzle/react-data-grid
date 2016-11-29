@@ -2,7 +2,7 @@ import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import Row from '../Row';
 import { shallow } from 'enzyme';
-import * as helpers from './GridPropHelpers';
+import * as helpers from '../helpers/test/GridPropHelpers';
 
 describe('Row', () => {
   let fakeProps = {

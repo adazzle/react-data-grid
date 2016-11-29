@@ -1,5 +1,5 @@
 import getScrollbarSize from '../getScrollbarSize';
-import GridPropHelpers from './GridPropHelpers';
+import GridPropHelpers from '../helpers/test/GridPropHelpers';
 const rewire = require('rewire');
 const ColumnMetrics = rewire('../ColumnMetrics');
 const Immutable = window.Immutable = require('immutable');

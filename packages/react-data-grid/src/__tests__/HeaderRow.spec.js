@@ -1,9 +1,9 @@
 const React         = require('react');
 const rewire        = require('rewire');
 const TestUtils     = require('react/lib/ReactTestUtils');
-const rewireModule  = require('../../test/rewireModule');
-const StubComponent = require('../../test/StubComponent');
-const helpers       = require('./GridPropHelpers');
+const rewireModule  = require('../../../../test/rewireModule');
+const StubComponent = require('../../../../test/StubComponent');
+const helpers       = require('../helpers/test/GridPropHelpers');
 const HeaderRow     = rewire('../HeaderRow');
 import { shallow } from 'enzyme';
 

@@ -2,11 +2,11 @@ import isEqual from 'lodash/isEqual';
 const React = require('react');
 const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
-const EditorContainer = require('./addons/editors/EditorContainer');
+const EditorContainer = require('./editors/EditorContainer');
 const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
-const isFunction = require('./addons/utils/isFunction');
+const isFunction = require('./utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const SimpleCellFormatter = require('./addons/formatters/SimpleCellFormatter');
+const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
 const ColumnUtils = require('./ColumnUtils');
 const createObjectWithProperties = require('./createObjectWithProperties');
 

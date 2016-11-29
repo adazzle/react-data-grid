@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropTarget } from 'react-dnd';
-import shouldRowUpdate from '../../RowComparer';
+import shouldRowUpdate from '../../../react-data-grid/src/RowComparer';
 
 let rowDropTarget = (Row) => class extends React.Component {
 

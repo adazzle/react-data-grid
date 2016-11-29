@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
-import isEmptyObject from '../utils/isEmptyObject';
-import isEmptyArray from '../utils/isEmptyArray';
+import isEmptyObject from '../../../react-data-grid/src/utils/isEmptyObject';
+import isEmptyArray from '../../../react-data-grid/src/utils/isEmptyArray';
 
 const groupRows = require('./RowGrouper');
 const filterRows = require('./RowFilterer');

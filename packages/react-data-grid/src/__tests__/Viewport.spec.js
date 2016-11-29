@@ -1,7 +1,7 @@
 import React from 'react';
 import Viewport from '../Viewport';
 import { shallow} from 'enzyme';
-import helpers from './GridPropHelpers';
+import helpers from '../helpers/test/GridPropHelpers';
 
 let viewportProps = {
   rowOffsetHeight: 0,

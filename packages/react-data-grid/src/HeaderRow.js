@@ -4,8 +4,8 @@ const BaseHeaderCell        = require('./HeaderCell');
 const getScrollbarSize  = require('./getScrollbarSize');
 const ExcelColumn  = require('./PropTypeShapes/ExcelColumn');
 const ColumnUtilsMixin  = require('./ColumnUtils');
-const SortableHeaderCell    = require('./addons/cells/headerCells/SortableHeaderCell');
-const FilterableHeaderCell  = require('./addons/cells/headerCells/FilterableHeaderCell');
+const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
+const FilterableHeaderCell  = require('./cells/headerCells/FilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
 const createObjectWithProperties = require('./createObjectWithProperties');
 

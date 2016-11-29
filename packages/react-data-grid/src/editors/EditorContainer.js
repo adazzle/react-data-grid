@@ -1,6 +1,6 @@
 const React                   = require('react');
 const joinClasses              = require('classnames');
-const keyboardHandlerMixin    = require('../../KeyboardHandlerMixin');
+const keyboardHandlerMixin    = require('../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
 const isFunction              = require('../utils/isFunction');
 
