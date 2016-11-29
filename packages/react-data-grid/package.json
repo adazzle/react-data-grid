@@ -1,0 +1,17 @@
+{
+  "name": "react-data-grid",
+  "version": "2.0.0",
+  "description": "The grid core",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "react",
+    "react-data-grid",
+    "data-grid",
+    "core"
+  ],
+  "author": "Adazzle",
+  "license": "MIT"
+}

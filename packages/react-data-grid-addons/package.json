@@ -1,0 +1,16 @@
+{
+  "name": "react-data-grid-addons",
+  "version": "2.0.0",
+  "description": "A set of addons for react-data-grid",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "react",
+    "react-data-grid",
+    "react-data-grid-addons"
+  ],
+  "author": "Adazzle",
+  "license": "MIT"
+}
