@@ -1,4 +1,3 @@
-var ReactGrid             = require('../build/react-data-grid');
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 

@@ -1,5 +1,4 @@
 var React       = require('react');
-var ReactDataGrid = require('../build/react-data-grid');
 var Immutable = window.Immutable = require('immutable');
 
 

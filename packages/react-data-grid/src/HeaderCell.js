@@ -4,7 +4,6 @@ const joinClasses    = require('classnames');
 const ExcelColumn    = require('./PropTypeShapes/ExcelColumn');
 const ResizeHandle   = require('./ResizeHandle');
 const PropTypes      = React.PropTypes;
-import shallowCompare from 'react-addons-shallow-compare';
 
 function simpleCellRenderer(objArgs: {column: {name: string}}): ReactElement {
   return <div className="widget-HeaderCell__value">{objArgs.column.name}</div>;
@@ -29,10 +28,6 @@ const HeaderCell = React.createClass({
 
   getInitialState(): {resizing: boolean} {
     return {resizing: false};
-  },
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState) && (this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.column.name !== nextProps.column.name || this.props.column.cellClass !== nextProps.column.cellClass);
   },
 
   onDragStart(e: SyntheticMouseEvent) {
