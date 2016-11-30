@@ -742,6 +742,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return enableRowSelect ? columns.length + 1 : columns.length;
 	  },
+	  getDataGridDOMNode: function getDataGridDOMNode() {
+	    if (!this._gridNode) {
+	      this._gridNode = ReactDOM.findDOMNode(this);
+	    }
+	    return this._gridNode;
+	  },
 	  calculateNextSelectionPosition: function calculateNextSelectionPosition(cellNavigationMode, cellDelta, rowDelta) {
 	    var _rowDelta = rowDelta;
 	    var idx = this.state.selected.idx + cellDelta;
@@ -944,6 +950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onCellExpand: this.onCellExpand,
 	      onRowExpandToggle: this.onRowExpandToggle,
 	      onRowHover: this.onRowHover,
+	      getDataGridDOMNode: this.getDataGridDOMNode,
 	      isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38), // up or down
 	      isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) // left or right
 	    };
@@ -4040,13 +4047,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
 	  },
 	  checkFocus: function checkFocus() {
-	    if (this.isSelected() && !this.isActive()) {
-	      if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
-	        return;
-	      }
-	      var cellDOMNode = ReactDOM.findDOMNode(this);
-	      if (cellDOMNode) {
-	        cellDOMNode.focus();
+	    // Only focus to the current cell if the currently active node in the document is within the data grid.
+	    // Meaning focus should not be stolen from elements that the grid doesnt control.
+	    var dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
+	    if (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement)) {
+	      if (this.isSelected() && !this.isActive()) {
+	        if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
+	          return;
+	        }
+	        var cellDOMNode = ReactDOM.findDOMNode(this);
+	        if (cellDOMNode) {
+	          cellDOMNode.focus();
+	        }
 	      }
 	    }
 	  },
