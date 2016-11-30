@@ -1,4 +1,4 @@
-import TestUtils from 'react/lib/ReactTestUtils';
+import TestUtils from 'react-addons-test-utils';
 import GridRunner from './GridRunner';
 import ReactDOM from 'react-dom';
 

@@ -1,6 +1,6 @@
 const React            = require('react');
-const TestUtils        = require('react/lib/ReactTestUtils');
 const SimpleTextEditor = require('../SimpleTextEditor');
+const mount            = require('enzyme').mount;
 
 describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
@@ -10,13 +10,13 @@ describe('SimpleTextEditor', () => {
     function fakeBlurCb() { return true; }
     function fakeFunction() { }
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<SimpleTextEditor
+      component = mount(<SimpleTextEditor
         value={'This is a test'}
         onBlur={fakeBlurCb}
         onKeyDown={fakeFunction}
         commit={fakeFunction}
         column={fakeColumn}
-        />);
+        />).node;
     });
 
     it('should create a new SimpleTextEditor instance', () => {
@@ -24,8 +24,7 @@ describe('SimpleTextEditor', () => {
     });
 
     it('should pass the onBlur fuction down to the input as a prop', () => {
-      let Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-      expect(Input.props.onBlur()).toBe(true);
+      expect(component.props.onBlur()).toBe(true);
     });
 
     it('should return the value when getValue is called', () => {
