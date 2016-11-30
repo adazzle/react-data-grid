@@ -672,6 +672,13 @@ const ReactDataGrid = React.createClass({
     return enableRowSelect ? columns.length + 1 : columns.length;
   },
 
+  getDataGridDOMNode() {
+    if (!this._gridNode) {
+      this._gridNode = ReactDOM.findDOMNode(this);
+    }
+    return this._gridNode;
+  },
+
   calculateNextSelectionPosition(cellNavigationMode: string, cellDelta: number, rowDelta: number) {
     let _rowDelta = rowDelta;
     let idx = this.state.selected.idx + cellDelta;
@@ -877,6 +884,7 @@ const ReactDataGrid = React.createClass({
       onCellExpand: this.onCellExpand,
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
+      getDataGridDOMNode: this.getDataGridDOMNode,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38), // up or down
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) // left or right
     };
