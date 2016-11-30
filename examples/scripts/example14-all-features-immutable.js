@@ -8,6 +8,7 @@
   var DropDownEditor      = Editors.DropDownEditor;
   var joinClasses          = require('classnames');
   var FakeObjectDataStore = require('./FakeObjectDataStore');
+  var Immutable = require('immutable');
   var {ContextMenu, MenuItem} = ReactDataGridPlugins.Menu;
   var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
    { id : 10, title :'Durham'},
