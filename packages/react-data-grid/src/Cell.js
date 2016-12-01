@@ -344,13 +344,18 @@ const Cell = React.createClass({
   },
 
   checkFocus() {
-    if (this.isSelected() && !this.isActive()) {
-      if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
-        return;
-      }
-      let cellDOMNode = ReactDOM.findDOMNode(this);
-      if (cellDOMNode) {
-        cellDOMNode.focus();
+    // Only focus to the current cell if the currently active node in the document is within the data grid.
+    // Meaning focus should not be stolen from elements that the grid doesnt control.
+    let dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
+    if (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement)) {
+      if (this.isSelected() && !this.isActive()) {
+        if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
+          return;
+        }
+        let cellDOMNode = ReactDOM.findDOMNode(this);
+        if (cellDOMNode) {
+          cellDOMNode.focus();
+        }
       }
     }
   },
