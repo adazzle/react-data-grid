@@ -76,19 +76,19 @@ const Cell = React.createClass({
 
   shouldComponentUpdate(nextProps: any): boolean {
     let shouldUpdate = this.props.column.width !== nextProps.column.width
-    || this.props.column.left !== nextProps.column.left
-    || this.props.column.cellClass !== nextProps.column.cellClass
-    || this.props.height !== nextProps.height
-    || this.props.rowIdx !== nextProps.rowIdx
-    || this.isCellSelectionChanging(nextProps)
-    || this.isDraggedCellChanging(nextProps)
-    || this.isCopyCellChanging(nextProps)
-    || this.props.isRowSelected !== nextProps.isRowSelected
-    || this.isSelected()
-    || this.props.value !== nextProps.value
-    || this.props.forceUpdate === true
-    || this.props.className !== nextProps.className
-    || this.hasChangedDependentValues(nextProps);
+      || this.props.column.left !== nextProps.column.left
+      || this.props.column.cellClass !== nextProps.column.cellClass
+      || this.props.height !== nextProps.height
+      || this.props.rowIdx !== nextProps.rowIdx
+      || this.isCellSelectionChanging(nextProps)
+      || this.isDraggedCellChanging(nextProps)
+      || this.isCopyCellChanging(nextProps)
+      || this.props.isRowSelected !== nextProps.isRowSelected
+      || this.isSelected()
+      || this.props.value !== nextProps.value
+      || this.props.forceUpdate === true
+      || this.props.className !== nextProps.className
+      || this.hasChangedDependentValues(nextProps);
     return shouldUpdate;
   },
 
@@ -153,7 +153,7 @@ const Cell = React.createClass({
   getFormatter() {
     let col = this.props.column;
     if (this.isActive()) {
-      return <EditorContainer rowData={this.getRowData() } rowIdx={this.props.rowIdx} value={this.props.value} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height}/>;
+      return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} value={this.props.value} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height} />;
     }
 
     return this.props.column.formatter;
@@ -343,15 +343,19 @@ const Cell = React.createClass({
     return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
   },
 
+  isFocusedOnBody() {
+    return document.activeElement == null || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body');
+  },
+
   checkFocus() {
-    // Only focus to the current cell if the currently active node in the document is within the data grid.
-    // Meaning focus should not be stolen from elements that the grid doesnt control.
-    let dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
-    if (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement)) {
-      if (this.isSelected() && !this.isActive()) {
-        if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
-          return;
-        }
+    if (this.isSelected() && !this.isActive()) {
+      if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
+        return;
+      }
+      // Only focus to the current cell if the currently active node in the document is within the data grid.
+      // Meaning focus should not be stolen from elements that the grid doesnt control.
+      let dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
+      if (document.activeElement.className === 'react-grid-Cell' || this.isFocusedOnBody() || (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement))) {
         let cellDOMNode = ReactDOM.findDOMNode(this);
         if (cellDOMNode) {
           cellDOMNode.focus();
@@ -430,14 +434,14 @@ const Cell = React.createClass({
       props.dependentValues = this.getFormatterDependencies();
       CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies() }/>;
+      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} />;
     } else {
-      CellContent = <SimpleCellFormatter value={this.props.value}/>;
+      CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
     let cellExpander;
     let marginLeft = this.props.expandableOptions ? (this.props.expandableOptions.treeDepth * 30) : 0;
     if (this.canExpand()) {
-      cellExpander = (<span style={{ float: 'left', marginLeft: marginLeft }} onClick={this.onCellExpand} >{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658') }</span>);
+      cellExpander = (<span style={{ float: 'left', marginLeft: marginLeft }} onClick={this.onCellExpand} >{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>);
     }
     return (<div className="react-grid-Cell__value">{cellExpander}<span >{CellContent}</span> {this.props.cellControls} </div>);
   },
@@ -462,7 +466,7 @@ const Cell = React.createClass({
     let events = this.getEvents();
 
     return (
-      <div {...this.getKnownDivProps()} className={className} style={style}   {...events}>
+      <div {...this.getKnownDivProps() } className={className} style={style}   {...events}>
         {cellContent}
         {dragHandle}
       </div>
