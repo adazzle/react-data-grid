@@ -3,7 +3,7 @@ const joinClasses              = require('classnames');
 const keyboardHandlerMixin    = require('../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
 const isFunction              = require('../utils/isFunction');
-
+require('../../../../themes/react-data-grid-core.css');
 
 const EditorContainer = React.createClass({
   mixins: [keyboardHandlerMixin],

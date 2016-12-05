@@ -1,5 +1,6 @@
 import React from 'react';
 import focusableComponentWrapper from './focusableComponentWrapper';
+import '../../../themes/react-data-grid-cell.css';
 
 class OverflowCell extends React.Component {
   getStyle() {

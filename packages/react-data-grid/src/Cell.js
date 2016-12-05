@@ -9,6 +9,7 @@ const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
 const ColumnUtils = require('./ColumnUtils');
 const createObjectWithProperties = require('./createObjectWithProperties');
+require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
 const knownDivPropertyKeys = ['height', 'tabIndex', 'value'];

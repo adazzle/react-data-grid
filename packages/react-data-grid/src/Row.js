@@ -7,6 +7,7 @@ const ColumnUtilsMixin = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const PropTypes = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
+require('../../../themes/react-data-grid-row.css');
 
 const CellExpander = React.createClass({
   render() {

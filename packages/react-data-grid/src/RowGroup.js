@@ -1,6 +1,7 @@
 import React, {PropTypes, Component} from 'react';
 import ReactDOM from 'react-dom';
 import classnames from 'classnames';
+import '../../../themes/react-data-grid-row.css';
 
 class RowGroup extends Component {
 

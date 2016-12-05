@@ -8,6 +8,7 @@ const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
 const FilterableHeaderCell  = require('./cells/headerCells/FilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
 const createObjectWithProperties = require('./createObjectWithProperties');
+require('../../../themes/react-data-grid-header.css');
 
 const PropTypes         = React.PropTypes;
 

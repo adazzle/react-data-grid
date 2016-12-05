@@ -1,6 +1,7 @@
 const React         = require('react');
 const PropTypes     = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
+require('../../../themes/react-data-grid-header.css');
 
 // The list of the propTypes that we want to include in the Draggable div
 const knownDivPropertyKeys = ['onDragStart', 'onDragEnd', 'onDrag', 'style'];

@@ -1,4 +1,5 @@
 const React = require('react');
+require('../../../../themes/react-data-grid-checkbox.css');
 
 const CheckboxEditor = React.createClass({
 

@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
 import Selectors from '../data/Selectors';
+import '../../../../themes/react-data-grid-cell.css';
+import '../../../../themes/react-data-grid-row.css';
 
 const layerStyles = {
   cursor: '-webkit-grabbing',

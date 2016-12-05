@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Select from 'react-select';
 import ReactDOM from 'react-dom';
+import 'react-select/dist/react-select.css';
 
 const ExcelColumn = {
   name: React.PropTypes.string.isRequired,

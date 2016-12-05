@@ -1,4 +1,5 @@
 const React = require('react');
+require('../../../../themes/react-data-grid-toolbar.css');
 
 const Toolbar = React.createClass({
   propTypes: {

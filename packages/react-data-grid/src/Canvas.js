@@ -6,6 +6,8 @@ const ScrollShim = require('./ScrollShim');
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const RowUtils = require('./RowUtils');
+require('../../../themes/react-data-grid-core.css');
+
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';

@@ -7,6 +7,7 @@ const ColumnUtils         = require('./ColumnUtils');
 const HeaderRow           = require('./HeaderRow');
 const PropTypes           = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
+require('../../../themes/react-data-grid-header.css');
 
 type Column = {
   width: number
