@@ -15,12 +15,10 @@
 .react-grid-Grid {
   background-color: #ffffff;
   border: 1px solid #dddddd;
-  will-change: transform;
 }
 
 .react-grid-Canvas {
   background-color: #ffffff;
-  will-change: transform;
 }
 
 .react-grid-Canvas.opaque .react-grid-Cell:not(.editing) {
