@@ -5,15 +5,16 @@ module.exports =  {
   entry: {
     'react-data-grid': './packages/react-data-grid/src',
     'react-data-grid.ui-plugins': './packages/react-data-grid-addons/src/',
-    'index': './packages/examples/src',
-    'shared': './packages/examples/src/shared.js',
-    'examples': './packages/examples/src/examples.js'
+    index: './packages/examples/src',
+    shared: './packages/examples/src/shared.js',
+    examples: './packages/examples/src/examples.js'
     // 'documentation': './examples/documentation.js'
   },
   output: {
-    path: "./examples/build",
-    filename: "[name].js",
-    libraryTarget: "umd"
+    path: './dist',
+    filename: '[name].js',
+    library: ['ReactDataGrid'],
+    libraryTarget: 'umd'
   },
   resolve: {
     alias: {
@@ -22,11 +23,11 @@ module.exports =  {
     }
   },
   externals: {
-    "react": 'React',
-    "react/addons": 'React',
-    "react-dom": 'ReactDOM',
-    'faker': 'faker',
-    "moment": "moment"
+    react: 'React',
+    'react/addons': 'React',
+    'react-dom': 'ReactDOM',
+    faker: 'faker',
+    moment: 'moment'
   },
   module: {
     loaders: [

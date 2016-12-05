@@ -8,6 +8,7 @@
     "prepublish": "gulp dist --release true",
     "debug-test": "gulp test --debug true",
     "examples": "gulp",
+    "build": "webpack --config webpack.config.js",
     "dev-server": "./node_modules/.bin/webpack-dev-server"
   },
   "repository": {
