@@ -26,7 +26,7 @@ function createRows(numberOfRows){
 
 //function to retrieve a row for a given index
 var rowGetter = function(i){
-  return _rows[i];
+  return _rows[i + 1];
 };
 
 //Columns definition
