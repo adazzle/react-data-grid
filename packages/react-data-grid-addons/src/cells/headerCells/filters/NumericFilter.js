@@ -1,5 +1,6 @@
 import React from 'react';
-import ExcelColumn from '../../../../../react-data-grid/src/PropTypeShapes/ExcelColumn';
+import { shapes } from 'react-data-grid';
+const { ExcelColumn } = shapes;
 const RuleType = {
   Number: 1,
   Range: 2,

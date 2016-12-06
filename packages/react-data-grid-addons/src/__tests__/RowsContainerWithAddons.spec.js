@@ -1,7 +1,7 @@
 import { ContextMenu } from '../menu';
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import RowsContainer from '../../../react-data-grid/src/RowsContainer';
+import { RowsContainer } from 'react-data-grid';
 
 describe('RowsContainer with addons', () => {
   describe('with context menu', () => {

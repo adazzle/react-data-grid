@@ -1,8 +1,9 @@
-import React, {PropTypes} from 'react';
-import ExcelColumn from '../../../../../react-data-grid/src/PropTypeShapes/ExcelColumn';
-import Select from 'react-select';
-import isEmptyArray from '../../../../../react-data-grid/src/utils/isEmptyArray';
 import 'react-select/dist/react-select.css';
+import React, {PropTypes} from 'react';
+import Select from 'react-select';
+import { utils, shapes } from 'react-data-grid';
+const { isEmptyArray } = utils;
+const { ExcelColumn } = shapes;
 
 class AutoCompleteFilter extends React.Component {
   constructor(props) {

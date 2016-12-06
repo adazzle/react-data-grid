@@ -2,7 +2,7 @@ const shallowCloneObject = require('./shallowCloneObject');
 const sameColumn = require('./ColumnComparer');
 const ColumnUtils = require('./ColumnUtils');
 const getScrollbarSize  = require('./getScrollbarSize');
-const isColumnsImmutable  = require('./isColumnsImmutable');
+const isColumnsImmutable  = require('./utils/isColumnsImmutable');
 
 type Column = {
   key: string;

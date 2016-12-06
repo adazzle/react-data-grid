@@ -13,5 +13,15 @@
     "react-data-grid-addons"
   ],
   "author": "Adazzle",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react-data-grid": "^2.0.0",
+    "react-router": "^3.0.0"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.2.0",
+    "jquery": "^2.1.1",
+    "lodash": "^4.13.1",
+    "lodash.groupby": "^4.5.1"
+  }
 }

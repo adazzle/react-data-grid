@@ -6,7 +6,7 @@ const Data = require('./data/');
 const Menu = require('./menu');
 import Draggable from './draggable';
 const Filters = require('./cells/headerCells/filters');
-import rowComparer from '../../react-data-grid/src/RowComparer';
+import { RowComparer as rowComparer } from 'react-data-grid';
 const Utils = {rowComparer};
 
 window.ReactDataGridPlugins = {Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, Filters, Utils};
