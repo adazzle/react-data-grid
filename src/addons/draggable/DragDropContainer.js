@@ -1,16 +1,11 @@
 import React, {Component} from 'react';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
 import isColumnsImmutable from '../../isColumnsImmutable';
-import getDndContext from './dnd-context';
 
 class DraggableContainer extends Component {
-
-  getChildContext() {
-    return {
-      dragDropManager: getDndContext(this.context)
-    };
-  }
 
   getRows(rowsCount, rowGetter) {
     let rows = [];
@@ -39,17 +34,9 @@ class DraggableContainer extends Component {
   }
 }
 
-DraggableContainer.childContextTypes = {
-  dragDropManager: React.PropTypes.object.isRequired
-};
-
-DraggableContainer.contextTypes = {
-  dragDropManager: React.PropTypes.object
-};
-
 DraggableContainer.propTypes = {
   children: React.PropTypes.element.isRequired,
   getDragPreviewRow: React.PropTypes.func
 };
 
-export default DraggableContainer;
+export default DragDropContext(HTML5Backend)(DraggableContainer);
