@@ -9,7 +9,7 @@
     "debug-test": "gulp test --debug true",
     "examples": "gulp",
     "build": "webpack --config webpack.config.js",
-    "dev-server": "./node_modules/.bin/webpack-dev-server"
+    "dev-server": "./node_modules/.bin/webpack-dev-server --watch-poll"
   },
   "repository": {
     "type": "git",

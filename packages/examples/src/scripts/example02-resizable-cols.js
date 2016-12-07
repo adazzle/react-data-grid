@@ -1,90 +1,99 @@
-var ReactPlayground       = require('../assets/js/ReactPlayground');
+const ReactDataGrid = require('react-data-grid');
+const exampleWrapper = require('../components/exampleWrapper');
+const React = require('react');
 
-var ResizableExample = `
-//helper to generate a random date
-function randomDate(start, end) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-};
+const Example = React.createClass({
+  getInitialState() {
+    this.createRows();
+    this._columns = [
+      {
+        key: 'id',
+        name: 'ID',
+        resizable: true,
+        width: 40
+      },
+      {
+        key: 'task',
+        name: 'Title',
+        resizable: true
+      },
+      {
+        key: 'priority',
+        name: 'Priority',
+        resizable: true
+      },
+      {
+        key: 'issueType',
+        name: 'Issue Type',
+        resizable: true
+      },
+      {
+        key: 'complete',
+        name: '% Complete',
+        resizable: true
+      },
+      {
+        key: 'startDate',
+        name: 'Start Date',
+        resizable: true
+      },
+      {
+        key: 'completeDate',
+        name: 'Expected Complete',
+        resizable: true
+      }
+    ];
 
-var _rows = [];
-for (var i = 1; i < 1000; i++) {
-  _rows.push({
-    id: i,
-    task: 'Task ' + i,
-    complete: Math.min(100, Math.round(Math.random() * 110)),
-    priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
-    issueType : ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],
-    startDate: randomDate(new Date(2015, 3, 1), new Date()),
-    completeDate: randomDate(new Date(), new Date(2016, 0, 1))
-  });
-}
+    return null;
+  },
 
-//function to retrieve a row for a given index
-var rowGetter = function(i){
-  return _rows[i];
-};
+  getRandomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
+  },
 
+  createRows() {
+    let rows = [];
+    for (let i = 1; i < 1000; i++) {
+      rows.push({
+        id: i,
+        task: 'Task ' + i,
+        complete: Math.min(100, Math.round(Math.random() * 110)),
+        priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
+        issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],
+        startDate: this.getRandomDate(new Date(2015, 3, 1), new Date()),
+        completeDate: this.getRandomDate(new Date(), new Date(2016, 0, 1))
+      });
+    }
 
-//Columns definition
-var columns = [
-{
-  key: 'id',
-  name: 'ID',
-  resizable : true,
-  width : 40
-},
-{
-  key: 'task',
-  name: 'Title',
-  resizable : true
-},
-{
-  key: 'priority',
-  name: 'Priority',
-  resizable : true
-},
-{
-  key: 'issueType',
-  name: 'Issue Type',
-  resizable : true
-},
-{
-  key: 'complete',
-  name: '% Complete',
-  resizable : true
-},
-{
-  key: 'startDate',
-  name: 'Start Date',
-  resizable : true
-},
-{
-  key: 'completeDate',
-  name: 'Expected Complete',
-  resizable : true
-}
-]
+    this._rows = rows;
+  },
 
-ReactDOM.render(<ReactDataGrid
-  columns={columns}
-  rowGetter={rowGetter}
-  rowsCount={_rows.length}
-  minHeight={500} />, mountNode);
-`;
+  rowGetter(i) {
+    return this._rows[i];
+  },
 
-module.exports = React.createClass({
-
-  render:function(){
-    return(
-      <div>
-        <h3>Resizable Columns Example</h3>
-        <p>To make a given column resizable, set <code>column.resizable = true</code></p>
-        <p>If you need to know when a column has been resized, use the <code>onColumnResize</code> prop. This will be triggered when a column is
-        resized and will report the column index and its new width. These can be saved on the back-end and used to restore column widths when
-        the component is initialized, by setting <code>width</code> key in each column.</p>
-        <ReactPlayground codeText={ResizableExample} />
-      </div>
-    )
+  render() {
+    return  (
+      <ReactDataGrid
+        columns={this._columns}
+        rowGetter={this.rowGetter}
+        rowsCount={this._rows.length}
+        minHeight={500} />);
   }
+});
 
+const exampleDescription = (
+  <div>
+    <p>To make a given column resizable, set <code>column.resizable = true</code></p>
+    <p>If you need to know when a column has been resized, use the <code>onColumnResize</code> prop. This will be triggered when a column is
+    resized and will report the column index and its new width. These can be saved on the back-end and used to restore column widths when
+    the component is initialized, by setting <code>width</code> key in each column.</p>
+  </div>);
+
+module.exports = exampleWrapper({
+  WrappedComponent: Example,
+  exampleName: 'Resizable Columns Example',
+  exampleDescription,
+  examplePath: './scripts/example02-resizable-cols.js',
+  examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/2/'
 });

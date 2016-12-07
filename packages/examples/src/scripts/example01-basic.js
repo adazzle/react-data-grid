@@ -1,52 +1,49 @@
+const ReactDataGrid = require('react-data-grid');
+const exampleWrapper = require('../components/exampleWrapper');
+const React = require('react');
 
-var QuickStartDescription = require('../components/QuickStartDescription')
-var ReactPlayground       = require('../assets/js/ReactPlayground');
+const Example = React.createClass({
+  getInitialState() {
+    this.createRows();
+    this._columns = [
+      { key: 'id', name: 'ID' },
+      { key: 'title', name: 'Title' },
+      { key: 'count', name: 'Count' } ];
 
-var _rows = [];
-for (var i = 1; i < 1000; i++) {
-  _rows.push({
-    id: i,
-    title: 'Title ' + i,
-    count: i * 1000
-  });
-}
+    return null;
+  },
 
-//A rowGetter function is required by the grid to retrieve a row for a given index
-var rowGetter = function(i){
-  return _rows[i];
-};
+  createRows() {
+    let rows = [];
+    for (let i = 1; i < 1000; i++) {
+      rows.push({
+        id: i,
+        title: 'Title ' + i,
+        count: i * 1000
+      });
+    }
 
+    this._rows = rows;
+  },
 
-var columns = [
-{
-  key: 'id',
-  name: 'ID'
-},
-{
-  key: 'title',
-  name: 'Title'
-},
-{
-  key: 'count',
-  name: 'Count'
-}
-]
+  rowGetter(i) {
+    return this._rows[i];
+  },
 
-var Example = React.createClass({
-  render: function() {
-    return  (<ReactDataGrid
-    columns={columns}
-    rowGetter={rowGetter}
-    rowsCount={_rows.length}
-    minHeight={500} />);
+  render() {
+    return  (
+      <ReactDataGrid
+        columns={this._columns}
+        rowGetter={this.rowGetter}
+        rowsCount={this._rows.length}
+        minHeight={500} />);
   }
 });
 
-
-module.exports = React.createClass({
-
-  render:function(){
-    return <Example />;
-  }
-
+module.exports = exampleWrapper({
+  WrappedComponent: Example,
+  exampleName: 'Basic Example',
+  exampleDescription: 'A display only grid.',
+  examplePath: './scripts/example01-basic.js',
+  examplePlaygroundLink: 'https://jsfiddle.net/f6mbnb8z/1/'
 });

@@ -6,7 +6,10 @@ const constants = {
     COLUMN_FILL: null,
     COPY_PASTE: null,
     CELL_DRAG: null
-  })
+  }),
+  DragItemTypes: {
+    Column: 'column'
+  }
 };
 
-export default constants;
+module.exports = constants;

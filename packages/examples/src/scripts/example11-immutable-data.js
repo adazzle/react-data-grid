@@ -1,72 +1,66 @@
-var React       = require('react');
-var Immutable = window.Immutable = require('immutable');
+const ReactDataGrid = require('react-data-grid');
+const exampleWrapper = require('../components/exampleWrapper');
+const React = require('react');
+const Immutable = require('immutable');
 
+const Example = React.createClass({
+  getInitialState() {
+    this._columns = this.createColumns();
+    this._rows = this.createRows();
 
-//helper to generate a random date
-function randomDate(start, end) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-}
-
-var _rows = [];
-var _cols = [];
-for (var j = 0; j < 50; j++) {
-  _cols.push({ key: 'col' + j, name: 'col' + j, width: 150, editable: true });
-}
-
-for (var rowIdx = 1; rowIdx < 300; rowIdx++) {
-  var row = {};
-  _cols.forEach(function(c, colIdx) {
-    row[c.key] = '(' + colIdx + ',' + rowIdx + ')';
-  });
-  _rows.push(row);
-}
-
-var Example = React.createClass({
-
-  getInitialState: function() {
-    return { rows: new Immutable.fromJS(_rows), cols: new Immutable.List(_cols) };
+    return { rows: new Immutable.fromJS(this._rows) };
   },
 
-  rowGetter: function(rowIdx) {
+  getRandomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
+  },
+
+  createColumns() {
+    let cols = [];
+    for (let j = 0; j < 50; j++) {
+      cols.push({ key: 'col' + j, name: 'col' + j, width: 150, editable: true });
+    }
+
+    return cols;
+  },
+
+  createRows() {
+    let rows = [];
+    for (let rowIdx = 1; rowIdx < 300; rowIdx++) {
+      let row = {};
+      this._columns.forEach((c, colIdx) => row[c.key] = '(' + colIdx + ',' + rowIdx + ')');
+      rows.push(row);
+    }
+
+    return rows;
+  },
+
+  rowGetter(rowIdx) {
     return this.state.rows.get(rowIdx);
   },
 
   handleRowUpdated: function(e) {
-    //merge updated row with current row and rerender by setting state
-    var rows = this.state.rows.update(e.rowIdx, function(row) {
-      return row.merge(e.updated);
-    });
-    this.setState({ rows: rows });
+    // merge updated row with current row and rerender by setting state
+    let rows = this.state.rows.update(e.rowIdx, (row) => row.merge(e.updated));
+    this.setState({ rows });
   },
 
-  render: function() {
-    return (
+  render() {
+    return  (
       <ReactDataGrid
-        ref="reactDataGrid"
         enableCellSelect={true}
-        columns={this.state.cols}
+        columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.size}
         minHeight={1200}
-        onRowUpdated={this.handleRowUpdated} />
-    );
+        onRowUpdated={this.handleRowUpdated} />);
   }
-
 });
 
-
-
-
-module.exports = React.createClass({
-
-  render: function() {
-    return (
-      <div>
-        <h3>Immutable Data Example</h3>
-        <p></p>
-        <Example/>
-      </div>
-    );
-  }
-
+module.exports = exampleWrapper({
+  WrappedComponent: Example,
+  exampleName: 'Immutable Data Example',
+  exampleDescription: 'Data Grid using immutable data',
+  examplePath: './scripts/example11-immutable-data.js',
+  examplePlaygroundLink: undefined
 });

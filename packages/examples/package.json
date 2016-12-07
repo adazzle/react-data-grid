@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "react-data-grid": "^2.0.0",
-    "react-router": "^3.0.0"
+    "react-data-grid-addons": "^2.0.0"
   },
   "devDependencies": {
     "bootstrap": "^3.2.0",

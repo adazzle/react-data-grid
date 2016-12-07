@@ -3,9 +3,9 @@ const webpack = require('webpack');
 module.exports =  {
   debug: true,
   entry: {
-    'react-data-grid': './packages/react-data-grid/src',
-    'react-data-grid.ui-plugins': './packages/react-data-grid-addons/src/',
-    index: './packages/examples/src',
+    'react-data-grid': ['./packages/react-data-grid/'],
+    'react-data-grid-addons': ['./packages/react-data-grid-addons/'],
+    index: ['./packages/examples/src'],
     shared: './packages/examples/src/shared.js',
     examples: './packages/examples/src/examples.js'
     // 'documentation': './examples/documentation.js'

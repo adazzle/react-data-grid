@@ -1,71 +1,54 @@
-var QuickStartDescription = require('../components/QuickStartDescription')
-var ReactPlayground       = require('../assets/js/ReactPlayground');
+const ReactDataGrid = require('react-data-grid');
+const exampleWrapper = require('../components/exampleWrapper');
+const React = require('react');
 
-var millionRowsExample = `
-//helper to generate a random date
-function randomDate(start, end) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-};
+const Example = React.createClass({
+  getInitialState() {
+    this.createRows();
+    this._columns = [
+      { key: 'id', name: 'ID' },
+      { key: 'task', name: 'Title' },
+      { key: 'priority', name: 'Priority' },
+      { key: 'issueType', name: 'Issue Type' },
+      { key: 'complete', name: '% Complete' }
+    ];
 
-var _rows = [];
-for (var i = 1; i < 1000000; i++) {
-  _rows.push({
-    id: i,
-    task: 'Task ' + i,
-    complete: 'a',
-    priority : 'b',
-    issueType : 'c'
-  });
-}
+    return null;
+  },
 
-//function to retrieve a row for a given index
-var rowGetter = function(i){
-  return _rows[i];
-};
-
-
-//Columns definition
-var columns = [
-{
-  key: 'id',
-  name: 'ID'
-
-},
-{
-  key: 'task',
-  name: 'Title'
-},
-{
-  key: 'priority',
-  name: 'Priority'
-},
-{
-  key: 'issueType',
-  name: 'Issue Type'
-},
-{
-  key: 'complete',
-  name: '% Complete'
-}
-]
-
-ReactDOM.render(<ReactDataGrid
-  columns={columns}
-  rowGetter={rowGetter}
-  rowsCount={_rows.length}
-  minHeight={500} />, mountNode);
-  `;
-
-  module.exports = React.createClass({
-
-    render:function(){
-      return(
-        <div>
-        <h3>One Million Rows Example</h3>
-        <p></p>
-        <ReactPlayground codeText={millionRowsExample} />
-        </div>
-      )
+  createRows() {
+    let rows = [];
+    for (let i = 1; i < 1000000; i++) {
+      rows.push({
+        id: i,
+        task: 'Task ' + i,
+        complete: 'a',
+        priority: 'b',
+        issueType: 'c'
+      });
     }
 
-  });
+    this._rows = rows;
+  },
+
+  rowGetter(i) {
+    return this._rows[i];
+  },
+
+  render() {
+    return  (
+      <ReactDataGrid
+        columns={this._columns}
+        rowGetter={this.rowGetter}
+        rowsCount={this._rows.length}
+        minHeight={500} />);
+  }
+});
+
+module.exports = exampleWrapper({
+  WrappedComponent: Example,
+  exampleName: 'One Million Rows Example',
+  exampleDescription: 'A grid with 1 Million rows.',
+  examplePath: './scripts/example10-one-million-rows.js',
+  examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/9/'
+});

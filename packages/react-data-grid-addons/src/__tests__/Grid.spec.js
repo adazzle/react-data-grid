@@ -7,7 +7,6 @@ const rewireModule = require('../../../../test/rewireModule');
 const StubComponent = require('../../../../test/StubComponent');
 const mockStateObject = require('./data/MockStateObject');
 
-
 describe('Grid', function() {
   let BaseGridStub = new StubComponent('BaseGrid');
   let CheckboxEditorStub = new StubComponent('CheckboxEditor');
