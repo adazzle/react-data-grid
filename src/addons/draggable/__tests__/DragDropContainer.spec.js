@@ -16,7 +16,7 @@ describe('<DragDropContainer />', () => {
   const GridStub = () => <div/>;
 
   function render(props = {}) {
-    let ComponentUnderTest = DragDropContainer;
+    let ComponentUnderTest = DragDropContainer.DecoratedComponent;
     wrapper = shallow(
       <ComponentUnderTest {...props} >
         <GridStub {...childProps} />
