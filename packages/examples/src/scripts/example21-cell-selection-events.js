@@ -1,94 +1,80 @@
-var QuickStartDescription = require('../components/QuickStartDescription')
-var ReactPlayground       = require('../assets/js/ReactPlayground');
+const ReactDataGrid = require('react-data-grid');
+const exampleWrapper = require('../components/exampleWrapper');
+const React = require('react');
 
+const Example = React.createClass({
+  getInitialState() {
+    this._columns = [
+      { key: 'id', name: 'ID' },
+      { key: 'title', name: 'Title', editable: true },
+      { key: 'count', name: 'Count' }
+    ];
 
-var SimpleExample = `
+    let rows = [];
+    for (let i = 1; i < 1000; i++) {
+      rows.push({
+        id: i,
+        title: 'Title ' + i,
+        count: i * 1000,
+        active: i % 2
+      });
+    }
 
-var SimpleCheckboxEditor = ReactDataGridPlugins.Editors.SimpleCheckboxEditor;
-var SimpleCheckboxFormatter = ReactDataGridPlugins.Editors.SimpleCheckboxFormatter;
-var _rows = [];
-for (var i = 1; i < 1000; i++) {
-  _rows.push({
-    id: i,
-    title: 'Title ' + i,
-    count: i * 1000,
-    active: i % 2
-  });
-}
+    this._rows = rows;
 
-//A rowGetter function is required by the grid to retrieve a row for a given index
-var rowGetter = function(i){
-  return _rows[i];
-};
-
-
-var columns = [
-{
-  key: 'id',
-  name: 'ID'
-},
-{
-  key: 'title',
-  name: 'Title',
-  editable: true
-},
-{
-  key: 'count',
-  name: 'Count'
-}
-]
-
-var Example = React.createClass({
-
-  getInitialState: function() {
-    return {selectedRows: []}
+    return { selectedRows: [] };
   },
 
-  onRowSelect: function(rows) {
-    this.setState({selectedRows: rows});
+  rowGetter(index) {
+    return this._rows[index];
   },
-  
-  onCellSelected(coordinates) {
-    this.refs.grid.openCellEditor(coordinates.rowIdx, coordinates.idx);
+
+  onRowSelect(rows) {
+    this.setState({ selectedRows: rows });
   },
-  
-  onCellDeSelected(coordinates) {
-    if (coordinates.idx === 2) {
-      alert('the editor for cell (' + coordinates.rowIdx + ',' + coordinates.idx + ') should have just closed');
+
+  onCellSelected({ rowIdx, idx }) {
+    this.refs.grid.openCellEditor(rowIdx, idx);
+  },
+
+  onCellDeSelected({ rowIdx, idx }) {
+    if (idx === 2) {
+      alert('the editor for cell (' + rowIdx + ',' + idx + ') should have just closed');
     }
   },
-  
-  render: function() {
-    var rowText = this.state.selectedRows.length === 1 ? 'row' : 'rows';
-    return  (<div>
-      <span>{this.state.selectedRows.length} {rowText} selected</span>
-      <ReactDataGrid ref="grid"
-    rowKey='id'
-    columns={columns}
-    rowGetter={rowGetter}
-    rowsCount={_rows.length}
-    enableRowSelect='multi'
-    minHeight={500}
-    onRowSelect={this.onRowSelect}
-    enableCellSelect={true}
-    onCellSelected={this.onCellSelected}
-    onCellDeSelected={this.onCellDeSelected} /></div>);
+
+  render() {
+    const rowText = this.state.selectedRows.length === 1 ? 'row' : 'rows';
+    return  (
+      <div>
+        <span>{this.state.selectedRows.length} {rowText} selected</span>
+        <ReactDataGrid
+          ref="grid"
+          rowKey="id"
+          columns={this._columns}
+          rowGetter={this.rowGetter}
+          rowsCount={this._rows.length}
+          enableRowSelect="multi"
+          minHeight={500}
+          onRowSelect={this.onRowSelect}
+          enableCellSelect={true}
+          onCellSelected={this.onCellSelected}
+          onCellDeSelected={this.onCellDeSelected} />
+      </div>);
   }
 });
-ReactDOM.render(<Example />, mountNode);
-`;
 
-module.exports = React.createClass({
+const exampleDescription = (
+  <div>
+    <p>Define onCellSelected and onCellDeSelected callback handlers and pass them as props to enable events upon cell selection/deselection.</p>
+    <p>if passed, onCellSelected will be triggered each time a cell is selected with the cell coordinates. Similarly, onCellDeSelected will be triggered when a cell is deselected.</p>
+  </div>
+);
 
-  render:function(){
-    return(
-      <div>
-        <h3>Cell selection/delesection events</h3>
-        <p>Define onCellSelected and onCellDeSelected callback handlers and pass them as props to enable events upon cell selection/deselection.</p>
-        <p>if passed, onCellSelected will be triggered each time a cell is selected with the cell coordinates. Similarly, onCellDeSelected will be triggered when a cell is deselected.</p>
-        <ReactPlayground codeText={SimpleExample} />
-      </div>
-    )
-  }
-
+module.exports = exampleWrapper({
+  WrappedComponent: Example,
+  exampleName: 'Cell selection/delesection events',
+  exampleDescription,
+  examplePath: './scripts/example21-cell-selection-events.js',
+  examplePlaygroundLink: 'https://jsfiddle.net/f6mbnb8z/8/'
 });

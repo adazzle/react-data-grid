@@ -1,4 +1,4 @@
-const AdvancedToolbar = require('./AdvancedToolbar');
-const GroupedColumnsPanel = require('./GroupedColumnsPanel');
+import AdvancedToolbar from './AdvancedToolbar';
+import GroupedColumnsPanel from './GroupedColumnsPanel';
 
 module.exports = {AdvancedToolbar, GroupedColumnsPanel};

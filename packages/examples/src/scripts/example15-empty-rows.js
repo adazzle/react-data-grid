@@ -1,58 +1,43 @@
+const ReactDataGrid = require('react-data-grid');
+const exampleWrapper = require('../components/exampleWrapper');
+const React = require('react');
 
-var QuickStartDescription = require('../components/QuickStartDescription')
-var ReactPlayground       = require('../assets/js/ReactPlayground');
-
-var EmptyRowsExample = `
-var _rows = [];
-var rowGetter = function(i){
-  return _rows[i];
-};
-
-
-var columns = [
-{
-  key: 'id',
-  name: 'ID'
-},
-{
-  key: 'title',
-  name: 'Title'
-},
-{
-  key: 'count',
-  name: 'Count'
-}
-]
-
-var EmptyRowsView = React.createClass({
- render: function() {
-   return (<div>Nothing to show</div>)
- }
-});
-
-
-var Example = React.createClass({
-  render: function() {
-    return  (<ReactDataGrid
-    columns={columns}
-    rowGetter={rowGetter}
-    rowsCount={_rows.length}
-    minHeight={500}
-    emptyRowsView={EmptyRowsView} />);
+const EmptyRowsView = React.createClass({
+  render() {
+    return (<div>Nothing to show</div>);
   }
 });
-ReactDOM.render(<Example />, mountNode);
-`;
 
-module.exports = React.createClass({
+const Example = React.createClass({
+  getInitialState() {
+    this._rows = [];
+    this._columns = [
+      { key: 'id', name: 'ID' },
+      { key: 'title', name: 'Title' },
+      { key: 'count', name: 'Count' }];
 
-  render: function() {
-    return (
-      <div>
-        <h3>Empty Rows Example</h3>
-        <ReactPlayground codeText={EmptyRowsExample} />
-      </div>
-    );
+    return null;
+  },
+
+  rowGetter() {
+    return _rows[i];
+  },
+
+  render() {
+    return  (
+      <ReactDataGrid
+        columns={this._columns}
+        rowGetter={this.rowGetter}
+        rowsCount={this._rows.length}
+        minHeight={500}
+        emptyRowsView={EmptyRowsView} />);
   }
+});
 
+module.exports = exampleWrapper({
+  WrappedComponent: Example,
+  exampleName: 'Empty rows grid',
+  exampleDescription: 'A grid with a empty rows view',
+  examplePath: './scripts/example15-empty-rows.js',
+  examplePlaygroundLink: 'https://jsfiddle.net/f6mbnb8z/3/'
 });

@@ -9,4 +9,5 @@ const Filters = require('./src/cells/headerCells/filters');
 const { RowComparer: rowComparer } = require('react-data-grid');
 const Utils = { rowComparer };
 
+window.ReactDataGridPlugins = {Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, Filters, Utils};
 module.exports = {Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, Filters, Utils};
