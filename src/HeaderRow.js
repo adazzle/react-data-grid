@@ -80,7 +80,7 @@ const HeaderRow = React.createClass({
 
   getHeaderRenderer(column) {
     let renderer;
-    if (column.headerRenderer) {
+    if (column.headerRenderer && !this.props.filterable) {
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);
