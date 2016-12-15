@@ -33,7 +33,8 @@ const AutoCompleteEditor = React.createClass({
 
   getDefaultProps(): {resultIdentifier: string} {
     return {
-      resultIdentifier: 'id'
+      resultIdentifier: 'id',
+      search: searchArray
     };
   },
 
@@ -126,18 +127,54 @@ const AutoCompleteEditor = React.createClass({
     return true;
   },
 
+  getOptions(input, callback) {
+    this.props.search(
+      this.props.options,
+      input.trim(),
+      (err, results) => {
+        callback(err, {options: results});
+      },
+    );
+  },
+
   render(): ?ReactElement {
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <Select
+      <Select.Async
         name="auto-complete-editor"
         valueKey={this.props.resultIdentifier}
         labelKey={this.getLabelKey()}
-        options={this.props.options}
+        loadOptions={this.getOptions}
         value={this.getEditorValue()}
         onChange={this.handleChange}
         onFocus={this.props.onFocus} />
       </div>);
   }
 });
+
+/**
+* Search options using specified search term treating options as an array
+* of candidates.
+*
+* @param {Array.<Object>} options
+* @param {String} searchTerm
+* @param {Callback} cb
+*/
+function searchArray(options, searchTerm, cb) {
+  if (!options) {
+    return cb(null, []);
+  }
+
+  searchTerm = new RegExp(searchTerm, 'i');
+
+  var results = [];
+
+  for (var i = 0, len = options.length; i < len; i++) {
+    if (searchTerm.exec(options[i].title)) {
+      results.push(options[i]);
+    }
+  }
+
+  cb(null, results);
+}
 
 module.exports = AutoCompleteEditor;
