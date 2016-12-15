@@ -4,7 +4,12 @@ var ReactPlayground       = require('../assets/js/ReactPlayground');
 var EditableExample = `
 
 //options for priorities autocomplete editor
-var priorities = [{id:0, title : 'Critical'}, {id:1, title : 'High'}, {id:2, title : 'Medium'}, {id:3, title : 'Low'}]
+var priorities = [
+  {id:0, title : 'Critical'},
+  {id:1, title : 'High'},
+  {id:2, title : 'Medium'},
+  {id:3, title : 'Low'}
+];
 var AutoCompleteEditor = ReactDataGridPlugins.Editors.AutoComplete;
 var PrioritiesEditor = <AutoCompleteEditor options={priorities}/>
 
@@ -35,7 +40,7 @@ function createRows(numberOfRows){
       id: i,
       task: 'Task ' + i,
       complete: Math.min(100, Math.round(Math.random() * 110)),
-      priority : ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
+      priority : priorities[Math.floor((Math.random() * 3) + 1)].title,
       issueType : issueTypes[Math.floor((Math.random() * 3) + 1)].value,
       startDate: randomDate(new Date(2015, 3, 1), new Date()),
       completeDate: randomDate(new Date(), new Date(2016, 0, 1))
