@@ -158,10 +158,10 @@ const Row = React.createClass({
   },
 
   setScrollLeft(scrollLeft) {
-    this.props.columns.forEach((column, i) => {
+    this.props.columns.forEach((column) => {
       if (column.locked) {
-        if (!this.refs[`cell-${i}`]) return;
-        this.refs[`cell-${i}`].setScrollLeft(scrollLeft);
+        if (!this.refs[column.key]) return;
+        this.refs[column.key].setScrollLeft(scrollLeft);
       }
     });
   },
