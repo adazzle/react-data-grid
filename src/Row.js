@@ -80,10 +80,10 @@ const Row = React.createClass({
   getCell(column, i, selectedColumn) {
     let CellRenderer = this.props.cellRenderer;
     const { colVisibleStart, colVisibleEnd, idx, cellMetaData } = this.props;
-    const { key, formatter } = column;
+    const { key, formatter, locked } = column;
     const baseCellProps = { key: `${key}-${idx}`, idx: i, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
 
-    if (i < colVisibleStart || i > colVisibleEnd) {
+    if ((i < colVisibleStart || i > colVisibleEnd) && !locked) {
       return <OverflowCell ref={key} {...baseCellProps} />;
     }
 
