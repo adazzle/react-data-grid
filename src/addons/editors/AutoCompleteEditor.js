@@ -3,6 +3,29 @@ const ReactDOM                = require('react-dom');
 const Select                  = require('react-select');
 const ExcelColumn             = require('../../PropTypeShapes/ExcelColumn');
 
+/**
+* Search options using specified search term treating options as an array
+* of candidates.
+*
+* @param {Array.<Object>} options
+* @param {String} searchTerm
+* @param {Callback} cb
+*/
+function searchArray(options, searchTerm, cb) {
+  let results = [];
+
+  if (options) {
+    let searchRegExp = new RegExp(searchTerm, 'i');
+    for (let i = 0, len = options.length; i < len; i++) {
+      if (searchRegExp.exec(options[i].title)) {
+        results.push(options[i]);
+      }
+    }
+  }
+
+  cb(null, results);
+}
+
 let optionPropType = React.PropTypes.shape({
   id: React.PropTypes.required,
   title: React.PropTypes.string
@@ -19,7 +42,7 @@ const AutoCompleteEditor = React.createClass({
     valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
     column: React.PropTypes.shape(ExcelColumn),
     resultIdentifier: React.PropTypes.string,
-    search: React.PropTypes.string,
+    search: React.PropTypes.func,
     onKeyDown: React.PropTypes.func,
     onFocus: React.PropTypes.func,
     editorDisplayValue: React.PropTypes.func
@@ -65,8 +88,9 @@ const AutoCompleteEditor = React.createClass({
         let label = this.state.selectedOption[this.getLabelKey()];
         label = editorDisplayValue(column, label);
         value = this.getValueForLabel(label);
+      } else {
+        value = this.state.selectedOption[this.props.resultIdentifier];
       }
-      value = this.state.selectedOption[this.props.resultIdentifier];
     }
     return value;
   },
@@ -128,16 +152,18 @@ const AutoCompleteEditor = React.createClass({
   },
 
   getOptions(input, callback) {
+    let trimmedInput = input != null ? input.trim() : input;
     this.props.search(
       this.props.options,
-      input.trim(),
+      trimmedInput,
       (err, results) => {
         callback(err, {options: results});
-      },
+      }
     );
   },
 
   render(): ?ReactElement {
+    let noResults = 'No results found';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
       <Select.Async
         name="auto-complete-editor"
@@ -146,35 +172,12 @@ const AutoCompleteEditor = React.createClass({
         loadOptions={this.getOptions}
         value={this.getEditorValue()}
         onChange={this.handleChange}
-        onFocus={this.props.onFocus} />
+        onFocus={this.props.onFocus}
+        noResultsText={noResults}
+        searchPromptText={noResults}
+        />
       </div>);
   }
 });
-
-/**
-* Search options using specified search term treating options as an array
-* of candidates.
-*
-* @param {Array.<Object>} options
-* @param {String} searchTerm
-* @param {Callback} cb
-*/
-function searchArray(options, searchTerm, cb) {
-  if (!options) {
-    return cb(null, []);
-  }
-
-  searchTerm = new RegExp(searchTerm, 'i');
-
-  var results = [];
-
-  for (var i = 0, len = options.length; i < len; i++) {
-    if (searchTerm.exec(options[i].title)) {
-      results.push(options[i]);
-    }
-  }
-
-  cb(null, results);
-}
 
 module.exports = AutoCompleteEditor;
