@@ -5,6 +5,7 @@ const shallowCloneObject  = require('./shallowCloneObject');
 const ColumnMetrics       = require('./ColumnMetrics');
 const ColumnUtils         = require('./ColumnUtils');
 const HeaderRow           = require('./HeaderRow');
+const getScrollbarSize  = require('./getScrollbarSize');
 const PropTypes           = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
 
@@ -94,7 +95,7 @@ const Header = React.createClass({
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
         left: 0,
-        width: this.props.totalWidth,
+        width: this.props.totalWidth - getScrollbarSize(),
         overflowX: 'hidden',
         minHeight: rowHeight
       };

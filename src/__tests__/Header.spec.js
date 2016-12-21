@@ -6,14 +6,17 @@ const rewireModule  = require('../../test/rewireModule');
 const StubComponent = require('../../test/StubComponent');
 const helpers       = require('./GridPropHelpers');
 import { shallow } from 'enzyme';
+const SCROLL_BAR_SIZE = 20;
 
 describe('Header Unit Tests', () => {
   let header;
   // Configure local letiable replacements for the module.
   let HeaderRowStub = new StubComponent('HeaderRow');
+  let getScrollbarSize = () => SCROLL_BAR_SIZE;
 
   rewireModule(Header, {
-    HeaderRow: HeaderRowStub
+    HeaderRow: HeaderRowStub,
+    getScrollbarSize: getScrollbarSize
   });
 
   let testProps = {
@@ -140,6 +143,12 @@ describe('Header Unit Tests', () => {
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
       expect(headerDiv.props().style).toBeDefined();
+    });
+
+    it('should account for scrollbar size in header', () => {
+      const wrapper = renderComponent(testAllProps);
+      let headerRow = wrapper.find('.react-grid-Header').props().children[0];
+      expect(headerRow.props.style.width).toBe(testAllProps.totalWidth - SCROLL_BAR_SIZE);
     });
     it('passes height property', () => {
       const wrapper = renderComponent(testAllProps);
