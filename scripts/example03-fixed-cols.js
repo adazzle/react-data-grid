@@ -64,11 +64,6 @@ var columns = [
   key: 'completeDate',
   name: 'Expected Complete',
   width: 200
-},
-{
-  key: 'completeDate',
-  name: 'Expected Complete',
-  width: 200
 }
 ]
 

@@ -1310,6 +1310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ColumnMetrics = __webpack_require__(11);
 	var ColumnUtils = __webpack_require__(13);
 	var HeaderRow = __webpack_require__(16);
+	var getScrollbarSize = __webpack_require__(14);
 	var PropTypes = React.PropTypes;
 	var createObjectWithProperties = __webpack_require__(22);
 
@@ -1391,7 +1392,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        position: 'absolute',
 	        top: _this.getCombinedHeaderHeights(index),
 	        left: 0,
-	        width: _this.props.totalWidth,
+	        width: _this.props.totalWidth - getScrollbarSize(),
 	        overflowX: 'hidden',
 	        minHeight: rowHeight
 	      };
@@ -3385,11 +3386,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        idx = _props.idx,
 	        cellMetaData = _props.cellMetaData;
 	    var key = column.key,
-	        formatter = column.formatter;
+	        formatter = column.formatter,
+	        locked = column.locked;
 
 	    var baseCellProps = { key: key + '-' + idx, idx: i, rowIdx: idx, height: this.getRowHeight(), column: column, cellMetaData: cellMetaData };
 
-	    if (i < colVisibleStart || i > colVisibleEnd) {
+	    if ((i < colVisibleStart || i > colVisibleEnd) && !locked) {
 	      return React.createElement(_OverflowCell2['default'], _extends({ ref: key }, baseCellProps));
 	    }
 
@@ -3465,10 +3467,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  setScrollLeft: function setScrollLeft(scrollLeft) {
 	    var _this2 = this;
 
-	    this.props.columns.forEach(function (column, i) {
+	    this.props.columns.forEach(function (column) {
 	      if (column.locked) {
-	        if (!_this2.refs['cell-' + i]) return;
-	        _this2.refs['cell-' + i].setScrollLeft(scrollLeft);
+	        if (!_this2.refs[column.key]) return;
+	        _this2.refs[column.key].setScrollLeft(scrollLeft);
 	      }
 	    });
 	  },
