@@ -91,7 +91,7 @@ const Header = React.createClass({
       if (row.rowType === 'filter') {
         rowHeight = '500px';
       }
-      let scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0; 
+      let scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
       let headerRowStyle = {
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
