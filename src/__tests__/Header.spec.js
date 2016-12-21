@@ -145,7 +145,7 @@ describe('Header Unit Tests', () => {
       expect(headerDiv.props().style).toBeDefined();
     });
 
-    fit('should account for scrollbar size in header', () => {
+    it('should account for scrollbar size in header', () => {
       const wrapper = renderComponent(testAllProps);
       let headerRow = wrapper.find('.react-grid-Header').props().children[0];
       expect(headerRow.props.style.width).toBe(testAllProps.totalWidth - SCROLL_BAR_SIZE);
