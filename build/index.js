@@ -2129,11 +2129,12 @@ return /******/ (function(modules) { // webpackBootstrap
 							if (row.rowType === 'filter') {
 								rowHeight = '500px';
 							}
+							var scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
 							var headerRowStyle = {
 								position: 'absolute',
 								top: _this.getCombinedHeaderHeights(index),
 								left: 0,
-								width: _this.props.totalWidth - getScrollbarSize(),
+								width: _this.props.totalWidth - scrollbarSize,
 								overflowX: 'hidden',
 								minHeight: rowHeight
 							};
@@ -15637,11 +15638,12 @@ return /******/ (function(modules) { // webpackBootstrap
 							if (row.rowType === 'filter') {
 								rowHeight = '500px';
 							}
+							var scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
 							var headerRowStyle = {
 								position: 'absolute',
 								top: _this.getCombinedHeaderHeights(index),
 								left: 0,
-								width: _this.props.totalWidth - getScrollbarSize(),
+								width: _this.props.totalWidth - scrollbarSize,
 								overflowX: 'hidden',
 								minHeight: rowHeight
 							};
