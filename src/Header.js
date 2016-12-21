@@ -92,11 +92,12 @@ const Header = React.createClass({
         rowHeight = '500px';
       }
       let scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
+      let updatedWidth = isNaN(this.props.totalWidth - scrollbarSize) ? this.props.totalWidth : this.props.totalWidth - scrollbarSize;
       let headerRowStyle = {
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
         left: 0,
-        width: this.props.totalWidth - scrollbarSize,
+        width: updatedWidth,
         overflowX: 'hidden',
         minHeight: rowHeight
       };
