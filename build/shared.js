@@ -2128,11 +2128,12 @@ return /******/ (function(modules) { // webpackBootstrap
 								rowHeight = '500px';
 							}
 							var scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
+							var updatedWidth = isNaN(_this.props.totalWidth - scrollbarSize) ? _this.props.totalWidth : _this.props.totalWidth - scrollbarSize;
 							var headerRowStyle = {
 								position: 'absolute',
 								top: _this.getCombinedHeaderHeights(index),
 								left: 0,
-								width: _this.props.totalWidth - scrollbarSize,
+								width: updatedWidth,
 								overflowX: 'hidden',
 								minHeight: rowHeight
 							};
@@ -15637,11 +15638,12 @@ return /******/ (function(modules) { // webpackBootstrap
 								rowHeight = '500px';
 							}
 							var scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
+							var updatedWidth = isNaN(_this.props.totalWidth - scrollbarSize) ? _this.props.totalWidth : _this.props.totalWidth - scrollbarSize;
 							var headerRowStyle = {
 								position: 'absolute',
 								top: _this.getCombinedHeaderHeights(index),
 								left: 0,
-								width: _this.props.totalWidth - scrollbarSize,
+								width: updatedWidth,
 								overflowX: 'hidden',
 								minHeight: rowHeight
 							};
