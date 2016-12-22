@@ -620,3 +620,38 @@ textarea.react-autocomplete-Autocomplete__search {
 		-webkit-transform: translateY(0%);
 	}	
 }
+
+.cell-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.cell-tooltip .cell-tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 2px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 75%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
+    visibility: visible;
+}
+
+.cell-tooltip .cell-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
