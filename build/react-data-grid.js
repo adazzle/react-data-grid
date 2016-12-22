@@ -4007,6 +4007,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  isFocusedOnBody: function isFocusedOnBody() {
 	    return document.activeElement == null || document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body';
 	  },
+	  isFocusedOnCell: function isFocusedOnCell() {
+	    return document.activeElement && document.activeElement.className === 'react-grid-Cell';
+	  },
 	  checkFocus: function checkFocus() {
 	    if (this.isSelected() && !this.isActive()) {
 	      if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
@@ -4015,7 +4018,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Only focus to the current cell if the currently active node in the document is within the data grid.
 	      // Meaning focus should not be stolen from elements that the grid doesnt control.
 	      var dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
-	      if (document.activeElement.className === 'react-grid-Cell' || this.isFocusedOnBody() || dataGridDOMNode && dataGridDOMNode.contains(document.activeElement)) {
+	      if (this.isFocusedOnCell() || this.isFocusedOnBody() || dataGridDOMNode && dataGridDOMNode.contains(document.activeElement)) {
 	        var cellDOMNode = ReactDOM.findDOMNode(this);
 	        if (cellDOMNode) {
 	          cellDOMNode.focus();
