@@ -568,15 +568,15 @@ textarea.react-autocomplete-Autocomplete__search {
 
 .slideUp{
 	animation-name: slideUp;
-	-webkit-animation-name: slideUp;	
+	-webkit-animation-name: slideUp;
 
-	animation-duration: 1s;	
+	animation-duration: 1s;
 	-webkit-animation-duration: 1s;
 
-	animation-timing-function: ease;	
+	animation-timing-function: ease;
 	-webkit-animation-timing-function: ease;
 
-	visibility: visible !important;			
+	visibility: visible !important;
 }
 
 @keyframes slideUp {
@@ -594,10 +594,10 @@ textarea.react-autocomplete-Autocomplete__search {
 	}
 	95%{
 		transform: translateY(2%);
-	}			
+	}
 	100% {
 		transform: translateY(0%);
-	}	
+	}
 }
 
 @-webkit-keyframes slideUp {
@@ -615,10 +615,10 @@ textarea.react-autocomplete-Autocomplete__search {
 	}
 	95%{
 		-webkit-transform: translateY(2%);
-	}			
+	}
 	100% {
 		-webkit-transform: translateY(0%);
-	}	
+	}
 }
 
 .cell-tooltip {
@@ -636,22 +636,11 @@ textarea.react-autocomplete-Autocomplete__search {
     padding: 2px 0;
     position: absolute;
     z-index: 1;
-    bottom: 75%;
+    bottom: -100%;
     left: 50%;
     margin-left: -60px;
 }
 
 .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
     visibility: visible;
-}
-
-.cell-tooltip .cell-tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: black transparent transparent transparent;
 }
