@@ -641,6 +641,18 @@ textarea.react-autocomplete-Autocomplete__search {
     margin-left: -60px;
 }
 
+
+.cell-tooltip .cell-tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+ }
+
 .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
     visibility: visible;
 }

@@ -185,7 +185,7 @@ const Cell = React.createClass({
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
       'was-dragged-over': this.wasDraggedOver(),
-      'cell-tooltip': this.props.tooltip !== undefined
+      'cell-tooltip': this.props.tooltip === true
     });
     return joinClasses(className, extraClasses);
   },
@@ -469,7 +469,7 @@ const Cell = React.createClass({
     const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{ this.props.tooltip }</span>) : null;
 
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style}   {...events}>
+      <div {...this.getKnownDivProps() } className={className} style={style} {...events}>
         {cellContent}
         {dragHandle}
         { tooltip }
