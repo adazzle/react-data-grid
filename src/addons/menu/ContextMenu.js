@@ -3,8 +3,9 @@ import {ContextMenu} from 'react-contextmenu';
 
 class ReactDataGridContextMenu extends React.Component {
   render() {
+    // docoder--change: identifier ("reactDataGridContextMenu" -> {this.props.identifier})
     return (
-      <ContextMenu identifier="reactDataGridContextMenu">
+      <ContextMenu identifier={this.props.identifier}>
         {this.props.children}
       </ContextMenu>
     );
@@ -12,7 +13,8 @@ class ReactDataGridContextMenu extends React.Component {
 }
 
 ReactDataGridContextMenu.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  identifier: PropTypes.string // docoder--add
 };
 
 export default ReactDataGridContextMenu;

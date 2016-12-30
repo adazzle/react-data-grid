@@ -53,7 +53,8 @@ const Grid = React.createClass({
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
-    overScan: PropTypes.object
+    overScan: PropTypes.object,
+    id: PropTypes.string // docoder--add
   },
 
   mixins: [
@@ -99,8 +100,10 @@ const Grid = React.createClass({
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div ref="viewPortContainer" tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+                {/* docoder--add: identifier */}
                 <Viewport
                   ref="viewport"
+                  identifier={this.props.id}
                   rowKey={this.props.rowKey}
                   width={this.props.columnMetrics.width}
                   rowHeight={this.props.rowHeight}
