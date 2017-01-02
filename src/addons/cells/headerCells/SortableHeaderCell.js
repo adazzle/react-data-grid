@@ -38,10 +38,9 @@ const SortableHeaderCell = React.createClass({
   getSortByText: function() {
     let unicodeKeys = {
       ASC: '9650',
-      DESC: '9660',
-      NONE: ''
+      DESC: '9660'
     };
-    return String.fromCharCode(unicodeKeys[this.props.sortDirection]);
+    return this.props.sortDirection == 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
   },
 
   render: function(): ?ReactElement {
