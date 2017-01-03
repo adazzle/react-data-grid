@@ -73,11 +73,9 @@
 .react-grid-Grid {
   background-color: #ffffff;
   border: 1px solid #dddddd;
-  will-change: transform;
 }
 .react-grid-Canvas {
   background-color: #ffffff;
-  will-change: transform;
 }
 .react-grid-Cell {
   background-color: #ffffff;
@@ -85,6 +83,12 @@
   padding-right: 8px;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #dddddd;
+}
+
+.react-grid-Cell:focus {
+  border-color: #66afe9;
+  border: 2px solid #66afe9;
+  margin: -2px;
 }
 
 .react-grid-Cell:focus .drag-handle {
