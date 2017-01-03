@@ -180,7 +180,6 @@ const Cell = React.createClass({
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
       editing: this.isActive(),
-      selected: this.isSelected() && !this.isActive() && this.isCellSelectEnabled(),
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
