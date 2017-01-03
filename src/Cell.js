@@ -144,7 +144,8 @@ const Cell = React.createClass({
       position: 'absolute',
       width: this.props.column.width,
       height: this.props.height,
-      left: this.props.column.left
+      left: this.props.column.left,
+      contain: 'layout'
     };
     return style;
   },
@@ -179,6 +180,7 @@ const Cell = React.createClass({
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
       editing: this.isActive(),
+      selected: this.isSelected() && !this.isActive() && this.isCellSelectEnabled(),
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
