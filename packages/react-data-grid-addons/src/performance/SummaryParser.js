@@ -45,4 +45,4 @@ class SummaryParser {
   }
 }
 
-export { SummaryParser };
+export default SummaryParser;

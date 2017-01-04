@@ -7,7 +7,8 @@ const Menu = require('./src/menu');
 const Draggable = require('./src/draggable');
 const Filters = require('./src/cells/headerCells/filters');
 const { RowComparer: rowComparer } = require('react-data-grid');
-const Utils = { rowComparer };
+const performance = require('./src/performance');
+const Utils = { rowComparer, performance };
 
 window.ReactDataGridPlugins = {Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, Filters, Utils};
 module.exports = {Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, Filters, Utils};

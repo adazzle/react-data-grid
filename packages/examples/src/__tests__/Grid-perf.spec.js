@@ -1,7 +1,7 @@
 import ReactPerf from 'react-addons-perf';
 import GridRunner from './GridRunner';
-import { SummaryParser } from './performance/PerformanceUtils';
-const ImmutableGrid = require('../../../../examples/scripts/example11-immutable-data');
+const { Component: ImmutableGrid } = require('../scripts/example11-immutable-data');
+const { Utils: { performance: { SummaryParser } } } = require('react-data-grid-addons');
 
 const ScrollType = {
   VERTICAL: 0,

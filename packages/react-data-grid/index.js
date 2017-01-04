@@ -1,12 +1,13 @@
 const Grid = require('./src/ReactDataGrid');
 import RowComparer from './src/RowComparer';
+import RowsContainer from './src/RowsContainer';
 
 module.exports = Grid;
 module.exports.Row = require('./src/Row');
 module.exports.Cell = require('./src/Cell');
 module.exports.HeaderCell = require('./src/HeaderCell');
 module.exports.RowComparer = RowComparer;
-module.exports.RowsContainer = require('./src/RowsContainer');
+module.exports.RowsContainer = RowsContainer;
 module.exports.editors = require('./src/editors');
 module.exports.utils = require('./src/utils');
 module.exports.shapes = require('./src/PropTypeShapes');

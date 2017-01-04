@@ -1,22 +1,12 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
-const rewire = require('rewire');
-const Grid = rewire('react-data-grid');
+const Grid = require('react-data-grid');
+const { editors: { CheckboxEditor } } = Grid;
 const TestUtils = require('react/lib/ReactTestUtils');
-const rewireModule = require('../../../../test/rewireModule');
 const StubComponent = require('../../../../test/StubComponent');
 const mockStateObject = require('./data/MockStateObject');
 
 describe('Grid', function() {
-  let BaseGridStub = new StubComponent('BaseGrid');
-  let CheckboxEditorStub = new StubComponent('CheckboxEditor');
-
-  // Configure local letiable replacements for the module.
-  rewireModule(Grid, {
-    BaseGrid: BaseGridStub,
-    CheckboxEditor: CheckboxEditorStub
-  });
-
   beforeEach(function() {
     this.columns = [
       { key: 'id', name: 'ID', width: 100, events: { onClick: () => {}} },
@@ -69,7 +59,8 @@ describe('Grid', function() {
       }, addedData);
     };
 
-    this.getBaseGrid = () => TestUtils.findRenderedComponentWithType(this.component, BaseGridStub);
+    this.getBaseGrid = () => this.component.refs.base;
+
     this.getCellMetaData = () => this.getBaseGrid().props.cellMetaData;
 
     this.simulateGridKeyDown = (key, ctrlKey) => {
@@ -163,7 +154,7 @@ describe('Grid', function() {
     it('should render an additional Select Row column', function() {
       expect(this.baseGrid.props.columnMetrics.columns.length).toEqual(this.columns.length + 1);
       expect(this.selectRowCol.key).toEqual('select-row');
-      expect(TestUtils.isElementOfType(this.selectRowCol.formatter, CheckboxEditorStub)).toBe(true);
+      expect(TestUtils.isElementOfType(this.selectRowCol.formatter, CheckboxEditor)).toBe(true);
     });
 
     describe('checking header checkbox', function() {
@@ -872,8 +863,7 @@ describe('Grid', function() {
 
       it('should trigger onRowUpdated with correct params', function() {
         const onRowUpdated = this.component.props.onRowUpdated;
-        expect(onRowUpdated.calls.count()).toEqual(1);
-        expect(onRowUpdated.calls.first().args[0]).toEqual(this.buildFakeCellUodate());
+        expect(onRowUpdated.calls.mostRecent().args[0]).toEqual(this.buildFakeCellUodate());
       });
 
       it('should deactivate selected cell', function() {

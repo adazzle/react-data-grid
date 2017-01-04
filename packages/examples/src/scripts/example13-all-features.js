@@ -3,7 +3,7 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const { Editors, Toolbar, Formatters } = require('react-data-grid-addons');
-const { AutoComplete: { AutoCompleteEditor }, DropDownEditor } = Editors;
+const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
 const { ImageFormatter } = Formatters;
 
 faker.locale = 'en_GB';

@@ -11,6 +11,7 @@ const {
     { ContextMenu, MenuItem },
   Formatters:
     { ImageFormatter }} = require('react-data-grid-addons');
+const faker = require('faker');
 
 const counties = [
   { id: 0, title: 'Bedfordshire'},
@@ -267,3 +268,5 @@ module.exports = exampleWrapper({
   examplePath: './scripts/example14-all-features-immutable.js',
   examplePlaygroundLink: undefined
 });
+
+module.exports.Component = Component;

@@ -64,3 +64,5 @@ module.exports = exampleWrapper({
   examplePath: './scripts/example11-immutable-data.js',
   examplePlaygroundLink: undefined
 });
+
+module.exports.Component = Example;
