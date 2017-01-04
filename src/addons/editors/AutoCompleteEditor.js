@@ -68,7 +68,7 @@ const AutoCompleteEditor = React.createClass({
   getValue(): any {
     let value;
     let updated = {};
-    if (this.hasResults()) {
+    if (this.hasSelectedOption()) {
       if (this.props.valueParams) {
         value = this.constuctValueFromParams(this.state.selectedOption, this.props.valueParams);
       } else {
@@ -82,7 +82,7 @@ const AutoCompleteEditor = React.createClass({
 
   getEditorValue() {
     let value;
-    if (this.hasResults()) {
+    if (this.hasSelectedOption()) {
       let { column, editorDisplayValue } = this.props;
       if (editorDisplayValue && typeof editorDisplayValue === 'function') {
         let label = this.state.selectedOption[this.getLabelKey()];
@@ -132,7 +132,11 @@ const AutoCompleteEditor = React.createClass({
   },
 
   hasResults(): boolean {
-    return this.state.selectedOption != null;
+    return this.props.options.length > 0;
+  },
+
+  hasSelectedOption() {
+    return this.hasResults() && this.state.selectedOption != null;
   },
 
   constuctValueFromParams(obj: any, props: ?Array<string>): string {
@@ -164,7 +168,7 @@ const AutoCompleteEditor = React.createClass({
 
   render(): ?ReactElement {
     let noResults = 'No results found';
-    return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
+    return (<div height={this.props.height}>
       <Select.Async
         name="auto-complete-editor"
         valueKey={this.props.resultIdentifier}
@@ -176,7 +180,7 @@ const AutoCompleteEditor = React.createClass({
         noResultsText={noResults}
         searchPromptText={noResults}
         />
-      </div>);
+    </div>);
   }
 });
 
