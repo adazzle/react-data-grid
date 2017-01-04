@@ -50,7 +50,8 @@ const AutoCompleteEditor = React.createClass({
 
   getInitialState() {
     return {
-      selectedLabel: this.props.value
+      selectedLabel: this.props.value,
+      results: this.props.options
     };
   },
 
@@ -98,7 +99,7 @@ const AutoCompleteEditor = React.createClass({
 
   getOptionForLabel(label) {
     let option;
-    let labelOptions = this.props.options.filter(o => o[this.getLabelKey()] === label);
+    let labelOptions = this.state.results.filter(o => o[this.getLabelKey()] === label);
     if (labelOptions.length === 1) {
       option = labelOptions[0];
     }
@@ -133,7 +134,7 @@ const AutoCompleteEditor = React.createClass({
   },
 
   hasResults(): boolean {
-    return this.props.options.length > 0;
+    return this.state.results.length > 0;
   },
 
   hasSelectedLabel() {
@@ -162,7 +163,7 @@ const AutoCompleteEditor = React.createClass({
       this.props.options,
       trimmedInput,
       (err, results) => {
-        callback(err, {options: results});
+        this.setState({results: results}, () => callback(err, {options: results}));
       }
     );
   },
