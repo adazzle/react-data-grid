@@ -57,7 +57,8 @@ const AutoCompleteEditor = React.createClass({
   getDefaultProps(): {resultIdentifier: string} {
     return {
       resultIdentifier: 'id',
-      search: searchArray
+      search: searchArray,
+      options: []
     };
   },
 
@@ -174,6 +175,7 @@ const AutoCompleteEditor = React.createClass({
         valueKey={this.props.resultIdentifier}
         labelKey={this.getLabelKey()}
         loadOptions={this.getOptions}
+        cache={false}
         value={this.getEditorValue()}
         onChange={this.handleChange}
         onFocus={this.props.onFocus}
