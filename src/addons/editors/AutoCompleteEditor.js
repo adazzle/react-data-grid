@@ -50,7 +50,7 @@ const AutoCompleteEditor = React.createClass({
 
   getInitialState() {
     return {
-      selectedOption: this.getOptionForLabel(this.props.value)
+      selectedLabel: this.props.value
     };
   },
 
@@ -63,17 +63,19 @@ const AutoCompleteEditor = React.createClass({
   },
 
   handleChange(newOption) {
-    this.setState({selectedOption: newOption}, () => this.props.onCommit());
+    const newLabel = newOption[this.getLabelKey()];
+    this.setState({selectedLabel: newLabel}, () => this.props.onCommit());
   },
 
   getValue(): any {
     let value;
     let updated = {};
-    if (this.hasSelectedOption()) {
+    if (this.hasSelectedLabel()) {
       if (this.props.valueParams) {
-        value = this.constuctValueFromParams(this.state.selectedOption, this.props.valueParams);
+        const selectedOption = this.getOptionForLabel(this.state.selectedLabel);
+        value = this.constuctValueFromParams(selectedOption, this.props.valueParams);
       } else {
-        value = this.state.selectedOption[this.getLabelKey()];
+        value = this.state.selectedLabel;
       }
     }
 
@@ -83,15 +85,13 @@ const AutoCompleteEditor = React.createClass({
 
   getEditorValue() {
     let value;
-    if (this.hasSelectedOption()) {
+    if (this.hasSelectedLabel()) {
       let { column, editorDisplayValue } = this.props;
+      let label = this.state.selectedLabel;
       if (editorDisplayValue && typeof editorDisplayValue === 'function') {
-        let label = this.state.selectedOption[this.getLabelKey()];
         label = editorDisplayValue(column, label);
-        value = this.getValueForLabel(label);
-      } else {
-        value = this.state.selectedOption[this.props.resultIdentifier];
       }
+      value = this.getValueForLabel(label);
     }
     return value;
   },
@@ -136,8 +136,8 @@ const AutoCompleteEditor = React.createClass({
     return this.props.options.length > 0;
   },
 
-  hasSelectedOption() {
-    return this.hasResults() && this.state.selectedOption != null;
+  hasSelectedLabel() {
+    return this.hasResults() && this.state.selectedLabel != null;
   },
 
   constuctValueFromParams(obj: any, props: ?Array<string>): string {
