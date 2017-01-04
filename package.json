@@ -4,10 +4,9 @@
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
-    "test": "gulp test",
+    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
     "prepublish": "gulp dist --release true",
-    "debug-test": "gulp test --debug true",
-    "examples": "gulp",
+    "dev-test": "./node_modules/.bin/karma start ./config/karma.js --singleRun false --debug true",
     "build": "webpack --config webpack.config.js",
     "dev-server": "./node_modules/.bin/webpack-dev-server --watch-poll"
   },
@@ -73,6 +72,7 @@
     "gulp-uglify": "^1.0.2",
     "gulp-util": "^3.0.0",
     "html-webpack-plugin": "^2.24.1",
+    "istanbul-instrumenter-loader": "^0.1.2",
     "immutable": "^3.7.3",
     "jasmine-core": "^2.2.0",
     "jasmine-enzyme": "^1.2.0",
