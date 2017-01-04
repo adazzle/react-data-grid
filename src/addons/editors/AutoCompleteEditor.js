@@ -72,8 +72,8 @@ const AutoCompleteEditor = React.createClass({
     let value;
     let updated = {};
     if (this.hasSelectedLabel()) {
-      if (this.props.valueParams) {
-        const selectedOption = this.getOptionForLabel(this.state.selectedLabel);
+      const selectedOption = this.getOptionForLabel(this.state.selectedLabel);
+      if (this.props.valueParams && selectedOption) {
         value = this.constuctValueFromParams(selectedOption, this.props.valueParams);
       } else {
         value = this.state.selectedLabel;
