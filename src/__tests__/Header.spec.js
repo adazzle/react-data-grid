@@ -129,7 +129,16 @@ describe('Header Unit Tests', () => {
       onColumnResize: jasmine.createSpy(),
       onScroll: jasmine.createSpy(),
       draggableHeaderCell: jasmine.createSpy(),
-      getValidFilterValues: jasmine.createSpy()
+      getValidFilterValues: jasmine.createSpy(),
+      cellMetaData: {
+        onCommitCancel: () => {},
+        onCommit: () => {},
+        onCellDoubleClick: () => {},
+        onCellClick: () => {},
+        handleDragEnterRow: () => {},
+        handleTerminateDrag: () => {},
+        selected: { rowIdx: 0, id: 1 }
+      }
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
@@ -168,6 +177,14 @@ describe('Header Unit Tests', () => {
       expect(headerDiv.props().onColumnResize).toBeUndefined();
       expect(headerDiv.props().draggableHeaderCell).toBeUndefined();
       expect(headerDiv.props().getValidFilterValues).toBeUndefined();
+    });
+
+    it('execute onCellClick event on cellMetaData', () => {
+      spyOn(testAllProps.cellMetaData, 'onCellClick');
+      const wrapper = renderComponent(testAllProps);
+      const headerDiv = wrapper.find('div');
+      headerDiv.simulate('click');
+      expect(testAllProps.cellMetaData.onCellClick).toHaveBeenCalled();
     });
   });
 });
