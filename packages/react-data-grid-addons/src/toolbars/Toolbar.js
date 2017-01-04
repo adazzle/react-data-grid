@@ -8,7 +8,8 @@ const Toolbar = React.createClass({
     enableFilter: React.PropTypes.bool,
     numberOfRows: React.PropTypes.number,
     addRowButtonText: React.PropTypes.string,
-    filterRowsButtonText: React.PropTypes.string
+    filterRowsButtonText: React.PropTypes.string,
+    children: React.PropTypes.any
   },
 
   onAddRow() {
@@ -47,6 +48,7 @@ const Toolbar = React.createClass({
         <div className="tools">
           {this.renderAddRowButton()}
           {this.renderToggleFilterButton()}
+          {this.props.children}
         </div>
       </div>);
   }

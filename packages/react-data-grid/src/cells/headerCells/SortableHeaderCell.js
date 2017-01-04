@@ -63,3 +63,4 @@ const SortableHeaderCell = React.createClass({
 });
 
 module.exports = SortableHeaderCell;
+module.exports.DEFINE_SORT = DEFINE_SORT;

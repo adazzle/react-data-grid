@@ -5,6 +5,7 @@ const shallowCloneObject  = require('./shallowCloneObject');
 const ColumnMetrics       = require('./ColumnMetrics');
 const ColumnUtils         = require('./ColumnUtils');
 const HeaderRow           = require('./HeaderRow');
+const getScrollbarSize  = require('./getScrollbarSize');
 const PropTypes           = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-header.css');
@@ -91,11 +92,13 @@ const Header = React.createClass({
       if (row.rowType === 'filter') {
         rowHeight = '500px';
       }
+      let scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
+      let updatedWidth = isNaN(this.props.totalWidth - scrollbarSize) ? this.props.totalWidth : this.props.totalWidth - scrollbarSize;
       let headerRowStyle = {
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
         left: 0,
-        width: this.props.totalWidth,
+        width: updatedWidth,
         overflowX: 'hidden',
         minHeight: rowHeight
       };

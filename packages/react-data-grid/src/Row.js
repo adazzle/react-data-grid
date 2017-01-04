@@ -81,10 +81,10 @@ const Row = React.createClass({
   getCell(column, i, selectedColumn) {
     let CellRenderer = this.props.cellRenderer;
     const { colVisibleStart, colVisibleEnd, idx, cellMetaData } = this.props;
-    const { key, formatter } = column;
+    const { key, formatter, locked } = column;
     const baseCellProps = { key: `${key}-${idx}`, idx: i, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
 
-    if (i < colVisibleStart || i > colVisibleEnd) {
+    if ((i < colVisibleStart || i > colVisibleEnd) && !locked) {
       return <OverflowCell ref={key} {...baseCellProps} />;
     }
 
@@ -159,10 +159,10 @@ const Row = React.createClass({
   },
 
   setScrollLeft(scrollLeft) {
-    this.props.columns.forEach((column, i) => {
+    this.props.columns.forEach((column) => {
       if (column.locked) {
-        if (!this.refs[`cell-${i}`]) return;
-        this.refs[`cell-${i}`].setScrollLeft(scrollLeft);
+        if (!this.refs[column.key]) return;
+        this.refs[column.key].setScrollLeft(scrollLeft);
       }
     });
   },
