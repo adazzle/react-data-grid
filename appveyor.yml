@@ -39,7 +39,7 @@ test_script:
   - node --version
   - npm --version
   # run tests
-  - npm run test
+  - npm test
   - ps: ./test/uploadResults.ps1
   - gulp coveralls
 
