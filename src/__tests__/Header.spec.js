@@ -8,7 +8,7 @@ const helpers       = require('./GridPropHelpers');
 import { shallow } from 'enzyme';
 const SCROLL_BAR_SIZE = 20;
 
-describe('Header Unit Tests', () => {
+fdescribe('Header Unit Tests', () => {
   let header;
   // Configure local letiable replacements for the module.
   let HeaderRowStub = new StubComponent('HeaderRow');
@@ -137,7 +137,7 @@ describe('Header Unit Tests', () => {
         onCommitCancel: () => {},
         onCommit: () => {},
         onCellDoubleClick: () => {},
-        onCellClick: () => {},
+        onCellClick: () => { },
         handleDragEnterRow: () => {},
         handleTerminateDrag: () => {},
         selected: { rowIdx: 0, id: 1 }
@@ -188,12 +188,13 @@ describe('Header Unit Tests', () => {
       expect(headerDiv.props().getValidFilterValues).toBeUndefined();
     });
 
-    it('execute onCellClick event on cellMetaData', () => {
+    it('execute onCellClick event on cellMetaData and rowIdx & idx = -1', () => {
       spyOn(testAllProps.cellMetaData, 'onCellClick');
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
       headerDiv.simulate('click');
       expect(testAllProps.cellMetaData.onCellClick).toHaveBeenCalled();
+      expect(testAllProps.cellMetaData.onCellClick.calls.mostRecent().args[0]).toEqual({ rowIdx: -1, idx: -1 });
     });
   });
 });
