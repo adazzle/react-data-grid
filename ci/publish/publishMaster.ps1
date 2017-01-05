@@ -21,7 +21,7 @@ git push --tags
 Write-Host "Publishing $($currentVersion) to npm"
 if($?)
 {
-  ./node_modules/.bin/lerna publish --independent
+  ./node_modules/.bin/lerna publish
   if($?){
     Write-Host "regenerating public site and examples"
     gulp docs

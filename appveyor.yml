@@ -21,9 +21,11 @@ install:
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
         ./ci/publish/decrypt-npmrc.ps1
+        ./ci/publish/copy-npmrc.ps1
       }
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
         ./ci/publish/decrypt-npmrc.ps1
+        ./ci/publish/copy-npmrc.ps1
       }
   - ps: Install-Product node 4
   - npm -g install npm@3
