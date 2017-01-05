@@ -9116,10 +9116,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (item.hasOwnProperty(c.key)) {
 	          if (c.formatter) {
 	            var Formatter = c.formatter;
+	            var dependentValues = typeof c.getRowMetaData === 'function' ? c.getRowMetaData(item, c) : {};
 	            cells.push(_react2['default'].createElement(
 	              'td',
 	              { key: 'dragged-cell-' + rowIdx + '-' + c.key, className: 'react-grid-Cell', style: { padding: '5px' } },
-	              _react2['default'].createElement(Formatter, { value: item[c.key] })
+	              _react2['default'].createElement(Formatter, { dependentValues: dependentValues, value: item[c.key] })
 	            ));
 	          } else {
 	            cells.push(_react2['default'].createElement(
