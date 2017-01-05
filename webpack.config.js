@@ -4,9 +4,9 @@ const config =  {
   entry: {
     'react-data-grid': ['./packages/react-data-grid/'],
     'react-data-grid-addons': ['./packages/react-data-grid-addons/'],
-    index: ['./packages/examples/src'],
-    shared: './packages/examples/src/shared.js',
-    examples: './packages/examples/src/examples.js'
+    index: ['./packages/react-data-grid-examples/src'],
+    shared: './packages/react-data-grid-examples/src/shared.js',
+    examples: './packages/react-data-grid-examples/src/examples.js'
     // 'documentation': './examples/documentation.js'
   },
   output: {

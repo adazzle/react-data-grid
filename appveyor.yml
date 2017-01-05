@@ -18,6 +18,7 @@ environment:
 # Install scripts. (runs after repo cloning)
 install:
   # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
+  # Lerna needs to have a npmrc for each package folder as it does not use the root npmrc https://github.com/lerna/lerna/issues/296#issuecomment-261080345
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
         ./ci/publish/decrypt-npmrc.ps1
