@@ -9,7 +9,7 @@ npm version $nextVersion --message "Version Bump : $($nextVersion) [ci skip]"
 Write-Host "Publishing $($nextVersion) to npm"
 if($?)
 {
-  npm publish . --tag $env:APPVEYOR_REPO_BRANCH
+  ./node_modules/.bin/lerna publish --canary
 }
 
 exit $lastexitcode
