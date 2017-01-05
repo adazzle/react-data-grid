@@ -32,8 +32,7 @@ install:
   - npm install -g gulp
   - npm install
   - gulp flow
-  - gulp dist
-  - gulp examples
+  - npm run build
 
 # Post-install test scripts.
 test_script:
@@ -41,7 +40,7 @@ test_script:
   - node --version
   - npm --version
   # run tests
-  - gulp test --release true
+  - npm run test
   - ps: ./test/uploadResults.ps1
   - gulp coveralls
 

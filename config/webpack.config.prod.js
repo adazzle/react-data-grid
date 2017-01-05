@@ -1,13 +1,13 @@
-const webpackCommon = require('./config/webpack.common.config');
+const webpackCommon = require('./webpack.common.config');
 
 const config =  {
   entry: {
     'react-data-grid': ['./packages/react-data-grid/'],
     'react-data-grid-addons': ['./packages/react-data-grid-addons/'],
-    index: ['./packages/examples/src'],
+    'react-data-grid.min': ['./packages/react-data-grid/'],
+    'react-data-grid-addons.min': ['./packages/react-data-grid-addons/'],
     shared: './packages/examples/src/shared.js',
     examples: './packages/examples/src/examples.js'
-    // 'documentation': './examples/documentation.js'
   },
   output: {
     path: './dist',

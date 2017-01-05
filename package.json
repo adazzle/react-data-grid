@@ -4,10 +4,10 @@
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
-    "prepublish": "gulp dist --release true",
-    "dev-test": "./node_modules/.bin/karma start ./config/karma.js --singleRun false --debug true",
-    "build": "webpack --config webpack.config.js",
+    "test": "./node_modules/.bin/karma start --config ./config/karma.js --singleRun true --release true",
+    "dev-test": "./node_modules/.bin/karma start --config ./config/karma.js --singleRun false --debug true",
+    "postinstall": "lerna bootstrap",
+    "build": "webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "./node_modules/.bin/webpack-dev-server --watch-poll"
   },
   "repository": {
