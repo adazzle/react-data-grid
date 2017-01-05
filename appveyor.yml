@@ -31,7 +31,6 @@ install:
   - npm cache clean
   - npm install -g gulp
   - npm install
-  - gulp flow
   - npm run build
 
 # Post-install test scripts.
