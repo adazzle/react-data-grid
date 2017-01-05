@@ -2,7 +2,7 @@
   "name": "react-data-grid",
   "version": "2.0.0-dc-arch-revamp2285",
   "description": "The grid core",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "npm test"
   },
