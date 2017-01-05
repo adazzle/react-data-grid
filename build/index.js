@@ -2662,7 +2662,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					},
 					getHeaderRenderer: function getHeaderRenderer(column) {
 						var renderer = void 0;
-						if (column.headerRenderer) {
+						if (column.headerRenderer && !this.props.filterable) {
 							renderer = column.headerRenderer;
 						} else {
 							var headerCellType = this.getHeaderCellType(column);
@@ -16343,7 +16343,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					},
 					getHeaderRenderer: function getHeaderRenderer(column) {
 						var renderer = void 0;
-						if (column.headerRenderer) {
+						if (column.headerRenderer && !this.props.filterable) {
 							renderer = column.headerRenderer;
 						} else {
 							var headerCellType = this.getHeaderCellType(column);
