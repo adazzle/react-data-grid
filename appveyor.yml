@@ -34,7 +34,7 @@ install:
   - npm cache clean
   - npm install -g gulp
   - npm install
-  - ./ci/buildScripts/build.ps1
+  - ps: ./ci/buildScripts/build.ps1
 
 # Post-install test scripts.
 test_script:
