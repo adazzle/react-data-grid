@@ -8,7 +8,7 @@ const helpers       = require('./GridPropHelpers');
 import { shallow } from 'enzyme';
 const SCROLL_BAR_SIZE = 20;
 
-fdescribe('Header Unit Tests', () => {
+describe('Header Unit Tests', () => {
   let header;
   // Configure local letiable replacements for the module.
   let HeaderRowStub = new StubComponent('HeaderRow');
