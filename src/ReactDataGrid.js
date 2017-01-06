@@ -189,6 +189,9 @@ const ReactDataGrid = React.createClass({
             this.props.onCellSelected(selected);
           }
         });
+      } else if (selected.rowIdx === -1 && selected.idx === -1) {
+        // When it's outside of the grid, set rowIdx anyway
+        this.setState({selected: { idx, rowIdx }});
       }
     }
   },

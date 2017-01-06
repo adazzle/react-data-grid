@@ -96,6 +96,7 @@ const Grid = React.createClass({
           onSort={this.props.onSort}
           onScroll={this.onHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
+          cellMetaData={this.props.cellMetaData}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div ref="viewPortContainer" tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
