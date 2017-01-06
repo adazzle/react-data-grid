@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid-addons",
-  "version": "2.0.0-dc-arch-revamp2285",
+  "version": "2.0.0-dc-arch-revamp2296",
   "description": "A set of addons for react-data-grid",
   "scripts": {
     "test": "npm test"
@@ -13,7 +13,7 @@
   "author": "Adazzle",
   "license": "MIT",
   "dependencies": {
-    "react-data-grid": "^2.0.0-dc-arch-revamp2285"
+    "react-data-grid": "^2.0.0-dc-arch-revamp2296"
   },
   "devDependencies": {
     "jquery": "^2.1.1",
