@@ -35,6 +35,7 @@ const config = {
       commonjs2: 'react-dom',
       amd: 'react-dom'
     },
+    'react/addons': 'React',
     moment: 'moment'
   },
   module: {

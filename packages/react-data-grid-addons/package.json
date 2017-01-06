@@ -2,7 +2,6 @@
   "name": "react-data-grid-addons",
   "version": "2.0.0-dc-arch-revamp2285",
   "description": "A set of addons for react-data-grid",
-  "main": "main.js",
   "scripts": {
     "test": "npm test"
   },

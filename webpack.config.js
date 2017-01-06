@@ -1,25 +1,20 @@
 const webpackCommon = require('./config/webpack.common.config');
+const webpack = require('webpack');
 
 const config =  {
-  entry: {
-    'react-data-grid': ['./packages/react-data-grid/'],
-    'react-data-grid-addons': ['./packages/react-data-grid-addons/'],
-    index: ['./packages/react-data-grid-examples/src'],
-    shared: './packages/react-data-grid-examples/src/shared.js',
-    examples: './packages/react-data-grid-examples/src/examples.js'
-    // 'documentation': './examples/documentation.js'
+  entry: {   
+    'index': ['./packages/react-data-grid-examples/src/index.js'],
+    'shared': './packages/react-data-grid-examples/src/shared.js',
+    'examples': './packages/react-data-grid-examples/src/examples.js'
   },
+  plugins: [
+    new webpack.DefinePlugin({'process.env.NODE_ENV': '"webpack-dev-server"', 'global': 'window'})
+  ],
   output: {
-    path: './dist',
+    path: './',
     filename: '[name].js',
     library: ['ReactDataGrid'],
     libraryTarget: 'umd'
-  },
-  resolve: {
-    alias: {
-      react: './node_modules/react',
-      'react-dom': './node_modules/react-dom'
-    }
   },
   externals: {
     react: 'React',

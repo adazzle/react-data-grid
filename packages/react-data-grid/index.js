@@ -1,15 +1,6 @@
-const Grid = require('./src/ReactDataGrid');
-import RowComparer from './src/RowComparer';
-import RowsContainer from './src/RowsContainer';
-
-module.exports = Grid;
-module.exports.Row = require('./src/Row');
-module.exports.Cell = require('./src/Cell');
-module.exports.HeaderCell = require('./src/HeaderCell');
-module.exports.RowComparer = RowComparer;
-module.exports.RowsContainer = RowsContainer;
-module.exports.editors = require('./src/editors');
-module.exports.utils = require('./src/utils');
-module.exports.shapes = require('./src/PropTypeShapes');
-module.exports._constants = require('./src/AppConstants');
-module.exports._helpers = require('./src/helpers');
+const nodeEnv = process.env.NODE_ENV;
+if (nodeEnv === 'webpack-dev-server') {
+  module.exports = require('./src');
+} else {
+  module.exports = require("./dist/react-data-grid");
+}
