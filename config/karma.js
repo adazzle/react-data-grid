@@ -102,7 +102,8 @@ module.exports = function (config) {
         extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
       },
       plugins: [
-      new RewirePlugin()
+        new RewirePlugin(),
+        new webpack.DefinePlugin({'process.env.NODE_ENV': '"tests"', 'global': 'window'})
       ],
       externals: {
         'cheerio': 'window',
