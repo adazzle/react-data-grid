@@ -1,9 +1,6 @@
 function Clean-Dist () {
-  $allPackageDists = Get-ChildItem -Path .\packages\*\dist -Include *.js -Recurse 
-
-  ForEach ($file in $allPackageDists) {
-    New-Item $file.FullName -type file -force
-  }
+  New-Item -Path ".\packages\react-data-grid\dist\react-data-grid.js" -type file -force 
+  New-Item -Path ".\packages\react-data-grid-addons\dist\react-data-grid-addons.js" -type file -force 
 }
 
 function Build () {
@@ -16,3 +13,5 @@ Write-Host "-- File cleanup finished --"
 Write-Host "-- Build process --"
 Build
 Write-Host "-- Build completed --"
+
+exit $lastexitcode
