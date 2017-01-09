@@ -1,15 +1,11 @@
 const webpackCommon = require('./config/webpack.common.config');
-const webpack = require('webpack');
 
 const config =  {
-  entry: {   
+  entry: {
     'index': ['./packages/react-data-grid-examples/src/index.js'],
     'shared': './packages/react-data-grid-examples/src/shared.js',
     'examples': './packages/react-data-grid-examples/src/examples.js'
   },
-  plugins: [
-    new webpack.DefinePlugin({'process.env.NODE_ENV': '"webpack-dev-server"', 'global': 'window'})
-  ],
   output: {
     path: './',
     filename: '[name].js',
