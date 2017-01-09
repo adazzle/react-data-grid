@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "2.0.0-dc-arch-revamp2299",
+  "version": "2.0.0-dc-arch-revamp2304",
   "description": "The grid core",
   "scripts": {
     "posttest": "node ../../ci/publish/replacePackageEntry react-data-grid true",
