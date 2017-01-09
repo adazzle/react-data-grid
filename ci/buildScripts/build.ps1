@@ -1,6 +1,11 @@
-function Clean-Dist () {
-  New-Item -Path ".\packages\react-data-grid\dist\react-data-grid.js" -type file -force 
-  New-Item -Path ".\packages\react-data-grid-addons\dist\react-data-grid-addons.js" -type file -force 
+function Clear-Dist () {
+  $distFolders= dir packages/*/dist | ?{$_.PSISContainer}
+
+  foreach ($folder in $distFolders){
+    $path = Join-Path -Path $folder.FullName -ChildPath "*"
+    Remove-Item $path -recurse
+    Write-Host "Cleaned dist folder in $($path)"
+  }
 }
 
 function Build () {
@@ -8,7 +13,7 @@ function Build () {
 }
 
 Write-Host "-- Cleaning files in dist folders --"
-Clean-Dist
+Clear-Dist
 Write-Host "-- File cleanup finished --"
 Write-Host "-- Build process --"
 Build
