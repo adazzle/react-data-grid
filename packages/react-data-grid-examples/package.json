@@ -4,6 +4,8 @@
   "description": "A set of examples for the grid",
   "main": "main.js",
   "scripts": {
+    "prepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples true",
+    "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples",
     "test": "npm test"
   },
   "keywords": [
