@@ -32,13 +32,13 @@ Asside from the grid this package exports:
 
 name                   | source                           |
 -----------------------|----------------------------------|
-RowComparer            | [RowComparer](./RowComparer)     |
-RowsContainer          | [RowsContainer](./RowsContainer) |
-Row                    | [Row](./Row)                     |
-Cell                   | [Cell](./Cell)                   |
-HeaderCell             | [HeaderCell](./HeaderCell)       |
-editors                | [Editors](./editors)             |
-utils                  | [utils](./utils)                 |
-shapes                 | [shapes](./PropTypeShapes)       |
-_constants             | [_constants](./AppConstants)     |
-_helpers               | [_helpers](./helpers)            |
+RowComparer            | [RowComparer](./src/RowComparer)     |
+RowsContainer          | [RowsContainer](./src/RowsContainer) |
+Row                    | [Row](./src/Row)                     |
+Cell                   | [Cell](./src/Cell)                   |
+HeaderCell             | [HeaderCell](./src/HeaderCell)       |
+editors                | [Editors](./src/editors)             |
+utils                  | [utils](./src/utils)                 |
+shapes                 | [shapes](./src/PropTypeShapes)       |
+_constants             | [_constants](./src/AppConstants)     |
+_helpers               | [_helpers](./src/helpers)            |
