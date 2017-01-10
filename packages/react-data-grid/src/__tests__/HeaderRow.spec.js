@@ -124,6 +124,13 @@ describe('Header Row Unit Tests', () => {
       expect(TestUtils.isElementOfType(headerCells[customColumnIdx].props.renderer, CustomHeaderStub)).toBe(true);
     });
 
+    it('should render filter if header row if row and column is filterable', () => {
+      testProps.columns[customColumnIdx].filterable = true;
+      headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} filterable={true} />);
+      let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
+      expect(TestUtils.isElementOfType(headerCells[customColumnIdx].props.renderer, FilterableHeaderCellStub)).toBe(true);
+    });
+
     afterEach(() => {
       testProps.columns[customColumnIdx].headerRenderer = null;
     });

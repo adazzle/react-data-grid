@@ -8,6 +8,7 @@ const HeaderRow           = require('./HeaderRow');
 const getScrollbarSize  = require('./getScrollbarSize');
 const PropTypes           = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
+const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-header.css');
 
 type Column = {
@@ -29,7 +30,8 @@ const Header = React.createClass({
     onColumnResize: PropTypes.func,
     onScroll: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
-    getValidFilterValues: PropTypes.func
+    getValidFilterValues: PropTypes.func,
+    cellMetaData: PropTypes.shape(cellMetaDataShape)
   },
 
   getInitialState(): {resizing: any} {
@@ -183,6 +185,11 @@ const Header = React.createClass({
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   },
 
+  // Set the cell selection to -1 x -1 when clicking on the header
+  onHeaderClick() {
+    this.props.cellMetaData.onCellClick({rowIdx: -1, idx: -1 });
+  },
+
   render(): ?ReactElement {
     let className = joinClasses({
       'react-grid-Header': true,
@@ -191,7 +198,7 @@ const Header = React.createClass({
     let headerRows = this.getHeaderRows();
 
     return (
-      <div {...this.getKnownDivProps()} style={this.getStyle()} className={className}>
+      <div {...this.getKnownDivProps()} style={this.getStyle()} className={className} onClick={this.onHeaderClick}>
         {headerRows}
       </div>
     );

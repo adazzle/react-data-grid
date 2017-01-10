@@ -223,15 +223,24 @@ const EditorContainer = React.createClass({
   },
 
   isBodyClicked(e) {
-    return (e.relatedTarget === null);
+    let relatedTarget = this.getRelatedTarget(e);
+    return (relatedTarget === null);
   },
 
   isViewportClicked(e) {
-    return (e.relatedTarget.classList.contains('react-grid-Viewport'));
+    let relatedTarget = this.getRelatedTarget(e);
+    return (relatedTarget.className.indexOf('react-grid-Viewport') > -1);
   },
 
   isClickInisdeEditor(e) {
-    return (e.currentTarget.contains(e.relatedTarget) || (e.relatedTarget.classList.contains('editing') || e.relatedTarget.classList.contains('react-grid-Cell')));
+    let relatedTarget = this.getRelatedTarget(e);
+    return (e.currentTarget.contains(relatedTarget) || (relatedTarget.className.indexOf('editing') > -1 || relatedTarget.className.indexOf('react-grid-Cell') > -1));
+  },
+
+  getRelatedTarget(e) {
+    return e.relatedTarget ||
+            e.explicitOriginalTarget ||
+            document.activeElement; // IE11
   },
 
   handleBlur(e) {
