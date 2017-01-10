@@ -25,7 +25,7 @@ ReactDataGrid is an advanced JavaScript spreadsheet-like grid component built us
 
 Migrations
 --------
-If you intend to do a major release update for you react-data-grid check [Migrations document](MIGRATIONS.md).
+If you intend to do a major release update for you react-data-grid check [the migration documents](migrations).
   
 Features
 --------
