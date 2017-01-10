@@ -30,15 +30,15 @@ const Grid = () => {
 ## Extras
 Asside from the grid this package exports:
 
-name                   | source                           |
------------------------|----------------------------------|
-RowComparer            | [RowComparer](./src/RowComparer)     |
-RowsContainer          | [RowsContainer](./src/RowsContainer) |
-Row                    | [Row](./src/Row)                     |
-Cell                   | [Cell](./src/Cell)                   |
-HeaderCell             | [HeaderCell](./src/HeaderCell)       |
-editors                | [Editors](./src/editors)             |
-utils                  | [utils](./src/utils)                 |
-shapes                 | [shapes](./src/PropTypeShapes)       |
-_constants             | [_constants](./src/AppConstants)     |
-_helpers               | [_helpers](./src/helpers)            |
+name                   | source                                  |
+-----------------------|-----------------------------------------|
+RowComparer            | [RowComparer](./src/RowComparer.js)     |
+RowsContainer          | [RowsContainer](./src/RowsContainer.js) |
+Row                    | [Row](./src/Row.js)                     |
+Cell                   | [Cell](./src/Cell.js)                   |
+HeaderCell             | [HeaderCell](./src/HeaderCell.js)       |
+editors                | [Editors](./src/editors)                |
+utils                  | [utils](./src/utils)                    |
+shapes                 | [shapes](./src/PropTypeShapes)          |
+_constants             | [_constants](./src/AppConstants.js)     |
+_helpers               | [_helpers](./src/helpers)               |
