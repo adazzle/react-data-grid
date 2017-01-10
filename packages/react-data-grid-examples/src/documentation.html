@@ -70,8 +70,11 @@
 		</div>
 	</div>
 	<!-- JavaScript srcs are placed at the end of the document so the pages load faster -->
-	<script src="http://localhost:8080/shared.js"></script>
-	<script src="http://localhost:8080/documentation.js"></script>
+	<script src="scriptDelegator.js"></script>
+	<script type="text/javascript">
+		delegateScript('shared.js');
+		delegateScript('documentation.js');
+	</script>
 	<script src="assets/js/dropdown.js"></script>
 </body>
 </html>

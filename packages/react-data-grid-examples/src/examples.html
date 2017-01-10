@@ -46,8 +46,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.8/react-with-addons.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.8/react-dom.js"></script>
 <!-- JavaScript srcs are placed at the end of the document so the pages load faster -->
-<script src="http://localhost:8080/shared.js"></script>
-<script src="http://localhost:8080/examples.js"></script>
+<script src="scriptDelegator.js"></script>
+<script type="text/javascript">
+  delegateScript('shared.js');
+  delegateScript('index.js');
+</script>
 <script src="assets/js/dropdown.js"></script>
 </body>
 </html>
