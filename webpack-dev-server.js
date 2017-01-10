@@ -4,9 +4,10 @@ const webpack = require('webpack');
 
 const specificConfig =  {
   entry: {
-    'index': ['./packages/react-data-grid-examples/src/index.js'],
-    'shared': ['./packages/react-data-grid-examples/src/shared.js'],
-    'examples': ['./packages/react-data-grid-examples/src/examples.js']
+    index: ['./packages/react-data-grid-examples/src/index.js'],
+    shared: ['./packages/react-data-grid-examples/src/shared.js'],
+    examples: ['./packages/react-data-grid-examples/src/examples.js'],
+    documentation: ['./packages/react-data-grid-examples/src/documentation.js']
   },
   output: {
     path: '/packages/react-data-grid-examples/src/',
@@ -31,6 +32,7 @@ const config =  Object.assign({ }, webpackCommon, specificConfig);
 config.entry.index.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
 config.entry.shared.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
 config.entry.examples.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
+config.entry.documentation.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
 
 const compiler = webpack(config);
 const server = new WebpackDevServer(compiler, {

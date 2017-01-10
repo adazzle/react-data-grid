@@ -1,3 +1,5 @@
+const markdown = require('markdown');
+
 var DocumentContainer = React.createClass({
   propTypes: {
     documentContent: React.PropTypes.string.isRequired,
