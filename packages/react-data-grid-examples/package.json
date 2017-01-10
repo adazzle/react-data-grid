@@ -4,7 +4,7 @@
   "description": "A set of examples for the grid",
   "main": "main.js",
   "scripts": {
-    "posttest": "node ../../ci/publish/replacePackageEntry react-data-grid-examples true",
+    "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples true",
     "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples",
     "test": "npm test"
   },

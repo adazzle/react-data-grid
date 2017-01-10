@@ -3,7 +3,7 @@
   "version": "2.0.0-dc-arch-revamp2310",
   "description": "The grid core",
   "scripts": {
-    "posttest": "node ../../ci/publish/replacePackageEntry react-data-grid true",
+    "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid true",
     "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid",
     "test": "npm test"
   },
