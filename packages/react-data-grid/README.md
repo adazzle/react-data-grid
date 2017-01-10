@@ -27,7 +27,7 @@ const Grid = () => {
 }
 ```
 
-## Extras
+## Exports
 Asside from the grid this package exports:
 
 name                   | source                                  |
