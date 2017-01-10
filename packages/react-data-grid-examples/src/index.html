@@ -15,14 +15,12 @@
 	<!-- Custom styles for our template -->
 	<link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen" ></link>
 	<link rel="stylesheet" href="assets/css/main.css"></link>
-	<link rel="stylesheet" href="build/react-data-grid.css"></link>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react-with-addons.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.14.6/react-dom.js"></script>
 	<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.0.1/faker.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.7.3/immutable.min.js"/></script>
 
-	<script src="build/libs.js"></script>
 
 	<script src="assets/js/dropdown.js"></script>
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -177,12 +175,10 @@
 
 	</footer>
 
-
-
-		<!-- JavaScript srcs are placed at the end of the document so the pages load faster -->
-
-		<script src="http://localhost:8080/shared.js"></script>
-		<script src="http://localhost:8080/index.js"></script>
-
+	<script src="scriptDelegator.js"></script>
+	<script type="text/javascript">
+		delegateScript('shared.js');
+		delegateScript('index.js');
+	</script>
 </body>
 </html>
