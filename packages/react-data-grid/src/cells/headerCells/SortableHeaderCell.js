@@ -40,7 +40,7 @@ const SortableHeaderCell = React.createClass({
       ASC: '9650',
       DESC: '9660'
     };
-    return this.props.sortDirection == 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
+    return this.props.sortDirection === 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
   },
 
   render: function(): ?ReactElement {
