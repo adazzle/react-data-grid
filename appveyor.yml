@@ -60,6 +60,7 @@ on_success:
   - ps: >-
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
         ./ci/publish/publishMaster.ps1
+        node ./ci/publish/publishExamples.js
       }
       if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
         ./ci/publish/publishBranch.ps1
