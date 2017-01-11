@@ -64,7 +64,10 @@ const AutoCompleteEditor = React.createClass({
   },
 
   handleChange(newOption) {
-    const newLabel = newOption[this.getLabelKey()];
+    let newLabel;
+    if (newOption != null) {
+      newLabel = newOption[this.getLabelKey()];
+    }
     this.setState({selectedLabel: newLabel}, () => this.props.onCommit());
   },
 
@@ -172,7 +175,6 @@ const AutoCompleteEditor = React.createClass({
     let noResults = 'No results found';
     return (<div height={this.props.height}>
       <Select.Async
-        name="auto-complete-editor"
         valueKey={this.props.resultIdentifier}
         labelKey={this.getLabelKey()}
         loadOptions={this.getOptions}
