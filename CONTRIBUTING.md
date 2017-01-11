@@ -2,16 +2,16 @@ Use [Github issues](https://github.com/adazzle/react-data-grid/issues) for featu
 
 ## <a name="question"></a> Got a Question or Problem?
 
-If you have questions about how to *use* react-data-grid, please direct them to [StackOverflow](https://www.stackoverflow.com). We are also available on our Slack channel
+If you have questions about how to *use* react-data-grid, please direct them to [StackOverflow](http://stackoverflow.com/questions/tagged/react-data-grid). We are also available on our Slack channel
 
 ## <a name="issue"></a> Found an Issue?
 If you find a bug in the source code or a mistake in the documentation, you can help us by
-[submitting an issue](#submit-issue) to our [GitHub Repository][github]. Even better, you can
+[submitting an issue](#submit-issue) to our [GitHub Repository][https://github.com/adazzle/react-data-grid]. Even better, you can
 [submit a Pull Request](#submit-pr) with a fix.
 
 ## <a name="feature"></a> Want a Feature?
 You can *request* a new feature by submitting an issue to our [GitHub
-Repository][github]. If you would like to *implement* a new feature, please submit an issue with
+Repository][https://github.com/adazzle/react-data-grid]. If you would like to *implement* a new feature, please submit an issue with
 a proposal for your work first, to be sure that we can use it. 
 Please consider what kind of change it is:
 
@@ -73,6 +73,10 @@ Most modern text editor have their own plugins, you can find them in here for th
 Internally we use [VS Code](https://code.visualstudio.com/) as our main text editor, it is quite extensible and fully configurable.
 It doesn’t mean you need to use it to contribute to our community.
 You can use whatever is your personal preference, although it would be nice if it supports a eslint plugin as it would make your life a lot easier.
+
+### Build
+To build the project you will need to run `npm run build`.
+It will create a dist folder for each package, that dist folder will be what is published to npm after your code being released.
 
 ### Review process
 To be accepted your code needs to be mergeable with the master branch, and the CI builds needs to be passing. After a sign of from those requirements you code will be subject of a code review by one of the team members. 
