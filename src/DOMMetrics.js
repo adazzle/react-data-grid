@@ -97,6 +97,10 @@ let MetricsComputatorMixin = {
     } else {
       window.attachEvent('resize', this.updateMetrics);
     }
+    // to prevent mis-calculated widths calling updateMetrics one more time async
+    setTimeout(() => {
+      this.updateMetrics();
+    }, 0);
     this.updateMetrics();
   },
 
