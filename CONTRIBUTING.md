@@ -20,14 +20,60 @@ discussed. This will also allow us to better coordinate our efforts, prevent dup
 and help you to craft the change so that it is successfully accepted into the project.
 * **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
 
-## Docs
-
-Please update the docs with any API changes, the code and docs should
-always be in sync.
 
 ## Development
+We want anyone contributing to react-data-grid to have the best experience possible.
 
-- `npm test` will fire up a karma test runner and run tests in Phantom JS
-- `npm run debug-test` will fire up a karma test runner and run tests in chrome. This can be used for debugging purposes
-- `npm run examples` will load a webpack dev server that will watch
-for changes and build the examples
+### tl;dr
+You can start coding in 5 minutes.
+
+```sh
+git clone https://github.com/adazzle/react-data-grid.git
+cd react-data-grid
+npm install
+npm run dev-server
+```
+
+### Enviroment
+We use webpack-dev-server for development. If you're fancy about knowing the tools you’re working with you can find the details about this awesome tool [in here](https://webpack.github.io/docs/webpack-dev-server.html).
+To run webpack-dev-server all you need to do is to run the following command:
+```sh
+npm run dev-server
+```
+This will open your default browser at `http://localhost:8080/webpack-dev-server/` an you can navigate in our examples from there. 
+HMR is enabled, that means you won't need to reload the page wherever you make a change, webpack-dev-server will watch for any changes in the source code.
+
+### Testing
+We use [karma](https://karma-runner.github.io/1.0/index.html) as our test runner combined with [Phantom JS](http://phantomjs.org/) and [jasmine](https://jasmine.github.io/). You can run your test in debug or release mode.
+To run tests in release and dev mode you just need to run:
+`npm test` for release
+`npm dev-test` for debug
+
+When testing react components we encourage the use of [enzyme](https://github.com/airbnb/enzyme) as it presents a clean and descriptive interface for component testing.
+
+We want to keep our test coverage high, so when contributing you will need to test the changes you’re making and all the tests need to run successfully.
+
+Any file inside a `__tests__` subfolder in the packages folder that looks like `*.spec.js` will be picked up an executed by the test runner.
+When writing new tests you must follow the following guidelines:
+-	If it is a test for a functionality that is already tested you need to write your tests in the existing spec file for that component.
+-	If you’re adding a new functionality, or testing a untested one you will need to add a spec file (and maybe a `__tests__` folder if that directory level doesn’t have one),
+  that spec file must be in the same deep level as the file your testing and by standard it will need to have the same name.
+
+### Code style
+We use [eslint](http://eslint.org/) to enforce some code standards.
+An npm script will run automatically before testing to check if there are any violations to the set of rules we defined, you can also run that same script independently by running `npm run pretest` on your console.
+The easiest way to be aware of any violation on coding time is to have a plugin in you text editor that will be checking for any violation on the run. 
+Most modern text editor have their own plugins, you can find them in here for this popular editors:
+
+- [VS Code eslint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Atom eslint plugin](https://atom.io/packages/linter-eslint)
+- [Sublime Text](https://github.com/roadhump/SublimeLinter-eslint)
+
+### Text Editor
+Internally we use [VS Code](https://code.visualstudio.com/) as our main text editor, it is quite extensible and fully configurable.
+It doesn’t mean you need to use it to contribute to our community.
+You can use whatever is your personal preference, although it would be nice if it supports a eslint plugin as it would make your life a lot easier.
+
+### Review process
+To be accepted your code needs to be mergeable with the master branch, and the CI builds needs to be passing. After a sign of from those requirements you code will be subject of a code review by one of the team members. 
+All contributions are encouraged and most of all we hope you will have some fun writing code for react-data-grid.
