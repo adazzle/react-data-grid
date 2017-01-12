@@ -173,12 +173,13 @@ const AutoCompleteEditor = React.createClass({
 
   render(): ?ReactElement {
     let noResults = 'No results found';
+    let emptyCache = {};
     return (<div height={this.props.height}>
       <Select.Async
         valueKey={this.props.resultIdentifier}
         labelKey={this.getLabelKey()}
         loadOptions={this.getOptions}
-        cache={false}
+        cache={emptyCache}
         value={this.getEditorValue()}
         onChange={this.handleChange}
         onFocus={this.props.onFocus}
