@@ -2633,7 +2633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						onColumnResizeEnd: PropTypes.func,
 						style: PropTypes.shape(HeaderRowStyle),
 						sortColumn: PropTypes.string,
-						sortDirection: React.PropTypes.oneOf(SortableHeaderCell.DEFINE_SORT),
+						sortDirection: React.PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
 						cellRenderer: PropTypes.func,
 						headerCellRenderer: PropTypes.func,
 						filterable: PropTypes.bool,
@@ -3134,7 +3134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						columnKey: React.PropTypes.string.isRequired,
 						column: React.PropTypes.shape({ name: React.PropTypes.node }),
 						onSort: React.PropTypes.func.isRequired,
-						sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE'])
+						sortDirection: React.PropTypes.oneOf(Object.keys(DEFINE_SORT))
 					},
 
 					onClick: function onClick() {
@@ -3161,7 +3161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 							ASC: '9650',
 							DESC: '9660'
 						};
-						return this.props.sortDirection == 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
+						return this.props.sortDirection === 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
 					},
 
 					render: function render() {
@@ -16325,7 +16325,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						onColumnResizeEnd: PropTypes.func,
 						style: PropTypes.shape(HeaderRowStyle),
 						sortColumn: PropTypes.string,
-						sortDirection: React.PropTypes.oneOf(SortableHeaderCell.DEFINE_SORT),
+						sortDirection: React.PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
 						cellRenderer: PropTypes.func,
 						headerCellRenderer: PropTypes.func,
 						filterable: PropTypes.bool,
@@ -16826,7 +16826,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						columnKey: React.PropTypes.string.isRequired,
 						column: React.PropTypes.shape({ name: React.PropTypes.node }),
 						onSort: React.PropTypes.func.isRequired,
-						sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE'])
+						sortDirection: React.PropTypes.oneOf(Object.keys(DEFINE_SORT))
 					},
 
 					onClick: function onClick() {
@@ -16853,7 +16853,7 @@ return /******/ (function(modules) { // webpackBootstrap
 							ASC: '9650',
 							DESC: '9660'
 						};
-						return this.props.sortDirection == 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
+						return this.props.sortDirection === 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
 					},
 
 					render: function render() {
