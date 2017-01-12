@@ -2,24 +2,22 @@
 var QuickStartDescription = require('../components/QuickStartDescription')
 var ReactPlayground       = require('../assets/js/ReactPlayground');
 var SimpleExample = `
-var Selectors = ReactDataGridPlugins.Data.Selectors;
-var _rows = [
-        {name: 'supplier 1', 
-        format: 'package 1', 
+
+function createRows() {
+  var rows = [{name: 'row0'}];
+  for (var i = 1; i < 1000; i++) {
+    var price = Math.random() * 30;
+    var row = {name: 'supplier ' + i,
+        format: 'package ' + i,
         position: 'Run of site',
-        price: 30,
-        children: [{name: 'supplier 1', format: '728x90', position: 'run of site', price: 10},
-        {name: 'supplier 1', format: '480x600', position: 'run of site', price: 5},
-        {name: 'supplier 1', format: '328x70', position: 'run of site', price: 15}]}
-    ];
-
-
-
-//A rowGetter function is required by the grid to retrieve a row for a given index
-var rowGetter = function(i){
-  return _rows[i];
-};
-
+        price: price,
+        children: [{name: 'supplier ' + i, format: '728x90', position: 'run of site', price: price/2},
+        {name: 'supplier ' + i, format: '480x600', position: 'run of site', price: price * .25},
+        {name: 'supplier ' + i, format: '328x70', position: 'run of site', price: price * .25, children: [{name: 'another sub row'}] }]}
+    rows.push(row);
+  }
+  return rows;
+}
 
 var columns = [
 {
@@ -42,27 +40,14 @@ var columns = [
 
 var Example = React.createClass({
     
-    getInitialState : function(){
-        return {rows: _rows, groupBy: [], expandedRows: {}};
-    },
-
-    getRows: function() {
-        var rows = Selectors.getRows(this.state);
-        return rows;
-    },
-
-    getRowAt : function(index){
-        var rows = this.getRows();
-        return rows[index];
-    },
-
-    getSize : function() {
-        return this.getRows().length;
-    },
+  getInitialState() {
+    var rows = createRows();
+    return {expanded: {}, rowCount: rows.length, rows: rows}
+  },
   
   getSubRowDetails(rowItem, index) {
     var isExpanded = this.state.expanded[rowItem.name] ? this.state.expanded[rowItem.name] : false;
-    if (rowItem.folder) {
+    if (rowItem.children) {
         return {
             group: true,
             expanded: isExpanded,
@@ -72,6 +57,10 @@ var Example = React.createClass({
     } else {
         return null;
     }
+  },
+
+  getRows(i) {
+    return this.state.rows[i];
   },
     
   onCellExpand(args) {
@@ -92,8 +81,9 @@ var Example = React.createClass({
     return  (<ReactDataGrid
     enableCellSelect={true}
     columns={columns}
-    rowGetter={this.getRowAt}
-    rowsCount={this.getSize()}
+    rowGetter={this.getRows}
+    rowsCount={this.state.rowCount}
+    getSubRowDetails={this.getSubRowDetails}
     minHeight={500}
     onCellExpand={this.onCellExpand} />);
   }
