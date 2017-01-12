@@ -1,10 +1,12 @@
 const React          = require('react');
 const ReactDOM = require('react-dom');
-const TestUtils      = require('react/lib/ReactTestUtils');
+const TestUtils      = require('react-addons-test-utils');
 const CheckboxEditor = require('../CheckboxEditor');
+const { mount } = require('enzyme');
 
 describe('CheckboxEditor', () => {
   let component;
+  let componentWrapper;
   let testColumn = {
     key: 'columnKey',
     onCellChange: function() {}
@@ -13,10 +15,11 @@ describe('CheckboxEditor', () => {
   describe('Basic tests', () => {
     beforeEach(() => {
       spyOn(testColumn, 'onCellChange');
-      component = TestUtils.renderIntoDocument(<CheckboxEditor
+      componentWrapper = mount(<CheckboxEditor
         value={true}
         rowIdx={1}
         column={testColumn}/>);
+      component = componentWrapper.node;
     });
 
     it('should create a new CheckboxEditor instance', () => {
@@ -30,7 +33,7 @@ describe('CheckboxEditor', () => {
     });
 
     it('should not be selected if value prop is false', () => {
-      component.setProps({value: false});
+      componentWrapper.setProps({value: false});
       let Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
       let checkboxNode = ReactDOM.findDOMNode(Input);
       expect(checkboxNode.checked).toBe(false);
