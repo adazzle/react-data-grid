@@ -11,7 +11,7 @@ const SortableHeaderCell = React.createClass({
     columnKey: React.PropTypes.string.isRequired,
     column: React.PropTypes.shape({ name: React.PropTypes.node }),
     onSort: React.PropTypes.func.isRequired,
-    sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE'])
+    sortDirection: React.PropTypes.oneOf(Object.keys(DEFINE_SORT))
   },
 
   onClick: function() {
@@ -40,7 +40,7 @@ const SortableHeaderCell = React.createClass({
       ASC: '9650',
       DESC: '9660'
     };
-    return this.props.sortDirection == 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
+    return this.props.sortDirection === 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
   },
 
   render: function(): ?ReactElement {
