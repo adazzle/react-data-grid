@@ -28,11 +28,13 @@ const specificConfig =  {
 };
 
 const config =  Object.assign({ }, webpackCommon, specificConfig);
+const entries = config.entry;
 
-config.entry.index.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
-config.entry.shared.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
-config.entry.examples.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
-config.entry.documentation.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
+for (const key in entries) {
+  if (entries.hasOwnProperty(key)) {
+    entries[key].unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
+  }
+}
 
 const compiler = webpack(config);
 const server = new WebpackDevServer(compiler, {
