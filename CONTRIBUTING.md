@@ -34,6 +34,16 @@ npm install
 npm run dev-server
 ```
 
+command                | outcome                                                                                               |
+-----------------------|-------------------------------------------------------------------------------------------------------|
+npm test               | runs tests in release mode                                                                            |
+npm run dev-test       | runs tests in debug mode                                                                              |
+npm run dev-server     | starts webpack dev server                                                                             |
+npm run eslint         | runs the eslint task (runs automatically before npm test)                                             |
+npm run build          | build the project in release mode                                                                     |
+npm run postinstall    | boostraps the packages and fetches the individual dependencies (runs automatically after npm install) |
+
+
 ### Project structure
 react-data-grid is a monorepo containing a total of three packages:
 - **react-data-grid** the core package of the grid, contains all the core functionality of the project
@@ -72,7 +82,7 @@ When writing new tests you must follow the following guidelines:
 
 ### Code style
 We use [eslint](http://eslint.org/) to enforce some code standards.
-An npm script will run automatically before testing to check if there are any violations to the set of rules we defined, you can also run that same script independently by running `npm run pretest` on your console.
+An npm script will run automatically before testing to check if there are any violations to the set of rules we defined, you can also run that same script independently by running `npm run eslint` on your console.
 The easiest way to be aware of any violation on coding time is to have a plugin in you text editor that will be checking for any violation on the run. 
 Most modern text editor have their own plugins, you can find them in here for this popular editors:
 
