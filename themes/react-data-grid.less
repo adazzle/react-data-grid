@@ -628,23 +628,21 @@ textarea.react-autocomplete-Autocomplete__search {
 
 .cell-tooltip .cell-tooltip-text {
     visibility: hidden;
-    width: 120px;
+    width: 75%;
     background-color: black;
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 2px 0;
+    padding: 2px 2px;
     position: absolute;
-    z-index: 999999;
-    bottom: -50%;
-    left: 50%;
-    margin-left: -60px;
+    top: 50%;
+    margin-left: -37%;
+    bottom: initial;
 }
 
 .cell-tooltip .cell-tooltip-text::after {
     content: " ";
     position: absolute;
-    bottom: 100%;  /* At the top of the tooltip */
     left: 50%;
     margin-left: -5px;
     border-width: 5px;
