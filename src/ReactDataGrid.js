@@ -118,6 +118,7 @@ const ReactDataGrid = React.createClass({
       minHeight: 350,
       rowKey: 'id',
       rowScrollTimeout: 0,
+      enableDragAndDrop: true,
       cellNavigationMode: 'none',
       overScan: {
         colsStart: 5,
@@ -857,7 +858,7 @@ const ReactDataGrid = React.createClass({
   },
 
   dragEnabled: function(): boolean {
-    return (this.props.onGridRowsUpdated !== undefined || this.props.onCellsDragged !== undefined) && this.props.enableDragAndDrop !== false;
+    return this.props.enableDragAndDrop && (this.props.onGridRowsUpdated || this.props.onCellsDragged);
   },
 
   renderToolbar(): ReactElement {
