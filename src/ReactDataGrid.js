@@ -385,17 +385,19 @@ const ReactDataGrid = React.createClass({
 
   handleDragEnd() {
     if (!this.dragEnabled()) { return; }
-    let selected = this.state.selected;
-    let dragged = this.state.dragged;
-    let cellKey = this.getColumn(this.state.selected.idx).key;
-    let fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-    let toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-    if (this.props.onCellsDragged) {
-      this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
-    }
-
-    if (this.props.onGridRowsUpdated) {
-      this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
+    const selected = this.state.selected;
+    const dragged = this.state.dragged;
+    const column = this.getColumn(this.state.selected.idx);
+    if (selected && dragged && column) {
+      let cellKey = column.key;
+      let fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+      let toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+      if (this.props.onCellsDragged) {
+        this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
+      }
+      if (this.props.onGridRowsUpdated) {
+        this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
+      }
     }
     this.setState({dragged: {complete: true}});
   },
