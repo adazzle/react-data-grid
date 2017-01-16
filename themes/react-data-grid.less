@@ -620,40 +620,33 @@ textarea.react-autocomplete-Autocomplete__search {
 		-webkit-transform: translateY(0%);
 	}
 }
-
 .cell-tooltip {
     position: relative;
     display: inline-block;
+    border-bottom: 1px dotted black;
 }
 
-.cell-tooltip .cell-tooltip-text {
-    position: absolute;
-    top: 100%;
-    right: 15%;
-    bottom: initial;
+.cell-tooltip .cell-tooltiptext {
+    visibility: hidden;
     width: 120px;
-    padding: 2px 2px;
-    margin-left: -37%;
+    background-color: black;
     color: #fff;
     text-align: center;
-    visibility: hidden;
-    background-color: black;
     border-radius: 6px;
-}
-
-.cell-tooltip .cell-tooltip-text::after {
+    padding: 5px 0;
     position: absolute;
-    top: -15%;
+    z-index: 1;
+    bottom: -200%;
     left: 50%;
-    margin-left: -5px;
-    content: " ";
-    border-color: transparent transparent black transparent;
-    border-style: solid;
-    border-width: 5px;
+    margin-left: -60px;
+    /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
+    opacity: 0;
+    transition: opacity 1s;
 }
 
-.react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
+.cell-tooltip:hover .cell-tooltiptext {
     visibility: visible;
+    opacity: 1;
 }
 
 .react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
