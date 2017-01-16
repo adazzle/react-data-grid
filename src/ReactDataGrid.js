@@ -174,12 +174,7 @@ const ReactDataGrid = React.createClass({
       || this.state.selected.active === false) {
       let idx = selected.idx;
       let rowIdx = selected.rowIdx;
-      if (
-          idx >= 0
-          && rowIdx >= 0
-          && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
-          && rowIdx < this.props.rowsCount
-        ) {
+      if (this.isCellWithinBounds(selected)) {
         const oldSelection = this.state.selected;
         this.setState({selected: selected}, () => {
           if (typeof this.props.onCellDeSelected === 'function') {
@@ -189,7 +184,7 @@ const ReactDataGrid = React.createClass({
             this.props.onCellSelected(selected);
           }
         });
-      } else if (selected.rowIdx === -1 && selected.idx === -1) {
+      } else if (rowIdx === -1 && idx === -1) {
         // When it's outside of the grid, set rowIdx anyway
         this.setState({selected: { idx, rowIdx }});
       }
@@ -369,16 +364,18 @@ const ReactDataGrid = React.createClass({
     }
   },
 
+  isCellWithinBounds(cell) {
+    const idx = cell.idx;
+    const rowIdx = cell.rowIdx;
+    return idx >= 0
+      && rowIdx >= 0
+      && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
+      && rowIdx < this.props.rowsCount;
+  },
+
   handleDragStart(dragged: DraggedType) {
     if (!this.dragEnabled()) { return; }
-    let idx = dragged.idx;
-    let rowIdx = dragged.rowIdx;
-    if (
-        idx >= 0
-        && rowIdx >= 0
-        && idx < this.getSize()
-        && rowIdx < this.props.rowsCount
-      ) {
+    if (this.isCellWithinBounds(dragged)) {
       this.setState({ dragged: dragged });
     }
   },
