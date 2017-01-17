@@ -327,7 +327,7 @@ const ReactDataGrid = React.createClass({
         if (e.dataTransfer.setData) {
           e.dataTransfer.dropEffect = 'move';
           e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('text/plain', 'dummy');
+          e.dataTransfer.setData('text/plain', '');
         }
       }
     }
