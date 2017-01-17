@@ -742,7 +742,8 @@ describe('Grid', function() {
       describe('dragging in grid', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 1, rowIdx: 2 } });
-          this.getBaseGrid().props.onViewportDragStart();
+          const event = { target: { className: 'drag-handle' }};
+          this.getBaseGrid().props.onViewportDragStart(event);
         });
 
         it('should store drag rowIdx, idx and value of cell in state', function() {

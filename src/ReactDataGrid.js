@@ -318,7 +318,7 @@ const ReactDataGrid = React.createClass({
   onDragStart(e: SyntheticEvent) {
     let idx = this.state.selected.idx;
     // To prevent dragging down/up when reordering rows.
-    const isDragging = e && e.target && e.target.className === 'drag-handle';
+    const isDragging = e && e.target && e.target.className;
     if (idx > -1 && isDragging) {
       let value = this.getSelectedValue();
       this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
