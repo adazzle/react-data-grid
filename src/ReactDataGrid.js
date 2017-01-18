@@ -318,8 +318,8 @@ const ReactDataGrid = React.createClass({
   onDragStart(e: SyntheticEvent) {
     let idx = this.state.selected.idx;
     // To prevent dragging down/up when reordering rows.
-    const isDragging = e && e.target && e.target.className;
-    if (idx > -1 && isDragging) {
+    const isViewportDragging = e && e.target && e.target.className;
+    if (idx > -1 && isViewportDragging) {
       let value = this.getSelectedValue();
       this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
       // need to set dummy data for FF
@@ -366,9 +366,7 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  isCellWithinBounds(cell) {
-    const idx = cell.idx;
-    const rowIdx = cell.rowIdx;
+  isCellWithinBounds({idx, rowIdx}) {
     return idx >= 0
       && rowIdx >= 0
       && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
@@ -384,8 +382,7 @@ const ReactDataGrid = React.createClass({
 
   handleDragEnd() {
     if (!this.dragEnabled()) { return; }
-    const selected = this.state.selected;
-    const dragged = this.state.dragged;
+    const { selected, dragged } = this.state;
     const column = this.getColumn(this.state.selected.idx);
     if (selected && dragged && column) {
       let cellKey = column.key;
