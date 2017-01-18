@@ -36,7 +36,8 @@ const Cell = React.createClass({
     rowData: React.PropTypes.object.isRequired,
     forceUpdate: React.PropTypes.bool,
     expandableOptions: React.PropTypes.object.isRequired,
-    isScrolling: React.PropTypes.bool.isRequired
+    isScrolling: React.PropTypes.bool.isRequired,
+    tooltip: React.PropTypes.string
   },
 
   getDefaultProps() {
@@ -183,7 +184,8 @@ const Cell = React.createClass({
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
-      'was-dragged-over': this.wasDraggedOver()
+      'was-dragged-over': this.wasDraggedOver(),
+      'cell-tooltip': this.props.tooltip ? true : false
     });
     return joinClasses(className, extraClasses);
   },
@@ -468,11 +470,13 @@ const Cell = React.createClass({
 
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
     let events = this.getEvents();
+    const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{ this.props.tooltip }</span>) : null;
 
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style}   {...events}>
+      <div {...this.getKnownDivProps() } className={className} style={style} {...events}>
         {cellContent}
         {dragHandle}
+        { tooltip }
       </div>
     );
   }

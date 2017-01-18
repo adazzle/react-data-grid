@@ -568,15 +568,15 @@ textarea.react-autocomplete-Autocomplete__search {
 
 .slideUp{
 	animation-name: slideUp;
-	-webkit-animation-name: slideUp;	
+	-webkit-animation-name: slideUp;
 
-	animation-duration: 1s;	
+	animation-duration: 1s;
 	-webkit-animation-duration: 1s;
 
-	animation-timing-function: ease;	
+	animation-timing-function: ease;
 	-webkit-animation-timing-function: ease;
 
-	visibility: visible !important;			
+	visibility: visible !important;
 }
 
 @keyframes slideUp {
@@ -594,10 +594,10 @@ textarea.react-autocomplete-Autocomplete__search {
 	}
 	95%{
 		transform: translateY(2%);
-	}			
+	}
 	100% {
 		transform: translateY(0%);
-	}	
+	}
 }
 
 @-webkit-keyframes slideUp {
@@ -615,8 +615,39 @@ textarea.react-autocomplete-Autocomplete__search {
 	}
 	95%{
 		-webkit-transform: translateY(2%);
-	}			
+	}
 	100% {
 		-webkit-transform: translateY(0%);
-	}	
+	}
+}
+.cell-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.cell-tooltip .cell-tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: -200%;
+    left: 50%;
+    margin-left: -60px;
+    /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.cell-tooltip:hover .cell-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
+    visibility: hidden;
 }
