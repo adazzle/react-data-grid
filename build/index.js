@@ -985,7 +985,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						if (this.state.selected.rowIdx !== selected.rowIdx || this.state.selected.idx !== selected.idx || this.state.selected.active === false) {
 							var _idx = selected.idx;
 							var _rowIdx = selected.rowIdx;
-							if (_idx >= 0 && _rowIdx >= 0 && _idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && _rowIdx < this.props.rowsCount) {
+							if (this.isCellWithinBounds(selected)) {
 								(function () {
 									var oldSelection = _this.state.selected;
 									_this.setState({ selected: selected }, function () {
@@ -997,7 +997,7 @@ return /******/ (function(modules) { // webpackBootstrap
 										}
 									});
 								})();
-							} else if (selected.rowIdx === -1 && selected.idx === -1) {
+							} else if (_rowIdx === -1 && _idx === -1) {
 								// When it's outside of the grid, set rowIdx anyway
 								this.setState({ selected: { idx: _idx, rowIdx: _rowIdx } });
 							}
@@ -1117,7 +1117,9 @@ return /******/ (function(modules) { // webpackBootstrap
 					},
 					onDragStart: function onDragStart(e) {
 						var idx = this.state.selected.idx;
-						if (idx > -1) {
+						// To prevent dragging down/up when reordering rows.
+						var isViewportDragging = e && e.target && e.target.className;
+						if (idx > -1 && isViewportDragging) {
 							var _value2 = this.getSelectedValue();
 							this.handleDragStart({ idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: _value2 });
 							// need to set dummy data for FF
@@ -1125,7 +1127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 								if (e.dataTransfer.setData) {
 									e.dataTransfer.dropEffect = 'move';
 									e.dataTransfer.effectAllowed = 'move';
-									e.dataTransfer.setData('text/plain', 'dummy');
+									e.dataTransfer.setData('text/plain', '');
 								}
 							}
 						}
@@ -1163,13 +1165,17 @@ return /******/ (function(modules) { // webpackBootstrap
 							this.props.onRowExpandToggle(args);
 						}
 					},
+					isCellWithinBounds: function isCellWithinBounds(_ref) {
+						var idx = _ref.idx,
+						    rowIdx = _ref.rowIdx;
+
+						return idx >= 0 && rowIdx >= 0 && idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && rowIdx < this.props.rowsCount;
+					},
 					handleDragStart: function handleDragStart(dragged) {
 						if (!this.dragEnabled()) {
 							return;
 						}
-						var idx = dragged.idx;
-						var rowIdx = dragged.rowIdx;
-						if (idx >= 0 && rowIdx >= 0 && idx < this.getSize() && rowIdx < this.props.rowsCount) {
+						if (this.isCellWithinBounds(dragged)) {
 							this.setState({ dragged: dragged });
 						}
 					},
@@ -1177,19 +1183,23 @@ return /******/ (function(modules) { // webpackBootstrap
 						if (!this.dragEnabled()) {
 							return;
 						}
-						var selected = this.state.selected;
-						var dragged = this.state.dragged;
-						var cellKey = this.getColumn(this.state.selected.idx).key;
-						var fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-						var toRow = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-						if (this.props.onCellsDragged) {
-							this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
-						}
+						var _state = this.state,
+						    selected = _state.selected,
+						    dragged = _state.dragged;
 
-						if (this.props.onGridRowsUpdated) {
-							var _onGridRowsUpdated2;
+						var column = this.getColumn(this.state.selected.idx);
+						if (selected && dragged && column) {
+							var cellKey = column.key;
+							var fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+							var toRow = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+							if (this.props.onCellsDragged) {
+								this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
+							}
+							if (this.props.onGridRowsUpdated) {
+								var _onGridRowsUpdated2;
 
-							this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated2 = {}, _onGridRowsUpdated2[cellKey] = dragged.value, _onGridRowsUpdated2), _AppConstants2['default'].UpdateActions.CELL_DRAG);
+								this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated2 = {}, _onGridRowsUpdated2[cellKey] = dragged.value, _onGridRowsUpdated2), _AppConstants2['default'].UpdateActions.CELL_DRAG);
+							}
 						}
 						this.setState({ dragged: { complete: true } });
 					},
@@ -14677,7 +14687,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						if (this.state.selected.rowIdx !== selected.rowIdx || this.state.selected.idx !== selected.idx || this.state.selected.active === false) {
 							var _idx = selected.idx;
 							var _rowIdx = selected.rowIdx;
-							if (_idx >= 0 && _rowIdx >= 0 && _idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && _rowIdx < this.props.rowsCount) {
+							if (this.isCellWithinBounds(selected)) {
 								(function () {
 									var oldSelection = _this.state.selected;
 									_this.setState({ selected: selected }, function () {
@@ -14689,7 +14699,7 @@ return /******/ (function(modules) { // webpackBootstrap
 										}
 									});
 								})();
-							} else if (selected.rowIdx === -1 && selected.idx === -1) {
+							} else if (_rowIdx === -1 && _idx === -1) {
 								// When it's outside of the grid, set rowIdx anyway
 								this.setState({ selected: { idx: _idx, rowIdx: _rowIdx } });
 							}
@@ -14809,7 +14819,9 @@ return /******/ (function(modules) { // webpackBootstrap
 					},
 					onDragStart: function onDragStart(e) {
 						var idx = this.state.selected.idx;
-						if (idx > -1) {
+						// To prevent dragging down/up when reordering rows.
+						var isViewportDragging = e && e.target && e.target.className;
+						if (idx > -1 && isViewportDragging) {
 							var _value2 = this.getSelectedValue();
 							this.handleDragStart({ idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: _value2 });
 							// need to set dummy data for FF
@@ -14817,7 +14829,7 @@ return /******/ (function(modules) { // webpackBootstrap
 								if (e.dataTransfer.setData) {
 									e.dataTransfer.dropEffect = 'move';
 									e.dataTransfer.effectAllowed = 'move';
-									e.dataTransfer.setData('text/plain', 'dummy');
+									e.dataTransfer.setData('text/plain', '');
 								}
 							}
 						}
@@ -14855,13 +14867,17 @@ return /******/ (function(modules) { // webpackBootstrap
 							this.props.onRowExpandToggle(args);
 						}
 					},
+					isCellWithinBounds: function isCellWithinBounds(_ref) {
+						var idx = _ref.idx,
+						    rowIdx = _ref.rowIdx;
+
+						return idx >= 0 && rowIdx >= 0 && idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && rowIdx < this.props.rowsCount;
+					},
 					handleDragStart: function handleDragStart(dragged) {
 						if (!this.dragEnabled()) {
 							return;
 						}
-						var idx = dragged.idx;
-						var rowIdx = dragged.rowIdx;
-						if (idx >= 0 && rowIdx >= 0 && idx < this.getSize() && rowIdx < this.props.rowsCount) {
+						if (this.isCellWithinBounds(dragged)) {
 							this.setState({ dragged: dragged });
 						}
 					},
@@ -14869,19 +14885,23 @@ return /******/ (function(modules) { // webpackBootstrap
 						if (!this.dragEnabled()) {
 							return;
 						}
-						var selected = this.state.selected;
-						var dragged = this.state.dragged;
-						var cellKey = this.getColumn(this.state.selected.idx).key;
-						var fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-						var toRow = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-						if (this.props.onCellsDragged) {
-							this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
-						}
+						var _state = this.state,
+						    selected = _state.selected,
+						    dragged = _state.dragged;
 
-						if (this.props.onGridRowsUpdated) {
-							var _onGridRowsUpdated2;
+						var column = this.getColumn(this.state.selected.idx);
+						if (selected && dragged && column) {
+							var cellKey = column.key;
+							var fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+							var toRow = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+							if (this.props.onCellsDragged) {
+								this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
+							}
+							if (this.props.onGridRowsUpdated) {
+								var _onGridRowsUpdated2;
 
-							this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated2 = {}, _onGridRowsUpdated2[cellKey] = dragged.value, _onGridRowsUpdated2), _AppConstants2['default'].UpdateActions.CELL_DRAG);
+								this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated2 = {}, _onGridRowsUpdated2[cellKey] = dragged.value, _onGridRowsUpdated2), _AppConstants2['default'].UpdateActions.CELL_DRAG);
+							}
 						}
 						this.setState({ dragged: { complete: true } });
 					},
@@ -25338,13 +25358,17 @@ return /******/ (function(modules) { // webpackBootstrap
 		 * @returns {Function} A function obtained by composing the argument functions
 		 * from right to left. For example, compose(f, g, h) is identical to doing
 		 * (...args) => f(g(h(...args))).
-		 */function compose(){for(var _len=arguments.length,funcs=Array(_len),_key=0;_key<_len;_key++){funcs[_key]=arguments[_key];}if(funcs.length===0){return function(arg){return arg;};}if(funcs.length===1){return funcs[0];}var last=funcs[funcs.length-1];var rest=funcs.slice(0,-1);return function(){return rest.reduceRight(function(composed,f){return f(composed);},last.apply(undefined,arguments));};}/***/},/* 286 *//***/function(module,exports,__webpack_require__){"use strict";Object.defineProperty(exports,"__esModule",{value:true});exports['default']=function(){var state=arguments.length<=0||arguments[0]===undefined?defaultState:arguments[0];var action=arguments[1];return action.type==="SET_PARAMS"?(0,_objectAssign2['default'])({},state,action.data):state;};var _objectAssign=__webpack_require__(287);var _objectAssign2=_interopRequireDefault(_objectAssign);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{'default':obj};}var defaultState={x:0,y:0,isVisible:false,currentItem:{}};/***/},/* 287 *//***/function(module,exports){'use strict';/* eslint-disable no-unused-vars */var hasOwnProperty=Object.prototype.hasOwnProperty;var propIsEnumerable=Object.prototype.propertyIsEnumerable;function toObject(val){if(val===null||val===undefined){throw new TypeError('Object.assign cannot be called with null or undefined');}return Object(val);}function shouldUseNative(){try{if(!Object.assign){return false;}// Detect buggy property enumeration order in older V8 versions.
+		 */function compose(){for(var _len=arguments.length,funcs=Array(_len),_key=0;_key<_len;_key++){funcs[_key]=arguments[_key];}if(funcs.length===0){return function(arg){return arg;};}if(funcs.length===1){return funcs[0];}var last=funcs[funcs.length-1];var rest=funcs.slice(0,-1);return function(){return rest.reduceRight(function(composed,f){return f(composed);},last.apply(undefined,arguments));};}/***/},/* 286 *//***/function(module,exports,__webpack_require__){"use strict";Object.defineProperty(exports,"__esModule",{value:true});exports['default']=function(){var state=arguments.length<=0||arguments[0]===undefined?defaultState:arguments[0];var action=arguments[1];return action.type==="SET_PARAMS"?(0,_objectAssign2['default'])({},state,action.data):state;};var _objectAssign=__webpack_require__(287);var _objectAssign2=_interopRequireDefault(_objectAssign);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{'default':obj};}var defaultState={x:0,y:0,isVisible:false,currentItem:{}};/***/},/* 287 *//***/function(module,exports){/*
+		object-assign
+		(c) Sindre Sorhus
+		@license MIT
+		*/'use strict';/* eslint-disable no-unused-vars */var getOwnPropertySymbols=Object.getOwnPropertySymbols;var hasOwnProperty=Object.prototype.hasOwnProperty;var propIsEnumerable=Object.prototype.propertyIsEnumerable;function toObject(val){if(val===null||val===undefined){throw new TypeError('Object.assign cannot be called with null or undefined');}return Object(val);}function shouldUseNative(){try{if(!Object.assign){return false;}// Detect buggy property enumeration order in older V8 versions.
 	// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-	var test1=new String('abc');// eslint-disable-line
+	var test1=new String('abc');// eslint-disable-line no-new-wrappers
 	test1[5]='de';if(Object.getOwnPropertyNames(test1)[0]==='5'){return false;}// https://bugs.chromium.org/p/v8/issues/detail?id=3056
 	var test2={};for(var i=0;i<10;i++){test2['_'+String.fromCharCode(i)]=i;}var order2=Object.getOwnPropertyNames(test2).map(function(n){return test2[n];});if(order2.join('')!=='0123456789'){return false;}// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-	var test3={};'abcdefghijklmnopqrst'.split('').forEach(function(letter){test3[letter]=letter;});if(Object.keys(Object.assign({},test3)).join('')!=='abcdefghijklmnopqrst'){return false;}return true;}catch(e){// We don't expect any of the above to throw, but better to be safe.
-	return false;}}module.exports=shouldUseNative()?Object.assign:function(target,source){var from;var to=toObject(target);var symbols;for(var s=1;s<arguments.length;s++){from=Object(arguments[s]);for(var key in from){if(hasOwnProperty.call(from,key)){to[key]=from[key];}}if(Object.getOwnPropertySymbols){symbols=Object.getOwnPropertySymbols(from);for(var i=0;i<symbols.length;i++){if(propIsEnumerable.call(from,symbols[i])){to[symbols[i]]=from[symbols[i]];}}}}return to;};/***/},/* 288 *//***/function(module,exports,__webpack_require__){"use strict";Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key];}}}return target;};var _react=__webpack_require__(3);var _react2=_interopRequireDefault(_react);var _monitor=__webpack_require__(289);var _monitor2=_interopRequireDefault(_monitor);var _Modal=__webpack_require__(290);var _Modal2=_interopRequireDefault(_Modal);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{'default':obj};}var modalStyle={position:"fixed",zIndex:1040,top:0,bottom:0,left:0,right:0},backdropStyle=_extends({},modalStyle,{zIndex:"auto",backgroundColor:"transparent"}),menuStyles={position:"fixed",zIndex:"auto"};var ContextMenuWrapper=_react2['default'].createClass({displayName:"ContextMenuWrapper",getInitialState:function getInitialState(){return{left:0,top:0};},componentWillReceiveProps:function componentWillReceiveProps(nextProps){var _this=this;if(nextProps.isVisible===nextProps.identifier){var wrapper=window.requestAnimationFrame||setTimeout;wrapper(function(){_this.setState(_this.getMenuPosition(nextProps.x,nextProps.y));_this.menu.parentNode.addEventListener("contextmenu",_this.hideMenu);});}},shouldComponentUpdate:function shouldComponentUpdate(nextProps){return this.props.isVisible!==nextProps.visible;},hideMenu:function hideMenu(e){e.preventDefault();this.menu.parentNode.removeEventListener("contextmenu",this.hideMenu);_monitor2['default'].hideMenu();},getMenuPosition:function getMenuPosition(x,y){var scrollX=document.documentElement.scrollTop;var scrollY=document.documentElement.scrollLeft;var _window=window;var innerWidth=_window.innerWidth;var innerHeight=_window.innerHeight;var rect=this.menu.getBoundingClientRect();var menuStyles={top:y+scrollY,left:x+scrollX};if(y+rect.height>innerHeight){menuStyles.top-=rect.height;}if(x+rect.width>innerWidth){menuStyles.left-=rect.width;}return menuStyles;},render:function render(){var _this2=this;var _props=this.props;var isVisible=_props.isVisible;var identifier=_props.identifier;var children=_props.children;var style=_extends({},menuStyles,this.state);return _react2['default'].createElement(_Modal2['default'],{style:modalStyle,backdropStyle:backdropStyle,show:isVisible===identifier,onHide:function onHide(){return _monitor2['default'].hideMenu();}},_react2['default'].createElement("nav",{ref:function ref(c){return _this2.menu=c;},style:style,className:"react-context-menu"},children));}});exports['default']=ContextMenuWrapper;/***/},/* 289 *//***/function(module,exports,__webpack_require__){"use strict";Object.defineProperty(exports,"__esModule",{value:true});var _store=__webpack_require__(279);var _store2=_interopRequireDefault(_store);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{'default':obj};}exports['default']={getItem:function getItem(){return _store2['default'].getState().currentItem;},getPosition:function getPosition(){var _store$getState=_store2['default'].getState();var x=_store$getState.x;var y=_store$getState.y;return{x:x,y:y};},hideMenu:function hideMenu(){_store2['default'].dispatch({type:"SET_PARAMS",data:{isVisible:false,currentItem:{}}});}};/* eslint-disable object-property-newline *//***/},/* 290 *//***/function(module,exports,__webpack_require__){'use strict';Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key];}}}return target;};/*eslint-disable react/prop-types */var _react=__webpack_require__(3);var _react2=_interopRequireDefault(_react);var _warning=__webpack_require__(291);var _warning2=_interopRequireDefault(_warning);var _componentOrElement=__webpack_require__(292);var _componentOrElement2=_interopRequireDefault(_componentOrElement);var _elementType=__webpack_require__(294);var _elementType2=_interopRequireDefault(_elementType);var _Portal=__webpack_require__(295);var _Portal2=_interopRequireDefault(_Portal);var _ModalManager=__webpack_require__(299);var _ModalManager2=_interopRequireDefault(_ModalManager);var _ownerDocument=__webpack_require__(296);var _ownerDocument2=_interopRequireDefault(_ownerDocument);var _addEventListener=__webpack_require__(317);var _addEventListener2=_interopRequireDefault(_addEventListener);var _addFocusListener=__webpack_require__(320);var _addFocusListener2=_interopRequireDefault(_addFocusListener);var _inDOM=__webpack_require__(313);var _inDOM2=_interopRequireDefault(_inDOM);var _activeElement=__webpack_require__(321);var _activeElement2=_interopRequireDefault(_activeElement);var _contains=__webpack_require__(322);var _contains2=_interopRequireDefault(_contains);var _getContainer=__webpack_require__(298);var _getContainer2=_interopRequireDefault(_getContainer);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{'default':obj};}var modalManager=new _ModalManager2['default']();/**
+	var test3={};'abcdefghijklmnopqrst'.split('').forEach(function(letter){test3[letter]=letter;});if(Object.keys(Object.assign({},test3)).join('')!=='abcdefghijklmnopqrst'){return false;}return true;}catch(err){// We don't expect any of the above to throw, but better to be safe.
+	return false;}}module.exports=shouldUseNative()?Object.assign:function(target,source){var from;var to=toObject(target);var symbols;for(var s=1;s<arguments.length;s++){from=Object(arguments[s]);for(var key in from){if(hasOwnProperty.call(from,key)){to[key]=from[key];}}if(getOwnPropertySymbols){symbols=getOwnPropertySymbols(from);for(var i=0;i<symbols.length;i++){if(propIsEnumerable.call(from,symbols[i])){to[symbols[i]]=from[symbols[i]];}}}}return to;};/***/},/* 288 *//***/function(module,exports,__webpack_require__){"use strict";Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key];}}}return target;};var _react=__webpack_require__(3);var _react2=_interopRequireDefault(_react);var _monitor=__webpack_require__(289);var _monitor2=_interopRequireDefault(_monitor);var _Modal=__webpack_require__(290);var _Modal2=_interopRequireDefault(_Modal);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{'default':obj};}var modalStyle={position:"fixed",zIndex:1040,top:0,bottom:0,left:0,right:0},backdropStyle=_extends({},modalStyle,{zIndex:"auto",backgroundColor:"transparent"}),menuStyles={position:"fixed",zIndex:"auto"};var ContextMenuWrapper=_react2['default'].createClass({displayName:"ContextMenuWrapper",getInitialState:function getInitialState(){return{left:0,top:0};},componentWillReceiveProps:function componentWillReceiveProps(nextProps){var _this=this;if(nextProps.isVisible===nextProps.identifier){var wrapper=window.requestAnimationFrame||setTimeout;wrapper(function(){_this.setState(_this.getMenuPosition(nextProps.x,nextProps.y));_this.menu.parentNode.addEventListener("contextmenu",_this.hideMenu);});}},shouldComponentUpdate:function shouldComponentUpdate(nextProps){return this.props.isVisible!==nextProps.visible;},hideMenu:function hideMenu(e){e.preventDefault();this.menu.parentNode.removeEventListener("contextmenu",this.hideMenu);_monitor2['default'].hideMenu();},getMenuPosition:function getMenuPosition(x,y){var scrollX=document.documentElement.scrollTop;var scrollY=document.documentElement.scrollLeft;var _window=window;var innerWidth=_window.innerWidth;var innerHeight=_window.innerHeight;var rect=this.menu.getBoundingClientRect();var menuStyles={top:y+scrollY,left:x+scrollX};if(y+rect.height>innerHeight){menuStyles.top-=rect.height;}if(x+rect.width>innerWidth){menuStyles.left-=rect.width;}return menuStyles;},render:function render(){var _this2=this;var _props=this.props;var isVisible=_props.isVisible;var identifier=_props.identifier;var children=_props.children;var style=_extends({},menuStyles,this.state);return _react2['default'].createElement(_Modal2['default'],{style:modalStyle,backdropStyle:backdropStyle,show:isVisible===identifier,onHide:function onHide(){return _monitor2['default'].hideMenu();}},_react2['default'].createElement("nav",{ref:function ref(c){return _this2.menu=c;},style:style,className:"react-context-menu"},children));}});exports['default']=ContextMenuWrapper;/***/},/* 289 *//***/function(module,exports,__webpack_require__){"use strict";Object.defineProperty(exports,"__esModule",{value:true});var _store=__webpack_require__(279);var _store2=_interopRequireDefault(_store);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{'default':obj};}exports['default']={getItem:function getItem(){return _store2['default'].getState().currentItem;},getPosition:function getPosition(){var _store$getState=_store2['default'].getState();var x=_store$getState.x;var y=_store$getState.y;return{x:x,y:y};},hideMenu:function hideMenu(){_store2['default'].dispatch({type:"SET_PARAMS",data:{isVisible:false,currentItem:{}}});}};/* eslint-disable object-property-newline *//***/},/* 290 *//***/function(module,exports,__webpack_require__){'use strict';Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key];}}}return target;};/*eslint-disable react/prop-types */var _react=__webpack_require__(3);var _react2=_interopRequireDefault(_react);var _warning=__webpack_require__(291);var _warning2=_interopRequireDefault(_warning);var _componentOrElement=__webpack_require__(292);var _componentOrElement2=_interopRequireDefault(_componentOrElement);var _elementType=__webpack_require__(294);var _elementType2=_interopRequireDefault(_elementType);var _Portal=__webpack_require__(295);var _Portal2=_interopRequireDefault(_Portal);var _ModalManager=__webpack_require__(299);var _ModalManager2=_interopRequireDefault(_ModalManager);var _ownerDocument=__webpack_require__(296);var _ownerDocument2=_interopRequireDefault(_ownerDocument);var _addEventListener=__webpack_require__(317);var _addEventListener2=_interopRequireDefault(_addEventListener);var _addFocusListener=__webpack_require__(320);var _addFocusListener2=_interopRequireDefault(_addFocusListener);var _inDOM=__webpack_require__(313);var _inDOM2=_interopRequireDefault(_inDOM);var _activeElement=__webpack_require__(321);var _activeElement2=_interopRequireDefault(_activeElement);var _contains=__webpack_require__(322);var _contains2=_interopRequireDefault(_contains);var _getContainer=__webpack_require__(298);var _getContainer2=_interopRequireDefault(_getContainer);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{'default':obj};}var modalManager=new _ModalManager2['default']();/**
 		 * Love them or hate them, `<Modal/>` provides a solid foundation for creating dialogs, lightboxes, or whatever else.
 		 * The Modal component renders its `children` node in front of a backdrop component.
 		 *

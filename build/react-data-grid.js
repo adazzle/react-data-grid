@@ -228,7 +228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.state.selected.rowIdx !== selected.rowIdx || this.state.selected.idx !== selected.idx || this.state.selected.active === false) {
 	      var _idx = selected.idx;
 	      var _rowIdx = selected.rowIdx;
-	      if (_idx >= 0 && _rowIdx >= 0 && _idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && _rowIdx < this.props.rowsCount) {
+	      if (this.isCellWithinBounds(selected)) {
 	        (function () {
 	          var oldSelection = _this.state.selected;
 	          _this.setState({ selected: selected }, function () {
@@ -240,7 +240,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          });
 	        })();
-	      } else if (selected.rowIdx === -1 && selected.idx === -1) {
+	      } else if (_rowIdx === -1 && _idx === -1) {
 	        // When it's outside of the grid, set rowIdx anyway
 	        this.setState({ selected: { idx: _idx, rowIdx: _rowIdx } });
 	      }
@@ -360,7 +360,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  onDragStart: function onDragStart(e) {
 	    var idx = this.state.selected.idx;
-	    if (idx > -1) {
+	    // To prevent dragging down/up when reordering rows.
+	    var isViewportDragging = e && e.target && e.target.className;
+	    if (idx > -1 && isViewportDragging) {
 	      var _value2 = this.getSelectedValue();
 	      this.handleDragStart({ idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: _value2 });
 	      // need to set dummy data for FF
@@ -368,7 +370,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (e.dataTransfer.setData) {
 	          e.dataTransfer.dropEffect = 'move';
 	          e.dataTransfer.effectAllowed = 'move';
-	          e.dataTransfer.setData('text/plain', 'dummy');
+	          e.dataTransfer.setData('text/plain', '');
 	        }
 	      }
 	    }
@@ -406,13 +408,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.props.onRowExpandToggle(args);
 	    }
 	  },
+	  isCellWithinBounds: function isCellWithinBounds(_ref) {
+	    var idx = _ref.idx,
+	        rowIdx = _ref.rowIdx;
+
+	    return idx >= 0 && rowIdx >= 0 && idx < ColumnUtils.getSize(this.state.columnMetrics.columns) && rowIdx < this.props.rowsCount;
+	  },
 	  handleDragStart: function handleDragStart(dragged) {
 	    if (!this.dragEnabled()) {
 	      return;
 	    }
-	    var idx = dragged.idx;
-	    var rowIdx = dragged.rowIdx;
-	    if (idx >= 0 && rowIdx >= 0 && idx < this.getSize() && rowIdx < this.props.rowsCount) {
+	    if (this.isCellWithinBounds(dragged)) {
 	      this.setState({ dragged: dragged });
 	    }
 	  },
@@ -420,19 +426,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!this.dragEnabled()) {
 	      return;
 	    }
-	    var selected = this.state.selected;
-	    var dragged = this.state.dragged;
-	    var cellKey = this.getColumn(this.state.selected.idx).key;
-	    var fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-	    var toRow = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-	    if (this.props.onCellsDragged) {
-	      this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
-	    }
+	    var _state = this.state,
+	        selected = _state.selected,
+	        dragged = _state.dragged;
 
-	    if (this.props.onGridRowsUpdated) {
-	      var _onGridRowsUpdated2;
+	    var column = this.getColumn(this.state.selected.idx);
+	    if (selected && dragged && column) {
+	      var cellKey = column.key;
+	      var fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+	      var toRow = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+	      if (this.props.onCellsDragged) {
+	        this.props.onCellsDragged({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value });
+	      }
+	      if (this.props.onGridRowsUpdated) {
+	        var _onGridRowsUpdated2;
 
-	      this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated2 = {}, _onGridRowsUpdated2[cellKey] = dragged.value, _onGridRowsUpdated2), _AppConstants2['default'].UpdateActions.CELL_DRAG);
+	        this.onGridRowsUpdated(cellKey, fromRow, toRow, (_onGridRowsUpdated2 = {}, _onGridRowsUpdated2[cellKey] = dragged.value, _onGridRowsUpdated2), _AppConstants2['default'].UpdateActions.CELL_DRAG);
+	      }
 	    }
 	    this.setState({ dragged: { complete: true } });
 	  },
