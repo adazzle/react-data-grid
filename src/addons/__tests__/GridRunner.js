@@ -171,7 +171,7 @@ export default class GridRunner {
   drag({from, to, col, beforeDragEnter = null, beforeDragEnd = null}) {
     this.selectCell({cellIdx: col - 1, rowIdx: from});
     let over = [];
-    over.push(this.row);
+    over.push(this.cell);
     let fromIterator = from;
 
     for (let i = fromIterator++; i < to; i++) {
@@ -183,11 +183,11 @@ export default class GridRunner {
     // Act
     // do the drag
     // Important: we need dragStart / dragEnter / dragEnd
-    this.row.simulate('dragStart');
+    this.cell.simulate('dragStart');
     if (beforeDragEnter) {beforeDragEnter();}
 
-    over.forEach((r) => {
-      r.simulate('dragEnter');
+    over.forEach((cell) => {
+      cell.simulate('dragEnter');
     });
     if (beforeDragEnd) {beforeDragEnd();}
     toCell.simulate('dragEnd');
