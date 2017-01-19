@@ -14,6 +14,7 @@ type ColumnMetricsType = {
     columns: Array<Column>;
     totalWidth: number;
     minColumnWidth: number;
+    lockedColumnsWidth: number;
 };
 
 function setColumnWidths(columns, totalWidth) {
@@ -80,7 +81,8 @@ function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
     columns,
     width,
     totalWidth: metrics.totalWidth,
-    minColumnWidth: metrics.minColumnWidth
+    minColumnWidth: metrics.minColumnWidth,
+    lockedColumnsWidth: metrics.lockedColumnsWidth
   };
 }
 

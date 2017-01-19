@@ -36,7 +36,8 @@ const Row = React.createClass({
     colVisibleEnd: PropTypes.number.isRequired,
     colDisplayStart: PropTypes.number.isRequired,
     colDisplayEnd: PropTypes.number.isRequired,
-    isScrolling: React.PropTypes.bool.isRequired
+    isScrolling: React.PropTypes.bool.isRequired,
+    lockedColumnsWidth: React.PropTypes.number
   },
 
   mixins: [ColumnUtilsMixin],
@@ -159,9 +160,15 @@ const Row = React.createClass({
 
   setScrollLeft(scrollLeft) {
     this.props.columns.forEach((column) => {
-      if (column.locked) {
-        if (!this.refs[column.key]) return;
-        this.refs[column.key].setScrollLeft(scrollLeft);
+      if (typeof this.refs[column.key].setScrollLeft === 'function') {
+        if (column.locked) {
+          if (!this.refs[column.key]) return;
+          this.refs[column.key].setScrollLeft(scrollLeft);
+        } else if (scrollLeft < this.props.lockedColumnsWidth) {
+          this.refs[column.key].setScrollLeft(scrollLeft);
+        } else {
+          this.refs[column.key].setScrollLeft(0);
+        }
       }
     });
   },
