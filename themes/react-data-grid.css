@@ -122,6 +122,7 @@
   -moz-transition: opacity .25s ease-in-out;
   -webkit-transition: opacity .25s ease-in-out;
 }
+
 .react-grid-Cell__value ul {
   margin-top: 0;
   margin-bottom: 0;
@@ -621,4 +622,41 @@ textarea.react-autocomplete-Autocomplete__search {
 	100% {
 		-webkit-transform: translateY(0%);
 	}	
+}
+
+.cell-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.cell-tooltip .cell-tooltip-text {
+    visibility: hidden;
+    width: 75%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 2px 2px;
+    position: absolute;
+    top: 50%;
+    margin-left: -37%;
+    bottom: initial;
+}
+
+.cell-tooltip .cell-tooltip-text::after {
+    content: " ";
+    position: absolute;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+ }
+
+.react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
+    visibility: visible;
+}
+
+.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
+    visibility: hidden;
 }

@@ -6,14 +6,17 @@ const rewireModule  = require('../../test/rewireModule');
 const StubComponent = require('../../test/StubComponent');
 const helpers       = require('./GridPropHelpers');
 import { shallow } from 'enzyme';
+const SCROLL_BAR_SIZE = 20;
 
 describe('Header Unit Tests', () => {
   let header;
   // Configure local letiable replacements for the module.
   let HeaderRowStub = new StubComponent('HeaderRow');
+  let getScrollbarSize = () => SCROLL_BAR_SIZE;
 
   rewireModule(Header, {
-    HeaderRow: HeaderRowStub
+    HeaderRow: HeaderRowStub,
+    getScrollbarSize: getScrollbarSize
   });
 
   let testProps = {
@@ -129,7 +132,16 @@ describe('Header Unit Tests', () => {
       onColumnResize: jasmine.createSpy(),
       onScroll: jasmine.createSpy(),
       draggableHeaderCell: jasmine.createSpy(),
-      getValidFilterValues: jasmine.createSpy()
+      getValidFilterValues: jasmine.createSpy(),
+      cellMetaData: {
+        onCommitCancel: () => {},
+        onCommit: () => {},
+        onCellDoubleClick: () => {},
+        onCellClick: () => { },
+        handleDragEnterRow: () => {},
+        handleTerminateDrag: () => {},
+        selected: { rowIdx: 0, id: 1 }
+      }
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
@@ -140,6 +152,12 @@ describe('Header Unit Tests', () => {
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
       expect(headerDiv.props().style).toBeDefined();
+    });
+
+    it('should account for scrollbar size in header', () => {
+      const wrapper = renderComponent(testAllProps);
+      let headerRow = wrapper.find('.react-grid-Header').props().children[0];
+      expect(headerRow.props.style.width).toBe(testAllProps.totalWidth - SCROLL_BAR_SIZE);
     });
     it('passes height property', () => {
       const wrapper = renderComponent(testAllProps);
@@ -168,6 +186,15 @@ describe('Header Unit Tests', () => {
       expect(headerDiv.props().onColumnResize).toBeUndefined();
       expect(headerDiv.props().draggableHeaderCell).toBeUndefined();
       expect(headerDiv.props().getValidFilterValues).toBeUndefined();
+    });
+
+    it('execute onCellClick event on cellMetaData and rowIdx & idx = -1', () => {
+      spyOn(testAllProps.cellMetaData, 'onCellClick');
+      const wrapper = renderComponent(testAllProps);
+      const headerDiv = wrapper.find('div');
+      headerDiv.simulate('click');
+      expect(testAllProps.cellMetaData.onCellClick).toHaveBeenCalled();
+      expect(testAllProps.cellMetaData.onCellClick.calls.mostRecent().args[0]).toEqual({ rowIdx: -1, idx: -1 });
     });
   });
 });

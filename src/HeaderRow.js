@@ -31,7 +31,7 @@ const HeaderRow = React.createClass({
     onColumnResizeEnd: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle),
     sortColumn: PropTypes.string,
-    sortDirection: React.PropTypes.oneOf(SortableHeaderCell.DEFINE_SORT),
+    sortDirection: React.PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
@@ -80,7 +80,7 @@ const HeaderRow = React.createClass({
 
   getHeaderRenderer(column) {
     let renderer;
-    if (column.headerRenderer) {
+    if (column.headerRenderer && !this.props.filterable) {
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);

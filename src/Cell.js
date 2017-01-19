@@ -36,7 +36,8 @@ const Cell = React.createClass({
     rowData: React.PropTypes.object.isRequired,
     forceUpdate: React.PropTypes.bool,
     expandableOptions: React.PropTypes.object.isRequired,
-    isScrolling: React.PropTypes.bool.isRequired
+    isScrolling: React.PropTypes.bool.isRequired,
+    tooltip: React.PropTypes.string
   },
 
   getDefaultProps() {
@@ -183,7 +184,8 @@ const Cell = React.createClass({
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
-      'was-dragged-over': this.wasDraggedOver()
+      'was-dragged-over': this.wasDraggedOver(),
+      'cell-tooltip': this.props.tooltip ? true : false
     });
     return joinClasses(className, extraClasses);
   },
@@ -347,6 +349,10 @@ const Cell = React.createClass({
     return document.activeElement == null || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body');
   },
 
+  isFocusedOnCell() {
+    return document.activeElement && document.activeElement.className === 'react-grid-Cell';
+  },
+
   checkFocus() {
     if (this.isSelected() && !this.isActive()) {
       if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
@@ -355,7 +361,7 @@ const Cell = React.createClass({
       // Only focus to the current cell if the currently active node in the document is within the data grid.
       // Meaning focus should not be stolen from elements that the grid doesnt control.
       let dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
-      if (document.activeElement.className === 'react-grid-Cell' || this.isFocusedOnBody() || (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement))) {
+      if (this.isFocusedOnCell() || this.isFocusedOnBody() || (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement))) {
         let cellDOMNode = ReactDOM.findDOMNode(this);
         if (cellDOMNode) {
           cellDOMNode.focus();
@@ -464,11 +470,13 @@ const Cell = React.createClass({
 
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
     let events = this.getEvents();
+    const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{ this.props.tooltip }</span>) : null;
 
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style}   {...events}>
+      <div {...this.getKnownDivProps() } className={className} style={style} {...events}>
         {cellContent}
         {dragHandle}
+        { tooltip }
       </div>
     );
   }
