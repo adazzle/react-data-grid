@@ -4596,7 +4596,8 @@ return /******/ (function(modules) { // webpackBootstrap
 						rowData: React.PropTypes.object.isRequired,
 						forceUpdate: React.PropTypes.bool,
 						expandableOptions: React.PropTypes.object.isRequired,
-						isScrolling: React.PropTypes.bool.isRequired
+						isScrolling: React.PropTypes.bool.isRequired,
+						tooltip: React.PropTypes.string
 					},
 
 					getDefaultProps: function getDefaultProps() {
@@ -4710,7 +4711,8 @@ return /******/ (function(modules) { // webpackBootstrap
 							copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
 							'is-dragged-over-up': this.isDraggedOverUpwards(),
 							'is-dragged-over-down': this.isDraggedOverDownwards(),
-							'was-dragged-over': this.wasDraggedOver()
+							'was-dragged-over': this.wasDraggedOver(),
+							'cell-tooltip': this.props.tooltip ? true : false
 						});
 						return joinClasses(className, extraClasses);
 					},
@@ -4953,8 +4955,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 						var dragHandle = !this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect) ? React.createElement('div', { className: 'drag-handle', draggable: 'true', onDoubleClick: this.onDragHandleDoubleClick }, React.createElement('span', { style: { display: 'none' } })) : null;
 						var events = this.getEvents();
+						var tooltip = this.props.tooltip ? React.createElement('span', { className: 'cell-tooltip-text' }, this.props.tooltip) : null;
 
-						return React.createElement('div', _extends({}, this.getKnownDivProps(), { className: className, style: style }, events), cellContent, dragHandle);
+						return React.createElement('div', _extends({}, this.getKnownDivProps(), { className: className, style: style }, events), cellContent, dragHandle, tooltip);
 					}
 				});
 
@@ -18298,7 +18301,8 @@ return /******/ (function(modules) { // webpackBootstrap
 						rowData: React.PropTypes.object.isRequired,
 						forceUpdate: React.PropTypes.bool,
 						expandableOptions: React.PropTypes.object.isRequired,
-						isScrolling: React.PropTypes.bool.isRequired
+						isScrolling: React.PropTypes.bool.isRequired,
+						tooltip: React.PropTypes.string
 					},
 
 					getDefaultProps: function getDefaultProps() {
@@ -18412,7 +18416,8 @@ return /******/ (function(modules) { // webpackBootstrap
 							copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
 							'is-dragged-over-up': this.isDraggedOverUpwards(),
 							'is-dragged-over-down': this.isDraggedOverDownwards(),
-							'was-dragged-over': this.wasDraggedOver()
+							'was-dragged-over': this.wasDraggedOver(),
+							'cell-tooltip': this.props.tooltip ? true : false
 						});
 						return joinClasses(className, extraClasses);
 					},
@@ -18655,8 +18660,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 						var dragHandle = !this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect) ? React.createElement('div', { className: 'drag-handle', draggable: 'true', onDoubleClick: this.onDragHandleDoubleClick }, React.createElement('span', { style: { display: 'none' } })) : null;
 						var events = this.getEvents();
+						var tooltip = this.props.tooltip ? React.createElement('span', { className: 'cell-tooltip-text' }, this.props.tooltip) : null;
 
-						return React.createElement('div', _extends({}, this.getKnownDivProps(), { className: className, style: style }, events), cellContent, dragHandle);
+						return React.createElement('div', _extends({}, this.getKnownDivProps(), { className: className, style: style }, events), cellContent, dragHandle, tooltip);
 					}
 				});
 
