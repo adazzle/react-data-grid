@@ -26,7 +26,8 @@ module.exports = function(stateValues, events) {
       }],
       width: 400,
       totalWidth: 0,
-      minColumnWidth: 80
+      minColumnWidth: 80,
+      lockedColumnsWidth: 0
     },
     selectedRows: [],
     selected: {

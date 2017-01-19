@@ -24,7 +24,8 @@ describe('Header Unit Tests', () => {
       columns: helpers.columns,
       minColumnWidth: 80,
       totalWidth: true,
-      width: 2600
+      width: 2600,
+      lockedColumnsWidth: 0
     },
     totalWidth: 1000,
     height: 50,
@@ -111,7 +112,8 @@ describe('Header Unit Tests', () => {
         columns: helpers.columns,
         minColumnWidth: 81,
         totalWidth: true,
-        width: 2601
+        width: 2601,
+        lockedColumnsWidth: 0
       },
       height: 51,
       headerRows: [{height: 51, ref: 'row'}]
@@ -121,7 +123,8 @@ describe('Header Unit Tests', () => {
         columns: helpers.columns,
         minColumnWidth: 80,
         totalWidth: true,
-        width: 2600
+        width: 2600,
+        lockedColumnsWidth: 0
       },
       totalWidth: 1000,
       height: 50,
