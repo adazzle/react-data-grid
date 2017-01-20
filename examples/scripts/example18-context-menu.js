@@ -90,7 +90,7 @@ var MyContextMenu = React.createClass({
   },
   render: function() {
     return (
-      <ContextMenu>
+      <ContextMenu identifier={this.props.identifier}>
         <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowDelete}>Delete Row</MenuItem>
         <SubMenu title="Insert Row">
           <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowInsertAbove}>Above</MenuItem>

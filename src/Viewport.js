@@ -39,7 +39,8 @@ const Viewport = React.createClass({
     rowScrollTimeout: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
-    rowGroupRenderer: PropTypes.func
+    rowGroupRenderer: PropTypes.func,
+    identifier: PropTypes.string  // docoder--add
   },
 
   onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
@@ -77,8 +78,10 @@ const Viewport = React.createClass({
       <div
         className="react-grid-Viewport"
         style={style}>
+        {/* docoder--add: identifier */}
         <Canvas
           ref="canvas"
+          identifier={this.props.identifier}
           rowKey={this.props.rowKey}
           totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}

@@ -106,7 +106,8 @@ const ReactDataGrid = React.createClass({
     rowActionsCell: React.PropTypes.func,
     onCheckCellIsEditable: React.PropTypes.func,
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
-    overScan: React.PropTypes.object
+    overScan: React.PropTypes.object,
+    id: React.PropTypes.string  // docoder--add
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -124,7 +125,8 @@ const ReactDataGrid = React.createClass({
         colsEnd: 5,
         rowsStart: 5,
         rowsEnd: 5
-      }
+      },
+      id: 'ReactDataGrid'  // docoder--add
     };
   },
 

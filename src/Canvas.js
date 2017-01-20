@@ -59,7 +59,8 @@ const Canvas = React.createClass({
       })
     ]),
     rowGroupRenderer: React.PropTypes.func,
-    isScrolling: React.PropTypes.bool
+    isScrolling: React.PropTypes.bool,
+    identifier: PropTypes.string // docoder--add
   },
 
   getDefaultProps() {
@@ -349,7 +350,9 @@ const Canvas = React.createClass({
         style={style}
         onScroll={this.onScroll}
         className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active }) }>
+        {/* docoder--add: identifier */}
         <RowsContainer
+          identifier={this.props.identifier}
           width={this.props.width}
           rows={rows}
           contextMenu={this.props.contextMenu}
