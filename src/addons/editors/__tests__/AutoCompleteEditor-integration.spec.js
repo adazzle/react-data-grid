@@ -1,5 +1,6 @@
 const React              = require('react');
-const TestUtils          = require('react/lib/ReactTestUtils');
+const ReactDOM           = require('react-dom');
+const TestUtils          = require('react-addons-test-utils');
 const AutoCompleteEditor = require('../AutoCompleteEditor');
 
 describe('AutoCompleteEditor integration', () => {
@@ -11,7 +12,7 @@ describe('AutoCompleteEditor integration', () => {
   let commitSpy = jasmine.createSpy();
 
   beforeEach(() => {
-    component = React.render(<AutoCompleteEditor
+    component = ReactDOM.render(<AutoCompleteEditor
       onCommit={commitSpy}
       options={fakeOptions}
       label= "title"

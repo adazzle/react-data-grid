@@ -1,7 +1,7 @@
 
 
 let React              = require('react');
-let TestUtils          = require('react/lib/ReactTestUtils');
+let TestUtils          = require('react-addons-test-utils');
 let rewire             = require('rewire');
 let rewireModule       = require('../../../../test/rewireModule');
 let StubComponent      = require('../../../../test/StubComponent');

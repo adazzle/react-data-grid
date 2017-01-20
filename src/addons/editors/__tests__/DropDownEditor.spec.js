@@ -1,7 +1,7 @@
 
 
 const React          = require('react');
-const TestUtils      = require('react/lib/ReactTestUtils');
+const TestUtils      = require('react-addons-test-utils');
 const DropDownEditor = require('../DropDownEditor');
 
 describe('DropDownEditor', () => {
@@ -16,7 +16,7 @@ describe('DropDownEditor', () => {
       component = TestUtils.renderIntoDocument(<DropDownEditor
         name={'DropDownEditor'}
         options={fakeOptions}
-        value={'Choose a thing'}
+        value={'option2'}
         onCommit={fakeCommitCb}
         column={fakeColumn}/>);
     });
@@ -29,14 +29,14 @@ describe('DropDownEditor', () => {
       expect(component.getStyle().width).toBe('100%');
     });
 
-    it('should pass width=100% to the select node as a prop', () => {
+    it('should pass width=100% to the select node as an inline style', () => {
       let Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
-      expect(Select.props.style.width).toBe('100%');
+      expect(Select.style.width).toBe('100%');
     });
 
-    it('should pass the value to the select node as a prop', () => {
+    it('should pass the value to the select node as an inline value', () => {
       let Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
-      expect(Select.props.defaultValue).toBe('Choose a thing');
+      expect(Select.value).toBe('option2');
     });
 
     it('should render the options as ReactElements', () => {
@@ -52,7 +52,7 @@ describe('DropDownEditor', () => {
     });
 
     it('should return the selected option on getValue', () => {
-      expect(component.getValue().selected).toBe('option1');
+      expect(component.getValue().selected).toBe('option2');
     });
   });
 
