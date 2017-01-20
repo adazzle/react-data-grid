@@ -2638,7 +2638,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rowSelection: this.props.rowSelection,
 	        getSubRowDetails: this.props.getSubRowDetails,
 	        rowGroupRenderer: this.props.rowGroupRenderer,
-	        isScrolling: this.state.isScrolling
+	        isScrolling: this.state.isScrolling || false
 	      })
 	    );
 	  }
