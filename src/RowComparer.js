@@ -33,6 +33,7 @@ export const shouldRowUpdate = (nextProps, currentProps) => {
     nextProps.height !== currentProps.height ||
     currentProps.isOver !== nextProps.isOver ||
     currentProps.canDrop !== nextProps.canDrop ||
+    currentProps.expandedRows !== nextProps.expandedRows ||
     currentProps.forceUpdate === true;
 };
 
