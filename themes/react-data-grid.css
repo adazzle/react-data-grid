@@ -1,4 +1,4 @@
-@import './node_modules/react-select/less/select.less';
+@import '../node_modules/react-select/dist/react-select.css';
 
 .react-grid-Container {
   clear: both;
