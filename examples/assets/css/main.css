@@ -12,11 +12,12 @@
 .main-grid {
 	background : url( ../images/datagrid1.png) no-repeat center;
 	background-position-y:inherit;
-	height : 600px;
+	height : 900px;
 }
 
 .main-logo {
 	background: url(../images/AdazzleLogoWhite.png) no-repeat center;
+	background-position: top 600px;
 	height: 89px;
 	margin-bottom: -50px
 }
@@ -137,7 +138,11 @@
 .nav .open a {
   color: #111;
 }
-
+@media (min-width: 768px) {
+	.navbar-nav {
+		margin-right: 70px;
+	}
+}
 /* Autohide navbar */
 .slideUp {
 	top: -100px;
@@ -378,10 +383,6 @@ img.pull-left {
 		display:block
 	}
 
-	.bs-docs-sidebar.affix,.bs-docs-sidebar.affix-bottom {
-		width: 213px
-	}
-
 	.bs-docs-sidebar.affix {
 		position: fixed;
 		top: 100px
@@ -394,19 +395,6 @@ img.pull-left {
 	.bs-docs-sidebar.affix .bs-docs-sidenav,.bs-docs-sidebar.affix-bottom .bs-docs-sidenav {
 		margin-top: 0;
 		margin-bottom: 0
-	}
-}
-
-@media (min-width: 1200px) {
-	.bs-docs-sidebar.affix,.bs-docs-sidebar.affix-bottom {
-		width:263px
-	}
-}
-
-
-@media (min-width: 768px) {
-	.bs-docs-sidebar {
-		padding-left:20px
 	}
 }
 
@@ -549,11 +537,17 @@ img.pull-left {
 
 .github-ribbon {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: -10px;
+	right: -20px;
 	border: 0;
 	width: 149px;
 	height: 149px;
+}
+@media (min-width: 767px) {
+	.github-ribbon {
+		top: 0;
+		right: 0;
+	}
 }
 
 code.tab1{
