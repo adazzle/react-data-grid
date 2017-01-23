@@ -3,6 +3,7 @@ const sameColumn = require('./ColumnComparer');
 const ColumnUtils = require('./ColumnUtils');
 const getScrollbarSize  = require('./getScrollbarSize');
 const isColumnsImmutable  = require('./isColumnsImmutable');
+const ColumnMetricsMixin = require('./ColumnMetricsMixin');
 
 type Column = {
   key: string;
@@ -77,12 +78,14 @@ function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
   // compute left offset
   columns = setColumnOffsets(columns);
 
+  let lockedColumnsWidth = ColumnMetricsMixin.getLockedColumnsWidth(columns);
+
   return {
     columns,
     width,
     totalWidth: metrics.totalWidth,
     minColumnWidth: metrics.minColumnWidth,
-    lockedColumnsWidth: metrics.lockedColumnsWidth
+    lockedColumnsWidth: lockedColumnsWidth
   };
 }
 
