@@ -67,6 +67,7 @@ const ReactDataGrid = React.createClass({
     onDragHandleDoubleClick: React.PropTypes.func,
     onGridRowsUpdated: React.PropTypes.func,
     onRowSelect: React.PropTypes.func,
+    onRowSelectIdx: React.PropTypes.func,
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
     onClearFilters: React.PropTypes.func,
@@ -544,6 +545,9 @@ const ReactDataGrid = React.createClass({
       if (this.props.onRowSelect) {
         this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
       }
+    }
+    if (this.props.onRowSelectIdx) {
+      this.props.onRowSelectIdx(rowIdx);
     }
   },
 
