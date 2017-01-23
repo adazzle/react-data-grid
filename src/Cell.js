@@ -56,6 +56,7 @@ const Cell = React.createClass({
 
   componentDidMount() {
     this.checkFocus();
+    this.forceUpdate();
   },
 
   componentWillReceiveProps(nextProps) {
@@ -89,8 +90,13 @@ const Cell = React.createClass({
       || this.props.value !== nextProps.value
       || this.props.forceUpdate === true
       || this.props.className !== nextProps.className
-      || this.hasChangedDependentValues(nextProps);
+      || this.hasChangedDependentValues(nextProps)
+      || this.isPlanCopied();
     return shouldUpdate;
+  },
+
+  isPlanCopied() {  // put a condition for the new plan
+    return true;
   },
 
   onCellClick(e) {
