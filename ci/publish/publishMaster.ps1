@@ -5,13 +5,13 @@ Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-
 git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
 git config --global user.email $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL
 git checkout master
-$currentVersion = node ./ci/publish/getCurrentVersion
-Write-Host "Publishing $($currentVersion) to npm"
+$nextVersion = node ./ci/publish/bumpVersion
+Write-Host "Publishing $($nextVersion) to npm"
 
 if($?)
 {
-  ./node_modules/.bin/lerna publish --repo-version $currentVersion --yes --skip-git
-  git commit -m "Version Bump to $($currentVersion) [ci skip]"
+  ./node_modules/.bin/lerna publish --repo-version $nextVersion --yes --skip-git
+  git commit -m "Version Bump to $($nextVersion) [ci skip]"
   git fetch
   git pull --rebase
   git push
