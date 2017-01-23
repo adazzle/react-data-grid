@@ -1,0 +1,48 @@
+.react-grid-Toolbar {
+  background-color: #ffffff;
+  border-color: #e7eaec;
+  border-image: none;
+  border-style: solid solid none;
+  border-width: 1px 1px 1px 1px;
+  color: inherit;
+  margin-bottom: 0;
+  padding: 14px 15px 7px;
+  height: 48px;
+}
+.react-grid-Toolbar .btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  color: inherit;
+  background: white;
+  border: 1px solid #e7eaec;
+}
+.react-grid-Toolbar .btn:hover {
+  color: inherit;
+  border: 1px solid #d2d2d2;
+}
+.react-grid-Toolbar .grouped-col-btn {
+  background-color: #428bca;
+  color: white;
+}
+.react-grid-Toolbar .grouped-col-btn:hover {
+  color: white;
+}
+.react-grid-Toolbar .tools {
+  display: inline-block;
+  float: right;
+  margin-top: 0;
+  position: relative;
+  padding: 0;
+  margin-top: -6px;
+}
