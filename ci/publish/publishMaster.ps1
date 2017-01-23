@@ -10,7 +10,12 @@ Write-Host "Publishing $($currentVersion) to npm"
 
 if($?)
 {
-  ./node_modules/.bin/lerna publish --repo-version $currentVersion --yes
+  ./node_modules/.bin/lerna publish --repo-version $currentVersion --yes --skip-git
+  git commit -m "Version Bump to $($currentVersion) [ci skip]"
+  git fetch
+  git pull --rebase
+  git push
+  git push --tags
   if($?){
     Write-Host "regenerating public site and examples"
     node ./ci/publish/publishExamples.js
