@@ -128,7 +128,7 @@ module.exports = {
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     let colVisibleStart = max(0, this.getVisibleColStart(scrollLeft));
     let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
-    let colVisibleEnd = colVisibleStart + renderedColumnCount;
+    let colVisibleEnd = (renderedColumnCount !== 0) ? colVisibleStart + renderedColumnCount : totalNumberColumns;
     let colDisplayStart = max(0, colVisibleStart - this.props.overScan.colsStart);
     let colDisplayEnd = min(colVisibleEnd + this.props.overScan.colsEnd, totalNumberColumns);
 
