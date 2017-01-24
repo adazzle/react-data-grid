@@ -11,6 +11,7 @@ Write-Host "Publishing $($nextVersion) to npm"
 if($?)
 {
   ./node_modules/.bin/lerna publish --repo-version $nextVersion --yes --skip-git
+  git add . -A
   git commit -m "Version Bump to $($nextVersion) [ci skip]"
   git fetch
   git pull --rebase
