@@ -1,0 +1,5 @@
+src
+.npmrc
+secure-file
+npm-debug.log
+lerna-debug.log
