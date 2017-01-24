@@ -37,6 +37,40 @@ let viewportProps = {
   rowKey: 'Id'
 };
 
+let viewportPropsNoColumns = {  // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
+  rowOffsetHeight: 0,
+  totalWidth: 400,
+  columnMetrics: {
+    columns: helpers.columns,
+    minColumnWidth: 80,
+    totalWidth: 0,
+    width: 2010
+  },
+  rowGetter: () => { },
+  rowsCount: 50,
+  rowHeight: 35,
+  onScroll: () => { },
+  minHeight: 500,
+  overScan: {
+    colsStart: 5,
+    colsEnd: 5,
+    rowsStart: 5,
+    rowsEnd: 5
+  },
+  cellMetaData: {
+    selected: {},
+    dragged: {},
+    onCellClick: () => { },
+    onCellDoubleClick: () => { },
+    onCommit: () => { },
+    onCommitCancel: () => { },
+    copied: {},
+    handleDragEnterRow: () => { },
+    handleTerminateDrag: () => { }
+  },
+  rowKey: 'Id'
+};
+
 describe('<Viewport />', () => {
   it('renders a Canvas component', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
@@ -64,6 +98,11 @@ describe('<Viewport />', () => {
       visibleStart: 5,
       isScrolling: true
     });
+  });
+
+  it('should set the max number of columns when column rendered are zeroed', () => {
+    const wrapper = shallow(<Viewport {...viewportPropsNoColumns} />);
+    expect(wrapper.state().colVisibleEnd).toEqual(helpers.columns.length);
   });
 
   it('should update when given different number of columns', () => {
