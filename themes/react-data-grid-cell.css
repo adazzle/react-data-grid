@@ -153,6 +153,17 @@
     opacity: 1;
 }
 
+.cell-tooltip .cell-tooltip-text::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+}
+
 .react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
     visibility: hidden;
 }
