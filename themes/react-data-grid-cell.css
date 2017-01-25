@@ -132,7 +132,7 @@
 
 .cell-tooltip .cell-tooltip-text {
     visibility: hidden;
-    width: 120px;
+    width: 150px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -140,7 +140,7 @@
     padding: 5px 0;
     position: absolute;
     z-index: 1;
-    bottom: -200%;
+    bottom: -150%;
     left: 50%;
     margin-left: -60px;
     /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
@@ -150,7 +150,18 @@
 
 .cell-tooltip:hover .cell-tooltip-text {
     visibility: visible;
-    opacity: 1;
+    opacity: 0.8;
+}
+
+.cell-tooltip .cell-tooltip-text::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
 }
 
 .react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
