@@ -132,7 +132,7 @@
 
 .cell-tooltip .cell-tooltip-text {
     visibility: hidden;
-    width: 120px;
+    width: 150px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -150,7 +150,7 @@
 
 .cell-tooltip:hover .cell-tooltip-text {
     visibility: visible;
-    opacity: 1;
+    opacity: 0.8;
 }
 
 .cell-tooltip .cell-tooltip-text::after {
