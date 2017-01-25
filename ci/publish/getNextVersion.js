@@ -1,6 +1,6 @@
 var semver = require('semver');
 fs = require('fs')
-json = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
+json = JSON.parse(fs.readFileSync('./packages/react-data-grid/package.json', 'utf8'))
 var execSync = require('child_process').execSync,
     child;
 
