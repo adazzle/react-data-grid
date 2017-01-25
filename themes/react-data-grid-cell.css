@@ -140,7 +140,7 @@
     padding: 5px 0;
     position: absolute;
     z-index: 1;
-    bottom: -200%;
+    bottom: -150%;
     left: 50%;
     margin-left: -60px;
     /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
