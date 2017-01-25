@@ -71,6 +71,13 @@ const AutoCompleteEditor = React.createClass({
     this.setState({selectedLabel: newLabel}, () => this.props.onCommit());
   },
 
+  handleFocus(e) {
+    if (this.props.onFocus && typeof this.props.onFocus === 'function') {
+      this.props.onFocus(e);
+    }
+    this.getOptions('');
+  },
+
   getValue(): any {
     let value;
     let updated = {};
@@ -182,7 +189,7 @@ const AutoCompleteEditor = React.createClass({
         cache={emptyCache}
         value={this.getEditorValue()}
         onChange={this.handleChange}
-        onFocus={this.props.onFocus}
+        onFocus={this.handleFocus}
         noResultsText={noResults}
         searchPromptText={noResults}
         />
