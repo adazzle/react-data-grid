@@ -2,7 +2,7 @@
 * In local config, only run tests using phantom js. No code coverage reports applied
 */
 var webpack = require('webpack');
-var webpackConfig = require('./webpack.common.js');
+var webpackConfig = require('./webpack.common.config.js');
 var RewirePlugin = require("rewire-webpack");
 var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
@@ -102,7 +102,7 @@ module.exports = function (config) {
         extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
       },
       plugins: [
-      new RewirePlugin()
+        new RewirePlugin()
       ],
       externals: {
         'cheerio': 'window',

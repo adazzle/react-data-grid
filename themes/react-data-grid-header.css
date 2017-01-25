@@ -1,0 +1,45 @@
+.react-grid-Header {
+  box-shadow: 0px 0px 4px 0px #dddddd;
+  background: #f9f9f9;
+}
+.react-grid-Header--resizing {
+  cursor: ew-resize;
+}
+.react-grid-HeaderRow {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.react-grid-HeaderCell {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background: #f9f9f9;
+  padding: 8px;
+  font-weight: bold;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
+.react-grid-HeaderCell__value {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.react-grid-HeaderCell__resizeHandle:hover {
+  cursor: ew-resize;
+  background: #dddddd;
+}
+.react-grid-HeaderCell--locked:last-of-type {
+  box-shadow: none;
+}
+.react-grid-HeaderCell--resizing .react-grid-HeaderCell__resizeHandle {
+  background: #dddddd;
+}
+.react-grid-HeaderCell__draggable {
+    cursor: col-resize
+}
