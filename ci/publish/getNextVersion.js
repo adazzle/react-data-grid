@@ -12,8 +12,7 @@ var execSync = require('child_process').execSync,
  * @returns nextVersion - The new version of the branch in the format major.minor.patch-branchName.x
  */
 function getNextVersion(version, branchName, buildNumber){
-  const patchVersion = semver.patch(version) + 1;
-  var nextVersion = semver.major(version) + "." + semver.minor(version) + "." + patchVersion + "-" + branchName + buildNumber;
+  var nextVersion = semver.major(version) + "." + semver.minor(version) + "." + semver.patch(version) + "-" + branchName + buildNumber;
   if(semver.valid(nextVersion)) {
     return nextVersion;
   } else{
