@@ -10,7 +10,7 @@ if($?)
 {
   ./node_modules/.bin/lerna publish --message "Version bump [ci skip]" --yes 
   if($?){
-    Write-Host "regenerating public site and examples"
+    Write-Host "Regenerating public site and examples"
     node ./ci/publish/publishExamples.js
   }
 }

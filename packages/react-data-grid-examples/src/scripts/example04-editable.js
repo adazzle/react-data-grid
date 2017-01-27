@@ -69,11 +69,16 @@ const Example = React.createClass({
     return this.state.rows[i];
   },
 
-  handleRowUpdated({ rowIdx, updated }) {
-    // merge updated row with current row and rerender by setting state
-    const rows = this.state.rows;
-    Object.assign(rows[rowIdx], updated);
-    this.setState({rows: rows});
+  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+    let rows = this.state.rows;
+
+    for (let i = fromRow; i <= toRow; i++) {
+      let rowToUpdate = rows[i];
+      let updatedRow = React.addons.update(rowToUpdate, {$merge: updated});
+      rows[i] = updatedRow;
+    }
+
+    this.setState({ rows });
   },
 
   render() {
@@ -84,7 +89,7 @@ const Example = React.createClass({
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        onRowUpdated={this.handleRowUpdated} />);
+        onGridRowsUpdated={this.handleGridRowsUpdated} />);
   }
 });
 
@@ -96,5 +101,5 @@ module.exports = exampleWrapper({
   exampleName: 'Editable Example',
   exampleDescription,
   examplePath: './scripts/example04-editable.js',
-  examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/6/'
+  examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/10/'
 });
