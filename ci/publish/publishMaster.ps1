@@ -5,10 +5,14 @@ Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-
 git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
 git config --global user.email $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL
 git checkout master
+$releaseVersion = node ./ci/publish/getCurrentVersion
 
 if($?)
 {
-  ./node_modules/.bin/lerna publish --message "Version bump [ci skip]" --yes 
+  Write-Host "Publishing $($releaseVersion) to npm"
+  $versionBumpMessage = "Version Bump to $($releaseVersion) [ci skip]"
+
+  ./node_modules/.bin/lerna publish --repo-version $releaseVersion --message $versionBumpMessage --yes 
   if($?){
     Write-Host "Regenerating public site and examples"
     node ./ci/publish/publishExamples.js
