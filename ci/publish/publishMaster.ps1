@@ -5,7 +5,7 @@ Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-
 git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
 git config --global user.email $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL
 git checkout master
-$releaseVersion = node ./ci/publish/getCurrentVersion
+$releaseVersion = node ./ci/publish/getReleaseVersion.js
 
 if($?)
 {
