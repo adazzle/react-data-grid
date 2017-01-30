@@ -12,18 +12,21 @@ environment:
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
   npmrc_token:
-    secure: /9XWoCG/xQ2+rJpht0B5kA==
+    secure: jG6oWTaTCoL72ZhDYY8ipA==
 
 
 # Install scripts. (runs after repo cloning)
 install:
   # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
+  # Lerna needs to have a npmrc for each package folder as it does not use the root npmrc https://github.com/lerna/lerna/issues/296#issuecomment-261080345
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
         ./ci/publish/decrypt-npmrc.ps1
+        ./ci/publish/copy-npmrc.ps1
       }
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
         ./ci/publish/decrypt-npmrc.ps1
+        ./ci/publish/copy-npmrc.ps1
       }
   - ps: Install-Product node 4
   - npm -g install npm@3
@@ -31,9 +34,7 @@ install:
   - npm cache clean
   - npm install -g gulp
   - npm install
-  - gulp flow
-  - gulp dist
-  - gulp examples
+  - ps: ./ci/buildScripts/build.ps1
 
 # Post-install test scripts.
 test_script:
@@ -41,7 +42,7 @@ test_script:
   - node --version
   - npm --version
   # run tests
-  - gulp test --release true
+  - npm test
   - ps: ./test/uploadResults.ps1
   - gulp coveralls
 
@@ -49,16 +50,14 @@ test_script:
 # Don't run MS build step
 build: off
 
-#cache:
-#  - '%AppData%\npm-cache -> package.json'
-
 on_success:
 # If it is not a scheduled build/pr build and the current branch is master publish a new package.
 # If it is not build on master publish npm tag.
-- ps: >-
-    if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
-      ./ci/publish/publishMaster.ps1
-    }
-    if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
-      ./ci/publish/publishBranch.ps1
-    }
+  - npm run beforepublish
+  - ps: >-
+      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
+        ./ci/publish/publishMaster.ps1
+      }
+      if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
+        ./ci/publish/publishBranch.ps1
+      }

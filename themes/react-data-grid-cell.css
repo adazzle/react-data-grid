@@ -1,0 +1,169 @@
+.react-grid-Cell {
+  background-color: #ffffff;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #dddddd;
+}
+
+.react-grid-Cell:focus {
+  outline: 2px solid #66afe9;
+  outline-offset: -2px;
+}
+
+.react-grid-Cell:focus .drag-handle {
+  position: absolute;
+  bottom: -5px;
+  right: -4px;
+  background: #66afe9;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #fff;
+  border-right: 0px;
+  border-bottom: 0px;
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -webkit-grab;
+}
+
+.react-grid-Cell:not(.editing) .react-grid-Cell__value {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.react-grid-Cell.readonly {
+  background-color : black;
+}
+
+.react-grid-Cell.copied {
+  background: rgba(0, 0, 255, 0.2) !important;
+  -webkit-transition: 0.5s background;
+}
+
+.react-grid-Cell--locked:last-of-type {
+  border-right: 1px solid #dddddd;
+  box-shadow: none;
+  z-index:99;
+}
+
+.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down {
+  display: 'block'
+}
+
+.react-grid-Cell.is-dragged-over-down {
+  border-right: 1px dashed black;
+  border-left: 1px dashed black;
+  border-bottom: 1px dashed black;
+}
+
+.react-grid-Cell.is-dragged-over-up {
+  border-right: 1px dashed black;
+  border-left: 1px dashed black;
+  border-top: 1px dashed black;
+}
+
+.react-grid-Cell.is-dragged-over-up .drag-handle {
+  top: -5px;
+}
+
+.react-grid-Cell:hover {
+  background: #eee;
+}
+
+.react-grid-cell .form-control-feedback {
+  color: #a94442;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  z-index: 1000000;
+  display: block;
+  width: 34px;
+  height: 34px;
+}
+.react-grid-Cell.was-dragged-over {
+  border-right: 1px dashed black;
+  border-left: 1px dashed black;
+}
+
+.react-grid-Cell:hover:focus .drag-handle {
+  position: absolute;
+  bottom: -8px;
+  right: -7px;
+  background: white;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #66afe9;
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -webkit-grab;
+}
+
+.react-grid-Row.row-selected .react-grid-Cell{
+ background-color: #DBECFA;
+}
+
+.react-grid-Cell.editing {
+  padding: 0;
+  overflow: visible !important;
+}
+.react-grid-Cell.editing .has-error input {
+  border: 2px red solid !important;
+  border-radius: 2px !important;
+}
+
+.react-grid-Cell__value ul {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline-block;
+}
+
+.react-grid-Cell__value .btn-sm {
+  padding: 0;
+}
+
+.cell-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.cell-tooltip .cell-tooltip-text {
+    visibility: hidden;
+    width: 150px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: -150%;
+    left: 50%;
+    margin-left: -60px;
+    /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.cell-tooltip:hover .cell-tooltip-text {
+    visibility: visible;
+    opacity: 0.8;
+}
+
+.cell-tooltip .cell-tooltip-text::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+}
+
+.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
+    visibility: hidden;
+}

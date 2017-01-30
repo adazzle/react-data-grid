@@ -5,26 +5,17 @@ Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-
 git config --global user.name $env:APPVEYOR_REPO_COMMIT_AUTHOR
 git config --global user.email $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL
 git checkout master
+$releaseVersion = node ./ci/publish/getReleaseVersion.js
 
-#docs task currently broken needs investigation
-#gulp docs:regenerate
-#git add -A
-#git commit -m "Docs Regeneration"
-
-npm version patch --message "Version Bump [ci skip]"
-$currentVersion = node ./ci/publish/getCurrentVersion
-git commit --amend -m "Version Bump to $($currentVersion) [ci skip]"
-git fetch
-git pull --rebase
-git push
-git push --tags
-Write-Host "Publishing $($currentVersion) to npm"
 if($?)
 {
-  npm publish
+  Write-Host "Publishing $($releaseVersion) to npm"
+  $versionBumpMessage = "Version Bump to $($releaseVersion) [ci skip]"
+
+  ./node_modules/.bin/lerna publish --repo-version $releaseVersion --message $versionBumpMessage --yes 
   if($?){
-    Write-Host "regenerating public site and examples"
-    gulp docs
+    Write-Host "Regenerating public site and examples"
+    node ./ci/publish/publishExamples.js
   }
 }
 
