@@ -50,9 +50,6 @@ test_script:
 # Don't run MS build step
 build: off
 
-#cache:
-#  - '%AppData%\npm-cache -> package.json'
-
 on_success:
 # If it is not a scheduled build/pr build and the current branch is master publish a new package.
 # If it is not build on master publish npm tag.
