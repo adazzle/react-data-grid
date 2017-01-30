@@ -10,7 +10,7 @@ environment:
   COVERALLS_SERVICE_JOB_ID  : $(APPVEYOR_BUILD_ID)
   COVERALLS_SERVICE_PULL_REQUEST : $(APPVEYOR_PULL_REQUEST_NUMBER)
   access_token:
-    secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
+    secure: 96ngZgwB96qTeZgvn+1CbeEXEgc1LiuRWxlZ89YvorIFMfxNBU6cgYRe8LHoCQm3
   npmrc_token:
     secure: idJqRg4EVPIR659MBUpzFQ==
 
