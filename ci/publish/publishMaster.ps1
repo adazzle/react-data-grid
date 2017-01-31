@@ -10,7 +10,7 @@ $releaseVersion = node ./ci/publish/getReleaseVersion.js
 if($?)
 {
   Write-Host "Publishing $($releaseVersion) to npm"
-  $versionBumpMessage = "Version Bump to $($releaseVersion) [ci skip]"
+  $versionBumpMessage = "Version bump to $($releaseVersion) [ci skip]"
 
   ./node_modules/.bin/lerna publish --repo-version $releaseVersion  --skip-git --yes 
   git add .
