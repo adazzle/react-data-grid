@@ -12,7 +12,10 @@ if($?)
   Write-Host "Publishing $($releaseVersion) to npm"
   $versionBumpMessage = 'Version Bump to $($releaseVersion) [ci skip]'
 
-  ./node_modules/.bin/lerna publish --repo-version $releaseVersion --message $versionBumpMessage --yes 
+  ./node_modules/.bin/lerna publish --repo-version $releaseVersion --yes 
+  git add .
+  git commit -m $versionBumpMessage
+  git push
   if($?){
     Write-Host "Regenerating public site and examples"
     node ./ci/publish/publishExamples.js
