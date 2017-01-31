@@ -8,7 +8,7 @@ git checkout $env:APPVEYOR_REPO_BRANCH
 Write-Host "Publishing $($nextVersion) to npm"
 if($?)
 {
-  ./node_modules/.bin/lerna publish --repo-version $nextVersion --npm-tag=$env:APPVEYOR_REPO_BRANCH --yes --skip-git
+  ./node_modules/.bin/lerna publish --repo-version $nextVersion --npm-tag=$env:APPVEYOR_REPO_BRANCH --yes --message "Testing message"
 }
 
 exit $lastexitcode
