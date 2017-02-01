@@ -32,6 +32,7 @@ export const shouldRowUpdate = (nextProps, currentProps) => {
     currentProps.isSelected !== nextProps.isSelected ||
     nextProps.height !== currentProps.height ||
     currentProps.isOver !== nextProps.isOver ||
+    currentProps.expandedRows !== nextProps.expandedRows ||
     currentProps.canDrop !== nextProps.canDrop ||
     currentProps.forceUpdate === true;
 };
