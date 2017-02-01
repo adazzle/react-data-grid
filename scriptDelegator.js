@@ -1,9 +1,9 @@
-const isDevEnv = () => window.location.hostname === 'localhost';
+var isDevEnv = () => window.location.hostname === 'localhost';
 
-const delegateScript = fileName => {
-  let src = isDevEnv() ? `http://localhost:8080/${fileName}` :  `dist/${fileName}`;
+var delegateScript = fileName => {
+  var src = isDevEnv() ? `http://localhost:8080/${fileName}` :  `dist/${fileName}`;
 
-  let script = document.createElement('script');
+  var script = document.createElement('script');
   script.setAttribute('src', src);
   document.getElementsByTagName('body')[0].appendChild(script);
 };
