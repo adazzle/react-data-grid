@@ -9,6 +9,7 @@ const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
 const ColumnUtils = require('./ColumnUtils');
 const createObjectWithProperties = require('./createObjectWithProperties');
+import CellExpand from './CellExpand';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
@@ -90,6 +91,7 @@ const Cell = React.createClass({
       || this.props.value !== nextProps.value
       || this.props.forceUpdate === true
       || this.props.className !== nextProps.className
+      || this.props.expandableOptions !== nextProps.expandableOptions
       || this.hasChangedDependentValues(nextProps);
     return shouldUpdate;
   },
@@ -147,6 +149,7 @@ const Cell = React.createClass({
       width: this.props.column.width,
       height: this.props.height,
       left: this.props.column.left,
+      lineHeight: `${this.props.height}px`,
       contain: 'layout'
     };
     return style;
@@ -445,12 +448,8 @@ const Cell = React.createClass({
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
-    let cellExpander;
-    let marginLeft = this.props.expandableOptions ? (this.props.expandableOptions.treeDepth * 30) : 0;
-    if (this.canExpand()) {
-      cellExpander = (<span style={{ float: 'left', marginLeft: marginLeft }} onClick={this.onCellExpand} >{this.props.expandableOptions.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>);
-    }
-    return (<div className="react-grid-Cell__value">{cellExpander}<span >{CellContent}</span> {this.props.cellControls} </div>);
+
+    return (<div className="react-grid-Cell__value"><span >{CellContent}</span> {this.props.cellControls}</div>);
   },
 
   render() {
@@ -473,11 +472,16 @@ const Cell = React.createClass({
     let events = this.getEvents();
     const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{ this.props.tooltip }</span>) : null;
 
+    let cellExpander;
+    if (this.canExpand()) {
+      cellExpander = <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
+    }
     return (
       <div {...this.getKnownDivProps() } className={className} style={style} {...events}>
         {cellContent}
         {dragHandle}
         { tooltip }
+        {cellExpander}
       </div>
     );
   }

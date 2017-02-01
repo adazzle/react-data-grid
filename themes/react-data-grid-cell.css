@@ -30,9 +30,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .react-grid-Cell.readonly {
@@ -166,4 +163,10 @@
 
 .react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
     visibility: hidden;
+}
+
+.rdg-cell-expand {
+    right: 20px;
+    position: absolute;
+    z-index: 2;
 }
