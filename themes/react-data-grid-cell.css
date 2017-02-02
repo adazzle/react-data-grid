@@ -166,7 +166,16 @@
 }
 
 .rdg-cell-expand {
+    top: 0px;
     right: 20px;
     position: absolute;
-    z-index: 2;
+}
+
+.rdg-child-row-remove-btn {
+  color: grey;
+  width: 10px;
+  height: 10px;
+  float: left;
+  margin-right: 15px;
+  font-size: 10px;
 }

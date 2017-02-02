@@ -448,8 +448,17 @@ const Cell = React.createClass({
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
-
-    return (<div className="react-grid-Cell__value"><span >{CellContent}</span> {this.props.cellControls}</div>);
+    let treeDepth = this.props.expandableOptions ? this.props.expandableOptions.treeDepth : 0;
+    let marginLeft = this.props.expandableOptions ? (this.props.expandableOptions.treeDepth * 15) : 0;
+    let cellExpander;
+    let cellDeleter;
+    if (this.canExpand()) {
+      cellExpander = <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
+    }
+    if (treeDepth > 0) {
+      cellDeleter = <span className="rdg-child-row-remove-btn"><span>X</span></span>;
+    }
+    return (<div className="react-grid-Cell__value" style={{ marginLeft: marginLeft }}>{cellDeleter} <span >{CellContent}</span> {this.props.cellControls} {cellExpander}</div>);
   },
 
   render() {
@@ -470,18 +479,14 @@ const Cell = React.createClass({
 
     let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
     let events = this.getEvents();
-    const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{ this.props.tooltip }</span>) : null;
+    const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
 
-    let cellExpander;
-    if (this.canExpand()) {
-      cellExpander = <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
-    }
+
     return (
       <div {...this.getKnownDivProps() } className={className} style={style} {...events}>
         {cellContent}
         {dragHandle}
-        { tooltip }
-        {cellExpander}
+        {tooltip}
       </div>
     );
   }

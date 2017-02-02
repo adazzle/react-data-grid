@@ -3,8 +3,8 @@ const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
 function createRows() {
-  let rows = [{ name: 'row0' }];
-  for (let i = 1; i < 1000; i++) {
+  let rows = [];
+  for (let i = 0; i < 1000; i++) {
     let price = Math.random() * 30;
     let row = {
       name: 'supplier ' + i,
@@ -13,7 +13,7 @@ function createRows() {
       price: price,
       children: [{ name: 'supplier ' + i, format: '728x90', position: 'run of site', price: price / 2 },
       { name: 'supplier ' + i, format: '480x600', position: 'run of site', price: price * 0.25 },
-      { name: 'supplier ' + i, format: '328x70', position: 'run of site', price: price * 0.25, children: [{ name: 'another sub row' }] }]
+      { name: 'supplier ' + i, format: '328x70', position: 'run of site', price: price * 0.25 }]
     };
     rows.push(row);
   }
