@@ -171,11 +171,63 @@
     position: absolute;
 }
 
-.rdg-child-row-remove-btn {
-  color: grey;
-  width: 10px;
-  height: 10px;
-  float: left;
-  margin-right: 15px;
-  font-size: 10px;
+.rdg-child-row-action-cross:before, rdg-child-row-action-cross:after, .rdg-child-row-action-cross-first:before, .rdg-child-row-action-cross-first:after, .rdg-child-row-action-cross-last:before, rdg-child-row-action-cross-last:after {
+  content: "";
+  position: absolute;
+  background: grey;
+  height: 50%;
 }
+
+.rdg-child-row-action-cross:before {
+  left: 21px;
+  width: 1px;
+  height: 35px;
+}
+
+.rdg-child-row-action-cross-first:before {
+  left: 21px;
+  width: 1px;
+  height: 60px;
+}
+
+.rdg-child-row-action-cross-last:before {
+  left: 21px;
+  width: 1px;
+}
+
+.rdg-child-row-action-cross:after, .rdg-child-row-action-cross-first:after, .rdg-child-row-action-cross-last:after {
+  top: 50%;
+  left:20px;
+  height: 1px;
+  width: 15px;
+  content: "";
+  position: absolute;
+  background: grey;
+}
+
+
+.rdg-child-row-remove-btn {
+   position:absolute;
+   cursor:pointer;
+   border:1px solid grey;
+   border-radius:14px;
+   z-index: 3;
+   background: white;
+}
+
+.rdg-child-row-remove-btn div {
+  z-index: 5;
+  font-size: 8px;
+  text-align:center;
+  line-height:19px;
+  color: grey;
+  height:20px;
+  width:20px;
+  position:absolute;
+  top:60%;
+  left:53%;
+  margin-top:-10px;
+  margin-left:-10px;
+
+}
+

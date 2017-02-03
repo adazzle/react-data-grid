@@ -155,7 +155,7 @@ const Row = React.createClass({
   },
 
   getExpandableOptions(columnKey) {
-    return { canExpand: this.props.subRowDetails && this.props.subRowDetails.field === columnKey, expanded: this.props.subRowDetails && this.props.subRowDetails.expanded, children: this.props.subRowDetails && this.props.subRowDetails.children, treeDepth: this.props.subRowDetails ? this.props.subRowDetails.treeDepth : 0 };
+    return { canExpand: this.props.subRowDetails && this.props.subRowDetails.field === columnKey && this.props.subRowDetails.children && this.props.subRowDetails.children.length > 0, field: this.props.subRowDetails.field, expanded: this.props.subRowDetails && this.props.subRowDetails.expanded, children: this.props.subRowDetails && this.props.subRowDetails.children, treeDepth: this.props.subRowDetails ? this.props.subRowDetails.treeDepth : 0, subRowDetails: this.props.subRowDetails };
   },
 
   setScrollLeft(scrollLeft) {

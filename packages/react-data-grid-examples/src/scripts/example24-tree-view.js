@@ -48,16 +48,12 @@ const Example = React.createClass({
 
   getSubRowDetails(rowItem) {
     let isExpanded = this.state.expanded[rowItem.name] ? this.state.expanded[rowItem.name] : false;
-    if (rowItem.children) {
-      return {
-        group: true,
-        expanded: isExpanded,
-        children: rowItem.children,
-        field: 'name'
-      };
-    } else {
-      return null;
-    }
+    return {
+      group: rowItem.children && rowItem.children.length > 0,
+      expanded: isExpanded,
+      children: rowItem.children,
+      field: 'name'
+    };
   },
 
   getRows(i) {
