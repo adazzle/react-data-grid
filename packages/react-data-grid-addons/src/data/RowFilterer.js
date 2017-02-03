@@ -2,8 +2,8 @@ import { utils } from 'react-data-grid';
 const { getMixedTypeValueRetriever, isImmutableCollection } = utils;
 
 const filterRows = (filters, rows = []) => {
-  const retriever = getMixedTypeValueRetriever(isImmutableCollection(rows));
   return rows.filter(r => {
+    const retriever = getMixedTypeValueRetriever(isImmutableCollection(r));
     let include = true;
     for (let columnKey in filters) {
       if (filters.hasOwnProperty(columnKey)) {
