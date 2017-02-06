@@ -889,7 +889,7 @@ const ReactDataGrid = React.createClass({
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38), // up or down
-      isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) // left or right
+      isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) || this.isKeyDown(9) // left or right or tab
     };
 
     let toolbar = this.renderToolbar();
