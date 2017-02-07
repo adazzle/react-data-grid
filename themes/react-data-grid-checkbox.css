@@ -6,9 +6,8 @@
 .react-grid-checkbox, .react-grid-checkbox-label, .radio-custom, .radio-custom-label {
     display: inline-block;
     vertical-align: middle;
-    margin: 10px !important;
+    margin: 10px;
     cursor: pointer;
-    margin-top: 5px !important;
 }
 
 .react-grid-checkbox-label, .radio-custom-label {
@@ -51,4 +50,9 @@
 .radio-custom:checked + .radio-custom-label:before {
     background: #ccc;
     box-shadow: inset 0px 0px 0px 4px #fff;
+}
+
+label[for=select-all-checkbox]{
+    padding-left: 10px;
+    padding-top: 5px;
 }
