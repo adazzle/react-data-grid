@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid-examples",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A set of examples for the grid",
   "main": "main.js",
   "scripts": {
@@ -17,8 +17,8 @@
   "author": "Adazzle",
   "license": "MIT",
   "dependencies": {
-    "react-data-grid": "^2.0.4",
-    "react-data-grid-addons": "^2.0.4"
+    "react-data-grid": "^2.0.5",
+    "react-data-grid-addons": "^2.0.5"
   },
   "devDependencies": {
     "bootstrap": "^3.2.0",
