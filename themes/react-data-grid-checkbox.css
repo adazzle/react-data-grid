@@ -6,8 +6,9 @@
 .react-grid-checkbox, .react-grid-checkbox-label, .radio-custom, .radio-custom-label {
     display: inline-block;
     vertical-align: middle;
-    margin: 10px;
+    margin: 10px !important;
     cursor: pointer;
+    margin-top: 5px !important;
 }
 
 .react-grid-checkbox-label, .radio-custom-label {
