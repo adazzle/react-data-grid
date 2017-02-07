@@ -51,3 +51,8 @@
     background: #ccc;
     box-shadow: inset 0px 0px 0px 4px #fff;
 }
+
+label[for=select-all-checkbox]{
+    padding-left: 10px;
+    padding-top: 5px;
+}
