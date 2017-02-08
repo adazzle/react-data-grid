@@ -67,6 +67,8 @@ const ReactDataGrid = React.createClass({
     onCellsDragged: React.PropTypes.func,
     onAddFilter: React.PropTypes.func,
     onGridSort: React.PropTypes.func,
+    sortColumn: React.PropTypes.string,
+    sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     onDragHandleDoubleClick: React.PropTypes.func,
     onGridRowsUpdated: React.PropTypes.func,
     onRowSelect: React.PropTypes.func,
@@ -140,6 +142,12 @@ const ReactDataGrid = React.createClass({
     } else {
       initialState.selected = {rowIdx: -1, idx: -1};
     }
+
+    if (this.props.sortColumn && this.props.sortDirection) {
+      initialState.sortColumn = this.props.sortColumn;
+      initialState.sortDirection = this.props.sortDirection;
+    }
+
     return initialState;
   },
 
