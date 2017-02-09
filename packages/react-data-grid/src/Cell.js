@@ -38,14 +38,16 @@ const Cell = React.createClass({
     forceUpdate: React.PropTypes.bool,
     expandableOptions: React.PropTypes.object.isRequired,
     isScrolling: React.PropTypes.bool.isRequired,
-    tooltip: React.PropTypes.string
+    tooltip: React.PropTypes.string,
+    isCellValueChanging: React.PropTypes.func
   },
 
   getDefaultProps() {
     return {
       tabIndex: -1,
       isExpanded: false,
-      value: ''
+      value: '',
+      isCellValueChanging: (value, nextValue) => value !== nextValue
     };
   },
 
@@ -61,7 +63,7 @@ const Cell = React.createClass({
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      isCellValueChanging: this.props.value !== nextProps.value
+      isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value)
     });
   },
 
@@ -87,7 +89,7 @@ const Cell = React.createClass({
       || this.isCopyCellChanging(nextProps)
       || this.props.isRowSelected !== nextProps.isRowSelected
       || this.isSelected()
-      || this.props.value !== nextProps.value
+      || this.props.isCellValueChanging(this.props.value, nextProps.value)
       || this.props.forceUpdate === true
       || this.props.className !== nextProps.className
       || this.hasChangedDependentValues(nextProps);
