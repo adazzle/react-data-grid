@@ -47,7 +47,7 @@ const Cell = React.createClass({
       tabIndex: -1,
       isExpanded: false,
       value: '',
-      isCellValueChanging: (value, nextValue) => { value !== nextValue; }
+      isCellValueChanging: (value, nextValue) => value !== nextValue
     };
   },
 
