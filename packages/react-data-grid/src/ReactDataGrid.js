@@ -10,6 +10,7 @@ const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
+const uniqueId = require('lodash.uniqueid');
 import AppConstants from './AppConstants';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
@@ -824,11 +825,12 @@ const ReactDataGrid = React.createClass({
 
     let cols = columns.slice(0);
     let unshiftedCols = {};
+    let selectAllCheckboxId = uniqueId('select-all-checkbox-');
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       let headerRenderer = props.enableRowSelect === 'single' ? null :
       <div className="react-grid-checkbox-container">
-        <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" onChange={this.handleCheckboxChange} />
-        <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
+        <input className="react-grid-checkbox" type="checkbox" name={selectAllCheckboxId} id={selectAllCheckboxId} onChange={this.handleCheckboxChange} />
+        <label htmlFor={selectAllCheckboxId} className="react-grid-checkbox-label"></label>
       </div>;
       let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
       let selectColumn = {
