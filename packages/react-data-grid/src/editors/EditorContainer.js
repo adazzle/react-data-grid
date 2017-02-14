@@ -243,6 +243,11 @@ const EditorContainer = React.createClass({
             document.activeElement; // IE11
   },
 
+  handleRightClick(e) {
+    e.stopPropagation();
+    e.preventDefault();
+  },
+
   handleBlur(e) {
     e.stopPropagation();
     if (this.isBodyClicked(e)) {
@@ -293,7 +298,7 @@ const EditorContainer = React.createClass({
 
   render(): ?ReactElement {
     return (
-        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown}>
+        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>
