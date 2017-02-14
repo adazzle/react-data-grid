@@ -245,7 +245,6 @@ const EditorContainer = React.createClass({
 
   handleRightClick(e) {
     e.stopPropagation();
-    e.preventDefault();
   },
 
   handleBlur(e) {
