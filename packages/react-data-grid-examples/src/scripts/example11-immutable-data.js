@@ -39,16 +39,6 @@ const Example = React.createClass({
     return this.state.rows.get(rowIdx);
   },
 
-  handleGridRowsUpdated({ fromRow, toRow, updated }) {
-    let rows = this.state.rows;
-
-    for (let i = fromRow; i <= toRow; i++) {
-      rows = rows.update(i, r => r.merge(updated));
-    }
-
-    this.setState({ rows });
-  },
-
   render() {
     return  (
       <ReactDataGrid
@@ -56,8 +46,7 @@ const Example = React.createClass({
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.size}
-        minHeight={1200}
-        onGridRowsUpdated={this.handleGridRowsUpdated} />);
+        minHeight={1200} />);
   }
 });
 

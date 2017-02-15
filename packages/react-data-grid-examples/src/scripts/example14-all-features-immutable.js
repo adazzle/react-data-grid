@@ -193,7 +193,7 @@ const Component = React.createClass({
   },
 
   handleGridRowsUpdated({ fromRow, toRow, updated }) {
-    let rows = this.state.rows;
+    let rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
       rows = rows.update(i, r => r.merge(updated));
