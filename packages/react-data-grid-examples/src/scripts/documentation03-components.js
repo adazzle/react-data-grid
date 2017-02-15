@@ -12,7 +12,7 @@ var DocumentContainer = React.createClass({
   },
 
   getMarkdownAsHtml() {
-    return markdown.toHTML(this.props.documentContent);
+    return markdown.parse(this.props.documentContent);
   },
 
   render: function() {
