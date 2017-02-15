@@ -94,7 +94,7 @@ const Example = React.createClass({
 });
 
 const exampleDescription = (
-  <p>To make a given column editable set <code>column.editable</code> and create a <code>onRowUpdated</code> handler. Note that you will need to store your rows in state and update that state when a cell value changes.</p>);
+  <p>To make a given column editable set <code>column.editable</code> and create a <code>onGridRowsUpdated</code> handler. Note that you will need to store your rows in state and update that state when a cell value changes.</p>);
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,

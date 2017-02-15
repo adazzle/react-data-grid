@@ -8,45 +8,6 @@ module.exports = React.createClass({
       <div>
         <h1 id="js-api-refernce">API Reference</h1>
         <h2>Grid Events</h2>
-        <h3>onRowUpdated</h3>
-        <div className="code-block function">
-          <pre>
-            <span className="nx">onRowUpdated</span><span className="p">(</span><span className="nx">e</span> <span className="nx">:RowUpdateEvent</span><span className="p">)</span>
-          </pre>
-        </div>
-        <div className="code-block flow">
-          <pre>
-            /* @flow */
-            <br/>
-            <code>{RowUpdateEventString}</code>
-          </pre>
-        </div>
-        <h3>onCellsDragged</h3>
-        <div className="code-block function">
-          <pre>
-            <span className="nx">onCellsDragged</span><span className="p">(</span><span className="nx">e</span> <span className="nx">:CellDragEvent</span><span className="p">)</span>
-          </pre>
-        </div>
-        <div className="code-block flow">
-          <pre>
-            /* @flow */
-            <br/>
-            <code>{CellDragEventString}</code>
-          </pre>
-        </div>
-        <h3>onCellCopyPaste</h3>
-        <div className="code-block function">
-          <pre>
-            <span className="nx">onCellCopyPaste</span><span className="p">(</span><span className="nx">e</span> <span className="nx">:CellCopyPasteEvent</span><span className="p">)</span>
-          </pre>
-        </div>
-        <div className="code-block flow">
-          <pre>
-            /* @flow */
-            <br/>
-            <code>{CellCopyPasteEventString}</code>
-          </pre>
-        </div>
       </div>
     );
   }
