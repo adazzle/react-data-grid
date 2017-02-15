@@ -7,13 +7,14 @@ function createRows() {
   for (let i = 0; i < 6; i++) {
     let price = Math.random() * 30;
     let row = {
+      id: 'row' + i,
       name: 'supplier ' + i,
       format: 'package ' + i,
       position: 'Run of site',
       price: price,
-      children: [{ name: 'supplier ' + i, format: '728x90', position: 'run of site', price: price / 2 },
-      { name: 'supplier ' + i, format: '480x600', position: 'run of site', price: price * 0.25 },
-      { name: 'supplier ' + i, format: '328x70', position: 'run of site', price: price * 0.25 }]
+      children: [{ id: 'row' + i + '-0', name: 'supplier ' + i, format: '728x90', position: 'run of site', price: price / 2 },
+      { id: 'row' + i + '-1', name: 'supplier ' + i, format: '480x600', position: 'run of site', price: price * 0.25 },
+      { id: 'row' + i + '-2', name: 'supplier ' + i, format: '328x70', position: 'run of site', price: price * 0.25 }]
     };
     rows.push(row);
   }
@@ -71,8 +72,17 @@ const Example = React.createClass({
       delete expanded[rowKey];
       rowCount -= args.expandArgs.children.length;
     }
-    console.log(rowCount);
+
     this.setState({ expanded: expanded, rowCount: rowCount });
+  },
+
+  onDeleteSubRow(args) {
+    let idToDelete = args.rowData.id;
+    let rows = this.state.rows.slice(0);
+    rows = rows.map(r => {
+      return Object.assign({}, r, {children: r.children.filter(sr => sr.id !== idToDelete)});
+    });
+    this.setState({rows});
   },
 
   render() {
@@ -82,6 +92,7 @@ const Example = React.createClass({
       rowGetter={this.getRows}
       rowsCount={this.state.rowCount}
       getSubRowDetails={this.getSubRowDetails}
+      onDeleteSubRow={this.onDeleteSubRow}
       minHeight={500}
       onCellExpand={this.onCellExpand} />);
   }

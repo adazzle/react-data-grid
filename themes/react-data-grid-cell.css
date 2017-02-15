@@ -169,6 +169,7 @@
     top: 0px;
     right: 20px;
     position: absolute;
+    cursor: pointer;
 }
 
 .rdg-child-row-action-cross:before, rdg-child-row-action-cross:after, .rdg-child-row-action-cross-first:before, .rdg-child-row-action-cross-first:after, .rdg-child-row-action-cross-last:before, rdg-child-row-action-cross-last:after {
@@ -205,7 +206,9 @@
   background: grey;
 }
 
-
+.rdg-child-row-action-cross:hover {
+    background: red;
+}
 .rdg-child-row-remove-btn {
    position:absolute;
    cursor:pointer;
@@ -213,6 +216,11 @@
    border-radius:14px;
    z-index: 3;
    background: white;
+}
+
+.rdg-child-row-remove-btn:hover {
+   color: red;
+   border:1px solid red;
 }
 
 .rdg-child-row-remove-btn div {
@@ -231,3 +239,6 @@
 
 }
 
+.rdg-child-row-remove-btn div:hover {
+   color: red;
+}

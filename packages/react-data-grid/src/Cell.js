@@ -132,6 +132,13 @@ const Cell = React.createClass({
     }
   },
 
+  onDeleteSubRow(e) {
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onDeleteSubRow != null) {
+      meta.onDeleteSubRow({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expandArgs: this.props.expandableOptions });
+    }
+  },
+
   onDragHandleDoubleClick(e) {
     e.stopPropagation();
     let meta = this.props.cellMetaData;
@@ -458,7 +465,7 @@ const Cell = React.createClass({
       cellExpander = <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
     }
     if (treeDepth > 0 && isExpandCell) {
-      cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings}/>;
+      cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow}/>;
     }
     return (<div className="react-grid-Cell__value">{cellDeleter}<div  style={{ marginLeft: marginLeft }}><span>{CellContent}</span> {this.props.cellControls} {cellExpander}</div></div>);
   },
