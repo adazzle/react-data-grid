@@ -15,8 +15,11 @@ const focusableComponentWrapper = WrappedComponent => {
         return WrappedComponent.isSelected(this.props) !== WrappedComponent.isSelected(nextProps);
       }
 
-      componentWillReceiveProps() {
-        this.setState({isScrolling: WrappedComponent.isScrolling(this.props)});
+      componentWillReceiveProps(nextProps) {
+        let isScrolling = WrappedComponent.isScrolling(nextProps);
+        if (isScrolling && !this.state.isScrolling) {
+          this.setState({isScrolling: isScrolling});
+        }
       }
 
       componentDidMount() {
