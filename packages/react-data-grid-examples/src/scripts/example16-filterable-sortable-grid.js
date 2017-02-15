@@ -14,32 +14,38 @@ const Example = React.createClass({
       {
         key: 'task',
         name: 'Title',
-        filterable: true
+        filterable: true,
+        sortable: true
       },
       {
         key: 'priority',
         name: 'Priority',
-        filterable: true
+        filterable: true,
+        sortable: true
       },
       {
         key: 'issueType',
         name: 'Issue Type',
-        filterable: true
+        filterable: true,
+        sortable: true
       },
       {
         key: 'complete',
         name: '% Complete',
-        filterable: true
+        filterable: true,
+        sortable: true
       },
       {
         key: 'startDate',
         name: 'Start Date',
-        filterable: true
+        filterable: true,
+        sortable: true
       },
       {
         key: 'completeDate',
         name: 'Expected Complete',
-        filterable: true
+        filterable: true,
+        sortable: true
       }
     ];
 
@@ -105,7 +111,7 @@ const Example = React.createClass({
         enableCellSelect={true}
         columns={this._columns}
         rowGetter={this.rowGetter}
-        rowsCount={this.state.rows.length}
+        rowsCount={this.getSize()}
         minHeight={500}
         toolbar={<Toolbar enableFilter={true}/>}
         onAddFilter={this.handleFilterChange}
