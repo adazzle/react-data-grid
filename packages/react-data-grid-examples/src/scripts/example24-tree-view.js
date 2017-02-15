@@ -47,6 +47,10 @@ const Example = React.createClass({
     return { expanded: {}, rowCount: rows.length, rows: rows };
   },
 
+  getRows(i) {
+    return this.state.rows[i];
+  },
+
   getSubRowDetails(rowItem) {
     let isExpanded = this.state.expanded[rowItem.name] ? this.state.expanded[rowItem.name] : false;
     return {
@@ -55,10 +59,6 @@ const Example = React.createClass({
       children: rowItem.children,
       field: 'name'
     };
-  },
-
-  getRows(i) {
-    return this.state.rows[i];
   },
 
   onCellExpand(args) {
@@ -80,9 +80,9 @@ const Example = React.createClass({
     let idToDelete = args.rowData.id;
     let rows = this.state.rows.slice(0);
     rows = rows.map(r => {
-      return Object.assign({}, r, {children: r.children.filter(sr => sr.id !== idToDelete)});
+      return Object.assign({}, r, { children: r.children.filter(sr => sr.id !== idToDelete) });
     });
-    this.setState({rows});
+    this.setState({ rows });
   },
 
   render() {
