@@ -192,11 +192,16 @@ const Component = React.createClass({
     return { rows: Immutable.fromJS(fakeRows)};
   },
 
-  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+  handleGridRowsUpdated(e) {
+    const { fromRow, toRow, updated } = e;
     let rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
       rows = rows.update(i, r => r.merge(updated));
+    }
+
+    if (this.props.handleCellDrag) {
+      this.props.handleCellDrag(e);
     }
 
     this.setState({ rows });
