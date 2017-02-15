@@ -205,12 +205,12 @@ const Component = React.createClass({
   handleAddRow({ newRowIndex }) {
     const newRow = {
       id: newRowIndex,
-      userStory: '',
-      developer: '',
-      epic: ''
+      firstName: '',
+      lastName: ''
     };
 
-    let rows = this.state.rows.push(newRow);
+    let rows = this.state.rows.slice();
+    rows = rows.push(Immutable.fromJS(newRow));
     this.setState({ rows });
   },
 

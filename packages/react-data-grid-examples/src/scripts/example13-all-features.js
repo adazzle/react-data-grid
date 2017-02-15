@@ -225,7 +225,8 @@ const Example = React.createClass({
       epic: ''
     };
 
-    const rows = React.addons.update(this.state.rows, {$push: [newRow]});
+    let rows = this.state.rows.slice();
+    rows = React.addons.update(rows, {$push: [newRow]});
     this.setState({ rows });
   },
 
