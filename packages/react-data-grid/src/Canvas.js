@@ -189,7 +189,7 @@ const Canvas = React.createClass({
     let rows = [];
     let rowFetchIndex = displayStart;
     let i = displayStart;
-    while (i < displayEnd && rowFetchIndex < 6) {
+    while (i < displayEnd && rowFetchIndex < displayEnd) {
       let row = this.props.rowGetter(rowFetchIndex);
       if (this.props.getSubRowDetails) {
         let treeDepth = 0;
