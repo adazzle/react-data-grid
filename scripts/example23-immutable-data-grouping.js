@@ -15,7 +15,7 @@ let _rows = [];
 let _cols = [];
 
 for (let j = 0; j < 50; j++) {
-  _cols.push({key: 'col' + j, name: 'col' + j, width: 150, editable: true, draggable: true});
+  _cols.push({key: 'col' + j, name: 'col' + j, width: 150, draggable: true});
 }
 
 for (let rowIdx = 1; rowIdx < 100; rowIdx++) {
