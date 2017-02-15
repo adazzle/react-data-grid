@@ -1,4 +1,4 @@
-import isEqual from 'lodash/isEqual';
+import _ from 'underscore';
 const React = require('react');
 const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
@@ -252,7 +252,7 @@ const Cell = React.createClass({
       let nextColumn = nextProps.column;
       let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
 
-      hasChangedDependentValues = !isEqual(currentRowMetaData, nextRowMetaData);
+      hasChangedDependentValues = !_.isEqual(currentRowMetaData, nextRowMetaData);
     }
 
     return hasChangedDependentValues;
