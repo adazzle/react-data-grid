@@ -189,7 +189,7 @@ const Canvas = React.createClass({
     let rows = [];
     let rowFetchIndex = displayStart;
     let i = displayStart;
-    while (i < displayEnd) {
+    while (i < displayEnd && rowFetchIndex < 6) {
       let row = this.props.rowGetter(rowFetchIndex);
       if (this.props.getSubRowDetails) {
         let treeDepth = 0;
@@ -213,12 +213,12 @@ const Canvas = React.createClass({
     return scrollbarWidth;
   },
 
-  getScroll(): { scrollTop: number; scrollLeft: number } {
+  getScroll() {
     let {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
     return { scrollTop, scrollLeft };
   },
 
-  isRowSelected(idx, row): boolean {
+  isRowSelected(idx, row) {
     // Use selectedRows if set
     if (this.props.selectedRows !== null) {
       let selectedRows = this.props.selectedRows.filter(r => {
@@ -241,7 +241,7 @@ const Canvas = React.createClass({
   _currentRowsRange: { start: 0, end: 0 },
   _scroll: { scrollTop: 0, scrollLeft: 0 },
 
-  setScrollLeft(scrollLeft: number) {
+  setScrollLeft(scrollLeft) {
     if (this._currentRowsLength !== 0) {
       if (!this.refs) return;
       for (let i = 0, len = this._currentRowsLength; i < len; i++) {
@@ -264,7 +264,7 @@ const Canvas = React.createClass({
     return this.refs[i];
   },
 
-  renderRow(props: any) {
+  renderRow(props) {
     let row = props.row;
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup

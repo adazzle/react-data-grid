@@ -4,7 +4,7 @@ const React = require('react');
 
 function createRows() {
   let rows = [];
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 6; i++) {
     let price = Math.random() * 30;
     let row = {
       name: 'supplier ' + i,
@@ -71,6 +71,7 @@ const Example = React.createClass({
       delete expanded[rowKey];
       rowCount -= args.expandArgs.children.length;
     }
+    console.log(rowCount);
     this.setState({ expanded: expanded, rowCount: rowCount });
   },
 

@@ -43,6 +43,9 @@ const Viewport = React.createClass({
   },
 
   onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
+    if (this.state.displayEnd === this.props.rowsCount && scroll.scrollTop > this.state.scrollTop) {
+      return;
+    }
     this.updateScroll(
       scroll.scrollTop, scroll.scrollLeft,
       this.state.height,
