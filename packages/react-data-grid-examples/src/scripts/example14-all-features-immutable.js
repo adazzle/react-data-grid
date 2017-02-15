@@ -192,30 +192,13 @@ const Component = React.createClass({
     return { rows: Immutable.fromJS(fakeRows)};
   },
 
-  handleRowUpdated({ rowIdx, updated }) {
-    // merge the updated row values with the existing row
-    const rows = this.state.rows.update(rowIdx, r => r.merge(updated));
-
-    this.setState({ rows });
-  },
-
-  handleCellDrag(e) {
+  handleGridRowsUpdated({ fromRow, toRow, updated }) {
     let rows = this.state.rows;
-    for (let i = e.fromRow; i <= e.toRow; i++) {
-      rows = rows.update(i, r => r.set(e.cellKey, e.value));
+
+    for (let i = fromRow; i <= toRow; i++) {
+      rows = rows.update(i, r => r.merge(updated));
     }
 
-    if (this.props.handleCellDrag) {
-      this.props.handleCellDrag(e);
-    }
-
-    this.setState({ rows });
-  },
-
-  handleCellCopyPaste(e) {
-    let rows = this.state.rows.update(e.toRow, r => {
-      return r.set(e.cellKey, e.value);
-    });
     this.setState({ rows });
   },
 
@@ -251,9 +234,7 @@ const Component = React.createClass({
         columns={columns}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}
-        onRowUpdated={this.handleRowUpdated}
-        onCellsDragged={this.handleCellDrag}
-        onCellCopyPaste={this.handleCellCopyPaste}
+        onGridRowsUpdated={this.handleGridRowsUpdated}
         toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={()=>{}} numberOfRows={this.getSize()}/>}
         rowHeight={50}
         minHeight={600} />
