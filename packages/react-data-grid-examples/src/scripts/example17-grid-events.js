@@ -41,7 +41,7 @@ const Example = React.createClass({
   },
 
   onRowClick(rowIdx, row) {
-    let rows = this.state.rows;
+    let rows = this.state.rows.slice();
     rows[rowIdx] = Object.assign({}, row, {isSelected: !row.isSelected});
     this.setState({ rows });
   },

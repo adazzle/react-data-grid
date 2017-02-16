@@ -790,7 +790,7 @@ const ReactDataGrid = React.createClass({
     let column = this.getColumn(idx);
 
     if (ColumnUtils.canEdit(column, row, this.props.enableCellSelect) && !this.isActive()) {
-      let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
+      let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
       let showEditor = true;
       if (typeof this.props.onCheckCellIsEditable === 'function') {
         let args = Object.assign({}, { row, column }, selected);
@@ -811,7 +811,7 @@ const ReactDataGrid = React.createClass({
     let col = this.getColumn(idx);
 
     if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && this.isActive()) {
-      let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
+      let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
       this.setState({selected: selected});
     }
   },
