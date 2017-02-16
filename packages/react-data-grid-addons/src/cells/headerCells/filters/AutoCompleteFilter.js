@@ -38,12 +38,11 @@ class AutoCompleteFilter extends React.Component {
         continue;
       }
 
-      if (typeof columnValue !== 'undefined' && typeof filterTerms[key].value !== 'undefined') {
+      if (columnValue !== undefined && filterTerms[key].value !== undefined) {
+        let strColumnValue = columnValue.toString();
         let filterTermValue = filterTerms[key].value.toString();
-
-        let checkValueIndex = columnValue.toString().trim().toLowerCase().indexOf(filterTermValue.trim().toLowerCase());
-        let columnMatchesSearch = checkValueIndex !== -1 && (checkValueIndex !== 0 || columnValue.toString() === filterTermValue);
-
+        let checkValueIndex = strColumnValue.trim().toLowerCase().indexOf(filterTermValue.trim().toLowerCase());
+        let columnMatchesSearch = checkValueIndex !== -1 && (checkValueIndex !== 0 || strColumnValue === filterTermValue);
         if (columnMatchesSearch === true) {
           columnValueContainsSearchTerms = true;
           break;
