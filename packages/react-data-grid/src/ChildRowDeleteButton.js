@@ -1,5 +1,4 @@
 import React from 'react';
-require('../../../themes/react-data-grid-cell.css');
 
 const ChildRowDeleteButton = ({treeDepth, cellHeight, siblingIndex, numberSiblings, onDeleteSubRow}) => {
   let className = 'rdg-child-row-action-cross';
