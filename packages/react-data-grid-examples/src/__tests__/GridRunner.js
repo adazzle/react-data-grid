@@ -8,26 +8,22 @@ export default class GridRunner {
   /* =====
   SETUP
   ======== */
-  constructor({renderIntoBody = false, GridUnderTest = ExampleGrid}) {
-    this.renderIntoBody = renderIntoBody;
+  constructor({GridUnderTest = ExampleGrid}) {
     this.example = GridUnderTest;
-    this.gridWrapper = this._renderGrid(renderIntoBody);
+    this.gridWrapper = this._renderGrid();
     this.grid = this.gridWrapper.node;
   }
 
-  _renderGrid(intoBody) {
+  _renderGrid() {
     let Example = this.example;
     this.handleCellDragSpy = jasmine.createSpy('handleCellDrag');
-    let options = intoBody ? { attachTo: document.body } : { };
-    let gridWrapper = mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
+    let gridWrapper = mount(<Example handleCellDrag={this.handleCellDragSpy} />);
 
     return gridWrapper;
   }
 
   dispose() {
-    if (this.renderIntoBody) {
-      ReactDOM.unmountComponentAtNode(document.body);
-    }
+    this.gridWrapper = this.gridWrapper.unmount();
     this.grid = null;
   }
 
@@ -57,12 +53,12 @@ export default class GridRunner {
   }
 
   getContextMenu() {
-    let menus = document.getElementsByClassName('react-context-menu');
+    let menus = this.wrapper.find('.react-context-menu');
     return menus.length > 0 ? menus[menus.length - 1] : undefined;
   }
 
   getContextMenuItem() {
-    let menuItems = document.getElementsByClassName('react-context-menu-link');
+    let menuItems = this.wrapper.find('.react-context-menu-link');
     return menuItems.length > 0 ? menuItems[menuItems.length - 1] : undefined;
   }
 
@@ -83,7 +79,8 @@ export default class GridRunner {
   }
 
   getDisplayInfo() {
-    const { displayStart, colDisplayStart, displayEnd, colDisplayEnd } = this.grid.refs.reactDataGrid.refs.base.refs.viewport.state;
+    const viewPort = this.gridWrapper.find('Viewport');
+    const { displayStart, colDisplayStart, displayEnd, colDisplayEnd } = viewPort.node.state;
 
     return { displayStart, colDisplayStart, displayEnd, colDisplayEnd };
   }
@@ -102,7 +99,7 @@ export default class GridRunner {
   }
 
   getRenderedHeaderCells() {
-    return ReactDOM.findDOMNode(this.grid).querySelectorAll('.react-grid-HeaderCell');
+    return this.gridWrapper.find('.react-grid-HeaderCell');
   }
 
   getRow(rowIdx) {
@@ -151,7 +148,7 @@ export default class GridRunner {
   // you MUST have set the grid to render into body to use this
   // chrome (et al) dont do cursor positions unless you are properly visibile
   setCursor(start, end = start) {
-    const input = ReactDOM.findDOMNode(this.getEditor().node);
+    const input = this.getEditor().node;
     input.setSelectionRange(start, end);
     expect(input.selectionStart).toEqual(start, `Couldnt set the cursor.
             You probably havent rendered the grid into the *actual* dom.
@@ -219,7 +216,7 @@ export default class GridRunner {
     return this;
   }
   hasCopied({cellIdx, rowIdx}) {
-    let baseGrid = this.grid.refs.reactDataGrid;
+    let baseGrid = this.gridWrapper.find('ReactDataGrid').node;
     expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
     expect(ReactDOM.findDOMNode(this.cell.node).className.indexOf('copied') > -1).toBe(true);
