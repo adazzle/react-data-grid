@@ -20,7 +20,7 @@ function fakeGetValidFilterValues() {
   return options;
 }
 
-fdescribe('AutoCompleteFilter', () => {
+describe('AutoCompleteFilter', () => {
 
   let component;
   let rows;
