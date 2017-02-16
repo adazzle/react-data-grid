@@ -108,7 +108,8 @@ const ReactDataGrid = React.createClass({
     rowActionsCell: React.PropTypes.func,
     onCheckCellIsEditable: React.PropTypes.func,
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
-    overScan: React.PropTypes.object
+    overScan: React.PropTypes.object,
+    onDeleteSubRow: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {

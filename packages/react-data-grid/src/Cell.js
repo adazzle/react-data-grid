@@ -134,7 +134,7 @@ const Cell = React.createClass({
     }
   },
 
-  onDeleteSubRow(e) {
+  onDeleteSubRow() {
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onDeleteSubRow != null) {
       meta.onDeleteSubRow({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expandArgs: this.props.expandableOptions });

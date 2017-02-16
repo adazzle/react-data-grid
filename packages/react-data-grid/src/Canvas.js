@@ -164,7 +164,7 @@ const Canvas = React.createClass({
     let rows = rowsInput;
     let increment = i;
     if (increment < displayEnd) {
-      subRowDetails = Object.assign(subRowDetails, { treeDepth, siblingIndex, numberSiblings });
+      Object.assign(subRowDetails, { treeDepth, siblingIndex, numberSiblings });
       rows.push({ row, subRowDetails });
       increment++;
     }
