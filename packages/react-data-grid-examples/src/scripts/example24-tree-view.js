@@ -4,7 +4,7 @@ const React = require('react');
 
 function createRows() {
   let rows = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 100; i++) {
     let price = Math.random() * 30;
     let row = {
       id: 'row' + i,
