@@ -21,7 +21,6 @@ function fakeGetValidFilterValues() {
 }
 
 describe('AutoCompleteFilter', () => {
-
   let component;
   let rows;
 
@@ -149,7 +148,6 @@ describe('AutoCompleteFilter', () => {
         let request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
-
     });
   });
 });
