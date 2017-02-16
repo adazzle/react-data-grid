@@ -1,12 +1,14 @@
 import React from 'react';
+import classNames from 'classnames';
 
 const ChildRowDeleteButton = ({treeDepth, cellHeight, siblingIndex, numberSiblings, onDeleteSubRow}) => {
-  let className = 'rdg-child-row-action-cross';
-  if (siblingIndex === 0) {
-    className = 'rdg-child-row-action-cross-first';
-  } else if (siblingIndex === numberSiblings - 1) {
-    className = 'rdg-child-row-action-cross-last';
-  }
+  const firstSibling = siblingIndex === 0;
+  const lastSibling = siblingIndex === numberSiblings - 1;
+  let className = classNames(
+    { 'rdg-child-row-action-cross-first': firstSibling },
+    { 'rdg-child-row-action-cross-last': lastSibling },
+    { 'rdg-child-row-action-cross': !firstSibling && !lastSibling }
+  );
   const height = 12;
   const width = 12;
   let left = treeDepth * 15;
