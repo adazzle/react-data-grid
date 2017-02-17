@@ -17257,6 +17257,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getRelatedTarget: function getRelatedTarget(e) {
 	    return e.relatedTarget || e.explicitOriginalTarget || document.activeElement; // IE11
 	  },
+	  handleRightClick: function handleRightClick(e) {
+	    e.stopPropagation();
+	  },
 	  handleBlur: function handleBlur(e) {
 	    e.stopPropagation();
 	    if (this.isBodyClicked(e)) {
@@ -17304,7 +17307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: this.getContainerClass(), onBlur: this.handleBlur, onKeyDown: this.onKeyDown },
+	      { className: this.getContainerClass(), onBlur: this.handleBlur, onKeyDown: this.onKeyDown, onContextMenu: this.handleRightClick },
 	      this.createEditor(),
 	      this.renderStatusIcon()
 	    );
