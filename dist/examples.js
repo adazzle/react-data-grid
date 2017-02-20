@@ -16587,8 +16587,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onRowExpandToggle: this.onRowExpandToggle,
 	      onRowHover: this.onRowHover,
 	      getDataGridDOMNode: this.getDataGridDOMNode,
-	      isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38), // up or down
-	      isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) // left or right
+	      isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
+	      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
 	    };
 
 	    var toolbar = this.renderToolbar();
@@ -17654,11 +17654,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var _this = _possibleConstructorReturn(this, _Component.call(this));
 
 	      _this.checkFocus = _this.checkFocus.bind(_this);
+	      _this.state = { isScrolling: false };
 	      return _this;
 	    }
 
 	    ComponentWrapper.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
 	      return WrappedComponent.isSelected(this.props) !== WrappedComponent.isSelected(nextProps);
+	    };
+
+	    ComponentWrapper.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+	      var isScrolling = WrappedComponent.isScrolling(nextProps);
+	      if (isScrolling && !this.state.isScrolling) {
+	        this.setState({ isScrolling: isScrolling });
+	      }
 	    };
 
 	    ComponentWrapper.prototype.componentDidMount = function componentDidMount() {
@@ -17670,8 +17678,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    ComponentWrapper.prototype.checkFocus = function checkFocus() {
-	      if (WrappedComponent.isSelected(this.props) && WrappedComponent.isScrolling(this.props)) {
+	      if (WrappedComponent.isSelected(this.props) && this.state.isScrolling) {
 	        this.focus();
+	        this.setState({ isScrolling: false });
 	      }
 	    };
 
