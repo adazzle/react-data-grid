@@ -8881,10 +8881,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var PropTypes = React.PropTypes;
 
 	function simpleCellRenderer(objArgs) {
+	  var headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
 	  return React.createElement(
 	    'div',
 	    { className: 'widget-HeaderCell__value' },
-	    objArgs.column.name
+	    headerText
 	  );
 	}
 
@@ -15126,7 +15127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var cells = [];
 	    var lockedCells = [];
 	    for (var i = 0, len = this.getSize(this.props.columns); i < len; i++) {
-	      var column = this.getColumn(this.props.columns, i);
+	      var column = Object.assign({ rowType: this.props.rowType }, this.getColumn(this.props.columns, i));
 	      var _renderer = this.getHeaderRenderer(column);
 	      if (column.key === 'select-row' && this.props.rowType === 'filter') {
 	        _renderer = React.createElement('div', null);
@@ -18151,14 +18152,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        continue;
 	      }
 
-	      var filterTermValue = filterTerms[key].value;
-
-	      var checkValueIndex = columnValue.trim().toLowerCase().indexOf(filterTermValue.trim().toLowerCase());
-	      var columnMatchesSearch = checkValueIndex !== -1 && (checkValueIndex !== 0 || columnValue === filterTermValue);
-
-	      if (columnMatchesSearch) {
-	        columnValueContainsSearchTerms = true;
-	        break;
+	      if (columnValue !== undefined && filterTerms[key].value !== undefined) {
+	        var strColumnValue = columnValue.toString();
+	        var filterTermValue = filterTerms[key].value.toString();
+	        var checkValueIndex = strColumnValue.trim().toLowerCase().indexOf(filterTermValue.trim().toLowerCase());
+	        var columnMatchesSearch = checkValueIndex !== -1 && (checkValueIndex !== 0 || strColumnValue === filterTermValue);
+	        if (columnMatchesSearch === true) {
+	          columnValueContainsSearchTerms = true;
+	          break;
+	        }
 	      }
 	    }
 
