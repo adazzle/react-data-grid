@@ -888,8 +888,8 @@ const ReactDataGrid = React.createClass({
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
-      isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38), // up or down
-      isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) // left or right
+      isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
+      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
     };
 
     let toolbar = this.renderToolbar();
