@@ -12,7 +12,7 @@ environment:
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
   npmrc_token:
-    secure: /9XWoCG/xQ2+rJpht0B5kA==
+    secure: jG6oWTaTCoL72ZhDYY8ipA==
 
 
 # Install scripts. (runs after repo cloning)
@@ -49,9 +49,6 @@ test_script:
 
 # Don't run MS build step
 build: off
-
-#cache:
-#  - '%AppData%\npm-cache -> package.json'
 
 on_success:
 # If it is not a scheduled build/pr build and the current branch is master publish a new package.

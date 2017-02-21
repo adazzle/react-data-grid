@@ -96,6 +96,58 @@ describe('AutoCompleteFilter', () => {
         let request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
+
+      it('should transform Integers into string to compare', () => {
+        let columnFilter = { filterTerm: [ {value: 1} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeTruthy();
+      });
+
+      it('should transform Float into string to compare', () => {
+        let columnFilter = { filterTerm: [ {value: 1.1} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeFalsy();
+      });
+
+      it('should transform row values into string to compare data (returns true)', () => {
+        rows = [{ id: 1, title: 0.15, count: 1 }];
+        let columnFilter = { filterTerm: [ {value: '0.15'} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeTruthy();
+      });
+
+      it('should transform row values into string to compare data (returns false)', () => {
+        rows = [{ id: 1, title: 0.15, count: 1 }];
+        let columnFilter = { filterTerm: [ {value: '0.10'} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeFalsy();
+      });
+
+      it('should transform row and filter values into string to compare data', () => {
+        rows = [{ id: 1, title: 0.15, count: 1 }];
+        let columnFilter = { filterTerm: [ {value: 0.15} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeTruthy();
+      });
+
+      it('should trim spaces of the filterTerm values', () => {
+        let columnFilter = { filterTerm: [ {value: '   1   '} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeTruthy();
+      });
+
+      it('should handle undefined row values', () => {
+        rows = [{ id: 1, title: undefined, count: 1 }];
+        let columnFilter = { filterTerm: [ {value: 1} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeFalsy();
+      });
+
+      it('should handle undefined filter values', () => {
+        let columnFilter = { filterTerm: [ {value: undefined} ] };
+        let request = filterValues(columnFilter);
+        expect(request).toBeFalsy();
+      });
     });
   });
 });

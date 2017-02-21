@@ -784,7 +784,7 @@ const ReactDataGrid = React.createClass({
     let column = this.getColumn(idx);
 
     if (ColumnUtils.canEdit(column, row, this.props.enableCellSelect) && !this.isActive()) {
-      let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
+      let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
       let showEditor = true;
       if (typeof this.props.onCheckCellIsEditable === 'function') {
         let args = Object.assign({}, { row, column }, selected);
@@ -805,7 +805,7 @@ const ReactDataGrid = React.createClass({
     let col = this.getColumn(idx);
 
     if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && this.isActive()) {
-      let selected = Object.assign(this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
+      let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
       this.setState({selected: selected});
     }
   },
@@ -888,8 +888,8 @@ const ReactDataGrid = React.createClass({
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
-      isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38), // up or down
-      isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) // left or right
+      isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
+      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
     };
 
     let toolbar = this.renderToolbar();

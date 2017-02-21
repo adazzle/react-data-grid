@@ -18,7 +18,7 @@ const Example = React.createClass({
   createColumns() {
     let cols = [];
     for (let j = 0; j < 50; j++) {
-      cols.push({ key: 'col' + j, name: 'col' + j, width: 150, editable: true });
+      cols.push({ key: 'col' + j, name: 'col' + j, width: 150 });
     }
 
     return cols;
@@ -39,12 +39,6 @@ const Example = React.createClass({
     return this.state.rows.get(rowIdx);
   },
 
-  handleRowUpdated: function(e) {
-    // merge updated row with current row and rerender by setting state
-    let rows = this.state.rows.update(e.rowIdx, (row) => row.merge(e.updated));
-    this.setState({ rows });
-  },
-
   render() {
     return  (
       <ReactDataGrid
@@ -52,8 +46,7 @@ const Example = React.createClass({
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.size}
-        minHeight={1200}
-        onRowUpdated={this.handleRowUpdated} />);
+        minHeight={1200} />);
   }
 });
 
