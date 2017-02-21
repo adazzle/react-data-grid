@@ -10,6 +10,11 @@
     cursor: pointer;
 }
 
+/* Remove vertical margin */
+.react-grid-checkbox, .react-grid-checkbox-label {
+    margin: 0 10px;
+}
+
 .react-grid-checkbox-label, .radio-custom-label {
     position: relative;
 }
@@ -52,7 +57,9 @@
     box-shadow: inset 0px 0px 0px 4px #fff;
 }
 
+/* Remove padding that mis-aligns the checkbox, also the id is not valid since unique ids will be generated
 label[for=select-all-checkbox]{
     padding-left: 10px;
     padding-top: 5px;
 }
+*/
