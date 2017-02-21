@@ -888,8 +888,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./react-data-grid-header.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./react-data-grid-header.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./react-data-grid-header.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./react-data-grid-header.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -1168,8 +1168,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./react-data-grid-core.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./react-data-grid-core.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./react-data-grid-core.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./react-data-grid-core.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -1194,8 +1194,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./react-data-grid-row.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./react-data-grid-row.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./react-data-grid-row.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./react-data-grid-row.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -6731,8 +6731,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./react-data-grid-cell.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./react-data-grid-cell.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./react-data-grid-cell.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./react-data-grid-cell.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -9519,8 +9519,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./react-data-grid-checkbox.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./react-data-grid-checkbox.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./react-data-grid-checkbox.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./react-data-grid-checkbox.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -13977,8 +13977,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./react-data-grid-toolbar.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./react-data-grid-toolbar.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./react-data-grid-toolbar.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./react-data-grid-toolbar.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -15731,6 +15731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  propTypes: {
 	    rowHeight: React.PropTypes.number.isRequired,
 	    headerRowHeight: React.PropTypes.number,
+	    headerFiltersHeight: React.PropTypes.number,
 	    minHeight: React.PropTypes.number.isRequired,
 	    minWidth: React.PropTypes.number,
 	    enableRowSelect: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]),
@@ -15791,6 +15792,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      enableCellSelect: false,
 	      tabIndex: -1,
 	      rowHeight: 35,
+	      headerRowHeight: 45,
 	      enableRowSelect: false,
 	      minHeight: 350,
 	      rowKey: 'id',
@@ -16316,7 +16318,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        ref: 'filterRow',
 	        filterable: true,
 	        onFilterChange: this.props.onAddFilter,
-	        height: 45,
+	        height: this.props.headerFiltersHeight,
 	        rowType: 'filter'
 	      });
 	    }
@@ -51341,8 +51343,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../css-loader/index.js!./react-select.css", function() {
-				var newContent = require("!!./../../css-loader/index.js!./react-select.css");
+			module.hot.accept("!!../../css-loader/index.js!./react-select.css", function() {
+				var newContent = require("!!../../css-loader/index.js!./react-select.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -51367,8 +51369,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./react-data-grid-drop-target.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./react-data-grid-drop-target.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./react-data-grid-drop-target.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./react-data-grid-drop-target.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -51393,8 +51395,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./react-data-grid-image.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./react-data-grid-image.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./react-data-grid-image.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./react-data-grid-image.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -51419,8 +51421,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./ron-react-autocomplete.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./ron-react-autocomplete.css");
+			module.hot.accept("!!../node_modules/css-loader/index.js!./ron-react-autocomplete.css", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!./ron-react-autocomplete.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -113487,8 +113489,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../../../node_modules/css-loader/index.js!./exampleWrapper.css", function() {
-				var newContent = require("!!./../../../../../node_modules/css-loader/index.js!./exampleWrapper.css");
+			module.hot.accept("!!../../../../../node_modules/css-loader/index.js!./exampleWrapper.css", function() {
+				var newContent = require("!!../../../../../node_modules/css-loader/index.js!./exampleWrapper.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
