@@ -52,6 +52,7 @@ const ReactDataGrid = React.createClass({
   propTypes: {
     rowHeight: React.PropTypes.number.isRequired,
     headerRowHeight: React.PropTypes.number,
+    headerFiltersHeight: React.PropTypes.number,
     minHeight: React.PropTypes.number.isRequired,
     minWidth: React.PropTypes.number,
     enableRowSelect: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]),
@@ -116,6 +117,7 @@ const ReactDataGrid = React.createClass({
       enableCellSelect: false,
       tabIndex: -1,
       rowHeight: 35,
+      headerRowHeight: 45,
       enableRowSelect: false,
       minHeight: 350,
       rowKey: 'id',
@@ -619,7 +621,7 @@ const ReactDataGrid = React.createClass({
         ref: 'filterRow',
         filterable: true,
         onFilterChange: this.props.onAddFilter,
-        height: 45,
+        height: this.props.headerFiltersHeight,
         rowType: 'filter'
       });
     }
@@ -888,8 +890,8 @@ const ReactDataGrid = React.createClass({
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
-      isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38), // up or down
-      isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) // left or right
+      isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
+      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
     };
 
     let toolbar = this.renderToolbar();

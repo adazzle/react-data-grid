@@ -4,7 +4,7 @@ let Cell         = rewire('../Cell');
 let rewireModule = require('../../../../test/rewireModule');
 let StubComponent = require('../../../../test/StubComponent');
 import { mount, shallow } from 'enzyme';
-import isEqual from 'lodash/isEqual';
+import _ from 'underscore';
 Object.assign = require('object-assign');
 import helpers from '../helpers/test/GridPropHelpers';
 
@@ -331,7 +331,7 @@ describe('Cell Tests', () => {
 
       let editorContainerInstanceProps = editorContainerInstance.props();
 
-      expect(isEqual(props, editorContainerInstanceProps)).toBeTruthy();
+      expect(_.isEqual(props, editorContainerInstanceProps)).toBeTruthy();
     });
 
     it('should append the update cell class to the dom node if present and cell is updated', () => {

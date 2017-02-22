@@ -83,7 +83,7 @@ describe('Editor Container Tests', () => {
         height: 50
       };
       let editorDiv = renderComponent(props).find('div').at(0);
-      expect(Object.keys(editorDiv.props()).length).toBe(4);
+      expect(Object.keys(editorDiv.props()).length).toBe(5);
       expect(editorDiv.props().className).toBeDefined();
       expect(editorDiv.props().onBlur).toBeDefined();
       expect(editorDiv.props().onKeyDown).toBeDefined();

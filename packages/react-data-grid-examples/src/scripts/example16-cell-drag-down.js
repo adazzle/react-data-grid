@@ -48,30 +48,15 @@ const Example = React.createClass({
     return this.state.rows[i];
   },
 
-  handleRowUpdated({ rowIdx, updated }) {
-    // merge updated row with current row and rerender by setting state
-    const rows = this.state.rows;
-    Object.assign(rows[rowIdx], updated);
-    this.setState({rows: rows});
-  },
+  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+    let rows = this.state.rows.slice();
 
-  handleCellDrag({ fromRow, toRow, cellKey, value }) {
-    let rows = this.state.rows.slice(0);
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
-      rowToUpdate[cellKey] = value;
+      let updatedRow = React.addons.update(rowToUpdate, {$merge: updated});
+      rows[i] = updatedRow;
     }
-    this.setState({ rows });
-  },
 
-  handleDragHandleDoubleClick({ idx, rowIdx, rowData }) {
-    let rows = this.state.rows.map(r => Object.assign({}, r));
-    const column = this._columns[idx];
-
-    for (let i = rowIdx; i <= rows.length - 1; i++) {
-      let rowToUpdate = rows[i];
-      rowToUpdate[column.key] = rowData[column.key];
-    }
     this.setState({ rows });
   },
 
@@ -82,10 +67,8 @@ const Example = React.createClass({
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
-        onDragHandleDoubleClick={this.handleDragHandleDoubleClick}
-        onCellsDragged={this.handleCellDrag}
         minHeight={500}
-        onRowUpdated={this.handleRowUpdated} />);
+        onGridRowsUpdated={this.handleGridRowsUpdated} />);
   }
 });
 

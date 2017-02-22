@@ -70,7 +70,7 @@ const Example = React.createClass({
   },
 
   handleGridRowsUpdated({ fromRow, toRow, updated }) {
-    let rows = this.state.rows;
+    let rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
@@ -94,7 +94,7 @@ const Example = React.createClass({
 });
 
 const exampleDescription = (
-  <p>To make a given column editable set <code>column.editable</code> and create a <code>onRowUpdated</code> handler. Note that you will need to store your rows in state and update that state when a cell value changes.</p>);
+  <p>To make a given column editable set <code>column.editable</code> and create a <code>onGridRowsUpdated</code> handler. Note that you will need to store your rows in state and update that state when a cell value changes.</p>);
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,

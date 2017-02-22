@@ -44,7 +44,7 @@ const Example = React.createClass({
       }
     ];
 
-    return { rows: this.createRows(1000), filters: [] };
+    return { rows: this.createRows(), filters: {} };
   },
 
   getRandomDate(start, end) {
@@ -91,7 +91,7 @@ const Example = React.createClass({
     this.setState({ filters: newFilters });
   },
 
-  onClearFilters: function() {
+  onClearFilters() {
     // all filters removed
     this.setState({filters: {} });
   },
