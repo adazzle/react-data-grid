@@ -26,7 +26,7 @@
 }
 
 .react-grid-checkbox:checked + .react-grid-checkbox-label:before {
-    background: rebeccapurple;
+    background: #005295;
     box-shadow: inset 0px 0px 0px 4px #fff;
 }
 
@@ -50,9 +50,4 @@
 .radio-custom:checked + .radio-custom-label:before {
     background: #ccc;
     box-shadow: inset 0px 0px 0px 4px #fff;
-}
-
-label[for=select-all-checkbox]{
-    padding-left: 10px;
-    padding-top: 5px;
 }
