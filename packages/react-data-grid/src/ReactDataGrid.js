@@ -293,7 +293,7 @@ const ReactDataGrid = React.createClass({
       rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
     }
 
-    let fromRowId = this.props.rowGetter(from)[this.props.rowKey];
+    let fromRowId = this.props.rowGetter(fromRow)[this.props.rowKey];
     let toRowId = this.props.rowGetter(toRow)[this.props.rowKey];
 
     this.props.onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action});
