@@ -100,7 +100,8 @@ const ReactDataGrid = React.createClass({
             rowKey: React.PropTypes.string.isRequired
           }).isRequired
         })
-      ]).isRequired
+      ]).isRequired,
+      columnWidth: React.PropTypes.number
     }),
     onRowClick: React.PropTypes.func,
     onGridKeyUp: React.PropTypes.func,
@@ -840,7 +841,7 @@ const ReactDataGrid = React.createClass({
         onCellChange: this.handleRowSelect,
         filterable: false,
         headerRenderer: headerRenderer,
-        width: 60,
+        width: !!this.props.rowSelection && this.props.rowSelection.columnWidth ? this.props.rowSelection.columnWidth : 60,
         locked: true,
         getRowMetaData: (rowData) => rowData,
         cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''
