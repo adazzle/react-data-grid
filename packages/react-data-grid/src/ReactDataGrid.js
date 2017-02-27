@@ -117,7 +117,7 @@ const ReactDataGrid = React.createClass({
       enableCellSelect: false,
       tabIndex: -1,
       rowHeight: 35,
-      headerFiltersRowHeight: 45,
+      headerFiltersHeight: 45,
       enableRowSelect: false,
       minHeight: 350,
       rowKey: 'id',
@@ -621,7 +621,7 @@ const ReactDataGrid = React.createClass({
         ref: 'filterRow',
         filterable: true,
         onFilterChange: this.props.onAddFilter,
-        height: this.props.headerFiltersRowHeight,
+        height: this.props.headerFiltersHeight,
         rowType: 'filter'
       });
     }
