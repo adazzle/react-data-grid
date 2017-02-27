@@ -326,7 +326,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			};
 		},
 		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
 		}),
 		getHeadElement = memoize(function () {
 			return document.head || document.getElementsByTagName("head")[0];
@@ -15501,7 +15501,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      enableCellSelect: false,
 	      tabIndex: -1,
 	      rowHeight: 35,
-	      headerRowHeight: 45,
+	      headerFiltersHeight: 45,
 	      enableRowSelect: false,
 	      minHeight: 350,
 	      rowKey: 'id',
