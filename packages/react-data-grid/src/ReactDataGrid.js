@@ -117,7 +117,7 @@ const ReactDataGrid = React.createClass({
       enableCellSelect: false,
       tabIndex: -1,
       rowHeight: 35,
-      headerRowHeight: 45,
+      headerFiltersHeight: 45,
       enableRowSelect: false,
       minHeight: 350,
       rowKey: 'id',

@@ -104,6 +104,75 @@ describe('Grid', function() {
     }, events));
   });
 
+  // Set of tests for the props that defined the height of our rows
+  describe('when defininig heigths on props', function() {
+    describe('for defaults props', function() {
+      beforeEach(function() {
+        const ToolBarStub = new StubComponent('Toolbar');
+        this.component = this.createComponent({ toolbar: <ToolBarStub /> }).node;
+        this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
+        this.toolbarInstance.props.onToggleFilter();
+        this.baseGrid = this.getBaseGrid();
+      });
+
+      it('uses the appropriate default for the grid row height', function() {
+        expect(this.baseGrid.props.rowHeight).toEqual(35);
+      });
+
+      it('uses the appropriate default for the header row height', function() {
+        expect(this.baseGrid.props.headerRows[0].height).toEqual(35);
+      });
+
+      it('uses the appropriate default for the header filter row height', function() {
+        expect(this.baseGrid.props.headerRows[1].height).toEqual(45);
+      });
+    });
+
+    describe('for a given row height prop', function() {
+      beforeEach(function() {
+        const ToolBarStub = new StubComponent('Toolbar');
+        this.component = this.createComponent({ toolbar: <ToolBarStub />, rowHeight: 40 }).node;
+        this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
+        this.toolbarInstance.props.onToggleFilter();
+        this.baseGrid = this.getBaseGrid();
+      });
+
+      it('passes the correct heigth to the grid rows', function() {
+        expect(this.baseGrid.props.rowHeight).toEqual(40);
+      });
+
+      it('passes the grid row heigth to the header row when no height to the specific header row is provided', function() {
+        expect(this.baseGrid.props.headerRows[0].height).toEqual(40);
+      });
+
+      it('uses the default prop height for the filter row when none is provided', function() {
+        expect(this.baseGrid.props.headerRows[1].height).toEqual(45);
+      });
+    });
+
+    describe('for given row and header height props', function() {
+      beforeEach(function() {
+        const ToolBarStub = new StubComponent('Toolbar');
+        this.component = this.createComponent({ toolbar: <ToolBarStub />, rowHeight: 40, headerRowHeight: 50, headerFiltersHeight: 60 }).node;
+        this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
+        this.toolbarInstance.props.onToggleFilter();
+        this.baseGrid = this.getBaseGrid();
+      });
+
+      it('passes the correct heigth to the grid rows', function() {
+        expect(this.baseGrid.props.rowHeight).toEqual(40);
+      });
+
+      it('passes the correct heigth to the header row', function() {
+        expect(this.baseGrid.props.headerRows[0].height).toEqual(50);
+      });
+
+      it('passes the correct heigth to the header filter row', function() {
+        expect(this.baseGrid.props.headerRows[1].height).toEqual(60);
+      });
+    });
+  });
+
   describe('if passed in as props to grid', function() {
     beforeEach(function() {
       const ToolBarStub = new StubComponent('Toolbar');
