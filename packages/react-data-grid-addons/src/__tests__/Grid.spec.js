@@ -105,7 +105,7 @@ describe('Grid', function() {
   });
 
   // Set of tests for the props that defined the height of our rows
-  describe('when defininig heigths on props', function() {    
+  describe('when defininig heigths on props', function() {
     describe('for defaults props', function() {
       beforeEach(function() {
         const ToolBarStub = new StubComponent('Toolbar');
@@ -170,8 +170,7 @@ describe('Grid', function() {
       it('passes the correct heigth to the header filter row', function() {
         expect(this.baseGrid.props.headerRows[1].height).toEqual(60);
       });
-    }); 
-    
+    });
   });
 
   describe('if passed in as props to grid', function() {
