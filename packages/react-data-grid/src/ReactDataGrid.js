@@ -286,14 +286,17 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  onGridRowsUpdated(cellKey, fromRow, toRow, updated, action) {
+  onGridRowsUpdated(cellKey, fromRow, toRow, updated, action, originRow) {
     let rowIds = [];
 
     for (let i = fromRow; i <= toRow; i++) {
       rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
     }
 
-    this.props.onGridRowsUpdated({cellKey, fromRow, toRow, rowIds, updated, action});
+    let fromRowId = this.props.rowGetter(action === 'COPY_PASTE' ? originRow : fromRow)[this.props.rowKey];
+    let toRowId = this.props.rowGetter(toRow)[this.props.rowKey];
+
+    this.props.onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action});
   },
 
   onCellCommit(commit: RowUpdateEvent) {
@@ -427,7 +430,7 @@ const ReactDataGrid = React.createClass({
     }
 
     if (this.props.onGridRowsUpdated) {
-      this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE);
+      this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE, fromRow);
     }
   },
 
