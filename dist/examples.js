@@ -15953,14 +15953,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  },
-	  onGridRowsUpdated: function onGridRowsUpdated(cellKey, fromRow, toRow, updated, action) {
+	  onGridRowsUpdated: function onGridRowsUpdated(cellKey, fromRow, toRow, updated, action, originRow) {
 	    var rowIds = [];
 
 	    for (var i = fromRow; i <= toRow; i++) {
 	      rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
 	    }
 
-	    this.props.onGridRowsUpdated({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, rowIds: rowIds, updated: updated, action: action });
+	    var fromRowId = this.props.rowGetter(action === 'COPY_PASTE' ? originRow : fromRow)[this.props.rowKey];
+	    var toRowId = this.props.rowGetter(toRow)[this.props.rowKey];
+
+	    this.props.onGridRowsUpdated({ cellKey: cellKey, fromRow: fromRow, toRow: toRow, fromRowId: fromRowId, toRowId: toRowId, rowIds: rowIds, updated: updated, action: action });
 	  },
 	  onCellCommit: function onCellCommit(commit) {
 	    var selected = Object.assign({}, this.state.selected);
@@ -16103,7 +16106,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.props.onGridRowsUpdated) {
 	      var _onGridRowsUpdated3;
 
-	      this.onGridRowsUpdated(cellKey, toRow, toRow, (_onGridRowsUpdated3 = {}, _onGridRowsUpdated3[cellKey] = textToCopy, _onGridRowsUpdated3), _AppConstants2['default'].UpdateActions.COPY_PASTE);
+	      this.onGridRowsUpdated(cellKey, toRow, toRow, (_onGridRowsUpdated3 = {}, _onGridRowsUpdated3[cellKey] = textToCopy, _onGridRowsUpdated3), _AppConstants2['default'].UpdateActions.COPY_PASTE, fromRow);
 	    }
 	  },
 	  handleCancelCopy: function handleCancelCopy() {
@@ -25798,8 +25801,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return _this2.props.window;
 	        } else if (_this2.context && _this2.context.window) {
 	          return _this2.context.window;
+	        } else if (typeof window !== 'undefined') {
+	          return window;
 	        }
-	        return window;
+	        return undefined;
 	      };
 
 	      return (0, _DragDropContext.createChildContext)(this.backend, { window: getWindow() });
