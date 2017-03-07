@@ -112,7 +112,7 @@ const HeaderRow = React.createClass({
     let cells = [];
     let lockedCells = [];
     for (let i = 0, len = this.getSize(this.props.columns); i < len; i++) {
-      let column = this.getColumn(this.props.columns, i);
+      let column = Object.assign({ rowType: this.props.rowType }, this.getColumn(this.props.columns, i));
       let _renderer = this.getHeaderRenderer(column);
       if (column.key === 'select-row' && this.props.rowType === 'filter') {
         _renderer = <div></div>;

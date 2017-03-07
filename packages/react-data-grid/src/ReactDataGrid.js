@@ -52,6 +52,7 @@ const ReactDataGrid = React.createClass({
   propTypes: {
     rowHeight: React.PropTypes.number.isRequired,
     headerRowHeight: React.PropTypes.number,
+    headerFiltersHeight: React.PropTypes.number,
     minHeight: React.PropTypes.number.isRequired,
     minWidth: React.PropTypes.number,
     enableRowSelect: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]),
@@ -117,6 +118,7 @@ const ReactDataGrid = React.createClass({
       enableCellSelect: false,
       tabIndex: -1,
       rowHeight: 35,
+      headerFiltersHeight: 45,
       enableRowSelect: false,
       minHeight: 350,
       rowKey: 'id',
@@ -285,14 +287,17 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  onGridRowsUpdated(cellKey, fromRow, toRow, updated, action) {
+  onGridRowsUpdated(cellKey, fromRow, toRow, updated, action, originRow) {
     let rowIds = [];
 
     for (let i = fromRow; i <= toRow; i++) {
       rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
     }
 
-    this.props.onGridRowsUpdated({cellKey, fromRow, toRow, rowIds, updated, action});
+    let fromRowId = this.props.rowGetter(action === 'COPY_PASTE' ? originRow : fromRow)[this.props.rowKey];
+    let toRowId = this.props.rowGetter(toRow)[this.props.rowKey];
+
+    this.props.onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action});
   },
 
   onCellCommit(commit: RowUpdateEvent) {
@@ -432,7 +437,7 @@ const ReactDataGrid = React.createClass({
     }
 
     if (this.props.onGridRowsUpdated) {
-      this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE);
+      this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE, fromRow);
     }
   },
 
@@ -626,7 +631,7 @@ const ReactDataGrid = React.createClass({
         ref: 'filterRow',
         filterable: true,
         onFilterChange: this.props.onAddFilter,
-        height: 45,
+        height: this.props.headerFiltersHeight,
         rowType: 'filter'
       });
     }
@@ -896,8 +901,8 @@ const ReactDataGrid = React.createClass({
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
       onDeleteSubRow: this.onDeleteSubRow,
-      isScrollingVerticallyWithKeyboard: this.isKeyDown(40) || this.isKeyDown(38), // up or down
-      isScrollingHorizontallyWithKeyboard: this.isKeyDown(37) || this.isKeyDown(39) // left or right
+      isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
+      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
     };
 
     let toolbar = this.renderToolbar();

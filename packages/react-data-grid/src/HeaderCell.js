@@ -8,7 +8,8 @@ require('../../../themes/react-data-grid-header.css');
 const PropTypes      = React.PropTypes;
 
 function simpleCellRenderer(objArgs: {column: {name: string}}): ReactElement {
-  return <div className="widget-HeaderCell__value">{objArgs.column.name}</div>;
+  let headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
+  return <div className="widget-HeaderCell__value">{headerText}</div>;
 }
 
 const HeaderCell = React.createClass({
