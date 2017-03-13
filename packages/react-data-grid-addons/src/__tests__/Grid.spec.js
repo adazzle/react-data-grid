@@ -60,7 +60,7 @@ describe('Grid', function() {
       }, addedData);
     };
 
-    this.getBaseGrid = () => this.component.refs.base;
+    this.getBaseGrid = () => this.component.base;
 
     this.getCellMetaData = () => this.getBaseGrid().props.cellMetaData;
 
@@ -194,7 +194,7 @@ describe('Grid', function() {
         let filterableHeaderRow = this.baseGrid.props.headerRows[1];
         expect(this.component.state.canFilter).toBe(true);
         expect(this.baseGrid.props.headerRows.length).toEqual(2);
-        expect(filterableHeaderRow.ref).toEqual('filterRow');
+        expect(typeof filterableHeaderRow.ref).toEqual('function');
       });
     });
   });

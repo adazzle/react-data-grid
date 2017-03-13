@@ -617,11 +617,11 @@ const ReactDataGrid = React.createClass({
     return offsetHeight;
   },
 
-  getHeaderRows(): Array<{ref: string; height: number;}> {
-    let rows = [{ ref: 'row', height: this.props.headerRowHeight || this.props.rowHeight, rowType: 'header' }];
+  getHeaderRows(): Array<{ref: Function; height: number;}> {
+    let rows = [{ ref: (node) => this.row = node, height: this.props.headerRowHeight || this.props.rowHeight, rowType: 'header' }];
     if (this.state.canFilter === true) {
       rows.push({
-        ref: 'filterRow',
+        ref: (node) => this.filterRow = node,
         filterable: true,
         onFilterChange: this.props.onAddFilter,
         height: this.props.headerFiltersHeight,
@@ -915,7 +915,7 @@ const ReactDataGrid = React.createClass({
         {toolbar}
         <div className="react-grid-Main">
           <BaseGrid
-            ref="base"
+            ref={(node) => this.base = node}
             {...this.props}
             rowKey={this.props.rowKey}
             headerRows={this.getHeaderRows()}

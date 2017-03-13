@@ -25,7 +25,6 @@ const Cell = React.createClass({
     selectedColumn: React.PropTypes.object,
     height: React.PropTypes.number,
     tabIndex: React.PropTypes.number,
-    ref: React.PropTypes.string,
     column: React.PropTypes.shape(ExcelColumn).isRequired,
     value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
     isExpanded: React.PropTypes.bool,

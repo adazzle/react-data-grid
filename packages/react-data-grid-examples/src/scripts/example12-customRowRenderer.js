@@ -10,7 +10,7 @@ const RowRenderer = React.createClass({
 
   setScrollLeft(scrollBy) {
     // if you want freeze columns to work, you need to make sure you implement this as apass through
-    this.refs.row.setScrollLeft(scrollBy);
+    this.row.setScrollLeft(scrollBy);
   },
 
   getRowStyle() {
@@ -27,7 +27,7 @@ const RowRenderer = React.createClass({
     // here we are just changing the style
     // but we could replace this with anything we liked, cards, images, etc
     // usually though it will just be a matter of wrapping a div, and then calling back through to the grid
-    return (<div style={this.getRowStyle()}><Row ref="row" {...this.props}/></div>);
+    return (<div style={this.getRowStyle()}><Row ref={ node => this.row = node } {...this.props}/></div>);
   }
 });
 
