@@ -7,13 +7,13 @@ const Example = React.createClass({
   getInitialState() {
     this._columns = [
       { 
-        id: 1,
+        id: 10,
         key: 'id',
         name: 'ID',
         draggable: true,
       },
       { 
-        id: 2,
+        id: 12,
         key: 'title',
         name: 'Title',
         draggable: true
@@ -26,7 +26,7 @@ const Example = React.createClass({
       } 
     ];
 
-    return { column: this._columns, rows: this.createRows()};
+    return { columns: this._columns, rows: this.createRows()};
   },
 
   createRows() {
@@ -46,8 +46,19 @@ const Example = React.createClass({
     return this._rows[i];
   },
 
-  onHeaderDrop: function(a, b) {
-    console.log(a,b);
+  onHeaderDrop: function(source, target) {
+    const columns = this.state.columns;
+    // find index of column in array based on his id
+    const columnSourceIndex = columns.findIndex(i => i.id === source);
+    const columnTargetIndex = columns.findIndex(i => i.id === target);
+    console.log("Source index:", columnSourceIndex, "Target index:", columnTargetIndex);
+    // change order of items
+    // TODO - make it immutable
+    columns.splice(columnTargetIndex, 0, columns.splice(columnSourceIndex, 1)[0]);
+    
+    this.setState({
+      columns: columns
+    });
   },
 
   render() {

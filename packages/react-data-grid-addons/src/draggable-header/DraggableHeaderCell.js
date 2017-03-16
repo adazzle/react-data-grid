@@ -49,14 +49,14 @@ const headerCellSource = {
 const target = {
   drop(props, monitor, component) {
     // get info about source and target
-    let rowSource = monitor.getItem().id;
-    let headerTarget = props.column.id;
+    let source = monitor.getItem().id;
+    let target = props.column.id;
 
-    console.log("rowSource ", rowSource);
-    console.log("target", headerTarget);
+    console.log("source ", source);
+    console.log("target", target);
 
     //callback function - how to sort columns
-    props.onHeaderDrop(rowSource, headerTarget);
+    props.onHeaderDrop(source, target);
   }
 };
 
