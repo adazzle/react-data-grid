@@ -1,7 +1,7 @@
 const React = require('react');
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
-const { DraggableHeader: { DraggableContainer, DraggableHeaderCell } } = require('react-data-grid-addons');
+const { DraggableHeader: { DraggableContainer } } = require('react-data-grid-addons');
 
 const Example = React.createClass({
   getInitialState() {
@@ -55,11 +55,14 @@ const Example = React.createClass({
 
     stateCopy.columns.splice(columnTargetIndex, 0, stateCopy.columns.splice(columnSourceIndex, 1)[0]);
 
+    //????? 
+    // is there better sollution for this??
     this.setState(
       Object.assign(this.state,{
         columns: []
       })
     );
+    //????????
 
     this.setState(
       Object.assign(this.state,{
