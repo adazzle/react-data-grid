@@ -17,7 +17,6 @@ class DraggableHeaderCell extends React.Component {
     // isDragging je v monitoru (React DnD)
     const { connectDragSource, connectDropTarget, isDragging, isOver, canDrop} = this.props;
 
-    console.log("isDragging ", isDragging);
     // set opacity when dragging
     let opacity = 1;
     if (isDragging) {
@@ -44,22 +43,32 @@ function collect(connect, monitor) {
 
 const headerCellSource = {
   beginDrag(props) {
-    return { order: props.column.order };
+    return { 
+      // source column
+      order: props.column.order 
+    };
   },
   endDrag(props, monitor) {
-    console.log("Did drop ",monitor.didDrop());
-    return { order: props.column.order };
+    // check if drop was made in droppable zone
+    if (monitor.didDrop()) {
+      const source = monitor.getDropResult().source;
+      const target = monitor.getDropResult().target;
+      return props.onHeaderDrop(source, target);
+    }
   }
 };
 
 // drop target
 const target = {
-  drop(props, monitor, component) {
-    // get info about source and target - id of column (set in state)
+  drop(props, monitor) {
+    // get info about source (get from monitor - came from beginDrag) and target - id of column (set in state)
     let source = monitor.getItem().order;
     let target = props.column.order;
     //callback function how to sort columns
-    return props.onHeaderDrop(source, target);
+    return {
+      source: source,
+      target: target
+    }
   }
 };
 
