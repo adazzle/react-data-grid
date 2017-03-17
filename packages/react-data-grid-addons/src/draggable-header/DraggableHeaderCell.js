@@ -4,7 +4,7 @@ import { HeaderCell } from 'react-data-grid';
 
 class DraggableHeaderCell extends React.Component {
   componentDidMount() {
-    // zobrazení náhledu při tažení sloupce 
+    // set image as a preview of column when dragging
     let connectDragPreview = this.props.connectDragPreview;
     let img = new Image();
     img.src = './assets/images/drag_column_full.png';
@@ -16,9 +16,17 @@ class DraggableHeaderCell extends React.Component {
   render() {
     // isDragging je v monitoru (React DnD)
     const { connectDragSource, connectDropTarget, isDragging, isOver, canDrop} = this.props;
-    // pokud při klonování bylo zjištěno, že je možné táhnout sloupec, přidám obalovač s kurzorem a předám klasickou HeaderCell
+
+    console.log("isDragging ", isDragging);
+    // set opacity when dragging
+    let opacity = 1;
+    if (isDragging) {
+      opacity = 0.2;
+    }
+
+    // set drag source and drop target on header cell
     return connectDragSource(connectDropTarget(
-        <div style={{cursor: 'move'}} className={isOver && canDrop ? 'rdg-can-drop' : ''}>
+        <div style={{cursor: 'move', opacity}} className={isOver && canDrop ? 'rdg-can-drop' : ''}>
             <HeaderCell {...this.props}/>
         </div>
     ));
@@ -36,25 +44,22 @@ function collect(connect, monitor) {
 
 const headerCellSource = {
   beginDrag(props) {
-    return { id: props.column.id };
+    return { order: props.column.order };
   },
-  endDrag(props) {
-    return { id: props.column.id };
+  endDrag(props, monitor) {
+    console.log("Did drop ",monitor.didDrop());
+    return { order: props.column.order };
   }
 };
 
 // drop target
 const target = {
   drop(props, monitor, component) {
-    // get info about source and target
-    let source = monitor.getItem().id;
-    let target = props.column.id;
-
-    console.log("source ", source);
-    console.log("target", target);
-
-    //callback function - how to sort columns
-    props.onHeaderDrop(source, target);
+    // get info about source and target - id of column (set in state)
+    let source = monitor.getItem().order;
+    let target = props.column.order;
+    //callback function how to sort columns
+    return props.onHeaderDrop(source, target);
   }
 };
 

@@ -7,19 +7,19 @@ const Example = React.createClass({
   getInitialState() {
     this._columns = [
       { 
-        id: 10,
+        order: 1,
         key: 'id',
         name: 'ID',
         draggable: true,
       },
       { 
-        id: 12,
+        order: 2,
         key: 'title',
         name: 'Title',
         draggable: true
       },
       { 
-        id: 3,
+        order: 3,
         key: 'count',
         name: 'Count',
         draggable: true
@@ -47,18 +47,20 @@ const Example = React.createClass({
   },
 
   onHeaderDrop: function(source, target) {
-    const columns = this.state.columns;
-    // find index of column in array based on his id
-    const columnSourceIndex = columns.findIndex(i => i.id === source);
-    const columnTargetIndex = columns.findIndex(i => i.id === target);
-    console.log("Source index:", columnSourceIndex, "Target index:", columnTargetIndex);
-    // change order of items
-    // TODO - make it immutable
-    columns.splice(columnTargetIndex, 0, columns.splice(columnSourceIndex, 1)[0]);
-  
+    const stateCopy = Object.assign({}, this.state);
+    
+    const columnSourceIndex = this.state.columns.findIndex(i => i.order === source);
+    const columnTargetIndex = this.state.columns.findIndex(i => i.order === target);
+
+    stateCopy.columns.splice(columnTargetIndex, 0, stateCopy.columns.splice(columnSourceIndex, 1)[0]);
+
     this.setState({
-      columns: columns
-    });
+      columns: []
+    })
+
+    this.setState(Object.assign({},{
+      columns: stateCopy.columns
+    }));
   },
 
   render() {
