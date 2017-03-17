@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
-import { _constants, HeaderCell } from 'react-data-grid';
-const { DragItemTypes } = _constants;
+import { HeaderCell } from 'react-data-grid';
 
 class DraggableHeaderCell extends React.Component {
   componentDidMount() {
@@ -17,7 +16,6 @@ class DraggableHeaderCell extends React.Component {
   render() {
     // isDragging je v monitoru (React DnD)
     const { connectDragSource, connectDropTarget, isDragging, isOver, canDrop} = this.props;
-    console.log(isOver, canDrop);
     // pokud při klonování bylo zjištěno, že je možné táhnout sloupec, přidám obalovač s kurzorem a předám klasickou HeaderCell
     return connectDragSource(connectDropTarget(
         <div style={{cursor: 'move'}} className={isOver && canDrop ? 'rdg-can-drop' : ''}>

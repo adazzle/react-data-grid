@@ -26,7 +26,7 @@ const Example = React.createClass({
       } 
     ];
 
-    return { columns: this._columns, rows: this.createRows()};
+    return { columns: this._columns, rows: this.createRows() };
   },
 
   createRows() {
@@ -39,11 +39,11 @@ const Example = React.createClass({
       });
     }
 
-    this._rows = rows;
+    return rows;
   },
 
   rowGetter(i) {
-    return this._rows[i];
+    return this.state.rows[i];
   },
 
   onHeaderDrop: function(source, target) {
@@ -55,7 +55,7 @@ const Example = React.createClass({
     // change order of items
     // TODO - make it immutable
     columns.splice(columnTargetIndex, 0, columns.splice(columnSourceIndex, 1)[0]);
-    
+  
     this.setState({
       columns: columns
     });
@@ -66,9 +66,9 @@ const Example = React.createClass({
       <DraggableContainer 
         onHeaderDrop={this.onHeaderDrop}>
         <ReactDataGrid
-          columns={this._columns}
+          columns={this.state.columns}
           rowGetter={this.rowGetter}
-          rowsCount={this._rows.length}
+          rowsCount={this.state.rows.length}
           minHeight={500} />
       </DraggableContainer>  
     );
@@ -80,5 +80,5 @@ module.exports = exampleWrapper({
   exampleName: 'Draggable header',
   exampleDescription: 'Draggable header',
   examplePath: './scripts/example24-draggable-header.js',
-  examplePlaygroundLink: 'https://jsfiddle.net/f6mbnb8z/1/'
+  //examplePlaygroundLink: ''
 });
