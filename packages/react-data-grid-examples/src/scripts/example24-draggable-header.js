@@ -5,28 +5,29 @@ const { DraggableHeader: { DraggableContainer, DraggableHeaderCell } } = require
 
 const Example = React.createClass({
   getInitialState() {
-    this._columns = [
-      { 
-        order: 1,
-        key: 'id',
-        name: 'ID',
-        draggable: true,
-      },
-      { 
-        order: 2,
-        key: 'title',
-        name: 'Title',
-        draggable: true
-      },
-      { 
-        order: 3,
-        key: 'count',
-        name: 'Count',
-        draggable: true
-      } 
-    ];
-
-    return { columns: this._columns, rows: this.createRows() };
+    return { 
+      columns: [
+        { 
+          id: 1,
+          key: 'id',
+          name: 'ID',
+          draggable: true,
+        },
+        { 
+          id: 2,
+          key: 'title',
+          name: 'Title',
+          draggable: true
+        },
+        { 
+          id: 3,
+          key: 'count',
+          name: 'Count',
+          draggable: true
+        }
+      ], 
+      rows: this.createRows() 
+    };
   },
 
   createRows() {
@@ -49,18 +50,22 @@ const Example = React.createClass({
   onHeaderDrop: function(source, target) {
     const stateCopy = Object.assign({}, this.state);
     
-    const columnSourceIndex = this.state.columns.findIndex(i => i.order === source);
-    const columnTargetIndex = this.state.columns.findIndex(i => i.order === target);
+    const columnSourceIndex = this.state.columns.findIndex(i => i.id === source);
+    const columnTargetIndex = this.state.columns.findIndex(i => i.id === target);
 
     stateCopy.columns.splice(columnTargetIndex, 0, stateCopy.columns.splice(columnSourceIndex, 1)[0]);
 
-    this.setState({
-      columns: []
-    })
+    this.setState(
+      Object.assign(this.state,{
+        columns: []
+      })
+    );
 
-    this.setState(Object.assign({},{
-      columns: stateCopy.columns
-    }));
+    this.setState(
+      Object.assign(this.state,{
+        columns: stateCopy.columns
+      })
+    );
   },
 
   render() {
