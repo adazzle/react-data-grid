@@ -1,9 +1,9 @@
-const React = require("react");
-const ReactDataGrid = require("react-data-grid");
-const exampleWrapper = require("../components/exampleWrapper");
+const React = require('react');
+const ReactDataGrid = require('react-data-grid');
+const exampleWrapper = require('../components/exampleWrapper');
 const {
   DraggableHeader: { DraggableContainer }
-} = require("react-data-grid-addons");
+} = require('react-data-grid-addons');
 
 const Example = React.createClass({
   getInitialState() {
@@ -11,20 +11,20 @@ const Example = React.createClass({
       columns: [
         {
           id: 1,
-          key: "id",
-          name: "ID",
+          key: 'id',
+          name: 'ID',
           draggable: true
         },
         {
           id: 2,
-          key: "title",
-          name: "Title",
+          key: 'title',
+          name: 'Title',
           draggable: true
         },
         {
           id: 3,
-          key: "count",
-          name: "Count",
+          key: 'count',
+          name: 'Count',
           draggable: true
         }
       ],
@@ -37,7 +37,7 @@ const Example = React.createClass({
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
-        title: "Title " + i,
+        title: 'Title ' + i,
         count: i * 1000
       });
     }
@@ -83,7 +83,8 @@ const Example = React.createClass({
 
   render() {
     return (
-      <DraggableContainer onHeaderDrop={this.onHeaderDrop}>
+      <DraggableContainer 
+        onHeaderDrop={this.onHeaderDrop}>
         <ReactDataGrid
           columns={this.state.columns}
           rowGetter={this.rowGetter}
@@ -97,8 +98,8 @@ const Example = React.createClass({
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
-  exampleName: "Draggable header",
-  exampleDescription: "Draggable header",
-  examplePath: "./scripts/example24-draggable-header.js"
+  exampleName: 'Draggable header',
+  exampleDescription: 'Draggable header',
+  examplePath: './scripts/example24-draggable-header.js'
   //examplePlaygroundLink: ''
 });

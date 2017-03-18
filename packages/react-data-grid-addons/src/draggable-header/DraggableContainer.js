@@ -1,7 +1,7 @@
-import React from "react";
-import { DragDropContext } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
-import DraggableHeaderCell from "./DraggableHeaderCell";
+import React from 'react';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import DraggableHeaderCell from './DraggableHeaderCell';
 
 class DraggableContainer extends React.Component {
   renderGrid() {

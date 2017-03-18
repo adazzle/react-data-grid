@@ -1,20 +1,19 @@
-import React, { PropTypes } from "react";
-import { DragSource, DropTarget } from "react-dnd";
-import { HeaderCell } from "react-data-grid";
+import React, { PropTypes } from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
+import { HeaderCell } from 'react-data-grid';
 
 class DraggableHeaderCell extends React.Component {
   componentDidMount() {
     // set image as a preview of column when dragging
     let connectDragPreview = this.props.connectDragPreview;
     let img = new Image();
-    img.src = "./assets/images/drag_column_full.png";
+    img.src = './assets/images/drag_column_full.png';
     img.onload = function() {
       connectDragPreview(img);
     };
   }
 
   render() {
-    // isDragging je v monitoru (React DnD)
     const {
       connectDragSource,
       connectDropTarget,
@@ -33,8 +32,8 @@ class DraggableHeaderCell extends React.Component {
     return connectDragSource(
       connectDropTarget(
         <div
-          style={{ cursor: "move", opacity }}
-          className={isOver && canDrop ? "rdg-can-drop" : ""}
+          style={{ cursor: 'move', opacity }}
+          className={isOver && canDrop ? 'rdg-can-drop' : ''}
         >
           <HeaderCell {...this.props} />
         </div>
@@ -56,7 +55,6 @@ const headerCellSource = {
   beginDrag(props) {
     return {
       // source column
-      // TODO: delete id and change it to column !!!
       id: props.column.id
     };
   },
@@ -76,7 +74,7 @@ const target = {
     // get info about source (get from monitor - came from beginDrag) and target - id of column (set in state)
     let source = monitor.getItem().id;
     let target = props.column.id;
-    //callback function how to sort columns
+    //callback function - how to sort columns
     return {
       source: source,
       target: target
