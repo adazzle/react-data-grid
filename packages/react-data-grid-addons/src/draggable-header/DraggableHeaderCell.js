@@ -1,13 +1,13 @@
-import React, {PropTypes} from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
-import { HeaderCell } from 'react-data-grid';
+import React, { PropTypes } from "react";
+import { DragSource, DropTarget } from "react-dnd";
+import { HeaderCell } from "react-data-grid";
 
 class DraggableHeaderCell extends React.Component {
   componentDidMount() {
     // set image as a preview of column when dragging
     let connectDragPreview = this.props.connectDragPreview;
     let img = new Image();
-    img.src = './assets/images/drag_column_full.png';
+    img.src = "./assets/images/drag_column_full.png";
     img.onload = function() {
       connectDragPreview(img);
     };
@@ -15,7 +15,13 @@ class DraggableHeaderCell extends React.Component {
 
   render() {
     // isDragging je v monitoru (React DnD)
-    const { connectDragSource, connectDropTarget, isDragging, isOver, canDrop} = this.props;
+    const {
+      connectDragSource,
+      connectDropTarget,
+      isDragging,
+      isOver,
+      canDrop
+    } = this.props;
 
     // set opacity when dragging
     let opacity = 1;
@@ -24,11 +30,16 @@ class DraggableHeaderCell extends React.Component {
     }
 
     // set drag source and drop target on header cell
-    return connectDragSource(connectDropTarget(
-        <div style={{cursor: 'move', opacity}} className={isOver && canDrop ? 'rdg-can-drop' : ''}>
-            <HeaderCell {...this.props}/>
+    return connectDragSource(
+      connectDropTarget(
+        <div
+          style={{ cursor: "move", opacity }}
+          className={isOver && canDrop ? "rdg-can-drop" : ""}
+        >
+          <HeaderCell {...this.props} />
         </div>
-    ));
+      )
+    );
   }
 }
 
@@ -43,9 +54,10 @@ function collect(connect, monitor) {
 
 const headerCellSource = {
   beginDrag(props) {
-    return { 
+    return {
       // source column
-      id: props.column.id 
+      // TODO: delete id and change it to column !!!
+      id: props.column.id
     };
   },
   endDrag(props, monitor) {
@@ -68,7 +80,7 @@ const target = {
     return {
       source: source,
       target: target
-    }
+    };
   }
 };
 
@@ -88,7 +100,11 @@ DraggableHeaderCell.propTypes = {
   isDragging: PropTypes.bool.isRequired
 };
 
-DraggableHeaderCell = DropTarget('Column', target, targetCollect)(DraggableHeaderCell);
-DraggableHeaderCell = DragSource('Column', headerCellSource, collect)(DraggableHeaderCell);
+DraggableHeaderCell = DropTarget("Column", target, targetCollect)(
+  DraggableHeaderCell
+);
+DraggableHeaderCell = DragSource("Column", headerCellSource, collect)(
+  DraggableHeaderCell
+);
 
 export default DraggableHeaderCell;
