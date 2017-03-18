@@ -41,7 +41,7 @@ const HeaderRow = React.createClass({
     onScroll: PropTypes.func,
     rowType: PropTypes.string,
     draggableHeaderCell: PropTypes.func,
-    onHeaderDrop: PropTypes.func,
+    onHeaderDrop: PropTypes.func
   },
 
   mixins: [ColumnUtilsMixin],

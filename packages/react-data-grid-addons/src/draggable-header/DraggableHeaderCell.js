@@ -73,11 +73,11 @@ const target = {
   drop(props, monitor) {
     // get info about source (get from monitor - came from beginDrag) and target - id of column (set in state)
     let source = monitor.getItem().id;
-    let target = props.column.id;
-    //callback function - how to sort columns
+    let targetId = props.column.id;
+    // callback function - how to sort columns
     return {
       source: source,
-      target: target
+      target: targetId
     };
   }
 };
@@ -95,13 +95,16 @@ function targetCollect(connect, monitor) {
 DraggableHeaderCell.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired
+  connectDropTarget: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool.isRequired,
+  isOver: PropTypes.bool,
+  canDrop: PropTypes.bool
 };
 
-DraggableHeaderCell = DropTarget("Column", target, targetCollect)(
+DraggableHeaderCell = DropTarget('Column', target, targetCollect)(
   DraggableHeaderCell
 );
-DraggableHeaderCell = DragSource("Column", headerCellSource, collect)(
+DraggableHeaderCell = DragSource('Column', headerCellSource, collect)(
   DraggableHeaderCell
 );
 
