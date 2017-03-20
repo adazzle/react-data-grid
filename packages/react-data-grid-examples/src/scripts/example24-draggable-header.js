@@ -10,19 +10,16 @@ const Example = React.createClass({
     return {
       columns: [
         {
-          id: 1,
           key: 'id',
           name: 'ID',
           draggable: true
         },
         {
-          id: 2,
           key: 'title',
           name: 'Title',
           draggable: true
         },
         {
-          id: 3,
           key: 'count',
           name: 'Count',
           draggable: true
@@ -53,10 +50,10 @@ const Example = React.createClass({
     const stateCopy = Object.assign({}, this.state);
 
     const columnSourceIndex = this.state.columns.findIndex(
-      i => i.id === source
+      i => i.key === source
     );
     const columnTargetIndex = this.state.columns.findIndex(
-      i => i.id === target
+      i => i.key === target
     );
 
     stateCopy.columns.splice(

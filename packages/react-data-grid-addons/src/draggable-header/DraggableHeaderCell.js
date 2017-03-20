@@ -55,7 +55,7 @@ const headerCellSource = {
   beginDrag(props) {
     return {
       // source column
-      id: props.column.id
+      key: props.column.key
     };
   },
   endDrag(props, monitor) {
@@ -72,12 +72,12 @@ const headerCellSource = {
 const target = {
   drop(props, monitor) {
     // get info about source (get from monitor - came from beginDrag) and target - id of column (set in state)
-    let source = monitor.getItem().id;
-    let targetId = props.column.id;
+    let source = monitor.getItem().key;
+    let targetKey = props.column.key;
     // callback function - how to sort columns
     return {
       source: source,
-      target: targetId
+      target: targetKey
     };
   }
 };
