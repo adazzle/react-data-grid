@@ -6,7 +6,6 @@ import DraggableHeaderCell from './DraggableHeaderCell';
 class DraggableContainer extends React.Component {
   renderGrid() {
     return React.Children.map(this.props.children, child => {
-      // clone header cell and change them to be draggable
       return React.cloneElement(child, {
         draggableHeaderCell: DraggableHeaderCell
       });
@@ -17,7 +16,6 @@ class DraggableContainer extends React.Component {
     let grid = this.renderGrid();
     return (
       <div>
-        {/* clone grid and pass onHeaderDrop prop */}
         {React.cloneElement(grid, this.props)}
       </div>
     );
@@ -28,5 +26,4 @@ DraggableContainer.propTypes = {
   children: PropTypes.element
 };
 
-// wrapper as drag and drop target
 export default DragDropContext(HTML5Backend)(DraggableContainer);

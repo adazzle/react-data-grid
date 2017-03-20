@@ -22,7 +22,6 @@ class DraggableHeaderCell extends React.Component {
       canDrop
     } = this.props;
 
-    // set opacity when dragging
     let opacity = 1;
     if (isDragging) {
       opacity = 0.2;
@@ -71,10 +70,8 @@ const headerCellSource = {
 // drop target
 const target = {
   drop(props, monitor) {
-    // get info about source (get from monitor - came from beginDrag) and target - id of column (set in state)
     let source = monitor.getItem().key;
     let targetKey = props.column.key;
-    // callback function - how to sort columns
     return {
       source: source,
       target: targetKey
@@ -91,7 +88,6 @@ function targetCollect(connect, monitor) {
   };
 }
 
-// proptypes
 DraggableHeaderCell.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,

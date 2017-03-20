@@ -62,14 +62,13 @@ const Example = React.createClass({
       stateCopy.columns.splice(columnSourceIndex, 1)[0]
     );
 
-    //?????
-    // is there better sollution for this??
+    // ?????? is there better sollution for this??
     this.setState(
       Object.assign(this.state, {
         columns: []
       })
     );
-    //????????
+    // ????????
 
     this.setState(
       Object.assign(this.state, {
@@ -98,5 +97,5 @@ module.exports = exampleWrapper({
   exampleName: 'Draggable header',
   exampleDescription: 'Draggable header',
   examplePath: './scripts/example24-draggable-header.js'
-  //examplePlaygroundLink: ''
+  // examplePlaygroundLink: ''
 });
