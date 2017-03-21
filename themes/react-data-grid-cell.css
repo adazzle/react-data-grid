@@ -41,7 +41,6 @@
 
 .react-grid-Cell.copied {
   background: rgba(0, 0, 255, 0.2) !important;
-  -webkit-transition: 0.5s background;
 }
 
 .react-grid-Cell--locked:last-of-type {
@@ -144,8 +143,7 @@
     left: 50%;
     margin-left: -60px;
     /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
-    opacity: 0;
-    transition: opacity 1s;
+    opacity: 1s;
 }
 
 .cell-tooltip:hover .cell-tooltip-text {
