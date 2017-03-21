@@ -3,16 +3,6 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { HeaderCell } from 'react-data-grid';
 
 class DraggableHeaderCell extends React.Component {
-  componentDidMount() {
-    // set image as a preview of column when dragging
-    let connectDragPreview = this.props.connectDragPreview;
-    let img = new Image();
-    img.src = './assets/images/drag_column_full.png';
-    img.onload = function() {
-      connectDragPreview(img);
-    };
-  }
-
   render() {
     const {
       connectDragSource,
@@ -28,10 +18,11 @@ class DraggableHeaderCell extends React.Component {
     }
 
     // set drag source and drop target on header cell
+    // width: 0 - otherwise drag clone was wrongly positioned
     return connectDragSource(
       connectDropTarget(
         <div
-          style={{ cursor: 'move', opacity }}
+          style={{ width: 0, cursor: 'move', opacity }}
           className={isOver && canDrop ? 'rdg-can-drop' : ''}
         >
           <HeaderCell {...this.props} />
@@ -45,8 +36,7 @@ class DraggableHeaderCell extends React.Component {
 function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging(),
-    connectDragPreview: connect.dragPreview()
+    isDragging: monitor.isDragging()
   };
 }
 
@@ -90,7 +80,6 @@ function targetCollect(connect, monitor) {
 
 DraggableHeaderCell.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
-  connectDragPreview: PropTypes.func.isRequired,
   connectDropTarget: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
   isOver: PropTypes.bool,

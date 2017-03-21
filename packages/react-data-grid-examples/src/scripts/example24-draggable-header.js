@@ -12,17 +12,20 @@ const Example = React.createClass({
         {
           key: 'id',
           name: 'ID',
+          width: 50,
           draggable: true
         },
         {
           key: 'title',
           name: 'Title',
-          draggable: true
+          draggable: true,
+          resizable: true
         },
         {
           key: 'count',
           name: 'Count',
-          draggable: true
+          draggable: true,
+          resizable: true
         }
       ],
       rows: this.createRows()
