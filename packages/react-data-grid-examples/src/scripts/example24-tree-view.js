@@ -12,9 +12,11 @@ function createRows() {
       format: 'package ' + i,
       position: 'Run of site',
       price: price,
-      children: [{ id: 'row' + i + '-0', name: 'supplier ' + i, format: '728x90', position: 'run of site', price: price / 2 },
-      { id: 'row' + i + '-1', name: 'supplier ' + i, format: '480x600', position: 'run of site', price: price * 0.25 },
-      { id: 'row' + i + '-2', name: 'supplier ' + i, format: '328x70', position: 'run of site', price: price * 0.25 }]
+      children: [
+        { id: 'row' + i + '-0', name: 'supplier ' + i, format: '728x90', position: 'run of site', price: price / 2 },
+        { id: 'row' + i + '-1', name: 'supplier ' + i, format: '480x600', position: 'run of site', price: price * 0.25 },
+        { id: 'row' + i + '-2', name: 'supplier ' + i, format: '328x70', position: 'run of site', price: price * 0.25 }
+      ]
     };
     rows.push(row);
   }
@@ -44,7 +46,7 @@ let columns = [
 const Example = React.createClass({
   getInitialState() {
     let rows = createRows();
-    return { expanded: {}, rowCount: rows.length, rows: rows };
+    return { expanded: {}, rows: rows };
   },
 
   getRows(i) {
@@ -57,31 +59,57 @@ const Example = React.createClass({
       group: rowItem.children && rowItem.children.length > 0,
       expanded: isExpanded,
       children: rowItem.children,
-      field: 'name'
+      field: 'name',
+      treeDepth: rowItem.treeDepth || 0,
+      siblingIndex: rowItem.siblingIndex,
+      numberSiblings: rowItem.numberSiblings
     };
   },
 
   onCellExpand(args) {
+    let rows = this.state.rows.slice(0);
     let rowKey = args.rowData.name;
-    let rowCount = this.state.rowCount;
+    let rowIndex = rows.indexOf(args.rowData);
+    let subRows = args.expandArgs.children;
+
     let expanded = Object.assign({}, this.state.expanded);
-    if (this.state.expanded && !expanded[rowKey]) {
-      expanded[rowKey] = !args.expandArgs.expanded;
-      rowCount += args.expandArgs.children.length;
+    if (expanded && !expanded[rowKey]) {
+      expanded[rowKey] = true;
+      this.updateSubRowDetails(subRows, args.rowData.treeDepth);
+      rows.splice(rowIndex + 1, 0, ...subRows);
     } else if (expanded[rowKey]) {
-      delete expanded[rowKey];
-      rowCount -= args.expandArgs.children.length;
+      expanded[rowKey] = false;
+      rows.splice(rowIndex + 1, subRows.length);
     }
 
-    this.setState({ expanded: expanded, rowCount: rowCount });
+    this.setState({ expanded: expanded, rows: rows });
+  },
+
+  updateSubRowDetails(subRows, parentTreeDepth) {
+    let treeDepth = parentTreeDepth || 0;
+    subRows.forEach((sr, i) => {
+      sr.treeDepth = treeDepth + 1;
+      sr.siblingIndex = i;
+      sr.numberSiblings = subRows.length;
+    });
   },
 
   onDeleteSubRow(args) {
     let idToDelete = args.rowData.id;
     let rows = this.state.rows.slice(0);
+    // Remove sub row from parent row.
     rows = rows.map(r => {
-      return Object.assign({}, r, { children: r.children.filter(sr => sr.id !== idToDelete) });
+      let children = [];
+      if (r.children) {
+        children = r.children.filter(sr => sr.id !== idToDelete);
+        if (children.length !== r.children.length) {
+          this.updateSubRowDetails(children, r.treeDepth);
+        }
+      }
+      return Object.assign({}, r, { children });
     });
+    // Remove sub row from flattened rows.
+    rows = rows.filter(r => r.id !== idToDelete);
     this.setState({ rows });
   },
 
@@ -90,7 +118,7 @@ const Example = React.createClass({
       enableCellSelect={true}
       columns={columns}
       rowGetter={this.getRows}
-      rowsCount={this.state.rowCount}
+      rowsCount={this.state.rows.length}
       getSubRowDetails={this.getSubRowDetails}
       onDeleteSubRow={this.onDeleteSubRow}
       minHeight={500}

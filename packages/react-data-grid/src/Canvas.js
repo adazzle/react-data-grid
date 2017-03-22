@@ -150,55 +150,21 @@ const Canvas = React.createClass({
     this.props.onScroll(scroll);
   },
 
-  getSubRows(row) {
-    let subRowDetails = this.props.getSubRowDetails(row);
-    if (subRowDetails.expanded === true) {
-      return subRowDetails.children.map((r, i) => {
-        return { row: r, childIndex: i };
-      });
-    }
-  },
-
-  addSubRows(rowsInput, row, i, displayEnd, treeDepth, siblingIndex, numberSiblings) {
-    let subRowDetails = this.props.getSubRowDetails(row) || {};
-    let rows = rowsInput;
-    let increment = i;
-    if (increment < displayEnd) {
-      Object.assign(subRowDetails, { treeDepth, siblingIndex, numberSiblings });
-      rows.push({ row, subRowDetails });
-      increment++;
-    }
-    if (subRowDetails && subRowDetails.expanded && subRowDetails.children && subRowDetails.children.length > 0) {
-      let subRows = this.getSubRows(row);
-      subRows.forEach((sr, j) => {
-        let result = this.addSubRows(rows, sr.row, increment, displayEnd, treeDepth + 1, j, subRowDetails.children.length);
-        rows = result.rows;
-        increment = result.increment;
-      });
-    }
-    return { rows, increment };
-  },
-
   getRows(displayStart, displayEnd) {
     this._currentRowsRange = { start: displayStart, end: displayEnd };
     if (Array.isArray(this.props.rowGetter)) {
       return this.props.rowGetter.slice(displayStart, displayEnd);
     }
     let rows = [];
-    let rowFetchIndex = displayStart;
     let i = displayStart;
-    while (i < displayEnd && rowFetchIndex < displayEnd) {
-      let row = this.props.rowGetter(rowFetchIndex);
+    while (i < displayEnd) {
+      let row = this.props.rowGetter(i);
+      let subRowDetails = {};
       if (this.props.getSubRowDetails) {
-        let treeDepth = 0;
-        let result = this.addSubRows(rows, row, i, displayEnd, treeDepth);
-        rows = result.rows;
-        i = result.increment;
-      } else {
-        rows.push({ row: row });
-        i++;
+        subRowDetails = this.props.getSubRowDetails(row);
       }
-      rowFetchIndex++;
+      rows.push({ row, subRowDetails });
+      i++;
     }
     return rows;
   },
