@@ -9,8 +9,8 @@ const filterRows = (filters, rows = []) => {
       if (filters.hasOwnProperty(columnKey)) {
         let colFilter = filters[columnKey];
         // check if custom filter function exists
-        if (colFilter.filterValues && typeof colFilter.filterValues === 'function' && !colFilter.filterValues(r, colFilter, columnKey)) {
-          include = false;
+        if (colFilter.filterValues && typeof colFilter.filterValues === 'function') {
+          include = colFilter.filterValues(r, colFilter, columnKey);
         } else if (typeof colFilter.filterTerm === 'string') {
           // default filter action
           let rowValue = retriever.getValue(r, columnKey);
