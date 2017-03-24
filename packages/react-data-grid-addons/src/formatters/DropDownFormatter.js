@@ -4,15 +4,16 @@ const React = require('react');
 
 const DropDownFormatter = React.createClass({
   propTypes: {
-    options: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.objectOf({
-        id: React.PropTypes.string,
-        title: React.PropTypes.string,
-        value: React.PropTypes.string,
-        text: React.PropTypes.string
-      })
-    ])).isRequired,
+    options: React.PropTypes.arrayOf(
+      React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.shape({
+          id: React.PropTypes.string,
+          title: React.PropTypes.string,
+          value: React.PropTypes.string,
+          text: React.PropTypes.string
+        })
+      ])).isRequired,
     value: React.PropTypes.string.isRequired
   },
 

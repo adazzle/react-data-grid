@@ -89,7 +89,7 @@ const Example = React.createClass({
     return (
       <DraggableContainer>
           <ReactDataGrid
-            ref="grid"
+            ref={ node => this.grid = node }
             enableCellSelect={true}
             enableDragAndDrop={true}
             columns={_cols}

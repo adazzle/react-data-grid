@@ -56,11 +56,11 @@ const Viewport = React.createClass({
   },
 
   getScroll(): {scrollLeft: number; scrollTop: number} {
-    return this.refs.canvas.getScroll();
+    return this.canvas.getScroll();
   },
 
   setScrollLeft(scrollLeft: number) {
-    this.refs.canvas.setScrollLeft(scrollLeft);
+    this.canvas.setScrollLeft(scrollLeft);
   },
 
   render() {
@@ -78,7 +78,7 @@ const Viewport = React.createClass({
         className="react-grid-Viewport"
         style={style}>
         <Canvas
-          ref="canvas"
+          ref={(node) => this.canvas = node}
           rowKey={this.props.rowKey}
           totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}
