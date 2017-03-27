@@ -6751,6 +6751,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	exports.END_DRAG = exports.DROP = exports.HOVER = exports.PUBLISH_DRAG_SOURCE = exports.BEGIN_DRAG = undefined;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	exports.beginDrag = beginDrag;
 	exports.publishDragSource = publishDragSource;
 	exports.hover = hover;
@@ -6893,6 +6896,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function drop() {
 	  var _this = this;
 
+	  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
 	  var monitor = this.getMonitor();
 	  var registry = this.getRegistry();
 	  (0, _invariant2.default)(monitor.isDragging(), 'Cannot call drop while not dragging.');
@@ -6912,7 +6917,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.store.dispatch({
 	      type: DROP,
-	      dropResult: dropResult
+	      dropResult: _extends({}, options, dropResult)
 	    });
 	  });
 	}
@@ -18797,8 +18802,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (filters.hasOwnProperty(columnKey)) {
 	        var colFilter = filters[columnKey];
 	        // check if custom filter function exists
-	        if (colFilter.filterValues && typeof colFilter.filterValues === 'function' && !colFilter.filterValues(r, colFilter, columnKey)) {
-	          include = false;
+	        if (colFilter.filterValues && typeof colFilter.filterValues === 'function') {
+	          include = colFilter.filterValues(r, colFilter, columnKey);
 	        } else if (typeof colFilter.filterTerm === 'string') {
 	          // default filter action
 	          var rowValue = retriever.getValue(r, columnKey);
@@ -24759,6 +24764,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.sourceNodeOptions = {};
 	    this.enterLeaveCounter = new _EnterLeaveCounter2.default();
 
+	    this.dragStartSourceIds = [];
+	    this.dropTargetIds = [];
+	    this.dragEnterTargetIds = [];
+	    this.currentNativeSource = null;
+	    this.currentNativeHandle = null;
+	    this.currentDragSourceNode = null;
+	    this.currentDragSourceNodeOffset = null;
+	    this.currentDragSourceNodeOffsetChanged = false;
+	    this.altKeyPressed = false;
+
 	    this.getSourceClientOffset = this.getSourceClientOffset.bind(this);
 	    this.handleTopDragStart = this.handleTopDragStart.bind(this);
 	    this.handleTopDragStartCapture = this.handleTopDragStartCapture.bind(this);
@@ -24901,7 +24916,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var sourceNodeOptions = this.sourceNodeOptions[sourceId];
 
 	      return (0, _defaults2.default)(sourceNodeOptions || {}, {
-	        dropEffect: 'move'
+	        dropEffect: this.altKeyPressed ? 'copy' : 'move'
 	      });
 	    }
 	  }, {
@@ -25175,6 +25190,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
+	      this.altKeyPressed = e.altKey;
+
 	      if (!(0, _BrowserDetector.isFirefox)()) {
 	        // Don't emit hover in `dragenter` on Firefox due to an edge case.
 	        // If the target changes position as the result of `dragenter`, Firefox
@@ -25221,6 +25238,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        e.dataTransfer.dropEffect = 'none';
 	        return;
 	      }
+
+	      this.altKeyPressed = e.altKey;
 
 	      this.actions.hover(dragOverTargetIds, {
 	        clientOffset: (0, _OffsetUtils.getEventClientOffset)(e)
@@ -25289,7 +25308,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.actions.hover(dropTargetIds, {
 	        clientOffset: (0, _OffsetUtils.getEventClientOffset)(e)
 	      });
-	      this.actions.drop();
+	      this.actions.drop({ dropEffect: this.getCurrentDropEffect() });
 
 	      if (this.isDraggingNativeItem()) {
 	        this.endDragNativeItem();
