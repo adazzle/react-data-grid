@@ -4,5 +4,6 @@ module.exports = {
   isFunction: require('./isFunction'),
   isImmutableCollection: require('./isImmutableCollection'),
   getMixedTypeValueRetriever: require('./mixedTypeValueRetriever'),
-  isColumnsImmutable: require('./isColumnsImmutable')
+  isColumnsImmutable: require('./isColumnsImmutable'),
+  isImmutableMap: require('./isImmutableMap')
 };
