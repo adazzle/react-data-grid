@@ -16,6 +16,7 @@ type ColumnMetricsType = {
     columns: Array<Column>;
     totalWidth: number;
     minColumnWidth: number;
+    lockedColumnsWidth: number;
 };
 
 module.exports = {
@@ -37,7 +38,8 @@ module.exports = {
   getDefaultProps(): {minColumnWidth: number; columnEquality: (a: Column, b: Column) => boolean}  {
     return {
       minColumnWidth: 80,
-      columnEquality: ColumnMetrics.sameColumn
+      columnEquality: ColumnMetrics.sameColumn,
+      lockedColumnsWidth: 0
     };
   },
 
@@ -70,7 +72,8 @@ module.exports = {
     let currentMetrics = {
       columns: metrics.columns,
       totalWidth: totalWidth,
-      minColumnWidth: metrics.minColumnWidth
+      minColumnWidth: metrics.minColumnWidth,
+      lockedColumnsWidth: metrics.lockedColumnsWidth
     };
     let updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
     return updatedMetrics;
@@ -104,7 +107,8 @@ module.exports = {
     return this.getColumnMetricsType({
       columns: gridColumns,
       minColumnWidth: this.props.minColumnWidth,
-      totalWidth: props.minWidth
+      totalWidth: props.minWidth,
+      lockedColumnsWidth: ColumnMetrics.getLockedColumnsWidth(gridColumns)
     });
   },
 

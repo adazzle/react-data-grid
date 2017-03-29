@@ -143,3 +143,53 @@ describe('Column Metrics Tests', () => {
     });
   });
 });
+
+describe('Column Metrics Mixin Tests', () => {
+  describe('Locked Columns width', () => {
+    let totalWidth = 300;
+    let oneLockedColumn = [
+      { key: 'id', name: 'ID', width: 60, locked: true },
+      { key: 'title', name: 'Title' },
+      { key: 'count', name: 'Count' }
+    ];
+    let noLockedColumns = [
+      { key: 'id', name: 'ID', width: 60 },
+      { key: 'title', name: 'Title' },
+      { key: 'count', name: 'Count' }
+    ];
+    let noWidthColumn = [
+      { key: 'id', name: 'ID', width: 60, locked: true },
+      { key: 'title', name: 'Title', locked: true },
+      { key: 'count', name: 'Count' }
+    ];
+
+    it('should return correct width when there is locked column', () => {
+      let lockedColumnWidth = ColumnMetrics.getLockedColumnsWidth(oneLockedColumn);
+      expect(lockedColumnWidth).toBe(60);
+    });
+
+    it('should return zero width when there is no locked column', () => {
+      let lockedColumnWidth = ColumnMetrics.getLockedColumnsWidth(noLockedColumns);
+      expect(lockedColumnWidth).toBe(0);
+    });
+
+    it('should return zero width when columns are undefined', () => {
+      let lockedColumnWidth = ColumnMetrics.getLockedColumnsWidth();
+      expect(lockedColumnWidth).toBe(0);
+    });
+
+    it('should return zero width when columns are null', () => {
+      let lockedColumnWidth = ColumnMetrics.getLockedColumnsWidth(null);
+      expect(lockedColumnWidth).toBe(0);
+    });
+
+    it('should return correct width after recalculate the width', () => {
+      let scrollBarSize = getScrollbarSize();
+      let expectedWidth = Math.floor((totalWidth - scrollBarSize - 60) / 2) + 60;
+      let newMetrics = ColumnMetrics.recalculate({ columns: noWidthColumn, totalWidth, minColumnWidth: 50 });
+      expect(newMetrics.lockedColumnsWidth).toBe(expectedWidth);
+      let lockedColumnsWidth = ColumnMetrics.getLockedColumnsWidth(newMetrics.columns);
+      expect(lockedColumnsWidth).toBe(expectedWidth);
+    });
+  });
+});

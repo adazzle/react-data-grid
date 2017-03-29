@@ -107,6 +107,7 @@ const Viewport = React.createClass({
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
           isScrolling={this.state.isScrolling || false}
+          lockedColumnsWidth={this.props.columnMetrics.lockedColumnsWidth}
         />
       </div>
     );

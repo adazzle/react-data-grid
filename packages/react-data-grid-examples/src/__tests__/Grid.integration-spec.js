@@ -155,9 +155,9 @@ describe('Grid Integration', () => {
 
     it('Arrow Left doesnt commit your change if you are not at the start of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
-        .setValue('Test')
-        .setCursor(2)
+      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 5})
+        .setValue('Test000')
+        .setCursor(3)
         .keyDown({key: 'ArrowLeft'})
         .isEditable()
         // Need to escape the editor here since dispose will prompt componentWillUnmount,
@@ -178,18 +178,18 @@ describe('Grid Integration', () => {
 
     it('Arrow Right commits your change when you are at the end of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
-        .setValue('Test')
-        .setCursor(4)
+      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 5})
+        .setValue('Test Ok')
+        .setCursor(7)
         .keyDown({key: 'ArrowRight'})
-        .hasCommitted('Test')
-        .hasSelected({rowIdx: 3, cellIdx: 5})
+        .hasCommitted('Test Ok')
+        .hasSelected({rowIdx: 3, cellIdx: 6})
         .dispose();
     });
 
     it('Arrow Right doesnt commit your change when you are not at the end of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
+      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 5})
         .setValue('Test')
         .setCursor(2)
         .keyDown({key: 'ArrowRight'})

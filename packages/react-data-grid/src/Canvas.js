@@ -61,7 +61,8 @@ const Canvas = React.createClass({
       })
     ]),
     rowGroupRenderer: React.PropTypes.func,
-    isScrolling: React.PropTypes.bool
+    isScrolling: React.PropTypes.bool,
+    lockedColumnsWidth: React.PropTypes.number
   },
 
   getDefaultProps() {
@@ -126,9 +127,7 @@ const Canvas = React.createClass({
   },
 
   componentDidUpdate() {
-    if (this._scroll.scrollTop !== 0 && this._scroll.scrollLeft !== 0) {
-      this.setScrollLeft(this._scroll.scrollLeft);
-    }
+    this.setScrollLeft(this._scroll.scrollLeft);
     this.onRows();
   },
 
@@ -323,7 +322,8 @@ const Canvas = React.createClass({
         colVisibleEnd: this.props.colVisibleEnd,
         colDisplayStart: this.props.colDisplayStart,
         colDisplayEnd: this.props.colDisplayEnd,
-        isScrolling: this.props.isScrolling
+        isScrolling: this.props.isScrolling,
+        lockedColumnsWidth: this.props.lockedColumnsWidth
       }));
 
     this._currentRowsLength = rows.length;

@@ -33,7 +33,8 @@ describe('Base Grid Tests', () => {
       columns: helpers.columns,
       minColumnWidth: 80,
       totalWidth: true,
-      width: 2600
+      width: 2600,
+      lockedColumnsWidth: 0
     },
     headerRows: [],
     rowsCount: helpers.rowsCount(),

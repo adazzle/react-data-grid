@@ -124,6 +124,7 @@ const Header = React.createClass({
         onSort={this.props.onSort}
         onScroll={this.props.onScroll}
         getValidFilterValues={this.props.getValidFilterValues}
+        lockedColumnsWidth={columnMetrics.lockedColumnsWidth}
         />);
     });
     return headerRows;

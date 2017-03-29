@@ -21,7 +21,8 @@ let testProps = {
     copied: {},
     handleDragEnterRow: () => {},
     handleTerminateDrag: () => {}
-  }
+  },
+  lockedColumnsWidth: 0
 };
 
 const renderComponent = (extraProps) => {
@@ -45,12 +46,6 @@ describe('Canvas Tests', () => {
 
   it('Should not call setScroll on render', () => {
     spyOn(testElementNode, 'setScrollLeft');
-    expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
-  });
-
-  it('Should not call setScroll on update', () => {
-    spyOn(testElementNode, 'setScrollLeft');
-    testElementNode.componentDidUpdate(testProps);
     expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
   });
 

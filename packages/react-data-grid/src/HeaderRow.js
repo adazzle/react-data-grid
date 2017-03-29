@@ -40,7 +40,8 @@ const HeaderRow = React.createClass({
     resizing: PropTypes.object,
     onScroll: PropTypes.func,
     rowType: PropTypes.string,
-    draggableHeaderCell: PropTypes.func
+    draggableHeaderCell: PropTypes.func,
+    lockedColumnsWidth: PropTypes.number
   },
 
   mixins: [ColumnUtilsMixin],
@@ -142,8 +143,14 @@ const HeaderRow = React.createClass({
 
   setScrollLeft(scrollLeft: number) {
     this.props.columns.forEach( (column, i) => {
-      if (column.locked) {
-        this.refs[i].setScrollLeft(scrollLeft);
+      if (typeof this.refs[i].setScrollLeft === 'function') {
+        if (column.locked) {
+          this.refs[i].setScrollLeft(scrollLeft);
+        } else if (scrollLeft < this.props.lockedColumnsWidth) {
+          this.refs[i].setScrollLeft(scrollLeft);
+        } else {
+          this.refs[i].setScrollLeft(0);
+        }
       }
     });
   },

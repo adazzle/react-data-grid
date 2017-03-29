@@ -4,6 +4,7 @@ const ColumnUtils = require('./ColumnUtils');
 const getScrollbarSize  = require('./getScrollbarSize');
 const isColumnsImmutable  = require('./utils/isColumnsImmutable');
 
+
 type Column = {
   key: string;
   left: number;
@@ -14,6 +15,7 @@ type ColumnMetricsType = {
     columns: Array<Column>;
     totalWidth: number;
     minColumnWidth: number;
+    lockedColumnsWidth: number;
 };
 
 function setColumnWidths(columns, totalWidth) {
@@ -27,6 +29,18 @@ function setColumnWidths(columns, totalWidth) {
     }
     return colInfo;
   });
+}
+
+function getLockedColumnsWidth(columns) {
+  let lockedColumnsWidth = 0;
+  if (Array.isArray(columns)) {
+    columns.forEach(column => {
+      if (column !== undefined && column.locked === true) {
+        lockedColumnsWidth += column.width;
+      }
+    });
+  }
+  return lockedColumnsWidth;
 }
 
 function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
@@ -76,11 +90,14 @@ function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
   // compute left offset
   columns = setColumnOffsets(columns);
 
+  let lockedColumnsWidth = getLockedColumnsWidth(columns);
+
   return {
     columns,
     width,
     totalWidth: metrics.totalWidth,
-    minColumnWidth: metrics.minColumnWidth
+    minColumnWidth: metrics.minColumnWidth,
+    lockedColumnsWidth: lockedColumnsWidth
   };
 }
 
@@ -152,4 +169,4 @@ function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, isS
   return compareEachColumn(prevColumns, nextColumns, isSameColumn);
 }
 
-module.exports = { recalculate, resizeColumn, sameColumn, sameColumns };
+module.exports = { recalculate, resizeColumn, sameColumn, sameColumns, getLockedColumnsWidth };
