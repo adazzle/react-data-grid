@@ -14,16 +14,11 @@ let fakeColumn = { name: 'Col One', key: 'colOne', width: 100 };
 let fakeOnChange = () => { };
 let fakeGetValidFilterValues = () => { return []; };
 
-const acFilter = TestUtils.renderIntoDocument(<AutoCompleteFilter
-        onChange={fakeOnChange}
-        column={fakeColumn}
-        getValidFilterValues={fakeGetValidFilterValues}
-        />); 
+const acFilter = TestUtils.renderIntoDocument(<AutoCompleteFilter onChange={fakeOnChange} column={fakeColumn} getValidFilterValues={fakeGetValidFilterValues} />);
 
 const acFilters = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], filterValues: acFilter.filterValues }};
 
-const acFilters2Column = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], filterValues: acFilter.filterValues }, 
-                           colTwo: { filterTerm: [{ value: 'b2' }], filterValues: acFilter.filterValues }};
+const acFilters2Column = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], filterValues: acFilter.filterValues }, colTwo: { filterTerm: [{ value: 'b2' }], filterValues: acFilter.filterValues }};
 
 describe('Row Filterer', () => {
   it('It can filter arrays of rows', () => {
