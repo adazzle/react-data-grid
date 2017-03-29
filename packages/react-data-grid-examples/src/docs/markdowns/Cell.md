@@ -69,7 +69,7 @@ type: `bool`
 
 ### `ref`
 
-type: `string`
+type: `function`
 
 
 ### `rowData` (required)

@@ -234,7 +234,7 @@ const Component = React.createClass({
     return (
       <ReactDataGrid
         contextMenu={<MyContextMenu />}
-        ref="reactDataGrid"
+        ref={(node) => this.reactDataGrid = node}
         enableCellSelect={true}
         columns={columns}
         rowGetter={this.getRowAt}

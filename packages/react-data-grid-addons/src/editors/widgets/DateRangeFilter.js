@@ -1193,7 +1193,7 @@ let DateRangeFilter = React.createClass({
 
   render: function() {
     return (
-      <input ref="calendar" onBlur={this.props.onblur}/>
+      <input ref={node => this.calendar = node} onBlur={this.props.onblur}/>
     );
   }
 });
