@@ -40,7 +40,8 @@ const HeaderRow = React.createClass({
     resizing: PropTypes.object,
     onScroll: PropTypes.func,
     rowType: PropTypes.string,
-    draggableHeaderCell: PropTypes.func
+    draggableHeaderCell: PropTypes.func,
+    onHeaderDrop: PropTypes.func
   },
 
   mixins: [ColumnUtilsMixin],
@@ -128,6 +129,7 @@ const HeaderRow = React.createClass({
           resizing={this.props.resizing === column}
           onResize={this.props.onColumnResize}
           onResizeEnd={this.props.onColumnResizeEnd}
+          onHeaderDrop={this.props.onHeaderDrop}
           />
       );
       if (column.locked) {

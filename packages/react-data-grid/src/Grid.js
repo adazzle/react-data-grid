@@ -46,6 +46,7 @@ const Grid = React.createClass({
     onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
+    onHeaderDrop: PropTypes.func,
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
@@ -95,6 +96,7 @@ const Grid = React.createClass({
           sortDirection={this.props.sortDirection}
           draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
+          onHeaderDrop={this.props.onHeaderDrop}
           onScroll={this.onHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}

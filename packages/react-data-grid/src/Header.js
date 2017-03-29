@@ -29,6 +29,7 @@ const Header = React.createClass({
     onSort: PropTypes.func,
     onColumnResize: PropTypes.func,
     onScroll: PropTypes.func,
+    onHeaderDrop: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
     cellMetaData: PropTypes.shape(cellMetaDataShape)
@@ -119,6 +120,7 @@ const Header = React.createClass({
         draggableHeaderCell={this.props.draggableHeaderCell}
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}
+        onHeaderDrop={this.props.onHeaderDrop}
         sortColumn={this.props.sortColumn}
         sortDirection={this.props.sortDirection}
         onSort={this.props.onSort}
