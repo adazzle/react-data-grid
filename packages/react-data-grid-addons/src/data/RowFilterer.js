@@ -24,7 +24,7 @@ const filterRows = (filters, rows = []) => {
         }
       }
     }
-    return include;
+    return Boolean(include);
   });
 };
 
