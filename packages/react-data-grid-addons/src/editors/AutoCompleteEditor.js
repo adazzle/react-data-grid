@@ -1,8 +1,30 @@
 const React                   = require('react');
 const ReactDOM                = require('react-dom');
-const ReactAutocomplete       = require('ron-react-autocomplete');
+const Select                  = require('react-select');
 const { shapes: { ExcelColumn } } = require('react-data-grid');
-require('../../../../themes/ron-react-autocomplete.css');
+
+/**
+* Search options using specified search term treating options as an array
+* of candidates.
+*
+* @param {Array.<Object>} options
+* @param {String} searchTerm
+* @param {Callback} cb
+*/
+function searchArray(options, searchTerm, cb) {
+  let results = [];
+
+  if (options) {
+    let searchRegExp = new RegExp(searchTerm, 'i');
+    for (let i = 0, len = options.length; i < len; i++) {
+      if (searchRegExp.exec(options[i].title)) {
+        results.push(options[i]);
+      }
+    }
+  }
+
+  cb(null, results);
+}
 
 let optionPropType = React.PropTypes.shape({
   id: React.PropTypes.required,
@@ -20,55 +42,100 @@ const AutoCompleteEditor = React.createClass({
     valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
     column: React.PropTypes.shape(ExcelColumn),
     resultIdentifier: React.PropTypes.string,
-    search: React.PropTypes.string,
+    search: React.PropTypes.func,
     onKeyDown: React.PropTypes.func,
     onFocus: React.PropTypes.func,
     editorDisplayValue: React.PropTypes.func
   },
 
-  getDefaultProps(): {resultIdentifier: string} {
+  getInitialState() {
     return {
-      resultIdentifier: 'id'
+      selectedLabel: this.props.value,
+      results: this.props.options
     };
   },
 
-  handleChange() {
-    this.props.onCommit();
+  getDefaultProps(): {resultIdentifier: string} {
+    return {
+      resultIdentifier: 'id',
+      search: searchArray,
+      options: []
+    };
+  },
+
+  handleChange(newOption) {
+    let newLabel;
+    if (newOption != null) {
+      newLabel = newOption[this.getLabelKey()];
+    }
+    this.setState({selectedLabel: newLabel}, () => this.props.onCommit());
+  },
+
+  handleFocus(e) {
+    if (this.props.onFocus && typeof this.props.onFocus === 'function') {
+      this.props.onFocus(e);
+    }
+    this.getOptions('');
   },
 
   getValue(): any {
     let value;
     let updated = {};
-    if (this.hasResults() && this.isFocusedOnSuggestion()) {
-      value = this.getLabel(this.refs.autoComplete.state.focusedValue);
-      if (this.props.valueParams) {
-        value = this.constuctValueFromParams(this.refs.autoComplete.state.focusedValue, this.props.valueParams);
+    if (this.hasSelectedLabel()) {
+      const selectedOption = this.getOptionForLabel(this.state.selectedLabel);
+      if (this.props.valueParams && selectedOption) {
+        value = this.constuctValueFromParams(selectedOption, this.props.valueParams);
+      } else {
+        value = this.state.selectedLabel;
       }
-    } else {
-      value = this.refs.autoComplete.state.searchTerm;
     }
 
     updated[this.props.column.key] = value;
     return updated;
   },
 
-  getEditorDisplayValue() {
-    let displayValue = {title: ''};
-    let { column, value, editorDisplayValue } = this.props;
-    if (editorDisplayValue && typeof editorDisplayValue === 'function') {
-      displayValue.title = editorDisplayValue(column, value);
-    } else {
-      displayValue.title = value;
+  getEditorValue() {
+    let value;
+    if (this.hasSelectedLabel()) {
+      let { column, editorDisplayValue } = this.props;
+      let label = this.state.selectedLabel;
+      if (editorDisplayValue && typeof editorDisplayValue === 'function') {
+        label = editorDisplayValue(column, label);
+      }
+      value = this.getValueForLabel(label);
     }
-    return displayValue;
+    return value;
+  },
+
+  getOptionForLabel(label) {
+    let option;
+    let labelOptions = this.state.results.filter(o => o[this.getLabelKey()] === label);
+    if (labelOptions.length === 1) {
+      option = labelOptions[0];
+    }
+    return option;
+  },
+
+  getValueForLabel(label) {
+    let value;
+    let labelOption = this.getOptionForLabel(label);
+    if (labelOption != null) {
+      value = labelOption[this.props.resultIdentifier];
+    }
+    return value;
   },
 
   getInputNode() {
     return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
   },
 
+  getLabelKey() {
+    let labelKey = this.props.label != null ? this.props.label : 'title';
+    return labelKey;
+  },
+
   getLabel(item: any): string {
-    let label = this.props.label != null ? this.props.label : 'title';
+    let label = this.getLabelKey();
     if (typeof label === 'function') {
       return label(item);
     } else if (typeof label === 'string') {
@@ -77,12 +144,11 @@ const AutoCompleteEditor = React.createClass({
   },
 
   hasResults(): boolean {
-    return this.refs.autoComplete.state.results.length > 0;
+    return this.state.results.length > 0;
   },
 
-  isFocusedOnSuggestion(): boolean {
-    let autoComplete = this.refs.autoComplete;
-    return autoComplete.state.focusedValue != null;
+  hasSelectedLabel() {
+    return this.hasResults() && this.state.selectedLabel != null;
   },
 
   constuctValueFromParams(obj: any, props: ?Array<string>): string {
@@ -97,11 +163,37 @@ const AutoCompleteEditor = React.createClass({
     return ret.join('|');
   },
 
+  disableContainerStyles() {
+    return true;
+  },
+
+  getOptions(input, callback) {
+    let trimmedInput = input != null ? input.trim() : input;
+    this.props.search(
+      this.props.options,
+      trimmedInput,
+      (err, results) => {
+        this.setState({results: results}, () => callback(err, {options: results}));
+      }
+    );
+  },
+
   render(): ?ReactElement {
-    let label = this.props.label != null ? this.props.label : 'title';
-    return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
-      </div>);
+    let noResults = 'No results found';
+    let emptyCache = {};
+    return (<div height={this.props.height}>
+      <Select.Async
+        valueKey={this.props.resultIdentifier}
+        labelKey={this.getLabelKey()}
+        loadOptions={this.getOptions}
+        cache={emptyCache}
+        value={this.getEditorValue()}
+        onChange={this.handleChange}
+        onFocus={this.handleFocus}
+        noResultsText={noResults}
+        searchPromptText={noResults}
+        />
+    </div>);
   }
 });
 

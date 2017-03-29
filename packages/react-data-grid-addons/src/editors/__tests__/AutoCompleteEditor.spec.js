@@ -1,5 +1,3 @@
-
-
 let React              = require('react');
 let TestUtils          = require('react-addons-test-utils');
 let rewire             = require('rewire');
@@ -10,18 +8,17 @@ let AutoCompleteEditor = rewire('../AutoCompleteEditor');
 describe('AutoCompleteEditor', () => {
   let component;
   function fakeCb() { return true; }
-  let fakeOptions = [{id: 1, title: 'test-result1'}, {id: 2, title: 'test-result2'}];
+  let fakeSelectedOption = {id: 1, title: 'test-result1'};
+  let fakeOptions = [fakeSelectedOption, {id: 2, title: 'test-result2'}];
   let fakeParams = ['param1', 'param2', 'param3'];
   let fakeColumn = { key: 'autocomplete', name: 'name', width: 0 };
   let fakeLabelFn = function(item) { return item; };
 
-
   describe('Unit Tests', () => {
-    let ReactAutocompleteStub = new StubComponent('ReactAutocomplete');
-
+    let ReactSelectStub = new StubComponent('Select.Async');
     // Configure local letiable replacements for the module.
     rewireModule(AutoCompleteEditor, {
-      ReactAutocomplete: ReactAutocompleteStub
+      'Select.Async': ReactSelectStub
     });
 
     describe('Basic tests', () => {
@@ -30,11 +27,10 @@ describe('AutoCompleteEditor', () => {
           onCommit={fakeCb}
           options={fakeOptions}
           label="title"
-          value="value"
+          value={fakeSelectedOption.title}
           valueParams={fakeParams}
           column={fakeColumn}
           resultIdentifier="id"
-          search="test"
           height={30}
           onKeyDown={fakeCb}/>);
       });
@@ -43,34 +39,32 @@ describe('AutoCompleteEditor', () => {
         expect(component).toBeDefined();
       });
 
-      it('should render a ReactAutocomplete component', () => {
-        let Autocomplete = TestUtils.findRenderedComponentWithType(component, ReactAutocompleteStub);
-        expect(Autocomplete).toBeDefined();
+      it('should render a ReactSelect component', () => {
+        let reactSelect = TestUtils.findRenderedComponentWithType(component, ReactSelectStub);
+        expect(reactSelect).toBeDefined();
       });
 
-      it('should pass the search text to ReachAutocomplete as a prop', () => {
-        let Autocomplete = TestUtils.findRenderedComponentWithType(component, ReactAutocompleteStub);
-        expect(Autocomplete.props.search).toBeDefined('test');
+      it('should pass the label to ReactSelect as a prop', () => {
+        let reactSelect = TestUtils.findRenderedComponentWithType(component, ReactSelectStub);
+        expect(reactSelect.props.labelKey).toBeDefined('title');
       });
 
-      it('should pass the label to ReachAutocomplete as a prop', () => {
-        let Autocomplete = TestUtils.findRenderedComponentWithType(component, ReactAutocompleteStub);
-        expect(Autocomplete.props.label).toBeDefined('autocomplete');
+      it('should pass the resultIdentifier to ReactSelect as a prop', () => {
+        let reactSelect = TestUtils.findRenderedComponentWithType(component, ReactSelectStub);
+        expect(reactSelect.props.valueKey).toBeDefined('id');
       });
 
-      it('should pass the resultIdentifier to ReachAutocomplete as a prop', () => {
-        let Autocomplete = TestUtils.findRenderedComponentWithType(component, ReactAutocompleteStub);
-        expect(Autocomplete.props.resultIdentifier).toBeDefined('id');
+      it('should pass the options to ReactSelect via a callback', () => {
+        let callback = (err, results) => {
+          expect(results.options).toBeDefined(fakeOptions);
+        };
+        let reactSelect = TestUtils.findRenderedComponentWithType(component, ReactSelectStub);
+        reactSelect.props.loadOptions('', callback);
       });
 
-      it('should pass the options to ReachAutocomplete as a prop', () => {
-        let Autocomplete = TestUtils.findRenderedComponentWithType(component, ReactAutocompleteStub);
-        expect(Autocomplete.props.options).toBeDefined(fakeOptions);
-      });
-
-      it('should pass the value to ReachAutocomplete as a prop', () => {
-        let Autocomplete = TestUtils.findRenderedComponentWithType(component, ReactAutocompleteStub);
-        expect(Autocomplete.props.value.title).toBeDefined('value');
+      it('should pass the value to ReactSelect as a prop', () => {
+        let reactSelect = TestUtils.findRenderedComponentWithType(component, ReactSelectStub);
+        expect(reactSelect.props.value).toBeDefined(fakeSelectedOption.id);
       });
 
       it('should construct values from the parameters', () => {
@@ -94,7 +88,6 @@ describe('AutoCompleteEditor', () => {
           valueParams={fakeParams}
           column={fakeColumn}
           resultIdentifier="id"
-          search="test"
           height={30}
           onKeyDown={fakeCb}/>);
       });
@@ -104,47 +97,25 @@ describe('AutoCompleteEditor', () => {
         expect(value).toBe('autocomplete');
       });
     });
-  });
 
-  describe('interactions', () => {
-    it('should render', () => {
-      component = TestUtils.renderIntoDocument(<AutoCompleteEditor
-      onCommit={fakeCb}
-      options={fakeOptions}
-      label="title"
-      value="value"
-      valueParams={fakeParams}
-      column={fakeColumn}
-      resultIdentifier="id"
-      search={() => true}
-      height={30}
-      onKeyDown={fakeCb}/>);
+    describe('With editorDisplayValue prop', () => {
+      const editorDisplayValue = (col, val) => {
+        const options = fakeOptions.filter(o => o.title === val);
+        return options[0].title;
+      };
 
-      expect(component).toBeDefined();
+      beforeEach(() => {
+        component = TestUtils.renderIntoDocument(<AutoCompleteEditor
+          options={fakeOptions}
+          value={fakeSelectedOption.title}
+          editorDisplayValue={editorDisplayValue}
+          column={fakeColumn}/>);
+      });
 
-      // type a key!
-      let node = component.getInputNode();
-      node.value = 'a';
-      TestUtils.Simulate.change(node);
-      TestUtils.Simulate.keyDown(node, {key: 'Enter', keyCode: 13, which: 13});
-
-      expect(component.getValue()).toEqual({autocomplete: 'a'});
-    });
-  });
-  describe('With editorDisplayValue prop', () => {
-    beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<AutoCompleteEditor
-        options={fakeOptions}
-        value="value"
-        editorDisplayValue={(col, val) => col.key + val}
-        column={fakeColumn}/>);
-    });
-
-    it('should create a new AutoCompleteEditor instance', () => {
-      expect(component).toBeDefined();
-    });
-    it('should pass the value returned by editorDisplayValue prop to ReachAutocomplete as a prop', () => {
-      expect(component.refs.autoComplete.props.value.title).toEqual(fakeColumn.key + 'value');
+      it('should use the label returned by editorDisplayValue prop to look up the ReactSelect value', () => {
+        let reactSelect = TestUtils.findRenderedComponentWithType(component, ReactSelectStub);
+        expect(reactSelect.props.value).toEqual(fakeSelectedOption.id);
+      });
     });
   });
 });
