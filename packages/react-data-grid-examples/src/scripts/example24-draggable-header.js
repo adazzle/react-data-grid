@@ -51,7 +51,6 @@ const Example = React.createClass({
 
   onHeaderDrop: function(source, target) {
     const stateCopy = Object.assign({}, this.state);
-
     const columnSourceIndex = this.state.columns.findIndex(
       i => i.key === source
     );
@@ -65,18 +64,14 @@ const Example = React.createClass({
       stateCopy.columns.splice(columnSourceIndex, 1)[0]
     );
 
-    // ?????? is there better sollution for this??
+    const emptyColumns = Object.assign({},this.state, { columns: [] });
     this.setState(
-      Object.assign(this.state, {
-        columns: []
-      })
+      emptyColumns
     );
-    // ????????
 
+    const reorderedColumns = Object.assign({},this.state, { columns: stateCopy.columns });
     this.setState(
-      Object.assign(this.state, {
-        columns: stateCopy.columns
-      })
+      reorderedColumns
     );
   },
 
@@ -97,8 +92,8 @@ const Example = React.createClass({
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
-  exampleName: 'Draggable header',
-  exampleDescription: 'Draggable header',
+  exampleName: 'Drag Columns to Reorder',
+  exampleDescription: 'Drag Columns to Reorder',
   examplePath: './scripts/example24-draggable-header.js'
   // examplePlaygroundLink: ''
 });
