@@ -25,7 +25,7 @@ const acFilters = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], fi
 const acFilters2Column = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], filterValues: acFilter.filterValues }, 
                            colTwo: { filterTerm: [{ value: 'b2' }], filterValues: acFilter.filterValues }};
 
-fdescribe('Row Filterer', () => {
+describe('Row Filterer', () => {
   it('It can filter arrays of rows', () => {
     let filterResult = filterRows(filters, rows);
     expect(filterResult.length).toBe(1);
