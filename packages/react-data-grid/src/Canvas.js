@@ -109,6 +109,7 @@ const Canvas = React.createClass({
       || nextProps.rowHeight !== this.props.rowHeight
       || nextProps.columns !== this.props.columns
       || nextProps.width !== this.props.width
+      || nextProps.height !== this.props.height
       || nextProps.cellMetaData !== this.props.cellMetaData
       || this.props.colDisplayStart !== nextProps.colDisplayStart
       || this.props.colDisplayEnd !== nextProps.colDisplayEnd
