@@ -171,7 +171,7 @@ const Header = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    let node = this.row;
+    let node = ReactDOM.findDOMNode(this.row);
     node.scrollLeft = scrollLeft;
     this.row.setScrollLeft(scrollLeft);
     if (this.filterRow) {
