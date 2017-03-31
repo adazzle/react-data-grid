@@ -108,7 +108,7 @@ const Header = React.createClass({
 
       headerRows.push(<HeaderRow
         key={row.ref}
-        ref={row.ref}
+        ref={(node) => this.row = node}
         rowType={row.rowType}
         style={headerRowStyle}
         onColumnResize={this.onColumnResize}
@@ -173,13 +173,13 @@ const Header = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    let node = ReactDOM.findDOMNode(this.refs.row);
+    let node = ReactDOM.findDOMNode(this.row);
     node.scrollLeft = scrollLeft;
-    this.refs.row.setScrollLeft(scrollLeft);
-    if (this.refs.filterRow) {
-      let nodeFilters =  ReactDOM.findDOMNode(this.refs.filterRow);
+    this.row.setScrollLeft(scrollLeft);
+    if (this.filterRow) {
+      let nodeFilters = this.filterRow;
       nodeFilters.scrollLeft = scrollLeft;
-      this.refs.filterRow.setScrollLeft(scrollLeft);
+      this.filterRow.setScrollLeft(scrollLeft);
     }
   },
 

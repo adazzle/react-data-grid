@@ -40,12 +40,12 @@ const AutoCompleteEditor = React.createClass({
     let value;
     let updated = {};
     if (this.hasResults() && this.isFocusedOnSuggestion()) {
-      value = this.getLabel(this.refs.autoComplete.state.focusedValue);
+      value = this.getLabel(this.autoComplete.state.focusedValue);
       if (this.props.valueParams) {
-        value = this.constuctValueFromParams(this.refs.autoComplete.state.focusedValue, this.props.valueParams);
+        value = this.constuctValueFromParams(this.autoComplete.state.focusedValue, this.props.valueParams);
       }
     } else {
-      value = this.refs.autoComplete.state.searchTerm;
+      value = this.autoComplete.state.searchTerm;
     }
 
     updated[this.props.column.key] = value;
@@ -77,11 +77,11 @@ const AutoCompleteEditor = React.createClass({
   },
 
   hasResults(): boolean {
-    return this.refs.autoComplete.state.results.length > 0;
+    return this.autoComplete.state.results.length > 0;
   },
 
   isFocusedOnSuggestion(): boolean {
-    let autoComplete = this.refs.autoComplete;
+    let autoComplete = this.autoComplete;
     return autoComplete.state.focusedValue != null;
   },
 
@@ -100,7 +100,7 @@ const AutoCompleteEditor = React.createClass({
   render(): ?ReactElement {
     let label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete search={this.props.search} ref="autoComplete" label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
+      <ReactAutocomplete search={this.props.search} ref={(node) => this.autoComplete = node} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
       </div>);
   }
 });

@@ -83,7 +83,7 @@ export default class GridRunner {
   }
 
   getDisplayInfo() {
-    const { displayStart, colDisplayStart, displayEnd, colDisplayEnd } = this.grid.refs.reactDataGrid.refs.base.refs.viewport.state;
+    const { displayStart, colDisplayStart, displayEnd, colDisplayEnd } = this.grid.reactDataGrid.base.viewport.state;
 
     return { displayStart, colDisplayStart, displayEnd, colDisplayEnd };
   }
@@ -219,7 +219,7 @@ export default class GridRunner {
     return this;
   }
   hasCopied({cellIdx, rowIdx}) {
-    let baseGrid = this.grid.refs.reactDataGrid;
+    let baseGrid = this.grid.reactDataGrid;
     expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
     expect(ReactDOM.findDOMNode(this.cell.node).className.indexOf('copied') > -1).toBe(true);
