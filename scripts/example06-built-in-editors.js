@@ -20,7 +20,7 @@ const issueTypes = [
 ];
 const IssueTypesEditor = <DropDownEditor options={issueTypes}/>;
 
-const IssueTypesFormatter = <DropDownFormatter options={issueTypes}/>;
+const IssueTypesFormatter = <DropDownFormatter options={issueTypes} value="bug"/>;
 
 const Example = React.createClass({
   getInitialState() {
