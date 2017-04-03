@@ -73,6 +73,8 @@ const Canvas = React.createClass({
     };
   },
 
+  rows: [],
+
   getInitialState() {
     return {
       displayStart: this.props.displayStart,
