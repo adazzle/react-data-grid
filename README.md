@@ -52,11 +52,11 @@ Features
 - [Frozen columns](http://adazzle.github.io/react-data-grid/examples.html#/fixed-cols)
 - [Resizable columns](http://adazzle.github.io/react-data-grid/examples.html#/resizable-cols)
 - [Sorting](http://adazzle.github.io/react-data-grid/examples.html#/sortable-cols) 
-- [Filtering] (http://adazzle.github.io/react-data-grid/examples.html#/filterable-sortable-grid) 
-- [Context Menu] (http://adazzle.github.io/react-data-grid/examples.html#/context-menu)
+- [Filtering](http://adazzle.github.io/react-data-grid/examples.html#/filterable-sortable-grid) 
+- [Context Menu](http://adazzle.github.io/react-data-grid/examples.html#/context-menu)
 - Copy and Paste values into other cells
-- [Multiple cell updates using cell dragdown] (http://adazzle.github.io/react-data-grid/examples.html#/cell-drag-down)
-- [Association of events of individual columns] (http://adazzle.github.io/react-data-grid/examples.html#/column-events)
+- [Multiple cell updates using cell dragdown](http://adazzle.github.io/react-data-grid/examples.html#/cell-drag-down)
+- [Association of events of individual columns](http://adazzle.github.io/react-data-grid/examples.html#/column-events)
 
 
 Check out the `examples` directory to see how simple previously complex UI
