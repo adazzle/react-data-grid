@@ -14,7 +14,7 @@ const CellExpand = React.createClass({
     this.props.onCellExpand(e);
   },
   render() {
-    return (<span className="rdg-cell-expand" onClick={this.onCellExpand} >{this.state.expanded ? String.fromCharCode('9650') : String.fromCharCode('9660')}</span>);
+    return (<span className="rdg-cell-expand" onClick={this.onCellExpand} >{this.state.expanded ? String.fromCharCode('9660') : String.fromCharCode('9654')}</span>);
   }
 });
 
