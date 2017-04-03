@@ -50,4 +50,12 @@ describe('Row Grouper', () => {
             .slice(0, grpDetails.multiCol.length)
             .every(x => x.__metaData)).toBe(true);
   });
+  it('It can group an Immutable List (not list of immutable maps)', () => {
+    const immutableList = Immutable.List(rows); // eslint-disable-line new-cap
+    const groupingResult = groupRows(immutableList, grpDetails.multiCol, grpDetails.expRows);
+
+    expect(groupingResult
+            .slice(0, grpDetails.multiCol.length)
+            .every(x => x.__metaData)).toBe(true);
+  });
 });

@@ -1,7 +1,7 @@
 import {List} from 'immutable';
 import groupBy from 'lodash/groupBy';
 import { utils } from 'react-data-grid';
-const { getMixedTypeValueRetriever } = utils;
+const { getMixedTypeValueRetriever, isImmutableMap } = utils;
 
 export default class RowGrouperResolver {
 
@@ -15,7 +15,7 @@ export default class RowGrouperResolver {
   }
 
   getGroupedRows(rows, columnName) {
-    return this.isImmutable ? rows.groupBy(x => x.get(columnName)) : groupBy(rows, columnName);
+    return this.isImmutable ? rows.groupBy(x => isImmutableMap(x) ? x.get(columnName) : x[columnName]) : groupBy(rows, columnName);
   }
 
   getGroupKeys(groupedRows) {

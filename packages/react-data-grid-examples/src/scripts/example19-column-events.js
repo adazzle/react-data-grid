@@ -75,7 +75,7 @@ const Example = React.createClass({
   },
 
   cellEditWithOneClick: function(ev, { idx, rowIdx }) {
-    this.refs.grid.openCellEditor(rowIdx, idx);
+    this.grid.openCellEditor(rowIdx, idx);
   },
 
   getColumns: function() {
@@ -93,7 +93,7 @@ const Example = React.createClass({
   render: function() {
     return (
       <ReactDataGrid
-        ref="grid"
+        ref={ (node) => this.grid = node }
         columns={this.getColumns()}
         enableCellSelect={true}
         rowGetter={this.rowGetter}

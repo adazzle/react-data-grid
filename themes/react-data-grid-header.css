@@ -43,3 +43,6 @@
 .react-grid-HeaderCell__draggable {
     cursor: col-resize
 }
+.rdg-can-drop > .react-grid-HeaderCell {
+  background: #ececec;
+}

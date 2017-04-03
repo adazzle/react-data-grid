@@ -29,6 +29,7 @@ const Header = React.createClass({
     onSort: PropTypes.func,
     onColumnResize: PropTypes.func,
     onScroll: PropTypes.func,
+    onHeaderDrop: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
     cellMetaData: PropTypes.shape(cellMetaDataShape)
@@ -107,7 +108,7 @@ const Header = React.createClass({
 
       headerRows.push(<HeaderRow
         key={row.ref}
-        ref={row.ref}
+        ref={(node) => this.row = node}
         rowType={row.rowType}
         style={headerRowStyle}
         onColumnResize={this.onColumnResize}
@@ -119,6 +120,7 @@ const Header = React.createClass({
         draggableHeaderCell={this.props.draggableHeaderCell}
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}
+        onHeaderDrop={this.props.onHeaderDrop}
         sortColumn={this.props.sortColumn}
         sortDirection={this.props.sortDirection}
         onSort={this.props.onSort}
@@ -171,13 +173,13 @@ const Header = React.createClass({
   },
 
   setScrollLeft(scrollLeft: number) {
-    let node = ReactDOM.findDOMNode(this.refs.row);
+    let node = ReactDOM.findDOMNode(this.row);
     node.scrollLeft = scrollLeft;
-    this.refs.row.setScrollLeft(scrollLeft);
-    if (this.refs.filterRow) {
-      let nodeFilters =  ReactDOM.findDOMNode(this.refs.filterRow);
+    this.row.setScrollLeft(scrollLeft);
+    if (this.filterRow) {
+      let nodeFilters = this.filterRow;
       nodeFilters.scrollLeft = scrollLeft;
-      this.refs.filterRow.setScrollLeft(scrollLeft);
+      this.filterRow.setScrollLeft(scrollLeft);
     }
   },
 

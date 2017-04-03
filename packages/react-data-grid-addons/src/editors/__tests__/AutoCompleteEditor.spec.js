@@ -144,7 +144,7 @@ describe('AutoCompleteEditor', () => {
       expect(component).toBeDefined();
     });
     it('should pass the value returned by editorDisplayValue prop to ReachAutocomplete as a prop', () => {
-      expect(component.refs.autoComplete.props.value.title).toEqual(fakeColumn.key + 'value');
+      expect(component.autoComplete.props.value.title).toEqual(fakeColumn.key + 'value');
     });
   });
 });

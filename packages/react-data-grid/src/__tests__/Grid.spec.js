@@ -66,7 +66,7 @@ describe('Base Grid Tests', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportKeydown');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    viewportContainerNode = ReactDOM.findDOMNode(testElement.refs.viewPortContainer);
+    viewportContainerNode = ReactDOM.findDOMNode(testElement.viewPortContainer);
     TestUtils.Simulate.keyDown(viewportContainerNode, {key: 'Enter'});
     expect(testProps.onViewportKeydown).toHaveBeenCalled();
   });
@@ -75,7 +75,7 @@ describe('Base Grid Tests', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportDoubleClick');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    viewportContainerNode = ReactDOM.findDOMNode(testElement.refs.viewPortContainer);
+    viewportContainerNode = ReactDOM.findDOMNode(testElement.viewPortContainer);
     TestUtils.Simulate.doubleClick(viewportContainerNode);
     expect(testProps.onViewportDoubleClick).toHaveBeenCalled();
   });
@@ -84,7 +84,7 @@ describe('Base Grid Tests', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportDragStart');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    viewportContainerNode = ReactDOM.findDOMNode(testElement.refs.viewPortContainer);
+    viewportContainerNode = ReactDOM.findDOMNode(testElement.viewPortContainer);
     TestUtils.Simulate.dragStart(viewportContainerNode);
     expect(testProps.onViewportDragStart).toHaveBeenCalled();
   });
@@ -93,7 +93,7 @@ describe('Base Grid Tests', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportDragEnd');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    viewportContainerNode = ReactDOM.findDOMNode(testElement.refs.viewPortContainer);
+    viewportContainerNode = ReactDOM.findDOMNode(testElement.viewPortContainer);
     TestUtils.Simulate.dragEnd(viewportContainerNode);
     expect(testProps.onViewportDragEnd).toHaveBeenCalled();
   });
@@ -136,8 +136,8 @@ describe('Empty Grid Tests', () => {
   });
 
   it('should not have any viewport', () => {
-    expect(testElement.refs.viewPortContainer).not.toBeDefined();
-    expect(testElement.refs.emptyView).toBeDefined();
+    expect(testElement.viewPortContainer).not.toBeDefined();
+    expect(testElement.emptyView).toBeDefined();
   });
 });
 

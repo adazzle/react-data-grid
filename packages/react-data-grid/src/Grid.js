@@ -46,6 +46,7 @@ const Grid = React.createClass({
     onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
+    onHeaderDrop: PropTypes.func,
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
@@ -79,13 +80,13 @@ const Grid = React.createClass({
   },
 
   render(): ?ReactElement {
-    let headerRows = this.props.headerRows || [{ref: 'row'}];
+    let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
     let EmptyRowsView = this.props.emptyRowsView;
 
     return (
       <div style={this.getStyle()} className="react-grid-Grid">
         <Header
-          ref="header"
+          ref={(input) => { this.header = input; } }
           columnMetrics={this.props.columnMetrics}
           onColumnResize={this.props.onColumnResize}
           height={this.props.rowHeight}
@@ -95,14 +96,15 @@ const Grid = React.createClass({
           sortDirection={this.props.sortDirection}
           draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
+          onHeaderDrop={this.props.onHeaderDrop}
           onScroll={this.onHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
-            <div ref="viewPortContainer" tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+            <div ref={(node) => { this.viewPortContainer = node; } } tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
-                  ref="viewport"
+                  ref={(node) => { this.viewport = node; } }
                   rowKey={this.props.rowKey}
                   width={this.props.columnMetrics.width}
                   rowHeight={this.props.rowHeight}
@@ -127,7 +129,7 @@ const Grid = React.createClass({
                 />
             </div>
         :
-            <div ref="emptyView" className="react-grid-Empty">
+            <div ref={(node) => { this.emptyView = node; } } className="react-grid-Empty">
                 <EmptyRowsView />
             </div>
         }

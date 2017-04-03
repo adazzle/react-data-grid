@@ -109,6 +109,7 @@ const Canvas = React.createClass({
       || nextProps.rowHeight !== this.props.rowHeight
       || nextProps.columns !== this.props.columns
       || nextProps.width !== this.props.width
+      || nextProps.height !== this.props.height
       || nextProps.cellMetaData !== this.props.cellMetaData
       || this.props.colDisplayStart !== nextProps.colDisplayStart
       || this.props.colDisplayEnd !== nextProps.colDisplayEnd
@@ -207,9 +208,9 @@ const Canvas = React.createClass({
 
   setScrollLeft(scrollLeft) {
     if (this._currentRowsLength !== 0) {
-      if (!this.refs) return;
+      if (!this.rows) return;
       for (let i = 0, len = this._currentRowsLength; i < len; i++) {
-        if (this.refs[i]) {
+        if (this.rows[i]) {
           let row = this.getRowByRef(i);
           if (row && row.setScrollLeft) {
             row.setScrollLeft(scrollLeft);
@@ -221,14 +222,14 @@ const Canvas = React.createClass({
 
   getRowByRef(i) {
     // check if wrapped with React DND drop target
-    let wrappedRow = this.refs[i].getDecoratedComponentInstance ? this.refs[i].getDecoratedComponentInstance(i) : null;
+    let wrappedRow = this.rows[i].getDecoratedComponentInstance ? this.rows[i].getDecoratedComponentInstance(i) : null;
     if (wrappedRow) {
-      return wrappedRow.refs.row;
+      return wrappedRow.row;
     }
-    return this.refs[i];
+    return this.rows[i];
   },
 
-  renderRow(props) {
+  renderRow(props: any) {
     let row = props.row;
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
@@ -272,7 +273,7 @@ const Canvas = React.createClass({
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
         key: `row-${displayStart + idx}`,
-        ref: idx,
+        ref: (node) => this.rows[idx] = node,
         idx: displayStart + idx,
         visibleStart: this.props.visibleStart,
         visibleEnd: this.props.visibleEnd,

@@ -60,7 +60,7 @@ const DateRangeEditor = React.createClass({
   render(): ?ReactElement {
     return (
       <div style={this.getStyle()} onKeyDown={this.onKeyDown}>
-        <DateRangeFilter ref="datepicker" onApply={this.handleDateFilterApply}  format={this.props.format} ranges={this.props.ranges} startDate={this.props.value.startDate} endDate={this.props.value.endDate} />
+  <DateRangeFilter ref={(node) => this.datepicker = node} onApply={this.handleDateFilterApply}  format={this.props.format} ranges={this.props.ranges} startDate={this.props.value.startDate} endDate={this.props.value.endDate} />
       </div>
     );
   }

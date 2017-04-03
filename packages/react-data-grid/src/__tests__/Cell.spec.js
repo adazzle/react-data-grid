@@ -530,7 +530,7 @@ describe('Cell Tests', () => {
       selected: {idx: 18},
       height: 35,
       tabIndex: 12,
-      ref: 'cellRef',
+      ref: () => {},
       column: helpers.columns[1],
       value: 'allValue',
       isExpanded: true,
