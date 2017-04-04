@@ -32,14 +32,14 @@ describe('CellExpand', () => {
     let fakeProps = getFakeProps(true);
     testElement = renderComponent(fakeProps);
     expect(testElement.state('expanded')).toBeTruthy();
-    expect(testElement.find('span.rdg-cell-expand').text()).toBe(String.fromCharCode('9650'));
+    expect(testElement.find('span.rdg-cell-expand').text()).toBe(String.fromCharCode('9660'));
   });
 
   it('should render correctly when expanded is false', () => {
     let fakeProps = getFakeProps(false);
     testElement = renderComponent(fakeProps);
     expect(testElement.state('expanded')).toBeFalsy();
-    expect(testElement.find('span.rdg-cell-expand').text()).toBe(String.fromCharCode('9660'));
+    expect(testElement.find('span.rdg-cell-expand').text()).toBe(String.fromCharCode('9654'));
   });
 
   it('should call onCellExpand when clicked', () => {
