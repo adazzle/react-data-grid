@@ -201,7 +201,7 @@
 .rdg-child-row-action-cross:hover {
     background: red;
 }
-.rdg-child-row-remove-btn {
+.rdg-child-row-btn {
    position:absolute;
    cursor:pointer;
    border:1px solid grey;
@@ -210,14 +210,8 @@
    background: white;
 }
 
-.rdg-child-row-remove-btn:hover {
-   color: red;
-   border:1px solid red;
-}
-
-.rdg-child-row-remove-btn div {
-  z-index: 5;
-  font-size: 8px;
+.rdg-child-row-btn div {
+  font-size: 12px;
   text-align:center;
   line-height:19px;
   color: grey;
@@ -231,6 +225,14 @@
 
 }
 
-.rdg-child-row-remove-btn div:hover {
-   color: red;
+.rdg-empty-child-row:hover .glyphicon-plus-sign {
+  color: green;
+}
+
+.rdg-empty-child-row:hover a {
+  color: green;
+}
+
+.rdg-child-row-btn .glyphicon-remove-sign:hover {
+  color: red;
 }

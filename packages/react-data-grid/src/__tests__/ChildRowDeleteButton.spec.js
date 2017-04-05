@@ -39,8 +39,7 @@ describe('ChildRowDeleteButton', () => {
     let fakeProps = getFakeProps(false);
     testElement = renderComponent(fakeProps);
     expect(testElement.find('div.rdg-child-row-action-cross').length).toBe(1);
-    expect(testElement.find('div.rdg-child-row-action-cross-last').length).toBe(0);
-    expect(testElement.find('div.rdg-child-row-remove-btn').length).toBe(1);
+    expect(testElement.find('div.rdg-child-row-btn').length).toBe(1);
   });
 
   it('should render correctly when is isLastSibiling is true', () => {
@@ -48,13 +47,13 @@ describe('ChildRowDeleteButton', () => {
     testElement = renderComponent(fakeProps);
     expect(testElement.find('div.rdg-child-row-action-cross').length).toBe(0);
     expect(testElement.find('div.rdg-child-row-action-cross-last').length).toBe(1);
-    expect(testElement.find('div.rdg-child-row-remove-btn').length).toBe(1);
+    expect(testElement.find('div.rdg-child-row-btn').length).toBe(1);
   });
 
   it('should call onDeleteSubRow when clicked', () => {
     let fakeProps = getFakeProps(true);
     testElement = renderComponent(fakeProps);
-    let button = testElement.find('div.rdg-child-row-remove-btn');
+    let button = testElement.find('div.rdg-child-row-btn');
     button.simulate('click');
     expect(fakeProps.onDeleteSubRow).toHaveBeenCalled();
     expect(fakeProps.onDeleteSubRow.calls.count()).toEqual(1);

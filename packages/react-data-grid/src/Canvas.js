@@ -11,6 +11,7 @@ require('../../../themes/react-data-grid-core.css');
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
+import EmptyChildRow from './EmptyChildRow';
 
 const Canvas = React.createClass({
   mixins: [ScrollShim],
@@ -167,6 +168,9 @@ const Canvas = React.createClass({
         subRowDetails = this.props.getSubRowDetails(row);
       }
       rows.push({ row, subRowDetails });
+      if (subRowDetails.numberSiblings > 0 && subRowDetails.siblingIndex === subRowDetails.numberSiblings - 1) {
+        rows.push({row: {__metaData: {isEmptySubRow: true}, treeDepth: subRowDetails.treeDepth, cellHeight: this.props.rowHeight}});
+      }
       i++;
     }
     return rows;
@@ -233,6 +237,9 @@ const Canvas = React.createClass({
 
   renderRow(props: any) {
     let row = props.row;
+    if (row.__metaData && row.__metaData.isEmptySubRow) {
+      return (<EmptyChildRow treeDepth={row.treeDepth} cellHeight={row.cellHeight}/>);
+    }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
         key={props.key}
