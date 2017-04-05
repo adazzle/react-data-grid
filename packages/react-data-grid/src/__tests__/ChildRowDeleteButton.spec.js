@@ -45,8 +45,7 @@ describe('ChildRowDeleteButton', () => {
   it('should render correctly when is isLastSibiling is true', () => {
     let fakeProps = getFakeProps(true);
     testElement = renderComponent(fakeProps);
-    expect(testElement.find('div.rdg-child-row-action-cross').length).toBe(0);
-    expect(testElement.find('div.rdg-child-row-action-cross-last').length).toBe(1);
+    expect(testElement.find('div.rdg-child-row-action-cross').length).toBe(1);
     expect(testElement.find('div.rdg-child-row-btn').length).toBe(1);
   });
 
