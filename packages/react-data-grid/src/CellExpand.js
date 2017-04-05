@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import AppConstants from './AppConstants';
 
 const CellExpand = React.createClass({
   getInitialState() {
@@ -14,7 +15,11 @@ const CellExpand = React.createClass({
     this.props.onCellExpand(e);
   },
   render() {
-    return (<span className="rdg-cell-expand" onClick={this.onCellExpand} >{this.state.expanded ? String.fromCharCode('9660') : String.fromCharCode('9654')}</span>);
+    return (
+      <span className="rdg-cell-expand" onClick={this.onCellExpand} >
+        {this.state.expanded ? AppConstants.CellExpand.DOWN_TRIANGLE : AppConstants.CellExpand.RIGHT_TRIANGLE}
+      </span>
+    );
   }
 });
 
