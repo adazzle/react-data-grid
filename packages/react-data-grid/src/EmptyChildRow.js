@@ -8,7 +8,7 @@ class EmptyChildRow extends React.Component {
   }
 
   onAddSubRow() {
-    this.props.onAddSubRow(this.props.subRowDetails);
+    this.props.onAddSubRow(this.props.lastSibling);
   }
 
   render() {
@@ -38,7 +38,7 @@ EmptyChildRow.propTypes = {
   treeDepth: PropTypes.number.isRequired,
   cellHeight: PropTypes.number.isRequired,
   onAddSubRow: PropTypes.func.isRequired,
-  subRowDetails: PropTypes.object
+  lastSibling: PropTypes.object
 };
 
 export default EmptyChildRow;
