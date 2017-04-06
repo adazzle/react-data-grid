@@ -1,6 +1,7 @@
 import React from 'react';
 import Canvas from '../Canvas';
 import { mount } from 'enzyme';
+import EmptyChildRow from '../EmptyChildRow';
 
 let testProps = {
   rowHeight: 25,
@@ -92,6 +93,45 @@ describe('Canvas Tests', () => {
         let selectedRows = testElement.find('.row-selected .react-grid-Row');
         expect(selectedRows.length).toBe(1);
       });
+    });
+  });
+
+  describe('Tree View', () => {
+    function getFakeSubRowDetails(index) {
+      return function() {
+        return {
+          children: [
+            {id: 'row1-0'},
+            {id: 'row1-1'}
+          ],
+          treeDepth: 1,
+          siblingIndex: index,
+          numberSiblings: 2
+        };
+      };
+    }
+
+    let COLUMNS = [{key: 'id', name: 'ID'}];
+
+    it('should not render empty child row if not last sibling row', () => {
+      let rowGetter = () => { return {id: 0}; };
+      let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(0) };
+      testElement = renderComponent(props);
+      let rows = testElement.instance().getRows(props.displayStart, props.displayEnd);
+      let child = testElement.find(EmptyChildRow);
+      expect(child.length).toBe(0);
+      expect(rows.length).toBe(1);
+    });
+
+    it('should render an empty child row after last sibling row', () => {
+      let rowGetter = () => { return {id: 0}; };
+      let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1) };
+      testElement = renderComponent(props);
+      let rowData = testElement.instance().getRows(props.displayStart, props.displayEnd);
+      let child = testElement.find(EmptyChildRow);
+      expect(child.length).toBe(1);
+      expect(rowData.length).toBe(2);
+      expect(rowData[1].row.__metaData.isEmptySubRow).toBeTruthy();
     });
   });
 });
