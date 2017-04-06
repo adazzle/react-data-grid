@@ -104,7 +104,8 @@ RowGroup.propTypes = {
   height: PropTypes.number.isRequired,
   cellMetaData: PropTypes.object,
   idx: PropTypes.number.isRequired,
-  renderer: PropTypes.func
+  renderer: PropTypes.func,
+  columns: PropTypes.array.isRequired
 };
 
 const DefaultRowGroupRenderer = (props) => {
