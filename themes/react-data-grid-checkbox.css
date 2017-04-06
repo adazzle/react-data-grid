@@ -38,10 +38,17 @@
   z-index: 99999;
 }
 .react-grid-HeaderCell > .react-grid-checkbox-container {
-   padding: 0px 10px;
+    padding: 0px 10px;
+    height: 100%
 }
+
+
 .react-grid-HeaderCell > .react-grid-checkbox-container > .react-grid-checkbox-label {
    margin : 0;
+   margin-top: -0.3em;
+   position: relative;
+   top: 50%;
+   transform: translateY(-50%);
 }
 .radio-custom + .radio-custom-label:before {
     border-radius: 50%;
@@ -50,4 +57,8 @@
 .radio-custom:checked + .radio-custom-label:before {
     background: #ccc;
     box-shadow: inset 0px 0px 0px 4px #fff;
+}
+
+.checkbox-align {
+    text-align: center;
 }
