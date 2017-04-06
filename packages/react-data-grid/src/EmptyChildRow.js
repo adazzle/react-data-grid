@@ -1,24 +1,44 @@
-import React from 'react';
-const EmptyChildRow = ({treeDepth, cellHeight, onAddSubRow, AddNewText = 'Add New'}) => {
-  const height = 12;
-  const width = 12;
-  let left = treeDepth * 15;
-  let top = (cellHeight - 12) / 2;
-  let style = {
-    height: cellHeight,
-    borderBottom: '1px solid #dddddd'
-  };
-  return (<div className="react-grid-Row" style={style}>
-    <div className="react-grid-Cell" style={{ position: 'absolute', height: cellHeight, width: '100%' }}>
-      <div className="rdg-empty-child-row" style={{ marginLeft: '30px', lineHeight: `${cellHeight}px` }}>
-      <div className="'rdg-child-row-action-cross rdg-child-row-action-cross-last" />
-      <div style={{ left: left, top: top, width: width, height: height }} className="rdg-child-row-btn" onClick={onAddSubRow}>
-        <div className="glyphicon glyphicon-plus-sign"></div>
+import React, { PropTypes } from 'react';
+
+class EmptyChildRow extends React.Component {
+
+  constructor() {
+    super();
+    this.onAddSubRow = this.onAddSubRow.bind(this);
+  }
+
+  onAddSubRow() {
+    this.props.onAddSubRow(this.props.subRowDetails);
+  }
+
+  render() {
+    let {cellHeight, treeDepth} = this.props;
+    const height = 12;
+    const width = 12;
+    let left = treeDepth * 15;
+    let top = (cellHeight - 12) / 2;
+    let style = {
+      height: cellHeight,
+      borderBottom: '1px solid #dddddd'
+    };
+    return (<div className="react-grid-Row" style={style}>
+      <div className="react-grid-Cell" style={{ position: 'absolute', height: cellHeight, width: '100%' }}>
+        <div className="rdg-empty-child-row" style={{ marginLeft: '30px', lineHeight: `${cellHeight}px` }}>
+          <div className="'rdg-child-row-action-cross rdg-child-row-action-cross-last" />
+          <div style={{ left: left, top: top, width: width, height: height }} className="rdg-child-row-btn" onClick={this.onAddSubRow}>
+            <div className="glyphicon glyphicon-plus-sign"></div>
+          </div>
+        </div>
       </div>
-        <a href="#">{AddNewText}</a>
-      </div>
-    </div>
-  </div>);
+    </div>);
+  }
+}
+
+EmptyChildRow.propTypes = {
+  treeDepth: PropTypes.number.isRequired,
+  cellHeight: PropTypes.number.isRequired,
+  onAddSubRow: PropTypes.func.isRequired,
+  subRowDetails: PropTypes.object
 };
 
 export default EmptyChildRow;

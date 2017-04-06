@@ -110,7 +110,8 @@ const ReactDataGrid = React.createClass({
     onCheckCellIsEditable: React.PropTypes.func,
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
     overScan: React.PropTypes.object,
-    onDeleteSubRow: React.PropTypes.func
+    onDeleteSubRow: React.PropTypes.func,
+    onAddSubRow: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -371,6 +372,12 @@ const ReactDataGrid = React.createClass({
   onDeleteSubRow(args) {
     if (this.props.onDeleteSubRow) {
       this.props.onDeleteSubRow(args);
+    }
+  },
+
+  onAddSubRow(args) {
+    if (this.props.onAddSubRow) {
+      this.props.onAddSubRow(args);
     }
   },
 
@@ -905,8 +912,10 @@ const ReactDataGrid = React.createClass({
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
       onDeleteSubRow: this.onDeleteSubRow,
+      onAddSubRow: this.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
+
     };
 
     let toolbar = this.renderToolbar();

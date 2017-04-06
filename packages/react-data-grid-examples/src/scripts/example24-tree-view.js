@@ -113,6 +113,11 @@ const Example = React.createClass({
     this.setState({ rows });
   },
 
+  onAddSubRow(args) {
+    console.log('add sub row');
+    console.log(args);
+  },
+
   render() {
     return (<ReactDataGrid
       enableCellSelect={true}
@@ -122,7 +127,8 @@ const Example = React.createClass({
       getSubRowDetails={this.getSubRowDetails}
       onDeleteSubRow={this.onDeleteSubRow}
       minHeight={500}
-      onCellExpand={this.onCellExpand} />);
+      onCellExpand={this.onCellExpand}
+      onAddSubRow={this.onAddSubRow} />);
   }
 });
 
