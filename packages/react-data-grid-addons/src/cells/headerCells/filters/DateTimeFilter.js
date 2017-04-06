@@ -20,8 +20,8 @@ class DateTimeFilter extends DateFilter {
 
     // implement default filter logic
     let value = new Date(row[columnKey]);
-    for (let rule of columnFilter.filterTerm) {
 
+    for (let rule of columnFilter.filterTerm) {
       // just check to the nearest minute
       if (rule.hasOwnProperty('eq')) {
         let floorMin = new Date(value);
@@ -40,7 +40,7 @@ class DateTimeFilter extends DateFilter {
     return true;
   }
 
-  inputGen(key, blockStyle, changeHandler, type="datetime-local") {
+  inputGen(key, blockStyle, changeHandler, type = 'datetime-local') {
     return super.inputGen(key, blockStyle, changeHandler, type);
   }
 

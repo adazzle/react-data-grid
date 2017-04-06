@@ -89,15 +89,17 @@ class DateFilter extends React.Component {
     let key = DateFilter.RuleType[this.comp.sortState].key;
 
     switch (this.comp.sortState) {
-      case 'on':
-      case 'ending':
-      case 'beginning':
-        rules.push({type: this.comp.sortState, [key]: this.comp.left});
-        break;
-      case 'between':
-        rules.push({type: this.comp.sortState, lte: this.comp.right});
-        rules.push({type: this.comp.sortState, gte: this.comp.left});
-        break;
+    case 'on':
+    case 'ending':
+    case 'beginning':
+      rules.push({type: this.comp.sortState, [key]: this.comp.left});
+      break;
+    case 'between':
+      rules.push({type: this.comp.sortState, lte: this.comp.right});
+      rules.push({type: this.comp.sortState, gte: this.comp.left});
+      break;
+    default:
+      break;
     }
     return rules;
   }
@@ -131,7 +133,7 @@ class DateFilter extends React.Component {
     this.setProps();
   }
 
-  inputGen(key, blockStyle, changeHandler, type="date") {
+  inputGen(key, blockStyle, changeHandler, type = 'date') {
     return (
         <input key={key}
                style={blockStyle}
@@ -158,7 +160,9 @@ class DateFilter extends React.Component {
 
     let opts = [];
     for (let opt in DateFilter.RuleType) {
-      opts.push(<option key={this.props.column.key + '-' + opt} value={opt}>{DateFilter.RuleType[opt].title}</option>);
+      if (DateFilter.RuleType.hasOwnProperty(opt)) {
+        opts.push(<option key={this.props.column.key + '-' + opt} value={opt}>{DateFilter.RuleType[opt].title}</option>);
+      }
     }
 
     let selectSearchType = (
@@ -170,12 +174,12 @@ class DateFilter extends React.Component {
 
     let searchInputs = [];
     if (this.comp.sortState === 'between') {
-      let divider = (<div style={inputDividerStyle} key={inputKey+'-dash'}>-</div>);
-      searchInputs = [this.inputGen(inputKey+'-l', halfBlockStyle, this.leftChange),
+      let divider = (<div style={inputDividerStyle} key={inputKey + '-dash'}>-</div>);
+      searchInputs = [this.inputGen(inputKey + '-l', halfBlockStyle, this.leftChange),
                       divider,
-                      this.inputGen(inputKey+'-r', halfBlockStyle, this.rightChange)];
+                      this.inputGen(inputKey + '-r', halfBlockStyle, this.rightChange)];
     } else {
-      searchInputs.push(this.inputGen(inputKey+'-l', fullBlockStyle, this.leftChange));
+      searchInputs.push(this.inputGen(inputKey + '-l', fullBlockStyle, this.leftChange));
     }
 
     return (
