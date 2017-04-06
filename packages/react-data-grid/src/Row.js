@@ -16,7 +16,7 @@ const CellExpander = React.createClass({
 });
 
 // The list of the propTypes that we want to include in the Row div
-const knownDivPropertyKeys = ['height'];
+const knownDivPropertyKeys = ['height', 'onDoubleClick'];
 
 const Row = React.createClass({
 
