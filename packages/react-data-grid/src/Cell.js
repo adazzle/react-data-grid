@@ -347,7 +347,23 @@ const Cell = React.createClass({
     return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
   },
 
-  isFocusedOnBody() {
+  isTableOnScreen(dataGridDOMNode) {
+    // http://stackoverflow.com/a/11193613
+    const docViewTop  = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    // http://stackoverflow.com/a/28241682
+    const docViewBottom = docViewTop + (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight);
+
+    const elemTop = dataGridDOMNode.offsetTop;
+    const elemBottom = elemTop + dataGridDOMNode.offsetHeight;
+
+    if ((elemTop >= docViewTop && elemTop <= docViewBottom) || (elemBottom >= docViewTop && elemBottom <= docViewBottom)) return true;
+    return false;
+  },
+
+  isFocusedOnBody(dataGridDOMNode) {
+    // Make sure the table is on-screen as prerequisite
+    if (!this.isTableOnScreen(dataGridDOMNode)) return false;
+
     return document.activeElement == null || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body');
   },
 
@@ -363,7 +379,7 @@ const Cell = React.createClass({
       // Only focus to the current cell if the currently active node in the document is within the data grid.
       // Meaning focus should not be stolen from elements that the grid doesnt control.
       let dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
-      if (this.isFocusedOnCell() || this.isFocusedOnBody() || (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement))) {
+      if (this.isFocusedOnCell() || this.isFocusedOnBody(dataGridDOMNode) || (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement))) {
         let cellDOMNode = ReactDOM.findDOMNode(this);
         if (cellDOMNode) {
           cellDOMNode.focus();
