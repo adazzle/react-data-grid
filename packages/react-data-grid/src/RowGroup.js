@@ -2,6 +2,7 @@ import React, {PropTypes, Component} from 'react';
 import ReactDOM from 'react-dom';
 import classnames from 'classnames';
 import '../../../themes/react-data-grid-row.css';
+import utils from './utils';
 
 class RowGroup extends Component {
 
@@ -79,19 +80,24 @@ class RowGroup extends Component {
   }
 
   render() {
+    const lastColumn = utils.last(this.props.columns);
+
     let style = {
       height: '50px',
       overflow: 'hidden',
       border: '1px solid #dddddd',
       paddingTop: '15px',
-      paddingLeft: '5px'
+      paddingLeft: '5px',
+      width: lastColumn.left + lastColumn.width
     };
     let rowGroupRendererProps = Object.assign({ onRowExpandClick: this.onRowExpandClick }, this.props);
 
     return (
+
       <div style={style} className={this.getClassName()} onClick={this.onClick} onKeyDown={this.onKeyDown} tabIndex={-1}>
         <this.props.renderer {...rowGroupRendererProps} />
       </div>
+
     );
   }
 }
@@ -104,7 +110,8 @@ RowGroup.propTypes = {
   height: PropTypes.number.isRequired,
   cellMetaData: PropTypes.object,
   idx: PropTypes.number.isRequired,
-  renderer: PropTypes.func
+  renderer: PropTypes.func,
+  columns: PropTypes.array.isRequired
 };
 
 const DefaultRowGroupRenderer = (props) => {

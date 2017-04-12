@@ -277,6 +277,7 @@ const Canvas = React.createClass({
         height={props.height}
         cellMetaData={this.props.cellMetaData}
         renderer={this.props.rowGroupRenderer}
+        columns={props.columns}
         />);
     }
     let RowsRenderer = this.props.rowRenderer;

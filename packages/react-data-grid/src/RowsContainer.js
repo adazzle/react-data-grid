@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 
 const SimpleRowsContainer = (props) => {
   return (
-    <div key="rows-container" style={{overflow: 'hidden'}}>
+    <div key="rows-container">
       {props.rows}
     </div>
   );
