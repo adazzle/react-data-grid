@@ -14,7 +14,8 @@ describe('Editor Container Tests', () => {
       idx: 0,
       rowIdx: 0
     },
-    onCommit: function() {}
+    onCommit: function() {},
+    onCommitCancel: function() {}
   };
 
   let component;
@@ -119,6 +120,7 @@ describe('Editor Container Tests', () => {
       expect(editor).toBeDefined();
       expect(editor.props.value).toBeDefined();
       expect(editor.props.onCommit).toBeDefined();
+      expect(editor.props.onCommitCancel).toBeDefined();
     });
 
     it('should render component custom editors', () => {
