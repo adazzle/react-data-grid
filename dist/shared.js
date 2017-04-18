@@ -6480,7 +6480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if ((i < colVisibleStart || i > colVisibleEnd) && !locked) {
 	      return React.createElement(_OverflowCell2['default'], _extends({ ref: function ref(node) {
-	          return _this.key = node;
+	          return _this[key] = node;
 	        } }, baseCellProps));
 	    }
 
@@ -6490,7 +6490,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var cellProps = {
 	      ref: function ref(node) {
-	        return _this.key = node;
+	        return _this[key] = node;
 	      },
 	      value: this.getCellValue(key || i),
 	      rowData: row,
