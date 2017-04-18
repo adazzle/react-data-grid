@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid-addons",
-  "version": "2.0.27",
+  "version": "2.0.28",
   "description": "A set of addons for react-data-grid",
   "scripts": {
     "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-addons true",
@@ -15,7 +15,7 @@
   "author": "Adazzle",
   "license": "MIT",
   "dependencies": {
-    "react-data-grid": "^2.0.27"
+    "react-data-grid": "^2.0.28"
   },
   "devDependencies": {
     "jquery": "^2.1.1",
