@@ -238,7 +238,7 @@ const Canvas = React.createClass({
   renderRow(props: any) {
     let row = props.row;
     if (row.__metaData && row.__metaData.isEmptySubRow) {
-      return (<EmptyChildRow treeDepth={row.treeDepth} cellHeight={row.cellHeight} subRowDetails={row.subRowDetails} onAddSubRow = {this.props.cellMetaData.onAddSubRow} lastSibling={row.lastSibling}/>);
+      return (<EmptyChildRow columns={this.props.columns} treeDepth={row.treeDepth} cellHeight={row.cellHeight} subRowDetails={row.subRowDetails} onAddSubRow = {this.props.cellMetaData.onAddSubRow} lastSibling={row.lastSibling}/>);
     }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
