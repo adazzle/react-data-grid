@@ -8679,11 +8679,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var ctrl = this; // flow on windows has an outdated react declaration, once that gets updated, we can remove this
 	    if (ctrl.isMounted()) {
 	      var node = ReactDOM.findDOMNode(this);
-	      if (node) {
-	        var transform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
-	        node.style.webkitTransform = transform;
-	        node.style.transform = transform;
-	      }
+	      var transform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
+	      node.style.webkitTransform = transform;
+	      node.style.transform = transform;
 	    }
 	  },
 	  isCopied: function isCopied() {
@@ -8974,14 +8972,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var node = ReactDOM.findDOMNode(this);
 	    node.style.webkitTransform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
 	    node.style.transform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
-	  },
-	  removeScroll: function removeScroll() {
-	    var node = ReactDOM.findDOMNode(this);
-	    if (node) {
-	      var transform = 'none';
-	      node.style.webkitTransform = transform;
-	      node.style.transform = transform;
-	    }
 	  },
 	  render: function render() {
 	    var resizeHandle = void 0;
@@ -15293,8 +15283,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.props.columns.forEach(function (column, i) {
 	      if (column.locked) {
 	        _this2.cells[i].setScrollLeft(scrollLeft);
-	      } else {
-	        _this2.cells[i].removeScroll();
 	      }
 	    });
 	  },
@@ -17270,7 +17258,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowData: this.props.rowData,
 	      height: this.props.height,
 	      onBlur: this.commit,
-	      onOverrideKeyDown: this.onKeyDown
+	      onOverrideKeyDown: this.onKeyDown,
+	      onCommitCancel: this.props.cellMetaData.onCommitCancel
 	    };
 
 	    var CustomEditor = this.props.column.editor;
