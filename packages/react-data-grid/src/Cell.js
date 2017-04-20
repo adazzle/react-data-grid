@@ -278,11 +278,9 @@ const Cell = React.createClass({
     let ctrl: any = this; // flow on windows has an outdated react declaration, once that gets updated, we can remove this
     if (ctrl.isMounted()) {
       let node = ReactDOM.findDOMNode(this);
-      if (node) {
-        let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-        node.style.webkitTransform = transform;
-        node.style.transform = transform;
-      }
+      let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+      node.style.webkitTransform = transform;
+      node.style.transform = transform;
     }
   },
 

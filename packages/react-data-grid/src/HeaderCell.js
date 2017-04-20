@@ -91,15 +91,6 @@ const HeaderCell = React.createClass({
     node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
   },
 
-  removeScroll() {
-    let node = ReactDOM.findDOMNode(this);
-    if (node) {
-      let transform = 'none';
-      node.style.webkitTransform = transform;
-      node.style.transform = transform;
-    }
-  },
-
   render(): ?ReactElement {
     let resizeHandle;
     if (this.props.column.resizable) {
