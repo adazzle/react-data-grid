@@ -59,7 +59,8 @@ const EditorContainer = React.createClass({
       rowData: this.props.rowData,
       height: this.props.height,
       onBlur: this.commit,
-      onOverrideKeyDown: this.onKeyDown
+      onOverrideKeyDown: this.onKeyDown,
+      onCommitCancel: this.props.cellMetaData.onCommitCancel
     };
 
     let CustomEditor = this.props.column.editor;
