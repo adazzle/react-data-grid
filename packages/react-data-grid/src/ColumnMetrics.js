@@ -36,7 +36,7 @@ function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
       if (unallocatedWidth <= 0) {
         column.width = minColumnWidth;
       } else {
-        let columnWidth = Math.ceil(unallocatedWidth / (ColumnUtils.getSize(defferedColumns)));
+        let columnWidth = Math.floor(unallocatedWidth / (ColumnUtils.getSize(defferedColumns)));
         if (columnWidth < minColumnWidth) {
           column.width = minColumnWidth;
         } else {
