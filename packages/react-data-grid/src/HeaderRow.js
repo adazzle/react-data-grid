@@ -149,7 +149,9 @@ const HeaderRow = React.createClass({
       if (column.locked) {
         this.cells[i].setScrollLeft(scrollLeft);
       } else {
-        this.cells[i].removeScroll();
+        if (this.cells[i]) {
+          this.cells[i].removeScroll();
+        }
       }
     });
   },
