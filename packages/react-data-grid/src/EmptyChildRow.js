@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ColumnUtils from './ColumnUtils';
 
 class EmptyChildRow extends React.Component {
 
@@ -21,7 +22,7 @@ class EmptyChildRow extends React.Component {
       height: cellHeight,
       borderBottom: '1px solid #dddddd'
     };
-    let expandColumn = this.props.columns.filter(c => c.key === this.props.subRowDetails.field)[0];
+    let expandColumn = ColumnUtils.getColumn(this.props.columns.filter(c => c.key === this.props.subRowDetails.field), 0);
     let cellLeft = expandColumn ? expandColumn.left : 0;
     return (<div className="react-grid-Row" style={style}>
       <div className="react-grid-Cell" style={{ position: 'absolute', height: cellHeight, width: '100%', cellLeft: cellLeft }}>
