@@ -10,7 +10,7 @@ class DateFilter extends React.Component {
    *
    *  Assumptions:
    *  All incoming dates are UTC
-   *  User wantes to search in local tme zone, NOT UTC
+   *  User wantes to search in local time zone, NOT UTC
    */
 
   static RuleType = {
