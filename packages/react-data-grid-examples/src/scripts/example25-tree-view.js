@@ -26,6 +26,11 @@ function createRows() {
 
 let columns = [
   {
+    key: 'id',
+    name: 'id',
+    locked: true
+  },
+  {
     key: 'name',
     name: 'Name'
   },
@@ -59,7 +64,7 @@ const Example = React.createClass({
       group: rowItem.children && rowItem.children.length > 0,
       expanded: isExpanded,
       children: rowItem.children,
-      field: 'name',
+      field: 'format',
       treeDepth: rowItem.treeDepth || 0,
       siblingIndex: rowItem.siblingIndex,
       numberSiblings: rowItem.numberSiblings
