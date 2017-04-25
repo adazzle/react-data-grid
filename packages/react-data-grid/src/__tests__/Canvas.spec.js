@@ -21,7 +21,8 @@ let testProps = {
     onCommitCancel: () => {},
     copied: {},
     handleDragEnterRow: () => {},
-    handleTerminateDrag: () => {}
+    handleTerminateDrag: () => {},
+    onAddSubRow: () => {}
   }
 };
 
@@ -115,7 +116,7 @@ describe('Canvas Tests', () => {
 
     it('should not render empty child row if not last sibling row', () => {
       let rowGetter = () => { return {id: 0}; };
-      let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(0) };
+      let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(0)};
       testElement = renderComponent(props);
       let rows = testElement.instance().getRows(props.displayStart, props.displayEnd);
       let child = testElement.find(EmptyChildRow);
@@ -125,7 +126,7 @@ describe('Canvas Tests', () => {
 
     it('should render an empty child row after last sibling row', () => {
       let rowGetter = () => { return {id: 0}; };
-      let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1) };
+      let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
       testElement = renderComponent(props);
       let rowData = testElement.instance().getRows(props.displayStart, props.displayEnd);
       let child = testElement.find(EmptyChildRow);
