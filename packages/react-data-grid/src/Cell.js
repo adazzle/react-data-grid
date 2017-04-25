@@ -465,7 +465,10 @@ const Cell = React.createClass({
     if (this.canExpand()) {
       cellExpander = <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
     }
-    if (treeDepth > 0 && isExpandCell) {
+
+    let isDeleteSubRowEnabled = this.props.cellMetaData.onDeleteSubRow ? true : false;
+
+    if (isDeleteSubRowEnabled && (treeDepth > 0 && isExpandCell)) {
       cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow}/>;
     }
     return (<div className="react-grid-Cell__value">{cellDeleter}<div  style={{ marginLeft: marginLeft }}><span>{CellContent}</span> {this.props.cellControls} {cellExpander}</div></div>);

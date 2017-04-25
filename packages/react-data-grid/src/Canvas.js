@@ -168,7 +168,11 @@ const Canvas = React.createClass({
         subRowDetails = this.props.getSubRowDetails(row);
       }
       rows.push({ row, subRowDetails });
-      if (subRowDetails.numberSiblings > 0 && subRowDetails.siblingIndex === subRowDetails.numberSiblings - 1) {
+
+      let isAddSubRowEnabled = this.props.cellMetaData.onAddSubRow ? true : false;
+      let isLastSubRowForParent = subRowDetails.numberSiblings > 0 && subRowDetails.siblingIndex === subRowDetails.numberSiblings - 1;
+
+      if (isAddSubRowEnabled && isLastSubRowForParent) {
         rows.push({row: {__metaData: {isEmptySubRow: true}, treeDepth: subRowDetails.treeDepth, cellHeight: this.props.rowHeight, subRowDetails, lastSibling: row}});
       }
       i++;

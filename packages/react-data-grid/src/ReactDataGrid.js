@@ -369,18 +369,6 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  onDeleteSubRow(args) {
-    if (this.props.onDeleteSubRow) {
-      this.props.onDeleteSubRow(args);
-    }
-  },
-
-  onAddSubRow(args) {
-    if (this.props.onAddSubRow) {
-      this.props.onAddSubRow(args);
-    }
-  },
-
   onRowExpandToggle(args) {
     if (typeof this.props.onRowExpandToggle === 'function') {
       this.props.onRowExpandToggle(args);
@@ -911,8 +899,8 @@ const ReactDataGrid = React.createClass({
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
-      onDeleteSubRow: this.onDeleteSubRow,
-      onAddSubRow: this.onAddSubRow,
+      onDeleteSubRow: this.props.onDeleteSubRow,
+      onAddSubRow: this.props.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
 
