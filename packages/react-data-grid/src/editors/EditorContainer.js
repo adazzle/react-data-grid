@@ -26,6 +26,7 @@ const EditorContainer = React.createClass({
   },
 
   changeCommitted: false,
+  changeCanceled: false,
 
   getInitialState() {
     return {isInvalid: false};
@@ -43,7 +44,7 @@ const EditorContainer = React.createClass({
   },
 
   componentWillUnmount: function() {
-    if (!this.changeCommitted && !this.hasEscapeBeenPressed()) {
+    if (!this.changeCommitted && !this.hasEscapeBeenPressed() && !this.changeCanceled) {
       this.commit({key: 'Enter'});
     }
   },
@@ -55,12 +56,12 @@ const EditorContainer = React.createClass({
       column: this.props.column,
       value: this.getInitialValue(),
       onCommit: this.commit,
+      onCommitCancel: this.commitCancel,
       rowMetaData: this.getRowMetaData(),
       rowData: this.props.rowData,
       height: this.props.height,
       onBlur: this.commit,
-      onOverrideKeyDown: this.onKeyDown,
-      onCommitCancel: this.props.cellMetaData.onCommitCancel
+      onOverrideKeyDown: this.onKeyDown
     };
 
     let CustomEditor = this.props.column.editor;
@@ -188,6 +189,12 @@ const EditorContainer = React.createClass({
       this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
     }
   },
+
+  commitCancel() {
+    this.changeCanceled = true;
+    this.props.cellMetaData.onCommitCancel();
+  },
+
   isNewValueValid(value: string): boolean {
     if (isFunction(this.getEditor().validate)) {
       let isValid = this.getEditor().validate(value);

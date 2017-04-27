@@ -163,6 +163,51 @@ describe('Editor Container Tests', () => {
       TestUtils.Simulate.click(ReactDOM.findDOMNode(editor));
       expect(component.commit.calls.count()).toEqual(0);
     });
+
+    it('should call onCommitCancel of cellMetaData when editor cancels editing', () => {
+      column.editor = <TestEditor />;
+      let metaData =  {
+        selected: {
+          idx: 0,
+          rowIdx: 0
+        },
+        onCommit: jasmine.createSpy(),
+        onCommitCancel: jasmine.createSpy()
+      };
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={'SupernaviX'}
+        cellMetaData={metaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
+      editor.props.onCommitCancel();
+      expect(metaData.onCommitCancel).toHaveBeenCalled();
+      expect(metaData.onCommitCancel.calls.count()).toEqual(1);
+      expect(metaData.onCommit).not.toHaveBeenCalled();
+    });
+
+    it('should not commit changes on componentWillUnmount if editor cancels editing', () => {
+      column.editor = <TestEditor />;
+      let metaData =  {
+        selected: {
+          idx: 0,
+          rowIdx: 0
+        },
+        onCommit: jasmine.createSpy(),
+        onCommitCancel: jasmine.createSpy()
+      };
+      component = TestUtils.renderIntoDocument(<EditorContainer
+        rowData={rowData}
+        value={'SupernaviX'}
+        cellMetaData={metaData}
+        column={column}
+        height={50}/>);
+      let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
+      editor.props.onCommitCancel();
+      component.componentWillUnmount();
+      expect(metaData.onCommit).not.toHaveBeenCalled();
+    });
   });
 
   describe('Events', () => {
