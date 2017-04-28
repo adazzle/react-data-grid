@@ -15294,7 +15294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (column.locked) {
 	        _this2.cells[i].setScrollLeft(scrollLeft);
 	      } else {
-	        if (_this2.cells[i]) {
+	        if (_this2.cells[i] && _this2.cells[i].removeScroll) {
 	          _this2.cells[i].removeScroll();
 	        }
 	      }
