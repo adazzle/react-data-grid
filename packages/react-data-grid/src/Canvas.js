@@ -11,7 +11,6 @@ require('../../../themes/react-data-grid-core.css');
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
-import EmptyChildRow from './EmptyChildRow';
 
 const Canvas = React.createClass({
   mixins: [ScrollShim],
