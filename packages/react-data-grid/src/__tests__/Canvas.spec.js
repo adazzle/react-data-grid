@@ -113,16 +113,6 @@ describe('Canvas Tests', () => {
 
     let COLUMNS = [{key: 'id', name: 'ID', left: 100}];
 
-    it('should not render empty child row if not last sibling row', () => {
-      let rowGetter = () => { return {id: 0}; };
-      let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(0)};
-      testElement = renderComponent(props);
-      let rows = testElement.instance().getRows(props.displayStart, props.displayEnd);
-      let child = testElement.find(EmptyChildRow);
-      expect(child.length).toBe(0);
-      expect(rows.length).toBe(1);
-    });
-
     it('can render a custom renderer if __metadata property exists', () => {
       let EmptyChildRow = () => {
         return (<div className="test-row-renderer"></div>);
