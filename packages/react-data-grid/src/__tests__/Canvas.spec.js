@@ -1,7 +1,6 @@
 import React from 'react';
 import Canvas from '../Canvas';
 import { mount } from 'enzyme';
-import EmptyChildRow from '../EmptyChildRow';
 
 let testProps = {
   rowHeight: 25,
@@ -124,15 +123,17 @@ describe('Canvas Tests', () => {
       expect(rows.length).toBe(1);
     });
 
-    it('should render an empty child row after last sibling row', () => {
-      let rowGetter = () => { return {id: 0}; };
+    it('can render a custom renderer if __metadata property exists', () => {
+      let EmptyChildRow = () => {
+        return (<div className="test-row-renderer"></div>);
+      };
+      let rowGetter = () => { return {id: 0, __metaData: {getRowRenderer: EmptyChildRow}}; };
       let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
       testElement = renderComponent(props);
       let rowData = testElement.instance().getRows(props.displayStart, props.displayEnd);
-      let child = testElement.find(EmptyChildRow);
+      let child = testElement.find('.test-row-renderer');
       expect(child.length).toBe(1);
-      expect(rowData.length).toBe(2);
-      expect(rowData[1].row.__metaData.isEmptySubRow).toBeTruthy();
+      expect(rowData.length).toBe(1);
     });
   });
 });
