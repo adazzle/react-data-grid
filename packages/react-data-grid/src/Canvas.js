@@ -168,13 +168,6 @@ const Canvas = React.createClass({
         subRowDetails = this.props.getSubRowDetails(row);
       }
       rows.push({ row, subRowDetails });
-
-      let isAddSubRowEnabled = this.props.cellMetaData.onAddSubRow ? true : false;
-      let isLastSubRowForParent = subRowDetails.numberSiblings > 0 && subRowDetails.siblingIndex === subRowDetails.numberSiblings - 1;
-
-      if (isAddSubRowEnabled && isLastSubRowForParent) {
-        rows.push({row: {__metaData: {isEmptySubRow: true}, treeDepth: subRowDetails.treeDepth, cellHeight: this.props.rowHeight, subRowDetails, lastSibling: row}});
-      }
       i++;
     }
     return rows;
@@ -242,7 +235,7 @@ const Canvas = React.createClass({
   renderRow(props: any) {
     let row = props.row;
     if (row.__metaData && row.__metaData.isEmptySubRow) {
-      return (<EmptyChildRow columns={this.props.columns} treeDepth={row.treeDepth} cellHeight={row.cellHeight} subRowDetails={row.subRowDetails} onAddSubRow = {this.props.cellMetaData.onAddSubRow} lastSibling={row.lastSibling}/>);
+      return (<EmptyChildRow columns={this.props.columns} treeDepth={row.treeDepth} cellHeight={row.cellHeight} subRowDetails={row.subRowDetails} onAddSubRow = {this.props.cellMetaData.onAddSubRow} parentRowId={row.parentRowId}/>);
     }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup

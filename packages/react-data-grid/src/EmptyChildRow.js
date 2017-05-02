@@ -9,7 +9,7 @@ class EmptyChildRow extends React.Component {
   }
 
   onAddSubRow() {
-    this.props.onAddSubRow(this.props.lastSibling);
+    this.props.onAddSubRow(this.props.parentRowId);
   }
 
   getFixedColumnsWidth() {
@@ -36,7 +36,7 @@ class EmptyChildRow extends React.Component {
       height: cellHeight,
       borderBottom: '1px solid #dddddd'
     };
-    let expandColumn = ColumnUtils.getColumn(this.props.columns.filter(c => c.key === this.props.subRowDetails.field), 0);
+    let expandColumn = ColumnUtils.getColumn(this.props.columns.filter(c => c.key === this.props.expandColumnKey), 0);
 
     let cellLeft = expandColumn ? expandColumn.left  : 0;
     return (<div className="react-grid-Row rdg-add-child-row-container" style={style}>
@@ -56,9 +56,9 @@ EmptyChildRow.propTypes = {
   treeDepth: PropTypes.number.isRequired,
   cellHeight: PropTypes.number.isRequired,
   onAddSubRow: PropTypes.func.isRequired,
-  lastSibling: PropTypes.object,
+  parentRowId: PropTypes.number,
   columns: PropTypes.array.isRequired,
-  subRowDetails: PropTypes.object.isRequired
+  expandColumnKey: PropTypes.string.isRequired
 };
 
 export default EmptyChildRow;
