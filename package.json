@@ -55,7 +55,7 @@
     "copy-dir": "^0.3.0",
     "css-loader": "^0.26.0",
     "del": "^1.2.1",
-    "enzyme": "^2.4.1",
+    "enzyme": "2.8.0",
     "eslint": "^1.10.3",
     "eslint-loader": "^1.2.0",
     "eslint-plugin-react": "^3.15.0",
