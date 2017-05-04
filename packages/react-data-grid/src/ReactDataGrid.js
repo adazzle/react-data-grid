@@ -676,6 +676,7 @@ const ReactDataGrid = React.createClass({
       rowIdx = this.state.selected.rowIdx + rowDelta;
       idx = this.state.selected.idx + cellDelta;
     }
+    this.scrollToColumn(idx);
     this.onSelect({ idx: idx, rowIdx: rowIdx });
   },
 
