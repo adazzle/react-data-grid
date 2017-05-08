@@ -516,7 +516,7 @@ const ReactDataGrid = React.createClass({
   },
 
   handleNewRowSelect(rowIdx, rowData) {
-    if (this.selectAllCheckbox.checked === true) {
+    if (this.selectAllCheckbox && this.selectAllCheckbox.checked === true) {
       this.selectAllCheckbox.checked = false;
     }
 
