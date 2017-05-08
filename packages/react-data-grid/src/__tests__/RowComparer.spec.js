@@ -6,6 +6,7 @@ let cellMetaData = {
   dragged: null,
   copied: null
 };
+let expandedRows = [{key: 'col1'}, {key: 'col2'}];
 
 describe('RowComparer shouldRowUpdate', () => {
   it('same props should not cause an update', () => {
@@ -45,5 +46,45 @@ describe('RowComparer shouldRowUpdate', () => {
       cellMetaData: cellMetaData
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
+  });
+
+  it('expanded rows should cause update', () => {
+    let currentProps = {
+      columns: columns,
+      cellMetaData: cellMetaData
+    };
+    let nextProps = {
+      columns: columns,
+      cellMetaData: cellMetaData,
+      expandedRows
+    };
+    expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
+  });
+
+  it('un-expanding rows should cause update', () => {
+    let currentProps = {
+      columns: columns,
+      cellMetaData: cellMetaData,
+      expandedRows
+    };
+    let nextProps = {
+      columns: columns,
+      cellMetaData: cellMetaData
+    };
+    expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
+  });
+
+  it('same expanded rows should not cause update', () => {
+    let currentProps = {
+      columns: columns,
+      cellMetaData: cellMetaData,
+      expandedRows
+    };
+    let nextProps = {
+      columns: columns,
+      cellMetaData: cellMetaData,
+      expandedRows
+    };
+    expect(shouldRowUpdate(nextProps, currentProps)).toBe(false);
   });
 });

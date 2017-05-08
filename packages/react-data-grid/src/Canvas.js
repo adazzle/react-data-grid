@@ -73,6 +73,8 @@ const Canvas = React.createClass({
     };
   },
 
+  rows: [],
+
   getInitialState() {
     return {
       displayStart: this.props.displayStart,
@@ -151,55 +153,21 @@ const Canvas = React.createClass({
     this.props.onScroll(scroll);
   },
 
-  getSubRows(row) {
-    let subRowDetails = this.props.getSubRowDetails(row);
-    if (subRowDetails.expanded === true) {
-      return subRowDetails.children.map(r => {
-        return { row: r };
-      });
-    }
-  },
-
-  addSubRows(rowsInput, row, i, displayEnd, treeDepth) {
-    let subRowDetails = this.props.getSubRowDetails(row) || {};
-    let rows = rowsInput;
-    let increment = i;
-    if (increment < displayEnd) {
-      subRowDetails.treeDepth = treeDepth;
-      rows.push({ row, subRowDetails });
-      increment++;
-    }
-    if (subRowDetails && subRowDetails.expanded) {
-      let subRows = this.getSubRows(row);
-      subRows.forEach(sr => {
-        let result = this.addSubRows(rows, sr.row, increment, displayEnd, treeDepth + 1);
-        rows = result.rows;
-        increment = result.increment;
-      });
-    }
-    return { rows, increment };
-  },
-
-  getRows(displayStart: number, displayEnd: number): Array<any> {
+  getRows(displayStart, displayEnd) {
     this._currentRowsRange = { start: displayStart, end: displayEnd };
     if (Array.isArray(this.props.rowGetter)) {
       return this.props.rowGetter.slice(displayStart, displayEnd);
     }
     let rows = [];
-    let rowFetchIndex = displayStart;
     let i = displayStart;
     while (i < displayEnd) {
-      let row = this.props.rowGetter(rowFetchIndex);
+      let row = this.props.rowGetter(i);
+      let subRowDetails = {};
       if (this.props.getSubRowDetails) {
-        let treeDepth = 0;
-        let result = this.addSubRows(rows, row, i, displayEnd, treeDepth);
-        rows = result.rows;
-        i = result.increment;
-      } else {
-        rows.push({ row: row });
-        i++;
+        subRowDetails = this.props.getSubRowDetails(row);
       }
-      rowFetchIndex++;
+      rows.push({ row, subRowDetails });
+      i++;
     }
     return rows;
   },
@@ -212,12 +180,12 @@ const Canvas = React.createClass({
     return scrollbarWidth;
   },
 
-  getScroll(): { scrollTop: number; scrollLeft: number } {
+  getScroll() {
     let {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
     return { scrollTop, scrollLeft };
   },
 
-  isRowSelected(idx, row): boolean {
+  isRowSelected(idx, row) {
     // Use selectedRows if set
     if (this.props.selectedRows !== null) {
       let selectedRows = this.props.selectedRows.filter(r => {
@@ -240,7 +208,7 @@ const Canvas = React.createClass({
   _currentRowsRange: { start: 0, end: 0 },
   _scroll: { scrollTop: 0, scrollLeft: 0 },
 
-  setScrollLeft(scrollLeft: number) {
+  setScrollLeft(scrollLeft) {
     if (this._currentRowsLength !== 0) {
       if (!this.rows) return;
       for (let i = 0, len = this._currentRowsLength; i < len; i++) {
@@ -263,10 +231,11 @@ const Canvas = React.createClass({
     return this.rows[i];
   },
 
-  rows: [],
-
   renderRow(props: any) {
     let row = props.row;
+    if (row.__metaData && row.__metaData.getRowRenderer) {
+      return row.__metaData.getRowRenderer(this.props);
+    }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
         key={props.key}

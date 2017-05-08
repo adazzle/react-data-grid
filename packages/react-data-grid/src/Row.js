@@ -11,7 +11,7 @@ require('../../../themes/react-data-grid-row.css');
 
 const CellExpander = React.createClass({
   render() {
-    return (<Cell {...this.props}/>);
+    return (<Cell {...this.props} />);
   }
 });
 
@@ -155,7 +155,11 @@ const Row = React.createClass({
   },
 
   getExpandableOptions(columnKey) {
-    return { canExpand: this.props.subRowDetails && this.props.subRowDetails.field === columnKey, expanded: this.props.subRowDetails && this.props.subRowDetails.expanded, children: this.props.subRowDetails && this.props.subRowDetails.children, treeDepth: this.props.subRowDetails ? this.props.subRowDetails.treeDepth : 0 };
+    let subRowDetails = this.props.subRowDetails;
+    if (subRowDetails) {
+      return { canExpand: subRowDetails && subRowDetails.field === columnKey && ((subRowDetails.children && subRowDetails.children.length > 0) || subRowDetails.group === true), field: subRowDetails.field, expanded: subRowDetails && subRowDetails.expanded, children: subRowDetails && subRowDetails.children, treeDepth: subRowDetails ? subRowDetails.treeDepth : 0, subRowDetails: subRowDetails };
+    }
+    return {};
   },
 
   setScrollLeft(scrollLeft) {
@@ -201,7 +205,7 @@ const Row = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.getKnownDivProps()} className = { className } style= { style } onDragEnter= { this.handleDragEnter } >
+      <div {...this.getKnownDivProps() } className={className} style={style} onDragEnter={this.handleDragEnter} >
         {
           React.isValidElement(this.props.row) ?
             this.props.row : cells

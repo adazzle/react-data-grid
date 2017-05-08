@@ -32,5 +32,15 @@ module.exports = {
       return enableCellSelect === true && col.editable(rowData);
     }
     return enableCellSelect === true && (!!col.editor || !!col.editable);
+  },
+
+  getValue(column, property) {
+    let value;
+    if (column.toJSON && column.get) {
+      value = column.get(property);
+    } else  {
+      value = column[property];
+    }
+    return value;
   }
 };

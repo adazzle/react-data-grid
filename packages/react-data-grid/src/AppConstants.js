@@ -9,6 +9,10 @@ const constants = {
   }),
   DragItemTypes: {
     Column: 'column'
+  },
+  CellExpand: {
+    DOWN_TRIANGLE: String.fromCharCode('9660'),
+    RIGHT_TRIANGLE: String.fromCharCode('9654')
   }
 };
 

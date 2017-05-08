@@ -30,9 +30,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .react-grid-Cell.readonly {
@@ -164,4 +161,78 @@
 
 .react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
     visibility: hidden;
+}
+
+.rdg-cell-expand {
+    top: 0px;
+    right: 20px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.rdg-child-row-action-cross:before, rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:before, rdg-child-row-action-cross-last:after {
+  content: "";
+  position: absolute;
+  background: grey;
+  height: 50%;
+}
+
+.rdg-child-row-action-cross:before {
+  left: 21px;
+  width: 1px;
+  height: 35px;
+}
+
+.rdg-child-row-action-cross-last:before {
+  left: 21px;
+  width: 1px;
+}
+
+.rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:after {
+  top: 50%;
+  left:20px;
+  height: 1px;
+  width: 15px;
+  content: "";
+  position: absolute;
+  background: grey;
+}
+
+.rdg-child-row-action-cross:hover {
+    background: red;
+}
+.rdg-child-row-btn {
+   position:absolute;
+   cursor:pointer;
+   border:1px solid grey;
+   border-radius:14px;
+   z-index: 3;
+   background: white;
+}
+
+.rdg-child-row-btn div {
+  font-size: 12px;
+  text-align:center;
+  line-height:19px;
+  color: grey;
+  height:20px;
+  width:20px;
+  position:absolute;
+  top:60%;
+  left:53%;
+  margin-top:-10px;
+  margin-left:-10px;
+
+}
+
+.rdg-empty-child-row:hover .glyphicon-plus-sign {
+  color: green;
+}
+
+.rdg-empty-child-row:hover a {
+  color: green;
+}
+
+.rdg-child-row-btn .glyphicon-remove-sign:hover {
+  color: red;
 }

@@ -109,7 +109,9 @@ const ReactDataGrid = React.createClass({
     rowActionsCell: React.PropTypes.func,
     onCheckCellIsEditable: React.PropTypes.func,
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
-    overScan: React.PropTypes.object
+    overScan: React.PropTypes.object,
+    onDeleteSubRow: React.PropTypes.func,
+    onAddSubRow: React.PropTypes.func
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -293,10 +295,10 @@ const ReactDataGrid = React.createClass({
       rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
     }
 
-    let fromRowId = this.props.rowGetter(action === 'COPY_PASTE' ? originRow : fromRow)[this.props.rowKey];
+    let fromRowData = this.props.rowGetter(action === 'COPY_PASTE' ? originRow : fromRow);
+    let fromRowId = fromRowData[this.props.rowKey];
     let toRowId = this.props.rowGetter(toRow)[this.props.rowKey];
-
-    this.props.onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action});
+    this.props.onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action, fromRowData});
   },
 
   onCellCommit(commit: RowUpdateEvent) {
@@ -898,8 +900,11 @@ const ReactDataGrid = React.createClass({
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
+      onDeleteSubRow: this.props.onDeleteSubRow,
+      onAddSubRow: this.props.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
+
     };
 
     let toolbar = this.renderToolbar();
