@@ -15403,13 +15403,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  mixins: [ColumnUtilsMixin],
 
+	  componentWillMount: function componentWillMount() {
+	    this.cells = [];
+	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
 	    return nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextProps.columns !== this.props.columns || !shallowEqual(nextProps.style, this.props.style) || this.props.sortColumn !== nextProps.sortColumn || this.props.sortDirection !== nextProps.sortDirection;
 	  },
-
-
-	  cells: [],
-
 	  getHeaderCellType: function getHeaderCellType(column) {
 	    if (column.filterable) {
 	      if (this.props.filterable) return HeaderCellType.FILTERABLE;
