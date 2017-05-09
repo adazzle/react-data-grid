@@ -78,7 +78,7 @@ class AutoCompleteFilter extends React.Component {
         placeholder={this.state.placeholder}
         onChange={this.handleChange}
         escapeClearsValue={true}
-        multi={this.props.multiSelection !== undefined || this.props.multiSelection !== null ? this.props.multiSelection : true}
+        multi={this.props.multiSelection !== undefined && this.props.multiSelection !== null ? this.props.multiSelection : true}
         value={this.state.filters} />
     );
   }
