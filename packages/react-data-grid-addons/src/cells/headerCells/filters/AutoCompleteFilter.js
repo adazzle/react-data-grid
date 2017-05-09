@@ -78,7 +78,7 @@ class AutoCompleteFilter extends React.Component {
         placeholder={this.state.placeholder}
         onChange={this.handleChange}
         escapeClearsValue={true}
-        multi={true}
+        multi={this.props.multiSelection !== undefined && this.props.multiSelection !== null ? this.props.multiSelection : true}
         value={this.state.filters} />
     );
   }
@@ -87,7 +87,8 @@ class AutoCompleteFilter extends React.Component {
 AutoCompleteFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
   column: React.PropTypes.shape(ExcelColumn),
-  getValidFilterValues: PropTypes.func
+  getValidFilterValues: PropTypes.func,
+  multiSelection: PropTypes.bool
 };
 
 export default AutoCompleteFilter;
