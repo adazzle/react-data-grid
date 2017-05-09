@@ -2,7 +2,7 @@ Use [Github issues](https://github.com/adazzle/react-data-grid/issues) for featu
 
 ## <a name="question"></a> Got a Question or Problem?
 
-If you have questions about how to *use* react-data-grid, please direct them to [StackOverflow](http://stackoverflow.com/questions/tagged/react-data-grid). We are also available on our Slack channel
+If you have questions about how to *use* react-data-grid, please direct them to [StackOverflow](http://stackoverflow.com/questions/tagged/react-data-grid). We are also available on our [Slack channel](https://react-data-grid.herokuapp.com/)
 
 ## <a name="issue"></a> Found an Issue?
 If you find a bug in the source code or a mistake in the documentation, you can help us by
