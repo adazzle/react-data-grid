@@ -63,7 +63,7 @@ module.exports = {
   },
 
   getRenderedColumnCount(displayStart, width) {
-    let remainingWidth = width && width > 0 ? width : this.props.columnMetrics.width;
+    let remainingWidth = width && width > 0 ? width : this.props.columnMetrics.totalWidth;
     if (remainingWidth === 0) {
       remainingWidth = ReactDOM.findDOMNode(this).offsetWidth;
     }
