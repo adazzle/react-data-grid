@@ -92,7 +92,7 @@
 
 .react-grid-HeaderCell .Select-control .Select-value {
     padding: 4px;
-    line-height: 20px;   
+    line-height: 20px !important;   
 }
 
 .react-grid-HeaderCell .Select-control .Select-value .Select-value-label {
