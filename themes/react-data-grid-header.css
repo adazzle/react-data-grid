@@ -95,6 +95,20 @@
     line-height: 20px !important;   
 }
 
+.react-grid-HeaderCell .Select--multi .Select-control .Select-value {
+    padding: 0px;
+    line-height: 16px !important;
+    max-height: 20px;
+}
+
+.react-grid-HeaderCell .Select--multi .Select-control .Select-value .Select-value-icon {
+    max-height: 20px;
+}
+
+.react-grid-HeaderCell .Select--multi .Select-control .Select-value .Select-value-label {
+    max-height: 20px;
+}
+
 .react-grid-HeaderCell .Select-control .Select-value .Select-value-label {
     color: #555555 !important;
 }
