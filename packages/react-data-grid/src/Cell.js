@@ -158,7 +158,6 @@ const Cell = React.createClass({
       width: this.props.column.width,
       height: this.props.height,
       left: this.props.column.left,
-      lineHeight: `${this.props.height}px`,
       contain: 'layout'
     };
     return style;
@@ -198,7 +197,8 @@ const Cell = React.createClass({
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
       'was-dragged-over': this.wasDraggedOver(),
-      'cell-tooltip': this.props.tooltip ? true : false
+      'cell-tooltip': this.props.tooltip ? true : false,
+      'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails
     });
     return joinClasses(className, extraClasses);
   },

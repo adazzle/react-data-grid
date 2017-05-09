@@ -32,6 +32,13 @@
   overflow: hidden;
 }
 
+.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value {
+  position: relative;		
+  top: 50%;		
+  transform: translateY(-50%);
+}
+
+
 .react-grid-Cell.readonly {
   background-color : black;
 }
