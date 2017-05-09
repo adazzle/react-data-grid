@@ -198,7 +198,7 @@ const Cell = React.createClass({
       'is-dragged-over-down': this.isDraggedOverDownwards(),
       'was-dragged-over': this.wasDraggedOver(),
       'cell-tooltip': this.props.tooltip ? true : false,
-      'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails
+      'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0
     });
     return joinClasses(className, extraClasses);
   },
