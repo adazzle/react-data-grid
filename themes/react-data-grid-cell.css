@@ -38,6 +38,10 @@
   transform: translateY(-50%);
 }
 
+.rdg-child-cell .react-grid-Cell__value {
+  line-height: 35px;
+}
+
 
 .react-grid-Cell.readonly {
   background-color : black;
