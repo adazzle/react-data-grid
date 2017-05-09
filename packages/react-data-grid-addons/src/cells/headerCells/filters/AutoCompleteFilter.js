@@ -11,7 +11,7 @@ class AutoCompleteFilter extends React.Component {
     this.getOptions = this.getOptions.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.filterValues = this.filterValues.bind(this);
-    this.state = {options: this.getOptions(), rawValue: '', placeholder: 'Search...'};
+    this.state = {options: this.getOptions(), rawValue: '', placeholder: 'Search'};
   }
 
   componentWillReceiveProps(newProps) {
@@ -70,19 +70,16 @@ class AutoCompleteFilter extends React.Component {
   }
 
   render() {
-    let filterName = 'filter-' + this.props.column.key;
     return (
-      <div style={{width: (this.props.column.width * 0.9)}}>
       <Select
-          name={filterName}
-          options={this.state.options}
-          placeholder={this.state.placeholder}
-          onChange={this.handleChange}
-          escapeClearsValue={true}
-          multi={true}
-          value={this.state.filters}
-      />
-      </div>
+        autosize={false}
+        name={`filter-${this.props.column.key}`}
+        options={this.state.options}
+        placeholder={this.state.placeholder}
+        onChange={this.handleChange}
+        escapeClearsValue={true}
+        multi={true}
+        value={this.state.filters} />
     );
   }
 }
