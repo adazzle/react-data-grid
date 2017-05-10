@@ -31,6 +31,12 @@ const Example = React.createClass({
         filterRenderer: SingleSelectFilter
       },
       {
+        key: 'developer',
+        name: 'Developer',
+        filterable: true,
+        filterRenderer: AutoCompleteFilter
+      },
+      {
         key: 'complete',
         name: '% Complete',
         filterable: true,
@@ -64,6 +70,7 @@ const Example = React.createClass({
         complete: Math.min(100, Math.round(Math.random() * 110)),
         priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
         issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],
+        developer: ['James', 'Tim', 'Daniel', 'Alan'][Math.floor((Math.random() * 3) + 1)],
         startDate: this.getRandomDate(new Date(2015, 3, 1), new Date()),
         completeDate: this.getRandomDate(new Date(), new Date(2016, 0, 1))
       });
