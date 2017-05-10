@@ -1,7 +1,7 @@
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
-const { Toolbar, Filters: { NumericFilter, AutoCompleteFilter }, Data: { Selectors } } = require('react-data-grid-addons');
+const { Toolbar, Filters: { NumericFilter, AutoCompleteFilter, MultiSelectFilter, SingleSelectFilter }, Data: { Selectors } } = require('react-data-grid-addons');
 
 const Example = React.createClass({
   getInitialState() {
@@ -22,11 +22,17 @@ const Example = React.createClass({
         key: 'priority',
         name: 'Priority',
         filterable: true,
-        filterRenderer: AutoCompleteFilter
+        filterRenderer: MultiSelectFilter
       },
       {
         key: 'issueType',
         name: 'Issue Type',
+        filterable: true,
+        filterRenderer: SingleSelectFilter
+      },
+      {
+        key: 'developer',
+        name: 'Developer',
         filterable: true,
         filterRenderer: AutoCompleteFilter
       },
@@ -64,6 +70,7 @@ const Example = React.createClass({
         complete: Math.min(100, Math.round(Math.random() * 110)),
         priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
         issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],
+        developer: ['James', 'Tim', 'Daniel', 'Alan'][Math.floor((Math.random() * 3) + 1)],
         startDate: this.getRandomDate(new Date(2015, 3, 1), new Date()),
         completeDate: this.getRandomDate(new Date(), new Date(2016, 0, 1))
       });
