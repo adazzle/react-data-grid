@@ -1,7 +1,7 @@
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
-const { Toolbar, Filters: { NumericFilter, AutoCompleteFilter }, Data: { Selectors } } = require('react-data-grid-addons');
+const { Toolbar, Filters: { NumericFilter, AutoCompleteFilter, MultiSelectFilter, SingleSelectFilter }, Data: { Selectors } } = require('react-data-grid-addons');
 
 const Example = React.createClass({
   getInitialState() {
@@ -22,13 +22,13 @@ const Example = React.createClass({
         key: 'priority',
         name: 'Priority',
         filterable: true,
-        filterRenderer: AutoCompleteFilter
+        filterRenderer: MultiSelectFilter
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         filterable: true,
-        filterRenderer: AutoCompleteFilter
+        filterRenderer: SingleSelectFilter
       },
       {
         key: 'complete',
