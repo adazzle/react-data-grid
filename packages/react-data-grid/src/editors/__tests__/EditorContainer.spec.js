@@ -214,6 +214,7 @@ describe('Editor Container Tests', () => {
     beforeEach(() => {
       cellMetaData.onCommit = function() {};
       spyOn(cellMetaData, 'onCommit');
+      cellMetaData.onCommitCancel = jasmine.createSpy();
 
       // render into an actual div, not a detached one
       // otherwise IE (11) gives an error when we try and setCaretAtEndOfInput
@@ -237,6 +238,20 @@ describe('Editor Container Tests', () => {
       TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'Enter'});
       expect(cellMetaData.onCommit).toHaveBeenCalled();
       expect(cellMetaData.onCommit.calls.count()).toEqual(1);
+    });
+
+    it('hitting escape should call commitCancel of cellMetaData only once', () => {
+      let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
+      TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'Escape'});
+      expect(cellMetaData.onCommitCancel).toHaveBeenCalled();
+      expect(cellMetaData.onCommitCancel.calls.count()).toEqual(1);
+    });
+
+    it('hitting escape should not call commit changes on componentWillUnmount', () => {
+      let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
+      TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'Escape'});
+      ReactDOM.unmountComponentAtNode(container);
+      expect(cellMetaData.onCommit).not.toHaveBeenCalled();
     });
   });
 });
