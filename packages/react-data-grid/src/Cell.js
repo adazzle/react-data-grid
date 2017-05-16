@@ -412,7 +412,7 @@ const Cell = React.createClass({
     for (let eventKey in columnEvents) {
       if (columnEvents.hasOwnProperty(eventKey)) {
         let event = columnEvents[event];
-        let eventInfo = { rowIdx: this.props.rowIdx, idx: this.props.idx, name: eventKey };
+        let eventInfo = { idx: this.props.idx, rowIdx: this.props.rowIdx, rowId: this.props.rowData[this.props.cellMetaData.rowKey], name: eventKey };
         let eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
 
         if (allEvents.hasOwnProperty(eventKey)) {
