@@ -164,8 +164,9 @@ const ReactDataGrid = React.createClass({
 
       if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
         let eventArgs = {
-          rowIdx: columnEvent.rowIdx,
           idx,
+          rowIdx: columnEvent.rowIdx,
+          rowId: columnEvent.rowId,
           column
         };
 
@@ -881,6 +882,7 @@ const ReactDataGrid = React.createClass({
 
   render() {
     let cellMetaData = {
+      rowKey: this.props.rowKey,
       selected: this.state.selected,
       dragged: this.state.dragged,
       hoveredRowIdx: this.state.hoveredRowIdx,
@@ -904,7 +906,6 @@ const ReactDataGrid = React.createClass({
       onAddSubRow: this.props.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
-
     };
 
     let toolbar = this.renderToolbar();
