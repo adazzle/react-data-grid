@@ -20,7 +20,7 @@ const Example = React.createClass({
         resizable: true,
         events: {
           onDoubleClick: function(ev, args) {
-              console.log('The user entered edit mode on title column with rowId: ' + args.rowIdx);
+            console.log('The user entered edit mode on title column with rowIdx: ' + args.rowIdx + ' & rowId: ' + args.rowId);
           }
         }
       },
@@ -80,9 +80,6 @@ const Example = React.createClass({
 
   getColumns: function() {
     let clonedColumns = this._columns.slice();
-    clonedColumns[1].events = {
-      onClick: this.cellEditWithOneClick
-    };
     clonedColumns[3].events = {
       onClick: this.cellEditWithOneClick
     };
@@ -111,7 +108,7 @@ const exampleDescription = (
       and will run only for the specified column.
     </p>
     <p>
-      Every event callback must respect this standard in order to work correctly: <code>function onXxx(ev :SyntheticEvent, (rowIdx, idx, column): args)</code>
+      Every event callback must respect this standard in order to work correctly: <code>function onXxx(ev :SyntheticEvent, (idx, rowIdx, rowId, column): args)</code>
     </p>
   </div>
 );
