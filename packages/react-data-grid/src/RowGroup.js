@@ -80,24 +80,17 @@ class RowGroup extends Component {
   }
 
   render() {
-    const lastColumn = utils.last(this.props.columns);
+    let lastColumn = utils.last(this.props.columns);
 
     let style = {
-      height: '50px',
       overflow: 'hidden',
-      border: '1px solid #dddddd',
-      paddingTop: '15px',
-      paddingLeft: '5px',
       width: lastColumn.left + lastColumn.width
     };
-    let rowGroupRendererProps = Object.assign({ onRowExpandClick: this.onRowExpandClick }, this.props);
 
     return (
-
-      <div style={style} className={this.getClassName()} onClick={this.onClick} onKeyDown={this.onKeyDown} tabIndex={-1}>
-        <this.props.renderer {...rowGroupRendererProps} />
+      <div style={style} className={this.getClassName()} onKeyDown={this.onKeyDown} onClick={this.onClick} tabIndex={-1}>
+         <this.props.renderer {...this.props} onRowExpandClick={this.onRowExpandClick} />
       </div>
-
     );
   }
 }
@@ -118,11 +111,19 @@ const DefaultRowGroupRenderer = (props) => {
   let treeDepth = props.treeDepth || 0;
   let marginLeft = treeDepth * 20;
 
+  let style = {
+    height: '50px',
+    border: '1px solid #dddddd',
+    paddingTop: '15px',
+    paddingLeft: '5px'
+  };
+
   return (
-    <div>
+    <div style={style}>
       <span className="row-expand-icon" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
       <strong>{props.columnGroupName} : {props.name}</strong>
-    </div>);
+    </div>
+  );
 };
 
 DefaultRowGroupRenderer.propTypes = {
