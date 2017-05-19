@@ -8936,8 +8936,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var isDeleteSubRowEnabled = this.props.cellMetaData.onDeleteSubRow ? true : false;
 
-	    if (isDeleteSubRowEnabled && treeDepth > 0 && isExpandCell) {
-	      cellDeleter = React.createElement(_ChildRowDeleteButton2['default'], { treeDepth: treeDepth, cellHeight: this.props.height, siblingIndex: this.props.expandableOptions.subRowDetails.siblingIndex, numberSiblings: this.props.expandableOptions.subRowDetails.numberSiblings, onDeleteSubRow: this.onDeleteSubRow });
+	    if (treeDepth > 0 && isExpandCell) {
+	      cellDeleter = React.createElement(_ChildRowDeleteButton2['default'], { treeDepth: treeDepth, cellHeight: this.props.height, siblingIndex: this.props.expandableOptions.subRowDetails.siblingIndex, numberSiblings: this.props.expandableOptions.subRowDetails.numberSiblings, onDeleteSubRow: this.onDeleteSubRow, isDeleteSubRowEnabled: isDeleteSubRowEnabled });
 	    }
 	    return React.createElement(
 	      'div',
@@ -14755,6 +14755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      siblingIndex = _ref.siblingIndex,
 	      numberSiblings = _ref.numberSiblings,
 	      onDeleteSubRow = _ref.onDeleteSubRow,
+	      isDeleteSubRowEnabled = _ref.isDeleteSubRowEnabled,
 	      _ref$allowAddChildRow = _ref.allowAddChildRow,
 	      allowAddChildRow = _ref$allowAddChildRow === undefined ? true : _ref$allowAddChildRow;
 
@@ -14768,7 +14769,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'div',
 	    null,
 	    _react2['default'].createElement('div', { className: className }),
-	    _react2['default'].createElement(
+	    isDeleteSubRowEnabled && _react2['default'].createElement(
 	      'div',
 	      { style: { left: left, top: top, width: width, height: height }, className: 'rdg-child-row-btn', onClick: onDeleteSubRow },
 	      _react2['default'].createElement('div', { className: 'glyphicon glyphicon-remove-sign' })
