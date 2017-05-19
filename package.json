@@ -67,7 +67,7 @@
     "gulp-util": "^3.0.0",
     "immutable": "^3.7.3",
     "istanbul-instrumenter-loader": "^0.1.2",
-    "jasmine-core": "^2.2.0",
+    "jasmine-core": "2.6.1",
     "jasmine-enzyme": "^1.2.0",
     "karma": "^0.13.10",
     "karma-chrome-launcher": "^0.1.4",
