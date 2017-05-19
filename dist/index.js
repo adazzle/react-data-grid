@@ -16980,6 +16980,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.__esModule = true;
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -17085,19 +17087,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var lastColumn = _utils2['default'].last(this.props.columns);
 
 	    var style = {
-	      height: '50px',
 	      overflow: 'hidden',
-	      border: '1px solid #dddddd',
-	      paddingTop: '15px',
-	      paddingLeft: '5px',
 	      width: lastColumn.left + lastColumn.width
 	    };
-	    var rowGroupRendererProps = Object.assign({ onRowExpandClick: this.onRowExpandClick }, this.props);
 
 	    return _react2['default'].createElement(
 	      'div',
-	      { style: style, className: this.getClassName(), onClick: this.onClick, onKeyDown: this.onKeyDown, tabIndex: -1 },
-	      _react2['default'].createElement(this.props.renderer, rowGroupRendererProps)
+	      { style: style, className: this.getClassName(), onKeyDown: this.onKeyDown, onClick: this.onClick, tabIndex: -1 },
+	      _react2['default'].createElement(this.props.renderer, _extends({}, this.props, { onRowExpandClick: this.onRowExpandClick }))
 	    );
 	  };
 
@@ -17120,9 +17117,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var treeDepth = props.treeDepth || 0;
 	  var marginLeft = treeDepth * 20;
 
+	  var style = {
+	    height: '50px',
+	    border: '1px solid #dddddd',
+	    paddingTop: '15px',
+	    paddingLeft: '5px'
+	  };
+
 	  return _react2['default'].createElement(
 	    'div',
-	    null,
+	    { style: style },
 	    _react2['default'].createElement(
 	      'span',
 	      { className: 'row-expand-icon', style: { float: 'left', marginLeft: marginLeft, cursor: 'pointer' }, onClick: props.onRowExpandClick },
@@ -58632,6 +58636,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
+	var CustomRowGroupRenderer = React.createClass({
+	  displayName: 'CustomRowGroupRenderer',
+	  renderColumns: function renderColumns() {
+	    var _this = this;
+
+	    return this.props.columns.map(function (column) {
+	      return React.createElement(
+	        'div',
+	        { className: 'react-grid-Cell', style: { position: 'absolute', width: column.width, height: '35px', left: column.left, contain: 'layout' } },
+	        React.createElement(
+	          'div',
+	          { className: 'react-grid-Cell__value' },
+	          column.key === _this.props.columnGroupName ? React.createElement(
+	            'div',
+	            null,
+	            React.createElement(
+	              'span',
+	              { className: 'row-expand-icon', style: { float: 'left', cursor: 'pointer' }, onClick: _this.props.onRowExpandClick },
+	              _this.props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')
+	            ),
+	            React.createElement(
+	              'strong',
+	              null,
+	              _this.props.name
+	            )
+	          ) : ''
+	        )
+	      );
+	    });
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { style: { height: '35px', overflow: 'hidden', contain: 'layout' } },
+	      this.renderColumns()
+	    );
+	  }
+	});
+
 	var Example = React.createClass({
 	  displayName: 'Example',
 	  getInitialState: function getInitialState() {
@@ -58673,14 +58716,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ expandedRows: expandedRows });
 	  },
 	  render: function render() {
-	    var _this = this;
+	    var _this2 = this;
 
 	    return React.createElement(
 	      DraggableContainer,
 	      null,
 	      React.createElement(ReactDataGrid, {
 	        ref: function ref(node) {
-	          return _this.grid = node;
+	          return _this2.grid = node;
 	        },
 	        enableCellSelect: true,
 	        enableDragAndDrop: true,
@@ -58690,7 +58733,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        onRowExpandToggle: this.onRowExpandToggle,
 	        toolbar: React.createElement(CustomToolbar, { groupBy: this.state.groupBy, onColumnGroupAdded: this.onColumnGroupAdded, onColumnGroupDeleted: this.onColumnGroupDeleted }),
 	        rowHeight: 50,
-	        minHeight: 600
+	        minHeight: 600,
+	        rowGroupRenderer: CustomRowGroupRenderer
 	      })
 	    );
 	  }
