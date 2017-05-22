@@ -1,5 +1,6 @@
 import OverflowCell from './OverflowCell';
 import rowComparer from './RowComparer';
+import utils from './utils';
 const React = require('react');
 const joinClasses = require('classnames');
 const Cell = require('./Cell');
@@ -139,18 +140,7 @@ const Row = React.createClass({
     } else if (typeof this.props.row.get === 'function') {
       val = this.props.row.get(key);
     } else if (key.indexOf('.') >= 0) {
-      val = (function getVal(valchain, subkey) {
-        const tokenIdx = subkey.indexOf('.');
-        if (tokenIdx >= 0) {
-          const token = key.slice(0, tokenIdx);
-          const remain = key.slice(tokenIdx + 1, key.length);
-          if (valchain[token]) {
-            return getVal(valchain[token], remain);
-          }
-          return null;
-        }
-        return valchain[key] || null;
-      })(this.props.row, key);
+      val = utils.getValueForKey(this.props.row, key);
     }else {
       val = this.props.row[key];
     }
