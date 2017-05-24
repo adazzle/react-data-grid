@@ -52,13 +52,8 @@ class RowGroup extends Component {
       width: lastColumn.left + lastColumn.width
     };
 
-    let onClickPreventionHandler = (event) => {
-      e.stopPropagation();
-      e.preventDefault();
-    };
-
     return (
-      <div style={style} className={this.getClassName()} onKeyDown={this.onKeyDown} tabIndex={-1} onClick={onClickPreventionHandler}>
+      <div style={style} className={this.getClassName()} onKeyDown={this.onKeyDown} tabIndex={-1}>
          <this.props.renderer {...this.props} onRowExpandClick={this.onRowExpandClick} />
       </div>
     );
