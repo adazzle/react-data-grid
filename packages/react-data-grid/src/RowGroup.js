@@ -8,37 +8,9 @@ class RowGroup extends Component {
 
   constructor() {
     super();
-    this.checkFocus = this.checkFocus.bind(this);
-    this.isSelected = this.isSelected.bind(this);
-    this.onClick = this.onClick.bind(this);
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onRowExpandClick = this.onRowExpandClick.bind(this);
-  }
-
-  componentDidMount() {
-    this.checkFocus();
-  }
-
-  componentDidUpdate() {
-    this.checkFocus();
-  }
-
-  isSelected() {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-
-    return (
-      meta.selected
-      && meta.selected.rowIdx === this.props.idx
-    );
-  }
-
-  onClick(e) {
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellClick && typeof(meta.onCellClick) === 'function') {
-      meta.onCellClick({rowIdx: this.props.idx, idx: 0}, e);
-    }
   }
 
   onKeyDown(e) {
@@ -68,15 +40,8 @@ class RowGroup extends Component {
   getClassName() {
     return classnames(
       'react-grid-row-group',
-      'react-grid-Row',
-      {'row-selected': this.isSelected()}
+      'react-grid-Row'
     );
-  }
-
-  checkFocus() {
-    if (this.isSelected()) {
-      ReactDOM.findDOMNode(this).focus();
-    }
   }
 
   render() {
@@ -87,8 +52,13 @@ class RowGroup extends Component {
       width: lastColumn.left + lastColumn.width
     };
 
+    let onClickPreventionHandler = (event) => {
+      e.stopPropagation();
+      e.preventDefault();
+    };
+
     return (
-      <div style={style} className={this.getClassName()} onKeyDown={this.onKeyDown} onClick={this.onClick} tabIndex={-1}>
+      <div style={style} className={this.getClassName()} onKeyDown={this.onKeyDown} tabIndex={-1} onClick={onClickPreventionHandler}>
          <this.props.renderer {...this.props} onRowExpandClick={this.onRowExpandClick} />
       </div>
     );
