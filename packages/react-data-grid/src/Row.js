@@ -1,11 +1,11 @@
 import OverflowCell from './OverflowCell';
 import rowComparer from './RowComparer';
 const React = require('react');
+import PropTypes from "prop-types";
 const joinClasses = require('classnames');
 const Cell = require('./Cell');
 const ColumnUtilsMixin = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const PropTypes = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-row.css');
 

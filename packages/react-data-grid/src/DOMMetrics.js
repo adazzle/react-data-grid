@@ -1,8 +1,9 @@
 const React               = require('react');
 const shallowCloneObject  = require('./shallowCloneObject');
+import PropTypes from "prop-types";
 
 let contextTypes = {
-  metricsComputator: React.PropTypes.object
+  metricsComputator: PropTypes.object
 };
 
 let MetricsComputatorMixin = {

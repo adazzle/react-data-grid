@@ -1,5 +1,6 @@
 import 'react-select/dist/react-select.css';
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from "prop-types";
 import Select from 'react-select';
 import { utils, shapes } from 'react-data-grid';
 const { isEmptyArray } = utils;

@@ -1,4 +1,5 @@
 const React = require('react');
+import PropTypes from "prop-types";
 const ReactDOM = require('react-dom');
 const Moment = require('moment');
 const DateRangeFilter = require('./widgets/DateRangeFilter');
@@ -7,11 +8,11 @@ type DateRangeValue = { startDate: Date; endDate: Date};
 const DateRangeEditor = React.createClass({
 
   propTypes: {
-    format: React.PropTypes.string,
-    ranges: React.PropTypes.arrayOf(React.PropTypes.string),
-    value: React.PropTypes.shape({
-      startDate: React.PropTypes.Date.isRequired,
-      endDate: React.PropTypes.Date.isRequired
+    format: PropTypes.string,
+    ranges: PropTypes.arrayOf(PropTypes.string),
+    value: PropTypes.shape({
+      startDate: PropTypes.Date.isRequired,
+      endDate: PropTypes.Date.isRequired
     }).isRequired
   },
 
