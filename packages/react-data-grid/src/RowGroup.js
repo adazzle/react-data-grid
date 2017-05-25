@@ -12,6 +12,7 @@ class RowGroup extends Component {
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
     this.onRowExpandClick = this.onRowExpandClick.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.setScrollLeft = this.setScrollLeft.bind(this);
   }
 
   onRowExpandToggle(expand) {
@@ -36,6 +37,15 @@ class RowGroup extends Component {
     if (e.key === 'Enter') {
       this.onRowExpandToggle(!this.props.isExpanded);
     }
+
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  setScrollLeft(scrollLeft) {
+    if (this.rowGroupRenderer) {
+      this.rowGroupRenderer.setScrollLeft ? this.rowGroupRenderer.setScrollLeft(scrollLeft) : null;
+    }
   }
 
   render() {
@@ -45,7 +55,7 @@ class RowGroup extends Component {
 
     return (
       <div style={style} className="react-grid-row-group" onKeyDown={this.onKeyDown} tabIndex={-1}>
-         <this.props.renderer {...this.props} onRowExpandClick={this.onRowExpandClick} />
+         <this.props.renderer ref={(node) => {this.rowGroupRenderer = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} />
       </div>
     );
   }
