@@ -238,16 +238,10 @@ const Canvas = React.createClass({
     }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
-        key={props.key}
-        name={row.name}
+        {...props}
         {...row.__metaData}
-        row={props.row}
-        idx={props.idx}
-        height={props.height}
-        cellMetaData={this.props.cellMetaData}
-        renderer={this.props.rowGroupRenderer}
-        columns={props.columns}
-        />);
+        name={row.name}
+        renderer={this.props.rowGroupRenderer} />);
     }
     let RowsRenderer = this.props.rowRenderer;
     if (typeof RowsRenderer === 'function') {

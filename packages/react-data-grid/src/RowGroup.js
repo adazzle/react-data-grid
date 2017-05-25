@@ -1,16 +1,29 @@
 import React, {PropTypes, Component} from 'react';
-import ReactDOM from 'react-dom';
-import classnames from 'classnames';
-import '../../../themes/react-data-grid-row.css';
 import utils from './utils';
+const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+
+import '../../../themes/react-data-grid-row.css';
 
 class RowGroup extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
     this.onRowExpandClick = this.onRowExpandClick.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+  }
+
+  onRowExpandToggle(expand) {
+    let shouldExpand = expand == null ? !this.props.isExpanded : expand;
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onRowExpandToggle && typeof(meta.onRowExpandToggle) === 'function') {
+      meta.onRowExpandToggle({rowIdx: this.props.idx, shouldExpand: shouldExpand, columnGroupName: this.props.columnGroupName, name: this.props.name});
+    }
+  }
+
+  onRowExpandClick() {
+    this.onRowExpandToggle(!this.props.isExpanded);
   }
 
   onKeyDown(e) {
@@ -25,35 +38,13 @@ class RowGroup extends Component {
     }
   }
 
-  onRowExpandClick() {
-    this.onRowExpandToggle(!this.props.isExpanded);
-  }
-
-  onRowExpandToggle(expand) {
-    let shouldExpand = expand == null ? !this.props.isExpanded : expand;
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onRowExpandToggle && typeof(meta.onRowExpandToggle) === 'function') {
-      meta.onRowExpandToggle({rowIdx: this.props.idx, shouldExpand: shouldExpand, columnGroupName: this.props.columnGroupName, name: this.props.name});
-    }
-  }
-
-  getClassName() {
-    return classnames(
-      'react-grid-row-group',
-      'react-grid-Row'
-    );
-  }
-
   render() {
     let lastColumn = utils.last(this.props.columns);
 
-    let style = {
-      overflow: 'hidden',
-      width: lastColumn.left + lastColumn.width
-    };
+    let style = {width: lastColumn.left + lastColumn.width};
 
     return (
-      <div style={style} className={this.getClassName()} onKeyDown={this.onKeyDown} tabIndex={-1}>
+      <div style={style} className="react-grid-row-group" onKeyDown={this.onKeyDown} tabIndex={-1}>
          <this.props.renderer {...this.props} onRowExpandClick={this.onRowExpandClick} />
       </div>
     );
@@ -61,15 +52,28 @@ class RowGroup extends Component {
 }
 
 RowGroup.propTypes = {
-  name: PropTypes.string.isRequired,
+  height: PropTypes.number.isRequired,
+  columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  row: PropTypes.any.isRequired,
+  cellRenderer: PropTypes.func,
+  cellMetaData: PropTypes.shape(cellMetaDataShape),
+  isSelected: PropTypes.bool,
+  idx: PropTypes.number.isRequired,
+  expandedRows: PropTypes.arrayOf(PropTypes.object),
+  extraClasses: PropTypes.string,
+  forceUpdate: PropTypes.bool,
+  subRowDetails: PropTypes.object,
+  isRowHovered: PropTypes.bool,
+  colVisibleStart: PropTypes.number.isRequired,
+  colVisibleEnd: PropTypes.number.isRequired,
+  colDisplayStart: PropTypes.number.isRequired,
+  colDisplayEnd: PropTypes.number.isRequired,
+  isScrolling: React.PropTypes.bool.isRequired,
   columnGroupName: PropTypes.string.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   treeDepth: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  cellMetaData: PropTypes.object,
-  idx: PropTypes.number.isRequired,
-  renderer: PropTypes.func,
-  columns: PropTypes.array.isRequired
+  name: PropTypes.string.isRequired,
+  renderer: PropTypes.func
 };
 
 const DefaultRowGroupRenderer = (props) => {
