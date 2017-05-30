@@ -6,6 +6,7 @@ const min = Math.min;
 const max = Math.max;
 const floor = Math.floor;
 const ceil = Math.ceil;
+import PropTypes from "prop-types";
 
 type ViewportScrollState = {
   displayStart: number;
@@ -28,8 +29,8 @@ module.exports = {
   },
 
   propTypes: {
-    rowHeight: React.PropTypes.number,
-    rowsCount: React.PropTypes.number.isRequired
+    rowHeight: PropTypes.number,
+    rowsCount: PropTypes.number.isRequired
   },
 
   getDefaultProps(): { rowHeight: number } {
