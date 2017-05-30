@@ -8155,10 +8155,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 				var divProps = _objectWithoutProperties(_props$inputProps, ['inputClassName']);
 
+				var _ariaOwns = (0, _classnames2['default'])(_defineProperty({}, this._instancePrefix + '-list', isOpen));
+
 				return _react2['default'].createElement('div', _extends({}, divProps, {
 					role: 'combobox',
 					'aria-expanded': isOpen,
-					'aria-owns': isOpen ? this._instancePrefix + '-list' : this._instancePrefix + '-value',
+					'aria-owns': _ariaOwns,
 					'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
 					className: className,
 					tabIndex: this.props.tabIndex || 0,
@@ -8182,7 +8184,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		},
 
 		renderClear: function renderClear() {
-			if (!this.props.clearable || !this.props.value || this.props.value === 0 || this.props.multi && !this.props.value.length || this.props.disabled || this.props.isLoading) return;
+
+			if (!this.props.clearable || this.props.value === undefined || this.props.value === null || this.props.multi && !this.props.value.length || this.props.disabled || this.props.isLoading) return;
 			var clear = this.props.clearRenderer();
 
 			return _react2['default'].createElement(
@@ -8300,11 +8303,12 @@ return /******/ (function(modules) { // webpackBootstrap
 			var options = this._visibleOptions;
 			if (!options.length) return null;
 
+			var valueKey = this.props.valueKey;
 			var focusedOption = this.state.focusedOption || selectedOption;
 			if (focusedOption && !focusedOption.disabled) {
 				var focusedOptionIndex = -1;
 				options.some(function (option, index) {
-					var isOptionEqual = option.value === focusedOption.value;
+					var isOptionEqual = option[valueKey] === focusedOption[valueKey];
 					if (isOptionEqual) {
 						focusedOptionIndex = index;
 					}
@@ -14578,7 +14582,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderRow: function renderRow(props) {
 	    var row = props.row;
 	    if (row.__metaData && row.__metaData.getRowRenderer) {
-	      return row.__metaData.getRowRenderer(this.props);
+	      return row.__metaData.getRowRenderer(this.props, props.idx);
 	    }
 	    if (row.__metaData && row.__metaData.isGroup) {
 	      return React.createElement(_RowGroup2['default'], _extends({
