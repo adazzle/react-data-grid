@@ -234,7 +234,7 @@ const Canvas = React.createClass({
   renderRow(props: any) {
     let row = props.row;
     if (row.__metaData && row.__metaData.getRowRenderer) {
-      return row.__metaData.getRowRenderer(this.props);
+      return row.__metaData.getRowRenderer(this.props, props.idx);
     }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
