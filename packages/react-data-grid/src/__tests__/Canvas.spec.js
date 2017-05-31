@@ -20,7 +20,8 @@ let testProps = {
     onCommitCancel: () => {},
     copied: {},
     handleDragEnterRow: () => {},
-    handleTerminateDrag: () => {}
+    handleTerminateDrag: () => {},
+    onAddSubRow: () => {}
   }
 };
 
@@ -92,6 +93,37 @@ describe('Canvas Tests', () => {
         let selectedRows = testElement.find('.row-selected .react-grid-Row');
         expect(selectedRows.length).toBe(1);
       });
+    });
+  });
+
+  describe('Tree View', () => {
+    function getFakeSubRowDetails(index) {
+      return function() {
+        return {
+          children: [
+            {id: 'row1-0'},
+            {id: 'row1-1'}
+          ],
+          treeDepth: 1,
+          siblingIndex: index,
+          numberSiblings: 2
+        };
+      };
+    }
+
+    let COLUMNS = [{key: 'id', name: 'ID', left: 100}];
+
+    it('can render a custom renderer if __metadata property exists', () => {
+      let EmptyChildRow = () => {
+        return (<div className="test-row-renderer"></div>);
+      };
+      let rowGetter = () => { return {id: 0, __metaData: {getRowRenderer: EmptyChildRow}}; };
+      let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
+      testElement = renderComponent(props);
+      let rowData = testElement.instance().getRows(props.displayStart, props.displayEnd);
+      let child = testElement.find('.test-row-renderer');
+      expect(child.length).toBe(1);
+      expect(rowData.length).toBe(1);
     });
   });
 });

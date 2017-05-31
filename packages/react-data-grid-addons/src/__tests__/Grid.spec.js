@@ -978,6 +978,7 @@ describe('Grid', function() {
       let columnWithEvent;
       const eventColumnIdx = 3;
       const eventColumnRowIdx = 2;
+      const eventColumnRowId = 2;
 
       beforeEach(function() {
         columnWithEvent = this.component.state.columnMetrics.columns[3];
@@ -1011,8 +1012,8 @@ describe('Grid', function() {
       });
 
       it('should call the event when there is one with the correct args', function() {
-        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
-        expect(columnWithEvent.events.onClick.calls.mostRecent().args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId, name: 'onClick'});
+        expect(columnWithEvent.events.onClick.calls.mostRecent().args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId }]);
       });
 
       it('events should work for the first column', function() {
@@ -1020,7 +1021,7 @@ describe('Grid', function() {
         let firstColumn = this.component.state.columnMetrics.columns[firstColumnIdx];
         let firstColumnEvents = this.testProps.columns[firstColumnIdx].events;
         spyOn(firstColumnEvents, 'onClick');
-        this.getCellMetaData().onColumnEvent({}, {idx: firstColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+        this.getCellMetaData().onColumnEvent({}, {idx: firstColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId, name: 'onClick'});
 
         expect(firstColumn.events.onClick).toHaveBeenCalled();
       });

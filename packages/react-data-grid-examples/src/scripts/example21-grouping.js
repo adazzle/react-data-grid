@@ -139,6 +139,33 @@ const CustomToolbar = React.createClass({
   }
 });
 
+const CustomRowGroupRenderer = React.createClass({
+  renderColumns() {
+    return this.props.columns.map(column => {
+      return (
+        <div className="react-grid-Cell" style={{position: 'absolute', width: column.width, height: '35px', left: column.left, contain: 'layout' }}>
+          <div className="react-grid-Cell__value">
+            {column.key === this.props.columnGroupName ? (
+              <div>
+                <span className="row-expand-icon" style={{float: 'left', cursor: 'pointer'}} onClick={this.props.onRowExpandClick} >{this.props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
+                <strong>{this.props.name}</strong>
+              </div>
+              ) : ''}
+          </div>
+        </div>
+      );
+    });
+  },
+
+  render() {
+    return (
+      <div style={{height: '35px', overflow: 'hidden', contain: 'layout'}} >
+        {this.renderColumns()}
+      </div>
+    );
+  }
+});
+
 const Example = React.createClass({
   getInitialState() {
     let fakeRows = createRows(2000);
@@ -193,6 +220,7 @@ const Example = React.createClass({
             toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted}/>}
             rowHeight={50}
             minHeight={600}
+            rowGroupRenderer={CustomRowGroupRenderer}
             />
       </DraggableContainer>
     );
