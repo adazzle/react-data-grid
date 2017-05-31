@@ -5,7 +5,7 @@ class DateTimeFilter extends DateFilter {
   /* Allows a user to search a column by date and time (to the nearest minute)
   *  Assumptions:
   *  All incoming dates are UTC
-  *  User wantes to search in local tme zone, NOT UTC
+  *  User wants to search in local tme zone, NOT UTC
   */
 
   constructor(props) {
@@ -43,7 +43,6 @@ class DateTimeFilter extends DateFilter {
   inputGen(key, blockStyle, changeHandler, type = 'datetime-local') {
     return super.inputGen(key, blockStyle, changeHandler, type);
   }
-
 }
 
 DateTimeFilter.propTypes = DateFilter.propTypes;

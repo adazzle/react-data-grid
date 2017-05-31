@@ -1,7 +1,7 @@
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
-const { Toolbar, Filters: { NumericFilter, AutoCompleteFilter, MultiSelectFilter, SingleSelectFilter }, Data: { Selectors } } = require('react-data-grid-addons');
+const { Toolbar, Filters: { NumericFilter, DateFilter, AutoCompleteFilter, MultiSelectFilter, SingleSelectFilter }, Data: { Selectors } } = require('react-data-grid-addons');
 
 const Example = React.createClass({
   getInitialState() {
@@ -45,12 +45,14 @@ const Example = React.createClass({
       {
         key: 'startDate',
         name: 'Start Date',
-        filterable: true
+        filterable: true,
+        filterRenderer: DateFilter
       },
       {
         key: 'completeDate',
         name: 'Expected Complete',
-        filterable: true
+        filterable: true,
+        filterRenderer: DateFilter
       }
     ];
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { shapes } from 'react-data-grid';
 const { ExcelColumn } = shapes;
 
@@ -38,13 +38,12 @@ class DateFilter extends React.Component {
     this.convertDateToUTC = this.convertDateToUTC.bind(this);
     this.filterValues = this.filterValues.bind(this);
     this.getRules = this.getRules.bind(this);
-    this.setProps = this.setProps.bind(this);
     this.leftChange = this.leftChange.bind(this);
     this.rightChange = this.rightChange.bind(this);
     this.setSearchType = this.setSearchType.bind(this);
     this.inputGen = this.inputGen.bind(this);
 
-    this.comp = {
+    this.state = {
       sortState: 'on',
       left: null,
       right: null
@@ -82,21 +81,21 @@ class DateFilter extends React.Component {
 
   getRules() {
     let rules = [];
-    if (!this.comp.left || this.comp.sortState === 'between' && !this.comp.right) {
+    if (!this.state.left || this.state.sortState === 'between' && !this.state.right) {
       return rules;
     }
 
-    let key = DateFilter.RuleType[this.comp.sortState].key;
+    let key = DateFilter.RuleType[this.state.sortState].key;
 
-    switch (this.comp.sortState) {
+    switch (this.state.sortState) {
     case 'on':
     case 'ending':
     case 'beginning':
-      rules.push({type: this.comp.sortState, [key]: this.comp.left});
+      rules.push({type: this.state.sortState, [key]: this.state.left});
       break;
     case 'between':
-      rules.push({type: this.comp.sortState, lte: this.comp.right});
-      rules.push({type: this.comp.sortState, gte: this.comp.left});
+      rules.push({type: this.state.sortState, lte: this.state.right});
+      rules.push({type: this.state.sortState, gte: this.state.left});
       break;
     default:
       break;
@@ -104,33 +103,19 @@ class DateFilter extends React.Component {
     return rules;
   }
 
-  setProps() {
-    let filters = this.getRules();
-    this.props.onChange({
-      filterTerm: (filters.length > 0 ? filters : null),
-      column: this.props.column,
-      left: this.comp.left,
-      right: this.comp.right,
-      filterValues: this.filterValues
-    });
-  }
-
   leftChange(event) {
     // Convert the UTC date created by the value to a time-shifted value.
     // Should probably be considered a hack, but this is what a user is likely to mean
-    this.comp.left = this.convertDateToUTC(event.target.value);
-    this.setProps();
+    this.setState({left: this.convertDateToUTC(event.target.value)});
   }
 
   rightChange(event) {
     // see leftChange
-    this.comp.right = this.convertDateToUTC(event.target.value);
-    this.setProps();
+    this.setState({right: this.convertDateToUTC(event.target.value)});
   }
 
   setSearchType(event) {
-    this.comp.sortState = event.target.value;
-    this.setProps();
+    this.setState({sortState: event.target.value});
   }
 
   inputGen(key, blockStyle, changeHandler, type = 'date') {
@@ -146,11 +131,12 @@ class DateFilter extends React.Component {
     let inputKey = 'header-filter-' + this.props.column.key;
 
     let fullBlockStyle = {
-      maxWidth: '100%',
+      maxWidth: '72%',
       display: 'inline-block'
     };
     let halfBlockStyle = {
-      maxWidth: '42%',
+      width: '40%',
+      maxWidth: '40%',
       display: 'inline-block'
     };
     let inputDividerStyle = {
@@ -165,16 +151,20 @@ class DateFilter extends React.Component {
       }
     }
 
+    let selectFullStyle = { maxWidth: '25%' };
+    let selectHalfStyle = { maxWidth: '15%' };
+
     let selectSearchType = (
       <select key={'header-filter-select-' + this.props.column.key}
-              defaultValue={this.comp.sortState}
+              style={this.state.sortState === 'between' ? selectHalfStyle : selectFullStyle}
+              defaultValue={this.state.sortState}
               onChange={this.setSearchType}>
         {opts}
       </select>);
 
     let searchInputs = [];
-    if (this.comp.sortState === 'between') {
-      let divider = (<div style={inputDividerStyle} key={inputKey + '-dash'}>-</div>);
+    if (this.state.sortState === 'between') {
+      let divider = (<span style={inputDividerStyle} key={inputKey + '-dash'}>-</span>);
       searchInputs = [this.inputGen(inputKey + '-l', halfBlockStyle, this.leftChange),
                       divider,
                       this.inputGen(inputKey + '-r', halfBlockStyle, this.rightChange)];
@@ -184,19 +174,16 @@ class DateFilter extends React.Component {
 
     return (
       <div>
-        <div>
-         {searchInputs}
-        </div>
-        <div>
-          {selectSearchType}
-        </div>
+        <span>{searchInputs}</span>
+        <span>{selectSearchType}</span>
       </div>
     );
   }
 }
 
 DateFilter.propTypes = {
-  onChange: React.PropTypes.func.isRequired,
-  column: React.PropTypes.shape(ExcelColumn)
+  onChange: PropTypes.func.isRequired,
+  column: PropTypes.shape(ExcelColumn)
 };
+
 export default DateFilter;
