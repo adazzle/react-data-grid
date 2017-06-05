@@ -39,7 +39,6 @@ class RowGroup extends Component {
     }
 
     e.preventDefault();
-    e.stopPropagation();
   }
 
   setScrollLeft(scrollLeft) {
