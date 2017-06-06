@@ -37,8 +37,6 @@ class RowGroup extends Component {
     if (e.key === 'Enter') {
       this.onRowExpandToggle(!this.props.isExpanded);
     }
-
-    e.preventDefault();
   }
 
   setScrollLeft(scrollLeft) {
