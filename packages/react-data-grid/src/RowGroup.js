@@ -70,7 +70,6 @@ RowGroup.propTypes = {
 };
 
 const  DefaultRowGroupRenderer = (props) => {
-
   let treeDepth = props.treeDepth || 0;
   let marginLeft = treeDepth * 20;
 
@@ -91,7 +90,7 @@ const  DefaultRowGroupRenderer = (props) => {
     if (e.key === 'Enter') {
       props.onRowExpandToggle(!props.isExpanded);
     }
-  }
+  };
 
   return (
     <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
@@ -99,7 +98,7 @@ const  DefaultRowGroupRenderer = (props) => {
       <strong>{props.columnGroupName} : {props.name}</strong>
     </div>
   );
-}
+};
 
 DefaultRowGroupRenderer.propTypes = {
   onRowExpandClick: PropTypes.func.isRequired,
