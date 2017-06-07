@@ -11,7 +11,8 @@ const comparer = (a, b) => {
 };
 
 const sortRows = (rows, sortColumn, sortDirection) => {
-  const retriever = getMixedTypeValueRetriever(isImmutableCollection(rows));
+  const isImmutable = isImmutableCollection(rows);
+  const retriever = getMixedTypeValueRetriever(isImmutable);
   let sortDirectionSign = sortDirection === 'ASC' ? 1 : -1;
   let rowComparer = (a, b) => {
     return sortDirectionSign * comparer(retriever.getValue(a, sortColumn), retriever.getValue(b, sortColumn));
@@ -19,7 +20,7 @@ const sortRows = (rows, sortColumn, sortDirection) => {
   if (sortDirection === 'NONE') {
     return rows;
   }
-  return [...rows].sort(rowComparer);
+  return isImmutable ? rows.sort(rowComparer) : [...rows].sort(rowComparer);
 };
 
 module.exports = sortRows;
