@@ -1,11 +1,15 @@
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const argv = require('minimist')(process.argv.slice(2));
 const RELEASE = argv.release;
+
+var extractCSS = new ExtractTextPlugin('[name].css');
 
 function getPlugins() {
   const nodeEnv = RELEASE ? '"production"' : '"development"';
   var pluginsBase =  [
-    new webpack.DefinePlugin({'process.env.NODE_ENV': nodeEnv, 'global': 'window'})
+    new webpack.DefinePlugin({'process.env.NODE_ENV': nodeEnv, 'global': 'window'}),
+    extractCSS
   ];
 
   if (RELEASE) {
@@ -41,7 +45,7 @@ const config = {
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
-      { test: /\.css$/, loader: 'style-loader!css-loader' }
+      { test: /\.css$/, loader: extractCSS.extract('style-loader', 'css-loader') }
     ]
   },
   plugins: getPlugins(),
