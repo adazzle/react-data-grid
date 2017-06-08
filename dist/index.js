@@ -17009,7 +17009,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.onRowExpandToggle = _this.onRowExpandToggle.bind(_this);
 	    _this.onRowExpandClick = _this.onRowExpandClick.bind(_this);
-	    _this.onKeyDown = _this.onKeyDown.bind(_this);
 	    _this.setScrollLeft = _this.setScrollLeft.bind(_this);
 	    return _this;
 	  }
@@ -17024,21 +17023,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  RowGroup.prototype.onRowExpandClick = function onRowExpandClick() {
 	    this.onRowExpandToggle(!this.props.isExpanded);
-	  };
-
-	  RowGroup.prototype.onKeyDown = function onKeyDown(e) {
-	    if (e.key === 'ArrowLeft') {
-	      this.onRowExpandToggle(false);
-	    }
-	    if (e.key === 'ArrowRight') {
-	      this.onRowExpandToggle(true);
-	    }
-	    if (e.key === 'Enter') {
-	      this.onRowExpandToggle(!this.props.isExpanded);
-	    }
-
-	    e.preventDefault();
-	    e.stopPropagation();
 	  };
 
 	  RowGroup.prototype.setScrollLeft = function setScrollLeft(scrollLeft) {
@@ -17056,10 +17040,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return _react2['default'].createElement(
 	      'div',
-	      { style: style, className: 'react-grid-row-group', onKeyDown: this.onKeyDown, tabIndex: -1 },
+	      { style: style, className: 'react-grid-row-group' },
 	      _react2['default'].createElement(this.props.renderer, _extends({ ref: function ref(node) {
 	          _this2.rowGroupRenderer = node;
-	        } }, this.props, { onRowExpandClick: this.onRowExpandClick }))
+	        } }, this.props, { onRowExpandClick: this.onRowExpandClick, onRowExpandToggle: this.onRowExpandToggle }))
 	    );
 	  };
 
@@ -17102,9 +17086,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    paddingLeft: '5px'
 	  };
 
+	  var onKeyDown = function onKeyDown(e) {
+	    if (e.key === 'ArrowLeft') {
+	      props.onRowExpandToggle(false);
+	    }
+	    if (e.key === 'ArrowRight') {
+	      props.onRowExpandToggle(true);
+	    }
+	    if (e.key === 'Enter') {
+	      props.onRowExpandToggle(!props.isExpanded);
+	    }
+	  };
+
 	  return _react2['default'].createElement(
 	    'div',
-	    { style: style },
+	    { style: style, onKeyDown: onKeyDown, tabIndex: 0 },
 	    _react2['default'].createElement(
 	      'span',
 	      { className: 'row-expand-icon', style: { float: 'left', marginLeft: marginLeft, cursor: 'pointer' }, onClick: props.onRowExpandClick },
@@ -17122,6 +17118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	DefaultRowGroupRenderer.propTypes = {
 	  onRowExpandClick: _react.PropTypes.func.isRequired,
+	  onRowExpandToggle: _react.PropTypes.func.isRequired,
 	  isExpanded: _react.PropTypes.bool.isRequired,
 	  treeDepth: _react.PropTypes.number.isRequired,
 	  name: _react.PropTypes.string.isRequired,
