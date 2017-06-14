@@ -247,3 +247,8 @@
 .rdg-child-row-btn .glyphicon-remove-sign:hover {
   color: red;
 }
+
+.last-column .cell-tooltip-text{
+  right: 100%;
+  left: 0% !important;
+}
