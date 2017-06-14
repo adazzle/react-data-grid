@@ -6116,6 +6116,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var factory = __webpack_require__(247);
 
+	if (typeof React === 'undefined') {
+	  throw Error(
+	    'create-react-class could not find the React object. If you are using script tags, ' +
+	      'make sure that React is being loaded before create-react-class.'
+	  );
+	}
+
 	// Hack to grab NoopUpdateQueue from isomorphic React
 	var ReactNoopUpdateQueue = new React.Component().updater;
 
@@ -6615,8 +6622,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var cells = [];
 	    var lockedCells = [];
 	    var selectedColumn = this.getSelectedColumn();
+	    var lastColumnIdx = this.props.columns.size - 1;
 	    if (this.props.columns) {
 	      this.props.columns.forEach(function (column, i) {
+	        if (i === lastColumnIdx) {
+	          column.isLastColumn = true;
+	        }
 	        var cell = _this2.getCell(column, i, selectedColumn);
 	        if (column.locked) {
 	          lockedCells.push(cell);
@@ -8709,7 +8720,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'is-dragged-over-down': this.isDraggedOverDownwards(),
 	      'was-dragged-over': this.wasDraggedOver(),
 	      'cell-tooltip': this.props.tooltip ? true : false,
-	      'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0
+	      'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
+	      'last-column': this.props.column.isLastColumn
 	    });
 	    return joinClasses(className, extraClasses);
 	  },
@@ -15437,7 +15449,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      headerRows.push(React.createElement(HeaderRow, {
 	        key: row.ref,
 	        ref: function ref(node) {
-	          return _this.row = node;
+	          return row.rowType === 'filter' ? _this.filterRow = node : _this.row = node;
 	        },
 	        rowType: row.rowType,
 	        style: headerRowStyle,
@@ -15502,7 +15514,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.scrollLeft = scrollLeft;
 	    this.row.setScrollLeft(scrollLeft);
 	    if (this.filterRow) {
-	      var nodeFilters = this.filterRow;
+	      var nodeFilters = ReactDOM.findDOMNode(this.filterRow);
 	      nodeFilters.scrollLeft = scrollLeft;
 	      this.filterRow.setScrollLeft(scrollLeft);
 	    }
@@ -18184,7 +18196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	// module
-	exports.push([module.id, ".react-grid-Cell{background-color:#fff;padding-left:8px;padding-right:8px;border-right:1px solid #eee;border-bottom:1px solid #ddd}.react-grid-Cell:focus{outline:2px solid #66afe9;outline-offset:-2px}.react-grid-Cell:focus .drag-handle{position:absolute;bottom:-5px;right:-4px;background:#66afe9;width:8px;height:8px;border:1px solid #fff;border-right:0;border-bottom:0;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Cell:not(.editing) .react-grid-Cell__value{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value{position:relative;top:50%;transform:translateY(-50%)}.rdg-child-cell .react-grid-Cell__value{line-height:35px}.react-grid-Cell.readonly{background-color:#000}.react-grid-Cell.copied{background:rgba(0,0,255,.2)!important}.react-grid-Cell--locked:last-of-type{border-right:1px solid #ddd;box-shadow:none;z-index:99}.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down{display:\"block\"}.react-grid-Cell.is-dragged-over-down{border-right:1px dashed #000;border-left:1px dashed #000;border-bottom:1px dashed #000}.react-grid-Cell.is-dragged-over-up{border-right:1px dashed #000;border-left:1px dashed #000;border-top:1px dashed #000}.react-grid-Cell.is-dragged-over-up .drag-handle{top:-5px}.react-grid-Cell:hover{background:#eee}.react-grid-cell .form-control-feedback{color:#a94442;position:absolute;top:0;right:10px;z-index:1000000;display:block;width:34px;height:34px}.react-grid-Cell.was-dragged-over{border-right:1px dashed #000;border-left:1px dashed #000}.react-grid-Cell:hover:focus .drag-handle{position:absolute;bottom:-8px;right:-7px;background:#fff;width:16px;height:16px;border:1px solid #66afe9;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Row.row-selected .react-grid-Cell{background-color:#dbecfa}.react-grid-Cell.editing{padding:0;overflow:visible!important}.react-grid-Cell.editing .has-error input{border:2px solid red!important;border-radius:2px!important}.react-grid-Cell__value ul{margin-top:0;margin-bottom:0;display:inline-block}.react-grid-Cell__value .btn-sm{padding:0}.cell-tooltip{position:relative;display:inline-block}.cell-tooltip .cell-tooltip-text{visibility:hidden;width:150px;background-color:#000;color:#fff;text-align:center;border-radius:6px;padding:5px 0;position:absolute;z-index:1;bottom:-150%;left:50%;margin-left:-60px;opacity:1s}.cell-tooltip:hover .cell-tooltip-text{visibility:visible;opacity:.8}.cell-tooltip .cell-tooltip-text:after{content:\" \";position:absolute;bottom:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;border-color:transparent transparent #000}.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text{visibility:hidden}.rdg-cell-expand{top:0;right:20px;position:absolute;cursor:pointer}.rdg-child-row-action-cross-last:before,.rdg-child-row-action-cross:before,rdg-child-row-action-cross-last:after,rdg-child-row-action-cross:after{content:\"\";position:absolute;background:grey;height:50%}.rdg-child-row-action-cross:before{left:21px;width:1px;height:35px}.rdg-child-row-action-cross-last:before{left:21px;width:1px}.rdg-child-row-action-cross-last:after,.rdg-child-row-action-cross:after{top:50%;left:20px;height:1px;width:15px;content:\"\";position:absolute;background:grey}.rdg-child-row-action-cross:hover{background:red}.rdg-child-row-btn{position:absolute;cursor:pointer;border:1px solid grey;border-radius:14px;z-index:3;background:#fff}.rdg-child-row-btn div{font-size:12px;text-align:center;line-height:19px;color:grey;height:20px;width:20px;position:absolute;top:60%;left:53%;margin-top:-10px;margin-left:-10px}.rdg-empty-child-row:hover .glyphicon-plus-sign,.rdg-empty-child-row:hover a{color:green}.rdg-child-row-btn .glyphicon-remove-sign:hover{color:red}", ""]);
+	exports.push([module.id, ".react-grid-Cell{background-color:#fff;padding-left:8px;padding-right:8px;border-right:1px solid #eee;border-bottom:1px solid #ddd}.react-grid-Cell:focus{outline:2px solid #66afe9;outline-offset:-2px}.react-grid-Cell:focus .drag-handle{position:absolute;bottom:-5px;right:-4px;background:#66afe9;width:8px;height:8px;border:1px solid #fff;border-right:0;border-bottom:0;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Cell:not(.editing) .react-grid-Cell__value{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value{position:relative;top:50%;transform:translateY(-50%)}.rdg-child-cell .react-grid-Cell__value{line-height:35px}.react-grid-Cell.readonly{background-color:#000}.react-grid-Cell.copied{background:rgba(0,0,255,.2)!important}.react-grid-Cell--locked:last-of-type{border-right:1px solid #ddd;box-shadow:none;z-index:99}.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down{display:\"block\"}.react-grid-Cell.is-dragged-over-down{border-right:1px dashed #000;border-left:1px dashed #000;border-bottom:1px dashed #000}.react-grid-Cell.is-dragged-over-up{border-right:1px dashed #000;border-left:1px dashed #000;border-top:1px dashed #000}.react-grid-Cell.is-dragged-over-up .drag-handle{top:-5px}.react-grid-Cell:hover{background:#eee}.react-grid-cell .form-control-feedback{color:#a94442;position:absolute;top:0;right:10px;z-index:1000000;display:block;width:34px;height:34px}.react-grid-Cell.was-dragged-over{border-right:1px dashed #000;border-left:1px dashed #000}.react-grid-Cell:hover:focus .drag-handle{position:absolute;bottom:-8px;right:-7px;background:#fff;width:16px;height:16px;border:1px solid #66afe9;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Row.row-selected .react-grid-Cell{background-color:#dbecfa}.react-grid-Cell.editing{padding:0;overflow:visible!important}.react-grid-Cell.editing .has-error input{border:2px solid red!important;border-radius:2px!important}.react-grid-Cell__value ul{margin-top:0;margin-bottom:0;display:inline-block}.react-grid-Cell__value .btn-sm{padding:0}.cell-tooltip{position:relative;display:inline-block}.cell-tooltip .cell-tooltip-text{visibility:hidden;width:150px;background-color:#000;color:#fff;text-align:center;border-radius:6px;padding:5px 0;position:absolute;z-index:1;bottom:-150%;left:50%;margin-left:-60px;opacity:1s}.cell-tooltip:hover .cell-tooltip-text{visibility:visible;opacity:.8}.cell-tooltip .cell-tooltip-text:after{content:\" \";position:absolute;bottom:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;border-color:transparent transparent #000}.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text{visibility:hidden}.rdg-cell-expand{top:0;right:20px;position:absolute;cursor:pointer}.rdg-child-row-action-cross-last:before,.rdg-child-row-action-cross:before,rdg-child-row-action-cross-last:after,rdg-child-row-action-cross:after{content:\"\";position:absolute;background:grey;height:50%}.rdg-child-row-action-cross:before{left:21px;width:1px;height:35px}.rdg-child-row-action-cross-last:before{left:21px;width:1px}.rdg-child-row-action-cross-last:after,.rdg-child-row-action-cross:after{top:50%;left:20px;height:1px;width:15px;content:\"\";position:absolute;background:grey}.rdg-child-row-action-cross:hover{background:red}.rdg-child-row-btn{position:absolute;cursor:pointer;border:1px solid grey;border-radius:14px;z-index:3;background:#fff}.rdg-child-row-btn div{font-size:12px;text-align:center;line-height:19px;color:grey;height:20px;width:20px;position:absolute;top:60%;left:53%;margin-top:-10px;margin-left:-10px}.rdg-empty-child-row:hover .glyphicon-plus-sign,.rdg-empty-child-row:hover a{color:green}.rdg-child-row-btn .glyphicon-remove-sign:hover{color:red}.last-column .cell-tooltip-text{right:100%;left:0!important}", ""]);
 
 	// exports
 
@@ -21050,7 +21062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  ReactPropTypeLocationNames = {
 	    prop: 'prop',
 	    context: 'context',
-	    childContext: 'child context',
+	    childContext: 'child context'
 	  };
 	} else {
 	  ReactPropTypeLocationNames = {};
@@ -21060,7 +21072,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Policies that describe methods in `ReactClassInterface`.
 	   */
-
 
 	  var injectedMixins = [];
 
@@ -21087,7 +21098,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @internal
 	   */
 	  var ReactClassInterface = {
-
 	    /**
 	     * An array of Mixin objects to include when defining your component.
 	     *
@@ -21178,7 +21188,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *   }
 	     *
 	     * @return {ReactComponent}
-	     * @nosideeffects
 	     * @required
 	     */
 	    render: 'DEFINE_ONCE',
@@ -21306,7 +21315,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @overridable
 	     */
 	    updateComponent: 'OVERRIDE_BASE'
-
 	  };
 
 	  /**
@@ -21319,71 +21327,106 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * which all other static methods are defined.
 	   */
 	  var RESERVED_SPEC_KEYS = {
-	    displayName: function (Constructor, displayName) {
+	    displayName: function(Constructor, displayName) {
 	      Constructor.displayName = displayName;
 	    },
-	    mixins: function (Constructor, mixins) {
+	    mixins: function(Constructor, mixins) {
 	      if (mixins) {
 	        for (var i = 0; i < mixins.length; i++) {
 	          mixSpecIntoComponent(Constructor, mixins[i]);
 	        }
 	      }
 	    },
-	    childContextTypes: function (Constructor, childContextTypes) {
+	    childContextTypes: function(Constructor, childContextTypes) {
 	      if (false) {
 	        validateTypeDef(Constructor, childContextTypes, 'childContext');
 	      }
-	      Constructor.childContextTypes = _assign({}, Constructor.childContextTypes, childContextTypes);
+	      Constructor.childContextTypes = _assign(
+	        {},
+	        Constructor.childContextTypes,
+	        childContextTypes
+	      );
 	    },
-	    contextTypes: function (Constructor, contextTypes) {
+	    contextTypes: function(Constructor, contextTypes) {
 	      if (false) {
 	        validateTypeDef(Constructor, contextTypes, 'context');
 	      }
-	      Constructor.contextTypes = _assign({}, Constructor.contextTypes, contextTypes);
+	      Constructor.contextTypes = _assign(
+	        {},
+	        Constructor.contextTypes,
+	        contextTypes
+	      );
 	    },
 	    /**
 	     * Special case getDefaultProps which should move into statics but requires
 	     * automatic merging.
 	     */
-	    getDefaultProps: function (Constructor, getDefaultProps) {
+	    getDefaultProps: function(Constructor, getDefaultProps) {
 	      if (Constructor.getDefaultProps) {
-	        Constructor.getDefaultProps = createMergedResultFunction(Constructor.getDefaultProps, getDefaultProps);
+	        Constructor.getDefaultProps = createMergedResultFunction(
+	          Constructor.getDefaultProps,
+	          getDefaultProps
+	        );
 	      } else {
 	        Constructor.getDefaultProps = getDefaultProps;
 	      }
 	    },
-	    propTypes: function (Constructor, propTypes) {
+	    propTypes: function(Constructor, propTypes) {
 	      if (false) {
 	        validateTypeDef(Constructor, propTypes, 'prop');
 	      }
 	      Constructor.propTypes = _assign({}, Constructor.propTypes, propTypes);
 	    },
-	    statics: function (Constructor, statics) {
+	    statics: function(Constructor, statics) {
 	      mixStaticSpecIntoComponent(Constructor, statics);
 	    },
-	    autobind: function () {} };
+	    autobind: function() {}
+	  };
 
 	  function validateTypeDef(Constructor, typeDef, location) {
 	    for (var propName in typeDef) {
 	      if (typeDef.hasOwnProperty(propName)) {
 	        // use a warning instead of an _invariant so components
 	        // don't show up in prod but only in __DEV__
-	         false ? warning(typeof typeDef[propName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', Constructor.displayName || 'ReactClass', ReactPropTypeLocationNames[location], propName) : void 0;
+	        if (false) {
+	          warning(
+	            typeof typeDef[propName] === 'function',
+	            '%s: %s type `%s` is invalid; it must be a function, usually from ' +
+	              'React.PropTypes.',
+	            Constructor.displayName || 'ReactClass',
+	            ReactPropTypeLocationNames[location],
+	            propName
+	          );
+	        }
 	      }
 	    }
 	  }
 
 	  function validateMethodOverride(isAlreadyDefined, name) {
-	    var specPolicy = ReactClassInterface.hasOwnProperty(name) ? ReactClassInterface[name] : null;
+	    var specPolicy = ReactClassInterface.hasOwnProperty(name)
+	      ? ReactClassInterface[name]
+	      : null;
 
 	    // Disallow overriding of base class methods unless explicitly allowed.
 	    if (ReactClassMixin.hasOwnProperty(name)) {
-	      _invariant(specPolicy === 'OVERRIDE_BASE', 'ReactClassInterface: You are attempting to override ' + '`%s` from your class specification. Ensure that your method names ' + 'do not overlap with React methods.', name);
+	      _invariant(
+	        specPolicy === 'OVERRIDE_BASE',
+	        'ReactClassInterface: You are attempting to override ' +
+	          '`%s` from your class specification. Ensure that your method names ' +
+	          'do not overlap with React methods.',
+	        name
+	      );
 	    }
 
 	    // Disallow defining methods more than once unless explicitly allowed.
 	    if (isAlreadyDefined) {
-	      _invariant(specPolicy === 'DEFINE_MANY' || specPolicy === 'DEFINE_MANY_MERGED', 'ReactClassInterface: You are attempting to define ' + '`%s` on your component more than once. This conflict may be due ' + 'to a mixin.', name);
+	      _invariant(
+	        specPolicy === 'DEFINE_MANY' || specPolicy === 'DEFINE_MANY_MERGED',
+	        'ReactClassInterface: You are attempting to define ' +
+	          '`%s` on your component more than once. This conflict may be due ' +
+	          'to a mixin.',
+	        name
+	      );
 	    }
 	  }
 
@@ -21397,14 +21440,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var typeofSpec = typeof spec;
 	        var isMixinValid = typeofSpec === 'object' && spec !== null;
 
-	        process.env.NODE_ENV !== 'production' ? warning(isMixinValid, '%s: You\'re attempting to include a mixin that is either null ' + 'or not an object. Check the mixins included by the component, ' + 'as well as any mixins they include themselves. ' + 'Expected object but got %s.', Constructor.displayName || 'ReactClass', spec === null ? null : typeofSpec) : void 0;
+	        if (process.env.NODE_ENV !== 'production') {
+	          warning(
+	            isMixinValid,
+	            "%s: You're attempting to include a mixin that is either null " +
+	              'or not an object. Check the mixins included by the component, ' +
+	              'as well as any mixins they include themselves. ' +
+	              'Expected object but got %s.',
+	            Constructor.displayName || 'ReactClass',
+	            spec === null ? null : typeofSpec
+	          );
+	        }
 	      }
 
 	      return;
 	    }
 
-	    _invariant(typeof spec !== 'function', 'ReactClass: You\'re attempting to ' + 'use a component class or function as a mixin. Instead, just use a ' + 'regular object.');
-	    _invariant(!isValidElement(spec), 'ReactClass: You\'re attempting to ' + 'use a component as a mixin. Instead, just use a regular object.');
+	    _invariant(
+	      typeof spec !== 'function',
+	      "ReactClass: You're attempting to " +
+	        'use a component class or function as a mixin. Instead, just use a ' +
+	        'regular object.'
+	    );
+	    _invariant(
+	      !isValidElement(spec),
+	      "ReactClass: You're attempting to " +
+	        'use a component as a mixin. Instead, just use a regular object.'
+	    );
 
 	    var proto = Constructor.prototype;
 	    var autoBindPairs = proto.__reactAutoBindPairs;
@@ -21439,7 +21501,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // 2. Overridden methods (that were mixed in).
 	        var isReactClassMethod = ReactClassInterface.hasOwnProperty(name);
 	        var isFunction = typeof property === 'function';
-	        var shouldAutoBind = isFunction && !isReactClassMethod && !isAlreadyDefined && spec.autobind !== false;
+	        var shouldAutoBind =
+	          isFunction &&
+	          !isReactClassMethod &&
+	          !isAlreadyDefined &&
+	          spec.autobind !== false;
 
 	        if (shouldAutoBind) {
 	          autoBindPairs.push(name, property);
@@ -21449,7 +21515,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var specPolicy = ReactClassInterface[name];
 
 	            // These cases should already be caught by validateMethodOverride.
-	            _invariant(isReactClassMethod && (specPolicy === 'DEFINE_MANY_MERGED' || specPolicy === 'DEFINE_MANY'), 'ReactClass: Unexpected spec policy %s for key %s ' + 'when mixing in component specs.', specPolicy, name);
+	            _invariant(
+	              isReactClassMethod &&
+	                (specPolicy === 'DEFINE_MANY_MERGED' ||
+	                  specPolicy === 'DEFINE_MANY'),
+	              'ReactClass: Unexpected spec policy %s for key %s ' +
+	                'when mixing in component specs.',
+	              specPolicy,
+	              name
+	            );
 
 	            // For methods which are defined more than once, call the existing
 	            // methods before calling the new property, merging if appropriate.
@@ -21484,10 +21558,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      var isReserved = name in RESERVED_SPEC_KEYS;
-	      _invariant(!isReserved, 'ReactClass: You are attempting to define a reserved ' + 'property, `%s`, that shouldn\'t be on the "statics" key. Define it ' + 'as an instance property instead; it will still be accessible on the ' + 'constructor.', name);
+	      _invariant(
+	        !isReserved,
+	        'ReactClass: You are attempting to define a reserved ' +
+	          'property, `%s`, that shouldn\'t be on the "statics" key. Define it ' +
+	          'as an instance property instead; it will still be accessible on the ' +
+	          'constructor.',
+	        name
+	      );
 
 	      var isInherited = name in Constructor;
-	      _invariant(!isInherited, 'ReactClass: You are attempting to define ' + '`%s` on your component more than once. This conflict may be ' + 'due to a mixin.', name);
+	      _invariant(
+	        !isInherited,
+	        'ReactClass: You are attempting to define ' +
+	          '`%s` on your component more than once. This conflict may be ' +
+	          'due to a mixin.',
+	        name
+	      );
 	      Constructor[name] = property;
 	    }
 	  }
@@ -21500,11 +21587,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {object} one after it has been mutated to contain everything in two.
 	   */
 	  function mergeIntoWithNoDuplicateKeys(one, two) {
-	    _invariant(one && two && typeof one === 'object' && typeof two === 'object', 'mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects.');
+	    _invariant(
+	      one && two && typeof one === 'object' && typeof two === 'object',
+	      'mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects.'
+	    );
 
 	    for (var key in two) {
 	      if (two.hasOwnProperty(key)) {
-	        _invariant(one[key] === undefined, 'mergeIntoWithNoDuplicateKeys(): ' + 'Tried to merge two objects with the same key: `%s`. This conflict ' + 'may be due to a mixin; in particular, this may be caused by two ' + 'getInitialState() or getDefaultProps() methods returning objects ' + 'with clashing keys.', key);
+	        _invariant(
+	          one[key] === undefined,
+	          'mergeIntoWithNoDuplicateKeys(): ' +
+	            'Tried to merge two objects with the same key: `%s`. This conflict ' +
+	            'may be due to a mixin; in particular, this may be caused by two ' +
+	            'getInitialState() or getDefaultProps() methods returning objects ' +
+	            'with clashing keys.',
+	          key
+	        );
 	        one[key] = two[key];
 	      }
 	    }
@@ -21565,8 +21663,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      boundMethod.__reactBoundArguments = null;
 	      var componentName = component.constructor.displayName;
 	      var _bind = boundMethod.bind;
-	      boundMethod.bind = function (newThis) {
-	        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	      boundMethod.bind = function(newThis) {
+	        for (
+	          var _len = arguments.length,
+	            args = Array(_len > 1 ? _len - 1 : 0),
+	            _key = 1;
+	          _key < _len;
+	          _key++
+	        ) {
 	          args[_key - 1] = arguments[_key];
 	        }
 
@@ -21574,9 +21678,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // ignore the value of "this" that the user is trying to use, so
 	        // let's warn.
 	        if (newThis !== component && newThis !== null) {
-	          process.env.NODE_ENV !== 'production' ? warning(false, 'bind(): React component methods may only be bound to the ' + 'component instance. See %s', componentName) : void 0;
+	          if (process.env.NODE_ENV !== 'production') {
+	            warning(
+	              false,
+	              'bind(): React component methods may only be bound to the ' +
+	                'component instance. See %s',
+	              componentName
+	            );
+	          }
 	        } else if (!args.length) {
-	          process.env.NODE_ENV !== 'production' ? warning(false, 'bind(): You are binding a component method to the component. ' + 'React does this for you automatically in a high-performance ' + 'way, so you can safely remove this call. See %s', componentName) : void 0;
+	          if (process.env.NODE_ENV !== 'production') {
+	            warning(
+	              false,
+	              'bind(): You are binding a component method to the component. ' +
+	                'React does this for you automatically in a high-performance ' +
+	                'way, so you can safely remove this call. See %s',
+	              componentName
+	            );
+	          }
 	          return boundMethod;
 	        }
 	        var reboundMethod = _bind.apply(boundMethod, arguments);
@@ -21603,11 +21722,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  var IsMountedMixin = {
-	    componentDidMount: function () {
+	  var IsMountedPreMixin = {
+	    componentDidMount: function() {
 	      this.__isMounted = true;
-	    },
-	    componentWillUnmount: function () {
+	    }
+	  };
+
+	  var IsMountedPostMixin = {
+	    componentWillUnmount: function() {
 	      this.__isMounted = false;
 	    }
 	  };
@@ -21617,12 +21739,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * therefore not already part of the modern ReactComponent.
 	   */
 	  var ReactClassMixin = {
-
 	    /**
 	     * TODO: This will be deprecated because state should always keep a consistent
 	     * type signature and the only use case for this, is to avoid that.
 	     */
-	    replaceState: function (newState, callback) {
+	    replaceState: function(newState, callback) {
 	      this.updater.enqueueReplaceState(this, newState, callback);
 	    },
 
@@ -21632,17 +21753,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @protected
 	     * @final
 	     */
-	    isMounted: function () {
+	    isMounted: function() {
 	      if (false) {
-	        process.env.NODE_ENV !== 'production' ? warning(this.__didWarnIsMounted, '%s: isMounted is deprecated. Instead, make sure to clean up ' + 'subscriptions and pending requests in componentWillUnmount to ' + 'prevent memory leaks.', this.constructor && this.constructor.displayName || this.name || 'Component') : void 0;
+	        warning(
+	          this.__didWarnIsMounted,
+	          '%s: isMounted is deprecated. Instead, make sure to clean up ' +
+	            'subscriptions and pending requests in componentWillUnmount to ' +
+	            'prevent memory leaks.',
+	          (this.constructor && this.constructor.displayName) ||
+	            this.name ||
+	            'Component'
+	        );
 	        this.__didWarnIsMounted = true;
 	      }
 	      return !!this.__isMounted;
 	    }
 	  };
 
-	  var ReactClassComponent = function () {};
-	  _assign(ReactClassComponent.prototype, ReactComponent.prototype, ReactClassMixin);
+	  var ReactClassComponent = function() {};
+	  _assign(
+	    ReactClassComponent.prototype,
+	    ReactComponent.prototype,
+	    ReactClassMixin
+	  );
 
 	  /**
 	   * Creates a composite component class given a class specification.
@@ -21656,12 +21789,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // To keep our warnings more understandable, we'll use a little hack here to
 	    // ensure that Constructor.name !== 'Constructor'. This makes sure we don't
 	    // unnecessarily identify a class without displayName as 'Constructor'.
-	    var Constructor = identity(function (props, context, updater) {
+	    var Constructor = identity(function(props, context, updater) {
 	      // This constructor gets overridden by mocks. The argument is used
 	      // by mocks to assert on what gets mounted.
 
 	      if (false) {
-	        process.env.NODE_ENV !== 'production' ? warning(this instanceof Constructor, 'Something is calling a React component directly. Use a factory or ' + 'JSX instead. See: https://fb.me/react-legacyfactory') : void 0;
+	        warning(
+	          this instanceof Constructor,
+	          'Something is calling a React component directly. Use a factory or ' +
+	            'JSX instead. See: https://fb.me/react-legacyfactory'
+	        );
 	      }
 
 	      // Wire up auto-binding
@@ -21682,13 +21819,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var initialState = this.getInitialState ? this.getInitialState() : null;
 	      if (false) {
 	        // We allow auto-mocks to proceed as if they're returning null.
-	        if (initialState === undefined && this.getInitialState._isMockFunction) {
+	        if (
+	          initialState === undefined &&
+	          this.getInitialState._isMockFunction
+	        ) {
 	          // This is probably bad practice. Consider warning here and
 	          // deprecating this convenience.
 	          initialState = null;
 	        }
 	      }
-	      _invariant(typeof initialState === 'object' && !Array.isArray(initialState), '%s.getInitialState(): must return an object or null', Constructor.displayName || 'ReactCompositeComponent');
+	      _invariant(
+	        typeof initialState === 'object' && !Array.isArray(initialState),
+	        '%s.getInitialState(): must return an object or null',
+	        Constructor.displayName || 'ReactCompositeComponent'
+	      );
 
 	      this.state = initialState;
 	    });
@@ -21698,8 +21842,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    injectedMixins.forEach(mixSpecIntoComponent.bind(null, Constructor));
 
-	    mixSpecIntoComponent(Constructor, IsMountedMixin);
+	    mixSpecIntoComponent(Constructor, IsMountedPreMixin);
 	    mixSpecIntoComponent(Constructor, spec);
+	    mixSpecIntoComponent(Constructor, IsMountedPostMixin);
 
 	    // Initialize the defaultProps property after all mixins have been merged.
 	    if (Constructor.getDefaultProps) {
@@ -21719,11 +21864,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    _invariant(Constructor.prototype.render, 'createClass(...): Class specification must implement a `render` method.');
+	    _invariant(
+	      Constructor.prototype.render,
+	      'createClass(...): Class specification must implement a `render` method.'
+	    );
 
 	    if (false) {
-	      process.env.NODE_ENV !== 'production' ? warning(!Constructor.prototype.componentShouldUpdate, '%s has a method called ' + 'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' + 'The name is phrased as a question because the function is ' + 'expected to return a value.', spec.displayName || 'A component') : void 0;
-	      process.env.NODE_ENV !== 'production' ? warning(!Constructor.prototype.componentWillRecieveProps, '%s has a method called ' + 'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?', spec.displayName || 'A component') : void 0;
+	      warning(
+	        !Constructor.prototype.componentShouldUpdate,
+	        '%s has a method called ' +
+	          'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' +
+	          'The name is phrased as a question because the function is ' +
+	          'expected to return a value.',
+	        spec.displayName || 'A component'
+	      );
+	      warning(
+	        !Constructor.prototype.componentWillRecieveProps,
+	        '%s has a method called ' +
+	          'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
+	        spec.displayName || 'A component'
+	      );
 	    }
 
 	    // Reduce time spent doing lookups by setting these on the prototype.
