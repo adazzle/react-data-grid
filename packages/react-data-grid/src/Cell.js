@@ -293,6 +293,7 @@ const Cell = React.createClass({
         let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
         node.style.webkitTransform = transform;
         node.style.transform = transform;
+        node.style.transformStyle = 'preserve-3d';
       }
     }
   },
