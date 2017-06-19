@@ -290,7 +290,7 @@ const Cell = React.createClass({
     if (ctrl.isMounted()) {
       let node = ReactDOM.findDOMNode(this);
       if (node) {
-        let transform = `translate(${scrollLeft}px, 0px)`;
+        let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
         node.style.webkitTransform = transform;
         node.style.transform = transform;
       }
