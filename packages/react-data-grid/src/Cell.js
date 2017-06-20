@@ -297,6 +297,18 @@ const Cell = React.createClass({
     }
   },
 
+  removeScroll() {
+    let ctrl: any = this; // flow on windows has an outdated react declaration, once that gets updated, we can remove this
+    if (ctrl.isMounted()) {
+      let node = ReactDOM.findDOMNode(this);
+      if (node) {
+        let transform = 'none';
+        node.style.webkitTransform = transform;
+        node.style.transform = transform;
+      }
+    }
+  }
+
   isCopied(): boolean {
     let copied = this.props.cellMetaData.copied;
     return (

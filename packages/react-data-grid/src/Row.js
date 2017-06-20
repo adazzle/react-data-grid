@@ -167,6 +167,10 @@ const Row = React.createClass({
       if (column.locked) {
         if (!this[column.key]) return;
         this[column.key].setScrollLeft(scrollLeft);
+      } else {
+        if (this[column.key] && this[column.key].removeScroll) {
+          this[column.key].removeScroll();
+        }
       }
     });
   },
