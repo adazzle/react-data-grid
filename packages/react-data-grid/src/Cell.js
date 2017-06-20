@@ -307,7 +307,7 @@ const Cell = React.createClass({
         node.style.transform = transform;
       }
     }
-  }
+  },
 
   isCopied(): boolean {
     let copied = this.props.cellMetaData.copied;
