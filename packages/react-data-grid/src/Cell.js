@@ -94,7 +94,8 @@ const Cell = React.createClass({
       || this.props.forceUpdate === true
       || this.props.className !== nextProps.className
       || this.props.expandableOptions !== nextProps.expandableOptions
-      || this.hasChangedDependentValues(nextProps);
+      || this.hasChangedDependentValues(nextProps)
+      || this.props.column.locked !== nextProps.column.locked;
     return shouldUpdate;
   },
 
