@@ -249,6 +249,10 @@ const ReactDataGrid = createReactClass({
   },
 
   onPressTab(e: SyntheticEvent) {
+    // Allow the user to exit the grid if they are in the right location and they press Tab (with or without shift)
+    if (this.canExitGrid(e)) {
+      return;
+    }
     this.moveSelectedCell(e, 0, e.shiftKey ? -1 : 1);
   },
 
@@ -680,6 +684,39 @@ const ReactDataGrid = createReactClass({
     let cellKey = this.getColumn(idx).key;
     let row = this.props.rowGetter(rowIdx);
     return RowUtils.get(row, cellKey);
+  },
+  canExitGrid(e: SyntheticEvent): boolean {
+    // When the cellNavigationMode is 'none', you can exit the grid if you're at the start or end of the row
+    // When the cellNavigationMode is 'changeRow', you can exit the grid if you're at the first or last cell of the grid
+    // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
+    let atLastCellInRow = this.isAtLastCellInRow(this.getNbrColumns());
+    let atFirstCellInRow = this.isAtFirstCellInRow();
+    let atLastRow = this.isAtLastRow();
+    let atFirstRow = this.isAtFirstRow();
+    let shift = e.shiftKey === true;
+    const { cellNavigationMode } = this.props;
+    if (shift) {
+      if (cellNavigationMode === 'none') {
+        if (atFirstCellInRow) {
+          return true;
+        }
+      } else if (cellNavigationMode === 'changeRow') {
+        if (atFirstCellInRow && atFirstRow) {
+          return true;
+        }
+      }
+    } else {
+      if (cellNavigationMode === 'none') {
+        if (atLastCellInRow) {
+          return true;
+        }
+      } else if (cellNavigationMode === 'changeRow') {
+        if (atLastCellInRow && atLastRow) {
+          return true;
+        }
+      }
+    }
+    return false;
   },
 
   moveSelectedCell(e: SyntheticEvent, rowDelta: number, cellDelta: number) {

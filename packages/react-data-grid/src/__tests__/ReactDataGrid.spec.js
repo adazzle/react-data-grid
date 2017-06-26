@@ -34,6 +34,193 @@ describe('configure enableCellAutoFocus property', () => {
   });
 });
 
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactDataGrid from '../ReactDataGrid';
+import { shallow } from 'enzyme';
+import * as helpers from '../helpers/test/GridPropHelpers';
+
+function shallowRenderGrid({
+  cellNavigationMode = undefined
+}) {
+  const enzymeWrapper = shallow(<ReactDataGrid
+    columns={helpers.columns}
+    rowGetter={helpers.rowGetter}
+    rowsCount={helpers.rowsCount()}
+    enableCellSelect
+    cellNavigationMode={cellNavigationMode}
+  />);
+  return {
+    enzymeWrapper
+  };
+}
+describe('using keyboard to navigate through the grid', () => {
+  describe('when cellNavigationMode is changeRow', () => {
+    const cellNavigationMode = 'changeRow';
+    it('allows the user to exit the grid when they press Shift+Tab at the first cell of the grid', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      expect(grid.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+      const preventDefault = jasmine.createSpy();
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('allows the user to exit the grid when they press Tab at the last cell in the grid', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 } });
+      expect(grid.state.selected).toEqual({ rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1});
+      const preventDefault = jasmine.createSpy();
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
+    });
+    it('goes to the beginning of the next row when the user presses Tab and they are at the end of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 0, idx: helpers.columns.length - 1 } });
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: helpers.columns.length - 1 });
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 0 });
+    });
+    it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 0, idx: 1 } });
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
+    });
+    it('goes to the end of the previous row when the user presses Shift+Tab and they are at the beginning of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 2, idx: 0 } });
+      expect(grid.state.selected).toEqual({ rowIdx: 2, idx: 0 });
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: helpers.columns.length - 1 });
+    });
+  });
+  describe('when cellNavigationMode is none', () => {
+    const cellNavigationMode = 'none';
+    it('allows the user to exit the grid when they press Shift+Tab at the first cell of the grid', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      expect(grid.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+      const preventDefault = jasmine.createSpy();
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('allows the user to exit the grid when they press Tab at the last cell in the grid', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 } });
+      expect(grid.state.selected).toEqual({ rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1});
+      const preventDefault = jasmine.createSpy();
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
+    });
+    it('allows the user to exit the grid when they press Tab and they are at the end of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 0, idx: helpers.columns.length - 1 } });
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: helpers.columns.length - 1});
+      const preventDefault = jasmine.createSpy();
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 0, idx: 1 } });
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
+    });
+    it('allows the user to exit the grid when they press Shift+Tab and they are at the beginning of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 2, idx: 0 } });
+      expect(grid.state.selected).toEqual({ rowIdx: 2, idx: 0 });
+      const preventDefault = jasmine.createSpy();
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+  });
+  describe('when cellNavigationMode is loopOverRow', () => {
+    const cellNavigationMode = 'loopOverRow';
+    it('goes to the first cell in the row when the user presses Tab and they are at the end of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 } });
+      expect(grid.state.selected).toEqual({ rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 });
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: helpers.rowsCount() - 1, idx: 0 });
+    });
+    it('goes to the last cell in the row when the user presses Shift+Tab and they are at the beginning of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: helpers.columns.length - 1 });
+    });
+    it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
+    });
+    it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 0, idx: 1 } });
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
+      const preventDefault = jasmine.createSpy();
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
+    });
+  });
+});
+
 //
 //   var testProps = {
 //     enableCellSelect: true,
