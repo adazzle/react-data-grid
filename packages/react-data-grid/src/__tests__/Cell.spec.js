@@ -3,6 +3,7 @@ let rewire       = require('rewire');
 let Cell         = rewire('../Cell');
 let rewireModule = require('../../../../test/rewireModule');
 let StubComponent = require('../../../../test/StubComponent');
+import ReactDOM from 'react-dom';
 import { mount, shallow } from 'enzyme';
 import _ from 'underscore';
 Object.assign = require('object-assign');
@@ -489,6 +490,73 @@ describe('Cell Tests', () => {
           column,
           rowIdx: testProps.rowIdx,
           idx: testProps.idx
+        });
+      });
+    });
+  });
+
+  describe('Cell checkFocus', () => {
+    const shallowRenderComponent = (props) => {
+      const wrapper = shallow(<Cell {...props} />);
+      return wrapper;
+    };
+    describe('when the cell is selected but not active and the grid is not scrolling', () => {
+      const getProps = ({
+        enableCellAutoFocus = true,
+        getDataGridDOMNode = () => ({})
+      }) => ({
+        column: helpers.columns[0],
+        isScrolling: false,
+        cellMetaData: {
+          selected: { rowIdx: 1, idx: 1 },
+          active: false,
+          enableCellAutoFocus
+        },
+        getDataGridDOMNode,
+        rowIdx: 1,
+        idx: 1,
+        value: 'value'
+      });
+      describe('when enableCellAutoFocus is set to true', () => {
+        const enableCellAutoFocus = true;
+        it('focuses on the cell when document has no active element', () => {
+          const enzymeWrapper = shallowRenderComponent(getProps({ enableCellAutoFocus }));
+          spyOn(document, 'activeElement').and.returnValue(null);
+          const focus = jasmine.createSpy();
+          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ focus });
+          enzymeWrapper.instance().checkFocus();
+          expect(ReactDOM.findDOMNode).toHaveBeenCalledWith(enzymeWrapper.instance());
+          expect(focus).toHaveBeenCalled();
+        });
+        it('focuses on the cell when document is focused on body and cell autofocus is enabled', () => {
+          const enzymeWrapper = shallowRenderComponent(getProps({ enableCellAutoFocus }));
+          spyOn(document, 'activeElement').and.returnValue({ nodeName: 'body' });
+          const focus = jasmine.createSpy();
+          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ focus });
+          enzymeWrapper.instance().checkFocus();
+          expect(ReactDOM.findDOMNode).toHaveBeenCalledWith(enzymeWrapper.instance());
+          expect(focus).toHaveBeenCalled();
+        });
+      });
+      describe('when enableCellAutoFocus is set to false', () => {
+        const enableCellAutoFocus = false;
+        it('does not focus on the cell when document has no active element', () => {
+          const enzymeWrapper = shallowRenderComponent(getProps({ enableCellAutoFocus }));
+          spyOn(document, 'activeElement').and.returnValue(null);
+          const focus = jasmine.createSpy();
+          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ focus });
+          enzymeWrapper.instance().checkFocus();
+          expect(ReactDOM.findDOMNode).not.toHaveBeenCalledWith(enzymeWrapper.instance());
+          expect(focus).not.toHaveBeenCalled();
+        });
+        it('does not focus on the cell when document is focused on body and cell autofocus is enabled', () => {
+          const enzymeWrapper = shallowRenderComponent(getProps({ enableCellAutoFocus }));
+          spyOn(document, 'activeElement').and.returnValue({ nodeName: 'body' });
+          const focus = jasmine.createSpy();
+          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ focus });
+          enzymeWrapper.instance().checkFocus();
+          expect(ReactDOM.findDOMNode).not.toHaveBeenCalledWith(enzymeWrapper.instance());
+          expect(focus).not.toHaveBeenCalled();
         });
       });
     });

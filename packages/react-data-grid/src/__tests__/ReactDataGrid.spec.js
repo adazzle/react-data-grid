@@ -1,3 +1,38 @@
+import React from 'react';
+import ReactDataGrid from '../ReactDataGrid';
+import { shallow } from 'enzyme';
+import * as helpers from '../helpers/test/GridPropHelpers';
+
+function shallowRenderGrid({
+  enableCellAutoFocus = undefined
+}) {
+  const enzymeWrapper = shallow(<ReactDataGrid
+    columns={helpers.columns}
+    rowGetter={helpers.rowGetter}
+    rowsCount={helpers.rowsCount()}
+    enableCellSelect
+    enableCellAutoFocus={enableCellAutoFocus}
+  />);
+  return {
+    enzymeWrapper
+  };
+}
+
+describe('configure enableCellAutoFocus property', () => {
+  it('passes enableCellAutoFocus property in the Grid cellMetaData', () => {
+    const enableCellAutoFocus = true;
+    const { enzymeWrapper } = shallowRenderGrid({ enableCellAutoFocus });
+    expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toEqual(enableCellAutoFocus);
+  });
+  it('sets enableCellAutoFocus to true by default', () => {
+    const { enzymeWrapper } = shallowRenderGrid({});
+    expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toBe(true);
+  });
+  it('sets enableCellAutoFocus to false if it is configured', () => {
+    const { enzymeWrapper } = shallowRenderGrid({ enableCellAutoFocus: false });
+    expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toBe(false);
+  });
+});
 
 //
 //   var testProps = {

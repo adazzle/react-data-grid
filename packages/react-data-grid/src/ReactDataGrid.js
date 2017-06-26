@@ -132,7 +132,7 @@ const ReactDataGrid = React.createClass({
         rowsStart: 5,
         rowsEnd: 5
       },
-      enabledCellAutoFocus: true
+      enableCellAutoFocus: true
     };
   },
 
