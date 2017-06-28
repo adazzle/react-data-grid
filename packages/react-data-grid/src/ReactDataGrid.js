@@ -804,7 +804,11 @@ const ReactDataGrid = React.createClass({
         showEditor = this.props.onCheckCellIsEditable(args);
       }
       if (showEditor !== false) {
-        this.setState({selected: selected}, this.scrollToColumn(idx));
+        if (column.locked) {
+          this.setState({selected});
+        } else {
+          this.setState({selected}, () => { this.scrollToColumn(idx); });
+        }
         this.handleCancelCopy();
       }
     }

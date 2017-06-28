@@ -54,7 +54,8 @@ const Cell = React.createClass({
 
   getInitialState() {
     return {
-      isCellValueChanging: false
+      isCellValueChanging: false,
+      isLockChanging: false
     };
   },
 
@@ -64,7 +65,8 @@ const Cell = React.createClass({
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value)
+      isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
+      isLockChanging: this.props.column.locked !== nextProps.column.locked
     });
   },
 
@@ -76,6 +78,9 @@ const Cell = React.createClass({
     }
     if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
       this.applyUpdateClass();
+    }
+    if (this.state.isLockChanging && !this.props.column.locked) {
+      this.removeScroll();
     }
   },
 
@@ -94,7 +99,8 @@ const Cell = React.createClass({
       || this.props.forceUpdate === true
       || this.props.className !== nextProps.className
       || this.props.expandableOptions !== nextProps.expandableOptions
-      || this.hasChangedDependentValues(nextProps);
+      || this.hasChangedDependentValues(nextProps)
+      || this.props.column.locked !== nextProps.column.locked;
     return shouldUpdate;
   },
 
@@ -295,6 +301,14 @@ const Cell = React.createClass({
         node.style.webkitTransform = transform;
         node.style.transform = transform;
       }
+    }
+  },
+
+  removeScroll() {
+    let node = ReactDOM.findDOMNode(this);
+    if (node) {
+      node.style.webkitTransform = null;
+      node.style.transform = null;
     }
   },
 
