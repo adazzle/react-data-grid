@@ -8608,7 +8608,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  getInitialState: function getInitialState() {
 	    return {
-	      isCellValueChanging: false
+	      isCellValueChanging: false,
+	      isLockChanging: false
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -8616,7 +8617,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	    this.setState({
-	      isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value)
+	      isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
+	      isLockChanging: this.props.column.locked !== nextProps.column.locked
 	    });
 	  },
 	  componentDidUpdate: function componentDidUpdate() {
@@ -8628,9 +8630,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
 	      this.applyUpdateClass();
 	    }
+	    if (this.state.isLockChanging && !this.props.column.locked) {
+	      this.removeScroll();
+	    }
 	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    var shouldUpdate = this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.column.cellClass !== nextProps.column.cellClass || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.isCellValueChanging(this.props.value, nextProps.value) || this.props.forceUpdate === true || this.props.className !== nextProps.className || this.props.expandableOptions !== nextProps.expandableOptions || this.hasChangedDependentValues(nextProps);
+	    var shouldUpdate = this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.column.cellClass !== nextProps.column.cellClass || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.isCellValueChanging(this.props.value, nextProps.value) || this.props.forceUpdate === true || this.props.className !== nextProps.className || this.props.expandableOptions !== nextProps.expandableOptions || this.hasChangedDependentValues(nextProps) || this.props.column.locked !== nextProps.column.locked;
 	    return shouldUpdate;
 	  },
 	  onCellClick: function onCellClick(e) {
@@ -8807,6 +8812,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        node.style.webkitTransform = transform;
 	        node.style.transform = transform;
 	      }
+	    }
+	  },
+	  removeScroll: function removeScroll() {
+	    var node = ReactDOM.findDOMNode(this);
+	    if (node) {
+	      node.style.webkitTransform = null;
+	      node.style.transform = null;
 	    }
 	  },
 	  isCopied: function isCopied() {
@@ -10122,34 +10134,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var ActionTypes = exports.ActionTypes = {
 	  INIT: '@@redux/INIT'
-	};
 
-	/**
-	 * Creates a Redux store that holds the state tree.
-	 * The only way to change the data in the store is to call `dispatch()` on it.
-	 *
-	 * There should only be a single store in your app. To specify how different
-	 * parts of the state tree respond to actions, you may combine several reducers
-	 * into a single reducer function by using `combineReducers`.
-	 *
-	 * @param {Function} reducer A function that returns the next state tree, given
-	 * the current state tree and the action to handle.
-	 *
-	 * @param {any} [preloadedState] The initial state. You may optionally specify it
-	 * to hydrate the state from the server in universal apps, or to restore a
-	 * previously serialized user session.
-	 * If you use `combineReducers` to produce the root reducer function, this must be
-	 * an object with the same shape as `combineReducers` keys.
-	 *
-	 * @param {Function} enhancer The store enhancer. You may optionally specify it
-	 * to enhance the store with third-party capabilities such as middleware,
-	 * time travel, persistence, etc. The only store enhancer that ships with Redux
-	 * is `applyMiddleware()`.
-	 *
-	 * @returns {Store} A Redux store that lets you read the state, dispatch actions
-	 * and subscribe to changes.
-	 */
-	function createStore(reducer, preloadedState, enhancer) {
+	  /**
+	   * Creates a Redux store that holds the state tree.
+	   * The only way to change the data in the store is to call `dispatch()` on it.
+	   *
+	   * There should only be a single store in your app. To specify how different
+	   * parts of the state tree respond to actions, you may combine several reducers
+	   * into a single reducer function by using `combineReducers`.
+	   *
+	   * @param {Function} reducer A function that returns the next state tree, given
+	   * the current state tree and the action to handle.
+	   *
+	   * @param {any} [preloadedState] The initial state. You may optionally specify it
+	   * to hydrate the state from the server in universal apps, or to restore a
+	   * previously serialized user session.
+	   * If you use `combineReducers` to produce the root reducer function, this must be
+	   * an object with the same shape as `combineReducers` keys.
+	   *
+	   * @param {Function} [enhancer] The store enhancer. You may optionally specify it
+	   * to enhance the store with third-party capabilities such as middleware,
+	   * time travel, persistence, etc. The only store enhancer that ships with Redux
+	   * is `applyMiddleware()`.
+	   *
+	   * @returns {Store} A Redux store that lets you read the state, dispatch actions
+	   * and subscribe to changes.
+	   */
+	};function createStore(reducer, preloadedState, enhancer) {
 	  var _ref2;
 
 	  if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
@@ -10283,7 +10294,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var listeners = currentListeners = nextListeners;
 	    for (var i = 0; i < listeners.length; i++) {
-	      listeners[i]();
+	      var listener = listeners[i];
+	      listener();
 	    }
 
 	    return action;
@@ -10312,7 +10324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Interoperability point for observable/reactive libraries.
 	   * @returns {observable} A minimal observable of state changes.
 	   * For more information, see the observable proposal:
-	   * https://github.com/zenparsing/es-observable
+	   * https://github.com/tc39/proposal-observable
 	   */
 	  function observable() {
 	    var _ref;
@@ -13987,13 +13999,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return funcs[0];
 	  }
 
-	  var last = funcs[funcs.length - 1];
-	  var rest = funcs.slice(0, -1);
-	  return function () {
-	    return rest.reduceRight(function (composed, f) {
-	      return f(composed);
-	    }, last.apply(undefined, arguments));
-	  };
+	  return funcs.reduce(function (a, b) {
+	    return function () {
+	      return a(b.apply(undefined, arguments));
+	    };
+	  });
 	}
 
 /***/ }),
@@ -16763,6 +16773,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  setActive: function setActive(keyPressed) {
+	    var _this6 = this;
+
 	    var rowIdx = this.state.selected.rowIdx;
 	    var row = this.props.rowGetter(rowIdx);
 
@@ -16777,7 +16789,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        showEditor = this.props.onCheckCellIsEditable(args);
 	      }
 	      if (showEditor !== false) {
-	        this.setState({ selected: _selected }, this.scrollToColumn(idx));
+	        if (column.locked) {
+	          this.setState({ selected: _selected });
+	        } else {
+	          this.setState({ selected: _selected }, function () {
+	            _this6.scrollToColumn(idx);
+	          });
+	        }
 	        this.handleCancelCopy();
 	      }
 	    }
@@ -16800,7 +16818,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  setupGridColumns: function setupGridColumns() {
-	    var _this6 = this;
+	    var _this7 = this;
 
 	    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
 	    var columns = props.columns;
@@ -16818,7 +16836,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'div',
 	        { className: 'react-grid-checkbox-container checkbox-align' },
 	        React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: 'select-all-checkbox', id: 'select-all-checkbox', ref: function ref(grid) {
-	            return _this6.selectAllCheckbox = grid;
+	            return _this7.selectAllCheckbox = grid;
 	          }, onChange: this.handleCheckboxChange }),
 	        React.createElement('label', { htmlFor: 'select-all-checkbox', className: 'react-grid-checkbox-label' })
 	      );
@@ -16860,7 +16878,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  render: function render() {
-	    var _this7 = this;
+	    var _this8 = this;
 
 	    var cellMetaData = {
 	      rowKey: this.props.rowKey,
@@ -16911,7 +16929,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        { className: 'react-grid-Main' },
 	        React.createElement(BaseGrid, _extends({
 	          ref: function ref(node) {
-	            return _this7.base = node;
+	            return _this8.base = node;
 	          }
 	        }, this.props, {
 	          rowKey: this.props.rowKey,
@@ -18194,7 +18212,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	// module
-	exports.push([module.id, ".react-grid-Cell{background-color:#fff;padding-left:8px;padding-right:8px;border-right:1px solid #eee;border-bottom:1px solid #ddd}.react-grid-Cell:focus{outline:2px solid #66afe9;outline-offset:-2px}.react-grid-Cell:focus .drag-handle{position:absolute;bottom:-5px;right:-4px;background:#66afe9;width:8px;height:8px;border:1px solid #fff;border-right:0;border-bottom:0;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Cell:not(.editing) .react-grid-Cell__value{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value{position:relative;top:50%;transform:translateY(-50%)}.rdg-child-cell .react-grid-Cell__value{line-height:35px}.react-grid-Cell.readonly{background-color:#000}.react-grid-Cell.copied{background:rgba(0,0,255,.2)!important}.react-grid-Cell--locked:last-of-type{border-right:1px solid #ddd;box-shadow:none;z-index:99}.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down{display:\"block\"}.react-grid-Cell.is-dragged-over-down{border-right:1px dashed #000;border-left:1px dashed #000;border-bottom:1px dashed #000}.react-grid-Cell.is-dragged-over-up{border-right:1px dashed #000;border-left:1px dashed #000;border-top:1px dashed #000}.react-grid-Cell.is-dragged-over-up .drag-handle{top:-5px}.react-grid-Cell:hover{background:#eee}.react-grid-cell .form-control-feedback{color:#a94442;position:absolute;top:0;right:10px;z-index:1000000;display:block;width:34px;height:34px}.react-grid-Cell.was-dragged-over{border-right:1px dashed #000;border-left:1px dashed #000}.react-grid-Cell:hover:focus .drag-handle{position:absolute;bottom:-8px;right:-7px;background:#fff;width:16px;height:16px;border:1px solid #66afe9;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Row.row-selected .react-grid-Cell{background-color:#dbecfa}.react-grid-Cell.editing{padding:0;overflow:visible!important}.react-grid-Cell.editing .has-error input{border:2px solid red!important;border-radius:2px!important}.react-grid-Cell__value ul{margin-top:0;margin-bottom:0;display:inline-block}.react-grid-Cell__value .btn-sm{padding:0}.cell-tooltip{position:relative;display:inline-block}.cell-tooltip .cell-tooltip-text{visibility:hidden;width:150px;background-color:#000;color:#fff;text-align:center;border-radius:6px;padding:5px 0;position:absolute;z-index:1;bottom:-150%;left:50%;margin-left:-60px;opacity:1s}.cell-tooltip:hover .cell-tooltip-text{visibility:visible;opacity:.8}.cell-tooltip .cell-tooltip-text:after{content:\" \";position:absolute;bottom:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;border-color:transparent transparent #000}.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text{visibility:hidden}.rdg-cell-expand{top:0;right:20px;position:absolute;cursor:pointer}.rdg-child-row-action-cross-last:before,.rdg-child-row-action-cross:before,rdg-child-row-action-cross-last:after,rdg-child-row-action-cross:after{content:\"\";position:absolute;background:grey;height:50%}.rdg-child-row-action-cross:before{left:21px;width:1px;height:35px}.rdg-child-row-action-cross-last:before{left:21px;width:1px}.rdg-child-row-action-cross-last:after,.rdg-child-row-action-cross:after{top:50%;left:20px;height:1px;width:15px;content:\"\";position:absolute;background:grey}.rdg-child-row-action-cross:hover{background:red}.rdg-child-row-btn{position:absolute;cursor:pointer;border:1px solid grey;border-radius:14px;z-index:3;background:#fff}.rdg-child-row-btn div{font-size:12px;text-align:center;line-height:19px;color:grey;height:20px;width:20px;position:absolute;top:60%;left:53%;margin-top:-10px;margin-left:-10px}.rdg-empty-child-row:hover .glyphicon-plus-sign,.rdg-empty-child-row:hover a{color:green}.rdg-child-row-btn .glyphicon-remove-sign:hover{color:red}.last-column .cell-tooltip-text{right:100%;left:0!important}", ""]);
+	exports.push([module.id, ".react-grid-Cell{background-color:#fff;padding-left:8px;padding-right:8px;border-right:1px solid #eee;border-bottom:1px solid #ddd}.react-grid-Cell:focus{outline:2px solid #66afe9;outline-offset:-2px}.react-grid-Cell--locked:focus{z-index:100}.react-grid-Cell:focus .drag-handle{position:absolute;bottom:-5px;right:-4px;background:#66afe9;width:8px;height:8px;border:1px solid #fff;border-right:0;border-bottom:0;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Cell:not(.editing) .react-grid-Cell__value{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value{position:relative;top:50%;transform:translateY(-50%)}.rdg-child-cell .react-grid-Cell__value{line-height:35px}.react-grid-Cell.readonly{background-color:#000}.react-grid-Cell.copied{background:rgba(0,0,255,.2)!important}.react-grid-Cell--locked:last-of-type{border-right:1px solid #ddd;box-shadow:none}.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down{display:\"block\"}.react-grid-Cell.is-dragged-over-down{border-right:1px dashed #000;border-left:1px dashed #000;border-bottom:1px dashed #000}.react-grid-Cell.is-dragged-over-up{border-right:1px dashed #000;border-left:1px dashed #000;border-top:1px dashed #000}.react-grid-Cell.is-dragged-over-up .drag-handle{top:-5px}.react-grid-Cell:hover{background:#eee}.react-grid-cell .form-control-feedback{color:#a94442;position:absolute;top:0;right:10px;z-index:1000000;display:block;width:34px;height:34px}.react-grid-Cell.was-dragged-over{border-right:1px dashed #000;border-left:1px dashed #000}.react-grid-Cell:hover:focus .drag-handle{position:absolute;bottom:-8px;right:-7px;background:#fff;width:16px;height:16px;border:1px solid #66afe9;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Row.row-selected .react-grid-Cell{background-color:#dbecfa}.react-grid-Cell.editing{padding:0;overflow:visible!important}.react-grid-Cell--locked.editing{z-index:100}.react-grid-Cell.editing .has-error input{border:2px solid red!important;border-radius:2px!important}.react-grid-Cell__value ul{margin-top:0;margin-bottom:0;display:inline-block}.react-grid-Cell__value .btn-sm{padding:0}.cell-tooltip{position:relative;display:inline-block}.cell-tooltip .cell-tooltip-text{visibility:hidden;width:150px;background-color:#000;color:#fff;text-align:center;border-radius:6px;padding:5px 0;position:absolute;z-index:1;bottom:-150%;left:50%;margin-left:-60px;opacity:1s}.cell-tooltip:hover .cell-tooltip-text{visibility:visible;opacity:.8}.cell-tooltip .cell-tooltip-text:after{content:\" \";position:absolute;bottom:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;border-color:transparent transparent #000}.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text{visibility:hidden}.rdg-cell-expand{top:0;right:20px;position:absolute;cursor:pointer}.rdg-child-row-action-cross-last:before,.rdg-child-row-action-cross:before,rdg-child-row-action-cross-last:after,rdg-child-row-action-cross:after{content:\"\";position:absolute;background:grey;height:50%}.rdg-child-row-action-cross:before{left:21px;width:1px;height:35px}.rdg-child-row-action-cross-last:before{left:21px;width:1px}.rdg-child-row-action-cross-last:after,.rdg-child-row-action-cross:after{top:50%;left:20px;height:1px;width:15px;content:\"\";position:absolute;background:grey}.rdg-child-row-action-cross:hover{background:red}.rdg-child-row-btn{position:absolute;cursor:pointer;border:1px solid grey;border-radius:14px;z-index:3;background:#fff}.rdg-child-row-btn div{font-size:12px;text-align:center;line-height:19px;color:grey;height:20px;width:20px;position:absolute;top:60%;left:53%;margin-top:-10px;margin-left:-10px}.rdg-empty-child-row:hover .glyphicon-plus-sign,.rdg-empty-child-row:hover a{color:green}.rdg-child-row-btn .glyphicon-remove-sign:hover{color:red}.last-column .cell-tooltip-text{right:100%;left:0!important}", ""]);
 
 	// exports
 
@@ -30648,7 +30666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var actionType = action && action.type;
 	  var actionName = actionType && '"' + actionType.toString() + '"' || 'an action';
 
-	  return 'Given action ' + actionName + ', reducer "' + key + '" returned undefined. ' + 'To ignore an action, you must explicitly return the previous state.';
+	  return 'Given action ' + actionName + ', reducer "' + key + '" returned undefined. ' + 'To ignore an action, you must explicitly return the previous state. ' + 'If you want this reducer to hold no value, you can return null instead of undefined.';
 	}
 
 	function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
@@ -30676,18 +30694,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
-	function assertReducerSanity(reducers) {
+	function assertReducerShape(reducers) {
 	  Object.keys(reducers).forEach(function (key) {
 	    var reducer = reducers[key];
 	    var initialState = reducer(undefined, { type: _createStore.ActionTypes.INIT });
 
 	    if (typeof initialState === 'undefined') {
-	      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined.');
+	      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined. If you don\'t want to set a value for this reducer, ' + 'you can use null instead of undefined.');
 	    }
 
 	    var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
 	    if (typeof reducer(undefined, { type: type }) === 'undefined') {
-	      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined.');
+	      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined, but can be null.');
 	    }
 	  });
 	}
@@ -30726,23 +30744,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  var finalReducerKeys = Object.keys(finalReducers);
 
+	  var unexpectedKeyCache = void 0;
 	  if (false) {
-	    var unexpectedKeyCache = {};
+	    unexpectedKeyCache = {};
 	  }
 
-	  var sanityError;
+	  var shapeAssertionError = void 0;
 	  try {
-	    assertReducerSanity(finalReducers);
+	    assertReducerShape(finalReducers);
 	  } catch (e) {
-	    sanityError = e;
+	    shapeAssertionError = e;
 	  }
 
 	  return function combination() {
-	    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    var action = arguments[1];
 
-	    if (sanityError) {
-	      throw sanityError;
+	    if (shapeAssertionError) {
+	      throw shapeAssertionError;
 	    }
 
 	    if (false) {
@@ -30754,16 +30773,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var hasChanged = false;
 	    var nextState = {};
-	    for (var i = 0; i < finalReducerKeys.length; i++) {
-	      var key = finalReducerKeys[i];
-	      var reducer = finalReducers[key];
-	      var previousStateForKey = state[key];
+	    for (var _i = 0; _i < finalReducerKeys.length; _i++) {
+	      var _key = finalReducerKeys[_i];
+	      var reducer = finalReducers[_key];
+	      var previousStateForKey = state[_key];
 	      var nextStateForKey = reducer(previousStateForKey, action);
 	      if (typeof nextStateForKey === 'undefined') {
-	        var errorMessage = getUndefinedStateErrorMessage(key, action);
+	        var errorMessage = getUndefinedStateErrorMessage(_key, action);
 	        throw new Error(errorMessage);
 	      }
-	      nextState[key] = nextStateForKey;
+	      nextState[_key] = nextStateForKey;
 	      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
 	    }
 	    return hasChanged ? nextState : state;
