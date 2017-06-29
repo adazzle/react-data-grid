@@ -95,7 +95,7 @@ const  DefaultRowGroupRenderer = (props) => {
   return (
     <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
       <span className="row-expand-icon" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
-      <strong>{props.columnGroupName} : {props.name}</strong>
+      <strong>{props.name}</strong>
     </div>
   );
 };

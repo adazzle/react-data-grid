@@ -21,7 +21,7 @@ class RowGrouper {
 
   groupRowsByColumn(rows, columnIndex = 0) {
     let nextColumnIndex = columnIndex;
-    let columnName = this.columns[columnIndex];
+    let columnName = typeof this.columns === 'string' ? this.columns[columnIndex] : this.columns[columnIndex].key;
     let groupedRows = this.resolver.getGroupedRows(rows, columnName);
     let keys = this.resolver.getGroupKeys(groupedRows);
     let dataviewRows = this.resolver.initRowsCollection();
