@@ -6,7 +6,7 @@ const rows = [{ colOne: 'v1', colTwo: 'b1' },
               { colOne: 'v1', colTwo: 'b3' }];
 const grpDetails = { oneCol: ['colOne'], expRows: {}, multiCol: ['colOne', 'colTwo'] };
 
-fdescribe('Row Grouper', () => {
+describe('Row Grouper', () => {
   it('It can group an array of rows (one grouping column) - correct number of header elements', () => {
     let groupingResult = groupRows(rows, grpDetails.oneCol, grpDetails.expRows);
 
