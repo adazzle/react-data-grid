@@ -268,7 +268,5 @@ describe('Grid Selectors', () => {
       expect(computedRows[0].name).toEqual('Title 1');
       expect(computedRows[1]).toEqual(jasmine.objectContaining({ count: 1000, id: 1, title: 'Title 1' }));
     });
-
-
   });
 });

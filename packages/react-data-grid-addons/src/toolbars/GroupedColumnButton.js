@@ -23,5 +23,5 @@ export default class GroupedColumnButton extends Component {
 GroupedColumnButton.propTypes = {
   name: PropTypes.string.isRequired,
   onColumnGroupDeleted: PropTypes.func,
-  columnKey: PropTypes.string.isRequired,
+  columnKey: PropTypes.string.isRequired
 };

@@ -883,7 +883,7 @@ const ReactDataGrid = React.createClass({
     if (React.isValidElement(Toolbar)) {
       return ( React.cloneElement(Toolbar, toolBarProps));
     } else if (isFunction(Toolbar)) {
-      return <ToolBar {...toolBarProps}/>;
+      return <Toolbar {...toolBarProps}/>;
     }
   },
 

@@ -34,9 +34,7 @@ class GroupedColumnsPanel extends Component {
       if (typeof c === 'string') {
         return (<GroupedColumnButton key={c} columnKey={c} name={c} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>);
       }
-     
       return (<GroupedColumnButton key={c.key} columnKey={c.key} name={c.name} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>);
-      
     });
   }
 
