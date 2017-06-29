@@ -139,32 +139,6 @@ const CustomToolbar = React.createClass({
   }
 });
 
-const CustomRowGroupRenderer = React.createClass({
-  renderColumns() {
-    return this.props.columns.map(column => {
-      return (
-        <div className="react-grid-Cell" style={{position: 'absolute', width: column.width, height: '35px', left: column.left, contain: 'layout' }}>
-          <div className="react-grid-Cell__value">
-            {column.key === this.props.columnGroupName ? (
-              <div>
-                <span className="row-expand-icon" style={{float: 'left', cursor: 'pointer'}} onClick={this.props.onRowExpandClick} >{this.props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
-                <strong>{this.props.name}</strong>
-              </div>
-              ) : ''}
-          </div>
-        </div>
-      );
-    });
-  },
-
-  render() {
-    return (
-      <div style={{height: '35px', overflow: 'hidden', contain: 'layout'}} >
-        {this.renderColumns()}
-      </div>
-    );
-  }
-});
 
 const Example = React.createClass({
   getInitialState() {
@@ -188,14 +162,19 @@ const Example = React.createClass({
 
   onColumnGroupAdded(colName) {
     let columnGroups = this.state.groupBy.slice(0);
-    if (columnGroups.indexOf(colName) === -1) {
-      columnGroups.push(colName);
+    let activeColumn = columns.find((c) => c.key === colName)
+    let isNotInGroups = columnGroups.find((c) => activeColumn.key === c.name) == null;
+    if (isNotInGroups) {
+      columnGroups.push({key: activeColumn.key, name: activeColumn.name});
     }
+   
     this.setState({groupBy: columnGroups});
   },
 
   onColumnGroupDeleted(name) {
-    let columnGroups = this.state.groupBy.filter(function(g){return g !== name});
+    let columnGroups = this.state.groupBy.filter(function(g){
+      return typeof g === 'string' ? g !== name : g.key !== name;
+    });
     this.setState({groupBy: columnGroups});
   },
 
@@ -220,7 +199,6 @@ const Example = React.createClass({
             toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted}/>}
             rowHeight={50}
             minHeight={600}
-            rowGroupRenderer={CustomRowGroupRenderer}
             />
       </DraggableContainer>
     );
