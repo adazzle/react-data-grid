@@ -107,8 +107,12 @@ const Row = React.createClass({
     let cells = [];
     let lockedCells = [];
     let selectedColumn = this.getSelectedColumn();
+    let lastColumnIdx = this.props.columns.size - 1;
     if (this.props.columns) {
       this.props.columns.forEach((column, i) => {
+        if (i === lastColumnIdx) {
+          column.isLastColumn = true;
+        }
         let cell = this.getCell(column, i, selectedColumn);
         if (column.locked) {
           lockedCells.push(cell);
