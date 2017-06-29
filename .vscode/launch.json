@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Karma Chrome",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9333,
+      "sourceMaps": true,
+      "webRoot": "${workspaceRoot}"
+    },
+    {
+      "type": "PowerShell",
+      "request": "launch",
+      "name": "PowerShell Interactive Session",
+      "cwd": "${workspaceRoot}"
+    }
+  ]
+}
