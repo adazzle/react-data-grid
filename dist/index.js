@@ -6361,7 +6361,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (unallocatedWidth <= 0) {
 	        column.width = minColumnWidth;
 	      } else {
-	        column.width = Math.floor(unallocatedWidth / ColumnUtils.getSize(defferedColumns));
+	        var columnWidth = Math.floor(unallocatedWidth / ColumnUtils.getSize(defferedColumns));
+	        if (columnWidth < minColumnWidth) {
+	          column.width = minColumnWidth;
+	        } else {
+	          column.width = columnWidth;
+	        }
 	      }
 	    }
 	    return column;
@@ -17683,7 +17688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  componentWillUnmount: function componentWillUnmount() {
-	    if (!this.changeCommitted && !this.hasEscapeBeenPressed() && !this.changeCanceled) {
+	    if (!this.changeCommitted && !this.changeCanceled) {
 	      this.commit({ key: 'Enter' });
 	    }
 	  },
@@ -17726,7 +17731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  onPressEscape: function onPressEscape(e) {
 	    if (!this.editorIsSelectOpen()) {
-	      this.props.cellMetaData.onCommitCancel();
+	      this.commitCancel();
 	    } else {
 	      // prevent event from bubbling if editor has results to select
 	      e.stopPropagation();
@@ -17895,18 +17900,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        inputNode.select();
 	      }
 	    }
-	  },
-	  hasEscapeBeenPressed: function hasEscapeBeenPressed() {
-	    var pressed = false;
-	    var escapeKey = 27;
-	    if (window.event) {
-	      if (window.event.keyCode === escapeKey) {
-	        pressed = true;
-	      } else if (window.event.which === escapeKey) {
-	        pressed = true;
-	      }
-	    }
-	    return pressed;
 	  },
 	  renderStatusIcon: function renderStatusIcon() {
 	    if (this.state.isInvalid === true) {
@@ -19172,7 +19165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (sortDirection === 'NONE') {
 	    return rows;
 	  }
-	  return [].concat(rows).sort(rowComparer);
+	  return rows.slice().sort(rowComparer);
 	};
 
 	module.exports = sortRows;
@@ -55919,7 +55912,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      columns: this._columns,
 	      rowGetter: this.rowGetter,
 	      rowsCount: this._rows.length,
-	      minHeight: 500 });
+	      minHeight: 500,
+	      minColumnWidth: 120
+	    });
 	  }
 	});
 
