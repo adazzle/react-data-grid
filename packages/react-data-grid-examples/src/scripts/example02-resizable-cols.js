@@ -78,7 +78,9 @@ const Example = React.createClass({
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this._rows.length}
-        minHeight={500} />);
+        minHeight={500}
+        minColumnWidth={120} 
+      />);
   }
 });
 
