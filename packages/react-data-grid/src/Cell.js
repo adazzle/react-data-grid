@@ -60,7 +60,7 @@ const Cell = React.createClass({
   },
 
   componentDidMount() {
-    this.checkFocus();
+    //this.checkFocus();
   },
 
   componentWillReceiveProps(nextProps) {
