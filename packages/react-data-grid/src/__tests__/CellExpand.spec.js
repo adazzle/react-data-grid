@@ -66,7 +66,7 @@ describe('CellExpand', () => {
     testElement.simulate('click');
     expect(testElement.state('expanded')).toBeTruthy();
     let secondProps = getFakeProps(false);
-    testElement = renderComponent(secondProps);
+    testElement.setProps(secondProps);
     expect(testElement.state('expanded')).toBeFalsy();
   });
 });
