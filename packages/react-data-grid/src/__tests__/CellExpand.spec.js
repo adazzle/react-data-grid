@@ -59,4 +59,14 @@ describe('CellExpand', () => {
     testElement.simulate('click');
     expect(testElement.state('expanded')).toBeFalsy();
   });
+
+  it('should correctly set state when receiving data from external source', () => {
+    let fakeProps = getFakeProps(false);
+    testElement = renderComponent(fakeProps);
+    testElement.simulate('click');
+    expect(testElement.state('expanded')).toBeTruthy();
+    let secondProps = getFakeProps(false);
+    testElement.setProps(secondProps);
+    expect(testElement.state('expanded')).toBeFalsy();
+  });
 });
