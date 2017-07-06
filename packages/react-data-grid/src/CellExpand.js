@@ -6,6 +6,9 @@ const CellExpand = React.createClass({
     let expanded = this.props.expandableOptions && this.props.expandableOptions.expanded;
     return { expanded: expanded };
   },
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.getInitialState());
+  },
   propTypes: {
     expandableOptions: PropTypes.object.isRequired,
     onCellExpand: PropTypes.func.isRequired
