@@ -15023,6 +15023,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var expanded = this.props.expandableOptions && this.props.expandableOptions.expanded;
 	    return { expanded: expanded };
 	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    var expanded = nextProps.expandableOptions && nextProps.expandableOptions.expanded;
+	    if (this.state.expanded !== expanded) {
+	      this.setState({ expanded: expanded });
+	    }
+	  },
 
 	  propTypes: {
 	    expandableOptions: _react.PropTypes.object.isRequired,
