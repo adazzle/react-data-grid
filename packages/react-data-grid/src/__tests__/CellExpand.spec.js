@@ -3,7 +3,7 @@ import CellExpand from '../CellExpand';
 import AppConstants from '../AppConstants';
 import { mount } from 'enzyme';
 
-describe('CellExpand', () => {
+fdescribe('CellExpand', () => {
   let testElement;
   let getFakeProps = (expanded) => {
     let expandableOptions = {expanded};
@@ -57,6 +57,16 @@ describe('CellExpand', () => {
     testElement.simulate('click');
     expect(testElement.state('expanded')).toBeTruthy();
     testElement.simulate('click');
+    expect(testElement.state('expanded')).toBeFalsy();
+  });
+
+  it('should correctly set state when receiving data from external source', () => {
+    let fakeProps = getFakeProps(false);
+    testElement = renderComponent(fakeProps);
+    testElement.simulate('click');
+    expect(testElement.state('expanded')).toBeTruthy();
+    let secondProps = getFakeProps(false);
+    testElement = renderComponent(secondProps);
     expect(testElement.state('expanded')).toBeFalsy();
   });
 });
