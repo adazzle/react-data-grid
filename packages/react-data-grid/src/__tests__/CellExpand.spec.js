@@ -3,7 +3,7 @@ import CellExpand from '../CellExpand';
 import AppConstants from '../AppConstants';
 import { mount } from 'enzyme';
 
-fdescribe('CellExpand', () => {
+describe('CellExpand', () => {
   let testElement;
   let getFakeProps = (expanded) => {
     let expandableOptions = {expanded};
