@@ -824,7 +824,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var baseGetTag = __webpack_require__(45),
 	    getPrototype = __webpack_require__(315),
-	    isObjectLike = __webpack_require__(32);
+	    isObjectLike = __webpack_require__(33);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -5997,7 +5997,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var shallowCloneObject = __webpack_require__(39);
+	var shallowCloneObject = __webpack_require__(40);
 
 	var contextTypes = {
 	  metricsComputator: React.PropTypes.object
@@ -6148,6 +6148,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 25 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	var isFunction = function isFunction(functionToCheck) {
+	  var getType = {};
+	  return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+	};
+
+	module.exports = isFunction;
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -6183,7 +6196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -6195,7 +6208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var identity = __webpack_require__(121),
@@ -6218,7 +6231,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
@@ -6244,7 +6257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
@@ -6270,9 +6283,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 30 */
-[1804, 118],
 /* 31 */
+[1804, 118],
+/* 32 */
 /***/ (function(module, exports) {
 
 	/**
@@ -6309,7 +6322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 	/**
@@ -6344,11 +6357,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 33 */
-[1679, 56, 466, 493],
 /* 34 */
-32,
+[1679, 56, 466, 493],
 /* 35 */
+33,
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6378,15 +6391,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = constants;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var shallowCloneObject = __webpack_require__(39);
+	var shallowCloneObject = __webpack_require__(40);
 	var sameColumn = __webpack_require__(167);
 	var ColumnUtils = __webpack_require__(7);
-	var getScrollbarSize = __webpack_require__(38);
+	var getScrollbarSize = __webpack_require__(39);
 	var isColumnsImmutable = __webpack_require__(71);
 
 	function setColumnWidths(columns, totalWidth) {
@@ -6537,7 +6550,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { recalculate: recalculate, resizeColumn: resizeColumn, sameColumn: sameColumn, sameColumns: sameColumns };
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6561,7 +6574,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var cellMetaDataShape = __webpack_require__(11);
 	var PropTypes = React.PropTypes;
 	var createObjectWithProperties = __webpack_require__(18);
-	__webpack_require__(29);
+	__webpack_require__(30);
 
 	var CellExpander = React.createClass({
 	  displayName: 'CellExpander',
@@ -6777,7 +6790,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Row;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -6815,7 +6828,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = getScrollbarSize;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -6831,19 +6844,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	module.exports = shallowCloneObject;
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports) {
-
-	'use strict';
-
-	var isFunction = function isFunction(functionToCheck) {
-	  var getType = {};
-	  return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-	};
-
-	module.exports = isFunction;
 
 /***/ }),
 /* 41 */
@@ -6898,7 +6898,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _isArray2 = _interopRequireDefault(_isArray);
 
-	var _isObject = __webpack_require__(31);
+	var _isObject = __webpack_require__(32);
 
 	var _isObject2 = _interopRequireDefault(_isObject);
 
@@ -7170,7 +7170,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 	var isArrayLike = __webpack_require__(86),
-	    isObjectLike = __webpack_require__(32);
+	    isObjectLike = __webpack_require__(33);
 
 	/**
 	 * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -7275,7 +7275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _createReactClass = __webpack_require__(25);
+	var _createReactClass = __webpack_require__(26);
 
 	var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
@@ -8612,7 +8612,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var joinClasses = __webpack_require__(10);
 	var EditorContainer = __webpack_require__(187);
 	var ExcelColumn = __webpack_require__(12);
-	var isFunction = __webpack_require__(40);
+	var isFunction = __webpack_require__(25);
 	var CellMetaDataShape = __webpack_require__(11);
 	var SimpleCellFormatter = __webpack_require__(190);
 	var ColumnUtils = __webpack_require__(7);
@@ -9291,7 +9291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 	exports.shouldRowUpdate = undefined;
 
-	var _ColumnMetrics = __webpack_require__(36);
+	var _ColumnMetrics = __webpack_require__(37);
 
 	var _ColumnMetrics2 = _interopRequireDefault(_ColumnMetrics);
 
@@ -9595,7 +9595,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = {
 	  isEmptyArray: __webpack_require__(194),
 	  isEmptyObject: __webpack_require__(195),
-	  isFunction: __webpack_require__(40),
+	  isFunction: __webpack_require__(25),
 	  isImmutableCollection: __webpack_require__(196),
 	  getMixedTypeValueRetriever: __webpack_require__(198),
 	  isColumnsImmutable: __webpack_require__(71),
@@ -9950,7 +9950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 79 */
 [1654, 111, 343, 344],
 /* 80 */
-[1656, 30],
+[1656, 31],
 /* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10510,12 +10510,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 95 */
-31,
+32,
 /* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(33),
-	    isObjectLike = __webpack_require__(34);
+	var baseGetTag = __webpack_require__(34),
+	    isObjectLike = __webpack_require__(35);
 
 	/** `Object#toString` result references. */
 	var symbolTag = '[object Symbol]';
@@ -13200,9 +13200,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 122 */
-[1807, 301, 32],
+[1807, 301, 33],
 /* 123 */
-[1825, 45, 31],
+[1825, 45, 32],
 /* 124 */
 94,
 /* 125 */
@@ -13232,7 +13232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseDifference = __webpack_require__(114),
-	    baseRest = __webpack_require__(27),
+	    baseRest = __webpack_require__(28),
 	    isArrayLikeObject = __webpack_require__(50);
 
 	/**
@@ -14426,7 +14426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseIsEqualDeep = __webpack_require__(443),
-	    isObjectLike = __webpack_require__(34);
+	    isObjectLike = __webpack_require__(35);
 
 	/**
 	 * The base implementation of `_.isEqual` which supports partial comparisons
@@ -14658,13 +14658,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 158 */
 49,
 /* 159 */
-[1807, 442, 34],
+[1807, 442, 35],
 /* 160 */
 [1814, 162, 94],
 /* 161 */
 [1820, 14, 511],
 /* 162 */
-[1825, 33, 95],
+[1825, 34, 95],
 /* 163 */
 [1828, 446, 455, 492],
 /* 164 */
@@ -14693,10 +14693,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var joinClasses = __webpack_require__(10);
 	var PropTypes = React.PropTypes;
 	var ScrollShim = __webpack_require__(182);
-	var Row = __webpack_require__(37);
+	var Row = __webpack_require__(38);
 	var cellMetaDataShape = __webpack_require__(11);
 	var RowUtils = __webpack_require__(65);
-	__webpack_require__(28);
+	__webpack_require__(29);
 
 	var Canvas = React.createClass({
 	  displayName: 'Canvas',
@@ -15011,7 +15011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _AppConstants = __webpack_require__(35);
+	var _AppConstants = __webpack_require__(36);
 
 	var _AppConstants2 = _interopRequireDefault(_AppConstants);
 
@@ -15142,7 +15142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var ColumnMetrics = __webpack_require__(36);
+	var ColumnMetrics = __webpack_require__(37);
 	var DOMMetrics = __webpack_require__(24);
 	Object.assign = __webpack_require__(73);
 	var PropTypes = __webpack_require__(2).PropTypes;
@@ -15457,7 +15457,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var GridScrollMixin = __webpack_require__(172);
 	var DOMMetrics = __webpack_require__(24);
 	var cellMetaDataShape = __webpack_require__(11);
-	__webpack_require__(28);
+	__webpack_require__(29);
 
 	var Grid = React.createClass({
 	  displayName: 'Grid',
@@ -15659,11 +15659,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(4);
 	var joinClasses = __webpack_require__(10);
-	var shallowCloneObject = __webpack_require__(39);
-	var ColumnMetrics = __webpack_require__(36);
+	var shallowCloneObject = __webpack_require__(40);
+	var ColumnMetrics = __webpack_require__(37);
 	var ColumnUtils = __webpack_require__(7);
 	var HeaderRow = __webpack_require__(175);
-	var getScrollbarSize = __webpack_require__(38);
+	var getScrollbarSize = __webpack_require__(39);
 	var PropTypes = React.PropTypes;
 	var createObjectWithProperties = __webpack_require__(18);
 	var cellMetaDataShape = __webpack_require__(11);
@@ -15881,7 +15881,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var shallowEqual = __webpack_require__(72);
 	var BaseHeaderCell = __webpack_require__(62);
-	var getScrollbarSize = __webpack_require__(38);
+	var getScrollbarSize = __webpack_require__(39);
 	var ExcelColumn = __webpack_require__(12);
 	var ColumnUtilsMixin = __webpack_require__(7);
 	var SortableHeaderCell = __webpack_require__(186);
@@ -16277,7 +16277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _AppConstants = __webpack_require__(35);
+	var _AppConstants = __webpack_require__(36);
 
 	var _AppConstants2 = _interopRequireDefault(_AppConstants);
 
@@ -16286,7 +16286,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(4);
 	var BaseGrid = __webpack_require__(171);
-	var Row = __webpack_require__(37);
+	var Row = __webpack_require__(38);
 	var ExcelColumn = __webpack_require__(12);
 	var KeyboardHandlerMixin = __webpack_require__(63);
 	var CheckboxEditor = __webpack_require__(67);
@@ -16295,8 +16295,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var RowUtils = __webpack_require__(65);
 	var ColumnUtils = __webpack_require__(7);
 	var KeyCodes = __webpack_require__(176);
+	var isFunction = __webpack_require__(25);
 
-	__webpack_require__(28);
+	__webpack_require__(29);
 	__webpack_require__(74);
 
 	if (!Object.assign) {
@@ -17175,8 +17176,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  renderToolbar: function renderToolbar() {
 	    var Toolbar = this.props.toolbar;
+	    var toolBarProps = { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount };
 	    if (React.isValidElement(Toolbar)) {
-	      return React.cloneElement(Toolbar, { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount });
+	      return React.cloneElement(Toolbar, toolBarProps);
+	    } else if (isFunction(Toolbar)) {
+	      return React.createElement(Toolbar, toolBarProps);
 	    }
 	  },
 	  render: function render() {
@@ -17317,7 +17321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	__webpack_require__(29);
+	__webpack_require__(30);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -17427,7 +17431,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      props.onRowExpandToggle(!props.isExpanded);
 	    }
 	  };
-
 	  return _react2['default'].createElement(
 	    'div',
 	    { style: style, onKeyDown: onKeyDown, tabIndex: 0 },
@@ -17440,7 +17443,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'strong',
 	      null,
 	      props.columnGroupName,
-	      ' : ',
+	      ': ',
 	      props.name
 	    )
 	  );
@@ -17452,7 +17455,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  isExpanded: _react.PropTypes.bool.isRequired,
 	  treeDepth: _react.PropTypes.number.isRequired,
 	  name: _react.PropTypes.string.isRequired,
-	  columnGroupName: _react.PropTypes.string.isRequired
+	  columnGroupName: _react.PropTypes.string.isRequired,
+	  hideColumnName: _react.PropTypes.bool
 	};
 
 	RowGroup.defaultProps = {
@@ -17938,8 +17942,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var joinClasses = __webpack_require__(10);
 	var keyboardHandlerMixin = __webpack_require__(63);
 	var SimpleTextEditor = __webpack_require__(69);
-	var isFunction = __webpack_require__(40);
-	__webpack_require__(28);
+	var isFunction = __webpack_require__(25);
+	__webpack_require__(29);
 
 	var EditorContainer = React.createClass({
 	  displayName: 'EditorContainer',
@@ -18411,7 +18415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Grid = __webpack_require__(179);
 
 	module.exports = Grid;
-	module.exports.Row = __webpack_require__(37);
+	module.exports.Row = __webpack_require__(38);
 	module.exports.Cell = __webpack_require__(61);
 	module.exports.HeaderCell = __webpack_require__(62);
 	module.exports.RowComparer = _RowComparer2['default'];
@@ -18420,7 +18424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports.editors = __webpack_require__(188);
 	module.exports.utils = __webpack_require__(70);
 	module.exports.shapes = __webpack_require__(178);
-	module.exports._constants = __webpack_require__(35);
+	module.exports._constants = __webpack_require__(36);
 	module.exports._helpers = __webpack_require__(191);
 
 /***/ }),
@@ -19386,7 +19390,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var columnIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
 	    var nextColumnIndex = columnIndex;
-	    var columnName = this.columns[columnIndex];
+	    var columnName = this.columns.length > 0 && typeof this.columns[columnIndex] === 'string' ? this.columns[columnIndex] : this.columns[columnIndex].key;
 	    var groupedRows = this.resolver.getGroupedRows(rows, columnName);
 	    var keys = this.resolver.getGroupKeys(groupedRows);
 	    var dataviewRows = this.resolver.initRowsCollection();
@@ -19941,7 +19945,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.__esModule = true;
 
-	__webpack_require__(29);
+	__webpack_require__(30);
 
 	var _react = __webpack_require__(2);
 
@@ -20058,7 +20062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	__webpack_require__(41);
 
-	__webpack_require__(29);
+	__webpack_require__(30);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -21162,7 +21166,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _react2['default'].createElement('span', {
 	        className: 'glyphicon glyphicon-trash',
 	        style: { float: 'right', paddingLeft: '5px' },
-	        onClick: this.props.onColumnGroupDeleted.bind(null, this.props.name) })
+	        onClick: this.props.onColumnGroupDeleted.bind(null, this.props.columnKey) })
 	    );
 	  };
 
@@ -21174,7 +21178,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	GroupedColumnButton.propTypes = {
 	  name: _react.PropTypes.string.isRequired,
-	  onColumnGroupDeleted: _react.PropTypes.func
+	  onColumnGroupDeleted: _react.PropTypes.func,
+	  columnKey: _react.PropTypes.string.isRequired
 	};
 
 /***/ }),
@@ -21242,7 +21247,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this2 = this;
 
 	    return this.props.groupBy.map(function (c) {
-	      return _react2['default'].createElement(_GroupedColumnButton2['default'], { key: c, name: c, onColumnGroupDeleted: _this2.props.onColumnGroupDeleted });
+	      var groupedColumnButtonProps = {
+	        columnKey: typeof c === 'string' ? c : c.key,
+	        name: typeof c === 'string' ? c : c.name,
+	        onColumnGroupDeleted: _this2.props.onColumnGroupDeleted,
+	        key: typeof c === 'string' ? c : c.key
+	      };
+	      return _react2['default'].createElement(_GroupedColumnButton2['default'], groupedColumnButtonProps);
 	    });
 	  };
 
@@ -23780,7 +23791,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _inDOM = __webpack_require__(26);
+	var _inDOM = __webpack_require__(27);
 
 	var _inDOM2 = _interopRequireDefault(_inDOM);
 
@@ -23810,7 +23821,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _inDOM = __webpack_require__(26);
+	var _inDOM = __webpack_require__(27);
 
 	var _inDOM2 = _interopRequireDefault(_inDOM);
 
@@ -23846,7 +23857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _inDOM = __webpack_require__(26);
+	var _inDOM = __webpack_require__(27);
 
 	var _inDOM2 = _interopRequireDefault(_inDOM);
 
@@ -24060,7 +24071,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.animationEnd = exports.animationDelay = exports.animationTiming = exports.animationDuration = exports.animationName = exports.transitionEnd = exports.transitionDuration = exports.transitionDelay = exports.transitionTiming = exports.transitionProperty = exports.transform = undefined;
 
-	var _inDOM = __webpack_require__(26);
+	var _inDOM = __webpack_require__(27);
 
 	var _inDOM2 = _interopRequireDefault(_inDOM);
 
@@ -24259,7 +24270,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return size;
 	};
 
-	var _inDOM = __webpack_require__(26);
+	var _inDOM = __webpack_require__(27);
 
 	var _inDOM2 = _interopRequireDefault(_inDOM);
 
@@ -24318,9 +24329,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 291 */
 [1631, 328, 329, 330, 331, 332],
 /* 292 */
-[1638, 47, 30],
+[1638, 47, 31],
 /* 293 */
-[1647, 47, 30],
+[1647, 47, 31],
 /* 294 */
 /***/ (function(module, exports) {
 
@@ -24551,7 +24562,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 301 */
-[1683, 45, 32],
+[1683, 45, 33],
 /* 302 */
 /***/ (function(module, exports) {
 
@@ -24571,13 +24582,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 303 */
-[1688, 123, 326, 31, 348],
+[1688, 123, 326, 32, 348],
 /* 304 */
-[1693, 45, 124, 32],
+[1693, 45, 124, 33],
 /* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(31),
+	var isObject = __webpack_require__(32),
 	    isPrototype = __webpack_require__(327),
 	    nativeKeysIn = __webpack_require__(338);
 
@@ -24776,11 +24787,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 311 */
-[1700, 30],
+[1700, 31],
 /* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(27),
+	var baseRest = __webpack_require__(28),
 	    isIterateeCall = __webpack_require__(324);
 
 	/**
@@ -24976,7 +24987,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var eq = __webpack_require__(49),
 	    isArrayLike = __webpack_require__(86),
 	    isIndex = __webpack_require__(119),
-	    isObject = __webpack_require__(31);
+	    isObject = __webpack_require__(32);
 
 	/**
 	 * Checks if the given arguments are from an iteratee call.
@@ -25429,7 +25440,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var apply = __webpack_require__(112),
 	    assignInWith = __webpack_require__(349),
-	    baseRest = __webpack_require__(27),
+	    baseRest = __webpack_require__(28),
 	    customDefaultsAssignIn = __webpack_require__(314);
 
 	/**
@@ -25467,7 +25478,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var arrayMap = __webpack_require__(83),
 	    baseIntersection = __webpack_require__(300),
-	    baseRest = __webpack_require__(27),
+	    baseRest = __webpack_require__(28),
 	    castArrayLikeObject = __webpack_require__(309);
 
 	/**
@@ -25499,7 +25510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 353 */
-[1820, 30, 357],
+[1820, 31, 357],
 /* 354 */
 [1828, 304, 84, 339],
 /* 355 */
@@ -25570,7 +25581,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 	var baseFlatten = __webpack_require__(115),
-	    baseRest = __webpack_require__(27),
+	    baseRest = __webpack_require__(28),
 	    baseUniq = __webpack_require__(116),
 	    isArrayLikeObject = __webpack_require__(50);
 
@@ -25602,7 +25613,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 	var arrayFilter = __webpack_require__(294),
-	    baseRest = __webpack_require__(27),
+	    baseRest = __webpack_require__(28),
 	    baseXor = __webpack_require__(308),
 	    isArrayLikeObject = __webpack_require__(50);
 
@@ -28704,7 +28715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _addFocusListener2 = _interopRequireDefault(_addFocusListener);
 
-	var _inDOM = __webpack_require__(26);
+	var _inDOM = __webpack_require__(27);
 
 	var _inDOM2 = _interopRequireDefault(_inDOM);
 
@@ -30020,7 +30031,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _createReactClass = __webpack_require__(25);
+	var _createReactClass = __webpack_require__(26);
 
 	var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
@@ -30092,7 +30103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _createReactClass = __webpack_require__(25);
+	var _createReactClass = __webpack_require__(26);
 
 	var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
@@ -30421,7 +30432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _createReactClass = __webpack_require__(25);
+	var _createReactClass = __webpack_require__(26);
 
 	var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
@@ -30543,7 +30554,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _createReactClass = __webpack_require__(25);
+	var _createReactClass = __webpack_require__(26);
 
 	var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
@@ -30716,7 +30727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var PropTypes = __webpack_require__(13);
-	var createClass = __webpack_require__(25);
+	var createClass = __webpack_require__(26);
 
 	var sizerStyle = {
 		position: 'absolute',
@@ -54397,7 +54408,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 442 */
-[1683, 33, 34],
+[1683, 34, 35],
 /* 443 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -54558,7 +54569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 445 */
 [1688, 162, 477, 95, 157],
 /* 446 */
-[1693, 33, 94, 34],
+[1693, 34, 94, 35],
 /* 447 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -55203,7 +55214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Promise = __webpack_require__(424),
 	    Set = __webpack_require__(425),
 	    WeakMap = __webpack_require__(428),
-	    baseGetTag = __webpack_require__(33),
+	    baseGetTag = __webpack_require__(34),
 	    toSource = __webpack_require__(157);
 
 	/** `Object#toString` result references. */
@@ -59670,45 +59681,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var CustomRowGroupRenderer = React.createClass({
-	  displayName: 'CustomRowGroupRenderer',
-	  renderColumns: function renderColumns() {
-	    var _this = this;
-
-	    return this.props.columns.map(function (column) {
-	      return React.createElement(
-	        'div',
-	        { className: 'react-grid-Cell', style: { position: 'absolute', width: column.width, height: '35px', left: column.left, contain: 'layout' } },
-	        React.createElement(
-	          'div',
-	          { className: 'react-grid-Cell__value' },
-	          column.key === _this.props.columnGroupName ? React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	              'span',
-	              { className: 'row-expand-icon', style: { float: 'left', cursor: 'pointer' }, onClick: _this.props.onRowExpandClick },
-	              _this.props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')
-	            ),
-	            React.createElement(
-	              'strong',
-	              null,
-	              _this.props.name
-	            )
-	          ) : ''
-	        )
-	      );
-	    });
-	  },
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      { style: { height: '35px', overflow: 'hidden', contain: 'layout' } },
-	      this.renderColumns()
-	    );
-	  }
-	});
-
 	var Example = React.createClass({
 	  displayName: 'Example',
 	  getInitialState: function getInitialState() {
@@ -59728,14 +59700,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  onColumnGroupAdded: function onColumnGroupAdded(colName) {
 	    var columnGroups = this.state.groupBy.slice(0);
-	    if (columnGroups.indexOf(colName) === -1) {
-	      columnGroups.push(colName);
+	    var activeColumn = columns.find(function (c) {
+	      return c.key === colName;
+	    });
+	    var isNotInGroups = columnGroups.find(function (c) {
+	      return activeColumn.key === c.name;
+	    }) == null;
+	    if (isNotInGroups) {
+	      columnGroups.push({ key: activeColumn.key, name: activeColumn.name });
 	    }
+
 	    this.setState({ groupBy: columnGroups });
 	  },
 	  onColumnGroupDeleted: function onColumnGroupDeleted(name) {
 	    var columnGroups = this.state.groupBy.filter(function (g) {
-	      return g !== name;
+	      return typeof g === 'string' ? g !== name : g.key !== name;
 	    });
 	    this.setState({ groupBy: columnGroups });
 	  },
@@ -59750,14 +59729,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({ expandedRows: expandedRows });
 	  },
 	  render: function render() {
-	    var _this2 = this;
+	    var _this = this;
 
 	    return React.createElement(
 	      DraggableContainer,
 	      null,
 	      React.createElement(ReactDataGrid, {
 	        ref: function ref(node) {
-	          return _this2.grid = node;
+	          return _this.grid = node;
 	        },
 	        enableCellSelect: true,
 	        enableDragAndDrop: true,
@@ -59767,8 +59746,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        onRowExpandToggle: this.onRowExpandToggle,
 	        toolbar: React.createElement(CustomToolbar, { groupBy: this.state.groupBy, onColumnGroupAdded: this.onColumnGroupAdded, onColumnGroupDeleted: this.onColumnGroupDeleted }),
 	        rowHeight: 50,
-	        minHeight: 600,
-	        rowGroupRenderer: CustomRowGroupRenderer
+	        minHeight: 600
 	      })
 	    );
 	  }
