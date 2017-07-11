@@ -13,7 +13,7 @@ export default class GroupedColumnButton extends Component {
         <span
           className="glyphicon glyphicon-trash"
           style={{float: 'right', paddingLeft: '5px'}}
-          onClick={this.props.onColumnGroupDeleted.bind(null, this.props.name)}>
+          onClick={this.props.onColumnGroupDeleted.bind(null, this.props.columnKey)}>
         </span>
       </button>
     );
@@ -22,5 +22,6 @@ export default class GroupedColumnButton extends Component {
 
 GroupedColumnButton.propTypes = {
   name: PropTypes.string.isRequired,
-  onColumnGroupDeleted: PropTypes.func
+  onColumnGroupDeleted: PropTypes.func,
+  columnKey: PropTypes.string.isRequired
 };

@@ -10,6 +10,7 @@ const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
+const isFunction = require('./utils/isFunction');
 import AppConstants from './AppConstants';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
@@ -879,8 +880,11 @@ const ReactDataGrid = React.createClass({
 
   renderToolbar(): ReactElement {
     let Toolbar = this.props.toolbar;
+    let toolBarProps =  {columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount};
     if (React.isValidElement(Toolbar)) {
-      return ( React.cloneElement(Toolbar, {columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount}));
+      return ( React.cloneElement(Toolbar, toolBarProps));
+    } else if (isFunction(Toolbar)) {
+      return <Toolbar {...toolBarProps}/>;
     }
   },
 
