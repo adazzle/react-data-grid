@@ -59,6 +59,10 @@ const Cell = React.createClass({
     };
   },
 
+  componentWillMount() {
+    this.mounted = true;
+  },
+
   componentDidMount() {
     this.checkFocus();
   },
@@ -102,6 +106,10 @@ const Cell = React.createClass({
       || this.hasChangedDependentValues(nextProps)
       || this.props.column.locked !== nextProps.column.locked;
     return shouldUpdate;
+  },
+
+  componentWillUnmount() {
+    this.mounted = false;
   },
 
   onCellClick(e) {
@@ -294,7 +302,7 @@ const Cell = React.createClass({
 
   setScrollLeft(scrollLeft: number) {
     let ctrl: any = this; // flow on windows has an outdated react declaration, once that gets updated, we can remove this
-    if (ctrl.isMounted()) {
+    if (ctrl.mounted) {
       let node = ReactDOM.findDOMNode(this);
       if (node) {
         let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
