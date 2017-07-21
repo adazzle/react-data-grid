@@ -38,6 +38,7 @@ Row                    | [Row](./src/Row.js)                     |
 Cell                   | [Cell](./src/Cell.js)                   |
 HeaderCell             | [HeaderCell](./src/HeaderCell.js)       |
 editors                | [Editors](./src/editors)                |
+formatters             | [Formatters](./src/formatters)          |
 utils                  | [utils](./src/utils)                    |
 shapes                 | [shapes](./src/PropTypeShapes)          |
 _constants             | [_constants](./src/AppConstants.js)     |
