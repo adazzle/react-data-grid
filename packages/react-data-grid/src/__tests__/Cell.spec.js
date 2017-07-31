@@ -3,7 +3,6 @@ let rewire       = require('rewire');
 let Cell         = rewire('../Cell');
 let rewireModule = require('../../../../test/rewireModule');
 let StubComponent = require('../../../../test/StubComponent');
-import ReactDOM from 'react-dom';
 import { mount, shallow } from 'enzyme';
 import _ from 'underscore';
 Object.assign = require('object-assign');
@@ -496,8 +495,8 @@ describe('Cell Tests', () => {
   });
 
   describe('Cell checkFocus', () => {
-    const shallowRenderComponent = (props) => {
-      const wrapper = shallow(<Cell {...props} />);
+    const renderComponent = (props) => {
+      const wrapper = mount(<Cell {...props} />);
       return wrapper;
     };
     describe('when the cell is selected but not active and the grid is not scrolling', () => {
@@ -520,43 +519,39 @@ describe('Cell Tests', () => {
       describe('when enableCellAutoFocus is set to true', () => {
         const enableCellAutoFocus = true;
         it('focuses on the cell when document has no active element', () => {
-          const enzymeWrapper = shallowRenderComponent(getProps({ enableCellAutoFocus }));
+          const enzymeWrapper = renderComponent(getProps({ enableCellAutoFocus }));
           spyOn(document, 'activeElement').and.returnValue(null);
-          const focus = jasmine.createSpy();
-          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ focus });
+          const cellDiv = enzymeWrapper.find('div').at(0).node;
+          spyOn(cellDiv, 'focus');
           enzymeWrapper.instance().checkFocus();
-          expect(ReactDOM.findDOMNode).toHaveBeenCalledWith(enzymeWrapper.instance());
-          expect(focus).toHaveBeenCalled();
+          expect(cellDiv.focus).toHaveBeenCalled();
         });
         it('focuses on the cell when document is focused on body and cell autofocus is enabled', () => {
-          const enzymeWrapper = shallowRenderComponent(getProps({ enableCellAutoFocus }));
+          const enzymeWrapper = renderComponent(getProps({ enableCellAutoFocus }));
           spyOn(document, 'activeElement').and.returnValue({ nodeName: 'body' });
-          const focus = jasmine.createSpy();
-          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ focus });
+          const cellDiv = enzymeWrapper.find('div').at(0).node;
+          spyOn(cellDiv, 'focus');
           enzymeWrapper.instance().checkFocus();
-          expect(ReactDOM.findDOMNode).toHaveBeenCalledWith(enzymeWrapper.instance());
-          expect(focus).toHaveBeenCalled();
+          expect(cellDiv.focus).toHaveBeenCalled();
         });
       });
       describe('when enableCellAutoFocus is set to false', () => {
         const enableCellAutoFocus = false;
         it('does not focus on the cell when document has no active element', () => {
-          const enzymeWrapper = shallowRenderComponent(getProps({ enableCellAutoFocus }));
+          const enzymeWrapper = renderComponent(getProps({ enableCellAutoFocus }));
           spyOn(document, 'activeElement').and.returnValue(null);
-          const focus = jasmine.createSpy();
-          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ focus });
+          const cellDiv = enzymeWrapper.find('div').at(0).node;
+          spyOn(cellDiv, 'focus');
           enzymeWrapper.instance().checkFocus();
-          expect(ReactDOM.findDOMNode).not.toHaveBeenCalledWith(enzymeWrapper.instance());
-          expect(focus).not.toHaveBeenCalled();
+          expect(cellDiv.focus).not.toHaveBeenCalled();
         });
         it('does not focus on the cell when document is focused on body and cell autofocus is enabled', () => {
-          const enzymeWrapper = shallowRenderComponent(getProps({ enableCellAutoFocus }));
+          const enzymeWrapper = renderComponent(getProps({ enableCellAutoFocus }));
           spyOn(document, 'activeElement').and.returnValue({ nodeName: 'body' });
-          const focus = jasmine.createSpy();
-          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ focus });
+          const cellDiv = enzymeWrapper.find('div').at(0).node;
+          spyOn(cellDiv, 'focus');
           enzymeWrapper.instance().checkFocus();
-          expect(ReactDOM.findDOMNode).not.toHaveBeenCalledWith(enzymeWrapper.instance());
-          expect(focus).not.toHaveBeenCalled();
+          expect(cellDiv.focus).not.toHaveBeenCalled();
         });
       });
     });
