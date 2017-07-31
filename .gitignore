@@ -8,3 +8,4 @@ dist
 .npmrc
 npm-debug.log
 **.orig
+.vscode

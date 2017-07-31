@@ -11,6 +11,10 @@
   outline-offset: -2px;
 }
 
+.react-grid-Cell--locked:focus {
+  z-index: 100;
+}
+
 .react-grid-Cell:focus .drag-handle {
   position: absolute;
   bottom: -5px;
@@ -54,7 +58,6 @@
 .react-grid-Cell--locked:last-of-type {
   border-right: 1px solid #dddddd;
   box-shadow: none;
-  z-index:99;
 }
 
 .react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down {
@@ -116,6 +119,10 @@
 .react-grid-Cell.editing {
   padding: 0;
   overflow: visible !important;
+}
+
+.react-grid-Cell--locked.editing {
+  z-index: 100;
 }
 .react-grid-Cell.editing .has-error input {
   border: 2px red solid !important;
