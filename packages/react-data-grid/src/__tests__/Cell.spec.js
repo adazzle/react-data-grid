@@ -495,7 +495,7 @@ describe('Cell Tests', () => {
   });
 
   describe('Cell checkFocus', () => {
-    const renderComponent = (props) => {
+    const renderCellComponent = (props) => {
       const wrapper = mount(<Cell {...props} />);
       return wrapper;
     };
@@ -519,7 +519,7 @@ describe('Cell Tests', () => {
       describe('when enableCellAutoFocus is set to true', () => {
         const enableCellAutoFocus = true;
         it('focuses on the cell when document has no active element', () => {
-          const enzymeWrapper = renderComponent(getProps({ enableCellAutoFocus }));
+          const enzymeWrapper = renderCellComponent(getProps({ enableCellAutoFocus }));
           spyOn(document, 'activeElement').and.returnValue(null);
           const cellDiv = enzymeWrapper.find('div').at(0).node;
           spyOn(cellDiv, 'focus');
@@ -527,7 +527,7 @@ describe('Cell Tests', () => {
           expect(cellDiv.focus).toHaveBeenCalled();
         });
         it('focuses on the cell when document is focused on body and cell autofocus is enabled', () => {
-          const enzymeWrapper = renderComponent(getProps({ enableCellAutoFocus }));
+          const enzymeWrapper = renderCellComponent(getProps({ enableCellAutoFocus }));
           spyOn(document, 'activeElement').and.returnValue({ nodeName: 'body' });
           const cellDiv = enzymeWrapper.find('div').at(0).node;
           spyOn(cellDiv, 'focus');
@@ -538,7 +538,7 @@ describe('Cell Tests', () => {
       describe('when enableCellAutoFocus is set to false', () => {
         const enableCellAutoFocus = false;
         it('does not focus on the cell when document has no active element', () => {
-          const enzymeWrapper = renderComponent(getProps({ enableCellAutoFocus }));
+          const enzymeWrapper = renderCellComponent(getProps({ enableCellAutoFocus }));
           spyOn(document, 'activeElement').and.returnValue(null);
           const cellDiv = enzymeWrapper.find('div').at(0).node;
           spyOn(cellDiv, 'focus');
@@ -546,7 +546,7 @@ describe('Cell Tests', () => {
           expect(cellDiv.focus).not.toHaveBeenCalled();
         });
         it('does not focus on the cell when document is focused on body and cell autofocus is enabled', () => {
-          const enzymeWrapper = renderComponent(getProps({ enableCellAutoFocus }));
+          const enzymeWrapper = renderCellComponent(getProps({ enableCellAutoFocus }));
           spyOn(document, 'activeElement').and.returnValue({ nodeName: 'body' });
           const cellDiv = enzymeWrapper.find('div').at(0).node;
           spyOn(cellDiv, 'focus');
