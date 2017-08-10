@@ -28,7 +28,8 @@ module.exports = {
   // Logic extented to allow for functions to be passed down in column.editable
   // this allows us to deicde whether we can be edting from a cell level
   canEdit(col, rowData, enableCellSelect) {
-    if (col && col.editable != null && typeof(col.editable) === 'function') {
+    if (!col) return false;
+    if (col.editable != null && typeof(col.editable) === 'function') {
       return enableCellSelect === true && col.editable(rowData);
     }
     return enableCellSelect === true && (!!col.editor || !!col.editable);
