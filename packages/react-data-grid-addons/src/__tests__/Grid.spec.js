@@ -909,11 +909,11 @@ describe('Grid', function() {
         dragged: null,
         copied: null
       }));
-      expect(meta.onCellClick).toBeFunction();
-      expect(meta.onCommit).toBeFunction();
-      expect(meta.onCommitCancel).toBeFunction();
-      expect(meta.handleDragEnterRow).toBeFunction();
-      expect(meta.handleTerminateDrag).toBeFunction();
+      expect(meta.onCellClick).toEqual(jasmine.any(Function));
+      expect(meta.onCommit).toEqual(jasmine.any(Function));
+      expect(meta.onCommitCancel).toEqual(jasmine.any(Function));
+      expect(meta.handleDragEnterRow).toEqual(jasmine.any(Function));
+      expect(meta.handleTerminateDrag).toEqual(jasmine.any(Function));
     });
 
     describe('Changing Grid state', function() {
