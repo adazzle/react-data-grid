@@ -16203,7 +16203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
 
 	    if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
-	      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx));
+	      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
 	    }
 	  },
 
