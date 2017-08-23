@@ -28,7 +28,8 @@ class RowsContainer extends React.Component {
       if (!this.plugins) {
         throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
       }
-      return this.plugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
+      const menuId = this.props.contextMenuId || 'reactDataGridContextMenu';
+      return this.plugins.Menu.ContextMenuLayer(menuId)(SimpleRowsContainer);
     }
   }
 
@@ -51,6 +52,7 @@ class RowsContainer extends React.Component {
 
 RowsContainer.propTypes = {
   contextMenu: PropTypes.element,
+  contextMenuId: PropTypes.string,
   rowIdx: PropTypes.number,
   idx: PropTypes.number,
   window: PropTypes.object
