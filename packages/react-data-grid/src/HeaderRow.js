@@ -84,10 +84,28 @@ const HeaderRow = React.createClass({
     return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection}/>;
   },
 
+  getCustomHeaderCell(column) {
+    let props = {};
+    if (this.getHeaderCellType(column) === HeaderCellType.SORTABLE) {
+      let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+      props = {
+        onSort: this.props.onSort,
+        sortDirection: sortDirection
+      };
+    }
+    if (React.isValidElement(column.headerRenderer)) {
+      if (typeof column.headerRenderer.type === 'string') {
+        return column.headerRenderer;
+      }
+      return React.cloneElement(column.headerRenderer, props);
+    }
+    return column.headerRenderer(props);
+  },
+
   getHeaderRenderer(column) {
     let renderer;
     if (column.headerRenderer && !this.props.filterable) {
-      renderer = column.headerRenderer;
+      renderer = this.getCustomHeaderCell(column);
     } else {
       let headerCellType = this.getHeaderCellType(column);
       switch (headerCellType) {
