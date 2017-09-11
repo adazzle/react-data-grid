@@ -13,6 +13,7 @@
 
 ⚠️ Not officially supported, expect warnings ⚠️
 - [ ] v15.5.x
+- [ ] v15.6.x
 
 ☣️ Not officially supported, expect warnings and errors ☣️
 - [ ] v16.x.x
