@@ -455,7 +455,7 @@ const Cell = React.createClass({
       props.dependentValues = this.getFormatterDependencies();
       CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} />;
+      CellContent = <Formatter {...props} />;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
@@ -471,9 +471,9 @@ const Cell = React.createClass({
     let isDeleteSubRowEnabled = this.props.cellMetaData.onDeleteSubRow ? true : false;
 
     if (isDeleteSubRowEnabled && (treeDepth > 0 && isExpandCell)) {
-      cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow}/>;
+      cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow} />;
     }
-    return (<div className="react-grid-Cell__value">{cellDeleter}<div  style={{ marginLeft: marginLeft }}><span>{CellContent}</span> {this.props.cellControls} {cellExpander}</div></div>);
+    return (<div className="react-grid-Cell__value">{cellDeleter}<div style={{ marginLeft: marginLeft }}><span>{CellContent}</span> {this.props.cellControls} {cellExpander}</div></div>);
   },
 
   render() {
