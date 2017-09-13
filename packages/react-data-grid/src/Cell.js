@@ -397,7 +397,13 @@ const Cell = React.createClass({
   },
 
   canEdit() {
-    return (this.props.column.editor != null) || this.props.column.editable;
+    const editorExists = col.editor != null;
+
+    if (this.props.column.editable === false && editorExists) {
+      return false;
+    }
+
+    return editorExists || this.props.column.editable;
   },
 
   canExpand() {

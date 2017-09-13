@@ -109,6 +109,22 @@ describe('ColumnUtils tests', () => {
         expect(result).toBe(false);
       });
 
+      it('CanEdit returns false when col.editable is false, col.editor is defined and enableCellSelect is true', () => {
+        // Arrange
+        testProps.col.editable = false;
+        testProps.col.editor = {};
+        testProps.enableCellSelect = true;
+
+        // Act
+        let result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+
+        // Assert
+        expect(testProps.col.editor).not.toBe(undefined);
+        expect(testProps.col.editable).toBe(false);
+        expect(testProps.enableCellSelect).toBe(true);
+        expect(result).toBe(false);
+      });
+
       it('CanEdit returns false when col.editable is true and enableCellSelect is undefined', () => {
         // Arrange
         testProps.col.editable = true;
