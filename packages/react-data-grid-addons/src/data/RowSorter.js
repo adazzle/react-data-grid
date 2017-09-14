@@ -19,7 +19,7 @@ const sortRows = (rows, sortColumn, sortDirection) => {
   if (sortDirection === 'NONE') {
     return rows;
   }
-  return [...rows].sort(rowComparer);
+  return rows.slice().sort(rowComparer);
 };
 
 module.exports = sortRows;

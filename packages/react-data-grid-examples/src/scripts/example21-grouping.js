@@ -139,6 +139,7 @@ const CustomToolbar = React.createClass({
   }
 });
 
+
 const Example = React.createClass({
   getInitialState() {
     let fakeRows = createRows(2000);
@@ -161,14 +162,19 @@ const Example = React.createClass({
 
   onColumnGroupAdded(colName) {
     let columnGroups = this.state.groupBy.slice(0);
-    if (columnGroups.indexOf(colName) === -1) {
-      columnGroups.push(colName);
+    let activeColumn = columns.find((c) => c.key === colName)
+    let isNotInGroups = columnGroups.find((c) => activeColumn.key === c.name) == null;
+    if (isNotInGroups) {
+      columnGroups.push({key: activeColumn.key, name: activeColumn.name});
     }
+   
     this.setState({groupBy: columnGroups});
   },
 
   onColumnGroupDeleted(name) {
-    let columnGroups = this.state.groupBy.filter(function(g){return g !== name});
+    let columnGroups = this.state.groupBy.filter(function(g){
+      return typeof g === 'string' ? g !== name : g.key !== name;
+    });
     this.setState({groupBy: columnGroups});
   },
 

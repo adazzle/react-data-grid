@@ -141,5 +141,5 @@ module.exports = exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Tree View',
   exampleDescription: 'This examples demonstrates how a nested JSON data structure can be passed as row data in order to display a tree view',
-  examplePath: './scripts/example24-tree-view.js'
+  examplePath: './scripts/example25-tree-view.js'
 });

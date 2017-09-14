@@ -79,6 +79,16 @@ function executeSpyTests(fn) {
     });
   });
 
+  describe('When groupBy is defined as an array of objects', () => {
+    let options = { groupBy: [{key: 'title', name: 'Title'}] };
+
+    it('should call groupBy only once', () => {
+      let expectedComputations = fn(options);
+      expect(groupRowsSpy.calls.count()).toBe(expectedComputations);
+    });
+  });
+
+
   describe('When groupBy is undefined', () => {
     let options = {};
 
@@ -219,6 +229,39 @@ describe('Grid Selectors', () => {
     it('can filter and then group by column', () => {
       let filters = { title: { filterTerm: '1' } };
       let groupBy = ['title'];
+      let computedRows = Selectors.getRows({ rows, filters, groupBy });
+      expect(computedRows.length).toBe(2);
+      expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
+      expect(computedRows[0].name).toEqual('Title 1');
+      expect(computedRows[1]).toEqual(jasmine.objectContaining({ count: 1000, id: 1, title: 'Title 1' }));
+    });
+
+    it('can group by a single column when groupBy is an object array', () => {
+      let groupBy = [{key: 'title', name: 'title'}];
+      let computedRows = Selectors.getRows({ rows, groupBy });
+      expect(computedRows.length).toBe(6);
+      expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
+      expect(computedRows[0].name).toEqual('Title 0');
+      expect(computedRows[1]).toEqual(jasmine.objectContaining({ count: 0, id: 0, title: 'Title 0' }));
+      expect(computedRows[2].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
+      expect(computedRows[2].name).toEqual('Title 1');
+      expect(computedRows[4].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
+      expect(computedRows[4].name).toEqual('Title 2');
+    });
+
+    it('can group by multiple columns when groupBy is an object array', () => {
+      let groupBy = [{key: 'title', name: 'title'}, {key: 'count', name: 'count'}, {key: 'id', name: 'id'}];
+      let computedRows = Selectors.getRows({ rows, groupBy });
+      expect(computedRows.length).toBe(12);
+      expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
+      expect(computedRows[1].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'count', isExpanded: true, isGroup: true, treeDepth: 1 }));
+      expect(computedRows[2].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'id', isExpanded: true, isGroup: true, treeDepth: 2 }));
+      expect(computedRows[3]).toEqual(jasmine.objectContaining({ count: 0, id: 0, title: 'Title 0' }));
+    });
+
+    it('can filter and then group by column when groupBy is an object array', () => {
+      let filters = { title: { filterTerm: '1' } };
+      let groupBy = [{key: 'title', name: 'title'}];
       let computedRows = Selectors.getRows({ rows, filters, groupBy });
       expect(computedRows.length).toBe(2);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));

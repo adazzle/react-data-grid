@@ -1,6 +1,6 @@
 .react-grid-Row:hover .react-grid-Cell,
 .react-grid-Row.row-context-menu .react-grid-Cell {
-  background-color: #f2f2f2;
+  background-color: #f9f9f9;
 }
 
 .react-grid-Row:hover .rdg-row-index {

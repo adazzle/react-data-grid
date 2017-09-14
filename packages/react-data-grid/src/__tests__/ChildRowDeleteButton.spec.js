@@ -12,7 +12,8 @@ describe('ChildRowDeleteButton', () => {
       cellHeight: 50,
       siblingIndex,
       numberSiblings: 2,
-      onDeleteSubRow
+      onDeleteSubRow,
+      isDeleteSubRowEnabled: true
     };
   };
 

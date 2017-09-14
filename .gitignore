@@ -7,3 +7,4 @@ test/coverage
 .npmrc
 npm-debug.log
 **.orig
+.vscode
