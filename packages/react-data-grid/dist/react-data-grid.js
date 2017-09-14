@@ -54,7 +54,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(194);
+	module.exports = __webpack_require__(196);
 
 
 /***/ }),
@@ -75,55 +75,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */,
 /* 6 */,
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2015 Jed Watson.
-	  Licensed under the MIT License (MIT), see
-	  http://jedwatson.github.io/classnames
-	*/
-
-	function classNames() {
-		var classes = '';
-		var arg;
-
-		for (var i = 0; i < arguments.length; i++) {
-			arg = arguments[i];
-			if (!arg) {
-				continue;
-			}
-
-			if ('string' === typeof arg || 'number' === typeof arg) {
-				classes += ' ' + arg;
-			} else if (Object.prototype.toString.call(arg) === '[object Array]') {
-				classes += ' ' + classNames.apply(null, arg);
-			} else if ('object' === typeof arg) {
-				for (var key in arg) {
-					if (!arg.hasOwnProperty(key) || !arg[key]) {
-						continue;
-					}
-					classes += ' ' + key;
-				}
-			}
-		}
-		return classes.substr(1);
-	}
-
-	// safely export classNames for node / browserify
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = classNames;
-	}
-
-	// safely export classNames for RequireJS
-	if (true) {
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
-			return classNames;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}
-
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -156,6 +107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Logic extented to allow for functions to be passed down in column.editable
 	  // this allows us to deicde whether we can be edting from a cell level
 	  canEdit: function canEdit(col, rowData, enableCellSelect) {
+	    if (!col) return false;
 	    if (col.editable != null && typeof col.editable === 'function') {
 	      return enableCellSelect === true && col.editable(rowData);
 	    }
@@ -173,7 +125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 	/*
@@ -229,7 +181,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -481,27 +433,57 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 11 */,
-/* 12 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2015 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
 
-	var React = __webpack_require__(2);
+	function classNames() {
+		var classes = '';
+		var arg;
 
-	var ExcelColumnShape = {
-	  name: React.PropTypes.node.isRequired,
-	  key: React.PropTypes.string.isRequired,
-	  width: React.PropTypes.number.isRequired,
-	  filterable: React.PropTypes.bool
-	};
+		for (var i = 0; i < arguments.length; i++) {
+			arg = arguments[i];
+			if (!arg) {
+				continue;
+			}
 
-	module.exports = ExcelColumnShape;
+			if ('string' === typeof arg || 'number' === typeof arg) {
+				classes += ' ' + arg;
+			} else if (Object.prototype.toString.call(arg) === '[object Array]') {
+				classes += ' ' + classNames.apply(null, arg);
+			} else if ('object' === typeof arg) {
+				for (var key in arg) {
+					if (!arg.hasOwnProperty(key) || !arg[key]) {
+						continue;
+					}
+					classes += ' ' + key;
+				}
+			}
+		}
+		return classes.substr(1);
+	}
+
+	// safely export classNames for node / browserify
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	}
+
+	// safely export classNames for RequireJS
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+			return classNames;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}
+
 
 /***/ }),
-/* 13 */,
-/* 14 */,
-/* 15 */
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -521,6 +503,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(2);
+
+	var ExcelColumnShape = {
+	  name: React.PropTypes.node.isRequired,
+	  key: React.PropTypes.string.isRequired,
+	  width: React.PropTypes.number.isRequired,
+	  filterable: React.PropTypes.bool
+	};
+
+	module.exports = ExcelColumnShape;
+
+/***/ }),
+/* 14 */,
+/* 15 */,
 /* 16 */,
 /* 17 */,
 /* 18 */
@@ -5544,10 +5545,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(203);
+	var content = __webpack_require__(205);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(10)(content, {});
+	var update = __webpack_require__(9)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5573,7 +5574,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var shallowCloneObject = __webpack_require__(38);
+	var shallowCloneObject = __webpack_require__(39);
 
 	var contextTypes = {
 	  metricsComputator: React.PropTypes.object
@@ -5723,18 +5724,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 25 */,
+/* 25 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	var isFunction = function isFunction(functionToCheck) {
+	  var getType = {};
+	  return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+	};
+
+	module.exports = isFunction;
+
+/***/ }),
 /* 26 */,
-/* 27 */
+/* 27 */,
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(202);
+	var content = __webpack_require__(204);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(10)(content, {});
+	var update = __webpack_require__(9)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5751,16 +5765,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(204);
+	var content = __webpack_require__(206);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(10)(content, {});
+	var update = __webpack_require__(9)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5777,17 +5791,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 29 */,
 /* 30 */,
 /* 31 */,
 /* 32 */,
 /* 33 */,
-/* 34 */
+/* 34 */,
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _keyMirror = __webpack_require__(206);
+	var _keyMirror = __webpack_require__(208);
 
 	var _keyMirror2 = _interopRequireDefault(_keyMirror);
 
@@ -5812,16 +5826,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = constants;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var shallowCloneObject = __webpack_require__(38);
-	var sameColumn = __webpack_require__(168);
-	var ColumnUtils = __webpack_require__(8);
-	var getScrollbarSize = __webpack_require__(37);
-	var isColumnsImmutable = __webpack_require__(70);
+	var shallowCloneObject = __webpack_require__(39);
+	var sameColumn = __webpack_require__(170);
+	var ColumnUtils = __webpack_require__(7);
+	var getScrollbarSize = __webpack_require__(38);
+	var isColumnsImmutable = __webpack_require__(71);
 
 	function setColumnWidths(columns, totalWidth) {
 	  return columns.map(function (column) {
@@ -5840,11 +5854,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return !c.width;
 	  });
 	  return columns.map(function (column) {
-	    if (!column.width) {
+	    if (!column.width && column.width !== 0) {
 	      if (unallocatedWidth <= 0) {
 	        column.width = minColumnWidth;
 	      } else {
-	        column.width = Math.floor(unallocatedWidth / ColumnUtils.getSize(defferedColumns));
+	        var columnWidth = Math.floor(unallocatedWidth / ColumnUtils.getSize(defferedColumns));
+	        if (columnWidth < minColumnWidth) {
+	          column.width = minColumnWidth;
+	        } else {
+	          column.width = columnWidth;
+	        }
 	      }
 	    }
 	    return column;
@@ -5966,14 +5985,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { recalculate: recalculate, resizeColumn: resizeColumn, sameColumn: sameColumn, sameColumns: sameColumns };
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _OverflowCell = __webpack_require__(178);
+	var _OverflowCell = __webpack_require__(180);
 
 	var _OverflowCell2 = _interopRequireDefault(_OverflowCell);
 
@@ -5984,13 +6003,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	var React = __webpack_require__(2);
-	var joinClasses = __webpack_require__(7);
+	var joinClasses = __webpack_require__(10);
 	var Cell = __webpack_require__(60);
-	var ColumnUtilsMixin = __webpack_require__(8);
-	var cellMetaDataShape = __webpack_require__(15);
+	var ColumnUtilsMixin = __webpack_require__(7);
+	var cellMetaDataShape = __webpack_require__(12);
 	var PropTypes = React.PropTypes;
 	var createObjectWithProperties = __webpack_require__(18);
-	__webpack_require__(28);
+	__webpack_require__(29);
 
 	var CellExpander = React.createClass({
 	  displayName: 'CellExpander',
@@ -6105,8 +6124,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var cells = [];
 	    var lockedCells = [];
 	    var selectedColumn = this.getSelectedColumn();
+	    var lastColumnIdx = this.props.columns.size - 1;
 	    if (this.props.columns) {
 	      this.props.columns.forEach(function (column, i) {
+	        if (i === lastColumnIdx) {
+	          column.isLastColumn = true;
+	        }
 	        var cell = _this2.getCell(column, i, selectedColumn);
 	        if (column.locked) {
 	          lockedCells.push(cell);
@@ -6202,7 +6225,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Row;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -6240,7 +6263,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = getScrollbarSize;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -6258,29 +6281,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = shallowCloneObject;
 
 /***/ }),
-/* 39 */
-/***/ (function(module, exports) {
-
-	'use strict';
-
-	var isFunction = function isFunction(functionToCheck) {
-	  var getType = {};
-	  return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-	};
-
-	module.exports = isFunction;
-
-/***/ }),
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(200);
+	var content = __webpack_require__(202);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(10)(content, {});
+	var update = __webpack_require__(9)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -6323,29 +6333,28 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _underscore = __webpack_require__(98);
+	var _underscore = __webpack_require__(100);
 
 	var _underscore2 = _interopRequireDefault(_underscore);
 
-	var _CellExpand = __webpack_require__(166);
+	var _CellExpand = __webpack_require__(168);
 
 	var _CellExpand2 = _interopRequireDefault(_CellExpand);
 
-	var _ChildRowDeleteButton = __webpack_require__(167);
+	var _ChildRowDeleteButton = __webpack_require__(169);
 
 	var _ChildRowDeleteButton2 = _interopRequireDefault(_ChildRowDeleteButton);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(4);
-	var joinClasses = __webpack_require__(7);
-	var EditorContainer = __webpack_require__(188);
-	var ExcelColumn = __webpack_require__(12);
-	var isFunction = __webpack_require__(39);
-	var CellMetaDataShape = __webpack_require__(15);
-	var SimpleCellFormatter = __webpack_require__(191);
-	var ColumnUtils = __webpack_require__(8);
+	var joinClasses = __webpack_require__(10);
+	var EditorContainer = __webpack_require__(190);
+	var ExcelColumn = __webpack_require__(13);
+	var isFunction = __webpack_require__(25);
+	var CellMetaDataShape = __webpack_require__(12);
+	var SimpleCellFormatter = __webpack_require__(69);
+	var ColumnUtils = __webpack_require__(7);
 	var createObjectWithProperties = __webpack_require__(18);
 
 	__webpack_require__(40);
@@ -6367,7 +6376,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    height: React.PropTypes.number,
 	    tabIndex: React.PropTypes.number,
 	    column: React.PropTypes.shape(ExcelColumn).isRequired,
-	    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
+	    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]),
 	    isExpanded: React.PropTypes.bool,
 	    isRowSelected: React.PropTypes.bool,
 	    cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
@@ -6394,7 +6403,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  getInitialState: function getInitialState() {
 	    return {
-	      isCellValueChanging: false
+	      isCellValueChanging: false,
+	      isLockChanging: false
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -6402,7 +6412,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 	    this.setState({
-	      isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value)
+	      isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
+	      isLockChanging: this.props.column.locked !== nextProps.column.locked
 	    });
 	  },
 	  componentDidUpdate: function componentDidUpdate() {
@@ -6414,9 +6425,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
 	      this.applyUpdateClass();
 	    }
+	    if (this.state.isLockChanging && !this.props.column.locked) {
+	      this.removeScroll();
+	    }
 	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    var shouldUpdate = this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.column.cellClass !== nextProps.column.cellClass || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.isCellValueChanging(this.props.value, nextProps.value) || this.props.forceUpdate === true || this.props.className !== nextProps.className || this.props.expandableOptions !== nextProps.expandableOptions || this.hasChangedDependentValues(nextProps);
+	    var shouldUpdate = this.props.column.width !== nextProps.column.width || this.props.column.left !== nextProps.column.left || this.props.column.cellClass !== nextProps.column.cellClass || this.props.height !== nextProps.height || this.props.rowIdx !== nextProps.rowIdx || this.isCellSelectionChanging(nextProps) || this.isDraggedCellChanging(nextProps) || this.isCopyCellChanging(nextProps) || this.props.isRowSelected !== nextProps.isRowSelected || this.isSelected() || this.props.isCellValueChanging(this.props.value, nextProps.value) || this.props.forceUpdate === true || this.props.className !== nextProps.className || this.props.expandableOptions !== nextProps.expandableOptions || this.hasChangedDependentValues(nextProps) || this.props.column.locked !== nextProps.column.locked;
 	    return shouldUpdate;
 	  },
 	  onCellClick: function onCellClick(e) {
@@ -6471,7 +6485,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      width: this.props.column.width,
 	      height: this.props.height,
 	      left: this.props.column.left,
-	      lineHeight: this.props.height + 'px',
 	      contain: 'layout'
 	    };
 	    return style;
@@ -6504,7 +6517,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'is-dragged-over-up': this.isDraggedOverUpwards(),
 	      'is-dragged-over-down': this.isDraggedOverDownwards(),
 	      'was-dragged-over': this.wasDraggedOver(),
-	      'cell-tooltip': this.props.tooltip ? true : false
+	      'cell-tooltip': this.props.tooltip ? true : false,
+	      'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
+	      'last-column': this.props.column.isLastColumn
 	    });
 	    return joinClasses(className, extraClasses);
 	  },
@@ -6571,7 +6586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var updateCellClass = this.getUpdateCellClass();
 	    // -> removing the class
 	    if (updateCellClass != null && updateCellClass !== '') {
-	      var cellDOMNode = ReactDOM.findDOMNode(this);
+	      var cellDOMNode = this.node;
 	      if (cellDOMNode.classList) {
 	        cellDOMNode.classList.remove(updateCellClass);
 	        // -> and re-adding the class
@@ -6584,14 +6599,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  setScrollLeft: function setScrollLeft(scrollLeft) {
-	    var ctrl = this; // flow on windows has an outdated react declaration, once that gets updated, we can remove this
-	    if (ctrl.isMounted()) {
-	      var node = ReactDOM.findDOMNode(this);
-	      if (node) {
-	        var transform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
-	        node.style.webkitTransform = transform;
-	        node.style.transform = transform;
-	      }
+	    var node = this.node;
+	    if (node) {
+	      var transform = 'translate3d(' + scrollLeft + 'px, 0px, 0px)';
+	      node.style.webkitTransform = transform;
+	      node.style.transform = transform;
+	    }
+	  },
+	  removeScroll: function removeScroll() {
+	    var node = this.node;
+	    if (node) {
+	      node.style.webkitTransform = null;
+	      node.style.transform = null;
 	    }
 	  },
 	  isCopied: function isCopied() {
@@ -6650,7 +6669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Meaning focus should not be stolen from elements that the grid doesnt control.
 	      var dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
 	      if (this.isFocusedOnCell() || this.isFocusedOnBody() || dataGridDOMNode && dataGridDOMNode.contains(document.activeElement)) {
-	        var cellDOMNode = ReactDOM.findDOMNode(this);
+	        var cellDOMNode = this.node;
 	        if (cellDOMNode) {
 	          cellDOMNode.focus();
 	        }
@@ -6680,7 +6699,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (var eventKey in columnEvents) {
 	      if (columnEvents.hasOwnProperty(eventKey)) {
 	        var event = columnEvents[event];
-	        var eventInfo = { rowIdx: this.props.rowIdx, idx: this.props.idx, name: eventKey };
+	        var eventInfo = { idx: this.props.idx, rowIdx: this.props.rowIdx, rowId: this.props.rowData[this.props.cellMetaData.rowKey], name: eventKey };
 	        var eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
 
 	        if (allEvents.hasOwnProperty(eventKey)) {
@@ -6736,8 +6755,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var isDeleteSubRowEnabled = this.props.cellMetaData.onDeleteSubRow ? true : false;
 
-	    if (isDeleteSubRowEnabled && treeDepth > 0 && isExpandCell) {
-	      cellDeleter = React.createElement(_ChildRowDeleteButton2['default'], { treeDepth: treeDepth, cellHeight: this.props.height, siblingIndex: this.props.expandableOptions.subRowDetails.siblingIndex, numberSiblings: this.props.expandableOptions.subRowDetails.numberSiblings, onDeleteSubRow: this.onDeleteSubRow });
+	    if (treeDepth > 0 && isExpandCell) {
+	      cellDeleter = React.createElement(_ChildRowDeleteButton2['default'], { treeDepth: treeDepth, cellHeight: this.props.height, siblingIndex: this.props.expandableOptions.subRowDetails.siblingIndex, numberSiblings: this.props.expandableOptions.subRowDetails.numberSiblings, onDeleteSubRow: this.onDeleteSubRow, isDeleteSubRowEnabled: isDeleteSubRowEnabled });
 	    }
 	    return React.createElement(
 	      'div',
@@ -6759,6 +6778,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 	  render: function render() {
+	    var _this = this;
+
 	    if (this.props.column.hidden) {
 	      return null;
 	    }
@@ -6788,7 +6809,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return React.createElement(
 	      'div',
-	      _extends({}, this.getKnownDivProps(), { className: className, style: style }, events),
+	      _extends({}, this.getKnownDivProps(), { className: className, style: style }, events, { ref: function ref(node) {
+	          _this.node = node;
+	        } }),
 	      cellContent,
 	      dragHandle,
 	      tooltip
@@ -6806,9 +6829,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(4);
-	var joinClasses = __webpack_require__(7);
-	var ExcelColumn = __webpack_require__(12);
-	var ResizeHandle = __webpack_require__(181);
+	var joinClasses = __webpack_require__(10);
+	var ExcelColumn = __webpack_require__(13);
+	var ResizeHandle = __webpack_require__(183);
 	__webpack_require__(20);
 
 	var PropTypes = React.PropTypes;
@@ -7009,7 +7032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 	exports.shouldRowUpdate = undefined;
 
-	var _ColumnMetrics = __webpack_require__(35);
+	var _ColumnMetrics = __webpack_require__(36);
 
 	var _ColumnMetrics2 = _interopRequireDefault(_ColumnMetrics);
 
@@ -7167,7 +7190,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
-	__webpack_require__(73);
+	__webpack_require__(74);
 
 	var CheckboxEditor = React.createClass({
 	  displayName: 'CheckboxEditor',
@@ -7214,7 +7237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(4);
-	var ExcelColumn = __webpack_require__(12);
+	var ExcelColumn = __webpack_require__(13);
 
 	var EditorBase = function (_React$Component) {
 	  _inherits(EditorBase, _React$Component);
@@ -7306,18 +7329,47 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var React = __webpack_require__(2);
+
+	var SimpleCellFormatter = React.createClass({
+	  displayName: 'SimpleCellFormatter',
+
+	  propTypes: {
+	    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
+	  },
+
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
+	    return nextProps.value !== this.props.value;
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { title: this.props.value },
+	      this.props.value
+	    );
+	  }
+	});
+
+	module.exports = SimpleCellFormatter;
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _immutable = __webpack_require__(19);
 
 	module.exports = {
-	  isEmptyArray: __webpack_require__(195),
-	  isEmptyObject: __webpack_require__(196),
-	  isFunction: __webpack_require__(39),
-	  isImmutableCollection: __webpack_require__(197),
-	  getMixedTypeValueRetriever: __webpack_require__(199),
-	  isColumnsImmutable: __webpack_require__(70),
-	  isImmutableMap: __webpack_require__(198),
+	  isEmptyArray: __webpack_require__(197),
+	  isEmptyObject: __webpack_require__(198),
+	  isFunction: __webpack_require__(25),
+	  isImmutableCollection: __webpack_require__(199),
+	  getMixedTypeValueRetriever: __webpack_require__(201),
+	  isColumnsImmutable: __webpack_require__(71),
+	  isImmutableMap: __webpack_require__(200),
 	  last: function last(arrayOrList) {
 	    if (arrayOrList == null) {
 	      throw new Error('arrayOrCollection is null');
@@ -7336,7 +7388,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -7346,7 +7398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports) {
 
 	/**
@@ -7401,7 +7453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = shallowEqual;
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -7433,16 +7485,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(201);
+	var content = __webpack_require__(203);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(10)(content, {});
+	var update = __webpack_require__(9)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -7459,7 +7511,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 74 */,
 /* 75 */,
 /* 76 */,
 /* 77 */,
@@ -7483,7 +7534,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 95 */,
 /* 96 */,
 /* 97 */,
-/* 98 */
+/* 98 */,
+/* 99 */,
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -9037,8 +9090,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 99 */,
-/* 100 */,
 /* 101 */,
 /* 102 */,
 /* 103 */,
@@ -9103,14 +9154,16 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 162 */,
 /* 163 */,
 /* 164 */,
-/* 165 */
+/* 165 */,
+/* 166 */,
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _shallowEqual = __webpack_require__(71);
+	var _shallowEqual = __webpack_require__(72);
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
@@ -9118,7 +9171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _RowsContainer2 = _interopRequireDefault(_RowsContainer);
 
-	var _RowGroup = __webpack_require__(182);
+	var _RowGroup = __webpack_require__(184);
 
 	var _RowGroup2 = _interopRequireDefault(_RowGroup);
 
@@ -9126,13 +9179,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(4);
-	var joinClasses = __webpack_require__(7);
+	var joinClasses = __webpack_require__(10);
 	var PropTypes = React.PropTypes;
-	var ScrollShim = __webpack_require__(183);
-	var Row = __webpack_require__(36);
-	var cellMetaDataShape = __webpack_require__(15);
+	var ScrollShim = __webpack_require__(185);
+	var Row = __webpack_require__(37);
+	var cellMetaDataShape = __webpack_require__(12);
 	var RowUtils = __webpack_require__(64);
-	__webpack_require__(27);
+	__webpack_require__(28);
 
 	var Canvas = React.createClass({
 	  displayName: 'Canvas',
@@ -9189,10 +9242,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowScrollTimeout: 0
 	    };
 	  },
-
-
-	  rows: [],
-
 	  getInitialState: function getInitialState() {
 	    return {
 	      displayStart: this.props.displayStart,
@@ -9201,6 +9250,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
+	    this.rows = [];
 	    this._currentRowsLength = 0;
 	    this._currentRowsRange = { start: 0, end: 0 };
 	    this._scroll = { scrollTop: 0, scrollLeft: 0 };
@@ -9334,20 +9384,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  renderRow: function renderRow(props) {
 	    var row = props.row;
 	    if (row.__metaData && row.__metaData.getRowRenderer) {
-	      return row.__metaData.getRowRenderer(this.props);
+	      return row.__metaData.getRowRenderer(this.props, props.idx);
 	    }
 	    if (row.__metaData && row.__metaData.isGroup) {
-	      return React.createElement(_RowGroup2['default'], _extends({
-	        key: props.key,
-	        name: row.name
-	      }, row.__metaData, {
-	        row: props.row,
-	        idx: props.idx,
-	        height: props.height,
-	        cellMetaData: this.props.cellMetaData,
-	        renderer: this.props.rowGroupRenderer,
-	        columns: props.columns
-	      }));
+	      return React.createElement(_RowGroup2['default'], _extends({}, props, row.__metaData, {
+	        name: row.name,
+	        renderer: this.props.rowGroupRenderer }));
 	    }
 	    var RowsRenderer = this.props.rowRenderer;
 	    if (typeof RowsRenderer === 'function') {
@@ -9444,7 +9486,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Canvas;
 
 /***/ }),
-/* 166 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9455,7 +9497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _AppConstants = __webpack_require__(34);
+	var _AppConstants = __webpack_require__(35);
 
 	var _AppConstants2 = _interopRequireDefault(_AppConstants);
 
@@ -9466,6 +9508,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getInitialState: function getInitialState() {
 	    var expanded = this.props.expandableOptions && this.props.expandableOptions.expanded;
 	    return { expanded: expanded };
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    var expanded = nextProps.expandableOptions && nextProps.expandableOptions.expanded;
+	    if (this.state.expanded !== expanded) {
+	      this.setState({ expanded: expanded });
+	    }
 	  },
 
 	  propTypes: {
@@ -9488,7 +9536,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = CellExpand;
 
 /***/ }),
-/* 167 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9499,7 +9547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _classnames = __webpack_require__(7);
+	var _classnames = __webpack_require__(10);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -9511,6 +9559,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      siblingIndex = _ref.siblingIndex,
 	      numberSiblings = _ref.numberSiblings,
 	      onDeleteSubRow = _ref.onDeleteSubRow,
+	      isDeleteSubRowEnabled = _ref.isDeleteSubRowEnabled,
 	      _ref$allowAddChildRow = _ref.allowAddChildRow,
 	      allowAddChildRow = _ref$allowAddChildRow === undefined ? true : _ref$allowAddChildRow;
 
@@ -9524,7 +9573,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'div',
 	    null,
 	    _react2['default'].createElement('div', { className: className }),
-	    _react2['default'].createElement(
+	    isDeleteSubRowEnabled && _react2['default'].createElement(
 	      'div',
 	      { style: { left: left, top: top, width: width, height: height }, className: 'rdg-child-row-btn', onClick: onDeleteSubRow },
 	      _react2['default'].createElement('div', { className: 'glyphicon glyphicon-remove-sign' })
@@ -9535,7 +9584,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = ChildRowDeleteButton;
 
 /***/ }),
-/* 168 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9566,7 +9615,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 169 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9579,11 +9628,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var ColumnMetrics = __webpack_require__(35);
+	var ColumnMetrics = __webpack_require__(36);
 	var DOMMetrics = __webpack_require__(24);
-	Object.assign = __webpack_require__(72);
+	Object.assign = __webpack_require__(73);
 	var PropTypes = __webpack_require__(2).PropTypes;
-	var ColumnUtils = __webpack_require__(8);
+	var ColumnUtils = __webpack_require__(7);
 
 	var Column = function Column() {
 	  _classCallCheck(this, Column);
@@ -9681,7 +9730,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 170 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9774,7 +9823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Draggable;
 
 /***/ }),
-/* 171 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9785,7 +9834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _ColumnUtils = __webpack_require__(8);
+	var _ColumnUtils = __webpack_require__(7);
 
 	var _ColumnUtils2 = _interopRequireDefault(_ColumnUtils);
 
@@ -9882,19 +9931,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = EmptyChildRow;
 
 /***/ }),
-/* 172 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
 	var PropTypes = React.PropTypes;
-	var Header = __webpack_require__(174);
-	var Viewport = __webpack_require__(184);
-	var GridScrollMixin = __webpack_require__(173);
+	var Header = __webpack_require__(176);
+	var Viewport = __webpack_require__(186);
+	var GridScrollMixin = __webpack_require__(175);
 	var DOMMetrics = __webpack_require__(24);
-	var cellMetaDataShape = __webpack_require__(15);
-	__webpack_require__(27);
+	var cellMetaDataShape = __webpack_require__(12);
+	__webpack_require__(28);
 
 	var Grid = React.createClass({
 	  displayName: 'Grid',
@@ -10038,7 +10087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Grid;
 
 /***/ }),
-/* 173 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10086,7 +10135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 174 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10095,15 +10144,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(4);
-	var joinClasses = __webpack_require__(7);
-	var shallowCloneObject = __webpack_require__(38);
-	var ColumnMetrics = __webpack_require__(35);
-	var ColumnUtils = __webpack_require__(8);
-	var HeaderRow = __webpack_require__(176);
-	var getScrollbarSize = __webpack_require__(37);
+	var joinClasses = __webpack_require__(10);
+	var shallowCloneObject = __webpack_require__(39);
+	var ColumnMetrics = __webpack_require__(36);
+	var ColumnUtils = __webpack_require__(7);
+	var HeaderRow = __webpack_require__(178);
+	var getScrollbarSize = __webpack_require__(38);
 	var PropTypes = React.PropTypes;
 	var createObjectWithProperties = __webpack_require__(18);
-	var cellMetaDataShape = __webpack_require__(15);
+	var cellMetaDataShape = __webpack_require__(12);
 	__webpack_require__(20);
 
 	// The list of the propTypes that we want to include in the Header div
@@ -10196,7 +10245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      headerRows.push(React.createElement(HeaderRow, {
 	        key: row.ref,
 	        ref: function ref(node) {
-	          return _this.row = node;
+	          return row.rowType === 'filter' ? _this.filterRow = node : _this.row = node;
 	        },
 	        rowType: row.rowType,
 	        style: headerRowStyle,
@@ -10261,7 +10310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.scrollLeft = scrollLeft;
 	    this.row.setScrollLeft(scrollLeft);
 	    if (this.filterRow) {
-	      var nodeFilters = this.filterRow;
+	      var nodeFilters = ReactDOM.findDOMNode(this.filterRow);
 	      nodeFilters.scrollLeft = scrollLeft;
 	      this.filterRow.setScrollLeft(scrollLeft);
 	    }
@@ -10293,7 +10342,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Header;
 
 /***/ }),
-/* 175 */
+/* 177 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -10308,7 +10357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = HeaderCellType;
 
 /***/ }),
-/* 176 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10316,14 +10365,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(2);
-	var shallowEqual = __webpack_require__(71);
+	var shallowEqual = __webpack_require__(72);
 	var BaseHeaderCell = __webpack_require__(61);
-	var getScrollbarSize = __webpack_require__(37);
-	var ExcelColumn = __webpack_require__(12);
-	var ColumnUtilsMixin = __webpack_require__(8);
-	var SortableHeaderCell = __webpack_require__(187);
-	var FilterableHeaderCell = __webpack_require__(186);
-	var HeaderCellType = __webpack_require__(175);
+	var getScrollbarSize = __webpack_require__(38);
+	var ExcelColumn = __webpack_require__(13);
+	var ColumnUtilsMixin = __webpack_require__(7);
+	var SortableHeaderCell = __webpack_require__(189);
+	var FilterableHeaderCell = __webpack_require__(188);
+	var HeaderCellType = __webpack_require__(177);
 	var createObjectWithProperties = __webpack_require__(18);
 	__webpack_require__(20);
 
@@ -10376,7 +10425,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.props.filterable) return HeaderCellType.FILTERABLE;
 	    }
 
-	    if (column.sortable) return HeaderCellType.SORTABLE;
+	    if (column.sortable && column.rowType !== 'filter') return HeaderCellType.SORTABLE;
 
 	    return HeaderCellType.NONE;
 	  },
@@ -10498,7 +10547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = HeaderRow;
 
 /***/ }),
-/* 177 */
+/* 179 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -10604,7 +10653,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 178 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10616,7 +10665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _focusableComponentWrapper = __webpack_require__(190);
+	var _focusableComponentWrapper = __webpack_require__(192);
 
 	var _focusableComponentWrapper2 = _interopRequireDefault(_focusableComponentWrapper);
 
@@ -10691,14 +10740,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.OverflowCellComponent = OverflowCellComponent;
 
 /***/ }),
-/* 179 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _ExcelColumn = __webpack_require__(12);
+	var _ExcelColumn = __webpack_require__(13);
 
 	var _ExcelColumn2 = _interopRequireDefault(_ExcelColumn);
 
@@ -10707,14 +10756,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = { ExcelColumn: _ExcelColumn2['default'] };
 
 /***/ }),
-/* 180 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _AppConstants = __webpack_require__(34);
+	var _AppConstants = __webpack_require__(35);
 
 	var _AppConstants2 = _interopRequireDefault(_AppConstants);
 
@@ -10722,22 +10771,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(4);
-	var BaseGrid = __webpack_require__(172);
-	var Row = __webpack_require__(36);
-	var ExcelColumn = __webpack_require__(12);
+	var BaseGrid = __webpack_require__(174);
+	var Row = __webpack_require__(37);
+	var ExcelColumn = __webpack_require__(13);
 	var KeyboardHandlerMixin = __webpack_require__(62);
 	var CheckboxEditor = __webpack_require__(66);
 	var DOMMetrics = __webpack_require__(24);
-	var ColumnMetricsMixin = __webpack_require__(169);
+	var ColumnMetricsMixin = __webpack_require__(171);
 	var RowUtils = __webpack_require__(64);
-	var ColumnUtils = __webpack_require__(8);
-	var KeyCodes = __webpack_require__(177);
+	var ColumnUtils = __webpack_require__(7);
+	var KeyCodes = __webpack_require__(179);
+	var isFunction = __webpack_require__(25);
 
-	__webpack_require__(27);
-	__webpack_require__(73);
+	__webpack_require__(28);
+	__webpack_require__(74);
 
 	if (!Object.assign) {
-	  Object.assign = __webpack_require__(72);
+	  Object.assign = __webpack_require__(73);
 	}
 
 	var ReactDataGrid = React.createClass({
@@ -10860,8 +10910,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
 	        var eventArgs = {
-	          rowIdx: columnEvent.rowIdx,
 	          idx: idx,
+	          rowIdx: columnEvent.rowIdx,
+	          rowId: columnEvent.rowId,
 	          column: column
 	        };
 
@@ -10897,7 +10948,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
 
 	    if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
-	      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx));
+	      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
 	    }
 	  },
 
@@ -11511,6 +11562,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  setActive: function setActive(keyPressed) {
+	    var _this6 = this;
+
 	    var rowIdx = this.state.selected.rowIdx;
 	    var row = this.props.rowGetter(rowIdx);
 
@@ -11525,7 +11578,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        showEditor = this.props.onCheckCellIsEditable(args);
 	      }
 	      if (showEditor !== false) {
-	        this.setState({ selected: _selected }, this.scrollToColumn(idx));
+	        if (column.locked) {
+	          this.setState({ selected: _selected });
+	        } else {
+	          this.setState({ selected: _selected }, function () {
+	            _this6.scrollToColumn(idx);
+	          });
+	        }
 	        this.handleCancelCopy();
 	      }
 	    }
@@ -11548,7 +11607,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  setupGridColumns: function setupGridColumns() {
-	    var _this6 = this;
+	    var _this7 = this;
 
 	    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
 	    var columns = props.columns;
@@ -11566,7 +11625,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'div',
 	        { className: 'react-grid-checkbox-container checkbox-align' },
 	        React.createElement('input', { className: 'react-grid-checkbox', type: 'checkbox', name: 'select-all-checkbox', id: 'select-all-checkbox', ref: function ref(grid) {
-	            return _this6.selectAllCheckbox = grid;
+	            return _this7.selectAllCheckbox = grid;
 	          }, onChange: this.handleCheckboxChange }),
 	        React.createElement('label', { htmlFor: 'select-all-checkbox', className: 'react-grid-checkbox-label' })
 	      );
@@ -11603,14 +11662,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  renderToolbar: function renderToolbar() {
 	    var Toolbar = this.props.toolbar;
+	    var toolBarProps = { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount };
 	    if (React.isValidElement(Toolbar)) {
-	      return React.cloneElement(Toolbar, { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount });
+	      return React.cloneElement(Toolbar, toolBarProps);
+	    } else if (isFunction(Toolbar)) {
+	      return React.createElement(Toolbar, toolBarProps);
 	    }
 	  },
 	  render: function render() {
-	    var _this7 = this;
+	    var _this8 = this;
 
 	    var cellMetaData = {
+	      rowKey: this.props.rowKey,
 	      selected: this.state.selected,
 	      dragged: this.state.dragged,
 	      hoveredRowIdx: this.state.hoveredRowIdx,
@@ -11634,7 +11697,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onAddSubRow: this.props.onAddSubRow,
 	      isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
 	      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
-
 	    };
 
 	    var toolbar = this.renderToolbar();
@@ -11659,7 +11721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        { className: 'react-grid-Main' },
 	        React.createElement(BaseGrid, _extends({
 	          ref: function ref(node) {
-	            return _this7.base = node;
+	            return _this8.base = node;
 	          }
 	        }, this.props, {
 	          rowKey: this.props.rowKey,
@@ -11695,7 +11757,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ReactDataGrid;
 
 /***/ }),
-/* 181 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11703,7 +11765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(2);
-	var Draggable = __webpack_require__(170);
+	var Draggable = __webpack_require__(172);
 	__webpack_require__(20);
 
 	var ResizeHandle = React.createClass({
@@ -11728,30 +11790,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ResizeHandle;
 
 /***/ }),
-/* 182 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(4);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _classnames = __webpack_require__(7);
-
-	var _classnames2 = _interopRequireDefault(_classnames);
-
-	__webpack_require__(28);
-
-	var _utils = __webpack_require__(69);
+	var _utils = __webpack_require__(70);
 
 	var _utils2 = _interopRequireDefault(_utils);
+
+	__webpack_require__(29);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -11761,62 +11817,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var cellMetaDataShape = __webpack_require__(12);
+
 	var RowGroup = function (_Component) {
 	  _inherits(RowGroup, _Component);
 
-	  function RowGroup() {
+	  function RowGroup(props) {
 	    _classCallCheck(this, RowGroup);
 
-	    var _this = _possibleConstructorReturn(this, _Component.call(this));
+	    var _this = _possibleConstructorReturn(this, _Component.call(this, props));
 
-	    _this.checkFocus = _this.checkFocus.bind(_this);
-	    _this.isSelected = _this.isSelected.bind(_this);
-	    _this.onClick = _this.onClick.bind(_this);
 	    _this.onRowExpandToggle = _this.onRowExpandToggle.bind(_this);
-	    _this.onKeyDown = _this.onKeyDown.bind(_this);
 	    _this.onRowExpandClick = _this.onRowExpandClick.bind(_this);
+	    _this.setScrollLeft = _this.setScrollLeft.bind(_this);
 	    return _this;
 	  }
-
-	  RowGroup.prototype.componentDidMount = function componentDidMount() {
-	    this.checkFocus();
-	  };
-
-	  RowGroup.prototype.componentDidUpdate = function componentDidUpdate() {
-	    this.checkFocus();
-	  };
-
-	  RowGroup.prototype.isSelected = function isSelected() {
-	    var meta = this.props.cellMetaData;
-	    if (meta == null) {
-	      return false;
-	    }
-
-	    return meta.selected && meta.selected.rowIdx === this.props.idx;
-	  };
-
-	  RowGroup.prototype.onClick = function onClick(e) {
-	    var meta = this.props.cellMetaData;
-	    if (meta != null && meta.onCellClick && typeof meta.onCellClick === 'function') {
-	      meta.onCellClick({ rowIdx: this.props.idx, idx: 0 }, e);
-	    }
-	  };
-
-	  RowGroup.prototype.onKeyDown = function onKeyDown(e) {
-	    if (e.key === 'ArrowLeft') {
-	      this.onRowExpandToggle(false);
-	    }
-	    if (e.key === 'ArrowRight') {
-	      this.onRowExpandToggle(true);
-	    }
-	    if (e.key === 'Enter') {
-	      this.onRowExpandToggle(!this.props.isExpanded);
-	    }
-	  };
-
-	  RowGroup.prototype.onRowExpandClick = function onRowExpandClick() {
-	    this.onRowExpandToggle(!this.props.isExpanded);
-	  };
 
 	  RowGroup.prototype.onRowExpandToggle = function onRowExpandToggle(expand) {
 	    var shouldExpand = expand == null ? !this.props.isExpanded : expand;
@@ -11826,33 +11841,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  };
 
-	  RowGroup.prototype.getClassName = function getClassName() {
-	    return (0, _classnames2['default'])('react-grid-row-group', 'react-grid-Row', { 'row-selected': this.isSelected() });
+	  RowGroup.prototype.onRowExpandClick = function onRowExpandClick() {
+	    this.onRowExpandToggle(!this.props.isExpanded);
 	  };
 
-	  RowGroup.prototype.checkFocus = function checkFocus() {
-	    if (this.isSelected()) {
-	      _reactDom2['default'].findDOMNode(this).focus();
+	  RowGroup.prototype.setScrollLeft = function setScrollLeft(scrollLeft) {
+	    if (this.rowGroupRenderer) {
+	      this.rowGroupRenderer.setScrollLeft ? this.rowGroupRenderer.setScrollLeft(scrollLeft) : null;
 	    }
 	  };
 
 	  RowGroup.prototype.render = function render() {
+	    var _this2 = this;
+
 	    var lastColumn = _utils2['default'].last(this.props.columns);
 
-	    var style = {
-	      height: '50px',
-	      overflow: 'hidden',
-	      border: '1px solid #dddddd',
-	      paddingTop: '15px',
-	      paddingLeft: '5px',
-	      width: lastColumn.left + lastColumn.width
-	    };
-	    var rowGroupRendererProps = Object.assign({ onRowExpandClick: this.onRowExpandClick }, this.props);
+	    var style = { width: lastColumn.left + lastColumn.width };
 
 	    return _react2['default'].createElement(
 	      'div',
-	      { style: style, className: this.getClassName(), onClick: this.onClick, onKeyDown: this.onKeyDown, tabIndex: -1 },
-	      _react2['default'].createElement(this.props.renderer, rowGroupRendererProps)
+	      { style: style, className: 'react-grid-row-group' },
+	      _react2['default'].createElement(this.props.renderer, _extends({ ref: function ref(node) {
+	          _this2.rowGroupRenderer = node;
+	        } }, this.props, { onRowExpandClick: this.onRowExpandClick, onRowExpandToggle: this.onRowExpandToggle }))
 	    );
 	  };
 
@@ -11860,24 +11871,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(_react.Component);
 
 	RowGroup.propTypes = {
-	  name: _react.PropTypes.string.isRequired,
+	  height: _react.PropTypes.number.isRequired,
+	  columns: _react.PropTypes.oneOfType([_react.PropTypes.object, _react.PropTypes.array]).isRequired,
+	  row: _react.PropTypes.any.isRequired,
+	  cellRenderer: _react.PropTypes.func,
+	  cellMetaData: _react.PropTypes.shape(cellMetaDataShape),
+	  isSelected: _react.PropTypes.bool,
+	  idx: _react.PropTypes.number.isRequired,
+	  expandedRows: _react.PropTypes.arrayOf(_react.PropTypes.object),
+	  extraClasses: _react.PropTypes.string,
+	  forceUpdate: _react.PropTypes.bool,
+	  subRowDetails: _react.PropTypes.object,
+	  isRowHovered: _react.PropTypes.bool,
+	  colVisibleStart: _react.PropTypes.number.isRequired,
+	  colVisibleEnd: _react.PropTypes.number.isRequired,
+	  colDisplayStart: _react.PropTypes.number.isRequired,
+	  colDisplayEnd: _react.PropTypes.number.isRequired,
+	  isScrolling: _react2['default'].PropTypes.bool.isRequired,
 	  columnGroupName: _react.PropTypes.string.isRequired,
 	  isExpanded: _react.PropTypes.bool.isRequired,
 	  treeDepth: _react.PropTypes.number.isRequired,
-	  height: _react.PropTypes.number.isRequired,
-	  cellMetaData: _react.PropTypes.object,
-	  idx: _react.PropTypes.number.isRequired,
-	  renderer: _react.PropTypes.func,
-	  columns: _react.PropTypes.array.isRequired
+	  name: _react.PropTypes.string.isRequired,
+	  renderer: _react.PropTypes.func
 	};
 
 	var DefaultRowGroupRenderer = function DefaultRowGroupRenderer(props) {
 	  var treeDepth = props.treeDepth || 0;
 	  var marginLeft = treeDepth * 20;
 
+	  var style = {
+	    height: '50px',
+	    border: '1px solid #dddddd',
+	    paddingTop: '15px',
+	    paddingLeft: '5px'
+	  };
+
+	  var onKeyDown = function onKeyDown(e) {
+	    if (e.key === 'ArrowLeft') {
+	      props.onRowExpandToggle(false);
+	    }
+	    if (e.key === 'ArrowRight') {
+	      props.onRowExpandToggle(true);
+	    }
+	    if (e.key === 'Enter') {
+	      props.onRowExpandToggle(!props.isExpanded);
+	    }
+	  };
 	  return _react2['default'].createElement(
 	    'div',
-	    null,
+	    { style: style, onKeyDown: onKeyDown, tabIndex: 0 },
 	    _react2['default'].createElement(
 	      'span',
 	      { className: 'row-expand-icon', style: { float: 'left', marginLeft: marginLeft, cursor: 'pointer' }, onClick: props.onRowExpandClick },
@@ -11887,7 +11929,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'strong',
 	      null,
 	      props.columnGroupName,
-	      ' : ',
+	      ': ',
 	      props.name
 	    )
 	  );
@@ -11895,10 +11937,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	DefaultRowGroupRenderer.propTypes = {
 	  onRowExpandClick: _react.PropTypes.func.isRequired,
+	  onRowExpandToggle: _react.PropTypes.func.isRequired,
 	  isExpanded: _react.PropTypes.bool.isRequired,
 	  treeDepth: _react.PropTypes.number.isRequired,
 	  name: _react.PropTypes.string.isRequired,
-	  columnGroupName: _react.PropTypes.string.isRequired
+	  columnGroupName: _react.PropTypes.string.isRequired,
+	  hideColumnName: _react.PropTypes.bool
 	};
 
 	RowGroup.defaultProps = {
@@ -11908,7 +11952,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = RowGroup;
 
 /***/ }),
-/* 183 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11962,15 +12006,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ScrollShim;
 
 /***/ }),
-/* 184 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var Canvas = __webpack_require__(165);
-	var ViewportScroll = __webpack_require__(185);
-	var cellMetaDataShape = __webpack_require__(15);
+	var Canvas = __webpack_require__(167);
+	var ViewportScroll = __webpack_require__(187);
+	var cellMetaDataShape = __webpack_require__(12);
 	var PropTypes = React.PropTypes;
 
 	var Viewport = React.createClass({
@@ -12079,12 +12123,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Viewport;
 
 /***/ }),
-/* 185 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ColumnUtils = __webpack_require__(8);
+	var _ColumnUtils = __webpack_require__(7);
 
 	var _ColumnUtils2 = _interopRequireDefault(_ColumnUtils);
 
@@ -12143,7 +12187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  getRenderedColumnCount: function getRenderedColumnCount(displayStart, width) {
-	    var remainingWidth = width && width > 0 ? width : this.props.columnMetrics.width;
+	    var remainingWidth = width && width > 0 ? width : this.props.columnMetrics.totalWidth;
 	    if (remainingWidth === 0) {
 	      remainingWidth = ReactDOM.findDOMNode(this).offsetWidth;
 	    }
@@ -12245,13 +12289,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 186 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var ExcelColumn = __webpack_require__(12);
+	var ExcelColumn = __webpack_require__(13);
 
 	var FilterableHeaderCell = React.createClass({
 	  displayName: 'FilterableHeaderCell',
@@ -12297,13 +12341,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = FilterableHeaderCell;
 
 /***/ }),
-/* 187 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var joinClasses = __webpack_require__(7);
+	var joinClasses = __webpack_require__(10);
 	var DEFINE_SORT = {
 	  ASC: 'ASC',
 	  DESC: 'DESC',
@@ -12373,7 +12417,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports.DEFINE_SORT = DEFINE_SORT;
 
 /***/ }),
-/* 188 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12381,11 +12425,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(2);
-	var joinClasses = __webpack_require__(7);
+	var joinClasses = __webpack_require__(10);
 	var keyboardHandlerMixin = __webpack_require__(62);
 	var SimpleTextEditor = __webpack_require__(68);
-	var isFunction = __webpack_require__(39);
-	__webpack_require__(27);
+	var isFunction = __webpack_require__(25);
+	__webpack_require__(28);
 
 	var EditorContainer = React.createClass({
 	  displayName: 'EditorContainer',
@@ -12410,6 +12454,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  changeCommitted: false,
+	  changeCanceled: false,
 
 	  getInitialState: function getInitialState() {
 	    return { isInvalid: false };
@@ -12428,7 +12473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  componentWillUnmount: function componentWillUnmount() {
-	    if (!this.changeCommitted && !this.hasEscapeBeenPressed()) {
+	    if (!this.changeCommitted && !this.changeCanceled) {
 	      this.commit({ key: 'Enter' });
 	    }
 	  },
@@ -12444,12 +12489,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      column: this.props.column,
 	      value: this.getInitialValue(),
 	      onCommit: this.commit,
+	      onCommitCancel: this.commitCancel,
 	      rowMetaData: this.getRowMetaData(),
 	      rowData: this.props.rowData,
 	      height: this.props.height,
 	      onBlur: this.commit,
-	      onOverrideKeyDown: this.onKeyDown,
-	      onCommitCancel: this.props.cellMetaData.onCommitCancel
+	      onOverrideKeyDown: this.onKeyDown
 	    };
 
 	    var CustomEditor = this.props.column.editor;
@@ -12471,7 +12516,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  onPressEscape: function onPressEscape(e) {
 	    if (!this.editorIsSelectOpen()) {
-	      this.props.cellMetaData.onCommitCancel();
+	      this.commitCancel();
 	    } else {
 	      // prevent event from bubbling if editor has results to select
 	      e.stopPropagation();
@@ -12562,6 +12607,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.props.cellMetaData.onCommit({ cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key });
 	    }
 	  },
+	  commitCancel: function commitCancel() {
+	    this.changeCanceled = true;
+	    this.props.cellMetaData.onCommitCancel();
+	  },
 	  isNewValueValid: function isNewValueValid(value) {
 	    if (isFunction(this.getEditor().validate)) {
 	      var isValid = this.getEditor().validate(value);
@@ -12637,18 +12686,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  },
-	  hasEscapeBeenPressed: function hasEscapeBeenPressed() {
-	    var pressed = false;
-	    var escapeKey = 27;
-	    if (window.event) {
-	      if (window.event.keyCode === escapeKey) {
-	        pressed = true;
-	      } else if (window.event.which === escapeKey) {
-	        pressed = true;
-	      }
-	    }
-	    return pressed;
-	  },
 	  renderStatusIcon: function renderStatusIcon() {
 	    if (this.state.isInvalid === true) {
 	      return React.createElement('span', { className: 'glyphicon glyphicon-remove form-control-feedback' });
@@ -12667,7 +12704,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = EditorContainer;
 
 /***/ }),
-/* 189 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12679,7 +12716,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 190 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12760,41 +12797,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = focusableComponentWrapper;
 
 /***/ }),
-/* 191 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var React = __webpack_require__(2);
-
-	var SimpleCellFormatter = React.createClass({
-	  displayName: 'SimpleCellFormatter',
-
-	  propTypes: {
-	    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
-	  },
-
-	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    return nextProps.value !== this.props.value;
-	  },
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      { title: this.props.value },
-	      this.props.value
-	    );
-	  }
-	});
-
-	module.exports = SimpleCellFormatter;
+	module.exports = {
+	  SimpleCellFormatter: __webpack_require__(69)
+	};
 
 /***/ }),
-/* 192 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _GridPropHelpers = __webpack_require__(193);
+	var _GridPropHelpers = __webpack_require__(195);
 
 	var _GridPropHelpers2 = _interopRequireDefault(_GridPropHelpers);
 
@@ -12805,7 +12823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 193 */
+/* 195 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -12846,7 +12864,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 194 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12861,23 +12879,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var Grid = __webpack_require__(180);
+	var Grid = __webpack_require__(182);
 
 	module.exports = Grid;
-	module.exports.Row = __webpack_require__(36);
+	module.exports.Row = __webpack_require__(37);
 	module.exports.Cell = __webpack_require__(60);
 	module.exports.HeaderCell = __webpack_require__(61);
 	module.exports.RowComparer = _RowComparer2['default'];
-	module.exports.EmptyChildRow = __webpack_require__(171);
+	module.exports.EmptyChildRow = __webpack_require__(173);
 	module.exports.RowsContainer = _RowsContainer2['default'];
-	module.exports.editors = __webpack_require__(189);
-	module.exports.utils = __webpack_require__(69);
-	module.exports.shapes = __webpack_require__(179);
-	module.exports._constants = __webpack_require__(34);
-	module.exports._helpers = __webpack_require__(192);
+	module.exports.editors = __webpack_require__(191);
+	module.exports.formatters = __webpack_require__(193);
+	module.exports.utils = __webpack_require__(70);
+	module.exports.shapes = __webpack_require__(181);
+	module.exports._constants = __webpack_require__(35);
+	module.exports._helpers = __webpack_require__(194);
 
 /***/ }),
-/* 195 */
+/* 197 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -12889,7 +12908,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isEmptyArray;
 
 /***/ }),
-/* 196 */
+/* 198 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -12901,7 +12920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isEmpty;
 
 /***/ }),
-/* 197 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12915,7 +12934,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = isImmutableCollection;
 
 /***/ }),
-/* 198 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12925,7 +12944,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = _immutable.Map.isMap;
 
 /***/ }),
-/* 199 */
+/* 201 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -12947,24 +12966,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = getMixedTypeValueRetriever;
 
 /***/ }),
-/* 200 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)();
+	exports = module.exports = __webpack_require__(8)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".react-grid-Cell{background-color:#fff;padding-left:8px;padding-right:8px;border-right:1px solid #eee;border-bottom:1px solid #ddd}.react-grid-Cell:focus{outline:2px solid #66afe9;outline-offset:-2px}.react-grid-Cell:focus .drag-handle{position:absolute;bottom:-5px;right:-4px;background:#66afe9;width:8px;height:8px;border:1px solid #fff;border-right:0;border-bottom:0;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Cell:not(.editing) .react-grid-Cell__value{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.react-grid-Cell.readonly{background-color:#000}.react-grid-Cell.copied{background:rgba(0,0,255,.2)!important}.react-grid-Cell--locked:last-of-type{border-right:1px solid #ddd;box-shadow:none;z-index:99}.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down{display:\"block\"}.react-grid-Cell.is-dragged-over-down{border-right:1px dashed #000;border-left:1px dashed #000;border-bottom:1px dashed #000}.react-grid-Cell.is-dragged-over-up{border-right:1px dashed #000;border-left:1px dashed #000;border-top:1px dashed #000}.react-grid-Cell.is-dragged-over-up .drag-handle{top:-5px}.react-grid-Cell:hover{background:#eee}.react-grid-cell .form-control-feedback{color:#a94442;position:absolute;top:0;right:10px;z-index:1000000;display:block;width:34px;height:34px}.react-grid-Cell.was-dragged-over{border-right:1px dashed #000;border-left:1px dashed #000}.react-grid-Cell:hover:focus .drag-handle{position:absolute;bottom:-8px;right:-7px;background:#fff;width:16px;height:16px;border:1px solid #66afe9;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Row.row-selected .react-grid-Cell{background-color:#dbecfa}.react-grid-Cell.editing{padding:0;overflow:visible!important}.react-grid-Cell.editing .has-error input{border:2px solid red!important;border-radius:2px!important}.react-grid-Cell__value ul{margin-top:0;margin-bottom:0;display:inline-block}.react-grid-Cell__value .btn-sm{padding:0}.cell-tooltip{position:relative;display:inline-block}.cell-tooltip .cell-tooltip-text{visibility:hidden;width:150px;background-color:#000;color:#fff;text-align:center;border-radius:6px;padding:5px 0;position:absolute;z-index:1;bottom:-150%;left:50%;margin-left:-60px;opacity:1s}.cell-tooltip:hover .cell-tooltip-text{visibility:visible;opacity:.8}.cell-tooltip .cell-tooltip-text:after{content:\" \";position:absolute;bottom:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;border-color:transparent transparent #000}.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text{visibility:hidden}.rdg-cell-expand{top:0;right:20px;position:absolute;cursor:pointer}.rdg-child-row-action-cross-last:before,.rdg-child-row-action-cross:before,rdg-child-row-action-cross-last:after,rdg-child-row-action-cross:after{content:\"\";position:absolute;background:grey;height:50%}.rdg-child-row-action-cross:before{left:21px;width:1px;height:35px}.rdg-child-row-action-cross-last:before{left:21px;width:1px}.rdg-child-row-action-cross-last:after,.rdg-child-row-action-cross:after{top:50%;left:20px;height:1px;width:15px;content:\"\";position:absolute;background:grey}.rdg-child-row-action-cross:hover{background:red}.rdg-child-row-btn{position:absolute;cursor:pointer;border:1px solid grey;border-radius:14px;z-index:3;background:#fff}.rdg-child-row-btn div{font-size:12px;text-align:center;line-height:19px;color:grey;height:20px;width:20px;position:absolute;top:60%;left:53%;margin-top:-10px;margin-left:-10px}.rdg-empty-child-row:hover .glyphicon-plus-sign,.rdg-empty-child-row:hover a{color:green}.rdg-child-row-btn .glyphicon-remove-sign:hover{color:red}", ""]);
+	exports.push([module.id, ".react-grid-Cell{background-color:#fff;padding-left:8px;padding-right:8px;border-right:1px solid #eee;border-bottom:1px solid #ddd}.react-grid-Cell:focus{outline:2px solid #66afe9;outline-offset:-2px}.react-grid-Cell--locked:focus{z-index:100}.react-grid-Cell:focus .drag-handle{position:absolute;bottom:-5px;right:-4px;background:#66afe9;width:8px;height:8px;border:1px solid #fff;border-right:0;border-bottom:0;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Cell:not(.editing) .react-grid-Cell__value{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value{position:relative;top:50%;transform:translateY(-50%)}.rdg-child-cell .react-grid-Cell__value{line-height:35px}.react-grid-Cell.readonly{background-color:#000}.react-grid-Cell.copied{background:rgba(0,0,255,.2)!important}.react-grid-Cell--locked:last-of-type{border-right:1px solid #ddd;box-shadow:none}.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down{display:\"block\"}.react-grid-Cell.is-dragged-over-down{border-right:1px dashed #000;border-left:1px dashed #000;border-bottom:1px dashed #000}.react-grid-Cell.is-dragged-over-up{border-right:1px dashed #000;border-left:1px dashed #000;border-top:1px dashed #000}.react-grid-Cell.is-dragged-over-up .drag-handle{top:-5px}.react-grid-Cell:hover{background:#eee}.react-grid-cell .form-control-feedback{color:#a94442;position:absolute;top:0;right:10px;z-index:1000000;display:block;width:34px;height:34px}.react-grid-Cell.was-dragged-over{border-right:1px dashed #000;border-left:1px dashed #000}.react-grid-Cell:hover:focus .drag-handle{position:absolute;bottom:-8px;right:-7px;background:#fff;width:16px;height:16px;border:1px solid #66afe9;z-index:8;cursor:crosshair;cursor:-webkit-grab}.react-grid-Row.row-selected .react-grid-Cell{background-color:#dbecfa}.react-grid-Cell.editing{padding:0;overflow:visible!important}.react-grid-Cell--locked.editing{z-index:100}.react-grid-Cell.editing .has-error input{border:2px solid red!important;border-radius:2px!important}.react-grid-Cell__value ul{margin-top:0;margin-bottom:0;display:inline-block}.react-grid-Cell__value .btn-sm{padding:0}.cell-tooltip{position:relative;display:inline-block}.cell-tooltip .cell-tooltip-text{visibility:hidden;width:150px;background-color:#000;color:#fff;text-align:center;border-radius:6px;padding:5px 0;position:absolute;z-index:1;bottom:-150%;left:50%;margin-left:-60px;opacity:1s}.cell-tooltip:hover .cell-tooltip-text{visibility:visible;opacity:.8}.cell-tooltip .cell-tooltip-text:after{content:\" \";position:absolute;bottom:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;border-color:transparent transparent #000}.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text{visibility:hidden}.rdg-cell-expand{top:0;right:20px;position:absolute;cursor:pointer}.rdg-child-row-action-cross-last:before,.rdg-child-row-action-cross:before,rdg-child-row-action-cross-last:after,rdg-child-row-action-cross:after{content:\"\";position:absolute;background:grey;height:50%}.rdg-child-row-action-cross:before{left:21px;width:1px;height:35px}.rdg-child-row-action-cross-last:before{left:21px;width:1px}.rdg-child-row-action-cross-last:after,.rdg-child-row-action-cross:after{top:50%;left:20px;height:1px;width:15px;content:\"\";position:absolute;background:grey}.rdg-child-row-action-cross:hover{background:red}.rdg-child-row-btn{position:absolute;cursor:pointer;border:1px solid grey;border-radius:14px;z-index:3;background:#fff}.rdg-child-row-btn div{font-size:12px;text-align:center;line-height:19px;color:grey;height:20px;width:20px;position:absolute;top:60%;left:53%;margin-top:-10px;margin-left:-10px}.rdg-empty-child-row:hover .glyphicon-plus-sign,.rdg-empty-child-row:hover a{color:green}.rdg-child-row-btn .glyphicon-remove-sign:hover{color:red}.last-column .cell-tooltip-text{right:100%;left:0!important}", ""]);
 
 	// exports
 
 
 /***/ }),
-/* 201 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)();
+	exports = module.exports = __webpack_require__(8)();
 	// imports
 
 
@@ -12975,10 +12994,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 202 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)();
+	exports = module.exports = __webpack_require__(8)();
 	// imports
 
 
@@ -12989,35 +13008,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 203 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(9)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".react-grid-Header{box-shadow:0 0 4px 0 #ddd;background:#f9f9f9}.react-grid-Header--resizing{cursor:ew-resize}.react-grid-HeaderCell,.react-grid-HeaderRow{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.react-grid-HeaderCell{background:#f9f9f9;padding:8px;font-weight:700;border-right:1px solid #ddd;border-bottom:1px solid #ddd}.react-grid-HeaderCell__value{white-space:nowrap;text-overflow:ellipsis;overflow:hidden;position:relative;top:50%;transform:translateY(-50%)}.react-grid-HeaderCell__resizeHandle:hover{cursor:ew-resize;background:#ddd}.react-grid-HeaderCell--locked:last-of-type{box-shadow:none}.react-grid-HeaderCell--resizing .react-grid-HeaderCell__resizeHandle{background:#ddd}.react-grid-HeaderCell__draggable{cursor:col-resize}.rdg-can-drop>.react-grid-HeaderCell{background:#ececec}", ""]);
-
-	// exports
-
-
-/***/ }),
-/* 204 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(9)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".react-grid-Row.row-context-menu .react-grid-Cell,.react-grid-Row:hover .react-grid-Cell{background-color:#f2f2f2}.react-grid-Row:hover .rdg-row-index{display:none}.react-grid-Row:hover .rdg-actions-checkbox{display:block}.react-grid-Row:hover .rdg-drag-row-handle{cursor:move;cursor:grab;cursor:-moz-grab;cursor:-webkit-grab;width:12px;height:30px;margin-left:0;background-image:url(\"data:image/svg+xml;base64, PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjlweCIgaGVpZ2h0PSIyOXB4IiB2aWV3Qm94PSIwIDAgOSAyOSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICAgIDwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggMzkgKDMxNjY3KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT5kcmFnIGljb248L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iQWN0dWFsaXNhdGlvbi12MiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IkRlc2t0b3AiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xNS4wMDAwMDAsIC0yNjIuMDAwMDAwKSIgZmlsbD0iI0Q4RDhEOCI+CiAgICAgICAgICAgIDxnIGlkPSJJbnRlcmFjdGlvbnMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE1LjAwMDAwMCwgMjU4LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPGcgaWQ9IlJvdy1Db250cm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsIDIuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICAgICAgPGcgaWQ9ImRyYWctaWNvbiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsIDIuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSIyIiBjeT0iMiIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSI3IiBjeT0iMiIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSIyIiBjeT0iNyIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSI3IiBjeT0iNyIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSIyIiBjeT0iMTIiIHI9IjIiPjwvY2lyY2xlPgogICAgICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTMwIiBjeD0iNyIgY3k9IjEyIiByPSIyIj48L2NpcmNsZT4KICAgICAgICAgICAgICAgICAgICAgICAgPGNpcmNsZSBpZD0iT3ZhbC0zMCIgY3g9IjIiIGN5PSIxNyIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSI3IiBjeT0iMTciIHI9IjIiPjwvY2lyY2xlPgogICAgICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTMwIiBjeD0iMiIgY3k9IjIyIiByPSIyIj48L2NpcmNsZT4KICAgICAgICAgICAgICAgICAgICAgICAgPGNpcmNsZSBpZD0iT3ZhbC0zMCIgY3g9IjciIGN5PSIyMiIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSIyIiBjeT0iMjciIHI9IjIiPjwvY2lyY2xlPgogICAgICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTMwIiBjeD0iNyIgY3k9IjI3IiByPSIyIj48L2NpcmNsZT4KICAgICAgICAgICAgICAgICAgICA8L2c+CiAgICAgICAgICAgICAgICA8L2c+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==\");background-repeat:no-repeat}.react-grid-Row.row-selected,.react-grid-Row .row-selected{background-color:#dbecfa}.react-grid-row-group .row-expand-icon:hover{color:#777}.react-grid-row-index{padding:0 18px}.rdg-row-index{display:block;text-align:center}.rdg-row-actions-cell{padding:0}.rdg-actions-checkbox{display:none;text-align:center}.rdg-actions-checkbox.selected{display:block}.rdg-dragging{cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.rdg-dragged-row{border-bottom:1px solid #000}", ""]);
-
-	// exports
-
-
-/***/ }),
 /* 205 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(8)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".react-grid-Header{box-shadow:0 0 4px 0 #ddd;background:#f9f9f9}.react-grid-Header--resizing{cursor:ew-resize}.react-grid-HeaderCell,.react-grid-HeaderRow{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.react-grid-HeaderCell{background:#f9f9f9;padding:8px;font-weight:700;border-right:1px solid #ddd;border-bottom:1px solid #ddd}.react-grid-HeaderCell__value{white-space:nowrap;text-overflow:ellipsis;overflow:hidden;position:relative;top:50%;transform:translateY(-50%)}.react-grid-HeaderCell__resizeHandle:hover{cursor:ew-resize;background:#ddd}.react-grid-HeaderCell--locked:last-of-type{box-shadow:none}.react-grid-HeaderCell--resizing .react-grid-HeaderCell__resizeHandle{background:#ddd}.react-grid-HeaderCell__draggable{cursor:col-resize}.rdg-can-drop>.react-grid-HeaderCell{background:#ececec}.react-grid-HeaderCell .Select{max-height:30px;font-size:12px;font-weight:400}.react-grid-HeaderCell .Select-control{max-height:30px;border:1px solid #ccc;color:#555;border-radius:3px}.react-grid-HeaderCell .is-focused:not(.is-open)>.Select-control{border-color:#66afe9;outline:0;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)}.react-grid-HeaderCell .Select-control .Select-placeholder{line-height:20px;color:#999;padding:4px}.react-grid-HeaderCell .Select-control .Select-input{max-height:28px;padding:4px;margin-left:0}.react-grid-HeaderCell .Select-control .Select-input input{padding:0;height:100%}.react-grid-HeaderCell .Select-control .Select-arrow-zone .Select-arrow{border-color:gray transparent transparent;border-width:4px 4px 2.5px}.react-grid-HeaderCell .Select-control .Select-value{padding:4px;line-height:20px!important}.react-grid-HeaderCell .Select--multi .Select-control .Select-value{padding:0;line-height:16px!important;max-height:20px}.react-grid-HeaderCell .Select--multi .Select-control .Select-value .Select-value-icon,.react-grid-HeaderCell .Select--multi .Select-control .Select-value .Select-value-label{max-height:20px}.react-grid-HeaderCell .Select-control .Select-value .Select-value-label{color:#555!important}.react-grid-HeaderCell .Select-menu-outer .Select-option{padding:4px;line-height:20px}.react-grid-HeaderCell .Select-menu-outer .Select-menu .Select-option.is-focused,.react-grid-HeaderCell .Select-menu-outer .Select-menu .Select-option.is-selected{color:#555}", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 206 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(8)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".react-grid-Row.row-context-menu .react-grid-Cell,.react-grid-Row:hover .react-grid-Cell{background-color:#f9f9f9}.react-grid-Row:hover .rdg-row-index{display:none}.react-grid-Row:hover .rdg-actions-checkbox{display:block}.react-grid-Row:hover .rdg-drag-row-handle{cursor:move;cursor:grab;cursor:-moz-grab;cursor:-webkit-grab;width:12px;height:30px;margin-left:0;background-image:url(\"data:image/svg+xml;base64, PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjlweCIgaGVpZ2h0PSIyOXB4IiB2aWV3Qm94PSIwIDAgOSAyOSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICAgIDwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggMzkgKDMxNjY3KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT5kcmFnIGljb248L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iQWN0dWFsaXNhdGlvbi12MiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9IkRlc2t0b3AiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xNS4wMDAwMDAsIC0yNjIuMDAwMDAwKSIgZmlsbD0iI0Q4RDhEOCI+CiAgICAgICAgICAgIDxnIGlkPSJJbnRlcmFjdGlvbnMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE1LjAwMDAwMCwgMjU4LjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPGcgaWQ9IlJvdy1Db250cm9scyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsIDIuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICAgICAgPGcgaWQ9ImRyYWctaWNvbiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsIDIuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSIyIiBjeT0iMiIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSI3IiBjeT0iMiIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSIyIiBjeT0iNyIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSI3IiBjeT0iNyIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSIyIiBjeT0iMTIiIHI9IjIiPjwvY2lyY2xlPgogICAgICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTMwIiBjeD0iNyIgY3k9IjEyIiByPSIyIj48L2NpcmNsZT4KICAgICAgICAgICAgICAgICAgICAgICAgPGNpcmNsZSBpZD0iT3ZhbC0zMCIgY3g9IjIiIGN5PSIxNyIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSI3IiBjeT0iMTciIHI9IjIiPjwvY2lyY2xlPgogICAgICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTMwIiBjeD0iMiIgY3k9IjIyIiByPSIyIj48L2NpcmNsZT4KICAgICAgICAgICAgICAgICAgICAgICAgPGNpcmNsZSBpZD0iT3ZhbC0zMCIgY3g9IjciIGN5PSIyMiIgcj0iMiI+PC9jaXJjbGU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxjaXJjbGUgaWQ9Ik92YWwtMzAiIGN4PSIyIiBjeT0iMjciIHI9IjIiPjwvY2lyY2xlPgogICAgICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsLTMwIiBjeD0iNyIgY3k9IjI3IiByPSIyIj48L2NpcmNsZT4KICAgICAgICAgICAgICAgICAgICA8L2c+CiAgICAgICAgICAgICAgICA8L2c+CiAgICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==\");background-repeat:no-repeat}.react-grid-Row.row-selected,.react-grid-Row .row-selected{background-color:#dbecfa}.react-grid-row-group .row-expand-icon:hover{color:#777}.react-grid-row-index{padding:0 18px}.rdg-row-index{display:block;text-align:center}.rdg-row-actions-cell{padding:0}.rdg-actions-checkbox{display:none;text-align:center}.rdg-actions-checkbox.selected{display:block}.rdg-dragging{cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.rdg-dragged-row{border-bottom:1px solid #000}", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -13072,7 +13091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = invariant;
 
 /***/ }),
-/* 206 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -13089,7 +13108,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var invariant = __webpack_require__(205);
+	var invariant = __webpack_require__(207);
 
 	/**
 	 * Constructs an enumeration with keys equal to their value.
