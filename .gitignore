@@ -4,6 +4,7 @@ lib
 **/build
 test/reports
 test/coverage
+-dist
 .npmrc
 npm-debug.log
 **.orig
