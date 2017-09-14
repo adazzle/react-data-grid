@@ -22053,7 +22053,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _this2 = this;
 
 	    return this.props.groupBy.map(function (c) {
-	      return _react2['default'].createElement(_GroupedColumnButton2['default'], { key: c, name: c, onColumnGroupDeleted: _this2.props.onColumnGroupDeleted });
+	      var groupedColumnButtonProps = {
+	        columnKey: typeof c === 'string' ? c : c.key,
+	        name: typeof c === 'string' ? c : c.name,
+	        onColumnGroupDeleted: _this2.props.onColumnGroupDeleted,
+	        key: typeof c === 'string' ? c : c.key
+	      };
+	      return _react2['default'].createElement(_GroupedColumnButton2['default'], groupedColumnButtonProps);
 	    });
 	  };
 
