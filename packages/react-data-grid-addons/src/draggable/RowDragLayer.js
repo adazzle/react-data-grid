@@ -34,7 +34,7 @@ function getItemStyles(props) {
 class CustomDragLayer extends Component {
 
   isDraggedRowSelected(selectedRows) {
-    let {item, rowSelection} = this.props;
+    let { item, rowSelection } = this.props;
     if (selectedRows && selectedRows.length > 0) {
       let key = rowSelection.selectBy.keys.rowKey;
       return selectedRows.filter(r => r[key] === item.data[key]).length > 0;
@@ -44,11 +44,11 @@ class CustomDragLayer extends Component {
 
   getDraggedRows() {
     let draggedRows;
-    let {rowSelection} = this.props;
+    let { rowSelection } = this.props;
     if (rowSelection && rowSelection.selectBy.keys) {
       let rows = this.props.rows;
-      let {rowKey, values} = rowSelection.selectBy.keys;
-      let selectedRows = Selectors.getSelectedRowsByKey({rowKey: rowKey, selectedKeys: values, rows: rows});
+      let { rowKey, values } = rowSelection.selectBy.keys;
+      let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: rowKey, selectedKeys: values, rows: rows });
       draggedRows = this.isDraggedRowSelected(selectedRows) ? selectedRows : [this.props.rows[this.props.item.idx]];
     } else {
       draggedRows = [this.props.rows[this.props.item.idx]];
@@ -59,21 +59,28 @@ class CustomDragLayer extends Component {
   renderDraggedRows() {
     const columns = this.props.columns;
     return this.getDraggedRows().map((r, i) => {
-      return <tr key={`dragged-row-${i}`}>{this.renderDraggedCells(r, i, columns) }</tr>;
+      return <tr key={`dragged-row-${i}`}>{this.renderDraggedCells(r, i, columns)}</tr>;
     });
   }
 
   renderDraggedCells(item, rowIdx, columns) {
     let cells = [];
     if (item != null) {
-      columns.forEach( c => {
+      columns.forEach(c => {
         if (item.hasOwnProperty(c.key)) {
           if (c.formatter) {
             const Formatter = c.formatter;
             const dependentValues = typeof c.getRowMetaData === 'function' ? c.getRowMetaData(item, c) : {};
-            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{padding: '5px'}}><Formatter dependentValues={dependentValues} value={item[c.key]} /></td>);
+            let props = {
+              value: item[c.key],
+              column: c,
+              rowIdx,
+              dependentValues
+            }
+
+            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{ padding: '5px' }}><Formatter {...props} /></td>);
           } else {
-            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{padding: '5px'}}>{item[c.key]}</td>);
+            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{ padding: '5px' }}>{item[c.key]}</td>);
           }
         }
       });
@@ -82,14 +89,14 @@ class CustomDragLayer extends Component {
   }
 
   render() {
-    const { isDragging} = this.props;
+    const { isDragging } = this.props;
     if (!isDragging) {
       return null;
     }
     let draggedRows = this.renderDraggedRows();
     return (
       <div style={layerStyles} className="rdg-dragging">
-        <div style={getItemStyles(this.props) } className="rdg-dragging">
+        <div style={getItemStyles(this.props)} className="rdg-dragging">
           <table><tbody>{draggedRows}</tbody></table>
         </div>
       </div>

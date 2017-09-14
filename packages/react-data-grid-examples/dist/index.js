@@ -20611,10 +20611,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (c.formatter) {
 	            var Formatter = c.formatter;
 	            var dependentValues = typeof c.getRowMetaData === 'function' ? c.getRowMetaData(item, c) : {};
+	            var props = {
+	              value: item[c.key],
+	              column: c,
+	              rowIdx: rowIdx,
+	              dependentValues: dependentValues
+	            };
+
 	            cells.push(_react2['default'].createElement(
 	              'td',
 	              { key: 'dragged-cell-' + rowIdx + '-' + c.key, className: 'react-grid-Cell', style: { padding: '5px' } },
-	              _react2['default'].createElement(Formatter, { dependentValues: dependentValues, value: item[c.key] })
+	              _react2['default'].createElement(Formatter, props)
 	            ));
 	          } else {
 	            cells.push(_react2['default'].createElement(
