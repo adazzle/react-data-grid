@@ -76,7 +76,7 @@ class CustomDragLayer extends Component {
               column: c,
               rowIdx,
               dependentValues
-            }
+            };
 
             cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{ padding: '5px' }}><Formatter {...props} /></td>);
           } else {

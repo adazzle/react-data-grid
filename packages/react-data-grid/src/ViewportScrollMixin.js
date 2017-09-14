@@ -82,8 +82,7 @@ module.exports = {
         // the first column might be partially hidden, and cause right columns not to be displayed.
         let hiddenPartOfColumn = scrollLeft - column.left;
         remainingWidth -= column.width - hiddenPartOfColumn;
-      }
-      else {
+      } else {
         remainingWidth -= column.width;
       }
     }
