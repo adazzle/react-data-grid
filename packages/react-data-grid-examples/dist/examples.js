@@ -9020,6 +9020,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      props.dependentValues = this.getFormatterDependencies();
 	      CellContent = React.cloneElement(Formatter, props);
 	    } else if (isFunction(Formatter)) {
+	      props.dependentValues = this.getFormatterDependencies();
 	      CellContent = React.createElement(Formatter, props);
 	    } else {
 	      CellContent = React.createElement(SimpleCellFormatter, { value: this.props.value });
