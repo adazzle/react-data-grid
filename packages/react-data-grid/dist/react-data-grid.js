@@ -12186,7 +12186,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      colDisplayEnd: totalNumberColumns
 	    };
 	  },
-	  getRenderedColumnCount: function getRenderedColumnCount(displayStart, width) {
+	  getRenderedColumnCount: function getRenderedColumnCount(displayStart, width, scrollLeft) {
 	    var remainingWidth = width && width > 0 ? width : this.props.columnMetrics.totalWidth;
 	    if (remainingWidth === 0) {
 	      remainingWidth = ReactDOM.findDOMNode(this).offsetWidth;
@@ -12202,7 +12202,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      columnCount++;
 	      columnIndex++;
-	      remainingWidth -= column.width;
+	      if (columnCount === 1 && scrollLeft > column.left) {
+	        // the first column might be partially hidden, and cause right columns not to be displayed.
+	        var hiddenPartOfColumn = scrollLeft - column.left;
+	        remainingWidth -= column.width - hiddenPartOfColumn;
+	      } else {
+	        remainingWidth -= column.width;
+	      }
 	    }
 	    return columnCount;
 	  },
@@ -12244,7 +12250,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var totalNumberColumns = _ColumnUtils2['default'].getSize(this.props.columnMetrics.columns);
 	    var colVisibleStart = totalNumberColumns > 0 ? max(0, this.getVisibleColStart(scrollLeft)) : 0;
-	    var renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
+	    var renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width, scrollLeft);
 	    var colVisibleEnd = renderedColumnCount !== 0 ? colVisibleStart + renderedColumnCount : totalNumberColumns;
 	    var colDisplayStart = max(0, colVisibleStart - this.props.overScan.colsStart);
 	    var colDisplayEnd = min(colVisibleEnd + this.props.overScan.colsEnd, totalNumberColumns);
