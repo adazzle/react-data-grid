@@ -1,4 +1,4 @@
-import React, {PropTypes, Component} from 'react';
+import React, { PropTypes, Component } from 'react';
 import { DropTarget } from 'react-dnd';
 import GroupedColumnButton from './GroupedColumnButton';
 import { _constants } from 'react-data-grid';
@@ -25,7 +25,7 @@ class GroupedColumnsPanel extends Component {
   }
 
   getPanelInstructionMessage() {
-    let {groupBy} = this.props;
+    let { groupBy } = this.props;
     return groupBy && groupBy.length > 0 ? this.props.panelDescription : this.props.noColumnsSelectedMessage;
   }
 
@@ -37,7 +37,7 @@ class GroupedColumnsPanel extends Component {
         onColumnGroupDeleted: this.props.onColumnGroupDeleted,
         key: typeof c === 'string' ? c : c.key
       };
-      return (<GroupedColumnButton {...groupedColumnButtonProps}/>);
+      return (<GroupedColumnButton {...groupedColumnButtonProps} />);
     });
   }
 
@@ -57,7 +57,7 @@ class GroupedColumnsPanel extends Component {
   }
 
   render() {
-    const { connectDropTarget, isOver, canDrop} = this.props;
+    const { connectDropTarget, isOver, canDrop } = this.props;
     return connectDropTarget(
       <div style={{ padding: '2px', position: 'relative', margin: '-10px', display: 'inline-block', border: '1px solid #eee' }}>
         {this.renderGroupedColumns()} <span>{this.getPanelInstructionMessage()}</span>

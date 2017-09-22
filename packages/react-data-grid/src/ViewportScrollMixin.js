@@ -62,7 +62,7 @@ module.exports = {
     };
   },
 
-  getRenderedColumnCount(displayStart, width) {
+  getRenderedColumnCount(displayStart, width, scrollLeft) {
     let remainingWidth = width && width > 0 ? width : this.props.columnMetrics.totalWidth;
     if (remainingWidth === 0) {
       remainingWidth = ReactDOM.findDOMNode(this).offsetWidth;
@@ -78,7 +78,13 @@ module.exports = {
 
       columnCount++;
       columnIndex++;
-      remainingWidth -= column.width;
+      if (columnCount === 1 && scrollLeft > column.left) {
+        // the first column might be partially hidden, and cause right columns not to be displayed.
+        let hiddenPartOfColumn = scrollLeft - column.left;
+        remainingWidth -= column.width - hiddenPartOfColumn;
+      } else {
+        remainingWidth -= column.width;
+      }
     }
     return columnCount;
   },
@@ -127,7 +133,7 @@ module.exports = {
 
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     let colVisibleStart = (totalNumberColumns > 0) ? max(0, this.getVisibleColStart(scrollLeft)) : 0;
-    let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
+    let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width, scrollLeft);
     let colVisibleEnd = (renderedColumnCount !== 0) ? colVisibleStart + renderedColumnCount : totalNumberColumns;
     let colDisplayStart = max(0, colVisibleStart - this.props.overScan.colsStart);
     let colDisplayEnd = min(colVisibleEnd + this.props.overScan.colsEnd, totalNumberColumns);
