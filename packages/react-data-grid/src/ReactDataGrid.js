@@ -112,7 +112,9 @@ const ReactDataGrid = React.createClass({
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
     overScan: React.PropTypes.object,
     onDeleteSubRow: React.PropTypes.func,
-    onAddSubRow: React.PropTypes.func
+    onAddSubRow: React.PropTypes.func,
+    selectionRenderer: React.PropTypes.object,
+    selectAllRenderer: React.PropTypes.object
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -843,12 +845,14 @@ const ReactDataGrid = React.createClass({
     let cols = columns.slice(0);
     let unshiftedCols = {};
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
-      let headerRenderer = props.enableRowSelect === 'single' ? null :
-      <div className="react-grid-checkbox-container checkbox-align">
-        <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" ref={grid => this.selectAllCheckbox = grid} onChange={this.handleCheckboxChange} />
-        <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
-      </div>;
-      let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
+      const SelectAll = this.props.selectAllRenderer;
+      const SelectAllRenderer = SelectAll ?  <SelectAll onChange={this.handleCheckboxChange} /> : (
+        <div className="react-grid-checkbox-container checkbox-align">
+          <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" ref={grid => this.selectAllCheckbox = grid} onChange={this.handleCheckboxChange} />
+          <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
+        </div>);
+      let headerRenderer = props.enableRowSelect === 'single' ? null : SelectAllRenderer;
+      let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : this.props.selectionRenderer || CheckboxEditor;
       let selectColumn = {
         key: 'select-row',
         name: '',
