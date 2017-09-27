@@ -20,6 +20,14 @@ const ImageFormatter = React.createClass({
     this._load(this.props.value);
   },
 
+  componentDidMount() {
+    this._isMounted = true;
+  },
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  },
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
       this.setState({value: null});
@@ -54,7 +62,7 @@ const ImageFormatter = React.createClass({
   },
 
   _onLoad(src) {
-    if (this.isMounted() && src === this.props.value) {
+    if (this._isMounted && src === this.props.value) {
       this.setState({
         value: src
       });

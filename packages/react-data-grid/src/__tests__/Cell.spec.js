@@ -613,5 +613,11 @@ describe('Cell Tests', () => {
       expect(cellDiv.props().expandableOptions).toBeUndefined();
       expect(cellDiv.props().isScrolling).toBeUndefined();
     });
+    it('should set transform style when scrollLeft is called', () => {
+      const wrapper = renderComponent(requiredProperties);
+      wrapper.instance().setScrollLeft(200);
+      const node = wrapper.getDOMNode();
+      expect(node.style.transform).toBe('translate3d(200px, 0px, 0px)');
+    });
   });
 });

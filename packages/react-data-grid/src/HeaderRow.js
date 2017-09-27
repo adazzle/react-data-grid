@@ -66,7 +66,7 @@ const HeaderRow = React.createClass({
       if (this.props.filterable) return HeaderCellType.FILTERABLE;
     }
 
-    if (column.sortable) return HeaderCellType.SORTABLE;
+    if (column.sortable && column.rowType !== 'filter') return HeaderCellType.SORTABLE;
 
     return HeaderCellType.NONE;
   },

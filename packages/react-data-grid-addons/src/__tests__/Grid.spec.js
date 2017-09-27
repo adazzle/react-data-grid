@@ -909,11 +909,11 @@ describe('Grid', function() {
         dragged: null,
         copied: null
       }));
-      expect(meta.onCellClick).toBeFunction();
-      expect(meta.onCommit).toBeFunction();
-      expect(meta.onCommitCancel).toBeFunction();
-      expect(meta.handleDragEnterRow).toBeFunction();
-      expect(meta.handleTerminateDrag).toBeFunction();
+      expect(meta.onCellClick).toEqual(jasmine.any(Function));
+      expect(meta.onCommit).toEqual(jasmine.any(Function));
+      expect(meta.onCommitCancel).toEqual(jasmine.any(Function));
+      expect(meta.handleDragEnterRow).toEqual(jasmine.any(Function));
+      expect(meta.handleTerminateDrag).toEqual(jasmine.any(Function));
     });
 
     describe('Changing Grid state', function() {
@@ -1077,7 +1077,7 @@ describe('Grid', function() {
     beforeEach(function() {
       let self = this;
       this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
-      let columns = [{name: 'Id', key: 'id'}];
+      let columns = [{name: 'Id', key: 'id'}, {name: 'Title', key: 'title', width: 100 }];
       let rowGetter = function(i) {
         return self.rows[i];
       };
@@ -1085,16 +1085,18 @@ describe('Grid', function() {
       this.rowClicked = {};
       this.rowClicks = 0;
 
-      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row) {
-        self.rowClicked = row;
+      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
+        self.rowClicked = {row, column};
         self.rowClicks++;
       }}).node;
     });
 
     it('calls handler when row (cell) clicked', function() {
-      this.getCellMetaData().onCellClick({ idx: 0, rowIdx: 1 });
+      this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1});
       expect(this.rowClicks).toBe(1);
-      expect(this.rowClicked).toBe(this.rows[1]);
+      const { row, column } = this.rowClicked;
+      expect(row).toEqual(jasmine.objectContaining(this.rows[1]));
+      expect(column).toEqual(jasmine.objectContaining(this.columns[1]));
     });
   });
 });

@@ -108,7 +108,7 @@ const Header = React.createClass({
 
       headerRows.push(<HeaderRow
         key={row.ref}
-        ref={(node) => this.row = node}
+        ref={(node) => { return row.rowType === 'filter' ? this.filterRow = node : this.row = node; }}
         rowType={row.rowType}
         style={headerRowStyle}
         onColumnResize={this.onColumnResize}
@@ -177,7 +177,7 @@ const Header = React.createClass({
     node.scrollLeft = scrollLeft;
     this.row.setScrollLeft(scrollLeft);
     if (this.filterRow) {
-      let nodeFilters = this.filterRow;
+      let nodeFilters = ReactDOM.findDOMNode(this.filterRow);
       nodeFilters.scrollLeft = scrollLeft;
       this.filterRow.setScrollLeft(scrollLeft);
     }

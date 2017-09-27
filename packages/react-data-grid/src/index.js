@@ -9,6 +9,7 @@ module.exports.RowComparer = RowComparer;
 module.exports.EmptyChildRow = require('./EmptyChildRow');
 module.exports.RowsContainer = RowsContainer;
 module.exports.editors = require('./editors');
+module.exports.formatters = require('./formatters');
 module.exports.utils = require('./utils');
 module.exports.shapes = require('./PropTypeShapes');
 module.exports._constants = require('./AppConstants');

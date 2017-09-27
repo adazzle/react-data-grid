@@ -73,8 +73,6 @@ const Canvas = React.createClass({
     };
   },
 
-  rows: [],
-
   getInitialState() {
     return {
       displayStart: this.props.displayStart,
@@ -84,6 +82,7 @@ const Canvas = React.createClass({
   },
 
   componentWillMount() {
+    this.rows = [];
     this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
@@ -234,20 +233,14 @@ const Canvas = React.createClass({
   renderRow(props: any) {
     let row = props.row;
     if (row.__metaData && row.__metaData.getRowRenderer) {
-      return row.__metaData.getRowRenderer(this.props);
+      return row.__metaData.getRowRenderer(this.props, props.idx);
     }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
-        key={props.key}
-        name={row.name}
+        {...props}
         {...row.__metaData}
-        row={props.row}
-        idx={props.idx}
-        height={props.height}
-        cellMetaData={this.props.cellMetaData}
-        renderer={this.props.rowGroupRenderer}
-        columns={props.columns}
-        />);
+        name={row.name}
+        renderer={this.props.rowGroupRenderer} />);
     }
     let RowsRenderer = this.props.rowRenderer;
     if (typeof RowsRenderer === 'function') {
