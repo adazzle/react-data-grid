@@ -2,7 +2,7 @@ const React                = require('react');
 const Canvas               = require('./Canvas');
 const ViewportScroll       = require('./ViewportScrollMixin');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const Viewport = React.createClass({
   mixins: [ViewportScroll],

@@ -1,6 +1,6 @@
 const React               = require('react');
 const shallowCloneObject  = require('./shallowCloneObject');
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 let contextTypes = {
   metricsComputator: PropTypes.object
@@ -18,7 +18,7 @@ let MetricsComputatorMixin = {
     return this._DOMMetrics.metrics[name].value;
   },
 
-  registerMetricsImpl(component: ReactComponent, metrics: any): {[key:string]: any} {
+  registerMetricsImpl(component: React.Component, metrics: any): {[key:string]: any} {
     let getters = {};
     let s = this._DOMMetrics;
 

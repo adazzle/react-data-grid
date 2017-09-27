@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import Select from 'react-select';
 import ReactDOM from 'react-dom';
 import 'react-select/dist/react-select.css';

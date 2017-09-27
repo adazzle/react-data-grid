@@ -10,7 +10,7 @@ const HeaderCellType = require('./HeaderCellType');
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-header.css');
 
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const HeaderRowStyle  = {
   overflow: React.PropTypes.string,

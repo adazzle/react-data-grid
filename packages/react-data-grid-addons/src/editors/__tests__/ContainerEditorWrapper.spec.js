@@ -1,6 +1,6 @@
 const Enzyme = require('enzyme');
 const React = require('react');
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const ContainerEditorWrapper = require('../ContainerEditorWrapper');
 

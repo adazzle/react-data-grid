@@ -1,6 +1,6 @@
 const React              = require('react');
 const ExcelColumn        = require('../../PropTypeShapes/ExcelColumn');
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const FilterableHeaderCell = React.createClass({
 

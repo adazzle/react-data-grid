@@ -1,12 +1,11 @@
 import ColumnUtils from './ColumnUtils';
-const React = require('react');
 const ReactDOM = require('react-dom');
 const DOMMetrics = require('./DOMMetrics');
 const min = Math.min;
 const max = Math.max;
 const floor = Math.floor;
 const ceil = Math.ceil;
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 type ViewportScrollState = {
   displayStart: number;

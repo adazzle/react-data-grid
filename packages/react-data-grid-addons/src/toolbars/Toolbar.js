@@ -1,6 +1,6 @@
 const React = require('react');
 require('../../../../themes/react-data-grid-toolbar.css');
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const Toolbar = React.createClass({
   propTypes: {

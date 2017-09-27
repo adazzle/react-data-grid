@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import { DragLayer } from 'react-dnd';
 import Selectors from '../data/Selectors';
 import '../../../../themes/react-data-grid-cell.css';

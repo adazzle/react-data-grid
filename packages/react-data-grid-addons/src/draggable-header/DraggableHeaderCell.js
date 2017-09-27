@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
 import { HeaderCell } from 'react-data-grid';
 

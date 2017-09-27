@@ -5,7 +5,7 @@ const ExcelColumn    = require('./PropTypeShapes/ExcelColumn');
 const ResizeHandle   = require('./ResizeHandle');
 require('../../../themes/react-data-grid-header.css');
 
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 function simpleCellRenderer(objArgs: {column: {name: string}}): ReactElement {
   let headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';

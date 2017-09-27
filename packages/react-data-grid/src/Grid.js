@@ -1,5 +1,5 @@
 const React                = require('react');
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
 const GridScrollMixin      = require('./GridScrollMixin');
