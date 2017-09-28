@@ -10,7 +10,7 @@ const RowRenderer = DropTargetRowContainer(ReactDataGrid.Row);
 
 const Example = React.createClass({
   propTypes: {
-    rowKey: React.PropTypes.string.isRequired
+    rowKey: PropTypes.string.isRequired
   },
 
   getInitialState() {

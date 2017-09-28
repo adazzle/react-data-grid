@@ -5,7 +5,7 @@ const React = require('react');
 
 const RowRenderer = React.createClass({
   propTypes: {
-    idx: React.PropTypes.string.isRequired
+    idx: PropTypes.string.isRequired
   },
 
   setScrollLeft(scrollBy) {

@@ -13,10 +13,10 @@ require('../../../themes/react-data-grid-header.css');
 import PropTypes from 'prop-types';
 
 const HeaderRowStyle  = {
-  overflow: React.PropTypes.string,
+  overflow: PropTypes.string,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  height: React.PropTypes.number,
-  position: React.PropTypes.string
+  height: PropTypes.number,
+  position: PropTypes.string
 };
 
 // The list of the propTypes that we want to include in the HeaderRow div
@@ -32,7 +32,7 @@ const HeaderRow = React.createClass({
     onColumnResizeEnd: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle),
     sortColumn: PropTypes.string,
-    sortDirection: React.PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sortDirection: PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,

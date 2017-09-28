@@ -5,7 +5,7 @@ const React = require('react');
 // Custom Formatter component
 const PercentCompleteFormatter = React.createClass({
   propTypes: {
-    value: React.PropTypes.number.isRequired
+    value: PropTypes.number.isRequired
   },
 
   render() {

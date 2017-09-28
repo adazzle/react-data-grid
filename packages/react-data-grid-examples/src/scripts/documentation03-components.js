@@ -2,9 +2,9 @@ const markdown = require('markdown');
 
 var DocumentContainer = React.createClass({
   propTypes: {
-    documentContent: React.PropTypes.string.isRequired,
-    documentName: React.PropTypes.string.isRequired,
-    documentPath: React.PropTypes.string.isRequired
+    documentContent: PropTypes.string.isRequired,
+    documentName: PropTypes.string.isRequired,
+    documentPath: PropTypes.string.isRequired
   },
 
   getHtml() {

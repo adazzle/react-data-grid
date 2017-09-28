@@ -14,9 +14,9 @@ const ExcelColumn = {
 class AutoCompleteTokensEditor extends Component {
 
   static propTypes = {
-    options: React.PropTypes.array.isRequired,
-    column: React.PropTypes.shape(ExcelColumn),
-    value: React.PropTypes.array
+    options: PropTypes.array.isRequired,
+    column: PropTypes.shape(ExcelColumn),
+    value: PropTypes.array
   }
 
   constructor(props) {

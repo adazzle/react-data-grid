@@ -80,7 +80,7 @@ class AutoCompleteFilter extends React.Component {
 
 AutoCompleteFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
-  column: React.PropTypes.shape(ExcelColumn),
+  column: PropTypes.shape(ExcelColumn),
   getValidFilterValues: PropTypes.func,
   multiSelection: PropTypes.bool
 };

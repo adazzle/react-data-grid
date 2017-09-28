@@ -37,7 +37,7 @@ const Row = React.createClass({
     colVisibleEnd: PropTypes.number.isRequired,
     colDisplayStart: PropTypes.number.isRequired,
     colDisplayEnd: PropTypes.number.isRequired,
-    isScrolling: React.PropTypes.bool.isRequired
+    isScrolling: PropTypes.bool.isRequired
   },
 
   mixins: [ColumnUtilsMixin],
