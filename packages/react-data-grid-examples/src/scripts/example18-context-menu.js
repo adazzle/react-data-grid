@@ -3,6 +3,8 @@ const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const { Menu: { ContextMenu, MenuItem, SubMenu } } = require('react-data-grid-addons');
 
+import PropTypes from 'prop-types';
+
 const Example = React.createClass({
   getInitialState() {
     this._columns = [

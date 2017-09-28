@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const markdown = require('markdown');
 
 var DocumentContainer = React.createClass({

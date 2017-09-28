@@ -13,6 +13,8 @@ const {
     { ImageFormatter }} = require('react-data-grid-addons');
 const faker = require('faker');
 
+import PropTypes from 'prop-types';
+
 const counties = [
   { id: 0, title: 'Bedfordshire'},
   { id: 1, title: 'Berkshire'},

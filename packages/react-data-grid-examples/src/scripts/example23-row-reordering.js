@@ -6,6 +6,8 @@ const {
    Data: { Selectors }
 } = require('react-data-grid-addons');
 
+import PropTypes from 'prop-types';
+
 const RowRenderer = DropTargetRowContainer(ReactDataGrid.Row);
 
 const Example = React.createClass({

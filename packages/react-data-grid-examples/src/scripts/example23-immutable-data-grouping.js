@@ -9,6 +9,8 @@ const {
   Draggable: { Container: DraggableContainer }
  } = require('react-data-grid-addons');
 
+import PropTypes from 'prop-types';
+
 faker.locale = 'en_GB';
 
 let _rows = [];
