@@ -5,6 +5,8 @@ const Viewport             = require('./Viewport');
 const GridScrollMixin      = require('./GridScrollMixin');
 const DOMMetrics           = require('./DOMMetrics');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
+const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
+const SortDataShape = require('./PropTypeShapes/SortDataShape');
 require('../../../themes/react-data-grid-core.css');
 
 const Grid = React.createClass({
@@ -37,7 +39,8 @@ const Grid = React.createClass({
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
     sortColumn: React.PropTypes.string,
-    sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
+    sortDirection: React.PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sort: SortDataShape,
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,
     onViewportKeyup: PropTypes.func,
@@ -95,6 +98,7 @@ const Grid = React.createClass({
           sortColumn={this.props.sortColumn}
           sortDirection={this.props.sortDirection}
           draggableHeaderCell={this.props.draggableHeaderCell}
+          sort={this.props.sort}
           onSort={this.props.onSort}
           onHeaderDrop={this.props.onHeaderDrop}
           onScroll={this.onHeaderScroll}

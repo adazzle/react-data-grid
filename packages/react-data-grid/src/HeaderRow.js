@@ -7,7 +7,9 @@ const ColumnUtilsMixin  = require('./ColumnUtils');
 const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
 const FilterableHeaderCell  = require('./cells/headerCells/FilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
+const SortDataShape = require('./PropTypeShapes/SortDataShape');
 const createObjectWithProperties = require('./createObjectWithProperties');
+const areSortArraysEqual = require('./utils/areSortArraysEqual');
 require('../../../themes/react-data-grid-header.css');
 
 const PropTypes         = React.PropTypes;
@@ -32,7 +34,8 @@ const HeaderRow = React.createClass({
     onColumnResizeEnd: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle),
     sortColumn: PropTypes.string,
-    sortDirection: React.PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sortDirection: PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sort: SortDataShape,
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
@@ -51,11 +54,13 @@ const HeaderRow = React.createClass({
   },
 
   shouldComponentUpdate(nextProps: {width: ?(number | string); height: number; columns: Array<ExcelColumn>; style: ?HeaderRowStyle; onColumnResize: ?any}): boolean {
+  
     return (
       nextProps.width !== this.props.width
       || nextProps.height !== this.props.height
       || nextProps.columns !== this.props.columns
       || !shallowEqual(nextProps.style, this.props.style)
+      || !areSortArraysEqual(nextProps.sort, this.props.sort)
       || this.props.sortColumn !== nextProps.sortColumn
       || this.props.sortDirection !== nextProps.sortDirection
     );
@@ -80,7 +85,14 @@ const HeaderRow = React.createClass({
   },
 
   getSortableHeaderCell(column) {
-    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+    let sortDirection;
+    if (this.props.sort) {
+      const columnSort = this.props.sort.find(function(s) { return s.column === column.key; });
+      sortDirection = columnSort ? columnSort.direction : SortableHeaderCell.DEFINE_SORT.NONE;
+    }
+    else {
+      sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+    }
     return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection}/>;
   },
 

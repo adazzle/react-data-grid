@@ -11,9 +11,11 @@ const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
+const SortDataShape = require('./PropTypeShapes/SortDataShape');
 import AppConstants from './AppConstants';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
+const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
@@ -67,7 +69,10 @@ const ReactDataGrid = React.createClass({
     onCellCopyPaste: React.PropTypes.func,
     onCellsDragged: React.PropTypes.func,
     onAddFilter: React.PropTypes.func,
+    sort: SortDataShape,
+    multipleColumnSort: React.PropTypes.bool,
     onGridSort: React.PropTypes.func,
+    onGridMultipleColumnSort: React.PropTypes.func,
     onDragHandleDoubleClick: React.PropTypes.func,
     onGridRowsUpdated: React.PropTypes.func,
     onRowSelect: React.PropTypes.func,
@@ -143,6 +148,10 @@ const ReactDataGrid = React.createClass({
     } else {
       initialState.selected = {rowIdx: -1, idx: -1};
     }
+    if (this.props.multipleColumnSort) {
+      initialState.sort = this.props.sort || [];
+    }
+
     return initialState;
   },
 
@@ -451,8 +460,37 @@ const ReactDataGrid = React.createClass({
   },
 
   handleSort: function(columnKey: string, direction: SortType) {
-    this.setState({sortDirection: direction, sortColumn: columnKey}, function() {
-      this.props.onGridSort(columnKey, direction);
+    const stateChange = {
+      sortDirection: direction, 
+      sortColumn: columnKey
+    };
+    const isMultiple = this.props.multipleColumnSort;
+    if (isMultiple) {
+      let sort = this.state.sort.slice();
+      if (direction === SortableHeaderCell.DEFINE_SORT.NONE) {
+        sort = sort.filter(function(item) { return item.column !== columnKey});
+      }
+      else {
+        const sortData = {column: columnKey, direction};
+        let found = false;
+        for (let i = 0; i < sort.length; ++i) {
+          if (sort[i].column === columnKey) {
+            // Overwrite the object, because shallowEqual is used for sort array comparison in shouldComponentUpdate
+            sort[i] = sortData;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          sort.push(sortData);
+        }
+      }
+
+      stateChange.sort = sort;
+    }
+
+    this.setState(stateChange, function() {
+      isMultiple ? this.props.onGridMultipleColumnSort(stateChange.sort, columnKey, direction) : this.props.onGridSort(columnKey, direction);
     });
   },
 
@@ -949,6 +987,7 @@ const ReactDataGrid = React.createClass({
             rowOffsetHeight={this.getRowOffsetHeight()}
             sortColumn={this.state.sortColumn}
             sortDirection={this.state.sortDirection}
+            sort={this.state.sort}
             onSort={this.handleSort}
             minHeight={this.props.minHeight}
             totalWidth={gridWidth}
