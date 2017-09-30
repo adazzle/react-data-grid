@@ -107,8 +107,8 @@ const Example = React.createClass({
   render() {
     return  (
       <ReactDataGrid
-        onGridMultipleColumnSort={this.handleSort}
-        multipleColumnSort={true}
+        onGridMultipleColumnsSort={this.handleSort}
+        multipleColumnsSort={true}
         columns={this._columns}
         sort={[{
           column: 'task',
@@ -120,7 +120,7 @@ const Example = React.createClass({
   }
 });
 
-const exampleDescription = (<p>To enable multiple column sort, set <code>{'multipleColumnSort={true}'}</code> on ReactDataGrid component. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Unlike single sort, when the header cell is clicked for a column, <code>onGridMultipleColumnSort</code> will be triggered passing the array of <code>{'{columnKey, sortDirection}'}</code> pairs. Also, there is an option to provide initial sort array for the grid via <code>sort</code> property which can be passed to ReactDataGrid</p>);
+const exampleDescription = (<p>To enable multiple column sort, set <code>{'multipleColumnsSort={true}'}</code> on ReactDataGrid component. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Unlike single sort, when the header cell is clicked for a column, <code>onGridMultipleColumnsSort</code> will be triggered passing the array of <code>{'{columnKey, sortDirection}'}</code> pairs. Also, there is an option to provide initial sort array for the grid via <code>sort</code> property which can be passed to ReactDataGrid</p>);
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
