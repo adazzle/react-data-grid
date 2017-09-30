@@ -1,14 +1,12 @@
 const shallowEqual    = require('fbjs/lib/shallowEqual');
 
 const areSortArraysEqual = (a, b) => {
-  const typeA = typeof a;
-  const typeB = typeof b;
   // Handle multipleSortColumns option
-  if (typeA === 'undefined' && typeB === 'undefined') {
+  if (typeof a === 'undefined' && typeof b === 'undefined') {
     return true;
   }
 
-  if (typeA !== 'object' || typeB !== 'object' || a.constructor !== Array || b.constructor !== Array || a.length !== b.length) {
+  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) {
     return false;
   }
 

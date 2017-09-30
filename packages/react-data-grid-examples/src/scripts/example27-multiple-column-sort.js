@@ -95,7 +95,7 @@ const Example = React.createClass({
       }
       return cmp;
     };
-    
+
     const rows = sort.length === 0 ? this.state.originalRows.slice(0) : this.state.rows.sort(comparer);
     this.setState({ rows });
   },

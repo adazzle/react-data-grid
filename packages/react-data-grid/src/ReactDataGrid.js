@@ -461,16 +461,15 @@ const ReactDataGrid = React.createClass({
 
   handleSort: function(columnKey: string, direction: SortType) {
     const stateChange = {
-      sortDirection: direction, 
+      sortDirection: direction,
       sortColumn: columnKey
     };
     const isMultiple = this.props.multipleColumnSort;
     if (isMultiple) {
       let sort = this.state.sort.slice();
       if (direction === SortableHeaderCell.DEFINE_SORT.NONE) {
-        sort = sort.filter(function(item) { return item.column !== columnKey});
-      }
-      else {
+        sort = sort.filter((item) => item.column !== columnKey);
+      } else {
         const sortData = {column: columnKey, direction};
         let found = false;
         for (let i = 0; i < sort.length; ++i) {
@@ -489,7 +488,7 @@ const ReactDataGrid = React.createClass({
       stateChange.sort = sort;
     }
 
-    this.setState(stateChange, function() {
+    this.setState(stateChange, () => {
       isMultiple ? this.props.onGridMultipleColumnSort(stateChange.sort, columnKey, direction) : this.props.onGridSort(columnKey, direction);
     });
   },
