@@ -54,7 +54,6 @@ const HeaderRow = React.createClass({
   },
 
   shouldComponentUpdate(nextProps: {width: ?(number | string); height: number; columns: Array<ExcelColumn>; style: ?HeaderRowStyle; onColumnResize: ?any}): boolean {
-  
     return (
       nextProps.width !== this.props.width
       || nextProps.height !== this.props.height
