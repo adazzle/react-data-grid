@@ -17344,6 +17344,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  onCellClick: function onCellClick(cell) {
+	    if (this.state.selected && this.state.selected.rowIdx === cell.rowIdx && this.state.selected.idx === cell.idx) {
+	      return this.setActive('Enter'); // If already focused, simulate enter key and go to edit mode
+	    }
+
 	    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
 
 	    if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
