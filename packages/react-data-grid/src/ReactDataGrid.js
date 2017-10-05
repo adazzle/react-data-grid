@@ -11,6 +11,7 @@ const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
+const SelectAll = require('./formatters/SelectAll');
 import AppConstants from './AppConstants';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
@@ -113,7 +114,6 @@ const ReactDataGrid = React.createClass({
     overScan: React.PropTypes.object,
     onDeleteSubRow: React.PropTypes.func,
     onAddSubRow: React.PropTypes.func,
-    selectionRenderer: React.PropTypes.object,
     selectAllRenderer: React.PropTypes.object
   },
 
@@ -845,14 +845,10 @@ const ReactDataGrid = React.createClass({
     let cols = columns.slice(0);
     let unshiftedCols = {};
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
-      const SelectAll = this.props.selectAllRenderer;
-      const SelectAllRenderer = SelectAll ?  <SelectAll onChange={this.handleCheckboxChange} /> : (
-        <div className="react-grid-checkbox-container checkbox-align">
-          <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" ref={grid => this.selectAllCheckbox = grid} onChange={this.handleCheckboxChange} />
-          <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
-        </div>);
+      const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
+      const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} selectAllCheckbox={this.selectAllCheckbox} />;
       let headerRenderer = props.enableRowSelect === 'single' ? null : SelectAllRenderer;
-      let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : this.props.selectionRenderer || CheckboxEditor;
+      let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
       let selectColumn = {
         key: 'select-row',
         name: '',
