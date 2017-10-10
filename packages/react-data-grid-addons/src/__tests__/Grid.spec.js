@@ -233,10 +233,10 @@ describe('Grid', function() {
         let checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
-
-        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
+        const SelectAll = this.selectRowCol.headerRenderer;
+        this.selectAllWrapper = mount(SelectAll);
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        this.headerCheckbox.props.onChange(this.fakeEvent);
+        this.selectAllWrapper.props().onChange(this.fakeEvent);
       });
 
       it('should select all rows', function() {
@@ -250,7 +250,7 @@ describe('Grid', function() {
       describe('and then unchecking header checkbox', function() {
         beforeEach(function() {
           this.checkbox.checked = false;
-          this.headerCheckbox.props.onChange(this.fakeEvent);
+          this.selectAllWrapper.props().onChange(this.fakeEvent);
         });
 
         it('should deselect all rows', function() {
@@ -559,9 +559,10 @@ describe('Grid', function() {
         let checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
-        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        this.headerCheckbox.props.onChange(this.fakeEvent);
+        const SelectAll = this.selectRowCol.headerRenderer;
+        this.selectAllWrapper = mount(SelectAll);
+        this.selectAllWrapper.props().onChange(this.fakeEvent);
       });
 
       it('should call rowSelection.onRowsSelected with all rows', function() {
@@ -595,13 +596,14 @@ describe('Grid', function() {
         let checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
-        this.headerCheckbox = this.selectRowCol.headerRenderer.props.children[0];
+        const SelectAll = this.selectRowCol.headerRenderer;
+        this.selectAllWrapper = mount(SelectAll);
       });
 
       it('then unchecking should call rowSelection.onRowsDeselected with all rows', function() {
         this.checkbox.checked = false;
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        this.headerCheckbox.props.onChange(this.fakeEvent);
+        this.selectAllWrapper.props().onChange(this.fakeEvent);
         expect(this._deselectedRows.length).toBe(2);
       });
     });
