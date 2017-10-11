@@ -1,19 +1,18 @@
-const React = require('react');
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const SelectAll = React.createClass({
-  propTypes: {
-    onChange: React.PropTypes.func,
-    inputRef: React.PropTypes.element
-  },
-
-  render(): ?ReactElement {
-    return (
-      <div className="react-grid-checkbox-container checkbox-align">
-      <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" ref={this.props.inputRef} onChange={this.props.onChange} />
+const SelectAll = (props) => {
+  return (
+    <div className="react-grid-checkbox-container checkbox-align">
+      <input className="react-grid-checkbox" type="checkbox" name="select-all-checkbox" id="select-all-checkbox" ref={props.inputRef} onChange={props.onChange} />
       <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
     </div>
   );
-  }
-});
+};
 
-module.exports = SelectAll;
+SelectAll.propTypes = {
+  onChange: PropTypes.func,
+  inputRef: PropTypes.element
+};
+
+export default SelectAll;
