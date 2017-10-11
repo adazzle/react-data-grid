@@ -11,7 +11,7 @@ const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
-const SelectAll = require('./formatters/SelectAll');
+import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
