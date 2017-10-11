@@ -2,7 +2,6 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
 const PropTypes = React.PropTypes;
-const ScrollShim = require('./ScrollShim');
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const RowUtils = require('./RowUtils');
@@ -13,8 +12,6 @@ import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 
 const Canvas = React.createClass({
-  mixins: [ScrollShim],
-
   propTypes: {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     rowHeight: PropTypes.number.isRequired,
@@ -79,6 +76,48 @@ const Canvas = React.createClass({
       displayEnd: this.props.displayEnd,
       scrollingTimeout: null
     };
+  },
+
+  appendScrollShim() {
+    if (!this._scrollShim) {
+      let size = this._scrollShimSize();
+      let shim = document.createElement('div');
+      if (shim.classList) {
+        shim.classList.add('react-grid-ScrollShim'); // flow - not compatible with HTMLElement
+      } else {
+        shim.className += ' react-grid-ScrollShim';
+      }
+      shim.style.position = 'absolute';
+      shim.style.top = 0;
+      shim.style.left = 0;
+      shim.style.width = `${size.width}px`;
+      shim.style.height = `${size.height}px`;
+      ReactDOM.findDOMNode(this).appendChild(shim);
+      this._scrollShim = shim;
+    }
+    this._scheduleRemoveScrollShim();
+  },
+
+  _scrollShimSize(): {width: number; height: number } {
+    return {
+      width: this.props.width,
+      height: this.props.length * this.props.rowHeight
+    };
+  },
+
+  _scheduleRemoveScrollShim() {
+    if (this._scheduleRemoveScrollShimTimer) {
+      clearTimeout(this._scheduleRemoveScrollShimTimer);
+    }
+    this._scheduleRemoveScrollShimTimer = setTimeout(
+      this._removeScrollShim, 200);
+  },
+
+  _removeScrollShim() {
+    if (this._scrollShim) {
+      this._scrollShim.parentNode.removeChild(this._scrollShim);
+      this._scrollShim = undefined;
+    }
   },
 
   componentWillMount() {
