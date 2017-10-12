@@ -11,7 +11,7 @@ const SelectAll = (props) => {
 
 SelectAll.propTypes = {
   onChange: PropTypes.func,
-  inputRef: PropTypes.element
+  inputRef: PropTypes.func
 };
 
 export default SelectAll;
