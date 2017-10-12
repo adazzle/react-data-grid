@@ -109,6 +109,7 @@ const Viewport = createReactClass({
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
           isScrolling={this.state.isScrolling || false}
+          loadingView={this.props.loadingView}
         />
       </div>
     );

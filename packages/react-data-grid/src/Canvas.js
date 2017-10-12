@@ -63,6 +63,7 @@ const Canvas = createReactClass({
       })
     ]),
     rowGroupRenderer: PropTypes.func,
+    loadingView: PropTypes.func,
     isScrolling: PropTypes.bool
   },
 
@@ -79,8 +80,51 @@ const Canvas = createReactClass({
     return {
       displayStart: this.props.displayStart,
       displayEnd: this.props.displayEnd,
+      loadPending: false,
       scrollingTimeout: null
     };
+  },
+
+  loadData(rowGetter, start, end, getSubRowDetails) {
+    this._currentRowsRange = { start, end };
+    if (Array.isArray(rowGetter)) {
+      this.data = rowGetter.slice(start, end);
+      return;
+    }
+
+    function addSubRow(row) {
+      let subRowDetails = {};
+      if (getSubRowDetails) {
+        subRowDetails = getSubRowDetails(row);
+      }
+      return { row, subRowDetails };
+    }
+
+    const req = rowGetter(start, end);
+    if (req.then) {
+      const reqId = this.dataRequestId += 1;
+      req.then(resp => {
+        if (this.dataRequestId === reqId) {
+          this.data = resp.map(addSubRow);
+          this.setState({ loadPending: false });
+        }
+      });
+
+      this.setState({ loadPending: true });
+    } else {
+      let data;
+      if (Array.isArray(req)) {
+        data = req;
+      } else {
+        data = [req];
+        for (let i = start + 1; i < end; ++i) {
+          data.push(this.props.rowGetter(i));
+        }
+      }
+
+      this.data = data.map(addSubRow);
+      this.setState({ loadPending: false });
+    }
   },
 
   componentWillMount() {
@@ -88,6 +132,9 @@ const Canvas = createReactClass({
     this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
+    this.dataRequestId = 0;
+    this.loadData(this.props.rowGetter, this.state.displayStart, this.state.displayEnd,
+                  this.props.getSubRowDetails);
   },
 
   componentDidMount() {
@@ -102,11 +149,15 @@ const Canvas = createReactClass({
         displayEnd: nextProps.displayEnd
       });
     }
+
+    this.loadData(nextProps.rowGetter, nextProps.displayStart, nextProps.displayEnd,
+                  nextProps.getSubRowDetails);
   },
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     let shouldUpdate = nextState.displayStart !== this.state.displayStart
       || nextState.displayEnd !== this.state.displayEnd
+      || nextState.loadPending !== this.state.loadPending
       || nextState.scrollingTimeout !== this.state.scrollingTimeout
       || nextProps.rowsCount !== this.props.rowsCount
       || nextProps.rowHeight !== this.props.rowHeight
@@ -126,6 +177,7 @@ const Canvas = createReactClass({
     this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
+    this.data = undefined;
   },
 
   componentDidUpdate() {
@@ -152,25 +204,6 @@ const Canvas = createReactClass({
     let scroll = { scrollTop, scrollLeft };
     this._scroll = scroll;
     this.props.onScroll(scroll);
-  },
-
-  getRows(displayStart, displayEnd) {
-    this._currentRowsRange = { start: displayStart, end: displayEnd };
-    if (Array.isArray(this.props.rowGetter)) {
-      return this.props.rowGetter.slice(displayStart, displayEnd);
-    }
-    let rows = [];
-    let i = displayStart;
-    while (i < displayEnd) {
-      let row = this.props.rowGetter(i);
-      let subRowDetails = {};
-      if (this.props.getSubRowDetails) {
-        subRowDetails = this.props.getSubRowDetails(row);
-      }
-      rows.push({ row, subRowDetails });
-      i++;
-    }
-    return rows;
   },
 
   getScrollbarWidth() {
@@ -271,8 +304,11 @@ const Canvas = createReactClass({
     const { displayStart, displayEnd } = this.state;
     const { rowHeight, rowsCount } = this.props;
 
-    let rows = this.getRows(displayStart, displayEnd)
-      .map((r, idx) => this.renderRow({
+    let content;
+    if (this.state.loadPending) {
+      content = this.renderPlaceholder('dummy', rowsCount * rowHeight);
+    } else {
+      let rows = this.data.map((r, idx) => this.renderRow({
         key: `row-${displayStart + idx}`,
         ref: (node) => this.rows[idx] = node,
         idx: displayStart + idx,
@@ -293,15 +329,25 @@ const Canvas = createReactClass({
         isScrolling: this.props.isScrolling
       }));
 
-    this._currentRowsLength = rows.length;
+      this._currentRowsLength = rows.length;
 
-    if (displayStart > 0) {
-      rows.unshift(this.renderPlaceholder('top', displayStart * rowHeight));
-    }
+      if (displayStart > 0) {
+        rows.unshift(this.renderPlaceholder('top', displayStart * rowHeight));
+      }
 
-    if (rowsCount - displayEnd > 0) {
-      rows.push(
-        this.renderPlaceholder('bottom', (rowsCount - displayEnd) * rowHeight));
+      if (rowsCount - displayEnd > 0) {
+        rows.push(
+          this.renderPlaceholder('bottom', (rowsCount - displayEnd) * rowHeight));
+      }
+
+      content = (
+        <RowsContainer
+          width={this.props.width}
+          rows={rows}
+          contextMenu={this.props.contextMenu}
+          rowIdx={this.props.cellMetaData.selected.rowIdx}
+          idx={this.props.cellMetaData.selected.idx} />
+      );
     }
 
     let style = {
@@ -314,17 +360,14 @@ const Canvas = createReactClass({
       height: this.props.height
     };
 
+    const LoadingView = this.props.loadingView;
     return (
       <div
         style={style}
         onScroll={this.onScroll}
         className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active }) }>
-        <RowsContainer
-          width={this.props.width}
-          rows={rows}
-          contextMenu={this.props.contextMenu}
-          rowIdx={this.props.cellMetaData.selected.rowIdx}
-          idx={this.props.cellMetaData.selected.idx} />
+        {LoadingView && <LoadingView loading={this.state.loadPending} width={this.props.totalWidth} />}
+        {content}
       </div>
     );
   }

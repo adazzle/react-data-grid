@@ -138,6 +138,7 @@ const Grid = createReactClass({
                   getSubRowDetails={this.props.getSubRowDetails}
                   rowGroupRenderer={this.props.rowGroupRenderer}
                   overScan={this.props.overScan}
+                  loadingView={this.props.loadingView}
                 />
             </div>
         :
