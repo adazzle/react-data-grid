@@ -1,5 +1,6 @@
 const React                   = require('react');
-const joinClasses              = require('classnames');
+const PropTypes               = require('prop-types');
+const joinClasses             = require('classnames');
 const keyboardHandlerMixin    = require('../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
 const isFunction              = require('../utils/isFunction');
@@ -9,20 +10,20 @@ const EditorContainer = React.createClass({
   mixins: [keyboardHandlerMixin],
 
   propTypes: {
-    rowIdx: React.PropTypes.number,
-    rowData: React.PropTypes.object.isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
-    cellMetaData: React.PropTypes.shape({
-      selected: React.PropTypes.object.isRequired,
-      copied: React.PropTypes.object,
-      dragged: React.PropTypes.object,
-      onCellClick: React.PropTypes.func,
-      onCellDoubleClick: React.PropTypes.func,
-      onCommitCancel: React.PropTypes.func,
-      onCommit: React.PropTypes.func
+    rowIdx: PropTypes.number,
+    rowData: PropTypes.object.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired,
+    cellMetaData: PropTypes.shape({
+      selected: PropTypes.object.isRequired,
+      copied: PropTypes.object,
+      dragged: PropTypes.object,
+      onCellClick: PropTypes.func,
+      onCellDoubleClick: PropTypes.func,
+      onCommitCancel: PropTypes.func,
+      onCommit: PropTypes.func
     }).isRequired,
-    column: React.PropTypes.object.isRequired,
-    height: React.PropTypes.number.isRequired
+    column: PropTypes.object.isRequired,
+    height: PropTypes.number.isRequired
   },
 
   changeCommitted: false,

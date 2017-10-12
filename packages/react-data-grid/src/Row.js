@@ -5,7 +5,7 @@ const joinClasses = require('classnames');
 const Cell = require('./Cell');
 const ColumnUtilsMixin = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const PropTypes = React.PropTypes;
+const PropTypes = require('prop-types');
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-row.css');
 
@@ -37,7 +37,7 @@ const Row = React.createClass({
     colVisibleEnd: PropTypes.number.isRequired,
     colDisplayStart: PropTypes.number.isRequired,
     colDisplayEnd: PropTypes.number.isRequired,
-    isScrolling: React.PropTypes.bool.isRequired
+    isScrolling: PropTypes.bool.isRequired
   },
 
   mixins: [ColumnUtilsMixin],

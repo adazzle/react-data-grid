@@ -1,16 +1,17 @@
 const React = require('react');
+const PropTypes = require('prop-types');
 require('../../../../themes/react-data-grid-checkbox.css');
 
 const CheckboxEditor = React.createClass({
 
   propTypes: {
-    value: React.PropTypes.bool,
-    rowIdx: React.PropTypes.number,
-    column: React.PropTypes.shape({
-      key: React.PropTypes.string,
-      onCellChange: React.PropTypes.func
+    value: PropTypes.bool,
+    rowIdx: PropTypes.number,
+    column: PropTypes.shape({
+      key: PropTypes.string,
+      onCellChange: PropTypes.func
     }),
-    dependentValues: React.PropTypes.object
+    dependentValues: PropTypes.object
   },
 
   handleChange(e: Event) {

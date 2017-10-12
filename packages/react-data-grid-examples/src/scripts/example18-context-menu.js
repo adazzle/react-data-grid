@@ -1,6 +1,7 @@
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
+const PropTypes = require('prop-types');
 const { Menu: { ContextMenu, MenuItem, SubMenu } } = require('react-data-grid-addons');
 
 const Example = React.createClass({
@@ -69,11 +70,11 @@ const Example = React.createClass({
 // Use this.props.rowIdx and this.props.idx to get the row/column where the menu is shown.
 const MyContextMenu = React.createClass({
   propTypes: {
-    onRowDelete: React.PropTypes.func.isRequired,
-    onRowInsertAbove: React.PropTypes.func.isRequired,
-    onRowInsertBelow: React.PropTypes.func.isRequired,
-    rowIdx: React.PropTypes.string.isRequired,
-    idx: React.PropTypes.string.isRequired
+    onRowDelete: PropTypes.func.isRequired,
+    onRowInsertAbove: PropTypes.func.isRequired,
+    onRowInsertBelow: PropTypes.func.isRequired,
+    rowIdx: PropTypes.string.isRequired,
+    idx: PropTypes.string.isRequired
   },
 
   onRowDelete(e, data) {
