@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { shapes } from 'react-data-grid';
 const { ExcelColumn } = shapes;
@@ -134,7 +135,7 @@ class NumericFilter extends React.Component {
 }
 
 NumericFilter.propTypes = {
-  onChange: React.PropTypes.func.isRequired,
-  column: React.PropTypes.shape(ExcelColumn)
+  onChange: PropTypes.func.isRequired,
+  column: PropTypes.shape(ExcelColumn)
 };
 module.exports = NumericFilter;

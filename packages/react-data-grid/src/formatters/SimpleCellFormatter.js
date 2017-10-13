@@ -1,8 +1,9 @@
+const PropTypes = require('prop-types');
 const React = require('react');
 
 const SimpleCellFormatter = React.createClass({
   propTypes: {
-    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired
   },
 
   shouldComponentUpdate(nextProps: any): boolean {
