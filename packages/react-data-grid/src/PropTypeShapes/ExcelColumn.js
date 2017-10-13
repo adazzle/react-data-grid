@@ -1,6 +1,5 @@
-const PropTypes = require('prop-types');
 /* @flow */
-const React = require('react');
+const PropTypes = require('prop-types');
 
 const ExcelColumnShape = {
   name: PropTypes.node.isRequired,

@@ -1,6 +1,5 @@
 import ColumnUtils from './ColumnUtils';
 const PropTypes = require('prop-types');
-const React = require('react');
 const ReactDOM = require('react-dom');
 const DOMMetrics = require('./DOMMetrics');
 const min = Math.min;
