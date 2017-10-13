@@ -1,5 +1,5 @@
 import ColumnUtils from './ColumnUtils';
-const React = require('react');
+const PropTypes = require('prop-types');
 const ReactDOM = require('react-dom');
 const DOMMetrics = require('./DOMMetrics');
 const min = Math.min;
@@ -28,8 +28,8 @@ module.exports = {
   },
 
   propTypes: {
-    rowHeight: React.PropTypes.number,
-    rowsCount: React.PropTypes.number.isRequired
+    rowHeight: PropTypes.number,
+    rowsCount: PropTypes.number.isRequired
   },
 
   getDefaultProps(): { rowHeight: number } {

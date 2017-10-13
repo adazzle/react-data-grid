@@ -1,11 +1,11 @@
 /* @flow */
-const React = require('react');
+const PropTypes = require('prop-types');
 
 const ExcelColumnShape = {
-  name: React.PropTypes.node.isRequired,
-  key: React.PropTypes.string.isRequired,
-  width: React.PropTypes.number.isRequired,
-  filterable: React.PropTypes.bool
+  name: PropTypes.node.isRequired,
+  key: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+  filterable: PropTypes.bool
 };
 
 module.exports = ExcelColumnShape;
