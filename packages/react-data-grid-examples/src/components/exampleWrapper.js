@@ -18,7 +18,7 @@ const exampleWrapper = ({
 
   const examplePlaygroundLinkAction = doesExamplePlayGroundLinkExist ? emptyAction : disableLink;
 
-  return React.createClass({
+  return class extends React.Component {
     render() {
       return (
         <div>
@@ -32,7 +32,7 @@ const exampleWrapper = ({
         </div>
       );
     }
-  });
+  };
 };
 
 module.exports = exampleWrapper;

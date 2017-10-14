@@ -3,8 +3,9 @@ const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const { Menu: { ContextMenu, MenuItem, SubMenu } } = require('react-data-grid-addons');
 
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props) {
+    super(props);
     this._columns = [
       { key: 'id', name: 'ID' },
       { key: 'title', name: 'Title' },
@@ -20,27 +21,27 @@ const Example = React.createClass({
       });
     }
 
-    return { rows };
-  },
+    this.state = { rows };
+  }
 
-  rowGetter(rowIdx) {
+  rowGetter = (rowIdx) => {
     return this.state.rows[rowIdx];
-  },
+  };
 
-  deleteRow(e, { rowIdx }) {
+  deleteRow = (e, { rowIdx }) => {
     this.state.rows.splice(rowIdx, 1);
     this.setState({rows: this.state.rows});
-  },
+  };
 
-  insertRowAbove(e, { rowIdx }) {
+  insertRowAbove = (e, { rowIdx }) => {
     this.insertRow(rowIdx);
-  },
+  };
 
-  insertRowBelow(e, { rowIdx }) {
+  insertRowBelow = (e, { rowIdx }) => {
     this.insertRow(rowIdx + 1);
-  },
+  };
 
-  insertRow(rowIdx) {
+  insertRow = (rowIdx) => {
     const newRow = {
       id: 0,
       title: 'New at ' + (rowIdx + 1),
@@ -51,7 +52,7 @@ const Example = React.createClass({
     rows.splice(rowIdx, 0, newRow);
 
     this.setState({ rows });
-  },
+  };
 
   render() {
     return (
@@ -63,36 +64,36 @@ const Example = React.createClass({
         minHeight={500} />
     );
   }
-});
+}
 
 // Create the context menu.
 // Use this.props.rowIdx and this.props.idx to get the row/column where the menu is shown.
-const MyContextMenu = React.createClass({
-  propTypes: {
+class MyContextMenu extends React.Component {
+  static propTypes = {
     onRowDelete: React.PropTypes.func.isRequired,
     onRowInsertAbove: React.PropTypes.func.isRequired,
     onRowInsertBelow: React.PropTypes.func.isRequired,
     rowIdx: React.PropTypes.string.isRequired,
     idx: React.PropTypes.string.isRequired
-  },
+  };
 
-  onRowDelete(e, data) {
+  onRowDelete = (e, data) => {
     if (typeof(this.props.onRowDelete) === 'function') {
       this.props.onRowDelete(e, data);
     }
-  },
+  };
 
-  onRowInsertAbove(e, data) {
+  onRowInsertAbove = (e, data) => {
     if (typeof(this.props.onRowInsertAbove) === 'function') {
       this.props.onRowInsertAbove(e, data);
     }
-  },
+  };
 
-  onRowInsertBelow(e, data) {
+  onRowInsertBelow = (e, data) => {
     if (typeof(this.props.onRowInsertBelow) === 'function') {
       this.props.onRowInsertBelow(e, data);
     }
-  },
+  };
 
   render() {
     return (
@@ -105,7 +106,7 @@ const MyContextMenu = React.createClass({
       </ContextMenu>
     );
   }
-});
+}
 
 const exampleDescription = (
   <div>

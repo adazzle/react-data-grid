@@ -5,34 +5,8 @@ const {
   DraggableHeader: { DraggableContainer }
 } = require('react-data-grid-addons');
 
-const Example = React.createClass({
-  getInitialState() {
-    return {
-      columns: [
-        {
-          key: 'id',
-          name: 'ID',
-          width: 50,
-          draggable: true
-        },
-        {
-          key: 'title',
-          name: 'Title',
-          draggable: true,
-          resizable: true
-        },
-        {
-          key: 'count',
-          name: 'Count',
-          draggable: true,
-          resizable: true
-        }
-      ],
-      rows: this.createRows()
-    };
-  },
-
-  createRows() {
+class Example extends React.Component {
+  createRows = () => {
     let rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
@@ -43,13 +17,13 @@ const Example = React.createClass({
     }
 
     return rows;
-  },
+  };
 
-  rowGetter(i) {
+  rowGetter = (i) => {
     return this.state.rows[i];
-  },
+  };
 
-  onHeaderDrop: function(source, target) {
+  onHeaderDrop = (source, target) => {
     const stateCopy = Object.assign({}, this.state);
     const columnSourceIndex = this.state.columns.findIndex(
       i => i.key === source
@@ -73,7 +47,31 @@ const Example = React.createClass({
     this.setState(
       reorderedColumns
     );
-  },
+  };
+
+  state = {
+    columns: [
+      {
+        key: 'id',
+        name: 'ID',
+        width: 50,
+        draggable: true
+      },
+      {
+        key: 'title',
+        name: 'Title',
+        draggable: true,
+        resizable: true
+      },
+      {
+        key: 'count',
+        name: 'Count',
+        draggable: true,
+        resizable: true
+      }
+    ],
+    rows: this.createRows()
+  };
 
   render() {
     return (
@@ -88,7 +86,7 @@ const Example = React.createClass({
       </DraggableContainer>
     );
   }
-});
+}
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,

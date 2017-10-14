@@ -1,9 +1,8 @@
 const React = require('react');
 require('../../../../themes/react-data-grid-checkbox.css');
 
-const CheckboxEditor = React.createClass({
-
-  propTypes: {
+class CheckboxEditor extends React.Component {
+  static propTypes = {
     value: React.PropTypes.bool,
     rowIdx: React.PropTypes.number,
     column: React.PropTypes.shape({
@@ -11,11 +10,11 @@ const CheckboxEditor = React.createClass({
       onCellChange: React.PropTypes.func
     }),
     dependentValues: React.PropTypes.object
-  },
+  };
 
-  handleChange(e: Event) {
+  handleChange = (e: Event) => {
     this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, this.props.dependentValues, e);
-  },
+  };
 
   render(): ? ReactElement {
     let checked = this.props.value != null ? this.props.value : false;
@@ -26,6 +25,6 @@ const CheckboxEditor = React.createClass({
           <label htmlFor={checkboxName} className="react-grid-checkbox-label"></label>
       </div>);
   }
-});
+}
 
 module.exports = CheckboxEditor;
