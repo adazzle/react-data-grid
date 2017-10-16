@@ -172,3 +172,6 @@ type: `enum('ASC'|'DESC'|'NONE')`
 
 type: `union(number|string)`
 
+### `onScroll`
+
+type: `func`
