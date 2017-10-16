@@ -67,6 +67,9 @@ const Example = React.createClass({
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
+        onScroll={(scroll) => {
+          console.log(scroll)
+        }}
         rowSelection={{
           showCheckbox: false,
           selectBy: {
