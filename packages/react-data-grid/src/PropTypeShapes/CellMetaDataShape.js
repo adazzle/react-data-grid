@@ -1,4 +1,4 @@
-const PropTypes = require('react').PropTypes;
+const PropTypes = require('prop-types');
 
 module.exports = {
   selected: PropTypes.object.isRequired,

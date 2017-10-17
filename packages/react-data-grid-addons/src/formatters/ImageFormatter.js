@@ -1,4 +1,5 @@
 const React = require('react');
+const PropTypes = require('prop-types');
 require('../../../../themes/react-data-grid-image.css');
 
 let PendingPool = {};
@@ -6,7 +7,7 @@ let ReadyPool = {};
 
 const ImageFormatter = React.createClass({
   propTypes: {
-    value: React.PropTypes.string.isRequired
+    value: PropTypes.string.isRequired
   },
 
   getInitialState() {

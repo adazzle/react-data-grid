@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import DraggableHeaderCell from './DraggableHeaderCell';
@@ -36,8 +37,8 @@ class DraggableContainer extends Component {
 }
 
 DraggableContainer.propTypes = {
-  children: React.PropTypes.element.isRequired,
-  getDragPreviewRow: React.PropTypes.func
+  children: PropTypes.element.isRequired,
+  getDragPreviewRow: PropTypes.func
 };
 
 export default DragDropContext(HTML5Backend)(DraggableContainer);

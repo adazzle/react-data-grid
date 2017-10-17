@@ -1,15 +1,16 @@
 const React = require('react');
+const PropTypes = require('prop-types');
 require('../../../../themes/react-data-grid-toolbar.css');
 
 const Toolbar = React.createClass({
   propTypes: {
-    onAddRow: React.PropTypes.func,
-    onToggleFilter: React.PropTypes.func,
-    enableFilter: React.PropTypes.bool,
-    numberOfRows: React.PropTypes.number,
-    addRowButtonText: React.PropTypes.string,
-    filterRowsButtonText: React.PropTypes.string,
-    children: React.PropTypes.any
+    onAddRow: PropTypes.func,
+    onToggleFilter: PropTypes.func,
+    enableFilter: PropTypes.bool,
+    numberOfRows: PropTypes.number,
+    addRowButtonText: PropTypes.string,
+    filterRowsButtonText: PropTypes.string,
+    children: PropTypes.any
   },
 
   onAddRow() {

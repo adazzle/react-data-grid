@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import focusableComponentWrapper from './focusableComponentWrapper';
 import '../../../themes/react-data-grid-cell.css';
 
@@ -31,11 +32,11 @@ OverflowCell.isSelected = (props) => {
 OverflowCell.isScrolling = props => props.cellMetaData.isScrollingHorizontallyWithKeyboard;
 
 OverflowCell.propTypes = {
-  rowIdx: React.PropTypes.number,
-  idx: React.PropTypes.number,
-  height: React.PropTypes.number,
-  column: React.PropTypes.object,
-  cellMetaData: React.PropTypes.object
+  rowIdx: PropTypes.number,
+  idx: PropTypes.number,
+  height: PropTypes.number,
+  column: PropTypes.object,
+  cellMetaData: PropTypes.object
 };
 
 OverflowCell.displayName = 'Cell';
