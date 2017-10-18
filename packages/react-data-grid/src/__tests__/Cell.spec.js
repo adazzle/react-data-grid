@@ -101,6 +101,11 @@ describe('Cell Tests', () => {
     expect(formatterInstance.props().value).toEqual('Wicklow');
   });
 
+  it('should render children when those are passed', () => {
+    testElement = renderComponent({ children: (<div>Child</div>)});
+    expect(testElement.children().text()).toBe('Child');
+  });
+
   describe('isDraggedCellChanging tests', () => {
     it('should be false if no cell was dragged', () => {
       testElement = renderComponent({
