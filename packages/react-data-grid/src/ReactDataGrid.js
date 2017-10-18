@@ -1,5 +1,6 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
+const createReactClass = require('create-react-class');
 const ReactDOM = require('react-dom');
 const BaseGrid              = require('./Grid');
 const Row                   = require('./Row');
@@ -43,7 +44,8 @@ type RowUpdateEvent = {
   rowIdx: number;
 };
 
-const ReactDataGrid = React.createClass({
+const ReactDataGrid = createReactClass({
+  displayName: 'ReactDataGrid',
 
   mixins: [
     ColumnMetricsMixin,
@@ -472,6 +474,7 @@ const ReactDataGrid = React.createClass({
   useNewRowSelection() {
     return this.props.rowSelection && this.props.rowSelection.selectBy;
   },
+
   // return false if not a shift select so can be handled as normal row selection
   handleShiftSelect(rowIdx) {
     if (this.state.lastRowIdxUiSelected > -1 && this.isSingleKeyDown(KeyCodes.Shift)) {
@@ -534,6 +537,7 @@ const ReactDataGrid = React.createClass({
       this.props.rowSelection.onRowsSelected([{rowIdx, row: rowData}]);
     }
   },
+
   // columnKey not used here as this function will select the whole row,
   // but needed to match the function signature in the CheckboxEditor
   handleRowSelect(rowIdx: number, columnKey: string, rowData, e: Event) {
@@ -639,6 +643,7 @@ const ReactDataGrid = React.createClass({
     }
     return rows;
   },
+
   getInitialSelectedRows: function() {
     let selectedRows = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
@@ -646,6 +651,7 @@ const ReactDataGrid = React.createClass({
     }
     return selectedRows;
   },
+
   getRowSelectionProps() {
     if (this.props.rowSelection) {
       return this.props.rowSelection.selectBy;
@@ -653,6 +659,7 @@ const ReactDataGrid = React.createClass({
 
     return null;
   },
+
   getSelectedRows() {
     if (this.props.rowSelection) {
       return null;
@@ -660,6 +667,7 @@ const ReactDataGrid = React.createClass({
 
     return this.state.selectedRows.filter(r => r.isSelected === true);
   },
+
   getSelectedValue(): string {
     let rowIdx = this.state.selected.rowIdx;
     let idx = this.state.selected.idx;
@@ -869,7 +877,6 @@ const ReactDataGrid = React.createClass({
 
     return this._cachedComputedColumns;
   },
-
 
   copyPasteEnabled: function(): boolean {
     return this.props.onCellCopyPaste !== null;

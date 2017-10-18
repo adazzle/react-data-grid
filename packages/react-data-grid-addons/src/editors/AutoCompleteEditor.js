@@ -10,9 +10,8 @@ let optionPropType = PropTypes.shape({
   title: PropTypes.string
 });
 
-const AutoCompleteEditor = React.createClass({
-
-  propTypes: {
+class AutoCompleteEditor extends React.Component {
+  static propTypes = {
     onCommit: PropTypes.func,
     options: PropTypes.arrayOf(optionPropType),
     label: PropTypes.any,
@@ -25,19 +24,17 @@ const AutoCompleteEditor = React.createClass({
     onKeyDown: PropTypes.func,
     onFocus: PropTypes.func,
     editorDisplayValue: PropTypes.func
-  },
+  };
 
-  getDefaultProps(): {resultIdentifier: string} {
-    return {
-      resultIdentifier: 'id'
-    };
-  },
+  static defaultProps = {
+    resultIdentifier: 'id'
+  };
 
-  handleChange() {
+  handleChange = () => {
     this.props.onCommit();
-  },
+  };
 
-  getValue(): any {
+  getValue = (): any => {
     let value;
     let updated = {};
     if (this.hasResults() && this.isFocusedOnSuggestion()) {
@@ -51,9 +48,9 @@ const AutoCompleteEditor = React.createClass({
 
     updated[this.props.column.key] = value;
     return updated;
-  },
+  };
 
-  getEditorDisplayValue() {
+  getEditorDisplayValue = () => {
     let displayValue = {title: ''};
     let { column, value, editorDisplayValue } = this.props;
     if (editorDisplayValue && typeof editorDisplayValue === 'function') {
@@ -62,31 +59,31 @@ const AutoCompleteEditor = React.createClass({
       displayValue.title = value;
     }
     return displayValue;
-  },
+  };
 
-  getInputNode() {
+  getInputNode = () => {
     return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
-  },
+  };
 
-  getLabel(item: any): string {
+  getLabel = (item: any): string => {
     let label = this.props.label != null ? this.props.label : 'title';
     if (typeof label === 'function') {
       return label(item);
     } else if (typeof label === 'string') {
       return item[label];
     }
-  },
+  };
 
-  hasResults(): boolean {
+  hasResults = (): boolean => {
     return this.autoComplete.state.results.length > 0;
-  },
+  };
 
-  isFocusedOnSuggestion(): boolean {
+  isFocusedOnSuggestion = (): boolean => {
     let autoComplete = this.autoComplete;
     return autoComplete.state.focusedValue != null;
-  },
+  };
 
-  constuctValueFromParams(obj: any, props: ?Array<string>): string {
+  constuctValueFromParams = (obj: any, props: ?Array<string>) => {
     if (!props) {
       return '';
     }
@@ -96,7 +93,7 @@ const AutoCompleteEditor = React.createClass({
       ret.push(obj[props[i]]);
     }
     return ret.join('|');
-  },
+  };
 
   render(): ?ReactElement {
     let label = this.props.label != null ? this.props.label : 'title';
@@ -104,6 +101,6 @@ const AutoCompleteEditor = React.createClass({
       <ReactAutocomplete search={this.props.search} ref={(node) => this.autoComplete = node} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
       </div>);
   }
-});
+}
 
 module.exports = AutoCompleteEditor;

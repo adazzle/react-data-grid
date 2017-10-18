@@ -5,37 +5,35 @@ require('../../../../themes/react-data-grid-image.css');
 let PendingPool = {};
 let ReadyPool = {};
 
-const ImageFormatter = React.createClass({
-  propTypes: {
+class ImageFormatter extends React.Component {
+  static propTypes = {
     value: PropTypes.string.isRequired
-  },
+  };
 
-  getInitialState() {
-    return {
-      ready: false
-    };
-  },
+  state = {
+    ready: false
+  };
 
   componentWillMount() {
     this._load(this.props.value);
-  },
+  }
 
   componentDidMount() {
     this._isMounted = true;
-  },
+  }
 
   componentWillUnmount() {
     this._isMounted = false;
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
       this.setState({value: null});
       this._load(nextProps.value);
     }
-  },
+  }
 
-  _load(src) {
+  _load = (src) => {
     let imageSrc = src;
     if (ReadyPool[imageSrc]) {
       this.setState({value: imageSrc});
@@ -59,15 +57,15 @@ const ImageFormatter = React.createClass({
       imageSrc = undefined;
     };
     img.src = imageSrc;
-  },
+  };
 
-  _onLoad(src) {
+  _onLoad = (src) => {
     if (this._isMounted && src === this.props.value) {
       this.setState({
         value: src
       });
     }
-  },
+  };
 
   render() {
     let style = this.state.value ?
@@ -76,7 +74,7 @@ const ImageFormatter = React.createClass({
 
     return <div className="react-grid-image" style={style} />;
   }
-});
+}
 
 
 module.exports = ImageFormatter;

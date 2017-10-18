@@ -3,8 +3,8 @@
 const React = require('react');
 import PropTypes from 'prop-types';
 
-const DropDownFormatter = React.createClass({
-  propTypes: {
+class DropDownFormatter extends React.Component {
+  static propTypes = {
     options: PropTypes.arrayOf(
       PropTypes.oneOfType([
         PropTypes.string,
@@ -16,11 +16,11 @@ const DropDownFormatter = React.createClass({
         })
       ])).isRequired,
     value: PropTypes.string.isRequired
-  },
+  };
 
   shouldComponentUpdate(nextProps: any): boolean {
     return nextProps.value !== this.props.value;
-  },
+  }
 
   render(): ?ReactElement {
     let value = this.props.value;
@@ -34,6 +34,6 @@ const DropDownFormatter = React.createClass({
     let text = option.text || option.value || option;
     return <div title={title}>{text}</div>;
   }
-});
+}
 
 module.exports = DropDownFormatter;

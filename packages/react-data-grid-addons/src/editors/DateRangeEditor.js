@@ -1,11 +1,13 @@
 const React = require('react');
 import PropTypes from 'prop-types';
+const createReactClass = require('create-react-class');
 const ReactDOM = require('react-dom');
 const Moment = require('moment');
 const DateRangeFilter = require('./widgets/DateRangeFilter');
 type DateRangeValue = { startDate: Date; endDate: Date};
 
-const DateRangeEditor = React.createClass({
+const DateRangeEditor = createReactClass({
+  displayName: 'DateRangeEditor',
 
   propTypes: {
     format: PropTypes.string,
@@ -65,7 +67,6 @@ const DateRangeEditor = React.createClass({
       </div>
     );
   }
-
 });
 
 module.exports = DateRangeEditor;

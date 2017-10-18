@@ -127,42 +127,42 @@ const columns = [
   }
 ];
 
-const CustomToolbar = React.createClass({
-  propTypes: {
+class CustomToolbar extends React.Component {
+  static propTypes = {
     groupBy: PropTypes.array.isRequired,
     onColumnGroupAdded: PropTypes.func.isRequired,
     onColumnGroupDeleted: PropTypes.func.isRequired
-  },
+  };
 
   render() {
     return (<Toolbar>
       <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>
       </Toolbar>);
   }
-});
+}
 
-
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props) {
+    super(props);
     let fakeRows = createRows(2000);
-    return {rows: fakeRows, groupBy: [], expandedRows: {}};
-  },
+    this.state = {rows: fakeRows, groupBy: [], expandedRows: {}};
+  }
 
-  getRows() {
+  getRows = () => {
     let rows = Selectors.getRows(this.state);
     return rows;
-  },
+  };
 
-  getRowAt(index) {
+  getRowAt = (index) => {
     let rows = this.getRows();
     return rows[index];
-  },
+  };
 
-  getSize() {
+  getSize = () => {
     return this.getRows().length;
-  },
+  };
 
-  onColumnGroupAdded(colName) {
+  onColumnGroupAdded = (colName) => {
     let columnGroups = this.state.groupBy.slice(0);
     let activeColumn = columns.find((c) => c.key === colName)
     let isNotInGroups = columnGroups.find((c) => activeColumn.key === c.name) == null;
@@ -171,21 +171,21 @@ const Example = React.createClass({
     }
    
     this.setState({groupBy: columnGroups});
-  },
+  };
 
-  onColumnGroupDeleted(name) {
+  onColumnGroupDeleted = (name) => {
     let columnGroups = this.state.groupBy.filter(function(g){
       return typeof g === 'string' ? g !== name : g.key !== name;
     });
     this.setState({groupBy: columnGroups});
-  },
+  };
 
-  onRowExpandToggle({ columnGroupName, name, shouldExpand }) {
+  onRowExpandToggle = ({ columnGroupName, name, shouldExpand }) => {
     let expandedRows = Object.assign({}, this.state.expandedRows);
     expandedRows[columnGroupName] = Object.assign({}, expandedRows[columnGroupName]);
     expandedRows[columnGroupName][name] = {isExpanded: shouldExpand};
     this.setState({expandedRows: expandedRows});
-  },
+  };
 
   render() {
     return (
@@ -205,7 +205,7 @@ const Example = React.createClass({
       </DraggableContainer>
     );
   }
-});
+}
 
 const exampleDescription = (
   <div>

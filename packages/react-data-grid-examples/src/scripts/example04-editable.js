@@ -2,8 +2,9 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props, context) {
+    super(props, context);
     this._columns = [
       {
         key: 'id',
@@ -42,14 +43,14 @@ const Example = React.createClass({
       }
     ];
 
-    return { rows: this.createRows(1000) };
-  },
+    this.state = { rows: this.createRows(1000) };
+  }
 
-  getRandomDate(start, end) {
+  getRandomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-  },
+  };
 
-  createRows(numberOfRows) {
+  createRows = (numberOfRows) => {
     let rows = [];
     for (let i = 1; i < numberOfRows; i++) {
       rows.push({
@@ -63,13 +64,13 @@ const Example = React.createClass({
       });
     }
     return rows;
-  },
+  };
 
-  rowGetter(i) {
+  rowGetter = (i) => {
     return this.state.rows[i];
-  },
+  };
 
-  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+  handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
     let rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
@@ -79,7 +80,7 @@ const Example = React.createClass({
     }
 
     this.setState({ rows });
-  },
+  };
 
   render() {
     return  (
@@ -91,7 +92,7 @@ const Example = React.createClass({
         minHeight={500}
         onGridRowsUpdated={this.handleGridRowsUpdated} />);
   }
-});
+}
 
 const exampleDescription = (
   <p>To make a given column editable set <code>column.editable</code> and create a <code>onGridRowsUpdated</code> handler. Note that you will need to store your rows in state and update that state when a cell value changes.</p>);

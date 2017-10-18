@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "classnames": "^1.2.0",
+    "create-react-class": "^15.6.2",
     "es5-shim": "^4.0.3",
     "fbjs": "^0.6.1",
     "fs-extra": "^0.30.0",

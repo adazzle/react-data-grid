@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 
 const markdown = require('markdown');
+var createReactClass = require('create-react-class');
 
-var DocumentContainer = React.createClass({
+var DocumentContainer = createReactClass({
   propTypes: {
     documentContent: PropTypes.string.isRequired,
     documentName: PropTypes.string.isRequired,
@@ -26,7 +27,7 @@ var DocumentContainer = React.createClass({
   }
 });
 
-var ComponentDocs = React.createClass({
+var ComponentDocs = createReactClass({
   getInitialState: function() {
     return { selectedDocumentIndex: 0, documentContent: '' };
   },

@@ -2,8 +2,9 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props, context) {
+    super(props, context);
     this._columns = [
       {
         key: 'id',
@@ -50,15 +51,14 @@ const Example = React.createClass({
 
     let originalRows = this.createRows(1000);
     let rows = originalRows.slice(0);
-    // Store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
-    return { originalRows, rows };
-  },
+    this.state = { originalRows, rows };
+  }
 
-  getRandomDate(start, end) {
+  getRandomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-  },
+  };
 
-  createRows() {
+  createRows = () => {
     let rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
@@ -73,9 +73,9 @@ const Example = React.createClass({
     }
 
     return rows;
-  },
+  };
 
-  handleGridSort(sortColumn, sortDirection) {
+  handleGridSort = (sortColumn, sortDirection) => {
     const comparer = (a, b) => {
       if (sortDirection === 'ASC') {
         return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
@@ -87,11 +87,11 @@ const Example = React.createClass({
     const rows = sortDirection === 'NONE' ? this.state.originalRows.slice(0) : this.state.rows.sort(comparer);
 
     this.setState({ rows });
-  },
+  };
 
-  rowGetter(i) {
+  rowGetter = (i) => {
     return this.state.rows[i];
-  },
+  };
 
   render() {
     return  (
@@ -102,7 +102,7 @@ const Example = React.createClass({
         rowsCount={this.state.rows.length}
         minHeight={500} />);
   }
-});
+}
 
 const exampleDescription = (<p>While ReactDataGrid does not provide the ability to sort directly, it does provide hooks that allow you to provide your own sort function. This is done via the <code>onGridSort</code> prop. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Now when the header cell is clicked for that column, <code>onGridSort</code> will be triggered passing the column name and the sort direction.</p>);
 
