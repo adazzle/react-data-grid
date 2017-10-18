@@ -8,12 +8,15 @@ const {
 
 const RowRenderer = DropTargetRowContainer(ReactDataGrid.Row);
 
-const Example = React.createClass({
-  propTypes: {
+class Example extends React.Component {
+  static propTypes = {
     rowKey: React.PropTypes.string.isRequired
-  },
+  };
 
-  getInitialState() {
+  static defaultProps = { rowKey: 'id' };
+
+  constructor(props, context) {
+    super(props, context);
     this._columns = [
       {
         key: 'id',
@@ -33,18 +36,14 @@ const Example = React.createClass({
       }
     ];
 
-    return { rows: this.createRows(1000), selectedIds: [1, 2] };
-  },
+    this.state = { rows: this.createRows(1000), selectedIds: [1, 2] };
+  }
 
-  getDefaultProps() {
-    return { rowKey: 'id' };
-  },
-
-  getRandomDate(start, end) {
+  getRandomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-  },
+  };
 
-  createRows(numberOfRows) {
+  createRows = (numberOfRows) => {
     let rows = [];
     for (let i = 1; i < numberOfRows; i++) {
       rows.push({
@@ -58,21 +57,21 @@ const Example = React.createClass({
       });
     }
     return rows;
-  },
+  };
 
-  rowGetter(i) {
+  rowGetter = (i) => {
     return this.state.rows[i];
-  },
+  };
 
-  isDraggedRowSelected: function(selectedRows, rowDragSource) {
+  isDraggedRowSelected = (selectedRows, rowDragSource) => {
     if (selectedRows && selectedRows.length > 0) {
       let key = this.props.rowKey;
       return selectedRows.filter(r => r[key] === rowDragSource.data[key]).length > 0;
     }
     return false;
-  },
+  };
 
-  reorderRows: function(e) {
+  reorderRows = (e) => {
     let selectedRows = Selectors.getSelectedRowsByKey({rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows});
     let draggedRows = this.isDraggedRowSelected(selectedRows, e.rowSource) ? selectedRows : [e.rowSource.data];
     let undraggedRows = this.state.rows.filter(function(r) {
@@ -81,16 +80,16 @@ const Example = React.createClass({
     let args = [e.rowTarget.idx, 0].concat(draggedRows);
     Array.prototype.splice.apply(undraggedRows, args);
     this.setState({rows: undraggedRows});
-  },
+  };
 
-  onRowsSelected: function(rows) {
+  onRowsSelected = (rows) => {
     this.setState({selectedIds: this.state.selectedIds.concat(rows.map(r => r.row[this.props.rowKey]))});
-  },
+  };
 
-  onRowsDeselected: function(rows) {
+  onRowsDeselected = (rows) => {
     let rowIds = rows.map(r =>  r.row[this.props.rowKey]);
     this.setState({selectedIds: this.state.selectedIds.filter(i => rowIds.indexOf(i) === -1 )});
-  },
+  };
 
   render() {
     return  (
@@ -114,7 +113,7 @@ const Example = React.createClass({
           }}/>
       </DraggableContainer>);
   }
-});
+}
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,

@@ -1,4 +1,5 @@
 const React = require('react');
+const createReactClass = require('create-react-class');
 const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
 const PropTypes = React.PropTypes;
@@ -12,7 +13,8 @@ import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 
-const Canvas = React.createClass({
+const Canvas = createReactClass({
+  displayName: 'Canvas',
   mixins: [ScrollShim],
 
   propTypes: {

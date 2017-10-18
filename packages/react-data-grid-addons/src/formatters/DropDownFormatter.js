@@ -2,8 +2,8 @@
 // Accepts the same parameters as the DropDownEditor.
 const React = require('react');
 
-const DropDownFormatter = React.createClass({
-  propTypes: {
+class DropDownFormatter extends React.Component {
+  static propTypes = {
     options: React.PropTypes.arrayOf(
       React.PropTypes.oneOfType([
         React.PropTypes.string,
@@ -15,11 +15,11 @@ const DropDownFormatter = React.createClass({
         })
       ])).isRequired,
     value: React.PropTypes.string.isRequired
-  },
+  };
 
   shouldComponentUpdate(nextProps: any): boolean {
     return nextProps.value !== this.props.value;
-  },
+  }
 
   render(): ?ReactElement {
     let value = this.props.value;
@@ -33,6 +33,6 @@ const DropDownFormatter = React.createClass({
     let text = option.text || option.value || option;
     return <div title={title}>{text}</div>;
   }
-});
+}
 
 module.exports = DropDownFormatter;

@@ -1,4 +1,5 @@
 const React                = require('react');
+const createReactClass = require('create-react-class');
 const PropTypes            = React.PropTypes;
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
@@ -7,7 +8,9 @@ const DOMMetrics           = require('./DOMMetrics');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-core.css');
 
-const Grid = React.createClass({
+const Grid = createReactClass({
+  displayName: 'Grid',
+
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
