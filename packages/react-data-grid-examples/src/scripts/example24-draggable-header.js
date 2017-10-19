@@ -58,15 +58,12 @@ const Example = React.createClass({
       i => i.key === target
     );
 
+    stateCopy.columns = this.state.columns.slice()
+
     stateCopy.columns.splice(
       columnTargetIndex,
       0,
       stateCopy.columns.splice(columnSourceIndex, 1)[0]
-    );
-
-    const emptyColumns = Object.assign({},this.state, { columns: [] });
-    this.setState(
-      emptyColumns
     );
 
     const reorderedColumns = Object.assign({},this.state, { columns: stateCopy.columns });

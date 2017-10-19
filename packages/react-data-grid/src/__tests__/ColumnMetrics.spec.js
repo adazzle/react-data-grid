@@ -94,10 +94,19 @@ describe('Column Metrics Tests', () => {
 
       it('should call compareEachColumn when comparing columns', () => {
         let compareEachColumnSpy = jasmine.createSpy();
-        ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
+        let reset = ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
         ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
+        reset();
         expect(compareEachColumnSpy).toHaveBeenCalled();
         expect(compareEachColumnSpy.calls.count()).toEqual(1);
+      });
+
+      it('changing columns order will make columns unequal', () => {
+        const nextColumn = nextColumns[0];
+        nextColumns[0] = nextColumns[2];
+        nextColumns[2] = nextColumn;
+        let areColumnsEqual = ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
+        expect(areColumnsEqual).toBeFalsy();
       });
     });
 
@@ -135,8 +144,9 @@ describe('Column Metrics Tests', () => {
 
       it('should not call compareEachColumn when comparing columns', () => {
         let compareEachColumnSpy = jasmine.createSpy();
-        ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
+        let reset = ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
         ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
+        reset()
         expect(compareEachColumnSpy).not.toHaveBeenCalled();
         expect(compareEachColumnSpy.calls.count()).toEqual(0);
       });
