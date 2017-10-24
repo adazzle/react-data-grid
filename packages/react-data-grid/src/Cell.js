@@ -1,5 +1,6 @@
 import _ from 'underscore';
 const React = require('react');
+import PropTypes from 'prop-types';
 const joinClasses = require('classnames');
 const EditorContainer = require('./editors/EditorContainer');
 const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
@@ -17,28 +18,28 @@ const knownDivPropertyKeys = ['height', 'tabIndex', 'value'];
 
 class Cell extends React.Component {
   static propTypes = {
-    rowIdx: React.PropTypes.number.isRequired,
-    idx: React.PropTypes.number.isRequired,
-    selected: React.PropTypes.shape({
-      idx: React.PropTypes.number.isRequired
+    rowIdx: PropTypes.number.isRequired,
+    idx: PropTypes.number.isRequired,
+    selected: PropTypes.shape({
+      idx: PropTypes.number.isRequired
     }),
-    selectedColumn: React.PropTypes.object,
-    height: React.PropTypes.number,
-    tabIndex: React.PropTypes.number,
-    column: React.PropTypes.shape(ExcelColumn).isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]),
-    isExpanded: React.PropTypes.bool,
-    isRowSelected: React.PropTypes.bool,
-    cellMetaData: React.PropTypes.shape(CellMetaDataShape).isRequired,
-    handleDragStart: React.PropTypes.func,
-    className: React.PropTypes.string,
-    cellControls: React.PropTypes.any,
-    rowData: React.PropTypes.object.isRequired,
-    forceUpdate: React.PropTypes.bool,
-    expandableOptions: React.PropTypes.object.isRequired,
-    isScrolling: React.PropTypes.bool.isRequired,
-    tooltip: React.PropTypes.string,
-    isCellValueChanging: React.PropTypes.func
+    selectedColumn: PropTypes.object,
+    height: PropTypes.number,
+    tabIndex: PropTypes.number,
+    column: PropTypes.shape(ExcelColumn).isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]),
+    isExpanded: PropTypes.bool,
+    isRowSelected: PropTypes.bool,
+    cellMetaData: PropTypes.shape(CellMetaDataShape).isRequired,
+    handleDragStart: PropTypes.func,
+    className: PropTypes.string,
+    cellControls: PropTypes.any,
+    rowData: PropTypes.object.isRequired,
+    forceUpdate: PropTypes.bool,
+    expandableOptions: PropTypes.object.isRequired,
+    isScrolling: PropTypes.bool.isRequired,
+    tooltip: PropTypes.string,
+    isCellValueChanging: PropTypes.func
   };
 
   static defaultProps = {

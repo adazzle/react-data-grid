@@ -1,6 +1,7 @@
 const React                   = require('react');
 const ReactDOM = require('react-dom');
 const ExcelColumn             = require('../PropTypeShapes/ExcelColumn');
+import PropTypes from 'prop-types';
 
 class EditorBase extends React.Component {
 
@@ -32,11 +33,11 @@ class EditorBase extends React.Component {
 }
 
 EditorBase.propTypes = {
-  onKeyDown: React.PropTypes.func.isRequired,
-  value: React.PropTypes.any.isRequired,
-  onBlur: React.PropTypes.func.isRequired,
-  column: React.PropTypes.shape(ExcelColumn).isRequired,
-  commit: React.PropTypes.func.isRequired
+  onKeyDown: PropTypes.func.isRequired,
+  value: PropTypes.any.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  column: PropTypes.shape(ExcelColumn).isRequired,
+  commit: PropTypes.func.isRequired
 };
 
 module.exports = EditorBase;

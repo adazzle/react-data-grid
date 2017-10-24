@@ -1,4 +1,5 @@
 const React = require('react');
+import PropTypes from 'prop-types';
 const ReactDOM = require('react-dom');
 const Moment 		 = require('moment');
 const $					 = require('jquery');
@@ -1136,11 +1137,11 @@ let validateDate = function(props, propName) {
 
 class DateRangeFilter extends React.Component {
   static propTypes = {
-    format: React.PropTypes.string.isRequired,
-    ranges: React.PropTypes.object.isRequired,
-    onApply: React.PropTypes.func,
-    title: React.PropTypes.string.isRequired,
-    onblur: React.PropTypes.func,
+    format: PropTypes.string.isRequired,
+    ranges: PropTypes.object.isRequired,
+    onApply: PropTypes.func,
+    title: PropTypes.string.isRequired,
+    onblur: PropTypes.func,
     startDate: validateDate,
     endDate: validateDate
   };

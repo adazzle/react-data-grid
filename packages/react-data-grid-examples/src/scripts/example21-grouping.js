@@ -9,6 +9,8 @@ const {
   Formatters: { ImageFormatter }
 } = require('react-data-grid-addons');
 
+import PropTypes from 'prop-types';
+
 faker.locale = 'en_GB';
 
 const createFakeRowObjectData = (index) => ({
@@ -127,9 +129,9 @@ const columns = [
 
 class CustomToolbar extends React.Component {
   static propTypes = {
-    groupBy: React.PropTypes.array.isRequired,
-    onColumnGroupAdded: React.PropTypes.func.isRequired,
-    onColumnGroupDeleted: React.PropTypes.func.isRequired
+    groupBy: PropTypes.array.isRequired,
+    onColumnGroupAdded: PropTypes.func.isRequired,
+    onColumnGroupDeleted: PropTypes.func.isRequired
   };
 
   render() {
