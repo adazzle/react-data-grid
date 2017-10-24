@@ -146,7 +146,7 @@ describe('Column Metrics Tests', () => {
         let compareEachColumnSpy = jasmine.createSpy();
         let reset = ColumnMetrics.__set__('compareEachColumn', compareEachColumnSpy);
         ColumnMetrics.sameColumns(prevColumns, nextColumns, ColumnMetrics.sameColumn);
-        reset()
+        reset();
         expect(compareEachColumnSpy).not.toHaveBeenCalled();
         expect(compareEachColumnSpy.calls.count()).toEqual(0);
       });
