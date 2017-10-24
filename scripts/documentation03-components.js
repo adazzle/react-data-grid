@@ -1,11 +1,13 @@
+import PropTypes from 'prop-types';
+
 const markdown = require('markdown');
 var createReactClass = require('create-react-class');
 
 var DocumentContainer = createReactClass({
   propTypes: {
-    documentContent: React.PropTypes.string.isRequired,
-    documentName: React.PropTypes.string.isRequired,
-    documentPath: React.PropTypes.string.isRequired
+    documentContent: PropTypes.string.isRequired,
+    documentName: PropTypes.string.isRequired,
+    documentPath: PropTypes.string.isRequired
   },
 
   getHtml() {
