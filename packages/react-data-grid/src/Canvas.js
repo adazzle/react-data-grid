@@ -47,6 +47,7 @@ const Canvas = createReactClass({
     rowKey: React.PropTypes.string,
     rowScrollTimeout: React.PropTypes.number,
     contextMenu: PropTypes.element,
+    contextMenuId: PropTypes.string,
     getSubRowDetails: PropTypes.func,
     rowSelection: React.PropTypes.oneOfType([
       React.PropTypes.shape({
@@ -323,6 +324,7 @@ const Canvas = createReactClass({
           width={this.props.width}
           rows={rows}
           contextMenu={this.props.contextMenu}
+          contextMenuId={this.props.contextMenuId}
           rowIdx={this.props.cellMetaData.selected.rowIdx}
           idx={this.props.cellMetaData.selected.idx} />
       </div>

@@ -26,6 +26,11 @@ type: `union(array|object)`
 type: `element`
 
 
+### `contextMenuId`
+
+type: string
+
+
 ### `draggableHeaderCell`
 
 type: `func`
