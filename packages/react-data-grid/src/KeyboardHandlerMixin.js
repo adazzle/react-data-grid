@@ -56,7 +56,7 @@ let KeyboardHandlerMixin = {
   },
 
   isCtrlKeyHeldDown(e: SyntheticKeyboardEvent): boolean {
-    return e.ctrlKey === true && e.key !== 'Control';
+    return (e.ctrlKey === true || e.metaKey === true) && e.key !== 'Control';
   },
 
   checkAndCall(methodName: string, args: any) {
