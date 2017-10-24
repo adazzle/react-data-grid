@@ -105,6 +105,7 @@ class Example extends React.Component {
         enableCellSelect={true}
         rowsCount={this.getSize()}
         minHeight={500}
+        canFilter={true}
         toolbar={<Toolbar enableFilter={true}/>}
         onAddFilter={this.handleFilterChange}
         onClearFilters={this.onClearFilters} />);
