@@ -93,11 +93,14 @@ module.exports = {
     return columnIndex;
   },
 
-  resetScrollStateAfterDelay() {
+  clearScrollTimer() {
     if (this.resetScrollStateTimeoutId) {
       clearTimeout(this.resetScrollStateTimeoutId);
     }
+  },
 
+  resetScrollStateAfterDelay() {
+    this.clearScrollTimer();
     this.resetScrollStateTimeoutId = setTimeout(
       this.resetScrollStateAfterDelayCallback,
       500
@@ -191,5 +194,9 @@ module.exports = {
         nextProps.rowsCount
       );
     }
+  },
+
+  componentWillUnmount() {
+    this.clearScrollTimer();
   }
 };
