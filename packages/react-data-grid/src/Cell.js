@@ -39,7 +39,7 @@ class Cell extends React.Component {
     expandableOptions: PropTypes.object.isRequired,
     isScrolling: PropTypes.bool.isRequired,
     tooltip: PropTypes.string,
-    isCellValueChanging: PropTypes.func
+    isCellValueChanging: PropTypes.func,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
