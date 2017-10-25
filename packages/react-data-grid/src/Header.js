@@ -6,7 +6,7 @@ const ColumnMetrics       = require('./ColumnMetrics');
 const ColumnUtils         = require('./ColumnUtils');
 const HeaderRow           = require('./HeaderRow');
 const getScrollbarSize  = require('./getScrollbarSize');
-const PropTypes           = React.PropTypes;
+import PropTypes from 'prop-types';
 const createObjectWithProperties = require('./createObjectWithProperties');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-header.css');

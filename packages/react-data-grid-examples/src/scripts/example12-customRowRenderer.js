@@ -3,9 +3,11 @@ const { Row } = ReactDataGrid;
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
+import PropTypes from 'prop-types';
+
 class RowRenderer extends React.Component {
   static propTypes = {
-    idx: React.PropTypes.string.isRequired
+    idx: PropTypes.string.isRequired
   };
 
   setScrollLeft = (scrollBy) => {

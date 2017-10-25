@@ -1,10 +1,11 @@
 const React              = require('react');
 const ExcelColumn        = require('../../PropTypeShapes/ExcelColumn');
+import PropTypes from 'prop-types';
 
 class FilterableHeaderCell extends React.Component {
   static propTypes = {
-    onChange: React.PropTypes.func.isRequired,
-    column: React.PropTypes.shape(ExcelColumn)
+    onChange: PropTypes.func.isRequired,
+    column: PropTypes.shape(ExcelColumn)
   };
 
   state: {filterTerm: string} = {filterTerm: ''};

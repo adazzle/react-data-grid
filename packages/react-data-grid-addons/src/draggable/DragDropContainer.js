@@ -5,6 +5,7 @@ import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
 import { utils } from 'react-data-grid';
 const { isColumnsImmutable } = utils;
+import PropTypes from 'prop-types';
 
 class DraggableContainer extends Component {
 
@@ -36,8 +37,8 @@ class DraggableContainer extends Component {
 }
 
 DraggableContainer.propTypes = {
-  children: React.PropTypes.element.isRequired,
-  getDragPreviewRow: React.PropTypes.func
+  children: PropTypes.element.isRequired,
+  getDragPreviewRow: PropTypes.func
 };
 
 export default DragDropContext(HTML5Backend)(DraggableContainer);

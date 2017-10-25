@@ -1,12 +1,12 @@
 import OverflowCell from './OverflowCell';
 import rowComparer from './RowComparer';
 const React = require('react');
+import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const joinClasses = require('classnames');
 const Cell = require('./Cell');
 const ColumnUtilsMixin = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const PropTypes = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-row.css');
 
@@ -39,7 +39,7 @@ const Row = createReactClass({
     colVisibleEnd: PropTypes.number.isRequired,
     colDisplayStart: PropTypes.number.isRequired,
     colDisplayEnd: PropTypes.number.isRequired,
-    isScrolling: React.PropTypes.bool.isRequired
+    isScrolling: PropTypes.bool.isRequired
   },
 
   mixins: [ColumnUtilsMixin],

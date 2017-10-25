@@ -3,26 +3,27 @@ const ReactDOM                = require('react-dom');
 const ReactAutocomplete       = require('ron-react-autocomplete');
 const { shapes: { ExcelColumn } } = require('react-data-grid');
 require('../../../../themes/ron-react-autocomplete.css');
+import PropTypes from 'prop-types';
 
-let optionPropType = React.PropTypes.shape({
-  id: React.PropTypes.required,
-  title: React.PropTypes.string
+let optionPropType = PropTypes.shape({
+  id: PropTypes.required,
+  title: PropTypes.string
 });
 
 class AutoCompleteEditor extends React.Component {
   static propTypes = {
-    onCommit: React.PropTypes.func,
-    options: React.PropTypes.arrayOf(optionPropType),
-    label: React.PropTypes.any,
-    value: React.PropTypes.any,
-    height: React.PropTypes.number,
-    valueParams: React.PropTypes.arrayOf(React.PropTypes.string),
-    column: React.PropTypes.shape(ExcelColumn),
-    resultIdentifier: React.PropTypes.string,
-    search: React.PropTypes.string,
-    onKeyDown: React.PropTypes.func,
-    onFocus: React.PropTypes.func,
-    editorDisplayValue: React.PropTypes.func
+    onCommit: PropTypes.func,
+    options: PropTypes.arrayOf(optionPropType),
+    label: PropTypes.any,
+    value: PropTypes.any,
+    height: PropTypes.number,
+    valueParams: PropTypes.arrayOf(PropTypes.string),
+    column: PropTypes.shape(ExcelColumn),
+    resultIdentifier: PropTypes.string,
+    search: PropTypes.string,
+    onKeyDown: PropTypes.func,
+    onFocus: PropTypes.func,
+    editorDisplayValue: PropTypes.func
   };
 
   static defaultProps = {

@@ -1,5 +1,6 @@
 import 'react-select/dist/react-select.css';
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Select from 'react-select';
 import { utils, shapes } from 'react-data-grid';
 const { isEmptyArray } = utils;
@@ -79,7 +80,7 @@ class AutoCompleteFilter extends React.Component {
 
 AutoCompleteFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
-  column: React.PropTypes.shape(ExcelColumn),
+  column: PropTypes.shape(ExcelColumn),
   getValidFilterValues: PropTypes.func,
   multiSelection: PropTypes.bool
 };

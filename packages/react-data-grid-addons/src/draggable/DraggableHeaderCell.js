@@ -1,5 +1,6 @@
 import { DragSource } from 'react-dnd';
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { _constants, HeaderCell } from 'react-data-grid';
 const { DragItemTypes } = _constants;
 

@@ -1,4 +1,5 @@
 const React = require('react');
+import PropTypes from 'prop-types';
 require('../../../../themes/react-data-grid-image.css');
 
 let PendingPool = {};
@@ -6,7 +7,7 @@ let ReadyPool = {};
 
 class ImageFormatter extends React.Component {
   static propTypes = {
-    value: React.PropTypes.string.isRequired
+    value: PropTypes.string.isRequired
   };
 
   state = {

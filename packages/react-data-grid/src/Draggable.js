@@ -1,5 +1,5 @@
 const React         = require('react');
-const PropTypes     = React.PropTypes;
+import PropTypes from 'prop-types';
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-header.css');
 

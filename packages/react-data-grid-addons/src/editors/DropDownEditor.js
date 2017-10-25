@@ -1,4 +1,5 @@
 const React = require('react');
+import PropTypes from 'prop-types';
 const { editors: { EditorBase } } = require('react-data-grid');
 import ReactDOM from 'react-dom';
 
@@ -37,13 +38,13 @@ class DropDownEditor extends EditorBase {
 }
 
 DropDownEditor.propTypes = {
-  options: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.shape({
-      id: React.PropTypes.string,
-      title: React.PropTypes.string,
-      value: React.PropTypes.string,
-      text: React.PropTypes.string
+  options: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      value: PropTypes.string,
+      text: PropTypes.string
     })
   ])).isRequired
 };
