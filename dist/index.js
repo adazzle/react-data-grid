@@ -9069,7 +9069,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var className = this.getCellClass();
 
-	    var cellContent = this.renderCellContent({
+	    var cellContent = this.props.children || this.renderCellContent({
 	      value: this.props.value,
 	      column: this.props.column,
 	      rowIdx: this.props.rowIdx,
@@ -9124,7 +9124,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  expandableOptions: _propTypes2['default'].object.isRequired,
 	  isScrolling: _propTypes2['default'].bool.isRequired,
 	  tooltip: _propTypes2['default'].string,
-	  isCellValueChanging: _propTypes2['default'].func
+	  isCellValueChanging: _propTypes2['default'].func,
+	  children: _propTypes2['default'].oneOfType([_propTypes2['default'].arrayOf(_propTypes2['default'].node), _propTypes2['default'].node])
 	};
 	Cell.defaultProps = {
 	  tabIndex: -1,
