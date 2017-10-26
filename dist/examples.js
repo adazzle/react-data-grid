@@ -19946,11 +19946,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return columnIndex;
 	  },
-	  resetScrollStateAfterDelay: function resetScrollStateAfterDelay() {
+	  clearScrollTimer: function clearScrollTimer() {
 	    if (this.resetScrollStateTimeoutId) {
 	      clearTimeout(this.resetScrollStateTimeoutId);
 	    }
-
+	  },
+	  resetScrollStateAfterDelay: function resetScrollStateAfterDelay() {
+	    this.clearScrollTimer();
 	    this.resetScrollStateTimeoutId = setTimeout(this.resetScrollStateAfterDelayCallback, 500);
 	  },
 	  resetScrollStateAfterDelayCallback: function resetScrollStateAfterDelayCallback() {
@@ -20016,6 +20018,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.updateScroll(this.state.scrollTop, this.state.scrollLeft, this.state.height + _height, nextProps.rowHeight, nextProps.rowsCount);
 	    }
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.clearScrollTimer();
 	  }
 	};
 
