@@ -219,10 +219,6 @@ const ReactDataGrid = createReactClass({
 
   onCellDoubleClick: function(cell: SelectedType) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
-    this.setActive('DoubleClick');
-  },
-
-  onViewportDoubleClick: function() {
     this.setActive();
   },
 
@@ -964,7 +960,7 @@ const ReactDataGrid = createReactClass({
             onViewportKeyup={this.onKeyUp}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
-            onViewportDoubleClick={this.onViewportDoubleClick}
+            onViewportDoubleClick={this.onCellDoubleClick}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
             contextMenu={this.props.contextMenu}
