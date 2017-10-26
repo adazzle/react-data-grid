@@ -869,6 +869,22 @@ describe('Grid', function() {
         expect(this.columns[1]).toEqual(jasmine.objectContaining({ key: 'count', name: 'Count', width: 100 }));
       });
     });
+
+    describe('outside row/cell', function() {
+      beforeEach(function() {
+        this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+      });
+
+      it('should deselect currently selected cell on click', function() {
+        this.getBaseGrid().props.onViewportClick();
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+
+      it('should deselect currently selected cell on double-click', function() {
+        this.getBaseGrid().props.onViewportDoubleClick();
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+    });
   });
 
   describe('Cell Meta Data', function() {
