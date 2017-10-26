@@ -44,7 +44,7 @@ class Cell extends React.Component {
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
     ])
-};
+  };
 
   static defaultProps = {
     tabIndex: -1,
