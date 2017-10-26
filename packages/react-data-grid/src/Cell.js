@@ -39,7 +39,11 @@ class Cell extends React.Component {
     expandableOptions: PropTypes.object.isRequired,
     isScrolling: PropTypes.bool.isRequired,
     tooltip: PropTypes.string,
-    isCellValueChanging: PropTypes.func
+    isCellValueChanging: PropTypes.func,
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
+    ])
   };
 
   static defaultProps = {
@@ -492,7 +496,7 @@ class Cell extends React.Component {
 
     let className = this.getCellClass();
 
-    let cellContent = this.renderCellContent({
+    const cellContent = this.props.children || this.renderCellContent({
       value: this.props.value,
       column: this.props.column,
       rowIdx: this.props.rowIdx,
