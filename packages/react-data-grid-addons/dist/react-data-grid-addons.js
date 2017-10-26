@@ -20408,10 +20408,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  RowActionsCell.prototype.renderRowIndex = function renderRowIndex() {
+
+	    var id = this.props.rowIdx + 1;
+	    if (this.props.dependentValues) {
+	      var rowSelection = this.props.rowSelection || {};
+	      var selectBy = rowSelection.selectBy || {};
+	      var keys = selectBy.keys || {};
+	      var rowKey = keys.rowKey;
+	      if (rowKey) id = this.props.dependentValues[rowKey];
+	    }
+
 	    return _react2['default'].createElement(
 	      'div',
 	      { className: 'rdg-row-index' },
-	      this.props.rowIdx + 1
+	      id
 	    );
 	  };
 

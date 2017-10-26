@@ -7,8 +7,18 @@ const { CheckboxEditor } = editors;
 class RowActionsCell extends React.Component {
 
   renderRowIndex() {
+    
+    let id = this.props.rowIdx + 1 
+    if (this.props.dependentValues){
+        let rowSelection =     this.props.rowSelection ||{}
+        let selectBy = rowSelection.selectBy ||{}
+        let keys = selectBy.keys||{}
+        let rowKey = keys.rowKey;
+      if (rowKey) id = this.props.dependentValues[rowKey]
+  }
+
     return (<div className="rdg-row-index">
-      { this.props.rowIdx + 1 }
+      { id }
     </div>);
   }
 
