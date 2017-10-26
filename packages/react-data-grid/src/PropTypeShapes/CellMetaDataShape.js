@@ -9,5 +9,6 @@ module.exports = {
   onCommit: PropTypes.func.isRequired,
   onCommitCancel: PropTypes.func.isRequired,
   handleDragEnterRow: PropTypes.func.isRequired,
-  handleTerminateDrag: PropTypes.func.isRequired
+  handleTerminateDrag: PropTypes.func.isRequired,
+  getCellActions: PropTypes.func
 };
