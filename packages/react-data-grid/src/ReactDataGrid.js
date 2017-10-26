@@ -202,11 +202,15 @@ const ReactDataGrid = createReactClass({
     }
   },
 
-  onCellClick: function(cell: SelectedType) {
+  onCellClick: function(cell: SelectedType, e: SyntheticEvent) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
 
     if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
       this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
+    }
+
+    if (e) {
+      e.stopPropagation();
     }
   },
 
@@ -217,9 +221,12 @@ const ReactDataGrid = createReactClass({
     }
   },
 
-  onCellDoubleClick: function(cell: SelectedType) {
+  onCellDoubleClick: function(cell: SelectedType, e: SyntheticEvent) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
     this.setActive();
+    if (e) {
+      e.stopPropagation();
+    }
   },
 
   onPressArrowUp(e: SyntheticEvent) {
@@ -795,6 +802,11 @@ const ReactDataGrid = createReactClass({
     }
   },
 
+  deselect() {
+    const selected = {rowIdx: -1, idx: -1};
+    this.setState({selected});
+  },
+
   setActive(keyPressed: string) {
     let rowIdx = this.state.selected.rowIdx;
     let row = this.props.rowGetter(rowIdx);
@@ -960,7 +972,8 @@ const ReactDataGrid = createReactClass({
             onViewportKeyup={this.onKeyUp}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
-            onViewportDoubleClick={this.onCellDoubleClick}
+            onViewportClick={this.deselect}
+            onViewportDoubleClick={this.deselect}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
             contextMenu={this.props.contextMenu}

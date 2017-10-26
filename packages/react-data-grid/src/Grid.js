@@ -46,6 +46,7 @@ const Grid = createReactClass({
     onViewportKeyup: PropTypes.func,
     onViewportDragStart: PropTypes.func.isRequired,
     onViewportDragEnd: PropTypes.func.isRequired,
+    onViewportClick: PropTypes.func.isRequired,
     onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
@@ -105,7 +106,15 @@ const Grid = createReactClass({
           cellMetaData={this.props.cellMetaData}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
-            <div ref={(node) => { this.viewPortContainer = node; } } tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+            <div
+              ref={(node) => { this.viewPortContainer = node; } }
+              tabIndex="0"
+              onKeyDown={this.props.onViewportKeydown}
+              onKeyUp={this.props.onViewportKeyup}
+              onClick={this.props.onViewportClick}
+              onDoubleClick={this.props.onViewportDoubleClick}
+              onDragStart={this.props.onViewportDragStart}
+              onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
                   ref={(node) => { this.viewport = node; } }
                   rowKey={this.props.rowKey}
