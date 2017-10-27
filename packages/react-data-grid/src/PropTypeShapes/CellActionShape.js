@@ -6,4 +6,4 @@ const action = {
   callback: PropTypes.func
 };
 
-module.exports = Object.assign({}, action, { actions: PropTypes.arrayOf(action) });
+export default Object.assign({}, action, { actions: PropTypes.arrayOf(action) });

@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
-
-const CellActionShape = require('./PropTypeShapes/CellActionShape');
+import CellActionShape  from './PropTypeShapes/CellActionShape';
 
 class CellAction extends React.Component {
   static propTypes = {
@@ -10,14 +9,12 @@ class CellAction extends React.Component {
     isFirst: PropTypes.bool.isRequired
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {isMenuOpen: false};
-  }
+  state = {  isMenuOpen: false };
 
   onToggleMenu = () => {
-    this.setState({isMenuOpen: !this.state.isMenuOpen});
+    this.setState((prevState) => {
+      return { isMenuOpen: !prevState.isMenuOpen };
+    });
   }
 
   onHideMenu = () => {
@@ -51,13 +48,11 @@ class CellAction extends React.Component {
   render() {
     const isActionMenu = this.isActionMenu();
 
-    const cellActionClasses = classNames({
-      'cell-action': true,
+    const cellActionClasses = classNames('cell-action', {
       'cell-action-last': this.props.isFirst
     });
 
-    const actionButtonClasses = classNames({
-      'action-button': true,
+    const actionButtonClasses = classNames('action-button', {
       'action-button-toggled': this.state.isMenuOpen
     });
 
