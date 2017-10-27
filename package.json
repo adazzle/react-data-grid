@@ -23,8 +23,8 @@
     "react-component"
   ],
   "peerDependencies": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2"
   },
   "dependencies": {
     "classnames": "^1.2.0",
