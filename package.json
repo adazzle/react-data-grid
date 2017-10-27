@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "pretest": "npm run eslint",
-    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
+    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true --max_old_space_size=4096",
     "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
     "postinstall": "lerna bootstrap",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
@@ -23,8 +23,8 @@
     "react-component"
   ],
   "peerDependencies": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2"
   },
   "dependencies": {
     "classnames": "^1.2.0",
@@ -103,6 +103,7 @@
     "rewire-webpack": "^1.0.0",
     "run-sequence": "^1.2.2",
     "semver": "^5.0.3",
+    "sinon": "^4.0.2",
     "style-loader": "^0.13.1",
     "underscore": "^1.8.3",
     "vinyl-source-stream": "^0.1.1",

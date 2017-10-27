@@ -7,6 +7,8 @@ import { mount, shallow } from 'enzyme';
 import _ from 'underscore';
 Object.assign = require('object-assign');
 import helpers from '../helpers/test/GridPropHelpers';
+import sinon from 'sinon';
+import CellAction from '../CellAction';
 
 let testCellMetaData = {
   selected: {idx: 2, rowIdx: 3},
@@ -623,6 +625,80 @@ describe('Cell Tests', () => {
       wrapper.instance().setScrollLeft(200);
       const node = wrapper.getDOMNode();
       expect(node.style.transform).toBe('translate3d(200px, 0px, 0px)');
+    });
+  });
+
+  describe('CellActions', () => {
+    const setup = (propsOverride = {}) => {
+      const props = Object.assign({}, {
+        rowIdx: 18,
+        idx: 19,
+        column: helpers.columns[0],
+        row: {key: 'value'},
+        value: 'requiredValue',
+        cellMetaData: {
+          selected: {idx: 2, rowIdx: 3},
+          dragged: null,
+          onCellClick: jasmine.createSpy(),
+          onCellContextMenu: jasmine.createSpy(),
+          onCellDoubleClick: jasmine.createSpy(),
+          onCommit: jasmine.createSpy(),
+          onCommitCancel: jasmine.createSpy(),
+          copied: null,
+          handleDragEnterRow: jasmine.createSpy(),
+          handleTerminateDrag: jasmine.createSpy(),
+          onColumnEvent: jasmine.createSpy()
+        },
+        rowData: helpers.rowGetter(11),
+        expandableOptions: {key: 'reqValue'},
+        isScrolling: false
+      }, propsOverride);
+
+      const wrapper = shallow(<Cell {...props} />);
+      return {
+        wrapper,
+        props
+      };
+    };
+
+    describe('when getCellActions is in cellMetadata', () => {
+      it('should render some CellActions', () => {
+        const action = {icon: 'glpyhicon glyphicon-link', callback: sinon.spy()};
+        const {wrapper} = setup({
+          cellMetaData: {
+            selected: {idx: 2, rowIdx: 3},
+            dragged: null,
+            onCellClick: jasmine.createSpy(),
+            onCellContextMenu: jasmine.createSpy(),
+            onCellDoubleClick: jasmine.createSpy(),
+            onCommit: jasmine.createSpy(),
+            onCommitCancel: jasmine.createSpy(),
+            copied: null,
+            handleDragEnterRow: jasmine.createSpy(),
+            handleTerminateDrag: jasmine.createSpy(),
+            onColumnEvent: jasmine.createSpy(),
+            getCellActions: sinon.stub().returns([action])
+          }
+        });
+
+        const renderedCellActions = wrapper.find(CellAction);
+
+        expect(renderedCellActions.length).toBe(1);
+        expect(renderedCellActions.props()).toEqual({
+          action,
+          isFirst: true
+        });
+      });
+    });
+
+    describe('when getCellActions is not in cellMetadata', () => {
+      it('should not render any CellActions', () => {
+        const {wrapper} = setup();
+
+        const renderedCellActions = wrapper.find(CellAction);
+
+        expect(renderedCellActions.length).toBe(0);
+      });
     });
   });
 });

@@ -9,6 +9,7 @@ const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
 const ColumnUtils = require('./ColumnUtils');
 const createObjectWithProperties = require('./createObjectWithProperties');
+import CellAction from './CellAction';
 import CellExpand from './CellExpand';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 require('../../../themes/react-data-grid-cell.css');
@@ -459,6 +460,20 @@ class Cell extends React.Component {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
 
+  getCellActions() {
+    const {cellMetaData, column, rowData} = this.props;
+    if (cellMetaData && cellMetaData.getCellActions) {
+      const cellActions = cellMetaData.getCellActions(column, rowData);
+      if (cellActions && cellActions.length) {
+        return cellActions.map((action, index) => {
+          return <CellAction action={action} isFirst={index === 0} />;
+        });
+      }
+      return null;
+    }
+    return null;
+  }
+
   renderCellContent = (props) => {
     let CellContent;
     let Formatter = this.getFormatter();
@@ -496,6 +511,8 @@ class Cell extends React.Component {
 
     let className = this.getCellClass();
 
+    const cellActions = this.getCellActions();
+
     const cellContent = this.props.children || this.renderCellContent({
       value: this.props.value,
       column: this.props.column,
@@ -510,6 +527,7 @@ class Cell extends React.Component {
 
     return (
       <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }}>
+        {cellActions}
         {cellContent}
         {dragHandle}
         {tooltip}
