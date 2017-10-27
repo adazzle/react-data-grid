@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+Object.assign = require('object-assign');
 
 const action = {
   icon: PropTypes.string.isRequired,
