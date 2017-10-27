@@ -103,6 +103,7 @@
     "rewire-webpack": "^1.0.0",
     "run-sequence": "^1.2.2",
     "semver": "^5.0.3",
+    "sinon": "^4.0.2",
     "style-loader": "^0.13.1",
     "underscore": "^1.8.3",
     "vinyl-source-stream": "^0.1.1",

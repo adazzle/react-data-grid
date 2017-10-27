@@ -7,8 +7,7 @@ const CellActionShape = require('./PropTypeShapes/CellActionShape');
 class CellAction extends React.Component {
   static propTypes = {
     action: PropTypes.shape(CellActionShape).isRequired,
-    isFirst: PropTypes.bool.isRequired,
-    cellHeight: PropTypes.number.isRequired
+    isFirst: PropTypes.bool.isRequired
   }
 
   constructor(props) {

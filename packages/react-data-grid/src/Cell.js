@@ -460,6 +460,20 @@ class Cell extends React.Component {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
 
+  getCellActions() {
+    const {cellMetaData, column, rowData} = this.props;
+    if (cellMetaData && cellMetaData.getCellActions) {
+      const cellActions = cellMetaData.getCellActions(column, rowData);
+      if (cellActions && cellActions.length) {
+        return cellActions.map((action, index) => {
+          return <CellAction action={action} isFirst={index === 0} />;
+        });
+      }
+      return null;
+    }
+    return null;
+  }
+
   renderCellContent = (props) => {
     let CellContent;
     let Formatter = this.getFormatter();
@@ -487,20 +501,6 @@ class Cell extends React.Component {
     }
     return (<div className="react-grid-Cell__value">{cellDeleter}<div style={{ marginLeft: marginLeft }}><span>{CellContent}</span> {this.props.cellControls} {cellExpander}</div></div>);
   };
-
-  getCellActions() {
-    const {cellMetaData, column, rowData} = this.props;
-    if (cellMetaData && cellMetaData.getCellActions) {
-      const cellActions = cellMetaData.getCellActions(column, rowData);
-      if (cellActions && cellActions.length) {
-        return cellActions.map((action, index) => {
-          return <CellAction action={action} isFirst={index === 0} />;
-        });
-      }
-      return null;
-    }
-    return null;
-  }
 
   render() {
     if (this.props.column.hidden) {
