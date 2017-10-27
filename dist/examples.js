@@ -17666,6 +17666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onViewportKeyup: _propTypes2['default'].func,
 	    onViewportDragStart: _propTypes2['default'].func.isRequired,
 	    onViewportDragEnd: _propTypes2['default'].func.isRequired,
+	    onViewportClick: _propTypes2['default'].func.isRequired,
 	    onViewportDoubleClick: _propTypes2['default'].func.isRequired,
 	    onColumnResize: _propTypes2['default'].func,
 	    onSort: _propTypes2['default'].func,
@@ -17731,9 +17732,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }),
 	      this.props.rowsCount >= 1 || this.props.rowsCount === 0 && !this.props.emptyRowsView ? React.createElement(
 	        'div',
-	        { ref: function ref(node) {
+	        {
+	          ref: function ref(node) {
 	            _this.viewPortContainer = node;
-	          }, tabIndex: '0', onKeyDown: this.props.onViewportKeydown, onKeyUp: this.props.onViewportKeyup, onDoubleClick: this.props.onViewportDoubleClick, onDragStart: this.props.onViewportDragStart, onDragEnd: this.props.onViewportDragEnd },
+	          },
+	          tabIndex: '0',
+	          onKeyDown: this.props.onViewportKeydown,
+	          onKeyUp: this.props.onViewportKeyup,
+	          onClick: this.props.onViewportClick,
+	          onDoubleClick: this.props.onViewportDoubleClick,
+	          onDragStart: this.props.onViewportDragStart,
+	          onDragEnd: this.props.onViewportDragEnd },
 	        React.createElement(Viewport, {
 	          ref: function ref(node) {
 	            _this.viewport = node;
@@ -18656,11 +18665,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
-	  onCellClick: function onCellClick(cell) {
+	  onCellClick: function onCellClick(cell, e) {
 	    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
 
 	    if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
 	      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
+	    }
+
+	    if (e) {
+	      e.stopPropagation();
 	    }
 	  },
 
@@ -18671,13 +18684,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
-	  onCellDoubleClick: function onCellDoubleClick(cell) {
+	  onCellDoubleClick: function onCellDoubleClick(cell, e) {
 	    this.onSelect({ rowIdx: cell.rowIdx, idx: cell.idx });
-	    this.setActive('DoubleClick');
-	  },
-
-	  onViewportDoubleClick: function onViewportDoubleClick() {
 	    this.setActive();
+	    if (e) {
+	      e.stopPropagation();
+	    }
 	  },
 
 	  onPressArrowUp: function onPressArrowUp(e) {
@@ -19277,6 +19289,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  },
+	  deselect: function deselect() {
+	    var selected = { rowIdx: -1, idx: -1 };
+	    this.setState({ selected: selected });
+	  },
 	  setActive: function setActive(keyPressed) {
 	    var _this6 = this;
 
@@ -19460,7 +19476,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          onViewportKeyup: this.onKeyUp,
 	          onViewportDragStart: this.onDragStart,
 	          onViewportDragEnd: this.handleDragEnd,
-	          onViewportDoubleClick: this.onViewportDoubleClick,
+	          onViewportClick: this.deselect,
+	          onViewportDoubleClick: this.deselect,
 	          onColumnResize: this.onColumnResize,
 	          rowScrollTimeout: this.props.rowScrollTimeout,
 	          contextMenu: this.props.contextMenu,
