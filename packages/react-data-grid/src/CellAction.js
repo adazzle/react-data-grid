@@ -48,12 +48,12 @@ class CellAction extends React.Component {
   render() {
     const isActionMenu = this.isActionMenu();
 
-    const cellActionClasses = classNames('cell-action', {
-      'cell-action-last': this.props.isFirst
+    const cellActionClasses = classNames('rdg-cell-action', {
+      'rdg-cell-action-last': this.props.isFirst
     });
 
-    const actionButtonClasses = classNames('action-button', {
-      'action-button-toggled': this.state.isMenuOpen
+    const actionButtonClasses = classNames('rdg-cell-action-button', {
+      'rdg-cell-action-button-toggled': this.state.isMenuOpen
     });
 
     return (
@@ -64,7 +64,7 @@ class CellAction extends React.Component {
         {
           isActionMenu &&
           this.state.isMenuOpen &&
-          <div className="action-menu">
+          <div className="rdg-cell-action-menu">
             {this.onGetMenuOptions()}
           </div>
         }
