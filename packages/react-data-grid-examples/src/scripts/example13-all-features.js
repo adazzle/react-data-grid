@@ -3,6 +3,7 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const { Editors, Toolbar, Formatters } = require('react-data-grid-addons');
+import update from 'immutability-helper';
 const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
 const { ImageFormatter } = Formatters;
 
@@ -211,7 +212,7 @@ class Example extends React.Component {
 
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
-      let updatedRow = React.addons.update(rowToUpdate, {$merge: updated});
+      let updatedRow = update(rowToUpdate, {$merge: updated});
       rows[i] = updatedRow;
     }
 
@@ -227,7 +228,7 @@ class Example extends React.Component {
     };
 
     let rows = this.state.rows.slice();
-    rows = React.addons.update(rows, {$push: [newRow]});
+    rows = update(rows, {$push: [newRow]});
     this.setState({ rows });
   };
 
