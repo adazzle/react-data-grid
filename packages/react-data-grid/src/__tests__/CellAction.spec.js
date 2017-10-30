@@ -87,7 +87,7 @@ describe('Cell Action Tests', () => {
         const wrapperProps = wrapper.props();
 
         expect(wrapper.length).toBe(1);
-        expect(wrapperProps.className).toBe('rdg-cell-action cell-action-last');
+        expect(wrapperProps.className).toBe('rdg-cell-action rdg-cell-action-last');
       });
     });
 
