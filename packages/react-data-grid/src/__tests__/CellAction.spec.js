@@ -22,9 +22,9 @@ describe('Cell Action Tests', () => {
   describe('when a button action is passed', () => {
     it('will render a button action and hook up the callback function', () => {
       const {wrapper, props} = setup();
-      const renderedActionButton = wrapper.find('.action-button');
+      const renderedActionButton = wrapper.find('.cell-action-button');
       const renderedActionButtonProps = renderedActionButton.props();
-      const renderedActionMenu = wrapper.find('.action-menu');
+      const renderedActionMenu = wrapper.find('.cell-action-menu');
 
       expect(renderedActionButton.length).toBe(1);
       expect(renderedActionButtonProps.onClick).toEqual(jasmine.any(Function));
@@ -55,9 +55,9 @@ describe('Cell Action Tests', () => {
         }
       });
       let wrapperState = wrapper.state();
-      const renderedActionButton = wrapper.find('.action-button');
+      const renderedActionButton = wrapper.find('.cell-action-button');
       const renderedActionButtonProps = renderedActionButton.props();
-      let renderedActionMenu = wrapper.find('.action-menu');
+      let renderedActionMenu = wrapper.find('.cell-action-menu');
 
       expect(renderedActionButton.length).toBe(1);
       expect(renderedActionButtonProps.onClick).toEqual(jasmine.any(Function));
@@ -67,7 +67,7 @@ describe('Cell Action Tests', () => {
       renderedActionButton.simulate('click');
 
       wrapperState = wrapper.state();
-      renderedActionMenu = wrapper.find('.action-menu');
+      renderedActionMenu = wrapper.find('.cell-action-menu');
       const renderedActionMenuProps = renderedActionMenu.props();
 
       expect(wrapperState.isMenuOpen).toBeTruthy();

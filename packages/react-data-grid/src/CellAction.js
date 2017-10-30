@@ -52,8 +52,8 @@ class CellAction extends React.Component {
       'cell-action-last': this.props.isFirst
     });
 
-    const actionButtonClasses = classNames('action-button', {
-      'action-button-toggled': this.state.isMenuOpen
+    const actionButtonClasses = classNames('cell-action-button', {
+      'cell-action-button-toggled': this.state.isMenuOpen
     });
 
     return (
@@ -64,7 +64,7 @@ class CellAction extends React.Component {
         {
           isActionMenu &&
           this.state.isMenuOpen &&
-          <div className="action-menu">
+          <div className="cell-action-menu">
             {this.onGetMenuOptions()}
           </div>
         }

@@ -269,7 +269,7 @@
   margin-right: -8px;
 }
 
-.action-button {
+.cell-action-button {
   width: 35px;
   height: 100%;
   text-align: center;
@@ -277,22 +277,22 @@
   display: table;
 }
 
-.action-button > span {
+.cell-action-button > span {
   display: table-cell;
   vertical-align: middle;
 }
 
-.action-button:hover {
+.cell-action-button:hover {
   background-color: #fff;
 }
 
-.action-button-toggled {
+.cell-action-button-toggled {
   background-color: #fff;
   border-right: 1px solid #ccc;
   border-left: 1px solid #ccc;
 }
 
-.action-button-toggled:after {
+.cell-action-button-toggled:after {
   content: '';
   height: 1px;
   position: absolute;
@@ -303,7 +303,7 @@
   z-index: 10001;
 }
 
-.action-menu {
+.cell-action-menu {
   position: absolute;
   top: 100%;
   right: 0;
@@ -320,7 +320,7 @@
   border: 1px solid #ccc;
 }
 
-.action-menu > span {
+.cell-action-menu > span {
   display: block;
   padding: 3px 20px;
   clear: both;
@@ -330,7 +330,7 @@
   white-space: nowrap;
 }
 
-.action-menu > span:hover {
+.cell-action-menu > span:hover {
   color: #262626;
   text-decoration: none;
   background-color: #f5f5f5;

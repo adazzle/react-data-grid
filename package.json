@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "pretest": "npm run eslint",
-    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true --max_old_space_size=4096",
+    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
     "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
     "postinstall": "lerna bootstrap",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
