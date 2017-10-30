@@ -662,17 +662,6 @@ describe('Grid', function() {
         this.component = this.createComponent({ columns: this.columns }).node;
       });
 
-      describe('double click on grid', function() {
-        beforeEach(function() {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
-          this.getBaseGrid().props.onViewportDoubleClick();
-        });
-
-        it('should activate current selected cell', function() {
-          expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: 1, rowIdx: 1, active: true }));
-        });
-      });
-
       describe('copy a cell value', function() {
         beforeEach(function() {
           const cCharacterKeyCode = 99;
@@ -782,25 +771,6 @@ describe('Grid', function() {
       });
     });
 
-    describe('When column is not editable', function() {
-      beforeEach(function() {
-        const uneditableColumn = Object.assign({ editable: false }, this.columns[1]);
-        this.columns[1] = uneditableColumn;
-        this.component = this.createComponent({ columns: this.columns }).node;
-      });
-
-      describe('double click on grid ', function() {
-        beforeEach(function() {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
-          this.getBaseGrid().props.onViewportDoubleClick();
-        });
-
-        it('should not activate current selected cell', function() {
-          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1 });
-        });
-      });
-    });
-
     describe('Drag events', function() {
       describe('dragging in grid', function() {
         beforeEach(function() {
@@ -897,6 +867,22 @@ describe('Grid', function() {
       it('should no longer include metrics for removed column', function() {
         expect(this.columns[0]).toEqual(jasmine.objectContaining({ key: 'id', name: 'ID', width: 100 }));
         expect(this.columns[1]).toEqual(jasmine.objectContaining({ key: 'count', name: 'Count', width: 100 }));
+      });
+    });
+
+    describe('outside row/cell', function() {
+      beforeEach(function() {
+        this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+      });
+
+      it('should deselect currently selected cell on click', function() {
+        this.getBaseGrid().props.onViewportClick();
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+
+      it('should deselect currently selected cell on double-click', function() {
+        this.getBaseGrid().props.onViewportDoubleClick();
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
       });
     });
   });

@@ -1,25 +1,26 @@
 // Used for displaying the value of a dropdown (using DropDownEditor) when not editing it.
 // Accepts the same parameters as the DropDownEditor.
 const React = require('react');
+import PropTypes from 'prop-types';
 
-const DropDownFormatter = React.createClass({
-  propTypes: {
-    options: React.PropTypes.arrayOf(
-      React.PropTypes.oneOfType([
-        React.PropTypes.string,
-        React.PropTypes.shape({
-          id: React.PropTypes.string,
-          title: React.PropTypes.string,
-          value: React.PropTypes.string,
-          text: React.PropTypes.string
+class DropDownFormatter extends React.Component {
+  static propTypes = {
+    options: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+          id: PropTypes.string,
+          title: PropTypes.string,
+          value: PropTypes.string,
+          text: PropTypes.string
         })
       ])).isRequired,
-    value: React.PropTypes.string.isRequired
-  },
+    value: PropTypes.string.isRequired
+  };
 
   shouldComponentUpdate(nextProps: any): boolean {
     return nextProps.value !== this.props.value;
-  },
+  }
 
   render(): ?ReactElement {
     let value = this.props.value;
@@ -33,6 +34,6 @@ const DropDownFormatter = React.createClass({
     let text = option.text || option.value || option;
     return <div title={title}>{text}</div>;
   }
-});
+}
 
 module.exports = DropDownFormatter;
