@@ -201,8 +201,10 @@ const ReactDataGrid = React.createClass({
 
   onCellClick: function(cell: SelectedType) {
     if (this.state.selected && this.state.selected.rowIdx === cell.rowIdx && this.state.selected.idx === cell.idx) {
-      let col = this.props.columns[cell.idx - 1];
-      if (col.events && col.events.onClick) return this.setInactive();
+      if (cell.idx > 0) {
+        let col = this.props.columns[cell.idx - 1];
+        if (col.events && col.events.onClick) return this.setInactive();
+      }
       return this.setActive('Enter'); // If already focused, simulate enter key and go to edit mode
     }
 

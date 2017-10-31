@@ -16965,8 +16965,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  onCellClick: function onCellClick(cell) {
 	    if (this.state.selected && this.state.selected.rowIdx === cell.rowIdx && this.state.selected.idx === cell.idx) {
-	      var col = this.props.columns[cell.idx - 1];
-	      if (col.events && col.events.onClick) return this.setInactive();
+	      if (cell.idx > 0) {
+	        var col = this.props.columns[cell.idx - 1];
+	        if (col.events && col.events.onClick) return this.setInactive();
+	      }
 	      return this.setActive('Enter'); // If already focused, simulate enter key and go to edit mode
 	    }
 
