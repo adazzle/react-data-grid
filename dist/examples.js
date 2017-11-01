@@ -21767,7 +21767,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else if (typeof colFilter.filterTerm === 'string') {
 	          // default filter action
 	          var rowValue = retriever.getValue(r, columnKey);
-	          if (rowValue) {
+	          if (rowValue !== undefined) {
 	            if (rowValue.toString().toLowerCase().indexOf(colFilter.filterTerm.toLowerCase()) === -1) {
 	              include = include & false;
 	            }
