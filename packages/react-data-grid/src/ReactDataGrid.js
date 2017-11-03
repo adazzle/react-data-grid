@@ -119,24 +119,22 @@ const ReactDataGrid = createReactClass({
     onAddSubRow: PropTypes.func
   },
 
-  getDefaultProps(): {enableCellSelect: boolean} {
-    return {
-      enableCellSelect: false,
-      tabIndex: -1,
-      rowHeight: 35,
-      headerFiltersHeight: 45,
-      enableRowSelect: false,
-      minHeight: 350,
-      rowKey: 'id',
-      rowScrollTimeout: 0,
-      cellNavigationMode: 'none',
-      overScan: {
-        colsStart: 5,
-        colsEnd: 5,
-        rowsStart: 5,
-        rowsEnd: 5
-      }
-    };
+  defaultProps: {
+    enableCellSelect: false,
+    tabIndex: -1,
+    rowHeight: 35,
+    headerFiltersHeight: 45,
+    enableRowSelect: false,
+    minHeight: 350,
+    rowKey: 'id',
+    rowScrollTimeout: 0,
+    cellNavigationMode: 'none',
+    overScan: {
+      colsStart: 5,
+      colsEnd: 5,
+      rowsStart: 5,
+      rowsEnd: 5
+    }
   },
 
   getInitialState: function(): {selected: SelectedType; copied: ?{idx: number; rowIdx: number}; selectedRows: Array<Row>; expandedRows: Array<Row>; canFilter: boolean; columnFilters: any; sortDirection: ?SortType; sortColumn: ?ExcelColumn; dragged: ?DraggedType;  } {
