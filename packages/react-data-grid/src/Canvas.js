@@ -66,13 +66,11 @@ const Canvas = createReactClass({
     isScrolling: PropTypes.bool
   },
 
-  getDefaultProps() {
-    return {
-      rowRenderer: Row,
-      onRows: () => { },
-      selectedRows: [],
-      rowScrollTimeout: 0
-    };
+  defaultProps: {
+    rowRenderer: Row,
+    onRows: () => { },
+    selectedRows: [],
+    rowScrollTimeout: 0
   },
 
   getInitialState() {

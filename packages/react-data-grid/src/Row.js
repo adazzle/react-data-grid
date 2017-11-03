@@ -44,12 +44,10 @@ const Row = createReactClass({
 
   mixins: [ColumnUtilsMixin],
 
-  getDefaultProps() {
-    return {
-      cellRenderer: Cell,
-      isSelected: false,
-      height: 35
-    };
+  defaultProps: {
+    cellRenderer: Cell,
+    isSelected: false,
+    height: 35
   },
 
   shouldComponentUpdate(nextProps) {

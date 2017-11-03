@@ -67,11 +67,9 @@ const Grid = createReactClass({
     DOMMetrics.MetricsComputatorMixin
   ],
 
-  getDefaultProps() {
-    return {
-      rowHeight: 35,
-      minHeight: 350
-    };
+  defaultProps: {
+    rowHeight: 35,
+    minHeight: 350
   },
 
   getStyle: function(): { overflow: string; outline: number; position: string; minHeight: number } {

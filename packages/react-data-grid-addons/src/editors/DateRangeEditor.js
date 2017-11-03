@@ -18,11 +18,9 @@ const DateRangeEditor = createReactClass({
     }).isRequired
   },
 
-  getDefaultProps(): {format: string; ranges: Array<Date>} {
-    return {
-      format: 'YYYY-MM-DD',
-      ranges: []
-    };
+  defaultProps: {
+    format: 'YYYY-MM-DD',
+    ranges: []
   },
 
   rangeSeparatorChar: ' - ',
