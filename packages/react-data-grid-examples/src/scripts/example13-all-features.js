@@ -211,7 +211,7 @@ class Example extends React.Component {
 
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
-      let updatedRow = React.addons.update(rowToUpdate, {$merge: updated});
+      let updatedRow = Object.assign({}, rowToUpdate, updated);
       rows[i] = updatedRow;
     }
 
@@ -219,15 +219,10 @@ class Example extends React.Component {
   };
 
   handleAddRow = ({ newRowIndex }) => {
-    const newRow = {
-      value: newRowIndex,
-      userStory: '',
-      developer: '',
-      epic: ''
-    };
+    const newRow = this.createFakeRowObjectData(newRowIndex);
 
     let rows = this.state.rows.slice();
-    rows = React.addons.update(rows, {$push: [newRow]});
+    rows.push(newRow);
     this.setState({ rows });
   };
 

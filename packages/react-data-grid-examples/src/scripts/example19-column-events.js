@@ -68,7 +68,7 @@ class Example extends React.Component {
 
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
-      const updatedRow = React.addons.update(rowToUpdate, {$merge: updated});
+      const updatedRow = Object.assign({}, rowToUpdate, updated);
       rows[i] = updatedRow;
     }
 
