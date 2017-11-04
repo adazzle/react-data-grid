@@ -251,7 +251,11 @@ const ReactDataGrid = createReactClass({
   },
 
   onPressEnter(e: SyntheticKeyboardEvent) {
-    this.setActive(e.key);
+    const didSetActive = this.setActive(e.key);
+
+    if (!didSetActive) {
+      this.moveSelectedCell(e, e.shiftKey ? -1 : 1, 0);
+    }
   },
 
   onPressDelete(e: SyntheticKeyboardEvent) {
@@ -313,9 +317,6 @@ const ReactDataGrid = createReactClass({
   onCellCommit(commit: RowUpdateEvent) {
     let selected = Object.assign({}, this.state.selected);
     selected.active = false;
-    if (commit.key === 'Tab') {
-      selected.idx += 1;
-    }
     let expandedRows = this.state.expandedRows;
     // if(commit.changed && commit.changed.expandedHeight){
     //   expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
@@ -808,7 +809,7 @@ const ReactDataGrid = createReactClass({
     this.setState({selected});
   },
 
-  setActive(keyPressed: string) {
+  setActive(keyPressed: string): boolean {
     let rowIdx = this.state.selected.rowIdx;
     let row = this.props.rowGetter(rowIdx);
 
@@ -829,8 +830,11 @@ const ReactDataGrid = createReactClass({
           this.setState({selected}, () => { this.scrollToColumn(idx); });
         }
         this.handleCancelCopy();
+        return true;
       }
     }
+
+    return false;
   },
 
   setInactive() {
