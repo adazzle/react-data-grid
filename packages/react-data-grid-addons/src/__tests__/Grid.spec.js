@@ -51,7 +51,7 @@ describe('Grid', function() {
       }, addedData);
     };
 
-    this.buildFakeCellUodate = (addedData) => {
+    this.buildFakeCellUpdate = (addedData) => {
       return Object.assign({}, {
         cellKey: 'title',
         rowIdx: 0,
@@ -64,11 +64,12 @@ describe('Grid', function() {
 
     this.getCellMetaData = () => this.getBaseGrid().props.cellMetaData;
 
-    this.simulateGridKeyDown = (key, ctrlKey) => {
+    this.simulateGridKeyDown = (key, ctrlKey, shiftKey) => {
       let fakeEvent = this.buildFakeEvent({
         key: key,
         keyCode: key,
-        ctrlKey: ctrlKey
+        ctrlKey: ctrlKey,
+        shiftKey: shiftKey
       });
       this.getBaseGrid().props.onViewportKeydown(fakeEvent);
     };
@@ -309,16 +310,28 @@ describe('Grid', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
         });
-        it('selection should stay on cell', function() {
+        it('selection should stay on cell on Tab', function() {
           this.simulateGridKeyDown('Tab');
           expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+        it('selection should move left on Tab+Shift', function() {
+          this.simulateGridKeyDown('Tab', false, true);
+          expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 1 });
+        });
+        it('selection should move to next row on Enter', function() {
+          this.simulateGridKeyDown('Enter');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 2 });
+        });
+        it('selection should move to previous row on Enter+Shift', function() {
+          this.simulateGridKeyDown('Enter', false, true);
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 0 });
         });
       });
       describe('when on first cell in row', function() {
         beforeEach(function() {
           this.component.setState({ selected: { idx: 0, rowIdx: 1 } });
         });
-        it('nothing should happen', function() {
+        it('selection should stay on cell on ArrowLeft', function() {
           this.simulateGridKeyDown('ArrowLeft');
           expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
         });
@@ -330,6 +343,15 @@ describe('Grid', function() {
         it('selection should move to last cell', function() {
           this.simulateGridKeyDown('Tab');
           expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+      describe('when in last row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: this._rows.length - 1 } });
+        });
+        it('selection should stay on cell on Enter', function() {
+          this.simulateGridKeyDown('Enter');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: this._rows.length - 1 });
         });
       });
     });
@@ -926,27 +948,16 @@ describe('Grid', function() {
         wrapper.setProps({ onRowUpdated: this.testProps.onRowUpdated });
         this.component = wrapper.node;
         this.component.setState({ selected: { idx: 3, rowIdx: 3, active: true } });
-        this.getCellMetaData().onCommit(this.buildFakeCellUodate());
+        this.getCellMetaData().onCommit(this.buildFakeCellUpdate());
       });
 
       it('should trigger onRowUpdated with correct params', function() {
         const onRowUpdated = this.component.props.onRowUpdated;
-        expect(onRowUpdated.calls.mostRecent().args[0]).toEqual(this.buildFakeCellUodate());
+        expect(onRowUpdated.calls.mostRecent().args[0]).toEqual(this.buildFakeCellUpdate());
       });
 
       it('should deactivate selected cell', function() {
         expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: 3, rowIdx: 3, active: false }));
-      });
-    });
-
-    describe('cell commit after "Tab"', function() {
-      beforeEach(function() {
-        this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true } });
-        this.getCellMetaData().onCommit(this.buildFakeCellUodate({ key: 'Tab' }));
-      });
-
-      it('should select next cell', function() {
-        expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 1, active: false });
       });
     });
 
