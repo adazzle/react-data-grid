@@ -116,7 +116,8 @@ const ReactDataGrid = createReactClass({
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
     overScan: PropTypes.object,
     onDeleteSubRow: PropTypes.func,
-    onAddSubRow: PropTypes.func
+    onAddSubRow: PropTypes.func,
+    enableCellAutoFocus: PropTypes.bool
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -135,7 +136,8 @@ const ReactDataGrid = createReactClass({
         colsEnd: 5,
         rowsStart: 5,
         rowsEnd: 5
-      }
+      },
+      enableCellAutoFocus: true
     };
   },
 
@@ -931,7 +933,8 @@ const ReactDataGrid = createReactClass({
       onDeleteSubRow: this.props.onDeleteSubRow,
       onAddSubRow: this.props.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
-      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
+      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
+      enableCellAutoFocus: this.props.enableCellAutoFocus
     };
 
     let toolbar = this.renderToolbar();

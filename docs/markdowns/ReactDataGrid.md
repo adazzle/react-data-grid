@@ -27,6 +27,12 @@ type: `element`
 type: `func`
 
 
+### `enableCellAutoFocus`
+
+type: `bool`
+defaultValue: `true`
+
+
 ### `enableCellSelect`
 
 type: `bool`
