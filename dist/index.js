@@ -8962,10 +8962,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (_this.props.isScrolling && !_this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !_this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
 	          return;
 	        }
-	        // Only focus to the current cell if the currently active node in the document is within the data grid.
+	        // If the enableCellAutoFocus is set in the ReactDataGrid props, it will allow the cell to take focus when the browser is focused on the body.
+	        // Otherwise, only focus to the current cell if the currently active node in the document is within the data grid.
 	        // Meaning focus should not be stolen from elements that the grid doesnt control.
+	        var cellAutoFocusEnabled = _this.props.cellMetaData && _this.props.cellMetaData.enableCellAutoFocus;
 	        var dataGridDOMNode = _this.props.cellMetaData && _this.props.cellMetaData.getDataGridDOMNode ? _this.props.cellMetaData.getDataGridDOMNode() : null;
-	        if (_this.isFocusedOnCell() || _this.isFocusedOnBody() || dataGridDOMNode && dataGridDOMNode.contains(document.activeElement)) {
+	        if (_this.isFocusedOnCell() || cellAutoFocusEnabled && _this.isFocusedOnBody() || dataGridDOMNode && dataGridDOMNode.contains(document.activeElement)) {
 	          var cellDOMNode = _this.node;
 	          if (cellDOMNode) {
 	            cellDOMNode.focus();
@@ -18673,7 +18675,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /* called before cell is set active, returns a boolean to determine whether cell is editable */
 	    overScan: _propTypes2['default'].object,
 	    onDeleteSubRow: _propTypes2['default'].func,
-	    onAddSubRow: _propTypes2['default'].func
+	    onAddSubRow: _propTypes2['default'].func,
+	    enableCellAutoFocus: _propTypes2['default'].bool
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -18692,7 +18695,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        colsEnd: 5,
 	        rowsStart: 5,
 	        rowsEnd: 5
-	      }
+	      },
+	      enableCellAutoFocus: true
 	    };
 	  },
 
@@ -19527,7 +19531,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onDeleteSubRow: this.props.onDeleteSubRow,
 	      onAddSubRow: this.props.onAddSubRow,
 	      isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
-	      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab)
+	      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
+	      enableCellAutoFocus: this.props.enableCellAutoFocus
 	    };
 
 	    var toolbar = this.renderToolbar();
