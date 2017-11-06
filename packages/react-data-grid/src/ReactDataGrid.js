@@ -302,7 +302,6 @@ const ReactDataGrid = createReactClass({
       e.preventDefault();
       return;
     }
-    
     this.moveSelectedCell(e, 0, e.shiftKey ? -1 : 1);
   },
 
