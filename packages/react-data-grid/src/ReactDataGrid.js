@@ -1,4 +1,6 @@
 const React                 = require('react');
+import PropTypes from 'prop-types';
+const createReactClass = require('create-react-class');
 const ReactDOM = require('react-dom');
 const BaseGrid              = require('./Grid');
 const Row                   = require('./Row');
@@ -42,7 +44,8 @@ type RowUpdateEvent = {
   rowIdx: number;
 };
 
-const ReactDataGrid = React.createClass({
+const ReactDataGrid = createReactClass({
+  displayName: 'ReactDataGrid',
 
   mixins: [
     ColumnMetricsMixin,
@@ -51,69 +54,70 @@ const ReactDataGrid = React.createClass({
   ],
 
   propTypes: {
-    rowHeight: React.PropTypes.number.isRequired,
-    headerRowHeight: React.PropTypes.number,
-    headerFiltersHeight: React.PropTypes.number,
-    minHeight: React.PropTypes.number.isRequired,
-    minWidth: React.PropTypes.number,
-    enableRowSelect: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]),
-    onRowUpdated: React.PropTypes.func,
-    rowGetter: React.PropTypes.func.isRequired,
-    rowsCount: React.PropTypes.number.isRequired,
-    toolbar: React.PropTypes.element,
-    enableCellSelect: React.PropTypes.bool,
-    columns: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.array]).isRequired,
-    onFilter: React.PropTypes.func,
-    onCellCopyPaste: React.PropTypes.func,
-    onCellsDragged: React.PropTypes.func,
-    onAddFilter: React.PropTypes.func,
-    onGridSort: React.PropTypes.func,
-    onDragHandleDoubleClick: React.PropTypes.func,
-    onGridRowsUpdated: React.PropTypes.func,
-    onRowSelect: React.PropTypes.func,
-    rowKey: React.PropTypes.string,
-    rowScrollTimeout: React.PropTypes.number,
-    onClearFilters: React.PropTypes.func,
-    contextMenu: React.PropTypes.element,
-    cellNavigationMode: React.PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
-    onCellSelected: React.PropTypes.func,
-    onCellDeSelected: React.PropTypes.func,
-    onCellExpand: React.PropTypes.func,
-    enableDragAndDrop: React.PropTypes.bool,
-    onRowExpandToggle: React.PropTypes.func,
-    draggableHeaderCell: React.PropTypes.func,
-    getValidFilterValues: React.PropTypes.func,
-    rowSelection: React.PropTypes.shape({
-      enableShiftSelect: React.PropTypes.bool,
-      onRowsSelected: React.PropTypes.func,
-      onRowsDeselected: React.PropTypes.func,
-      showCheckbox: React.PropTypes.bool,
-      selectBy: React.PropTypes.oneOfType([
-        React.PropTypes.shape({
-          indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+    rowHeight: PropTypes.number.isRequired,
+    headerRowHeight: PropTypes.number,
+    headerFiltersHeight: PropTypes.number,
+    minHeight: PropTypes.number.isRequired,
+    minWidth: PropTypes.number,
+    enableRowSelect: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+    onRowUpdated: PropTypes.func,
+    rowGetter: PropTypes.func.isRequired,
+    rowsCount: PropTypes.number.isRequired,
+    toolbar: PropTypes.element,
+    enableCellSelect: PropTypes.bool,
+    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    onFilter: PropTypes.func,
+    onCellCopyPaste: PropTypes.func,
+    onCellsDragged: PropTypes.func,
+    getCellActions: PropTypes.func,
+    onAddFilter: PropTypes.func,
+    onGridSort: PropTypes.func,
+    onDragHandleDoubleClick: PropTypes.func,
+    onGridRowsUpdated: PropTypes.func,
+    onRowSelect: PropTypes.func,
+    rowKey: PropTypes.string,
+    rowScrollTimeout: PropTypes.number,
+    onClearFilters: PropTypes.func,
+    contextMenu: PropTypes.element,
+    cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
+    onCellSelected: PropTypes.func,
+    onCellDeSelected: PropTypes.func,
+    onCellExpand: PropTypes.func,
+    enableDragAndDrop: PropTypes.bool,
+    onRowExpandToggle: PropTypes.func,
+    draggableHeaderCell: PropTypes.func,
+    getValidFilterValues: PropTypes.func,
+    rowSelection: PropTypes.shape({
+      enableShiftSelect: PropTypes.bool,
+      onRowsSelected: PropTypes.func,
+      onRowsDeselected: PropTypes.func,
+      showCheckbox: PropTypes.bool,
+      selectBy: PropTypes.oneOfType([
+        PropTypes.shape({
+          indexes: PropTypes.arrayOf(PropTypes.number).isRequired
         }),
-        React.PropTypes.shape({
-          isSelectedKey: React.PropTypes.string.isRequired
+        PropTypes.shape({
+          isSelectedKey: PropTypes.string.isRequired
         }),
-        React.PropTypes.shape({
-          keys: React.PropTypes.shape({
-            values: React.PropTypes.array.isRequired,
-            rowKey: React.PropTypes.string.isRequired
+        PropTypes.shape({
+          keys: PropTypes.shape({
+            values: PropTypes.array.isRequired,
+            rowKey: PropTypes.string.isRequired
           }).isRequired
         })
       ]).isRequired
     }),
-    onRowClick: React.PropTypes.func,
-    onGridKeyUp: React.PropTypes.func,
-    onGridKeyDown: React.PropTypes.func,
-    rowGroupRenderer: React.PropTypes.func,
-    rowActionsCell: React.PropTypes.func,
-    onCheckCellIsEditable: React.PropTypes.func,
+    onRowClick: PropTypes.func,
+    onGridKeyUp: PropTypes.func,
+    onGridKeyDown: PropTypes.func,
+    rowGroupRenderer: PropTypes.func,
+    rowActionsCell: PropTypes.func,
+    onCheckCellIsEditable: PropTypes.func,
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
-    overScan: React.PropTypes.object,
-    onDeleteSubRow: React.PropTypes.func,
-    onAddSubRow: React.PropTypes.func,
-    enableCellAutoFocus: React.PropTypes.bool
+    overScan: PropTypes.object,
+    onDeleteSubRow: PropTypes.func,
+    onAddSubRow: PropTypes.func,
+    enableCellAutoFocus: PropTypes.bool
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
@@ -201,11 +205,15 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  onCellClick: function(cell: SelectedType) {
+  onCellClick: function(cell: SelectedType, e: SyntheticEvent) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
 
     if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
-      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx));
+      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
+    }
+
+    if (e) {
+      e.stopPropagation();
     }
   },
 
@@ -216,13 +224,12 @@ const ReactDataGrid = React.createClass({
     }
   },
 
-  onCellDoubleClick: function(cell: SelectedType) {
+  onCellDoubleClick: function(cell: SelectedType, e: SyntheticEvent) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
-    this.setActive('DoubleClick');
-  },
-
-  onViewportDoubleClick: function() {
     this.setActive();
+    if (e) {
+      e.stopPropagation();
+    }
   },
 
   onPressArrowUp(e: SyntheticEvent) {
@@ -473,6 +480,7 @@ const ReactDataGrid = React.createClass({
   useNewRowSelection() {
     return this.props.rowSelection && this.props.rowSelection.selectBy;
   },
+
   // return false if not a shift select so can be handled as normal row selection
   handleShiftSelect(rowIdx) {
     if (this.state.lastRowIdxUiSelected > -1 && this.isSingleKeyDown(KeyCodes.Shift)) {
@@ -535,6 +543,7 @@ const ReactDataGrid = React.createClass({
       this.props.rowSelection.onRowsSelected([{rowIdx, row: rowData}]);
     }
   },
+
   // columnKey not used here as this function will select the whole row,
   // but needed to match the function signature in the CheckboxEditor
   handleRowSelect(rowIdx: number, columnKey: string, rowData, e: Event) {
@@ -640,6 +649,7 @@ const ReactDataGrid = React.createClass({
     }
     return rows;
   },
+
   getInitialSelectedRows: function() {
     let selectedRows = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
@@ -647,6 +657,7 @@ const ReactDataGrid = React.createClass({
     }
     return selectedRows;
   },
+
   getRowSelectionProps() {
     if (this.props.rowSelection) {
       return this.props.rowSelection.selectBy;
@@ -654,6 +665,7 @@ const ReactDataGrid = React.createClass({
 
     return null;
   },
+
   getSelectedRows() {
     if (this.props.rowSelection) {
       return null;
@@ -661,6 +673,7 @@ const ReactDataGrid = React.createClass({
 
     return this.state.selectedRows.filter(r => r.isSelected === true);
   },
+
   getSelectedValue(): string {
     let rowIdx = this.state.selected.rowIdx;
     let idx = this.state.selected.idx;
@@ -792,6 +805,11 @@ const ReactDataGrid = React.createClass({
     }
   },
 
+  deselect() {
+    const selected = {rowIdx: -1, idx: -1};
+    this.setState({selected});
+  },
+
   setActive(keyPressed: string) {
     let rowIdx = this.state.selected.rowIdx;
     let row = this.props.rowGetter(rowIdx);
@@ -871,7 +889,6 @@ const ReactDataGrid = React.createClass({
     return this._cachedComputedColumns;
   },
 
-
   copyPasteEnabled: function(): boolean {
     return this.props.onCellCopyPaste !== null;
   },
@@ -912,6 +929,7 @@ const ReactDataGrid = React.createClass({
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
       getDataGridDOMNode: this.getDataGridDOMNode,
+      getCellActions: this.props.getCellActions,
       onDeleteSubRow: this.props.onDeleteSubRow,
       onAddSubRow: this.props.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
@@ -959,7 +977,8 @@ const ReactDataGrid = React.createClass({
             onViewportKeyup={this.onKeyUp}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
-            onViewportDoubleClick={this.onViewportDoubleClick}
+            onViewportClick={this.deselect}
+            onViewportDoubleClick={this.deselect}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
             contextMenu={this.props.contextMenu}

@@ -1,5 +1,6 @@
 const React                = require('react');
-const PropTypes            = React.PropTypes;
+import PropTypes from 'prop-types';
+const createReactClass = require('create-react-class');
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
 const GridScrollMixin      = require('./GridScrollMixin');
@@ -7,7 +8,9 @@ const DOMMetrics           = require('./DOMMetrics');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-core.css');
 
-const Grid = React.createClass({
+const Grid = createReactClass({
+  displayName: 'Grid',
+
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
@@ -20,29 +23,30 @@ const Grid = React.createClass({
     emptyRowsView: PropTypes.func,
     expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
-    rowSelection: React.PropTypes.oneOfType([
-      React.PropTypes.shape({
-        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+    rowSelection: PropTypes.oneOfType([
+      PropTypes.shape({
+        indexes: PropTypes.arrayOf(PropTypes.number).isRequired
       }),
-      React.PropTypes.shape({
-        isSelectedKey: React.PropTypes.string.isRequired
+      PropTypes.shape({
+        isSelectedKey: PropTypes.string.isRequired
       }),
-      React.PropTypes.shape({
-        keys: React.PropTypes.shape({
-          values: React.PropTypes.array.isRequired,
-          rowKey: React.PropTypes.string.isRequired
+      PropTypes.shape({
+        keys: PropTypes.shape({
+          values: PropTypes.array.isRequired,
+          rowKey: PropTypes.string.isRequired
         }).isRequired
       })
     ]),
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
-    sortColumn: React.PropTypes.string,
-    sortDirection: React.PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
+    sortColumn: PropTypes.string,
+    sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,
     onViewportKeyup: PropTypes.func,
     onViewportDragStart: PropTypes.func.isRequired,
     onViewportDragEnd: PropTypes.func.isRequired,
+    onViewportClick: PropTypes.func.isRequired,
     onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
@@ -102,7 +106,15 @@ const Grid = React.createClass({
           cellMetaData={this.props.cellMetaData}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
-            <div ref={(node) => { this.viewPortContainer = node; } } tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+            <div
+              ref={(node) => { this.viewPortContainer = node; } }
+              tabIndex="0"
+              onKeyDown={this.props.onViewportKeydown}
+              onKeyUp={this.props.onViewportKeyup}
+              onClick={this.props.onViewportClick}
+              onDoubleClick={this.props.onViewportDoubleClick}
+              onDragStart={this.props.onViewportDragStart}
+              onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
                   ref={(node) => { this.viewport = node; } }
                   rowKey={this.props.rowKey}

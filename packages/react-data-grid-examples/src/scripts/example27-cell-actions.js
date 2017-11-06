@@ -169,7 +169,7 @@ class Example extends React.Component {
     if (isNotInGroups) {
       columnGroups.push({key: activeColumn.key, name: activeColumn.name});
     }
-   
+
     this.setState({groupBy: columnGroups});
   };
 
@@ -187,6 +187,26 @@ class Example extends React.Component {
     this.setState({expandedRows: expandedRows});
   };
 
+  getCellActions(column, row) {
+    if (column.key === 'county' && row.id === 'id_0') {
+      return [
+        {
+          icon: 'glyphicon glyphicon-remove',
+          callback: () => { alert('Deleting'); }
+        },
+        {
+          icon: 'glyphicon glyphicon-link',
+          actions: [
+            {
+              text: 'Campaign Linking',
+              callback: () => { alert('Navigating to camapign linking'); }
+            }
+          ]
+        }
+      ];
+    }
+  }
+
   render() {
     return (
       <DraggableContainer>
@@ -201,7 +221,7 @@ class Example extends React.Component {
             toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted}/>}
             rowHeight={50}
             minHeight={600}
-            />
+            getCellActions={this.getCellActions} />
       </DraggableContainer>
     );
   }
@@ -209,18 +229,19 @@ class Example extends React.Component {
 
 const exampleDescription = (
   <div>
-    <p>This example demonstrates how to group rows by column name. Drag a column header to group rows by that column.</p>
-    <p>To expand and close a row group, you can use either the mouse or keyboard</p>
-    <p>Press <strong>Enter</strong> or <strong>Left Arrow</strong> or <strong>Right Arrow</strong> to toggle whether a row is expanded or not</p>
-    <p>This feature also supports a custom Renderer, by using a renderer you can render some fancy custom html in the row gorup.</p>
-    <p>To use a renderer just inject your component with <code>rowGroupRenderer</code> prop in the grid.</p>
+    <p>This example demonstrates how one can add on custom actions to the cells of any column and row.</p>
+    <p>This feature was designed in such a way that one can decide which combination of row/columns should have actions on them.</p>
+    <p>To use the cell action simply create a function called <code>getCellActions</code> which will be passed to your react data grid instance</p>
+    <p>The function is called by react data grid for each cell with a column and row object, you can then create any condition you deem fit and return an array of objects to be rendered</p>
+    <p><code>{"[{actionIcon, actionCallback}]"}</code> will render an action button</p>
+    <p><code>{"[{actionIcon, actions: [{actionIcon, actionText, actionCallback}]}]"}</code> will render an action menu with the button opening a dropdown of actions</p>
   </div>
 );
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
-  exampleName: 'Row Grouping Example',
+  exampleName: 'Cell Actions Example',
   exampleDescription,
-  examplePath: './scripts/example21-grouping.js',
+  examplePath: './scripts/example27-cell-actions.js',
   examplePlaygroundLink: undefined
 });

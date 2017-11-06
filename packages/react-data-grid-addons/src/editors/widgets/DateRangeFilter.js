@@ -1,4 +1,5 @@
 const React = require('react');
+import PropTypes from 'prop-types';
 const ReactDOM = require('react-dom');
 const Moment 		 = require('moment');
 const $					 = require('jquery');
@@ -1134,23 +1135,20 @@ let validateDate = function(props, propName) {
   }
 };
 
-let DateRangeFilter = React.createClass({
-
-  getInitialState: function() {
-    return {dateRange: ''};
-  },
-
-  propTypes: {
-    format: React.PropTypes.string.isRequired,
-    ranges: React.PropTypes.object.isRequired,
-    onApply: React.PropTypes.func,
-    title: React.PropTypes.string.isRequired,
-    onblur: React.PropTypes.func,
+class DateRangeFilter extends React.Component {
+  static propTypes = {
+    format: PropTypes.string.isRequired,
+    ranges: PropTypes.object.isRequired,
+    onApply: PropTypes.func,
+    title: PropTypes.string.isRequired,
+    onblur: PropTypes.func,
     startDate: validateDate,
     endDate: validateDate
-  },
+  };
 
-  componentDidMount: function() {
+  state = {dateRange: ''};
+
+  componentDidMount() {
     // initialise jQuery date range widget -
     let $calendarNode = $(ReactDOM.findDOMNode(this.refs.calendar));
     let $calendar = $calendarNode.daterangepicker({ranges: this.props.ranges, format: this.props.format, opens: 'left', locale: { cancelLabel: 'Clear' }, applyClass: 'btn-primary'  });
@@ -1163,39 +1161,39 @@ let DateRangeFilter = React.createClass({
     }
 
     $calendar.on('apply.daterangepicker', this.handleApply).on('cancel.daterangepicker', this.handleClear);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     // destroy widget on unMount
     this.calendar.remove();
-  },
+  }
 
-  handleApply: function(ev, picker) {
+  handleApply = (ev, picker) => {
     if (this.props.onApply) {
       // return moment instances for start and end date ranges
       this.props.onApply(picker.startDate, picker.endDate);
     }
 
     this.setState({dateRange: picker.startDate.format(picker.format) + ' - ' + picker.endDate.format(picker.format)});
-  },
+  };
 
-  handleClear: function() {
+  handleClear = () => {
     this.setState({dateRange: ''});
     if (this.props.onApply) {
       // return moment instances for start and end date ranges
       this.props.onApply(null, null);
     }
-  },
+  };
 
-  getTitle: function() {
+  getTitle = () => {
     return this.state.dateRange !== '' ? this.state.dateRange : this.props.title;
-  },
+  };
 
-  render: function() {
+  render() {
     return (
       <input ref={node => this.calendar = node} onBlur={this.props.onblur}/>
     );
   }
-});
+}
 
 module.exports = DateRangeFilter;

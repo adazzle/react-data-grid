@@ -1,4 +1,5 @@
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import utils from './utils';
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 
@@ -61,7 +62,7 @@ RowGroup.propTypes = {
   colVisibleEnd: PropTypes.number.isRequired,
   colDisplayStart: PropTypes.number.isRequired,
   colDisplayEnd: PropTypes.number.isRequired,
-  isScrolling: React.PropTypes.bool.isRequired,
+  isScrolling: PropTypes.bool.isRequired,
   columnGroupName: PropTypes.string.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   treeDepth: PropTypes.number.isRequired,

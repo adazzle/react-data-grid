@@ -3,8 +3,9 @@ const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const { Toolbar, Data: { Selectors } } = require('react-data-grid-addons');
 
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props, context) {
+    super(props, context);
     this._columns = [
       {
         key: 'id',
@@ -44,14 +45,14 @@ const Example = React.createClass({
       }
     ];
 
-    return { rows: this.createRows(), filters: {} };
-  },
+    this.state = { rows: this.createRows(), filters: {} };
+  }
 
-  getRandomDate(start, end) {
+  getRandomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-  },
+  };
 
-  createRows() {
+  createRows = () => {
     let rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
@@ -66,22 +67,22 @@ const Example = React.createClass({
     }
 
     return rows;
-  },
+  };
 
-  getRows() {
+  getRows = () => {
     return Selectors.getRows(this.state);
-  },
+  };
 
-  getSize() {
+  getSize = () => {
     return this.getRows().length;
-  },
+  };
 
-  rowGetter(rowIdx) {
+  rowGetter = (rowIdx) => {
     let rows = this.getRows();
     return rows[rowIdx];
-  },
+  };
 
-  handleFilterChange(filter) {
+  handleFilterChange = (filter) => {
     let newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
@@ -89,12 +90,12 @@ const Example = React.createClass({
       delete newFilters[filter.column.key];
     }
     this.setState({ filters: newFilters });
-  },
+  };
 
-  onClearFilters() {
+  onClearFilters = () => {
     // all filters removed
     this.setState({filters: {} });
-  },
+  };
 
   render() {
     return (
@@ -108,7 +109,7 @@ const Example = React.createClass({
         onAddFilter={this.handleFilterChange}
         onClearFilters={this.onClearFilters} />);
   }
-});
+}
 
 const exampleDescription = (
   <p>While ReactDataGrid doesn't not provide the ability to filter directly, it does provide hooks that allow you to provide your own filter function. This is done via the <code>onAddFilter</code> prop. To enable filtering for a given column, set <code>column.filterable = true</code> for that column. Now when the header cell has a new filter value entered for that column, <code>onAddFilter</code> will be triggered passing the filter key and value.</p>);

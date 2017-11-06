@@ -1,28 +1,31 @@
 const React                   = require('react');
+import PropTypes from 'prop-types';
+const createReactClass = require('create-react-class');
 const joinClasses              = require('classnames');
 const keyboardHandlerMixin    = require('../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
 const isFunction              = require('../utils/isFunction');
 require('../../../../themes/react-data-grid-core.css');
 
-const EditorContainer = React.createClass({
+const EditorContainer = createReactClass({
+  displayName: 'EditorContainer',
   mixins: [keyboardHandlerMixin],
 
   propTypes: {
-    rowIdx: React.PropTypes.number,
-    rowData: React.PropTypes.object.isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
-    cellMetaData: React.PropTypes.shape({
-      selected: React.PropTypes.object.isRequired,
-      copied: React.PropTypes.object,
-      dragged: React.PropTypes.object,
-      onCellClick: React.PropTypes.func,
-      onCellDoubleClick: React.PropTypes.func,
-      onCommitCancel: React.PropTypes.func,
-      onCommit: React.PropTypes.func
+    rowIdx: PropTypes.number,
+    rowData: PropTypes.object.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired,
+    cellMetaData: PropTypes.shape({
+      selected: PropTypes.object.isRequired,
+      copied: PropTypes.object,
+      dragged: PropTypes.object,
+      onCellClick: PropTypes.func,
+      onCellDoubleClick: PropTypes.func,
+      onCommitCancel: PropTypes.func,
+      onCommit: PropTypes.func
     }).isRequired,
-    column: React.PropTypes.object.isRequired,
-    height: React.PropTypes.number.isRequired
+    column: PropTypes.object.isRequired,
+    height: PropTypes.number.isRequired
   },
 
   changeCommitted: false,
@@ -240,7 +243,7 @@ const EditorContainer = React.createClass({
     return (relatedTarget.className.indexOf('react-grid-Viewport') > -1);
   },
 
-  isClickInisdeEditor(e) {
+  isClickInsideEditor(e) {
     let relatedTarget = this.getRelatedTarget(e);
     return (e.currentTarget.contains(relatedTarget) || (relatedTarget.className.indexOf('editing') > -1 || relatedTarget.className.indexOf('react-grid-Cell') > -1));
   },
@@ -263,7 +266,7 @@ const EditorContainer = React.createClass({
 
     if (!this.isBodyClicked(e)) {
 	    // prevent null reference
-      if (this.isViewportClicked(e) || !this.isClickInisdeEditor(e)) {
+      if (this.isViewportClicked(e) || !this.isClickInsideEditor(e)) {
         this.commit(e);
       }
     }
