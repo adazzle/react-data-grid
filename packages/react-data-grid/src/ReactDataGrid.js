@@ -258,23 +258,39 @@ const ReactDataGrid = createReactClass({
     return domNode && domNode.contains(document.activeElement);
   },
 
+  exitGrid(oldSelectedCell, newSelectedValue) {
+    this.setState({ selected: newSelectedValue }, 
+      () => {
+        if (typeof this.props.onCellDeSelected === 'function') {
+          this.props.onCellDeSelected(oldSelectedCell);
+        }});
+  },
+
+  enterGrid(newSelectedValue) {
+    this.setState({ selected: newSelectedValue },
+      () => {
+        if (typeof this.props.onCellSelected === 'function') {
+          this.props.onCellSelected(newSelectedValue);
+        }});
+  },
+
   onPressTab(e: SyntheticEvent) {
-    const shift = e.shiftKey === true;
-    const idx = this.state.selected.idx;
-    const rowIdx = this.state.selected.rowIdx;
-    // Scenario 0: we're on the div surrounding the grid and the grid has no rows
-    // we want to let the browser handle it
+    // Scenario 0: When there are no rows in the grid, pressing tab needs to allow the browser to handle it
     if (this.props.rowsCount === 0) {
       return;
     }
-    // Scenario 1: we're inside the grid, and we are trying to exit using the keyboard
+    const shift = e.shiftKey === true;
+    const idx = this.state.selected.idx;
+    const rowIdx = this.state.selected.rowIdx;
+    // Scenario 1: we're at a cell where we can exit the grid
     if (this.canExitGrid(e) && this.isFocusedOnCell()) {
       if (shift && idx >= 0) {
-        this.setState({ selected: { idx: -1, rowIdx, exitedLeft: true } });
+        this.exitGrid({ idx, rowIdx}, { idx: -1, rowIdx, exitedLeft: true });
+        return;
       } else if (!shift && idx >= 0) {
-        this.setState({ selected: { idx: -1, rowIdx } });
+        this.exitGrid({ idx, rowIdx }, { idx: -1, rowIdx });
+        return;
       }
-      return;
     }
     // Scenario 2: we're on the div surrounding the grid and press shift+Tab
     // and we just exited left, so we want to let the browser handle it
@@ -282,7 +298,7 @@ const ReactDataGrid = createReactClass({
     // they user arrived, so it is possible that exitLeft gets set and then the user clicks out of the table
     // and they won't be able to Shift+Tab around the site to re-enter the table from the right.
     if (this.isFocusedOnTable() && !this.isFocusedOnCell() && shift && this.state.selected.exitedLeft) {
-      this.setState({ selected: { idx, rowIdx } });
+      this.enterGrid({ idx, rowIdx });
       return;
     }
     // Scenario 3: we're on the div surrounding the grid and we want to enter the grid
@@ -297,7 +313,7 @@ const ReactDataGrid = createReactClass({
       // otherwise, there is a selected cell in the table already, and
       // we want to trigger it to focus - setting selected in state will update
       // the cell props, and checkFocus will be called
-      this.setState({ selected: { idx, rowIdx, changeSomething: true } });
+      this.enterGrid({ idx, rowIdx, changeSomething: true });
       // make sure the browser doesn't handle it
       e.preventDefault();
       return;

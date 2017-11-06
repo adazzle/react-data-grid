@@ -42,7 +42,8 @@ import * as helpers from '../helpers/test/GridPropHelpers';
 
 function shallowRenderGrid({
   cellNavigationMode = undefined,
-  numRows = helpers.rowsCount()
+  numRows = helpers.rowsCount(),
+  onCellSelected, onCellDeSelected
 }) {
   const enzymeWrapper = shallow(<ReactDataGrid
     columns={helpers.columns}
@@ -50,13 +51,124 @@ function shallowRenderGrid({
     rowsCount={numRows}
     enableCellSelect
     cellNavigationMode={cellNavigationMode}
+    onCellSelected={onCellSelected}
+    onCellDeSelected={onCellDeSelected}
   />);
   return {
     enzymeWrapper
   };
 }
+describe('Cell Selection/DeSelection handlers', function() {
+  describe('when cell selection/deselection handlers are passed', function() {
+    beforeEach(function() {
+      const props = { cellNavigationMode: 'none', onCellSelected: jasmine.createSpy(), onCellDeSelected: jasmine.createSpy() };
+      const { enzymeWrapper } = shallowRenderGrid(props);
+      this.grid = enzymeWrapper.instance();
+    });
 
-describe('using keyboard to navigate through the grid', () => {
+    describe('cell in the middle of the grid is selected', function() {
+      beforeEach(function() {
+        this.grid.setState({ selected: { rowIdx: 1, idx: 1 } });
+        // override focused on cell/table tests because we're using shallow rendering
+        this.grid.isFocusedOnCell = () => true;
+        this.grid.isFocusedOnTable = () => false;
+        spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      });
+      it('deselection handler should have been called when moving to the next cell when press Tab', function() {
+        this.grid.onPressTab({ shiftKey: false, preventDefault: () => {} });
+        expect(this.grid.props.onCellDeSelected).toHaveBeenCalled();
+        expect(this.grid.props.onCellDeSelected.calls.mostRecent().args[0]).toEqual({
+          rowIdx: 1,
+          idx: 1
+        });
+      });
+      it('selection handler should have been called when moving to the next cell', function() {
+        this.grid.onPressTab({ shiftKey: false, preventDefault: () => {} });
+        expect(this.grid.props.onCellSelected).toHaveBeenCalled();
+        expect(this.grid.props.onCellSelected.calls.mostRecent().args[0]).toEqual({
+          rowIdx: 1,
+          idx: 2
+        });
+      });
+    });
+    describe('user is able to exit the grid to the left', function() {
+      beforeEach(function() {
+        this.grid.setState({ selected: { rowIdx: 0, idx: 0 } });
+        this.grid.isFocusedOnCell = () => true;
+        this.grid.isFocusedOnTable = () => false;
+      });
+      it('triggers the deselection handler on press Shift+Tab', function() {
+        console.log("Amanda")
+        this.grid.onPressTab({ shiftKey: true, preventDefault: () => {} });
+        expect(this.grid.props.onCellDeSelected).toHaveBeenCalled();
+        expect(this.grid.props.onCellDeSelected.calls.mostRecent().args[0]).toEqual({
+          rowIdx: 0,
+          idx: 0
+        });
+      });
+      it('does not trigger the selection handler on press Shift+Tab', function() {
+        this.grid.onPressTab({ shiftKey: true, preventDefault: () => {} });
+        expect(this.grid.props.onCellSelected).not.toHaveBeenCalled();
+      });
+    });
+    describe('user is able to exit the grid to the right', function() {
+      beforeEach(function() {
+        this.grid.setState({ selected: { rowIdx: 2, idx: 2 } });
+        this.grid.isFocusedOnCell = () => true;
+        this.grid.isFocusedOnTable = () => false;
+      });
+      it('triggers the deselection handler on press Tab', function() {
+        this.grid.onPressTab({ shiftKey: false, preventDefault: () => {} });
+        expect(this.grid.props.onCellDeSelected).toHaveBeenCalled();
+        expect(this.grid.props.onCellDeSelected.calls.mostRecent().args[0]).toEqual({
+          rowIdx: 2,
+          idx: 2
+        });
+      });
+      it('does not trigger the selection handler on press Tab', function() {
+        this.grid.onPressTab({ shiftKey: false, preventDefault: () => {} });
+        expect(this.grid.props.onCellSelected).not.toHaveBeenCalled();
+      });
+    });
+    describe('user is able to enter the grid by pressing Tab', () => {
+      beforeEach(function() {
+        this.grid.setState({ selected: { rowIdx: 1, idx: 1 } });
+        this.grid.isFocusedOnCell = () => false;
+        this.grid.isFocusedOnTable = () => true;
+      });
+      it('does not trigger the deselection handler on press Tab', function() {
+        this.grid.onPressTab({ shiftKey: false, preventDefault: () => {} });
+        expect(this.grid.props.onCellDeSelected).not.toHaveBeenCalled();
+      });
+      it('triggers the selection handler on press Tab', function() {
+        this.grid.onPressTab({ shiftKey: false, preventDefault: () => {} });
+        expect(this.grid.props.onCellSelected).toHaveBeenCalled();
+        const selectedCell = this.grid.props.onCellSelected.calls.mostRecent().args[0];
+        expect(selectedCell.rowIdx).toEqual(1);
+        expect(selectedCell.idx).toEqual(1);
+      });
+    });
+    describe('user is able to enter the grid by pressing Shift+Tab', () => {
+      beforeEach(function() {
+        this.grid.setState({ selected: { rowIdx: 1, idx: 1 } });
+        this.grid.isFocusedOnCell = () => false;
+        this.grid.isFocusedOnTable = () => true;
+      });
+      it('does not trigger the deselection handler on press Shift+Tab', function() {
+        this.grid.onPressTab({ shiftKey: true, preventDefault: () => {} });
+        expect(this.grid.props.onCellDeSelected).not.toHaveBeenCalled();
+      });
+      it('triggers the selection handler on press Shift+Tab', function() {
+        this.grid.onPressTab({ shiftKey: true, preventDefault: () => {} });
+        expect(this.grid.props.onCellSelected).toHaveBeenCalled();
+        const selectedCell = this.grid.props.onCellSelected.calls.mostRecent().args[0];
+        expect(selectedCell.rowIdx).toEqual(1);
+        expect(selectedCell.idx).toEqual(1);
+      });
+    });
+  });
+});
+describe('using keyboard to navigate through the grid by pressing Tab or Shift+Tab', () => {
   // enzyme doesn't allow dom keyboard navigation, but we can assume that if
   // prevent default isn't called, it lets the dom do normal navigation
   describe('when cellNavigationMode is changeRow', () => {
@@ -80,7 +192,7 @@ describe('using keyboard to navigate through the grid', () => {
       const grid = enzymeWrapper.instance();
       // override focused on cell test because we're using shallow rendering
       grid.isFocusedOnCell = () => true;
-      grid.setState({selected: { rowIdx: 0, idx: 0 } });
+      grid.setState({ selected: { rowIdx: 0, idx: 0 } });
       expect(grid.state.selected).toEqual({ idx: 0, rowIdx: 0 });
       const preventDefault = jasmine.createSpy();
       grid.onPressTab({ shiftKey: true, preventDefault });
