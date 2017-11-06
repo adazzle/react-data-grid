@@ -1,6 +1,7 @@
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
+import update from 'immutability-helper';
 
 class Example extends React.Component {
   constructor(props, context) {
@@ -75,7 +76,7 @@ class Example extends React.Component {
 
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
-      let updatedRow = React.addons.update(rowToUpdate, {$merge: updated});
+      let updatedRow = update(rowToUpdate, {$merge: updated});
       rows[i] = updatedRow;
     }
 
