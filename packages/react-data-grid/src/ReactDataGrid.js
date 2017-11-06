@@ -248,11 +248,61 @@ const ReactDataGrid = createReactClass({
     this.moveSelectedCell(e, 0, 1);
   },
 
+  isFocusedOnCell() {
+    return document.activeElement && document.activeElement.classList &&
+      document.activeElement.classList.contains('react-grid-Cell');
+  },
+
+  isFocusedOnTable() {
+    const domNode = this.getDataGridDOMNode();
+    return domNode && domNode.contains(document.activeElement);
+  },
+
   onPressTab(e: SyntheticEvent) {
-    // Allow the user to exit the grid if they are in the right location and they press Tab (with or without shift)
-    if (this.canExitGrid(e)) {
+    const shift = e.shiftKey === true;
+    const idx = this.state.selected.idx;
+    const rowIdx = this.state.selected.rowIdx;
+    // Scenario 0: we're on the div surrounding the grid and the grid has no rows
+    // we want to let the browser handle it
+    if (this.props.rowsCount === 0) {
       return;
     }
+    // Scenario 1: we're inside the grid, and we are trying to exit using the keyboard
+    if (this.canExitGrid(e) && this.isFocusedOnCell()) {
+      if (shift && idx >= 0) {
+        this.setState({ selected: { idx: -1, rowIdx, exitedLeft: true } });
+      } else if (!shift && idx >= 0) {
+        this.setState({ selected: { idx: -1, rowIdx } });
+      }
+      return;
+    }
+    // Scenario 2: we're on the div surrounding the grid and press shift+Tab
+    // and we just exited left, so we want to let the browser handle it
+    // KNOWN ISSUE: Focus on the table can come from either side and at this point we can't know how
+    // they user arrived, so it is possible that exitLeft gets set and then the user clicks out of the table
+    // and they won't be able to Shift+Tab around the site to re-enter the table from the right.
+    if (this.isFocusedOnTable() && !this.isFocusedOnCell() && shift && this.state.selected.exitedLeft) {
+      this.setState({ selected: { idx, rowIdx } });
+      return;
+    }
+    // Scenario 3: we're on the div surrounding the grid and we want to enter the grid
+    if (!this.isFocusedOnCell()) {
+      // Scenario 3A: idx has been set to -1 (eg can happen when clicking into the filter box)
+      // we want to go to the first cell in the row if we press Tab
+      // we want to go to the last cell in the row if we press Shift+Tab
+      if (idx === -1) {
+        this.moveSelectedCell(e, rowIdx === -1 ? 1 : 0, shift ? this.getNbrColumns() : 1);
+        return;
+      }
+      // otherwise, there is a selected cell in the table already, and
+      // we want to trigger it to focus - setting selected in state will update
+      // the cell props, and checkFocus will be called
+      this.setState({ selected: { idx, rowIdx, changeSomething: true } });
+      // make sure the browser doesn't handle it
+      e.preventDefault();
+      return;
+    }
+    
     this.moveSelectedCell(e, 0, e.shiftKey ? -1 : 1);
   },
 

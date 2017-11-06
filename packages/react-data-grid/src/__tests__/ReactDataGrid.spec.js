@@ -41,12 +41,13 @@ import { shallow } from 'enzyme';
 import * as helpers from '../helpers/test/GridPropHelpers';
 
 function shallowRenderGrid({
-  cellNavigationMode = undefined
+  cellNavigationMode = undefined,
+  numRows = helpers.rowsCount()
 }) {
   const enzymeWrapper = shallow(<ReactDataGrid
     columns={helpers.columns}
     rowGetter={helpers.rowGetter}
-    rowsCount={helpers.rowsCount()}
+    rowsCount={numRows}
     enableCellSelect
     cellNavigationMode={cellNavigationMode}
   />);
@@ -54,20 +55,42 @@ function shallowRenderGrid({
     enzymeWrapper
   };
 }
+
 describe('using keyboard to navigate through the grid', () => {
+  // enzyme doesn't allow dom keyboard navigation, but we can assume that if
+  // prevent default isn't called, it lets the dom do normal navigation
   describe('when cellNavigationMode is changeRow', () => {
     const cellNavigationMode = 'changeRow';
-    it('allows the user to exit the grid when they press Shift+Tab at the first cell of the grid', () => {
+    it('allows the user to exit the grid with Tab if there are no rows', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode, numRows: 0 });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      grid.onPressTab({ shiftKey: false, preventDefault });
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode, numRows: 0 });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      grid.onPressTab({ shiftKey: true, preventDefault });
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('allows the user to exit to the grid with Shift+Tab at the first cell of the grid', () => {
       const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
       const grid = enzymeWrapper.instance();
+      // override focused on cell test because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.setState({selected: { rowIdx: 0, idx: 0 } });
       expect(grid.state.selected).toEqual({ idx: 0, rowIdx: 0 });
       const preventDefault = jasmine.createSpy();
-      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      grid.onPressTab({ shiftKey: true, preventDefault });
       expect(preventDefault).not.toHaveBeenCalled();
     });
     it('allows the user to exit the grid when they press Tab at the last cell in the grid', () => {
       const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
       const grid = enzymeWrapper.instance();
+      // override focused on cell test because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
       grid.setState({selected: { rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 } });
       expect(grid.state.selected).toEqual({ rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1});
       const preventDefault = jasmine.createSpy();
@@ -78,6 +101,9 @@ describe('using keyboard to navigate through the grid', () => {
       const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
       const grid = enzymeWrapper.instance();
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: false, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
@@ -89,6 +115,9 @@ describe('using keyboard to navigate through the grid', () => {
       grid.setState({selected: { rowIdx: 0, idx: helpers.columns.length - 1 } });
       expect(grid.state.selected).toEqual({ rowIdx: 0, idx: helpers.columns.length - 1 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: false, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
@@ -100,6 +129,9 @@ describe('using keyboard to navigate through the grid', () => {
       grid.setState({selected: { rowIdx: 0, idx: 1 } });
       expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: true, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
@@ -111,19 +143,94 @@ describe('using keyboard to navigate through the grid', () => {
       grid.setState({selected: { rowIdx: 2, idx: 0 } });
       expect(grid.state.selected).toEqual({ rowIdx: 2, idx: 0 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: true, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
       expect(grid.state.selected).toEqual({ rowIdx: 1, idx: helpers.columns.length - 1 });
     });
+    it('allows the user to exit the grid with Shift+Tab when focused on the div surrounding the table and they just exited left', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 0, idx: 0, exitedLeft: true } });
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0, exitedLeft: true });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
+    });
+    it('allows the user to enter the grid with Tab when grid\'s selected cell has idx:-1', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: -1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: -1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 0 });
+    });
+    it('allows the user to enter the grid with Shift+Tab when grid\'s selected cell has idx:-1', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: -1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: -1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 2 });
+    });
+    it('allows the user to enter the grid with Tab to the previously selected cell', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: 1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1, changeSomething: true });
+    });
   });
   describe('when cellNavigationMode is none', () => {
     const cellNavigationMode = 'none';
+    it('allows the user to exit the grid with Tab if there are no rows', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode, numRows: 0 });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      grid.onPressTab({ shiftKey: false, preventDefault });
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode, numRows: 0 });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      grid.onPressTab({ shiftKey: true, preventDefault });
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
     it('allows the user to exit the grid when they press Shift+Tab at the first cell of the grid', () => {
       const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
       const grid = enzymeWrapper.instance();
       expect(grid.state.selected).toEqual({ idx: 0, rowIdx: 0 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       expect(grid.onPressTab({ shiftKey: true, preventDefault }));
       expect(preventDefault).not.toHaveBeenCalled();
     });
@@ -133,6 +240,9 @@ describe('using keyboard to navigate through the grid', () => {
       grid.setState({selected: { rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 } });
       expect(grid.state.selected).toEqual({ rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1});
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       expect(grid.onPressTab({ shiftKey: false, preventDefault }));
       expect(preventDefault).not.toHaveBeenCalled();
     });
@@ -140,6 +250,9 @@ describe('using keyboard to navigate through the grid', () => {
       const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
       const grid = enzymeWrapper.instance();
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: false, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
@@ -151,6 +264,9 @@ describe('using keyboard to navigate through the grid', () => {
       grid.setState({selected: { rowIdx: 0, idx: helpers.columns.length - 1 } });
       expect(grid.state.selected).toEqual({ rowIdx: 0, idx: helpers.columns.length - 1});
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       expect(grid.onPressTab({ shiftKey: false, preventDefault }));
       expect(preventDefault).not.toHaveBeenCalled();
     });
@@ -160,6 +276,9 @@ describe('using keyboard to navigate through the grid', () => {
       grid.setState({selected: { rowIdx: 0, idx: 1 } });
       expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: true, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
@@ -171,18 +290,93 @@ describe('using keyboard to navigate through the grid', () => {
       grid.setState({selected: { rowIdx: 2, idx: 0 } });
       expect(grid.state.selected).toEqual({ rowIdx: 2, idx: 0 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       expect(grid.onPressTab({ shiftKey: true, preventDefault }));
       expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('allows the user to exit the grid with Shift+Tab when focused on the div surrounding the table and they just exited left', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 0, idx: 0, exitedLeft: true } });
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0, exitedLeft: true });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
+    });
+    it('allows the user to enter the grid with Tab when grid\'s selected cell has idx:-1', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: -1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: -1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 0 });
+    });
+    it('allows the user to enter the grid with Shift+Tab when grid\'s selected cell has idx:-1', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: -1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: -1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 2 });
+    });
+    it('allows the user to enter the grid with Tab to the previously selected cell', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: 1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1, changeSomething: true });
     });
   });
   describe('when cellNavigationMode is loopOverRow', () => {
     const cellNavigationMode = 'loopOverRow';
+    it('allows the user to exit the grid with Tab if there are no rows', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode, numRows: 0 });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      grid.onPressTab({ shiftKey: false, preventDefault });
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+    it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode, numRows: 0 });
+      const grid = enzymeWrapper.instance();
+      const preventDefault = jasmine.createSpy();
+      grid.onPressTab({ shiftKey: true, preventDefault });
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
     it('goes to the first cell in the row when the user presses Tab and they are at the end of a row', () => {
       const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
       const grid = enzymeWrapper.instance();
       grid.setState({selected: { rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 } });
       expect(grid.state.selected).toEqual({ rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: false, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
@@ -193,6 +387,9 @@ describe('using keyboard to navigate through the grid', () => {
       const grid = enzymeWrapper.instance();
       expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: true, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
@@ -202,6 +399,9 @@ describe('using keyboard to navigate through the grid', () => {
       const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
       const grid = enzymeWrapper.instance();
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: false, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
@@ -213,10 +413,68 @@ describe('using keyboard to navigate through the grid', () => {
       grid.setState({selected: { rowIdx: 0, idx: 1 } });
       expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
       const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => true;
+      grid.isFocusedOnTable = () => false;
       spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
       expect(grid.onPressTab({ shiftKey: true, preventDefault }));
       expect(preventDefault).toHaveBeenCalled();
       expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
+    });
+    it('allows the user to exit the grid with Shift+Tab when focused on the div surrounding the table and they just exited left', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 0, idx: 0, exitedLeft: true } });
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0, exitedLeft: true });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 0 });
+    });
+    it('allows the user to enter the grid with Tab when grid\'s selected cell has idx:-1', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: -1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: -1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 0 });
+    });
+    it('allows the user to enter the grid with Shift+Tab when grid\'s selected cell has idx:-1', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: -1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: -1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: true, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 2 });
+    });
+    it('allows the user to enter the grid with Tab to the previously selected cell', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const grid = enzymeWrapper.instance();
+      grid.setState({selected: { rowIdx: 1, idx: 1 }});
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1 });
+      const preventDefault = jasmine.createSpy();
+      // override focused on cell/table tests because we're using shallow rendering
+      grid.isFocusedOnCell = () => false;
+      grid.isFocusedOnTable = () => true;
+      spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
+      expect(grid.onPressTab({ shiftKey: false, preventDefault }));
+      expect(preventDefault).toHaveBeenCalled();
+      expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1, changeSomething: true });
     });
   });
 });
