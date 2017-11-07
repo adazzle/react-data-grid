@@ -259,7 +259,7 @@ const ReactDataGrid = createReactClass({
   },
 
   exitGrid(oldSelectedCell, newSelectedValue) {
-    this.setState({ selected: newSelectedValue }, 
+    this.setState({ selected: newSelectedValue },
       () => {
         if (typeof this.props.onCellDeSelected === 'function') {
           this.props.onCellDeSelected(oldSelectedCell);

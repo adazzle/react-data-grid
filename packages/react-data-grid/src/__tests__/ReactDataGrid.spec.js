@@ -98,7 +98,6 @@ describe('Cell Selection/DeSelection handlers', function() {
         this.grid.isFocusedOnTable = () => false;
       });
       it('triggers the deselection handler on press Shift+Tab', function() {
-        console.log("Amanda")
         this.grid.onPressTab({ shiftKey: true, preventDefault: () => {} });
         expect(this.grid.props.onCellDeSelected).toHaveBeenCalled();
         expect(this.grid.props.onCellDeSelected.calls.mostRecent().args[0]).toEqual({
