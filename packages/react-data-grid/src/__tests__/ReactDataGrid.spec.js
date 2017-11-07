@@ -1,17 +1,24 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import ReactDataGrid from '../ReactDataGrid';
 import { shallow } from 'enzyme';
 import * as helpers from '../helpers/test/GridPropHelpers';
 
 function shallowRenderGrid({
-  enableCellAutoFocus = undefined
+  enableCellAutoFocus = undefined,
+  cellNavigationMode = undefined,
+  numRows = helpers.rowsCount(),
+  onCellSelected, onCellDeSelected
 }) {
   const enzymeWrapper = shallow(<ReactDataGrid
     columns={helpers.columns}
     rowGetter={helpers.rowGetter}
-    rowsCount={helpers.rowsCount()}
+    rowsCount={numRows}
     enableCellSelect
     enableCellAutoFocus={enableCellAutoFocus}
+    cellNavigationMode={cellNavigationMode}
+    onCellSelected={onCellSelected}
+    onCellDeSelected={onCellDeSelected}
   />);
   return {
     enzymeWrapper
@@ -34,30 +41,6 @@ describe('configure enableCellAutoFocus property', () => {
   });
 });
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import ReactDataGrid from '../ReactDataGrid';
-import { shallow } from 'enzyme';
-import * as helpers from '../helpers/test/GridPropHelpers';
-
-function shallowRenderGrid({
-  cellNavigationMode = undefined,
-  numRows = helpers.rowsCount(),
-  onCellSelected, onCellDeSelected
-}) {
-  const enzymeWrapper = shallow(<ReactDataGrid
-    columns={helpers.columns}
-    rowGetter={helpers.rowGetter}
-    rowsCount={numRows}
-    enableCellSelect
-    cellNavigationMode={cellNavigationMode}
-    onCellSelected={onCellSelected}
-    onCellDeSelected={onCellDeSelected}
-  />);
-  return {
-    enzymeWrapper
-  };
-}
 function shallowRenderGridWithSelectionHandlers() {
   const props = { cellNavigationMode: 'none', onCellSelected: jasmine.createSpy(), onCellDeSelected: jasmine.createSpy() };
   const { enzymeWrapper } = shallowRenderGrid(props);
