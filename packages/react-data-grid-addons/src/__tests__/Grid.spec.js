@@ -934,17 +934,6 @@ describe('Grid', function() {
       });
     });
 
-    describe('cell commit after "Tab"', function() {
-      beforeEach(function() {
-        this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true } });
-        this.getCellMetaData().onCommit(this.buildFakeCellUodate({ key: 'Tab' }));
-      });
-
-      it('should select next cell', function() {
-        expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 1, active: false });
-      });
-    });
-
     describe('Cell click', function() {
       beforeEach(function() {
         this.getCellMetaData().onCellClick({ idx: 2, rowIdx: 2 });

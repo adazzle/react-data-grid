@@ -275,13 +275,24 @@ const ReactDataGrid = createReactClass({
   },
 
   onPressTab(e: SyntheticEvent) {
-    // Scenario 0: When there are no rows in the grid, pressing tab needs to allow the browser to handle it
+    // Scenario 0a: When there are no rows in the grid, pressing tab needs to allow the browser to handle it
     if (this.props.rowsCount === 0) {
       return;
     }
-    const shift = e.shiftKey === true;
+    // Scenario 0b: When we're editing a cell
     const idx = this.state.selected.idx;
     const rowIdx = this.state.selected.rowIdx;
+    if (this.state.selected.active === true) {
+      // if we are in a position to leave the grid, stop editing but stay in that cell
+      if (this.canExitGrid(e)) {
+        this.moveSelectedCell(e, 0, 0);
+        return;
+      }
+      // otherwise move left or right as appropriate
+      this.moveSelectedCell(e, 0, e.shiftKey ? -1 : 1);
+      return;
+    }
+    const shift = e.shiftKey === true;
     // Scenario 1: we're at a cell where we can exit the grid
     if (this.canExitGrid(e) && this.isFocusedOnCell()) {
       if (shift && idx >= 0) {
@@ -384,9 +395,6 @@ const ReactDataGrid = createReactClass({
   onCellCommit(commit: RowUpdateEvent) {
     let selected = Object.assign({}, this.state.selected);
     selected.active = false;
-    if (commit.key === 'Tab') {
-      selected.idx += 1;
-    }
     let expandedRows = this.state.expandedRows;
     // if(commit.changed && commit.changed.expandedHeight){
     //   expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
