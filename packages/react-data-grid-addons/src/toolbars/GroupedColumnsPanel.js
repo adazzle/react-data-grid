@@ -1,4 +1,6 @@
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 import { DropTarget } from 'react-dnd';
 import GroupedColumnButton from './GroupedColumnButton';
 import { _constants } from 'react-data-grid';
@@ -31,7 +33,13 @@ class GroupedColumnsPanel extends Component {
 
   renderGroupedColumns() {
     return this.props.groupBy.map(c => {
-      return (<GroupedColumnButton key={c} name={c} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>);
+      const groupedColumnButtonProps = {
+        columnKey: typeof c === 'string' ? c : c.key,
+        name: typeof c === 'string' ? c : c.name,
+        onColumnGroupDeleted: this.props.onColumnGroupDeleted,
+        key: typeof c === 'string' ? c : c.key
+      };
+      return (<GroupedColumnButton {...groupedColumnButtonProps}/>);
     });
   }
 

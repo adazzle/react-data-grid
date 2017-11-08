@@ -1,7 +1,8 @@
 const React = require('react');
+const createReactClass = require('create-react-class');
 const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
-const PropTypes = React.PropTypes;
+import PropTypes from 'prop-types';
 const ScrollShim = require('./ScrollShim');
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
@@ -12,7 +13,8 @@ import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 
-const Canvas = React.createClass({
+const Canvas = createReactClass({
+  displayName: 'Canvas',
   mixins: [ScrollShim],
 
   propTypes: {
@@ -42,26 +44,26 @@ const Canvas = React.createClass({
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
     selectedRows: PropTypes.array,
-    rowKey: React.PropTypes.string,
-    rowScrollTimeout: React.PropTypes.number,
+    rowKey: PropTypes.string,
+    rowScrollTimeout: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
-    rowSelection: React.PropTypes.oneOfType([
-      React.PropTypes.shape({
-        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+    rowSelection: PropTypes.oneOfType([
+      PropTypes.shape({
+        indexes: PropTypes.arrayOf(PropTypes.number).isRequired
       }),
-      React.PropTypes.shape({
-        isSelectedKey: React.PropTypes.string.isRequired
+      PropTypes.shape({
+        isSelectedKey: PropTypes.string.isRequired
       }),
-      React.PropTypes.shape({
-        keys: React.PropTypes.shape({
-          values: React.PropTypes.array.isRequired,
-          rowKey: React.PropTypes.string.isRequired
+      PropTypes.shape({
+        keys: PropTypes.shape({
+          values: PropTypes.array.isRequired,
+          rowKey: PropTypes.string.isRequired
         }).isRequired
       })
     ]),
-    rowGroupRenderer: React.PropTypes.func,
-    isScrolling: React.PropTypes.bool
+    rowGroupRenderer: PropTypes.func,
+    isScrolling: PropTypes.bool
   },
 
   getDefaultProps() {
@@ -82,6 +84,7 @@ const Canvas = React.createClass({
   },
 
   componentWillMount() {
+    this.rows = [];
     this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
@@ -151,55 +154,21 @@ const Canvas = React.createClass({
     this.props.onScroll(scroll);
   },
 
-  getSubRows(row) {
-    let subRowDetails = this.props.getSubRowDetails(row);
-    if (subRowDetails.expanded === true) {
-      return subRowDetails.children.map(r => {
-        return { row: r };
-      });
-    }
-  },
-
-  addSubRows(rowsInput, row, i, displayEnd, treeDepth) {
-    let subRowDetails = this.props.getSubRowDetails(row) || {};
-    let rows = rowsInput;
-    let increment = i;
-    if (increment < displayEnd) {
-      subRowDetails.treeDepth = treeDepth;
-      rows.push({ row, subRowDetails });
-      increment++;
-    }
-    if (subRowDetails && subRowDetails.expanded) {
-      let subRows = this.getSubRows(row);
-      subRows.forEach(sr => {
-        let result = this.addSubRows(rows, sr.row, increment, displayEnd, treeDepth + 1);
-        rows = result.rows;
-        increment = result.increment;
-      });
-    }
-    return { rows, increment };
-  },
-
-  getRows(displayStart: number, displayEnd: number): Array<any> {
+  getRows(displayStart, displayEnd) {
     this._currentRowsRange = { start: displayStart, end: displayEnd };
     if (Array.isArray(this.props.rowGetter)) {
       return this.props.rowGetter.slice(displayStart, displayEnd);
     }
     let rows = [];
-    let rowFetchIndex = displayStart;
     let i = displayStart;
     while (i < displayEnd) {
-      let row = this.props.rowGetter(rowFetchIndex);
+      let row = this.props.rowGetter(i);
+      let subRowDetails = {};
       if (this.props.getSubRowDetails) {
-        let treeDepth = 0;
-        let result = this.addSubRows(rows, row, i, displayEnd, treeDepth);
-        rows = result.rows;
-        i = result.increment;
-      } else {
-        rows.push({ row: row });
-        i++;
+        subRowDetails = this.props.getSubRowDetails(row);
       }
-      rowFetchIndex++;
+      rows.push({ row, subRowDetails });
+      i++;
     }
     return rows;
   },
@@ -212,12 +181,12 @@ const Canvas = React.createClass({
     return scrollbarWidth;
   },
 
-  getScroll(): { scrollTop: number; scrollLeft: number } {
+  getScroll() {
     let {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
     return { scrollTop, scrollLeft };
   },
 
-  isRowSelected(idx, row): boolean {
+  isRowSelected(idx, row) {
     // Use selectedRows if set
     if (this.props.selectedRows !== null) {
       let selectedRows = this.props.selectedRows.filter(r => {
@@ -240,7 +209,7 @@ const Canvas = React.createClass({
   _currentRowsRange: { start: 0, end: 0 },
   _scroll: { scrollTop: 0, scrollLeft: 0 },
 
-  setScrollLeft(scrollLeft: number) {
+  setScrollLeft(scrollLeft) {
     if (this._currentRowsLength !== 0) {
       if (!this.rows) return;
       for (let i = 0, len = this._currentRowsLength; i < len; i++) {
@@ -263,22 +232,17 @@ const Canvas = React.createClass({
     return this.rows[i];
   },
 
-  rows: [],
-
   renderRow(props: any) {
     let row = props.row;
+    if (row.__metaData && row.__metaData.getRowRenderer) {
+      return row.__metaData.getRowRenderer(this.props, props.idx);
+    }
     if (row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
-        key={props.key}
-        name={row.name}
+        {...props}
         {...row.__metaData}
-        row={props.row}
-        idx={props.idx}
-        height={props.height}
-        cellMetaData={this.props.cellMetaData}
-        renderer={this.props.rowGroupRenderer}
-        columns={props.columns}
-        />);
+        name={row.name}
+        renderer={this.props.rowGroupRenderer} />);
     }
     let RowsRenderer = this.props.rowRenderer;
     if (typeof RowsRenderer === 'function') {

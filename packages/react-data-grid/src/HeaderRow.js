@@ -1,4 +1,5 @@
 const React             = require('react');
+const createReactClass = require('create-react-class');
 const shallowEqual    = require('fbjs/lib/shallowEqual');
 const BaseHeaderCell        = require('./HeaderCell');
 const getScrollbarSize  = require('./getScrollbarSize');
@@ -10,19 +11,21 @@ const HeaderCellType = require('./HeaderCellType');
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-header.css');
 
-const PropTypes         = React.PropTypes;
+import PropTypes from 'prop-types';
 
 const HeaderRowStyle  = {
-  overflow: React.PropTypes.string,
+  overflow: PropTypes.string,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  height: React.PropTypes.number,
-  position: React.PropTypes.string
+  height: PropTypes.number,
+  position: PropTypes.string
 };
 
 // The list of the propTypes that we want to include in the HeaderRow div
 const knownDivPropertyKeys = ['width', 'height', 'style', 'onScroll'];
 
-const HeaderRow = React.createClass({
+const HeaderRow = createReactClass({
+  displayName: 'HeaderRow',
+
   propTypes: {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
@@ -32,7 +35,7 @@ const HeaderRow = React.createClass({
     onColumnResizeEnd: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle),
     sortColumn: PropTypes.string,
-    sortDirection: React.PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sortDirection: PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
@@ -46,6 +49,10 @@ const HeaderRow = React.createClass({
 
   mixins: [ColumnUtilsMixin],
 
+  componentWillMount() {
+    this.cells = [];
+  },
+
   shouldComponentUpdate(nextProps: {width: ?(number | string); height: number; columns: Array<ExcelColumn>; style: ?HeaderRowStyle; onColumnResize: ?any}): boolean {
     return (
       nextProps.width !== this.props.width
@@ -57,14 +64,12 @@ const HeaderRow = React.createClass({
     );
   },
 
-  cells: [],
-
   getHeaderCellType(column) {
     if (column.filterable) {
       if (this.props.filterable) return HeaderCellType.FILTERABLE;
     }
 
-    if (column.sortable) return HeaderCellType.SORTABLE;
+    if (column.sortable && column.rowType !== 'filter') return HeaderCellType.SORTABLE;
 
     return HeaderCellType.NONE;
   },
@@ -149,7 +154,7 @@ const HeaderRow = React.createClass({
       if (column.locked) {
         this.cells[i].setScrollLeft(scrollLeft);
       } else {
-        if (this.cells[i]) {
+        if (this.cells[i] && this.cells[i].removeScroll) {
           this.cells[i].removeScroll();
         }
       }

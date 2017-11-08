@@ -1,24 +1,26 @@
 import OverflowCell from './OverflowCell';
 import rowComparer from './RowComparer';
 const React = require('react');
+import PropTypes from 'prop-types';
+const createReactClass = require('create-react-class');
 const joinClasses = require('classnames');
 const Cell = require('./Cell');
 const ColumnUtilsMixin = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const PropTypes = React.PropTypes;
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-row.css');
 
-const CellExpander = React.createClass({
+class CellExpander extends React.Component {
   render() {
-    return (<Cell {...this.props}/>);
+    return (<Cell {...this.props} />);
   }
-});
+}
 
 // The list of the propTypes that we want to include in the Row div
 const knownDivPropertyKeys = ['height'];
 
-const Row = React.createClass({
+const Row = createReactClass({
+  displayName: 'Row',
 
   propTypes: {
     height: PropTypes.number.isRequired,
@@ -37,7 +39,7 @@ const Row = React.createClass({
     colVisibleEnd: PropTypes.number.isRequired,
     colDisplayStart: PropTypes.number.isRequired,
     colDisplayEnd: PropTypes.number.isRequired,
-    isScrolling: React.PropTypes.bool.isRequired
+    isScrolling: PropTypes.bool.isRequired
   },
 
   mixins: [ColumnUtilsMixin],
@@ -107,8 +109,12 @@ const Row = React.createClass({
     let cells = [];
     let lockedCells = [];
     let selectedColumn = this.getSelectedColumn();
+    let lastColumnIdx = this.props.columns.size - 1;
     if (this.props.columns) {
       this.props.columns.forEach((column, i) => {
+        if (i === lastColumnIdx) {
+          column.isLastColumn = true;
+        }
         let cell = this.getCell(column, i, selectedColumn);
         if (column.locked) {
           lockedCells.push(cell);
@@ -155,7 +161,11 @@ const Row = React.createClass({
   },
 
   getExpandableOptions(columnKey) {
-    return { canExpand: this.props.subRowDetails && this.props.subRowDetails.field === columnKey, expanded: this.props.subRowDetails && this.props.subRowDetails.expanded, children: this.props.subRowDetails && this.props.subRowDetails.children, treeDepth: this.props.subRowDetails ? this.props.subRowDetails.treeDepth : 0 };
+    let subRowDetails = this.props.subRowDetails;
+    if (subRowDetails) {
+      return { canExpand: subRowDetails && subRowDetails.field === columnKey && ((subRowDetails.children && subRowDetails.children.length > 0) || subRowDetails.group === true), field: subRowDetails.field, expanded: subRowDetails && subRowDetails.expanded, children: subRowDetails && subRowDetails.children, treeDepth: subRowDetails ? subRowDetails.treeDepth : 0, subRowDetails: subRowDetails };
+    }
+    return {};
   },
 
   setScrollLeft(scrollLeft) {
@@ -201,7 +211,7 @@ const Row = React.createClass({
 
     let cells = this.getCells();
     return (
-      <div {...this.getKnownDivProps()} className = { className } style= { style } onDragEnter= { this.handleDragEnter } >
+      <div {...this.getKnownDivProps() } className={className} style={style} onDragEnter={this.handleDragEnter} >
         {
           React.isValidElement(this.props.row) ?
             this.props.row : cells

@@ -1,31 +1,35 @@
 const React                   = require('react');
+import PropTypes from 'prop-types';
+const createReactClass = require('create-react-class');
 const joinClasses              = require('classnames');
 const keyboardHandlerMixin    = require('../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
 const isFunction              = require('../utils/isFunction');
 require('../../../../themes/react-data-grid-core.css');
 
-const EditorContainer = React.createClass({
+const EditorContainer = createReactClass({
+  displayName: 'EditorContainer',
   mixins: [keyboardHandlerMixin],
 
   propTypes: {
-    rowIdx: React.PropTypes.number,
-    rowData: React.PropTypes.object.isRequired,
-    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number, React.PropTypes.object, React.PropTypes.bool]).isRequired,
-    cellMetaData: React.PropTypes.shape({
-      selected: React.PropTypes.object.isRequired,
-      copied: React.PropTypes.object,
-      dragged: React.PropTypes.object,
-      onCellClick: React.PropTypes.func,
-      onCellDoubleClick: React.PropTypes.func,
-      onCommitCancel: React.PropTypes.func,
-      onCommit: React.PropTypes.func
+    rowIdx: PropTypes.number,
+    rowData: PropTypes.object.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired,
+    cellMetaData: PropTypes.shape({
+      selected: PropTypes.object.isRequired,
+      copied: PropTypes.object,
+      dragged: PropTypes.object,
+      onCellClick: PropTypes.func,
+      onCellDoubleClick: PropTypes.func,
+      onCommitCancel: PropTypes.func,
+      onCommit: PropTypes.func
     }).isRequired,
-    column: React.PropTypes.object.isRequired,
-    height: React.PropTypes.number.isRequired
+    column: PropTypes.object.isRequired,
+    height: PropTypes.number.isRequired
   },
 
   changeCommitted: false,
+  changeCanceled: false,
 
   getInitialState() {
     return {isInvalid: false};
@@ -43,7 +47,7 @@ const EditorContainer = React.createClass({
   },
 
   componentWillUnmount: function() {
-    if (!this.changeCommitted && !this.hasEscapeBeenPressed()) {
+    if (!this.changeCommitted && !this.changeCanceled) {
       this.commit({key: 'Enter'});
     }
   },
@@ -55,12 +59,12 @@ const EditorContainer = React.createClass({
       column: this.props.column,
       value: this.getInitialValue(),
       onCommit: this.commit,
+      onCommitCancel: this.commitCancel,
       rowMetaData: this.getRowMetaData(),
       rowData: this.props.rowData,
       height: this.props.height,
       onBlur: this.commit,
-      onOverrideKeyDown: this.onKeyDown,
-      onCommitCancel: this.props.cellMetaData.onCommitCancel
+      onOverrideKeyDown: this.onKeyDown
     };
 
     let CustomEditor = this.props.column.editor;
@@ -85,7 +89,7 @@ const EditorContainer = React.createClass({
 
   onPressEscape(e: SyntheticKeyboardEvent) {
     if (!this.editorIsSelectOpen()) {
-      this.props.cellMetaData.onCommitCancel();
+      this.commitCancel();
     } else {
       // prevent event from bubbling if editor has results to select
       e.stopPropagation();
@@ -188,6 +192,12 @@ const EditorContainer = React.createClass({
       this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
     }
   },
+
+  commitCancel() {
+    this.changeCanceled = true;
+    this.props.cellMetaData.onCommitCancel();
+  },
+
   isNewValueValid(value: string): boolean {
     if (isFunction(this.getEditor().validate)) {
       let isValid = this.getEditor().validate(value);
@@ -233,7 +243,7 @@ const EditorContainer = React.createClass({
     return (relatedTarget.className.indexOf('react-grid-Viewport') > -1);
   },
 
-  isClickInisdeEditor(e) {
+  isClickInsideEditor(e) {
     let relatedTarget = this.getRelatedTarget(e);
     return (e.currentTarget.contains(relatedTarget) || (relatedTarget.className.indexOf('editing') > -1 || relatedTarget.className.indexOf('react-grid-Cell') > -1));
   },
@@ -256,7 +266,7 @@ const EditorContainer = React.createClass({
 
     if (!this.isBodyClicked(e)) {
 	    // prevent null reference
-      if (this.isViewportClicked(e) || !this.isClickInisdeEditor(e)) {
+      if (this.isViewportClicked(e) || !this.isClickInsideEditor(e)) {
         this.commit(e);
       }
     }
@@ -275,19 +285,6 @@ const EditorContainer = React.createClass({
         inputNode.select();
       }
     }
-  },
-
-  hasEscapeBeenPressed() {
-    let pressed = false;
-    let escapeKey = 27;
-    if (window.event) {
-      if (window.event.keyCode === escapeKey) {
-        pressed = true;
-      } else if (window.event.which === escapeKey) {
-        pressed  = true;
-      }
-    }
-    return pressed;
   },
 
   renderStatusIcon(): ?ReactElement {

@@ -662,17 +662,6 @@ describe('Grid', function() {
         this.component = this.createComponent({ columns: this.columns }).node;
       });
 
-      describe('double click on grid', function() {
-        beforeEach(function() {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
-          this.getBaseGrid().props.onViewportDoubleClick();
-        });
-
-        it('should activate current selected cell', function() {
-          expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: 1, rowIdx: 1, active: true }));
-        });
-      });
-
       describe('copy a cell value', function() {
         beforeEach(function() {
           const cCharacterKeyCode = 99;
@@ -782,25 +771,6 @@ describe('Grid', function() {
       });
     });
 
-    describe('When column is not editable', function() {
-      beforeEach(function() {
-        const uneditableColumn = Object.assign({ editable: false }, this.columns[1]);
-        this.columns[1] = uneditableColumn;
-        this.component = this.createComponent({ columns: this.columns }).node;
-      });
-
-      describe('double click on grid ', function() {
-        beforeEach(function() {
-          this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
-          this.getBaseGrid().props.onViewportDoubleClick();
-        });
-
-        it('should not activate current selected cell', function() {
-          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1 });
-        });
-      });
-    });
-
     describe('Drag events', function() {
       describe('dragging in grid', function() {
         beforeEach(function() {
@@ -899,6 +869,22 @@ describe('Grid', function() {
         expect(this.columns[1]).toEqual(jasmine.objectContaining({ key: 'count', name: 'Count', width: 100 }));
       });
     });
+
+    describe('outside row/cell', function() {
+      beforeEach(function() {
+        this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+      });
+
+      it('should deselect currently selected cell on click', function() {
+        this.getBaseGrid().props.onViewportClick();
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+
+      it('should deselect currently selected cell on double-click', function() {
+        this.getBaseGrid().props.onViewportDoubleClick();
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+    });
   });
 
   describe('Cell Meta Data', function() {
@@ -909,11 +895,11 @@ describe('Grid', function() {
         dragged: null,
         copied: null
       }));
-      expect(meta.onCellClick).toBeFunction();
-      expect(meta.onCommit).toBeFunction();
-      expect(meta.onCommitCancel).toBeFunction();
-      expect(meta.handleDragEnterRow).toBeFunction();
-      expect(meta.handleTerminateDrag).toBeFunction();
+      expect(meta.onCellClick).toEqual(jasmine.any(Function));
+      expect(meta.onCommit).toEqual(jasmine.any(Function));
+      expect(meta.onCommitCancel).toEqual(jasmine.any(Function));
+      expect(meta.handleDragEnterRow).toEqual(jasmine.any(Function));
+      expect(meta.handleTerminateDrag).toEqual(jasmine.any(Function));
     });
 
     describe('Changing Grid state', function() {
@@ -978,6 +964,7 @@ describe('Grid', function() {
       let columnWithEvent;
       const eventColumnIdx = 3;
       const eventColumnRowIdx = 2;
+      const eventColumnRowId = 2;
 
       beforeEach(function() {
         columnWithEvent = this.component.state.columnMetrics.columns[3];
@@ -1011,8 +998,8 @@ describe('Grid', function() {
       });
 
       it('should call the event when there is one with the correct args', function() {
-        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
-        expect(columnWithEvent.events.onClick.calls.mostRecent().args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx }]);
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId, name: 'onClick'});
+        expect(columnWithEvent.events.onClick.calls.mostRecent().args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId }]);
       });
 
       it('events should work for the first column', function() {
@@ -1020,7 +1007,7 @@ describe('Grid', function() {
         let firstColumn = this.component.state.columnMetrics.columns[firstColumnIdx];
         let firstColumnEvents = this.testProps.columns[firstColumnIdx].events;
         spyOn(firstColumnEvents, 'onClick');
-        this.getCellMetaData().onColumnEvent({}, {idx: firstColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+        this.getCellMetaData().onColumnEvent({}, {idx: firstColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId, name: 'onClick'});
 
         expect(firstColumn.events.onClick).toHaveBeenCalled();
       });
@@ -1076,7 +1063,7 @@ describe('Grid', function() {
     beforeEach(function() {
       let self = this;
       this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
-      let columns = [{name: 'Id', key: 'id'}];
+      let columns = [{name: 'Id', key: 'id'}, {name: 'Title', key: 'title', width: 100 }];
       let rowGetter = function(i) {
         return self.rows[i];
       };
@@ -1084,16 +1071,18 @@ describe('Grid', function() {
       this.rowClicked = {};
       this.rowClicks = 0;
 
-      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row) {
-        self.rowClicked = row;
+      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
+        self.rowClicked = {row, column};
         self.rowClicks++;
       }}).node;
     });
 
     it('calls handler when row (cell) clicked', function() {
-      this.getCellMetaData().onCellClick({ idx: 0, rowIdx: 1 });
+      this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1});
       expect(this.rowClicks).toBe(1);
-      expect(this.rowClicked).toBe(this.rows[1]);
+      const { row, column } = this.rowClicked;
+      expect(row).toEqual(jasmine.objectContaining(this.rows[1]));
+      expect(column).toEqual(jasmine.objectContaining(this.columns[1]));
     });
   });
 });

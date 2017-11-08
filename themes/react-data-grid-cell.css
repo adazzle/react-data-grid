@@ -11,6 +11,10 @@
   outline-offset: -2px;
 }
 
+.react-grid-Cell--locked:focus {
+  z-index: 100;
+}
+
 .react-grid-Cell:focus .drag-handle {
   position: absolute;
   bottom: -5px;
@@ -30,10 +34,18 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  position: relative;
-  top: 50%;
+}
+
+.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value {
+  position: relative;		
+  top: 50%;		
   transform: translateY(-50%);
 }
+
+.rdg-child-cell .react-grid-Cell__value {
+  line-height: 35px;
+}
+
 
 .react-grid-Cell.readonly {
   background-color : black;
@@ -46,7 +58,6 @@
 .react-grid-Cell--locked:last-of-type {
   border-right: 1px solid #dddddd;
   box-shadow: none;
-  z-index:99;
 }
 
 .react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down {
@@ -109,6 +120,10 @@
   padding: 0;
   overflow: visible !important;
 }
+
+.react-grid-Cell--locked.editing {
+  z-index: 100;
+}
 .react-grid-Cell.editing .has-error input {
   border: 2px red solid !important;
   border-radius: 2px !important;
@@ -164,4 +179,159 @@
 
 .react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
     visibility: hidden;
+}
+
+.rdg-cell-expand {
+    top: 0px;
+    right: 20px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.rdg-child-row-action-cross:before, rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:before, rdg-child-row-action-cross-last:after {
+  content: "";
+  position: absolute;
+  background: grey;
+  height: 50%;
+}
+
+.rdg-child-row-action-cross:before {
+  left: 21px;
+  width: 1px;
+  height: 35px;
+}
+
+.rdg-child-row-action-cross-last:before {
+  left: 21px;
+  width: 1px;
+}
+
+.rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:after {
+  top: 50%;
+  left:20px;
+  height: 1px;
+  width: 15px;
+  content: "";
+  position: absolute;
+  background: grey;
+}
+
+.rdg-child-row-action-cross:hover {
+    background: red;
+}
+.rdg-child-row-btn {
+   position:absolute;
+   cursor:pointer;
+   border:1px solid grey;
+   border-radius:14px;
+   z-index: 3;
+   background: white;
+}
+
+.rdg-child-row-btn div {
+  font-size: 12px;
+  text-align:center;
+  line-height:19px;
+  color: grey;
+  height:20px;
+  width:20px;
+  position:absolute;
+  top:60%;
+  left:53%;
+  margin-top:-10px;
+  margin-left:-10px;
+
+}
+
+.rdg-empty-child-row:hover .glyphicon-plus-sign {
+  color: green;
+}
+
+.rdg-empty-child-row:hover a {
+  color: green;
+}
+
+.rdg-child-row-btn .glyphicon-remove-sign:hover {
+  color: red;
+}
+
+.last-column .cell-tooltip-text{
+  right: 100%;
+  left: 0% !important;
+}
+
+.rdg-cell-action {
+  float: right;
+  height: 100%;
+}
+
+.rdg-cell-action-last {
+  margin-right: -8px;
+}
+
+.rdg-cell-action-button {
+  width: 35px;
+  height: 100%;
+  text-align: center;
+  position: relative;
+  display: table;
+}
+
+.rdg-cell-action-button > span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.rdg-cell-action-button:hover {
+  background-color: #fff;
+}
+
+.rdg-cell-action-button-toggled {
+  background-color: #fff;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+
+.rdg-cell-action-button-toggled:after {
+  content: '';
+  height: 1px;
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  background: inherit;
+  z-index: 10001;
+}
+
+.rdg-cell-action-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+}
+
+.rdg-cell-action-menu > span {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+}
+
+.rdg-cell-action-menu > span:hover {
+  color: #262626;
+  text-decoration: none;
+  background-color: #f5f5f5;
 }

@@ -1,11 +1,11 @@
 import ColumnUtils from './ColumnUtils';
-const React = require('react');
 const ReactDOM = require('react-dom');
 const DOMMetrics = require('./DOMMetrics');
 const min = Math.min;
 const max = Math.max;
 const floor = Math.floor;
 const ceil = Math.ceil;
+import PropTypes from 'prop-types';
 
 type ViewportScrollState = {
   displayStart: number;
@@ -28,8 +28,8 @@ module.exports = {
   },
 
   propTypes: {
-    rowHeight: React.PropTypes.number,
-    rowsCount: React.PropTypes.number.isRequired
+    rowHeight: PropTypes.number,
+    rowsCount: PropTypes.number.isRequired
   },
 
   getDefaultProps(): { rowHeight: number } {
@@ -63,7 +63,7 @@ module.exports = {
   },
 
   getRenderedColumnCount(displayStart, width) {
-    let remainingWidth = width > 0 ? width : this.props.columnMetrics.totalWidth;
+    let remainingWidth = width && width > 0 ? width : this.props.columnMetrics.totalWidth;
     if (remainingWidth === 0) {
       remainingWidth = ReactDOM.findDOMNode(this).offsetWidth;
     }
@@ -93,11 +93,14 @@ module.exports = {
     return columnIndex;
   },
 
-  resetScrollStateAfterDelay() {
+  clearScrollTimer() {
     if (this.resetScrollStateTimeoutId) {
       clearTimeout(this.resetScrollStateTimeoutId);
     }
+  },
 
+  resetScrollStateAfterDelay() {
+    this.clearScrollTimer();
     this.resetScrollStateTimeoutId = setTimeout(
       this.resetScrollStateAfterDelayCallback,
       500
@@ -191,5 +194,9 @@ module.exports = {
         nextProps.rowsCount
       );
     }
+  },
+
+  componentWillUnmount() {
+    this.clearScrollTimer();
   }
 };

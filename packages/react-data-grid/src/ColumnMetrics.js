@@ -32,11 +32,16 @@ function setColumnWidths(columns, totalWidth) {
 function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
   let defferedColumns = columns.filter(c => !c.width);
   return columns.map((column) => {
-    if (!column.width) {
+    if (!column.width && column.width !== 0) {
       if (unallocatedWidth <= 0) {
         column.width = minColumnWidth;
       } else {
-        column.width = Math.floor(unallocatedWidth / (ColumnUtils.getSize(defferedColumns)));
+        let columnWidth = Math.floor(unallocatedWidth / (ColumnUtils.getSize(defferedColumns)));
+        if (columnWidth < minColumnWidth) {
+          column.width = minColumnWidth;
+        } else {
+          column.width = columnWidth;
+        }
       }
     }
     return column;
