@@ -11463,6 +11463,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else {
 	      rowIdx = this.state.selected.rowIdx + rowDelta;
 	      idx = this.state.selected.idx + cellDelta;
+	      if (rowDelta !== 0) {
+	        // check if next is a rowGroup
+	        var row = this.props.rowGetter(rowIdx);
+	        if (row && row.__metaData && row.__metaData.isGroup) {
+	          if (rowIdx === 0) rowIdx = this.state.selected.rowIdx;else rowIdx += rowDelta;
+	        }
+	      }
 	    }
 	    this.scrollToColumn(idx);
 	    this.onSelect({ idx: idx, rowIdx: rowIdx });
