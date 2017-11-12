@@ -46,6 +46,7 @@ const Canvas = createReactClass({
     selectedRows: PropTypes.array,
     rowKey: PropTypes.string,
     rowScrollTimeout: PropTypes.number,
+    scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
     rowSelection: PropTypes.oneOfType([
@@ -108,6 +109,7 @@ const Canvas = createReactClass({
     let shouldUpdate = nextState.displayStart !== this.state.displayStart
       || nextState.displayEnd !== this.state.displayEnd
       || nextState.scrollingTimeout !== this.state.scrollingTimeout
+      || this.props.scrollToRowIndex !== nextProps.scrollToRowIndex
       || nextProps.rowsCount !== this.props.rowsCount
       || nextProps.rowHeight !== this.props.rowHeight
       || nextProps.columns !== this.props.columns
@@ -131,6 +133,12 @@ const Canvas = createReactClass({
   componentDidUpdate() {
     if (this._scroll.scrollTop !== 0 && this._scroll.scrollLeft !== 0) {
       this.setScrollLeft(this._scroll.scrollLeft);
+    }
+    if (this.props.scrollToRowIndex !== 0) {
+      this.div.scrollTop = Math.min(
+        this.props.scrollToRowIndex * this.props.rowHeight,
+        this.props.rowsCount * this.props.rowHeight - this.props.height
+      );
     }
     this.onRows();
   },
@@ -316,6 +324,7 @@ const Canvas = createReactClass({
 
     return (
       <div
+        ref={(div) => {this.div = div;}}
         style={style}
         onScroll={this.onScroll}
         className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active }) }>
