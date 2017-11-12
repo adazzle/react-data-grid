@@ -62,6 +62,6 @@ module.exports = exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Programmatic Scrolling Example',
   exampleDescription: <p>To programmatically set the vertical scrolling offset, specify the <code>scrollToRowIndex</code> property.</p>,
-  examplePath: './scripts/example27-scroll-to-row-index.js',
+  examplePath: './scripts/example28-scroll-to-row-index.js',
   examplePlaygroundLink: 'https://jsfiddle.net/f6mbnb8z/1/'
 });
