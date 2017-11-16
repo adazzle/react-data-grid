@@ -9448,7 +9448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	var shouldRowUpdate = exports.shouldRowUpdate = function shouldRowUpdate(nextProps, currentProps) {
-	  return !_ColumnMetrics2['default'].sameColumns(currentProps.columns, nextProps.columns, _ColumnMetrics2['default'].sameColumn) || doesRowContainSelectedCell(currentProps) || doesRowContainSelectedCell(nextProps) || willRowBeDraggedOver(nextProps) || nextProps.row !== currentProps.row || currentProps.colDisplayStart !== nextProps.colDisplayStart || currentProps.colDisplayEnd !== nextProps.colDisplayEnd || currentProps.colVisibleStart !== nextProps.colVisibleStart || currentProps.colVisibleEnd !== nextProps.colVisibleEnd || hasRowBeenCopied(currentProps) || currentProps.isSelected !== nextProps.isSelected || nextProps.height !== currentProps.height || currentProps.isOver !== nextProps.isOver || currentProps.expandedRows !== nextProps.expandedRows || currentProps.canDrop !== nextProps.canDrop || currentProps.forceUpdate === true;
+	  return !_ColumnMetrics2['default'].sameColumns(currentProps.columns, nextProps.columns, _ColumnMetrics2['default'].sameColumn) || doesRowContainSelectedCell(currentProps) || doesRowContainSelectedCell(nextProps) || willRowBeDraggedOver(nextProps) || nextProps.row !== currentProps.row || currentProps.colDisplayStart !== nextProps.colDisplayStart || currentProps.colDisplayEnd !== nextProps.colDisplayEnd || currentProps.colVisibleStart !== nextProps.colVisibleStart || currentProps.colVisibleEnd !== nextProps.colVisibleEnd || hasRowBeenCopied(currentProps) || currentProps.isSelected !== nextProps.isSelected || nextProps.height !== currentProps.height || currentProps.isOver !== nextProps.isOver || currentProps.expandedRows !== nextProps.expandedRows || currentProps.canDrop !== nextProps.canDrop || currentProps.forceUpdate === true || currentProps.extraClasses !== nextProps.extraClasses;
 	};
 
 	exports['default'] = shouldRowUpdate;
@@ -12368,6 +12368,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
 	var splice = Array.prototype.splice;
 
+	var toString = Object.prototype.toString
+	var type = function(obj) {
+	  return toString.call(obj).slice(8, -1);
+	}
+
 	var assign = Object.assign || /* istanbul ignore next */ function assign(target, source) {
 	  getAllKeys(source).forEach(function(key) {
 	    if (hasOwnProperty.call(source, key)) {
@@ -12383,8 +12388,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* istanbul ignore next */
 	function copy(object) {
-	  if (object instanceof Array) {
+	  if (Array.isArray(object)) {
 	    return assign(object.constructor(object.length), object)
+	  } else if (type(object) === 'Map') {
+	    return new Map(object)
+	  } else if (type(object) === 'Set') {
+	    return new Set(object)
 	  } else if (object && typeof object === 'object') {
 	    var prototype = object.constructor && object.constructor.prototype
 	    return assign(Object.create(prototype || null), object);
@@ -12467,7 +12476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return value;
 	  },
 	  $toggle: function(targets, nextObject) {
-	    invariantToggle(targets, nextObject);
+	    invariantSpecArray(targets, '$toggle');
 	    var nextObjectCopy = targets.length ? copy(nextObject) : nextObject;
 
 	    targets.forEach(function(target) {
@@ -12477,17 +12486,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return nextObjectCopy;
 	  },
 	  $unset: function(value, nextObject, spec, originalObject) {
-	    invariant(
-	      Array.isArray(value),
-	      'update(): expected spec of $unset to be an array; got %s. ' +
-	      'Did you forget to wrap the key(s) in an array?',
-	      value
-	    );
+	    invariantSpecArray(value, '$unset');
 	    value.forEach(function(key) {
 	      if (Object.hasOwnProperty.call(nextObject, key)) {
 	        if (nextObject === originalObject) nextObject = copy(originalObject);
 	        delete nextObject[key];
 	      }
+	    });
+	    return nextObject;
+	  },
+	  $add: function(value, nextObject, spec, originalObject) {
+	    invariantMapOrSet(nextObject, '$add');
+	    invariantSpecArray(value, '$add');
+	    if (type(nextObject) === 'Map') {
+	      value.forEach(function(pair) {
+	        var key = pair[0];
+	        var value = pair[1];
+	        if (nextObject === originalObject && nextObject.get(key) !== value) nextObject = copy(originalObject);
+	        nextObject.set(key, value);
+	      });
+	    } else {
+	      value.forEach(function(value) {
+	        if (nextObject === originalObject && !nextObject.has(value)) nextObject = copy(originalObject);
+	        nextObject.add(value);
+	      });
+	    }
+	    return nextObject;
+	  },
+	  $remove: function(value, nextObject, spec, originalObject) {
+	    invariantMapOrSet(nextObject, '$remove');
+	    invariantSpecArray(value, '$remove');
+	    value.forEach(function(key) {
+	      if (nextObject === originalObject && nextObject.has(key)) nextObject = copy(originalObject);
+	      nextObject.delete(key);
 	    });
 	    return nextObject;
 	  },
@@ -12519,22 +12550,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    command,
 	    value
 	  );
-	  var specValue = spec[command];
+	  invariantSpecArray(spec[command], command)
+	}
+
+	function invariantSpecArray(spec, command) {
 	  invariant(
-	    Array.isArray(specValue),
+	    Array.isArray(spec),
 	    'update(): expected spec of %s to be an array; got %s. ' +
 	    'Did you forget to wrap your parameter in an array?',
 	    command,
-	    specValue
-	  );
-	}
-
-	function invariantToggle(value) {
-	  invariant(
-	    Array.isArray(value),
-	    'update(): expected spec of $toggle to be an array; got %s. ' +
-	    'Did you forget to wrap the key(s) in an array?',
-	    value
+	    spec
 	  );
 	}
 
@@ -12581,6 +12606,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    target && typeof target === 'object',
 	    'update(): $merge expects a target of type \'object\'; got %s',
 	    target
+	  );
+	}
+
+	function invariantMapOrSet(target, command) {
+	  var typeOfTarget = type(target);
+	  invariant(
+	    typeOfTarget === 'Map' || typeOfTarget === 'Set',
+	    'update(): %s expects a target of type Set or Map; got %s',
+	    command,
+	    typeOfTarget
 	  );
 	}
 
