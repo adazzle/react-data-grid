@@ -1,16 +1,10 @@
 const webpackCommon = require('./webpack.common.config');
 
-const config = {
+const config =  {
   entry: {
-    'react-data-grid/dist/react-data-grid': [
-      './node_modules/create-react-class/create-react-class.js',
-      './packages/react-data-grid/src'
-    ],
+    'react-data-grid/dist/react-data-grid': ['./packages/react-data-grid/src'],
     'react-data-grid-addons/dist/react-data-grid-addons': ['./packages/react-data-grid-addons/src'],
-    'react-data-grid/dist/react-data-grid.min': [
-      './node_modules/create-react-class/create-react-class.min.js',
-      './packages/react-data-grid/src'
-    ],
+    'react-data-grid/dist/react-data-grid.min': ['./packages/react-data-grid/src'],
     'react-data-grid-addons/dist/react-data-grid-addons.min': ['./packages/react-data-grid-addons/src'],
     'react-data-grid-examples/dist/shared': './packages/react-data-grid-examples/src/shared.js',
     'react-data-grid-examples/dist/examples': './packages/react-data-grid-examples/src/examples.js',
@@ -25,4 +19,4 @@ const config = {
   }
 };
 
-module.exports = Object.assign({}, webpackCommon, config);
+module.exports = Object.assign({ }, webpackCommon, config);
