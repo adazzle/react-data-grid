@@ -62,6 +62,12 @@ Features
 Check out the `examples` directory to see how simple previously complex UI
 and workflows are to create.
 
+FAQs
+----
+
+- Why is the version number of the GitHub Release so far behind the `master` branch?
+> When we updated the library to v2, we adopted a mono-repo structure using Lerna. Because of this, only changes to the parent repository will get tagged on GitHub as Releases. The core package is released from the `packages` directory; and what is on NPM / on the `master` branch will always be the latest release.
+
 Contributing
 ------------
 
