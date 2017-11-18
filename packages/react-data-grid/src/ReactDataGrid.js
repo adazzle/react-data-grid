@@ -227,8 +227,8 @@ const ReactDataGrid = createReactClass({
 
   onCellDoubleClick: function(cell: SelectedType, e: SyntheticEvent) {
     this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
-	
-	if (this.props.onRowDoubleClick && typeof this.props.onRowDoubleClick === 'function') {
+
+    if (this.props.onRowDoubleClick && typeof this.props.onRowDoubleClick === 'function') {
       this.props.onRowDoubleClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
     }
 	
