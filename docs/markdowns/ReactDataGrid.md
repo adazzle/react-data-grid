@@ -146,6 +146,11 @@ type: `func`
 type: `func`
 
 
+### `onRowDoubleClick`
+
+type: `func`
+
+
 ### `onRowExpandToggle`
 
 type: `func`
