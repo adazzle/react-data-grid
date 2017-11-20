@@ -1522,6 +1522,17 @@
         "required": false,
         "description": ""
       },
+      "tabIndex": {
+        "type": {
+          "name": "number"
+        },
+        "defaultValue": {
+          "value": "-1",
+          "computed": false
+        },
+        "required": false,
+        "description": ""
+      },
       "rowOffsetHeight": {
         "type": {
           "name": "number"
