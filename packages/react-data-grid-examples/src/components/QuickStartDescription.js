@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const RowsDescription = require('./RowsDescription');
 const ColsDescription = require('./ColsDescription');
 
-class QuickStartDesciption extends React.Component {
+class QuickStartDescription extends React.Component {
   render() {
     return (
       <div>
@@ -23,8 +23,8 @@ class QuickStartDesciption extends React.Component {
   }
 }
 
-QuickStartDesciption.propTypes = {
+QuickStartDescription.propTypes = {
   title: PropTypes.string
 };
 
-module.exports = QuickStartDesciption;
+module.exports = QuickStartDescription;
