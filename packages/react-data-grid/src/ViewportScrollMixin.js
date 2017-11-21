@@ -172,7 +172,9 @@ module.exports = {
     if (this.props.rowHeight !== nextProps.rowHeight ||
       this.props.minHeight !== nextProps.minHeight ||
       ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
-      this.setState(this.getGridState(nextProps));
+      const newState = this.getGridState(nextProps)
+      this.setState(newState);
+      this.updateScroll(newState.scrollTop, newState.scrollLeft, newState.height, nextProps.rowHeight, nextProps.rowsCount);
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
         this.state.scrollTop,
