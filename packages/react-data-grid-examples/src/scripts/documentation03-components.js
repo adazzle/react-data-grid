@@ -8,7 +8,7 @@ class DocumentContainer extends React.Component {
     documentContent: PropTypes.string.isRequired,
     documentName: PropTypes.string.isRequired,
     documentPath: PropTypes.string.isRequired
-  }
+  };
 
   getHtml() {
     return { __html: this.getMarkdownAsHtml() };
@@ -23,7 +23,8 @@ class DocumentContainer extends React.Component {
       <div className={'pull-left'} style={{ marginLeft: '100px' }}>
         <h3>{this.props.documentName}</h3>
         <div dangerouslySetInnerHTML={this.getHtml()}></div>
-      </div>);
+      </div>
+    );
   }
 }
 
@@ -34,7 +35,7 @@ class ComponentDocs extends React.Component {
     this.getDocumentContent(0);
   }
 
-  getDocumentContent(key) {
+  getDocumentContent = (key) => {
     const documentPath = generatedDocs[key].path;
     $.ajax({
       url: documentPath,
@@ -42,12 +43,12 @@ class ComponentDocs extends React.Component {
         this.setState({ documentContent: documentContent, selectedDocumentIndex: key });
       }
     });
-  }
+  };
 
   onNavBarClicked = (key, e) => {
     this.getDocumentContent(key);
     e.preventDefault();
-  }
+  };
 
   getComponentDocs() {
     const docsToRender = [];
@@ -69,7 +70,8 @@ class ComponentDocs extends React.Component {
     return (
       <ul className="nav nav-pills nav-stacked pull-left">
         {this.getComponentDocs()}
-      </ul>);
+      </ul>
+    );
   }
 
   render() {
