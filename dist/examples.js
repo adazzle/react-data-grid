@@ -19319,7 +19319,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    overScan: _propTypes2['default'].object,
 	    onDeleteSubRow: _propTypes2['default'].func,
 	    onAddSubRow: _propTypes2['default'].func,
-	    enableCellAutoFocus: _propTypes2['default'].bool
+	    enableCellAutoFocus: _propTypes2['default'].bool,
+	    onBeforeEdit: _propTypes2['default'].func
 	  },
 
 	  getDefaultProps: function getDefaultProps() {
@@ -19339,7 +19340,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rowsStart: 5,
 	        rowsEnd: 5
 	      },
-	      enableCellAutoFocus: true
+	      enableCellAutoFocus: true,
+	      onBeforeEdit: function onBeforeEdit() {}
 	    };
 	  },
 
@@ -20062,6 +20064,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this6.scrollToColumn(idx);
 	          });
 	        }
+	        this.props.onBeforeEdit();
 	        this.handleCancelCopy();
 	      }
 	    }
