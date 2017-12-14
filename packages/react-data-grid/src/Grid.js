@@ -55,6 +55,7 @@ const Grid = createReactClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
+    scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
@@ -135,6 +136,7 @@ const Grid = createReactClass({
                   rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
+                  scrollToRowIndex={this.props.scrollToRowIndex}
                   contextMenu={this.props.contextMenu}
                   rowSelection={this.props.rowSelection}
                   getSubRowDetails={this.props.getSubRowDetails}

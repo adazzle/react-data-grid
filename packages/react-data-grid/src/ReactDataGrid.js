@@ -77,6 +77,7 @@ const ReactDataGrid = createReactClass({
     onRowSelect: PropTypes.func,
     rowKey: PropTypes.string,
     rowScrollTimeout: PropTypes.number,
+    scrollToRowIndex: PropTypes.number,
     onClearFilters: PropTypes.func,
     contextMenu: PropTypes.element,
     cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
@@ -133,6 +134,7 @@ const ReactDataGrid = createReactClass({
       minHeight: 350,
       rowKey: 'id',
       rowScrollTimeout: 0,
+      scrollToRowIndex: 0,
       cellNavigationMode: 'none',
       overScan: {
         colsStart: 5,
@@ -989,6 +991,7 @@ const ReactDataGrid = createReactClass({
             onViewportDoubleClick={this.deselect}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
+            scrollToRowIndex={this.props.scrollToRowIndex}
             contextMenu={this.props.contextMenu}
             overScan={this.props.overScan} />
           </div>
