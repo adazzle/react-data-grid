@@ -104,6 +104,13 @@ class Cell extends React.Component {
     return shouldUpdate;
   }
 
+  onCellFocus = (e) => {
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.enableCellAutoFocus && meta.onCellClick && typeof (meta.onCellClick) === 'function') {
+      meta.onCellDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
+    }
+  }
+
   onCellClick = (e) => {
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellClick && typeof (meta.onCellClick) === 'function') {
@@ -445,6 +452,7 @@ class Cell extends React.Component {
     let columnEvents = this.props.column ? Object.assign({}, this.props.column.events) : undefined;
     let onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
     let gridEvents = {
+      onFocus: this.onCellFocus,
       onClick: this.onCellClick,
       onDoubleClick: this.onCellDoubleClick,
       onContextMenu: this.onCellContextMenu,

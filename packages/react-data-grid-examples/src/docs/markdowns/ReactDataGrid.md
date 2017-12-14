@@ -33,6 +33,12 @@ type: `bool`
 defaultValue: `false`
 
 
+### `enableCellAutoFocus`
+
+type: `bool`
+defaultValue: `false`
+
+
 ### `enableDragAndDrop`
 
 type: `bool`
@@ -217,4 +223,3 @@ defaultValue: `-1`
 ### `toolbar`
 
 type: `element`
-

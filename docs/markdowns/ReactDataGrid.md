@@ -30,7 +30,7 @@ type: `func`
 ### `enableCellAutoFocus`
 
 type: `bool`
-defaultValue: `true`
+defaultValue: `false`
 
 
 ### `enableCellSelect`
@@ -223,4 +223,3 @@ defaultValue: `-1`
 ### `toolbar`
 
 type: `element`
-

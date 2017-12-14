@@ -31,9 +31,9 @@ describe('configure enableCellAutoFocus property', () => {
     const { enzymeWrapper } = shallowRenderGrid({ enableCellAutoFocus });
     expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toEqual(enableCellAutoFocus);
   });
-  it('sets enableCellAutoFocus to true by default', () => {
+  it('sets enableCellAutoFocus to false by default', () => {
     const { enzymeWrapper } = shallowRenderGrid({});
-    expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toBe(true);
+    expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toBe(false);
   });
   it('sets enableCellAutoFocus to false if it is configured', () => {
     const { enzymeWrapper } = shallowRenderGrid({ enableCellAutoFocus: false });
