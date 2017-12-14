@@ -84,6 +84,7 @@ const ReactDataGrid = createReactClass({
     onCellDeSelected: PropTypes.func,
     onCellExpand: PropTypes.func,
     enableDragAndDrop: PropTypes.bool,
+    tabIndex: PropTypes.number,
     onRowExpandToggle: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,

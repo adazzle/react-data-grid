@@ -14,6 +14,7 @@ const Grid = createReactClass({
   propTypes: {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    tabIndex: PropTypes.number,
     columnMetrics: PropTypes.object,
     minHeight: PropTypes.number,
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -70,7 +71,8 @@ const Grid = createReactClass({
   getDefaultProps() {
     return {
       rowHeight: 35,
-      minHeight: 350
+      minHeight: 350,
+      tabIndex: 0
     };
   },
 
@@ -108,7 +110,7 @@ const Grid = createReactClass({
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div
               ref={(node) => { this.viewPortContainer = node; } }
-              tabIndex="0"
+              tabIndex={this.props.tabIndex}
               onKeyDown={this.props.onViewportKeydown}
               onKeyUp={this.props.onViewportKeyup}
               onClick={this.props.onViewportClick}
