@@ -45,7 +45,7 @@ const renderComponent = (extraProps) => {
   return wrapper;
 };
 
-const onCellFocus = jasmin.createSpy();
+const onCellFocus = jasmine.createSpy();
 const onCellClick = jasmine.createSpy();
 const onDragHandleDoubleClick = jasmine.createSpy();
 const onCellContextMenu = jasmine.createSpy();
@@ -392,12 +392,6 @@ describe('Cell Tests', () => {
         });
 
         describe('When Action is defined on CellMetaData', () => {
-          it('should call metaData onCellFocus when it is defined', () => {
-            testElement.simulate('focus');
-
-            expect(onCellFocus).toHaveBeenCalled();
-          });
-
           it('should call metaData onCellClick when it is defined', () => {
             testElement.simulate('click');
 
@@ -597,7 +591,7 @@ describe('Cell Tests', () => {
       cellMetaData: {
         selected: {idx: 2, rowIdx: 3},
         dragged: null,
-        onCellFocus: jasmin.createSpy(),
+        onCellFocus: jasmine.createSpy(),
         onCellClick: jasmine.createSpy(),
         onCellContextMenu: jasmine.createSpy(),
         onCellDoubleClick: jasmine.createSpy(),

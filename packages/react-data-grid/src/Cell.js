@@ -106,7 +106,7 @@ class Cell extends React.Component {
 
   onCellFocus = (e) => {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.enableCellAutoFocus && meta.onCellClick && typeof (meta.onCellClick) === 'function') {
+    if (meta != null && meta.enableCellAutoFocus && meta.onCellDoubleClick && typeof (meta.onCellDoubleClick) === 'function') {
       meta.onCellDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
     }
   }
