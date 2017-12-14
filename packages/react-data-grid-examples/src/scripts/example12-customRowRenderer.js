@@ -118,7 +118,7 @@ class Example extends React.Component {
 const exampleDescription = (
   <div>
     <p>This shows how you can easily override the default row renderer</p>
-    <p>Here we are just using that to wrap the default renderer, and then going back into the 'normal' flow, just changing some backgrounds</p>
+    <p>Here we are just using that to wrap the default renderer, and then going back into the 'normal' flow, just changing the text colour</p>
     <p>NOTE: if you want to use fixed columns as well, make sure you implement and pass through the call to setScrollLeft</p>
   </div>);
 
