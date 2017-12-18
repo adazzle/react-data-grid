@@ -28,8 +28,6 @@ install:
         ./ci/publish/decrypt-npmrc.ps1
         ./ci/publish/copy-npmrc.ps1
       }
-  - ps: Install-Product node 4
-  - npm -g install npm@3
   - set PATH=%APPDATA%\npm;%PATH%
   - npm cache clean
   - npm install -g gulp
