@@ -60,6 +60,7 @@ class Example extends React.Component {
     return (
       <ReactDataGrid
         contextMenu={<MyContextMenu onRowDelete={this.deleteRow} onRowInsertAbove={this.insertRowAbove} onRowInsertBelow={this.insertRowBelow} />}
+        contextMenuId="myContextMenu"
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
@@ -76,7 +77,8 @@ class MyContextMenu extends React.Component {
     onRowInsertAbove: PropTypes.func.isRequired,
     onRowInsertBelow: PropTypes.func.isRequired,
     rowIdx: PropTypes.string.isRequired,
-    idx: PropTypes.string.isRequired
+    idx: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired
   };
 
   onRowDelete = (e, data) => {
@@ -99,7 +101,7 @@ class MyContextMenu extends React.Component {
 
   render() {
     return (
-      <ContextMenu>
+      <ContextMenu id={this.props.id || ''}>
         <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowDelete}>Delete Row</MenuItem>
         <SubMenu title="Insert Row">
           <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowInsertAbove}>Above</MenuItem>
