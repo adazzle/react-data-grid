@@ -34,7 +34,7 @@
     "fs-extra": "^0.30.0",
     "object-assign": "^2.0.0",
     "prop-types": "^15.5.10",
-    "react-contextmenu": "1.6.2",
+    "react-contextmenu": "^2.9.2",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
     "react-input-autosize": "1.1.0",

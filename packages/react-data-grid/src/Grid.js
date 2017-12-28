@@ -57,6 +57,7 @@ const Grid = createReactClass({
     rowScrollTimeout: PropTypes.number,
     scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
+    contextMenuId: React.PropTypes.string,
     getSubRowDetails: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
@@ -138,6 +139,7 @@ const Grid = createReactClass({
                   rowScrollTimeout={this.props.rowScrollTimeout}
                   scrollToRowIndex={this.props.scrollToRowIndex}
                   contextMenu={this.props.contextMenu}
+                  contextMenuId={this.props.contextMenuId}
                   rowSelection={this.props.rowSelection}
                   getSubRowDetails={this.props.getSubRowDetails}
                   rowGroupRenderer={this.props.rowGroupRenderer}
