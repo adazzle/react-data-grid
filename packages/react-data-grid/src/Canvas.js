@@ -121,7 +121,7 @@ const Canvas = createReactClass({
       || this.props.colVisibleStart !== nextProps.colVisibleStart
       || this.props.colVisibleEnd !== nextProps.colVisibleEnd
       || !shallowEqual(nextProps.style, this.props.style)
-      || !nextProps.isScrolling;
+      || this.props.isScrolling !== nextProps.isScrolling;
     return shouldUpdate;
   },
 
