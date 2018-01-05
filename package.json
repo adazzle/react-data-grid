@@ -1,11 +1,11 @@
 {
-  "name": "react-data-grid",
-  "version": "2.0.1",
+  "name": "react-data-grid-repo",
+  "private": true,
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
     "pretest": "npm run eslint",
-    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
+    "test": "jest",
     "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
     "postinstall": "lerna bootstrap",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
@@ -16,6 +16,14 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/adazzle/react-data-grid.git"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    },
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!react-data-grid|react-data-grid-addons)"
+  ]
   },
   "keywords": [
     "react",
@@ -44,17 +52,21 @@
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
-    "babel-core": "^6.7.4",
+    "babel-core": "^6.26.0",
     "babel-eslint": "^4.1.6",
+    "babel-jest": "^22.0.4",
     "babel-loader": "^6.2.1",
     "babel-plugin-transform-class-properties": "^6.4.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-plugin-transform-es3-member-expression-literals": "^6.5.0",
     "babel-plugin-transform-es3-property-literals": "^6.5.0",
     "babel-plugin-transform-react-jsx": "^6.4.0",
     "babel-plugin-typecheck": "^3.6.1",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-0": "^6.24.1",
     "copy-dir": "^0.3.0",
     "css-loader": "^0.26.0",
     "del": "^1.2.1",
@@ -71,6 +83,7 @@
     "istanbul-instrumenter-loader": "^0.1.2",
     "jasmine-core": "2.6.1",
     "jasmine-enzyme": "^1.2.0",
+    "jest": "^22.0.4",
     "karma": "^1.1.0",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.4.0",
@@ -79,12 +92,12 @@
     "karma-jasmine": "^1.0.2",
     "karma-jasmine-matchers": "^0.1.3",
     "karma-junit-reporter": "^0.2.2",
+    "karma-mocha-reporter": "^2.2.3",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-phantomjs-launcher-nonet": "^0.1.3",
-    "karma-webpack": "^1.7.0",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-mocha-reporter": "^2.2.3",
-    "lerna": "2.0.0-beta.34",
+    "karma-webpack": "^1.7.0",
+    "lerna": "2.0.0-beta.24",
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
@@ -99,6 +112,7 @@
     "react-dnd-test-backend": "^1.0.2",
     "react-docgen": "^2.8.2",
     "react-dom": "^15.4.2",
+    "regenerator-runtime": "^0.11.1",
     "rewire": "^2.1.3",
     "rewire-webpack": "^1.0.0",
     "run-sequence": "^1.2.2",
