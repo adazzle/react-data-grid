@@ -10,13 +10,15 @@ const style = {
   height: '100%'
 };
 
-function ResizeHandle(props) {
-  return (
-    <Draggable {...props}
-      className="react-grid-HeaderCell__resizeHandle"
-      style={style}
-    />
-  );
+class ResizeHandle extends React.Component {
+  render() {
+    return (
+      <Draggable {...this.props}
+        className="react-grid-HeaderCell__resizeHandle"
+        style={style}
+      />
+    );
+  }
 }
 
 module.exports = ResizeHandle;
