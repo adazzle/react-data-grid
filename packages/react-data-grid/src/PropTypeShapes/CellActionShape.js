@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
-Object.assign = require('object-assign');
 
-const action = {
+const CellActionShape = {
   icon: PropTypes.string.isRequired,
-  text: PropTypes.string,
-  callback: PropTypes.func
+  callback: PropTypes.func,
+  actions: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string,
+      callback: PropTypes.func
+    })
+  )
 };
 
-export default Object.assign({}, action, { actions: PropTypes.arrayOf(action) });
+export default CellActionShape;

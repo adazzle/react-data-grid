@@ -170,8 +170,16 @@ module.exports = {
 
   componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number }) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
-      this.props.minHeight !== nextProps.minHeight ||
-      ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
+      this.props.minHeight !== nextProps.minHeight) {
+      const newState = this.getGridState(nextProps);
+      this.updateScroll(
+          newState.scrollTop,
+          newState.scrollLeft,
+          newState.height,
+          nextProps.rowHeight,
+          nextProps.rowsCount
+      );
+    } else if (ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
       this.setState(this.getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
