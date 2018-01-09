@@ -5,7 +5,7 @@ const { editors: { CheckboxEditor } } = Grid;
 const TestUtils = require('react-addons-test-utils');
 const StubComponent = require('../../../../test/StubComponent');
 const mockStateObject = require('./data/MockStateObject');
-const { mount, shallow } = require('enzyme');
+const { mount } = require('enzyme');
 
 describe('Grid', function() {
   beforeEach(function() {
@@ -234,9 +234,9 @@ describe('Grid', function() {
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
         const SelectAll = this.selectRowCol.headerRenderer;
-        this.selectAllWrapper = shallow(SelectAll);
+        this.selectAllWrapper = mount(SelectAll);
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        this.selectAllWrapper.instance().props.onChange(this.fakeEvent);
+        this.selectAllWrapper.props().onChange(this.fakeEvent);
       });
 
       it('should select all rows', function() {
@@ -250,7 +250,7 @@ describe('Grid', function() {
       describe('and then unchecking header checkbox', function() {
         beforeEach(function() {
           this.checkbox.checked = false;
-          this.selectAllWrapper.instance().props.onChange(this.fakeEvent);
+          this.selectAllWrapper.props().onChange(this.fakeEvent);
         });
 
         it('should deselect all rows', function() {
