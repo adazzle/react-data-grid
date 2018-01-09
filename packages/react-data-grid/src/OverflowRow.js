@@ -1,6 +1,7 @@
 import React from 'react';
 import focusableComponentWrapper from './focusableComponentWrapper';
 import '../../../themes/react-data-grid-row.css';
+import PropTypes from 'prop-types';
 
 class OverflowRow extends React.Component {
   render() {
@@ -20,9 +21,9 @@ OverflowRow.isSelected = props => {
 OverflowRow.isScrolling = props => props.cellMetaData.isScrollingVerticallyWithKeyboard;
 
 OverflowRow.propTypes = {
-  idx: React.PropTypes.number,
-  height: React.PropTypes.number,
-  cellMetaData: React.PropTypes.object
+  idx: PropTypes.number,
+  height: PropTypes.number,
+  cellMetaData: PropTypes.object
 };
 
 const OverflowRowComponent = OverflowRow;

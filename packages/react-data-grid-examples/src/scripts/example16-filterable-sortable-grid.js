@@ -3,8 +3,9 @@ const { Toolbar, Data: { Selectors } } = require('react-data-grid-addons');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props, context) {
+    super(props, context);
     this._columns = [
       {
         key: 'id',
@@ -49,14 +50,14 @@ const Example = React.createClass({
       }
     ];
 
-    return { rows: this.createRows(1000), filters: {}, sortColumn: null, sortDirection: null };
-  },
+    this.state = { rows: this.createRows(1000), filters: {}, sortColumn: null, sortDirection: null };
+  }
 
-  getRandomDate(start, end) {
+  getRandomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-  },
+  };
 
-  createRows(numberOfRows) {
+  createRows = (numberOfRows) => {
     let rows = [];
     for (let i = 1; i < numberOfRows; i++) {
       rows.push({
@@ -70,26 +71,26 @@ const Example = React.createClass({
       });
     }
     return rows;
-  },
+  };
 
-  getRows() {
+  getRows = () => {
     return Selectors.getRows(this.state);
-  },
+  };
 
-  getSize() {
+  getSize = () => {
     return this.getRows().length;
-  },
+  };
 
-  rowGetter(rowIdx) {
+  rowGetter = (rowIdx) => {
     const rows = this.getRows();
     return rows[rowIdx];
-  },
+  };
 
-  handleGridSort(sortColumn, sortDirection) {
+  handleGridSort = (sortColumn, sortDirection) => {
     this.setState({ sortColumn: sortColumn, sortDirection: sortDirection });
-  },
+  };
 
-  handleFilterChange(filter) {
+  handleFilterChange = (filter) => {
     let newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
@@ -98,11 +99,11 @@ const Example = React.createClass({
     }
 
     this.setState({ filters: newFilters });
-  },
+  };
 
-  onClearFilters() {
+  onClearFilters = () => {
     this.setState({ filters: {} });
-  },
+  };
 
   render() {
     return  (
@@ -117,7 +118,7 @@ const Example = React.createClass({
         onAddFilter={this.handleFilterChange}
         onClearFilters={this.onClearFilters} />);
   }
-});
+}
 
 const exampleDescription = (
   <div>

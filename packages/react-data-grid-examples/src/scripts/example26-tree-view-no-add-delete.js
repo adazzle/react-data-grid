@@ -48,17 +48,18 @@ let columns = [
   }
 ];
 
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props) {
+    super(props);
     let rows = createRows();
-    return { expanded: {}, rows: rows };
-  },
+    this.state = { expanded: {}, rows: rows };
+  }
 
-  getRows(i) {
+  getRows = (i) => {
     return this.state.rows[i];
-  },
+  };
 
-  getSubRowDetails(rowItem) {
+  getSubRowDetails = (rowItem) => {
     let isExpanded = this.state.expanded[rowItem.name] ? this.state.expanded[rowItem.name] : false;
     return {
       group: rowItem.children && rowItem.children.length > 0,
@@ -69,9 +70,9 @@ const Example = React.createClass({
       siblingIndex: rowItem.siblingIndex,
       numberSiblings: rowItem.numberSiblings
     };
-  },
+  };
 
-  onCellExpand(args) {
+  onCellExpand = (args) => {
     let rows = this.state.rows.slice(0);
     let rowKey = args.rowData.name;
     let rowIndex = rows.indexOf(args.rowData);
@@ -88,16 +89,16 @@ const Example = React.createClass({
     }
 
     this.setState({ expanded: expanded, rows: rows });
-  },
+  };
 
-  updateSubRowDetails(subRows, parentTreeDepth) {
+  updateSubRowDetails = (subRows, parentTreeDepth) => {
     let treeDepth = parentTreeDepth || 0;
     subRows.forEach((sr, i) => {
       sr.treeDepth = treeDepth + 1;
       sr.siblingIndex = i;
       sr.numberSiblings = subRows.length;
     });
-  },
+  };
 
   render() {
     return (<ReactDataGrid
@@ -109,7 +110,7 @@ const Example = React.createClass({
       minHeight={500}
       onCellExpand={this.onCellExpand} />);
   }
-});
+}
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,

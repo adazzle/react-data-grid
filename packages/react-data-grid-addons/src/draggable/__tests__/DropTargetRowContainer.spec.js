@@ -17,13 +17,11 @@ class fakeRow extends Component {
  * Wraps a component into a DragDropContext that uses the TestBackend.
  */
 function wrapInTestContext(DecoratedComponent) {
-  return DragDropContext(TestBackend)(
-    React.createClass({
-      render() {
-        return <DecoratedComponent {...this.props} />;
-      }
-    })
-  );
+  return DragDropContext(TestBackend)(class extends React.Component {
+    render() {
+      return <DecoratedComponent {...this.props} />;
+    }
+  });
 }
 
 describe('<DropTargetRowContainer />', () => {

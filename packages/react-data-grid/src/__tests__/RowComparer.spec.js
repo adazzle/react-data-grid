@@ -87,4 +87,19 @@ describe('RowComparer shouldRowUpdate', () => {
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(false);
   });
+
+  it('changing row extraClasses should cause update', () => {
+    const currentProps = {
+      columns: columns,
+      cellMetaData: cellMetaData,
+      extraClasses: 'row-added'
+    };
+    const nextProps = {
+      columns: columns,
+      cellMetaData: cellMetaData,
+      extraClasses: 'row-deleted'
+    };
+
+    expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
+  });
 });

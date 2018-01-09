@@ -3,6 +3,7 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const { Editors, Toolbar, Formatters } = require('react-data-grid-addons');
+import update from 'immutability-helper';
 const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
 const { ImageFormatter } = Formatters;
 
@@ -53,8 +54,9 @@ const counties = [
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props, context) {
+    super(props, context);
     this._columns = [
       {
         key: 'id',
@@ -161,18 +163,18 @@ const Example = React.createClass({
       }
     ];
 
-    return { rows: this.createRows(2000) };
-  },
+    this.state = { rows: this.createRows(2000) };
+  }
 
-  createRows(numberOfRows) {
+  createRows = (numberOfRows) => {
     let rows = [];
     for (let i = 0; i < numberOfRows; i++) {
       rows[i] = this.createFakeRowObjectData(i);
     }
     return rows;
-  },
+  };
 
-  createFakeRowObjectData(index) {
+  createFakeRowObjectData = (index) => {
     return {
       id: 'id_' + index,
       avartar: faker.image.avatar(),
@@ -190,9 +192,9 @@ const Example = React.createClass({
       words: faker.lorem.words(),
       sentence: faker.lorem.sentence()
     };
-  },
+  };
 
-  getColumns() {
+  getColumns = () => {
     let clonedColumns = this._columns.slice();
     clonedColumns[2].events = {
       onClick: (ev, args) => {
@@ -203,21 +205,21 @@ const Example = React.createClass({
     };
 
     return clonedColumns;
-  },
+  };
 
-  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+  handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
     let rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
-      let updatedRow = React.addons.update(rowToUpdate, {$merge: updated});
+      let updatedRow = update(rowToUpdate, {$merge: updated});
       rows[i] = updatedRow;
     }
 
     this.setState({ rows });
-  },
+  };
 
-  handleAddRow({ newRowIndex }) {
+  handleAddRow = ({ newRowIndex }) => {
     const newRow = {
       value: newRowIndex,
       userStory: '',
@@ -226,21 +228,21 @@ const Example = React.createClass({
     };
 
     let rows = this.state.rows.slice();
-    rows = React.addons.update(rows, {$push: [newRow]});
+    rows = update(rows, {$push: [newRow]});
     this.setState({ rows });
-  },
+  };
 
-  getRowAt(index) {
+  getRowAt = (index) => {
     if (index < 0 || index > this.getSize()) {
       return undefined;
     }
 
     return this.state.rows[index];
-  },
+  };
 
-  getSize() {
+  getSize = () => {
     return this.state.rows.length;
-  },
+  };
 
   render() {
     return (
@@ -257,7 +259,7 @@ const Example = React.createClass({
         minHeight={600}
         rowScrollTimeout={200} />);
   }
-});
+}
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,

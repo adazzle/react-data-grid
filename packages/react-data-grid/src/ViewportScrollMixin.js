@@ -1,11 +1,11 @@
 import ColumnUtils from './ColumnUtils';
-const React = require('react');
 const ReactDOM = require('react-dom');
 const DOMMetrics = require('./DOMMetrics');
 const min = Math.min;
 const max = Math.max;
 const floor = Math.floor;
 const ceil = Math.ceil;
+import PropTypes from 'prop-types';
 
 type ViewportScrollState = {
   displayStart: number;
@@ -28,8 +28,8 @@ module.exports = {
   },
 
   propTypes: {
-    rowHeight: React.PropTypes.number,
-    rowsCount: React.PropTypes.number.isRequired
+    rowHeight: PropTypes.number,
+    rowsCount: PropTypes.number.isRequired
   },
 
   getDefaultProps(): { rowHeight: number } {
@@ -93,11 +93,14 @@ module.exports = {
     return columnIndex;
   },
 
-  resetScrollStateAfterDelay() {
+  clearScrollTimer() {
     if (this.resetScrollStateTimeoutId) {
       clearTimeout(this.resetScrollStateTimeoutId);
     }
+  },
 
+  resetScrollStateAfterDelay() {
+    this.clearScrollTimer();
     this.resetScrollStateTimeoutId = setTimeout(
       this.resetScrollStateAfterDelayCallback,
       500
@@ -167,8 +170,16 @@ module.exports = {
 
   componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number }) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
-      this.props.minHeight !== nextProps.minHeight ||
-      ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
+      this.props.minHeight !== nextProps.minHeight) {
+      const newState = this.getGridState(nextProps);
+      this.updateScroll(
+          newState.scrollTop,
+          newState.scrollLeft,
+          newState.height,
+          nextProps.rowHeight,
+          nextProps.rowsCount
+      );
+    } else if (ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
       this.setState(this.getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
@@ -191,5 +202,9 @@ module.exports = {
         nextProps.rowsCount
       );
     }
+  },
+
+  componentWillUnmount() {
+    this.clearScrollTimer();
   }
 };
