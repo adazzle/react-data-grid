@@ -123,7 +123,7 @@ const ReactDataGrid = createReactClass({
     onAddSubRow: PropTypes.func,
     enableCellAutoFocus: PropTypes.bool,
     onBeforeEdit: PropTypes.func,
-    selectAllRenderer: React.PropTypes.object
+    selectAllRenderer: PropTypes.object
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
