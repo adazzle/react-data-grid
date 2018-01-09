@@ -51,9 +51,8 @@ class HeaderCell extends React.Component {
   };
 
   getWidthFromMouseEvent = (e: SyntheticMouseEvent): number => {
-    const node = ReactDOM.findDOMNode(this);
     let right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
-    let left = node ? node.getBoundingClientRect().left : 0;
+    let left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   };
 
