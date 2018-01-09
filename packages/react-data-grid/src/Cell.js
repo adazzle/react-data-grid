@@ -48,7 +48,7 @@ class Cell extends React.Component {
   };
 
   static defaultProps = {
-    tabIndex: -1,
+    tabIndex: 0,
     isExpanded: false,
     value: '',
     isCellValueChanging: (value, nextValue) => value !== nextValue
@@ -108,6 +108,13 @@ class Cell extends React.Component {
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onCellClick && typeof (meta.onCellClick) === 'function') {
       meta.onCellClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
+    }
+  };
+
+  onCellFocus = () => {
+    let meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellFocus && typeof (meta.onCellFocus) === 'function') {
+      meta.onCellFocus({ rowIdx: this.props.rowIdx, idx: this.props.idx });
     }
   };
 
@@ -446,6 +453,7 @@ class Cell extends React.Component {
     let onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
     let gridEvents = {
       onClick: this.onCellClick,
+      onFocus: this.onCellFocus,
       onDoubleClick: this.onCellDoubleClick,
       onContextMenu: this.onCellContextMenu,
       onDragOver: this.onDragOver
