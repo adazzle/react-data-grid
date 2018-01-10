@@ -12,7 +12,7 @@
     "dev-server": "node webpack-dev-server.js",
     "beforepublish": "lerna run beforepublish",
     "eslint": "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
-    "format": "prettier --trailing-comma none --single-quote --write packages/**/*.js"
+    "format": "prettier --trailing-comma none --single-quote --list-different packages/**/*.{js,ts,css,md}"
   },
   "repository": {
     "type": "git",
