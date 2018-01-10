@@ -40,7 +40,7 @@ test_script:
   - node --version
   - npm --version
   # run tests
-  - npm test
+  - npm test --max_old_space_size=8000
   - ps: ./test/uploadResults.ps1
   - gulp coveralls
 
