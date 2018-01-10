@@ -11,7 +11,8 @@
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "node webpack-dev-server.js",
     "beforepublish": "lerna run beforepublish",
-    "eslint": "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**"
+    "eslint": "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
+    "format": "prettier --trailing-comma none --single-quote --write packages/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -92,6 +93,7 @@
     "node-dir": "^0.1.12",
     "object-assign": "^2.1.1",
     "open": "0.0.5",
+    "prettier": "1.10.1",
     "react": "^15.4.2",
     "react-addons-perf": "^15.4.2",
     "react-addons-shallow-compare": "^15.4.2",
