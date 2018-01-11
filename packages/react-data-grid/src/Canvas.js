@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const RowUtils = require('./RowUtils');
+import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
 
 import shallowEqual from 'fbjs/lib/shallowEqual';
@@ -78,18 +79,8 @@ class Canvas extends React.Component {
 
   appendScrollShim = () => {
     if (!this._scrollShim) {
-      let size = this._scrollShimSize();
-      let shim = document.createElement('div');
-      if (shim.classList) {
-        shim.classList.add('react-grid-ScrollShim'); // flow - not compatible with HTMLElement
-      } else {
-        shim.className += ' react-grid-ScrollShim';
-      }
-      shim.style.position = 'absolute';
-      shim.style.top = 0;
-      shim.style.left = 0;
-      shim.style.width = `${size.width}px`;
-      shim.style.height = `${size.height}px`;
+      const size = this._scrollShimSize();
+      const shim = createScrollShim(size);
       ReactDOM.findDOMNode(this).appendChild(shim);
       this._scrollShim = shim;
     }
@@ -97,9 +88,10 @@ class Canvas extends React.Component {
   };
 
   _scrollShimSize = (): { width: number; height: number } => {
+    const { width, length, rowHeight } = this.props;
     return {
-      width: this.props.width,
-      height: this.props.length * this.props.rowHeight
+      width,
+      height: length * rowHeight
     };
   };
 
