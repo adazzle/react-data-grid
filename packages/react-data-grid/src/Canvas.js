@@ -3,7 +3,6 @@ const createReactClass = require('create-react-class');
 const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
 import PropTypes from 'prop-types';
-const ScrollShim = require('./ScrollShim');
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const RowUtils = require('./RowUtils');
@@ -15,7 +14,6 @@ import RowGroup from './RowGroup';
 
 const Canvas = createReactClass({
   displayName: 'Canvas',
-  mixins: [ScrollShim],
 
   propTypes: {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
@@ -65,6 +63,48 @@ const Canvas = createReactClass({
     ]),
     rowGroupRenderer: PropTypes.func,
     isScrolling: PropTypes.bool
+  },
+
+  appendScrollShim() {
+    if (!this._scrollShim) {
+      let size = this._scrollShimSize();
+      let shim = document.createElement('div');
+      if (shim.classList) {
+        shim.classList.add('react-grid-ScrollShim'); // flow - not compatible with HTMLElement
+      } else {
+        shim.className += ' react-grid-ScrollShim';
+      }
+      shim.style.position = 'absolute';
+      shim.style.top = 0;
+      shim.style.left = 0;
+      shim.style.width = `${size.width}px`;
+      shim.style.height = `${size.height}px`;
+      ReactDOM.findDOMNode(this).appendChild(shim);
+      this._scrollShim = shim;
+    }
+    this._scheduleRemoveScrollShim();
+  },
+
+  _scrollShimSize(): { width: number; height: number } {
+    return {
+      width: this.props.width,
+      height: this.props.length * this.props.rowHeight
+    };
+  },
+
+  _scheduleRemoveScrollShim() {
+    if (this._scheduleRemoveScrollShimTimer) {
+      clearTimeout(this._scheduleRemoveScrollShimTimer);
+    }
+    this._scheduleRemoveScrollShimTimer = setTimeout(
+      this._removeScrollShim, 200);
+  },
+
+  _removeScrollShim() {
+    if (this._scrollShim) {
+      this._scrollShim.parentNode.removeChild(this._scrollShim);
+      this._scrollShim = undefined;
+    }
   },
 
   getDefaultProps() {
@@ -191,7 +231,7 @@ const Canvas = createReactClass({
   },
 
   getScroll() {
-    let {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
+    let { scrollTop, scrollLeft } = ReactDOM.findDOMNode(this);
     return { scrollTop, scrollLeft };
   },
 
@@ -207,7 +247,7 @@ const Canvas = createReactClass({
 
     // Else use new rowSelection props
     if (this.props.rowSelection) {
-      let {keys, indexes, isSelectedKey} = this.props.rowSelection;
+      let { keys, indexes, isSelectedKey } = this.props.rowSelection;
       return RowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
     }
 
@@ -255,7 +295,7 @@ const Canvas = createReactClass({
     }
     let RowsRenderer = this.props.rowRenderer;
     if (typeof RowsRenderer === 'function') {
-      return <RowsRenderer {...props}/>;
+      return <RowsRenderer {...props} />;
     }
 
     if (React.isValidElement(this.props.rowRenderer)) {
@@ -266,7 +306,7 @@ const Canvas = createReactClass({
   renderPlaceholder(key: string, height: number): ?ReactElement {
     // just renders empty cells
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
-    return (<div key={ key } style={{ height: height }}>
+    return (<div key={key} style={{ height: height }}>
       {
         this.props.columns.map(
           (column, idx) => <div style={{ width: column.width }} key={idx} />
@@ -325,10 +365,10 @@ const Canvas = createReactClass({
 
     return (
       <div
-        ref={(div) => {this.div = div;}}
+        ref={(div) => { this.div = div; }}
         style={style}
         onScroll={this.onScroll}
-        className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active }) }>
+        className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active })}>
         <RowsContainer
           width={this.props.width}
           rows={rows}
