@@ -15,15 +15,11 @@
     "beforepublish": "lerna run beforepublish",
     "eslint":
       "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
-    "format":
-      "prettier --trailing-comma none --single-quote --write **/*.{js,css,json}",
+    "format": "prettier --write **/*.{js,css,json}",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,css,json}": [
-      "prettier --trailing-comma none --single-quote --write",
-      "git add"
-    ]
+    "*.{js,css,json}": ["prettier --write", "git add"]
   },
   "repository": {
     "type": "git",
