@@ -8,8 +8,6 @@ import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 require('../../../../themes/react-data-grid-core.css');
 
 class EditorContainer extends React.Component {
-  static displayName = 'EditorContainer';
-
   static propTypes = {
     rowIdx: PropTypes.number,
     rowData: PropTypes.object.isRequired,
