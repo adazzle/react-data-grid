@@ -16,11 +16,11 @@
     "eslint":
       "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
     "format":
-      "prettier --trailing-comma none --single-quote --write packages/**/*.{js,ts,css,md,json}",
+      "prettier --trailing-comma none --single-quote --write **/*.{js,css,json}",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,ts,css,md,json}": [
+    "*.{js,css,json}": [
       "prettier --trailing-comma none --single-quote --write",
       "git add"
     ]
