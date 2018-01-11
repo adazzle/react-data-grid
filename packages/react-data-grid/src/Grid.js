@@ -2,6 +2,7 @@ const React                = require('react');
 import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const Header               = require('./Header');
+const HeaderGroup          = require('./HeaderGroup');
 const Viewport             = require('./Viewport');
 const GridScrollMixin      = require('./GridScrollMixin');
 const DOMMetrics           = require('./DOMMetrics');
@@ -15,7 +16,9 @@ const Grid = createReactClass({
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     tabIndex: PropTypes.number,
+    groups: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     columnMetrics: PropTypes.object,
+    groupMetrics: PropTypes.object,
     minHeight: PropTypes.number,
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     headerRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
@@ -71,6 +74,7 @@ const Grid = createReactClass({
 
   getDefaultProps() {
     return {
+      groupRowHeight: 35,
       rowHeight: 35,
       minHeight: 350,
       tabIndex: 0
@@ -90,8 +94,24 @@ const Grid = createReactClass({
     let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
     let EmptyRowsView = this.props.emptyRowsView;
 
+    let groupHeader;
+    let groupHeight = 0;
+    if (this.props.groups) {
+      groupHeader = <HeaderGroup
+          ref={(input) => { this.groupHeader = input; } }
+          columnMetrics={this.props.columnMetrics}
+          groups={this.props.groups}
+          groupMetrics={this.props.groupMetrics}
+          height={this.props.rowHeight}
+          totalWidth={this.props.totalWidth}
+          headerRows={headerRows}
+          />;
+      groupHeight = this.props.groupRowHeight;
+    }
+
     return (
       <div style={this.getStyle()} className="react-grid-Grid">
+          {groupHeader}
         <Header
           ref={(input) => { this.header = input; } }
           columnMetrics={this.props.columnMetrics}
@@ -133,7 +153,7 @@ const Grid = createReactClass({
                   onScroll={this.onScroll}
                   onRows={this.props.onRows}
                   cellMetaData={this.props.cellMetaData}
-                  rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
+                  rowOffsetHeight={(this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length) + groupHeight}
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
                   scrollToRowIndex={this.props.scrollToRowIndex}

@@ -1,3 +1,5 @@
+import Immutable from 'immutable';
+
 module.exports = {
 
   getColumn(columns, idx) {

@@ -94,11 +94,6 @@ module.exports = {
     }
   },
 
-  metricsUpdated() {
-    let columnMetrics = this.createColumnMetrics();
-    this.setState({columnMetrics});
-  },
-
   createColumnMetrics(props = this.props) {
     let gridColumns = this.setupGridColumns(props);
     return this.getColumnMetricsType({
@@ -108,11 +103,5 @@ module.exports = {
     });
   },
 
-  onColumnResize(index: number, width: number) {
-    let columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
-    this.setState({columnMetrics});
-    if (this.props.onColumnResize) {
-      this.props.onColumnResize(index, width);
-    }
-  }
+
 };

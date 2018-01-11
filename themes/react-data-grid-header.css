@@ -126,3 +126,18 @@
     color: #555555;   
 }
 
+.react-grid-HeaderGroupCell {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background: #f9f9f9;
+  padding: 8px;
+  font-weight: bold;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
+
+.react-grid-HeaderGroupCell__value {
+  text-align: center;
+}
