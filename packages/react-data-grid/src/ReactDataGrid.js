@@ -5,7 +5,6 @@ const ReactDOM = require('react-dom');
 const BaseGrid              = require('./Grid');
 const Row                   = require('./Row');
 const ExcelColumn           = require('./PropTypeShapes/ExcelColumn');
-const KeyboardHandlerMixin  = require('./KeyboardHandlerMixin');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
 const DOMMetrics           = require('./DOMMetrics');
 const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
@@ -15,6 +14,7 @@ const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
+import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
@@ -50,8 +50,7 @@ const ReactDataGrid = createReactClass({
 
   mixins: [
     ColumnMetricsMixin,
-    DOMMetrics.MetricsComputatorMixin,
-    KeyboardHandlerMixin
+    DOMMetrics.MetricsComputatorMixin
   ],
 
   propTypes: {
@@ -158,6 +157,57 @@ const ReactDataGrid = createReactClass({
       initialState.selected = {rowIdx: -1, idx: -1};
     }
     return initialState;
+  },
+
+  // TODO: add tests
+  onKeyDown(e: SyntheticKeyboardEvent) {
+    if (isCtrlKeyHeldDown(e)) {
+      this.checkAndCall('onPressKeyWithCtrl', e);
+    } else if (this.isKeyExplicitlyHandled(e.key)) {
+      // break up individual keyPress events to have their own specific callbacks
+      // this allows multiple mixins to listen to onKeyDown events and somewhat reduces methodName clashing
+      let callBack = 'onPress' + e.key;
+      this.checkAndCall(callBack, e);
+    } else if (isKeyPrintable(e.keyCode)) {
+      this.checkAndCall('onPressChar', e);
+    }
+
+    // Track which keys are currently down for shift clicking etc
+    this._keysDown = this._keysDown || {};
+    this._keysDown[e.keyCode] = true;
+    if (isFunction(this.props.onGridKeyDown)) {
+      this.props.onGridKeyDown(e);
+    }
+  },
+
+  onKeyUp(e) {
+    // Track which keys are currently down for shift clicking etc
+    this._keysDown = this._keysDown || {};
+    delete this._keysDown[e.keyCode];
+
+    if (isFunction(this.props.onGridKeyUp)) {
+      this.props.onGridKeyUp(e);
+    }
+  },
+
+  isKeyDown(keyCode) {
+    if (!this._keysDown) return false;
+    return keyCode in this._keysDown;
+  },
+
+  isSingleKeyDown(keyCode) {
+    if (!this._keysDown) return false;
+    return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
+  },
+
+  checkAndCall(methodName: string, args: any) {
+    if (typeof this[methodName] === 'function') {
+      this[methodName](args);
+    }
+  },
+
+  isKeyExplicitlyHandled(key: string): boolean {
+    return typeof this['onPress' + key] === 'function';
   },
 
   hasSelectedCellChanged: function(selected: SelectedType) {
@@ -361,7 +411,7 @@ const ReactDataGrid = createReactClass({
   },
 
   onPressChar(e: SyntheticKeyboardEvent) {
-    if (this.isKeyPrintable(e.keyCode)) {
+    if (isKeyPrintable(e.keyCode)) {
       this.setActive(e.keyCode);
     }
   },
