@@ -1,11 +1,13 @@
 import ColumnUtils from './ColumnUtils';
 const ReactDOM = require('react-dom');
 const DOMMetrics = require('./DOMMetrics');
-const min = Math.min;
-const max = Math.max;
-const floor = Math.floor;
-const ceil = Math.ceil;
 import PropTypes from 'prop-types';
+import {
+  getGridState,
+  getRenderedColumnCount,
+  getVisibleColStart,
+  getNextScrollState
+} from './utils/viewportUtils';
 
 type ViewportScrollState = {
   displayStart: number;
@@ -39,58 +41,15 @@ module.exports = {
   },
 
   getInitialState(): ViewportScrollState {
-    return this.getGridState(this.props);
+    return getGridState(this.props);
   },
 
-  getGridState(props: { rowHeight: number; rowsCount: number; minHeight: number }): ViewportScrollState {
-    let totalNumberColumns = ColumnUtils.getSize(props.columnMetrics.columns);
-    let canvasHeight = props.minHeight - props.rowOffsetHeight;
-    let renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
-    let totalRowCount = min(renderedRowsCount * 4, props.rowsCount);
-    return {
-      displayStart: 0,
-      displayEnd: totalRowCount,
-      visibleStart: 0,
-      visibleEnd: totalRowCount,
-      height: canvasHeight,
-      scrollTop: 0,
-      scrollLeft: 0,
-      colVisibleStart: 0,
-      colVisibleEnd: totalNumberColumns,
-      colDisplayStart: 0,
-      colDisplayEnd: totalNumberColumns
-    };
+  getDOMNodeOffsetWidth() {
+    return ReactDOM.findDOMNode(this).offsetWidth;
   },
 
   getRenderedColumnCount(displayStart, width) {
-    let remainingWidth = width && width > 0 ? width : this.props.columnMetrics.totalWidth;
-    if (remainingWidth === 0) {
-      remainingWidth = ReactDOM.findDOMNode(this).offsetWidth;
-    }
-    let columnIndex = displayStart;
-    let columnCount = 0;
-    while (remainingWidth > 0) {
-      let column = ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex);
-
-      if (!column) {
-        break;
-      }
-
-      columnCount++;
-      columnIndex++;
-      remainingWidth -= column.width;
-    }
-    return columnCount;
-  },
-
-  getVisibleColStart(scrollLeft) {
-    let remainingScroll = scrollLeft;
-    let columnIndex = -1;
-    while (remainingScroll >= 0) {
-      columnIndex++;
-      remainingScroll -= ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex).width;
-    }
-    return columnIndex;
+    return getRenderedColumnCount(this.props, this.getDOMNodeOffsetWidth, displayStart, width);
   },
 
   clearScrollTimer() {
@@ -115,40 +74,8 @@ module.exports = {
   },
 
   updateScroll(scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
-    let isScrolling = true;
     this.resetScrollStateAfterDelay();
-
-    let renderedRowsCount = ceil(height / rowHeight);
-
-    let visibleStart = max(0, floor(scrollTop / rowHeight));
-
-    let visibleEnd = min(visibleStart + renderedRowsCount, length);
-
-    let displayStart = max(0, visibleStart - this.props.overScan.rowsStart);
-
-    let displayEnd = min(visibleEnd + this.props.overScan.rowsEnd, length);
-
-    let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
-    let colVisibleStart = (totalNumberColumns > 0) ? max(0, this.getVisibleColStart(scrollLeft)) : 0;
-    let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
-    let colVisibleEnd = (renderedColumnCount !== 0) ? colVisibleStart + renderedColumnCount : totalNumberColumns;
-    let colDisplayStart = max(0, colVisibleStart - this.props.overScan.colsStart);
-    let colDisplayEnd = min(colVisibleEnd + this.props.overScan.colsEnd, totalNumberColumns);
-
-    let nextScrollState = {
-      visibleStart,
-      visibleEnd,
-      displayStart,
-      displayEnd,
-      height,
-      scrollTop,
-      scrollLeft,
-      colVisibleStart,
-      colVisibleEnd,
-      colDisplayStart,
-      colDisplayEnd,
-      isScrolling
-    };
+    const nextScrollState = getNextScrollState(this.props, this.getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width);
 
     this.setState(nextScrollState);
   },
@@ -171,16 +98,16 @@ module.exports = {
   componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number }) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
       this.props.minHeight !== nextProps.minHeight) {
-      const newState = this.getGridState(nextProps);
+      const newState = getGridState(nextProps);
       this.updateScroll(
-          newState.scrollTop,
-          newState.scrollLeft,
-          newState.height,
-          nextProps.rowHeight,
-          nextProps.rowsCount
+        newState.scrollTop,
+        newState.scrollLeft,
+        newState.height,
+        nextProps.rowHeight,
+        nextProps.rowsCount
       );
     } else if (ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
-      this.setState(this.getGridState(nextProps));
+      this.setState(getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
         this.state.scrollTop,
