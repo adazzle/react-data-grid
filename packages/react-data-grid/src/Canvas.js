@@ -62,8 +62,7 @@ class Canvas extends React.Component {
       })
     ]),
     rowGroupRenderer: PropTypes.func,
-    isScrolling: PropTypes.bool,
-    length: PropTypes.number
+    isScrolling: PropTypes.bool
   };
 
   static defaultProps = {
@@ -291,7 +290,7 @@ class Canvas extends React.Component {
     }
   };
 
-  renderPlaceholder = (key: string, height: number) => {
+  renderPlaceholder = (key: string, height: number): ?ReactElement => {
     // just renders empty cells
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
     return (<div key={key} style={{ height: height }}>
