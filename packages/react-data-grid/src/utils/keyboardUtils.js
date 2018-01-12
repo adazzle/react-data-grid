@@ -1,6 +1,4 @@
-/* @flow */
-
-function isKeyPrintable(keycode: string): boolean {
+function isKeyPrintable(keycode) {
   const valid =
     (keycode > 47 && keycode < 58) || // number keys
     keycode === 32 || keycode === 13 || // spacebar & return key(s) (if you want to allow carriage returns)
@@ -12,7 +10,7 @@ function isKeyPrintable(keycode: string): boolean {
   return valid;
 }
 
-function isCtrlKeyHeldDown(e: SyntheticKeyboardEvent): boolean {
+function isCtrlKeyHeldDown(e) {
   return (e.ctrlKey === true || e.metaKey === true) && e.key !== 'Control';
 }
 

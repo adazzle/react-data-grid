@@ -5,15 +5,7 @@ const max = Math.max;
 const floor = Math.floor;
 const ceil = Math.ceil;
 
-type ViewportScrollState = {
-  displayStart: number;
-  displayEnd: number;
-  height: number;
-  scrollTop: number;
-  scrollLeft: number;
-};
-
-function getGridState(props: { rowHeight: number; rowsCount: number; minHeight: number }): ViewportScrollState {
+function getGridState(props) {
   const totalNumberColumns = ColumnUtils.getSize(props.columnMetrics.columns);
   const canvasHeight = props.minHeight - props.rowOffsetHeight;
   const renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
@@ -64,7 +56,7 @@ function getVisibleColStart(props, scrollLeft) {
   return columnIndex;
 }
 
-function getNextScrollState(props, getDOMNodeOffsetWidth, scrollTop: number, scrollLeft: number, height: number, rowHeight: number, length: number, width) {
+function getNextScrollState(props, getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width) {
   const isScrolling = true;
   const renderedRowsCount = ceil(height / rowHeight);
   const visibleStart = max(0, floor(scrollTop / rowHeight));
