@@ -1,4 +1,5 @@
 const React                = require('react');
+const ReactDOM             = require('react-dom');
 import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const Header               = require('./Header');
