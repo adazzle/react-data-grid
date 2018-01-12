@@ -13,6 +13,8 @@ import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 
 class Canvas extends React.Component {
+  static displayName = 'Canvas';
+
   static propTypes = {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     rowHeight: PropTypes.number.isRequired,
