@@ -23,6 +23,8 @@ const HeaderRowStyle  = {
 const knownDivPropertyKeys = ['width', 'height', 'style', 'onScroll'];
 
 class HeaderRow extends React.Component {
+  static displayName = 'HeaderRow';
+
   static propTypes = {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
