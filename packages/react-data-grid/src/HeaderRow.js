@@ -4,7 +4,7 @@ const shallowEqual    = require('fbjs/lib/shallowEqual');
 const BaseHeaderCell        = require('./HeaderCell');
 const getScrollbarSize  = require('./getScrollbarSize');
 const ExcelColumn  = require('./PropTypeShapes/ExcelColumn');
-const ColumnUtilsMixin  = require('./ColumnUtils');
+const columnUtils  = require('./ColumnUtils');
 const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
 const FilterableHeaderCell  = require('./cells/headerCells/FilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
@@ -46,8 +46,6 @@ const HeaderRow = createReactClass({
     draggableHeaderCell: PropTypes.func,
     onHeaderDrop: PropTypes.func
   },
-
-  mixins: [ColumnUtilsMixin],
 
   componentWillMount() {
     this.cells = [];
@@ -119,8 +117,8 @@ const HeaderRow = createReactClass({
   getCells(): Array<HeaderCell> {
     let cells = [];
     let lockedCells = [];
-    for (let i = 0, len = this.getSize(this.props.columns); i < len; i++) {
-      let column = Object.assign({ rowType: this.props.rowType }, this.getColumn(this.props.columns, i));
+    for (let i = 0, len = columnUtils.getSize(this.props.columns); i < len; i++) {
+      let column = Object.assign({ rowType: this.props.rowType }, columnUtils.getColumn(this.props.columns, i));
       let _renderer = this.getHeaderRenderer(column);
       if (column.key === 'select-row' && this.props.rowType === 'filter') {
         _renderer = <div></div>;
