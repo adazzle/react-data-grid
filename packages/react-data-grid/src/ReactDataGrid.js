@@ -6,7 +6,6 @@ const BaseGrid              = require('./Grid');
 const Row                   = require('./Row');
 const ExcelColumn           = require('./PropTypeShapes/ExcelColumn');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
-const DOMMetrics           = require('./DOMMetrics');
 const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
@@ -49,8 +48,7 @@ const ReactDataGrid = createReactClass({
   displayName: 'ReactDataGrid',
 
   mixins: [
-    ColumnMetricsMixin,
-    DOMMetrics.MetricsComputatorMixin
+    ColumnMetricsMixin
   ],
 
   propTypes: {
@@ -123,6 +121,105 @@ const ReactDataGrid = createReactClass({
     enableCellAutoFocus: PropTypes.bool,
     onBeforeEdit: PropTypes.func,
     selectAllRenderer: PropTypes.object
+  },
+
+  childContextTypes: {
+    metricsComputator: PropTypes.object
+  },
+
+  getChildContext() {
+    return { metricsComputator: this };
+  },
+
+  getMetricImpl(name) {
+    return this._DOMMetrics.metrics[name].value;
+  },
+
+  registerMetricsImpl(component, metrics) {
+    let getters = {};
+    let s = this._DOMMetrics;
+
+    for (let name in metrics) {
+      if (s.metrics[name] !== undefined) {
+        throw new Error('DOM metric ' + name + ' is already defined');
+      }
+      s.metrics[name] = {component, computator: metrics[name].bind(component)};
+      getters[name] = this.getMetricImpl.bind(null, name);
+    }
+
+    if (s.components.indexOf(component) === -1) {
+      s.components.push(component);
+    }
+
+    return getters;
+  },
+
+  unregisterMetricsFor(component) {
+    let s = this._DOMMetrics;
+    let idx = s.components.indexOf(component);
+
+    if (idx > -1) {
+      s.components.splice(idx, 1);
+
+      let name;
+      let metricsToDelete = {};
+
+      for (name in s.metrics) {
+        if (s.metrics[name].component === component) {
+          metricsToDelete[name] = true;
+        }
+      }
+
+      for (name in metricsToDelete) {
+        if (metricsToDelete.hasOwnProperty(name)) {
+          delete s.metrics[name];
+        }
+      }
+    }
+  },
+
+  updateMetrics() {
+    let s = this._DOMMetrics;
+
+    let needUpdate = false;
+
+    for (let name in s.metrics) {
+      if (!s.metrics.hasOwnProperty(name)) continue;
+
+      let newMetric = s.metrics[name].computator();
+      if (newMetric !== s.metrics[name].value) {
+        needUpdate = true;
+      }
+      s.metrics[name].value = newMetric;
+    }
+
+    if (needUpdate) {
+      for (let i = 0, len = s.components.length; i < len; i++) {
+        if (s.components[i].metricsUpdated) {
+          s.components[i].metricsUpdated();
+        }
+      }
+    }
+  },
+
+  componentWillMount() {
+    this._DOMMetrics = {
+      metrics: {},
+      components: []
+    };
+  },
+
+  componentDidMount() {
+    if (window.addEventListener) {
+      window.addEventListener('resize', this.updateMetrics);
+    } else {
+      window.attachEvent('resize', this.updateMetrics);
+    }
+    this.updateMetrics();
+  },
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateMetrics);
   },
 
   getDefaultProps(): {enableCellSelect: boolean} {
