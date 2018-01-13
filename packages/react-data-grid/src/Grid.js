@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
-const DOMMetrics           = require('./DOMMetrics');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-core.css');
 
@@ -63,10 +62,6 @@ const Grid = createReactClass({
     rowGroupRenderer: PropTypes.func,
     overScan: PropTypes.object
   },
-
-  mixins: [
-    DOMMetrics.MetricsComputatorMixin
-  ],
 
   getDefaultProps() {
     return {
