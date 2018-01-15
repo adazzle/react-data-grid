@@ -218,39 +218,4 @@ describe('Grid Integration', () => {
       });
     });
   });
-
-  describe('Context Menu', () => {
-    let fakeRowIdx = 3;
-    let fakeIdx = 5;
-
-    it('should show context menu on right click', () => {
-      gridRunner.rightClickCell({cellIdx: fakeIdx, rowIdx: fakeRowIdx});
-      expect(gridRunner.isContextMenuVisible()).toEqual(true);
-    });
-
-    it('should hide context menu on selecting menu item', () => {
-      gridRunner.clickContextMenuLink();
-      expect(gridRunner.isContextMenuVisible()).toEqual(false);
-    });
-
-    // Please note: this test will fail if the MenuItem's inner text in example14-all-features-immutable is changed.
-    it('should get row and column indexes from context menu', () => {
-      gridRunner.rightClickCell({cellIdx: fakeIdx, rowIdx: fakeRowIdx});
-      let menuItem = gridRunner.getContextMenuItem();
-      // Using this alternative for firefox tests
-      let menuItemValue = menuItem.innerText !== undefined ? menuItem.innerText : menuItem.textContent;
-      let idxs = menuItemValue.split(',');
-      expect(fakeRowIdx).toEqual(parseInt(idxs[0], 10));
-      expect(fakeIdx).toEqual(parseInt(idxs[1], 10));
-    });
-
-    // In ContextMenuWrapper's componentWillReceiveProps the function getMenuPosition is called with a delay
-    // (window.requestAnimationFrame || setTimeout). This causes timing issues when you have both 'right click on cell' (open menu)
-    // and 'click on menu item' (close menu) in the same test. To avoid this we need to close the menu after each right click
-    // in a separate test.
-    xit('should hide context menu', () => {
-      gridRunner.clickContextMenuLink();
-      expect(gridRunner.isContextMenuVisible()).toEqual(false);
-    });
-  });
 });
