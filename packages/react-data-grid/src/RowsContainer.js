@@ -10,6 +10,13 @@ SimpleRowsContainer.propTypes = {
   rows: PropTypes.array
 };
 
+const getNewContextMenuProps = ({ contextMenuId, rowIdx, idx }) => {
+  const id = `${contextMenuId || DEFAULT_CONTEXT_MENU_ID}_${rowIdx}`;
+  return {rowIdx, idx, id};
+}
+
+const getNewContextMenu = (contextMenu, newProps) => React.cloneElement(contextMenu, newProps);
+
 class RowsContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -35,14 +42,12 @@ class RowsContainer extends React.Component {
 
   renderRowsWithContextMenu() {
     const { ContextMenuTrigger } = this.plugins.Menu;
-    const { contextMenuId, rowIdx, idx } = this.props;
-    const id = `${contextMenuId || DEFAULT_CONTEXT_MENU_ID}_${rowIdx}`;
-    const newProps = {rowIdx, idx, id};
-    const contextMenu = React.cloneElement(this.props.contextMenu, newProps);
+    const newProps = getNewContextMenuProps(this.props);
+    const contextMenu = getNewContextMenu(this.props.contextMenu, newProps);
     // Initialise the context menu if it is available
     return (
       <div>
-        <ContextMenuTrigger id={id}>
+        <ContextMenuTrigger id={newProps.id}>
           <SimpleRowsContainer {...this.props} />
         </ContextMenuTrigger>
         {contextMenu}
