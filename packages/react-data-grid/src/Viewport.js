@@ -1,8 +1,6 @@
 const React                = require('react');
-const ReactDOM             = require('react-dom');
 const createReactClass = require('create-react-class');
 const Canvas               = require('./Canvas');
-const ViewportScroll       = require('./ViewportScrollMixin');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 import PropTypes from 'prop-types';
 import ColumnUtils from './ColumnUtils';
@@ -14,7 +12,6 @@ import {
 
 const Viewport = createReactClass({
   displayName: 'Viewport',
-  mixins: [ViewportScroll],
 
   propTypes: {
     rowOffsetHeight: PropTypes.number.isRequired,
@@ -84,7 +81,7 @@ const Viewport = createReactClass({
   },
 
   getDOMNodeOffsetWidth() {
-    return ReactDOM.findDOMNode(this).offsetWidth;
+    return this.viewport ? this.viewport.offsetWidth : 0;
   },
 
   getRenderedColumnCount(displayStart, width) {
@@ -120,8 +117,8 @@ const Viewport = createReactClass({
   },
 
   metricsUpdated() {
-    let height = this.DOMMetrics.viewportHeight();
-    let width = this.DOMMetrics.viewportWidth();
+    let height = this.viewportHeight();
+    let width = this.viewportWidth();
     if (height) {
       this.updateScroll(
         this.state.scrollTop,
@@ -132,6 +129,14 @@ const Viewport = createReactClass({
         width
       );
     }
+  },
+
+  viewportHeight(): number {
+    return this.viewport ? this.viewport.offsetHeight : 0;
+  },
+
+  viewportWidth(): number {
+    return this.viewport ? this.viewport.offsetWidth : 0;
   },
 
   componentWillReceiveProps(nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number }) {
@@ -170,7 +175,17 @@ const Viewport = createReactClass({
     }
   },
 
+  componentDidMount() {
+    if (window.addEventListener) {
+      window.addEventListener('resize', this.metricsUpdated);
+    } else {
+      window.attachEvent('resize', this.metricsUpdated);
+    }
+    this.metricsUpdated();
+  },
+
   componentWillUnmount() {
+    window.removeEventListener('resize', this.metricsUpdated);
     this.clearScrollTimer();
   },
 
@@ -187,7 +202,8 @@ const Viewport = createReactClass({
     return (
       <div
         className="react-grid-Viewport"
-        style={style}>
+        style={style}
+        ref={(node) => { this.viewport = node; }}>
         <Canvas
           ref={(node) => this.canvas = node}
           rowKey={this.props.rowKey}
