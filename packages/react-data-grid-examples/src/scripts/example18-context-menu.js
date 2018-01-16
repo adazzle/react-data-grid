@@ -100,12 +100,14 @@ class MyContextMenu extends React.Component {
   };
 
   render() {
+    const { idx, id, rowIdx } = this.props;
+
     return (
-      <ContextMenu id={this.props.id || ''}>
-        <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowDelete}>Delete Row</MenuItem>
+      <ContextMenu id={id}>
+        <MenuItem data={{ rowIdx, idx }} onClick={this.onRowDelete}>Delete Row</MenuItem>
         <SubMenu title="Insert Row">
-          <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowInsertAbove}>Above</MenuItem>
-          <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onRowInsertBelow}>Below</MenuItem>
+          <MenuItem data={{ rowIdx, idx }} onClick={this.onRowInsertAbove}>Above</MenuItem>
+          <MenuItem data={{ rowIdx, idx }} onClick={this.onRowInsertBelow}>Below</MenuItem>
         </SubMenu>
       </ContextMenu>
     );

@@ -1,21 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const DEFAULT_CONTEXT_MENU_ID = 'rgdContextMenu';
+export const DEFAULT_CONTEXT_MENU_ID = 'rgdContextMenu';
 
-const SimpleRowsContainer = (props) => (<div key="rows-container">{props.rows}</div>);
+const SimpleRowsContainer = (props) => <div key="rows-container">{props.rows}</div>;
 
 SimpleRowsContainer.propTypes = {
   width: PropTypes.number,
   rows: PropTypes.array
 };
 
-const getNewContextMenuProps = ({ contextMenuId, rowIdx, idx }) => {
-  const id = `${contextMenuId || DEFAULT_CONTEXT_MENU_ID}_${rowIdx}`;
-  return {rowIdx, idx, id};
-}
-
-const getNewContextMenu = (contextMenu, newProps) => React.cloneElement(contextMenu, newProps);
+export const getNewContextMenuProps = ({ contextMenuId, rowIdx, idx }) => ({
+  rowIdx, idx, id: contextMenuId || DEFAULT_CONTEXT_MENU_ID
+});
 
 class RowsContainer extends React.Component {
   constructor(props) {
@@ -25,14 +22,12 @@ class RowsContainer extends React.Component {
     this.renderRowsWithContextMenu = this.renderRowsWithContextMenu.bind(this);
     this.validateContextMenu = this.validateContextMenu.bind(this);
 
-    this.validateContextMenu(props);
+    this.validateContextMenu();
   }
 
   validateContextMenu() {
-    if (this.hasContextMenu()) {
-      if (!this.plugins) {
-        throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
-      }
+    if (this.hasContextMenu() && !this.plugins) {
+      throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
     }
   }
 
@@ -43,7 +38,7 @@ class RowsContainer extends React.Component {
   renderRowsWithContextMenu() {
     const { ContextMenuTrigger } = this.plugins.Menu;
     const newProps = getNewContextMenuProps(this.props);
-    const contextMenu = getNewContextMenu(this.props.contextMenu, newProps);
+    const contextMenu = React.cloneElement(this.props.contextMenu, newProps);
     // Initialise the context menu if it is available
     return (
       <div>
