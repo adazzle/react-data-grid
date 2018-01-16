@@ -259,7 +259,6 @@ const ReactDataGrid = createReactClass({
       this.checkAndCall('onPressKeyWithCtrl', e);
     } else if (this.isKeyExplicitlyHandled(e.key)) {
       // break up individual keyPress events to have their own specific callbacks
-      // this allows multiple mixins to listen to onKeyDown events and somewhat reduces methodName clashing
       let callBack = 'onPress' + e.key;
       this.checkAndCall(callBack, e);
     } else if (isKeyPrintable(e.keyCode)) {
