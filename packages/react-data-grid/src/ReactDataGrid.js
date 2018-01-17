@@ -25,7 +25,7 @@ if (!Object.assign) {
 type SelectedType = {
   rowIdx: number;
   idx: number;
-}
+};
 
 type ColumnEvent = {
   name: string,
