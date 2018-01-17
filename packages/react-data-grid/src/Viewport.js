@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import ColumnUtils from './ColumnUtils';
 import {
   getGridState,
-  getRenderedColumnCount,
   getNextScrollState
 } from './utils/viewportUtils';
 
@@ -82,10 +81,6 @@ const Viewport = createReactClass({
 
   getDOMNodeOffsetWidth() {
     return this.viewport ? this.viewport.offsetWidth : 0;
-  },
-
-  getRenderedColumnCount(displayStart, width) {
-    return getRenderedColumnCount(this.props, this.getDOMNodeOffsetWidth, displayStart, width);
   },
 
   clearScrollTimer() {
