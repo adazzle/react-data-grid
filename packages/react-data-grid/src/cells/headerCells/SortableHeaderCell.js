@@ -17,7 +17,6 @@ class SortableHeaderCell extends React.Component {
   };
 
   onClick = () => {
-  	console.log(this.props);
     let direction;
     switch (this.props.sortDirection) {
     default:
