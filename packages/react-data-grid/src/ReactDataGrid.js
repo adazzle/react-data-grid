@@ -20,7 +20,7 @@ require('../../../themes/react-data-grid-checkbox.css');
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
-}
+};
 
 type SelectedType = {
   rowIdx: number;
