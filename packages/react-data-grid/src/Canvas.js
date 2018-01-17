@@ -93,6 +93,9 @@ const Canvas = createReactClass({
 
   componentDidMount() {
     this.onRows();
+    if (this.props.scrollToRowIndex !== 0) {
+      this.scrollToRowIndex = this.props.scrollToRowIndex;
+    }
   },
 
   componentWillReceiveProps(nextProps: any) {
@@ -102,6 +105,10 @@ const Canvas = createReactClass({
         displayStart: nextProps.displayStart,
         displayEnd: nextProps.displayEnd
       });
+    }
+    if (this.props.scrollToRowIndex !== nextProps.scrollToRowIndex
+      && this.props.scrollToRowIndex !== 0) {
+      this.scrollToRowIndex = nextProps.scrollToRowIndex;
     }
   },
 
@@ -135,11 +142,12 @@ const Canvas = createReactClass({
     if (this._scroll.scrollTop !== 0 && this._scroll.scrollLeft !== 0) {
       this.setScrollLeft(this._scroll.scrollLeft);
     }
-    if (this.props.scrollToRowIndex !== 0) {
+    if (this.scrollToRowIndex) {
       this.div.scrollTop = Math.min(
-        this.props.scrollToRowIndex * this.props.rowHeight,
+        this.scrollToRowIndex * this.props.rowHeight,
         this.props.rowsCount * this.props.rowHeight - this.props.height
       );
+      delete this.scrollToRowIndex;
     }
     this.onRows();
   },
