@@ -12,10 +12,12 @@ class SortableHeaderCell extends React.Component {
     columnKey: PropTypes.string.isRequired,
     column: PropTypes.shape({ name: PropTypes.node }),
     onSort: PropTypes.func.isRequired,
-    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT))
+    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
+    descendingFirst: PropTypes.bool
   };
 
   onClick = () => {
+  	console.log(this.props);
     let direction;
     switch (this.props.sortDirection) {
     default:

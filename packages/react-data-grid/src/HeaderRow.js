@@ -82,9 +82,9 @@ const HeaderRow = createReactClass({
     return <FilterRenderer {...this.props} onChange={this.props.onFilterChange} />;
   },
 
-  getSortableHeaderCell(column, descendingFirst) {
+  getSortableHeaderCell(column) {
     let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
-    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} descendingFirst={descendingFirst}/>;
+    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} descendingFirst={column.descendingFirst}/>;
   },
 
   getHeaderRenderer(column) {
@@ -95,7 +95,7 @@ const HeaderRow = createReactClass({
       let headerCellType = this.getHeaderCellType(column);
       switch (headerCellType) {
       case HeaderCellType.SORTABLE:
-        renderer = this.getSortableHeaderCell(column, this.props.descendingFirst);
+        renderer = this.getSortableHeaderCell(column);
         break;
       case HeaderCellType.FILTERABLE:
         renderer = this.getFilterableHeaderCell(column);
