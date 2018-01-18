@@ -45,7 +45,8 @@ class Example extends React.Component {
         key: 'completeDate',
         name: 'Expected Complete',
         width: 200,
-        sortable: true
+        sortable: true,
+        descendingFirst: true
       }
     ];
 
