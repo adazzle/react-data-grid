@@ -253,7 +253,6 @@ const ReactDataGrid = createReactClass({
     return initialState;
   },
 
-  // TODO: add tests
   onKeyDown(e: SyntheticKeyboardEvent) {
     if (isCtrlKeyHeldDown(e)) {
       this.checkAndCall('onPressKeyWithCtrl', e);
