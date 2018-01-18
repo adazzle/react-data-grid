@@ -15,43 +15,37 @@ class Example extends React.Component {
         key: 'task',
         name: 'Title',
         width: 200,
-        sortable: true,
-        descendingFirst: false
+        sortable: true
       },
       {
         key: 'priority',
         name: 'Priority',
         width: 200,
-        sortable: true,
-        descendingFirst: false
+        sortable: true
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         width: 200,
-        sortable: true,
-        descendingFirst: false
+        sortable: true
       },
       {
         key: 'complete',
         name: '% Complete',
         width: 200,
-        sortable: true,
-        descendingFirst: false
+        sortable: true
       },
       {
         key: 'startDate',
         name: 'Start Date',
         width: 200,
-        sortable: true,
-        descendingFirst: false
+        sortable: true
       },
       {
         key: 'completeDate',
         name: 'Expected Complete',
         width: 200,
-        sortable: true,
-        descendingFirst: false
+        sortable: true
       }
     ];
 
