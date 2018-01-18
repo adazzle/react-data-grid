@@ -1,6 +1,5 @@
 const React = require('react');
 const createReactClass = require('create-react-class');
-const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
 import PropTypes from 'prop-types';
 const Row = require('./Row');
@@ -70,7 +69,7 @@ const Canvas = createReactClass({
     if (!this._scrollShim) {
       const size = this._scrollShimSize();
       const shim = createScrollShim(size);
-      ReactDOM.findDOMNode(this).appendChild(shim);
+      this.canvas.appendChild(shim);
       this._scrollShim = shim;
     }
     this._scheduleRemoveScrollShim();
@@ -167,7 +166,7 @@ const Canvas = createReactClass({
       this.setScrollLeft(this._scroll.scrollLeft);
     }
     if (this.props.scrollToRowIndex !== 0) {
-      this.div.scrollTop = Math.min(
+      this.canvas.scrollTop = Math.min(
         this.props.scrollToRowIndex * this.props.rowHeight,
         this.props.rowsCount * this.props.rowHeight - this.props.height
       );
@@ -183,7 +182,7 @@ const Canvas = createReactClass({
   },
 
   onScroll(e: any) {
-    if (ReactDOM.findDOMNode(this) !== e.target) {
+    if (this.canvas !== e.target) {
       return;
     }
     this.appendScrollShim();
@@ -214,15 +213,13 @@ const Canvas = createReactClass({
   },
 
   getScrollbarWidth() {
-    let scrollbarWidth = 0;
     // Get the scrollbar width
-    let canvas = ReactDOM.findDOMNode(this);
-    scrollbarWidth = canvas.offsetWidth - canvas.clientWidth;
+    const scrollbarWidth = this.canvas.offsetWidth - this.canvas.clientWidth;
     return scrollbarWidth;
   },
 
   getScroll() {
-    let { scrollTop, scrollLeft } = ReactDOM.findDOMNode(this);
+    const { scrollTop, scrollLeft } = this.canvas;
     return { scrollTop, scrollLeft };
   },
 
@@ -356,7 +353,7 @@ const Canvas = createReactClass({
 
     return (
       <div
-        ref={(div) => { this.div = div; }}
+        ref={(div) => { this.canvas = div; }}
         style={style}
         onScroll={this.onScroll}
         className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active })}>
