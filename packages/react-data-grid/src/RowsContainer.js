@@ -10,25 +10,29 @@ SimpleRowsContainer.propTypes = {
   rows: PropTypes.array
 };
 
-export const getNewContextMenuProps = ({ contextMenuId, rowIdx, idx }) => ({
-  rowIdx, idx, id: contextMenuId || DEFAULT_CONTEXT_MENU_ID
+export const getNewContextMenuProps = ({ contextMenu, rowIdx, idx }) => ({
+  rowIdx, idx, id: contextMenu.props.id || DEFAULT_CONTEXT_MENU_ID
 });
 
 class RowsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.plugins = props.window ? props.window.ReactDataGridPlugins : window.ReactDataGridPlugins;
-    this.hasContextMenu = this.hasContextMenu.bind(this);
-    this.renderRowsWithContextMenu = this.renderRowsWithContextMenu.bind(this);
-    this.validateContextMenu = this.validateContextMenu.bind(this);
-
-    this.validateContextMenu();
   }
 
-  validateContextMenu() {
-    if (this.hasContextMenu() && !this.plugins) {
+  validatePlugin() {
+    if (!this.plugins) {
       throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
     }
+  }
+
+  getRowsContainer() {
+    if (this.hasContextMenu()) {
+      this.validatePlugin();
+      return this.renderRowsWithContextMenu();
+    }
+
+    return <SimpleRowsContainer {...this.props} />;
   }
 
   hasContextMenu() {
@@ -51,13 +55,12 @@ class RowsContainer extends React.Component {
   }
 
   render() {
-    return this.hasContextMenu() ? this.renderRowsWithContextMenu() : <SimpleRowsContainer {...this.props} />;
+    return this.getRowsContainer();
   }
 }
 
 RowsContainer.propTypes = {
   contextMenu: PropTypes.element,
-  contextMenuId: PropTypes.string,
   rowIdx: PropTypes.number,
   idx: PropTypes.number,
   window: PropTypes.object

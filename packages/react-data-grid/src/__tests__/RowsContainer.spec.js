@@ -4,7 +4,7 @@ import RowsContainer, { getNewContextMenuProps, SimpleRowsContainer, DEFAULT_CON
 
 const FakeContextMenuTrigger = () => <div id="fakeContextMenuTrigger" />;
 
-const FakeContextMenu = () => <div id="fakeContextMenu" />;
+const FakeContextMenu = () => <div />;
 
 const ReactDataGridPlugins = {
   Menu: {
@@ -12,9 +12,9 @@ const ReactDataGridPlugins = {
   }
 };
 
+const contextMenuId = 'fakeContextMenu';
 const props = {
-  contextMenu: <FakeContextMenu />,
-  contextMenuId: 'fakeContextMenu',
+  contextMenu: <FakeContextMenu id={contextMenuId} />,
   rowIdx: 5,
   idx: 8,
   window: { ReactDataGridPlugins },
@@ -28,11 +28,11 @@ describe('Rows Container', () => {
   describe('getNewContextMenuProps()', () => {
     it('should populate correct newProps for contextMenu with customized menu id', () => {
       const newProps = getNewContextMenuProps(props);
-      expect(newProps.id).toBe(props.contextMenuId);
+      expect(newProps.id).toBe(contextMenuId);
     });
 
     it('should populate correct newProps for contextMenu with default menu id', () => {
-      const newProps = getNewContextMenuProps(Object.assign({}, props, { contextMenuId: undefined }));
+      const newProps = getNewContextMenuProps(Object.assign({}, props, { contextMenu: <FakeContextMenu /> }));
       expect(newProps.id).toBe(DEFAULT_CONTEXT_MENU_ID);
     });
   });
@@ -43,21 +43,16 @@ describe('Rows Container', () => {
       expect(wrapper.find(FakeContextMenuTrigger).length).toBe(1);
     });
 
-    it('should throw exception for no context menu plugin', () => {
+    it('should throw exception for no context menu plugin when rendering', () => {
       const newProp = Object.assign({}, props, { window: {}});
-      try {
-        shallow(<RowsContainer {...newProp} />);
-      } catch (e) {
-        expect(e.message).toContain('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
-      }
+      expect(() => { shallow(<RowsContainer {...newProp} />); }).toThrowError('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
     });
   });
 
   describe('without context menu', () => {
     it('should create a SimpleRowsContainer', () => {
       const newProps = Object.assign({}, props, {
-        contextMenu: undefined,
-        contextMenuId: undefined
+        contextMenu: undefined
       });
       const wrapper = shallow(<RowsContainer {...newProps}/>);
       expect(wrapper.find(SimpleRowsContainer).length).toBe(1);

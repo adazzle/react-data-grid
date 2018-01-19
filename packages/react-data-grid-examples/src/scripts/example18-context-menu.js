@@ -59,8 +59,7 @@ class Example extends React.Component {
   render() {
     return (
       <ReactDataGrid
-        contextMenu={<MyContextMenu onRowDelete={this.deleteRow} onRowInsertAbove={this.insertRowAbove} onRowInsertBelow={this.insertRowBelow} />}
-        contextMenuId="myContextMenu"
+        contextMenu={<MyContextMenu id="customizedContextMenu" onRowDelete={this.deleteRow} onRowInsertAbove={this.insertRowAbove} onRowInsertBelow={this.insertRowBelow} />}
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
