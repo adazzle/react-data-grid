@@ -17211,25 +17211,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return React.createElement(FilterRenderer, _extends({}, this.props, { onChange: this.props.onFilterChange }));
 	  },
 	  getSortableHeaderCell: function getSortableHeaderCell(column) {
-	    var SortableRenderer = SortableHeaderCell;
-	    if (column.headerRenderer !== undefined) {
-	      SortableRenderer = column.headerRenderer;
-	    }
 	    var sortDirection = this.props.sortColumn === column.key ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
-	    var props = { columnKey: column.key, onSort: this.props.onSort, sortDirection: sortDirection };
-
-	    if (React.isValidElement(SortableRenderer)) {
-	      // a string means it's an HTML element and props we want to pass are not valid, return it as is
-	      if (typeof SortableRenderer.type === 'string') {
-	        return SortableRenderer;
-	      }
-	      return React.cloneElement(SortableRenderer, props);
-	    }
-	    return React.createElement(SortableRenderer, props);
+	    return React.createElement(SortableHeaderCell, { columnKey: column.key, onSort: this.props.onSort, sortDirection: sortDirection });
 	  },
 	  getHeaderRenderer: function getHeaderRenderer(column) {
 	    var renderer = void 0;
-	    if (column.headerRenderer && !this.props.filterable && !column.sortable) {
+	    if (column.headerRenderer && !this.props.filterable) {
 	      renderer = column.headerRenderer;
 	    } else {
 	      var headerCellType = this.getHeaderCellType(column);
