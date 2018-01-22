@@ -13,7 +13,7 @@ class SortableHeaderCell extends React.Component {
     column: PropTypes.shape({ name: PropTypes.node }),
     onSort: PropTypes.func.isRequired,
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
-    descendingFirst: PropTypes.bool
+    sortDescendingFirst: PropTypes.bool
   };
 
   onClick = () => {
@@ -23,25 +23,13 @@ class SortableHeaderCell extends React.Component {
     case null:
     case undefined:
     case DEFINE_SORT.NONE:
-      if (this.props.descendingFirst) {
-        direction = DEFINE_SORT.DESC;
-      } else {
-        direction = DEFINE_SORT.ASC;
-      }
+      direction = this.props.sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
       break;
     case DEFINE_SORT.ASC:
-      if (this.props.descendingFirst) {
-        direction = DEFINE_SORT.NONE;
-      } else {
-        direction = DEFINE_SORT.DESC;
-      }
+      direction = this.props.sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
       break;
     case DEFINE_SORT.DESC:
-      if (this.props.descendingFirst) {
-        direction = DEFINE_SORT.ASC;
-      } else {
-        direction = DEFINE_SORT.NONE;
-      }
+	  direction = this.props.sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
       break;
     }
     this.props.onSort(

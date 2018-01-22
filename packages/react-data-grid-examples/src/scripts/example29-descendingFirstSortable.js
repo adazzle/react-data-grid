@@ -46,7 +46,7 @@ class Example extends React.Component {
         name: 'Expected Complete',
         width: 200,
         sortable: true,
-        descendingFirst: true
+        sortDescendingFirst: true
       }
     ];
 

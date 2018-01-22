@@ -84,8 +84,8 @@ const HeaderRow = createReactClass({
 
   getSortableHeaderCell(column) {
     let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
-    let descendingFirst = (column.descendingFirst === undefined ) ? false : column.descendingFirst;
-    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} descendingFirst={descendingFirst}/>;
+    let sortDescendingFirst = (column.sortDescendingFirst === undefined ) ? false : column.sortDescendingFirst;
+    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst}/>;
   },
 
   getHeaderRenderer(column) {
