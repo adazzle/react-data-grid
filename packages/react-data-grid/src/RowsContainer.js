@@ -26,15 +26,6 @@ class RowsContainer extends React.Component {
     }
   }
 
-  getRowsContainer() {
-    if (this.hasContextMenu()) {
-      this.validatePlugin();
-      return this.renderRowsWithContextMenu();
-    }
-
-    return <SimpleRowsContainer {...this.props} />;
-  }
-
   hasContextMenu() {
     return this.props.contextMenu && React.isValidElement(this.props.contextMenu);
   }
@@ -55,7 +46,12 @@ class RowsContainer extends React.Component {
   }
 
   render() {
-    return this.getRowsContainer();
+    if (this.hasContextMenu()) {
+      this.validatePlugin();
+      return this.renderRowsWithContextMenu();
+    }
+
+    return <SimpleRowsContainer {...this.props} />;
   }
 }
 
