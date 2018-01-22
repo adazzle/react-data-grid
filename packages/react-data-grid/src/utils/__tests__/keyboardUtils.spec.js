@@ -10,7 +10,7 @@ describe('isKeyPrintable', () => {
   });
 
   it('should return false if ctrl key is not pressed', () => {
-    expect(isCtrlKeyHeldDown({ ctrlKey: true, key: 's' })).toBe(false);
+    expect(isCtrlKeyHeldDown({ ctrlKey: false, key: 's' })).toBe(false);
   });
 
   it('should return false if only ctrl key is pressed', () => {
