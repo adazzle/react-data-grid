@@ -1,5 +1,5 @@
 import columnUtils from '../../ColumnUtils';
-import { getGridState, getRenderedColumnCount } from '../viewportUtils';
+import { getGridState, getNextScrollState, getRenderedColumnCount } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -73,6 +73,47 @@ describe('viewportUtils', () => {
       const count = getColumnCount(4);
       expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
       expect(count).toBe(1);
+    });
+  });
+
+  describe('getNextScrollState', () => {
+    it('should correctly set next scroll state', () => {
+      const fakeGetDOMNodeOffsetWidth = () => ({});
+      const scrollTop = 100;
+      const scrollLeft = 100;
+      const height = 500;
+      const rowHeight = 40;
+      const props = {
+        columnMetrics: {
+          columns: [
+            { key: 'col1', width: 50 },
+            { key: 'col2', width: 120 }
+          ]
+        },
+        minHeight: 100,
+        rowOffsetHeight: 5,
+        rowHeight: 20,
+        rowsCount: 100,
+        overScan: {
+          rowsStart: 1,
+          rowsEnd: 10,
+          colsStart: 1,
+          colsEnd: 10
+        }
+      };
+      const state = getNextScrollState(props, fakeGetDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, 50, 60);
+
+      expect(state).toEqual(jasmine.objectContaining({
+        isScrolling: true,
+        scrollLeft,
+        scrollTop,
+        visibleStart: 2,
+        visibleEnd: 15,
+        displayStart: 1,
+        displayEnd: 25,
+        colDisplayStart: 0,
+        colDisplayEnd: 2
+      }));
     });
   });
 });
