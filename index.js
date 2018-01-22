@@ -1,0 +1,1 @@
+module.exports = require('./packages/react-data-grid/dist/react-data-grid');
