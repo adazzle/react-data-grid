@@ -104,7 +104,7 @@ const HeaderRow = createReactClass({
 
   getHeaderRenderer(column) {
     let renderer;
-    if (column.headerRenderer && !this.props.filterable && !column.sortable) {
+    if (column.headerRenderer && !this.props.filterable) {
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);
