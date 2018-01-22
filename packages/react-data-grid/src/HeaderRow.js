@@ -83,7 +83,6 @@ const HeaderRow = createReactClass({
   },
 
   getSortableHeaderCell(column) {
-
     let SortableRenderer = SortableHeaderCell;
     if (column.headerRenderer !== undefined) {
       SortableRenderer = column.headerRenderer;
