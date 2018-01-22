@@ -24,6 +24,7 @@ module.exports = {
       this._scrollLeft = props.scrollLeft;
       this._onScroll();
     }
+    this.props.onScroll && this.props.onScroll(this.viewport.getScroll());
   },
 
   onHeaderScroll(e) {
