@@ -30,7 +30,7 @@ class SortableHeaderCell extends React.Component {
       direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
       break;
     case DEFINE_SORT.DESC:
-	  direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
+      direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
       break;
     }
     this.props.onSort(
