@@ -1,3 +1,4 @@
 module.exports = {
-  SimpleCellFormatter: require('./SimpleCellFormatter')
+  SimpleCellFormatter: require('./SimpleCellFormatter'),
+  SelectAll: require('./SelectAll')
 };

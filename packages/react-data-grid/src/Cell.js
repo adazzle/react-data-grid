@@ -476,7 +476,7 @@ class Cell extends React.Component {
       const cellActions = cellMetaData.getCellActions(column, rowData);
       if (cellActions && cellActions.length) {
         return cellActions.map((action, index) => {
-          return <CellAction action={action} isFirst={index === 0} />;
+          return <CellAction key={index} action={action} isFirst={index === 0} />;
         });
       }
       return null;
