@@ -90,5 +90,6 @@ function getNextScrollState(props, getDOMNodeOffsetWidth, scrollTop, scrollLeft,
 
 export {
   getGridState,
-  getNextScrollState
+  getNextScrollState,
+  getRenderedColumnCount
 };
