@@ -83,14 +83,28 @@ const HeaderRow = createReactClass({
   },
 
   getSortableHeaderCell(column) {
-    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
-    let sortDescendingFirst = (column.sortDescendingFirst === undefined ) ? false : column.sortDescendingFirst;
-    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst}/>;
+
+    let SortableRenderer = SortableHeaderCell;
+    if (column.headerRenderer !== undefined) {
+      SortableRenderer = column.headerRenderer;
+    }
+    const sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+    const sortDescendingFirst = (column.sortDescendingFirst === undefined ) ? false : column.sortDescendingFirst;
+    const props = { columnKey: column.key, onSort: this.props.onSort, sortDirection: sortDirection, sortDescendingFirst: sortDescendingFirst };
+
+    if (React.isValidElement(SortableRenderer)) {
+      // a string means it's an HTML element and props we want to pass are not valid, return it as is
+      if (typeof SortableRenderer.type === 'string') {
+        return SortableRenderer;
+      }
+      return React.cloneElement(SortableRenderer, props);
+    }
+    return React.createElement(SortableRenderer, props);
   },
 
   getHeaderRenderer(column) {
     let renderer;
-    if (column.headerRenderer && !this.props.filterable) {
+    if (column.headerRenderer && !this.props.filterable && !column.sortable) {
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);
