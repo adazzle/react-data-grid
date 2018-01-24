@@ -40,7 +40,9 @@
     "react-input-autosize": "1.1.0",
     "react-select": "^1.0.0-beta14",
     "reselect": "^2.5.1",
-    "ron-react-autocomplete": "^4.0.5"
+    "ron-react-autocomplete": "^4.0.5",
+    "rxjs": "^5.5.6",
+    "rxjs-es": "^5.0.0-beta.12"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
