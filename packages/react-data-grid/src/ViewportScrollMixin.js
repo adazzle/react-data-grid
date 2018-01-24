@@ -62,13 +62,15 @@ module.exports = {
     };
   },
 
-  getRenderedColumnCount(displayStart, width) {
+  getRenderedColumnCount(displayStart, width, scrollLeft) {
     let remainingWidth = width && width > 0 ? width : this.props.columnMetrics.totalWidth;
     if (remainingWidth === 0) {
       remainingWidth = ReactDOM.findDOMNode(this).offsetWidth;
     }
     let columnIndex = displayStart;
     let columnCount = 0;
+    let nonVisibleColumnsWidth = 0;
+    let visibileWidth = 0;
     while (remainingWidth > 0) {
       let column = ColumnUtils.getColumn(this.props.columnMetrics.columns, columnIndex);
 
@@ -76,9 +78,16 @@ module.exports = {
         break;
       }
 
+      if (columnCount === 0) {
+        nonVisibleColumnsWidth = ColumnUtils.getWidthOfColumns(this.props.columnMetrics.columns, 0, displayStart - 1);
+        visibileWidth = column.width - (scrollLeft - nonVisibleColumnsWidth);
+        remainingWidth -= visibileWidth;
+      } else {
+        remainingWidth -= column.width;
+      }
+
       columnCount++;
       columnIndex++;
-      remainingWidth -= column.width;
     }
     return columnCount;
   },
@@ -130,7 +139,7 @@ module.exports = {
 
     let totalNumberColumns = ColumnUtils.getSize(this.props.columnMetrics.columns);
     let colVisibleStart = (totalNumberColumns > 0) ? max(0, this.getVisibleColStart(scrollLeft)) : 0;
-    let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width);
+    let renderedColumnCount = this.getRenderedColumnCount(colVisibleStart, width, scrollLeft);
     let colVisibleEnd = (renderedColumnCount !== 0) ? colVisibleStart + renderedColumnCount : totalNumberColumns;
     let colDisplayStart = max(0, colVisibleStart - this.props.overScan.colsStart);
     let colDisplayEnd = min(colVisibleEnd + this.props.overScan.colsEnd, totalNumberColumns);

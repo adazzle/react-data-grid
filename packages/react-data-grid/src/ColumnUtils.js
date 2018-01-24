@@ -43,5 +43,20 @@ module.exports = {
       value = column[property];
     }
     return value;
+  },
+
+  getWidthOfColumns: function getSize(columns, startIdx, endIdx) {
+    let totalWidth = 0;
+    if (Array.isArray(columns)) {
+      for (let idx = startIdx; idx <= endIdx; idx++) {
+        totalWidth += columns[idx].width;
+      }
+      return totalWidth;
+    } else if (typeof Immutable !== 'undefined') {
+      for (let idx = startIdx; idx <= endIdx; idx++) {
+        totalWidth += columns.get(idx).width;
+      }
+      return totalWidth;
+    }
   }
 };
