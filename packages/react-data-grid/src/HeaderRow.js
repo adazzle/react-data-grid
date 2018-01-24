@@ -83,22 +83,9 @@ const HeaderRow = createReactClass({
   },
 
   getSortableHeaderCell(column) {
-    let SortableRenderer = SortableHeaderCell;
-    if (column.headerRenderer !== undefined) {
-      SortableRenderer = column.headerRenderer;
-    }
-    const sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
-    const sortDescendingFirst = (column.sortDescendingFirst === undefined ) ? false : column.sortDescendingFirst;
-    const props = { columnKey: column.key, onSort: this.props.onSort, sortDirection: sortDirection, sortDescendingFirst };
-
-    if (React.isValidElement(SortableRenderer)) {
-      // a string means it's an HTML element and props we want to pass are not valid, return it as is
-      if (typeof SortableRenderer.type === 'string') {
-        return SortableRenderer;
-      }
-      return React.cloneElement(SortableRenderer, props);
-    }
-    return React.createElement(SortableRenderer, props);
+    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+    let descendingFirst = (column.descendingFirst === undefined ) ? false : column.descendingFirst;
+    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} descendingFirst={descendingFirst}/>;
   },
 
   getHeaderRenderer(column) {
