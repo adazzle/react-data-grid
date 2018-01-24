@@ -14,6 +14,8 @@ const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
+const ColumnGroupMetrics = require('./ColumnGroupMetrics');
+const ColumnMetrics        = require('./ColumnMetrics');
 import AppConstants from './AppConstants';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
@@ -156,6 +158,9 @@ const ReactDataGrid = createReactClass({
       initialState.selected = {rowIdx: 0, idx: 0};
     } else {
       initialState.selected = {rowIdx: -1, idx: -1};
+    }
+    if (this.props.groups) {
+      initialState.groupMetrics = ColumnGroupMetrics.getGroupMetrics(this.props.groups, columnMetrics);
     }
     return initialState;
   },
@@ -1080,6 +1085,7 @@ const ReactDataGrid = createReactClass({
             rowKey={this.props.rowKey}
             headerRows={this.getHeaderRows()}
             columnMetrics={this.state.columnMetrics}
+            groupMetrics={this.state.groupMetrics}
             rowGetter={this.props.rowGetter}
             rowsCount={this.props.rowsCount}
             rowHeight={this.props.rowHeight}
@@ -1107,7 +1113,33 @@ const ReactDataGrid = createReactClass({
           </div>
         </div>
       );
+  },
+
+  metricsUpdated() {
+    let columnMetrics = this.createColumnMetrics();
+
+    if (this.props.groups) {
+      const groupMetrics = ColumnGroupMetrics.getGroupMetrics(this.props.groups, columnMetrics);
+      this.setState({columnMetrics, groupMetrics});
+    } else {
+      this.setState({columnMetrics});
+    }
+  },
+
+
+  onColumnResize(index: number, width: number) {
+    let columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
+    if (this.props.onColumnResize) {
+      this.props.onColumnResize(index, width);
+    }
+    if (this.props.groups) {
+      const groupMetrics = ColumnGroupMetrics.getGroupMetrics(this.props.groups, columnMetrics);
+      this.setState({columnMetrics, groupMetrics});
+    } else {
+      this.setState({columnMetrics});
+    }
   }
+
 });
 
 

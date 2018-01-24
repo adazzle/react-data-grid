@@ -9,3 +9,4 @@ dist
 npm-debug.log
 **.orig
 .vscode
+.idea

@@ -11,7 +11,8 @@ class Example extends React.Component {
         key: 'id',
         name: 'ID',
         resizable: true,
-        width: 40
+        width: 40,
+        locked: true
       },
       {
         key: 'task',
@@ -42,6 +43,33 @@ class Example extends React.Component {
         key: 'completeDate',
         name: 'Expected Complete',
         resizable: true
+      }
+    ];
+    this._groups = [
+      {
+        key: 'id_group',
+        name: '',
+        resizable: true,
+        columns: ['id'],
+        locked: true
+      },
+      {
+        key: 'details',
+        name: 'Details',
+        resizable: true,
+        columns: ['task', 'priority', 'issueType']
+      },
+      {
+        key: 'dates',
+        name: 'Dates',
+        resizable: true,
+        columns: ['startDate', 'completeDate']
+      },
+      {
+        key: 'complete',
+        name: 'Complete',
+        resizable: true,
+        columns: ['complete']
       }
     ];
 
@@ -77,10 +105,11 @@ class Example extends React.Component {
     return  (
       <ReactDataGrid
         columns={this._columns}
+        groups={this._groups}
         rowGetter={this.rowGetter}
         rowsCount={this._rows.length}
         minHeight={500}
-        minColumnWidth={120} 
+        minColumnWidth={120}
       />);
   }
 }
