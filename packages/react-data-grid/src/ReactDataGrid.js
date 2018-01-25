@@ -1,20 +1,18 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
-const ReactDOM = require('react-dom');
 const BaseGrid              = require('./Grid');
 const Row                   = require('./Row');
 const ExcelColumn           = require('./PropTypeShapes/ExcelColumn');
-const KeyboardHandlerMixin  = require('./KeyboardHandlerMixin');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
-const DOMMetrics           = require('./DOMMetrics');
-const ColumnMetricsMixin      = require('./ColumnMetricsMixin');
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
+import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
+const ColumnMetrics        = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
@@ -45,14 +43,14 @@ type RowUpdateEvent = {
   rowIdx: number;
 };
 
+type ColumnMetricsType = {
+  columns: Array<Column>;
+  totalWidth: number;
+  minColumnWidth: number;
+};
+
 const ReactDataGrid = createReactClass({
   displayName: 'ReactDataGrid',
-
-  mixins: [
-    ColumnMetricsMixin,
-    DOMMetrics.MetricsComputatorMixin,
-    KeyboardHandlerMixin
-  ],
 
   propTypes: {
     rowHeight: PropTypes.number.isRequired,
@@ -126,6 +124,99 @@ const ReactDataGrid = createReactClass({
     selectAllRenderer: PropTypes.object
   },
 
+  componentWillMount() {
+    this._mounted = true;
+  },
+
+  componentDidMount() {
+    if (window.addEventListener) {
+      window.addEventListener('resize', this.metricsUpdated);
+    } else {
+      window.attachEvent('resize', this.metricsUpdated);
+    }
+    this.metricsUpdated();
+  },
+
+  componentWillUnmount() {
+    this._mounted = false;
+    window.removeEventListener('resize', this.metricsUpdated);
+  },
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.columns) {
+      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality) ||
+          nextProps.minWidth !== this.props.minWidth) {
+        let columnMetrics = this.createColumnMetrics(nextProps);
+        this.setState({columnMetrics: columnMetrics});
+      }
+    }
+  },
+
+  gridWidth(): number {
+    return this.grid ? this.grid.parentElement.offsetWidth : 0;
+  },
+
+  getTotalWidth() {
+    let totalWidth = 0;
+    if (this._mounted) {
+      totalWidth = this.gridWidth();
+    } else {
+      totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;
+    }
+    return totalWidth;
+  },
+
+  getColumnMetricsType(metrics: ColumnMetricsType): { columns: ColumnMetricsType } {
+    let totalWidth = metrics.totalWidth || this.getTotalWidth();
+    let currentMetrics = {
+      columns: metrics.columns,
+      totalWidth: totalWidth,
+      minColumnWidth: metrics.minColumnWidth
+    };
+    let updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
+    return updatedMetrics;
+  },
+
+  getColumn(idx) {
+    let columns = this.state.columnMetrics.columns;
+    if (Array.isArray(columns)) {
+      return columns[idx];
+    }else if (typeof Immutable !== 'undefined') {
+      return columns.get(idx);
+    }
+  },
+
+  getSize() {
+    let columns = this.state.columnMetrics.columns;
+    if (Array.isArray(columns)) {
+      return columns.length;
+    }else if (typeof Immutable !== 'undefined') {
+      return columns.size;
+    }
+  },
+
+  metricsUpdated() {
+    let columnMetrics = this.createColumnMetrics();
+    this.setState({columnMetrics});
+  },
+
+  createColumnMetrics(props = this.props) {
+    let gridColumns = this.setupGridColumns(props);
+    return this.getColumnMetricsType({
+      columns: gridColumns,
+      minColumnWidth: this.props.minColumnWidth,
+      totalWidth: props.minWidth
+    });
+  },
+
+  onColumnResize(index: number, width: number) {
+    let columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
+    this.setState({columnMetrics});
+    if (this.props.onColumnResize) {
+      this.props.onColumnResize(index, width);
+    }
+  },
+
   getDefaultProps(): {enableCellSelect: boolean} {
     return {
       enableCellSelect: false,
@@ -145,7 +236,9 @@ const ReactDataGrid = createReactClass({
         rowsEnd: 5
       },
       enableCellAutoFocus: true,
-      onBeforeEdit: () => {}
+      onBeforeEdit: () => {},
+      minColumnWidth: 80,
+      columnEquality: ColumnMetrics.sameColumn
     };
   },
 
@@ -158,6 +251,55 @@ const ReactDataGrid = createReactClass({
       initialState.selected = {rowIdx: -1, idx: -1};
     }
     return initialState;
+  },
+
+  onKeyDown(e: SyntheticKeyboardEvent) {
+    if (isCtrlKeyHeldDown(e)) {
+      this.checkAndCall('onPressKeyWithCtrl', e);
+    } else if (this.isKeyExplicitlyHandled(e.key)) {
+      // break up individual keyPress events to have their own specific callbacks
+      let callBack = 'onPress' + e.key;
+      this.checkAndCall(callBack, e);
+    } else if (isKeyPrintable(e.keyCode)) {
+      this.checkAndCall('onPressChar', e);
+    }
+
+    // Track which keys are currently down for shift clicking etc
+    this._keysDown = this._keysDown || {};
+    this._keysDown[e.keyCode] = true;
+    if (isFunction(this.props.onGridKeyDown)) {
+      this.props.onGridKeyDown(e);
+    }
+  },
+
+  onKeyUp(e) {
+    // Track which keys are currently down for shift clicking etc
+    this._keysDown = this._keysDown || {};
+    delete this._keysDown[e.keyCode];
+
+    if (isFunction(this.props.onGridKeyUp)) {
+      this.props.onGridKeyUp(e);
+    }
+  },
+
+  isKeyDown(keyCode) {
+    if (!this._keysDown) return false;
+    return keyCode in this._keysDown;
+  },
+
+  isSingleKeyDown(keyCode) {
+    if (!this._keysDown) return false;
+    return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
+  },
+
+  checkAndCall(methodName: string, args: any) {
+    if (typeof this[methodName] === 'function') {
+      this[methodName](args);
+    }
+  },
+
+  isKeyExplicitlyHandled(key: string): boolean {
+    return typeof this['onPress' + key] === 'function';
   },
 
   hasSelectedCellChanged: function(selected: SelectedType) {
@@ -361,7 +503,7 @@ const ReactDataGrid = createReactClass({
   },
 
   onPressChar(e: SyntheticKeyboardEvent) {
-    if (this.isKeyPrintable(e.keyCode)) {
+    if (isKeyPrintable(e.keyCode)) {
       this.setActive(e.keyCode);
     }
   },
@@ -711,9 +853,11 @@ const ReactDataGrid = createReactClass({
 
   getScrollOffSet() {
     let scrollOffset = 0;
-    let canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
-    if (canvas) {
-      scrollOffset = canvas.offsetWidth - canvas.clientWidth;
+    if (this.grid) {
+      let canvas = this.grid.querySelector('.react-grid-Canvas');
+      if (canvas) {
+        scrollOffset = canvas.offsetWidth - canvas.clientWidth;
+      }
     }
     this.setState({scrollOffset: scrollOffset});
   },
@@ -826,10 +970,7 @@ const ReactDataGrid = createReactClass({
   },
 
   getDataGridDOMNode() {
-    if (!this._gridNode) {
-      this._gridNode = ReactDOM.findDOMNode(this);
-    }
-    return this._gridNode;
+    return this.grid;
   },
 
   calculateNextSelectionPosition(cellNavigationMode: string, cellDelta: number, rowDelta: number) {
@@ -894,33 +1035,35 @@ const ReactDataGrid = createReactClass({
   },
 
   scrollToColumn(colIdx) {
-    let canvas = ReactDOM.findDOMNode(this).querySelector('.react-grid-Canvas');
-    if (canvas) {
-      let left = 0;
-      let locked = 0;
+    if (this.grid) {
+      let canvas = this.grid.querySelector('.react-grid-Canvas');
+      if (canvas) {
+        let left = 0;
+        let locked = 0;
 
-      for (let i = 0; i < colIdx; i++) {
-        let column = this.getColumn(i);
-        if (column) {
-          if (column.width) {
-            left += column.width;
-          }
-          if (column.locked) {
-            locked += column.width;
+        for (let i = 0; i < colIdx; i++) {
+          let column = this.getColumn(i);
+          if (column) {
+            if (column.width) {
+              left += column.width;
+            }
+            if (column.locked) {
+              locked += column.width;
+            }
           }
         }
-      }
 
-      let selectedColumn = this.getColumn(colIdx);
-      if (selectedColumn) {
-        let scrollLeft = left - locked - canvas.scrollLeft;
-        let scrollRight =  left + selectedColumn.width - canvas.scrollLeft;
+        let selectedColumn = this.getColumn(colIdx);
+        if (selectedColumn) {
+          let scrollLeft = left - locked - canvas.scrollLeft;
+          let scrollRight =  left + selectedColumn.width - canvas.scrollLeft;
 
-        if (scrollLeft < 0) {
-          canvas.scrollLeft += scrollLeft;
-        } else if (scrollRight > canvas.clientWidth) {
-          let scrollAmount =  scrollRight - canvas.clientWidth;
-          canvas.scrollLeft += scrollAmount;
+          if (scrollLeft < 0) {
+            canvas.scrollLeft += scrollLeft;
+          } else if (scrollRight > canvas.clientWidth) {
+            let scrollAmount =  scrollRight - canvas.clientWidth;
+            canvas.scrollLeft += scrollAmount;
+          }
         }
       }
     }
@@ -1058,7 +1201,7 @@ const ReactDataGrid = createReactClass({
     };
 
     let toolbar = this.renderToolbar();
-    let containerWidth = this.props.minWidth || this.DOMMetrics.gridWidth();
+    let containerWidth = this.props.minWidth || this.gridWidth();
     let gridWidth = containerWidth - this.state.scrollOffset;
 
     // depending on the current lifecycle stage, gridWidth() may not initialize correctly
@@ -1071,7 +1214,8 @@ const ReactDataGrid = createReactClass({
       gridWidth = '100%';
     }
     return (
-      <div className="react-grid-Container" style={{width: containerWidth}}>
+      <div className="react-grid-Container" style={{width: containerWidth}}
+        ref={(node) => { this.grid = node; }}>
         {toolbar}
         <div className="react-grid-Main">
           <BaseGrid

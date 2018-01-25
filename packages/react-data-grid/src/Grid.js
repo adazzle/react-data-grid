@@ -1,10 +1,9 @@
 const React                = require('react');
+const ReactDOM             = require('react-dom');
 import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
-const GridScrollMixin      = require('./GridScrollMixin');
-const DOMMetrics           = require('./DOMMetrics');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-core.css');
 
@@ -64,11 +63,6 @@ const Grid = createReactClass({
     overScan: PropTypes.object
   },
 
-  mixins: [
-    GridScrollMixin,
-    DOMMetrics.MetricsComputatorMixin
-  ],
-
   getDefaultProps() {
     return {
       rowHeight: 35,
@@ -84,6 +78,50 @@ const Grid = createReactClass({
       position: 'relative',
       minHeight: this.props.minHeight
     };
+  },
+
+  _onScroll() {
+    if (this._scrollLeft !== undefined) {
+      this.header.setScrollLeft(this._scrollLeft);
+      if (this.viewport) {
+        this.viewport.setScrollLeft(this._scrollLeft);
+      }
+    }
+  },
+
+  onScroll(props) {
+    if (this._scrollLeft !== props.scrollLeft) {
+      this._scrollLeft = props.scrollLeft;
+      this._onScroll();
+    }
+  },
+
+  onHeaderScroll(e) {
+    let scrollLeft = e.target.scrollLeft;
+    if (this._scrollLeft !== scrollLeft) {
+      this._scrollLeft = scrollLeft;
+      this.header.setScrollLeft(scrollLeft);
+      let canvas = ReactDOM.findDOMNode(this.viewport.canvas);
+      canvas.scrollLeft = scrollLeft;
+      this.viewport.canvas.setScrollLeft(scrollLeft);
+    }
+  },
+
+  componentDidMount() {
+    this._scrollLeft = this.viewport ? this.viewport.getScroll().scrollLeft : 0;
+    this._onScroll();
+  },
+
+  componentDidUpdate() {
+    this._onScroll();
+  },
+
+  componentWillMount() {
+    this._scrollLeft = undefined;
+  },
+
+  componentWillUnmount() {
+    this._scrollLeft = undefined;
   },
 
   render(): ?ReactElement {

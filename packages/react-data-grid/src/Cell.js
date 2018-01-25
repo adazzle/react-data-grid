@@ -377,7 +377,7 @@ class Cell extends React.Component {
   };
 
   isFocusedOnCell = () => {
-    return document.activeElement && document.activeElement.className === 'react-grid-Cell';
+    return document.activeElement && document.activeElement.className.indexOf('react-grid-Cell') !== -1;
   };
 
   checkFocus = () => {
