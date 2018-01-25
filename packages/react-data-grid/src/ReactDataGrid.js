@@ -167,12 +167,16 @@ const ReactDataGrid = createReactClass({
     const { rowsCount, rowSelection } = this.props;
     const { enableIndeterminate, selectedRowCounts } = rowSelection;
 
-    if (enableIndeterminate && selectedRowCounts >= 0) {
+    if (selectedRowCounts >= 0) {
       const classList = this.getSelectAllLabelClassList();
       if (selectedRowCounts > 0 && selectedRowCounts < rowsCount) {
-        addIndeterminate(classList);
+        if (enableIndeterminate) {
+          addIndeterminate(classList);
+        }
       } else {
-        removeIndeterminate(classList);
+        if (enableIndeterminate) {
+          removeIndeterminate(classList);
+        }
 
         if (selectedRowCounts === 0) {
           this.selectAllCheckbox.checked === false;
