@@ -21,11 +21,11 @@ class Example extends React.Component {
     ];
 
     let rows = [];
-    for (let i = 1; i < 1000; i++) {
+    for (let i = 1; i < 10; i++) {
       rows.push({
         id: i,
         title: 'Title ' + i,
-        count: i * 1000
+        count: i * 10
       });
     }
     this.state = { rows, selectedIndexes: [] };
@@ -62,7 +62,9 @@ class Example extends React.Component {
             onRowsDeselected: this.onRowsDeselected,
             selectBy: {
               indexes: this.state.selectedIndexes
-            }
+            },
+            enableIndeterminate: true,
+            selectedRowCounts: this.state.selectedIndexes.length
           }} />
       </div>);
   }

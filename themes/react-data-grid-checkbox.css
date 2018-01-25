@@ -29,6 +29,19 @@
     box-shadow: inset 0px 0px 0px 4px #fff;
 }
 
+.react-grid-checkbox-label.indeterminate:after {
+    content: '';
+    background: #005295;
+    display: inline-block;
+    vertical-align: middle;
+    width: 10px;
+    height: 3px;
+    text-align: center;
+    left: 5px;
+    position: absolute;
+    top: 9px;
+}
+
 .react-grid-checkbox:focus + .react-grid-checkbox-label, .radio-custom:focus + .radio-custom-label {
   outline: 1px solid #ddd; /* focus style */
 }

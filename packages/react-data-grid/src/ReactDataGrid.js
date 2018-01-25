@@ -15,6 +15,7 @@ const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
+import { populateSelectAllIndeterminate, removeIndeterminate } from './helpers/indeterminateHelpers';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
@@ -92,6 +93,7 @@ const ReactDataGrid = createReactClass({
     getValidFilterValues: PropTypes.func,
     rowSelection: PropTypes.shape({
       enableShiftSelect: PropTypes.bool,
+      enableIndeterminate: PropTypes.bool,
       onRowsSelected: PropTypes.func,
       onRowsDeselected: PropTypes.func,
       showCheckbox: PropTypes.bool,
@@ -108,7 +110,8 @@ const ReactDataGrid = createReactClass({
             rowKey: PropTypes.string.isRequired
           }).isRequired
         })
-      ]).isRequired
+      ]).isRequired,
+      selectedRowCounts: PropTypes.number
     }),
     onRowClick: PropTypes.func,
     onRowDoubleClick: PropTypes.func,
@@ -615,19 +618,38 @@ const ReactDataGrid = createReactClass({
     return false;
   },
 
+  getSelectAllLabelClassList() {
+    return ReactDOM.findDOMNode(this.checkboxLabel).classList;
+  },
+
   handleNewRowSelect(rowIdx, rowData) {
     if (this.selectAllCheckbox && this.selectAllCheckbox.checked === true) {
       this.selectAllCheckbox.checked = false;
     }
 
-    let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
-    let isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
+    const { rowsCount } = this.props;
+    const { enableIndeterminate, selectBy, onRowsDeselected, onRowsSelected, selectedRowCounts } = this.props.rowSelection;
+    const checkboxLabelClassList = this.getSelectAllLabelClassList();
+
+    const { keys, indexes, isSelectedKey } = selectBy;
+    const isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
 
     this.setState({lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: {rowIdx: rowIdx, idx: 0}});
 
-    if (isPreviouslySelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
-      this.props.rowSelection.onRowsDeselected([{rowIdx, row: rowData}]);
-    } else if (!isPreviouslySelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
+    // populate indeterminate checkbox style if enableIndeterminate === true and selectedRowCounts is set
+    if (selectedRowCounts !== undefined && selectedRowCounts !== null && enableIndeterminate) {
+      populateSelectAllIndeterminate(checkboxLabelClassList, {
+        rowsCount, selectedRowCounts, isPreviouslySelected
+      });
+    }
+
+    if (isPreviouslySelected && typeof onRowsDeselected === 'function') {
+      onRowsDeselected([{rowIdx, row: rowData}]);
+    } else if (!isPreviouslySelected && typeof onRowsSelected === 'function') {
+      if (selectedRowCounts === rowsCount - 1) {
+        this.selectAllCheckbox.checked = true;
+      }
+
       this.props.rowSelection.onRowsSelected([{rowIdx, row: rowData}]);
     }
   },
@@ -663,11 +685,17 @@ const ReactDataGrid = createReactClass({
 
   handleCheckboxChange: function(e: SyntheticEvent) {
     let allRowsSelected;
+    const classList = this.getSelectAllLabelClassList();
     if (e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true) {
       allRowsSelected = true;
+
+      if (this.props.rowSelection.enableIndeterminate) {
+        removeIndeterminate(classList);
+      }
     } else {
       allRowsSelected = false;
     }
+
     if (this.useNewRowSelection()) {
       let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
 
@@ -986,7 +1014,7 @@ const ReactDataGrid = createReactClass({
     let unshiftedCols = {};
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
-      const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} inputRef={grid => this.selectAllCheckbox = grid} />;
+      const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} inputRef={grid => this.selectAllCheckbox = grid} labelRef={checkboxLabel => this.checkboxLabel = checkboxLabel} />;
       let headerRenderer = props.enableRowSelect === 'single' ? null : SelectAllRenderer;
       let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
       let selectColumn = {
