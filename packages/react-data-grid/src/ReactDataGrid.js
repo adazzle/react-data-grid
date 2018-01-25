@@ -15,7 +15,7 @@ const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
-import { populateSelectAllIndeterminate, removeIndeterminate } from './helpers/indeterminateHelpers';
+import { addIndeterminate, removeIndeterminate } from './helpers/indeterminateHelpers';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
@@ -161,6 +161,28 @@ const ReactDataGrid = createReactClass({
       initialState.selected = {rowIdx: -1, idx: -1};
     }
     return initialState;
+  },
+
+  componentDidUpdate() {
+    const { rowsCount, rowSelection } = this.props;
+    const { enableIndeterminate, selectedRowCounts } = rowSelection;
+
+    if (enableIndeterminate && selectedRowCounts >= 0) {
+      const classList = this.getSelectAllLabelClassList();
+      if (selectedRowCounts > 0 && selectedRowCounts < rowsCount) {
+        addIndeterminate(classList);
+      } else {
+        removeIndeterminate(classList);
+
+        if (selectedRowCounts === 0) {
+          this.selectAllCheckbox.checked === false;
+        }
+
+        if (selectedRowCounts === rowsCount) {
+          this.selectAllCheckbox.checked === true;
+        }
+      }
+    }
   },
 
   hasSelectedCellChanged: function(selected: SelectedType) {
@@ -628,20 +650,12 @@ const ReactDataGrid = createReactClass({
     }
 
     const { rowsCount } = this.props;
-    const { enableIndeterminate, selectBy, onRowsDeselected, onRowsSelected, selectedRowCounts } = this.props.rowSelection;
-    const checkboxLabelClassList = this.getSelectAllLabelClassList();
+    const { selectBy, onRowsDeselected, onRowsSelected, selectedRowCounts } = this.props.rowSelection;
 
     const { keys, indexes, isSelectedKey } = selectBy;
     const isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
 
     this.setState({lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: {rowIdx: rowIdx, idx: 0}});
-
-    // populate indeterminate checkbox style if enableIndeterminate === true and selectedRowCounts is set
-    if (selectedRowCounts !== undefined && selectedRowCounts !== null && enableIndeterminate) {
-      populateSelectAllIndeterminate(checkboxLabelClassList, {
-        rowsCount, selectedRowCounts, isPreviouslySelected
-      });
-    }
 
     if (isPreviouslySelected && typeof onRowsDeselected === 'function') {
       onRowsDeselected([{rowIdx, row: rowData}]);
@@ -685,13 +699,8 @@ const ReactDataGrid = createReactClass({
 
   handleCheckboxChange: function(e: SyntheticEvent) {
     let allRowsSelected;
-    const classList = this.getSelectAllLabelClassList();
     if (e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true) {
       allRowsSelected = true;
-
-      if (this.props.rowSelection.enableIndeterminate) {
-        removeIndeterminate(classList);
-      }
     } else {
       allRowsSelected = false;
     }
