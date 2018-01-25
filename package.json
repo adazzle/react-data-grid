@@ -57,6 +57,7 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-2": "^6.24.1",
     "copy-dir": "^0.3.0",
     "create-react-class": "^15.6.2",
     "css-loader": "^0.26.0",

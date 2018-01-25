@@ -23,6 +23,10 @@ class Example extends React.Component {
     this.state = null;
   }
 
+  onClick(e) {
+
+  }
+
   createRows = () => {
     let rows = [];
     for (let i = 1; i < 1000; i++) {
@@ -42,11 +46,14 @@ class Example extends React.Component {
 
   render() {
     return  (
+      <div>
+      <button onClick={this.onClick}>Refresh</button>
       <ReactDataGrid
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this._rows.length}
-        minHeight={500} />);
+        minHeight={500} />
+    </div>);
   }
 }
 
