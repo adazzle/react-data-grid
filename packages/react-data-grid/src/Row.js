@@ -2,7 +2,6 @@ import OverflowCell from './OverflowCell';
 import rowComparer from './RowComparer';
 const React = require('react');
 import PropTypes from 'prop-types';
-const createReactClass = require('create-react-class');
 const joinClasses = require('classnames');
 const Cell = require('./Cell');
 const columnUtils = require('./ColumnUtils');
@@ -19,10 +18,10 @@ class CellExpander extends React.Component {
 // The list of the propTypes that we want to include in the Row div
 const knownDivPropertyKeys = ['height'];
 
-const Row = createReactClass({
-  displayName: 'Row',
+class Row extends React.Component {
+  static displayName = 'Row';
 
-  propTypes: {
+  static propTypes = {
     height: PropTypes.number.isRequired,
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     row: PropTypes.any.isRequired,
@@ -40,45 +39,43 @@ const Row = createReactClass({
     colDisplayStart: PropTypes.number.isRequired,
     colDisplayEnd: PropTypes.number.isRequired,
     isScrolling: PropTypes.bool.isRequired
-  },
+  };
 
-  getDefaultProps() {
-    return {
-      cellRenderer: Cell,
-      isSelected: false,
-      height: 35
-    };
-  },
+  static defaultProps = {
+    cellRenderer: Cell,
+    isSelected: false,
+    height: 35
+  };
 
   shouldComponentUpdate(nextProps) {
     return rowComparer(nextProps, this.props);
-  },
+  }
 
-  handleDragEnter() {
+  handleDragEnter = () => {
     let handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
     if (handleDragEnterRow) {
       handleDragEnterRow(this.props.idx);
     }
-  },
+  };
 
-  getSelectedColumn() {
+  getSelectedColumn = () => {
     if (this.props.cellMetaData) {
       let selected = this.props.cellMetaData.selected;
       if (selected && selected.idx) {
         return columnUtils.getColumn(this.props.columns, selected.idx);
       }
     }
-  },
+  };
 
-  getCellRenderer(columnKey) {
+  getCellRenderer = (columnKey) => {
     let CellRenderer = this.props.cellRenderer;
     if (this.props.subRowDetails && this.props.subRowDetails.field === columnKey) {
       return CellExpander;
     }
     return CellRenderer;
-  },
+  };
 
-  getCell(column, i, selectedColumn) {
+  getCell = (column, i, selectedColumn) => {
     let CellRenderer = this.props.cellRenderer;
     const { colVisibleStart, colVisibleEnd, idx, cellMetaData } = this.props;
     const { key, formatter, locked } = column;
@@ -101,9 +98,9 @@ const Row = createReactClass({
     };
 
     return <CellRenderer {...baseCellProps} {...cellProps} />;
-  },
+  };
 
-  getCells() {
+  getCells = () => {
     let cells = [];
     let lockedCells = [];
     let selectedColumn = this.getSelectedColumn();
@@ -123,9 +120,9 @@ const Row = createReactClass({
     }
 
     return cells.concat(lockedCells);
-  },
+  };
 
-  getRowHeight() {
+  getRowHeight = () => {
     let rows = this.props.expandedRows || null;
     if (rows && this.props.idx) {
       let row = rows[this.props.idx] || null;
@@ -134,9 +131,9 @@ const Row = createReactClass({
       }
     }
     return this.props.height;
-  },
+  };
 
-  getCellValue(key) {
+  getCellValue = (key) => {
     let val;
     if (key === 'select-row') {
       return this.props.isSelected;
@@ -146,9 +143,9 @@ const Row = createReactClass({
       val = this.props.row[key];
     }
     return val;
-  },
+  };
 
-  isContextMenuDisplayed() {
+  isContextMenuDisplayed = () => {
     if (this.props.cellMetaData) {
       let selected = this.props.cellMetaData.selected;
       if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
@@ -156,30 +153,30 @@ const Row = createReactClass({
       }
     }
     return false;
-  },
+  };
 
-  getExpandableOptions(columnKey) {
+  getExpandableOptions = (columnKey) => {
     let subRowDetails = this.props.subRowDetails;
     if (subRowDetails) {
       return { canExpand: subRowDetails && subRowDetails.field === columnKey && ((subRowDetails.children && subRowDetails.children.length > 0) || subRowDetails.group === true), field: subRowDetails.field, expanded: subRowDetails && subRowDetails.expanded, children: subRowDetails && subRowDetails.children, treeDepth: subRowDetails ? subRowDetails.treeDepth : 0, subRowDetails: subRowDetails };
     }
     return {};
-  },
+  };
 
-  setScrollLeft(scrollLeft) {
+  setScrollLeft = (scrollLeft) => {
     this.props.columns.forEach((column) => {
       if (column.locked) {
         if (!this[column.key]) return;
         this[column.key].setScrollLeft(scrollLeft);
       }
     });
-  },
+  };
 
-  getKnownDivProps() {
+  getKnownDivProps = () => {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
-  },
+  };
 
-  renderCell(props) {
+  renderCell = (props) => {
     if (typeof this.props.cellRenderer === 'function') {
       this.props.cellRenderer.call(this, props);
     }
@@ -188,7 +185,7 @@ const Row = createReactClass({
     }
 
     return this.props.cellRenderer(props);
-  },
+  };
 
   render() {
     let className = joinClasses(
@@ -217,6 +214,6 @@ const Row = createReactClass({
       </div >
     );
   }
-});
+}
 
 module.exports = Row;
