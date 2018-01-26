@@ -1,12 +1,11 @@
 const React = require('react');
 const createReactClass = require('create-react-class');
-const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
 import PropTypes from 'prop-types';
-const ScrollShim = require('./ScrollShim');
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const RowUtils = require('./RowUtils');
+import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
 
 import shallowEqual from 'fbjs/lib/shallowEqual';
@@ -15,7 +14,6 @@ import RowGroup from './RowGroup';
 
 const Canvas = createReactClass({
   displayName: 'Canvas',
-  mixins: [ScrollShim],
 
   propTypes: {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
@@ -65,6 +63,38 @@ const Canvas = createReactClass({
     ]),
     rowGroupRenderer: PropTypes.func,
     isScrolling: PropTypes.bool
+  },
+
+  appendScrollShim() {
+    if (!this._scrollShim) {
+      const size = this._scrollShimSize();
+      const shim = createScrollShim(size);
+      this.canvas.appendChild(shim);
+      this._scrollShim = shim;
+    }
+    this._scheduleRemoveScrollShim();
+  },
+
+  _scrollShimSize(): { width: number; height: number } {
+    return {
+      width: this.props.width,
+      height: this.props.length * this.props.rowHeight
+    };
+  },
+
+  _scheduleRemoveScrollShim() {
+    if (this._scheduleRemoveScrollShimTimer) {
+      clearTimeout(this._scheduleRemoveScrollShimTimer);
+    }
+    this._scheduleRemoveScrollShimTimer = setTimeout(
+      this._removeScrollShim, 200);
+  },
+
+  _removeScrollShim() {
+    if (this._scrollShim) {
+      this._scrollShim.parentNode.removeChild(this._scrollShim);
+      this._scrollShim = undefined;
+    }
   },
 
   getDefaultProps() {
@@ -136,7 +166,7 @@ const Canvas = createReactClass({
       this.setScrollLeft(this._scroll.scrollLeft);
     }
     if (this.props.scrollToRowIndex !== 0) {
-      this.div.scrollTop = Math.min(
+      this.canvas.scrollTop = Math.min(
         this.props.scrollToRowIndex * this.props.rowHeight,
         this.props.rowsCount * this.props.rowHeight - this.props.height
       );
@@ -152,7 +182,7 @@ const Canvas = createReactClass({
   },
 
   onScroll(e: any) {
-    if (ReactDOM.findDOMNode(this) !== e.target) {
+    if (this.canvas !== e.target) {
       return;
     }
     this.appendScrollShim();
@@ -183,15 +213,13 @@ const Canvas = createReactClass({
   },
 
   getScrollbarWidth() {
-    let scrollbarWidth = 0;
     // Get the scrollbar width
-    let canvas = ReactDOM.findDOMNode(this);
-    scrollbarWidth = canvas.offsetWidth - canvas.clientWidth;
+    const scrollbarWidth = this.canvas.offsetWidth - this.canvas.clientWidth;
     return scrollbarWidth;
   },
 
   getScroll() {
-    let {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
+    const { scrollTop, scrollLeft } = this.canvas;
     return { scrollTop, scrollLeft };
   },
 
@@ -207,7 +235,7 @@ const Canvas = createReactClass({
 
     // Else use new rowSelection props
     if (this.props.rowSelection) {
-      let {keys, indexes, isSelectedKey} = this.props.rowSelection;
+      let { keys, indexes, isSelectedKey } = this.props.rowSelection;
       return RowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
     }
 
@@ -255,7 +283,7 @@ const Canvas = createReactClass({
     }
     let RowsRenderer = this.props.rowRenderer;
     if (typeof RowsRenderer === 'function') {
-      return <RowsRenderer {...props}/>;
+      return <RowsRenderer {...props} />;
     }
 
     if (React.isValidElement(this.props.rowRenderer)) {
@@ -266,7 +294,7 @@ const Canvas = createReactClass({
   renderPlaceholder(key: string, height: number): ?ReactElement {
     // just renders empty cells
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
-    return (<div key={ key } style={{ height: height }}>
+    return (<div key={key} style={{ height: height }}>
       {
         this.props.columns.map(
           (column, idx) => <div style={{ width: column.width }} key={idx} />
@@ -325,10 +353,10 @@ const Canvas = createReactClass({
 
     return (
       <div
-        ref={(div) => {this.div = div;}}
+        ref={(div) => { this.canvas = div; }}
         style={style}
         onScroll={this.onScroll}
-        className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active }) }>
+        className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active })}>
         <RowsContainer
           width={this.props.width}
           rows={rows}

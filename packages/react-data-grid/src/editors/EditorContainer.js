@@ -2,14 +2,14 @@ const React                   = require('react');
 import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const joinClasses              = require('classnames');
-const keyboardHandlerMixin    = require('../KeyboardHandlerMixin');
 const SimpleTextEditor        = require('./SimpleTextEditor');
 const isFunction              = require('../utils/isFunction');
+import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
+
 require('../../../../themes/react-data-grid-core.css');
 
 const EditorContainer = createReactClass({
   displayName: 'EditorContainer',
-  mixins: [keyboardHandlerMixin],
 
   propTypes: {
     rowIdx: PropTypes.number,
@@ -49,6 +49,35 @@ const EditorContainer = createReactClass({
   componentWillUnmount: function() {
     if (!this.changeCommitted && !this.changeCanceled) {
       this.commit({key: 'Enter'});
+    }
+  },
+
+  isKeyExplicitlyHandled(key: string): boolean {
+    return isFunction(this['onPress' + key]);
+  },
+
+  checkAndCall(methodName: string, args: any) {
+    if (isFunction(this[methodName])) {
+      this[methodName](args);
+    }
+  },
+
+  onKeyDown: function(e: SyntheticKeyboardEvent) {
+    if (isCtrlKeyHeldDown(e)) {
+      this.checkAndCall('onPressKeyWithCtrl', e);
+    } else if (this.isKeyExplicitlyHandled(e.key)) {
+      // break up individual keyPress events to have their own specific callbacks
+      let callBack = 'onPress' + e.key;
+      this.checkAndCall(callBack, e);
+    } else if (isKeyPrintable(e.keyCode)) {
+      this.checkAndCall('onPressChar', e);
+    }
+
+    // Track which keys are currently down for shift clicking etc
+    this._keysDown = this._keysDown || {};
+    this._keysDown[e.keyCode] = true;
+    if (isFunction(this.props.onGridKeyDown)) {
+      this.props.onGridKeyDown(e);
     }
   },
 
@@ -278,7 +307,7 @@ const EditorContainer = createReactClass({
     let inputNode = this.getInputNode();
     inputNode.focus();
     if (inputNode.tagName === 'INPUT') {
-      if (!this.isKeyPrintable(keyCode)) {
+      if (!isKeyPrintable(keyCode)) {
         inputNode.focus();
         inputNode.select();
       } else {
