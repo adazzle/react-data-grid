@@ -142,6 +142,9 @@ class Cell extends React.Component {
   };
 
   onKeyDown = (e) => {
+      // we need to prevent default as we control grid scroll
+    // otherwise it moves every time you left/right which is janky
+    e.preventDefault();
     const {moveDown, moveUp} = this.props;
     switch (e.key) {
     case 'ArrowDown':

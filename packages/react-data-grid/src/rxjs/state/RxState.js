@@ -30,7 +30,14 @@ export function connect(selector = state => state, actionSubjects) {
       };
 
       componentWillMount() {
-        this.subscription = this.context.state$.map(selector).subscribe(this.setState.bind(this));
+        const {idx, rowIdx} = this.props;
+        this.subscription = this.context.state$
+        .map(selector)
+        .filter(state => {
+          return state && [idx, idx - 1, idx + 1].includes(state.selected.idx)
+          && [rowIdx, rowIdx - 1, rowIdx + 1].includes(state.selected.rowIdx);
+        })
+        .subscribe(this.setState.bind(this));
       }
 
       componentWillUnmount() {
