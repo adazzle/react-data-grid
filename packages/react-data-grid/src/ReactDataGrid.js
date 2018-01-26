@@ -161,8 +161,7 @@ const ReactDataGrid = createReactClass({
 
     if (selectedRowCounts >= 0) {
       // if the selectedRowCounts is set, populate the select all checkbox status for checkbox.checked and indeterminate style
-      const checkboxLabelDom = ReactDOM.findDOMNode(this.checkboxLabel) || {};
-      populateIndeterminate(checkboxLabelDom, rowsCount, selectedRowCounts, enableIndeterminate);
+      populateIndeterminate(this.checkboxLabel, rowsCount, selectedRowCounts, enableIndeterminate);
       populateSelectAllChecked(this.selectAllCheckbox, rowsCount, selectedRowCounts);
     }
   },

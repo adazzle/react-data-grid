@@ -27,19 +27,21 @@ export const populateSelectAllChecked = (selectAllCheckbox, rowsCount, selectedR
   }
 };
 
-export const populateIndeterminate = (checkboxLabelDom, rowsCount, selectedRowCounts, enableIndeterminate) => {
-  const classList = checkboxLabelDom.classList || [];
-  if (!enableIndeterminate) {
-    removeIndeterminate(classList);
-    return;
-  }
+export const populateIndeterminate = (checkboxLabel, rowsCount, selectedRowCounts, enableIndeterminate) => {
+  if (checkboxLabel) {
+    const { classList } = checkboxLabel;
+    if (!enableIndeterminate) {
+      removeIndeterminate(classList);
+      return;
+    }
 
-  if (selectedRowCounts > 0 && selectedRowCounts < rowsCount) {
-    // if there are any rows selected while it's not equals to rowsCount, it renders indeterminate status if it's set true.
-    addIndeterminate(classList);
-  } else {
-    // if there are any rows equals to rowsCount, it remove the indeterminate status
-    removeIndeterminate(classList);
+    if (selectedRowCounts > 0 && selectedRowCounts < rowsCount) {
+      // if there are any rows selected while it's not equals to rowsCount, it renders indeterminate status if it's set true.
+      addIndeterminate(classList);
+    } else {
+      // if there are any rows equals to rowsCount, it remove the indeterminate status
+      removeIndeterminate(classList);
+    }
   }
 };
 
