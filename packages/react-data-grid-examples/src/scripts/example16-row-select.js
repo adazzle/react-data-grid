@@ -28,7 +28,7 @@ class Example extends React.Component {
         count: i * 10
       });
     }
-    this.state = { rows, selectedIndexes: [] };
+    this.state = { rows, selectedIndexes: [], enableIndeterminate: true };
   }
 
   rowGetter = (i) => {
@@ -48,6 +48,12 @@ class Example extends React.Component {
     const rowText = this.state.selectedIndexes.length === 1 ? 'row' : 'rows';
     return  (
       <div>
+        <div className="checkbox">
+          <label>
+            <input type="checkbox" onChange={() => this.setState({ enableIndeterminate: !this.state.enableIndeterminate })} checked={this.state.enableIndeterminate}/>
+            enableIndeterminate
+          </label>
+        </div>
         <span>{this.state.selectedIndexes.length} {rowText} selected</span>
         <ReactDataGrid
           rowKey="id"
@@ -63,7 +69,7 @@ class Example extends React.Component {
             selectBy: {
               indexes: this.state.selectedIndexes
             },
-            enableIndeterminate: true,
+            enableIndeterminate: this.state.enableIndeterminate,
             selectedRowCounts: this.state.selectedIndexes.length
           }} />
       </div>);

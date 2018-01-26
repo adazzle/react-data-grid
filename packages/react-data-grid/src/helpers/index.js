@@ -1,7 +1,7 @@
 import GridPropHelpers from './test/GridPropHelpers';
-import indeterminateHelpers from './indeterminateHelpers';
+import selectAllHelpers from './selectAllHelpers';
 
 module.exports = {
   test: { GridPropHelpers },
-  indeterminateHelpers
+  selectAllHelpers
 };

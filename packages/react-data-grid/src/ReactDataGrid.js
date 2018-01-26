@@ -11,7 +11,7 @@ const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
-import { addIndeterminate, removeIndeterminate } from './helpers/indeterminateHelpers';
+import { populateIndeterminate, populateSelectAllChecked } from './helpers/selectAllHelpers';
 import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics        = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
@@ -155,6 +155,17 @@ const ReactDataGrid = createReactClass({
     }
   },
 
+  componentDidUpdate() {
+    const { rowsCount, rowSelection } = this.props;
+    const { enableIndeterminate, selectedRowCounts } = rowSelection;
+
+    if (selectedRowCounts >= 0) {
+      // if the selectedRowCounts is set, populate the select all checkbox status for checkbox.checked and indeterminate style
+      populateIndeterminate(this.checkboxLabel, rowsCount, selectedRowCounts, enableIndeterminate);
+      populateSelectAllChecked(this.selectAllCheckbox, rowsCount, selectedRowCounts);
+    }
+  },
+
   gridWidth(): number {
     return this.grid ? this.grid.parentElement.offsetWidth : 0;
   },
@@ -254,38 +265,6 @@ const ReactDataGrid = createReactClass({
       initialState.selected = {rowIdx: -1, idx: -1};
     }
     return initialState;
-  },
-
-  componentDidUpdate() {
-    const { rowsCount, rowSelection } = this.props;
-    const { enableIndeterminate, selectedRowCounts } = rowSelection;
-
-    if (selectedRowCounts >= 0) {
-      const classList = this.checkboxLabel ? ReactDOM.findDOMNode(this.checkboxLabel).classList : [];
-
-      if (selectedRowCounts > 0 && selectedRowCounts < rowsCount) {
-        // if there are any rows selected while it's not equals to rowsCount, it renders indeterminate status if it's set true.
-        if (enableIndeterminate) {
-          addIndeterminate(classList);
-        }
-      } else {
-        // if there are any rows equals to rowsCount, it remove the indeterminate status
-        if (enableIndeterminate) {
-          removeIndeterminate(classList);
-        }
-
-        if (this.selectAllCheckbox) {
-          // render checked status for select all
-          if (selectedRowCounts === 0) {
-            this.selectAllCheckbox.checked === false;
-          }
-
-          if (selectedRowCounts === rowsCount && rowsCount !== 0) {
-            this.selectAllCheckbox.checked === true;
-          }
-        }
-      }
-    }
   },
 
   onKeyDown(e: SyntheticKeyboardEvent) {
