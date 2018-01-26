@@ -1,8 +1,6 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
 const BaseGrid              = require('./Grid');
-const Row                   = require('./Row');
-const ExcelColumn           = require('./PropTypeShapes/ExcelColumn');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
@@ -120,7 +118,10 @@ class ReactDataGrid extends React.Component {
     onAddSubRow: PropTypes.func,
     enableCellAutoFocus: PropTypes.bool,
     onBeforeEdit: PropTypes.func,
-    selectAllRenderer: PropTypes.object
+    selectAllRenderer: PropTypes.object,
+    minColumnWidth: PropTypes.number,
+    columnEquality: PropTypes.func,
+    onColumnResize: PropTypes.func
   };
 
   static defaultProps = {

@@ -24,7 +24,8 @@ class EditorContainer extends React.Component {
       onCommit: PropTypes.func
     }).isRequired,
     column: PropTypes.object.isRequired,
-    height: PropTypes.number.isRequired
+    height: PropTypes.number.isRequired,
+    onGridKeyDown: PropTypes.func
   };
 
   state = {isInvalid: false};
