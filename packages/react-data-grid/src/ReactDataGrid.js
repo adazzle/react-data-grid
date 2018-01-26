@@ -161,7 +161,8 @@ const ReactDataGrid = createReactClass({
 
     if (selectedRowCounts >= 0) {
       // if the selectedRowCounts is set, populate the select all checkbox status for checkbox.checked and indeterminate style
-      populateIndeterminate(this.checkboxLabel, rowsCount, selectedRowCounts, enableIndeterminate);
+      const checkboxLabelDom = ReactDOM.findDOMNode(this.checkboxLabel) || {};
+      populateIndeterminate(checkboxLabelDom, rowsCount, selectedRowCounts, enableIndeterminate);
       populateSelectAllChecked(this.selectAllCheckbox, rowsCount, selectedRowCounts);
     }
   },
@@ -778,7 +779,6 @@ const ReactDataGrid = createReactClass({
 
     const { rowsCount } = this.props;
     const { selectBy, onRowsDeselected, onRowsSelected, selectedRowCounts } = this.props.rowSelection;
-
     const { keys, indexes, isSelectedKey } = selectBy;
     const isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
 
@@ -831,7 +831,6 @@ const ReactDataGrid = createReactClass({
     } else {
       allRowsSelected = false;
     }
-
     if (this.useNewRowSelection()) {
       let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
 

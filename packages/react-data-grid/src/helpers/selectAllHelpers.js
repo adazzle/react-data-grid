@@ -27,8 +27,8 @@ export const populateSelectAllChecked = (selectAllCheckbox, rowsCount, selectedR
   }
 };
 
-export const populateIndeterminate = (checkboxLabel, rowsCount, selectedRowCounts, enableIndeterminate) => {
-  const classList = checkboxLabel ? ReactDOM.findDOMNode(checkboxLabel).classList : [];
+export const populateIndeterminate = (checkboxLabelDom, rowsCount, selectedRowCounts, enableIndeterminate) => {
+  const classList = checkboxLabelDom.classList || [];
   if (!enableIndeterminate) {
     removeIndeterminate(classList);
     return;
