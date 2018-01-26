@@ -7,17 +7,20 @@ export const addIndeterminate = (classList) => {
 };
 
 export const removeIndeterminate = (classList) => {
-  classList.remove(indeterminateClassName);
+  if (classList.contains(indeterminateClassName)) {
+    classList.remove(indeterminateClassName);
+  }
 };
 
 export const populateSelectAllChecked = (selectAllCheckbox, rowsCount, selectedRowCounts) => {
   if (selectAllCheckbox) {
     const { checked } = selectAllCheckbox;
     const isEmptySelected = selectedRowCounts === 0;
+    const isPartiallySelected = selectedRowCounts > 0 && selectedRowCounts < rowsCount;
     const isFullySelected = selectedRowCounts === rowsCount && rowsCount !== 0;
 
     // render checked status for select all
-    if (isEmptySelected && checked) {
+    if ((isEmptySelected || isPartiallySelected) && checked) {
       selectAllCheckbox.checked = false;
     }
 
