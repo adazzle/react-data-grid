@@ -168,22 +168,28 @@ const ReactDataGrid = createReactClass({
     const { enableIndeterminate, selectedRowCounts } = rowSelection;
 
     if (selectedRowCounts >= 0) {
-      const classList = this.getSelectAllLabelClassList();
+      const classList = this.checkboxLabel ? ReactDOM.findDOMNode(this.checkboxLabel).classList : [];
+
       if (selectedRowCounts > 0 && selectedRowCounts < rowsCount) {
+        // if there are any rows selected while it's not equals to rowsCount, it renders indeterminate status if it's set true.
         if (enableIndeterminate) {
           addIndeterminate(classList);
         }
       } else {
+        // if there are any rows equals to rowsCount, it remove the indeterminate status
         if (enableIndeterminate) {
           removeIndeterminate(classList);
         }
 
-        if (selectedRowCounts === 0) {
-          this.selectAllCheckbox.checked === false;
-        }
+        if (this.selectAllCheckbox) {
+          // render checked status for select all
+          if (selectedRowCounts === 0) {
+            this.selectAllCheckbox.checked === false;
+          }
 
-        if (selectedRowCounts === rowsCount) {
-          this.selectAllCheckbox.checked === true;
+          if (selectedRowCounts === rowsCount && rowsCount !== 0) {
+            this.selectAllCheckbox.checked === true;
+          }
         }
       }
     }
@@ -642,10 +648,6 @@ const ReactDataGrid = createReactClass({
     }
 
     return false;
-  },
-
-  getSelectAllLabelClassList() {
-    return ReactDOM.findDOMNode(this.checkboxLabel).classList;
   },
 
   handleNewRowSelect(rowIdx, rowData) {
