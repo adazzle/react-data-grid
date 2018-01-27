@@ -384,7 +384,7 @@ class Cell extends React.Component {
   };
 
   isFocusedOnCell = () => {
-    return document.activeElement && document.activeElement.className === 'react-grid-Cell';
+    return document.activeElement && document.activeElement.className.indexOf('react-grid-Cell') !== -1;
   };
 
   checkFocus = () => {
@@ -491,7 +491,7 @@ class Cell extends React.Component {
       props.dependentValues = this.getFormatterDependencies();
       CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} />;
+      CellContent = <Formatter value={this.props.value} focus={this.isSelected()} dependentValues={this.getFormatterDependencies()} />;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
