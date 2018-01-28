@@ -5,23 +5,27 @@
   "main": "src/index.js",
   "scripts": {
     "pretest": "npm run eslint",
-    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
-    "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
+    "test":
+      "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
+    "dev-test":
+      "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
     "postinstall": "lerna bootstrap",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "node webpack-dev-server.js",
     "beforepublish": "lerna run beforepublish",
-    "eslint": "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**"
+    "eslint":
+      "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
+    "format": "prettier --write **/*.{js,css,json}",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,css,json}": ["prettier --write", "git add"]
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/adazzle/react-data-grid.git"
   },
-  "keywords": [
-    "react",
-    "grid",
-    "react-component"
-  ],
+  "keywords": ["react", "grid", "react-component"],
   "peerDependencies": {
     "react": "^15.6.2",
     "react-dom": "^15.6.2"
@@ -66,6 +70,7 @@
     "gulp": "^3.8.7",
     "gulp-concat": "^2.3.4",
     "gulp-util": "^3.0.0",
+    "husky": "^0.14.3",
     "immutable": "^3.7.3",
     "istanbul-instrumenter-loader": "^0.1.2",
     "jasmine-core": "2.6.1",
@@ -84,12 +89,14 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "lerna": "2.0.0-beta.34",
+    "lint-staged": "^6.0.0",
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
     "node-dir": "^0.1.12",
     "object-assign": "^2.1.1",
     "open": "0.0.5",
+    "prettier": "1.10.1",
     "react": "^15.4.2",
     "react-addons-perf": "^15.4.2",
     "react-addons-shallow-compare": "^15.4.2",
