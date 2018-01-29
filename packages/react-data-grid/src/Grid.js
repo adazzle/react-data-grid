@@ -1,16 +1,15 @@
 const React                = require('react');
 const ReactDOM             = require('react-dom');
 import PropTypes from 'prop-types';
-const createReactClass = require('create-react-class');
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-core.css');
 
-const Grid = createReactClass({
-  displayName: 'Grid',
+class Grid extends React.Component {
+  static displayName = 'Grid';
 
-  propTypes: {
+  static propTypes = {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     tabIndex: PropTypes.number,
@@ -61,42 +60,40 @@ const Grid = createReactClass({
     getValidFilterValues: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
     overScan: PropTypes.object
-  },
+  };
 
-  getDefaultProps() {
-    return {
-      rowHeight: 35,
-      minHeight: 350,
-      tabIndex: 0
-    };
-  },
+  static defaultProps = {
+    rowHeight: 35,
+    minHeight: 350,
+    tabIndex: 0
+  };
 
-  getStyle: function(): { overflow: string; outline: number; position: string; minHeight: number } {
+  getStyle = (): { overflow: string; outline: number; position: string; minHeight: number } => {
     return {
       overflow: 'hidden',
       outline: 0,
       position: 'relative',
       minHeight: this.props.minHeight
     };
-  },
+  };
 
-  _onScroll() {
+  _onScroll = () => {
     if (this._scrollLeft !== undefined) {
       this.header.setScrollLeft(this._scrollLeft);
       if (this.viewport) {
         this.viewport.setScrollLeft(this._scrollLeft);
       }
     }
-  },
+  };
 
-  onScroll(props) {
+  onScroll = (props) => {
     if (this._scrollLeft !== props.scrollLeft) {
       this._scrollLeft = props.scrollLeft;
       this._onScroll();
     }
-  },
+  };
 
-  onHeaderScroll(e) {
+  onHeaderScroll = (e) => {
     let scrollLeft = e.target.scrollLeft;
     if (this._scrollLeft !== scrollLeft) {
       this._scrollLeft = scrollLeft;
@@ -105,24 +102,24 @@ const Grid = createReactClass({
       canvas.scrollLeft = scrollLeft;
       this.viewport.canvas.setScrollLeft(scrollLeft);
     }
-  },
+  };
 
   componentDidMount() {
     this._scrollLeft = this.viewport ? this.viewport.getScroll().scrollLeft : 0;
     this._onScroll();
-  },
+  }
 
   componentDidUpdate() {
     this._onScroll();
-  },
+  }
 
   componentWillMount() {
     this._scrollLeft = undefined;
-  },
+  }
 
   componentWillUnmount() {
     this._scrollLeft = undefined;
-  },
+  }
 
   render(): ?ReactElement {
     let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
@@ -190,6 +187,6 @@ const Grid = createReactClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Grid;

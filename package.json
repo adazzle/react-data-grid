@@ -23,7 +23,6 @@
     "react-component"
   ],
   "peerDependencies": {
-    "create-react-class": "^15.6.2",
     "react": "^15.6.2",
     "react-dom": "^15.6.2"
   },
@@ -56,7 +55,6 @@
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-react": "^6.3.13",
     "copy-dir": "^0.3.0",
-    "create-react-class": "^15.6.2",
     "css-loader": "^0.26.0",
     "del": "^1.2.1",
     "enzyme": "2.8.0",

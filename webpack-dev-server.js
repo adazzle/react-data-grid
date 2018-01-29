@@ -19,7 +19,6 @@ const specificConfig =  {
     react: 'React',
     'react/addons': 'React',
     'react-dom': 'ReactDOM',
-    'create-react-class': 'createReactClass',
     faker: 'faker',
     moment: 'moment'
   },
