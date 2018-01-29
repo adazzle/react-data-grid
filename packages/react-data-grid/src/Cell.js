@@ -1,6 +1,11 @@
 import _ from 'underscore';
 const React = require('react');
 import PropTypes from 'prop-types';
+
+import { connect } from './rxjs/state/RxState';
+import {cellActions} from './rxjs/modules/Cell';
+
+
 const joinClasses = require('classnames');
 const EditorContainer = require('./editors/EditorContainer');
 const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
@@ -44,7 +49,11 @@ class Cell extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ])
+    ]),
+    moveDown: PropTypes.func,
+    moveRight: PropTypes.func,
+    moveLeft: PropTypes.func,
+    moveUp: PropTypes.func
   };
 
   static defaultProps = {
@@ -139,6 +148,21 @@ class Cell extends React.Component {
     }
   };
 
+  onKeyDown = (e) => {
+    e.preventDefault();
+    const { moveUp, moveRight, moveDown, moveLeft} = this.props;
+    const keyPressActionMap = {
+      ArrowDown: moveDown,
+      ArrowRight: moveRight,
+      ArrowLeft: moveLeft,
+      ArrowUp: moveUp
+    };
+    const action = keyPressActionMap[e.key];
+    if (typeof action === 'function') {
+      action();
+    }
+  }
+
   onDeleteSubRow = () => {
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onDeleteSubRow != null) {
@@ -227,15 +251,14 @@ class Cell extends React.Component {
   };
 
   isSelected = () => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-
+    const {idx, rowIdx, selected} = this.props;
     return (
-      meta.selected
-      && meta.selected.rowIdx === this.props.rowIdx
-      && meta.selected.idx === this.props.idx
+      selected
+      && selected.rowIdx === rowIdx
+      && selected.idx === idx
     );
   };
+
 
   isActive = () => {
     let meta = this.props.cellMetaData;
@@ -243,12 +266,12 @@ class Cell extends React.Component {
     return this.isSelected() && meta.selected.active === true;
   };
 
-  isCellSelectionChanging = (nextProps: { idx: number; cellMetaData: { selected: { idx: number } } }): boolean => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-    let nextSelected = nextProps.cellMetaData.selected;
-    if (meta.selected && nextSelected) {
-      return this.props.idx === nextSelected.idx || this.props.idx === meta.selected.idx;
+  isCellSelectionChanging = (nextProps) => {
+    const {idx, rowIdx, selected} = this.props;
+
+    let nextSelected = nextProps.selected;
+    if (selected && nextSelected) {
+      return (idx === nextSelected.idx || idx === selected.idx) && (rowIdx === nextSelected.rowIdx || rowIdx === selected.rowIdx);
     }
 
     return true;
@@ -448,7 +471,8 @@ class Cell extends React.Component {
       onClick: this.onCellClick,
       onDoubleClick: this.onCellDoubleClick,
       onContextMenu: this.onCellContextMenu,
-      onDragOver: this.onDragOver
+      onDragOver: this.onDragOver,
+      onKeyDown: this.onKeyDown
     };
 
     if (!columnEvents || !onColumnEvent) {
@@ -465,9 +489,9 @@ class Cell extends React.Component {
   getCellActions() {
     const {cellMetaData, column, rowData} = this.props;
     if (cellMetaData && cellMetaData.getCellActions) {
-      const cellActions = cellMetaData.getCellActions(column, rowData);
-      if (cellActions && cellActions.length) {
-        return cellActions.map((action, index) => {
+      const cellActionButtons = cellMetaData.getCellActions(column, rowData);
+      if (cellActionButtons && cellActionButtons.length) {
+        return cellActionButtons.map((action, index) => {
           return <CellAction key={index} action={action} isFirst={index === 0} />;
         });
       }
@@ -513,7 +537,7 @@ class Cell extends React.Component {
 
     let className = this.getCellClass();
 
-    const cellActions = this.getCellActions();
+    const cellActionButtons = this.getCellActions();
 
     const cellContent = this.props.children || this.renderCellContent({
       value: this.props.value,
@@ -529,7 +553,7 @@ class Cell extends React.Component {
 
     return (
       <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }}>
-        {cellActions}
+        {cellActionButtons}
         {cellContent}
         {dragHandle}
         {tooltip}
@@ -538,4 +562,4 @@ class Cell extends React.Component {
   }
 }
 
-module.exports = Cell;
+module.exports = connect(({ cell }) => (cell), cellActions)(Cell);
