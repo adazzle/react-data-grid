@@ -17,16 +17,16 @@
   "author": "Adazzle",
   "license": "MIT",
   "dependencies": {
-    "immutability-helper": "^2.4.0",
+    "immutability-helper": "^2.6.4",
     "react-data-grid": "^3.0.8",
     "react-data-grid-addons": "^3.0.8"
   },
   "devDependencies": {
-    "bootstrap": "^3.2.0",
-    "jquery": "^2.1.1",
-    "lodash": "^4.13.1",
-    "lodash.groupby": "^4.5.1",
-    "react-router": "^0.13.3",
-    "markdown": "^0.5.0"
+    "bootstrap": "^3.3.7",
+    "jquery": "^2.2.4",
+    "lodash": "^4.17.4",
+    "lodash.groupby": "^4.6.0",
+    "markdown": "^0.5.0",
+    "react-router": "^0.13.6"
   }
 }
