@@ -92,7 +92,6 @@
     "open": "0.0.5",
     "react": "^15.6.2",
     "react-addons-perf": "^15.4.2",
-    "react-addons-shallow-compare": "^15.4.2",
     "react-addons-transition-group": "^15.4.2",
     "react-dnd-test-backend": "^1.0.2",
     "react-docgen": "^2.8.2",
