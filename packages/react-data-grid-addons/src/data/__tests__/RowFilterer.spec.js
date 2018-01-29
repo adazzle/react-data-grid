@@ -2,7 +2,7 @@ import React from 'react';
 import filterRows from '../RowFilterer';
 import {fromJS} from 'immutable';
 import AutoCompleteFilter from '../../cells/headerCells/filters/AutoCompleteFilter';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 
 const rows = [{ colOne: 'v1', colTwo: 'b1' },
               { colOne: 'v2', colTwo: 'b2' },
