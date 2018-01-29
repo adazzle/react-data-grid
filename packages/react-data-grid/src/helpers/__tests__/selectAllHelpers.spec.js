@@ -79,7 +79,7 @@ describe('selectAllHelpers test', () => {
         addIndeterminate(wrapper.getDOMNode().classList);
         populateIndeterminate(wrapper.getDOMNode(), 5, 5, true);
         expect(wrapper.getDOMNode().classList.contains(indeterminateClassName)).toBeFalsy();
-      
+
         addIndeterminate(wrapper.getDOMNode().classList);
         populateIndeterminate(wrapper.getDOMNode(), 5, 0, true);
         expect(wrapper.getDOMNode().classList.contains(indeterminateClassName)).toBeFalsy();
