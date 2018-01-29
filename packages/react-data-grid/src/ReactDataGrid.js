@@ -192,12 +192,15 @@ class ReactDataGrid extends React.Component {
 
   componentDidUpdate() {
     const { rowsCount, rowSelection } = this.props;
-    const { enableIndeterminate, selectedRowCounts } = rowSelection;
 
-    if (selectedRowCounts >= 0) {
-      // if the selectedRowCounts is set, populate the select all checkbox status for checkbox.checked and indeterminate style
-      populateIndeterminate(this.checkboxLabel, rowsCount, selectedRowCounts, enableIndeterminate);
-      populateSelectAllChecked(this.selectAllCheckbox, rowsCount, selectedRowCounts);
+    if (rowSelection) {
+      const { enableIndeterminate, selectedRowCounts } = rowSelection;
+
+      if (selectedRowCounts >= 0) {
+        // if the selectedRowCounts is set, populate the select all checkbox status for checkbox.checked and indeterminate style
+        populateIndeterminate(this.checkboxLabel, rowsCount, selectedRowCounts, enableIndeterminate);
+        populateSelectAllChecked(this.selectAllCheckbox, rowsCount, selectedRowCounts);
+      }
     }
   }
 
