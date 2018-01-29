@@ -15,6 +15,10 @@ const initialState = {
   selected: {
     idx: 0,
     rowIdx: 0
+  },
+  lastSelected: {
+    idx: 0,
+    rowIdx: 0
   }
 };
 
@@ -27,7 +31,7 @@ const moveCellBy = (state, cellOffset, rowOffset) => {
     ...state.selected,
     ...newCellCoords
   };
-  return isCellWithinBounds(newCellCoords) ? { ...state, ...{ selected } } : state;
+  return isCellWithinBounds(newCellCoords) ? { ...state, ...{ selected }, ...{lastSelected: state.selected} } : state;
 };
 
 export const cellReducer$ = Observable.of(() => initialState)

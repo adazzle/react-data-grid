@@ -21,7 +21,7 @@ export function createState(reducer$, initialState$ = Observable.of({})) {
     .refCount();
 }
 
-export function connect(selector = state => state, actionSubjects) {
+export function connect(selector = state => state, actionSubjects, subscribeFilter = () => () => true) {
   const actions = Object.keys(actionSubjects)
     .reduce((akk, key) => ({ ...akk, [key]: value => actionSubjects[key].next(value) }), {});
 
@@ -32,13 +32,9 @@ export function connect(selector = state => state, actionSubjects) {
       };
 
       componentDidMount() {
-        const {idx, rowIdx} = this.props;
         this.subscription = this.context.state$
         .map(selector)
-        .filter(state => {
-          return state && [idx, idx - 1, idx + 1].includes(state.selected.idx)
-          && [rowIdx, rowIdx - 1, rowIdx + 1].includes(state.selected.rowIdx);
-        })
+        .filter(subscribeFilter(this.props))
         .subscribe(this.setState.bind(this));
       }
 

@@ -562,4 +562,8 @@ class Cell extends React.Component {
   }
 }
 
-module.exports = connect(({ cell }) => (cell), cellActions)(Cell);
+const isCellSelected = (selected, {idx, rowIdx}) => selected.idx === idx & selected.rowIdx === rowIdx;
+
+const subscribeFilter = props => state => state && (isCellSelected(state.lastSelected, props) || isCellSelected(state.selected, props));
+
+module.exports = connect(({ cell }) => (cell), cellActions, subscribeFilter)(Cell);
