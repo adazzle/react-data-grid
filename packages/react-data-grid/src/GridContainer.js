@@ -10,6 +10,8 @@ import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
 import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics        = require('./ColumnMetrics');
+import { connect } from './rxjs/state/RxState';
+import {cellActions} from './rxjs/modules/Cell';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
@@ -25,7 +27,7 @@ type SelectedType = {
 type ColumnEvent = {
   name: string,
   rowIdx: number;
-  idx: number;
+  idx: number
 }
 
 type DraggedType = {
@@ -332,25 +334,12 @@ class GridContainer extends React.Component {
   };
 
   onSelect = (selected: SelectedType) => {
-    if (this.state.selected.rowIdx !== selected.rowIdx
-      || this.state.selected.idx !== selected.idx
-      || this.state.selected.active === false) {
-      let idx = selected.idx;
-      let rowIdx = selected.rowIdx;
-      if (this.isCellWithinBounds(selected)) {
-        const oldSelection = this.state.selected;
-        this.setState({selected: selected}, () => {
-          if (typeof this.props.onCellDeSelected === 'function') {
-            this.props.onCellDeSelected(oldSelection);
-          }
-          if (typeof this.props.onCellSelected === 'function') {
-            this.props.onCellSelected(selected);
-          }
-        });
-      } else if (rowIdx === -1 && idx === -1) {
-        // When it's outside of the grid, set rowIdx anyway
-        this.setState({selected: { idx, rowIdx }});
-      }
+    this.props.selectCell(selected);
+    if (typeof this.props.onCellDeSelected === 'function') {
+      this.props.onCellDeSelected(oldSelection);
+    }
+    if (typeof this.props.onCellSelected === 'function') {
+      this.props.onCellSelected(selected);
     }
   };
 
@@ -384,20 +373,24 @@ class GridContainer extends React.Component {
     }
   };
 
-  onPressArrowUp = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, -1, 0);
+  onPressArrowUp = e => {
+    e.preventDefault();
+    this.props.moveUp();
   };
 
-  onPressArrowDown = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 1, 0);
+  onPressArrowDown = (e) => {
+    e.preventDefault();
+    this.props.moveDown();
   };
 
-  onPressArrowLeft = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 0, -1);
+  onPressArrowLeft = (e) => {
+    e.preventDefault();
+    this.props.moveLeft();
   };
 
-  onPressArrowRight = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 0, 1);
+  onPressArrowRight = (e) => {
+    e.preventDefault();
+    this.props.moveRight();
   };
 
   isFocusedOnCell = () => {
@@ -1255,4 +1248,4 @@ class GridContainer extends React.Component {
 }
 
 
-module.exports = GridContainer;
+module.exports = connect(({ cell }) => (cell), cellActions, () => () => false)(GridContainer);
