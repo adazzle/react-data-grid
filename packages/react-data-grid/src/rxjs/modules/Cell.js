@@ -15,7 +15,8 @@ export const cellActions = createActions([
 const initialState = {
   selected: {
     idx: 0,
-    rowIdx: 0
+    rowIdx: 0,
+    isEditing: false
   },
   lastSelected: {
     idx: 0,
@@ -33,7 +34,6 @@ const moveCellBy = (state, cellOffset, rowOffset) => {
     ...state.selected,
     ...newCellCoords
   };
-  console.log(selected);
   return isCellWithinBounds(newCellCoords) ? { ...state, ...{ selected }, ...{lastSelected: state.selected} } : state;
 };
 
