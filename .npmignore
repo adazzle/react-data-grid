@@ -1,3 +1,4 @@
+benchmarks
 src
 **/build
 webpack.config.js

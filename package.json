@@ -4,6 +4,7 @@
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
+    "benchmark": "node ./ci/perf/benchmarks.js",
     "pretest": "npm run eslint",
     "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
     "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
@@ -92,6 +93,7 @@
     "node-dir": "^0.1.12",
     "object-assign": "^2.1.1",
     "open": "0.0.5",
+    "puppeteer": "^1.0.0",
     "react": "^15.4.2",
     "react-addons-perf": "^15.4.2",
     "react-addons-shallow-compare": "^15.4.2",
