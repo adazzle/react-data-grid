@@ -152,13 +152,7 @@ class GridContainer extends React.Component {
   constructor(props, context) {
     super(props, context);
     let columnMetrics = this.createColumnMetrics();
-    let initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
-    if (props.enableCellSelect) {
-      initialState.selected = {rowIdx: 0, idx: 0};
-    } else {
-      initialState.selected = {rowIdx: -1, idx: -1};
-    }
-    this.state = initialState;
+    this.state = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
   }
 
   componentWillMount() {
@@ -333,13 +327,14 @@ class GridContainer extends React.Component {
     }
   };
 
-  onSelect = (selected: SelectedType) => {
-    this.props.selectCell(selected);
-    if (typeof this.props.onCellDeSelected === 'function') {
-      this.props.onCellDeSelected(oldSelection);
+  onSelect = (selected) => {
+    const {selectCell, onCellDeSelected, onCellSelected} = this.props;
+    selectCell(selected);
+    if (typeof onCellDeSelected === 'function') {
+      onCellDeSelected(oldSelection);
     }
-    if (typeof this.props.onCellSelected === 'function') {
-      this.props.onCellSelected(selected);
+    if (typeof onCellSelected === 'function') {
+      onCellSelected(selected);
     }
   };
 
