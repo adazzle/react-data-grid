@@ -95,7 +95,9 @@ module.exports = function (config) {
         'cheerio': 'window',
         'react/lib/ExecutionEnvironment': true,
         'react/lib/ReactContext': true,
-        'react/addons': true
+        'react/addons': true,
+        // https://github.com/airbnb/enzyme/issues/968
+        'react-addons-test-utils': true
       }
     },
 
