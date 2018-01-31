@@ -109,7 +109,7 @@ const exampleDescription = (<p>While ReactDataGrid does not provide the ability 
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
-  exampleName: 'Descending First Sortable Columns Example',
+  exampleName: 'Sort Descending First Sortable Columns Example',
   exampleDescription,
   examplePath: './scripts/example29-descendingFirstSortable.js',
   examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/8/'
