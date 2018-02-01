@@ -25,7 +25,8 @@ class EditorContainer extends React.Component {
     }).isRequired,
     column: PropTypes.object.isRequired,
     height: PropTypes.number.isRequired,
-    onGridKeyDown: PropTypes.func
+    onGridKeyDown: PropTypes.func,
+    selected: PropTypes.object.isRequired
   };
 
   state = {isInvalid: false};
@@ -191,7 +192,7 @@ class EditorContainer extends React.Component {
   };
 
   getInitialValue = (): string => {
-    let selected = this.props.cellMetaData.selected;
+    let selected = this.props.selected;
     let keyCode = selected.initialKeyCode;
     if (keyCode === 'Delete' || keyCode === 'Backspace') {
       return '';
@@ -299,7 +300,7 @@ class EditorContainer extends React.Component {
   };
 
   setTextInputFocus = () => {
-    let selected = this.props.cellMetaData.selected;
+    let selected = this.props.selected;
     let keyCode = selected.initialKeyCode;
     let inputNode = this.getInputNode();
     inputNode.focus();

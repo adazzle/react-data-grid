@@ -11,6 +11,10 @@
   outline-offset: -2px;
 }
 
+.moving-element {
+  will-change: transform;
+}
+
 .react-grid-Cell--locked:focus {
   z-index: 100;
 }

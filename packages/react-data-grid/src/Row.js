@@ -1,10 +1,8 @@
-import OverflowCell from './OverflowCell';
 import rowComparer from './RowComparer';
 const React = require('react');
 import PropTypes from 'prop-types';
 const joinClasses = require('classnames');
-const Cell = require('./Cell');
-const columnUtils = require('./ColumnUtils');
+const Cell = require('./connectedComponents/CellContainer');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-row.css');
@@ -58,15 +56,6 @@ class Row extends React.Component {
     }
   };
 
-  getSelectedColumn = () => {
-    if (this.props.cellMetaData) {
-      let selected = this.props.cellMetaData.selected;
-      if (selected && selected.idx) {
-        return columnUtils.getColumn(this.props.columns, selected.idx);
-      }
-    }
-  };
-
   getCellRenderer = (columnKey) => {
     let CellRenderer = this.props.cellRenderer;
     if (this.props.subRowDetails && this.props.subRowDetails.field === columnKey) {
@@ -75,15 +64,11 @@ class Row extends React.Component {
     return CellRenderer;
   };
 
-  getCell = (column, i, selectedColumn) => {
+  getCell = (column, i) => {
     let CellRenderer = this.props.cellRenderer;
-    const { colVisibleStart, colVisibleEnd, idx, cellMetaData } = this.props;
-    const { key, formatter, locked } = column;
+    const { idx, cellMetaData } = this.props;
+    const { key, formatter } = column;
     const baseCellProps = { key: `${key}-${idx}`, idx: i, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
-
-    if ((i < colVisibleStart || i > colVisibleEnd) && !locked) {
-      return <OverflowCell ref={(node) => this[key] = node} {...baseCellProps} />;
-    }
 
     const { row, isSelected } = this.props;
     const cellProps = {
@@ -92,7 +77,6 @@ class Row extends React.Component {
       rowData: row,
       isRowSelected: isSelected,
       expandableOptions: this.getExpandableOptions(key),
-      selectedColumn,
       formatter,
       isScrolling: this.props.isScrolling
     };
@@ -103,14 +87,13 @@ class Row extends React.Component {
   getCells = () => {
     let cells = [];
     let lockedCells = [];
-    let selectedColumn = this.getSelectedColumn();
     let lastColumnIdx = this.props.columns.size - 1;
     if (this.props.columns) {
       this.props.columns.forEach((column, i) => {
         if (i === lastColumnIdx) {
           column.isLastColumn = true;
         }
-        let cell = this.getCell(column, i, selectedColumn);
+        let cell = this.getCell(column, i);
         if (column.locked) {
           lockedCells.push(cell);
         } else {
@@ -143,16 +126,6 @@ class Row extends React.Component {
       val = this.props.row[key];
     }
     return val;
-  };
-
-  isContextMenuDisplayed = () => {
-    if (this.props.cellMetaData) {
-      let selected = this.props.cellMetaData.selected;
-      if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
-        return true;
-      }
-    }
-    return false;
   };
 
   getExpandableOptions = (columnKey) => {
@@ -192,8 +165,7 @@ class Row extends React.Component {
       'react-grid-Row',
       `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
       {
-        'row-selected': this.props.isSelected,
-        'row-context-menu': this.isContextMenuDisplayed()
+        'row-selected': this.props.isSelected
       },
       this.props.extraClasses
     );

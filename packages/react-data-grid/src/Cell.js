@@ -1,7 +1,6 @@
 import _ from 'underscore';
 const React = require('react');
 import PropTypes from 'prop-types';
-import { connect } from './rxjs/state/RxState';
 const joinClasses = require('classnames');
 const EditorContainer = require('./editors/EditorContainer');
 const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
@@ -22,9 +21,9 @@ class Cell extends React.Component {
   static propTypes = {
     rowIdx: PropTypes.number.isRequired,
     idx: PropTypes.number.isRequired,
-    selected: PropTypes.shape({
-      idx: PropTypes.number.isRequired
-    }),
+    isSelected: PropTypes.bool,
+    wasPreviouslySelected: PropTypes.bool,
+    isEditorEnabled: PropTypes.bool,
     selectedColumn: PropTypes.object,
     height: PropTypes.number,
     tabIndex: PropTypes.number,
@@ -76,9 +75,6 @@ class Cell extends React.Component {
     let dragged = this.props.cellMetaData.dragged;
     if (dragged && dragged.complete === true) {
       this.props.cellMetaData.handleTerminateDrag();
-    }
-    if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
-      this.applyUpdateClass();
     }
     if (this.state.isLockChanging && !this.props.column.locked) {
       this.removeScroll();
@@ -153,7 +149,7 @@ class Cell extends React.Component {
 
   getFormatter = () => {
     let col = this.props.column;
-    if (this.isActive()) {
+    if (this.isEditorEnabled()) {
       return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} value={this.props.value} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height} />;
     }
 
@@ -180,14 +176,15 @@ class Cell extends React.Component {
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
-      editing: this.isActive(),
+      editing: this.isEditorEnabled(),
       copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
       'is-dragged-over-up': this.isDraggedOverUpwards(),
       'is-dragged-over-down': this.isDraggedOverDownwards(),
       'was-dragged-over': this.wasDraggedOver(),
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
-      'last-column': this.props.column.isLastColumn
+      'last-column': this.props.column.isLastColumn,
+      'will-change': this.props.isSelected || this.props.wasPreviouslySelected
     });
     return joinClasses(className, extraClasses);
   };
@@ -198,41 +195,13 @@ class Cell extends React.Component {
       : '';
   };
 
-  isColumnSelected = () => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-
-    return (
-      meta.selected
-      && meta.selected.idx === this.props.idx
-    );
-  };
-
   isSelected = () => {
-    const {idx, rowIdx, selected} = this.props;
-    return (
-      selected
-      && selected.rowIdx === rowIdx
-      && selected.idx === idx
-    );
+    return this.props.isSelected === true;
   };
 
 
-  isActive = () => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-    return this.isSelected() && meta.selected.active === true;
-  };
-
-  isCellSelectionChanging = (nextProps) => {
-    const {idx, rowIdx, selected} = this.props;
-
-    let nextSelected = nextProps.selected;
-    if (selected && nextSelected) {
-      return (idx === nextSelected.idx || idx === selected.idx) && (rowIdx === nextSelected.rowIdx || rowIdx === selected.rowIdx);
-    }
-
-    return true;
+  isEditorEnabled = () => {
+    return this.props.isEditorEnabled === true;
   };
 
   isCellSelectEnabled = () => {
@@ -256,24 +225,7 @@ class Cell extends React.Component {
     return hasChangedDependentValues;
   };
 
-  applyUpdateClass = () => {
-    let updateCellClass = this.getUpdateCellClass();
-    // -> removing the class
-    if (updateCellClass != null && updateCellClass !== '') {
-      let cellDOMNode = this.node;
-      if (cellDOMNode.classList) {
-        cellDOMNode.classList.remove(updateCellClass);
-        // -> and re-adding the class
-        cellDOMNode.classList.add(updateCellClass);
-      } else if (cellDOMNode.className.indexOf(updateCellClass) === -1) {
-        // IE9 doesn't support classList, nor (I think) altering element.className
-        // without replacing it wholesale.
-        cellDOMNode.className = cellDOMNode.className + ' ' + updateCellClass;
-      }
-    }
-  };
-
-  setScrollLeft = (scrollLeft: number) => {
+  setScrollLeft = (scrollLeft) => {
     let node = this.node;
     if (node) {
       let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
@@ -362,7 +314,7 @@ class Cell extends React.Component {
   };
 
   checkFocus = () => {
-    if (this.isSelected() && !this.isActive()) {
+    if (this.isSelected() && !this.isEditorEnabled()) {
       // If the enableCellAutoFocus is set in the ReactDataGrid props, it will allow the cell to take focus when the browser is focused on the body.
       // Otherwise, only focus to the current cell if the currently active node in the document is within the data grid.
       // Meaning focus should not be stolen from elements that the grid doesnt control.
@@ -501,7 +453,7 @@ class Cell extends React.Component {
       isExpanded: this.props.isExpanded
     });
 
-    let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
+    let dragHandle = (!this.isEditorEnabled() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
     let events = this.getEvents();
     const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
 
@@ -517,8 +469,4 @@ class Cell extends React.Component {
   }
 }
 
-const isCellSelected = (selected, {idx, rowIdx}) => selected.idx === idx && selected.rowIdx === rowIdx;
-
-const subscribeFilter = props => state => state && (isCellSelected(state.lastSelected, props) || isCellSelected(state.selected, props));
-
-module.exports = connect(({ cell }) => cell, [], subscribeFilter)(Cell);
+module.exports = Cell;

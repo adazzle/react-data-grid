@@ -352,13 +352,11 @@ class Canvas extends React.Component {
         ref={(div) => { this.canvas = div; }}
         style={style}
         onScroll={this.onScroll}
-        className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active })}>
+        className='react-grid-Canvas'>
         <RowsContainer
           width={this.props.width}
           rows={rows}
-          contextMenu={this.props.contextMenu}
-          rowIdx={this.props.cellMetaData.selected.rowIdx}
-          idx={this.props.cellMetaData.selected.idx} />
+          contextMenu={this.props.contextMenu}/>
       </div>
     );
   }
