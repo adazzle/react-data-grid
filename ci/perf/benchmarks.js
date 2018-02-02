@@ -37,7 +37,7 @@ const navigateCells = async (page, direction, numberCells) => {
   await clickCell(page);
   await page.tracing.start({path: `benchmarks/trace.json`});
   const startTime = performance.now();
-  await navigateCells(page, Key.Down, 40);
+  await navigateCells(page, Key.Down, 20);
   await logPageMetrics(page);
   const endTime = performance.now() - startTime;
   console.log(endTime);

@@ -7,12 +7,20 @@
 }
 
 .react-grid-Cell:focus {
-  outline: 2px solid #66afe9;
-  outline-offset: -2px;
+  outline: none;
 }
 
 .moving-element {
   will-change: transform;
+}
+
+.rdg-selector-on {
+  opacity: 1 !important;
+}
+
+
+.rdg-selector-off {
+  opacity: 0;
 }
 
 .react-grid-Cell--locked:focus {

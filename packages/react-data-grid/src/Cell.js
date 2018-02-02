@@ -68,10 +68,10 @@ class Cell extends React.Component {
       isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
       isLockChanging: this.props.column.locked !== nextProps.column.locked
     });
+
   }
 
   componentDidUpdate() {
-    this.checkFocus();
     let dragged = this.props.cellMetaData.dragged;
     if (dragged && dragged.complete === true) {
       this.props.cellMetaData.handleTerminateDrag();
@@ -183,8 +183,7 @@ class Cell extends React.Component {
       'was-dragged-over': this.wasDraggedOver(),
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
-      'last-column': this.props.column.isLastColumn,
-      'will-change': this.props.isSelected || this.props.wasPreviouslySelected
+      'last-column': this.props.column.isLastColumn
     });
     return joinClasses(className, extraClasses);
   };
@@ -457,14 +456,24 @@ class Cell extends React.Component {
     let events = this.getEvents();
     const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
 
+    let selectorStyle = {
+      position: 'absolute',
+      width: this.props.column.width,
+      height: this.props.height,
+      outline: '1px solid #66afe9',
+      zIndex: 1000
+    };
 
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }}>
-        {cellActionButtons}
-        {cellContent}
-        {dragHandle}
-        {tooltip}
+      <div>
+        <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }}>
+          <div className="selector rdg-selector-off" style={selectorStyle}></div>
+          {cellActionButtons}
+          {cellContent}
+          {dragHandle}
+          {tooltip}
       </div>
+    </div>
     );
   }
 }

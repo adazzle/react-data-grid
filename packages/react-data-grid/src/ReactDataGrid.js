@@ -16,7 +16,7 @@ import { connect } from './stateManagement/state/RxState';
 import {cellActions} from './stateManagement/modules/Cell';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
-let count = 0;
+
 if (!Object.assign) {
   Object.assign = require('object-assign');
 }
@@ -377,7 +377,6 @@ class GridContainer extends React.Component {
 
   onPressArrowDown = (e) => {
     e.preventDefault();
-    console.log(count++);
     this.props.moveDown();
   };
 
