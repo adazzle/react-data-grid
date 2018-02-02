@@ -15,7 +15,9 @@
   "author": "Adazzle",
   "license": "MIT",
   "dependencies": {
-    "react-data-grid": "^3.0.10"
+    "react-data-grid": "^3.0.10",
+    "react-page-click": "^4.0.2",
+    "react-tether": "^0.6.1"
   },
   "devDependencies": {
     "jquery": "^2.1.1",
