@@ -69,7 +69,6 @@ const DropdownBody = (props) => {
   };
   const data = toImmutableList(props.data).valueSeq();
   const items = data.map(renderItem);
-  console.log(items);
   return (
     <div className="dropdown-portal-body">
       {items &&
