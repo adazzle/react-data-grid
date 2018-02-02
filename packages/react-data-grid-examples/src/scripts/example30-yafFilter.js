@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
-import { Toolbar, Data } from 'react-data-grid-addons';
+import { Toolbar, Data, Filters } from 'react-data-grid-addons';
 import exampleWrapper from '../components/exampleWrapper';
 
 /* Columns definition */
@@ -8,37 +8,44 @@ const columnsDef =  [
   {
     key: 'id',
     name: 'ID',
-    filterable: true
+    filterable: true,
+    filterRenderer: Filters.YafFilter
   },
   {
     key: 'task',
     name: 'Title',
-    filterable: true
+    filterable: true,
+    filterRenderer: Filters.YafFilter
   },
   {
     key: 'priority',
     name: 'Priority',
-    filterable: true
+    filterable: true,
+    filterRenderer: Filters.YafFilter
   },
   {
     key: 'issueType',
     name: 'Issue Type',
-    filterable: true
+    filterable: true,
+    filterRenderer: Filters.YafFilter
   },
   {
     key: 'complete',
     name: '% Complete',
-    filterable: true
+    filterable: true,
+    filterRenderer: Filters.YafFilter
   },
   {
     key: 'startDate',
     name: 'Start Date',
-    filterable: true
+    filterable: true,
+    filterRenderer: Filters.YafFilter
   },
   {
     key: 'completeDate',
     name: 'Expected Complete',
-    filterable: true
+    filterable: true,
+    filterRenderer: Filters.YafFilter
   }
 ];
 
@@ -79,9 +86,12 @@ class Example extends React.Component {
   };
 
   getValidFilterValues = (columnId) => {
+    console.log("teste");
     const rows = Data.Selectors.getRows(this.state);
     const values = rows.map(r => r[columnId]);
+    console.log(values);
     return values.filter((item, i, a) => {
+      console.log(i === a.indexOf(item));
       return i === a.indexOf(item);
     });
   };
@@ -112,7 +122,7 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
         columns={this.state.columns}
         rowGetter={this.rowGetter}
@@ -122,7 +132,8 @@ class Example extends React.Component {
         onClearFilters={this.onClearFilters}
         getValidFilterValues={this.getValidFilterValues}
         toolbar={<Toolbar enableFilter={true}/>}
-      />);
+      />
+    );
   }
 }
 

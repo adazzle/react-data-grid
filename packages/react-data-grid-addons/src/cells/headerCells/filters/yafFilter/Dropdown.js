@@ -1,6 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import TetherComponent from 'react-tether';
+import isFunction from 'lodash/fp/isFunction';
 import { ReactPageClick } from 'react-page-click';
+import Immutable from 'immutable';
+
+const toImmutableList = (data) => {
+  if (!data) {
+    return new Immutable.List();
+  }
+  if (Array.isArray(data)) {
+    return Immutable.List.of(...data);
+  }
+  return data;
+};
 
 /* ...rest operator get from babel */
 const restOperator = (obj, keys) => {
@@ -48,11 +60,32 @@ DropdownHeader.propTypes = {
 };
 
 const DropdownBody = (props) => {
+  const renderItem = (paramItem, idx) => {
+    const item = isFunction(paramItem.toJS) ? paramItem.toJS() : paramItem;
+    const render = props.renderItem;
+    return (
+      <li key={idx}>{render(item, idx)}</li>
+    );
+  };
+  const data = toImmutableList(props.data).valueSeq();
+  const items = data.map(renderItem);
+  console.log(items);
   return (
     <div className="dropdown-portal-body">
+      {items &&
+        <ul>
+          {items}
+        </ul>
+      }
       {props.children}
     </div>
   );
+};
+
+DropdownBody.propTypes = {
+  renderItem: PropTypes.func,
+  data: PropTypes.array,
+  children: PropTypes.element
 };
 
 DropdownBody.propTypes = {
