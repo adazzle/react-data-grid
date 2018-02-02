@@ -6,6 +6,10 @@
   border-bottom: 1px solid #dddddd;
 }
 
+.react-grid-Cell:focus {
+  outline: none;
+}
+
 .rdg-selected {
   border: 2px solid #66afe9;
 }

@@ -1,23 +1,31 @@
 import React from 'react';
+import { Motion, spring } from 'react-motion';
 import { connect } from '../stateManagement/state/RxState';
 import initialState from '../stateManagement/state/initialState';
 
 /* MapStateToProps */
 
-const Mask = ({selectedPosition}) => {
-  const {idx, rowIdx} = selectedPosition;
-  const style = {
-    position: 'absolute',
-    height: 35,
-    width: 150,
-    zIndex: 1000,
-    transform: `translate(${idx * 150}px, ${rowIdx * 35}px)`
+const Mask = ({ selectedPosition }) => {
+  const { idx, rowIdx } = selectedPosition;
+  const [width, height] = [150, 35];
+  const setStyle = (x, y) => {
+    return {
+      position: 'absolute',
+      height,
+      width,
+      zIndex: 1000,
+      transform: `translate(${x}px, ${y}px)`
+    };
   };
-  return (<div style={style} className="rdg-selected"></div>);
+  return (
+    <Motion style={{ x: spring(idx * width), y: spring(rowIdx * height) }}>
+      {({ x, y }) => <div style={setStyle(x, y)} className="rdg-selected" />}
+    </Motion>
+  );
 };
 
-const mapStateToProps = ({cell} = initialState) => {
-  const {selectedPosition} = cell;
+const mapStateToProps = ({ cell } = initialState) => {
+  const { selectedPosition } = cell;
   return {
     selectedPosition
   };
