@@ -581,6 +581,22 @@ describe('using keyboard to navigate through the grid by pressing Tab or Shift+T
       expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1, changeSomething: true });
     });
   });
+  describe('keyboard events', () => {
+    const cellNavigationMode = 'none';
+    it('registers keyDown events', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      enzymeWrapper.find('Grid').prop('onViewportKeydown')({ key: 'Enter', keyCode: 13, which: 13 });
+      expect(enzymeWrapper.instance().isKeyDown(13)).toBeTruthy();
+    });
+
+    it('registers keyUp events', () => {
+      const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
+      const gridWrapper = enzymeWrapper.find('Grid');
+      gridWrapper.prop('onViewportKeydown')({ key: 'Enter', keyCode: 13, which: 13 });
+      gridWrapper.prop('onViewportKeyup')({ key: 'Enter', keyCode: 13, which: 13 });
+      expect(enzymeWrapper.instance().isKeyDown(13)).toBeFalsy();
+    });
+  });
 });
 
 //
