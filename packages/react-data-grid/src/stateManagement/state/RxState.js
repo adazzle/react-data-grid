@@ -22,7 +22,7 @@ export function createState(reducer$, initialState$ = Observable.of(initialState
     .refCount();
 }
 
-export function connect(mapStateToProps, actionSubjects, subscribeFilter = () => () => true) {
+export function connect(mapStateToProps, actionSubjects = [], subscribeFilter = () => () => true) {
   const actions = Object.keys(actionSubjects)
     .reduce((akk, key) => ({ ...akk, [key]: value => actionSubjects[key].next(value) }), {});
 
@@ -35,6 +35,7 @@ export function connect(mapStateToProps, actionSubjects, subscribeFilter = () =>
       componentDidMount() {
         this.subscription = this.context.state$
         .filter(subscribeFilter(this.props))
+        .throttleTime(17)
         .subscribe(this.setState.bind(this));
       }
 

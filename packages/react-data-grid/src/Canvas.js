@@ -10,6 +10,7 @@ require('../../../themes/react-data-grid-core.css');
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
+import SelectionMask from './connectedComponents/SelectionMask';
 
 class Canvas extends React.Component {
   static displayName = 'Canvas';
@@ -353,6 +354,7 @@ class Canvas extends React.Component {
         style={style}
         onScroll={this.onScroll}
         className='react-grid-Canvas'>
+        <SelectionMask/>
         <RowsContainer
           width={this.props.width}
           rows={rows}

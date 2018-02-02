@@ -17,7 +17,7 @@ const isCellChanging = (state, ownProps) => {
 */
 
 const stateSubscriber = ownProps => ({cell}) => {
-  return isCellChanging(cell, ownProps);
+  return false;
 };
 
 /* MapStateToProps */
