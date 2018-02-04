@@ -14,7 +14,7 @@ npm install --save react-data-grid-addons
 ```sh
 import { Editors, Formatters } from 'react-data-grid-addons';
 const { DropDownEditor } = Editors;
-const { DropDownFormatter } = Formatters
+const { DropDownFormatter } = Formatters;
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 const columns = [

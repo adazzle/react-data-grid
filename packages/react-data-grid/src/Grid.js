@@ -1,18 +1,20 @@
 const React                = require('react');
-const PropTypes            = React.PropTypes;
+const ReactDOM             = require('react-dom');
+import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
-const GridScrollMixin      = require('./GridScrollMixin');
-const DOMMetrics           = require('./DOMMetrics');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
 const SortDataShape = require('./PropTypeShapes/SortDataShape');
 require('../../../themes/react-data-grid-core.css');
 
-const Grid = React.createClass({
-  propTypes: {
+class Grid extends React.Component {
+  static displayName = 'Grid';
+
+  static propTypes = {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    tabIndex: PropTypes.number,
     columnMetrics: PropTypes.object,
     minHeight: PropTypes.number,
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -22,17 +24,17 @@ const Grid = React.createClass({
     emptyRowsView: PropTypes.func,
     expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
-    rowSelection: React.PropTypes.oneOfType([
-      React.PropTypes.shape({
-        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+    rowSelection: PropTypes.oneOfType([
+      PropTypes.shape({
+        indexes: PropTypes.arrayOf(PropTypes.number).isRequired
       }),
-      React.PropTypes.shape({
-        isSelectedKey: React.PropTypes.string.isRequired
+      PropTypes.shape({
+        isSelectedKey: PropTypes.string.isRequired
       }),
-      React.PropTypes.shape({
-        keys: React.PropTypes.shape({
-          values: React.PropTypes.array.isRequired,
-          rowKey: React.PropTypes.string.isRequired
+      PropTypes.shape({
+        keys: PropTypes.shape({
+          values: PropTypes.array.isRequired,
+          rowKey: PropTypes.string.isRequired
         }).isRequired
       })
     ]),
@@ -46,6 +48,7 @@ const Grid = React.createClass({
     onViewportKeyup: PropTypes.func,
     onViewportDragStart: PropTypes.func.isRequired,
     onViewportDragEnd: PropTypes.func.isRequired,
+    onViewportClick: PropTypes.func.isRequired,
     onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
@@ -53,34 +56,73 @@ const Grid = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
+    scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
     overScan: PropTypes.object
-  },
+  };
 
-  mixins: [
-    GridScrollMixin,
-    DOMMetrics.MetricsComputatorMixin
-  ],
+  static defaultProps = {
+    rowHeight: 35,
+    minHeight: 350,
+    tabIndex: 0
+  };
 
-  getDefaultProps() {
-    return {
-      rowHeight: 35,
-      minHeight: 350
-    };
-  },
-
-  getStyle: function(): { overflow: string; outline: number; position: string; minHeight: number } {
+  getStyle = (): { overflow: string; outline: number; position: string; minHeight: number } => {
     return {
       overflow: 'hidden',
       outline: 0,
       position: 'relative',
       minHeight: this.props.minHeight
     };
-  },
+  };
+
+  _onScroll = () => {
+    if (this._scrollLeft !== undefined) {
+      this.header.setScrollLeft(this._scrollLeft);
+      if (this.viewport) {
+        this.viewport.setScrollLeft(this._scrollLeft);
+      }
+    }
+  };
+
+  onScroll = (props) => {
+    if (this._scrollLeft !== props.scrollLeft) {
+      this._scrollLeft = props.scrollLeft;
+      this._onScroll();
+    }
+  };
+
+  onHeaderScroll = (e) => {
+    let scrollLeft = e.target.scrollLeft;
+    if (this._scrollLeft !== scrollLeft) {
+      this._scrollLeft = scrollLeft;
+      this.header.setScrollLeft(scrollLeft);
+      let canvas = ReactDOM.findDOMNode(this.viewport.canvas);
+      canvas.scrollLeft = scrollLeft;
+      this.viewport.canvas.setScrollLeft(scrollLeft);
+    }
+  };
+
+  componentDidMount() {
+    this._scrollLeft = this.viewport ? this.viewport.getScroll().scrollLeft : 0;
+    this._onScroll();
+  }
+
+  componentDidUpdate() {
+    this._onScroll();
+  }
+
+  componentWillMount() {
+    this._scrollLeft = undefined;
+  }
+
+  componentWillUnmount() {
+    this._scrollLeft = undefined;
+  }
 
   render(): ?ReactElement {
     let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
@@ -106,7 +148,15 @@ const Grid = React.createClass({
           cellMetaData={this.props.cellMetaData}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
-            <div ref={(node) => { this.viewPortContainer = node; } } tabIndex="0" onKeyDown={this.props.onViewportKeydown} onKeyUp={this.props.onViewportKeyup} onDoubleClick={this.props.onViewportDoubleClick}   onDragStart={this.props.onViewportDragStart} onDragEnd={this.props.onViewportDragEnd}>
+            <div
+              ref={(node) => { this.viewPortContainer = node; } }
+              tabIndex={this.props.tabIndex}
+              onKeyDown={this.props.onViewportKeydown}
+              onKeyUp={this.props.onViewportKeyup}
+              onClick={this.props.onViewportClick}
+              onDoubleClick={this.props.onViewportDoubleClick}
+              onDragStart={this.props.onViewportDragStart}
+              onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
                   ref={(node) => { this.viewport = node; } }
                   rowKey={this.props.rowKey}
@@ -125,6 +175,7 @@ const Grid = React.createClass({
                   rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
+                  scrollToRowIndex={this.props.scrollToRowIndex}
                   contextMenu={this.props.contextMenu}
                   rowSelection={this.props.rowSelection}
                   getSubRowDetails={this.props.getSubRowDetails}
@@ -140,6 +191,6 @@ const Grid = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Grid;

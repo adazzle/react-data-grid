@@ -3,28 +3,29 @@ const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const Immutable = require('immutable');
 
-const Example = React.createClass({
-  getInitialState() {
+class Example extends React.Component {
+  constructor(props, context) {
+    super(props, context);
     this._columns = this.createColumns();
     this._rows = this.createRows();
 
-    return { rows: new Immutable.fromJS(this._rows) };
-  },
+    this.state = { rows: new Immutable.fromJS(this._rows) };
+  }
 
-  getRandomDate(start, end) {
+  getRandomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
-  },
+  };
 
-  createColumns() {
+  createColumns = () => {
     let cols = [];
     for (let j = 0; j < 50; j++) {
       cols.push({ key: 'col' + j, name: 'col' + j, width: 150 });
     }
 
     return cols;
-  },
+  };
 
-  createRows() {
+  createRows = () => {
     let rows = [];
     for (let rowIdx = 1; rowIdx < 300; rowIdx++) {
       let row = {};
@@ -33,11 +34,11 @@ const Example = React.createClass({
     }
 
     return rows;
-  },
+  };
 
-  rowGetter(rowIdx) {
+  rowGetter = (rowIdx) => {
     return this.state.rows.get(rowIdx);
-  },
+  };
 
   render() {
     return  (
@@ -48,7 +49,7 @@ const Example = React.createClass({
         rowsCount={this.state.rows.size}
         minHeight={1200} />);
   }
-});
+}
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,

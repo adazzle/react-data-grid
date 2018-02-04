@@ -9,6 +9,8 @@ const {
   Draggable: { Container: DraggableContainer }
  } = require('react-data-grid-addons');
 
+import PropTypes from 'prop-types';
+
 faker.locale = 'en_GB';
 
 let _rows = [];
@@ -26,12 +28,12 @@ for (let rowIdx = 1; rowIdx < 100; rowIdx++) {
   _rows.push(row);
 }
 
-const CustomToolbar = React.createClass({
-  propTypes: {
-    groupBy: React.PropTypes.array.isRequired,
-    onColumnGroupAdded: React.PropTypes.func.isRequired,
-    onColumnGroupDeleted: React.PropTypes.func.isRequired
-  },
+class CustomToolbar extends React.Component {
+  static propTypes = {
+    groupBy: PropTypes.array.isRequired,
+    onColumnGroupAdded: PropTypes.func.isRequired,
+    onColumnGroupDeleted: PropTypes.func.isRequired
+  };
 
   render() {
     return (
@@ -39,51 +41,49 @@ const CustomToolbar = React.createClass({
         <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>
       </Toolbar>);
   }
-});
+}
 
-const Example = React.createClass({
-  getInitialState() {
-    return {
-      rows: new Immutable.fromJS(_rows),
-      cols: new Immutable.List(_cols),
-      groupBy: [],
-      expandedRows: {}
-    };
-  },
+class Example extends React.Component {
+  state = {
+    rows: new Immutable.fromJS(_rows),
+    cols: new Immutable.List(_cols),
+    groupBy: [],
+    expandedRows: {}
+  };
 
-  getRows() {
+  getRows = () => {
     let rows = Selectors.getRows(this.state);
     return rows;
-  },
+  };
 
-  getRowAt(index) {
+  getRowAt = (index) => {
     let rows = this.getRows();
     return rows.get(index);
-  },
+  };
 
-  getSize() {
+  getSize = () => {
     return this.getRows().size;
-  },
+  };
 
-  onColumnGroupAdded(colName) {
+  onColumnGroupAdded = (colName) => {
     let columnGroups = this.state.groupBy.slice(0);
     if (columnGroups.indexOf(colName) === -1) {
       columnGroups.push(colName);
     }
     this.setState({ groupBy: columnGroups });
-  },
+  };
 
-  onColumnGroupDeleted(name) {
+  onColumnGroupDeleted = (name) => {
     let columnGroups = this.state.groupBy.filter(function(g) {return g !== name;});
     this.setState({ groupBy: columnGroups });
-  },
+  };
 
-  onRowExpandToggle(args) {
+  onRowExpandToggle = (args) => {
     let expandedRows = Object.assign({}, this.state.expandedRows);
     expandedRows[args.columnGroupName] = Object.assign({}, expandedRows[args.columnGroupName]);
     expandedRows[args.columnGroupName][args.name] = { isExpanded: args.shouldExpand };
     this.setState({expandedRows: expandedRows});
-  },
+  };
 
   render() {
     return (
@@ -103,7 +103,7 @@ const Example = React.createClass({
       </DraggableContainer>
     );
   }
-});
+}
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,

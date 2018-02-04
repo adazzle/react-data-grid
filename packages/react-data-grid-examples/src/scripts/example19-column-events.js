@@ -2,11 +2,13 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const { Editors: { DropDownEditor } } = require('react-data-grid-addons');
+import update from 'immutability-helper';
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
-const Example = React.createClass({
-  getInitialState: function() {
+class Example extends React.Component {
+  constructor(props) {
+    super(props);
     this._columns = [
       {
         key: 'id',
@@ -55,39 +57,39 @@ const Example = React.createClass({
       });
     }
 
-    return { rows };
-  },
+    this.state = { rows };
+  }
 
-  rowGetter: function(rowIdx) {
+  rowGetter = (rowIdx) => {
     return this.state.rows[rowIdx];
-  },
+  };
 
-  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+  handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
     let rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
       let rowToUpdate = rows[i];
-      const updatedRow = React.addons.update(rowToUpdate, {$merge: updated});
+      const updatedRow = update(rowToUpdate, {$merge: updated});
       rows[i] = updatedRow;
     }
 
     this.setState({rows: rows});
-  },
+  };
 
-  cellEditWithOneClick: function(ev, { idx, rowIdx }) {
+  cellEditWithOneClick = (ev, { idx, rowIdx }) => {
     this.grid.openCellEditor(rowIdx, idx);
-  },
+  };
 
-  getColumns: function() {
+  getColumns = () => {
     let clonedColumns = this._columns.slice();
     clonedColumns[3].events = {
       onClick: this.cellEditWithOneClick
     };
 
     return clonedColumns;
-  },
+  };
 
-  render: function() {
+  render() {
     return (
       <ReactDataGrid
         ref={ (node) => this.grid = node }
@@ -99,7 +101,7 @@ const Example = React.createClass({
         minHeight={500} />
     );
   }
-});
+}
 
 const exampleDescription = (
   <div>

@@ -1,29 +1,33 @@
 const React                = require('react');
 const Canvas               = require('./Canvas');
-const ViewportScroll       = require('./ViewportScrollMixin');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
-const PropTypes            = React.PropTypes;
+import PropTypes from 'prop-types';
+import ColumnUtils from './ColumnUtils';
+import {
+  getGridState,
+  getNextScrollState
+} from './utils/viewportUtils';
 
-const Viewport = React.createClass({
-  mixins: [ViewportScroll],
+class Viewport extends React.Component {
+  static displayName = 'Viewport';
 
-  propTypes: {
+  static propTypes = {
     rowOffsetHeight: PropTypes.number.isRequired,
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     columnMetrics: PropTypes.object.isRequired,
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     selectedRows: PropTypes.array,
-    rowSelection: React.PropTypes.oneOfType([
-      React.PropTypes.shape({
-        indexes: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+    rowSelection: PropTypes.oneOfType([
+      PropTypes.shape({
+        indexes: PropTypes.arrayOf(PropTypes.number).isRequired
       }),
-      React.PropTypes.shape({
-        isSelectedKey: React.PropTypes.string.isRequired
+      PropTypes.shape({
+        isSelectedKey: PropTypes.string.isRequired
       }),
-      React.PropTypes.shape({
-        keys: React.PropTypes.shape({
-          values: React.PropTypes.array.isRequired,
-          rowKey: React.PropTypes.string.isRequired
+      PropTypes.shape({
+        keys: PropTypes.shape({
+          values: PropTypes.array.isRequired,
+          rowKey: PropTypes.string.isRequired
         }).isRequired
       })
     ]),
@@ -37,12 +41,19 @@ const Viewport = React.createClass({
     cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
+    scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
     rowGroupRenderer: PropTypes.func
-  },
+  };
 
-  onScroll(scroll: {scrollTop: number; scrollLeft: number}) {
+  static defaultProps = {
+    rowHeight: 30
+  };
+
+  state = getGridState(this.props);
+
+  onScroll = (scroll: {scrollTop: number; scrollLeft: number}) => {
     this.updateScroll(
       scroll.scrollTop, scroll.scrollLeft,
       this.state.height,
@@ -53,15 +64,129 @@ const Viewport = React.createClass({
     if (this.props.onScroll) {
       this.props.onScroll({scrollTop: scroll.scrollTop, scrollLeft: scroll.scrollLeft});
     }
-  },
+  };
 
-  getScroll(): {scrollLeft: number; scrollTop: number} {
+  getScroll = (): {scrollLeft: number; scrollTop: number} => {
     return this.canvas.getScroll();
-  },
+  };
 
-  setScrollLeft(scrollLeft: number) {
+  setScrollLeft = (scrollLeft: number) => {
     this.canvas.setScrollLeft(scrollLeft);
-  },
+  };
+
+  getDOMNodeOffsetWidth = () => {
+    return this.viewport ? this.viewport.offsetWidth : 0;
+  };
+
+  clearScrollTimer = () => {
+    if (this.resetScrollStateTimeoutId) {
+      clearTimeout(this.resetScrollStateTimeoutId);
+    }
+  };
+
+  resetScrollStateAfterDelay = () => {
+    this.clearScrollTimer();
+    this.resetScrollStateTimeoutId = setTimeout(
+      this.resetScrollStateAfterDelayCallback,
+      500
+    );
+  };
+
+  resetScrollStateAfterDelayCallback = () => {
+    this.resetScrollStateTimeoutId = null;
+    this.setState({
+      isScrolling: false
+    });
+  };
+
+  updateScroll = (
+    scrollTop: number,
+    scrollLeft: number,
+    height: number,
+    rowHeight: number,
+    length: number,
+    width,
+  ) => {
+    this.resetScrollStateAfterDelay();
+    const nextScrollState = getNextScrollState(this.props, this.getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width);
+
+    this.setState(nextScrollState);
+  };
+
+  metricsUpdated = () => {
+    let height = this.viewportHeight();
+    let width = this.viewportWidth();
+    if (height) {
+      this.updateScroll(
+        this.state.scrollTop,
+        this.state.scrollLeft,
+        height,
+        this.props.rowHeight,
+        this.props.rowsCount,
+        width
+      );
+    }
+  };
+
+  viewportHeight = (): number => {
+    return this.viewport ? this.viewport.offsetHeight : 0;
+  };
+
+  viewportWidth = (): number => {
+    return this.viewport ? this.viewport.offsetWidth : 0;
+  };
+
+  componentWillReceiveProps(
+    nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number },
+  ) {
+    if (this.props.rowHeight !== nextProps.rowHeight ||
+      this.props.minHeight !== nextProps.minHeight) {
+      const newState = getGridState(nextProps);
+      this.updateScroll(
+        newState.scrollTop,
+        newState.scrollLeft,
+        newState.height,
+        nextProps.rowHeight,
+        nextProps.rowsCount
+      );
+    } else if (ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
+      this.setState(getGridState(nextProps));
+    } else if (this.props.rowsCount !== nextProps.rowsCount) {
+      this.updateScroll(
+        this.state.scrollTop,
+        this.state.scrollLeft,
+        this.state.height,
+        nextProps.rowHeight,
+        nextProps.rowsCount
+      );
+      // Added to fix the hiding of the bottom scrollbar when showing the filters.
+    } else if (this.props.rowOffsetHeight !== nextProps.rowOffsetHeight) {
+      // The value of height can be positive or negative and will be added to the current height to cater for changes in the header height (due to the filer)
+      let height = this.props.rowOffsetHeight - nextProps.rowOffsetHeight;
+
+      this.updateScroll(
+        this.state.scrollTop,
+        this.state.scrollLeft,
+        this.state.height + height,
+        nextProps.rowHeight,
+        nextProps.rowsCount
+      );
+    }
+  }
+
+  componentDidMount() {
+    if (window.addEventListener) {
+      window.addEventListener('resize', this.metricsUpdated);
+    } else {
+      window.attachEvent('resize', this.metricsUpdated);
+    }
+    this.metricsUpdated();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.metricsUpdated);
+    this.clearScrollTimer();
+  }
 
   render() {
     let style = {
@@ -76,7 +201,8 @@ const Viewport = React.createClass({
     return (
       <div
         className="react-grid-Viewport"
-        style={style}>
+        style={style}
+        ref={(node) => { this.viewport = node; }}>
         <Canvas
           ref={(node) => this.canvas = node}
           rowKey={this.props.rowKey}
@@ -102,6 +228,7 @@ const Viewport = React.createClass({
           onScroll={this.onScroll}
           onRows={this.props.onRows}
           rowScrollTimeout={this.props.rowScrollTimeout}
+          scrollToRowIndex={this.props.scrollToRowIndex}
           contextMenu={this.props.contextMenu}
           rowSelection={this.props.rowSelection}
           getSubRowDetails={this.props.getSubRowDetails}
@@ -111,6 +238,6 @@ const Viewport = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Viewport;

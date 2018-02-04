@@ -2,30 +2,35 @@ const React         = require('react');
 const ReactDOM = require('react-dom');
 const rewire        = require('rewire');
 const Grid          = rewire('../Grid');
-const TestUtils     = require('react-addons-test-utils');
+const TestUtils     = require('react-dom/test-utils');
 const helpers       = require('../helpers/test/GridPropHelpers');
 const rewireModule = require('../../../../test/rewireModule');
 import { shallow } from 'enzyme';
 import { ContextMenu } from 'react-contextmenu';
 
 let testElement;
-let HeaderStub = React.createClass({
-  setScrollLeft() {
-  },
+
+class HeaderStub extends React.Component {
+  setScrollLeft = () => {
+  };
+
   render() {
     return (<div></div>);
   }
-});
-let ViewportStub = React.createClass({
-  getScroll() {
+}
+
+class ViewportStub extends React.Component {
+  getScroll = () => {
     return {scrollLeft: 0};
-  },
-  setScrollLeft() {
-  },
+  };
+
+  setScrollLeft = () => {
+  };
+
   render() {
     return (<div></div>);
   }
-});
+}
 
 describe('Base Grid Tests', () => {
   let testProps = {
@@ -100,11 +105,11 @@ describe('Base Grid Tests', () => {
 });
 
 describe('Empty Grid Tests', () => {
-  let EmptyRowsView = React.createClass({
-    render: function() {
+  class EmptyRowsView extends React.Component {
+    render() {
       return (<div>Nothing to show</div>);
     }
-  });
+  }
 
   let testProps = {
     columnMetrics: {
@@ -168,6 +173,7 @@ describe('Rendering Grid component', () => {
       onRows: jasmine.createSpy(),
       sortColumn: 'sortColumn',
       sortDirection: 'ASC',
+      tabIndex: -1,
       rowOffsetHeight: 100,
       onViewportKeydown: jasmine.createSpy(),
       onViewportKeyup: jasmine.createSpy(),
@@ -245,5 +251,6 @@ describe('Rendering Grid component', () => {
     expect(draggableDiv.props().getValidFilterValues).toBeUndefined();
     expect(draggableDiv.props().rowGroupRenderer).toBeUndefined();
     expect(draggableDiv.props().overScan).toBeUndefined();
+    expect(draggableDiv.props().tabIndex).toBeUndefined();
   });
 });
