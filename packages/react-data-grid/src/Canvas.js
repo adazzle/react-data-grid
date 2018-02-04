@@ -303,7 +303,7 @@ class Canvas extends React.Component {
 
   render() {
     const { displayStart, displayEnd } = this.state;
-    const { rowHeight, rowsCount } = this.props;
+    const { columns, rowHeight, rowsCount } = this.props;
 
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
@@ -354,7 +354,7 @@ class Canvas extends React.Component {
         style={style}
         onScroll={this.onScroll}
         className='react-grid-Canvas'>
-        <SelectionMask/>
+        <SelectionMask columns={columns} height={rowHeight}/>
         <RowsContainer
           width={this.props.width}
           rows={rows}

@@ -3,31 +3,34 @@ import { Motion, spring } from 'react-motion';
 import { connect } from '../stateManagement/state/RxState';
 import initialState from '../stateManagement/state/initialState';
 
-/* MapStateToProps */
 
-const Mask = ({ selectedPosition }) => {
-  const { idx, rowIdx } = selectedPosition;
-  const [width, height] = [150, 35];
-  const setStyle = (x, y) => {
-    return {
-      position: 'absolute',
-      height,
-      width,
-      zIndex: 1000,
-      transform: `translate(${x}px, ${y}px)`
-    };
+const setMaskStyle = (left, top, width, height) => {
+  return {
+    position: 'absolute',
+    height,
+    width,
+    zIndex: 1000,
+    transform: `translate(${left}px, ${top}px)`
   };
+};
+
+const Mask = ({ left, top, width, height }) => {
   return (
-    <Motion style={{ x: spring(idx * width), y: spring(rowIdx * height) }}>
-      {({ x, y }) => <div style={setStyle(x, y)} className="rdg-selected" />}
+    <Motion style={{ x: spring(left), y: spring(top), w: spring(width), h: spring(height) }}>
+      {({ x, y, w, h }) => <div style={setMaskStyle(x, y, w, h)} className="rdg-selected" />}
     </Motion>
   );
 };
 
-const mapStateToProps = ({ cell } = initialState) => {
-  const { selectedPosition } = cell;
+/* MapStateToProps */
+const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
+
+const mapStateToProps = ({ cell } = initialState, {columns, height}) => {
+  const { selectedPosition: {idx, rowIdx} } = cell;
   return {
-    selectedPosition
+    width: columns[idx].width,
+    left: columns[idx].left,
+    top: getRowTop(rowIdx, height)
   };
 };
 

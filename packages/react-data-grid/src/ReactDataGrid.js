@@ -377,7 +377,7 @@ class GridContainer extends React.Component {
 
   onPressArrowDown = (e) => {
     e.preventDefault();
-    window.requestAnimationFrame(this.props.moveDown);
+    this.props.moveDown();
   };
 
   onPressArrowLeft = (e) => {
