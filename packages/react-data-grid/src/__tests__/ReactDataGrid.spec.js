@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import ReactDataGrid from '../ReactDataGrid';
 import { shallow } from 'enzyme';
 import * as helpers from '../helpers/test/GridPropHelpers';
+import {DEFINE_SORT} from '../cells/headerCells/SortableHeaderCell';
 
 function shallowRenderGrid({
   enableCellAutoFocus = undefined,
@@ -596,6 +597,45 @@ describe('using keyboard to navigate through the grid by pressing Tab or Shift+T
       gridWrapper.prop('onViewportKeyup')({ key: 'Enter', keyCode: 13, which: 13 });
       expect(enzymeWrapper.instance().isKeyDown(13)).toBeFalsy();
     });
+  });
+});
+describe('When multipleColumnsSort is enabled', () => {
+  const testProps = {
+    columns: helpers.columns,
+    rowsCount: 0,
+    rowGetter: function() {},
+    minHeight: 300,
+    rowHeight: 40,
+    multipleColumnsSort: true,
+    onGridMultipleColumnsSort: jasmine.createSpy(),
+    sort: [{column: 'title', direction: DEFINE_SORT.ASC}]
+  };
+  it('initializes sort upon construction', () => {
+    const wrapper = shallow(<ReactDataGrid {...testProps} />);
+    expect(wrapper.instance().state.sort).toEqual(testProps.sort);
+  });
+  it('calls onGridMultipleColumnsSort when sorting', () => {
+    const wrapper = shallow(<ReactDataGrid {...testProps} />);
+    wrapper.instance().handleSort('title', DEFINE_SORT.DESC);
+    const expectedSort = [{column: 'title', direction: DEFINE_SORT.DESC}];
+    expect(wrapper.instance().state.sort).toEqual(expectedSort);
+    expect(testProps.onGridMultipleColumnsSort).toHaveBeenCalledWith(expectedSort, 'title', DEFINE_SORT.DESC);
+  });
+  it('adds a new sort column', () => {
+    const wrapper = shallow(<ReactDataGrid {...testProps} />);
+    wrapper.instance().handleSort('count', DEFINE_SORT.ASC);
+    const expectedSort = [{column: 'title', direction: DEFINE_SORT.ASC}, {column: 'count', direction: DEFINE_SORT.ASC}];
+    expect(wrapper.instance().state.sort).toEqual(expectedSort);
+  });
+  it('removes a sort column', () => {
+    const wrapper = shallow(<ReactDataGrid {...testProps} />);
+    wrapper.instance().handleSort('title', DEFINE_SORT.NONE);
+    expect(wrapper.instance().state.sort).toEqual([]);
+  });
+  it('adds first sort column correctly', () => {
+    const wrapper = shallow(<ReactDataGrid {...testProps} sort={undefined} />);
+    wrapper.instance().handleSort('count', DEFINE_SORT.DESC);
+    expect(wrapper.instance().state.sort).toEqual([{column: 'count', direction: DEFINE_SORT.DESC}]);
   });
 });
 

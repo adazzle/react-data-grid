@@ -709,20 +709,16 @@ class ReactDataGrid extends React.Component {
         sort = sort.filter((item) => item.column !== columnKey);
       } else {
         const sortData = {column: columnKey, direction};
-        let found = false;
-        for (let i = 0; i < sort.length; ++i) {
-          if (sort[i].column === columnKey) {
-            // Overwrite the object, because shallowEqual is used for sort array comparison in shouldComponentUpdate
-            sort[i] = sortData;
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
+        const columnIndex = sort.map((s, index) => {
+          if (s.column === columnKey) return index;
+        }).filter(isFinite)[0];
+        if (typeof columnIndex === 'number') {
+          // Overwrite the object, because shallowEqual is used for sort array comparison in shouldComponentUpdate
+          sort[columnIndex] = sortData;
+        } else {
           sort.push(sortData);
         }
       }
-
       stateChange.sort = sort;
     }
 
