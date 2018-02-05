@@ -475,7 +475,7 @@ describe('Cell Tests', () => {
       });
 
       it('should not add any extra keys', () => {
-        expect(Object.keys(cellEvents).length).toBe(5);
+        expect(Object.keys(cellEvents).length).toBe(6);
       });
 
       it('should call onKeyPress column event', () => {
@@ -669,7 +669,7 @@ describe('Cell Tests', () => {
     it('passes tabIndex if not available from props, because it is set as a default', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
       const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.props().tabIndex).toBe(-1);
+      expect(cellDiv.props().tabIndex).toBe(0);
     });
     it('passes value property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
