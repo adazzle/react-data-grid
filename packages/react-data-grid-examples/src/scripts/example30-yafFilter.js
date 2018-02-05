@@ -86,12 +86,9 @@ class Example extends React.Component {
   };
 
   getValidFilterValues = (columnId) => {
-    console.log("teste");
     const rows = Data.Selectors.getRows(this.state);
     const values = rows.map(r => r[columnId]);
-    console.log(values);
     return values.filter((item, i, a) => {
-      console.log(i === a.indexOf(item));
       return i === a.indexOf(item);
     });
   };
@@ -137,12 +134,8 @@ class Example extends React.Component {
   }
 }
 
-const exampleDescription = (<p>I will create a description</p>);
-
 module.exports = exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Yet Another Filter Filter',
-  exampleDescription,
-  examplePath: './scripts/example30-yafFilter.js',
-  examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/8/'
+  examplePath: './scripts/example30-yafFilter.js'
 });
