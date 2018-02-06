@@ -1,35 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SimpleRowsContainer = (props) => {
-  return (
-    <div key="rows-container">
-      {props.rows}
-    </div>
-  );
-};
+export const DEFAULT_CONTEXT_MENU_ID = 'rgdContextMenu';
+
+const SimpleRowsContainer = (props) => <div key="rows-container">{props.rows}</div>;
 
 SimpleRowsContainer.propTypes = {
   width: PropTypes.number,
   rows: PropTypes.array
 };
 
+export const getNewContextMenuProps = ({ contextMenu, rowIdx, idx }) => ({
+  rowIdx, idx, id: contextMenu.props.id || DEFAULT_CONTEXT_MENU_ID
+});
+
 class RowsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.plugins = props.window ? props.window.ReactDataGridPlugins : window.ReactDataGridPlugins;
-    this.hasContextMenu = this.hasContextMenu.bind(this);
-    this.renderRowsWithContextMenu = this.renderRowsWithContextMenu.bind(this);
-    this.getContextMenuContainer = this.getContextMenuContainer.bind(this);
-    this.state = {ContextMenuContainer: this.getContextMenuContainer(props)};
   }
 
-  getContextMenuContainer() {
-    if (this.hasContextMenu()) {
-      if (!this.plugins) {
-        throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
-      }
-      return this.plugins.Menu.ContextMenuLayer('reactDataGridContextMenu')(SimpleRowsContainer);
+  validatePlugin() {
+    if (!this.plugins) {
+      throw new Error('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
     }
   }
 
@@ -38,15 +31,27 @@ class RowsContainer extends React.Component {
   }
 
   renderRowsWithContextMenu() {
-    let ContextMenuRowsContainer = this.state.ContextMenuContainer;
-    let newProps = {rowIdx: this.props.rowIdx, idx: this.props.idx};
-    let contextMenu = React.cloneElement(this.props.contextMenu, newProps);
+    const { ContextMenuTrigger } = this.plugins.Menu;
+    const newProps = getNewContextMenuProps(this.props);
+    const contextMenu = React.cloneElement(this.props.contextMenu, newProps);
     // Initialise the context menu if it is available
-    return (<div><ContextMenuRowsContainer {...this.props} />{contextMenu}</div>);
+    return (
+      <div>
+        <ContextMenuTrigger id={newProps.id}>
+          <SimpleRowsContainer {...this.props} />
+        </ContextMenuTrigger>
+        {contextMenu}
+      </div>
+    );
   }
 
   render() {
-    return this.hasContextMenu() ? this.renderRowsWithContextMenu() : <SimpleRowsContainer {...this.props} />;
+    if (this.hasContextMenu()) {
+      this.validatePlugin();
+      return this.renderRowsWithContextMenu();
+    }
+
+    return <SimpleRowsContainer {...this.props} />;
   }
 }
 
