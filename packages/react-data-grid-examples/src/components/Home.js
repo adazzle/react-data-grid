@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import ExampleScripts from '../scripts';
+import ExampleList from './ExampleList';
+
 function Home() {
   return (
     <div>
@@ -55,6 +58,7 @@ function Home() {
             <div className="grid-examples">
               <h3>Check out these examples</h3>
               <div id="grid-examples-div">
+                <ExampleList links={ExampleScripts} className="nav bs-docs-sidenav" />
               </div>
             </div>
           </div>
