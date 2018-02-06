@@ -7,8 +7,7 @@ import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
-import InteractionMasks from './masks/InteractionMasks';
-import { CellEventsProvider } from './cellEvents/Provider';
+import MasksContainer from './connectedComponents/MasksContainer';
 
 class Canvas extends React.Component {
   static displayName = 'Canvas';
@@ -340,19 +339,17 @@ class Canvas extends React.Component {
     };
 
     return (
-      <CellEventsProvider>
         <div
           ref={(div) => { this.canvas = div; }}
           style={style}
           onScroll={this.onScroll}
           className='react-grid-Canvas'>
-          <InteractionMasks width={this.props.totalWidth} height={height} rowHeight={rowHeight} onCellClick={cellMetaData.onCellClick} columns={columns} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas}/>
+          <MasksContainer width={this.props.totalWidth} height={height} rowHeight={rowHeight} onCellClick={cellMetaData.onCellClick} columns={columns} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas}/>
           <RowsContainer
             width={width}
             rows={rows}
             contextMenu={this.props.contextMenu}/>
         </div>
-      </CellEventsProvider>
     );
   }
 }

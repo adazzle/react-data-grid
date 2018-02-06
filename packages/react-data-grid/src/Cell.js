@@ -11,7 +11,6 @@ const createObjectWithProperties = require('./createObjectWithProperties');
 import CellAction from './CellAction';
 import CellExpand from './CellExpand';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
-import {withCellEvents} from './cellEvents/withCellEvents';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
@@ -361,4 +360,4 @@ class Cell extends React.Component {
   }
 }
 
-module.exports = withCellEvents(Cell);
+export default Cell;

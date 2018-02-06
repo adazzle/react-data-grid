@@ -1,4 +1,4 @@
 export default {
-  onClick: 'onClick',
+  onCellClick: 'onCellClick',
   editCell: 'editCell'
 };

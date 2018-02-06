@@ -1,15 +1,15 @@
-export class EventDispatcher {
+export default class EventDispatcher {
   constructor() {
     this.listeners = new Map();
   }
-  subscribe(label, callback) {
+  subscribe = (label, callback) => {
     this.listeners.has(label) || this.listeners.set(label, []);
     this.listeners.get(label).push(callback);
   }
-  unsubscribeAll() {
+  unsubscribe = () => {
     this.listeners.clear();
   }
-  dispatch(label, ...args) {
+  dispatch = (label, ...args) => {
     let listeners = this.listeners.get(label);
 
     if (listeners && listeners.length) {

@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { cellEventListener } from '../cellEvents/CellEventListener';
 import SelectionMask from './SelectionMask';
-import CellEventTypes from '../cellEvents/CellEventTypes';
-import { isCtrlKeyHeldDown } from '../utils/keyboardUtils';
+import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 
 class InteractionMasks extends React.Component {
   static propTypes = {
@@ -19,20 +17,6 @@ class InteractionMasks extends React.Component {
     rowHeight: PropTypes.number,
     editCell: PropTypes.func
   };
-  state = {
-    selectedPosition: {
-      idx: -1,
-      rowIdx: -1
-    }
-  };
-
-  componentDidMount() {
-    const { cellEvents } = this.props;
-    cellEvents.subscribe(CellEventTypes.onClick, cell => {
-      this.selectCell(cell);
-      this.node.focus();
-    });
-  }
 
   onKeyDown = e => {
     e.preventDefault();
@@ -45,11 +29,15 @@ class InteractionMasks extends React.Component {
       Enter: this.editCell
     };
     const action = keyPressMaps[e.key];
-    action && action(e);
+    if (action) {
+      action(e);
+    } else if (isKeyPrintable(e.keyCode)) {
+      this.editCell(e.keyCode);
+    }
   };
 
   editCell = (e) => {
-    this.props.editCell(this.state.selectedPosition, e.keyCode);
+    this.props.editCell(this.props.selectedPosition, e.keyCode);
   };
 
   onPressTab = e => {
@@ -61,25 +49,25 @@ class InteractionMasks extends React.Component {
   };
 
   moveUp = () => {
-    const current = this.state.selectedPosition;
+    const current = this.props.selectedPosition;
     const next = { ...current, ...{ rowIdx: current.rowIdx - 1 } };
     this.selectCell(next);
   };
 
   moveDown = () => {
-    const current = this.state.selectedPosition;
+    const current = this.props.selectedPosition;
     const next = { ...current, ...{ rowIdx: current.rowIdx + 1 } };
     this.selectCell(next);
   };
 
   moveLeft = () => {
-    const current = this.state.selectedPosition;
+    const current = this.props.selectedPosition;
     const next = { ...current, ...{ idx: current.idx - 1 } };
     this.selectCell(next);
   };
 
   moveRight = () => {
-    const current = this.state.selectedPosition;
+    const current = this.props.selectedPosition;
     const next = { ...current, ...{ idx: current.idx + 1 } };
     this.selectCell(next);
   };
@@ -89,7 +77,7 @@ class InteractionMasks extends React.Component {
   };
 
   isGridSelected = () => {
-    return this.isCellWithinBounds(this.state.selectedPosition);
+    return this.isCellWithinBounds(this.props.selectedPosition);
   };
 
   selectCell = cell => {
@@ -110,7 +98,6 @@ class InteractionMasks extends React.Component {
         {this.isGridSelected() && (
           <SelectionMask
             {...this.props}
-            selectedPosition={this.state.selectedPosition}
           />
         )}
       </div>
@@ -118,4 +105,4 @@ class InteractionMasks extends React.Component {
   }
 }
 
-export default cellEventListener(InteractionMasks);
+export default InteractionMasks;
