@@ -137,7 +137,8 @@ class Cell extends React.Component {
   getFormatter = () => {
     let col = this.props.column;
     if (this.isEditorEnabled()) {
-      return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} value={this.props.value} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height} />;
+      const {rowIdx, idx, cellMetaData, height, initialKeyCode, value} = this.props;
+      return <EditorContainer rowData={this.getRowData()} rowIdx={rowIdx} value={value} idx={idx} cellMetaData={cellMetaData} column={col} height={height} initialKeyCode={initialKeyCode}/>;
     }
 
     return this.props.column.formatter;
