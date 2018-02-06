@@ -7,7 +7,8 @@ import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
-import SelectionMask from './connectedComponents/SelectionMask';
+import InteractionMasks from './masks/InteractionMasks';
+import { CellEventsProvider } from './cellEvents/Provider';
 
 class Canvas extends React.Component {
   static displayName = 'Canvas';
@@ -293,7 +294,7 @@ class Canvas extends React.Component {
 
   render() {
     const { displayStart, displayEnd } = this.state;
-    const { columns, rowHeight, rowsCount } = this.props;
+    const { cellMetaData, columns, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height } = this.props;
 
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
@@ -305,13 +306,13 @@ class Canvas extends React.Component {
         row: r.row,
         height: rowHeight,
         onMouseOver: this.onMouseOver,
-        columns: this.props.columns,
+        columns: columns,
         isSelected: this.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
-        expandedRows: this.props.expandedRows,
-        cellMetaData: this.props.cellMetaData,
+        expandedRows,
+        cellMetaData,
         subRowDetails: r.subRowDetails,
-        colVisibleStart: this.props.colVisibleStart,
-        colVisibleEnd: this.props.colVisibleEnd,
+        colVisibleStart,
+        colVisibleEnd,
         colDisplayStart: this.props.colDisplayStart,
         colDisplayEnd: this.props.colDisplayEnd,
         isScrolling: this.props.isScrolling
@@ -335,21 +336,23 @@ class Canvas extends React.Component {
       overflowX: 'auto',
       overflowY: 'scroll',
       width: this.props.totalWidth,
-      height: this.props.height
+      height
     };
 
     return (
-      <div
-        ref={(div) => { this.canvas = div; }}
-        style={style}
-        onScroll={this.onScroll}
-        className='react-grid-Canvas'>
-        <SelectionMask columns={columns} height={rowHeight} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas}/>
-        <RowsContainer
-          width={this.props.width}
-          rows={rows}
-          contextMenu={this.props.contextMenu}/>
-      </div>
+      <CellEventsProvider>
+        <div
+          ref={(div) => { this.canvas = div; }}
+          style={style}
+          onScroll={this.onScroll}
+          className='react-grid-Canvas'>
+          <InteractionMasks width={this.props.totalWidth} height={height} rowHeight={rowHeight} onCellClick={cellMetaData.onCellClick} columns={columns} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas}/>
+          <RowsContainer
+            width={width}
+            rows={rows}
+            contextMenu={this.props.contextMenu}/>
+        </div>
+      </CellEventsProvider>
     );
   }
 }

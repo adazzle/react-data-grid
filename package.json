@@ -32,7 +32,6 @@
     "es5-shim": "^4.0.3",
     "fbjs": "^0.6.1",
     "fs-extra": "^0.30.0",
-    "object-assign": "^2.0.0",
     "prop-types": "^15.5.10",
     "react-contextmenu": "1.6.2",
     "react-dnd": "^2.1.4",
@@ -41,8 +40,7 @@
     "react-motion": "^0.5.2",
     "react-select": "^1.0.0-beta14",
     "reselect": "^2.5.1",
-    "ron-react-autocomplete": "^4.0.5",
-    "rxjs": "^5.5.6"
+    "ron-react-autocomplete": "^4.0.5"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",

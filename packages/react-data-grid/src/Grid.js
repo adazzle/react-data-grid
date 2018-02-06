@@ -12,7 +12,6 @@ class Grid extends React.Component {
   static propTypes = {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-    tabIndex: PropTypes.number,
     columnMetrics: PropTypes.object,
     minHeight: PropTypes.number,
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -64,8 +63,7 @@ class Grid extends React.Component {
 
   static defaultProps = {
     rowHeight: 35,
-    minHeight: 350,
-    tabIndex: 0
+    minHeight: 350
   };
 
   getStyle = (): { overflow: string; outline: number; position: string; minHeight: number } => {
@@ -146,7 +144,6 @@ class Grid extends React.Component {
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div
               ref={(node) => { this.viewPortContainer = node; } }
-              tabIndex={this.props.tabIndex}
               onKeyDown={this.props.onViewportKeydown}
               onKeyUp={this.props.onViewportKeyup}
               onClick={this.props.onViewportClick}

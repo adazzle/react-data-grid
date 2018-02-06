@@ -1,4 +1,3 @@
-import _ from 'underscore';
 const React = require('react');
 import PropTypes from 'prop-types';
 const joinClasses = require('classnames');
@@ -12,10 +11,11 @@ const createObjectWithProperties = require('./createObjectWithProperties');
 import CellAction from './CellAction';
 import CellExpand from './CellExpand';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
+import {withCellEvents} from './cellEvents/withCellEvents';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
-const knownDivPropertyKeys = ['height', 'tabIndex', 'value'];
+const knownDivPropertyKeys = ['height', 'value'];
 
 class Cell extends React.Component {
   static propTypes = {
@@ -26,7 +26,6 @@ class Cell extends React.Component {
     isEditorEnabled: PropTypes.bool,
     selectedColumn: PropTypes.object,
     height: PropTypes.number,
-    tabIndex: PropTypes.number,
     column: PropTypes.shape(ExcelColumn).isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]),
     isExpanded: PropTypes.bool,
@@ -44,11 +43,11 @@ class Cell extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ])
+    ]),
+    onCellClick: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    tabIndex: -1,
     isExpanded: false,
     value: '',
     isCellValueChanging: (value, nextValue) => value !== nextValue
@@ -59,10 +58,6 @@ class Cell extends React.Component {
     isLockChanging: false
   };
 
-  componentDidMount() {
-
-  }
-
   componentWillReceiveProps(nextProps) {
     this.setState({
       isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
@@ -71,22 +66,14 @@ class Cell extends React.Component {
   }
 
   componentDidUpdate() {
-
-    let dragged = this.props.cellMetaData.dragged;
-    if (dragged && dragged.complete === true) {
-      this.props.cellMetaData.handleTerminateDrag();
-    }
     if (this.state.isLockChanging && !this.props.column.locked) {
       this.removeScroll();
     }
   }
 
-  onCellClick = (e) => {
-    const {idx, rowIdx} = this.props;
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellClick && typeof (meta.onCellClick) === 'function') {
-      meta.onCellClick({ rowIdx, idx }, e);
-    }
+  onCellClick = () => {
+    const {idx, rowIdx, onCellClick} = this.props;
+    onCellClick({idx, rowIdx});
   };
 
   onCellContextMenu = () => {
@@ -177,10 +164,7 @@ class Cell extends React.Component {
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
       editing: this.isEditorEnabled(),
-      copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
-      'is-dragged-over-up': this.isDraggedOverUpwards(),
-      'is-dragged-over-down': this.isDraggedOverDownwards(),
-      'was-dragged-over': this.wasDraggedOver(),
+      copied: this.isCopied(),
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn,
@@ -210,21 +194,6 @@ class Cell extends React.Component {
     return meta.enableCellSelect;
   };
 
-  hasChangedDependentValues = (nextProps) => {
-    let currentColumn = this.props.column;
-    let hasChangedDependentValues = false;
-
-    if (currentColumn.getRowMetaData) {
-      let currentRowMetaData = currentColumn.getRowMetaData(this.getRowData(), currentColumn);
-      let nextColumn = nextProps.column;
-      let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
-
-      hasChangedDependentValues = !_.isEqual(currentRowMetaData, nextRowMetaData);
-    }
-
-    return hasChangedDependentValues;
-  };
-
   setScrollLeft = (scrollLeft) => {
     let node = this.node;
     if (node) {
@@ -249,84 +218,6 @@ class Cell extends React.Component {
       && copied.rowIdx === this.props.rowIdx
       && copied.idx === this.props.idx
     );
-  };
-
-  isDraggedOver = (): boolean => {
-    let dragged = this.props.cellMetaData.dragged;
-    return (
-      dragged &&
-      dragged.overRowIdx === this.props.rowIdx
-      && dragged.idx === this.props.idx
-    );
-  };
-
-  wasDraggedOver = (): boolean => {
-    let dragged = this.props.cellMetaData.dragged;
-    return (
-      dragged
-      && ((dragged.overRowIdx < this.props.rowIdx && this.props.rowIdx < dragged.rowIdx)
-        || (dragged.overRowIdx > this.props.rowIdx && this.props.rowIdx > dragged.rowIdx))
-      && dragged.idx === this.props.idx
-    );
-  };
-
-  isDraggedCellChanging = (nextProps: any): boolean => {
-    let isChanging;
-    let dragged = this.props.cellMetaData.dragged;
-    let nextDragged = nextProps.cellMetaData.dragged;
-    if (dragged) {
-      isChanging = (nextDragged && this.props.idx === nextDragged.idx)
-        || (dragged && this.props.idx === dragged.idx);
-      return isChanging;
-    }
-
-    return false;
-  };
-
-  isCopyCellChanging = (nextProps: any): boolean => {
-    let isChanging;
-    let copied = this.props.cellMetaData.copied;
-    let nextCopied = nextProps.cellMetaData.copied;
-    if (copied) {
-      isChanging = (nextCopied && this.props.idx === nextCopied.idx)
-        || (copied && this.props.idx === copied.idx);
-      return isChanging;
-    }
-    return false;
-  };
-
-  isDraggedOverUpwards = (): boolean => {
-    let dragged = this.props.cellMetaData.dragged;
-    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx < dragged.rowIdx;
-  };
-
-  isDraggedOverDownwards = (): boolean => {
-    let dragged = this.props.cellMetaData.dragged;
-    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
-  };
-
-  isFocusedOnBody = () => {
-    return document.activeElement == null || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body');
-  };
-
-  isFocusedOnCell = () => {
-    return document.activeElement && document.activeElement.className.indexOf('react-grid-Cell') !== -1;
-  };
-
-  checkFocus = () => {
-    if (this.isSelected() && !this.isEditorEnabled()) {
-      // If the enableCellAutoFocus is set in the ReactDataGrid props, it will allow the cell to take focus when the browser is focused on the body.
-      // Otherwise, only focus to the current cell if the currently active node in the document is within the data grid.
-      // Meaning focus should not be stolen from elements that the grid doesnt control.
-      const cellAutoFocusEnabled = this.props.cellMetaData && this.props.cellMetaData.enableCellAutoFocus;
-      let dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
-      if (this.isFocusedOnCell() || (cellAutoFocusEnabled && this.isFocusedOnBody()) || (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement))) {
-        let cellDOMNode = this.node;
-        if (cellDOMNode) {
-          cellDOMNode.focus();
-        }
-      }
-    }
   };
 
   canEdit = () => {
@@ -469,4 +360,4 @@ class Cell extends React.Component {
   }
 }
 
-module.exports = Cell;
+module.exports = withCellEvents(Cell);

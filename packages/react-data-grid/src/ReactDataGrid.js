@@ -1,7 +1,5 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
-import { Provider, createState } from './stateManagement/state/RxState';
-import reducer$ from './stateManagement/Reducers';
 const BaseGrid              = require('./Grid');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
 const RowUtils = require('./RowUtils');
@@ -12,8 +10,6 @@ import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
 import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics        = require('./ColumnMetrics');
-import { connect } from './stateManagement/state/RxState';
-import {cellActions} from './stateManagement/modules/Cell';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
@@ -50,7 +46,7 @@ type ColumnMetricsType = {
   minColumnWidth: number;
 };
 
-class GridContainer extends React.Component {
+class ReactDataGrid extends React.Component {
   static displayName = 'GridContainer';
 
   static propTypes = {
@@ -85,7 +81,6 @@ class GridContainer extends React.Component {
     onCellDeSelected: PropTypes.func,
     onCellExpand: PropTypes.func,
     enableDragAndDrop: PropTypes.bool,
-    tabIndex: PropTypes.number,
     onRowExpandToggle: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
@@ -135,7 +130,6 @@ class GridContainer extends React.Component {
 
   static defaultProps = {
     enableCellSelect: false,
-    tabIndex: -1,
     rowHeight: 35,
     headerFiltersHeight: 45,
     enableRowSelect: false,
@@ -330,25 +324,12 @@ class GridContainer extends React.Component {
   };
 
   onSelect = (selected) => {
-    const {selectCell, onCellDeSelected, onCellSelected} = this.props;
-    selectCell(selected);
+    const {onCellDeSelected, onCellSelected} = this.props;
     if (typeof onCellDeSelected === 'function') {
       onCellDeSelected(oldSelection);
     }
     if (typeof onCellSelected === 'function') {
       onCellSelected(selected);
-    }
-  };
-
-  onCellClick = (cell: SelectedType, e: SyntheticEvent) => {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
-
-    if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
-      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
-    }
-
-    if (e) {
-      e.stopPropagation();
     }
   };
 
@@ -368,26 +349,6 @@ class GridContainer extends React.Component {
     if (e) {
       e.stopPropagation();
     }
-  };
-
-  onPressArrowUp = e => {
-    e.preventDefault();
-    this.props.moveUp();
-  };
-
-  onPressArrowDown = (e) => {
-    e.preventDefault();
-    this.props.moveDown();
-  };
-
-  onPressArrowLeft = (e) => {
-    e.preventDefault();
-    this.props.moveLeft();
-  };
-
-  onPressArrowRight = (e) => {
-    e.preventDefault();
-    this.props.moveRight();
   };
 
   isFocusedOnCell = () => {
@@ -1158,7 +1119,6 @@ class GridContainer extends React.Component {
       rowKey: this.props.rowKey,
       dragged: this.state.dragged,
       hoveredRowIdx: this.state.hoveredRowIdx,
-      onCellClick: this.onCellClick,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onCommit: this.onCellCommit,
@@ -1235,15 +1195,5 @@ class GridContainer extends React.Component {
       );
   }
 }
-
-const ConnectedGrid = connect(() => {}, cellActions, () => () => false)(GridContainer);
-
-const ReactDataGrid = (props) => {
-  return (
-    <Provider state$={createState(reducer$)}>
-      <ConnectedGrid {...props}/>
-    </Provider>
-  );
-};
 
 module.exports = ReactDataGrid;
