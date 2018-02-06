@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import joinClasses from 'classnames';
 import shallowCloneObject from './shallowCloneObject';
 import ColumnMetrics from'./ColumnMetrics';
 import ColumnUtils from'./ColumnUtils';
 import getScrollbarSize  from'./getScrollbarSize';
-import PropTypes from 'prop-types';
 import createObjectWithProperties from'./createObjectWithProperties';
 import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
 import SummaryRow from './SummaryRow';
@@ -36,7 +36,6 @@ class Summary extends Component {
   }
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
-    console.log(nextProps, nextState);
     let update = !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
     || this.props.totalWidth !== nextProps.totalWidth
     || (this.state.resizing !== nextState.resizing)
