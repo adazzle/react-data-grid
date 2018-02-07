@@ -357,7 +357,9 @@ describe('Cell Tests', () => {
       // force update
       let newValue = 'London';
       testElement.setProps({ value: newValue, selectedColumn: testProps.column });
-      let cellHasUpdateClass = testElement.find('.react-grid-Cell').hasClass(UPDATE_CLASS);
+      // TODO: why the updated class is not reflected when the element is searched using the find method
+      // let cellHasUpdateClass = testElement.find('.react-grid-Cell').hasClass(UPDATE_CLASS);
+      let cellHasUpdateClass = testElement.getDOMNode().className.indexOf(UPDATE_CLASS) > -1;
       expect(cellHasUpdateClass).toBeTruthy();
     });
 
