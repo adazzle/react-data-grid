@@ -90,7 +90,6 @@
     "object-assign": "^4.1.1",
     "open": "0.0.5",
     "react": "^16.2.0",
-    "react-addons-perf": "^15.4.2",
     "react-dnd-test-backend": "^1.0.2",
     "react-docgen": "^2.8.2",
     "react-dom": "^16.2.0",
