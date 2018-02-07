@@ -1,6 +1,5 @@
 import TestUtils from 'react-dom/test-utils';
 import GridRunner from './GridRunner';
-import ReactDOM from 'react-dom';
 
 describe('Grid Integration', () => {
   let gridRunner;
@@ -47,11 +46,11 @@ describe('Grid Integration', () => {
       gridRunner.selectCell({cellIdx: firstCellIdx, rowIdx: 1}).copy();
 
       let firstCell = gridRunner.getCell({cellIdx: firstCellIdx, rowIdx: 1});
-      expect(ReactDOM.findDOMNode(firstCell.node).className.indexOf('copied') > -1).toBe(true);
+      expect(firstCell.getDOMNode().className.indexOf('copied') > -1).toBe(true);
 
       gridRunner.selectCell({cellIdx: 4, rowIdx: 1})
       .copy();
-      expect(ReactDOM.findDOMNode(firstCell.node).className.indexOf('copied') > -1).toBe(false);
+      expect(firstCell.getDOMNode().className.indexOf('copied') > -1).toBe(false);
     });
   });
 
