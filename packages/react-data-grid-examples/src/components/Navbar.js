@@ -18,30 +18,30 @@ class Navbar extends React.Component {
             </a>
 
             <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span className="icon-bar"></span> <span className="icon-bar"></span> <span className="icon-bar"></span> </button>
-            <a className="navbar-brand" href="https://www.adazzle.com"><img className="header-logo" src="assets/images/AdazzleHeaderLogo.png" /></a> <a className="navbar-brand" href="index.html#">React Data Grid</a>
-          </div>
-          <div className="navbar-collapse collapse">
-            <ul className="nav navbar-nav pull-right">
-              <li className="active">
-                <Link to="/">Home</Link>
-              </li>
-              <li className="dropdown">
-                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Documentation <b className="caret"></b></a>
-                <ul className="dropdown-menu">
-                  <li><Link to="/documentation/gettingstarted">Getting Started</Link></li>
-                  <li><Link to="/documentation/apireference">API Reference</Link></li>
-                  <li><Link to="/documentation/componentsdocs">Component Docs</Link></li>
-                </ul>
-              </li>
+            <a className="navbar-brand" href="https://www.adazzle.com"><img className="header-logo" src="assets/images/AdazzleHeaderLogo.png" /></a> <Link className="navbar-brand" to="/">React Data Grid</Link>
+        </div>
+        <div className="navbar-collapse collapse">
+          <ul className="nav navbar-nav pull-right">
+            <li className="active">
+              <Link to="/">Home</Link>
+            </li>
+            <li className="dropdown">
+              <a href="#" className="dropdown-toggle" data-toggle="dropdown">Documentation <b className="caret"></b></a>
+              <ul className="dropdown-menu">
+                <li><Link to="/documentation/gettingstarted">Getting Started</Link></li>
+                <li><Link to="/documentation/apireference">API Reference</Link></li>
+                <li><Link to="/documentation/componentsdocs">Component Docs</Link></li>
+              </ul>
+            </li>
 
-              <li className="dropdown">
-                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
-                <ExampleList links={this.props.exampleLinks} className="dropdown-menu" />
-              </li>
-            </ul>
-          </div>
+            <li className="dropdown">
+              <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
+              <ExampleList links={this.props.exampleLinks} className="dropdown-menu" />
+            </li>
+          </ul>
         </div>
       </div>
+      </div >
     );
   }
 }
