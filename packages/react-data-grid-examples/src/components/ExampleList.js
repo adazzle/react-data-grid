@@ -1,10 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+
+import ExampleScripts from '../scripts';
 
 class ExampleList extends React.Component {
   render() {
-    const links = this.props.links.map(s => <li key={`/examples/${s.hashLocation}`}><Link to={`/examples/${s.hashLocation}`}>{s.name}</Link></li>);
+    const links = ExampleScripts.map(s => <li key={`/examples/${s.hashLocation}`}><Link to={`/examples/${s.hashLocation}`}>{s.name}</Link></li>);
     return (
       <ul {...this.props}>
         {links}
@@ -12,9 +13,5 @@ class ExampleList extends React.Component {
     );
   }
 }
-
-ExampleList.propTypes = {
-  links: PropTypes.array.isRequired
-};
 
 export default ExampleList;

@@ -14,7 +14,7 @@ function Examples() {
         <div className="col-md-2 top-space" role="complementary">
           <nav id="sidebar" className="bs-docs-sidebar hidden-print hidden-xs hidden-sm" data-spy="affix" data-offset-top="0" data-offset-bottom="200">
             <div id="grid-examples-div">
-              <ExampleList className="nav bs-docs-sidenav" links={ExampleScripts} />
+              <ExampleList className="nav bs-docs-sidenav" />
             </div>
           </nav>
         </div>

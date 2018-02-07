@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import ExampleList from './ExampleList';
@@ -19,35 +18,31 @@ class Navbar extends React.Component {
 
             <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span className="icon-bar"></span> <span className="icon-bar"></span> <span className="icon-bar"></span> </button>
             <a className="navbar-brand" href="https://www.adazzle.com"><img className="header-logo" src="assets/images/AdazzleHeaderLogo.png" /></a> <Link className="navbar-brand" to="/">React Data Grid</Link>
-        </div>
-        <div className="navbar-collapse collapse">
-          <ul className="nav navbar-nav pull-right">
-            <li className="active">
-              <Link to="/">Home</Link>
-            </li>
-            <li className="dropdown">
-              <a href="#" className="dropdown-toggle" data-toggle="dropdown">Documentation <b className="caret"></b></a>
-              <ul className="dropdown-menu">
-                <li><Link to="/documentation/gettingstarted">Getting Started</Link></li>
-                <li><Link to="/documentation/apireference">API Reference</Link></li>
-                <li><Link to="/documentation/componentsdocs">Component Docs</Link></li>
-              </ul>
-            </li>
+          </div>
+          <div className="navbar-collapse collapse">
+            <ul className="nav navbar-nav pull-right">
+              <li className="active">
+                <Link to="/">Home</Link>
+              </li>
+              <li className="dropdown">
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Documentation <b className="caret"></b></a>
+                <ul className="dropdown-menu">
+                  <li><Link to="/documentation/gettingstarted">Getting Started</Link></li>
+                  <li><Link to="/documentation/apireference">API Reference</Link></li>
+                  <li><Link to="/documentation/componentsdocs">Component Docs</Link></li>
+                </ul>
+              </li>
 
-            <li className="dropdown">
-              <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
-              <ExampleList links={this.props.exampleLinks} className="dropdown-menu" />
-            </li>
-          </ul>
+              <li className="dropdown">
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
+                <ExampleList className="dropdown-menu" />
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
       </div >
     );
   }
 }
-
-Navbar.propTypes = {
-  exampleLinks: PropTypes.array.isRequired
-};
 
 export default Navbar;
