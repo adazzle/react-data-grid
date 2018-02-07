@@ -69,7 +69,7 @@
     "immutable": "^3.7.3",
     "istanbul-instrumenter-loader": "^0.1.2",
     "jasmine-core": "2.6.1",
-    "jasmine-enzyme": "^1.2.0",
+    "jasmine-enzyme": "^4.2.0",
     "karma": "^1.1.0",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.4.0",
