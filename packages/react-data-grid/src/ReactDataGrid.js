@@ -69,6 +69,8 @@ class ReactDataGrid extends React.Component {
     getCellActions: PropTypes.func,
     onAddFilter: PropTypes.func,
     onGridSort: PropTypes.func,
+    sortColumn: React.PropTypes.string,
+    sortDirection: React.PropTypes.oneOf(Object.keys(DEFINE_SORT)),
     onDragHandleDoubleClick: PropTypes.func,
     onGridRowsUpdated: PropTypes.func,
     onRowSelect: PropTypes.func,
