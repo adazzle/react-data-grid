@@ -37,8 +37,8 @@
 }
 
 .react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value {
-  position: relative;		
-  top: 50%;		
+  position: relative;
+  top: 50%;
   transform: translateY(-50%);
 }
 
@@ -142,6 +142,10 @@
 .cell-tooltip {
     position: relative;
     display: inline-block;
+}
+
+.cell-tooltip:hover {
+  z-index: 101;
 }
 
 .cell-tooltip .cell-tooltip-text {
