@@ -57,7 +57,7 @@ class ComponentDocs extends React.Component {
         const className = key === this.state.selectedDocumentIndex ? 'active' : '';
         const doc = generatedDocs[key];
         docsToRender.push(
-          <li role="presentation" className={className}>
+          <li key={key} role="presentation" className={className}>
             <a href="#" onClick={function(index, e) { this.onNavBarClicked(index, e); }.bind(this, key)}>{doc.name}</a>
           </li>);
       }

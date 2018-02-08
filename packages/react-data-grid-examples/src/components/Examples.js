@@ -1,12 +1,18 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Route, Redirect, Switch } from 'react-router-dom';
 
-import ExampleScripts from '../scripts';
+import exampleScripts from '../scripts';
 import ExampleList from './ExampleList';
 
-function Examples() {
-  const routes = ExampleScripts.map(s => <Route path={`/examples/${s.hashLocation}`} component={s.module} />);
-  routes.push(<Route exact path="/examples" render={() => <Redirect to="/examples/all-features" />} />);
+function Examples({ match }) {
+  const routes = exampleScripts.map((s, index) => (
+    <Route
+      key={index}
+      path={`${match.url}/${s.hashLocation}`}
+      component={s.module}
+    />
+  ));
 
   return (
     <div className="container-fluid top-space">
@@ -21,12 +27,21 @@ function Examples() {
         <div className="col-md-10">
           <div>
             <h1 className="page-header">React Data Grid Examples</h1>
-            {routes}
+            <Switch>
+              {routes}
+              <Redirect exact from={`${match.url}`} to={`${match.url}/all-features`} />
+            </Switch>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+Examples.propTypes = {
+  match: PropTypes.shape({
+    url: PropTypes.string
+  })
+};
 
 export default Examples;
