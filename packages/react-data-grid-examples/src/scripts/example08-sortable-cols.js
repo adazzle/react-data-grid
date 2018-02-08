@@ -2,6 +2,10 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
+const CustomHeaderRenderer = (props) => {
+  return (<span style={{color: 'blue'}}>Custom Header</span>);
+};
+
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -21,7 +25,8 @@ class Example extends React.Component {
         key: 'priority',
         name: 'Priority',
         width: 200,
-        sortable: true
+        sortable: true,
+        headerRenderer: <CustomHeaderRenderer/>
       },
       {
         key: 'issueType',
