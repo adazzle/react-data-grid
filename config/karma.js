@@ -13,18 +13,6 @@ var BROWSERS = argv.browsers;
 
 module.exports = function (config) {
 
-  function getPostLoaders(){
-    var postLoaders = [];
-    if(RELEASE === true){
-      return  [ {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        loader: 'istanbul-instrumenter'
-      } ]
-    }
-    return postLoaders;
-  };
-
   function getReporters(){
     if(RELEASE === true){
       return  ['junit', 'progress', 'coverage']
@@ -95,8 +83,7 @@ module.exports = function (config) {
     webpack: {
       devtool: 'inline-source-map',
       module: {
-        loaders: webpackConfig.module.loaders,
-        postLoaders : getPostLoaders()
+        loaders: webpackConfig.module.loaders
       },
       resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
@@ -108,7 +95,9 @@ module.exports = function (config) {
         'cheerio': 'window',
         'react/lib/ExecutionEnvironment': true,
         'react/lib/ReactContext': true,
-        'react/addons': true
+        'react/addons': true,
+        // https://github.com/airbnb/enzyme/issues/968
+        'react-addons-test-utils': true
       }
     },
 

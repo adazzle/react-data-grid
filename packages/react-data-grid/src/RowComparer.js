@@ -34,7 +34,8 @@ export const shouldRowUpdate = (nextProps, currentProps) => {
     currentProps.isOver !== nextProps.isOver ||
     currentProps.expandedRows !== nextProps.expandedRows ||
     currentProps.canDrop !== nextProps.canDrop ||
-    currentProps.forceUpdate === true;
+    currentProps.forceUpdate === true ||
+    currentProps.extraClasses !== nextProps.extraClasses;
 };
 
 export default shouldRowUpdate;

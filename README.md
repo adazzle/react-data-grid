@@ -7,21 +7,34 @@
 Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like http://adazzle.github.io/react-data-grid/  
 ![react-data-grid](https://cloud.githubusercontent.com/assets/1432798/7348812/78063bd6-ecec-11e4-89d5-ffd327721cd7.PNG)
 
+Overview 
+--------
+ReactDataGrid is an advanced JavaScript spreadsheet-like grid component built using React
 
 Installation
 ------------
-
+The easiest way to use react-data-grid is to install it from npm and build it into your app with Webpack.
 ```sh
 npm install react-data-grid
 ```
 
-This library is written with CommonJS modules. If you are using
-browserify, webpack, or similar, you can consume it like anything else
-installed from npm.
+You can then import react-data-grid in your application as follows:
+```typescript
+import ReactDataGrid from 'react-data-grid';
+```
 
-Overview 
+Versions In This Repository
 --------
-ReactDataGrid is an advanced JavaScript spreadsheet-like grid component built using React
+
+- [master](https://github.com/adazzle/react-data-grid/commits/master) - commits that will be included in the next _minor_ or _patch_ release
+- [next](https://github.com/adazzle/react-data-grid/commits/next) - commits that will be included in the next _major_ release (breaking changes)
+
+Most PRs should be made to **master**, unless you know it is a breaking change.
+
+To install the latest **unstable** version, you can run 
+```sh
+npm install react-data-grid@next
+```
 
 Themes
 ------
@@ -61,6 +74,7 @@ Features
 
 Check out the `examples` directory to see how simple previously complex UI
 and workflows are to create.
+
 
 Contributing
 ------------

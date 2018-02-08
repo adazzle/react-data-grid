@@ -1,27 +1,24 @@
-const React          = require('react');
-const createReactClass = require('create-react-class');
-const Draggable      = require('./Draggable');
+const React = require('react');
+const Draggable = require('./Draggable');
 require('../../../themes/react-data-grid-header.css');
 
-const ResizeHandle   = createReactClass({
-  displayName: 'ResizeHandle',
+const style = {
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  width: 6,
+  height: '100%'
+};
 
-  style: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 6,
-    height: '100%'
-  },
-
-  render(): ?ReactElement {
+class ResizeHandle extends React.Component {
+  render() {
     return (
       <Draggable {...this.props}
-      className="react-grid-HeaderCell__resizeHandle"
-      style={this.style}
+        className="react-grid-HeaderCell__resizeHandle"
+        style={style}
       />
-  );
+    );
   }
-});
+}
 
 module.exports = ResizeHandle;

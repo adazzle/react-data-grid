@@ -12,23 +12,25 @@ class SortableHeaderCell extends React.Component {
     columnKey: PropTypes.string.isRequired,
     column: PropTypes.shape({ name: PropTypes.node }),
     onSort: PropTypes.func.isRequired,
-    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT))
+    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
+    sortDescendingFirst: PropTypes.bool
   };
 
   onClick = () => {
     let direction;
-    switch (this.props.sortDirection) {
+    const { sortDirection, sortDescendingFirst } = this.props;
+    switch (sortDirection) {
     default:
     case null:
     case undefined:
     case DEFINE_SORT.NONE:
-      direction = DEFINE_SORT.ASC;
+      direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
       break;
     case DEFINE_SORT.ASC:
-      direction = DEFINE_SORT.DESC;
+      direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
       break;
     case DEFINE_SORT.DESC:
-      direction = DEFINE_SORT.NONE;
+      direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
       break;
     }
     this.props.onSort(

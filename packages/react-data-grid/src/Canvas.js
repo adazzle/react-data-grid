@@ -1,23 +1,20 @@
 const React = require('react');
-const createReactClass = require('create-react-class');
-const ReactDOM = require('react-dom');
 const joinClasses = require('classnames');
 import PropTypes from 'prop-types';
-const ScrollShim = require('./ScrollShim');
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const RowUtils = require('./RowUtils');
+import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
 
 import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 
-const Canvas = createReactClass({
-  displayName: 'Canvas',
-  mixins: [ScrollShim],
+class Canvas extends React.Component {
+  static displayName = 'Canvas';
 
-  propTypes: {
+  static propTypes = {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     rowHeight: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
@@ -46,6 +43,7 @@ const Canvas = createReactClass({
     selectedRows: PropTypes.array,
     rowKey: PropTypes.string,
     rowScrollTimeout: PropTypes.number,
+    scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
     rowSelection: PropTypes.oneOfType([
@@ -63,36 +61,69 @@ const Canvas = createReactClass({
       })
     ]),
     rowGroupRenderer: PropTypes.func,
-    isScrolling: PropTypes.bool
-  },
+    isScrolling: PropTypes.bool,
+    length: PropTypes.number
+  };
 
-  getDefaultProps() {
-    return {
-      rowRenderer: Row,
-      onRows: () => { },
-      selectedRows: [],
-      rowScrollTimeout: 0
-    };
-  },
+  static defaultProps = {
+    rowRenderer: Row,
+    onRows: () => { },
+    selectedRows: [],
+    rowScrollTimeout: 0
+  };
 
-  getInitialState() {
+  state = {
+    displayStart: this.props.displayStart,
+    displayEnd: this.props.displayEnd,
+    scrollingTimeout: null
+  };
+
+  _currentRowsLength = 0;
+  _currentRowsRange = { start: 0, end: 0 };
+  _scroll = { scrollTop: 0, scrollLeft: 0 };
+
+  appendScrollShim = () => {
+    if (!this._scrollShim) {
+      const size = this._scrollShimSize();
+      const shim = createScrollShim(size);
+      this.canvas.appendChild(shim);
+      this._scrollShim = shim;
+    }
+    this._scheduleRemoveScrollShim();
+  };
+
+  _scrollShimSize = (): { width: number; height: number } => {
     return {
-      displayStart: this.props.displayStart,
-      displayEnd: this.props.displayEnd,
-      scrollingTimeout: null
+      width: this.props.width,
+      height: this.props.length * this.props.rowHeight
     };
-  },
+  };
+
+  _scheduleRemoveScrollShim = () => {
+    if (this._scheduleRemoveScrollShimTimer) {
+      clearTimeout(this._scheduleRemoveScrollShimTimer);
+    }
+    this._scheduleRemoveScrollShimTimer = setTimeout(
+      this._removeScrollShim, 200);
+  };
+
+  _removeScrollShim = () => {
+    if (this._scrollShim) {
+      this._scrollShim.parentNode.removeChild(this._scrollShim);
+      this._scrollShim = undefined;
+    }
+  };
 
   componentWillMount() {
     this.rows = [];
     this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
-  },
+  }
 
   componentDidMount() {
     this.onRows();
-  },
+  }
 
   componentWillReceiveProps(nextProps: any) {
     if (nextProps.displayStart !== this.state.displayStart
@@ -102,12 +133,13 @@ const Canvas = createReactClass({
         displayEnd: nextProps.displayEnd
       });
     }
-  },
+  }
 
   shouldComponentUpdate(nextProps: any, nextState: any): boolean {
     let shouldUpdate = nextState.displayStart !== this.state.displayStart
       || nextState.displayEnd !== this.state.displayEnd
       || nextState.scrollingTimeout !== this.state.scrollingTimeout
+      || this.props.scrollToRowIndex !== nextProps.scrollToRowIndex
       || nextProps.rowsCount !== this.props.rowsCount
       || nextProps.rowHeight !== this.props.rowHeight
       || nextProps.columns !== this.props.columns
@@ -118,32 +150,39 @@ const Canvas = createReactClass({
       || this.props.colDisplayEnd !== nextProps.colDisplayEnd
       || this.props.colVisibleStart !== nextProps.colVisibleStart
       || this.props.colVisibleEnd !== nextProps.colVisibleEnd
-      || !shallowEqual(nextProps.style, this.props.style);
+      || !shallowEqual(nextProps.style, this.props.style)
+      || this.props.isScrolling !== nextProps.isScrolling;
     return shouldUpdate;
-  },
+  }
 
   componentWillUnmount() {
     this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
-  },
+  }
 
   componentDidUpdate() {
     if (this._scroll.scrollTop !== 0 && this._scroll.scrollLeft !== 0) {
       this.setScrollLeft(this._scroll.scrollLeft);
     }
+    if (this.props.scrollToRowIndex !== 0) {
+      this.canvas.scrollTop = Math.min(
+        this.props.scrollToRowIndex * this.props.rowHeight,
+        this.props.rowsCount * this.props.rowHeight - this.props.height
+      );
+    }
     this.onRows();
-  },
+  }
 
-  onRows() {
+  onRows = () => {
     if (this._currentRowsRange !== { start: 0, end: 0 }) {
       this.props.onRows(this._currentRowsRange);
       this._currentRowsRange = { start: 0, end: 0 };
     }
-  },
+  };
 
-  onScroll(e: any) {
-    if (ReactDOM.findDOMNode(this) !== e.target) {
+  onScroll = (e: any) => {
+    if (this.canvas !== e.target) {
       return;
     }
     this.appendScrollShim();
@@ -152,9 +191,9 @@ const Canvas = createReactClass({
     let scroll = { scrollTop, scrollLeft };
     this._scroll = scroll;
     this.props.onScroll(scroll);
-  },
+  };
 
-  getRows(displayStart, displayEnd) {
+  getRows = (displayStart, displayEnd) => {
     this._currentRowsRange = { start: displayStart, end: displayEnd };
     if (Array.isArray(this.props.rowGetter)) {
       return this.props.rowGetter.slice(displayStart, displayEnd);
@@ -171,22 +210,20 @@ const Canvas = createReactClass({
       i++;
     }
     return rows;
-  },
+  };
 
-  getScrollbarWidth() {
-    let scrollbarWidth = 0;
+  getScrollbarWidth = () => {
     // Get the scrollbar width
-    let canvas = ReactDOM.findDOMNode(this);
-    scrollbarWidth = canvas.offsetWidth - canvas.clientWidth;
+    const scrollbarWidth = this.canvas.offsetWidth - this.canvas.clientWidth;
     return scrollbarWidth;
-  },
+  };
 
-  getScroll() {
-    let {scrollTop, scrollLeft} = ReactDOM.findDOMNode(this);
+  getScroll = () => {
+    const { scrollTop, scrollLeft } = this.canvas;
     return { scrollTop, scrollLeft };
-  },
+  };
 
-  isRowSelected(idx, row) {
+  isRowSelected = (idx, row) => {
     // Use selectedRows if set
     if (this.props.selectedRows !== null) {
       let selectedRows = this.props.selectedRows.filter(r => {
@@ -198,18 +235,14 @@ const Canvas = createReactClass({
 
     // Else use new rowSelection props
     if (this.props.rowSelection) {
-      let {keys, indexes, isSelectedKey} = this.props.rowSelection;
+      let { keys, indexes, isSelectedKey } = this.props.rowSelection;
       return RowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
     }
 
     return false;
-  },
+  };
 
-  _currentRowsLength: 0,
-  _currentRowsRange: { start: 0, end: 0 },
-  _scroll: { scrollTop: 0, scrollLeft: 0 },
-
-  setScrollLeft(scrollLeft) {
+  setScrollLeft = (scrollLeft) => {
     if (this._currentRowsLength !== 0) {
       if (!this.rows) return;
       for (let i = 0, len = this._currentRowsLength; i < len; i++) {
@@ -221,18 +254,18 @@ const Canvas = createReactClass({
         }
       }
     }
-  },
+  };
 
-  getRowByRef(i) {
+  getRowByRef = (i) => {
     // check if wrapped with React DND drop target
     let wrappedRow = this.rows[i].getDecoratedComponentInstance ? this.rows[i].getDecoratedComponentInstance(i) : null;
     if (wrappedRow) {
       return wrappedRow.row;
     }
     return this.rows[i];
-  },
+  };
 
-  renderRow(props: any) {
+  renderRow = (props: any) => {
     let row = props.row;
     if (row.__metaData && row.__metaData.getRowRenderer) {
       return row.__metaData.getRowRenderer(this.props, props.idx);
@@ -246,18 +279,18 @@ const Canvas = createReactClass({
     }
     let RowsRenderer = this.props.rowRenderer;
     if (typeof RowsRenderer === 'function') {
-      return <RowsRenderer {...props}/>;
+      return <RowsRenderer {...props} />;
     }
 
     if (React.isValidElement(this.props.rowRenderer)) {
       return React.cloneElement(this.props.rowRenderer, props);
     }
-  },
+  };
 
-  renderPlaceholder(key: string, height: number): ?ReactElement {
+  renderPlaceholder = (key: string, height: number) => {
     // just renders empty cells
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
-    return (<div key={ key } style={{ height: height }}>
+    return (<div key={key} style={{ height: height }}>
       {
         this.props.columns.map(
           (column, idx) => <div style={{ width: column.width }} key={idx} />
@@ -265,7 +298,7 @@ const Canvas = createReactClass({
       }
     </div >
     );
-  },
+  };
 
   render() {
     const { displayStart, displayEnd } = this.state;
@@ -316,9 +349,10 @@ const Canvas = createReactClass({
 
     return (
       <div
+        ref={(div) => { this.canvas = div; }}
         style={style}
         onScroll={this.onScroll}
-        className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active }) }>
+        className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active })}>
         <RowsContainer
           width={this.props.width}
           rows={rows}
@@ -328,6 +362,6 @@ const Canvas = createReactClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Canvas;
