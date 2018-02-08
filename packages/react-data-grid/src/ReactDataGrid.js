@@ -164,7 +164,7 @@ class ReactDataGrid extends React.Component {
     }
 
     this.state = initialState;
-  },
+  }
 
   componentWillMount() {
     this._mounted = true;
