@@ -163,7 +163,7 @@ class ReactDataGrid extends React.Component {
       initialState.sortDirection = this.props.sortDirection;
     }
 
-    return initialState;
+    this.state = initialState;
   },
 
   componentWillMount() {
