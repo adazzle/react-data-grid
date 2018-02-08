@@ -20,11 +20,7 @@ install:
   # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
   # Lerna needs to have a npmrc for each package folder as it does not use the root npmrc https://github.com/lerna/lerna/issues/296#issuecomment-261080345
   - ps: >-
-      if($env:APPVEYOR_REPO_BRANCH -ne 'master'){
-        ./ci/publish/decrypt-npmrc.ps1
-        ./ci/publish/copy-npmrc.ps1
-      }
-      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
+      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'next') {
         ./ci/publish/decrypt-npmrc.ps1
         ./ci/publish/copy-npmrc.ps1
       }
@@ -49,13 +45,9 @@ test_script:
 build: off
 
 on_success:
-# If it is not a scheduled build/pr build and the current branch is master publish a new package.
-# If it is not build on master publish npm tag.
+# If merging to next branch, publish with 'next' tag
   - npm run beforepublish
   - ps: >-
-      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'master') {
-        ./ci/publish/publishMaster.ps1
-      }
-      if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
+      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'next') {
         ./ci/publish/publishBranch.ps1
       }
