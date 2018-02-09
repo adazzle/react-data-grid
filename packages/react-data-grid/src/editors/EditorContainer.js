@@ -191,8 +191,7 @@ class EditorContainer extends React.Component {
   };
 
   getInitialValue = (): string => {
-    let selected = this.props.cellMetaData.selected;
-    let keyCode = selected.initialKeyCode;
+    let keyCode = this.props.initialKeyCode;
     if (keyCode === 'Delete' || keyCode === 'Backspace') {
       return '';
     } else if (keyCode === 'Enter') {
@@ -299,8 +298,7 @@ class EditorContainer extends React.Component {
   };
 
   setTextInputFocus = () => {
-    let selected = this.props.cellMetaData.selected;
-    let keyCode = selected.initialKeyCode;
+    let keyCode = this.props.initialKeyCode;
     let inputNode = this.getInputNode();
     inputNode.focus();
     if (inputNode.tagName === 'INPUT') {

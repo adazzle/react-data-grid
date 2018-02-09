@@ -16,7 +16,7 @@ describe('SimpleTextEditor', () => {
         onKeyDown={fakeFunction}
         commit={fakeFunction}
         column={fakeColumn}
-        />).node;
+        />).instance();
     });
 
     it('should create a new SimpleTextEditor instance', () => {

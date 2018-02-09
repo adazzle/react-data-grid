@@ -1,8 +1,11 @@
 import React from 'react';
-import ReactDom from 'react-dom';
-import ExampleList from './components/ExampleList';
-import ExampleScripts from './scripts';
+import ReactDOM from 'react-dom';
+import { HashRouter as Router } from 'react-router-dom';
 
-window.React = React;
+import App from './components/App';
 
-ReactDom.render(<ExampleList links={ExampleScripts} className="nav bs-docs-sidenav" />, document.getElementById('grid-examples-div'));
+ReactDOM.render((
+  <Router>
+    <App />
+  </Router>
+), document.getElementById('root'));
