@@ -9,7 +9,7 @@ function Examples({ match }) {
   const routes = exampleScripts.map((s, index) => (
     <Route
       key={index}
-      path={`${match.url}/${s.hashLocation}`}
+      path={`${match.path}/${s.hashLocation}`}
       component={s.module}
     />
   ));

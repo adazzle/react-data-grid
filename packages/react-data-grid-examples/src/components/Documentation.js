@@ -6,7 +6,7 @@ import GettingStarted from '../scripts/documentation01-gettingstarted';
 import ApiReference from '../scripts/documentation02-apireference';
 import ComponentsDocs from '../scripts/documentation03-components';
 
-function Documentation({ match: { url } }) {
+function Documentation({ match: { url, path } }) {
   return (
     <div className="container-fluid top-space">
       <div className="row">
@@ -21,10 +21,10 @@ function Documentation({ match: { url } }) {
         </div>
         <div className="col-md-10">
           <Switch>
-            <Route path={`${url}/gettingstarted`} component={GettingStarted} />
-            <Route path={`${url}/apireference`} component={ApiReference} />
-            <Route path={`${url}/componentsDocs`} component={ComponentsDocs} />
-            <Redirect from={`${url}`} to={`${url}/gettingstarted`} />
+            <Route path={`${path}/gettingstarted`} component={GettingStarted} />
+            <Route path={`${path}/apireference`} component={ApiReference} />
+            <Route path={`${path}/componentsDocs`} component={ComponentsDocs} />
+            <Redirect from={`${path}`} to={`${path}/gettingstarted`} />
           </Switch>
         </div>
       </div>
@@ -34,7 +34,8 @@ function Documentation({ match: { url } }) {
 
 Documentation.propTypes = {
   match: PropTypes.shape({
-    url: PropTypes.string
+    url: PropTypes.string,
+    path: PropTypes.string
   })
 };
 
