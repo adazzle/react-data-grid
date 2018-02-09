@@ -47,7 +47,7 @@ type ColumnMetricsType = {
 };
 
 class ReactDataGrid extends React.Component {
-  static displayName = 'GridContainer';
+  static displayName = 'ReactDataGrid';
 
   static propTypes = {
     rowHeight: PropTypes.number.isRequired,
@@ -331,6 +331,10 @@ class ReactDataGrid extends React.Component {
     if (typeof onCellSelected === 'function') {
       onCellSelected(selected);
     }
+  };
+
+  onCellFocus = (cell: SelectedType) => {
+    this.onSelect(cell);
   };
 
   onCellContextMenu = (cell: SelectedType) => {
@@ -1119,6 +1123,7 @@ class ReactDataGrid extends React.Component {
       rowKey: this.props.rowKey,
       dragged: this.state.dragged,
       hoveredRowIdx: this.state.hoveredRowIdx,
+      onCellClick: this.onCellClick,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onCommit: this.onCellCommit,
