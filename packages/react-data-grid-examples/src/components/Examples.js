@@ -29,7 +29,7 @@ function Examples({ match }) {
             <h1 className="page-header">React Data Grid Examples</h1>
             <Switch>
               {routes}
-              <Redirect exact from={`${match.url}`} to={`${match.url}/all-features`} />
+              <Redirect from={`${match.url}`} to={`${match.url}/all-features`} />
             </Switch>
           </div>
         </div>
