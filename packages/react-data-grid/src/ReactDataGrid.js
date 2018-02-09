@@ -536,15 +536,19 @@ class ReactDataGrid extends React.Component {
   };
 
   onGridRowsUpdated = (cellKey, fromRow, toRow, updated, action, originRow) => {
-    let rowIds = [];
+    const fromRowData = this.props.rowGetter(action === AppConstants.UpdateActions.COPY_PASTE ? originRow : fromRow);
+    const fromRowId = fromRowData[this.props.rowKey];
+    const toRowId = this.props.rowGetter(toRow)[this.props.rowKey];
 
-    for (let i = fromRow; i <= toRow; i++) {
-      rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
+    let rowIds = [];
+    if (fromRow === toRow) {
+      rowIds.push(toRowId);
+    } else {
+      for (let i = fromRow + 1; i <= toRow; i++) {
+        rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
+      }
     }
 
-    let fromRowData = this.props.rowGetter(action === 'COPY_PASTE' ? originRow : fromRow);
-    let fromRowId = fromRowData[this.props.rowKey];
-    let toRowId = this.props.rowGetter(toRow)[this.props.rowKey];
     this.props.onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action, fromRowData});
   };
 
