@@ -1,5 +1,6 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
+import Provider from './stateManagement/Provider';
 const BaseGrid              = require('./Grid');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
 const RowUtils = require('./RowUtils');
@@ -1161,6 +1162,7 @@ class ReactDataGrid extends React.Component {
       gridWidth = '100%';
     }
     return (
+      <Provider>
       <div className="react-grid-Container" style={{width: containerWidth}}
         ref={(node) => { this.grid = node; }}>
         {toolbar}
@@ -1197,6 +1199,7 @@ class ReactDataGrid extends React.Component {
             overScan={this.props.overScan} />
           </div>
         </div>
+        </Provider>
       );
   }
 }

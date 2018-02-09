@@ -1,23 +1,17 @@
-export default class EventDispatcher {
-  constructor() {
-    this.listeners = new Map();
-  }
-  subscribe = (label, callback) => {
-    this.listeners.has(label) || this.listeners.set(label, []);
-    this.listeners.get(label).push(callback);
-  }
-  unsubscribe = () => {
-    this.listeners.clear();
-  }
-  dispatch = (label, ...args) => {
-    let listeners = this.listeners.get(label);
+const listeners = new Map();
 
-    if (listeners && listeners.length) {
-      listeners.forEach(listener => {
-        listener(...args);
-      });
-      return true;
-    }
-    return false;
+export const subscribe = (label, callback) => {
+  listeners.set(label, callback);
+};
+
+export const unsubscribe = () => {
+  listeners.clear();
+};
+
+export const dispatch = (label, ...args) => {
+  const event = listeners.get(label);
+
+  if (event) {
+    event(...args);
   }
-}
+};

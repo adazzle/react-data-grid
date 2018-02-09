@@ -1,33 +1,55 @@
 import React from 'react';
-import EventDispatcher from './EventDispatcher';
+import PropTypes from 'prop-types';
+import {subscribe, dispatch} from './EventDispatcher';
 
-const events = new EventDispatcher();
-
-const sharedState = {
-  selectedPosition: {
-    idx: -1,
-    rowIdx: -1
-  },
-  isEditorEnabled: false,
-  firstEditorKeyPress: null
+const createAction = eventName => {
+  return {
+    [eventName](payload) {
+      dispatch(eventName, payload);
+    }
+  };
 };
 
-function connect(mapStateToProps, mapDispatchToProps, subscribeToEvents = () => {}) {
-  const actions = mapDispatchToProps(events.dispatch);
+const mapDispatchToActions = dispatchers => {
+  return dispatchers.reduce((acc, eventName) => {
+    return {
+      ...{},
+      ...createAction(eventName)
+    };
+  }, {});
+};
+
+function connect(mapStateToProps, getDispatchers, getSubscriptions) {
+  const actions = getDispatchers && mapDispatchToActions(getDispatchers());
   return function wrapWithConnect(WrappedComponent) {
     return class Connect extends React.Component {
-      componentDidMount() {
-        subscribeToEvents(events.subscribe, this.setState, this.props);
-      }
+      static contextTypes = {
+        store: PropTypes.object.isRequired,
+        events: PropTypes.object.isRequired
+      };
 
-      componentWillUnmount() {
-        events.unsubscribe();
-      }
+      componentDidMount = () => {
+        if (getSubscriptions) {
+          const subscriptions = getSubscriptions(this.update);
+          this.subscribe(subscriptions);
+        }
+      };
+
+      subscribe = subscriptions => {
+        Object.keys(subscriptions).forEach(eventName => {
+          subscribe(eventName, subscriptions[eventName]);
+        });
+      };
+
+      update =payload => {
+        this.context.store.updateStore(payload);
+        this.setState(payload);
+      };
 
       render() {
         return (
           <WrappedComponent
-            {...mapStateToProps(sharedState, this.props)}
+            {...mapStateToProps(this.context.store.getState(), this.props)}
             {...this.props}
             {...actions}
           />
@@ -38,3 +60,4 @@ function connect(mapStateToProps, mapDispatchToProps, subscribeToEvents = () => 
 }
 
 export default connect;
+

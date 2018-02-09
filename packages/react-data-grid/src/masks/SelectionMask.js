@@ -55,7 +55,7 @@ class SelectionMask extends React.Component {
         }}
       >
         {({ x, y, w, h }) => (
-          <div tabIndex="0" style={setMaskStyle(x, y, w, h)} className='rdg-selected' />
+          <div style={setMaskStyle(x, y, w, h)} className="rdg-selected" />
         )}
       </Motion>
     );

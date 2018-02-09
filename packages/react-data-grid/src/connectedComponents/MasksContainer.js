@@ -2,24 +2,14 @@ import connect from '../stateManagement/Connect';
 import EventTypes from '../stateManagement/EventTypes';
 import InteractionMasks from '../masks/InteractionMasks';
 
-const mapStateToProps = (selectedPosition) => {
+const mapStateToProps = ({selectedPosition}) => ({selectedPosition});
+
+const mapDispatchToProps = () => [EventTypes.editCell, EventTypes.selectCell];
+
+const subscriptions = (updateStore) => {
   return {
-    selectedPosition
+    [EventTypes.selectCell]: ({idx, rowIdx}) => updateStore({selectedPosition: {idx, rowIdx}})
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    editCell(selectedPosition, keyCode) {
-      dispatch(EventTypes.editCell, selectedPosition, keyCode);
-    }
-  };
-};
-
-const subscribeToEvents = (subscribe, setState) => {
-  subscribe(EventTypes.onCellClick, (idx, rowIdx) => {
-    setState({selectedPosition: {idx, rowIdx}});
-  });
-};
-
-export default connect(mapStateToProps, mapDispatchToProps, subscribeToEvents)(InteractionMasks);
+export default connect(mapStateToProps, mapDispatchToProps, subscriptions)(InteractionMasks);

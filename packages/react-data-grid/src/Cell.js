@@ -43,7 +43,7 @@ class Cell extends React.Component {
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
     ]),
-    onCellClick: PropTypes.func.isRequired
+    selectCell: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -72,8 +72,8 @@ class Cell extends React.Component {
   }
 
   onCellClick = () => {
-    const {idx, rowIdx, onCellClick} = this.props;
-    onCellClick({idx, rowIdx});
+    const {idx, rowIdx, selectCell} = this.props;
+    selectCell({idx, rowIdx});
   };
 
   onCellFocus = () => {
