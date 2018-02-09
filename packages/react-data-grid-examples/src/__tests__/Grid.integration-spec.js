@@ -106,20 +106,27 @@ describe('Grid Integration', () => {
 
     it('Start editing by pressing a key', () => {
       const letterEKeyCode = 69;
-      gridRunner.selectCell({rowIdx: 3, cellIdx: 5})
+      const coords = {rowIdx: 3, cellIdx: 5};
+      gridRunner.selectCell(coords)
         .keyDown({
           keyCode: letterEKeyCode
         }, gridRunner.cell )
+        .resetCell(coords)
         .isEditable()
+        .resetCell(coords)
         .keyDown({key: 'Enter'})
+        .resetCell(coords)
         .hasCommitted('E') // keydown ALWAYS upper case http://stackoverflow.com/questions/2263889/why-always-uppercase-in-my-code
         .isNotEditable()
         .dispose();
     });
 
     it('Start editing by pressing enter', () => {
-      gridRunner.selectCell({rowIdx: 3, cellIdx: 5})
+      const coords = {rowIdx: 3, cellIdx: 5};
+      gridRunner.selectCell(coords)
+        .resetCell(coords)
         .keyDown({key: 'Enter'}, gridRunner.cell)
+        .resetCell(coords)
         .isEditable()
         .dispose();
     });
@@ -145,6 +152,7 @@ describe('Grid Integration', () => {
     it('should commit editor changes on blur', () => {
       gridRunner = new GridRunner({});
       gridRunner.clickIntoEditor({ rowIdx: 3, cellIdx: 5})
+        .resetCell({ rowIdx: 3, cellIdx: 5})
         .setValue('Test')
         .selectCell({ rowIdx: 4, cellIdx: 3 })
         .selectCell({ rowIdx: 3, cellIdx: 5 })
@@ -154,9 +162,13 @@ describe('Grid Integration', () => {
 
     it('Arrow Left doesnt commit your change if you are not at the start of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
+      const coords = {rowIdx: 3, cellIdx: 4};
+      gridRunner.clickIntoEditor(coords)
+        .resetCell(coords)
         .setValue('Test')
+        .resetCell(coords)
         .setCursor(2)
+        .resetCell(coords)
         .keyDown({key: 'ArrowLeft'})
         .isEditable()
         // Need to escape the editor here since dispose will prompt componentWillUnmount,
@@ -177,10 +189,15 @@ describe('Grid Integration', () => {
 
     it('Arrow Right commits your change when you are at the end of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
+      const coords = {rowIdx: 3, cellIdx: 4};
+      gridRunner.clickIntoEditor(coords)
+        .resetCell(coords)
         .setValue('Test')
+        .resetCell(coords)
         .setCursor(4)
+        .resetCell(coords)
         .keyDown({key: 'ArrowRight'})
+        .resetCell(coords)
         .hasCommitted('Test')
         .hasSelected({rowIdx: 3, cellIdx: 5})
         .dispose();
@@ -188,9 +205,13 @@ describe('Grid Integration', () => {
 
     it('Arrow Right doesnt commit your change when you are not at the end of the text', () => {
       gridRunner = new GridRunner({renderIntoBody: true});
-      gridRunner.clickIntoEditor({rowIdx: 3, cellIdx: 4})
+      const coords = {rowIdx: 3, cellIdx: 4};
+      gridRunner.clickIntoEditor(coords)
+        .resetCell(coords)
         .setValue('Test')
+        .resetCell(coords)
         .setCursor(2)
+        .resetCell(coords)
         .keyDown({key: 'ArrowRight'})
         .isEditable()
         // Need to escape the editor here since dispose will prompt componentWillUnmount,

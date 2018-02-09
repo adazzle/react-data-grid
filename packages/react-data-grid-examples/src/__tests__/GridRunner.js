@@ -37,11 +37,16 @@ export default class GridRunner {
   // Helpers - these are just wrappers to run several steps
   // NOTE: these are 'final' functions, ie they call dispose at the end
   changeCell({select: {cell: selectCell, row: selectRow}, val, ev, expectToSelect: {row: expectRow, cell: expectCell}}) {
+    const coords = {cellIdx: selectCell, rowIdx: selectRow};
     this
-      .clickIntoEditor({cellIdx: selectCell, rowIdx: selectRow})
+      .clickIntoEditor(coords)
+      .resetCell(coords)
       .setValue(val)
+      .resetCell(coords)
       .keyDown(ev)
+      .resetCell(coords)
       .hasCommitted(val)
+      .resetCell(coords)
       .hasSelected({cellIdx: expectCell, rowIdx: expectRow})
       .dispose();
   }
@@ -49,6 +54,12 @@ export default class GridRunner {
   /* =====
   ACTIONS
   ======== */
+  resetCell({cellIdx, rowIdx}) {
+    // Caching components do not work in V3 so find the cell again after each operation
+    this.cell = this.getCell({ cellIdx, rowIdx });
+    return this;
+  }
+
   rightClickCell({cellIdx, rowIdx}) {
     this.row = this.getRow(rowIdx);
     this.cell = this.getCell({ cellIdx, rowIdx });
