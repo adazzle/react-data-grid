@@ -37,6 +37,7 @@
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
     "react-input-autosize": "1.1.0",
+    "react-motion": "^0.5.2",
     "react-select": "^1.0.0-beta14",
     "reselect": "^2.5.1",
     "ron-react-autocomplete": "^4.0.5"
@@ -54,6 +55,7 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-2": "^6.24.1",
     "copy-dir": "^0.3.0",
     "css-loader": "^0.26.0",
     "del": "^1.2.1",

@@ -1,5 +1,6 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
+import Provider from './stateManagement/Provider';
 const BaseGrid              = require('./Grid');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
 const RowUtils = require('./RowUtils');
@@ -25,7 +26,7 @@ type SelectedType = {
 type ColumnEvent = {
   name: string,
   rowIdx: number;
-  idx: number;
+  idx: number
 }
 
 type DraggedType = {
@@ -81,7 +82,6 @@ class ReactDataGrid extends React.Component {
     onCellDeSelected: PropTypes.func,
     onCellExpand: PropTypes.func,
     enableDragAndDrop: PropTypes.bool,
-    tabIndex: PropTypes.number,
     onRowExpandToggle: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
@@ -121,12 +121,16 @@ class ReactDataGrid extends React.Component {
     selectAllRenderer: PropTypes.object,
     minColumnWidth: PropTypes.number,
     columnEquality: PropTypes.func,
-    onColumnResize: PropTypes.func
+    onColumnResize: PropTypes.func,
+    setCellActive: PropTypes.func,
+    moveDown: PropTypes.func,
+    moveUp: PropTypes.func,
+    moveLeft: PropTypes.func,
+    moveRight: PropTypes.func
   };
 
   static defaultProps = {
     enableCellSelect: false,
-    tabIndex: -1,
     rowHeight: 35,
     headerFiltersHeight: 45,
     enableRowSelect: false,
@@ -150,13 +154,7 @@ class ReactDataGrid extends React.Component {
   constructor(props, context) {
     super(props, context);
     let columnMetrics = this.createColumnMetrics();
-    let initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
-    if (props.enableCellSelect) {
-      initialState.selected = {rowIdx: 0, idx: 0};
-    } else {
-      initialState.selected = {rowIdx: -1, idx: -1};
-    }
-    this.state = initialState;
+    this.state = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
   }
 
   componentWillMount() {
@@ -301,11 +299,6 @@ class ReactDataGrid extends React.Component {
     return typeof this['onPress' + key] === 'function';
   };
 
-  hasSelectedCellChanged = (selected: SelectedType) => {
-    let previouslySelected = Object.assign({}, this.state.selected);
-    return previouslySelected.rowIdx !== selected.rowIdx || previouslySelected.idx !== selected.idx || previouslySelected.active === false;
-  };
-
   onContextMenuHide = () => {
     document.removeEventListener('click', this.onContextMenuHide);
     let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
@@ -331,38 +324,13 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  onSelect = (selected: SelectedType) => {
-    if (this.state.selected.rowIdx !== selected.rowIdx
-      || this.state.selected.idx !== selected.idx
-      || this.state.selected.active === false) {
-      let idx = selected.idx;
-      let rowIdx = selected.rowIdx;
-      if (this.isCellWithinBounds(selected)) {
-        const oldSelection = this.state.selected;
-        this.setState({selected: selected}, () => {
-          if (typeof this.props.onCellDeSelected === 'function') {
-            this.props.onCellDeSelected(oldSelection);
-          }
-          if (typeof this.props.onCellSelected === 'function') {
-            this.props.onCellSelected(selected);
-          }
-        });
-      } else if (rowIdx === -1 && idx === -1) {
-        // When it's outside of the grid, set rowIdx anyway
-        this.setState({selected: { idx, rowIdx }});
-      }
+  onSelect = (selected) => {
+    const {onCellDeSelected, onCellSelected} = this.props;
+    if (typeof onCellDeSelected === 'function') {
+      onCellDeSelected(oldSelection);
     }
-  };
-
-  onCellClick = (cell: SelectedType, e: SyntheticEvent) => {
-    this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx});
-
-    if (this.props.onRowClick && typeof this.props.onRowClick === 'function') {
-      this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
-    }
-
-    if (e) {
-      e.stopPropagation();
+    if (typeof onCellSelected === 'function') {
+      onCellSelected(selected);
     }
   };
 
@@ -386,22 +354,6 @@ class ReactDataGrid extends React.Component {
     if (e) {
       e.stopPropagation();
     }
-  };
-
-  onPressArrowUp = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, -1, 0);
-  };
-
-  onPressArrowDown = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 1, 0);
-  };
-
-  onPressArrowLeft = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 0, -1);
-  };
-
-  onPressArrowRight = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 0, 1);
   };
 
   isFocusedOnCell = () => {
@@ -1021,21 +973,14 @@ class ReactDataGrid extends React.Component {
   };
 
   openCellEditor = (rowIdx, idx) => {
-    let row = this.props.rowGetter(rowIdx);
+    const {rowGetter, setCellActive} = this.props;
+    let row = rowGetter(rowIdx);
     let col = this.getColumn(idx);
 
     if (!ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
       return;
     }
-
-    let selected = {rowIdx, idx};
-    if (this.hasSelectedCellChanged(selected)) {
-      this.setState({selected}, () => {
-        this.setActive('Enter');
-      });
-    } else {
-      this.setActive('Enter');
-    }
+    setCellActive(idx, rowIdx);
   };
 
   scrollToColumn = (colIdx) => {
@@ -1177,11 +1122,9 @@ class ReactDataGrid extends React.Component {
   render() {
     let cellMetaData = {
       rowKey: this.props.rowKey,
-      selected: this.state.selected,
       dragged: this.state.dragged,
       hoveredRowIdx: this.state.hoveredRowIdx,
       onCellClick: this.onCellClick,
-      onCellFocus: this.onCellFocus,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onCommit: this.onCellCommit,
@@ -1219,6 +1162,7 @@ class ReactDataGrid extends React.Component {
       gridWidth = '100%';
     }
     return (
+      <Provider>
       <div className="react-grid-Container" style={{width: containerWidth}}
         ref={(node) => { this.grid = node; }}>
         {toolbar}
@@ -1255,9 +1199,9 @@ class ReactDataGrid extends React.Component {
             overScan={this.props.overScan} />
           </div>
         </div>
+        </Provider>
       );
   }
 }
-
 
 module.exports = ReactDataGrid;

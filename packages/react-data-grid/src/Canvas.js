@@ -1,15 +1,13 @@
 const React = require('react');
-const joinClasses = require('classnames');
 import PropTypes from 'prop-types';
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const RowUtils = require('./RowUtils');
 import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
-
-import shallowEqual from 'fbjs/lib/shallowEqual';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
+import MasksContainer from './connectedComponents/MasksContainer';
 
 class Canvas extends React.Component {
   static displayName = 'Canvas';
@@ -135,26 +133,6 @@ class Canvas extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps: any, nextState: any): boolean {
-    let shouldUpdate = nextState.displayStart !== this.state.displayStart
-      || nextState.displayEnd !== this.state.displayEnd
-      || nextState.scrollingTimeout !== this.state.scrollingTimeout
-      || this.props.scrollToRowIndex !== nextProps.scrollToRowIndex
-      || nextProps.rowsCount !== this.props.rowsCount
-      || nextProps.rowHeight !== this.props.rowHeight
-      || nextProps.columns !== this.props.columns
-      || nextProps.width !== this.props.width
-      || nextProps.height !== this.props.height
-      || nextProps.cellMetaData !== this.props.cellMetaData
-      || this.props.colDisplayStart !== nextProps.colDisplayStart
-      || this.props.colDisplayEnd !== nextProps.colDisplayEnd
-      || this.props.colVisibleStart !== nextProps.colVisibleStart
-      || this.props.colVisibleEnd !== nextProps.colVisibleEnd
-      || !shallowEqual(nextProps.style, this.props.style)
-      || this.props.isScrolling !== nextProps.isScrolling;
-    return shouldUpdate;
-  }
-
   componentWillUnmount() {
     this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
@@ -192,6 +170,19 @@ class Canvas extends React.Component {
     this._scroll = scroll;
     this.props.onScroll(scroll);
   };
+
+  onHitBottomCanvas = () =>  {
+    const {visibleEnd, rowHeight} = this.props;
+    const node = ReactDOM.findDOMNode(this);
+    const buffer = rowHeight;
+    node.scrollTop = (visibleEnd * rowHeight) - buffer;
+  }
+
+  onHitTopCanvas = () =>  {
+    const {visibleStart, visibleEnd, rowHeight} = this.props;
+    const node = ReactDOM.findDOMNode(this);
+    node.scrollTop -= (visibleEnd - visibleStart) * rowHeight;
+  }
 
   getRows = (displayStart, displayEnd) => {
     this._currentRowsRange = { start: displayStart, end: displayEnd };
@@ -302,7 +293,7 @@ class Canvas extends React.Component {
 
   render() {
     const { displayStart, displayEnd } = this.state;
-    const { rowHeight, rowsCount } = this.props;
+    const { cellMetaData, columns, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height } = this.props;
 
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
@@ -314,13 +305,13 @@ class Canvas extends React.Component {
         row: r.row,
         height: rowHeight,
         onMouseOver: this.onMouseOver,
-        columns: this.props.columns,
+        columns: columns,
         isSelected: this.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
-        expandedRows: this.props.expandedRows,
-        cellMetaData: this.props.cellMetaData,
+        expandedRows,
+        cellMetaData,
         subRowDetails: r.subRowDetails,
-        colVisibleStart: this.props.colVisibleStart,
-        colVisibleEnd: this.props.colVisibleEnd,
+        colVisibleStart,
+        colVisibleEnd,
         colDisplayStart: this.props.colDisplayStart,
         colDisplayEnd: this.props.colDisplayEnd,
         isScrolling: this.props.isScrolling
@@ -344,22 +335,21 @@ class Canvas extends React.Component {
       overflowX: 'auto',
       overflowY: 'scroll',
       width: this.props.totalWidth,
-      height: this.props.height
+      height
     };
 
     return (
-      <div
-        ref={(div) => { this.canvas = div; }}
-        style={style}
-        onScroll={this.onScroll}
-        className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active })}>
-        <RowsContainer
-          width={this.props.width}
-          rows={rows}
-          contextMenu={this.props.contextMenu}
-          rowIdx={this.props.cellMetaData.selected.rowIdx}
-          idx={this.props.cellMetaData.selected.idx} />
-      </div>
+        <div
+          ref={(div) => { this.canvas = div; }}
+          style={style}
+          onScroll={this.onScroll}
+          className='react-grid-Canvas'>
+          <MasksContainer width={this.props.totalWidth} height={height} rowHeight={rowHeight} onCellClick={cellMetaData.onCellClick} columns={columns} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas}/>
+          <RowsContainer
+            width={width}
+            rows={rows}
+            contextMenu={this.props.contextMenu}/>
+        </div>
     );
   }
 }
