@@ -84,12 +84,12 @@ class HeaderRow extends React.Component {
   getSortableHeaderCell = (column) => {
     let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
     let sortDescendingFirst = (column.sortDescendingFirst === undefined ) ? false : column.sortDescendingFirst;
-    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst}/>;
+    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst} headerRenderer={column.headerRenderer} />;
   };
 
   getHeaderRenderer = (column) => {
     let renderer;
-    if (column.headerRenderer && !this.props.filterable) {
+    if (column.headerRenderer && !column.sortable && !this.props.filterable) {
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);
