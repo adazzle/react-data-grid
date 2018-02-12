@@ -15,7 +15,8 @@ class InteractionMasks extends React.Component {
     selectedPosition: PropTypes.object,
     cellEvents: PropTypes.func,
     rowHeight: PropTypes.number,
-    editCell: PropTypes.func
+    editCell: PropTypes.func,
+    selectCell: PropTypes.func
   };
 
   onKeyDown = e => {
@@ -37,7 +38,8 @@ class InteractionMasks extends React.Component {
   };
 
   editCell = (e) => {
-    this.props.editCell(this.props.selectedPosition, e.keyCode);
+    const {editCell, selectedPosition} = this.props;
+    editCell(selectedPosition, e.keyCode);
   };
 
   onPressTab = e => {
@@ -80,16 +82,23 @@ class InteractionMasks extends React.Component {
     return this.isCellWithinBounds(this.props.selectedPosition);
   };
 
+  focus = () => {
+    if (this.node && (document.activeElement !== this.node)) {
+      this.node.focus();
+    }
+  };
+
   selectCell = cell => {
     if (this.isCellWithinBounds(cell)) {
-      this.setState({ selectedPosition: cell });
+      this.props.selectCell(cell);
     }
   };
 
   render() {
     return (
       <div
-        tabIndex='0'
+        ref={node => {this.node = node;}}
+        tabIndex="0"
         onKeyDown={this.onKeyDown}
         ref={node => {
           this.node = node;

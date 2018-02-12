@@ -36,6 +36,7 @@ class SelectionMask extends React.Component {
       onHitBottomBoundary();
     }
   }
+
   render() {
     const {
       selectedPosition: { idx, rowIdx },
@@ -55,7 +56,7 @@ class SelectionMask extends React.Component {
         }}
       >
         {({ x, y, w, h }) => (
-          <div tabIndex="0" style={setMaskStyle(x, y, w, h)} className='rdg-selected' />
+          <div tabIndex="0" style={setMaskStyle(x, y, w, h)} className='rdg-selected moving-element' />
         )}
       </Motion>
     );

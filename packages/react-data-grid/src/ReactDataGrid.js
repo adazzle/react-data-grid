@@ -1186,8 +1186,6 @@ class ReactDataGrid extends React.Component {
             onSort={this.handleSort}
             minHeight={this.props.minHeight}
             totalWidth={gridWidth}
-            onViewportKeydown={this.onKeyDown}
-            onViewportKeyup={this.onKeyUp}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
             onViewportClick={this.deselect}
