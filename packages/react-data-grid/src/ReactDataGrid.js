@@ -551,7 +551,7 @@ class ReactDataGrid extends React.Component {
   };
 
   onCellCommit = (commit: RowUpdateEvent) => {
-    const selected = { ...this.state.selected, active: false };
+    const selected = Object.assign({}, this.state.selected, { active: false });
     this.setState({ selected });
 
     if (this.props.onRowUpdated) {
