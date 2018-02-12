@@ -622,7 +622,7 @@ describe('onGridRowsUpdated', () => {
     const toRow =  updatedRows[updatedRows.length - 1];
 
     const grid = shallowRenderGridWithSelectionHandlers();
-    grid.onGridRowsUpdated(CELL_KEY, fromRow, toRows, updatedRowData, action, fromRow);
+    grid.onGridRowsUpdated(CELL_KEY, fromRow, toRow, updatedRowData, action, fromRow);
     expect(grid.props.onGridRowsUpdated).toHaveBeenCalledWith({
       cellKey: CELL_KEY,
       fromRow,
