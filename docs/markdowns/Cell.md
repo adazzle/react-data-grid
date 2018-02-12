@@ -67,11 +67,6 @@ type: `bool`
 type: `bool`
 
 
-### `ref`
-
-type: `string`
-
-
 ### `rowData` (required)
 
 type: `object`

@@ -1522,6 +1522,17 @@
         "required": false,
         "description": ""
       },
+      "tabIndex": {
+        "type": {
+          "name": "number"
+        },
+        "defaultValue": {
+          "value": "-1",
+          "computed": false
+        },
+        "required": false,
+        "description": ""
+      },
       "rowOffsetHeight": {
         "type": {
           "name": "number"
@@ -5471,12 +5482,12 @@
           "value": {
             "startDate": {
               "name": "custom",
-              "raw": "React.PropTypes.Date.isRequired",
+              "raw": "PropTypes.Date.isRequired",
               "required": true
             },
             "endDate": {
               "name": "custom",
-              "raw": "React.PropTypes.Date.isRequired",
+              "raw": "PropTypes.Date.isRequired",
               "required": true
             }
           }
@@ -5542,7 +5553,7 @@
                 "name": "objectOf",
                 "value": {
                   "name": "custom",
-                  "raw": "{\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n}"
+                  "raw": "{\r\n  id: PropTypes.string,\r\n  title: PropTypes.string,\r\n  value: PropTypes.string,\r\n  text: PropTypes.string\r\n}"
                 }
               }
             ]
@@ -5921,7 +5932,7 @@
         "returns": null
       },
       {
-        "name": "isClickInisdeEditor",
+        "name": "isClickInsideEditor",
         "docblock": null,
         "modifiers": [],
         "params": [
@@ -6262,7 +6273,7 @@
                 "name": "objectOf",
                 "value": {
                   "name": "custom",
-                  "raw": "{\r\n  id: React.PropTypes.string,\r\n  title: React.PropTypes.string,\r\n  value: React.PropTypes.string,\r\n  text: React.PropTypes.string\r\n}"
+                  "raw": "{\r\n  id: PropTypes.string,\r\n  title: PropTypes.string,\r\n  value: PropTypes.string,\r\n  text: PropTypes.string\r\n}"
                 }
               }
             ]

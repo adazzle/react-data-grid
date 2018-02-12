@@ -1,53 +1,56 @@
 # React Data Grid 
 [![Build status](https://ci.appveyor.com/api/projects/status/smciktvlkvp6r8w7/branch/master?svg=true)](https://ci.appveyor.com/project/adazzle/react-data-grid/branch/master)[![Coverage Status](https://coveralls.io/repos/adazzle/react-data-grid/badge.svg?branch=master)](https://coveralls.io/r/adazzle/react-data-grid?branch=master) [![npm version](https://badge.fury.io/js/react-data-grid.svg)](http://badge.fury.io/js/react-data-grid) 
 ![npm dependencies](https://david-dm.org/adazzle/react-data-grid.svg)
+[![CDNJS](https://img.shields.io/cdnjs/v/react-data-grid.svg)](https://cdnjs.com/libraries/react-data-grid)
 [![React Data Grid chat](https://react-data-grid.herokuapp.com/badge.svg)](https://react-data-grid.herokuapp.com/)
 
 Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like http://adazzle.github.io/react-data-grid/  
 ![react-data-grid](https://cloud.githubusercontent.com/assets/1432798/7348812/78063bd6-ecec-11e4-89d5-ffd327721cd7.PNG)
 
-
-Installation
-------------
-
-```sh
-npm install react-data-grid
-```
-
-This library is written with CommonJS modules. If you are using
-browserify, webpack, or similar, you can consume it like anything else
-installed from npm.
-
 Overview 
 --------
 ReactDataGrid is an advanced JavaScript spreadsheet-like grid component built using React
 
-Exported Modules
+Installation
+------------
+The easiest way to use react-data-grid is to install it from npm and build it into your app with Webpack.
+```sh
+npm install react-data-grid
+```
+
+You can then import react-data-grid in your application as follows:
+```typescript
+import ReactDataGrid from 'react-data-grid';
+```
+
+Versions In This Repository
 --------
-ReactDataGrid exposes two possible modules, `react-data-grid` and `react-data-grid/addons`.
-What's included in each module depends on ReactDataGrid's version you're using.
-We have made a major change to this in v1, so please read below.
 
-### 0.X.X
+- [master](https://github.com/adazzle/react-data-grid/commits/master) - commits that will be included in the next _minor_ or _patch_ release
+- [next](https://github.com/adazzle/react-data-grid/commits/next) - commits that will be included in the next _major_ release (breaking changes)
 
-  - You can import `react-data-grid` **or** `react-data-grid/addons`  depending if you want to have access to the add-ons or not. 
-  - `react-data-grid/addons` contains `react-data-grid` so in 0.X.X you *only* need to imort this module to get the addon extras *and* the grid itself.
-  - `react-data-grid/addons` points to `react-data-grid-with-addons.js` on dist folder.  
-  - #### Known Issues:
-    -  Some external dependencies in `react-data-grid/addons` don't offer support for older browsers like **IE8**, so you *cannot* use this on a page with IE* as babel generated script will break (using `default` and other issues that break in IE8)
-    -  This also includes a much deeper set of dependencies that get bunlded, which in simple use cases, causes a lot of bloat
+Most PRs should be made to **master**, unless you know it is a breaking change.
 
-### 1.0.0
- We have made a breaking change, so `react-data-grid/addons` will *not* include the grid itself, it is *only* for importing the addons and you need to also import `react-data-grid`
- This solves for the issues above, as well as laying the groundwork for allowing more fine grained imports.
- This will allow you to simply include `react-data-grid/addons` to get everything, but also to include single addons (a la lodash)
-  - If you just want the basic grid import `react-data-grid`
-  - If you want the addons (rich editors, etc) import `react-data-grid` **and** `react-data-grid/addons`
-  - Both modules are **completely independent and can be used separately**.
-  - `react-data-grid/addons` points to `react-data-grid.ui-plugins.js`` on dist folder. 
+To install the latest **unstable** version, you can run 
+```sh
+npm install react-data-grid@next
+```
 
-#### Migration from 0.X to 1.X
-  If you previously had an import for `react-data-grid/addons` you will need to now add `react-data-grid` as well
+Themes
+------
+We use [Bootstrap](https://github.com/twbs/bootstrap). If you want your Grid to get the "default" styling like the picture above, you'll need to include it separately.
+
+```
+npm install bootstrap
+```
+and then import the css from the dist folder when bootstrapping your application
+```
+import 'bootstrap/dist/css/bootstrap.css';
+```
+
+Migrations
+--------
+If you intend to do a major release update for you react-data-grid check [the migration documents](migrations).
   
 Features
 --------
@@ -62,15 +65,16 @@ Features
 - [Frozen columns](http://adazzle.github.io/react-data-grid/examples.html#/fixed-cols)
 - [Resizable columns](http://adazzle.github.io/react-data-grid/examples.html#/resizable-cols)
 - [Sorting](http://adazzle.github.io/react-data-grid/examples.html#/sortable-cols) 
-- [Filtering] (http://adazzle.github.io/react-data-grid/examples.html#/filterable-sortable-grid) 
-- [Context Menu] (http://adazzle.github.io/react-data-grid/examples.html#/context-menu)
+- [Filtering](http://adazzle.github.io/react-data-grid/examples.html#/filterable-sortable-grid) 
+- [Context Menu](http://adazzle.github.io/react-data-grid/examples.html#/context-menu)
 - Copy and Paste values into other cells
-- [Multiple cell updates using cell dragdown] (http://adazzle.github.io/react-data-grid/examples.html#/cell-drag-down)
-- [Association of events of individual columns] (http://adazzle.github.io/react-data-grid/examples.html#/column-events)
+- [Multiple cell updates using cell dragdown](http://adazzle.github.io/react-data-grid/examples.html#/cell-drag-down)
+- [Association of events of individual columns](http://adazzle.github.io/react-data-grid/examples.html#/column-events)
 
 
 Check out the `examples` directory to see how simple previously complex UI
 and workflows are to create.
+
 
 Contributing
 ------------

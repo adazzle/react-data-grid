@@ -1,0 +1,32 @@
+{
+  "name": "react-data-grid-examples",
+  "version": "3.0.11",
+  "description": "A set of examples for the grid",
+  "main": "main.js",
+  "scripts": {
+    "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples true",
+    "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples",
+    "test": "npm test"
+  },
+  "keywords": [
+    "react",
+    "react-data-grid",
+    "examples",
+    "react-data-grid-addons"
+  ],
+  "author": "Adazzle",
+  "license": "MIT",
+  "dependencies": {
+    "immutability-helper": "^2.4.0",
+    "react-data-grid": "^3.0.11",
+    "react-data-grid-addons": "^3.0.11"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.2.0",
+    "jquery": "^2.1.1",
+    "lodash": "^4.13.1",
+    "lodash.groupby": "^4.5.1",
+    "react-router": "^0.13.3",
+    "markdown": "^0.5.0"
+  }
+}

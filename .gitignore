@@ -6,4 +6,7 @@ test/reports
 test/coverage
 dist
 .npmrc
+npm-debug.log
+lerna-debug.log
 **.orig
+.vscode

@@ -1,0 +1,32 @@
+.react-grid-Container {
+  clear: both;
+  margin-top: 0;
+  padding: 0;
+}
+
+.react-grid-Main {
+  background-color: black;
+  color: inherit;
+  padding: 0px;
+  outline: 1px solid red;
+  clear : both;
+}
+
+.react-grid-Grid {
+  background-color: blue;
+  border: 1px solid yellow;
+  will-change: transform;
+}
+
+.react-grid-Canvas {
+  background-color: darkorange;
+  will-change: transform;
+}
+
+.react-grid-Cell {
+  background-color: rosybrown;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-right: 1px solid seagreen;
+  border-bottom: 1px solid cornflowerblue;
+}
