@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 const COMPONENT_DID_MOUNT_SOURCE = 'CDM';
 const COMPONENT_DID_UPDATE_SOURCE = 'CDU';
 
