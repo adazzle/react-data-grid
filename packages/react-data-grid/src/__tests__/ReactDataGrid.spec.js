@@ -614,25 +614,26 @@ describe('using keyboard to navigate through the grid by pressing Tab or Shift+T
 describe('onGridRowsUpdated', () => {
   const CELL_KEY = 'column1';
 
-  const getRow = (rowKey) => { return { ROW_KEY: rowKey }; };
+  const getRow = (rowKey, index) => { return { ROW_KEY: rowKey, index }; };
   const testOnGridRowsUpdated = (rowKeys, expectedUpdatedRowIds, action =  UpdateActions.CELL_UPDATE) => {
-    const updatedRows = rowKeys.map(rowKey => getRow(rowKey));
+    const updatedRows = rowKeys.map((rowKey, index) => getRow(rowKey, index));
     const updatedRowData = { CELL_KEY: 'update' };
-    const fromRow =  updatedRows[0];
-    const toRow =  updatedRows[updatedRows.length - 1];
+    const fromRowData = updatedRows[0];
+    const fromRowIdx = fromRowData.index;
+    const toRowIdx = updatedRows[updatedRows.length - 1].index;
 
     const grid = shallowRenderGridWithSelectionHandlers();
-    grid.onGridRowsUpdated(CELL_KEY, fromRow, toRow, updatedRowData, action, fromRow);
+    grid.onGridRowsUpdated(CELL_KEY, fromRowIdx, toRowIdx, updatedRowData, action, fromRowIdx);
     expect(grid.props.onGridRowsUpdated).toHaveBeenCalledWith({
       cellKey: CELL_KEY,
-      fromRow,
-      toRow,
+      fromRow: fromRowIdx,
+      toRow: toRowIdx,
       fromRowId: fromRow[ROW_KEY],
       toRowId: toRow[ROW_KEY],
       rowIds: expectedUpdatedRowIds,
       updated: updatedRowData,
       action,
-      fromRowData: fromRow
+      fromRowData
     });
   };
 
