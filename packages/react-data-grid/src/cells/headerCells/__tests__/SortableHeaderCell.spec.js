@@ -12,7 +12,7 @@ const defaultProps = {
   sortDirection: DEFINE_SORT.NONE
 };
 
-fdescribe('<SortableHeaderCell/>', () => {
+describe('<SortableHeaderCell/>', () => {
   const setup = overrideProps => {
     const props = Object.assign({}, defaultProps, overrideProps);
     const wrapper = shallow(<SortableHeaderCell {...props} />);
