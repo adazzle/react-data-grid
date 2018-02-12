@@ -535,36 +535,32 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  onGridRowsUpdated = (cellKey, fromRow, toRow, updated, action, originRow) => {
+  onGridRowsUpdated = (cellKey, fromRowIdx, toRowIdx, updated, action, originRowIdx) => {
+    const { rowGetter, rowKey } = this.props;
+    const fromRowData = rowGetter(action === AppConstants.UpdateActions.COPY_PASTE ? originRowIdx : fromRowIdx);
+    const fromRowId = fromRowData[rowKey];
+    const toRowId = rowGetter(toRowIdx)[rowKey];
+
     let rowIds = [];
-
-    for (let i = fromRow; i <= toRow; i++) {
-      rowIds.push(this.props.rowGetter(i)[this.props.rowKey]);
+    for (let i = fromRowIdx + 1; i < toRowIdx; i++) {
+      rowIds.push(rowGetter(i)[this.props.rowKey]);
     }
+    rowIds.push(toRowId);
 
-    let fromRowData = this.props.rowGetter(action === 'COPY_PASTE' ? originRow : fromRow);
-    let fromRowId = fromRowData[this.props.rowKey];
-    let toRowId = this.props.rowGetter(toRow)[this.props.rowKey];
-    this.props.onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action, fromRowData});
+    this.props.onGridRowsUpdated({cellKey, fromRowIdx, toRowIdx, fromRowId, toRowId, rowIds, updated, action, fromRowData});
   };
 
   onCellCommit = (commit: RowUpdateEvent) => {
-    let selected = Object.assign({}, this.state.selected);
-    selected.active = false;
-    let expandedRows = this.state.expandedRows;
-    // if(commit.changed && commit.changed.expandedHeight){
-    //   expandedRows = this.expandRow(commit.rowIdx, commit.changed.expandedHeight);
-    // }
-    this.setState({selected: selected, expandedRows: expandedRows});
+    const selected = Object.assign({}, this.state.selected, { active: false });
+    this.setState({ selected });
 
     if (this.props.onRowUpdated) {
       this.props.onRowUpdated(commit);
     }
 
-    let targetRow = commit.rowIdx;
-
     if (this.props.onGridRowsUpdated) {
-      this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
+      const targetRowIdx = commit.rowIdx;
+      this.onGridRowsUpdated(commit.cellKey, targetRowIdx, targetRowIdx, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
     }
   };
 
@@ -602,7 +598,7 @@ class ReactDataGrid extends React.Component {
     }
 
     if (this.props.onGridRowsUpdated) {
-      let cellKey = this.getColumn(e.idx).key;
+      const cellKey = this.getColumn(e.idx).key;
       this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, {[cellKey]: e.rowData[cellKey]}, AppConstants.UpdateActions.COLUMN_FILL);
     }
   };
@@ -635,17 +631,19 @@ class ReactDataGrid extends React.Component {
 
   handleDragEnd = () => {
     if (!this.dragEnabled()) { return; }
+
     const { selected, dragged } = this.state;
-    const column = this.getColumn(this.state.selected.idx);
+    const column = this.getColumn(selected.idx);
     if (selected && dragged && column) {
-      let cellKey = column.key;
-      let fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-      let toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+      const cellKey = column.key;
+      const fromRowIdx = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+      const toRowIdx   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       if (this.props.onCellsDragged) {
-        this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
+        this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRowIdx, toRow: toRowIdx, value: dragged.value});
       }
+
       if (this.props.onGridRowsUpdated) {
-        this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
+        this.onGridRowsUpdated(cellKey, fromRowIdx, toRowIdx, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
       }
     }
     this.setState({dragged: {complete: true}});
@@ -665,18 +663,18 @@ class ReactDataGrid extends React.Component {
 
   handlePaste = () => {
     if (!this.copyPasteEnabled() || !(this.state.copied)) { return; }
-    let selected = this.state.selected;
-    let cellKey = this.getColumn(this.state.selected.idx).key;
-    let textToCopy = this.state.textToCopy;
-    let fromRow = this.state.copied.rowIdx;
-    let toRow = selected.rowIdx;
+
+    const { selected, textToCopy, copied } = this.state;
+    const cellKey = this.getColumn(selected.idx).key;
+    const fromRowIdx = copied.rowIdx;
+    const toRowIdx = selected.rowIdx;
 
     if (this.props.onCellCopyPaste) {
-      this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: fromRow, toRow: toRow});
+      this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: toRowIdx, value: textToCopy, fromRow: fromRowIdx, toRow: toRowIdx});
     }
 
     if (this.props.onGridRowsUpdated) {
-      this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE, fromRow);
+      this.onGridRowsUpdated(cellKey, toRowIdx, toRowIdx, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE, fromRowIdx);
     }
   };
 
