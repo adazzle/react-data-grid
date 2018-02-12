@@ -112,14 +112,6 @@ class FocusableComponentTestRunner {
 
       expect(this.componentPrototype.focus).not.toHaveBeenCalled();
     });
-
-    // TODO: why is this test failing?
-    xit('should focus when scrolling and selected', () => {
-      let cellMetaData = Object.assign({ }, this._props.cellMetaData, { isScrollingVerticallyWithKeyboard: true, isScrollingHorizontallyWithKeyboard: true });
-      this._componentWrapper = shallow(<this._Component {...this._props} cellMetaData={cellMetaData} />, { lifecycleExperimental: true });
-      this._componentWrapper.setProps({cellMetaData});
-      expect(this.componentPrototype.focus).toHaveBeenCalled();
-    });
   }
 
   _addFocusBeforeEach() {
