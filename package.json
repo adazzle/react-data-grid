@@ -29,7 +29,6 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "es5-shim": "^4.0.3",
-    "fbjs": "^0.6.1",
     "fs-extra": "^0.30.0",
     "keymirror": "^0.1.1",
     "object-assign": "^4.1.1",
@@ -39,7 +38,8 @@
     "react-dnd-html5-backend": "^2.5.4",
     "react-select": "^1.2.1",
     "reselect": "^2.5.1",
-    "ron-react-autocomplete": "^4.0.5"
+    "ron-react-autocomplete": "^4.0.5",
+    "shallowequal": "^1.0.2"
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
