@@ -31,6 +31,7 @@
     "es5-shim": "^4.0.3",
     "fbjs": "^0.6.1",
     "fs-extra": "^0.30.0",
+    "keymirror": "^0.1.1",
     "object-assign": "^4.1.1",
     "prop-types": "^15.5.10",
     "react-contextmenu": "^2.9.2",
