@@ -37,7 +37,7 @@ describe('Canvas Tests', () => {
 
   beforeEach(() => {
     testElement = renderComponent();
-    testElementNode = testElement.node;
+    testElementNode = testElement.instance();
   });
 
   it('should create a new instance of Canvas', () => {

@@ -39,8 +39,8 @@ describe('ContainerEditorWrapper', () => {
         const renderedComp = Enzyme.mount(<ConnectedContainerEditorWrapper />);
 
         // ASSERT
-        let redneredContainerEditorWrapper = renderedComp.find('ContainerEditorWrapper').node;
-        let renderedFakeComponent = renderedComp.find('FakeComponent').node;
+        let redneredContainerEditorWrapper = renderedComp.find('ContainerEditorWrapper').instance();
+        let renderedFakeComponent = renderedComp.find('FakeComponent').instance();
         redneredContainerEditorWrapper.getValue();
 
         expect(renderedComp).toBeDefined();
@@ -55,8 +55,8 @@ describe('ContainerEditorWrapper', () => {
         const renderedComp = Enzyme.mount(<ConnectedContainerEditorWrapper />);
 
         // ASSERT
-        let redneredContainerEditorWrapper = renderedComp.find('ContainerEditorWrapper').node;
-        let renderedFakeComponent = renderedComp.find('FakeComponent').node;
+        let redneredContainerEditorWrapper = renderedComp.find('ContainerEditorWrapper').instance();
+        let renderedFakeComponent = renderedComp.find('FakeComponent').instance();
         redneredContainerEditorWrapper.getInputNode();
 
         expect(renderedComp).toBeDefined();

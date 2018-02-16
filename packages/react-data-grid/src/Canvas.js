@@ -7,7 +7,7 @@ const RowUtils = require('./RowUtils');
 import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
 
-import shallowEqual from 'fbjs/lib/shallowEqual';
+import shallowEqual from 'shallowequal';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 
