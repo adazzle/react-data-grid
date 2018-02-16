@@ -58,8 +58,8 @@ class SortableHeaderCell extends React.Component {
       <div className={className}
         onClick={this.onClick}
         style={{cursor: 'pointer'}}>
-        {content}
         <span className="pull-right">{this.getSortByText()}</span>
+        {content}
       </div>
     );
   }
