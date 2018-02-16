@@ -31,7 +31,7 @@ class HeaderCell extends React.Component {
   onDragStart = (e: SyntheticMouseEvent) => {
     this.setState({resizing: true});
     // need to set dummy data for FF
-    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
+    if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text', 'dummy');
   };
 
   onDrag = (e: SyntheticMouseEvent) => {

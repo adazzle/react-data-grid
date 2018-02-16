@@ -580,7 +580,7 @@ class ReactDataGrid extends React.Component {
         if (e.dataTransfer.setData) {
           e.dataTransfer.dropEffect = 'move';
           e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('text/plain', '');
+          e.dataTransfer.setData('text', '');
         }
       }
     }
