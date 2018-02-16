@@ -13,7 +13,7 @@ class SortableHeaderCell extends React.Component {
     column: PropTypes.shape({ name: PropTypes.node }),
     onSort: PropTypes.func.isRequired,
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
-    headerRenderer: React.PropTypes.node,
+    headerRenderer: PropTypes.node,
     sortDescendingFirst: PropTypes.bool
   };
 
@@ -53,7 +53,7 @@ class SortableHeaderCell extends React.Component {
       'react-grid-HeaderCell-sortable--ascending': this.props.sortDirection === 'ASC',
       'react-grid-HeaderCell-sortable--descending': this.props.sortDirection === 'DESC'
     });
-    let content = this.props.headerRenderer ? this.props.headerRenderer :  this.props.column.name;
+    const content = this.props.headerRenderer ? this.props.headerRenderer :  this.props.column.name;
     return (
       <div className={className}
         onClick={this.onClick}
