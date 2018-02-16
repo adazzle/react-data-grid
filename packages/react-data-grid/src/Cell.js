@@ -1,7 +1,6 @@
 const React = require('react');
 import PropTypes from 'prop-types';
 const joinClasses = require('classnames');
-const EditorContainer = require('./editors/EditorContainer');
 const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
 const isFunction = require('./utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
@@ -134,11 +133,11 @@ class Cell extends React.Component {
   };
 
   getFormatter = () => {
-    let col = this.props.column;
-    if (this.isEditorEnabled()) {
-      const {rowIdx, idx, cellMetaData, height, initialKeyCode, value} = this.props;
-      return <EditorContainer rowData={this.getRowData()} rowIdx={rowIdx} value={value} idx={idx} cellMetaData={cellMetaData} column={col} height={height} initialKeyCode={initialKeyCode}/>;
-    }
+    // let col = this.props.column;
+    // if (this.isEditorEnabled()) {
+    //   const {rowIdx, idx, cellMetaData, height, initialKeyCode, value} = this.props;
+    //   return <EditorContainer rowData={this.getRowData()} rowIdx={rowIdx} value={value} idx={idx} cellMetaData={cellMetaData} column={col} height={height} initialKeyCode={initialKeyCode}/>;
+    // }
 
     return this.props.column.formatter;
   };

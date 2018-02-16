@@ -1,23 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SelectionMask from './SelectionMask';
+import EditorContainer from '../editors/EditorContainer';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
+import {getSelectedDimensions, getSelectedCellValue, getSelectedRowIndex, getSelectedRow} from '../utils/SelectedCellUtils';
 
 class InteractionMasks extends React.Component {
   static propTypes = {
     visibleStart: PropTypes.number,
     visibleEnd: PropTypes.number,
     columns: PropTypes.array,
-    width: PropTypes.number,
-    height: PropTypes.number,
-    onHitBottomBoundary: PropTypes.func,
-    onHitTopBoundary: PropTypes.func,
     selectedPosition: PropTypes.object,
-    cellEvents: PropTypes.func,
     rowHeight: PropTypes.number,
     editCell: PropTypes.func,
-    selectCell: PropTypes.func
+    selectCell: PropTypes.func,
+    onHitBottomBoundary: PropTypes.func,
+    onHitTopBoundary: PropTypes.func,
+    isEditorEnabled: PropTypes.bool,
+    firstEditorKeyPress: PropTypes.number,
+    rowGetter: PropTypes.func
   };
+
+  componentDidUpdate(nextProps) {
+    if (this.props.selectedPosition !== nextProps.selectedPosition) {
+      this.focus();
+    }
+  }
 
   onKeyDown = e => {
     e.preventDefault();
@@ -75,7 +83,7 @@ class InteractionMasks extends React.Component {
   };
 
   isCellWithinBounds = ({ idx, rowIdx }) => {
-    return rowIdx >= 0 && idx >= 0 && idx <= this.props.columns.length;
+    return rowIdx >= 0 && idx >= 0 && idx < this.props.columns.length;
   };
 
   isGridSelected = () => {
@@ -95,6 +103,10 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
+    const {isEditorEnabled, firstEditorKeyPress} = this.props;
+    const {width, left, top, height} = getSelectedDimensions(this.props);
+    const value = getSelectedCellValue(this.props);
+    const rowIdx = getSelectedRowIndex(this.props);
     return (
       <div
         ref={node => {this.node = node;}}
@@ -104,11 +116,14 @@ class InteractionMasks extends React.Component {
           this.node = node;
         }}
       >
-        {this.isGridSelected() && (
-          <SelectionMask
+        {this.isGridSelected() &&
+          <SelectionMask width={width} left={left} top={top} height={height}
             {...this.props}
           />
-        )}
+        }
+        {isEditorEnabled &&
+          <EditorContainer width={width} left={left} top={top} height={height} rowData={getSelectedRow(rowIdx)} rowIdx={rowIdx} value={value} firstEditorKeyPress={firstEditorKeyPress}/>
+        }
       </div>
     );
   }

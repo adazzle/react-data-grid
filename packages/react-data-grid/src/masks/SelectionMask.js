@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Motion, spring } from 'react-motion';
 
-const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
-
 const setMaskStyle = (left, top, width, height) => {
   return {
     position: 'absolute',
@@ -17,10 +15,12 @@ const setMaskStyle = (left, top, width, height) => {
 class SelectionMask extends React.Component {
 
   static propTypes = {
+    width: PropTypes.number,
+    height: PropTypes.number,
+    top: PropTypes.number,
+    left: PropTypes.number,
     visibleStart: PropTypes.number,
     visibleEnd: PropTypes.number,
-    columns: PropTypes.array,
-    rowHeight: PropTypes.number,
     onHitBottomBoundary: PropTypes.func,
     onHitTopBoundary: PropTypes.func,
     selectedPosition: PropTypes.object
@@ -38,25 +38,18 @@ class SelectionMask extends React.Component {
   }
 
   render() {
-    const {
-      selectedPosition: { idx, rowIdx },
-      columns,
-      rowHeight
-    } = this.props;
-    const width = columns[idx].width;
-    const left = columns[idx].left;
-    const top = getRowTop(rowIdx, rowHeight);
+    const {width, height, top, left} = this.props;
     return (
       <Motion
         style={{
           x: spring(left),
           y: spring(top),
           w: spring(width),
-          h: spring(rowHeight)
+          h: spring(height)
         }}
       >
         {({ x, y, w, h }) => (
-          <div tabIndex="0" style={setMaskStyle(x, y, w, h)} className='rdg-selected moving-element' />
+          <div tabIndex="0" style={setMaskStyle(x, y, w, h)} className="rdg-selected moving-element" />
         )}
       </Motion>
     );

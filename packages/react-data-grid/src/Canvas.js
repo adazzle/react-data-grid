@@ -343,8 +343,8 @@ class Canvas extends React.Component {
           ref={(div) => { this.canvas = div; }}
           style={style}
           onScroll={this.onScroll}
-          className='react-grid-Canvas'>
-          <MasksContainer width={this.props.totalWidth} height={height} rowHeight={rowHeight} onCellClick={cellMetaData.onCellClick} columns={columns} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas}/>
+          className="react-grid-Canvas">
+          <MasksContainer rowGetter={rowGetter} width={this.props.totalWidth} height={height} rowHeight={rowHeight} onCellClick={cellMetaData.onCellClick} columns={columns} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas}/>
           <RowsContainer
             width={width}
             rows={rows}

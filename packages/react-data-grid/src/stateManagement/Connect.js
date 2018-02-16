@@ -41,7 +41,7 @@ function connect(mapStateToProps, getDispatchers, getSubscriptions) {
         });
       };
 
-      update =payload => {
+      update = payload => {
         this.context.store.updateStore(payload);
         this.setState(payload);
       };

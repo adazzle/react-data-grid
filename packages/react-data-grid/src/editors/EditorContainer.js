@@ -14,18 +14,12 @@ class EditorContainer extends React.Component {
     rowIdx: PropTypes.number,
     rowData: PropTypes.object.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired,
-    cellMetaData: PropTypes.shape({
-      selected: PropTypes.object.isRequired,
-      copied: PropTypes.object,
-      dragged: PropTypes.object,
-      onCellClick: PropTypes.func,
-      onCellDoubleClick: PropTypes.func,
-      onCommitCancel: PropTypes.func,
-      onCommit: PropTypes.func
-    }).isRequired,
     column: PropTypes.object.isRequired,
     height: PropTypes.number.isRequired,
-    onGridKeyDown: PropTypes.func
+    onGridKeyDown: PropTypes.func,
+    onCommit: PropTypes.func,
+    onCommitCancel: PropTypes.func,
+    firstEditorKeyPress: PropTypes.number
   };
 
   state = {isInvalid: false};
@@ -191,8 +185,7 @@ class EditorContainer extends React.Component {
   };
 
   getInitialValue = (): string => {
-    let selected = this.props.cellMetaData.selected;
-    let keyCode = selected.initialKeyCode;
+    const {firstEditorKeyPress} = this.props;
     if (keyCode === 'Delete' || keyCode === 'Backspace') {
       return '';
     } else if (keyCode === 'Enter') {
@@ -210,18 +203,20 @@ class EditorContainer extends React.Component {
   };
 
   commit = (args: {key : string}) => {
+    const {onCommit} = this.props;
     let opts = args || {};
     let updated = this.getEditor().getValue();
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       let cellKey = this.props.column.key;
-      this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
+      onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
     }
   };
 
   commitCancel = () => {
+    const {onCommitCancel} = this.props;
     this.changeCanceled = true;
-    this.props.cellMetaData.onCommitCancel();
+    onCommitCancel();
   };
 
   isNewValueValid = (value: string): boolean => {

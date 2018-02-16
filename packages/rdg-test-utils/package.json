@@ -1,0 +1,23 @@
+{
+  "name": "rdg-test-utils",
+  "version": "3.0.11",
+  "description": "Test utilities for the grid",
+  "scripts": {
+    "beforepublish": "node ../../ci/publish/replacePackageEntry rdg-test-utils true",
+    "postpublish": "node ../../ci/publish/replacePackageEntry rdg-test-utils",
+    "test": "npm test"
+  },
+  "keywords": [
+    "react",
+    "react-data-grid",
+    "examples"
+  ],
+  "author": "Adazzle",
+  "license": "MIT",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+
+  }
+}
