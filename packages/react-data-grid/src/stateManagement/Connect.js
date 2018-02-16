@@ -11,9 +11,9 @@ const createAction = eventName => {
 };
 
 const mapDispatchToActions = dispatchers => {
-  return dispatchers.reduce((acc, eventName) => {
+  return dispatchers.reduce((actions, eventName) => {
     return {
-      ...{},
+      ...actions,
       ...createAction(eventName)
     };
   }, {});
@@ -30,7 +30,7 @@ function connect(mapStateToProps, getDispatchers, getSubscriptions) {
 
       componentDidMount = () => {
         if (getSubscriptions) {
-          const subscriptions = getSubscriptions(this.update);
+          const subscriptions = getSubscriptions(this.update, this.props);
           this.subscribe(subscriptions);
         }
       };

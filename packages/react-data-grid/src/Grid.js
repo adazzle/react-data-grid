@@ -3,7 +3,6 @@ const ReactDOM             = require('react-dom');
 import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
-const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-core.css');
 
 class Grid extends React.Component {
@@ -49,7 +48,6 @@ class Grid extends React.Component {
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
     onHeaderDrop: PropTypes.func,
-    cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
     scrollToRowIndex: PropTypes.number,
@@ -66,7 +64,7 @@ class Grid extends React.Component {
     minHeight: 350
   };
 
-  getStyle = (): { overflow: string; outline: number; position: string; minHeight: number } => {
+  getStyle = () => {
     return {
       overflow: 'hidden',
       outline: 0,

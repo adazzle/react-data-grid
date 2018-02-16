@@ -19,7 +19,10 @@ class EditorContainer extends React.Component {
     onGridKeyDown: PropTypes.func,
     onCommit: PropTypes.func,
     onCommitCancel: PropTypes.func,
-    firstEditorKeyPress: PropTypes.number
+    firstEditorKeyPress: PropTypes.number,
+    width: PropTypes.number,
+    top: PropTypes.number,
+    left: PropTypes.number
   };
 
   state = {isInvalid: false};
@@ -107,7 +110,7 @@ class EditorContainer extends React.Component {
     this.commit({key: 'Tab'});
   };
 
-  onPressEscape = (e: SyntheticKeyboardEvent) => {
+  onPressEscape = (e) => {
     if (!this.editorIsSelectOpen()) {
       this.commitCancel();
     } else {
@@ -116,7 +119,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onPressArrowDown = (e: SyntheticKeyboardEvent) => {
+  onPressArrowDown = (e) => {
     if (this.editorHasResults()) {
       // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
@@ -185,7 +188,7 @@ class EditorContainer extends React.Component {
   };
 
   getInitialValue = (): string => {
-    const {firstEditorKeyPress} = this.props;
+    const keyCode = this.props.firstEditorKeyPress;
     if (keyCode === 'Delete' || keyCode === 'Backspace') {
       return '';
     } else if (keyCode === 'Enter') {
@@ -294,8 +297,7 @@ class EditorContainer extends React.Component {
   };
 
   setTextInputFocus = () => {
-    let selected = this.props.cellMetaData.selected;
-    let keyCode = selected.initialKeyCode;
+    let keyCode = this.props.firstEditorKeyPress;
     let inputNode = this.getInputNode();
     inputNode.focus();
     if (inputNode.tagName === 'INPUT') {
@@ -315,8 +317,10 @@ class EditorContainer extends React.Component {
   };
 
   render(): ?ReactElement {
+    const { left, top, width, height } = this.props;
+    const style = { position: 'absolute', height, width, zIndex: 1000, transform: `translate(${left}px, ${top}px)` };
     return (
-        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
+        <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>

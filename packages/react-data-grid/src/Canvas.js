@@ -293,7 +293,7 @@ class Canvas extends React.Component {
 
   render() {
     const { displayStart, displayEnd } = this.state;
-    const { cellMetaData, columns, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height } = this.props;
+    const { cellMetaData, columns, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
 
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({

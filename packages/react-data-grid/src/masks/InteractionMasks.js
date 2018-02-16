@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 import SelectionMask from './SelectionMask';
 import EditorContainer from '../editors/EditorContainer';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
-import {getSelectedDimensions, getSelectedCellValue, getSelectedRowIndex, getSelectedRow} from '../utils/SelectedCellUtils';
+import {
+  getSelectedDimensions,
+  getSelectedCellValue,
+  getSelectedRowIndex,
+  getSelectedRow,
+  getSelectedColumn
+} from '../utils/SelectedCellUtils';
 
 class InteractionMasks extends React.Component {
   static propTypes = {
@@ -45,9 +51,9 @@ class InteractionMasks extends React.Component {
     }
   };
 
-  editCell = (e) => {
-    const {editCell, selectedPosition} = this.props;
-    editCell(selectedPosition, e.keyCode);
+  editCell = e => {
+    const { editCell } = this.props;
+    editCell(e.keyCode);
   };
 
   onPressTab = e => {
@@ -91,7 +97,7 @@ class InteractionMasks extends React.Component {
   };
 
   focus = () => {
-    if (this.node && (document.activeElement !== this.node)) {
+    if (this.node && document.activeElement !== this.node) {
       this.node.focus();
     }
   };
@@ -103,27 +109,45 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
-    const {isEditorEnabled, firstEditorKeyPress} = this.props;
-    const {width, left, top, height} = getSelectedDimensions(this.props);
+    const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel } = this.props;
+    const { width, left, top, height } = getSelectedDimensions(this.props);
     const value = getSelectedCellValue(this.props);
     const rowIdx = getSelectedRowIndex(this.props);
     return (
       <div
-        ref={node => {this.node = node;}}
+        ref={node => {
+          this.node = node;
+        }}
         tabIndex="0"
         onKeyDown={this.onKeyDown}
         ref={node => {
           this.node = node;
         }}
       >
-        {this.isGridSelected() &&
-          <SelectionMask width={width} left={left} top={top} height={height}
+        {this.isGridSelected() && (
+          <SelectionMask
             {...this.props}
+            width={width}
+            left={left}
+            top={top}
+            height={height}
           />
-        }
-        {isEditorEnabled &&
-          <EditorContainer width={width} left={left} top={top} height={height} rowData={getSelectedRow(rowIdx)} rowIdx={rowIdx} value={value} firstEditorKeyPress={firstEditorKeyPress}/>
-        }
+        )}
+        {isEditorEnabled && (
+          <EditorContainer
+            width={width}
+            left={left}
+            top={top}
+            height={height}
+            rowData={getSelectedRow(this.props)}
+            column={getSelectedColumn(this.props)}
+            rowIdx={rowIdx}
+            value={value}
+            firstEditorKeyPress={firstEditorKeyPress}
+            onCommit={onCommit}
+            onCommitCancel={onCommitCancel}
+          />
+        )}
       </div>
     );
   }

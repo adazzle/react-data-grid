@@ -1,4 +1,6 @@
 export default {
   selectCell: 'selectCell',
-  editCell: 'editCell'
+  editCell: 'editCell',
+  onCommit: 'onCommit',
+  onCommitCancel: 'onCommitCancel'
 };
