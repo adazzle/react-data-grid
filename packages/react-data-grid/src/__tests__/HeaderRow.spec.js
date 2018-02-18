@@ -1,26 +1,16 @@
 const React         = require('react');
-const rewire        = require('rewire');
 const TestUtils     = require('react-dom/test-utils');
-const rewireModule  = require('../../../../test/rewireModule');
 const StubComponent = require('../../../../test/StubComponent');
 const helpers       = require('../helpers/test/GridPropHelpers');
-const HeaderRow     = rewire('../HeaderRow');
+const HeaderRow     = require('../HeaderRow');
 import { shallow } from 'enzyme';
+import HeaderCell from '../HeaderCell';
+import SortableHeaderCell from '../cells/headerCells/SortableHeaderCell';
+import FilterableHeaderCell from '../cells/headerCells/FilterableHeaderCell';
 
 describe('Header Row Unit Tests', () => {
   let headerRow;
-
-  // Configure local letiable replacements for the module.
-  let SortableHeaderCellStub = new StubComponent('SortableHeaderCell');
-  let HeaderCellStub = new StubComponent('HeaderCell');
-  let FilterableHeaderCellStub = new StubComponent('FilterableHeaderCell');
   let CustomHeaderStub = new StubComponent('CustomHeader');
-
-  rewireModule(HeaderRow, {
-    SortableHeaderCell: SortableHeaderCellStub,
-    BaseHeaderCell: HeaderCellStub,
-    FilterableHeaderCell: FilterableHeaderCellStub
-  });
 
   let testProps = {
     columns: helpers.columns,
@@ -32,7 +22,7 @@ describe('Header Row Unit Tests', () => {
   };
 
   beforeEach(() => {
-    headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps}/>);
+    headerRow = shallow(<HeaderRow {...testProps}/>);
   });
 
   it('should create a new instance of HeaderRow', () => {
@@ -43,7 +33,7 @@ describe('Header Row Unit Tests', () => {
     let sortableColIdx = 1;
     beforeEach(() => {
       testProps.columns[sortableColIdx].sortable = true;
-      headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} />);
+      headerRow = shallow(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} />);
     });
 
     afterEach(() => {
@@ -51,23 +41,23 @@ describe('Header Row Unit Tests', () => {
     });
 
     it('should provide column with a sortableHeaderRenderer', () => {
-      let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
-      expect(TestUtils.isElementOfType(headerCells[sortableColIdx].props.renderer, SortableHeaderCellStub)).toBe(true);
+      const headerCells = headerRow.find(HeaderCell);
+      expect(TestUtils.isElementOfType(headerCells.at(sortableColIdx).props().renderer, SortableHeaderCell)).toBe(true);
     });
 
     it('should pass sort direction as props to headerRenderer when column is sortColumn', () => {
-      headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} sortDirection={'ASC'} />);
-      let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
-      let sortableHeaderRenderer = headerCells[sortableColIdx].props.renderer;
+      headerRow = shallow(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} sortDirection={'ASC'} />);
+      const headerCells =  headerRow.find(HeaderCell);
+      const sortableHeaderRenderer = headerCells.at(sortableColIdx).props().renderer;
       expect(sortableHeaderRenderer.props.sortDirection).toEqual('ASC');
     });
 
     it('should call onSort when headerRender triggers sort', () => {
       // arrange
       spyOn(testProps, 'onSort');
-      headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} sortDirection={'ASC'} />);
-      let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
-      let sortableHeaderRenderer = headerCells[sortableColIdx].props.renderer;
+      headerRow = shallow(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableColIdx].key} sortDirection={'ASC'} />);
+      let headerCells = headerRow.find(HeaderCell);
+      let sortableHeaderRenderer = headerCells.at(sortableColIdx).props().renderer;
       // act
       sortableHeaderRenderer.props.onSort('title', 'DESC');
       // assert
@@ -84,12 +74,12 @@ describe('Header Row Unit Tests', () => {
       beforeEach(() => {
         testProps.columns[sortableAndFilterableColIdx].sortable = true;
         testProps.columns[sortableAndFilterableColIdx].filterable = true;
-        headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableAndFilterableColIdx].key} filterable={true} onFilterChange={() => {}}/>);
+        headerRow = shallow(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableAndFilterableColIdx].key} filterable={true} onFilterChange={() => {}}/>);
       });
 
       it('should provide column with a filterableHeaderRenderer', () => {
-        let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
-        expect(TestUtils.isElementOfType(headerCells[sortableAndFilterableColIdx].props.renderer, FilterableHeaderCellStub)).toBe(true);
+        const headerCells = headerRow.find(HeaderCell);
+        expect(TestUtils.isElementOfType(headerCells.at(sortableAndFilterableColIdx).props().renderer, FilterableHeaderCell)).toBe(true);
       });
     });
 
@@ -97,12 +87,12 @@ describe('Header Row Unit Tests', () => {
       beforeEach(() => {
         testProps.columns[sortableAndFilterableColIdx].sortable = true;
         testProps.columns[sortableAndFilterableColIdx].filterable = true;
-        headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableAndFilterableColIdx].key}/>);
+        headerRow = shallow(<HeaderRow {...testProps} sortColumn={testProps.columns[sortableAndFilterableColIdx].key}/>);
       });
 
       it('should provide column with a sortableHeaderRenderer', () => {
-        let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
-        expect(TestUtils.isElementOfType(headerCells[sortableAndFilterableColIdx].props.renderer, SortableHeaderCellStub)).toBe(true);
+        const headerCells = headerRow.find(HeaderCell);
+        expect(TestUtils.isElementOfType(headerCells.at(sortableAndFilterableColIdx).props().renderer, SortableHeaderCell)).toBe(true);
       });
     });
 
@@ -116,19 +106,19 @@ describe('Header Row Unit Tests', () => {
     let customColumnIdx = 1;
     beforeEach(() => {
       testProps.columns[customColumnIdx].headerRenderer = <CustomHeaderStub />;
-      headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} />);
+      headerRow = shallow(<HeaderRow {...testProps} />);
     });
 
     it('should render custom column header', () => {
-      let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
-      expect(TestUtils.isElementOfType(headerCells[customColumnIdx].props.renderer, CustomHeaderStub)).toBe(true);
+      const headerCells = headerRow.find(HeaderCell);
+      expect(TestUtils.isElementOfType(headerCells.at(customColumnIdx).props().renderer, CustomHeaderStub)).toBe(true);
     });
 
     it('should render filter if header row if row and column is filterable', () => {
       testProps.columns[customColumnIdx].filterable = true;
-      headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} filterable={true} />);
-      let headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
-      expect(TestUtils.isElementOfType(headerCells[customColumnIdx].props.renderer, FilterableHeaderCellStub)).toBe(true);
+      headerRow = shallow(<HeaderRow {...testProps} filterable={true} />);
+      const headerCells = headerRow.find(HeaderCell);
+      expect(TestUtils.isElementOfType(headerCells.at(customColumnIdx).props().renderer, FilterableHeaderCell)).toBe(true);
     });
 
     afterEach(() => {
