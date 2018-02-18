@@ -1,5 +1,5 @@
 const React            = require('react');
-const SimpleTextEditor = require('../SimpleTextEditor');
+import SimpleTextEditor from '../SimpleTextEditor';
 const { mount } = require('enzyme');
 
 describe('SimpleTextEditor', () => {

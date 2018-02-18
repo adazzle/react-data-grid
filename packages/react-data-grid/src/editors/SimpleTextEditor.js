@@ -1,6 +1,5 @@
-const React                   = require('react');
-const EditorBase              = require('./EditorBase');
-
+import React from 'react';
+import EditorBase from './EditorBase';
 
 class SimpleTextEditor extends EditorBase {
 
@@ -9,4 +8,4 @@ class SimpleTextEditor extends EditorBase {
   }
 }
 
-module.exports = SimpleTextEditor;
+export default SimpleTextEditor;

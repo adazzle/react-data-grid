@@ -1,7 +1,6 @@
 let React        = require('react');
 let rewire       = require('rewire');
 let Cell         = rewire('../Cell');
-let rewireModule = require('../../../../test/rewireModule');
 let StubComponent = require('../../../../test/StubComponent');
 import { mount, shallow } from 'enzyme';
 import _ from 'underscore';
@@ -9,6 +8,8 @@ Object.assign = require('object-assign');
 import helpers from '../helpers/test/GridPropHelpers';
 import sinon from 'sinon';
 import CellAction from '../CellAction';
+import EditorContainer from '../editors/EditorContainer';
+const SimpleCellFormatter = require('../formatters/SimpleCellFormatter');
 
 let testCellMetaData = {
   selected: {idx: 2, rowIdx: 3},
@@ -69,16 +70,6 @@ const getCellMetaDataWithEvents = () => {
 
 describe('Cell Tests', () => {
   let testElement;
-  let ExcelColumnStub = new StubComponent('ExcelColumn');
-  let EditorContainerStub = new StubComponent('EditorContainer');
-  let SimpleCellFormatterStub = new StubComponent('SimpleCellFormatter');
-  // Configure local letiable replacements for the module.
-  rewireModule(Cell, {
-    ExcelColumn: ExcelColumnStub,
-    EditorContainer: EditorContainerStub,
-    SimpleCellFormatter: SimpleCellFormatterStub
-  });
-
   beforeEach(() => {
     testElement = renderComponent();
   });
@@ -88,7 +79,7 @@ describe('Cell Tests', () => {
   });
 
   it('should render a SimpleCellFormatter with value', () => {
-    let formatter = testElement.find(SimpleCellFormatterStub);
+    let formatter = testElement.find(SimpleCellFormatter);
 
     expect(testElement).toBeDefined();
     expect(formatter.props().value).toEqual('Wicklow');
@@ -325,7 +316,7 @@ describe('Cell Tests', () => {
     });
 
     it('should render an EditorContainer instead of a formatter', () => {
-      let editorContainerInstance = testElement.find(EditorContainerStub);
+      let editorContainerInstance = testElement.find(EditorContainer);
       expect(editorContainerInstance).toBeDefined();
 
       let props = {

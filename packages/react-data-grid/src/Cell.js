@@ -2,7 +2,7 @@ import _ from 'underscore';
 const React = require('react');
 import PropTypes from 'prop-types';
 const joinClasses = require('classnames');
-const EditorContainer = require('./editors/EditorContainer');
+import EditorContainer from './editors/EditorContainer';
 const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
 const isFunction = require('./utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
