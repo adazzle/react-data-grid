@@ -10,6 +10,7 @@ import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
 import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics        = require('./ColumnMetrics');
+import SheetClip from 'sheetclip';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
@@ -304,6 +305,45 @@ class ReactDataGrid extends React.Component {
   hasSelectedCellChanged = (selected: SelectedType) => {
     let previouslySelected = Object.assign({}, this.state.selected);
     return previouslySelected.rowIdx !== selected.rowIdx || previouslySelected.idx !== selected.idx || previouslySelected.active === false;
+  };
+
+  onPaste = (e) => {
+    if (e && e.clipboardData) {
+      const text = e.clipboardData.getData('text/plain');
+      if (text) {
+        const values = SheetClip.prototype.parse(text);
+
+        if (this.props.onGridRowsUpdated) {
+          const gridRowsUpdateEvents = [];
+
+          let rowIdx = this.state.selected.rowIdx;
+          let idx = this.state.selected.idx;
+
+          for (let i = 0; i < values.length; i++) {
+            for (let j = 0; j < values[i].length; j++) {
+              let $rowIdx = rowIdx + i;
+              let $row = this.props.rowGetter($rowIdx);
+
+              let $idx = idx + j;
+              let $col = this.getColumn($idx);
+
+              if (ColumnUtils.canEdit($col, $row, this.props.enableCellSelect)) {
+                gridRowsUpdateEvents.push({
+                  cellKey: $col.key,
+                  fromRow: $rowIdx,
+                  toRow: $rowIdx,
+                  rowIds: [$row[this.props.rowKey]],
+                  updated: {[$col.key]: values[i][j]},
+                  action: AppConstants.UpdateActions.COPY_PASTE
+                });
+              }
+            }
+          }
+
+          this.props.onGridRowsUpdated.apply(this, gridRowsUpdateEvents);
+        }
+      }
+    }
   };
 
   onContextMenuHide = () => {
@@ -1248,6 +1288,7 @@ class ReactDataGrid extends React.Component {
             onViewportDragEnd={this.handleDragEnd}
             onViewportClick={this.deselect}
             onViewportDoubleClick={this.deselect}
+            onViewportPaste={this.onPaste}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
             scrollToRowIndex={this.props.scrollToRowIndex}

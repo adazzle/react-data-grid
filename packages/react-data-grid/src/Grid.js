@@ -47,6 +47,7 @@ class Grid extends React.Component {
     onViewportDragEnd: PropTypes.func.isRequired,
     onViewportClick: PropTypes.func.isRequired,
     onViewportDoubleClick: PropTypes.func.isRequired,
+    onViewportPaste: PropTypes.func,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
     onHeaderDrop: PropTypes.func,
@@ -152,7 +153,8 @@ class Grid extends React.Component {
               onClick={this.props.onViewportClick}
               onDoubleClick={this.props.onViewportDoubleClick}
               onDragStart={this.props.onViewportDragStart}
-              onDragEnd={this.props.onViewportDragEnd}>
+              onDragEnd={this.props.onViewportDragEnd}
+              onPaste={this.props.onViewportPaste}>
                 <Viewport
                   ref={(node) => { this.viewport = node; } }
                   rowKey={this.props.rowKey}
