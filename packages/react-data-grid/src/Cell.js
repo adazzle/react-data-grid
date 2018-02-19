@@ -6,7 +6,7 @@ import EditorContainer from './editors/EditorContainer';
 const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
 const isFunction = require('./utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
+import SimpleCellFormatter from './formatters/SimpleCellFormatter';
 const ColumnUtils = require('./ColumnUtils');
 const createObjectWithProperties = require('./createObjectWithProperties');
 import CellAction from './CellAction';

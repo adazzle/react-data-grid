@@ -9,7 +9,7 @@ import helpers from '../helpers/test/GridPropHelpers';
 import sinon from 'sinon';
 import CellAction from '../CellAction';
 import EditorContainer from '../editors/EditorContainer';
-const SimpleCellFormatter = require('../formatters/SimpleCellFormatter');
+import SimpleCellFormatter from '../formatters/SimpleCellFormatter';
 
 let testCellMetaData = {
   selected: {idx: 2, rowIdx: 3},

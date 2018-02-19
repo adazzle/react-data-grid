@@ -1,4 +1,4 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 
 class SimpleCellFormatter extends React.Component {
@@ -15,4 +15,4 @@ class SimpleCellFormatter extends React.Component {
   }
 }
 
-module.exports = SimpleCellFormatter;
+export default SimpleCellFormatter;
