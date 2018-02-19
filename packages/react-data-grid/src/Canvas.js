@@ -5,6 +5,8 @@ const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const RowUtils = require('./RowUtils');
 import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
+
+import shallowEqual from 'shallowequal';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 import MasksContainer from './connectedComponents/MasksContainer';

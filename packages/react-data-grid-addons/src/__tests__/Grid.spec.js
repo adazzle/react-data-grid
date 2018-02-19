@@ -86,7 +86,7 @@ describe('Grid', function() {
     };
 
     this.componentWrapper = this.createComponent();
-    this.component = this.componentWrapper.node;
+    this.component = this.componentWrapper.instance();
   });
 
   it('should create a new instance of Grid', function() {
@@ -109,7 +109,7 @@ describe('Grid', function() {
     describe('for defaults props', function() {
       beforeEach(function() {
         const ToolBarStub = new StubComponent('Toolbar');
-        this.component = this.createComponent({ toolbar: <ToolBarStub /> }).node;
+        this.component = this.createComponent({ toolbar: <ToolBarStub /> }).instance();
         this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
         this.toolbarInstance.props.onToggleFilter();
         this.baseGrid = this.getBaseGrid();
@@ -131,7 +131,7 @@ describe('Grid', function() {
     describe('for a given row height prop', function() {
       beforeEach(function() {
         const ToolBarStub = new StubComponent('Toolbar');
-        this.component = this.createComponent({ toolbar: <ToolBarStub />, rowHeight: 40 }).node;
+        this.component = this.createComponent({ toolbar: <ToolBarStub />, rowHeight: 40 }).instance();
         this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
         this.toolbarInstance.props.onToggleFilter();
         this.baseGrid = this.getBaseGrid();
@@ -153,7 +153,7 @@ describe('Grid', function() {
     describe('for given row and header height props', function() {
       beforeEach(function() {
         const ToolBarStub = new StubComponent('Toolbar');
-        this.component = this.createComponent({ toolbar: <ToolBarStub />, rowHeight: 40, headerRowHeight: 50, headerFiltersHeight: 60 }).node;
+        this.component = this.createComponent({ toolbar: <ToolBarStub />, rowHeight: 40, headerRowHeight: 50, headerFiltersHeight: 60 }).instance();
         this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
         this.toolbarInstance.props.onToggleFilter();
         this.baseGrid = this.getBaseGrid();
@@ -176,7 +176,7 @@ describe('Grid', function() {
   describe('if passed in as props to grid', function() {
     beforeEach(function() {
       const ToolBarStub = new StubComponent('Toolbar');
-      this.component = this.createComponent({ toolbar: <ToolBarStub /> }).node;
+      this.component = this.createComponent({ toolbar: <ToolBarStub /> }).instance();
       this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
     });
 
@@ -207,7 +207,7 @@ describe('Grid', function() {
         rowGetter: this.rowGetter,
         rowsCount: this._rows.length,
         width: 300
-      }).node;
+      }).instance();
     });
 
     it('grid should be initialized with selected state of {rowIdx : -1, idx : -1}', function() {
@@ -217,7 +217,7 @@ describe('Grid', function() {
 
   describe('When row selection enabled', function() {
     beforeEach(function() {
-      this.component = this.createComponent({ enableRowSelect: true}).node;
+      this.component = this.createComponent({ enableRowSelect: true}).instance();
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -302,7 +302,7 @@ describe('Grid', function() {
   describe('Cell Navigation', function() {
     describe('when cell navigation is configured to default, none', function() {
       beforeEach(function() {
-        this.component = this.createComponent({enableCellSelect: true}).node;
+        this.component = this.createComponent({enableCellSelect: true}).instance();
       });
 
       describe('when on last cell in a row', function() {
@@ -336,7 +336,7 @@ describe('Grid', function() {
 
     describe('when cell navigation is configured to change rows', function() {
       beforeEach(function() {
-        this.component = this.createComponent({cellNavigationMode: 'changeRow', enableCellSelect: true}).node;
+        this.component = this.createComponent({cellNavigationMode: 'changeRow', enableCellSelect: true}).instance();
       });
 
       describe('when on last cell in a row that\'s not the last', function() {
@@ -388,7 +388,7 @@ describe('Grid', function() {
 
     describe('when cell navigation is configured to loop over cells in row', function() {
       beforeEach(function() {
-        this.component = this.createComponent({cellNavigationMode: 'loopOverRow', enableCellSelect: true}).node;
+        this.component = this.createComponent({cellNavigationMode: 'loopOverRow', enableCellSelect: true}).instance();
       });
 
       describe('when on last cell, looping enabled', function() {
@@ -445,7 +445,7 @@ describe('Grid', function() {
         const extraProps = { onCellSelected: this.noop, onCellDeSelected: this.noop };
         spyOn(extraProps, 'onCellSelected');
         spyOn(extraProps, 'onCellDeSelected');
-        this.component = this.createComponent(extraProps).node;
+        this.component = this.createComponent(extraProps).instance();
       });
 
       describe('cell is selected', function() {
@@ -489,7 +489,7 @@ describe('Grid', function() {
         onRowsDeselected: function(deselectedRows) {
           self._deselectedRows = deselectedRows;
         }
-      }}).node;
+      }}).instance();
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -550,7 +550,7 @@ describe('Grid', function() {
           onRowsDeselected: function(deselectedRows) {
             self._deselectedRows = deselectedRows;
           }
-        }}).node;
+        }}).instance();
 
         this.baseGrid = this.getBaseGrid();
         this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -587,7 +587,7 @@ describe('Grid', function() {
           onRowsDeselected: function(deselectedRows) {
             self._deselectedRows = deselectedRows;
           }
-        }}).node;
+        }}).instance();
 
         this.baseGrid = this.getBaseGrid();
         this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -656,7 +656,7 @@ describe('Grid', function() {
       beforeEach(function() {
         const editableColumn = Object.assign({ editable: true }, this.columns[1]);
         this.columns[1] = editableColumn;
-        this.component = this.createComponent({ columns: this.columns }).node;
+        this.component = this.createComponent({ columns: this.columns }).instance();
       });
 
       describe('copy a cell value', function() {
@@ -679,7 +679,7 @@ describe('Grid', function() {
           const vCharacterKeyCode = 118;
           spyOn(this.testProps, 'onCellCopyPaste');
           wrapper.setProps({ onCellCopyPaste: this.testProps.onCellCopyPaste });
-          this.component = wrapper.node;
+          this.component = wrapper.instance();
           this.component.setState({
             textToCopy: 'banana',
             selected: { idx: 1, rowIdx: 5 },
@@ -801,7 +801,7 @@ describe('Grid', function() {
           let wrapper = this.createComponent();
           spyOn(this.testProps, 'onCellsDragged');
           wrapper.setProps({ onCellsDragged: this.testProps.onCellsDragged });
-          this.component = wrapper.node;
+          this.component = wrapper.instance();
           this.component.setState({
             selected: { idx: 1, rowIdx: 2 },
             dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 }
@@ -834,7 +834,7 @@ describe('Grid', function() {
         const newColumns = Object.assign([], this.columns);
         newColumns.splice(2, 0, newColumn);
         wrapper.setProps({ columns: newColumns });
-        this.component = wrapper.node;
+        this.component = wrapper.instance();
         this.columns = this.component.state.columnMetrics.columns;
       });
 
@@ -853,7 +853,7 @@ describe('Grid', function() {
         const newColumns = Object.assign([], this.columns);
         newColumns.splice(1, 1);
         wrapper.setProps({ columns: newColumns });
-        this.component = wrapper.node;
+        this.component = wrapper.instance();
         this.columns = this.component.state.columnMetrics.columns;
       });
 
@@ -921,7 +921,7 @@ describe('Grid', function() {
         let wrapper = this.createComponent();
         spyOn(this.testProps, 'onRowUpdated');
         wrapper.setProps({ onRowUpdated: this.testProps.onRowUpdated });
-        this.component = wrapper.node;
+        this.component = wrapper.instance();
         this.component.setState({ selected: { idx: 3, rowIdx: 3, active: true } });
         this.getCellMetaData().onCommit(this.buildFakeCellUodate());
       });
@@ -1007,7 +1007,7 @@ describe('Grid', function() {
       const editableColumn = Object.assign({ editable: true }, this.columns[0]);
       this.columns[0] = editableColumn;
       wrapper.setProps({ columns: this.columns });
-      this.component = wrapper.node;
+      this.component = wrapper.instance();
     });
 
     it('should keep original metric information', function() {
@@ -1025,7 +1025,7 @@ describe('Grid', function() {
 
     beforeEach(function() {
       wrapper = this.createComponent();
-      this.component = wrapper.node;
+      this.component = wrapper.instance();
       this.tableElement = ReactDOM.findDOMNode(this.component);
     });
 
@@ -1036,7 +1036,7 @@ describe('Grid', function() {
     describe('providing table width as prop', function() {
       beforeEach(function() {
         wrapper.setProps({ minWidth: 900 });
-        this.component = wrapper.node;
+        this.component = wrapper.instance();
       });
 
       it('should set the width of the table', function() {
@@ -1060,7 +1060,7 @@ describe('Grid', function() {
       this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
         self.rowClicked = {row, column};
         self.rowClicks++;
-      }}).node;
+      }}).instance();
     });
 
     it('calls handler when row (cell) clicked', function() {

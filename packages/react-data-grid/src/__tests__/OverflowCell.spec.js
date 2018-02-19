@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 import OverflowCell, { OverflowCellComponent } from '../OverflowCell';
 import FocusableComponentTestRunner from './FocusableComponentTestRunner';
@@ -25,11 +24,11 @@ describe('OverflowCell', () => {
     });
 
     it('should render without crashing', () => {
-      expect(overflowCellElementWrapper.node).toBeDefined();
+      expect(overflowCellElementWrapper.instance()).toBeDefined();
     });
 
     it('render with the correct style based on props', () => {
-      let domNode = ReactDOM.findDOMNode(overflowCellElementWrapper.component);
+      let domNode = overflowCellElementWrapper.getDOMNode();
 
       const { width, height, left } = domNode.style;
 
