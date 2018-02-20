@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SelectionMask from './SelectionMask';
 import EditorContainer from '../editors/EditorContainer';
-import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
+import { isKeyPrintable } from '../utils/keyboardUtils';
 import {
   getSelectedDimensions,
   getSelectedCellValue,
@@ -18,10 +18,12 @@ class InteractionMasks extends React.Component {
     columns: PropTypes.array,
     selectedPosition: PropTypes.object,
     rowHeight: PropTypes.number,
-    editCell: PropTypes.func,
+    toggleCellEdit: PropTypes.func,
     selectCell: PropTypes.func,
     onHitBottomBoundary: PropTypes.func,
     onHitTopBoundary: PropTypes.func,
+    onCommit: PropTypes.func,
+    onCommitCancel: PropTypes.func,
     isEditorEnabled: PropTypes.bool,
     firstEditorKeyPress: PropTypes.number,
     rowGetter: PropTypes.func
@@ -47,17 +49,21 @@ class InteractionMasks extends React.Component {
     if (action) {
       action(e);
     } else if (isKeyPrintable(e.keyCode)) {
-      this.editCell(e.keyCode);
+      this.toggleCellEdit(e.keyCode);
     }
   };
 
-  editCell = e => {
-    const { editCell } = this.props;
-    editCell(e.keyCode);
+  toggleCellEdit = e => {
+    const { isEditorEnabled, toggleCellEdit } = this.props;
+    const enableEdit = !isEditorEnabled;
+    toggleCellEdit(enableEdit, e.key);
+    if (enableEdit === false) {
+      this.focus();
+    }
   };
 
   onPressTab = e => {
-    if (isCtrlKeyHeldDown(e)) {
+    if (e.shiftKey === true) {
       this.moveLeft();
     } else {
       this.moveRight();
@@ -124,7 +130,7 @@ class InteractionMasks extends React.Component {
           this.node = node;
         }}
       >
-        {this.isGridSelected() && (
+        {!isEditorEnabled && this.isGridSelected() && (
           <SelectionMask
             {...this.props}
             width={width}

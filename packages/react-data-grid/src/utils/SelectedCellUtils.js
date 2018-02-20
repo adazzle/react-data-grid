@@ -8,7 +8,7 @@ export const getSelectedRowIndex = (selectArgs) => {
 export const getSelectedRow = (selectArgs) => {
   const {rowGetter} = selectArgs;
   const rowIdx = getSelectedRowIndex(selectArgs);
-  return rowGetter[rowIdx];
+  return rowGetter(rowIdx);
 };
 
 export const getSelectedDimensions = (selectArgs) => {

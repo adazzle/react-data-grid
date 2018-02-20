@@ -15,5 +15,9 @@
   ],
   "repository": "adazzle/react-data-grid",
   "author": "Adazzle",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.3.0-alpha.1",
+    "react-dom": "^16.3.0-alpha.1"
+  }
 }

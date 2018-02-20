@@ -29,11 +29,16 @@ class SelectionMask extends React.Component {
   componentDidUpdate() {
     const {
       selectedPosition: { rowIdx },
+      visibleStart,
       visibleEnd,
+      onHitTopBoundary,
       onHitBottomBoundary
     } = this.props;
     if (rowIdx === visibleEnd - 1) {
       onHitBottomBoundary();
+    }
+    if (rowIdx === visibleStart - 1) {
+      onHitTopBoundary();
     }
   }
 

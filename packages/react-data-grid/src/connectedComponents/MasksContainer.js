@@ -4,12 +4,12 @@ import InteractionMasks from '../masks/InteractionMasks';
 
 const mapStateToProps = ({selectedPosition, isEditorEnabled, firstEditorKeyPress}) => ({selectedPosition, isEditorEnabled, firstEditorKeyPress});
 
-const mapDispatchToProps = () => [EventTypes.editCell, EventTypes.selectCell, EventTypes.onCommit];
+const mapDispatchToProps = () => [EventTypes.toggleCellEdit, EventTypes.selectCell, EventTypes.onCommit];
 
 const subscriptions = (updateStore) => {
   return {
     [EventTypes.selectCell]: ({idx, rowIdx}) => updateStore({selectedPosition: {idx, rowIdx}}),
-    [EventTypes.editCell]: (firstEditorKeyPress) => updateStore({isEditorEnabled: true, firstEditorKeyPress}),
+    [EventTypes.toggleCellEdit]: (isEditorEnabled, firstEditorKeyPress) => updateStore({isEditorEnabled, firstEditorKeyPress}),
     [EventTypes.onCommit]: () => updateStore({isEditorEnabled: false}),
     [EventTypes.onCommitCancel]: () => updateStore({isEditorEnabled: false})
   };

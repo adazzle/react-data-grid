@@ -56,7 +56,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onKeyDown = (e: SyntheticKeyboardEvent) => {
+  onKeyDown = (e) => {
     if (isCtrlKeyHeldDown(e)) {
       this.checkAndCall('onPressKeyWithCtrl', e);
     } else if (this.isKeyExplicitlyHandled(e.key)) {
@@ -64,6 +64,7 @@ class EditorContainer extends React.Component {
       let callBack = 'onPress' + e.key;
       this.checkAndCall(callBack, e);
     } else if (isKeyPrintable(e.keyCode)) {
+      e.stopPropagation();
       this.checkAndCall('onPressChar', e);
     }
 
@@ -75,7 +76,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  createEditor = (): ReactElement => {
+  createEditor = () => {
     let editorRef = (c) => this.editor = c;
     let editorProps = {
       ref: editorRef,
@@ -128,7 +129,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onPressArrowUp = (e: SyntheticKeyboardEvent) => {
+  onPressArrowUp = (e) => {
     if (this.editorHasResults()) {
       // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
@@ -137,7 +138,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onPressArrowLeft = (e: SyntheticKeyboardEvent) => {
+  onPressArrowLeft = (e) => {
     // prevent event propogation. this disables left cell navigation
     if (!this.isCaretAtBeginningOfInput()) {
       e.stopPropagation();
@@ -146,7 +147,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onPressArrowRight = (e: SyntheticKeyboardEvent) => {
+  onPressArrowRight = (e) => {
     // prevent event propogation. this disables right cell navigation
     if (!this.isCaretAtEndOfInput()) {
       e.stopPropagation();
@@ -155,7 +156,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  editorHasResults = (): boolean => {
+  editorHasResults = () => {
     if (isFunction(this.getEditor().hasResults)) {
       return this.getEditor().hasResults();
     }
@@ -171,7 +172,7 @@ class EditorContainer extends React.Component {
     return false;
   };
 
-  getRowMetaData = (): any => {
+  getRowMetaData = () => {
     // clone row data so editor cannot actually change this
     // convention based method to get corresponding Id or Name of any Name or Id property
     if (typeof this.props.column.getRowMetaData === 'function') {
@@ -179,15 +180,15 @@ class EditorContainer extends React.Component {
     }
   };
 
-  getEditor = (): Editor => {
+  getEditor = () => {
     return this.editor;
   };
 
-  getInputNode = (): HTMLInputElement => {
+  getInputNode = () => {
     return this.getEditor().getInputNode();
   };
 
-  getInitialValue = (): string => {
+  getInitialValue = () => {
     const keyCode = this.props.firstEditorKeyPress;
     if (keyCode === 'Delete' || keyCode === 'Backspace') {
       return '';
@@ -205,7 +206,7 @@ class EditorContainer extends React.Component {
     });
   };
 
-  commit = (args: {key : string}) => {
+  commit = (args) => {
     const {onCommit} = this.props;
     let opts = args || {};
     let updated = this.getEditor().getValue();
@@ -222,7 +223,7 @@ class EditorContainer extends React.Component {
     onCommitCancel();
   };
 
-  isNewValueValid = (value: string): boolean => {
+  isNewValueValid = (value) => {
     if (isFunction(this.getEditor().validate)) {
       let isValid = this.getEditor().validate(value);
       this.setState({isInvalid: !isValid});
@@ -246,13 +247,13 @@ class EditorContainer extends React.Component {
     }
   };
 
-  isCaretAtBeginningOfInput = (): boolean => {
+  isCaretAtBeginningOfInput = () => {
     let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.selectionEnd
       && inputNode.selectionStart === 0;
   };
 
-  isCaretAtEndOfInput = (): boolean => {
+  isCaretAtEndOfInput = () => {
     let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
   };
@@ -310,13 +311,13 @@ class EditorContainer extends React.Component {
     }
   };
 
-  renderStatusIcon = (): ?ReactElement => {
+  renderStatusIcon = () => {
     if (this.state.isInvalid === true) {
       return <span className="glyphicon glyphicon-remove form-control-feedback"></span>;
     }
   };
 
-  render(): ?ReactElement {
+  render() {
     const { left, top, width, height } = this.props;
     const style = { position: 'absolute', height, width, zIndex: 1000, transform: `translate(${left}px, ${top}px)` };
     return (

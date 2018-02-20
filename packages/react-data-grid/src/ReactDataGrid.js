@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Provider from './stateManagement/Provider';
 import GridContainer from './connectedComponents/GridContainer';
 import Constants from './AppConstants';
 
@@ -31,9 +30,9 @@ class ReactDataGrid extends React.Component {
   };
 
   render() {
-    return (<Provider>
+    return (
       <GridContainer {...this.props} onCommit={this.onCommit}/>
-    </Provider>);
+    );
   }
 }
 

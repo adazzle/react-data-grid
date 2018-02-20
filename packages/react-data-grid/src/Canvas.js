@@ -181,9 +181,22 @@ class Canvas extends React.Component {
   }
 
   onHitTopCanvas = () =>  {
-    const {visibleStart, visibleEnd, rowHeight} = this.props;
+    const {visibleStart, rowHeight} = this.props;
     const node = ReactDOM.findDOMNode(this);
-    node.scrollTop -= (visibleEnd - visibleStart) * rowHeight;
+    node.scrollTop = (visibleStart * rowHeight);
+  }
+
+  onHitLeftCanvas = () =>  {
+    const {visibleEnd, rowHeight} = this.props;
+    const node = ReactDOM.findDOMNode(this);
+    const buffer = rowHeight;
+    node.scrollTop = (visibleEnd * rowHeight) - buffer;
+  }
+
+  onHitRightCanvas = () =>  {
+    const {colVisibleStart, colVisibleEnd, rowHeight} = this.props;
+    const node = ReactDOM.findDOMNode(this);
+    node.scrollLeft -= (colVisibleEnd - visibleStart) * rowHeight;
   }
 
   getRows = (displayStart, displayEnd) => {
@@ -295,7 +308,7 @@ class Canvas extends React.Component {
 
   render() {
     const { displayStart, displayEnd } = this.state;
-    const { cellMetaData, columns, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
+    const { cellMetaData, columns, colDisplayStart, colDisplayEnd, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
 
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
@@ -314,8 +327,8 @@ class Canvas extends React.Component {
         subRowDetails: r.subRowDetails,
         colVisibleStart,
         colVisibleEnd,
-        colDisplayStart: this.props.colDisplayStart,
-        colDisplayEnd: this.props.colDisplayEnd,
+        colDisplayStart,
+        colDisplayEnd,
         isScrolling: this.props.isScrolling
       }));
 
@@ -346,7 +359,7 @@ class Canvas extends React.Component {
           style={style}
           onScroll={this.onScroll}
           className="react-grid-Canvas">
-          <MasksContainer rowGetter={rowGetter} width={this.props.totalWidth} height={height} rowHeight={rowHeight} onCellClick={cellMetaData.onCellClick} columns={columns} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas}/>
+          <MasksContainer rowGetter={rowGetter} width={this.props.totalWidth} height={height} rowHeight={rowHeight} onCellClick={cellMetaData.onCellClick} columns={columns} visibleStart={this.props.visibleStart}  visibleEnd={this.props.visibleEnd} colVisibleStart={colVisibleStart} colVisibleEnd={colVisibleEnd} onHitBottomBoundary={this.onHitBottomCanvas} onHitTopBoundary={this.onHitTopCanvas} onHitLeftBoundary={this.onHitLeftCanvas} onHitRightBoundary={this.onHitRightCanvas}/>
           <RowsContainer
             width={width}
             rows={rows}

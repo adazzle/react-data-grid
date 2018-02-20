@@ -505,6 +505,24 @@ class GridWrapper extends React.Component {
     }
   };
 
+  onGridRowsUpdated = (cellKey, fromRow, toRow, updated, action, originRow) => {
+    const rowIds = [];
+    const {rowGetter, rowKey, onGridRowsUpdated} = this.props;
+    for (let i = fromRow; i <= toRow; i++) {
+      rowIds.push(rowGetter(i)[rowKey]);
+    }
+
+    const fromRowData = rowGetter(action === Constants.UpdateActions.COPY_PASTE ? originRow : fromRow);
+    const fromRowId = fromRowData[rowKey];
+    const toRowId = rowGetter(toRow)[rowKey];
+    onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action, fromRowData});
+  };
+
+  onCommit = (commit) => {
+    const targetRow = commit.rowIdx;
+    this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, Constants.UpdateActions.CELL_UPDATE);
+  };
+
   isCellWithinBounds = ({idx, rowIdx}) => {
     return idx >= 0
       && rowIdx >= 0
