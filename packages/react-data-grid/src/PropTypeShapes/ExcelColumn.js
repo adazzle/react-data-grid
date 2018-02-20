@@ -7,4 +7,4 @@ const ExcelColumnShape = {
   filterable: PropTypes.bool
 };
 
-module.exports = ExcelColumnShape;
+export default ExcelColumnShape;

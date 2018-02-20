@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import utils from './utils';
-const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
 
 import '../../../themes/react-data-grid-row.css';
 
