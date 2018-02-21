@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const joinClasses = require('classnames');
 import EditorContainer from './editors/EditorContainer';
 import ExcelColumn from './PropTypeShapes/ExcelColumn';
-const isFunction = require('./utils/isFunction');
+import isFunction from './utils/isFunction';
 import CellMetaDataShape from'./PropTypeShapes/CellMetaDataShape';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
 const ColumnUtils = require('./ColumnUtils');

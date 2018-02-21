@@ -1,3 +1,3 @@
 import { Map } from 'immutable';
 
-module.exports = Map.isMap;
+export default Map.isMap;
