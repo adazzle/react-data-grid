@@ -12,14 +12,15 @@ const SelectAll = (props) => {
         ref={props.inputRef}
         onChange={props.onChange}
       />
-      <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
+      <label ref={props.labelRef} htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
     </div>
   );
 };
 
 SelectAll.propTypes = {
   onChange: PropTypes.func,
-  inputRef: PropTypes.func
+  inputRef: PropTypes.func,
+  labelRef: PropTypes.func
 };
 
 export default SelectAll;

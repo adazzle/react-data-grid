@@ -21,14 +21,14 @@ class Example extends React.Component {
     ];
 
     let rows = [];
-    for (let i = 1; i < 1000; i++) {
+    for (let i = 1; i < 10; i++) {
       rows.push({
         id: i,
         title: 'Title ' + i,
-        count: i * 1000
+        count: i * 10
       });
     }
-    this.state = { rows, selectedIndexes: [] };
+    this.state = { rows, selectedIndexes: [], enableIndeterminate: true };
   }
 
   rowGetter = (i) => {
@@ -48,6 +48,12 @@ class Example extends React.Component {
     const rowText = this.state.selectedIndexes.length === 1 ? 'row' : 'rows';
     return  (
       <div>
+        <div className="checkbox">
+          <label>
+            <input type="checkbox" onChange={() => this.setState({ enableIndeterminate: !this.state.enableIndeterminate })} checked={this.state.enableIndeterminate}/>
+            enableIndeterminate
+          </label>
+        </div>
         <span>{this.state.selectedIndexes.length} {rowText} selected</span>
         <ReactDataGrid
           rowKey="id"
@@ -62,7 +68,9 @@ class Example extends React.Component {
             onRowsDeselected: this.onRowsDeselected,
             selectBy: {
               indexes: this.state.selectedIndexes
-            }
+            },
+            enableIndeterminate: this.state.enableIndeterminate,
+            selectedRowCounts: this.state.selectedIndexes.length
           }} />
       </div>);
   }
@@ -90,6 +98,15 @@ const exampleDescription = (
       Allows a continuous range of rows to be selected by holding the shift key when clicking the row selection checkbox.
     </p>
     <p><b>Note:</b> These props supercede the existing <code>enableRowSelect</code> and <code>onRowUpdated</code> props which will be removed in a later release.</p>
+    <h4>enableIndeterminate</h4>
+    <p>
+      enableIndeterminate flag is used for selectAll checkbox to display the indeterminate style if the rows are partially selected.
+    </p>
+    <h4>selectedRowCounts</h4>
+    <p>
+      selectedRowCounts must be set inorder to use indeterminate style. It is also used to detect and render the current selectAll checkbox checked status,
+      if selectedRowCounts is not set to the correct value while rows are updated from outside of react data grid like filtering, the select all status might not be updated and could be wrong.
+    </p>
   </div>
 );
 

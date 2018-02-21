@@ -8,6 +8,7 @@ const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
+import { populateIndeterminate, populateSelectAllChecked } from './helpers/selectAllHelpers';
 import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics        = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
@@ -87,6 +88,7 @@ class ReactDataGrid extends React.Component {
     getValidFilterValues: PropTypes.func,
     rowSelection: PropTypes.shape({
       enableShiftSelect: PropTypes.bool,
+      enableIndeterminate: PropTypes.bool,
       onRowsSelected: PropTypes.func,
       onRowsDeselected: PropTypes.func,
       showCheckbox: PropTypes.bool,
@@ -103,7 +105,8 @@ class ReactDataGrid extends React.Component {
             rowKey: PropTypes.string.isRequired
           }).isRequired
         })
-      ]).isRequired
+      ]).isRequired,
+      selectedRowCounts: PropTypes.number
     }),
     onRowClick: PropTypes.func,
     onRowDoubleClick: PropTypes.func,
@@ -183,6 +186,20 @@ class ReactDataGrid extends React.Component {
           nextProps.minWidth !== this.props.minWidth) {
         let columnMetrics = this.createColumnMetrics(nextProps);
         this.setState({columnMetrics: columnMetrics});
+      }
+    }
+  }
+
+  componentDidUpdate() {
+    const { rowsCount, rowSelection } = this.props;
+
+    if (rowSelection) {
+      const { enableIndeterminate, selectedRowCounts } = rowSelection;
+
+      if (selectedRowCounts >= 0) {
+        // if the selectedRowCounts is set, populate the select all checkbox status for checkbox.checked and indeterminate style
+        populateIndeterminate(this.checkboxLabel, rowsCount, selectedRowCounts, enableIndeterminate);
+        populateSelectAllChecked(this.selectAllCheckbox, rowsCount, selectedRowCounts);
       }
     }
   }
@@ -765,14 +782,20 @@ class ReactDataGrid extends React.Component {
       this.selectAllCheckbox.checked = false;
     }
 
-    let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
-    let isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
+    const { rowsCount } = this.props;
+    const { selectBy, onRowsDeselected, onRowsSelected, selectedRowCounts } = this.props.rowSelection;
+    const { keys, indexes, isSelectedKey } = selectBy;
+    const isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
 
     this.setState({lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: {rowIdx: rowIdx, idx: 0}});
 
-    if (isPreviouslySelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
-      this.props.rowSelection.onRowsDeselected([{rowIdx, row: rowData}]);
-    } else if (!isPreviouslySelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
+    if (isPreviouslySelected && typeof onRowsDeselected === 'function') {
+      onRowsDeselected([{rowIdx, row: rowData}]);
+    } else if (!isPreviouslySelected && typeof onRowsSelected === 'function') {
+      if (selectedRowCounts === rowsCount - 1) {
+        this.selectAllCheckbox.checked = true;
+      }
+
       this.props.rowSelection.onRowsSelected([{rowIdx, row: rowData}]);
     }
   };
@@ -1133,7 +1156,7 @@ class ReactDataGrid extends React.Component {
     let unshiftedCols = {};
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
-      const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} inputRef={grid => this.selectAllCheckbox = grid} />;
+      const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} inputRef={grid => this.selectAllCheckbox = grid} labelRef={checkboxLabel => this.checkboxLabel = checkboxLabel} />;
       let headerRenderer = props.enableRowSelect === 'single' ? null : SelectAllRenderer;
       let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
       let selectColumn = {
