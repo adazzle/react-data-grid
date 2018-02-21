@@ -8,4 +8,4 @@ const getMixedTypeValueRetriever = (isImmutable) => {
   return retObj;
 };
 
-module.exports = getMixedTypeValueRetriever;
+export default getMixedTypeValueRetriever;

@@ -4,4 +4,4 @@ const isImmutableCollection = (objToVerify) => {
   return Iterable.isIterable(objToVerify);
 };
 
-module.exports = isImmutableCollection;
+export default isImmutableCollection;

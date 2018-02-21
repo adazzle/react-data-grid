@@ -1,11 +1,11 @@
-const React                   = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses              = require('classnames');
-const SimpleTextEditor        = require('./SimpleTextEditor');
-const isFunction              = require('../utils/isFunction');
+import joinClasses from 'classnames';
+import SimpleTextEditor from './SimpleTextEditor';
+import isFunction from '../utils/isFunction';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 
-require('../../../../themes/react-data-grid-core.css');
+import '../../../../themes/react-data-grid-core.css';
 
 class EditorContainer extends React.Component {
   static displayName = 'EditorContainer';
@@ -329,4 +329,4 @@ class EditorContainer extends React.Component {
   }
 }
 
-module.exports = EditorContainer;
+export default EditorContainer;

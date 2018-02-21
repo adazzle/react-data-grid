@@ -1,11 +1,10 @@
 
 const React            = require('react');
 const ReactDOM         = require('react-dom');
-const rewire           = require('rewire');
-const EditorContainer  = rewire('../EditorContainer.js');
+import EditorContainer from '../EditorContainer';
 const TestUtils        = require('react-dom/test-utils');
-const SimpleTextEditor = require('../SimpleTextEditor');
-const EditorBase       = require('../EditorBase');
+import SimpleTextEditor from '../SimpleTextEditor';
+import EditorBase from '../EditorBase';
 import { shallow } from 'enzyme';
 
 describe('Editor Container Tests', () => {

@@ -5,4 +5,4 @@ const isFunction = function(functionToCheck: any): boolean {
   return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 };
 
-module.exports = isFunction;
+export default isFunction;

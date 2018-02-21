@@ -1,14 +1,14 @@
-const React             = require('react');
-const shallowEqual    = require('shallowequal');
-const BaseHeaderCell        = require('./HeaderCell');
-const getScrollbarSize  = require('./getScrollbarSize');
-const ExcelColumn  = require('./PropTypeShapes/ExcelColumn');
-const columnUtils  = require('./ColumnUtils');
-const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
-const FilterableHeaderCell  = require('./cells/headerCells/FilterableHeaderCell');
-const HeaderCellType = require('./HeaderCellType');
-const createObjectWithProperties = require('./createObjectWithProperties');
-require('../../../themes/react-data-grid-header.css');
+import React from 'react';
+import shallowEqual from 'shallowequal';
+import BaseHeaderCell from './HeaderCell';
+import getScrollbarSize from './getScrollbarSize';
+import ExcelColumn from './PropTypeShapes/ExcelColumn';
+import columnUtils from './ColumnUtils';
+import SortableHeaderCell, { DEFINE_SORT } from './cells/headerCells/SortableHeaderCell';
+import FilterableHeaderCell from './cells/headerCells/FilterableHeaderCell';
+import HeaderCellType from './HeaderCellType';
+import createObjectWithProperties from './createObjectWithProperties';
+import '../../../themes/react-data-grid-header.css';
 
 import PropTypes from 'prop-types';
 
@@ -34,7 +34,7 @@ class HeaderRow extends React.Component {
     onColumnResizeEnd: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle),
     sortColumn: PropTypes.string,
-    sortDirection: PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
@@ -82,7 +82,7 @@ class HeaderRow extends React.Component {
   };
 
   getSortableHeaderCell = (column) => {
-    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : DEFINE_SORT.NONE;
     let sortDescendingFirst = (column.sortDescendingFirst === undefined ) ? false : column.sortDescendingFirst;
     return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst}/>;
   };

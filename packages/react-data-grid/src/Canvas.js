@@ -2,7 +2,7 @@ const React = require('react');
 const joinClasses = require('classnames');
 import PropTypes from 'prop-types';
 const Row = require('./Row');
-const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
 const RowUtils = require('./RowUtils');
 import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');

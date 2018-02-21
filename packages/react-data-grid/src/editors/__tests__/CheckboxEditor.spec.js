@@ -1,7 +1,7 @@
 const React          = require('react');
 const ReactDOM = require('react-dom');
 const TestUtils      = require('react-dom/test-utils');
-const CheckboxEditor = require('../CheckboxEditor');
+import CheckboxEditor from '../CheckboxEditor';
 const { mount } = require('enzyme');
 
 describe('CheckboxEditor', () => {

@@ -1,11 +1,11 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
 const BaseGrid              = require('./Grid');
-const CheckboxEditor        = require('./editors/CheckboxEditor');
+import CheckboxEditor from './editors/CheckboxEditor';
 const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
-const isFunction = require('./utils/isFunction');
+import isFunction from './utils/isFunction';
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
 import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';

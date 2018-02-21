@@ -1,6 +1,6 @@
-const React              = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses         = require('classnames');
+import joinClasses from 'classnames';
 const DEFINE_SORT = {
   ASC: 'ASC',
   DESC: 'DESC',
@@ -64,5 +64,5 @@ class SortableHeaderCell extends React.Component {
   }
 }
 
-module.exports = SortableHeaderCell;
-module.exports.DEFINE_SORT = DEFINE_SORT;
+export default SortableHeaderCell;
+export { DEFINE_SORT };

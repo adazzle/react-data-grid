@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-module.exports = {
+export default {
   selected: PropTypes.object.isRequired,
   copied: PropTypes.object,
   dragged: PropTypes.object,
