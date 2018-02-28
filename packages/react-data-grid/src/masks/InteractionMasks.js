@@ -92,6 +92,8 @@ class InteractionMasks extends React.Component {
     const nextRowIdx = rowIdx + 1;
     const next = { ...selectedPosition, ...{ rowIdx: nextRowIdx } };
     const scrollBoundary = visibleEnd - 2;
+    console.log('row = ' + nextRowIdx);
+    console.log('scroll boundary ' + scrollBoundary);
     if (nextRowIdx === scrollBoundary ) {
       this.setState({lockedPosition: this.getSelectedCellPosition()});
       onHitBottomBoundary();

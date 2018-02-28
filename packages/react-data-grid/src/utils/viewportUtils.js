@@ -58,7 +58,7 @@ function getVisibleColStart(props, scrollLeft) {
 
 export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, totalNumberRows) => {
   const renderedRowsCount = ceil(gridHeight / rowHeight);
-  const visibleStart = max(0, floor(Math.round(scrollTop) / rowHeight));
+  const visibleStart = max(0, Math.round(scrollTop / rowHeight));
   const visibleEnd = min(visibleStart + renderedRowsCount, totalNumberRows);
   return {visibleStart, visibleEnd};
 };
@@ -66,6 +66,7 @@ export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, totalNumb
 function getNextScrollState(props, getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width) {
   const isScrolling = true;
   const {visibleStart, visibleEnd} = getVisibleBoundaries(height, rowHeight, scrollTop, length);
+  console.log('visible end' + visibleEnd);
   const displayStart = max(0, visibleStart - props.overScan.rowsStart);
   const displayEnd = min(visibleEnd + props.overScan.rowsEnd, length);
   const totalNumberColumns = ColumnUtils.getSize(props.columnMetrics.columns);
