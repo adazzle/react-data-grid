@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Motion, spring } from 'react-motion';
 
-const setMaskStyle = (left, top, width, height) => {
+const setMaskStyle = (left, top, width, height, lockedPosition) => {
   return {
-    position: 'absolute',
+    position: lockedPosition != null ? 'fixed' : 'absolute',
     height,
     width,
     zIndex: 1000,
@@ -19,31 +19,11 @@ class SelectionMask extends React.Component {
     height: PropTypes.number,
     top: PropTypes.number,
     left: PropTypes.number,
-    visibleStart: PropTypes.number,
-    visibleEnd: PropTypes.number,
-    onHitBottomBoundary: PropTypes.func,
-    onHitTopBoundary: PropTypes.func,
     selectedPosition: PropTypes.object
   }
 
-  componentDidUpdate() {
-    const {
-      selectedPosition: { rowIdx },
-      visibleStart,
-      visibleEnd,
-      onHitTopBoundary,
-      onHitBottomBoundary
-    } = this.props;
-    if (rowIdx === visibleEnd - 1) {
-      onHitBottomBoundary();
-    }
-    if (rowIdx === visibleStart - 1) {
-      onHitTopBoundary();
-    }
-  }
-
   render() {
-    const {width, height, top, left} = this.props;
+    const {width, height, top, left, lockedPosition} = this.props;
     return (
       <Motion
         style={{
@@ -54,7 +34,7 @@ class SelectionMask extends React.Component {
         }}
       >
         {({ x, y, w, h }) => (
-          <div tabIndex="0" style={setMaskStyle(x, y, w, h)} className="rdg-selected moving-element" />
+          <div tabIndex="0" style={setMaskStyle(x, y, w, h, lockedPosition)} className="rdg-selected moving-element" />
         )}
       </Motion>
     );

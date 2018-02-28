@@ -2,11 +2,7 @@ const React = require('react');
 import PropTypes from 'prop-types';
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const RowUtils = require('./RowUtils');
-import { createScrollShim } from './utils/scrollUtils';
 require('../../../themes/react-data-grid-core.css');
-
-import shallowEqual from 'shallowequal';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 import MasksContainer from './connectedComponents/MasksContainer';
@@ -82,38 +78,6 @@ class Canvas extends React.Component {
   _currentRowsRange = { start: 0, end: 0 };
   _scroll = { scrollTop: 0, scrollLeft: 0 };
 
-  appendScrollShim = () => {
-    if (!this._scrollShim) {
-      const size = this._scrollShimSize();
-      const shim = createScrollShim(size);
-      this.canvas.appendChild(shim);
-      this._scrollShim = shim;
-    }
-    this._scheduleRemoveScrollShim();
-  };
-
-  _scrollShimSize = (): { width: number; height: number } => {
-    return {
-      width: this.props.width,
-      height: this.props.length * this.props.rowHeight
-    };
-  };
-
-  _scheduleRemoveScrollShim = () => {
-    if (this._scheduleRemoveScrollShimTimer) {
-      clearTimeout(this._scheduleRemoveScrollShimTimer);
-    }
-    this._scheduleRemoveScrollShimTimer = setTimeout(
-      this._removeScrollShim, 200);
-  };
-
-  _removeScrollShim = () => {
-    if (this._scrollShim) {
-      this._scrollShim.parentNode.removeChild(this._scrollShim);
-      this._scrollShim = undefined;
-    }
-  };
-
   componentWillMount() {
     this.rows = [];
     this._currentRowsLength = 0;
@@ -165,36 +129,36 @@ class Canvas extends React.Component {
     if (this.canvas !== e.target) {
       return;
     }
-    this.appendScrollShim();
     let scrollLeft = e.target.scrollLeft;
     let scrollTop = e.target.scrollTop;
+    console.log(scrollTop);
     let scroll = { scrollTop, scrollLeft };
     this._scroll = scroll;
     this.props.onScroll(scroll);
   };
 
   onHitBottomCanvas = () =>  {
-    const {visibleEnd, rowHeight} = this.props;
+    const { rowHeight} = this.props;
     const node = ReactDOM.findDOMNode(this);
-    const buffer = rowHeight;
-    node.scrollTop = (visibleEnd * rowHeight) - buffer;
+    const scrollVariation = node.scrollTop % rowHeight;
+    const clientScrollOffset = scrollVariation > 0 ? rowHeight - scrollVariation : 0;
+    node.scrollTop += rowHeight + clientScrollOffset;
   }
 
   onHitTopCanvas = () =>  {
-    const {visibleStart, rowHeight} = this.props;
+    const {rowHeight} = this.props;
     const node = ReactDOM.findDOMNode(this);
-    node.scrollTop = (visibleStart * rowHeight);
+    node.scrollTop -= rowHeight;
   }
 
   onHitLeftCanvas = () =>  {
-    const {visibleEnd, rowHeight} = this.props;
+    const {rowHeight} = this.props;
     const node = ReactDOM.findDOMNode(this);
-    const buffer = rowHeight;
-    node.scrollTop = (visibleEnd * rowHeight) - buffer;
+    node.scrollTop -= rowHeight;
   }
 
   onHitRightCanvas = () =>  {
-    const {colVisibleStart, colVisibleEnd, rowHeight} = this.props;
+    const {colVisibleEnd, rowHeight} = this.props;
     const node = ReactDOM.findDOMNode(this);
     node.scrollLeft -= (colVisibleEnd - visibleStart) * rowHeight;
   }

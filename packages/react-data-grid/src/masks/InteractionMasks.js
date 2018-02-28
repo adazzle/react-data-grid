@@ -29,6 +29,10 @@ class InteractionMasks extends React.Component {
     rowGetter: PropTypes.func
   };
 
+  state = {
+    lockedPosition: null
+  };
+
   componentDidUpdate(nextProps) {
     if (this.props.selectedPosition !== nextProps.selectedPosition) {
       this.focus();
@@ -71,15 +75,32 @@ class InteractionMasks extends React.Component {
   };
 
   moveUp = () => {
-    const current = this.props.selectedPosition;
-    const next = { ...current, ...{ rowIdx: current.rowIdx - 1 } };
+    const {
+      selectedPosition: { rowIdx }
+    } = this.props;
+    const next = { ...selectedPosition, ...{ rowIdx: rowIdx - 1 } };
     this.selectCell(next);
   };
 
   moveDown = () => {
-    const current = this.props.selectedPosition;
-    const next = { ...current, ...{ rowIdx: current.rowIdx + 1 } };
-    this.selectCell(next);
+    const {
+      onHitBottomBoundary,
+      selectedPosition,
+      selectedPosition: { rowIdx },
+      visibleEnd
+    } = this.props;
+    const nextRowIdx = rowIdx + 1;
+    const next = { ...selectedPosition, ...{ rowIdx: nextRowIdx } };
+    const scrollBoundary = visibleEnd - 2;
+    if (nextRowIdx === scrollBoundary ) {
+      this.setState({lockedPosition: this.getSelectedCellPosition()});
+      onHitBottomBoundary();
+      setTimeout(() => {
+        this.selectCell(next);
+      }, 50);
+    } else {
+      this.selectCell(next);
+    }
   };
 
   moveLeft = () => {
@@ -108,6 +129,11 @@ class InteractionMasks extends React.Component {
     }
   };
 
+  getSelectedCellPosition() {
+    const {lockedPosition} = this.state;
+    return lockedPosition ? lockedPosition : getSelectedDimensions(this.props);
+  }
+
   selectCell = cell => {
     if (this.isCellWithinBounds(cell)) {
       this.props.selectCell(cell);
@@ -116,7 +142,7 @@ class InteractionMasks extends React.Component {
 
   render() {
     const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel } = this.props;
-    const { width, left, top, height } = getSelectedDimensions(this.props);
+    const { width, left, top, height } = this.getSelectedCellPosition();
     const value = getSelectedCellValue(this.props);
     const rowIdx = getSelectedRowIndex(this.props);
     return (
@@ -137,6 +163,7 @@ class InteractionMasks extends React.Component {
             left={left}
             top={top}
             height={height}
+            lockedPosition={this.state.lockedPosition}
           />
         )}
         {isEditorEnabled && (
