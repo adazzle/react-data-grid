@@ -11,6 +11,9 @@ import {
   getSelectedColumn
 } from '../utils/SelectedCellUtils';
 
+const SCROLL_CELL_BUFFER = 2;
+const SCROLL_CELL_INCREMENT = 1;
+
 class InteractionMasks extends React.Component {
   static propTypes = {
     visibleStart: PropTypes.number,
@@ -75,47 +78,44 @@ class InteractionMasks extends React.Component {
   };
 
   moveUp = () => {
-    const {
-      selectedPosition: { rowIdx }
-    } = this.props;
-    const next = { ...selectedPosition, ...{ rowIdx: rowIdx - 1 } };
+    const currentPosition = this.getSelectedCellPosition();
+    const next = { ...currentPosition, ...{ rowIdx: currentPosition.rowIdx - SCROLL_CELL_INCREMENT } };
     this.selectCell(next);
   };
 
   moveDown = () => {
     const {
-      onHitBottomBoundary,
-      selectedPosition,
-      selectedPosition: { rowIdx },
-      visibleEnd
+      onHitBottomBoundary
     } = this.props;
-    const nextRowIdx = rowIdx + 1;
-    const next = { ...selectedPosition, ...{ rowIdx: nextRowIdx } };
-    const scrollBoundary = visibleEnd - 2;
-    console.log('row = ' + nextRowIdx);
-    console.log('scroll boundary ' + scrollBoundary);
-    if (nextRowIdx === scrollBoundary ) {
-      this.setState({lockedPosition: this.getSelectedCellPosition()});
+    const currentPosition = this.getSelectedCellPosition();
+    const nextRowIdx = currentPosition.rowIdx + SCROLL_CELL_INCREMENT;
+    const next = { ...currentPosition, ...{ rowIdx: nextRowIdx } };
+    if (this.isCellAtBottomBoundary(next)) {
+      this.setScrollingMetrics(next);
       onHitBottomBoundary();
-      setTimeout(() => {
-        this.selectCell(next);
-      }, 50);
     } else {
+      this.resetScrollingMetrics();
       this.selectCell(next);
     }
   };
 
   moveLeft = () => {
     const current = this.props.selectedPosition;
-    const next = { ...current, ...{ idx: current.idx - 1 } };
+    const next = { ...current, ...{ idx: current.idx - SCROLL_CELL_INCREMENT } };
     this.selectCell(next);
   };
 
   moveRight = () => {
     const current = this.props.selectedPosition;
-    const next = { ...current, ...{ idx: current.idx + 1 } };
+    const next = { ...current, ...{ idx: current.idx + SCROLL_CELL_INCREMENT } };
     this.selectCell(next);
   };
+
+  isCellAtBottomBoundary(cell) {
+    const {visibleEnd} = this.props;
+    const scrollBoundary = visibleEnd - SCROLL_CELL_BUFFER;
+    return cell.rowIdx === scrollBoundary;
+  }
 
   isCellWithinBounds = ({ idx, rowIdx }) => {
     return rowIdx >= 0 && idx >= 0 && idx < this.props.columns.length;
@@ -131,9 +131,12 @@ class InteractionMasks extends React.Component {
     }
   };
 
+  getSelectedCellDimensions() {
+    return this._scrollingMetrics ? this._scrollingMetrics.dimensions : getSelectedDimensions(this.props);
+  }
+
   getSelectedCellPosition() {
-    const {lockedPosition} = this.state;
-    return lockedPosition ? lockedPosition : getSelectedDimensions(this.props);
+    return this._scrollingMetrics ? this._scrollingMetrics.position : this.props.selectedPosition;
   }
 
   selectCell = cell => {
@@ -142,9 +145,20 @@ class InteractionMasks extends React.Component {
     }
   };
 
+  setScrollingMetrics(next) {
+    this._scrollingMetrics = {
+      dimensions: this.getSelectedCellDimensions(),
+      position: next
+    };
+  }
+
+  resetScrollingMetrics() {
+    this._scrollingMetrics = null;
+  }
+
   render() {
     const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel } = this.props;
-    const { width, left, top, height } = this.getSelectedCellPosition();
+    const { width, left, top, height } = this.getSelectedCellDimensions();
     const value = getSelectedCellValue(this.props);
     const rowIdx = getSelectedRowIndex(this.props);
     return (
@@ -165,7 +179,7 @@ class InteractionMasks extends React.Component {
             left={left}
             top={top}
             height={height}
-            lockedPosition={this.state.lockedPosition}
+            isFixed={this._cellPositionWhileScrolling != null}
           />
         )}
         {isEditorEnabled && (

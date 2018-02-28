@@ -141,7 +141,7 @@ class Canvas extends React.Component {
     const node = ReactDOM.findDOMNode(this);
     const scrollVariation = node.scrollTop % rowHeight;
     const clientScrollOffset = scrollVariation > 0 ? rowHeight - scrollVariation : 0;
-    console.log('scroll to ' + rowHeight + clientScrollOffset);
+    const toScroll =  rowHeight + clientScrollOffset;
     node.scrollTop += rowHeight + clientScrollOffset;
   }
 

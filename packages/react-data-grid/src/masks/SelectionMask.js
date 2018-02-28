@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Motion, spring } from 'react-motion';
 
-const setMaskStyle = (left, top, width, height, lockedPosition) => {
+const setMaskStyle = (left, top, width, height, isFixed) => {
   return {
-    position: lockedPosition != null ? 'fixed' : 'absolute',
+    position: isFixed != null ? 'fixed' : 'absolute',
     height,
     width,
     zIndex: 1000,
@@ -19,11 +19,12 @@ class SelectionMask extends React.Component {
     height: PropTypes.number,
     top: PropTypes.number,
     left: PropTypes.number,
-    selectedPosition: PropTypes.object
+    selectedPosition: PropTypes.object,
+    isFixed: PropTypes.bool
   }
 
   render() {
-    const {width, height, top, left, lockedPosition} = this.props;
+    const {width, height, top, left, isFixed} = this.props;
     return (
       <Motion
         style={{
@@ -34,7 +35,7 @@ class SelectionMask extends React.Component {
         }}
       >
         {({ x, y, w, h }) => (
-          <div tabIndex="0" style={setMaskStyle(x, y, w, h, lockedPosition)} className="rdg-selected moving-element" />
+          <div tabIndex="0" style={setMaskStyle(x, y, w, h, isFixed)} className="rdg-selected moving-element" />
         )}
       </Motion>
     );
