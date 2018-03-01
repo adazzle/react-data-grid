@@ -12,7 +12,6 @@ import {
 } from '../utils/SelectedCellUtils';
 
 const SCROLL_CELL_BUFFER = 2;
-const SCROLL_CELL_INCREMENT = 1;
 
 class InteractionMasks extends React.Component {
   static propTypes = {
@@ -44,23 +43,14 @@ class InteractionMasks extends React.Component {
 
   onKeyDown = e => {
     e.preventDefault();
-    const keyPressMaps = {
-      ArrowDown: this.moveDown,
-      ArrowUp: this.moveUp,
-      ArrowLeft: this.moveLeft,
-      ArrowRight: this.moveRight,
-      Tab: this.onPressTab,
-      Enter: this.editCell
-    };
-    const action = keyPressMaps[e.key];
-    if (action) {
-      action(e);
+    if (this.isKeyboardNavigationEvent(e)) {
+      this.move(e);
     } else if (isKeyPrintable(e.keyCode)) {
       this.toggleCellEdit(e.keyCode);
     }
   };
 
-  toggleCellEdit = e => {
+  toggleCellEdit = (e) => {
     const { isEditorEnabled, toggleCellEdit } = this.props;
     const enableEdit = !isEditorEnabled;
     toggleCellEdit(enableEdit, e.key);
@@ -71,50 +61,62 @@ class InteractionMasks extends React.Component {
 
   onPressTab = e => {
     if (e.shiftKey === true) {
-      this.moveLeft();
+      this.move();
     } else {
-      this.moveRight();
+      this.move();
     }
   };
 
-  moveUp = () => {
-    const currentPosition = this.getSelectedCellPosition();
-    const next = { ...currentPosition, ...{ rowIdx: currentPosition.rowIdx - SCROLL_CELL_INCREMENT } };
-    this.selectCell(next);
-  };
+  isKeyboardNavigationEvent(e) {
+    return this.getNavigationAction(e) != null;
+  }
 
-  moveDown = () => {
-    const {
-      onHitBottomBoundary
-    } = this.props;
+  getNavigationAction(e) {
+    const keyNavActions = {
+      ArrowDown: {
+        getNext: current => ({...current, ...{rowIdx: current.rowIdx + 1}}),
+        isCellAtBoundary: cell => {
+          const {visibleEnd} = this.props;
+          const scrollBoundary = visibleEnd - SCROLL_CELL_BUFFER;
+          return cell.rowIdx >= scrollBoundary;
+        },
+        onHitBoundary: this.props.onHitBottomBoundary
+      },
+      ArrowUp: {
+        getNext: current => ({...current, ...{rowIdx: current.rowIdx - 1}}),
+        isCellAtBoundary: cell => {
+          const {visibleStart} = this.props;
+          return cell.rowIdx !== 0 && cell.rowIdx < visibleStart + SCROLL_CELL_BUFFER;
+        },
+        onHitBoundary: this.props.onHitTopBoundary
+      },
+      ArrowRight: {
+        getNext: current => ({...current, ...{cellIdx: current.cellIdx + 1}}),
+        isCellAtBoundary: () => false, // to do
+        onHitBoundary: this.props.onRightBoundary//to do
+      },
+      ArrowLeft: {
+        getNext: current => ({...current, ...{cellIdx: current.cellIdx - 1}}),
+        isCellAtBoundary: () => false, // to do
+        onHitBoundary: this.props.onHitLeftBoundary//to do
+      }
+    };
+    return keyNavActions[e.key];
+  }
+
+  move(e) {
+    const action = this.getNavigationAction(e);
     const currentPosition = this.getSelectedCellPosition();
-    const nextRowIdx = currentPosition.rowIdx + SCROLL_CELL_INCREMENT;
-    const next = { ...currentPosition, ...{ rowIdx: nextRowIdx } };
-    if (this.isCellAtBottomBoundary(next)) {
-      this.setScrollingMetrics(next);
-      onHitBottomBoundary();
+    const next = action.getNext(currentPosition);
+    if (action.isCellAtBoundary(next)) {
+      if (this.isReadyToScrollWithKeyboard()) {
+        this.setScrollingMetrics(next);
+        action.onHitBoundary();
+      }
     } else {
       this.resetScrollingMetrics();
       this.selectCell(next);
     }
-  };
-
-  moveLeft = () => {
-    const current = this.props.selectedPosition;
-    const next = { ...current, ...{ idx: current.idx - SCROLL_CELL_INCREMENT } };
-    this.selectCell(next);
-  };
-
-  moveRight = () => {
-    const current = this.props.selectedPosition;
-    const next = { ...current, ...{ idx: current.idx + SCROLL_CELL_INCREMENT } };
-    this.selectCell(next);
-  };
-
-  isCellAtBottomBoundary(cell) {
-    const {visibleEnd} = this.props;
-    const scrollBoundary = visibleEnd - SCROLL_CELL_BUFFER;
-    return cell.rowIdx === scrollBoundary;
   }
 
   isCellWithinBounds = ({ idx, rowIdx }) => {
@@ -123,6 +125,14 @@ class InteractionMasks extends React.Component {
 
   isGridSelected = () => {
     return this.isCellWithinBounds(this.props.selectedPosition);
+  };
+
+  isReadyToScrollWithKeyboard = () => {
+    if (this._scrollingMetrics == null) {
+      return true;
+    }
+    const {visibleEnd} = this.props;
+    return this._scrollingMetrics && this._scrollingMetrics.visibleEnd === visibleEnd - 1;
   };
 
   focus = () => {
@@ -146,9 +156,11 @@ class InteractionMasks extends React.Component {
   };
 
   setScrollingMetrics(next) {
+    const {visibleEnd} = this.props;
     this._scrollingMetrics = {
       dimensions: this.getSelectedCellDimensions(),
-      position: next
+      position: next,
+      visibleEnd
     };
   }
 

@@ -59,10 +59,7 @@ function getVisibleColStart(props, scrollLeft) {
 export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, totalNumberRows) => {
   const renderedRowsCount = ceil(gridHeight / rowHeight);
   const visibleStart = max(0, Math.round(scrollTop / rowHeight));
-  console.log('scrolltop = ' + scrollTop);
-  console.log('start = ' + visibleStart);
   const visibleEnd = min(visibleStart + renderedRowsCount, totalNumberRows);
-  console.log('end = ' + visibleEnd);
   return {visibleStart, visibleEnd};
 };
 

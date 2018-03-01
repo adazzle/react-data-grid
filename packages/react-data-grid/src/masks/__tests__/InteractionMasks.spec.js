@@ -108,7 +108,7 @@ fdescribe('<InteractionMasks/>', () => {
         expect(props.selectCell).not.toHaveBeenCalled();
       });
 
-      fit('Press arrow right should not move right', () => {
+      it('Press arrow right should not move right', () => {
         const currentCell = { idx: NUMBER_OF_COLUMNS - 1, rowIdx: 0 };
         const { wrapper, props } = setup({ selectedPosition: currentCell });
         pressKey(wrapper, 'ArrowRight');
