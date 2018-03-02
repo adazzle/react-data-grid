@@ -1,10 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Motion, spring } from 'react-motion';
 
 const setMaskStyle = (left, top, width, height, isFixed) => {
   return {
-    position: isFixed != null ? 'fixed' : 'absolute',
+    position: isFixed === true ? 'fixed' : 'absolute',
     height,
     width,
     zIndex: 1000,
@@ -12,34 +11,33 @@ const setMaskStyle = (left, top, width, height, isFixed) => {
   };
 };
 
-class SelectionMask extends React.Component {
 
-  static propTypes = {
-    width: PropTypes.number,
-    height: PropTypes.number,
-    top: PropTypes.number,
-    left: PropTypes.number,
-    selectedPosition: PropTypes.object,
-    isFixed: PropTypes.bool
-  }
+const AnimatedMask = ({ width, height, top, left, isFixed }) => {
+  return (
+    <Motion
+      style={{
+        x: spring(left),
+        y: spring(top),
+        w: spring(width),
+        h: spring(height)
+      }}
+    >
+      {({ x, y, w, h }) => (
+        <div
+          style={setMaskStyle(x, y, w, h, isFixed)}
+          className="rdg-selected moving-element"
+        />
+      )}
+    </Motion>
+  );
+};
 
-  render() {
-    const {width, height, top, left, isFixed} = this.props;
-    return (
-      <Motion
-        style={{
-          x: spring(left),
-          y: spring(top),
-          w: spring(width),
-          h: spring(height)
-        }}
-      >
-        {({ x, y, w, h }) => (
-          <div tabIndex="0" style={setMaskStyle(x, y, w, h, isFixed)} className="rdg-selected moving-element" />
-        )}
-      </Motion>
-    );
-  }
-}
+const SelectionMask = (props) => {
+  const { width, height, top, left, isFixed, isAnimating } = props;
+  return isAnimating ? <AnimatedMask {...props}/> :  (<div
+  style={setMaskStyle(left, top, width, height, isFixed)}
+  className="rdg-selected"
+/>);
+};
 
 export default SelectionMask;

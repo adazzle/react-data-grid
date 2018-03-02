@@ -11,9 +11,8 @@ export const getSelectedRow = (selectArgs) => {
   return rowGetter(rowIdx);
 };
 
-export const getSelectedDimensions = (selectArgs, override) => {
-  const selectedPosition =  override || selectArgs.selectedPosition;
-  const {idx, rowIdx} = selectedPosition;
+export const getSelectedDimensions = (selectArgs) => {
+  const {idx, rowIdx} = selectArgs.selectedPosition;
   const {
     columns,
     rowHeight
