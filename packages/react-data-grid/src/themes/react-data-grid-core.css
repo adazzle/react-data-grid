@@ -1,0 +1,77 @@
+.react-grid-Container {
+  clear: both;
+  margin-top: 0;
+  padding: 0;
+}
+
+.react-grid-Main {
+  background-color: #ffffff;
+  color: inherit;
+  padding: 0px;
+  outline: 1px solid #e7eaec;
+  clear : both;
+}
+
+.react-grid-Grid {
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+}
+
+.react-grid-Canvas {
+  background-color: #ffffff;
+}
+
+.react-grid-Cell input.editor-main,
+select.editor-main {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555555;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+input.editor-main:focus,
+select.editor-main:focus {
+  border-color: #66afe9;
+  border: 2px solid #66afe9;
+  background: #eee;
+  border-radius: 4px;
+}
+.react-grid-Cell input.editor-main::-moz-placeholder,
+select.editor-main::-moz-placeholder {
+  color: #999999;
+  opacity: 1;
+}
+.react-grid-Cell input.editor-main:-ms-input-placeholder,
+select.editor-main:-ms-input-placeholder {
+  color: #999999;
+}
+.react-grid-Cell input.editor-main::-webkit-input-placeholder,
+select.editor-main::-webkit-input-placeholder {
+  color: #999999;
+}
+.react-grid-Cell input.editor-main[disabled],
+select.editor-main[disabled],
+.react-grid-Cell input.editor-main[readonly],
+select.editor-main[readonly],
+fieldset[disabled] .react-grid-Cell input.editor-main,
+fieldset[disabled] select.editor-main {
+  cursor: not-allowed;
+  background-color: #eeeeee;
+  opacity: 1;
+}
+textarea.react-grid-Cell input.editor-main,
+textareaselect.editor-main {
+  height: auto;
+}
+
+.react-grid-ScrollShim {
+  z-index: 10002;
+}

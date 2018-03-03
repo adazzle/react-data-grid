@@ -5,7 +5,7 @@ const SimpleTextEditor        = require('./SimpleTextEditor');
 const isFunction              = require('../utils/isFunction');
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 
-require('../../../../themes/react-data-grid-core.css');
+require('../themes/react-data-grid-core.css');
 
 class EditorContainer extends React.Component {
   static displayName = 'EditorContainer';

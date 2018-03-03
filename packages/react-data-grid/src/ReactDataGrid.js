@@ -10,8 +10,8 @@ import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
 import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics        = require('./ColumnMetrics');
-require('../../../themes/react-data-grid-core.css');
-require('../../../themes/react-data-grid-checkbox.css');
+require('./themes/react-data-grid-core.css');
+require('./themes/react-data-grid-checkbox.css');
 
 if (!Object.assign) {
   Object.assign = require('object-assign');

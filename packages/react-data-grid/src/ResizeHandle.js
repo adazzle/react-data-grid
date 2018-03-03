@@ -1,6 +1,6 @@
 const React = require('react');
 const Draggable = require('./Draggable');
-require('../../../themes/react-data-grid-header.css');
+require('./themes/react-data-grid-header.css');
 
 const style = {
   position: 'absolute',

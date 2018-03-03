@@ -2,7 +2,10 @@
   "name": "react-data-grid-addons",
   "version": "3.0.11",
   "description": "A set of addons for react-data-grid",
+  "main": "lib/index.js",
   "scripts": {
+    "precompile": "rm -rf lib/ && mkdir -p lib",
+    "compile": "babel src --ignore '**/*.spec.js' --out-dir lib --copy-files --source-maps",
     "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-addons true",
     "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid-addons",
     "test": "npm test"
@@ -15,7 +18,15 @@
   "author": "Adazzle",
   "license": "MIT",
   "dependencies": {
-    "react-data-grid": "^3.0.11"
+    "react-data-grid": "^3.0.11",
+    "classnames": "^1.2.0",
+    "prop-types": "^15.5.10",
+    "react-contextmenu": "1.6.2",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
+    "react-select": "^1.0.0-beta14",
+    "reselect": "^2.5.1",
+    "ron-react-autocomplete": "^4.0.5"
   },
   "devDependencies": {
     "jquery": "^2.1.1",

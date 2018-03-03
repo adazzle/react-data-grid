@@ -1,0 +1,341 @@
+.react-grid-Cell {
+  background-color: #ffffff;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #dddddd;
+}
+
+.react-grid-Cell:focus {
+  outline: 2px solid #66afe9;
+  outline-offset: -2px;
+}
+
+.react-grid-Cell--locked:focus {
+  z-index: 100;
+}
+
+.react-grid-Cell:focus .drag-handle {
+  position: absolute;
+  bottom: -5px;
+  right: -4px;
+  background: #66afe9;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #fff;
+  border-right: 0px;
+  border-bottom: 0px;
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -webkit-grab;
+}
+
+.react-grid-Cell:not(.editing) .react-grid-Cell__value {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.rdg-child-cell .react-grid-Cell__value {
+  line-height: 35px;
+}
+
+
+.react-grid-Cell.readonly {
+  background-color : black;
+}
+
+.react-grid-Cell.copied {
+  background: rgba(0, 0, 255, 0.2) !important;
+}
+
+.react-grid-Cell--locked:last-of-type {
+  border-right: 1px solid #dddddd;
+  box-shadow: none;
+}
+
+.react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down {
+  display: 'block'
+}
+
+.react-grid-Cell.is-dragged-over-down {
+  border-right: 1px dashed black;
+  border-left: 1px dashed black;
+  border-bottom: 1px dashed black;
+}
+
+.react-grid-Cell.is-dragged-over-up {
+  border-right: 1px dashed black;
+  border-left: 1px dashed black;
+  border-top: 1px dashed black;
+}
+
+.react-grid-Cell.is-dragged-over-up .drag-handle {
+  top: -5px;
+}
+
+.react-grid-Cell:hover {
+  background: #eee;
+}
+
+.react-grid-cell .form-control-feedback {
+  color: #a94442;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  z-index: 1000000;
+  display: block;
+  width: 34px;
+  height: 34px;
+}
+.react-grid-Cell.was-dragged-over {
+  border-right: 1px dashed black;
+  border-left: 1px dashed black;
+}
+
+.react-grid-Cell:hover:focus .drag-handle {
+  position: absolute;
+  bottom: -8px;
+  right: -7px;
+  background: white;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #66afe9;
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -webkit-grab;
+}
+
+.react-grid-Row.row-selected .react-grid-Cell{
+ background-color: #DBECFA;
+}
+
+.react-grid-Cell.editing {
+  padding: 0;
+  overflow: visible !important;
+}
+
+.react-grid-Cell--locked.editing {
+  z-index: 100;
+}
+.react-grid-Cell.editing .has-error input {
+  border: 2px red solid !important;
+  border-radius: 2px !important;
+}
+
+.react-grid-Cell__value ul {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline-block;
+}
+
+.react-grid-Cell__value .btn-sm {
+  padding: 0;
+}
+
+.cell-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.cell-tooltip:hover {
+  z-index: 101;
+}
+
+.cell-tooltip .cell-tooltip-text {
+    visibility: hidden;
+    width: 150px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: -150%;
+    left: 50%;
+    margin-left: -60px;
+    /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
+    opacity: 1s;
+}
+
+.cell-tooltip:hover .cell-tooltip-text {
+    visibility: visible;
+    opacity: 0.8;
+}
+
+.cell-tooltip .cell-tooltip-text::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+}
+
+.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
+    visibility: hidden;
+}
+
+.rdg-cell-expand {
+    top: 0px;
+    right: 20px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.rdg-child-row-action-cross:before, rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:before, rdg-child-row-action-cross-last:after {
+  content: "";
+  position: absolute;
+  background: grey;
+  height: 50%;
+}
+
+.rdg-child-row-action-cross:before {
+  left: 21px;
+  width: 1px;
+  height: 35px;
+}
+
+.rdg-child-row-action-cross-last:before {
+  left: 21px;
+  width: 1px;
+}
+
+.rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:after {
+  top: 50%;
+  left:20px;
+  height: 1px;
+  width: 15px;
+  content: "";
+  position: absolute;
+  background: grey;
+}
+
+.rdg-child-row-action-cross:hover {
+    background: red;
+}
+.rdg-child-row-btn {
+   position:absolute;
+   cursor:pointer;
+   border:1px solid grey;
+   border-radius:14px;
+   z-index: 3;
+   background: white;
+}
+
+.rdg-child-row-btn div {
+  font-size: 12px;
+  text-align:center;
+  line-height:19px;
+  color: grey;
+  height:20px;
+  width:20px;
+  position:absolute;
+  top:60%;
+  left:53%;
+  margin-top:-10px;
+  margin-left:-10px;
+
+}
+
+.rdg-empty-child-row:hover .glyphicon-plus-sign {
+  color: green;
+}
+
+.rdg-empty-child-row:hover a {
+  color: green;
+}
+
+.rdg-child-row-btn .glyphicon-remove-sign:hover {
+  color: red;
+}
+
+.last-column .cell-tooltip-text{
+  right: 100%;
+  left: 0% !important;
+}
+
+.rdg-cell-action {
+  float: right;
+  height: 100%;
+}
+
+.rdg-cell-action-last {
+  margin-right: -8px;
+}
+
+.rdg-cell-action-button {
+  width: 35px;
+  height: 100%;
+  text-align: center;
+  position: relative;
+  display: table;
+}
+
+.rdg-cell-action-button > span {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.rdg-cell-action-button:hover {
+  background-color: #fff;
+}
+
+.rdg-cell-action-button-toggled {
+  background-color: #fff;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+
+.rdg-cell-action-button-toggled:after {
+  content: '';
+  height: 1px;
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  background: inherit;
+  z-index: 10001;
+}
+
+.rdg-cell-action-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+}
+
+.rdg-cell-action-menu > span {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+}
+
+.rdg-cell-action-menu > span:hover {
+  color: #262626;
+  text-decoration: none;
+  background-color: #f5f5f5;
+}
