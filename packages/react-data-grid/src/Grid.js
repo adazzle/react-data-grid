@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
-require('../../../themes/react-data-grid-core.css');
+require('./themes/react-data-grid-core.css');
 
 class Grid extends React.Component {
   static displayName = 'Grid';

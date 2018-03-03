@@ -9,7 +9,7 @@ const getScrollbarSize  = require('./getScrollbarSize');
 import PropTypes from 'prop-types';
 const createObjectWithProperties = require('./createObjectWithProperties');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
-require('../../../themes/react-data-grid-header.css');
+require('./themes/react-data-grid-header.css');
 
 type Column = {
   width: number

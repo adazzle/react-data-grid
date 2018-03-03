@@ -6,6 +6,13 @@ function Clear-Dist () {
     Remove-Item $path -recurse
     Write-Host "Cleaned dist folder in $($path)"
   }
+  $libFolders= dir packages/*/lib | ?{$_.PSISContainer}
+
+  foreach ($folder in $libFolders){
+    $path = Join-Path -Path $folder.FullName -ChildPath "*"
+    Remove-Item $path -recurse
+    Write-Host "Cleaned lib folder in $($path)"
+  }
 }
 
 function Build () {

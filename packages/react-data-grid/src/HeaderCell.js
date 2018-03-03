@@ -3,7 +3,7 @@ const ReactDOM      = require('react-dom');
 const joinClasses    = require('classnames');
 const ExcelColumn    = require('./PropTypeShapes/ExcelColumn');
 const ResizeHandle   = require('./ResizeHandle');
-require('../../../themes/react-data-grid-header.css');
+require('./themes/react-data-grid-header.css');
 
 import PropTypes from 'prop-types';
 

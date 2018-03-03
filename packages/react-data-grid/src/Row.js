@@ -7,7 +7,7 @@ const Cell = require('./Cell');
 const columnUtils = require('./ColumnUtils');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const createObjectWithProperties = require('./createObjectWithProperties');
-require('../../../themes/react-data-grid-row.css');
+require('./themes/react-data-grid-row.css');
 
 class CellExpander extends React.Component {
   render() {

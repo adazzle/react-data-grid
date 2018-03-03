@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import '../../../../themes/react-data-grid-toolbar.css';
+import '../themes/react-data-grid-toolbar.css';
 
 const propTypes = {
   children: PropTypes.array

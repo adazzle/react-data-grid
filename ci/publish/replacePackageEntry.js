@@ -5,7 +5,7 @@ const packageName = scriptArgs[0];
 const publish = scriptArgs[1];
 
 const getPathToPackageEntry = () => path.join(__dirname, `../../packages/${packageName}/index.js`);
-const getPublishEntryData = () => `module.exports = require('./dist/${packageName}');`;
+const getPublishEntryData = () => `module.exports = require('./lib/${packageName}');`;
 const getDevEntryData = () => "module.exports = require('./src');";
 
 const replacePackageEntry = () => {

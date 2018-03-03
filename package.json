@@ -8,10 +8,10 @@
     "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
     "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
     "postinstall": "lerna bootstrap",
-    "build": "webpack --config ./config/webpack.config.prod.js --release true",
+    "build": "lerna run compile && webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "node webpack-dev-server.js",
     "beforepublish": "lerna run beforepublish",
-    "eslint": "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**"
+    "eslint": "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/**/*.js packages/react-data-grid-addons/src/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "avcoveralls": "^1.0.0",
+    "babel-cli": "6.26.0",
     "babel-core": "^6.7.4",
     "babel-eslint": "^4.1.6",
     "babel-loader": "^6.2.1",
@@ -54,6 +55,7 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-0": "6.24.1",
     "copy-dir": "^0.3.0",
     "css-loader": "^0.26.0",
     "del": "^1.2.1",
