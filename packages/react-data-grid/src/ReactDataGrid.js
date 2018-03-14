@@ -114,6 +114,7 @@ class ReactDataGrid extends React.Component {
     onCheckCellIsEditable: PropTypes.func,
     /* called before cell is set active, returns a boolean to determine whether cell is editable */
     overScan: PropTypes.object,
+    searchPlaceholderText: PropTypes.string,
     onDeleteSubRow: PropTypes.func,
     onAddSubRow: PropTypes.func,
     enableCellAutoFocus: PropTypes.bool,
@@ -878,6 +879,7 @@ class ReactDataGrid extends React.Component {
         ref: (node) => this.filterRow = node,
         filterable: true,
         onFilterChange: this.props.onAddFilter,
+        searchPlaceholderText: this.props.searchPlaceholderText,
         height: this.props.headerFiltersHeight,
         rowType: 'filter'
       });

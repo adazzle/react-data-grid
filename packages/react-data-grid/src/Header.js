@@ -118,6 +118,7 @@ class Header extends React.Component {
         draggableHeaderCell={this.props.draggableHeaderCell}
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}
+        searchPlaceholderText={row.searchPlaceholderText}
         onHeaderDrop={this.props.onHeaderDrop}
         sortColumn={this.props.sortColumn}
         sortDirection={this.props.sortDirection}
