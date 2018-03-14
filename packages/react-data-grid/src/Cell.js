@@ -114,7 +114,6 @@ class Cell extends React.Component {
 
   onCellFocus = () => {
     let meta = this.props.cellMetaData;
-    console.log(meta.isTabFocus);
     if (meta.isTabFocus && meta != null && meta.onCellFocus && typeof (meta.onCellFocus) === 'function') {
       meta.onCellFocus({ rowIdx: this.props.rowIdx, idx: this.props.idx });
     }
