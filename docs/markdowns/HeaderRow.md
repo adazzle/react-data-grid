@@ -90,3 +90,7 @@ type: `shape[object Object]`
 
 type: `union(number|string)`
 
+
+### `searchPlaceholderText`
+
+type: `string`

@@ -224,3 +224,7 @@ defaultValue: `-1`
 
 type: `element`
 
+
+### `searchPlaceholderText`
+
+type: `string`

@@ -43,7 +43,8 @@ class HeaderRow extends React.Component {
     onScroll: PropTypes.func,
     rowType: PropTypes.string,
     draggableHeaderCell: PropTypes.func,
-    onHeaderDrop: PropTypes.func
+    onHeaderDrop: PropTypes.func,
+    searchPlaceholderText: PropTypes.string
   };
 
   componentWillMount() {

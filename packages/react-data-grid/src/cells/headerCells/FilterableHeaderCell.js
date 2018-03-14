@@ -5,7 +5,12 @@ import PropTypes from 'prop-types';
 class FilterableHeaderCell extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
-    column: PropTypes.shape(ExcelColumn)
+    column: PropTypes.shape(ExcelColumn),
+    searchPlaceholderText: PropTypes.string
+  };
+
+  static defaultProps = {
+    searchPlaceholderText: 'Search'
   };
 
   state: {filterTerm: string} = {filterTerm: ''};
@@ -22,7 +27,7 @@ class FilterableHeaderCell extends React.Component {
     }
 
     let inputKey = 'header-filter-' + this.props.column.key;
-    return (<input key={inputKey} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>);
+    return (<input key={inputKey} type="text" className="form-control input-sm" placeholder={this.props.searchPlaceholderText} value={this.state.filterTerm} onChange={this.handleChange}/>);
   };
 
   render(): ?ReactElement {
