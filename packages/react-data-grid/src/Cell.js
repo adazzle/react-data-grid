@@ -100,7 +100,8 @@ class Cell extends React.Component {
       || this.props.className !== nextProps.className
       || this.props.expandableOptions !== nextProps.expandableOptions
       || this.hasChangedDependentValues(nextProps)
-      || this.props.column.locked !== nextProps.column.locked;
+      || this.props.column.locked !== nextProps.column.locked
+      || this.props.cellMetaData.isTabFocus !== nextProps.cellMetaData.isTabFocus;
     return shouldUpdate;
   }
 
@@ -113,7 +114,8 @@ class Cell extends React.Component {
 
   onCellFocus = () => {
     let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellFocus && typeof (meta.onCellFocus) === 'function') {
+    console.log(meta.isTabFocus);
+    if (meta.isTabFocus && meta != null && meta.onCellFocus && typeof (meta.onCellFocus) === 'function') {
       meta.onCellFocus({ rowIdx: this.props.rowIdx, idx: this.props.idx });
     }
   };
