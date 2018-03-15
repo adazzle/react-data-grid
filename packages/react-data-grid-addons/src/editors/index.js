@@ -4,6 +4,7 @@ const Editors = {
   AutoComplete: require('./AutoCompleteEditor'),
   DropDownEditor: require('./DropDownEditor'),
   ContainerEditorWrapper: require('./ContainerEditorWrapper'),
+  DateRangeEditor: require('./DateRangeEditor'),
   SimpleTextEditor,
   CheckboxEditor
 };
