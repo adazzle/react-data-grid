@@ -41,6 +41,7 @@ module.exports = function(stateValues, events) {
     sortColumn: null,
     dragged: null,
     scrollOffset: 0,
-    lastRowIdxUiSelected: -1
+    lastRowIdxUiSelected: -1,
+    isTabFocus: false
   }, stateValues);
 };

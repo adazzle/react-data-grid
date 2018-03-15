@@ -22,7 +22,8 @@ let testCellMetaData = {
   copied: null,
   handleDragEnterRow: function() {},
   handleTerminateDrag: function() {},
-  onColumnEvent: function() {}
+  onColumnEvent: function() {},
+  isTabFocus: true
 };
 
 let testProps = {
