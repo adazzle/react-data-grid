@@ -200,9 +200,6 @@ class InteractionMasks extends React.Component {
         tabIndex="0"
         onKeyDown={this.onKeyDown}
         onKeyUp={this.onKeyUp}
-        ref={node => {
-          this.node = node;
-        }}
       >
         {!isEditorEnabled && this.isGridSelected() && (
           <SelectionMask

@@ -34,10 +34,14 @@ const AnimatedMask = ({ width, height, top, left, isFixed }) => {
 
 const SelectionMask = (props) => {
   const { width, height, top, left, isFixed, isAnimating } = props;
-  return isAnimating ? <AnimatedMask {...props}/> :  (<div
-  style={setMaskStyle(left, top, width, height, isFixed)}
-  className="rdg-selected"
-/>);
+  return isAnimating
+    ? <AnimatedMask {...props} />
+    : (
+      <div
+        style={setMaskStyle(left, top, width, height, isFixed)}
+        className="rdg-selected"
+      />
+    );
 };
 
 export default SelectionMask;
