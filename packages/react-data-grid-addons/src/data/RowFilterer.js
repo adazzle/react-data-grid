@@ -14,7 +14,7 @@ const filterRows = (filters, rows = []) => {
         } else if (typeof colFilter.filterTerm === 'string') {
           // default filter action
           let rowValue = retriever.getValue(r, columnKey);
-          if (rowValue !== undefined) {
+          if (rowValue !== undefined && rowValue !== null) {
             if (rowValue.toString().toLowerCase().indexOf(colFilter.filterTerm.toLowerCase()) === -1) {
               include = include & false;
             }
