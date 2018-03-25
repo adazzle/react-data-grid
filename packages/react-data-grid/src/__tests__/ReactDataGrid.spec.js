@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDataGrid from '../ReactDataGrid';
+import Grid from '../Grid';
 import { shallow } from 'enzyme';
 import * as helpers from '../helpers/test/GridPropHelpers';
 
@@ -8,7 +9,8 @@ function shallowRenderGrid({
   enableCellAutoFocus = undefined,
   cellNavigationMode = undefined,
   numRows = helpers.rowsCount(),
-  onCellSelected, onCellDeSelected
+  onCellSelected, onCellDeSelected,
+  onCellRangeSelectionStarted, onCellRangeSelectionUpdated, onCellRangeSelectionCompleted
 }) {
   const enzymeWrapper = shallow(<ReactDataGrid
     columns={helpers.columns}
@@ -19,6 +21,9 @@ function shallowRenderGrid({
     cellNavigationMode={cellNavigationMode}
     onCellSelected={onCellSelected}
     onCellDeSelected={onCellDeSelected}
+    onCellRangeSelectionStarted={onCellRangeSelectionStarted}
+    onCellRangeSelectionUpdated={onCellRangeSelectionUpdated}
+    onCellRangeSelectionCompleted={onCellRangeSelectionCompleted}
   />);
   return {
     enzymeWrapper
@@ -41,10 +46,20 @@ describe('configure enableCellAutoFocus property', () => {
   });
 });
 
-function shallowRenderGridWithSelectionHandlers() {
-  const props = { cellNavigationMode: 'none', onCellSelected: jasmine.createSpy(), onCellDeSelected: jasmine.createSpy() };
+function shallowRenderGridWithSelectionHandlersWrapper() {
+  const props = {
+    cellNavigationMode: 'none',
+    onCellSelected: jasmine.createSpy(),
+    onCellDeSelected: jasmine.createSpy(),
+    onCellRangeSelectionStarted: jasmine.createSpy(),
+    onCellRangeSelectionUpdated: jasmine.createSpy(),
+    onCellRangeSelectionCompleted: jasmine.createSpy()
+  };
   const { enzymeWrapper } = shallowRenderGrid(props);
-  return enzymeWrapper.instance();
+  return enzymeWrapper;
+}
+function shallowRenderGridWithSelectionHandlers() {
+  return shallowRenderGridWithSelectionHandlersWrapper().instance();
 }
 function selectCellInGrid(selected, grid) {
   grid.setState({ selected });
@@ -59,6 +74,7 @@ function selectTable(selected, grid) {
   grid.isFocusedOnCell = () => false;
   grid.isFocusedOnTable = () => true;
 }
+
 describe('Cell Selection/DeSelection handlers', () => {
   describe('when cell selection/deselection handlers are passed', () => {
     describe('cell in the middle of the grid is selected', () => {
@@ -160,6 +176,109 @@ describe('Cell Selection/DeSelection handlers', () => {
     });
   });
 });
+
+describe('Cell range selection event handlers', () => {
+  const initialCell = { rowIdx: 0, idx: 0 };
+  const cellToSelect = { rowIdx: 1, idx: 1 };
+  const cellToSelectByKeyboard = { rowIdx: 1, idx: 0 };
+  describe('onCellRangeSelectionStarted', () => {
+    it('is called when a cell receives a mousedown event', () => {
+      const testgrid = shallowRenderGridWithSelectionHandlersWrapper();
+
+      testgrid.find(Grid).props().cellMetaData.onCellMouseDown(cellToSelect);
+
+      expect(testgrid.instance().props.onCellRangeSelectionStarted).toHaveBeenCalledWith({
+        topLeft: cellToSelect,
+        bottomRight: cellToSelect,
+        startCell: cellToSelect,
+        cursorCell: cellToSelect,
+        isDragging: true
+      });
+    });
+  });
+
+  describe('onCellRangeSelectionUpdated', () => {
+    it('is called when a selection drag is in progress and a cell receives a mouseenter event', () => {
+      const testgrid = shallowRenderGridWithSelectionHandlersWrapper();
+
+      testgrid.instance().setState({
+        selectedRange: Object.assign({}, testgrid.instance().state.selectedRange, {isDragging: true})
+      });
+      testgrid.find(Grid).props().cellMetaData.onCellMouseEnter(cellToSelect);
+
+      expect(testgrid.instance().props.onCellRangeSelectionUpdated).toHaveBeenCalledWith({
+        topLeft: initialCell,
+        bottomRight: cellToSelect,
+        startCell: initialCell,
+        cursorCell: cellToSelect,
+        isDragging: true
+      });
+    });
+
+    it('is not called when no drag is progress but a cell receives a mouseenter event', () => {
+      const testgrid = shallowRenderGridWithSelectionHandlersWrapper();
+
+      testgrid.find(Grid).props().cellMetaData.onCellMouseEnter(cellToSelect);
+
+      expect(testgrid.instance().props.onCellRangeSelectionUpdated).not.toHaveBeenCalled();
+    });
+
+    it('is called when a selected range is updated via the keyboard', () => {
+      const testgrid = shallowRenderGridWithSelectionHandlersWrapper();
+
+      testgrid.instance().selectUpdateViaKeyboard(1, 0); // fake keyboard input
+
+      expect(testgrid.instance().props.onCellRangeSelectionUpdated).toHaveBeenCalledWith({
+        topLeft: initialCell,
+        bottomRight: cellToSelectByKeyboard,
+        startCell: initialCell,
+        cursorCell: cellToSelectByKeyboard
+      });
+    });
+  });
+
+  describe('onCellRangeSelectionCompleted', () => {
+    it('is called when a selection drag is in progress and window receives a mouseup event', () => {
+      const testgrid = shallowRenderGridWithSelectionHandlersWrapper();
+
+      testgrid.instance().setState({
+        selectedRange: Object.assign({}, testgrid.instance().state.selectedRange, {isDragging: true})
+      });
+      testgrid.instance().onWindowMouseUp(); // we're shallow rendering, so just call the handler
+
+      expect(testgrid.instance().props.onCellRangeSelectionCompleted).toHaveBeenCalledWith({
+        topLeft: initialCell,
+        bottomRight: initialCell,
+        startCell: initialCell,
+        cursorCell: initialCell,
+        isDragging: false
+      });
+    });
+
+    it('is not called when no drag is progress but window receives a mouseup event', () => {
+      const testgrid = shallowRenderGridWithSelectionHandlersWrapper();
+
+      testgrid.instance().onWindowMouseUp(); // we're shallow rendering, so just call the handler
+
+      expect(testgrid.instance().props.onCellRangeSelectionCompleted).not.toHaveBeenCalled();
+    });
+
+    it('is called when a selected range is updated via the keyboard', () => {
+      const testgrid = shallowRenderGridWithSelectionHandlersWrapper();
+
+      testgrid.instance().selectUpdateViaKeyboard(1, 0); // fake keyboard input
+
+      expect(testgrid.instance().props.onCellRangeSelectionCompleted).toHaveBeenCalledWith({
+        topLeft: initialCell,
+        bottomRight: cellToSelectByKeyboard,
+        startCell: initialCell,
+        cursorCell: cellToSelectByKeyboard,
+        isDragging: false
+      });
+    });
+  });
+});
+
 describe('using keyboard to navigate through the grid by pressing Tab or Shift+Tab', () => {
   // enzyme doesn't allow dom keyboard navigation, but we can assume that if
   // prevent default isn't called, it lets the dom do normal navigation

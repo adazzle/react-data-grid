@@ -8,6 +8,11 @@ function doesRowContainSelectedCell(props) {
   return false;
 }
 
+function isWithinSelectedRange(props) {
+  const selectedRange = props.cellMetaData.selectedRange;
+  return selectedRange && selectedRange.topLeft.rowIdx <= props.idx && props.idx <= selectedRange.bottomRight.rowIdx;
+}
+
 function willRowBeDraggedOver(props) {
   let dragged = props.cellMetaData.dragged;
   return dragged != null && (dragged.rowIdx >= 0 || dragged.complete === true);
@@ -22,6 +27,8 @@ export const shouldRowUpdate = (nextProps, currentProps) => {
   return !(ColumnMetrics.sameColumns(currentProps.columns, nextProps.columns, ColumnMetrics.sameColumn)) ||
     doesRowContainSelectedCell(currentProps) ||
     doesRowContainSelectedCell(nextProps) ||
+    isWithinSelectedRange(currentProps) ||
+    isWithinSelectedRange(nextProps) ||
     willRowBeDraggedOver(nextProps) ||
     nextProps.row !== currentProps.row ||
     currentProps.colDisplayStart !== nextProps.colDisplayStart ||

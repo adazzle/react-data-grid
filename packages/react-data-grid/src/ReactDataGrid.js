@@ -9,7 +9,7 @@ const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
 import { DEFINE_SORT } from './cells/headerCells/SortableHeaderCell';
-import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
+import { isKeyPrintable, isCtrlKeyHeldDown, isShiftKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
@@ -83,6 +83,9 @@ class ReactDataGrid extends React.Component {
     onCellSelected: PropTypes.func,
     onCellDeSelected: PropTypes.func,
     onCellExpand: PropTypes.func,
+    onCellRangeSelectionStarted: PropTypes.func,
+    onCellRangeSelectionUpdated: PropTypes.func,
+    onCellRangeSelectionCompleted: PropTypes.func,
     enableDragAndDrop: PropTypes.bool,
     tabIndex: PropTypes.number,
     onRowExpandToggle: PropTypes.func,
@@ -156,8 +159,10 @@ class ReactDataGrid extends React.Component {
     let initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
     if (props.enableCellSelect) {
       initialState.selected = {rowIdx: 0, idx: 0};
+      initialState.selectedRange = {topLeft: {rowIdx: 0, idx: 0}, bottomRight: {rowIdx: 0, idx: 0}, startCell: {rowIdx: 0, idx: 0}, cursorCell: {rowIdx: 0, idx: 0}};
     } else {
       initialState.selected = {rowIdx: -1, idx: -1};
+      initialState.selectedRange = {topLeft: {rowIdx: -1, idx: -1}, bottomRight: {rowIdx: -1, idx: -1}, startCell: {rowIdx: -1, idx: -1}, cursorCell: {rowIdx: -1, idx: -1}};
     }
 
     if (this.props.sortColumn && this.props.sortDirection) {
@@ -175,15 +180,23 @@ class ReactDataGrid extends React.Component {
   componentDidMount() {
     if (window.addEventListener) {
       window.addEventListener('resize', this.metricsUpdated);
+      window.addEventListener('mouseup', this.onWindowMouseUp);
     } else {
       window.attachEvent('resize', this.metricsUpdated);
+      window.attachEvent('mouseup', this.onWindowMouseUp);
     }
     this.metricsUpdated();
   }
 
   componentWillUnmount() {
     this._mounted = false;
-    window.removeEventListener('resize', this.metricsUpdated);
+    if (window.removeEventListener) {
+      window.removeEventListener('resize', this.metricsUpdated);
+      window.removeEventListener('mouseup', this.onWindowMouseUp);
+    } else {
+      window.detachEvent('resize', this.metricsUpdated);
+      window.detachEvent('mouseup', this.onWindowMouseUp);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -263,7 +276,7 @@ class ReactDataGrid extends React.Component {
 
   onKeyDown = (e: SyntheticKeyboardEvent) => {
     if (isCtrlKeyHeldDown(e)) {
-      this.checkAndCall('onPressKeyWithCtrl', e);
+      this.onPressKeyWithCtrl(e);
     } else if (this.isKeyExplicitlyHandled(e.key)) {
       // break up individual keyPress events to have their own specific callbacks
       let callBack = 'onPress' + e.key;
@@ -344,11 +357,19 @@ class ReactDataGrid extends React.Component {
     if (this.state.selected.rowIdx !== selected.rowIdx
       || this.state.selected.idx !== selected.idx
       || this.state.selected.active === false) {
-      let idx = selected.idx;
-      let rowIdx = selected.rowIdx;
+      const idx = selected.idx;
+      const rowIdx = selected.rowIdx;
+      const newState = {
+        selected: selected,
+        selectedRange: Object.assign(
+          {},
+          this.state.selectedRange,
+          {topLeft: selected, bottomRight: selected, startCell: selected, cursorCell: selected}
+        )
+      };
       if (this.isCellWithinBounds(selected)) {
         const oldSelection = this.state.selected;
-        this.setState({selected: selected}, () => {
+        this.setState(newState, () => {
           if (typeof this.props.onCellDeSelected === 'function') {
             this.props.onCellDeSelected(oldSelection);
           }
@@ -358,8 +379,87 @@ class ReactDataGrid extends React.Component {
         });
       } else if (rowIdx === -1 && idx === -1) {
         // When it's outside of the grid, set rowIdx anyway
-        this.setState({selected: { idx, rowIdx }});
+        this.setState(newState);
       }
+    }
+  };
+
+  selectStart = (cell: SelectedType) => {
+    this.setState({
+      selectedRange: {topLeft: cell, bottomRight: cell, startCell: cell, cursorCell: cell, isDragging: true}
+    }, () => {
+      if (typeof this.props.onCellRangeSelectionStarted === 'function') {
+        this.props.onCellRangeSelectionStarted(this.state.selectedRange);
+      }
+    });
+  };
+
+  selectUpdate = (cell: SelectedType, callback) => {
+    const startCell = this.state.selectedRange.startCell;
+    const colIdxs = [startCell.idx, cell.idx].sort((a, b) => a - b);
+    const rowIdxs = [startCell.rowIdx, cell.rowIdx].sort((a, b) => a - b);
+    const topLeft = {idx: colIdxs[0], rowIdx: rowIdxs[0]};
+    const bottomRight = {idx: colIdxs[1], rowIdx: rowIdxs[1]};
+    const selectedRange = Object.assign(
+        // default the startCell to the selected cell, in case we've just started via keyboard
+        {startCell: this.state.selected},
+        // assign the previous state (which will override the startCell if we already have one)
+        this.state.selectedRange,
+        // assign the new state - the bounds of the range, and the new cursor cell
+        {topLeft, bottomRight, cursorCell: cell}
+    );
+    this.setState({
+      selectedRange,
+      // Update the selected cell to the cursor cell; this will cause the Cell to claim focus, which in turn will
+      // cause the browser to ensure it is scrolled into view.
+      selected: cell
+    }, () => {
+      if (typeof this.props.onCellRangeSelectionUpdated === 'function') {
+        this.props.onCellRangeSelectionUpdated(this.state.selectedRange);
+      }
+      if (typeof callback === 'function') {
+        callback();
+      }
+    });
+  };
+
+  selectEnd = () => {
+    const selectedRange = Object.assign({}, this.state.selectedRange, {isDragging: false});
+    this.setState({selectedRange}, () => {
+      if (typeof this.props.onCellRangeSelectionCompleted === 'function') {
+        this.props.onCellRangeSelectionCompleted(this.state.selectedRange);
+      }
+    });
+  };
+
+  selectUpdateViaKeyboard = (rowDelta: number, cellDelta: number) => {
+    const cursorCell = this.state.selectedRange.cursorCell;
+    const newCell = {
+      idx: cursorCell.idx + cellDelta,
+      rowIdx: cursorCell.rowIdx + rowDelta
+    };
+    if (!this.isCellWithinBounds(newCell)) {
+      return;
+    }
+    this.selectUpdate(newCell, () => { this.selectEnd(); });
+  };
+
+  onCellMouseDown = (cell: SelectedType) => {
+    this.selectStart(cell);
+  };
+
+  onCellMouseEnter = (cell: SelectedType) => {
+    if (!this.state.selectedRange.isDragging) {
+      return;
+    }
+    this.selectUpdate(cell);
+  };
+
+  onWindowMouseUp = () => {
+    if (!this.state.selectedRange.isDragging) {
+      this.deselect();
+    } else {
+      this.selectEnd();
     }
   };
 
@@ -398,19 +498,35 @@ class ReactDataGrid extends React.Component {
   };
 
   onPressArrowUp = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, -1, 0);
+    if (isShiftKeyHeldDown(e)) {
+      this.selectUpdateViaKeyboard(-1, 0);
+    } else {
+      this.moveSelectedCell(e, -1, 0);
+    }
   };
 
   onPressArrowDown = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 1, 0);
+    if (isShiftKeyHeldDown(e)) {
+      this.selectUpdateViaKeyboard(1, 0);
+    } else {
+      this.moveSelectedCell(e, 1, 0);
+    }
   };
 
   onPressArrowLeft = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 0, -1);
+    if (isShiftKeyHeldDown(e)) {
+      this.selectUpdateViaKeyboard(0, -1);
+    } else {
+      this.moveSelectedCell(e, 0, -1);
+    }
   };
 
   onPressArrowRight = (e: SyntheticEvent) => {
-    this.moveSelectedCell(e, 0, 1);
+    if (isShiftKeyHeldDown(e)) {
+      this.selectUpdateViaKeyboard(0, 1);
+    } else {
+      this.moveSelectedCell(e, 0, 1);
+    }
   };
 
   isFocusedOnCell = () => {
@@ -638,7 +754,8 @@ class ReactDataGrid extends React.Component {
   handleDragStart = (dragged: DraggedType) => {
     if (!this.dragEnabled()) { return; }
     if (this.isCellWithinBounds(dragged)) {
-      this.setState({ dragged: dragged });
+      const selectedRange = Object.assign({}, this.state.selectedRange, {isDragging: false});
+      this.setState({ dragged: dragged, selectedRange });
     }
   };
 
@@ -1084,7 +1201,14 @@ class ReactDataGrid extends React.Component {
 
   deselect = () => {
     const selected = {rowIdx: -1, idx: -1};
-    this.setState({selected});
+    const selectedRange = {topLeft: {rowIdx: -1, idx: -1}, bottomRight: {rowIdx: -1, idx: -1}};
+
+    const oldSelection = this.state.selected;
+    this.setState({selected, selectedRange}, () => {
+      if (typeof this.props.onCellDeSelected === 'function') {
+        this.props.onCellDeSelected(oldSelection);
+      }
+    });
   };
 
   setActive = (keyPressed: string) => {
@@ -1187,9 +1311,12 @@ class ReactDataGrid extends React.Component {
     let cellMetaData = {
       rowKey: this.props.rowKey,
       selected: this.state.selected,
+      selectedRange: this.state.selectedRange,
       dragged: this.state.dragged,
       hoveredRowIdx: this.state.hoveredRowIdx,
       onCellClick: this.onCellClick,
+      onCellMouseDown: this.onCellMouseDown,
+      onCellMouseEnter: this.onCellMouseEnter,
       onCellFocus: this.onCellFocus,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
@@ -1255,7 +1382,6 @@ class ReactDataGrid extends React.Component {
             onViewportKeyup={this.onKeyUp}
             onViewportDragStart={this.onDragStart}
             onViewportDragEnd={this.handleDragEnd}
-            onViewportClick={this.deselect}
             onViewportDoubleClick={this.deselect}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}

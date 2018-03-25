@@ -2,9 +2,12 @@ import PropTypes from 'prop-types';
 
 module.exports = {
   selected: PropTypes.object.isRequired,
+  selectedRange: PropTypes.object.isRequired,
   copied: PropTypes.object,
   dragged: PropTypes.object,
   onCellClick: PropTypes.func.isRequired,
+  onCellMouseDown: PropTypes.func.isRequired,
+  onCellMouseEnter: PropTypes.func.isRequired,
   onCellDoubleClick: PropTypes.func.isRequired,
   onCommit: PropTypes.func.isRequired,
   onCommitCancel: PropTypes.func.isRequired,

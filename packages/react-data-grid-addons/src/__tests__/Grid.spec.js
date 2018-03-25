@@ -64,11 +64,12 @@ describe('Grid', function() {
 
     this.getCellMetaData = () => this.getBaseGrid().props.cellMetaData;
 
-    this.simulateGridKeyDown = (key, ctrlKey) => {
+    this.simulateGridKeyDown = (key, ctrlKey, shiftKey) => {
       let fakeEvent = this.buildFakeEvent({
         key: key,
         keyCode: key,
-        ctrlKey: ctrlKey
+        ctrlKey: ctrlKey,
+        shiftKey: shiftKey
       });
       this.getBaseGrid().props.onViewportKeydown(fakeEvent);
     };
@@ -615,11 +616,39 @@ describe('Grid', function() {
         this.simulateGridKeyDown('ArrowLeft');
         expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
       });
+
+      it('Shift + ArrowUp should not change the selected range', function() {
+        this.simulateGridKeyDown('ArrowUp', false, true);
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 0, rowIdx: 0 },
+          bottomRight: { idx: 0, rowIdx: 0 },
+          startCell: { idx: 0, rowIdx: 0 },
+          cursorCell: { idx: 0, rowIdx: 0 }
+        });
+      });
+
+      it('Shift + ArrowLeft should not change the selected range', function() {
+        this.simulateGridKeyDown('ArrowLeft', false, true);
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 0, rowIdx: 0 },
+          bottomRight: { idx: 0, rowIdx: 0 },
+          startCell: { idx: 0, rowIdx: 0 },
+          cursorCell: { idx: 0, rowIdx: 0 }
+        });
+      });
     });
 
     describe('When selected cell has adjacent cells on all sides', function() {
       beforeEach(function() {
-        this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+        this.component.setState({
+          selected: { idx: 1, rowIdx: 1 },
+          selectedRange: {
+            topLeft: {idx: 1, rowIdx: 1 },
+            bottomRight: {idx: 1, rowIdx: 1 },
+            startCell: {idx: 1, rowIdx: 1 },
+            cursorCell: {idx: 1, rowIdx: 1 }
+          }
+        });
       });
 
       it('on ArrowRight keyboard event should increment selected cell index by 1', function() {
@@ -640,6 +669,51 @@ describe('Grid', function() {
       it('on ArrowUp keyboard event should decrement selected row index by 1', function() {
         this.simulateGridKeyDown('ArrowUp');
         expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 0 });
+      });
+
+      it('Shift + ArrowRight should extend the selected range one column to the right', function() {
+        this.simulateGridKeyDown('ArrowRight', false, true);
+        expect(this.component.state.selectedRange).toEqual(jasmine.objectContaining({
+          topLeft: { idx: 1, rowIdx: 1 },
+          bottomRight: { idx: 2, rowIdx: 1 },
+          startCell: { idx: 1, rowIdx: 1 },
+          cursorCell: { idx: 2, rowIdx: 1 }
+        }));
+      });
+
+      it('Shift + ArrowDown should extend the selected range one row down', function() {
+        this.simulateGridKeyDown('ArrowDown', false, true);
+        expect(this.component.state.selectedRange).toEqual(jasmine.objectContaining({
+          topLeft: { idx: 1, rowIdx: 1 },
+          bottomRight: { idx: 1, rowIdx: 2 },
+          startCell: { idx: 1, rowIdx: 1 },
+          cursorCell: { idx: 1, rowIdx: 2 }
+        }));
+      });
+
+      it('Shift + ArrowLeft should extend the selected range one column to the left', function() {
+        this.simulateGridKeyDown('ArrowLeft', false, true);
+        expect(this.component.state.selectedRange).toEqual(jasmine.objectContaining({
+          topLeft: { idx: 0, rowIdx: 1 },
+          bottomRight: { idx: 1, rowIdx: 1 },
+          startCell: { idx: 1, rowIdx: 1 },
+          cursorCell: { idx: 0, rowIdx: 1 }
+        }));
+      });
+
+      it('Shift + ArrowUp should extend the selected range one row up', function() {
+        this.simulateGridKeyDown('ArrowUp', false, true);
+        expect(this.component.state.selectedRange).toEqual(jasmine.objectContaining({
+          topLeft: { idx: 1, rowIdx: 0 },
+          bottomRight: { idx: 1, rowIdx: 1 },
+          startCell: { idx: 1, rowIdx: 1 },
+          cursorCell: { idx: 1, rowIdx: 0 }
+        }));
+      });
+
+      it('extending the selected range via the keyboard should update the selected cell to the cell nagivated to', function() {
+        this.simulateGridKeyDown('ArrowUp', false, true);
+        expect(this.component.state.selected).toEqual({idx: 1, rowIdx: 0 });
       });
     });
 
@@ -762,7 +836,16 @@ describe('Grid', function() {
     describe('Drag events', function() {
       describe('dragging in grid', function() {
         beforeEach(function() {
-          this.component.setState({ selected: { idx: 1, rowIdx: 2 } });
+          this.component.setState({
+            selected: { idx: 1, rowIdx: 2 },
+            selectedRange: {
+              topLeft: {idx: 1, rowIdx: 2 },
+              bottomRight: {idx: 1, rowIdx: 2 },
+              startCell: {idx: 1, rowIdx: 2 },
+              cursorCell: {idx: 1, rowIdx: 2 },
+              isDragging: true
+            }
+          });
           const event = { target: { className: 'drag-handle' }};
           this.getBaseGrid().props.onViewportDragStart(event);
         });
@@ -770,6 +853,10 @@ describe('Grid', function() {
         it('should store drag rowIdx, idx and value of cell in state', function() {
           const thirdRowTitle = this._rows[2].title;
           expect(this.component.state.dragged).toEqual({ idx: 1, rowIdx: 2, value: thirdRowTitle });
+        });
+
+        it('should stop the selected range from considering that it is being dragged', function() {
+          expect(this.component.state.selectedRange.isDragging).toBeFalsy();
         });
       });
 
@@ -863,14 +950,151 @@ describe('Grid', function() {
         this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
       });
 
-      it('should deselect currently selected cell on click', function() {
-        this.getBaseGrid().props.onViewportClick();
+      it('should deselect currently selected cell on mouseup', function() {
+        const evt = document.createEvent('Events');
+        evt.initEvent('mouseup', true, true);
+        window.dispatchEvent(evt);
         expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
       });
 
       it('should deselect currently selected cell on double-click', function() {
         this.getBaseGrid().props.onViewportDoubleClick();
         expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+    });
+
+    describe('Cell mousedown', function() {
+      beforeEach(function() {
+        this.getCellMetaData().onCellMouseDown({ idx: 2, rowIdx: 2 });
+      });
+
+      it('should set the selected state of grid as a 1x1 range with dragging in process', function() {
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 2, rowIdx: 2 },
+          bottomRight: { idx: 2, rowIdx: 2 },
+          startCell: { idx: 2, rowIdx: 2 },
+          cursorCell: { idx: 2, rowIdx: 2 },
+          isDragging: true
+        });
+      });
+
+      describe('followed by cell mouseenter to the left', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 1, rowIdx: 2 });
+        });
+
+        it('should update the selected range to a 1x2 range with an updated cursorCell', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 1, rowIdx: 2 },
+            bottomRight: { idx: 2, rowIdx: 2 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 1, rowIdx: 2 },
+            isDragging: true
+          });
+        });
+
+        it('should update the selected cell to the cell moused over', function() {
+          expect(this.component.state.selected).toEqual({idx: 1, rowIdx: 2});
+        });
+      });
+
+      describe('followed by cell mouseenter to the right', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 3, rowIdx: 2 });
+        });
+
+        it('should update the selected range to a 1x2 range with an updated cursorCell', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 2, rowIdx: 2 },
+            bottomRight: { idx: 3, rowIdx: 2 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 3, rowIdx: 2 },
+            isDragging: true
+          });
+        });
+      });
+
+      describe('followed by cell mouseenter to the above', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 2, rowIdx: 1 });
+        });
+
+        it('should update the selected range to a 1x2 range with an updated cursorCell', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 2, rowIdx: 1 },
+            bottomRight: { idx: 2, rowIdx: 2 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 2, rowIdx: 1 },
+            isDragging: true
+          });
+        });
+      });
+
+      describe('followed by cell mouseenter to the below', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 2, rowIdx: 3 });
+        });
+
+        it('should update the selected range to a 1x2 range with an updated cursorCell', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 2, rowIdx: 2 },
+            bottomRight: { idx: 2, rowIdx: 3 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 2, rowIdx: 3 },
+            isDragging: true
+          });
+        });
+      });
+
+      describe('followed by mouseup (on the window)', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 2, rowIdx: 3 });
+
+          const evt = document.createEvent('Events');
+          evt.initEvent('mouseup', true, true);
+          window.dispatchEvent(evt);
+        });
+
+        it('should update the selected range to be marked as no longer dragging', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 2, rowIdx: 2 },
+            bottomRight: { idx: 2, rowIdx: 3 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 2, rowIdx: 3 },
+            isDragging: false
+          });
+        });
+
+        describe('followed by Shift + an arrow key', function() {
+          beforeEach(function() {
+            this.simulateGridKeyDown('ArrowRight', false, true);
+          });
+
+          it('should update the selected range from where the mouse left the cursorCell', function() {
+            expect(this.component.state.selectedRange).toEqual({
+              topLeft: { idx: 2, rowIdx: 2 },
+              bottomRight: { idx: 3, rowIdx: 3 },
+              startCell: { idx: 2, rowIdx: 2 },
+              cursorCell: { idx: 3, rowIdx: 3 },
+              isDragging: false
+            });
+          });
+        });
+      });
+    });
+
+    describe('Cell mouseenter before select range dragging has started', function() {
+      beforeEach(function() {
+        this.getCellMetaData().onCellMouseEnter({ idx: 1, rowIdx: 2 });
+      });
+
+      it('should not update the selected range', function() {
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 0, rowIdx: 0 },
+          bottomRight: { idx: 0, rowIdx: 0 },
+          startCell: { idx: 0, rowIdx: 0 },
+          cursorCell: { idx: 0, rowIdx: 0 }
+        });
       });
     });
   });
@@ -894,6 +1118,7 @@ describe('Grid', function() {
       beforeEach(function() {
         let newState = {
           selected: { idx: 2, rowIdx: 2 },
+          selectedRange: { topLeft: {idx: 2, rowIdx: 2}, bottomRight: {idx: 2, rowIdx: 2} },
           dragged: { idx: 2, rowIdx: 2 }
         };
         this.component.setState(newState);
@@ -902,6 +1127,7 @@ describe('Grid', function() {
       it(' should update cellMetaData', function() {
         expect(this.getCellMetaData()).toEqual(jasmine.objectContaining({
           selected: { idx: 2, rowIdx: 2 },
+          selectedRange: { topLeft: {idx: 2, rowIdx: 2}, bottomRight: {idx: 2, rowIdx: 2} },
           dragged: { idx: 2, rowIdx: 2 }
         }));
       });
@@ -934,6 +1160,12 @@ describe('Grid', function() {
 
       it('should set selected state of grid', function() {
         expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 2 });
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 2, rowIdx: 2 },
+          bottomRight: { idx: 2, rowIdx: 2 },
+          startCell: { idx: 2, rowIdx: 2 },
+          cursorCell: { idx: 2, rowIdx: 2 }
+        });
       });
     });
 

@@ -85,7 +85,7 @@ describe('Base Grid Tests', () => {
     expect(testProps.onViewportDoubleClick).toHaveBeenCalled();
   });
 
-  it('dragstart in viewport should call props.onViewportDoubleClick', () => {
+  it('dragstart in viewport should call props.onViewportDragStart', () => {
     let viewportContainerNode;
     spyOn(testProps, 'onViewportDragStart');
     testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
