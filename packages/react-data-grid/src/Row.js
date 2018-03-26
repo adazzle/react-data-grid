@@ -56,23 +56,17 @@ class Row extends React.Component {
     }
   };
 
-  getCellRenderer = (columnKey) => {
-    let CellRenderer = this.props.cellRenderer;
-    if (this.props.subRowDetails && this.props.subRowDetails.field === columnKey) {
-      return CellExpander;
-    }
-    return CellRenderer;
-  };
-
   getCell = (column, i) => {
-    let CellRenderer = this.props.cellRenderer;
+    const CellRenderer = this.props.cellRenderer;
     const { idx, cellMetaData } = this.props;
     const { key, formatter } = column;
     const baseCellProps = { key: `${key}-${idx}`, idx: i, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
 
     const { row, isSelected } = this.props;
     const cellProps = {
-      ref: (node) => this[key] = node,
+      innerRef: (node) => {
+        this[key] = node;
+      },
       value: this.getCellValue(key || i),
       rowData: row,
       isRowSelected: isSelected,
@@ -147,17 +141,6 @@ class Row extends React.Component {
 
   getKnownDivProps = () => {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
-  };
-
-  renderCell = (props) => {
-    if (typeof this.props.cellRenderer === 'function') {
-      this.props.cellRenderer.call(this, props);
-    }
-    if (React.isValidElement(this.props.cellRenderer)) {
-      return React.cloneElement(this.props.cellRenderer, props);
-    }
-
-    return this.props.cellRenderer(props);
   };
 
   render() {

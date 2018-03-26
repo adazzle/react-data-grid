@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { subscribe, dispatch } from './EventDispatcher';
 import { createStore } from './Store';
@@ -26,6 +27,9 @@ function connect(mapStateToProps, getDispatchers, getSubscriptions) {
   const actions = getDispatchers && mapDispatchToActions(getDispatchers());
   return function wrapWithConnect(WrappedComponent) {
     return class Connect extends React.Component {
+      static propTypes = {
+        innerRef: PropTypes.func
+      };
 
       componentDidMount() {
         if (getSubscriptions) {
@@ -34,11 +38,15 @@ function connect(mapStateToProps, getDispatchers, getSubscriptions) {
         }
       }
 
-      subscribe = subscriptions => {
+      componentWillUnmount() {
+        // TODO
+      }
+
+      subscribe(subscriptions) {
         Object.keys(subscriptions).forEach(eventName => {
           subscribe(eventName, subscriptions[eventName]);
         });
-      };
+      }
 
       update = payload => {
         store.updateStore(payload);
@@ -46,10 +54,13 @@ function connect(mapStateToProps, getDispatchers, getSubscriptions) {
       };
 
       render() {
+        const { innerRef, ...rest } = this.props;
+
         return (
           <WrappedComponent
-            {...mapStateToProps(store.getState(), this.props)}
-            {...this.props}
+            ref={innerRef}
+            {...mapStateToProps(store.getState(), rest)}
+            {...rest}
             {...actions}
           />
         );
