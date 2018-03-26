@@ -144,25 +144,25 @@ class Canvas extends React.Component {
 
   onHitBottomCanvas = () =>  {
     const { rowHeight} = this.props;
-    const node = ReactDOM.findDOMNode(this);
+    const node = this.canvas;
     node.scrollTop += rowHeight + this.getClientScrollTopOffset(node);
   }
 
   onHitTopCanvas = () =>  {
     const {rowHeight} = this.props;
-    const node = ReactDOM.findDOMNode(this);
+    const node = this.canvas;
     node.scrollTop -= (rowHeight - this.getClientScrollTopOffset(node));
   }
 
   onHitLeftCanvas = () =>  {
     const {rowHeight} = this.props;
-    const node = ReactDOM.findDOMNode(this);
+    const node = this.canvas;
     node.scrollTop -= rowHeight;
   }
 
   onHitRightCanvas = () =>  {
     const {colVisibleEnd, rowHeight} = this.props;
-    const node = ReactDOM.findDOMNode(this);
+    const node = this.canvas;
     node.scrollLeft -= (colVisibleEnd - visibleStart) * rowHeight;
   }
 
