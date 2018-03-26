@@ -123,6 +123,9 @@ class Canvas extends React.Component {
 
   componentDidMount() {
     this.onRows();
+    this.scrollingContent.style.width = `${this.canvas.scrollWidth}px`;
+    this.scrollingContent.style.height = `${this.canvas.scrollHeight}px`;
+    this.hoveredElement = null;
   }
 
   componentWillReceiveProps(nextProps: any) {
@@ -182,16 +185,37 @@ class Canvas extends React.Component {
   };
 
   onScroll = (e: any) => {
-    if (this.canvas !== e.target) {
-      return;
-    }
-    this.appendScrollShim();
-    let scrollLeft = e.target.scrollLeft;
-    let scrollTop = e.target.scrollTop;
+    let hDiff = this.scrollingContent.offsetWidth - this.scrollingArea.offsetWidth;
+    let vDiff = this.scrollingContent.offsetHeight - this.scrollingArea.offsetHeight;
+    if (this.scrollingArea !== e.target || vDiff < 0 || hDiff < 0 ) { return; }
+    let scrollLeft = e.target.scrollLeft > hDiff ? hDiff : e.target.scrollLeft;
+    let scrollTop = e.target.scrollTop > vDiff ? vDiff : e.target.scrollTop;
     let scroll = { scrollTop, scrollLeft };
     this._scroll = scroll;
+    this.canvas.scrollLeft = scrollLeft;
+    this.canvas.scrollTop = scrollTop;
+    this.scrollingArea.style.transform = `translate(${scrollLeft}px, ${scrollTop}px)`;
     this.props.onScroll(scroll);
   };
+
+  onHover = (e) => {
+    let hoveredCell = this.getHoveredCell(e);
+    let lastElement = this.hoveredElement;
+    this.hoveredElement = hoveredCell ? hoveredCell : null;
+    if (this.hoveredElement !== lastElement) {
+      lastElement && lastElement.classList.remove('hover');
+      this.hoveredElement && this.hoveredElement.classList.add('hover');
+    }
+    this.scrollingArea.style.cursor = hoveredCell ? window.getComputedStyle(hoveredCell).cursor : 'default';
+  };
+
+  onMouseLeave = () => {
+    if (this.hoveredElement) {
+      this.hoveredElement.classList.remove('hover');
+      this.hoveredElement = null;
+    }
+  };
+
 
   getRows = (displayStart, displayEnd) => {
     this._currentRowsRange = { start: displayStart, end: displayEnd };
@@ -210,6 +234,19 @@ class Canvas extends React.Component {
       i++;
     }
     return rows;
+  };
+
+  getHoveredCell = (e) => {
+    return document.elementsFromPoint(e.clientX, e.clientY).find(function(node) {
+      return node.classList.contains('react-grid-Cell');
+    });
+  };
+
+  getRealElement = (e) => {
+    let elements = document.elementsFromPoint(e.clientX, e.clientY);
+    return elements[elements.findIndex(node => {
+      return node.classList.contains('react-grid-Canvas-Scrolling-Area');
+    }) + 1 ];
   };
 
   getScrollbarWidth = () => {
@@ -340,12 +377,22 @@ class Canvas extends React.Component {
     let style = {
       position: 'absolute',
       top: 0,
+      right: 0,
       left: 0,
-      overflowX: 'auto',
-      overflowY: 'scroll',
-      width: this.props.totalWidth,
+      overflow: 'hidden',
       height: this.props.height
     };
+
+    let scrollingAreaStyle = {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      overflow: 'auto',
+      zIndex: 1
+    };
+
 
     return (
       <div
@@ -353,6 +400,19 @@ class Canvas extends React.Component {
         style={style}
         onScroll={this.onScroll}
         className={joinClasses('react-grid-Canvas', this.props.className, { opaque: this.props.cellMetaData.selected && this.props.cellMetaData.selected.active })}>
+        <div
+          style={scrollingAreaStyle}
+          className="react-grid-Canvas-Scrolling-Area"
+          ref={ div => this.scrollingArea = div }
+          onScroll={this.onScroll}
+          onMouseMove={ this.onHover }
+          onMouseOut={ this.onMouseLeave }
+          onClick={e => { this.getRealElement(e).click(); }}
+        >
+          <div
+            ref={ div => this.scrollingContent = div }
+          />
+        </div>
         <RowsContainer
           width={this.props.width}
           rows={rows}
