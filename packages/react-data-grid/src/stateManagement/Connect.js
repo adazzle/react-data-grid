@@ -1,6 +1,8 @@
 import React from 'react';
-import {subscribe, dispatch} from './EventDispatcher';
-import {createStore} from './Store';
+
+import { subscribe, dispatch } from './EventDispatcher';
+import { createStore } from './Store';
+
 const store = createStore();
 
 const createAction = eventName => {
@@ -25,12 +27,12 @@ function connect(mapStateToProps, getDispatchers, getSubscriptions) {
   return function wrapWithConnect(WrappedComponent) {
     return class Connect extends React.Component {
 
-      componentDidMount = () => {
+      componentDidMount() {
         if (getSubscriptions) {
           const subscriptions = getSubscriptions(this.update, this.props);
           this.subscribe(subscriptions);
         }
-      };
+      }
 
       subscribe = subscriptions => {
         Object.keys(subscriptions).forEach(eventName => {

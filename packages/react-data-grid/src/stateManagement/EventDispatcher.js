@@ -1,7 +1,9 @@
 const listeners = new Map();
 
 export const subscribe = (label, callback) => {
-  listeners.has(label) || listeners.set(label, []);
+  if (!listeners.has(label)) {
+    listeners.set(label, []);
+  }
   listeners.get(label).push(callback);
 };
 
@@ -10,9 +12,9 @@ export const unsubscribe = () => {
 };
 
 export const dispatch = (label, ...args) => {
-  let actions = listeners.get(label);
+  const actions = listeners.get(label);
 
-  if (actions && actions.length) {
+  if (actions && actions.length > 0) {
     actions.forEach(a => {
       a(...args);
     });

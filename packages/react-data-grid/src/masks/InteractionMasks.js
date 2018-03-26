@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import SelectionMask from './SelectionMask';
 import EditorContainer from '../editors/EditorContainer';
 import { isKeyPrintable } from '../utils/keyboardUtils';
@@ -87,32 +88,32 @@ class InteractionMasks extends React.Component {
   }
 
   getKeyNavActionFromEvent(e) {
-    const {visibleEnd, visibleStart, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary} = this.props;
+    const { visibleEnd, visibleStart, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary } = this.props;
     const keyNavActions = {
       ArrowDown: {
-        getNext: current => ({...current, ...{rowIdx: current.rowIdx + 1}}),
-        isCellAtBoundary: cell =>  cell.rowIdx >= visibleEnd - SCROLL_CELL_BUFFER,
+        getNext: current => ({ ...current, rowIdx: current.rowIdx + 1 }),
+        isCellAtBoundary: cell => cell.rowIdx >= visibleEnd - SCROLL_CELL_BUFFER,
         onHitBoundary: onHitBottomBoundary,
         getBoundaryDimensions: () => this.getSelectedCellDimensions(),
         scrollReadyCondition: scrollMetrics => scrollMetrics.visibleEnd === visibleEnd - 1
       },
       ArrowUp: {
-        getNext: current => ({...current, ...{rowIdx: current.rowIdx - 1}}),
+        getNext: current => ({ ...current, rowIdx: current.rowIdx - 1 }),
         isCellAtBoundary: cell => cell.rowIdx !== 0 && cell.rowIdx <= visibleStart - 1,
         onHitBoundary: () => {
           this._enableSelectionAnimation = !this.isScrollingWithKeyboard() ? false : true;
           onHitTopBoundary();
         },
-        getBoundaryDimensions: () => ({...this.getSelectedCellDimensions(), ...{top: 0}}),
+        getBoundaryDimensions: () => ({ ...this.getSelectedCellDimensions(), top: 0 }),
         scrollReadyCondition: scrollMetrics => scrollMetrics.visibleStart === visibleStart
       },
       ArrowRight: {
-        getNext: current => ({...current, ...{idx: current.idx + 1}}),
+        getNext: current => ({ ...current, idx: current.idx + 1 }),
         isCellAtBoundary: () => false,
         onHitBoundary: onHitRightBoundary
       },
       ArrowLeft: {
-        getNext: current => ({...current, ...{idx: current.idx - 1}}),
+        getNext: current => ({ ...current, idx: current.idx - 1 }),
         isCellAtBoundary: () => false,
         onHitBoundary: onHitLeftBoundary
       }
@@ -121,7 +122,7 @@ class InteractionMasks extends React.Component {
   }
 
   moveUsingKeyboard(keyNavAction) {
-    const {getNext, isCellAtBoundary, onHitBoundary, getBoundaryDimensions} = keyNavAction;
+    const { getNext, isCellAtBoundary, onHitBoundary, getBoundaryDimensions } = keyNavAction;
     this._enableSelectionAnimation = true;
     const currentPosition = this.getSelectedCellPosition();
     const next = getNext(currentPosition);
@@ -174,7 +175,7 @@ class InteractionMasks extends React.Component {
   };
 
   setScrollingMetrics(next, dimensions) {
-    const {visibleEnd, visibleStart} = this.props;
+    const { visibleEnd, visibleStart } = this.props;
     this._scrollingMetrics = {
       dimensions,
       position: next,

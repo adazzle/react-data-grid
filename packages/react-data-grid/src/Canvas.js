@@ -137,31 +137,31 @@ class Canvas extends React.Component {
   };
 
   getClientScrollTopOffset(node) {
-    const { rowHeight} = this.props;
+    const { rowHeight } = this.props;
     const scrollVariation = node.scrollTop % rowHeight;
     return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
   }
 
   onHitBottomCanvas = () =>  {
-    const { rowHeight} = this.props;
+    const { rowHeight } = this.props;
     const node = this.canvas;
     node.scrollTop += rowHeight + this.getClientScrollTopOffset(node);
   }
 
   onHitTopCanvas = () =>  {
-    const {rowHeight} = this.props;
+    const { rowHeight } = this.props;
     const node = this.canvas;
     node.scrollTop -= (rowHeight - this.getClientScrollTopOffset(node));
   }
 
   onHitLeftCanvas = () =>  {
-    const {rowHeight} = this.props;
+    const { rowHeight } = this.props;
     const node = this.canvas;
     node.scrollTop -= rowHeight;
   }
 
   onHitRightCanvas = () =>  {
-    const {colVisibleEnd, rowHeight} = this.props;
+    const { colVisibleEnd, rowHeight } = this.props;
     const node = this.canvas;
     node.scrollLeft -= (colVisibleEnd - visibleStart) * rowHeight;
   }
@@ -287,7 +287,7 @@ class Canvas extends React.Component {
         row: r.row,
         height: rowHeight,
         onMouseOver: this.onMouseOver,
-        columns: columns,
+        columns,
         isSelected: this.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
         expandedRows,
         cellMetaData,
@@ -322,7 +322,7 @@ class Canvas extends React.Component {
 
     return (
         <div
-          ref={(div) => { this.canvas = div; }}
+          ref={(canvas) => { this.canvas = canvas; }}
           style={style}
           onScroll={this.onScroll}
           className="react-grid-Canvas">
