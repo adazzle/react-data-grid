@@ -12,7 +12,7 @@ const constants = {
   },
   CellExpand: {
     DOWN_TRIANGLE: String.fromCharCode('9660'),
-    RIGHT_TRIANGLE: String.fromCharCode('9654')
+    RIGHT_TRIANGLE: String.fromCharCode('9658')
   }
 };
 
