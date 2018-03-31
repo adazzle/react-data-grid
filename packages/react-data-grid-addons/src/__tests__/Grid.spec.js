@@ -473,130 +473,120 @@ describe('Grid', function() {
   });
 
   describe('When selection enabled and using rowSelection props', function() {
-    beforeEach(function() {
-      let self = this;
-      this._selectedRows = [];
-      this._deselectedRows = [];
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}, {id: '3', isSelected: false}, {id: '4', isSelected: false}];
+    let rows;
+    let selectRowCol;
+    let onRowsSelectedSpy;
+    let onRowsDeselectedSpy;
+
+    function createComponentWithSpies() {
+      onRowsSelectedSpy = jasmine.createSpy('onRowsSelected');
+      onRowsDeselectedSpy = jasmine.createSpy('onRowsDeselectedSpy');
+
       let columns = [{name: 'Id', key: 'id'}];
       let rowGetter = function(i) {
-        return self.rows[i];
+        return rows[i];
       };
-      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {enableShiftSelect: true, selectBy: {isSelectedKey: 'isSelected'},
-        onRowsSelected: function(selectedRows) {
-          self._selectedRows = selectedRows;
-        },
-        onRowsDeselected: function(deselectedRows) {
-          self._deselectedRows = deselectedRows;
+
+      const props = {
+        rowsCount: rows.length,
+        rowGetter: rowGetter,
+        columns: columns,
+        rowSelection: {
+          enableShiftSelect: true,
+          selectBy: {isSelectedKey: 'isSelected'},
+          onRowsSelected: onRowsSelectedSpy,
+          onRowsDeselected: onRowsDeselectedSpy
         }
-      }}).node;
-      this.baseGrid = this.getBaseGrid();
-      this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+      };
+
+      this.component = this.createComponent(props).node;
+      const baseGrid = this.getBaseGrid();
+      selectRowCol = baseGrid.props.columnMetrics.columns[0];
+    }
+
+    beforeEach(function() {
+      rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}, {id: '3', isSelected: false}, {id: '4', isSelected: false}];
+
+      createComponentWithSpies.apply(this);
     });
 
     it('should call rowSelection.onRowsSelected when row selected', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toBe(1);
-      expect(this._selectedRows[0].rowIdx).toBe(1);
-      expect(this._selectedRows[0].row).toBe(this.rows[1]);
+      selectRowCol.onCellChange(1, '',  rows[1], this.buildFakeEvent());
+      const selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toBe(1);
+      expect(selectedRows[0].rowIdx).toBe(1);
+      expect(selectedRows[0].row).toBe(rows[1]);
     });
 
     it('should call rowSelection.onRowsDeselected when row de-selected', function() {
-      this.selectRowCol.onCellChange(0, '',  this.rows[0], this.buildFakeEvent());
-      expect(this._deselectedRows.length).toBe(1);
-      expect(this._deselectedRows[0].rowIdx).toBe(0);
-      expect(this._deselectedRows[0].row).toBe(this.rows[0]);
+      selectRowCol.onCellChange(0, '',  rows[0], this.buildFakeEvent());
+      const deselectedRows = onRowsDeselectedSpy.calls.mostRecent().args[0];
+      expect(deselectedRows.length).toBe(1);
+      expect(deselectedRows[0].rowIdx).toBe(0);
+      expect(deselectedRows[0].row).toBe(rows[0]);
     });
 
 
     it('should set lastRowIdxUiSelected state', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      selectRowCol.onCellChange(1, '',  rows[1], this.buildFakeEvent());
       expect(this.component.state.lastRowIdxUiSelected).toEqual(1);
     });
 
 
     it('should select range when shift selecting below selected row', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(1);
+      selectRowCol.onCellChange(1, '',  rows[1], this.buildFakeEvent());
+      let selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toEqual(1);
       this.simulateGridKeyDownWithKeyCode(16);
-      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(2);
+      selectRowCol.onCellChange(3, '',  rows[3], this.buildFakeEvent());
+      selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toEqual(2);
     });
 
 
     it('should select range when shift selecting above selected row', function() {
-      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(1);
+      selectRowCol.onCellChange(3, '',  rows[3], this.buildFakeEvent());
+      let selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toEqual(1);
       this.simulateGridKeyDownWithKeyCode(16);
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(2);
+      selectRowCol.onCellChange(1, '',  rows[1], this.buildFakeEvent());
+      selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toEqual(2);
     });
 
 
     describe('checking header checkbox', function() {
       beforeEach(function() {
-        let self = this;
-        this._selectedRows = [];
-        this._deselectedRows = [];
-        this.rows = [{id: '1'}, {id: '2'}];
-        let columns = [{name: 'Id', key: 'id'}];
-        let rowGetter = function(i) {
-          return self.rows[i];
-        };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: []},
-          onRowsSelected: function(selectedRows) {
-            self._selectedRows = selectedRows;
-          },
-          onRowsDeselected: function(deselectedRows) {
-            self._deselectedRows = deselectedRows;
-          }
-        }}).node;
-
-        this.baseGrid = this.getBaseGrid();
-        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        rows[0].isSelected = false;
+        createComponentWithSpies.apply(this);
 
         // header checkbox
-        let checkboxWrapper = document.createElement('div');
+        const checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
-        this.checkbox = checkboxWrapper.querySelector('input');
-        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        const SelectAll = this.selectRowCol.headerRenderer;
+        const checkbox = checkboxWrapper.querySelector('input');
+        const fakeEvent = this.buildFakeEvent({ currentTarget: checkbox });
+        const SelectAll = selectRowCol.headerRenderer;
         this.selectAllWrapper = mount(SelectAll);
-        this.selectAllWrapper.props().onChange(this.fakeEvent);
+        this.selectAllWrapper.props().onChange(fakeEvent);
       });
 
       it('should call rowSelection.onRowsSelected with all rows', function() {
-        expect(this._selectedRows.length).toBe(2);
+        const selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+        expect(selectedRows.length).toBe(rows.length);
       });
     });
 
     describe('un-checking header checkbox', function() {
       beforeEach(function() {
-        let self = this;
-        this._selectedRows = [];
-        this._deselectedRows = [];
-        this.rows = [{id: '1'}, {id: '2'}];
-        let columns = [{name: 'Id', key: 'id'}];
-        let rowGetter = function(i) {
-          return self.rows[i];
-        };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: [0, 1]},
-          onRowsSelected: function(selectedRows) {
-            self._selectedRows = selectedRows;
-          },
-          onRowsDeselected: function(deselectedRows) {
-            self._deselectedRows = deselectedRows;
-          }
-        }}).node;
-
-        this.baseGrid = this.getBaseGrid();
-        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        rows[0].isSelected = true;
+        rows[1].isSelected = true;
+        createComponentWithSpies.apply(this);
 
         // header checkbox
         let checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
-        const SelectAll = this.selectRowCol.headerRenderer;
+        const SelectAll = selectRowCol.headerRenderer;
         this.selectAllWrapper = mount(SelectAll);
       });
 
@@ -604,7 +594,8 @@ describe('Grid', function() {
         this.checkbox.checked = false;
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
         this.selectAllWrapper.props().onChange(this.fakeEvent);
-        expect(this._deselectedRows.length).toBe(2);
+        const deselectedRows = onRowsDeselectedSpy.calls.mostRecent().args[0];
+        expect(deselectedRows.length).toBe(2);
       });
     });
   });
@@ -1046,28 +1037,18 @@ describe('Grid', function() {
   });
 
   describe('onRowClick handler', function() {
+    let onRowClickSpy;
     beforeEach(function() {
-      let self = this;
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
-      let columns = [{name: 'Id', key: 'id'}, {name: 'Title', key: 'title', width: 100 }];
-      let rowGetter = function(i) {
-        return self.rows[i];
-      };
-
-      this.rowClicked = {};
-      this.rowClicks = 0;
-
-      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
-        self.rowClicked = {row, column};
-        self.rowClicks++;
-      }}).node;
+      onRowClickSpy = jasmine.createSpy('onRowClick');
+      this.component = this.createComponent({onRowClick: onRowClickSpy}).node;
     });
 
     it('calls handler when row (cell) clicked', function() {
       this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1});
-      expect(this.rowClicks).toBe(1);
-      const { row, column } = this.rowClicked;
-      expect(row).toEqual(jasmine.objectContaining(this.rows[1]));
+      expect(onRowClickSpy).toHaveBeenCalledTimes(1);
+      const row = onRowClickSpy.calls.mostRecent().args[1];
+      const column = onRowClickSpy.calls.mostRecent().args[2];
+      expect(row).toEqual(jasmine.objectContaining(this._rows[1]));
       expect(column).toEqual(jasmine.objectContaining(this.columns[1]));
     });
   });
