@@ -260,6 +260,97 @@ describe('Cell Tests', () => {
     });
   });
 
+  describe('isWithinSelectedRange tests', () => {
+    const getSelectedRangeCellMetadata = (selectedRange) => {
+      return {
+        cellMetaData: {
+          selectedRange
+        }
+      };
+    };
+
+    it('should be false if no selectedRange is provided', () => {
+      testElement = renderComponent(getSelectedRangeCellMetadata(undefined));
+      expect(testElement.node.isWithinSelectedRange(testElement.node.props)).toBeFalsy();
+    });
+
+    it('should be false if the cell is not within the select range', () => {
+      testElement = renderComponent(getSelectedRangeCellMetadata({
+        topLeft: {idx: testProps.idx + 1, rowIdx: testProps.rowIdx + 1},
+        bottomRight: {idx: testProps.idx + 1, rowIdx: testProps.rowIdx + 1}
+      }));
+      expect(testElement.node.isWithinSelectedRange(testElement.node.props)).toBeFalsy();
+    });
+
+    it('should be true if the cell is the entirety of the select range', () => {
+      testElement = renderComponent(getSelectedRangeCellMetadata({
+        topLeft: {idx: testProps.idx, rowIdx: testProps.rowIdx},
+        bottomRight: {idx: testProps.idx, rowIdx: testProps.rowIdx}
+      }));
+      expect(testElement.node.isWithinSelectedRange(testElement.node.props)).toBeTruthy();
+    });
+
+    it('should be true if the cell is contained by a larger select range', () => {
+      testElement = renderComponent(getSelectedRangeCellMetadata({
+        topLeft: {idx: testProps.idx - 1, rowIdx: testProps.rowIdx - 1},
+        bottomRight: {idx: testProps.idx + 1, rowIdx: testProps.rowIdx + 1}
+      }));
+      expect(testElement.node.isWithinSelectedRange(testElement.node.props)).toBeTruthy();
+    });
+  });
+
+  describe('isWithinSelectedRangeChanging tests', () => {
+    const getSelectedRangeCellMetadata = (selectedRange) => {
+      return {
+        cellMetaData: {
+          selectedRange
+        }
+      };
+    };
+
+    const getIncludingSelectedRangeCellMetadata = () => {
+      return getSelectedRangeCellMetadata({
+        topLeft: {idx: testProps.idx - 1, rowIdx: testProps.rowIdx - 1},
+        bottomRight: {idx: testProps.idx + 1, rowIdx: testProps.rowIdx + 1}
+      });
+    };
+
+    const getExcludingSelectedRangeCellMetadata = () => {
+      return getSelectedRangeCellMetadata({
+        topLeft: {idx: testProps.idx + 1, rowIdx: testProps.rowIdx + 1},
+        bottomRight: {idx: testProps.idx + 1, rowIdx: testProps.rowIdx + 1}
+      });
+    };
+
+    it('should be true if cell is not currently in selected range but will be under next props', () => {
+      testElement = renderComponent(getExcludingSelectedRangeCellMetadata());
+
+      const nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, testProps, getIncludingSelectedRangeCellMetadata());
+      expect(testElement.node.isWithinSelectedRangeChanging(nextProps)).toBeTruthy();
+    });
+
+    it('should be true if cell is currently in selected range but will not be under next props', () => {
+      testElement = renderComponent(getIncludingSelectedRangeCellMetadata());
+
+      const nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, testProps, getExcludingSelectedRangeCellMetadata());
+      expect(testElement.node.isWithinSelectedRangeChanging(nextProps)).toBeTruthy();
+    });
+
+    it('should be false if cell is currently in selected range and will also be under next props', () => {
+      testElement = renderComponent(getIncludingSelectedRangeCellMetadata());
+
+      const nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, testProps, getIncludingSelectedRangeCellMetadata());
+      expect(testElement.node.isWithinSelectedRangeChanging(nextProps)).toBeFalsy();
+    });
+
+    it('should be false if cell is not currently in selected range and will also not be under next props', () => {
+      testElement = renderComponent(getExcludingSelectedRangeCellMetadata());
+
+      const nextProps = Object.assign({}, DEFAULT_NEXT_PROPS, testProps, getExcludingSelectedRangeCellMetadata());
+      expect(testElement.node.isWithinSelectedRangeChanging(nextProps)).toBeFalsy();
+    });
+  });
+
   describe('isCopyCellChanging tests', () => {
     const getCopiedCellMetadata = (copied) => {
       return {
@@ -475,7 +566,7 @@ describe('Cell Tests', () => {
       });
 
       it('should not add any extra keys', () => {
-        expect(Object.keys(cellEvents).length).toBe(6);
+        expect(Object.keys(cellEvents).length).toBe(8);
       });
 
       it('should call onKeyPress column event', () => {
@@ -644,7 +735,7 @@ describe('Cell Tests', () => {
     it('passes classname property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
       const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.hasClass('react-grid-Cell'));
+      expect(cellDiv.hasClass('react-grid-Cell')).toBeTruthy();
     });
     it('passes style property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
@@ -700,6 +791,124 @@ describe('Cell Tests', () => {
       wrapper.instance().setScrollLeft(200);
       const node = wrapper.getDOMNode();
       expect(node.style.transform).toBe('translate3d(200px, 0px, 0px)');
+    });
+
+    describe('selected range classnames', () => {
+      const getPropsForRange = (topDelta, leftDelta, bottomDelta, rightDelta) => {
+        return Object.assign({},
+          requiredProperties,
+          {
+            cellMetaData: Object.assign({},
+              requiredProperties.cellMetaData,
+              {
+                selectedRange: {
+                  topLeft: {idx: requiredProperties.idx + leftDelta, rowIdx: requiredProperties.rowIdx + topDelta},
+                  bottomRight: {idx: requiredProperties.idx + rightDelta, rowIdx: requiredProperties.rowIdx + bottomDelta}
+                }
+              }
+            )
+          }
+        );
+      };
+
+      // 4 edges
+      it('includes all four edges if selected range is just this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, 0, 0, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-top-bottom-left-right')).toBeTruthy();
+      });
+
+      // 3 edges
+      it('includes top, left, right if selected range is 1-cell column starting at this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, 0, 1, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-top-left-right')).toBeTruthy();
+      });
+      it('includes bottom, left, right if selected range is 1-cell column ending at this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(-1, 0, 0, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-bottom-left-right')).toBeTruthy();
+      });
+      it('includes top, bottom, left if selected range is 1-cell row starting at this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, 0, 0, 1));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-top-bottom-left')).toBeTruthy();
+      });
+      it('includes top, bottom, right if selected range is 1-cell row end at this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, -1, 0, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-top-bottom-right')).toBeTruthy();
+      });
+
+      // 2 edges
+      it('includes top, bottom if selected range is 1-cell row encompassing this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, -1, 0, 1));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-top-bottom')).toBeTruthy();
+      });
+      it('includes top, left if selected range is a large range with this cell at top-left', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, 0, 1, 1));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-top-left')).toBeTruthy();
+      });
+      it('includes top, right if selected range is a large range with this cell at top-right', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, -1, 1, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-top-right')).toBeTruthy();
+      });
+      it('includes bottom, left if selected range is a large range with this cell at bottom-left', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(-1, 0, 0, 1));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-bottom-left')).toBeTruthy();
+      });
+      it('includes abottom, right if selected range is a large range with this cell at bottom-right', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(-1, -1, 0, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-bottom-right')).toBeTruthy();
+      });
+      it('includes left, right if selected range is 1-cell column encompassing this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(-1, 0, 1, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-left-right')).toBeTruthy();
+      });
+
+      // 1 edge
+      it('includes top if selected range is 1-cell a large range with this cell on the top edge', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, -1, 1, 1));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-top')).toBeTruthy();
+      });
+      it('includes bottom if selected range is 1-cell a large range with this cell on the top edge', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(-1, -1, 0, 1));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-bottom')).toBeTruthy();
+      });
+      it('includes left if selected range is 1-cell a large range with this cell on the top edge', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(-1, 0, 1, 1));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-left')).toBeTruthy();
+      });
+      it('includes right if selected range is 1-cell a large range with this cell on the top edge', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(-1, -1, 1, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected-right')).toBeTruthy();
+      });
+
+      it('includes selected overlay if selected range is larger than 1x1 and includes this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(-1, -1, 1, 1));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected')).toBeTruthy();
+      });
+      it('does not include selected overlay if selected range does not inlcude this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(1, 1, 2, 2));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected')).toBeFalsy();
+      });
+      it('does not include selected overlay if selected range is just this cell', () => {
+        const wrapper = shallowRenderComponent(getPropsForRange(0, 0, 0, 0));
+        const cellDiv = wrapper.find('div').at(0);
+        expect(cellDiv.hasClass('selected')).toBeFalsy();
+      });
     });
   });
 

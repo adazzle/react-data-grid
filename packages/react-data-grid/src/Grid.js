@@ -45,7 +45,6 @@ class Grid extends React.Component {
     onViewportKeyup: PropTypes.func,
     onViewportDragStart: PropTypes.func.isRequired,
     onViewportDragEnd: PropTypes.func.isRequired,
-    onViewportClick: PropTypes.func.isRequired,
     onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
@@ -149,10 +148,10 @@ class Grid extends React.Component {
               tabIndex={this.props.tabIndex}
               onKeyDown={this.props.onViewportKeydown}
               onKeyUp={this.props.onViewportKeyup}
-              onClick={this.props.onViewportClick}
               onDoubleClick={this.props.onViewportDoubleClick}
               onDragStart={this.props.onViewportDragStart}
-              onDragEnd={this.props.onViewportDragEnd}>
+              onDragEnd={this.props.onViewportDragEnd}
+            >
                 <Viewport
                   ref={(node) => { this.viewport = node; } }
                   rowKey={this.props.rowKey}

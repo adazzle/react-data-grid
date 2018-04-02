@@ -64,11 +64,12 @@ describe('Grid', function() {
 
     this.getCellMetaData = () => this.getBaseGrid().props.cellMetaData;
 
-    this.simulateGridKeyDown = (key, ctrlKey) => {
+    this.simulateGridKeyDown = (key, ctrlKey, shiftKey) => {
       let fakeEvent = this.buildFakeEvent({
         key: key,
         keyCode: key,
-        ctrlKey: ctrlKey
+        ctrlKey: ctrlKey,
+        shiftKey: shiftKey
       });
       this.getBaseGrid().props.onViewportKeydown(fakeEvent);
     };
@@ -473,130 +474,120 @@ describe('Grid', function() {
   });
 
   describe('When selection enabled and using rowSelection props', function() {
-    beforeEach(function() {
-      let self = this;
-      this._selectedRows = [];
-      this._deselectedRows = [];
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}, {id: '3', isSelected: false}, {id: '4', isSelected: false}];
+    let rows;
+    let selectRowCol;
+    let onRowsSelectedSpy;
+    let onRowsDeselectedSpy;
+
+    function createComponentWithSpies() {
+      onRowsSelectedSpy = jasmine.createSpy('onRowsSelected');
+      onRowsDeselectedSpy = jasmine.createSpy('onRowsDeselectedSpy');
+
       let columns = [{name: 'Id', key: 'id'}];
       let rowGetter = function(i) {
-        return self.rows[i];
+        return rows[i];
       };
-      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {enableShiftSelect: true, selectBy: {isSelectedKey: 'isSelected'},
-        onRowsSelected: function(selectedRows) {
-          self._selectedRows = selectedRows;
-        },
-        onRowsDeselected: function(deselectedRows) {
-          self._deselectedRows = deselectedRows;
+
+      const props = {
+        rowsCount: rows.length,
+        rowGetter: rowGetter,
+        columns: columns,
+        rowSelection: {
+          enableShiftSelect: true,
+          selectBy: {isSelectedKey: 'isSelected'},
+          onRowsSelected: onRowsSelectedSpy,
+          onRowsDeselected: onRowsDeselectedSpy
         }
-      }}).node;
-      this.baseGrid = this.getBaseGrid();
-      this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+      };
+
+      this.component = this.createComponent(props).node;
+      const baseGrid = this.getBaseGrid();
+      selectRowCol = baseGrid.props.columnMetrics.columns[0];
+    }
+
+    beforeEach(function() {
+      rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}, {id: '3', isSelected: false}, {id: '4', isSelected: false}];
+
+      createComponentWithSpies.apply(this);
     });
 
     it('should call rowSelection.onRowsSelected when row selected', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toBe(1);
-      expect(this._selectedRows[0].rowIdx).toBe(1);
-      expect(this._selectedRows[0].row).toBe(this.rows[1]);
+      selectRowCol.onCellChange(1, '',  rows[1], this.buildFakeEvent());
+      const selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toBe(1);
+      expect(selectedRows[0].rowIdx).toBe(1);
+      expect(selectedRows[0].row).toBe(rows[1]);
     });
 
     it('should call rowSelection.onRowsDeselected when row de-selected', function() {
-      this.selectRowCol.onCellChange(0, '',  this.rows[0], this.buildFakeEvent());
-      expect(this._deselectedRows.length).toBe(1);
-      expect(this._deselectedRows[0].rowIdx).toBe(0);
-      expect(this._deselectedRows[0].row).toBe(this.rows[0]);
+      selectRowCol.onCellChange(0, '',  rows[0], this.buildFakeEvent());
+      const deselectedRows = onRowsDeselectedSpy.calls.mostRecent().args[0];
+      expect(deselectedRows.length).toBe(1);
+      expect(deselectedRows[0].rowIdx).toBe(0);
+      expect(deselectedRows[0].row).toBe(rows[0]);
     });
 
 
     it('should set lastRowIdxUiSelected state', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      selectRowCol.onCellChange(1, '',  rows[1], this.buildFakeEvent());
       expect(this.component.state.lastRowIdxUiSelected).toEqual(1);
     });
 
 
     it('should select range when shift selecting below selected row', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(1);
+      selectRowCol.onCellChange(1, '',  rows[1], this.buildFakeEvent());
+      let selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toEqual(1);
       this.simulateGridKeyDownWithKeyCode(16);
-      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(2);
+      selectRowCol.onCellChange(3, '',  rows[3], this.buildFakeEvent());
+      selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toEqual(2);
     });
 
 
     it('should select range when shift selecting above selected row', function() {
-      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(1);
+      selectRowCol.onCellChange(3, '',  rows[3], this.buildFakeEvent());
+      let selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toEqual(1);
       this.simulateGridKeyDownWithKeyCode(16);
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(2);
+      selectRowCol.onCellChange(1, '',  rows[1], this.buildFakeEvent());
+      selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+      expect(selectedRows.length).toEqual(2);
     });
 
 
     describe('checking header checkbox', function() {
       beforeEach(function() {
-        let self = this;
-        this._selectedRows = [];
-        this._deselectedRows = [];
-        this.rows = [{id: '1'}, {id: '2'}];
-        let columns = [{name: 'Id', key: 'id'}];
-        let rowGetter = function(i) {
-          return self.rows[i];
-        };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: []},
-          onRowsSelected: function(selectedRows) {
-            self._selectedRows = selectedRows;
-          },
-          onRowsDeselected: function(deselectedRows) {
-            self._deselectedRows = deselectedRows;
-          }
-        }}).node;
-
-        this.baseGrid = this.getBaseGrid();
-        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        rows[0].isSelected = false;
+        createComponentWithSpies.apply(this);
 
         // header checkbox
-        let checkboxWrapper = document.createElement('div');
+        const checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
-        this.checkbox = checkboxWrapper.querySelector('input');
-        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        const SelectAll = this.selectRowCol.headerRenderer;
+        const checkbox = checkboxWrapper.querySelector('input');
+        const fakeEvent = this.buildFakeEvent({ currentTarget: checkbox });
+        const SelectAll = selectRowCol.headerRenderer;
         this.selectAllWrapper = mount(SelectAll);
-        this.selectAllWrapper.props().onChange(this.fakeEvent);
+        this.selectAllWrapper.props().onChange(fakeEvent);
       });
 
       it('should call rowSelection.onRowsSelected with all rows', function() {
-        expect(this._selectedRows.length).toBe(2);
+        const selectedRows = onRowsSelectedSpy.calls.mostRecent().args[0];
+        expect(selectedRows.length).toBe(rows.length);
       });
     });
 
     describe('un-checking header checkbox', function() {
       beforeEach(function() {
-        let self = this;
-        this._selectedRows = [];
-        this._deselectedRows = [];
-        this.rows = [{id: '1'}, {id: '2'}];
-        let columns = [{name: 'Id', key: 'id'}];
-        let rowGetter = function(i) {
-          return self.rows[i];
-        };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: [0, 1]},
-          onRowsSelected: function(selectedRows) {
-            self._selectedRows = selectedRows;
-          },
-          onRowsDeselected: function(deselectedRows) {
-            self._deselectedRows = deselectedRows;
-          }
-        }}).node;
-
-        this.baseGrid = this.getBaseGrid();
-        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        rows[0].isSelected = true;
+        rows[1].isSelected = true;
+        createComponentWithSpies.apply(this);
 
         // header checkbox
         let checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
-        const SelectAll = this.selectRowCol.headerRenderer;
+        const SelectAll = selectRowCol.headerRenderer;
         this.selectAllWrapper = mount(SelectAll);
       });
 
@@ -604,7 +595,8 @@ describe('Grid', function() {
         this.checkbox.checked = false;
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
         this.selectAllWrapper.props().onChange(this.fakeEvent);
-        expect(this._deselectedRows.length).toBe(2);
+        const deselectedRows = onRowsDeselectedSpy.calls.mostRecent().args[0];
+        expect(deselectedRows.length).toBe(2);
       });
     });
   });
@@ -624,11 +616,39 @@ describe('Grid', function() {
         this.simulateGridKeyDown('ArrowLeft');
         expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
       });
+
+      it('Shift + ArrowUp should not change the selected range', function() {
+        this.simulateGridKeyDown('ArrowUp', false, true);
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 0, rowIdx: 0 },
+          bottomRight: { idx: 0, rowIdx: 0 },
+          startCell: { idx: 0, rowIdx: 0 },
+          cursorCell: { idx: 0, rowIdx: 0 }
+        });
+      });
+
+      it('Shift + ArrowLeft should not change the selected range', function() {
+        this.simulateGridKeyDown('ArrowLeft', false, true);
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 0, rowIdx: 0 },
+          bottomRight: { idx: 0, rowIdx: 0 },
+          startCell: { idx: 0, rowIdx: 0 },
+          cursorCell: { idx: 0, rowIdx: 0 }
+        });
+      });
     });
 
     describe('When selected cell has adjacent cells on all sides', function() {
       beforeEach(function() {
-        this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+        this.component.setState({
+          selected: { idx: 1, rowIdx: 1 },
+          selectedRange: {
+            topLeft: {idx: 1, rowIdx: 1 },
+            bottomRight: {idx: 1, rowIdx: 1 },
+            startCell: {idx: 1, rowIdx: 1 },
+            cursorCell: {idx: 1, rowIdx: 1 }
+          }
+        });
       });
 
       it('on ArrowRight keyboard event should increment selected cell index by 1', function() {
@@ -649,6 +669,51 @@ describe('Grid', function() {
       it('on ArrowUp keyboard event should decrement selected row index by 1', function() {
         this.simulateGridKeyDown('ArrowUp');
         expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 0 });
+      });
+
+      it('Shift + ArrowRight should extend the selected range one column to the right', function() {
+        this.simulateGridKeyDown('ArrowRight', false, true);
+        expect(this.component.state.selectedRange).toEqual(jasmine.objectContaining({
+          topLeft: { idx: 1, rowIdx: 1 },
+          bottomRight: { idx: 2, rowIdx: 1 },
+          startCell: { idx: 1, rowIdx: 1 },
+          cursorCell: { idx: 2, rowIdx: 1 }
+        }));
+      });
+
+      it('Shift + ArrowDown should extend the selected range one row down', function() {
+        this.simulateGridKeyDown('ArrowDown', false, true);
+        expect(this.component.state.selectedRange).toEqual(jasmine.objectContaining({
+          topLeft: { idx: 1, rowIdx: 1 },
+          bottomRight: { idx: 1, rowIdx: 2 },
+          startCell: { idx: 1, rowIdx: 1 },
+          cursorCell: { idx: 1, rowIdx: 2 }
+        }));
+      });
+
+      it('Shift + ArrowLeft should extend the selected range one column to the left', function() {
+        this.simulateGridKeyDown('ArrowLeft', false, true);
+        expect(this.component.state.selectedRange).toEqual(jasmine.objectContaining({
+          topLeft: { idx: 0, rowIdx: 1 },
+          bottomRight: { idx: 1, rowIdx: 1 },
+          startCell: { idx: 1, rowIdx: 1 },
+          cursorCell: { idx: 0, rowIdx: 1 }
+        }));
+      });
+
+      it('Shift + ArrowUp should extend the selected range one row up', function() {
+        this.simulateGridKeyDown('ArrowUp', false, true);
+        expect(this.component.state.selectedRange).toEqual(jasmine.objectContaining({
+          topLeft: { idx: 1, rowIdx: 0 },
+          bottomRight: { idx: 1, rowIdx: 1 },
+          startCell: { idx: 1, rowIdx: 1 },
+          cursorCell: { idx: 1, rowIdx: 0 }
+        }));
+      });
+
+      it('extending the selected range via the keyboard should update the selected cell to the cell nagivated to', function() {
+        this.simulateGridKeyDown('ArrowUp', false, true);
+        expect(this.component.state.selected).toEqual({idx: 1, rowIdx: 0 });
       });
     });
 
@@ -771,7 +836,16 @@ describe('Grid', function() {
     describe('Drag events', function() {
       describe('dragging in grid', function() {
         beforeEach(function() {
-          this.component.setState({ selected: { idx: 1, rowIdx: 2 } });
+          this.component.setState({
+            selected: { idx: 1, rowIdx: 2 },
+            selectedRange: {
+              topLeft: {idx: 1, rowIdx: 2 },
+              bottomRight: {idx: 1, rowIdx: 2 },
+              startCell: {idx: 1, rowIdx: 2 },
+              cursorCell: {idx: 1, rowIdx: 2 },
+              isDragging: true
+            }
+          });
           const event = { target: { className: 'drag-handle' }};
           this.getBaseGrid().props.onViewportDragStart(event);
         });
@@ -779,6 +853,10 @@ describe('Grid', function() {
         it('should store drag rowIdx, idx and value of cell in state', function() {
           const thirdRowTitle = this._rows[2].title;
           expect(this.component.state.dragged).toEqual({ idx: 1, rowIdx: 2, value: thirdRowTitle });
+        });
+
+        it('should stop the selected range from considering that it is being dragged', function() {
+          expect(this.component.state.selectedRange.isDragging).toBeFalsy();
         });
       });
 
@@ -872,14 +950,151 @@ describe('Grid', function() {
         this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
       });
 
-      it('should deselect currently selected cell on click', function() {
-        this.getBaseGrid().props.onViewportClick();
+      it('should deselect currently selected cell on mouseup', function() {
+        const evt = document.createEvent('Events');
+        evt.initEvent('mouseup', true, true);
+        window.dispatchEvent(evt);
         expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
       });
 
       it('should deselect currently selected cell on double-click', function() {
         this.getBaseGrid().props.onViewportDoubleClick();
         expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+    });
+
+    describe('Cell mousedown', function() {
+      beforeEach(function() {
+        this.getCellMetaData().onCellMouseDown({ idx: 2, rowIdx: 2 });
+      });
+
+      it('should set the selected state of grid as a 1x1 range with dragging in process', function() {
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 2, rowIdx: 2 },
+          bottomRight: { idx: 2, rowIdx: 2 },
+          startCell: { idx: 2, rowIdx: 2 },
+          cursorCell: { idx: 2, rowIdx: 2 },
+          isDragging: true
+        });
+      });
+
+      describe('followed by cell mouseenter to the left', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 1, rowIdx: 2 });
+        });
+
+        it('should update the selected range to a 1x2 range with an updated cursorCell', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 1, rowIdx: 2 },
+            bottomRight: { idx: 2, rowIdx: 2 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 1, rowIdx: 2 },
+            isDragging: true
+          });
+        });
+
+        it('should update the selected cell to the cell moused over', function() {
+          expect(this.component.state.selected).toEqual({idx: 1, rowIdx: 2});
+        });
+      });
+
+      describe('followed by cell mouseenter to the right', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 3, rowIdx: 2 });
+        });
+
+        it('should update the selected range to a 1x2 range with an updated cursorCell', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 2, rowIdx: 2 },
+            bottomRight: { idx: 3, rowIdx: 2 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 3, rowIdx: 2 },
+            isDragging: true
+          });
+        });
+      });
+
+      describe('followed by cell mouseenter to the above', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 2, rowIdx: 1 });
+        });
+
+        it('should update the selected range to a 1x2 range with an updated cursorCell', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 2, rowIdx: 1 },
+            bottomRight: { idx: 2, rowIdx: 2 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 2, rowIdx: 1 },
+            isDragging: true
+          });
+        });
+      });
+
+      describe('followed by cell mouseenter to the below', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 2, rowIdx: 3 });
+        });
+
+        it('should update the selected range to a 1x2 range with an updated cursorCell', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 2, rowIdx: 2 },
+            bottomRight: { idx: 2, rowIdx: 3 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 2, rowIdx: 3 },
+            isDragging: true
+          });
+        });
+      });
+
+      describe('followed by mouseup (on the window)', function() {
+        beforeEach(function() {
+          this.getCellMetaData().onCellMouseEnter({ idx: 2, rowIdx: 3 });
+
+          const evt = document.createEvent('Events');
+          evt.initEvent('mouseup', true, true);
+          window.dispatchEvent(evt);
+        });
+
+        it('should update the selected range to be marked as no longer dragging', function() {
+          expect(this.component.state.selectedRange).toEqual({
+            topLeft: { idx: 2, rowIdx: 2 },
+            bottomRight: { idx: 2, rowIdx: 3 },
+            startCell: { idx: 2, rowIdx: 2 },
+            cursorCell: { idx: 2, rowIdx: 3 },
+            isDragging: false
+          });
+        });
+
+        describe('followed by Shift + an arrow key', function() {
+          beforeEach(function() {
+            this.simulateGridKeyDown('ArrowRight', false, true);
+          });
+
+          it('should update the selected range from where the mouse left the cursorCell', function() {
+            expect(this.component.state.selectedRange).toEqual({
+              topLeft: { idx: 2, rowIdx: 2 },
+              bottomRight: { idx: 3, rowIdx: 3 },
+              startCell: { idx: 2, rowIdx: 2 },
+              cursorCell: { idx: 3, rowIdx: 3 },
+              isDragging: false
+            });
+          });
+        });
+      });
+    });
+
+    describe('Cell mouseenter before select range dragging has started', function() {
+      beforeEach(function() {
+        this.getCellMetaData().onCellMouseEnter({ idx: 1, rowIdx: 2 });
+      });
+
+      it('should not update the selected range', function() {
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 0, rowIdx: 0 },
+          bottomRight: { idx: 0, rowIdx: 0 },
+          startCell: { idx: 0, rowIdx: 0 },
+          cursorCell: { idx: 0, rowIdx: 0 }
+        });
       });
     });
   });
@@ -903,6 +1118,7 @@ describe('Grid', function() {
       beforeEach(function() {
         let newState = {
           selected: { idx: 2, rowIdx: 2 },
+          selectedRange: { topLeft: {idx: 2, rowIdx: 2}, bottomRight: {idx: 2, rowIdx: 2} },
           dragged: { idx: 2, rowIdx: 2 }
         };
         this.component.setState(newState);
@@ -911,6 +1127,7 @@ describe('Grid', function() {
       it(' should update cellMetaData', function() {
         expect(this.getCellMetaData()).toEqual(jasmine.objectContaining({
           selected: { idx: 2, rowIdx: 2 },
+          selectedRange: { topLeft: {idx: 2, rowIdx: 2}, bottomRight: {idx: 2, rowIdx: 2} },
           dragged: { idx: 2, rowIdx: 2 }
         }));
       });
@@ -943,6 +1160,12 @@ describe('Grid', function() {
 
       it('should set selected state of grid', function() {
         expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 2 });
+        expect(this.component.state.selectedRange).toEqual({
+          topLeft: { idx: 2, rowIdx: 2 },
+          bottomRight: { idx: 2, rowIdx: 2 },
+          startCell: { idx: 2, rowIdx: 2 },
+          cursorCell: { idx: 2, rowIdx: 2 }
+        });
       });
     });
 
@@ -1046,28 +1269,18 @@ describe('Grid', function() {
   });
 
   describe('onRowClick handler', function() {
+    let onRowClickSpy;
     beforeEach(function() {
-      let self = this;
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
-      let columns = [{name: 'Id', key: 'id'}, {name: 'Title', key: 'title', width: 100 }];
-      let rowGetter = function(i) {
-        return self.rows[i];
-      };
-
-      this.rowClicked = {};
-      this.rowClicks = 0;
-
-      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
-        self.rowClicked = {row, column};
-        self.rowClicks++;
-      }}).node;
+      onRowClickSpy = jasmine.createSpy('onRowClick');
+      this.component = this.createComponent({onRowClick: onRowClickSpy}).node;
     });
 
     it('calls handler when row (cell) clicked', function() {
       this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1});
-      expect(this.rowClicks).toBe(1);
-      const { row, column } = this.rowClicked;
-      expect(row).toEqual(jasmine.objectContaining(this.rows[1]));
+      expect(onRowClickSpy).toHaveBeenCalledTimes(1);
+      const row = onRowClickSpy.calls.mostRecent().args[1];
+      const column = onRowClickSpy.calls.mostRecent().args[2];
+      expect(row).toEqual(jasmine.objectContaining(this._rows[1]));
       expect(column).toEqual(jasmine.objectContaining(this.columns[1]));
     });
   });

@@ -15,6 +15,12 @@
 .react-grid-Grid {
   background-color: #ffffff;
   border: 1px solid #dddddd;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .react-grid-Canvas {

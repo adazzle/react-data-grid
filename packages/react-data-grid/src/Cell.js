@@ -91,6 +91,7 @@ class Cell extends React.Component {
       || this.props.height !== nextProps.height
       || this.props.rowIdx !== nextProps.rowIdx
       || this.isCellSelectionChanging(nextProps)
+      || this.isWithinSelectedRangeChanging(nextProps)
       || this.isDraggedCellChanging(nextProps)
       || this.isCopyCellChanging(nextProps)
       || this.props.isRowSelected !== nextProps.isRowSelected
@@ -103,6 +104,20 @@ class Cell extends React.Component {
       || this.props.column.locked !== nextProps.column.locked;
     return shouldUpdate;
   }
+
+  onCellMouseDown = () => {
+    const meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellMouseDown && typeof (meta.onCellMouseDown === 'function')) {
+      meta.onCellMouseDown({ rowIdx: this.props.rowIdx, idx: this.props.idx });
+    }
+  };
+
+  onCellMouseEnter = () => {
+    const meta = this.props.cellMetaData;
+    if (meta != null && meta.onCellMouseEnter && typeof (meta.onCellMouseEnter === 'function')) {
+      meta.onCellMouseEnter({ rowIdx: this.props.rowIdx, idx: this.props.idx });
+    }
+  };
 
   onCellClick = (e) => {
     let meta = this.props.cellMetaData;
@@ -196,6 +211,42 @@ class Cell extends React.Component {
     }
   };
 
+  isWithinSelectedRange = (props) => {
+    return props.cellMetaData && props.cellMetaData.selectedRange &&
+        props.cellMetaData.selectedRange.topLeft.idx <= props.idx &&
+        props.idx <= props.cellMetaData.selectedRange.bottomRight.idx &&
+        props.cellMetaData.selectedRange.topLeft.rowIdx <= props.rowIdx &&
+        props.rowIdx <= props.cellMetaData.selectedRange.bottomRight.rowIdx;
+  };
+
+  isWithinSelectedRangeChanging = (nextProps) => {
+    return this.isWithinSelectedRange(this.props) !== this.isWithinSelectedRange(nextProps);
+  };
+
+  getSelectedCellClasses = () => {
+    if (!this.isWithinSelectedRange(this.props)) {
+      return {};
+    }
+    const selectedRange = this.props.cellMetaData.selectedRange;
+    const selectedClasses = [];
+    if (selectedRange.topLeft.rowIdx === this.props.rowIdx) {
+      selectedClasses.push('top');
+    }
+    if (selectedRange.bottomRight.rowIdx === this.props.rowIdx) {
+      selectedClasses.push('bottom');
+    }
+    if (selectedRange.topLeft.idx === this.props.idx) {
+      selectedClasses.push('left');
+    }
+    if (selectedRange.bottomRight.idx === this.props.idx) {
+      selectedClasses.push('right');
+    }
+    const selectedClass = 'selected-' + selectedClasses.join('-');
+    const result = {selected: selectedClasses.length < 4};
+    result[selectedClass] = true;
+    return result;
+  };
+
   getCellClass = () => {
     let className = joinClasses(
       this.props.column.cellClass,
@@ -214,7 +265,8 @@ class Cell extends React.Component {
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn
     });
-    return joinClasses(className, extraClasses);
+    const selectedClasses = this.getSelectedCellClasses();
+    return joinClasses(className, extraClasses, selectedClasses);
   };
 
   getUpdateCellClass = () => {
@@ -453,6 +505,8 @@ class Cell extends React.Component {
     let onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
     let gridEvents = {
       onClick: this.onCellClick,
+      onMouseDown: this.onCellMouseDown,
+      onMouseEnter: this.onCellMouseEnter,
       onFocus: this.onCellFocus,
       onDoubleClick: this.onCellDoubleClick,
       onContextMenu: this.onCellContextMenu,

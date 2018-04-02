@@ -14,7 +14,12 @@ function isCtrlKeyHeldDown(e) {
   return (e.ctrlKey === true || e.metaKey === true) && e.key !== 'Control';
 }
 
+function isShiftKeyHeldDown(e) {
+  return e.shiftKey === true && e.key !== 'Shift';
+}
+
 export {
   isKeyPrintable,
-  isCtrlKeyHeldDown
+  isCtrlKeyHeldDown,
+  isShiftKeyHeldDown
 };
