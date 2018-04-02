@@ -70,8 +70,8 @@ class Cell extends React.Component {
   }
 
   onCellClick = () => {
-    const {idx, rowIdx, selectCell} = this.props;
-    selectCell({idx, rowIdx});
+    const { idx, rowIdx, cellMetaData } = this.props;
+    cellMetaData.selectCell({idx, rowIdx});
   };
 
   onCellContextMenu = () => {

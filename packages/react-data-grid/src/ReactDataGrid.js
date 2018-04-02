@@ -13,6 +13,7 @@ const ColumnMetrics        = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
+import { createStore, reducer, EventTypes } from './stateManagement';
 
 class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
@@ -118,10 +119,21 @@ class ReactDataGrid extends React.Component {
     columnEquality: ColumnMetrics.sameColumn
   };
 
+  static childContextTypes = {
+    store: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     let columnMetrics = this.createColumnMetrics();
     this.state = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
+    this.store = createStore(reducer);
+  }
+
+  getChildContext() {
+    return {
+      store: this.store
+    };
   }
 
   componentWillMount() {
@@ -151,6 +163,14 @@ class ReactDataGrid extends React.Component {
       }
     }
   }
+
+  selectCell = ({ idx, rowIdx }) => {
+    this.store.dispatch({
+      idx,
+      rowIdx,
+      type: EventTypes.selectCell
+    });
+  };
 
   gridWidth = () => {
     return this.grid ? this.grid.parentElement.offsetWidth : 0;
@@ -454,24 +474,6 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  onDragStart = (e) => {
-    let idx = this.state.selected.idx;
-    // To prevent dragging down/up when reordering rows.
-    const isViewportDragging = e && e.target && e.target.className;
-    if (idx > -1 && isViewportDragging) {
-      let value = this.getSelectedValue();
-      this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
-      // need to set dummy data for FF
-      if (e && e.dataTransfer) {
-        if (e.dataTransfer.setData) {
-          e.dataTransfer.dropEffect = 'move';
-          e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('text/plain', '');
-        }
-      }
-    }
-  };
-
   onToggleFilter = () => {
     // setState() does not immediately mutate this.state but creates a pending state transition.
     // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
@@ -512,7 +514,7 @@ class ReactDataGrid extends React.Component {
       rowIds.push(rowGetter(i)[rowKey]);
     }
 
-    const fromRowData = rowGetter(action === Constants.UpdateActions.COPY_PASTE ? originRow : fromRow);
+    const fromRowData = rowGetter(action === AppConstants.UpdateActions.COPY_PASTE ? originRow : fromRow);
     const fromRowId = fromRowData[rowKey];
     const toRowId = rowGetter(toRow)[rowKey];
     onGridRowsUpdated({cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action, fromRowData});
@@ -520,7 +522,25 @@ class ReactDataGrid extends React.Component {
 
   onCommit = (commit) => {
     const targetRow = commit.rowIdx;
-    this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, Constants.UpdateActions.CELL_UPDATE);
+    this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
+  };
+
+  onDragStart = (e) => {
+    let idx = this.state.selected.idx;
+    // To prevent dragging down/up when reordering rows.
+    const isViewportDragging = e && e.target && e.target.className;
+    if (idx > -1 && isViewportDragging) {
+      let value = this.getSelectedValue();
+      this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
+      // need to set dummy data for FF
+      if (e && e.dataTransfer) {
+        if (e.dataTransfer.setData) {
+          e.dataTransfer.dropEffect = 'move';
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', '');
+        }
+      }
+    }
   };
 
   isCellWithinBounds = ({idx, rowIdx}) => {
@@ -1079,7 +1099,7 @@ class ReactDataGrid extends React.Component {
       onCellClick: this.onCellClick,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
-      onCommit: this.onCellCommit,
+      onCommit: this.onCommit,
       onCommitCancel: this.setInactive,
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
@@ -1097,7 +1117,8 @@ class ReactDataGrid extends React.Component {
       onAddSubRow: this.props.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
-      enableCellAutoFocus: this.props.enableCellAutoFocus
+      enableCellAutoFocus: this.props.enableCellAutoFocus,
+      selectCell: this.selectCell
     };
 
     let toolbar = this.renderToolbar();

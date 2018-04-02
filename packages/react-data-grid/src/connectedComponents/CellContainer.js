@@ -1,8 +1,16 @@
-import connect from '../stateManagement/Connect';
+import { connect, EventTypes } from '../stateManagement';
 import Cell from '../Cell';
-import * as EventTypes from '../stateManagement/EventTypes';
 
-const mapEventsToProps = () => [EventTypes.selectCell];
-const mapStateToProps = () => { };
-export default connect(mapStateToProps, mapEventsToProps)(Cell);
+// const mapEventsToProps = () => [EventTypes.selectCell];
+// const mapStateToProps = () => { };
+// export default connect(mapStateToProps, mapEventsToProps)(Cell);
+
+const mapDispatchToProps = (dispatch) => ({
+  selectCell: ({ idx, rowIdx }) => dispatch({
+    idx,
+    rowIdx,
+    type: EventTypes.selectCell
+  })
+});
+export default connect(undefined, mapDispatchToProps)(Cell);
 
