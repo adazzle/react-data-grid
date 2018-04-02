@@ -136,16 +136,9 @@ class ReactDataGrid extends React.Component {
     };
   }
 
-  componentWillMount() {
-    this._mounted = true;
-  }
-
   componentDidMount() {
-    if (window.addEventListener) {
-      window.addEventListener('resize', this.metricsUpdated);
-    } else {
-      window.attachEvent('resize', this.metricsUpdated);
-    }
+    this._mounted = true;
+    window.addEventListener('resize', this.metricsUpdated);
     this.metricsUpdated();
   }
 

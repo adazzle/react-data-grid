@@ -7,7 +7,7 @@ const validateAction = action => {
   }
 };
 
-export default function(reducer) {
+export default function createStore(reducer) {
   let state = undefined;
   const subscribers = [];
 

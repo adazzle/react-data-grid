@@ -17,15 +17,4 @@ const mapDispatchToProps = (dispatch) => ({
   onCommitCancel: () => dispatch({ isEditorEnabled: false, type: EventTypes.onCommitCancel })
 });
 
-// const mapDispatchToProps = () => [EventTypes.toggleCellEdit, EventTypes.selectCell, EventTypes.onCommit];
-
-// const subscriptions = (updateStore) => ({
-//   [EventTypes.selectCell]: ({ idx, rowIdx }) => updateStore({ selectedPosition: { idx, rowIdx } }),
-//   [EventTypes.toggleCellEdit]: (isEditorEnabled, firstEditorKeyPress) => updateStore({ isEditorEnabled, firstEditorKeyPress }),
-//   [EventTypes.onCommit]: () => updateStore({ isEditorEnabled: false }),
-//   [EventTypes.onCommitCancel]: () => updateStore({ isEditorEnabled: false })
-// });
-
-// export default connect(mapStateToProps, mapDispatchToProps, subscriptions)(InteractionMasks);
-
 export default connect(mapStateToProps, mapDispatchToProps)(InteractionMasks);
