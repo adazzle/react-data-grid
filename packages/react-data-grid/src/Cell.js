@@ -41,8 +41,7 @@ class Cell extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ]),
-    selectCell: PropTypes.func.isRequired
+    ])
   };
 
   static defaultProps = {
@@ -71,20 +70,24 @@ class Cell extends React.Component {
 
   onCellClick = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
-    cellMetaData.selectCell({idx, rowIdx});
+    if (isFunction(cellMetaData.onCellClick)) {
+      cellMetaData.onCellClick({ idx, rowIdx });
+    }
   };
 
-  onCellContextMenu = () => {
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellContextMenu && typeof (meta.onCellContextMenu) === 'function') {
-      meta.onCellContextMenu({ rowIdx: this.props.rowIdx, idx: this.props.idx });
+  onCellContextMenu = (e) => {
+    e.stopPropagation();
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellContextMenu)) {
+      cellMetaData.onCellContextMenu({ idx, rowIdx });
     }
   };
 
   onCellDoubleClick = (e) => {
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick && typeof (meta.onCellDoubleClick) === 'function') {
-      meta.onCellDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
+    e.stopPropagation();
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellDoubleClick)) {
+      cellMetaData.onCellDoubleClick({ idx, rowIdx });
     }
   };
 
@@ -96,11 +99,11 @@ class Cell extends React.Component {
     }
   };
 
-  onCellKeyDown = (e) => {
-    if (this.canExpand() && e.key === 'Enter') {
-      this.onCellExpand(e);
-    }
-  };
+  // onCellKeyDown = (e) => {
+  //   if (this.canExpand() && e.key === 'Enter') {
+  //     this.onCellExpand(e);
+  //   }
+  // };
 
   onDeleteSubRow = () => {
     let meta = this.props.cellMetaData;
@@ -178,10 +181,9 @@ class Cell extends React.Component {
       : '';
   };
 
-  isSelected = () => {
-    return false;
-  };
-
+  // isSelected = () => {
+  //   return false;
+  // };
 
   isEditorEnabled = () => {
     return this.props.isEditorEnabled === true;
@@ -210,7 +212,7 @@ class Cell extends React.Component {
     }
   };
 
-  isCopied = (): boolean => {
+  isCopied = () => {
     let copied = this.props.cellMetaData.copied;
     return (
       copied
@@ -346,7 +348,6 @@ class Cell extends React.Component {
     let dragHandle = (!this.isEditorEnabled() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
     let events = this.getEvents();
     const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
-
 
     return (
       <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }}>

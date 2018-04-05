@@ -3,14 +3,18 @@ import PropTypes from 'prop-types';
 
 import SelectionMask from './SelectionMask';
 import EditorContainer from '../editors/EditorContainer';
-import { isKeyPrintable } from '../utils/keyboardUtils';
+import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 import {
   getSelectedDimensions,
   getSelectedCellValue,
   getSelectedRowIndex,
   getSelectedRow,
-  getSelectedColumn
+  getSelectedColumn,
+  isSelectedCellEditable
 } from '../utils/SelectedCellUtils';
+import isFunction from '../utils/isFunction';
+import * as AppConstants from '../AppConstants';
+import * as keyCodes from '../KeyCodes';
 
 const SCROLL_CELL_BUFFER = 2;
 
@@ -33,11 +37,16 @@ class InteractionMasks extends React.Component {
     onCommitCancel: PropTypes.func,
     isEditorEnabled: PropTypes.bool,
     firstEditorKeyPress: PropTypes.number,
-    rowGetter: PropTypes.func
+    rowGetter: PropTypes.func,
+    enableCellSelect: PropTypes.bool.isRequired,
+    onCheckCellIsEditable: PropTypes.func,
+    onCellCopyPaste: PropTypes.func,
+    onGridRowsUpdated: PropTypes.func.isRequired
   };
 
   state = {
-    lockedPosition: null
+    lockedPosition: null,
+    copied: null
   };
 
   componentDidUpdate(nextProps) {
@@ -48,11 +57,16 @@ class InteractionMasks extends React.Component {
 
   onKeyDown = e => {
     e.preventDefault();
-    if (this.isKeyboardNavigationEvent(e)) {
+    // TODO: cleanup
+    if (isCtrlKeyHeldDown(e)) {
+      this.onPressKeyWithCtrl(e);
+    } else if (e.keyCode === keyCodes.Escape) {
+      this.onPressEscape();
+    } else if (this.isKeyboardNavigationEvent(e)) {
       const keyNavAction = this.getKeyNavActionFromEvent(e);
       this.moveUsingKeyboard(keyNavAction);
-    } else if (isKeyPrintable(e.keyCode)) {
-      this.toggleCellEdit(e.keyCode);
+    } else if (isKeyPrintable(e.keyCode) || e.keyCode === keyCodes.Backspace || e.keyCode === keyCodes.Delete) {
+      this.toggleCellEdit(e);
     }
   };
 
@@ -67,20 +81,72 @@ class InteractionMasks extends React.Component {
   }
 
   toggleCellEdit = (e) => {
-    const { isEditorEnabled, toggleCellEdit } = this.props;
-    const enableEdit = !isEditorEnabled;
-    toggleCellEdit(enableEdit, e.key);
-    if (enableEdit === false) {
-      this.focus();
+    const { props } = this;
+    if (isSelectedCellEditable(props)) {
+      const { isEditorEnabled, toggleCellEdit } = props;
+      const enableEdit = !isEditorEnabled;
+      toggleCellEdit(enableEdit, e.key);
+      if (enableEdit === false) {
+        this.focus();
+      }
     }
   };
 
-  onPressTab = e => {
-    if (e.shiftKey === true) {
-      this.move();
-    } else {
-      this.move();
+  onPressKeyWithCtrl = ({ keyCode }) => {
+    const { props } = this;
+    if (this.copyPasteEnabled() && isSelectedCellEditable(props)) {
+      if (keyCode === keyCodes.c) {
+        const value = getSelectedCellValue(props);
+        this.handleCopy({ value });
+      } else if (keyCode === keyCodes.v) {
+        this.handlePaste();
+      }
     }
+  };
+
+  onPressEscape = () => {
+    this.handleCancelCopy();
+  };
+
+  onPressTab = (e) => {
+    if (e.shiftKey === true) {
+      // this.move();
+    } else {
+      // this.move();
+    }
+  };
+
+  copyPasteEnabled = () => {
+    return this.props.onCellCopyPaste !== null;
+  };
+
+  handleCopy = ({ value }) => {
+    const { rowIdx } = this.props.selectedPosition;
+    this.copied = { value, rowIdx };
+  };
+
+  handleCancelCopy = () => {
+    this.copied = null;
+  };
+
+  handlePaste = () => {
+    const { props, copied } = this;
+    if (copied == null) { return; }
+    const { key: cellKey } = getSelectedColumn(props);
+    const { selectedPosition: { rowIdx: toRow }, onCellCopyPaste, onGridRowsUpdated } = props;
+    const { rowIdx: fromRow, value: textToCopy } = copied;
+
+    if (isFunction(onCellCopyPaste)) {
+      onCellCopyPaste({
+        cellKey,
+        rowIdx,
+        fromRow,
+        toRow,
+        value: textToCopy
+      });
+    }
+
+    onGridRowsUpdated(cellKey, toRow, toRow, { [cellKey]: textToCopy }, AppConstants.UpdateActions.COPY_PASTE, fromRow);
   };
 
   isKeyboardNavigationEvent(e) {

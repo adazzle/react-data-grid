@@ -1,3 +1,6 @@
+import * as rowUtils from '../RowUtils';
+import * as columnUtils from '../ColumnUtils';
+
 const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
 
 export const getSelectedRowIndex = (selectArgs) => {
@@ -31,5 +34,12 @@ export const getSelectedColumn = (selectArgs) => {
 export const getSelectedCellValue = (selectArgs) => {
   const column = getSelectedColumn(selectArgs);
   const row = getSelectedRow(selectArgs);
-  return row && column ? row[column.key] : null;
+
+  return row && column ? rowUtils.get(row, column.key) : null;
+};
+
+export const isSelectedCellEditable = (selectArgs) => {
+  const column = getSelectedColumn(selectArgs);
+  const row = getSelectedRow(selectArgs);
+  return columnUtils.canEdit(column, row, selectArgs.enableCellSelect);
 };

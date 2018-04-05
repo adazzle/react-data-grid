@@ -2,10 +2,11 @@ const React = require('react');
 import PropTypes from 'prop-types';
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-require('../../../themes/react-data-grid-core.css');
+import * as RowUtils from './RowUtils';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 import MasksContainer from './connectedComponents/MasksContainer';
+require('../../../themes/react-data-grid-core.css');
 
 class Canvas extends React.Component {
   static displayName = 'Canvas';
@@ -58,7 +59,11 @@ class Canvas extends React.Component {
     ]),
     rowGroupRenderer: PropTypes.func,
     isScrolling: PropTypes.bool,
-    length: PropTypes.number
+    length: PropTypes.number,
+    enableCellSelect: PropTypes.bool.isRequired,
+    onCheckCellIsEditable: PropTypes.func,
+    onCellCopyPaste: PropTypes.func,
+    onGridRowsUpdated: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -341,6 +346,11 @@ class Canvas extends React.Component {
             onHitTopBoundary={this.onHitTopCanvas}
             onHitLeftBoundary={this.onHitLeftCanvas}
             onHitRightBoundary={this.onHitRightCanvas}
+            onCommit={cellMetaData.onCommit}
+            enableCellSelect={this.props.enableCellSelect}
+            onCheckCellIsEditable={this.props.onCheckCellIsEditable}
+            onCellCopyPaste={this.props.onCellCopyPaste}
+            onGridRowsUpdated={this.props.onGridRowsUpdated}
           />
           <RowsContainer
             width={width}

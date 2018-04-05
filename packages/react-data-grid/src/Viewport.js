@@ -44,7 +44,11 @@ class Viewport extends React.Component {
     scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
-    rowGroupRenderer: PropTypes.func
+    rowGroupRenderer: PropTypes.func,
+    enableCellSelect: PropTypes.bool.isRequired,
+    onCheckCellIsEditable: PropTypes.func,
+    onCellCopyPaste: PropTypes.func,
+    onGridRowsUpdated: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -234,6 +238,10 @@ class Viewport extends React.Component {
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
           isScrolling={this.state.isScrolling || false}
+          enableCellSelect={this.props.enableCellSelect}
+          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
+          onCellCopyPaste={this.props.onCellCopyPaste}
+          onGridRowsUpdated={this.props.onGridRowsUpdated}
         />
       </div>
     );

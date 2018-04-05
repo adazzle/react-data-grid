@@ -43,8 +43,8 @@ class Grid extends React.Component {
     onViewportKeyup: PropTypes.func,
     onViewportDragStart: PropTypes.func.isRequired,
     onViewportDragEnd: PropTypes.func.isRequired,
-    onViewportClick: PropTypes.func.isRequired,
-    onViewportDoubleClick: PropTypes.func.isRequired,
+    // onViewportClick: PropTypes.func.isRequired,
+    // onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
     onHeaderDrop: PropTypes.func,
@@ -56,7 +56,11 @@ class Grid extends React.Component {
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
-    overScan: PropTypes.object
+    overScan: PropTypes.object,
+    enableCellSelect: PropTypes.bool.isRequired,
+    onCheckCellIsEditable: PropTypes.func,
+    onCellCopyPaste: PropTypes.func,
+    onGridRowsUpdated: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -144,8 +148,8 @@ class Grid extends React.Component {
               ref={(node) => { this.viewPortContainer = node; } }
               onKeyDown={this.props.onViewportKeydown}
               onKeyUp={this.props.onViewportKeyup}
-              onClick={this.props.onViewportClick}
-              onDoubleClick={this.props.onViewportDoubleClick}
+              // onClick={this.props.onViewportClick}
+              // onDoubleClick={this.props.onViewportDoubleClick}
               onDragStart={this.props.onViewportDragStart}
               onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
@@ -172,6 +176,10 @@ class Grid extends React.Component {
                   getSubRowDetails={this.props.getSubRowDetails}
                   rowGroupRenderer={this.props.rowGroupRenderer}
                   overScan={this.props.overScan}
+                  enableCellSelect={this.props.enableCellSelect}
+                  onCheckCellIsEditable={this.props.onCheckCellIsEditable}
+                  onCellCopyPaste={this.props.onCellCopyPaste}
+                  onGridRowsUpdated={this.props.onGridRowsUpdated}
                 />
             </div>
         :

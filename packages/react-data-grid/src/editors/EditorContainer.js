@@ -189,15 +189,24 @@ class EditorContainer extends React.Component {
   };
 
   getInitialValue = () => {
-    const keyCode = this.props.firstEditorKeyPress;
-    if (keyCode === 'Delete' || keyCode === 'Backspace') {
+    // const keyCode = this.props.firstEditorKeyPress;
+    // if (keyCode === 'Delete' || keyCode === 'Backspace') {
+    //   return '';
+    // } else if (keyCode === 'Enter') {
+    //   return this.props.value;
+    // }
+
+    // let text = keyCode ? String.fromCharCode(keyCode) : this.props.value;
+    // return text;
+
+    const { firstEditorKeyPress: key, value } = this.props;
+    if ( key === 'Delete' || key === 'Backspace') {
       return '';
-    } else if (keyCode === 'Enter') {
-      return this.props.value;
+    } else if (key === 'Enter') {
+      return value;
     }
 
-    let text = keyCode ? String.fromCharCode(keyCode) : this.props.value;
-    return text;
+    return key || value;
   };
 
   getContainerClass = () => {
