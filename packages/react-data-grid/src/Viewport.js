@@ -2,7 +2,7 @@ const React                = require('react');
 const Canvas               = require('./Canvas');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 import PropTypes from 'prop-types';
-import ColumnUtils from './ColumnUtils';
+import * as columnUtils from './ColumnUtils';
 import {
   getGridState,
   getNextScrollState
@@ -57,7 +57,7 @@ class Viewport extends React.Component {
 
   state = getGridState(this.props);
 
-  onScroll = (scroll: {scrollTop: number; scrollLeft: number}) => {
+  onScroll = (scroll) => {
     this.updateScroll(
       scroll.scrollTop, scroll.scrollLeft,
       this.state.height,
@@ -70,11 +70,11 @@ class Viewport extends React.Component {
     }
   };
 
-  getScroll = (): {scrollLeft: number; scrollTop: number} => {
+  getScroll = () => {
     return this.canvas.getScroll();
   };
 
-  setScrollLeft = (scrollLeft: number) => {
+  setScrollLeft = (scrollLeft) => {
     this.canvas.setScrollLeft(scrollLeft);
   };
 
@@ -104,11 +104,11 @@ class Viewport extends React.Component {
   };
 
   updateScroll = (
-    scrollTop: number,
-    scrollLeft: number,
-    height: number,
-    rowHeight: number,
-    length: number,
+    scrollTop,
+    scrollLeft,
+    height,
+    rowHeight,
+    length,
     width,
   ) => {
     this.resetScrollStateAfterDelay();
@@ -132,17 +132,15 @@ class Viewport extends React.Component {
     }
   };
 
-  viewportHeight = (): number => {
+  viewportHeight = () => {
     return this.viewport ? this.viewport.offsetHeight : 0;
   };
 
-  viewportWidth = (): number => {
+  viewportWidth = () => {
     return this.viewport ? this.viewport.offsetWidth : 0;
   };
 
-  componentWillReceiveProps(
-    nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number },
-  ) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
       this.props.minHeight !== nextProps.minHeight) {
       const newState = getGridState(nextProps);
@@ -153,7 +151,7 @@ class Viewport extends React.Component {
         nextProps.rowHeight,
         nextProps.rowsCount
       );
-    } else if (ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
+    } else if (columnUtils.getSize(this.props.columnMetrics.columns) !== columnUtils.getSize(nextProps.columnMetrics.columns)) {
       this.setState(getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
@@ -179,11 +177,7 @@ class Viewport extends React.Component {
   }
 
   componentDidMount() {
-    if (window.addEventListener) {
-      window.addEventListener('resize', this.metricsUpdated);
-    } else {
-      window.attachEvent('resize', this.metricsUpdated);
-    }
+    window.addEventListener('resize', this.metricsUpdated);
     this.metricsUpdated();
   }
 
