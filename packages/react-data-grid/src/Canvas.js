@@ -2,7 +2,7 @@ const React = require('react');
 import PropTypes from 'prop-types';
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-import * as RowUtils from './RowUtils';
+import * as rowUtils from './RowUtils';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 import MasksContainer from './connectedComponents/MasksContainer';
@@ -94,7 +94,7 @@ class Canvas extends React.Component {
     this.onRows();
   }
 
-  componentWillReceiveProps(nextProps: any) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.displayStart !== this.state.displayStart
       || nextProps.displayEnd !== this.state.displayEnd) {
       this.setState({
@@ -130,7 +130,7 @@ class Canvas extends React.Component {
     }
   };
 
-  onScroll = (e: any) => {
+  onScroll = (e) => {
     if (this.canvas !== e.target) {
       return;
     }
@@ -214,7 +214,7 @@ class Canvas extends React.Component {
     // Else use new rowSelection props
     if (this.props.rowSelection) {
       let { keys, indexes, isSelectedKey } = this.props.rowSelection;
-      return RowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
+      return rowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
     }
 
     return false;
@@ -243,7 +243,7 @@ class Canvas extends React.Component {
     return this.rows[i];
   };
 
-  renderRow = (props: any) => {
+  renderRow = (props) => {
     let row = props.row;
     if (row.__metaData && row.__metaData.getRowRenderer) {
       return row.__metaData.getRowRenderer(this.props, props.idx);
@@ -265,7 +265,7 @@ class Canvas extends React.Component {
     }
   };
 
-  renderPlaceholder = (key: string, height: number) => {
+  renderPlaceholder = (key, height) => {
     // just renders empty cells
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
     return (<div key={key} style={{ height: height }}>
