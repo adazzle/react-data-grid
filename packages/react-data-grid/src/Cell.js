@@ -182,10 +182,6 @@ class Cell extends React.Component {
       : '';
   };
 
-  // isSelected = () => {
-  //   return false;
-  // };
-
   isEditorEnabled = () => {
     return this.props.isEditorEnabled === true;
   };

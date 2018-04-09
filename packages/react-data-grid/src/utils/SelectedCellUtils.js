@@ -20,15 +20,16 @@ export const getSelectedDimensions = (selectArgs) => {
     columns,
     rowHeight
   } = selectArgs;
-  const width = idx >= 0 ? columns[idx].width : 0;
-  const left = idx >= 0 ? columns[idx].left : 0;
+  const column = columnUtils.getColumn(columns, idx);
+  const width = idx >= 0 ? column.width : 0;
+  const left = idx >= 0 ? column.left : 0;
   const top = getRowTop(rowIdx, rowHeight);
   return { width, left, top, height: rowHeight };
 };
 
 export const getSelectedColumn = (selectArgs) => {
   const { selectedPosition: { idx }, columns } = selectArgs;
-  return columns[idx];
+  return columnUtils.getColumn(columns, idx);
 };
 
 export const getSelectedCellValue = (selectArgs) => {

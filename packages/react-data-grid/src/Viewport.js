@@ -59,7 +59,8 @@ class Viewport extends React.Component {
 
   onScroll = (scroll) => {
     this.updateScroll(
-      scroll.scrollTop, scroll.scrollLeft,
+      scroll.scrollTop,
+      scroll.scrollLeft,
       this.state.height,
       this.props.rowHeight,
       this.props.rowsCount

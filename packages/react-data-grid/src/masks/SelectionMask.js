@@ -11,7 +11,6 @@ const setMaskStyle = (left, top, width, height, isFixed) => {
   };
 };
 
-
 const AnimatedMask = ({ width, height, top, left, isFixed }) => {
   return (
     <Motion

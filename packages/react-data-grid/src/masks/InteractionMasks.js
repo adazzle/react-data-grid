@@ -16,7 +16,7 @@ import isFunction from '../utils/isFunction';
 import * as AppConstants from '../AppConstants';
 import * as keyCodes from '../KeyCodes';
 
-const SCROLL_CELL_BUFFER = 2;
+const SCROLL_CELL_BUFFER = 1;
 
 class InteractionMasks extends React.Component {
   static propTypes = {
@@ -166,7 +166,7 @@ class InteractionMasks extends React.Component {
   }
 
   getKeyNavActionFromEvent(e) {
-    const { visibleEnd, visibleStart, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary } = this.props;
+    const { visibleEnd, visibleStart, colVisibleEnd, colVisibleStart, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary } = this.props;
     const keyNavActions = {
       ArrowDown: {
         getNext: current => ({ ...current, rowIdx: current.rowIdx + 1 }),
@@ -187,30 +187,40 @@ class InteractionMasks extends React.Component {
       },
       ArrowRight: {
         getNext: current => ({ ...current, idx: current.idx + 1 }),
-        isCellAtBoundary: () => false,
-        onHitBoundary: onHitRightBoundary
+        isCellAtBoundary: cell => cell.idx !== 0 && cell.idx >= colVisibleEnd - 1,
+        onHitBoundary: onHitRightBoundary,
+        getBoundaryDimensions: () => this.getSelectedCellDimensions()
       },
       ArrowLeft: {
         getNext: current => ({ ...current, idx: current.idx - 1 }),
-        isCellAtBoundary: () => false,
-        onHitBoundary: onHitLeftBoundary
+        isCellAtBoundary: cell => cell.idx !== 0 && cell.idx <= colVisibleStart + 1,
+        onHitBoundary: onHitLeftBoundary,
+        getBoundaryDimensions: () => this.getSelectedCellDimensions()
       }
     };
     return keyNavActions[e.key];
   }
 
   moveUsingKeyboard(keyNavAction) {
-    const { getNext, isCellAtBoundary, onHitBoundary, getBoundaryDimensions } = keyNavAction;
-    this._enableSelectionAnimation = true;
+    // const { getNext, isCellAtBoundary, onHitBoundary, getBoundaryDimensions } = keyNavAction;
+    // this._enableSelectionAnimation = true;
+    // const currentPosition = this.getSelectedCellPosition();
+    // const next = getNext(currentPosition);
+    // if (isCellAtBoundary(next)) {
+    //   onHitBoundary(next);
+    //   this.setScrollingMetrics(next, getBoundaryDimensions());
+    // } else {
+    //   this.resetScrollingMetrics();
+    //   this.selectCell(next);
+    // }
+
+    const { getNext, isCellAtBoundary, onHitBoundary } = keyNavAction;
     const currentPosition = this.getSelectedCellPosition();
     const next = getNext(currentPosition);
     if (isCellAtBoundary(next)) {
-      onHitBoundary();
-      this.setScrollingMetrics(next, getBoundaryDimensions());
-    } else {
-      this.resetScrollingMetrics();
-      this.selectCell(next);
+      onHitBoundary(next);
     }
+    this.selectCell(next);
   }
 
   isCellWithinBounds = ({ idx, rowIdx }) => {

@@ -93,16 +93,17 @@ class Grid extends React.Component {
     }
   };
 
-  onHeaderScroll = (e) => {
-    let scrollLeft = e.target.scrollLeft;
-    if (this._scrollLeft !== scrollLeft) {
-      this._scrollLeft = scrollLeft;
-      this.header.setScrollLeft(scrollLeft);
-      let canvas = ReactDOM.findDOMNode(this.viewport.canvas);
-      canvas.scrollLeft = scrollLeft;
-      this.viewport.canvas.setScrollLeft(scrollLeft);
-    }
-  };
+  // TODO: why is this needed?
+  // onHeaderScroll = (e) => {
+  //   let scrollLeft = e.target.scrollLeft;
+  //   if (this._scrollLeft !== scrollLeft) {
+  //     this._scrollLeft = scrollLeft;
+  //     this.header.setScrollLeft(scrollLeft);
+  //     let canvas = ReactDOM.findDOMNode(this.viewport.canvas);
+  //     canvas.scrollLeft = scrollLeft;
+  //     this.viewport.canvas.setScrollLeft(scrollLeft);
+  //   }
+  // };
 
   componentDidMount() {
     this._scrollLeft = this.viewport ? this.viewport.getScroll().scrollLeft : 0;
@@ -121,7 +122,7 @@ class Grid extends React.Component {
     this._scrollLeft = undefined;
   }
 
-  render(): ?ReactElement {
+  render() {
     let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
     let EmptyRowsView = this.props.emptyRowsView;
 
@@ -139,7 +140,7 @@ class Grid extends React.Component {
           draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
           onHeaderDrop={this.props.onHeaderDrop}
-          onScroll={this.onHeaderScroll}
+          // onScroll={this.onHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}
           />

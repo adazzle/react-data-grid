@@ -6,6 +6,7 @@ import * as rowUtils from './RowUtils';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 import MasksContainer from './connectedComponents/MasksContainer';
+import { getColumnScrollPosition } from './utils/canvasUtils';
 require('../../../themes/react-data-grid-core.css');
 
 class Canvas extends React.Component {
@@ -159,16 +160,21 @@ class Canvas extends React.Component {
     node.scrollTop -= (rowHeight - this.getClientScrollTopOffset(node));
   }
 
-  onHitLeftCanvas = () =>  {
-    const { rowHeight } = this.props;
-    const node = this.canvas;
-    node.scrollTop -= rowHeight;
+  scrollToColumn = (idx) => {
+    const { scrollLeft, clientWidth } = this.canvas;
+    const newScrollLeft = getColumnScrollPosition(this.props.columns, idx, scrollLeft, clientWidth);
+
+    if (newScrollLeft != null) {
+      this.canvas.scrollLeft = scrollLeft + newScrollLeft;
+    }
   }
 
-  onHitRightCanvas = () =>  {
-    const { colVisibleEnd, rowHeight } = this.props;
-    const node = this.canvas;
-    node.scrollLeft -= (colVisibleEnd - visibleStart) * rowHeight;
+  onHitLeftCanvas = ({ idx }) =>  {
+    this.scrollToColumn(idx);
+  }
+
+  onHitRightCanvas = ({ idx }) =>  {
+    this.scrollToColumn(idx);
   }
 
   getRows = (displayStart, displayEnd) => {
