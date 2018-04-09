@@ -41,7 +41,8 @@ class Cell extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ])
+    ]),
+    isCopied: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -166,7 +167,7 @@ class Cell extends React.Component {
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
       editing: this.isEditorEnabled(),
-      copied: this.isCopied(),
+      copied: this.props.isCopied,
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn,
@@ -210,15 +211,6 @@ class Cell extends React.Component {
       node.style.webkitTransform = null;
       node.style.transform = null;
     }
-  };
-
-  isCopied = () => {
-    let copied = this.props.cellMetaData.copied;
-    return (
-      copied
-      && copied.rowIdx === this.props.rowIdx
-      && copied.idx === this.props.idx
-    );
   };
 
   canEdit = () => {

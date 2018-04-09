@@ -14,13 +14,13 @@ const connect = (
       innerRef: PropTypes.func
     };
 
-    state = this.getStateFromStore();
+    state = this.getStateFromStore(this.props);
 
-    getStateFromStore() {
+    getStateFromStore(props) {
       const { store } = this.context;
       const state = store.getState();
-      const stateProps = mapStateToProps(state);
-      const dispatchProps = mapDispatchToProps(store.dispatch);
+      const stateProps = mapStateToProps(state, props);
+      const dispatchProps = mapDispatchToProps(store.dispatch, props);
 
       return {
         ...stateProps,
@@ -28,13 +28,17 @@ const connect = (
       };
     }
 
-    onStoreChange = () => {
-      this.setState(this.getStateFromStore());
+    onStoreOrPropsChange = () => {
+      this.setState(this.getStateFromStore(this.props));
     };
 
     componentDidMount() {
       const { store } = this.context;
-      this.unsubscribe = store.subscribe(this.onStoreChange);
+      this.unsubscribe = store.subscribe(this.onStoreOrPropsChange);
+    }
+
+    componentWillReceiveProps(nextProps) {
+      this.onStoreOrPropsChange(nextProps);
     }
 
     componentWillUnmount() {

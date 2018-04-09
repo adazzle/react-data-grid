@@ -1,6 +1,13 @@
 import { connect, EventTypes } from '../stateManagement';
 import Cell from '../Cell';
 
+const mapStateToProps = ({ copiedPosition }, { rowIdx, idx } = {}) => {
+  const isCopied = copiedPosition != null ? copiedPosition.rowIdx === rowIdx && copiedPosition.idx === idx : false;
+
+  return {
+    isCopied
+  };
+};
 const mapDispatchToProps = (dispatch) => ({
   selectCell: ({ idx, rowIdx }) => dispatch({
     idx,
@@ -8,5 +15,5 @@ const mapDispatchToProps = (dispatch) => ({
     type: EventTypes.selectCell
   })
 });
-export default connect(undefined, mapDispatchToProps)(Cell);
 
+export default connect(mapStateToProps, mapDispatchToProps)(Cell);

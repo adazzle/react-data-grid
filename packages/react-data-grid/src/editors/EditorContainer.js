@@ -200,7 +200,7 @@ class EditorContainer extends React.Component {
     // return text;
 
     const { firstEditorKeyPress: key, value } = this.props;
-    if ( key === 'Delete' || key === 'Backspace') {
+    if (key === 'Delete' || key === 'Backspace') {
       return '';
     } else if (key === 'Enter') {
       return value;

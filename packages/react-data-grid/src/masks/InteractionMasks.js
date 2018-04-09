@@ -26,6 +26,7 @@ class InteractionMasks extends React.Component {
     visibleEnd: PropTypes.number,
     columns: PropTypes.array,
     selectedPosition: PropTypes.object,
+    copiedPosition: PropTypes.object,
     rowHeight: PropTypes.number,
     toggleCellEdit: PropTypes.func,
     selectCell: PropTypes.func,
@@ -41,12 +42,14 @@ class InteractionMasks extends React.Component {
     enableCellSelect: PropTypes.bool.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
-    onGridRowsUpdated: PropTypes.func.isRequired
+    onGridRowsUpdated: PropTypes.func.isRequired,
+    cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']).isRequired,
+    copyCell: PropTypes.func.isRequired,
+    cancelCopyCell: PropTypes.func.isRequired
   };
 
   state = {
-    lockedPosition: null,
-    copied: null
+    lockedPosition: null
   };
 
   componentDidUpdate(nextProps) {
@@ -61,7 +64,9 @@ class InteractionMasks extends React.Component {
     if (isCtrlKeyHeldDown(e)) {
       this.onPressKeyWithCtrl(e);
     } else if (e.keyCode === keyCodes.Escape) {
-      this.onPressEscape();
+      this.onPressEscape(e);
+    } else if (e.keyCode === keyCodes.Tab) {
+      this.onPressTab(e);
     } else if (this.isKeyboardNavigationEvent(e)) {
       const keyNavAction = this.getKeyNavActionFromEvent(e);
       this.moveUsingKeyboard(keyNavAction);
@@ -70,7 +75,7 @@ class InteractionMasks extends React.Component {
     }
   };
 
-  onKeyUp = e => {
+  onKeyUp = (e) => {
     if (this.isKeyboardNavigationEvent(e)) {
       this._enableSelectionAnimation = false;
       // set selected state from temporary srolling metrics
@@ -104,8 +109,10 @@ class InteractionMasks extends React.Component {
     }
   };
 
-  onPressEscape = () => {
+  onPressEscape = (e) => {
     this.handleCancelCopy();
+    // TODO: is this required?
+    // this.props.toggleCellEdit(false, e.key);
   };
 
   onPressTab = (e) => {
@@ -121,20 +128,25 @@ class InteractionMasks extends React.Component {
   };
 
   handleCopy = ({ value }) => {
-    const { rowIdx } = this.props.selectedPosition;
-    this.copied = { value, rowIdx };
+    const { copyCell, selectedPosition } = this.props;
+    const { rowIdx, idx } = selectedPosition;
+    copyCell({ rowIdx, idx, value });
   };
 
   handleCancelCopy = () => {
-    this.copied = null;
+    this.props.cancelCopyCell();
   };
 
   handlePaste = () => {
-    const { props, copied } = this;
-    if (copied == null) { return; }
+    const { props } = this;
+    const { selectedPosition: { rowIdx: toRow }, copiedPosition, onCellCopyPaste, onGridRowsUpdated } = props;
+
+    if (copiedPosition == null) {
+      return;
+    }
+
     const { key: cellKey } = getSelectedColumn(props);
-    const { selectedPosition: { rowIdx: toRow }, onCellCopyPaste, onGridRowsUpdated } = props;
-    const { rowIdx: fromRow, value: textToCopy } = copied;
+    const { rowIdx: fromRow, value: textToCopy } = copiedPosition;
 
     if (isFunction(onCellCopyPaste)) {
       onCellCopyPaste({
