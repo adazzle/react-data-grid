@@ -5,7 +5,7 @@ const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import * as rowUtils from './RowUtils';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
-import MasksContainer from './connectedComponents/MasksContainer';
+import MasksContainer from './containers/MasksContainer';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 require('../../../themes/react-data-grid-core.css');
 
