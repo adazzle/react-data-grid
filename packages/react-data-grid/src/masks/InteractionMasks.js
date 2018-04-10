@@ -10,13 +10,14 @@ import {
   getSelectedRowIndex,
   getSelectedRow,
   getSelectedColumn,
+  getNextSelectedCellPosition,
   isSelectedCellEditable
 } from '../utils/SelectedCellUtils';
 import isFunction from '../utils/isFunction';
 import * as AppConstants from '../AppConstants';
 import * as keyCodes from '../KeyCodes';
 
-const SCROLL_CELL_BUFFER = 1;
+const SCROLL_CELL_BUFFER = 2;
 
 class InteractionMasks extends React.Component {
   static propTypes = {
@@ -38,7 +39,8 @@ class InteractionMasks extends React.Component {
     onCommitCancel: PropTypes.func,
     isEditorEnabled: PropTypes.bool,
     firstEditorKeyPress: PropTypes.number,
-    rowGetter: PropTypes.func,
+    rowGetter: PropTypes.func.isRequired,
+    rowsCount: PropTypes.func.isRequired,
     enableCellSelect: PropTypes.bool.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
@@ -171,31 +173,32 @@ class InteractionMasks extends React.Component {
       ArrowDown: {
         getNext: current => ({ ...current, rowIdx: current.rowIdx + 1 }),
         isCellAtBoundary: cell => cell.rowIdx >= visibleEnd - SCROLL_CELL_BUFFER,
-        onHitBoundary: onHitBottomBoundary,
-        getBoundaryDimensions: () => this.getSelectedCellDimensions(),
-        scrollReadyCondition: scrollMetrics => scrollMetrics.visibleEnd === visibleEnd - 1
+        onHitBoundary: onHitBottomBoundary
+        // getBoundaryDimensions: () => this.getSelectedCellDimensions(),
+        // scrollReadyCondition: scrollMetrics => scrollMetrics.visibleEnd === visibleEnd - 1
       },
       ArrowUp: {
         getNext: current => ({ ...current, rowIdx: current.rowIdx - 1 }),
         isCellAtBoundary: cell => cell.rowIdx !== 0 && cell.rowIdx <= visibleStart - 1,
-        onHitBoundary: () => {
-          this._enableSelectionAnimation = !this.isScrollingWithKeyboard() ? false : true;
-          onHitTopBoundary();
-        },
-        getBoundaryDimensions: () => ({ ...this.getSelectedCellDimensions(), top: 0 }),
-        scrollReadyCondition: scrollMetrics => scrollMetrics.visibleStart === visibleStart
+        onHitBoundary: onHitTopBoundary
+        // onHitBoundary: () => {
+        //   this._enableSelectionAnimation = !this.isScrollingWithKeyboard() ? false : true;
+        //   onHitTopBoundary();
+        // },
+        // getBoundaryDimensions: () => ({ ...this.getSelectedCellDimensions(), top: 0 }),
+        // scrollReadyCondition: scrollMetrics => scrollMetrics.visibleStart === visibleStart
       },
       ArrowRight: {
         getNext: current => ({ ...current, idx: current.idx + 1 }),
         isCellAtBoundary: cell => cell.idx !== 0 && cell.idx >= colVisibleEnd - 1,
-        onHitBoundary: onHitRightBoundary,
-        getBoundaryDimensions: () => this.getSelectedCellDimensions()
+        onHitBoundary: onHitRightBoundary
+        // getBoundaryDimensions: () => this.getSelectedCellDimensions()
       },
       ArrowLeft: {
         getNext: current => ({ ...current, idx: current.idx - 1 }),
         isCellAtBoundary: cell => cell.idx !== 0 && cell.idx <= colVisibleStart + 1,
-        onHitBoundary: onHitLeftBoundary,
-        getBoundaryDimensions: () => this.getSelectedCellDimensions()
+        onHitBoundary: onHitLeftBoundary
+        // getBoundaryDimensions: () => this.getSelectedCellDimensions()
       }
     };
     return keyNavActions[e.key];
@@ -216,15 +219,19 @@ class InteractionMasks extends React.Component {
 
     const { getNext, isCellAtBoundary, onHitBoundary } = keyNavAction;
     const currentPosition = this.getSelectedCellPosition();
-    const next = getNext(currentPosition);
-    if (isCellAtBoundary(next)) {
+    const nextPosition = getNext(currentPosition)
+    const { changeRowOrColumn, ...next } = getNextSelectedCellPosition(this.props, nextPosition);
+
+    if (isCellAtBoundary(next) || changeRowOrColumn) {
       onHitBoundary(next);
     }
+
     this.selectCell(next);
   }
 
   isCellWithinBounds = ({ idx, rowIdx }) => {
-    return rowIdx >= 0 && idx >= 0 && idx < this.props.columns.length;
+    const { columns, rowsCount } = this.props;
+    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columns.length;
   };
 
   isGridSelected = () => {

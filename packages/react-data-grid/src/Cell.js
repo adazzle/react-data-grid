@@ -258,8 +258,7 @@ class Cell extends React.Component {
       onClick: this.onCellClick,
       onDoubleClick: this.onCellDoubleClick,
       onContextMenu: this.onCellContextMenu,
-      onDragOver: this.onDragOver,
-      onKeyDown: this.onKeyDown
+      onDragOver: this.onDragOver
     };
 
     if (!columnEvents || !onColumnEvent) {

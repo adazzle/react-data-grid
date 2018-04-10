@@ -60,7 +60,8 @@ class Grid extends React.Component {
     enableCellSelect: PropTypes.bool.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
-    onGridRowsUpdated: PropTypes.func.isRequired
+    onGridRowsUpdated: PropTypes.func.isRequired,
+    cellNavigationMode: PropTypes.string.isRequired
   };
 
   static defaultProps = {
@@ -181,6 +182,7 @@ class Grid extends React.Component {
                   onCheckCellIsEditable={this.props.onCheckCellIsEditable}
                   onCellCopyPaste={this.props.onCellCopyPaste}
                   onGridRowsUpdated={this.props.onGridRowsUpdated}
+                  cellNavigationMode={this.props.cellNavigationMode}
                 />
             </div>
         :

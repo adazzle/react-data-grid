@@ -8,7 +8,6 @@ const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
-// import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics        = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
@@ -195,20 +194,12 @@ class ReactDataGrid extends React.Component {
 
   getColumn = (idx) => {
     const { columns } = this.state.columnMetrics;
-    if (Array.isArray(columns)) {
-      return columns[idx];
-    } else if (typeof Immutable !== 'undefined') {
-      return columns.get(idx);
-    }
+    return ColumnUtils.getColumn(columns, idx);
   };
 
   getSize = () => {
     const { columns } = this.state.columnMetrics;
-    if (Array.isArray(columns)) {
-      return columns.length;
-    } else if (typeof Immutable !== 'undefined') {
-      return columns.size;
-    }
+    return ColumnUtils.getSize(columns);
   };
 
   metricsUpdated = () => {
@@ -234,22 +225,9 @@ class ReactDataGrid extends React.Component {
   };
 
   onKeyDown = (e) => {
-    // if (isCtrlKeyHeldDown(e)) {
-    //   this.checkAndCall('onPressKeyWithCtrl', e);
-    // } else if (this.isKeyExplicitlyHandled(e.key)) {
-    //   // break up individual keyPress events to have their own specific callbacks
-    //   let callBack = 'onPress' + e.key;
-    //   this.checkAndCall(callBack, e);
-    // } else if (isKeyPrintable(e.keyCode)) {
-    //   this.checkAndCall('onPressChar', e);
-    // }
-
-    // // Track which keys are currently down for shift clicking etc
-    // this._keysDown = this._keysDown || {};
-    // this._keysDown[e.keyCode] = true;
-    // if (isFunction(this.props.onGridKeyDown)) {
-    //   this.props.onGridKeyDown(e);
-    // }
+    // Track which keys are currently down for shift clicking etc
+    this._keysDown = this._keysDown || {};
+    this._keysDown[e.keyCode] = true;
 
     const { onGridKeyDown } = this.props;
     if (isFunction(onGridKeyDown)) {
@@ -259,12 +237,9 @@ class ReactDataGrid extends React.Component {
 
   onKeyUp = (e) => {
     // Track which keys are currently down for shift clicking etc
-    // this._keysDown = this._keysDown || {};
-    // delete this._keysDown[e.keyCode];
+    this._keysDown = this._keysDown || {};
+    delete this._keysDown[e.keyCode];
 
-    // if (isFunction(this.props.onGridKeyUp)) {
-    //   this.props.onGridKeyUp(e);
-    // }
     const { onGridKeyUp } = this.props;
     if (isFunction(onGridKeyUp)) {
       onGridKeyUp(e);
@@ -281,16 +256,6 @@ class ReactDataGrid extends React.Component {
     return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
   };
 
-  // checkAndCall = (methodName, args) => {
-  //   if (typeof this[methodName] === 'function') {
-  //     this[methodName](args);
-  //   }
-  // };
-
-  // isKeyExplicitlyHandled = (key) => {
-  //   return typeof this['onPress' + key] === 'function';
-  // };
-
   onContextMenuHide = () => {
     document.removeEventListener('click', this.onContextMenuHide);
     // let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
@@ -298,12 +263,13 @@ class ReactDataGrid extends React.Component {
   };
 
   onColumnEvent = (ev, columnEvent) => {
+    // TODO: fix me
     const { idx, name } = columnEvent;
 
     if (name && typeof idx !== 'undefined') {
       const column = this.getColumn(idx);
 
-      if (column && column.events && column.events[name] && typeof column.events[name] === 'function') {
+      if (column && column.events && isFunction(column.events[name])) {
         const eventArgs = {
           idx,
           rowIdx: columnEvent.rowIdx,
@@ -316,21 +282,23 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  onSelect = ({ rowIdx, idx }) => {
+  onSelect = (newSelection) => {
     const { onCellDeSelected, onCellSelected } = this.props;
     if (isFunction(onCellDeSelected)) {
+      // TODO: connect
+      const oldSelection = this.store.getState().selectedPosition;
       onCellDeSelected(oldSelection);
     }
     if (isFunction(onCellSelected)) {
-      onCellSelected(selected);
+      onCellSelected(newSelection);
     }
 
-    this.selectCell({ rowIdx, idx });
+    this.selectCell(newSelection);
   };
 
   onCellClick = ({ rowIdx, idx }) => {
     const { onRowClick, rowGetter } = this.props;
-    this.selectCell({ rowIdx, idx });
+    this.onSelect({ rowIdx, idx });
 
     if (isFunction(onRowClick)) {
       onRowClick(rowIdx, rowGetter(rowIdx), this.getColumn(idx));
@@ -338,14 +306,15 @@ class ReactDataGrid extends React.Component {
   };
 
   onCellContextMenu = ({ rowIdx, idx }) => {
-    this.onSelect({ rowIdx, idx, contextMenuDisplayed: this.props.contextMenu });
+    // this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx, contextMenuDisplayed: this.props.contextMenu});
+    this.onSelect({ rowIdx, idx });
     if (this.props.contextMenu) {
       document.addEventListener('click', this.onContextMenuHide);
     }
   };
 
   onCellDoubleClick = ({ rowIdx, idx }) => {
-    // TODO
+    // FIXME: double click conflicts with single click?
     const { onRowDoubleClick, rowGetter } = this.props;
     if (isFunction(onRowDoubleClick)) {
       onRowDoubleClick(rowIdx, rowGetter(rowIdx), this.getColumn(idx));
@@ -436,53 +405,9 @@ class ReactDataGrid extends React.Component {
     this.moveSelectedCell(e, 0, e.shiftKey ? -1 : 1);
   };
 
-  // onPressEnter = (e) => {
-  //   this.setActive(e.key);
-  // };
-
-  // onPressDelete = (e) => {
-  //   this.setActive(e.key);
-  // };
-
-  onPressEscape = (e) => {
-    this.setInactive(e.key);
-    this.handleCancelCopy();
-  };
-
-  // onPressBackspace = (e) => {
-  //   this.setActive(e.key);
-  // };
-
-  // onPressChar = (e) => {
-  //   if (isKeyPrintable(e.keyCode)) {
-  //     this.setActive(e.keyCode);
-  //   }
-  // };
-
-  // onPressKeyWithCtrl = (e) => {
-  //   let keys = {
-  //     KeyCode_c: 99,
-  //     KeyCode_C: 67,
-  //     KeyCode_V: 86,
-  //     KeyCode_v: 118
-  //   };
-
-  //   // let rowIdx = this.state.selected.rowIdx;
-  //   const rowIdx = this.store.getState().selectedPosition.rowIdx;
-  //   let row = this.props.rowGetter(rowIdx);
-
-  //   // let idx = this.state.selected.idx;
-  //   const idx = this.store.getState().selectedPosition.idx;
-  //   let col = this.getColumn(idx);
-
-  //   if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
-  //     if (e.keyCode === keys.KeyCode_c || e.keyCode === keys.KeyCode_C) {
-  //       let value = this.getSelectedValue();
-  //       this.handleCopy({ value: value });
-  //     } else if (e.keyCode === keys.KeyCode_v || e.keyCode === keys.KeyCode_V) {
-  //       this.handlePaste();
-  //     }
-  //   }
+  // onPressEscape = (e) => {
+  //   this.setInactive(e.key);
+  //   this.handleCancelCopy();
   // };
 
   onToggleFilter = () => {
@@ -634,7 +559,7 @@ class ReactDataGrid extends React.Component {
   // };
 
   handleSort = (columnKey, direction) => {
-    this.setState({sortDirection: direction, sortColumn: columnKey}, function() {
+    this.setState({sortDirection: direction, sortColumn: columnKey}, () => {
       this.props.onGridSort(columnKey, direction);
     });
   };
@@ -962,9 +887,9 @@ class ReactDataGrid extends React.Component {
   };
 
   openCellEditor = (rowIdx, idx) => {
-    const {rowGetter, setCellActive} = this.props;
-    let row = rowGetter(rowIdx);
-    let col = this.getColumn(idx);
+    const { rowGetter, setCellActive } = this.props;
+    const row = rowGetter(rowIdx);
+    const col = this.getColumn(idx);
 
     if (!ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
       return;
@@ -1191,6 +1116,7 @@ class ReactDataGrid extends React.Component {
             onCheckCellIsEditable={this.props.onCheckCellIsEditable}
             onCellCopyPaste={this.props.onCellCopyPaste}
             onGridRowsUpdated={this.onGridRowsUpdated}
+            cellNavigationMode={this.props.cellNavigationMode}
           />
         </div>
       </div>

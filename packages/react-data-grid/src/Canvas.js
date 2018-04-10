@@ -64,7 +64,8 @@ class Canvas extends React.Component {
     enableCellSelect: PropTypes.bool.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
-    onGridRowsUpdated: PropTypes.func.isRequired
+    onGridRowsUpdated: PropTypes.func.isRequired,
+    cellNavigationMode: PropTypes.string.isRequired
   };
 
   static defaultProps = {
@@ -339,6 +340,7 @@ class Canvas extends React.Component {
           className="react-grid-Canvas">
           <MasksContainer
             rowGetter={rowGetter}
+            rowsCount={rowsCount}
             width={this.props.totalWidth}
             height={height}
             rowHeight={rowHeight}
@@ -357,6 +359,7 @@ class Canvas extends React.Component {
             onCheckCellIsEditable={this.props.onCheckCellIsEditable}
             onCellCopyPaste={this.props.onCellCopyPaste}
             onGridRowsUpdated={this.props.onGridRowsUpdated}
+            cellNavigationMode={this.props.cellNavigationMode}
           />
           <RowsContainer
             width={width}
