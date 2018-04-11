@@ -76,8 +76,7 @@ class Cell extends React.Component {
     }
   };
 
-  onCellContextMenu = (e) => {
-    e.stopPropagation();
+  onCellContextMenu = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
     if (isFunction(cellMetaData.onCellContextMenu)) {
       cellMetaData.onCellContextMenu({ idx, rowIdx });

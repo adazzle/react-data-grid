@@ -54,8 +54,8 @@ class InteractionMasks extends React.Component {
     lockedPosition: null
   };
 
-  componentDidUpdate(nextProps) {
-    if (this.props.selectedPosition !== nextProps.selectedPosition) {
+  componentDidUpdate(prevProps) {
+    if (this.props.selectedPosition !== prevProps.selectedPosition) {
       this.focus();
     }
   }
