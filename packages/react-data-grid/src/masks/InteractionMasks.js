@@ -55,7 +55,8 @@ class InteractionMasks extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (this.props.selectedPosition !== prevProps.selectedPosition) {
+    const { selectedPosition } = this.props;
+    if (selectedPosition !== prevProps.selectedPosition && selectedPosition.rowIdx !== -1 && selectedPosition.idx !== -1) {
       this.focus();
     }
   }
