@@ -7,6 +7,7 @@ const setMaskStyle = (left, top, width, height, isFixed) => {
     height,
     width,
     zIndex: 1000,
+    pointerEvents: 'none',
     transform: `translate(${left}px, ${top}px)`
   };
 };
