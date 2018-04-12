@@ -939,44 +939,44 @@ class ReactDataGrid extends React.Component {
   //   this.setState({selected});
   // };
 
-  setActive = (keyPressed) => {
-    let rowIdx = this.state.selected.rowIdx;
-    let row = this.props.rowGetter(rowIdx);
+  // setActive = (keyPressed) => {
+  //   let rowIdx = this.state.selected.rowIdx;
+  //   let row = this.props.rowGetter(rowIdx);
 
-    let idx = this.state.selected.idx;
-    let column = this.getColumn(idx);
+  //   let idx = this.state.selected.idx;
+  //   let column = this.getColumn(idx);
 
-    if (ColumnUtils.canEdit(column, row, this.props.enableCellSelect) && !this.isActive()) {
-      let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
-      let showEditor = true;
-      if (typeof this.props.onCheckCellIsEditable === 'function') {
-        let args = Object.assign({}, { row, column }, selected);
-        showEditor = this.props.onCheckCellIsEditable(args);
-      }
-      if (showEditor !== false) {
-        if (column.locked) {
-          this.setState({selected});
-        } else {
-          this.setState({selected}, () => { this.scrollToColumn(idx); });
-        }
-        this.props.onBeforeEdit();
-        this.handleCancelCopy();
-      }
-    }
-  };
+  //   if (ColumnUtils.canEdit(column, row, this.props.enableCellSelect) && !this.isActive()) {
+  //     let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
+  //     let showEditor = true;
+  //     if (typeof this.props.onCheckCellIsEditable === 'function') {
+  //       let args = Object.assign({}, { row, column }, selected);
+  //       showEditor = this.props.onCheckCellIsEditable(args);
+  //     }
+  //     if (showEditor !== false) {
+  //       if (column.locked) {
+  //         this.setState({selected});
+  //       } else {
+  //         this.setState({selected}, () => { this.scrollToColumn(idx); });
+  //       }
+  //       this.props.onBeforeEdit();
+  //       this.handleCancelCopy();
+  //     }
+  //   }
+  // };
 
-  setInactive = () => {
-    let rowIdx = this.state.selected.rowIdx;
-    let row = this.props.rowGetter(rowIdx);
+  // setInactive = () => {
+  //   let rowIdx = this.state.selected.rowIdx;
+  //   let row = this.props.rowGetter(rowIdx);
 
-    let idx = this.state.selected.idx;
-    let col = this.getColumn(idx);
+  //   let idx = this.state.selected.idx;
+  //   let col = this.getColumn(idx);
 
-    if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && this.isActive()) {
-      let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
-      this.setState({selected: selected});
-    }
-  };
+  //   if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && this.isActive()) {
+  //     let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
+  //     this.setState({selected: selected});
+  //   }
+  // };
 
   isActive = () => {
     return this.state.selected.active === true;
@@ -1044,7 +1044,7 @@ class ReactDataGrid extends React.Component {
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onCommit: this.onCommit,
-      onCommitCancel: this.setInactive,
+      // onCommitCancel: this.setInactive,
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
       handleTerminateDrag: this.handleTerminateDrag,

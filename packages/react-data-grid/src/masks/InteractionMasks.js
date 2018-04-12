@@ -101,10 +101,9 @@ class InteractionMasks extends React.Component {
   };
 
   onPressKeyWithCtrl = ({ keyCode }) => {
-    const { props } = this;
-    if (this.copyPasteEnabled() && isSelectedCellEditable(props)) {
+    if (this.copyPasteEnabled()) {
       if (keyCode === keyCodes.c) {
-        const value = getSelectedCellValue(props);
+        const value = getSelectedCellValue(this.props);
         this.handleCopy({ value });
       } else if (keyCode === keyCodes.v) {
         this.handlePaste();
@@ -112,10 +111,12 @@ class InteractionMasks extends React.Component {
     }
   };
 
-  onPressEscape = (e) => {
-    this.handleCancelCopy();
-    // TODO: is this required?
-    // this.props.toggleCellEdit(false, e.key);
+  onPressEscape = () => {
+    if (copyPasteEnabled()) {
+      this.handleCancelCopy();
+      // this.props.toggleCellEdit(false);
+      // this.focus();
+    }
   };
 
   onPressTab = (e) => {
@@ -127,7 +128,7 @@ class InteractionMasks extends React.Component {
   };
 
   copyPasteEnabled = () => {
-    return this.props.onCellCopyPaste !== null;
+    return this.props.onCellCopyPaste !== null && isSelectedCellEditable(this.props);
   };
 
   handleCopy = ({ value }) => {
@@ -220,7 +221,7 @@ class InteractionMasks extends React.Component {
 
     const { getNext, isCellAtBoundary, onHitBoundary } = keyNavAction;
     const currentPosition = this.getSelectedCellPosition();
-    const nextPosition = getNext(currentPosition)
+    const nextPosition = getNext(currentPosition);
     const { changeRowOrColumn, ...next } = getNextSelectedCellPosition(this.props, nextPosition);
 
     if (isCellAtBoundary(next) || changeRowOrColumn) {

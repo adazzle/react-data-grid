@@ -185,11 +185,11 @@ class Cell extends React.Component {
     return this.props.isEditorEnabled === true;
   };
 
-  isCellSelectEnabled = () => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-    return meta.enableCellSelect;
-  };
+  // isCellSelectEnabled = () => {
+  //   let meta = this.props.cellMetaData;
+  //   if (meta == null) { return false; }
+  //   return meta.enableCellSelect;
+  // };
 
   setScrollLeft = (scrollLeft) => {
     let node = this.node;
@@ -234,7 +234,7 @@ class Cell extends React.Component {
 
     for (let eventKey in columnEvents) {
       if (columnEvents.hasOwnProperty(eventKey)) {
-        let event = columnEvents[event];
+        // let event = columnEvents[event];
         let eventInfo = { idx: this.props.idx, rowIdx: this.props.rowIdx, rowId: this.props.rowData[this.props.cellMetaData.rowKey], name: eventKey };
         let eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
 
