@@ -42,7 +42,6 @@ class Cell extends React.Component {
       PropTypes.node
     ]),
     dragEnter: PropTypes.func.isRequired,
-    isCopied: PropTypes.bool.isRequired,
     // TODO: can dataTransfer.setDragImage be used instead?
     isDraggedOverUp: PropTypes.bool.isRequired,
     isDraggedOverDown: PropTypes.bool.isRequired
@@ -169,7 +168,6 @@ class Cell extends React.Component {
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
       editing: this.isEditorEnabled(),
-      copied: this.props.isCopied,
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn,

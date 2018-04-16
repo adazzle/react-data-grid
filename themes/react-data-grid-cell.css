@@ -59,6 +59,7 @@
   background-color : black;
 }
 
+.react-grid-cell-copied,
 .react-grid-Cell.copied,
 .react-grid-Cell.is-dragged-over-down,
 .react-grid-Cell.is-dragged-over-up {

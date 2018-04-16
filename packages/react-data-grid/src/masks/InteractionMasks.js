@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import SelectionMask from './SelectionMask';
+import CellMask from './CellMask';
 import DragHandle from './DragHandle';
 import EditorContainer from '../editors/EditorContainer';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
@@ -267,8 +267,9 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
-    const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel } = this.props;
-    const { width, left, top, height } = getSelectedDimensions(this.props);
+    const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel, selectedPosition, copiedPosition, rowHeight, columns } = this.props;
+    const selectionMaskDimension = getSelectedDimensions({ selectedPosition, columns, rowHeight });
+    const copyMaskDimension = copiedPosition ? getSelectedDimensions({ selectedPosition: copiedPosition, columns, rowHeight }) : null;
     const value = getSelectedCellValue(this.props);
     const rowIdx = getSelectedRowIndex(this.props);
     return (
@@ -280,11 +281,9 @@ class InteractionMasks extends React.Component {
         onKeyDown={this.onKeyDown}
       >
         {!isEditorEnabled && this.isGridSelected() && (
-          <SelectionMask
-            width={width}
-            left={left}
-            top={top}
-            height={height}
+          <CellMask
+            {...selectionMaskDimension}
+            className="rdg-selected"
           >
             {
               this.dragEnabled(this.props) &&
@@ -294,14 +293,18 @@ class InteractionMasks extends React.Component {
                 onDoubleClick={this.onDragHandleDoubleClick}
               />
             }
-          </SelectionMask>
+          </CellMask>
         )}
+        {
+          copyMaskDimension != null &&
+          <CellMask
+            {...copyMaskDimension}
+            className="react-grid-cell-copied"
+          />
+        }
         {isEditorEnabled && (
           <EditorContainer
-            width={width}
-            left={left}
-            top={top}
-            height={height}
+            {...selectionMaskDimension}
             rowData={getSelectedRow(this.props)}
             column={getSelectedColumn(this.props)}
             rowIdx={rowIdx}

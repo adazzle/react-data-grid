@@ -1,13 +1,11 @@
 import { connect, EventTypes } from '../stateManagement';
 
-const mapStateToProps = ({ copiedPosition, draggedPosition }, { rowIdx, idx } = {}) => {
-  const isCopied = copiedPosition != null ? copiedPosition.rowIdx === rowIdx && copiedPosition.idx === idx : false;
+const mapStateToProps = ({ draggedPosition }, { rowIdx, idx } = {}) => {
   const isDraggedOver = draggedPosition != null && draggedPosition.idx === idx && draggedPosition.overRowIdx !== undefined;
   const isDraggedOverUp = isDraggedOver && rowIdx < draggedPosition.rowIdx && rowIdx >= draggedPosition.overRowIdx;
   const isDraggedOverDown = isDraggedOver && rowIdx > draggedPosition.rowIdx && rowIdx <= draggedPosition.overRowIdx;
 
   return {
-    isCopied,
     isDraggedOverUp,
     isDraggedOverDown
   };
@@ -19,7 +17,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 // TODO: Decide how to optimize containers, may be use Redux
 const shouldUpdate = (state, newState) => (
-  state.isCopied !== newState.isCopied ||
   state.isDraggedOverDown !== newState.isDraggedOverDown ||
   state.isDraggedOverUp !== newState.isDraggedOverUp
 );

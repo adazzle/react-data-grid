@@ -15,12 +15,8 @@ export const getSelectedRow = (selectArgs) => {
   return rowGetter(rowIdx);
 };
 
-export const getSelectedDimensions = (selectArgs) => {
-  const { idx, rowIdx } = selectArgs.selectedPosition;
-  const {
-    columns,
-    rowHeight
-  } = selectArgs;
+export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) => {
+  const { idx, rowIdx } = selectedPosition;
   const column = columnUtils.getColumn(columns, idx);
   const width = idx >= 0 ? column.width : 0;
   const left = idx >= 0 ? column.left : 0;
