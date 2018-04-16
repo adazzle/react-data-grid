@@ -7,7 +7,7 @@ import CellMask from './CellMask';
 function CopyMask({ copiedPosition, columns, rowHeight }) {
   const dimensions = copiedPosition ? getSelectedDimensions({ selectedPosition: copiedPosition, columns, rowHeight }) : null;
   return (
-    dimensions != null &&
+    dimensions &&
     <CellMask
       {...dimensions}
       className="react-grid-cell-copied"

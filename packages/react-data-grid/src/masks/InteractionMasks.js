@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import CellMask from './CellMask';
+import SelectionMask from './SelectionMask';
 import CopyMask from './CopyMask';
 import DragMask from './DragMask';
 import DragHandle from './DragHandle';
@@ -270,12 +270,19 @@ class InteractionMasks extends React.Component {
 
   render() {
     const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel, selectedPosition, copiedPosition, draggedPosition, rowHeight, columns } = this.props;
-    const selectionMaskDimension = getSelectedDimensions({ selectedPosition, columns, rowHeight });
-    const value = getSelectedCellValue(this.props);
-    const rowIdx = getSelectedRowIndex(this.props);
-
     const copyMaskProps = { copiedPosition, rowHeight, columns };
     const dragMaskProps = { selectedPosition, draggedPosition, rowHeight, columns };
+    const selectionMaskProps = { selectedPosition, rowHeight, columns };
+    const editorContainerProps = {
+      firstEditorKeyPress,
+      onCommit,
+      onCommitCancel,
+      value: getSelectedCellValue(this.props),
+      rowIdx: getSelectedRowIndex(this.props),
+      RowData: getSelectedRow(this.props),
+      column: getSelectedColumn(this.props),
+      ...getSelectedDimensions(selectionMaskProps)
+    }
 
     return (
       <div
@@ -285,11 +292,10 @@ class InteractionMasks extends React.Component {
         tabIndex="0"
         onKeyDown={this.onKeyDown}
       >
+        <CopyMask {...copyMaskProps} />
+        <DragMask {...dragMaskProps} />
         {!isEditorEnabled && this.isGridSelected() && (
-          <CellMask
-            {...selectionMaskDimension}
-            className="rdg-selected"
-          >
+          <SelectionMask {...selectionMaskProps}>
             {
               this.dragEnabled(this.props) &&
               <DragHandle
@@ -298,22 +304,9 @@ class InteractionMasks extends React.Component {
                 onDoubleClick={this.onDragHandleDoubleClick}
               />
             }
-          </CellMask>
+          </SelectionMask>
         )}
-        <CopyMask {...copyMaskProps} />
-        <DragMask {...dragMaskProps} />
-        {isEditorEnabled && (
-          <EditorContainer
-            {...selectionMaskDimension}
-            rowData={getSelectedRow(this.props)}
-            column={getSelectedColumn(this.props)}
-            rowIdx={rowIdx}
-            value={value}
-            firstEditorKeyPress={firstEditorKeyPress}
-            onCommit={onCommit}
-            onCommitCancel={onCommitCancel}
-          />
-        )}
+        {isEditorEnabled && <EditorContainer {...editorContainerProps} />}
       </div>
     );
   }
