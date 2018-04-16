@@ -1,51 +1,31 @@
 import React from 'react';
-import { Motion, spring } from 'react-motion';
+import PropTypes from 'prop-types';
 
-const setMaskStyle = (left, top, width, height, isFixed) => {
+const setMaskStyle = ({ left, top, width, height }) => {
   return {
-    position: isFixed === true ? 'fixed' : 'absolute',
     height,
     width,
+    position: 'absolute',
     zIndex: 1000,
     pointerEvents: 'none',
     transform: `translate(${left}px, ${top}px)`
   };
 };
 
-const AnimatedMask = ({ width, height, top, left, isFixed, children }) => {
-  return (
-    <Motion
-      style={{
-        x: spring(left),
-        y: spring(top),
-        w: spring(width),
-        h: spring(height)
-      }}
-    >
-      {({ x, y, w, h }) => (
-        <div
-          style={setMaskStyle(x, y, w, h, isFixed)}
-          className="rdg-selected moving-element"
-        >
-          {children}
-        </div>
-      )}
-    </Motion>
-  );
-};
+const SelectionMask = ({ width, height, top, left, children }) => (
+  <div
+    style={setMaskStyle({ left, top, width, height })}
+    className="rdg-selected"
+  >
+    {children}
+  </div>
+);
 
-const SelectionMask = (props) => {
-  const { width, height, top, left, isFixed, isAnimating, children } = props;
-  return isAnimating
-    ? <AnimatedMask {...props} />
-    : (
-      <div
-        style={setMaskStyle(left, top, width, height, isFixed)}
-        className="rdg-selected"
-      >
-        {children}
-      </div>
-    );
+SelectionMask.propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  top: PropTypes.number.isRequired,
+  left: PropTypes.number.isRequired
 };
 
 export default SelectionMask;

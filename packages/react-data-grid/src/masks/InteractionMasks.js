@@ -84,16 +84,6 @@ class InteractionMasks extends React.Component {
     }
   };
 
-  onKeyUp = (e) => {
-    if (this.isKeyboardNavigationEvent(e)) {
-      this._enableSelectionAnimation = false;
-      // set selected state from temporary srolling metrics
-      if (this._scrollingMetrics != null) {
-        this.selectCell(this._scrollingMetrics.position);
-      }
-    }
-  }
-
   toggleCellEdit = (e) => {
     const { props } = this;
     if (isSelectedCellEditable(props)) {
@@ -182,51 +172,29 @@ class InteractionMasks extends React.Component {
         getNext: current => ({ ...current, rowIdx: current.rowIdx + 1 }),
         isCellAtBoundary: cell => cell.rowIdx >= visibleEnd - SCROLL_CELL_BUFFER,
         onHitBoundary: onHitBottomBoundary
-        // getBoundaryDimensions: () => this.getSelectedCellDimensions(),
-        // scrollReadyCondition: scrollMetrics => scrollMetrics.visibleEnd === visibleEnd - 1
       },
       ArrowUp: {
         getNext: current => ({ ...current, rowIdx: current.rowIdx - 1 }),
         isCellAtBoundary: cell => cell.rowIdx !== 0 && cell.rowIdx <= visibleStart - 1,
         onHitBoundary: onHitTopBoundary
-        // onHitBoundary: () => {
-        //   this._enableSelectionAnimation = !this.isScrollingWithKeyboard() ? false : true;
-        //   onHitTopBoundary();
-        // },
-        // getBoundaryDimensions: () => ({ ...this.getSelectedCellDimensions(), top: 0 }),
-        // scrollReadyCondition: scrollMetrics => scrollMetrics.visibleStart === visibleStart
       },
       ArrowRight: {
         getNext: current => ({ ...current, idx: current.idx + 1 }),
         isCellAtBoundary: cell => cell.idx !== 0 && cell.idx >= colVisibleEnd - 1,
         onHitBoundary: onHitRightBoundary
-        // getBoundaryDimensions: () => this.getSelectedCellDimensions()
       },
       ArrowLeft: {
         getNext: current => ({ ...current, idx: current.idx - 1 }),
         isCellAtBoundary: cell => cell.idx !== 0 && cell.idx <= colVisibleStart + 1,
         onHitBoundary: onHitLeftBoundary
-        // getBoundaryDimensions: () => this.getSelectedCellDimensions()
       }
     };
     return keyNavActions[e.key];
   }
 
   moveUsingKeyboard(keyNavAction) {
-    // const { getNext, isCellAtBoundary, onHitBoundary, getBoundaryDimensions } = keyNavAction;
-    // this._enableSelectionAnimation = true;
-    // const currentPosition = this.getSelectedCellPosition();
-    // const next = getNext(currentPosition);
-    // if (isCellAtBoundary(next)) {
-    //   onHitBoundary(next);
-    //   this.setScrollingMetrics(next, getBoundaryDimensions());
-    // } else {
-    //   this.resetScrollingMetrics();
-    //   this.selectCell(next);
-    // }
-
     const { getNext, isCellAtBoundary, onHitBoundary } = keyNavAction;
-    const currentPosition = this.getSelectedCellPosition();
+    const currentPosition = this.props.selectedPosition;
     const nextPosition = getNext(currentPosition);
     const { changeRowOrColumn, ...next } = getNextSelectedCellPosition(this.props, nextPosition);
 
@@ -246,50 +214,17 @@ class InteractionMasks extends React.Component {
     return this.isCellWithinBounds(this.props.selectedPosition);
   };
 
-  isReadyToScrollWithKeyboard = (scrollReadyCondition) => {
-    if (this._scrollingMetrics == null) {
-      return true;
-    }
-    return this._scrollingMetrics && scrollReadyCondition(this._scrollingMetrics) === true;
-  };
-
-  isScrollingWithKeyboard() {
-    return this._scrollingMetrics != null;
-  }
-
   focus = () => {
     if (this.node && document.activeElement !== this.node) {
       this.node.focus();
     }
   };
 
-  getSelectedCellDimensions() {
-    return this._scrollingMetrics ? this._scrollingMetrics.dimensions : getSelectedDimensions(this.props);
-  }
-
-  getSelectedCellPosition() {
-    return this._scrollingMetrics ? this._scrollingMetrics.position : this.props.selectedPosition;
-  }
-
   selectCell = cell => {
     if (this.isCellWithinBounds(cell)) {
       this.props.selectCell(cell);
     }
   };
-
-  setScrollingMetrics(next, dimensions) {
-    const { visibleEnd, visibleStart } = this.props;
-    this._scrollingMetrics = {
-      dimensions,
-      position: next,
-      visibleEnd,
-      visibleStart
-    };
-  }
-
-  resetScrollingMetrics() {
-    this._scrollingMetrics = null;
-  }
 
   dragEnabled = () => {
     const { onGridRowsUpdated, onCellsDragged } = this.props;
@@ -333,7 +268,7 @@ class InteractionMasks extends React.Component {
 
   render() {
     const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel } = this.props;
-    const { width, left, top, height } = this.getSelectedCellDimensions();
+    const { width, left, top, height } = getSelectedDimensions(this.props);
     const value = getSelectedCellValue(this.props);
     const rowIdx = getSelectedRowIndex(this.props);
     return (
@@ -343,17 +278,13 @@ class InteractionMasks extends React.Component {
         }}
         tabIndex="0"
         onKeyDown={this.onKeyDown}
-        onKeyUp={this.onKeyUp}
       >
         {!isEditorEnabled && this.isGridSelected() && (
           <SelectionMask
-            {...this.props}
             width={width}
             left={left}
             top={top}
             height={height}
-            isAnimating={this._enableSelectionAnimation === true}
-            isFixed={this.isScrollingWithKeyboard()}
           >
             {
               this.dragEnabled(this.props) &&
