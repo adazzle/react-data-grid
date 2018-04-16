@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CellMask from './CellMask';
+import CopyMask from './CopyMask';
+import DragMask from './DragMask';
 import DragHandle from './DragHandle';
 import EditorContainer from '../editors/EditorContainer';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
@@ -267,11 +269,14 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
-    const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel, selectedPosition, copiedPosition, rowHeight, columns } = this.props;
+    const { isEditorEnabled, firstEditorKeyPress, onCommit, onCommitCancel, selectedPosition, copiedPosition, draggedPosition, rowHeight, columns } = this.props;
     const selectionMaskDimension = getSelectedDimensions({ selectedPosition, columns, rowHeight });
-    const copyMaskDimension = copiedPosition ? getSelectedDimensions({ selectedPosition: copiedPosition, columns, rowHeight }) : null;
     const value = getSelectedCellValue(this.props);
     const rowIdx = getSelectedRowIndex(this.props);
+
+    const copyMaskProps = { copiedPosition, rowHeight, columns };
+    const dragMaskProps = { selectedPosition, draggedPosition, rowHeight, columns };
+
     return (
       <div
         ref={node => {
@@ -295,13 +300,8 @@ class InteractionMasks extends React.Component {
             }
           </CellMask>
         )}
-        {
-          copyMaskDimension != null &&
-          <CellMask
-            {...copyMaskDimension}
-            className="react-grid-cell-copied"
-          />
-        }
+        <CopyMask {...copyMaskProps} />
+        <DragMask {...dragMaskProps} />
         {isEditorEnabled && (
           <EditorContainer
             {...selectionMaskDimension}

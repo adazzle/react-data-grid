@@ -59,10 +59,22 @@
   background-color : black;
 }
 
+.react-grid-cell-dragged-over-up,
+.react-grid-cell-dragged-over-down {
+  border: 1px dashed black;
+  background: rgba(0, 0, 255, 0.2) !important;
+}
+
+.react-grid-cell-dragged-over-up {
+  border-bottom-width: 0;
+}
+
+.react-grid-cell-dragged-over-down {
+  border-top-width: 0;
+}
+
 .react-grid-cell-copied,
-.react-grid-Cell.copied,
-.react-grid-Cell.is-dragged-over-down,
-.react-grid-Cell.is-dragged-over-up {
+.react-grid-Cell.copied {
   background: rgba(0, 0, 255, 0.2) !important;
 }
 

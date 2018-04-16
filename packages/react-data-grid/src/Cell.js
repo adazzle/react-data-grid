@@ -41,10 +41,7 @@ class Cell extends React.Component {
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
     ]),
-    dragEnter: PropTypes.func.isRequired,
-    // TODO: can dataTransfer.setDragImage be used instead?
-    isDraggedOverUp: PropTypes.bool.isRequired,
-    isDraggedOverDown: PropTypes.bool.isRequired
+    dragEnter: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -171,9 +168,7 @@ class Cell extends React.Component {
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn,
-      'will-change': this.props.isSelected || this.props.wasPreviouslySelected,
-      'is-dragged-over-up': this.props.isDraggedOverUp,
-      'is-dragged-over-down': this.props.isDraggedOverDown
+      'will-change': this.props.isSelected || this.props.wasPreviouslySelected
     });
     return joinClasses(className, extraClasses);
   };
