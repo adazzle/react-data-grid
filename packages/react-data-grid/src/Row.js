@@ -5,6 +5,7 @@ const joinClasses = require('classnames');
 import Cell from './Cell';
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const createObjectWithProperties = require('./createObjectWithProperties');
+import withCellState from './containers/withCellState';
 require('../../../themes/react-data-grid-row.css');
 
 // The list of the propTypes that we want to include in the Row div
@@ -39,26 +40,28 @@ class Row extends React.Component {
     height: 35
   };
 
+  cellRenderer = withCellState(this.props.cellRenderer);
+
   shouldComponentUpdate(nextProps) {
     return rowComparer(nextProps, this.props);
   }
 
-  handleDragEnter = () => {
-    let handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
-    if (handleDragEnterRow) {
-      handleDragEnterRow(this.props.idx);
-    }
-  };
+  // handleDragEnter = () => {
+  //   let handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
+  //   if (handleDragEnterRow) {
+  //     handleDragEnterRow(this.props.idx);
+  //   }
+  // };
 
   getCell = (column, i) => {
-    const CellRenderer = this.props.cellRenderer;
+    const CellRenderer = this.cellRenderer;
     const { idx, cellMetaData } = this.props;
     const { key, formatter } = column;
     const baseCellProps = { key: `${key}-${idx}`, idx: i, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
 
     const { row, isSelected } = this.props;
     const cellProps = {
-      ref: (node) => {
+      innerRef: (node) => {
         this[key] = node;
       },
       value: this.getCellValue(key || i),
@@ -155,7 +158,9 @@ class Row extends React.Component {
 
     let cells = this.getCells();
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style} onDragEnter={this.handleDragEnter} >
+      <div {...this.getKnownDivProps() } className={className} style={style}
+      //  onDragEnter={this.handleDragEnter}
+       >
         {
           React.isValidElement(this.props.row) ?
             this.props.row : cells

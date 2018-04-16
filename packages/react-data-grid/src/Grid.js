@@ -1,5 +1,5 @@
 const React                = require('react');
-const ReactDOM             = require('react-dom');
+// const ReactDOM             = require('react-dom');
 import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
@@ -41,8 +41,8 @@ class Grid extends React.Component {
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,
     onViewportKeyup: PropTypes.func,
-    onViewportDragStart: PropTypes.func.isRequired,
-    onViewportDragEnd: PropTypes.func.isRequired,
+    // onViewportDragStart: PropTypes.func.isRequired,
+    // onViewportDragEnd: PropTypes.func.isRequired,
     // onViewportClick: PropTypes.func.isRequired,
     // onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
@@ -61,7 +61,8 @@ class Grid extends React.Component {
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
-    cellNavigationMode: PropTypes.string.isRequired
+    cellNavigationMode: PropTypes.string.isRequired,
+    onDragHandleDoubleClick: PropTypes.func
   };
 
   static defaultProps = {
@@ -152,8 +153,9 @@ class Grid extends React.Component {
               onKeyUp={this.props.onViewportKeyup}
               // onClick={this.props.onViewportClick}
               // onDoubleClick={this.props.onViewportDoubleClick}
-              onDragStart={this.props.onViewportDragStart}
-              onDragEnd={this.props.onViewportDragEnd}>
+              // onDragStart={this.props.onViewportDragStart}
+              // onDragEnd={this.props.onViewportDragEnd}
+              >
                 <Viewport
                   ref={(node) => { this.viewport = node; } }
                   rowKey={this.props.rowKey}
@@ -183,6 +185,7 @@ class Grid extends React.Component {
                   onCellCopyPaste={this.props.onCellCopyPaste}
                   onGridRowsUpdated={this.props.onGridRowsUpdated}
                   cellNavigationMode={this.props.cellNavigationMode}
+                  onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
                 />
             </div>
         :

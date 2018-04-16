@@ -5,7 +5,6 @@ const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
 const isFunction = require('./utils/isFunction');
 const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
-const ColumnUtils = require('./ColumnUtils');
 const createObjectWithProperties = require('./createObjectWithProperties');
 import CellAction from './CellAction';
 import CellExpand from './CellExpand';
@@ -42,7 +41,11 @@ class Cell extends React.Component {
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
     ]),
-    isCopied: PropTypes.bool.isRequired
+    dragEnter: PropTypes.func.isRequired,
+    isCopied: PropTypes.bool.isRequired,
+    // TODO: can dataTransfer.setDragImage be used instead?
+    isDraggedOverUp: PropTypes.bool.isRequired,
+    isDraggedOverDown: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
@@ -170,7 +173,9 @@ class Cell extends React.Component {
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn,
-      'will-change': this.props.isSelected || this.props.wasPreviouslySelected
+      'will-change': this.props.isSelected || this.props.wasPreviouslySelected,
+      'is-dragged-over-up': this.props.isDraggedOverUp,
+      'is-dragged-over-down': this.props.isDraggedOverDown
     });
     return joinClasses(className, extraClasses);
   };
@@ -208,9 +213,9 @@ class Cell extends React.Component {
     }
   };
 
-  canEdit = () => {
-    return (this.props.column.editor != null) || this.props.column.editable;
-  };
+  // canEdit = () => {
+  //   return (this.props.column.editor != null) || this.props.column.editable;
+  // };
 
   canExpand = () => {
     return this.props.expandableOptions && this.props.expandableOptions.canExpand;
@@ -285,6 +290,11 @@ class Cell extends React.Component {
     return null;
   }
 
+  handleDragEnter = () => {
+    const { rowIdx, dragEnter } = this.props;
+    dragEnter({ overRowIdx: rowIdx });
+  };
+
   renderCellContent = (props) => {
     let CellContent;
     let Formatter = this.getFormatter();
@@ -331,15 +341,20 @@ class Cell extends React.Component {
       isExpanded: this.props.isExpanded
     });
 
-    let dragHandle = (!this.isEditorEnabled() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
     let events = this.getEvents();
     const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
 
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }}>
+      <div
+        {...this.getKnownDivProps()}
+        className={className}
+        style={style}
+        {...events}
+        ref={(node) => { this.node = node; }}
+        onDragEnter={this.handleDragEnter}
+      >
         {cellActionButtons}
         {cellContent}
-        {dragHandle}
         {tooltip}
       </div>
     );

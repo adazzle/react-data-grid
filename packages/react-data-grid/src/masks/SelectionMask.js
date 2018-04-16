@@ -12,7 +12,7 @@ const setMaskStyle = (left, top, width, height, isFixed) => {
   };
 };
 
-const AnimatedMask = ({ width, height, top, left, isFixed }) => {
+const AnimatedMask = ({ width, height, top, left, isFixed, children }) => {
   return (
     <Motion
       style={{
@@ -26,21 +26,25 @@ const AnimatedMask = ({ width, height, top, left, isFixed }) => {
         <div
           style={setMaskStyle(x, y, w, h, isFixed)}
           className="rdg-selected moving-element"
-        />
+        >
+          {children}
+        </div>
       )}
     </Motion>
   );
 };
 
 const SelectionMask = (props) => {
-  const { width, height, top, left, isFixed, isAnimating } = props;
+  const { width, height, top, left, isFixed, isAnimating, children } = props;
   return isAnimating
     ? <AnimatedMask {...props} />
     : (
       <div
         style={setMaskStyle(left, top, width, height, isFixed)}
         className="rdg-selected"
-      />
+      >
+        {children}
+      </div>
     );
 };
 

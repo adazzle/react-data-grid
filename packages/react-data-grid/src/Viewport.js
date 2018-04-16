@@ -49,7 +49,8 @@ class Viewport extends React.Component {
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
-    cellNavigationMode: PropTypes.string.isRequired
+    cellNavigationMode: PropTypes.string.isRequired,
+    onDragHandleDoubleClick: PropTypes.func
   };
 
   static defaultProps = {
@@ -239,6 +240,7 @@ class Viewport extends React.Component {
           onCellCopyPaste={this.props.onCellCopyPaste}
           onGridRowsUpdated={this.props.onGridRowsUpdated}
           cellNavigationMode={this.props.cellNavigationMode}
+          onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
         />
       </div>
     );

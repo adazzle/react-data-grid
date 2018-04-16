@@ -18,6 +18,11 @@
   z-index: 100;
 }
 
+.rdg-selected .drag-handle {
+  pointer-events: auto;
+}
+
+.rdg-selected .drag-handle,
 .react-grid-Cell:focus .drag-handle {
   position: absolute;
   bottom: -5px;
@@ -40,8 +45,8 @@
 }
 
 .react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value {
-  position: relative;		
-  top: 50%;		
+  position: relative;
+  top: 50%;
   transform: translateY(-50%);
 }
 
@@ -54,7 +59,9 @@
   background-color : black;
 }
 
-.react-grid-Cell.copied {
+.react-grid-Cell.copied,
+.react-grid-Cell.is-dragged-over-down,
+.react-grid-Cell.is-dragged-over-up {
   background: rgba(0, 0, 255, 0.2) !important;
 }
 
@@ -63,6 +70,7 @@
   box-shadow: none;
 }
 
+.rdg-selected:hover .drag-handle .glyphicon-arrow-down,
 .react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down {
   display: 'block'
 }
@@ -79,6 +87,7 @@
   border-top: 1px dashed black;
 }
 
+.rdg-selected.is-dragged-over-up .drag-handle
 .react-grid-Cell.is-dragged-over-up .drag-handle {
   top: -5px;
 }
@@ -102,6 +111,7 @@
   border-left: 1px dashed black;
 }
 
+.rdg-selected:hover .drag-handle,
 .react-grid-Cell:hover:focus .drag-handle {
   position: absolute;
   bottom: -8px;

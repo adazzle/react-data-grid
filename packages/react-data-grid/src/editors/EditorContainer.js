@@ -227,9 +227,8 @@ class EditorContainer extends React.Component {
   };
 
   commitCancel = () => {
-    const {onCommitCancel} = this.props;
     this.changeCanceled = true;
-    onCommitCancel();
+    this.props.onCommitCancel();
   };
 
   isNewValueValid = (value) => {

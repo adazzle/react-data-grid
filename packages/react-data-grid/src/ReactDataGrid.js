@@ -159,6 +159,7 @@ class ReactDataGrid extends React.Component {
   }
 
   // TODO: connect
+  // Should we restrict to react 16.3.0 and use the createRef API
   selectCell = ({ idx, rowIdx }) => {
     this.store.dispatch({
       idx,
@@ -465,23 +466,23 @@ class ReactDataGrid extends React.Component {
     this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
   };
 
-  onDragStart = (e) => {
-    let idx = this.state.selected.idx;
-    // To prevent dragging down/up when reordering rows.
-    const isViewportDragging = e && e.target && e.target.className;
-    if (idx > -1 && isViewportDragging) {
-      let value = this.getSelectedValue();
-      this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
-      // need to set dummy data for FF
-      if (e && e.dataTransfer) {
-        if (e.dataTransfer.setData) {
-          e.dataTransfer.dropEffect = 'move';
-          e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('text/plain', '');
-        }
-      }
-    }
-  };
+  // onDragStart = (e) => {
+  //   let idx = this.state.selected.idx;
+  //   // To prevent dragging down/up when reordering rows.
+  //   const isViewportDragging = e && e.target && e.target.className;
+  //   if (idx > -1 && isViewportDragging) {
+  //     let value = this.getSelectedValue();
+  //     this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
+  //     // need to set dummy data for FF
+  //     if (e && e.dataTransfer) {
+  //       if (e.dataTransfer.setData) {
+  //         e.dataTransfer.dropEffect = 'move';
+  //         e.dataTransfer.effectAllowed = 'move';
+  //         e.dataTransfer.setData('text/plain', '');
+  //       }
+  //     }
+  //   }
+  // };
 
   isCellWithinBounds = ({idx, rowIdx}) => {
     return idx >= 0
@@ -490,42 +491,42 @@ class ReactDataGrid extends React.Component {
       && rowIdx < this.props.rowsCount;
   };
 
-  handleDragStart = (dragged) => {
-    if (!this.dragEnabled()) { return; }
-    if (this.isCellWithinBounds(dragged)) {
-      this.setState({ dragged: dragged });
-    }
-  };
+  // handleDragStart = (dragged) => {
+  //   if (!this.dragEnabled()) { return; }
+  //   if (this.isCellWithinBounds(dragged)) {
+  //     this.setState({ dragged: dragged });
+  //   }
+  // };
 
-  handleDragEnd = () => {
-    if (!this.dragEnabled()) { return; }
-    const { selected, dragged } = this.state;
-    const column = this.getColumn(this.state.selected.idx);
-    if (selected && dragged && column) {
-      let cellKey = column.key;
-      let fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-      let toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-      if (this.props.onCellsDragged) {
-        this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
-      }
-      if (this.props.onGridRowsUpdated) {
-        this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
-      }
-    }
-    this.setState({dragged: {complete: true}});
-  };
+  // handleDragEnd = () => {
+  //   if (!this.dragEnabled()) { return; }
+  //   const { selected, dragged } = this.state;
+  //   const column = this.getColumn(this.state.selected.idx);
+  //   if (selected && dragged && column) {
+  //     let cellKey = column.key;
+  //     let fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+  //     let toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+  //     if (this.props.onCellsDragged) {
+  //       this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
+  //     }
+  //     if (this.props.onGridRowsUpdated) {
+  //       this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
+  //     }
+  //   }
+  //   this.setState({dragged: {complete: true}});
+  // };
 
-  handleDragEnter = (row) => {
-    if (!this.dragEnabled() || this.state.dragged == null) { return; }
-    let dragged = this.state.dragged;
-    dragged.overRowIdx = row;
-    this.setState({dragged: dragged});
-  };
+  // handleDragEnter = (row) => {
+  //   if (!this.dragEnabled() || this.state.dragged == null) { return; }
+  //   let dragged = this.state.dragged;
+  //   dragged.overRowIdx = row;
+  //   this.setState({dragged: dragged});
+  // };
 
-  handleTerminateDrag = () => {
-    if (!this.dragEnabled()) { return; }
-    this.setState({ dragged: null });
-  };
+  // handleTerminateDrag = () => {
+  //   if (!this.dragEnabled()) { return; }
+  //   this.setState({ dragged: null });
+  // };
 
   // handlePaste = () => {
   //   if (!this.copyPasteEnabled() || !(this.state.copied)) { return; }
@@ -1046,12 +1047,12 @@ class ReactDataGrid extends React.Component {
       onCommit: this.onCommit,
       // onCommitCancel: this.setInactive,
       copied: this.state.copied,
-      handleDragEnterRow: this.handleDragEnter,
-      handleTerminateDrag: this.handleTerminateDrag,
+      // handleDragEnterRow: this.handleDragEnter,
+      // handleTerminateDrag: this.handleTerminateDrag,
       enableCellSelect: this.props.enableCellSelect,
       onColumnEvent: this.onColumnEvent,
       openCellEditor: this.openCellEditor,
-      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
+      // onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       onCellExpand: this.onCellExpand,
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
@@ -1103,8 +1104,8 @@ class ReactDataGrid extends React.Component {
             totalWidth={gridWidth}
             onViewportKeydown={this.onKeyDown}
             onViewportKeyup={this.onKeyUp}
-            onViewportDragStart={this.onDragStart}
-            onViewportDragEnd={this.handleDragEnd}
+            // onViewportDragStart={this.onDragStart}
+            // onViewportDragEnd={this.handleDragEnd}
             // onViewportClick={this.deselect}
             // onViewportDoubleClick={this.deselect}
             onColumnResize={this.onColumnResize}
@@ -1117,6 +1118,7 @@ class ReactDataGrid extends React.Component {
             onCellCopyPaste={this.props.onCellCopyPaste}
             onGridRowsUpdated={this.onGridRowsUpdated}
             cellNavigationMode={this.props.cellNavigationMode}
+            onDragHandleDoubleClick={this.onDragHandleDoubleClick}
           />
         </div>
       </div>

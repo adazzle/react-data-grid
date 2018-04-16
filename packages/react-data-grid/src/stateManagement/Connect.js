@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 const connect = (
   mapStateToProps = () => ({}),
-  mapDispatchToProps = () => ({})
+  mapDispatchToProps = () => ({}),
+  shouldUpdate = () => true
 ) => Component => {
   class Connected extends React.Component {
     static contextTypes = {
@@ -29,7 +30,10 @@ const connect = (
     }
 
     onStoreOrPropsChange = () => {
-      this.setState(this.getStateFromStore(this.props));
+      const newState = this.getStateFromStore(this.props);
+      if (shouldUpdate(this.state, newState)) {
+        this.setState(newState);
+      }
     };
 
     componentDidMount() {
