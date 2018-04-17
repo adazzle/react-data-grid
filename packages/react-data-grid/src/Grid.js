@@ -62,7 +62,8 @@ class Grid extends React.Component {
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
     cellNavigationMode: PropTypes.string.isRequired,
-    onDragHandleDoubleClick: PropTypes.func
+    onDragHandleDoubleClick: PropTypes.func,
+    eventBus: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -186,6 +187,7 @@ class Grid extends React.Component {
                   onGridRowsUpdated={this.props.onGridRowsUpdated}
                   cellNavigationMode={this.props.cellNavigationMode}
                   onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
+                  eventBus={this.props.eventBus}
                 />
             </div>
         :

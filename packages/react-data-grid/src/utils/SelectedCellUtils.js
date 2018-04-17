@@ -4,14 +4,8 @@ import * as columnUtils from '../ColumnUtils';
 
 const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
 
-export const getSelectedRowIndex = (selectArgs) => {
-  const { selectedPosition: { rowIdx } } = selectArgs;
-  return rowIdx;
-};
-
-export const getSelectedRow = (selectArgs) => {
-  const { rowGetter } = selectArgs;
-  const rowIdx = getSelectedRowIndex(selectArgs);
+export const getSelectedRow = ({ selectedPosition, rowGetter }) => {
+  const { rowIdx } = selectedPosition;
   return rowGetter(rowIdx);
 };
 
@@ -24,26 +18,25 @@ export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) 
   return { width, left, top, height: rowHeight };
 };
 
-export const getSelectedColumn = (selectArgs) => {
-  const { selectedPosition: { idx }, columns } = selectArgs;
+export const getSelectedColumn = ({ selectedPosition, columns }) => {
+  const { idx } = selectedPosition;
   return columnUtils.getColumn(columns, idx);
 };
 
-export const getSelectedCellValue = (selectArgs) => {
-  const column = getSelectedColumn(selectArgs);
-  const row = getSelectedRow(selectArgs);
+export const getSelectedCellValue = ({ selectedPosition, columns, rowGetter }) => {
+  const column = getSelectedColumn({ selectedPosition, columns });
+  const row = getSelectedRow({ selectedPosition, rowGetter });
 
   return row && column ? rowUtils.get(row, column.key) : null;
 };
 
-export const isSelectedCellEditable = (selectArgs) => {
-  const column = getSelectedColumn(selectArgs);
-  const row = getSelectedRow(selectArgs);
-  return columnUtils.canEdit(column, row, selectArgs.enableCellSelect);
+export const isSelectedCellEditable = ({ enableCellSelect, selectedPosition, columns, rowGetter }) => {
+  const column = getSelectedColumn({ selectedPosition, columns });
+  const row = getSelectedRow({ selectedPosition, rowGetter });
+  return columnUtils.canEdit(column, row, enableCellSelect);
 };
 
-export const getNextSelectedCellPosition = (selectArgs, nextPosition) => {
-  const { cellNavigationMode, columns, rowsCount } = selectArgs;
+export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsCount }, nextPosition) => {
   if (cellNavigationMode !== constants.cellNavigationMode.NONE) {
     const { idx, rowIdx } = nextPosition;
     const isAfterLastColumn = idx === columns.length;

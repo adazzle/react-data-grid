@@ -12,7 +12,7 @@ const ColumnMetrics        = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
-import { createStore, reducer, EventTypes } from './stateManagement';
+import { EventTypes, EventBus } from './masks';
 
 class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
@@ -120,21 +120,11 @@ class ReactDataGrid extends React.Component {
     columnEquality: ColumnMetrics.sameColumn
   };
 
-  static childContextTypes = {
-    store: PropTypes.object
-  };
-
   constructor(props, context) {
     super(props, context);
     let columnMetrics = this.createColumnMetrics();
     this.state = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
-    this.store = createStore(reducer);
-  }
-
-  getChildContext() {
-    return {
-      store: this.store
-    };
+    this.eventBus = new EventBus();
   }
 
   componentDidMount() {
@@ -158,14 +148,12 @@ class ReactDataGrid extends React.Component {
     }
   }
 
-  // TODO: connect
-  // Should we restrict to react 16.3.0 and use the createRef API
   selectCell = ({ idx, rowIdx }) => {
-    this.store.dispatch({
-      idx,
-      rowIdx,
-      type: EventTypes.selectCell
-    });
+    this.eventBus.dispatch(EventTypes.selectCell, { rowIdx, idx });
+  };
+
+  dragEnter = ({ overRowIdx }) => {
+    this.eventBus.dispatch(EventTypes.dragEnter, { overRowIdx });
   };
 
   gridWidth = () => {
@@ -287,8 +275,8 @@ class ReactDataGrid extends React.Component {
     const { onCellDeSelected, onCellSelected } = this.props;
     if (isFunction(onCellDeSelected)) {
       // TODO: connect
-      const oldSelection = this.store.getState().selectedPosition;
-      onCellDeSelected(oldSelection);
+      // const oldSelection = this.store.getState().selectedPosition;
+      // onCellDeSelected(oldSelection);
     }
     if (isFunction(onCellSelected)) {
       onCellSelected(newSelection);
@@ -1062,7 +1050,8 @@ class ReactDataGrid extends React.Component {
       onAddSubRow: this.props.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
-      enableCellAutoFocus: this.props.enableCellAutoFocus
+      enableCellAutoFocus: this.props.enableCellAutoFocus,
+      dragEnter: this.dragEnter
     };
 
     let toolbar = this.renderToolbar();
@@ -1119,6 +1108,7 @@ class ReactDataGrid extends React.Component {
             onGridRowsUpdated={this.onGridRowsUpdated}
             cellNavigationMode={this.props.cellNavigationMode}
             onDragHandleDoubleClick={this.onDragHandleDoubleClick}
+            eventBus={this.eventBus}
           />
         </div>
       </div>

@@ -40,8 +40,7 @@ class Cell extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ]),
-    dragEnter: PropTypes.func.isRequired
+    ])
   };
 
   static defaultProps = {
@@ -284,7 +283,7 @@ class Cell extends React.Component {
   }
 
   handleDragEnter = () => {
-    const { rowIdx, dragEnter } = this.props;
+    const { rowIdx, cellMetaData: { dragEnter } } = this.props;
     dragEnter({ overRowIdx: rowIdx });
   };
 

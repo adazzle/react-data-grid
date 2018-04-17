@@ -5,7 +5,7 @@ const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import * as rowUtils from './RowUtils';
 import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
-import MasksContainer from './containers/MasksContainer';
+import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 require('../../../themes/react-data-grid-core.css');
 
@@ -66,7 +66,8 @@ class Canvas extends React.Component {
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
     cellNavigationMode: PropTypes.string.isRequired,
-    onDragHandleDoubleClick: PropTypes.func
+    onDragHandleDoubleClick: PropTypes.func,
+    eventBus: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -339,7 +340,7 @@ class Canvas extends React.Component {
           style={style}
           onScroll={this.onScroll}
           className="react-grid-Canvas">
-          <MasksContainer
+          <InteractionMasks
             rowGetter={rowGetter}
             rowsCount={rowsCount}
             width={this.props.totalWidth}
@@ -362,6 +363,7 @@ class Canvas extends React.Component {
             onGridRowsUpdated={this.props.onGridRowsUpdated}
             cellNavigationMode={this.props.cellNavigationMode}
             onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
+            eventBus={this.props.eventBus}
           />
           <RowsContainer
             width={width}
