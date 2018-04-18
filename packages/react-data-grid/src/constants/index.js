@@ -1,5 +1,7 @@
-import * as cellNavigationMode from './cellNavigationMode';
+import * as CellNavigationMode from './cellNavigationMode';
+import * as EventTypes from './eventTypes';
 
 export {
-  cellNavigationMode
+  CellNavigationMode,
+  EventTypes
 };

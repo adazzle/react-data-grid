@@ -12,7 +12,8 @@ const ColumnMetrics        = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
-import { EventTypes, EventBus } from './masks';
+import { EventTypes } from './constants';
+import { EventBus } from './masks';
 
 class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
@@ -149,11 +150,11 @@ class ReactDataGrid extends React.Component {
   }
 
   selectCell = ({ idx, rowIdx }) => {
-    this.eventBus.dispatch(EventTypes.selectCell, { rowIdx, idx });
+    this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx });
   };
 
   dragEnter = ({ overRowIdx }) => {
-    this.eventBus.dispatch(EventTypes.dragEnter, { overRowIdx });
+    this.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx });
   };
 
   gridWidth = () => {

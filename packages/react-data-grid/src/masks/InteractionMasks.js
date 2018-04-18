@@ -18,7 +18,7 @@ import {
 import isFunction from '../utils/isFunction';
 import * as AppConstants from '../AppConstants';
 import * as keyCodes from '../KeyCodes';
-import * as EventTypes from './EventTypes';
+import { EventTypes } from '../constants';
 
 const SCROLL_CELL_BUFFER = 2;
 
@@ -72,13 +72,13 @@ class InteractionMasks extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribeSelectCell = this.props.eventBus.subscribe(EventTypes.selectCell, ({ rowIdx, idx }) => {
+    this.unsubscribeSelectCell = this.props.eventBus.subscribe(EventTypes.SELECT_CELL, ({ rowIdx, idx }) => {
       this.setState({
         selectedPosition: { rowIdx, idx }
       });
     });
 
-    this.unsubscribeDragEnter = this.props.eventBus.subscribe(EventTypes.dragEnter, ({ overRowIdx }) => {
+    this.unsubscribeDragEnter = this.props.eventBus.subscribe(EventTypes.DRAG_ENTER, ({ overRowIdx }) => {
       this.setState(({ draggedPosition }) => ({
         draggedPosition: { ...draggedPosition, overRowIdx }
       }));

@@ -1,4 +1,4 @@
-import * as constants from '../constants/';
+import { CellNavigationMode } from '../constants/';
 import * as rowUtils from '../RowUtils';
 import * as columnUtils from '../ColumnUtils';
 
@@ -37,13 +37,13 @@ export const isSelectedCellEditable = ({ enableCellSelect, selectedPosition, col
 };
 
 export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsCount }, nextPosition) => {
-  if (cellNavigationMode !== constants.cellNavigationMode.NONE) {
+  if (cellNavigationMode !== CellNavigationMode.NONE) {
     const { idx, rowIdx } = nextPosition;
     const isAfterLastColumn = idx === columns.length;
     const isBeforeFirstColumn = idx === -1;
 
     if (isAfterLastColumn) {
-      if (cellNavigationMode === constants.cellNavigationMode.CHANGE_ROW) {
+      if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
         const isLastRow = rowIdx === rowsCount;
         if (!isLastRow) {
           return {
@@ -52,7 +52,7 @@ export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsC
             changeRowOrColumn: true
           };
         }
-      } else if (cellNavigationMode === constants.cellNavigationMode.LOOP_OVER_ROW) {
+      } else if (cellNavigationMode === CellNavigationMode.LOOP_OVER_ROW) {
         return {
           rowIdx,
           idx: 0,
@@ -60,7 +60,7 @@ export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsC
         };
       }
     } else if (isBeforeFirstColumn) {
-      if (cellNavigationMode === constants.cellNavigationMode.CHANGE_ROW) {
+      if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
         const isFirstRow = rowIdx === 0;
         if (!isFirstRow) {
           return {
@@ -69,7 +69,7 @@ export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsC
             changeRowOrColumn: true
           };
         }
-      } else if (cellNavigationMode === constants.cellNavigationMode.LOOP_OVER_ROW) {
+      } else if (cellNavigationMode === CellNavigationMode.LOOP_OVER_ROW) {
         return {
           rowIdx: rowIdx,
           idx: columns.length - 1,
