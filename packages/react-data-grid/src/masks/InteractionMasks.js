@@ -101,7 +101,7 @@ class InteractionMasks extends React.Component {
     } else if (this.isKeyboardNavigationEvent(e)) {
       const keyNavAction = this.getKeyNavActionFromEvent(e);
       this.moveUsingKeyboard(keyNavAction);
-    } else if (isKeyPrintable(e.keyCode) || [keyCodes.Backspace, keyCodes.Delete, keyCodes.Enter].includes(e.keyCode)) {
+    } else if (this.state.isEditorEnabled === false && (isKeyPrintable(e.keyCode) || [keyCodes.Backspace, keyCodes.Delete, keyCodes.Enter].includes(e.keyCode))) {
       this.toggleCellEdit(e);
     }
   };
@@ -138,8 +138,8 @@ class InteractionMasks extends React.Component {
   onPressEscape = () => {
     if (this.copyPasteEnabled()) {
       this.handleCancelCopy();
-      // this.props.toggleCellEdit(false);
-      // this.focus();
+      this.toggleCellEdit(false);
+      this.focus();
     }
   };
 
@@ -304,6 +304,7 @@ class InteractionMasks extends React.Component {
   onCommit = (...args) => {
     this.props.onCommit(...args);
     this.setState({ isEditorEnabled: false });
+    this.focus();
   };
 
   onCommitCancel = () => {
