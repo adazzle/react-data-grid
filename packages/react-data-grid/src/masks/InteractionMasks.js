@@ -39,7 +39,7 @@ class InteractionMasks extends React.Component {
     isEditorEnabled: PropTypes.bool,
     firstEditorKeyPress: PropTypes.number,
     rowGetter: PropTypes.func.isRequired,
-    rowsCount: PropTypes.func.isRequired,
+    rowsCount: PropTypes.number.isRequired,
     enableCellSelect: PropTypes.bool.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,

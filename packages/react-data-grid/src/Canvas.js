@@ -74,7 +74,8 @@ class Canvas extends React.Component {
     rowRenderer: Row,
     onRows: () => { },
     selectedRows: [],
-    rowScrollTimeout: 0
+    rowScrollTimeout: 0,
+    scrollToRowIndex: 0
   };
 
   state = {
