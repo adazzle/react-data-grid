@@ -1,6 +1,7 @@
 import React from 'react';
 import Cell from '../Cell';
 import { shallow } from 'enzyme';
+import helpers from '../helpers/test/GridPropHelpers';
 import sinon from 'sinon';
 import CellAction from '../CellAction';
 import SimpleCellFormatter from '../formatters/SimpleCellFormatter';
@@ -23,7 +24,6 @@ const testCellMetaData = {
 const testProps = {
   rowIdx: 0,
   idx: 1,
-  tabIndex: 1,
   column: {name: 'col1'},
   value: 'Wicklow',
   isExpanded: false,
@@ -39,29 +39,7 @@ const renderComponent = (extraProps) => {
   return shallow(<Cell {...testProps} {...extraProps} />);
 };
 
-const onCellClick = jasmine.createSpy();
-const onCellFocus = jasmine.createSpy();
-const onDragHandleDoubleClick = jasmine.createSpy();
-const onCellContextMenu = jasmine.createSpy();
-const onCellDoubleClick = jasmine.createSpy();
-const DEFAULT_NEXT_PROPS = {
-  cellMetaData: { }
-};
-
-const getCellMetaDataWithEvents = () => {
-  return Object.assign(
-    { },
-    testCellMetaData,
-    {
-      onCellClick,
-      onCellFocus,
-      onDragHandleDoubleClick,
-      onCellContextMenu,
-      onCellDoubleClick
-    });
-};
-
-fdescribe('Cell Tests', () => {
+describe('Cell Tests', () => {
   it('should render a SimpleCellFormatter with value', () => {
     const wrapper = renderComponent();
     let formatter = wrapper.find(SimpleCellFormatter);
@@ -121,7 +99,6 @@ fdescribe('Cell Tests', () => {
       idx: 21,
       selected: {idx: 18},
       height: 35,
-      tabIndex: 12,
       ref: () => {},
       column: helpers.columns[1],
       value: 'allValue',
@@ -172,16 +149,6 @@ fdescribe('Cell Tests', () => {
       const cellDiv = wrapper.find('div').at(0);
       expect(cellDiv.props().height).toBeUndefined();
     });
-    it('passes tabIndex property if available from props', () => {
-      const wrapper = shallowRenderComponent(allProperties);
-      const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.props().tabIndex).toBe(12);
-    });
-    it('passes tabIndex if not available from props, because it is set as a default', () => {
-      const wrapper = shallowRenderComponent(requiredProperties);
-      const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.props().tabIndex).toBe(0);
-    });
     it('passes value property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
       const cellDiv = wrapper.find('div').at(0);
@@ -205,12 +172,6 @@ fdescribe('Cell Tests', () => {
       expect(cellDiv.props().forceUpdate).toBeUndefined();
       expect(cellDiv.props().expandableOptions).toBeUndefined();
       expect(cellDiv.props().isScrolling).toBeUndefined();
-    });
-    it('should set transform style when scrollLeft is called', () => {
-      const wrapper = renderComponent(requiredProperties);
-      wrapper.instance().setScrollLeft(200);
-      const node = wrapper.getDOMNode();
-      expect(node.style.transform).toBe('translate3d(200px, 0px, 0px)');
     });
   });
 
