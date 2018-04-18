@@ -82,7 +82,7 @@ class InteractionMasks extends React.Component {
       }));
     });
 
-    this.unsubscribeCellDoubleClick =  eventBus.subscribe(EventTypes.CELL_DOUBLE_CLICK, () => this.toggleCellEdit({}));
+    this.unsubscribeCellDoubleClick =  eventBus.subscribe(EventTypes.CELL_DOUBLE_CLICK, () => this.openEditor({}));
   }
 
   componentWillUnmount() {
@@ -101,8 +101,8 @@ class InteractionMasks extends React.Component {
     } else if (this.isKeyboardNavigationEvent(e)) {
       const keyNavAction = this.getKeyNavActionFromEvent(e);
       this.moveUsingKeyboard(keyNavAction);
-    } else if (this.state.isEditorEnabled === false && (isKeyPrintable(e.keyCode) || [keyCodes.Backspace, keyCodes.Delete, keyCodes.Enter].includes(e.keyCode))) {
-      this.toggleCellEdit(e);
+    } else if (isKeyPrintable(e.keyCode) || [keyCodes.Backspace, keyCodes.Delete, keyCodes.Enter].includes(e.keyCode)) {
+      this.openEditor(e);
     }
   };
 
@@ -112,14 +112,18 @@ class InteractionMasks extends React.Component {
     return isSelectedCellEditable({ enableCellSelect, columns, rowGetter, selectedPosition });
   }
 
-  toggleCellEdit = (e) => {
-    if (this.isSelectedCellEditable()) {
+  openEditor = (e) => {
+    if (this.isSelectedCellEditable() && this.state.isEditorEnabled === false) {
       const { key } = e;
       this.setState(({ isEditorEnabled }) => ({
         isEditorEnabled: !isEditorEnabled,
         firstEditorKeyPress: key
       }));
     }
+  };
+
+  closeEditor = () => {
+    this.setState({ isEditorEnabled: false });
   };
 
   onPressKeyWithCtrl = ({ keyCode }) => {
@@ -138,8 +142,7 @@ class InteractionMasks extends React.Component {
   onPressEscape = () => {
     if (this.copyPasteEnabled()) {
       this.handleCancelCopy();
-      this.toggleCellEdit(false);
-      this.focus();
+      this.closeEditor();
     }
   };
 
@@ -303,12 +306,11 @@ class InteractionMasks extends React.Component {
 
   onCommit = (...args) => {
     this.props.onCommit(...args);
-    this.setState({ isEditorEnabled: false });
-    this.focus();
+    this.closeEditor();
   };
 
   onCommitCancel = () => {
-    this.setState({ isEditorEnabled: false });
+    this.closeEditor();
   };
 
   render() {
