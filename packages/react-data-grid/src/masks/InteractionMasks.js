@@ -47,7 +47,8 @@ class InteractionMasks extends React.Component {
     cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']).isRequired,
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func,
-    eventBus: PropTypes.object.isRequired
+    eventBus: PropTypes.object.isRequired,
+    onBeforeFocus: PropTypes.func.isRequired
   };
 
   state = {
@@ -247,7 +248,7 @@ class InteractionMasks extends React.Component {
 
   focus = () => {
     if (this.node && document.activeElement !== this.node) {
-      this.node.focus();
+      this.props.onBeforeFocus(() => this.node.focus());
     }
   };
 

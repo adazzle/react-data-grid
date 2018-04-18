@@ -119,10 +119,7 @@ class Canvas extends React.Component {
       this.setScrollLeft(this._scroll.scrollLeft);
     }
     if (this.props.scrollToRowIndex !== 0) {
-      this.canvas.scrollTop = Math.min(
-        this.props.scrollToRowIndex * this.props.rowHeight,
-        this.props.rowsCount * this.props.rowHeight - this.props.height
-      );
+      this.scrollToRow(this.props.scrollToRowIndex);
     }
     this.onRows();
   }
@@ -132,6 +129,19 @@ class Canvas extends React.Component {
       this.props.onRows(this._currentRowsRange);
       this._currentRowsRange = { start: 0, end: 0 };
     }
+  };
+
+  scrollToRow = (scrollToRowIndex) => {
+    this.canvas.scrollTop = Math.min(
+      scrollToRowIndex * this.props.rowHeight,
+      this.props.rowsCount * this.props.rowHeight - this.props.height
+    );
+  };
+
+  onFocusInteractionMask = (focus) => {
+    const scrollTop = this.canvas.scrollTop;
+    focus();
+    this.canvas.scrollTop = scrollTop;
   };
 
   onScroll = (e) => {
@@ -364,6 +374,7 @@ class Canvas extends React.Component {
             cellNavigationMode={this.props.cellNavigationMode}
             onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
             eventBus={this.props.eventBus}
+            onBeforeFocus={this.onFocusInteractionMask}
           />
           <RowsContainer
             width={width}
