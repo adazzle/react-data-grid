@@ -84,16 +84,10 @@ class Canvas extends React.Component {
     scrollingTimeout: null
   };
 
+  rows = [];
   _currentRowsLength = 0;
   _currentRowsRange = { start: 0, end: 0 };
   _scroll = { scrollTop: 0, scrollLeft: 0 };
-
-  componentWillMount() {
-    this.rows = [];
-    this._currentRowsLength = 0;
-    this._currentRowsRange = { start: 0, end: 0 };
-    this._scroll = { scrollTop: 0, scrollLeft: 0 };
-  }
 
   componentDidMount() {
     this.onRows();
@@ -113,6 +107,7 @@ class Canvas extends React.Component {
     this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
+    this.rows = [];
   }
 
   componentDidUpdate() {
@@ -140,10 +135,11 @@ class Canvas extends React.Component {
   };
 
   onFocusInteractionMask = (focus) => {
-    const scrollTop = this._scroll.scrollTop;
+    const { scrollTop, scrollLeft } = this._scroll;
     focus();
     if (this.canvas) {
       this.canvas.scrollTop = scrollTop;
+      this.canvas.scrollLeft = scrollLeft;
     }
   };
 
@@ -151,9 +147,8 @@ class Canvas extends React.Component {
     if (this.canvas !== e.target) {
       return;
     }
-    let scrollLeft = e.target.scrollLeft;
-    let scrollTop = e.target.scrollTop;
-    let scroll = { scrollTop, scrollLeft };
+    const { scrollLeft, scrollTop } = e.target;
+    const scroll = { scrollTop, scrollLeft };
     this._scroll = scroll;
     this.props.onScroll(scroll);
   };
@@ -350,9 +345,7 @@ class Canvas extends React.Component {
     return (
         <div
           ref={(canvas) => {
-            if (canvas != null) {
-              this.canvas = canvas;
-            }
+            this.canvas = canvas;
           }}
           style={style}
           onScroll={this.onScroll}
