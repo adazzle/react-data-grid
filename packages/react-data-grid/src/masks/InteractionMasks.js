@@ -74,11 +74,7 @@ class InteractionMasks extends React.Component {
 
   componentDidMount() {
     const {eventBus} = this.props;
-    this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, ({ rowIdx, idx }) => {
-      this.setState({
-        selectedPosition: { rowIdx, idx }
-      });
-    });
+    this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, (cell) => this.selectCell(cell));
 
     this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, ({ overRowIdx }) => {
       this.setState(({ draggedPosition }) => ({
@@ -102,12 +98,10 @@ class InteractionMasks extends React.Component {
       this.onPressKeyWithCtrl(e);
     } else if (e.keyCode === keyCodes.Escape) {
       this.onPressEscape(e);
-    } else if (e.keyCode === keyCodes.Tab) {
-      this.onPressTab(e);
     } else if (this.isKeyboardNavigationEvent(e)) {
       const keyNavAction = this.getKeyNavActionFromEvent(e);
       this.moveUsingKeyboard(keyNavAction);
-    } else if (isKeyPrintable(e.keyCode) || e.keyCode === keyCodes.Backspace || e.keyCode === keyCodes.Delete) {
+    } else if (isKeyPrintable(e.keyCode) || [keyCodes.Backspace, keyCodes.Delete, keyCodes.Enter].includes(e.keyCode)) {
       this.toggleCellEdit(e);
     }
   };
@@ -146,14 +140,6 @@ class InteractionMasks extends React.Component {
       this.handleCancelCopy();
       // this.props.toggleCellEdit(false);
       // this.focus();
-    }
-  };
-
-  onPressTab = (e) => {
-    if (e.shiftKey === true) {
-      // this.move();
-    } else {
-      // this.move();
     }
   };
 
@@ -225,6 +211,9 @@ class InteractionMasks extends React.Component {
         onHitBoundary: onHitLeftBoundary
       }
     };
+    if (e.keyCode === keyCodes.Tab) {
+      return e.shiftKey === true ? keyNavActions.ArrowLeft : keyNavActions.ArrowRight;
+    }
     return keyNavActions[e.key];
   }
 

@@ -76,7 +76,7 @@ describe('viewportUtils', () => {
     });
   });
 
-  fdescribe('getVisibleBoundaries', () => {
+  describe('getVisibleBoundaries', () => {
 
     const GRID_HEIGHT = 350;
     const ROW_HEIGHT = 35;
