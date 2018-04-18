@@ -73,16 +73,11 @@ class InteractionMasks extends React.Component {
   }
 
   componentDidMount() {
-    const {eventBus} = this.props;
-    this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, (cell) => this.selectCell(cell));
+    const { eventBus } = this.props;
 
-    this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, ({ overRowIdx }) => {
-      this.setState(({ draggedPosition }) => ({
-        draggedPosition: { ...draggedPosition, overRowIdx }
-      }));
-    });
-
-    this.unsubscribeCellDoubleClick =  eventBus.subscribe(EventTypes.CELL_DOUBLE_CLICK, () => this.openEditor({}));
+    this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, this.selectCell);
+    this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, this.handleDragEnter);
+    this.unsubscribeCellDoubleClick = eventBus.subscribe(EventTypes.CELL_DOUBLE_CLICK, () => this.openEditor({}));
   }
 
   componentWillUnmount() {
@@ -113,12 +108,12 @@ class InteractionMasks extends React.Component {
   }
 
   openEditor = (e) => {
-    if (this.isSelectedCellEditable() && this.state.isEditorEnabled === false) {
+    if (this.isSelectedCellEditable() && !this.state.isEditorEnabled) {
       const { key } = e;
-      this.setState(({ isEditorEnabled }) => ({
-        isEditorEnabled: !isEditorEnabled,
+      this.setState({
+        isEditorEnabled: true,
         firstEditorKeyPress: key
-      }));
+      });
     }
   };
 
@@ -274,6 +269,12 @@ class InteractionMasks extends React.Component {
     }
   };
 
+  handleDragEnter = ({ overRowIdx }) => {
+    this.setState(({ draggedPosition }) => ({
+      draggedPosition: { ...draggedPosition, overRowIdx }
+    }));
+  };
+
   handleDragEnd = () => {
     const { columns, onCellsDragged, onGridRowsUpdated, rowGetter } = this.props;
     const { selectedPosition, draggedPosition } = this.state;
@@ -281,9 +282,10 @@ class InteractionMasks extends React.Component {
     const column = getSelectedColumn({ selectedPosition, columns });
     const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
     if (draggedPosition && column) {
+      const { overRowIdx } = draggedPosition;
       const cellKey = column.key;
-      const fromRow = rowIdx < draggedPosition.overRowIdx ? rowIdx : draggedPosition.overRowIdx;
-      const toRow = rowIdx > draggedPosition.overRowIdx ? rowIdx : draggedPosition.overRowIdx;
+      const fromRow = rowIdx < overRowIdx ? rowIdx : overRowIdx;
+      const toRow = rowIdx > overRowIdx ? rowIdx : overRowIdx;
       if (isFunction(onCellsDragged)) {
         onCellsDragged({ cellKey, fromRow, toRow, value });
       }
