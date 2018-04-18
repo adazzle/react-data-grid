@@ -34,7 +34,6 @@ class Cell extends React.Component {
     rowData: PropTypes.object.isRequired,
     forceUpdate: PropTypes.bool,
     expandableOptions: PropTypes.object.isRequired,
-    isScrolling: PropTypes.bool.isRequired,
     tooltip: PropTypes.string,
     isCellValueChanging: PropTypes.func,
     children: PropTypes.oneOfType([
