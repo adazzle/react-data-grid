@@ -309,6 +309,7 @@ class ReactDataGrid extends React.Component {
     if (isFunction(onRowDoubleClick)) {
       onRowDoubleClick(rowIdx, rowGetter(rowIdx), this.getColumn(idx));
     }
+    this.eventBus.dispatch(EventTypes.CELL_DOUBLE_CLICK);
   };
 
   isFocusedOnCell = () => {

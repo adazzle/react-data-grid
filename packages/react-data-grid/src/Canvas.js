@@ -139,9 +139,11 @@ class Canvas extends React.Component {
   };
 
   onFocusInteractionMask = (focus) => {
-    const scrollTop = this.canvas.scrollTop;
-    focus();
-    this.canvas.scrollTop = scrollTop;
+    if (this.canvas) {
+      const scrollTop = this.canvas.scrollTop;
+      focus();
+      this.canvas.scrollTop = scrollTop;
+    }
   };
 
   onScroll = (e) => {

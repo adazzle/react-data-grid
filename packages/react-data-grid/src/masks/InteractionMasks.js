@@ -73,22 +73,26 @@ class InteractionMasks extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribeSelectCell = this.props.eventBus.subscribe(EventTypes.SELECT_CELL, ({ rowIdx, idx }) => {
+    const {eventBus} = this.props;
+    this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, ({ rowIdx, idx }) => {
       this.setState({
         selectedPosition: { rowIdx, idx }
       });
     });
 
-    this.unsubscribeDragEnter = this.props.eventBus.subscribe(EventTypes.DRAG_ENTER, ({ overRowIdx }) => {
+    this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, ({ overRowIdx }) => {
       this.setState(({ draggedPosition }) => ({
         draggedPosition: { ...draggedPosition, overRowIdx }
       }));
     });
+
+    this.unsubscribeCellDoubleClick =  eventBus.subscribe(EventTypes.CELL_DOUBLE_CLICK, () => this.toggleCellEdit({}));
   }
 
   componentWillUnmount() {
     this.unsubscribeSelectCell();
     this.unsubscribeDragEnter();
+    this.unsubscribeCellDoubleClick();
   }
 
   onKeyDown = e => {
@@ -309,8 +313,8 @@ class InteractionMasks extends React.Component {
   };
 
   onCommit = (...args) => {
-    // this.setState({ isEditorEnabled: false });
     this.props.onCommit(...args);
+    this.setState({ isEditorEnabled: false });
   };
 
   onCommitCancel = () => {
