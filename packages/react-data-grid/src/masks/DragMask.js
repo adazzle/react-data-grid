@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
 
-function DragMask({ selectedPosition: { idx, rowIdx }, draggedPosition, columns, rowHeight }) {
+function DragMask({ draggedPosition, columns, rowHeight }) {
   if (draggedPosition != null) {
-    const { overRowIdx } = draggedPosition;
+    const { overRowIdx, idx, rowIdx } = draggedPosition;
     const isDraggedOverDown = rowIdx <= overRowIdx;
     const startRowIdx = isDraggedOverDown ? rowIdx + 1 : overRowIdx;
     const endRowIdx = isDraggedOverDown ? overRowIdx : rowIdx - 1;

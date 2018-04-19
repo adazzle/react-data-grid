@@ -136,12 +136,12 @@ class InteractionMasks extends React.Component {
   };
 
   isAtLastCellInRow = () => {
-    const {selectedPosition: {idx}} = this.state;
+    const { selectedPosition: { idx } } = this.state;
     return idx === this.props.columns - 1;
   };
 
   isAtLastRow = () => {
-    const {rowIdx} = this.state.selectedPosition;
+    const { rowIdx } = this.state.selectedPosition;
     return rowIdx === this.props.rowsCount - 1;
   };
 
@@ -154,12 +154,13 @@ class InteractionMasks extends React.Component {
   };
 
   exitGrid = (oldSelectedCell, newSelectedValue) => {
-    const {onCellDeSelected} = this.props;
+    const { onCellDeSelected } = this.props;
     this.setState({ selectedPosition: newSelectedValue },
       () => {
         if (typeof onCellDeSelected === 'function') {
           onCellDeSelected(oldSelectedCell);
-        }});
+        }
+      });
   };
 
   enterGrid = (newSelectedValue) => {
@@ -167,7 +168,8 @@ class InteractionMasks extends React.Component {
       () => {
         if (typeof this.props.onCellSelected === 'function') {
           this.props.onCellSelected(newSelectedValue);
-        }});
+        }
+      });
   };
 
   canExitGrid = (e) => {
@@ -205,7 +207,7 @@ class InteractionMasks extends React.Component {
   };
 
   onPressTab = (e) => {
-    const {selectedPosition: {idx, rowIdx}, isEditorEnabled} = this.state;
+    const { selectedPosition: { idx, rowIdx }, isEditorEnabled } = this.state;
     // Scenario 0a: When there are no rows in the grid, pressing tab needs to allow the browser to handle it
     if (this.props.rowsCount === 0) {
       return;
@@ -225,7 +227,7 @@ class InteractionMasks extends React.Component {
     // Scenario 1: we're at a cell where we can exit the grid
     if (this.canExitGrid(e) && this.isFocused()) {
       if (shift && idx >= 0) {
-        this.exitGrid({ idx, rowIdx}, { idx: -1, rowIdx, exitedLeft: true });
+        this.exitGrid({ idx, rowIdx }, { idx: -1, rowIdx, exitedLeft: true });
         return;
       } else if (!shift && idx >= 0) {
         this.exitGrid({ idx, rowIdx }, { idx: -1, rowIdx });
@@ -391,7 +393,7 @@ class InteractionMasks extends React.Component {
 
   handleDragStart = (e) => {
     const { selectedPosition: { idx, rowIdx } } = this.state;
-    // To prevent dragging down/up when reordering rows.
+    // To prevent dragging down/up when reordering rows. (TODO: is this required)
     const isViewportDragging = e && e.target && e.target.className;
     if (idx > -1 && isViewportDragging) {
       e.dataTransfer.effectAllowed = 'copy';
@@ -403,22 +405,24 @@ class InteractionMasks extends React.Component {
   };
 
   handleDragEnter = ({ overRowIdx }) => {
-    this.setState(({ draggedPosition }) => ({
-      draggedPosition: { ...draggedPosition, overRowIdx }
-    }));
+    if (this.state.draggedPosition != null) {
+      this.setState(({ draggedPosition }) => ({
+        draggedPosition: { ...draggedPosition, overRowIdx }
+      }));
+    }
   };
 
   handleDragEnd = () => {
-    const { columns, onCellsDragged, onGridRowsUpdated, rowGetter } = this.props;
-    const { selectedPosition, draggedPosition } = this.state;
-    const { rowIdx } = selectedPosition;
-    const column = getSelectedColumn({ selectedPosition, columns });
-    const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
-    if (draggedPosition && column) {
-      const { overRowIdx } = draggedPosition;
+    const { draggedPosition } = this.state;
+    if (draggedPosition != null) {
+      const { columns, onCellsDragged, onGridRowsUpdated, rowGetter } = this.props;
+      const { rowIdx, overRowIdx } = draggedPosition;
+      const column = getSelectedColumn({ selectedPosition: draggedPosition, columns });
+      const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
       const cellKey = column.key;
       const fromRow = rowIdx < overRowIdx ? rowIdx : overRowIdx;
       const toRow = rowIdx > overRowIdx ? rowIdx : overRowIdx;
+
       if (isFunction(onCellsDragged)) {
         onCellsDragged({ cellKey, fromRow, toRow, value });
       }
@@ -452,7 +456,7 @@ class InteractionMasks extends React.Component {
     const { rowHeight, rowGetter, columns } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const copyMaskProps = { copiedPosition, rowHeight, columns };
-    const dragMaskProps = { selectedPosition, draggedPosition, rowHeight, columns };
+    const dragMaskProps = { draggedPosition, rowHeight, columns };
     const selectionMaskProps = { selectedPosition, rowHeight, columns };
     const editorContainerProps = {
       firstEditorKeyPress,

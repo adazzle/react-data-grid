@@ -367,13 +367,6 @@ class ReactDataGrid extends React.Component {
     this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
   };
 
-  isCellWithinBounds = ({idx, rowIdx}) => {
-    return idx >= 0
-      && rowIdx >= 0
-      && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
-      && rowIdx < this.props.rowsCount;
-  };
-
   handleSort = (columnKey, direction) => {
     this.setState({sortDirection: direction, sortColumn: columnKey}, () => {
       this.props.onGridSort(columnKey, direction);
@@ -693,14 +686,6 @@ class ReactDataGrid extends React.Component {
     this._cachedComputedColumns = cols;
 
     return this._cachedComputedColumns;
-  };
-
-  // copyPasteEnabled = () => {
-  //   return this.props.onCellCopyPaste !== null;
-  // };
-
-  dragEnabled = () => {
-    return this.props.onGridRowsUpdated !== undefined || this.props.onCellsDragged !== undefined;
   };
 
   renderToolbar = () => {
