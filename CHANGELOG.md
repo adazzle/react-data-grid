@@ -7,4 +7,4 @@
 - **Bugfix:** Resize column doesnt work on firefox when also draggable ([#1121](https://github.com/adazzle/react-data-grid/pull/1121))
 
 ### React-Data-Grid-Addons
-- **Breaking:** Migrate to `react-context-menu 2.9.2` ([#1081])
+- **Breaking:** Migrate to `react-context-menu 2.9.2` ([#1081](https://github.com/adazzle/react-data-grid/pull/1081))
