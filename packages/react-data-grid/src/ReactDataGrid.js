@@ -153,7 +153,7 @@ class ReactDataGrid extends React.Component {
     this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx });
   };
 
-  dragEnter = ({ overRowIdx }) => {
+  handleDragEnter = ({ overRowIdx }) => {
     this.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx });
   };
 
@@ -1053,7 +1053,7 @@ class ReactDataGrid extends React.Component {
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
       enableCellAutoFocus: this.props.enableCellAutoFocus,
-      dragEnter: this.dragEnter
+      onDragEnter: this.handleDragEnter
     };
 
     let toolbar = this.renderToolbar();

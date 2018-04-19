@@ -281,9 +281,14 @@ class Cell extends React.Component {
     return null;
   }
 
-  handleDragEnter = () => {
-    const { rowIdx, cellMetaData: { dragEnter } } = this.props;
-    dragEnter({ overRowIdx: rowIdx });
+  handleDragEnter = (e) => {
+    e.dataTransfer.dropEffect = 'move';
+    const { rowIdx, cellMetaData: { onDragEnter } } = this.props;
+    onDragEnter({ overRowIdx: rowIdx });
+  };
+
+  handleDrop= (e) => {
+    e.preventDefault();
   };
 
   renderCellContent = (props) => {
@@ -343,6 +348,7 @@ class Cell extends React.Component {
         {...events}
         ref={(node) => { this.node = node; }}
         onDragEnter={this.handleDragEnter}
+        onDrop={this.handleDrop}
       >
         {cellActionButtons}
         {cellContent}
