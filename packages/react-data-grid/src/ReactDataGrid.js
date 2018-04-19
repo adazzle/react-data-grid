@@ -701,12 +701,9 @@ class ReactDataGrid extends React.Component {
       onCommit: this.onCommit,
       // onCommitCancel: this.setInactive,
       copied: this.state.copied,
-      // handleDragEnterRow: this.handleDragEnter,
-      // handleTerminateDrag: this.handleTerminateDrag,
       enableCellSelect: this.props.enableCellSelect,
       onColumnEvent: this.onColumnEvent,
       openCellEditor: this.openCellEditor,
-      // onDragHandleDoubleClick: this.onDragHandleDoubleClick,
       onCellExpand: this.onCellExpand,
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
@@ -765,12 +762,12 @@ class ReactDataGrid extends React.Component {
             contextMenu={this.props.contextMenu}
             overScan={this.props.overScan}
             enableCellSelect={this.props.enableCellSelect}
+            cellNavigationMode={this.props.cellNavigationMode}
+            eventBus={this.eventBus}
             onCheckCellIsEditable={this.props.onCheckCellIsEditable}
             onCellCopyPaste={this.props.onCellCopyPaste}
             onGridRowsUpdated={this.onGridRowsUpdated}
-            cellNavigationMode={this.props.cellNavigationMode}
             onDragHandleDoubleClick={this.onDragHandleDoubleClick}
-            eventBus={this.eventBus}
           />
         </div>
       </div>

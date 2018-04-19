@@ -41,15 +41,15 @@ class InteractionMasks extends React.Component {
     rowGetter: PropTypes.func.isRequired,
     rowsCount: PropTypes.number.isRequired,
     enableCellSelect: PropTypes.bool.isRequired,
+    cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']).isRequired,
+    eventBus: PropTypes.object.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
     onCellDeSelected: PropTypes.func,
     onCellSelected: PropTypes.func,
-    cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']).isRequired,
     onCellsDragged: PropTypes.func,
-    onDragHandleDoubleClick: PropTypes.func,
-    eventBus: PropTypes.object.isRequired,
+    onDragHandleDoubleClick: PropTypes.func.isRequired,
     onBeforeFocus: PropTypes.func.isRequired
   };
 

@@ -62,12 +62,12 @@ class Canvas extends React.Component {
     isScrolling: PropTypes.bool,
     length: PropTypes.number,
     enableCellSelect: PropTypes.bool.isRequired,
+    cellNavigationMode: PropTypes.string.isRequired,
+    eventBus: PropTypes.object.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
-    cellNavigationMode: PropTypes.string.isRequired,
-    onDragHandleDoubleClick: PropTypes.func,
-    eventBus: PropTypes.object.isRequired
+    onDragHandleDoubleClick: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -355,12 +355,12 @@ class Canvas extends React.Component {
             onHitRightBoundary={this.onHitRightCanvas}
             onCommit={cellMetaData.onCommit}
             enableCellSelect={this.props.enableCellSelect}
+            cellNavigationMode={this.props.cellNavigationMode}
+            eventBus={this.props.eventBus}
             onCheckCellIsEditable={this.props.onCheckCellIsEditable}
             onCellCopyPaste={this.props.onCellCopyPaste}
             onGridRowsUpdated={this.props.onGridRowsUpdated}
-            cellNavigationMode={this.props.cellNavigationMode}
             onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-            eventBus={this.props.eventBus}
             onBeforeFocus={this.onFocusInteractionMask}
           />
           <RowsContainer

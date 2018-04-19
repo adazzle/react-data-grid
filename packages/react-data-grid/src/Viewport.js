@@ -46,12 +46,12 @@ class Viewport extends React.Component {
     getSubRowDetails: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
     enableCellSelect: PropTypes.bool.isRequired,
+    cellNavigationMode: PropTypes.string.isRequired,
+    eventBus: PropTypes.object.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
-    cellNavigationMode: PropTypes.string.isRequired,
-    onDragHandleDoubleClick: PropTypes.func,
-    eventBus: PropTypes.object.isRequired
+    onDragHandleDoubleClick: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -237,12 +237,12 @@ class Viewport extends React.Component {
           rowGroupRenderer={this.props.rowGroupRenderer}
           isScrolling={this.state.isScrolling || false}
           enableCellSelect={this.props.enableCellSelect}
+          cellNavigationMode={this.props.cellNavigationMode}
+          eventBus={this.props.eventBus}
           onCheckCellIsEditable={this.props.onCheckCellIsEditable}
           onCellCopyPaste={this.props.onCellCopyPaste}
           onGridRowsUpdated={this.props.onGridRowsUpdated}
-          cellNavigationMode={this.props.cellNavigationMode}
           onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-          eventBus={this.props.eventBus}
         />
       </div>
     );
