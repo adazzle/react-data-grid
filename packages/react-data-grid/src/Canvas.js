@@ -79,8 +79,6 @@ class Canvas extends React.Component {
   };
 
   state = {
-    displayStart: this.props.displayStart,
-    displayEnd: this.props.displayEnd,
     scrollingTimeout: null
   };
 
@@ -91,16 +89,6 @@ class Canvas extends React.Component {
 
   componentDidMount() {
     this.onRows();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.displayStart !== this.state.displayStart
-      || nextProps.displayEnd !== this.state.displayEnd) {
-      this.setState({
-        displayStart: nextProps.displayStart,
-        displayEnd: nextProps.displayEnd
-      });
-    }
   }
 
   componentWillUnmount() {
@@ -296,8 +284,7 @@ class Canvas extends React.Component {
   };
 
   render() {
-    const { displayStart, displayEnd } = this.state;
-    const { cellMetaData, columns, colDisplayStart, colDisplayEnd, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
+    const { displayStart, displayEnd, cellMetaData, columns, colDisplayStart, colDisplayEnd, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
 
     let rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
