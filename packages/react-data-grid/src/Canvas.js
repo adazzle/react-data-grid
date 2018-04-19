@@ -98,12 +98,14 @@ class Canvas extends React.Component {
     this.rows = [];
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (this._scroll.scrollTop !== 0 && this._scroll.scrollLeft !== 0) {
       this.setScrollLeft(this._scroll.scrollLeft);
     }
-    if (this.props.scrollToRowIndex !== 0) {
-      this.scrollToRow(this.props.scrollToRowIndex);
+
+    const { scrollToRowIndex } = this.props;
+    if (prevProps.scrollToRowIndex !== scrollToRowIndex && scrollToRowIndex !== 0) {
+      this.scrollToRow(scrollToRowIndex);
     }
     this.onRows();
   }
@@ -116,9 +118,10 @@ class Canvas extends React.Component {
   };
 
   scrollToRow = (scrollToRowIndex) => {
+    const { rowHeight, rowsCount, height } = this.props;
     this.canvas.scrollTop = Math.min(
-      scrollToRowIndex * this.props.rowHeight,
-      this.props.rowsCount * this.props.rowHeight - this.props.height
+      scrollToRowIndex * rowHeight,
+      rowsCount * rowHeight - height
     );
   };
 
