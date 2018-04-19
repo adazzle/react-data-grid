@@ -89,14 +89,7 @@ class ReactDataGrid extends React.Component {
     selectAllRenderer: PropTypes.object,
     minColumnWidth: PropTypes.number,
     columnEquality: PropTypes.func,
-    onColumnResize: PropTypes.func,
-
-    /* New Props */
-    setCellActive: PropTypes.func,
-    moveDown: PropTypes.func,
-    moveUp: PropTypes.func,
-    moveLeft: PropTypes.func,
-    moveRight: PropTypes.func
+    onColumnResize: PropTypes.func
   };
 
   static defaultProps = {
@@ -304,7 +297,6 @@ class ReactDataGrid extends React.Component {
   };
 
   onCellDoubleClick = ({ rowIdx, idx }) => {
-    // FIXME: double click conflicts with single click?
     const { onRowDoubleClick, rowGetter } = this.props;
     if (isFunction(onRowDoubleClick)) {
       onRowDoubleClick(rowIdx, rowGetter(rowIdx), this.getColumn(idx));

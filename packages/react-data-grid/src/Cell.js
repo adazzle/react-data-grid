@@ -109,14 +109,6 @@ class Cell extends React.Component {
     }
   };
 
-  onDragHandleDoubleClick = (e) => {
-    e.stopPropagation();
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onDragHandleDoubleClick && typeof (meta.onDragHandleDoubleClick) === 'function') {
-      meta.onDragHandleDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e });
-    }
-  };
-
   onDragOver = (e) => {
     e.preventDefault();
   };
@@ -181,23 +173,17 @@ class Cell extends React.Component {
     return this.props.isEditorEnabled === true;
   };
 
-  // isCellSelectEnabled = () => {
-  //   let meta = this.props.cellMetaData;
-  //   if (meta == null) { return false; }
-  //   return meta.enableCellSelect;
-  // };
-
   setScrollLeft = (scrollLeft) => {
-    let node = this.node;
+    const node = this.node;
     if (node) {
-      let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+      const transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;
     }
   };
 
   removeScroll = () => {
-    let node = this.node;
+    const node = this.node;
     if (node) {
       node.style.webkitTransform = null;
       node.style.transform = null;
