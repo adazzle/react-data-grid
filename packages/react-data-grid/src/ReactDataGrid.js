@@ -108,7 +108,7 @@ class ReactDataGrid extends React.Component {
     rowKey: 'id',
     rowScrollTimeout: 0,
     scrollToRowIndex: 0,
-    cellNavigationMode: 'none',
+    cellNavigationMode: 'changeRow',
     overScan: {
       colsStart: 5,
       colsEnd: 5,
@@ -147,13 +147,13 @@ class ReactDataGrid extends React.Component {
         this.setState({columnMetrics: columnMetrics});
       }
     }
-  }
+  }ina
 
   selectCell = ({ idx, rowIdx }) => {
     this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx });
   };
 
-  handleDragEnter = ({ overRowIdx }) => {
+  dragEnter = ({ overRowIdx }) => {
     this.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx });
   };
 
@@ -312,95 +312,6 @@ class ReactDataGrid extends React.Component {
     this.eventBus.dispatch(EventTypes.CELL_DOUBLE_CLICK);
   };
 
-  isFocusedOnCell = () => {
-    return document.activeElement && document.activeElement.classList &&
-      document.activeElement.classList.contains('react-grid-Cell');
-  };
-
-  isFocusedOnTable = () => {
-    const domNode = this.getDataGridDOMNode();
-    return domNode && domNode.contains(document.activeElement);
-  };
-
-  exitGrid = (oldSelectedCell, newSelectedValue) => {
-    this.setState({ selected: newSelectedValue },
-      () => {
-        if (typeof this.props.onCellDeSelected === 'function') {
-          this.props.onCellDeSelected(oldSelectedCell);
-        }});
-  };
-
-  enterGrid = (newSelectedValue) => {
-    this.setState({ selected: newSelectedValue },
-      () => {
-        if (typeof this.props.onCellSelected === 'function') {
-          this.props.onCellSelected(newSelectedValue);
-        }});
-  };
-
-  onPressTab = (e) => {
-    // Scenario 0a: When there are no rows in the grid, pressing tab needs to allow the browser to handle it
-    if (this.props.rowsCount === 0) {
-      return;
-    }
-    // Scenario 0b: When we're editing a cell
-    const idx = this.state.selected.idx;
-    const rowIdx = this.state.selected.rowIdx;
-    if (this.state.selected.active === true) {
-      // if we are in a position to leave the grid, stop editing but stay in that cell
-      if (this.canExitGrid(e)) {
-        this.moveSelectedCell(e, 0, 0);
-        return;
-      }
-      // otherwise move left or right as appropriate
-      this.moveSelectedCell(e, 0, e.shiftKey ? -1 : 1);
-      return;
-    }
-    const shift = e.shiftKey === true;
-    // Scenario 1: we're at a cell where we can exit the grid
-    if (this.canExitGrid(e) && this.isFocusedOnCell()) {
-      if (shift && idx >= 0) {
-        this.exitGrid({ idx, rowIdx}, { idx: -1, rowIdx, exitedLeft: true });
-        return;
-      } else if (!shift && idx >= 0) {
-        this.exitGrid({ idx, rowIdx }, { idx: -1, rowIdx });
-        return;
-      }
-    }
-    // Scenario 2: we're on the div surrounding the grid and press shift+Tab
-    // and we just exited left, so we want to let the browser handle it
-    // KNOWN ISSUE: Focus on the table can come from either side and at this point we can't know how
-    // they user arrived, so it is possible that exitLeft gets set and then the user clicks out of the table
-    // and they won't be able to Shift+Tab around the site to re-enter the table from the right.
-    if (this.isFocusedOnTable() && !this.isFocusedOnCell() && shift && this.state.selected.exitedLeft) {
-      this.enterGrid({ idx, rowIdx });
-      return;
-    }
-    // Scenario 3: we're on the div surrounding the grid and we want to enter the grid
-    if (!this.isFocusedOnCell()) {
-      // Scenario 3A: idx has been set to -1 (eg can happen when clicking into the filter box)
-      // we want to go to the first cell in the row if we press Tab
-      // we want to go to the last cell in the row if we press Shift+Tab
-      if (idx === -1) {
-        this.moveSelectedCell(e, rowIdx === -1 ? 1 : 0, shift ? this.getNbrColumns() : 1);
-        return;
-      }
-      // otherwise, there is a selected cell in the table already, and
-      // we want to trigger it to focus - setting selected in state will update
-      // the cell props, and checkFocus will be called
-      this.enterGrid({ idx, rowIdx, changeSomething: true });
-      // make sure the browser doesn't handle it
-      e.preventDefault();
-      return;
-    }
-    this.moveSelectedCell(e, 0, e.shiftKey ? -1 : 1);
-  };
-
-  // onPressEscape = (e) => {
-  //   this.setInactive(e.key);
-  //   this.handleCancelCopy();
-  // };
-
   onToggleFilter = () => {
     // setState() does not immediately mutate this.state but creates a pending state transition.
     // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
@@ -456,98 +367,12 @@ class ReactDataGrid extends React.Component {
     this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
   };
 
-  // onDragStart = (e) => {
-  //   let idx = this.state.selected.idx;
-  //   // To prevent dragging down/up when reordering rows.
-  //   const isViewportDragging = e && e.target && e.target.className;
-  //   if (idx > -1 && isViewportDragging) {
-  //     let value = this.getSelectedValue();
-  //     this.handleDragStart({idx: this.state.selected.idx, rowIdx: this.state.selected.rowIdx, value: value});
-  //     // need to set dummy data for FF
-  //     if (e && e.dataTransfer) {
-  //       if (e.dataTransfer.setData) {
-  //         e.dataTransfer.dropEffect = 'move';
-  //         e.dataTransfer.effectAllowed = 'move';
-  //         e.dataTransfer.setData('text/plain', '');
-  //       }
-  //     }
-  //   }
-  // };
-
   isCellWithinBounds = ({idx, rowIdx}) => {
     return idx >= 0
       && rowIdx >= 0
       && idx < ColumnUtils.getSize(this.state.columnMetrics.columns)
       && rowIdx < this.props.rowsCount;
   };
-
-  // handleDragStart = (dragged) => {
-  //   if (!this.dragEnabled()) { return; }
-  //   if (this.isCellWithinBounds(dragged)) {
-  //     this.setState({ dragged: dragged });
-  //   }
-  // };
-
-  // handleDragEnd = () => {
-  //   if (!this.dragEnabled()) { return; }
-  //   const { selected, dragged } = this.state;
-  //   const column = this.getColumn(this.state.selected.idx);
-  //   if (selected && dragged && column) {
-  //     let cellKey = column.key;
-  //     let fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-  //     let toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
-  //     if (this.props.onCellsDragged) {
-  //       this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
-  //     }
-  //     if (this.props.onGridRowsUpdated) {
-  //       this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
-  //     }
-  //   }
-  //   this.setState({dragged: {complete: true}});
-  // };
-
-  // handleDragEnter = (row) => {
-  //   if (!this.dragEnabled() || this.state.dragged == null) { return; }
-  //   let dragged = this.state.dragged;
-  //   dragged.overRowIdx = row;
-  //   this.setState({dragged: dragged});
-  // };
-
-  // handleTerminateDrag = () => {
-  //   if (!this.dragEnabled()) { return; }
-  //   this.setState({ dragged: null });
-  // };
-
-  // handlePaste = () => {
-  //   if (!this.copyPasteEnabled() || !(this.state.copied)) { return; }
-  //   // let selected = this.state.selected;
-  //   const selected = this.store.getState().selectedPosition;
-  //   // let cellKey = this.getColumn(this.state.selected.idx).key;
-  //   let cellKey = this.getColumn(this.store.getState().selectedPosition.idx).key;
-  //   let textToCopy = this.state.textToCopy;
-  //   let fromRow = this.state.copied.rowIdx;
-  //   let toRow = selected.rowIdx;
-
-  //   if (this.props.onCellCopyPaste) {
-  //     this.props.onCellCopyPaste({cellKey: cellKey, rowIdx: toRow, value: textToCopy, fromRow: fromRow, toRow: toRow});
-  //   }
-
-  //   if (this.props.onGridRowsUpdated) {
-  //     this.onGridRowsUpdated(cellKey, toRow, toRow, {[cellKey]: textToCopy}, AppConstants.UpdateActions.COPY_PASTE, fromRow);
-  //   }
-  // };
-
-  // handleCancelCopy = () => {
-  //   this.setState({copied: null});
-  // };
-
-  // handleCopy = (args) => {
-  //   if (!this.copyPasteEnabled()) { return; }
-  //   let textToCopy = args.value;
-  //   let selected = this.state.selected;
-  //   let copied = {idx: selected.idx, rowIdx: selected.rowIdx};
-  //   this.setState({textToCopy: textToCopy, copied: copied});
-  // };
 
   handleSort = (columnKey, direction) => {
     this.setState({sortDirection: direction, sortColumn: columnKey}, () => {
@@ -774,57 +599,6 @@ class ReactDataGrid extends React.Component {
     return RowUtils.get(row, cellKey);
   };
 
-  canExitGrid = (e) => {
-    // When the cellNavigationMode is 'none', you can exit the grid if you're at the start or end of the row
-    // When the cellNavigationMode is 'changeRow', you can exit the grid if you're at the first or last cell of the grid
-    // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
-    let atLastCellInRow = this.isAtLastCellInRow(this.getNbrColumns());
-    let atFirstCellInRow = this.isAtFirstCellInRow();
-    let atLastRow = this.isAtLastRow();
-    let atFirstRow = this.isAtFirstRow();
-    let shift = e.shiftKey === true;
-    const { cellNavigationMode } = this.props;
-    if (shift) {
-      if (cellNavigationMode === 'none') {
-        if (atFirstCellInRow) {
-          return true;
-        }
-      } else if (cellNavigationMode === 'changeRow') {
-        if (atFirstCellInRow && atFirstRow) {
-          return true;
-        }
-      }
-    } else {
-      if (cellNavigationMode === 'none') {
-        if (atLastCellInRow) {
-          return true;
-        }
-      } else if (cellNavigationMode === 'changeRow') {
-        if (atLastCellInRow && atLastRow) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  moveSelectedCell = (e, rowDelta, cellDelta) => {
-    // we need to prevent default as we control grid scroll
-    // otherwise it moves every time you left/right which is janky
-    e.preventDefault();
-    let rowIdx;
-    let idx;
-    const { cellNavigationMode } = this.props;
-    if (cellNavigationMode !== 'none') {
-      ({idx, rowIdx} = this.calculateNextSelectionPosition(cellNavigationMode, cellDelta, rowDelta));
-    } else {
-      rowIdx = this.state.selected.rowIdx + rowDelta;
-      idx = this.state.selected.idx + cellDelta;
-    }
-    this.scrollToColumn(idx);
-    this.onSelect({ idx: idx, rowIdx: rowIdx });
-  };
-
   getNbrColumns = () => {
     const {columns, enableRowSelect} = this.props;
     return enableRowSelect ? columns.length + 1 : columns.length;
@@ -834,51 +608,8 @@ class ReactDataGrid extends React.Component {
     return this.grid;
   };
 
-  calculateNextSelectionPosition = (cellNavigationMode, cellDelta, rowDelta) => {
-    let _rowDelta = rowDelta;
-    let idx = this.state.selected.idx + cellDelta;
-    const nbrColumns = this.getNbrColumns();
-    if (cellDelta > 0) {
-      if (this.isAtLastCellInRow(nbrColumns)) {
-        if (cellNavigationMode === 'changeRow') {
-          _rowDelta = this.isAtLastRow() ? rowDelta : rowDelta + 1;
-          idx = this.isAtLastRow() ? idx : 0;
-        } else {
-          idx = 0;
-        }
-      }
-    } else if (cellDelta < 0) {
-      if (this.isAtFirstCellInRow()) {
-        if (cellNavigationMode === 'changeRow') {
-          _rowDelta = this.isAtFirstRow() ? rowDelta : rowDelta - 1;
-          idx = this.isAtFirstRow() ? 0 : nbrColumns - 1;
-        } else {
-          idx = nbrColumns - 1;
-        }
-      }
-    }
-    let rowIdx = this.state.selected.rowIdx + _rowDelta;
-    return {idx, rowIdx};
-  };
-
-  isAtLastCellInRow = (nbrColumns) => {
-    return this.state.selected.idx === nbrColumns - 1;
-  };
-
-  isAtLastRow = () => {
-    return this.state.selected.rowIdx === this.props.rowsCount - 1;
-  };
-
-  isAtFirstCellInRow = () => {
-    return this.state.selected.idx === 0;
-  };
-
-  isAtFirstRow = () => {
-    return this.state.selected.rowIdx === 0;
-  };
-
   openCellEditor = (rowIdx, idx) => {
-    const { rowGetter, setCellActive } = this.props;
+    const { rowGetter } = this.props;
     const row = rowGetter(rowIdx);
     const col = this.getColumn(idx);
 
@@ -925,45 +656,6 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  // setActive = (keyPressed) => {
-  //   let rowIdx = this.state.selected.rowIdx;
-  //   let row = this.props.rowGetter(rowIdx);
-
-  //   let idx = this.state.selected.idx;
-  //   let column = this.getColumn(idx);
-
-  //   if (ColumnUtils.canEdit(column, row, this.props.enableCellSelect) && !this.isActive()) {
-  //     let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: true, initialKeyCode: keyPressed});
-  //     let showEditor = true;
-  //     if (typeof this.props.onCheckCellIsEditable === 'function') {
-  //       let args = Object.assign({}, { row, column }, selected);
-  //       showEditor = this.props.onCheckCellIsEditable(args);
-  //     }
-  //     if (showEditor !== false) {
-  //       if (column.locked) {
-  //         this.setState({selected});
-  //       } else {
-  //         this.setState({selected}, () => { this.scrollToColumn(idx); });
-  //       }
-  //       this.props.onBeforeEdit();
-  //       this.handleCancelCopy();
-  //     }
-  //   }
-  // };
-
-  // setInactive = () => {
-  //   let rowIdx = this.state.selected.rowIdx;
-  //   let row = this.props.rowGetter(rowIdx);
-
-  //   let idx = this.state.selected.idx;
-  //   let col = this.getColumn(idx);
-
-  //   if (ColumnUtils.canEdit(col, row, this.props.enableCellSelect) && this.isActive()) {
-  //     let selected = Object.assign({}, this.state.selected, {idx: idx, rowIdx: rowIdx, active: false});
-  //     this.setState({selected: selected});
-  //   }
-  // };
-
   isActive = () => {
     return this.state.selected.active === true;
   };
@@ -1002,6 +694,10 @@ class ReactDataGrid extends React.Component {
 
     return this._cachedComputedColumns;
   };
+
+  // copyPasteEnabled = () => {
+  //   return this.props.onCellCopyPaste !== null;
+  // };
 
   dragEnabled = () => {
     return this.props.onGridRowsUpdated !== undefined || this.props.onCellsDragged !== undefined;
@@ -1044,7 +740,7 @@ class ReactDataGrid extends React.Component {
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
       enableCellAutoFocus: this.props.enableCellAutoFocus,
-      onDragEnter: this.handleDragEnter
+      dragEnter: this.dragEnter
     };
 
     let toolbar = this.renderToolbar();
