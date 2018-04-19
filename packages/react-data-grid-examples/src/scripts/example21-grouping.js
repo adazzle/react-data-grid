@@ -212,7 +212,7 @@ const exampleDescription = (
     <p>This example demonstrates how to group rows by column name. Drag a column header to group rows by that column.</p>
     <p>To expand and close a row group, you can use either the mouse or keyboard</p>
     <p>Press <strong>Enter</strong> or <strong>Left Arrow</strong> or <strong>Right Arrow</strong> to toggle whether a row is expanded or not</p>
-    <p>This feature also supports a custom Renderer, by using a renderer you can render some fancy custom html in the row gorup.</p>
+    <p>This feature also supports a custom Renderer, by using a renderer you can render some fancy custom html in the row group.</p>
     <p>To use a renderer just inject your component with <code>rowGroupRenderer</code> prop in the grid.</p>
   </div>
 );
