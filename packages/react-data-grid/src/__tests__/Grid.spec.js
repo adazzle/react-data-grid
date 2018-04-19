@@ -75,33 +75,6 @@ describe('Base Grid Tests', () => {
     TestUtils.Simulate.keyDown(viewportContainerNode, {key: 'Enter'});
     expect(testProps.onViewportKeydown).toHaveBeenCalled();
   });
-
-  it('doubleclick in viewport should call props.onViewportDoubleClick', () => {
-    let viewportContainerNode;
-    spyOn(testProps, 'onViewportDoubleClick');
-    testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    viewportContainerNode = ReactDOM.findDOMNode(testElement.viewPortContainer);
-    TestUtils.Simulate.doubleClick(viewportContainerNode);
-    expect(testProps.onViewportDoubleClick).toHaveBeenCalled();
-  });
-
-  it('dragstart in viewport should call props.onViewportDoubleClick', () => {
-    let viewportContainerNode;
-    spyOn(testProps, 'onViewportDragStart');
-    testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    viewportContainerNode = ReactDOM.findDOMNode(testElement.viewPortContainer);
-    TestUtils.Simulate.dragStart(viewportContainerNode);
-    expect(testProps.onViewportDragStart).toHaveBeenCalled();
-  });
-
-  it('dragend in viewport should call props.onViewportDragEnd', () => {
-    let viewportContainerNode;
-    spyOn(testProps, 'onViewportDragEnd');
-    testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    viewportContainerNode = ReactDOM.findDOMNode(testElement.viewPortContainer);
-    TestUtils.Simulate.dragEnd(viewportContainerNode);
-    expect(testProps.onViewportDragEnd).toHaveBeenCalled();
-  });
 });
 
 describe('Empty Grid Tests', () => {

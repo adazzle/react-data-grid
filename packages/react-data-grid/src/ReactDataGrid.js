@@ -925,11 +925,6 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  // deselect = () => {
-  //   const selected = {rowIdx: -1, idx: -1};
-  //   this.setState({selected});
-  // };
-
   // setActive = (keyPressed) => {
   //   let rowIdx = this.state.selected.rowIdx;
   //   let row = this.props.rowGetter(rowIdx);
@@ -1007,10 +1002,6 @@ class ReactDataGrid extends React.Component {
 
     return this._cachedComputedColumns;
   };
-
-  // copyPasteEnabled = () => {
-  //   return this.props.onCellCopyPaste !== null;
-  // };
 
   dragEnabled = () => {
     return this.props.onGridRowsUpdated !== undefined || this.props.onCellsDragged !== undefined;
@@ -1095,10 +1086,6 @@ class ReactDataGrid extends React.Component {
             totalWidth={gridWidth}
             onViewportKeydown={this.onKeyDown}
             onViewportKeyup={this.onKeyUp}
-            // onViewportDragStart={this.onDragStart}
-            // onViewportDragEnd={this.handleDragEnd}
-            // onViewportClick={this.deselect}
-            // onViewportDoubleClick={this.deselect}
             onColumnResize={this.onColumnResize}
             rowScrollTimeout={this.props.rowScrollTimeout}
             scrollToRowIndex={this.props.scrollToRowIndex}
