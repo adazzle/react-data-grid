@@ -1,20 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const setMaskStyle = ({ left, top, width, height }) => {
+const setMaskStyle = ({ left, top, width, height, zIndex }) => {
   return {
     height,
     width,
+    zIndex,
     position: 'absolute',
-    zIndex: 1000,
     pointerEvents: 'none',
     transform: `translate(${left}px, ${top}px)`
   };
 };
 
-const CellMask = ({ width, height, top, left, children, ...rest }) => (
+const CellMask = ({ width, height, top, left, zIndex, children, ...rest }) => (
   <div
-    style={setMaskStyle({ left, top, width, height })}
+    style={setMaskStyle({ left, top, width, height, zIndex })}
     {...rest}
   >
     {children}

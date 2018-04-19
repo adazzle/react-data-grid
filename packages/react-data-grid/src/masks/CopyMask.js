@@ -5,14 +5,16 @@ import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
 
 function CopyMask({ copiedPosition, columns, rowHeight }) {
-  const dimensions = copiedPosition ? getSelectedDimensions({ selectedPosition: copiedPosition, columns, rowHeight }) : null;
-  return (
-    dimensions &&
-    <CellMask
-      {...dimensions}
-      className="react-grid-cell-copied"
-    />
-  );
+  if (copiedPosition != null) {
+    const dimensions = getSelectedDimensions({ selectedPosition: copiedPosition, columns, rowHeight });
+    return (
+      <CellMask
+        {...dimensions}
+        className="react-grid-cell-copied"
+      />
+    );
+  }
+  return null;
 }
 
 CopyMask.propTypes = {

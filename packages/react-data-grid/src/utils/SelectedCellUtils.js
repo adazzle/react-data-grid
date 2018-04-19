@@ -11,11 +11,14 @@ export const getSelectedRow = ({ selectedPosition, rowGetter }) => {
 
 export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) => {
   const { idx, rowIdx } = selectedPosition;
-  const column = columnUtils.getColumn(columns, idx);
-  const width = idx >= 0 ? column.width : 0;
-  const left = idx >= 0 ? column.left : 0;
-  const top = getRowTop(rowIdx, rowHeight);
-  return { width, left, top, height: rowHeight };
+  if (idx >= 0) {
+    const column = columnUtils.getColumn(columns, idx);
+    const { width, left, locked } = column;
+    const top = getRowTop(rowIdx, rowHeight);
+    const zIndex = locked ? 2 : 1;
+    return { width, left, top, height: rowHeight, zIndex };
+  }
+  return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
 };
 
 export const getSelectedColumn = ({ selectedPosition, columns }) => {

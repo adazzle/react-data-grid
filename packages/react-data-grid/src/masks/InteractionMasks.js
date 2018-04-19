@@ -455,19 +455,6 @@ class InteractionMasks extends React.Component {
   render() {
     const { rowHeight, rowGetter, columns } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
-    const copyMaskProps = { copiedPosition, rowHeight, columns };
-    const dragMaskProps = { draggedPosition, rowHeight, columns };
-    const selectionMaskProps = { selectedPosition, rowHeight, columns };
-    const editorContainerProps = {
-      firstEditorKeyPress,
-      onCommit: this.onCommit,
-      onCommitCancel: this.onCommitCancel,
-      value: getSelectedCellValue({ selectedPosition, columns, rowGetter }),
-      rowIdx: selectedPosition.rowIdx,
-      RowData: getSelectedRow({ selectedPosition, rowGetter }),
-      column: getSelectedColumn({ selectedPosition, columns }),
-      ...getSelectedDimensions(selectionMaskProps)
-    };
 
     return (
       <div
@@ -477,12 +464,24 @@ class InteractionMasks extends React.Component {
         tabIndex="0"
         onKeyDown={this.onKeyDown}
       >
-        <CopyMask {...copyMaskProps} />
-        <DragMask {...dragMaskProps} />
+        <CopyMask
+          copiedPosition={copiedPosition}
+          rowHeight={rowHeight}
+          columns={columns}
+        />
+        <DragMask
+          draggedPosition={draggedPosition}
+          rowHeight={rowHeight}
+          columns={columns}
+        />
         {!isEditorEnabled && this.isGridSelected() && (
-          <SelectionMask {...selectionMaskProps}>
+          <SelectionMask
+            selectedPosition={selectedPosition}
+            rowHeight={rowHeight}
+            columns={columns}
+          >
             {
-              this.dragEnabled(this.props) &&
+              this.dragEnabled() &&
               <DragHandle
                 onDragStart={this.handleDragStart}
                 onDragEnd={this.handleDragEnd}
@@ -491,7 +490,16 @@ class InteractionMasks extends React.Component {
             }
           </SelectionMask>
         )}
-        {isEditorEnabled && <EditorContainer {...editorContainerProps} />}
+        {isEditorEnabled && <EditorContainer
+          firstEditorKeyPress={firstEditorKeyPress}
+          onCommit={this.onCommit}
+          onCommitCancel={this.onCommitCancel}
+          rowIdx={selectedPosition.rowIdx}
+          value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+          RowData={getSelectedRow({ selectedPosition, rowGetter })}
+          column={getSelectedColumn({ selectedPosition, columns })}
+          {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
+        />}
       </div>
     );
   }

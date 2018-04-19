@@ -29,7 +29,6 @@ function DragMask({ draggedPosition, columns, rowHeight }) {
 }
 
 DragMask.propTypes = {
-  selectedPosition: PropTypes.object.isRequired,
   draggedPosition: PropTypes.object,
   columns: PropTypes.array.isRequired,
   rowHeight: PropTypes.number.isRequired
