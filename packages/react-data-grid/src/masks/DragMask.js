@@ -12,18 +12,18 @@ function DragMask({ draggedPosition, columns, rowHeight }) {
     const endRowIdx = isDraggedOverDown ? overRowIdx : rowIdx - 1;
     const className = isDraggedOverDown ? 'react-grid-cell-dragged-over-down' : 'react-grid-cell-dragged-over-up';
 
-    const draggedCellMasks = [];
-    for (let currentRowIdx = startRowIdx; currentRowIdx <= endRowIdx; currentRowIdx++) {
-      const draggedMaskDimension = getSelectedDimensions({ selectedPosition: { idx, rowIdx: currentRowIdx }, columns, rowHeight });
-      draggedCellMasks.push(
-        <CellMask
-          key={currentRowIdx}
-          {...draggedMaskDimension}
-          className={className}
-        />
-      );
+    const dimensions = getSelectedDimensions({ selectedPosition: { idx, rowIdx: startRowIdx }, columns, rowHeight });
+    for (let currentRowIdx = startRowIdx + 1; currentRowIdx <= endRowIdx; currentRowIdx++) {
+      const { height } = getSelectedDimensions({ selectedPosition: { idx, rowIdx: currentRowIdx }, columns, rowHeight });
+      dimensions.height += height;
     }
-    return draggedCellMasks;
+
+    return (
+      <CellMask
+        {...dimensions}
+        className={className}
+      />
+    );
   }
   return null;
 }
