@@ -21,5 +21,9 @@
     "jquery": "^2.1.1",
     "lodash": "^4.13.1",
     "lodash.groupby": "^4.5.1"
+  },
+  "peerDependencies": {
+    "react": "^15.0.0 || ^16.0.0",
+    "react-dom": "^15.0.0 || ^16.0.0"
   }
 }
