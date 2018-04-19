@@ -77,7 +77,6 @@ describe('viewportUtils', () => {
   });
 
   describe('getVisibleBoundaries', () => {
-
     const GRID_HEIGHT = 350;
     const ROW_HEIGHT = 35;
     const TOTAL_ROWS = 100;
@@ -86,13 +85,13 @@ describe('viewportUtils', () => {
     describe('When scroll top is 0', () => {
       it('should set the visibleStart to be 0', () => {
         const scrollTop = 0;
-        const {visibleStart} = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, scrollTop, TOTAL_ROWS);
+        const { visibleStart } = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, scrollTop, TOTAL_ROWS);
         expect(visibleStart).toBe(0);
       });
 
       it('should set the visibleEnd to be last rendered row', () => {
         const scrollTop = 0;
-        const {visibleEnd} = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, scrollTop, TOTAL_ROWS);
+        const { visibleEnd } = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, scrollTop, TOTAL_ROWS);
         expect(visibleEnd).toBe(EXPECTED_NUMBER_VISIBLE_ROWS);
       });
     });
@@ -106,17 +105,16 @@ describe('viewportUtils', () => {
         }
       };
       describe('When incrementing scroll by n*rowHeight', () => {
-
         it('should increase visibleStart by n rows', () => {
           const getScrollTop = n => n * ROW_HEIGHT;
-          scrollDown(getScrollTop, (n, {visibleStart}) => {
+          scrollDown(getScrollTop, (n, { visibleStart }) => {
             expect(visibleStart).toBe(n);
           });
         });
 
         it('should increase visibleEnd by (n + total rendered rows)', () => {
           const getScrollTop = n => n * ROW_HEIGHT;
-          scrollDown(getScrollTop, (n, {visibleEnd}) => {
+          scrollDown(getScrollTop, (n, { visibleEnd }) => {
             expect(visibleEnd).toBe(EXPECTED_NUMBER_VISIBLE_ROWS + n);
           });
         });
@@ -126,7 +124,7 @@ describe('viewportUtils', () => {
         it('should increase visibleEnd by (n + total rendered rows)', () => {
           const clientScrollError = 0.5;
           const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
-          scrollDown(getScrollTop, (n, {visibleEnd}) => {
+          scrollDown(getScrollTop, (n, { visibleEnd }) => {
             expect(visibleEnd).toBe(EXPECTED_NUMBER_VISIBLE_ROWS + n);
           });
         });
@@ -134,7 +132,7 @@ describe('viewportUtils', () => {
         it('should increase visibleEnd by n rows', () => {
           const clientScrollError = 0.5;
           const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
-          scrollDown(getScrollTop, (n, {visibleStart}) => {
+          scrollDown(getScrollTop, (n, { visibleStart }) => {
             expect(visibleStart).toBe(n);
           });
         });

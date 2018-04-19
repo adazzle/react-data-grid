@@ -3,6 +3,7 @@ const React                = require('react');
 import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
+import * as cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
 require('../../../themes/react-data-grid-core.css');
 
 class Grid extends React.Component {
@@ -37,6 +38,7 @@ class Grid extends React.Component {
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
     sortColumn: PropTypes.string,
+    cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
     sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,
