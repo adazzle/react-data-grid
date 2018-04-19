@@ -229,10 +229,10 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  isKeyDown = (keyCode) => {
-    if (!this._keysDown) return false;
-    return keyCode in this._keysDown;
-  };
+  // isKeyDown = (keyCode) => {
+  //   if (!this._keysDown) return false;
+  //   return keyCode in this._keysDown;
+  // };
 
   isSingleKeyDown = (keyCode) => {
     if (!this._keysDown) return false;
@@ -521,16 +521,16 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  getScrollOffSet = () => {
-    let scrollOffset = 0;
-    if (this.grid) {
-      let canvas = this.grid.querySelector('.react-grid-Canvas');
-      if (canvas) {
-        scrollOffset = canvas.offsetWidth - canvas.clientWidth;
-      }
-    }
-    this.setState({scrollOffset: scrollOffset});
-  };
+  // getScrollOffSet = () => {
+  //   let scrollOffset = 0;
+  //   if (this.grid) {
+  //     let canvas = this.grid.querySelector('.react-grid-Canvas');
+  //     if (canvas) {
+  //       scrollOffset = canvas.offsetWidth - canvas.clientWidth;
+  //     }
+  //   }
+  //   this.setState({scrollOffset: scrollOffset});
+  // };
 
   getRowOffsetHeight = () => {
     let offsetHeight = 0;
@@ -641,9 +641,9 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  isActive = () => {
-    return this.state.selected.active === true;
-  };
+  // isActive = () => {
+  //   return this.state.selected.active === true;
+  // };
 
   setupGridColumns = (props = this.props) => {
     const { columns } = props;
@@ -707,12 +707,12 @@ class ReactDataGrid extends React.Component {
       onCellExpand: this.onCellExpand,
       onRowExpandToggle: this.onRowExpandToggle,
       onRowHover: this.onRowHover,
-      getDataGridDOMNode: this.getDataGridDOMNode,
+      // getDataGridDOMNode: this.getDataGridDOMNode,
       getCellActions: this.props.getCellActions,
       onDeleteSubRow: this.props.onDeleteSubRow,
       onAddSubRow: this.props.onAddSubRow,
-      isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
-      isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
+      // isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
+      // isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
       enableCellAutoFocus: this.props.enableCellAutoFocus,
       onDragEnter: this.handleDragEnter
     };
