@@ -230,56 +230,44 @@ describe('<InteractionMasks/>', () => {
       });
     });
 
-    fdescribe('using keyboard to navigate through the grid by pressing Tab or Shift+Tab', () => {
+    describe('using keyboard to navigate through the grid by pressing Tab or Shift+Tab', () => {
       // enzyme doesn't allow dom keyboard navigation, but we can assume that if
       // prevent default isn't called, it lets the dom do normal navigation
+
+      const setupTabTest = (props, shiftKey) => {
+        const { wrapper } = setup(props);
+        const preventDefaultSpy = jasmine.createSpy();
+        pressKey(wrapper, 'Tab', {keyCode: keyCodes.Tab, preventDefault: preventDefaultSpy, shiftKey});
+        return {wrapper, preventDefaultSpy};
+      };
+
       describe('when cellNavigationMode is changeRow', () => {
         const cellNavigationMode = CELL_NAVIGATION_MODES.CHANGE_ROW;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
-          const { wrapper } = setup({cellNavigationMode, rowsCount: 0});
-          const preventDefault = jasmine.createSpy();
-          pressKey(wrapper, 'Tab', {keyCode: keyCodes.Tab, preventDefault});
-          expect(preventDefault).not.toHaveBeenCalled();
+          const preventDefaultSpy = setupTabTest({cellNavigationMode, rowsCount: 0});
+          expect(preventDefaultSpy).not.toHaveBeenCalled();
         });
         it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-          const { wrapper } = setup({cellNavigationMode, rowsCount: 0});
-          const preventDefault = jasmine.createSpy();
-          pressKey(wrapper, 'Tab', {keyCode: keyCodes.Tab, preventDefault,  shiftKey: true});
-          expect(preventDefault).not.toHaveBeenCalled();
+          const preventDefaultSpy = setupTabTest({cellNavigationMode, rowsCount: 0}, true);
+          expect(preventDefaultSpy).not.toHaveBeenCalled();
         });
         it('allows the user to exit to the grid with Shift+Tab at the first cell of the grid', () => {
-          const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
-          const grid = enzymeWrapper.instance();
-          // override focused on cell test because we're using shallow rendering
-          grid.isFocusedOnCell = () => true;
-          grid.setState({ selected: { rowIdx: 0, idx: 0 } });
-          expect(grid.state.selected).toEqual({ idx: 0, rowIdx: 0 });
-          const preventDefault = jasmine.createSpy();
-          grid.onPressTab({ shiftKey: true, preventDefault });
-          expect(preventDefault).not.toHaveBeenCalled();
+          const firstCellOfGrid = { rowIdx: 0, idx: 0 };
+          const {wrapper, preventDefaultSpy} = setupTabTest({cellNavigationMode, selectedPosition: firstCellOfGrid }, true);
+          expect(preventDefaultSpy).not.toHaveBeenCalled();
+          expect(wrapper.state().selectedPosition).toEqual({idx: -1, rowIdx: 0});
         });
         it('allows the user to exit the grid when they press Tab at the last cell in the grid', () => {
-          const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
-          const grid = enzymeWrapper.instance();
-          // override focused on cell test because we're using shallow rendering
-          grid.isFocusedOnCell = () => true;
-          grid.setState({selected: { rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 } });
-          expect(grid.state.selected).toEqual({ rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1});
-          const preventDefault = jasmine.createSpy();
-          expect(grid.onPressTab({ shiftKey: false, preventDefault }));
-          expect(preventDefault).not.toHaveBeenCalled();
+          const lastCellOfGrid = { rowIdx: helpers.rowsCount() - 1, idx: helpers.columns.length - 1 };
+          const {wrapper, preventDefaultSpy} = setupTabTest({cellNavigationMode, selectedPosition: lastCellOfGrid });
+          expect(preventDefaultSpy).not.toHaveBeenCalled();
+          expect(wrapper.state().selectedPosition).toEqual({idx: -1, rowIdx: lastCellOfGrid.rowIdx});
         });
         it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
-          const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
-          const grid = enzymeWrapper.instance();
-          const preventDefault = jasmine.createSpy();
-          // override focused on cell/table tests because we're using shallow rendering
-          grid.isFocusedOnCell = () => true;
-          grid.isFocusedOnTable = () => false;
-          spyOn(ReactDOM, 'findDOMNode').and.returnValue({ querySelector: () => (false) });
-          expect(grid.onPressTab({ shiftKey: false, preventDefault }));
-          expect(preventDefault).toHaveBeenCalled();
-          expect(grid.state.selected).toEqual({ rowIdx: 0, idx: 1 });
+          const selectedPosition = { rowIdx: 3, idx: 3 };
+          const {wrapper, preventDefaultSpy} = setupTabTest({cellNavigationMode, selectedPosition });
+          expect(preventDefaultSpy).toHaveBeenCalled();
+          expect(wrapper.state().selectedPosition).toEqual({ rowIdx: 3, idx: 4 });
         });
         it('goes to the beginning of the next row when the user presses Tab and they are at the end of a row', () => {
           const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
@@ -379,7 +367,7 @@ describe('<InteractionMasks/>', () => {
           expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1, changeSomething: true });
         });
       });
-      fdescribe('when cellNavigationMode is none', () => {
+      describe('when cellNavigationMode is none', () => {
         const cellNavigationMode = 'none';
         it('allows the user to exit the grid with Tab if there are no rows', () => {
           const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode, numRows: 0 });
@@ -649,7 +637,7 @@ describe('<InteractionMasks/>', () => {
           expect(grid.state.selected).toEqual({ rowIdx: 1, idx: 1, changeSomething: true });
         });
       });
-      fdescribe('keyboard events', () => {
+      describe('keyboard events', () => {
         const cellNavigationMode = 'none';
         it('registers keyDown events', () => {
           const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
