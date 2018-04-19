@@ -12,7 +12,7 @@ const ColumnMetrics        = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
-import { EventTypes } from './constants';
+import { CellNavigationMode, EventTypes } from './constants';
 import { EventBus } from './masks';
 
 class ReactDataGrid extends React.Component {
@@ -108,7 +108,7 @@ class ReactDataGrid extends React.Component {
     rowKey: 'id',
     rowScrollTimeout: 0,
     scrollToRowIndex: 0,
-    cellNavigationMode: 'changeRow',
+    cellNavigationMode: CellNavigationMode.CHANGE_ROW,
     overScan: {
       colsStart: 5,
       colsEnd: 5,

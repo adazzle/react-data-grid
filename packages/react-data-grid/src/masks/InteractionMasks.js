@@ -18,14 +18,9 @@ import {
 import isFunction from '../utils/isFunction';
 import * as AppConstants from '../AppConstants';
 import * as keyCodes from '../KeyCodes';
-import { EventTypes } from '../constants';
+import { CellNavigationMode, EventTypes } from '../constants';
 
 const SCROLL_CELL_BUFFER = 2;
-export const CELL_NAVIGATION_MODES = {
-  NONE: 'none',
-  LOOP_OVER_ROW: 'loopOverRow',
-  CHANGE_ROW: 'changeRow'
-};
 
 class InteractionMasks extends React.Component {
   static propTypes = {
@@ -186,21 +181,21 @@ class InteractionMasks extends React.Component {
     let shift = e.shiftKey === true;
     const { cellNavigationMode } = this.props;
     if (shift) {
-      if (cellNavigationMode === CELL_NAVIGATION_MODES.NONE) {
+      if (cellNavigationMode === CellNavigationMode.NONE) {
         if (atFirstCellInRow) {
           return true;
         }
-      } else if (cellNavigationMode === CELL_NAVIGATION_MODES.CHANGE_ROW) {
+      } else if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
         if (atFirstCellInRow && atFirstRow) {
           return true;
         }
       }
     } else {
-      if (cellNavigationMode === CELL_NAVIGATION_MODES.NONE) {
+      if (cellNavigationMode === CellNavigationMode.NONE) {
         if (atLastCellInRow) {
           return true;
         }
-      } else if (cellNavigationMode === CELL_NAVIGATION_MODES.CHANGE_ROW) {
+      } else if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
         if (atLastCellInRow && atLastRow) {
           return true;
         }

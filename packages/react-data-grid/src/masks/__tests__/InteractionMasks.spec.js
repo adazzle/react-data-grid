@@ -1,11 +1,12 @@
 import React from 'react';
-import InteractionMasks, {CELL_NAVIGATION_MODES} from '../InteractionMasks';
 import { shallow } from 'enzyme';
 
+import InteractionMasks from '../InteractionMasks';
 import SelectionMask from '../SelectionMask';
 import EditorContainer from '../../editors/EditorContainer';
 import { createColumns } from '../../__tests__/utils/createColumns';
 import * as keyCodes from '../../KeyCodes';
+import { CellNavigationMode } from '../../constants';
 
 const NUMBER_OF_COLUMNS = 10;
 
@@ -27,7 +28,7 @@ describe('<InteractionMasks/>', () => {
         isEditorEnabled: false,
         rowGetter,
         enableCellSelect: true,
-        cellNavigationMode: CELL_NAVIGATION_MODES.NONE
+        cellNavigationMode: CellNavigationMode.NONE
       },
       ...overrideProps
     };
@@ -242,7 +243,7 @@ describe('<InteractionMasks/>', () => {
       };
 
       describe('when cellNavigationMode is changeRow', () => {
-        const cellNavigationMode = CELL_NAVIGATION_MODES.CHANGE_ROW;
+        const cellNavigationMode = CellNavigationMode.CHANGE_ROW;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
           const preventDefaultSpy = setupTabTest({cellNavigationMode, rowsCount: 0});
           expect(preventDefaultSpy).not.toHaveBeenCalled();
@@ -644,7 +645,7 @@ describe('<InteractionMasks/>', () => {
           enzymeWrapper.find('Grid').prop('onViewportKeydown')({ key: 'Enter', keyCode: 13, which: 13 });
           expect(enzymeWrapper.instance().isKeyDown(13)).toBeTruthy();
         });
-    
+
         it('registers keyUp events', () => {
           const { enzymeWrapper } = shallowRenderGrid({ cellNavigationMode });
           const gridWrapper = enzymeWrapper.find('Grid');
