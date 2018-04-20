@@ -93,13 +93,11 @@ class InteractionMasks extends React.Component {
 
     this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, this.selectCell);
     this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, this.handleDragEnter);
-    this.unsubscribeCellDoubleClick = eventBus.subscribe(EventTypes.OPEN_EDITOR, this.openEditor);
   }
 
   componentWillUnmount() {
     this.unsubscribeSelectCell();
     this.unsubscribeDragEnter();
-    this.unsubscribeCellDoubleClick();
   }
 
   onKeyDown = e => {
@@ -122,9 +120,8 @@ class InteractionMasks extends React.Component {
     return isSelectedCellEditable({ enableCellSelect, columns, rowGetter, selectedPosition });
   }
 
-  openEditor = (e = {}) => {
+  openEditor = ({ key } = {}) => {
     if (this.isSelectedCellEditable() && !this.state.isEditorEnabled) {
-      const { key } = e;
       this.setState({
         isEditorEnabled: true,
         firstEditorKeyPress: key
@@ -392,11 +389,12 @@ class InteractionMasks extends React.Component {
     }
   };
 
-  selectCell = cell => {
+  selectCell = (cell, openEditor) => {
+    const callback = openEditor ? this.openEditor : undefined;
     if (this.isCellWithinBounds(cell)) {
       this.setState({
         selectedPosition: cell
-      });
+      }, callback);
     }
   };
 

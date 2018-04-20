@@ -142,12 +142,8 @@ class ReactDataGrid extends React.Component {
     }
   }
 
-  selectCell = ({ idx, rowIdx }) => {
-    this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx });
-  };
-
-  openEditor = () => {
-    this.eventBus.dispatch(EventTypes.OPEN_EDITOR);
+  selectCell = ({ idx, rowIdx }, openEditor) => {
+    this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
   };
 
   handleDragEnter = ({ overRowIdx }) => {
@@ -291,7 +287,7 @@ class ReactDataGrid extends React.Component {
     if (isFunction(onRowDoubleClick)) {
       onRowDoubleClick(rowIdx, rowGetter(rowIdx), this.getColumn(idx));
     }
-    this.openEditor();
+    this.openCellEditor(rowIdx, idx);
   };
 
   onToggleFilter = () => {
@@ -584,9 +580,7 @@ class ReactDataGrid extends React.Component {
   };
 
   openCellEditor = (rowIdx, idx) => {
-    this.selectCell({ rowIdx, idx });
-    // Fix me
-    setTimeout(this.openEditor);
+    this.selectCell({ rowIdx, idx }, true);
   };
 
   scrollToColumn = (colIdx) => {
