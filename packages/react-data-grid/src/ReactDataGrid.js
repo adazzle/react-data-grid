@@ -146,6 +146,10 @@ class ReactDataGrid extends React.Component {
     this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx });
   };
 
+  openEditor = () => {
+    this.eventBus.dispatch(EventTypes.OPEN_EDITOR);
+  };
+
   handleDragEnter = ({ overRowIdx }) => {
     this.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx });
   };
@@ -265,23 +269,9 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  onSelect = (newSelection) => {
-    const { onCellDeSelected, onCellSelected } = this.props;
-    if (isFunction(onCellDeSelected)) {
-      // TODO: connect
-      // const oldSelection = this.store.getState().selectedPosition;
-      // onCellDeSelected(oldSelection);
-    }
-    if (isFunction(onCellSelected)) {
-      onCellSelected(newSelection);
-    }
-
-    this.selectCell(newSelection);
-  };
-
   onCellClick = ({ rowIdx, idx }) => {
     const { onRowClick, rowGetter } = this.props;
-    this.onSelect({ rowIdx, idx });
+    this.selectCell({ rowIdx, idx });
 
     if (isFunction(onRowClick)) {
       onRowClick(rowIdx, rowGetter(rowIdx), this.getColumn(idx));
@@ -290,7 +280,7 @@ class ReactDataGrid extends React.Component {
 
   onCellContextMenu = ({ rowIdx, idx }) => {
     // this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx, contextMenuDisplayed: this.props.contextMenu});
-    this.onSelect({ rowIdx, idx });
+    this.selectCell({ rowIdx, idx });
     if (this.props.contextMenu) {
       document.addEventListener('click', this.onContextMenuHide);
     }
@@ -301,7 +291,7 @@ class ReactDataGrid extends React.Component {
     if (isFunction(onRowDoubleClick)) {
       onRowDoubleClick(rowIdx, rowGetter(rowIdx), this.getColumn(idx));
     }
-    this.eventBus.dispatch(EventTypes.CELL_DOUBLE_CLICK);
+    this.openEditor();
   };
 
   onToggleFilter = () => {
@@ -594,16 +584,9 @@ class ReactDataGrid extends React.Component {
   };
 
   openCellEditor = (rowIdx, idx) => {
-    const { rowGetter } = this.props;
-    const row = rowGetter(rowIdx);
-    const col = this.getColumn(idx);
-
-    if (!ColumnUtils.canEdit(col, row, this.props.enableCellSelect)) {
-      return;
-    }
-
-    // TODO
-    // setCellActive(idx, rowIdx);
+    this.selectCell({ rowIdx, idx });
+    // Fix me
+    setTimeout(this.openEditor);
   };
 
   scrollToColumn = (colIdx) => {
@@ -737,6 +720,8 @@ class ReactDataGrid extends React.Component {
             onCellCopyPaste={this.props.onCellCopyPaste}
             onGridRowsUpdated={this.onGridRowsUpdated}
             onDragHandleDoubleClick={this.onDragHandleDoubleClick}
+            onCellSelected={this.props.onCellSelected}
+            onCellDeSelected={this.props.onCellDeSelected}
           />
         </div>
       </div>

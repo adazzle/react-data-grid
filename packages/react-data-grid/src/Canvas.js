@@ -68,7 +68,9 @@ class Canvas extends React.Component {
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
-    onDragHandleDoubleClick: PropTypes.func.isRequired
+    onDragHandleDoubleClick: PropTypes.func.isRequired,
+    onCellSelected: PropTypes.func,
+    onCellDeSelected: PropTypes.func
   };
 
   static defaultProps = {
@@ -201,11 +203,11 @@ class Canvas extends React.Component {
     return rows;
   };
 
-  getScrollbarWidth = () => {
-    // Get the scrollbar width
-    const scrollbarWidth = this.canvas.offsetWidth - this.canvas.clientWidth;
-    return scrollbarWidth;
-  };
+  // getScrollbarWidth = () => {
+  //   // Get the scrollbar width
+  //   const scrollbarWidth = this.canvas.offsetWidth - this.canvas.clientWidth;
+  //   return scrollbarWidth;
+  // };
 
   getScroll = () => {
     const { scrollTop, scrollLeft } = this.canvas;
@@ -292,7 +294,7 @@ class Canvas extends React.Component {
   render() {
     const { displayStart, displayEnd, cellMetaData, columns, colDisplayStart, colDisplayEnd, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
 
-    let rows = this.getRows(displayStart, displayEnd)
+    const rows = this.getRows(displayStart, displayEnd)
       .map((r, idx) => this.renderRow({
         key: `row-${displayStart + idx}`,
         ref: (node) => this.rows[idx] = node,
@@ -325,7 +327,7 @@ class Canvas extends React.Component {
         this.renderPlaceholder('bottom', (rowsCount - displayEnd) * rowHeight));
     }
 
-    let style = {
+    const style = {
       position: 'absolute',
       top: 0,
       left: 0,
@@ -368,6 +370,8 @@ class Canvas extends React.Component {
             onGridRowsUpdated={this.props.onGridRowsUpdated}
             onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
             onBeforeFocus={this.onFocusInteractionMask}
+            onCellSelected={this.props.onCellSelected}
+            onCellDeSelected={this.props.onCellDeSelected}
           />
           <RowsContainer
             width={width}

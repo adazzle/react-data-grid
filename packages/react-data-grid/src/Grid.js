@@ -65,7 +65,9 @@ class Grid extends React.Component {
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
-    onDragHandleDoubleClick: PropTypes.func.isRequired
+    onDragHandleDoubleClick: PropTypes.func.isRequired,
+    onCellSelected: PropTypes.func,
+    onCellDeSelected: PropTypes.func
   };
 
   static defaultProps = {
@@ -190,6 +192,8 @@ class Grid extends React.Component {
                   onCellCopyPaste={this.props.onCellCopyPaste}
                   onGridRowsUpdated={this.props.onGridRowsUpdated}
                   onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
+                  onCellSelected={this.props.onCellSelected}
+                  onCellDeSelected={this.props.onCellDeSelected}
                 />
             </div>
         :

@@ -67,9 +67,23 @@ class InteractionMasks extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { selectedPosition, isEditorEnabled } = this.state;
-    const isSelectedPositionChanged = selectedPosition !== prevState.selectedPosition && selectedPosition.rowIdx !== -1 && selectedPosition.idx !== -1;
-    const isEditorClosed = isEditorEnabled !== prevState.isEditorEnabled && !isEditorEnabled;
-    if (isSelectedPositionChanged || isEditorClosed) {
+    const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
+    const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx);
+    const isEditorClosed = isEditorEnabled !== prevIsEditorEnabled && !isEditorEnabled;
+
+    if (isSelectedPositionChanged) {
+      // Call event handlers if selected cell has changed
+      const { onCellSelected, onCellDeSelected } = this.props;
+      if (isFunction(onCellDeSelected) && this.isCellWithinBounds(prevSelectedPosition)) {
+        onCellDeSelected({ ...prevSelectedPosition });
+      }
+
+      if (isFunction(onCellSelected) && this.isCellWithinBounds(selectedPosition)) {
+        onCellSelected({ ...selectedPosition });
+      }
+    }
+
+    if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
       this.focus();
     }
   }
@@ -79,7 +93,7 @@ class InteractionMasks extends React.Component {
 
     this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, this.selectCell);
     this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, this.handleDragEnter);
-    this.unsubscribeCellDoubleClick = eventBus.subscribe(EventTypes.CELL_DOUBLE_CLICK, () => this.openEditor({}));
+    this.unsubscribeCellDoubleClick = eventBus.subscribe(EventTypes.OPEN_EDITOR, this.openEditor);
   }
 
   componentWillUnmount() {
@@ -108,7 +122,7 @@ class InteractionMasks extends React.Component {
     return isSelectedCellEditable({ enableCellSelect, columns, rowGetter, selectedPosition });
   }
 
-  openEditor = (e) => {
+  openEditor = (e = {}) => {
     if (this.isSelectedCellEditable() && !this.state.isEditorEnabled) {
       const { key } = e;
       this.setState({
