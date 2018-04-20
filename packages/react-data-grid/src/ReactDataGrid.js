@@ -607,38 +607,7 @@ class ReactDataGrid extends React.Component {
   };
 
   scrollToColumn = (colIdx) => {
-    if (this.grid) {
-      let canvas = this.grid.querySelector('.react-grid-Canvas');
-      if (canvas) {
-        let left = 0;
-        let locked = 0;
-
-        for (let i = 0; i < colIdx; i++) {
-          let column = this.getColumn(i);
-          if (column) {
-            if (column.width) {
-              left += column.width;
-            }
-            if (column.locked) {
-              locked += column.width;
-            }
-          }
-        }
-
-        let selectedColumn = this.getColumn(colIdx);
-        if (selectedColumn) {
-          let scrollLeft = left - locked - canvas.scrollLeft;
-          let scrollRight =  left + selectedColumn.width - canvas.scrollLeft;
-
-          if (scrollLeft < 0) {
-            canvas.scrollLeft += scrollLeft;
-          } else if (scrollRight > canvas.clientWidth) {
-            let scrollAmount =  scrollRight - canvas.clientWidth;
-            canvas.scrollLeft += scrollAmount;
-          }
-        }
-      }
-    }
+    this.eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
   };
 
   // isActive = () => {

@@ -7,6 +7,7 @@ import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
+import { EventTypes } from './constants';
 require('../../../themes/react-data-grid-core.css');
 
 class Canvas extends React.Component {
@@ -88,6 +89,7 @@ class Canvas extends React.Component {
   _scroll = { scrollTop: 0, scrollLeft: 0 };
 
   componentDidMount() {
+    this.unsubscribeScrollToColumn = this.props.eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, this.scrollToColumn);
     this.onRows();
   }
 
@@ -96,6 +98,7 @@ class Canvas extends React.Component {
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
     this.rows = [];
+    this.unsubscribeScrollToColumn();
   }
 
   componentDidUpdate(prevProps) {

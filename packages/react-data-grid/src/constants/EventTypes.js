@@ -1,3 +1,4 @@
 export const SELECT_CELL = 'SELECT_CELL';
 export const DRAG_ENTER = 'DRAG_ENTER';
 export const CELL_DOUBLE_CLICK = 'CELL_DOUBLE_CLICK';
+export const SCROLL_TO_COLUMN = 'SCROLL_TO_COLUMN';
