@@ -63,6 +63,7 @@ class Canvas extends React.Component {
     isScrolling: PropTypes.bool,
     length: PropTypes.number,
     enableCellSelect: PropTypes.bool.isRequired,
+    enableCellAutoFocus: PropTypes.bool.isRequired,
     cellNavigationMode: PropTypes.string.isRequired,
     eventBus: PropTypes.object.isRequired,
     onCheckCellIsEditable: PropTypes.func,
@@ -357,6 +358,7 @@ class Canvas extends React.Component {
             colVisibleStart={colVisibleStart}
             colVisibleEnd={colVisibleEnd}
             enableCellSelect={this.props.enableCellSelect}
+            enableCellAutoFocus={this.props.enableCellAutoFocus}
             cellNavigationMode={this.props.cellNavigationMode}
             eventBus={this.props.eventBus}
             onHitBottomBoundary={this.onHitBottomCanvas}

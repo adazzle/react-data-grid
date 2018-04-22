@@ -60,6 +60,7 @@ class Grid extends React.Component {
     rowGroupRenderer: PropTypes.func,
     overScan: PropTypes.object,
     enableCellSelect: PropTypes.bool.isRequired,
+    enableCellAutoFocus: PropTypes.bool.isRequired,
     cellNavigationMode: PropTypes.string.isRequired,
     eventBus: PropTypes.object.isRequired,
     onCheckCellIsEditable: PropTypes.func,
@@ -186,6 +187,7 @@ class Grid extends React.Component {
                   rowGroupRenderer={this.props.rowGroupRenderer}
                   overScan={this.props.overScan}
                   enableCellSelect={this.props.enableCellSelect}
+                  enableCellAutoFocus={this.props.enableCellAutoFocus}
                   cellNavigationMode={this.props.cellNavigationMode}
                   eventBus={this.props.eventBus}
                   onCheckCellIsEditable={this.props.onCheckCellIsEditable}

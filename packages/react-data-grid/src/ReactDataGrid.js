@@ -708,6 +708,7 @@ class ReactDataGrid extends React.Component {
             contextMenu={this.props.contextMenu}
             overScan={this.props.overScan}
             enableCellSelect={this.props.enableCellSelect}
+            enableCellAutoFocus={this.props.enableCellAutoFocus}
             cellNavigationMode={this.props.cellNavigationMode}
             eventBus={this.eventBus}
             onCheckCellIsEditable={this.props.onCheckCellIsEditable}

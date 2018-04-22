@@ -46,6 +46,7 @@ class Viewport extends React.Component {
     getSubRowDetails: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
     enableCellSelect: PropTypes.bool.isRequired,
+    enableCellAutoFocus: PropTypes.bool.isRequired,
     cellNavigationMode: PropTypes.string.isRequired,
     eventBus: PropTypes.object.isRequired,
     onCheckCellIsEditable: PropTypes.func,
@@ -239,6 +240,7 @@ class Viewport extends React.Component {
           rowGroupRenderer={this.props.rowGroupRenderer}
           isScrolling={this.state.isScrolling || false}
           enableCellSelect={this.props.enableCellSelect}
+          enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}
           eventBus={this.props.eventBus}
           onCheckCellIsEditable={this.props.onCheckCellIsEditable}

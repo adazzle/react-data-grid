@@ -33,6 +33,7 @@ class InteractionMasks extends React.Component {
     rowGetter: PropTypes.func.isRequired,
     rowsCount: PropTypes.number.isRequired,
     enableCellSelect: PropTypes.bool.isRequired,
+    enableCellAutoFocus: PropTypes.bool.isRequired,
     cellNavigationMode: PropTypes.oneOf([
       CellNavigationMode.NONE,
       CellNavigationMode.LOOP_OVER_ROW,
@@ -91,10 +92,14 @@ class InteractionMasks extends React.Component {
   }
 
   componentDidMount() {
-    const { eventBus } = this.props;
+    const { eventBus, enableCellAutoFocus } = this.props;
 
     this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, this.selectCell);
     this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, this.handleDragEnter);
+
+    if (enableCellAutoFocus && this.isFocusedOnBody()) {
+      this.selectCell({ rowIdx: 0, idx: 0 });
+    }
   }
 
   componentWillUnmount() {
@@ -383,6 +388,10 @@ class InteractionMasks extends React.Component {
 
   isFocused = () => {
     return document.activeElement === this.node;
+  };
+
+  isFocusedOnBody = () => {
+    return document.activeElement === document.body;
   };
 
   focus = () => {
