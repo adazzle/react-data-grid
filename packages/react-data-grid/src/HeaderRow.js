@@ -1,5 +1,5 @@
 const React             = require('react');
-const shallowEqual    = require('fbjs/lib/shallowEqual');
+const shallowEqual    = require('shallowequal');
 const BaseHeaderCell        = require('./HeaderCell');
 const getScrollbarSize  = require('./getScrollbarSize');
 const ExcelColumn  = require('./PropTypeShapes/ExcelColumn');

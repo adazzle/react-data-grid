@@ -19,7 +19,7 @@ describe('CheckboxEditor', () => {
         value={true}
         rowIdx={1}
         column={testColumn}/>);
-      component = componentWrapper.node;
+      component = componentWrapper.instance();
     });
 
     it('should create a new CheckboxEditor instance', () => {

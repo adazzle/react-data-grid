@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
 
 class DraggableContainer extends React.Component {
@@ -27,4 +26,4 @@ DraggableContainer.propTypes = {
   children: PropTypes.element
 };
 
-export default DragDropContext(HTML5Backend)(DraggableContainer);
+export default html5DragDropContext(DraggableContainer);
