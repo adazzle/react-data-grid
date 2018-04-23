@@ -54,7 +54,8 @@ class Viewport extends React.Component {
     onGridRowsUpdated: PropTypes.func.isRequired,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     onCellSelected: PropTypes.func,
-    onCellDeSelected: PropTypes.func
+    onCellDeSelected: PropTypes.func,
+    onCommit: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -249,6 +250,7 @@ class Viewport extends React.Component {
           onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
           onCellSelected={this.props.onCellSelected}
           onCellDeSelected={this.props.onCellDeSelected}
+          onCommit={this.props.onCommit}
         />
       </div>
     );

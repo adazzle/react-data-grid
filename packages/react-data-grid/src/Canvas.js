@@ -71,7 +71,8 @@ class Canvas extends React.Component {
     onGridRowsUpdated: PropTypes.func.isRequired,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     onCellSelected: PropTypes.func,
-    onCellDeSelected: PropTypes.func
+    onCellDeSelected: PropTypes.func,
+    onCommit: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -365,9 +366,8 @@ class Canvas extends React.Component {
             onHitTopBoundary={this.onHitTopCanvas}
             onHitLeftBoundary={this.onHitLeftCanvas}
             onHitRightBoundary={this.onHitRightCanvas}
-            onCommit={cellMetaData.onCommit}
+            onCommit={this.props.onCommit}
             onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-            onCellClick={cellMetaData.onCellClick}
             onCellCopyPaste={this.props.onCellCopyPaste}
             onGridRowsUpdated={this.props.onGridRowsUpdated}
             onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}

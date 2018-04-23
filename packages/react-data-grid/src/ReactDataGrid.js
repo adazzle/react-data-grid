@@ -646,33 +646,21 @@ class ReactDataGrid extends React.Component {
   };
 
   render() {
-    let cellMetaData = {
+    const cellMetaData = {
       rowKey: this.props.rowKey,
-      // dragged: this.state.dragged,
-      hoveredRowIdx: this.state.hoveredRowIdx,
       onCellClick: this.onCellClick,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
-      onCommit: this.onCommit,
-      // onCommitCancel: this.setInactive,
-      // copied: this.state.copied,
-      enableCellSelect: this.props.enableCellSelect,
       onColumnEvent: this.onColumnEvent,
-      openCellEditor: this.openCellEditor,
       onCellExpand: this.onCellExpand,
       onRowExpandToggle: this.onRowExpandToggle,
-      onRowHover: this.onRowHover,
-      // getDataGridDOMNode: this.getDataGridDOMNode,
       getCellActions: this.props.getCellActions,
       onDeleteSubRow: this.props.onDeleteSubRow,
       onAddSubRow: this.props.onAddSubRow,
-      // isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
-      // isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
-      enableCellAutoFocus: this.props.enableCellAutoFocus,
       onDragEnter: this.handleDragEnter
     };
 
-    let toolbar = this.renderToolbar();
+    const toolbar = this.renderToolbar();
     let containerWidth = this.props.minWidth || this.gridWidth();
     let gridWidth = containerWidth - this.state.scrollOffset;
 
@@ -726,6 +714,7 @@ class ReactDataGrid extends React.Component {
             onDragHandleDoubleClick={this.onDragHandleDoubleClick}
             onCellSelected={this.props.onCellSelected}
             onCellDeSelected={this.props.onCellDeSelected}
+            onCommit={this.onCommit}
           />
         </div>
       </div>
