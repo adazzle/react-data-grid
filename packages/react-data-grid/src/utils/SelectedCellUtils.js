@@ -84,3 +84,36 @@ export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsC
 
   return { ...nextPosition, changeRowOrColumn: false };
 };
+
+export function canExitGrid(e, { cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx } }) {
+  // When the cellNavigationMode is 'none', you can exit the grid if you're at the start or end of the row
+  // When the cellNavigationMode is 'changeRow', you can exit the grid if you're at the first or last cell of the grid
+  // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
+  const atLastCellInRow = idx === columns.length - 1;
+  const atFirstCellInRow = idx === 0;
+  const atLastRow = rowIdx === rowsCount - 1;
+  const atFirstRow = rowIdx === 0;
+  const shift = e.shiftKey === true;
+  if (shift) {
+    if (cellNavigationMode === CellNavigationMode.NONE) {
+      if (atFirstCellInRow) {
+        return true;
+      }
+    } else if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
+      if (atFirstCellInRow && atFirstRow) {
+        return true;
+      }
+    }
+  } else {
+    if (cellNavigationMode === CellNavigationMode.NONE) {
+      if (atLastCellInRow) {
+        return true;
+      }
+    } else if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
+      if (atLastCellInRow && atLastRow) {
+        return true;
+      }
+    }
+  }
+  return false;
+}

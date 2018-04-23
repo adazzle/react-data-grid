@@ -13,6 +13,7 @@ import {
   getSelectedRow,
   getSelectedColumn,
   getNextSelectedCellPosition,
+  canExitGrid,
   isSelectedCellEditable
 } from '../utils/SelectedCellUtils';
 import isFunction from '../utils/isFunction';
@@ -98,7 +99,7 @@ class InteractionMasks extends React.Component {
     this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, this.handleDragEnter);
 
     if (enableCellAutoFocus && this.isFocusedOnBody()) {
-      this.selectCell({ rowIdx: 0, idx: 0 });
+      this.selectFirstCell();
     }
   }
 
@@ -137,7 +138,10 @@ class InteractionMasks extends React.Component {
   };
 
   closeEditor = () => {
-    this.setState({ isEditorEnabled: false });
+    this.setState({
+      isEditorEnabled: false,
+      firstEditorKeyPress: null
+    });
   };
 
   onPressKeyWithCtrl = ({ keyCode }) => {
@@ -153,131 +157,39 @@ class InteractionMasks extends React.Component {
     }
   };
 
-  isAtLastCellInRow = () => {
-    const { selectedPosition: { idx } } = this.state;
-    return idx === this.props.columns - 1;
-  };
-
-  isAtLastRow = () => {
-    const { rowIdx } = this.state.selectedPosition;
-    return rowIdx === this.props.rowsCount - 1;
-  };
-
-  isAtFirstCellInRow = () => {
-    return this.state.selectedPosition.idx === 0;
-  };
-
-  isAtFirstRow = () => {
-    return this.state.selectedPosition.rowIdx === 0;
-  };
-
-  exitGrid = (oldSelectedCell, newSelectedValue) => {
-    const { onCellDeSelected } = this.props;
-    this.setState({ selectedPosition: newSelectedValue },
-      () => {
-        if (typeof onCellDeSelected === 'function') {
-          onCellDeSelected(oldSelectedCell);
-        }
-      });
-  };
-
-  enterGrid = (newSelectedValue) => {
-    this.setState({ selected: newSelectedValue },
-      () => {
-        if (typeof this.props.onCellSelected === 'function') {
-          this.props.onCellSelected(newSelectedValue);
-        }
-      });
-  };
-
-  canExitGrid = (e) => {
-    // When the cellNavigationMode is 'none', you can exit the grid if you're at the start or end of the row
-    // When the cellNavigationMode is 'changeRow', you can exit the grid if you're at the first or last cell of the grid
-    // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
-    let atLastCellInRow = this.isAtLastCellInRow();
-    let atFirstCellInRow = this.isAtFirstCellInRow();
-    let atLastRow = this.isAtLastRow();
-    let atFirstRow = this.isAtFirstRow();
-    let shift = e.shiftKey === true;
-    const { cellNavigationMode } = this.props;
-    if (shift) {
-      if (cellNavigationMode === CellNavigationMode.NONE) {
-        if (atFirstCellInRow) {
-          return true;
-        }
-      } else if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
-        if (atFirstCellInRow && atFirstRow) {
-          return true;
-        }
-      }
-    } else {
-      if (cellNavigationMode === CellNavigationMode.NONE) {
-        if (atLastCellInRow) {
-          return true;
-        }
-      } else if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
-        if (atLastCellInRow && atLastRow) {
-          return true;
-        }
+  onFocus = (e) => {
+    const shift = e.shiftKey === true;
+    const { selectedPosition: { idx, rowIdx } } = this.state;
+    if (idx === -1 && rowIdx === -1) {
+      if (shift) {
+        // FIXME: How to check if shift was pressed?
+        this.selectLastCell();
+      } else {
+        this.selectFirstCell();
       }
     }
-    return false;
   };
 
   onPressTab = (e) => {
-    const { selectedPosition: { idx, rowIdx }, isEditorEnabled } = this.state;
-    // Scenario 0a: When there are no rows in the grid, pressing tab needs to allow the browser to handle it
-    if (this.props.rowsCount === 0) {
+    const { cellNavigationMode, columns, rowsCount } = this.props;
+    const { selectedPosition, isEditorEnabled } = this.state;
+    // When there are no rows in the grid, pressing tab needs to allow the browser to handle it
+    if (rowsCount === 0) {
       return;
     }
-    // Scenario 0b: When we're editing a cell
-    if (isEditorEnabled === true) {
-      // if we are in a position to leave the grid, stop editing but stay in that cell
-      if (this.canExitGrid(e)) {
-        this.selectCell(selectedPosition);
+
+    // If we are in a position to leave the grid, stop editing but stay in that cell
+    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount, selectedPosition })) {
+      if (isEditorEnabled) {
+        this.closeEditor();
         return;
       }
-      // otherwise move left or right as appropriate
-      this.changeCellFromEvent(e);
+
+      // Reset the selected position before exiting
+      this.setState({ selectedPosition: { idx: -1, rowIdx: -1 } });
       return;
     }
-    const shift = e.shiftKey === true;
-    // Scenario 1: we're at a cell where we can exit the grid
-    if (this.canExitGrid(e) && this.isFocused()) {
-      if (shift && idx >= 0) {
-        this.exitGrid({ idx, rowIdx }, { idx: -1, rowIdx, exitedLeft: true });
-        return;
-      } else if (!shift && idx >= 0) {
-        this.exitGrid({ idx, rowIdx }, { idx: -1, rowIdx });
-        return;
-      }
-    }
-    // Scenario 2: we're on the div surrounding the grid and press shift+Tab
-    // and we just exited left, so we want to let the browser handle it
-    // KNOWN ISSUE: Focus on the table can come from either side and at this point we can't know how
-    // they user arrived, so it is possible that exitLeft gets set and then the user clicks out of the table
-    // and they won't be able to Shift+Tab around the site to re-enter the table from the right.
-    if (!this.isFocused() && shift && this.state.selectedPosition.exitedLeft) {
-      this.enterGrid({ idx, rowIdx });
-      return;
-    }
-    // Scenario 3: we're on the div surrounding the grid and we want to enter the grid
-    if (!this.isFocused()) {
-      // Scenario 3A: idx has been set to -1 (eg can happen when clicking into the filter box)
-      // we want to go to the first cell in the row if we press Tab
-      // we want to go to the last cell in the row if we press Shift+Tab
-      if (idx === -1) {
-        this.changeCellFromEvent(e);
-        return;
-      }
-      // otherwise, there is a selected cell in the table already, and
-      // we want to trigger it to focus - setting selected in state will update
-      // the cell props, and checkFocus will be called
-      this.enterGrid({ idx, rowIdx, changeSomething: true });
-      // make sure the browser doesn't handle it
-      e.preventDefault();
-      return;
-    }
+
     this.changeCellFromEvent(e);
   };
 
@@ -400,6 +312,15 @@ class InteractionMasks extends React.Component {
     }
   };
 
+  selectFirstCell = () => {
+    this.selectCell({ rowIdx: 0, idx: 0 });
+  };
+
+  selectLastCell = () => {
+    const { rowsCount, columns } = this.props;
+    this.selectCell({ rowIdx: rowsCount - 1, idx: columns.length - 1 });
+  };
+
   selectCell = (cell, openEditor) => {
     const callback = openEditor ? this.openEditor : undefined;
     if (this.isCellWithinBounds(cell)) {
@@ -486,6 +407,7 @@ class InteractionMasks extends React.Component {
         }}
         tabIndex="0"
         onKeyDown={this.onKeyDown}
+        onFocus={this.onFocus}
       >
         <CopyMask
           copiedPosition={copiedPosition}
