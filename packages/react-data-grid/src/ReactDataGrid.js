@@ -8,7 +8,8 @@ const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
-const ColumnMetrics        = require('./ColumnMetrics');
+import { DEFINE_SORT } from './cells/headerCells/SortableHeaderCell';
+const ColumnMetrics = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
@@ -37,6 +38,8 @@ class ReactDataGrid extends React.Component {
     getCellActions: PropTypes.func,
     onAddFilter: PropTypes.func,
     onGridSort: PropTypes.func,
+    sortColumn: PropTypes.string,
+    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
     onDragHandleDoubleClick: PropTypes.func,
     onGridRowsUpdated: PropTypes.func,
     onRowSelect: PropTypes.func,
@@ -117,7 +120,13 @@ class ReactDataGrid extends React.Component {
   constructor(props, context) {
     super(props, context);
     let columnMetrics = this.createColumnMetrics();
-    this.state = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
+    const initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
+    if (this.props.sortColumn && this.props.sortDirection) {
+      initialState.sortColumn = this.props.sortColumn;
+      initialState.sortDirection = this.props.sortDirection;
+    }
+
+    this.state = initialState;
     this.eventBus = new EventBus();
   }
 
