@@ -3,7 +3,7 @@ const React                = require('react');
 import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
-import * as cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
+import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
 require('../../../themes/react-data-grid-core.css');
 
 class Grid extends React.Component {

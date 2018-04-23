@@ -120,7 +120,7 @@ class ReactDataGrid extends React.Component {
   constructor(props, context) {
     super(props, context);
     let columnMetrics = this.createColumnMetrics();
-    const initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
+    const initialState = {columnMetrics, selectedRows: [], expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
     if (this.props.sortColumn && this.props.sortDirection) {
       initialState.sortColumn = this.props.sortColumn;
       initialState.sortDirection = this.props.sortDirection;
@@ -648,14 +648,14 @@ class ReactDataGrid extends React.Component {
   render() {
     let cellMetaData = {
       rowKey: this.props.rowKey,
-      dragged: this.state.dragged,
+      // dragged: this.state.dragged,
       hoveredRowIdx: this.state.hoveredRowIdx,
       onCellClick: this.onCellClick,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onCommit: this.onCommit,
       // onCommitCancel: this.setInactive,
-      copied: this.state.copied,
+      // copied: this.state.copied,
       enableCellSelect: this.props.enableCellSelect,
       onColumnEvent: this.onColumnEvent,
       openCellEditor: this.openCellEditor,

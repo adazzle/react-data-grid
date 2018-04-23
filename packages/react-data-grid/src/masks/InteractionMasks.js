@@ -38,8 +38,8 @@ class InteractionMasks extends React.Component {
     cellNavigationMode: PropTypes.oneOf([
       CellNavigationMode.NONE,
       CellNavigationMode.LOOP_OVER_ROW,
-      CellNavigationMode.CHANGE_ROW]
-    ).isRequired,
+      CellNavigationMode.CHANGE_ROW
+    ]).isRequired,
     eventBus: PropTypes.object.isRequired,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
