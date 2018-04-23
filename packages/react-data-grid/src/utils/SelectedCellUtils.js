@@ -47,7 +47,7 @@ export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsC
 
     if (isAfterLastColumn) {
       if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
-        const isLastRow = rowIdx === rowsCount;
+        const isLastRow = rowIdx === rowsCount - 1;
         if (!isLastRow) {
           return {
             idx: 0,
