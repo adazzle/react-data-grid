@@ -12,7 +12,7 @@ export default class GridRunner {
     this.renderIntoBody = renderIntoBody;
     this.example = GridUnderTest;
     this.gridWrapper = this._renderGrid(renderIntoBody);
-    this.grid = this.gridWrapper.node;
+    this.grid = this.gridWrapper.instance();
   }
 
   _renderGrid(intoBody) {
@@ -37,11 +37,16 @@ export default class GridRunner {
   // Helpers - these are just wrappers to run several steps
   // NOTE: these are 'final' functions, ie they call dispose at the end
   changeCell({select: {cell: selectCell, row: selectRow}, val, ev, expectToSelect: {row: expectRow, cell: expectCell}}) {
+    const coords = {cellIdx: selectCell, rowIdx: selectRow};
     this
-      .clickIntoEditor({cellIdx: selectCell, rowIdx: selectRow})
+      .clickIntoEditor(coords)
+      .resetCell(coords)
       .setValue(val)
+      .resetCell(coords)
       .keyDown(ev)
+      .resetCell(coords)
       .hasCommitted(val)
+      .resetCell(coords)
       .hasSelected({cellIdx: expectCell, rowIdx: expectRow})
       .dispose();
   }
@@ -49,6 +54,12 @@ export default class GridRunner {
   /* =====
   ACTIONS
   ======== */
+  resetCell({cellIdx, rowIdx}) {
+    // Caching components do not work in V3 so find the cell again after each operation
+    this.cell = this.getCell({ cellIdx, rowIdx });
+    return this;
+  }
+
   rightClickCell({cellIdx, rowIdx}) {
     this.row = this.getRow(rowIdx);
     this.cell = this.getCell({ cellIdx, rowIdx });
@@ -144,14 +155,14 @@ export default class GridRunner {
     return this.cell.find('input');
   }
   setValue(val) {
-    this.getEditor().node.value = val;
+    this.getEditor().instance().value = val;
     // remember to set the value via the dom node, not the component!
     return this;
   }
   // you MUST have set the grid to render into body to use this
   // chrome (et al) dont do cursor positions unless you are properly visibile
   setCursor(start, end = start) {
-    const input = ReactDOM.findDOMNode(this.getEditor().node);
+    const input = ReactDOM.findDOMNode(this.getEditor().instance());
     input.setSelectionRange(start, end);
     expect(input.selectionStart).toEqual(start, `Couldnt set the cursor.
             You probably havent rendered the grid into the *actual* dom.
@@ -204,25 +215,25 @@ export default class GridRunner {
   }
   isNotEditable() {
     let editor = this.cell.find('input');
-    expect(editor.nodes.length === 0).toBe(true);
+    expect(editor.length === 0).toBe(true);
     return this;
   }
   isEditable() {
     let editor = this.cell.find('input');
-    expect(editor.nodes.length > 0).toBe(true);
+    expect(editor.length > 0).toBe(true);
     return this;
   }
   hasSelected({rowIdx, cellIdx}) {
     // and should move to the appropriate cell/row
     let cell = this.getCell({cellIdx, rowIdx});
-    expect(cell.node.isSelected()).toBe(true);
+    expect(cell.instance().isSelected()).toBe(true);
     return this;
   }
   hasCopied({cellIdx, rowIdx}) {
     let baseGrid = this.grid.reactDataGrid;
     expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
-    expect(ReactDOM.findDOMNode(this.cell.node).className.indexOf('copied') > -1).toBe(true);
+    expect(ReactDOM.findDOMNode(this.cell.instance()).className.indexOf('copied') > -1).toBe(true);
   }
   hasDragged({from, to, col, cellKey}) {
     // check onCellDrag called with correct data
@@ -241,7 +252,7 @@ export default class GridRunner {
       expect(toCell.props().value).toEqual(expected);
       // and finally the rendered data
       // (use trim as we are reading from the dom so get some whitespace at the end)
-      expect(toCell.find('.react-grid-Cell__value').node.textContent.trim()).toEqual(expected.trim());
+      expect(toCell.find('.react-grid-Cell__value').instance().textContent.trim()).toEqual(expected.trim());
     }
   }
 }
