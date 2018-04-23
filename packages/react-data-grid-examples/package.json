@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid-examples",
-  "version": "4.0.1",
+  "version": "4.0.3",
   "description": "A set of examples for the grid",
   "main": "main.js",
   "scripts": {
