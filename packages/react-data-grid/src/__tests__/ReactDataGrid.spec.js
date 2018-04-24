@@ -10,7 +10,7 @@ function shallowRenderGrid({
   numRows = helpers.rowsCount(),
   onCellSelected, onCellDeSelected
 }) {
-  const enzymeWrapper = shallow(<ReactDataGrid
+  const wrapper = shallow(<ReactDataGrid
     columns={helpers.columns}
     rowGetter={helpers.rowGetter}
     rowsCount={numRows}
@@ -21,23 +21,23 @@ function shallowRenderGrid({
     onCellDeSelected={onCellDeSelected}
   />);
   return {
-    enzymeWrapper
+    wrapper
   };
 }
 
-fdescribe('configure enableCellAutoFocus property', () => {
+describe('configure enableCellAutoFocus property', () => {
   it('passes enableCellAutoFocus property in the Grid cellMetaData', () => {
     const enableCellAutoFocus = true;
-    const { enzymeWrapper } = shallowRenderGrid({ enableCellAutoFocus });
-    expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toEqual(enableCellAutoFocus);
+    const { wrapper } = shallowRenderGrid({ enableCellAutoFocus });
+    expect(wrapper.find('Grid').props().enableCellAutoFocus).toEqual(enableCellAutoFocus);
   });
   it('sets enableCellAutoFocus to true by default', () => {
-    const { enzymeWrapper } = shallowRenderGrid({});
-    expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toBe(true);
+    const { wrapper } = shallowRenderGrid({});
+    expect(wrapper.find('Grid').props().enableCellAutoFocus).toBe(true);
   });
   it('sets enableCellAutoFocus to false if it is configured', () => {
-    const { enzymeWrapper } = shallowRenderGrid({ enableCellAutoFocus: false });
-    expect(enzymeWrapper.find('Grid').props().cellMetaData.enableCellAutoFocus).toBe(false);
+    const { wrapper } = shallowRenderGrid({ enableCellAutoFocus: false });
+    expect(wrapper.find('Grid').props().enableCellAutoFocus).toBe(false);
   });
 });
 

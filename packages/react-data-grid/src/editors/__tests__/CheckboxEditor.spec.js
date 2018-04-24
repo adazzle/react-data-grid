@@ -38,13 +38,5 @@ describe('CheckboxEditor', () => {
       let checkboxNode = ReactDOM.findDOMNode(Input);
       expect(checkboxNode.checked).toBe(false);
     });
-
-    it('should call onCellChange with correct rowIdx and columnKey when checkbox is clicked', () => {
-      let Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-      TestUtils.Simulate.click(ReactDOM.findDOMNode(Input));
-      expect(testColumn.onCellChange).toHaveBeenCalled();
-      let fakeEvent = {stopPropagation: function() {}};
-      expect(testColumn.onCellChange.calls.mostRecent().args[0]).toEqual(1, 'columnKey', fakeEvent);
-    });
   });
 });

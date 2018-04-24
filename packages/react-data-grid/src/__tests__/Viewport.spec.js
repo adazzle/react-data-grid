@@ -78,7 +78,7 @@ describe('<Viewport />', () => {
     expect(Canvas).toBeDefined();
   });
 
-  it('should updated scroll state onScroll', () => {
+  it('should update scroll state onScroll', () => {
     let scrollLeft = 0;
     let scrollTop = 200;
     const wrapper = shallow(<Viewport {...viewportProps} />);
@@ -89,13 +89,13 @@ describe('<Viewport />', () => {
       colDisplayStart: 0,
       colVisibleEnd: 3,
       colVisibleStart: 0,
-      displayEnd: 25,
-      displayStart: 0,
+      displayEnd: 26,
+      displayStart: 1,
       height: viewportProps.minHeight,
       scrollLeft: scrollLeft,
       scrollTop: scrollTop,
-      visibleEnd: 20,
-      visibleStart: 5,
+      visibleEnd: 21,
+      visibleStart: 6,
       isScrolling: true
     });
   });
