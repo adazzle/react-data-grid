@@ -441,7 +441,7 @@ class InteractionMasks extends React.Component {
           onCommitCancel={this.onCommitCancel}
           rowIdx={selectedPosition.rowIdx}
           value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
-          RowData={getSelectedRow({ selectedPosition, rowGetter })}
+          rowData={getSelectedRow({ selectedPosition, rowGetter })}
           column={getSelectedColumn({ selectedPosition, columns })}
           {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
         />}
