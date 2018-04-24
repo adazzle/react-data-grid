@@ -1,4 +1,4 @@
-import columnUtils from '../../ColumnUtils';
+import * as columnUtils from '../../ColumnUtils';
 import { getGridState, getNextScrollState, getRenderedColumnCount, getVisibleBoundaries } from '../viewportUtils';
 
 describe('viewportUtils', () => {
@@ -37,11 +37,8 @@ describe('viewportUtils', () => {
     });
 
     it('should correctly set visible column count', () => {
-      const fakeGetSize = spyOn(columnUtils, 'getSize').and.returnValue(15);
       const { state, props } = getState();
-
-      expect(fakeGetSize).toHaveBeenCalledWith(props.columnMetrics.columns);
-      expect(state.colVisibleEnd).toBe(15);
+      expect(state.colVisibleEnd).toBe(props.columnMetrics.columns.length);
     });
   });
 
@@ -171,10 +168,10 @@ describe('viewportUtils', () => {
         isScrolling: true,
         scrollLeft,
         scrollTop,
-        visibleStart: 2,
-        visibleEnd: 15,
-        displayStart: 1,
-        displayEnd: 25,
+        visibleStart: 3,
+        visibleEnd: 16,
+        displayStart: 2,
+        displayEnd: 26,
         colDisplayStart: 0,
         colDisplayEnd: 2
       }));

@@ -29,17 +29,11 @@ module.exports = function(stateValues, events) {
       minColumnWidth: 80
     },
     selectedRows: [],
-    selected: {
-      rowIdx: 0,
-      idx: 0
-    },
-    copied: null,
     canFilter: false,
     expandedRows: [],
     columnFilters: {},
     sortDirection: null,
     sortColumn: null,
-    dragged: null,
     scrollOffset: 0,
     lastRowIdxUiSelected: -1
   }, stateValues);

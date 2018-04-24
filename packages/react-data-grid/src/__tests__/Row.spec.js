@@ -96,11 +96,6 @@ describe('Row', () => {
       const draggableDiv = wrapper.find('div').at(0);
       expect(draggableDiv.props().style).toBeDefined();
     });
-    it('passes onDragEnter property', () => {
-      const wrapper = renderComponent(requiredProperties);
-      const draggableDiv = wrapper.find('div');
-      expect(draggableDiv.props().onDragEnter).toBeDefined();
-    });
     it('passes height property', () => {
       const wrapper = renderComponent(requiredProperties);
       const draggableDiv = wrapper.find('div').at(0);
