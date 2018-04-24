@@ -19,7 +19,7 @@ class EditorContainer extends React.Component {
     onGridKeyDown: PropTypes.func,
     onCommit: PropTypes.func,
     onCommitCancel: PropTypes.func,
-    firstEditorKeyPress: PropTypes.number,
+    firstEditorKeyPress: PropTypes.string,
     width: PropTypes.number,
     top: PropTypes.number,
     left: PropTypes.number

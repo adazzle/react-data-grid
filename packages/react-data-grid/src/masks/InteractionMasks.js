@@ -359,19 +359,21 @@ class InteractionMasks extends React.Component {
   handleDragEnd = () => {
     const { draggedPosition } = this.state;
     if (draggedPosition != null) {
-      const { columns, onCellsDragged, onGridRowsUpdated, rowGetter } = this.props;
       const { rowIdx, overRowIdx } = draggedPosition;
-      const column = getSelectedColumn({ selectedPosition: draggedPosition, columns });
-      const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
-      const cellKey = column.key;
-      const fromRow = rowIdx < overRowIdx ? rowIdx : overRowIdx;
-      const toRow = rowIdx > overRowIdx ? rowIdx : overRowIdx;
+      if (overRowIdx != null) {
+        const { columns, onCellsDragged, onGridRowsUpdated, rowGetter } = this.props;
+        const column = getSelectedColumn({ selectedPosition: draggedPosition, columns });
+        const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
+        const cellKey = column.key;
+        const fromRow = rowIdx < overRowIdx ? rowIdx : overRowIdx;
+        const toRow = rowIdx > overRowIdx ? rowIdx : overRowIdx;
 
-      if (isFunction(onCellsDragged)) {
-        onCellsDragged({ cellKey, fromRow, toRow, value });
-      }
-      if (isFunction(onGridRowsUpdated)) {
-        onGridRowsUpdated(cellKey, fromRow, toRow, { [cellKey]: value }, AppConstants.UpdateActions.CELL_DRAG);
+        if (isFunction(onCellsDragged)) {
+          onCellsDragged({ cellKey, fromRow, toRow, value });
+        }
+        if (isFunction(onGridRowsUpdated)) {
+          onGridRowsUpdated(cellKey, fromRow, toRow, { [cellKey]: value }, AppConstants.UpdateActions.CELL_DRAG);
+        }
       }
       this.setState({
         draggedPosition: null
