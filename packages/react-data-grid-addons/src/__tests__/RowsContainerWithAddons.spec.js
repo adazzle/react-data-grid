@@ -4,7 +4,7 @@ import { RowsContainer } from 'react-data-grid';
 import { Menu } from '../../';
 const { ContextMenu } = Menu;
 
-describe('RowsContainer with addons', () => {
+xdescribe('RowsContainer with addons', () => {
   describe('with context menu', () => {
     let componentWithContextMenu;
     const fakeRowIdx = 1;
