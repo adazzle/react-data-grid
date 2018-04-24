@@ -1,4 +1,5 @@
 import { CellNavigationMode } from '../constants/';
+import isFunction from './isFunction';
 import * as rowUtils from '../RowUtils';
 import * as columnUtils from '../ColumnUtils';
 
@@ -33,10 +34,11 @@ export const getSelectedCellValue = ({ selectedPosition, columns, rowGetter }) =
   return row && column ? rowUtils.get(row, column.key) : null;
 };
 
-export const isSelectedCellEditable = ({ enableCellSelect, selectedPosition, columns, rowGetter }) => {
+export const isSelectedCellEditable = ({ enableCellSelect, selectedPosition, columns, rowGetter, onCheckCellIsEditable }) => {
   const column = getSelectedColumn({ selectedPosition, columns });
   const row = getSelectedRow({ selectedPosition, rowGetter });
-  return columnUtils.canEdit(column, row, enableCellSelect);
+  const isCellEditable = isFunction(onCheckCellIsEditable) ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
+  return columnUtils.canEdit(column, row, enableCellSelect) && isCellEditable;
 };
 
 export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsCount }, nextPosition) => {

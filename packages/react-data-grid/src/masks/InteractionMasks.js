@@ -123,9 +123,9 @@ class InteractionMasks extends React.Component {
   };
 
   isSelectedCellEditable = () => {
-    const { enableCellSelect, columns, rowGetter } = this.props;
+    const { enableCellSelect, columns, rowGetter, onCheckCellIsEditable } = this.props;
     const { selectedPosition } = this.state;
-    return isSelectedCellEditable({ enableCellSelect, columns, rowGetter, selectedPosition });
+    return isSelectedCellEditable({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
   }
 
   openEditor = ({ key } = {}) => {
