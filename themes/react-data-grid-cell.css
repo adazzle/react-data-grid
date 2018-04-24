@@ -26,6 +26,10 @@
   pointer-events: auto;
 }
 
+.react-contextmenu--visible {
+  z-index: 3;
+}
+
 .rdg-selected .drag-handle,
 .react-grid-Cell:focus .drag-handle {
   position: absolute;

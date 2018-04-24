@@ -248,11 +248,11 @@ class ReactDataGrid extends React.Component {
     return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
   };
 
-  onContextMenuHide = () => {
-    document.removeEventListener('click', this.onContextMenuHide);
-    // let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
-    // this.setState({selected: newSelected});
-  };
+  // onContextMenuHide = () => {
+  //   document.removeEventListener('click', this.onContextMenuHide);
+  //   // let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
+  //   // this.setState({selected: newSelected});
+  // };
 
   onColumnEvent = (ev, columnEvent) => {
     // TODO: fix me
@@ -286,9 +286,9 @@ class ReactDataGrid extends React.Component {
   onCellContextMenu = ({ rowIdx, idx }) => {
     // this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx, contextMenuDisplayed: this.props.contextMenu});
     this.selectCell({ rowIdx, idx });
-    if (this.props.contextMenu) {
-      document.addEventListener('click', this.onContextMenuHide);
-    }
+    // if (this.props.contextMenu) {
+    //   document.addEventListener('click', this.onContextMenuHide);
+    // }
   };
 
   onCellDoubleClick = ({ rowIdx, idx }) => {
@@ -579,10 +579,10 @@ class ReactDataGrid extends React.Component {
     return RowUtils.get(row, cellKey);
   };
 
-  getNbrColumns = () => {
-    const {columns, enableRowSelect} = this.props;
-    return enableRowSelect ? columns.length + 1 : columns.length;
-  };
+  // getNbrColumns = () => {
+  //   const {columns, enableRowSelect} = this.props;
+  //   return enableRowSelect ? columns.length + 1 : columns.length;
+  // };
 
   getDataGridDOMNode = () => {
     return this.grid;

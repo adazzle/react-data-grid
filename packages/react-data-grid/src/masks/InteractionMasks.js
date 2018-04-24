@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { isValidElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 
 import SelectionMask from './SelectionMask';
@@ -41,6 +41,7 @@ class InteractionMasks extends React.Component {
       CellNavigationMode.CHANGE_ROW
     ]).isRequired,
     eventBus: PropTypes.object.isRequired,
+    contextMenu: PropTypes.element,
     onCheckCellIsEditable: PropTypes.func,
     onCellCopyPaste: PropTypes.func,
     onGridRowsUpdated: PropTypes.func.isRequired,
@@ -399,7 +400,7 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
-    const { rowHeight, rowGetter, columns } = this.props;
+    const { rowHeight, rowGetter, columns, contextMenu } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
 
     return (
@@ -447,6 +448,7 @@ class InteractionMasks extends React.Component {
           column={getSelectedColumn({ selectedPosition, columns })}
           {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
         />}
+        {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>
     );
   }

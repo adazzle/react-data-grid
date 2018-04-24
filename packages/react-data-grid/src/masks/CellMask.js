@@ -25,7 +25,9 @@ CellMask.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   top: PropTypes.number.isRequired,
-  left: PropTypes.number.isRequired
+  left: PropTypes.number.isRequired,
+  zIndex: PropTypes.number.isRequired,
+  children: PropTypes.node
 };
 
 export default CellMask;

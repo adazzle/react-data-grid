@@ -362,6 +362,7 @@ class Canvas extends React.Component {
             enableCellAutoFocus={this.props.enableCellAutoFocus}
             cellNavigationMode={this.props.cellNavigationMode}
             eventBus={this.props.eventBus}
+            contextMenu={this.props.contextMenu}
             onHitBottomBoundary={this.onHitBottomCanvas}
             onHitTopBoundary={this.onHitTopCanvas}
             onHitLeftBoundary={this.onHitLeftCanvas}
