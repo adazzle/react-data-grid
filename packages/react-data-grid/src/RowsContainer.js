@@ -1,6 +1,8 @@
 import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
 
+export const DEFAULT_CONTEXT_MENU_ID = 'rgdContextMenu';
+
 class RowsContainer extends React.Component {
   static propTypes = {
     contextMenu: PropTypes.element,
