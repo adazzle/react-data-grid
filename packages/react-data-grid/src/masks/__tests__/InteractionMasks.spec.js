@@ -346,7 +346,7 @@ describe('<InteractionMasks/>', () => {
 
     it('should not render a CopyMask component if there is no copied cell', () => {
       const { wrapper } = setupCopy();
-      expect(wrapper.find(CopyMask).props().copiedPosition).toBe(null);
+      expect(wrapper.find(CopyMask).length).toBe(0);
     });
 
     it('should render a CopyMask component when a cell is copied', () => {
@@ -359,14 +359,18 @@ describe('<InteractionMasks/>', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
       pressKey(wrapper, 'Escape', { keyCode: keyCodes.Escape });
-      expect(wrapper.find(CopyMask).props().copiedPosition).toBe(null);
+      expect(wrapper.find(CopyMask).length).toBe(0);
     });
 
     it('should update the selected cell with the copied value on paster', () => {
       const { wrapper, props } = setupCopy();
+      // Copy selected cell
       pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
+      // Move up
       pressKey(wrapper, 'ArrowUp');
+      // Paste copied cell
       pressKey(wrapper, 'v', { keyCode: keyCodes.v, ctrlKey: true });
+
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 1, 1, { Column1: '3' }, AppConstants.UpdateActions.COPY_PASTE, 2);
     });
   });

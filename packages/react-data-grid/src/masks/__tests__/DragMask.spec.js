@@ -18,12 +18,6 @@ describe('DragMask', () => {
     return wrapper.find(CellMask);
   };
 
-  it('should not render a CellMask if the drag process has not started', () => {
-    const mask = setup(null);
-
-    expect(mask.length).toBe(0);
-  });
-
   it('should not render a CellMask if the drag handle is on the same row as the dragged cell', () => {
     const mask = setup({ draggedPosition: { idx: 0, rowIdx: 2, overRowIdx: 2 } });
 

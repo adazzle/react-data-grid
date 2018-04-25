@@ -412,16 +412,20 @@ class InteractionMasks extends React.Component {
         onKeyDown={this.onKeyDown}
         onFocus={this.onFocus}
       >
-        <CopyMask
-          copiedPosition={copiedPosition}
-          rowHeight={rowHeight}
-          columns={columns}
-        />
-        <DragMask
-          draggedPosition={draggedPosition}
-          rowHeight={rowHeight}
-          columns={columns}
-        />
+        {copiedPosition && (
+          <CopyMask
+            copiedPosition={copiedPosition}
+            rowHeight={rowHeight}
+            columns={columns}
+          />
+        )}
+        {draggedPosition && (
+          <DragMask
+            draggedPosition={draggedPosition}
+            rowHeight={rowHeight}
+            columns={columns}
+          />
+        )}
         {!isEditorEnabled && this.isGridSelected() && (
           <SelectionMask
             selectedPosition={selectedPosition}

@@ -18,12 +18,6 @@ describe('CopyMask', () => {
     return wrapper.find(CellMask);
   };
 
-  it('should not render a CellMask if there is no copied cell', () => {
-    const mask = setup(null);
-
-    expect(mask.length).toBe(0);
-  });
-
   it('should render a CellMask with correct position for the copied cell', () => {
     const mask = setup({ copiedPosition: { idx: 0, rowIdx: 3 } });
 

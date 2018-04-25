@@ -17,7 +17,7 @@ function SelectionMask({ selectedPosition, columns, rowHeight, children }) {
 }
 
 SelectionMask.propTypes = {
-  selectedPosition: PropTypes.object,
+  selectedPosition: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired,
   rowHeight: PropTypes.number.isRequired
 };
