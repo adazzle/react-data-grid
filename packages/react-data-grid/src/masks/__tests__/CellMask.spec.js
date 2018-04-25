@@ -15,32 +15,25 @@ describe('CellMask', () => {
     };
 
     const wrapper = shallow(<CellMask {...props}>{children}</CellMask>);
-
-    return {
-      props,
-      mask: wrapper.find(sel('cell-mask'))
-    }
+    return wrapper.find(sel('cell-mask'));
   };
 
-  it('should render CellMask with correct style', () => {
-    const {
-      props: { height, width, left, top, zIndex },
-      mask
-    } = setup();
+  it('should render a mask with correct style', () => {
+    const mask = setup();
 
     expect(mask.prop('style')).toEqual(
       jasmine.objectContaining({
-        height,
-        width,
-        zIndex,
-        transform: `translate(${left}px, ${top}px)`
+        height: 30,
+        width: 50,
+        zIndex: 2,
+        transform: `translate(5px, 10px)`
       })
     );
   });
 
   it('should render any children', () => {
     const FakeChild = <div>test</div>;
-    const { mask } = setup(FakeChild);
+    const mask = setup(FakeChild);
 
     expect(mask.contains(FakeChild)).toBe(true);
   });
