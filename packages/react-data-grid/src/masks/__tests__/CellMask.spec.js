@@ -18,7 +18,7 @@ describe('CellMask', () => {
     return wrapper.find(sel('cell-mask'));
   };
 
-  it('should render a mask with correct style', () => {
+  it('should render the mask with correct style', () => {
     const mask = setup();
 
     expect(mask.prop('style')).toEqual(

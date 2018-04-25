@@ -18,7 +18,7 @@ describe('CopyMask', () => {
     return wrapper.find(CellMask);
   };
 
-  it('should render a CellMask with correct position for the copied cell', () => {
+  it('should render the CellMask component with correct position for the copied cell', () => {
     const mask = setup({ copiedPosition: { idx: 0, rowIdx: 3 } });
 
     expect(mask.props()).toEqual(

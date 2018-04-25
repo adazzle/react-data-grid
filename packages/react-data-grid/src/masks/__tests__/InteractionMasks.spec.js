@@ -4,11 +4,14 @@ import { shallow, mount } from 'enzyme';
 import InteractionMasks from '../InteractionMasks';
 import SelectionMask from '../SelectionMask';
 import CopyMask from '../CopyMask';
+import DragMask from '../DragMask';
+import DragHandle from '../DragHandle';
+import EventBus from '../EventBus';
 import EditorContainer from '../../editors/EditorContainer';
 import { createColumns } from '../../__tests__/utils/createColumns';
 import * as AppConstants from '../../AppConstants';
 import * as keyCodes from '../../KeyCodes';
-import { CellNavigationMode } from '../../constants';
+import { CellNavigationMode, EventTypes } from '../../constants';
 
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
@@ -17,7 +20,7 @@ describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
   const setup = (overrideProps, initialState, render = shallow) => {
-    const eventBus = { subscribe: jasmine.createSpy() };
+    const eventBus = new EventBus();
     const props = {
       visibleStart: 0,
       visibleEnd: 10,
@@ -331,7 +334,7 @@ describe('<InteractionMasks/>', () => {
     });
   });
 
-  describe('Copy Operation', () => {
+  describe('Copy functionality', () => {
     const setupCopy = () => {
       const selectedPosition = { idx: 1, rowIdx: 2 };
       const rows = [
@@ -372,6 +375,51 @@ describe('<InteractionMasks/>', () => {
       pressKey(wrapper, 'v', { keyCode: keyCodes.v, ctrlKey: true });
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 1, 1, { Column1: '3' }, AppConstants.UpdateActions.COPY_PASTE, 2);
+    });
+  });
+
+  describe('Drag functionality', () => {
+    const setupDrag = () => {
+      const selectedPosition = { idx: 1, rowIdx: 2 };
+      const rows = [
+        { Column1: '1' },
+        { Column1: '2' },
+        { Column1: '3' }
+      ];
+      return setup({
+        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter(rowIdx)
+      }, { selectedPosition });
+    };
+
+    it('should not render the DragMask component if drag has not started', () => {
+      const { wrapper } = setupDrag();
+
+      expect(wrapper.find(DragMask).length).toBe(0);
+    });
+
+    it('should render the DragMask component on cell drag', () => {
+      const { wrapper } = setupDrag();
+      const setData = jasmine.createSpy();
+      wrapper.find(DragHandle).simulate('dragstart', {
+        target: { className: 'test' },
+        dataTransfer: { setData }
+      });
+
+      expect(wrapper.find(DragMask).length).toBe(1);
+      expect(setData).toHaveBeenCalled();
+    });
+
+    it('should update the dragged over cells on drag end', () => {
+      const { wrapper, props } = setupDrag();
+      const setData = jasmine.createSpy();
+      wrapper.find(DragHandle).simulate('dragstart', {
+        target: { className: 'test' },
+        dataTransfer: { setData }
+      });
+      props.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx: 6 });
+      wrapper.find(DragHandle).simulate('dragEnd');
+
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, AppConstants.UpdateActions.CELL_DRAG);
     });
   });
 });

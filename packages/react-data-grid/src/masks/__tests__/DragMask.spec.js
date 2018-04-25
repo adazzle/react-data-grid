@@ -18,13 +18,13 @@ describe('DragMask', () => {
     return wrapper.find(CellMask);
   };
 
-  it('should not render a CellMask if the drag handle is on the same row as the dragged cell', () => {
+  it('should not render the CellMask component if the drag handle is on the same row as the dragged cell', () => {
     const mask = setup({ draggedPosition: { idx: 0, rowIdx: 2, overRowIdx: 2 } });
 
     expect(mask.length).toBe(0);
   });
 
-  it('should render a CellMask with correct position for the dragged down cell', () => {
+  it('should render the CellMask component with correct position for the dragged down cell', () => {
     const mask = setup({ draggedPosition: { idx: 0, rowIdx: 2, overRowIdx: 6 } });
 
     expect(mask.props()).toEqual(
@@ -38,7 +38,7 @@ describe('DragMask', () => {
     );
   });
 
-  it('should render a CellMask with correct position for the dragged up cell', () => {
+  it('should render the CellMask component with correct position for the dragged up cell', () => {
     const mask = setup({ draggedPosition: { idx: 0, rowIdx: 6, overRowIdx: 4 } });
 
     expect(mask.props()).toEqual(
