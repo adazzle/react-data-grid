@@ -155,7 +155,8 @@ class ReactDataGrid extends React.Component {
     let columnMetrics = this.createColumnMetrics();
     let initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
     if (props.enableCellSelect) {
-      initialState.selected = {rowIdx: 0, idx: 0};
+      // @NOTE Lennd: If endableCellSelect, start with cells deselected
+      initialState.selected = {rowIdx: -1, idx: -1};
     } else {
       initialState.selected = {rowIdx: -1, idx: -1};
     }
@@ -195,6 +196,27 @@ class ReactDataGrid extends React.Component {
       }
     }
   }
+
+  // @NOTE: Lennd: Ability to deselect all cells
+  deselectCells = () => {
+    this.setState({ selected: { rowIdx: -1, idx: -1 } });
+  };
+
+  // @NOTE: Lennd: Ability to deselect specific rows with an array of row ids
+  deselectRows = () => {
+    let selectedRows = [];
+    for (let i = 0; i < this.state.selectedRows; i++) {
+      if (rowsToDeselect.indexOf(this.state.selectedRows[i].id) === -1) {
+        selectedRows.push(this.state.selectedRows[i]);
+      } else {
+        selectedRows.push(Object.assign({}, this.state.selectedRows[i], { isSelected: false }));
+      }
+    }
+    this.setState({ selectedRows: selectedRows });
+    if (typeof this.props.onRowSelect === 'function') {
+      this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
+    }
+  };
 
   gridWidth = (): number => {
     return this.grid ? this.grid.parentElement.offsetWidth : 0;

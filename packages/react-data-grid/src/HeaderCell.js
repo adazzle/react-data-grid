@@ -111,8 +111,9 @@ class HeaderCell extends React.Component {
     });
     className = joinClasses(className, this.props.className, this.props.column.cellClass);
     let cell = this.getCell();
+    // @NOTE Lennd: Add data attribute for column
     return (
-      <div className={className} style={this.getStyle()}>
+      <div className={className} style={this.getStyle()} data-column={this.props.column.id || this.props.column.key}>
         {cell}
         {resizeHandle}
       </div>
