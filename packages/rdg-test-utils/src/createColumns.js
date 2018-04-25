@@ -11,4 +11,5 @@ export const createColumn = (index, props) => {
   };
 };
 
-export const createColumns = (count) => [...Array(count).keys()].map(i => createColumn(i));
+
+export const createColumns = (count) => Array.apply(null, {length: count}).map(Function.call, Number).map(i => createColumn(i));
