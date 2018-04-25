@@ -3,13 +3,16 @@ import { shallow, mount } from 'enzyme';
 
 import InteractionMasks from '../InteractionMasks';
 import SelectionMask from '../SelectionMask';
+import CopyMask from '../CopyMask';
 import EditorContainer from '../../editors/EditorContainer';
 import { createColumns } from '../../__tests__/utils/createColumns';
+import * as AppConstants from '../../AppConstants';
 import * as keyCodes from '../../KeyCodes';
 import { CellNavigationMode } from '../../constants';
 
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
+
 describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
@@ -31,6 +34,7 @@ describe('<InteractionMasks/>', () => {
       onHitLeftBoundary: jasmine.createSpy(),
       onCellSelected: jasmine.createSpy(),
       onCellDeSelected: jasmine.createSpy(),
+      onGridRowsUpdated: jasmine.createSpy(),
       isEditorEnabled: false,
       rowGetter,
       enableCellSelect: true,
@@ -163,6 +167,7 @@ describe('<InteractionMasks/>', () => {
               expect(props.onCellSelected).toHaveBeenCalledWith({ rowIdx: 2, idx: 3 });
             });
           });
+
           describe('user is able to exit the grid to the left', () => {
             it('triggers the deselection handler on press Shift+Tab', () => {
               const { wrapper, props, initialCell } = setupCellSelectionTest({ rowIdx: 0, idx: 0 });
@@ -175,6 +180,7 @@ describe('<InteractionMasks/>', () => {
               expect(props.onCellSelected).not.toHaveBeenCalled();
             });
           });
+
           describe('user is able to exit the grid to the right', () => {
             it('triggers the deselection handler on press Tab', () => {
               const { wrapper, props, initialCell } = setupCellSelectionTest();
@@ -191,7 +197,6 @@ describe('<InteractionMasks/>', () => {
         });
       });
     });
-
 
     describe('using keyboard to navigate through the grid by pressing Tab or Shift+Tab', () => {
       // enzyme doesn't allow dom keyboard navigation, but we can assume that if
@@ -257,6 +262,7 @@ describe('<InteractionMasks/>', () => {
             .toEqual({ rowIdx: 1, idx: NUMBER_OF_COLUMNS - 1 });
         });
       });
+
       describe('when cellNavigationMode is none', () => {
         const cellNavigationMode = CellNavigationMode.NONE;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
@@ -292,6 +298,7 @@ describe('<InteractionMasks/>', () => {
           assertExitGridOnTab({ cellNavigationMode }, true, { selectedPosition });
         });
       });
+
       describe('when cellNavigationMode is loopOverRow', () => {
         const cellNavigationMode = 'loopOverRow';
         it('allows the user to exit the grid with Tab if there are no rows', () => {
@@ -321,6 +328,46 @@ describe('<InteractionMasks/>', () => {
             .toEqual({ rowIdx: 2, idx: 1 });
         });
       });
+    });
+  });
+
+  describe('Copy Operation', () => {
+    const setupCopy = () => {
+      const selectedPosition = { idx: 1, rowIdx: 2 };
+      const rows = [
+        { Column1: '1' },
+        { Column1: '2' },
+        { Column1: '3' }
+      ];
+      return setup({
+        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter(rowIdx)
+      }, { selectedPosition });
+    };
+
+    it('should not render a CopyMask component if there is no copied cell', () => {
+      const { wrapper } = setupCopy();
+      expect(wrapper.find(CopyMask).props().copiedPosition).toBe(null);
+    });
+
+    it('should render a CopyMask component when a cell is copied', () => {
+      const { wrapper } = setupCopy();
+      pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
+      expect(wrapper.find(CopyMask).props().copiedPosition).toEqual({ idx: 1, rowIdx: 2, value: '3' });
+    });
+
+    it('should remove the CopyMask component on escape', () => {
+      const { wrapper } = setupCopy();
+      pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
+      pressKey(wrapper, 'Escape', { keyCode: keyCodes.Escape });
+      expect(wrapper.find(CopyMask).props().copiedPosition).toBe(null);
+    });
+
+    it('should update the selected cell with the copied value on paster', () => {
+      const { wrapper, props } = setupCopy();
+      pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
+      pressKey(wrapper, 'ArrowUp');
+      pressKey(wrapper, 'v', { keyCode: keyCodes.v, ctrlKey: true });
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 1, 1, { Column1: '3' }, AppConstants.UpdateActions.COPY_PASTE, 2);
     });
   });
 });
