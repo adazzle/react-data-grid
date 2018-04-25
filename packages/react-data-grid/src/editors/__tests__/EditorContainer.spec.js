@@ -9,7 +9,6 @@ const EditorBase       = require('../EditorBase');
 import { shallow } from 'enzyme';
 
 describe('Editor Container Tests', () => {
-
   let component;
   let container;
 

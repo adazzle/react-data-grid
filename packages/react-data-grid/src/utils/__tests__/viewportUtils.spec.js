@@ -1,4 +1,3 @@
-import * as columnUtils from '../../ColumnUtils';
 import { getGridState, getNextScrollState, getRenderedColumnCount, getVisibleBoundaries } from '../viewportUtils';
 
 describe('viewportUtils', () => {

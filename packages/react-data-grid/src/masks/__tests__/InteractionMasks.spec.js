@@ -145,7 +145,6 @@ describe('<InteractionMasks/>', () => {
 
     describe('Full render tests', () => {
       describe('Cell Selection/DeSelection handlers', () => {
-
         const setupCellSelectionTest = (initialCell = {rowIdx: 2, idx: 2}) => {
           return {
             ...setup({}, { selectedPosition: initialCell }, mount),
@@ -167,7 +166,6 @@ describe('<InteractionMasks/>', () => {
             });
           });
           describe('user is able to exit the grid to the left', () => {
-
             it('triggers the deselection handler on press Shift+Tab', () => {
               const { wrapper, props, initialCell } = setupCellSelectionTest({ rowIdx: 0, idx: 0 });
               simulateTab(wrapper, true);
@@ -293,7 +291,7 @@ describe('<InteractionMasks/>', () => {
         });
         it('allows the user to exit the grid when they press Shift+Tab and they are at the beginning of a row', () => {
           const selectedPosition = { rowIdx: 3, idx: 0 };
-          assertExitGridOnTab({cellNavigationMode}, true, {selectedPosition});       
+          assertExitGridOnTab({cellNavigationMode}, true, {selectedPosition});
         });
       });
       describe('when cellNavigationMode is loopOverRow', () => {
