@@ -18,9 +18,9 @@
     "react-data-grid": "^4.0.7"
   },
   "devDependencies": {
-    "jquery": "^2.1.1",
-    "lodash": "^4.13.1",
-    "lodash.groupby": "^4.5.1"
+    "jquery": "^2.2.4",
+    "lodash": "^4.17.10",
+    "lodash.groupby": "^4.6.0"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0",

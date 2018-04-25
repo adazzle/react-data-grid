@@ -194,13 +194,12 @@ class EditorContainer extends React.Component {
     let selected = this.props.cellMetaData.selected;
     let keyCode = selected.initialKeyCode;
     if (keyCode === 'Delete' || keyCode === 'Backspace') {
-      return '';
-    } else if (keyCode === 'Enter') {
-      return this.props.value;
+      // @NOTE Lennd: On delete, return undefined
+      return undefined;
     }
 
-    let text = keyCode ? String.fromCharCode(keyCode) : this.props.value;
-    return text;
+    // @NOTE: Lennd: On any other input, return value object, otherwise undefined
+    return typeof this.props.value === 'object' ? this.props.value : undefined;
   };
 
   getContainerClass = () => {
