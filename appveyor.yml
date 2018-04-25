@@ -27,6 +27,7 @@ install:
       }
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install
+  - npm install gulp -g
   - ps: ./ci/buildScripts/build.ps1
 
 # Post-install test scripts.
