@@ -104,7 +104,7 @@ class ReactDataGrid extends React.Component {
     rowKey: 'id',
     rowScrollTimeout: 0,
     scrollToRowIndex: 0,
-    cellNavigationMode: CellNavigationMode.CHANGE_ROW,
+    cellNavigationMode: CellNavigationMode.NONE,
     overScan: {
       colsStart: 5,
       colsEnd: 5,
