@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import CellMask from '../CellMask';
 import DragMask from '../DragMask';
 
-fdescribe('DragMask', () => {
+describe('DragMask', () => {
   const setup = (propsOverride = {}) => {
     const props = {
       columns: [
