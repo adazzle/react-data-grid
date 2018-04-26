@@ -432,26 +432,27 @@ class InteractionMasks extends React.Component {
             rowHeight={rowHeight}
             columns={columns}
           >
-            {
-              this.dragEnabled() &&
+            {this.dragEnabled() && (
               <DragHandle
                 onDragStart={this.handleDragStart}
                 onDragEnd={this.handleDragEnd}
                 onDoubleClick={this.onDragHandleDoubleClick}
               />
-            }
+            )}
           </SelectionMask>
         )}
-        {isEditorEnabled && <EditorContainer
-          firstEditorKeyPress={firstEditorKeyPress}
-          onCommit={this.onCommit}
-          onCommitCancel={this.onCommitCancel}
-          rowIdx={selectedPosition.rowIdx}
-          value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
-          rowData={getSelectedRow({ selectedPosition, rowGetter })}
-          column={getSelectedColumn({ selectedPosition, columns })}
-          {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
-        />}
+        {isEditorEnabled && (
+          <EditorContainer
+            firstEditorKeyPress={firstEditorKeyPress}
+            onCommit={this.onCommit}
+            onCommitCancel={this.onCommitCancel}
+            rowIdx={selectedPosition.rowIdx}
+            value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+            rowData={getSelectedRow({ selectedPosition, rowGetter })}
+            column={getSelectedColumn({ selectedPosition, columns })}
+            {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
+          />
+        )}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>
     );
