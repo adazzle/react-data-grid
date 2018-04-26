@@ -238,24 +238,12 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  // isKeyDown = (keyCode) => {
-  //   if (!this._keysDown) return false;
-  //   return keyCode in this._keysDown;
-  // };
-
   isSingleKeyDown = (keyCode) => {
     if (!this._keysDown) return false;
     return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
   };
 
-  // onContextMenuHide = () => {
-  //   document.removeEventListener('click', this.onContextMenuHide);
-  //   // let newSelected = Object.assign({}, this.state.selected, {contextMenuDisplayed: false});
-  //   // this.setState({selected: newSelected});
-  // };
-
   onColumnEvent = (ev, columnEvent) => {
-    // TODO: fix me
     const { idx, name } = columnEvent;
 
     if (name && typeof idx !== 'undefined') {
@@ -284,11 +272,7 @@ class ReactDataGrid extends React.Component {
   };
 
   onCellContextMenu = ({ rowIdx, idx }) => {
-    // this.onSelect({rowIdx: cell.rowIdx, idx: cell.idx, contextMenuDisplayed: this.props.contextMenu});
     this.selectCell({ rowIdx, idx });
-    // if (this.props.contextMenu) {
-    //   document.addEventListener('click', this.onContextMenuHide);
-    // }
   };
 
   onCellDoubleClick = ({ rowIdx, idx }) => {
@@ -516,17 +500,6 @@ class ReactDataGrid extends React.Component {
     }
   };
 
-  // getScrollOffSet = () => {
-  //   let scrollOffset = 0;
-  //   if (this.grid) {
-  //     let canvas = this.grid.querySelector('.react-grid-Canvas');
-  //     if (canvas) {
-  //       scrollOffset = canvas.offsetWidth - canvas.clientWidth;
-  //     }
-  //   }
-  //   this.setState({scrollOffset: scrollOffset});
-  // };
-
   getRowOffsetHeight = () => {
     let offsetHeight = 0;
     this.getHeaderRows().forEach((row) => offsetHeight += parseFloat(row.height, 10) );
@@ -579,11 +552,6 @@ class ReactDataGrid extends React.Component {
     return RowUtils.get(row, cellKey);
   };
 
-  // getNbrColumns = () => {
-  //   const {columns, enableRowSelect} = this.props;
-  //   return enableRowSelect ? columns.length + 1 : columns.length;
-  // };
-
   getDataGridDOMNode = () => {
     return this.grid;
   };
@@ -595,10 +563,6 @@ class ReactDataGrid extends React.Component {
   scrollToColumn = (colIdx) => {
     this.eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
   };
-
-  // isActive = () => {
-  //   return this.state.selected.active === true;
-  // };
 
   setupGridColumns = (props = this.props) => {
     const { columns } = props;

@@ -216,7 +216,6 @@ class Cell extends React.Component {
 
     for (let eventKey in columnEvents) {
       if (columnEvents.hasOwnProperty(eventKey)) {
-        // let event = columnEvents[event];
         let eventInfo = { idx: this.props.idx, rowIdx: this.props.rowIdx, rowId: this.props.rowData[this.props.cellMetaData.rowKey], name: eventKey };
         let eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
 
