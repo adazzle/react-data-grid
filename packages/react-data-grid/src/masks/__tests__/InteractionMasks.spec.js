@@ -8,7 +8,7 @@ import DragMask from '../DragMask';
 import DragHandle from '../DragHandle';
 import EventBus from '../EventBus';
 import EditorContainer from '../../editors/EditorContainer';
-import { createColumns } from '../../__tests__/utils/createColumns';
+import { createColumns } from '../../__tests__/utils';
 import * as AppConstants from '../../AppConstants';
 import * as keyCodes from '../../KeyCodes';
 import { CellNavigationMode, EventTypes } from '../../constants';
