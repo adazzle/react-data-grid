@@ -8,7 +8,7 @@ import DragMask from '../DragMask';
 import DragHandle from '../DragHandle';
 import EventBus from '../EventBus';
 import EditorContainer from '../../editors/EditorContainer';
-import { createColumns } from '../../__tests__/utils';
+import { sel, createColumns } from '../../__tests__/utils';
 import * as AppConstants from '../../AppConstants';
 import * as keyCodes from '../../KeyCodes';
 import { CellNavigationMode, EventTypes } from '../../constants';
@@ -420,6 +420,16 @@ describe('<InteractionMasks/>', () => {
       wrapper.find(DragHandle).simulate('dragEnd');
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, AppConstants.UpdateActions.CELL_DRAG);
+    });
+  });
+
+  describe('ContextMenu functionality', () => {
+    it('should render the context menu if it a valid element', () => {
+      const FakeContextMenu = <div data-test="context-menu">Context Menu</div>;
+      const { wrapper } = setup({ contextMenu: FakeContextMenu }, { selectedPosition: { idx: 1, rowIdx: 2 } });
+
+      expect(wrapper.find(sel('context-menu')).props())
+        .toEqual(jasmine.objectContaining({ idx: 1, rowIdx: 2 }));
     });
   });
 });
