@@ -16,6 +16,10 @@ require('../../../themes/react-data-grid-checkbox.css');
 import { CellNavigationMode, EventTypes } from './constants';
 import { EventBus } from './masks';
 
+if (!Object.assign) {
+  Object.assign = require('object-assign');
+}
+
 class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
 

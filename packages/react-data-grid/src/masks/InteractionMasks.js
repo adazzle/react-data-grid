@@ -120,7 +120,7 @@ class InteractionMasks extends React.Component {
       this.onPressTab(e);
     } else if (this.isKeyboardNavigationEvent(e)) {
       this.changeCellFromEvent(e);
-    } else if (isKeyPrintable(e.keyCode) || [keyCodes.Backspace, keyCodes.Delete, keyCodes.Enter].includes(e.keyCode)) {
+    } else if (isKeyPrintable(e.keyCode) || [keyCodes.Backspace, keyCodes.Delete, keyCodes.Enter].indexOf(e.keyCode) !== -1) {
       this.openEditor(e);
     }
   };
@@ -349,7 +349,7 @@ class InteractionMasks extends React.Component {
 
   selectCell = (cell, openEditor) => {
     const callback = openEditor ? this.openEditor : undefined;
-    const next = {...this.state.selectedPosition, ...cell};
+    const next = { ...this.state.selectedPosition, ...cell };
     if (this.isCellWithinBounds(next)) {
       this.setState({
         selectedPosition: next
