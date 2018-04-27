@@ -192,7 +192,7 @@ describe('<InteractionMasks/>', () => {
             });
 
             it('does not trigger the selection handler on press Tab', () => {
-              const { wrapper, props } = setupCellSelectionTest({ rowIdx: 2, idx: 9 });
+              const { wrapper, props } = setupCellSelectionTest({ rowIdx: ROWS_COUNT - 1, idx: 9 });
               simulateTab(wrapper);
               expect(props.onCellSelected).not.toHaveBeenCalled();
             });
@@ -287,18 +287,20 @@ describe('<InteractionMasks/>', () => {
           assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
             .toEqual({ rowIdx: 3, idx: 4 });
         });
-        it('allows the user to exit the grid when they press Tab and they are at the end of a row', () => {
+        it('goes to the first cell of the next row when they press Tab and they are at the end of a row', () => {
           const selectedPosition = { rowIdx: 3, idx: NUMBER_OF_COLUMNS - 1 };
-          assertExitGridOnTab({ cellNavigationMode }, false, { selectedPosition });
+          assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
+            .toEqual({ rowIdx: 4, idx: 0 });
         });
         it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
           const selectedPosition = { rowIdx: 2, idx: 2 };
           assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
             .toEqual({ rowIdx: 2, idx: 1 });
         });
-        it('allows the user to exit the grid when they press Shift+Tab and they are at the beginning of a row', () => {
+        it('goes to the last cell of the previous row when they press Shift+Tab and they are at the beginning of a row', () => {
           const selectedPosition = { rowIdx: 3, idx: 0 };
-          assertExitGridOnTab({ cellNavigationMode }, true, { selectedPosition });
+          assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
+            .toEqual({ rowIdx: 2, idx: NUMBER_OF_COLUMNS - 1 });
         });
       });
 

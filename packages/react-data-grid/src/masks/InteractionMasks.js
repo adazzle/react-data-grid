@@ -298,7 +298,13 @@ class InteractionMasks extends React.Component {
     const { getNext, isCellAtBoundary, onHitBoundary } = keyNavAction;
     const currentPosition = this.state.selectedPosition;
     const nextPosition = getNext(currentPosition);
-    const { changeRowOrColumn, ...next } = getNextSelectedCellPosition(this.props, nextPosition);
+    const isTab = e.keyCode === keyCodes.Tab;
+    const { cellNavigationMode, columns, rowsCount } = this.props;
+    const { changeRowOrColumn, ...next } = getNextSelectedCellPosition({
+      columns,
+      rowsCount,
+      cellNavigationMode: isTab && cellNavigationMode === CellNavigationMode.NONE ? CellNavigationMode.CHANGE_ROW : cellNavigationMode
+    }, nextPosition);
 
     if (isCellAtBoundary(next) || changeRowOrColumn) {
       onHitBoundary(next);
