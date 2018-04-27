@@ -258,6 +258,12 @@ class Canvas extends React.Component {
     return this.rows[i];
   };
 
+  setRef = (canvas) => {
+    // It is important to define ref callback as a bound method
+    // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
+    this.canvas = canvas;
+  };
+
   renderRow = (props) => {
     let row = props.row;
     if (row.__metaData && row.__metaData.getRowRenderer) {
@@ -292,12 +298,6 @@ class Canvas extends React.Component {
       }
     </div >
     );
-  };
-
-  setRef = (canvas) => {
-    // It is important to define ref callback as a bound method
-    // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
-    this.canvas = canvas;
   };
 
   render() {
