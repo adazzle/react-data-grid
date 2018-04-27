@@ -247,26 +247,43 @@ class InteractionMasks extends React.Component {
 
   getKeyNavActionFromEvent(e) {
     const { visibleEnd, visibleStart, colVisibleEnd, colVisibleStart, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary } = this.props;
+    const isCellAtBottomBoundary = cell => cell.rowIdx >= visibleEnd - SCROLL_CELL_BUFFER;
+    const isCellAtTopBoundary = cell => cell.rowIdx !== 0 && cell.rowIdx <= visibleStart - 1;
+    const isCellAtRightBoundary = cell => cell.idx !== 0 && cell.idx >= colVisibleEnd - 1;
+    const isCellAtLeftBoundary = cell => cell.idx !== 0 && cell.idx <= colVisibleStart + 1;
+
     const keyNavActions = {
       ArrowDown: {
         getNext: current => ({ ...current, rowIdx: current.rowIdx + 1 }),
-        isCellAtBoundary: cell => cell.rowIdx >= visibleEnd - SCROLL_CELL_BUFFER,
+        isCellAtBoundary: isCellAtBottomBoundary,
         onHitBoundary: onHitBottomBoundary
       },
       ArrowUp: {
         getNext: current => ({ ...current, rowIdx: current.rowIdx - 1 }),
-        isCellAtBoundary: cell => cell.rowIdx !== 0 && cell.rowIdx <= visibleStart - 1,
+        isCellAtBoundary: isCellAtTopBoundary,
         onHitBoundary: onHitTopBoundary
       },
       ArrowRight: {
         getNext: current => ({ ...current, idx: current.idx + 1 }),
-        isCellAtBoundary: cell => cell.idx !== 0 && cell.idx >= colVisibleEnd - 1,
-        onHitBoundary: onHitRightBoundary
+        isCellAtBoundary: isCellAtRightBoundary,
+        onHitBoundary: (next) => {
+          onHitRightBoundary(next);
+          // Selected cell can hit the bottom boundary when the cellNavigationMode is 'changeRow'
+          if (isCellAtBottomBoundary(next)) {
+            onHitBottomBoundary(next);
+          }
+        }
       },
       ArrowLeft: {
         getNext: current => ({ ...current, idx: current.idx - 1 }),
-        isCellAtBoundary: cell => cell.idx !== 0 && cell.idx <= colVisibleStart + 1,
-        onHitBoundary: onHitLeftBoundary
+        isCellAtBoundary: isCellAtLeftBoundary,
+        onHitBoundary: (next) => {
+          onHitLeftBoundary(next);
+          // Selected cell can hit the top boundary when the cellNavigationMode is 'changeRow'
+          if (isCellAtTopBoundary(next)) {
+            onHitTopBoundary(next);
+          }
+        }
       }
     };
     if (e.keyCode === keyCodes.Tab) {
