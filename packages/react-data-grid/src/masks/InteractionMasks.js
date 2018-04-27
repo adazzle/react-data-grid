@@ -30,6 +30,7 @@ class InteractionMasks extends React.Component {
     visibleStart: PropTypes.number.isRequired,
     visibleEnd: PropTypes.number.isRequired,
     columns: PropTypes.array,
+    width: PropTypes.number,
     rowHeight: PropTypes.number.isRequired,
     rowGetter: PropTypes.func.isRequired,
     rowsCount: PropTypes.number.isRequired,
@@ -55,7 +56,8 @@ class InteractionMasks extends React.Component {
     onCellDeSelected: PropTypes.func,
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
-    onBeforeFocus: PropTypes.func.isRequired
+    onBeforeFocus: PropTypes.func.isRequired,
+    scrollLeft: PropTypes.number.isRequired
   };
 
   state = {
@@ -347,9 +349,10 @@ class InteractionMasks extends React.Component {
 
   selectCell = (cell, openEditor) => {
     const callback = openEditor ? this.openEditor : undefined;
-    if (this.isCellWithinBounds(cell)) {
+    const next = {...this.state.selectedPosition, ...cell};
+    if (this.isCellWithinBounds(next)) {
       this.setState({
-        selectedPosition: cell
+        selectedPosition: next
       }, callback);
     }
   };
@@ -425,7 +428,7 @@ class InteractionMasks extends React.Component {
   render() {
     const { rowHeight, rowGetter, columns, contextMenu } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
-
+    const rowData = getSelectedRow({ selectedPosition, rowGetter });
     return (
       <div
         ref={node => {
@@ -454,6 +457,8 @@ class InteractionMasks extends React.Component {
             selectedPosition={selectedPosition}
             rowHeight={rowHeight}
             columns={columns}
+            isGroupedRow={rowData && rowData.__metaData ? rowData.__metaData.isGroup : false}
+            scrollLeft={this.props.scrollLeft}
           >
             {this.dragEnabled() && (
               <DragHandle
@@ -464,18 +469,16 @@ class InteractionMasks extends React.Component {
             )}
           </SelectionMask>
         )}
-        {isEditorEnabled && (
-          <EditorContainer
-            firstEditorKeyPress={firstEditorKeyPress}
-            onCommit={this.onCommit}
-            onCommitCancel={this.onCommitCancel}
-            rowIdx={selectedPosition.rowIdx}
-            value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
-            rowData={getSelectedRow({ selectedPosition, rowGetter })}
-            column={getSelectedColumn({ selectedPosition, columns })}
-            {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
-          />
-        )}
+        {isEditorEnabled && <EditorContainer
+          firstEditorKeyPress={firstEditorKeyPress}
+          onCommit={this.onCommit}
+          onCommitCancel={this.onCommitCancel}
+          rowIdx={selectedPosition.rowIdx}
+          value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+          rowData={rowData}
+          column={getSelectedColumn({ selectedPosition, columns })}
+          {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
+        />}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>
     );

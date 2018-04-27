@@ -268,6 +268,7 @@ class Canvas extends React.Component {
         {...props}
         {...row.__metaData}
         name={row.name}
+        eventBus={this.props.eventBus}
         renderer={this.props.rowGroupRenderer} />);
     }
     let RowsRenderer = this.props.rowRenderer;
@@ -375,6 +376,7 @@ class Canvas extends React.Component {
             onBeforeFocus={this.onFocusInteractionMask}
             onCellSelected={this.props.onCellSelected}
             onCellDeSelected={this.props.onCellDeSelected}
+            scrollLeft={this._scroll.scrollLeft}
           />
           <RowsContainer
             width={width}

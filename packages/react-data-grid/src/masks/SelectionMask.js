@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
 
-function SelectionMask({ selectedPosition, columns, rowHeight, children }) {
+function SelectionMask({ selectedPosition, columns, rowHeight, children, isGroupedRow, scrollLeft }) {
   const dimensions = getSelectedDimensions({ selectedPosition, columns, rowHeight });
+  const width = isGroupedRow ? '100%' : dimensions.width;
+  const left = isGroupedRow ? scrollLeft : dimensions.left;
+  const d = {...dimensions, ...{width, left} };
   return (
     <CellMask
-      {...dimensions}
+      {...d}
       className="rdg-selected"
     >
       {children}

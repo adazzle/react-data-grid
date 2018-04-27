@@ -10,7 +10,7 @@ export const getSelectedRow = ({ selectedPosition, rowGetter }) => {
   return rowGetter(rowIdx);
 };
 
-export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) => {
+export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight, isGroupedRow }) => {
   const { idx, rowIdx } = selectedPosition;
   if (idx >= 0) {
     const column = columnUtils.getColumn(columns, idx);
