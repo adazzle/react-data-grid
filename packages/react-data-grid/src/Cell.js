@@ -96,11 +96,11 @@ class Cell extends React.Component {
     }
   };
 
-  // onCellKeyDown = (e) => {
-  //   if (this.canExpand() && e.key === 'Enter') {
-  //     this.onCellExpand(e);
-  //   }
-  // };
+  onCellKeyDown = (e) => {
+    if (this.canExpand() && e.key === 'Enter') {
+      this.onCellExpand(e);
+    }
+  };
 
   onDeleteSubRow = () => {
     let meta = this.props.cellMetaData;
