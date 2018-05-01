@@ -125,12 +125,6 @@ class Cell extends React.Component {
   };
 
   getFormatter = () => {
-    // let col = this.props.column;
-    // if (this.isEditorEnabled()) {
-    //   const {rowIdx, idx, cellMetaData, height, initialKeyCode, value} = this.props;
-    //   return <EditorContainer rowData={this.getRowData()} rowIdx={rowIdx} value={value} idx={idx} cellMetaData={cellMetaData} column={col} height={height} initialKeyCode={initialKeyCode}/>;
-    // }
-
     return this.props.column.formatter;
   };
 
@@ -189,10 +183,6 @@ class Cell extends React.Component {
       node.style.transform = null;
     }
   };
-
-  // canEdit = () => {
-  //   return (this.props.column.editor != null) || this.props.column.editable;
-  // };
 
   canExpand = () => {
     return this.props.expandableOptions && this.props.expandableOptions.canExpand;
