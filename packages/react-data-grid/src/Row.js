@@ -43,12 +43,15 @@ class Row extends React.Component {
     return rowComparer(nextProps, this.props);
   }
 
-  // handleDragEnter = () => {
-  //   let handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
-  //   if (handleDragEnterRow) {
-  //     handleDragEnterRow(this.props.idx);
-  //   }
-  // };
+  handleDragEnter = (e) => {
+    e.dataTransfer.dropEffect = 'move';
+    const { idx, cellMetaData: { onDragEnter } } = this.props;
+    onDragEnter({ overRowIdx: idx });
+  };
+
+  handleDrop= (e) => {
+    e.preventDefault();
+  };
 
   getCell = (column, i) => {
     const CellRenderer = this.props.cellRenderer;
@@ -155,8 +158,12 @@ class Row extends React.Component {
 
     let cells = this.getCells();
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style}
-      //  onDragEnter={this.handleDragEnter}
+      <div
+        {...this.getKnownDivProps() }
+        className={className}
+        style={style}
+        onDragEnter={this.handleDragEnter}
+        onDrop={this.handleDrop}
        >
         {
           React.isValidElement(this.props.row) ?
