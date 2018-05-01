@@ -7,16 +7,20 @@ import React, { Component } from 'react';
 // to the required methods.
 module.exports = (ContainerEditor) => {
   return class ContainerEditorWrapper extends Component {
-    getInputNode() {
+    getInputNode = () => {
       return this.editorRef.getInputNode();
     }
 
-    getValue() {
+    getValue = () => {
       return this.editorRef.getValue();
     }
 
+    createRef = (ref) => {
+      this.editorRef = ref;
+    }
+
     render() {
-      return (<ContainerEditor refCallback={(ref) => { this.editorRef = ref; }} {...this.props} />);
+      return (<ContainerEditor refCallback={this.createRef} {...this.props} />);
     }
   };
 };

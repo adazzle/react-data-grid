@@ -17,7 +17,7 @@
   "author": "Adazzle",
   "license": "MIT",
   "dependencies": {
-    "immutability-helper": "^2.4.0",
+    "immutability-helper": "^2.7.0",
     "react-data-grid": "^4.0.7",
     "react-data-grid-addons": "^4.0.7",
     "react-router-dom": "^4.2.2"
