@@ -429,7 +429,7 @@ class ReactDataGrid extends React.Component {
 
   // columnKey not used here as this function will select the whole row,
   // but needed to match the function signature in the CheckboxEditor
-  handleRowSelect = (rowIdx, columnKe, rowData, e) => {
+  handleRowSelect = (rowIdx, columnKey, rowData, e) => {
     e.stopPropagation();
 
     if (this.useNewRowSelection()) {
