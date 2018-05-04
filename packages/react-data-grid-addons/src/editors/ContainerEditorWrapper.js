@@ -7,11 +7,11 @@ import React, { Component } from 'react';
 // to the required methods.
 module.exports = (ContainerEditor) => {
   return class ContainerEditorWrapper extends Component {
-    getInputNode = () => {
+    getInputNode() {
       return this.editorRef.getInputNode();
     }
 
-    getValue = () => {
+    getValue() {
       return this.editorRef.getValue();
     }
 
