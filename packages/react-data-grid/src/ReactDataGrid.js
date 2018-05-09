@@ -804,6 +804,8 @@ class ReactDataGrid extends React.Component {
       let selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
       if (selectedRow) {
         selectedRow.isSelected = !selectedRow.isSelected;
+        const selectedRowIndex = _selectedRows.findIndex( sr => sr[this.props.rowKey] === selectedRow[this.props.rowKey]);
+        _selectedRows = [..._selectedRows.slice(0, selectedRowIndex), ..._selectedRows.slice(selectedRowIndex + 1)];
       } else {
         rowData.isSelected = true;
         selectedRows.push(rowData);
