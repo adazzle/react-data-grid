@@ -31,7 +31,7 @@ class RowGrouper {
       let count = 0;
       let isExpanded = this.isRowExpanded(columnName, key);
       if (groupedRows) {
-        count = groupedRows[key].length;
+        count = groupedRows[key] ? groupedRows[key].length : 0;
       }
       let rowGroupHeader = {name: key, groupedRowCount: count, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName}};
 
