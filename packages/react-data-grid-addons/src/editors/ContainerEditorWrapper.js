@@ -15,8 +15,12 @@ module.exports = (ContainerEditor) => {
       return this.editorRef.getValue();
     }
 
+    createRef = (ref) => {
+      this.editorRef = ref;
+    }
+
     render() {
-      return (<ContainerEditor refCallback={(ref) => { this.editorRef = ref; }} {...this.props} />);
+      return (<ContainerEditor refCallback={this.createRef} {...this.props} />);
     }
   };
 };
