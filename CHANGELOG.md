@@ -1,8 +1,13 @@
-## 4.0.0 (April 19, 2018)
+## 4.0.8 (May 10, 2018)
+
+### React-Data-Grid
+- **Bugfix:** Fix editor refs ([#1183](https://github.com/adazzle/react-data-grid/pull/1183))
+
+## 4.0.7 (April 19, 2018)
 
 ### React-Data-Grid
 - **Feature:** Support `React v16` ([#1116](https://github.com/adazzle/react-data-grid/pull/1116))
-- **Feature:** Set sort column and direction with props ([649](https://github.com/adazzle/react-data-grid/pull/649))
+- **Feature:** Set sort column and direction with props ([#649](https://github.com/adazzle/react-data-grid/pull/649))
 - **Bugfix:** Filtering should ignore null values ([#1147](https://github.com/adazzle/react-data-grid/pull/1147))
 - **Bugfix:** Resize column doesnt work on firefox when also draggable ([#1121](https://github.com/adazzle/react-data-grid/pull/1121))
 
