@@ -50,6 +50,18 @@ describe('NumericFilter', () => {
       expect(request).toEqual(result);
     });
 
+    it('When using greater then or equal filter', () => {
+      let request = component.getRules('>=7');
+      let result = [{ type: 5, value: 7 }];
+      expect(request).toEqual(result);
+    });
+
+    it('When using less then or equal filter', () => {
+      let request = component.getRules('<=5');
+      let result = [{ type: 6, value: 5 }];
+      expect(request).toEqual(result);
+    });
+
     it('When using mixed filters', () => {
       let request = component.getRules('61,72,33-53,<6,>900,10');
       let result = [{ type: 1, value: 61 },
