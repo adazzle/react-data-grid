@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
+import { DragDropContextProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
-class DraggableContainer extends React.Component {
+export default class DraggableContainer extends React.Component {
   renderGrid() {
     return React.Children.map(this.props.children, child => {
       return React.cloneElement(child, {
@@ -14,7 +15,16 @@ class DraggableContainer extends React.Component {
 
   render() {
     let grid = this.renderGrid();
-    return (
+    // Test if a react-dnd context already exists
+    // higher up the component tree. If not, insert
+    // a react-dnd DragDropContextProvider to serve as context
+    const addContextIfNeeded = component =>
+      this.context.dragDropManager
+        ? component
+        : <DragDropContextProvider backend={HTML5Backend}>
+          {component}
+        </DragDropContextProvider>;
+    return addContextIfNeeded(
       <div>
         {React.cloneElement(grid, this.props)}
       </div>
@@ -26,4 +36,6 @@ DraggableContainer.propTypes = {
   children: PropTypes.element
 };
 
-export default html5DragDropContext(DraggableContainer);
+DraggableContainer.contextTypes = {
+  dragDropManager: PropTypes.object
+};
