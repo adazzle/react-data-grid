@@ -1,4 +1,4 @@
-const PropTypes = require('react').PropTypes;
+const PropTypes = require('prop-types');
 const SortableHeaderCell    = require('../cells/headerCells/SortableHeaderCell');
 
 const SortItemShape = PropTypes.shape({
