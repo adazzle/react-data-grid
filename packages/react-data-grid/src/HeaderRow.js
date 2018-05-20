@@ -1,5 +1,5 @@
 const React             = require('react');
-const shallowEqual    = require('fbjs/lib/shallowEqual');
+const shallowEqual    = require('shallowequal');
 const BaseHeaderCell        = require('./HeaderCell');
 const getScrollbarSize  = require('./getScrollbarSize');
 const ExcelColumn  = require('./PropTypeShapes/ExcelColumn');
@@ -87,18 +87,19 @@ class HeaderRow extends React.Component {
 
   getSortableHeaderCell = (column) => {
     let sortDirection;
+    let sortDescendingFirst = (column.sortDescendingFirst === undefined ) ? false : column.sortDescendingFirst;
     if (this.props.sort) {
       const columnSort = this.props.sort.filter((s) => s.column === column.key)[0];
       sortDirection = columnSort ? columnSort.direction : SortableHeaderCell.DEFINE_SORT.NONE;
     } else {
       sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
     }
-    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection}/>;
+    return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst} headerRenderer={column.headerRenderer} />;
   };
 
   getHeaderRenderer = (column) => {
     let renderer;
-    if (column.headerRenderer && !this.props.filterable) {
+    if (column.headerRenderer && !column.sortable && !this.props.filterable) {
       renderer = column.headerRenderer;
     } else {
       let headerCellType = this.getHeaderCellType(column);

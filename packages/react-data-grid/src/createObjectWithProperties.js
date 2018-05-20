@@ -1,7 +1,7 @@
 function createObjectWithProperties(originalObj: any, properties: any): any {
   let result = {};
   for (let property of properties) {
-    if (originalObj[property]) {
+    if (property in originalObj) {
       result[property] = originalObj[property];
     }
   }

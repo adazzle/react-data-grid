@@ -15,7 +15,7 @@ describe('OverflowRow', () => {
   describe('render tests', () => {
     it('should render without crashing', () => {
       const overflowCellElementWrapper = mount(<OverflowRow />);
-      expect(overflowCellElementWrapper.node).toBeDefined();
+      expect(overflowCellElementWrapper.instance()).toBeDefined();
     });
   });
 

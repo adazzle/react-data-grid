@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
+import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
 import { utils } from 'react-data-grid';
@@ -41,4 +40,4 @@ DraggableContainer.propTypes = {
   getDragPreviewRow: PropTypes.func
 };
 
-export default DragDropContext(HTML5Backend)(DraggableContainer);
+export default html5DragDropContext(DraggableContainer);

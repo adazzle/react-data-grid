@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 const COMPONENT_DID_MOUNT_SOURCE = 'CDM';
 const COMPONENT_DID_UPDATE_SOURCE = 'CDU';
 
@@ -111,13 +111,6 @@ class FocusableComponentTestRunner {
       this._componentWrapper = mount(<this._Component {...this._props} cellMetaData={cellMetaData} />);
 
       expect(this.componentPrototype.focus).not.toHaveBeenCalled();
-    });
-
-    it('should focus when scrolling and selected', () => {
-      let cellMetaData = Object.assign({ }, this._props.cellMetaData, { isScrollingVerticallyWithKeyboard: true, isScrollingHorizontallyWithKeyboard: true });
-      this._componentWrapper = shallow(<this._Component {...this._props} cellMetaData={cellMetaData} />, { lifecycleExperimental: true });
-      this._componentWrapper.setProps({cellMetaData});
-      expect(this.componentPrototype.focus).toHaveBeenCalled();
     });
   }
 

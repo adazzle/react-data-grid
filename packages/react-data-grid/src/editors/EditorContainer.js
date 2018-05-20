@@ -78,10 +78,13 @@ class EditorContainer extends React.Component {
     }
   };
 
+  createEditorRef = (ref) => {
+    this.editor = ref;
+  }
+
   createEditor = (): ReactElement => {
-    let editorRef = (c) => this.editor = c;
     let editorProps = {
-      ref: editorRef,
+      ref: this.createEditorRef,
       column: this.props.column,
       value: this.getInitialValue(),
       onCommit: this.commit,
@@ -99,10 +102,10 @@ class EditorContainer extends React.Component {
       return React.cloneElement(CustomEditor, editorProps);
     }
     if (isFunction(CustomEditor)) {
-      return <CustomEditor ref={editorRef} {...editorProps} />;
+      return <CustomEditor ref={this.createEditorRef} {...editorProps} />;
     }
 
-    return <SimpleTextEditor ref={editorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
+    return <SimpleTextEditor ref={this.createEditorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
   };
 
   onPressEnter = () => {

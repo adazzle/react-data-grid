@@ -9,8 +9,9 @@ const isFunction = require('./utils/isFunction');
 const SortDataShape = require('./PropTypeShapes/SortDataShape');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
+import { DEFINE_SORT } from './cells/headerCells/SortableHeaderCell';
 import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
-const ColumnMetrics        = require('./ColumnMetrics');
+const ColumnMetrics = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
@@ -73,6 +74,8 @@ class ReactDataGrid extends React.Component {
     multipleColumnsSort: React.PropTypes.bool,
     onGridSort: PropTypes.func,
     onGridMultipleColumnsSort: React.PropTypes.func,
+    sortColumn: PropTypes.string,
+    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
     onDragHandleDoubleClick: PropTypes.func,
     onGridRowsUpdated: PropTypes.func,
     onRowSelect: PropTypes.func,
@@ -163,6 +166,11 @@ class ReactDataGrid extends React.Component {
     }
     if (this.props.multipleColumnsSort) {
       initialState.sort = this.props.sort || [];
+    }
+
+    if (this.props.sortColumn && this.props.sortDirection) {
+      initialState.sortColumn = this.props.sortColumn;
+      initialState.sortDirection = this.props.sortDirection;
     }
 
     this.state = initialState;
@@ -373,6 +381,10 @@ class ReactDataGrid extends React.Component {
     if (e) {
       e.stopPropagation();
     }
+  };
+
+  onCellFocus = (cell: SelectedType) => {
+    this.onSelect(cell);
   };
 
   onCellContextMenu = (cell: SelectedType) => {
@@ -1210,6 +1222,7 @@ class ReactDataGrid extends React.Component {
       dragged: this.state.dragged,
       hoveredRowIdx: this.state.hoveredRowIdx,
       onCellClick: this.onCellClick,
+      onCellFocus: this.onCellFocus,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onCommit: this.onCellCommit,
