@@ -50,8 +50,6 @@ class Example extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log('constructor');
-
     let originalRows = this.createRows(1000);
     let rows = originalRows.slice(0);
     // Store the original rows array, and make a copy that can be used for modifying eg.filtering, sorting
