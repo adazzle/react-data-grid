@@ -73,7 +73,7 @@ RowGroup.propTypes = {
   treeDepth: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   renderer: PropTypes.func,
-  eventBus: PropTypes.isRequired
+  eventBus: PropTypes.object.isRequired
 };
 
 const  DefaultRowGroupRenderer = (props) => {
