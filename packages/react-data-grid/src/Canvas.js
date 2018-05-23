@@ -45,6 +45,7 @@ class Canvas extends React.Component {
     rowScrollTimeout: PropTypes.number,
     scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
+    holdToDisplayContext: PropTypes.number,
     getSubRowDetails: PropTypes.func,
     rowSelection: PropTypes.oneOfType([
       PropTypes.shape({
@@ -358,7 +359,8 @@ class Canvas extends React.Component {
           rows={rows}
           contextMenu={this.props.contextMenu}
           rowIdx={this.props.cellMetaData.selected.rowIdx}
-          idx={this.props.cellMetaData.selected.idx} />
+          idx={this.props.cellMetaData.selected.idx} 
+          holdToDisplayContext={this.props.holdToDisplayContext} />
       </div>
     );
   }

@@ -79,6 +79,7 @@ class ReactDataGrid extends React.Component {
     scrollToRowIndex: PropTypes.number,
     onClearFilters: PropTypes.func,
     contextMenu: PropTypes.element,
+    holdToDisplayContext: PropTypes.number,
     cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
     onCellSelected: PropTypes.func,
     onCellDeSelected: PropTypes.func,
@@ -1261,6 +1262,7 @@ class ReactDataGrid extends React.Component {
             rowScrollTimeout={this.props.rowScrollTimeout}
             scrollToRowIndex={this.props.scrollToRowIndex}
             contextMenu={this.props.contextMenu}
+            holdToDisplayContext={this.props.holdToDisplayContext}
             overScan={this.props.overScan} />
           </div>
         </div>
