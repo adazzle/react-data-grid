@@ -43,6 +43,7 @@ class Viewport extends React.Component {
     rowScrollTimeout: PropTypes.number,
     scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
+    holdToDisplayContext: PropTypes.number,
     getSubRowDetails: PropTypes.func,
     rowGroupRenderer: PropTypes.func
   };
@@ -230,6 +231,7 @@ class Viewport extends React.Component {
           rowScrollTimeout={this.props.rowScrollTimeout}
           scrollToRowIndex={this.props.scrollToRowIndex}
           contextMenu={this.props.contextMenu}
+          holdToDisplayContext={this.props.holdToDisplayContext}
           rowSelection={this.props.rowSelection}
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
