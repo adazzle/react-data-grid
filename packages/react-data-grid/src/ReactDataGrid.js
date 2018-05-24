@@ -548,14 +548,6 @@ class ReactDataGrid extends React.Component {
     return this.state.selectedRows.filter(r => r.isSelected === true);
   };
 
-  getSelectedValue = () => {
-    let rowIdx = this.state.selected.rowIdx;
-    let idx = this.state.selected.idx;
-    let cellKey = this.getColumn(idx).key;
-    let row = this.props.rowGetter(rowIdx);
-    return RowUtils.get(row, cellKey);
-  };
-
   getDataGridDOMNode = () => {
     return this.grid;
   };
