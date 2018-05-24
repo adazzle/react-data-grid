@@ -6,15 +6,31 @@
   border-bottom: 1px solid #dddddd;
 }
 
-.react-grid-Cell:focus {
-  outline: 2px solid #66afe9;
-  outline-offset: -2px;
+.rdg-selected {
+  border: 2px solid #66afe9;
+}
+
+.moving-element {
+  will-change: transform;
+}
+
+.react-grid-Cell--locked {
+  z-index: 1;
 }
 
 .react-grid-Cell--locked:focus {
   z-index: 100;
 }
 
+.rdg-selected .drag-handle {
+  pointer-events: auto;
+}
+
+.react-contextmenu--visible {
+  z-index: 3;
+}
+
+.rdg-selected .drag-handle,
 .react-grid-Cell:focus .drag-handle {
   position: absolute;
   bottom: -5px;
@@ -51,6 +67,21 @@
   background-color : black;
 }
 
+.react-grid-cell-dragged-over-up,
+.react-grid-cell-dragged-over-down {
+  border: 1px dashed black;
+  background: rgba(0, 0, 255, 0.2) !important;
+}
+
+.react-grid-cell-dragged-over-up {
+  border-bottom-width: 0;
+}
+
+.react-grid-cell-dragged-over-down {
+  border-top-width: 0;
+}
+
+.react-grid-cell-copied,
 .react-grid-Cell.copied {
   background: rgba(0, 0, 255, 0.2) !important;
 }
@@ -60,6 +91,7 @@
   box-shadow: none;
 }
 
+.rdg-selected:hover .drag-handle .glyphicon-arrow-down,
 .react-grid-Cell:hover:focus .drag-handle .glyphicon-arrow-down {
   display: 'block'
 }
@@ -76,6 +108,7 @@
   border-top: 1px dashed black;
 }
 
+.rdg-selected.is-dragged-over-up .drag-handle
 .react-grid-Cell.is-dragged-over-up .drag-handle {
   top: -5px;
 }
@@ -99,6 +132,7 @@
   border-left: 1px dashed black;
 }
 
+.rdg-selected:hover .drag-handle,
 .react-grid-Cell:hover:focus .drag-handle {
   position: absolute;
   bottom: -8px;

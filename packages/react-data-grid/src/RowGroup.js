@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import utils from './utils';
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+import { EventTypes } from './constants';
 
 import '../../../themes/react-data-grid-row.css';
 
@@ -14,7 +15,7 @@ class RowGroup extends Component {
     this.setScrollLeft = this.setScrollLeft.bind(this);
   }
 
-  onRowExpandToggle(expand) {
+  onRowExpandToggle = (expand) => {
     let shouldExpand = expand == null ? !this.props.isExpanded : expand;
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onRowExpandToggle && typeof(meta.onRowExpandToggle) === 'function') {
@@ -22,11 +23,15 @@ class RowGroup extends Component {
     }
   }
 
-  onRowExpandClick() {
+  onClick = () => {
+    this.props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: this.props.idx });
+  }
+
+  onRowExpandClick = () => {
     this.onRowExpandToggle(!this.props.isExpanded);
   }
 
-  setScrollLeft(scrollLeft) {
+  setScrollLeft = (scrollLeft) => {
     if (this.rowGroupRenderer) {
       this.rowGroupRenderer.setScrollLeft ? this.rowGroupRenderer.setScrollLeft(scrollLeft) : null;
     }
@@ -38,7 +43,7 @@ class RowGroup extends Component {
     let style = {width: lastColumn.left + lastColumn.width};
 
     return (
-      <div style={style} className="react-grid-row-group">
+      <div style={style} className="react-grid-row-group" onClick={this.onClick}>
          <this.props.renderer ref={(node) => {this.rowGroupRenderer = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
       </div>
     );
@@ -67,7 +72,8 @@ RowGroup.propTypes = {
   isExpanded: PropTypes.bool.isRequired,
   treeDepth: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  renderer: PropTypes.func
+  renderer: PropTypes.func,
+  eventBus: PropTypes.object.isRequired
 };
 
 const  DefaultRowGroupRenderer = (props) => {
@@ -93,7 +99,7 @@ const  DefaultRowGroupRenderer = (props) => {
     }
   };
   return (
-    <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
+    <div style={style} onKeyDown={onKeyDown} tabIndex={0} >
       <span className="row-expand-icon" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
       <strong>{props.columnGroupName}: {props.name}</strong>
     </div>

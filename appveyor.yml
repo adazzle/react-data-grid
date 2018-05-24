@@ -17,6 +17,7 @@ environment:
 
 # Install scripts. (runs after repo cloning)
 install:
+  - ps: Install-Product node 6
   # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
   # Lerna needs to have a npmrc for each package folder as it does not use the root npmrc https://github.com/lerna/lerna/issues/296#issuecomment-261080345
   - ps: >-
@@ -25,9 +26,8 @@ install:
         ./ci/publish/copy-npmrc.ps1
       }
   - set PATH=%APPDATA%\npm;%PATH%
-  - npm cache clean
-  - npm install -g gulp
   - npm install
+  - npm install gulp -g
   - ps: ./ci/buildScripts/build.ps1
 
 # Post-install test scripts.

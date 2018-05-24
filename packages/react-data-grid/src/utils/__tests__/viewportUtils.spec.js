@@ -1,5 +1,4 @@
-import columnUtils from '../../ColumnUtils';
-import { getGridState, getNextScrollState, getRenderedColumnCount } from '../viewportUtils';
+import { getGridState, getNextScrollState, getRenderedColumnCount, getVisibleBoundaries } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -37,11 +36,8 @@ describe('viewportUtils', () => {
     });
 
     it('should correctly set visible column count', () => {
-      const fakeGetSize = spyOn(columnUtils, 'getSize').and.returnValue(15);
       const { state, props } = getState();
-
-      expect(fakeGetSize).toHaveBeenCalledWith(props.columnMetrics.columns);
-      expect(state.colVisibleEnd).toBe(15);
+      expect(state.colVisibleEnd).toBe(props.columnMetrics.columns.length);
     });
   });
 
@@ -76,6 +72,70 @@ describe('viewportUtils', () => {
     });
   });
 
+  describe('getVisibleBoundaries', () => {
+    const GRID_HEIGHT = 350;
+    const ROW_HEIGHT = 35;
+    const TOTAL_ROWS = 100;
+    const EXPECTED_NUMBER_VISIBLE_ROWS = 10;
+
+    describe('When scroll top is 0', () => {
+      it('should set the visibleStart to be 0', () => {
+        const scrollTop = 0;
+        const { visibleStart } = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, scrollTop, TOTAL_ROWS);
+        expect(visibleStart).toBe(0);
+      });
+
+      it('should set the visibleEnd to be last rendered row', () => {
+        const scrollTop = 0;
+        const { visibleEnd } = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, scrollTop, TOTAL_ROWS);
+        expect(visibleEnd).toBe(EXPECTED_NUMBER_VISIBLE_ROWS);
+      });
+    });
+
+    describe('When scrolling', () => {
+      const scrollDown = (getScrollTop, assert) => {
+        const NUMBER_OF_TESTS = 10;
+        for (let n = 1; n < NUMBER_OF_TESTS; n++) {
+          const boundaries = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, getScrollTop(n), TOTAL_ROWS);
+          assert(n, boundaries);
+        }
+      };
+      describe('When incrementing scroll by n*rowHeight', () => {
+        it('should increase visibleStart by n rows', () => {
+          const getScrollTop = n => n * ROW_HEIGHT;
+          scrollDown(getScrollTop, (n, { visibleStart }) => {
+            expect(visibleStart).toBe(n);
+          });
+        });
+
+        it('should increase visibleEnd by (n + total rendered rows)', () => {
+          const getScrollTop = n => n * ROW_HEIGHT;
+          scrollDown(getScrollTop, (n, { visibleEnd }) => {
+            expect(visibleEnd).toBe(EXPECTED_NUMBER_VISIBLE_ROWS + n);
+          });
+        });
+      });
+
+      describe('When incrementing scroll by a decimal number within 0.5 buffer of n*rowHeight', () => {
+        it('should increase visibleEnd by (n + total rendered rows)', () => {
+          const clientScrollError = 0.5;
+          const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
+          scrollDown(getScrollTop, (n, { visibleEnd }) => {
+            expect(visibleEnd).toBe(EXPECTED_NUMBER_VISIBLE_ROWS + n);
+          });
+        });
+
+        it('should increase visibleEnd by n rows', () => {
+          const clientScrollError = 0.5;
+          const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
+          scrollDown(getScrollTop, (n, { visibleStart }) => {
+            expect(visibleStart).toBe(n);
+          });
+        });
+      });
+    });
+  });
+
   describe('getNextScrollState', () => {
     it('should correctly set next scroll state', () => {
       const fakeGetDOMNodeOffsetWidth = () => ({});
@@ -107,10 +167,10 @@ describe('viewportUtils', () => {
         isScrolling: true,
         scrollLeft,
         scrollTop,
-        visibleStart: 2,
-        visibleEnd: 15,
-        displayStart: 1,
-        displayEnd: 25,
+        visibleStart: 3,
+        visibleEnd: 16,
+        displayStart: 2,
+        displayEnd: 26,
         colDisplayStart: 0,
         colDisplayEnd: 2
       }));

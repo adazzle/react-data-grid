@@ -14,18 +14,15 @@ class EditorContainer extends React.Component {
     rowIdx: PropTypes.number,
     rowData: PropTypes.object.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired,
-    cellMetaData: PropTypes.shape({
-      selected: PropTypes.object.isRequired,
-      copied: PropTypes.object,
-      dragged: PropTypes.object,
-      onCellClick: PropTypes.func,
-      onCellDoubleClick: PropTypes.func,
-      onCommitCancel: PropTypes.func,
-      onCommit: PropTypes.func
-    }).isRequired,
     column: PropTypes.object.isRequired,
     height: PropTypes.number.isRequired,
-    onGridKeyDown: PropTypes.func
+    onGridKeyDown: PropTypes.func,
+    onCommit: PropTypes.func,
+    onCommitCancel: PropTypes.func,
+    firstEditorKeyPress: PropTypes.string,
+    width: PropTypes.number,
+    top: PropTypes.number,
+    left: PropTypes.number
   };
 
   state = {isInvalid: false};
@@ -59,7 +56,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onKeyDown = (e: SyntheticKeyboardEvent) => {
+  onKeyDown = (e) => {
     if (isCtrlKeyHeldDown(e)) {
       this.checkAndCall('onPressKeyWithCtrl', e);
     } else if (this.isKeyExplicitlyHandled(e.key)) {
@@ -67,6 +64,7 @@ class EditorContainer extends React.Component {
       let callBack = 'onPress' + e.key;
       this.checkAndCall(callBack, e);
     } else if (isKeyPrintable(e.keyCode)) {
+      e.stopPropagation();
       this.checkAndCall('onPressChar', e);
     }
 
@@ -82,7 +80,7 @@ class EditorContainer extends React.Component {
     this.editor = ref;
   }
 
-  createEditor = (): ReactElement => {
+  createEditor = () => {
     let editorProps = {
       ref: this.createEditorRef,
       column: this.props.column,
@@ -116,7 +114,7 @@ class EditorContainer extends React.Component {
     this.commit({key: 'Tab'});
   };
 
-  onPressEscape = (e: SyntheticKeyboardEvent) => {
+  onPressEscape = (e) => {
     if (!this.editorIsSelectOpen()) {
       this.commitCancel();
     } else {
@@ -125,7 +123,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onPressArrowDown = (e: SyntheticKeyboardEvent) => {
+  onPressArrowDown = (e) => {
     if (this.editorHasResults()) {
       // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
@@ -134,7 +132,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onPressArrowUp = (e: SyntheticKeyboardEvent) => {
+  onPressArrowUp = (e) => {
     if (this.editorHasResults()) {
       // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
@@ -143,7 +141,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onPressArrowLeft = (e: SyntheticKeyboardEvent) => {
+  onPressArrowLeft = (e) => {
     // prevent event propogation. this disables left cell navigation
     if (!this.isCaretAtBeginningOfInput()) {
       e.stopPropagation();
@@ -152,7 +150,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  onPressArrowRight = (e: SyntheticKeyboardEvent) => {
+  onPressArrowRight = (e) => {
     // prevent event propogation. this disables right cell navigation
     if (!this.isCaretAtEndOfInput()) {
       e.stopPropagation();
@@ -161,7 +159,7 @@ class EditorContainer extends React.Component {
     }
   };
 
-  editorHasResults = (): boolean => {
+  editorHasResults = () => {
     if (isFunction(this.getEditor().hasResults)) {
       return this.getEditor().hasResults();
     }
@@ -177,7 +175,7 @@ class EditorContainer extends React.Component {
     return false;
   };
 
-  getRowMetaData = (): any => {
+  getRowMetaData = () => {
     // clone row data so editor cannot actually change this
     // convention based method to get corresponding Id or Name of any Name or Id property
     if (typeof this.props.column.getRowMetaData === 'function') {
@@ -185,25 +183,23 @@ class EditorContainer extends React.Component {
     }
   };
 
-  getEditor = (): Editor => {
+  getEditor = () => {
     return this.editor;
   };
 
-  getInputNode = (): HTMLInputElement => {
+  getInputNode = () => {
     return this.getEditor().getInputNode();
   };
 
-  getInitialValue = (): string => {
-    let selected = this.props.cellMetaData.selected;
-    let keyCode = selected.initialKeyCode;
-    if (keyCode === 'Delete' || keyCode === 'Backspace') {
+  getInitialValue = () => {
+    const { firstEditorKeyPress: key, value } = this.props;
+    if (key === 'Delete' || key === 'Backspace') {
       return '';
-    } else if (keyCode === 'Enter') {
-      return this.props.value;
+    } else if (key === 'Enter') {
+      return value;
     }
 
-    let text = keyCode ? String.fromCharCode(keyCode) : this.props.value;
-    return text;
+    return key || value;
   };
 
   getContainerClass = () => {
@@ -212,22 +208,23 @@ class EditorContainer extends React.Component {
     });
   };
 
-  commit = (args: {key : string}) => {
+  commit = (args) => {
+    const {onCommit} = this.props;
     let opts = args || {};
     let updated = this.getEditor().getValue();
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       let cellKey = this.props.column.key;
-      this.props.cellMetaData.onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
+      onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
     }
   };
 
   commitCancel = () => {
     this.changeCanceled = true;
-    this.props.cellMetaData.onCommitCancel();
+    this.props.onCommitCancel();
   };
 
-  isNewValueValid = (value: string): boolean => {
+  isNewValueValid = (value) => {
     if (isFunction(this.getEditor().validate)) {
       let isValid = this.getEditor().validate(value);
       this.setState({isInvalid: !isValid});
@@ -251,13 +248,13 @@ class EditorContainer extends React.Component {
     }
   };
 
-  isCaretAtBeginningOfInput = (): boolean => {
+  isCaretAtBeginningOfInput = () => {
     let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.selectionEnd
       && inputNode.selectionStart === 0;
   };
 
-  isCaretAtEndOfInput = (): boolean => {
+  isCaretAtEndOfInput = () => {
     let inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
   };
@@ -302,8 +299,7 @@ class EditorContainer extends React.Component {
   };
 
   setTextInputFocus = () => {
-    let selected = this.props.cellMetaData.selected;
-    let keyCode = selected.initialKeyCode;
+    let keyCode = this.props.firstEditorKeyPress;
     let inputNode = this.getInputNode();
     inputNode.focus();
     if (inputNode.tagName === 'INPUT') {
@@ -316,15 +312,17 @@ class EditorContainer extends React.Component {
     }
   };
 
-  renderStatusIcon = (): ?ReactElement => {
+  renderStatusIcon = () => {
     if (this.state.isInvalid === true) {
       return <span className="glyphicon glyphicon-remove form-control-feedback"></span>;
     }
   };
 
-  render(): ?ReactElement {
+  render() {
+    const { left, top, width, height } = this.props;
+    const style = { position: 'absolute', height, width, zIndex: 1000, transform: `translate(${left}px, ${top}px)` };
     return (
-        <div className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
+        <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>

@@ -2,7 +2,7 @@ const React                = require('react');
 const Canvas               = require('./Canvas');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 import PropTypes from 'prop-types';
-import ColumnUtils from './ColumnUtils';
+import * as columnUtils from './ColumnUtils';
 import {
   getGridState,
   getNextScrollState
@@ -44,7 +44,18 @@ class Viewport extends React.Component {
     scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
-    rowGroupRenderer: PropTypes.func
+    rowGroupRenderer: PropTypes.func,
+    enableCellSelect: PropTypes.bool.isRequired,
+    enableCellAutoFocus: PropTypes.bool.isRequired,
+    cellNavigationMode: PropTypes.string.isRequired,
+    eventBus: PropTypes.object.isRequired,
+    onCheckCellIsEditable: PropTypes.func,
+    onCellCopyPaste: PropTypes.func,
+    onGridRowsUpdated: PropTypes.func.isRequired,
+    onDragHandleDoubleClick: PropTypes.func.isRequired,
+    onCellSelected: PropTypes.func,
+    onCellDeSelected: PropTypes.func,
+    onCommit: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -53,9 +64,10 @@ class Viewport extends React.Component {
 
   state = getGridState(this.props);
 
-  onScroll = (scroll: {scrollTop: number; scrollLeft: number}) => {
+  onScroll = (scroll) => {
     this.updateScroll(
-      scroll.scrollTop, scroll.scrollLeft,
+      scroll.scrollTop,
+      scroll.scrollLeft,
       this.state.height,
       this.props.rowHeight,
       this.props.rowsCount
@@ -66,11 +78,11 @@ class Viewport extends React.Component {
     }
   };
 
-  getScroll = (): {scrollLeft: number; scrollTop: number} => {
+  getScroll = () => {
     return this.canvas.getScroll();
   };
 
-  setScrollLeft = (scrollLeft: number) => {
+  setScrollLeft = (scrollLeft) => {
     this.canvas.setScrollLeft(scrollLeft);
   };
 
@@ -100,11 +112,11 @@ class Viewport extends React.Component {
   };
 
   updateScroll = (
-    scrollTop: number,
-    scrollLeft: number,
-    height: number,
-    rowHeight: number,
-    length: number,
+    scrollTop,
+    scrollLeft,
+    height,
+    rowHeight,
+    length,
     width,
   ) => {
     this.resetScrollStateAfterDelay();
@@ -128,17 +140,15 @@ class Viewport extends React.Component {
     }
   };
 
-  viewportHeight = (): number => {
+  viewportHeight = () => {
     return this.viewport ? this.viewport.offsetHeight : 0;
   };
 
-  viewportWidth = (): number => {
+  viewportWidth = () => {
     return this.viewport ? this.viewport.offsetWidth : 0;
   };
 
-  componentWillReceiveProps(
-    nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number },
-  ) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
       this.props.minHeight !== nextProps.minHeight) {
       const newState = getGridState(nextProps);
@@ -149,7 +159,7 @@ class Viewport extends React.Component {
         nextProps.rowHeight,
         nextProps.rowsCount
       );
-    } else if (ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
+    } else if (columnUtils.getSize(this.props.columnMetrics.columns) !== columnUtils.getSize(nextProps.columnMetrics.columns)) {
       this.setState(getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       this.updateScroll(
@@ -175,11 +185,7 @@ class Viewport extends React.Component {
   }
 
   componentDidMount() {
-    if (window.addEventListener) {
-      window.addEventListener('resize', this.metricsUpdated);
-    } else {
-      window.attachEvent('resize', this.metricsUpdated);
-    }
+    window.addEventListener('resize', this.metricsUpdated);
     this.metricsUpdated();
   }
 
@@ -187,6 +193,14 @@ class Viewport extends React.Component {
     window.removeEventListener('resize', this.metricsUpdated);
     this.clearScrollTimer();
   }
+
+  setViewportRef = (viewport) => {
+    this.viewport = viewport;
+  };
+
+  setCanvasRef = (canvas) => {
+    this.canvas = canvas;
+  };
 
   render() {
     let style = {
@@ -202,9 +216,9 @@ class Viewport extends React.Component {
       <div
         className="react-grid-Viewport"
         style={style}
-        ref={(node) => { this.viewport = node; }}>
+        ref={this.setViewportRef}>
         <Canvas
-          ref={(node) => this.canvas = node}
+          ref={this.setCanvasRef}
           rowKey={this.props.rowKey}
           totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}
@@ -234,6 +248,17 @@ class Viewport extends React.Component {
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
           isScrolling={this.state.isScrolling || false}
+          enableCellSelect={this.props.enableCellSelect}
+          enableCellAutoFocus={this.props.enableCellAutoFocus}
+          cellNavigationMode={this.props.cellNavigationMode}
+          eventBus={this.props.eventBus}
+          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
+          onCellCopyPaste={this.props.onCellCopyPaste}
+          onGridRowsUpdated={this.props.onGridRowsUpdated}
+          onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
+          onCellSelected={this.props.onCellSelected}
+          onCellDeSelected={this.props.onCellDeSelected}
+          onCommit={this.props.onCommit}
         />
       </div>
     );

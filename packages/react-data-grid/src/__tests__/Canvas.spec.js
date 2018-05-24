@@ -1,12 +1,23 @@
 import React from 'react';
+import { shallow } from 'enzyme';
+
+import InteractionMasks from '../masks/InteractionMasks';
+import RowsContainer from '../RowsContainer';
 import Canvas from '../Canvas';
-import { mount } from 'enzyme';
+
+const noop = () => null;
 
 let testProps = {
   rowHeight: 25,
   height: 200,
   displayStart: 1,
   displayEnd: 10,
+  visibleStart: 0,
+  visibleEnd: 10,
+  colVisibleStart: 0,
+  colVisibleEnd: 100,
+  colDisplayStart: 0,
+  colDisplayEnd: 100,
   rowsCount: 1,
   columns: [],
   selectedRows: null,
@@ -22,26 +33,30 @@ let testProps = {
     handleDragEnterRow: () => {},
     handleTerminateDrag: () => {},
     onAddSubRow: () => {}
-  }
+  },
+  rowGroupRenderer: null,
+  isScrolling: false,
+  length: 1000,
+  enableCellSelect: true,
+  onCheckCellIsEditable: noop,
+  onCellCopyPaste: noop,
+  onGridRowsUpdated: noop,
+  cellNavigationMode: 'none',
+  onDragHandleDoubleClick: noop,
+  eventBus: {}
 };
 
 const renderComponent = (extraProps) => {
-  const wrapper = mount(<Canvas {...testProps} {...extraProps} />);
-
-  return wrapper;
+  return shallow(<Canvas {...testProps} {...extraProps} />);
 };
 
 describe('Canvas Tests', () => {
-  let testElement;
+  let wrapper;
   let testElementNode;
 
   beforeEach(() => {
-    testElement = renderComponent();
-    testElementNode = testElement.instance();
-  });
-
-  it('should create a new instance of Canvas', () => {
-    expect(testElement).toBeDefined();
+    wrapper = renderComponent();
+    testElementNode = wrapper.instance();
   });
 
   it('Should not call setScroll on render', () => {
@@ -55,6 +70,17 @@ describe('Canvas Tests', () => {
     expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
   });
 
+  it('Should render the InteractionMasks component', () => {
+    expect(wrapper.find(InteractionMasks).props()).toEqual(jasmine.objectContaining({
+      rowHeight: 25,
+      rowsCount: 1,
+      visibleStart: 0,
+      visibleEnd: 10,
+      colVisibleStart: 0,
+      colVisibleEnd: 100
+    }));
+  });
+
   describe('Row Selection', () =>{
     let COLUMNS = [{key: 'id', name: 'ID'}];
 
@@ -63,10 +89,10 @@ describe('Canvas Tests', () => {
         let rowGetter = () => { return { id: 1}; };
 
         let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
-        testElement = renderComponent(props);
+        wrapper = renderComponent(props);
 
-        let selectedRows = testElement.find('.row-selected .react-grid-Row');
-        expect(selectedRows.length).toBe(1);
+        const rows = wrapper.find(RowsContainer).props().rows;
+        expect(rows[0].props.isSelected).toBe(true);
       });
     });
 
@@ -75,10 +101,10 @@ describe('Canvas Tests', () => {
         let rowGetter = () => { return {id: 1}; };
 
         let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
-        testElement = renderComponent(props);
+        wrapper = renderComponent(props);
 
-        let selectedRows = testElement.find('.row-selected .react-grid-Row');
-        expect(selectedRows.length).toBe(1);
+        const rows = wrapper.find(RowsContainer).props().rows;
+        expect(rows[0].props.isSelected).toBe(true);
       });
     });
 
@@ -88,10 +114,10 @@ describe('Canvas Tests', () => {
         let rowGetter = (i) => { return i === 0 ? {id: 1, isSelected: true} : null; };
 
         let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected'} };
-        testElement = renderComponent(props);
+        wrapper = renderComponent(props);
 
-        let selectedRows = testElement.find('.row-selected .react-grid-Row');
-        expect(selectedRows.length).toBe(1);
+        const rows = wrapper.find(RowsContainer).props().rows;
+        expect(rows[0].props.isSelected).toBe(true);
       });
     });
   });
@@ -119,11 +145,9 @@ describe('Canvas Tests', () => {
       };
       let rowGetter = () => { return {id: 0, __metaData: {getRowRenderer: EmptyChildRow}}; };
       let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
-      testElement = renderComponent(props);
-      let rowData = testElement.instance().getRows(props.displayStart, props.displayEnd);
-      let child = testElement.find('.test-row-renderer');
-      expect(child.length).toBe(1);
-      expect(rowData.length).toBe(1);
+      wrapper = renderComponent(props);
+      const rows = wrapper.find(RowsContainer).props().rows;
+      expect(rows[0].props.className).toBe('test-row-renderer');
     });
   });
 });

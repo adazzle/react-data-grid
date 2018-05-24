@@ -1,11 +1,10 @@
-function createObjectWithProperties(originalObj: any, properties: any): any {
-  let result = {};
-  for (let property of properties) {
+function createObjectWithProperties(originalObj, properties) {
+  return properties.reduce((result, property) => {
     if (property in originalObj) {
       result[property] = originalObj[property];
     }
-  }
-  return result;
+    return result;
+  }, {});
 }
 
 module.exports = createObjectWithProperties;

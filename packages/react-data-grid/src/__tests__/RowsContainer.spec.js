@@ -1,10 +1,11 @@
 import { shallow } from 'enzyme';
 import React from 'react';
-import RowsContainer, { getNewContextMenuProps, SimpleRowsContainer, DEFAULT_CONTEXT_MENU_ID } from '../RowsContainer';
+
+import RowsContainer, { DEFAULT_CONTEXT_MENU_ID } from '../RowsContainer';
 
 const FakeContextMenuTrigger = () => <div id="fakeContextMenuTrigger" />;
-
 const FakeContextMenu = () => <div />;
+const FakeRow = (id) => <div id={id} />;
 
 const ReactDataGridPlugins = {
   Menu: {
@@ -12,50 +13,55 @@ const ReactDataGridPlugins = {
   }
 };
 
-const contextMenuId = 'fakeContextMenu';
-const props = {
-  contextMenu: <FakeContextMenu id={contextMenuId} />,
-  rowIdx: 5,
-  idx: 8,
-  window: { ReactDataGridPlugins },
-  rows: [
-    { id: 'row_1' },
-    { id: 'row_2' }
-  ]
-};
-
 describe('Rows Container', () => {
-  describe('getNewContextMenuProps()', () => {
-    it('should populate correct newProps for contextMenu with customized menu id', () => {
-      const newProps = getNewContextMenuProps(props);
-      expect(newProps.id).toBe(contextMenuId);
-    });
+  const setup = (propsOverride = {}) => {
+    const props = {
+      rowIdx: 5,
+      idx: 8,
+      window: { ReactDataGridPlugins },
+      rows: [
+        <FakeRow key={1} id={1} />,
+        <FakeRow key={2} id={2} />
+      ],
+      contextMenu: <FakeContextMenu />,
+      ...propsOverride
+    };
 
-    it('should populate correct newProps for contextMenu with default menu id', () => {
-      const newProps = getNewContextMenuProps(Object.assign({}, props, { contextMenu: <FakeContextMenu /> }));
-      expect(newProps.id).toBe(DEFAULT_CONTEXT_MENU_ID);
-    });
-  });
+    return shallow(<RowsContainer {...props} />);
+  };
 
   describe('with context menu', () => {
-    it('should create a new RowsContainer instance', () => {
-      const wrapper = shallow(<RowsContainer {...props} />);
-      expect(wrapper.find(FakeContextMenuTrigger).length).toBe(1);
+    it('should set the correct id for contextMenu', () => {
+      const contextMenuId = 'fakeContextMenu';
+      const wrapper = setup({ contextMenu: <FakeContextMenu id={contextMenuId} /> });
+      expect(wrapper.find(FakeContextMenuTrigger).props().id).toBe(contextMenuId);
     });
 
-    it('should throw exception for no context menu plugin when rendering', () => {
-      const newProp = Object.assign({}, props, { window: {}});
-      expect(() => { shallow(<RowsContainer {...newProp} />); }).toThrowError('You need to include ReactDataGrid UiPlugins in order to initialise context menu');
+    it('should set the default id for contextMenu', () => {
+      const wrapper = setup();
+      expect(wrapper.find(FakeContextMenuTrigger).props().id).toBe(DEFAULT_CONTEXT_MENU_ID);
+    });
+
+    it('should render grid rows', () => {
+      const wrapper = setup();
+      expect(wrapper.find(FakeRow).length).toBe(2);
+    });
+
+    it('should throw an exception for no context menu plugin if rdg addons are not included', () => {
+      expect(
+        () => setup({ window: {} })
+      ).toThrow();
     });
   });
 
   describe('without context menu', () => {
-    it('should create a SimpleRowsContainer', () => {
-      const newProps = Object.assign({}, props, {
-        contextMenu: undefined
-      });
-      const wrapper = shallow(<RowsContainer {...newProps}/>);
-      expect(wrapper.find(SimpleRowsContainer).length).toBe(1);
+    it('should render grid rows', () => {
+      const wrapper = setup({ contextMenu: undefined });
+      expect(wrapper.find(FakeRow).length).toBe(2);
+    });
+
+    it('should not render context menu', () => {
+      const wrapper = setup({ contextMenu: undefined });
       expect(wrapper.find(FakeContextMenuTrigger).length).toBe(0);
     });
   });

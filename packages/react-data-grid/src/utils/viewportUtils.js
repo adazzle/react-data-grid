@@ -1,12 +1,11 @@
-import ColumnUtils from '../ColumnUtils';
+import * as columnUtils from '../ColumnUtils';
 
 const min = Math.min;
 const max = Math.max;
-const floor = Math.floor;
 const ceil = Math.ceil;
 
 function getGridState(props) {
-  const totalNumberColumns = ColumnUtils.getSize(props.columnMetrics.columns);
+  const totalNumberColumns = columnUtils.getSize(props.columnMetrics.columns);
   const canvasHeight = props.minHeight - props.rowOffsetHeight;
   const renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
   const totalRowCount = min(renderedRowsCount * 4, props.rowsCount);
@@ -33,7 +32,7 @@ function getRenderedColumnCount(props, getDOMNodeOffsetWidth, displayStart, widt
   let columnIndex = displayStart;
   let columnCount = 0;
   while (remainingWidth > 0) {
-    let column = ColumnUtils.getColumn(props.columnMetrics.columns, columnIndex);
+    let column = columnUtils.getColumn(props.columnMetrics.columns, columnIndex);
 
     if (!column) {
       break;
@@ -51,26 +50,31 @@ function getVisibleColStart(props, scrollLeft) {
   let columnIndex = -1;
   while (remainingScroll >= 0) {
     columnIndex++;
-    remainingScroll -= ColumnUtils.getColumn(props.columnMetrics.columns, columnIndex).width;
+    remainingScroll -= columnUtils.getColumn(props.columnMetrics.columns, columnIndex).width;
   }
   return columnIndex;
 }
 
+export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, totalNumberRows) => {
+  const renderedRowsCount = ceil(gridHeight / rowHeight);
+  const visibleStart = max(0, Math.round(scrollTop / rowHeight));
+  const visibleEnd = min(visibleStart + renderedRowsCount, totalNumberRows);
+  return { visibleStart, visibleEnd };
+};
+
 function getNextScrollState(props, getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width) {
   const isScrolling = true;
-  const renderedRowsCount = ceil(height / rowHeight);
-  const visibleStart = max(0, floor(scrollTop / rowHeight));
-  const visibleEnd = min(visibleStart + renderedRowsCount, length);
+  const { visibleStart, visibleEnd } = getVisibleBoundaries(height, rowHeight, scrollTop, length);
   const displayStart = max(0, visibleStart - props.overScan.rowsStart);
   const displayEnd = min(visibleEnd + props.overScan.rowsEnd, length);
-  const totalNumberColumns = ColumnUtils.getSize(props.columnMetrics.columns);
+  const totalNumberColumns = columnUtils.getSize(props.columnMetrics.columns);
   const colVisibleStart = (totalNumberColumns > 0) ? max(0, getVisibleColStart(props, scrollLeft)) : 0;
   const renderedColumnCount = getRenderedColumnCount(props, getDOMNodeOffsetWidth, colVisibleStart, width);
   const colVisibleEnd = (renderedColumnCount !== 0) ? colVisibleStart + renderedColumnCount : totalNumberColumns;
   const colDisplayStart = max(0, colVisibleStart - props.overScan.colsStart);
   const colDisplayEnd = min(colVisibleEnd + props.overScan.colsEnd, totalNumberColumns);
 
-  const nextScrollState = {
+  return {
     visibleStart,
     visibleEnd,
     displayStart,
@@ -84,8 +88,6 @@ function getNextScrollState(props, getDOMNodeOffsetWidth, scrollTop, scrollLeft,
     colDisplayEnd,
     isScrolling
   };
-
-  return nextScrollState;
 }
 
 export {

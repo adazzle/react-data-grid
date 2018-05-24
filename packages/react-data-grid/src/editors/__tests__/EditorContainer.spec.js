@@ -9,15 +9,6 @@ const EditorBase       = require('../EditorBase');
 import { shallow } from 'enzyme';
 
 describe('Editor Container Tests', () => {
-  let cellMetaData = {
-    selected: {
-      idx: 0,
-      rowIdx: 0
-    },
-    onCommit: function() {},
-    onCommitCancel: function() {}
-  };
-
   let component;
   let container;
 
@@ -38,7 +29,6 @@ describe('Editor Container Tests', () => {
       component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
         value={'Adwolf'}
-        cellMetaData={cellMetaData}
         column={fakeColumn}
         height={50}/>);
     });
@@ -79,12 +69,10 @@ describe('Editor Container Tests', () => {
       const props = {
         rowData: rowData,
         value: 'Adwolf',
-        cellMetaData: cellMetaData,
         column: fakeColumn,
         height: 50
       };
       let editorDiv = renderComponent(props).find('div').at(0);
-      expect(Object.keys(editorDiv.props()).length).toBe(5);
       expect(editorDiv.props().className).toBeDefined();
       expect(editorDiv.props().onBlur).toBeDefined();
       expect(editorDiv.props().onKeyDown).toBeDefined();
@@ -113,7 +101,6 @@ describe('Editor Container Tests', () => {
       component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
         value={'SupernaviX'}
-        cellMetaData={cellMetaData}
         column={column}
         height={50}/>);
       let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
@@ -128,7 +115,6 @@ describe('Editor Container Tests', () => {
       component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
         value={'SupernaviX'}
-        cellMetaData={cellMetaData}
         column={column}
         height={50}/>);
       let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
@@ -142,7 +128,6 @@ describe('Editor Container Tests', () => {
       component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
         value={'SupernaviX'}
-        cellMetaData={cellMetaData}
         column={column}
         height={50}/>);
       spyOn(component, 'commit');
@@ -155,7 +140,6 @@ describe('Editor Container Tests', () => {
       component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
         value={'SupernaviX'}
-        cellMetaData={cellMetaData}
         column={column}
         height={50}/>);
       let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
@@ -164,66 +148,52 @@ describe('Editor Container Tests', () => {
       expect(component.commit.calls.count()).toEqual(0);
     });
 
-    it('should call onCommitCancel of cellMetaData when editor cancels editing', () => {
+    it('should call onCommitCancel when editor cancels editing', () => {
       column.editor = <TestEditor />;
-      let metaData =  {
-        selected: {
-          idx: 0,
-          rowIdx: 0
-        },
-        onCommit: jasmine.createSpy(),
-        onCommitCancel: jasmine.createSpy()
-      };
+      const onCommit = jasmine.createSpy();
+      const onCommitCancel = jasmine.createSpy();
       component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
         value={'SupernaviX'}
-        cellMetaData={metaData}
         column={column}
-        height={50}/>);
+        onCommitCancel={onCommitCancel}
+        onCommit={onCommit}
+        height={50}/>
+      );
       let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
       editor.props.onCommitCancel();
-      expect(metaData.onCommitCancel).toHaveBeenCalled();
-      expect(metaData.onCommitCancel.calls.count()).toEqual(1);
-      expect(metaData.onCommit).not.toHaveBeenCalled();
+      expect(onCommitCancel).toHaveBeenCalled();
+      expect(onCommitCancel.calls.count()).toEqual(1);
+      expect(onCommit).not.toHaveBeenCalled();
     });
 
     it('should not commit changes on componentWillUnmount if editor cancels editing', () => {
       column.editor = <TestEditor />;
-      let metaData =  {
-        selected: {
-          idx: 0,
-          rowIdx: 0
-        },
-        onCommit: jasmine.createSpy(),
-        onCommitCancel: jasmine.createSpy()
-      };
+      const onCommit = jasmine.createSpy();
+      const onCommitCancel = jasmine.createSpy();
       component = TestUtils.renderIntoDocument(<EditorContainer
         rowData={rowData}
         value={'SupernaviX'}
-        cellMetaData={metaData}
         column={column}
+        onCommitCancel={onCommitCancel}
+        onCommit={onCommit}
         height={50}/>);
       let editor = TestUtils.findRenderedComponentWithType(component, TestEditor);
       editor.props.onCommitCancel();
       component.componentWillUnmount();
-      expect(metaData.onCommit).not.toHaveBeenCalled();
+      expect(onCommit).not.toHaveBeenCalled();
     });
   });
 
   describe('Events', () => {
     beforeEach(() => {
-      cellMetaData.onCommit = function() {};
-      spyOn(cellMetaData, 'onCommit');
-      cellMetaData.onCommitCancel = jasmine.createSpy();
-
-      // render into an actual div, not a detached one
-      // otherwise IE (11) gives an error when we try and setCaretAtEndOfInput
       container = document.createElement('div');
       document.body.appendChild(container);
       component = ReactDOM.render(<EditorContainer
         rowData={rowData}
         value={'Adwolf'}
-        cellMetaData={cellMetaData}
+        onCommit={jasmine.createSpy()}
+        onCommitCancel={jasmine.createSpy()}
         column={fakeColumn}
         height={50}/>, container);
     });
@@ -233,25 +203,25 @@ describe('Editor Container Tests', () => {
       document.body.removeChild(container);
     });
 
-    xit('hitting enter should call commit of cellMetaData only once', () => {
+    xit('hitting enter should call commit only once', () => {
       let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
       TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'Enter'});
-      expect(cellMetaData.onCommit).toHaveBeenCalled();
-      expect(cellMetaData.onCommit.calls.count()).toEqual(1);
+      expect(onCommit).toHaveBeenCalled();
+      expect(onCommit.calls.count()).toEqual(1);
     });
 
-    it('hitting escape should call commitCancel of cellMetaData only once', () => {
+    it('hitting escape should call commitCancel only once', () => {
       let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
       TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'Escape'});
-      expect(cellMetaData.onCommitCancel).toHaveBeenCalled();
-      expect(cellMetaData.onCommitCancel.calls.count()).toEqual(1);
+      expect(component.props.onCommitCancel).toHaveBeenCalled();
+      expect(component.props.onCommitCancel.calls.count()).toEqual(1);
     });
 
     it('hitting escape should not call commit changes on componentWillUnmount', () => {
       let editor = TestUtils.findRenderedComponentWithType(component, SimpleTextEditor);
       TestUtils.Simulate.keyDown(editor.getInputNode(), {key: 'Escape'});
       ReactDOM.unmountComponentAtNode(container);
-      expect(cellMetaData.onCommit).not.toHaveBeenCalled();
+      expect(component.props.onCommit).not.toHaveBeenCalled();
     });
   });
 });
