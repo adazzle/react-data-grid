@@ -258,7 +258,7 @@ class Canvas extends React.Component {
     return this.rows[i];
   };
 
-  setRef = (canvas) => {
+  setCanvasRef = (canvas) => {
     // It is important to define ref callback as a bound method
     // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
     this.canvas = canvas;
@@ -348,7 +348,7 @@ class Canvas extends React.Component {
 
     return (
         <div
-          ref={this.setRef}
+          ref={this.setCanvasRef}
           style={style}
           onScroll={this.onScroll}
           className="react-grid-Canvas">

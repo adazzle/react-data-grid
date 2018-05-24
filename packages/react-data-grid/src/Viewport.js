@@ -194,6 +194,14 @@ class Viewport extends React.Component {
     this.clearScrollTimer();
   }
 
+  setViewportRef = (viewport) => {
+    this.viewport = viewport;
+  };
+
+  setCanvasRef = (canvas) => {
+    this.canvas = canvas;
+  };
+
   render() {
     let style = {
       padding: 0,
@@ -208,9 +216,9 @@ class Viewport extends React.Component {
       <div
         className="react-grid-Viewport"
         style={style}
-        ref={(node) => { this.viewport = node; }}>
+        ref={this.setViewportRef}>
         <Canvas
-          ref={(node) => this.canvas = node}
+          ref={this.setCanvasRef}
           rowKey={this.props.rowKey}
           totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}

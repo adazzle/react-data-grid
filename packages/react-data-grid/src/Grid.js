@@ -126,6 +126,14 @@ class Grid extends React.Component {
     this._scrollLeft = undefined;
   }
 
+  setHeaderRef = (header) => {
+    this.header = header;
+  };
+
+  setViewportRef = (viewport) => {
+    this.viewport = viewport;
+  };
+
   render() {
     let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
     let EmptyRowsView = this.props.emptyRowsView;
@@ -133,7 +141,7 @@ class Grid extends React.Component {
     return (
       <div style={this.getStyle()} className="react-grid-Grid">
         <Header
-          ref={(input) => { this.header = input; } }
+          ref={this.setHeaderRef}
           columnMetrics={this.props.columnMetrics}
           onColumnResize={this.props.onColumnResize}
           height={this.props.rowHeight}
@@ -155,7 +163,7 @@ class Grid extends React.Component {
               onKeyUp={this.props.onViewportKeyup}
               >
                 <Viewport
-                  ref={(node) => { this.viewport = node; } }
+                  ref={this.setViewportRef}
                   rowKey={this.props.rowKey}
                   width={this.props.columnMetrics.width}
                   rowHeight={this.props.rowHeight}

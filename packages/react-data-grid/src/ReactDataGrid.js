@@ -603,6 +603,10 @@ class ReactDataGrid extends React.Component {
     return this._cachedComputedColumns;
   };
 
+  setGridRef = (grid) => {
+    this.grid = grid;
+  };
+
   renderToolbar = () => {
     let Toolbar = this.props.toolbar;
     let toolBarProps =  {columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount};
@@ -643,7 +647,7 @@ class ReactDataGrid extends React.Component {
     }
     return (
       <div className="react-grid-Container" style={{width: containerWidth}}
-        ref={(node) => { this.grid = node; }}>
+        ref={this.setGridRef}>
         {toolbar}
         <div className="react-grid-Main">
           <BaseGrid
