@@ -13,9 +13,9 @@
 
 .react-grid-Row:hover .rdg-drag-row-handle {
   cursor: move; /* fallback if grab cursor is unsupported */
-  cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
+  cursor: grab;
   width: 12px;
   height: 30px;
   margin-left: 0px;
