@@ -55,6 +55,9 @@ class Viewport extends React.Component {
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     onCellSelected: PropTypes.func,
     onCellDeSelected: PropTypes.func,
+    onCellRangeSelectionStarted: PropTypes.func,
+    onCellRangeSelectionUpdated: PropTypes.func,
+    onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired
   };
 
@@ -258,6 +261,9 @@ class Viewport extends React.Component {
           onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
           onCellSelected={this.props.onCellSelected}
           onCellDeSelected={this.props.onCellDeSelected}
+          onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
+          onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
+          onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           onCommit={this.props.onCommit}
         />
       </div>

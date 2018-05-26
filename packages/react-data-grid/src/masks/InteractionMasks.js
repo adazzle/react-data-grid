@@ -2,6 +2,7 @@ import React, { isValidElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 
 import SelectionMask from './SelectionMask';
+import SelectionRangeMask from './SelectionRangeMask';
 import CopyMask from './CopyMask';
 import DragMask from './DragMask';
 import DragHandle from './DragHandle';
@@ -14,7 +15,8 @@ import {
   getSelectedColumn,
   getNextSelectedCellPosition,
   canExitGrid,
-  isSelectedCellEditable
+  isSelectedCellEditable,
+  selectedRangeIsSingleCell
 } from '../utils/SelectedCellUtils';
 import isFunction from '../utils/isFunction';
 import * as AppConstants from '../AppConstants';
@@ -54,6 +56,9 @@ class InteractionMasks extends React.Component {
     onCommitCancel: PropTypes.func,
     onCellSelected: PropTypes.func,
     onCellDeSelected: PropTypes.func,
+    onCellRangeSelectionStarted: PropTypes.func,
+    onCellRangeSelectionUpdated: PropTypes.func,
+    onCellRangeSelectionCompleted: PropTypes.func,
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     onBeforeFocus: PropTypes.func.isRequired,
@@ -64,6 +69,14 @@ class InteractionMasks extends React.Component {
     selectedPosition: {
       idx: -1,
       rowIdx: -1
+    },
+    selectedRange: {
+      topLeft: {
+        idx: -1, rowIdx: -1
+      },
+      bottomRight: {
+        idx: -1, rowIdx: -1
+      }
     },
     copiedPosition: null,
     draggedPosition: null,
@@ -99,6 +112,9 @@ class InteractionMasks extends React.Component {
     const { eventBus, enableCellAutoFocus } = this.props;
 
     this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, this.selectCell);
+    this.unsubscribeSelectStart = eventBus.subscribe(EventTypes.SELECT_START, this.selectStart);
+    this.unsubscribeSelectUpdate = eventBus.subscribe(EventTypes.SELECT_UPDATE, this.selectUpdate);
+    this.unsubscribeSelectEnd = eventBus.subscribe(EventTypes.SELECT_END, this.selectEnd);
     this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, this.handleDragEnter);
 
     if (enableCellAutoFocus && this.isFocusedOnBody()) {
@@ -108,6 +124,9 @@ class InteractionMasks extends React.Component {
 
   componentWillUnmount() {
     this.unsubscribeSelectCell();
+    this.unsubscribeSelectStart();
+    this.unsubscribeSelectUpdate();
+    this.unsubscribeSelectEnd();
     this.unsubscribeDragEnter();
   }
 
@@ -129,7 +148,7 @@ class InteractionMasks extends React.Component {
     const { enableCellSelect, columns, rowGetter, onCheckCellIsEditable } = this.props;
     const { selectedPosition } = this.state;
     return isSelectedCellEditable({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
-  }
+  };
 
   openEditor = ({ key } = {}) => {
     if (this.isSelectedCellEditable() && !this.state.isEditorEnabled) {
@@ -296,23 +315,60 @@ class InteractionMasks extends React.Component {
 
   changeCellFromEvent(e) {
     e.preventDefault();
+    const isTab = e.keyCode === keyCodes.Tab;
+    const isShift = e.shiftKey;
+
+    if (isTab) {
+      this.changeCellFromTabAction(e);
+    } else if (isShift) {
+      this.changeSelectedRangeFromArrowKeyAction(e);
+    } else {
+      this.changeCellFromArrowKeyAction(e);
+    }
+  }
+
+  changeCellFromArrowKeyAction(e) {
+    const currentPosition = this.state.selectedPosition;
+    const { cellNavigationMode } = this.props;
+    const next = this.getNextPositionAndFireOnHitBoundaryIfNeccesary(e, currentPosition, cellNavigationMode);
+
+    this.selectCell(next);
+  }
+
+  changeCellFromTabAction(e) {
+    const currentPosition = this.state.selectedPosition;
+    const cellNavigationMode = this.props.cellNavigationMode === CellNavigationMode.NONE ?
+      CellNavigationMode.CHANGE_ROW :
+      this.props.cellNavigationMode;
+    const next = this.getNextPositionAndFireOnHitBoundaryIfNeccesary(e, currentPosition, cellNavigationMode);
+
+    this.selectCell(next);
+  }
+
+  changeSelectedRangeFromArrowKeyAction(e) {
+    const { cellNavigationMode } = this.props;
+    const currentPosition = this.state.selectedRange.cursorCell || this.state.selectedPosition;
+    const next = this.getNextPositionAndFireOnHitBoundaryIfNeccesary(e, currentPosition, cellNavigationMode);
+
+    this.selectUpdate(next, true, () => { this.selectEnd(); });
+  }
+
+  getNextPositionAndFireOnHitBoundaryIfNeccesary(e, currentPosition, cellNavigationMode) {
     const keyNavAction = this.getKeyNavActionFromEvent(e);
     const { getNext, isCellAtBoundary, onHitBoundary } = keyNavAction;
-    const currentPosition = this.state.selectedPosition;
     const nextPosition = getNext(currentPosition);
-    const isTab = e.keyCode === keyCodes.Tab;
-    const { cellNavigationMode, columns, rowsCount } = this.props;
+    const { columns, rowsCount } = this.props;
     const { changeRowOrColumn, ...next } = getNextSelectedCellPosition({
       columns,
       rowsCount,
-      cellNavigationMode: isTab && cellNavigationMode === CellNavigationMode.NONE ? CellNavigationMode.CHANGE_ROW : cellNavigationMode
+      cellNavigationMode
     }, nextPosition);
 
     if (isCellAtBoundary(next) || changeRowOrColumn) {
       onHitBoundary(next);
     }
 
-    this.selectCell(next);
+    return next;
   }
 
   isCellWithinBounds = ({ idx, rowIdx }) => {
@@ -352,9 +408,83 @@ class InteractionMasks extends React.Component {
     const next = { ...this.state.selectedPosition, ...cell };
     if (this.isCellWithinBounds(next)) {
       this.setState({
-        selectedPosition: next
+        selectedPosition: next,
+        selectedRange: {
+          topLeft: next,
+          bottomRight: next,
+          startCell: next,
+          cursorCell: next,
+          isDragging: false
+        }
       }, callback);
     }
+  };
+
+  selectStart = (cellPosition) => {
+    this.setState({
+      selectedRange: {
+        topLeft: cellPosition,
+        bottomRight: cellPosition,
+        startCell: cellPosition,
+        cursorCell: cellPosition,
+        isDragging: true
+      },
+      selectedPosition: cellPosition
+    }, () => {
+      if (isFunction(this.props.onCellRangeSelectionStarted)) {
+        this.props.onCellRangeSelectionStarted(this.state.selectedRange);
+      }
+    });
+  };
+
+  selectUpdate = (cellPosition, isFromKeyboard, callback) => {
+    if (!this.state.selectedRange.isDragging && !isFromKeyboard) {
+      return;
+    }
+
+    if (!this.isCellWithinBounds(cellPosition)) {
+      return;
+    }
+
+    const startCell = this.state.selectedRange.startCell || this.state.selectedPosition;
+    const colIdxs = [startCell.idx, cellPosition.idx].sort((a, b) => a - b);
+    const rowIdxs = [startCell.rowIdx, cellPosition.rowIdx].sort((a, b) => a - b);
+    const topLeft = {idx: colIdxs[0], rowIdx: rowIdxs[0]};
+    const bottomRight = {idx: colIdxs[1], rowIdx: rowIdxs[1]};
+
+    const selectedRange = {
+      // default the startCell to the selected cell, in case we've just started via keyboard
+      ...{startCell: this.state.selectedPosition},
+      // assign the previous state (which will override the startCell if we already have one)
+      ...this.state.selectedRange,
+      // assign the new state - the bounds of the range, and the new cursor cell
+      topLeft,
+      bottomRight,
+      cursorCell: cellPosition
+    };
+
+    this.setState({
+      selectedRange
+    }, () => {
+      if (isFunction(this.props.onCellRangeSelectionUpdated)) {
+        this.props.onCellRangeSelectionUpdated(this.state.selectedRange);
+      }
+      if (isFunction(callback)) {
+        callback();
+      }
+    });
+  };
+
+  selectEnd = () => {
+    const selectedRange = {...this.state.selectedRange, isDragging: false};
+    this.setState({selectedRange}, () => {
+      if (isFunction(this.props.onCellRangeSelectionCompleted)) {
+        this.props.onCellRangeSelectionCompleted(this.state.selectedRange);
+      }
+
+      // Focus the InteractionMasks, so it can receive keyboard events
+      this.focus();
+    });
   };
 
   dragEnabled = () => {
@@ -452,23 +582,38 @@ class InteractionMasks extends React.Component {
             columns={columns}
           />
         )}
-        {!isEditorEnabled && this.isGridSelected() && (
-          <SelectionMask
-            selectedPosition={selectedPosition}
-            rowHeight={rowHeight}
+        {selectedRangeIsSingleCell(this.state.selectedRange) ? (
+          !isEditorEnabled && this.isGridSelected() && (
+            <SelectionMask
+              selectedPosition={selectedPosition}
+              rowHeight={rowHeight}
+              columns={columns}
+              isGroupedRow={rowData && rowData.__metaData ? rowData.__metaData.isGroup : false}
+              scrollLeft={this.props.scrollLeft}
+            >
+              {this.dragEnabled() && (
+                <DragHandle
+                  onDragStart={this.handleDragStart}
+                  onDragEnd={this.handleDragEnd}
+                  onDoubleClick={this.onDragHandleDoubleClick}
+                />
+              )}
+            </SelectionMask>
+          )
+        ) : ([
+          <SelectionRangeMask
+            key="range-mask"
+            selectedRange={this.state.selectedRange}
             columns={columns}
-            isGroupedRow={rowData && rowData.__metaData ? rowData.__metaData.isGroup : false}
-            scrollLeft={this.props.scrollLeft}
-          >
-            {this.dragEnabled() && (
-              <DragHandle
-                onDragStart={this.handleDragStart}
-                onDragEnd={this.handleDragEnd}
-                onDoubleClick={this.onDragHandleDoubleClick}
-              />
-            )}
-          </SelectionMask>
-        )}
+            rowHeight={rowHeight}
+          />,
+          <SelectionMask
+            key="selection-mask"
+            selectedPosition={this.state.selectedRange.startCell}
+            columns={columns}
+            rowHeight={rowHeight}
+          />
+        ])}
         {isEditorEnabled && <EditorContainer
           firstEditorKeyPress={firstEditorKeyPress}
           onCommit={this.onCommit}

@@ -72,6 +72,9 @@ class Canvas extends React.Component {
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     onCellSelected: PropTypes.func,
     onCellDeSelected: PropTypes.func,
+    onCellRangeSelectionStarted: PropTypes.func,
+    onCellRangeSelectionUpdated: PropTypes.func,
+    onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired
   };
 
@@ -380,6 +383,9 @@ class Canvas extends React.Component {
             onBeforeFocus={this.onFocusInteractionMask}
             onCellSelected={this.props.onCellSelected}
             onCellDeSelected={this.props.onCellDeSelected}
+            onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
+            onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
+            onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
             scrollLeft={this._scroll.scrollLeft}
           />
           <RowsContainer

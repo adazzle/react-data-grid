@@ -3,6 +3,7 @@ import { shallow, mount } from 'enzyme';
 
 import InteractionMasks from '../InteractionMasks';
 import SelectionMask from '../SelectionMask';
+import SelectionRangeMask from '../SelectionRangeMask';
 import CopyMask from '../CopyMask';
 import DragMask from '../DragMask';
 import DragHandle from '../DragHandle';
@@ -37,6 +38,9 @@ describe('<InteractionMasks/>', () => {
       onHitLeftBoundary: jasmine.createSpy(),
       onCellSelected: jasmine.createSpy(),
       onCellDeSelected: jasmine.createSpy(),
+      onCellRangeSelectionStarted: jasmine.createSpy(),
+      onCellRangeSelectionUpdated: jasmine.createSpy(),
+      onCellRangeSelectionCompleted: jasmine.createSpy(),
       onGridRowsUpdated: jasmine.createSpy(),
       isEditorEnabled: false,
       rowGetter,
@@ -60,21 +64,350 @@ describe('<InteractionMasks/>', () => {
     pressKey(wrapper, 'Tab', { keyCode: keyCodes.Tab, shiftKey, preventDefault });
   };
 
-  describe('When selected cell is within grid bounds', () => {
-    it('should render a SelectionMask component', () => {
-      const { wrapper } = setup({}, { selectedPosition: { idx: 0, rowIdx: 0 } });
-      expect(wrapper.find(SelectionMask).length).toBe(1);
+  describe('Rendered masks', () => {
+    describe('When a single cell is selected', () => {
+      describe('within grid bounds', () => {
+        it('should render a SelectionMask component', () => {
+          const { wrapper } = setup({}, { selectedPosition: { idx: 0, rowIdx: 0 } });
+          expect(wrapper.find(SelectionMask).length).toBe(1);
+        });
+      });
+
+      describe('outside grid bounds', () => {
+        it('should not render a SelectionMask component', () => {
+          const { wrapper } = setup();
+          expect(wrapper.find(SelectionMask).length).toBe(0);
+        });
+      });
+    });
+
+    describe('When a cell range is selected', () => {
+      it('should render a SelectionRangeMask component', () => {
+        const { wrapper } = setup({}, {
+          selectedPosition: { idx: 0, rowIdx: 0 },
+          selectedRange: {
+            topLeft: { idx: 0, rowIdx: 0 },
+            bottomRight: { idx: 1, rowIdx: 1 }
+          }
+        });
+        expect(wrapper.find(SelectionRangeMask).length).toBe(1);
+      });
+
+      it('should render a SelectionMask component on the range\'s start cell', () => {
+        const { wrapper } = setup({}, {
+          selectedPosition: { idx: 0, rowIdx: 0 },
+          selectedRange: {
+            topLeft: { idx: 0, rowIdx: 0 },
+            bottomRight: { idx: 1, rowIdx: 1 },
+            startCell: { idx: 0, rowIdx: 0 }
+          }
+        });
+        expect(wrapper.find(SelectionMask).length).toBe(1);
+        expect(wrapper.find(SelectionMask).props().selectedPosition).toEqual({ idx: 0, rowIdx: 0 });
+      });
     });
   });
 
-  describe('When selected cell is outside grid bounds', () => {
-    it('should not render a SelectionMask component', () => {
-      const { wrapper } = setup();
-      expect(wrapper.find(SelectionMask).length).toBe(0);
+  describe('Range selection functionality', () => {
+    describe('with the cursor', () => {
+      it('should update the single-cell selectedPosition on starting a selection', () => {
+        const { props, wrapper } = setup();
+        props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
+        expect(wrapper.state('selectedPosition')).toEqual({ idx: 2, rowIdx: 2 });
+      });
+
+      it('should update the multi-cell selectedRange on starting a selection', () => {
+        const { props, wrapper } = setup();
+        props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
+        const selectedRange = wrapper.state('selectedRange');
+        expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.bottomRight).toEqual({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: 2 });
+      });
+
+      describe('moving the cursor to a new cell, mid-select', () => {
+        let props;
+        let wrapper;
+
+        beforeEach(() => {
+          const setupResult = setup();
+          props = setupResult.props;
+          wrapper = setupResult.wrapper;
+          props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
+        });
+
+        it('should update topLeft (and cursor) when moving left', () => {
+          props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 1, rowIdx: 2 });
+          const selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.topLeft).toEqual({ idx: 1, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.cursorCell).toEqual({ idx: 1, rowIdx: 2 });
+        });
+
+        it('should update topLeft (and cursor) when moving up', () => {
+          props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 2, rowIdx: 1 });
+          const selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 1 });
+          expect(selectedRange.bottomRight).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: 1 });
+        });
+
+        it('should update bottomRight (and cursor) when moving right', () => {
+          props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 2 });
+          const selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toEqual({ idx: 3, rowIdx: 2 });
+          expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.cursorCell).toEqual({ idx: 3, rowIdx: 2 });
+        });
+
+        it('should update bottomRight (and cursor) when moving down', () => {
+          props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 2, rowIdx: 3 });
+          const selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toEqual({ idx: 2, rowIdx: 3 });
+          expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: 3 });
+        });
+      });
+
+      it('should not update state when moving the cursor but not mid-select', () => {
+        const { props, wrapper } = setup();
+        props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 2, rowIdx: 2 });
+        expect(wrapper.state('selectedRange').startCell).toBeUndefined();
+      });
+
+      it('should not update state when moving the cursor after a selection has ended', () => {
+        const { props, wrapper } = setup();
+        props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
+        props.eventBus.dispatch(EventTypes.SELECT_END, { idx: 2, rowIdx: 2 });
+        props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
+        expect(wrapper.state('selectedRange').cursorCell).toEqual({ idx: 2, rowIdx: 2 });
+      });
+
+      it('should give focus to InteractionMasks once a selection has ended', () => {
+        // We have to use mount, rather than shallow, so that InteractionMasks has a ref to it's node, used for focusing
+        const { props } = setup(undefined, undefined, mount);
+        props.eventBus.dispatch(EventTypes.SELECT_END);
+        expect(props.onBeforeFocus).toHaveBeenCalled();
+      });
     });
   });
 
-  describe('Keyboard functionality', () => {
+  describe('Keyboard range selection functionality', () => {
+    const selectRange = (wrapper, props, from, to) => {
+      props.eventBus.dispatch(EventTypes.SELECT_START, from);
+      props.eventBus.dispatch(EventTypes.SELECT_UPDATE, to);
+      props.eventBus.dispatch(EventTypes.SELECT_END);
+    };
+
+    describe('when a range is already selected', () => {
+      describe('when the cursor cell is not in outer bounds', () => {
+        let props;
+        let wrapper;
+
+        beforeEach(() => {
+          const setupResult = setup();
+          props = setupResult.props;
+          wrapper = setupResult.wrapper;
+          selectRange(wrapper, props, { idx: 2, rowIdx: 2}, { idx: 3, rowIdx: 3 });
+        });
+
+        it('should shrink the selection upwards on Shift+Up', () => {
+          pressKey(wrapper, 'ArrowUp', { shiftKey: true });
+          let selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toEqual({ idx: 3, rowIdx: 2 });
+          expect(selectedRange.cursorCell).toEqual({ idx: 3, rowIdx: 2 });
+          expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+        });
+
+        it('should shrink the selection leftwards on Shift+Left', () => {
+          pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
+          let selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toEqual({ idx: 2, rowIdx: 3 });
+          expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: 3 });
+          expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+        });
+
+        it('should grow the selection downwards on Shift+Down', () => {
+          pressKey(wrapper, 'ArrowDown', { shiftKey: true });
+          let selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toEqual({ idx: 3, rowIdx: 4 });
+          expect(selectedRange.cursorCell).toEqual({ idx: 3, rowIdx: 4 });
+          expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+        });
+
+        it('should grow the selection rightwards on Shift+Right', () => {
+          pressKey(wrapper, 'ArrowRight', { shiftKey: true });
+          let selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toEqual({ idx: 4, rowIdx: 3 });
+          expect(selectedRange.cursorCell).toEqual({ idx: 4, rowIdx: 3 });
+          expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+        });
+      });
+
+      describe('when the next cell is out of bounds', () => {
+        it('should not grow the selection on Shift+Up', () => {
+          const { props, wrapper } = setup();
+          selectRange(wrapper, props, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
+          pressKey(wrapper, 'ArrowUp', { shiftKey: true });
+          let selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.cursorCell).toEqual({ idx: 0, rowIdx: 0 });
+        });
+
+        it('should not grow the selection on Shift+Left', () => {
+          const { props, wrapper } = setup();
+          selectRange(wrapper, props, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
+          pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
+          let selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.cursorCell).toEqual({ idx: 0, rowIdx: 0 });
+        });
+
+        it('should not grow the selection on Shift+Right', () => {
+          const { props, wrapper } = setup();
+          selectRange(wrapper, props, { idx: 2, rowIdx: 2 }, { idx: NUMBER_OF_COLUMNS - 1, rowIdx: 3 });
+          pressKey(wrapper, 'ArrowRight', { shiftKey: true });
+          let selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.cursorCell).toEqual({ idx: NUMBER_OF_COLUMNS - 1, rowIdx: 3 });
+        });
+
+        it('should not grow the selection on Shift+Down', () => {
+          const { props, wrapper } = setup();
+          selectRange(wrapper, props, { idx: 2, rowIdx: 2 }, { idx: 2, rowIdx: ROWS_COUNT - 1 });
+          pressKey(wrapper, 'ArrowDown', { shiftKey: true });
+          let selectedRange = wrapper.state('selectedRange');
+          expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: ROWS_COUNT - 1 });
+        });
+      });
+    });
+
+    describe('when only a single cell is selected', () => {
+      let props;
+      let wrapper;
+
+      beforeEach(() => {
+        const currentCell = { idx: 2, rowIdx: 2 };
+        const setupResult = setup({}, { selectedPosition: currentCell });
+        props = setupResult.props;
+        wrapper = setupResult.wrapper;
+        props.eventBus.dispatch(EventTypes.SELECT_START, currentCell);
+        props.eventBus.dispatch(EventTypes.SELECT_END);
+      });
+
+      it('should grow the selection range left on Shift+Left', () => {
+        pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
+        let selectedRange = wrapper.state('selectedRange');
+        expect(selectedRange.topLeft).toEqual({ idx: 1, rowIdx: 2 });
+        expect(selectedRange.bottomRight).toEqual({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.cursorCell).toEqual({ idx: 1, rowIdx: 2 });
+        expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+      });
+
+      it('should grow the selection range right on Shift+Right', () => {
+        pressKey(wrapper, 'ArrowRight', { shiftKey: true });
+        let selectedRange = wrapper.state('selectedRange');
+        expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.bottomRight).toEqual({ idx: 3, rowIdx: 2 });
+        expect(selectedRange.cursorCell).toEqual({ idx: 3, rowIdx: 2 });
+        expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+      });
+
+      it('should grow the selection range up on Shift+Up', () => {
+        pressKey(wrapper, 'ArrowUp', { shiftKey: true });
+        let selectedRange = wrapper.state('selectedRange');
+        expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 1 });
+        expect(selectedRange.bottomRight).toEqual({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: 1 });
+        expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+      });
+
+      it('should grow the selection range down on Shift+Down', () => {
+        pressKey(wrapper, 'ArrowDown', { shiftKey: true });
+        let selectedRange = wrapper.state('selectedRange');
+        expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.bottomRight).toEqual({ idx: 2, rowIdx: 3 });
+        expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: 3 });
+        expect(selectedRange.startCell).toEqual({ idx: 2, rowIdx: 2 });
+      });
+    });
+
+    describe('when no range has ever been selected', () => {
+      let wrapper;
+
+      beforeEach(() => {
+        const currentCell = { idx: 0, rowIdx: 0 };
+        const setupResult = setup({}, { selectedPosition: currentCell });
+        wrapper = setupResult.wrapper;
+      });
+
+      it('should grow the selection range right on Shift+Right', () => {
+        pressKey(wrapper, 'ArrowRight', { shiftKey: true });
+        let selectedRange = wrapper.state('selectedRange');
+        expect(selectedRange.topLeft).toEqual({ idx: 0, rowIdx: 0 });
+        expect(selectedRange.bottomRight).toEqual({ idx: 1, rowIdx: 0 });
+        expect(selectedRange.cursorCell).toEqual({ idx: 1, rowIdx: 0 });
+        expect(selectedRange.startCell).toEqual({ idx: 0, rowIdx: 0 });
+      });
+
+      it('should grow the selection range down on Shift+Down', () => {
+        pressKey(wrapper, 'ArrowDown', { shiftKey: true });
+        let selectedRange = wrapper.state('selectedRange');
+        expect(selectedRange.topLeft).toEqual({ idx: 0, rowIdx: 0 });
+        expect(selectedRange.bottomRight).toEqual({ idx: 0, rowIdx: 1 });
+        expect(selectedRange.cursorCell).toEqual({ idx: 0, rowIdx: 1 });
+        expect(selectedRange.startCell).toEqual({ idx: 0, rowIdx: 0 });
+      });
+    });
+  });
+
+  describe('Range selection events', () => {
+    it('should fire onCellRangeSelectionStarted on starting a selection', () => {
+      const { props } = setup();
+      props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
+      expect(props.onCellRangeSelectionStarted).toHaveBeenCalledWith(jasmine.objectContaining({
+        topLeft: { idx: 2, rowIdx: 2},
+        bottomRight: { idx: 2, rowIdx: 2}
+      }));
+    });
+
+    it('should fire onCellRangeSelectionUpdated on updating a selection', () => {
+      const { props } = setup();
+      props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
+      props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
+      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(jasmine.objectContaining({
+        topLeft: { idx: 2, rowIdx: 2},
+        bottomRight: { idx: 3, rowIdx: 3}
+      }));
+    });
+
+    it('should fire onCellRangeSelectionCompleted on completing a selection', () => {
+      const { props } = setup();
+      props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
+      props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
+      props.eventBus.dispatch(EventTypes.SELECT_END);
+      expect(props.onCellRangeSelectionCompleted).toHaveBeenCalled();
+    });
+
+    it('should fire onCellRangeSelectionUpdated and onCRSCompleted on modifying a selection via they keyboard', () => {
+      const currentCell = { idx: 0, rowIdx: 0 };
+      const { wrapper, props } = setup({}, { selectedPosition: currentCell });
+      pressKey(wrapper, 'ArrowRight', { shiftKey: true });
+      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(jasmine.objectContaining({
+        topLeft: { idx: 0, rowIdx: 0},
+        bottomRight: { idx: 1, rowIdx: 0}
+      }));
+      expect(props.onCellRangeSelectionCompleted).toHaveBeenCalled();
+    });
+  });
+
+  describe('Keyboard navigation functionality', () => {
     it('Press enter should enable editing', () => {
       const { wrapper } = setup({}, { selectedPosition: { idx: 0, rowIdx: 0 } });
       pressKey(wrapper, 'Enter', { keyCode: keyCodes.Enter });
