@@ -357,7 +357,7 @@ class InteractionMasks extends React.Component {
     }
   };
 
-  dragEnabled = () => {
+  isDragEnabled = () => {
     const { onGridRowsUpdated, onCellsDragged } = this.props;
     return this.isSelectedCellEditable() && (isFunction(onGridRowsUpdated) || isFunction(onCellsDragged));
   };
@@ -367,8 +367,15 @@ class InteractionMasks extends React.Component {
     // To prevent dragging down/up when reordering rows. (TODO: is this required)
     const isViewportDragging = e && e.target && e.target.className;
     if (idx > -1 && isViewportDragging) {
-      e.dataTransfer.effectAllowed = 'copy';
-      e.dataTransfer.setData('text/plain', JSON.stringify({ idx, rowIdx }));
+      e.dataTransfer.effectAllowed = 'move';
+      // Setting data is required to make an element draggable in FF
+      const transferData = JSON.stringify({ idx, rowIdx });
+      try {
+        e.dataTransfer.setData('text/plain', transferData);
+      } catch (ex) {
+        // IE only supports 'text' and 'URL' for the 'type' argument
+        e.dataTransfer.setData('text', transferData);
+      }
       this.setState({
         draggedPosition: { idx, rowIdx }
       });
@@ -460,7 +467,7 @@ class InteractionMasks extends React.Component {
             isGroupedRow={rowData && rowData.__metaData ? rowData.__metaData.isGroup : false}
             scrollLeft={this.props.scrollLeft}
           >
-            {this.dragEnabled() && (
+            {this.isDragEnabled() && (
               <DragHandle
                 onDragStart={this.handleDragStart}
                 onDragEnd={this.handleDragEnd}
