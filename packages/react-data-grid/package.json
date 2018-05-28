@@ -13,8 +13,8 @@
     "data-grid",
     "core"
   ],
-  "repository": "adazzle/react-data-grid",
-  "author": "Adazzle",
+  "repository": "MohitKashyap/react-data-grid",
+  "author": "MohitKashyap",
   "license": "MIT",
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0",
