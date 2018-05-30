@@ -18,6 +18,7 @@ import {
 } from '../utils/SelectedCellUtils';
 import isFunction from '../utils/isFunction';
 import * as AppConstants from '../AppConstants';
+import * as columnUtils from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from '../constants';
 
@@ -317,7 +318,7 @@ class InteractionMasks extends React.Component {
 
   isCellWithinBounds = ({ idx, rowIdx }) => {
     const { columns, rowsCount } = this.props;
-    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columns.length;
+    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columnUtils.getSize(columns);
   };
 
   isGridSelected = () => {
@@ -344,7 +345,7 @@ class InteractionMasks extends React.Component {
 
   selectLastCell = () => {
     const { rowsCount, columns } = this.props;
-    this.selectCell({ rowIdx: rowsCount - 1, idx: columns.length - 1 });
+    this.selectCell({ rowIdx: rowsCount - 1, idx: columnUtils.getSize(columns) - 1 });
   };
 
   selectCell = (cell, openEditor) => {
