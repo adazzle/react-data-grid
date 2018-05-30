@@ -267,10 +267,10 @@ class Canvas extends React.Component {
 
   renderRow = (props: any) => {
     let row = props.row;
-    if (row.__metaData && row.__metaData.getRowRenderer) {
+    if (row && row.__metaData && row.__metaData.getRowRenderer) {
       return row.__metaData.getRowRenderer(this.props, props.idx);
     }
-    if (row.__metaData && row.__metaData.isGroup) {
+    if (row && row.__metaData && row.__metaData.isGroup) {
       return (<RowGroup
         {...props}
         {...row.__metaData}
