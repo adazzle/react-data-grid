@@ -137,7 +137,7 @@ class Viewport extends React.Component {
   };
 
   componentWillReceiveProps(
-    nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number },
+    nextProps: { rowHeight: number; rowsCount: number, rowOffsetHeight: number, totalWidth: number },
   ) {
     if (this.props.rowHeight !== nextProps.rowHeight ||
       this.props.minHeight !== nextProps.minHeight) {
@@ -147,7 +147,8 @@ class Viewport extends React.Component {
         newState.scrollLeft,
         newState.height,
         nextProps.rowHeight,
-        nextProps.rowsCount
+        nextProps.rowsCount,
+        nextProps.totalWidth
       );
     } else if (ColumnUtils.getSize(this.props.columnMetrics.columns) !== ColumnUtils.getSize(nextProps.columnMetrics.columns)) {
       this.setState(getGridState(nextProps));
@@ -157,7 +158,8 @@ class Viewport extends React.Component {
         this.state.scrollLeft,
         this.state.height,
         nextProps.rowHeight,
-        nextProps.rowsCount
+        nextProps.rowsCount,
+        nextProps.totalWidth
       );
       // Added to fix the hiding of the bottom scrollbar when showing the filters.
     } else if (this.props.rowOffsetHeight !== nextProps.rowOffsetHeight) {
@@ -169,7 +171,8 @@ class Viewport extends React.Component {
         this.state.scrollLeft,
         this.state.height + height,
         nextProps.rowHeight,
-        nextProps.rowsCount
+        nextProps.rowsCount,
+        nextProps.totalWidth
       );
     }
   }
