@@ -305,7 +305,7 @@ class EditorContainer extends React.Component {
     let selected = this.props.cellMetaData.selected;
     let keyCode = selected.initialKeyCode;
     let inputNode = this.getInputNode();
-    if(inputNode) {
+    if (inputNode) {
       inputNode.focus();
       if (inputNode.tagName === 'INPUT') {
         if (!(0, _keyboardUtils.isKeyPrintable)(keyCode)) {
