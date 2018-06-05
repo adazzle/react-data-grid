@@ -59,7 +59,7 @@ class CellAction extends React.Component {
     return (
       <div className={cellActionClasses} onMouseLeave={this.onActionButtonBlur}>
         <div className={actionButtonClasses} onClick={this.onActionIconClick}>
-          <span className={this.props.action.icon}></span>
+            { typeof(this.props.action.icon) === 'string' ? <span className={this.props.action.icon}></span> : this.props.action.icon }
         </div>
         {
           isActionMenu &&

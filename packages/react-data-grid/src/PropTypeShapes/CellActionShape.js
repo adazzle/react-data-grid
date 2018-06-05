@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 const CellActionShape = {
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   callback: PropTypes.func,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
