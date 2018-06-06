@@ -51,6 +51,11 @@ type: `func`
 type: `func`
 
 
+### `filterPlaceholderText`
+
+type: `string`
+
+
 ### `onScroll`
 
 type: `func`

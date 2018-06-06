@@ -21,6 +21,11 @@ type: `func`
 type: `func`
 
 
+### `filterPlaceholderText`
+
+typ: `string`
+
+
 ### `headerRows` (required)
 
 type: `array`

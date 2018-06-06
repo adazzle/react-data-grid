@@ -51,6 +51,11 @@ type: `func`
 type: `func`
 
 
+### `filterPlaceholderText`
+
+typ: `string`
+
+
 ### `headerRows`
 
 type: `union(array|func)`

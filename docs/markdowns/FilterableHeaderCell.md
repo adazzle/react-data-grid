@@ -15,3 +15,7 @@ type: `shaperequire('../../../PropTypeShapes/ExcelColumn')`
 
 type: `func`
 
+
+### `filterPlaceholderText`
+
+type: `string`

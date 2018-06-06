@@ -12,7 +12,7 @@ class AutoCompleteFilter extends React.Component {
     this.getOptions = this.getOptions.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.filterValues = this.filterValues.bind(this);
-    this.state = {options: this.getOptions(), rawValue: '', placeholder: 'Search'};
+    this.state = {options: this.getOptions(), rawValue: '', placeholder: props.filterPlaceholderText};
   }
 
   componentWillReceiveProps(newProps) {
@@ -82,7 +82,12 @@ AutoCompleteFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
   column: PropTypes.shape(ExcelColumn),
   getValidFilterValues: PropTypes.func,
-  multiSelection: PropTypes.bool
+  multiSelection: PropTypes.bool,
+  filterPlaceholderText: PropTypes.string
+};
+
+AutoCompleteFilter.defaultProps = {
+  filterPlaceholderText: 'Search'
 };
 
 export default AutoCompleteFilter;
