@@ -22,6 +22,8 @@ import * as columnUtils from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from '../constants';
 
+require('./interaction-masks.css');
+
 const SCROLL_CELL_BUFFER = 2;
 
 class InteractionMasks extends React.Component {
@@ -470,16 +472,20 @@ class InteractionMasks extends React.Component {
             )}
           </SelectionMask>
         )}
-        {isEditorEnabled && <EditorContainer
-          firstEditorKeyPress={firstEditorKeyPress}
-          onCommit={this.onCommit}
-          onCommitCancel={this.onCommitCancel}
-          rowIdx={selectedPosition.rowIdx}
-          value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
-          rowData={rowData}
-          column={getSelectedColumn({ selectedPosition, columns })}
-          {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
-        />}
+        {isEditorEnabled && (
+          <div className="rdg-editor-container">
+            <EditorContainer
+              firstEditorKeyPress={firstEditorKeyPress}
+              onCommit={this.onCommit}
+              onCommitCancel={this.onCommitCancel}
+              rowIdx={selectedPosition.rowIdx}
+              value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+              rowData={rowData}
+              column={getSelectedColumn({ selectedPosition, columns })}
+              {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
+            />
+          </div>
+        )}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>
     );
