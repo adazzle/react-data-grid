@@ -305,6 +305,10 @@ class Cell extends React.Component {
     return this.props.expandableOptions && (this.props.expandableOptions.children !== nextProps.expandableOptions.children);
   }
 
+  setCellRef = (node) => {
+    this.node = node;
+  };
+
 
   renderCellContent = (props) => {
     let CellContent;
@@ -362,7 +366,7 @@ class Cell extends React.Component {
         className={className}
         style={style}
         {...events}
-        ref={(node) => { this.node = node; }}
+        ref={this.setCellRef}
       >
         {cellActionButtons}
         {cellContent}
