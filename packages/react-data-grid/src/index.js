@@ -1,9 +1,10 @@
 const Grid = require('./ReactDataGrid');
 import RowComparer from './RowComparer';
 import RowsContainer from './RowsContainer';
+import Cell from './Cell';
 module.exports = Grid;
 module.exports.Row = require('./Row');
-module.exports.Cell = require('./Cell');
+module.exports.Cell = Cell;
 module.exports.HeaderCell = require('./HeaderCell');
 module.exports.RowComparer = RowComparer;
 module.exports.EmptyChildRow = require('./EmptyChildRow');
