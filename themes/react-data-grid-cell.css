@@ -304,7 +304,7 @@
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 1px solid #ccc;
-  box-shadow: 0px 0px 3px 0px #ccc;
+  box-shadow: 0 0 3px 0 #ccc;
 }
 
 .rdg-cell-action-menu > span {
