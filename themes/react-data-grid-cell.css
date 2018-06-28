@@ -279,6 +279,7 @@
   text-align: center;
   position: relative;
   display: table;
+  color: #4a9de2;
 }
 
 .rdg-cell-action-button > span {
@@ -286,47 +287,29 @@
   vertical-align: middle;
 }
 
-.rdg-cell-action-button:hover {
-  background-color: #fff;
-}
-
-.rdg-cell-action-button-toggled {
-  background-color: #fff;
-  border-right: 1px solid #ccc;
-  border-left: 1px solid #ccc;
-}
-
-.rdg-cell-action-button-toggled:after {
-  content: '';
-  height: 1px;
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  background: inherit;
-  z-index: 10001;
+.rdg-cell-action-button:hover, .rdg-cell-action-button-toggled {
+  color: #447bbb;
 }
 
 .rdg-cell-action-menu {
   position: absolute;
   top: 100%;
-  right: 0;
   z-index: 1000;
   float: left;
   min-width: 160px;
   padding: 5px 0;
-  font-size: 14px;
   text-align: left;
   list-style: none;
   background-color: #fff;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 1px solid #ccc;
+  box-shadow: 0 0 3px 0 #ccc;
 }
 
 .rdg-cell-action-menu > span {
   display: block;
-  padding: 3px 20px;
+  padding: 3px 10px;
   clear: both;
   font-weight: 400;
   line-height: 1.42857143;

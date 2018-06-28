@@ -25,7 +25,6 @@ install:
         ./ci/publish/copy-npmrc.ps1
       }
   - set PATH=%APPDATA%\npm;%PATH%
-  - npm cache clean
   - npm install -g gulp
   - npm install
   - ps: ./ci/buildScripts/build.ps1

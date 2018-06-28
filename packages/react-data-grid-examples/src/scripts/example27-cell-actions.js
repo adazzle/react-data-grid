@@ -191,7 +191,7 @@ class Example extends React.Component {
     if (column.key === 'county' && row.id === 'id_0') {
       return [
         {
-          icon: 'glyphicon glyphicon-remove',
+          icon: <span className="glyphicon glyphicon-remove"></span>,
           callback: () => { alert('Deleting'); }
         },
         {
@@ -199,6 +199,10 @@ class Example extends React.Component {
           actions: [
             {
               text: 'Campaign Linking',
+              callback: () => { alert('Navigating to camapign linking'); }
+            },
+            {
+              text: 'Option 2',
               callback: () => { alert('Navigating to camapign linking'); }
             }
           ]
