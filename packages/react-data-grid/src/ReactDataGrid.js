@@ -144,7 +144,7 @@ class ReactDataGrid extends React.Component {
       rowsStart: 5,
       rowsEnd: 5
     },
-    enableCellAutoFocus: true,
+    enableCellAutoFocus: false,
     onBeforeEdit: () => {},
     minColumnWidth: 80,
     columnEquality: ColumnMetrics.sameColumn
