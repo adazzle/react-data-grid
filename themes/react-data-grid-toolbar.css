@@ -23,20 +23,21 @@
   touch-action: manipulation;
   cursor: pointer;
   -webkit-user-select: none;
+}
+.react-grid-Toolbar .btn:not(.grouped-col-btn) {
   color: inherit;
-  background: white;
+  background: #fff;
   border: 1px solid #e7eaec;
 }
-.react-grid-Toolbar .btn:hover {
+.react-grid-Toolbar .btn:not(.grouped-col-btn):hover {
   color: inherit;
   border: 1px solid #d2d2d2;
 }
-.react-grid-Toolbar .grouped-col-btn {
-  background-color: #428bca;
-  color: white;
+.react-grid-Toolbar .grouped-col-btn + .grouped-col-btn {
+  margin-left: 5px;
 }
-.react-grid-Toolbar .grouped-col-btn:hover {
-  color: white;
+.react-grid-Toolbar .grouped-col-btn__remove {
+  margin-left: 5px;
 }
 .react-grid-Toolbar .tools {
   display: inline-block;
