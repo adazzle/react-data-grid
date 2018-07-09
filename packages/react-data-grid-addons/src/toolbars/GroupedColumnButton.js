@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export default class GroupedColumnButton extends Component {
   render() {
     return (
-      <div className="grouped-col-btn btn btn-primary btn-sm">
+      <div className="grouped-col-btn btn btn-sm">
         <span className="grouped-col-btn__name">{this.props.name}</span>
         <span className="grouped-col-btn__remove glyphicon glyphicon-trash"
               onClick={this.props.onColumnGroupDeleted.bind(null, this.props.columnKey)} />
