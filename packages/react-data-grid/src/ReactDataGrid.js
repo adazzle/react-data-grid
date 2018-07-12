@@ -6,6 +6,7 @@ const RowUtils = require('./RowUtils');
 const ColumnUtils = require('./ColumnUtils');
 const KeyCodes = require('./KeyCodes');
 const isFunction = require('./utils/isFunction');
+const SortDataShape = require('./PropTypeShapes/SortDataShape');
 import SelectAll from './formatters/SelectAll';
 import AppConstants from './AppConstants';
 import { DEFINE_SORT } from './cells/headerCells/SortableHeaderCell';
@@ -13,6 +14,7 @@ import { isKeyPrintable, isCtrlKeyHeldDown } from './utils/keyboardUtils';
 const ColumnMetrics = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
+const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
@@ -68,7 +70,10 @@ class ReactDataGrid extends React.Component {
     onCellsDragged: PropTypes.func,
     getCellActions: PropTypes.func,
     onAddFilter: PropTypes.func,
+    sort: SortDataShape,
+    multipleColumnsSort: PropTypes.bool,
     onGridSort: PropTypes.func,
+    onGridMultipleColumnsSort: PropTypes.func,
     sortColumn: PropTypes.string,
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
     onDragHandleDoubleClick: PropTypes.func,
@@ -158,6 +163,9 @@ class ReactDataGrid extends React.Component {
       initialState.selected = {rowIdx: 0, idx: 0};
     } else {
       initialState.selected = {rowIdx: -1, idx: -1};
+    }
+    if (this.props.multipleColumnsSort) {
+      initialState.sort = this.props.sort || [];
     }
 
     if (this.props.sortColumn && this.props.sortDirection) {
@@ -702,8 +710,32 @@ class ReactDataGrid extends React.Component {
   };
 
   handleSort = (columnKey: string, direction: SortType) => {
-    this.setState({sortDirection: direction, sortColumn: columnKey}, function() {
-      this.props.onGridSort(columnKey, direction);
+    const stateChange = {
+      sortDirection: direction,
+      sortColumn: columnKey
+    };
+    const isMultiple = this.props.multipleColumnsSort;
+    if (isMultiple) {
+      let sort = this.state.sort.slice();
+      if (direction === SortableHeaderCell.DEFINE_SORT.NONE) {
+        sort = sort.filter((item) => item.column !== columnKey);
+      } else {
+        const sortData = {column: columnKey, direction};
+        const columnIndex = sort.map((s, index) => {
+          if (s.column === columnKey) return index;
+        }).filter(isFinite)[0];
+        if (typeof columnIndex === 'number') {
+          // Overwrite the object, because shallowEqual is used for sort array comparison in shouldComponentUpdate
+          sort[columnIndex] = sortData;
+        } else {
+          sort.push(sortData);
+        }
+      }
+      stateChange.sort = sort;
+    }
+
+    this.setState(stateChange, () => {
+      isMultiple ? this.props.onGridMultipleColumnsSort(stateChange.sort, columnKey, direction) : this.props.onGridSort(columnKey, direction);
     });
   };
 
@@ -1248,6 +1280,7 @@ class ReactDataGrid extends React.Component {
             rowOffsetHeight={this.getRowOffsetHeight()}
             sortColumn={this.state.sortColumn}
             sortDirection={this.state.sortDirection}
+            sort={this.state.sort}
             onSort={this.handleSort}
             minHeight={this.props.minHeight}
             totalWidth={gridWidth}

@@ -5,6 +5,7 @@ const rewireModule  = require('../../../../test/rewireModule');
 const StubComponent = require('../../../../test/StubComponent');
 const helpers       = require('../helpers/test/GridPropHelpers');
 const HeaderRow     = rewire('../HeaderRow');
+const SortableHeaderCell = require('../cells/headerCells/SortableHeaderCell');
 import { shallow } from 'enzyme';
 
 describe('Header Row Unit Tests', () => {
@@ -12,6 +13,7 @@ describe('Header Row Unit Tests', () => {
 
   // Configure local letiable replacements for the module.
   let SortableHeaderCellStub = new StubComponent('SortableHeaderCell');
+  SortableHeaderCellStub.DEFINE_SORT = SortableHeaderCell.DEFINE_SORT;
   let HeaderCellStub = new StubComponent('HeaderCell');
   let FilterableHeaderCellStub = new StubComponent('FilterableHeaderCell');
   let CustomHeaderStub = new StubComponent('CustomHeader');
@@ -136,6 +138,36 @@ describe('Header Row Unit Tests', () => {
     });
   });
 
+  describe('When multiple columns sort is enabled', () => {
+    const sort = [{
+      column: 'count',
+      direction: SortableHeaderCell.DEFINE_SORT.DESC
+    }, {
+      column: 'title',
+      direction: SortableHeaderCell.DEFINE_SORT.ASC
+    }];
+    beforeEach(() => {
+      testProps.columns.forEach((col) => {
+        col.sortable = true;
+      });
+    });
+
+    afterEach(() => {
+      testProps.columns.forEach((col) => {
+        col.sortable = true;
+      });
+      delete testProps.sort;
+    });
+
+    it('uses sort property to pass sortDirection to multiple sortable columns', () => {
+      headerRow = TestUtils.renderIntoDocument(<HeaderRow {...testProps} sort={sort} />);
+      const headerCells = TestUtils.scryRenderedComponentsWithType(headerRow, HeaderCellStub);
+      expect(headerCells[0].props.renderer.props.sortDirection).toBe(SortableHeaderCell.DEFINE_SORT.NONE);
+      expect(headerCells[1].props.renderer.props.sortDirection).toBe(SortableHeaderCell.DEFINE_SORT.ASC);
+      expect(headerCells[2].props.renderer.props.sortDirection).toBe(SortableHeaderCell.DEFINE_SORT.DESC);
+    });
+  });
+
   describe('Rendering HeaderRow component', () => {
     const renderComponent = (props) => {
       const wrapper = shallow(<HeaderRow {...props} />);
@@ -164,6 +196,7 @@ describe('Header Row Unit Tests', () => {
       },
       sortColumn: 'sortColumnValue',
       sortDirection: 'NONE',
+      sort: [],
       cellRenderer: jasmine.createSpy(),
       headerCellRenderer: jasmine.createSpy(),
       filterable: true,
@@ -223,6 +256,7 @@ describe('Header Row Unit Tests', () => {
       expect(headerRowDiv.props().onColumnResizeEnd).toBeUndefined();
       expect(headerRowDiv.props().sortColumn).toBeUndefined();
       expect(headerRowDiv.props().sortDirection).toBeUndefined();
+      expect(headerRowDiv.props().sort).toBeUndefined();
       expect(headerRowDiv.props().cellRenderer).toBeUndefined();
       expect(headerRowDiv.props().headerCellRenderer).toBeUndefined();
       expect(headerRowDiv.props().filterable).toBeUndefined();

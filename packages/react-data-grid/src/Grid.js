@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
+const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
+const SortDataShape = require('./PropTypeShapes/SortDataShape');
 require('../../../themes/react-data-grid-core.css');
 
 class Grid extends React.Component {
@@ -39,7 +41,8 @@ class Grid extends React.Component {
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
     sortColumn: PropTypes.string,
-    sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
+    sortDirection: PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sort: SortDataShape,
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,
     onViewportKeyup: PropTypes.func,
@@ -137,6 +140,7 @@ class Grid extends React.Component {
           sortColumn={this.props.sortColumn}
           sortDirection={this.props.sortDirection}
           draggableHeaderCell={this.props.draggableHeaderCell}
+          sort={this.props.sort}
           onSort={this.props.onSort}
           onHeaderDrop={this.props.onHeaderDrop}
           onScroll={this.onHeaderScroll}

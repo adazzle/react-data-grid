@@ -173,6 +173,7 @@ describe('Rendering Grid component', () => {
       onRows: jasmine.createSpy(),
       sortColumn: 'sortColumn',
       sortDirection: 'ASC',
+      sort: [],
       tabIndex: -1,
       rowOffsetHeight: 100,
       onViewportKeydown: jasmine.createSpy(),
@@ -234,6 +235,7 @@ describe('Rendering Grid component', () => {
     expect(draggableDiv.props().onRows).toBeUndefined();
     expect(draggableDiv.props().sortColumn).toBeUndefined();
     expect(draggableDiv.props().sortDirection).toBeUndefined();
+    expect(draggableDiv.props().sort).toBeUndefined();
     expect(draggableDiv.props().rowOffsetHeight).toBeUndefined();
     expect(draggableDiv.props().onViewportKeydown).toBeUndefined();
     expect(draggableDiv.props().onViewportKeyup).toBeUndefined();
