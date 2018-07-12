@@ -134,15 +134,17 @@ class Row extends React.Component {
   };
 
   getCellValue = (key) => {
-    let val;
-    if (key === 'select-row') {
-      return this.props.isSelected;
-    } else if (typeof this.props.row.get === 'function') {
-      val = this.props.row.get(key);
-    } else {
-      val = this.props.row[key];
+    if (this.props.row) {
+      let val;
+      if (key === 'select-row') {
+        return this.props.isSelected;
+      } else if (typeof this.props.row.get === 'function') {
+        val = this.props.row.get(key);
+      } else {
+        val = this.props.row[key];
+      }
+      return val;
     }
-    return val;
   };
 
   isContextMenuDisplayed = () => {
