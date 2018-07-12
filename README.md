@@ -9,6 +9,8 @@ Excel-like grid component built with React, with editors, keyboard navigation, c
 
 Overview 
 --------
+# It does not work with React 16+
+
 ReactDataGrid is an advanced JavaScript spreadsheet-like grid component built using React
 
 Installation
