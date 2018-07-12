@@ -19,7 +19,7 @@ class EditorBase extends React.Component {
 
   getInputNode() {
     let domNode = ReactDOM.findDOMNode(this);
-    if (domNode.tagName === 'INPUT') {
+    if (domNode.tagName === 'INPUT' || domNode.tagName === 'SELECT') {
       return domNode;
     }
 
