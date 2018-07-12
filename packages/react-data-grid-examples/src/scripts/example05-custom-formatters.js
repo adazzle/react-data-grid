@@ -29,7 +29,8 @@ class Example extends React.Component {
       {
         key: 'id',
         name: 'ID',
-        width: 80
+        width: 80,
+        formatter: props => <span>{props.rowIdx + 1}</span>
       },
       {
         key: 'task',
@@ -69,7 +70,6 @@ class Example extends React.Component {
     let rows = [];
     for (let i = 1; i < 100; i++) {
       rows.push({
-        id: i,
         task: 'Task ' + i,
         complete: Math.min(100, Math.round(Math.random() * 110)),
         priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
