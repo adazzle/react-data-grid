@@ -28,8 +28,12 @@ class RowGrouper {
 
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
+      let count = 0;
       let isExpanded = this.isRowExpanded(columnName, key);
-      let rowGroupHeader = {name: key, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName}};
+      if (groupedRows) {
+        count = groupedRows[key] ? groupedRows[key].length : 0;
+      }
+      let rowGroupHeader = { name: key, groupedRowCount: count, __metaData: { isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName } };
 
       dataviewRows = this.resolver.addHeaderRow(rowGroupHeader, dataviewRows);
 

@@ -12,7 +12,7 @@
     "react-data-grid",
     "react-data-grid-addons"
   ],
-  "author": "Adazzle",
+  "author": "MohitKashyap",
   "license": "MIT",
   "dependencies": {
     "react-data-grid": "^4.0.8"
