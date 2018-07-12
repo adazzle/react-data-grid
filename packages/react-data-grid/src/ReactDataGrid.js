@@ -124,7 +124,8 @@ class ReactDataGrid extends React.Component {
     selectAllRenderer: PropTypes.object,
     minColumnWidth: PropTypes.number,
     columnEquality: PropTypes.func,
-    onColumnResize: PropTypes.func
+    onColumnResize: PropTypes.func,
+    enableSummary: PropTypes.bool
   };
 
   static defaultProps = {
@@ -147,7 +148,8 @@ class ReactDataGrid extends React.Component {
     enableCellAutoFocus: true,
     onBeforeEdit: () => {},
     minColumnWidth: 80,
-    columnEquality: ColumnMetrics.sameColumn
+    columnEquality: ColumnMetrics.sameColumn,
+    enableSummary: false
   };
 
   constructor(props, context) {

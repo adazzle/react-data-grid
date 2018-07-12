@@ -2,6 +2,7 @@ const React                = require('react');
 const ReactDOM             = require('react-dom');
 import PropTypes from 'prop-types';
 const Header               = require('./Header');
+import Summary from './Summary';
 const Viewport             = require('./Viewport');
 const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-core.css');
@@ -59,7 +60,8 @@ class Grid extends React.Component {
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
-    overScan: PropTypes.object
+    overScan: PropTypes.object,
+    enableSummary: PropTypes.bool
   };
 
   static defaultProps = {
@@ -82,6 +84,9 @@ class Grid extends React.Component {
       this.header.setScrollLeft(this._scrollLeft);
       if (this.viewport) {
         this.viewport.setScrollLeft(this._scrollLeft);
+      }
+      if (this.summary) {
+        this.summary.setScrollLeft(this._scrollLeft);
       }
     }
   };
@@ -124,6 +129,8 @@ class Grid extends React.Component {
   render(): ?ReactElement {
     let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
     let EmptyRowsView = this.props.emptyRowsView;
+    let { rowOffsetHeight, rowHeight, enableSummary } = this.props;
+    rowOffsetHeight = (rowOffsetHeight || rowHeight * headerRows.length) + (enableSummary ? rowOffsetHeight : 0);
 
     return (
       <div style={this.getStyle()} className="react-grid-Grid">
@@ -168,7 +175,7 @@ class Grid extends React.Component {
                   onScroll={this.onScroll}
                   onRows={this.props.onRows}
                   cellMetaData={this.props.cellMetaData}
-                  rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
+                  rowOffsetHeight={rowOffsetHeight}
                   minHeight={this.props.minHeight}
                   rowScrollTimeout={this.props.rowScrollTimeout}
                   scrollToRowIndex={this.props.scrollToRowIndex}
@@ -183,6 +190,19 @@ class Grid extends React.Component {
             <div ref={(node) => { this.emptyView = node; } } className="react-grid-Empty">
                 <EmptyRowsView />
             </div>
+        }
+        {enableSummary &&
+          <Summary
+            ref={(node) => { this.summary = node; } }
+            columnMetrics={this.props.columnMetrics}
+            onColumnResize={this.props.onColumnResize}
+            height={this.props.rowHeight}
+            totalWidth={this.props.totalWidth}
+            cellMetaData={this.props.cellMetaData}
+            rowGetter={this.props.rowGetter}
+            rowsCount={this.props.rowsCount}
+            onScroll={this.onScroll}
+          />
         }
       </div>
     );
