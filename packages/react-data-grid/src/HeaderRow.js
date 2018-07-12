@@ -39,6 +39,7 @@ class HeaderRow extends React.Component {
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
     onFilterChange: PropTypes.func,
+    filterPlaceholderText: PropTypes.string,
     resizing: PropTypes.object,
     onScroll: PropTypes.func,
     rowType: PropTypes.string,

@@ -58,6 +58,7 @@ class Grid extends React.Component {
     getSubRowDetails: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
+    filterPlaceholderText: PropTypes.string,
     rowGroupRenderer: PropTypes.func,
     overScan: PropTypes.object
   };
@@ -142,6 +143,7 @@ class Grid extends React.Component {
           onScroll={this.onHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}
+          filterPlaceholderText={this.props.filterPlaceholderText}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div

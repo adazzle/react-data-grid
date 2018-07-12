@@ -32,6 +32,7 @@ class Header extends React.Component {
     onHeaderDrop: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
+    filterPlaceholderText: PropTypes.string,
     cellMetaData: PropTypes.shape(cellMetaDataShape)
   };
 
@@ -124,6 +125,7 @@ class Header extends React.Component {
         onSort={this.props.onSort}
         onScroll={this.props.onScroll}
         getValidFilterValues={this.props.getValidFilterValues}
+        filterPlaceholderText={this.props.filterPlaceholderText}
         />);
     });
     return headerRows;
