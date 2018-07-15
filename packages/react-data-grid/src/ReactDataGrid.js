@@ -153,7 +153,7 @@ class ReactDataGrid extends React.Component {
   constructor(props, context) {
     super(props, context);
     let columnMetrics = this.createColumnMetrics();
-    let initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
+    let initialState = {columnMetrics, selectedRows: [], copied: null, expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, dragged: null, scrollOffset: 0, lastRowIdxUiSelected: -1, isTabFocus: false};
     if (props.enableCellSelect) {
       initialState.selected = {rowIdx: 0, idx: 0};
     } else {
@@ -370,6 +370,7 @@ class ReactDataGrid extends React.Component {
       this.props.onRowClick(cell.rowIdx, this.props.rowGetter(cell.rowIdx), this.getColumn(cell.idx));
     }
 
+    this.setState({ isTabFocus: false });
     if (e) {
       e.stopPropagation();
     }
@@ -444,6 +445,8 @@ class ReactDataGrid extends React.Component {
     if (this.props.rowsCount === 0) {
       return;
     }
+
+    this.setState({isTabFocus: true});
     // Scenario 0b: When we're editing a cell
     const idx = this.state.selected.idx;
     const rowIdx = this.state.selected.rowIdx;
@@ -1211,6 +1214,7 @@ class ReactDataGrid extends React.Component {
       onAddSubRow: this.props.onAddSubRow,
       isScrollingVerticallyWithKeyboard: this.isKeyDown(KeyCodes.DownArrow) || this.isKeyDown(KeyCodes.UpArrow),
       isScrollingHorizontallyWithKeyboard: this.isKeyDown(KeyCodes.LeftArrow) || this.isKeyDown(KeyCodes.RightArrow) || this.isKeyDown(KeyCodes.Tab),
+      isTabFocus: this.state.isTabFocus,
       enableCellAutoFocus: this.props.enableCellAutoFocus
     };
 
