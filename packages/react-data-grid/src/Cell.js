@@ -167,14 +167,6 @@ class Cell extends React.Component {
     return this.props.isEditorEnabled === true;
   };
 
-  setScrollLeft = (scrollLeft) => {
-    const node = this.node;
-    if (node) {
-      const transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-      node.style.webkitTransform = transform;
-      node.style.transform = transform;
-    }
-  };
 
   removeScroll = () => {
     const node = this.node;
@@ -258,14 +250,15 @@ class Cell extends React.Component {
 
   renderCellContent = (props) => {
     let CellContent;
+    const value = this.props.isScrolling === true ? 'scrolling' : this.props.value;
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
       props.dependentValues = this.getFormatterDependencies();
       CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} />;
+      CellContent = <Formatter value={value} dependentValues={this.getFormatterDependencies()} />;
     } else {
-      CellContent = <SimpleCellFormatter value={this.props.value} />;
+      CellContent = <SimpleCellFormatter value={value} />;
     }
     let isExpandCell = this.props.expandableOptions ? this.props.expandableOptions.field === this.props.column.key : false;
     let treeDepth = this.props.expandableOptions ? this.props.expandableOptions.treeDepth : 0;

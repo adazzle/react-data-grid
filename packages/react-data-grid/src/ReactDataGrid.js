@@ -342,6 +342,12 @@ class ReactDataGrid extends React.Component {
     this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
   };
 
+  onScroll = (scrollState) => {
+    if(isFunction(this.props.onScroll)) {
+      this.props.onScroll(scrollState);
+    }
+  }
+
   handleSort = (columnKey, direction) => {
     this.setState({sortDirection: direction, sortColumn: columnKey}, () => {
       this.props.onGridSort(columnKey, direction);
@@ -679,6 +685,7 @@ class ReactDataGrid extends React.Component {
             onCellSelected={this.props.onCellSelected}
             onCellDeSelected={this.props.onCellDeSelected}
             onCommit={this.onCommit}
+            onScroll={this.onScroll}
           />
         </div>
       </div>

@@ -27,17 +27,17 @@ describe('viewportUtils', () => {
 
     it('should correctly set visible rows count when rowsCount is greater than the rendered rows count', () => {
       const { state } = getState();
-      expect(state.displayEnd).toBe(16);
+      expect(state.rowOverscanEndIdx).toBe(16);
     });
 
     it('should correctly set visible rows count when rowsCount is less than the rendered rows count', () => {
       const { state } = getState({ rowsCount: 10 });
-      expect(state.displayEnd).toBe(10);
+      expect(state.rowOverscanEndIdx).toBe(10);
     });
 
     it('should correctly set visible column count', () => {
       const { state, props } = getState();
-      expect(state.colVisibleEnd).toBe(props.columnMetrics.columns.length);
+      expect(state.colVisibleEndIdx).toBe(props.columnMetrics.columns.length);
     });
   });
 
@@ -79,10 +79,10 @@ describe('viewportUtils', () => {
     const EXPECTED_NUMBER_VISIBLE_ROWS = 10;
 
     describe('When scroll top is 0', () => {
-      it('should set the visibleStart to be 0', () => {
+      it('should set the rowVisibleStartIdx to be 0', () => {
         const scrollTop = 0;
-        const { visibleStart } = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, scrollTop, TOTAL_ROWS);
-        expect(visibleStart).toBe(0);
+        const { rowVisibleStartIdx } = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, scrollTop, TOTAL_ROWS);
+        expect(rowVisibleStartIdx).toBe(0);
       });
 
       it('should set the visibleEnd to be last rendered row', () => {
@@ -101,10 +101,10 @@ describe('viewportUtils', () => {
         }
       };
       describe('When incrementing scroll by n*rowHeight', () => {
-        it('should increase visibleStart by n rows', () => {
+        it('should increase rowVisibleStartIdx by n rows', () => {
           const getScrollTop = n => n * ROW_HEIGHT;
-          scrollDown(getScrollTop, (n, { visibleStart }) => {
-            expect(visibleStart).toBe(n);
+          scrollDown(getScrollTop, (n, { rowVisibleStartIdx }) => {
+            expect(rowVisibleStartIdx).toBe(n);
           });
         });
 
@@ -128,8 +128,8 @@ describe('viewportUtils', () => {
         it('should increase visibleEnd by n rows', () => {
           const clientScrollError = 0.5;
           const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
-          scrollDown(getScrollTop, (n, { visibleStart }) => {
-            expect(visibleStart).toBe(n);
+          scrollDown(getScrollTop, (n, { rowVisibleStartIdx }) => {
+            expect(rowVisibleStartIdx).toBe(n);
           });
         });
       });
@@ -167,12 +167,12 @@ describe('viewportUtils', () => {
         isScrolling: true,
         scrollLeft,
         scrollTop,
-        visibleStart: 3,
+        rowVisibleStartIdx: 3,
         visibleEnd: 16,
-        displayStart: 2,
-        displayEnd: 26,
-        colDisplayStart: 0,
-        colDisplayEnd: 2
+        rowOverscanStartIdx: 2,
+        rowOverscanEndIdx: 26,
+        colOverscanStartIdx: 0,
+        colOverscanEndIdx: 2
       }));
     });
   });

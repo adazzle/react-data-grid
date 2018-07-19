@@ -21,14 +21,14 @@ class Canvas extends React.Component {
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     style: PropTypes.string,
     className: PropTypes.string,
-    displayStart: PropTypes.number.isRequired,
-    displayEnd: PropTypes.number.isRequired,
-    visibleStart: PropTypes.number.isRequired,
+    rowOverscanStartIdx: PropTypes.number.isRequired,
+    rowOverscanEndIdx: PropTypes.number.isRequired,
+    rowVisibleStartIdx: PropTypes.number.isRequired,
     visibleEnd: PropTypes.number.isRequired,
-    colVisibleStart: PropTypes.number.isRequired,
-    colVisibleEnd: PropTypes.number.isRequired,
-    colDisplayStart: PropTypes.number.isRequired,
-    colDisplayEnd: PropTypes.number.isRequired,
+    colVisibleStartIdx: PropTypes.number.isRequired,
+    colVisibleEndIdx: PropTypes.number.isRequired,
+    colOverscanStartIdx: PropTypes.number.isRequired,
+    colOverscanEndIdx: PropTypes.number.isRequired,
     rowsCount: PropTypes.number.isRequired,
     rowGetter: PropTypes.oneOfType([
       PropTypes.func.isRequired,
@@ -106,9 +106,6 @@ class Canvas extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this._scroll.scrollTop !== 0 && this._scroll.scrollLeft !== 0) {
-      this.setScrollLeft(this._scroll.scrollLeft);
-    }
 
     const { scrollToRowIndex } = this.props;
     if (prevProps.scrollToRowIndex !== scrollToRowIndex && scrollToRowIndex !== 0) {
@@ -186,14 +183,14 @@ class Canvas extends React.Component {
     this.scrollToColumn(idx);
   }
 
-  getRows = (displayStart, displayEnd) => {
-    this._currentRowsRange = { start: displayStart, end: displayEnd };
+  getRows = (rowOverscanStartIdx, rowOverscanEndIdx) => {
+    this._currentRowsRange = { start: rowOverscanStartIdx, end: rowOverscanEndIdx };
     if (Array.isArray(this.props.rowGetter)) {
-      return this.props.rowGetter.slice(displayStart, displayEnd);
+      return this.props.rowGetter.slice(rowOverscanStartIdx, rowOverscanEndIdx);
     }
     let rows = [];
-    let i = displayStart;
-    while (i < displayEnd) {
+    let i = rowOverscanStartIdx;
+    while (i < rowOverscanEndIdx) {
       let row = this.props.rowGetter(i);
       let subRowDetails = {};
       if (this.props.getSubRowDetails) {
@@ -233,20 +230,6 @@ class Canvas extends React.Component {
     }
 
     return false;
-  };
-
-  setScrollLeft = (scrollLeft) => {
-    if (this._currentRowsLength !== 0) {
-      if (!this.rows) return;
-      for (let i = 0, len = this._currentRowsLength; i < len; i++) {
-        if (this.rows[i]) {
-          let row = this.getRowByRef(i);
-          if (row && row.setScrollLeft) {
-            row.setScrollLeft(scrollLeft);
-          }
-        }
-      }
-    }
   };
 
   getRowByRef = (i) => {
@@ -301,39 +284,39 @@ class Canvas extends React.Component {
   };
 
   render() {
-    const { displayStart, displayEnd, cellMetaData, columns, colDisplayStart, colDisplayEnd, colVisibleStart, colVisibleEnd, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
 
-    const rows = this.getRows(displayStart, displayEnd)
+    const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map((r, idx) => this.renderRow({
-        key: `row-${displayStart + idx}`,
+        key: `row-${rowOverscanStartIdx + idx}`,
         ref: (node) => this.rows[idx] = node,
-        idx: displayStart + idx,
-        visibleStart: this.props.visibleStart,
+        idx: rowOverscanStartIdx + idx,
+        rowVisibleStartIdx: this.props.rowVisibleStartIdx,
         visibleEnd: this.props.visibleEnd,
         row: r.row,
         height: rowHeight,
         onMouseOver: this.onMouseOver,
         columns,
-        isSelected: this.isRowSelected(displayStart + idx, r.row, displayStart, displayEnd),
+        isSelected: this.isRowSelected(rowOverscanStartIdx + idx, r.row, rowOverscanStartIdx, rowOverscanEndIdx),
         expandedRows,
         cellMetaData,
         subRowDetails: r.subRowDetails,
-        colVisibleStart,
-        colVisibleEnd,
-        colDisplayStart,
-        colDisplayEnd,
+        colVisibleStartIdx,
+        colVisibleEndIdx,
+        colOverscanStartIdx,
+        colOverscanEndIdx,
         isScrolling: this.props.isScrolling
       }));
 
     this._currentRowsLength = rows.length;
 
-    if (displayStart > 0) {
-      rows.unshift(this.renderPlaceholder('top', displayStart * rowHeight));
+    if (rowOverscanStartIdx > 0) {
+      rows.unshift(this.renderPlaceholder('top', rowOverscanStartIdx * rowHeight));
     }
 
-    if (rowsCount - displayEnd > 0) {
+    if (rowsCount - rowOverscanEndIdx > 0) {
       rows.push(
-        this.renderPlaceholder('bottom', (rowsCount - displayEnd) * rowHeight));
+        this.renderPlaceholder('bottom', (rowsCount - rowOverscanEndIdx) * rowHeight));
     }
 
     const style = {
@@ -359,10 +342,10 @@ class Canvas extends React.Component {
             height={height}
             rowHeight={rowHeight}
             columns={columns}
-            visibleStart={this.props.visibleStart}
+            rowVisibleStartIdx={this.props.rowVisibleStartIdx}
             visibleEnd={this.props.visibleEnd}
-            colVisibleStart={colVisibleStart}
-            colVisibleEnd={colVisibleEnd}
+            colVisibleStartIdx={colVisibleStartIdx}
+            colVisibleEndIdx={colVisibleEndIdx}
             enableCellSelect={this.props.enableCellSelect}
             enableCellAutoFocus={this.props.enableCellAutoFocus}
             cellNavigationMode={this.props.cellNavigationMode}

@@ -22,10 +22,10 @@ describe('<InteractionMasks/>', () => {
   const setup = (overrideProps, initialState, render = shallow) => {
     const eventBus = new EventBus();
     const props = {
-      visibleStart: 0,
+      rowVisibleStartIdx: 0,
       visibleEnd: 10,
-      colVisibleStart: 0,
-      colVisibleEnd: 10,
+      colVisibleStartIdx: 0,
+      colVisibleEndIdx: 10,
       columns: createColumns(NUMBER_OF_COLUMNS),
       rowHeight: 30,
       rowsCount: ROWS_COUNT,

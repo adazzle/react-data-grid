@@ -26,10 +26,10 @@ class Row extends React.Component {
     forceUpdate: PropTypes.bool,
     subRowDetails: PropTypes.object,
     isRowHovered: PropTypes.bool,
-    colVisibleStart: PropTypes.number.isRequired,
-    colVisibleEnd: PropTypes.number.isRequired,
-    colDisplayStart: PropTypes.number.isRequired,
-    colDisplayEnd: PropTypes.number.isRequired,
+    colVisibleStartIdx: PropTypes.number.isRequired,
+    colVisibleEndIdx: PropTypes.number.isRequired,
+    colOverscanStartIdx: PropTypes.number.isRequired,
+    colOverscanEndIdx: PropTypes.number.isRequired,
     isScrolling: PropTypes.bool.isRequired
   };
 
@@ -76,11 +76,12 @@ class Row extends React.Component {
   };
 
   getCells = () => {
+    const{colOverscanStartIdx, colOverscanEndIdx} = this.props;
     let cells = [];
     let lockedCells = [];
     let lastColumnIdx = this.props.columns.size - 1;
     if (this.props.columns) {
-      this.props.columns.forEach((column, i) => {
+      this.props.columns.slice(colOverscanStartIdx, colOverscanEndIdx).forEach((column, i) => {
         if (i === lastColumnIdx) {
           column.isLastColumn = true;
         }
@@ -125,15 +126,6 @@ class Row extends React.Component {
       return { canExpand: subRowDetails && subRowDetails.field === columnKey && ((subRowDetails.children && subRowDetails.children.length > 0) || subRowDetails.group === true), field: subRowDetails.field, expanded: subRowDetails && subRowDetails.expanded, children: subRowDetails && subRowDetails.children, treeDepth: subRowDetails ? subRowDetails.treeDepth : 0, subRowDetails: subRowDetails };
     }
     return {};
-  };
-
-  setScrollLeft = (scrollLeft) => {
-    this.props.columns.forEach((column) => {
-      if (column.locked) {
-        if (!this[column.key]) return;
-        this[column.key].setScrollLeft(scrollLeft);
-      }
-    });
   };
 
   getKnownDivProps = () => {

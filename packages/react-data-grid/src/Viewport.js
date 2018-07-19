@@ -65,7 +65,7 @@ class Viewport extends React.Component {
   state = getGridState(this.props);
 
   onScroll = (scroll) => {
-    this.updateScroll(
+    const nextScrollState = this.updateScroll(
       scroll.scrollTop,
       scroll.scrollLeft,
       this.state.height,
@@ -74,7 +74,7 @@ class Viewport extends React.Component {
     );
 
     if (this.props.onScroll) {
-      this.props.onScroll({scrollTop: scroll.scrollTop, scrollLeft: scroll.scrollLeft});
+      this.props.onScroll(nextScrollState);
     }
   };
 
@@ -83,7 +83,6 @@ class Viewport extends React.Component {
   };
 
   setScrollLeft = (scrollLeft) => {
-    this.canvas.setScrollLeft(scrollLeft);
   };
 
   getDOMNodeOffsetWidth = () => {
@@ -123,6 +122,7 @@ class Viewport extends React.Component {
     const nextScrollState = getNextScrollState(this.props, this.getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width);
 
     this.setState(nextScrollState);
+    return nextScrollState;
   };
 
   metricsUpdated = () => {
@@ -228,14 +228,14 @@ class Viewport extends React.Component {
           expandedRows={this.props.expandedRows}
           columns={this.props.columnMetrics.columns}
           rowRenderer={this.props.rowRenderer}
-          displayStart={this.state.displayStart}
-          displayEnd={this.state.displayEnd}
-          visibleStart={this.state.visibleStart}
+          rowOverscanStartIdx={this.state.rowOverscanStartIdx}
+          rowOverscanEndIdx={this.state.rowOverscanEndIdx}
+          rowVisibleStartIdx={this.state.rowVisibleStartIdx}
           visibleEnd={this.state.visibleEnd}
-          colVisibleStart={this.state.colVisibleStart}
-          colVisibleEnd={this.state.colVisibleEnd}
-          colDisplayStart={this.state.colDisplayStart}
-          colDisplayEnd={this.state.colDisplayEnd}
+          colVisibleStartIdx={this.state.colVisibleStartIdx}
+          colVisibleEndIdx={this.state.colVisibleEndIdx}
+          colOverscanStartIdx={this.state.colOverscanStartIdx}
+          colOverscanEndIdx={this.state.colOverscanEndIdx}
           cellMetaData={this.props.cellMetaData}
           height={this.state.height}
           rowHeight={this.props.rowHeight}

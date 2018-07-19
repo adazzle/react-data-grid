@@ -19,7 +19,7 @@ class RowsContainer extends React.Component {
   }
 
   render() {
-    const { contextMenu, rows } = this.props;
+    const { contextMenu, rows, width } = this.props;
     if (isValidElement(contextMenu)) {
       this.validatePlugin();
       const { ContextMenuTrigger } = this.plugins.Menu;
@@ -30,7 +30,7 @@ class RowsContainer extends React.Component {
       );
     }
 
-    return <div>{rows}</div>;
+    return <div style={{width: width}}>{rows}</div>;
   }
 }
 

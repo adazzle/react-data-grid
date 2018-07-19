@@ -85,24 +85,24 @@ describe('<Viewport />', () => {
     let Canvas = wrapper.find('Canvas');
     Canvas.props().onScroll({ scrollTop, scrollLeft});
     expect(wrapper.state()).toEqual({
-      colDisplayEnd: 3,
-      colDisplayStart: 0,
-      colVisibleEnd: 3,
-      colVisibleStart: 0,
-      displayEnd: 26,
-      displayStart: 1,
+      colOverscanEndIdx: 3,
+      colOverscanStartIdx: 0,
+      colVisibleEndIdx: 3,
+      colVisibleStartIdx: 0,
+      rowOverscanEndIdx: 26,
+      rowOverscanStartIdx: 1,
       height: viewportProps.minHeight,
       scrollLeft: scrollLeft,
       scrollTop: scrollTop,
       visibleEnd: 21,
-      visibleStart: 6,
+      rowVisibleStartIdx: 6,
       isScrolling: true
     });
   });
 
   it('should set the max number of columns when column rendered are zeroed', () => {
     const wrapper = shallow(<Viewport {...viewportPropsNoColumns} />);
-    expect(wrapper.state().colVisibleEnd).toEqual(helpers.columns.length);
+    expect(wrapper.state().colVisibleEndIdx).toEqual(helpers.columns.length);
   });
 
   it('should update when given different number of columns', () => {
@@ -116,17 +116,17 @@ describe('<Viewport />', () => {
     let newProps = Object.assign({}, viewportProps, {columnMetrics: Object.assign({}, viewportProps.columnMetrics, {columns: updatedColumns})});
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
-      colDisplayEnd: updatedColumns.length,
-      colDisplayStart: 0,
-      colVisibleEnd: updatedColumns.length,
-      colVisibleStart: 0,
-      displayEnd: 50,
-      displayStart: 0,
+      colOverscanEndIdx: updatedColumns.length,
+      colOverscanStartIdx: 0,
+      colVisibleEndIdx: updatedColumns.length,
+      colVisibleStartIdx: 0,
+      rowOverscanEndIdx: 50,
+      rowOverscanStartIdx: 0,
       height: viewportProps.minHeight,
       scrollLeft: 0,
       scrollTop: 0,
       visibleEnd: 50,
-      visibleStart: 0
+      rowVisibleStartIdx: 0
     });
   });
 
@@ -136,17 +136,17 @@ describe('<Viewport />', () => {
     let newProps = Object.assign({}, viewportProps, {minHeight: newHeight});
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
-      colDisplayEnd: helpers.columns.length,
-      colDisplayStart: 0,
-      colVisibleEnd: helpers.columns.length,
-      colVisibleStart: 0,
-      displayEnd: 34,
-      displayStart: 0,
+      colOverscanEndIdx: helpers.columns.length,
+      colOverscanStartIdx: 0,
+      colVisibleEndIdx: helpers.columns.length,
+      colVisibleStartIdx: 0,
+      rowOverscanEndIdx: 34,
+      rowOverscanStartIdx: 0,
       height: newHeight,
       scrollLeft: 0,
       scrollTop: 0,
       visibleEnd: 29,
-      visibleStart: 0,
+      rowVisibleStartIdx: 0,
       isScrolling: true
     });
   });

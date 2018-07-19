@@ -24,12 +24,13 @@ export const shouldRowUpdate = (nextProps, currentProps) => {
     doesRowContainSelectedCell(nextProps) ||
     willRowBeDraggedOver(nextProps) ||
     nextProps.row !== currentProps.row ||
-    currentProps.colDisplayStart !== nextProps.colDisplayStart ||
-    currentProps.colDisplayEnd !== nextProps.colDisplayEnd ||
-    currentProps.colVisibleStart !== nextProps.colVisibleStart ||
-    currentProps.colVisibleEnd !== nextProps.colVisibleEnd ||
+    currentProps.colOverscanStartIdx !== nextProps.colOverscanStartIdx ||
+    currentProps.colOverscanEndIdx !== nextProps.colOverscanEndIdx ||
+    currentProps.colVisibleStartIdx !== nextProps.colVisibleStartIdx ||
+    currentProps.colVisibleEndIdx !== nextProps.colVisibleEndIdx ||
     hasRowBeenCopied(currentProps) ||
     currentProps.isSelected !== nextProps.isSelected ||
+    currentProps.isScrolling !== nextProps.isScrolling ||
     nextProps.height !== currentProps.height ||
     currentProps.isOver !== nextProps.isOver ||
     currentProps.expandedRows !== nextProps.expandedRows ||

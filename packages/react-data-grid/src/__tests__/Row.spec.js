@@ -47,10 +47,10 @@ describe('Row', () => {
       columns: helpers.columns,
       row: {key: 'value'},
       idx: 17,
-      colVisibleStart: 1,
-      colVisibleEnd: 2,
-      colDisplayStart: 3,
-      colDisplayEnd: 4,
+      colVisibleStartIdx: 1,
+      colVisibleEndIdx: 2,
+      colOverscanStartIdx: 3,
+      colOverscanEndIdx: 4,
       isScrolling: true
     };
 
@@ -79,10 +79,10 @@ describe('Row', () => {
       forceUpdate: false,
       subRowDetails: {name: 'subrowname'},
       isRowHovered: false,
-      colVisibleStart: 0,
-      colVisibleEnd: 1,
-      colDisplayStart: 2,
-      colDisplayEnd: 3,
+      colVisibleStartIdx: 0,
+      colVisibleEndIdx: 1,
+      colOverscanStartIdx: 2,
+      colOverscanEndIdx: 3,
       isScrolling: false
     };
 
@@ -115,10 +115,10 @@ describe('Row', () => {
       expect(draggableDiv.props().forceUpdate).toBeUndefined();
       expect(draggableDiv.props().subRowDetails).toBeUndefined();
       expect(draggableDiv.props().isRowHovered).toBeUndefined();
-      expect(draggableDiv.props().colVisibleStart).toBeUndefined();
-      expect(draggableDiv.props().colVisibleEnd).toBeUndefined();
-      expect(draggableDiv.props().colDisplayStart).toBeUndefined();
-      expect(draggableDiv.props().colDisplayEnd).toBeUndefined();
+      expect(draggableDiv.props().colVisibleStartIdx).toBeUndefined();
+      expect(draggableDiv.props().colVisibleEndIdx).toBeUndefined();
+      expect(draggableDiv.props().colOverscanStartIdx).toBeUndefined();
+      expect(draggableDiv.props().colOverscanEndIdx).toBeUndefined();
       expect(draggableDiv.props().isScrolling).toBeUndefined();
     });
   });

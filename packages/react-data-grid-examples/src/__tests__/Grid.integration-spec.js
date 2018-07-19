@@ -26,8 +26,8 @@ describe('Grid Integration', () => {
     });
 
     it('Renders the expected number of rows', () => {
-      const { displayStart, displayEnd } = gridRunner.getDisplayInfo();
-      let expectedNumberOfRows = displayEnd - displayStart;
+      const { rowOverscanStartIdx, rowOverscanEndIdx } = gridRunner.getDisplayInfo();
+      let expectedNumberOfRows = rowOverscanEndIdx - rowOverscanStartIdx;
 
       expect(gridRunner.getRenderedRows().length).toEqual(expectedNumberOfRows);
     });
