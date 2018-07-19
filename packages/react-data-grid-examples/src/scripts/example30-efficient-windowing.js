@@ -2,10 +2,19 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
-const RenderWindow = ({ isScrolling, colOverscanEndIdx, colOverscanStartIdx }) => {
-  const width = (colOverscanEndIdx - colOverscanStartIdx) * 200;
+const COL_WIDTH = 200;
+const ROW_HEIGHT = 35;
+const HEADER_HEIGHT = 35;
+
+const RenderWindow = ({ isScrolling, colOverscanEndIdx, colOverscanStartIdx, rowOverscanEndIdx, rowOverscanStartIdx, rowVisibleStartIdx, rowVisibleEndIdx, colVisibleStartIdx, colVisibleEndIdx  }) => {
+  console.log(rowVisibleEndIdx);
+  const topOffset = (rowOverscanStartIdx - rowVisibleStartIdx) * ROW_HEIGHT;
+  const marginTop = HEADER_HEIGHT + topOffset;
+  const marginLeft = (colOverscanStartIdx - colVisibleStartIdx) * COL_WIDTH;
+  const height = (rowOverscanEndIdx - rowOverscanStartIdx) * ROW_HEIGHT;
+  const width = (colOverscanEndIdx - colOverscanStartIdx) * COL_WIDTH;
   return (isScrolling ? <div 
-    style={{ position: 'absolute', backgroundColor: 'orange', opacity: 0.7, height: 400, width: width, zIndex: 2, pointerEvents: 'none' }} >
+    style={{ position: 'absolute', backgroundColor: 'orange', opacity: 0.7, height, width, marginTop, marginLeft, zIndex: 2, pointerEvents: 'none' }} >
     </div> : null);
 }
 
@@ -17,38 +26,53 @@ class Example extends React.Component {
       return {
         key: `col${i}`,
         name: `col${i}`,
-        width: 200
-      };
+        width: COL_WIDTH
+      }
     });
 
     this.state = null;
   }
 
   createRows = () => {
-    let rows = [];
-    for (let i = 1; i < 1000; i++) {
-      rows.push({
-        id: i,
-        col1: 1,
-        count: i * 1000
-      });
-    }
-
-    this._rows = rows;
+    this._rows = [...Array(1000).keys()].map(i => {
+      return [...Array(100).keys()].reduce((row, j) => ({...row, ...{[`col${j}`]: `row ${i} col ${j}`} }), {});
+    });
   };
 
   rowGetter = (i) => {
     return this._rows[i];
   };
 
+  clearScrollTimer = () => {
+    if (this.resetScrollStateTimeoutId) {
+      clearTimeout(this.resetScrollStateTimeoutId);
+    }
+  };
+
+  resetScrollStateAfterDelay = () => {
+    this.clearScrollTimer();
+    this.resetScrollStateTimeoutId = setTimeout(
+      this.resetScrollStateAfterDelayCallback,
+      500
+    );
+  };
+
+  resetScrollStateAfterDelayCallback = () => {
+    this.resetScrollStateTimeoutId = null;
+    this.setState({
+      isScrolling: false
+    });
+  };
+
   onScroll = (scrollParams) => {
+    this.resetScrollStateAfterDelay();
     console.log(scrollParams);
     this.setState(scrollParams);
   };
 
   render() {
     return (
-      <div style={{ marginLeft: '25%' }}>
+      <div style={{ marginLeft: '25%', marginTop: '5%' }}>
         <RenderWindow {...this.state} />
         <ReactDataGrid
           columns={this._columns}
