@@ -2,6 +2,13 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
+const RenderWindow = ({ isScrolling, colOverscanEndIdx, colOverscanStartIdx }) => {
+  const width = (colOverscanEndIdx - colOverscanStartIdx) * 200;
+  return (isScrolling ? <div 
+    style={{ position: 'absolute', backgroundColor: 'orange', opacity: 0.7, height: 400, width: width, zIndex: 2, pointerEvents: 'none' }} >
+    </div> : null);
+}
+
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -36,19 +43,21 @@ class Example extends React.Component {
 
   onScroll = (scrollParams) => {
     console.log(scrollParams);
+    this.setState(scrollParams);
   };
 
   render() {
-    return  (
-      <div style={{marginLeft: '25%'}}>
+    return (
+      <div style={{ marginLeft: '25%' }}>
+        <RenderWindow {...this.state} />
         <ReactDataGrid
-        columns={this._columns}
-        rowGetter={this.rowGetter}
-        rowsCount={this._rows.length}
-        minWidth={600}
-        minHeight={400}
-        onScroll={this.onScroll}
-         /></div>);
+          columns={this._columns}
+          rowGetter={this.rowGetter}
+          rowsCount={this._rows.length}
+          minWidth={600}
+          minHeight={400}
+          onScroll={this.onScroll}
+        /></div>);
   }
 }
 

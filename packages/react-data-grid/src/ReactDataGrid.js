@@ -110,10 +110,10 @@ class ReactDataGrid extends React.Component {
     scrollToRowIndex: 0,
     cellNavigationMode: CellNavigationMode.NONE,
     overScan: {
-      colsStart: 5,
-      colsEnd: 5,
-      rowsStart: 5,
-      rowsEnd: 5
+      colsStart: 2,
+      colsEnd: 2,
+      rowsStart: 2,
+      rowsEnd: 2
     },
     enableCellAutoFocus: true,
     onBeforeEdit: () => {},

@@ -91,10 +91,10 @@ class Grid extends React.Component {
   };
 
   onScroll = (props) => {
+    this.props.onScroll(props);
     if (this._scrollLeft !== props.scrollLeft) {
       this._scrollLeft = props.scrollLeft;
       this._onScroll();
-      this.props.onScroll(props);
     }
   };
 

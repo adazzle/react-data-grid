@@ -119,7 +119,7 @@ class Viewport extends React.Component {
     width,
   ) => {
     this.resetScrollStateAfterDelay();
-    const nextScrollState = getNextScrollState(this.props, this.getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width);
+    const nextScrollState = getNextScrollState(this.props, this.state, this.getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width);
 
     this.setState(nextScrollState);
     return nextScrollState;
