@@ -409,6 +409,7 @@ class Cell extends React.Component {
   isDraggedOverDownwards = (): boolean => {
     let dragged = this.props.cellMetaData.dragged;
     if (!this.isSelected() && this.isDraggedOver()) {
+      // Note that this is is a visual lower bound, and a numerical upper bound.
       let lowerBound = dragged.rowIdx > dragged.overRowIdx ?
         dragged.rowIdx : dragged.overRowIdx;
       return this.props.rowIdx === lowerBound;

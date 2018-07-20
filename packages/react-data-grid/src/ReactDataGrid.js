@@ -639,7 +639,6 @@ class ReactDataGrid extends React.Component {
       && rowIdx < this.props.rowsCount;
   };
 
-  // FIXME: the `dragged` variable will have the row idx!
   handleDragStart = (dragged: DraggedType) => {
     if (!this.dragEnabled()) { return; }
     if (this.isCellWithinBounds(dragged)) {
@@ -661,7 +660,7 @@ class ReactDataGrid extends React.Component {
         this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
       }
       if (this.props.onGridRowsUpdated) {
-        //fromRow
+        // Value resolution just copies the `selected` cells value, applying it to the `updated` object.
         let updated = {}
         this.props.columns.slice(fromCol, toCol + 1).forEach(column => { updated[column.key] = dragged.value; })
         this.onGridRowsUpdated(cellKey, fromRow, toRow, updated, AppConstants.UpdateActions.CELL_DRAG);
