@@ -657,7 +657,8 @@ class ReactDataGrid extends React.Component {
       let fromCol = selected.idx    < dragged.overIdx    ? selected.idx    : dragged.overIdx;
       let toCol   = selected.idx    > dragged.overIdx    ? selected.idx    : dragged.overIdx;
       if (this.props.onCellsDragged) {
-        this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
+        const { value } = dragged;
+        this.props.onCellsDragged({cellKey, fromRow, toRow, fromCol, toCol, value});
       }
       if (this.props.onGridRowsUpdated) {
         // Value resolution just copies the `selected` cells value, applying it to the `updated` object.
@@ -699,7 +700,7 @@ class ReactDataGrid extends React.Component {
       while (cur !== draggedTo.idx) {
         cur += nextCol;
         let column = this.getColumn(cur);
-        if (!column.editable) {
+        if (!(column && column.editable)) {
           cur -= nextCol;
           break;
         }
