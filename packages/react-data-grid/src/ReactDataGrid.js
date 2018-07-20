@@ -661,8 +661,8 @@ class ReactDataGrid extends React.Component {
       }
       if (this.props.onGridRowsUpdated) {
         // Value resolution just copies the `selected` cells value, applying it to the `updated` object.
-        let updated = {}
-        this.props.columns.slice(fromCol, toCol + 1).forEach(column => { updated[column.key] = dragged.value; })
+        let updated = {};
+        this.props.columns.slice(fromCol, toCol + 1).forEach(col => { updated[col.key] = dragged.value; });
         this.onGridRowsUpdated(cellKey, fromRow, toRow, updated, AppConstants.UpdateActions.CELL_DRAG);
       }
     }
