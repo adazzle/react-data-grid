@@ -139,6 +139,7 @@ describe('Header Unit Tests', () => {
         onCellDoubleClick: () => {},
         onCellClick: () => { },
         handleDragEnterRow: () => {},
+        handleDragEnterCell: () => {},
         handleTerminateDrag: () => {},
         selected: { rowIdx: 0, id: 1 }
       }

@@ -32,6 +32,7 @@ let viewportProps = {
     onCommitCancel: () => { },
     copied: {},
     handleDragEnterRow: () => { },
+    handleDragEnterCell: () => { },
     handleTerminateDrag: () => { }
   },
   rowKey: 'Id'
@@ -66,6 +67,7 @@ let viewportPropsNoColumns = {  // when creating anew plan copying from an exist
     onCommitCancel: () => { },
     copied: {},
     handleDragEnterRow: () => { },
+    handleDragEnterCell: () => { },
     handleTerminateDrag: () => { }
   },
   rowKey: 'Id'

@@ -20,6 +20,7 @@ let testProps = {
     onCommitCancel: () => {},
     copied: {},
     handleDragEnterRow: () => {},
+    handleDragEnterCell: () => {},
     handleTerminateDrag: () => {},
     onAddSubRow: () => {}
   }

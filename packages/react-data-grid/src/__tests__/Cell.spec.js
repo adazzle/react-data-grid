@@ -21,6 +21,7 @@ let testCellMetaData = {
   onCommitCancel: function() {},
   copied: null,
   handleDragEnterRow: function() {},
+  handleDragEnterCell: function() {},
   handleTerminateDrag: function() {},
   onColumnEvent: function() {}
 };
@@ -599,6 +600,7 @@ describe('Cell Tests', () => {
         onCommitCancel: jasmine.createSpy(),
         copied: null,
         handleDragEnterRow: jasmine.createSpy(),
+        handleDragEnterCell: jasmine.createSpy(),
         handleTerminateDrag: jasmine.createSpy(),
         onColumnEvent: jasmine.createSpy()
       },
@@ -629,6 +631,7 @@ describe('Cell Tests', () => {
         onCommitCancel: jasmine.createSpy(),
         copied: null,
         handleDragEnterRow: jasmine.createSpy(),
+        handleDragEnterCell: jasmine.createSpy(),
         handleTerminateDrag: jasmine.createSpy(),
         onColumnEvent: jasmine.createSpy()
       },
@@ -724,6 +727,7 @@ describe('Cell Tests', () => {
           onCommitCancel: jasmine.createSpy(),
           copied: null,
           handleDragEnterRow: jasmine.createSpy(),
+          handleDragEnterCell: jasmine.createSpy(),
           handleTerminateDrag: jasmine.createSpy(),
           onColumnEvent: jasmine.createSpy()
         },
@@ -754,6 +758,7 @@ describe('Cell Tests', () => {
             onCommitCancel: jasmine.createSpy(),
             copied: null,
             handleDragEnterRow: jasmine.createSpy(),
+            handleDragEnterCell: jasmine.createSpy(),
             handleTerminateDrag: jasmine.createSpy(),
             onColumnEvent: jasmine.createSpy(),
             getCellActions: sinon.stub().returns([action])

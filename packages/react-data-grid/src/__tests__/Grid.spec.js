@@ -192,6 +192,7 @@ describe('Rendering Grid component', () => {
         onCommitCancel: jasmine.createSpy(),
         copied: null,
         handleDragEnterRow: jasmine.createSpy(),
+        handleDragEnterCell: jasmine.createSpy(),
         handleTerminateDrag: jasmine.createSpy(),
         onColumnEvent: jasmine.createSpy()
       },
