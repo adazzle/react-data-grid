@@ -94,7 +94,7 @@ describe('<Viewport />', () => {
       height: viewportProps.minHeight,
       scrollLeft: scrollLeft,
       scrollTop: scrollTop,
-      visibleEnd: 21,
+      rowVisibleEndIdx: 21,
       rowVisibleStartIdx: 6,
       isScrolling: true
     });
@@ -125,7 +125,7 @@ describe('<Viewport />', () => {
       height: viewportProps.minHeight,
       scrollLeft: 0,
       scrollTop: 0,
-      visibleEnd: 50,
+      rowVisibleEndIdx: 50,
       rowVisibleStartIdx: 0
     });
   });
@@ -145,7 +145,7 @@ describe('<Viewport />', () => {
       height: newHeight,
       scrollLeft: 0,
       scrollTop: 0,
-      visibleEnd: 29,
+      rowVisibleEndIdx: 29,
       rowVisibleStartIdx: 0,
       isScrolling: true
     });

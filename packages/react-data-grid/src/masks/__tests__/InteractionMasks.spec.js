@@ -23,7 +23,7 @@ describe('<InteractionMasks/>', () => {
     const eventBus = new EventBus();
     const props = {
       rowVisibleStartIdx: 0,
-      visibleEnd: 10,
+      rowVisibleEndIdx: 10,
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 10,
       columns: createColumns(NUMBER_OF_COLUMNS),

@@ -33,7 +33,7 @@ const RenderWindow = ({ isScrolling, colOverscanEndIdx, colOverscanStartIdx, row
 
 const NumberInput = ({name, value, onChange}) => {
   return (
-  <div className="col-lg-2">
+  <div className="col-md-2">
   <div className="input-group">
   <span className="input-group-addon" id="basic-addon1">{name}</span>
   <input type="text" className="form-control" defaultValue={value} onChange={onChange}  />
@@ -49,25 +49,33 @@ const GridWidthInput = ({value, onChange}) => {
 }
 
 const NumberOfColumns = ({value, onChange}) => {
-  return (<NumberInput name="Number Columns" value={value} onChange={onChange}/>);
+  return (<NumberInput name="No. Columns" value={value} onChange={onChange}/>);
 }
 
 const NumberOfRows = ({value, onChange}) => {
-  return (<NumberInput name="Number Rows" value={value} onChange={onChange}/>);
+  return (<NumberInput name="No. Rows" value={value} onChange={onChange}/>);
 }
 
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {columns: createColumns(100), rows: createRows(1000), width: 600, height: 600};
+    this.state = {columns: createColumns(100), rows: createRows(1000), gridWidth: 600, gridHeight: 400};
   }
 
-  setColumns = (numberCols) => {
-    this.setState({columns: createColumns(numberCols)});
+  setColumns = (e) => {
+    this.setState({columns: createColumns(parseFloat(e.target.value))});
+  }
+
+  setRows = (e) => {
+    this.setState({rows: createRows(parseFloat(e.target.value))});
   }
 
   setHeight = (e) => {
-    this.setState({height: e.target.value})
+    this.setState({height: parseFloat(e.target.value)})
+  }
+
+  setWidth = (e) => {
+    this.setState({width: parseFloat(e.target.value)})
   }
 
   rowGetter = (i) => {
@@ -103,29 +111,30 @@ class Example extends React.Component {
 
   render() {
     return (
+      <div>
+      <div className="row" >
+      <NumberOfColumns onChange={this.setColumns} value={this.state.columns.length}/>
+      <NumberOfRows onChange={this.setRows} value={this.state.rows.length}/>
+      <GridWidthInput value={this.state.gridWidth} onChange={this.setGridWidth}/>
+      <GridHeightInput  value={this.state.gridHeight} onChange={this.setGridHeight}/>
+    </div>
       <div style={{ marginLeft: '25%', marginTop: '5%' }}>
-        <div className="row" >
-          <NumberOfColumns onChange={this.setNumberColumns} value={this.state.columns.length}/>
-          <NumberOfRows onChange={this.setNumberRows} value={this.state.rows.length}/>
-          <GridWidthInput value={this.state.width}/>
-          <GridHeightInput  value={this.state.height} onChange={this.setHeight}/>
-        </div>
         <RenderWindow {...this.state} />
         <ReactDataGrid
           columns={this.state.columns}
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
-          minWidth={this.state.width}
-          minHeight={this.state.height}
+          minWidth={this.state.gridWidth}
+          minHeight={this.state.gridHeight}
           onScroll={this.onScroll}
-        /></div>);
+        /></div></div>);
   }
 }
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
-  exampleName: 'Basic Example',
-  exampleDescription: 'A display only grid.',
+  exampleName: 'Efficient windowing demonstration',
+  exampleDescription: 'Scroll the grid in different directions to see how efficient invisible content is rendered in order to achieve smooth scrolling',
   examplePath: './scripts/example30-efficient-windowing.js',
   examplePlaygroundLink: 'https://jsfiddle.net/f6mbnb8z/1/'
 });

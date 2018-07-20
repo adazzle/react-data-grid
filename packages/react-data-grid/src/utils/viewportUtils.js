@@ -20,7 +20,7 @@ function getGridState(props) {
     rowOverscanStartIdx: 0,
     rowOverscanEndIdx: totalRowCount,
     rowVisibleStartIdx: 0,
-    visibleEnd: totalRowCount,
+    rowVisibleEndIdx: totalRowCount,
     height: canvasHeight,
     scrollTop: 0,
     scrollLeft: 0,

@@ -29,7 +29,7 @@ class InteractionMasks extends React.Component {
     colVisibleStartIdx: PropTypes.number.isRequired,
     colVisibleEndIdx: PropTypes.number.isRequired,
     rowVisibleStartIdx: PropTypes.number.isRequired,
-    visibleEnd: PropTypes.number.isRequired,
+    rowVisibleEndIdx: PropTypes.number.isRequired,
     columns: PropTypes.array,
     width: PropTypes.number,
     rowHeight: PropTypes.number.isRequired,
@@ -249,8 +249,8 @@ class InteractionMasks extends React.Component {
   }
 
   getKeyNavActionFromEvent(e) {
-    const { visibleEnd, rowVisibleStartIdx, colVisibleEndIdx, colVisibleStartIdx, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary } = this.props;
-    const isCellAtBottomBoundary = cell => cell.rowIdx >= visibleEnd - SCROLL_CELL_BUFFER;
+    const { rowVisibleEndIdx, rowVisibleStartIdx, colVisibleEndIdx, colVisibleStartIdx, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary } = this.props;
+    const isCellAtBottomBoundary = cell => cell.rowIdx >= rowVisibleEndIdx - SCROLL_CELL_BUFFER;
     const isCellAtTopBoundary = cell => cell.rowIdx !== 0 && cell.rowIdx <= rowVisibleStartIdx - 1;
     const isCellAtRightBoundary = cell => cell.idx !== 0 && cell.idx >= colVisibleEndIdx - 1;
     const isCellAtLeftBoundary = cell => cell.idx !== 0 && cell.idx <= colVisibleStartIdx + 1;

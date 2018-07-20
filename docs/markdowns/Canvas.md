@@ -145,7 +145,7 @@ type: `string`
 type: `union(number|string)`
 
 
-### `visibleEnd` (required)
+### `rowVisibleEndIdx` (required)
 
 type: `number`
 

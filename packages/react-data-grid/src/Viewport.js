@@ -231,7 +231,7 @@ class Viewport extends React.Component {
           rowOverscanStartIdx={this.state.rowOverscanStartIdx}
           rowOverscanEndIdx={this.state.rowOverscanEndIdx}
           rowVisibleStartIdx={this.state.rowVisibleStartIdx}
-          visibleEnd={this.state.visibleEnd}
+          rowVisibleEndIdx={this.state.rowVisibleEndIdx}
           colVisibleStartIdx={this.state.colVisibleStartIdx}
           colVisibleEndIdx={this.state.colVisibleEndIdx}
           colOverscanStartIdx={this.state.colOverscanStartIdx}

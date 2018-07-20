@@ -24,7 +24,7 @@ class Canvas extends React.Component {
     rowOverscanStartIdx: PropTypes.number.isRequired,
     rowOverscanEndIdx: PropTypes.number.isRequired,
     rowVisibleStartIdx: PropTypes.number.isRequired,
-    visibleEnd: PropTypes.number.isRequired,
+    rowVisibleEndIdx: PropTypes.number.isRequired,
     colVisibleStartIdx: PropTypes.number.isRequired,
     colVisibleEndIdx: PropTypes.number.isRequired,
     colOverscanStartIdx: PropTypes.number.isRequired,
@@ -155,6 +155,7 @@ class Canvas extends React.Component {
   }
 
   onHitBottomCanvas = () =>  {
+    console.log('bottom');
     const { rowHeight } = this.props;
     const node = this.canvas;
     node.scrollTop += rowHeight + this.getClientScrollTopOffset(node);
@@ -292,7 +293,7 @@ class Canvas extends React.Component {
         ref: (node) => this.rows[idx] = node,
         idx: rowOverscanStartIdx + idx,
         rowVisibleStartIdx: this.props.rowVisibleStartIdx,
-        visibleEnd: this.props.visibleEnd,
+        rowVisibleEndIdx: this.props.rowVisibleEndIdx,
         row: r.row,
         height: rowHeight,
         onMouseOver: this.onMouseOver,
@@ -343,7 +344,7 @@ class Canvas extends React.Component {
             rowHeight={rowHeight}
             columns={columns}
             rowVisibleStartIdx={this.props.rowVisibleStartIdx}
-            visibleEnd={this.props.visibleEnd}
+            rowVisibleEndIdx={this.props.rowVisibleEndIdx}
             colVisibleStartIdx={colVisibleStartIdx}
             colVisibleEndIdx={colVisibleEndIdx}
             enableCellSelect={this.props.enableCellSelect}

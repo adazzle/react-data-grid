@@ -13,7 +13,7 @@ let testProps = {
   rowOverscanStartIdx: 1,
   rowOverscanEndIdx: 10,
   rowVisibleStartIdx: 0,
-  visibleEnd: 10,
+  rowVisibleEndIdx: 10,
   colVisibleStartIdx: 0,
   colVisibleEndIdx: 100,
   colOverscanStartIdx: 0,
@@ -75,7 +75,7 @@ describe('Canvas Tests', () => {
       rowHeight: 25,
       rowsCount: 1,
       rowVisibleStartIdx: 0,
-      visibleEnd: 10,
+      rowVisibleEndIdx: 10,
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 100
     }));

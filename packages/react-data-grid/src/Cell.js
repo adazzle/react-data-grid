@@ -250,15 +250,14 @@ class Cell extends React.Component {
 
   renderCellContent = (props) => {
     let CellContent;
-    const value = this.props.isScrolling === true ? 'scrolling' : this.props.value;
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
       props.dependentValues = this.getFormatterDependencies();
       CellContent = React.cloneElement(Formatter, props);
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={value} dependentValues={this.getFormatterDependencies()} />;
+      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} />;
     } else {
-      CellContent = <SimpleCellFormatter value={value} />;
+      CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
     let isExpandCell = this.props.expandableOptions ? this.props.expandableOptions.field === this.props.column.key : false;
     let treeDepth = this.props.expandableOptions ? this.props.expandableOptions.treeDepth : 0;

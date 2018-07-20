@@ -308,7 +308,7 @@
         "required": true,
         "description": ""
       },
-      "visibleEnd": {
+      "rowVisibleEndIdx": {
         "type": {
           "name": "number"
         },
