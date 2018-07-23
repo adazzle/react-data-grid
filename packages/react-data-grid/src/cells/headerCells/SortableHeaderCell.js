@@ -53,7 +53,7 @@ class SortableHeaderCell extends React.Component {
       'react-grid-HeaderCell-sortable--ascending': this.props.sortDirection === 'ASC',
       'react-grid-HeaderCell-sortable--descending': this.props.sortDirection === 'DESC'
     });
-    const content = this.props.headerRenderer ? this.props.headerRenderer :  this.props.column.name;
+    const content = this.props.headerRenderer ? React.cloneElement(this.props.headerRenderer, this.props) :  this.props.column.name;
     return (
       <div className={className}
         onClick={this.onClick}
