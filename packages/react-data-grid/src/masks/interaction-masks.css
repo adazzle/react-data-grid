@@ -1,0 +1,97 @@
+.rdg-selected {
+  border: 2px solid #66afe9;
+}
+
+.rdg-selected .drag-handle {
+  pointer-events: auto;
+  position: absolute;
+  bottom: -5px;
+  right: -4px;
+  background: #66afe9;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #fff;
+  border-right: 0px;
+  border-bottom: 0px;
+  z-index: 8;
+  cursor: crosshair;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.rdg-selected:hover .drag-handle {
+  bottom: -8px;
+  right: -7px;
+  background: white;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #66afe9;
+}
+
+.rdg-selected:hover .drag-handle .glyphicon-arrow-down {
+  display: 'block'
+}
+
+.react-grid-cell-dragged-over-up, .react-grid-cell-dragged-over-down {
+  border: 1px dashed black;
+  background: rgba(0, 0, 255, 0.2) !important;
+}
+
+.react-grid-cell-dragged-over-up {
+  border-bottom-width: 0;
+}
+
+.react-grid-cell-dragged-over-down {
+  border-top-width: 0;
+}
+
+.react-grid-cell-copied {
+  background: rgba(0, 0, 255, 0.2) !important;
+}
+
+.rdg-editor-container input.editor-main, select.editor-main {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555555;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+input.editor-main:focus, select.editor-main:focus {
+  border-color: #66afe9;
+  border: 2px solid #66afe9;
+  background: #eee;
+  border-radius: 4px;
+}
+
+.rdg-editor-container input.editor-main::-moz-placeholder, select.editor-main::-moz-placeholder {
+  color: #999999;
+  opacity: 1;
+}
+
+.rdg-editor-container input.editor-main:-ms-input-placeholder, select.editor-main:-ms-input-placeholder {
+  color: #999999;
+}
+
+.rdg-editor-container input.editor-main::-webkit-input-placeholder, select.editor-main::-webkit-input-placeholder {
+  color: #999999;
+}
+
+.rdg-editor-container input.editor-main[disabled], select.editor-main[disabled], .rdg-editor-container input.editor-main[readonly], select.editor-main[readonly], fieldset[disabled] .rdg-editor-container input.editor-main, fieldset[disabled] select.editor-main {
+  cursor: not-allowed;
+  background-color: #eeeeee;
+  opacity: 1;
+}
+
+textarea.rdg-editor-container input.editor-main, textareaselect.editor-main {
+  height: auto;
+}

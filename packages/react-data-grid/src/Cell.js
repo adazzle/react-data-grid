@@ -256,6 +256,10 @@ class Cell extends React.Component {
     return null;
   }
 
+  setCellRef = (node) => {
+    this.node = node;
+  };
+
   renderCellContent = (props) => {
     let CellContent;
     let Formatter = this.getFormatter();
@@ -311,7 +315,7 @@ class Cell extends React.Component {
         className={className}
         style={style}
         {...events}
-        ref={(node) => { this.node = node; }}
+        ref={this.setCellRef}
       >
         {cellActionButtons}
         {cellContent}
