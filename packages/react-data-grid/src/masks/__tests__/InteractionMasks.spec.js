@@ -1,9 +1,8 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 
-import InteractionMasks from '../InteractionMasks';
+import InteractionMasks, { SingleCellSelectView, CellRangeSelectView } from '../InteractionMasks';
 import SelectionMask from '../SelectionMask';
-import SelectionRangeMask from '../SelectionRangeMask';
 import CopyMask from '../CopyMask';
 import DragMask from '../DragMask';
 import DragHandle from '../DragHandle';
@@ -67,33 +66,39 @@ describe('<InteractionMasks/>', () => {
   describe('Rendered masks', () => {
     describe('When a single cell is selected', () => {
       describe('within grid bounds', () => {
-        it('should render a SelectionMask component', () => {
+        it('should render a SingleCellSelectView component with visible true', () => {
           const { wrapper } = setup({}, { selectedPosition: { idx: 0, rowIdx: 0 } });
-          expect(wrapper.find(SelectionMask).length).toBe(1);
+          expect(wrapper.find(SingleCellSelectView).length).toBe(1);
+          expect(wrapper.find(SingleCellSelectView).props().visible).toBeTruthy();
         });
       });
 
       describe('outside grid bounds', () => {
-        it('should not render a SelectionMask component', () => {
+        it('should not render a SingleCellSelectView component with visible false', () => {
           const { wrapper } = setup();
-          expect(wrapper.find(SelectionMask).length).toBe(0);
+          expect(wrapper.find(SingleCellSelectView).length).toBe(1);
+          expect(wrapper.find(SingleCellSelectView).props().visible).toBeFalsy();
         });
       });
     });
 
     describe('When a cell range is selected', () => {
-      it('should render a SelectionRangeMask component', () => {
+      it('should render a CellRangeSelectView component, passing relevant props', () => {
+        const range = {
+          startCell: { idx: 0, rowIdx: 0 },
+          topLeft: { idx: 0, rowIdx: 0 },
+          bottomRight: { idx: 1, rowIdx: 1 }
+        };
         const { wrapper } = setup({}, {
           selectedPosition: { idx: 0, rowIdx: 0 },
-          selectedRange: {
-            topLeft: { idx: 0, rowIdx: 0 },
-            bottomRight: { idx: 1, rowIdx: 1 }
-          }
+          selectedRange: range
         });
-        expect(wrapper.find(SelectionRangeMask).length).toBe(1);
+        expect(wrapper.find(CellRangeSelectView).length).toBe(1);
+        expect(wrapper.find(CellRangeSelectView).props().selectedPosition).toEqual({ idx: 0, rowIdx: 0 });
+        expect(wrapper.find(CellRangeSelectView).props().selectedRange).toEqual(range);
       });
 
-      it('should render a SelectionMask component on the range\'s start cell', () => {
+      it('should render a CellRangeSelectView component on the range\'s start cell', () => {
         const { wrapper } = setup({}, {
           selectedPosition: { idx: 0, rowIdx: 0 },
           selectedRange: {
@@ -102,8 +107,8 @@ describe('<InteractionMasks/>', () => {
             startCell: { idx: 0, rowIdx: 0 }
           }
         });
-        expect(wrapper.find(SelectionMask).length).toBe(1);
-        expect(wrapper.find(SelectionMask).props().selectedPosition).toEqual({ idx: 0, rowIdx: 0 });
+        expect(wrapper.find(CellRangeSelectView).length).toBe(1);
+        expect(wrapper.find(CellRangeSelectView).props().selectedPosition).toEqual({ idx: 0, rowIdx: 0 });
       });
     });
   });
@@ -735,10 +740,12 @@ describe('<InteractionMasks/>', () => {
     it('should render the DragMask component on cell drag', () => {
       const { wrapper } = setupDrag();
       const setData = jasmine.createSpy();
-      wrapper.find(DragHandle).simulate('dragstart', {
+      const dragHandlers = wrapper.find(SingleCellSelectView).props().dragHandleEventHandlers;
+      dragHandlers.onDragStart({
         target: { className: 'test' },
         dataTransfer: { setData }
       });
+      wrapper.update();
 
       expect(wrapper.find(DragMask).length).toBe(1);
       expect(setData).toHaveBeenCalled();
@@ -747,12 +754,14 @@ describe('<InteractionMasks/>', () => {
     it('should update the dragged over cells on drag end', () => {
       const { wrapper, props } = setupDrag();
       const setData = jasmine.createSpy();
-      wrapper.find(DragHandle).simulate('dragstart', {
+      const dragHandlers = wrapper.find(SingleCellSelectView).props().dragHandleEventHandlers;
+      dragHandlers.onDragStart({
         target: { className: 'test' },
         dataTransfer: { setData }
       });
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx: 6 });
-      wrapper.find(DragHandle).simulate('dragEnd');
+      dragHandlers.onDragEnd();
+      wrapper.update();
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, AppConstants.UpdateActions.CELL_DRAG);
     });
@@ -765,6 +774,50 @@ describe('<InteractionMasks/>', () => {
 
       expect(wrapper.find(sel('context-menu')).props())
         .toEqual(jasmine.objectContaining({ idx: 1, rowIdx: 2 }));
+    });
+  });
+});
+
+describe('SingleCellSelectView', () => {
+  const setup = (overrideProps, render = shallow) => {
+    const props = {
+      visible: true,
+      selectedPosition: { idx: 0, rowIdx: 0 },
+      rowHeight: 10,
+      columns: [],
+      rowData: { __meta: { isGroup: false } },
+      dragEnabled: true,
+      ...overrideProps
+    };
+    const wrapper = render(<SingleCellSelectView {...props} />, { disableLifecycleMethods: false });
+    return { wrapper, props };
+  };
+
+  describe('with visible true', () => {
+    it('displays a SelectionMask', () => {
+      const { wrapper } = setup({ visible: true });
+      expect(wrapper.find(SelectionMask).length).toBe(1);
+    });
+  });
+
+  describe('with visible false', () => {
+    it('displays a SelectionMask', () => {
+      const { wrapper } = setup({ visible: false });
+      expect(wrapper.find(SelectionMask).length).toBe(0);
+    });
+  });
+
+  describe('with drag enabled', () => {
+    it('displays the DragHandle', () => {
+      const { wrapper } = setup({ dragEnabled: true });
+      expect(wrapper.find(DragHandle).length).toBe(1);
+    });
+  });
+
+  describe('with drag disabled', () => {
+    it('does not display the DragHandle', () => {
+      const { wrapper } = setup({ dragEnabled: false });
+      expect(wrapper.find(DragHandle).length).toBe(0);
     });
   });
 });

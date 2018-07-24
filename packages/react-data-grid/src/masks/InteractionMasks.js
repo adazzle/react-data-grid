@@ -558,52 +558,31 @@ class InteractionMasks extends React.Component {
     this.closeEditor();
   };
 
-  getSingleCellSelectView = (rowData) => {
-    const { rowHeight, columns } = this.props;
-    const { selectedPosition } = this.state;
-
-    return (
-      !this.state.isEditorEnabled && this.isGridSelected() && (
-        <SelectionMask
-          selectedPosition={selectedPosition}
-          rowHeight={rowHeight}
-          columns={columns}
-          isGroupedRow={rowData && rowData.__metaData ? rowData.__metaData.isGroup : false}
-        >
-          {this.dragEnabled() && (
-            <DragHandle
-              onDragStart={this.handleDragStart}
-              onDragEnd={this.handleDragEnd}
-              onDoubleClick={this.onDragHandleDoubleClick}
-            />
-          )}
-        </SelectionMask>
-      )
-    );
-  };
-
-  getCellRangeSelectView = () => {
-    const { rowHeight, columns } = this.props;
-    return [
-      <SelectionRangeMask
-        key="range-mask"
-        selectedRange={this.state.selectedRange}
-        columns={columns}
-        rowHeight={rowHeight}
-      />,
-      <SelectionMask
-        key="selection-mask"
-        selectedPosition={this.state.selectedRange.startCell}
-        columns={columns}
-        rowHeight={rowHeight}
-      />
-    ];
-  };
-
   render() {
     const { rowHeight, rowGetter, columns, contextMenu } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = getSelectedRow({ selectedPosition, rowGetter });
+
+    const singleCellSelectViewProps = {
+      visible: !this.state.isEditorEnabled && this.isGridSelected(),
+      selectedPosition: this.state.selectedPosition,
+      rowHeight: this.props.rowHeight,
+      columns: this.props.columns,
+      rowData: rowData,
+      dragEnabled: this.dragEnabled(),
+      dragHandleEventHandlers: {
+        onDragStart: this.handleDragStart,
+        onDragEnd: this.handleDragEnd,
+        onDoubleClick: this.onDragHandleDoubleClick
+      }
+    };
+    const cellRangeSelectViewProps = {
+      selectedRange: this.state.selectedRange,
+      selectedPosition: this.state.selectedRange.startCell,
+      columns: this.props.columns,
+      rowHeight: this.props.rowHeight
+    };
+
     return (
       <div
         ref={node => {
@@ -628,8 +607,8 @@ class InteractionMasks extends React.Component {
           />
         )}
         {selectedRangeIsSingleCell(this.state.selectedRange) ?
-          this.getSingleCellSelectView(rowData) :
-          this.getCellRangeSelectView()
+          <SingleCellSelectView {...singleCellSelectViewProps} /> :
+          <CellRangeSelectView {...cellRangeSelectViewProps} />
         }
         {isEditorEnabled && <EditorContainer
           firstEditorKeyPress={firstEditorKeyPress}
@@ -646,5 +625,58 @@ class InteractionMasks extends React.Component {
     );
   }
 }
+
+export const SingleCellSelectView = (props) => {
+  return (
+    props.visible && (
+      <SelectionMask
+        selectedPosition={props.selectedPosition}
+        rowHeight={props.rowHeight}
+        columns={props.columns}
+        isGroupedRow={props.rowData && props.rowData.__metaData ? props.rowData.__metaData.isGroup : false}
+      >
+        {props.dragEnabled && (
+          <DragHandle {...props.dragHandleEventHandlers} />
+        )}
+      </SelectionMask>
+    )
+  );
+};
+SingleCellSelectView.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  selectedPosition: PropTypes.object.isRequired,
+  rowHeight: PropTypes.number.isRequired,
+  columns: PropTypes.array.isRequired,
+  rowData: PropTypes.object.isRequired,
+  dragEnabled: PropTypes.bool.isRequired,
+  dragHandleEventHandlers: PropTypes.shape({
+    onDragStart: PropTypes.func.isRequired,
+    onDragEnd: PropTypes.func.isRequired,
+    onDoubleClick: PropTypes.func.isRequired
+  }).isRequired
+};
+
+export const CellRangeSelectView = (props) => {
+  return [
+    <SelectionRangeMask
+      key="range-mask"
+      selectedRange={props.selectedRange}
+      columns={props.columns}
+      rowHeight={props.rowHeight}
+    />,
+    <SelectionMask
+      key="selection-mask"
+      selectedPosition={props.selectedPosition}
+      columns={props.columns}
+      rowHeight={props.rowHeight}
+    />
+  ];
+};
+CellRangeSelectView.propTypes = {
+  selectedRange: PropTypes.object.isRequired,
+  selectedPosition: PropTypes.object.isRequired,
+  columns: PropTypes.array.isRequired,
+  rowHeight: PropTypes.number.isRequired
+};
 
 export default InteractionMasks;
