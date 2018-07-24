@@ -55,9 +55,11 @@ class ReactDataGrid extends React.Component {
     cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
     onCellSelected: PropTypes.func,
     onCellDeSelected: PropTypes.func,
-    onCellRangeSelectionStarted: PropTypes.func,
-    onCellRangeSelectionUpdated: PropTypes.func,
-    onCellRangeSelectionCompleted: PropTypes.func,
+    cellRangeSelection: PropTypes.shape({
+      onStart: PropTypes.func,
+      onUpdate: PropTypes.func,
+      onComplete: PropTypes.func
+    }),
     onCellExpand: PropTypes.func,
     enableDragAndDrop: PropTypes.bool,
     onRowExpandToggle: PropTypes.func,
@@ -709,9 +711,9 @@ class ReactDataGrid extends React.Component {
             onDragHandleDoubleClick={this.onDragHandleDoubleClick}
             onCellSelected={this.props.onCellSelected}
             onCellDeSelected={this.props.onCellDeSelected}
-            onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
-            onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
-            onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
+            onCellRangeSelectionStarted={this.props.cellRangeSelection && this.props.cellRangeSelection.onStart}
+            onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
+            onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
             onCommit={this.onCommit}
           />
         </div>

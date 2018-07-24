@@ -74,9 +74,11 @@ class Example extends React.Component {
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={500}
-          onCellRangeSelectionStarted={this.onStart}
-          onCellRangeSelectionUpdated={this.onUpdate}
-          onCellRangeSelectionCompleted={this.onComplete}
+          cellRangeSelection={{
+            onStart: this.onStart,
+            onUpdate: this.onUpdate,
+            onComplete: this.onComplete
+          }}
         />
       </div>
     );
@@ -85,11 +87,11 @@ class Example extends React.Component {
 
 const exampleDescription = (
   <div>
-    <h4>onCellRangeSelectionStarted</h4>
+    <h4>cellRangeSelection.onStart</h4>
     <p>Called on mousedown on a cell. Receives <code>selectedRange</code> (containing <code>topLeft</code> and <code>topRight</code>) as an argument.</p>
-    <h4>onCellRangeSelectionUpdated</h4>
+    <h4>cellRangeSelection.onUpdate</h4>
     <p>Called on mouseover on a cell when dragging with the mouse, or when pressing shift+arrowkey. Receives <code>selectedRange</code> (containing <code>topLeft</code> and <code>topRight</code>) as an argument.</p>
-    <h4>onCellRangeSelectionCompleted</h4>
+    <h4>cellRangeSelection.onComplete</h4>
     <p>Called on mouseup (anywhere) when dragging with the mouse, or when pressing shift+arrowkey.</p>
     <p>Note: altering the selected range with shift+arrowkey will fire both an Updated and Completed event with each keystroke.</p>
     <h4>Example</h4>
