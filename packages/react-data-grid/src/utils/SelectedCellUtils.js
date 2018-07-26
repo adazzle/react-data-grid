@@ -22,6 +22,32 @@ export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) 
   return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
 };
 
+const getColumnRangeProperties = (from, to, columns) => {
+  let totalWidth = 0;
+  let anyColLocked = false;
+  for (let i = from; i <= to; i++) {
+    const column = columnUtils.getColumn(columns, i);
+    totalWidth += column.width;
+    anyColLocked = anyColLocked || column.locked;
+  }
+  return { totalWidth, anyColLocked, left: columnUtils.getColumn(columns, from).left };
+};
+
+export const getSelectedRangeDimensions = ({ selectedRange, columns, rowHeight }) => {
+  const { topLeft, bottomRight } = selectedRange;
+
+  if (topLeft.idx < 0) {
+    return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
+  }
+
+  const { totalWidth, anyColLocked, left } = getColumnRangeProperties(topLeft.idx, bottomRight.idx, columns);
+  const top = getRowTop(topLeft.rowIdx, rowHeight);
+  const height = (bottomRight.rowIdx - topLeft.rowIdx + 1) * rowHeight;
+  const zIndex = anyColLocked ? 2 : 1;
+
+  return { width: totalWidth, left, top, height, zIndex };
+};
+
 export const getSelectedColumn = ({ selectedPosition, columns }) => {
   const { idx } = selectedPosition;
   return columnUtils.getColumn(columns, idx);
@@ -101,4 +127,9 @@ export function canExitGrid(e, { cellNavigationMode, columns, rowsCount, selecte
   }
 
   return false;
+}
+
+export function selectedRangeIsSingleCell(selectedRange) {
+  return selectedRange.topLeft.idx === selectedRange.bottomRight.idx &&
+    selectedRange.topLeft.rowIdx === selectedRange.bottomRight.rowIdx;
 }

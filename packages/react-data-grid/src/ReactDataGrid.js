@@ -55,6 +55,11 @@ class ReactDataGrid extends React.Component {
     cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
     onCellSelected: PropTypes.func,
     onCellDeSelected: PropTypes.func,
+    cellRangeSelection: PropTypes.shape({
+      onStart: PropTypes.func,
+      onUpdate: PropTypes.func,
+      onComplete: PropTypes.func
+    }),
     onCellExpand: PropTypes.func,
     enableDragAndDrop: PropTypes.bool,
     onRowExpandToggle: PropTypes.func,
@@ -137,12 +142,14 @@ class ReactDataGrid extends React.Component {
   componentDidMount() {
     this._mounted = true;
     window.addEventListener('resize', this.metricsUpdated);
+    window.addEventListener('mouseup', this.onWindowMouseUp);
     this.metricsUpdated();
   }
 
   componentWillUnmount() {
     this._mounted = false;
     window.removeEventListener('resize', this.metricsUpdated);
+    window.removeEventListener('mouseup', this.onWindowMouseUp);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -157,6 +164,18 @@ class ReactDataGrid extends React.Component {
 
   selectCell = ({ idx, rowIdx }, openEditor) => {
     this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
+  };
+
+  selectStart = (cellPosition) => {
+    this.eventBus.dispatch(EventTypes.SELECT_START, cellPosition);
+  };
+
+  selectUpdate = (cellPosition) => {
+    this.eventBus.dispatch(EventTypes.SELECT_UPDATE, cellPosition);
+  };
+
+  selectEnd = () => {
+    this.eventBus.dispatch(EventTypes.SELECT_END);
   };
 
   handleDragEnter = ({ overRowIdx }) => {
@@ -273,6 +292,18 @@ class ReactDataGrid extends React.Component {
     if (isFunction(onRowClick)) {
       onRowClick(rowIdx, rowGetter(rowIdx), this.getColumn(idx));
     }
+  };
+
+  onCellMouseDown = (cellPosition) => {
+    this.selectStart(cellPosition);
+  };
+
+  onCellMouseEnter = (cellPosition) => {
+    this.selectUpdate(cellPosition);
+  };
+
+  onWindowMouseUp = () => {
+    this.selectEnd();
   };
 
   onCellContextMenu = ({ rowIdx, idx }) => {
@@ -613,6 +644,8 @@ class ReactDataGrid extends React.Component {
     const cellMetaData = {
       rowKey: this.props.rowKey,
       onCellClick: this.onCellClick,
+      onCellMouseDown: this.onCellMouseDown,
+      onCellMouseEnter: this.onCellMouseEnter,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onColumnEvent: this.onColumnEvent,
@@ -678,6 +711,9 @@ class ReactDataGrid extends React.Component {
             onDragHandleDoubleClick={this.onDragHandleDoubleClick}
             onCellSelected={this.props.onCellSelected}
             onCellDeSelected={this.props.onCellDeSelected}
+            onCellRangeSelectionStarted={this.props.cellRangeSelection && this.props.cellRangeSelection.onStart}
+            onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
+            onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
             onCommit={this.onCommit}
           />
         </div>
