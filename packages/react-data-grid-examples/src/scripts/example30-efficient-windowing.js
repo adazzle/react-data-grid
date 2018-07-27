@@ -7,6 +7,14 @@ const ROW_HEIGHT = 35;
 const HEADER_HEIGHT = 35;
 
 const createColumns = (numberCols) => [...Array(numberCols).keys()].map(i => {
+  if (i<3) {
+    return {
+      key: `col${i}`,
+      name: `col${i}`,
+      width: COL_WIDTH,
+      locked: true
+    }
+  }
   return {
     key: `col${i}`,
     name: `col${i}`,
@@ -59,7 +67,7 @@ const NumberOfRows = ({value, onChange}) => {
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {columns: createColumns(100), rows: createRows(1000), gridWidth: 600, gridHeight: 400};
+    this.state = {columns: createColumns(100), rows: createRows(1000), gridWidth: 1200, gridHeight: 400};
   }
 
   setColumns = (e) => {
@@ -118,13 +126,12 @@ class Example extends React.Component {
       <GridWidthInput value={this.state.gridWidth} onChange={this.setGridWidth}/>
       <GridHeightInput  value={this.state.gridHeight} onChange={this.setGridHeight}/>
     </div>
-      <div style={{ marginLeft: '25%', marginTop: '5%' }}>
+      <div >
         <RenderWindow {...this.state} />
         <ReactDataGrid
           columns={this.state.columns}
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
-          minWidth={this.state.gridWidth}
           minHeight={this.state.gridHeight}
           onScroll={this.onScroll}
         /></div></div>);

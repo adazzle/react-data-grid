@@ -80,7 +80,7 @@ const getScrollDirection = (lastScroll, scrollTop, scrollLeft) => {
 }
 
 const OVERSCAN_ROWS = 8;
-const OVERSCAN_COLUMNS = 2;
+const OVERSCAN_COLUMNS = 8;
 
 const getRowOverscanStartIdx = (scrollDirection, rowVisibleStartIdx) => {
   return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : rowVisibleStartIdx;

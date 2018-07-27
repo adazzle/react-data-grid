@@ -35,6 +35,7 @@ class Cell extends React.Component {
     forceUpdate: PropTypes.bool,
     expandableOptions: PropTypes.object.isRequired,
     tooltip: PropTypes.string,
+    isScrolling: PropTypes.bool,
     isCellValueChanging: PropTypes.func,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
@@ -286,12 +287,13 @@ class Cell extends React.Component {
     let className = this.getCellClass();
 
     const cellActionButtons = this.getCellActions();
-
+    const {value, column, rowIdx, isExpanded, isScrolling} = this.props;
     const cellContent = this.props.children || this.renderCellContent({
-      value: this.props.value,
-      column: this.props.column,
-      rowIdx: this.props.rowIdx,
-      isExpanded: this.props.isExpanded
+      value,
+      column,
+      rowIdx,
+      isExpanded,
+      isScrolling
     });
 
     let events = this.getEvents();

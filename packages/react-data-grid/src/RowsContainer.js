@@ -25,7 +25,7 @@ class RowsContainer extends React.Component {
       const { ContextMenuTrigger } = this.plugins.Menu;
       return (
         <ContextMenuTrigger id={contextMenu.props.id || DEFAULT_CONTEXT_MENU_ID}>
-          <div>{rows}</div>
+          <div style={{width: width}}>{rows}</div>
         </ContextMenuTrigger>
       );
     }
