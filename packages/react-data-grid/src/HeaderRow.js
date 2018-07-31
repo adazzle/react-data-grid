@@ -137,6 +137,7 @@ class HeaderRow extends React.Component {
           onResize={this.props.onColumnResize}
           onResizeEnd={this.props.onColumnResizeEnd}
           onHeaderDrop={this.props.onHeaderDrop}
+          isScrolling={this.state.isScrolling}
           />
       );
       if (column.locked) {
@@ -149,7 +150,28 @@ class HeaderRow extends React.Component {
     return cells.concat(lockedCells);
   };
 
+  clearScrollTimer = () => {
+    if (this.resetScrollStateTimeoutId) {
+      clearTimeout(this.resetScrollStateTimeoutId);
+    }
+  };
+
+  resetScrollStateAfterDelay = () => {
+    this.clearScrollTimer();
+    this.resetScrollStateTimeoutId = setTimeout(
+      this.resetScrollStateAfterDelayCallback,
+      500
+    );
+  };
+
+  resetScrollStateAfterDelayCallback = () => {
+    this.resetScrollStateTimeoutId = null;
+    this.setState({isScrolling: false});
+  };
+
   setScrollLeft = (scrollLeft: number) => {
+    this.setState({isScrolling: true});
+    this.resetScrollStateAfterDelay();
     this.props.columns.forEach( (column, i) => {
       if (column.locked) {
         this.cells[i].setScrollLeft(scrollLeft);
