@@ -16,7 +16,7 @@ export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) 
     const column = columnUtils.getColumn(columns, idx);
     const { width, left, locked } = column;
     const top = getRowTop(rowIdx, rowHeight);
-    const zIndex = locked ? 2 : 1;
+    const zIndex = locked ? 300 : 200;
     return { width, left, top, height: rowHeight, zIndex };
   }
   return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };

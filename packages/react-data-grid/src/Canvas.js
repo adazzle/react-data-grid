@@ -10,7 +10,7 @@ import { getColumnScrollPosition } from './utils/canvasUtils';
 import { EventTypes } from './constants';
 require('../../../themes/react-data-grid-core.css');
 
-class Canvas extends React.Component {
+class Canvas extends React.PureComponent {
   static displayName = 'Canvas';
 
   static propTypes = {
@@ -155,7 +155,6 @@ class Canvas extends React.Component {
   }
 
   onHitBottomCanvas = () =>  {
-    console.log('bottom');
     const { rowHeight } = this.props;
     const node = this.canvas;
     node.scrollTop += rowHeight + this.getClientScrollTopOffset(node);

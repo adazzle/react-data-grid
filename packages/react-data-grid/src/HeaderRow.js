@@ -46,6 +46,10 @@ class HeaderRow extends React.Component {
     onHeaderDrop: PropTypes.func
   };
 
+  state = {
+    isScrolling: false
+  }
+
   componentWillMount() {
     this.cells = [];
   }
@@ -60,6 +64,7 @@ class HeaderRow extends React.Component {
       || !shallowEqual(nextProps.style, this.props.style)
       || this.props.sortColumn !== nextProps.sortColumn
       || this.props.sortDirection !== nextProps.sortDirection
+      || this.props.isScrolling !== nextProps.isScrolling
     );
   }
 

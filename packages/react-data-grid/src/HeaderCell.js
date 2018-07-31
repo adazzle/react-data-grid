@@ -56,15 +56,16 @@ class HeaderCell extends React.Component {
     return right - left;
   };
 
-  getCell = (): ReactComponent => {
-    if (React.isValidElement(this.props.renderer)) {
+  getCell = ()=> {
+    const {height, column, renderer, isScrolling} = this.props;
+    if (React.isValidElement(renderer)) {
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
       if (typeof this.props.renderer.type === 'string') {
-        return React.cloneElement(this.props.renderer, {height: this.props.height});
+        return React.cloneElement(renderer, {height, isScrolling});
       }
-      return React.cloneElement(this.props.renderer, {column: this.props.column, height: this.props.height});
+      return React.cloneElement(renderer, {column, height, isScrolling});
     }
-    return this.props.renderer({column: this.props.column});
+    return this.props.renderer({column, isScrolling});
   };
 
   getStyle = (): {width:number; left: number; display: string; position: string; overflow: string; height: number; margin: number; textOverflow: string; whiteSpace: string } => {
