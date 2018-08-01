@@ -260,6 +260,7 @@ class Viewport extends React.Component {
           onCellSelected={this.props.onCellSelected}
           onCellDeSelected={this.props.onCellDeSelected}
           onCommit={this.props.onCommit}
+          RowsContainer={this.props.RowsContainer}
         />
       </div>
     );

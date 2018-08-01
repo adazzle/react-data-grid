@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 const Row = require('./Row');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import * as rowUtils from './RowUtils';
-import RowsContainer from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
@@ -80,7 +79,8 @@ class Canvas extends React.PureComponent {
     onRows: () => { },
     selectedRows: [],
     rowScrollTimeout: 0,
-    scrollToRowIndex: 0
+    scrollToRowIndex: 0,
+    RowsContainer: ({children}) => children
   };
 
   state = {
@@ -298,7 +298,7 @@ class Canvas extends React.PureComponent {
   };
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, expandedRows, rowHeight, rowsCount, width, height, rowGetter } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, expandedRows, rowHeight, rowsCount, width, height, rowGetter, RowsContainer, contextMenu } = this.props;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map((r, idx) => this.renderRow({
@@ -379,11 +379,9 @@ class Canvas extends React.PureComponent {
             onCellDeSelected={this.props.onCellDeSelected}
             scrollLeft={this._scroll.scrollLeft}
           />
-          <RowsContainer
-            width={width}
-            rows={rows}
-            contextMenu={this.props.contextMenu}
-          />
+          <RowsContainer id={contextMenu.props.id || 'rgdContextMenu'}>
+            <div style={{width: width}}>{rows}</div>
+          </RowsContainer>
         </div>
     );
   }

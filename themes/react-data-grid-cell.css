@@ -27,7 +27,7 @@
 }
 
 .react-contextmenu--visible {
-  z-index: 3;
+  z-index: 1000;
 }
 
 .rdg-selected .drag-handle,
