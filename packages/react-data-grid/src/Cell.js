@@ -176,6 +176,7 @@ class Cell extends React.Component {
     }
   };
 
+
   removeScroll = () => {
     const node = this.node;
     if (node) {

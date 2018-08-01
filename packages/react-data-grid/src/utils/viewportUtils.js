@@ -90,8 +90,10 @@ const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, totalNumberRows
   return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, totalNumberRows) : rowVisibleEndIdx;
 };
 
-const getColOverscanStartIdx = (scrollDirection, colVisibleStartIdx) => {
-  return scrollDirection === SCROLL_DIRECTION.LEFT || SCROLL_DIRECTION.RIGHT ? 0 : colVisibleStartIdx;
+const getColOverscanStartIdx = (columns, scrollDirection, colVisibleStartIdx) => {
+  const firstFrozenColumnIdx = columns.findIndex(c => c.locked === true);
+  const firstVisibleColumn = firstFrozenColumnIdx > -1 ? firstFrozenColumnIdx : colVisibleStartIdx;
+  return scrollDirection === SCROLL_DIRECTION.LEFT || SCROLL_DIRECTION.RIGHT ? 0 : firstVisibleColumn;
 };
 
 const getColOverscanEndIdx = (scrollDirection, colVisibleEndIdx, totalNumberColumns) => {
@@ -101,15 +103,16 @@ const getColOverscanEndIdx = (scrollDirection, colVisibleEndIdx, totalNumberColu
 
 function getNextScrollState(props, lastScroll, getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, totalNumberRows, width) {
   const isScrolling = true;
+  const {columns} = props.columnMetrics;
   const scrollDirection = getScrollDirection(lastScroll, scrollTop, scrollLeft);
   const { rowVisibleStartIdx , rowVisibleEndIdx  } = getVisibleBoundaries(height, rowHeight, scrollTop, totalNumberRows);
   const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
   const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, totalNumberRows);
-  const totalNumberColumns = columnUtils.getSize(props.columnMetrics.columns);
+  const totalNumberColumns = columnUtils.getSize(columns);
   const colVisibleStartIdx = (totalNumberColumns > 0) ? max(0, getVisibleColStart(props, scrollLeft)) : 0;
   const renderedColumnCount = getRenderedColumnCount(props, getDOMNodeOffsetWidth, colVisibleStartIdx, width);
   const colVisibleEndIdx = (renderedColumnCount !== 0) ? colVisibleStartIdx + renderedColumnCount : totalNumberColumns;
-  const colOverscanStartIdx = getColOverscanStartIdx(scrollDirection, colVisibleStartIdx);
+  const colOverscanStartIdx = getColOverscanStartIdx(columns, scrollDirection, colVisibleStartIdx);
   const colOverscanEndIdx = getColOverscanEndIdx(scrollDirection, colVisibleEndIdx, totalNumberColumns);
 
   return {

@@ -90,10 +90,15 @@ class Grid extends React.Component {
     }
   };
 
+  areFrozenColumnsAreScrolledLeft(scrollLeft) {
+    return this.props.columns.some(c => c.locked === true) && scrollLeft > 0;
+  }
+
   onScroll = (props) => {
     this.props.onScroll(props);
-    if (this._scrollLeft !== props.scrollLeft) {
-      this._scrollLeft = props.scrollLeft;
+    const {scrollLeft} = props;
+    if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsAreScrolledLeft(scrollLeft)) {
+      this._scrollLeft = scrollLeft;
       this._onScroll();
     }
   };
