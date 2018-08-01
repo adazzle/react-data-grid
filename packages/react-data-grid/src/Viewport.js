@@ -82,7 +82,8 @@ class Viewport extends React.Component {
     return this.canvas.getScroll();
   };
 
-  setScrollLeft = (scrollLeft) => {
+  setScrollLeft = (scrollLeft: number) => {
+    this.canvas.setScrollLeft(scrollLeft);
   };
 
   getDOMNodeOffsetWidth = () => {

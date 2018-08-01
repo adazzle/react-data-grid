@@ -232,6 +232,20 @@ class Canvas extends React.PureComponent {
     return false;
   };
 
+  setScrollLeft = (scrollLeft) => {
+    if (this._currentRowsLength !== 0) {
+      if (!this.rows) return;
+      for (let i = 0, len = this._currentRowsLength; i < len; i++) {
+        if (this.rows[i]) {
+          let row = this.getRowByRef(i);
+          if (row && row.setScrollLeft) {
+            row.setScrollLeft(scrollLeft);
+          }
+        }
+      }
+    }
+  };
+
   getRowByRef = (i) => {
     // check if wrapped with React DND drop target
     let wrappedRow = this.rows[i].getDecoratedComponentInstance ? this.rows[i].getDecoratedComponentInstance(i) : null;

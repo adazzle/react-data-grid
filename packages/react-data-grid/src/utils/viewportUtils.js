@@ -80,25 +80,23 @@ const getScrollDirection = (lastScroll, scrollTop, scrollLeft) => {
 }
 
 const OVERSCAN_ROWS = 8;
-const OVERSCAN_COLUMNS = 8;
 
 const getRowOverscanStartIdx = (scrollDirection, rowVisibleStartIdx) => {
   return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : rowVisibleStartIdx;
-}
+};
 
 const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, totalNumberRows) => {
   const overscanBoundaryIdx = rowVisibleEndIdx + OVERSCAN_ROWS;
   return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, totalNumberRows) : rowVisibleEndIdx;
-}
+};
 
 const getColOverscanStartIdx = (scrollDirection, colVisibleStartIdx) => {
-  return scrollDirection === SCROLL_DIRECTION.LEFT ? max(0, colVisibleStartIdx - OVERSCAN_COLUMNS) : colVisibleStartIdx;
-}
+  return scrollDirection === SCROLL_DIRECTION.LEFT || SCROLL_DIRECTION.RIGHT ? 0 : colVisibleStartIdx;
+};
 
 const getColOverscanEndIdx = (scrollDirection, colVisibleEndIdx, totalNumberColumns) => {
-  const overscanBoundaryIdx = colVisibleEndIdx + OVERSCAN_COLUMNS;
-  return scrollDirection === SCROLL_DIRECTION.RIGHT ? min(overscanBoundaryIdx, totalNumberColumns) : colVisibleEndIdx;
-}
+  return scrollDirection === SCROLL_DIRECTION.LEFT || SCROLL_DIRECTION.RIGHT ? totalNumberColumns : colVisibleEndIdx;
+};
 
 
 function getNextScrollState(props, lastScroll, getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, totalNumberRows, width) {

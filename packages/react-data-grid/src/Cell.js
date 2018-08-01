@@ -152,8 +152,7 @@ class Cell extends React.Component {
       editing: this.isEditorEnabled(),
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
-      'last-column': this.props.column.isLastColumn,
-      'will-change': this.props.isSelected || this.props.wasPreviouslySelected
+      'last-column': this.props.column.isLastColumn
     });
     return joinClasses(className, extraClasses);
   };
@@ -168,6 +167,14 @@ class Cell extends React.Component {
     return this.props.isEditorEnabled === true;
   };
 
+  setScrollLeft = (scrollLeft: number) => {
+    let node = this.node;
+    if (node) {
+      let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+      node.style.webkitTransform = transform;
+      node.style.transform = transform;
+    }
+  };
 
   removeScroll = () => {
     const node = this.node;
