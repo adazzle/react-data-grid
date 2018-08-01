@@ -127,6 +127,15 @@ class Row extends React.Component {
     return {};
   };
 
+  setScrollLeft = (scrollLeft) => {
+    this.props.columns.forEach((column) => {
+      if (column.locked) {
+        if (!this[column.key]) return;
+        this[column.key].setScrollLeft(scrollLeft);
+      }
+    });
+  };
+
   getKnownDivProps = () => {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
@@ -138,7 +147,8 @@ class Row extends React.Component {
       {
         'row-selected': this.props.isSelected
       },
-      this.props.extraClasses
+      this.props.extraClasses,
+      {'rdg-scrolling': this.props.isScrolling}
     );
 
     let style = {
