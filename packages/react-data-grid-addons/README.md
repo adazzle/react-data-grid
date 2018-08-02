@@ -36,7 +36,7 @@ This package exports:
 name                   | source                                     |
 -----------------------|--------------------------------------------|
 Editors                | [Editors](./src/editors)                   |
-Formatters             | [Formatters](./src/Formatters)             |
+Formatters             | [Formatters](./src/formatters)             |
 Toolbar                | [Toolbar](./src/toolbars/Toolbar.js)       |
 ToolsPanel             | [ToolsPanelCell](./src/toolbars)           |
 Data                   | [Data](./src/data)                         |
