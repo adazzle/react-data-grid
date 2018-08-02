@@ -379,7 +379,7 @@ class Canvas extends React.PureComponent {
             onCellDeSelected={this.props.onCellDeSelected}
             scrollLeft={this._scroll.scrollLeft}
           />
-          <RowsContainer id={contextMenu.props.id || 'rgdContextMenu'}>
+          <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
             <div style={{width: width}}>{rows}</div>
           </RowsContainer>
         </div>

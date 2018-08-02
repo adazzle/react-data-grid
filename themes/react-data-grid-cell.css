@@ -15,11 +15,11 @@
 }
 
 .react-grid-Cell--locked {
-  z-index: 1;
+  z-index: 300;
 }
 
 .react-grid-Cell--locked:focus {
-  z-index: 100;
+  z-index: 300;
 }
 
 .rdg-selected .drag-handle {
