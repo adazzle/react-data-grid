@@ -5,7 +5,14 @@ import PropTypes from 'prop-types';
 import * as columnUtils from './ColumnUtils';
 import {
   getGridState,
-  getNextScrollState
+  getColOverscanEndIdx,
+  getVisibleBoundaries,
+  getScrollDirection,
+  getRowOverscanStartIdx,
+  getRowOverscanEndIdx,
+  getColOverscanStartIdx,
+  getVisibleColStart,
+  getRenderedColumnCount
 } from './utils/viewportUtils';
 
 class Viewport extends React.Component {
@@ -82,7 +89,7 @@ class Viewport extends React.Component {
     return this.canvas.getScroll();
   };
 
-  setScrollLeft = (scrollLeft: number) => {
+  setScrollLeft = (scrollLeft) => {
     this.canvas.setScrollLeft(scrollLeft);
   };
 
@@ -96,6 +103,38 @@ class Viewport extends React.Component {
     }
   };
 
+  getNextScrollState([scrollTop, scrollLeft, height, rowHeight, totalNumberRows, width]) {
+    const isScrolling = true;
+    const {columns} = this.props.columnMetrics;
+    const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);
+    const { rowVisibleStartIdx , rowVisibleEndIdx  } = getVisibleBoundaries(height, rowHeight, scrollTop, totalNumberRows);
+    const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
+    const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, totalNumberRows);
+    const totalNumberColumns = columnUtils.getSize(columns);
+    const colVisibleStartIdx = (totalNumberColumns > 0) ? Math.max(0, getVisibleColStart(columns, scrollLeft)) : 0;
+    const renderedColumnCount = getRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth, colVisibleStartIdx, width);
+    const colVisibleEndIdx = (renderedColumnCount !== 0) ? colVisibleStartIdx + renderedColumnCount : totalNumberColumns;
+    const colOverscanStartIdx = getColOverscanStartIdx(columns, scrollDirection, colVisibleStartIdx);
+    const colOverscanEndIdx = getColOverscanEndIdx(scrollDirection, colVisibleEndIdx, totalNumberColumns);
+    let a = {
+      height,
+      scrollTop,
+      scrollLeft,
+      rowVisibleStartIdx,
+      rowVisibleEndIdx,
+      rowOverscanStartIdx,
+      rowOverscanEndIdx,
+      colVisibleStartIdx,
+      colVisibleEndIdx,
+      colOverscanStartIdx,
+      colOverscanEndIdx,
+      scrollDirection,
+      isScrolling
+    };
+    console.log(a);
+    return a;
+  }
+
   resetScrollStateAfterDelay = () => {
     this.clearScrollTimer();
     this.resetScrollStateTimeoutId = setTimeout(
@@ -107,20 +146,15 @@ class Viewport extends React.Component {
   resetScrollStateAfterDelayCallback = () => {
     this.resetScrollStateTimeoutId = null;
     this.setState({
-      isScrolling: false
+      isScrolling: false,
+      colOverscanStartIdx: 0,
+      colOverscanEndIdx: columnUtils.getSize(this.props.columnMetrics.columns)
     });
   };
 
-  updateScroll = (
-    scrollTop,
-    scrollLeft,
-    height,
-    rowHeight,
-    length,
-    width,
-  ) => {
+  updateScroll = (...scrollParams) => {
     this.resetScrollStateAfterDelay();
-    const nextScrollState = getNextScrollState(this.props, this.state, this.getDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, length, width);
+    const nextScrollState = this.getNextScrollState(scrollParams);
 
     this.setState(nextScrollState);
     return nextScrollState;
