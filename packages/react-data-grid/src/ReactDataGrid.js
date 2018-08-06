@@ -72,6 +72,8 @@ class ReactDataGrid extends React.Component {
     sortColumn: PropTypes.string,
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
     onDragHandleDoubleClick: PropTypes.func,
+    enableDragVertical: PropTypes.bool,
+    enableDragHorizontal: PropTypes.bool,
     onGridRowsUpdated: PropTypes.func,
     onRowSelect: PropTypes.func,
     rowKey: PropTypes.string,
@@ -133,6 +135,8 @@ class ReactDataGrid extends React.Component {
     rowHeight: 35,
     headerFiltersHeight: 45,
     enableRowSelect: false,
+    enableDragVertical: true,
+    enableDragHorizontal: false,
     minHeight: 350,
     rowKey: 'id',
     rowScrollTimeout: 0,
@@ -650,11 +654,17 @@ class ReactDataGrid extends React.Component {
       let cellKey = column.key;
       let fromRow = selected.rowIdx < dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
       let toRow   = selected.rowIdx > dragged.overRowIdx ? selected.rowIdx : dragged.overRowIdx;
+      let fromCol = selected.idx    < dragged.overIdx    ? selected.idx    : dragged.overIdx;
+      let toCol   = selected.idx    > dragged.overIdx    ? selected.idx    : dragged.overIdx;
       if (this.props.onCellsDragged) {
-        this.props.onCellsDragged({cellKey: cellKey, fromRow: fromRow, toRow: toRow, value: dragged.value});
+        const { value } = dragged;
+        this.props.onCellsDragged({cellKey, fromRow, toRow, fromCol, toCol, value});
       }
       if (this.props.onGridRowsUpdated) {
-        this.onGridRowsUpdated(cellKey, fromRow, toRow, {[cellKey]: dragged.value}, AppConstants.UpdateActions.CELL_DRAG);
+        // Value resolution just copies the `selected` cells value, applying it to the `updated` object.
+        let updated = {};
+        this.props.columns.slice(fromCol, toCol + 1).forEach(col => { updated[col.key] = dragged.value; });
+        this.onGridRowsUpdated(cellKey, fromRow, toRow, updated, AppConstants.UpdateActions.CELL_DRAG);
       }
     }
     this.setState({dragged: {complete: true}});
@@ -663,9 +673,44 @@ class ReactDataGrid extends React.Component {
   handleDragEnter = (row: any) => {
     if (!this.dragEnabled() || this.state.dragged == null) { return; }
     let dragged = this.state.dragged;
-    dragged.overRowIdx = row;
+    const { enableDragVertical } = this.props;
+    if (enableDragVertical) {
+      dragged.overRowIdx = row;
+    } else {
+      dragged.overRowIdx = this.state.selected.rowIdx;
+    }
     this.setState({dragged: dragged});
   };
+
+  handleDragEnterCell = (draggedTo: DraggedType) => {
+    if (!this.dragEnabled() || this.state.dragged == null) { return; }
+    let dragged = this.state.dragged;
+
+    const { enableDragVertical, enableDragHorizontal } = this.props;
+
+    if (enableDragVertical) {
+      dragged.overRowIdx = draggedTo.rowIdx;
+    } else {
+      dragged.overRowIdx = this.state.selected.rowIdx;
+    }
+    if (enableDragHorizontal) {
+      // This way the drag will stop at uneditable columns.
+      let nextCol = dragged.idx < draggedTo.idx ? 1 : -1;
+      let cur = this.state.selected.idx;
+      while (cur !== draggedTo.idx) {
+        cur += nextCol;
+        let column = this.getColumn(cur);
+        if (!(column && column.editable)) {
+          cur -= nextCol;
+          break;
+        }
+      }
+      dragged.overIdx = cur;
+    } else {
+      dragged.overIdx = this.state.selected.idx;
+    }
+    this.setState({dragged: dragged});
+  }
 
   handleTerminateDrag = () => {
     if (!this.dragEnabled()) { return; }
@@ -1197,6 +1242,7 @@ class ReactDataGrid extends React.Component {
       onCommitCancel: this.setInactive,
       copied: this.state.copied,
       handleDragEnterRow: this.handleDragEnter,
+      handleDragEnterCell: this.handleDragEnterCell,
       handleTerminateDrag: this.handleTerminateDrag,
       enableCellSelect: this.props.enableCellSelect,
       onColumnEvent: this.onColumnEvent,

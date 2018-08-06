@@ -165,6 +165,14 @@ class Cell extends React.Component {
     e.preventDefault();
   };
 
+  handleDragEnter = () => {
+    let handleDragEnterCell = this.props.cellMetaData.handleDragEnterCell;
+    let { idx, rowIdx, value } = this.props;
+    if (handleDragEnterCell) {
+      handleDragEnterCell({ idx: idx, rowIdx: rowIdx, value: value });
+    }
+  };
+
   getStyle = () => {
     let style = {
       position: 'absolute',
@@ -196,6 +204,19 @@ class Cell extends React.Component {
     }
   };
 
+  getDraggedClasses = () => {
+    if (!this.isDragged()) {
+      return {};
+    }
+    return {
+      'is-dragged-over-up': this.isDraggedOverUpwards(),
+      'is-dragged-over-down': this.isDraggedOverDownwards(),
+      'is-dragged-over-right': this.isDraggedOverRight(),
+      'is-dragged-over-left': this.isDraggedOverLeft(),
+      'was-dragged-over': this.wasDraggedOver()
+    };
+  }
+
   getCellClass = () => {
     let className = joinClasses(
       this.props.column.cellClass,
@@ -203,13 +224,10 @@ class Cell extends React.Component {
       this.props.className,
       this.props.column.locked ? 'react-grid-Cell--locked' : null
     );
-    let extraClasses = joinClasses({
+    let extraClasses = joinClasses(this.getDraggedClasses(), {
       'row-selected': this.props.isRowSelected,
       editing: this.isActive(),
-      copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
-      'is-dragged-over-up': this.isDraggedOverUpwards(),
-      'is-dragged-over-down': this.isDraggedOverDownwards(),
-      'was-dragged-over': this.wasDraggedOver(),
+      copied: this.isCopied() || this.isDragged(),
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn
@@ -325,13 +343,20 @@ class Cell extends React.Component {
     );
   };
 
-  isDraggedOver = (): boolean => {
+  // Helper function to reduce unnecessary calls to dragged checks.
+  isDragged = (): boolean => {
     let dragged = this.props.cellMetaData.dragged;
     return (
-      dragged &&
-      dragged.overRowIdx === this.props.rowIdx
-      && dragged.idx === this.props.idx
+      dragged
+      && ((dragged.overRowIdx <= this.props.rowIdx && this.props.rowIdx <= dragged.rowIdx)
+        || (dragged.overRowIdx >= this.props.rowIdx && this.props.rowIdx >= dragged.rowIdx))
+      && ((dragged.overIdx <= this.props.idx && this.props.idx <= dragged.idx)
+        || (dragged.overIdx >= this.props.idx && this.props.idx >= dragged.idx))
     );
+  };
+
+  isDraggedOver = (): boolean => {
+    return this.isDragged() && !this.wasDraggedOver();
   };
 
   wasDraggedOver = (): boolean => {
@@ -340,7 +365,8 @@ class Cell extends React.Component {
       dragged
       && ((dragged.overRowIdx < this.props.rowIdx && this.props.rowIdx < dragged.rowIdx)
         || (dragged.overRowIdx > this.props.rowIdx && this.props.rowIdx > dragged.rowIdx))
-      && dragged.idx === this.props.idx
+      && ((dragged.overIdx < this.props.idx && this.props.idx < dragged.idx)
+        || (dragged.overIdx > this.props.idx && this.props.idx > dragged.idx))
     );
   };
 
@@ -371,13 +397,45 @@ class Cell extends React.Component {
 
   isDraggedOverUpwards = (): boolean => {
     let dragged = this.props.cellMetaData.dragged;
-    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx < dragged.rowIdx;
+    if (!this.isSelected() && this.isDraggedOver()) {
+      // Note that this is is a visual upper bound, and a numerical lower bound.
+      let upperBound = dragged.rowIdx < dragged.overRowIdx ?
+        dragged.rowIdx : dragged.overRowIdx;
+      return this.props.rowIdx === upperBound;
+    }
+    return false;
   };
 
   isDraggedOverDownwards = (): boolean => {
     let dragged = this.props.cellMetaData.dragged;
-    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
+    if (!this.isSelected() && this.isDraggedOver()) {
+      // Note that this is is a visual lower bound, and a numerical upper bound.
+      let lowerBound = dragged.rowIdx > dragged.overRowIdx ?
+        dragged.rowIdx : dragged.overRowIdx;
+      return this.props.rowIdx === lowerBound;
+    }
+    return false;
   };
+
+  isDraggedOverRight = (): boolean => {
+    let dragged = this.props.cellMetaData.dragged;
+    if (!this.isSelected() && this.isDraggedOver()) {
+      let rightBound = dragged.idx > dragged.overIdx ?
+        dragged.idx : dragged.overIdx;
+      return this.props.idx === rightBound;
+    }
+    return false;
+  }
+
+  isDraggedOverLeft = (): boolean => {
+    let dragged = this.props.cellMetaData.dragged;
+    if (!this.isSelected() && this.isDraggedOver()) {
+      let leftBound = dragged.idx < dragged.overIdx ?
+        dragged.idx : dragged.overIdx;
+      return this.props.idx === leftBound;
+    }
+    return false;
+  }
 
   isFocusedOnBody = () => {
     return document.activeElement == null || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body');
@@ -536,7 +594,7 @@ class Cell extends React.Component {
 
 
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }}>
+      <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }} onDragEnter={this.handleDragEnter}>
         {cellActions}
         {cellContent}
         {dragHandle}

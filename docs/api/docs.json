@@ -3689,6 +3689,28 @@
         "required": false,
         "description": ""
       },
+      "enableDragVertical": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Allows user to toggle drag down functionality",
+        "defaultValue": {
+          "value": true,
+          "computed": false
+        }
+      },
+      "enableDragHorizontal": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Allows user to toggle drag side-to-side functionality",
+        "defaultValue": {
+          "value": false,
+          "computed": false
+        }
+      },
       "onGridRowsUpdated": {
         "type": {
           "name": "func"

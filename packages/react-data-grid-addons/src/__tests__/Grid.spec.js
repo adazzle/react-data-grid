@@ -796,22 +796,116 @@ describe('Grid', function() {
         });
       });
 
+      describe('dragging over a column with enableDragHorizontal=true', function() {
+        beforeEach(function() {
+          let wrapper = this.createComponent();
+          let columns = [
+            { key: 'id', name: 'ID', width: 100, events: { onClick: () => {}} },
+            { key: 'title', name: 'Title', editable: true, width: 100 },
+            { key: 'count', name: 'Count', editable: true, width: 100 },
+            { key: 'country', name: 'Country', editable: true, width: 100 },
+            { key: 'planet', name: 'planet', width: 100 }
+          ];
+          wrapper.setProps({ enableDragHorizontal: true, columns });
+          this.component = wrapper.instance();
+          this.component.setState({
+            selected: { idx: 2, rowIdx: 2 },
+            dragged: { idx: 2, rowIdx: 2, value: 'apple', overIdx: 2, overRowIdx: 2 }
+          });
+        });
+
+        it('should store the current rowIdx, and idx in grid state when dragged left', function() {
+          this.getCellMetaData().handleDragEnterCell({ idx: 1, rowIdx: 2, value: 'apple' });
+          expect(this.component.state.dragged).toEqual({ idx: 2, rowIdx: 2, value: 'apple', overIdx: 1, overRowIdx: 2 });
+        });
+
+        it('should store the current rowIdx, and idx in grid state when dragged too far left', function() {
+          this.getCellMetaData().handleDragEnterCell({ idx: 0, rowIdx: 2, value: 'apple' });
+          expect(this.component.state.dragged).toEqual({ idx: 2, rowIdx: 2, value: 'apple', overIdx: 1, overRowIdx: 2 });
+        });
+
+        it('should store the current rowIdx, and idx in grid state when dragged right', function() {
+          this.getCellMetaData().handleDragEnterCell({ idx: 3, rowIdx: 2, value: 'apple' });
+          expect(this.component.state.dragged).toEqual({ idx: 2, rowIdx: 2, value: 'apple', overIdx: 3, overRowIdx: 2 });
+        });
+
+        it('should store the current rowIdx, and idx in grid state when dragged too far right', function() {
+          this.getCellMetaData().handleDragEnterCell({ idx: 8, rowIdx: 2, value: 'apple' });
+          expect(this.component.state.dragged).toEqual({ idx: 2, rowIdx: 2, value: 'apple', overIdx: 3, overRowIdx: 2 });
+        });
+      });
+
+      describe('finishing drag with enableDragHorizontal=true', function() {
+        beforeEach(function() {
+          let wrapper = this.createComponent();
+          let columns = [
+            { key: 'id', name: 'ID', editable: true, width: 100, events: { onClick: () => {}} },
+            { key: 'title', name: 'Title', editable: true, width: 100 },
+            { key: 'count', name: 'Count', editable: true, width: 100 },
+            { key: 'country', name: 'Country', editable: true, width: 100 },
+            { key: 'planet', name: 'planet', editable: true, width: 100 }
+          ];
+          spyOn(this.testProps, 'onCellsDragged');
+          wrapper.setProps({ onCellsDragged: this.testProps.onCellsDragged, enableDragHorizontal: true, columns });
+          this.component = wrapper.instance();
+          this.component.setState({
+            selected: { idx: 2, rowIdx: 2 },
+            dragged: { idx: 2, rowIdx: 2, value: 'apple', overIdx: 2, overRowIdx: 2 }
+          });
+        });
+
+        it('should trigger onCellsDragged event and call it with correct params when dragged left', function() {
+          this.getCellMetaData().handleDragEnterCell({ idx: 1, rowIdx: 2, value: 'apple' });
+          this.getBaseGrid().props.onViewportDragEnd();
+          expect(this.component.props.onCellsDragged).toHaveBeenCalled();
+          expect(this.component.props.onCellsDragged.calls.argsFor(0)[0]).toEqual({ cellKey: 'count', fromRow: 2, toRow: 2, fromCol: 1, toCol: 2, value: 'apple' });
+        });
+
+        it('should trigger onCellsDragged event and call it with correct params when dragged too far left', function() {
+          this.getCellMetaData().handleDragEnterCell({ idx: -1, rowIdx: 2, value: 'apple' });
+          this.getBaseGrid().props.onViewportDragEnd();
+          expect(this.component.props.onCellsDragged).toHaveBeenCalled();
+          expect(this.component.props.onCellsDragged.calls.argsFor(0)[0]).toEqual({ cellKey: 'count', fromRow: 2, toRow: 2, fromCol: 0, toCol: 2, value: 'apple' });
+        });
+
+        it('should trigger onCellsDragged event and call it with correct params when dragged right', function() {
+          this.getCellMetaData().handleDragEnterCell({ idx: 3, rowIdx: 2, value: 'apple' });
+          this.getBaseGrid().props.onViewportDragEnd();
+          expect(this.component.props.onCellsDragged).toHaveBeenCalled();
+          expect(this.component.props.onCellsDragged.calls.argsFor(0)[0]).toEqual({ cellKey: 'count', fromRow: 2, toRow: 2, fromCol: 2, toCol: 3, value: 'apple' });
+        });
+
+        it('should trigger onCellsDragged event and call it with correct params when dragged too far right', function() {
+          this.getCellMetaData().handleDragEnterCell({ idx: 8, rowIdx: 2, value: 'apple' });
+          this.getBaseGrid().props.onViewportDragEnd();
+          expect(this.component.props.onCellsDragged).toHaveBeenCalled();
+          expect(this.component.props.onCellsDragged.calls.argsFor(0)[0]).toEqual({ cellKey: 'count', fromRow: 2, toRow: 2, fromCol: 2, toCol: 4, value: 'apple' });
+        });
+      });
+
       describe('finishing drag', function() {
         beforeEach(function() {
           let wrapper = this.createComponent();
+          let columns = [
+            { key: 'id', name: 'ID', editable: true, width: 100, events: { onClick: () => {}} },
+            { key: 'title', name: 'Title', editable: true, width: 100 },
+            { key: 'count', name: 'Count', editable: true, width: 100 },
+            { key: 'country', name: 'Country', editable: true, width: 100 },
+            { key: 'planet', name: 'planet', editable: true, width: 100 }
+          ];
           spyOn(this.testProps, 'onCellsDragged');
-          wrapper.setProps({ onCellsDragged: this.testProps.onCellsDragged });
+          wrapper.setProps({ onCellsDragged: this.testProps.onCellsDragged, columns });
           this.component = wrapper.instance();
           this.component.setState({
             selected: { idx: 1, rowIdx: 2 },
-            dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 }
+            dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6, overIdx: 1 }
           });
           this.getBaseGrid().props.onViewportDragEnd();
         });
 
         it('should trigger onCellsDragged event and call it with correct params', function() {
           expect(this.component.props.onCellsDragged).toHaveBeenCalled();
-          expect(this.component.props.onCellsDragged.calls.argsFor(0)[0]).toEqual({ cellKey: 'title', fromRow: 2, toRow: 6, value: 'apple' });
+          expect(this.component.props.onCellsDragged.calls.argsFor(0)[0]).toEqual({ cellKey: 'title', fromRow: 2, toRow: 6, fromCol: 1, toCol: 1, value: 'apple' });
         });
       });
 
