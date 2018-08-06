@@ -146,7 +146,6 @@ class Viewport extends React.Component {
     this.setState({
       isScrolling: false
     });
-    console.log('stop scroll');
   };
 
   updateScroll = (...scrollParams) => {

@@ -283,7 +283,7 @@ class Cell extends React.Component {
       let nextColumn = nextProps.column;
       let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
 
-      hasChangedDependentValues = !_.isEqual(currentRowMetaData, nextRowMetaData);
+      hasChangedDependentValues = JSON.stringify(currentRowMetaData) === JSON.stringify(nextRowMetaData);
     }
 
     return hasChangedDependentValues;

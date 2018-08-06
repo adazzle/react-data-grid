@@ -17,12 +17,11 @@ export const getGridState = (props) => {
   const totalNumberColumns = columnUtils.getSize(props.columnMetrics.columns);
   const canvasHeight = props.minHeight - props.rowOffsetHeight;
   const renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
-  const totalRowCount = min(renderedRowsCount * 4, props.rowsCount);
   return {
     rowOverscanStartIdx: 0,
-    rowOverscanEndIdx: totalRowCount,
+    rowOverscanEndIdx: renderedRowsCount * 2,
     rowVisibleStartIdx: 0,
-    rowVisibleEndIdx: totalRowCount,
+    rowVisibleEndIdx: renderedRowsCount,
     height: canvasHeight,
     scrollTop: 0,
     scrollLeft: 0,
