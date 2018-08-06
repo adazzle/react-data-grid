@@ -67,6 +67,23 @@ class Cell extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    let shouldUpdate = this.props.column.width !== nextProps.column.width
+      || this.props.column.left !== nextProps.column.left
+      || this.props.column.cellClass !== nextProps.column.cellClass
+      || this.props.height !== nextProps.height
+      || this.props.rowIdx !== nextProps.rowIdx
+      || this.props.isRowSelected !== nextProps.isRowSelected
+      || this.props.isCellValueChanging(this.props.value, nextProps.value)
+      || this.props.forceUpdate === true
+      || this.props.className !== nextProps.className
+      || this.didChildrenChange(nextProps)
+      || this.didDependentValuesChange(nextProps)
+      || this.props.column.locked !== nextProps.column.locked
+      || this.props.column.isScrolling !== nextProps.isScrolling;
+    return shouldUpdate;
+  }
+
   onCellClick = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
     if (isFunction(cellMetaData.onCellClick)) {
@@ -256,6 +273,26 @@ class Cell extends React.Component {
     }
     return null;
   }
+
+  didDependentValuesChange = (nextProps) => {
+    let currentColumn = this.props.column;
+    let hasChangedDependentValues = false;
+
+    if (currentColumn.getRowMetaData) {
+      let currentRowMetaData = currentColumn.getRowMetaData(this.getRowData(), currentColumn);
+      let nextColumn = nextProps.column;
+      let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
+
+      hasChangedDependentValues = !_.isEqual(currentRowMetaData, nextRowMetaData);
+    }
+
+    return hasChangedDependentValues;
+  };
+
+  didChildrenChange(nextProps) {
+    return this.props.expandableOptions && (this.props.expandableOptions.children !== nextProps.expandableOptions.children);
+  }
+
 
   renderCellContent = (props) => {
     let CellContent;

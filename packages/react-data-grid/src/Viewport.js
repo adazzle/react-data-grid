@@ -116,7 +116,7 @@ class Viewport extends React.Component {
     const colVisibleEndIdx = (renderedColumnCount !== 0) ? colVisibleStartIdx + renderedColumnCount : totalNumberColumns;
     const colOverscanStartIdx = getColOverscanStartIdx(columns, scrollDirection, colVisibleStartIdx);
     const colOverscanEndIdx = getColOverscanEndIdx(scrollDirection, colVisibleEndIdx, totalNumberColumns);
-    let a = {
+    return {
       height,
       scrollTop,
       scrollLeft,
@@ -131,8 +131,6 @@ class Viewport extends React.Component {
       scrollDirection,
       isScrolling
     };
-    console.log(a);
-    return a;
   }
 
   resetScrollStateAfterDelay = () => {
@@ -146,10 +144,9 @@ class Viewport extends React.Component {
   resetScrollStateAfterDelayCallback = () => {
     this.resetScrollStateTimeoutId = null;
     this.setState({
-      isScrolling: false,
-      colOverscanStartIdx: 0,
-      colOverscanEndIdx: columnUtils.getSize(this.props.columnMetrics.columns)
+      isScrolling: false
     });
+    console.log('stop scroll');
   };
 
   updateScroll = (...scrollParams) => {

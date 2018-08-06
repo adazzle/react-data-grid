@@ -3,11 +3,24 @@ import PropTypes from 'prop-types';
 
 import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
+import * as columnUtils from '../ColumnUtils';
+
+const isLockedColumn = (columns, {idx}) => columnUtils.getColumn(columns, idx).locked;
+
+const getLeftPosition = (isGroupedRow, isFrozenColumn, scrollLeft, cellLeft) => {
+  if (isGroupedRow) {
+    return scrollLeft;
+  } else if (isFrozenColumn) {
+    return scrollLeft + cellLeft;
+  }
+  return cellLeft;
+};
 
 function SelectionMask({ selectedPosition, columns, rowHeight, children, isGroupedRow, scrollLeft }) {
   const dimensions = getSelectedDimensions({ selectedPosition, columns, rowHeight });
   const width = isGroupedRow ? '100%' : dimensions.width;
-  const left = isGroupedRow ? scrollLeft : dimensions.left;
+  const locked = isLockedColumn(columns, selectedPosition);
+  const left = getLeftPosition(isGroupedRow, locked, scrollLeft, dimensions.left);
   const d = {...dimensions, ...{width, left} };
   return (
     <CellMask

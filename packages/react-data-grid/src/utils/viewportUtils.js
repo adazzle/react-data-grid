@@ -1,6 +1,6 @@
 import * as columnUtils from '../ColumnUtils';
 
-const OVERSCAN_ROWS = 8;
+const OVERSCAN_ROWS = 2;
 
 export const SCROLL_DIRECTION = {
   UP: 'upwards',
