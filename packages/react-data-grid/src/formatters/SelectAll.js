@@ -8,18 +8,19 @@ const SelectAll = (props) => {
         className="react-grid-checkbox"
         type="checkbox"
         name="select-all-checkbox"
-        id="select-all-checkbox"
+        id={'select-all-checkbox' + props.id}
         ref={props.inputRef}
         onChange={props.onChange}
       />
-      <label htmlFor="select-all-checkbox" className="react-grid-checkbox-label"></label>
+      <label htmlFor={'select-all-checkbox' + props.id} className="react-grid-checkbox-label"></label>
     </div>
   );
 };
 
 SelectAll.propTypes = {
   onChange: PropTypes.func,
-  inputRef: PropTypes.func
+  inputRef: PropTypes.func,
+  id: PropTypes.number.isRequired
 };
 
 export default SelectAll;
