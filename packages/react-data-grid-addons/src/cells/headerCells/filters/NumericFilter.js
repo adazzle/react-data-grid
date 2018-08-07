@@ -6,7 +6,9 @@ const RuleType = {
   Number: 1,
   Range: 2,
   GreaterThen: 3,
-  LessThen: 4
+  LessThen: 4,
+  GreaterThenEqual: 5,
+  LessThenEqual: 6
 };
 
 class NumericFilter extends React.Component {
@@ -23,7 +25,7 @@ class NumericFilter extends React.Component {
     }
     let result = false;
     // implement default filter logic
-    let value = parseInt(row[columnKey], 10);
+    let value = parseFloat(row[columnKey]);
     for (let ruleKey in columnFilter.filterTerm) {
       if (!columnFilter.filterTerm.hasOwnProperty(ruleKey)) {
         continue;
@@ -37,13 +39,23 @@ class NumericFilter extends React.Component {
           result = true;
         }
         break;
-      case RuleType.GreaterThen:
+      case RuleType.GreaterThenEqual:
         if (rule.value <= value) {
           result = true;
         }
         break;
-      case RuleType.LessThen:
+      case RuleType.LessThenEqual:
         if (rule.value >= value) {
+          result = true;
+        }
+        break;
+      case RuleType.GreaterThen:
+        if (rule.value < value) {
+          result = true;
+        }
+        break;
+      case RuleType.LessThen:
+        if (rule.value > value) {
           result = true;
         }
         break;
@@ -76,17 +88,23 @@ class NumericFilter extends React.Component {
 
         let obj = list[key];
         if (obj.indexOf('-') > 0) { // handle dash
-          let begin = parseInt(obj.split('-')[0], 10);
-          let end = parseInt(obj.split('-')[1], 10);
+          let begin = parseFloat(obj.split('-')[0]);
+          let end = parseFloat(obj.split('-')[1]);
           rules.push({ type: RuleType.Range, begin: begin, end: end });
+        } else if (obj.indexOf('>=') > -1) { // handle greater then or equal
+          let begin = parseFloat(obj.split('>=')[1]);
+          rules.push({ type: RuleType.GreaterThen, value: begin });
+        } else if (obj.indexOf('<=') > -1) { // handle less then or equal
+          let end = parseFloat(obj.split('<=')[1]);
+          rules.push({ type: RuleType.LessThen, value: end });
         } else if (obj.indexOf('>') > -1) { // handle greater then
-          let begin = parseInt(obj.split('>')[1], 10);
+          let begin = parseFloat(obj.split('>')[1]);
           rules.push({ type: RuleType.GreaterThen, value: begin });
         } else if (obj.indexOf('<') > -1) { // handle less then
-          let end = parseInt(obj.split('<')[1], 10);
+          let end = parseFloat(obj.split('<')[1]);
           rules.push({ type: RuleType.LessThen, value: end });
         } else { // handle normal values
-          let numericValue = parseInt(obj, 10);
+          let numericValue = parseFloat(obj);
           rules.push({ type: RuleType.Number, value: numericValue });
         }
       }
@@ -95,7 +113,7 @@ class NumericFilter extends React.Component {
   }
 
   handleKeyPress(e) { // Validate the input
-    let regex = '>|<|-|,|([0-9])';
+    let regex = '.|=|>|<|-|,|([0-9])';
     let result = RegExp(regex).test(e.key);
     if (result === false) {
       e.preventDefault();
@@ -124,7 +142,7 @@ class NumericFilter extends React.Component {
     return (
       <div>
         <div style={columnStyle}>
-          <input key={inputKey} type="text" placeholder="e.g. 3,10-15,>20" className="form-control input-sm" onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
+          <input key={inputKey} type="text" placeholder="e.g. 3,10-15,<=0.05" className="form-control input-sm" onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
         </div>
         <div className="input-sm">
           <span className="badge" style={badgeStyle} title={tooltipText}>?</span>
