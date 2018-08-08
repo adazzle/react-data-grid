@@ -61,6 +61,10 @@ class Cell extends React.Component {
     });
   }
 
+  componentDidMount() {
+    this.checkScroll();
+  }
+
   componentDidUpdate() {
     if (this.state.isLockChanging && !this.props.column.locked) {
       this.removeScroll();
@@ -183,6 +187,14 @@ class Cell extends React.Component {
   isEditorEnabled = () => {
     return this.props.isEditorEnabled === true;
   };
+
+  checkScroll() {
+    const {scrollLeft, column} = this.props;
+    let node = this.node;
+    if (column.locked && node && node.style.transform != null) {
+      this.setScrollLeft(scrollLeft);
+    }
+  }
 
   setScrollLeft = (scrollLeft: number) => {
     let node = this.node;

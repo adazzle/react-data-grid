@@ -88,7 +88,6 @@ class Canvas extends React.PureComponent {
   };
 
   rows = [];
-  _currentRowsLength = 0;
   _currentRowsRange = { start: 0, end: 0 };
   _scroll = { scrollTop: 0, scrollLeft: 0 };
 
@@ -98,7 +97,6 @@ class Canvas extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this._currentRowsLength = 0;
     this._currentRowsRange = { start: 0, end: 0 };
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
     this.rows = [];
@@ -233,17 +231,14 @@ class Canvas extends React.PureComponent {
   };
 
   setScrollLeft = (scrollLeft) => {
-    if (this._currentRowsLength !== 0) {
-      if (!this.rows) return;
-      for (let i = 0, len = this._currentRowsLength; i < len; i++) {
-        if (this.rows[i]) {
-          let row = this.getRowByRef(i);
-          if (row && row.setScrollLeft) {
-            row.setScrollLeft(scrollLeft);
-          }
+    this.rows.forEach((r, idx) => {
+      if (r) {
+        let row = this.getRowByRef(idx);
+        if (row && row.setScrollLeft) {
+          row.setScrollLeft(scrollLeft);
         }
       }
-    }
+    });
   };
 
   getRowByRef = (i) => {
@@ -319,10 +314,9 @@ class Canvas extends React.PureComponent {
         colVisibleEndIdx,
         colOverscanStartIdx,
         colOverscanEndIdx,
-        isScrolling: this.props.isScrolling
+        isScrolling: this.props.isScrolling,
+        scrollLeft: this._scroll.scrollLeft
       }));
-
-    this._currentRowsLength = rows.length;
 
     if (rowOverscanStartIdx > 0) {
       rows.unshift(this.renderPlaceholder('top', rowOverscanStartIdx * rowHeight));
