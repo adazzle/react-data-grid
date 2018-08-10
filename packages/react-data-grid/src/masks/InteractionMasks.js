@@ -32,6 +32,7 @@ class InteractionMasks extends React.Component {
     colVisibleEndIdx: PropTypes.number.isRequired,
     rowVisibleStartIdx: PropTypes.number.isRequired,
     rowVisibleEndIdx: PropTypes.number.isRequired,
+    rowOverscanStartIdx: PropTypes.number.isRequired,
     columns: PropTypes.array,
     width: PropTypes.number,
     rowHeight: PropTypes.number.isRequired,
@@ -60,7 +61,9 @@ class InteractionMasks extends React.Component {
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     onBeforeFocus: PropTypes.func.isRequired,
-    scrollLeft: PropTypes.number.isRequired
+    scrollLeft: PropTypes.number.isRequired,
+    rows: PropTypes.array.isRequired,
+    getRowDomNode: PropTypes.func
   };
 
   state = {
@@ -297,6 +300,21 @@ class InteractionMasks extends React.Component {
     return keyNavActions[e.key];
   }
 
+  getSelectedRowHeight(rowIdx) {
+    const node = this.props.getRowDomNode(rowIdx);
+    if (node) {
+      return node.clientHeight;
+    }
+    return this.props.rowHeight;
+  }
+
+  getSelectedRowTop(rowIdx) {
+    const node = this.props.getRowDomNode(rowIdx);
+    if (node) {
+      return node.offsetTop;
+    }
+  }
+
   changeCellFromEvent(e) {
     e.preventDefault();
     const keyNavAction = this.getKeyNavActionFromEvent(e);
@@ -429,9 +447,10 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
-    const { rowHeight, rowGetter, columns, contextMenu } = this.props;
+    const { rowGetter, columns, contextMenu} = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = getSelectedRow({ selectedPosition, rowGetter });
+    const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
     return (
       <div
         ref={node => {
@@ -462,6 +481,7 @@ class InteractionMasks extends React.Component {
             columns={columns}
             isGroupedRow={rowData && rowData.__metaData ? rowData.__metaData.isGroup : false}
             scrollLeft={this.props.scrollLeft}
+            top={this.getSelectedRowTop(selectedPosition.rowIdx)}
           >
             {this.dragEnabled() && (
               <DragHandle

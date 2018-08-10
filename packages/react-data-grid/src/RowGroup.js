@@ -81,7 +81,7 @@ const  DefaultRowGroupRenderer = (props) => {
   let marginLeft = treeDepth * 20;
 
   let style = {
-    height: '50px',
+    height: '100px',
     border: '1px solid #dddddd',
     paddingTop: '15px',
     paddingLeft: '5px'

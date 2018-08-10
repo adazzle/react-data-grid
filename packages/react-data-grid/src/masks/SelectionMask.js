@@ -16,7 +16,7 @@ const getLeftPosition = (isGroupedRow, isFrozenColumn, scrollLeft, cellLeft) => 
   return cellLeft;
 };
 
-function SelectionMask({ selectedPosition, columns, rowHeight, children, isGroupedRow, scrollLeft }) {
+function SelectionMask({ selectedPosition, columns, rowHeight, children, isGroupedRow, scrollLeft, top }) {
   const dimensions = getSelectedDimensions({ selectedPosition, columns, rowHeight });
   const width = isGroupedRow ? '100%' : dimensions.width;
   const locked = isLockedColumn(columns, selectedPosition);
@@ -25,6 +25,7 @@ function SelectionMask({ selectedPosition, columns, rowHeight, children, isGroup
   return (
     <CellMask
       {...d}
+      top={top || dimensions.top}
       className="rdg-selected"
     >
       {children}
