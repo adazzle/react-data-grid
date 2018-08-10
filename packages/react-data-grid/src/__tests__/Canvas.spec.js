@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
-import RowsContainer from '../RowsContainer';
+
 import Canvas from '../Canvas';
 
 const noop = () => null;
