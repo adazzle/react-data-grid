@@ -502,6 +502,7 @@ class InteractionMasks extends React.Component {
               value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
               rowData={rowData}
               column={getSelectedColumn({ selectedPosition, columns })}
+              scrollLeft={this.props.scrollLeft}
               {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
             />
           </div>

@@ -22,7 +22,8 @@ class EditorContainer extends React.Component {
     firstEditorKeyPress: PropTypes.string,
     width: PropTypes.number,
     top: PropTypes.number,
-    left: PropTypes.number
+    left: PropTypes.number,
+    scrollLeft: PropTypes.number
   };
 
   state = {isInvalid: false};
@@ -319,8 +320,8 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { left, top, width, height } = this.props;
-    const style = { position: 'absolute', height, width, zIndex: 1000, transform: `translate(${left}px, ${top}px)` };
+    const { left, top, width, height, scrollLeft } = this.props;
+    const style = { position: 'absolute', height, width, zIndex: 1000, transform: `translate(${left + scrollLeft}px, ${top}px)` };
     return (
         <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}
