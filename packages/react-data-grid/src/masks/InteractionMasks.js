@@ -24,7 +24,7 @@ import * as columnUtils from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from '../constants';
 
-require('./interaction-masks.css');
+require('../../../../themes/interaction-masks.css');
 
 const SCROLL_CELL_BUFFER = 2;
 

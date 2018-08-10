@@ -40,7 +40,8 @@ class Cell extends React.Component {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ])
+    ]),
+    scrollLeft: PropTypes.number.isRequired
   };
 
   static defaultProps = {
