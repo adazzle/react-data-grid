@@ -95,6 +95,20 @@ class Cell extends React.Component {
     }
   };
 
+  onCellMouseDown = () => {
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellMouseDown)) {
+      cellMetaData.onCellMouseDown({ idx, rowIdx });
+    }
+  };
+
+  onCellMouseEnter = () => {
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellMouseEnter)) {
+      cellMetaData.onCellMouseEnter({ idx, rowIdx });
+    }
+  };
+
   onCellContextMenu = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
     if (isFunction(cellMetaData.onCellContextMenu)) {
@@ -256,6 +270,8 @@ class Cell extends React.Component {
     let onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
     let gridEvents = {
       onClick: this.onCellClick,
+      onMouseDown: this.onCellMouseDown,
+      onMouseEnter: this.onCellMouseEnter,
       onDoubleClick: this.onCellDoubleClick,
       onContextMenu: this.onCellContextMenu,
       onDragOver: this.onDragOver
