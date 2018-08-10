@@ -17,7 +17,7 @@ import { CellNavigationMode, EventTypes } from '../../constants';
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
 
-describe('<InteractionMasks/>', () => {
+fdescribe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
   const setup = (overrideProps, initialState, render = shallow) => {
@@ -48,6 +48,7 @@ describe('<InteractionMasks/>', () => {
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus,
       onBeforeFocus: jasmine.createSpy().and.returnValue(() => null),
+      getRowDomNode: () => null,
       ...overrideProps
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
