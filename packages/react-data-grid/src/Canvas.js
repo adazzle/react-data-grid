@@ -108,7 +108,6 @@ class Canvas extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-
     const { scrollToRowIndex } = this.props;
     if (prevProps.scrollToRowIndex !== scrollToRowIndex && scrollToRowIndex !== 0) {
       this.scrollToRow(scrollToRowIndex);

@@ -101,7 +101,8 @@ class ReactDataGrid extends React.Component {
     selectAllRenderer: PropTypes.object,
     minColumnWidth: PropTypes.number,
     columnEquality: PropTypes.func,
-    onColumnResize: PropTypes.func
+    onColumnResize: PropTypes.func,
+    onScroll: PropTypes.func
   };
 
   static defaultProps = {
@@ -374,7 +375,7 @@ class ReactDataGrid extends React.Component {
   };
 
   onScroll = (scrollState) => {
-    if(isFunction(this.props.onScroll)) {
+    if (isFunction(this.props.onScroll)) {
       this.props.onScroll(scrollState);
     }
   }

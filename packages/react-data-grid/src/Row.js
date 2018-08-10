@@ -30,7 +30,8 @@ class Row extends React.Component {
     colVisibleEndIdx: PropTypes.number.isRequired,
     colOverscanStartIdx: PropTypes.number.isRequired,
     colOverscanEndIdx: PropTypes.number.isRequired,
-    isScrolling: PropTypes.bool.isRequired
+    isScrolling: PropTypes.bool.isRequired,
+    scrollLeft: PropTypes.number
   };
 
   static defaultProps = {

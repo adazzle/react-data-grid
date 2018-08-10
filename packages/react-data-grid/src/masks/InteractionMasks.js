@@ -579,11 +579,9 @@ class InteractionMasks extends React.Component {
     this.closeEditor();
   };
 
-  getSingleCellSelectView = (rowData) => {
+  getSingleCellSelectView = (rowData, rowHeight) => {
     const { columns } = this.props;
     const { selectedPosition } = this.state;
-    const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
-
     return (
       !this.state.isEditorEnabled && this.isGridSelected() && (
         <SelectionMask
@@ -605,9 +603,8 @@ class InteractionMasks extends React.Component {
     );
   };
 
-  getCellRangeSelectView = () => {
+  getCellRangeSelectView = (rowHeight) => {
     const { columns } = this.props;
-    const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
     return [
       <SelectionRangeMask
         key="range-mask"
@@ -629,6 +626,7 @@ class InteractionMasks extends React.Component {
     const { rowGetter, columns, contextMenu} = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = getSelectedRow({ selectedPosition, rowGetter });
+    const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
     return (
       <div
         ref={node => {

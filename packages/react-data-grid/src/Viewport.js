@@ -65,7 +65,8 @@ class Viewport extends React.Component {
     onCellRangeSelectionStarted: PropTypes.func,
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
-    onCommit: PropTypes.func.isRequired
+    onCommit: PropTypes.func.isRequired,
+    RowsContainer: PropTypes.node
   };
 
   static defaultProps = {
@@ -110,7 +111,7 @@ class Viewport extends React.Component {
     const isScrolling = true;
     const {columns} = this.props.columnMetrics;
     const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);
-    const { rowVisibleStartIdx , rowVisibleEndIdx  } = getVisibleBoundaries(height, rowHeight, scrollTop, totalNumberRows);
+    const { rowVisibleStartIdx, rowVisibleEndIdx  } = getVisibleBoundaries(height, rowHeight, scrollTop, totalNumberRows);
     const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
     const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, totalNumberRows);
     const totalNumberColumns = columnUtils.getSize(columns);

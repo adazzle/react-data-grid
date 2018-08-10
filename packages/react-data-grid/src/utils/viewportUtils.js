@@ -69,7 +69,7 @@ export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, totalNumb
   const renderedRowsCount = ceil(gridHeight / rowHeight);
   const rowVisibleStartIdx = max(0, Math.round(scrollTop / rowHeight));
   const rowVisibleEndIdx  = min(rowVisibleStartIdx  + renderedRowsCount, totalNumberRows);
-  return { rowVisibleStartIdx , rowVisibleEndIdx  };
+  return { rowVisibleStartIdx, rowVisibleEndIdx  };
 };
 
 

@@ -67,7 +67,10 @@ class Grid extends React.Component {
     onCellRangeSelectionStarted: PropTypes.func,
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
-    onCommit: PropTypes.func.isRequired
+    onCommit: PropTypes.func.isRequired,
+    onScroll: PropTypes.func,
+    scrollLeft: PropTpes.number,
+    RowsContainer: PropTypes.node
   };
 
   static defaultProps = {
@@ -105,18 +108,6 @@ class Grid extends React.Component {
       this._onScroll();
     }
   };
-
-  // TODO: why is this needed?
-  // onHeaderScroll = (e) => {
-  //   let scrollLeft = e.target.scrollLeft;
-  //   if (this._scrollLeft !== scrollLeft) {
-  //     this._scrollLeft = scrollLeft;
-  //     this.header.setScrollLeft(scrollLeft);
-  //     let canvas = ReactDOM.findDOMNode(this.viewport.canvas);
-  //     canvas.scrollLeft = scrollLeft;
-  //     this.viewport.canvas.setScrollLeft(scrollLeft);
-  //   }
-  // };
 
   componentDidMount() {
     this._scrollLeft = this.viewport ? this.viewport.getScroll().scrollLeft : 0;
