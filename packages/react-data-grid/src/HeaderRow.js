@@ -137,7 +137,6 @@ class HeaderRow extends React.Component {
           onResize={this.props.onColumnResize}
           onResizeEnd={this.props.onColumnResizeEnd}
           onHeaderDrop={this.props.onHeaderDrop}
-          isScrolling={this.state.isScrolling}
           />
       );
       if (column.locked) {

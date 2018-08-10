@@ -107,6 +107,13 @@ class InteractionMasks extends React.Component {
       if (isFunction(onCellSelected) && this.isCellWithinBounds(selectedPosition)) {
         onCellSelected({ ...selectedPosition });
       }
+
+      // dynamic height
+      const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
+      const rowTop = this.getSelectedRowTop(selectedPosition.rowIdx);
+      const cellMasks = this.node.querySelector('.rdg-cell-mask');
+      cellMasks.style.height = `${rowHeight}px`;
+      cellMasks.style.top = `${rowTop}px`;
     }
 
     if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
@@ -579,8 +586,8 @@ class InteractionMasks extends React.Component {
     this.closeEditor();
   };
 
-  getSingleCellSelectView = (rowData, rowHeight) => {
-    const { columns } = this.props;
+  getSingleCellSelectView = (rowData) => {
+    const { columns, rowHeight } = this.props;
     const { selectedPosition } = this.state;
     return (
       !this.state.isEditorEnabled && this.isGridSelected() && (
@@ -603,8 +610,8 @@ class InteractionMasks extends React.Component {
     );
   };
 
-  getCellRangeSelectView = (rowHeight) => {
-    const { columns } = this.props;
+  getCellRangeSelectView = () => {
+    const { columns, rowHeight } = this.props;
     return [
       <SelectionRangeMask
         key="range-mask"
@@ -623,10 +630,9 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
-    const { rowGetter, columns, contextMenu} = this.props;
+    const { rowGetter, columns, contextMenu, rowHeight} = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = getSelectedRow({ selectedPosition, rowGetter });
-    const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
     return (
       <div
         ref={node => {

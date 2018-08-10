@@ -1,7 +1,8 @@
-const React = require('react');
+import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-const Row = require('./Row');
-const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+import Row from './Row';
+import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
 import * as rowUtils from './RowUtils';
 import RowGroup, { DefaultRowGroupRenderer } from './RowGroup';
 import { InteractionMasks } from './masks';

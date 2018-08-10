@@ -1,4 +1,4 @@
-import { getGridState, getNextScrollState, getRenderedColumnCount, getVisibleBoundaries } from '../viewportUtils';
+import { getGridState, getRenderedColumnCount, getVisibleBoundaries } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -27,11 +27,11 @@ describe('viewportUtils', () => {
 
     it('should correctly set visible rows count when rowsCount is greater than the rendered rows count', () => {
       const { state } = getState();
-      expect(state.rowOverscanEndIdx).toBe(16);
+      expect(state.rowOverscanEndIdx).toBe(8);
     });
 
     it('should correctly set visible rows count when rowsCount is less than the rendered rows count', () => {
-      const { state } = getState({ rowsCount: 10 });
+      const { state } = getState({ rowsCount: 8 });
       expect(state.rowOverscanEndIdx).toBe(10);
     });
 
@@ -133,47 +133,6 @@ describe('viewportUtils', () => {
           });
         });
       });
-    });
-  });
-
-  describe('getNextScrollState', () => {
-    it('should correctly set next scroll state', () => {
-      const fakeGetDOMNodeOffsetWidth = () => ({});
-      const scrollTop = 100;
-      const scrollLeft = 100;
-      const height = 500;
-      const rowHeight = 40;
-      const props = {
-        columnMetrics: {
-          columns: [
-            { key: 'col1', width: 50 },
-            { key: 'col2', width: 120 }
-          ]
-        },
-        minHeight: 100,
-        rowOffsetHeight: 5,
-        rowHeight: 20,
-        rowsCount: 100,
-        overScan: {
-          rowsStart: 1,
-          rowsEnd: 10,
-          colsStart: 1,
-          colsEnd: 10
-        }
-      };
-      const state = getNextScrollState(props, fakeGetDOMNodeOffsetWidth, scrollTop, scrollLeft, height, rowHeight, 50, 60);
-
-      expect(state).toEqual(jasmine.objectContaining({
-        isScrolling: true,
-        scrollLeft,
-        scrollTop,
-        rowVisibleStartIdx: 3,
-        rowVisibleEndIdx: 16,
-        rowOverscanStartIdx: 2,
-        rowOverscanEndIdx: 26,
-        colOverscanStartIdx: 0,
-        colOverscanEndIdx: 2
-      }));
     });
   });
 });

@@ -96,7 +96,8 @@ describe('<Viewport />', () => {
       scrollTop: scrollTop,
       rowVisibleEndIdx: 21,
       rowVisibleStartIdx: 6,
-      isScrolling: true
+      isScrolling: true,
+      scrollDirection: 'downwards'
     });
   });
 
@@ -126,7 +127,8 @@ describe('<Viewport />', () => {
       scrollLeft: 0,
       scrollTop: 0,
       rowVisibleEndIdx: 50,
-      rowVisibleStartIdx: 0
+      rowVisibleStartIdx: 0,
+      isScrolling: false
     });
   });
 
@@ -147,7 +149,8 @@ describe('<Viewport />', () => {
       scrollTop: 0,
       rowVisibleEndIdx: 29,
       rowVisibleStartIdx: 0,
-      isScrolling: true
+      isScrolling: true,
+      scrollDirection: undefined
     });
   });
 });

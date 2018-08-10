@@ -26,7 +26,7 @@ function SelectionMask({ selectedPosition, columns, rowHeight, children, isGroup
     <CellMask
       {...d}
       top={top || dimensions.top}
-      className="rdg-selected"
+      className="rdg-selected rdg-cell-mask"
     >
       {children}
     </CellMask>

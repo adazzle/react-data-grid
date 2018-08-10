@@ -33,7 +33,7 @@ describe('DragMask', () => {
         width: 50,
         left: 5,
         top: 90, // = rowHeight * rowIdx
-        zIndex: 1
+        zIndex: 300
       })
     );
   });
@@ -47,7 +47,7 @@ describe('DragMask', () => {
         width: 50,
         left: 5,
         top: 120, // = rowHeight * overRowIdx
-        zIndex: 1
+        zIndex: 300
       })
     );
   });

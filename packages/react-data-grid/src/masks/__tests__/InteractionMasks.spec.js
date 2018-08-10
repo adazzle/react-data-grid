@@ -17,7 +17,7 @@ import { CellNavigationMode, EventTypes } from '../../constants';
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
 
-fdescribe('<InteractionMasks/>', () => {
+describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
   const setup = (overrideProps, initialState, render = shallow) => {
