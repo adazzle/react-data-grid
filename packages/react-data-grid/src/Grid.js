@@ -69,7 +69,7 @@ class Grid extends React.Component {
     onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired,
     onScroll: PropTypes.func,
-    scrollLeft: PropTpes.number,
+    scrollLeft: PropTypes.number,
     RowsContainer: PropTypes.node
   };
 
