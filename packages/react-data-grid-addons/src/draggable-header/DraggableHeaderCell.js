@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
-import { HeaderCell } from 'react-data-grid';
+import { _constants, HeaderCell } from 'react-data-grid';
+const { DragItemTypes } = _constants;
 
 class DraggableHeaderCell extends React.Component {
   render() {
@@ -87,10 +88,10 @@ DraggableHeaderCell.propTypes = {
   canDrop: PropTypes.bool
 };
 
-DraggableHeaderCell = DropTarget('Column', target, targetCollect)(
+DraggableHeaderCell = DropTarget(DragItemTypes.Column, target, targetCollect)(
   DraggableHeaderCell
 );
-DraggableHeaderCell = DragSource('Column', headerCellSource, collect)(
+DraggableHeaderCell = DragSource(DragItemTypes.Column, headerCellSource, collect)(
   DraggableHeaderCell
 );
 
