@@ -163,6 +163,7 @@ class Grid extends React.Component {
               onKeyUp={this.props.onViewportKeyup}
               >
                 <Viewport
+                  {...this.props}
                   ref={this.setViewportRef}
                   rowKey={this.props.rowKey}
                   width={this.props.columnMetrics.width}

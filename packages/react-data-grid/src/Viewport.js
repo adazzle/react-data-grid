@@ -66,7 +66,8 @@ class Viewport extends React.Component {
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired,
-    RowsContainer: PropTypes.node
+    RowsContainer: PropTypes.node,
+    EXPERIMENTAL_usingDynamicRowHeight: PropTypes.bool
   };
 
   static defaultProps = {
@@ -298,6 +299,7 @@ class Viewport extends React.Component {
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           onCommit={this.props.onCommit}
           RowsContainer={this.props.RowsContainer}
+          EXPERIMENTAL_usingDynamicRowHeight={this.props.EXPERIMENTAL_usingDynamicRowHeight}
         />
       </div>
     );

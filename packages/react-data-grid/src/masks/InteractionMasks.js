@@ -1,7 +1,7 @@
 import React, { isValidElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 
-import SelectionMask from './SelectionMask';
+import SelectionMask, { getCellMaskDimensions } from './SelectionMask';
 import SelectionRangeMask from './SelectionRangeMask';
 import CopyMask from './CopyMask';
 import DragMask from './DragMask';
@@ -68,8 +68,7 @@ class InteractionMasks extends React.Component {
     onBeforeFocus: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
-    getRowDomNode: PropTypes.func,
-    EXPERIMENTAL_usingDynamicRowHeight: PropTypes.bool
+    getRowDomNode: PropTypes.func
   };
 
   state = {
@@ -108,16 +107,11 @@ class InteractionMasks extends React.Component {
       if (isFunction(onCellSelected) && this.isCellWithinBounds(selectedPosition)) {
         onCellSelected({ ...selectedPosition });
       }
-
-      // dynamic height
-      if (this.props.EXPERIMENTAL_usingDynamicRowHeight) {
-        const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
-        const rowTop = this.getSelectedRowTop(selectedPosition.rowIdx);
-        const cellMasks = this.node.querySelector('.rdg-cell-mask');
-        cellMasks.style.height = `${rowHeight}px`;
-        cellMasks.style.top = `${rowTop}px`;
-      }
     }
+    if (this.isCellWithinBounds(selectedPosition)) {
+      this.updateSelectionMaskNodeForDynamicHeightRows();
+    }
+
 
     if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
       this.focus();
@@ -126,7 +120,6 @@ class InteractionMasks extends React.Component {
 
   componentDidMount() {
     const { eventBus, enableCellAutoFocus } = this.props;
-
     this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, this.selectCell);
     this.unsubscribeSelectStart = eventBus.subscribe(EventTypes.SELECT_START, this.onSelectCellRangeStarted);
     this.unsubscribeSelectUpdate = eventBus.subscribe(EventTypes.SELECT_UPDATE, this.onSelectCellRangeUpdated);
@@ -144,6 +137,21 @@ class InteractionMasks extends React.Component {
     this.unsubscribeSelectUpdate();
     this.unsubscribeSelectEnd();
     this.unsubscribeDragEnter();
+  }
+
+  updateSelectionMaskNodeForDynamicHeightRows() {
+    const {scrollLeft, columns, rowHeight} = this.props;
+    const {selectedPosition} = this.state;
+    const selectedRowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
+    const rowTop = this.getSelectedRowTop(selectedPosition.rowIdx);
+    if (this.node) {
+      const cellMasks = this.node.querySelector('.rdg-cell-mask');
+      const {left} = getCellMaskDimensions({selectedPosition, columns, isGroupedRow: this.isGroupedRowSelected(), scrollLeft, rowHeight});
+      cellMasks.style.height = `${selectedRowHeight}px`;
+      let transform = `translate(${left}px, ${rowTop}px)`;
+      cellMasks.style.webkitTransform = transform;
+      cellMasks.style.transform = transform;
+    }
   }
 
   onKeyDown = e => {
@@ -280,6 +288,13 @@ class InteractionMasks extends React.Component {
 
   isKeyboardNavigationEvent(e) {
     return this.getKeyNavActionFromEvent(e) != null;
+  }
+
+  isGroupedRowSelected() {
+    const { rowGetter } = this.props;
+    const { selectedPosition } = this.state;
+    const rowData = getSelectedRow({selectedPosition, rowGetter });
+    return rowData && rowData.__metaData ? rowData.__metaData.isGroup : false;
   }
 
   getKeyNavActionFromEvent(e) {
@@ -589,7 +604,7 @@ class InteractionMasks extends React.Component {
     this.closeEditor();
   };
 
-  getSingleCellSelectView = (rowData) => {
+  getSingleCellSelectView = () => {
     const { columns, rowHeight } = this.props;
     const { selectedPosition } = this.state;
     return (
@@ -598,7 +613,7 @@ class InteractionMasks extends React.Component {
           selectedPosition={selectedPosition}
           rowHeight={rowHeight}
           columns={columns}
-          isGroupedRow={rowData && rowData.__metaData ? rowData.__metaData.isGroup : false}
+          isGroupedRow={this.isGroupedRowSelected()}
           scrollLeft={this.props.scrollLeft}
         >
           {this.dragEnabled() && (
@@ -635,7 +650,7 @@ class InteractionMasks extends React.Component {
   render() {
     const { rowGetter, columns, contextMenu, rowHeight} = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
-    const rowData = getSelectedRow({ selectedPosition, rowGetter });
+    const rowData = getSelectedRow({selectedPosition, rowGetter });
     return (
       <div
         ref={node => {
@@ -660,7 +675,7 @@ class InteractionMasks extends React.Component {
           />
         )}
         {selectedRangeIsSingleCell(this.state.selectedRange) ?
-          this.getSingleCellSelectView(rowData) :
+          this.getSingleCellSelectView() :
           this.getCellRangeSelectView()
         }
         {isEditorEnabled && <EditorContainer

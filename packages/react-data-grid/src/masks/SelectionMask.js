@@ -16,15 +16,19 @@ const getLeftPosition = (isGroupedRow, isFrozenColumn, scrollLeft, cellLeft) => 
   return cellLeft;
 };
 
-function SelectionMask({ selectedPosition, columns, rowHeight, children, isGroupedRow, scrollLeft, top }) {
+export const getCellMaskDimensions = ({ selectedPosition, columns, isGroupedRow, scrollLeft, rowHeight}) => {
   const dimensions = getSelectedDimensions({ selectedPosition, columns, rowHeight });
   const width = isGroupedRow ? '100%' : dimensions.width;
   const locked = isLockedColumn(columns, selectedPosition);
   const left = getLeftPosition(isGroupedRow, locked, scrollLeft, dimensions.left);
-  const d = {...dimensions, ...{width, left} };
+  return {...dimensions, ...{width, left} };
+};
+
+function SelectionMask({top, children, ...rest}) {
+  const dimensions = getCellMaskDimensions(rest);
   return (
     <CellMask
-      {...d}
+      {...dimensions}
       top={top || dimensions.top}
       className="rdg-selected rdg-cell-mask"
     >
