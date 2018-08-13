@@ -30,7 +30,9 @@ describe('SelectionMask', () => {
         width: 50,
         left: 5,
         top: 90, // = rowHeight * rowIdx
-        zIndex: 1
+        zIndex: 300,
+        className: 'rdg-selected rdg-cell-mask',
+        children: undefined
       })
     );
   });

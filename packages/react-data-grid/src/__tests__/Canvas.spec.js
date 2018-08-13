@@ -7,6 +7,8 @@ import Canvas from '../Canvas';
 
 const noop = () => null;
 
+const getRows = wrp => wrp.find('RowsContainer').props().children.props.children;
+
 let testProps = {
   rowHeight: 25,
   height: 200,
@@ -81,7 +83,7 @@ describe('Canvas Tests', () => {
     }));
   });
 
-  describe('Row Selection', () =>{
+  describe('Row Selection', () => {
     let COLUMNS = [{key: 'id', name: 'ID'}];
 
     describe('selectBy index', () => {
@@ -91,7 +93,7 @@ describe('Canvas Tests', () => {
         let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
         wrapper = renderComponent(props);
 
-        const rows = wrapper.find(RowsContainer).props().rows;
+        const rows = getRows(wrapper);
         expect(rows[0].props.isSelected).toBe(true);
       });
     });
@@ -103,7 +105,7 @@ describe('Canvas Tests', () => {
         let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
         wrapper = renderComponent(props);
 
-        const rows = wrapper.find(RowsContainer).props().rows;
+        const rows = getRows(wrapper);
         expect(rows[0].props.isSelected).toBe(true);
       });
     });
@@ -116,7 +118,7 @@ describe('Canvas Tests', () => {
         let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected'} };
         wrapper = renderComponent(props);
 
-        const rows = wrapper.find(RowsContainer).props().rows;
+        const rows = getRows(wrapper);
         expect(rows[0].props.isSelected).toBe(true);
       });
     });
@@ -146,7 +148,7 @@ describe('Canvas Tests', () => {
       let rowGetter = () => { return {id: 0, __metaData: {getRowRenderer: EmptyChildRow}}; };
       let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
       wrapper = renderComponent(props);
-      const rows = wrapper.find(RowsContainer).props().rows;
+      const rows = getRows(wrapper);
       expect(rows[0].props.className).toBe('test-row-renderer');
     });
   });

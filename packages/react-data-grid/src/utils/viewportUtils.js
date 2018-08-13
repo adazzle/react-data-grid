@@ -91,8 +91,20 @@ export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, totalNum
   return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, totalNumberRows) : rowVisibleEndIdx;
 };
 
+const findFirstFrozenColumn = (columns) => {
+  let index;
+  // IE 11 support no findIndex
+  columns.some((c, i) => {
+    if (c.locked === true) {
+      index = i;
+      return true;
+    }
+  });
+  return index;
+};
+
 export const getColOverscanStartIdx = (columns, scrollDirection, colVisibleStartIdx) => {
-  const firstFrozenColumnIdx = columns.findIndex(c => c.locked === true);
+  const firstFrozenColumnIdx = findFirstFrozenColumn(columns);
   const firstVisibleColumn = firstFrozenColumnIdx > -1 ? firstFrozenColumnIdx : colVisibleStartIdx;
   return (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) ? 0 : firstVisibleColumn;
 };

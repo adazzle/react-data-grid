@@ -27,7 +27,8 @@ describe('CopyMask', () => {
         width: 50,
         left: 5,
         top: 90, // = rowHeight * rowIdx
-        zIndex: 1
+        zIndex: 300,
+        className: 'react-grid-cell-copied'
       })
     );
   });

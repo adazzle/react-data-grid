@@ -32,7 +32,7 @@ describe('viewportUtils', () => {
 
     it('should correctly set visible rows count when rowsCount is less than the rendered rows count', () => {
       const { state } = getState({ rowsCount: 8 });
-      expect(state.rowOverscanEndIdx).toBe(10);
+      expect(state.rowOverscanEndIdx).toBe(8);
     });
 
     it('should correctly set visible column count', () => {
@@ -44,15 +44,14 @@ describe('viewportUtils', () => {
   describe('getRenderedColumnCount', () => {
     const fakeGetDOMNodeOffsetWidth = jasmine.createSpy('getDOMNodeOffsetWidth').and.returnValue(50);
     const getColumnCount = (width) => {
-      return getRenderedColumnCount({
-        columnMetrics: {
-          columns: [
-            { key: 'col1', width: 5 },
-            { key: 'col2', width: 12 }
-          ],
-          totalWidth: 0
-        }
-      }, fakeGetDOMNodeOffsetWidth, 0, width);
+      const columnMetrics = {
+        columns: [
+          { key: 'col1', width: 5 },
+          { key: 'col2', width: 12 }
+        ],
+        totalWidth: 0
+      };
+      return getRenderedColumnCount(columnMetrics, fakeGetDOMNodeOffsetWidth, 0, width);
     };
 
     beforeEach(() => {

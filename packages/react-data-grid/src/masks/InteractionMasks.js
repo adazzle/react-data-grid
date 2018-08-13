@@ -68,7 +68,8 @@ class InteractionMasks extends React.Component {
     onBeforeFocus: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
-    getRowDomNode: PropTypes.func
+    getRowDomNode: PropTypes.func,
+    EXPERIMENTAL_usingDynamicRowHeight: PropTypes.bool
   };
 
   state = {
@@ -109,11 +110,13 @@ class InteractionMasks extends React.Component {
       }
 
       // dynamic height
-      const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
-      const rowTop = this.getSelectedRowTop(selectedPosition.rowIdx);
-      const cellMasks = this.node.querySelector('.rdg-cell-mask');
-      cellMasks.style.height = `${rowHeight}px`;
-      cellMasks.style.top = `${rowTop}px`;
+      if (this.props.EXPERIMENTAL_usingDynamicRowHeight) {
+        const rowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
+        const rowTop = this.getSelectedRowTop(selectedPosition.rowIdx);
+        const cellMasks = this.node.querySelector('.rdg-cell-mask');
+        cellMasks.style.height = `${rowHeight}px`;
+        cellMasks.style.top = `${rowTop}px`;
+      }
     }
 
     if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
