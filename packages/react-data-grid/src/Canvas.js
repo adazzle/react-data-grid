@@ -156,13 +156,6 @@ class Canvas extends React.PureComponent {
     return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
   }
 
-  getRowDomNode = (rowIdx) => {
-    const node = this.canvas;
-    if (node) {
-      return ReactDOM.findDOMNode(node).querySelector(`#row-${rowIdx}`);
-    }
-  }
-
   onHitBottomCanvas = () => {
     const { rowHeight } = this.props;
     const node = this.canvas;
@@ -211,12 +204,6 @@ class Canvas extends React.PureComponent {
     return rows;
   };
 
-  // getScrollbarWidth = () => {
-  //   // Get the scrollbar width
-  //   const scrollbarWidth = this.canvas.offsetWidth - this.canvas.clientWidth;
-  //   return scrollbarWidth;
-  // };
-
   getScroll = () => {
     const { scrollTop, scrollLeft } = this.canvas;
     return { scrollTop, scrollLeft };
@@ -254,17 +241,37 @@ class Canvas extends React.PureComponent {
 
   getRowByRef = (i) => {
     // check if wrapped with React DND drop target
-    let wrappedRow = this.rows[i].getDecoratedComponentInstance ? this.rows[i].getDecoratedComponentInstance(i) : null;
+    let wrappedRow = this.rows[i] && this.rows[i].getDecoratedComponentInstance ? this.rows[i].getDecoratedComponentInstance(i) : null;
     if (wrappedRow) {
       return wrappedRow.row;
     }
     return this.rows[i];
   };
 
+  getSelectedRowTop = (rowIdx) => {
+    const row = this.getRowByRef(rowIdx);
+    if (row) {
+      const node = ReactDOM.findDOMNode(row);
+      return node && node.offsetTop;
+    }
+  }
+
+  getSelectedRowHeight = (rowIdx) => {
+    const row = this.getRowByRef(rowIdx);
+    if (row) {
+      const node = ReactDOM.findDOMNode(row);
+      return node ? node.clientHeight : this.props.rowHeight;
+    }
+  }
+
   setCanvasRef = (canvas) => {
     // It is important to define ref callback as a bound method
     // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
     this.canvas = canvas;
+  };
+
+  setRowRef = idx => row => {
+    this.rows[idx] = row;
   };
 
   renderRow = (props) => {
@@ -273,13 +280,13 @@ class Canvas extends React.PureComponent {
       return row.__metaData.getRowRenderer(this.props, props.idx);
     }
     if (row.__metaData && row.__metaData.isGroup) {
-      return (<div id={props.key}><RowGroup
+      return (<RowGroup
         {...props}
         {...row.__metaData}
         name={row.name}
         eventBus={this.props.eventBus}
         renderer={this.props.rowGroupRenderer}
-         /></div>);
+      />);
     }
     let RowsRenderer = this.props.rowRenderer;
     if (typeof RowsRenderer === 'function') {
@@ -309,18 +316,19 @@ class Canvas extends React.PureComponent {
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map((r, idx) => {
-        const key = `row-${rowOverscanStartIdx + idx}`;
+        const rowIdx = rowOverscanStartIdx + idx;
+        const key = `row-${rowIdx}`;
         return (this.renderRow({
           key,
-          ref: (node) => this.rows[idx] = node,
-          idx: rowOverscanStartIdx + idx,
+          ref: this.setRowRef(rowIdx),
+          idx: rowIdx,
           rowVisibleStartIdx: this.props.rowVisibleStartIdx,
           rowVisibleEndIdx: this.props.rowVisibleEndIdx,
           row: r.row,
           height: rowHeight,
           onMouseOver: this.onMouseOver,
           columns,
-          isSelected: this.isRowSelected(rowOverscanStartIdx + idx, r.row, rowOverscanStartIdx, rowOverscanEndIdx),
+          isSelected: this.isRowSelected(rowIdx, r.row, rowOverscanStartIdx, rowOverscanEndIdx),
           expandedRows,
           cellMetaData,
           subRowDetails: r.subRowDetails,
@@ -392,14 +400,12 @@ class Canvas extends React.PureComponent {
           onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           scrollLeft={this._scroll.scrollLeft}
-          getRowDomNode={this.getRowDomNode}
-          rows={rows}
+          getSelectedRowHeight={this.getSelectedRowHeight}
+          getSelectedRowTop={this.getSelectedRowTop}
         />
-        <div id="rowsContainer">
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           <div style={{ width: width }}>{rows}</div>
         </RowsContainer>
-        </div>
       </div>
     );
   }

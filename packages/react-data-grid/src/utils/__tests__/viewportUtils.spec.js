@@ -1,4 +1,4 @@
-import { getGridState, getRenderedColumnCount, getVisibleBoundaries, SCROLL_DIRECTION } from '../viewportUtils';
+import { getGridState, getRenderedColumnCount, getVisibleBoundaries } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -41,7 +41,7 @@ describe('viewportUtils', () => {
     });
   });
 
-  fdescribe('getRenderedColumnCount', () => {
+  describe('getRenderedColumnCount', () => {
     const fakeGetDOMNodeOffsetWidth = jasmine.createSpy('getDOMNodeOffsetWidth').and.returnValue(50);
     const verifyRenderedColumnCount = (width, extraColumns = []) => {
       const columns = [...[
@@ -135,10 +135,4 @@ describe('viewportUtils', () => {
       });
     });
   });
-
-  describe('Column Rendering', () => {
-    describe('When scrolling downwards', () => {
-
-    });
-  })
 });

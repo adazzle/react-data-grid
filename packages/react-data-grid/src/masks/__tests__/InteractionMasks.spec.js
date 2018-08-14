@@ -48,7 +48,8 @@ describe('<InteractionMasks/>', () => {
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus,
       onBeforeFocus: jasmine.createSpy().and.returnValue(() => null),
-      getRowDomNode: () => null,
+      getSelectedRowHeight: () => 50,
+      getSelectedRowTop: () => 0,
       ...overrideProps
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });

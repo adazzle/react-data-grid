@@ -96,14 +96,14 @@ class Grid extends React.Component {
     }
   };
 
-  areFrozenColumnsAreScrolledLeft(scrollLeft) {
-    return this.props.columns.some(c => c.locked === true) && scrollLeft > 0;
+  areFrozenColumnsScrolledLeft(scrollLeft) {
+    return scrollLeft > 0 && this.props.columns.some(c => c.locked === true);
   }
 
-  onScroll = (props) => {
-    this.props.onScroll(props);
-    const {scrollLeft} = props;
-    if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsAreScrolledLeft(scrollLeft)) {
+  onScroll = (scrollState) => {
+    this.props.onScroll(scrollState);
+    const {scrollLeft} = scrollState;
+    if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsScrolledLeft(scrollLeft)) {
       this._scrollLeft = scrollLeft;
       this._onScroll();
     }

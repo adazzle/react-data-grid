@@ -1,7 +1,7 @@
 import React, { isValidElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 
-import SelectionMask, { getCellMaskDimensions } from './SelectionMask';
+import SelectionMask from './SelectionMask';
 import SelectionRangeMask from './SelectionRangeMask';
 import CopyMask from './CopyMask';
 import DragMask from './DragMask';
@@ -68,7 +68,8 @@ class InteractionMasks extends React.Component {
     onBeforeFocus: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
-    getRowDomNode: PropTypes.func
+    getSelectedRowHeight: PropTypes.func.isRequired,
+    getSelectedRowTop: PropTypes.func.isRequired
   };
 
   state = {
@@ -108,10 +109,6 @@ class InteractionMasks extends React.Component {
         onCellSelected({ ...selectedPosition });
       }
     }
-    if (this.isCellWithinBounds(selectedPosition)) {
-      this.updateSelectionMaskNodeForDynamicHeightRows();
-    }
-
 
     if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
       this.focus();
@@ -137,23 +134,6 @@ class InteractionMasks extends React.Component {
     this.unsubscribeSelectUpdate();
     this.unsubscribeSelectEnd();
     this.unsubscribeDragEnter();
-  }
-
-  updateSelectionMaskNodeForDynamicHeightRows() {
-    const {scrollLeft, columns, rowHeight} = this.props;
-    const {selectedPosition} = this.state;
-    const selectedRowHeight = this.getSelectedRowHeight(selectedPosition.rowIdx);
-    const rowTop = this.getSelectedRowTop(selectedPosition.rowIdx);
-    if (this.node) {
-      const cellMasks = this.node.querySelector('.rdg-cell-mask');
-      if (cellMasks) {
-        const {left} = getCellMaskDimensions({selectedPosition, columns, isGroupedRow: this.isGroupedRowSelected(), scrollLeft, rowHeight});
-        cellMasks.style.height = `${selectedRowHeight}px`;
-        let transform = `translate(${left}px, ${rowTop}px)`;
-        cellMasks.style.webkitTransform = transform;
-        cellMasks.style.transform = transform;
-      }
-    }
   }
 
   onKeyDown = e => {
@@ -344,21 +324,6 @@ class InteractionMasks extends React.Component {
       return e.shiftKey === true ? keyNavActions.ArrowLeft : keyNavActions.ArrowRight;
     }
     return keyNavActions[e.key];
-  }
-
-  getSelectedRowHeight(rowIdx) {
-    const node = this.props.getRowDomNode(rowIdx);
-    if (node) {
-      return node.clientHeight;
-    }
-    return this.props.rowHeight;
-  }
-
-  getSelectedRowTop(rowIdx) {
-    const node = this.props.getRowDomNode(rowIdx);
-    if (node) {
-      return node.offsetTop;
-    }
   }
 
   changeCellFromEvent(e) {
@@ -607,16 +572,17 @@ class InteractionMasks extends React.Component {
   };
 
   getSingleCellSelectView = () => {
-    const { columns, rowHeight } = this.props;
+    const { columns, getSelectedRowHeight, getSelectedRowTop } = this.props;
     const { selectedPosition } = this.state;
     return (
       !this.state.isEditorEnabled && this.isGridSelected() && (
         <SelectionMask
           selectedPosition={selectedPosition}
-          rowHeight={rowHeight}
           columns={columns}
           isGroupedRow={this.isGroupedRowSelected()}
           scrollLeft={this.props.scrollLeft}
+          getSelectedRowHeight={getSelectedRowHeight}
+          getSelectedRowTop={getSelectedRowTop}
         >
           {this.dragEnabled() && (
             <DragHandle
@@ -631,7 +597,7 @@ class InteractionMasks extends React.Component {
   };
 
   getCellRangeSelectView = () => {
-    const { columns, rowHeight } = this.props;
+    const { columns, rowHeight, getSelectedRowHeight, getSelectedRowTop } = this.props;
     return [
       <SelectionRangeMask
         key="range-mask"
@@ -645,6 +611,8 @@ class InteractionMasks extends React.Component {
         columns={columns}
         rowHeight={rowHeight}
         scrollLeft={this.props.scrollLeft}
+        getSelectedRowHeight={getSelectedRowHeight}
+        getSelectedRowTop={getSelectedRowTop}
       />
     ];
   };

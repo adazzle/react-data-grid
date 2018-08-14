@@ -6,7 +6,9 @@ class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.createRows();
-    this._columns = [
+
+    const extraColumns = [...Array(50).keys()].map(i => ({key: `col${i}`, name: `col${i}`}));
+    const columns = [
       {
         key: 'id',
         name: 'ID',
@@ -41,9 +43,10 @@ class Example extends React.Component {
         key: 'completeDate',
         name: 'Expected Complete',
         width: 200
-      }
-    ];
+      },
+      ...extraColumns];
 
+    this._columns = columns;
     this.state = null;
   }
 

@@ -6,10 +6,13 @@ const {AreaChart, Area} = require('Recharts');
 const getRandom = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-}
+  return Math.floor(Math.random() * (max - min)) + min; // The maximum is exclusive and the minimum is inclusive
+};
 
-const ExpensiveFormatter = () => {
+const ExpensiveFormatter = ({isScrolling}) => {
+  if (isScrolling) {
+    return <div>is scrolling</div>;
+  }
   const items = [...Array(1000).keys()].map(i => ({name: `Page ${i}`, uv: getRandom(0, 4000), pv: getRandom(0, 4000), amt: getRandom(0, 4000)})).slice(0, 50);
   return (
     <AreaChart width={500} height={50} data={items}
@@ -38,7 +41,7 @@ const createRows = (numberRows) => [...Array(numberRows).keys()].map(i => {
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {columns: createColumns(50), rows: createRows(200)};
+    this.state = {columns: createColumns(6), rows: createRows(200)};
   }
 
   rowGetter = (i) => {
@@ -61,7 +64,7 @@ class Example extends React.Component {
 module.exports = exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Efficient windowing demonstration',
-  exampleDescription: 'Scroll the grid in different directions to see how efficient invisible content is rendered in order to achieve smooth scrolling',
+  exampleDescription: 'For formatters that are expensive to render it is possible to render a simple placeholder when scrolling to improve scroll performance',
   examplePath: './scripts/example30-efficient-windowing.js',
   examplePlaygroundLink: 'https://jsfiddle.net/f6mbnb8z/1/'
 });

@@ -20,8 +20,7 @@
     "immutability-helper": "^2.7.0",
     "react-data-grid": "^4.0.8",
     "react-data-grid-addons": "^4.0.8",
-    "react-router-dom": "^4.2.2",
-    "react-d3-basic": "^1.6.11"
+    "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
     "bootstrap": "^3.2.0",

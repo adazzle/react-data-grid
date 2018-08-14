@@ -1,6 +1,6 @@
-const React                = require('react');
-const Canvas               = require('./Canvas');
-const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
+const React = require('react');
+const Canvas = require('./Canvas');
+const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import PropTypes from 'prop-types';
 import * as columnUtils from './ColumnUtils';
 import {
@@ -76,17 +76,18 @@ class Viewport extends React.Component {
 
   state = getGridState(this.props);
 
-  onScroll = (scroll) => {
-    const nextScrollState = this.updateScroll(
-      scroll.scrollTop,
-      scroll.scrollLeft,
-      this.state.height,
-      this.props.rowHeight,
-      this.props.rowsCount
-    );
+  onScroll = ({ scrollTop, scrollLeft }) => {
+    const { rowHeight, rowsCount, onScroll } = this.props;
+    const nextScrollState = this.updateScroll({
+      scrollTop,
+      scrollLeft,
+      height: this.state.height,
+      rowHeight,
+      rowsCount
+    });
 
-    if (this.props.onScroll) {
-      this.props.onScroll(nextScrollState);
+    if (onScroll) {
+      onScroll(nextScrollState);
     }
   };
 
@@ -108,20 +109,20 @@ class Viewport extends React.Component {
     }
   };
 
-  getNextScrollState([scrollTop, scrollLeft, height, rowHeight, totalNumberRows, width]) {
+  getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount, width }) {
     const isScrolling = true;
-    const {columns} = this.props.columnMetrics;
+    const { columns } = this.props.columnMetrics;
     const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);
-    const { rowVisibleStartIdx, rowVisibleEndIdx  } = getVisibleBoundaries(height, rowHeight, scrollTop, totalNumberRows);
+    const { rowVisibleStartIdx, rowVisibleEndIdx } = getVisibleBoundaries(height, rowHeight, scrollTop, rowsCount);
     const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
-    const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, totalNumberRows);
+    const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, rowsCount);
     const totalNumberColumns = columnUtils.getSize(columns);
     const colVisibleStartIdx = (totalNumberColumns > 0) ? Math.max(0, getVisibleColStart(columns, scrollLeft)) : 0;
     const renderedColumnCount = getRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth, colVisibleStartIdx, width);
     const colVisibleEndIdx = (renderedColumnCount !== 0) ? colVisibleStartIdx + renderedColumnCount : totalNumberColumns;
     const colOverscanStartIdx = getColOverscanStartIdx(columns, scrollDirection, colVisibleStartIdx);
     const colOverscanEndIdx = getColOverscanEndIdx(scrollDirection, colVisibleEndIdx, totalNumberColumns);
-    let a = {
+    return {
       height,
       scrollTop,
       scrollLeft,
@@ -136,8 +137,6 @@ class Viewport extends React.Component {
       scrollDirection,
       isScrolling
     };
-    console.log(a);
-    return a;
   }
 
   resetScrollStateAfterDelay = () => {
@@ -155,10 +154,9 @@ class Viewport extends React.Component {
     });
   };
 
-  updateScroll = (...scrollParams) => {
+  updateScroll = (scrollParams) => {
     this.resetScrollStateAfterDelay();
     const nextScrollState = this.getNextScrollState(scrollParams);
-
     this.setState(nextScrollState);
     return nextScrollState;
   };
@@ -167,14 +165,16 @@ class Viewport extends React.Component {
     let height = this.viewportHeight();
     let width = this.viewportWidth();
     if (height) {
-      this.updateScroll(
-        this.state.scrollTop,
-        this.state.scrollLeft,
+      const { scrollTop, scrollLeft } = this.state;
+      const { rowHeight, rowsCount } = this.props;
+      this.updateScroll({
+        scrollTop,
+        scrollLeft,
         height,
-        this.props.rowHeight,
-        this.props.rowsCount,
+        rowHeight,
+        rowsCount,
         width
-      );
+      });
     }
   };
 
@@ -187,38 +187,40 @@ class Viewport extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    const { rowHeight, rowsCount } = nextProps;
     if (this.props.rowHeight !== nextProps.rowHeight ||
       this.props.minHeight !== nextProps.minHeight) {
-      const newState = getGridState(nextProps);
-      this.updateScroll(
-        newState.scrollTop,
-        newState.scrollLeft,
-        newState.height,
-        nextProps.rowHeight,
-        nextProps.rowsCount
-      );
+      const { scrollTop, scrollLeft, height } = getGridState(nextProps);
+      this.updateScroll({
+        scrollTop,
+        scrollLeft,
+        height,
+        rowHeight,
+        rowsCount
+      });
     } else if (columnUtils.getSize(this.props.columnMetrics.columns) !== columnUtils.getSize(nextProps.columnMetrics.columns)) {
       this.setState(getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
-      this.updateScroll(
-        this.state.scrollTop,
-        this.state.scrollLeft,
-        this.state.height,
-        nextProps.rowHeight,
-        nextProps.rowsCount
-      );
+      const { scrollTop, scrollLeft, height } = this.state;
+      this.updateScroll({
+        scrollTop,
+        scrollLeft,
+        height,
+        rowHeight,
+        rowsCount
+      });
       // Added to fix the hiding of the bottom scrollbar when showing the filters.
     } else if (this.props.rowOffsetHeight !== nextProps.rowOffsetHeight) {
+      const { scrollTop, scrollLeft } = this.state;
       // The value of height can be positive or negative and will be added to the current height to cater for changes in the header height (due to the filer)
-      let height = this.props.rowOffsetHeight - nextProps.rowOffsetHeight;
-
-      this.updateScroll(
-        this.state.scrollTop,
-        this.state.scrollLeft,
-        this.state.height + height,
-        nextProps.rowHeight,
-        nextProps.rowsCount
-      );
+      const height = this.state.height + this.props.rowOffsetHeight - nextProps.rowOffsetHeight;
+      this.updateScroll({
+        scrollTop,
+        scrollLeft,
+        height,
+        rowHeight,
+        rowsCount
+      });
     }
   }
 

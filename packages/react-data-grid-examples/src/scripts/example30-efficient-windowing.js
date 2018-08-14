@@ -1,13 +1,13 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
 
 const COL_WIDTH = 200;
 const ROW_HEIGHT = 35;
 const HEADER_HEIGHT = 35;
 
 const createColumns = (numberCols) => [...Array(numberCols).keys()].map(i => {
-  if (i<3) {
+  if (i < 3) {
     return {
       key: `col${i}`,
       name: `col${i}`,
@@ -26,8 +26,6 @@ const createRows = (numberRows) => [...Array(numberRows).keys()].map(i => {
   return [...Array(100).keys()].reduce((row, j) => ({...row, ...{[`col${j}`]: `row ${i} col ${j}`} }), {});
 });
 
-
-
 const RenderWindow = ({ isScrolling, colOverscanEndIdx, colOverscanStartIdx, rowOverscanEndIdx, rowOverscanStartIdx, rowVisibleStartIdx, rowVisibleEndIdx, colVisibleStartIdx, colVisibleEndIdx  }) => {
   const topOffset = (rowOverscanStartIdx - rowVisibleStartIdx) * ROW_HEIGHT;
   const marginTop = HEADER_HEIGHT + topOffset;
@@ -37,7 +35,7 @@ const RenderWindow = ({ isScrolling, colOverscanEndIdx, colOverscanStartIdx, row
   return (isScrolling ? <div 
     style={{ position: 'absolute', backgroundColor: 'orange', opacity: 0.7, height, width, marginTop, marginLeft, zIndex: 2, pointerEvents: 'none' }} >
     </div> : null);
-}
+};
 
 const NumberInput = ({name, value, onChange}) => {
   return (
@@ -46,7 +44,7 @@ const NumberInput = ({name, value, onChange}) => {
   <span className="input-group-addon" id="basic-addon1">{name}</span>
   <input type="text" className="form-control" defaultValue={value} onChange={onChange}  />
 </div></div>);
-}
+};
 
 const GridHeightInput = ({value, onChange}) => {
   return (<NumberInput name="Height" value={value} onChange={onChange}/>);
@@ -54,15 +52,15 @@ const GridHeightInput = ({value, onChange}) => {
 
 const GridWidthInput = ({value, onChange}) => {
   return (<NumberInput name="Width" value={value} onChange={onChange}/>);
-}
+};
 
 const NumberOfColumns = ({value, onChange}) => {
   return (<NumberInput name="No. Columns" value={value} onChange={onChange}/>);
-}
+};
 
 const NumberOfRows = ({value, onChange}) => {
   return (<NumberInput name="No. Rows" value={value} onChange={onChange}/>);
-}
+};
 
 class Example extends React.Component {
   constructor(props, context) {
@@ -96,6 +94,10 @@ class Example extends React.Component {
     }
   };
 
+  componentWillUnmount() {
+    this.clearScrollTimer();
+  }
+
   resetScrollStateAfterDelay = () => {
     this.clearScrollTimer();
     this.resetScrollStateTimeoutId = setTimeout(
@@ -113,7 +115,6 @@ class Example extends React.Component {
 
   onScroll = (scrollParams) => {
     this.resetScrollStateAfterDelay();
-    console.log(scrollParams);
     this.setState(scrollParams);
   };
 

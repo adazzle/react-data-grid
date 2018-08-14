@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 
 import { sel } from '../../__tests__/utils';
 import CellMask from '../CellMask';
+import zIndexes from '../../constants/zIndexes';
 
 describe('CellMask', () => {
   const setup = (children) => {
@@ -11,7 +12,7 @@ describe('CellMask', () => {
       width: 50,
       left: 5,
       top: 10,
-      zIndex: 2
+      zIndex: zIndexes.CELL_MASK
     };
 
     const wrapper = shallow(<CellMask {...props}>{children}</CellMask>);
@@ -25,7 +26,7 @@ describe('CellMask', () => {
       jasmine.objectContaining({
         height: 30,
         width: 50,
-        zIndex: 2,
+        zIndex: zIndexes.CELL_MASK,
         transform: `translate(5px, 10px)`
       })
     );

@@ -65,10 +65,10 @@ export const getVisibleColStart = (columns, scrollLeft) => {
   return columnIndex;
 };
 
-export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, totalNumberRows) => {
+export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, rowsCount) => {
   const renderedRowsCount = ceil(gridHeight / rowHeight);
   const rowVisibleStartIdx = max(0, Math.round(scrollTop / rowHeight));
-  const rowVisibleEndIdx  = min(rowVisibleStartIdx  + renderedRowsCount, totalNumberRows);
+  const rowVisibleEndIdx  = min(rowVisibleStartIdx  + renderedRowsCount, rowsCount);
   return { rowVisibleStartIdx, rowVisibleEndIdx  };
 };
 
@@ -86,9 +86,9 @@ export const getRowOverscanStartIdx = (scrollDirection, rowVisibleStartIdx) => {
   return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : rowVisibleStartIdx;
 };
 
-export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, totalNumberRows) => {
+export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCount) => {
   const overscanBoundaryIdx = rowVisibleEndIdx + OVERSCAN_ROWS;
-  return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, totalNumberRows) : rowVisibleEndIdx;
+  return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, rowsCount) : rowVisibleEndIdx;
 };
 
 const findFirstFrozenColumn = (columns) => {
