@@ -188,7 +188,7 @@ class Cell extends React.PureComponent {
 
   checkScroll() {
     const {scrollLeft, column} = this.props;
-    let node = this.node;
+    const node = this.node;
     if (column.locked && node && node.style.transform != null) {
       this.setScrollLeft(scrollLeft);
     }
