@@ -146,11 +146,13 @@ class InteractionMasks extends React.Component {
     const rowTop = this.getSelectedRowTop(selectedPosition.rowIdx);
     if (this.node) {
       const cellMasks = this.node.querySelector('.rdg-cell-mask');
-      const {left} = getCellMaskDimensions({selectedPosition, columns, isGroupedRow: this.isGroupedRowSelected(), scrollLeft, rowHeight});
-      cellMasks.style.height = `${selectedRowHeight}px`;
-      let transform = `translate(${left}px, ${rowTop}px)`;
-      cellMasks.style.webkitTransform = transform;
-      cellMasks.style.transform = transform;
+      if (cellMasks) {
+        const {left} = getCellMaskDimensions({selectedPosition, columns, isGroupedRow: this.isGroupedRowSelected(), scrollLeft, rowHeight});
+        cellMasks.style.height = `${selectedRowHeight}px`;
+        let transform = `translate(${left}px, ${rowTop}px)`;
+        cellMasks.style.webkitTransform = transform;
+        cellMasks.style.transform = transform;
+      }
     }
   }
 

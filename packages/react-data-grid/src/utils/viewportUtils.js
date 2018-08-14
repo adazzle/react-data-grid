@@ -34,12 +34,12 @@ export const getGridState = (props) => {
   };
 };
 
-export const getRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, rowOverscanStartIdx, width) => {
+export const getRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, colVisibleStartIdx, width) => {
   let remainingWidth = width && width > 0 ? width : columnMetrics.totalWidth;
   if (remainingWidth === 0) {
     remainingWidth = getDOMNodeOffsetWidth();
   }
-  let columnIndex = rowOverscanStartIdx;
+  let columnIndex = colVisibleStartIdx;
   let columnCount = 0;
   while (remainingWidth > 0) {
     let column = columnUtils.getColumn(columnMetrics.columns, columnIndex);
@@ -58,7 +58,7 @@ export const getRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, row
 export const getVisibleColStart = (columns, scrollLeft) => {
   let remainingScroll = scrollLeft;
   let columnIndex = -1;
-  while (remainingScroll >= 0) {
+  while (remainingScroll >= 0 && columnIndex < columnUtils.getSize(columns)) {
     columnIndex++;
     remainingScroll -= columnUtils.getColumn(columns, columnIndex).width;
   }

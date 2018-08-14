@@ -1,4 +1,4 @@
-import { getGridState, getRenderedColumnCount, getVisibleBoundaries } from '../viewportUtils';
+import { getGridState, getRenderedColumnCount, getVisibleBoundaries, SCROLL_DIRECTION } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -41,14 +41,15 @@ describe('viewportUtils', () => {
     });
   });
 
-  describe('getRenderedColumnCount', () => {
+  fdescribe('getRenderedColumnCount', () => {
     const fakeGetDOMNodeOffsetWidth = jasmine.createSpy('getDOMNodeOffsetWidth').and.returnValue(50);
-    const getColumnCount = (width) => {
+    const verifyRenderedColumnCount = (width, extraColumns = []) => {
+      const columns = [...[
+        { key: 'col1', width: 5 },
+        { key: 'col2', width: 12 }
+      ], ...extraColumns];
       const columnMetrics = {
-        columns: [
-          { key: 'col1', width: 5 },
-          { key: 'col2', width: 12 }
-        ],
+        columns,
         totalWidth: 0
       };
       return getRenderedColumnCount(columnMetrics, fakeGetDOMNodeOffsetWidth, 0, width);
@@ -59,13 +60,13 @@ describe('viewportUtils', () => {
     });
 
     it('correctly set rendered columns count if width is 0', () => {
-      const count = getColumnCount(0);
+      const count = verifyRenderedColumnCount(0);
       expect(fakeGetDOMNodeOffsetWidth).toHaveBeenCalled();
       expect(count).toBe(2);
     });
 
     it('correctly set rendered columns count if width is greater than 0', () => {
-      const count = getColumnCount(4);
+      const count = verifyRenderedColumnCount(4);
       expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
       expect(count).toBe(1);
     });
@@ -134,4 +135,10 @@ describe('viewportUtils', () => {
       });
     });
   });
+
+  describe('Column Rendering', () => {
+    describe('When scrolling downwards', () => {
+
+    });
+  })
 });

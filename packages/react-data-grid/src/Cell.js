@@ -14,7 +14,7 @@ require('../../../themes/react-data-grid-cell.css');
 // The list of the propTypes that we want to include in the Cell div
 const knownDivPropertyKeys = ['height', 'value'];
 
-class Cell extends React.Component {
+class Cell extends React.PureComponent {
   static propTypes = {
     rowIdx: PropTypes.number.isRequired,
     idx: PropTypes.number.isRequired,
@@ -70,23 +70,6 @@ class Cell extends React.Component {
     if (this.state.isLockChanging && !this.props.column.locked) {
       this.removeScroll();
     }
-  }
-
-  shouldComponentUpdate(nextProps) {
-    let shouldUpdate = this.props.column.width !== nextProps.column.width
-      || this.props.column.left !== nextProps.column.left
-      || this.props.column.cellClass !== nextProps.column.cellClass
-      || this.props.height !== nextProps.height
-      || this.props.rowIdx !== nextProps.rowIdx
-      || this.props.isRowSelected !== nextProps.isRowSelected
-      || this.props.isCellValueChanging(this.props.value, nextProps.value)
-      || this.props.forceUpdate === true
-      || this.props.className !== nextProps.className
-      || this.didChildrenChange(nextProps)
-      || this.didDependentValuesChange(nextProps)
-      || this.props.column.locked !== nextProps.column.locked
-      || this.props.column.isScrolling !== nextProps.isScrolling;
-    return shouldUpdate;
   }
 
   onCellClick = () => {
