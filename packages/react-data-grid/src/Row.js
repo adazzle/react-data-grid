@@ -162,7 +162,6 @@ class Row extends React.Component {
     let cells = this.getCells();
     return (
       <div
-        id={`row-${this.props.idx}`}
         {...this.getKnownDivProps() }
         className={className}
         style={style}
