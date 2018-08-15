@@ -1,4 +1,4 @@
-import { getGridState, getRenderedColumnCount, getVisibleBoundaries } from '../viewportUtils';
+import { getGridState, getRenderedColumnCount, getVisibleBoundaries, getNonLockedVisibleColStartIdx } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -41,7 +41,7 @@ describe('viewportUtils', () => {
     });
   });
 
-  fdescribe('getRenderedColumnCount', () => {
+  describe('getRenderedColumnCount', () => {
     const fakeGetDOMNodeOffsetWidth = jasmine.createSpy('getDOMNodeOffsetWidth').and.returnValue(100);
     const verifyRenderedColumnCount = (width, extraColumns = [], colVisibleStartIdx = 0) => {
       const columns = [...[
@@ -146,6 +146,62 @@ describe('viewportUtils', () => {
             expect(rowVisibleStartIdx).toBe(n);
           });
         });
+      });
+    });
+
+    describe('getNonLockedVisibleColStartIdx', () => {
+
+      const getColumns = () => [{width: 100, left: 0}, {width: 100, left: 200}, {width: 100, left: 300}, {width: 100, left: 400}, {width: 100, left: 500}, {width: 100, left: 600}];
+
+      it('should return 0 if no locked columns and grid not scrolled left', () => {
+        const scrollLeft = 0;
+        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(getColumns(), scrollLeft);
+        expect(colVisibleStartIdx).toBe(0);
+      });
+
+      it('should return first fully visible column when scrolled left', () => {
+        const scrollLeft = 100;
+        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(getColumns(), scrollLeft);
+        expect(colVisibleStartIdx).toBe(1);
+      });
+
+      it('should return first partially visible column when scrolled left (left bound)', () => {
+        const scrollLeft = 99;
+        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(getColumns(), scrollLeft);
+        expect(colVisibleStartIdx).toBe(0);
+      });
+
+      it('should return first partially visible column when scrolled left (right bound)', () => {
+        const scrollLeft = 101;
+        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(getColumns(), scrollLeft);
+        expect(colVisibleStartIdx).toBe(1);
+      });
+
+      const expectIdxWhenColumsLocked = (scrollLeft) => {
+        const columns = getColumns();
+        columns[1].locked = true;
+        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(columns, scrollLeft);
+        return expect(colVisibleStartIdx);
+      };
+
+      it('should return first non locked column that appears after last locked column', () => {
+        const scrollLeft = 0;
+        expectIdxWhenColumsLocked(scrollLeft).toBe(2);
+      });
+
+      it('should return first fully visible non locked column that appears after last locked column when scrolled left', () => {
+        const scrollLeft = 200;
+        expectIdxWhenColumsLocked(scrollLeft).toBe(4);
+      });
+
+      it('should return first partially visible non locked column that appears after last locked column when scrolled left', () => {
+        const scrollLeft = 201;
+        expectIdxWhenColumsLocked(scrollLeft).toBe(4);
+      });
+
+      it('should return first partially visible non locked column that appears after last locked column when scrolled left', () => {
+        const scrollLeft = 199;
+        expectIdxWhenColumsLocked(scrollLeft).toBe(3);
       });
     });
   });

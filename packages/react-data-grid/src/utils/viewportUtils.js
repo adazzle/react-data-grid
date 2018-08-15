@@ -56,10 +56,24 @@ export const getRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, col
   return columnCount;
 };
 
-export const getVisibleColStart = (columns, scrollLeft) => {
+
+// No IE support for Array.findIndex
+const findLastLockedColumnIndex = (columns) => {
+  let index = -1;
+  columns.forEach((c, i) => {
+    if (c.locked === true) {
+      index = i;
+    }
+  });
+  return index;
+};
+
+export const getNonLockedVisibleColStartIdx = (columns, scrollLeft) => {
   let remainingScroll = scrollLeft;
-  let columnIndex = -1;
-  while (remainingScroll >= 0 && columnIndex < columnUtils.getSize(columns)) {
+  const lastLockedColumnIndex = findLastLockedColumnIndex(columns);
+  const nonLockedColumns = columns.slice(lastLockedColumnIndex + 1);
+  let columnIndex = lastLockedColumnIndex;
+  while (remainingScroll >= 0 && columnIndex < columnUtils.getSize(nonLockedColumns)) {
     columnIndex++;
     remainingScroll -= columnUtils.getColumn(columns, columnIndex).width;
   }
@@ -92,22 +106,8 @@ export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCoun
   return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, rowsCount) : rowVisibleEndIdx;
 };
 
-const findFirstFrozenColumn = (columns) => {
-  let index = -1;
-  // IE 11 support no findIndex
-  columns.some((c, i) => {
-    if (c.locked === true) {
-      index = i;
-      return true;
-    }
-  });
-  return index;
-};
-
 export const getColOverscanStartIdx = (columns, scrollDirection, colVisibleStartIdx) => {
-  const firstFrozenColumnIdx = findFirstFrozenColumn(columns);
-  const firstVisibleColumn = firstFrozenColumnIdx > -1 ? firstFrozenColumnIdx : colVisibleStartIdx;
-  return (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) ? 0 : firstVisibleColumn;
+  return (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) ? 0 : colVisibleStartIdx;
 };
 
 export const getColOverscanEndIdx = (scrollDirection, colVisibleEndIdx, totalNumberColumns) => {

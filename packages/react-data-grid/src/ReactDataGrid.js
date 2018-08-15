@@ -143,7 +143,9 @@ class ReactDataGrid extends React.Component {
   componentDidMount() {
     this._mounted = true;
     window.addEventListener('resize', this.metricsUpdated);
-    window.addEventListener('mouseup', this.onWindowMouseUp);
+    if (this.props.cellRangeSelection) {
+      window.addEventListener('mouseup', this.onWindowMouseUp);
+    }
     this.metricsUpdated();
   }
 
@@ -651,8 +653,6 @@ class ReactDataGrid extends React.Component {
     const cellMetaData = {
       rowKey: this.props.rowKey,
       onCellClick: this.onCellClick,
-      onCellMouseDown: this.onCellMouseDown,
-      onCellMouseEnter: this.onCellMouseEnter,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onColumnEvent: this.onColumnEvent,
@@ -663,6 +663,10 @@ class ReactDataGrid extends React.Component {
       onAddSubRow: this.props.onAddSubRow,
       onDragEnter: this.handleDragEnter
     };
+    if (this.props.cellRangeSelection) {
+      cellMetaData.onCellMouseDown = this.onCellMouseDown;
+      cellMetaData.onCellMouseEnter = this.onCellMouseEnter;
+    }
 
     const toolbar = this.renderToolbar();
     let containerWidth = this.props.minWidth || this.gridWidth();

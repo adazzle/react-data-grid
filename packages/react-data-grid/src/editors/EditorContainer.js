@@ -320,8 +320,9 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { left, top, width, height, scrollLeft } = this.props;
-    const style = { position: 'absolute', height, width, zIndex: zIndexes.EDITOR_CONTAINER, transform: `translate(${left + scrollLeft}px, ${top}px)` };
+    const { left, top, width, height, column, scrollLeft } = this.props;
+    const editorLeft = column.locked ? left + scrollLeft : left;
+    const style = { position: 'absolute', height, width, zIndex: zIndexes.EDITOR_CONTAINER, transform: `translate(${editorLeft}px, ${top}px)` };
     return (
         <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}

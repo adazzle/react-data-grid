@@ -11,7 +11,7 @@ import {
   getRowOverscanStartIdx,
   getRowOverscanEndIdx,
   getColOverscanStartIdx,
-  getVisibleColStart,
+  getNonLockedVisibleColStartIdx,
   getRenderedColumnCount
 } from './utils/viewportUtils';
 
@@ -66,8 +66,7 @@ class Viewport extends React.Component {
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired,
-    RowsContainer: PropTypes.node,
-    EXPERIMENTAL_usingDynamicRowHeight: PropTypes.bool
+    RowsContainer: PropTypes.node
   };
 
   static defaultProps = {
@@ -117,7 +116,7 @@ class Viewport extends React.Component {
     const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
     const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, rowsCount);
     const totalNumberColumns = columnUtils.getSize(columns);
-    const colVisibleStartIdx = (totalNumberColumns > 0) ? Math.max(0, getVisibleColStart(columns, scrollLeft)) : 0;
+    const colVisibleStartIdx = (totalNumberColumns > 0) ? Math.max(0, getNonLockedVisibleColStartIdx(columns, scrollLeft)) : 0;
     const renderedColumnCount = getRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth, colVisibleStartIdx, width);
     const colVisibleEndIdx = (renderedColumnCount !== 0) ? colVisibleStartIdx + renderedColumnCount : totalNumberColumns;
     const colOverscanStartIdx = getColOverscanStartIdx(columns, scrollDirection, colVisibleStartIdx);
@@ -303,7 +302,6 @@ class Viewport extends React.Component {
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           onCommit={this.props.onCommit}
           RowsContainer={this.props.RowsContainer}
-          EXPERIMENTAL_usingDynamicRowHeight={this.props.EXPERIMENTAL_usingDynamicRowHeight}
         />
       </div>
     );
