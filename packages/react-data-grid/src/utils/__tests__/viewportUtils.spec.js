@@ -150,7 +150,6 @@ describe('viewportUtils', () => {
     });
 
     describe('getNonLockedVisibleColStartIdx', () => {
-
       const getColumns = () => [{width: 100, left: 0}, {width: 100, left: 200}, {width: 100, left: 300}, {width: 100, left: 400}, {width: 100, left: 500}, {width: 100, left: 600}];
 
       it('should return 0 if no locked columns and grid not scrolled left', () => {
