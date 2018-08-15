@@ -41,18 +41,18 @@ describe('viewportUtils', () => {
     });
   });
 
-  describe('getRenderedColumnCount', () => {
-    const fakeGetDOMNodeOffsetWidth = jasmine.createSpy('getDOMNodeOffsetWidth').and.returnValue(50);
-    const verifyRenderedColumnCount = (width, extraColumns = []) => {
+  fdescribe('getRenderedColumnCount', () => {
+    const fakeGetDOMNodeOffsetWidth = jasmine.createSpy('getDOMNodeOffsetWidth').and.returnValue(100);
+    const verifyRenderedColumnCount = (width, extraColumns = [], colVisibleStartIdx = 0) => {
       const columns = [...[
-        { key: 'col1', width: 5 },
-        { key: 'col2', width: 12 }
+        { key: 'col1', width: 10 },
+        { key: 'col2', width: 10 }
       ], ...extraColumns];
       const columnMetrics = {
         columns,
         totalWidth: 0
       };
-      return getRenderedColumnCount(columnMetrics, fakeGetDOMNodeOffsetWidth, 0, width);
+      return getRenderedColumnCount(columnMetrics, fakeGetDOMNodeOffsetWidth, colVisibleStartIdx, width);
     };
 
     beforeEach(() => {
@@ -66,9 +66,23 @@ describe('viewportUtils', () => {
     });
 
     it('correctly set rendered columns count if width is greater than 0', () => {
-      const count = verifyRenderedColumnCount(4);
+      const count = verifyRenderedColumnCount(11);
       expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
-      expect(count).toBe(1);
+      expect(count).toBe(2);
+    });
+
+    it('can handle variable column widths', () => {
+      const columns = [{ key: 'col3', width: 70 }, { key: 'col4', width: 5 }, { key: 'col3', width: 2 }, { key: 'col3', width: 1 }];
+      const count = verifyRenderedColumnCount(100, columns);
+      expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
+      expect(count).toBe(6);
+    });
+
+    it('can handle when grid is scrolled', () => {
+      const columns = [{ key: 'col3', width: 70 }, { key: 'col4', width: 5 }, { key: 'col3', width: 2 }, { key: 'col3', width: 1 }];
+      const count = verifyRenderedColumnCount(100, columns, 4);
+      expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
+      expect(count).toBe(2);
     });
   });
 

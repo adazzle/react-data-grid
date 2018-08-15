@@ -39,8 +39,9 @@ export const getRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, col
   if (remainingWidth === 0) {
     remainingWidth = getDOMNodeOffsetWidth();
   }
-  let columnIndex = colVisibleStartIdx;
-  let columnCount = 0;
+  const visibleColumnBuffer = 1;
+  let columnIndex = colVisibleStartIdx + visibleColumnBuffer; // ensure to start counting from first fully visible column
+  let columnCount = visibleColumnBuffer;
   while (remainingWidth > 0) {
     let column = columnUtils.getColumn(columnMetrics.columns, columnIndex);
 

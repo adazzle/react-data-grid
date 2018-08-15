@@ -260,7 +260,7 @@ class Canvas extends React.PureComponent {
     const row = this.getRowByRef(rowIdx);
     if (row) {
       const node = ReactDOM.findDOMNode(row);
-      return node ? node.clientHeight : this.props.rowHeight;
+      return node && node.clientHeight > 0 ? node.clientHeight : this.props.rowHeight;
     }
   }
 
