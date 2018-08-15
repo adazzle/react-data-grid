@@ -11,7 +11,6 @@ import { EventTypes } from './constants';
 require('../../../themes/react-data-grid-core.css');
 
 class Canvas extends React.PureComponent {
-  static displayName = 'Canvas';
 
   static propTypes = {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
@@ -262,6 +261,7 @@ class Canvas extends React.PureComponent {
       const node = ReactDOM.findDOMNode(row);
       return node && node.clientHeight > 0 ? node.clientHeight : this.props.rowHeight;
     }
+    return this.props.rowHeight;
   }
 
   setCanvasRef = (canvas) => {

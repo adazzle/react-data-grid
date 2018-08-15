@@ -93,7 +93,7 @@ export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCoun
 };
 
 const findFirstFrozenColumn = (columns) => {
-  let index;
+  let index = -1;
   // IE 11 support no findIndex
   columns.some((c, i) => {
     if (c.locked === true) {

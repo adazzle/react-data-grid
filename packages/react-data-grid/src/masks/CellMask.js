@@ -14,7 +14,6 @@ const setMaskStyle = ({ left, top, width, height, zIndex }) => {
 
 const CellMask = ({ width, height, top, left, zIndex, children, ...rest }) => (
   <div
-    className="rdg-cell-mask"
     style={setMaskStyle({ left, top, width, height, zIndex })}
     data-test="cell-mask"
     {...rest}

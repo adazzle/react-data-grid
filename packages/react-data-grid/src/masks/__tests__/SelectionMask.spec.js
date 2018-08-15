@@ -35,7 +35,7 @@ describe('SelectionMask', () => {
         left: 5,
         top: TOP,
         zIndex: zIndexes.CELL_MASK,
-        className: 'rdg-selected rdg-cell-mask',
+        className: 'rdg-selected',
         children: undefined
       })
     );

@@ -31,7 +31,7 @@ function SelectionMask({children, ...rest}) {
   return (
     <CellMask
       {...dimensions}
-      className="rdg-selected rdg-cell-mask"
+      className="rdg-selected"
     >
       {children}
     </CellMask>

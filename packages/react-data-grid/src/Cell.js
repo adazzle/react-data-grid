@@ -155,6 +155,9 @@ class Cell extends React.PureComponent {
   getFormatterDependencies = () => {
     // convention based method to get corresponding Id or Name of any Name or Id property
     if (typeof this.props.column.getRowMetaData === 'function') {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
+      }
       return this.props.column.getRowMetaData(this.getRowData(), this.props.column);
     }
   };
