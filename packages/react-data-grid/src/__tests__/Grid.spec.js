@@ -3,7 +3,7 @@ const ReactDOM = require('react-dom');
 const rewire        = require('rewire');
 const Grid          = rewire('../Grid');
 const TestUtils     = require('react-dom/test-utils');
-const helpers       = require('../helpers/test/GridPropHelpers');
+import helpers from '../helpers/test/GridPropHelpers';
 const rewireModule = require('../../../../test/rewireModule');
 import { shallow } from 'enzyme';
 import { ContextMenu } from 'react-contextmenu';

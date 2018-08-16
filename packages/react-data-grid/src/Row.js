@@ -50,7 +50,7 @@ class Row extends React.Component {
     onDragEnter({ overRowIdx: idx });
   };
 
-  handleDrop= (e) => {
+  handleDrop = (e) => {
     e.preventDefault();
   };
 
@@ -77,25 +77,12 @@ class Row extends React.Component {
   };
 
   getCells = () => {
-    const{colOverscanStartIdx, colOverscanEndIdx} = this.props;
-    let cells = [];
-    let lockedCells = [];
-    let lastColumnIdx = this.props.columns.size - 1;
-    if (this.props.columns) {
-      this.props.columns.slice(colOverscanStartIdx, colOverscanEndIdx).forEach((column, i) => {
-        if (i === lastColumnIdx) {
-          column.isLastColumn = true;
-        }
-        let cell = this.getCell(column, i);
-        if (column.locked) {
-          lockedCells.push(cell);
-        } else {
-          cells.push(cell);
-        }
-      });
-    }
-
-    return cells.concat(lockedCells);
+    const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
+    const lockedColumns = columns.filter(c => c.locked === true);
+    const nonLockedColumns = columns.filter(c => c.locked === undefined);
+    const nonLockedColumnsToRender = nonLockedColumns.slice(colOverscanStartIdx, colOverscanEndIdx + 1); // include colOverscanEndIdx in slice
+    return lockedColumns.concat(nonLockedColumnsToRender)
+      .map((column, i) => this.getCell(column, i));
   };
 
   getRowHeight = () => {
@@ -150,7 +137,7 @@ class Row extends React.Component {
         'row-selected': this.props.isSelected
       },
       this.props.extraClasses,
-      {'rdg-scrolling': this.props.isScrolling}
+      { 'rdg-scrolling': this.props.isScrolling }
     );
 
     let style = {
@@ -162,12 +149,12 @@ class Row extends React.Component {
     let cells = this.getCells();
     return (
       <div
-        {...this.getKnownDivProps() }
+        {...this.getKnownDivProps()}
         className={className}
         style={style}
         onDragEnter={this.handleDragEnter}
         onDrop={this.handleDrop}
-       >
+      >
         {
           React.isValidElement(this.props.row) ?
             this.props.row : cells
