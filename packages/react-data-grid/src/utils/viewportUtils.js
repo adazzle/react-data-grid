@@ -1,6 +1,6 @@
 import * as columnUtils from '../ColumnUtils';
 
-const OVERSCAN_ROWS = 2;
+export const OVERSCAN_ROWS = 2;
 
 export const SCROLL_DIRECTION = {
   UP: 'upwards',
@@ -100,7 +100,7 @@ export const getScrollDirection = (lastScroll, scrollTop, scrollLeft) => {
 };
 
 export const getRowOverscanStartIdx = (scrollDirection, rowVisibleStartIdx) => {
-  return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : rowVisibleStartIdx;
+  return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : max(0, rowVisibleStartIdx);
 };
 
 export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCount) => {

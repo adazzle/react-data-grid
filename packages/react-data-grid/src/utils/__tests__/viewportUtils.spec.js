@@ -1,4 +1,4 @@
-import { getGridState, getRenderedColumnCount, getVisibleBoundaries, getNonLockedVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION } from '../viewportUtils';
+import { getGridState, getRenderedColumnCount, getVisibleBoundaries, getNonLockedVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, OVERSCAN_ROWS } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -238,6 +238,29 @@ describe('viewportUtils', () => {
         const currentScrollTop = 0;
         const currentScrollLeft = 200;
         expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.NONE);
+      });
+    });
+
+    describe('getRowOverscanStartIdx', () => {
+      const rowVisibleStartIdx = 2;
+      it('should return rowVisibleStartIdx - OVERSCAN_ROWS if scroll direction is upwards', () => {
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.UP, rowVisibleStartIdx)).toBe(rowVisibleStartIdx - OVERSCAN_ROWS);
+      });
+
+      it('should return rowVisibleStartIdx if scroll direction is left', () => {
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.LEFT, rowVisibleStartIdx)).toBe(rowVisibleStartIdx);
+      });
+
+      it('should return rowVisibleStartIdx if scroll direction is right', () => {
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.RIGHT, rowVisibleStartIdx)).toBe(rowVisibleStartIdx);
+      });
+
+      it('should return rowVisibleStartIdx if scroll direction is downwards', () => {
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.DOWN, rowVisibleStartIdx)).toBe(rowVisibleStartIdx);
+      });
+
+      it('should return 0 if rowVisibleStartIdx negative', () => {
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.DOWN, -1)).toBe(0);
       });
     });
   });
