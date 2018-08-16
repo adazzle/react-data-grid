@@ -34,7 +34,6 @@ describe('Row', () => {
   });
 
   describe('Rendering Row component', () => {
-
     const COLUMN_COUNT = 50;
 
     const setup = (props) => {
