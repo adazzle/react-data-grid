@@ -119,7 +119,7 @@ class Viewport extends React.Component {
     const colVisibleStartIdx = (totalNumberColumns > 0) ? Math.max(0, getNonLockedVisibleColStartIdx(columns, scrollLeft)) : 0;
     const renderedColumnCount = getRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth, colVisibleStartIdx, width);
     const colVisibleEndIdx = (renderedColumnCount !== 0) ? colVisibleStartIdx + renderedColumnCount : totalNumberColumns;
-    const colOverscanStartIdx = getColOverscanStartIdx(columns, scrollDirection, colVisibleStartIdx);
+    const colOverscanStartIdx = getColOverscanStartIdx(scrollDirection, colVisibleStartIdx);
     const colOverscanEndIdx = getColOverscanEndIdx(scrollDirection, colVisibleEndIdx, totalNumberColumns);
     return {
       height,

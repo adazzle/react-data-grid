@@ -2,6 +2,7 @@ import React from 'react';
 import Viewport from '../Viewport';
 import { shallow} from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
+import {SCROLL_DIRECTION} from '../utils/viewportUtils';
 
 let viewportProps = {
   rowOffsetHeight: 0,
@@ -97,7 +98,7 @@ describe('<Viewport />', () => {
       rowVisibleEndIdx: 21,
       rowVisibleStartIdx: 6,
       isScrolling: true,
-      scrollDirection: 'downwards'
+      scrollDirection: SCROLL_DIRECTION.DOWN
     });
   });
 
@@ -150,7 +151,7 @@ describe('<Viewport />', () => {
       rowVisibleEndIdx: 29,
       rowVisibleStartIdx: 0,
       isScrolling: true,
-      scrollDirection: undefined
+      scrollDirection: SCROLL_DIRECTION.NONE
     });
   });
 });

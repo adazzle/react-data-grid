@@ -108,7 +108,7 @@ export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCoun
   return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, rowsCount) : rowVisibleEndIdx;
 };
 
-export const getColOverscanStartIdx = (columns, scrollDirection, colVisibleStartIdx) => {
+export const getColOverscanStartIdx = (scrollDirection, colVisibleStartIdx) => {
   return (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) ? 0 : colVisibleStartIdx;
 };
 

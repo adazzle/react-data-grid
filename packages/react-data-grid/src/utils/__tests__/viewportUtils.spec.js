@@ -1,4 +1,4 @@
-import { getGridState, getRenderedColumnCount, getVisibleBoundaries, getNonLockedVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS } from '../viewportUtils';
+import { getGridState, getRenderedColumnCount, getVisibleBoundaries, getNonLockedVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -285,6 +285,45 @@ describe('viewportUtils', () => {
 
       it('should return rowVisibleEndIdx if scroll direction is upwards', () => {
         expect(getRowOverscanEndIdx(SCROLL_DIRECTION.UP, rowVisibleEndIdx, totalNumberOfRows)).toBe(rowVisibleEndIdx);
+      });
+    });
+
+    describe('getColOverscanStartIdx', () => {
+      const colVisibleStartIdx = 5;
+      it('should return colVisibleStartIdx if scroll direction is downward', () => {
+        expect(getColOverscanStartIdx(SCROLL_DIRECTION.DOWN, colVisibleStartIdx)).toBe(colVisibleStartIdx);
+      });
+
+      it('should return colVisibleStartIdx if scroll direction is upwards', () => {
+        expect(getColOverscanStartIdx(SCROLL_DIRECTION.UP, colVisibleStartIdx)).toBe(colVisibleStartIdx);
+      });
+
+      it('should return 0 if scroll direction is left', () => {
+        expect(getColOverscanStartIdx(SCROLL_DIRECTION.LEFT, colVisibleStartIdx)).toBe(0);
+      });
+
+      it('should return 0 if scroll direction is right', () => {
+        expect(getColOverscanStartIdx(SCROLL_DIRECTION.RIGHT, colVisibleStartIdx)).toBe(0);
+      });
+    });
+
+    describe('getColOverscanEndIdx', () => {
+      const colVisibleEndIdx = 20;
+      const totalNumberOfColumns = 30;
+      it('should return colVisibleStartIdx if scroll direction is downward', () => {
+        expect(getColOverscanEndIdx(SCROLL_DIRECTION.DOWN, colVisibleEndIdx, totalNumberOfColumns)).toBe(colVisibleEndIdx);
+      });
+
+      it('should return colVisibleEndIdx if scroll direction is upwards', () => {
+        expect(getColOverscanEndIdx(SCROLL_DIRECTION.UP, colVisibleEndIdx, totalNumberOfColumns)).toBe(colVisibleEndIdx);
+      });
+
+      it('should return totalNumberOfColumns if scroll direction is left', () => {
+        expect(getColOverscanEndIdx(SCROLL_DIRECTION.LEFT, colVisibleEndIdx, totalNumberOfColumns)).toBe(totalNumberOfColumns);
+      });
+
+      it('should return totalNumberOfColumns if scroll direction is right', () => {
+        expect(getColOverscanEndIdx(SCROLL_DIRECTION.RIGHT, colVisibleEndIdx, totalNumberOfColumns)).toBe(totalNumberOfColumns);
       });
     });
   });
