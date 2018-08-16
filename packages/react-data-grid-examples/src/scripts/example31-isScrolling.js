@@ -1,7 +1,7 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const {AreaChart, Area} = require('Recharts');
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
+import {AreaChart, Area} from 'Recharts';
 
 const getRandom = (min, max) => {
   min = Math.ceil(min);
@@ -35,7 +35,7 @@ const createColumns = (numberCols) => [...Array(numberCols).keys()].map(i => {
 });
 
 const createRows = (numberRows) => [...Array(numberRows).keys()].map(i => {
-  return [...Array(numberRows).keys()].reduce((row, j) => ({...row, ...{[`col${j}`]: `row ${i} col ${j}`} }), {});
+  return [...Array(numberRows).keys()].reduce((row, j) => ({...row, [`col${j}`]: `row ${i} col ${j}`}), {});
 });
 
 class Example extends React.Component {
