@@ -1,8 +1,8 @@
 const shallowCloneObject = require('./shallowCloneObject');
 const sameColumn = require('./ColumnComparer');
 const ColumnUtils = require('./ColumnUtils');
-const getScrollbarSize  = require('./getScrollbarSize');
-const isColumnsImmutable  = require('./utils/isColumnsImmutable');
+const getScrollbarSize = require('./getScrollbarSize');
+const isColumnsImmutable = require('./utils/isColumnsImmutable');
 
 type Column = {
   key: string;
@@ -11,9 +11,9 @@ type Column = {
 };
 
 type ColumnMetricsType = {
-    columns: Array<Column>;
-    totalWidth: number;
-    minColumnWidth: number;
+  columns: Array<Column>;
+  totalWidth: number;
+  minColumnWidth: number;
 };
 
 function setColumnWidths(columns, totalWidth) {
@@ -63,7 +63,7 @@ function setColumnOffsets(columns) {
  * @param {ColumnMetricsType} metrics
  */
 function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
-    // compute width for columns which specify width
+  // compute width for columns which specify width
   let columns = setColumnWidths(metrics.columns, metrics.totalWidth);
 
   let unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => {
@@ -80,9 +80,11 @@ function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
 
   // compute left offset
   columns = setColumnOffsets(columns);
+  const lockedColumns = columns.filter(c => c.locked === true);
+  const nonLockedColumns = columns.filter(c => c.locked === undefined || c.locked === false);
 
   return {
-    columns,
+    columns: lockedColumns.concat(nonLockedColumns),
     width,
     totalWidth: metrics.totalWidth,
     minColumnWidth: metrics.minColumnWidth
@@ -117,8 +119,8 @@ function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column
   let i;
   let len;
   let column;
-  let prevColumnsByKey: { [key:string]: Column } = {};
-  let nextColumnsByKey: { [key:string]: Column } = {};
+  let prevColumnsByKey: { [key: string]: Column } = {};
+  let nextColumnsByKey: { [key: string]: Column } = {};
 
 
   if (ColumnUtils.getSize(prevColumns) !== ColumnUtils.getSize(nextColumns)) {
