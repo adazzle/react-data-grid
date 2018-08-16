@@ -6,7 +6,8 @@ export const SCROLL_DIRECTION = {
   UP: 'upwards',
   DOWN: 'downwards',
   LEFT: 'left',
-  RIGHT: 'right'
+  RIGHT: 'right',
+  NONE: 'none'
 };
 
 const min = Math.min;
@@ -89,12 +90,13 @@ export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, rowsCount
 
 
 export const getScrollDirection = (lastScroll, scrollTop, scrollLeft) => {
-  if (scrollTop !== lastScroll.scrollTop) {
+  if (scrollTop !== lastScroll.scrollTop && lastScroll.scrollTop !== undefined) {
     return scrollTop - lastScroll.scrollTop >= 0 ? SCROLL_DIRECTION.DOWN : SCROLL_DIRECTION.UP;
   }
-  if (scrollLeft !== lastScroll.scrollLeft) {
+  if (scrollLeft !== lastScroll.scrollLeft && lastScroll.scrollLeft !== undefined) {
     return scrollLeft - lastScroll.scrollLeft >= 0 ? SCROLL_DIRECTION.RIGHT : SCROLL_DIRECTION.LEFT;
   }
+  return SCROLL_DIRECTION.NONE;
 };
 
 export const getRowOverscanStartIdx = (scrollDirection, rowVisibleStartIdx) => {

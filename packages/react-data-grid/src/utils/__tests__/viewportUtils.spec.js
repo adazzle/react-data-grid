@@ -1,4 +1,4 @@
-import { getGridState, getRenderedColumnCount, getVisibleBoundaries, getNonLockedVisibleColStartIdx } from '../viewportUtils';
+import { getGridState, getRenderedColumnCount, getVisibleBoundaries, getNonLockedVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   describe('getGridState', () => {
@@ -201,6 +201,43 @@ describe('viewportUtils', () => {
       it('should return first partially visible non locked column that appears after last locked column when scrolled left', () => {
         const scrollLeft = 199;
         expectIdxWhenColumsLocked(scrollLeft).toBe(3);
+      });
+    });
+
+    describe('getScrollDirection', () => {
+      it('should return SCROLL_DIRECTION.DOWN iF previous scrollTop is less than current scrollTop', () => {
+        const prevScroll = {scrollTop: 100};
+        const currentScrollTop = 200;
+        const currentScrollLeft = 0;
+        expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.DOWN);
+      });
+
+      it('should return SCROLL_DIRECTION.UP iF previous scrollTop is greater than current scrollTop', () => {
+        const prevScroll = {scrollTop: 200};
+        const currentScrollTop = 0;
+        const currentScrollLeft = 0;
+        expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.UP);
+      });
+
+      it('should return SCROLL_DIRECTION.RIGHT iF previous scrollLeft is less than current scrollLeft', () => {
+        const prevScroll = {scrollLeft: 200};
+        const currentScrollTop = 0;
+        const currentScrollLeft = 400;
+        expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.RIGHT);
+      });
+
+      it('should return SCROLL_DIRECTION.LEFT iF previous scrollLeft is greater than current scrollLeft', () => {
+        const prevScroll = {scrollLeft: 200};
+        const currentScrollTop = 0;
+        const currentScrollLeft = 0;
+        expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.LEFT);
+      });
+
+      it('should return SCROLL_DIRECTION.NONE if current scroll is equal to previous scroll', () => {
+        const prevScroll = {scrollLeft: 200, scrollTop: 0};
+        const currentScrollTop = 0;
+        const currentScrollLeft = 200;
+        expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.NONE);
       });
     });
   });
