@@ -46,16 +46,16 @@ describe('Column Metrics Tests', () => {
         expect(metrics.columns[2].left).toEqual(expectedLeftValue);
       });
 
-      it('should shift all locked columns to the start of column metrics array', () => {
-        const firstLockedColumn =  {key: 'lockedColumn1', name: 'lockedColumn1', locked: true};
-        const secondLockedColumn =  {key: 'lockedColumn2', name: 'lockedColumn2', locked: true};
-        const thirdLockedColumn =  {key: 'lockedColumn3', name: 'lockedColumn3', locked: true};
-        const columns = [...getInitialColumns(), secondLockedColumn, thirdLockedColumn];
-        columns.splice(2, 0, firstLockedColumn);
+      it('should shift all frozen columns to the start of column metrics array', () => {
+        const firstFrozenColumn =  {key: 'frozenColumn1', name: 'frozenColumn1', frozen: true};
+        const secondFrozenColumn =  {key: 'frozenColumn2', name: 'frozenColumn2', frozen: true};
+        const thirdFrozenColumn =  {key: 'frozenColumn3', name: 'frozenColumn3', frozen: true};
+        const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
+        columns.splice(2, 0, firstFrozenColumn);
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
-        expect(metrics.columns[0]).toEqual(jasmine.objectContaining(firstLockedColumn));
-        expect(metrics.columns[1]).toEqual(jasmine.objectContaining(secondLockedColumn));
-        expect(metrics.columns[2]).toEqual(jasmine.objectContaining(thirdLockedColumn));
+        expect(metrics.columns[0]).toEqual(jasmine.objectContaining(firstFrozenColumn));
+        expect(metrics.columns[1]).toEqual(jasmine.objectContaining(secondFrozenColumn));
+        expect(metrics.columns[2]).toEqual(jasmine.objectContaining(thirdFrozenColumn));
       });
 
       describe('When column data is immutable js object', () => {

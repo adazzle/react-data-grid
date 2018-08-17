@@ -123,31 +123,31 @@ describe('Row', () => {
     });
 
     describe('Cell rendering', () => {
-      describe('When using locked columns', () => {
+      describe('When using frozen columns', () => {
         const LAST_LOCKED_CELL_IDX = 5;
 
         const lockColumns = () => createColumns(COLUMN_COUNT).map((c, idx) => {
-          return idx <= LAST_LOCKED_CELL_IDX ? {...c, locked: true} : c;
+          return idx <= LAST_LOCKED_CELL_IDX ? {...c, frozen: true} : c;
         });
 
-        it('should render all locked and visible and overscan cells', () => {
+        it('should render all frozen and visible and overscan cells', () => {
           const columns = lockColumns(LAST_LOCKED_CELL_IDX);
           const {cells} = setup({...requiredProperties, columns});
           const {colOverscanStartIdx, colOverscanEndIdx} = requiredProperties;
-          const nonLockedRenderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
-          const lockedRenderedRange = LAST_LOCKED_CELL_IDX + 1;
-          expect(cells.length).toBe(lockedRenderedRange + nonLockedRenderedRange);
+          const nonFrozenRenderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
+          const frozenRenderedRange = LAST_LOCKED_CELL_IDX + 1;
+          expect(cells.length).toBe(frozenRenderedRange + nonFrozenRenderedRange);
         });
 
-        it('first rendered cell index should be first locked cell', () => {
+        it('first rendered cell index should be first frozen cell', () => {
           const columns = lockColumns(LAST_LOCKED_CELL_IDX);
           const {cells} = setup({...requiredProperties, columns});
-          const firstLockedColumn = columns.find(c => c.locked === true);
-          expect(cells.first().props().column).toBe(firstLockedColumn);
+          const firstFrozenColumn = columns.find(c => c.frozen === true);
+          expect(cells.first().props().column).toBe(firstFrozenColumn);
         });
       });
 
-      describe('When not using locked columns', ()  => {
+      describe('When not using frozen columns', ()  => {
         it('should render all visible and overscan cells', () => {
           const {cells} = setup(requiredProperties);
           const {colOverscanStartIdx, colOverscanEndIdx} = requiredProperties;

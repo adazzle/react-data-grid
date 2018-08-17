@@ -1,4 +1,4 @@
-import * as columnUtils from '../ColumnUtils';
+import columnUtils from '../ColumnUtils';
 
 export const OVERSCAN_ROWS = 2;
 
@@ -31,18 +31,35 @@ export const getGridState = (props) => {
     colVisibleEndIdx: totalNumberColumns,
     colOverscanStartIdx: 0,
     colOverscanEndIdx: totalNumberColumns,
-    isScrolling: false
+    isScrolling: false,
+    lastFrozenColumnIndex: 0
   };
 };
 
-export const getRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, colVisibleStartIdx, width) => {
+// No IE support for Array.findIndex
+export const findLastFrozenColumnIndex = (columns) => {
+  let index = -1;
+  columns.forEach((c, i) => {
+    if (columnUtils.isFrozen(c)) {
+      index = i;
+    }
+  });
+  return index;
+};
+
+export const getNonFrozenRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, colVisibleStartIdx, width) => {
   let remainingWidth = width && width > 0 ? width : columnMetrics.totalWidth;
+  const lastFrozenColumnIndex = findLastFrozenColumnIndex(columnMetrics.columns);
   if (remainingWidth === 0) {
     remainingWidth = getDOMNodeOffsetWidth();
   }
-  const visibleColumnBuffer = 1;
-  let columnIndex = colVisibleStartIdx + visibleColumnBuffer; // ensure to start counting from first fully visible column
-  let columnCount = visibleColumnBuffer;
+  if (lastFrozenColumnIndex > -1) {
+    const lastFrozenColumn = columnUtils.getColumn(columnMetrics.columns, lastFrozenColumnIndex);
+    remainingWidth = remainingWidth - lastFrozenColumn.left - lastFrozenColumn.width;
+  }
+  let columnIndex = colVisibleStartIdx;
+
+  let columnCount = 0;
   while (remainingWidth > 0) {
     let column = columnUtils.getColumn(columnMetrics.columns, columnIndex);
 
@@ -57,24 +74,12 @@ export const getRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, col
   return columnCount;
 };
 
-
-// No IE support for Array.findIndex
-const findLastLockedColumnIndex = (columns) => {
-  let index = -1;
-  columns.forEach((c, i) => {
-    if (c.locked === true) {
-      index = i;
-    }
-  });
-  return index;
-};
-
-export const getNonLockedVisibleColStartIdx = (columns, scrollLeft) => {
+export const getNonFrozenVisibleColStartIdx = (columns, scrollLeft) => {
   let remainingScroll = scrollLeft;
-  const lastLockedColumnIndex = findLastLockedColumnIndex(columns);
-  const nonLockedColumns = columns.slice(lastLockedColumnIndex + 1);
-  let columnIndex = lastLockedColumnIndex;
-  while (remainingScroll >= 0 && columnIndex < columnUtils.getSize(nonLockedColumns)) {
+  const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
+  const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
+  let columnIndex = lastFrozenColumnIndex;
+  while (remainingScroll >= 0 && columnIndex < columnUtils.getSize(nonFrozenColumns)) {
     columnIndex++;
     remainingScroll -= columnUtils.getColumn(columns, columnIndex).width;
   }
@@ -108,8 +113,9 @@ export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCoun
   return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, rowsCount) : rowVisibleEndIdx;
 };
 
-export const getColOverscanStartIdx = (scrollDirection, colVisibleStartIdx) => {
-  return (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) ? 0 : colVisibleStartIdx;
+export const getColOverscanStartIdx = (scrollDirection, colVisibleStartIdx, lastFrozenColumnIdx) => {
+  const leftMostBoundIdx = lastFrozenColumnIdx > -1 ? lastFrozenColumnIdx + 1 : 0;
+  return (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) ? leftMostBoundIdx : colVisibleStartIdx;
 };
 
 export const getColOverscanEndIdx = (scrollDirection, colVisibleEndIdx, totalNumberColumns) => {

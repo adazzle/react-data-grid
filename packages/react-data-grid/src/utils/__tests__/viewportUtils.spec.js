@@ -1,6 +1,7 @@
-import { getGridState, getRenderedColumnCount, getVisibleBoundaries, getNonLockedVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
+import { getGridState, getNonFrozenRenderedColumnCount, getVisibleBoundaries, getNonFrozenVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
 
 describe('viewportUtils', () => {
+  const getColumns = () => [{width: 100, left: 0}, {width: 100, left: 200}, {width: 100, left: 300}, {width: 100, left: 400}, {width: 100, left: 500}, {width: 100, left: 600}];
   describe('getGridState', () => {
     const getState = (propsOverrides = {}) => {
       const props = Object.assign({
@@ -41,7 +42,7 @@ describe('viewportUtils', () => {
     });
   });
 
-  describe('getRenderedColumnCount', () => {
+  describe('getNonFrozenRenderedColumnCount', () => {
     const fakeGetDOMNodeOffsetWidth = jasmine.createSpy('getDOMNodeOffsetWidth').and.returnValue(100);
     const verifyRenderedColumnCount = (width, extraColumns = [], colVisibleStartIdx = 0) => {
       const columns = [...[
@@ -52,7 +53,7 @@ describe('viewportUtils', () => {
         columns,
         totalWidth: 0
       };
-      return getRenderedColumnCount(columnMetrics, fakeGetDOMNodeOffsetWidth, colVisibleStartIdx, width);
+      return getNonFrozenRenderedColumnCount(columnMetrics, fakeGetDOMNodeOffsetWidth, colVisibleStartIdx, width);
     };
 
     beforeEach(() => {
@@ -149,58 +150,56 @@ describe('viewportUtils', () => {
       });
     });
 
-    describe('getNonLockedVisibleColStartIdx', () => {
-      const getColumns = () => [{width: 100, left: 0}, {width: 100, left: 200}, {width: 100, left: 300}, {width: 100, left: 400}, {width: 100, left: 500}, {width: 100, left: 600}];
-
-      it('should return 0 if no locked columns and grid not scrolled left', () => {
+    describe('getNonFrozenVisibleColStartIdx', () => {
+      it('should return 0 if no frozen columns and grid not scrolled left', () => {
         const scrollLeft = 0;
-        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(getColumns(), scrollLeft);
+        const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(getColumns(), scrollLeft);
         expect(colVisibleStartIdx).toBe(0);
       });
 
       it('should return first fully visible column when scrolled left', () => {
         const scrollLeft = 100;
-        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(getColumns(), scrollLeft);
+        const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(getColumns(), scrollLeft);
         expect(colVisibleStartIdx).toBe(1);
       });
 
       it('should return first partially visible column when scrolled left (left bound)', () => {
         const scrollLeft = 99;
-        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(getColumns(), scrollLeft);
+        const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(getColumns(), scrollLeft);
         expect(colVisibleStartIdx).toBe(0);
       });
 
       it('should return first partially visible column when scrolled left (right bound)', () => {
         const scrollLeft = 101;
-        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(getColumns(), scrollLeft);
+        const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(getColumns(), scrollLeft);
         expect(colVisibleStartIdx).toBe(1);
       });
 
-      const expectIdxWhenColumsLocked = (scrollLeft) => {
+      const expectIdxWhenColumsFrozen = (scrollLeft) => {
         const columns = getColumns();
-        columns[1].locked = true;
-        const colVisibleStartIdx = getNonLockedVisibleColStartIdx(columns, scrollLeft);
+        columns[1].frozen = true;
+        const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);
         return expect(colVisibleStartIdx);
       };
 
-      it('should return first non locked column that appears after last locked column', () => {
+      it('should return first non frozen column that appears after last frozen column', () => {
         const scrollLeft = 0;
-        expectIdxWhenColumsLocked(scrollLeft).toBe(2);
+        expectIdxWhenColumsFrozen(scrollLeft).toBe(2);
       });
 
-      it('should return first fully visible non locked column that appears after last locked column when scrolled left', () => {
+      it('should return first fully visible non frozen column that appears after last frozen column when scrolled left', () => {
         const scrollLeft = 200;
-        expectIdxWhenColumsLocked(scrollLeft).toBe(4);
+        expectIdxWhenColumsFrozen(scrollLeft).toBe(4);
       });
 
-      it('should return first partially visible non locked column that appears after last locked column when scrolled left', () => {
+      it('should return first partially visible non frozen column that appears after last frozen column when scrolled left', () => {
         const scrollLeft = 201;
-        expectIdxWhenColumsLocked(scrollLeft).toBe(4);
+        expectIdxWhenColumsFrozen(scrollLeft).toBe(4);
       });
 
-      it('should return first partially visible non locked column that appears after last locked column when scrolled left', () => {
+      it('should return first partially visible non frozen column that appears after last frozen column when scrolled left', () => {
         const scrollLeft = 199;
-        expectIdxWhenColumsLocked(scrollLeft).toBe(3);
+        expectIdxWhenColumsFrozen(scrollLeft).toBe(3);
       });
     });
 
@@ -290,20 +289,21 @@ describe('viewportUtils', () => {
 
     describe('getColOverscanStartIdx', () => {
       const colVisibleStartIdx = 5;
+      const lastFrozenColumnIdx = -1;
       it('should return colVisibleStartIdx if scroll direction is downward', () => {
-        expect(getColOverscanStartIdx(SCROLL_DIRECTION.DOWN, colVisibleStartIdx)).toBe(colVisibleStartIdx);
+        expect(getColOverscanStartIdx(SCROLL_DIRECTION.DOWN, colVisibleStartIdx, lastFrozenColumnIdx)).toBe(colVisibleStartIdx);
       });
 
       it('should return colVisibleStartIdx if scroll direction is upwards', () => {
-        expect(getColOverscanStartIdx(SCROLL_DIRECTION.UP, colVisibleStartIdx)).toBe(colVisibleStartIdx);
+        expect(getColOverscanStartIdx(SCROLL_DIRECTION.UP, colVisibleStartIdx, lastFrozenColumnIdx)).toBe(colVisibleStartIdx);
       });
 
       it('should return 0 if scroll direction is left', () => {
-        expect(getColOverscanStartIdx(SCROLL_DIRECTION.LEFT, colVisibleStartIdx)).toBe(0);
+        expect(getColOverscanStartIdx(SCROLL_DIRECTION.LEFT, colVisibleStartIdx, lastFrozenColumnIdx)).toBe(0);
       });
 
       it('should return 0 if scroll direction is right', () => {
-        expect(getColOverscanStartIdx(SCROLL_DIRECTION.RIGHT, colVisibleStartIdx)).toBe(0);
+        expect(getColOverscanStartIdx(SCROLL_DIRECTION.RIGHT, colVisibleStartIdx, lastFrozenColumnIdx)).toBe(0);
       });
     });
 

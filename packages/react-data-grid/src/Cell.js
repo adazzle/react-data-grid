@@ -9,6 +9,7 @@ const createObjectWithProperties = require('./createObjectWithProperties');
 import CellAction from './CellAction';
 import CellExpand from './CellExpand';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
+import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
@@ -58,7 +59,7 @@ class Cell extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     this.setState({
       isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
-      isLockChanging: this.props.column.locked !== nextProps.column.locked
+      isLockChanging: columnUtils.isFrozen(this.props.column) !== columnUtils.isFrozen(nextProps.column)
     });
   }
 
@@ -67,7 +68,7 @@ class Cell extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    if (this.state.isLockChanging && !this.props.column.locked) {
+    if (this.state.isLockChanging && !columnUtils.isFrozen(this.props.column)) {
       this.removeScroll();
     }
   }
@@ -163,11 +164,13 @@ class Cell extends React.PureComponent {
   };
 
   getCellClass = () => {
+    const {idx, lastFrozenColumnIndex} = this.props;
     let className = joinClasses(
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
-      this.props.column.locked ? 'react-grid-Cell--locked' : null
+      columnUtils.isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
+      lastFrozenColumnIndex === idx ? 'rdg-last--frozen' : null
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
@@ -192,7 +195,7 @@ class Cell extends React.PureComponent {
   checkScroll() {
     const {scrollLeft, column} = this.props;
     const node = this.node;
-    if (column.locked && node && node.style.transform != null) {
+    if (columnUtils.isFrozen(column) && node && node.style.transform != null) {
       this.setScrollLeft(scrollLeft);
     }
   }

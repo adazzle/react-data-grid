@@ -17,17 +17,20 @@ class Example extends React.Component {
       {
         key: 'task',
         name: 'Title',
-        width: 200
+        width: 200,
+        locked: true
       },
       {
         key: 'priority',
         name: 'Priority',
-        width: 200
+        width: 200,
+        locked: true
       },
       {
         key: 'issueType',
         name: 'Issue Type',
-        width: 200
+        width: 200,
+        locked: true
       },
       {
         key: 'complete',
@@ -85,12 +88,12 @@ class Example extends React.Component {
   }
 }
 
-const exampleDescription = <p>To make a given column frozen, set <code>column.locked = true</code>. In this example, the ID columns has been frozen and will remain in position as you scroll horizontally</p>
+const exampleDescription = <p>To make a given column frozen, set <code>column.frozen = true</code>. In this example, the ID columns has been frozen and will remain in position as you scroll horizontally</p>
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Frozen Columns Example',
   exampleDescription,
-  examplePath: './scripts/example03-fixed-cols.js',
+  examplePath: './scripts/example03-frozen-cols.js',
   examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/5/'
 });

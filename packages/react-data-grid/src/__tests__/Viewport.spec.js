@@ -98,6 +98,7 @@ describe('<Viewport />', () => {
       rowVisibleEndIdx: 21,
       rowVisibleStartIdx: 6,
       isScrolling: true,
+      lastFrozenColumnIndex: -1,
       scrollDirection: SCROLL_DIRECTION.DOWN
     });
   });
@@ -129,6 +130,7 @@ describe('<Viewport />', () => {
       scrollTop: 0,
       rowVisibleEndIdx: 14,
       rowVisibleStartIdx: 0,
+      lastFrozenColumnIndex: 0,
       isScrolling: false
     });
   });
@@ -151,7 +153,8 @@ describe('<Viewport />', () => {
       rowVisibleEndIdx: 29,
       rowVisibleStartIdx: 0,
       isScrolling: true,
-      scrollDirection: SCROLL_DIRECTION.NONE
+      scrollDirection: SCROLL_DIRECTION.NONE,
+      lastFrozenColumnIndex: -1
     });
   });
 });

@@ -34,8 +34,8 @@
   cursor: ew-resize;
   background: #dddddd;
 }
-.react-grid-HeaderCell--locked:last-of-type {
-  box-shadow: none;
+.react-grid-HeaderCell--frozen:last-of-type {
+    box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
 }
 .react-grid-HeaderCell--resizing .react-grid-HeaderCell__resizeHandle {
   background: #dddddd;

@@ -15,9 +15,9 @@ export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) 
   const { idx, rowIdx } = selectedPosition;
   if (idx >= 0) {
     const column = columnUtils.getColumn(columns, idx);
-    const { width, left, locked } = column;
+    const { width, left, frozen } = column;
     const top = getRowTop(rowIdx, rowHeight);
-    const zIndex = locked ? zIndexes.LOCKED_CELL_MASK : zIndexes.CELL_MASK;
+    const zIndex = frozen ? zIndexes.LOCKED_CELL_MASK : zIndexes.CELL_MASK;
     return { width, left, top, height: rowHeight, zIndex };
   }
   return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
@@ -25,13 +25,13 @@ export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) 
 
 const getColumnRangeProperties = (from, to, columns) => {
   let totalWidth = 0;
-  let anyColLocked = false;
+  let anyColFrozen = false;
   for (let i = from; i <= to; i++) {
     const column = columnUtils.getColumn(columns, i);
     totalWidth += column.width;
-    anyColLocked = anyColLocked || column.locked;
+    anyColFrozen = anyColFrozen || columnUtils.isFrozen(column);
   }
-  return { totalWidth, anyColLocked, left: columnUtils.getColumn(columns, from).left };
+  return { totalWidth, anyColFrozen, left: columnUtils.getColumn(columns, from).left };
 };
 
 export const getSelectedRangeDimensions = ({ selectedRange, columns, rowHeight }) => {
@@ -41,10 +41,10 @@ export const getSelectedRangeDimensions = ({ selectedRange, columns, rowHeight }
     return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: zIndexes.CELL_MASK };
   }
 
-  const { totalWidth, anyColLocked, left } = getColumnRangeProperties(topLeft.idx, bottomRight.idx, columns);
+  const { totalWidth, anyColFrozen, left } = getColumnRangeProperties(topLeft.idx, bottomRight.idx, columns);
   const top = getRowTop(topLeft.rowIdx, rowHeight);
   const height = (bottomRight.rowIdx - topLeft.rowIdx + 1) * rowHeight;
-  const zIndex = anyColLocked ? zIndexes.LOCKED_CELL_MASK : zIndexes.CELL_MASK;
+  const zIndex = anyColFrozen ? zIndexes.LOCKED_CELL_MASK : zIndexes.CELL_MASK;
 
   return { width: totalWidth, left, top, height, zIndex };
 };

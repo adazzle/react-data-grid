@@ -623,7 +623,7 @@ class ReactDataGrid extends React.Component {
         filterable: false,
         headerRenderer: headerRenderer,
         width: 60,
-        locked: true,
+        frozen: true,
         getRowMetaData: (rowData) => rowData,
         cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''
       };

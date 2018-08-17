@@ -130,7 +130,7 @@ export default class GridRunner {
   }
 
   getCellsFromRow(row) {
-    return row.find('Cell'); // don't return locked checkbox select cell'
+    return row.find('Cell'); // don't return frozen checkbox select cell'
   }
 
   getCells(row) {

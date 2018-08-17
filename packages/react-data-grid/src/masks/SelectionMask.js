@@ -4,12 +4,12 @@ import CellMask from './CellMask';
 import * as columnUtils from '../ColumnUtils';
 import zIndexes from '../constants/zIndexes';
 
-const isLockedColumn = (columns, {idx}) => columnUtils.getColumn(columns, idx).locked;
+const isFrozenColumn = (columns, {idx}) => columnUtils.isFrozen(columnUtils.getColumn(columns, idx));
 
-const getLeftPosition = (isGroupedRow, isFrozenColumn, scrollLeft, cellLeft) => {
+const getLeftPosition = (isGroupedRow, isFrozen, scrollLeft, cellLeft) => {
   if (isGroupedRow) {
     return scrollLeft;
-  } else if (isFrozenColumn) {
+  } else if (isFrozen) {
     return scrollLeft + cellLeft;
   }
   return cellLeft;
@@ -20,9 +20,9 @@ export const getCellMaskDimensions = ({ selectedPosition, columns, isGroupedRow,
   const height = getSelectedRowHeight(selectedPosition.rowIdx);
   const top = getSelectedRowTop(selectedPosition.rowIdx);
   const width = isGroupedRow ? '100%' : column.width;
-  const locked = isLockedColumn(columns, selectedPosition);
-  const zIndex = locked ? zIndexes.LOCKED_CELL_MASK :  zIndexes.CELL_MASK;
-  const left = getLeftPosition(isGroupedRow, locked, scrollLeft, column.left);
+  const frozen = isFrozenColumn(columns, selectedPosition);
+  const zIndex = frozen ? zIndexes.LOCKED_CELL_MASK :  zIndexes.CELL_MASK;
+  const left = getLeftPosition(isGroupedRow, frozen, scrollLeft, column.left);
   return {height, top, width, left, zIndex};
 };
 

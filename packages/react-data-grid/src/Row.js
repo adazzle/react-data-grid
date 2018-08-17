@@ -1,10 +1,11 @@
 import rowComparer from './RowComparer';
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses = require('classnames');
+import joinClasses from 'classnames';
 import Cell from './Cell';
-const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const createObjectWithProperties = require('./createObjectWithProperties');
+import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
+import createObjectWithProperties from './createObjectWithProperties';
+import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-row.css');
 
 // The list of the propTypes that we want to include in the Row div
@@ -31,7 +32,8 @@ class Row extends React.Component {
     colOverscanStartIdx: PropTypes.number.isRequired,
     colOverscanEndIdx: PropTypes.number.isRequired,
     isScrolling: PropTypes.bool.isRequired,
-    scrollLeft: PropTypes.number
+    scrollLeft: PropTypes.number,
+    lastFrozenColumnIndex: PropTypes.number
   };
 
   static defaultProps = {
@@ -56,9 +58,9 @@ class Row extends React.Component {
 
   getCell = (column, i) => {
     const CellRenderer = this.props.cellRenderer;
-    const { idx, colOverscanStartIdx, cellMetaData, isScrolling, row, isSelected, scrollLeft } = this.props;
+    const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key, formatter } = column;
-    const baseCellProps = { key: `${key}-${idx}`, idx: i + colOverscanStartIdx, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
+    const baseCellProps = { key: `${key}-${idx}`, idx: column.idx, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
 
     const cellProps = {
       ref: (node) => {
@@ -70,7 +72,8 @@ class Row extends React.Component {
       expandableOptions: this.getExpandableOptions(key),
       formatter,
       isScrolling,
-      scrollLeft
+      scrollLeft,
+      lastFrozenColumnIndex
     };
 
     return <CellRenderer {...baseCellProps} {...cellProps} />;
@@ -78,11 +81,10 @@ class Row extends React.Component {
 
   getCells = () => {
     const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
-    const lockedColumns = columns.filter(c => c.locked === true);
-    const nonLockedColumns = columns.filter(c => c.locked === undefined);
-    const nonLockedColumnsToRender = nonLockedColumns.slice(colOverscanStartIdx, colOverscanEndIdx + 1); // include colOverscanEndIdx in slice
-    return lockedColumns.concat(nonLockedColumnsToRender)
-      .map((column, i) => this.getCell(column, i));
+    const frozenColumns = columns.filter(c => columnUtils.isFrozen(c));
+    const nonFrozenColumnsToRender = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1); // include colOverscanEndIdx in slice
+    return frozenColumns.concat(nonFrozenColumnsToRender)
+      .map(column => this.getCell(column));
   };
 
   getRowHeight = () => {
@@ -118,7 +120,7 @@ class Row extends React.Component {
 
   setScrollLeft = (scrollLeft) => {
     this.props.columns.forEach((column) => {
-      if (column.locked) {
+      if (columnUtils.isFrozen(column)) {
         if (!this[column.key]) return;
         this[column.key].setScrollLeft(scrollLeft);
       }

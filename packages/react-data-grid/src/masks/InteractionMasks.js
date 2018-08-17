@@ -87,7 +87,7 @@ class InteractionMasks extends React.Component {
     },
     copiedPosition: null,
     draggedPosition: null,
-    lockedPosition: null,
+    frozenPosition: null,
     isEditorEnabled: false,
     firstEditorKeyPress: null
   };

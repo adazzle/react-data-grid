@@ -312,7 +312,7 @@ class Canvas extends React.PureComponent {
   };
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, expandedRows, rowHeight, rowsCount, width, height, rowGetter, RowsContainer, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, expandedRows, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, RowsContainer, contextMenu } = this.props;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map((r, idx) => {
@@ -336,6 +336,7 @@ class Canvas extends React.PureComponent {
           colVisibleEndIdx,
           colOverscanStartIdx,
           colOverscanEndIdx,
+          lastFrozenColumnIndex,
           isScrolling: this.props.isScrolling,
           scrollLeft: this._scroll.scrollLeft
         })
@@ -357,7 +358,7 @@ class Canvas extends React.PureComponent {
       left: 0,
       overflowX: 'auto',
       overflowY: 'scroll',
-      width: this.props.totalWidth,
+      width: totalWidth,
       height
     };
 
@@ -404,7 +405,7 @@ class Canvas extends React.PureComponent {
           getSelectedRowTop={this.getSelectedRowTop}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-          <div style={{ width: width }}>{rows}</div>
+          <div style={{ width: totalColumnWidth }}>{rows}</div>
         </RowsContainer>
       </div>
     );

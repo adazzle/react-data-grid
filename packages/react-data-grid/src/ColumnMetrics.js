@@ -57,20 +57,15 @@ function setColumnOffsets(columns) {
   });
 }
 
-/**
- * Update column metrics calculation.
- *
- * @param {ColumnMetricsType} metrics
- */
-function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
+const getTotalColumnWidth = columns => columns.reduce((acc, c) => acc + c.width, 0);
+
+
+function recalculate(metrics) {
   // compute width for columns which specify width
   let columns = setColumnWidths(metrics.columns, metrics.totalWidth);
 
-  let unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => {
-    return w - column.width;
-  }, metrics.totalWidth);
+  let unallocatedWidth = columns.filter(c => c.width).reduce((w, column) => w - column.width, metrics.totalWidth);
   unallocatedWidth -= getScrollbarSize();
-
   let width = columns.filter(c => c.width).reduce((w, column) => {
     return w + column.width;
   }, 0);
@@ -80,13 +75,17 @@ function recalculate(metrics: ColumnMetricsType): ColumnMetricsType {
 
   // compute left offset
   columns = setColumnOffsets(columns);
-  const lockedColumns = columns.filter(c => c.locked === true);
-  const nonLockedColumns = columns.filter(c => c.locked === undefined || c.locked === false);
-
+  const frozenColumns = columns.filter(c => ColumnUtils.isFrozen(c));
+  const nonFrozenColumns = columns.filter(c => !ColumnUtils.isFrozen(c));
+  columns = frozenColumns.concat(nonFrozenColumns).map((c, i) => {
+    c.idx = i;
+    return c;
+  });
   return {
-    columns: lockedColumns.concat(nonLockedColumns),
+    columns,
     width,
     totalWidth: metrics.totalWidth,
+    totalColumnWidth: getTotalColumnWidth(columns),
     minColumnWidth: metrics.minColumnWidth
   };
 }

@@ -2,7 +2,7 @@ const React = require('react');
 const Canvas = require('./Canvas');
 const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 import PropTypes from 'prop-types';
-import * as columnUtils from './ColumnUtils';
+import columnUtils from './ColumnUtils';
 import {
   getGridState,
   getColOverscanEndIdx,
@@ -11,8 +11,9 @@ import {
   getRowOverscanStartIdx,
   getRowOverscanEndIdx,
   getColOverscanStartIdx,
-  getNonLockedVisibleColStartIdx,
-  getRenderedColumnCount
+  getNonFrozenVisibleColStartIdx,
+  getNonFrozenRenderedColumnCount,
+  findLastFrozenColumnIndex
 } from './utils/viewportUtils';
 
 class Viewport extends React.Component {
@@ -116,12 +117,13 @@ class Viewport extends React.Component {
     const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
     const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, rowsCount);
     const totalNumberColumns = columnUtils.getSize(columns);
-    const colVisibleStartIdx = (totalNumberColumns > 0) ? Math.max(0, getNonLockedVisibleColStartIdx(columns, scrollLeft)) : 0;
-    const renderedColumnCount = getRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth, colVisibleStartIdx, width);
-    const colVisibleEndIdx = (renderedColumnCount !== 0) ? colVisibleStartIdx + renderedColumnCount : totalNumberColumns;
-    const colOverscanStartIdx = getColOverscanStartIdx(scrollDirection, colVisibleStartIdx);
+    const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
+    const nonFrozenColVisibleStartIdx = (totalNumberColumns > 0) ? Math.max(0, getNonFrozenVisibleColStartIdx(columns, scrollLeft)) : 0;
+    const nonFrozenRenderedColumnCount = getNonFrozenRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth, nonFrozenColVisibleStartIdx, width);
+    const colVisibleEndIdx = nonFrozenColVisibleStartIdx + nonFrozenRenderedColumnCount;
+    const colOverscanStartIdx = getColOverscanStartIdx(scrollDirection, nonFrozenColVisibleStartIdx, lastFrozenColumnIndex);
     const colOverscanEndIdx = getColOverscanEndIdx(scrollDirection, colVisibleEndIdx, totalNumberColumns);
-    return {
+    let a = {
       height,
       scrollTop,
       scrollLeft,
@@ -129,13 +131,16 @@ class Viewport extends React.Component {
       rowVisibleEndIdx,
       rowOverscanStartIdx,
       rowOverscanEndIdx,
-      colVisibleStartIdx,
+      colVisibleStartIdx: nonFrozenColVisibleStartIdx,
       colVisibleEndIdx,
       colOverscanStartIdx,
       colOverscanEndIdx,
       scrollDirection,
+      lastFrozenColumnIndex,
       isScrolling
     };
+    console.log({colOverscanStartIdx, colOverscanEndIdx, scrollLeft});
+    return a;
   }
 
   resetScrollStateAfterDelay = () => {
@@ -261,6 +266,7 @@ class Viewport extends React.Component {
           rowKey={this.props.rowKey}
           totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}
+          totalColumnWidth={this.props.columnMetrics.totalColumnWidth}
           rowGetter={this.props.rowGetter}
           rowsCount={this.props.rowsCount}
           selectedRows={this.props.selectedRows}
@@ -275,6 +281,7 @@ class Viewport extends React.Component {
           colVisibleEndIdx={this.state.colVisibleEndIdx}
           colOverscanStartIdx={this.state.colOverscanStartIdx}
           colOverscanEndIdx={this.state.colOverscanEndIdx}
+          lastFrozenColumnIndex={this.state.lastFrozenColumnIndex}
           cellMetaData={this.props.cellMetaData}
           height={this.state.height}
           rowHeight={this.props.rowHeight}

@@ -2,6 +2,7 @@ const React          = require('react');
 const ReactDOM      = require('react-dom');
 const joinClasses    = require('classnames');
 const ExcelColumn    = require('./PropTypeShapes/ExcelColumn');
+import columnUtils from './ColumnUtils';
 const ResizeHandle   = require('./ResizeHandle');
 require('../../../themes/react-data-grid-header.css');
 
@@ -108,7 +109,7 @@ class HeaderCell extends React.Component {
     let className = joinClasses({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
-      'react-grid-HeaderCell--locked': this.props.column.locked
+      'react-grid-HeaderCell--frozen': columnUtils.isFrozen(this.props.column)
     });
     className = joinClasses(className, this.props.className, this.props.column.cellClass);
     let cell = this.getCell();
