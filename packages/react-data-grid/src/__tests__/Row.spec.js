@@ -134,9 +134,8 @@ describe('Row', () => {
           const columns = lockColumns(LAST_LOCKED_CELL_IDX);
           const {cells} = setup({...requiredProperties, columns});
           const {colOverscanStartIdx, colOverscanEndIdx} = requiredProperties;
-          const nonFrozenRenderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
-          const frozenRenderedRange = LAST_LOCKED_CELL_IDX + 1;
-          expect(cells.length).toBe(frozenRenderedRange + nonFrozenRenderedRange);
+          const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
+          expect(cells.length).toBe(renderedRange);
         });
 
         it('first rendered cell index should be first frozen cell', () => {
