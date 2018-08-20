@@ -141,7 +141,7 @@ describe('Row', () => {
         it('first rendered cell index should be first frozen cell', () => {
           const columns = lockColumns(LAST_LOCKED_CELL_IDX);
           const {cells} = setup({...requiredProperties, columns});
-          const firstFrozenColumn = columns.find(c => c.frozen === true);
+          const firstFrozenColumn = columns.filter(c => c.frozen === true)[0];
           expect(cells.first().props().column).toBe(firstFrozenColumn);
         });
       });
