@@ -36,9 +36,3 @@ export default {
   }
 };
 
-const createColumn = (index) => ({
-  name: `column${index}`,
-  key: `col${index}`
-});
-
-export const createColumns = (count) => [...Array(count).keys()].map(createColumn);
