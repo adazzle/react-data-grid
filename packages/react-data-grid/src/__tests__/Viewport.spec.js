@@ -141,6 +141,7 @@ describe('<Viewport />', () => {
     let newProps = Object.assign({}, viewportProps, {minHeight: newHeight});
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
+      colOverscanEndIdx: 2,
       colOverscanStartIdx: 0,
       colVisibleEndIdx: 2,
       colVisibleStartIdx: 0,
