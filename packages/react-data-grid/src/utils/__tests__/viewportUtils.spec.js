@@ -63,27 +63,27 @@ describe('viewportUtils', () => {
     it('correctly set rendered columns count if width is 0', () => {
       const count = verifyRenderedColumnCount(0);
       expect(fakeGetDOMNodeOffsetWidth).toHaveBeenCalled();
-      expect(count).toBe(2);
+      expect(count).toBe(1);
     });
 
     it('correctly set rendered columns count if width is greater than 0', () => {
       const count = verifyRenderedColumnCount(11);
       expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
-      expect(count).toBe(2);
+      expect(count).toBe(1);
     });
 
     it('can handle variable column widths', () => {
       const columns = [{ key: 'col3', width: 70 }, { key: 'col4', width: 5 }, { key: 'col3', width: 2 }, { key: 'col3', width: 1 }];
       const count = verifyRenderedColumnCount(100, columns);
       expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
-      expect(count).toBe(6);
+      expect(count).toBe(5);
     });
 
     it('can handle when grid is scrolled', () => {
       const columns = [{ key: 'col3', width: 70 }, { key: 'col4', width: 5 }, { key: 'col3', width: 2 }, { key: 'col3', width: 1 }];
       const count = verifyRenderedColumnCount(100, columns, 4);
       expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
-      expect(count).toBe(2);
+      expect(count).toBe(1);
     });
   });
 

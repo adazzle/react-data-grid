@@ -47,18 +47,26 @@ export const findLastFrozenColumnIndex = (columns) => {
   return index;
 };
 
+const getTotalFrozenColumnWidth = (columns) => {
+  const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
+  if (lastFrozenColumnIndex > -1) {
+    const lastFrozenColumn = columnUtils.getColumn(columns, lastFrozenColumnIndex);
+    return lastFrozenColumn.left + lastFrozenColumn.width;
+  }
+  return 0;
+};
+
 export const getNonFrozenRenderedColumnCount = (columnMetrics, getDOMNodeOffsetWidth, colVisibleStartIdx, width) => {
+  // 1. Calculate total viewport width
   let remainingWidth = width && width > 0 ? width : columnMetrics.totalWidth;
-  const lastFrozenColumnIndex = findLastFrozenColumnIndex(columnMetrics.columns);
   if (remainingWidth === 0) {
     remainingWidth = getDOMNodeOffsetWidth();
   }
-  if (lastFrozenColumnIndex > -1) {
-    const lastFrozenColumn = columnUtils.getColumn(columnMetrics.columns, lastFrozenColumnIndex);
-    remainingWidth = remainingWidth - lastFrozenColumn.left - lastFrozenColumn.width;
-  }
-  let columnIndex = colVisibleStartIdx;
 
+  // 2. Subtract frozen column width
+  const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columnMetrics.columns);
+  remainingWidth -= totalFrozenColumnWidth;
+  let columnIndex = colVisibleStartIdx + 1;
   let columnCount = 0;
   while (remainingWidth > 0) {
     let column = columnUtils.getColumn(columnMetrics.columns, columnIndex);

@@ -86,9 +86,9 @@ describe('<Viewport />', () => {
     let Canvas = wrapper.find('Canvas');
     Canvas.props().onScroll({ scrollTop, scrollLeft});
     expect(wrapper.state()).toEqual({
-      colOverscanEndIdx: 3,
+      colOverscanEndIdx: 2,
       colOverscanStartIdx: 0,
-      colVisibleEndIdx: 3,
+      colVisibleEndIdx: 2,
       colVisibleStartIdx: 0,
       rowOverscanEndIdx: 23,
       rowOverscanStartIdx: 6,
@@ -141,9 +141,9 @@ describe('<Viewport />', () => {
     let newProps = Object.assign({}, viewportProps, {minHeight: newHeight});
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
-      colOverscanEndIdx: helpers.columns.length,
+      colOverscanEndIdx: 2,
       colOverscanStartIdx: 0,
-      colVisibleEndIdx: helpers.columns.length,
+      colVisibleEndIdx: 2,
       colVisibleStartIdx: 0,
       rowOverscanEndIdx: 29,
       rowOverscanStartIdx: 0,
