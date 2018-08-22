@@ -109,7 +109,7 @@ class Viewport extends React.Component {
     }
   };
 
-  getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount, width }) {
+  getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount}) {
     const isScrolling = true;
     const { columns } = this.props.columnMetrics;
     const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);
@@ -118,8 +118,8 @@ class Viewport extends React.Component {
     const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, rowsCount);
     const totalNumberColumns = columnUtils.getSize(columns);
     const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
-    const nonFrozenColVisibleStartIdx = (totalNumberColumns > 0) ? Math.max(0, getNonFrozenVisibleColStartIdx(columns, scrollLeft)) : 0;
-    const nonFrozenRenderedColumnCount = getNonFrozenRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth, nonFrozenColVisibleStartIdx, width);
+    const nonFrozenColVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);
+    const nonFrozenRenderedColumnCount = getNonFrozenRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth(), scrollLeft);
     const colVisibleEndIdx = Math.min(nonFrozenColVisibleStartIdx + nonFrozenRenderedColumnCount, totalNumberColumns);
     const colOverscanStartIdx = getColOverscanStartIdx(scrollDirection, nonFrozenColVisibleStartIdx, lastFrozenColumnIndex);
     const colOverscanEndIdx = getColOverscanEndIdx(scrollDirection, colVisibleEndIdx, totalNumberColumns);

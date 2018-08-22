@@ -1,7 +1,7 @@
 import { getGridState, getNonFrozenRenderedColumnCount, getVisibleBoundaries, getNonFrozenVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
 
 describe('viewportUtils', () => {
-  const getColumns = () => [{width: 100, left: 0}, {width: 100, left: 200}, {width: 100, left: 300}, {width: 100, left: 400}, {width: 100, left: 500}, {width: 100, left: 600}];
+  const getColumns = () => [{ width: 100, left: 0 }, { width: 100, left: 200 }, { width: 100, left: 300 }, { width: 100, left: 400 }, { width: 100, left: 500 }, { width: 100, left: 600 }];
   describe('getGridState', () => {
     const getState = (propsOverrides = {}) => {
       const props = Object.assign({
@@ -43,47 +43,48 @@ describe('viewportUtils', () => {
   });
 
   describe('getNonFrozenRenderedColumnCount', () => {
-    const fakeGetDOMNodeOffsetWidth = jasmine.createSpy('getDOMNodeOffsetWidth').and.returnValue(100);
-    const verifyRenderedColumnCount = (width, extraColumns = [], colVisibleStartIdx = 0) => {
-      const columns = [...[
-        { key: 'col1', width: 10 },
-        { key: 'col2', width: 10 }
-      ], ...extraColumns];
+    const viewportWidth = 100;
+
+    const getCols = () => [
+      { key: 'col1', width: 20, left: 0 },
+      { key: 'col2', width: 20, left: 20 },
+      { key: 'col3', width: 20, left: 40 },
+      { key: 'col4', width: 20, left: 60 },
+      { key: 'col5', width: 20, left: 80 },
+      { key: 'col6', width: 1, left: 100 },
+      { key: 'col7', width: 1, left: 101 },
+      { key: 'col8', width: 1, left: 102 },
+      { key: 'col9', width: 1, left: 103 }
+    ];
+
+    const verifyNonFrozenRenderedColumnCount = (width = viewportWidth, columns = getCols(), scrollLeft = 0) => {
       const columnMetrics = {
         columns,
         totalWidth: 0
       };
-      return getNonFrozenRenderedColumnCount(columnMetrics, fakeGetDOMNodeOffsetWidth, colVisibleStartIdx, width);
+      return getNonFrozenRenderedColumnCount(columnMetrics, width, scrollLeft);
     };
 
-    beforeEach(() => {
-      fakeGetDOMNodeOffsetWidth.calls.reset();
+    it('correctly set rendered columns count for a set width', () => {
+      const count = verifyNonFrozenRenderedColumnCount();
+      expect(count).toBe(5); // col1, col2, col3, col4, col5
     });
 
-    it('correctly set rendered columns count if width is 0', () => {
-      const count = verifyRenderedColumnCount(0);
-      expect(fakeGetDOMNodeOffsetWidth).toHaveBeenCalled();
-      expect(count).toBe(1);
+    it('should return all columns that fit width after last frozen column', () => {
+      const columns = getCols();
+      columns[1].frozen = true;
+      const count = verifyNonFrozenRenderedColumnCount(100, columns);
+      expect(count).toBe(3); // col3, col4, col5
     });
 
-    it('correctly set rendered columns count if width is greater than 0', () => {
-      const count = verifyRenderedColumnCount(11);
-      expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
-      expect(count).toBe(1);
-    });
-
-    it('can handle variable column widths', () => {
-      const columns = [{ key: 'col3', width: 70 }, { key: 'col4', width: 5 }, { key: 'col3', width: 2 }, { key: 'col3', width: 1 }];
-      const count = verifyRenderedColumnCount(100, columns);
-      expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
-      expect(count).toBe(5);
-    });
-
-    it('can handle when grid is scrolled', () => {
-      const columns = [{ key: 'col3', width: 70 }, { key: 'col4', width: 5 }, { key: 'col3', width: 2 }, { key: 'col3', width: 1 }];
-      const count = verifyRenderedColumnCount(100, columns, 4);
-      expect(fakeGetDOMNodeOffsetWidth).not.toHaveBeenCalled();
-      expect(count).toBe(1);
+    it('should return all columns that fit width after last frozen column when grid is scrolled', () => {
+      // 10 px of first non frozen column are hidden, with remaining 10 px visible
+      const scrollLeft = 50;
+      // This means that there are 10px of extra space to fill with columns
+      const columns =  getCols();
+      columns[1].frozen = true;
+      const count = verifyNonFrozenRenderedColumnCount(100, columns, scrollLeft);
+      expect(count).toBe(5); // col5, col6, col7, col8, col9
     });
   });
 
@@ -205,35 +206,35 @@ describe('viewportUtils', () => {
 
     describe('getScrollDirection', () => {
       it('should return SCROLL_DIRECTION.DOWN iF previous scrollTop is less than current scrollTop', () => {
-        const prevScroll = {scrollTop: 100};
+        const prevScroll = { scrollTop: 100 };
         const currentScrollTop = 200;
         const currentScrollLeft = 0;
         expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.DOWN);
       });
 
       it('should return SCROLL_DIRECTION.UP iF previous scrollTop is greater than current scrollTop', () => {
-        const prevScroll = {scrollTop: 200};
+        const prevScroll = { scrollTop: 200 };
         const currentScrollTop = 0;
         const currentScrollLeft = 0;
         expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.UP);
       });
 
       it('should return SCROLL_DIRECTION.RIGHT iF previous scrollLeft is less than current scrollLeft', () => {
-        const prevScroll = {scrollLeft: 200};
+        const prevScroll = { scrollLeft: 200 };
         const currentScrollTop = 0;
         const currentScrollLeft = 400;
         expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.RIGHT);
       });
 
       it('should return SCROLL_DIRECTION.LEFT iF previous scrollLeft is greater than current scrollLeft', () => {
-        const prevScroll = {scrollLeft: 200};
+        const prevScroll = { scrollLeft: 200 };
         const currentScrollTop = 0;
         const currentScrollLeft = 0;
         expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.LEFT);
       });
 
       it('should return SCROLL_DIRECTION.NONE if current scroll is equal to previous scroll', () => {
-        const prevScroll = {scrollLeft: 200, scrollTop: 0};
+        const prevScroll = { scrollLeft: 200, scrollTop: 0 };
         const currentScrollTop = 0;
         const currentScrollLeft = 200;
         expect(getScrollDirection(prevScroll, currentScrollTop, currentScrollLeft)).toBe(SCROLL_DIRECTION.NONE);
