@@ -72,12 +72,17 @@ export const getNonFrozenVisibleColStartIdx = (columns, scrollLeft) => {
   let columnIndex = lastFrozenColumnIndex;
   while (remainingScroll >= 0 && columnIndex < columnUtils.getSize(nonFrozenColumns)) {
     columnIndex++;
-    remainingScroll -= columnUtils.getColumn(columns, columnIndex).width;
+    const column = columnUtils.getColumn(columns, columnIndex);
+    remainingScroll -= column ? column.width : 0;
   }
   return Math.max(columnIndex, 0);
 };
 
 export const getNonFrozenRenderedColumnCount = (columnMetrics, viewportDomWidth, scrollLeft) => {
+  const {columns} = columnMetrics;
+  if (columnUtils.getSize(columns) === 0) {
+    return 0;
+  }
   const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(columnMetrics.columns, scrollLeft);
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columnMetrics.columns);
   const viewportWidth = viewportDomWidth > 0 ? viewportDomWidth : columnMetrics.totalColumnWidth;
