@@ -253,6 +253,7 @@ class Canvas extends React.PureComponent {
       const node = ReactDOM.findDOMNode(row);
       return node && node.offsetTop;
     }
+    return this.props.rowHeight * rowIdx;
   }
 
   getSelectedRowHeight = (rowIdx) => {
