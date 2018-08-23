@@ -41,9 +41,4 @@ describe('SelectionMask', () => {
     );
   });
 
-  it('should set cell mask left to be ${scrollLeft} if row is a grouped row', () => {
-    const scrollLeft = 120;
-    const mask = setup({isGroupedRow: true, scrollLeft});
-    expect(mask.props().left).toBe(scrollLeft);
-  });
 });
