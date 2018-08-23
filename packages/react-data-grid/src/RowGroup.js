@@ -44,7 +44,7 @@ class RowGroup extends Component {
 
     return (
       <div style={style} className="react-grid-row-group" onClick={this.onClick}>
-         <this.props.renderer ref={(node) => {this.rowGroupRenderer = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
+         <this.props.renderer {...this.props} ref={(node) => {this.rowGroupRenderer = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
       </div>
     );
   }
