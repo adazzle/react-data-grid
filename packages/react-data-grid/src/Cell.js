@@ -320,10 +320,9 @@ class Cell extends React.PureComponent {
     let CellContent;
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
-      props.dependentValues = this.getFormatterDependencies();
-      CellContent = React.cloneElement(Formatter, props);
+      CellContent = React.cloneElement(Formatter, {...props, dependentValues: this.getFormatterDependencies(), row: this.getRowData()});
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling}/>;
+      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling} row={this.getRowData()}/>;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
