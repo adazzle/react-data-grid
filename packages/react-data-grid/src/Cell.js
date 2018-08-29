@@ -9,12 +9,13 @@ const createObjectWithProperties = require('./createObjectWithProperties');
 import CellAction from './CellAction';
 import CellExpand from './CellExpand';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
+import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
 const knownDivPropertyKeys = ['height', 'value'];
 
-class Cell extends React.Component {
+class Cell extends React.PureComponent {
   static propTypes = {
     rowIdx: PropTypes.number.isRequired,
     idx: PropTypes.number.isRequired,
@@ -35,11 +36,13 @@ class Cell extends React.Component {
     forceUpdate: PropTypes.bool,
     expandableOptions: PropTypes.object.isRequired,
     tooltip: PropTypes.string,
+    isScrolling: PropTypes.bool,
     isCellValueChanging: PropTypes.func,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ])
+    ]),
+    scrollLeft: PropTypes.number.isRequired
   };
 
   static defaultProps = {
@@ -56,12 +59,16 @@ class Cell extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
-      isLockChanging: this.props.column.locked !== nextProps.column.locked
+      isLockChanging: columnUtils.isFrozen(this.props.column) !== columnUtils.isFrozen(nextProps.column)
     });
   }
 
+  componentDidMount() {
+    this.checkScroll();
+  }
+
   componentDidUpdate() {
-    if (this.state.isLockChanging && !this.props.column.locked) {
+    if (this.state.isLockChanging && !columnUtils.isFrozen(this.props.column)) {
       this.removeScroll();
     }
   }
@@ -149,24 +156,28 @@ class Cell extends React.Component {
   getFormatterDependencies = () => {
     // convention based method to get corresponding Id or Name of any Name or Id property
     if (typeof this.props.column.getRowMetaData === 'function') {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
+      }
       return this.props.column.getRowMetaData(this.getRowData(), this.props.column);
     }
   };
 
   getCellClass = () => {
+    const {idx, lastFrozenColumnIndex} = this.props;
     let className = joinClasses(
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
-      this.props.column.locked ? 'react-grid-Cell--locked' : null
+      columnUtils.isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
+      lastFrozenColumnIndex === idx ? 'rdg-last--frozen' : null
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
       editing: this.isEditorEnabled(),
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
-      'last-column': this.props.column.isLastColumn,
-      'will-change': this.props.isSelected || this.props.wasPreviouslySelected
+      'last-column': this.props.column.isLastColumn
     });
     return joinClasses(className, extraClasses);
   };
@@ -181,14 +192,23 @@ class Cell extends React.Component {
     return this.props.isEditorEnabled === true;
   };
 
-  setScrollLeft = (scrollLeft) => {
+  checkScroll() {
+    const {scrollLeft, column} = this.props;
     const node = this.node;
+    if (columnUtils.isFrozen(column) && node && node.style.transform != null) {
+      this.setScrollLeft(scrollLeft);
+    }
+  }
+
+  setScrollLeft = (scrollLeft: number) => {
+    let node = this.node;
     if (node) {
-      const transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+      let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;
     }
   };
+
 
   removeScroll = () => {
     const node = this.node;
@@ -272,14 +292,18 @@ class Cell extends React.Component {
     return null;
   }
 
+  setCellRef = (node) => {
+    this.node = node;
+  };
+
+
   renderCellContent = (props) => {
     let CellContent;
     let Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
-      props.dependentValues = this.getFormatterDependencies();
-      CellContent = React.cloneElement(Formatter, props);
+      CellContent = React.cloneElement(Formatter, {...props, dependentValues: this.getFormatterDependencies(), row: this.getRowData()});
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} />;
+      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling} row={this.getRowData()}/>;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
@@ -310,12 +334,13 @@ class Cell extends React.Component {
     let className = this.getCellClass();
 
     const cellActionButtons = this.getCellActions();
-
+    const {value, column, rowIdx, isExpanded, isScrolling} = this.props;
     const cellContent = this.props.children || this.renderCellContent({
-      value: this.props.value,
-      column: this.props.column,
-      rowIdx: this.props.rowIdx,
-      isExpanded: this.props.isExpanded
+      value,
+      column,
+      rowIdx,
+      isExpanded,
+      isScrolling
     });
 
     let events = this.getEvents();
@@ -327,7 +352,7 @@ class Cell extends React.Component {
         className={className}
         style={style}
         {...events}
-        ref={(node) => { this.node = node; }}
+        ref={this.setCellRef}
       >
         {cellActionButtons}
         {cellContent}

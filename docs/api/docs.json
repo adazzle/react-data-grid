@@ -53,7 +53,7 @@
             "type": null
           },
           {
-            "name": "displayEnd",
+            "name": "rowOverscanEndIdx",
             "type": null
           },
           {
@@ -69,13 +69,13 @@
         "modifiers": [],
         "params": [
           {
-            "name": "displayStart",
+            "name": "rowOverscanStartIdx",
             "type": {
               "name": "number"
             }
           },
           {
-            "name": "displayEnd",
+            "name": "rowOverscanEndIdx",
             "type": {
               "name": "number"
             }
@@ -287,56 +287,56 @@
         "required": false,
         "description": ""
       },
-      "displayStart": {
+      "rowOverscanStartIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "displayEnd": {
+      "rowOverscanEndIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "visibleStart": {
+      "rowVisibleStartIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "visibleEnd": {
+      "rowVisibleEndIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "colVisibleStart": {
+      "colVisibleStartIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "colVisibleEnd": {
+      "colVisibleEndIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "colDisplayStart": {
+      "colOverscanStartIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "colDisplayEnd": {
+      "colOverscanEndIdx": {
         "type": {
           "name": "number"
         },
@@ -4178,28 +4178,28 @@
         "required": false,
         "description": ""
       },
-      "colVisibleStart": {
+      "colVisibleStartIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "colVisibleEnd": {
+      "colVisibleEndIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "colDisplayStart": {
+      "colOverscanStartIdx": {
         "type": {
           "name": "number"
         },
         "required": true,
         "description": ""
       },
-      "colDisplayEnd": {
+      "colOverscanEndIdx": {
         "type": {
           "name": "number"
         },

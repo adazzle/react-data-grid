@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import SelectionRangeMask from '../SelectionRangeMask';
+import zIndexes from '../../constants/zIndexes';
 
 describe('SelectionRangeMask', () => {
   const setup = (propsOverride = {}) => {
@@ -36,7 +37,7 @@ describe('SelectionRangeMask', () => {
         width: 90, // = columns[0].width + columns[1].width
         left: 5, // = left of leftmost column
         top: 90, // = rowHeight * rowIdx of topmost column
-        zIndex: 1
+        zIndex: zIndexes.CELL_MASK
       })
     );
   });

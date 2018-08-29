@@ -13,13 +13,13 @@ class EmptyChildRow extends React.Component {
     this.props.onAddSubRow(this.props.parentRowId);
   }
 
-  getFixedColumnsWidth() {
+  getFrozenColumnsWidth() {
     let fixedWidth = 0;
     let size = ColumnUtils.getSize(this.props.columns);
     for (let i = 0; i < size; i++) {
       let column = ColumnUtils.getColumn(this.props.columns, i);
       if (column) {
-        if (ColumnUtils.getValue(column, 'locked')) {
+        if (ColumnUtils.getValue(column, 'frozen')) {
           fixedWidth += ColumnUtils.getValue(column, 'width');
         }
       }

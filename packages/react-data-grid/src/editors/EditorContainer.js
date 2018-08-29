@@ -1,10 +1,11 @@
-const React                   = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses              = require('classnames');
-const SimpleTextEditor        = require('./SimpleTextEditor');
-const isFunction              = require('../utils/isFunction');
+import joinClasses from 'classnames';
+import SimpleTextEditor from './SimpleTextEditor';
+import isFunction from'../utils/isFunction';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
-
+import zIndexes from '../constants/zIndexes';
+import columnUtils from '../ColumnUtils';
 require('../../../../themes/react-data-grid-core.css');
 
 class EditorContainer extends React.Component {
@@ -22,7 +23,8 @@ class EditorContainer extends React.Component {
     firstEditorKeyPress: PropTypes.string,
     width: PropTypes.number,
     top: PropTypes.number,
-    left: PropTypes.number
+    left: PropTypes.number,
+    scrollLeft: PropTypes.number
   };
 
   state = {isInvalid: false};
@@ -319,8 +321,9 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { left, top, width, height } = this.props;
-    const style = { position: 'absolute', height, width, zIndex: 1000, transform: `translate(${left}px, ${top}px)` };
+    const { left, top, width, height, column, scrollLeft } = this.props;
+    const editorLeft = columnUtils.isFrozen(column) ? left + scrollLeft : left;
+    const style = { position: 'absolute', height, width, zIndex: zIndexes.EDITOR_CONTAINER, transform: `translate(${editorLeft}px, ${top}px)` };
     return (
         <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}

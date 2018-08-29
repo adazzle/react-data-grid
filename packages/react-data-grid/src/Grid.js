@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
 import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
+import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-core.css');
 
 class Grid extends React.Component {
@@ -67,7 +68,10 @@ class Grid extends React.Component {
     onCellRangeSelectionStarted: PropTypes.func,
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
-    onCommit: PropTypes.func.isRequired
+    onCommit: PropTypes.func.isRequired,
+    onScroll: PropTypes.func,
+    scrollLeft: PropTypes.number,
+    RowsContainer: PropTypes.node
   };
 
   static defaultProps = {
@@ -93,24 +97,18 @@ class Grid extends React.Component {
     }
   };
 
-  onScroll = (props) => {
-    if (this._scrollLeft !== props.scrollLeft) {
-      this._scrollLeft = props.scrollLeft;
+  areFrozenColumnsScrolledLeft(scrollLeft) {
+    return scrollLeft > 0 && this.props.columns.some(c => columnUtils.isFrozen(c));
+  }
+
+  onScroll = (scrollState) => {
+    this.props.onScroll(scrollState);
+    const {scrollLeft} = scrollState;
+    if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsScrolledLeft(scrollLeft)) {
+      this._scrollLeft = scrollLeft;
       this._onScroll();
     }
   };
-
-  // TODO: why is this needed?
-  // onHeaderScroll = (e) => {
-  //   let scrollLeft = e.target.scrollLeft;
-  //   if (this._scrollLeft !== scrollLeft) {
-  //     this._scrollLeft = scrollLeft;
-  //     this.header.setScrollLeft(scrollLeft);
-  //     let canvas = ReactDOM.findDOMNode(this.viewport.canvas);
-  //     canvas.scrollLeft = scrollLeft;
-  //     this.viewport.canvas.setScrollLeft(scrollLeft);
-  //   }
-  // };
 
   componentDidMount() {
     this._scrollLeft = this.viewport ? this.viewport.getScroll().scrollLeft : 0;
@@ -166,6 +164,7 @@ class Grid extends React.Component {
               onKeyUp={this.props.onViewportKeyup}
               >
                 <Viewport
+                  {...this.props}
                   ref={this.setViewportRef}
                   rowKey={this.props.rowKey}
                   width={this.props.columnMetrics.width}
@@ -203,6 +202,7 @@ class Grid extends React.Component {
                   onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
                   onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
                   onCommit={this.props.onCommit}
+                  RowsContainer={this.props.RowsContainer}
                 />
             </div>
         :

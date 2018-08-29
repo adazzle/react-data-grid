@@ -39,9 +39,7 @@ class Example extends React.Component {
   };
 
   onCellDeSelected = ({ rowIdx, idx }) => {
-    if (idx === 2) {
-      alert('the editor for cell (' + rowIdx + ',' + idx + ') should have just closed');
-    }
+    this.setState({alert: `The editor for cell ${idx}, ${rowIdx} should have just closed`});
   };
 
   render() {
@@ -49,6 +47,7 @@ class Example extends React.Component {
     return  (
       <div>
         <span>{this.state.selectedRows.length} {rowText} selected</span>
+        {this.state.alert && <div className="alert alert-info" role="alert">{this.state.alert}</div>}
         <ReactDataGrid
           ref={ node => this.grid = node }
           rowKey="id"

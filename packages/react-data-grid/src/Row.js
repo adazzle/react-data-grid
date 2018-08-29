@@ -1,10 +1,11 @@
 import rowComparer from './RowComparer';
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses = require('classnames');
+import joinClasses from 'classnames';
 import Cell from './Cell';
-const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const createObjectWithProperties = require('./createObjectWithProperties');
+import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
+import createObjectWithProperties from './createObjectWithProperties';
+import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-row.css');
 
 // The list of the propTypes that we want to include in the Row div
@@ -26,11 +27,13 @@ class Row extends React.Component {
     forceUpdate: PropTypes.bool,
     subRowDetails: PropTypes.object,
     isRowHovered: PropTypes.bool,
-    colVisibleStart: PropTypes.number.isRequired,
-    colVisibleEnd: PropTypes.number.isRequired,
-    colDisplayStart: PropTypes.number.isRequired,
-    colDisplayEnd: PropTypes.number.isRequired,
-    isScrolling: PropTypes.bool.isRequired
+    colVisibleStartIdx: PropTypes.number.isRequired,
+    colVisibleEndIdx: PropTypes.number.isRequired,
+    colOverscanStartIdx: PropTypes.number.isRequired,
+    colOverscanEndIdx: PropTypes.number.isRequired,
+    isScrolling: PropTypes.bool.isRequired,
+    scrollLeft: PropTypes.number,
+    lastFrozenColumnIndex: PropTypes.number
   };
 
   static defaultProps = {
@@ -49,17 +52,16 @@ class Row extends React.Component {
     onDragEnter({ overRowIdx: idx });
   };
 
-  handleDrop= (e) => {
+  handleDrop = (e) => {
     e.preventDefault();
   };
 
   getCell = (column, i) => {
     const CellRenderer = this.props.cellRenderer;
-    const { idx, cellMetaData } = this.props;
+    const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key, formatter } = column;
-    const baseCellProps = { key: `${key}-${idx}`, idx: i, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
+    const baseCellProps = { key: `${key}-${idx}`, idx: column.idx, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
 
-    const { row, isSelected } = this.props;
     const cellProps = {
       ref: (node) => {
         this[key] = node;
@@ -69,31 +71,20 @@ class Row extends React.Component {
       isRowSelected: isSelected,
       expandableOptions: this.getExpandableOptions(key),
       formatter,
-      isScrolling: this.props.isScrolling
+      isScrolling,
+      scrollLeft,
+      lastFrozenColumnIndex
     };
 
     return <CellRenderer {...baseCellProps} {...cellProps} />;
   };
 
   getCells = () => {
-    let cells = [];
-    let lockedCells = [];
-    let lastColumnIdx = this.props.columns.size - 1;
-    if (this.props.columns) {
-      this.props.columns.forEach((column, i) => {
-        if (i === lastColumnIdx) {
-          column.isLastColumn = true;
-        }
-        let cell = this.getCell(column, i);
-        if (column.locked) {
-          lockedCells.push(cell);
-        } else {
-          cells.push(cell);
-        }
-      });
-    }
-
-    return cells.concat(lockedCells);
+    const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
+    const frozenColumns = columns.filter(c => columnUtils.isFrozen(c));
+    const nonFrozenColumnsToRender = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !columnUtils.isFrozen(c));
+    return frozenColumns.concat(nonFrozenColumnsToRender)
+      .map(column => this.getCell(column));
   };
 
   getRowHeight = () => {
@@ -129,7 +120,7 @@ class Row extends React.Component {
 
   setScrollLeft = (scrollLeft) => {
     this.props.columns.forEach((column) => {
-      if (column.locked) {
+      if (columnUtils.isFrozen(column)) {
         if (!this[column.key]) return;
         this[column.key].setScrollLeft(scrollLeft);
       }
@@ -147,7 +138,8 @@ class Row extends React.Component {
       {
         'row-selected': this.props.isSelected
       },
-      this.props.extraClasses
+      this.props.extraClasses,
+      { 'rdg-scrolling': this.props.isScrolling }
     );
 
     let style = {
@@ -159,12 +151,12 @@ class Row extends React.Component {
     let cells = this.getCells();
     return (
       <div
-        {...this.getKnownDivProps() }
+        {...this.getKnownDivProps()}
         className={className}
         style={style}
         onDragEnter={this.handleDragEnter}
         onDrop={this.handleDrop}
-       >
+      >
         {
           React.isValidElement(this.props.row) ?
             this.props.row : cells

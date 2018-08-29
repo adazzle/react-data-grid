@@ -2,22 +2,24 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
-import RowsContainer from '../RowsContainer';
+
 import Canvas from '../Canvas';
 
 const noop = () => null;
 
+const getRows = wrp => wrp.find('RowsContainer').props().children.props.children;
+
 let testProps = {
   rowHeight: 25,
   height: 200,
-  displayStart: 1,
-  displayEnd: 10,
-  visibleStart: 0,
-  visibleEnd: 10,
-  colVisibleStart: 0,
-  colVisibleEnd: 100,
-  colDisplayStart: 0,
-  colDisplayEnd: 100,
+  rowOverscanStartIdx: 1,
+  rowOverscanEndIdx: 10,
+  rowVisibleStartIdx: 0,
+  rowVisibleEndIdx: 10,
+  colVisibleStartIdx: 0,
+  colVisibleEndIdx: 100,
+  colOverscanStartIdx: 0,
+  colOverscanEndIdx: 100,
   rowsCount: 1,
   columns: [],
   selectedRows: null,
@@ -74,24 +76,24 @@ describe('Canvas Tests', () => {
     expect(wrapper.find(InteractionMasks).props()).toEqual(jasmine.objectContaining({
       rowHeight: 25,
       rowsCount: 1,
-      visibleStart: 0,
-      visibleEnd: 10,
-      colVisibleStart: 0,
-      colVisibleEnd: 100
+      rowVisibleStartIdx: 0,
+      rowVisibleEndIdx: 10,
+      colVisibleStartIdx: 0,
+      colVisibleEndIdx: 100
     }));
   });
 
-  describe('Row Selection', () =>{
+  describe('Row Selection', () => {
     let COLUMNS = [{key: 'id', name: 'ID'}];
 
     describe('selectBy index', () => {
       it('renders row selected', () => {
         let rowGetter = () => { return { id: 1}; };
 
-        let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
+        let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
         wrapper = renderComponent(props);
 
-        const rows = wrapper.find(RowsContainer).props().rows;
+        const rows = getRows(wrapper);
         expect(rows[0].props.isSelected).toBe(true);
       });
     });
@@ -100,10 +102,10 @@ describe('Canvas Tests', () => {
       it('renders row selected', () => {
         let rowGetter = () => { return {id: 1}; };
 
-        let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
+        let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
         wrapper = renderComponent(props);
 
-        const rows = wrapper.find(RowsContainer).props().rows;
+        const rows = getRows(wrapper);
         expect(rows[0].props.isSelected).toBe(true);
       });
     });
@@ -113,10 +115,10 @@ describe('Canvas Tests', () => {
       it('renders row selected', () => {
         let rowGetter = (i) => { return i === 0 ? {id: 1, isSelected: true} : null; };
 
-        let props = { displayStart: 0, displayEnd: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected'} };
+        let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected'} };
         wrapper = renderComponent(props);
 
-        const rows = wrapper.find(RowsContainer).props().rows;
+        const rows = getRows(wrapper);
         expect(rows[0].props.isSelected).toBe(true);
       });
     });
@@ -144,9 +146,9 @@ describe('Canvas Tests', () => {
         return (<div className="test-row-renderer"></div>);
       };
       let rowGetter = () => { return {id: 0, __metaData: {getRowRenderer: EmptyChildRow}}; };
-      let props = { displayStart: 0, displayEnd: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
+      let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
       wrapper = renderComponent(props);
-      const rows = wrapper.find(RowsContainer).props().rows;
+      const rows = getRows(wrapper);
       expect(rows[0].props.className).toBe('test-row-renderer');
     });
   });

@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import DragMask from '../DragMask';
+import zIndexes from '../../constants/zIndexes';
 
 describe('DragMask', () => {
   const setup = (propsOverride = {}) => {
@@ -33,7 +34,7 @@ describe('DragMask', () => {
         width: 50,
         left: 5,
         top: 90, // = rowHeight * rowIdx
-        zIndex: 1
+        zIndex: zIndexes.CELL_MASK
       })
     );
   });
@@ -47,7 +48,7 @@ describe('DragMask', () => {
         width: 50,
         left: 5,
         top: 120, // = rowHeight * overRowIdx
-        zIndex: 1
+        zIndex: zIndexes.CELL_MASK
       })
     );
   });

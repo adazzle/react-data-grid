@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import CopyMask from '../CopyMask';
+import zIndexes from '../../constants/zIndexes';
 
 describe('CopyMask', () => {
   const setup = (propsOverride = {}) => {
@@ -27,7 +28,8 @@ describe('CopyMask', () => {
         width: 50,
         left: 5,
         top: 90, // = rowHeight * rowIdx
-        zIndex: 1
+        zIndex: zIndexes.CELL_MASK,
+        className: 'react-grid-cell-copied'
       })
     );
   });

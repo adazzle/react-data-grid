@@ -44,7 +44,7 @@ class RowGroup extends Component {
 
     return (
       <div style={style} className="react-grid-row-group" onClick={this.onClick}>
-         <this.props.renderer ref={(node) => {this.rowGroupRenderer = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
+         <this.props.renderer {...this.props} ref={(node) => {this.rowGroupRenderer = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
       </div>
     );
   }
@@ -63,10 +63,10 @@ RowGroup.propTypes = {
   forceUpdate: PropTypes.bool,
   subRowDetails: PropTypes.object,
   isRowHovered: PropTypes.bool,
-  colVisibleStart: PropTypes.number.isRequired,
-  colVisibleEnd: PropTypes.number.isRequired,
-  colDisplayStart: PropTypes.number.isRequired,
-  colDisplayEnd: PropTypes.number.isRequired,
+  colVisibleStartIdx: PropTypes.number.isRequired,
+  colVisibleEndIdx: PropTypes.number.isRequired,
+  colOverscanStartIdx: PropTypes.number.isRequired,
+  colOverscanEndIdx: PropTypes.number.isRequired,
   isScrolling: PropTypes.bool.isRequired,
   columnGroupName: PropTypes.string.isRequired,
   isExpanded: PropTypes.bool.isRequired,
@@ -81,7 +81,7 @@ const  DefaultRowGroupRenderer = (props) => {
   let marginLeft = treeDepth * 20;
 
   let style = {
-    height: '50px',
+    height: '100px',
     border: '1px solid #dddddd',
     paddingTop: '15px',
     paddingLeft: '5px'

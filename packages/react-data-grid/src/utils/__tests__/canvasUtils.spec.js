@@ -9,11 +9,11 @@ describe('canvasUtils', () => {
       expect(scrollPosition).toBe(-100);
     });
 
-    describe('When columns are locked', () => {
+    describe('When columns are frozen', () => {
       it('should calculate the scroll position for the selected column', () => {
         const columns = createColumns(10);
-        columns[0].locked = true;
-        columns[1].locked = true;
+        columns[0].frozen = true;
+        columns[1].frozen = true;
         const scrollPosition = getColumnScrollPosition(columns, 4, 500, 100);
         expect(scrollPosition).toBe(-300);
       });
@@ -27,11 +27,11 @@ describe('canvasUtils', () => {
       expect(scrollPosition).toBe(200);
     });
 
-    describe('When columns are locked', () => {
+    describe('When columns are frozen', () => {
       it('should calculate the scroll position for the selected column', () => {
         const columns = createColumns(10);
-        columns[0].locked = true;
-        columns[1].locked = true;
+        columns[0].frozen = true;
+        columns[1].frozen = true;
         const scrollPosition = getColumnScrollPosition(columns, 7, 500, 100);
         expect(scrollPosition).toBe(200);
       });
@@ -39,8 +39,8 @@ describe('canvasUtils', () => {
 
     it('should not calculate the scroll position for the selected column when client width is greater than the scroll width', () => {
       const columns = createColumns(10);
-      columns[0].locked = true;
-      columns[1].locked = true;
+      columns[0].frozen = true;
+      columns[1].frozen = true;
       const scrollPosition = getColumnScrollPosition(columns, 7, 500, 400);
       expect(scrollPosition).toBeUndefined();
     });

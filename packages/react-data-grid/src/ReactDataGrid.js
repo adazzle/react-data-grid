@@ -1,5 +1,6 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
+import {deprecate} from 'react-is-deprecated';
 const BaseGrid              = require('./Grid');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
 const RowUtils = require('./RowUtils');
@@ -20,6 +21,8 @@ if (!Object.assign) {
   Object.assign = require('object-assign');
 }
 
+const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;
+
 class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
 
@@ -29,26 +32,26 @@ class ReactDataGrid extends React.Component {
     headerFiltersHeight: PropTypes.number,
     minHeight: PropTypes.number.isRequired,
     minWidth: PropTypes.number,
-    enableRowSelect: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-    onRowUpdated: PropTypes.func,
+    enableRowSelect: deprecate(PropTypes.func, deprecationWarning('enableRowSelect', 'rowSelection')),
+    onRowUpdated: deprecate(PropTypes.func, deprecationWarning('onRowUpdated', 'onGridRowsUpdated')),
     rowGetter: PropTypes.func.isRequired,
     rowsCount: PropTypes.number.isRequired,
     toolbar: PropTypes.element,
     enableCellSelect: PropTypes.bool,
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     onFilter: PropTypes.func,
-    onCellCopyPaste: PropTypes.func,
-    onCellsDragged: PropTypes.func,
+    onCellCopyPaste: deprecate(PropTypes.func, deprecationWarning('onCellCopyPaste', 'onGridRowsUpdated')),
+    onCellsDragged: deprecate(PropTypes.func, deprecationWarning('onCellsDragged', 'onGridRowsUpdated')),
     getCellActions: PropTypes.func,
     onAddFilter: PropTypes.func,
     onGridSort: PropTypes.func,
     sortColumn: PropTypes.string,
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
-    onDragHandleDoubleClick: PropTypes.func,
+    onDragHandleDoubleClick: deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated')),
     onGridRowsUpdated: PropTypes.func,
     onRowSelect: PropTypes.func,
     rowKey: PropTypes.string,
-    rowScrollTimeout: PropTypes.number,
+    rowScrollTimeout: deprecate(PropTypes.number),
     scrollToRowIndex: PropTypes.number,
     onClearFilters: PropTypes.func,
     contextMenu: PropTypes.element,
@@ -101,7 +104,8 @@ class ReactDataGrid extends React.Component {
     selectAllRenderer: PropTypes.object,
     minColumnWidth: PropTypes.number,
     columnEquality: PropTypes.func,
-    onColumnResize: PropTypes.func
+    onColumnResize: PropTypes.func,
+    onScroll: PropTypes.func
   };
 
   static defaultProps = {
@@ -115,10 +119,10 @@ class ReactDataGrid extends React.Component {
     scrollToRowIndex: 0,
     cellNavigationMode: CellNavigationMode.NONE,
     overScan: {
-      colsStart: 5,
-      colsEnd: 5,
-      rowsStart: 5,
-      rowsEnd: 5
+      colsStart: 2,
+      colsEnd: 2,
+      rowsStart: 2,
+      rowsEnd: 2
     },
     enableCellAutoFocus: true,
     onBeforeEdit: () => {},
@@ -142,7 +146,9 @@ class ReactDataGrid extends React.Component {
   componentDidMount() {
     this._mounted = true;
     window.addEventListener('resize', this.metricsUpdated);
-    window.addEventListener('mouseup', this.onWindowMouseUp);
+    if (this.props.cellRangeSelection) {
+      window.addEventListener('mouseup', this.onWindowMouseUp);
+    }
     this.metricsUpdated();
   }
 
@@ -353,6 +359,11 @@ class ReactDataGrid extends React.Component {
 
   onGridRowsUpdated = (cellKey, fromRow, toRow, updated, action, originRow) => {
     const { rowGetter, rowKey, onGridRowsUpdated } = this.props;
+    // Deprecated prop
+    // to be removed in next major release
+    if (isFunction(this.props.onRowUpdated)) {
+      this.props.onRowUpdated({updated, rowIdx: fromRow, cellKey, value: updated[cellKey]});
+    }
     if (!isFunction(onGridRowsUpdated)) {
       return;
     }
@@ -372,6 +383,12 @@ class ReactDataGrid extends React.Component {
     const targetRow = commit.rowIdx;
     this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
   };
+
+  onScroll = (scrollState) => {
+    if (isFunction(this.props.onScroll)) {
+      this.props.onScroll(scrollState);
+    }
+  }
 
   handleSort = (columnKey, direction) => {
     this.setState({sortDirection: direction, sortColumn: columnKey}, () => {
@@ -614,7 +631,7 @@ class ReactDataGrid extends React.Component {
         filterable: false,
         headerRenderer: headerRenderer,
         width: 60,
-        locked: true,
+        frozen: true,
         getRowMetaData: (rowData) => rowData,
         cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''
       };
@@ -644,8 +661,6 @@ class ReactDataGrid extends React.Component {
     const cellMetaData = {
       rowKey: this.props.rowKey,
       onCellClick: this.onCellClick,
-      onCellMouseDown: this.onCellMouseDown,
-      onCellMouseEnter: this.onCellMouseEnter,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
       onColumnEvent: this.onColumnEvent,
@@ -656,6 +671,10 @@ class ReactDataGrid extends React.Component {
       onAddSubRow: this.props.onAddSubRow,
       onDragEnter: this.handleDragEnter
     };
+    if (this.props.cellRangeSelection) {
+      cellMetaData.onCellMouseDown = this.onCellMouseDown;
+      cellMetaData.onCellMouseEnter = this.onCellMouseEnter;
+    }
 
     const toolbar = this.renderToolbar();
     let containerWidth = this.props.minWidth || this.gridWidth();
@@ -715,6 +734,7 @@ class ReactDataGrid extends React.Component {
             onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
             onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
             onCommit={this.onCommit}
+            onScroll={this.onScroll}
           />
         </div>
       </div>

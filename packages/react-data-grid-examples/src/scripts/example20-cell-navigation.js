@@ -10,7 +10,7 @@ class Example extends React.Component {
       {
         key: 'id',
         name: 'ID',
-        locked: true
+        frozen: true
       },
       {
         key: 'task',

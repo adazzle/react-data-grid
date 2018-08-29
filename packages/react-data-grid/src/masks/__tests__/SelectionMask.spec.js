@@ -3,15 +3,19 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import SelectionMask from '../SelectionMask';
+import zIndexes from '../../constants/zIndexes';
 
 describe('SelectionMask', () => {
+  const TOP = 45;
+  const ROW_HEIGHT = 50;
   const setup = (propsOverride = {}) => {
     const props = {
       selectedPosition: { idx: 0, rowIdx: 3 },
       columns: [
         { width: 50, left: 5 }
       ],
-      rowHeight: 30,
+      getSelectedRowHeight: () => ROW_HEIGHT,
+      getSelectedRowTop: () => TOP,
       isGroupedRow: false,
       scrollLeft: 0,
       ...propsOverride
@@ -26,23 +30,14 @@ describe('SelectionMask', () => {
 
     expect(mask.props()).toEqual(
       jasmine.objectContaining({
-        height: 30, // = rowHeight
+        height: ROW_HEIGHT,
         width: 50,
         left: 5,
-        top: 90, // = rowHeight * rowIdx
-        zIndex: 1
+        top: TOP,
+        zIndex: zIndexes.CELL_MASK,
+        className: 'rdg-selected',
+        children: undefined
       })
     );
-  });
-
-  it('should set cell mask width to be 100% if row is a grouped row', () => {
-    const mask = setup({isGroupedRow: true});
-    expect(mask.props().width).toBe('100%');
-  });
-
-  it('should set cell mask left to be ${scrollLeft} if row is a grouped row', () => {
-    const scrollLeft = 120;
-    const mask = setup({isGroupedRow: true, scrollLeft});
-    expect(mask.props().left).toBe(scrollLeft);
   });
 });

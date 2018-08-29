@@ -1,17 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
+import * as columnUtils from '../ColumnUtils';
+import zIndexes from '../constants/zIndexes';
 
-function SelectionMask({ selectedPosition, columns, rowHeight, children, isGroupedRow, scrollLeft }) {
-  const dimensions = getSelectedDimensions({ selectedPosition, columns, rowHeight });
-  const width = isGroupedRow ? '100%' : dimensions.width;
-  const left = isGroupedRow ? scrollLeft : dimensions.left;
-  const d = {...dimensions, ...{width, left} };
+const isFrozenColumn = (columns, {idx}) => columnUtils.isFrozen(columnUtils.getColumn(columns, idx));
+
+const getLeftPosition = (isFrozen, scrollLeft, cellLeft) => {
+  if (isFrozen) {
+    return scrollLeft + cellLeft;
+  }
+  return cellLeft;
+};
+
+export const getCellMaskDimensions = ({ selectedPosition, columns, scrollLeft, getSelectedRowHeight, getSelectedRowTop}) => {
+  const column = columnUtils.getColumn(columns, selectedPosition.idx);
+  const height = getSelectedRowHeight(selectedPosition.rowIdx);
+  const top = getSelectedRowTop(selectedPosition.rowIdx);
+  const frozen = isFrozenColumn(columns, selectedPosition);
+  const zIndex = frozen ? zIndexes.LOCKED_CELL_MASK :  zIndexes.CELL_MASK;
+  const left = getLeftPosition(frozen, scrollLeft, column.left);
+  return {height, top, width: column.width, left, zIndex};
+};
+
+function SelectionMask({children, ...rest}) {
+  const dimensions = getCellMaskDimensions(rest);
   return (
     <CellMask
-      {...d}
+      {...dimensions}
       className="rdg-selected"
     >
       {children}

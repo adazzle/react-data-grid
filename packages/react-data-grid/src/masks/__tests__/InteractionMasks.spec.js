@@ -23,10 +23,10 @@ describe('<InteractionMasks/>', () => {
   const setup = (overrideProps, initialState, render = shallow) => {
     const eventBus = new EventBus();
     const props = {
-      visibleStart: 0,
-      visibleEnd: 10,
-      colVisibleStart: 0,
-      colVisibleEnd: 10,
+      rowVisibleStartIdx: 0,
+      rowVisibleEndIdx: 10,
+      colVisibleStartIdx: 0,
+      colVisibleEndIdx: 10,
       columns: createColumns(NUMBER_OF_COLUMNS),
       rowHeight: 30,
       rowsCount: ROWS_COUNT,
@@ -48,6 +48,8 @@ describe('<InteractionMasks/>', () => {
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus,
       onBeforeFocus: jasmine.createSpy().and.returnValue(() => null),
+      getSelectedRowHeight: () => 50,
+      getSelectedRowTop: () => 0,
       ...overrideProps
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });

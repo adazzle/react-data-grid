@@ -2,7 +2,7 @@ import React from 'react';
 // import ReactDOM from 'react-dom';
 import ReactDataGrid from '../ReactDataGrid';
 import { shallow } from 'enzyme';
-import * as helpers from '../helpers/test/GridPropHelpers';
+import helpers from '../helpers/test/GridPropHelpers';
 
 function shallowRenderGrid({
   enableCellAutoFocus = undefined,
