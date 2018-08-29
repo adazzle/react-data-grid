@@ -41,6 +41,7 @@
     "shallowequal": "^1.1.0"
   },
   "devDependencies": {
+    "airbnb-browser-shims": "^3.0.0",
     "avcoveralls": "^1.0.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^4.1.6",
