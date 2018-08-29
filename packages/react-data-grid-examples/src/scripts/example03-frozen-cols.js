@@ -12,25 +12,25 @@ class Example extends React.Component {
       {
         key: 'id',
         name: 'ID',
-        locked: true
+        frozen: true
       },
       {
         key: 'task',
         name: 'Title',
         width: 200,
-        locked: true
+        frozen: true
       },
       {
         key: 'priority',
         name: 'Priority',
         width: 200,
-        locked: true
+        frozen: true
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         width: 200,
-        locked: true
+        frozen: true
       },
       {
         key: 'complete',

@@ -1,5 +1,6 @@
 const React                 = require('react');
 import PropTypes from 'prop-types';
+import {deprecate} from 'react-is-deprecated';
 const BaseGrid              = require('./Grid');
 const CheckboxEditor        = require('./editors/CheckboxEditor');
 const RowUtils = require('./RowUtils');
@@ -20,6 +21,9 @@ if (!Object.assign) {
   Object.assign = require('object-assign');
 }
 
+const ON_GRID_ROW_UPDATED_DEPRECATION_WARNING = 'This has been deprecated and will be removed in a future version. Please use onGridRowsUpdated instead';
+const ENABLE_ROW_SELECT_DEPRECATION_WARNING = 'This has been deprecated and will be removed in a future version. Please use rowSelection instead';
+
 class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
 
@@ -29,26 +33,26 @@ class ReactDataGrid extends React.Component {
     headerFiltersHeight: PropTypes.number,
     minHeight: PropTypes.number.isRequired,
     minWidth: PropTypes.number,
-    enableRowSelect: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-    onRowUpdated: PropTypes.func,
+    enableRowSelect: deprecate(PropTypes.func, ENABLE_ROW_SELECT_DEPRECATION_WARNING),
+    onRowUpdated: deprecate(PropTypes.func, ),
     rowGetter: PropTypes.func.isRequired,
     rowsCount: PropTypes.number.isRequired,
     toolbar: PropTypes.element,
     enableCellSelect: PropTypes.bool,
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     onFilter: PropTypes.func,
-    onCellCopyPaste: PropTypes.func,
-    onCellsDragged: PropTypes.func,
+    onCellCopyPaste: deprecate(PropTypes.func, ON_GRID_ROW_UPDATED_DEPRECATION_WARNING),
+    onCellsDragged: deprecate(PropTypes.func, ON_GRID_ROW_UPDATED_DEPRECATION_WARNING),
     getCellActions: PropTypes.func,
     onAddFilter: PropTypes.func,
     onGridSort: PropTypes.func,
     sortColumn: PropTypes.string,
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
-    onDragHandleDoubleClick: PropTypes.func,
+    onDragHandleDoubleClick: deprecate(PropTypes.func, ON_GRID_ROW_UPDATED_DEPRECATION_WARNING),
     onGridRowsUpdated: PropTypes.func,
     onRowSelect: PropTypes.func,
     rowKey: PropTypes.string,
-    rowScrollTimeout: PropTypes.number,
+    rowScrollTimeout: deprecate(PropTypes.number),
     scrollToRowIndex: PropTypes.number,
     onClearFilters: PropTypes.func,
     contextMenu: PropTypes.element,
