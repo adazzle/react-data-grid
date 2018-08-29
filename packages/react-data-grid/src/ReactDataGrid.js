@@ -21,8 +21,7 @@ if (!Object.assign) {
   Object.assign = require('object-assign');
 }
 
-const ON_GRID_ROW_UPDATED_DEPRECATION_WARNING = 'This has been deprecated and will be removed in a future version. Please use onGridRowsUpdated instead';
-const ENABLE_ROW_SELECT_DEPRECATION_WARNING = 'This has been deprecated and will be removed in a future version. Please use rowSelection instead';
+const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;
 
 class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
@@ -33,16 +32,16 @@ class ReactDataGrid extends React.Component {
     headerFiltersHeight: PropTypes.number,
     minHeight: PropTypes.number.isRequired,
     minWidth: PropTypes.number,
-    enableRowSelect: deprecate(PropTypes.func, ENABLE_ROW_SELECT_DEPRECATION_WARNING),
-    onRowUpdated: deprecate(PropTypes.func, ),
+    enableRowSelect: deprecate(PropTypes.func, deprecationWarning('enableRowSelect', 'rowSelection')),
+    onRowUpdated: deprecate(PropTypes.func, deprecationWarning('onRowUpdated', 'onGridRowsUpdated')),
     rowGetter: PropTypes.func.isRequired,
     rowsCount: PropTypes.number.isRequired,
     toolbar: PropTypes.element,
     enableCellSelect: PropTypes.bool,
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     onFilter: PropTypes.func,
-    onCellCopyPaste: deprecate(PropTypes.func, ON_GRID_ROW_UPDATED_DEPRECATION_WARNING),
-    onCellsDragged: deprecate(PropTypes.func, ON_GRID_ROW_UPDATED_DEPRECATION_WARNING),
+    onCellCopyPaste: deprecate(PropTypes.func, deprecationWarning('onCellCopyPaste', 'onGridRowsUpdated')),
+    onCellsDragged: deprecate(PropTypes.func, deprecationWarning('onCellsDragged', 'onGridRowsUpdated')),
     getCellActions: PropTypes.func,
     onAddFilter: PropTypes.func,
     onGridSort: PropTypes.func,
