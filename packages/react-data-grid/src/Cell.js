@@ -292,25 +292,6 @@ class Cell extends React.PureComponent {
     return null;
   }
 
-  didDependentValuesChange = (nextProps) => {
-    let currentColumn = this.props.column;
-    let hasChangedDependentValues = false;
-
-    if (currentColumn.getRowMetaData) {
-      let currentRowMetaData = currentColumn.getRowMetaData(this.getRowData(), currentColumn);
-      let nextColumn = nextProps.column;
-      let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
-
-      hasChangedDependentValues = currentRowMetaData === nextRowMetaData;
-    }
-
-    return hasChangedDependentValues;
-  };
-
-  didChildrenChange(nextProps) {
-    return this.props.expandableOptions && (this.props.expandableOptions.children !== nextProps.expandableOptions.children);
-  }
-
   setCellRef = (node) => {
     this.node = node;
   };
