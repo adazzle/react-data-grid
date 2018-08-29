@@ -47,7 +47,7 @@ class ReactDataGrid extends React.Component {
     onGridSort: PropTypes.func,
     sortColumn: PropTypes.string,
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
-    onDragHandleDoubleClick: deprecate(PropTypes.func, ON_GRID_ROW_UPDATED_DEPRECATION_WARNING),
+    onDragHandleDoubleClick: deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated')),
     onGridRowsUpdated: PropTypes.func,
     onRowSelect: PropTypes.func,
     rowKey: PropTypes.string,
