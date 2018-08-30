@@ -34,9 +34,17 @@
 .react-grid-Toolbar .grouped-col-btn {
   background-color: #428bca;
   color: white;
+  border-color: #2b669a;
 }
 .react-grid-Toolbar .grouped-col-btn:hover {
   color: white;
+  border-color: #2b669a;
+}
+.react-grid-Toolbar .grouped-col-btn + .grouped-col-btn {
+  margin-left: 5px;
+}
+.react-grid-Toolbar .grouped-col-btn__remove {
+  margin-left: 5px;
 }
 .react-grid-Toolbar .tools {
   display: inline-block;
