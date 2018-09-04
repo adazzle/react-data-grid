@@ -16,6 +16,7 @@ import { CellNavigationMode, EventTypes } from '../../constants';
 
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
+const columns = createColumns(NUMBER_OF_COLUMNS);
 
 describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
@@ -27,7 +28,7 @@ describe('<InteractionMasks/>', () => {
       rowVisibleEndIdx: 10,
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 10,
-      columns: createColumns(NUMBER_OF_COLUMNS),
+      columns,
       rowHeight: 30,
       rowsCount: ROWS_COUNT,
       editCell: jasmine.createSpy(),
@@ -50,6 +51,7 @@ describe('<InteractionMasks/>', () => {
       onBeforeFocus: jasmine.createSpy().and.returnValue(() => null),
       getSelectedRowHeight: () => 50,
       getSelectedRowTop: () => 0,
+      getSelectedRowColumns: () => columns,
       ...overrideProps
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });

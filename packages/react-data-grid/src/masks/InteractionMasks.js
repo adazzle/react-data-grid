@@ -417,7 +417,6 @@ class InteractionMasks extends React.Component {
   };
 
   selectCell = (cell, openEditor) => {
-    console.log('select cell');
     const callback = openEditor ? this.openEditor : () => null;
     this.setState(prevState => {
       const next = { ...prevState.selectedPosition, ...cell };
