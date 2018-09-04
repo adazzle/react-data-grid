@@ -69,7 +69,8 @@ class InteractionMasks extends React.Component {
     scrollLeft: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
     getSelectedRowHeight: PropTypes.func.isRequired,
-    getSelectedRowTop: PropTypes.func.isRequired
+    getSelectedRowTop: PropTypes.func.isRequired,
+    getSelectedRowColumns: PropTypes.func.isRequired
   };
 
   state = {
@@ -416,6 +417,7 @@ class InteractionMasks extends React.Component {
   };
 
   selectCell = (cell, openEditor) => {
+    console.log('select cell');
     const callback = openEditor ? this.openEditor : () => null;
     this.setState(prevState => {
       const next = { ...prevState.selectedPosition, ...cell };
@@ -621,9 +623,10 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
-    const { rowGetter, columns, contextMenu, rowHeight } = this.props;
+    const { rowGetter, contextMenu, rowHeight, getSelectedRowColumns } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = getSelectedRow({ selectedPosition, rowGetter });
+    const columns = getSelectedRowColumns(selectedPosition.rowIdx);
     return (
       <div
         ref={node => {

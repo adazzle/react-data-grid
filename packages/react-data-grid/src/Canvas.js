@@ -265,6 +265,11 @@ class Canvas extends React.PureComponent {
     return this.props.rowHeight;
   }
 
+  getSelectedRowColumns = (rowIdx) => {
+    const row = this.getRowByRef(rowIdx);
+    return row && row.base ? row.base.props.columns : this.props.columns;
+  }
+
   setCanvasRef = (canvas) => {
     // It is important to define ref callback as a bound method
     // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
@@ -404,6 +409,7 @@ class Canvas extends React.PureComponent {
           scrollLeft={this._scroll.scrollLeft}
           getSelectedRowHeight={this.getSelectedRowHeight}
           getSelectedRowTop={this.getSelectedRowTop}
+          getSelectedRowColumns={this.getSelectedRowColumns}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           <div style={{ width: totalColumnWidth }}>{rows}</div>

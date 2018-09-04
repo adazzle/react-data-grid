@@ -32,8 +32,8 @@ class RowGroup extends Component {
   }
 
   setScrollLeft = (scrollLeft) => {
-    if (this.rowGroupRenderer) {
-      this.rowGroupRenderer.setScrollLeft ? this.rowGroupRenderer.setScrollLeft(scrollLeft) : null;
+    if (this.base) {
+      this.base.setScrollLeft ? this.base.setScrollLeft(scrollLeft) : null;
     }
   }
 
@@ -44,7 +44,7 @@ class RowGroup extends Component {
 
     return (
       <div style={style} className="react-grid-row-group" onClick={this.onClick}>
-         <this.props.renderer {...this.props} ref={(node) => {this.rowGroupRenderer = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
+         <this.props.renderer {...this.props} ref={(node) => {this.base = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
       </div>
     );
   }
@@ -76,7 +76,7 @@ RowGroup.propTypes = {
   eventBus: PropTypes.object.isRequired
 };
 
-const  DefaultRowGroupRenderer = (props) => {
+const  Defaultbase = (props) => {
   let treeDepth = props.treeDepth || 0;
   let marginLeft = treeDepth * 20;
 
@@ -106,7 +106,7 @@ const  DefaultRowGroupRenderer = (props) => {
   );
 };
 
-DefaultRowGroupRenderer.propTypes = {
+Defaultbase.propTypes = {
   onRowExpandClick: PropTypes.func.isRequired,
   onRowExpandToggle: PropTypes.func.isRequired,
   isExpanded: PropTypes.bool.isRequired,
@@ -117,7 +117,7 @@ DefaultRowGroupRenderer.propTypes = {
 };
 
 RowGroup.defaultProps = {
-  renderer: DefaultRowGroupRenderer
+  renderer: Defaultbase
 };
 
 export default RowGroup;
