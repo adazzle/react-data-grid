@@ -48,5 +48,5 @@ on_success:
   - npm run beforepublish
   - ps: >-
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'next') {
-        ./ci/publish/publishBranch.ps1
+        ./ci/publish/publishNext.ps1
       }
