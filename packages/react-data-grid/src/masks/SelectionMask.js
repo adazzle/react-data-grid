@@ -18,7 +18,7 @@ export const getCellMaskDimensions = ({ selectedPosition, columns, scrollLeft, g
   const height = getSelectedRowHeight(selectedPosition.rowIdx);
   const top = getSelectedRowTop(selectedPosition.rowIdx);
   const frozen = isFrozenColumn(columns, selectedPosition);
-  const zIndex = frozen ? zIndexes.LOCKED_CELL_MASK :  zIndexes.CELL_MASK;
+  const zIndex = frozen ? zIndexes.FROZEN_CELL_MASK :  zIndexes.CELL_MASK;
   const left = getLeftPosition(frozen, scrollLeft, column.left);
   return {height, top, width: column.width, left, zIndex};
 };

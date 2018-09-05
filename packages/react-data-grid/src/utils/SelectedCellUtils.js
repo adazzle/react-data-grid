@@ -17,7 +17,7 @@ export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) 
     const column = columnUtils.getColumn(columns, idx);
     const { width, left, frozen } = column;
     const top = getRowTop(rowIdx, rowHeight);
-    const zIndex = frozen ? zIndexes.LOCKED_CELL_MASK : zIndexes.CELL_MASK;
+    const zIndex = frozen ? zIndexes.FROZEN_CELL_MASK : zIndexes.CELL_MASK;
     return { width, left, top, height: rowHeight, zIndex };
   }
   return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
@@ -44,7 +44,7 @@ export const getSelectedRangeDimensions = ({ selectedRange, columns, rowHeight }
   const { totalWidth, anyColFrozen, left } = getColumnRangeProperties(topLeft.idx, bottomRight.idx, columns);
   const top = getRowTop(topLeft.rowIdx, rowHeight);
   const height = (bottomRight.rowIdx - topLeft.rowIdx + 1) * rowHeight;
-  const zIndex = anyColFrozen ? zIndexes.LOCKED_CELL_MASK : zIndexes.CELL_MASK;
+  const zIndex = anyColFrozen ? zIndexes.FROZEN_CELL_MASK : zIndexes.CELL_MASK;
 
   return { width: totalWidth, left, top, height, zIndex };
 };

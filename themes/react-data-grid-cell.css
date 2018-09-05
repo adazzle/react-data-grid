@@ -20,11 +20,11 @@
 }
 
 .react-grid-Cell--frozen {
-  z-index: 300;
+  z-index: 12;
 }
 
 .react-grid-Cell--frozen:focus {
-  z-index: 300;
+  z-index: 12;
 }
 
 .rdg-last--frozen {
