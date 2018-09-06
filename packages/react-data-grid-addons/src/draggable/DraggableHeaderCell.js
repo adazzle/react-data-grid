@@ -1,8 +1,7 @@
 import { DragSource } from 'react-dnd';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { _constants, HeaderCell } from 'react-data-grid';
-const { DragItemTypes } = _constants;
+import { DragItemTypes } from 'common/constants';
 
 class DraggableHeaderCell extends Component {
 
@@ -26,14 +25,15 @@ class DraggableHeaderCell extends Component {
     if (isDragging) {
       return null;
     }
-    return connectDragSource(<div style={{cursor: 'move'}}><HeaderCell {...this.props}/></div>);
+    return connectDragSource(<div style={{cursor: 'move'}}>{this.props.renderHeaderCell(this.props)}</div>);
   }
 }
 
 DraggableHeaderCell.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired
+  isDragging: PropTypes.bool.isRequired,
+  renderHeaderCell: PropTypes.func
 };
 
 function collect(connect, monitor) {

@@ -1,6 +1,6 @@
 const React = require('react');
 const Canvas = require('./Canvas');
-const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import PropTypes from 'prop-types';
 import columnUtils from './ColumnUtils';
 import {

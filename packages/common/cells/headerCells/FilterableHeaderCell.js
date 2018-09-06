@@ -1,5 +1,5 @@
 const React              = require('react');
-const ExcelColumn        = require('../../PropTypeShapes/ExcelColumn');
+const ExcelColumn        = require('common/prop-shapes/ExcelColumn');
 import PropTypes from 'prop-types';
 
 class FilterableHeaderCell extends React.Component {

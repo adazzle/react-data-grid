@@ -1,3 +1,3 @@
-module.exports = function isColumnsImmutable(columns: Array<Column>) {
+export default function isColumnsImmutable(columns) {
   return (typeof Immutable !== 'undefined' && (columns instanceof Immutable.List));
-};
+}

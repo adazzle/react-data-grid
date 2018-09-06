@@ -1,6 +1,6 @@
 const React                   = require('react');
 const ReactDOM = require('react-dom');
-const ExcelColumn             = require('../PropTypeShapes/ExcelColumn');
+import ExcelColumn from 'common/prop-shapes/ExcelColumn';
 import PropTypes from 'prop-types';
 
 class EditorBase extends React.Component {

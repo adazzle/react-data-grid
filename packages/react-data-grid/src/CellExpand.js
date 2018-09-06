@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AppConstants from './AppConstants';
+import { CellExpand } from 'common/constants';
 
-class CellExpand extends React.Component {
+class CellExpander extends React.Component {
   static propTypes = {
     expandableOptions: PropTypes.object.isRequired,
     onCellExpand: PropTypes.func.isRequired
@@ -29,10 +29,10 @@ class CellExpand extends React.Component {
   render() {
     return (
       <span className="rdg-cell-expand" onClick={this.onCellExpand} >
-        {this.state.expanded ? AppConstants.CellExpand.DOWN_TRIANGLE : AppConstants.CellExpand.RIGHT_TRIANGLE}
+        {this.state.expanded ? CellExpand.DOWN_TRIANGLE : CellExpand.RIGHT_TRIANGLE}
       </span>
     );
   }
 }
 
-export default CellExpand;
+export default CellExpander;

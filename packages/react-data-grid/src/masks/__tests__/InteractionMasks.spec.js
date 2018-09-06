@@ -8,11 +8,10 @@ import CopyMask from '../CopyMask';
 import DragMask from '../DragMask';
 import DragHandle from '../DragHandle';
 import EventBus from '../EventBus';
-import EditorContainer from '../../editors/EditorContainer';
+import EditorContainer from 'common/editors/EditorContainer';
 import { sel, createColumns } from '../../__tests__/utils';
-import * as AppConstants from '../../AppConstants';
 import * as keyCodes from '../../KeyCodes';
-import { CellNavigationMode, EventTypes } from '../../constants';
+import { CellNavigationMode, EventTypes, UpdateActions } from 'common/constants';
 
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
@@ -713,7 +712,7 @@ describe('<InteractionMasks/>', () => {
       // Paste copied cell
       pressKey(wrapper, 'v', { keyCode: keyCodes.v, ctrlKey: true });
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 1, 1, { Column1: '3' }, AppConstants.UpdateActions.COPY_PASTE, 2);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 1, 1, { Column1: '3' }, UpdateActions.COPY_PASTE, 2);
     });
   });
 
@@ -758,7 +757,7 @@ describe('<InteractionMasks/>', () => {
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx: 6 });
       wrapper.find(DragHandle).simulate('dragEnd');
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, AppConstants.UpdateActions.CELL_DRAG);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, UpdateActions.CELL_DRAG);
     });
   });
 

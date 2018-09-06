@@ -1,7 +1,7 @@
 const React          = require('react');
 const ReactDOM      = require('react-dom');
 const joinClasses    = require('classnames');
-const ExcelColumn    = require('./PropTypeShapes/ExcelColumn');
+import ExcelColumn from 'common/prop-shapes/ExcelColumn';
 import columnUtils from './ColumnUtils';
 const ResizeHandle   = require('./ResizeHandle');
 require('../../../themes/react-data-grid-header.css');
