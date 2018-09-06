@@ -13,6 +13,10 @@ const ColumnMetrics = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
+if (!Object.assign) {
+  Object.assign = require('object-assign');
+}
+
 import { CellNavigationMode, EventTypes, UpdateActions } from 'common/constants';
 import { EventBus } from './masks';
 
