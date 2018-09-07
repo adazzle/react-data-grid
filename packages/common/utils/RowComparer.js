@@ -1,4 +1,4 @@
-export const shouldRowUpdate = (nextProps, currentProps) => {
+export default function shouldRowUpdate(nextProps, currentProps) {
   return currentProps.columns !== nextProps.columns ||
     nextProps.row !== currentProps.row ||
     currentProps.colOverscanStartIdx !== nextProps.colOverscanStartIdx ||
@@ -13,6 +13,5 @@ export const shouldRowUpdate = (nextProps, currentProps) => {
     currentProps.canDrop !== nextProps.canDrop ||
     currentProps.forceUpdate === true ||
     currentProps.extraClasses !== nextProps.extraClasses;
-};
+}
 
-export default shouldRowUpdate;

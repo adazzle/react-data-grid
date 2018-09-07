@@ -6,7 +6,7 @@ import CheckboxEditor from 'common/editors/CheckboxEditor';
 import RowUtils from './RowUtils';
 import ColumnUtils from './ColumnUtils';
 import KeyCodes from './KeyCodes';
-import isFunction from 'common/utils/isFunction';
+import {isFunction} from 'common/utils';
 import SelectAll from './formatters/SelectAll';
 import { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
 const ColumnMetrics = require('./ColumnMetrics');

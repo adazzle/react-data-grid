@@ -19,7 +19,7 @@ import {
   isSelectedCellEditable,
   selectedRangeIsSingleCell
 } from '../utils/SelectedCellUtils';
-import isFunction from 'common/utils/isFunction';
+import {isFunction} from 'common/utils';
 import * as columnUtils from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from 'common/constants';

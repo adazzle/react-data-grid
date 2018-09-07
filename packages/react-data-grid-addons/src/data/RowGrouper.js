@@ -1,4 +1,4 @@
-import isImmutableCollection from 'common/utils/isImmutableCollection';
+import {isImmutableCollection} from 'common/utils';
 import Resolver from './RowGrouperResolver';
 
 

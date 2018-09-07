@@ -1,5 +1,5 @@
 import React from 'react';
-import CellExpander from '../CellExpand';
+import CellExpander from '../CellExpander';
 import { CellExpand } from 'common/constants';
 import { mount } from 'enzyme';
 

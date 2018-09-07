@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
-import isEmptyArray from 'common/utils/isEmptyArray';
-import isEmptyObject from 'common/utils/isEmptyObject';
+import {isEmptyObject , isEmptyArray} from 'common/utils';
 const groupRows = require('./RowGrouper');
 const filterRows = require('./RowFilterer');
 const sortRows = require('./RowSorter');

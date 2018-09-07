@@ -33,7 +33,7 @@ DraggableHeaderCell.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
-  renderHeaderCell: PropTypes.func
+  renderHeaderCell: PropTypes.func.isRequired
 };
 
 function collect(connect, monitor) {

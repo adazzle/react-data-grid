@@ -10,7 +10,7 @@ describe('<DraggableHeaderCell />', () => {
   it('should render grid HeaderCell wrapper with cursor: move ', () => {
     const wrapper = shallow(
       <DraggableContainer>
-        <DraggableHeaderCell renderHeaderCell={() => HeaderCell}/>
+        <DraggableHeaderCell renderHeaderCell={() => <HeaderCell/>}/>
       </DraggableContainer>
     );
     expect(wrapper.find(HeaderCell));

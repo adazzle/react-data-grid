@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
 
 class DraggableHeaderCell extends React.Component {
+
+  static defaultProps = {
+    renderHeaderCell: () => <div/>
+  };
+
   render() {
     const {
       connectDragSource,

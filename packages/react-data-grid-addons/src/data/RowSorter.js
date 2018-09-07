@@ -1,5 +1,4 @@
-import getMixedTypeValueRetriever from 'common/utils/mixedTypeValueRetriever';
-import isImmutableCollection from 'common/utils/isImmutableCollection';
+import {getMixedTypeValueRetriever, isImmutableCollection} from 'common/utils';
 
 const comparer = (a, b) => {
   if (a > b) {

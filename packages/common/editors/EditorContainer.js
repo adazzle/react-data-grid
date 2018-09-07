@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import SimpleTextEditor from './SimpleTextEditor';
-import isFunction from 'common/utils/isFunction';
+import {isFunction} from 'common/utils';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import zIndexes from 'common/constants/zIndexes';
 require('../../../themes/react-data-grid-core.css');
