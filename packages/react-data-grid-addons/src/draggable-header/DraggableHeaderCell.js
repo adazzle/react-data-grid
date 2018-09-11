@@ -23,14 +23,15 @@ class HeaderCell extends React.Component {
   }
 
   setScrollLeft = (scrollLeft) => {
-    let node = ReactDOM.findDOMNode(this);
-    node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-    node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+    if (this.node) {
+      node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+      node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+    }
   };
 
   render() {
     return (
-      <div className="react-grid-HeaderCell" style={this.getStyle()}>
+      <div ref={node => this.node = node} className="react-grid-HeaderCell" style={this.getStyle()}>
         {this.props.column.name}
       </div>
     );
@@ -118,8 +119,7 @@ DraggableHeaderCell.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
   isOver: PropTypes.bool,
-  canDrop: PropTypes.bool,
-  renderHeaderCell: PropTypes.fund
+  canDrop: PropTypes.bool
 };
 
 DraggableHeaderCell = DropTarget('Column', target, targetCollect)(
