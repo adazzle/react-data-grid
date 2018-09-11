@@ -12,7 +12,6 @@ class RowGroup extends Component {
 
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
     this.onRowExpandClick = this.onRowExpandClick.bind(this);
-    this.setScrollLeft = this.setScrollLeft.bind(this);
   }
 
   onRowExpandToggle = (expand) => {
@@ -31,12 +30,6 @@ class RowGroup extends Component {
     this.onRowExpandToggle(!this.props.isExpanded);
   }
 
-  setScrollLeft = (scrollLeft) => {
-    if (this.base) {
-      this.base.setScrollLeft ? this.base.setScrollLeft(scrollLeft) : null;
-    }
-  }
-
   render() {
     let lastColumn = last(this.props.columns);
 
@@ -44,7 +37,7 @@ class RowGroup extends Component {
 
     return (
       <div style={style} className="react-grid-row-group" onClick={this.onClick}>
-         <this.props.renderer {...this.props} ref={(node) => {this.base = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
+         <this.props.renderer {...this.props} ref={this.props.rowRef} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
       </div>
     );
   }
@@ -73,7 +66,8 @@ RowGroup.propTypes = {
   treeDepth: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   renderer: PropTypes.func,
-  eventBus: PropTypes.object.isRequired
+  eventBus: PropTypes.object.isRequired,
+  rowRef: PropTypes.func.isRequired
 };
 
 const  Defaultbase = (props) => {

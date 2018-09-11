@@ -2,11 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Row from './Row';
-import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
+import cellMetaDataShape from 'common/prop-shapes/CellActionShape';
 import * as rowUtils from './RowUtils';
 import RowGroup, { DefaultRowGroupRenderer } from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
+import {isFunction} from 'common/utils';
 import { EventTypes } from 'common/constants';
 require('../../../themes/react-data-grid-core.css');
 
@@ -78,7 +79,6 @@ class Canvas extends React.PureComponent {
   };
 
   static defaultProps = {
-    rowRenderer: Row,
     onRows: () => { },
     selectedRows: [],
     rowScrollTimeout: 0,
@@ -267,12 +267,10 @@ class Canvas extends React.PureComponent {
 
   getSelectedRowColumns = (rowIdx) => {
     const row = this.getRowByRef(rowIdx);
-    return row && row.base ? row.base.props.columns : this.props.columns;
+    return row ? row.props.columns : this.props.columns;
   }
 
   setCanvasRef = (canvas) => {
-    // It is important to define ref callback as a bound method
-    // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
     this.canvas = canvas;
   };
 
@@ -280,28 +278,44 @@ class Canvas extends React.PureComponent {
     this.rows[idx] = row;
   };
 
+  renderCustomRowRenderer(props) {
+    const {ref, ...otherProps} = props;
+    const CustomRowRenderer = this.props.rowRenderer;
+    const customRowRendererProps = {...otherProps, renderBaseRow: (p) => <Row ref={ref} {...p}/>};
+    if (isFunction(CustomRowRenderer)) {
+      return <CustomRowRenderer {...customRowRendererProps} />;
+    }
+
+    if (React.isValidElement(CustomRowRenderer)) {
+      return React.cloneElement(CustomRowRenderer, customRowRendererProps);
+    }
+  }
+
+  renderGroupRow(props) {
+    const {ref, ...rowGroupProps} = props;
+    return (<RowGroup
+      {...rowGroupProps}
+      {...props.row.__metaData}
+      rowRef={props.ref}
+      name={props.row.name}
+      eventBus={this.props.eventBus}
+      renderer={this.props.rowGroupRenderer}
+    />);
+  }
+
   renderRow = (props) => {
     let row = props.row;
     if (row.__metaData && row.__metaData.getRowRenderer) {
       return row.__metaData.getRowRenderer(this.props, props.idx);
     }
     if (row.__metaData && row.__metaData.isGroup) {
-      return (<RowGroup
-        {...props}
-        {...row.__metaData}
-        name={row.name}
-        eventBus={this.props.eventBus}
-        renderer={this.props.rowGroupRenderer}
-      />);
+      return this.renderGroupRow(props);
     }
-    let RowsRenderer = this.props.rowRenderer;
-    if (typeof RowsRenderer === 'function') {
-      return <RowsRenderer {...props} />;
+    if (this.props.rowRenderer) {
+      return this.renderCustomRowRenderer(props);
     }
 
-    if (React.isValidElement(this.props.rowRenderer)) {
-      return React.cloneElement(this.props.rowRenderer, props);
-    }
+    return <Row {...props}/>;
   };
 
   renderPlaceholder = (key, height) => {
