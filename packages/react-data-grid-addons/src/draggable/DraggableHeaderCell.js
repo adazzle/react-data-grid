@@ -15,9 +15,10 @@ class DraggableHeaderCell extends Component {
   }
 
   setScrollLeft(scrollLeft) {
-    let node = ReactDOM.findDOMNode(this);
-    node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-    node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+    if (this.node) {
+      node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+      node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+    }
   }
 
   render() {
@@ -25,7 +26,7 @@ class DraggableHeaderCell extends Component {
     if (isDragging) {
       return null;
     }
-    return connectDragSource(<div style={{cursor: 'move'}}>{this.props.renderHeaderCell(this.props)}</div>);
+    return connectDragSource(<div ref={node => this.node = node} style={{cursor: 'move'}}>{this.props.renderHeaderCell(this.props)}</div>);
   }
 }
 
