@@ -1,8 +1,8 @@
-import { CellNavigationMode } from '../constants/';
-import isFunction from './isFunction';
+import { CellNavigationMode } from 'common/constants';
+import {isFunction} from 'common/utils';
 import * as rowUtils from '../RowUtils';
 import * as columnUtils from '../ColumnUtils';
-import zIndexes from '../constants/zIndexes';
+import zIndexes from 'common/constants/zIndexes';
 
 const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
 

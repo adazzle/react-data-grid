@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import utils from './utils';
-const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-import { EventTypes } from './constants';
+import {last} from 'common/utils';
+import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
+import { EventTypes } from 'common/constants';
 
 import '../../../themes/react-data-grid-row.css';
 
@@ -38,7 +38,7 @@ class RowGroup extends Component {
   }
 
   render() {
-    let lastColumn = utils.last(this.props.columns);
+    let lastColumn = last(this.props.columns);
 
     let style = {width: lastColumn.left + lastColumn.width};
 

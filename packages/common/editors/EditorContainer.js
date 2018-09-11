@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import SimpleTextEditor from './SimpleTextEditor';
-import isFunction from'../utils/isFunction';
-import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
-import zIndexes from '../constants/zIndexes';
-import columnUtils from '../ColumnUtils';
-require('../../../../themes/react-data-grid-core.css');
+import {isFunction} from 'common/utils';
+import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
+import zIndexes from 'common/constants/zIndexes';
+require('../../../themes/react-data-grid-core.css');
+
+const isFrozen = column => column.frozen === true || column.locked === true;
 
 class EditorContainer extends React.Component {
   static displayName = 'EditorContainer';
@@ -322,8 +323,8 @@ class EditorContainer extends React.Component {
 
   render() {
     const { left, top, width, height, column, scrollLeft } = this.props;
-    const editorLeft = columnUtils.isFrozen(column) ? left + scrollLeft : left;
-    const zIndex = columnUtils.isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER : zIndexes.EDITOR_CONTAINER;
+    const editorLeft = isFrozen(column) ? left + scrollLeft : left;
+    const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER : zIndexes.EDITOR_CONTAINER;
     const style = { position: 'absolute', height, width, zIndex, transform: `translate(${editorLeft}px, ${top}px)` };
     return (
         <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>

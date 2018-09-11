@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import SelectionMask from '../SelectionMask';
-import zIndexes from '../../constants/zIndexes';
+import zIndexes from 'common/constants/zIndexes';
 
 describe('SelectionMask', () => {
   const TOP = 45;

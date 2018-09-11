@@ -6,8 +6,9 @@ import SelectionRangeMask from './SelectionRangeMask';
 import CopyMask from './CopyMask';
 import DragMask from './DragMask';
 import DragHandle from './DragHandle';
-import EditorContainer from '../editors/EditorContainer';
-import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
+import EditorContainer from 'common/editors/EditorContainer';
+import { UpdateActions } from 'common/constants';
+import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import {
   getSelectedDimensions,
   getSelectedCellValue,
@@ -18,11 +19,10 @@ import {
   isSelectedCellEditable,
   selectedRangeIsSingleCell
 } from '../utils/SelectedCellUtils';
-import isFunction from '../utils/isFunction';
-import * as AppConstants from '../AppConstants';
+import {isFunction} from 'common/utils';
 import * as columnUtils from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
-import { CellNavigationMode, EventTypes } from '../constants';
+import { CellNavigationMode, EventTypes } from 'common/constants';
 
 require('../../../../themes/interaction-masks.css');
 
@@ -266,7 +266,7 @@ class InteractionMasks extends React.Component {
       });
     }
 
-    onGridRowsUpdated(cellKey, toRow, toRow, { [cellKey]: textToCopy }, AppConstants.UpdateActions.COPY_PASTE, fromRow);
+    onGridRowsUpdated(cellKey, toRow, toRow, { [cellKey]: textToCopy }, UpdateActions.COPY_PASTE, fromRow);
   };
 
   isKeyboardNavigationEvent(e) {
@@ -549,7 +549,7 @@ class InteractionMasks extends React.Component {
           onCellsDragged({ cellKey, fromRow, toRow, value });
         }
         if (isFunction(onGridRowsUpdated)) {
-          onGridRowsUpdated(cellKey, fromRow, toRow, { [cellKey]: value }, AppConstants.UpdateActions.CELL_DRAG);
+          onGridRowsUpdated(cellKey, fromRow, toRow, { [cellKey]: value }, UpdateActions.CELL_DRAG);
         }
       }
       this.setState({

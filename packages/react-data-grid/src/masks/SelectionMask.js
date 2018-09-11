@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CellMask from './CellMask';
 import * as columnUtils from '../ColumnUtils';
-import zIndexes from '../constants/zIndexes';
+import zIndexes from 'common/constants/zIndexes';
 
 const isFrozenColumn = (columns, {idx}) => columnUtils.isFrozen(columnUtils.getColumn(columns, idx));
 

@@ -1,25 +1,24 @@
-const React                 = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 import {deprecate} from 'react-is-deprecated';
-const BaseGrid              = require('./Grid');
-const CheckboxEditor        = require('./editors/CheckboxEditor');
-const RowUtils = require('./RowUtils');
-const ColumnUtils = require('./ColumnUtils');
-const KeyCodes = require('./KeyCodes');
-const isFunction = require('./utils/isFunction');
+import BaseGrid from './Grid';
+import CheckboxEditor from 'common/editors/CheckboxEditor';
+import RowUtils from './RowUtils';
+import ColumnUtils from './ColumnUtils';
+import KeyCodes from './KeyCodes';
+import {isFunction} from 'common/utils';
 import SelectAll from './formatters/SelectAll';
-import AppConstants from './AppConstants';
-import { DEFINE_SORT } from './cells/headerCells/SortableHeaderCell';
+import { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
 const ColumnMetrics = require('./ColumnMetrics');
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
-import { CellNavigationMode, EventTypes } from './constants';
-import { EventBus } from './masks';
-
 if (!Object.assign) {
   Object.assign = require('object-assign');
 }
+
+import { CellNavigationMode, EventTypes, UpdateActions } from 'common/constants';
+import { EventBus } from './masks';
 
 const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;
 
@@ -341,7 +340,7 @@ class ReactDataGrid extends React.Component {
 
     if (this.props.onGridRowsUpdated) {
       let cellKey = this.getColumn(e.idx).key;
-      this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, {[cellKey]: e.rowData[cellKey]}, AppConstants.UpdateActions.COLUMN_FILL);
+      this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, {[cellKey]: e.rowData[cellKey]}, UpdateActions.COLUMN_FILL);
     }
   };
 
@@ -373,7 +372,7 @@ class ReactDataGrid extends React.Component {
       rowIds.push(rowGetter(i)[rowKey]);
     }
 
-    const fromRowData = rowGetter(action === AppConstants.UpdateActions.COPY_PASTE ? originRow : fromRow);
+    const fromRowData = rowGetter(action === UpdateActions.COPY_PASTE ? originRow : fromRow);
     const fromRowId = fromRowData[rowKey];
     const toRowId = rowGetter(toRow)[rowKey];
     onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action, fromRowData });
@@ -381,7 +380,7 @@ class ReactDataGrid extends React.Component {
 
   onCommit = (commit) => {
     const targetRow = commit.rowIdx;
-    this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, AppConstants.UpdateActions.CELL_UPDATE);
+    this.onGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
   };
 
   onScroll = (scrollState) => {

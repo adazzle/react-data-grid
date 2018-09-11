@@ -2,19 +2,7 @@ const shallowCloneObject = require('./shallowCloneObject');
 const sameColumn = require('./ColumnComparer');
 const ColumnUtils = require('./ColumnUtils');
 const getScrollbarSize = require('./getScrollbarSize');
-const isColumnsImmutable = require('./utils/isColumnsImmutable');
-
-type Column = {
-  key: string;
-  left: number;
-  width: number;
-};
-
-type ColumnMetricsType = {
-  columns: Array<Column>;
-  totalWidth: number;
-  minColumnWidth: number;
-};
+import {isColumnsImmutable} from 'common/utils';
 
 function setColumnWidths(columns, totalWidth) {
   return columns.map(column => {

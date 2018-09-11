@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Row from './Row';
-import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
+import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import * as rowUtils from './RowUtils';
 import RowGroup, { DefaultRowGroupRenderer } from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
-import { EventTypes } from './constants';
+import { EventTypes } from 'common/constants';
 require('../../../themes/react-data-grid-core.css');
 
 class Canvas extends React.PureComponent {

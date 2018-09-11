@@ -1,9 +1,9 @@
-import rowComparer from './RowComparer';
+import rowComparer from 'common/utils/RowComparer';
 import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import Cell from './Cell';
-import cellMetaDataShape from './PropTypeShapes/CellMetaDataShape';
+import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import createObjectWithProperties from './createObjectWithProperties';
 import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-row.css');

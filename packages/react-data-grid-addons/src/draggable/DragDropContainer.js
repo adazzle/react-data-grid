@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
-import { utils } from 'react-data-grid';
-const { isColumnsImmutable } = utils;
+import {isColumnsImmutable} from 'common/utils';
 import PropTypes from 'prop-types';
 
 class DraggableContainer extends Component {

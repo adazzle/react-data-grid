@@ -1,13 +1,13 @@
 const React = require('react');
 import PropTypes from 'prop-types';
 const joinClasses = require('classnames');
-const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
-const isFunction = require('./utils/isFunction');
-const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
+import ExcelColumn from 'common/prop-shapes/ExcelColumn';
+import {isFunction} from 'common/utils';
+import CellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
 const createObjectWithProperties = require('./createObjectWithProperties');
 import CellAction from './CellAction';
-import CellExpand from './CellExpand';
+import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-cell.css');

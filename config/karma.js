@@ -87,7 +87,10 @@ module.exports = function (config) {
         loaders: webpackConfig.module.loaders
       },
       resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
+        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx'],
+        alias: {
+          common: path.resolve('packages/common/')
+        }
       },
       plugins: [
         new RewirePlugin()
