@@ -25,7 +25,8 @@ class EditorContainer extends React.Component {
     width: PropTypes.number,
     top: PropTypes.number,
     left: PropTypes.number,
-    scrollLeft: PropTypes.number
+    scrollLeft: PropTypes.number,
+    scrollTop: PropTypes.number
   };
 
   state = {isInvalid: false};
@@ -40,6 +41,12 @@ class EditorContainer extends React.Component {
         inputNode.className += ' editor-main';
         inputNode.style.height = this.props.height - 1 + 'px';
       }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.scrollLeft !== this.props.scrollLeft || prevProps.scrollTop !== this.props.scrollTop) {
+      this.commitCancel();
     }
   }
 
@@ -322,10 +329,11 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { left, top, width, height, column, scrollLeft } = this.props;
-    const editorLeft = isFrozen(column) ? left + scrollLeft : left;
-    const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER : zIndexes.EDITOR_CONTAINER;
-    const style = { position: 'absolute', height, width, zIndex, transform: `translate(${editorLeft}px, ${top}px)` };
+    const { left, top, width, height, column, scrollLeft, scrollTop } = this.props;
+    const editorLeft = left - scrollLeft;
+    const editorTop = top - scrollTop;
+    const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER  : zIndexes.EDITOR_CONTAINER;
+    const style = { position: 'fixed', height, width, zIndex, transform: `translate(${editorLeft}px, ${editorTop}px)` };
     return (
         <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}

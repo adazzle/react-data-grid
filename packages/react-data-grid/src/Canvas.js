@@ -421,6 +421,7 @@ class Canvas extends React.PureComponent {
           onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           scrollLeft={this._scroll.scrollLeft}
+          scrollTop={this._scroll.scrollTop}
           getSelectedRowHeight={this.getSelectedRowHeight}
           getSelectedRowTop={this.getSelectedRowTop}
           getSelectedRowColumns={this.getSelectedRowColumns}

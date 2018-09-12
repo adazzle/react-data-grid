@@ -67,6 +67,7 @@ class InteractionMasks extends React.Component {
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     onBeforeFocus: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
+    scrollTop: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
     getSelectedRowHeight: PropTypes.func.isRequired,
     getSelectedRowTop: PropTypes.func.isRequired,
@@ -662,6 +663,7 @@ class InteractionMasks extends React.Component {
           rowData={rowData}
           column={getSelectedColumn({ selectedPosition, columns })}
           scrollLeft={this.props.scrollLeft}
+          scrollTop={this.props.scrollTop}
           {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
         />}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
