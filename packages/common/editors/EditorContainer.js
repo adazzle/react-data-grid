@@ -214,6 +214,7 @@ class EditorContainer extends React.Component {
 
   getContainerClass = () => {
     return joinClasses({
+      'rdg-editor-container': true,
       'has-error': this.state.isInvalid === true
     });
   };
