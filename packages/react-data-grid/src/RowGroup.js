@@ -37,7 +37,7 @@ class RowGroup extends Component {
 
     return (
       <div style={style} className="react-grid-row-group" onClick={this.onClick}>
-         <this.props.renderer {...this.props} ref={this.props.rowRef} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
+         <this.props.renderer {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
       </div>
     );
   }
@@ -93,7 +93,7 @@ const  Defaultbase = (props) => {
     }
   };
   return (
-    <div style={style} onKeyDown={onKeyDown} tabIndex={0} >
+    <div style={style} onKeyDown={onKeyDown} tabIndex={0} ref={this.props.rowRef} >
       <span className="row-expand-icon" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
       <strong>{props.columnGroupName}: {props.name}</strong>
     </div>
