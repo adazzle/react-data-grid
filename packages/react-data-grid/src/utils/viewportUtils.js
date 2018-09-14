@@ -128,5 +128,8 @@ export const getColOverscanStartIdx = (scrollDirection, colVisibleStartIdx, last
 };
 
 export const getColOverscanEndIdx = (scrollDirection, colVisibleEndIdx, totalNumberColumns) => {
-  return (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) ? totalNumberColumns : colVisibleEndIdx;
+  if (scrollDirection === SCROLL_DIRECTION.DOWN || scrollDirection === SCROLL_DIRECTION.UP) {
+    return colVisibleEndIdx;
+  }
+  return totalNumberColumns;
 };
