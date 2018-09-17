@@ -15,9 +15,9 @@ export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight }) 
   const { idx, rowIdx } = selectedPosition;
   if (idx >= 0) {
     const column = columnUtils.getColumn(columns, idx);
-    const { width, left, frozen } = column;
+    const { width, left } = column;
     const top = getRowTop(rowIdx, rowHeight);
-    const zIndex = frozen ? zIndexes.FROZEN_CELL_MASK : zIndexes.CELL_MASK;
+    const zIndex = columnUtils.isFrozen(columns) ? zIndexes.FROZEN_CELL_MASK : zIndexes.CELL_MASK;
     return { width, left, top, height: rowHeight, zIndex };
   }
   return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
