@@ -3,7 +3,7 @@ const rewire        = require('rewire');
 const TestUtils     = require('react-dom/test-utils');
 const rewireModule  = require('../../../../test/rewireModule');
 const StubComponent = require('../../../../test/StubComponent');
-const helpers       = require('../helpers/test/GridPropHelpers');
+import helpers from '../helpers/test/GridPropHelpers';
 const HeaderRow     = rewire('../HeaderRow');
 import { shallow } from 'enzyme';
 

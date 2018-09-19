@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
-import { utils } from 'react-data-grid';
-const { isEmptyArray, isEmptyObject } = utils;
+import {isEmptyObject, isEmptyArray} from 'common/utils';
 const groupRows = require('./RowGrouper');
 const filterRows = require('./RowFilterer');
 const sortRows = require('./RowSorter');

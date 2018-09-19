@@ -68,3 +68,6 @@
   border-bottom: 1px solid black
 }
 
+.rdg-scrolling {
+  pointer-events: none;
+}

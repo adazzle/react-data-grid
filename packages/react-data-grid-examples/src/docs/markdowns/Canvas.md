@@ -16,22 +16,22 @@ type: `shaperequire('./PropTypeShapes/CellMetaDataShape')`
 type: `string`
 
 
-### `colDisplayEnd` (required)
+### `colOverscanEndIdx` (required)
 
 type: `number`
 
 
-### `colDisplayStart` (required)
+### `colOverscanStartIdx` (required)
 
 type: `number`
 
 
-### `colVisibleEnd` (required)
+### `colVisibleEndIdx` (required)
 
 type: `number`
 
 
-### `colVisibleStart` (required)
+### `colVisibleStartIdx` (required)
 
 type: `number`
 
@@ -46,12 +46,12 @@ type: `union(object|array)`
 type: `element`
 
 
-### `displayEnd` (required)
+### `rowOverscanEndIdx` (required)
 
 type: `number`
 
 
-### `displayStart` (required)
+### `rowOverscanStartIdx` (required)
 
 type: `number`
 
@@ -145,12 +145,12 @@ type: `string`
 type: `union(number|string)`
 
 
-### `visibleEnd` (required)
+### `rowVisibleEndIdx` (required)
 
 type: `number`
 
 
-### `visibleStart` (required)
+### `rowVisibleStartIdx` (required)
 
 type: `number`
 

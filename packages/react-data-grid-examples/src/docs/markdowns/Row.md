@@ -17,22 +17,22 @@ type: `func`
 defaultValue: `require('./Cell')`
 
 
-### `colDisplayEnd` (required)
+### `colOverscanEndIdx` (required)
 
 type: `number`
 
 
-### `colDisplayStart` (required)
+### `colOverscanStartIdx` (required)
 
 type: `number`
 
 
-### `colVisibleEnd` (required)
+### `colVisibleEndIdx` (required)
 
 type: `number`
 
 
-### `colVisibleStart` (required)
+### `colVisibleStartIdx` (required)
 
 type: `number`
 

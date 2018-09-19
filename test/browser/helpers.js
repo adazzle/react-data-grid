@@ -25,7 +25,7 @@ var columns = [
     name: 'Supplier',
     key: 'supplier',
     width: 300,
-    locked: true,
+    frozen: true,
   },
   {
     idx: 1,

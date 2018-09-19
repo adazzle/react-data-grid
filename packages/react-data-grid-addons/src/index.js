@@ -7,7 +7,7 @@ const Menu = require('./menu');
 const Draggable = require('./draggable');
 const DraggableHeader = require('./draggable-header');
 const Filters = require('./cells/headerCells/filters');
-const { RowComparer: rowComparer } = require('react-data-grid');
+import rowComparer from 'common/utils/RowComparer';
 const performance = require('./performance');
 const Utils = { rowComparer, performance };
 
