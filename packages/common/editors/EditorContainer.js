@@ -331,7 +331,7 @@ class EditorContainer extends React.Component {
 
   render() {
     const { left, top, width, height, column, scrollLeft, scrollTop } = this.props;
-    const editorLeft = left - scrollLeft;
+    const editorLeft = isFrozen(column) ? left : left - scrollLeft;
     const editorTop = top - scrollTop;
     const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER  : zIndexes.EDITOR_CONTAINER;
     const style = { position: 'fixed', height, width, zIndex, transform: `translate(${editorLeft}px, ${editorTop}px)` };
