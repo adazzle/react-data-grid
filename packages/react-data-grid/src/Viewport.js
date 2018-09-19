@@ -137,7 +137,9 @@ class Viewport extends React.Component {
       colOverscanEndIdx,
       scrollDirection,
       lastFrozenColumnIndex,
-      isScrolling
+      isScrolling,
+      prevScrollTop: this.state.scrollTop,
+      prevScrollLeft: this.state.scrollTop
     };
   }
 
@@ -307,6 +309,8 @@ class Viewport extends React.Component {
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           onCommit={this.props.onCommit}
           RowsContainer={this.props.RowsContainer}
+          prevScrollLeft={this.state.prevScrollLeft}
+          prevScrollTop={this.state.prevScrollTop}
         />
       </div>
     );

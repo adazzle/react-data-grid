@@ -67,7 +67,9 @@ class InteractionMasks extends React.Component {
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     onBeforeFocus: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
+    prevScrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,
+    prevScrollTop: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
     getSelectedRowHeight: PropTypes.func.isRequired,
     getSelectedRowTop: PropTypes.func.isRequired,
@@ -424,6 +426,7 @@ class InteractionMasks extends React.Component {
       if (this.isCellWithinBounds(next)) {
         return {
           selectedPosition: next,
+          prevSelectedPosition: cell,
           selectedRange: {
             topLeft: next,
             bottomRight: next,
@@ -577,7 +580,7 @@ class InteractionMasks extends React.Component {
   };
 
   getSingleCellSelectView = () => {
-    const { columns, getSelectedRowHeight, getSelectedRowTop } = this.props;
+    const { columns, getSelectedRowHeight, getSelectedRowTop, scrollLeft, scrollTop, prevScrollLeft, prevScrollTop} = this.props;
     const { selectedPosition } = this.state;
     return (
       !this.state.isEditorEnabled && this.isGridSelected() && (
@@ -585,9 +588,13 @@ class InteractionMasks extends React.Component {
           selectedPosition={selectedPosition}
           columns={columns}
           isGroupedRow={this.isGroupedRowSelected()}
-          scrollLeft={this.props.scrollLeft}
+          scrollTop={scrollTop}
+          scrollLeft={scrollLeft}
           getSelectedRowHeight={getSelectedRowHeight}
           getSelectedRowTop={getSelectedRowTop}
+          prevScrollLeft={prevScrollLeft}
+          prevScrollTop={prevScrollTop}
+          prevSelectedPosition={this.state.prevSelectedPosition}
         >
           {this.dragEnabled() && (
             <DragHandle
@@ -602,7 +609,7 @@ class InteractionMasks extends React.Component {
   };
 
   getCellRangeSelectView = () => {
-    const { columns, rowHeight, getSelectedRowHeight, getSelectedRowTop } = this.props;
+    const { columns, rowHeight, getSelectedRowHeight, getSelectedRowTop, scrollLeft, scrollTop, prevScrollLeft, prevScrollTop } = this.props;
     return [
       <SelectionRangeMask
         key="range-mask"
@@ -615,9 +622,13 @@ class InteractionMasks extends React.Component {
         selectedPosition={this.state.selectedRange.startCell}
         columns={columns}
         rowHeight={rowHeight}
-        scrollLeft={this.props.scrollLeft}
+        scrollLeft={scrollLeft}
+        scrollTop={scrollTop}
         getSelectedRowHeight={getSelectedRowHeight}
         getSelectedRowTop={getSelectedRowTop}
+        prevScrollLeft={prevScrollLeft}
+        prevScrollTop={prevScrollTop}
+        prevSelectedPosition={this.state.prevSelectedPosition}
       />
     ];
   };
