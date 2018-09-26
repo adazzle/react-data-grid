@@ -1,6 +1,6 @@
 {
-  "name": "react-data-grid-examples",
-  "version": "5.0.4",
+  "name": "@eagle/react-data-grid-examples",
+  "version": "5.0.5",
   "description": "A set of examples for the grid",
   "main": "main.js",
   "scripts": {
