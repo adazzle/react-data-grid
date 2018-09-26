@@ -1,14 +1,11 @@
 {
-  "name": "react-data-grid",
-  "version": "5.0.1",
+  "name": "@eagle/react-data-grid",
+  "version": "5.0.2",
   "description": "Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like",
   "scripts": {
     "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid true",
     "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid",
     "test": "npm test"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "keywords": [
     "react",
