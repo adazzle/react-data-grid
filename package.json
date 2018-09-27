@@ -1,5 +1,5 @@
 {
-  "name": "react-data-grid",
+  "name": "@eagle/react-data-grid",
   "private": true,
   "version": "1.0.0",
   "description": "Data grid for React",

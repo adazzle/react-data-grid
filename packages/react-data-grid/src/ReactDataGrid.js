@@ -126,7 +126,8 @@ class ReactDataGrid extends React.Component {
     columnEquality: PropTypes.func,
     onColumnResize: PropTypes.func,
     onScroll: PropTypes.func,
-    alwaysShowFilterRow: PropTypes.bool
+    alwaysShowFilterRow: PropTypes.bool, // Flag to show the filter row without toggling
+    skipColumnObjComparison: PropTypes.bool // Skip column object comparison if this flag is set - reqd for re-rendering of filter row
   };
 
   static defaultProps = {
@@ -195,7 +196,8 @@ class ReactDataGrid extends React.Component {
         !ColumnMetrics.sameColumns(
           this.props.columns,
           nextProps.columns,
-          this.props.columnEquality
+          this.props.columnEquality,
+          nextProps.skipColumnObjComparison
         ) ||
         nextProps.minWidth !== this.props.minWidth
       ) {

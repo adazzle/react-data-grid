@@ -1,16 +1,17 @@
-const React                = require('react');
-import PropTypes from 'prop-types';
-const Header               = require('./Header');
-const Viewport             = require('./Viewport');
-import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-import columnUtils from './ColumnUtils';
-require('../../../themes/react-data-grid-core.css');
+const React = require("react");
+import PropTypes from "prop-types";
+const Header = require("./Header");
+const Viewport = require("./Viewport");
+import cellMetaDataShape from "common/prop-shapes/CellMetaDataShape";
+import columnUtils from "./ColumnUtils";
+require("../../../themes/react-data-grid-core.css");
 
 class Grid extends React.Component {
-  static displayName = 'Grid';
+  static displayName = "Grid";
 
   static propTypes = {
-    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
+    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func])
+      .isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     columnMetrics: PropTypes.object,
     minHeight: PropTypes.number,
@@ -39,7 +40,7 @@ class Grid extends React.Component {
     onRows: PropTypes.func,
     sortColumn: PropTypes.string,
     cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
-    sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
+    sortDirection: PropTypes.oneOf(["ASC", "DESC", "NONE"]),
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,
     onViewportKeyup: PropTypes.func,
@@ -81,9 +82,9 @@ class Grid extends React.Component {
 
   getStyle = () => {
     return {
-      overflow: 'hidden',
+      overflow: "hidden",
       outline: 0,
-      position: 'relative',
+      position: "relative",
       minHeight: this.props.minHeight
     };
   };
@@ -98,13 +99,18 @@ class Grid extends React.Component {
   };
 
   areFrozenColumnsScrolledLeft(scrollLeft) {
-    return scrollLeft > 0 && this.props.columns.some(c => columnUtils.isFrozen(c));
+    return (
+      scrollLeft > 0 && this.props.columns.some(c => columnUtils.isFrozen(c))
+    );
   }
 
-  onScroll = (scrollState) => {
+  onScroll = scrollState => {
     this.props.onScroll(scrollState);
-    const {scrollLeft} = scrollState;
-    if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsScrolledLeft(scrollLeft)) {
+    const { scrollLeft } = scrollState;
+    if (
+      this._scrollLeft !== scrollLeft ||
+      this.areFrozenColumnsScrolledLeft(scrollLeft)
+    ) {
       this._scrollLeft = scrollLeft;
       this._onScroll();
     }
@@ -127,16 +133,18 @@ class Grid extends React.Component {
     this._scrollLeft = undefined;
   }
 
-  setHeaderRef = (header) => {
+  setHeaderRef = header => {
     this.header = header;
   };
 
-  setViewportRef = (viewport) => {
+  setViewportRef = viewport => {
     this.viewport = viewport;
   };
 
   render() {
-    let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
+    let headerRows = this.props.headerRows || [
+      { ref: node => (this.row = node) }
+    ];
     let EmptyRowsView = this.props.emptyRowsView;
 
     return (
@@ -156,60 +164,78 @@ class Grid extends React.Component {
           // onScroll={this.onHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}
-          />
-          {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
-            <div
-              ref={(node) => { this.viewPortContainer = node; } }
-              onKeyDown={this.props.onViewportKeydown}
-              onKeyUp={this.props.onViewportKeyup}
-              >
-                <Viewport
-                  {...this.props}
-                  ref={this.setViewportRef}
-                  rowKey={this.props.rowKey}
-                  width={this.props.columnMetrics.width}
-                  rowHeight={this.props.rowHeight}
-                  rowRenderer={this.props.rowRenderer}
-                  rowGetter={this.props.rowGetter}
-                  rowsCount={this.props.rowsCount}
-                  selectedRows={this.props.selectedRows}
-                  expandedRows={this.props.expandedRows}
-                  columnMetrics={this.props.columnMetrics}
-                  totalWidth={this.props.totalWidth}
-                  onScroll={this.onScroll}
-                  onRows={this.props.onRows}
-                  cellMetaData={this.props.cellMetaData}
-                  rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
-                  minHeight={this.props.minHeight}
-                  rowScrollTimeout={this.props.rowScrollTimeout}
-                  scrollToRowIndex={this.props.scrollToRowIndex}
-                  contextMenu={this.props.contextMenu}
-                  rowSelection={this.props.rowSelection}
-                  getSubRowDetails={this.props.getSubRowDetails}
-                  rowGroupRenderer={this.props.rowGroupRenderer}
-                  overScan={this.props.overScan}
-                  enableCellSelect={this.props.enableCellSelect}
-                  enableCellAutoFocus={this.props.enableCellAutoFocus}
-                  cellNavigationMode={this.props.cellNavigationMode}
-                  eventBus={this.props.eventBus}
-                  onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-                  onCellCopyPaste={this.props.onCellCopyPaste}
-                  onGridRowsUpdated={this.props.onGridRowsUpdated}
-                  onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-                  onCellSelected={this.props.onCellSelected}
-                  onCellDeSelected={this.props.onCellDeSelected}
-                  onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
-                  onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
-                  onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
-                  onCommit={this.props.onCommit}
-                  RowsContainer={this.props.RowsContainer}
-                />
-            </div>
-        :
-            <div ref={(node) => { this.emptyView = node; } } className="react-grid-Empty">
-                <EmptyRowsView />
-            </div>
-        }
+          skipColumnObjComparison={this.props.skipColumnObjComparison}
+        />
+        {this.props.rowsCount >= 1 ||
+        (this.props.rowsCount === 0 && !this.props.emptyRowsView) ? (
+          <div
+            ref={node => {
+              this.viewPortContainer = node;
+            }}
+            onKeyDown={this.props.onViewportKeydown}
+            onKeyUp={this.props.onViewportKeyup}
+          >
+            <Viewport
+              {...this.props}
+              ref={this.setViewportRef}
+              rowKey={this.props.rowKey}
+              width={this.props.columnMetrics.width}
+              rowHeight={this.props.rowHeight}
+              rowRenderer={this.props.rowRenderer}
+              rowGetter={this.props.rowGetter}
+              rowsCount={this.props.rowsCount}
+              selectedRows={this.props.selectedRows}
+              expandedRows={this.props.expandedRows}
+              columnMetrics={this.props.columnMetrics}
+              totalWidth={this.props.totalWidth}
+              onScroll={this.onScroll}
+              onRows={this.props.onRows}
+              cellMetaData={this.props.cellMetaData}
+              rowOffsetHeight={
+                this.props.rowOffsetHeight ||
+                this.props.rowHeight * headerRows.length
+              }
+              minHeight={this.props.minHeight}
+              rowScrollTimeout={this.props.rowScrollTimeout}
+              scrollToRowIndex={this.props.scrollToRowIndex}
+              contextMenu={this.props.contextMenu}
+              rowSelection={this.props.rowSelection}
+              getSubRowDetails={this.props.getSubRowDetails}
+              rowGroupRenderer={this.props.rowGroupRenderer}
+              overScan={this.props.overScan}
+              enableCellSelect={this.props.enableCellSelect}
+              enableCellAutoFocus={this.props.enableCellAutoFocus}
+              cellNavigationMode={this.props.cellNavigationMode}
+              eventBus={this.props.eventBus}
+              onCheckCellIsEditable={this.props.onCheckCellIsEditable}
+              onCellCopyPaste={this.props.onCellCopyPaste}
+              onGridRowsUpdated={this.props.onGridRowsUpdated}
+              onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
+              onCellSelected={this.props.onCellSelected}
+              onCellDeSelected={this.props.onCellDeSelected}
+              onCellRangeSelectionStarted={
+                this.props.onCellRangeSelectionStarted
+              }
+              onCellRangeSelectionUpdated={
+                this.props.onCellRangeSelectionUpdated
+              }
+              onCellRangeSelectionCompleted={
+                this.props.onCellRangeSelectionCompleted
+              }
+              onCommit={this.props.onCommit}
+              RowsContainer={this.props.RowsContainer}
+            />
+          </div>
+        ) : (
+          <div
+            ref={node => {
+              this.emptyView = node;
+            }}
+            className="react-grid-Empty"
+          >
+            <EmptyRowsView />
+          </div>
+        )}
       </div>
     );
   }
