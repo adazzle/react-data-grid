@@ -1,4 +1,4 @@
-# React Data Grid 
+# React Data Grid
 [![Build status](https://ci.appveyor.com/api/projects/status/smciktvlkvp6r8w7/branch/master?svg=true)](https://ci.appveyor.com/project/adazzle/react-data-grid/branch/master)[![Coverage Status](https://coveralls.io/repos/adazzle/react-data-grid/badge.svg?branch=master)](https://coveralls.io/r/adazzle/react-data-grid?branch=master) [![npm version](https://badge.fury.io/js/react-data-grid.svg)](http://badge.fury.io/js/react-data-grid) 
 ![npm dependencies](https://david-dm.org/adazzle/react-data-grid.svg)
 [![CDNJS](https://img.shields.io/cdnjs/v/react-data-grid.svg)](https://cdnjs.com/libraries/react-data-grid)
@@ -56,20 +56,20 @@ Features
 --------
 
 - Lightning fast virtual rendering
-- [Can render hundreds of thousands of rows with no lag](http://adazzle.github.io/react-data-grid/examples.html#/one-million-rows)
-- Keyboard navigation
-- [Fully editable grid](http://adazzle.github.io/react-data-grid/examples.html#/editable)
-- [Rich cell editors like autocomplete, checkbox and dropdown editors, complete with keyboard navigation](http://adazzle.github.io/react-data-grid/examples.html#/built-in-editors)
-- Custom cell Editors - Easily create your own
-- [Custom cell Formatters](http://adazzle.github.io/react-data-grid/examples.html#/custom-formatters)
-- [Frozen columns](http://adazzle.github.io/react-data-grid/examples.html#/fixed-cols)
-- [Resizable columns](http://adazzle.github.io/react-data-grid/examples.html#/resizable-cols)
-- [Sorting](http://adazzle.github.io/react-data-grid/examples.html#/sortable-cols) 
-- [Filtering](http://adazzle.github.io/react-data-grid/examples.html#/filterable-sortable-grid) 
-- [Context Menu](http://adazzle.github.io/react-data-grid/examples.html#/context-menu)
+- [Can render hundreds of thousands of rows with no lag](https://adazzle.github.io/react-data-grid/#/examples/one-million-rows)
+- [Keyboard navigation](https://adazzle.github.io/react-data-grid/#/examples/cell-navigation)
+- [Fully editable grid](https://adazzle.github.io/react-data-grid/#/examples/editable)
+- [Rich cell editors like autocomplete, checkbox and dropdown editors, complete with keyboard navigation](https://adazzle.github.io/react-data-grid/#/examples/built-in-editors)
+- [Custom cell Editors - Easily create your own](https://adazzle.github.io/react-data-grid/#/examples/editable)
+- [Custom cell Formatters](https://adazzle.github.io/react-data-grid/#/examples/custom-formatters)
+- [Frozen columns](https://adazzle.github.io/react-data-grid/#/examples/fixed-cols)
+- [Resizable columns](https://adazzle.github.io/react-data-grid/#/examples/resizable-cols)
+- [Sorting](https://adazzle.github.io/react-data-grid/#/examples/sortable-cols)
+- [Filtering](https://adazzle.github.io/react-data-grid/#/examples/filterable-sortable-grid)
+- [Context Menu](https://adazzle.github.io/react-data-grid/#/examples/context-menu)
 - Copy and Paste values into other cells
-- [Multiple cell updates using cell dragdown](http://adazzle.github.io/react-data-grid/examples.html#/cell-drag-down)
-- [Association of events of individual columns](http://adazzle.github.io/react-data-grid/examples.html#/column-events)
+- [Multiple cell updates using cell dragdown](https://adazzle.github.io/react-data-grid/#/examples/cell-drag-down)
+- [Association of events of individual columns](https://adazzle.github.io/react-data-grid/#/examples/column-events)
 
 
 Check out the `examples` directory to see how simple previously complex UI
