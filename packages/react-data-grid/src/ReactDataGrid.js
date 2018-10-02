@@ -140,6 +140,7 @@ class ReactDataGrid extends React.Component {
 
     this.state = initialState;
     this.eventBus = new EventBus();
+    this._selectedRowsCount = 0;
   }
 
   componentDidMount() {
@@ -468,9 +469,16 @@ class ReactDataGrid extends React.Component {
     this.setState({lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: {rowIdx: rowIdx, idx: 0}});
 
     if (isPreviouslySelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
+      this._selectedRowsCount -= 1;
       this.props.rowSelection.onRowsDeselected([{rowIdx, row: rowData}]);
     } else if (!isPreviouslySelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
+      this._selectedRowsCount += 1;
       this.props.rowSelection.onRowsSelected([{rowIdx, row: rowData}]);
+    }
+    if (this.selectAllCheckbox && this.selectAllCheckbox.checked === false) {
+      if (this._selectedRowsCount === this.props.rowsCount) {
+        this.selectAllCheckbox.checked = true;
+      }
     }
   };
 
@@ -507,8 +515,10 @@ class ReactDataGrid extends React.Component {
     let allRowsSelected;
     if (e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true) {
       allRowsSelected = true;
+      this._selectedRowsCount = this.props.rowsCount;
     } else {
       allRowsSelected = false;
+      this._selectedRowsCount = 0;
     }
     if (this.useNewRowSelection()) {
       let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
