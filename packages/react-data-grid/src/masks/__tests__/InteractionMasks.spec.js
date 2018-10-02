@@ -50,7 +50,7 @@ describe('<InteractionMasks/>', () => {
       onBeforeFocus: jasmine.createSpy().and.returnValue(() => null),
       getSelectedRowHeight: () => 50,
       getSelectedRowTop: () => 0,
-      getSelectedRowColumns: () => columns,
+      getSelectedRowColumns: jasmine.createSpy().and.callFake(() => columns),
       ...overrideProps
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
@@ -134,9 +134,7 @@ describe('<InteractionMasks/>', () => {
         let wrapper;
 
         beforeEach(() => {
-          const setupResult = setup();
-          props = setupResult.props;
-          wrapper = setupResult.wrapper;
+          ({ props, wrapper } = setup());
           props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
         });
 
@@ -216,7 +214,7 @@ describe('<InteractionMasks/>', () => {
           const setupResult = setup();
           props = setupResult.props;
           wrapper = setupResult.wrapper;
-          selectRange(wrapper, props, { idx: 2, rowIdx: 2}, { idx: 3, rowIdx: 3 });
+          selectRange(wrapper, props, { idx: 2, rowIdx: 2 }, { idx: 3, rowIdx: 3 });
         });
 
         it('should shrink the selection upwards on Shift+Up', () => {
@@ -375,8 +373,8 @@ describe('<InteractionMasks/>', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
       expect(props.onCellRangeSelectionStarted).toHaveBeenCalledWith(jasmine.objectContaining({
-        topLeft: { idx: 2, rowIdx: 2},
-        bottomRight: { idx: 2, rowIdx: 2}
+        topLeft: { idx: 2, rowIdx: 2 },
+        bottomRight: { idx: 2, rowIdx: 2 }
       }));
     });
 
@@ -385,8 +383,8 @@ describe('<InteractionMasks/>', () => {
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
       props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
       expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(jasmine.objectContaining({
-        topLeft: { idx: 2, rowIdx: 2},
-        bottomRight: { idx: 3, rowIdx: 3}
+        topLeft: { idx: 2, rowIdx: 2 },
+        bottomRight: { idx: 3, rowIdx: 3 }
       }));
     });
 
@@ -403,8 +401,8 @@ describe('<InteractionMasks/>', () => {
       const { wrapper, props } = setup({}, { selectedPosition: currentCell });
       pressKey(wrapper, 'ArrowRight', { shiftKey: true });
       expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(jasmine.objectContaining({
-        topLeft: { idx: 0, rowIdx: 0},
-        bottomRight: { idx: 1, rowIdx: 0}
+        topLeft: { idx: 0, rowIdx: 0 },
+        bottomRight: { idx: 1, rowIdx: 0 }
       }));
       expect(props.onCellRangeSelectionCompleted).toHaveBeenCalled();
     });
@@ -696,6 +694,18 @@ describe('<InteractionMasks/>', () => {
       expect(wrapper.find(CopyMask).props().copiedPosition).toEqual({ idx: 1, rowIdx: 2, value: '3' });
     });
 
+    it('should render a CopyMask component with correct columns', () => {
+      const { wrapper, props } = setupCopy();
+      const { columns: selectedRowColumns, getSelectedRowColumns } = props;
+      const copyRowColumns = selectedRowColumns.slice(0, 5);
+      getSelectedRowColumns.and.callFake(rowIdx => rowIdx === 2 ? copyRowColumns : selectedRowColumns);
+      // Copy selected cell
+      pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
+      // Change selected row
+      pressKey(wrapper, 'ArrowUp');
+      expect(wrapper.find(CopyMask).props().columns).toEqual(copyRowColumns);
+    });
+
     it('should remove the CopyMask component on escape', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
@@ -703,7 +713,7 @@ describe('<InteractionMasks/>', () => {
       expect(wrapper.find(CopyMask).length).toBe(0);
     });
 
-    it('should update the selected cell with the copied value on paster', () => {
+    it('should update the selected cell with the copied value on paste', () => {
       const { wrapper, props } = setupCopy();
       // Copy selected cell
       pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
