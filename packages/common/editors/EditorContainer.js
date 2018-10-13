@@ -42,6 +42,8 @@ class EditorContainer extends React.Component {
         inputNode.style.height = this.props.height - 1 + 'px';
       }
     }
+
+    window.addEventListener('scroll', this.setContainerTransform);
   }
 
   componentDidUpdate(prevProps) {
@@ -54,6 +56,20 @@ class EditorContainer extends React.Component {
     if (!this.changeCommitted && !this.changeCanceled) {
       this.commit({key: 'Enter'});
     }
+    window.removeEventListener('scroll', this.setContainerTransform);
+  }
+
+  setContainerTransform = (): void => {
+    if (this.containerRef) {
+      this.containerRef.style.transform = this.calculateTransform();
+    }
+  }
+
+  calculateTransform = () => {
+    const { column, left, scrollLeft, top, scrollTop } = this.props;
+    const editorLeft = isFrozen(column) ? left : left - scrollLeft;
+    const editorTop = top - scrollTop - window.pageYOffset;
+    return `translate(${editorLeft}px, ${editorTop}px)`;
   }
 
   isKeyExplicitlyHandled = (key: string): boolean => {
@@ -330,13 +346,11 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { left, top, width, height, column, scrollLeft, scrollTop } = this.props;
-    const editorLeft = isFrozen(column) ? left : left - scrollLeft;
-    const editorTop = top - scrollTop;
+    const { width, height, column } = this.props;
     const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER  : zIndexes.EDITOR_CONTAINER;
-    const style = { position: 'fixed', height, width, zIndex, transform: `translate(${editorLeft}px, ${editorTop}px)` };
+    const style = { position: 'fixed', height, width, zIndex, transform: this.calculateTransform() };
     return (
-        <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
+        <div ref={ref => this.containerRef = ref} style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>
