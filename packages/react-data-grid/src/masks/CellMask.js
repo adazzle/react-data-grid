@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const setMaskStyle = ({ left, top, width, height, zIndex, position }) => {
-  const topWithOffset = top - window.scrollY;
   return {
     height,
     width,
     zIndex,
     position: position || 'absolute',
     pointerEvents: 'none',
-    transform: `translate(${left}px, ${topWithOffset}px)`
+    transform: `translate(${left}px, ${top}px)`
   };
 };
 
