@@ -68,7 +68,7 @@ class EditorContainer extends React.Component {
   calculateTransform = () => {
     const { column, left, scrollLeft, top, scrollTop } = this.props;
     const editorLeft = isFrozen(column) ? left : left - scrollLeft;
-    const editorTop = top - scrollTop - window.scrollY;
+    const editorTop = top - scrollTop - window.pageYOffset;
     return `translate(${editorLeft}px, ${editorTop}px)`;
   }
 
