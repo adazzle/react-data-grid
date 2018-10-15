@@ -111,17 +111,11 @@ class HeaderRow extends React.Component {
   getCells = (): Array<HeaderCell> => {
     const cells = [];
     const frozenCells = [];
-    for (let i = 0, len = columnUtils.getSize(this.props.columns); i < len; i++) {
-      const column = Object.assign({ rowType: this.props.rowType }, columnUtils.getColumn(this.props.columns, i));
-      let _renderer = this.getHeaderRenderer(column);
-      if (column.key === 'select-row' && this.props.rowType === 'filter') {
-        _renderer = <div></div>;
-      }
+    const { columns, rowType } = this.props;
 
-      const draggableHeaderCellProps = {
-        column,
-        onHeaderDrop: this.props.onHeaderDrop
-      };
+    for (let i = 0, len = columnUtils.getSize(columns); i < len; i++) {
+      const column = Object.assign({ rowType }, columnUtils.getColumn(columns, i));
+      const _renderer = column.key === 'select-row' && rowType === 'filter' ? <div></div> : this.getHeaderRenderer(column);
 
       const baseHeaderCellProps = {
         column,
@@ -139,7 +133,8 @@ class HeaderRow extends React.Component {
           <DraggableHeaderCell
             key={column.key}
             ref={(node) => this.cells[i] = node}
-            {...draggableHeaderCellProps}
+            column={column}
+            onHeaderDrop={this.props.onHeaderDrop}
           >
             <BaseHeaderCell {...baseHeaderCellProps} />
           </DraggableHeaderCell>
