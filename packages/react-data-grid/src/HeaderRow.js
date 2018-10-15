@@ -49,9 +49,7 @@ class HeaderRow extends React.Component {
     this.cells = [];
   }
 
-  shouldComponentUpdate(
-    nextProps: {width: ?(number | string); height: number; columns: Array<ExcelColumn>; style: ?HeaderRowStyle; onColumnResize: ?any},
-  ): boolean {
+  shouldComponentUpdate(nextProps) {
     return (
       nextProps.width !== this.props.width
       || nextProps.height !== this.props.height
@@ -106,7 +104,7 @@ class HeaderRow extends React.Component {
     return renderer;
   };
 
-  getStyle = (): HeaderRowStyle => {
+  getStyle = () => {
     return {
       overflow: 'hidden',
       width: '100%',
@@ -115,7 +113,7 @@ class HeaderRow extends React.Component {
     };
   };
 
-  getCells = (): Array<HeaderCell> => {
+  getCells = () => {
     let cells = [];
     let frozenCells = [];
     for (let i = 0, len = columnUtils.getSize(this.props.columns); i < len; i++) {
@@ -148,7 +146,7 @@ class HeaderRow extends React.Component {
     return cells.concat(frozenCells);
   };
 
-  setScrollLeft = (scrollLeft: number) => {
+  setScrollLeft = (scrollLeft) => {
     this.props.columns.forEach( (column, i) => {
       if (columnUtils.isFrozen(column)) {
         this.cells[i].setScrollLeft(scrollLeft);
@@ -164,7 +162,7 @@ class HeaderRow extends React.Component {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
 
-  render(): ?ReactElement {
+  render() {
     let cellsStyle = {
       width: this.props.width ? (this.props.width + getScrollbarSize()) : '100%',
       height: this.props.height,

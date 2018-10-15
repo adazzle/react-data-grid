@@ -47,7 +47,7 @@ class SortableHeaderCell extends React.Component {
     return this.props.sortDirection === 'NONE' ? '' : String.fromCharCode(unicodeKeys[this.props.sortDirection]);
   };
 
-  render(): ?ReactElement {
+  render() {
     let className = joinClasses({
       'react-grid-HeaderCell-sortable': true,
       'react-grid-HeaderCell-sortable--ascending': this.props.sortDirection === 'ASC',
