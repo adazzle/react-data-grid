@@ -1,7 +1,6 @@
 let isValidElement = require('react').isValidElement;
 
-module.exports =
-function sameColumn(a: Column, b: Column): boolean {
+module.exports = function sameColumn(a, b) {
   let k;
 
   for (k in a) {
