@@ -38,12 +38,12 @@ class Example extends React.Component {
       stateCopy.columns.splice(columnSourceIndex, 1)[0]
     );
 
-    const emptyColumns = Object.assign({},this.state, { columns: [] });
+    const emptyColumns = Object.assign({}, this.state, { columns: [] });
     this.setState(
       emptyColumns
     );
 
-    const reorderedColumns = Object.assign({},this.state, { columns: stateCopy.columns });
+    const reorderedColumns = Object.assign({}, this.state, { columns: stateCopy.columns });
     this.setState(
       reorderedColumns
     );
@@ -75,7 +75,7 @@ class Example extends React.Component {
 
   render() {
     return (
-      <DraggableContainer 
+      <DraggableContainer
         onHeaderDrop={this.onHeaderDrop}>
         <ReactDataGrid
           columns={this.state.columns}
