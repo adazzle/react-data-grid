@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 
 class EditorBase extends React.Component {
 
-  getStyle(): {width: string} {
+  getStyle() {
     return {
       width: '100%'
     };
   }
 
-  getValue(): any {
+  getValue() {
     let updated = {};
     updated[this.props.column.key] = this.getInputNode().value;
     return updated;
@@ -26,7 +26,7 @@ class EditorBase extends React.Component {
     return domNode.querySelector('input:not([type=hidden])');
   }
 
-  inheritContainerStyles(): boolean {
+  inheritContainerStyles() {
     return true;
   }
 

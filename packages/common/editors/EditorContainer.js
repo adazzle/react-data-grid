@@ -56,11 +56,11 @@ class EditorContainer extends React.Component {
     }
   }
 
-  isKeyExplicitlyHandled = (key: string): boolean => {
+  isKeyExplicitlyHandled = (key) => {
     return isFunction(this['onPress' + key]);
   };
 
-  checkAndCall = (methodName: string, args: any) => {
+  checkAndCall = (methodName, args) => {
     if (isFunction(this[methodName])) {
       this[methodName](args);
     }
