@@ -42,7 +42,6 @@ class EditorContainer extends React.Component {
         inputNode.style.height = this.props.height - 1 + 'px';
       }
     }
-
     window.addEventListener('scroll', this.setContainerTransform);
   }
 
@@ -59,7 +58,7 @@ class EditorContainer extends React.Component {
     window.removeEventListener('scroll', this.setContainerTransform);
   }
 
-  setContainerTransform = (): void => {
+  setContainerTransform = () => {
     if (this.containerRef) {
       this.containerRef.style.transform = this.calculateTransform();
     }
