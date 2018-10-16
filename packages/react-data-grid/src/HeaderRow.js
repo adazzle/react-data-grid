@@ -112,7 +112,7 @@ class HeaderRow extends React.Component {
     const { columns, rowType } = this.props;
 
     for (let i = 0, len = columnUtils.getSize(columns); i < len; i++) {
-      const column = Object.assign({ rowType }, columnUtils.getColumn(columns, i));
+      const column = { rowType, ...columnUtils.getColumn(columns, i) };
       const _renderer = column.key === 'select-row' && rowType === 'filter' ? <div></div> : this.getHeaderRenderer(column);
 
       const baseHeaderCellProps = {
