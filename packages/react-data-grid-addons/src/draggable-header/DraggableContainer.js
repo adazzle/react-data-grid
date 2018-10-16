@@ -4,26 +4,18 @@ import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
 
 class DraggableContainer extends React.Component {
-  renderGrid() {
-    return React.Children.map(this.props.children, child => {
-      return React.cloneElement(child, {
-        draggableHeaderCell: DraggableHeaderCell
-      });
-    })[0];
-  }
-
   render() {
-    let grid = this.renderGrid();
-    return (
-      <div>
-        {React.cloneElement(grid, this.props)}
-      </div>
+    return React.cloneElement(
+      React.Children.only(this.props.children), {
+        ...this.props,
+        draggableHeaderCell: DraggableHeaderCell
+      }
     );
   }
 }
 
 DraggableContainer.propTypes = {
-  children: PropTypes.element
+  children: PropTypes.element.isRequired
 };
 
 export default html5DragDropContext(DraggableContainer);
