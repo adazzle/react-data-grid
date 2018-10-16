@@ -1,6 +1,6 @@
 // not including this
 // it currently requires the whole of moment, which we dont want to take as a dependency
-const ImageFormatter = require('./ImageFormatter');
+import ImageFormatter from './ImageFormatter';
 const DropDownFormatter = require('./DropDownFormatter');
 
 const Formatters = {
