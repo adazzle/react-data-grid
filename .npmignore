@@ -16,6 +16,5 @@ bower.json
 CONTRIBUTING.md
 .flowconfig
 secure-file
-flow
 ci
 npm-debug.log
