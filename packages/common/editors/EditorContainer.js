@@ -42,7 +42,7 @@ class EditorContainer extends React.Component {
         inputNode.style.height = this.props.height - 1 + 'px';
       }
     }
-    window.addEventListener('scroll', this.setContainerTransform);
+    window.addEventListener('scroll', this.setContainerPosition);
   }
 
   componentDidUpdate(prevProps) {
@@ -55,12 +55,12 @@ class EditorContainer extends React.Component {
     if (!this.changeCommitted && !this.changeCanceled) {
       this.commit({key: 'Enter'});
     }
-    window.removeEventListener('scroll', this.setContainerTransform);
+    window.removeEventListener('scroll', this.setContainerPosition);
   }
 
-  setContainerTransform = () => {
-    if (this.containerRef) {
-      this.containerRef.style.transform = this.calculateTransform();
+  setContainerPosition = () => {
+    if (this.container) {
+      this.container.style.transform = this.calculateTransform();
     }
   }
 
@@ -71,11 +71,11 @@ class EditorContainer extends React.Component {
     return `translate(${editorLeft}px, ${editorTop}px)`;
   }
 
-  isKeyExplicitlyHandled = (key: string): boolean => {
+  isKeyExplicitlyHandled = (key) => {
     return isFunction(this['onPress' + key]);
   };
 
-  checkAndCall = (methodName: string, args: any) => {
+  checkAndCall = (methodName, args) => {
     if (isFunction(this[methodName])) {
       this[methodName](args);
     }
@@ -101,13 +101,17 @@ class EditorContainer extends React.Component {
     }
   };
 
-  createEditorRef = (ref) => {
-    this.editor = ref;
+  setEditorRef = (editor) => {
+    this.editor = editor;
+  }
+
+  setContainerRef = (container) => {
+    this.container = container;
   }
 
   createEditor = () => {
     let editorProps = {
-      ref: this.createEditorRef,
+      ref: this.setEditorRef,
       column: this.props.column,
       value: this.getInitialValue(),
       onCommit: this.commit,
@@ -125,10 +129,10 @@ class EditorContainer extends React.Component {
       return React.cloneElement(CustomEditor, editorProps);
     }
     if (isFunction(CustomEditor)) {
-      return <CustomEditor ref={this.createEditorRef} {...editorProps} />;
+      return <CustomEditor ref={this.setEditorRef} {...editorProps} />;
     }
 
-    return <SimpleTextEditor ref={this.createEditorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
+    return <SimpleTextEditor ref={this.setEditorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
   };
 
   onPressEnter = () => {
@@ -349,7 +353,7 @@ class EditorContainer extends React.Component {
     const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER  : zIndexes.EDITOR_CONTAINER;
     const style = { position: 'fixed', height, width, zIndex, transform: this.calculateTransform() };
     return (
-        <div ref={ref => this.containerRef = ref} style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
+        <div ref={this.setContainerRef} style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>
