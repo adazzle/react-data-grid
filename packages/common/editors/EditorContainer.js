@@ -42,6 +42,7 @@ class EditorContainer extends React.Component {
         inputNode.style.height = this.props.height - 1 + 'px';
       }
     }
+    window.addEventListener('scroll', this.setContainerPosition);
   }
 
   componentDidUpdate(prevProps) {
@@ -54,6 +55,20 @@ class EditorContainer extends React.Component {
     if (!this.changeCommitted && !this.changeCanceled) {
       this.commit({key: 'Enter'});
     }
+    window.removeEventListener('scroll', this.setContainerPosition);
+  }
+
+  setContainerPosition = () => {
+    if (this.container) {
+      this.container.style.transform = this.calculateTransform();
+    }
+  }
+
+  calculateTransform = () => {
+    const { column, left, scrollLeft, top, scrollTop } = this.props;
+    const editorLeft = isFrozen(column) ? left : left - scrollLeft;
+    const editorTop = top - scrollTop - window.pageYOffset;
+    return `translate(${editorLeft}px, ${editorTop}px)`;
   }
 
   isKeyExplicitlyHandled = (key) => {
@@ -86,13 +101,17 @@ class EditorContainer extends React.Component {
     }
   };
 
-  createEditorRef = (ref) => {
-    this.editor = ref;
+  setEditorRef = (editor) => {
+    this.editor = editor;
+  }
+
+  setContainerRef = (container) => {
+    this.container = container;
   }
 
   createEditor = () => {
     let editorProps = {
-      ref: this.createEditorRef,
+      ref: this.setEditorRef,
       column: this.props.column,
       value: this.getInitialValue(),
       onCommit: this.commit,
@@ -110,10 +129,10 @@ class EditorContainer extends React.Component {
       return React.cloneElement(CustomEditor, editorProps);
     }
     if (isFunction(CustomEditor)) {
-      return <CustomEditor ref={this.createEditorRef} {...editorProps} />;
+      return <CustomEditor ref={this.setEditorRef} {...editorProps} />;
     }
 
-    return <SimpleTextEditor ref={this.createEditorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
+    return <SimpleTextEditor ref={this.setEditorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
   };
 
   onPressEnter = () => {
@@ -330,13 +349,11 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { left, top, width, height, column, scrollLeft, scrollTop } = this.props;
-    const editorLeft = isFrozen(column) ? left : left - scrollLeft;
-    const editorTop = top - scrollTop;
+    const { width, height, column } = this.props;
     const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER  : zIndexes.EDITOR_CONTAINER;
-    const style = { position: 'fixed', height, width, zIndex, transform: `translate(${editorLeft}px, ${editorTop}px)` };
+    const style = { position: 'fixed', height, width, zIndex, transform: this.calculateTransform() };
     return (
-        <div style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
+        <div ref={this.setContainerRef} style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>
