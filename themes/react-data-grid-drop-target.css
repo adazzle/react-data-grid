@@ -55,9 +55,9 @@
 }
 
 .rowDropTarget {
-	position: 'absolute',
-	left: 0,
-	width: '100%',
-  zIndex: 1,
-	borderBottom: '1px solid black'
+	position: absolute;
+	left: 0;
+	width: 100%;
+	z-index: 1;
+	border-bottom: 1px solid black;
 }
