@@ -200,7 +200,7 @@ class Cell extends React.PureComponent {
     }
   }
 
-  setScrollLeft = (scrollLeft: number) => {
+  setScrollLeft = (scrollLeft) => {
     let node = this.node;
     if (node) {
       let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;

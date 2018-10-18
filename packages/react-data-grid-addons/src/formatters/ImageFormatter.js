@@ -1,9 +1,9 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 require('../../../../themes/react-data-grid-image.css');
 
-let PendingPool = {};
-let ReadyPool = {};
+const PendingPool = {};
+const ReadyPool = {};
 
 class ImageFormatter extends React.Component {
   static propTypes = {
@@ -14,12 +14,9 @@ class ImageFormatter extends React.Component {
     ready: false
   };
 
-  componentWillMount() {
-    this._load(this.props.value);
-  }
-
   componentDidMount() {
     this._isMounted = true;
+    this._load(this.props.value);
   }
 
   componentWillUnmount() {
@@ -28,7 +25,7 @@ class ImageFormatter extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
-      this.setState({value: null});
+      this.setState({ value: null });
       this._load(nextProps.value);
     }
   }
@@ -36,7 +33,7 @@ class ImageFormatter extends React.Component {
   _load = (src) => {
     let imageSrc = src;
     if (ReadyPool[imageSrc]) {
-      this.setState({value: imageSrc});
+      this.setState({ value: imageSrc });
       return;
     }
 
@@ -47,7 +44,7 @@ class ImageFormatter extends React.Component {
 
     PendingPool[imageSrc] = [this._onLoad];
 
-    let img = new Image();
+    const img = new Image();
     img.onload = () => {
       PendingPool[imageSrc].forEach(callback => {
         callback(imageSrc);
@@ -68,13 +65,13 @@ class ImageFormatter extends React.Component {
   };
 
   render() {
-    let style = this.state.value ?
-    { backgroundImage: 'url(' + this.state.value + ')'} :
-    undefined;
+    const style = this.state.value ?
+      { backgroundImage: 'url(' + this.state.value + ')' } :
+      undefined;
 
     return <div className="react-grid-image" style={style} />;
   }
 }
 
 
-module.exports = ImageFormatter;
+export default ImageFormatter;

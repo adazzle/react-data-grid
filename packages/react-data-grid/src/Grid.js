@@ -79,6 +79,8 @@ class Grid extends React.Component {
     minHeight: 350
   };
 
+  _scrollLeft = undefined;
+
   getStyle = () => {
     return {
       overflow: 'hidden',
@@ -117,10 +119,6 @@ class Grid extends React.Component {
 
   componentDidUpdate() {
     this._onScroll();
-  }
-
-  componentWillMount() {
-    this._scrollLeft = undefined;
   }
 
   componentWillUnmount() {

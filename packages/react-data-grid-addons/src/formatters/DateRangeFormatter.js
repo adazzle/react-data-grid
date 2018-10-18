@@ -19,7 +19,7 @@ class DateRangeFormatter extends React.Component {
     value: {startDate: null, endDate: null}
   };
 
-  formatDate = (date: Date | moment): string => {
+  formatDate = (date) => {
     if (moment.isMoment(date)) {
       return moment(date).format(this.props.displayFormat);
     }
@@ -27,7 +27,7 @@ class DateRangeFormatter extends React.Component {
     return moment(date, this.props.inputFormat).format(this.props.displayFormat);
   };
 
-  render(): ?ReactElement {
+  render() {
     let startDate = this.props.value.startDate;
     let endDate = this.props.value.endDate;
     return (<span>{startDate} to {endDate}</span>);
