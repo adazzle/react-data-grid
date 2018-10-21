@@ -75,7 +75,7 @@ const  Defaultbase = (props) => {
   let marginLeft = treeDepth * 20;
 
   let style = {
-    height: '100px',
+    height: '50px',
     border: '1px solid #dddddd',
     paddingTop: '15px',
     paddingLeft: '5px'
@@ -93,7 +93,7 @@ const  Defaultbase = (props) => {
     }
   };
   return (
-    <div style={style} onKeyDown={onKeyDown} tabIndex={0} ref={this.props.rowRef} >
+    <div style={style} onKeyDown={onKeyDown} tabIndex={0} ref={props.rowRef} >
       <span className="row-expand-icon" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
       <strong>{props.columnGroupName}: {props.name}</strong>
     </div>
@@ -107,6 +107,7 @@ Defaultbase.propTypes = {
   treeDepth: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   columnGroupName: PropTypes.string.isRequired,
+  rowRef: PropTypes.func.isRequired,
   hideColumnName: PropTypes.bool
 };
 

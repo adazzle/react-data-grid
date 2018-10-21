@@ -267,7 +267,7 @@ class Canvas extends React.PureComponent {
 
   getSelectedRowColumns = (rowIdx) => {
     const row = this.getRowByRef(rowIdx);
-    return row ? row.props.columns : this.props.columns;
+    return row && row.props ? row.props.columns : this.props.columns;
   }
 
   setCanvasRef = (canvas) => {
