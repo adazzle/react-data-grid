@@ -1,3 +1,20 @@
+
+## 5.0.1 (Oct 22, 2018)
+
+### React-Data-Grid
+- **Bugfix:** Fix CopyMask columns ([1289](https://github.com/adazzle/react-data-grid/pull/1272)
+
+
+## 5.0.0 (Oct 22, 2018)
+
+### React-Data-Grid
+- **Feature:** Improve Cell navigation Performance ([1123](https://github.com/adazzle/react-data-grid/pull/1123)
+- **Feature:** Scrolling improvements ([1254](https://github.com/adazzle/react-data-grid/pull/1254)
+- **Feature:** Remove react-data-grid dependency from react-data-grid-addons bundle  ([1272](https://github.com/adazzle/react-data-grid/pull/1272)
+
+
+
+
 ## 4.0.8 (May 10, 2018)
 
 ### React-Data-Grid
