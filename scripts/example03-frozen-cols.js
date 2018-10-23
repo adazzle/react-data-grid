@@ -5,53 +5,52 @@ const React = require('react');
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this._columns = [
+    this.createRows();
+
+    const extraColumns = [...Array(50).keys()].map(i => ({key: `col${i}`, name: `col${i}`}));
+    const columns = [
       {
         key: 'id',
         name: 'ID',
-        frozen: true
+        locked: true
       },
       {
         key: 'task',
         name: 'Title',
         width: 200,
-        sortable: true
+        locked: true
       },
       {
         key: 'priority',
         name: 'Priority',
         width: 200,
-        sortable: true
+        locked: true
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         width: 200,
-        sortable: true
+        locked: true
       },
       {
         key: 'complete',
         name: '% Complete',
-        width: 200,
-        sortable: true
+        width: 200
       },
       {
         key: 'startDate',
         name: 'Start Date',
-        width: 200,
-        sortable: true
+        width: 200
       },
       {
         key: 'completeDate',
         name: 'Expected Complete',
-        width: 200,
-        sortable: true
-      }
-    ];
+        width: 200
+      },
+      ...extraColumns];
 
-    let originalRows = this.createRows(1000);
-    let rows = originalRows.slice(0);
-    this.state = { originalRows, rows };
+    this._columns = columns;
+    this.state = null;
   }
 
   getRandomDate = (start, end) => {
@@ -72,44 +71,29 @@ class Example extends React.Component {
       });
     }
 
-    return rows;
-  };
-
-  handleGridSort = (sortColumn, sortDirection) => {
-    const comparer = (a, b) => {
-      if (sortDirection === 'ASC') {
-        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
-      } else if (sortDirection === 'DESC') {
-        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
-      }
-    };
-
-    const rows = sortDirection === 'NONE' ? this.state.originalRows.slice(0) : this.state.rows.sort(comparer);
-
-    this.setState({ rows });
+    this._rows = rows;
   };
 
   rowGetter = (i) => {
-    return this.state.rows[i];
+    return this._rows[i];
   };
 
   render() {
     return  (
       <ReactDataGrid
-        onGridSort={this.handleGridSort}
         columns={this._columns}
         rowGetter={this.rowGetter}
-        rowsCount={this.state.rows.length}
+        rowsCount={this._rows.length}
         minHeight={500} />);
   }
 }
 
-const exampleDescription = (<p>While ReactDataGrid does not provide the ability to sort directly, it does provide hooks that allow you to provide your own sort function. This is done via the <code>onGridSort</code> prop. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Now when the header cell is clicked for that column, <code>onGridSort</code> will be triggered passing the column name and the sort direction.</p>);
+const exampleDescription = <p>To make a given column locked, set <code>column.locked = true</code>. In this example, the ID columns has been locked and will remain in position as you scroll horizontally</p>
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
-  exampleName: 'Sortable Columns Example',
+  exampleName: 'locked Columns Example',
   exampleDescription,
-  examplePath: './scripts/example08-sortable-cols.js',
-  examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/8/'
+  examplePath: './scripts/example03-locked-cols.js',
+  examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/5/'
 });
