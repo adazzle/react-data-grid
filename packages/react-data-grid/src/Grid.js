@@ -1,9 +1,9 @@
 const React                = require('react');
+const ReactDOM             = require('react-dom');
 import PropTypes from 'prop-types';
 const Header               = require('./Header');
 const Viewport             = require('./Viewport');
-import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-import columnUtils from './ColumnUtils';
+const cellMetaDataShape    = require('./PropTypeShapes/CellMetaDataShape');
 require('../../../themes/react-data-grid-core.css');
 
 class Grid extends React.Component {
@@ -12,6 +12,7 @@ class Grid extends React.Component {
   static propTypes = {
     rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
     columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    tabIndex: PropTypes.number,
     columnMetrics: PropTypes.object,
     minHeight: PropTypes.number,
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -38,14 +39,18 @@ class Grid extends React.Component {
     rowsCount: PropTypes.number,
     onRows: PropTypes.func,
     sortColumn: PropTypes.string,
-    cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
     sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,
     onViewportKeyup: PropTypes.func,
+    onViewportDragStart: PropTypes.func.isRequired,
+    onViewportDragEnd: PropTypes.func.isRequired,
+    onViewportClick: PropTypes.func.isRequired,
+    onViewportDoubleClick: PropTypes.func.isRequired,
     onColumnResize: PropTypes.func,
     onSort: PropTypes.func,
     onHeaderDrop: PropTypes.func,
+    cellMetaData: PropTypes.shape(cellMetaDataShape),
     rowKey: PropTypes.string.isRequired,
     rowScrollTimeout: PropTypes.number,
     scrollToRowIndex: PropTypes.number,
@@ -54,32 +59,16 @@ class Grid extends React.Component {
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
-    overScan: PropTypes.object,
-    enableCellSelect: PropTypes.bool.isRequired,
-    enableCellAutoFocus: PropTypes.bool.isRequired,
-    cellNavigationMode: PropTypes.string.isRequired,
-    eventBus: PropTypes.object.isRequired,
-    onCheckCellIsEditable: PropTypes.func,
-    onCellCopyPaste: PropTypes.func,
-    onGridRowsUpdated: PropTypes.func.isRequired,
-    onDragHandleDoubleClick: PropTypes.func.isRequired,
-    onCellSelected: PropTypes.func,
-    onCellDeSelected: PropTypes.func,
-    onCellRangeSelectionStarted: PropTypes.func,
-    onCellRangeSelectionUpdated: PropTypes.func,
-    onCellRangeSelectionCompleted: PropTypes.func,
-    onCommit: PropTypes.func.isRequired,
-    onScroll: PropTypes.func,
-    scrollLeft: PropTypes.number,
-    RowsContainer: PropTypes.node
+    overScan: PropTypes.object
   };
 
   static defaultProps = {
     rowHeight: 35,
-    minHeight: 350
+    minHeight: 350,
+    tabIndex: 0
   };
 
-  getStyle = () => {
+  getStyle = (): { overflow: string; outline: number; position: string; minHeight: number } => {
     return {
       overflow: 'hidden',
       outline: 0,
@@ -97,16 +86,21 @@ class Grid extends React.Component {
     }
   };
 
-  areFrozenColumnsScrolledLeft(scrollLeft) {
-    return scrollLeft > 0 && this.props.columns.some(c => columnUtils.isFrozen(c));
-  }
-
-  onScroll = (scrollState) => {
-    this.props.onScroll(scrollState);
-    const {scrollLeft} = scrollState;
-    if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsScrolledLeft(scrollLeft)) {
-      this._scrollLeft = scrollLeft;
+  onScroll = (props) => {
+    if (this._scrollLeft !== props.scrollLeft) {
+      this._scrollLeft = props.scrollLeft;
       this._onScroll();
+    }
+  };
+
+  onHeaderScroll = (e) => {
+    let scrollLeft = e.target.scrollLeft;
+    if (this._scrollLeft !== scrollLeft) {
+      this._scrollLeft = scrollLeft;
+      this.header.setScrollLeft(scrollLeft);
+      let canvas = ReactDOM.findDOMNode(this.viewport.canvas);
+      canvas.scrollLeft = scrollLeft;
+      this.viewport.canvas.setScrollLeft(scrollLeft);
     }
   };
 
@@ -127,22 +121,14 @@ class Grid extends React.Component {
     this._scrollLeft = undefined;
   }
 
-  setHeaderRef = (header) => {
-    this.header = header;
-  };
-
-  setViewportRef = (viewport) => {
-    this.viewport = viewport;
-  };
-
-  render() {
+  render(): ?ReactElement {
     let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
     let EmptyRowsView = this.props.emptyRowsView;
 
     return (
       <div style={this.getStyle()} className="react-grid-Grid">
         <Header
-          ref={this.setHeaderRef}
+          ref={(input) => { this.header = input; } }
           columnMetrics={this.props.columnMetrics}
           onColumnResize={this.props.onColumnResize}
           height={this.props.rowHeight}
@@ -153,19 +139,22 @@ class Grid extends React.Component {
           draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
           onHeaderDrop={this.props.onHeaderDrop}
-          // onScroll={this.onHeaderScroll}
+          onScroll={this.onHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div
               ref={(node) => { this.viewPortContainer = node; } }
+              tabIndex={this.props.tabIndex}
               onKeyDown={this.props.onViewportKeydown}
               onKeyUp={this.props.onViewportKeyup}
-              >
+              onClick={this.props.onViewportClick}
+              onDoubleClick={this.props.onViewportDoubleClick}
+              onDragStart={this.props.onViewportDragStart}
+              onDragEnd={this.props.onViewportDragEnd}>
                 <Viewport
-                  {...this.props}
-                  ref={this.setViewportRef}
+                  ref={(node) => { this.viewport = node; } }
                   rowKey={this.props.rowKey}
                   width={this.props.columnMetrics.width}
                   rowHeight={this.props.rowHeight}
@@ -188,21 +177,6 @@ class Grid extends React.Component {
                   getSubRowDetails={this.props.getSubRowDetails}
                   rowGroupRenderer={this.props.rowGroupRenderer}
                   overScan={this.props.overScan}
-                  enableCellSelect={this.props.enableCellSelect}
-                  enableCellAutoFocus={this.props.enableCellAutoFocus}
-                  cellNavigationMode={this.props.cellNavigationMode}
-                  eventBus={this.props.eventBus}
-                  onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-                  onCellCopyPaste={this.props.onCellCopyPaste}
-                  onGridRowsUpdated={this.props.onGridRowsUpdated}
-                  onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-                  onCellSelected={this.props.onCellSelected}
-                  onCellDeSelected={this.props.onCellDeSelected}
-                  onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
-                  onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
-                  onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
-                  onCommit={this.props.onCommit}
-                  RowsContainer={this.props.RowsContainer}
                 />
             </div>
         :

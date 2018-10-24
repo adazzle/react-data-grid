@@ -6,7 +6,7 @@ for (let i = 0; i < 1000; i++) {
     count: i * 1000
   });
 }
-export default {
+module.exports = {
   columns: [{
     key: 'id',
     name: 'ID',
@@ -35,4 +35,3 @@ export default {
     copied: null
   }
 };
-

@@ -1,6 +1,6 @@
 const React = require('react');
 import PropTypes from 'prop-types';
-import { EditorBase } from 'common/editors';
+const { editors: { EditorBase } } = require('react-data-grid');
 import ReactDOM from 'react-dom';
 
 class DropDownEditor extends EditorBase {

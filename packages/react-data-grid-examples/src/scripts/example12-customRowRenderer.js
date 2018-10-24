@@ -1,4 +1,5 @@
 const ReactDataGrid = require('react-data-grid');
+const { Row } = ReactDataGrid;
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
@@ -6,8 +7,7 @@ import PropTypes from 'prop-types';
 
 class RowRenderer extends React.Component {
   static propTypes = {
-    idx: PropTypes.string.isRequired,
-    renderBaseRow: PropTypes.func.isRequired
+    idx: PropTypes.string.isRequired
   };
 
   setScrollLeft = (scrollBy) => {
@@ -29,7 +29,7 @@ class RowRenderer extends React.Component {
     // here we are just changing the style
     // but we could replace this with anything we liked, cards, images, etc
     // usually though it will just be a matter of wrapping a div, and then calling back through to the grid
-    return (<div style={this.getRowStyle()}>{this.props.renderBaseRow(this.props)}</div>);
+    return (<div style={this.getRowStyle()}><Row ref={ node => this.row = node } {...this.props}/></div>);
   }
 }
 

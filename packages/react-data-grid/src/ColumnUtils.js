@@ -43,9 +43,5 @@ module.exports = {
       value = column[property];
     }
     return value;
-  },
-
-  isFrozen(column) {
-    return column.locked === true || column.frozen === true;
   }
 };

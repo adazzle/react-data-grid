@@ -199,6 +199,22 @@ describe('Grid', function() {
     });
   });
 
+  describe('When cell selection disabled', function() {
+    beforeEach(function() {
+      this.component = this.createComponent({
+        enableCellSelect: false,
+        columns: this.columns,
+        rowGetter: this.rowGetter,
+        rowsCount: this._rows.length,
+        width: 300
+      }).instance();
+    });
+
+    it('grid should be initialized with selected state of {rowIdx : -1, idx : -1}', function() {
+      expect(this.component.state.selected).toEqual({ rowIdx: -1, idx: -1 });
+    });
+  });
+
   describe('When row selection enabled', function() {
     beforeEach(function() {
       this.component = this.createComponent({ enableRowSelect: true}).instance();
@@ -283,6 +299,178 @@ describe('Grid', function() {
     });
   });
 
+  describe('Cell Navigation', function() {
+    describe('when cell navigation is configured to default, none', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({enableCellSelect: true}).instance();
+      });
+
+      describe('when on last cell in a row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should stay on cell', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+      describe('when on first cell in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 1 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
+        });
+      });
+      describe('when row selection is enabled and positioned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+    });
+
+    describe('when cell navigation is configured to change rows', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({cellNavigationMode: 'changeRow', enableCellSelect: true}).instance();
+      });
+
+      describe('when on last cell in a row that\'s not the last', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should move to first cell in next row', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 2 });
+        });
+      });
+      describe('when on last cell in last row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 999 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 999 });
+        });
+      });
+      describe('when on first cell in a row that\'s not the first', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 2 } });
+        });
+        it('selection should move to last cell in previous row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+      describe('when on first cell in the first row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 0 } });
+        });
+        it('nothing should happen', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+        });
+      });
+      describe('when row selection is enabled and positioned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+    });
+
+    describe('when cell navigation is configured to loop over cells in row', function() {
+      beforeEach(function() {
+        this.component = this.createComponent({cellNavigationMode: 'loopOverRow', enableCellSelect: true}).instance();
+      });
+
+      describe('when on last cell, looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 1 } });
+        });
+        it('selection should move to first cell in same row', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
+        });
+      });
+      describe('when on last cell in last row with looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 3, rowIdx: 999 } });
+        });
+        it('selection should move to first cell in same row', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 999 });
+        });
+      });
+      describe('when on first cell with looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 2 } });
+        });
+        it('selection should move to last cell in same row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 2 });
+        });
+      });
+      describe('when on first cell in first row with looping enabled', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 0, rowIdx: 0 } });
+        });
+        it('selection should move to last cell in same row', function() {
+          this.simulateGridKeyDown('ArrowLeft');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 0 });
+        });
+      });
+
+      describe('when row selection enabled and positioned on cell before last in row', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 2, rowIdx: 1 }, enableRowSelect: true });
+        });
+        it('selection should move to last cell', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.state.selected).toEqual({ idx: 3, rowIdx: 1 });
+        });
+      });
+    });
+  });
+  describe('Cell Selection/DeSelection handlers', function() {
+    describe('when cell selection/deselection handlers are passed', function() {
+      beforeEach(function() {
+        const extraProps = { onCellSelected: this.noop, onCellDeSelected: this.noop };
+        spyOn(extraProps, 'onCellSelected');
+        spyOn(extraProps, 'onCellDeSelected');
+        this.component = this.createComponent(extraProps).instance();
+      });
+
+      describe('cell is selected', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { rowIdx: 1, idx: 2 } });
+        });
+        it('deselection handler should have been called', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.props.onCellDeSelected).toHaveBeenCalled();
+          expect(this.component.props.onCellDeSelected.calls.mostRecent().args[0]).toEqual({
+            rowIdx: 1,
+            idx: 2
+          });
+        });
+        it('selection handler should have been called', function() {
+          this.simulateGridKeyDown('ArrowRight');
+          expect(this.component.props.onCellSelected).toHaveBeenCalled();
+          expect(this.component.props.onCellSelected.calls.mostRecent().args[0]).toEqual({
+            rowIdx: 1,
+            idx: 3
+          });
+        });
+      });
+    });
+  });
 
   describe('When selection enabled and using rowSelection props', function() {
     beforeEach(function() {
@@ -417,6 +605,397 @@ describe('Grid', function() {
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
         this.selectAllWrapper.props().onChange(this.fakeEvent);
         expect(this._deselectedRows.length).toBe(2);
+      });
+    });
+  });
+
+  describe('User Interaction', function() {
+    describe('When selected cell is in top corner of grid', function() {
+      beforeEach(function() {
+        this.component.setState({ selected: { idx: 0, rowIdx: 0 } });
+      });
+
+      it('on ArrowUp keyboard event should not change selected index', function() {
+        this.simulateGridKeyDown('ArrowUp');
+        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+      });
+
+      it('on ArrowLeft keyboard event should not change selected index', function() {
+        this.simulateGridKeyDown('ArrowLeft');
+        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 0 });
+      });
+    });
+
+    describe('When selected cell has adjacent cells on all sides', function() {
+      beforeEach(function() {
+        this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+      });
+
+      it('on ArrowRight keyboard event should increment selected cell index by 1', function() {
+        this.simulateGridKeyDown('ArrowRight');
+        expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 1 });
+      });
+
+      it('on ArrowDown keyboard event should increment selected row index by 1', function() {
+        this.simulateGridKeyDown('ArrowDown');
+        expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 2 });
+      });
+
+      it('on ArrowLeft keyboard event should decrement selected row index by 1', function() {
+        this.simulateGridKeyDown('ArrowLeft');
+        expect(this.component.state.selected).toEqual({ idx: 0, rowIdx: 1 });
+      });
+
+      it('on ArrowUp keyboard event should decrement selected row index by 1', function() {
+        this.simulateGridKeyDown('ArrowUp');
+        expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 0 });
+      });
+    });
+
+    describe('When column is editable', function() {
+      beforeEach(function() {
+        const editableColumn = Object.assign({ editable: true }, this.columns[1]);
+        this.columns[1] = editableColumn;
+        this.component = this.createComponent({ columns: this.columns }).instance();
+      });
+
+      describe('copy a cell value', function() {
+        beforeEach(function() {
+          const cCharacterKeyCode = 99;
+          this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+          this.simulateGridKeyDown(cCharacterKeyCode, true);
+        });
+
+        it('should store the value in grid state', function() {
+          let expectedCellValue = this._rows[1].title;
+          expect(this.component.state.textToCopy).toEqual(expectedCellValue);
+          expect(this.component.state.copied).toEqual({ idx: 1, rowIdx: 1 });
+        });
+      });
+
+      describe('paste a cell value', function() {
+        beforeEach(function() {
+          let wrapper = this.createComponent();
+          const vCharacterKeyCode = 118;
+          spyOn(this.testProps, 'onCellCopyPaste');
+          wrapper.setProps({ onCellCopyPaste: this.testProps.onCellCopyPaste });
+          this.component = wrapper.instance();
+          this.component.setState({
+            textToCopy: 'banana',
+            selected: { idx: 1, rowIdx: 5 },
+            copied: { idx: 1, rowIdx: 1 }
+          });
+          this.simulateGridKeyDown(vCharacterKeyCode, true);
+        });
+
+        it('should call onCellCopyPaste of component with correct params', function() {
+          expect(this.component.props.onCellCopyPaste).toHaveBeenCalled();
+          expect(this.component.props.onCellCopyPaste.calls.mostRecent().args[0]).toEqual({
+            cellKey: 'title',
+            rowIdx: 5,
+            value: 'banana',
+            fromRow: 1,
+            toRow: 5
+          });
+        });
+      });
+
+      describe('cell commit cancel', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true } });
+          this.getCellMetaData().onCommitCancel();
+        });
+
+        it('should set grid state inactive', function() {
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: false });
+        });
+      });
+
+      describe('pressing escape', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: true } });
+          this.simulateGridKeyDown('Escape');
+        });
+
+        it('should set grid state inactive', function() {
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: false });
+        });
+      });
+
+      describe('pressing enter', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false } });
+          this.simulateGridKeyDown('Enter');
+        });
+
+        it('should set grid state active', function() {
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true, initialKeyCode: 'Enter' });
+        });
+      });
+
+      describe('pressing delete', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false } });
+          this.simulateGridKeyDown('Delete');
+        });
+
+        it('should set grid state active', function() {
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true, initialKeyCode: 'Delete' });
+        });
+      });
+
+      describe('pressing backspace', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false } });
+          this.simulateGridKeyDown('Backspace');
+        });
+
+        it('should set grid state active', function() {
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true, initialKeyCode: 'Backspace' });
+        });
+      });
+
+      describe('typing a char', function() {
+        beforeEach(function() {
+          const fakeEvent = this.buildFakeEvent({ keyCode: 66, key: 'Unidentified' });
+          this.component.setState({ selected: { idx: 1, rowIdx: 1, active: false } });
+          this.getBaseGrid().props.onViewportKeydown(fakeEvent);
+        });
+
+        it('should set grid state active and store the typed value', function() {
+          expect(this.component.state.selected).toEqual({ idx: 1, rowIdx: 1, active: true, initialKeyCode: 66 });
+        });
+      });
+    });
+
+    describe('Drag events', function() {
+      describe('dragging in grid', function() {
+        beforeEach(function() {
+          this.component.setState({ selected: { idx: 1, rowIdx: 2 } });
+          const event = { target: { className: 'drag-handle' }};
+          this.getBaseGrid().props.onViewportDragStart(event);
+        });
+
+        it('should store drag rowIdx, idx and value of cell in state', function() {
+          const thirdRowTitle = this._rows[2].title;
+          expect(this.component.state.dragged).toEqual({ idx: 1, rowIdx: 2, value: thirdRowTitle });
+        });
+      });
+
+      describe('dragging over a row', function() {
+        beforeEach(function() {
+          this.component.setState({
+            selected: { idx: 1, rowIdx: 2 },
+            dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 }
+          });
+          this.getCellMetaData().handleDragEnterRow(4);
+        });
+
+        it('should store the current rowIdx in grid state', function() {
+          expect(this.component.state.dragged).toEqual({ idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 4 });
+        });
+      });
+
+      describe('finishing drag', function() {
+        beforeEach(function() {
+          let wrapper = this.createComponent();
+          spyOn(this.testProps, 'onCellsDragged');
+          wrapper.setProps({ onCellsDragged: this.testProps.onCellsDragged });
+          this.component = wrapper.instance();
+          this.component.setState({
+            selected: { idx: 1, rowIdx: 2 },
+            dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 }
+          });
+          this.getBaseGrid().props.onViewportDragEnd();
+        });
+
+        it('should trigger onCellsDragged event and call it with correct params', function() {
+          expect(this.component.props.onCellsDragged).toHaveBeenCalled();
+          expect(this.component.props.onCellsDragged.calls.argsFor(0)[0]).toEqual({ cellKey: 'title', fromRow: 2, toRow: 6, value: 'apple' });
+        });
+      });
+
+      describe('terminating drag', function() {
+        beforeEach(function() {
+          this.component.setState({ dragged: { idx: 1, rowIdx: 2, value: 'apple', overRowIdx: 6 } });
+          this.getCellMetaData().handleTerminateDrag();
+        });
+
+        it('should clear drag state', function() {
+          expect(this.component.state.dragged).toBe(null);
+        });
+      });
+    });
+
+    describe('Adding a new column', function() {
+      beforeEach(function() {
+        let wrapper = this.createComponent();
+        const newColumn = { key: 'isodd', name: 'Is Odd', width: 100 };
+        const newColumns = Object.assign([], this.columns);
+        newColumns.splice(2, 0, newColumn);
+        wrapper.setProps({ columns: newColumns });
+        this.component = wrapper.instance();
+        this.columns = this.component.state.columnMetrics.columns;
+      });
+
+      it('should add column', function() {
+        expect(this.columns.length).toEqual(5);
+      });
+
+      it('should calculate column metrics for added column', function() {
+        expect(this.columns[2]).toEqual(jasmine.objectContaining({ key: 'isodd', name: 'Is Odd', width: 100 }));
+      });
+    });
+
+    describe('Remove a column', function() {
+      beforeEach(function() {
+        let wrapper = this.createComponent();
+        const newColumns = Object.assign([], this.columns);
+        newColumns.splice(1, 1);
+        wrapper.setProps({ columns: newColumns });
+        this.component = wrapper.instance();
+        this.columns = this.component.state.columnMetrics.columns;
+      });
+
+      it('should remove column', function() {
+        expect(this.columns.length).toEqual(3);
+      });
+
+      it('should no longer include metrics for removed column', function() {
+        expect(this.columns[0]).toEqual(jasmine.objectContaining({ key: 'id', name: 'ID', width: 100 }));
+        expect(this.columns[1]).toEqual(jasmine.objectContaining({ key: 'count', name: 'Count', width: 100 }));
+      });
+    });
+
+    describe('outside row/cell', function() {
+      beforeEach(function() {
+        this.component.setState({ selected: { idx: 1, rowIdx: 1 } });
+      });
+
+      it('should deselect currently selected cell on click', function() {
+        this.getBaseGrid().props.onViewportClick();
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+
+      it('should deselect currently selected cell on double-click', function() {
+        this.getBaseGrid().props.onViewportDoubleClick();
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: -1, rowIdx: -1 }));
+      });
+    });
+  });
+
+  describe('Cell Meta Data', function() {
+    it('should create a cellMetaData object and pass to baseGrid as props', function() {
+      let meta = this.getCellMetaData();
+      expect(meta).toEqual(jasmine.objectContaining({
+        selected: { rowIdx: 0, idx: 0 },
+        dragged: null,
+        copied: null
+      }));
+      expect(meta.onCellClick).toEqual(jasmine.any(Function));
+      expect(meta.onCommit).toEqual(jasmine.any(Function));
+      expect(meta.onCommitCancel).toEqual(jasmine.any(Function));
+      expect(meta.handleDragEnterRow).toEqual(jasmine.any(Function));
+      expect(meta.handleTerminateDrag).toEqual(jasmine.any(Function));
+    });
+
+    describe('Changing Grid state', function() {
+      beforeEach(function() {
+        let newState = {
+          selected: { idx: 2, rowIdx: 2 },
+          dragged: { idx: 2, rowIdx: 2 }
+        };
+        this.component.setState(newState);
+      });
+
+      it(' should update cellMetaData', function() {
+        expect(this.getCellMetaData()).toEqual(jasmine.objectContaining({
+          selected: { idx: 2, rowIdx: 2 },
+          dragged: { idx: 2, rowIdx: 2 }
+        }));
+      });
+    });
+
+    describe('cell commit', function() {
+      beforeEach(function() {
+        let wrapper = this.createComponent();
+        spyOn(this.testProps, 'onRowUpdated');
+        wrapper.setProps({ onRowUpdated: this.testProps.onRowUpdated });
+        this.component = wrapper.instance();
+        this.component.setState({ selected: { idx: 3, rowIdx: 3, active: true } });
+        this.getCellMetaData().onCommit(this.buildFakeCellUodate());
+      });
+
+      it('should trigger onRowUpdated with correct params', function() {
+        const onRowUpdated = this.component.props.onRowUpdated;
+        expect(onRowUpdated.calls.mostRecent().args[0]).toEqual(this.buildFakeCellUodate());
+      });
+
+      it('should deactivate selected cell', function() {
+        expect(this.component.state.selected).toEqual(jasmine.objectContaining({ idx: 3, rowIdx: 3, active: false }));
+      });
+    });
+
+    describe('Cell click', function() {
+      beforeEach(function() {
+        this.getCellMetaData().onCellClick({ idx: 2, rowIdx: 2 });
+      });
+
+      it('should set selected state of grid', function() {
+        expect(this.component.state.selected).toEqual({ idx: 2, rowIdx: 2 });
+      });
+    });
+
+    describe('Column events', function() {
+      let columnWithEvent;
+      const eventColumnIdx = 3;
+      const eventColumnRowIdx = 2;
+      const eventColumnRowId = 2;
+
+      beforeEach(function() {
+        columnWithEvent = this.component.state.columnMetrics.columns[3];
+        let events = this.testProps.columns[3].events;
+        spyOn(events, 'onClick');
+        spyOn(events, 'onDoubleClick');
+        spyOn(events, 'onDragOver');
+      });
+
+      it('should call an event when there is one', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+        expect(columnWithEvent.events.onClick).toHaveBeenCalled();
+      });
+
+      it('should call the correct event', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onClick'});
+        expect(columnWithEvent.events.onClick).toHaveBeenCalled();
+        expect(columnWithEvent.events.onDoubleClick).not.toHaveBeenCalled();
+      });
+
+      it('should call double click event on double click', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onDoubleClick'});
+
+        expect(columnWithEvent.events.onDoubleClick).toHaveBeenCalled();
+      });
+
+      it('should call drag over event on drag over click', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, name: 'onDragOver'});
+
+        expect(columnWithEvent.events.onDragOver).toHaveBeenCalled();
+      });
+
+      it('should call the event when there is one with the correct args', function() {
+        this.getCellMetaData().onColumnEvent({}, {idx: eventColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId, name: 'onClick'});
+        expect(columnWithEvent.events.onClick.calls.mostRecent().args).toEqual([{}, {column: columnWithEvent, idx: eventColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId }]);
+      });
+
+      it('events should work for the first column', function() {
+        const firstColumnIdx = 0;
+        let firstColumn = this.component.state.columnMetrics.columns[firstColumnIdx];
+        let firstColumnEvents = this.testProps.columns[firstColumnIdx].events;
+        spyOn(firstColumnEvents, 'onClick');
+        this.getCellMetaData().onColumnEvent({}, {idx: firstColumnIdx, rowIdx: eventColumnRowIdx, rowId: eventColumnRowId, name: 'onClick'});
+
+        expect(firstColumn.events.onClick).toHaveBeenCalled();
       });
     });
   });

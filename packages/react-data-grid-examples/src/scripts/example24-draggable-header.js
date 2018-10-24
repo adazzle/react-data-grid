@@ -1,5 +1,5 @@
 const React = require('react');
-import ReactDataGrid from 'react-data-grid';
+const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const {
   DraggableHeader: { DraggableContainer }

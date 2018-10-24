@@ -4,7 +4,7 @@ const HeaderCell    = rewire('../HeaderCell');
 const TestUtils     = require('react-dom/test-utils');
 const rewireModule  = require('../../../../test/rewireModule');
 const StubComponent = require('../../../../test/StubComponent');
-import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
+import SortableHeaderCell from '../cells/headerCells/SortableHeaderCell';
 
 describe('Header Cell Tests', () => {
   // Configure local constiable replacements for the module.

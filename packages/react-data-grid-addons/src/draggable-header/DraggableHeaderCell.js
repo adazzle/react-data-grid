@@ -1,42 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
-
-class HeaderCell extends React.Component {
-  static propTypes = {
-    column: PropTypes.isRequired,
-    height: PropTypes.number.isRequired,
-    className: PropTypes.string
-  };
-
-  getStyle() {
-    return {
-      width: this.props.column.width,
-      left: this.props.column.left,
-      display: 'inline-block',
-      position: 'absolute',
-      height: this.props.height,
-      margin: 0,
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap'
-    };
-  }
-
-  setScrollLeft = (scrollLeft) => {
-    if (this.node) {
-      node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-      node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-    }
-  };
-
-  render() {
-    return (
-      <div ref={node => this.node = node} className="react-grid-HeaderCell" style={this.getStyle()}>
-        {this.props.column.name}
-      </div>
-    );
-  }
-}
+import { HeaderCell } from 'react-data-grid';
 
 class DraggableHeaderCell extends React.Component {
   render() {
@@ -61,7 +26,7 @@ class DraggableHeaderCell extends React.Component {
           style={{ width: 0, cursor: 'move', opacity }}
           className={isOver && canDrop ? 'rdg-can-drop' : ''}
         >
-          <HeaderCell {...this.props}/>
+          <HeaderCell {...this.props} />
         </div>
       )
     );

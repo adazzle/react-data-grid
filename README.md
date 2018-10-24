@@ -62,7 +62,7 @@ Features
 - [Rich cell editors like autocomplete, checkbox and dropdown editors, complete with keyboard navigation](http://adazzle.github.io/react-data-grid/#/examples/built-in-editors)
 - Custom cell Editors - Easily create your own
 - [Custom cell Formatters](http://adazzle.github.io/react-data-grid/#/examples/custom-formatters)
-- [Frozen columns](http://adazzle.github.io/react-data-grid/#/examples/frozen-cols)
+- [Frozen columns](http://adazzle.github.io/react-data-grid/#/examples/fixed-cols)
 - [Resizable columns](http://adazzle.github.io/react-data-grid/#/examples/resizable-cols)
 - [Sorting](http://adazzle.github.io/react-data-grid/#/examples/sortable-cols) 
 - [Filtering](http://adazzle.github.io/react-data-grid/#/examples/filterable-sortable-grid) 

@@ -12,7 +12,7 @@ environment:
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
   npmrc_token:
-    secure: +0xEbrDGXwT78XtVnyF0CQcqiKZCgQSVq9DZaIH2YhI=
+    secure: vqGk4eUIvg1ngzdW4WE2hlq1U7YupunkayeCh7bXy8M=
 
 
 # Install scripts. (runs after repo cloning)
@@ -48,5 +48,5 @@ on_success:
   - npm run beforepublish
   - ps: >-
       if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'next') {
-        ./ci/publish/publishNext.ps1
+        ./ci/publish/publishBranch.ps1
       }

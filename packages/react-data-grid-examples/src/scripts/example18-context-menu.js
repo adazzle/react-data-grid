@@ -1,7 +1,7 @@
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
-const { Menu: { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } } = require('react-data-grid-addons');
+const { Menu: { ContextMenu, MenuItem, SubMenu } } = require('react-data-grid-addons');
 
 import PropTypes from 'prop-types';
 
@@ -63,8 +63,7 @@ class Example extends React.Component {
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
-        minHeight={500}
-        RowsContainer={ContextMenuTrigger} />
+        minHeight={500} />
     );
   }
 }

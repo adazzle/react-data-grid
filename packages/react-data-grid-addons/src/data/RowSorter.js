@@ -1,4 +1,5 @@
-import {getMixedTypeValueRetriever, isImmutableCollection} from 'common/utils';
+import { utils } from 'react-data-grid';
+const { getMixedTypeValueRetriever, isImmutableCollection } = utils;
 
 const comparer = (a, b) => {
   if (a > b) {

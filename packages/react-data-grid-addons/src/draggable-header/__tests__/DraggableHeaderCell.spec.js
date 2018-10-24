@@ -3,14 +3,13 @@ import { shallow } from 'enzyme';
 
 import DraggableContainer from '../DraggableContainer';
 import DraggableHeaderCell from '../DraggableHeaderCell';
-
-const HeaderCell = () => <div/>;
+import { HeaderCell } from 'react-data-grid';
 
 describe('<DraggableHeaderCell />', () => {
   it('should render grid HeaderCell wrapper with cursor: move ', () => {
     const wrapper = shallow(
       <DraggableContainer>
-        <DraggableHeaderCell renderHeaderCell={() => <HeaderCell/>}/>
+        <DraggableHeaderCell />
       </DraggableContainer>
     );
     expect(wrapper.find(HeaderCell));

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import { DropTarget } from 'react-dnd';
 import GroupedColumnButton from './GroupedColumnButton';
-import { DragItemTypes } from 'common/constants';
+import { _constants } from 'react-data-grid';
+const { DragItemTypes } = _constants;
 
 const propTypes = {
   isOver: PropTypes.bool.isRequired,

@@ -2,9 +2,10 @@ const React             = require('react');
 const shallowEqual    = require('shallowequal');
 const BaseHeaderCell        = require('./HeaderCell');
 const getScrollbarSize  = require('./getScrollbarSize');
+const ExcelColumn  = require('./PropTypeShapes/ExcelColumn');
 const columnUtils  = require('./ColumnUtils');
-const SortableHeaderCell    = require('common/cells/headerCells/SortableHeaderCell');
-const FilterableHeaderCell  = require('common/cells/headerCells/FilterableHeaderCell');
+const SortableHeaderCell    = require('./cells/headerCells/SortableHeaderCell');
+const FilterableHeaderCell  = require('./cells/headerCells/FilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
 const createObjectWithProperties = require('./createObjectWithProperties');
 require('../../../themes/react-data-grid-header.css');
@@ -117,7 +118,7 @@ class HeaderRow extends React.Component {
 
   getCells = (): Array<HeaderCell> => {
     let cells = [];
-    let frozenCells = [];
+    let lockedCells = [];
     for (let i = 0, len = columnUtils.getSize(this.props.columns); i < len; i++) {
       let column = Object.assign({ rowType: this.props.rowType }, columnUtils.getColumn(this.props.columns, i));
       let _renderer = this.getHeaderRenderer(column);
@@ -138,19 +139,19 @@ class HeaderRow extends React.Component {
           onHeaderDrop={this.props.onHeaderDrop}
           />
       );
-      if (columnUtils.isFrozen(column)) {
-        frozenCells.push(cell);
+      if (column.locked) {
+        lockedCells.push(cell);
       } else {
         cells.push(cell);
       }
     }
 
-    return cells.concat(frozenCells);
+    return cells.concat(lockedCells);
   };
 
   setScrollLeft = (scrollLeft: number) => {
     this.props.columns.forEach( (column, i) => {
-      if (columnUtils.isFrozen(column)) {
+      if (column.locked) {
         this.cells[i].setScrollLeft(scrollLeft);
       } else {
         if (this.cells[i] && this.cells[i].removeScroll) {

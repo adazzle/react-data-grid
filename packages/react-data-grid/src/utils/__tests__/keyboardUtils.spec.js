@@ -1,4 +1,4 @@
-import { isCtrlKeyHeldDown, isKeyPrintable } from 'common/utils/keyboardUtils';
+import { isCtrlKeyHeldDown, isKeyPrintable } from '../keyboardUtils';
 
 describe('isKeyPrintable', () => {
   it('should return true if ctrl key is pressed', () => {

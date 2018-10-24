@@ -2,7 +2,6 @@
 * In local config, only run tests using phantom js. No code coverage reports applied
 */
 var webpack = require('webpack');
-require('airbnb-browser-shims');
 var webpackConfig = require('./webpack.common.config.js');
 var RewirePlugin = require("rewire-webpack");
 var path = require('path');
@@ -28,7 +27,7 @@ module.exports = function (config) {
       return BROWSERS.split(',');
     }
     if(RELEASE){
-      browsers = ['Chrome','Firefox', 'IE']
+      browsers = ['Chrome','Firefox','IE']
     }else if(DEBUG){
       browsers = ['ChromeDebugging'];
     }
@@ -87,10 +86,7 @@ module.exports = function (config) {
         loaders: webpackConfig.module.loaders
       },
       resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx'],
-        alias: {
-          common: path.resolve('packages/common/')
-        }
+        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
       },
       plugins: [
         new RewirePlugin()

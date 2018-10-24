@@ -1,7 +1,7 @@
 const React                   = require('react');
 const ReactDOM                = require('react-dom');
 const ReactAutocomplete       = require('ron-react-autocomplete');
-import { ExcelColumn } from 'common/prop-shapes';
+const { shapes: { ExcelColumn } } = require('react-data-grid');
 require('../../../../themes/ron-react-autocomplete.css');
 import PropTypes from 'prop-types';
 

@@ -4,7 +4,7 @@ const Header        = rewire('../Header');
 const TestUtils     = require('react-dom/test-utils');
 const rewireModule  = require('../../../../test/rewireModule');
 const StubComponent = require('../../../../test/StubComponent');
-import helpers from '../helpers/test/GridPropHelpers';
+const helpers       = require('../helpers/test/GridPropHelpers');
 import { shallow } from 'enzyme';
 const SCROLL_BAR_SIZE = 20;
 

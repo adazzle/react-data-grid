@@ -1,8 +1,7 @@
 const React          = require('react');
 const ReactDOM      = require('react-dom');
 const joinClasses    = require('classnames');
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
-import columnUtils from './ColumnUtils';
+const ExcelColumn    = require('./PropTypeShapes/ExcelColumn');
 const ResizeHandle   = require('./ResizeHandle');
 require('../../../themes/react-data-grid-header.css');
 
@@ -57,16 +56,15 @@ class HeaderCell extends React.Component {
     return right - left;
   };
 
-  getCell = ()=> {
-    const {height, column, renderer} = this.props;
-    if (React.isValidElement(renderer)) {
+  getCell = (): ReactComponent => {
+    if (React.isValidElement(this.props.renderer)) {
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
       if (typeof this.props.renderer.type === 'string') {
-        return React.cloneElement(renderer, {height});
+        return React.cloneElement(this.props.renderer, {height: this.props.height});
       }
-      return React.cloneElement(renderer, {column, height});
+      return React.cloneElement(this.props.renderer, {column: this.props.column, height: this.props.height});
     }
-    return this.props.renderer({column});
+    return this.props.renderer({column: this.props.column});
   };
 
   getStyle = (): {width:number; left: number; display: string; position: string; overflow: string; height: number; margin: number; textOverflow: string; whiteSpace: string } => {
@@ -109,7 +107,7 @@ class HeaderCell extends React.Component {
     let className = joinClasses({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
-      'react-grid-HeaderCell--frozen': columnUtils.isFrozen(this.props.column)
+      'react-grid-HeaderCell--locked': this.props.column.locked
     });
     className = joinClasses(className, this.props.className, this.props.column.cellClass);
     let cell = this.getCell();

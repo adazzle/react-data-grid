@@ -28,7 +28,7 @@ let columns = [
   {
     key: 'id',
     name: 'id',
-    frozen: true
+    locked: true
   },
   {
     key: 'name',

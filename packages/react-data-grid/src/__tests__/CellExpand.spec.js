@@ -1,6 +1,6 @@
 import React from 'react';
-import CellExpander from '../CellExpander';
-import { CellExpand } from 'common/constants';
+import CellExpand from '../CellExpand';
+import AppConstants from '../AppConstants';
 import { mount } from 'enzyme';
 
 describe('CellExpand', () => {
@@ -15,28 +15,32 @@ describe('CellExpand', () => {
   };
 
   const renderComponent = (props) => {
-    const wrapper = mount(<CellExpander {...props} />);
+    const wrapper = mount(<CellExpand {...props} />);
     return wrapper;
   };
+
+  it('should import CellExpand', () => {
+    expect(CellExpand).toBeDefined();
+  });
 
   it('should create an instance of CellExpand', () => {
     let fakeProps = getFakeProps(false);
     testElement = renderComponent(fakeProps);
-    expect(testElement.find(CellExpander).length).toBe(1);
+    expect(testElement.find(CellExpand).length).toBe(1);
   });
 
   it('should render correctly when expanded is true', () => {
     let fakeProps = getFakeProps(true);
     testElement = renderComponent(fakeProps);
     expect(testElement.state('expanded')).toBeTruthy();
-    expect(testElement.find('span.rdg-cell-expand').text()).toBe(CellExpand.DOWN_TRIANGLE);
+    expect(testElement.find('span.rdg-cell-expand').text()).toBe(AppConstants.CellExpand.DOWN_TRIANGLE);
   });
 
   it('should render correctly when expanded is false', () => {
     let fakeProps = getFakeProps(false);
     testElement = renderComponent(fakeProps);
     expect(testElement.state('expanded')).toBeFalsy();
-    expect(testElement.find('span.rdg-cell-expand').text()).toBe(CellExpand.RIGHT_TRIANGLE);
+    expect(testElement.find('span.rdg-cell-expand').text()).toBe(AppConstants.CellExpand.RIGHT_TRIANGLE);
   });
 
   it('should call onCellExpand when clicked', () => {

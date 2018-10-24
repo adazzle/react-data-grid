@@ -2,7 +2,6 @@ import React from 'react';
 import Viewport from '../Viewport';
 import { shallow} from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
-import {SCROLL_DIRECTION} from '../utils/viewportUtils';
 
 let viewportProps = {
   rowOffsetHeight: 0,
@@ -11,7 +10,6 @@ let viewportProps = {
     columns: helpers.columns,
     minColumnWidth: 80,
     totalWidth: 2600,
-    totalColumnWidth: 2600,
     width: 2600
   },
   rowGetter: () => { },
@@ -80,35 +78,31 @@ describe('<Viewport />', () => {
     expect(Canvas).toBeDefined();
   });
 
-  it('should update scroll state onScroll', () => {
+  it('should updated scroll state onScroll', () => {
     let scrollLeft = 0;
     let scrollTop = 200;
     const wrapper = shallow(<Viewport {...viewportProps} />);
     let Canvas = wrapper.find('Canvas');
     Canvas.props().onScroll({ scrollTop, scrollLeft});
     expect(wrapper.state()).toEqual({
-      colOverscanEndIdx: helpers.columns.length,
-      colOverscanStartIdx: 0,
-      colVisibleEndIdx: helpers.columns.length,
-      colVisibleStartIdx: 0,
-      rowOverscanEndIdx: 23,
-      rowOverscanStartIdx: 6,
+      colDisplayEnd: 3,
+      colDisplayStart: 0,
+      colVisibleEnd: 3,
+      colVisibleStart: 0,
+      displayEnd: 25,
+      displayStart: 0,
       height: viewportProps.minHeight,
       scrollLeft: scrollLeft,
       scrollTop: scrollTop,
-      prevScrollTop: 0,
-      prevScrollLeft: 0,
-      rowVisibleEndIdx: 21,
-      rowVisibleStartIdx: 6,
-      isScrolling: true,
-      lastFrozenColumnIndex: -1,
-      scrollDirection: SCROLL_DIRECTION.DOWN
+      visibleEnd: 20,
+      visibleStart: 5,
+      isScrolling: true
     });
   });
 
   it('should set the max number of columns when column rendered are zeroed', () => {
     const wrapper = shallow(<Viewport {...viewportPropsNoColumns} />);
-    expect(wrapper.state().colVisibleEndIdx).toEqual(helpers.columns.length);
+    expect(wrapper.state().colVisibleEnd).toEqual(helpers.columns.length);
   });
 
   it('should update when given different number of columns', () => {
@@ -122,19 +116,17 @@ describe('<Viewport />', () => {
     let newProps = Object.assign({}, viewportProps, {columnMetrics: Object.assign({}, viewportProps.columnMetrics, {columns: updatedColumns})});
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
-      colOverscanEndIdx: updatedColumns.length,
-      colOverscanStartIdx: 0,
-      colVisibleEndIdx: updatedColumns.length,
-      colVisibleStartIdx: 0,
-      rowOverscanEndIdx: 28,
-      rowOverscanStartIdx: 0,
+      colDisplayEnd: updatedColumns.length,
+      colDisplayStart: 0,
+      colVisibleEnd: updatedColumns.length,
+      colVisibleStart: 0,
+      displayEnd: 50,
+      displayStart: 0,
       height: viewportProps.minHeight,
       scrollLeft: 0,
       scrollTop: 0,
-      rowVisibleEndIdx: 14,
-      rowVisibleStartIdx: 0,
-      lastFrozenColumnIndex: 0,
-      isScrolling: false
+      visibleEnd: 50,
+      visibleStart: 0
     });
   });
 
@@ -144,22 +136,18 @@ describe('<Viewport />', () => {
     let newProps = Object.assign({}, viewportProps, {minHeight: newHeight});
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
-      colOverscanEndIdx: helpers.columns.length,
-      colOverscanStartIdx: 0,
-      colVisibleEndIdx: helpers.columns.length,
-      colVisibleStartIdx: 0,
-      rowOverscanEndIdx: 29,
-      rowOverscanStartIdx: 0,
+      colDisplayEnd: helpers.columns.length,
+      colDisplayStart: 0,
+      colVisibleEnd: helpers.columns.length,
+      colVisibleStart: 0,
+      displayEnd: 34,
+      displayStart: 0,
       height: newHeight,
       scrollLeft: 0,
       scrollTop: 0,
-      prevScrollTop: 0,
-      prevScrollLeft: 0,
-      rowVisibleEndIdx: 29,
-      rowVisibleStartIdx: 0,
-      isScrolling: true,
-      scrollDirection: SCROLL_DIRECTION.NONE,
-      lastFrozenColumnIndex: -1
+      visibleEnd: 29,
+      visibleStart: 0,
+      isScrolling: true
     });
   });
 });

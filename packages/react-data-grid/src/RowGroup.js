@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {last} from 'common/utils';
-import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-import { EventTypes } from 'common/constants';
+import utils from './utils';
+const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
 
 import '../../../themes/react-data-grid-row.css';
 
@@ -12,9 +11,10 @@ class RowGroup extends Component {
 
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
     this.onRowExpandClick = this.onRowExpandClick.bind(this);
+    this.setScrollLeft = this.setScrollLeft.bind(this);
   }
 
-  onRowExpandToggle = (expand) => {
+  onRowExpandToggle(expand) {
     let shouldExpand = expand == null ? !this.props.isExpanded : expand;
     let meta = this.props.cellMetaData;
     if (meta != null && meta.onRowExpandToggle && typeof(meta.onRowExpandToggle) === 'function') {
@@ -22,22 +22,24 @@ class RowGroup extends Component {
     }
   }
 
-  onClick = () => {
-    this.props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: this.props.idx });
-  }
-
-  onRowExpandClick = () => {
+  onRowExpandClick() {
     this.onRowExpandToggle(!this.props.isExpanded);
   }
 
+  setScrollLeft(scrollLeft) {
+    if (this.rowGroupRenderer) {
+      this.rowGroupRenderer.setScrollLeft ? this.rowGroupRenderer.setScrollLeft(scrollLeft) : null;
+    }
+  }
+
   render() {
-    let lastColumn = last(this.props.columns);
+    let lastColumn = utils.last(this.props.columns);
 
     let style = {width: lastColumn.left + lastColumn.width};
 
     return (
-      <div style={style} className="react-grid-row-group" onClick={this.onClick}>
-         <this.props.renderer {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
+      <div style={style} className="react-grid-row-group">
+         <this.props.renderer ref={(node) => {this.rowGroupRenderer = node; }} {...this.props} onRowExpandClick={this.onRowExpandClick} onRowExpandToggle={this.onRowExpandToggle}/>
       </div>
     );
   }
@@ -56,26 +58,24 @@ RowGroup.propTypes = {
   forceUpdate: PropTypes.bool,
   subRowDetails: PropTypes.object,
   isRowHovered: PropTypes.bool,
-  colVisibleStartIdx: PropTypes.number.isRequired,
-  colVisibleEndIdx: PropTypes.number.isRequired,
-  colOverscanStartIdx: PropTypes.number.isRequired,
-  colOverscanEndIdx: PropTypes.number.isRequired,
+  colVisibleStart: PropTypes.number.isRequired,
+  colVisibleEnd: PropTypes.number.isRequired,
+  colDisplayStart: PropTypes.number.isRequired,
+  colDisplayEnd: PropTypes.number.isRequired,
   isScrolling: PropTypes.bool.isRequired,
   columnGroupName: PropTypes.string.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   treeDepth: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  renderer: PropTypes.func,
-  eventBus: PropTypes.object.isRequired,
-  rowRef: PropTypes.func.isRequired
+  renderer: PropTypes.func
 };
 
-const  Defaultbase = (props) => {
+const  DefaultRowGroupRenderer = (props) => {
   let treeDepth = props.treeDepth || 0;
   let marginLeft = treeDepth * 20;
 
   let style = {
-    height: '100px',
+    height: '50px',
     border: '1px solid #dddddd',
     paddingTop: '15px',
     paddingLeft: '5px'
@@ -93,14 +93,14 @@ const  Defaultbase = (props) => {
     }
   };
   return (
-    <div style={style} onKeyDown={onKeyDown} tabIndex={0} ref={this.props.rowRef} >
+    <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
       <span className="row-expand-icon" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
       <strong>{props.columnGroupName}: {props.name}</strong>
     </div>
   );
 };
 
-Defaultbase.propTypes = {
+DefaultRowGroupRenderer.propTypes = {
   onRowExpandClick: PropTypes.func.isRequired,
   onRowExpandToggle: PropTypes.func.isRequired,
   isExpanded: PropTypes.bool.isRequired,
@@ -111,7 +111,7 @@ Defaultbase.propTypes = {
 };
 
 RowGroup.defaultProps = {
-  renderer: Defaultbase
+  renderer: DefaultRowGroupRenderer
 };
 
 export default RowGroup;

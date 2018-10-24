@@ -1,4 +1,4 @@
-import shouldRowUpdate from 'common/utils/RowComparer';
+import {shouldRowUpdate} from '../RowComparer';
 
 let columns = [{ id: 1, key: 'col1', width: 100 }, { id: 2, key: 'col2', width: 100 }];
 let cellMetaData = {

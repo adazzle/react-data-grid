@@ -2,12 +2,12 @@ import '../../../../themes/react-data-grid-drop-target.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropTarget } from 'react-dnd';
-import rowComparer from 'common/utils/RowComparer';
+import { RowComparer as shouldRowUpdate } from 'react-data-grid';
 
 let rowDropTarget = (Row) => class extends React.Component {
 
   shouldComponentUpdate(nextProps) {
-    return rowComparer(nextProps, this.props);
+    return shouldRowUpdate(nextProps, this.props);
   }
 
   moveRow() {
@@ -51,4 +51,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default (Row) => DropTarget('Row', target, collect, {arePropsEqual: (nextProps, currentProps) => !rowComparer(nextProps, currentProps)})(rowDropTarget(Row));
+export default (Row) => DropTarget('Row', target, collect, {arePropsEqual: (nextProps, currentProps) => !shouldRowUpdate(nextProps, currentProps)})(rowDropTarget(Row));

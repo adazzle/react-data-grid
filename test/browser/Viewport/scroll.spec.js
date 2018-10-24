@@ -70,12 +70,12 @@ describe("Viewport scroll tests", function() {
       expect(canvas.scrollLeft).toBe(100);
   });
 
-  it("Should scroll the header frozen cells horizontally", function() {
+  it("Should scroll the header locked cells horizontally", function() {
       ReactTests.Simulate.scroll(ReactDOM.findDOMNode(this.canvas), {target:{scrollLeft:100, scrollTop:0}});
-      expect(ReactDOM.findDOMNode(this.header).getElementsByClassName('react-grid-HeaderCell--frozen')[0].style.transform).toBe("translate3d(100px, 0px, 0px)");
+      expect(ReactDOM.findDOMNode(this.header).getElementsByClassName('react-grid-HeaderCell--locked')[0].style.transform).toBe("translate3d(100px, 0px, 0px)");
   });
 
-  xit("Should scroll the canvas frozen cells horizontally", function() {
+  xit("Should scroll the canvas locked cells horizontally", function() {
     //This is failing as the canvas calls setScrollLeft in Canvas.componentDidUpdate
     //it passes through scrollLeft to the rows and cells
     //but this is taken from Canvas.getScroll()
@@ -83,6 +83,6 @@ describe("Viewport scroll tests", function() {
     //for some reason - that is 0 (which is what causes tests above to fail)
 
     ReactTests.Simulate.scroll(ReactDOM.findDOMNode(this.canvas), {target:{scrollLeft:100, scrollTop:0}});
-    expect(canvas.getElementsByClassName('react-grid-Cell--frozen')[0].style.transform).toBe("translate3d(100px, 0px, 0px)");
+    expect(canvas.getElementsByClassName('react-grid-Cell--locked')[0].style.transform).toBe("translate3d(100px, 0px, 0px)");
   });
 });
