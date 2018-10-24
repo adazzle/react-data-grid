@@ -145,6 +145,7 @@
 .rdg-cell-expand > span {
   display: table-cell;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .rdg-child-row-action-cross:before, rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:before, rdg-child-row-action-cross-last:after {
