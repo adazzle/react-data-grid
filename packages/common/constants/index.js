@@ -1,5 +1,6 @@
 import * as CellNavigationMode from './CellNavigationMode';
 import * as EventTypes from './EventTypes';
+import * as HeaderRowType from './HeaderRowType';
 import keyMirror from 'keymirror';
 
 
@@ -23,6 +24,7 @@ const CellExpand = {
 export {
   CellNavigationMode,
   EventTypes,
+  HeaderRowType,
   UpdateActions,
   CellExpand,
   DragItemTypes

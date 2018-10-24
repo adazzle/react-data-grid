@@ -10,15 +10,15 @@ import {isFunction} from 'common/utils';
 import SelectAll from './formatters/SelectAll';
 import { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
 const ColumnMetrics = require('./ColumnMetrics');
+import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType } from 'common/constants';
+import { EventBus } from './masks';
+
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
 }
-
-import { CellNavigationMode, EventTypes, UpdateActions } from 'common/constants';
-import { EventBus } from './masks';
 
 const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;
 
@@ -558,14 +558,14 @@ class ReactDataGrid extends React.Component {
   };
 
   getHeaderRows = () => {
-    let rows = [{ ref: (node) => this.row = node, height: this.props.headerRowHeight || this.props.rowHeight, rowType: 'header' }];
+    let rows = [{ ref: (node) => this.row = node, height: this.props.headerRowHeight || this.props.rowHeight, rowType: HeaderRowType.HEADER }];
     if (this.state.canFilter === true) {
       rows.push({
         ref: (node) => this.filterRow = node,
         filterable: true,
         onFilterChange: this.props.onAddFilter,
         height: this.props.headerFiltersHeight,
-        rowType: 'filter'
+        rowType: HeaderRowType.FILTER
       });
     }
     return rows;

@@ -1,14 +1,15 @@
-const React          = require('react');
-const ReactDOM      = require('react-dom');
-const joinClasses    = require('classnames');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import ExcelColumn from 'common/prop-shapes/ExcelColumn';
 import columnUtils from './ColumnUtils';
+import { HeaderRowType } from 'common/constants';
 const ResizeHandle   = require('./ResizeHandle');
+
 require('../../../themes/react-data-grid-header.css');
 
-import PropTypes from 'prop-types';
-
-function simpleCellRenderer(objArgs) {
+function SimpleCellRenderer(objArgs) {
   let headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
   return <div className="widget-HeaderCell__value">{headerText}</div>;
 }
@@ -17,14 +18,17 @@ class HeaderCell extends React.Component {
   static propTypes = {
     renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
     column: PropTypes.shape(ExcelColumn).isRequired,
-    onResize: PropTypes.func.isRequired,
+    rowType: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired,
+    onResize: PropTypes.func.isRequired,
     onResizeEnd: PropTypes.func.isRequired,
+    onHeaderDrop: PropTypes.func,
+    draggableHeaderCell: PropTypes.element,
     className: PropTypes.string
   };
 
   static defaultProps = {
-    renderer: simpleCellRenderer
+    renderer: SimpleCellRenderer
   };
 
   state = {resizing: false};
@@ -83,42 +87,54 @@ class HeaderCell extends React.Component {
   };
 
   setScrollLeft = (scrollLeft) => {
-    let node = ReactDOM.findDOMNode(this);
-    node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-    node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+    const node = ReactDOM.findDOMNode(this);
+    if (node) {
+      node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+      node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+    }
   };
 
   removeScroll = () => {
-    let node = ReactDOM.findDOMNode(this);
+    const node = ReactDOM.findDOMNode(this);
     if (node) {
-      let transform = 'none';
+      const transform = 'none';
       node.style.webkitTransform = transform;
       node.style.transform = transform;
     }
   };
 
   render() {
-    let resizeHandle;
-    if (this.props.column.resizable) {
-      resizeHandle = (<ResizeHandle
-      onDrag={this.onDrag}
-      onDragStart={this.onDragStart}
-      onDragEnd={this.onDragEnd}
-      />);
-    }
-    let className = joinClasses({
+    const { column, rowType } = this.props;
+    const resizeHandle = column.resizable && (
+      <ResizeHandle
+        onDrag={this.onDrag}
+        onDragStart={this.onDragStart}
+        onDragEnd={this.onDragEnd}
+      />
+    );
+    const className = classNames({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
-      'react-grid-HeaderCell--frozen': columnUtils.isFrozen(this.props.column)
-    });
-    className = joinClasses(className, this.props.className, this.props.column.cellClass);
-    let cell = this.getCell();
-    return (
+      'react-grid-HeaderCell--frozen': columnUtils.isFrozen(column)
+    }, this.props.className, column.cellClass);
+    const cell = (
       <div className={className} style={this.getStyle()}>
-        {cell}
+        {this.getCell()}
         {resizeHandle}
       </div>
     );
+
+    if (rowType === HeaderRowType.HEADER && column.draggable) {
+      const { draggableHeaderCell: DraggableHeaderCell } = this.props;
+      return (
+        <DraggableHeaderCell
+          column={column}
+          onHeaderDrop={this.props.onHeaderDrop}>
+           {cell}
+        </DraggableHeaderCell>
+      );
+    }
+    return cell;
   }
 }
 
