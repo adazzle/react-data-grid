@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import packageJson from '../../package.json';
+
 import ExampleList from './ExampleList';
 
 class Navbar extends React.Component {
@@ -36,6 +38,10 @@ class Navbar extends React.Component {
               <li className="dropdown">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown">Examples <b className="caret"></b></a>
                 <ExampleList className="dropdown-menu" />
+              </li>
+
+              <li>
+                <Link to="/changelog">V{packageJson.version}</Link>
               </li>
             </ul>
           </div>
