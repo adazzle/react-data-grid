@@ -19,7 +19,7 @@ const setup = (overrideExpandableOptions = {}) => {
   };
 };
 
-fdescribe('CellExpand', () => {
+describe('CellExpand', () => {
   it('should create an instance of CellExpand', () => {
     const { wrapper } = setup({ expanded: false });
 
