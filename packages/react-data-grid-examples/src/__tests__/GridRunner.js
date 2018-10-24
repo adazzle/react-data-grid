@@ -94,15 +94,15 @@ export default class GridRunner {
   }
 
   getDisplayInfo() {
-    const { displayStart, colDisplayStart, displayEnd, colDisplayEnd } = this.grid.reactDataGrid.base.viewport.state;
+    const { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx } = this.grid.reactDataGrid.base.viewport.state;
 
-    return { displayStart, colDisplayStart, displayEnd, colDisplayEnd };
+    return { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx };
   }
 
   getRealPosition(originalCellIdx, originalRowIdx ) {
-    const { displayStart, colDisplayStart } = this.getDisplayInfo();
-    let relativeCellIdx = originalCellIdx - colDisplayStart;
-    let relativeRowIdx = originalRowIdx - displayStart;
+    const { rowOverscanStartIdx, colOverscanStartIdx } = this.getDisplayInfo();
+    let relativeCellIdx = originalCellIdx - colOverscanStartIdx;
+    let relativeRowIdx = originalRowIdx - rowOverscanStartIdx;
 
     return { relativeCellIdx, relativeRowIdx };
   }
@@ -130,7 +130,7 @@ export default class GridRunner {
   }
 
   getCellsFromRow(row) {
-    return row.find('Cell'); // don't return locked checkbox select cell'
+    return row.find('Cell'); // don't return frozen checkbox select cell'
   }
 
   getCells(row) {

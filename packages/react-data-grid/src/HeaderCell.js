@@ -1,13 +1,14 @@
 const React          = require('react');
 const ReactDOM      = require('react-dom');
 const joinClasses    = require('classnames');
-const ExcelColumn    = require('./PropTypeShapes/ExcelColumn');
+import ExcelColumn from 'common/prop-shapes/ExcelColumn';
+import columnUtils from './ColumnUtils';
 const ResizeHandle   = require('./ResizeHandle');
 require('../../../themes/react-data-grid-header.css');
 
 import PropTypes from 'prop-types';
 
-function simpleCellRenderer(objArgs: {column: {name: string}}): ReactElement {
+function simpleCellRenderer(objArgs) {
   let headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
   return <div className="widget-HeaderCell__value">{headerText}</div>;
 }
@@ -26,15 +27,15 @@ class HeaderCell extends React.Component {
     renderer: simpleCellRenderer
   };
 
-  state: {resizing: boolean} = {resizing: false};
+  state = {resizing: false};
 
-  onDragStart = (e: SyntheticMouseEvent) => {
+  onDragStart = (e) => {
     this.setState({resizing: true});
     // need to set dummy data for FF
     if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
   };
 
-  onDrag = (e: SyntheticMouseEvent) => {
+  onDrag = (e) => {
     let resize = this.props.onResize || null; // for flows sake, doesnt recognise a null check direct
     if (resize) {
       let width = this.getWidthFromMouseEvent(e);
@@ -44,30 +45,31 @@ class HeaderCell extends React.Component {
     }
   };
 
-  onDragEnd = (e: SyntheticMouseEvent) => {
+  onDragEnd = (e) => {
     let width = this.getWidthFromMouseEvent(e);
     this.props.onResizeEnd(this.props.column, width);
     this.setState({resizing: false});
   };
 
-  getWidthFromMouseEvent = (e: SyntheticMouseEvent): number => {
+  getWidthFromMouseEvent = (e) => {
     let right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
     let left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   };
 
-  getCell = (): ReactComponent => {
-    if (React.isValidElement(this.props.renderer)) {
+  getCell = () => {
+    const {height, column, renderer} = this.props;
+    if (React.isValidElement(renderer)) {
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
       if (typeof this.props.renderer.type === 'string') {
-        return React.cloneElement(this.props.renderer, {height: this.props.height});
+        return React.cloneElement(renderer, {height});
       }
-      return React.cloneElement(this.props.renderer, {column: this.props.column, height: this.props.height});
+      return React.cloneElement(renderer, {column, height});
     }
-    return this.props.renderer({column: this.props.column});
+    return this.props.renderer({column});
   };
 
-  getStyle = (): {width:number; left: number; display: string; position: string; overflow: string; height: number; margin: number; textOverflow: string; whiteSpace: string } => {
+  getStyle = () => {
     return {
       width: this.props.column.width,
       left: this.props.column.left,
@@ -80,7 +82,7 @@ class HeaderCell extends React.Component {
     };
   };
 
-  setScrollLeft = (scrollLeft: number) => {
+  setScrollLeft = (scrollLeft) => {
     let node = ReactDOM.findDOMNode(this);
     node.style.webkitTransform = `translate3d(${scrollLeft}px, 0px, 0px)`;
     node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
@@ -95,7 +97,7 @@ class HeaderCell extends React.Component {
     }
   };
 
-  render(): ?ReactElement {
+  render() {
     let resizeHandle;
     if (this.props.column.resizable) {
       resizeHandle = (<ResizeHandle
@@ -107,7 +109,7 @@ class HeaderCell extends React.Component {
     let className = joinClasses({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
-      'react-grid-HeaderCell--locked': this.props.column.locked
+      'react-grid-HeaderCell--frozen': columnUtils.isFrozen(this.props.column)
     });
     className = joinClasses(className, this.props.className, this.props.column.cellClass);
     let cell = this.getCell();

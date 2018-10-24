@@ -21,7 +21,7 @@ class Draggable extends React.Component {
     onDrag: () => {}
   };
 
-  state: {drag: ?any} = {
+  state = {
     drag: null
   };
 
@@ -29,7 +29,7 @@ class Draggable extends React.Component {
     this.cleanUp();
   }
 
-  onMouseDown = (e: SyntheticMouseEvent) => {
+  onMouseDown = (e) => {
     let drag = this.props.onDragStart(e);
     if (e.preventDefault) {
       e.preventDefault();
@@ -47,7 +47,7 @@ class Draggable extends React.Component {
     this.setState({drag});
   };
 
-  onMouseMove = (e: SyntheticEvent) => {
+  onMouseMove = (e) => {
     if (this.state.drag === null) {
       return;
     }
@@ -59,7 +59,7 @@ class Draggable extends React.Component {
     this.props.onDrag(e);
   };
 
-  onMouseUp = (e: SyntheticEvent) => {
+  onMouseUp = (e) => {
     this.cleanUp();
     this.props.onDragEnd(e, this.state.drag);
     this.setState({drag: null});
@@ -76,7 +76,7 @@ class Draggable extends React.Component {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
 
-  render(): ?ReactElement {
+  render() {
     return (
       <div {...this.getKnownDivProps()}
         onMouseDown={this.onMouseDown}

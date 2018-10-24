@@ -1,6 +1,6 @@
 const React = require('react');
 import PropTypes from 'prop-types';
-const { editors: { EditorBase } } = require('react-data-grid');
+import { EditorBase } from 'common/editors';
 import ReactDOM from 'react-dom';
 
 class DropDownEditor extends EditorBase {
@@ -17,14 +17,14 @@ class DropDownEditor extends EditorBase {
     this.getInputNode().focus();
   }
 
-  render(): ?ReactElement {
+  render() {
     return (
       <select style={this.getStyle()} defaultValue={this.props.value} onBlur={this.props.onBlur} onChange={this.onChange} >
         {this.renderOptions()}
       </select>);
   }
 
-  renderOptions(): Array<ReactElement> {
+  renderOptions() {
     let options = [];
     this.props.options.forEach(function(name) {
       if (typeof(name) === 'string') {

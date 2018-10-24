@@ -1,7 +1,7 @@
 const React                   = require('react');
 const ReactDOM                = require('react-dom');
 const ReactAutocomplete       = require('ron-react-autocomplete');
-const { shapes: { ExcelColumn } } = require('react-data-grid');
+import { ExcelColumn } from 'common/prop-shapes';
 require('../../../../themes/ron-react-autocomplete.css');
 import PropTypes from 'prop-types';
 
@@ -34,7 +34,7 @@ class AutoCompleteEditor extends React.Component {
     this.props.onCommit();
   };
 
-  getValue = (): any => {
+  getValue = () => {
     let value;
     let updated = {};
     if (this.hasResults() && this.isFocusedOnSuggestion()) {
@@ -65,7 +65,7 @@ class AutoCompleteEditor extends React.Component {
     return ReactDOM.findDOMNode(this).getElementsByTagName('input')[0];
   };
 
-  getLabel = (item: any): string => {
+  getLabel = (item) => {
     let label = this.props.label != null ? this.props.label : 'title';
     if (typeof label === 'function') {
       return label(item);
@@ -74,16 +74,16 @@ class AutoCompleteEditor extends React.Component {
     }
   };
 
-  hasResults = (): boolean => {
+  hasResults = () => {
     return this.autoComplete.state.results.length > 0;
   };
 
-  isFocusedOnSuggestion = (): boolean => {
+  isFocusedOnSuggestion = () => {
     let autoComplete = this.autoComplete;
     return autoComplete.state.focusedValue != null;
   };
 
-  constuctValueFromParams = (obj: any, props: ?Array<string>) => {
+  constuctValueFromParams = (obj, props) => {
     if (!props) {
       return '';
     }
@@ -95,7 +95,7 @@ class AutoCompleteEditor extends React.Component {
     return ret.join('|');
   };
 
-  render(): ?ReactElement {
+  render() {
     let label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
       <ReactAutocomplete search={this.props.search} ref={(node) => this.autoComplete = node} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
