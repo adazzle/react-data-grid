@@ -46,7 +46,4 @@ build: off
 on_success:
 # If merging to next branch, publish with 'next' tag
   - npm run beforepublish
-  - ps: >-
-      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'next') {
-        ./ci/publish/publishNext.ps1
-      }
+  - powershell ./ci/publish/publishNext.ps1

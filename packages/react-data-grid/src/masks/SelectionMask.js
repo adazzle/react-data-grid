@@ -11,7 +11,6 @@ const isScrollingHorizontallyWithoutCellChange = ({scrollTop, prevScrollTop, scr
 };
 
 const getLeftPosition = (isFrozen, cellLeft, props) => {
-  console.log(props);
   if (isFrozen && !isScrollingHorizontallyWithoutCellChange(props)) {
     return props.scrollLeft + cellLeft;
   }

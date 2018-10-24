@@ -85,7 +85,7 @@ function recalculate(metrics) {
  * @param {Column} column
  * @param {number} width
  */
-function resizeColumn(metrics: ColumnMetricsType, index: number, width: number): ColumnMetricsType {
+function resizeColumn(metrics, index, width) {
   let column = ColumnUtils.getColumn(metrics.columns, index);
   let metricsClone = shallowCloneObject(metrics);
   metricsClone.columns = metrics.columns.slice(0);
@@ -98,16 +98,16 @@ function resizeColumn(metrics: ColumnMetricsType, index: number, width: number):
   return recalculate(metricsClone);
 }
 
-function areColumnsImmutable(prevColumns: Array<Column>, nextColumns: Array<Column>) {
+function areColumnsImmutable(prevColumns, nextColumns) {
   return isColumnsImmutable(prevColumns) && isColumnsImmutable(nextColumns);
 }
 
-function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column>, isSameColumn: (a: Column, b: Column) => boolean) {
+function compareEachColumn(prevColumns, nextColumns, isSameColumn) {
   let i;
   let len;
   let column;
-  let prevColumnsByKey: { [key: string]: Column } = {};
-  let nextColumnsByKey: { [key: string]: Column } = {};
+  let prevColumnsByKey = {};
+  let nextColumnsByKey = {};
 
 
   if (ColumnUtils.getSize(prevColumns) !== ColumnUtils.getSize(nextColumns)) {
@@ -138,7 +138,7 @@ function compareEachColumn(prevColumns: Array<Column>, nextColumns: Array<Column
   return true;
 }
 
-function sameColumns(prevColumns: Array<Column>, nextColumns: Array<Column>, isSameColumn: (a: Column, b: Column) => boolean): boolean {
+function sameColumns(prevColumns, nextColumns, isSameColumn) {
   if (areColumnsImmutable(prevColumns, nextColumns)) {
     return prevColumns === nextColumns;
   }

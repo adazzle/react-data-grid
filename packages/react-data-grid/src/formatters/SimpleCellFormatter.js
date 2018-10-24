@@ -6,11 +6,11 @@ class SimpleCellFormatter extends React.Component {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool])
   };
 
-  shouldComponentUpdate(nextProps: any): boolean {
+  shouldComponentUpdate(nextProps) {
     return nextProps.value !== this.props.value;
   }
 
-  render(): ?ReactElement {
+  render() {
     return <div title={this.props.value}>{this.props.value}</div>;
   }
 }

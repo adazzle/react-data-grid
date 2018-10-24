@@ -651,14 +651,14 @@ class InteractionMasks extends React.Component {
           <CopyMask
             copiedPosition={copiedPosition}
             rowHeight={rowHeight}
-            columns={columns}
+            columns={getSelectedRowColumns(copiedPosition.rowIdx)}
           />
         )}
         {draggedPosition && (
           <DragMask
             draggedPosition={draggedPosition}
             rowHeight={rowHeight}
-            columns={columns}
+            columns={getSelectedRowColumns(draggedPosition.rowIdx)}
           />
         )}
         {selectedRangeIsSingleCell(this.state.selectedRange) ?

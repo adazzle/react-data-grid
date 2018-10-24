@@ -17,14 +17,14 @@ class DropDownEditor extends EditorBase {
     this.getInputNode().focus();
   }
 
-  render(): ?ReactElement {
+  render() {
     return (
       <select style={this.getStyle()} defaultValue={this.props.value} onBlur={this.props.onBlur} onChange={this.onChange} >
         {this.renderOptions()}
       </select>);
   }
 
-  renderOptions(): Array<ReactElement> {
+  renderOptions() {
     let options = [];
     this.props.options.forEach(function(name) {
       if (typeof(name) === 'string') {

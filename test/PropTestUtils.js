@@ -1,5 +1,3 @@
-/* @flow */
-/** @jsx dom */
 'use strict';
 
 var React    = require('react');

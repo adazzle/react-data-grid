@@ -13,11 +13,11 @@ class CheckboxEditor extends React.Component {
     dependentValues: PropTypes.object
   };
 
-  handleChange = (e: Event) => {
+  handleChange = (e) => {
     this.props.column.onCellChange(this.props.rowIdx, this.props.column.key, this.props.dependentValues, e);
   };
 
-  render(): ? ReactElement {
+  render() {
     let checked = this.props.value != null ? this.props.value : false;
     let checkboxName = 'checkbox' + this.props.rowIdx;
     return (
