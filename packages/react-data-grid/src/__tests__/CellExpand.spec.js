@@ -1,68 +1,60 @@
 import React from 'react';
-import CellExpander from '../CellExpander';
-import { CellExpand } from 'common/constants';
 import { mount } from 'enzyme';
 
-describe('CellExpand', () => {
-  let testElement;
-  let getFakeProps = (expanded) => {
-    let expandableOptions = {expanded};
-    let onCellExpand = jasmine.createSpy();
-    return {
-      expandableOptions,
-      onCellExpand
-    };
+import CellExpander from '../CellExpander';
+import { CellExpand } from 'common/constants';
+
+const setup = (overrideExpandableOptions = {}) => {
+  const props = {
+    expandableOptions: {
+      expanded: true,
+      ...overrideExpandableOptions
+    },
+    onCellExpand: jasmine.createSpy()
   };
 
-  const renderComponent = (props) => {
-    const wrapper = mount(<CellExpander {...props} />);
-    return wrapper;
+  return {
+    props,
+    wrapper: mount(<CellExpander {...props} />)
   };
+};
 
+fdescribe('CellExpand', () => {
   it('should create an instance of CellExpand', () => {
-    let fakeProps = getFakeProps(false);
-    testElement = renderComponent(fakeProps);
-    expect(testElement.find(CellExpander).length).toBe(1);
+    const { wrapper } = setup({ expanded: false });
+
+    expect(wrapper.find('.rdg-cell-expand').length).toBe(1);
   });
 
   it('should render correctly when expanded is true', () => {
-    let fakeProps = getFakeProps(true);
-    testElement = renderComponent(fakeProps);
-    expect(testElement.state('expanded')).toBeTruthy();
-    expect(testElement.find('span.rdg-cell-expand').text()).toBe(CellExpand.DOWN_TRIANGLE);
+    const { wrapper } = setup({ expanded: true });
+
+    expect(wrapper.state('expanded')).toBeTruthy();
+    expect(wrapper.find('span').text()).toBe(CellExpand.DOWN_TRIANGLE);
   });
 
   it('should render correctly when expanded is false', () => {
-    let fakeProps = getFakeProps(false);
-    testElement = renderComponent(fakeProps);
-    expect(testElement.state('expanded')).toBeFalsy();
-    expect(testElement.find('span.rdg-cell-expand').text()).toBe(CellExpand.RIGHT_TRIANGLE);
+    const { wrapper } = setup({ expanded: false });
+
+    expect(wrapper.state('expanded')).toBeFalsy();
+    expect(wrapper.find('span').text()).toBe(CellExpand.RIGHT_TRIANGLE);
   });
 
   it('should call onCellExpand when clicked', () => {
-    let fakeProps = getFakeProps(false);
-    testElement = renderComponent(fakeProps);
-    testElement.simulate('click');
-    expect(fakeProps.onCellExpand).toHaveBeenCalled();
-    expect(fakeProps.onCellExpand.calls.count()).toEqual(1);
+    const { wrapper, props } = setup({ expanded: false });
+
+    wrapper.find('span').simulate('click');
+
+    expect(props.onCellExpand).toHaveBeenCalled();
+    expect(props.onCellExpand.calls.count()).toEqual(1);
   });
 
   it('should correctly set state  when clicked', () => {
-    let fakeProps = getFakeProps(false);
-    testElement = renderComponent(fakeProps);
-    testElement.simulate('click');
-    expect(testElement.state('expanded')).toBeTruthy();
-    testElement.simulate('click');
-    expect(testElement.state('expanded')).toBeFalsy();
-  });
+    const { wrapper } = setup({ expanded: false });
 
-  it('should correctly set state when receiving data from external source', () => {
-    let fakeProps = getFakeProps(false);
-    testElement = renderComponent(fakeProps);
-    testElement.simulate('click');
-    expect(testElement.state('expanded')).toBeTruthy();
-    let secondProps = getFakeProps(false);
-    testElement.setProps(secondProps);
-    expect(testElement.state('expanded')).toBeFalsy();
+    wrapper.find('span').simulate('click');
+    expect(wrapper.state('expanded')).toBeTruthy();
+    wrapper.find('span').simulate('click');
+    expect(wrapper.state('expanded')).toBeFalsy();
   });
 });
