@@ -1,0 +1,9 @@
+{
+  "docs": {
+    "Getting Started": ["quick-start", "addons"],
+    "Second Category": ["doc3"]
+  },
+  "docs-other": {
+    "First Category": ["doc4", "doc5"]
+  }
+}
