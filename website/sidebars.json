@@ -1,7 +1,8 @@
 {
   "docs": {
     "Getting Started": ["quick-start", "addons"],
-    "Second Category": ["doc3"]
+    "Guides": ["basic-rendering", "cell-formatting", "cell-editing", "frozen-columns"],
+    "API": ["react-data-grid", "column"]
   },
   "docs-other": {
     "First Category": ["doc4", "doc5"]

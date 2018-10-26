@@ -8,14 +8,26 @@
       "addons": {
         "title": "React Data Grid Addons"
       },
-      "doc3": {
-        "title": "This is document number 3"
+      "basic-rendering": {
+        "title": "Basic Rendering"
+      },
+      "cell-editing": {
+        "title": "Cell Editing"
+      },
+      "cell-formatting": {
+        "title": "Cell Formatting"
+      },
+      "column": {
+        "title": "column"
       },
       "doc4": {
         "title": "Other Document"
       },
       "doc5": {
         "title": "Fifth Document"
+      },
+      "frozen-columns": {
+        "title": "Frozen Columns"
       },
       "markdowns/AdvancedToolbar": {
         "title": "markdowns/AdvancedToolbar"
@@ -125,6 +137,9 @@
       "quick-start": {
         "title": "Quick Start"
       },
+      "react-data-grid": {
+        "title": "react-data-grid"
+      },
       "readme": {
         "title": "readme"
       }
@@ -137,7 +152,8 @@
     },
     "categories": {
       "Getting Started": "Getting Started",
-      "Second Category": "Second Category",
+      "Guides": "Guides",
+      "API": "API",
       "First Category": "First Category"
     }
   },
