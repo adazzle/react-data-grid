@@ -1,0 +1,4 @@
+---
+id: column
+title: Column
+---
