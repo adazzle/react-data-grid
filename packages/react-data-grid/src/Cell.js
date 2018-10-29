@@ -321,7 +321,7 @@ class Cell extends React.PureComponent {
     return (
       <div className="react-grid-Cell__value">
         {cellDeleter}
-        <div style={{ marginLeft: marginLeft, position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
+        <div style={{ marginLeft, position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
           <span>{CellContent}</span>
           {this.props.cellControls}
         </div>
@@ -351,10 +351,9 @@ class Cell extends React.PureComponent {
     let events = this.getEvents();
     const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
 
-    let cellExpander;
-    if (this.canExpand()) {
-      cellExpander = <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
-    }
+    const cellExpander =  this.canExpand() && (
+      <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />
+    );
 
     return (
       <div
