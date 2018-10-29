@@ -139,8 +139,7 @@ class Cell extends React.PureComponent {
       position: 'absolute',
       width: this.props.column.width,
       height: this.props.height,
-      left: this.props.column.left,
-      contain: 'layout'
+      left: this.props.column.left
     };
     return style;
   };
