@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Row from './Row';
 import cellMetaDataShape from 'common/prop-shapes/CellActionShape';
 import * as rowUtils from './RowUtils';
-import RowGroup, { DefaultRowGroupRenderer } from './RowGroup';
+import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 import {isFunction} from 'common/utils';
@@ -83,8 +83,7 @@ class Canvas extends React.PureComponent {
     selectedRows: [],
     rowScrollTimeout: 0,
     scrollToRowIndex: 0,
-    RowsContainer: ({ children }) => children,
-    rowGroupRenderer: DefaultRowGroupRenderer
+    RowsContainer: ({ children }) => children
   };
 
   state = {
@@ -267,7 +266,7 @@ class Canvas extends React.PureComponent {
 
   getSelectedRowColumns = (rowIdx) => {
     const row = this.getRowByRef(rowIdx);
-    return row ? row.props.columns : this.props.columns;
+    return row && row.props ? row.props.columns : this.props.columns;
   }
 
   setCanvasRef = (canvas) => {
@@ -342,7 +341,7 @@ class Canvas extends React.PureComponent {
       .map((r, idx) => {
         const rowIdx = rowOverscanStartIdx + idx;
         const key = `row-${rowIdx}`;
-        return (this.renderRow({
+        return this.renderRow({
           key,
           ref: this.setRowRef(rowIdx),
           idx: rowIdx,
@@ -363,8 +362,7 @@ class Canvas extends React.PureComponent {
           lastFrozenColumnIndex,
           isScrolling: this.props.isScrolling,
           scrollLeft: this._scroll.scrollLeft
-        })
-      );
+        });
       });
 
     if (rowOverscanStartIdx > 0) {

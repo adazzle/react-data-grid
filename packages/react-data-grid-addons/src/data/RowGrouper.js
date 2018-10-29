@@ -22,6 +22,7 @@ class RowGrouper {
   groupRowsByColumn(rows, columnIndex = 0) {
     let nextColumnIndex = columnIndex;
     let columnName = this.columns.length > 0 && typeof this.columns[columnIndex] === 'string' ? this.columns[columnIndex] : this.columns[columnIndex].key;
+    const columnGroupDisplayName = this.columns.length > 0 && typeof this.columns[columnIndex] === 'string' ? this.columns[columnIndex] : this.columns[columnIndex].name;
     let groupedRows = this.resolver.getGroupedRows(rows, columnName);
     let keys = this.resolver.getGroupKeys(groupedRows);
     let dataviewRows = this.resolver.initRowsCollection();
@@ -29,7 +30,7 @@ class RowGrouper {
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
       let isExpanded = this.isRowExpanded(columnName, key);
-      let rowGroupHeader = {name: key, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName}};
+      let rowGroupHeader = {name: key, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName, columnGroupDisplayName}};
 
       dataviewRows = this.resolver.addHeaderRow(rowGroupHeader, dataviewRows);
 
