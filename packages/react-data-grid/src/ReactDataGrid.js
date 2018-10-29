@@ -356,6 +356,22 @@ class ReactDataGrid extends React.Component {
     }
   };
 
+  /**
+ * onGridRowsUpdated will be called for the following update scenarios
+ * - Whenever a single cell is updated
+ * - Whenever the value of a cell is copy/pasted to another cell
+ * - Whenever multiple cells of a column are updated by dragging the fill handle of another cell
+ * - Whenever multiple cells of a column are updated by double clicking the fill handle of another cell
+ * @param {object} updated Updated key/value pairs that should be applied to each row to update
+ * @param {number} toRow The index of the destination row being to be updated
+ * @param {number} toRowId The unique id of the destination row to be updated
+ * @param {string} action The action that triggered the update. Can be one of [CELL_UPDATE, COLUMN_FILL, COPY_PASTE, CELL_DRAG]
+ * @returns {object} fromRowData The row data of the origin row
+ * The following are optional arguments that apply when editing multiple rows or copying from one cell to another
+ * @param {array} rowIds The unique id of each row to be updated
+ * @param {number} fromRowId The unique id property of the source row
+ * @param {number} fromRow The index of the source row
+ */
   onGridRowsUpdated = (cellKey, fromRow, toRow, updated, action, originRow) => {
     const { rowGetter, rowKey, onGridRowsUpdated } = this.props;
     // Deprecated prop
