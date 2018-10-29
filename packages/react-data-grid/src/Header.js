@@ -9,6 +9,7 @@ const getScrollbarSize  = require('./getScrollbarSize');
 import PropTypes from 'prop-types';
 const createObjectWithProperties = require('./createObjectWithProperties');
 const cellMetaDataShape    = require('common/prop-shapes/CellMetaDataShape');
+import { HeaderRowType } from 'common/constants';
 require('../../../themes/react-data-grid-header.css');
 
 
@@ -87,7 +88,7 @@ class Header extends React.Component {
     this.props.headerRows.forEach((row, index) => {
       // To allow header filters to be visible
       let rowHeight = 'auto';
-      if (row.rowType === 'filter') {
+      if (row.rowType === HeaderRowType.FILTER) {
         rowHeight = '500px';
       }
       let scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
@@ -103,7 +104,7 @@ class Header extends React.Component {
 
       headerRows.push(<HeaderRow
         key={row.ref}
-        ref={(node) => { return row.rowType === 'filter' ? this.filterRow = node : this.row = node; }}
+        ref={(node) => { return row.rowType === HeaderRowType.FILTER ? this.filterRow = node : this.row = node; }}
         rowType={row.rowType}
         style={headerRowStyle}
         onColumnResize={this.onColumnResize}

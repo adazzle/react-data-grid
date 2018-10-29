@@ -10,11 +10,6 @@ class RowRenderer extends React.Component {
     renderBaseRow: PropTypes.func.isRequired
   };
 
-  setScrollLeft = (scrollBy) => {
-    // if you want freeze columns to work, you need to make sure you implement this as apass through
-    this.row.setScrollLeft(scrollBy);
-  };
-
   getRowStyle = () => {
     return {
       color: this.getRowBackground()

@@ -7,6 +7,7 @@ const SortableHeaderCell = require('common/cells/headerCells/SortableHeaderCell'
 const FilterableHeaderCell = require('common/cells/headerCells/FilterableHeaderCell');
 const HeaderCellType = require('./HeaderCellType');
 const createObjectWithProperties = require('./createObjectWithProperties');
+import { HeaderRowType } from 'common/constants';
 require('../../../themes/react-data-grid-header.css');
 
 import PropTypes from 'prop-types';
@@ -63,7 +64,7 @@ class HeaderRow extends React.Component {
       if (this.props.filterable) return HeaderCellType.FILTERABLE;
     }
 
-    if (column.sortable && column.rowType !== 'filter') return HeaderCellType.SORTABLE;
+    if (column.sortable && column.rowType !== HeaderRowType.FILTER) return HeaderCellType.SORTABLE;
 
     return HeaderCellType.NONE;
   };
@@ -113,39 +114,23 @@ class HeaderRow extends React.Component {
 
     for (let i = 0, len = columnUtils.getSize(columns); i < len; i++) {
       const column = { rowType, ...columnUtils.getColumn(columns, i) };
-      const _renderer = column.key === 'select-row' && rowType === 'filter' ? <div></div> : this.getHeaderRenderer(column);
+      const _renderer = column.key === 'select-row' && rowType === HeaderRowType.FILTER ? <div></div> : this.getHeaderRenderer(column);
 
-      const baseHeaderCellProps = {
-        column,
-        height: this.props.height,
-        renderer: _renderer,
-        resizing: this.props.resizing === column,
-        onResize: this.props.onColumnResize,
-        onResizeEnd: this.props.onColumnResizeEnd
-      };
-
-      let cell;
-      if (column.draggable) {
-        const DraggableHeaderCell = this.props.draggableHeaderCell;
-        cell = (
-          <DraggableHeaderCell
-            key={column.key}
-            ref={(node) => this.cells[i] = node}
-            column={column}
-            onHeaderDrop={this.props.onHeaderDrop}
-          >
-            <BaseHeaderCell {...baseHeaderCellProps} />
-          </DraggableHeaderCell>
-        );
-      } else {
-        cell = (
-          <BaseHeaderCell
-            key={column.key}
-            ref={(node) => this.cells[i] = node}
-            {...baseHeaderCellProps}
-          />
-        );
-      }
+      const cell = (
+        <BaseHeaderCell
+          key={column.key}
+          ref={(node) => this.cells[i] = node}
+          column={column}
+          rowType={rowType}
+          height={this.props.height}
+          renderer={_renderer}
+          resizing={this.props.resizing === column}
+          onResize={this.props.onColumnResize}
+          onResizeEnd={this.props.onColumnResizeEnd}
+          onHeaderDrop={this.props.onHeaderDrop}
+          draggableHeaderCell={this.props.draggableHeaderCell}
+        />
+      );
 
       if (columnUtils.isFrozen(column)) {
         frozenCells.push(cell);
