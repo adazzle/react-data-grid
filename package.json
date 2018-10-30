@@ -54,6 +54,7 @@
     "@babel/plugin-transform-member-expression-literals": "^7.0.0",
     "@babel/plugin-transform-property-literals": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "airbnb-browser-shims": "^3.0.0",
     "avcoveralls": "^1.0.0",
@@ -109,9 +110,9 @@
     "style-loader": "^0.13.1",
     "underscore": "^1.9.1",
     "vinyl-source-stream": "^0.1.1",
-    "webpack": "^1.12.10",
-    "webpack-dev-server": "^1.16.2",
-    "@babel/preset-flow": "^7.0.0"
+    "webpack": "^4.23.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^1.16.2"
   },
   "author": "adazzle",
   "license": "MIT",
