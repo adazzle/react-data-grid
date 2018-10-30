@@ -131,13 +131,13 @@ class Canvas extends React.PureComponent {
 
   onFocusInteractionMask = (focus) => {
     const { scrollTop, scrollLeft } = this._scroll;
-    const { scrollX, scrollY } = window;
+    const { pageXOffset, pageYOffset } = window;
     focus();
     if (this.canvas) {
       this.canvas.scrollTop = scrollTop;
       this.canvas.scrollLeft = scrollLeft;
     }
-    window.scroll(scrollX, scrollY);
+    window.scroll(pageXOffset, pageYOffset);
   };
 
   onScroll = (e) => {
