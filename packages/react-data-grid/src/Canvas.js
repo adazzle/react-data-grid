@@ -7,7 +7,7 @@ import * as rowUtils from './RowUtils';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
-import {isFunction} from 'common/utils';
+import { isFunction } from 'common/utils';
 import { EventTypes } from 'common/constants';
 require('../../../themes/react-data-grid-core.css');
 
@@ -131,11 +131,13 @@ class Canvas extends React.PureComponent {
 
   onFocusInteractionMask = (focus) => {
     const { scrollTop, scrollLeft } = this._scroll;
+    const { pageXOffset, pageYOffset } = window;
     focus();
     if (this.canvas) {
       this.canvas.scrollTop = scrollTop;
       this.canvas.scrollLeft = scrollLeft;
     }
+    window.scroll(pageXOffset, pageYOffset);
   };
 
   onScroll = (e) => {
@@ -148,7 +150,7 @@ class Canvas extends React.PureComponent {
     this.props.onScroll(scroll);
   };
 
-  getClientScrollTopOffset= (node) => {
+  getClientScrollTopOffset = (node) => {
     const { rowHeight } = this.props;
     const scrollVariation = node.scrollTop % rowHeight;
     return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
@@ -278,9 +280,9 @@ class Canvas extends React.PureComponent {
   };
 
   renderCustomRowRenderer(props) {
-    const {ref, ...otherProps} = props;
+    const { ref, ...otherProps } = props;
     const CustomRowRenderer = this.props.rowRenderer;
-    const customRowRendererProps = {...otherProps, renderBaseRow: (p) => <Row ref={ref} {...p}/>};
+    const customRowRendererProps = { ...otherProps, renderBaseRow: (p) => <Row ref={ref} {...p} /> };
     if (CustomRowRenderer.type === Row) {
       // In the case where Row is specified as the custom render, ensure the correct ref is passed
       return <Row {...props} />;
@@ -294,7 +296,7 @@ class Canvas extends React.PureComponent {
   }
 
   renderGroupRow(props) {
-    const {ref, ...rowGroupProps} = props;
+    const { ref, ...rowGroupProps } = props;
     return (<RowGroup
       {...rowGroupProps}
       {...props.row.__metaData}
@@ -302,7 +304,7 @@ class Canvas extends React.PureComponent {
       name={props.row.name}
       eventBus={this.props.eventBus}
       renderer={this.props.rowGroupRenderer}
-      renderBaseRow= { (p) => <Row ref={ref} {...p}/>}
+      renderBaseRow={(p) => <Row ref={ref} {...p} />}
     />);
   }
 
@@ -318,7 +320,7 @@ class Canvas extends React.PureComponent {
       return this.renderCustomRowRenderer(props);
     }
 
-    return <Row {...props}/>;
+    return <Row {...props} />;
   };
 
   renderPlaceholder = (key, height) => {
