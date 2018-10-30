@@ -1,4 +1,9 @@
 
+## 5.0.2 (Oct 30, 2018)
+- **Bugfix:** Fix grouping example ([1311](https://github.com/adazzle/react-data-grid/pull/1311)
+- **Bugfix:** Remove contain layout css ([1346](https://github.com/adazzle/react-data-grid/pull/1346)
+- **Bugfix:** Preserve window scroll position on cell selection ([1349](https://github.com/adazzle/react-data-grid/pull/1346)
+
 ## 5.0.1 (Oct 22, 2018)
 
 ### React-Data-Grid
