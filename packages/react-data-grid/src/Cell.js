@@ -309,18 +309,23 @@ class Cell extends React.PureComponent {
     let isExpandCell = this.props.expandableOptions ? this.props.expandableOptions.field === this.props.column.key : false;
     let treeDepth = this.props.expandableOptions ? this.props.expandableOptions.treeDepth : 0;
     let marginLeft = this.props.expandableOptions && isExpandCell ? (this.props.expandableOptions.treeDepth * 30) : 0;
-    let cellExpander;
+
     let cellDeleter;
-    if (this.canExpand()) {
-      cellExpander = <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
-    }
 
     let isDeleteSubRowEnabled = this.props.cellMetaData.onDeleteSubRow ? true : false;
 
     if (treeDepth > 0 && isExpandCell) {
       cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow} isDeleteSubRowEnabled={isDeleteSubRowEnabled} />;
     }
-    return (<div className="react-grid-Cell__value">{cellDeleter}<div style={{ marginLeft: marginLeft }}><span>{CellContent}</span> {this.props.cellControls} {cellExpander}</div></div>);
+    return (
+      <div className="react-grid-Cell__value">
+        {cellDeleter}
+        <div style={{ marginLeft, position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
+          <span>{CellContent}</span>
+          {this.props.cellControls}
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -345,6 +350,10 @@ class Cell extends React.PureComponent {
     let events = this.getEvents();
     const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
 
+    const cellExpander =  this.canExpand() && (
+      <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />
+    );
+
     return (
       <div
         {...this.getKnownDivProps()}
@@ -354,6 +363,7 @@ class Cell extends React.PureComponent {
         ref={this.setCellRef}
       >
         {cellActionButtons}
+        {cellExpander}
         {cellContent}
         {tooltip}
       </div>
