@@ -92,8 +92,8 @@ const exampleDescription = <p>To make a given column locked, set <code>column.lo
 
 module.exports = exampleWrapper({
   WrappedComponent: Example,
-  exampleName: 'locked Columns Example',
+  exampleName: 'Frozen Columns Example',
   exampleDescription,
-  examplePath: './scripts/example03-locked-cols.js',
+  examplePath: './scripts/example03-frozen-cols.js',
   examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/5/'
 });

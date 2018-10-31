@@ -558,10 +558,9 @@ class ReactDataGrid extends React.Component {
   };
 
   getHeaderRows = () => {
-    let rows = [{ ref: (node) => this.row = node, height: this.props.headerRowHeight || this.props.rowHeight, rowType: HeaderRowType.HEADER }];
+    const rows = [{ height: this.props.headerRowHeight || this.props.rowHeight, rowType: HeaderRowType.HEADER }];
     if (this.state.canFilter === true) {
       rows.push({
-        ref: (node) => this.filterRow = node,
         filterable: true,
         onFilterChange: this.props.onAddFilter,
         height: this.props.headerFiltersHeight,
@@ -646,6 +645,10 @@ class ReactDataGrid extends React.Component {
     this.grid = grid;
   };
 
+  setBaseGridRef = (base) => {
+    this.base = base;
+  };
+
   renderToolbar = () => {
     let Toolbar = this.props.toolbar;
     let toolBarProps =  {columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount};
@@ -694,7 +697,7 @@ class ReactDataGrid extends React.Component {
         {toolbar}
         <div className="react-grid-Main">
           <BaseGrid
-            ref={(node) => this.base = node}
+            ref={this.setBaseGridRef}
             {...this.props}
             rowKey={this.props.rowKey}
             headerRows={this.getHeaderRows()}

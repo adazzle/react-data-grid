@@ -191,10 +191,8 @@ describe('Grid', function() {
       });
 
       it('should set filter state of grid and render a filterable header row', function() {
-        let filterableHeaderRow = this.baseGrid.props.headerRows[1];
         expect(this.component.state.canFilter).toBe(true);
         expect(this.baseGrid.props.headerRows.length).toEqual(2);
-        expect(typeof filterableHeaderRow.ref).toEqual('function');
       });
     });
   });

@@ -129,17 +129,6 @@ class Canvas extends React.PureComponent {
     );
   };
 
-  onFocusInteractionMask = (focus) => {
-    const { scrollTop, scrollLeft } = this._scroll;
-    const { pageXOffset, pageYOffset } = window;
-    focus();
-    if (this.canvas) {
-      this.canvas.scrollTop = scrollTop;
-      this.canvas.scrollLeft = scrollLeft;
-    }
-    window.scroll(pageXOffset, pageYOffset);
-  };
-
   onScroll = (e) => {
     if (this.canvas !== e.target) {
       return;
@@ -418,7 +407,6 @@ class Canvas extends React.PureComponent {
           onCellCopyPaste={this.props.onCellCopyPaste}
           onGridRowsUpdated={this.props.onGridRowsUpdated}
           onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-          onBeforeFocus={this.onFocusInteractionMask}
           onCellSelected={this.props.onCellSelected}
           onCellDeSelected={this.props.onCellDeSelected}
           onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}

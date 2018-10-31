@@ -78,22 +78,25 @@ class Header extends React.Component {
     }
   };
 
+  setRowRef = (row) => {
+    this.row = row;
+  };
+
+  setFilterRowRef = (filterRow) => {
+    this.filterRow = filterRow;
+  };
+
   getHeaderRows = () => {
-    let columnMetrics = this.getColumnMetrics();
-    let resizeColumn;
-    if (this.state.resizing) {
-      resizeColumn = this.state.resizing.column;
-    }
-    let headerRows = [];
-    this.props.headerRows.forEach((row, index) => {
+    const columnMetrics = this.getColumnMetrics();
+    const resizeColumn = this.state.resizing ? this.state.resizing.column : undefined;
+
+    return this.props.headerRows.map((row, index) => {
       // To allow header filters to be visible
-      let rowHeight = 'auto';
-      if (row.rowType === HeaderRowType.FILTER) {
-        rowHeight = '500px';
-      }
-      let scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
-      let updatedWidth = isNaN(this.props.totalWidth - scrollbarSize) ? this.props.totalWidth : this.props.totalWidth - scrollbarSize;
-      let headerRowStyle = {
+      const isFilterRow = row.rowType === HeaderRowType.FILTER;
+      const rowHeight = isFilterRow ? '500px' : 'auto';
+      const scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
+      const updatedWidth = isNaN(this.props.totalWidth - scrollbarSize) ? this.props.totalWidth : this.props.totalWidth - scrollbarSize;
+      const headerRowStyle = {
         position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
         left: 0,
@@ -102,29 +105,30 @@ class Header extends React.Component {
         minHeight: rowHeight
       };
 
-      headerRows.push(<HeaderRow
-        key={row.ref}
-        ref={(node) => { return row.rowType === HeaderRowType.FILTER ? this.filterRow = node : this.row = node; }}
-        rowType={row.rowType}
-        style={headerRowStyle}
-        onColumnResize={this.onColumnResize}
-        onColumnResizeEnd={this.onColumnResizeEnd}
-        width={columnMetrics.width}
-        height={row.height || this.props.height}
-        columns={columnMetrics.columns}
-        resizing={resizeColumn}
-        draggableHeaderCell={this.props.draggableHeaderCell}
-        filterable={row.filterable}
-        onFilterChange={row.onFilterChange}
-        onHeaderDrop={this.props.onHeaderDrop}
-        sortColumn={this.props.sortColumn}
-        sortDirection={this.props.sortDirection}
-        onSort={this.props.onSort}
-        onScroll={this.props.onScroll}
-        getValidFilterValues={this.props.getValidFilterValues}
-        />);
+      return (
+        <HeaderRow
+          key={row.rowType}
+          ref={isFilterRow ? this.setFilterRowRef : this.setRowRef}
+          rowType={row.rowType}
+          style={headerRowStyle}
+          onColumnResize={this.onColumnResize}
+          onColumnResizeEnd={this.onColumnResizeEnd}
+          width={columnMetrics.width}
+          height={row.height || this.props.height}
+          columns={columnMetrics.columns}
+          resizing={resizeColumn}
+          draggableHeaderCell={this.props.draggableHeaderCell}
+          filterable={row.filterable}
+          onFilterChange={row.onFilterChange}
+          onHeaderDrop={this.props.onHeaderDrop}
+          sortColumn={this.props.sortColumn}
+          sortDirection={this.props.sortDirection}
+          onSort={this.props.onSort}
+          onScroll={this.props.onScroll}
+          getValidFilterValues={this.props.getValidFilterValues}
+        />
+      );
     });
-    return headerRows;
   };
 
   getColumnMetrics = () => {
