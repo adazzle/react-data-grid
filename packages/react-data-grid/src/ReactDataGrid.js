@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 import PropTypes from 'prop-types';
 import {deprecate} from 'react-is-deprecated';
 import BaseGrid from './Grid';
@@ -132,12 +133,11 @@ class ReactDataGrid extends React.Component {
   constructor(props, context) {
     super(props, context);
     let columnMetrics = this.createColumnMetrics();
-    const initialState = {columnMetrics, selectedRows: [], expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
+    const initialState = {columnMetrics, selectedRows: [], expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, scrollOffset: 0, lastRowIdxUiSelected: -1}
     if (this.props.sortColumn && this.props.sortDirection) {
       initialState.sortColumn = this.props.sortColumn;
       initialState.sortDirection = this.props.sortDirection;
     }
-
     this.state = initialState;
     this.eventBus = new EventBus();
   }
@@ -149,6 +149,8 @@ class ReactDataGrid extends React.Component {
       window.addEventListener('mouseup', this.onWindowMouseUp);
     }
     this.metricsUpdated();
+    this.eventBus.subscribe(EventTypes.EDITOR_OPENED_AT_BOUNDARY, () => this.setState({editorOpenedAtBoundary: true}));
+    this.eventBus.subscribe(EventTypes.EDITOR_CLOSED, () => this.setState({editorOpenedAtBoundary: false}));
   }
 
   componentWillUnmount() {
@@ -691,8 +693,9 @@ class ReactDataGrid extends React.Component {
     if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
+    const paddingBottom = this.state.editorOpenedAtBoundary ? 300 : 0;
     return (
-      <div className="react-grid-Container" style={{width: containerWidth}}
+      <div className="react-grid-Container" style={{width: containerWidth, paddingBottom}}
         ref={this.setGridRef}>
         {toolbar}
         <div className="react-grid-Main">

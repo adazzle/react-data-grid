@@ -65,6 +65,7 @@ class InteractionMasks extends React.Component {
     onCellRangeSelectionCompleted: PropTypes.func,
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
+    onBeforeFocus: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     prevScrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,
@@ -166,6 +167,7 @@ class InteractionMasks extends React.Component {
         firstEditorKeyPress: key
       });
     }
+    this.setEditorVisibilty();
   };
 
   closeEditor = () => {
@@ -173,7 +175,20 @@ class InteractionMasks extends React.Component {
       isEditorEnabled: false,
       firstEditorKeyPress: null
     });
+    this.props.eventBus.dispatch(EventTypes.EDITOR_CLOSED);
   };
+
+  isEditorOpenedAtBottomBoundary() {
+    const buffer = 5;
+    return this.state.selectedPosition.rowIdx >= this.props.rowVisibleEndIdx - buffer;
+  }
+
+  setEditorVisibilty() {
+    const column = getSelectedColumn({ selectedPosition: this.state.selectedPosition, columns: this.props.columns });
+    if (column.editor && this.isEditorOpenedAtBottomBoundary()) {
+      this.props.eventBus.dispatch(EventTypes.EDITOR_OPENED_AT_BOUNDARY);
+    }
+  }
 
   onPressKeyWithCtrl = ({ keyCode }) => {
     if (this.copyPasteEnabled()) {
