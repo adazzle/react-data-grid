@@ -1,12 +1,12 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("react"), require("react-dom"), require("immutable"));
+		module.exports = factory(require("react"), require("react-dom"), require("Immutable"));
 	else if(typeof define === 'function' && define.amd)
-		define(["react", "react-dom", "immutable"], factory);
+		define(["react", "react-dom", "Immutable"], factory);
 	else if(typeof exports === 'object')
-		exports["ReactDataGrid"] = factory(require("react"), require("react-dom"), require("immutable"));
+		exports["ReactDataGrid"] = factory(require("react"), require("react-dom"), require("Immutable"));
 	else
-		root["ReactDataGrid"] = factory(root["React"], root["ReactDOM"], root["immutable"]);
+		root["ReactDataGrid"] = factory(root["React"], root["ReactDOM"], root["Immutable"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_13__, __WEBPACK_EXTERNAL_MODULE_48__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
