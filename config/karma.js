@@ -28,7 +28,7 @@ module.exports = function (config) {
       return BROWSERS.split(',');
     }
     if(RELEASE){
-      browsers = ['ChromeDebugging']
+      browsers = ['Chrome','Firefox', 'IE']
     }else if(DEBUG){
       browsers = ['ChromeDebugging'];
     }
@@ -74,7 +74,7 @@ module.exports = function (config) {
   }
 
   config.set({
-    singleRun: false,
+
     basePath: path.join(__dirname, '../'),
 
     files: getFiles(),
