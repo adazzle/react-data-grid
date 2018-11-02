@@ -65,7 +65,6 @@ class InteractionMasks extends React.Component {
     onCellRangeSelectionCompleted: PropTypes.func,
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
-    onBeforeFocus: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     prevScrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,
