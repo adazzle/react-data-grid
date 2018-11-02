@@ -23,6 +23,16 @@ class EventBus {
       handlers.forEach(handler => handler(...data));
     }
   }
+
+  unsubscribe(type) {
+    if (type) {
+      this.subscribers[type] = null;
+    }
+  }
+
+  unsubscribeAll() {
+    this.subscribers = null;
+  }
 }
 
 export default EventBus;

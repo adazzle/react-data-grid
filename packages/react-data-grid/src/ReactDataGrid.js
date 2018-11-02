@@ -156,6 +156,7 @@ class ReactDataGrid extends React.Component {
     this._mounted = false;
     window.removeEventListener('resize', this.metricsUpdated);
     window.removeEventListener('mouseup', this.onWindowMouseUp);
+    this.eventBus.unsubscribeAll();
   }
 
   componentWillReceiveProps(nextProps) {
