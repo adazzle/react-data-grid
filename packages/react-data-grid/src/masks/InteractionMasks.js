@@ -510,7 +510,7 @@ class InteractionMasks extends React.Component {
     });
   };
 
-  dragEnabled = () => {
+  isDragEnabled = () => {
     const { onGridRowsUpdated, onCellsDragged } = this.props;
     return this.isSelectedCellEditable() && (isFunction(onGridRowsUpdated) || isFunction(onCellsDragged));
   };
@@ -521,7 +521,14 @@ class InteractionMasks extends React.Component {
     const isViewportDragging = e && e.target && e.target.className;
     if (idx > -1 && isViewportDragging) {
       e.dataTransfer.effectAllowed = 'copy';
-      e.dataTransfer.setData('text/plain', JSON.stringify({ idx, rowIdx }));
+      // Setting data is required to make an element draggable in FF
+      const transferData = JSON.stringify({ idx, rowIdx });
+      try {
+        e.dataTransfer.setData('text/plain', transferData);
+      } catch (ex) {
+        // IE only supports 'text' and 'URL' for the 'type' argument
+        e.dataTransfer.setData('text', transferData);
+      }
       this.setState({
         draggedPosition: { idx, rowIdx }
       });
@@ -608,7 +615,7 @@ class InteractionMasks extends React.Component {
           selectedPosition={selectedPosition}
           {...this.getSelectionMaskProps()}
         >
-          {this.dragEnabled() && (
+          {this.isDragEnabled() && (
             <DragHandle
               onDragStart={this.handleDragStart}
               onDragEnd={this.handleDragEnd}
