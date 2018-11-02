@@ -24,6 +24,7 @@
     "react-component"
   ],
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "classnames": "^2.2.6",
     "es5-shim": "^4.0.3",
     "fs-extra": "^0.30.0",
@@ -63,6 +64,7 @@
     "babel-loader": "7.1.1",
     "babel-plugin-rewire": "^1.2.0",
     "copy-dir": "^0.3.0",
+    "core-js": "^2.5.7",
     "css-loader": "^0.26.0",
     "del": "^1.2.1",
     "enzyme": "^3.4.3",
