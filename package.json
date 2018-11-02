@@ -76,6 +76,7 @@
     "gulp-concat": "^2.3.4",
     "gulp-util": "^3.0.0",
     "immutable": "^3.7.3",
+    "import-local": "^2.0.0",
     "istanbul-instrumenter-loader": "^0.1.2",
     "jasmine-core": "2.6.1",
     "jasmine-enzyme": "^4.2.0",
