@@ -31,14 +31,14 @@ describe('<DragDropContainer />', () => {
 
   it('should render a RowDragLayer', () => {
     let rowDragLayer = wrapper.find(RowDragLayer);
-    expect(rowDragLayer).toBePresent();
-    expect(rowDragLayer).toHaveProp('rows', [0, 1]);
+    expect(rowDragLayer.length).toBe(1);
+    expect(rowDragLayer.props().rows).toEqual([0, 1]);
   });
 
   it('should correctly render child grid component when passed in', () => {
     let gridStub = wrapper.find(GridStub);
-    expect(gridStub).toBePresent();
-    expect(gridStub).toHaveProp('draggableHeaderCell', DraggableHeaderCell);
+    expect(gridStub.length).toBe(1);
+    expect(gridStub.props().draggableHeaderCell).toBe(DraggableHeaderCell);
   });
 
   it('getDragPreviewRow should override rowGetter to provide rows to rowDragLayer', () => {
@@ -47,7 +47,7 @@ describe('<DragDropContainer />', () => {
     };
     render(props);
     let rowDragLayer = wrapper.find(RowDragLayer);
-    expect(rowDragLayer).toBePresent();
-    expect(rowDragLayer).toHaveProp('rows', ['0a', '1a']);
+    expect(rowDragLayer.length).toBe(1);
+    expect(rowDragLayer.props().rows).toEqual( ['0a', '1a']);
   });
 });
