@@ -28,9 +28,11 @@ class CellExpander extends React.Component {
 
   render() {
     return (
-      <span className="rdg-cell-expand" onClick={this.onCellExpand} >
-        {this.state.expanded ? CellExpand.DOWN_TRIANGLE : CellExpand.RIGHT_TRIANGLE}
-      </span>
+      <div className="rdg-cell-expand">
+        <span onClick={this.onCellExpand}>
+          {this.state.expanded ? CellExpand.DOWN_TRIANGLE : CellExpand.RIGHT_TRIANGLE}
+        </span>
+      </div>
     );
   }
 }

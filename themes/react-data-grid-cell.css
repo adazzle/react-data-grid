@@ -40,18 +40,8 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  height: inherit;
 }
-
-.react-grid-Cell:not(.editing):not(.rdg-child-cell) .react-grid-Cell__value {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.rdg-child-cell .react-grid-Cell__value {
-  line-height: 35px;
-}
-
 
 .react-grid-Cell.readonly {
   background-color : black;
@@ -147,10 +137,15 @@
 }
 
 .rdg-cell-expand {
-    top: 0px;
-    right: 20px;
-    position: absolute;
-    cursor: pointer;
+    float: right;
+    display: table;
+    height: 100%;
+}
+
+.rdg-cell-expand > span {
+  display: table-cell;
+  vertical-align: middle;
+  cursor: pointer;
 }
 
 .rdg-child-row-action-cross:before, rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:before, rdg-child-row-action-cross-last:after {
@@ -163,7 +158,7 @@
 .rdg-child-row-action-cross:before {
   left: 21px;
   width: 1px;
-  height: 35px;
+  height: 100%;
 }
 
 .rdg-child-row-action-cross-last:before {

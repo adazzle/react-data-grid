@@ -49,7 +49,6 @@ describe('<InteractionMasks/>', () => {
       enableCellSelect: true,
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus,
-      onBeforeFocus: jasmine.createSpy().and.returnValue(() => null),
       getSelectedRowHeight: () => 50,
       getSelectedRowTop: () => 0,
       getSelectedRowColumns: jasmine.createSpy().and.callFake(() => columns),
@@ -193,9 +192,12 @@ describe('<InteractionMasks/>', () => {
 
       it('should give focus to InteractionMasks once a selection has ended', () => {
         // We have to use mount, rather than shallow, so that InteractionMasks has a ref to it's node, used for focusing
-        const { props } = setup(undefined, undefined, mount);
+        const { props, wrapper } = setup(undefined, undefined, mount);
+        props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
+        const { selectionMask } = wrapper.instance();
+        spyOn(selectionMask, 'focus');
         props.eventBus.dispatch(EventTypes.SELECT_END);
-        expect(props.onBeforeFocus).toHaveBeenCalled();
+        expect(selectionMask.focus).toHaveBeenCalled();
       });
     });
   });
