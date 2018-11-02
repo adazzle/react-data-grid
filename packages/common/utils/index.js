@@ -1,7 +1,7 @@
-const isImmutableLoaded = typeof Immutable !== 'undefined';
+const isImmutableLoaded = () => typeof Immutable !== 'undefined';
 
 export const isColumnsImmutable = (columns) => {
-  return isImmutableLoaded && columns instanceof Immutable.List;
+  return isImmutableLoaded() && columns instanceof Immutable.List;
 };
 
 export const isEmptyArray = (obj) => {
@@ -18,7 +18,7 @@ export const isEmptyObject = (obj) => {
 };
 
 export const isImmutableCollection = objToVerify => {
-  return isImmutableLoaded && Immutable.Iterable.isIterable(objToVerify);
+  return isImmutableLoaded() && Immutable.Iterable.isIterable(objToVerify);
 };
 
 export const getMixedTypeValueRetriever = (isImmutable) => {
@@ -31,14 +31,14 @@ export const getMixedTypeValueRetriever = (isImmutable) => {
   return retObj;
 };
 
-export const isImmutableMap = isImmutableLoaded ? Immutable.Map.isMap : () => false;
+export const isImmutableMap = isImmutableLoaded() ? Immutable.Map.isMap : () => false;
 
 export const last = arrayOrList => {
   if (arrayOrList == null) {
     throw new Error('arrayOrCollection is null');
   }
 
-  if (isImmutableLoaded && Immutable.List.isList(arrayOrList)) {
+  if (isImmutableLoaded() && Immutable.List.isList(arrayOrList)) {
     return arrayOrList.last();
   }
 
