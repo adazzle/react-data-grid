@@ -95,6 +95,14 @@ class InteractionMasks extends React.Component {
     firstEditorKeyPress: null
   };
 
+  saveEditorPosition = () => {
+    if (this.selectionMask) {
+      const { left, top } = this.selectionMask.getBoundingClientRect();
+      const { scrollLeft, scrollTop } = document.documentElement;
+      this.editorPosition = { left: left + scrollLeft, top: top + scrollTop };
+    }
+  };
+
   componentDidUpdate(prevProps, prevState) {
     const { selectedPosition, isEditorEnabled } = this.state;
     const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
@@ -115,6 +123,7 @@ class InteractionMasks extends React.Component {
 
     if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
       this.focus();
+      this.saveEditorPosition();
     }
   }
 
@@ -645,7 +654,7 @@ class InteractionMasks extends React.Component {
   };
 
   render() {
-    const { rowGetter, contextMenu, rowHeight, getSelectedRowColumns } = this.props;
+    const { rowGetter, contextMenu, rowHeight, getSelectedRowColumns, scrollLeft, scrollTop } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = getSelectedRow({ selectedPosition, rowGetter });
     const columns = getSelectedRowColumns(selectedPosition.rowIdx);
@@ -680,8 +689,9 @@ class InteractionMasks extends React.Component {
           value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
           rowData={rowData}
           column={getSelectedColumn({ selectedPosition, columns })}
-          scrollLeft={this.props.scrollLeft}
-          scrollTop={this.props.scrollTop}
+          scrollLeft={scrollLeft}
+          scrollTop={scrollTop}
+          position={this.editorPosition}
           {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
         />}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
