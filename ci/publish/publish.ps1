@@ -27,13 +27,16 @@ do
            } '3' {
             $nextVersion = node ./ci/publish/getNextVersion patch
                 Write-Host "Attempting to publishing new patch version $($nextVersion) to npm"
+           } '4' {
+            $nextVersion = node ./ci/publish/getNextVersion prepatch
+                Write-Host "Attempting to publishing new patch version $($nextVersion) to npm"
            } 'q' {
                 return
            }
      }
      pause
 }
-until ($input -eq 'q' -Or $input -eq '1' -Or $input -eq '2' -Or $input -eq '3')
+until ($input -eq 'q' -Or $input -eq '1' -Or $input -eq '2' -Or $input -eq '3'  -Or $input -eq '4')
 
 Write-Host "Installing dependencies before publish"
 npm install
