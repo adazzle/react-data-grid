@@ -61,7 +61,7 @@
     "eslint-loader": "^1.2.0",
     "eslint-plugin-react": "^3.15.0",
     "faker": "^3.0.1",
-    "gh-pages": "^0.2.0",
+    "gh-pages": "^2.0.1",
     "gulp": "^3.8.7",
     "gulp-concat": "^2.3.4",
     "gulp-util": "^3.0.0",
