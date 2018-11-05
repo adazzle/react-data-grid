@@ -9,6 +9,8 @@ function Show-Menu
      Write-Host "Major Release: Press '1' for this option."
      Write-Host "Minor Release: Press '2' for this option."
      Write-Host "Patch Release: Press '3' for this option."
+     Write-Host "Prepatch: Press '4' for this option."
+     Write-Host "Prerelease: Press '5' for this option."
      Write-Host "Q: Press 'Q' to quit."
 }
 
@@ -29,14 +31,17 @@ do
                 Write-Host "Attempting to publishing new patch version $($nextVersion) to npm"
            } '4' {
             $nextVersion = node ./ci/publish/getNextVersion prepatch
-                Write-Host "Attempting to publishing new patch version $($nextVersion) to npm"
+                Write-Host "Attempting to publishing new prepatch version $($nextVersion) to npm"
+           } '5' {
+            $nextVersion = node ./ci/publish/getNextVersion prerelease
+                Write-Host "Attempting to publishing new prerelease version $($nextVersion) to npm"
            } 'q' {
                 return
            }
      }
      pause
 }
-until ($input -eq 'q' -Or $input -eq '1' -Or $input -eq '2' -Or $input -eq '3'  -Or $input -eq '4')
+until ($input -eq 'q' -Or $input -eq '1' -Or $input -eq '2' -Or $input -eq '3'  -Or $input -eq '4' -Or $input -eq '5')
 
 Write-Host "Installing dependencies before publish"
 npm install
