@@ -36,9 +36,13 @@ const config = {
       commonjs2: 'react-dom',
       amd: 'react-dom'
     },
+    immutable: {
+      root: 'Immutable',
+      commonjs: 'immutable',
+      commonjs2: 'immutable'
+    },
     'react/addons': 'React',
-    moment: 'moment',
-    immutable: 'Immutable'
+    moment: 'moment'
   },
   module: {
     loaders: [
