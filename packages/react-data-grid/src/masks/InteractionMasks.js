@@ -166,7 +166,10 @@ class InteractionMasks extends React.Component {
         firstEditorKeyPress: key
       });
     }
-    this.setEditorVisibilty();
+    const column = getSelectedColumn({ selectedPosition: this.state.selectedPosition, columns: this.props.columns });
+    if (column.editor && this.isEditorOpenedAtBottomBoundary()) {
+      this.setEditorVisibilty();
+    }
   };
 
   closeEditor = () => {
@@ -183,10 +186,7 @@ class InteractionMasks extends React.Component {
   }
 
   setEditorVisibilty() {
-    const column = getSelectedColumn({ selectedPosition: this.state.selectedPosition, columns: this.props.columns });
-    if (column.editor && this.isEditorOpenedAtBottomBoundary()) {
-      this.props.eventBus.dispatch(EventTypes.EDITOR_OPENED_AT_BOUNDARY);
-    }
+    this.props.eventBus.dispatch(EventTypes.EDITOR_OPENED_AT_BOUNDARY);
   }
 
   onPressKeyWithCtrl = ({ keyCode }) => {
