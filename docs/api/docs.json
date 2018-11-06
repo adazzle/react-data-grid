@@ -1,625 +1,121 @@
 {
-  "src\\Canvas.js": {
+  "packages\\react-data-grid\\src\\ReactDataGrid.js": {
     "description": "",
+    "displayName": "ReactDataGrid",
     "methods": [
       {
-        "name": "onRows",
+        "name": "selectCell",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "{ idx, rowIdx }",
+            "type": null
+          },
+          {
+            "name": "openEditor",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "selectStart",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "cellPosition",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "selectUpdate",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "cellPosition",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "selectEnd",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "onScroll",
+        "name": "handleDragEnter",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "e",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getSubRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "row",
+            "name": "{ overRowIdx }",
             "type": null
           }
         ],
         "returns": null
       },
       {
-        "name": "addSubRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "rowsInput",
-            "type": null
-          },
-          {
-            "name": "row",
-            "type": null
-          },
-          {
-            "name": "i",
-            "type": null
-          },
-          {
-            "name": "rowOverscanEndIdx",
-            "type": null
-          },
-          {
-            "name": "treeDepth",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "rowOverscanStartIdx",
-            "type": {
-              "name": "number"
-            }
-          },
-          {
-            "name": "rowOverscanEndIdx",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "Array",
-            "elements": [
-              {
-                "name": "any"
-              }
-            ],
-            "raw": "Array<any>"
-          }
-        }
-      },
-      {
-        "name": "getScrollbarWidth",
+        "name": "gridWidth",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "getScroll",
+        "name": "getTotalWidth",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "signature",
-            "type": "object",
-            "raw": "{ scrollTop: number; scrollLeft: number }",
-            "signature": {
-              "properties": [
-                {
-                  "key": "scrollTop",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "scrollLeft",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                }
-              ]
-            }
-          }
-        }
+        "returns": null
       },
       {
-        "name": "isRowSelected",
+        "name": "getColumnMetricsType",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "metrics",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getColumn",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
             "name": "idx",
             "type": null
-          },
-          {
-            "name": "row",
-            "type": null
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": {
-              "name": "number"
-            }
           }
         ],
         "returns": null
       },
       {
-        "name": "getRowByRef",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "i",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderRow",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "props",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderPlaceholder",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "key",
-            "type": {
-              "name": "string"
-            }
-          },
-          {
-            "name": "height",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "ReactElement",
-            "nullable": true
-          }
-        }
-      }
-    ],
-    "props": {
-      "rowRenderer": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "func"
-            },
-            {
-              "name": "element"
-            }
-          ]
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "require('./Row')",
-          "computed": true
-        }
-      },
-      "rowHeight": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "width": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "totalWidth": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "number"
-            },
-            {
-              "name": "string"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "style": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "className": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowOverscanStartIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowOverscanEndIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowVisibleStartIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowVisibleEndIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "colVisibleStartIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "colVisibleEndIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "colOverscanStartIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "colOverscanEndIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowsCount": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowGetter": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "func"
-            },
-            {
-              "name": "array"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "expandedRows": {
-        "type": {
-          "name": "array"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onRows": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "() => { }",
-          "computed": false
-        }
-      },
-      "onScroll": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "columns": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "object"
-            },
-            {
-              "name": "array"
-            }
-          ]
-        },
-        "required": true,
-        "description": ""
-      },
-      "cellMetaData": {
-        "type": {
-          "name": "shape",
-          "value": "require('./PropTypeShapes/CellMetaDataShape')",
-          "computed": true
-        },
-        "required": true,
-        "description": ""
-      },
-      "selectedRows": {
-        "type": {
-          "name": "array"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "[]",
-          "computed": false
-        }
-      },
-      "rowKey": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowScrollTimeout": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "0",
-          "computed": false
-        }
-      },
-      "contextMenu": {
-        "type": {
-          "name": "element"
-        },
-        "required": false,
-        "description": ""
-      },
-      "getSubRowDetails": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowSelection": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "shape",
-              "value": {
-                "indexes": {
-                  "name": "arrayOf",
-                  "value": {
-                    "name": "number"
-                  },
-                  "required": true
-                }
-              }
-            },
-            {
-              "name": "shape",
-              "value": {
-                "isSelectedKey": {
-                  "name": "string",
-                  "required": true
-                }
-              }
-            },
-            {
-              "name": "shape",
-              "value": {
-                "keys": {
-                  "name": "shape",
-                  "value": {
-                    "values": {
-                      "name": "array",
-                      "required": true
-                    },
-                    "rowKey": {
-                      "name": "string",
-                      "required": true
-                    }
-                  },
-                  "required": true
-                }
-              }
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowGroupRenderer": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "isScrolling": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\Cell.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "onCellClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onCellContextMenu",
+        "name": "getSize",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "onCellDoubleClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onCellExpand",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onCellKeyDown",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onDragHandleDoubleClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onDragOver",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getStyle",
+        "name": "metricsUpdated",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "getFormatter",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getRowData",
+        "name": "createColumnMetrics",
         "docblock": null,
         "modifiers": [],
         "params": [
@@ -630,1884 +126,56 @@
         ],
         "returns": null
       },
-      {
-        "name": "getFormatterDependencies",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getCellClass",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getUpdateCellClass",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isColumnSelected",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isSelected",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isActive",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isCellSelectionChanging",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "nextProps",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{ idx: number; cellMetaData: { selected: { idx: number } } }",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "idx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "cellMetaData",
-                    "value": {
-                      "name": "signature",
-                      "type": "object",
-                      "raw": "{ selected: { idx: number } }",
-                      "signature": {
-                        "properties": [
-                          {
-                            "key": "selected",
-                            "value": {
-                              "name": "signature",
-                              "type": "object",
-                              "raw": "{ idx: number }",
-                              "signature": {
-                                "properties": [
-                                  {
-                                    "key": "idx",
-                                    "value": {
-                                      "name": "number",
-                                      "required": true
-                                    }
-                                  }
-                                ]
-                              },
-                              "required": true
-                            }
-                          }
-                        ]
-                      },
-                      "required": true
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isCellSelectEnabled",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "hasChangedDependentValues",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "nextProps",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "applyUpdateClass",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "isCopied",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isDraggedOver",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "wasDraggedOver",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isDraggedCellChanging",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "nextProps",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isCopyCellChanging",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "nextProps",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isDraggedOverUpwards",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isDraggedOverDownwards",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "checkFocus",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "canEdit",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "canExpand",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "createColumEventCallBack",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "onColumnEvent",
-            "type": null
-          },
-          {
-            "name": "info",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "createCellEventCallBack",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "gridEvent",
-            "type": null
-          },
-          {
-            "name": "columnEvent",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "createEventDTO",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "gridEvents",
-            "type": null
-          },
-          {
-            "name": "columnEvents",
-            "type": null
-          },
-          {
-            "name": "onColumnEvent",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getEvents",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderCellContent",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "props",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "rowIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "idx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "selected": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "idx": {
-              "name": "number",
-              "required": true
-            }
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "selectedColumn": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "tabIndex": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "-1",
-          "computed": false
-        }
-      },
-      "ref": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": "require('./PropTypeShapes/ExcelColumn')",
-          "computed": true
-        },
-        "required": true,
-        "description": ""
-      },
-      "value": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "string"
-            },
-            {
-              "name": "number"
-            },
-            {
-              "name": "object"
-            },
-            {
-              "name": "bool"
-            }
-          ]
-        },
-        "required": true,
-        "description": "",
-        "defaultValue": {
-          "value": "''",
-          "computed": false
-        }
-      },
-      "isExpanded": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "false",
-          "computed": false
-        }
-      },
-      "isRowSelected": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "cellMetaData": {
-        "type": {
-          "name": "shape",
-          "value": "require('./PropTypeShapes/CellMetaDataShape')",
-          "computed": true
-        },
-        "required": true,
-        "description": ""
-      },
-      "handleDragStart": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "className": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "cellControls": {
-        "type": {
-          "name": "any"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowData": {
-        "type": {
-          "name": "object"
-        },
-        "required": true,
-        "description": ""
-      },
-      "forceUpdate": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "expandableOptions": {
-        "type": {
-          "name": "object"
-        },
-        "required": true,
-        "description": ""
-      },
-      "isScrolling": {
-        "type": {
-          "name": "bool"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\Draggable.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "onMouseDown",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticMouseEvent",
-              "alias": "SyntheticMouseEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onMouseMove",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onMouseUp",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "cleanUp",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      }
-    ],
-    "props": {
-      "onDragStart": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "() => true",
-          "computed": false
-        }
-      },
-      "onDragEnd": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "() => {}",
-          "computed": false
-        }
-      },
-      "onDrag": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "() => {}",
-          "computed": false
-        }
-      },
-      "component": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "func"
-            },
-            {
-              "name": "custom",
-              "raw": "PropTypes.constructor"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\Grid.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "getStyle",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "signature",
-            "type": "object",
-            "raw": "{ overflow: string; outline: number; position: string; minHeight: number }",
-            "signature": {
-              "properties": [
-                {
-                  "key": "overflow",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "outline",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "position",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "minHeight",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    ],
-    "props": {
-      "rowGetter": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "array"
-            },
-            {
-              "name": "func"
-            }
-          ]
-        },
-        "required": true,
-        "description": ""
-      },
-      "columns": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "array"
-            },
-            {
-              "name": "object"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "columnMetrics": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "minHeight": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "350",
-          "computed": false
-        }
-      },
-      "totalWidth": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "number"
-            },
-            {
-              "name": "string"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "headerRows": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "array"
-            },
-            {
-              "name": "func"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowHeight": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "35",
-          "computed": false
-        }
-      },
-      "rowRenderer": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "element"
-            },
-            {
-              "name": "func"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "emptyRowsView": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "expandedRows": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "array"
-            },
-            {
-              "name": "func"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "selectedRows": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "array"
-            },
-            {
-              "name": "func"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowSelection": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "shape",
-              "value": {
-                "indexes": {
-                  "name": "arrayOf",
-                  "value": {
-                    "name": "number"
-                  },
-                  "required": true
-                }
-              }
-            },
-            {
-              "name": "shape",
-              "value": {
-                "isSelectedKey": {
-                  "name": "string",
-                  "required": true
-                }
-              }
-            },
-            {
-              "name": "shape",
-              "value": {
-                "keys": {
-                  "name": "shape",
-                  "value": {
-                    "values": {
-                      "name": "array",
-                      "required": true
-                    },
-                    "rowKey": {
-                      "name": "string",
-                      "required": true
-                    }
-                  },
-                  "required": true
-                }
-              }
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowsCount": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onRows": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "sortColumn": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "sortDirection": {
-        "type": {
-          "name": "enum",
-          "value": [
-            {
-              "value": "'ASC'",
-              "computed": false
-            },
-            {
-              "value": "'DESC'",
-              "computed": false
-            },
-            {
-              "value": "'NONE'",
-              "computed": false
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "tabIndex": {
-        "type": {
-          "name": "number"
-        },
-        "defaultValue": {
-          "value": "-1",
-          "computed": false
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowOffsetHeight": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onViewportKeydown": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onViewportKeyup": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onViewportDragStart": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onViewportDragEnd": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onViewportDoubleClick": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onColumnResize": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onSort": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "cellMetaData": {
-        "type": {
-          "name": "shape",
-          "value": "require('./PropTypeShapes/CellMetaDataShape')",
-          "computed": true
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowKey": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowScrollTimeout": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "contextMenu": {
-        "type": {
-          "name": "element"
-        },
-        "required": false,
-        "description": ""
-      },
-      "getSubRowDetails": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "draggableHeaderCell": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "getValidFilterValues": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowGroupRenderer": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "overScan": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\Header.js": {
-    "description": "",
-    "methods": [
       {
         "name": "onColumnResize",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "column",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  width: number\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "width",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "Column"
-            }
+            "name": "index",
+            "type": null
           },
           {
             "name": "width",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onColumnResizeEnd",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "column",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  width: number\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "width",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "Column"
-            }
-          },
-          {
-            "name": "width",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getHeaderRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "Array",
-            "elements": [
-              {
-                "name": "HeaderRow"
-              }
-            ],
-            "raw": "Array<HeaderRow>"
-          }
-        }
-      },
-      {
-        "name": "getColumnMetrics",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getColumnPosition",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "column",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  width: number\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "width",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "Column"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "number",
-            "nullable": true
-          }
-        }
-      },
-      {
-        "name": "getCombinedHeaderHeights",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "until",
-            "type": {
-              "name": "number",
-              "nullable": true
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "number"
-          }
-        }
-      },
-      {
-        "name": "getStyle",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "signature",
-            "type": "object",
-            "raw": "{position: string; height: number}",
-            "signature": {
-              "properties": [
-                {
-                  "key": "position",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "height",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "columnMetrics": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "width": {
-              "name": "number",
-              "required": true
-            },
-            "columns": {
-              "name": "any",
-              "required": false
-            }
-          }
-        },
-        "required": true,
-        "description": ""
-      },
-      "totalWidth": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "number"
-            },
-            {
-              "name": "string"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "headerRows": {
-        "type": {
-          "name": "array"
-        },
-        "required": true,
-        "description": ""
-      },
-      "sortColumn": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "sortDirection": {
-        "type": {
-          "name": "enum",
-          "value": [
-            {
-              "value": "'ASC'",
-              "computed": false
-            },
-            {
-              "value": "'DESC'",
-              "computed": false
-            },
-            {
-              "value": "'NONE'",
-              "computed": false
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "onSort": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onColumnResize": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onScroll": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "draggableHeaderCell": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "getValidFilterValues": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\HeaderCell.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "onDragStart",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticMouseEvent",
-              "alias": "SyntheticMouseEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onDrag",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticMouseEvent",
-              "alias": "SyntheticMouseEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onDragEnd",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticMouseEvent",
-              "alias": "SyntheticMouseEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getWidthFromMouseEvent",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticMouseEvent",
-              "alias": "SyntheticMouseEvent"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "number"
-          }
-        }
-      },
-      {
-        "name": "getCell",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactComponent"
-          }
-        }
-      },
-      {
-        "name": "getStyle",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "signature",
-            "type": "object",
-            "raw": "{width:number; left: number; display: string; position: string; overflow: string; height: number; margin: number; textOverflow: string; whiteSpace: string }",
-            "signature": {
-              "properties": [
-                {
-                  "key": "width",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "left",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "display",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "position",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "overflow",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "height",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "margin",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "textOverflow",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "whiteSpace",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "renderer": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "func"
-            },
-            {
-              "name": "element"
-            }
-          ]
-        },
-        "required": true,
-        "description": "",
-        "defaultValue": {
-          "value": "function simpleCellRenderer(objArgs: {column: {name: string}}): ReactElement {\r\n  return <div className=\"widget-HeaderCell__value\">{objArgs.column.name}</div>;\r\n}",
-          "computed": false
-        }
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": "require('./PropTypeShapes/ExcelColumn')",
-          "computed": true
-        },
-        "required": true,
-        "description": ""
-      },
-      "onResize": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onResizeEnd": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "className": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\HeaderRow.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "getHeaderCellType",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "column",
             "type": null
           }
         ],
         "returns": null
       },
       {
-        "name": "getFilterableHeaderCell",
+        "name": "onKeyDown",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "column",
+            "name": "e",
             "type": null
           }
         ],
         "returns": null
       },
       {
-        "name": "getSortableHeaderCell",
+        "name": "onKeyUp",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "column",
+            "name": "e",
             "type": null
           }
         ],
         "returns": null
       },
       {
-        "name": "getHeaderRenderer",
+        "name": "isSingleKeyDown",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "column",
+            "name": "keyCode",
             "type": null
           }
         ],
-        "returns": null
-      },
-      {
-        "name": "getStyle",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "unknown"
-          }
-        }
-      },
-      {
-        "name": "getCells",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "Array",
-            "elements": [
-              {
-                "name": "unknown"
-              }
-            ],
-            "raw": "Array<HeaderCell>"
-          }
-        }
-      },
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "width": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "number"
-            },
-            {
-              "name": "string"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "columns": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "array"
-            },
-            {
-              "name": "object"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "onColumnResize": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onSort": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onColumnResizeEnd": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "style": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "overflow": {
-              "name": "string",
-              "required": false
-            },
-            "width": {
-              "name": "union",
-              "value": [
-                {
-                  "name": "number"
-                },
-                {
-                  "name": "string"
-                }
-              ],
-              "required": false
-            },
-            "height": {
-              "name": "number",
-              "required": false
-            },
-            "position": {
-              "name": "string",
-              "required": false
-            }
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "sortColumn": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "sortDirection": {
-        "type": {
-          "name": "enum",
-          "value": [
-            {
-              "value": "'ASC'",
-              "computed": false
-            },
-            {
-              "value": "'DESC'",
-              "computed": false
-            },
-            {
-              "value": "'NONE'",
-              "computed": false
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "cellRenderer": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "headerCellRenderer": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "filterable": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onFilterChange": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "resizing": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onScroll": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowType": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "draggableHeaderCell": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\ReactDataGrid.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "hasSelectedCellChanged",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "selected",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  rowIdx: number;\r\n  idx: number;\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "rowIdx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "idx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "SelectedType"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onContextMenuHide",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
         "returns": null
       },
       {
@@ -2517,79 +185,11 @@
         "params": [
           {
             "name": "ev",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
+            "type": null
           },
           {
             "name": "columnEvent",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  name: string,\r\n  rowIdx: number;\r\n  idx: number;\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "name",
-                    "value": {
-                      "name": "string",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "rowIdx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "idx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "ColumnEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onSelect",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "selected",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  rowIdx: number;\r\n  idx: number;\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "rowIdx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "idx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "SelectedType"
-            }
+            "type": null
           }
         ],
         "returns": null
@@ -2600,33 +200,41 @@
         "modifiers": [],
         "params": [
           {
-            "name": "cell",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  rowIdx: number;\r\n  idx: number;\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "rowIdx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "idx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "SelectedType"
-            }
+            "name": "{ rowIdx, idx }",
+            "type": null
           }
         ],
+        "returns": null
+      },
+      {
+        "name": "onCellMouseDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "cellPosition",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onCellMouseEnter",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "cellPosition",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onWindowMouseUp",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
         "returns": null
       },
       {
@@ -2635,31 +243,8 @@
         "modifiers": [],
         "params": [
           {
-            "name": "cell",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  rowIdx: number;\r\n  idx: number;\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "rowIdx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "idx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "SelectedType"
-            }
+            "name": "{ rowIdx, idx }",
+            "type": null
           }
         ],
         "returns": null
@@ -2670,301 +255,8 @@
         "modifiers": [],
         "params": [
           {
-            "name": "cell",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  rowIdx: number;\r\n  idx: number;\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "rowIdx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "idx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "SelectedType"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onViewportDoubleClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "onPressArrowUp",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressArrowDown",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressArrowLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressArrowRight",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressTab",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressEnter",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressDelete",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressEscape",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressBackspace",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressChar",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressKeyWithCtrl",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onGridRowsUpdated",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "cellKey",
+            "name": "{ rowIdx, idx }",
             "type": null
-          },
-          {
-            "name": "fromRow",
-            "type": null
-          },
-          {
-            "name": "toRow",
-            "type": null
-          },
-          {
-            "name": "updated",
-            "type": null
-          },
-          {
-            "name": "action",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onCellCommit",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "commit",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  keyCode: string;\r\n  changed: {expandedHeight: number};\r\n  rowIdx: number;\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "keyCode",
-                    "value": {
-                      "name": "string",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "changed",
-                    "value": {
-                      "name": "signature",
-                      "type": "object",
-                      "raw": "{expandedHeight: number}",
-                      "signature": {
-                        "properties": [
-                          {
-                            "key": "expandedHeight",
-                            "value": {
-                              "name": "number",
-                              "required": true
-                            }
-                          }
-                        ]
-                      },
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "rowIdx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "RowUpdateEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onDragStart",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
           }
         ],
         "returns": null
@@ -3013,112 +305,73 @@
         "returns": null
       },
       {
-        "name": "handleDragStart",
+        "name": "onGridRowsUpdated",
+        "docblock": "onGridRowsUpdated will be called for the following update scenarios\r\n- Whenever a single cell is updated\r\n- Whenever the value of a cell is copy/pasted to another cell\r\n- Whenever multiple cells of a column are updated by dragging the fill handle of another cell\r\n- Whenever multiple cells of a column are updated by double clicking the fill handle of another cell\r\n@param {object} updated Updated key/value pairs that should be applied to each row to update\r\n@param {number} toRow The index of the destination row being to be updated\r\n@param {number} toRowId The unique id of the destination row to be updated\r\n@param {string} action The action that triggered the update. Can be one of [CELL_UPDATE, COLUMN_FILL, COPY_PASTE, CELL_DRAG]\r\n@returns {object} fromRowData The row data of the origin row\r\nThe following are optional arguments that apply when editing multiple rows or copying from one cell to another\r\n@param {array} rowIds The unique id of each row to be updated\r\n@param {number} fromRowId The unique id property of the source row\r\n@param {number} fromRow The index of the source row",
+        "modifiers": [],
+        "params": [
+          {
+            "name": "cellKey"
+          },
+          {
+            "name": "fromRow",
+            "description": "The index of the source row",
+            "type": {
+              "name": "number"
+            }
+          },
+          {
+            "name": "toRow",
+            "description": "The index of the destination row being to be updated",
+            "type": {
+              "name": "number"
+            }
+          },
+          {
+            "name": "updated",
+            "description": "Updated key/value pairs that should be applied to each row to update",
+            "type": {
+              "name": "object"
+            }
+          },
+          {
+            "name": "action",
+            "description": "The action that triggered the update. Can be one of [CELL_UPDATE, COLUMN_FILL, COPY_PASTE, CELL_DRAG]",
+            "type": {
+              "name": "string"
+            }
+          },
+          {
+            "name": "originRow"
+          }
+        ],
+        "returns": {
+          "description": "fromRowData The row data of the origin row\r\nThe following are optional arguments that apply when editing multiple rows or copying from one cell to another",
+          "type": {
+            "name": "object"
+          }
+        },
+        "description": "onGridRowsUpdated will be called for the following update scenarios\r\n- Whenever a single cell is updated\r\n- Whenever the value of a cell is copy/pasted to another cell\r\n- Whenever multiple cells of a column are updated by dragging the fill handle of another cell\r\n- Whenever multiple cells of a column are updated by double clicking the fill handle of another cell"
+      },
+      {
+        "name": "onCommit",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "dragged",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{\r\n  idx: number;\r\n  rowIdx: number;\r\n  value: string;\r\n}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "idx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "rowIdx",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "value",
-                    "value": {
-                      "name": "string",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "DraggedType"
-            }
+            "name": "commit",
+            "type": null
           }
         ],
         "returns": null
       },
       {
-        "name": "handleDragEnd",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "handleDragEnter",
+        "name": "onScroll",
         "docblock": null,
         "modifiers": [],
         "params": [
           {
-            "name": "row",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "handleTerminateDrag",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "handlePaste",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "handleCancelCopy",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "handleCopy",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "args",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{value: string}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "value",
-                    "value": {
-                      "name": "string",
-                      "required": true
-                    }
-                  }
-                ]
-              }
-            }
+            "name": "scrollState",
+            "type": null
           }
         ],
         "returns": null
@@ -3130,16 +383,11 @@
         "params": [
           {
             "name": "columnKey",
-            "type": {
-              "name": "string"
-            }
+            "type": null
           },
           {
             "name": "direction",
-            "type": {
-              "name": "SortType",
-              "alias": "SortType"
-            }
+            "type": null
           }
         ],
         "returns": null
@@ -3202,15 +450,11 @@
         "params": [
           {
             "name": "rowIdx",
-            "type": {
-              "name": "number"
-            }
+            "type": null
           },
           {
             "name": "columnKey",
-            "type": {
-              "name": "string"
-            }
+            "type": null
           },
           {
             "name": "rowData",
@@ -3218,10 +462,7 @@
           },
           {
             "name": "e",
-            "type": {
-              "name": "Event",
-              "alias": "Event"
-            }
+            "type": null
           }
         ],
         "returns": null
@@ -3233,19 +474,9 @@
         "params": [
           {
             "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
+            "type": null
           }
         ],
-        "returns": null
-      },
-      {
-        "name": "getScrollOffSet",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
         "returns": null
       },
       {
@@ -3253,48 +484,14 @@
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "number"
-          }
-        }
+        "returns": null
       },
       {
         "name": "getHeaderRows",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "Array",
-            "elements": [
-              {
-                "name": "signature",
-                "type": "object",
-                "raw": "{ref: string; height: number;}",
-                "signature": {
-                  "properties": [
-                    {
-                      "key": "ref",
-                      "value": {
-                        "name": "string",
-                        "required": true
-                      }
-                    },
-                    {
-                      "key": "height",
-                      "value": {
-                        "name": "number",
-                        "required": true
-                      }
-                    }
-                  ]
-                }
-              }
-            ],
-            "raw": "Array<{ref: string; height: number;}>"
-          }
-        }
+        "returns": null
       },
       {
         "name": "getInitialSelectedRows",
@@ -3318,104 +515,7 @@
         "returns": null
       },
       {
-        "name": "getSelectedValue",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "string"
-          }
-        }
-      },
-      {
-        "name": "moveSelectedCell",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticEvent",
-              "alias": "SyntheticEvent"
-            }
-          },
-          {
-            "name": "rowDelta",
-            "type": {
-              "name": "number"
-            }
-          },
-          {
-            "name": "cellDelta",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getNbrColumns",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "calculateNextSelectionPosition",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "cellNavigationMode",
-            "type": {
-              "name": "string"
-            }
-          },
-          {
-            "name": "cellDelta",
-            "type": {
-              "name": "number"
-            }
-          },
-          {
-            "name": "rowDelta",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "isAtLastCellInRow",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "nbrColumns",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "isAtLastRow",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isAtFirstCellInRow",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isAtFirstRow",
+        "name": "getDataGridDOMNode",
         "docblock": null,
         "modifiers": [],
         "params": [],
@@ -3450,38 +550,6 @@
         "returns": null
       },
       {
-        "name": "setActive",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "keyPressed",
-            "type": {
-              "name": "string"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "setInactive",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isActive",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
         "name": "setupGridColumns",
         "docblock": null,
         "modifiers": [],
@@ -3491,50 +559,38 @@
             "type": null
           }
         ],
-        "returns": {
-          "type": {
-            "name": "Array",
-            "elements": [
-              {
-                "name": "any"
-              }
-            ],
-            "raw": "Array<any>"
-          }
-        }
+        "returns": null
       },
       {
-        "name": "copyPasteEnabled",
+        "name": "setGridRef",
         "docblock": null,
         "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
+        "params": [
+          {
+            "name": "grid",
+            "type": null
           }
-        }
+        ],
+        "returns": null
       },
       {
-        "name": "dragEnabled",
+        "name": "setBaseGridRef",
         "docblock": null,
         "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
+        "params": [
+          {
+            "name": "base",
+            "type": null
           }
-        }
+        ],
+        "returns": null
       },
       {
         "name": "renderToolbar",
         "docblock": null,
         "modifiers": [],
         "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement"
-          }
-        }
+        "returns": null
       }
     ],
     "props": {
@@ -3542,7 +598,7 @@
         "type": {
           "name": "number"
         },
-        "required": true,
+        "required": false,
         "description": "",
         "defaultValue": {
           "value": "35",
@@ -3556,11 +612,22 @@
         "required": false,
         "description": ""
       },
+      "headerFiltersHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "45",
+          "computed": false
+        }
+      },
       "minHeight": {
         "type": {
           "name": "number"
         },
-        "required": true,
+        "required": false,
         "description": "",
         "defaultValue": {
           "value": "350",
@@ -3576,15 +643,8 @@
       },
       "enableRowSelect": {
         "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "bool"
-            },
-            {
-              "name": "string"
-            }
-          ]
+          "name": "custom",
+          "raw": "deprecate(PropTypes.func, deprecationWarning('enableRowSelect', 'rowSelection'))"
         },
         "required": false,
         "description": "",
@@ -3595,7 +655,8 @@
       },
       "onRowUpdated": {
         "type": {
-          "name": "func"
+          "name": "custom",
+          "raw": "deprecate(PropTypes.func, deprecationWarning('onRowUpdated', 'onGridRowsUpdated'))"
         },
         "required": false,
         "description": ""
@@ -3656,12 +717,21 @@
       },
       "onCellCopyPaste": {
         "type": {
-          "name": "func"
+          "name": "custom",
+          "raw": "deprecate(PropTypes.func, deprecationWarning('onCellCopyPaste', 'onGridRowsUpdated'))"
         },
         "required": false,
         "description": ""
       },
       "onCellsDragged": {
+        "type": {
+          "name": "custom",
+          "raw": "deprecate(PropTypes.func, deprecationWarning('onCellsDragged', 'onGridRowsUpdated'))"
+        },
+        "required": false,
+        "description": ""
+      },
+      "getCellActions": {
         "type": {
           "name": "func"
         },
@@ -3682,9 +752,26 @@
         "required": false,
         "description": ""
       },
+      "sortColumn": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
+      "sortDirection": {
+        "type": {
+          "name": "enum",
+          "computed": true,
+          "value": "Object.keys(DEFINE_SORT)"
+        },
+        "required": false,
+        "description": ""
+      },
       "onDragHandleDoubleClick": {
         "type": {
-          "name": "func"
+          "name": "custom",
+          "raw": "deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated'))"
         },
         "required": false,
         "description": ""
@@ -3715,6 +802,18 @@
         }
       },
       "rowScrollTimeout": {
+        "type": {
+          "name": "custom",
+          "raw": "deprecate(PropTypes.number)"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "0",
+          "computed": false
+        }
+      },
+      "scrollToRowIndex": {
         "type": {
           "name": "number"
         },
@@ -3760,8 +859,8 @@
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "'none'",
-          "computed": false
+          "value": "CellNavigationMode.NONE",
+          "computed": true
         }
       },
       "onCellSelected": {
@@ -3774,6 +873,27 @@
       "onCellDeSelected": {
         "type": {
           "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "cellRangeSelection": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "onStart": {
+              "name": "func",
+              "required": false
+            },
+            "onUpdate": {
+              "name": "func",
+              "required": false
+            },
+            "onComplete": {
+              "name": "func",
+              "required": false
+            }
+          }
         },
         "required": false,
         "description": ""
@@ -3891,6 +1011,13 @@
         "required": false,
         "description": ""
       },
+      "onRowDoubleClick": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
       "onGridKeyUp": {
         "type": {
           "name": "func"
@@ -3933,640 +1060,76 @@
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "{\r\n  colsStart: 5,\r\n  colsEnd: 5,\r\n  rowsStart: 5,\r\n  rowsEnd: 5\r\n}",
+          "value": "{\r\n  colsStart: 2,\r\n  colsEnd: 2,\r\n  rowsStart: 2,\r\n  rowsEnd: 2\r\n}",
           "computed": false
         }
       },
-      "tabIndex": {
-        "defaultValue": {
-          "value": "-1",
-          "computed": false
-        }
-      }
-    }
-  },
-  "src\\ResizeHandle.js": {
-    "description": "",
-    "methods": []
-  },
-  "src\\Row.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "handleDragEnter",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getSelectedColumn",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getCellRenderer",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "columnKey",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getCell",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "column",
-            "type": null
-          },
-          {
-            "name": "i",
-            "type": null
-          },
-          {
-            "name": "selectedColumn",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getCells",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getRowHeight",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getCellValue",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "key",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "isContextMenuDisplayed",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getExpandableOptions",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "columnKey",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderCell",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "props",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "height": {
+      "onDeleteSubRow": {
         "type": {
-          "name": "number"
+          "name": "func"
         },
-        "required": true,
+        "required": false,
+        "description": ""
+      },
+      "onAddSubRow": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "enableCellAutoFocus": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
         "description": "",
         "defaultValue": {
-          "value": "35",
+          "value": "true",
           "computed": false
         }
       },
-      "columns": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "object"
-            },
-            {
-              "name": "array"
-            }
-          ]
-        },
-        "required": true,
-        "description": ""
-      },
-      "row": {
-        "type": {
-          "name": "any"
-        },
-        "required": true,
-        "description": ""
-      },
-      "cellRenderer": {
+      "onBeforeEdit": {
         "type": {
           "name": "func"
         },
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "require('./Cell')",
-          "computed": true
+          "value": "() => {}",
+          "computed": false
         }
       },
-      "cellMetaData": {
+      "selectAllRenderer": {
         "type": {
-          "name": "shape",
-          "value": "require('./PropTypeShapes/CellMetaDataShape')",
-          "computed": true
+          "name": "object"
         },
         "required": false,
         "description": ""
       },
-      "isSelected": {
+      "minColumnWidth": {
         "type": {
-          "name": "bool"
+          "name": "number"
         },
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "false",
+          "value": "80",
           "computed": false
         }
       },
-      "idx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "expandedRows": {
-        "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "object"
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "extraClasses": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "forceUpdate": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "subRowDetails": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "isRowHovered": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "colVisibleStartIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "colVisibleEndIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "colOverscanStartIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "colOverscanEndIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "isScrolling": {
-        "type": {
-          "name": "bool"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\RowGroup.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "isSelected",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "onClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onKeyDown",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onRowExpandClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "onRowExpandToggle",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "expand",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getClassName",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "checkFocus",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      }
-    ],
-    "props": {
-      "name": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      },
-      "columnGroupName": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      },
-      "isExpanded": {
-        "type": {
-          "name": "bool"
-        },
-        "required": true,
-        "description": ""
-      },
-      "treeDepth": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "cellMetaData": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "idx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "renderer": {
+      "columnEquality": {
         "type": {
           "name": "func"
         },
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "(props) => {\r\n  let treeDepth = props.treeDepth || 0;\r\n  let marginLeft = treeDepth * 20;\r\n\r\n  return (\r\n    <div>\r\n      <span className=\"row-expand-icon\" style={{float: 'left', marginLeft: marginLeft, cursor: 'pointer'}} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>\r\n      <strong>{props.columnGroupName} : {props.name}</strong>\r\n    </div>);\r\n}",
-          "computed": false
-        }
-      }
-    }
-  },
-  "src\\Viewport.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "onScroll",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scroll",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{scrollTop: number; scrollLeft: number}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "scrollTop",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "scrollLeft",
-                    "value": {
-                      "name": "number",
-                      "required": true
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getScroll",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "signature",
-            "type": "object",
-            "raw": "{scrollLeft: number; scrollTop: number}",
-            "signature": {
-              "properties": [
-                {
-                  "key": "scrollLeft",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                },
-                {
-                  "key": "scrollTop",
-                  "value": {
-                    "name": "number",
-                    "required": true
-                  }
-                }
-              ]
-            }
-          }
+          "value": "ColumnMetrics.sameColumn",
+          "computed": true
         }
       },
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": {
-              "name": "number"
-            }
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "rowOffsetHeight": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "totalWidth": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "number"
-            },
-            {
-              "name": "string"
-            }
-          ]
-        },
-        "required": true,
-        "description": ""
-      },
-      "columnMetrics": {
-        "type": {
-          "name": "object"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowGetter": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "array"
-            },
-            {
-              "name": "func"
-            }
-          ]
-        },
-        "required": true,
-        "description": ""
-      },
-      "selectedRows": {
-        "type": {
-          "name": "array"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowSelection": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "shape",
-              "value": {
-                "indexes": {
-                  "name": "arrayOf",
-                  "value": {
-                    "name": "number"
-                  },
-                  "required": true
-                }
-              }
-            },
-            {
-              "name": "shape",
-              "value": {
-                "isSelectedKey": {
-                  "name": "string",
-                  "required": true
-                }
-              }
-            },
-            {
-              "name": "shape",
-              "value": {
-                "keys": {
-                  "name": "shape",
-                  "value": {
-                    "values": {
-                      "name": "array",
-                      "required": true
-                    },
-                    "rowKey": {
-                      "name": "string",
-                      "required": true
-                    }
-                  },
-                  "required": true
-                }
-              }
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "expandedRows": {
-        "type": {
-          "name": "array"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowRenderer": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "element"
-            },
-            {
-              "name": "func"
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowsCount": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowHeight": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onRows": {
+      "onColumnResize": {
         "type": {
           "name": "func"
         },
@@ -4579,2019 +1142,6 @@
         },
         "required": false,
         "description": ""
-      },
-      "minHeight": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "cellMetaData": {
-        "type": {
-          "name": "shape",
-          "value": "require('./PropTypeShapes/CellMetaDataShape')",
-          "computed": true
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowKey": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowScrollTimeout": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "contextMenu": {
-        "type": {
-          "name": "element"
-        },
-        "required": false,
-        "description": ""
-      },
-      "getSubRowDetails": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowGroupRenderer": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\cells\\headerCells\\FilterableHeaderCell.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "handleChange",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "Event",
-              "alias": "Event"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderInput",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement",
-            "nullable": true
-          }
-        }
-      }
-    ],
-    "props": {
-      "onChange": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": "require('../../../PropTypeShapes/ExcelColumn')",
-          "computed": true
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\cells\\headerCells\\SortableHeaderCell.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "onClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getSortByText",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      }
-    ],
-    "props": {
-      "columnKey": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "name": {
-              "name": "node",
-              "required": false
-            }
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "onSort": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "sortDirection": {
-        "type": {
-          "name": "enum",
-          "value": [
-            {
-              "value": "'ASC'",
-              "computed": false
-            },
-            {
-              "value": "'DESC'",
-              "computed": false
-            },
-            {
-              "value": "'NONE'",
-              "computed": false
-            }
-          ]
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\draggable\\DragDropContainer.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "getRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "rowsCount",
-            "type": null
-          },
-          {
-            "name": "rowGetter",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "renderGrid",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      }
-    ],
-    "props": {
-      "children": {
-        "type": {
-          "name": "element"
-        },
-        "required": true,
-        "description": ""
-      },
-      "getDragPreviewRow": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\draggable\\DraggableHeaderCell.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "setScrollLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "scrollLeft",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "connectDragSource": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "connectDragPreview": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "isDragging": {
-        "type": {
-          "name": "bool"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\draggable\\RowActionsCell.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "renderRowIndex",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      }
-    ],
-    "props": {
-      "rowIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": "",
-        "defaultValue": {
-          "value": "0",
-          "computed": false
-        }
-      },
-      "connectDragSource": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "connectDragPreview": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "isDragging": {
-        "type": {
-          "name": "bool"
-        },
-        "required": true,
-        "description": ""
-      },
-      "isRowHovered": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "dependentValues": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "value": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowSelection": {
-        "type": {
-          "name": "object"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\draggable\\RowDragLayer.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "isDraggedRowSelected",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "selectedRows",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "getDraggedRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderDraggedRows",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderDraggedCells",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "item",
-            "type": null
-          },
-          {
-            "name": "rowIdx",
-            "type": null
-          },
-          {
-            "name": "columns",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "item": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "itemType": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "currentOffset": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "x": {
-              "name": "number",
-              "required": true
-            },
-            "y": {
-              "name": "number",
-              "required": true
-            }
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "isDragging": {
-        "type": {
-          "name": "bool"
-        },
-        "required": true,
-        "description": ""
-      },
-      "rowSelection": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rows": {
-        "type": {
-          "name": "array"
-        },
-        "required": true,
-        "description": ""
-      },
-      "columns": {
-        "type": {
-          "name": "array"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\editors\\AutoCompleteEditor.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "handleChange",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getValue",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "any"
-          }
-        }
-      },
-      {
-        "name": "getEditorDisplayValue",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getInputNode",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getLabel",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "item",
-            "type": {
-              "name": "any"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "string"
-          }
-        }
-      },
-      {
-        "name": "hasResults",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isFocusedOnSuggestion",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "constuctValueFromParams",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "obj",
-            "type": {
-              "name": "any"
-            }
-          },
-          {
-            "name": "props",
-            "type": {
-              "name": "Array",
-              "elements": [
-                {
-                  "name": "string"
-                }
-              ],
-              "raw": "Array<string>",
-              "nullable": true
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "string"
-          }
-        }
-      }
-    ],
-    "props": {
-      "onCommit": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "options": {
-        "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "custom",
-            "raw": "optionPropType"
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "label": {
-        "type": {
-          "name": "any"
-        },
-        "required": false,
-        "description": ""
-      },
-      "value": {
-        "type": {
-          "name": "any"
-        },
-        "required": false,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "valueParams": {
-        "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "string"
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": "require('../../PropTypeShapes/ExcelColumn')",
-          "computed": true
-        },
-        "required": false,
-        "description": ""
-      },
-      "resultIdentifier": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'id'",
-          "computed": false
-        }
-      },
-      "search": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onKeyDown": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onFocus": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "editorDisplayValue": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\editors\\AutoCompleteTokensEditor.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "getInputNode",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getValue",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "handleSelectChange",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "value",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "options": {
-        "type": {
-          "name": "array"
-        },
-        "required": true,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "name": {
-              "name": "string",
-              "required": true
-            },
-            "key": {
-              "name": "string",
-              "required": true
-            },
-            "width": {
-              "name": "number",
-              "required": true
-            },
-            "filterable": {
-              "name": "bool",
-              "required": false
-            }
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "value": {
-        "type": {
-          "name": "array"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\editors\\CheckboxEditor.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "handleChange",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "Event",
-              "alias": "Event"
-            }
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "value": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "key": {
-              "name": "string",
-              "required": false
-            },
-            "onCellChange": {
-              "name": "func",
-              "required": false
-            }
-          }
-        },
-        "required": false,
-        "description": ""
-      },
-      "dependentValues": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\editors\\DateRangeEditor.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "isDateValid",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "date",
-            "type": {
-              "name": "Date",
-              "alias": "Date"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "validate",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "value",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{ startDate: Date; endDate: Date}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "startDate",
-                    "value": {
-                      "name": "Date",
-                      "required": true
-                    }
-                  },
-                  {
-                    "key": "endDate",
-                    "value": {
-                      "name": "Date",
-                      "required": true
-                    }
-                  }
-                ]
-              },
-              "alias": "DateRangeValue"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "handleDateFilterApply",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "startDate",
-            "type": {
-              "name": "string"
-            }
-          },
-          {
-            "name": "endDate",
-            "type": {
-              "name": "string"
-            }
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "format": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'YYYY-MM-DD'",
-          "computed": false
-        }
-      },
-      "ranges": {
-        "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "string"
-          }
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "[]",
-          "computed": false
-        }
-      },
-      "value": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "startDate": {
-              "name": "custom",
-              "raw": "PropTypes.Date.isRequired",
-              "required": true
-            },
-            "endDate": {
-              "name": "custom",
-              "raw": "PropTypes.Date.isRequired",
-              "required": true
-            }
-          }
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\editors\\DropDownEditor.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "getInputNode",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "onClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "onDoubleClick",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderOptions",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "Array",
-            "elements": [
-              {
-                "name": "ReactElement"
-              }
-            ],
-            "raw": "Array<ReactElement>"
-          }
-        }
-      }
-    ],
-    "props": {
-      "options": {
-        "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "union",
-            "value": [
-              {
-                "name": "string"
-              },
-              {
-                "name": "objectOf",
-                "value": {
-                  "name": "custom",
-                  "raw": "{\r\n  id: PropTypes.string,\r\n  title: PropTypes.string,\r\n  value: PropTypes.string,\r\n  text: PropTypes.string\r\n}"
-                }
-              }
-            ]
-          }
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\editors\\EditorBase.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "getStyle",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "signature",
-            "type": "object",
-            "raw": "{width: string}",
-            "signature": {
-              "properties": [
-                {
-                  "key": "width",
-                  "value": {
-                    "name": "string",
-                    "required": true
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "name": "getValue",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "any"
-          }
-        }
-      },
-      {
-        "name": "getInputNode",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "inheritContainerStyles",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      }
-    ],
-    "props": {
-      "onKeyDown": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "value": {
-        "type": {
-          "name": "any"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onBlur": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "shape",
-          "value": "require('../../PropTypeShapes/ExcelColumn')",
-          "computed": true
-        },
-        "required": true,
-        "description": ""
-      },
-      "commit": {
-        "type": {
-          "name": "func"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\editors\\EditorContainer.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "createEditor",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement"
-          }
-        }
-      },
-      {
-        "name": "onPressEnter",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "onPressTab",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "onPressEscape",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressArrowDown",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressArrowUp",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressArrowLeft",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onPressArrowRight",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": {
-              "name": "SyntheticKeyboardEvent",
-              "alias": "SyntheticKeyboardEvent"
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "editorHasResults",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "editorIsSelectOpen",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getRowMetaData",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "any"
-          }
-        }
-      },
-      {
-        "name": "getEditor",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "Editor"
-          }
-        }
-      },
-      {
-        "name": "getInputNode",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "HTMLInputElement"
-          }
-        }
-      },
-      {
-        "name": "getInitialValue",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "string"
-          }
-        }
-      },
-      {
-        "name": "getContainerClass",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "commit",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "args",
-            "type": {
-              "name": "signature",
-              "type": "object",
-              "raw": "{key : string}",
-              "signature": {
-                "properties": [
-                  {
-                    "key": "key",
-                    "value": {
-                      "name": "string",
-                      "required": true
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "isNewValueValid",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "value",
-            "type": {
-              "name": "string"
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "setCaretAtEndOfInput",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isCaretAtBeginningOfInput",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isCaretAtEndOfInput",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "boolean"
-          }
-        }
-      },
-      {
-        "name": "isBodyClicked",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "isViewportClicked",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "isClickInsideEditor",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "handleBlur",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "setTextInputFocus",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "hasEscapeBeenPressed",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderStatusIcon",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": {
-          "type": {
-            "name": "ReactElement",
-            "nullable": true
-          }
-        }
-      }
-    ],
-    "props": {
-      "rowIdx": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "rowData": {
-        "type": {
-          "name": "object"
-        },
-        "required": true,
-        "description": ""
-      },
-      "value": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "string"
-            },
-            {
-              "name": "number"
-            },
-            {
-              "name": "object"
-            },
-            {
-              "name": "bool"
-            }
-          ]
-        },
-        "required": true,
-        "description": ""
-      },
-      "cellMetaData": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "selected": {
-              "name": "object",
-              "required": true
-            },
-            "copied": {
-              "name": "object",
-              "required": false
-            },
-            "dragged": {
-              "name": "object",
-              "required": false
-            },
-            "onCellClick": {
-              "name": "func",
-              "required": false
-            },
-            "onCellDoubleClick": {
-              "name": "func",
-              "required": false
-            },
-            "onCommitCancel": {
-              "name": "func",
-              "required": false
-            },
-            "onCommit": {
-              "name": "func",
-              "required": false
-            }
-          }
-        },
-        "required": true,
-        "description": ""
-      },
-      "column": {
-        "type": {
-          "name": "object"
-        },
-        "required": true,
-        "description": ""
-      },
-      "height": {
-        "type": {
-          "name": "number"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\editors\\SimpleTextEditor.js": {
-    "description": "",
-    "methods": []
-  },
-  "src\\addons\\editors\\widgets\\DateRangeFilter.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "handleApply",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "ev",
-            "type": null
-          },
-          {
-            "name": "picker",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "handleClear",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getTitle",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      }
-    ],
-    "props": {
-      "format": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      },
-      "ranges": {
-        "type": {
-          "name": "object"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onApply": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "title": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onblur": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "startDate": {
-        "type": {
-          "name": "custom",
-          "raw": "validateDate"
-        },
-        "required": false,
-        "description": ""
-      },
-      "endDate": {
-        "type": {
-          "name": "custom",
-          "raw": "validateDate"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\formatters\\DateRangeFormatter.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "formatDate",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "date",
-            "type": {
-              "name": "union",
-              "raw": "Date | moment",
-              "elements": [
-                {
-                  "name": "Date"
-                },
-                {
-                  "name": "moment"
-                }
-              ]
-            }
-          }
-        ],
-        "returns": {
-          "type": {
-            "name": "string"
-          }
-        }
-      }
-    ],
-    "props": {
-      "value": {
-        "type": {
-          "name": "shape",
-          "value": {
-            "startDate": {
-              "name": "union",
-              "value": [
-                {
-                  "name": "string"
-                },
-                {
-                  "name": "object"
-                }
-              ],
-              "required": false
-            },
-            "endDate": {
-              "name": "union",
-              "value": [
-                {
-                  "name": "string"
-                },
-                {
-                  "name": "object"
-                }
-              ],
-              "required": false
-            }
-          }
-        },
-        "required": true,
-        "description": "",
-        "defaultValue": {
-          "value": "{startDate: null, endDate: null}",
-          "computed": false
-        }
-      },
-      "inputFormat": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'YYYY-MM-DD'",
-          "computed": false
-        }
-      },
-      "displayFormat": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'YYYY-MM-DD'",
-          "computed": false
-        }
-      }
-    }
-  },
-  "src\\addons\\formatters\\DropDownFormatter.js": {
-    "description": "",
-    "methods": [],
-    "props": {
-      "options": {
-        "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "union",
-            "value": [
-              {
-                "name": "string"
-              },
-              {
-                "name": "objectOf",
-                "value": {
-                  "name": "custom",
-                  "raw": "{\r\n  id: PropTypes.string,\r\n  title: PropTypes.string,\r\n  value: PropTypes.string,\r\n  text: PropTypes.string\r\n}"
-                }
-              }
-            ]
-          }
-        },
-        "required": true,
-        "description": ""
-      },
-      "value": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\formatters\\ImageFormatter.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "_load",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "src",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "_onLoad",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "src",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "value": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\formatters\\SimpleCellFormatter.js": {
-    "description": "",
-    "methods": [],
-    "props": {
-      "value": {
-        "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "string"
-            },
-            {
-              "name": "number"
-            },
-            {
-              "name": "object"
-            },
-            {
-              "name": "bool"
-            }
-          ]
-        },
-        "required": true,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\menu\\ContextMenu.js": {
-    "description": "",
-    "methods": [],
-    "props": {
-      "children": {
-        "type": {
-          "name": "node"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\menu\\MenuHeader.js": {
-    "description": "",
-    "methods": [],
-    "props": {
-      "children": {
-        "type": {
-          "name": "any"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\toolbars\\AdvancedToolbar.js": {
-    "description": "",
-    "methods": [],
-    "props": {
-      "children": {
-        "type": {
-          "name": "array"
-        },
-        "required": false,
-        "description": ""
-      },
-      "enableAddRow": {
-        "defaultValue": {
-          "value": "true",
-          "computed": false
-        }
-      }
-    }
-  },
-  "src\\addons\\toolbars\\GroupedColumnButton.js": {
-    "description": "",
-    "methods": [],
-    "props": {
-      "name": {
-        "type": {
-          "name": "string"
-        },
-        "required": true,
-        "description": ""
-      },
-      "onColumnGroupDeleted": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\toolbars\\GroupedColumnsPanel.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "getPanelInstructionMessage",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderGroupedColumns",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderOverlay",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "color",
-            "type": null
-          }
-        ],
-        "returns": null
-      }
-    ],
-    "props": {
-      "isOver": {
-        "type": {
-          "name": "bool"
-        },
-        "required": true,
-        "description": ""
-      },
-      "connectDropTarget": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "canDrop": {
-        "type": {
-          "name": "bool"
-        },
-        "required": true,
-        "description": ""
-      },
-      "groupBy": {
-        "type": {
-          "name": "array"
-        },
-        "required": false,
-        "description": ""
-      },
-      "noColumnsSelectedMessage": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'Drag a column header here to group by that column'",
-          "computed": false
-        }
-      },
-      "panelDescription": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'Drag a column header here to group by that column'",
-          "computed": false
-        }
-      },
-      "onColumnGroupDeleted": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      }
-    }
-  },
-  "src\\addons\\toolbars\\Toolbar.js": {
-    "description": "",
-    "methods": [
-      {
-        "name": "onAddRow",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderAddRowButton",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "renderToggleFilterButton",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      }
-    ],
-    "props": {
-      "onAddRow": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onToggleFilter": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": ""
-      },
-      "enableFilter": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "numberOfRows": {
-        "type": {
-          "name": "number"
-        },
-        "required": false,
-        "description": ""
-      },
-      "addRowButtonText": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'Add Row'",
-          "computed": false
-        }
-      },
-      "filterRowsButtonText": {
-        "type": {
-          "name": "string"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "'Filter Rows'",
-          "computed": false
-        }
-      },
-      "enableAddRow": {
-        "defaultValue": {
-          "value": "true",
-          "computed": false
-        }
       }
     }
   }

@@ -6,19 +6,9 @@
     "publish-gh-pages": "docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
-<<<<<<< HEAD
-    "rename-version": "docusaurus-rename-version",
-    "docz:dev": "docz dev",
-    "docz:build": "docz build"
-  },
-  "devDependencies": {
-    "docusaurus": "^1.5.0",
-    "docz": "^0.12.5"
-=======
     "rename-version": "docusaurus-rename-version"
   },
   "devDependencies": {
     "docusaurus": "^1.5.0"
->>>>>>> a2b42636... Docosaurus initial site
   }
 }

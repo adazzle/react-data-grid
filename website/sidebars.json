@@ -2,7 +2,7 @@
   "docs": {
     "Getting Started": ["quick-start", "addons"],
     "Guides": ["basic-rendering", "cell-formatting", "cell-editing", "frozen-columns"],
-    "API": ["react-data-grid", "column"]
+    "API": ["ReactDataGrid", "column"]
   },
   "docs-other": {
     "First Category": ["doc4", "doc5"]

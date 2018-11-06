@@ -6,8 +6,8 @@ function writeError(error) {
   console.log(error);
 }
 
-function traverseDir(transversePath, result, done, extension, ignoreDir) {
-  var extensions = new RegExp('\\.(?:' + extension.join('|') + ')$');
+function traverseDir(transversePath, result, done, files, ignoreDir) {
+  var extensions = new RegExp(`^(${files.join('|')}).(js)$`);
   dir.readFiles(
     transversePath,
     {
