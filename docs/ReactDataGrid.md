@@ -1,229 +1,362 @@
-`ReactDataGrid` (component)
-===========================
+Main API Component to render a data grid of rows and columns
 
+Example code
+-----
 
+```javascript
+<ReactDataGrid
+  columns={columns}
+  rowGetter={i => rows[i]}
+  rowsCount={3} />
+```
 
 Props
 -----
 
+### `columns` (required)
+
+An array of objects representing each column on the grid.
+Can also be an ImmutableJS object
+
+**type:** arrayOf 
+  | Name | Type | Required | Description
+  | --------- | ---- | ---- | ----------------------------------
+  |name | node | true | The name of the column. By default it will be displayed in the header cell| 
+key | string | true | A unique key to distinguish each column| 
+width | number | false | Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns| 
+filterable | bool | false | Enable filtering of a column| 
+filterRenderer | node | false | Component to be used to filter the data of the column| 
+resizable | bool | false | Enable resizing of a column| 
+sortable | bool | false | Enable sorting of a column| 
+dragable | bool | false | Enable dragging of a column| 
+editable | node | false | Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor| 
+editor | node | false | Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable| 
+formatter | node | false | Formatter to be used to render the cell content| 
+headerRenderer | node | false | Header renderer for each header cell| 
+frozen | bool | false | Determines whether column is frozen or not| 
+events | object | false | By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column
+Every event callback must respect this standard in order to work correctly: function onXxx(ev :SyntheticEvent, (idx, rowIdx, rowId, column): args)| 
+ 
+
+
+### `rowGetter` (required)
+
+A function called for each rendered row that should return a plain key/value pair object
+
+**type:** func  
+
+
+### `rowsCount` (required)
+
+The number of rows to be rendered
+
+**type:** number  
+
+
 ### `cellNavigationMode`
 
-type: `enum('none'|'loopOverRow'|'changeRow')`
-defaultValue: `CellNavigationMode.NONE`
+**type:** enum ('none'|'loopOverRow'|'changeRow') 
+
+ **defaultValue:** `CellNavigationMode.NONE`
 
 
 ### `cellRangeSelection`
 
-type: `shape[object Object]`
+Object used to configure cell range selection
+
+**type:** shape 
+  | Name | Type | Required | Description
+  | --------- | ---- | ---- | ----------------------------------
+  |onStart | func | false | Function called whenever cell range selection begins| 
+onUpdate | func | false | Function called whenever cell selection range is updated| 
+onComplete | func | false | Function called whenever cell selection range has been completed| 
+ 
 
 
 ### `columnEquality`
 
-type: `func`
-defaultValue: `ColumnMetrics.sameColumn`
 
-
-### `columns` (required)
-
-type: `union(object|array)`
+ **defaultValue:** `ColumnMetrics.sameColumn`
 
 
 ### `contextMenu`
 
-type: `element`
+Component used to render a context menu. react-data-grid-addons provides a default context menu which may be used
+
+**type:** element  
 
 
 ### `draggableHeaderCell`
 
-type: `func`
+Component used to render a draggable header cell
+
+**type:** func  
 
 
 ### `enableCellAutoFocus`
 
-type: `bool`
-defaultValue: `true`
+Toggles whether cells should be autofocused
+
+**type:** bool  
+
+ **defaultValue:** `true`
 
 
 ### `enableCellSelect`
 
-type: `bool`
-defaultValue: `false`
+Used to toggle whether cells can be selected or not
+
+**type:** bool  
+
+ **defaultValue:** `false`
 
 
 ### `enableDragAndDrop`
 
-type: `bool`
+Enables drag and drop on the grid
+
+**type:** bool  
 
 
 ### `enableRowSelect`
 
-type: `custom`
-defaultValue: `false`
+Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead
+
+**type:** custom  
+
+ **defaultValue:** `false`
 
 
 ### `getCellActions`
 
-type: `func`
+Function called on each cell render to render a list of actions for each cell
+
+**type:** func  
 
 
 ### `getValidFilterValues`
 
-type: `func`
+**type:** func  
 
 
 ### `headerFiltersHeight`
 
-type: `number`
-defaultValue: `45`
+The height of the header row in pixels
+
+**type:** number  
+
+ **defaultValue:** `45`
 
 
 ### `headerRowHeight`
 
-type: `number`
+The height of the header row in pixels
+
+**type:** number  
 
 
 ### `minColumnWidth`
 
-type: `number`
-defaultValue: `80`
+Minimum column width in pixels
+
+**type:** number  
+
+ **defaultValue:** `80`
 
 
 ### `minHeight`
 
-type: `number`
-defaultValue: `350`
+The minimum height of the grid in pixels
+
+**type:** number  
+
+ **defaultValue:** `350`
 
 
 ### `minWidth`
 
-type: `number`
+The minimum width of the grid in pixels
+
+**type:** number  
 
 
 ### `onAddFilter`
 
-type: `func`
+Callback
+
+**type:** func  
 
 
 ### `onAddSubRow`
 
-type: `func`
+Called whenever a sub row is added to the grid
+
+**type:** func  
 
 
 ### `onBeforeEdit`
 
-type: `func`
-defaultValue: `() => {}`
+Called just before a cell is about to be edited
+
+**type:** func  
+
+ **defaultValue:** `() => {}`
 
 
 ### `onCellCopyPaste`
 
-type: `custom`
+Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead
+
+**type:** custom  
 
 
 ### `onCellDeSelected`
 
-type: `func`
+Function called whenever a cell is deselected
+
+**type:** func  
 
 
 ### `onCellExpand`
 
-type: `func`
+Function called whenever a cell has been expanded
+
+**type:** func  
 
 
 ### `onCellSelected`
 
-type: `func`
+Function called whenever a cell is selected
+
+**type:** func  
 
 
 ### `onCellsDragged`
 
-type: `custom`
+Deprecated: Function called when grid is updated via a cell drag. Use onGridRowsUpdated instead
+
+**type:** custom  
 
 
 ### `onCheckCellIsEditable`
 
-type: `func`
+called before cell is set active, returns a boolean to determine whether cell is editable
+
+**type:** func  
 
 
 ### `onClearFilters`
 
-type: `func`
+Function called whenever filters are cleared
+
+**type:** func  
 
 
 ### `onColumnResize`
 
-type: `func`
+Called when a column is resized
+
+**type:** func  
 
 
 ### `onDeleteSubRow`
 
-type: `func`
+Called whenever a sub row is deleted from the grid
+
+**type:** func  
 
 
 ### `onDragHandleDoubleClick`
 
-type: `custom`
+Deprecated: Function called when grid is updated via double clicking the cell drag handle. Use onGridRowsUpdated instead
+
+**type:** custom  
 
 
 ### `onFilter`
 
-type: `func`
+Callback whenever grid is filtered via FilterableHeaderCell
+
+**type:** func  
 
 
 ### `onGridKeyDown`
 
-type: `func`
+Function called whenever keyboard key is pressed down
+
+**type:** func  
 
 
 ### `onGridKeyUp`
 
-type: `func`
+Function called whenever keyboard key is pressed up
+
+**type:** func  
 
 
 ### `onGridRowsUpdated`
 
-type: `func`
+Callback called whenever row data is updated
+When editing is enabled, this callback will be called for the following scenarios
+1. Using the supplied editor of the column. The default editor is the [SimpleTextEditor](https://github.com/adazzle/react-data-grid/blob/master/packages/common/editors/SimpleTextEditor.js).
+2. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
+3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
+4. Update all cells under a given cell by double clicking the cell's fill handle.
+
+**type:** func  
 
 
 ### `onGridSort`
 
-type: `func`
+Function called whenever grid is sorted
+
+**type:** func  
 
 
 ### `onRowClick`
 
-type: `func`
+Function called whenever row is clicked
+
+**type:** func  
 
 
 ### `onRowDoubleClick`
 
-type: `func`
+Function called whenever row is double clicked
+
+**type:** func  
 
 
 ### `onRowExpandToggle`
 
-type: `func`
+**type:** func  
 
 
 ### `onRowSelect`
 
-type: `func`
+Function called whenever row is selected
+
+**type:** func  
 
 
 ### `onRowUpdated`
 
-type: `custom`
+Deprecated: Function called when grid is updated via a cell commit. Use onGridRowsUpdated instead
+
+**type:** custom  
 
 
 ### `onScroll`
 
-type: `func`
+Called when the grid is scrolled
+
+**type:** func  
 
 
 ### `overScan`
 
-type: `object`
-defaultValue: `{
+
+ **defaultValue:** `{
   colsStart: 2,
   colsEnd: 2,
   rowsStart: 2,
@@ -233,69 +366,91 @@ defaultValue: `{
 
 ### `rowActionsCell`
 
-type: `func`
+Component to render row actions cell when present
 
-
-### `rowGetter` (required)
-
-type: `func`
+**type:** func  
 
 
 ### `rowGroupRenderer`
 
-type: `func`
+Function called whenever keyboard key is pressed down
+
+**type:** func  
 
 
 ### `rowHeight`
 
-type: `number`
-defaultValue: `35`
+The height of each row in pixels
+
+**type:** number  
+
+ **defaultValue:** `35`
 
 
 ### `rowKey`
 
-type: `string`
-defaultValue: `'id'`
+The primary key property of each row
+
+**type:** string  
+
+ **defaultValue:** `'id'`
 
 
 ### `rowScrollTimeout`
 
-type: `custom`
-defaultValue: `0`
+Deprecated
+
+**type:** custom  
+
+ **defaultValue:** `0`
 
 
 ### `rowSelection`
 
-type: `shape[object Object]`
-
-
-### `rowsCount` (required)
-
-type: `number`
+**type:** shape 
+  | Name | Type | Required | Description
+  | --------- | ---- | ---- | ----------------------------------
+  |enableShiftSelect | bool | false | undefined| 
+onRowsSelected | func | false | Function called whenever rows are selected| 
+onRowsDeselected | func | false | Function called whenever rows are deselected| 
+showCheckbox | bool | false | toggle whether to show a checkbox in first column to select rows| 
+selectBy | union | true | Method by which rows should be selected| 
+ 
 
 
 ### `scrollToRowIndex`
 
-type: `number`
-defaultValue: `0`
+When set, grid will scroll to this row index
+
+**type:** number  
+
+ **defaultValue:** `0`
 
 
 ### `selectAllRenderer`
 
-type: `object`
+Component to render the UI in the header row for selecting all rows
+
+**type:** object  
 
 
 ### `sortColumn`
 
-type: `string`
+The key of the column which is currently being sorted
+
+**type:** string  
 
 
 ### `sortDirection`
 
-type: `enumObject.keys(DEFINE_SORT)`
+The direction to sort the sortColumn
+
+**type:** enum Object.keys(DEFINE_SORT) 
 
 
 ### `toolbar`
 
-type: `element`
+Component used to render toolbar above the grid
+
+**type:** element  
 

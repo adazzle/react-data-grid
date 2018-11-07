@@ -1,11 +1,11 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses = require('classnames');
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
+import classNames from 'classnames';
+import Column from 'common/prop-shapes/Column';
 import {isFunction} from 'common/utils';
 import CellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
-const createObjectWithProperties = require('./createObjectWithProperties');
+import SimpleCellFormatter from './formatters/SimpleCellFormatter';
+import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
@@ -24,7 +24,7 @@ class Cell extends React.PureComponent {
     isEditorEnabled: PropTypes.bool,
     selectedColumn: PropTypes.object,
     height: PropTypes.number,
-    column: PropTypes.shape(ExcelColumn).isRequired,
+    column: PropTypes.shape(Column).isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]),
     isExpanded: PropTypes.bool,
     isRowSelected: PropTypes.bool,
@@ -164,21 +164,21 @@ class Cell extends React.PureComponent {
 
   getCellClass = () => {
     const {idx, lastFrozenColumnIndex} = this.props;
-    let className = joinClasses(
+    let className = classNames(
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
       columnUtils.isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
       lastFrozenColumnIndex === idx ? 'rdg-last--frozen' : null
     );
-    let extraClasses = joinClasses({
+    let extraClasses = classNames({
       'row-selected': this.props.isRowSelected,
       editing: this.isEditorEnabled(),
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn
     });
-    return joinClasses(className, extraClasses);
+    return classNames(className, extraClasses);
   };
 
   getUpdateCellClass = () => {

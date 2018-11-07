@@ -22,88 +22,197 @@ if (!Object.assign) {
 
 const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;
 
+/** Main API Component to render a data grid of rows and columns
+ *
+ * Example code
+ * -----
+ *
+ * ```javascript
+ * <ReactDataGrid
+ *   columns={columns}
+ *   rowGetter={i => rows[i]}
+ *   rowsCount={3} />
+ * ```
+*/
 class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
 
   static propTypes = {
-    rowHeight: PropTypes.number.isRequired,
+    /** The height of each row in pixels */
+    rowHeight: PropTypes.number,
+    /** The height of the header row in pixels */
     headerRowHeight: PropTypes.number,
+    /** The height of the header row in pixels */
     headerFiltersHeight: PropTypes.number,
+    /** The minimum height of the grid in pixels */
     minHeight: PropTypes.number.isRequired,
+    /** The minimum width of the grid in pixels */
     minWidth: PropTypes.number,
+    /** Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead*/
     enableRowSelect: deprecate(PropTypes.func, deprecationWarning('enableRowSelect', 'rowSelection')),
+    /** Deprecated: Function called when grid is updated via a cell commit. Use onGridRowsUpdated instead*/
     onRowUpdated: deprecate(PropTypes.func, deprecationWarning('onRowUpdated', 'onGridRowsUpdated')),
+    /** 	A function called for each rendered row that should return a plain key/value pair object */
     rowGetter: PropTypes.func.isRequired,
+    /** The number of rows to be rendered */
     rowsCount: PropTypes.number.isRequired,
+    /** Component used to render toolbar above the grid */
     toolbar: PropTypes.element,
+    /** Used to toggle whether cells can be selected or not */
     enableCellSelect: PropTypes.bool,
-    columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    /**
+    * An array of objects representing each column on the grid.
+    * Can also be an ImmutableJS object
+    */
+    columns: PropTypes.arrayOf(PropTypes.shape({
+      /** The name of the column. By default it will be displayed in the header cell */
+      name: PropTypes.node.isRequired,
+      /** A unique key to distinguish each column */
+      key: PropTypes.string.isRequired,
+      /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
+      width: PropTypes.number,
+      /** Enable filtering of a column */
+      filterable: PropTypes.bool,
+      /** Component to be used to filter the data of the column */
+      filterRenderer: PropTypes.node,
+      /** Enable resizing of a column */
+      resizable: PropTypes.bool,
+      /** Enable sorting of a column */
+      sortable: PropTypes.bool,
+      /** Enable dragging of a column */
+      dragable: PropTypes.bool,
+      /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
+      editable: PropTypes.node,
+      /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
+      editor: PropTypes.node,
+      /** Formatter to be used to render the cell content */
+      formatter: PropTypes.node,
+      /** Header renderer for each header cell */
+      headerRenderer: PropTypes.node,
+      /** Determines whether column is frozen or not */
+      frozen: PropTypes.bool,
+      /** By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column */
+      events: PropTypes.object
+    })).isRequired,
+    /** Callback whenever grid is filtered via FilterableHeaderCell*/
     onFilter: PropTypes.func,
+    /** Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead*/
     onCellCopyPaste: deprecate(PropTypes.func, deprecationWarning('onCellCopyPaste', 'onGridRowsUpdated')),
+    /** Deprecated: Function called when grid is updated via a cell drag. Use onGridRowsUpdated instead*/
     onCellsDragged: deprecate(PropTypes.func, deprecationWarning('onCellsDragged', 'onGridRowsUpdated')),
+    /** Function called on each cell render to render a list of actions for each cell */
     getCellActions: PropTypes.func,
+    /**  Callback */
     onAddFilter: PropTypes.func,
+    /**  Function called whenever grid is sorted*/
     onGridSort: PropTypes.func,
+    /** The key of the column which is currently being sorted */
     sortColumn: PropTypes.string,
+    /** The direction to sort the sortColumn*/
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
+    /** Deprecated: Function called when grid is updated via double clicking the cell drag handle. Use onGridRowsUpdated instead*/
     onDragHandleDoubleClick: deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated')),
+    /**
+     * Callback called whenever row data is updated
+     * When editing is enabled, this callback will be called for the following scenarios
+     * 1. Using the supplied editor of the column. The default editor is the [SimpleTextEditor](https://github.com/adazzle/react-data-grid/blob/master/packages/common/editors/SimpleTextEditor.js).
+     * 2. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
+     * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
+     * 4. Update all cells under a given cell by double clicking the cell's fill handle.
+     */
     onGridRowsUpdated: PropTypes.func,
+    /** Function called whenever row is selected */
     onRowSelect: PropTypes.func,
+    /** The primary key property of each row */
     rowKey: PropTypes.string,
+    /** Deprecated */
     rowScrollTimeout: deprecate(PropTypes.number),
+    /** When set, grid will scroll to this row index */
     scrollToRowIndex: PropTypes.number,
+    /** Function called whenever filters are cleared */
     onClearFilters: PropTypes.func,
+    /** Component used to render a context menu. react-data-grid-addons provides a default context menu which may be used*/
     contextMenu: PropTypes.element,
+    /** */
     cellNavigationMode: PropTypes.oneOf(['none', 'loopOverRow', 'changeRow']),
+    /** Function called whenever a cell is selected */
     onCellSelected: PropTypes.func,
+    /** Function called whenever a cell is deselected */
     onCellDeSelected: PropTypes.func,
+    /** Object used to configure cell range selection */
     cellRangeSelection: PropTypes.shape({
+      /** Function called whenever cell range selection begins*/
       onStart: PropTypes.func,
+      /**  Function called whenever cell selection range is updated*/
       onUpdate: PropTypes.func,
+      /** Function called whenever cell selection range has been completed */
       onComplete: PropTypes.func
     }),
+    /** Function called whenever a cell has been expanded */
     onCellExpand: PropTypes.func,
+    /** Enables drag and drop on the grid */
     enableDragAndDrop: PropTypes.bool,
     onRowExpandToggle: PropTypes.func,
+    /** Component used to render a draggable header cell */
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
     rowSelection: PropTypes.shape({
       enableShiftSelect: PropTypes.bool,
+      /** Function called whenever rows are selected */
       onRowsSelected: PropTypes.func,
+      /** Function called whenever rows are deselected */
       onRowsDeselected: PropTypes.func,
+      /** toggle whether to show a checkbox in first column to select rows */
       showCheckbox: PropTypes.bool,
+      /** Method by which rows should be selected */
       selectBy: PropTypes.oneOfType([
         PropTypes.shape({
+          /** List of indexes of selected rows */
           indexes: PropTypes.arrayOf(PropTypes.number).isRequired
         }),
         PropTypes.shape({
+          /** Name of property of row object which determines whether row is selected */
           isSelectedKey: PropTypes.string.isRequired
         }),
-        PropTypes.shape({
+        PropTypes.shape({ 
           keys: PropTypes.shape({
+             /** The selected unique ids of each row */
             values: PropTypes.array.isRequired,
+             /** The name of the unoque id property of each row */
             rowKey: PropTypes.string.isRequired
           }).isRequired
         })
       ]).isRequired
     }),
+    /** Function called whenever row is clicked */
     onRowClick: PropTypes.func,
+    /** Function called whenever row is double clicked */
     onRowDoubleClick: PropTypes.func,
+    /** Function called whenever keyboard key is pressed up */
     onGridKeyUp: PropTypes.func,
+    /** Function called whenever keyboard key is pressed down */
     onGridKeyDown: PropTypes.func,
+    /** Function called whenever keyboard key is pressed down */
     rowGroupRenderer: PropTypes.func,
+    /** Component to render row actions cell when present */
     rowActionsCell: PropTypes.func,
+    /** called before cell is set active, returns a boolean to determine whether cell is editable */
     onCheckCellIsEditable: PropTypes.func,
-    /* called before cell is set active, returns a boolean to determine whether cell is editable */
-    overScan: PropTypes.object,
+    /** Called whenever a sub row is deleted from the grid */
     onDeleteSubRow: PropTypes.func,
+    /** Called whenever a sub row is added to the grid */
     onAddSubRow: PropTypes.func,
+    /** Toggles whether cells should be autofocused */
     enableCellAutoFocus: PropTypes.bool,
+    /** Called just before a cell is about to be edited */
     onBeforeEdit: PropTypes.func,
+    /** Component to render the UI in the header row for selecting all rows  */
     selectAllRenderer: PropTypes.object,
+    /** Minimum column width in pixels */
     minColumnWidth: PropTypes.number,
-    columnEquality: PropTypes.func,
+    /** Called when a column is resized */
     onColumnResize: PropTypes.func,
+    /** Called when the grid is scrolled */
     onScroll: PropTypes.func
   };
 

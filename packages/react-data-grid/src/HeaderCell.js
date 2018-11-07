@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
+import Column from 'common/prop-shapes/Column';
 import columnUtils from './ColumnUtils';
 import { HeaderRowType } from 'common/constants';
 const ResizeHandle   = require('./ResizeHandle');
@@ -17,7 +17,7 @@ function SimpleCellRenderer(objArgs) {
 class HeaderCell extends React.Component {
   static propTypes = {
     renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
-    column: PropTypes.shape(ExcelColumn).isRequired,
+    column: PropTypes.shape(Column).isRequired,
     rowType: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired,
     onResize: PropTypes.func.isRequired,

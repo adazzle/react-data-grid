@@ -42,6 +42,10 @@ class Row extends React.Component {
     height: 35
   };
 
+  constructor() {
+    super();
+  }
+
   shouldComponentUpdate(nextProps) {
     return rowComparer(nextProps, this.props);
   }
@@ -165,4 +169,4 @@ class Row extends React.Component {
   }
 }
 
-module.exports = Row;
+export default Row;

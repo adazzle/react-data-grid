@@ -1,6 +1,6 @@
 {
   "packages\\react-data-grid\\src\\ReactDataGrid.js": {
-    "description": "",
+    "description": "Main API Component to render a data grid of rows and columns\r\n\nExample code\r\n-----\r\n\n```javascript\r\n<ReactDataGrid\r\n  columns={columns}\r\n  rowGetter={i => rows[i]}\r\n  rowsCount={3} />\r\n```",
     "displayName": "ReactDataGrid",
     "methods": [
       {
@@ -599,7 +599,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "",
+        "description": "The height of each row in pixels",
         "defaultValue": {
           "value": "35",
           "computed": false
@@ -610,14 +610,14 @@
           "name": "number"
         },
         "required": false,
-        "description": ""
+        "description": "The height of the header row in pixels"
       },
       "headerFiltersHeight": {
         "type": {
           "name": "number"
         },
         "required": false,
-        "description": "",
+        "description": "The height of the header row in pixels",
         "defaultValue": {
           "value": "45",
           "computed": false
@@ -628,7 +628,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "",
+        "description": "The minimum height of the grid in pixels",
         "defaultValue": {
           "value": "350",
           "computed": false
@@ -639,7 +639,7 @@
           "name": "number"
         },
         "required": false,
-        "description": ""
+        "description": "The minimum width of the grid in pixels"
       },
       "enableRowSelect": {
         "type": {
@@ -647,7 +647,7 @@
           "raw": "deprecate(PropTypes.func, deprecationWarning('enableRowSelect', 'rowSelection'))"
         },
         "required": false,
-        "description": "",
+        "description": "Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead",
         "defaultValue": {
           "value": "false",
           "computed": false
@@ -659,35 +659,35 @@
           "raw": "deprecate(PropTypes.func, deprecationWarning('onRowUpdated', 'onGridRowsUpdated'))"
         },
         "required": false,
-        "description": ""
+        "description": "Deprecated: Function called when grid is updated via a cell commit. Use onGridRowsUpdated instead"
       },
       "rowGetter": {
         "type": {
           "name": "func"
         },
         "required": true,
-        "description": ""
+        "description": "A function called for each rendered row that should return a plain key/value pair object"
       },
       "rowsCount": {
         "type": {
           "name": "number"
         },
         "required": true,
-        "description": ""
+        "description": "The number of rows to be rendered"
       },
       "toolbar": {
         "type": {
           "name": "element"
         },
         "required": false,
-        "description": ""
+        "description": "Component used to render toolbar above the grid"
       },
       "enableCellSelect": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "",
+        "description": "Used to toggle whether cells can be selected or not",
         "defaultValue": {
           "value": "false",
           "computed": false
@@ -695,25 +695,92 @@
       },
       "columns": {
         "type": {
-          "name": "union",
-          "value": [
-            {
-              "name": "object"
-            },
-            {
-              "name": "array"
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "name": {
+                "name": "node",
+                "description": "The name of the column. By default it will be displayed in the header cell",
+                "required": true
+              },
+              "key": {
+                "name": "string",
+                "description": "A unique key to distinguish each column",
+                "required": true
+              },
+              "width": {
+                "name": "number",
+                "description": "Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns",
+                "required": false
+              },
+              "filterable": {
+                "name": "bool",
+                "description": "Enable filtering of a column",
+                "required": false
+              },
+              "filterRenderer": {
+                "name": "node",
+                "description": "Component to be used to filter the data of the column",
+                "required": false
+              },
+              "resizable": {
+                "name": "bool",
+                "description": "Enable resizing of a column",
+                "required": false
+              },
+              "sortable": {
+                "name": "bool",
+                "description": "Enable sorting of a column",
+                "required": false
+              },
+              "dragable": {
+                "name": "bool",
+                "description": "Enable dragging of a column",
+                "required": false
+              },
+              "editable": {
+                "name": "node",
+                "description": "Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor",
+                "required": false
+              },
+              "editor": {
+                "name": "node",
+                "description": "Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable",
+                "required": false
+              },
+              "formatter": {
+                "name": "node",
+                "description": "Formatter to be used to render the cell content",
+                "required": false
+              },
+              "headerRenderer": {
+                "name": "node",
+                "description": "Header renderer for each header cell",
+                "required": false
+              },
+              "frozen": {
+                "name": "bool",
+                "description": "Determines whether column is frozen or not",
+                "required": false
+              },
+              "events": {
+                "name": "object",
+                "description": "By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column\r\nEvery event callback must respect this standard in order to work correctly: function onXxx(ev :SyntheticEvent, (idx, rowIdx, rowId, column): args)",
+                "required": false
+              }
             }
-          ]
+          }
         },
         "required": true,
-        "description": ""
+        "description": "An array of objects representing each column on the grid.\r\nCan also be an ImmutableJS object"
       },
       "onFilter": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Callback whenever grid is filtered via FilterableHeaderCell"
       },
       "onCellCopyPaste": {
         "type": {
@@ -721,7 +788,7 @@
           "raw": "deprecate(PropTypes.func, deprecationWarning('onCellCopyPaste', 'onGridRowsUpdated'))"
         },
         "required": false,
-        "description": ""
+        "description": "Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead"
       },
       "onCellsDragged": {
         "type": {
@@ -729,35 +796,35 @@
           "raw": "deprecate(PropTypes.func, deprecationWarning('onCellsDragged', 'onGridRowsUpdated'))"
         },
         "required": false,
-        "description": ""
+        "description": "Deprecated: Function called when grid is updated via a cell drag. Use onGridRowsUpdated instead"
       },
       "getCellActions": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called on each cell render to render a list of actions for each cell"
       },
       "onAddFilter": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Callback"
       },
       "onGridSort": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever grid is sorted"
       },
       "sortColumn": {
         "type": {
           "name": "string"
         },
         "required": false,
-        "description": ""
+        "description": "The key of the column which is currently being sorted"
       },
       "sortDirection": {
         "type": {
@@ -766,7 +833,7 @@
           "value": "Object.keys(DEFINE_SORT)"
         },
         "required": false,
-        "description": ""
+        "description": "The direction to sort the sortColumn"
       },
       "onDragHandleDoubleClick": {
         "type": {
@@ -774,28 +841,28 @@
           "raw": "deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated'))"
         },
         "required": false,
-        "description": ""
+        "description": "Deprecated: Function called when grid is updated via double clicking the cell drag handle. Use onGridRowsUpdated instead"
       },
       "onGridRowsUpdated": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Callback called whenever row data is updated\r\nWhen editing is enabled, this callback will be called for the following scenarios\r\n1. Using the supplied editor of the column. The default editor is the [SimpleTextEditor](https://github.com/adazzle/react-data-grid/blob/master/packages/common/editors/SimpleTextEditor.js).\r\n2. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>\r\n3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.\r\n4. Update all cells under a given cell by double clicking the cell's fill handle."
       },
       "onRowSelect": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever row is selected"
       },
       "rowKey": {
         "type": {
           "name": "string"
         },
         "required": false,
-        "description": "",
+        "description": "The primary key property of each row",
         "defaultValue": {
           "value": "'id'",
           "computed": false
@@ -807,7 +874,7 @@
           "raw": "deprecate(PropTypes.number)"
         },
         "required": false,
-        "description": "",
+        "description": "Deprecated",
         "defaultValue": {
           "value": "0",
           "computed": false
@@ -818,7 +885,7 @@
           "name": "number"
         },
         "required": false,
-        "description": "",
+        "description": "When set, grid will scroll to this row index",
         "defaultValue": {
           "value": "0",
           "computed": false
@@ -829,14 +896,14 @@
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever filters are cleared"
       },
       "contextMenu": {
         "type": {
           "name": "element"
         },
         "required": false,
-        "description": ""
+        "description": "Component used to render a context menu. react-data-grid-addons provides a default context menu which may be used"
       },
       "cellNavigationMode": {
         "type": {
@@ -868,14 +935,14 @@
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever a cell is selected"
       },
       "onCellDeSelected": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever a cell is deselected"
       },
       "cellRangeSelection": {
         "type": {
@@ -883,34 +950,37 @@
           "value": {
             "onStart": {
               "name": "func",
+              "description": "Function called whenever cell range selection begins",
               "required": false
             },
             "onUpdate": {
               "name": "func",
+              "description": "Function called whenever cell selection range is updated",
               "required": false
             },
             "onComplete": {
               "name": "func",
+              "description": "Function called whenever cell selection range has been completed",
               "required": false
             }
           }
         },
         "required": false,
-        "description": ""
+        "description": "Object used to configure cell range selection"
       },
       "onCellExpand": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever a cell has been expanded"
       },
       "enableDragAndDrop": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": ""
+        "description": "Enables drag and drop on the grid"
       },
       "onRowExpandToggle": {
         "type": {
@@ -924,7 +994,7 @@
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Component used to render a draggable header cell"
       },
       "getValidFilterValues": {
         "type": {
@@ -943,14 +1013,17 @@
             },
             "onRowsSelected": {
               "name": "func",
+              "description": "Function called whenever rows are selected",
               "required": false
             },
             "onRowsDeselected": {
               "name": "func",
+              "description": "Function called whenever rows are deselected",
               "required": false
             },
             "showCheckbox": {
               "name": "bool",
+              "description": "toggle whether to show a checkbox in first column to select rows",
               "required": false
             },
             "selectBy": {
@@ -964,6 +1037,7 @@
                       "value": {
                         "name": "number"
                       },
+                      "description": "List of indexes of selected rows",
                       "required": true
                     }
                   }
@@ -973,6 +1047,7 @@
                   "value": {
                     "isSelectedKey": {
                       "name": "string",
+                      "description": "Name of property of row object which determines whether row is selected",
                       "required": true
                     }
                   }
@@ -985,10 +1060,12 @@
                       "value": {
                         "values": {
                           "name": "array",
+                          "description": "The selected unique ids of each row",
                           "required": true
                         },
                         "rowKey": {
                           "name": "string",
+                          "description": "The name of the unoque id property of each row",
                           "required": true
                         }
                       },
@@ -997,6 +1074,7 @@
                   }
                 }
               ],
+              "description": "Method by which rows should be selected",
               "required": true
             }
           }
@@ -1009,81 +1087,70 @@
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever row is clicked"
       },
       "onRowDoubleClick": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever row is double clicked"
       },
       "onGridKeyUp": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever keyboard key is pressed up"
       },
       "onGridKeyDown": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever keyboard key is pressed down"
       },
       "rowGroupRenderer": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Function called whenever keyboard key is pressed down"
       },
       "rowActionsCell": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Component to render row actions cell when present"
       },
       "onCheckCellIsEditable": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
-      },
-      "overScan": {
-        "type": {
-          "name": "object"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "{\r\n  colsStart: 2,\r\n  colsEnd: 2,\r\n  rowsStart: 2,\r\n  rowsEnd: 2\r\n}",
-          "computed": false
-        }
+        "description": "called before cell is set active, returns a boolean to determine whether cell is editable"
       },
       "onDeleteSubRow": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Called whenever a sub row is deleted from the grid"
       },
       "onAddSubRow": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Called whenever a sub row is added to the grid"
       },
       "enableCellAutoFocus": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "",
+        "description": "Toggles whether cells should be autofocused",
         "defaultValue": {
           "value": "true",
           "computed": false
@@ -1094,7 +1161,7 @@
           "name": "func"
         },
         "required": false,
-        "description": "",
+        "description": "Called just before a cell is about to be edited",
         "defaultValue": {
           "value": "() => {}",
           "computed": false
@@ -1105,28 +1172,17 @@
           "name": "object"
         },
         "required": false,
-        "description": ""
+        "description": "Component to render the UI in the header row for selecting all rows"
       },
       "minColumnWidth": {
         "type": {
           "name": "number"
         },
         "required": false,
-        "description": "",
+        "description": "Minimum column width in pixels",
         "defaultValue": {
           "value": "80",
           "computed": false
-        }
-      },
-      "columnEquality": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "ColumnMetrics.sameColumn",
-          "computed": true
         }
       },
       "onColumnResize": {
@@ -1134,14 +1190,28 @@
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Called when a column is resized"
       },
       "onScroll": {
         "type": {
           "name": "func"
         },
         "required": false,
-        "description": ""
+        "description": "Called when the grid is scrolled"
+      },
+      "overScan": {
+        "defaultValue": {
+          "value": "{\r\n  colsStart: 2,\r\n  colsEnd: 2,\r\n  rowsStart: 2,\r\n  rowsEnd: 2\r\n}",
+          "computed": false
+        },
+        "required": false
+      },
+      "columnEquality": {
+        "defaultValue": {
+          "value": "ColumnMetrics.sameColumn",
+          "computed": true
+        },
+        "required": false
       }
     }
   }

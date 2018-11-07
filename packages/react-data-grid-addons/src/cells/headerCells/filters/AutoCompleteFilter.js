@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import {isEmptyArray} from 'common/utils';
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
+import Column from 'common/prop-shapes/Column';
 
 class AutoCompleteFilter extends React.Component {
   constructor(props) {
@@ -79,7 +79,7 @@ class AutoCompleteFilter extends React.Component {
 
 AutoCompleteFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
-  column: PropTypes.shape(ExcelColumn),
+  column: PropTypes.shape(Column),
   getValidFilterValues: PropTypes.func,
   multiSelection: PropTypes.bool
 };
