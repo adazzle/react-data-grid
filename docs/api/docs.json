@@ -766,7 +766,7 @@
               },
               "events": {
                 "name": "object",
-                "description": "By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column\r\nEvery event callback must respect this standard in order to work correctly: function onXxx(ev :SyntheticEvent, (idx, rowIdx, rowId, column): args)",
+                "description": "By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column",
                 "required": false
               }
             }

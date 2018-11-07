@@ -34,8 +34,7 @@ editor | node | false | Editor to be rendered when cell of column is being edite
 formatter | node | false | Formatter to be used to render the cell content| 
 headerRenderer | node | false | Header renderer for each header cell| 
 frozen | bool | false | Determines whether column is frozen or not| 
-events | object | false | By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column
-Every event callback must respect this standard in order to work correctly: function onXxx(ev :SyntheticEvent, (idx, rowIdx, rowId, column): args)| 
+events | object | false | By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column| 
  
 
 
