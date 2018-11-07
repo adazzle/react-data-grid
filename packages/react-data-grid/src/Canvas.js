@@ -250,15 +250,6 @@ class Canvas extends React.PureComponent {
     return this.props.rowHeight * rowIdx;
   }
 
-  getSelectedRowHeight = (rowIdx) => {
-    const row = this.getRowByRef(rowIdx);
-    if (row) {
-      const node = ReactDOM.findDOMNode(row);
-      return node && node.clientHeight > 0 ? node.clientHeight : this.props.rowHeight;
-    }
-    return this.props.rowHeight;
-  }
-
   getSelectedRowColumns = (rowIdx) => {
     const row = this.getRowByRef(rowIdx);
     return row && row.props ? row.props.columns : this.props.columns;
@@ -423,9 +414,6 @@ class Canvas extends React.PureComponent {
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           scrollLeft={this._scroll.scrollLeft}
           scrollTop={this._scroll.scrollTop}
-          prevScrollLeft={this.props.prevScrollLeft}
-          prevScrollTop={this.props.prevScrollTop}
-          getSelectedRowHeight={this.getSelectedRowHeight}
           getSelectedRowTop={this.getSelectedRowTop}
           getSelectedRowColumns={this.getSelectedRowColumns}
         />

@@ -66,11 +66,8 @@ class InteractionMasks extends React.Component {
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
-    prevScrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,
-    prevScrollTop: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
-    getSelectedRowHeight: PropTypes.func.isRequired,
     getSelectedRowTop: PropTypes.func.isRequired,
     getSelectedRowColumns: PropTypes.func.isRequired
   };
@@ -459,7 +456,6 @@ class InteractionMasks extends React.Component {
       if (this.isCellWithinBounds(next)) {
         return {
           selectedPosition: next,
-          prevSelectedPosition: cell,
           selectedRange: {
             topLeft: next,
             bottomRight: next,
@@ -628,18 +624,12 @@ class InteractionMasks extends React.Component {
   };
 
   getSelectionMaskProps = () => {
-    const { columns, getSelectedRowHeight, getSelectedRowTop, scrollLeft, scrollTop, prevScrollLeft, prevScrollTop } = this.props;
-    const { prevSelectedPosition } = this.state;
+    const { columns, scrollLeft, rowHeight } = this.props;
 
     return {
       columns,
-      scrollTop,
       scrollLeft,
-      getSelectedRowHeight,
-      getSelectedRowTop,
-      prevScrollLeft,
-      prevScrollTop,
-      prevSelectedPosition,
+      rowHeight,
       isGroupedRow: this.isGroupedRowSelected(),
       innerRef: this.setSelectionMaskRef
     };
@@ -724,7 +714,7 @@ class InteractionMasks extends React.Component {
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
           position={this.editorPosition}
-          {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
+          {...getSelectedDimensions({ selectedPosition, rowHeight, columns, scrollLeft })}
         />}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>

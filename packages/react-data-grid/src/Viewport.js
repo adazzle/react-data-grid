@@ -137,9 +137,7 @@ class Viewport extends React.Component {
       colOverscanEndIdx,
       scrollDirection,
       lastFrozenColumnIndex,
-      isScrolling,
-      prevScrollTop: this.state.scrollTop,
-      prevScrollLeft: this.state.scrollTop
+      isScrolling
     };
   }
 
