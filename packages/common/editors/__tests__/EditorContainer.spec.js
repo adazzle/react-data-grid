@@ -77,31 +77,6 @@ describe('Editor Container Tests', () => {
       expect(editorDiv.props().onKeyDown).toBeDefined();
       expect(editorDiv.props().children).toBeDefined();
     });
-
-    describe('Frozen columns', () => {
-      const frozenProps = {
-        column: { ...fakeColumn, frozen: true },
-        left: 60,
-        top: 0,
-        scrollTop: 0,
-        scrollLeft: 250
-      };
-
-      xit('should not subtract scrollLeft value from editors left position when column is frozen', () => {
-        const { shallowWrapper } = getComponent(frozenProps);
-        const editorDiv = shallowWrapper.find('div').at(0);
-        expect(editorDiv.props().style.transform).toBe('translate(60px, 0px)');
-      });
-
-      xit('should subtract scrollLeft value from editors left position when column is not frozen', () => {
-        const unfrozenProps = { ...frozenProps };
-        unfrozenProps.column.frozen = false;
-
-        const { shallowWrapper } = getComponent(unfrozenProps);
-        const editorDiv = shallowWrapper.find('div').at(0);
-        expect(editorDiv.props().style.transform).toBe('translate(-190px, 0px)');
-      });
-    });
   });
 
   describe('Custom Editors', () => {
