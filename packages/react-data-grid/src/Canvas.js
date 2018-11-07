@@ -218,9 +218,13 @@ class Canvas extends React.PureComponent {
   };
 
   setScrollLeft = (scrollLeft) => {
+    if (this.interactionMasks && this.interactionMasks.setScrollLeft) {
+      this.interactionMasks.setScrollLeft(scrollLeft);
+    }
+
     this.rows.forEach((r, idx) => {
       if (r) {
-        let row = this.getRowByRef(idx);
+        const row = this.getRowByRef(idx);
         if (row && row.setScrollLeft) {
           row.setScrollLeft(scrollLeft);
         }
@@ -260,12 +264,16 @@ class Canvas extends React.PureComponent {
     return row && row.props ? row.props.columns : this.props.columns;
   }
 
-  setCanvasRef = (canvas) => {
-    this.canvas = canvas;
+  setCanvasRef = el => {
+    this.canvas = el;
   };
 
   setRowRef = idx => row => {
     this.rows[idx] = row;
+  };
+
+  setInteractionMasksRef = el => {
+    this.interactionMasks = el;
   };
 
   renderCustomRowRenderer(props) {
@@ -382,6 +390,7 @@ class Canvas extends React.PureComponent {
         onScroll={this.onScroll}
         className="react-grid-Canvas">
         <InteractionMasks
+          ref={this.setInteractionMasksRef}
           rowGetter={rowGetter}
           rowsCount={rowsCount}
           width={this.props.totalWidth}

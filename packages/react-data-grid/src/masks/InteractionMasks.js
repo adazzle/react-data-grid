@@ -103,6 +103,31 @@ class InteractionMasks extends React.Component {
     }
   };
 
+  setMaskScollLeft = (mask, position, scrollLeft) => {
+    if (mask) {
+      const { idx, rowIdx } = position;
+      if (idx >= 0 && rowIdx >= 0) {
+        const { columns, getSelectedRowTop } = this.props;
+        const column = columnUtils.getColumn(columns, idx);
+        const frozen = columnUtils.isFrozen(column);
+        if (frozen) {
+          const top = getSelectedRowTop(rowIdx);
+          const left = scrollLeft + column.left;
+          const transform = `translate(${left}px, ${top}px)`;
+          if (mask.style.transform !== transform) {
+            mask.style.transform = transform;
+          }
+        }
+      }
+    }
+  };
+
+  setScrollLeft = (scrollLeft) => {
+    const { selectionMask, copyMask, state: { selectedPosition, copiedPosition } } = this;
+    this.setMaskScollLeft(selectionMask, selectedPosition, scrollLeft);
+    this.setMaskScollLeft(copyMask, copiedPosition, scrollLeft);
+  };
+
   componentDidUpdate(prevProps, prevState) {
     const { selectedPosition, isEditorEnabled } = this.state;
     const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
@@ -598,6 +623,10 @@ class InteractionMasks extends React.Component {
     this.selectionMask = node;
   };
 
+  setCopyMaskRef = (node) => {
+    this.copyMask = node;
+  };
+
   getSelectionMaskProps = () => {
     const { columns, getSelectedRowHeight, getSelectedRowTop, scrollLeft, scrollTop, prevScrollLeft, prevScrollTop } = this.props;
     const { prevSelectedPosition } = this.state;
@@ -667,6 +696,8 @@ class InteractionMasks extends React.Component {
           <CopyMask
             copiedPosition={copiedPosition}
             rowHeight={rowHeight}
+            scrollLeft={scrollLeft}
+            innerRef={this.setCopyMaskRef}
             columns={getSelectedRowColumns(copiedPosition.rowIdx)}
           />
         )}
@@ -674,6 +705,7 @@ class InteractionMasks extends React.Component {
           <DragMask
             draggedPosition={draggedPosition}
             rowHeight={rowHeight}
+            scrollLeft={scrollLeft}
             columns={getSelectedRowColumns(draggedPosition.rowIdx)}
           />
         )}
