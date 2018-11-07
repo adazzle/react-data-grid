@@ -17,6 +17,9 @@
       "cell-formatting": {
         "title": "Cell Formatting"
       },
+      "CHANGELOG": {
+        "title": "CHANGELOG"
+      },
       "doc4": {
         "title": "Other Document"
       },
@@ -43,13 +46,14 @@
       "Docs": "Docs",
       "API": "API",
       "Help": "Help",
-      "Blog": "Blog"
+      "Blog": "Blog",
+      "V5.0.3": "V5.0.3"
     },
     "categories": {
       "Getting Started": "Getting Started",
       "Guides": "Guides",
       "API": "API",
-      "First Category": "First Category"
+      "Changelog": "Changelog"
     }
   },
   "pages-strings": {
