@@ -47,8 +47,6 @@ describe('<InteractionMasks/>', () => {
       enableCellSelect: true,
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus,
-      getSelectedRowHeight: () => 50,
-      getSelectedRowTop: () => 0,
       getSelectedRowColumns: jasmine.createSpy().and.callFake(() => columns),
       ...overrideProps
     };

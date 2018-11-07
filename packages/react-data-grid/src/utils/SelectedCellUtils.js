@@ -4,7 +4,7 @@ import * as rowUtils from '../RowUtils';
 import * as columnUtils from '../ColumnUtils';
 import zIndexes from 'common/constants/zIndexes';
 
-const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
+export const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
 
 export const getSelectedRow = ({ selectedPosition, rowGetter }) => {
   const { rowIdx } = selectedPosition;

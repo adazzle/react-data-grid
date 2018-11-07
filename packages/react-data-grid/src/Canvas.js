@@ -1,6 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+
 import Row from './Row';
 import cellMetaDataShape from 'common/prop-shapes/CellActionShape';
 import * as rowUtils from './RowUtils';
@@ -241,15 +241,6 @@ class Canvas extends React.PureComponent {
     return this.rows[i];
   };
 
-  getSelectedRowTop = (rowIdx) => {
-    const row = this.getRowByRef(rowIdx);
-    if (row) {
-      const node = ReactDOM.findDOMNode(row);
-      return node && node.offsetTop;
-    }
-    return this.props.rowHeight * rowIdx;
-  }
-
   getSelectedRowColumns = (rowIdx) => {
     const row = this.getRowByRef(rowIdx);
     return row && row.props ? row.props.columns : this.props.columns;
@@ -414,7 +405,6 @@ class Canvas extends React.PureComponent {
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           scrollLeft={this._scroll.scrollLeft}
           scrollTop={this._scroll.scrollTop}
-          getSelectedRowTop={this.getSelectedRowTop}
           getSelectedRowColumns={this.getSelectedRowColumns}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>

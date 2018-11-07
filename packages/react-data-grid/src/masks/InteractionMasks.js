@@ -10,6 +10,7 @@ import EditorContainer from 'common/editors/EditorContainer';
 import { UpdateActions } from 'common/constants';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import {
+  getRowTop,
   getSelectedDimensions,
   getSelectedCellValue,
   getSelectedRow,
@@ -68,7 +69,6 @@ class InteractionMasks extends React.Component {
     scrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
-    getSelectedRowTop: PropTypes.func.isRequired,
     getSelectedRowColumns: PropTypes.func.isRequired
   };
 
@@ -104,11 +104,11 @@ class InteractionMasks extends React.Component {
     if (mask) {
       const { idx, rowIdx } = position;
       if (idx >= 0 && rowIdx >= 0) {
-        const { columns, getSelectedRowTop } = this.props;
+        const { columns, rowHeight } = this.props;
         const column = columnUtils.getColumn(columns, idx);
         const frozen = columnUtils.isFrozen(column);
         if (frozen) {
-          const top = getSelectedRowTop(rowIdx);
+          const top = getRowTop(rowIdx, rowHeight);
           const left = scrollLeft + column.left;
           const transform = `translate(${left}px, ${top}px)`;
           if (mask.style.transform !== transform) {
