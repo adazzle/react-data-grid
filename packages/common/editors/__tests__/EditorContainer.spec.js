@@ -20,7 +20,9 @@ const defaultProps = {
   },
   column: fakeColumn,
   value: 'Adwolf',
-  height: 50
+  height: 50,
+  onCommit: jasmine.createSpy(),
+  onCommitCancel: jasmine.createSpy()
 };
 
 const getComponent = (props) => {

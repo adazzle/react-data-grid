@@ -6,7 +6,6 @@ import SelectionMask from '../SelectionMask';
 import zIndexes from 'common/constants/zIndexes';
 
 describe('SelectionMask', () => {
-  const TOP = 45;
   const ROW_HEIGHT = 50;
   const setup = (propsOverride = {}) => {
     const props = {
@@ -14,8 +13,7 @@ describe('SelectionMask', () => {
       columns: [
         { width: 50, left: 5 }
       ],
-      getSelectedRowHeight: () => ROW_HEIGHT,
-      getSelectedRowTop: () => TOP,
+      rowHeight: ROW_HEIGHT,
       isGroupedRow: false,
       scrollLeft: 0,
       ...propsOverride
@@ -33,7 +31,7 @@ describe('SelectionMask', () => {
         height: ROW_HEIGHT,
         width: 50,
         left: 5,
-        top: TOP,
+        top: 150,
         zIndex: zIndexes.CELL_MASK,
         className: 'rdg-selected',
         children: undefined
