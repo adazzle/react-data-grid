@@ -167,6 +167,8 @@ describe('Editor Container Tests', () => {
     let container;
 
     beforeEach(() => {
+      defaultProps.onCommit.calls.reset();
+      defaultProps.onCommitCancel.calls.reset();
       container = document.createElement('div');
       document.body.appendChild(container);
       component = mount(<EditorContainer { ...defaultProps }/>, { attachTo: container });
