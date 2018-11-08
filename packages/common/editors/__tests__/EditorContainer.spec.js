@@ -169,10 +169,7 @@ describe('Editor Container Tests', () => {
     beforeEach(() => {
       container = document.createElement('div');
       document.body.appendChild(container);
-      component = mount(<EditorContainer
-        onCommit={jasmine.createSpy()}
-        onCommitCancel={jasmine.createSpy()}
-        { ...defaultProps }/>, { attachTo: container });
+      component = mount(<EditorContainer { ...defaultProps }/>, { attachTo: container });
     });
 
     afterEach(() => {
@@ -192,6 +189,7 @@ describe('Editor Container Tests', () => {
       const editor = component.find(SimpleTextEditor);
 
       editor.simulate('keydown', { key: 'Escape' });
+      component.detach();
 
       expect(component.props().onCommitCancel).toHaveBeenCalled();
       expect(component.props().onCommitCancel.calls.count()).toEqual(1);
