@@ -7,7 +7,7 @@ React Data Grid is an excel like data grid component powered by React.
 
 ## Installing react-data-grid
 
-```sh
+```bash
 $ npm install react-data-grid --save
 # or with yarn:
 $ yarn add react-data-grid
