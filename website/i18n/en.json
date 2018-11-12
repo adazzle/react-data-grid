@@ -20,6 +20,9 @@
       "CHANGELOG": {
         "title": "CHANGELOG"
       },
+      "CONTRIBUTING": {
+        "title": "CONTRIBUTING"
+      },
       "doc4": {
         "title": "Other Document"
       },
@@ -46,6 +49,7 @@
       "Docs": "Docs",
       "API": "API",
       "Help": "Help",
+      "Examples": "Examples",
       "Blog": "Blog",
       "V5.0.3": "V5.0.3"
     },
@@ -53,6 +57,8 @@
       "Getting Started": "Getting Started",
       "Guides": "Guides",
       "API": "API",
+      "Contributing": "Contributing",
+      "Examples": "Examples",
       "Changelog": "Changelog"
     }
   },

@@ -75,8 +75,8 @@ class HomeSplash extends React.Component {
           <ProjectTitle />
           <PromoSection>
             <Button href="#try">Try It Out</Button>
-            <Button href={docUrl('quick-start.html', language)}>Example Link</Button>
-            <Button href={docUrl('addons.html', language)}>Example Link 2</Button>
+            <Button href={docUrl('quick-start.html', language)}>Get Started</Button>
+            <Button href={docUrl('addons.html', language)}>Examples</Button>
           </PromoSection>
         </div>
       </SplashContainer>
@@ -94,6 +94,7 @@ const Block = props => (
 );
 
 const Features = () => (
+  <div>
   <Block layout="fourColumn">
     {[
       {
@@ -121,14 +122,13 @@ const Features = () => (
         title: 'Packed full of Excel Features'
       }
     ]}
-  </Block>
+  </Block></div>
 );
 
 const FeatureCallout = () => (
   <div
     className="productShowcaseSection paddingBottom"
     style={{textAlign: 'center'}}>
-    <h2>Feature Callout</h2>
     <MarkdownBlock>These are features of this project</MarkdownBlock>
   </div>
 );
@@ -138,7 +138,7 @@ const LearnHow = () => (
     {[
       {
         content: 'Talk about learning how to use this',
-        image: imgUrl('docusaurus.svg'),
+        image: imgUrl('datagrid1.png'),
         imageAlign: 'right',
         title: 'Learn How',
       },
@@ -166,8 +166,8 @@ const Description = () => (
         content: 'This is another description of how this project is useful',
         image: imgUrl('docusaurus.svg'),
         imageAlign: 'right',
-        title: 'Description',
-      },
+        title: 'Description'
+      }
     ]}
   </Block>
 );
@@ -206,7 +206,6 @@ class Index extends React.Component {
         <HomeSplash language={language} />
         <div className="mainContainer">
           <Features />
-          <FeatureCallout />
           <LearnHow />
           <TryOut />
           <Description />

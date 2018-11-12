@@ -2,7 +2,11 @@
   "docs": {
     "Getting Started": ["quick-start", "addons"],
     "Guides": ["basic-rendering", "cell-formatting", "cell-editing", "frozen-columns"],
-    "API": ["ReactDataGrid", "column"]
+    "API": ["ReactDataGrid", "column"],
+    "Contributing": ["CONTRIBUTING"]
+  },
+  "examples": {
+    "Examples": ["frozen-columns"]
   },
   "Changelog": {
     "Changelog": ["changelog"]

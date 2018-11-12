@@ -32,6 +32,7 @@ const siteConfig = {
     {doc: 'quick-start', label: 'Docs'},
     {doc: 'doc4', label: 'API'},
     {page: 'help', label: 'Help'},
+    {doc: 'frozen-columns', label: 'Examples'},
     {blog: true, label: 'Blog'},
     {doc: 'CHANGELOG', label: 'V' + packageJson.version}
   ],
@@ -84,7 +85,7 @@ const siteConfig = {
   ogImage: 'img/docusaurus.png',
   twitterImage: 'img/docusaurus.png',
 
-  usePrism: ['jsx', 'js', 'javascript']
+  usePrism: ['jsx', 'js', 'javascript', 'bash', 'sh']
 
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
