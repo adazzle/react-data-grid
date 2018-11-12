@@ -28,6 +28,7 @@ filterable | bool | false | Enable filtering of a column|
 filterRenderer | node | false | Component to be used to filter the data of the column| 
 resizable | bool | false | Enable resizing of a column| 
 sortable | bool | false | Enable sorting of a column| 
+sortDescendingFirst | bool | false | Sets the column sort order to be descending instead of ascending the first time the column is sorted| 
 dragable | bool | false | Enable dragging of a column| 
 editable | node | false | Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor| 
 editor | node | false | Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable| 

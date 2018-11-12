@@ -5,8 +5,22 @@
     "API": ["ReactDataGrid", "column"],
     "Contributing": ["CONTRIBUTING"]
   },
-  "examples": {
-    "Examples": ["frozen-columns"]
+  "examples/simple-grid": {
+    "Examples": ["examples/simple-grid", "examples/cell-formatting",
+      {
+        "type": "subcategory",
+        "label": "Cell Editing",
+        "ids": [
+          "examples/default-editor", "examples/dropdown-editor", "examples/custom-editors"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Column Operations",
+        "ids": [
+          "examples/column-resizing", "examples/frozen-columns", "examples/column-sorting", "examples/column-filtering"
+        ]
+      }]
   },
   "Changelog": {
     "Changelog": ["changelog"]

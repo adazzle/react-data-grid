@@ -32,7 +32,7 @@ const siteConfig = {
     {doc: 'quick-start', label: 'Docs'},
     {doc: 'doc4', label: 'API'},
     {page: 'help', label: 'Help'},
-    {doc: 'frozen-columns', label: 'Examples'},
+    {doc: 'examples/simple-grid', label: 'Examples'},
     {blog: true, label: 'Blog'},
     {doc: 'CHANGELOG', label: 'V' + packageJson.version}
   ],

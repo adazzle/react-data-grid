@@ -79,6 +79,8 @@ class ReactDataGrid extends React.Component {
       resizable: PropTypes.bool,
       /** Enable sorting of a column */
       sortable: PropTypes.bool,
+      /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
+      sortDescendingFirst: PropTypes.bool,
       /** Enable dragging of a column */
       dragable: PropTypes.bool,
       /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
@@ -93,6 +95,7 @@ class ReactDataGrid extends React.Component {
       frozen: PropTypes.bool,
       /** By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column */
       events: PropTypes.object
+
     })).isRequired,
     /** Callback whenever grid is filtered via FilterableHeaderCell*/
     onFilter: PropTypes.func,

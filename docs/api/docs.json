@@ -734,6 +734,11 @@
                 "description": "Enable sorting of a column",
                 "required": false
               },
+              "sortDescendingFirst": {
+                "name": "bool",
+                "description": "Sets the column sort order to be descending instead of ascending the first time the column is sorted",
+                "required": false
+              },
               "dragable": {
                 "name": "bool",
                 "description": "Enable dragging of a column",

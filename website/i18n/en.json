@@ -29,8 +29,39 @@
       "doc5": {
         "title": "Fifth Document"
       },
-      "frozen-columns": {
+      "examples/autocomplete-editor": {
+        "title": "Autocomplete Editor"
+      },
+      "examples/cell-editing": {
+        "title": "Cell Editing"
+      },
+      "examples/cell-formatting": {
+        "title": "Cell Formatting"
+      },
+      "examples/column-filtering": {
+        "title": "Column Filtering"
+      },
+      "examples/column-resizing": {
+        "title": "Column Resizing"
+      },
+      "examples/column-sorting": {
+        "title": "Column Sorting"
+      },
+      "examples/custom-editors": {
+        "title": "Custom Editors"
+      },
+      "examples/default-editor": {
+        "title": "Default Cell Editor"
+      },
+      "examples/dropdown-editor": {
+        "title": "Drop Down Editor"
+      },
+      "examples/frozen-columns": {
         "title": "Frozen Columns"
+      },
+      "examples/simple-grid": {
+        "title": "Simple Grid",
+        "sidebar_label": "Simple Grid"
       },
       "markdowns/ReactDataGrid": {
         "title": "markdowns/ReactDataGrid"
