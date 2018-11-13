@@ -27,7 +27,7 @@ describe('CellMask', () => {
         height: 30,
         width: 50,
         zIndex: zIndexes.CELL_MASK,
-        transform: `translate(5px, 10px)`
+        transform: 'translate(5px, 10px)'
       })
     );
   });
