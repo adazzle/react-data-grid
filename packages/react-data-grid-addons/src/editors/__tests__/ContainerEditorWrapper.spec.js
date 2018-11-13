@@ -26,7 +26,6 @@ describe('ContainerEditorWrapper', () => {
       const renderedComp = mount(<ConnectedContainerEditorWrapper />);
 
       // ASSERT
-      expect(renderedComp).toBeDefined();
       expect(renderedComp.find(FakeContainer).length).toBe(1);
       expect(renderedComp.find(FakeComponent).length).toBe(1);
     });

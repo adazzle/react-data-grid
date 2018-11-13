@@ -6,6 +6,7 @@ module.exports = {
   plugins: [
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-transform-property-literals',
-    '@babel/plugin-transform-member-expression-literals'
+    '@babel/plugin-transform-member-expression-literals',
+    '@babel/plugin-transform-runtime'
   ]
 };

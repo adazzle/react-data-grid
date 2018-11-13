@@ -27,6 +27,7 @@
     "@babel/polyfill": "^7.0.0",
     "classnames": "^2.2.6",
     "es5-shim": "^4.0.3",
+    "fs": "0.0.1-security",
     "fs-extra": "^0.30.0",
     "keymirror": "^0.1.1",
     "object-assign": "^4.1.1",
@@ -39,7 +40,8 @@
     "recharts": "^1.1.0",
     "reselect": "^2.5.1",
     "ron-react-autocomplete": "^4.0.5",
-    "shallowequal": "^1.1.0"
+    "shallowequal": "^1.1.0",
+    "tape": "^4.9.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -54,9 +56,11 @@
     "@babel/plugin-syntax-import-meta": "^7.0.0",
     "@babel/plugin-transform-member-expression-literals": "^7.0.0",
     "@babel/plugin-transform-property-literals": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.1.5",
     "airbnb-browser-shims": "^3.0.0",
     "avcoveralls": "^1.0.0",
     "babel-core": "^7.0.0-bridge.0",
