@@ -1,6 +1,6 @@
 ---
 id: column-filtering
-title: Column Filtering
+title: Basic Filtering
 ---
 <iframe src="https://codesandbox.io/embed/w6jvml4v45?autoresize=1&hidenavigation=1&view=preview" style="width:100%; height:700px; border:0; border-radius: 4px; " sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 

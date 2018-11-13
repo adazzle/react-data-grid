@@ -29,6 +29,9 @@
       "doc5": {
         "title": "Fifth Document"
       },
+      "examples/advanced-filtering": {
+        "title": "Advanced Filtering"
+      },
       "examples/autocomplete-editor": {
         "title": "Autocomplete Editor"
       },
@@ -38,8 +41,11 @@
       "examples/cell-formatting": {
         "title": "Cell Formatting"
       },
+      "examples/column-events": {
+        "title": "Column Events"
+      },
       "examples/column-filtering": {
-        "title": "Column Filtering"
+        "title": "Basic Filtering"
       },
       "examples/column-resizing": {
         "title": "Column Resizing"

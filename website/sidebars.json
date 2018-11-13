@@ -16,9 +16,16 @@
       },
       {
         "type": "subcategory",
-        "label": "Column Operations",
+        "label": "Column Configuration",
         "ids": [
-          "examples/column-resizing", "examples/frozen-columns", "examples/column-sorting", "examples/column-filtering"
+          "examples/column-resizing", "examples/frozen-columns", "examples/column-events"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Sorting and Filtering",
+        "ids": [
+          "examples/column-sorting", "examples/column-filtering", "examples/advanced-filtering"
         ]
       }]
   },
