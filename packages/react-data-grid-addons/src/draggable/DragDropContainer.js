@@ -18,7 +18,6 @@ class DraggableContainer extends Component {
   renderGrid() {
     return React.cloneElement(
       React.Children.only(this.props.children), {
-        ...this.props,
         draggableHeaderCell: DraggableHeaderCell
       }
     );
