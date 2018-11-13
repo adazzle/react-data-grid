@@ -7,4 +7,4 @@ function createObjectWithProperties(originalObj, properties) {
   }, {});
 }
 
-module.exports = createObjectWithProperties;
+export default createObjectWithProperties;

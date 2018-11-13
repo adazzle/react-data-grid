@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 
   getColumn(columns, idx) {
     if (Array.isArray(columns)) {

@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import Cell from './Cell';
-import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import createObjectWithProperties from './createObjectWithProperties';
 import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-row.css');
@@ -15,24 +14,43 @@ class Row extends React.Component {
   static displayName = 'Row';
 
   static propTypes = {
+    /** The height of the row in pixels */
     height: PropTypes.number.isRequired,
+    /** Array of columns to render */
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
-    row: PropTypes.any.isRequired,
+    /** JS object represeting row data */
+    row: PropTypes.object.isRequired,
+    /** React component used to render cell content */
     cellRenderer: PropTypes.func,
-    cellMetaData: PropTypes.shape(cellMetaDataShape),
+    /** Object used to listen for cell events */
+    cellMetaData: PropTypes.object,
+    /** Determines whether row is selected or not */
     isSelected: PropTypes.bool,
+    /** The index of the row in the grid */
     idx: PropTypes.number.isRequired,
+    /** Array of all rows that have been expanded */
     expandedRows: PropTypes.arrayOf(PropTypes.object),
+    /** Space separated list of extra css classes to apply to row */
     extraClasses: PropTypes.string,
+    /** Will force an update to the row if true */
     forceUpdate: PropTypes.bool,
+    /** */
     subRowDetails: PropTypes.object,
+    /** Determines whether row is hovered or not */
     isRowHovered: PropTypes.bool,
+    /** The index of the first visible column on the grid */
     colVisibleStartIdx: PropTypes.number.isRequired,
+    /** The index of the last visible column on the grid */
     colVisibleEndIdx: PropTypes.number.isRequired,
+    /** The index of the first overscan column on the grid */
     colOverscanStartIdx: PropTypes.number.isRequired,
+    /** The index of the last overscan column on the grid */
     colOverscanEndIdx: PropTypes.number.isRequired,
+    /** Flag to determine whether the grid is being scrolled */
     isScrolling: PropTypes.bool.isRequired,
+    /** scrollLeft in pixels */
     scrollLeft: PropTypes.number,
+    /** Index of last frozen column index */
     lastFrozenColumnIndex: PropTypes.number
   };
 

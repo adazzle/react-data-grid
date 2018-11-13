@@ -15,7 +15,7 @@ const conf = {
   apiDocsDir: apiDocsDir,
   apiDocsFilePath: apiDocsDir + 'docs.json',
   extension: ['js', 'jsx'],
-  publicAPI: ['ReactDataGrid'],
+  publicAPI: ['ReactDataGrid', 'Cell', 'Row'],
   ignoreDir: null,
   markdownDir: './docs/',
   docsIndexFilePath: './docs/readme.md'

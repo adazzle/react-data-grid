@@ -1,4 +1,477 @@
 {
+  "packages\\react-data-grid\\src\\Cell.js": {
+    "description": "",
+    "displayName": "Cell",
+    "methods": [
+      {
+        "name": "onCellClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "onCellMouseDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "onCellMouseEnter",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "onCellContextMenu",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "onCellDoubleClick",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onCellExpand",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onCellKeyDown",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "onDeleteSubRow",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "onDragOver",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getStyle",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getFormatter",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getRowData",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "props",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getFormatterDependencies",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getCellClass",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getUpdateCellClass",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "isEditorEnabled",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "checkScroll",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "setScrollLeft",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "scrollLeft",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "removeScroll",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "canExpand",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "createColumEventCallBack",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "onColumnEvent",
+            "type": null
+          },
+          {
+            "name": "info",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "createCellEventCallBack",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "gridEvent",
+            "type": null
+          },
+          {
+            "name": "columnEvent",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "createEventDTO",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "gridEvents",
+            "type": null
+          },
+          {
+            "name": "columnEvents",
+            "type": null
+          },
+          {
+            "name": "onColumnEvent",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getEvents",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getKnownDivProps",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getCellActions",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "setCellRef",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "node",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "renderCellContent",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "props",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "rowIdx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "idx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      },
+      "isSelected": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "wasPreviouslySelected": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "column": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
+        "description": ""
+      },
+      "isEditorEnabled": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "selectedColumn": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "value": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "number"
+            },
+            {
+              "name": "object"
+            },
+            {
+              "name": "bool"
+            }
+          ]
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "''",
+          "computed": false
+        }
+      },
+      "isExpanded": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "isRowSelected": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "cellMetaData": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
+        "description": ""
+      },
+      "handleDragStart": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      },
+      "className": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
+      "cellControls": {
+        "type": {
+          "name": "any"
+        },
+        "required": false,
+        "description": ""
+      },
+      "rowData": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
+        "description": ""
+      },
+      "forceUpdate": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "expandableOptions": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
+        "description": ""
+      },
+      "tooltip": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
+      "isScrolling": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "isCellValueChanging": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "(value, nextValue) => value !== nextValue",
+          "computed": false
+        }
+      },
+      "children": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "node"
+              }
+            },
+            {
+              "name": "node"
+            }
+          ]
+        },
+        "required": false,
+        "description": ""
+      },
+      "scrollLeft": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": ""
+      }
+    }
+  },
   "packages\\react-data-grid\\src\\ReactDataGrid.js": {
     "description": "Main API Component to render a data grid of rows and columns\r\n\nExample code\r\n-----\r\n\n```javascript\r\n<ReactDataGrid\r\n  columns={columns}\r\n  rowGetter={i => rows[i]}\r\n  rowsCount={3} />\r\n```",
     "displayName": "ReactDataGrid",
@@ -1217,6 +1690,279 @@
           "computed": true
         },
         "required": false
+      }
+    }
+  },
+  "packages\\react-data-grid\\src\\Row.js": {
+    "description": "",
+    "displayName": "Row",
+    "methods": [
+      {
+        "name": "handleDragEnter",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleDragOver",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "handleDrop",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getCell",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "column",
+            "type": null
+          },
+          {
+            "name": "i",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getCells",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getRowHeight",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "getCellValue",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "key",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getExpandableOptions",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "columnKey",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "setScrollLeft",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "scrollLeft",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "getKnownDivProps",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      }
+    ],
+    "props": {
+      "height": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "The height of the row in pixels",
+        "defaultValue": {
+          "value": "35",
+          "computed": false
+        }
+      },
+      "columns": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "object"
+            },
+            {
+              "name": "array"
+            }
+          ]
+        },
+        "required": true,
+        "description": "Array of columns to render"
+      },
+      "row": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
+        "description": "JS object represeting row data"
+      },
+      "cellRenderer": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "React component used to render cell content",
+        "defaultValue": {
+          "value": "Cell",
+          "computed": true
+        }
+      },
+      "cellMetaData": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Object used to listen for cell events"
+      },
+      "isSelected": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Determines whether row is selected or not",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "idx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "The index of the row in the grid"
+      },
+      "expandedRows": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "object"
+          }
+        },
+        "required": false,
+        "description": "Array of all rows that have been expanded"
+      },
+      "extraClasses": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Space separated list of extra css classes to apply to row"
+      },
+      "forceUpdate": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Will force an update to the row if true"
+      },
+      "subRowDetails": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "isRowHovered": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Determines whether row is hovered or not"
+      },
+      "colVisibleStartIdx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "The index of the first visible column on the grid"
+      },
+      "colVisibleEndIdx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "The index of the last visible column on the grid"
+      },
+      "colOverscanStartIdx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "The index of the first overscan column on the grid"
+      },
+      "colOverscanEndIdx": {
+        "type": {
+          "name": "number"
+        },
+        "required": true,
+        "description": "The index of the last overscan column on the grid"
+      },
+      "isScrolling": {
+        "type": {
+          "name": "bool"
+        },
+        "required": true,
+        "description": "Flag to determine whether the grid is being scrolled"
+      },
+      "scrollLeft": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "scrollLeft in pixels"
+      },
+      "lastFrozenColumnIndex": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Index of last frozen column index"
       }
     }
   }

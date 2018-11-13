@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Column from 'common/prop-shapes/Column';
 import {isFunction} from 'common/utils';
-import CellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
 import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';
@@ -21,14 +19,14 @@ class Cell extends React.PureComponent {
     idx: PropTypes.number.isRequired,
     isSelected: PropTypes.bool,
     wasPreviouslySelected: PropTypes.bool,
+    column: PropTypes.object.isRequired,
     isEditorEnabled: PropTypes.bool,
     selectedColumn: PropTypes.object,
     height: PropTypes.number,
-    column: PropTypes.shape(Column).isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]),
     isExpanded: PropTypes.bool,
     isRowSelected: PropTypes.bool,
-    cellMetaData: PropTypes.shape(CellMetaDataShape).isRequired,
+    cellMetaData: PropTypes.object.isRequired,
     handleDragStart: PropTypes.func,
     className: PropTypes.string,
     cellControls: PropTypes.any,
