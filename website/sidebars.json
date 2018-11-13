@@ -2,7 +2,7 @@
   "docs": {
     "Getting Started": ["quick-start", "addons"],
     "Guides": ["basic-rendering", "cell-formatting", "cell-editing", "frozen-columns"],
-    "API": ["ReactDataGrid", "column"],
+    "API": ["ReactDataGrid", "Row" ,"Cell"],
     "Contributing": ["CONTRIBUTING"]
   },
   "examples/simple-grid": {
@@ -18,7 +18,7 @@
         "type": "subcategory",
         "label": "Column Configuration",
         "ids": [
-          "examples/column-resizing", "examples/frozen-columns", "examples/column-events"
+          "examples/column-resizing", "examples/frozen-columns", "examples/column-events", "examples/cell-actions"
         ]
       },
       {
@@ -26,6 +26,20 @@
         "label": "Sorting and Filtering",
         "ids": [
           "examples/column-sorting", "examples/column-filtering", "examples/advanced-filtering"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Row Rendering",
+        "ids": [
+          "examples/row-renderer", "examples/render-base-row", "examples/empty-rows"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Grouping",
+        "ids": [
+          "examples/basic-grouping", "examples/drag-cols-to-group"
         ]
       }]
   },

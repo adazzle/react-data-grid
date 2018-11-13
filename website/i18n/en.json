@@ -17,6 +17,9 @@
       "cell-formatting": {
         "title": "Cell Formatting"
       },
+      "Cell": {
+        "title": "Cell"
+      },
       "CHANGELOG": {
         "title": "CHANGELOG"
       },
@@ -34,6 +37,12 @@
       },
       "examples/autocomplete-editor": {
         "title": "Autocomplete Editor"
+      },
+      "examples/basic-grouping": {
+        "title": "Basic Column Grouping"
+      },
+      "examples/cell-actions": {
+        "title": "Cell Actions"
       },
       "examples/cell-editing": {
         "title": "Cell Editing"
@@ -59,11 +68,23 @@
       "examples/default-editor": {
         "title": "Default Cell Editor"
       },
+      "examples/drag-cols-to-group": {
+        "title": "Grouping with draggable columns"
+      },
       "examples/dropdown-editor": {
         "title": "Drop Down Editor"
       },
+      "examples/empty-rows": {
+        "title": "Empty Rows View"
+      },
       "examples/frozen-columns": {
         "title": "Frozen Columns"
+      },
+      "examples/render-base-row": {
+        "title": "Intercepting a row"
+      },
+      "examples/row-renderer": {
+        "title": "Custom Row Renderers"
       },
       "examples/simple-grid": {
         "title": "Simple Grid",
@@ -80,6 +101,9 @@
       },
       "readme": {
         "title": "readme"
+      },
+      "Row": {
+        "title": "Row"
       }
     },
     "links": {
