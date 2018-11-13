@@ -159,8 +159,15 @@ class Grid extends React.Component {
           draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
           onHeaderDrop={this.props.onHeaderDrop}
+          onScroll={typeof(this.props.enableHeaderScroll) === 'Undefined' ? this.onHeaderScroll : (this.props.enableHeaderScroll ? this.onHeaderScroll : null)}
           getValidFilterValues={this.props.getValidFilterValues}
+          getValidFilterValuesForTypeAhead= {this.props.getValidFilterValuesForTypeAhead}
           cellMetaData={this.props.cellMetaData}
+          useTemplatingForTypeaheadFilter= {this.props.useTemplatingForTypeaheadFilter}
+          isTypeaheadFilterClearable = {this.props.isTypeaheadFilterClearable}
+          getOptionsTemplateForFilter = {this.props.getOptionsTemplateForFilter}
+          getOptionValueForFilter= {this.props.getOptionValueForFilter}
+          isMultiSelection = {this.props.isMultiSelection}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div

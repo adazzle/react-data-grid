@@ -1,0 +1,23 @@
+.rbt-input-multi{
+    max-height:30px;
+}
+
+.rbt-input-multi.focus{
+    border-color: #cccccc;
+    box-shadow: none;
+}
+
+.rbt-input-multi .rbt-input-wrapper{
+    margin-top: -3px;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.close.rbt-close.rbt-token-remove-button{
+    border-left: 1px solid rgba(0, 126, 255, 0.24);
+}
+
+.rbt-token.rbt-token-removeable{
+    border: 1px solid rgba(0, 126, 255, 0.24);
+    padding-right: 30px;
+}

@@ -1,0 +1,135 @@
+.columnStyles{
+    position: absolute;
+    z-index: 9;
+    background-color: #ffffff;
+    width: 300px;
+    border: 1px solid rgba(0,0,0,0.3);
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.3);
+}
+
+.ico-family {
+    font-family: FontAwesome;
+}
+
+.text-align-center {
+    text-align : -webkit-center;
+}
+
+.ico-check:before {
+    content: "\f046";
+    color: green;
+    font-weight: normal;
+}
+
+.ico-error-icon:after {
+    content: "\f06a";
+    color: #BD362F;
+    display: inline;
+    padding-top: 1px;
+}
+
+.error-text {
+    color: #bd362f;
+    font-size: 11px;
+    margin-top: 1px;
+}
+
+.ico-uncheck:before {
+    content: "\f096";
+    color: green;
+    font-weight: normal;
+}
+
+.ico-reset:before {
+    content: "\f01e";
+    color: green;
+    font-weight: normal;
+}
+
+.content{
+    width:255px;
+}
+.innerContent{
+    margin: 15px 0px 0px 20px;
+    font-size: 12px;
+}
+.topSection{
+    text-align: center;
+}
+.pdng-lt-5{
+    padding-left: 5px;
+}
+
+.pdng-lt-10{
+    padding-left: 10px;
+}
+
+.columnsList{
+    height:370px;
+    max-height: 45vh;
+    padding-top: 5px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border-bottom:1px solid rgba(0,0,0,0.3);
+}
+
+.footerButtons{
+    margin-top: 10px;
+    float: right;
+    margin-bottom: 10px;
+}
+
+.button {
+    font-size: 11px;
+    text-align: center;
+    line-height: 29px;
+    min-width: 70px;
+    width: auto;
+    display: inline-block;
+    padding-left: 18px;
+    padding-right: 18px;
+    border: 1px solid #626262;
+    margin-left: 0px;
+    margin-right: 4px;
+    border-radius: 3px;
+    
+}
+
+a {
+    cursor: pointer;
+}
+
+a.green-underline {
+    color: #1fb25a;
+    text-decoration: underline;
+    font-size: 11px;
+}
+
+.button-primary {
+    color: #FFFFFF;
+    /* fallback */
+    background-color: #1fb25a;
+    /* Good Ole IE 9 */
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#1fb25a', endColorstr='#178844');
+    /* Safari 5.1, iOS 5.0-6.1, Chrome 10-25, Android 4.0-4.3 */
+    background-image: -webkit-linear-gradient(top, #1fb25a, #178844);
+    /* Firefox 3.6 - 15 */
+    background-image: -moz-linear-gradient(top, #1fb25a, #178844);
+    /* Opera 15+, Chrome 25+, IE 10+, Firefox 16+, Safari 6.1+, iOS 7+, Android 4.4+ */
+    background-image: linear-gradient(#1fb25a, #178844);
+}
+
+.button-secondary {
+    color: #333333;
+    border: 1px solid #b0b0b0;
+    /* fallback */
+    background-color: #ededed;
+    /* Good Ole IE 9 */
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#f7f7f7', endColorstr='#dadada');
+    /* Safari 5.1, iOS 5.0-6.1, Chrome 10-25, Android 4.0-4.3 */
+    background-image: -webkit-linear-gradient(top, #f7f7f7, #dadada);
+    /* Firefox 3.6 - 15 */
+    background-image: -moz-linear-gradient(top, #f7f7f7, #dadada);
+    /* Opera 15+, Chrome 25+, IE 10+, Firefox 16+, Safari 6.1+, iOS 7+, Android 4.4+ */
+    background-image: linear-gradient(#f7f7f7, #dadada);
+}

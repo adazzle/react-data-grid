@@ -30,7 +30,13 @@ class Header extends React.Component {
     onHeaderDrop: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
     getValidFilterValues: PropTypes.func,
-    cellMetaData: PropTypes.shape(cellMetaDataShape)
+    getValidFilterValuesForTypeAhead: PropTypes.func,
+    cellMetaData: PropTypes.shape(cellMetaDataShape),
+    useTemplatingForTypeaheadFilter: PropTypes.bool,
+    isTypeaheadFilterClearable: PropTypes.bool,
+    getOptionsTemplateForFilter: PropTypes.func,
+    getOptionValueForFilter: PropTypes.func,
+    isMultiSelection: PropTypes.bool
   };
 
   state = {resizing: null};
@@ -126,6 +132,12 @@ class Header extends React.Component {
           onSort={this.props.onSort}
           onScroll={this.props.onScroll}
           getValidFilterValues={this.props.getValidFilterValues}
+          getValidFilterValuesForTypeAhead={this.props.getValidFilterValuesForTypeAhead}
+          useTemplatingForTypeaheadFilter={this.props.useTemplatingForTypeaheadFilter}
+          isTypeaheadFilterClearable={this.props.isTypeaheadFilterClearable}
+          getOptionsTemplateForFilter={this.props.getOptionsTemplateForFilter}
+          getOptionValueForFilter={this.props.getOptionValueForFilter}
+          isMultiSelection={this.props.isMultiSelection}
         />
       );
     });

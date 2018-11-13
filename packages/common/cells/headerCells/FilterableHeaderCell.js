@@ -5,7 +5,13 @@ import PropTypes from 'prop-types';
 class FilterableHeaderCell extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
-    column: PropTypes.shape(ExcelColumn)
+    column: PropTypes.shape(ExcelColumn),
+    filterTerm: PropTypes.string
+  };
+
+  constructor(props){
+    super(props)
+    this.state={filterTerm: this.props.filterTerm}
   };
 
   state = {filterTerm: ''};

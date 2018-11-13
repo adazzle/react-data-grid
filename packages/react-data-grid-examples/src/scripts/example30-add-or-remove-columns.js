@@ -1,5 +1,6 @@
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
+import _ from 'underscore'
 const React = require('react');
 const Axios = require('axios');
 const { Toolbar, Filters: { NumericFilter, AutoCompleteFilter, MultiSelectFilter, SingleSelectFilter, TypeAheadFilter }, Data: { Selectors } } = require('react-data-grid-addons');
@@ -10,61 +11,47 @@ class Example extends React.Component {
       {
         key: 'id',
         name: 'ID',
-        width: 120,
-        filterable: true,
-        filterRenderer: NumericFilter
+        width: 120
       },
       {
         key: 'task',
-        name: 'Title',
-        filterable: true
+        name: 'Title'
       },
       {
         key: 'priority',
-        name: 'Priority',
-        filterable: true,
-        filterRenderer: MultiSelectFilter
+        name: 'Priority'
       },
       {
         key: 'issueType',
         name: 'Issue Type',
-        filterable: true,
-        filterRenderer: SingleSelectFilter
+        
       },
       {
         key: 'developer',
         name: 'Developer',
-        filterable: true,
-        filterRenderer: AutoCompleteFilter
+        
       },
       {
         key: 'typeAheadTest',
         name: 'TypeAhead Test',
-        filterable: true,
         sortable: true,
-        filterRenderer: TypeAheadFilter,
-        //filterValue:[{value:'abcde', label:'abcdef'}],
         width: 250
       },
       {
         key: 'complete',
-        name: '% Complete',
-        filterable: true,
-        filterRenderer: NumericFilter
+        name: '% Complete'
       },
       {
         key: 'startDate',
-        name: 'Start Date',
-        filterable: true
+        name: 'Start Date'
       },
       {
         key: 'completeDate',
-        name: 'Expected Complete',
-        filterable: true
+        name: 'Expected Complete'
       }
     ];
 
-    this.state = { rows: this.createRows(1000), filters: {}, filterValues: [] };
+    this.state = { rows: this.createRows(1000), filters: {}, filterValues: [], columns: this._columns };
   }
 
   getRandomDate = (start, end) => {
@@ -97,52 +84,38 @@ class Example extends React.Component {
     return Selectors.getRows(this.state).length;
   };
 
-  handleFilterChange = (filter) => {
-    let newFilters = Object.assign({}, this.state.filters);
-    if (filter.filterTerm) {
-      newFilters[filter.column.key] = filter;
-    } else {
-      delete newFilters[filter.column.key];
-    }
-    this.setState({ filters: newFilters });
-  };
+  getAllColumns =(revertToDefaults) => {
+      let allColumns = [];
+      let selectedColKeys = _.map(this.state.columns, function(col){
+          return col.key;
+      });
 
-  getValidFilterValuesForTypeAhead = (columnId, searchText) => {
-    return Axios.get('https://api.github.com/users/mralexgray/repos').then(function (resp) {
-    var filterValues = [];
-      for (var i = 0; i < resp.data.length; i++) {
-        var value = {
-          id:i,
-          value: resp.data[i].full_name,
-          label: resp.data[i].full_name
-        };
-        filterValues.push(value);
+      _.filter(this._columns, function(col){
+        let colObj = {
+            key: col.key,
+            name: col.name,
+            isSelected: selectedColKeys.indexOf(col.key) > -1
+        }
+          allColumns.push(colObj);
+      });
+      for(let i=0; i<this._columns.length; i++){
+        
       }
-      return filterValues;
+      return allColumns;
+  }
+
+  updateSelectedColumns = (value) => {
+    let selectedColKeys = _.map(value, function(val){
+        return val.key;
     });
-  }
-
-  getValidFilterValues = (columnId) => {
-    let values = this.state.rows.map(r => r[columnId]);
-    return values.filter((item, i, a) => { return i === a.indexOf(item); });
+    let allColumns = this._columns;
+    let updatedColumnList = _.map(selectedColKeys, function(col){
+        return _.find(allColumns, function(val){
+            return col === val.key;
+        });
+    });
+    this.setState({columns: updatedColumnList});
   };
-
-  handleOnClearFilters = () => {
-    this.setState({ filters: {} });
-  };
-  
-  getOptionsTemplate = (option,column) => {
-    return (
-      <div style={{ padding: "2px" }}>    
-          <strong>{option.label}</strong> <br />
-          {option.value}
-      </div>
-    );
-  }
-
-  getOptionsValue = option => {
-    return option.value;
-  }
 
   getTotalNoOfRecords = () => {
     return this.rowsCount();
@@ -159,16 +132,11 @@ class Example extends React.Component {
       <ReactDataGrid
         onGridSort={this.handleGridSort}
         enableCellSelect={true}
-        columns={this._columns}
+        columns={this.state.columns}
         rowGetter={this.rowGetter}
         rowsCount={this.rowsCount()}
-        useTemplatingForTypeaheadFilter={true}
-        getOptionsTemplateForFilter={this.getOptionsTemplate}
-        getOptionValueForFilter={this.getOptionsValue}
-        isMultiSelection = {true}
         minHeight={500}
-        isTypeaheadFilterClearable={true}
-        toolbar={<Toolbar totalRecords={this.getTotalNoOfRecords} enableFilter={true} displayTotalNoOfRecords={false}  />}
+        toolbar={<Toolbar totalRecords={this.getTotalNoOfRecords} enableFilter={true} enableAddOrRemoveColumns={true} applySelectedColumns = {this.updateSelectedColumns} getAllColumns={this.getAllColumns} displayTotalNoOfRecords={false}  />}
         onAddFilter={this.handleFilterChange}
         getValidFilterValues={this.getValidFilterValues}
         getValidFilterValuesForTypeAhead={this.getValidFilterValuesForTypeAhead}
