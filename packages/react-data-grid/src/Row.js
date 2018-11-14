@@ -64,7 +64,7 @@ class Row extends React.Component {
     e.preventDefault();
   };
 
-  getCell = (column, i) => {
+  getCell = (column) => {
     const CellRenderer = this.props.cellRenderer;
     const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key, formatter } = column;
@@ -74,7 +74,7 @@ class Row extends React.Component {
       ref: (node) => {
         this[key] = node;
       },
-      value: this.getCellValue(key || i),
+      value: this.getCellValue(key || column.idx),
       rowData: row,
       isRowSelected: isSelected,
       expandableOptions: this.getExpandableOptions(key),

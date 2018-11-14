@@ -1,14 +1,12 @@
-.slideUp{
-	animation-name: slideUp;
-	-webkit-animation-name: slideUp;	
-
-	animation-duration: 1s;	
+.slideUp {
+	-webkit-animation-name: slideUp;
+	        animation-name: slideUp;
 	-webkit-animation-duration: 1s;
-
-	animation-timing-function: ease;	
+	        animation-duration: 1s;
 	-webkit-animation-timing-function: ease;
+	        animation-timing-function: ease;
 
-	visibility: visible !important;			
+	visibility: visible !important;
 }
 
 @keyframes slideUp {
@@ -26,10 +24,10 @@
 	}
 	95%{
 		transform: translateY(2%);
-	}			
+	}
 	100% {
 		transform: translateY(0%);
-	}	
+	}
 }
 
 
@@ -48,8 +46,16 @@
 	}
 	95%{
 		-webkit-transform: translateY(2%);
-	}			
+	}
 	100% {
 		-webkit-transform: translateY(0%);
-	}	
+	}
+}
+
+.rowDropTarget {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	z-index: 1;
+	border-bottom: 1px solid black;
 }

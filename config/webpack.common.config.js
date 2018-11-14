@@ -38,7 +38,11 @@ const config = {
     },
     'react/addons': 'React',
     moment: 'moment',
-    immutable: 'Immutable'
+    immutable: {
+      root: 'Immutable',
+      commonjs: 'immutable',
+      commonjs2: 'immutable'
+    }
   },
   module: {
     loaders: [
