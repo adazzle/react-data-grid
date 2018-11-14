@@ -1,4 +1,16 @@
 ## 5.0.3 (Nov 1, 2018)
+- **Bugfix:** Custom Formatters Example - Styling Fix ([1364](https://github.com/adazzle/react-data-grid/pull/1364))
+- **Bugfix:** Fix website publishing and remove ImmutableJS dependency ([1366](https://github.com/adazzle/react-data-grid/pull/1366))
+- **Bugfix:** Remove react-data-grid dependency from the addons package ([1354](https://github.com/adazzle/react-data-grid/pull/1354))
+- **Bugfix:** Fix drag fill in IE 11 ([1359](https://github.com/adazzle/react-data-grid/pull/1359))
+- **Bugfix:** Ensure webpack uses correct common js external ref ([1370](https://github.com/adazzle/react-data-grid/pull/1370))
+- **Feature:** Move DropTargetRowContainer static styles to CSS class for user customization ([1308](https://github.com/adazzle/react-data-grid/pull/1308))
+- **Bugfix:** Replace use of i for column index which is no longer passed in ([1344](https://github.com/adazzle/react-data-grid/pull/1344))
+- **Bugfix:** Remove utils from documentation as an exported module ([1374](https://github.com/adazzle/react-data-grid/pull/1374))
+- **TechDebt:** Upgrade eslint packages ([1376](https://github.com/adazzle/react-data-grid/pull/1376))
+- **Bugfix:** Cleanup DraggableContainer and fix styles ([1379](https://github.com/adazzle/react-data-grid/pull/1379))
+
+## 5.0.3 (Nov 1, 2018)
 - **Bugfix:** Fix frozen-columns source url ([1355](https://github.com/adazzle/react-data-grid/pull/1355))
 - **TechDebt:** Defining the ref callback as a bound method ([1353](https://github.com/adazzle/react-data-grid/pull/1353))
 - **Bugfix:** Fix cell focusing logic ([1352](https://github.com/adazzle/react-data-grid/pull/1352))
@@ -21,7 +33,6 @@
 - **Feature:** Improve Cell navigation Performance ([1123](https://github.com/adazzle/react-data-grid/pull/1123))
 - **Feature:** Scrolling improvements ([1254](https://github.com/adazzle/react-data-grid/pull/1254))
 - **Feature:** Remove react-data-grid dependency from react-data-grid-addons bundle  ([1272](https://github.com/adazzle/react-data-grid/pull/1272))
-
 
 
 

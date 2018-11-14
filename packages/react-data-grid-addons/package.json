@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid-addons",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "A set of addons for react-data-grid",
   "scripts": {
     "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-addons true",
@@ -18,7 +18,7 @@
     "jquery": "^2.1.1",
     "lodash": "^4.13.1",
     "lodash.groupby": "^4.5.1",
-    "react-data-grid": "^5.0.3"
+    "react-data-grid": "^5.0.4"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0",
