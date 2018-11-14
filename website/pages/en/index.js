@@ -70,7 +70,7 @@ class HomeSplash extends React.Component {
     const language = this.props.language || '';
     return (
       <SplashContainer>
-        <Logo img_src={imgUrl('logo.png')} />
+        <Logo img_src={imgUrl('logo_white.png')} />
         <div className="inner">
           <ProjectTitle />
           <PromoSection>
@@ -128,7 +128,7 @@ const FeatureCallout = () => (
   <div
     className="productShowcaseSection paddingBottom"
     style={{textAlign: 'center'}}>
-      <Example/>
+      <img src={imgUrl('datagrid1.png')} />
   </div>
 );
 
