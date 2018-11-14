@@ -13,9 +13,6 @@ const specificConfig =  {
     libraryTarget: 'umd'
   },
   externals: {
-    react: 'React',
-    'react/addons': 'React',
-    'react-dom': 'ReactDOM',
     faker: 'faker'
   },
   plugins: [

@@ -1,5 +1,5 @@
-const React = require('react');
-const Canvas = require('./Canvas');
+import React from 'react';
+import Canvas from './Canvas';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import PropTypes from 'prop-types';
 import columnUtils from './ColumnUtils';

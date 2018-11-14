@@ -1,14 +1,14 @@
-const React = require('react');
-const shallowEqual = require('shallowequal');
-const BaseHeaderCell = require('./HeaderCell');
-const getScrollbarSize = require('./getScrollbarSize');
-const columnUtils = require('./ColumnUtils');
-const SortableHeaderCell = require('common/cells/headerCells/SortableHeaderCell');
-const FilterableHeaderCell = require('common/cells/headerCells/FilterableHeaderCell');
-const HeaderCellType = require('./HeaderCellType');
-const createObjectWithProperties = require('./createObjectWithProperties');
+import React from 'react';
+import shallowEqual from 'shallowequal';
+import BaseHeaderCell from './HeaderCell';
+import getScrollbarSize from './getScrollbarSize';
+import columnUtils from './ColumnUtils';
+import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
+import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
+import HeaderCellType from './HeaderCellType';
+import createObjectWithProperties from './createObjectWithProperties';
 import { HeaderRowType } from 'common/constants';
-require('../../../themes/react-data-grid-header.css');
+import '../../../themes/react-data-grid-header.css';
 
 import PropTypes from 'prop-types';
 

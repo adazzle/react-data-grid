@@ -30,18 +30,15 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     {doc: 'quick-start', label: 'Docs'},
-    {doc: 'doc4', label: 'API'},
-    {page: 'help', label: 'Help'},
     {doc: 'examples/simple-grid', label: 'Examples'},
-    {blog: true, label: 'Blog'},
-    {doc: 'CHANGELOG', label: 'V' + packageJson.version}
+    {doc: 'changelog', label: 'V' + packageJson.version}
   ],
 
   // If you have users set above, you add it here:
   users,
 
   /* path to images for header/footer */
-  headerIcon: 'img/AdazzleHeaderLogo.png',
+  headerIcon: '',
   footerIcon: 'img/docusaurus.svg',
   favicon: 'img/favicon.png',
 
@@ -66,11 +63,11 @@ const siteConfig = {
   */
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
-  copyright: `Copyright © ${new Date().getFullYear()} Your Name or Your Company Name`,
+  copyright: `Copyright © ${new Date().getFullYear()} Adazzle`,
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
-    theme: 'default',
+    theme: 'atom-one-dark'
   },
 
   // Add custom scripts here that would be placed in <script> tags.
@@ -85,11 +82,11 @@ const siteConfig = {
   ogImage: 'img/docusaurus.png',
   twitterImage: 'img/docusaurus.png',
 
-  usePrism: ['jsx', 'js', 'javascript', 'bash', 'sh']
+  usePrism: ['jsx', 'js', 'javascript', 'bash'],
 
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
-  //   repoUrl: 'https://github.com/facebook/test-site',
+  repoUrl: 'https://github.com/adazzle/react-data-grid',
 };
 
 module.exports = siteConfig;

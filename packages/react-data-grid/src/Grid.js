@@ -1,7 +1,7 @@
-const React                = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const Header               = require('./Header');
-const Viewport             = require('./Viewport');
+import Header from './Header';
+import Viewport from './Viewport';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import columnUtils from './ColumnUtils';
 require('../../../themes/react-data-grid-core.css');

@@ -8,6 +8,9 @@
       "addons": {
         "title": "React Data Grid Addons"
       },
+      "architecture": {
+        "title": "Component Archticture"
+      },
       "basic-rendering": {
         "title": "Basic Rendering"
       },
@@ -20,11 +23,11 @@
       "Cell": {
         "title": "Cell"
       },
-      "CHANGELOG": {
-        "title": "CHANGELOG"
+      "changelog": {
+        "title": "Changelog"
       },
-      "CONTRIBUTING": {
-        "title": "CONTRIBUTING"
+      "Contributing": {
+        "title": "Contributing"
       },
       "doc4": {
         "title": "Other Document"
@@ -90,6 +93,9 @@
         "title": "Simple Grid",
         "sidebar_label": "Simple Grid"
       },
+      "examples/tree-view": {
+        "title": "examples/tree-view"
+      },
       "markdowns/ReactDataGrid": {
         "title": "markdowns/ReactDataGrid"
       },
@@ -108,19 +114,15 @@
     },
     "links": {
       "Docs": "Docs",
-      "API": "API",
-      "Help": "Help",
       "Examples": "Examples",
-      "Blog": "Blog",
       "V5.0.3": "V5.0.3"
     },
     "categories": {
       "Getting Started": "Getting Started",
-      "Guides": "Guides",
       "API": "API",
       "Contributing": "Contributing",
-      "Examples": "Examples",
-      "Changelog": "Changelog"
+      "Changelog": "Changelog",
+      "Examples": "Examples"
     }
   },
   "pages-strings": {

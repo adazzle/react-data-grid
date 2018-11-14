@@ -74,9 +74,8 @@ class HomeSplash extends React.Component {
         <div className="inner">
           <ProjectTitle />
           <PromoSection>
-            <Button href="#try">Try It Out</Button>
-            <Button href={docUrl('quick-start.html', language)}>Get Started</Button>
-            <Button href={docUrl('addons.html', language)}>Examples</Button>
+            <Button href={docUrl('quick-start', language)}>Get Started</Button>
+            <Button href={docUrl('examples/simple-grid', language)}>Examples</Button>
           </PromoSection>
         </div>
       </SplashContainer>
@@ -129,22 +128,10 @@ const FeatureCallout = () => (
   <div
     className="productShowcaseSection paddingBottom"
     style={{textAlign: 'center'}}>
-    <MarkdownBlock>These are features of this project</MarkdownBlock>
+      <img src={imgUrl('datagrid1.png')} />
   </div>
 );
 
-const LearnHow = () => (
-  <Block background="light">
-    {[
-      {
-        content: 'Talk about learning how to use this',
-        image: imgUrl('datagrid1.png'),
-        imageAlign: 'right',
-        title: 'Learn How',
-      },
-    ]}
-  </Block>
-);
 
 const TryOut = () => (
   <Block id="try">
@@ -206,10 +193,7 @@ class Index extends React.Component {
         <HomeSplash language={language} />
         <div className="mainContainer">
           <Features />
-          <LearnHow />
-          <TryOut />
-          <Description />
-          <Showcase language={language} />
+          <FeatureCallout/>
         </div>
       </div>
     );

@@ -1,7 +1,7 @@
-const shallowCloneObject = require('./shallowCloneObject');
-const sameColumn = require('./ColumnComparer');
-const ColumnUtils = require('./ColumnUtils');
-const getScrollbarSize = require('./getScrollbarSize');
+import shallowCloneObject from './shallowCloneObject';
+import sameColumn from './ColumnComparer';
+import ColumnUtils from './ColumnUtils';
+import getScrollbarSize from './getScrollbarSize';
 import {isColumnsImmutable} from 'common/utils';
 
 function setColumnWidths(columns, totalWidth) {

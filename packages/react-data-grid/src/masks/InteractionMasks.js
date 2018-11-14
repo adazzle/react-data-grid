@@ -19,8 +19,8 @@ import {
   isSelectedCellEditable,
   selectedRangeIsSingleCell
 } from '../utils/SelectedCellUtils';
-import {isFunction} from 'common/utils';
-import * as columnUtils from '../ColumnUtils';
+import { isFunction } from 'common/utils';
+import columnUtils from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from 'common/constants';
 
@@ -65,7 +65,6 @@ class InteractionMasks extends React.Component {
     onCellRangeSelectionCompleted: PropTypes.func,
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
-    onBeforeFocus: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     prevScrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,

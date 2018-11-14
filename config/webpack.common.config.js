@@ -24,19 +24,6 @@ function getPlugins() {
 const config = {
   debug: !RELEASE,
   externals: {
-    react: {
-      root: 'React',
-      commonjs: 'react',
-      commonjs2: 'react',
-      amd: 'react'
-    },
-    'react-dom': {
-      root: 'ReactDOM',
-      commonjs: 'react-dom',
-      commonjs2: 'react-dom',
-      amd: 'react-dom'
-    },
-    'react/addons': 'React',
     moment: 'moment',
     immutable: 'immutable'
   },

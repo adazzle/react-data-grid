@@ -1,9 +1,12 @@
 {
   "docs": {
     "Getting Started": ["quick-start", "addons"],
-    "Guides": ["basic-rendering", "cell-formatting", "cell-editing", "frozen-columns"],
     "API": ["ReactDataGrid", "Row" ,"Cell"],
-    "Contributing": ["CONTRIBUTING"]
+    "Contributing": ["Contributing", "architecture"],
+    "Changelog": ["changelog"]
+  },
+  "Changelog": {
+    "Changelog": ["changelog"]
   },
   "examples/simple-grid": {
     "Examples": ["examples/simple-grid", "examples/cell-formatting",
@@ -42,8 +45,5 @@
           "examples/basic-grouping", "examples/drag-cols-to-group"
         ]
       }]
-  },
-  "Changelog": {
-    "Changelog": ["changelog"]
   }
 }

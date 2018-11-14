@@ -1,3 +1,18 @@
+---
+id: changelog
+title: Changelog
+---
+
+## 5.0.3 (Nov 1, 2018)
+- **Bugfix:** Fix frozen-columns source url ([1355](https://github.com/adazzle/react-data-grid/pull/1355))
+- **TechDebt:** Defining the ref callback as a bound method ([1353](https://github.com/adazzle/react-data-grid/pull/1353))
+- **Bugfix:** Fix cell focusing logic ([1352](https://github.com/adazzle/react-data-grid/pull/1352))
+- **Bugfix:** RDG Tree Cell Expand Styling Issues ([1316](https://github.com/adazzle/react-data-grid/pull/1316))
+
+## 5.0.2 (Oct 30, 2018)
+- **Bugfix:** Fix grouping example ([1311](https://github.com/adazzle/react-data-grid/pull/1311))
+- **Bugfix:** Remove contain layout css ([1346](https://github.com/adazzle/react-data-grid/pull/1346))
+- **Bugfix:** Preserve window scroll position on cell selection ([1349](https://github.com/adazzle/react-data-grid/pull/1346))
 
 ## 5.0.1 (Oct 22, 2018)
 
