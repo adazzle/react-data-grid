@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
-import {isColumnsImmutable} from 'common/utils';
-import PropTypes from 'prop-types';
+import { isColumnsImmutable } from 'common/utils';
 
 class DraggableContainer extends Component {
-
   getRows(rowsCount, rowGetter) {
-    let rows = [];
+    const rows = [];
     for (let j = 0; j < rowsCount; j++) {
       rows.push(rowGetter(j));
     }
@@ -16,21 +16,29 @@ class DraggableContainer extends Component {
   }
 
   renderGrid() {
-    return React.Children.map(this.props.children, (child) => {
-      return React.cloneElement(child, { draggableHeaderCell: DraggableHeaderCell });
-    })[0];
+    return React.cloneElement(
+      React.Children.only(this.props.children), {
+        draggableHeaderCell: DraggableHeaderCell
+      }
+    );
   }
 
   render() {
-    let grid = this.renderGrid();
-    let rowGetter = this.props.getDragPreviewRow || grid.props.rowGetter;
-    let rowsCount = grid.props.rowsCount;
-    let columns = grid.props.columns;
-    let rows = this.getRows(rowsCount, rowGetter);
-    return (<div>
-      {grid}
-      <RowDragLayer rowSelection={grid.props.rowSelection} rows={rows} columns={isColumnsImmutable(columns) ? columns.toArray() : columns} />
-    </div>);
+    const grid = this.renderGrid();
+    const rowGetter = this.props.getDragPreviewRow || grid.props.rowGetter;
+    const rowsCount = grid.props.rowsCount;
+    const columns = grid.props.columns;
+    const rows = this.getRows(rowsCount, rowGetter);
+    return (
+      <div>
+        {grid}
+        <RowDragLayer
+          rowSelection={grid.props.rowSelection}
+          rows={rows}
+          columns={isColumnsImmutable(columns) ? columns.toArray() : columns}
+        />
+      </div>
+    );
   }
 }
 
