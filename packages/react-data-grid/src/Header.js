@@ -5,7 +5,7 @@ const shallowCloneObject  = require('./shallowCloneObject');
 const ColumnMetrics       = require('./ColumnMetrics');
 const ColumnUtils         = require('./ColumnUtils');
 const HeaderRow           = require('./HeaderRow');
-const getScrollbarSize  = require('./getScrollbarSize');
+import getScrollbarSize from './getScrollbarSize';
 import PropTypes from 'prop-types';
 const createObjectWithProperties = require('./createObjectWithProperties');
 const cellMetaDataShape    = require('common/prop-shapes/CellMetaDataShape');

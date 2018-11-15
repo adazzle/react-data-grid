@@ -53,7 +53,7 @@ const renderComponent = (extraProps) => {
   return shallow(<Canvas {...testProps} {...extraProps} />);
 };
 
-fdescribe('Canvas Tests', () => {
+describe('Canvas Tests', () => {
   let wrapper;
   let testElementNode;
 
