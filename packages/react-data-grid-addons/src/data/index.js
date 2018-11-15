@@ -1,3 +1,3 @@
-module.exports = {
-  Selectors: require('./Selectors')
-};
+import Selectors from './Selectors';
+export {Selectors};
+

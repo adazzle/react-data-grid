@@ -27,4 +27,4 @@ const filterRows = (filters, rows = []) => {
   });
 };
 
-module.exports = filterRows;
+export default filterRows;

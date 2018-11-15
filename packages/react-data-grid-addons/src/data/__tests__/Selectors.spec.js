@@ -1,8 +1,6 @@
-const rewire = require('rewire');
-const Selectors = rewire('../Selectors');
-
-let originalFilter = Selectors.__get__('filterRows');
-let originalGroupBy = Selectors.__get__('groupRows');
+import Selectors from '../Selectors';
+import * as filterRows from '../RowFilterer';
+import * as groupRows from '../RowGrouper';
 let filterSpy;
 let groupRowsSpy;
 
@@ -15,15 +13,8 @@ function createRows() {
 }
 
 function setupSpies() {
-  filterSpy = jasmine.createSpy();
-  groupRowsSpy = jasmine.createSpy();
-  Selectors.__set__('filterRows', filterSpy);
-  Selectors.__set__('groupRows', groupRowsSpy);
-}
-
-function resetSpies() {
-  Selectors.__set__('filterRows', originalFilter);
-  Selectors.__set__('groupRows', originalGroupBy);
+  filterSpy = spyOn(filterRows, 'default');
+  groupRowsSpy = spyOn(groupRows, 'default');
 }
 
 function selectPerRow(rows, options) {
@@ -124,10 +115,6 @@ describe('Grid Selectors', () => {
     beforeEach(() => {
       setupSpies();
       rows = createRows();
-    });
-
-    afterEach(() => {
-      resetSpies();
     });
 
     describe('Calling getRows multiple times for the same array of rows', () => {

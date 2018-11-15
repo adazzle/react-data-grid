@@ -1,5 +1,6 @@
 import React from 'react';
 import Viewport from '../Viewport';
+import Canvas from '../Canvas';
 import { shallow} from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
 import {SCROLL_DIRECTION} from '../utils/viewportUtils';
@@ -76,16 +77,16 @@ let viewportPropsNoColumns = {  // when creating anew plan copying from an exist
 describe('<Viewport />', () => {
   it('renders a Canvas component', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
-    let Canvas = wrapper.find('Canvas');
-    expect(Canvas).toBeDefined();
+    let canvas = wrapper.find(Canvas);
+    expect(canvas).toBeDefined();
   });
 
   it('should update scroll state onScroll', () => {
     let scrollLeft = 0;
     let scrollTop = 200;
     const wrapper = shallow(<Viewport {...viewportProps} />);
-    let Canvas = wrapper.find('Canvas');
-    Canvas.props().onScroll({ scrollTop, scrollLeft});
+    let canvas = wrapper.find(Canvas);
+    canvas.props().onScroll({ scrollTop, scrollLeft});
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: helpers.columns.length,
       colOverscanStartIdx: 0,

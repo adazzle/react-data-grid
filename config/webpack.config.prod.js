@@ -1,15 +1,16 @@
 const webpackCommon = require('./webpack.common.config');
+const path = require('path');
 
 const config =  {
   entry: {
-    'react-data-grid/dist/react-data-grid': ['./packages/react-data-grid/src'],
-    'react-data-grid-addons/dist/react-data-grid-addons': ['./packages/react-data-grid-addons/src'],
-    'react-data-grid/dist/react-data-grid.min': ['./packages/react-data-grid/src'],
-    'react-data-grid-addons/dist/react-data-grid-addons.min': ['./packages/react-data-grid-addons/src'],
-    'react-data-grid-examples/dist/index': './packages/react-data-grid-examples/src'
+    'react-data-grid/dist/react-data-grid': [path.resolve('packages/react-data-grid/src')],
+    'react-data-grid-addons/dist/react-data-grid-addons': [path.resolve('packages/react-data-grid-addons/src')],
+    'react-data-grid/dist/react-data-grid.min': [path.resolve('packages/react-data-grid/src')],
+    'react-data-grid-addons/dist/react-data-grid-addons.min': [path.resolve('packages/react-data-grid-addons/src')],
+    'react-data-grid-examples/dist/index': [path.resolve('packages/react-data-grid-examples/src')]
   },
   output: {
-    path: './packages',
+    path: path.resolve('packages'),
     filename: '[name].js',
     library: ['ReactDataGrid'],
     libraryTarget: 'umd'

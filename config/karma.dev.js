@@ -36,7 +36,7 @@ if (argv.file) {
 const webpackCfg = Object.keys(defaultWebpack).reduce((res, key) => {
   let value = defaultWebpack[key];
   if (key === 'module') {
-    value = Object.assign({}, value, { postLoaders: null});
+    value = Object.assign({}, value);
   } else if (key === 'plugins') {
     value = [...value, new webpack.SourceMapDevToolPlugin({
       filename: null,
@@ -47,6 +47,7 @@ const webpackCfg = Object.keys(defaultWebpack).reduce((res, key) => {
   return res;
 }, {});
 webpackCfg.devtool = argv.file ? 'inline-source-map' : undefined;
+webpackCfg.mode = 'development';
 
 module.exports = function(config) {
   config.set({
