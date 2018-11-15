@@ -119,7 +119,15 @@ class EditorContainer extends React.Component {
       return <CustomEditor ref={this.setEditorRef} {...editorProps} />;
     }
 
-    return <SimpleTextEditor ref={this.setEditorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => { }} commit={() => { }} />;
+    return (
+      <SimpleTextEditor
+        ref={this.setEditorRef}
+        column={this.props.column}
+        value={this.getInitialValue()}
+        onBlur={this.commit}
+        rowMetaData={this.getRowMetaData()}
+      />
+    );
   };
 
   onPressEnter = () => {
