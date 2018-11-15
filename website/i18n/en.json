@@ -8,9 +8,6 @@
       "addons": {
         "title": "React Data Grid Addons"
       },
-      "architecture": {
-        "title": "Component Archticture"
-      },
       "basic-rendering": {
         "title": "Basic Rendering"
       },
@@ -56,6 +53,10 @@
       "examples/cell-formatting": {
         "title": "Cell Formatting"
       },
+      "examples/cell-range-selection": {
+        "title": "Cell Range Selection",
+        "sidebar_label": "Cell Range Selection"
+      },
       "examples/column-events": {
         "title": "Column Events"
       },
@@ -67,6 +68,10 @@
       },
       "examples/column-sorting": {
         "title": "Column Sorting"
+      },
+      "examples/context-menu": {
+        "title": "Context Menu",
+        "sidebar_label": "Context Menu"
       },
       "examples/custom-editors": {
         "title": "Custom Editors"
@@ -97,10 +102,11 @@
         "sidebar_label": "Simple Grid"
       },
       "examples/tree-view": {
-        "title": "examples/tree-view"
+        "title": "Tree View",
+        "sidebar_label": "Tree View"
       },
       "implementation-notes": {
-        "title": "implementation-notes"
+        "title": "Implementation Notes"
       },
       "markdowns/ReactDataGrid": {
         "title": "markdowns/ReactDataGrid"
@@ -109,10 +115,10 @@
         "title": "v1-v2"
       },
       "migrations/v2-v3": {
-        "title": "migrations/v2-v3"
+        "title": "v2-v3"
       },
       "migrations/v3-v4": {
-        "title": "migrations/v3-v4"
+        "title": "v3-v4"
       },
       "quick-start": {
         "title": "Quick Start"
