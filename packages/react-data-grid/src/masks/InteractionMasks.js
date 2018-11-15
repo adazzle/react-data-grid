@@ -119,6 +119,11 @@ class InteractionMasks extends React.Component {
     }
   };
 
+  /**
+   * Sets the position of SelectionMask and CopyMask components when the canvas is scrolled
+   * This is only required on the frozen columns
+   * @param scrollLeft number
+   */
   setScrollLeft = (scrollLeft) => {
     const { selectionMask, copyMask, state: { selectedPosition, copiedPosition } } = this;
     this.setMaskScollLeft(selectionMask, selectedPosition, scrollLeft);
