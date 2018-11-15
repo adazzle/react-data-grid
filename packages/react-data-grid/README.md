@@ -1,7 +1,7 @@
 # react-data-grid
 
 > The core of react-data-grid
- 
+
 
 ## Install
 
@@ -9,7 +9,7 @@
 npm install --save react-data-grid
 ```
 
-## Usage 
+## Usage
 
 ```sh
 import ReactDataGrid from 'react-data-grid';
@@ -39,7 +39,6 @@ Cell                   | [Cell](./src/Cell.js)                   |
 HeaderCell             | [HeaderCell](./src/HeaderCell.js)       |
 editors                | [Editors](./src/editors)                |
 formatters             | [Formatters](./src/formatters)          |
-utils                  | [utils](./src/utils)                    |
 shapes                 | [shapes](./src/PropTypeShapes)          |
 _constants             | [_constants](./src/AppConstants.js)     |
 _helpers               | [_helpers](./src/helpers)               |

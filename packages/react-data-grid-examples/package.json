@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid-examples",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "A set of examples for the grid",
   "main": "main.js",
   "scripts": {
@@ -18,8 +18,8 @@
   "license": "MIT",
   "dependencies": {
     "immutability-helper": "^2.7.0",
-    "react-data-grid": "^5.0.3",
-    "react-data-grid-addons": "^5.0.3",
+    "react-data-grid": "^5.0.4",
+    "react-data-grid-addons": "^5.0.4",
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {

@@ -11,7 +11,8 @@
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "node webpack-dev-server.js",
     "beforepublish": "lerna run beforepublish",
-    "eslint": "./node_modules/.bin/eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
+    "eslint": "eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
+    "fix-eslint": "eslint --fix -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
     "lerna-publish": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./ci/publish/publish.ps1"
   },
   "repository": {
@@ -73,9 +74,8 @@
     "del": "^1.2.1",
     "enzyme": "^3.4.3",
     "enzyme-adapter-react-16": "^1.2.0",
-    "eslint": "^1.10.3",
-    "eslint-loader": "^1.2.0",
-    "eslint-plugin-react": "^3.15.0",
+    "eslint": "^5.9.0",
+    "eslint-plugin-react": "^7.11.1",
     "faker": "^3.0.1",
     "gh-pages": "^2.0.1",
     "gulp": "^3.8.7",

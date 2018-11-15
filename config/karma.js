@@ -35,19 +35,17 @@ module.exports = function (config) {
   };
 
   function getFiles() {
-    var files;
+    var files = [
+     'node_modules/es5-shim/es5-shim.js',
+     'node_modules/es5-shim/es5-sham.js',
+     'node_modules/es6-shim/es6-shim.js',
+     'node_modules/es6-sham/es6-sham.js'
+    ];
     if(RELEASE === true ||  DEBUG === true) {
-      files = [
-     'node_modules/es5-shim/es5-shim.js',
-     'node_modules/es5-shim/es5-sham.js',
-     'test/FullTests.jsx'
-     ]
+      files.push('test/FullTests.jsx');
     } else {
-    files = [
-     'node_modules/es5-shim/es5-shim.js',
-     'node_modules/es5-shim/es5-sham.js',
-     'test/unitTests.jsx'
-     ]
+      // TODO: cleanup tests
+      files.push('test/unitTests.jsx');
     }
     return files;
   }
