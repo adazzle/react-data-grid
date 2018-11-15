@@ -699,21 +699,23 @@ class InteractionMasks extends React.Component {
           this.getSingleCellSelectView() :
           this.getCellRangeSelectView()
         }
-        {isEditorEnabled && <EditorContainer
-          firstEditorKeyPress={firstEditorKeyPress}
-          onCommit={this.onCommit}
-          onCommitCancel={this.onCommitCancel}
-          rowIdx={selectedPosition.rowIdx}
-          value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
-          rowData={rowData}
-          column={getSelectedColumn({ selectedPosition, columns })}
-          scrollLeft={scrollLeft}
-          scrollTop={scrollTop}
-          {...{
-            ...getSelectedDimensions({ selectedPosition, rowHeight, columns, scrollLeft }),
-            ...this.editorPosition
-          }}
-        />}
+        {isEditorEnabled && (
+          <EditorContainer
+            firstEditorKeyPress={firstEditorKeyPress}
+            onCommit={this.onCommit}
+            onCommitCancel={this.onCommitCancel}
+            rowIdx={selectedPosition.rowIdx}
+            value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+            rowData={rowData}
+            column={getSelectedColumn({ selectedPosition, columns })}
+            scrollLeft={scrollLeft}
+            scrollTop={scrollTop}
+            {...{
+              ...getSelectedDimensions({ selectedPosition, rowHeight, columns, scrollLeft }),
+              ...this.editorPosition
+            }}
+          />
+        )}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>
     );
