@@ -382,7 +382,7 @@ class InteractionMasks extends React.Component {
     const keyNavAction = this.getKeyNavActionFromEvent(e);
     const next = this.getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode);
     this.checkIsAtGridBoundary(keyNavAction, next);
-    this.selectCell({...next});
+    this.selectCell({ ...next });
   }
 
   changeSelectedRangeFromArrowKeyAction(e) {
@@ -391,7 +391,7 @@ class InteractionMasks extends React.Component {
     const keyNavAction = this.getKeyNavActionFromEvent(e);
     const next = this.getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode);
     this.checkIsAtGridBoundary(keyNavAction, next);
-    this.onSelectCellRangeUpdated({...next}, true, () => { this.onSelectCellRangeEnded(); });
+    this.onSelectCellRangeUpdated({ ...next }, true, () => { this.onSelectCellRangeEnded(); });
   }
 
   getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode) {
@@ -709,8 +709,10 @@ class InteractionMasks extends React.Component {
           column={getSelectedColumn({ selectedPosition, columns })}
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
-          position={this.editorPosition}
-          {...getSelectedDimensions({ selectedPosition, rowHeight, columns, scrollLeft })}
+          {...{
+            ...getSelectedDimensions({ selectedPosition, rowHeight, columns, scrollLeft }),
+            ...this.editorPosition
+          }}
         />}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>

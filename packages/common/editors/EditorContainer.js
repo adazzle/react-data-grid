@@ -19,15 +19,16 @@ class EditorContainer extends React.Component {
     rowData: PropTypes.object.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired,
     column: PropTypes.object.isRequired,
+    width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
+    left: PropTypes.number.isRequired,
+    top: PropTypes.number.isRequired,
     onGridKeyDown: PropTypes.func,
     onCommit: PropTypes.func,
     onCommitCancel: PropTypes.func,
     firstEditorKeyPress: PropTypes.string,
-    width: PropTypes.number.isRequired,
     scrollLeft: PropTypes.number,
-    scrollTop: PropTypes.number,
-    position: PropTypes.object.isRequired
+    scrollTop: PropTypes.number
   };
 
   state = { isInvalid: false };
@@ -335,9 +336,9 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { width, height, column, position } = this.props;
+    const { width, height, left, top, column } = this.props;
     const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER : zIndexes.EDITOR_CONTAINER;
-    const style = { position: 'absolute', height, width, zIndex, ...position };
+    const style = { position: 'absolute', height, width, left, top, zIndex };
     return (
       <EditorPortal>
         <div style={style}
