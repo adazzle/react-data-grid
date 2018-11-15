@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Row from './Row';
+import DefaultRowsContainer from './RowsContainer';
 import cellMetaDataShape from 'common/prop-shapes/CellActionShape';
 import * as rowUtils from './RowUtils';
 import RowGroup from './RowGroup';
@@ -83,7 +84,7 @@ class Canvas extends React.PureComponent {
     selectedRows: [],
     rowScrollTimeout: 0,
     scrollToRowIndex: 0,
-    RowsContainer: ({ children }) => children
+    RowsContainer: DefaultRowsContainer
   };
 
   state = {

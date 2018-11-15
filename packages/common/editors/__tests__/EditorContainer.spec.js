@@ -1,7 +1,6 @@
 
 const React            = require('react');
-const rewire           = require('rewire');
-const EditorContainer  = rewire('../EditorContainer.js');
+const EditorContainer  = require('../EditorContainer.js');
 const SimpleTextEditor = require('../SimpleTextEditor');
 const EditorBase       = require('../EditorBase');
 import { mount, shallow } from 'enzyme';

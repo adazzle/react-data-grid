@@ -351,9 +351,7 @@ class InteractionMasks extends React.Component {
     const keyNavAction = this.getKeyNavActionFromEvent(e);
     const next = this.getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode);
     this.checkIsAtGridBoundary(keyNavAction, next);
-
-    const { changeRowOrColumn, ...nextPos } = next;
-    this.selectCell(nextPos);
+    this.selectCell({...next});
   }
 
   changeSelectedRangeFromArrowKeyAction(e) {
@@ -362,9 +360,7 @@ class InteractionMasks extends React.Component {
     const keyNavAction = this.getKeyNavActionFromEvent(e);
     const next = this.getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode);
     this.checkIsAtGridBoundary(keyNavAction, next);
-
-    const { changeRowOrColumn, ...nextPos } = next;
-    this.onSelectCellRangeUpdated(nextPos, true, () => { this.onSelectCellRangeEnded(); });
+    this.onSelectCellRangeUpdated({...next}, true, () => { this.onSelectCellRangeEnded(); });
   }
 
   getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode) {
