@@ -1,3 +1,8 @@
+---
+id: contributing
+title: Contributing
+---
+
 Use [Github issues](https://github.com/adazzle/react-data-grid/issues) for feature requests and bug reports.
 
 ## <a name="question"></a> Got a Question or Problem?
@@ -43,18 +48,6 @@ npm run eslint         | runs the eslint task (runs automatically before npm tes
 npm run build          | build the project in release mode                                                                     |
 npm run postinstall    | boostraps the packages and fetches the individual dependencies (runs automatically after npm install) |
 npm run lerna-publish  | prompts the user to choose between major, minor or patch release, then pusblishes each package in mono-repo  |
-
-
-### Project structure
-react-data-grid is a monorepo containing a total of three packages:
-- **react-data-grid** the core package of the grid, contains all the core functionality of the project
-- **react-data-grid-addons** a set of addons for the base grid, containing things like toolbars, custom editors...
-- **react-data-grid-examples** a playground for the project, this is where you can check your changes for real, it's also what gets deployed to the public page.
-
-To manage the multiple packages in the project we use [lerna](https://lernajs.io/), It allows us to have an independent release process for each package,
-individual and shared dependencies between packages and an automated bootstrap system to link packages together during development time.
-This also means that you **must not add any path reference between packages**, when you need to use something in a different package you just need to import it as if
-it was a standard npm package. (for example you if need something from react-data-grid package when developing in react-data-grid-addons you need to `import { something } from 'react-data-grid';`).
 
 ### Environment
 We use webpack-dev-server for development. If you're fancy about knowing the tools you’re working with you can find the details about this awesome tool [in here](https://webpack.github.io/docs/webpack-dev-server.html).

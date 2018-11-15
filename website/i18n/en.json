@@ -26,7 +26,10 @@
       "changelog": {
         "title": "Changelog"
       },
-      "Contributing": {
+      "codebase-overview": {
+        "title": "Codebase Overview"
+      },
+      "contributing": {
         "title": "Contributing"
       },
       "doc4": {
@@ -96,8 +99,20 @@
       "examples/tree-view": {
         "title": "examples/tree-view"
       },
+      "implementation-notes": {
+        "title": "implementation-notes"
+      },
       "markdowns/ReactDataGrid": {
         "title": "markdowns/ReactDataGrid"
+      },
+      "migrations/v1-v2": {
+        "title": "v1-v2"
+      },
+      "migrations/v2-v3": {
+        "title": "migrations/v2-v3"
+      },
+      "migrations/v3-v4": {
+        "title": "migrations/v3-v4"
       },
       "quick-start": {
         "title": "Quick Start"
@@ -122,6 +137,7 @@
       "API": "API",
       "Contributing": "Contributing",
       "Changelog": "Changelog",
+      "Migrations": "Migrations",
       "Examples": "Examples"
     }
   },

@@ -38,13 +38,13 @@ const siteConfig = {
   users,
 
   /* path to images for header/footer */
-  headerIcon: '',
+  headerIcon: 'img/logo_white.png',
   footerIcon: 'img/docusaurus.svg',
   favicon: 'img/favicon.png',
 
   /* Colors for website */
   colors: {
-    primaryColor: 'black',
+    primaryColor: '#4A90E2',
     secondaryColor: 'white'
   },
 

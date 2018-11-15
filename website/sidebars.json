@@ -2,8 +2,9 @@
   "docs": {
     "Getting Started": ["quick-start", "addons"],
     "API": ["ReactDataGrid", "Row" ,"Cell"],
-    "Contributing": ["Contributing", "architecture"],
-    "Changelog": ["changelog"]
+    "Contributing": ["contributing", "codebase-overview", "architecture", "implementation-notes"],
+    "Changelog": ["CHANGELOG"],
+    "Migrations": ["migrations/v1-v2", "migrations/v2-v3", "migrations/v3-v4"]
   },
   "Changelog": {
     "Changelog": ["changelog"]

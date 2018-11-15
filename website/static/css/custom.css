@@ -16,9 +16,19 @@
 }
 
 .splashGrid {
-    background: #70B9B0 url( ../img/grid.png);
+    background: #6a96c9 url( ../img/grid.png);
 }
 
 .projectTitle {
     color: white;
+}
+
+.button {
+    background: #4A90E2;
+    color: #fff;
+}
+
+.button:hover {
+    background:  #fff;
+    color: #4A90E2;
 }
