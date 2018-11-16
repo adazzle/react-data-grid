@@ -22,7 +22,7 @@
         "type": "subcategory",
         "label": "Column Configuration",
         "ids": [
-          "examples/column-resizing", "examples/frozen-columns", "examples/column-events", "examples/cell-actions"
+          "examples/column-resizing", "examples/frozen-columns", "examples/column-events", "examples/cell-actions", "examples/reordering-columns"
         ]
       },
       {
@@ -45,6 +45,20 @@
         "ids": [
           "examples/basic-grouping", "examples/drag-cols-to-group"
         ]
-      }, "examples/tree-view", "examples/context-menu", "examples/cell-range-selection", "examples/row-selection"]
+      }, 
+      {
+        "type": "subcategory",
+        "label": "Selection",
+        "ids": [
+          "examples/row-selection", "examples/cell-range-selection"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Miscellaneous",
+        "ids": [
+          "examples/tree-view", "examples/isScrolling", "examples/context-menu",  "examples/row-reordering"
+        ]
+      }]
   }
 }

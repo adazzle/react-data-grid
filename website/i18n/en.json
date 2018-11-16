@@ -92,11 +92,23 @@
       "examples/frozen-columns": {
         "title": "Frozen Columns"
       },
+      "examples/isScrolling": {
+        "title": "Optimizing scrolling performance",
+        "sidebar_label": "Optimizing scrolling performance"
+      },
       "examples/render-base-row": {
         "title": "Intercepting a row"
       },
+      "examples/reordering-columns": {
+        "title": "Reordering columns",
+        "sidebar_label": "Reordering columns"
+      },
       "examples/row-renderer": {
         "title": "Custom Row Renderers"
+      },
+      "examples/row-reordering": {
+        "title": "Row Reordering",
+        "sidebar_label": "Row Reordering"
       },
       "examples/row-selection": {
         "title": "Row Selection",
