@@ -177,7 +177,7 @@ class ReactDataGrid extends React.Component {
           /** Name of property of row object which determines whether row is selected */
           isSelectedKey: PropTypes.string.isRequired
         }),
-        PropTypes.shape({ 
+        PropTypes.shape({
           keys: PropTypes.shape({
              /** The selected unique ids of each row */
             values: PropTypes.array.isRequired,
