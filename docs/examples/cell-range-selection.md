@@ -17,8 +17,7 @@ Called on mousedown on a cell. Receives selectedRange (containing topLeft and to
 ### onUpdate
 Called on mouseover on a cell when dragging with the mouse, or when pressing shift+arrowkey. Receives selectedRange (containing topLeft and topRight) as an argument.
 
-### 
-onComplete
+### onComplete
 Called on mouseup (anywhere) when dragging with the mouse, or when pressing shift+arrowkey.
 
 Note: altering the selected range with shift+arrowkey will fire both an Updated and Completed event with each keystroke.

@@ -45,6 +45,6 @@
         "ids": [
           "examples/basic-grouping", "examples/drag-cols-to-group"
         ]
-      }, "examples/tree-view", "examples/context-menu", "examples/cell-range-selection"]
+      }, "examples/tree-view", "examples/context-menu", "examples/cell-range-selection", "examples/row-selection"]
   }
 }

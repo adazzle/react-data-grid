@@ -1,5 +1,5 @@
 const React = require('react');
-const ReactDataGrid = require(`${process.cwd()}/../packages/react-data-grid/dist/react-data-grid.js`);
+const ReactDataGrid = require('react-data-grid');
 const createRowData = require(`${process.cwd()}/core/createFakeData`);
 
 const defaultColumnProperties = {

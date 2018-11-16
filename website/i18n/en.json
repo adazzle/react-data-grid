@@ -98,6 +98,10 @@
       "examples/row-renderer": {
         "title": "Custom Row Renderers"
       },
+      "examples/row-selection": {
+        "title": "Row Selection",
+        "sidebar_label": "Row Selection"
+      },
       "examples/simple-grid": {
         "title": "Simple Grid",
         "sidebar_label": "Simple Grid"
