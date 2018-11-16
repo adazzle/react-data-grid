@@ -1,6 +1,6 @@
+# React Data Grid 
 
-# React Data Grid  <img style="float:right" width="200" alt="logo_white" src="https://user-images.githubusercontent.com/1432798/48616964-077b9400-e98d-11e8-9b56-f70e0722b83d.png">
-
+[logo]: https://user-images.githubusercontent.com/1432798/48616964-077b9400-e98d-11e8-9b56-f70e0722b83d.png "ReactDataGrid"
 
 [![Build status](https://ci.appveyor.com/api/projects/status/smciktvlkvp6r8w7/branch/master?svg=true)](https://ci.appveyor.com/project/adazzle/react-data-grid/branch/master)
 [![Coverage Status](https://coveralls.io/repos/adazzle/react-data-grid/badge.svg?branch=master)](https://coveralls.io/r/adazzle/react-data-grid?branch=master)
