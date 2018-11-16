@@ -1047,6 +1047,18 @@
         "returns": null
       },
       {
+        "name": "setBaseGridRef",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "base",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "renderToolbar",
         "docblock": null,
         "modifiers": [],
@@ -1698,6 +1710,18 @@
         "returns": null
       },
       {
+        "name": "handleDragOver",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "e",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
         "name": "handleDrop",
         "docblock": null,
         "modifiers": [],
@@ -1716,10 +1740,6 @@
         "params": [
           {
             "name": "column",
-            "type": null
-          },
-          {
-            "name": "i",
             "type": null
           }
         ],

@@ -77,7 +77,8 @@
         "title": "Custom Editors"
       },
       "examples/default-editor": {
-        "title": "Default Cell Editor"
+        "title": "Basic cell editing",
+        "sidebar_label": "Basic cell editing"
       },
       "examples/drag-cols-to-group": {
         "title": "Grouping with draggable columns"
@@ -136,7 +137,7 @@
     "links": {
       "Docs": "Docs",
       "Examples": "Examples",
-      "V5.0.3": "V5.0.3"
+      "V5.0.4": "V5.0.4"
     },
     "categories": {
       "Getting Started": "Getting Started",
