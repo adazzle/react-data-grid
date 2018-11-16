@@ -8,14 +8,16 @@ const setMaskStyle = ({ left, top, width, height, zIndex, position }) => {
     zIndex,
     position: position || 'absolute',
     pointerEvents: 'none',
-    transform: `translate(${left}px, ${top}px)`
+    transform: `translate(${left}px, ${top}px)`,
+    outline: 0
   };
 };
 
-const CellMask = ({ width, height, top, left, zIndex, children, position, ...rest }) => (
+const CellMask = ({ width, height, top, left, zIndex, children, position, innerRef, ...rest }) => (
   <div
     style={setMaskStyle({ left, top, width, height, zIndex, position })}
     data-test="cell-mask"
+    ref={innerRef}
     {...rest}
   >
     {children}
@@ -28,7 +30,8 @@ CellMask.propTypes = {
   top: PropTypes.number.isRequired,
   left: PropTypes.number.isRequired,
   zIndex: PropTypes.number.isRequired,
-  children: PropTypes.node
+  children: PropTypes.node,
+  innerRef: PropTypes.func
 };
 
 export default CellMask;

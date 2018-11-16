@@ -1,7 +1,7 @@
-import { List, Iterable, Map } from 'immutable';
+const isImmutableLoaded = () => typeof Immutable !== 'undefined';
 
 export const isColumnsImmutable = (columns) => {
-  return (typeof Immutable !== 'undefined' && (columns instanceof Immutable.List));
+  return isImmutableLoaded() && columns instanceof Immutable.List;
 };
 
 export const isEmptyArray = (obj) => {
@@ -18,27 +18,27 @@ export const isEmptyObject = (obj) => {
 };
 
 export const isImmutableCollection = objToVerify => {
-  return Iterable.isIterable(objToVerify);
+  return isImmutableLoaded() && Immutable.Iterable.isIterable(objToVerify);
 };
 
 export const getMixedTypeValueRetriever = (isImmutable) => {
   let retObj = {};
   const retriever = (item, key) => { return item[key]; };
-  const immutableRetriever =  (immutable, key) => { return immutable.get(key); };
+  const immutableRetriever = (immutable, key) => { return immutable.get(key); };
 
   retObj.getValue = isImmutable ? immutableRetriever : retriever;
 
   return retObj;
 };
 
-export const isImmutableMap = Map.isMap;
+export const isImmutableMap = isImmutableLoaded() ? Immutable.Map.isMap : () => false;
 
 export const last = arrayOrList => {
   if (arrayOrList == null) {
     throw new Error('arrayOrCollection is null');
   }
 
-  if (List.isList(arrayOrList)) {
+  if (isImmutableLoaded() && Immutable.List.isList(arrayOrList)) {
     return arrayOrList.last();
   }
 
@@ -46,5 +46,5 @@ export const last = arrayOrList => {
     return arrayOrList[arrayOrList.length - 1];
   }
 
-  throw new Error('Cant get last of: ' + typeof(arrayOrList));
+  throw new Error('Cant get last of: ' + typeof (arrayOrList));
 };

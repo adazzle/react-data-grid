@@ -23,7 +23,7 @@ class HeaderCell extends React.Component {
     onResize: PropTypes.func.isRequired,
     onResizeEnd: PropTypes.func.isRequired,
     onHeaderDrop: PropTypes.func,
-    draggableHeaderCell: PropTypes.element,
+    draggableHeaderCell: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     className: PropTypes.string
   };
 

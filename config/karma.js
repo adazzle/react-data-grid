@@ -4,7 +4,6 @@
 var webpack = require('webpack');
 require('airbnb-browser-shims');
 var webpackConfig = require('./webpack.common.config.js');
-var RewirePlugin = require("rewire-webpack");
 var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
 var RELEASE = !!argv.release;
@@ -36,19 +35,17 @@ module.exports = function (config) {
   };
 
   function getFiles() {
-    var files;
+    var files = [
+     'node_modules/es5-shim/es5-shim.js',
+     'node_modules/es5-shim/es5-sham.js',
+     'node_modules/es6-shim/es6-shim.js',
+     'node_modules/es6-sham/es6-sham.js'
+    ];
     if(RELEASE === true ||  DEBUG === true) {
-      files = [
-     'node_modules/es5-shim/es5-shim.js',
-     'node_modules/es5-shim/es5-sham.js',
-     'test/FullTests.jsx'
-     ]
+      files.push('test/FullTests.jsx');
     } else {
-    files = [
-     'node_modules/es5-shim/es5-shim.js',
-     'node_modules/es5-shim/es5-sham.js',
-     'test/unitTests.jsx'
-     ]
+      // TODO: cleanup tests
+      files.push('test/unitTests.jsx');
     }
     return files;
   }
@@ -82,19 +79,32 @@ module.exports = function (config) {
     preprocessors: getPreprocessors(),
 
     webpack: {
+      mode: RELEASE ? 'production' : 'development',
       devtool: 'inline-source-map',
       module: {
-        loaders: webpackConfig.module.loaders
+        rules: [
+          {
+            test: /\.(js|jsx)$/,
+            exclude: /node_modules/,
+            use: [
+              { loader: 'babel-loader', options: { envName: 'test' } }
+            ]
+          },
+          {
+            test: /\.css$/,
+            use: [
+              { loader: 'style-loader' },
+              { loader: 'css-loader' }
+            ]
+          }
+        ]
       },
       resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx'],
+        extensions: ['.webpack.js', '.web.js', '.js', '.jsx'],
         alias: {
           common: path.resolve('packages/common/')
         }
       },
-      plugins: [
-        new RewirePlugin()
-      ],
       externals: {
         'cheerio': 'window',
         'react/lib/ExecutionEnvironment': true,
@@ -154,7 +164,6 @@ module.exports = function (config) {
     plugins: [
       'karma-chrome-launcher',
       'karma-firefox-launcher',
-      'karma-phantomjs-launcher-nonet',
       'karma-ie-launcher',
       'karma-jasmine',
       'karma-jasmine-matchers',

@@ -1,7 +1,5 @@
 import getScrollbarSize from '../getScrollbarSize';
-const rewire = require('rewire');
-const ColumnMetrics = rewire('../ColumnMetrics');
-const Immutable = window.Immutable = require('immutable');
+const ColumnMetrics = require('../ColumnMetrics');
 
 const getAvailableWidthPerColumn = (totalWidth, consumedWidth, numberOfcolumns) => {
   let availableWidth = totalWidth - getScrollbarSize() - consumedWidth;

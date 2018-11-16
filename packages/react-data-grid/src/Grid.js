@@ -133,9 +133,17 @@ class Grid extends React.Component {
     this.viewport = viewport;
   };
 
+  setViewportContainerRef = (viewportContainer) => {
+    this.viewPortContainer = viewportContainer;
+  };
+
+  setEmptyViewRef = (emptyView) => {
+    this.emptyView = emptyView;
+  };
+
   render() {
-    let headerRows = this.props.headerRows || [{ref: (node) => this.row = node}];
-    let EmptyRowsView = this.props.emptyRowsView;
+    const { headerRows } = this.props;
+    const EmptyRowsView = this.props.emptyRowsView;
 
     return (
       <div style={this.getStyle()} className="react-grid-Grid">
@@ -151,13 +159,12 @@ class Grid extends React.Component {
           draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
           onHeaderDrop={this.props.onHeaderDrop}
-          // onScroll={this.onHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}
           />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div
-              ref={(node) => { this.viewPortContainer = node; } }
+              ref={this.setViewportContainerRef}
               onKeyDown={this.props.onViewportKeydown}
               onKeyUp={this.props.onViewportKeyup}
               >
@@ -204,7 +211,7 @@ class Grid extends React.Component {
                 />
             </div>
         :
-            <div ref={(node) => { this.emptyView = node; } } className="react-grid-Empty">
+            <div ref={this.setEmptyViewRef} className="react-grid-Empty">
                 <EmptyRowsView />
             </div>
         }

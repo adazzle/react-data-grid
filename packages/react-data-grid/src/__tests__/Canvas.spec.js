@@ -4,10 +4,11 @@ import { shallow } from 'enzyme';
 import InteractionMasks from '../masks/InteractionMasks';
 
 import Canvas from '../Canvas';
+import RowsContainer from '../RowsContainer';
 
 const noop = () => null;
 
-const getRows = wrp => wrp.find('RowsContainer').props().children.props.children;
+const getRows = wrp => wrp.find(RowsContainer).props().children.props.children;
 
 let testProps = {
   rowHeight: 25,
@@ -52,7 +53,7 @@ const renderComponent = (extraProps) => {
   return shallow(<Canvas {...testProps} {...extraProps} />);
 };
 
-describe('Canvas Tests', () => {
+fdescribe('Canvas Tests', () => {
   let wrapper;
   let testElementNode;
 

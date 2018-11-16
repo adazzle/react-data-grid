@@ -95,10 +95,14 @@ class AutoCompleteEditor extends React.Component {
     return ret.join('|');
   };
 
+  setAutocompleteRef = (autoComplete) => {
+    this.autoComplete = autoComplete;
+  };
+
   render() {
     let label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete search={this.props.search} ref={(node) => this.autoComplete = node} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
+      <ReactAutocomplete search={this.props.search} ref={this.setAutocompleteRef} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
       </div>);
   }
 }

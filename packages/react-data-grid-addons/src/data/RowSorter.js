@@ -1,6 +1,6 @@
 import {getMixedTypeValueRetriever, isImmutableCollection} from 'common/utils';
 
-const comparer = (a, b) => {
+export const comparer = (a, b) => {
   if (a > b) {
     return 1;
   } else if (a < b) {
@@ -21,5 +21,6 @@ const sortRows = (rows, sortColumn, sortDirection) => {
   return rows.slice().sort(rowComparer);
 };
 
-module.exports = sortRows;
-module.exports.comparer = comparer;
+export default sortRows;
+
+
