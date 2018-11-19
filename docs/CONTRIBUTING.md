@@ -47,7 +47,10 @@ npm run dev-server     | starts webpack dev server                              
 npm run eslint         | runs the eslint task (runs automatically before npm test)                                             |
 npm run build          | build the project in release mode                                                                     |
 npm run postinstall    | boostraps the packages and fetches the individual dependencies (runs automatically after npm install) |
-npm run lerna-publish  | prompts the user to choose between major, minor or patch release, then pusblishes each package in mono-repo  |
+npm run lerna-publish  | prompts the user to choose between major, minor or patch release, then publishes each package in mono-repo  |
+npm run start-public  | builds and runs a local copy of the public RDG Site   |
+npm run publish-public  | publishes the public website to gh-pages   |
+
 
 ### Environment
 We use webpack-dev-server for development. If you're fancy about knowing the tools you’re working with you can find the details about this awesome tool [in here](https://webpack.github.io/docs/webpack-dev-server.html).
