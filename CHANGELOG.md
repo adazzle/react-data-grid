@@ -1,4 +1,4 @@
-## 5.0.3 (Nov 1, 2018)
+## 5.0.4 (Nov 14, 2018)
 - **Bugfix:** Custom Formatters Example - Styling Fix ([1364](https://github.com/adazzle/react-data-grid/pull/1364))
 - **Bugfix:** Fix website publishing and remove ImmutableJS dependency ([1366](https://github.com/adazzle/react-data-grid/pull/1366))
 - **Bugfix:** Remove react-data-grid dependency from the addons package ([1354](https://github.com/adazzle/react-data-grid/pull/1354))
