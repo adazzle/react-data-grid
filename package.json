@@ -15,8 +15,8 @@
     "eslint": "eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
     "fix-eslint": "eslint --fix -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
     "lerna-publish": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./ci/publish/publish.ps1",
-    "start-public": "cd website && npm run start",
-    "publish-public": "cd website && npm run publish-gh-pages"
+    "web": "cd website && npm run start",
+    "web-publish": "cd website && npm run publish-gh-pages"
   },
   "repository": {
     "type": "git",

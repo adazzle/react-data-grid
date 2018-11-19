@@ -48,8 +48,8 @@ npm run eslint         | runs the eslint task (runs automatically before npm tes
 npm run build          | build the project in release mode                                                                     |
 npm run postinstall    | boostraps the packages and fetches the individual dependencies (runs automatically after npm install) |
 npm run lerna-publish  | prompts the user to choose between major, minor or patch release, then publishes each package in mono-repo  |
-npm run start-public  | builds and runs a local copy of the public RDG Site   |
-npm run publish-public  | publishes the public website to gh-pages   |
+npm run web  | builds and runs a local copy of the public RDG Site   |
+npm run web-publish  | publishes the public website to gh-pages   |
 
 
 ### Environment
