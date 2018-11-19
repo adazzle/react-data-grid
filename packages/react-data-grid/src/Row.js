@@ -95,10 +95,16 @@ class Row extends React.Component {
       .map(column => this.getCell(column));
   };
 
+  getRowTop = () => {
+    if (this.row) {
+      return this.row.offsetTop;
+    }
+  };
+
   getRowHeight = () => {
-    let rows = this.props.expandedRows || null;
+    const rows = this.props.expandedRows || null;
     if (rows && this.props.idx) {
-      let row = rows[this.props.idx] || null;
+      const row = rows[this.props.idx] || null;
       if (row) {
         return row.height;
       }
@@ -135,6 +141,10 @@ class Row extends React.Component {
     });
   };
 
+  setRowRef = el => {
+    this.row = el;
+  };
+
   getKnownDivProps = () => {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
@@ -159,6 +169,7 @@ class Row extends React.Component {
     return (
       <div
         {...this.getKnownDivProps()}
+        ref={this.setRowRef}
         className={className}
         style={style}
         onDragEnter={this.handleDragEnter}

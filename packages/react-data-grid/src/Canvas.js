@@ -235,17 +235,33 @@ class Canvas extends React.PureComponent {
 
   getRowByRef = (i) => {
     // check if wrapped with React DND drop target
-    let wrappedRow = this.rows[i] && this.rows[i].getDecoratedComponentInstance ? this.rows[i].getDecoratedComponentInstance(i) : null;
+    const wrappedRow = this.rows[i] && this.rows[i].getDecoratedComponentInstance ? this.rows[i].getDecoratedComponentInstance(i) : null;
     if (wrappedRow) {
       return wrappedRow.row;
     }
     return this.rows[i];
   };
 
-  getSelectedRowColumns = (rowIdx) => {
+  getRowTop = (rowIdx) => {
+    const row = this.getRowByRef(rowIdx);
+    if (row && isFunction(row.getRowTop)) {
+      return row.getRowTop();
+    }
+    return this.props.rowHeight * rowIdx;
+  };
+
+  getRowHeight = (rowIdx) => {
+    const row = this.getRowByRef(rowIdx);
+    if (row && isFunction(row.getRowHeight)) {
+      return row.getRowHeight();
+    }
+    return this.props.rowHeight;
+  };
+
+  getRowColumns = (rowIdx) => {
     const row = this.getRowByRef(rowIdx);
     return row && row.props ? row.props.columns : this.props.columns;
-  }
+  };
 
   setCanvasRef = el => {
     this.canvas = el;
@@ -277,19 +293,21 @@ class Canvas extends React.PureComponent {
 
   renderGroupRow(props) {
     const { ref, ...rowGroupProps } = props;
-    return (<RowGroup
-      {...rowGroupProps}
-      {...props.row.__metaData}
-      rowRef={props.ref}
-      name={props.row.name}
-      eventBus={this.props.eventBus}
-      renderer={this.props.rowGroupRenderer}
-      renderBaseRow={(p) => <Row ref={ref} {...p} />}
-    />);
+    return (
+      <RowGroup
+        {...rowGroupProps}
+        {...props.row.__metaData}
+        rowRef={props.ref}
+        name={props.row.name}
+        eventBus={this.props.eventBus}
+        renderer={this.props.rowGroupRenderer}
+        renderBaseRow={(p) => <Row ref={ref} {...p} />}
+      />
+    );
   }
 
   renderRow = (props) => {
-    let row = props.row;
+    const { row } = props;
     if (row.__metaData && row.__metaData.getRowRenderer) {
       return row.__metaData.getRowRenderer(this.props, props.idx);
     }
@@ -306,13 +324,14 @@ class Canvas extends React.PureComponent {
   renderPlaceholder = (key, height) => {
     // just renders empty cells
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
-    return (<div key={key} style={{ height: height }}>
-      {
-        this.props.columns.map(
-          (column, idx) => <div style={{ width: column.width }} key={idx} />
-        )
-      }
-    </div >
+    return (
+      <div key={key} style={{ height }}>
+        {
+          this.props.columns.map(
+            (column, idx) => <div style={{ width: column.width }} key={idx} />
+          )
+        }
+      </div >
     );
   };
 
@@ -406,7 +425,9 @@ class Canvas extends React.PureComponent {
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           scrollLeft={this._scroll.scrollLeft}
           scrollTop={this._scroll.scrollTop}
-          getSelectedRowColumns={this.getSelectedRowColumns}
+          getRowHeight={this.getRowHeight}
+          getRowTop={this.getRowTop}
+          getRowColumns={this.getRowColumns}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           <div style={{ width: totalColumnWidth }}>{rows}</div>

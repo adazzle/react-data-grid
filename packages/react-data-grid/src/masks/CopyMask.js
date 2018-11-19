@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
 
-function CopyMask({ copiedPosition, innerRef, ...rest }) {
-  const dimensions = getSelectedDimensions({ selectedPosition: copiedPosition, ...rest });
+function CopyMask({ copiedPosition, innerRef, getSelectedDimensions }) {
+  const dimensions = getSelectedDimensions(copiedPosition);
   return (
     <CellMask
       {...dimensions}
@@ -17,9 +16,7 @@ function CopyMask({ copiedPosition, innerRef, ...rest }) {
 
 CopyMask.propTypes = {
   copiedPosition: PropTypes.object.isRequired,
-  columns: PropTypes.array.isRequired,
-  rowHeight: PropTypes.number.isRequired,
-  scrollLeft: PropTypes.number.isRequired,
+  getSelectedDimensions: PropTypes.func.isRequired,
   innerRef: PropTypes.func.isRequired
 };
 

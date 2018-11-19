@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CellMask from './CellMask';
-import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 
-function SelectionMask({ children, innerRef, ...rest }) {
-  const dimensions = getSelectedDimensions(rest);
+function SelectionMask({ selectedPosition, innerRef, getSelectedDimensions, children }) {
+  const dimensions = getSelectedDimensions(selectedPosition);
   return (
     <CellMask
       {...dimensions}
@@ -20,7 +19,7 @@ function SelectionMask({ children, innerRef, ...rest }) {
 
 SelectionMask.propTypes = {
   selectedPosition: PropTypes.object.isRequired,
-  columns: PropTypes.array.isRequired,
+  getSelectedDimensions: PropTypes.func.isRequired,
   innerRef: PropTypes.func.isRequired
 };
 

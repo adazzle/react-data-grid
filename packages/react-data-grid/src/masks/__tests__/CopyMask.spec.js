@@ -8,10 +8,12 @@ import zIndexes from 'common/constants/zIndexes';
 describe('CopyMask', () => {
   const setup = (propsOverride = {}) => {
     const props = {
-      columns: [
-        { width: 50, left: 5 }
-      ],
-      rowHeight: 30,
+      getSelectedDimensions: () => ({
+        height: 30,
+        width: 50,
+        left: 5,
+        top: 90
+      }),
       ...propsOverride
     };
 
@@ -24,11 +26,10 @@ describe('CopyMask', () => {
 
     expect(mask.props()).toEqual(
       jasmine.objectContaining({
-        height: 30, // = rowHeight
+        height: 30,
         width: 50,
         left: 5,
-        top: 90, // = rowHeight * rowIdx
-        zIndex: zIndexes.CELL_MASK,
+        top: 90,
         className: 'react-grid-cell-copied'
       })
     );
