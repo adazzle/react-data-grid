@@ -32,7 +32,7 @@ class AutoCompleteTokensEditor extends Component {
   }
 
   getValue() {
-    let updated = {};
+    const updated = {};
     updated[this.props.column.key] = this.state.value;
     return updated;
   }
@@ -42,7 +42,7 @@ class AutoCompleteTokensEditor extends Component {
   }
 
   render() {
-    let options = [];
+    const options = [];
     this.props.options.forEach(function(name) {
       if (typeof (name) === 'string') {
         options.push({label: name, value: name});

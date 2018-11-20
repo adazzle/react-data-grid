@@ -6,7 +6,7 @@ import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
 import ResizeHandle from '../ResizeHandle';
 
 describe('Header Cell Tests', () => {
-  let testProps = {
+  const testProps = {
     rowType: 'header',
     column: {
       width: 150,
@@ -102,7 +102,7 @@ describe('Header Cell Tests', () => {
 
   describe('getCell method', () => {
     it('pass the column as property to cell renderer if it is a function', () => {
-      let rendererFunction = jasmine.createSpy();
+      const rendererFunction = jasmine.createSpy();
       const {props} = setup({renderer: rendererFunction});
       expect(rendererFunction.calls.argsFor(0)[0]).toEqual({column: props.column});
     });

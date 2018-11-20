@@ -17,11 +17,11 @@ class SummaryParser {
   }
 
   getSumByOwner(ownerName) {
-    let summaryItemsByOwner = this.getByOwner(ownerName);
-    let summaryItem = new SummaryItemModel(ownerName);
+    const summaryItemsByOwner = this.getByOwner(ownerName);
+    const summaryItem = new SummaryItemModel(ownerName);
 
     summaryItemsByOwner.forEach(s => {
-      let { wastedTime, wastedInstances } = summaryItem;
+      const { wastedTime, wastedInstances } = summaryItem;
       summaryItem.wastedTime = wastedTime + s.wastedTime;
       summaryItem.wastedInstances = wastedInstances + s.wastedInstances;
     });
@@ -37,7 +37,7 @@ class SummaryParser {
     }
 
     if (componentSummaryItem.length === 0) {
-      let emptySummary = new SummaryItemModel(component);
+      const emptySummary = new SummaryItemModel(component);
       componentSummaryItem = [emptySummary];
     }
 

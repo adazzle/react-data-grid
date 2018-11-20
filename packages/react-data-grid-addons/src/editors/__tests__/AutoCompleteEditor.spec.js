@@ -7,9 +7,9 @@ import ReactAutocomplete from 'ron-react-autocomplete';
 
 describe('AutoCompleteEditor', () => {
   function fakeCb() { return true; }
-  let fakeOptions = [{id: 1, title: 'test-result1'}, {id: 2, title: 'test-result2'}];
-  let fakeParams = ['param1', 'param2', 'param3'];
-  let fakeColumn = { key: 'autocomplete', name: 'name', width: 0 };
+  const fakeOptions = [{id: 1, title: 'test-result1'}, {id: 2, title: 'test-result2'}];
+  const fakeParams = ['param1', 'param2', 'param3'];
+  const fakeColumn = { key: 'autocomplete', name: 'name', width: 0 };
 
   describe('Unit Tests', () => {
     describe('Basic tests', () => {

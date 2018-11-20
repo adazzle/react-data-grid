@@ -12,7 +12,7 @@ class SummaryItemModel {
   }
 
   _createModel(summary) {
-    let { owner, component } = this._getComponentAndOwner(summary);
+    const { owner, component } = this._getComponentAndOwner(summary);
     this.owner = owner;
     this.component = component;
     this.wastedInstances = summary[WASTED_INSTANCES_KEY];
@@ -27,8 +27,8 @@ class SummaryItemModel {
   }
 
   _getComponentAndOwner(summary) {
-    let ownerAndComponent = summary[OWNER_COMPONENT_KEY];
-    let splitOwnerComponent = ownerAndComponent.split('>');
+    const ownerAndComponent = summary[OWNER_COMPONENT_KEY];
+    const splitOwnerComponent = ownerAndComponent.split('>');
 
     return {
       owner: splitOwnerComponent[0].trim(),

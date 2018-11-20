@@ -6,10 +6,10 @@ const AutoCompleteEditor = require('../AutoCompleteEditor');
 describe('AutoCompleteEditor integration', () => {
   let component;
   function fakeCb() { return true; }
-  let fakeOptions = [{id: 1, title: 'test-result1'}, {id: 2, title: 'test-result2'}];
-  let fakeParams = ['param1', 'param2', 'param3'];
-  let fakeColumn = { key: 'autocomplete', name: 'name', width: 0 };
-  let commitSpy = jasmine.createSpy();
+  const fakeOptions = [{id: 1, title: 'test-result1'}, {id: 2, title: 'test-result2'}];
+  const fakeParams = ['param1', 'param2', 'param3'];
+  const fakeColumn = { key: 'autocomplete', name: 'name', width: 0 };
+  const commitSpy = jasmine.createSpy();
 
   beforeEach(() => {
     component = ReactDOM.render(<AutoCompleteEditor
@@ -30,8 +30,8 @@ describe('AutoCompleteEditor integration', () => {
 
   describe('Input Events', () => {
     xit('clicking on an item should trigger commit', () => {
-      let Autocomplete = TestUtils.findRenderedComponentWithType(component, AutoCompleteEditor);
-      let textInputEle = Autocomplete.getInputNode();
+      const Autocomplete = TestUtils.findRenderedComponentWithType(component, AutoCompleteEditor);
+      const textInputEle = Autocomplete.getInputNode();
       // Click on input
       TestUtils.Simulate.click(textInputEle);
       // Click on first result

@@ -35,9 +35,9 @@ function getItemStyles(props) {
 class CustomDragLayer extends Component {
 
   isDraggedRowSelected(selectedRows) {
-    let {item, rowSelection} = this.props;
+    const {item, rowSelection} = this.props;
     if (selectedRows && selectedRows.length > 0) {
-      let key = rowSelection.selectBy.keys.rowKey;
+      const key = rowSelection.selectBy.keys.rowKey;
       return selectedRows.filter(r => r[key] === item.data[key]).length > 0;
     }
     return false;
@@ -45,11 +45,11 @@ class CustomDragLayer extends Component {
 
   getDraggedRows() {
     let draggedRows;
-    let {rowSelection} = this.props;
+    const {rowSelection} = this.props;
     if (rowSelection && rowSelection.selectBy.keys) {
-      let rows = this.props.rows;
-      let {rowKey, values} = rowSelection.selectBy.keys;
-      let selectedRows = Selectors.getSelectedRowsByKey({rowKey: rowKey, selectedKeys: values, rows: rows});
+      const rows = this.props.rows;
+      const {rowKey, values} = rowSelection.selectBy.keys;
+      const selectedRows = Selectors.getSelectedRowsByKey({rowKey: rowKey, selectedKeys: values, rows: rows});
       draggedRows = this.isDraggedRowSelected(selectedRows) ? selectedRows : [this.props.rows[this.props.item.idx]];
     } else {
       draggedRows = [this.props.rows[this.props.item.idx]];
@@ -65,7 +65,7 @@ class CustomDragLayer extends Component {
   }
 
   renderDraggedCells(item, rowIdx, columns) {
-    let cells = [];
+    const cells = [];
     if (item != null) {
       columns.forEach( c => {
         if (item.hasOwnProperty(c.key)) {
@@ -87,7 +87,7 @@ class CustomDragLayer extends Component {
     if (!isDragging) {
       return null;
     }
-    let draggedRows = this.renderDraggedRows();
+    const draggedRows = this.renderDraggedRows();
     return (
       <div style={layerStyles} className="rdg-dragging">
         <div style={getItemStyles(this.props) } className="rdg-dragging">

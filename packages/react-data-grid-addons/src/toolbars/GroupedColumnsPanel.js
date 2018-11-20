@@ -26,7 +26,7 @@ class GroupedColumnsPanel extends Component {
   }
 
   getPanelInstructionMessage() {
-    let {groupBy} = this.props;
+    const {groupBy} = this.props;
     return groupBy && groupBy.length > 0 ? this.props.panelDescription : this.props.noColumnsSelectedMessage;
   }
 
@@ -74,7 +74,7 @@ GroupedColumnsPanel.propTypes = propTypes;
 const columnTarget = {
   drop(props, monitor) {
     // Obtain the dragged item
-    let item = monitor.getItem();
+    const item = monitor.getItem();
     if (typeof props.onColumnGroupAdded === 'function') {
       props.onColumnGroupAdded(item.key);
     }

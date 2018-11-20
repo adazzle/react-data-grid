@@ -11,8 +11,8 @@ export const comparer = (a, b) => {
 
 const sortRows = (rows, sortColumn, sortDirection) => {
   const retriever = getMixedTypeValueRetriever(isImmutableCollection(rows));
-  let sortDirectionSign = sortDirection === 'ASC' ? 1 : -1;
-  let rowComparer = (a, b) => {
+  const sortDirectionSign = sortDirection === 'ASC' ? 1 : -1;
+  const rowComparer = (a, b) => {
     return sortDirectionSign * comparer(retriever.getValue(a, sortColumn), retriever.getValue(b, sortColumn));
   };
   if (sortDirection === 'NONE') {

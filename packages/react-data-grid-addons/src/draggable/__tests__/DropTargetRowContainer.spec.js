@@ -30,7 +30,7 @@ describe('<DropTargetRowContainer />', () => {
   let backend;
   let registry;
   let manager;
-  let props = {
+  const props = {
     onRowDrop: jasmine.createSpy(),
     idx: 1,
     row: {id: 5, country: 'England'},
@@ -51,17 +51,17 @@ describe('<DropTargetRowContainer />', () => {
   });
 
   it('should call onRowDrop with correct parameters when source is dropped', () => {
-    let rowTargetKey = Object.keys(registry.handlers).filter(k => registry.handlers[k].monitor && registry.handlers[k].monitor.targetId)[0];
-    let rowTargetId = registry.handlers[rowTargetKey].monitor.targetId;
-    let draggedRowItem = { idx: 3, data: { id: 11, country: 'Ireland', county: 'Wicklow' }};
-    let sourceId = registry.addSource('Row', new DragTestSource(draggedRowItem));
+    const rowTargetKey = Object.keys(registry.handlers).filter(k => registry.handlers[k].monitor && registry.handlers[k].monitor.targetId)[0];
+    const rowTargetId = registry.handlers[rowTargetKey].monitor.targetId;
+    const draggedRowItem = { idx: 3, data: { id: 11, country: 'Ireland', county: 'Wicklow' }};
+    const sourceId = registry.addSource('Row', new DragTestSource(draggedRowItem));
     backend.simulateBeginDrag([sourceId]);
     backend.simulateHover([rowTargetId]);
     backend.simulateDrop();
     expect(props.onRowDrop).toHaveBeenCalled();
     expect(props.onRowDrop.calls.count()).toEqual(1);
-    let rowSource = props.onRowDrop.calls.first().args[0].rowSource;
-    let rowTarget = props.onRowDrop.calls.first().args[0].rowTarget;
+    const rowSource = props.onRowDrop.calls.first().args[0].rowSource;
+    const rowTarget = props.onRowDrop.calls.first().args[0].rowTarget;
     expect(rowSource).toEqual(draggedRowItem);
     expect(rowTarget.idx).toEqual(1);
     expect(rowTarget.data).toEqual(props.row);

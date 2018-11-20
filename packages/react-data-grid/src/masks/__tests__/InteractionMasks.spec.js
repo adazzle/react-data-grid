@@ -223,7 +223,7 @@ describe('<InteractionMasks/>', () => {
 
         it('should shrink the selection upwards on Shift+Up', () => {
           pressKey(wrapper, 'ArrowUp', { shiftKey: true });
-          let selectedRange = wrapper.state('selectedRange');
+          const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
           expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 3, rowIdx: 2 }));
           expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 3, rowIdx: 2 }));
@@ -232,7 +232,7 @@ describe('<InteractionMasks/>', () => {
 
         it('should shrink the selection leftwards on Shift+Left', () => {
           pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
-          let selectedRange = wrapper.state('selectedRange');
+          const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
           expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 2, rowIdx: 3 }));
           expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 2, rowIdx: 3 }));
@@ -241,7 +241,7 @@ describe('<InteractionMasks/>', () => {
 
         it('should grow the selection downwards on Shift+Down', () => {
           pressKey(wrapper, 'ArrowDown', { shiftKey: true });
-          let selectedRange = wrapper.state('selectedRange');
+          const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
           expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 3, rowIdx: 4 }));
           expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 3, rowIdx: 4 }));
@@ -250,7 +250,7 @@ describe('<InteractionMasks/>', () => {
 
         it('should grow the selection rightwards on Shift+Right', () => {
           pressKey(wrapper, 'ArrowRight', { shiftKey: true });
-          let selectedRange = wrapper.state('selectedRange');
+          const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
           expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 4, rowIdx: 3 }));
           expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 4, rowIdx: 3 }));
@@ -263,7 +263,7 @@ describe('<InteractionMasks/>', () => {
           const { props, wrapper } = setup();
           selectRange(wrapper, props, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
           pressKey(wrapper, 'ArrowUp', { shiftKey: true });
-          let selectedRange = wrapper.state('selectedRange');
+          const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.cursorCell).toEqual(jasmine.objectContaining({ idx: 0, rowIdx: 0 }));
         });
 
@@ -271,7 +271,7 @@ describe('<InteractionMasks/>', () => {
           const { props, wrapper } = setup();
           selectRange(wrapper, props, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
           pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
-          let selectedRange = wrapper.state('selectedRange');
+          const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.cursorCell).toEqual({ idx: 0, rowIdx: 0 });
         });
 
@@ -279,7 +279,7 @@ describe('<InteractionMasks/>', () => {
           const { props, wrapper } = setup();
           selectRange(wrapper, props, { idx: 2, rowIdx: 2 }, { idx: NUMBER_OF_COLUMNS - 1, rowIdx: 3 });
           pressKey(wrapper, 'ArrowRight', { shiftKey: true });
-          let selectedRange = wrapper.state('selectedRange');
+          const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.cursorCell).toEqual({ idx: NUMBER_OF_COLUMNS - 1, rowIdx: 3 });
         });
 
@@ -287,7 +287,7 @@ describe('<InteractionMasks/>', () => {
           const { props, wrapper } = setup();
           selectRange(wrapper, props, { idx: 2, rowIdx: 2 }, { idx: 2, rowIdx: ROWS_COUNT - 1 });
           pressKey(wrapper, 'ArrowDown', { shiftKey: true });
-          let selectedRange = wrapper.state('selectedRange');
+          const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: ROWS_COUNT - 1 });
         });
       });
@@ -308,7 +308,7 @@ describe('<InteractionMasks/>', () => {
 
       it('should grow the selection range left on Shift+Left', () => {
         pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
-        let selectedRange = wrapper.state('selectedRange');
+        const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 1, rowIdx: 2 }));
         expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
         expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 1, rowIdx: 2 }));
@@ -317,7 +317,7 @@ describe('<InteractionMasks/>', () => {
 
       it('should grow the selection range right on Shift+Right', () => {
         pressKey(wrapper, 'ArrowRight', { shiftKey: true });
-        let selectedRange = wrapper.state('selectedRange');
+        const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
         expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 3, rowIdx: 2 }));
         expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 3, rowIdx: 2 }));
@@ -326,7 +326,7 @@ describe('<InteractionMasks/>', () => {
 
       it('should grow the selection range up on Shift+Up', () => {
         pressKey(wrapper, 'ArrowUp', { shiftKey: true });
-        let selectedRange = wrapper.state('selectedRange');
+        const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 1 }));
         expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
         expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 2, rowIdx: 1 }));
@@ -335,7 +335,7 @@ describe('<InteractionMasks/>', () => {
 
       it('should grow the selection range down on Shift+Down', () => {
         pressKey(wrapper, 'ArrowDown', { shiftKey: true });
-        let selectedRange = wrapper.state('selectedRange');
+        const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
         expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 2, rowIdx: 3 }));
         expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 2, rowIdx: 3 }));
@@ -354,7 +354,7 @@ describe('<InteractionMasks/>', () => {
 
       it('should grow the selection range right on Shift+Right', () => {
         pressKey(wrapper, 'ArrowRight', { shiftKey: true });
-        let selectedRange = wrapper.state('selectedRange');
+        const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 0, rowIdx: 0 }));
         expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 1, rowIdx: 0 }));
         expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 1, rowIdx: 0 }));
@@ -363,7 +363,7 @@ describe('<InteractionMasks/>', () => {
 
       it('should grow the selection range down on Shift+Down', () => {
         pressKey(wrapper, 'ArrowDown', { shiftKey: true });
-        let selectedRange = wrapper.state('selectedRange');
+        const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 0, rowIdx: 0 }));
         expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 0, rowIdx: 1 }));
         expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 0, rowIdx: 1 }));

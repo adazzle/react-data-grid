@@ -40,7 +40,7 @@ class Header extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let update =  !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
+    const update =  !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
     || this.props.totalWidth !== nextProps.totalWidth
     || (this.props.headerRows.length !== nextProps.headerRows.length)
     || (this.state.resizing !== nextState.resizing)
@@ -50,12 +50,12 @@ class Header extends React.Component {
   }
 
   onColumnResize = (column, width) => {
-    let state = this.state.resizing || this.props;
+    const state = this.state.resizing || this.props;
 
-    let pos = this.getColumnPosition(column);
+    const pos = this.getColumnPosition(column);
 
     if (pos != null) {
-      let resizing = {
+      const resizing = {
         columnMetrics: shallowCloneObject(state.columnMetrics)
       };
       resizing.columnMetrics = ColumnMetrics.resizeColumn(
@@ -72,7 +72,7 @@ class Header extends React.Component {
   };
 
   onColumnResizeEnd = (column, width) => {
-    let pos = this.getColumnPosition(column);
+    const pos = this.getColumnPosition(column);
     if (pos !== null && this.props.onColumnResize) {
       this.props.onColumnResize(pos, width || column.width);
     }
@@ -142,7 +142,7 @@ class Header extends React.Component {
   };
 
   getColumnPosition = (column) => {
-    let columnMetrics = this.getColumnMetrics();
+    const columnMetrics = this.getColumnMetrics();
     let pos = -1;
     columnMetrics.columns.forEach((c, idx) => {
       if (c.key === column.key) {
@@ -173,11 +173,11 @@ class Header extends React.Component {
   };
 
   setScrollLeft = (scrollLeft) => {
-    let node = ReactDOM.findDOMNode(this.row);
+    const node = ReactDOM.findDOMNode(this.row);
     node.scrollLeft = scrollLeft;
     this.row.setScrollLeft(scrollLeft);
     if (this.filterRow) {
-      let nodeFilters = ReactDOM.findDOMNode(this.filterRow);
+      const nodeFilters = ReactDOM.findDOMNode(this.filterRow);
       nodeFilters.scrollLeft = scrollLeft;
       this.filterRow.setScrollLeft(scrollLeft);
     }
@@ -193,11 +193,11 @@ class Header extends React.Component {
   };
 
   render() {
-    let className = joinClasses({
+    const className = joinClasses({
       'react-grid-Header': true,
       'react-grid-Header--resizing': !!this.state.resizing
     });
-    let headerRows = this.getHeaderRows();
+    const headerRows = this.getHeaderRows();
 
     return (
       <div {...this.getKnownDivProps()} style={this.getStyle()} className={className} onClick={this.onHeaderClick}>

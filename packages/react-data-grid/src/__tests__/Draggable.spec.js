@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-let Draggable = require('../Draggable');
+const Draggable = require('../Draggable');
 
 const renderComponent = (props) => {
   const wrapper = shallow(<Draggable {...props} />);

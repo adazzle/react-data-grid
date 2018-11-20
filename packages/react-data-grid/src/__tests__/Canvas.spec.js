@@ -10,7 +10,7 @@ const noop = () => null;
 
 const getRows = wrp => wrp.find(RowsContainer).props().children.props.children;
 
-let testProps = {
+const testProps = {
   rowHeight: 25,
   height: 200,
   rowOverscanStartIdx: 1,
@@ -85,13 +85,13 @@ describe('Canvas Tests', () => {
   });
 
   describe('Row Selection', () => {
-    let COLUMNS = [{key: 'id', name: 'ID'}];
+    const COLUMNS = [{key: 'id', name: 'ID'}];
 
     describe('selectBy index', () => {
       it('renders row selected', () => {
-        let rowGetter = () => { return { id: 1}; };
+        const rowGetter = () => { return { id: 1}; };
 
-        let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
+        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
         wrapper = renderComponent(props);
 
         const rows = getRows(wrapper);
@@ -101,9 +101,9 @@ describe('Canvas Tests', () => {
 
     describe('selectBy keys', () => {
       it('renders row selected', () => {
-        let rowGetter = () => { return {id: 1}; };
+        const rowGetter = () => { return {id: 1}; };
 
-        let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
+        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
         wrapper = renderComponent(props);
 
         const rows = getRows(wrapper);
@@ -114,9 +114,9 @@ describe('Canvas Tests', () => {
 
     describe('selectBy `isSelectedKey`', () => {
       it('renders row selected', () => {
-        let rowGetter = (i) => { return i === 0 ? {id: 1, isSelected: true} : null; };
+        const rowGetter = (i) => { return i === 0 ? {id: 1, isSelected: true} : null; };
 
-        let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected'} };
+        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected'} };
         wrapper = renderComponent(props);
 
         const rows = getRows(wrapper);
@@ -140,14 +140,14 @@ describe('Canvas Tests', () => {
       };
     }
 
-    let COLUMNS = [{key: 'id', name: 'ID', left: 100}];
+    const COLUMNS = [{key: 'id', name: 'ID', left: 100}];
 
     it('can render a custom renderer if __metadata property exists', () => {
-      let EmptyChildRow = () => {
+      const EmptyChildRow = () => {
         return (<div className="test-row-renderer"></div>);
       };
-      let rowGetter = () => { return {id: 0, __metaData: {getRowRenderer: EmptyChildRow}}; };
-      let props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
+      const rowGetter = () => { return {id: 0, __metaData: {getRowRenderer: EmptyChildRow}}; };
+      const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
       wrapper = renderComponent(props);
       const rows = getRows(wrapper);
       expect(rows[0].props.className).toBe('test-row-renderer');

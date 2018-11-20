@@ -10,7 +10,7 @@ const ResizeHandle   = require('./ResizeHandle');
 require('../../../themes/react-data-grid-header.css');
 
 function SimpleCellRenderer(objArgs) {
-  let headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
+  const headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
   return <div className="widget-HeaderCell__value">{headerText}</div>;
 }
 
@@ -40,9 +40,9 @@ class HeaderCell extends React.Component {
   };
 
   onDrag = (e) => {
-    let resize = this.props.onResize || null; // for flows sake, doesnt recognise a null check direct
+    const resize = this.props.onResize || null; // for flows sake, doesnt recognise a null check direct
     if (resize) {
-      let width = this.getWidthFromMouseEvent(e);
+      const width = this.getWidthFromMouseEvent(e);
       if (width > 0) {
         resize(this.props.column, width);
       }
@@ -50,14 +50,14 @@ class HeaderCell extends React.Component {
   };
 
   onDragEnd = (e) => {
-    let width = this.getWidthFromMouseEvent(e);
+    const width = this.getWidthFromMouseEvent(e);
     this.props.onResizeEnd(this.props.column, width);
     this.setState({resizing: false});
   };
 
   getWidthFromMouseEvent = (e) => {
-    let right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
-    let left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
+    const right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
+    const left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   };
 

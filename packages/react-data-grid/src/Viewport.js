@@ -164,8 +164,8 @@ class Viewport extends React.Component {
   };
 
   metricsUpdated = () => {
-    let height = this.viewportHeight();
-    let width = this.viewportWidth();
+    const height = this.viewportHeight();
+    const width = this.viewportWidth();
     if (height) {
       const { scrollTop, scrollLeft } = this.state;
       const { rowHeight, rowsCount } = this.props;
@@ -245,7 +245,7 @@ class Viewport extends React.Component {
   };
 
   render() {
-    let style = {
+    const style = {
       padding: 0,
       bottom: 0,
       left: 0,

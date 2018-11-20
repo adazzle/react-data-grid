@@ -1,4 +1,4 @@
-let isValidElement = require('react').isValidElement;
+const isValidElement = require('react').isValidElement;
 
 module.exports = function sameColumn(a, b) {
   let k;

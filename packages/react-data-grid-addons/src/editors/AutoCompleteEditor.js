@@ -5,7 +5,7 @@ import { ExcelColumn } from 'common/prop-shapes';
 require('../../../../themes/ron-react-autocomplete.css');
 import PropTypes from 'prop-types';
 
-let optionPropType = PropTypes.shape({
+const optionPropType = PropTypes.shape({
   id: PropTypes.required,
   title: PropTypes.string
 });
@@ -36,7 +36,7 @@ class AutoCompleteEditor extends React.Component {
 
   getValue = () => {
     let value;
-    let updated = {};
+    const updated = {};
     if (this.hasResults() && this.isFocusedOnSuggestion()) {
       value = this.getLabel(this.autoComplete.state.focusedValue);
       if (this.props.valueParams) {
@@ -51,8 +51,8 @@ class AutoCompleteEditor extends React.Component {
   };
 
   getEditorDisplayValue = () => {
-    let displayValue = {title: ''};
-    let { column, value, editorDisplayValue } = this.props;
+    const displayValue = {title: ''};
+    const { column, value, editorDisplayValue } = this.props;
     if (editorDisplayValue && typeof editorDisplayValue === 'function') {
       displayValue.title = editorDisplayValue(column, value);
     } else {
@@ -66,7 +66,7 @@ class AutoCompleteEditor extends React.Component {
   };
 
   getLabel = (item) => {
-    let label = this.props.label != null ? this.props.label : 'title';
+    const label = this.props.label != null ? this.props.label : 'title';
     if (typeof label === 'function') {
       return label(item);
     } else if (typeof label === 'string') {
@@ -79,7 +79,7 @@ class AutoCompleteEditor extends React.Component {
   };
 
   isFocusedOnSuggestion = () => {
-    let autoComplete = this.autoComplete;
+    const autoComplete = this.autoComplete;
     return autoComplete.state.focusedValue != null;
   };
 
@@ -88,7 +88,7 @@ class AutoCompleteEditor extends React.Component {
       return '';
     }
 
-    let ret = [];
+    const ret = [];
     for (let i = 0, ii = props.length; i < ii; i++) {
       ret.push(obj[props[i]]);
     }
@@ -100,7 +100,7 @@ class AutoCompleteEditor extends React.Component {
   };
 
   render() {
-    let label = this.props.label != null ? this.props.label : 'title';
+    const label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
       <ReactAutocomplete search={this.props.search} ref={this.setAutocompleteRef} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
       </div>);

@@ -7,7 +7,7 @@ import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell'
 import { shallow} from 'enzyme';
 
 describe('Header Row Unit Tests', () => {
-  let defaultProps = {
+  const defaultProps = {
     rowType: 'header',
     columns: helpers.columns,
     onColumnResize: function() {},
@@ -27,7 +27,7 @@ describe('Header Row Unit Tests', () => {
   };
 
   describe('When column is sortable and headerCellRenderer not provided', () => {
-    let sortableColIdx = 1;
+    const sortableColIdx = 1;
 
     beforeEach(() => {
       defaultProps.columns[sortableColIdx].sortable = true;
@@ -60,7 +60,7 @@ describe('Header Row Unit Tests', () => {
   });
 
   describe('When column is sortable and filterable', () => {
-    let sortableAndFilterableColIdx = 1;
+    const sortableAndFilterableColIdx = 1;
 
     describe('When row is filterable', () => {
       beforeEach(() => {
