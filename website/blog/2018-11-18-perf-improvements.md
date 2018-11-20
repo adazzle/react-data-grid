@@ -6,7 +6,7 @@ authorImageURL: https://media.licdn.com/dms/image/C4E03AQEk4UoXg1w95g/profile-di
 ---
 
 ## Overview
-ReactDataGrid V5 brought brin about a large rewrite of the core architecture with the main goal to improve performance of the grid. These performance issues were most noticeable in use cases where many rows and columns needed to be rendered to the screen, as well as when custom cell formatters were used to display the cell content. For cell formatters which were expensive to render, this could dramatically degrade grid performance for operations such as scrolling and cell navigation. It was clear to the naked eye that these issues were present in some of our production applications. We needed a solution to measure and solve the performance problems once and for all.
+ReactDataGrid V5 brought about a large rewrite of the core architecture with the main goal to improve performance of the grid. These performance issues were most noticeable in use cases where many rows and columns needed to be rendered to the screen, as well as when custom cell formatters were used to display the cell content. For cell formatters which were expensive to render, this could dramatically degrade grid performance for operations such as scrolling and cell navigation. It was clear to the naked eye that these issues were present in some of our production applications. We needed a solution to measure and solve the performance problems once and for all.
 
 ## Identifying the problems
 When using ReactDataGrid in our production environment for very large datasets, we could see performance degradation for the following situations
