@@ -7,7 +7,7 @@ import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
-import columnUtils from './ColumnUtils';
+import {isFrozen} from './ColumnUtils';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
@@ -57,7 +57,7 @@ class Cell extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     this.setState({
       isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
-      isLockChanging: columnUtils.isFrozen(this.props.column) !== columnUtils.isFrozen(nextProps.column)
+      isLockChanging: isFrozen(this.props.column) !== isFrozen(nextProps.column)
     });
   }
 
@@ -66,7 +66,7 @@ class Cell extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    if (this.state.isLockChanging && !columnUtils.isFrozen(this.props.column)) {
+    if (this.state.isLockChanging && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
   }
@@ -166,7 +166,7 @@ class Cell extends React.PureComponent {
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
-      columnUtils.isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
+      isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
       lastFrozenColumnIndex === idx ? 'rdg-last--frozen' : null
     );
     let extraClasses = classNames({
@@ -192,7 +192,7 @@ class Cell extends React.PureComponent {
   checkScroll() {
     const {scrollLeft, column} = this.props;
     const node = this.node;
-    if (columnUtils.isFrozen(column) && node && node.style.transform != null) {
+    if (isFrozen(column) && node && node.style.transform != null) {
       this.setScrollLeft(scrollLeft);
     }
   }

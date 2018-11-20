@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Column from 'common/prop-shapes/Column';
-import columnUtils from './ColumnUtils';
+import {isFrozen} from './ColumnUtils';
 import { HeaderRowType } from 'common/constants';
 const ResizeHandle   = require('./ResizeHandle');
 
@@ -115,7 +115,7 @@ class HeaderCell extends React.Component {
     const className = classNames({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
-      'react-grid-HeaderCell--frozen': columnUtils.isFrozen(column)
+      'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
     const cell = (
       <div className={className} style={this.getStyle()}>

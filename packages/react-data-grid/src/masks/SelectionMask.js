@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CellMask from './CellMask';
-import columnUtils from '../ColumnUtils';
+import {isFrozen, getColumn} from '../ColumnUtils';
 import zIndexes from 'common/constants/zIndexes';
 
-const isFrozenColumn = (columns, { idx }) => columnUtils.isFrozen(columnUtils.getColumn(columns, idx));
+const isFrozenColumn = (columns, { idx }) => isFrozen(getColumn(columns, idx));
 
 const isScrollingHorizontallyWithoutCellChange = ({ scrollTop, prevScrollTop, scrollLeft, prevScrollLeft, selectedPosition, prevSelectedPosition }) => {
   return scrollLeft !== prevScrollLeft && (scrollTop === prevScrollTop) && selectedPosition.idx === prevSelectedPosition.idx;
 };
 
-const getLeftPosition = (isFrozen, cellLeft, props) => {
-  if (isFrozen && !isScrollingHorizontallyWithoutCellChange(props)) {
+const getLeftPosition = (frozen, cellLeft, props) => {
+  if (frozen && !isScrollingHorizontallyWithoutCellChange(props)) {
     return props.scrollLeft + cellLeft;
   }
   return cellLeft;
@@ -20,7 +20,7 @@ const getLeftPosition = (isFrozen, cellLeft, props) => {
 
 export const getCellMaskDimensions = (props) => {
   const { selectedPosition, columns, getSelectedRowHeight, getSelectedRowTop } = props;
-  const column = columnUtils.getColumn(columns, selectedPosition.idx);
+  const column = getColumn(columns, selectedPosition.idx);
   const height = getSelectedRowHeight(selectedPosition.rowIdx);
   const top = getSelectedRowTop(selectedPosition.rowIdx);
   const frozen = isFrozenColumn(columns, selectedPosition);

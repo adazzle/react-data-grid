@@ -27,9 +27,11 @@
     "antd": "^3.10.2",
     "antd-init": "^2.0.6",
     "bootstrap": "^3.2.0",
+    "fs": "0.0.1-security",
     "jquery": "^2.1.1",
     "lodash": "^4.13.1",
     "lodash.groupby": "^4.5.1",
-    "markdown": "^0.5.0"
+    "markdown": "^0.5.0",
+    "tape": "^4.9.1"
   }
 }

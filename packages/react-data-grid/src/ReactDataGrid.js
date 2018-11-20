@@ -4,7 +4,7 @@ import {deprecate} from 'react-is-deprecated';
 import BaseGrid from './Grid';
 import CheckboxEditor from 'common/editors/CheckboxEditor';
 import RowUtils from './RowUtils';
-import ColumnUtils from './ColumnUtils';
+import {getColumn, getSize} from './ColumnUtils';
 import KeyCodes from './KeyCodes';
 import {isFunction} from 'common/utils';
 import SelectAll from './formatters/SelectAll';
@@ -308,7 +308,7 @@ class ReactDataGrid extends React.Component {
     if (this._mounted) {
       totalWidth = this.gridWidth();
     } else {
-      totalWidth = ColumnUtils.getSize(this.props.columns) * this.props.minColumnWidth;
+      totalWidth = getSize(this.props.columns) * this.props.minColumnWidth;
     }
     return totalWidth;
   };
@@ -326,12 +326,12 @@ class ReactDataGrid extends React.Component {
 
   getColumn = (idx) => {
     const { columns } = this.state.columnMetrics;
-    return ColumnUtils.getColumn(columns, idx);
+    return getColumn(columns, idx);
   };
 
   getSize = () => {
     const { columns } = this.state.columnMetrics;
-    return ColumnUtils.getSize(columns);
+    return getSize(columns);
   };
 
   metricsUpdated = () => {

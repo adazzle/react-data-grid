@@ -2,7 +2,7 @@ import React from 'react';
 import shallowEqual from 'shallowequal';
 import BaseHeaderCell from './HeaderCell';
 import getScrollbarSize from './getScrollbarSize';
-import columnUtils from './ColumnUtils';
+import {getColumn, getSize, isFrozen} from './ColumnUtils';
 import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
 import HeaderCellType from './HeaderCellType';
@@ -112,8 +112,8 @@ class HeaderRow extends React.Component {
     const frozenCells = [];
     const { columns, rowType } = this.props;
 
-    for (let i = 0, len = columnUtils.getSize(columns); i < len; i++) {
-      const column = { rowType, ...columnUtils.getColumn(columns, i) };
+    for (let i = 0, len = getSize(columns); i < len; i++) {
+      const column = { rowType, ...getColumn(columns, i) };
       const _renderer = column.key === 'select-row' && rowType === HeaderRowType.FILTER ? <div></div> : this.getHeaderRenderer(column);
 
       const cell = (
@@ -132,7 +132,7 @@ class HeaderRow extends React.Component {
         />
       );
 
-      if (columnUtils.isFrozen(column)) {
+      if (isFrozen(column)) {
         frozenCells.push(cell);
       } else {
         cells.push(cell);
@@ -144,7 +144,7 @@ class HeaderRow extends React.Component {
 
   setScrollLeft = (scrollLeft) => {
     this.props.columns.forEach((column, i) => {
-      if (columnUtils.isFrozen(column)) {
+      if (isFrozen(column)) {
         this.cells[i].setScrollLeft(scrollLeft);
       } else {
         if (this.cells[i] && this.cells[i].removeScroll) {

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import joinClasses from 'classnames';
 import shallowCloneObject from './shallowCloneObject';
 import ColumnMetrics from './ColumnMetrics';
-import ColumnUtils from './ColumnUtils';
+import {getColumn} from './ColumnUtils';
 import HeaderRow from './HeaderRow';
 import getScrollbarSize  from './getScrollbarSize';
 import PropTypes from 'prop-types';
@@ -66,7 +66,7 @@ class Header extends React.Component {
         resizing.columnMetrics.totalWidth = state.columnMetrics.totalWidth;
       }
 
-      resizing.column = ColumnUtils.getColumn(resizing.columnMetrics.columns, pos);
+      resizing.column = getColumn(resizing.columnMetrics.columns, pos);
       this.setState({resizing});
     }
   };

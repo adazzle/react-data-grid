@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import Cell from './Cell';
 import createObjectWithProperties from './createObjectWithProperties';
-import columnUtils from './ColumnUtils';
+import {isFrozen} from './ColumnUtils';
 require('../../../themes/react-data-grid-row.css');
 
 // The list of the propTypes that we want to include in the Row div
@@ -111,8 +111,8 @@ class Row extends React.Component {
 
   getCells = () => {
     const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
-    const frozenColumns = columns.filter(c => columnUtils.isFrozen(c));
-    const nonFrozenColumnsToRender = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !columnUtils.isFrozen(c));
+    const frozenColumns = columns.filter(c => isFrozen(c));
+    const nonFrozenColumnsToRender = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
     return frozenColumns.concat(nonFrozenColumnsToRender)
       .map(column => this.getCell(column));
   };
@@ -150,7 +150,7 @@ class Row extends React.Component {
 
   setScrollLeft = (scrollLeft) => {
     this.props.columns.forEach((column) => {
-      if (columnUtils.isFrozen(column)) {
+      if (isFrozen(column)) {
         if (!this[column.key]) return;
         this[column.key].setScrollLeft(scrollLeft);
       }
