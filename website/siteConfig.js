@@ -29,12 +29,16 @@ const siteConfig = {
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    {doc: 'quick-start', label: 'Docs'},
-    {doc: 'examples/simple-grid', label: 'Examples'},
+    { doc: 'quick-start', label: 'Docs' },
+    { doc: 'examples/simple-grid', label: 'Examples' },
     { blog: true, label: 'Blog' },
-    {doc: 'changelog', label: 'V' + packageJson.version}
+    { doc: 'changelog', label: 'V' + packageJson.version }
   ],
 
+  algolia: {
+    apiKey: '3233892b06b2ebdb595f78390b81bda2',
+    indexName: 'react_data_grid'
+  },
   // If you have users set above, you add it here:
   users,
 
