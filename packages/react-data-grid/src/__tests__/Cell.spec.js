@@ -42,7 +42,7 @@ const renderComponent = (extraProps) => {
 describe('Cell Tests', () => {
   it('should render a SimpleCellFormatter with value', () => {
     const wrapper = renderComponent();
-    let formatter = wrapper.find(SimpleCellFormatter);
+    const formatter = wrapper.find(SimpleCellFormatter);
     expect(formatter.props().value).toEqual('Wicklow');
   });
 
@@ -54,7 +54,7 @@ describe('Cell Tests', () => {
     };
 
     const wrapper = renderComponent({ column });
-    let formatterInstance = wrapper.find(CustomFormatter);
+    const formatterInstance = wrapper.find(CustomFormatter);
     expect(formatterInstance.props().value).toEqual('Wicklow');
   });
 

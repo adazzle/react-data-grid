@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import {createColumns} from '../__tests__/utils/createColumns';
 
 describe('Row', () => {
-  let fakeProps = {
+  const fakeProps = {
     height: 35,
     columns: [],
     row: [],
@@ -14,20 +14,20 @@ describe('Row', () => {
   };
 
   it('should create an instance of Row', () => {
-    let component = TestUtils.renderIntoDocument(<Row {...fakeProps} />);
+    const component = TestUtils.renderIntoDocument(<Row {...fakeProps} />);
     expect(component).toBeDefined();
   });
 
   describe('with extra classes', () => {
-    let fakeExtraClasses = ['row-extra-class', 'row-extra-extra-class'];
+    const fakeExtraClasses = ['row-extra-class', 'row-extra-extra-class'];
 
     it('should have extra classes', () => {
-      let newProps = Object.assign({}, fakeProps, {extraClasses: fakeExtraClasses.join(' ')});
-      let component = TestUtils.renderIntoDocument(<Row {...newProps} />);
+      const newProps = Object.assign({}, fakeProps, {extraClasses: fakeExtraClasses.join(' ')});
+      const component = TestUtils.renderIntoDocument(<Row {...newProps} />);
 
-      let row = TestUtils.findRenderedDOMComponentWithClass(component, 'react-grid-Row');
+      const row = TestUtils.findRenderedDOMComponentWithClass(component, 'react-grid-Row');
       fakeExtraClasses.forEach((c) => {
-        let containsExtraClass = row.className.indexOf(c) > -1;
+        const containsExtraClass = row.className.indexOf(c) > -1;
         expect(containsExtraClass).toBe(true);
       });
     });

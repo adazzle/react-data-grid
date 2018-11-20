@@ -11,7 +11,7 @@ describe('Empty Grid Tests', () => {
     }
   }
 
-  let testProps = {
+  const testProps = {
     columnMetrics: {
       columns: helpers.columns
     },

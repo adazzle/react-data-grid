@@ -5,7 +5,7 @@ import { shallow} from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
 import {SCROLL_DIRECTION} from '../utils/viewportUtils';
 
-let viewportProps = {
+const viewportProps = {
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {
@@ -40,7 +40,7 @@ let viewportProps = {
   rowKey: 'Id'
 };
 
-let viewportPropsNoColumns = {  // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
+const viewportPropsNoColumns = {  // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {
@@ -77,15 +77,15 @@ let viewportPropsNoColumns = {  // when creating anew plan copying from an exist
 describe('<Viewport />', () => {
   it('renders a Canvas component', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
-    let canvas = wrapper.find(Canvas);
+    const canvas = wrapper.find(Canvas);
     expect(canvas).toBeDefined();
   });
 
   it('should update scroll state onScroll', () => {
-    let scrollLeft = 0;
-    let scrollTop = 200;
+    const scrollLeft = 0;
+    const scrollTop = 200;
     const wrapper = shallow(<Viewport {...viewportProps} />);
-    let canvas = wrapper.find(Canvas);
+    const canvas = wrapper.find(Canvas);
     canvas.props().onScroll({ scrollTop, scrollLeft});
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: helpers.columns.length,
@@ -112,13 +112,13 @@ describe('<Viewport />', () => {
 
   it('should update when given different number of columns', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
-    let extraColumn = {
+    const extraColumn = {
       key: 'description',
       name: 'Description',
       width: 100
     };
-    let updatedColumns = helpers.columns.concat(extraColumn);
-    let newProps = Object.assign({}, viewportProps, {columnMetrics: Object.assign({}, viewportProps.columnMetrics, {columns: updatedColumns})});
+    const updatedColumns = helpers.columns.concat(extraColumn);
+    const newProps = Object.assign({}, viewportProps, {columnMetrics: Object.assign({}, viewportProps.columnMetrics, {columns: updatedColumns})});
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: updatedColumns.length,
@@ -140,7 +140,7 @@ describe('<Viewport />', () => {
   it('should update when given height changed', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
     const newHeight = 1000;
-    let newProps = Object.assign({}, viewportProps, {minHeight: newHeight});
+    const newProps = Object.assign({}, viewportProps, {minHeight: newHeight});
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: helpers.columns.length,

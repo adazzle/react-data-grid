@@ -96,7 +96,7 @@ describe('Header Unit Tests', () => {
       const wrapper = shallow(<Header {...props} />);
       return wrapper;
     };
-    let testRequiredProps = {
+    const testRequiredProps = {
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 81,
@@ -107,7 +107,7 @@ describe('Header Unit Tests', () => {
       headerRows: [{height: 51, ref: 'row'}],
       onSort: jasmine.createSpy()
     };
-    let testAllProps = {
+    const testAllProps = {
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 80,
@@ -139,7 +139,7 @@ describe('Header Unit Tests', () => {
 
     it('should account for scrollbar size in header', () => {
       const wrapper = renderComponent(testAllProps);
-      let headerRow = wrapper.find('.react-grid-Header').props().children[0];
+      const headerRow = wrapper.find('.react-grid-Header').props().children[0];
       expect(headerRow.props.style.width).toBe(testAllProps.totalWidth - SCROLL_BAR_SIZE);
     });
     it('passes height property', () => {

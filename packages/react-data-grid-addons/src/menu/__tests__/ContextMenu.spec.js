@@ -15,7 +15,7 @@ describe('Context Menu', () => {
   });
 
   it('should have "reactDataGridContextMenu" as identifier', () => {
-    let contextMenu = TestUtils.findRenderedComponentWithType(component, ContextMenu);
+    const contextMenu = TestUtils.findRenderedComponentWithType(component, ContextMenu);
     expect(contextMenu.props.identifier).toEqual('reactDataGridContextMenu');
   });
 });

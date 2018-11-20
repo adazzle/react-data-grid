@@ -19,7 +19,7 @@ class AutoCompleteFilter extends React.Component {
   }
 
   getOptions(newProps) {
-    let props = newProps || this.props;
+    const props = newProps || this.props;
     let options = props.getValidFilterValues(props.column.key);
     options = options.map(o => {
       if (typeof o === 'string') {
@@ -32,9 +32,9 @@ class AutoCompleteFilter extends React.Component {
 
   columnValueContainsSearchTerms(columnValue, filterTermValue) {
     if (columnValue !== undefined && filterTermValue !== undefined) {
-      let strColumnValue = columnValue.toString();
-      let strFilterTermValue = filterTermValue.toString();
-      let checkValueIndex = strColumnValue.trim().toLowerCase().indexOf(strFilterTermValue.trim().toLowerCase());
+      const strColumnValue = columnValue.toString();
+      const strFilterTermValue = filterTermValue.toString();
+      const checkValueIndex = strColumnValue.trim().toLowerCase().indexOf(strFilterTermValue.trim().toLowerCase());
       return checkValueIndex !== -1 && (checkValueIndex !== 0 || strColumnValue === strFilterTermValue);
     }
     return false;
@@ -57,7 +57,7 @@ class AutoCompleteFilter extends React.Component {
   }
 
   handleChange(value) {
-    let filters = value;
+    const filters = value;
     this.setState({filters});
     this.props.onChange({filterTerm: filters, column: this.props.column, rawValue: value, filterValues: this.filterValues });
   }

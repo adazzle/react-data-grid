@@ -1,4 +1,4 @@
-let _rows = [];
+const _rows = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,

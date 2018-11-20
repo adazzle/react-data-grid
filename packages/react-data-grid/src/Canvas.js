@@ -180,10 +180,10 @@ class Canvas extends React.PureComponent {
     if (Array.isArray(this.props.rowGetter)) {
       return this.props.rowGetter.slice(rowOverscanStartIdx, rowOverscanEndIdx);
     }
-    let rows = [];
+    const rows = [];
     let i = rowOverscanStartIdx;
     while (i < rowOverscanEndIdx) {
-      let row = this.props.rowGetter(i);
+      const row = this.props.rowGetter(i);
       let subRowDetails = {};
       if (this.props.getSubRowDetails) {
         subRowDetails = this.props.getSubRowDetails(row);
@@ -202,8 +202,8 @@ class Canvas extends React.PureComponent {
   isRowSelected = (idx, row) => {
     // Use selectedRows if set
     if (this.props.selectedRows !== null) {
-      let selectedRows = this.props.selectedRows.filter(r => {
-        let rowKeyValue = row.get ? row.get(this.props.rowKey) : row[this.props.rowKey];
+      const selectedRows = this.props.selectedRows.filter(r => {
+        const rowKeyValue = row.get ? row.get(this.props.rowKey) : row[this.props.rowKey];
         return r[this.props.rowKey] === rowKeyValue;
       });
       return selectedRows.length > 0 && selectedRows[0].isSelected;
@@ -211,7 +211,7 @@ class Canvas extends React.PureComponent {
 
     // Else use new rowSelection props
     if (this.props.rowSelection) {
-      let { keys, indexes, isSelectedKey } = this.props.rowSelection;
+      const { keys, indexes, isSelectedKey } = this.props.rowSelection;
       return rowUtils.isRowSelected(keys, indexes, isSelectedKey, row, idx);
     }
 

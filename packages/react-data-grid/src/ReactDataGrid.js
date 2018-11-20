@@ -131,7 +131,7 @@ class ReactDataGrid extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    let columnMetrics = this.createColumnMetrics();
+    const columnMetrics = this.createColumnMetrics();
     const initialState = {columnMetrics, selectedRows: [], expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, scrollOffset: 0, lastRowIdxUiSelected: -1};
     if (this.props.sortColumn && this.props.sortDirection) {
       initialState.sortColumn = this.props.sortColumn;
@@ -161,7 +161,7 @@ class ReactDataGrid extends React.Component {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality) ||
           nextProps.minWidth !== this.props.minWidth) {
-        let columnMetrics = this.createColumnMetrics(nextProps);
+        const columnMetrics = this.createColumnMetrics(nextProps);
         this.setState({columnMetrics: columnMetrics});
       }
     }
@@ -202,13 +202,13 @@ class ReactDataGrid extends React.Component {
   };
 
   getColumnMetricsType = (metrics) => {
-    let totalWidth = metrics.totalWidth || this.getTotalWidth();
-    let currentMetrics = {
+    const totalWidth = metrics.totalWidth || this.getTotalWidth();
+    const currentMetrics = {
       columns: metrics.columns,
       totalWidth: totalWidth,
       minColumnWidth: metrics.minColumnWidth
     };
-    let updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
+    const updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
     return updatedMetrics;
   };
 
@@ -339,7 +339,7 @@ class ReactDataGrid extends React.Component {
     }
 
     if (this.props.onGridRowsUpdated) {
-      let cellKey = this.getColumn(e.idx).key;
+      const cellKey = this.getColumn(e.idx).key;
       this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, {[cellKey]: e.rowData[cellKey]}, UpdateActions.COLUMN_FILL);
     }
   };
@@ -396,7 +396,7 @@ class ReactDataGrid extends React.Component {
   };
 
   getSelectedRow = (rows, key) => {
-    let selectedRow = rows.filter(r => {
+    const selectedRow = rows.filter(r => {
       if (r[this.props.rowKey] === key) {
         return true;
       }
@@ -414,15 +414,15 @@ class ReactDataGrid extends React.Component {
   // return false if not a shift select so can be handled as normal row selection
   handleShiftSelect = (rowIdx) => {
     if (this.state.lastRowIdxUiSelected > -1 && this.isSingleKeyDown(KeyCodes.Shift)) {
-      let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
-      let isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, this.props.rowGetter(rowIdx), rowIdx);
+      const {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
+      const isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, this.props.rowGetter(rowIdx), rowIdx);
 
       if (isPreviouslySelected) return false;
 
       let handled = false;
 
       if (rowIdx > this.state.lastRowIdxUiSelected) {
-        let rowsSelected = [];
+        const rowsSelected = [];
 
         for (let i = this.state.lastRowIdxUiSelected + 1; i <= rowIdx; i++) {
           rowsSelected.push({rowIdx: i, row: this.props.rowGetter(i)});
@@ -434,7 +434,7 @@ class ReactDataGrid extends React.Component {
 
         handled = true;
       } else if (rowIdx < this.state.lastRowIdxUiSelected) {
-        let rowsSelected = [];
+        const rowsSelected = [];
 
         for (let i = rowIdx; i <= this.state.lastRowIdxUiSelected - 1; i++) {
           rowsSelected.push({rowIdx: i, row: this.props.rowGetter(i)});
@@ -462,8 +462,8 @@ class ReactDataGrid extends React.Component {
       this.selectAllCheckbox.checked = false;
     }
 
-    let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
-    let isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
+    const {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
+    const isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
 
     this.setState({lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: {rowIdx: rowIdx, idx: 0}});
 
@@ -488,8 +488,8 @@ class ReactDataGrid extends React.Component {
         this.handleNewRowSelect(rowIdx, rowData);
       }
     } else { // Fallback to old onRowSelect handler
-      let selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
-      let selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
+      const selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
+      const selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
       if (selectedRow) {
         selectedRow.isSelected = !selectedRow.isSelected;
       } else {
@@ -511,12 +511,12 @@ class ReactDataGrid extends React.Component {
       allRowsSelected = false;
     }
     if (this.useNewRowSelection()) {
-      let {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
+      const {keys, indexes, isSelectedKey} = this.props.rowSelection.selectBy;
 
       if (allRowsSelected && typeof this.props.rowSelection.onRowsSelected === 'function') {
-        let selectedRows = [];
+        const selectedRows = [];
         for (let i = 0; i < this.props.rowsCount; i++) {
-          let rowData = this.props.rowGetter(i);
+          const rowData = this.props.rowGetter(i);
           if (!RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
             selectedRows.push({rowIdx: i, row: rowData});
           }
@@ -526,9 +526,9 @@ class ReactDataGrid extends React.Component {
           this.props.rowSelection.onRowsSelected(selectedRows);
         }
       } else if (!allRowsSelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
-        let deselectedRows = [];
+        const deselectedRows = [];
         for (let i = 0; i < this.props.rowsCount; i++) {
-          let rowData = this.props.rowGetter(i);
+          const rowData = this.props.rowGetter(i);
           if (RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
             deselectedRows.push({rowIdx: i, row: rowData});
           }
@@ -539,9 +539,9 @@ class ReactDataGrid extends React.Component {
         }
       }
     } else {
-      let selectedRows = [];
+      const selectedRows = [];
       for (let i = 0; i < this.props.rowsCount; i++) {
-        let row = Object.assign({}, this.props.rowGetter(i), {isSelected: allRowsSelected});
+        const row = Object.assign({}, this.props.rowGetter(i), {isSelected: allRowsSelected});
         selectedRows.push(row);
       }
       this.setState({selectedRows: selectedRows});
@@ -571,7 +571,7 @@ class ReactDataGrid extends React.Component {
   };
 
   getInitialSelectedRows = () => {
-    let selectedRows = [];
+    const selectedRows = [];
     for (let i = 0; i < this.props.rowsCount; i++) {
       selectedRows.push(false);
     }
@@ -619,9 +619,9 @@ class ReactDataGrid extends React.Component {
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
       const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} inputRef={grid => this.selectAllCheckbox = grid} />;
-      let headerRenderer = props.enableRowSelect === 'single' ? null : SelectAllRenderer;
-      let Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
-      let selectColumn = {
+      const headerRenderer = props.enableRowSelect === 'single' ? null : SelectAllRenderer;
+      const Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
+      const selectColumn = {
         key: 'select-row',
         name: '',
         formatter: <Formatter rowSelection={this.props.rowSelection}/>,
@@ -650,8 +650,8 @@ class ReactDataGrid extends React.Component {
   };
 
   renderToolbar = () => {
-    let Toolbar = this.props.toolbar;
-    let toolBarProps =  {columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount};
+    const Toolbar = this.props.toolbar;
+    const toolBarProps =  {columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount};
     if (React.isValidElement(Toolbar)) {
       return ( React.cloneElement(Toolbar, toolBarProps));
     } else if (isFunction(Toolbar)) {
