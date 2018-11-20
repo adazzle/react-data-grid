@@ -38,7 +38,7 @@ When scrolling right, it is unnecessary to render any rows outside of the visibl
 ![Scrolling Right](assets/scroll_right.svg)
 
 ### Scrolling Left
-When scrolling upwards, the only buffer that should be rendered is some columns to the left of the canvas. This is reverse of the previous image.
+When scrolling left, the only buffer that should be rendered is some columns to the left of the canvas. This is reverse of the previous image.
 
 
 ## Interaction Layer
@@ -66,7 +66,7 @@ When a cell is selected, either with a mouse click, or with the array keys of th
 The InteractionMask keeps track of the selected cell `{idx, rowIdx}` in state. However, the InteractionMask does not know how to relate coordinates on the screen to an actual cells position on the grid. In order to update the state of the selected cells position in the InteractionMask, the InteractionMask needs to listen to events from the Cell component. This is possible as aach Cell component is aware of its position in the grid. Unfortunately, as InteractionMask and Cell sit at the same level in the component heirarchy, it is dificult for the two components to directly communicate with each other. 
 
 ### EventBus
-To solve this issue as well as similar use cases, we introduced an [EventBus](https://github.com/adazzle/react-data-grid/blob/master/packages/common/editors/EventBus.js) object to allow for easier communication between sibling components, as well as to provide a way for components to propagate state changes to their descendants deep in the component hierarchy. We originally looked to solve this problem by incorperating a state management solultion like Redux, as well as a custom RxJs state manager. These added too much overhead to what we wanted to achieve and in the end, we decided to create a very simple event bus object that is passed down from the root component, allowing components to publish and subscribe to events.
+To solve this issue as well as similar use cases, we introduced an [EventBus](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid/src/masks/EventBus.js) object to allow for easier communication between sibling components, as well as to provide a way for components to propagate state changes to their descendants deep in the component hierarchy. We originally looked to solve this problem by incorperating a state management solultion like Redux, as well as a custom RxJs state manager. These added too much overhead to what we wanted to achieve and in the end, we decided to create a very simple event bus object that is passed down from the root component, allowing components to publish and subscribe to events.
 
 
 <img src="assets/selection4.svg" alt="drawing" width="1800"/>

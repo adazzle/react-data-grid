@@ -3,7 +3,7 @@ id: cell-formatting
 title: Cell Formatting
 ---
 
-By default, ReactDataGrid will render the content of a cell using the [SimpleCellFormatter](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid/src/formatters/SimpleCellFormatter.js). It is possible to render custom content for a column by setting its `Formatter` property and providing it a React component. 
+By default, ReactDataGrid will render the content of a cell using the [SimpleCellFormatter](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid/src/formatters/SimpleCellFormatter.js). It is possible to render custom content for a column by setting its `formatter` property and providing it a React component. 
 
 ## Formatter
 A Formatter can be any React component. It will take in the following props. 

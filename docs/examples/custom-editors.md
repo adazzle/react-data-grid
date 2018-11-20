@@ -18,7 +18,7 @@ The pluggable nature of ReactDataGrid can work really well with third party comp
 
 ### Editor API
 A ReactDataGrid editor is a React component that needs to implement three methods, `getValue`, `getInputNode`  
-and `render`. Here is a skeleton of a CustomEditor.
+and `render`. There is a fourth optional method called `disableContainerStyles`. Here is a skeleton of a CustomEditor.
 
 ```javascript
 class CustomEditor extends React.Component {
@@ -31,6 +31,11 @@ class CustomEditor extends React.Component {
     // If applicable, should return back the primary html input node that is used to edit the data
     // Otherwise return null
     // If value is an input node, then this node will be focussed on when the editor opens
+  }
+
+  disableContainerStyles() {
+    // Optional method
+    // If set to true, the EditorContainer will not apply default styling to the editor
   }
 
   render() {

@@ -57,11 +57,11 @@ ReactDataGrid 'Root API Component to render a data grid'
 
 ### react-data-grid-addons
 Below are the current addons available in the addons package. It is a future goal of the project to deprecate this package and move each folder to its own separate package
- - [Editors](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid/src/editors) - Contains a range of cell editors for the grid
- - [Formatters](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid/src/formatters) - Contains a selection of formatters for the grid
- - [Toolbar](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid/src/toolbar)
- - [Menu](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid/src/menu) - A context menu that can be used on the grid
- - [Data](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid/src/data) - Functional utilities for row filtering, grouping, sorting, expanding etc that can be used to modify grid rows based on certain input paramaters
- - [ToolsPanel](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid/src/toolspanel) - UI components used for a tool panel above the grid.
- - [Draggable](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid/src/draggable) - Utilities to add drag and drop capability to the grid
- - [Filters](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid/src/filters) - Custom Filters that can be added to the header of the grid 
+ - [Editors](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/editors) - Contains a range of cell editors for the grid
+ - [Formatters](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/formatters) - Contains a selection of formatters for the grid
+ - [Toolbar](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/toolbar)
+ - [Menu](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/menu) - A context menu that can be used on the grid
+ - [Data](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/data) - Functional utilities for row filtering, grouping, sorting, expanding etc that can be used to modify grid rows based on certain input paramaters
+ - [ToolsPanel](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/toolspanel) - UI components used for a tool panel above the grid.
+ - [Draggable](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/draggable) - Utilities to add drag and drop capability to the grid
+ - [Filters](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/filters) - Custom Filters that can be added to the header of the grid 
