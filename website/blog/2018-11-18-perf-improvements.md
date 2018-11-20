@@ -67,7 +67,7 @@ One way in which we can prevent a component from updating is to implement a [sho
 
 As a best practice, these functions should be simple and efficient. Checks aren’t free, and doing lots of checks can slow down your application. At the time of v4, both Cell and Row implemented shouldComponentUpdate functions that were neither simple or efficient.
 
-## #Cell shouldComponentUpdate
+### Cell shouldComponentUpdate
 ```javascript
 // Bad example of a shouldComponentUpdate function
 shouldComponentUpdate(nextProps: any): boolean {
