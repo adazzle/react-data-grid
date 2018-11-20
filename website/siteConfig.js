@@ -31,6 +31,7 @@ const siteConfig = {
   headerLinks: [
     {doc: 'quick-start', label: 'Docs'},
     {doc: 'examples/simple-grid', label: 'Examples'},
+    { blog: true, label: 'Blog' },
     {doc: 'changelog', label: 'V' + packageJson.version}
   ],
 
