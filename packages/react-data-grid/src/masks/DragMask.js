@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
 
-function DragMask({ draggedPosition, columns, rowHeight }) {
+function DragMask({ draggedPosition, getSelectedDimensions }) {
   const { overRowIdx, idx, rowIdx } = draggedPosition;
   if (overRowIdx != null && rowIdx !== overRowIdx) {
     const isDraggedOverDown = rowIdx < overRowIdx;
@@ -12,9 +11,9 @@ function DragMask({ draggedPosition, columns, rowHeight }) {
     const endRowIdx = isDraggedOverDown ? overRowIdx : rowIdx - 1;
     const className = isDraggedOverDown ? 'react-grid-cell-dragged-over-down' : 'react-grid-cell-dragged-over-up';
 
-    const dimensions = getSelectedDimensions({ selectedPosition: { idx, rowIdx: startRowIdx }, columns, rowHeight });
+    const dimensions = getSelectedDimensions({ idx, rowIdx: startRowIdx });
     for (let currentRowIdx = startRowIdx + 1; currentRowIdx <= endRowIdx; currentRowIdx++) {
-      const { height } = getSelectedDimensions({ selectedPosition: { idx, rowIdx: currentRowIdx }, columns, rowHeight });
+      const { height } = getSelectedDimensions({ idx, rowIdx: currentRowIdx });
       dimensions.height += height;
     }
 
@@ -30,8 +29,7 @@ function DragMask({ draggedPosition, columns, rowHeight }) {
 
 DragMask.propTypes = {
   draggedPosition: PropTypes.object.isRequired,
-  columns: PropTypes.array.isRequired,
-  rowHeight: PropTypes.number.isRequired
+  getSelectedDimensions: PropTypes.func.isRequired
 };
 
 export default DragMask;

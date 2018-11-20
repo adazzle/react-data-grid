@@ -19,7 +19,9 @@ const defaultProps = {
   },
   column: fakeColumn,
   value: 'Adwolf',
-  height: 50
+  height: 50,
+  onCommit: jasmine.createSpy(),
+  onCommitCancel: jasmine.createSpy()
 };
 
 const getComponent = (props) => {
@@ -75,31 +77,6 @@ describe('Editor Container Tests', () => {
       expect(editorDiv.props().onBlur).toBeDefined();
       expect(editorDiv.props().onKeyDown).toBeDefined();
       expect(editorDiv.props().children).toBeDefined();
-    });
-
-    describe('Frozen columns', () => {
-      const frozenProps = {
-        column: { ...fakeColumn, frozen: true },
-        left: 60,
-        top: 0,
-        scrollTop: 0,
-        scrollLeft: 250
-      };
-
-      it('should not subtract scrollLeft value from editors left position when column is frozen', () => {
-        const { shallowWrapper } = getComponent(frozenProps);
-        const editorDiv = shallowWrapper.find('div').at(0);
-        expect(editorDiv.props().style.transform).toBe('translate(60px, 0px)');
-      });
-
-      it('should subtract scrollLeft value from editors left position when column is not frozen', () => {
-        const unfrozenProps = { ...frozenProps };
-        unfrozenProps.column.frozen = false;
-
-        const { shallowWrapper } = getComponent(unfrozenProps);
-        const editorDiv = shallowWrapper.find('div').at(0);
-        expect(editorDiv.props().style.transform).toBe('translate(-190px, 0px)');
-      });
     });
   });
 
@@ -189,12 +166,11 @@ describe('Editor Container Tests', () => {
     let container;
 
     beforeEach(() => {
+      defaultProps.onCommit.calls.reset();
+      defaultProps.onCommitCancel.calls.reset();
       container = document.createElement('div');
       document.body.appendChild(container);
-      component = mount(<EditorContainer
-        onCommit={jasmine.createSpy()}
-        onCommitCancel={jasmine.createSpy()}
-        { ...defaultProps }/>, { attachTo: container });
+      component = mount(<EditorContainer { ...defaultProps }/>, { attachTo: container });
     });
 
     afterEach(() => {
@@ -214,6 +190,7 @@ describe('Editor Container Tests', () => {
       const editor = component.find(SimpleTextEditor);
 
       editor.simulate('keydown', { key: 'Escape' });
+      component.detach();
 
       expect(component.props().onCommitCancel).toHaveBeenCalled();
       expect(component.props().onCommitCancel.calls.count()).toEqual(1);

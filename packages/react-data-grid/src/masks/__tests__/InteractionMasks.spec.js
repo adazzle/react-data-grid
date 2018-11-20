@@ -49,9 +49,9 @@ describe('<InteractionMasks/>', () => {
       enableCellSelect: true,
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus,
-      getSelectedRowHeight: () => 50,
-      getSelectedRowTop: () => 0,
-      getSelectedRowColumns: jasmine.createSpy().and.callFake(() => columns),
+      getRowColumns: () => columns,
+      getRowHeight: () => 50,
+      getRowTop: () => 0,
       ...overrideProps
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
@@ -658,7 +658,7 @@ describe('<InteractionMasks/>', () => {
         it('goes to the last cell in the row when the user presses Shift+Tab and they are at the beginning of a row', () => {
           const selectedPosition = { rowIdx: 0, idx: 0 };
           assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-            .toEqual({ rowIdx: 0, idx: NUMBER_OF_COLUMNS - 1, changeRowOrColumn: true});
+            .toEqual({ rowIdx: 0, idx: NUMBER_OF_COLUMNS - 1, changeRowOrColumn: true });
         });
         it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
           const selectedPosition = { rowIdx: 3, idx: 3 };
@@ -696,18 +696,6 @@ describe('<InteractionMasks/>', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
       expect(wrapper.find(CopyMask).props().copiedPosition).toEqual({ idx: 1, rowIdx: 2, value: '3' });
-    });
-
-    it('should render a CopyMask component with correct columns', () => {
-      const { wrapper, props } = setupCopy();
-      const { columns: selectedRowColumns, getSelectedRowColumns } = props;
-      const copyRowColumns = selectedRowColumns.slice(0, 5);
-      getSelectedRowColumns.and.callFake(rowIdx => rowIdx === 2 ? copyRowColumns : selectedRowColumns);
-      // Copy selected cell
-      pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
-      // Change selected row
-      pressKey(wrapper, 'ArrowUp');
-      expect(wrapper.find(CopyMask).props().columns).toEqual(copyRowColumns);
     });
 
     it('should remove the CopyMask component on escape', () => {

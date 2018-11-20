@@ -8,10 +8,22 @@ import zIndexes from 'common/constants/zIndexes';
 describe('DragMask', () => {
   const setup = (propsOverride = {}) => {
     const props = {
-      columns: [
-        { width: 50, left: 5 }
-      ],
-      rowHeight: 30,
+      getSelectedDimensions: ({ rowIdx }) => {
+        const { [rowIdx]: height } = {
+          2: 20,
+          3: 30,
+          4: 40,
+          5: 50,
+          6: 60
+        };
+
+        return {
+          height,
+          width: 50,
+          left: 5,
+          top: 90
+        };
+      },
       ...propsOverride
     };
 
@@ -26,15 +38,14 @@ describe('DragMask', () => {
   });
 
   it('should render the CellMask component with correct position for the dragged down cell', () => {
-    const mask = setup({ draggedPosition: { idx: 0, rowIdx: 2, overRowIdx: 6 } });
+    const mask = setup({ draggedPosition: { idx: 0, rowIdx: 2, overRowIdx: 4 } });
 
     expect(mask.props()).toEqual(
       jasmine.objectContaining({
-        height: 120, // rowHeight * (overRowIdx - rowIdx)
+        height: 70,
         width: 50,
         left: 5,
-        top: 90, // = rowHeight * rowIdx
-        zIndex: zIndexes.CELL_MASK
+        top: 90
       })
     );
   });
@@ -44,11 +55,10 @@ describe('DragMask', () => {
 
     expect(mask.props()).toEqual(
       jasmine.objectContaining({
-        height: 60, // rowHeight * (rowIdx - overRowIdx)
+        height: 90,
         width: 50,
         left: 5,
-        top: 120, // = rowHeight * overRowIdx
-        zIndex: zIndexes.CELL_MASK
+        top: 90
       })
     );
   });

@@ -2,10 +2,15 @@ import React from 'react';
 import Header from '../Header';
 import HeaderRow from '../HeaderRow';
 import helpers, {fakeCellMetaData} from '../helpers/test/GridPropHelpers';
+import * as GetScrollbarSize from '../getScrollbarSize';
 import { shallow } from 'enzyme';
 const SCROLL_BAR_SIZE = 17;
 
 describe('Header Unit Tests', () => {
+  beforeEach(() => {
+    spyOn(GetScrollbarSize, 'default').and.returnValue(SCROLL_BAR_SIZE);
+  });
+
   const testProps = {
     columnMetrics: {
       columns: helpers.columns,
