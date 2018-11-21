@@ -168,7 +168,6 @@ class Cell extends React.PureComponent {
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
-      columnUtils.isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
       lastFrozenColumnIndex === idx ? 'rdg-last--frozen' : null
     );
     let extraClasses = joinClasses({
