@@ -137,13 +137,6 @@ describe('Row', () => {
           const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
           expect(cells.length).toBe(renderedRange);
         });
-
-        it('first rendered cell index should be first frozen cell', () => {
-          const columns = lockColumns(LAST_LOCKED_CELL_IDX);
-          const {cells} = setup({...requiredProperties, columns});
-          const firstFrozenColumn = columns.filter(c => c.frozen === true)[0];
-          expect(cells.first().props().column).toBe(firstFrozenColumn);
-        });
       });
 
       describe('When not using frozen columns', ()  => {
