@@ -50,6 +50,13 @@
 
 .react-grid-Cell:hover {
   background: #eee;
+  /*
+    A minor hack to get cell tooltips to show correctly.
+    Hover is triggered on a child (react-grid-Cell__value)
+    and to avoid having the tooltip hide under the cell in
+    the next row we need to up the z-index of the cell being hovered.
+  */
+  z-index: 101;
 }
 
 .react-grid-cell .form-control-feedback {
@@ -90,16 +97,8 @@
   padding: 0;
 }
 
-.cell-tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-.cell-tooltip:hover {
-  z-index: 101;
-}
-
 .cell-tooltip .cell-tooltip-text {
+    white-space: normal;
     visibility: hidden;
     width: 150px;
     background-color: black;
@@ -108,12 +107,12 @@
     border-radius: 6px;
     padding: 5px 0;
     position: absolute;
-    z-index: 1;
-    bottom: -150%;
+    z-index: 999;
+    top: 50%;
+    bottom: initial;
     left: 50%;
-    margin-left: -60px;
-    /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
-    opacity: 1s;
+    margin-top: 15px;
+    margin-left: -75px
 }
 
 .cell-tooltip:hover .cell-tooltip-text {
