@@ -138,11 +138,11 @@ describe('Row', () => {
           expect(cells.length).toBe(renderedRange);
         });
 
-        it('first rendered cell index should be first frozen cell', () => {
+        it('first frozen cell should be rendered after the unfrozen cells', () => {
           const columns = lockColumns(LAST_LOCKED_CELL_IDX);
           const {cells} = setup({...requiredProperties, columns});
           const firstFrozenColumn = columns.filter(c => c.frozen === true)[0];
-          expect(cells.first().props().column).toBe(firstFrozenColumn);
+          expect(cells.at(cells.length - LAST_LOCKED_CELL_IDX - 1).props().column).toBe(firstFrozenColumn);
         });
       });
 
@@ -161,7 +161,7 @@ describe('Row', () => {
           expect(cells.first().props().column).toBe(expectedFirstColumn);
         });
 
-        it('lasat rendered cell index should be colOverscanEndIdx', () => {
+        it('last rendered cell index should be colOverscanEndIdx', () => {
           const {cells} = setup(requiredProperties);
           const {columns, colOverscanEndIdx} = requiredProperties;
           const expectedLastColumn = columns[colOverscanEndIdx];
