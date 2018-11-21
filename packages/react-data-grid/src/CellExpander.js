@@ -10,12 +10,12 @@ class CellExpander extends React.Component {
 
   constructor(props) {
     super(props);
-    let expanded = props.expandableOptions && props.expandableOptions.expanded;
+    const expanded = props.expandableOptions && props.expandableOptions.expanded;
     this.state = { expanded: expanded };
   }
 
   componentWillReceiveProps(nextProps) {
-    let expanded = nextProps.expandableOptions && nextProps.expandableOptions.expanded;
+    const expanded = nextProps.expandableOptions && nextProps.expandableOptions.expanded;
     if (this.state.expanded !== expanded) {
       this.setState({expanded});
     }

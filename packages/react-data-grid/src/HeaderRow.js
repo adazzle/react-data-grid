@@ -78,8 +78,8 @@ class HeaderRow extends React.Component {
   };
 
   getSortableHeaderCell = (column) => {
-    let sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
-    let sortDescendingFirst = (column.sortDescendingFirst === undefined) ? false : column.sortDescendingFirst;
+    const sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+    const sortDescendingFirst = (column.sortDescendingFirst === undefined) ? false : column.sortDescendingFirst;
     return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst} headerRenderer={column.headerRenderer} />;
   };
 
@@ -159,7 +159,7 @@ class HeaderRow extends React.Component {
   };
 
   render() {
-    let cellsStyle = {
+    const cellsStyle = {
       width: this.props.width ? (this.props.width + getScrollbarSize()) : '100%',
       height: this.props.height,
       whiteSpace: 'nowrap',
@@ -167,7 +167,7 @@ class HeaderRow extends React.Component {
       overflowY: 'hidden'
     };
 
-    let cells = this.getCells();
+    const cells = this.getCells();
     return (
       <div {...this.getKnownDivProps()} className="react-grid-HeaderRow">
         <div style={cellsStyle}>

@@ -23,13 +23,13 @@ class NumericFilter extends React.Component {
     }
     let result = false;
     // implement default filter logic
-    let value = parseInt(row[columnKey], 10);
-    for (let ruleKey in columnFilter.filterTerm) {
+    const value = parseInt(row[columnKey], 10);
+    for (const ruleKey in columnFilter.filterTerm) {
       if (!columnFilter.filterTerm.hasOwnProperty(ruleKey)) {
         continue;
       }
 
-      let rule = columnFilter.filterTerm[ruleKey];
+      const rule = columnFilter.filterTerm[ruleKey];
 
       switch (rule.type) {
       case RuleType.Number:
@@ -61,32 +61,32 @@ class NumericFilter extends React.Component {
   }
 
   getRules(value) {
-    let rules = [];
+    const rules = [];
     if (value === '') {
       return rules;
     }
     // check comma
-    let list = value.split(',');
+    const list = value.split(',');
     if (list.length > 0) {
       // handle each value with comma
-      for (let key in list) {
+      for (const key in list) {
         if (!list.hasOwnProperty(key)) {
           continue;
         }
 
-        let obj = list[key];
+        const obj = list[key];
         if (obj.indexOf('-') > 0) { // handle dash
-          let begin = parseInt(obj.split('-')[0], 10);
-          let end = parseInt(obj.split('-')[1], 10);
+          const begin = parseInt(obj.split('-')[0], 10);
+          const end = parseInt(obj.split('-')[1], 10);
           rules.push({ type: RuleType.Range, begin: begin, end: end });
         } else if (obj.indexOf('>') > -1) { // handle greater then
-          let begin = parseInt(obj.split('>')[1], 10);
+          const begin = parseInt(obj.split('>')[1], 10);
           rules.push({ type: RuleType.GreaterThen, value: begin });
         } else if (obj.indexOf('<') > -1) { // handle less then
-          let end = parseInt(obj.split('<')[1], 10);
+          const end = parseInt(obj.split('<')[1], 10);
           rules.push({ type: RuleType.LessThen, value: end });
         } else { // handle normal values
-          let numericValue = parseInt(obj, 10);
+          const numericValue = parseInt(obj, 10);
           rules.push({ type: RuleType.Number, value: numericValue });
         }
       }
@@ -95,31 +95,31 @@ class NumericFilter extends React.Component {
   }
 
   handleKeyPress(e) { // Validate the input
-    let regex = '>|<|-|,|([0-9])';
-    let result = RegExp(regex).test(e.key);
+    const regex = '>|<|-|,|([0-9])';
+    const result = RegExp(regex).test(e.key);
     if (result === false) {
       e.preventDefault();
     }
   }
 
   handleChange(e) {
-    let value = e.target.value;
-    let filters = this.getRules(value);
+    const value = e.target.value;
+    const filters = this.getRules(value);
     this.props.onChange({filterTerm: (filters.length > 0 ? filters : null), column: this.props.column, rawValue: value, filterValues: this.filterValues });
   }
 
   render() {
-    let inputKey = 'header-filter-' + this.props.column.key;
-    let columnStyle = {
+    const inputKey = 'header-filter-' + this.props.column.key;
+    const columnStyle = {
       float: 'left',
       marginRight: 5,
       maxWidth: '80%'
     };
-    let badgeStyle = {
+    const badgeStyle = {
       cursor: 'help'
     };
 
-    let tooltipText = 'Input Methods: Range (x-y), Greater Then (>x), Less Then (<y)';
+    const tooltipText = 'Input Methods: Range (x-y), Greater Then (>x), Less Then (<y)';
 
     return (
       <div>

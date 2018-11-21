@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import SimpleTextEditor from './SimpleTextEditor';
-import {isFunction} from 'common/utils';
+import { isFunction } from 'common/utils';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import zIndexes from 'common/constants/zIndexes';
+import EditorPortal from './EditorPortal';
+
 require('../../../themes/react-data-grid-core.css');
 
 const isFrozen = column => column.frozen === true || column.locked === true;
@@ -17,19 +19,19 @@ class EditorContainer extends React.Component {
     rowData: PropTypes.object.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired,
     column: PropTypes.object.isRequired,
+    width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
+    left: PropTypes.number.isRequired,
+    top: PropTypes.number.isRequired,
     onGridKeyDown: PropTypes.func,
     onCommit: PropTypes.func,
     onCommitCancel: PropTypes.func,
     firstEditorKeyPress: PropTypes.string,
-    width: PropTypes.number,
-    top: PropTypes.number,
-    left: PropTypes.number,
     scrollLeft: PropTypes.number,
     scrollTop: PropTypes.number
   };
 
-  state = {isInvalid: false};
+  state = { isInvalid: false };
   changeCommitted = false;
   changeCanceled = false;
 
@@ -42,7 +44,6 @@ class EditorContainer extends React.Component {
         inputNode.style.height = this.props.height - 1 + 'px';
       }
     }
-    window.addEventListener('scroll', this.setContainerPosition);
   }
 
   componentDidUpdate(prevProps) {
@@ -53,22 +54,8 @@ class EditorContainer extends React.Component {
 
   componentWillUnmount() {
     if (!this.changeCommitted && !this.changeCanceled) {
-      this.commit({key: 'Enter'});
+      this.commit({ key: 'Enter' });
     }
-    window.removeEventListener('scroll', this.setContainerPosition);
-  }
-
-  setContainerPosition = () => {
-    if (this.container) {
-      this.container.style.transform = this.calculateTransform();
-    }
-  }
-
-  calculateTransform = () => {
-    const { column, left, scrollLeft, top, scrollTop } = this.props;
-    const editorLeft = isFrozen(column) ? left : left - scrollLeft;
-    const editorTop = top - scrollTop - window.pageYOffset;
-    return `translate(${editorLeft}px, ${editorTop}px)`;
   }
 
   isKeyExplicitlyHandled = (key) => {
@@ -132,15 +119,23 @@ class EditorContainer extends React.Component {
       return <CustomEditor ref={this.setEditorRef} {...editorProps} />;
     }
 
-    return <SimpleTextEditor ref={this.setEditorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
+    return (
+      <SimpleTextEditor
+        ref={this.setEditorRef}
+        column={this.props.column}
+        value={this.getInitialValue()}
+        onBlur={this.commit}
+        rowMetaData={this.getRowMetaData()}
+      />
+    );
   };
 
   onPressEnter = () => {
-    this.commit({key: 'Enter'});
+    this.commit({ key: 'Enter' });
   };
 
   onPressTab = () => {
-    this.commit({key: 'Tab'});
+    this.commit({ key: 'Tab' });
   };
 
   onPressEscape = (e) => {
@@ -239,13 +234,13 @@ class EditorContainer extends React.Component {
   };
 
   commit = (args) => {
-    const {onCommit} = this.props;
+    const { onCommit } = this.props;
     let opts = args || {};
     let updated = this.getEditor().getValue();
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       let cellKey = this.props.column.key;
-      onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
+      onCommit({ cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key });
     }
   };
 
@@ -257,7 +252,7 @@ class EditorContainer extends React.Component {
   isNewValueValid = (value) => {
     if (isFunction(this.getEditor().validate)) {
       let isValid = this.getEditor().validate(value);
-      this.setState({isInvalid: !isValid});
+      this.setState({ isInvalid: !isValid });
       return isValid;
     }
 
@@ -306,8 +301,8 @@ class EditorContainer extends React.Component {
 
   getRelatedTarget = (e) => {
     return e.relatedTarget ||
-            e.explicitOriginalTarget ||
-            document.activeElement; // IE11
+      e.explicitOriginalTarget ||
+      document.activeElement; // IE11
   };
 
   handleRightClick = (e) => {
@@ -321,7 +316,7 @@ class EditorContainer extends React.Component {
     }
 
     if (!this.isBodyClicked(e)) {
-	    // prevent null reference
+      // prevent null reference
       if (this.isViewportClicked(e) || !this.isClickInsideEditor(e)) {
         this.commit(e);
       }
@@ -349,15 +344,22 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { width, height, column } = this.props;
-    const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER  : zIndexes.EDITOR_CONTAINER;
-    const style = { position: 'fixed', height, width, zIndex, transform: this.calculateTransform() };
+    const { width, height, left, top, column } = this.props;
+    const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER : zIndexes.EDITOR_CONTAINER;
+    const style = { position: 'absolute', height, width, left, top, zIndex };
     return (
-        <div ref={this.setContainerRef} style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
+      <EditorPortal>
+        <div style={style}
+          className={this.getContainerClass()}
+          onBlur={this.handleBlur}
+          onKeyDown={this.onKeyDown}
+          onContextMenu={this.handleRightClick}
+        >
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>
-      );
+      </EditorPortal>
+    );
   }
 }
 

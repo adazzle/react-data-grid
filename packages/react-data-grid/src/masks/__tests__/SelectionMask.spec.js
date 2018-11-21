@@ -3,21 +3,18 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import SelectionMask from '../SelectionMask';
-import zIndexes from 'common/constants/zIndexes';
 
 describe('SelectionMask', () => {
-  const TOP = 45;
   const ROW_HEIGHT = 50;
   const setup = (propsOverride = {}) => {
     const props = {
       selectedPosition: { idx: 0, rowIdx: 3 },
-      columns: [
-        { width: 50, left: 5 }
-      ],
-      getSelectedRowHeight: () => ROW_HEIGHT,
-      getSelectedRowTop: () => TOP,
-      isGroupedRow: false,
-      scrollLeft: 0,
+      getSelectedDimensions: () => ({
+        height: 30,
+        width: 50,
+        left: 5,
+        top: 90
+      }),
       ...propsOverride
     };
 
@@ -30,11 +27,10 @@ describe('SelectionMask', () => {
 
     expect(mask.props()).toEqual(
       jasmine.objectContaining({
-        height: ROW_HEIGHT,
+        height: 30,
         width: 50,
         left: 5,
-        top: TOP,
-        zIndex: zIndexes.CELL_MASK,
+        top: 90,
         className: 'rdg-selected',
         children: undefined
       })

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { DropTarget } from 'react-dnd';
 import rowComparer from 'common/utils/RowComparer';
 
-let rowDropTarget = (Row) => class extends React.Component {
+const rowDropTarget = (Row) => class extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     return rowComparer(nextProps, this.props);
@@ -16,7 +16,7 @@ let rowDropTarget = (Row) => class extends React.Component {
 
   render() {
     const { connectDropTarget, isOver, canDrop} = this.props;
-    let overlayTop = this.props.idx * this.props.height;
+    const overlayTop = this.props.idx * this.props.height;
     return connectDropTarget(<div>
       <Row ref={(node) => this.row = node} {...this.props}/>
       {isOver && canDrop && <div className="rowDropTarget" style={{
@@ -31,8 +31,8 @@ const target = {
   drop(props, monitor, component) {
     // Obtain the dragged item
     component.moveRow();
-    let rowSource = monitor.getItem();
-    let rowTarget = { idx: props.idx, data: props.row };
+    const rowSource = monitor.getItem();
+    const rowTarget = { idx: props.idx, data: props.row };
     props.onRowDrop({ rowSource, rowTarget });
   }
 };

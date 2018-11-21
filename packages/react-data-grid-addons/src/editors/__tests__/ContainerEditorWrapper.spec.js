@@ -22,7 +22,7 @@ describe('ContainerEditorWrapper', () => {
   describe('Basic tests', () => {
     it('should create a new ContainerEditorWrapper instance wrapping the passed in component', () => {
       // ACT
-      let ConnectedContainerEditorWrapper = ContainerEditorWrapper(FakeContainer);
+      const ConnectedContainerEditorWrapper = ContainerEditorWrapper(FakeContainer);
       const renderedComp = mount(<ConnectedContainerEditorWrapper />);
 
       // ASSERT

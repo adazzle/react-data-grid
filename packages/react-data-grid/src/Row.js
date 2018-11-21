@@ -117,10 +117,16 @@ class Row extends React.Component {
       .map(column => this.getCell(column));
   };
 
+  getRowTop = () => {
+    if (this.row) {
+      return this.row.offsetTop;
+    }
+  };
+
   getRowHeight = () => {
-    let rows = this.props.expandedRows || null;
+    const rows = this.props.expandedRows || null;
     if (rows && this.props.idx) {
-      let row = rows[this.props.idx] || null;
+      const row = rows[this.props.idx] || null;
       if (row) {
         return row.height;
       }
@@ -141,7 +147,7 @@ class Row extends React.Component {
   };
 
   getExpandableOptions = (columnKey) => {
-    let subRowDetails = this.props.subRowDetails;
+    const subRowDetails = this.props.subRowDetails;
     if (subRowDetails) {
       return { canExpand: subRowDetails && subRowDetails.field === columnKey && ((subRowDetails.children && subRowDetails.children.length > 0) || subRowDetails.group === true), field: subRowDetails.field, expanded: subRowDetails && subRowDetails.expanded, children: subRowDetails && subRowDetails.children, treeDepth: subRowDetails ? subRowDetails.treeDepth : 0, subRowDetails: subRowDetails };
     }
@@ -157,12 +163,16 @@ class Row extends React.Component {
     });
   };
 
+  setRowRef = el => {
+    this.row = el;
+  };
+
   getKnownDivProps = () => {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
 
   render() {
-    let className = joinClasses(
+    const className = joinClasses(
       'react-grid-Row',
       `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
       {
@@ -172,13 +182,16 @@ class Row extends React.Component {
       { 'rdg-scrolling': this.props.isScrolling }
     );
 
-    let style = {
+    const style = {
       height: this.getRowHeight(this.props),
       overflow: 'hidden'
     };
+
+    const cells = this.getCells();
     return (
       <div
         {...this.getKnownDivProps()}
+        ref={this.setRowRef}
         className={className}
         style={style}
         onDragEnter={this.handleDragEnter}

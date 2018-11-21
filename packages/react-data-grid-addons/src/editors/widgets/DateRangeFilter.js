@@ -44,7 +44,7 @@ const DateRangePicker = function(element, options, cb) {
   this.setcustomOptions(customOptions, cb);
 
 	// apply CSS classes and labels to buttons
-  let c = this.container;
+  const c = this.container;
   $.each(this.buttonClasses, function(idx, val) {
     c.find('button').addClass(val);
   });
@@ -278,8 +278,8 @@ DateRangePicker.prototype = {
     // if no start/end dates set, check if an input element contains initial values
     if (typeof options.startDate === 'undefined' && typeof options.endDate === 'undefined') {
       if ($(this.element).is('input[type=text]')) {
-        let val = $(this.element).val();
-        let split = val.split(this.separator);
+        const val = $(this.element).val();
+        const split = val.split(this.separator);
         start = end = null;
         if (split.length === 2) {
           start = moment(split[0], this.format);
@@ -369,8 +369,8 @@ DateRangePicker.prototype = {
 
     if (this.opens === 'right') {
       // swap calendar positions
-      let left = this.container.find('.calendar.left');
-      let right = this.container.find('.calendar.right');
+      const left = this.container.find('.calendar.left');
+      const right = this.container.find('.calendar.right');
 
       if (right.hasClass('single')) {
         right.removeClass('single');
@@ -456,7 +456,7 @@ DateRangePicker.prototype = {
     if (!this.element.is('input')) return;
     if (!this.element.val().length) return;
 
-    let dateString = this.element.val().split(this.separator);
+    const dateString = this.element.val().split(this.separator);
     let start = null;
     let end = null;
 
@@ -560,7 +560,7 @@ DateRangePicker.prototype = {
   },
 
   outsideClick: function(e) {
-    let target = $(e.target);
+    const target = $(e.target);
     // if the page is clicked anywhere except within the daterangerpicker/button
     // itself then call this.hide()
     if (
@@ -596,11 +596,11 @@ DateRangePicker.prototype = {
 
   enterRange: function(e) {
     // mouse pointer has entered a range label
-    let label = e.target.innerHTML;
+    const label = e.target.innerHTML;
     if (label === this.locale.customRangeLabel) {
       this.updateView();
     } else {
-      let dates = this.ranges[label];
+      const dates = this.ranges[label];
       this.container.find('input[name=daterangepicker_start]').val(dates[0].format(this.format));
       this.container.find('input[name=daterangepicker_end]').val(dates[1].format(this.format));
     }
@@ -619,8 +619,8 @@ DateRangePicker.prototype = {
 
   // when a date is typed into the start to end date textboxes
   inputsChanged: function(e) {
-    let el = $(e.target);
-    let date = moment(el.val());
+    const el = $(e.target);
+    const date = moment(el.val());
 
     if (!date.isValid()) return;
 
@@ -654,13 +654,13 @@ DateRangePicker.prototype = {
   },
 
   clickRange: function(e) {
-    let label = e.target.innerHTML;
+    const label = e.target.innerHTML;
     this.chosenLabel = label;
 
     if (label === this.locale.customRangeLabel) {
       this.showCalendars();
     } else {
-      let dates = this.ranges[label];
+      const dates = this.ranges[label];
 
       this.startDate = dates[0];
       this.endDate = dates[1];
@@ -683,7 +683,7 @@ DateRangePicker.prototype = {
   },
 
   clickPrev: function(e) {
-    let cal = $(e.target).parents('.calendar');
+    const cal = $(e.target).parents('.calendar');
 
     if (cal.hasClass('left')) {
       this.leftCalendar.month.subtract(1, 'month');
@@ -694,7 +694,7 @@ DateRangePicker.prototype = {
   },
 
   clickNext: function(e) {
-    let cal = $(e.target).parents('.calendar');
+    const cal = $(e.target).parents('.calendar');
 
     if (cal.hasClass('left')) {
       this.leftCalendar.month.add(1, 'month');
@@ -705,10 +705,10 @@ DateRangePicker.prototype = {
   },
 
   hoverDate: function(e) {
-    let title = $(e.target).attr('data-title');
-    let row = title.substr(1, 1);
-    let col = title.substr(3, 1);
-    let cal = $(e.target).parents('.calendar');
+    const title = $(e.target).attr('data-title');
+    const row = title.substr(1, 1);
+    const col = title.substr(3, 1);
+    const cal = $(e.target).parents('.calendar');
 
     if (cal.hasClass('left')) {
       this.container.find('input[name=daterangepicker_start]').val(this.leftCalendar.calendar[row][col].format(this.format));
@@ -722,7 +722,7 @@ DateRangePicker.prototype = {
     let endDate = candidateEndDate;
 
     if (startDate.isAfter(endDate)) {
-      let difference = this.endDate.diff(this.startDate);
+      const difference = this.endDate.diff(this.startDate);
       endDate = moment(startDate).add(difference, 'ms');
     }
     this.startDate = startDate;
@@ -733,10 +733,10 @@ DateRangePicker.prototype = {
   },
 
   clickDate: function(e) {
-    let title = $(e.target).attr('data-title');
-    let row = title.substr(1, 1);
-    let col = title.substr(3, 1);
-    let cal = $(e.target).parents('.calendar');
+    const title = $(e.target).attr('data-title');
+    const row = title.substr(1, 1);
+    const col = title.substr(3, 1);
+    const cal = $(e.target).parents('.calendar');
 
     let startDate;
     let endDate;
@@ -745,7 +745,7 @@ DateRangePicker.prototype = {
       startDate = this.leftCalendar.calendar[row][col];
       endDate = this.endDate;
       if (typeof this.dateLimit === 'object') {
-        let maxDate = moment(startDate).add(this.dateLimit).startOf('day');
+        const maxDate = moment(startDate).add(this.dateLimit).startOf('day');
         if (endDate.isAfter(maxDate)) {
           endDate = maxDate;
         }
@@ -754,7 +754,7 @@ DateRangePicker.prototype = {
       startDate = this.startDate;
       endDate = this.rightCalendar.calendar[row][col];
       if (typeof this.dateLimit === 'object') {
-        let minDate = moment(endDate).subtract(this.dateLimit).startOf('day');
+        const minDate = moment(endDate).subtract(this.dateLimit).startOf('day');
         if (startDate.isBefore(minDate)) {
           startDate = minDate;
         }
@@ -799,27 +799,27 @@ DateRangePicker.prototype = {
   },
 
   updateMonthYear: function(e) {
-    let isLeft = $(e.target).closest('.calendar').hasClass('left');
-    let leftOrRight = isLeft ? 'left' : 'right';
-    let cal = this.container.find('.calendar.' + leftOrRight);
+    const isLeft = $(e.target).closest('.calendar').hasClass('left');
+    const leftOrRight = isLeft ? 'left' : 'right';
+    const cal = this.container.find('.calendar.' + leftOrRight);
 
     // Month must be Number for new moment versions
-    let month = parseInt(cal.find('.monthselect').val(), 10);
-    let year = cal.find('.yearselect').val();
+    const month = parseInt(cal.find('.monthselect').val(), 10);
+    const year = cal.find('.yearselect').val();
 
     this[leftOrRight + 'Calendar'].month.month(month).year(year);
     this.updateCalendars();
   },
 
   updateTime: function(e) {
-    let cal = $(e.target).closest('.calendar');
-    let isLeft = cal.hasClass('left');
+    const cal = $(e.target).closest('.calendar');
+    const isLeft = cal.hasClass('left');
 
     let hour = parseInt(cal.find('.hourselect').val(), 10);
-    let minute = parseInt(cal.find('.minuteselect').val(), 10);
+    const minute = parseInt(cal.find('.minuteselect').val(), 10);
 
     if (this.timePicker12Hour) {
-      let ampm = cal.find('.ampmselect').val();
+      const ampm = cal.find('.ampmselect').val();
 
       if (ampm === 'PM' && hour < 12) {
         hour += 12;
@@ -831,13 +831,13 @@ DateRangePicker.prototype = {
     }
 
     if (isLeft) {
-      let start = this.startDate.clone();
+      const start = this.startDate.clone();
       start.hour(hour);
       start.minute(minute);
       this.startDate = start;
       this.leftCalendar.month.hour(hour).minute(minute);
     } else {
-      let end = this.endDate.clone();
+      const end = this.endDate.clone();
       end.hour(hour);
       end.minute(minute);
       this.endDate = end;
@@ -863,7 +863,7 @@ DateRangePicker.prototype = {
     let customRange = true;
     let i = 0;
 
-    for (let range in this.ranges) {
+    for (const range in this.ranges) {
       if (this.timePicker) {
         if (this.startDate.isSame(this.ranges[range][0]) && this.endDate.isSame(this.ranges[range][1])) {
           customRange = false;
@@ -887,18 +887,18 @@ DateRangePicker.prototype = {
   },
 
   buildCalendar: function(month, year, hour, minute) {
-    let daysInMonth = moment([year, month]).daysInMonth();
-    let firstDay = moment([year, month, 1]);
-    let lastDay = moment([year, month, daysInMonth]);
-    let lastMonth = moment(firstDay).subtract(1, 'month').month();
-    let lastYear = moment(firstDay).subtract(1, 'month').year();
+    const daysInMonth = moment([year, month]).daysInMonth();
+    const firstDay = moment([year, month, 1]);
+    const lastDay = moment([year, month, daysInMonth]);
+    const lastMonth = moment(firstDay).subtract(1, 'month').month();
+    const lastYear = moment(firstDay).subtract(1, 'month').year();
 
-    let daysInLastMonth = moment([lastYear, lastMonth]).daysInMonth();
-    let dayOfWeek = firstDay.day();
+    const daysInLastMonth = moment([lastYear, lastMonth]).daysInMonth();
+    const dayOfWeek = firstDay.day();
     let i;
 
     // initialize a 6 rows x 7 columns array for the calendar
-    let calendar = [];
+    const calendar = [];
     calendar.firstDay = firstDay;
     calendar.lastDay = lastDay;
 
@@ -933,10 +933,10 @@ DateRangePicker.prototype = {
   },
 
   renderDropdowns: function(selected, minDate, maxDate) {
-    let currentMonth = selected.month();
+    const currentMonth = selected.month();
     let monthHtml = '<select class="monthselect">';
-    let inMinYear = false;
-    let inMaxYear = false;
+    const inMinYear = false;
+    const inMaxYear = false;
 
     for (let m = 0; m < 12; m++) {
       if ((!inMinYear || m >= minDate.month()) && (!inMaxYear || m <= maxDate.month())) {
@@ -947,9 +947,9 @@ DateRangePicker.prototype = {
     }
     monthHtml += '</select>';
 
-    let currentYear = selected.year();
-    let maxYear = (maxDate && maxDate.year()) || (currentYear + 5);
-    let minYear = (minDate && minDate.year()) || (currentYear - 50);
+    const currentYear = selected.year();
+    const maxYear = (maxDate && maxDate.year()) || (currentYear + 5);
+    const minYear = (minDate && minDate.year()) || (currentYear - 50);
     let yearHtml = '<select class="yearselect">';
 
     for (let y = minYear; y <= maxYear; y++) {
@@ -1037,7 +1037,7 @@ DateRangePicker.prototype = {
           if (calendar[row][col].isSame(this.endDate)) { cname += ' end-date '; }
         }
 
-        let title = 'r' + row + 'c' + col;
+        const title = 'r' + row + 'c' + col;
         html += '<td class="' + cname.replace(/\s+/g, ' ').replace(/^\s?(.*?)\s?$/, '$1') + '" data-title="' + title + '">' + calendar[row][col].date() + '</td>';
       }
       html += '</tr>';
@@ -1118,7 +1118,7 @@ DateRangePicker.prototype = {
 
 $.fn.daterangepicker = function(options, cb) {
   this.each(function() {
-    let el = $(this);
+    const el = $(this);
     if (el.data('daterangepicker')) {
       el.data('daterangepicker').remove();
     }
@@ -1129,7 +1129,7 @@ $.fn.daterangepicker = function(options, cb) {
   return this;
 };
 
-let validateDate = function(props, propName) {
+const validateDate = function(props, propName) {
   if (!moment(props).isValid()) {
     throw new Error(propName + ' must be a valid date');
   }
@@ -1150,8 +1150,8 @@ class DateRangeFilter extends React.Component {
 
   componentDidMount() {
     // initialise jQuery date range widget -
-    let $calendarNode = $(ReactDOM.findDOMNode(this.refs.calendar));
-    let $calendar = $calendarNode.daterangepicker({ranges: this.props.ranges, format: this.props.format, opens: 'left', locale: { cancelLabel: 'Clear' }, applyClass: 'btn-primary'  });
+    const $calendarNode = $(ReactDOM.findDOMNode(this.refs.calendar));
+    const $calendar = $calendarNode.daterangepicker({ranges: this.props.ranges, format: this.props.format, opens: 'left', locale: { cancelLabel: 'Clear' }, applyClass: 'btn-primary'  });
     this.calendar = $calendar.data('daterangepicker');
     if (this.props.startDate) {
       this.calendar.setStartDate(this.props.startDate);

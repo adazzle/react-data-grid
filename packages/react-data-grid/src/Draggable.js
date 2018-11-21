@@ -30,7 +30,7 @@ class Draggable extends React.Component {
   }
 
   onMouseDown = (e) => {
-    let drag = this.props.onDragStart(e);
+    const drag = this.props.onDragStart(e);
     if (e.preventDefault) {
       e.preventDefault();
     }
