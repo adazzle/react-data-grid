@@ -3,7 +3,6 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import CopyMask from '../CopyMask';
-import zIndexes from 'common/constants/zIndexes';
 
 describe('CopyMask', () => {
   const setup = (propsOverride = {}) => {

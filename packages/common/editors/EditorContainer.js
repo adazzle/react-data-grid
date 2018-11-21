@@ -4,12 +4,10 @@ import joinClasses from 'classnames';
 import SimpleTextEditor from './SimpleTextEditor';
 import { isFunction } from 'common/utils';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
-import zIndexes from 'common/constants/zIndexes';
+import * as zIndexes from 'common/constants/zIndexes';
 import EditorPortal from './EditorPortal';
 
 require('../../../themes/react-data-grid-core.css');
-
-const isFrozen = column => column.frozen === true || column.locked === true;
 
 class EditorContainer extends React.Component {
   static displayName = 'EditorContainer';
@@ -345,8 +343,7 @@ class EditorContainer extends React.Component {
 
   render() {
     const { width, height, left, top, column } = this.props;
-    const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER : zIndexes.EDITOR_CONTAINER;
-    const style = { position: 'absolute', height, width, left, top, zIndex };
+    const style = { position: 'absolute', height, width, left, top, zIndex: zIndexes.EDITOR_CONTAINER };
     return (
       <EditorPortal>
         <div style={style}

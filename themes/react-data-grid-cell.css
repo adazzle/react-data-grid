@@ -18,15 +18,10 @@
 .moving-element {
   will-change: transform;
 }
-
 .react-grid-Cell--frozen {
-  z-index: 12;
+  /* Should have a higher value than 1 to show in front of cell masks */
+  z-index: 2;
 }
-
-.react-grid-Cell--frozen:focus {
-  z-index: 12;
-}
-
 .rdg-last--frozen {
   border-right: 1px solid #dddddd;
   box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3) !important;
@@ -72,9 +67,6 @@
   overflow: visible !important;
 }
 
-.react-grid-Cell--frozen.editing {
-  z-index: 100;
-}
 .react-grid-Cell.editing .has-error input {
   border: 2px red solid !important;
   border-radius: 2px !important;

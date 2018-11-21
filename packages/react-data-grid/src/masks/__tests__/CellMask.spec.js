@@ -3,7 +3,6 @@ import { shallow } from 'enzyme';
 
 import { sel } from '../../__tests__/utils';
 import CellMask from '../CellMask';
-import zIndexes from 'common/constants/zIndexes';
 
 describe('CellMask', () => {
   const setup = (children) => {
