@@ -17,15 +17,12 @@
   "author": "Adazzle",
   "license": "MIT",
   "dependencies": {
-    "@material-ui/core": "^3.3.1",
     "immutability-helper": "^2.7.0",
     "react-data-grid": "^5.0.4",
     "react-data-grid-addons": "^5.0.4",
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
-    "antd": "^3.10.2",
-    "antd-init": "^2.0.6",
     "bootstrap": "^3.2.0",
     "fs": "0.0.1-security",
     "jquery": "^2.1.1",

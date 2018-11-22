@@ -1,6 +1,3 @@
-/*
-* In local config, only run tests using phantom js. No code coverage reports applied
-*/
 var webpack = require('webpack');
 require('airbnb-browser-shims');
 var webpackConfig = require('./webpack.common.config.js');
@@ -22,7 +19,7 @@ module.exports = function (config) {
   };
 
   function getBrowsers(){
-    var browsers = ['PhantomJS'];
+    var browsers = [];
     if(BROWSERS) {
       return BROWSERS.split(',');
     }
@@ -60,14 +57,6 @@ module.exports = function (config) {
       preprocessors = {'test/unitTests.jsx': ['webpack']}
     }
     return preprocessors;
-  }
-
-  function lookupPhantomJS() {
-    try {
-      return require('phantomjs').path;
-    } catch(e){
-      return;
-    }
   }
 
   config.set({
@@ -185,15 +174,6 @@ module.exports = function (config) {
         base: 'Chrome',
         flags: [ '--remote-debugging-port=9333' ],
         debug: true
-      }
-    },
-
-    phantomjsLauncher: {
-      // configure PhantomJS executable for each platform
-      cmd: {
-        linux: lookupPhantomJS(),
-        darwin: lookupPhantomJS(),
-        win32: path.join(__dirname, '../test/browser/phantomjs.exe')
       }
     }
   });

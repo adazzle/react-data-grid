@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ColumnUtils from './ColumnUtils';
+import {getSize, getColumn} from './ColumnUtils';
 
 class EmptyChildRow extends React.Component {
 
