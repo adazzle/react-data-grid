@@ -168,6 +168,7 @@ class Cell extends React.PureComponent {
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
+      columnUtils.isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
       lastFrozenColumnIndex === idx ? 'rdg-last--frozen' : null
     );
     const extraClasses = joinClasses({
@@ -316,8 +317,7 @@ class Cell extends React.PureComponent {
       cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow} isDeleteSubRowEnabled={isDeleteSubRowEnabled} />;
     }
 
-    const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
-
+    const tooltip = this.props.tooltip && (<span className="cell-tooltip-text">{this.props.tooltip}</span>);
     const classes = joinClasses('react-grid-Cell__value',
       { 'cell-tooltip': this.props.tooltip ? true : false }
     );
