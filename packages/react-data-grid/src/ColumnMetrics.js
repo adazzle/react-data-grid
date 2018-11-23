@@ -1,6 +1,6 @@
-const shallowCloneObject = require('./shallowCloneObject');
-const sameColumn = require('./ColumnComparer');
-const ColumnUtils = require('./ColumnUtils');
+import shallowCloneObject from './shallowCloneObject';
+import sameColumn from './ColumnComparer';
+import {getSize, getColumn, isFrozen, spliceColumn} from './ColumnUtils';
 import getScrollbarSize from './getScrollbarSize';
 import {isColumnsImmutable} from 'common/utils';
 
@@ -24,7 +24,7 @@ function setDefferedColumnWidths(columns, unallocatedWidth, minColumnWidth) {
       if (unallocatedWidth <= 0) {
         column.width = minColumnWidth;
       } else {
-        const columnWidth = Math.floor(unallocatedWidth / (ColumnUtils.getSize(defferedColumns)));
+        const columnWidth = Math.floor(unallocatedWidth / (getSize(defferedColumns)));
         if (columnWidth < minColumnWidth) {
           column.width = minColumnWidth;
         } else {
@@ -63,8 +63,8 @@ function recalculate(metrics) {
 
   // compute left offset
   columns = setColumnOffsets(columns);
-  const frozenColumns = columns.filter(c => ColumnUtils.isFrozen(c));
-  const nonFrozenColumns = columns.filter(c => !ColumnUtils.isFrozen(c));
+  const frozenColumns = columns.filter(c => isFrozen(c));
+  const nonFrozenColumns = columns.filter(c => !isFrozen(c));
   columns = frozenColumns.concat(nonFrozenColumns).map((c, i) => {
     c.idx = i;
     return c;
@@ -86,14 +86,14 @@ function recalculate(metrics) {
  * @param {number} width
  */
 function resizeColumn(metrics, index, width) {
-  const column = ColumnUtils.getColumn(metrics.columns, index);
+  const column = getColumn(metrics.columns, index);
   let metricsClone = shallowCloneObject(metrics);
   metricsClone.columns = metrics.columns.slice(0);
 
   const updatedColumn = shallowCloneObject(column);
   updatedColumn.width = Math.max(width, metricsClone.minColumnWidth);
 
-  metricsClone = ColumnUtils.spliceColumn(metricsClone, index, updatedColumn);
+  metricsClone = spliceColumn(metricsClone, index, updatedColumn);
 
   return recalculate(metricsClone);
 }
@@ -110,16 +110,16 @@ function compareEachColumn(prevColumns, nextColumns, isSameColumn) {
   const nextColumnsByKey = {};
 
 
-  if (ColumnUtils.getSize(prevColumns) !== ColumnUtils.getSize(nextColumns)) {
+  if (getSize(prevColumns) !== getSize(nextColumns)) {
     return false;
   }
 
-  for (i = 0, len = ColumnUtils.getSize(prevColumns); i < len; i++) {
+  for (i = 0, len = getSize(prevColumns); i < len; i++) {
     column = prevColumns[i];
     prevColumnsByKey[column.key] = column;
   }
 
-  for (i = 0, len = ColumnUtils.getSize(nextColumns); i < len; i++) {
+  for (i = 0, len = getSize(nextColumns); i < len; i++) {
     column = nextColumns[i];
     nextColumnsByKey[column.key] = column;
     const prevColumn = prevColumnsByKey[column.key];
@@ -128,7 +128,7 @@ function compareEachColumn(prevColumns, nextColumns, isSameColumn) {
     }
   }
 
-  for (i = 0, len = ColumnUtils.getSize(prevColumns); i < len; i++) {
+  for (i = 0, len = getSize(prevColumns); i < len; i++) {
     column = prevColumns[i];
     const nextColumn = nextColumnsByKey[column.key];
     if (nextColumn === undefined) {

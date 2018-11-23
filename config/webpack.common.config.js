@@ -17,7 +17,7 @@ const config = {
       commonjs2: 'react-dom',
       amd: 'react-dom'
     },
-    'react/addons': 'React',
+   'react/addons': 'React',
     moment: 'moment',
     immutable: {
       root: 'Immutable',

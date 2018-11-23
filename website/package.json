@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "docs": "gulp docs:create",
+    "examples": "docusaurus-examples",
+    "start": "npm run docs && docusaurus-start",
+    "build": "npm run docs && docusaurus-build",
+    "publish-gh-pages": "docusaurus-publish",
+    "write-translations": "docusaurus-write-translations",
+    "version": "docusaurus-version",
+    "rename-version": "docusaurus-rename-version"
+  },
+  "devDependencies": {
+    "docusaurus": "^1.5.0"
+  },
+  "dependencies": {
+    "recast": "^0.16.0"
+  }
+}

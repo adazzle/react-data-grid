@@ -1,5 +1,5 @@
-const React         = require('react');
-const Grid          = require('../Grid');
+import React from 'react';
+import Grid from '../Grid';
 import helpers, {fakeCellMetaData} from '../helpers/test/GridPropHelpers';
 import { shallow } from 'enzyme';
 import { ContextMenu } from 'react-contextmenu';

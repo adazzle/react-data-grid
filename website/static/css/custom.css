@@ -1,0 +1,34 @@
+/* your custom css */
+
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+}
+
+@media only screen and (min-width: 1024px) {
+}
+
+@media only screen and (max-width: 1023px) {
+}
+
+@media only screen and (min-width: 1400px) {
+}
+
+@media only screen and (min-width: 1500px) {
+}
+
+.splashGrid {
+    background: #6a96c9 url( ../img/grid.png);
+}
+
+.projectTitle {
+    color: white;
+}
+
+.button {
+    background: #4A90E2;
+    color: #fff;
+}
+
+.button:hover {
+    background:  #fff;
+    color: #4A90E2;
+}

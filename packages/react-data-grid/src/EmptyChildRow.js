@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ColumnUtils from './ColumnUtils';
+import {getSize, getColumn} from './ColumnUtils';
 
 class EmptyChildRow extends React.Component {
 
@@ -15,12 +15,12 @@ class EmptyChildRow extends React.Component {
 
   getFrozenColumnsWidth() {
     let fixedWidth = 0;
-    const size = ColumnUtils.getSize(this.props.columns);
+    const size = getSize(this.props.columns);
     for (let i = 0; i < size; i++) {
-      const column = ColumnUtils.getColumn(this.props.columns, i);
+      const column = getColumn(this.props.columns, i);
       if (column) {
-        if (ColumnUtils.getValue(column, 'frozen')) {
-          fixedWidth += ColumnUtils.getValue(column, 'width');
+        if (getValue(column, 'frozen')) {
+          fixedWidth += getValue(column, 'width');
         }
       }
     }
@@ -37,7 +37,7 @@ class EmptyChildRow extends React.Component {
       height: cellHeight,
       borderBottom: '1px solid #dddddd'
     };
-    const expandColumn = ColumnUtils.getColumn(this.props.columns.filter(c => c.key === this.props.expandColumnKey), 0);
+    const expandColumn = getColumn(this.props.columns.filter(c => c.key === this.props.expandColumnKey), 0);
 
     const cellLeft = expandColumn ? expandColumn.left  : 0;
     return (<div className="react-grid-Row rdg-add-child-row-container" style={style}>
