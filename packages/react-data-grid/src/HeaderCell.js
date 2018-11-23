@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
-import columnUtils from './ColumnUtils';
+import Column from 'common/prop-shapes/Column';
+import {isFrozen} from './ColumnUtils';
 import { HeaderRowType } from 'common/constants';
 const ResizeHandle   = require('./ResizeHandle');
 
@@ -17,7 +17,7 @@ function SimpleCellRenderer(objArgs) {
 class HeaderCell extends React.Component {
   static propTypes = {
     renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
-    column: PropTypes.shape(ExcelColumn).isRequired,
+    column: PropTypes.shape(Column).isRequired,
     rowType: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired,
     onResize: PropTypes.func.isRequired,
@@ -115,7 +115,7 @@ class HeaderCell extends React.Component {
     const className = classNames({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
-      'react-grid-HeaderCell--frozen': columnUtils.isFrozen(column)
+      'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
     const cell = (
       <div className={className} style={this.getStyle()}>

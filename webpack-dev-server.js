@@ -13,11 +13,7 @@ const specificConfig =  {
     libraryTarget: 'umd'
   },
   externals: {
-    react: 'React',
-    'react/addons': 'React',
-    'react-dom': 'ReactDOM',
-    faker: 'faker',
-    moment: 'moment'
+    faker: 'faker'
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()

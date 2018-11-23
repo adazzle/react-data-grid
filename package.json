@@ -4,6 +4,7 @@
   "description": "Data grid for React",
   "main": "src/index.js",
   "scripts": {
+    "docs": "gulp docs:create",
     "pretest": "npm run eslint",
     "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
     "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
@@ -13,7 +14,9 @@
     "beforepublish": "lerna run beforepublish",
     "eslint": "eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
     "fix-eslint": "eslint --fix -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
-    "lerna-publish": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./ci/publish/publish.ps1"
+    "lerna-publish": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./ci/publish/publish.ps1",
+    "web": "cd website && npm run start",
+    "web-publish": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./ci/publish/publish-web.ps1"
   },
   "repository": {
     "type": "git",
@@ -28,7 +31,6 @@
     "@babel/polyfill": "^7.0.0",
     "classnames": "^2.2.6",
     "es5-shim": "^4.0.3",
-    "fs": "0.0.1-security",
     "fs-extra": "^0.30.0",
     "keymirror": "^0.1.1",
     "object-assign": "^4.1.1",
@@ -41,8 +43,7 @@
     "recharts": "^1.1.0",
     "reselect": "^2.5.1",
     "ron-react-autocomplete": "^4.0.5",
-    "shallowequal": "^1.1.0",
-    "tape": "^4.9.1"
+    "shallowequal": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -82,7 +83,6 @@
     "gulp-concat": "^2.3.4",
     "gulp-util": "^3.0.0",
     "immutable": "^3.7.3",
-    "import-local": "^2.0.0",
     "istanbul-instrumenter-loader": "^0.1.2",
     "jasmine-core": "2.6.1",
     "jasmine-enzyme": "^4.2.0",
@@ -97,7 +97,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^3.0.5",
-    "lerna": "^2.8.0",
+    "lerna": "^3.4.3",
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.22.2",
@@ -112,6 +112,7 @@
     "semver": "^5.0.3",
     "sinon": "^4.5.0",
     "style-loader": "^0.13.1",
+    "tape": "^4.9.1",
     "underscore": "^1.9.1",
     "vinyl-source-stream": "^0.1.1",
     "webpack": "^4.23.1",

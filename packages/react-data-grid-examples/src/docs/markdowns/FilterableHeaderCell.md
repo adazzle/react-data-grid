@@ -8,7 +8,7 @@ Props
 
 ### `column`
 
-type: `shaperequire('../../../PropTypeShapes/ExcelColumn')`
+type: `shaperequire('../../../PropTypeShapes/Column')`
 
 
 ### `onChange` (required)

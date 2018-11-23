@@ -1,5 +1,5 @@
 import React from 'react';
-import ColumnUtils from '../ColumnUtils';
+import {canEdit} from '../ColumnUtils';
 import ReactDOM from 'react-dom';
 const cloneElement = React.cloneElement;
 
@@ -84,7 +84,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editor).not.toBe(undefined);
@@ -100,7 +100,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editor).toBe(undefined);
@@ -115,7 +115,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = undefined;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editable).toBe(true);
@@ -129,7 +129,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = undefined;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editable).toBe(undefined);
@@ -146,7 +146,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editor).not.toBe(null);
@@ -162,7 +162,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editor).toBe(null);
@@ -177,7 +177,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = null;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editable).toBe(true);
@@ -191,7 +191,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = null;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editable).toBe(null);
@@ -207,7 +207,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(typeof(testProps.col.editable)).toBe('boolean');
@@ -222,7 +222,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(typeof(testProps.col.editable)).toBe('boolean');
@@ -237,7 +237,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = false;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(typeof(testProps.col.editable)).toBe('boolean');
@@ -252,7 +252,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = false;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(typeof(testProps.col.editable)).toBe('boolean');
@@ -269,7 +269,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(typeof(testProps.col.editable)).toBe('function');
@@ -284,7 +284,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(typeof(testProps.col.editable)).toBe('function');
@@ -299,7 +299,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = false;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(typeof(testProps.col.editable)).toBe('function');
@@ -314,7 +314,7 @@ describe('ColumnUtils tests', () => {
         testProps.enableCellSelect = false;
 
         // Act
-        const result = ColumnUtils.canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps. RowData, testProps.enableCellSelect);
 
         // Assert
         expect(typeof(testProps.col.editable)).toBe('function');

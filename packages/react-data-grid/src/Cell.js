@@ -1,15 +1,13 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses = require('classnames');
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
+import joinClasses from 'classnames';
 import {isFunction} from 'common/utils';
-import CellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
-const createObjectWithProperties = require('./createObjectWithProperties');
+import SimpleCellFormatter from './formatters/SimpleCellFormatter';
+import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
-import columnUtils from './ColumnUtils';
+import {isFrozen} from './ColumnUtils';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
@@ -24,11 +22,11 @@ class Cell extends React.PureComponent {
     isEditorEnabled: PropTypes.bool,
     selectedColumn: PropTypes.object,
     height: PropTypes.number,
-    column: PropTypes.shape(ExcelColumn).isRequired,
+    column: PropTypes.object.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]),
     isExpanded: PropTypes.bool,
     isRowSelected: PropTypes.bool,
-    cellMetaData: PropTypes.shape(CellMetaDataShape).isRequired,
+    cellMetaData: PropTypes.object.isRequired,
     handleDragStart: PropTypes.func,
     className: PropTypes.string,
     cellControls: PropTypes.any,
@@ -59,7 +57,7 @@ class Cell extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     this.setState({
       isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
-      isLockChanging: columnUtils.isFrozen(this.props.column) !== columnUtils.isFrozen(nextProps.column)
+      isLockChanging: isFrozen(this.props.column) !== isFrozen(nextProps.column)
     });
   }
 
@@ -68,7 +66,7 @@ class Cell extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    if (this.state.isLockChanging && !columnUtils.isFrozen(this.props.column)) {
+    if (this.state.isLockChanging && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
   }
@@ -168,7 +166,7 @@ class Cell extends React.PureComponent {
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
-      columnUtils.isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
+      isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
       lastFrozenColumnIndex === idx ? 'rdg-last--frozen' : null
     );
     const extraClasses = joinClasses({
@@ -194,7 +192,7 @@ class Cell extends React.PureComponent {
   checkScroll() {
     const {scrollLeft, column} = this.props;
     const node = this.node;
-    if (columnUtils.isFrozen(column) && node && node.style.transform != null) {
+    if (isFrozen(column) && node && node.style.transform != null) {
       this.setScrollLeft(scrollLeft);
     }
   }

@@ -1,14 +1,14 @@
-const React               = require('react');
-const ReactDOM            = require('react-dom');
-const joinClasses         = require('classnames');
-const shallowCloneObject  = require('./shallowCloneObject');
-const ColumnMetrics       = require('./ColumnMetrics');
-const ColumnUtils         = require('./ColumnUtils');
-const HeaderRow           = require('./HeaderRow');
-import getScrollbarSize from './getScrollbarSize';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import joinClasses from 'classnames';
+import shallowCloneObject from './shallowCloneObject';
+import ColumnMetrics from './ColumnMetrics';
+import {getColumn} from './ColumnUtils';
+import HeaderRow from './HeaderRow';
+import getScrollbarSize  from './getScrollbarSize';
 import PropTypes from 'prop-types';
-const createObjectWithProperties = require('./createObjectWithProperties');
-const cellMetaDataShape    = require('common/prop-shapes/CellMetaDataShape');
+import createObjectWithProperties from'./createObjectWithProperties';
+import cellMetaDataShape    from'common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from 'common/constants';
 require('../../../themes/react-data-grid-header.css');
 
@@ -66,7 +66,7 @@ class Header extends React.Component {
         resizing.columnMetrics.totalWidth = state.columnMetrics.totalWidth;
       }
 
-      resizing.column = ColumnUtils.getColumn(resizing.columnMetrics.columns, pos);
+      resizing.column = getColumn(resizing.columnMetrics.columns, pos);
       this.setState({resizing});
     }
   };

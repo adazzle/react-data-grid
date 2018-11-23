@@ -1,7 +1,7 @@
 import { CellNavigationMode } from 'common/constants';
 import { isFunction } from 'common/utils';
 import * as rowUtils from '../RowUtils';
-import * as columnUtils from '../ColumnUtils';
+import {getColumn, isFrozen, canEdit} from '../ColumnUtils';
 import zIndexes from 'common/constants/zIndexes';
 
 export const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
@@ -14,12 +14,12 @@ export const getSelectedRow = ({ selectedPosition, rowGetter }) => {
 export const getSelectedDimensions = ({ selectedPosition, columns, rowHeight, scrollLeft }) => {
   const { idx, rowIdx } = selectedPosition;
   if (idx >= 0) {
-    const column = columnUtils.getColumn(columns, idx);
-    const isFrozen = columnUtils.isFrozen(column);
+    const column = getColumn(columns, idx);
+    const frozen = isFrozen(column);
     const { width } = column;
-    const left = isFrozen ? column.left + scrollLeft : column.left;
+    const left = frozen ? column.left + scrollLeft : column.left;
     const top = getRowTop(rowIdx, rowHeight);
-    const zIndex = isFrozen ? zIndexes.FROZEN_CELL_MASK : zIndexes.CELL_MASK;
+    const zIndex = frozen ? zIndexes.FROZEN_CELL_MASK : zIndexes.CELL_MASK;
     return { width, left, top, height: rowHeight, zIndex };
   }
   return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
@@ -29,11 +29,11 @@ const getColumnRangeProperties = (from, to, columns) => {
   let totalWidth = 0;
   let anyColFrozen = false;
   for (let i = from; i <= to; i++) {
-    const column = columnUtils.getColumn(columns, i);
+    const column = getColumn(columns, i);
     totalWidth += column.width;
-    anyColFrozen = anyColFrozen || columnUtils.isFrozen(column);
+    anyColFrozen = anyColFrozen || isFrozen(column);
   }
-  return { totalWidth, anyColFrozen, left: columnUtils.getColumn(columns, from).left };
+  return { totalWidth, anyColFrozen, left: getColumn(columns, from).left };
 };
 
 export const getSelectedRangeDimensions = ({ selectedRange, columns, rowHeight }) => {
@@ -53,7 +53,7 @@ export const getSelectedRangeDimensions = ({ selectedRange, columns, rowHeight }
 
 export const getSelectedColumn = ({ selectedPosition, columns }) => {
   const { idx } = selectedPosition;
-  return columnUtils.getColumn(columns, idx);
+  return getColumn(columns, idx);
 };
 
 export const getSelectedCellValue = ({ selectedPosition, columns, rowGetter }) => {
@@ -67,7 +67,7 @@ export const isSelectedCellEditable = ({ enableCellSelect, selectedPosition, col
   const column = getSelectedColumn({ selectedPosition, columns });
   const row = getSelectedRow({ selectedPosition, rowGetter });
   const isCellEditable = isFunction(onCheckCellIsEditable) ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
-  return columnUtils.canEdit(column, row, enableCellSelect) && isCellEditable;
+  return canEdit(column, row, enableCellSelect) && isCellEditable;
 };
 
 export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsCount }, nextPosition) => {

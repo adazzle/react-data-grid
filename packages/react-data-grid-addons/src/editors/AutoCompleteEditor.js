@@ -1,7 +1,7 @@
 const React                   = require('react');
 const ReactDOM                = require('react-dom');
 const ReactAutocomplete       = require('ron-react-autocomplete');
-import { ExcelColumn } from 'common/prop-shapes';
+import { Column } from 'common/prop-shapes';
 require('../../../../themes/ron-react-autocomplete.css');
 import PropTypes from 'prop-types';
 
@@ -18,7 +18,7 @@ class AutoCompleteEditor extends React.Component {
     value: PropTypes.any,
     height: PropTypes.number,
     valueParams: PropTypes.arrayOf(PropTypes.string),
-    column: PropTypes.shape(ExcelColumn),
+    column: PropTypes.shape(Column),
     resultIdentifier: PropTypes.string,
     search: PropTypes.string,
     onKeyDown: PropTypes.func,
