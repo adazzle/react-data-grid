@@ -59,11 +59,7 @@ class Row extends React.Component {
     isSelected: false,
     height: 35
   };
-
-  constructor() {
-    super();
-  }
-
+  
   shouldComponentUpdate(nextProps) {
     return rowComparer(nextProps, this.props);
   }
