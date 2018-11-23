@@ -108,7 +108,7 @@ class Row extends React.Component {
   getCells = () => {
     const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
     const frozenColumns = columns.filter(c => isFrozen(c));
-    const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !columnUtils.isFrozen(c));
+    const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
     return nonFrozenColumn.concat(frozenColumns)
       .map(column => this.getCell(column));
   };
