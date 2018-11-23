@@ -3,7 +3,6 @@
     "Getting Started": ["quick-start", "addons"],
     "API": ["ReactDataGrid", "Row" ,"Cell"],
     "Contributing": ["contributing", "codebase-overview", "implementation-notes"],
-    "Changelog": ["CHANGELOG"],
     "Migrations": ["migrations/v1-v2", "migrations/v2-v3", "migrations/v3-v4"]
   },
   "Changelog": {
