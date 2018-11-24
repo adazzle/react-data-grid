@@ -66,7 +66,7 @@ class FocusableComponentTestRunner {
 
     it('component should not update when the element is neither selected or about to be selected', () => {
       // Arange.
-      let selection = this._getNewSelection(this._props);
+      const selection = this._getNewSelection(this._props);
       const newSelection = Object.assign({ }, this._props.cellMetaData.selected, selection);
       const newCellMetaData = { selected: newSelection };
 
@@ -106,7 +106,7 @@ class FocusableComponentTestRunner {
 
     it('should not focus when scrolling but not selected', () => {
       const selected = this._getNewSelection(this._props);
-      let cellMetaData = { selected, isScrollingVerticallyWithKeyboard: true, isScrollingHorizontallyWithKeyboard: true };
+      const cellMetaData = { selected, isScrollingVerticallyWithKeyboard: true, isScrollingHorizontallyWithKeyboard: true };
 
       this._componentWrapper = mount(<this._Component {...this._props} cellMetaData={cellMetaData} />);
 

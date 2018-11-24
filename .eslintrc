@@ -14,24 +14,6 @@
     translate: true,
     pluralTranslate: true
   },
-  "ecmaFeatures": {
-    "arrowFunctions": true,
-    "blockBindings": true,
-    "classes": true,
-    "defaultParams": true,
-    "destructuring": true,
-    "forOf": true,
-    "generators": false,
-    "modules": true,
-    "objectLiteralComputedProperties": true,
-    "objectLiteralDuplicateProperties": false,
-    "objectLiteralShorthandMethods": true,
-    "objectLiteralShorthandProperties": true,
-    "spread": true,
-    "superInFunctions": true,
-    "templateStrings": true,
-    "jsx": true
-  },
   "rules": {
 /**
  * Strict mode
@@ -121,7 +103,8 @@
     "radix": 2,                      // http://eslint.org/docs/rules/radix
     "vars-on-top": 2,                // http://eslint.org/docs/rules/vars-on-top
     "wrap-iife": [2, "any"],         // http://eslint.org/docs/rules/wrap-iife
-    "yoda": 2,                       // http://eslint.org/docs/rules/yoda
+    "yoda": 2,                       // http://eslint.org/docs/rules/yoda,
+    "prefer-const": 2,
 
 /**
  * Style

@@ -60,8 +60,8 @@ const headerCellSource = {
 // drop target
 const target = {
   drop(props, monitor) {
-    let source = monitor.getItem().key;
-    let targetKey = props.column.key;
+    const source = monitor.getItem().key;
+    const targetKey = props.column.key;
     return {
       source: source,
       target: targetKey

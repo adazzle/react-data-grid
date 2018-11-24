@@ -1,4 +1,4 @@
-let RowUtils = {
+const RowUtils = {
   get: function(row, property) {
     if (typeof row.get === 'function') {
       return row.get(property);

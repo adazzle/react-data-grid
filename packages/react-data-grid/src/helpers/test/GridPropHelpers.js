@@ -1,4 +1,4 @@
-let _rows = [];
+const _rows = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
@@ -34,5 +34,18 @@ export default {
     dragged: null,
     copied: null
   }
+};
+
+export const fakeCellMetaData = {
+  rowKey: 'id',
+  onCellClick: () => null,
+  onCellMouseDown: () => null,
+  onColumnEvent: () => null,
+  onCellExpand: () => null,
+  onCellMouseEnter: () => null,
+  onCellContextMenu: () => null,
+  onRowExpandToggle: () => null,
+  onCellDoubleClick: () => null,
+  onDragEnter: () => null
 };
 

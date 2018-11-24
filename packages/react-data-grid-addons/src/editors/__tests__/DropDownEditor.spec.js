@@ -6,8 +6,8 @@ describe('DropDownEditor', () => {
   let component;
 
   describe('Basic tests', () => {
-    let fakeOptions = ['option1', 'option2', 'option3'];
-    let fakeColumn = { key: 'selected' };
+    const fakeOptions = ['option1', 'option2', 'option3'];
+    const fakeColumn = { key: 'selected' };
     function fakeCommitCb() { return true; }
 
     beforeEach(() => {
@@ -28,22 +28,22 @@ describe('DropDownEditor', () => {
     });
 
     it('should pass width=100% to the select node as an inline style', () => {
-      let Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
+      const Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
       expect(Select.style.width).toBe('100%');
     });
 
     it('should pass the value to the select node as an inline value', () => {
-      let Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
+      const Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
       expect(Select.value).toBe('option2');
     });
 
     it('should render the options as ReactElements', () => {
-      let firstOption = component.renderOptions()[0];
+      const firstOption = component.renderOptions()[0];
       expect(TestUtils.isElement(firstOption)).toBe(true);
     });
 
     it('should pass the option name as the key and value of each ReactElement', () => {
-      let optionsArray = component.renderOptions();
+      const optionsArray = component.renderOptions();
       expect(optionsArray[0].type).toBe('option');
       expect(optionsArray[1].key).toBe('option2');
       expect(optionsArray[2].props.value).toBe('option3');
@@ -55,12 +55,12 @@ describe('DropDownEditor', () => {
   });
 
   describe('Object parameters', () => {
-    let fakeOptions = [
+    const fakeOptions = [
       { id: '1', value: 'option1', title: 'Option 1' },
       { id: '2', value: 'option2', text: 'Option Two' },
       { id: '3', value: 'option3', title: 'Option 3', text: 'Option Three' }
     ];
-    let fakeColumn = { key: 'selected' };
+    const fakeColumn = { key: 'selected' };
     function fakeCommitCb() { return true; }
 
     beforeEach(() => {
@@ -73,7 +73,7 @@ describe('DropDownEditor', () => {
     });
 
     it('should display value unless text is specified', () => {
-      let option = component.renderOptions()[0];
+      const option = component.renderOptions()[0];
       expect(option.key).toBe('1');
       expect(option.props.value).toBe('option1');
       expect(option.props.title).toBe('Option 1');
@@ -81,7 +81,7 @@ describe('DropDownEditor', () => {
     });
 
     it('should display text', () => {
-      let option = component.renderOptions()[1];
+      const option = component.renderOptions()[1];
       expect(option.key).toBe('2');
       expect(option.props.value).toBe('option2');
       expect(option.props.title).not.toBeDefined();
@@ -89,7 +89,7 @@ describe('DropDownEditor', () => {
     });
 
     it('should display title', () => {
-      let option = component.renderOptions()[2];
+      const option = component.renderOptions()[2];
       expect(option.key).toBe('3');
       expect(option.props.value).toBe('option3');
       expect(option.props.title).toBe('Option 3');

@@ -4,7 +4,7 @@ import Select from 'react-select';
 import ReactDOM from 'react-dom';
 import 'react-select/dist/react-select.css';
 
-const ExcelColumn = {
+const Column = {
   name: PropTypes.string.isRequired,
   key: PropTypes.string.isRequired,
   width: PropTypes.number.isRequired,
@@ -15,7 +15,7 @@ class AutoCompleteTokensEditor extends Component {
 
   static propTypes = {
     options: PropTypes.array.isRequired,
-    column: PropTypes.shape(ExcelColumn),
+    column: PropTypes.shape(Column),
     value: PropTypes.array
   }
 
@@ -32,7 +32,7 @@ class AutoCompleteTokensEditor extends Component {
   }
 
   getValue() {
-    let updated = {};
+    const updated = {};
     updated[this.props.column.key] = this.state.value;
     return updated;
   }
@@ -42,7 +42,7 @@ class AutoCompleteTokensEditor extends Component {
   }
 
   render() {
-    let options = [];
+    const options = [];
     this.props.options.forEach(function(name) {
       if (typeof (name) === 'string') {
         options.push({label: name, value: name});

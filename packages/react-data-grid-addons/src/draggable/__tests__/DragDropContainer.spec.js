@@ -16,7 +16,7 @@ describe('<DragDropContainer />', () => {
   const GridStub = () => <div/>;
 
   function render(props = {}) {
-    let ComponentUnderTest = DragDropContainer.DecoratedComponent;
+    const ComponentUnderTest = DragDropContainer.DecoratedComponent;
     wrapper = shallow(
       <ComponentUnderTest {...props} >
         <GridStub {...childProps} />
@@ -30,15 +30,15 @@ describe('<DragDropContainer />', () => {
   });
 
   it('should render a RowDragLayer', () => {
-    let rowDragLayer = wrapper.find(RowDragLayer);
-    expect(rowDragLayer).toBePresent();
-    expect(rowDragLayer).toHaveProp('rows', [0, 1]);
+    const rowDragLayer = wrapper.find(RowDragLayer);
+    expect(rowDragLayer.length).toBe(1);
+    expect(rowDragLayer.props().rows).toEqual([0, 1]);
   });
 
   it('should correctly render child grid component when passed in', () => {
-    let gridStub = wrapper.find(GridStub);
-    expect(gridStub).toBePresent();
-    expect(gridStub).toHaveProp('draggableHeaderCell', DraggableHeaderCell);
+    const gridStub = wrapper.find(GridStub);
+    expect(gridStub.length).toBe(1);
+    expect(gridStub.props().draggableHeaderCell).toBe(DraggableHeaderCell);
   });
 
   it('getDragPreviewRow should override rowGetter to provide rows to rowDragLayer', () => {
@@ -46,8 +46,8 @@ describe('<DragDropContainer />', () => {
       getDragPreviewRow: index => index + 'a'
     };
     render(props);
-    let rowDragLayer = wrapper.find(RowDragLayer);
-    expect(rowDragLayer).toBePresent();
-    expect(rowDragLayer).toHaveProp('rows', ['0a', '1a']);
+    const rowDragLayer = wrapper.find(RowDragLayer);
+    expect(rowDragLayer.length).toBe(1);
+    expect(rowDragLayer.props().rows).toEqual( ['0a', '1a']);
   });
 });

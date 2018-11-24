@@ -14,9 +14,9 @@ class RowActionsCell extends React.Component {
 
   render() {
     const {connectDragSource, rowSelection} = this.props;
-    let rowHandleStyle = rowSelection != null ? {position: 'absolute', marginTop: '5px'} : {};
-    let isSelected = this.props.value;
-    let editorClass = isSelected ? 'rdg-actions-checkbox selected' : 'rdg-actions-checkbox';
+    const rowHandleStyle = rowSelection != null ? {position: 'absolute', marginTop: '5px'} : {};
+    const isSelected = this.props.value;
+    const editorClass = isSelected ? 'rdg-actions-checkbox selected' : 'rdg-actions-checkbox';
 
     return connectDragSource(
       <div>

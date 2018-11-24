@@ -2,7 +2,7 @@ import sortRows, {comparer} from '../RowSorter';
 import Immutable from 'immutable';
 
 describe('RowSorter', () => {
-  let rows = [
+  const rows = [
     { number: 0, text: 'Z' },
     { number: -1, text: 'A' },
     { number: 2, text: 'a' },
@@ -18,7 +18,7 @@ describe('RowSorter', () => {
 
   describe('with sort direction NONE', () => {
     it('should not sort', () => {
-      let rowsSorted = sortRows(rows, 'number', 'NONE');
+      const rowsSorted = sortRows(rows, 'number', 'NONE');
       for (let i = 0; i < rowsSorted.length; i++) {
         expect(rowsSorted[i]).toEqual(rows[i]);
       }
@@ -27,22 +27,22 @@ describe('RowSorter', () => {
 
   describe('with sort direction ASC', () => {
     it('should sort numbers', () => {
-      let rowsSorted = sortRows(rows, 'number', 'ASC');
+      const rowsSorted = sortRows(rows, 'number', 'ASC');
       for (let i = 0; i < rowsSorted.length - 1; i++) {
         expect(rowsSorted[i].number <= rowsSorted[i + 1].number).toBe(true);
       }
     });
 
     it('should sort text', () => {
-      let rowsSorted = sortRows(rows, 'text', 'ASC');
+      const rowsSorted = sortRows(rows, 'text', 'ASC');
       for (let i = 0; i < rowsSorted.length - 1; i++) {
         expect(rowsSorted[i].text <= rowsSorted[i + 1].text).toBe(true);
       }
     });
 
     it('It can sort an immutable js list of rows', () => {
-      let immutableList = Immutable.fromJS(rows);
-      let rowsSorted = sortRows(immutableList, 'text', 'ASC');
+      const immutableList = Immutable.fromJS(rows);
+      const rowsSorted = sortRows(immutableList, 'text', 'ASC');
       for (let i = 0; i < rowsSorted.size - 1; i++) {
         expect(rowsSorted.get(i).get('text') <= rowsSorted.get(i + 1).get('text')).toBe(true);
       }
@@ -51,14 +51,14 @@ describe('RowSorter', () => {
 
   describe('with sort direction DESC', () => {
     it('should sort numbers', () => {
-      let rowsSorted = sortRows(rows, 'number', 'DESC');
+      const rowsSorted = sortRows(rows, 'number', 'DESC');
       for (let i = 0; i < rowsSorted.length - 1; i++) {
         expect(rowsSorted[i].number >= rowsSorted[i + 1].number).toBe(true);
       }
     });
 
     it('should sort text', () => {
-      let rowsSorted = sortRows(rows, 'text', 'DESC');
+      const rowsSorted = sortRows(rows, 'text', 'DESC');
       for (let i = 0; i < rowsSorted.length - 1; i++) {
         expect(rowsSorted[i].text >= rowsSorted[i + 1].text).toBe(true);
       }
