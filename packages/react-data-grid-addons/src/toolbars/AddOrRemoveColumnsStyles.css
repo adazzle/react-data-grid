@@ -44,6 +44,7 @@
     content: "\f01e";
     color: green;
     font-weight: normal;
+    font-size: 11px;
 }
 
 .content{
@@ -62,6 +63,10 @@
 
 .pdng-lt-10{
     padding-left: 10px;
+}
+
+.mrgn-rt-10{
+    margin-right: 10px;
 }
 
 .columnsList{

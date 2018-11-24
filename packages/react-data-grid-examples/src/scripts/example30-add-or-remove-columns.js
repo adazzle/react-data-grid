@@ -104,6 +104,10 @@ class Example extends React.Component {
       return allColumns;
   }
 
+  getDefaultColumns(){
+    //Functionality To load default grid columns
+  }
+
   updateSelectedColumns = (value) => {
     let selectedColKeys = _.map(value, function(val){
         return val.key;
@@ -136,7 +140,7 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this.rowsCount()}
         minHeight={500}
-        toolbar={<Toolbar totalRecords={this.getTotalNoOfRecords} enableFilter={true} enableAddOrRemoveColumns={true} applySelectedColumns = {this.updateSelectedColumns} getAllColumns={this.getAllColumns} displayTotalNoOfRecords={false}  />}
+        toolbar={<Toolbar totalRecords={this.getTotalNoOfRecords} enableFilter={true} enableAddOrRemoveColumns={true} enableResetToDefaultColumns={true} applySelectedColumns = {this.updateSelectedColumns} getAllColumns={this.getAllColumns} getDefaultColumns={this.getDefaultColumns} displayTotalNoOfRecords={false}  />}
         onAddFilter={this.handleFilterChange}
         getValidFilterValues={this.getValidFilterValues}
         getValidFilterValuesForTypeAhead={this.getValidFilterValuesForTypeAhead}

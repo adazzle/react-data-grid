@@ -84,9 +84,14 @@ class Toolbar extends React.Component {
    return this.props.getAllColumns(revertToDefaults);
  };
 
+ getDefaultColumns = () => {
+   this.props.getDefaultColumns()
+ }
+
  addOrRemoveColumns=()=>{
   if(this.props.enableAddOrRemoveColumns){
    return (<span class="pull-right" ref={node => this.node = node}>
+             {this.props.enableResetToDefaultColumns ? <span className="mrgn-rt-10"><span className="green ico-family ico-reset"></span><a onClick={this.getDefaultColumns} className="green-underline pdng-lt-5">Reset To Default</a></span> : ''}
              <button type="button" className="button button-secondary button-small" onClick={this.openOrCloseColumns}><span className="add-or-remove-columns-button"></span></button>
              <div>{this.state.showColumns ? <AddOrRemoveColumns onColumnUpdate={this.onColumnUpdate} getAllColumns={this.getAllColumns} onCancel={this.onCancel}/>: null}</div>
            </span>);
