@@ -2,7 +2,7 @@ import { CellNavigationMode } from 'common/constants';
 import { isFunction } from 'common/utils';
 import * as rowUtils from '../RowUtils';
 import {getColumn, isFrozen, canEdit} from '../ColumnUtils';
-import zIndexes from 'common/constants/zIndexes';
+import * as zIndexes from 'common/constants/zIndexes';
 
 export const getRowTop = (rowIdx, rowHeight) => rowIdx * rowHeight;
 
