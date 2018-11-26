@@ -155,7 +155,8 @@
     "space-before-function-paren": [2, "never"], // http://eslint.org/docs/rules/space-before-function-paren
     "space-infix-ops": 2,            // http://eslint.org/docs/rules/space-infix-ops
     "keyword-spacing": 0,    // http://eslint.org/docs/rules/space-return-throw-case
-    "spaced-comment": 2,             // http://eslint.org/docs/rules/spaced-comment
+    "spaced-comment": 2,             // http://eslint.org/docs/rules/spaced-comment,
+    "no-whitespace-before-property": 2,
 
 /**
  * JSX style
