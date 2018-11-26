@@ -9,7 +9,7 @@ export const isEmptyArray = (obj) => {
 };
 
 export const isFunction = (functionToCheck) => {
-  let getType = {};
+  const getType = {};
   return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 };
 
@@ -22,7 +22,7 @@ export const isImmutableCollection = objToVerify => {
 };
 
 export const getMixedTypeValueRetriever = (isImmutable) => {
-  let retObj = {};
+  const retObj = {};
   const retriever = (item, key) => { return item[key]; };
   const immutableRetriever = (immutable, key) => { return immutable.get(key); };
 

@@ -7,7 +7,7 @@ const { mount } = require('enzyme');
 describe('CheckboxEditor', () => {
   let component;
   let componentWrapper;
-  let testColumn = {
+  const testColumn = {
     key: 'columnKey',
     onCellChange: function() {}
   };
@@ -27,15 +27,15 @@ describe('CheckboxEditor', () => {
     });
 
     it('should be selected if value prop is true', () => {
-      let Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-      let checkboxNode = ReactDOM.findDOMNode(Input);
+      const Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
+      const checkboxNode = ReactDOM.findDOMNode(Input);
       expect(checkboxNode.checked).toBe(true);
     });
 
     it('should not be selected if value prop is false', () => {
       componentWrapper.setProps({value: false});
-      let Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-      let checkboxNode = ReactDOM.findDOMNode(Input);
+      const Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
+      const checkboxNode = ReactDOM.findDOMNode(Input);
       expect(checkboxNode.checked).toBe(false);
     });
   });
