@@ -17,7 +17,7 @@ class CellExpander extends React.Component {
   componentWillReceiveProps(nextProps) {
     const expanded = nextProps.expandableOptions && nextProps.expandableOptions.expanded;
     if (this.state.expanded !== expanded) {
-      this.setState({expanded});
+      this.setState({ expanded });
     }
   }
 

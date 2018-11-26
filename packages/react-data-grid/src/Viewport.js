@@ -2,7 +2,7 @@ import React from 'react';
 import Canvas from './Canvas';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import PropTypes from 'prop-types';
-import {getSize} from './ColumnUtils';
+import { getSize } from './ColumnUtils';
 import {
   getGridState,
   getColOverscanEndIdx,
@@ -109,7 +109,7 @@ class Viewport extends React.Component {
     }
   };
 
-  getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount}) {
+  getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount }) {
     const isScrolling = true;
     const { columns } = this.props.columnMetrics;
     const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);

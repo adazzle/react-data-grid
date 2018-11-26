@@ -2,7 +2,7 @@ import React from 'react';
 import shallowEqual from 'shallowequal';
 import BaseHeaderCell from './HeaderCell';
 import getScrollbarSize from './getScrollbarSize';
-import {getColumn, getSize, isFrozen} from './ColumnUtils';
+import { getColumn, getSize, isFrozen } from './ColumnUtils';
 import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
 import HeaderCellType from './HeaderCellType';

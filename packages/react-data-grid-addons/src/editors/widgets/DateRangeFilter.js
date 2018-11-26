@@ -1149,12 +1149,12 @@ class DateRangeFilter extends React.Component {
     endDate: validateDate
   };
 
-  state = {dateRange: ''};
+  state = { dateRange: '' };
 
   componentDidMount() {
     // initialise jQuery date range widget -
     const $calendarNode = $(ReactDOM.findDOMNode(this.refs.calendar));
-    const $calendar = $calendarNode.daterangepicker({ranges: this.props.ranges, format: this.props.format, opens: 'left', locale: { cancelLabel: 'Clear' }, applyClass: 'btn-primary'  });
+    const $calendar = $calendarNode.daterangepicker({ ranges: this.props.ranges, format: this.props.format, opens: 'left', locale: { cancelLabel: 'Clear' }, applyClass: 'btn-primary'  });
     this.calendar = $calendar.data('daterangepicker');
     if (this.props.startDate) {
       this.calendar.setStartDate(this.props.startDate);
@@ -1177,11 +1177,11 @@ class DateRangeFilter extends React.Component {
       this.props.onApply(picker.startDate, picker.endDate);
     }
 
-    this.setState({dateRange: picker.startDate.format(picker.format) + ' - ' + picker.endDate.format(picker.format)});
+    this.setState({ dateRange: picker.startDate.format(picker.format) + ' - ' + picker.endDate.format(picker.format) });
   };
 
   handleClear = () => {
-    this.setState({dateRange: ''});
+    this.setState({ dateRange: '' });
     if (this.props.onApply) {
       // return moment instances for start and end date ranges
       this.props.onApply(null, null);

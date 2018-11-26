@@ -1,6 +1,6 @@
-import {List} from 'immutable';
+import { List } from 'immutable';
 import groupBy from 'lodash/groupBy';
-import { isImmutableMap, getMixedTypeValueRetriever} from 'common/utils';
+import { isImmutableMap, getMixedTypeValueRetriever } from 'common/utils';
 
 export default class RowGrouperResolver {
 

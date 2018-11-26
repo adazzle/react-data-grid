@@ -20,7 +20,7 @@ import {
   selectedRangeIsSingleCell
 } from '../utils/SelectedCellUtils';
 import { isFunction } from 'common/utils';
-import {getSize, getColumn, isFrozen} from '../ColumnUtils';
+import { getSize, getColumn, isFrozen } from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from 'common/constants';
 

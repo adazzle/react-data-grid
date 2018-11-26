@@ -2,7 +2,7 @@ import 'react-select/dist/react-select.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {isEmptyArray} from 'common/utils';
+import { isEmptyArray } from 'common/utils';
 import Column from 'common/prop-shapes/Column';
 
 class AutoCompleteFilter extends React.Component {
@@ -11,11 +11,11 @@ class AutoCompleteFilter extends React.Component {
     this.getOptions = this.getOptions.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.filterValues = this.filterValues.bind(this);
-    this.state = {options: this.getOptions(), rawValue: '', placeholder: 'Search'};
+    this.state = { options: this.getOptions(), rawValue: '', placeholder: 'Search' };
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({options: this.getOptions(newProps)});
+    this.setState({ options: this.getOptions(newProps) });
   }
 
   getOptions(newProps) {
@@ -58,8 +58,8 @@ class AutoCompleteFilter extends React.Component {
 
   handleChange(value) {
     const filters = value;
-    this.setState({filters});
-    this.props.onChange({filterTerm: filters, column: this.props.column, rawValue: value, filterValues: this.filterValues });
+    this.setState({ filters });
+    this.props.onChange({ filterTerm: filters, column: this.props.column, rawValue: value, filterValues: this.filterValues });
   }
 
   render() {

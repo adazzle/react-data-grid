@@ -71,7 +71,7 @@ function executeSpyTests(fn) {
   });
 
   describe('When groupBy is defined as an array of objects', () => {
-    const options = { groupBy: [{key: 'title', name: 'Title'}] };
+    const options = { groupBy: [{ key: 'title', name: 'Title' }] };
 
     it('should call groupBy only once', () => {
       const expectedComputations = fn(options);
@@ -224,7 +224,7 @@ describe('Grid Selectors', () => {
     });
 
     it('can group by a single column when groupBy is an object array', () => {
-      const groupBy = [{key: 'title', name: 'title'}];
+      const groupBy = [{ key: 'title', name: 'title' }];
       const computedRows = Selectors.getRows({ rows, groupBy });
       expect(computedRows.length).toBe(6);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
@@ -237,7 +237,7 @@ describe('Grid Selectors', () => {
     });
 
     it('can group by multiple columns when groupBy is an object array', () => {
-      const groupBy = [{key: 'title', name: 'title'}, {key: 'count', name: 'count'}, {key: 'id', name: 'id'}];
+      const groupBy = [{ key: 'title', name: 'title' }, { key: 'count', name: 'count' }, { key: 'id', name: 'id' }];
       const computedRows = Selectors.getRows({ rows, groupBy });
       expect(computedRows.length).toBe(12);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
@@ -248,7 +248,7 @@ describe('Grid Selectors', () => {
 
     it('can filter and then group by column when groupBy is an object array', () => {
       const filters = { title: { filterTerm: '1' } };
-      const groupBy = [{key: 'title', name: 'title'}];
+      const groupBy = [{ key: 'title', name: 'title' }];
       const computedRows = Selectors.getRows({ rows, filters, groupBy });
       expect(computedRows.length).toBe(2);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));

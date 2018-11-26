@@ -46,6 +46,8 @@
     }],
     "no-use-before-define": 2,       // http://eslint.org/docs/rules/no-use-before-define,
     "no-undef": 2,
+    "no-delete-var": 2,
+    "no-label-var": 2,
 
 /**
  * Possible errors
@@ -71,6 +73,10 @@
     "no-unreachable": 2,             // http://eslint.org/docs/rules/no-unreachable
     "use-isnan": 2,                  // http://eslint.org/docs/rules/use-isnan
     "block-scoped-var": 2,           // http://eslint.org/docs/rules/block-scoped-var
+    "no-dupe-args": 2,
+    "no-template-curly-in-string": 2,
+    "valid-typeof": [2, { "requireStringLiterals": true }],
+
 /**
  * Best practices
  */
@@ -114,6 +120,13 @@
     "wrap-iife": [2, "any"],         // http://eslint.org/docs/rules/wrap-iife
     "yoda": 2,                       // http://eslint.org/docs/rules/yoda,
     "prefer-const": 2,
+    "no-empty-pattern": 2,
+    "no-extra-label": 2,
+    "no-global-assign": 2,
+    "no-self-assign": 2,
+    "no-unmodified-loop-condition": 2,
+    "no-unused-expressions": [2, { "allowShortCircuit": true }],
+    "no-useless-call": 2,
 
 /**
  * Style
@@ -166,6 +179,8 @@
     "keyword-spacing": 0,    // http://eslint.org/docs/rules/space-return-throw-case
     "spaced-comment": 2,             // http://eslint.org/docs/rules/spaced-comment,
     "no-whitespace-before-property": 2,
+    "no-array-constructor": 2,
+    "object-curly-spacing": [1, "always"],
 
 /**
  * JSX style

@@ -1,5 +1,5 @@
 import React from 'react';
-import {canEdit} from '../ColumnUtils';
+import { canEdit } from '../ColumnUtils';
 import ReactDOM from 'react-dom';
 const cloneElement = React.cloneElement;
 

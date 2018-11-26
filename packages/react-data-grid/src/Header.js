@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import joinClasses from 'classnames';
 import shallowCloneObject from './shallowCloneObject';
 import ColumnMetrics from './ColumnMetrics';
-import {getColumn} from './ColumnUtils';
+import { getColumn } from './ColumnUtils';
 import HeaderRow from './HeaderRow';
 import getScrollbarSize  from './getScrollbarSize';
 import PropTypes from 'prop-types';
@@ -33,10 +33,10 @@ class Header extends React.Component {
     cellMetaData: PropTypes.shape(cellMetaDataShape)
   };
 
-  state = {resizing: null};
+  state = { resizing: null };
 
   componentWillReceiveProps() {
-    this.setState({resizing: null});
+    this.setState({ resizing: null });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -67,7 +67,7 @@ class Header extends React.Component {
       }
 
       resizing.column = getColumn(resizing.columnMetrics.columns, pos);
-      this.setState({resizing});
+      this.setState({ resizing });
     }
   };
 
@@ -189,7 +189,7 @@ class Header extends React.Component {
 
   // Set the cell selection to -1 x -1 when clicking on the header
   onHeaderClick = () => {
-    this.props.cellMetaData.onCellClick({rowIdx: -1, idx: -1 });
+    this.props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
   };
 
   render() {

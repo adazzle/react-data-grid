@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {ContextMenu} from 'react-contextmenu';
+import { ContextMenu } from 'react-contextmenu';
 
 class ReactDataGridContextMenu extends React.Component {
   render() {

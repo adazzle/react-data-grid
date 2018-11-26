@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '../Grid';
-import helpers, {fakeCellMetaData} from '../helpers/test/GridPropHelpers';
+import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
 import { shallow } from 'enzyme';
 import { ContextMenu } from 'react-contextmenu';
 
@@ -66,7 +66,7 @@ describe('Rendering Grid component', () => {
       emptyRowsView: jasmine.createSpy(),
       expandedRows: jasmine.createSpy(),
       selectedRows: jasmine.createSpy(),
-      rowSelection: {isSelectedKey: 'selectedKey'},
+      rowSelection: { isSelectedKey: 'selectedKey' },
       rowsCount: 14,
       onRows: jasmine.createSpy(),
       sortColumn: 'sortColumn',
@@ -81,7 +81,7 @@ describe('Rendering Grid component', () => {
       onColumnResize: jasmine.createSpy(),
       onSort: jasmine.createSpy(),
       cellMetaData: {
-        selected: {idx: 2, rowIdx: 3},
+        selected: { idx: 2, rowIdx: 3 },
         dragged: null,
         onCellClick: jasmine.createSpy(),
         onCellContextMenu: jasmine.createSpy(),
@@ -100,7 +100,7 @@ describe('Rendering Grid component', () => {
       draggableHeaderCell: jasmine.createSpy(),
       getValidFilterValues: jasmine.createSpy(),
       rowGroupRenderer: jasmine.createSpy(),
-      overScan: {key: 'value'}
+      overScan: { key: 'value' }
     };
   };
   it('passes classname property', () => {

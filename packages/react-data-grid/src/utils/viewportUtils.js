@@ -1,4 +1,4 @@
-import {getSize, getColumn, isFrozen} from '../ColumnUtils';
+import { getSize, getColumn, isFrozen } from '../ColumnUtils';
 
 export const OVERSCAN_ROWS = 2;
 
@@ -57,11 +57,11 @@ const getTotalFrozenColumnWidth = (columns) => {
 };
 
 const getColumnCountForWidth = (columns, initialWidth, colVisibleStartIdx) => {
-  const initialValue = {width: initialWidth, count: 0};
-  return columns.slice(colVisibleStartIdx).reduce(({width, count}, column) => {
+  const initialValue = { width: initialWidth, count: 0 };
+  return columns.slice(colVisibleStartIdx).reduce(({ width, count }, column) => {
     const remainingWidth = width - column.width;
     const columnCount = remainingWidth >= 0 ? count + 1 : count;
-    return {width: remainingWidth, count: columnCount};
+    return { width: remainingWidth, count: columnCount };
   }, initialValue);
 };
 
@@ -79,7 +79,7 @@ export const getNonFrozenVisibleColStartIdx = (columns, scrollLeft) => {
 };
 
 export const getNonFrozenRenderedColumnCount = (columnMetrics, viewportDomWidth, scrollLeft) => {
-  const {columns} = columnMetrics;
+  const { columns } = columnMetrics;
   if (getSize(columns) === 0) {
     return 0;
   }
@@ -91,7 +91,7 @@ export const getNonFrozenRenderedColumnCount = (columnMetrics, viewportDomWidth,
   const scrolledFrozenWidth = totalFrozenColumnWidth + scrollLeft;
   const firstColumnHiddenWidth = scrolledFrozenWidth  > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;
   const initialWidth = viewportWidth - totalFrozenColumnWidth + firstColumnHiddenWidth;
-  const {count} = getColumnCountForWidth(columnMetrics.columns, initialWidth,  colVisibleStartIdx);
+  const { count } = getColumnCountForWidth(columnMetrics.columns, initialWidth,  colVisibleStartIdx);
   return count;
 };
 
