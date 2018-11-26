@@ -1,15 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {getSize, getColumn} from './ColumnUtils';
+import { getSize, getColumn, getValue } from './ColumnUtils';
 
 class EmptyChildRow extends React.Component {
-
-  constructor() {
-    super();
-    this.onAddSubRow = this.onAddSubRow.bind(this);
-  }
-
-  onAddSubRow() {
+  onAddSubRow = () => {
     this.props.onAddSubRow(this.props.parentRowId);
   }
 
@@ -39,7 +33,7 @@ class EmptyChildRow extends React.Component {
     };
     const expandColumn = getColumn(this.props.columns.filter(c => c.key === this.props.expandColumnKey), 0);
 
-    const cellLeft = expandColumn ? expandColumn.left  : 0;
+    const cellLeft = expandColumn ? expandColumn.left : 0;
     return (<div className="react-grid-Row rdg-add-child-row-container" style={style}>
       <div className="react-grid-Cell" style={{ position: 'absolute', height: cellHeight, width: '100%', left: cellLeft }}>
         <div className="rdg-empty-child-row" style={{ marginLeft: '30px', lineHeight: `${cellHeight}px` }}>

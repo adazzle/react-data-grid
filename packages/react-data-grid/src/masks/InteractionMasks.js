@@ -299,7 +299,7 @@ class InteractionMasks extends React.Component {
     if (isFunction(onCellCopyPaste)) {
       onCellCopyPaste({
         cellKey,
-        rowIdx,
+        rowIdx: toRow,
         fromRow,
         toRow,
         value: textToCopy

@@ -1,4 +1,6 @@
 import React from 'react';
+import Immutable from 'immutable';
+
 import Header from '../Header';
 import HeaderRow from '../HeaderRow';
 import helpers, {fakeCellMetaData} from '../helpers/test/GridPropHelpers';

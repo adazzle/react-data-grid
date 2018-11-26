@@ -38,7 +38,7 @@ function executeSpyTests(fn) {
     it('should have filterTerm in every filter object', () => {
       const filters = options.filters;
       for (let i = 0; i < filters.length; i++) {
-        expect(filter.filterTerm).toBeDefined();
+        expect(filters[i].filterTerm).toBeDefined();
       }
     });
   });

@@ -1,5 +1,7 @@
 const React = require('react');
 import PropTypes from 'prop-types';
+import moment from 'moment';
+
 const ReactDOM = require('react-dom');
 const Moment 		 = require('moment');
 const $					 = require('jquery');
@@ -280,7 +282,8 @@ DateRangePicker.prototype = {
       if ($(this.element).is('input[type=text]')) {
         const val = $(this.element).val();
         const split = val.split(this.separator);
-        start = end = null;
+        let start = null;
+        let end = null;
         if (split.length === 2) {
           start = moment(split[0], this.format);
           end = moment(split[1], this.format);

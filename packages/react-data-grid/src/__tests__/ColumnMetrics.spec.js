@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import getScrollbarSize from '../getScrollbarSize';
 const ColumnMetrics = require('../ColumnMetrics');
 
