@@ -33,6 +33,7 @@
     "no-const-assign": 2,
     "no-dupe-class-members": 2,
     "no-new-symbol": 2,
+    "no-this-before-super": 2,
     "arrow-spacing": 1,
 /**
  * Variables
