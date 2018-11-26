@@ -29,6 +29,7 @@
     "jsx-quotes": [2, "prefer-double"],   //http://eslint.org/docs/rules/jsx-quotes
     "no-useless-constructor": 2,
     "no-useless-computed-key": 2,
+    "arrow-spacing": 1,
 /**
  * Variables
  */
