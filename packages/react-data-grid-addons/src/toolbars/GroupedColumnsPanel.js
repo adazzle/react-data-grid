@@ -21,10 +21,6 @@ const defaultProps = {
 };
 
 class GroupedColumnsPanel extends Component {
-  constructor() {
-    super();
-  }
-
   getPanelInstructionMessage() {
     const {groupBy} = this.props;
     return groupBy && groupBy.length > 0 ? this.props.panelDescription : this.props.noColumnsSelectedMessage;

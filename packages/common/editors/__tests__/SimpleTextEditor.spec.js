@@ -6,7 +6,7 @@ describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
     let component;
 
-    let fakeColumn = { key: 'text', name: 'name', width: 0};
+    const fakeColumn = { key: 'text', name: 'name', width: 0};
     function fakeBlurCb() { return true; }
     function fakeFunction() { }
     beforeEach(() => {

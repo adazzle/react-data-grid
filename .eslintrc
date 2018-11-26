@@ -27,6 +27,14 @@
  */
     "no-var": 2,                     // http://eslint.org/docs/rules/no-var
     "jsx-quotes": [2, "prefer-double"],   //http://eslint.org/docs/rules/jsx-quotes
+    "constructor-super": 2,
+    "no-useless-constructor": 2,
+    "no-useless-computed-key": 2,
+    "no-const-assign": 2,
+    "no-dupe-class-members": 2,
+    "no-new-symbol": 2,
+    "no-this-before-super": 2,
+    "arrow-spacing": 1,
 /**
  * Variables
  */
@@ -155,7 +163,8 @@
     "space-before-function-paren": [2, "never"], // http://eslint.org/docs/rules/space-before-function-paren
     "space-infix-ops": 2,            // http://eslint.org/docs/rules/space-infix-ops
     "keyword-spacing": 0,    // http://eslint.org/docs/rules/space-return-throw-case
-    "spaced-comment": 2,             // http://eslint.org/docs/rules/spaced-comment
+    "spaced-comment": 2,             // http://eslint.org/docs/rules/spaced-comment,
+    "no-whitespace-before-property": 2,
 
 /**
  * JSX style

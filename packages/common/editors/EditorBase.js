@@ -12,13 +12,13 @@ class EditorBase extends React.Component {
   }
 
   getValue() {
-    let updated = {};
+    const updated = {};
     updated[this.props.column.key] = this.getInputNode().value;
     return updated;
   }
 
   getInputNode() {
-    let domNode = ReactDOM.findDOMNode(this);
+    const domNode = ReactDOM.findDOMNode(this);
     if (domNode.tagName === 'INPUT') {
       return domNode;
     }

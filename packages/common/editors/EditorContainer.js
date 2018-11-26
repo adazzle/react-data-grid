@@ -34,7 +34,7 @@ class EditorContainer extends React.Component {
   changeCanceled = false;
 
   componentDidMount() {
-    let inputNode = this.getInputNode();
+    const inputNode = this.getInputNode();
     if (inputNode !== undefined) {
       this.setTextInputFocus();
       if (!this.getEditor().disableContainerStyles) {
@@ -71,7 +71,7 @@ class EditorContainer extends React.Component {
       this.checkAndCall('onPressKeyWithCtrl', e);
     } else if (this.isKeyExplicitlyHandled(e.key)) {
       // break up individual keyPress events to have their own specific callbacks
-      let callBack = 'onPress' + e.key;
+      const callBack = 'onPress' + e.key;
       this.checkAndCall(callBack, e);
     } else if (isKeyPrintable(e.keyCode)) {
       e.stopPropagation();
@@ -95,7 +95,7 @@ class EditorContainer extends React.Component {
   }
 
   createEditor = () => {
-    let editorProps = {
+    const editorProps = {
       ref: this.setEditorRef,
       column: this.props.column,
       value: this.getInitialValue(),
@@ -108,7 +108,7 @@ class EditorContainer extends React.Component {
       onOverrideKeyDown: this.onKeyDown
     };
 
-    let CustomEditor = this.props.column.editor;
+    const CustomEditor = this.props.column.editor;
     // return custom column editor or SimpleEditor if none specified
     if (React.isValidElement(CustomEditor)) {
       return React.cloneElement(CustomEditor, editorProps);
@@ -233,11 +233,11 @@ class EditorContainer extends React.Component {
 
   commit = (args) => {
     const { onCommit } = this.props;
-    let opts = args || {};
-    let updated = this.getEditor().getValue();
+    const opts = args || {};
+    const updated = this.getEditor().getValue();
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
-      let cellKey = this.props.column.key;
+      const cellKey = this.props.column.key;
       onCommit({ cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key });
     }
   };
@@ -249,7 +249,7 @@ class EditorContainer extends React.Component {
 
   isNewValueValid = (value) => {
     if (isFunction(this.getEditor().validate)) {
-      let isValid = this.getEditor().validate(value);
+      const isValid = this.getEditor().validate(value);
       this.setState({ isInvalid: !isValid });
       return isValid;
     }
@@ -258,13 +258,13 @@ class EditorContainer extends React.Component {
   };
 
   setCaretAtEndOfInput = () => {
-    let input = this.getInputNode();
+    const input = this.getInputNode();
     // taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-    let txtLength = input.value.length;
+    const txtLength = input.value.length;
     if (input.setSelectionRange) {
       input.setSelectionRange(txtLength, txtLength);
     } else if (input.createTextRange) {
-      let fieldRange = input.createTextRange();
+      const fieldRange = input.createTextRange();
       fieldRange.moveStart('character', txtLength);
       fieldRange.collapse();
       fieldRange.select();
@@ -272,28 +272,28 @@ class EditorContainer extends React.Component {
   };
 
   isCaretAtBeginningOfInput = () => {
-    let inputNode = this.getInputNode();
+    const inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.selectionEnd
       && inputNode.selectionStart === 0;
   };
 
   isCaretAtEndOfInput = () => {
-    let inputNode = this.getInputNode();
+    const inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
   };
 
   isBodyClicked = (e) => {
-    let relatedTarget = this.getRelatedTarget(e);
+    const relatedTarget = this.getRelatedTarget(e);
     return (relatedTarget === null);
   };
 
   isViewportClicked = (e) => {
-    let relatedTarget = this.getRelatedTarget(e);
+    const relatedTarget = this.getRelatedTarget(e);
     return (relatedTarget.className.indexOf('react-grid-Viewport') > -1);
   };
 
   isClickInsideEditor = (e) => {
-    let relatedTarget = this.getRelatedTarget(e);
+    const relatedTarget = this.getRelatedTarget(e);
     return (e.currentTarget.contains(relatedTarget) || (relatedTarget.className.indexOf('editing') > -1 || relatedTarget.className.indexOf('react-grid-Cell') > -1));
   };
 
@@ -322,8 +322,8 @@ class EditorContainer extends React.Component {
   };
 
   setTextInputFocus = () => {
-    let keyCode = this.props.firstEditorKeyPress;
-    let inputNode = this.getInputNode();
+    const keyCode = this.props.firstEditorKeyPress;
+    const inputNode = this.getInputNode();
     inputNode.focus();
     if (inputNode.tagName === 'INPUT') {
       if (!isKeyPrintable(keyCode)) {

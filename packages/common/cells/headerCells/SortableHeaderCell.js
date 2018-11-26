@@ -40,7 +40,7 @@ class SortableHeaderCell extends React.Component {
   };
 
   getSortByText = () => {
-    let unicodeKeys = {
+    const unicodeKeys = {
       ASC: '9650',
       DESC: '9660'
     };
@@ -48,7 +48,7 @@ class SortableHeaderCell extends React.Component {
   };
 
   render() {
-    let className = joinClasses({
+    const className = joinClasses({
       'react-grid-HeaderCell-sortable': true,
       'react-grid-HeaderCell-sortable--ascending': this.props.sortDirection === 'ASC',
       'react-grid-HeaderCell-sortable--descending': this.props.sortDirection === 'DESC'
