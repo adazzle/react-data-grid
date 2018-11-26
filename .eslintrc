@@ -27,6 +27,7 @@
  */
     "no-var": 2,                     // http://eslint.org/docs/rules/no-var
     "jsx-quotes": [2, "prefer-double"],   //http://eslint.org/docs/rules/jsx-quotes
+    "constructor-super": 2,
     "no-useless-constructor": 2,
     "no-useless-computed-key": 2,
     "arrow-spacing": 1,
