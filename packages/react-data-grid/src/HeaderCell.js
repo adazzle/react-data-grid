@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Column from 'common/prop-shapes/Column';
-import {isFrozen} from './ColumnUtils';
+import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from 'common/constants';
 const ResizeHandle   = require('./ResizeHandle');
 
@@ -31,10 +31,10 @@ class HeaderCell extends React.Component {
     renderer: SimpleCellRenderer
   };
 
-  state = {resizing: false};
+  state = { resizing: false };
 
   onDragStart = (e) => {
-    this.setState({resizing: true});
+    this.setState({ resizing: true });
     // need to set dummy data for FF
     if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
   };
@@ -52,7 +52,7 @@ class HeaderCell extends React.Component {
   onDragEnd = (e) => {
     const width = this.getWidthFromMouseEvent(e);
     this.props.onResizeEnd(this.props.column, width);
-    this.setState({resizing: false});
+    this.setState({ resizing: false });
   };
 
   getWidthFromMouseEvent = (e) => {
@@ -62,15 +62,15 @@ class HeaderCell extends React.Component {
   };
 
   getCell = () => {
-    const {height, column, renderer} = this.props;
+    const { height, column, renderer } = this.props;
     if (React.isValidElement(renderer)) {
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
       if (typeof this.props.renderer.type === 'string') {
-        return React.cloneElement(renderer, {height});
+        return React.cloneElement(renderer, { height });
       }
-      return React.cloneElement(renderer, {column, height});
+      return React.cloneElement(renderer, { column, height });
     }
-    return this.props.renderer({column});
+    return this.props.renderer({ column });
   };
 
   getStyle = () => {

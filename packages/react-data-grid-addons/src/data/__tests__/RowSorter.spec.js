@@ -1,4 +1,4 @@
-import sortRows, {comparer} from '../RowSorter';
+import sortRows, { comparer } from '../RowSorter';
 import Immutable from 'immutable';
 
 describe('RowSorter', () => {

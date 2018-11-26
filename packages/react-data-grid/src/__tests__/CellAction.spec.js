@@ -1,6 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
-import {shallow} from 'enzyme';
+import { shallow } from 'enzyme';
 import CellAction from '../CellAction';
 
 const setup = (overriderProps = {}) => {
@@ -21,7 +21,7 @@ const setup = (overriderProps = {}) => {
 describe('Cell Action Tests', () => {
   describe('when a button action is passed', () => {
     it('will render a button action and hook up the callback function', () => {
-      const {wrapper, props} = setup();
+      const { wrapper, props } = setup();
       const renderedActionButton = wrapper.find('.rdg-cell-action-button');
       const renderedActionButtonProps = renderedActionButton.props();
       const renderedActionMenu = wrapper.find('.rdg-cell-action-menu');
@@ -39,7 +39,7 @@ describe('Cell Action Tests', () => {
 
   describe('when a menu action is passed', () => {
     it('will render a toggle button which will hide/show the menu of actions', () => {
-      const {wrapper, props} = setup({
+      const { wrapper, props } = setup({
         action: {
           icon: 'glyphicon glyphicon-link',
           actions: [
@@ -83,7 +83,7 @@ describe('Cell Action Tests', () => {
   describe('when isFirst is passed', () => {
     describe('when isFirst is true', () => {
       it('will render a button action with cell-action-last class on it', () => {
-        const {wrapper} = setup({isFirst: true});
+        const { wrapper } = setup({ isFirst: true });
         const wrapperProps = wrapper.props();
 
         expect(wrapper.length).toBe(1);
@@ -93,7 +93,7 @@ describe('Cell Action Tests', () => {
 
     describe('when isFirst is false', () => {
       it('will render a button action without cell-action-last class on it', () => {
-        const {wrapper} = setup({isFirst: false});
+        const { wrapper } = setup({ isFirst: false });
         const wrapperProps = wrapper.props();
 
         expect(wrapper.length).toBe(1);

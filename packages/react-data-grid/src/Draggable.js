@@ -44,7 +44,7 @@ class Draggable extends React.Component {
     window.addEventListener('touchend', this.onMouseUp);
     window.addEventListener('touchmove', this.onMouseMove);
 
-    this.setState({drag});
+    this.setState({ drag });
   };
 
   onMouseMove = (e) => {
@@ -62,7 +62,7 @@ class Draggable extends React.Component {
   onMouseUp = (e) => {
     this.cleanUp();
     this.props.onDragEnd(e, this.state.drag);
-    this.setState({drag: null});
+    this.setState({ drag: null });
   };
 
   cleanUp = () => {

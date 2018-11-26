@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import {isEmptyObject, isEmptyArray} from 'common/utils';
+import { isEmptyObject, isEmptyArray } from 'common/utils';
 import groupRows from './RowGrouper';
 import filterRows from './RowFilterer';
 import sortRows from './RowSorter';

@@ -6,7 +6,7 @@ const AutoCompleteEditor = require('../AutoCompleteEditor');
 describe('AutoCompleteEditor integration', () => {
   let component;
   function fakeCb() { return true; }
-  const fakeOptions = [{id: 1, title: 'test-result1'}, {id: 2, title: 'test-result2'}];
+  const fakeOptions = [{ id: 1, title: 'test-result1' }, { id: 2, title: 'test-result2' }];
   const fakeParams = ['param1', 'param2', 'param3'];
   const fakeColumn = { key: 'autocomplete', name: 'name', width: 0 };
   const commitSpy = jasmine.createSpy();

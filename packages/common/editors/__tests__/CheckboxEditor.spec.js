@@ -33,7 +33,7 @@ describe('CheckboxEditor', () => {
     });
 
     it('should not be selected if value prop is false', () => {
-      componentWrapper.setProps({value: false});
+      componentWrapper.setProps({ value: false });
       const Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
       const checkboxNode = ReactDOM.findDOMNode(Input);
       expect(checkboxNode.checked).toBe(false);

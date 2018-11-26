@@ -8,12 +8,12 @@ class FilterableHeaderCell extends React.Component {
     column: PropTypes.shape(Column)
   };
 
-  state = {filterTerm: ''};
+  state = { filterTerm: '' };
 
   handleChange = (e) => {
     const val = e.target.value;
-    this.setState({filterTerm: val });
-    this.props.onChange({filterTerm: val, column: this.props.column});
+    this.setState({ filterTerm: val });
+    this.props.onChange({ filterTerm: val, column: this.props.column });
   };
 
   renderInput = () => {

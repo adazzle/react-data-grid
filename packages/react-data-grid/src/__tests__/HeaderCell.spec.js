@@ -21,28 +21,28 @@ describe('Header Cell Tests', () => {
   };
 
   function setup(overrideProps = {}) {
-    const props = {...testProps, ...overrideProps};
+    const props = { ...testProps, ...overrideProps };
     const wrapper = shallow(<HeaderCell  {...props}/>);
-    return {wrapper, props};
+    return { wrapper, props };
   }
 
   it('should initialize the state correctly', () => {
-    const {wrapper} = setup();
+    const { wrapper } = setup();
     expect(wrapper.state()).toEqual(
-      {resizing: false}
+      { resizing: false }
     );
   });
 
   describe('When custom render is supplied', () => {
     it('will render', () => {
       const CustomRenderer = () => <div>Custom</div>;
-      const {wrapper} = setup({renderer: <CustomRenderer/>});
+      const { wrapper } = setup({ renderer: <CustomRenderer/> });
       expect(wrapper.find(CustomRenderer).length).toBe(1);
     });
 
     it('will have height passed in props', () => {
       const CustomRenderer = () => <div>Custom</div>;
-      const {wrapper} = setup({renderer: <CustomRenderer/>});
+      const { wrapper } = setup({ renderer: <CustomRenderer/> });
       expect(wrapper.find(CustomRenderer).props().height).toBe(testProps.height);
     });
   });
@@ -57,13 +57,13 @@ describe('Header Cell Tests', () => {
     });
 
     it('should render a resize handle', () => {
-      const {wrapper} = setup();
+      const { wrapper } = setup();
       const resizeHandle = wrapper.find(ResizeHandle);
       expect(resizeHandle.length).toBe(1);
     });
 
     it('start dragging handle should set resizing state to be true', () => {
-      const {wrapper} = setup();
+      const { wrapper } = setup();
       const resizeHandle = wrapper.find(ResizeHandle);
       resizeHandle.props().onDragStart();
       expect(wrapper.state().resizing).toBe(true);
@@ -73,7 +73,7 @@ describe('Header Cell Tests', () => {
       const dragLength = 200;
       const wrapper = mount(<HeaderCell  {...testProps}/>);
       const resizeHandle = wrapper.find(ResizeHandle);
-      const fakeEvent = {pageX: dragLength};
+      const fakeEvent = { pageX: dragLength };
       resizeHandle.props().onDrag(fakeEvent);
       expect(testProps.onResize).toHaveBeenCalled();
       expect(testProps.onResize.calls.mostRecent().args[0]).toEqual(testProps.column);
@@ -82,8 +82,8 @@ describe('Header Cell Tests', () => {
 
     it('finish dragging should reset resizing state', () => {
       const wrapper = mount(<HeaderCell  {...testProps}/>);
-      wrapper.setState({resizing: true});
-      const fakeEvent = {pageX: 250};
+      wrapper.setState({ resizing: true });
+      const fakeEvent = { pageX: 250 };
       const resizeHandle = wrapper.find(ResizeHandle);
       resizeHandle.props().onDragEnd(fakeEvent);
       expect(wrapper.state().resizing).toBe(false);
@@ -92,7 +92,7 @@ describe('Header Cell Tests', () => {
     it('finish dragging should call onResizeEnd with correct params', () => {
       const wrapper = mount(<HeaderCell  {...testProps}/>);
       const resizeHandle = wrapper.find(ResizeHandle);
-      const fakeEvent = {pageX: 250};
+      const fakeEvent = { pageX: 250 };
       resizeHandle.props().onDrag(fakeEvent);
       expect(testProps.onResizeEnd).toHaveBeenCalled();
       expect(testProps.onResizeEnd.calls.mostRecent().args[0]).toEqual(testProps.column);
@@ -103,18 +103,18 @@ describe('Header Cell Tests', () => {
   describe('getCell method', () => {
     it('pass the column as property to cell renderer if it is a function', () => {
       const rendererFunction = jasmine.createSpy();
-      const {props} = setup({renderer: rendererFunction});
-      expect(rendererFunction.calls.argsFor(0)[0]).toEqual({column: props.column});
+      const { props } = setup({ renderer: rendererFunction });
+      expect(rendererFunction.calls.argsFor(0)[0]).toEqual({ column: props.column });
     });
     it('should not pass the column as property to cell renderer if it is an HTML element', () => {
       const renderer = <div>Value</div>;
-      const {wrapper} = setup({renderer});
+      const { wrapper } = setup({ renderer });
       const cell = wrapper.instance().getCell();
       expect(cell.props.column).toBeUndefined();
     });
     it('should pass the column as property to cell renderer if it is a React class', () => {
       const renderer = <SortableHeaderCell columnKey="colKey" onSort={jasmine.createSpy()} />;
-      const {wrapper, props} = setup({renderer});
+      const { wrapper, props } = setup({ renderer });
       const cell = wrapper.instance().getCell();
       expect(cell.props.column).toBe(props.column);
     });

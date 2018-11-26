@@ -34,7 +34,7 @@ class DateRangeEditor extends React.Component {
   };
 
   handleDateFilterApply = (startDate, endDate) => {
-    this.commit({value: {startDate: startDate, endDate: endDate}});
+    this.commit({ value: { startDate: startDate, endDate: endDate } });
   };
 
   render() {

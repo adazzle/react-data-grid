@@ -11,5 +11,5 @@ import rowComparer from 'common/utils/RowComparer';
 const performance = require('./performance');
 const Utils = { rowComparer, performance };
 
-window.ReactDataGridPlugins = {Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils};
-module.exports = {Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils};
+window.ReactDataGridPlugins = { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils };
+module.exports = { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils };

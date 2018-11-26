@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { mount } from 'enzyme';
 import TestBackend from 'react-dnd-test-backend';
-import {DragDropContext} from 'react-dnd';
+import { DragDropContext } from 'react-dnd';
 import dropTargetRowContainer from '../DropTargetRowContainer';
-import {DragTestSource} from './TestDragSources';
+import { DragTestSource } from './TestDragSources';
 import { _helpers } from 'react-data-grid';
 const { test: { GridPropHelpers } } = _helpers;
 
@@ -33,7 +33,7 @@ describe('<DropTargetRowContainer />', () => {
   const props = {
     onRowDrop: jasmine.createSpy(),
     idx: 1,
-    row: {id: 5, country: 'England'},
+    row: { id: 5, country: 'England' },
     columns: GridPropHelpers.columns,
     cellMetaData: GridPropHelpers.cellMetaData
   };
@@ -53,7 +53,7 @@ describe('<DropTargetRowContainer />', () => {
   it('should call onRowDrop with correct parameters when source is dropped', () => {
     const rowTargetKey = Object.keys(registry.handlers).filter(k => registry.handlers[k].monitor && registry.handlers[k].monitor.targetId)[0];
     const rowTargetId = registry.handlers[rowTargetKey].monitor.targetId;
-    const draggedRowItem = { idx: 3, data: { id: 11, country: 'Ireland', county: 'Wicklow' }};
+    const draggedRowItem = { idx: 3, data: { id: 11, country: 'Ireland', county: 'Wicklow' } };
     const sourceId = registry.addSource('Row', new DragTestSource(draggedRowItem));
     backend.simulateBeginDrag([sourceId]);
     backend.simulateHover([rowTargetId]);

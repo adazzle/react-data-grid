@@ -46,7 +46,7 @@ class FocusableComponentTestRunner {
       const { componentDidUpdate } = this.componentPrototype;
       const selected = this._getNewSelection(this._props);
 
-      this._componentWrapper.setProps({ cellMetaData: { selected }});
+      this._componentWrapper.setProps({ cellMetaData: { selected } });
       expect(componentDidUpdate.calls.count()).toBe(1);
     });
 
@@ -72,7 +72,7 @@ class FocusableComponentTestRunner {
 
       // Act.
       this._componentWrapper = mount(<this._Component {...this._props} cellMetaData={newCellMetaData} />);
-      this._componentWrapper.setProps({ cellMetaData: { selected: this._getNewSelection(selection) }});
+      this._componentWrapper.setProps({ cellMetaData: { selected: this._getNewSelection(selection) } });
 
       // Assert.
       expect(this.componentPrototype.componentDidUpdate).not.toHaveBeenCalled();

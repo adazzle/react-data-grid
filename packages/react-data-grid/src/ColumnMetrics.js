@@ -1,8 +1,8 @@
 import shallowCloneObject from './shallowCloneObject';
 import sameColumn from './ColumnComparer';
-import {getSize, getColumn, isFrozen, spliceColumn} from './ColumnUtils';
+import { getSize, getColumn, isFrozen, spliceColumn } from './ColumnUtils';
 import getScrollbarSize from './getScrollbarSize';
-import {isColumnsImmutable} from 'common/utils';
+import { isColumnsImmutable } from 'common/utils';
 
 function setColumnWidths(columns, totalWidth) {
   return columns.map(column => {

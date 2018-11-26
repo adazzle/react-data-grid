@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { DropTarget } from 'react-dnd';
@@ -22,7 +22,7 @@ const defaultProps = {
 
 class GroupedColumnsPanel extends Component {
   getPanelInstructionMessage() {
-    const {groupBy} = this.props;
+    const { groupBy } = this.props;
     return groupBy && groupBy.length > 0 ? this.props.panelDescription : this.props.noColumnsSelectedMessage;
   }
 
@@ -54,7 +54,7 @@ class GroupedColumnsPanel extends Component {
   }
 
   render() {
-    const { connectDropTarget, isOver, canDrop} = this.props;
+    const { connectDropTarget, isOver, canDrop } = this.props;
     return connectDropTarget(
       <div style={{ padding: '2px', position: 'relative', margin: '-10px', display: 'inline-block', border: '1px solid #eee' }}>
         {this.renderGroupedColumns()} <span>{this.getPanelInstructionMessage()}</span>

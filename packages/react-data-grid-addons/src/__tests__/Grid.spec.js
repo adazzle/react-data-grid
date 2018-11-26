@@ -10,10 +10,10 @@ const { mount } = require('enzyme');
 describe('Grid', function() {
   beforeEach(function() {
     this.columns = [
-      { key: 'id', name: 'ID', width: 100, events: { onClick: () => {}} },
+      { key: 'id', name: 'ID', width: 100, events: { onClick: () => {} } },
       { key: 'title', name: 'Title', width: 100 },
       { key: 'count', name: 'Count', width: 100 },
-      { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}, onDragOver: () => {}}}
+      { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}, onDragOver: () => {} } }
     ];
 
     this._rows = [];
@@ -199,7 +199,7 @@ describe('Grid', function() {
 
   describe('When row selection enabled', function() {
     beforeEach(function() {
-      this.component = this.createComponent({ enableRowSelect: true}).instance();
+      this.component = this.createComponent({ enableRowSelect: true }).instance();
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -246,7 +246,7 @@ describe('Grid', function() {
 
     describe('when selected is false', function() {
       beforeEach(function() {
-        this.component.setState({selectedRows: [{id: 0, isSelected: false}, {id: 1, isSelected: false}, {id: 2, isSelected: false}, {id: 3, isSelected: false}]});
+        this.component.setState({ selectedRows: [{ id: 0, isSelected: false }, { id: 1, isSelected: false }, { id: 2, isSelected: false }, { id: 3, isSelected: false }] });
         const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(3, 'select-row',  this._rows[3], this.buildFakeEvent());
       });
@@ -258,7 +258,7 @@ describe('Grid', function() {
 
     describe('when selected is null', function() {
       beforeEach(function() {
-        this.component.setState({selectedRows: [{id: 0, isSelected: null}, {id: 1, isSelected: null}, {id: 2, isSelected: null}, {id: 3, isSelected: null}]});
+        this.component.setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: null }, { id: 2, isSelected: null }, { id: 3, isSelected: null }] });
         const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(2, 'select-row', this._rows[2], this.buildFakeEvent());
       });
@@ -270,7 +270,7 @@ describe('Grid', function() {
 
     describe('when selected is true', function() {
       beforeEach(function() {
-        this.component.setState({selectedRows: [{id: 0, isSelected: null}, {id: 1, isSelected: true}, {id: 2, isSelected: true}, {id: 3, isSelected: true}]});
+        this.component.setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: true }, { id: 2, isSelected: true }, { id: 3, isSelected: true }] });
         const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(3, 'select-row', this._rows[3], this.buildFakeEvent());
       });
@@ -287,19 +287,19 @@ describe('Grid', function() {
       const self = this;
       this._selectedRows = [];
       this._deselectedRows = [];
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}, {id: '3', isSelected: false}, {id: '4', isSelected: false}];
-      const columns = [{name: 'Id', key: 'id'}];
+      this.rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }, { id: '3', isSelected: false }, { id: '4', isSelected: false }];
+      const columns = [{ name: 'Id', key: 'id' }];
       const rowGetter = function(i) {
         return self.rows[i];
       };
-      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {enableShiftSelect: true, selectBy: {isSelectedKey: 'isSelected'},
+      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: { enableShiftSelect: true, selectBy: { isSelectedKey: 'isSelected' },
         onRowsSelected: function(selectedRows) {
           self._selectedRows = selectedRows;
         },
         onRowsDeselected: function(deselectedRows) {
           self._deselectedRows = deselectedRows;
         }
-      }}).instance();
+      } }).instance();
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -348,19 +348,19 @@ describe('Grid', function() {
         const self = this;
         this._selectedRows = [];
         this._deselectedRows = [];
-        this.rows = [{id: '1'}, {id: '2'}];
-        const columns = [{name: 'Id', key: 'id'}];
+        this.rows = [{ id: '1' }, { id: '2' }];
+        const columns = [{ name: 'Id', key: 'id' }];
         const rowGetter = function(i) {
           return self.rows[i];
         };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: []},
+        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: { selectBy: { indexes: [] },
           onRowsSelected: function(selectedRows) {
             self._selectedRows = selectedRows;
           },
           onRowsDeselected: function(deselectedRows) {
             self._deselectedRows = deselectedRows;
           }
-        }}).instance();
+        } }).instance();
 
         this.baseGrid = this.getBaseGrid();
         this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -385,19 +385,19 @@ describe('Grid', function() {
         const self = this;
         this._selectedRows = [];
         this._deselectedRows = [];
-        this.rows = [{id: '1'}, {id: '2'}];
-        const columns = [{name: 'Id', key: 'id'}];
+        this.rows = [{ id: '1' }, { id: '2' }];
+        const columns = [{ name: 'Id', key: 'id' }];
         const rowGetter = function(i) {
           return self.rows[i];
         };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: [0, 1]},
+        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: { selectBy: { indexes: [0, 1] },
           onRowsSelected: function(selectedRows) {
             self._selectedRows = selectedRows;
           },
           onRowsDeselected: function(deselectedRows) {
             self._deselectedRows = deselectedRows;
           }
-        }}).instance();
+        } }).instance();
 
         this.baseGrid = this.getBaseGrid();
         this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -467,8 +467,8 @@ describe('Grid', function() {
   describe('onRowClick handler', function() {
     beforeEach(function() {
       const self = this;
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
-      const columns = [{name: 'Id', key: 'id'}, {name: 'Title', key: 'title', width: 100 }];
+      this.rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }];
+      const columns = [{ name: 'Id', key: 'id' }, { name: 'Title', key: 'title', width: 100 }];
       const rowGetter = function(i) {
         return self.rows[i];
       };
@@ -476,14 +476,14 @@ describe('Grid', function() {
       this.rowClicked = {};
       this.rowClicks = 0;
 
-      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
-        self.rowClicked = {row, column};
+      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
+        self.rowClicked = { row, column };
         self.rowClicks++;
-      }}).instance();
+      } }).instance();
     });
 
     it('calls handler when row (cell) clicked', function() {
-      this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1});
+      this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1 });
       expect(this.rowClicks).toBe(1);
       const { row, column } = this.rowClicked;
       expect(row).toEqual(jasmine.objectContaining(this.rows[1]));

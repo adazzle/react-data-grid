@@ -4,7 +4,7 @@ import HeaderRow from '../HeaderRow';
 import HeaderCell from '../HeaderCell';
 import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
-import { shallow} from 'enzyme';
+import { shallow } from 'enzyme';
 
 describe('Header Row Unit Tests', () => {
   const defaultProps = {
@@ -20,10 +20,10 @@ describe('Header Row Unit Tests', () => {
   };
 
   const setup = (testProps) => {
-    const props = {...defaultProps, ...testProps};
+    const props = { ...defaultProps, ...testProps };
     const wrapper = shallow(<HeaderRow {...props}/>);
     const headerCells = wrapper.find(HeaderCell);
-    return {wrapper, headerCells, props};
+    return { wrapper, headerCells, props };
   };
 
   describe('When column is sortable and headerCellRenderer not provided', () => {
@@ -38,19 +38,19 @@ describe('Header Row Unit Tests', () => {
     });
 
     it('should provide column with a sortableHeaderRenderer', () => {
-      const {headerCells} = setup({sortColumn: defaultProps.columns[sortableColIdx].key});
+      const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key });
       const renderer = headerCells.at(sortableColIdx).props().renderer;
       expect(renderer.type).toBe((SortableHeaderCell));
     });
 
     it('should pass sort direction as props to headerRenderer when column is sortColumn', () => {
-      const {headerCells} = setup({sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: 'ASC'});
+      const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: 'ASC' });
       const renderer = headerCells.at(sortableColIdx).props().renderer;
       expect(renderer.props.sortDirection).toEqual('ASC');
     });
 
     it('should call onSort when headerRender triggers sort', () => {
-      const {headerCells, props} = setup({sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: 'ASC'});
+      const { headerCells, props } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: 'ASC' });
       const renderer = headerCells.at(sortableColIdx).props().renderer;
       renderer.props.onSort('title', 'DESC');
       expect(props.onSort).toHaveBeenCalled();
@@ -69,7 +69,7 @@ describe('Header Row Unit Tests', () => {
       });
 
       it('should provide column with a filterableHeaderRenderer', () => {
-        const {headerCells} = setup({sortColumn: defaultProps.columns[sortableAndFilterableColIdx].key, filterable: true});
+        const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableAndFilterableColIdx].key, filterable: true });
         const renderer = headerCells.at(sortableAndFilterableColIdx).props().renderer;
         expect(renderer.type).toBe(FilterableHeaderCell);
       });
@@ -82,7 +82,7 @@ describe('Header Row Unit Tests', () => {
       });
 
       it('should provide column with a sortableHeaderRenderer', () => {
-        const {headerCells} = setup({sortColumn: defaultProps.columns[sortableAndFilterableColIdx].key});
+        const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableAndFilterableColIdx].key });
         const renderer = headerCells.at(sortableAndFilterableColIdx).props().renderer;
         expect(renderer.type).toBe(SortableHeaderCell);
       });
@@ -102,14 +102,14 @@ describe('Header Row Unit Tests', () => {
     });
 
     it('should render custom column header', () => {
-      const {headerCells} = setup();
+      const { headerCells } = setup();
       const renderer = headerCells.at(customColumnIdx).props().renderer;
       expect(renderer.type).toBe(CustomHeader);
     });
 
     it('should render filter if header row if row and column is filterable', () => {
       defaultProps.columns[customColumnIdx].filterable = true;
-      const {headerCells} = setup({filterable: true});
+      const { headerCells } = setup({ filterable: true });
       const renderer = headerCells.at(customColumnIdx).props().renderer;
       expect(renderer.type).toBe(FilterableHeaderCell);
     });
@@ -144,7 +144,7 @@ describe('Header Row Unit Tests', () => {
       onColumnResize: jasmine.createSpy(),
       onColumnResizeEnd: jasmine.createSpy(),
       width: 200,
-      style: {overflow: 'scroll',
+      style: { overflow: 'scroll',
         width: 201,
         height: 36,
         position: 'relative'
@@ -155,7 +155,7 @@ describe('Header Row Unit Tests', () => {
       headerCellRenderer: jasmine.createSpy(),
       filterable: true,
       onFilterChange: jasmine.createSpy(),
-      resizing: {key: 'value'},
+      resizing: { key: 'value' },
       onScroll,
       draggableHeaderCell: () => <div/>
     };

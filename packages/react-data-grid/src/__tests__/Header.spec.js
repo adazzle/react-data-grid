@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 
 import Header from '../Header';
 import HeaderRow from '../HeaderRow';
-import helpers, {fakeCellMetaData} from '../helpers/test/GridPropHelpers';
+import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
 import * as GetScrollbarSize from '../getScrollbarSize';
 import { shallow } from 'enzyme';
 const SCROLL_BAR_SIZE = 17;
@@ -23,7 +23,7 @@ describe('Header Unit Tests', () => {
     cellMetaData: fakeCellMetaData,
     totalWidth: 1000,
     height: 50,
-    headerRows: [{height: 50, ref: 'row'}],
+    headerRows: [{ height: 50, ref: 'row' }],
     onColumnResize: jasmine.createSpy(),
     onSort: () => null
   };
@@ -106,7 +106,7 @@ describe('Header Unit Tests', () => {
         width: 2601
       },
       height: 51,
-      headerRows: [{height: 51, ref: 'row'}],
+      headerRows: [{ height: 51, ref: 'row' }],
       onSort: jasmine.createSpy()
     };
     const testAllProps = {
@@ -118,7 +118,7 @@ describe('Header Unit Tests', () => {
       },
       totalWidth: 1000,
       height: 50,
-      headerRows: [{height: 50, ref: 'row'}],
+      headerRows: [{ height: 50, ref: 'row' }],
       sortColumn: 'sortColumnValue',
       sortDirection: 'DESC',
       onSort: jasmine.createSpy(),

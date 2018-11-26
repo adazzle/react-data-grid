@@ -180,6 +180,7 @@
     "spaced-comment": 2,             // http://eslint.org/docs/rules/spaced-comment,
     "no-whitespace-before-property": 2,
     "no-array-constructor": 2,
+    "object-curly-spacing": [1, "always"],
 
 /**
  * JSX style
