@@ -97,7 +97,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^3.0.5",
-    "lerna": "^3.4.3",
+    "lerna": "^3.5.0",
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.22.2",
