@@ -63,16 +63,22 @@ class EditorContainer extends React.Component {
   handleDocumentClick = (e) => {
     const { target } = e;
     const { container, editor } = this;
-    const isClickedInsideEditorContainer = container !== null && (target === container || container.contains(target));
-    let isClickedInsideEditor = false;
+    if (container !== null && (target === container || container.contains(target))) {
+      // Clicked inside the editor container
+      return;
+    }
+
     if (editor !== null) {
-      // In case the component is using a Portal
+      // Check the editor node in case the editor is using a Portal
       const editorNode = ReactDOM.findDOMNode(editor);
-      isClickedInsideEditor = editorNode && (target === editorNode || editorNode.contains(target));
+      if (editorNode && (target === editorNode || editorNode.contains(target))) {
+        // Clicked inside the editor
+        return;
+      }
     }
-    if (!isClickedInsideEditorContainer && !isClickedInsideEditor) {
-      this.commit(e);
-    }
+
+    // Clicked outside the editor, commit changes
+    this.commit(e);
   };
 
   isKeyExplicitlyHandled = (key) => {
@@ -300,11 +306,11 @@ class EditorContainer extends React.Component {
     const inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
   };
-  
+
   handleRightClick = (e) => {
     e.stopPropagation();
   };
-  
+
   setTextInputFocus = () => {
     const keyCode = this.props.firstEditorKeyPress;
     const inputNode = this.getInputNode();
