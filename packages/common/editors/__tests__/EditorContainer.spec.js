@@ -5,6 +5,7 @@ import { mount } from 'enzyme';
 const EditorContainer = require('../EditorContainer.js');
 const SimpleTextEditor = require('../SimpleTextEditor');
 const EditorBase = require('../EditorBase');
+import EditorPortal from '../EditorPortal';
 
 const fakeColumn = {
   name: 'col1',
@@ -134,6 +135,52 @@ describe('Editor Container Tests', () => {
       wrapper.unmount();
 
       expect(props.onCommit).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Portal editors', () => {
+    let container;
+    let wrapper;
+    let props;
+
+    class TestEditor extends EditorBase {
+      render() {
+        return (
+          <EditorPortal>
+            <div>
+              <input type="text" id="testpassed" />
+              <div>
+                <input type="text" id="input2" />
+                <button id="test-button" />
+              </div>
+            </div>
+          </EditorPortal>
+        );
+      }
+    }
+
+    beforeEach(() => {
+      container = document.createElement('div');
+      container.className = 'container';
+      document.body.appendChild(container);
+      ({ wrapper, props } = setup({ column: { ...fakeColumn, editor: <TestEditor /> } }, { attachTo: container }));
+    });
+
+    afterEach(() => {
+      document.body.removeChild(container);
+    });
+
+    it('should not commit if any element inside the editor is clicked', () => {
+      const editor = wrapper.find(TestEditor);
+      editor.simulate('click');
+
+      expect(props.onCommit.calls.count()).toEqual(0);
+    });
+
+    it('should commit if any element outside the editor is clicked', () => {
+      document.querySelector('.container').click();
+
+      expect(props.onCommit).toHaveBeenCalled();
     });
   });
 
