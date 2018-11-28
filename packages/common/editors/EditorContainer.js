@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import SimpleTextEditor from './SimpleTextEditor';
@@ -34,6 +36,7 @@ class EditorContainer extends React.Component {
   changeCanceled = false;
 
   componentDidMount() {
+    document.addEventListener('click', this.handleDocumentClick);
     const inputNode = this.getInputNode();
     if (inputNode !== undefined) {
       this.setTextInputFocus();
@@ -51,10 +54,32 @@ class EditorContainer extends React.Component {
   }
 
   componentWillUnmount() {
+    document.removeEventListener('click', this.handleDocumentClick);
     if (!this.changeCommitted && !this.changeCanceled) {
       this.commit({ key: 'Enter' });
     }
   }
+
+  handleDocumentClick = (e) => {
+    const { target } = e;
+    const { container, editor } = this;
+    if (container && (target === container || container.contains(target))) {
+      // Clicked inside the editor container
+      return;
+    }
+
+    if (editor) {
+      // Check the editor node in case the editor is using a Portal
+      const editorNode = ReactDOM.findDOMNode(editor);
+      if (editorNode && (target === editorNode || editorNode.contains(target))) {
+        // Clicked inside the editor
+        return;
+      }
+    }
+
+    // Clicked outside the editor, commit changes
+    this.commit(e);
+  };
 
   isKeyExplicitlyHandled = (key) => {
     return isFunction(this['onPress' + key]);
@@ -282,43 +307,8 @@ class EditorContainer extends React.Component {
     return inputNode.selectionStart === inputNode.value.length;
   };
 
-  isBodyClicked = (e) => {
-    const relatedTarget = this.getRelatedTarget(e);
-    return (relatedTarget === null);
-  };
-
-  isViewportClicked = (e) => {
-    const relatedTarget = this.getRelatedTarget(e);
-    return (relatedTarget.className.indexOf('react-grid-Viewport') > -1);
-  };
-
-  isClickInsideEditor = (e) => {
-    const relatedTarget = this.getRelatedTarget(e);
-    return (e.currentTarget.contains(relatedTarget) || (relatedTarget.className.indexOf('editing') > -1 || relatedTarget.className.indexOf('react-grid-Cell') > -1));
-  };
-
-  getRelatedTarget = (e) => {
-    return e.relatedTarget ||
-      e.explicitOriginalTarget ||
-      document.activeElement; // IE11
-  };
-
   handleRightClick = (e) => {
     e.stopPropagation();
-  };
-
-  handleBlur = (e) => {
-    e.stopPropagation();
-    if (this.isBodyClicked(e)) {
-      this.commit(e);
-    }
-
-    if (!this.isBodyClicked(e)) {
-      // prevent null reference
-      if (this.isViewportClicked(e) || !this.isClickInsideEditor(e)) {
-        this.commit(e);
-      }
-    }
   };
 
   setTextInputFocus = () => {
@@ -347,8 +337,8 @@ class EditorContainer extends React.Component {
     return (
       <EditorPortal>
         <div style={style}
+          ref={this.setContainerRef}
           className={this.getContainerClass()}
-          onBlur={this.handleBlur}
           onKeyDown={this.onKeyDown}
           onContextMenu={this.handleRightClick}
         >
