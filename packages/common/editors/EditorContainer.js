@@ -63,12 +63,12 @@ class EditorContainer extends React.Component {
   handleDocumentClick = (e) => {
     const { target } = e;
     const { container, editor } = this;
-    if (container !== null && (target === container || container.contains(target))) {
+    if (container && (target === container || container.contains(target))) {
       // Clicked inside the editor container
       return;
     }
 
-    if (editor !== null) {
+    if (editor) {
       // Check the editor node in case the editor is using a Portal
       const editorNode = ReactDOM.findDOMNode(editor);
       if (editorNode && (target === editorNode || editorNode.contains(target))) {
