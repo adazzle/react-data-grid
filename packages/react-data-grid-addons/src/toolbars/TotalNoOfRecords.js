@@ -9,11 +9,11 @@ class TotalNoOfRecords extends React.Component {
 
     render() {
         let resultText;
-        this.props.noOfRecords = isNaN(this.props.noOfRecords) ? 0 : this.props.noOfRecords;
-        if (this.props.noOfRecords !== 1) {
-            resultText = this.props.noOfRecords + ' ' + 'Results';
+        let noOfRecords = isNaN(this.props.noOfRecords) ? 0 : this.props.noOfRecords;
+        if (noOfRecords !== 1) {
+            resultText = noOfRecords + ' ' + 'Results';
         } else {
-            resultText = this.props.noOfRecords + ' ' + 'Result';
+            resultText = noOfRecords + ' ' + 'Result';
         }
         return (
             <span className="total-no-of-records">
