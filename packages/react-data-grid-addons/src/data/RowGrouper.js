@@ -1,4 +1,4 @@
-import {isImmutableCollection} from 'common/utils';
+import { isImmutableCollection } from 'common/utils';
 import Resolver from './RowGrouperResolver';
 
 
@@ -30,7 +30,7 @@ class RowGrouper {
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
       const isExpanded = this.isRowExpanded(columnName, key);
-      const rowGroupHeader = {name: key, __metaData: {isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName, columnGroupDisplayName}};
+      const rowGroupHeader = { name: key, __metaData: { isGroup: true, treeDepth: columnIndex, isExpanded: isExpanded, columnGroupName: columnName, columnGroupDisplayName } };
 
       dataviewRows = this.resolver.addHeaderRow(rowGroupHeader, dataviewRows);
 

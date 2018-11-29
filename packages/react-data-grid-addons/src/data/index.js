@@ -1,3 +1,3 @@
 import Selectors from './Selectors';
-export {Selectors};
+export { Selectors };
 

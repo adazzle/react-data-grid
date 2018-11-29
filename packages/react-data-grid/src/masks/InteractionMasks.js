@@ -20,7 +20,7 @@ import {
   selectedRangeIsSingleCell
 } from '../utils/SelectedCellUtils';
 import { isFunction } from 'common/utils';
-import {getSize, getColumn, isFrozen} from '../ColumnUtils';
+import { getSize, getColumn, isFrozen } from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from 'common/constants';
 
@@ -299,7 +299,7 @@ class InteractionMasks extends React.Component {
     if (isFunction(onCellCopyPaste)) {
       onCellCopyPaste({
         cellKey,
-        rowIdx,
+        rowIdx: toRow,
         fromRow,
         toRow,
         value: textToCopy

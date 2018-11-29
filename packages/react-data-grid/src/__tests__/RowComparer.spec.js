@@ -6,7 +6,7 @@ const cellMetaData = {
   dragged: null,
   copied: null
 };
-const expandedRows = [{key: 'col1'}, {key: 'col2'}];
+const expandedRows = [{ key: 'col1' }, { key: 'col2' }];
 
 describe('RowComparer shouldRowUpdate', () => {
   it('same props should not cause an update', () => {

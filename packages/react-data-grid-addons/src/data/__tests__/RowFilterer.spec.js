@@ -1,13 +1,13 @@
 import React from 'react';
 import filterRows from '../RowFilterer';
-import {fromJS} from 'immutable';
+import { fromJS } from 'immutable';
 import AutoCompleteFilter from '../../cells/headerCells/filters/AutoCompleteFilter';
 import TestUtils from 'react-dom/test-utils';
 
 const rows = [{ colOne: 'v1', colTwo: 'b1' },
               { colOne: 'v2', colTwo: 'b2' },
               { colOne: 'v3', colTwo: 'b3' }];
-const filters = { colOne: { filterTerm: 'v1' }};
+const filters = { colOne: { filterTerm: 'v1' } };
 
 const fakeColumn = { name: 'Col One', key: 'colOne', width: 100 };
 
@@ -16,9 +16,9 @@ const fakeGetValidFilterValues = () => { return []; };
 
 const acFilter = TestUtils.renderIntoDocument(<AutoCompleteFilter onChange={fakeOnChange} column={fakeColumn} getValidFilterValues={fakeGetValidFilterValues} />);
 
-const acFilters = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], filterValues: acFilter.filterValues }};
+const acFilters = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], filterValues: acFilter.filterValues } };
 
-const acFilters2Column = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], filterValues: acFilter.filterValues }, colTwo: { filterTerm: [{ value: 'b2' }], filterValues: acFilter.filterValues }};
+const acFilters2Column = { colOne: { filterTerm: [{ value: 'v1' }, { value: 'v2' }], filterValues: acFilter.filterValues }, colTwo: { filterTerm: [{ value: 'b2' }], filterValues: acFilter.filterValues } };
 
 describe('Row Filterer', () => {
   it('It can filter arrays of rows', () => {

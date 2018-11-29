@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
-import {isFunction} from 'common/utils';
+import { isFunction } from 'common/utils';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
 import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
-import {isFrozen} from './ColumnUtils';
+import { isFrozen } from './ColumnUtils';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
@@ -161,7 +161,7 @@ class Cell extends React.PureComponent {
   };
 
   getCellClass = () => {
-    const {idx, lastFrozenColumnIndex} = this.props;
+    const { idx, lastFrozenColumnIndex } = this.props;
     const className = joinClasses(
       this.props.column.cellClass,
       'react-grid-Cell',
@@ -190,7 +190,7 @@ class Cell extends React.PureComponent {
   };
 
   checkScroll() {
-    const {scrollLeft, column} = this.props;
+    const { scrollLeft, column } = this.props;
     const node = this.node;
     if (isFrozen(column) && node && node.style.transform != null) {
       this.setScrollLeft(scrollLeft);
@@ -276,7 +276,7 @@ class Cell extends React.PureComponent {
   };
 
   getCellActions() {
-    const {cellMetaData, column, rowData} = this.props;
+    const { cellMetaData, column, rowData } = this.props;
     if (cellMetaData && cellMetaData.getCellActions) {
       const cellActionButtons = cellMetaData.getCellActions(column, rowData);
       if (cellActionButtons && cellActionButtons.length) {
@@ -298,7 +298,7 @@ class Cell extends React.PureComponent {
     let CellContent;
     const Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
-      CellContent = React.cloneElement(Formatter, {...props, dependentValues: this.getFormatterDependencies(), row: this.getRowData()});
+      CellContent = React.cloneElement(Formatter, { ...props, dependentValues: this.getFormatterDependencies(), row: this.getRowData() });
     } else if (isFunction(Formatter)) {
       CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling} row={this.getRowData()}/>;
     } else {
@@ -336,7 +336,7 @@ class Cell extends React.PureComponent {
     const className = this.getCellClass();
 
     const cellActionButtons = this.getCellActions();
-    const {value, column, rowIdx, isExpanded, isScrolling} = this.props;
+    const { value, column, rowIdx, isExpanded, isScrolling } = this.props;
     const cellContent = this.props.children || this.renderCellContent({
       value,
       column,

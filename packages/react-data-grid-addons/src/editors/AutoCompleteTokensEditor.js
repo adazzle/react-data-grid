@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import ReactDOM from 'react-dom';
@@ -38,16 +38,16 @@ class AutoCompleteTokensEditor extends Component {
   }
 
   handleSelectChange(value) {
-    this.setState({value});
+    this.setState({ value });
   }
 
   render() {
     const options = [];
     this.props.options.forEach(function(name) {
       if (typeof (name) === 'string') {
-        options.push({label: name, value: name});
+        options.push({ label: name, value: name });
       } else {
-        options.push({label: name.caption, value: name.id});
+        options.push({ label: name.caption, value: name.id });
       }
     });
     return (

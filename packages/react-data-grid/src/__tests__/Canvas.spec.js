@@ -85,11 +85,11 @@ describe('Canvas Tests', () => {
   });
 
   describe('Row Selection', () => {
-    const COLUMNS = [{key: 'id', name: 'ID'}];
+    const COLUMNS = [{ key: 'id', name: 'ID' }];
 
     describe('selectBy index', () => {
       it('renders row selected', () => {
-        const rowGetter = () => { return { id: 1}; };
+        const rowGetter = () => { return { id: 1 }; };
 
         const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
         wrapper = renderComponent(props);
@@ -101,7 +101,7 @@ describe('Canvas Tests', () => {
 
     describe('selectBy keys', () => {
       it('renders row selected', () => {
-        const rowGetter = () => { return {id: 1}; };
+        const rowGetter = () => { return { id: 1 }; };
 
         const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
         wrapper = renderComponent(props);
@@ -114,9 +114,9 @@ describe('Canvas Tests', () => {
 
     describe('selectBy `isSelectedKey`', () => {
       it('renders row selected', () => {
-        const rowGetter = (i) => { return i === 0 ? {id: 1, isSelected: true} : null; };
+        const rowGetter = (i) => { return i === 0 ? { id: 1, isSelected: true } : null; };
 
-        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected'} };
+        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected' } };
         wrapper = renderComponent(props);
 
         const rows = getRows(wrapper);
@@ -130,8 +130,8 @@ describe('Canvas Tests', () => {
       return function() {
         return {
           children: [
-            {id: 'row1-0'},
-            {id: 'row1-1'}
+            { id: 'row1-0' },
+            { id: 'row1-1' }
           ],
           treeDepth: 1,
           siblingIndex: index,
@@ -140,14 +140,14 @@ describe('Canvas Tests', () => {
       };
     }
 
-    const COLUMNS = [{key: 'id', name: 'ID', left: 100}];
+    const COLUMNS = [{ key: 'id', name: 'ID', left: 100 }];
 
     it('can render a custom renderer if __metadata property exists', () => {
       const EmptyChildRow = () => {
         return (<div className="test-row-renderer"></div>);
       };
-      const rowGetter = () => { return {id: 0, __metaData: {getRowRenderer: EmptyChildRow}}; };
-      const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1)};
+      const rowGetter = () => { return { id: 0, __metaData: { getRowRenderer: EmptyChildRow } }; };
+      const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1) };
       wrapper = renderComponent(props);
       const rows = getRows(wrapper);
       expect(rows[0].props.className).toBe('test-row-renderer');

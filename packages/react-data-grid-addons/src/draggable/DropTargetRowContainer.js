@@ -15,7 +15,7 @@ const rowDropTarget = (Row) => class extends React.Component {
   }
 
   render() {
-    const { connectDropTarget, isOver, canDrop} = this.props;
+    const { connectDropTarget, isOver, canDrop } = this.props;
     const overlayTop = this.props.idx * this.props.height;
     return connectDropTarget(<div>
       <Row ref={(node) => this.row = node} {...this.props}/>
@@ -46,4 +46,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default (Row) => DropTarget('Row', target, collect, {arePropsEqual: (nextProps, currentProps) => !rowComparer(nextProps, currentProps)})(rowDropTarget(Row));
+export default (Row) => DropTarget('Row', target, collect, { arePropsEqual: (nextProps, currentProps) => !rowComparer(nextProps, currentProps) })(rowDropTarget(Row));

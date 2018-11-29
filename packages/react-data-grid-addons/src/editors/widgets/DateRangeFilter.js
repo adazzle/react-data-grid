@@ -1,5 +1,7 @@
 const React = require('react');
 import PropTypes from 'prop-types';
+import moment from 'moment';
+
 const ReactDOM = require('react-dom');
 const Moment 		 = require('moment');
 const $					 = require('jquery');
@@ -280,7 +282,8 @@ DateRangePicker.prototype = {
       if ($(this.element).is('input[type=text]')) {
         const val = $(this.element).val();
         const split = val.split(this.separator);
-        start = end = null;
+        let start = null;
+        let end = null;
         if (split.length === 2) {
           start = moment(split[0], this.format);
           end = moment(split[1], this.format);
@@ -1146,12 +1149,12 @@ class DateRangeFilter extends React.Component {
     endDate: validateDate
   };
 
-  state = {dateRange: ''};
+  state = { dateRange: '' };
 
   componentDidMount() {
     // initialise jQuery date range widget -
     const $calendarNode = $(ReactDOM.findDOMNode(this.refs.calendar));
-    const $calendar = $calendarNode.daterangepicker({ranges: this.props.ranges, format: this.props.format, opens: 'left', locale: { cancelLabel: 'Clear' }, applyClass: 'btn-primary'  });
+    const $calendar = $calendarNode.daterangepicker({ ranges: this.props.ranges, format: this.props.format, opens: 'left', locale: { cancelLabel: 'Clear' }, applyClass: 'btn-primary'  });
     this.calendar = $calendar.data('daterangepicker');
     if (this.props.startDate) {
       this.calendar.setStartDate(this.props.startDate);
@@ -1174,11 +1177,11 @@ class DateRangeFilter extends React.Component {
       this.props.onApply(picker.startDate, picker.endDate);
     }
 
-    this.setState({dateRange: picker.startDate.format(picker.format) + ' - ' + picker.endDate.format(picker.format)});
+    this.setState({ dateRange: picker.startDate.format(picker.format) + ' - ' + picker.endDate.format(picker.format) });
   };
 
   handleClear = () => {
-    this.setState({dateRange: ''});
+    this.setState({ dateRange: '' });
     if (this.props.onApply) {
       // return moment instances for start and end date ranges
       this.props.onApply(null, null);

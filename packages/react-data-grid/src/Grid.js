@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Header from './Header';
 import Viewport from './Viewport';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-import {isFrozen} from './ColumnUtils';
+import { isFrozen } from './ColumnUtils';
 require('../../../themes/react-data-grid-core.css');
 
 class Grid extends React.Component {
@@ -105,7 +105,7 @@ class Grid extends React.Component {
 
   onScroll = (scrollState) => {
     this.props.onScroll(scrollState);
-    const {scrollLeft} = scrollState;
+    const { scrollLeft } = scrollState;
     if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsScrolledLeft(scrollLeft)) {
       this._scrollLeft = scrollLeft;
       this._onScroll();

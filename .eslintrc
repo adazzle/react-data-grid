@@ -10,9 +10,8 @@
   },
   "globals" : {
     "adz": true,
-    jQuery: true,
-    translate: true,
-    pluralTranslate: true
+    "jQuery": true,
+    "Immutable": true
   },
   "rules": {
 /**
@@ -27,6 +26,15 @@
  */
     "no-var": 2,                     // http://eslint.org/docs/rules/no-var
     "jsx-quotes": [2, "prefer-double"],   //http://eslint.org/docs/rules/jsx-quotes
+    "constructor-super": 2,
+    "no-useless-constructor": 2,
+    "no-useless-computed-key": 2,
+    "no-const-assign": 2,
+    "no-dupe-class-members": 2,
+    "no-new-symbol": 2,
+    "no-this-before-super": 2,
+    "arrow-spacing": 1,
+    "no-class-assign": 2,
 /**
  * Variables
  */
@@ -36,7 +44,10 @@
       "vars": "local",
       "args": "after-used"
     }],
-    "no-use-before-define": 2,       // http://eslint.org/docs/rules/no-use-before-define
+    "no-use-before-define": 2,       // http://eslint.org/docs/rules/no-use-before-define,
+    "no-undef": 2,
+    "no-delete-var": 2,
+    "no-label-var": 2,
 
 /**
  * Possible errors
@@ -62,6 +73,10 @@
     "no-unreachable": 2,             // http://eslint.org/docs/rules/no-unreachable
     "use-isnan": 2,                  // http://eslint.org/docs/rules/use-isnan
     "block-scoped-var": 2,           // http://eslint.org/docs/rules/block-scoped-var
+    "no-dupe-args": 2,
+    "no-template-curly-in-string": 2,
+    "valid-typeof": [2, { "requireStringLiterals": true }],
+
 /**
  * Best practices
  */
@@ -105,6 +120,13 @@
     "wrap-iife": [2, "any"],         // http://eslint.org/docs/rules/wrap-iife
     "yoda": 2,                       // http://eslint.org/docs/rules/yoda,
     "prefer-const": 2,
+    "no-empty-pattern": 2,
+    "no-extra-label": 2,
+    "no-global-assign": 2,
+    "no-self-assign": 2,
+    "no-unmodified-loop-condition": 2,
+    "no-unused-expressions": [2, { "allowShortCircuit": true }],
+    "no-useless-call": 2,
 
 /**
  * Style
@@ -155,7 +177,10 @@
     "space-before-function-paren": [2, "never"], // http://eslint.org/docs/rules/space-before-function-paren
     "space-infix-ops": 2,            // http://eslint.org/docs/rules/space-infix-ops
     "keyword-spacing": 0,    // http://eslint.org/docs/rules/space-return-throw-case
-    "spaced-comment": 2,             // http://eslint.org/docs/rules/spaced-comment
+    "spaced-comment": 2,             // http://eslint.org/docs/rules/spaced-comment,
+    "no-whitespace-before-property": 2,
+    "no-array-constructor": 2,
+    "object-curly-spacing": [1, "always"],
 
 /**
  * JSX style

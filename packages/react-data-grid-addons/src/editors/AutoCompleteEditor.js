@@ -51,7 +51,7 @@ class AutoCompleteEditor extends React.Component {
   };
 
   getEditorDisplayValue = () => {
-    const displayValue = {title: ''};
+    const displayValue = { title: '' };
     const { column, value, editorDisplayValue } = this.props;
     if (editorDisplayValue && typeof editorDisplayValue === 'function') {
       displayValue.title = editorDisplayValue(column, value);

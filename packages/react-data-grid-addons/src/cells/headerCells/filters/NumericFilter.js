@@ -105,7 +105,7 @@ class NumericFilter extends React.Component {
   handleChange(e) {
     const value = e.target.value;
     const filters = this.getRules(value);
-    this.props.onChange({filterTerm: (filters.length > 0 ? filters : null), column: this.props.column, rawValue: value, filterValues: this.filterValues });
+    this.props.onChange({ filterTerm: (filters.length > 0 ? filters : null), column: this.props.column, rawValue: value, filterValues: this.filterValues });
   }
 
   render() {

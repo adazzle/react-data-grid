@@ -1,4 +1,4 @@
-import {isImmutableCollection, getMixedTypeValueRetriever} from 'common/utils';
+import { isImmutableCollection, getMixedTypeValueRetriever } from 'common/utils';
 
 const filterRows = (filters, rows = []) => {
   return rows.filter(r => {

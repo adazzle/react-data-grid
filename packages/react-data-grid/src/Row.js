@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import Cell from './Cell';
 import createObjectWithProperties from './createObjectWithProperties';
-import {isFrozen} from './ColumnUtils';
+import { isFrozen } from './ColumnUtils';
 require('../../../themes/react-data-grid-row.css');
 
 // The list of the propTypes that we want to include in the Row div
@@ -108,8 +108,8 @@ class Row extends React.Component {
   getCells = () => {
     const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
     const frozenColumns = columns.filter(c => isFrozen(c));
-    const nonFrozenColumnsToRender = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
-    return frozenColumns.concat(nonFrozenColumnsToRender)
+    const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
+    return nonFrozenColumn.concat(frozenColumns)
       .map(column => this.getCell(column));
   };
 
