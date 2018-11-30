@@ -3,6 +3,9 @@ id: changelog
 title: Changelog
 ---
 
+## 6.0.1 (Nov 30, 2018)
+- **Bugfix:** Fix formatter exports ([1409](https://github.com/adazzle/react-data-grid/pull/1409))
+
 ## 6.0.0 (Nov 30, 2018)
 - **Bugfix:** Fix outside click logic for committing changes ([1404](https://github.com/adazzle/react-data-grid/pull/1404))
 - **TechDebt** Add ESLint Rules ([1396](https://github.com/adazzle/react-data-grid/pull/1396) [1397](https://github.com/adazzle/react-data-grid/pull/1397) [1396](https://github.com/adazzle/react-data-grid/pull/1398) [1399](https://github.com/adazzle/react-data-grid/pull/1399))
