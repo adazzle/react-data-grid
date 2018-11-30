@@ -1,0 +1,18 @@
+.link-right {
+  position: absolute;
+  right: 0px;
+  padding: 10px;
+}
+
+.link-right a {
+  padding: 10px;
+}
+
+.disabled-link { 
+  cursor: not-allowed; 
+  color: lightgrey
+}
+
+.disabled-link:hover {
+  color: lightgray;
+}
