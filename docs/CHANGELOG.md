@@ -3,6 +3,14 @@ id: changelog
 title: Changelog
 ---
 
+## 6.0.0 (Nov 30, 2018)
+- **Bugfix:** Fix outside click logic for committing changes ([1404](https://github.com/adazzle/react-data-grid/pull/1404))
+- **TechDebt** Add ESLint Rules ([1396](https://github.com/adazzle/react-data-grid/pull/1396) [1397](https://github.com/adazzle/react-data-grid/pull/1397) [1396](https://github.com/adazzle/react-data-grid/pull/1398) [1399](https://github.com/adazzle/react-data-grid/pull/1399))
+- **TechDebt:** Upgrade build tools to latest versions ([1350](https://github.com/adazzle/react-data-grid/pull/1350))
+- **Feature:** Cleanup zIndex logic ([1393](https://github.com/adazzle/react-data-grid/pull/1393))
+- **Breaking** Use react portals for cell editors ([1369](https://github.com/adazzle/react-data-grid/pull/1369))
+- **TechDebt:** Upgrade build tools to latest versions ([1350](https://github.com/adazzle/react-data-grid/pull/1350))
+
 ## 5.0.4 (Nov 14, 2018)
 - **Bugfix:** Custom Formatters Example - Styling Fix ([1364](https://github.com/adazzle/react-data-grid/pull/1364))
 - **Bugfix:** Fix website publishing and remove ImmutableJS dependency ([1366](https://github.com/adazzle/react-data-grid/pull/1366))
