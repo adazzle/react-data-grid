@@ -3,15 +3,11 @@ import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import { isFunction } from 'common/utils';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
-import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 import { isFrozen } from './ColumnUtils';
 require('../../../themes/react-data-grid-cell.css');
-
-// The list of the propTypes that we want to include in the Cell div
-const knownDivPropertyKeys = ['height', 'value'];
 
 class Cell extends React.PureComponent {
   static propTypes = {
@@ -271,10 +267,6 @@ class Cell extends React.PureComponent {
     return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
   };
 
-  getKnownDivProps = () => {
-    return createObjectWithProperties(this.props, knownDivPropertyKeys);
-  };
-
   getCellActions() {
     const { cellMetaData, column, rowData } = this.props;
     if (cellMetaData && cellMetaData.getCellActions) {
@@ -293,14 +285,13 @@ class Cell extends React.PureComponent {
     this.node = node;
   };
 
-
   renderCellContent = (props) => {
     let CellContent;
     const Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
       CellContent = React.cloneElement(Formatter, { ...props, dependentValues: this.getFormatterDependencies(), row: this.getRowData() });
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling} row={this.getRowData()}/>;
+      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling} row={this.getRowData()} />;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
@@ -332,12 +323,10 @@ class Cell extends React.PureComponent {
     }
 
     const style = this.getStyle();
-
     const className = this.getCellClass();
-
     const cellActionButtons = this.getCellActions();
-    const { value, column, rowIdx, isExpanded, isScrolling } = this.props;
-    const cellContent = this.props.children || this.renderCellContent({
+    const { value, column, rowIdx, isExpanded, isScrolling, height, children, expandableOptions, tooltip } = this.props;
+    const cellContent = children || this.renderCellContent({
       value,
       column,
       rowIdx,
@@ -346,15 +335,13 @@ class Cell extends React.PureComponent {
     });
 
     const events = this.getEvents();
-    const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
-
-    const cellExpander =  this.canExpand() && (
-      <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />
+    const cellExpander = this.canExpand() && (
+      <CellExpand expandableOptions={expandableOptions} onCellExpand={this.onCellExpand} />
     );
 
     return (
       <div
-        {...this.getKnownDivProps()}
+        height={height}
         className={className}
         style={style}
         {...events}
@@ -363,7 +350,7 @@ class Cell extends React.PureComponent {
         {cellActionButtons}
         {cellExpander}
         {cellContent}
-        {tooltip}
+        {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
       </div>
     );
   }

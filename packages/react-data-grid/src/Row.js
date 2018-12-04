@@ -3,12 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import Cell from './Cell';
-import createObjectWithProperties from './createObjectWithProperties';
 import { isFrozen } from './ColumnUtils';
 require('../../../themes/react-data-grid-row.css');
-
-// The list of the propTypes that we want to include in the Row div
-const knownDivPropertyKeys = ['height'];
 
 class Row extends React.Component {
   static displayName = 'Row';
@@ -163,10 +159,6 @@ class Row extends React.Component {
     this.row = el;
   };
 
-  getKnownDivProps = () => {
-    return createObjectWithProperties(this.props, knownDivPropertyKeys);
-  };
-
   render() {
     const className = joinClasses(
       'react-grid-Row',
@@ -186,7 +178,6 @@ class Row extends React.Component {
     const cells = this.getCells();
     return (
       <div
-        {...this.getKnownDivProps()}
         ref={this.setRowRef}
         className={className}
         style={style}
