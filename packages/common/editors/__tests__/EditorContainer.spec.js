@@ -114,6 +114,7 @@ describe('Editor Container Tests', () => {
     it('should not commit if any element inside the editor is clicked', () => {
       const editor = wrapper.find(TestEditor);
       editor.simulate('click');
+      editor.simulate('mousedown');
 
       expect(props.onCommit.calls.count()).toEqual(0);
     });
@@ -173,12 +174,17 @@ describe('Editor Container Tests', () => {
     it('should not commit if any element inside the editor is clicked', () => {
       const editor = wrapper.find(TestEditor);
       editor.simulate('click');
+      editor.simulate('mousedown');
 
       expect(props.onCommit.calls.count()).toEqual(0);
     });
 
     it('should commit if any element outside the editor is clicked', () => {
-      document.querySelector('.container').click();
+      const clickEvent = document.createEvent('MouseEvents');
+      clickEvent.initEvent('mousedown', true);
+      const input = document.createElement('input');
+      document.querySelector('.container').appendChild(input);
+      input.dispatchEvent(clickEvent);
 
       expect(props.onCommit).toHaveBeenCalled();
     });
@@ -224,7 +230,11 @@ describe('Editor Container Tests', () => {
     });
 
     it('should commit if any element outside the editor is clicked', () => {
-      document.querySelector('.container').click();
+      const clickEvent = document.createEvent('MouseEvents');
+      clickEvent.initEvent('mousedown', true);
+      const input = document.createElement('input');
+      document.querySelector('.container').appendChild(input);
+      input.dispatchEvent(clickEvent);
 
       expect(props.onCommit).toHaveBeenCalled();
     });
