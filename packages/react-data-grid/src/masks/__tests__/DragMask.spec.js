@@ -3,7 +3,6 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import DragMask from '../DragMask';
-import zIndexes from 'common/constants/zIndexes';
 
 describe('DragMask', () => {
   const setup = (propsOverride = {}) => {

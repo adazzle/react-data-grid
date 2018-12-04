@@ -23,7 +23,7 @@ type: `string`
 
 ### `column` (required)
 
-type: `shaperequire('./PropTypeShapes/ExcelColumn')`
+type: `shaperequire('./PropTypeShapes/Column')`
 
 
 ### `expandableOptions` (required)

@@ -1,9 +1,9 @@
 import React from 'react';
 import Viewport from '../Viewport';
 import Canvas from '../Canvas';
-import { shallow} from 'enzyme';
+import { shallow } from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
-import {SCROLL_DIRECTION} from '../utils/viewportUtils';
+import { SCROLL_DIRECTION } from '../utils/viewportUtils';
 
 const viewportProps = {
   rowOffsetHeight: 0,
@@ -86,7 +86,7 @@ describe('<Viewport />', () => {
     const scrollTop = 200;
     const wrapper = shallow(<Viewport {...viewportProps} />);
     const canvas = wrapper.find(Canvas);
-    canvas.props().onScroll({ scrollTop, scrollLeft});
+    canvas.props().onScroll({ scrollTop, scrollLeft });
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: helpers.columns.length,
       colOverscanStartIdx: 0,
@@ -118,7 +118,7 @@ describe('<Viewport />', () => {
       width: 100
     };
     const updatedColumns = helpers.columns.concat(extraColumn);
-    const newProps = Object.assign({}, viewportProps, {columnMetrics: Object.assign({}, viewportProps.columnMetrics, {columns: updatedColumns})});
+    const newProps = Object.assign({}, viewportProps, { columnMetrics: Object.assign({}, viewportProps.columnMetrics, { columns: updatedColumns }) });
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: updatedColumns.length,
@@ -140,7 +140,7 @@ describe('<Viewport />', () => {
   it('should update when given height changed', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
     const newHeight = 1000;
-    const newProps = Object.assign({}, viewportProps, {minHeight: newHeight});
+    const newProps = Object.assign({}, viewportProps, { minHeight: newHeight });
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: helpers.columns.length,

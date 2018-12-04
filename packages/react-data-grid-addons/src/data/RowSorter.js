@@ -1,4 +1,4 @@
-import {getMixedTypeValueRetriever, isImmutableCollection} from 'common/utils';
+import { getMixedTypeValueRetriever, isImmutableCollection } from 'common/utils';
 
 export const comparer = (a, b) => {
   if (a > b) {

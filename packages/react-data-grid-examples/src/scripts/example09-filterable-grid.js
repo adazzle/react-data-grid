@@ -1,7 +1,9 @@
 const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
-const { Toolbar, Data: { Selectors } } = require('react-data-grid-addons');
+import { Toolbar, Data } from 'react-data-grid-addons';
+
+const Selectors = Data.Selectors;
 
 class Example extends React.Component {
   constructor(props, context) {

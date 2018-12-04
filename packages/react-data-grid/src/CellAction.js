@@ -18,7 +18,7 @@ class CellAction extends React.Component {
   }
 
   onHideMenu = () => {
-    this.setState({isMenuOpen: false});
+    this.setState({ isMenuOpen: false });
   }
 
   onGetMenuOptions = () => {

@@ -7,7 +7,7 @@ import CellAction from '../CellAction';
 import SimpleCellFormatter from '../formatters/SimpleCellFormatter';
 
 const testCellMetaData = {
-  selected: {idx: 2, rowIdx: 3},
+  selected: { idx: 2, rowIdx: 3 },
   dragged: null,
   onCellClick: function() {},
   onCellFocus: function() {},
@@ -24,13 +24,13 @@ const testCellMetaData = {
 const testProps = {
   rowIdx: 0,
   idx: 1,
-  column: {name: 'col1'},
+  column: { name: 'col1' },
   value: 'Wicklow',
   isExpanded: false,
   expandableOption: {},
   cellMetaData: testCellMetaData,
   handleDragStart: () => {},
-  rowData: {name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Absolutely'},
+  rowData: { name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Absolutely' },
   height: 40,
   name: 'JT'
 };
@@ -59,7 +59,7 @@ describe('Cell Tests', () => {
   });
 
   it('should render children when those are passed', () => {
-    const wrapper = renderComponent({ children: (<div>Child</div>)});
+    const wrapper = renderComponent({ children: (<div>Child</div>) });
     expect(wrapper.children().text()).toBe('Child');
   });
 
@@ -73,10 +73,10 @@ describe('Cell Tests', () => {
       rowIdx: 18,
       idx: 19,
       column: helpers.columns[0],
-      row: {key: 'value'},
+      row: { key: 'value' },
       value: 'requiredValue',
       cellMetaData: {
-        selected: {idx: 2, rowIdx: 3},
+        selected: { idx: 2, rowIdx: 3 },
         dragged: null,
         onCellClick: jasmine.createSpy(),
         onCellFocus: jasmine.createSpy(),
@@ -90,14 +90,14 @@ describe('Cell Tests', () => {
         onColumnEvent: jasmine.createSpy()
       },
       rowData: helpers.rowGetter(11),
-      expandableOptions: {key: 'reqValue'},
+      expandableOptions: { key: 'reqValue' },
       isScrolling: false
     };
 
     const allProperties = {
       rowIdx: 20,
       idx: 21,
-      selected: {idx: 18},
+      selected: { idx: 18 },
       height: 35,
       ref: () => {},
       column: helpers.columns[1],
@@ -105,7 +105,7 @@ describe('Cell Tests', () => {
       isExpanded: true,
       isRowSelected: false,
       cellMetaData: {
-        selected: {idx: 2, rowIdx: 3},
+        selected: { idx: 2, rowIdx: 3 },
         dragged: null,
         onCellClick: jasmine.createSpy(),
         onCellFocus: jasmine.createSpy(),
@@ -124,7 +124,7 @@ describe('Cell Tests', () => {
       rowData: helpers.rowGetter(10),
       extraClasses: 'extra-classes',
       forceUpdate: false,
-      expandableOptions: {key: 'value'},
+      expandableOptions: { key: 'value' },
       isScrolling: true
     };
 
@@ -181,10 +181,10 @@ describe('Cell Tests', () => {
         rowIdx: 18,
         idx: 19,
         column: helpers.columns[0],
-        row: {key: 'value'},
+        row: { key: 'value' },
         value: 'requiredValue',
         cellMetaData: {
-          selected: {idx: 2, rowIdx: 3},
+          selected: { idx: 2, rowIdx: 3 },
           dragged: null,
           onCellClick: jasmine.createSpy(),
           onCellFocus: jasmine.createSpy(),
@@ -198,7 +198,7 @@ describe('Cell Tests', () => {
           onColumnEvent: jasmine.createSpy()
         },
         rowData: helpers.rowGetter(11),
-        expandableOptions: {key: 'reqValue'},
+        expandableOptions: { key: 'reqValue' },
         isScrolling: false
       }, propsOverride);
 
@@ -211,10 +211,10 @@ describe('Cell Tests', () => {
 
     describe('when getCellActions is in cellMetadata', () => {
       it('should render some CellActions', () => {
-        const action = {icon: 'glpyhicon glyphicon-link', callback: sinon.spy()};
-        const {wrapper} = setup({
+        const action = { icon: 'glpyhicon glyphicon-link', callback: sinon.spy() };
+        const { wrapper } = setup({
           cellMetaData: {
-            selected: {idx: 2, rowIdx: 3},
+            selected: { idx: 2, rowIdx: 3 },
             dragged: null,
             onCellClick: jasmine.createSpy(),
             onCellFocus: jasmine.createSpy(),
@@ -242,7 +242,7 @@ describe('Cell Tests', () => {
 
     describe('when getCellActions is not in cellMetadata', () => {
       it('should not render any CellActions', () => {
-        const {wrapper} = setup();
+        const { wrapper } = setup();
 
         const renderedCellActions = wrapper.find(CellAction);
 

@@ -18,7 +18,7 @@ function getWindowSize() {
     height = document.body.clientHeight;
   }
 
-  return {width, height};
+  return { width, height };
 }
 
 module.exports = getWindowSize;

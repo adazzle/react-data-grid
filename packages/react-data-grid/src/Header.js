@@ -1,14 +1,14 @@
-const React               = require('react');
-const ReactDOM            = require('react-dom');
-const joinClasses         = require('classnames');
-const shallowCloneObject  = require('./shallowCloneObject');
-const ColumnMetrics       = require('./ColumnMetrics');
-const ColumnUtils         = require('./ColumnUtils');
-const HeaderRow           = require('./HeaderRow');
-import getScrollbarSize from './getScrollbarSize';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import joinClasses from 'classnames';
+import shallowCloneObject from './shallowCloneObject';
+import ColumnMetrics from './ColumnMetrics';
+import { getColumn } from './ColumnUtils';
+import HeaderRow from './HeaderRow';
+import getScrollbarSize  from './getScrollbarSize';
 import PropTypes from 'prop-types';
-const createObjectWithProperties = require('./createObjectWithProperties');
-const cellMetaDataShape    = require('common/prop-shapes/CellMetaDataShape');
+import createObjectWithProperties from'./createObjectWithProperties';
+import cellMetaDataShape    from'common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from 'common/constants';
 require('../../../themes/react-data-grid-header.css');
 
@@ -33,10 +33,10 @@ class Header extends React.Component {
     cellMetaData: PropTypes.shape(cellMetaDataShape)
   };
 
-  state = {resizing: null};
+  state = { resizing: null };
 
   componentWillReceiveProps() {
-    this.setState({resizing: null});
+    this.setState({ resizing: null });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -66,8 +66,8 @@ class Header extends React.Component {
         resizing.columnMetrics.totalWidth = state.columnMetrics.totalWidth;
       }
 
-      resizing.column = ColumnUtils.getColumn(resizing.columnMetrics.columns, pos);
-      this.setState({resizing});
+      resizing.column = getColumn(resizing.columnMetrics.columns, pos);
+      this.setState({ resizing });
     }
   };
 
@@ -189,7 +189,7 @@ class Header extends React.Component {
 
   // Set the cell selection to -1 x -1 when clicking on the header
   onHeaderClick = () => {
-    this.props.cellMetaData.onCellClick({rowIdx: -1, idx: -1 });
+    this.props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
   };
 
   render() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
+import Column from 'common/prop-shapes/Column';
 
 const RuleType = {
   Number: 1,
@@ -105,7 +105,7 @@ class NumericFilter extends React.Component {
   handleChange(e) {
     const value = e.target.value;
     const filters = this.getRules(value);
-    this.props.onChange({filterTerm: (filters.length > 0 ? filters : null), column: this.props.column, rawValue: value, filterValues: this.filterValues });
+    this.props.onChange({ filterTerm: (filters.length > 0 ? filters : null), column: this.props.column, rawValue: value, filterValues: this.filterValues });
   }
 
   render() {
@@ -136,6 +136,6 @@ class NumericFilter extends React.Component {
 
 NumericFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
-  column: PropTypes.shape(ExcelColumn)
+  column: PropTypes.shape(Column)
 };
 module.exports = NumericFilter;

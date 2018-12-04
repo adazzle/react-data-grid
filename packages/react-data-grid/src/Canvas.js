@@ -342,7 +342,7 @@ class Canvas extends React.PureComponent {
       .map((r, idx) => {
         const rowIdx = rowOverscanStartIdx + idx;
         const key = `row-${rowIdx}`;
-        return this.renderRow({
+        return r.row && this.renderRow({
           key,
           ref: this.setRowRef(rowIdx),
           idx: rowIdx,

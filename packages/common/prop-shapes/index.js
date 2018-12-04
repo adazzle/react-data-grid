@@ -1,3 +1,3 @@
-import ExcelColumn from './ExcelColumn';
+import Column from './Column';
 
-export default { ExcelColumn };
+export default { Column };
