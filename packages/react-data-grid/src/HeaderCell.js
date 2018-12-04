@@ -56,8 +56,12 @@ class HeaderCell extends React.Component {
   };
 
   getWidthFromMouseEvent = (e) => {
-    let right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
-    let left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
+    const right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
+
+    // if headerDom is a draggable div, the first element (which is the only element as well) is the actual column header div with the position info
+    const headerDom = ReactDOM.findDOMNode(this);
+    const left = headerDom.draggable ? headerDom.firstChild.getBoundingClientRect().left : headerDom.getBoundingClientRect().left;
+
     return right - left;
   };
 
