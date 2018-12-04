@@ -179,7 +179,7 @@ describe('Editor Container Tests', () => {
 
     it('should commit if any element outside the editor is clicked', () => {
       const clickEvent = document.createEvent('MouseEvents');
-      clickEvent.initEvent('mousedown', true);
+      clickEvent.initEvent('mousedown', true, true);
       const input = document.createElement('input');
       document.querySelector('.container').appendChild(input);
       input.dispatchEvent(clickEvent);
@@ -229,7 +229,7 @@ describe('Editor Container Tests', () => {
 
     it('should commit if any element outside the editor is clicked', () => {
       const clickEvent = document.createEvent('MouseEvents');
-      clickEvent.initEvent('mousedown', true);
+      clickEvent.initEvent('mousedown', true, true);
       const input = document.createElement('input');
       document.querySelector('.container').appendChild(input);
       input.dispatchEvent(clickEvent);
