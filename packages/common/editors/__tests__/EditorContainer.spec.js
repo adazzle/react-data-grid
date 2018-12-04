@@ -113,7 +113,6 @@ describe('Editor Container Tests', () => {
 
     it('should not commit if any element inside the editor is clicked', () => {
       const editor = wrapper.find(TestEditor);
-      editor.simulate('click');
       editor.simulate('mousedown');
 
       expect(props.onCommit.calls.count()).toEqual(0);
@@ -173,7 +172,6 @@ describe('Editor Container Tests', () => {
 
     it('should not commit if any element inside the editor is clicked', () => {
       const editor = wrapper.find(TestEditor);
-      editor.simulate('click');
       editor.simulate('mousedown');
 
       expect(props.onCommit.calls.count()).toEqual(0);
