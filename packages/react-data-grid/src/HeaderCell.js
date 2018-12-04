@@ -57,7 +57,7 @@ class HeaderCell extends React.Component {
 
   getWidthFromMouseEvent = (e) => {
     const right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
-    const left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
+    const left = document.getElementsByClassName('react-grid-HeaderCell--resizing')[0].getBoundingClientRect().left;
     return right - left;
   };
 
