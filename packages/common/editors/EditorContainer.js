@@ -1,13 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
+
 import SimpleTextEditor from './SimpleTextEditor';
 import { isFunction } from 'common/utils';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import * as zIndexes from 'common/constants/zIndexes';
 import EditorPortal from './EditorPortal';
+import ClickOutside from './ClickOutside';
 
 require('../../../themes/react-data-grid-core.css');
 
@@ -36,7 +36,6 @@ class EditorContainer extends React.Component {
   changeCanceled = false;
 
   componentDidMount() {
-    document.addEventListener('click', this.handleDocumentClick);
     const inputNode = this.getInputNode();
     if (inputNode !== undefined) {
       this.setTextInputFocus();
@@ -54,32 +53,10 @@ class EditorContainer extends React.Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleDocumentClick);
     if (!this.changeCommitted && !this.changeCanceled) {
       this.commit({ key: 'Enter' });
     }
   }
-
-  handleDocumentClick = (e) => {
-    const { target } = e;
-    const { container, editor } = this;
-    if (container && (target === container || container.contains(target))) {
-      // Clicked inside the editor container
-      return;
-    }
-
-    if (editor) {
-      // Check the editor node in case the editor is using a Portal
-      const editorNode = ReactDOM.findDOMNode(editor);
-      if (editorNode && (target === editorNode || editorNode.contains(target))) {
-        // Clicked inside the editor
-        return;
-      }
-    }
-
-    // Clicked outside the editor, commit changes
-    this.commit(e);
-  };
 
   isKeyExplicitlyHandled = (key) => {
     return isFunction(this['onPress' + key]);
@@ -336,15 +313,17 @@ class EditorContainer extends React.Component {
     const style = { position: 'absolute', height, width, left, top, zIndex: zIndexes.EDITOR_CONTAINER };
     return (
       <EditorPortal>
-        <div style={style}
-          ref={this.setContainerRef}
-          className={this.getContainerClass()}
-          onKeyDown={this.onKeyDown}
-          onContextMenu={this.handleRightClick}
-        >
-          {this.createEditor()}
-          {this.renderStatusIcon()}
-        </div>
+        <ClickOutside
+          onClickOutside={this.commit}>
+          <div style={style}
+            ref={this.setContainerRef}
+            className={this.getContainerClass()}
+            onKeyDown={this.onKeyDown}
+          >
+            {this.createEditor()}
+            {this.renderStatusIcon()}
+          </div>
+        </ClickOutside>
       </EditorPortal>
     );
   }
