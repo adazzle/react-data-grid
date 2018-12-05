@@ -44,11 +44,10 @@ import PropTypes from 'prop-types';
  *
  * This means if a child component inside the editor calls e.stopPropagation
  * then the click handler on the editor container will not be called whereas
- * document click handler will be called. To solve this issue mousedown event
- * is used instead.
+ * document click handler will be called.
+ * https://github.com/facebook/react/issues/12518
  *
- * One assumption in the current fix is that click handler on the editor
- * container is called before the click handler on the document.
+ * To solve this issue onClickCapture event is used.
  */
 
 export default class ClickOutside extends React.Component {
@@ -60,11 +59,11 @@ export default class ClickOutside extends React.Component {
   isClickedInside = false;
 
   componentDidMount() {
-    document.addEventListener('mousedown', this.handleDocumentClick);
+    document.addEventListener('click', this.handleDocumentClick);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleDocumentClick);
+    document.removeEventListener('click', this.handleDocumentClick);
   }
 
   handleDocumentClick = (e) => {
@@ -83,7 +82,7 @@ export default class ClickOutside extends React.Component {
   render() {
     return React.cloneElement(
       React.Children.only(this.props.children), {
-        onMouseDown: this.handleClick
+        onClickCapture: this.handleClick
       }
     );
   }

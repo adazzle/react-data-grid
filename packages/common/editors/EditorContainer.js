@@ -309,7 +309,7 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { width, height, left, top, column } = this.props;
+    const { width, height, left, top } = this.props;
     const style = { position: 'absolute', height, width, left, top, zIndex: zIndexes.EDITOR_CONTAINER };
     return (
       <EditorPortal>
