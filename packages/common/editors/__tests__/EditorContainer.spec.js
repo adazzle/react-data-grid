@@ -191,10 +191,7 @@ describe('Editor Container Tests', () => {
     });
 
     it('should commit if any element outside the editor is clicked', () => {
-      const input = document.createElement('input');
-      container.appendChild(input);
-      input.click();
-
+      document.body.click();
       expect(props.onCommit).toHaveBeenCalled();
     });
   });
@@ -244,10 +241,7 @@ describe('Editor Container Tests', () => {
     });
 
     it('should commit if any element outside the editor is clicked', () => {
-      const input = document.createElement('input');
-      container.appendChild(input);
-      input.click();
-
+      document.body.click();
       expect(props.onCommit).toHaveBeenCalled();
     });
   });
