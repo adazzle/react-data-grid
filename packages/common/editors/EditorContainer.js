@@ -301,7 +301,7 @@ class EditorContainer extends React.Component {
 
   isClickInsideEditor = (e) => {
     let relatedTarget = this.getRelatedTarget(e);
-    return (e.currentTarget.contains(relatedTarget) || (relatedTarget.className.indexOf('editing') > -1 || relatedTarget.className.indexOf('react-grid-Cell') > -1));
+    return e.currentTarget.contains(relatedTarget);
   };
 
   getRelatedTarget = (e) => {

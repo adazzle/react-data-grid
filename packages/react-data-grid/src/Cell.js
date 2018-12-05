@@ -173,7 +173,7 @@ class Cell extends React.PureComponent {
     );
     let extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
-      editing: this.isEditorEnabled(),
+      editing: this.isEditorEnabled(), // I think this attribute is deprecated after changning to the mask, isn't it?
       'cell-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn
