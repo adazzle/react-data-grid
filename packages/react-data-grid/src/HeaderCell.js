@@ -119,6 +119,12 @@ class HeaderCell extends React.Component {
       'react-grid-HeaderCell--resizing': this.state.resizing,
       'react-grid-HeaderCell--frozen': columnUtils.isFrozen(column)
     }, this.props.className, column.cellClass);
+    const cell = (
+      <div ref={this.headerCellRef} className={className} style={this.getStyle()}>
+        {this.getCell()}
+        {resizeHandle}
+      </div>
+    );
 
     if (rowType === HeaderRowType.HEADER && column.draggable) {
       const { draggableHeaderCell: DraggableHeaderCell } = this.props;
@@ -127,10 +133,7 @@ class HeaderCell extends React.Component {
           column={column}
           onHeaderDrop={this.props.onHeaderDrop}
         >
-          <div ref={this.headerCellRef} className={className} style={this.getStyle()}>
-            {this.getCell()}
-            {resizeHandle}
-          </div>
+          {cell}
         </DraggableHeaderCell>
       );
     }
