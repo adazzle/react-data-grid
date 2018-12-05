@@ -19,9 +19,25 @@
   will-change: transform;
 }
 
+.react-grid-Cell--frozen {
+  z-index: 12;
+}
+ .react-grid-Cell--frozen:focus {
+  z-index: 12;
+}
+
 .rdg-last--frozen {
   border-right: 1px solid #dddddd;
   box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3) !important;
+}
+
+/* cell which have tooltips need to have a higher z-index on hover so that the tooltip appears above the other cells*/
+.react-grid-Cell.has-tooltip:hover {
+  z-index: 5;
+}
+
+.react-grid-Cell.react-grid-Cell--frozen.has-tooltip:hover  {
+  z-index: 15;
 }
 
 .react-contextmenu--visible {
@@ -39,16 +55,8 @@
   background-color : black;
 }
 
-
 .react-grid-Cell:hover {
   background: #eee;
-  /*
-    A minor hack to get cell tooltips to show correctly.
-    Hover is triggered on a child (react-grid-Cell__value)
-    and to avoid having the tooltip hide under the cell in
-    the next row we need to up the z-index of the cell being hovered.
-  */
-  z-index: 101;
 }
 
 .react-grid-cell .form-control-feedback {
@@ -71,6 +79,9 @@
   overflow: visible !important;
 }
 
+.react-grid-Cell--frozen.editing {
+  z-index: 100;
+}
 .react-grid-Cell.editing .has-error input {
   border: 2px red solid !important;
   border-radius: 2px !important;
@@ -96,7 +107,6 @@
     border-radius: 6px;
     padding: 5px 0;
     position: absolute;
-    z-index: 999;
     top: 50%;
     bottom: initial;
     left: 50%;
