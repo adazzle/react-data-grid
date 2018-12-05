@@ -92,10 +92,6 @@ class EditorContainer extends React.Component {
     this.editor = editor;
   }
 
-  setContainerRef = (container) => {
-    this.container = container;
-  }
-
   createEditor = () => {
     const editorProps = {
       ref: this.setEditorRef,
@@ -314,8 +310,8 @@ class EditorContainer extends React.Component {
     return (
       <EditorPortal>
         <ClickOutside onClickOutside={this.commit}>
-          <div style={style}
-            ref={this.setContainerRef}
+          <div
+            style={style}
             className={this.getContainerClass()}
             onKeyDown={this.onKeyDown}
             onContextMenu={this.handleRightClick}
