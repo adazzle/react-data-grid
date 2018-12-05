@@ -313,8 +313,7 @@ class EditorContainer extends React.Component {
     const style = { position: 'absolute', height, width, left, top, zIndex: zIndexes.EDITOR_CONTAINER };
     return (
       <EditorPortal>
-        <ClickOutside
-          onClickOutside={this.commit}>
+        <ClickOutside onClickOutside={this.commit}>
           <div style={style}
             ref={this.setContainerRef}
             className={this.getContainerClass()}
