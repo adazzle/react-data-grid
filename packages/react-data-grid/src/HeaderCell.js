@@ -33,6 +33,8 @@ class HeaderCell extends React.Component {
 
   state = {resizing: false};
 
+  headerCellRef = (node) => this.headerCell = node;
+
   onDragStart = (e) => {
     this.setState({resizing: true});
     // need to set dummy data for FF
@@ -57,9 +59,7 @@ class HeaderCell extends React.Component {
 
   getWidthFromMouseEvent = (e) => {
     const right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
-    // if headerDom is a draggable div, the first element (which is the only element as well) is the actual column header div with the position info
-    const headerDom = ReactDOM.findDOMNode(this);
-    const left = headerDom.draggable ? headerDom.firstChild.getBoundingClientRect().left : headerDom.getBoundingClientRect().left;
+    const left = this.headerCell ? this.headerCell.getBoundingClientRect().left : 0;
     return right - left;
   };
 
@@ -119,20 +119,18 @@ class HeaderCell extends React.Component {
       'react-grid-HeaderCell--resizing': this.state.resizing,
       'react-grid-HeaderCell--frozen': columnUtils.isFrozen(column)
     }, this.props.className, column.cellClass);
-    const cell = (
-      <div className={className} style={this.getStyle()}>
-        {this.getCell()}
-        {resizeHandle}
-      </div>
-    );
 
     if (rowType === HeaderRowType.HEADER && column.draggable) {
       const { draggableHeaderCell: DraggableHeaderCell } = this.props;
       return (
         <DraggableHeaderCell
           column={column}
-          onHeaderDrop={this.props.onHeaderDrop}>
-           {cell}
+          onHeaderDrop={this.props.onHeaderDrop}
+        >
+          <div ref={this.headerCellRef} className={className} style={this.getStyle()}>
+            {this.getCell()}
+            {resizeHandle}
+          </div>
         </DraggableHeaderCell>
       );
     }
