@@ -318,6 +318,7 @@ class EditorContainer extends React.Component {
             ref={this.setContainerRef}
             className={this.getContainerClass()}
             onKeyDown={this.onKeyDown}
+            onContextMenu={this.handleRightClick}
           >
             {this.createEditor()}
             {this.renderStatusIcon()}
