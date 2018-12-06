@@ -1,3 +1,7 @@
+## 5.0.5 (Dec 6, 2018)
+- **Bugfix:** fix: draggable resizing col jumps to right ([1421](https://github.com/adazzle/react-data-grid/pull/1421))
+- **Bugfix:** Cell Tooltip - Focus Issues ([1422](https://github.com/adazzle/react-data-grid/pull/1422))
+
 ## 5.0.3 (Nov 1, 2018)
 - **Bugfix:** Custom Formatters Example - Styling Fix ([1364](https://github.com/adazzle/react-data-grid/pull/1364))
 - **Bugfix:** Fix website publishing and remove ImmutableJS dependency ([1366](https://github.com/adazzle/react-data-grid/pull/1366))
