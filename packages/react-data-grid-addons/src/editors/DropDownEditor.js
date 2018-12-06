@@ -25,7 +25,7 @@ class DropDownEditor extends EditorBase {
   }
 
   renderOptions() {
-    let options = [];
+    const options = [];
     this.props.options.forEach(function(name) {
       if (typeof(name) === 'string') {
         options.push(<option key={name} value={name}>{name}</option>);

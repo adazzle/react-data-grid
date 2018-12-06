@@ -1,6 +1,6 @@
 const React                   = require('react');
 const ReactDOM = require('react-dom');
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
+import Column from 'common/prop-shapes/Column';
 import PropTypes from 'prop-types';
 
 class EditorBase extends React.Component {
@@ -12,13 +12,13 @@ class EditorBase extends React.Component {
   }
 
   getValue() {
-    let updated = {};
+    const updated = {};
     updated[this.props.column.key] = this.getInputNode().value;
     return updated;
   }
 
   getInputNode() {
-    let domNode = ReactDOM.findDOMNode(this);
+    const domNode = ReactDOM.findDOMNode(this);
     if (domNode.tagName === 'INPUT') {
       return domNode;
     }
@@ -36,7 +36,7 @@ EditorBase.propTypes = {
   onKeyDown: PropTypes.func.isRequired,
   value: PropTypes.any.isRequired,
   onBlur: PropTypes.func.isRequired,
-  column: PropTypes.shape(ExcelColumn).isRequired,
+  column: PropTypes.shape(Column).isRequired,
   commit: PropTypes.func.isRequired
 };
 

@@ -1,6 +1,6 @@
-import {List} from 'immutable';
+import { List } from 'immutable';
 import groupBy from 'lodash/groupBy';
-import { isImmutableMap, getMixedTypeValueRetriever} from 'common/utils';
+import { isImmutableMap, getMixedTypeValueRetriever } from 'common/utils';
 
 export default class RowGrouperResolver {
 
@@ -21,8 +21,8 @@ export default class RowGrouperResolver {
     let getKeys = Object.keys;
     if (this.isImmutable) {
       getKeys = (col) => {
-        let keys = [];
-        let iterator = col.keys();
+        const keys = [];
+        const iterator = col.keys();
         let item = iterator.next();
 
         while (!item.done) {
@@ -36,8 +36,8 @@ export default class RowGrouperResolver {
   }
 
   addHeaderRow(rowGroupHeader, dataviewRows) {
-    let rows = dataviewRows;
-    let dvRows = rows.push(rowGroupHeader);
+    const rows = dataviewRows;
+    const dvRows = rows.push(rowGroupHeader);
     if (this.isImmutable) {
       return dvRows;
     }

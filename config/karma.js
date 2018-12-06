@@ -1,10 +1,6 @@
-/*
-* In local config, only run tests using phantom js. No code coverage reports applied
-*/
 var webpack = require('webpack');
 require('airbnb-browser-shims');
 var webpackConfig = require('./webpack.common.config.js');
-var RewirePlugin = require("rewire-webpack");
 var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
 var RELEASE = !!argv.release;
@@ -23,7 +19,7 @@ module.exports = function (config) {
   };
 
   function getBrowsers(){
-    var browsers = ['PhantomJS'];
+    var browsers = [];
     if(BROWSERS) {
       return BROWSERS.split(',');
     }
@@ -63,14 +59,6 @@ module.exports = function (config) {
     return preprocessors;
   }
 
-  function lookupPhantomJS() {
-    try {
-      return require('phantomjs').path;
-    } catch(e){
-      return;
-    }
-  }
-
   config.set({
 
     basePath: path.join(__dirname, '../'),
@@ -80,19 +68,32 @@ module.exports = function (config) {
     preprocessors: getPreprocessors(),
 
     webpack: {
+      mode: RELEASE ? 'production' : 'development',
       devtool: 'inline-source-map',
       module: {
-        loaders: webpackConfig.module.loaders
+        rules: [
+          {
+            test: /\.(js|jsx)$/,
+            exclude: /node_modules/,
+            use: [
+              { loader: 'babel-loader', options: { envName: 'test' } }
+            ]
+          },
+          {
+            test: /\.css$/,
+            use: [
+              { loader: 'style-loader' },
+              { loader: 'css-loader' }
+            ]
+          }
+        ]
       },
       resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx'],
+        extensions: ['.webpack.js', '.web.js', '.js', '.jsx'],
         alias: {
           common: path.resolve('packages/common/')
         }
       },
-      plugins: [
-        new RewirePlugin()
-      ],
       externals: {
         'cheerio': 'window',
         'react/lib/ExecutionEnvironment': true,
@@ -152,7 +153,6 @@ module.exports = function (config) {
     plugins: [
       'karma-chrome-launcher',
       'karma-firefox-launcher',
-      'karma-phantomjs-launcher-nonet',
       'karma-ie-launcher',
       'karma-jasmine',
       'karma-jasmine-matchers',
@@ -174,15 +174,6 @@ module.exports = function (config) {
         base: 'Chrome',
         flags: [ '--remote-debugging-port=9333' ],
         debug: true
-      }
-    },
-
-    phantomjsLauncher: {
-      // configure PhantomJS executable for each platform
-      cmd: {
-        linux: lookupPhantomJS(),
-        darwin: lookupPhantomJS(),
-        win32: path.join(__dirname, '../test/browser/phantomjs.exe')
       }
     }
   });

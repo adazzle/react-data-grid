@@ -2,28 +2,28 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import ExcelColumn from 'common/prop-shapes/ExcelColumn';
-import columnUtils from './ColumnUtils';
+import Column from 'common/prop-shapes/Column';
+import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from 'common/constants';
 const ResizeHandle   = require('./ResizeHandle');
 
 require('../../../themes/react-data-grid-header.css');
 
 function SimpleCellRenderer(objArgs) {
-  let headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
+  const headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
   return <div className="widget-HeaderCell__value">{headerText}</div>;
 }
 
 class HeaderCell extends React.Component {
   static propTypes = {
     renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
-    column: PropTypes.shape(ExcelColumn).isRequired,
+    column: PropTypes.shape(Column).isRequired,
     rowType: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired,
     onResize: PropTypes.func.isRequired,
     onResizeEnd: PropTypes.func.isRequired,
     onHeaderDrop: PropTypes.func,
-    draggableHeaderCell: PropTypes.element,
+    draggableHeaderCell: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     className: PropTypes.string
   };
 
@@ -31,20 +31,20 @@ class HeaderCell extends React.Component {
     renderer: SimpleCellRenderer
   };
 
-  state = {resizing: false};
+  state = { resizing: false };
 
   headerCellRef = (node) => this.headerCell = node;
 
   onDragStart = (e) => {
-    this.setState({resizing: true});
+    this.setState({ resizing: true });
     // need to set dummy data for FF
     if (e && e.dataTransfer && e.dataTransfer.setData) e.dataTransfer.setData('text/plain', 'dummy');
   };
 
   onDrag = (e) => {
-    let resize = this.props.onResize || null; // for flows sake, doesnt recognise a null check direct
+    const resize = this.props.onResize || null; // for flows sake, doesnt recognise a null check direct
     if (resize) {
-      let width = this.getWidthFromMouseEvent(e);
+      const width = this.getWidthFromMouseEvent(e);
       if (width > 0) {
         resize(this.props.column, width);
       }
@@ -52,27 +52,27 @@ class HeaderCell extends React.Component {
   };
 
   onDragEnd = (e) => {
-    let width = this.getWidthFromMouseEvent(e);
+    const width = this.getWidthFromMouseEvent(e);
     this.props.onResizeEnd(this.props.column, width);
-    this.setState({resizing: false});
+    this.setState({ resizing: false });
   };
 
   getWidthFromMouseEvent = (e) => {
     const right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
-    const left = this.headerCell ? this.headerCell.getBoundingClientRect().left : 0;
+    const left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
     return right - left;
   };
 
   getCell = () => {
-    const {height, column, renderer} = this.props;
+    const { height, column, renderer } = this.props;
     if (React.isValidElement(renderer)) {
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
       if (typeof this.props.renderer.type === 'string') {
-        return React.cloneElement(renderer, {height});
+        return React.cloneElement(renderer, { height });
       }
-      return React.cloneElement(renderer, {column, height});
+      return React.cloneElement(renderer, { column, height });
     }
-    return this.props.renderer({column});
+    return this.props.renderer({ column });
   };
 
   getStyle = () => {
@@ -117,7 +117,7 @@ class HeaderCell extends React.Component {
     const className = classNames({
       'react-grid-HeaderCell': true,
       'react-grid-HeaderCell--resizing': this.state.resizing,
-      'react-grid-HeaderCell--frozen': columnUtils.isFrozen(column)
+      'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
     const cell = (
       <div ref={this.headerCellRef} className={className} style={this.getStyle()}>

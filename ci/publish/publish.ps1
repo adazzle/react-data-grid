@@ -54,10 +54,6 @@ if($?)
   $versionBumpMessage = "Version bump to $nextVersion [ci skip]"
   npm run beforepublish
   ./node_modules/.bin/lerna publish --repo-version $nextVersion  --skip-git --yes
-  if($?) {
-    Write-Host "Regenerating public site and examples"
-    node ./ci/publish/publishExamples.js
-  }
   git add .
   git commit -m $versionBumpMessage
   git push

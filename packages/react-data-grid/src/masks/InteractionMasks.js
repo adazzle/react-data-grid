@@ -20,7 +20,7 @@ import {
   selectedRangeIsSingleCell
 } from '../utils/SelectedCellUtils';
 import { isFunction } from 'common/utils';
-import * as columnUtils from '../ColumnUtils';
+import { getSize, getColumn, isFrozen } from '../ColumnUtils';
 import * as keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from 'common/constants';
 
@@ -29,6 +29,8 @@ require('../../../../themes/interaction-masks.css');
 const SCROLL_CELL_BUFFER = 2;
 
 class InteractionMasks extends React.Component {
+  static dispplayName = 'InteractionMasks';
+
   static propTypes = {
     colVisibleStartIdx: PropTypes.number.isRequired,
     colVisibleEndIdx: PropTypes.number.isRequired,
@@ -66,13 +68,11 @@ class InteractionMasks extends React.Component {
     onCellsDragged: PropTypes.func,
     onDragHandleDoubleClick: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
-    prevScrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,
-    prevScrollTop: PropTypes.number.isRequired,
     rows: PropTypes.array.isRequired,
-    getSelectedRowHeight: PropTypes.func.isRequired,
-    getSelectedRowTop: PropTypes.func.isRequired,
-    getSelectedRowColumns: PropTypes.func.isRequired
+    getRowHeight: PropTypes.func.isRequired,
+    getRowTop: PropTypes.func.isRequired,
+    getRowColumns: PropTypes.func.isRequired
   };
 
   state = {
@@ -90,7 +90,6 @@ class InteractionMasks extends React.Component {
     },
     copiedPosition: null,
     draggedPosition: null,
-    frozenPosition: null,
     isEditorEnabled: false,
     firstEditorKeyPress: null
   };
@@ -115,6 +114,7 @@ class InteractionMasks extends React.Component {
 
     if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
       this.focus();
+      this.saveEditorPosition();
     }
   }
 
@@ -138,6 +138,44 @@ class InteractionMasks extends React.Component {
     this.unsubscribeSelectEnd();
     this.unsubscribeDragEnter();
   }
+
+  saveEditorPosition = () => {
+    if (this.selectionMask) {
+      const { left, top } = this.selectionMask.getBoundingClientRect();
+      const { scrollLeft, scrollTop } = document.documentElement;
+      this.editorPosition = { left: left + scrollLeft, top: top + scrollTop };
+    }
+  };
+
+  setMaskScollLeft = (mask, position, scrollLeft) => {
+    if (mask) {
+      const { idx, rowIdx } = position;
+      if (idx >= 0 && rowIdx >= 0) {
+        const { columns, getRowTop } = this.props;
+        const column = getColumn(columns, idx);
+        const frozen = isFrozen(column);
+        if (frozen) {
+          const top = getRowTop(rowIdx);
+          const left = scrollLeft + column.left;
+          const transform = `translate(${left}px, ${top}px)`;
+          if (mask.style.transform !== transform) {
+            mask.style.transform = transform;
+          }
+        }
+      }
+    }
+  };
+
+  /**
+   * Sets the position of SelectionMask and CopyMask components when the canvas is scrolled
+   * This is only required on the frozen columns
+   * @param scrollLeft number
+   */
+  setScrollLeft = (scrollLeft) => {
+    const { selectionMask, copyMask, state: { selectedPosition, copiedPosition } } = this;
+    this.setMaskScollLeft(selectionMask, selectedPosition, scrollLeft);
+    this.setMaskScollLeft(copyMask, copiedPosition, scrollLeft);
+  };
 
   onKeyDown = e => {
     if (isCtrlKeyHeldDown(e)) {
@@ -261,7 +299,7 @@ class InteractionMasks extends React.Component {
     if (isFunction(onCellCopyPaste)) {
       onCellCopyPaste({
         cellKey,
-        rowIdx,
+        rowIdx: toRow,
         fromRow,
         toRow,
         value: textToCopy
@@ -351,9 +389,7 @@ class InteractionMasks extends React.Component {
     const keyNavAction = this.getKeyNavActionFromEvent(e);
     const next = this.getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode);
     this.checkIsAtGridBoundary(keyNavAction, next);
-
-    const { changeRowOrColumn, ...nextPos } = next;
-    this.selectCell(nextPos);
+    this.selectCell({ ...next });
   }
 
   changeSelectedRangeFromArrowKeyAction(e) {
@@ -362,9 +398,7 @@ class InteractionMasks extends React.Component {
     const keyNavAction = this.getKeyNavActionFromEvent(e);
     const next = this.getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode);
     this.checkIsAtGridBoundary(keyNavAction, next);
-
-    const { changeRowOrColumn, ...nextPos } = next;
-    this.onSelectCellRangeUpdated(nextPos, true, () => { this.onSelectCellRangeEnded(); });
+    this.onSelectCellRangeUpdated({ ...next }, true, () => { this.onSelectCellRangeEnded(); });
   }
 
   getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode) {
@@ -388,7 +422,7 @@ class InteractionMasks extends React.Component {
 
   isCellWithinBounds = ({ idx, rowIdx }) => {
     const { columns, rowsCount } = this.props;
-    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columnUtils.getSize(columns);
+    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < getSize(columns);
   };
 
   isGridSelected = () => {
@@ -415,7 +449,7 @@ class InteractionMasks extends React.Component {
 
   selectLastCell = () => {
     const { rowsCount, columns } = this.props;
-    this.selectCell({ rowIdx: rowsCount - 1, idx: columnUtils.getSize(columns) - 1 });
+    this.selectCell({ rowIdx: rowsCount - 1, idx: getSize(columns) - 1 });
   };
 
   selectCell = (cell, openEditor) => {
@@ -425,7 +459,6 @@ class InteractionMasks extends React.Component {
       if (this.isCellWithinBounds(next)) {
         return {
           selectedPosition: next,
-          prevSelectedPosition: cell,
           selectedRange: {
             topLeft: next,
             bottomRight: next,
@@ -477,7 +510,7 @@ class InteractionMasks extends React.Component {
 
     const selectedRange = {
       // default the startCell to the selected cell, in case we've just started via keyboard
-      ...{ startCell: this.state.selectedPosition },
+      startCell: this.state.selectedPosition,
       // assign the previous state (which will override the startCell if we already have one)
       ...this.state.selectedRange,
       // assign the new state - the bounds of the range, and the new cursor cell
@@ -589,31 +622,26 @@ class InteractionMasks extends React.Component {
     this.selectionMask = node;
   };
 
-  getSelectionMaskProps = () => {
-    const { columns, getSelectedRowHeight, getSelectedRowTop, scrollLeft, scrollTop, prevScrollLeft, prevScrollTop } = this.props;
-    const { prevSelectedPosition } = this.state;
-
-    return {
-      columns,
-      scrollTop,
-      scrollLeft,
-      getSelectedRowHeight,
-      getSelectedRowTop,
-      prevScrollLeft,
-      prevScrollTop,
-      prevSelectedPosition,
-      isGroupedRow: this.isGroupedRowSelected(),
-      innerRef: this.setSelectionMaskRef
-    };
+  setCopyMaskRef = (node) => {
+    this.copyMask = node;
   };
 
-  getSingleCellSelectView = () => {
+  getSelectedDimensions = (selectedPosition) => {
+    const { scrollLeft, getRowHeight, getRowTop, getRowColumns } = this.props;
+    const columns = getRowColumns(selectedPosition.idx);
+    const top = getRowTop(selectedPosition.rowIdx);
+    const rowHeight = getRowHeight(selectedPosition.rowIdx);
+    return { ...getSelectedDimensions({ selectedPosition, columns, scrollLeft, rowHeight }), top };
+  };
+
+  renderSingleCellSelectView = () => {
     const { selectedPosition } = this.state;
     return (
       !this.state.isEditorEnabled && this.isGridSelected() && (
         <SelectionMask
           selectedPosition={selectedPosition}
-          {...this.getSelectionMaskProps()}
+          innerRef={this.setSelectionMaskRef}
+          getSelectedDimensions={this.getSelectedDimensions}
         >
           {this.isDragEnabled() && (
             <DragHandle
@@ -627,7 +655,7 @@ class InteractionMasks extends React.Component {
     );
   };
 
-  getCellRangeSelectView = () => {
+  renderCellRangeSelectView = () => {
     const { columns, rowHeight } = this.props;
     return [
       <SelectionRangeMask
@@ -639,16 +667,17 @@ class InteractionMasks extends React.Component {
       <SelectionMask
         key="selection-mask"
         selectedPosition={this.state.selectedRange.startCell}
-        {...this.getSelectionMaskProps()}
+        innerRef={this.setSelectionMaskRef}
+        getSelectedDimensions={this.getSelectedDimensions}
       />
     ];
   };
 
   render() {
-    const { rowGetter, contextMenu, rowHeight, getSelectedRowColumns } = this.props;
+    const { rowGetter, contextMenu, getRowColumns, scrollLeft, scrollTop } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = getSelectedRow({ selectedPosition, rowGetter });
-    const columns = getSelectedRowColumns(selectedPosition.rowIdx);
+    const columns = getRowColumns(selectedPosition.rowIdx);
     return (
       <div
         onKeyDown={this.onKeyDown}
@@ -657,33 +686,37 @@ class InteractionMasks extends React.Component {
         {copiedPosition && (
           <CopyMask
             copiedPosition={copiedPosition}
-            rowHeight={rowHeight}
-            columns={getSelectedRowColumns(copiedPosition.rowIdx)}
+            innerRef={this.setCopyMaskRef}
+            getSelectedDimensions={this.getSelectedDimensions}
           />
         )}
         {draggedPosition && (
           <DragMask
             draggedPosition={draggedPosition}
-            rowHeight={rowHeight}
-            columns={getSelectedRowColumns(draggedPosition.rowIdx)}
+            getSelectedDimensions={this.getSelectedDimensions}
           />
         )}
         {selectedRangeIsSingleCell(this.state.selectedRange) ?
-          this.getSingleCellSelectView() :
-          this.getCellRangeSelectView()
+          this.renderSingleCellSelectView() :
+          this.renderCellRangeSelectView()
         }
-        {isEditorEnabled && <EditorContainer
-          firstEditorKeyPress={firstEditorKeyPress}
-          onCommit={this.onCommit}
-          onCommitCancel={this.onCommitCancel}
-          rowIdx={selectedPosition.rowIdx}
-          value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
-          rowData={rowData}
-          column={getSelectedColumn({ selectedPosition, columns })}
-          scrollLeft={this.props.scrollLeft}
-          scrollTop={this.props.scrollTop}
-          {...getSelectedDimensions({ selectedPosition, rowHeight, columns })}
-        />}
+        {isEditorEnabled && (
+          <EditorContainer
+            firstEditorKeyPress={firstEditorKeyPress}
+            onCommit={this.onCommit}
+            onCommitCancel={this.onCommitCancel}
+            rowIdx={selectedPosition.rowIdx}
+            value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+            rowData={rowData}
+            column={getSelectedColumn({ selectedPosition, columns })}
+            scrollLeft={scrollLeft}
+            scrollTop={scrollTop}
+            {...{
+              ...this.getSelectedDimensions(selectedPosition),
+              ...this.editorPosition
+            }}
+          />
+        )}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>
     );

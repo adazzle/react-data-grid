@@ -1,13 +1,15 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import SimpleTextEditor from './SimpleTextEditor';
-import {isFunction} from 'common/utils';
+import { isFunction } from 'common/utils';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
-import zIndexes from 'common/constants/zIndexes';
-require('../../../themes/react-data-grid-core.css');
+import * as zIndexes from 'common/constants/zIndexes';
+import EditorPortal from './EditorPortal';
 
-const isFrozen = column => column.frozen === true || column.locked === true;
+require('../../../themes/react-data-grid-core.css');
 
 class EditorContainer extends React.Component {
   static displayName = 'EditorContainer';
@@ -17,24 +19,25 @@ class EditorContainer extends React.Component {
     rowData: PropTypes.object.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired,
     column: PropTypes.object.isRequired,
+    width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
+    left: PropTypes.number.isRequired,
+    top: PropTypes.number.isRequired,
     onGridKeyDown: PropTypes.func,
     onCommit: PropTypes.func,
     onCommitCancel: PropTypes.func,
     firstEditorKeyPress: PropTypes.string,
-    width: PropTypes.number,
-    top: PropTypes.number,
-    left: PropTypes.number,
     scrollLeft: PropTypes.number,
     scrollTop: PropTypes.number
   };
 
-  state = {isInvalid: false};
+  state = { isInvalid: false };
   changeCommitted = false;
   changeCanceled = false;
 
   componentDidMount() {
-    let inputNode = this.getInputNode();
+    document.addEventListener('click', this.handleDocumentClick);
+    const inputNode = this.getInputNode();
     if (inputNode !== undefined) {
       this.setTextInputFocus();
       if (!this.getEditor().disableContainerStyles) {
@@ -42,7 +45,6 @@ class EditorContainer extends React.Component {
         inputNode.style.height = this.props.height - 1 + 'px';
       }
     }
-    window.addEventListener('scroll', this.setContainerPosition);
   }
 
   componentDidUpdate(prevProps) {
@@ -52,24 +54,32 @@ class EditorContainer extends React.Component {
   }
 
   componentWillUnmount() {
+    document.removeEventListener('click', this.handleDocumentClick);
     if (!this.changeCommitted && !this.changeCanceled) {
-      this.commit({key: 'Enter'});
-    }
-    window.removeEventListener('scroll', this.setContainerPosition);
-  }
-
-  setContainerPosition = () => {
-    if (this.container) {
-      this.container.style.transform = this.calculateTransform();
+      this.commit({ key: 'Enter' });
     }
   }
 
-  calculateTransform = () => {
-    const { column, left, scrollLeft, top, scrollTop } = this.props;
-    const editorLeft = isFrozen(column) ? left : left - scrollLeft;
-    const editorTop = top - scrollTop - window.pageYOffset;
-    return `translate(${editorLeft}px, ${editorTop}px)`;
-  }
+  handleDocumentClick = (e) => {
+    const { target } = e;
+    const { container, editor } = this;
+    if (container && (target === container || container.contains(target))) {
+      // Clicked inside the editor container
+      return;
+    }
+
+    if (editor) {
+      // Check the editor node in case the editor is using a Portal
+      const editorNode = ReactDOM.findDOMNode(editor);
+      if (editorNode && (target === editorNode || editorNode.contains(target))) {
+        // Clicked inside the editor
+        return;
+      }
+    }
+
+    // Clicked outside the editor, commit changes
+    this.commit(e);
+  };
 
   isKeyExplicitlyHandled = (key) => {
     return isFunction(this['onPress' + key]);
@@ -86,7 +96,7 @@ class EditorContainer extends React.Component {
       this.checkAndCall('onPressKeyWithCtrl', e);
     } else if (this.isKeyExplicitlyHandled(e.key)) {
       // break up individual keyPress events to have their own specific callbacks
-      let callBack = 'onPress' + e.key;
+      const callBack = 'onPress' + e.key;
       this.checkAndCall(callBack, e);
     } else if (isKeyPrintable(e.keyCode)) {
       e.stopPropagation();
@@ -110,7 +120,7 @@ class EditorContainer extends React.Component {
   }
 
   createEditor = () => {
-    let editorProps = {
+    const editorProps = {
       ref: this.setEditorRef,
       column: this.props.column,
       value: this.getInitialValue(),
@@ -123,7 +133,7 @@ class EditorContainer extends React.Component {
       onOverrideKeyDown: this.onKeyDown
     };
 
-    let CustomEditor = this.props.column.editor;
+    const CustomEditor = this.props.column.editor;
     // return custom column editor or SimpleEditor if none specified
     if (React.isValidElement(CustomEditor)) {
       return React.cloneElement(CustomEditor, editorProps);
@@ -132,15 +142,23 @@ class EditorContainer extends React.Component {
       return <CustomEditor ref={this.setEditorRef} {...editorProps} />;
     }
 
-    return <SimpleTextEditor ref={this.setEditorRef} column={this.props.column} value={this.getInitialValue()} onBlur={this.commit} rowMetaData={this.getRowMetaData()} onKeyDown={() => {}} commit={() => {}}/>;
+    return (
+      <SimpleTextEditor
+        ref={this.setEditorRef}
+        column={this.props.column}
+        value={this.getInitialValue()}
+        onBlur={this.commit}
+        rowMetaData={this.getRowMetaData()}
+      />
+    );
   };
 
   onPressEnter = () => {
-    this.commit({key: 'Enter'});
+    this.commit({ key: 'Enter' });
   };
 
   onPressTab = () => {
-    this.commit({key: 'Tab'});
+    this.commit({ key: 'Tab' });
   };
 
   onPressEscape = (e) => {
@@ -239,13 +257,13 @@ class EditorContainer extends React.Component {
   };
 
   commit = (args) => {
-    const {onCommit} = this.props;
-    let opts = args || {};
-    let updated = this.getEditor().getValue();
+    const { onCommit } = this.props;
+    const opts = args || {};
+    const updated = this.getEditor().getValue();
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
-      let cellKey = this.props.column.key;
-      onCommit({cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key});
+      const cellKey = this.props.column.key;
+      onCommit({ cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key });
     }
   };
 
@@ -256,8 +274,8 @@ class EditorContainer extends React.Component {
 
   isNewValueValid = (value) => {
     if (isFunction(this.getEditor().validate)) {
-      let isValid = this.getEditor().validate(value);
-      this.setState({isInvalid: !isValid});
+      const isValid = this.getEditor().validate(value);
+      this.setState({ isInvalid: !isValid });
       return isValid;
     }
 
@@ -265,13 +283,13 @@ class EditorContainer extends React.Component {
   };
 
   setCaretAtEndOfInput = () => {
-    let input = this.getInputNode();
+    const input = this.getInputNode();
     // taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-    let txtLength = input.value.length;
+    const txtLength = input.value.length;
     if (input.setSelectionRange) {
       input.setSelectionRange(txtLength, txtLength);
     } else if (input.createTextRange) {
-      let fieldRange = input.createTextRange();
+      const fieldRange = input.createTextRange();
       fieldRange.moveStart('character', txtLength);
       fieldRange.collapse();
       fieldRange.select();
@@ -279,58 +297,23 @@ class EditorContainer extends React.Component {
   };
 
   isCaretAtBeginningOfInput = () => {
-    let inputNode = this.getInputNode();
+    const inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.selectionEnd
       && inputNode.selectionStart === 0;
   };
 
   isCaretAtEndOfInput = () => {
-    let inputNode = this.getInputNode();
+    const inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.value.length;
-  };
-
-  isBodyClicked = (e) => {
-    let relatedTarget = this.getRelatedTarget(e);
-    return (relatedTarget === null);
-  };
-
-  isViewportClicked = (e) => {
-    let relatedTarget = this.getRelatedTarget(e);
-    return (relatedTarget.className.indexOf('react-grid-Viewport') > -1);
-  };
-
-  isClickInsideEditor = (e) => {
-    let relatedTarget = this.getRelatedTarget(e);
-    return (e.currentTarget.contains(relatedTarget) || (relatedTarget.className.indexOf('editing') > -1 || relatedTarget.className.indexOf('react-grid-Cell') > -1));
-  };
-
-  getRelatedTarget = (e) => {
-    return e.relatedTarget ||
-            e.explicitOriginalTarget ||
-            document.activeElement; // IE11
   };
 
   handleRightClick = (e) => {
     e.stopPropagation();
   };
 
-  handleBlur = (e) => {
-    e.stopPropagation();
-    if (this.isBodyClicked(e)) {
-      this.commit(e);
-    }
-
-    if (!this.isBodyClicked(e)) {
-	    // prevent null reference
-      if (this.isViewportClicked(e) || !this.isClickInsideEditor(e)) {
-        this.commit(e);
-      }
-    }
-  };
-
   setTextInputFocus = () => {
-    let keyCode = this.props.firstEditorKeyPress;
-    let inputNode = this.getInputNode();
+    const keyCode = this.props.firstEditorKeyPress;
+    const inputNode = this.getInputNode();
     inputNode.focus();
     if (inputNode.tagName === 'INPUT') {
       if (!isKeyPrintable(keyCode)) {
@@ -349,15 +332,21 @@ class EditorContainer extends React.Component {
   };
 
   render() {
-    const { width, height, column } = this.props;
-    const zIndex = isFrozen(column) ? zIndexes.FROZEN_EDITOR_CONTAINER  : zIndexes.EDITOR_CONTAINER;
-    const style = { position: 'fixed', height, width, zIndex, transform: this.calculateTransform() };
+    const { width, height, left, top, column } = this.props;
+    const style = { position: 'absolute', height, width, left, top, zIndex: zIndexes.EDITOR_CONTAINER };
     return (
-        <div ref={this.setContainerRef} style={style} className={this.getContainerClass()} onBlur={this.handleBlur} onKeyDown={this.onKeyDown} onContextMenu={this.handleRightClick}>
+      <EditorPortal>
+        <div style={style}
+          ref={this.setContainerRef}
+          className={this.getContainerClass()}
+          onKeyDown={this.onKeyDown}
+          onContextMenu={this.handleRightClick}
+        >
           {this.createEditor()}
           {this.renderStatusIcon()}
         </div>
-      );
+      </EditorPortal>
+    );
   }
 }
 

@@ -21,7 +21,7 @@ class Toolbar extends React.Component {
 
   onAddRow = () => {
     if (this.props.onAddRow !== null && this.props.onAddRow instanceof Function) {
-      this.props.onAddRow({newRowIndex: this.props.numberOfRows});
+      this.props.onAddRow({ newRowIndex: this.props.numberOfRows });
     }
   };
 

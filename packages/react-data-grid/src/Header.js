@@ -1,14 +1,14 @@
-const React               = require('react');
-const ReactDOM            = require('react-dom');
-const joinClasses         = require('classnames');
-const shallowCloneObject  = require('./shallowCloneObject');
-const ColumnMetrics       = require('./ColumnMetrics');
-const ColumnUtils         = require('./ColumnUtils');
-const HeaderRow           = require('./HeaderRow');
-const getScrollbarSize  = require('./getScrollbarSize');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import joinClasses from 'classnames';
+import shallowCloneObject from './shallowCloneObject';
+import ColumnMetrics from './ColumnMetrics';
+import { getColumn } from './ColumnUtils';
+import HeaderRow from './HeaderRow';
+import getScrollbarSize  from './getScrollbarSize';
 import PropTypes from 'prop-types';
-const createObjectWithProperties = require('./createObjectWithProperties');
-const cellMetaDataShape    = require('common/prop-shapes/CellMetaDataShape');
+import createObjectWithProperties from'./createObjectWithProperties';
+import cellMetaDataShape    from'common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from 'common/constants';
 require('../../../themes/react-data-grid-header.css');
 
@@ -33,14 +33,14 @@ class Header extends React.Component {
     cellMetaData: PropTypes.shape(cellMetaDataShape)
   };
 
-  state = {resizing: null};
+  state = { resizing: null };
 
   componentWillReceiveProps() {
-    this.setState({resizing: null});
+    this.setState({ resizing: null });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    let update =  !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
+    const update =  !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
     || this.props.totalWidth !== nextProps.totalWidth
     || (this.props.headerRows.length !== nextProps.headerRows.length)
     || (this.state.resizing !== nextState.resizing)
@@ -50,12 +50,12 @@ class Header extends React.Component {
   }
 
   onColumnResize = (column, width) => {
-    let state = this.state.resizing || this.props;
+    const state = this.state.resizing || this.props;
 
-    let pos = this.getColumnPosition(column);
+    const pos = this.getColumnPosition(column);
 
     if (pos != null) {
-      let resizing = {
+      const resizing = {
         columnMetrics: shallowCloneObject(state.columnMetrics)
       };
       resizing.columnMetrics = ColumnMetrics.resizeColumn(
@@ -66,13 +66,13 @@ class Header extends React.Component {
         resizing.columnMetrics.totalWidth = state.columnMetrics.totalWidth;
       }
 
-      resizing.column = ColumnUtils.getColumn(resizing.columnMetrics.columns, pos);
-      this.setState({resizing});
+      resizing.column = getColumn(resizing.columnMetrics.columns, pos);
+      this.setState({ resizing });
     }
   };
 
   onColumnResizeEnd = (column, width) => {
-    let pos = this.getColumnPosition(column);
+    const pos = this.getColumnPosition(column);
     if (pos !== null && this.props.onColumnResize) {
       this.props.onColumnResize(pos, width || column.width);
     }
@@ -142,7 +142,7 @@ class Header extends React.Component {
   };
 
   getColumnPosition = (column) => {
-    let columnMetrics = this.getColumnMetrics();
+    const columnMetrics = this.getColumnMetrics();
     let pos = -1;
     columnMetrics.columns.forEach((c, idx) => {
       if (c.key === column.key) {
@@ -173,11 +173,11 @@ class Header extends React.Component {
   };
 
   setScrollLeft = (scrollLeft) => {
-    let node = ReactDOM.findDOMNode(this.row);
+    const node = ReactDOM.findDOMNode(this.row);
     node.scrollLeft = scrollLeft;
     this.row.setScrollLeft(scrollLeft);
     if (this.filterRow) {
-      let nodeFilters = ReactDOM.findDOMNode(this.filterRow);
+      const nodeFilters = ReactDOM.findDOMNode(this.filterRow);
       nodeFilters.scrollLeft = scrollLeft;
       this.filterRow.setScrollLeft(scrollLeft);
     }
@@ -189,15 +189,15 @@ class Header extends React.Component {
 
   // Set the cell selection to -1 x -1 when clicking on the header
   onHeaderClick = () => {
-    this.props.cellMetaData.onCellClick({rowIdx: -1, idx: -1 });
+    this.props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
   };
 
   render() {
-    let className = joinClasses({
+    const className = joinClasses({
       'react-grid-Header': true,
       'react-grid-Header--resizing': !!this.state.resizing
     });
-    let headerRows = this.getHeaderRows();
+    const headerRows = this.getHeaderRows();
 
     return (
       <div {...this.getKnownDivProps()} style={this.getStyle()} className={className} onClick={this.onHeaderClick}>

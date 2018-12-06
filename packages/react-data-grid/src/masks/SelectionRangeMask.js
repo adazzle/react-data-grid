@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { getSelectedRangeDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
 
-function SelectionRangeMask({ selectedRange, columns, rowHeight, children}) {
+function SelectionRangeMask({ selectedRange, columns, rowHeight, children }) {
   const dimensions = getSelectedRangeDimensions({ selectedRange, columns, rowHeight });
   return (
     <CellMask

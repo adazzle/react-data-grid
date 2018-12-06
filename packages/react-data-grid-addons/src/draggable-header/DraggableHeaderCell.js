@@ -60,8 +60,8 @@ const headerCellSource = {
 // drop target
 const target = {
   drop(props, monitor) {
-    let source = monitor.getItem().key;
-    let targetKey = props.column.key;
+    const source = monitor.getItem().key;
+    const targetKey = props.column.key;
     return {
       source: source,
       target: targetKey
@@ -87,11 +87,8 @@ DraggableHeaderCell.propTypes = {
   children: PropTypes.element.isRequired
 };
 
-DraggableHeaderCell = DropTarget('Column', target, targetCollect)(
-  DraggableHeaderCell
+export default DragSource('Column', headerCellSource, collect)(
+  DropTarget('Column', target, targetCollect)(
+    DraggableHeaderCell
+  )
 );
-DraggableHeaderCell = DragSource('Column', headerCellSource, collect)(
-  DraggableHeaderCell
-);
-
-export default DraggableHeaderCell;

@@ -1,23 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getSelectedDimensions } from '../utils/SelectedCellUtils';
 import CellMask from './CellMask';
 
-function CopyMask({ copiedPosition, columns, rowHeight }) {
-  const dimensions = getSelectedDimensions({ selectedPosition: copiedPosition, columns, rowHeight });
+function CopyMask({ copiedPosition, innerRef, getSelectedDimensions }) {
+  const dimensions = getSelectedDimensions(copiedPosition);
   return (
     <CellMask
       {...dimensions}
       className="react-grid-cell-copied"
+      innerRef={innerRef}
     />
   );
 }
 
 CopyMask.propTypes = {
   copiedPosition: PropTypes.object.isRequired,
-  columns: PropTypes.array.isRequired,
-  rowHeight: PropTypes.number.isRequired
+  getSelectedDimensions: PropTypes.func.isRequired,
+  innerRef: PropTypes.func.isRequired
 };
 
 export default CopyMask;

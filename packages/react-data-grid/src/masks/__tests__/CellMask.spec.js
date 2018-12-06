@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
+import * as zIndexes from 'common/constants/zIndexes';
 import { sel } from '../../__tests__/utils';
 import CellMask from '../CellMask';
-import zIndexes from 'common/constants/zIndexes';
 
 describe('CellMask', () => {
   const setup = (children) => {

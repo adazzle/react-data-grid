@@ -1,77 +1,70 @@
-const React         = require('react');
-const rewire        = require('rewire');
-const Header        = rewire('../Header');
-const TestUtils     = require('react-dom/test-utils');
-const rewireModule  = require('../../../../test/rewireModule');
-const StubComponent = require('../../../../test/StubComponent');
-import helpers from '../helpers/test/GridPropHelpers';
+import React from 'react';
+import Immutable from 'immutable';
+
+import Header from '../Header';
+import HeaderRow from '../HeaderRow';
+import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
+import * as GetScrollbarSize from '../getScrollbarSize';
 import { shallow } from 'enzyme';
-const SCROLL_BAR_SIZE = 20;
+const SCROLL_BAR_SIZE = 17;
 
 describe('Header Unit Tests', () => {
-  let header;
-  // Configure local letiable replacements for the module.
-  let HeaderRowStub = new StubComponent('HeaderRow');
-  let getScrollbarSize = () => SCROLL_BAR_SIZE;
-
-  rewireModule(Header, {
-    HeaderRow: HeaderRowStub,
-    getScrollbarSize: getScrollbarSize
+  beforeEach(() => {
+    spyOn(GetScrollbarSize, 'default').and.returnValue(SCROLL_BAR_SIZE);
   });
 
-  let testProps = {
+  const testProps = {
     columnMetrics: {
       columns: helpers.columns,
       minColumnWidth: 80,
       totalWidth: true,
       width: 2600
     },
+    cellMetaData: fakeCellMetaData,
     totalWidth: 1000,
     height: 50,
-    headerRows: [{height: 50, ref: 'row'}],
-    onColumnResize: function() {}
+    headerRows: [{ height: 50, ref: 'row' }],
+    onColumnResize: jasmine.createSpy(),
+    onSort: () => null
   };
 
-  function shouldRenderDefaultRow() {
-    let headerRows = TestUtils.scryRenderedComponentsWithType(header, HeaderRowStub);
-    expect(headerRows.length).toEqual(1);
+  function shouldRenderDefaultHeaderRow() {
+    const wrapper = shallow(<Header {...testProps}/>);
+    expect(wrapper.find(HeaderRow).length).toBe(1);
   }
 
   function shouldSetResizeState() {
-    let resizeColIdx = 2;
-    let newWidth = 350;
-    header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
-    let headerRow = TestUtils.findRenderedComponentWithType(header, HeaderRowStub);
-    headerRow.props.onColumnResize(helpers.columns[resizeColIdx], newWidth);
-    expect(header.state.resizing.column.width).toEqual(newWidth);
-    expect(header.state.resizing.column.key).toEqual(helpers.columns[resizeColIdx].key);
+    const wrapper = shallow(<Header {...testProps}/>);
+    const resizeColIdx = 2;
+    const newWidth = 350;
+    const headerRow = wrapper.find(HeaderRow);
+    headerRow.props().onColumnResize(helpers.columns[resizeColIdx], newWidth);
+    expect(wrapper.state().resizing.column.width).toEqual(newWidth);
+    expect(wrapper.state().resizing.column.key).toEqual(helpers.columns[resizeColIdx].key);
   }
 
   function shouldTriggerOnColumnResize() {
-    let resizeColIdx = 1;
-    spyOn(testProps, 'onColumnResize');
-    header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
-    let headerRow = TestUtils.findRenderedComponentWithType(header, HeaderRowStub);
-    headerRow.props.onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
+    const resizeColIdx = 1;
+    const wrapper = shallow(<Header {...testProps}/>);
+    const headerRow = wrapper.find(HeaderRow);
+    headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
     expect(testProps.onColumnResize).toHaveBeenCalled();
     expect(testProps.onColumnResize.calls.mostRecent().args[0]).toEqual(resizeColIdx);
     expect(testProps.onColumnResize.calls.mostRecent().args[1]).toEqual(200);
   }
 
-  beforeEach(() => {
-    header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
-  });
-
-  it('should create a new instance of Header', () => {
-    expect(header).toBeDefined();
+  it('should render a default header row', () => {
+    shouldRenderDefaultHeaderRow();
   });
 
   it('should initialize the state correctly', () => {
-    expect(header.state.resizing).toEqual(null);
+    const wrapper = shallow(<Header {...testProps}/>);
+    expect(wrapper.state().resizing).toEqual(null);
   });
 
   it('should render a default header row', () => {
-    shouldRenderDefaultRow();
+    const wrapper = shallow(<Header {...testProps}/>);
+    expect(wrapper.find(HeaderRow).length).toBe(1);
   });
 
   it('header row drag start should set resize column state ', () => {
@@ -85,11 +78,10 @@ describe('Header Unit Tests', () => {
   describe('When columns are immutable',  () => {
     beforeEach(() => {
       testProps.columnMetrics.columns = new Immutable.List(helpers.columns);
-      header = TestUtils.renderIntoDocument(<Header {...testProps}/>);
     });
 
     it('should render a default header row', () => {
-      shouldRenderDefaultRow();
+      shouldRenderDefaultHeaderRow();
     });
 
     it('header row drag start should set resize column state ', () => {
@@ -106,7 +98,7 @@ describe('Header Unit Tests', () => {
       const wrapper = shallow(<Header {...props} />);
       return wrapper;
     };
-    let testRequiredProps = {
+    const testRequiredProps = {
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 81,
@@ -114,9 +106,10 @@ describe('Header Unit Tests', () => {
         width: 2601
       },
       height: 51,
-      headerRows: [{height: 51, ref: 'row'}]
+      headerRows: [{ height: 51, ref: 'row' }],
+      onSort: jasmine.createSpy()
     };
-    let testAllProps = {
+    const testAllProps = {
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 80,
@@ -125,7 +118,7 @@ describe('Header Unit Tests', () => {
       },
       totalWidth: 1000,
       height: 50,
-      headerRows: [{height: 50, ref: 'row'}],
+      headerRows: [{ height: 50, ref: 'row' }],
       sortColumn: 'sortColumnValue',
       sortDirection: 'DESC',
       onSort: jasmine.createSpy(),
@@ -133,15 +126,7 @@ describe('Header Unit Tests', () => {
       onScroll: jasmine.createSpy(),
       draggableHeaderCell: jasmine.createSpy(),
       getValidFilterValues: jasmine.createSpy(),
-      cellMetaData: {
-        onCommitCancel: () => {},
-        onCommit: () => {},
-        onCellDoubleClick: () => {},
-        onCellClick: () => { },
-        handleDragEnterRow: () => {},
-        handleTerminateDrag: () => {},
-        selected: { rowIdx: 0, id: 1 }
-      }
+      cellMetaData: fakeCellMetaData
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
@@ -156,7 +141,7 @@ describe('Header Unit Tests', () => {
 
     it('should account for scrollbar size in header', () => {
       const wrapper = renderComponent(testAllProps);
-      let headerRow = wrapper.find('.react-grid-Header').props().children[0];
+      const headerRow = wrapper.find('.react-grid-Header').props().children[0];
       expect(headerRow.props.style.width).toBe(testAllProps.totalWidth - SCROLL_BAR_SIZE);
     });
     it('passes height property', () => {

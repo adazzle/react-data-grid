@@ -1,9 +1,9 @@
-const React                = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const Header               = require('./Header');
-const Viewport             = require('./Viewport');
+import Header from './Header';
+import Viewport from './Viewport';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-import columnUtils from './ColumnUtils';
+import { isFrozen } from './ColumnUtils';
 require('../../../themes/react-data-grid-core.css');
 
 class Grid extends React.Component {
@@ -100,12 +100,12 @@ class Grid extends React.Component {
   };
 
   areFrozenColumnsScrolledLeft(scrollLeft) {
-    return scrollLeft > 0 && this.props.columns.some(c => columnUtils.isFrozen(c));
+    return scrollLeft > 0 && this.props.columns.some(c => isFrozen(c));
   }
 
   onScroll = (scrollState) => {
     this.props.onScroll(scrollState);
-    const {scrollLeft} = scrollState;
+    const { scrollLeft } = scrollState;
     if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsScrolledLeft(scrollLeft)) {
       this._scrollLeft = scrollLeft;
       this._onScroll();
@@ -220,4 +220,4 @@ class Grid extends React.Component {
   }
 }
 
-module.exports = Grid;
+export default Grid;

@@ -1,81 +1,8 @@
-const React         = require('react');
-const ReactDOM = require('react-dom');
-const rewire        = require('rewire');
-const Grid          = rewire('../Grid');
-const TestUtils     = require('react-dom/test-utils');
-import helpers from '../helpers/test/GridPropHelpers';
-const rewireModule = require('../../../../test/rewireModule');
+import React from 'react';
+import Grid from '../Grid';
+import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
 import { shallow } from 'enzyme';
 import { ContextMenu } from 'react-contextmenu';
-
-let testElement;
-
-class HeaderStub extends React.Component {
-  setScrollLeft = () => {
-  };
-
-  render() {
-    return (<div></div>);
-  }
-}
-
-class ViewportStub extends React.Component {
-  getScroll = () => {
-    return {scrollLeft: 0};
-  };
-
-  setScrollLeft = () => {
-  };
-
-  render() {
-    return (<div></div>);
-  }
-}
-
-describe('Base Grid Tests', () => {
-  let testProps = {
-    columnMetrics: {
-      columns: helpers.columns,
-      minColumnWidth: 80,
-      totalWidth: true,
-      width: 2600
-    },
-    headerRows: [],
-    rowsCount: helpers.rowsCount(),
-    rowGetter: helpers.rowGetter,
-    rowOffsetHeight: 50,
-    selectedRows: [],
-    minHeight: 600,
-    onViewportKeydown: function() {},
-    onViewportDragStart: function() {},
-    onViewportDragEnd: function() {},
-    onViewportDoubleClick: function() {}
-  };
-
-  // Configure local letiable replacements for the module.
-  rewireModule(Grid, {
-    Header: HeaderStub,
-    Viewport: ViewportStub
-  });
-
-  beforeEach(() => {
-    testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-  });
-
-  it('should create a new instance of Grid', () => {
-    expect(testElement).toBeDefined();
-  });
-
-
-  it('keyboard input in viewport should call props.onViewportKeydown', () => {
-    let viewportContainerNode;
-    spyOn(testProps, 'onViewportKeydown');
-    testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-    viewportContainerNode = ReactDOM.findDOMNode(testElement.viewPortContainer);
-    TestUtils.Simulate.keyDown(viewportContainerNode, {key: 'Enter'});
-    expect(testProps.onViewportKeydown).toHaveBeenCalled();
-  });
-});
 
 describe('Empty Grid Tests', () => {
   class EmptyRowsView extends React.Component {
@@ -84,7 +11,7 @@ describe('Empty Grid Tests', () => {
     }
   }
 
-  let testProps = {
+  const testProps = {
     columnMetrics: {
       columns: helpers.columns
     },
@@ -99,23 +26,21 @@ describe('Empty Grid Tests', () => {
     onViewportKeydown: () => {},
     onViewportDragStart: () => {},
     onViewportDragEnd: () => {},
-    onViewportDoubleClick: () => {}
+    onViewportDoubleClick: () => {},
+    cellMetaData: fakeCellMetaData,
+    rowKey: 'id',
+    enableCellSelect: true,
+    enableCellAutoFocus: true,
+    cellNavigationMode: 'changeRow',
+    eventBus: {},
+    onGridRowsUpdated: () => null,
+    onDragHandleDoubleClick: () => null,
+    onCommit: () => null
   };
-  rewireModule(Grid, {
-    Header: HeaderStub
-  });
-
-  beforeEach(() => {
-    testElement = TestUtils.renderIntoDocument(<Grid {...testProps}/>);
-  });
-
-  it('should create a new instance of Grid', () => {
-    expect(testElement).toBeDefined();
-  });
 
   it('should not have any viewport', () => {
-    expect(testElement.viewPortContainer).not.toBeDefined();
-    expect(testElement.emptyView).toBeDefined();
+    const wrapper = shallow(<Grid {...testProps}/>);
+    expect(wrapper.find(EmptyRowsView).exists());
   });
 });
 
@@ -141,7 +66,7 @@ describe('Rendering Grid component', () => {
       emptyRowsView: jasmine.createSpy(),
       expandedRows: jasmine.createSpy(),
       selectedRows: jasmine.createSpy(),
-      rowSelection: {isSelectedKey: 'selectedKey'},
+      rowSelection: { isSelectedKey: 'selectedKey' },
       rowsCount: 14,
       onRows: jasmine.createSpy(),
       sortColumn: 'sortColumn',
@@ -156,7 +81,7 @@ describe('Rendering Grid component', () => {
       onColumnResize: jasmine.createSpy(),
       onSort: jasmine.createSpy(),
       cellMetaData: {
-        selected: {idx: 2, rowIdx: 3},
+        selected: { idx: 2, rowIdx: 3 },
         dragged: null,
         onCellClick: jasmine.createSpy(),
         onCellContextMenu: jasmine.createSpy(),
@@ -175,7 +100,7 @@ describe('Rendering Grid component', () => {
       draggableHeaderCell: jasmine.createSpy(),
       getValidFilterValues: jasmine.createSpy(),
       rowGroupRenderer: jasmine.createSpy(),
-      overScan: {key: 'value'}
+      overScan: { key: 'value' }
     };
   };
   it('passes classname property', () => {

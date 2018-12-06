@@ -1,7 +1,7 @@
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 import ReactDataGridContextMenu from '../ContextMenu';
-import {ContextMenu} from 'react-contextmenu';
+import { ContextMenu } from 'react-contextmenu';
 
 describe('Context Menu', () => {
   let component = {};
@@ -15,7 +15,7 @@ describe('Context Menu', () => {
   });
 
   it('should have "reactDataGridContextMenu" as identifier', () => {
-    let contextMenu = TestUtils.findRenderedComponentWithType(component, ContextMenu);
+    const contextMenu = TestUtils.findRenderedComponentWithType(component, ContextMenu);
     expect(contextMenu.props.identifier).toEqual('reactDataGridContextMenu');
   });
 });

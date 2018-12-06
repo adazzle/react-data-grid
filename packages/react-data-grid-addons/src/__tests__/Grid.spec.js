@@ -10,10 +10,10 @@ const { mount } = require('enzyme');
 describe('Grid', function() {
   beforeEach(function() {
     this.columns = [
-      { key: 'id', name: 'ID', width: 100, events: { onClick: () => {}} },
+      { key: 'id', name: 'ID', width: 100, events: { onClick: () => {} } },
       { key: 'title', name: 'Title', width: 100 },
       { key: 'count', name: 'Count', width: 100 },
-      { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}, onDragOver: () => {}}}
+      { key: 'country', name: 'Country', width: 100, events: { onClick: () => {}, onDoubleClick: () => {}, onDragOver: () => {} } }
     ];
 
     this._rows = [];
@@ -65,7 +65,7 @@ describe('Grid', function() {
     this.getCellMetaData = () => this.getBaseGrid().props.cellMetaData;
 
     this.simulateGridKeyDown = (key, ctrlKey) => {
-      let fakeEvent = this.buildFakeEvent({
+      const fakeEvent = this.buildFakeEvent({
         key: key,
         keyCode: key,
         ctrlKey: ctrlKey
@@ -74,13 +74,13 @@ describe('Grid', function() {
     };
 
     this.simulateGridKeyDownWithKeyCode = (keyCode) => {
-      let fakeEvent = this.buildFakeEvent({
+      const fakeEvent = this.buildFakeEvent({
         keyCode: keyCode
       });
       this.getBaseGrid().props.onViewportKeydown(fakeEvent);
     };
 
-    let buildProps = (addedProps) => Object.assign({}, this.testProps, addedProps);
+    const buildProps = (addedProps) => Object.assign({}, this.testProps, addedProps);
     this.createComponent = (addedProps) => {
       return mount(<Grid {...buildProps(addedProps)}/>);
     };
@@ -98,7 +98,7 @@ describe('Grid', function() {
   });
 
   it('should be initialized with correct state', function() {
-    let events = [this.columns[0].events, this.columns[1].events, this.columns[2].events, this.columns[3].events];
+    const events = [this.columns[0].events, this.columns[1].events, this.columns[2].events, this.columns[3].events];
     expect(this.component.state).toEqual(mockStateObject({
       selectedRows: this._selectedRows
     }, events));
@@ -199,7 +199,7 @@ describe('Grid', function() {
 
   describe('When row selection enabled', function() {
     beforeEach(function() {
-      this.component = this.createComponent({ enableRowSelect: true}).instance();
+      this.component = this.createComponent({ enableRowSelect: true }).instance();
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -212,7 +212,7 @@ describe('Grid', function() {
 
     describe('checking header checkbox', function() {
       beforeEach(function() {
-        let checkboxWrapper = document.createElement('div');
+        const checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
         const SelectAll = this.selectRowCol.headerRenderer;
@@ -222,7 +222,7 @@ describe('Grid', function() {
       });
 
       it('should select all rows', function() {
-        let selectedRows = this.component.state.selectedRows;
+        const selectedRows = this.component.state.selectedRows;
         expect(selectedRows.length).toEqual(this._rows.length);
 
         expect(selectedRows.length).toBeGreaterThan(1);
@@ -236,7 +236,7 @@ describe('Grid', function() {
         });
 
         it('should deselect all rows', function() {
-          let selectedRows = this.component.state.selectedRows;
+          const selectedRows = this.component.state.selectedRows;
 
           expect(selectedRows.length).toBeGreaterThan(1);
           selectedRows.forEach((selected) => expect(selected.isSelected).toBe(false));
@@ -246,8 +246,8 @@ describe('Grid', function() {
 
     describe('when selected is false', function() {
       beforeEach(function() {
-        this.component.setState({selectedRows: [{id: 0, isSelected: false}, {id: 1, isSelected: false}, {id: 2, isSelected: false}, {id: 3, isSelected: false}]});
-        let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        this.component.setState({ selectedRows: [{ id: 0, isSelected: false }, { id: 1, isSelected: false }, { id: 2, isSelected: false }, { id: 3, isSelected: false }] });
+        const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(3, 'select-row',  this._rows[3], this.buildFakeEvent());
       });
 
@@ -258,8 +258,8 @@ describe('Grid', function() {
 
     describe('when selected is null', function() {
       beforeEach(function() {
-        this.component.setState({selectedRows: [{id: 0, isSelected: null}, {id: 1, isSelected: null}, {id: 2, isSelected: null}, {id: 3, isSelected: null}]});
-        let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        this.component.setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: null }, { id: 2, isSelected: null }, { id: 3, isSelected: null }] });
+        const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(2, 'select-row', this._rows[2], this.buildFakeEvent());
       });
 
@@ -270,8 +270,8 @@ describe('Grid', function() {
 
     describe('when selected is true', function() {
       beforeEach(function() {
-        this.component.setState({selectedRows: [{id: 0, isSelected: null}, {id: 1, isSelected: true}, {id: 2, isSelected: true}, {id: 3, isSelected: true}]});
-        let selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        this.component.setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: true }, { id: 2, isSelected: true }, { id: 3, isSelected: true }] });
+        const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
         selectRowCol.onCellChange(3, 'select-row', this._rows[3], this.buildFakeEvent());
       });
 
@@ -284,22 +284,22 @@ describe('Grid', function() {
 
   describe('When selection enabled and using rowSelection props', function() {
     beforeEach(function() {
-      let self = this;
+      const self = this;
       this._selectedRows = [];
       this._deselectedRows = [];
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}, {id: '3', isSelected: false}, {id: '4', isSelected: false}];
-      let columns = [{name: 'Id', key: 'id'}];
-      let rowGetter = function(i) {
+      this.rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }, { id: '3', isSelected: false }, { id: '4', isSelected: false }];
+      const columns = [{ name: 'Id', key: 'id' }];
+      const rowGetter = function(i) {
         return self.rows[i];
       };
-      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {enableShiftSelect: true, selectBy: {isSelectedKey: 'isSelected'},
+      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: { enableShiftSelect: true, selectBy: { isSelectedKey: 'isSelected' },
         onRowsSelected: function(selectedRows) {
           self._selectedRows = selectedRows;
         },
         onRowsDeselected: function(deselectedRows) {
           self._deselectedRows = deselectedRows;
         }
-      }}).instance();
+      } }).instance();
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -345,28 +345,28 @@ describe('Grid', function() {
 
     describe('checking header checkbox', function() {
       beforeEach(function() {
-        let self = this;
+        const self = this;
         this._selectedRows = [];
         this._deselectedRows = [];
-        this.rows = [{id: '1'}, {id: '2'}];
-        let columns = [{name: 'Id', key: 'id'}];
-        let rowGetter = function(i) {
+        this.rows = [{ id: '1' }, { id: '2' }];
+        const columns = [{ name: 'Id', key: 'id' }];
+        const rowGetter = function(i) {
           return self.rows[i];
         };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: []},
+        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: { selectBy: { indexes: [] },
           onRowsSelected: function(selectedRows) {
             self._selectedRows = selectedRows;
           },
           onRowsDeselected: function(deselectedRows) {
             self._deselectedRows = deselectedRows;
           }
-        }}).instance();
+        } }).instance();
 
         this.baseGrid = this.getBaseGrid();
         this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
 
         // header checkbox
-        let checkboxWrapper = document.createElement('div');
+        const checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
         this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
@@ -382,28 +382,28 @@ describe('Grid', function() {
 
     describe('un-checking header checkbox', function() {
       beforeEach(function() {
-        let self = this;
+        const self = this;
         this._selectedRows = [];
         this._deselectedRows = [];
-        this.rows = [{id: '1'}, {id: '2'}];
-        let columns = [{name: 'Id', key: 'id'}];
-        let rowGetter = function(i) {
+        this.rows = [{ id: '1' }, { id: '2' }];
+        const columns = [{ name: 'Id', key: 'id' }];
+        const rowGetter = function(i) {
           return self.rows[i];
         };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: {selectBy: {indexes: [0, 1]},
+        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, rowSelection: { selectBy: { indexes: [0, 1] },
           onRowsSelected: function(selectedRows) {
             self._selectedRows = selectedRows;
           },
           onRowsDeselected: function(deselectedRows) {
             self._deselectedRows = deselectedRows;
           }
-        }}).instance();
+        } }).instance();
 
         this.baseGrid = this.getBaseGrid();
         this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
 
         // header checkbox
-        let checkboxWrapper = document.createElement('div');
+        const checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
         this.checkbox = checkboxWrapper.querySelector('input');
         const SelectAll = this.selectRowCol.headerRenderer;
@@ -421,7 +421,7 @@ describe('Grid', function() {
 
   describe('changes to non metric column data', function() {
     beforeEach(function() {
-      let wrapper = this.createComponent();
+      const wrapper = this.createComponent();
       this.originalMetrics = Object.assign({}, this.component.state.columnMetrics);
       const editableColumn = Object.assign({ editable: true }, this.columns[0]);
       this.columns[0] = editableColumn;
@@ -430,7 +430,7 @@ describe('Grid', function() {
     });
 
     it('should keep original metric information', function() {
-      let columnMetrics = this.component.state.columnMetrics;
+      const columnMetrics = this.component.state.columnMetrics;
       expect(columnMetrics.columns.length).toBeGreaterThan(1);
       columnMetrics.columns.forEach((column, index) => {
         expect(column.width).toEqual(this.originalMetrics.columns[index].width);
@@ -466,24 +466,24 @@ describe('Grid', function() {
 
   describe('onRowClick handler', function() {
     beforeEach(function() {
-      let self = this;
-      this.rows = [{id: '1', isSelected: true}, {id: '2', isSelected: false}];
-      let columns = [{name: 'Id', key: 'id'}, {name: 'Title', key: 'title', width: 100 }];
-      let rowGetter = function(i) {
+      const self = this;
+      this.rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }];
+      const columns = [{ name: 'Id', key: 'id' }, { name: 'Title', key: 'title', width: 100 }];
+      const rowGetter = function(i) {
         return self.rows[i];
       };
 
       this.rowClicked = {};
       this.rowClicks = 0;
 
-      this.component = this.createComponent({rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
-        self.rowClicked = {row, column};
+      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter: rowGetter, columns: columns, onRowClick: function(rowIdx, row, column) {
+        self.rowClicked = { row, column };
         self.rowClicks++;
-      }}).instance();
+      } }).instance();
     });
 
     it('calls handler when row (cell) clicked', function() {
-      this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1});
+      this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1 });
       expect(this.rowClicks).toBe(1);
       const { row, column } = this.rowClicked;
       expect(row).toEqual(jasmine.objectContaining(this.rows[1]));

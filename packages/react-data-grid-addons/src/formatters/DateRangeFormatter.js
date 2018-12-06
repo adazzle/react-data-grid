@@ -16,7 +16,7 @@ class DateRangeFormatter extends React.Component {
   static defaultProps = {
     inputFormat: 'YYYY-MM-DD',
     displayFormat: 'YYYY-MM-DD',
-    value: {startDate: null, endDate: null}
+    value: { startDate: null, endDate: null }
   };
 
   formatDate = (date) => {
@@ -28,8 +28,8 @@ class DateRangeFormatter extends React.Component {
   };
 
   render() {
-    let startDate = this.props.value.startDate;
-    let endDate = this.props.value.endDate;
+    const startDate = this.props.value.startDate;
+    const endDate = this.props.value.endDate;
     return (<span>{startDate} to {endDate}</span>);
   }
 }
