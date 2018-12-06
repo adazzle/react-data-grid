@@ -33,6 +33,8 @@ class HeaderCell extends React.Component {
 
   state = {resizing: false};
 
+  headerCellRef = (node) => this.headerCell = node;
+
   onDragStart = (e) => {
     this.setState({resizing: true});
     // need to set dummy data for FF
@@ -56,8 +58,8 @@ class HeaderCell extends React.Component {
   };
 
   getWidthFromMouseEvent = (e) => {
-    let right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
-    let left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
+    const right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
+    const left = this.headerCell ? this.headerCell.getBoundingClientRect().left : 0;
     return right - left;
   };
 
@@ -118,7 +120,7 @@ class HeaderCell extends React.Component {
       'react-grid-HeaderCell--frozen': columnUtils.isFrozen(column)
     }, this.props.className, column.cellClass);
     const cell = (
-      <div className={className} style={this.getStyle()}>
+      <div ref={this.headerCellRef} className={className} style={this.getStyle()}>
         {this.getCell()}
         {resizeHandle}
       </div>
@@ -129,8 +131,9 @@ class HeaderCell extends React.Component {
       return (
         <DraggableHeaderCell
           column={column}
-          onHeaderDrop={this.props.onHeaderDrop}>
-           {cell}
+          onHeaderDrop={this.props.onHeaderDrop}
+        >
+          {cell}
         </DraggableHeaderCell>
       );
     }
