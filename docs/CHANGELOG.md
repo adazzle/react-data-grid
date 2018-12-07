@@ -3,6 +3,10 @@ id: changelog
 title: Changelog
 ---
 
+## 5.0.5 (Dec 6, 2018)
+- **Bugfix:** fix: draggable resizing col jumps to right ([1421](https://github.com/adazzle/react-data-grid/pull/1421))
+- **Bugfix:** Cell Tooltip - Focus Issues ([1422](https://github.com/adazzle/react-data-grid/pull/1422))
+
 ## 6.0.1 (Nov 30, 2018)
 - **Bugfix:** Fix formatter exports ([1409](https://github.com/adazzle/react-data-grid/pull/1409))
 
@@ -13,10 +17,6 @@ title: Changelog
 - **Feature:** Cleanup zIndex logic ([1393](https://github.com/adazzle/react-data-grid/pull/1393))
 - **Breaking** Use react portals for cell editors ([1369](https://github.com/adazzle/react-data-grid/pull/1369))
 - **TechDebt:** Upgrade build tools to latest versions ([1350](https://github.com/adazzle/react-data-grid/pull/1350))
-
-## 5.0.5 (Dec 6, 2018)
-- **Bugfix:** fix: draggable resizing col jumps to right ([1421](https://github.com/adazzle/react-data-grid/pull/1421))
-- **Bugfix:** Cell Tooltip - Focus Issues ([1422](https://github.com/adazzle/react-data-grid/pull/1422))
 
 ## 5.0.4 (Nov 14, 2018)
 - **Bugfix:** Custom Formatters Example - Styling Fix ([1364](https://github.com/adazzle/react-data-grid/pull/1364))

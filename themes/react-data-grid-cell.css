@@ -29,11 +29,11 @@
 
 /* cell which have tooltips need to have a higher z-index on hover so that the tooltip appears above the other cells*/
 .react-grid-Cell.has-tooltip:hover {
-  z-index: 5;
+  z-index: 1;
 }
 
 .react-grid-Cell.react-grid-Cell--frozen.has-tooltip:hover  {
-  z-index: 15;
+  z-index: 3
 }
 
 .react-contextmenu--visible {
