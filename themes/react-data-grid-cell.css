@@ -27,6 +27,15 @@
   box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3) !important;
 }
 
+/* cell which have tooltips need to have a higher z-index on hover so that the tooltip appears above the other cells*/
+.react-grid-Cell.has-tooltip:hover {
+  z-index: 1;
+}
+
+.react-grid-Cell.react-grid-Cell--frozen.has-tooltip:hover  {
+  z-index: 3
+}
+
 .react-contextmenu--visible {
   z-index: 1000;
 }
@@ -82,16 +91,8 @@
   padding: 0;
 }
 
-.cell-tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-.cell-tooltip:hover {
-  z-index: 101;
-}
-
 .cell-tooltip .cell-tooltip-text {
+    white-space: normal;
     visibility: hidden;
     width: 150px;
     background-color: black;
@@ -100,12 +101,11 @@
     border-radius: 6px;
     padding: 5px 0;
     position: absolute;
-    z-index: 1;
-    bottom: -150%;
+    top: 50%;
+    bottom: initial;
     left: 50%;
-    margin-left: -60px;
-    /* Fade in tooltip - takes 1 second to go from 0% to 100% opacity */
-    opacity: 1s;
+    margin-top: 15px;
+    margin-left: -75px
 }
 
 .cell-tooltip:hover .cell-tooltip-text {

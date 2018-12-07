@@ -172,7 +172,7 @@ class Cell extends React.PureComponent {
     const extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
       editing: this.isEditorEnabled(),
-      'cell-tooltip': this.props.tooltip ? true : false,
+      'has-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn
     });
@@ -315,13 +315,20 @@ class Cell extends React.PureComponent {
     if (treeDepth > 0 && isExpandCell) {
       cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow} isDeleteSubRowEnabled={isDeleteSubRowEnabled} />;
     }
+
+    const tooltip = this.props.tooltip && (<span className="cell-tooltip-text">{this.props.tooltip}</span>);
+    const classes = joinClasses('react-grid-Cell__value',
+      { 'cell-tooltip': this.props.tooltip ? true : false }
+    );
+
     return (
-      <div className="react-grid-Cell__value">
+      <div className={classes}>
         {cellDeleter}
         <div style={{ marginLeft, position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
           <span>{CellContent}</span>
           {this.props.cellControls}
         </div>
+        {tooltip}
       </div>
     );
   };
@@ -346,7 +353,6 @@ class Cell extends React.PureComponent {
     });
 
     const events = this.getEvents();
-    const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
 
     const cellExpander =  this.canExpand() && (
       <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />
@@ -363,7 +369,6 @@ class Cell extends React.PureComponent {
         {cellActionButtons}
         {cellExpander}
         {cellContent}
-        {tooltip}
       </div>
     );
   }
