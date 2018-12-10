@@ -33,6 +33,8 @@ class HeaderCell extends React.Component {
 
   state = { resizing: false };
 
+  headerCellRef = (node) => this.headerCell = node;
+
   onDragStart = (e) => {
     this.setState({ resizing: true });
     // need to set dummy data for FF
@@ -118,7 +120,7 @@ class HeaderCell extends React.Component {
       'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
     const cell = (
-      <div className={className} style={this.getStyle()}>
+      <div ref={this.headerCellRef} className={className} style={this.getStyle()}>
         {this.getCell()}
         {resizeHandle}
       </div>
@@ -129,8 +131,9 @@ class HeaderCell extends React.Component {
       return (
         <DraggableHeaderCell
           column={column}
-          onHeaderDrop={this.props.onHeaderDrop}>
-           {cell}
+          onHeaderDrop={this.props.onHeaderDrop}
+        >
+          {cell}
         </DraggableHeaderCell>
       );
     }
