@@ -144,8 +144,8 @@ class AddOrRemoveColumns extends React.Component {
                 <div className="content">
                   <label>Show/Hide Columns</label>
                   <div>
-                    <span className="ico-family green ico-check"></span><a onClick={this.selectAll} className="pdng-lt-5 green-underline">Select All</a>
-                    <span className="pdng-lt-10 green ico-family ico-uncheck"></span><a onClick={this.unSelectAll} className="pdng-lt-5 green-underline">Unselect All</a>
+                    <span style={{ cursor: 'pointer' }} onClick={this.selectAll} className="ico-family green ico-check"></span><a onClick={this.selectAll} className="pdng-lt-5 green-underline">Select All</a>
+                    <span style={{ cursor: 'pointer' }} onClick={this.unSelectAll} className="pdng-lt-10 green ico-family ico-uncheck"></span><a onClick={this.unSelectAll} className="pdng-lt-5 green-underline">Unselect All</a>
                   </div>
                   <div>{this.state.displayErrorMessage ? <span><span className="ico-family ico-error-icon"></span><span className="error-text pdng-lt-5">Please select at least one column.</span></span> : <span></span>}</div>
                   <div className="columnsList">

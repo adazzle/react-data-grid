@@ -118,7 +118,7 @@ class HeaderCell extends React.Component {
       'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
     const cell = (
-      <div className={className} style={this.getStyle()}>
+      <div className={className} title={column.name} style={this.getStyle()}>
         {this.getCell()}
         {resizeHandle}
       </div>

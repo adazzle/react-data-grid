@@ -60,6 +60,9 @@
 .pdng-lt-5{
     padding-left: 5px;
 }
+.pdng-rt-5{
+    padding-right: 5px;
+}
 
 .pdng-lt-10{
     padding-left: 10px;
@@ -104,10 +107,14 @@ a {
     cursor: pointer;
 }
 
-a.green-underline {
+.resetToDefaults .green-underline {
     color: #1fb25a;
     text-decoration: underline;
     font-size: 11px;
+}
+
+.resetToDefaults a:hover {
+    text-decoration: none;
 }
 
 .button-primary {
