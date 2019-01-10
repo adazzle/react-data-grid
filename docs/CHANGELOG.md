@@ -3,6 +3,10 @@ id: changelog
 title: Changelog
 ---
 
+## 5.0.5 (Dec 6, 2018)
+- **Bugfix:** fix: draggable resizing col jumps to right ([1421](https://github.com/adazzle/react-data-grid/pull/1421))
+- **Bugfix:** Cell Tooltip - Focus Issues ([1422](https://github.com/adazzle/react-data-grid/pull/1422))
+
 ## 6.0.1 (Nov 30, 2018)
 - **Bugfix:** Fix formatter exports ([1409](https://github.com/adazzle/react-data-grid/pull/1409))
 
