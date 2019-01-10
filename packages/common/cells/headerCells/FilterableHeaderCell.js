@@ -14,7 +14,7 @@ class FilterableHeaderCell extends React.Component {
   };
 
   componentWillReceiveProps(newProps){
-    this.setState({filterTerm: newProps.filterTerm});
+    this.setState({filterTerm: newProps.filterTerm ? newProps.filterTerm : ''});
   }
 
   state = { filterTerm: '' };
