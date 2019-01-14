@@ -15,8 +15,7 @@ class AddOrRemoveColumns extends React.Component {
     this.setSelectedItems = this.setSelectedItems.bind(this);
     this.cancelDialog = this.cancelDialog.bind(this);
     this.selectAll = this.selectAll.bind(this);
-    this.unSelectAll = this.unSelectAll.bind(this)
-    this.revertToDefaults = this.revertToDefaults.bind(this);;
+    this.unSelectAll = this.unSelectAll.bind(this);
     this.state = { selectedColumns: [], allColumns: this.getColumnsForList(false, false, true), selectAllColumns: false, deselectAllColumns: false, displayErrorMessage: false };
   }
 
@@ -47,29 +46,12 @@ class AddOrRemoveColumns extends React.Component {
     this.setState({ selectAllColumns: false });
     this.setState({ deselectAllColumns: true });
     this.setState({selectedColumns: []});
-    let selectedColumns = [];
     let allColumns = this.state.allColumns;
     _.map(allColumns, function (col) {
       var currentCol = col;
       currentCol.isSelected = false;
     });
     this.setState({ selectedColumns: [] });
-  }
-
-  revertToDefaults() {
-    this.setState({ deselectAllColumns: false });
-    this.setState({ selectAllColumns: false });
-    var allColumns = this.getColumnsForList(false, false, false, true)
-    var parentScope = this;
-    this.setState({allColumns});
-    var selectedColumns = [];
-    this.setState({selectedColumns});
-    selectedColumns = _.filter(allColumns, function(col){
-      return col.isSelected
-    });
-    if(this.state.displayErrorMessage)
-        this.setState({displayErrorMessage: selectedColumns.length === 0});
-    this.setState({selectedColumns});
   }
 
   handleChange(value) {
@@ -92,8 +74,8 @@ class AddOrRemoveColumns extends React.Component {
     this.setState({ selectedColumns: selectedValues });
   }
 
-  getColumnsForList(selectAll, deselectAll, firstCall, revertToDefaults) {
-    let columns = firstCall || revertToDefaults ? this.props.getAllColumns(revertToDefaults) : this.state.allColumns;
+  getColumnsForList(selectAll, deselectAll, firstCall) {
+    let columns = firstCall ? this.props.getAllColumns() : this.state.allColumns;
     let allColumns = [];
     if (selectAll) {
       _.map(columns, function (col) {
@@ -124,6 +106,7 @@ class AddOrRemoveColumns extends React.Component {
 
   createCheckbox = (colObj) => (
     <Checkbox
+      key={colObj.key}
       optionObj={colObj}
       handleCheckboxChange={this.handleChange}
       setSelectedItems={this.setSelectedItems}

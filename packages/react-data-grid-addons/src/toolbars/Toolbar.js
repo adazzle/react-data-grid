@@ -72,7 +72,7 @@ class Toolbar extends React.Component {
  };
 
  onColumnUpdate = (value) =>{
-   this.props.applySelectedColumns(value)
+   this.props.applySelectedColumns(value);
    this.setState({showColumns : false});
  };
 

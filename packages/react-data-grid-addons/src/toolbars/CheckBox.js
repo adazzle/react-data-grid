@@ -39,10 +39,9 @@ class Checkbox extends React.Component {
 }
 
 Checkbox.propTypes = {
-  optionObj: PropTypes.string.isRequired,
+  optionObj: PropTypes.object.isRequired,
   handleCheckboxChange: PropTypes.func.isRequired,
-  setSelectedItems: PropTypes.func.isRequired,
-  setAllAsSelected: PropTypes.func.isRequired
+  setSelectedItems: PropTypes.func.isRequired
 };
 
 export default Checkbox;
