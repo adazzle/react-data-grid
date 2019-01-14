@@ -1,24 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './CheckBoxStyles.css';
+import '../../../../themes/check-box-styles.css';
 
 class Checkbox extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.toggleCheckboxChange = this.toggleCheckboxChange.bind(this);
-        this.state = {isSelected: props.optionObj.isSelected};
+        this.state = { isSelected: props.optionObj.isSelected };
         this.setSelectedValues();
     }
 
   toggleCheckboxChange = () => {
     this.props.optionObj.isSelected = !this.props.optionObj.isSelected;
-    this.setState({isSelected: this.props.optionObj.isSelected})
+    this.setState({ isSelected: this.props.optionObj.isSelected });
     this.props.handleCheckboxChange(this.props.optionObj);
   }
 
-  setSelectedValues(){
-    if(this.props.optionObj.isSelected)
-        this.props.setSelectedItems(this.props.optionObj);
+  setSelectedValues() {
+    if(this.props.optionObj.isSelected) {
+      this.props.setSelectedItems(this.props.optionObj);
+    }
   }
 
   render() {

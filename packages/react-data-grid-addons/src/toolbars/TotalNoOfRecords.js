@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './TotalNoOfRecordsStyles.css'
+import '../../../../themes/total-no-of-records-styles.css';
 
 class TotalNoOfRecords extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         let resultText;
-        let noOfRecords = isNaN(this.props.noOfRecords) ? 0 : this.props.noOfRecords;
+        const noOfRecords = isNaN(this.props.noOfRecords) ? 0 : this.props.noOfRecords;
         if (noOfRecords !== 1) {
             resultText = noOfRecords + ' ' + 'Results';
         } else {
@@ -20,7 +16,7 @@ class TotalNoOfRecords extends React.Component {
                 <span>{resultText}</span>
                 <span className="additional-text">{this.props.additionalText}</span>
             </span>
-        )
+        );
     }
 }
 

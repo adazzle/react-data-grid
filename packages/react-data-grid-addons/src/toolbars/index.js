@@ -3,4 +3,4 @@ import GroupedColumnsPanel from './GroupedColumnsPanel';
 import AddorRemoveColumns from './AddorRemoveColumns';
 import TotalNoOfRecords from './TotalNoOfRecords';
 
-module.exports = {AdvancedToolbar, GroupedColumnsPanel, AddorRemoveColumns, TotalNoOfRecords};
+module.exports = { AdvancedToolbar, GroupedColumnsPanel, AddorRemoveColumns, TotalNoOfRecords };

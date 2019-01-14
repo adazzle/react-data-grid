@@ -1,11 +1,11 @@
-import './ReactSelectStyles.css';
-import './TypeAheadFilterStyles.css'
+import '../../../../../../themes/react-select-styles.css';
+import '../../../../../../themes/type-ahead-filter-styles.css';
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AsyncSelect from 'react-select/lib/Async';
 import { utils, shapes } from 'react-data-grid';
-import {isEmptyArray} from 'common/utils';
-const { ExcelColumn } = shapes; 
+import { isEmptyArray } from 'common/utils';
+const { ExcelColumn } = shapes;
 const MultiValueLabel = props => {
     return (
         <div>
@@ -31,7 +31,7 @@ class TypeAheadFilter extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.columnValueContainsSearchTerms = this.columnValueContainsSearchTerms.bind(this);
         this.getOptionsTemplateForFilter = this.getOptionsTemplateForFilter.bind(this);
-        let defaultFilters = props.column ? props.column.filterValue : []
+        const defaultFilters = props.column ? props.column.filterValue : [];
         this.state = { options: [], rawValue: '', placeholder: 'Begin typing and select from list', filters: defaultFilters };
     }
 
@@ -41,9 +41,9 @@ class TypeAheadFilter extends React.Component {
 
     columnValueContainsSearchTerms(columnValue, filterTermValue) {
         if (columnValue !== undefined && filterTermValue !== undefined) {
-            let strColumnValue = columnValue.toString();
-            let strFilterTermValue = filterTermValue.toString();
-            let checkValueIndex = strColumnValue.trim().toLowerCase().indexOf(strFilterTermValue.trim().toLowerCase());
+            const strColumnValue = columnValue.toString();
+            const strFilterTermValue = filterTermValue.toString();
+            const checkValueIndex = strColumnValue.trim().toLowerCase().indexOf(strFilterTermValue.trim().toLowerCase());
             return checkValueIndex !== -1 && (checkValueIndex !== 0 || strColumnValue === strFilterTermValue);
         }
         return false;
@@ -66,34 +66,34 @@ class TypeAheadFilter extends React.Component {
     }
 
     getOptions(searchText, event, newProps) {
-        var parentScope = this;
-        return this.props.getValidFilterValuesForTypeAhead(this.props.column, searchText).then(function (val) {
+        const parentScope = this;
+        return this.props.getValidFilterValuesForTypeAhead(this.props.column, searchText).then(function(val) {
             parentScope.setState({ options: val });
             return val;
         });
     }
 
     handleChange(value) {
-        let filters = value;
+        const filters = value;
         this.setState({ filters });
         this.props.onChange({ filterTerm: filters, column: this.props.column, rawValue: value, filterValues: this.filterValues });
     }
 
-    handleInputChange (newValue) {
-        const inputValue = newValue.replace(/\W/g, "");
+    handleInputChange(newValue) {
+        const inputValue = newValue.replace(/\W/g, '');
         this.setState({ inputValue });
         return inputValue;
-      };
+    }
 
-      getOptionsTemplateForFilter(option){
-        return this.props.getOptionsTemplateForFilter(option, this.props.column); 
+      getOptionsTemplateForFilter(option) {
+        return this.props.getOptionsTemplateForFilter(option, this.props.column);
       }
 
     render() {
-        return this.props.useTemplatingForTypeaheadFilter ? 
+        return this.props.useTemplatingForTypeaheadFilter ?
         <AsyncSelect
           isMulti={this.props.isMultiSelection}
-          placeholder = {"Begin typing and select from list"}
+          placeholder = {'Begin typing and select from list'}
           ref={grid => (this.grid = grid)}
           cacheOptions
           loadOptions={this.getOptions}
@@ -106,12 +106,12 @@ class TypeAheadFilter extends React.Component {
           getOptionValue={this.props.getOptionValueForFilter}
           isClearable={this.props.isTypeaheadFilterClearable}
           onChange={this.handleChange}
-          components={{ MultiValueLabel , SingleValue }}
+          components={{ MultiValueLabel, SingleValue }}
         />
-         : 
+         :
          <AsyncSelect
           isMulti={this.props.isMultiSelection ? this.props.isMultiSelection : true}
-          placeholder = {"Begin typing and select from list"}
+          placeholder = {'Begin typing and select from list'}
           ref={grid => (this.grid = grid)}
           cacheOptions
           loadOptions={this.getOptions}
@@ -122,7 +122,7 @@ class TypeAheadFilter extends React.Component {
           onInputChange={this.handleInputChange}
           isClearable={this.props.isTypeaheadFilterClearable ? this.props.isTypeaheadFilterClearable : true}
           onChange={this.handleChange}
-          components={{ MultiValueLabel , SingleValue }}
+          components={{ MultiValueLabel, SingleValue }}
         />
          ;
     }

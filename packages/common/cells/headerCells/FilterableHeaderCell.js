@@ -8,13 +8,13 @@ class FilterableHeaderCell extends React.Component {
     filterTerm: PropTypes.string
   };
 
-  constructor(props){
-    super(props)
-    this.state={filterTerm: this.props.filterTerm}
-  };
+  constructor(props) {
+    super(props);
+    this.state = { filterTerm: this.props.filterTerm };
+  }
 
-  componentWillReceiveProps(newProps){
-    this.setState({filterTerm: newProps.filterTerm ? newProps.filterTerm : ''});
+  componentWillReceiveProps(newProps) {
+    this.setState({ filterTerm: newProps.filterTerm ? newProps.filterTerm : '' });
   }
 
   state = { filterTerm: '' };

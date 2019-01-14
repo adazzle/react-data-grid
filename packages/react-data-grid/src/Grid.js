@@ -141,6 +141,13 @@ class Grid extends React.Component {
     this.emptyView = emptyView;
   };
 
+  getHeaderScroll = () => {
+    if(typeof(this.props.enableHeaderScroll) === 'undefined' || this.props.enableHeaderScroll) {
+      return this.onHeaderScroll;
+    }
+    return null;
+  }
+
   render() {
     const { headerRows } = this.props;
     const EmptyRowsView = this.props.emptyRowsView;
@@ -159,7 +166,7 @@ class Grid extends React.Component {
           draggableHeaderCell={this.props.draggableHeaderCell}
           onSort={this.props.onSort}
           onHeaderDrop={this.props.onHeaderDrop}
-          onScroll={typeof(this.props.enableHeaderScroll) === 'Undefined' ? this.onHeaderScroll : (this.props.enableHeaderScroll ? this.onHeaderScroll : null)}
+          onScroll={this.getHeaderScroll}
           getValidFilterValues={this.props.getValidFilterValues}
           getValidFilterValuesForTypeAhead= {this.props.getValidFilterValuesForTypeAhead}
           cellMetaData={this.props.cellMetaData}

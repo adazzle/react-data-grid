@@ -74,6 +74,12 @@ describe('Header Cell Tests', () => {
       const wrapper = mount(<HeaderCell  {...testProps}/>);
       const resizeHandle = wrapper.find(ResizeHandle);
       const fakeEvent = { pageX: dragLength };
+      const respObj = [ {
+        getBoundingClientRect: function() {
+          return { left: 0 };
+        }
+      } ];
+      spyOn(document, 'getElementsByClassName').and.returnValue(respObj);
       resizeHandle.props().onDrag(fakeEvent);
       expect(testProps.onResize).toHaveBeenCalled();
       expect(testProps.onResize.calls.mostRecent().args[0]).toEqual(testProps.column);
@@ -84,6 +90,12 @@ describe('Header Cell Tests', () => {
       const wrapper = mount(<HeaderCell  {...testProps}/>);
       wrapper.setState({ resizing: true });
       const fakeEvent = { pageX: 250 };
+      const respObj = [ {
+        getBoundingClientRect: function() {
+          return { left: 0 };
+        }
+      } ];
+      spyOn(document, 'getElementsByClassName').and.returnValue(respObj);
       const resizeHandle = wrapper.find(ResizeHandle);
       resizeHandle.props().onDragEnd(fakeEvent);
       expect(wrapper.state().resizing).toBe(false);
@@ -93,6 +105,12 @@ describe('Header Cell Tests', () => {
       const wrapper = mount(<HeaderCell  {...testProps}/>);
       const resizeHandle = wrapper.find(ResizeHandle);
       const fakeEvent = { pageX: 250 };
+      const respObj = [ {
+        getBoundingClientRect: function() {
+          return { left: 0 };
+        }
+      } ];
+      spyOn(document, 'getElementsByClassName').and.returnValue(respObj);
       resizeHandle.props().onDrag(fakeEvent);
       expect(testProps.onResizeEnd).toHaveBeenCalled();
       expect(testProps.onResizeEnd.calls.mostRecent().args[0]).toEqual(testProps.column);

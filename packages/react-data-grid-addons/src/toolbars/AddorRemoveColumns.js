@@ -1,8 +1,8 @@
 import React from 'react';
-import _ from 'underscore'
+import _ from 'underscore';
 import PropTypes from 'prop-types';
 import Checkbox from './Checkbox';
-import './AddOrRemoveColumnsStyles.css';
+import '../../../../themes/add-or-remove-columns-styles.css';
 
 class AddOrRemoveColumns extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class AddOrRemoveColumns extends React.Component {
   }
 
   setSelectedItems(value) {
-    var selectedValues = this.state.selectedColumns;
+    const selectedValues = this.state.selectedColumns;
     this.setState({ selectedColumns: [] });
     selectedValues.push(value);
     this.setState({ selectedColumns: selectedValues });
@@ -29,26 +29,27 @@ class AddOrRemoveColumns extends React.Component {
   selectAll() {
     this.setState({ deselectAllColumns: false });
     this.setState({ selectAllColumns: true });
-    this.setState({selectedColumns: []});
-    let selectedColumns = [];
-    let allColumns = this.state.allColumns;
-    _.map(allColumns, function (col) {
-      var currentCol = col;
+    this.setState({ selectedColumns: [] });
+    const selectedColumns = [];
+    const allColumns = this.state.allColumns;
+    _.map(allColumns, function(col) {
+      const currentCol = col;
       currentCol.isSelected = true;
       selectedColumns.push(currentCol);
     });
-    if(this.state.displayErrorMessage)
-        this.setState({displayErrorMessage: selectedColumns.length === 0});
+    if(this.state.displayErrorMessage) {
+      this.setState({ displayErrorMessage: selectedColumns.length === 0 });
+    }
     this.setState({ selectedColumns });
   }
 
   unSelectAll() {
     this.setState({ selectAllColumns: false });
     this.setState({ deselectAllColumns: true });
-    this.setState({selectedColumns: []});
-    let allColumns = this.state.allColumns;
-    _.map(allColumns, function (col) {
-      var currentCol = col;
+    this.setState({ selectedColumns: [] });
+    const allColumns = this.state.allColumns;
+    _.map(allColumns, function(col) {
+      const currentCol = col;
       currentCol.isSelected = false;
     });
     this.setState({ selectedColumns: [] });
@@ -58,33 +59,34 @@ class AddOrRemoveColumns extends React.Component {
     this.setState({ deselectAllColumns: false });
     this.setState({ selectAllColumns: false });
     let selectedValues = this.state.selectedColumns;
-    let allColumns = this.state.allColumns;
+    const allColumns = this.state.allColumns;
     this.setState({ selectedColumns: [] });
-    _.map(allColumns, function (col) {
+    _.map(allColumns, function(col) {
       if (col.key === value.key) {
         col.isSelected = value.isSelected;
       }
     });
-    selectedValues = _.filter(allColumns, function (col) {
+    selectedValues = _.filter(allColumns, function(col) {
       return col.isSelected === true;
     });
-    if(this.state.displayErrorMessage)
-        this.setState({displayErrorMessage: selectedValues.length === 0});
+    if(this.state.displayErrorMessage) {
+      this.setState({ displayErrorMessage: selectedValues.length === 0 });
+    }
     this.setState({ allColumns });
     this.setState({ selectedColumns: selectedValues });
   }
 
   getColumnsForList(selectAll, deselectAll, firstCall) {
-    let columns = firstCall ? this.props.getAllColumns() : this.state.allColumns;
-    let allColumns = [];
+    const columns = firstCall ? this.props.getAllColumns() : this.state.allColumns;
+    const allColumns = [];
     if (selectAll) {
-      _.map(columns, function (col) {
+      _.map(columns, function(col) {
         col.isSelected = true;
         allColumns.push(col);
       });
     } else {
       if (deselectAll) {
-        _.map(columns, function (col) {
+        _.map(columns, function(col) {
           col.isSelected = false;
           allColumns.push(col);
         });
@@ -94,13 +96,14 @@ class AddOrRemoveColumns extends React.Component {
   }
 
   applySelectedColumns() {
-    var isEmptySelection = this.state.selectedColumns.length === 0;
-    this.setState({displayErrorMessage : isEmptySelection});
-    if(!isEmptySelection)
-        this.props.onColumnUpdate(this.state.selectedColumns);
+    const isEmptySelection = this.state.selectedColumns.length === 0;
+    this.setState({ displayErrorMessage: isEmptySelection });
+    if(!isEmptySelection) {
+      this.props.onColumnUpdate(this.state.selectedColumns);
+    }
   }
 
-  cancelDialog(){
+  cancelDialog() {
     this.props.onCancel();
   }
 
