@@ -108,9 +108,6 @@ class Example extends React.Component {
         }
           allColumns.push(colObj);
       });
-      for(let i=0; i<this._columns.length; i++){
-        
-      }
       return allColumns;
   }
 
