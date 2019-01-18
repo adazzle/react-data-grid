@@ -37,7 +37,7 @@ class Toolbar extends React.Component {
   };
 
   handleClick = (e) => {
-    if (this.node) {
+    if (this.node && e) {
       if (this.node.contains(e.target)) {
         return;
       }
@@ -63,10 +63,11 @@ class Toolbar extends React.Component {
         <div>{this.state.showColumns ? <AddOrRemoveColumns onColumnUpdate={this.onColumnUpdate} getAllColumns={this.getAllColumns} onCancel={this.onCancel} /> : null}</div>
       </span>);
     }
+    return null;
   };
 
-  getAllColumns = (revertToDefaults) => {
-    return this.props.getAllColumns(revertToDefaults);
+  getAllColumns = () => {
+    return this.props.getAllColumns();
   };
 
   getDefaultColumns = () => {
