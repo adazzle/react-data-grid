@@ -13,10 +13,18 @@ describe('Column Metrics Tests', () => {
   describe('Creating metrics', () => {
     describe('When column width not set for all columns', () => {
       const totalWidth = 300;
+      const expectedStaticWidth = 60;
+      const expectedPercentWidth = 30;
+      const knownWidth = expectedStaticWidth + expectedPercentWidth;
+
       const getInitialColumns = () => [{
         key: 'id',
         name: 'ID',
-        width: 60
+        width: expectedStaticWidth
+      }, {
+        key: 'name',
+        name: 'Name',
+        width: '10%'
       }, {
         key: 'title',
         name: 'Title'
@@ -28,21 +36,23 @@ describe('Column Metrics Tests', () => {
       it('should set the unset column widths based on the total width', () => {
         const columns = getInitialColumns();
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
-        const expectedCalculatedWidth = getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+        const expectedCalculatedWidth = getAvailableWidthPerColumn(totalWidth, knownWidth, 2);
 
-        expect(metrics.columns[0].width).toEqual(60);
-        expect(metrics.columns[1].width).toEqual(expectedCalculatedWidth);
+        expect(metrics.columns[0].width).toEqual(expectedStaticWidth);
+        expect(metrics.columns[1].width).toEqual(expectedPercentWidth);
         expect(metrics.columns[2].width).toEqual(expectedCalculatedWidth);
+        expect(metrics.columns[3].width).toEqual(expectedCalculatedWidth);
       });
 
       it('should set the column left based on the column widths', () => {
         const columns = getInitialColumns();
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
-        const expectedLeftValue = columns[0].width + getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+        const expectedLeftValue = knownWidth + getAvailableWidthPerColumn(totalWidth, knownWidth, 2);
 
         expect(metrics.columns[0].left).toEqual(0);
-        expect(metrics.columns[1].left).toEqual(columns[0].width);
-        expect(metrics.columns[2].left).toEqual(expectedLeftValue);
+        expect(metrics.columns[1].left).toEqual(expectedStaticWidth);
+        expect(metrics.columns[2].left).toEqual(knownWidth);
+        expect(metrics.columns[3].left).toEqual(expectedLeftValue);
       });
 
       it('should shift all frozen columns to the start of column metrics array', () => {
@@ -62,22 +72,24 @@ describe('Column Metrics Tests', () => {
 
         it('should set the unset column widths based on the total width', () => {
           const columns = getInitialColumns();
-          const metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth: 300, minColumnWidth: 50 });
-          const expectedCalculatedWidth = getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+          const metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth, minColumnWidth: 50 });
+          const expectedCalculatedWidth = getAvailableWidthPerColumn(totalWidth, knownWidth, 2);
 
-          expect(metrics.columns.get(0).width).toEqual(60);
-          expect(metrics.columns.get(1).width).toEqual(expectedCalculatedWidth);
+          expect(metrics.columns.get(0).width).toEqual(expectedStaticWidth);
+          expect(metrics.columns.get(1).width).toEqual(expectedPercentWidth);
           expect(metrics.columns.get(2).width).toEqual(expectedCalculatedWidth);
+          expect(metrics.columns.get(3).width).toEqual(expectedCalculatedWidth);
         });
 
         it('should set the column left based on the column widths', () => {
           const columns = getInitialColumns();
-          const metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth: 300, minColumnWidth: 50 });
-          const expectedLeftValue = columns[0].width + getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+          const metrics = ColumnMetrics.recalculate({ columns: immutableColumns, totalWidth, minColumnWidth: 50 });
+          const expectedLeftValue = knownWidth + getAvailableWidthPerColumn(totalWidth, knownWidth, 2);
 
           expect(metrics.columns.get(0).left).toEqual(0);
-          expect(metrics.columns.get(1).left).toEqual(columns[0].width);
-          expect(metrics.columns.get(2).left).toEqual(expectedLeftValue);
+          expect(metrics.columns.get(1).left).toEqual(expectedStaticWidth);
+          expect(metrics.columns.get(2).left).toEqual(knownWidth);
+          expect(metrics.columns.get(3).left).toEqual(expectedLeftValue);
         });
       });
     });
