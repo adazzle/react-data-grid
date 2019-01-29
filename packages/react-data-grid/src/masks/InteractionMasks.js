@@ -115,7 +115,6 @@ class InteractionMasks extends React.Component {
 
     if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
       this.focus();
-      this.saveEditorPosition();
     }
   }
 
@@ -140,22 +139,21 @@ class InteractionMasks extends React.Component {
     this.unsubscribeDragEnter();
   }
 
-  saveEditorPosition = () => {
+  getEditorPosition = () => {
     if (this.selectionMask) {
       const { editorPortalTarget } = this.props;
       const { left: selectionMaskLeft, top: selectionMaskTop } = this.selectionMask.getBoundingClientRect();
       if (editorPortalTarget === document.body) {
         const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
-        this.editorPosition = {
+        return {
           left: selectionMaskLeft + scrollLeft,
           top: selectionMaskTop + scrollTop
         };
-        return;
       }
 
       const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
       const { scrollLeft, scrollTop } = editorPortalTarget;
-      this.editorPosition = {
+      return {
         left: selectionMaskLeft - portalTargetLeft + scrollLeft,
         top: selectionMaskTop - portalTargetTop + scrollTop
       };
@@ -216,7 +214,8 @@ class InteractionMasks extends React.Component {
     if (this.isSelectedCellEditable() && !this.state.isEditorEnabled) {
       this.setState({
         isEditorEnabled: true,
-        firstEditorKeyPress: key
+        firstEditorKeyPress: key,
+        editorPosition: this.getEditorPosition()
       });
     }
   };
@@ -224,7 +223,8 @@ class InteractionMasks extends React.Component {
   closeEditor = () => {
     this.setState({
       isEditorEnabled: false,
-      firstEditorKeyPress: null
+      firstEditorKeyPress: null,
+      editorPosition: null
     });
   };
 
@@ -647,7 +647,7 @@ class InteractionMasks extends React.Component {
 
   getSelectedDimensions = (selectedPosition) => {
     const { scrollLeft, getRowHeight, getRowTop, getRowColumns } = this.props;
-    const columns = getRowColumns(selectedPosition.idx);
+    const columns = getRowColumns(selectedPosition.rowIdx);
     const top = getRowTop(selectedPosition.rowIdx);
     const rowHeight = getRowHeight(selectedPosition.rowIdx);
     return { ...getSelectedDimensions({ selectedPosition, columns, scrollLeft, rowHeight }), top };
@@ -733,7 +733,7 @@ class InteractionMasks extends React.Component {
             editorPortalTarget={this.props.editorPortalTarget}
             {...{
               ...this.getSelectedDimensions(selectedPosition),
-              ...this.editorPosition
+              ...this.state.editorPosition
             }}
           />
         )}
