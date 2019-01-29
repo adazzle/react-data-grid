@@ -28,7 +28,8 @@ class EditorContainer extends React.Component {
     onCommitCancel: PropTypes.func,
     firstEditorKeyPress: PropTypes.string,
     scrollLeft: PropTypes.number,
-    scrollTop: PropTypes.number
+    scrollTop: PropTypes.number,
+    editorPortalTarget: PropTypes.node.isRequired
   };
 
   state = { isInvalid: false };
@@ -308,7 +309,8 @@ class EditorContainer extends React.Component {
     const { width, height, left, top } = this.props;
     const style = { position: 'absolute', height, width, left, top, zIndex: zIndexes.EDITOR_CONTAINER };
     return (
-      <EditorPortal>
+      <EditorPortal
+        target={this.props.editorPortalTarget}>
         <ClickOutside onClickOutside={this.commit}>
           <div
             style={style}

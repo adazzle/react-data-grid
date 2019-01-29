@@ -72,7 +72,8 @@ class InteractionMasks extends React.Component {
     rows: PropTypes.array.isRequired,
     getRowHeight: PropTypes.func.isRequired,
     getRowTop: PropTypes.func.isRequired,
-    getRowColumns: PropTypes.func.isRequired
+    getRowColumns: PropTypes.func.isRequired,
+    editorPortalTarget: PropTypes.node.isRequired
   };
 
   state = {
@@ -141,9 +142,31 @@ class InteractionMasks extends React.Component {
 
   saveEditorPosition = () => {
     if (this.selectionMask) {
-      const { left, top } = this.selectionMask.getBoundingClientRect();
-      const { scrollLeft, scrollTop } = document.documentElement;
-      this.editorPosition = { left: left + scrollLeft, top: top + scrollTop };
+      const { editorPortalTarget } = this.props;
+      const { left: selectionMaskLeft, top: selectionMaskTop } = this.selectionMask.getBoundingClientRect();
+      if (editorPortalTarget === document.body) {
+        const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
+        this.editorPosition = {
+          left: selectionMaskLeft + scrollLeft,
+          top: selectionMaskTop + scrollTop
+        };
+        return;
+      }
+
+      const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
+      let scrollLeft = 0;
+      let scrollTop = 0;
+      let parent = editorPortalTarget;
+      while (parent) {
+        scrollLeft += parent.scrollLeft || 0;
+        scrollTop += parent.scrollTop || 0;
+        parent = parent.parentNode;
+      }
+
+      this.editorPosition = {
+        left: selectionMaskLeft - portalTargetLeft + scrollLeft,
+        top: selectionMaskTop - portalTargetTop + scrollTop
+      };
     }
   };
 
@@ -715,6 +738,7 @@ class InteractionMasks extends React.Component {
             column={getSelectedColumn({ selectedPosition, columns })}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
+            editorPortalTarget={this.props.editorPortalTarget}
             {...{
               ...this.getSelectedDimensions(selectedPosition),
               ...this.editorPosition

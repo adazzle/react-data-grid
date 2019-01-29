@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 
 export default class EditorPortal extends React.Component {
   static propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node.isRequired,
+    target: PropTypes.node.isRequired
   };
 
   el = document.createElement('div');
@@ -18,11 +19,11 @@ export default class EditorPortal extends React.Component {
     // DOM node, or uses 'autoFocus' in a descendant, add
     // state to Modal and only render the children when Modal
     // is inserted in the DOM tree.
-    document.body.appendChild(this.el);
+    this.props.target.appendChild(this.el);
   }
 
   componentWillUnmount() {
-    document.body.removeChild(this.el);
+    this.props.target.removeChild(this.el);
   }
 
   render() {

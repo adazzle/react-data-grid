@@ -216,7 +216,9 @@ class ReactDataGrid extends React.Component {
     /** Called when a column is resized */
     onColumnResize: PropTypes.func,
     /** Called when the grid is scrolled */
-    onScroll: PropTypes.func
+    onScroll: PropTypes.func,
+    /** DOM node to be used to render the cell editors */
+    editorPortalTarget: PropTypes.node
   };
 
   static defaultProps = {
@@ -238,7 +240,8 @@ class ReactDataGrid extends React.Component {
     enableCellAutoFocus: true,
     onBeforeEdit: () => {},
     minColumnWidth: 80,
-    columnEquality: ColumnMetrics.sameColumn
+    columnEquality: ColumnMetrics.sameColumn,
+    editorPortalTarget: document.body
   };
 
   constructor(props, context) {
@@ -865,6 +868,7 @@ class ReactDataGrid extends React.Component {
             onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
             onCommit={this.onCommit}
             onScroll={this.onScroll}
+            editorPortalTarget={this.props.editorPortalTarget}
           />
         </div>
       </div>
