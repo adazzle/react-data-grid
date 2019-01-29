@@ -46,6 +46,7 @@ const setup = (extraProps, container) => {
     height: 50,
     onCommit: jasmine.createSpy(),
     onCommitCancel: jasmine.createSpy(),
+    editorPortalTarget: document.body,
     ...extraProps
   };
   const wrapper = mount(<EditorContainer {...props} />, container);

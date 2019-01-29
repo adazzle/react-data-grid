@@ -52,6 +52,7 @@ describe('<InteractionMasks/>', () => {
       getRowColumns: () => columns,
       getRowHeight: () => 50,
       getRowTop: () => 0,
+      editorPortalTarget: document.body,
       ...overrideProps
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
