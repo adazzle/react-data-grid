@@ -154,15 +154,7 @@ class InteractionMasks extends React.Component {
       }
 
       const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
-      let scrollLeft = 0;
-      let scrollTop = 0;
-      let parent = editorPortalTarget;
-      while (parent) {
-        scrollLeft += parent.scrollLeft || 0;
-        scrollTop += parent.scrollTop || 0;
-        parent = parent.parentNode;
-      }
-
+      const { scrollLeft, scrollTop } = editorPortalTarget;
       this.editorPosition = {
         left: selectionMaskLeft - portalTargetLeft + scrollLeft,
         top: selectionMaskTop - portalTargetTop + scrollTop
