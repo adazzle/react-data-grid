@@ -454,6 +454,10 @@ class InteractionMasks extends React.Component {
 
   selectCell = (cell, openEditor) => {
     const callback = openEditor ? this.openEditor : () => null;
+    // Close the editor to commit any pending changes
+    if (this.state.isEditorEnabled) {
+      this.closeEditor();
+    }
     this.setState(prevState => {
       const next = { ...prevState.selectedPosition, ...cell };
       if (this.isCellWithinBounds(next)) {
