@@ -157,7 +157,8 @@ describe('Editor Container Tests', () => {
     class PortalTestEditor extends EditorBase {
       render() {
         return (
-          <EditorPortal>
+          <EditorPortal
+            target={document.body}>
             <DefaultEditor />
           </EditorPortal>
         );
