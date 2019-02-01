@@ -68,7 +68,7 @@ class Viewport extends React.Component {
     onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired,
     RowsContainer: PropTypes.node,
-    editorPortalTarget: PropTypes.node.isRequired
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   static defaultProps = {

@@ -5,21 +5,20 @@ import PropTypes from 'prop-types';
 export default class EditorPortal extends React.Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
-    target: PropTypes.node.isRequired
+    target: PropTypes.instanceOf(Element).isRequired
+  };
+
+  // Keep track of when the modal element is added to the DOM
+  state = {
+    isMounted: false
   };
 
   el = document.createElement('div');
 
   componentDidMount() {
-    // The portal element is inserted in the DOM tree after
-    // the Modal's children are mounted, meaning that children
-    // will be mounted on a detached DOM node. If a child
-    // component requires to be attached to the DOM tree
-    // immediately when mounted, for example to measure a
-    // DOM node, or uses 'autoFocus' in a descendant, add
-    // state to Modal and only render the children when Modal
-    // is inserted in the DOM tree.
     this.props.target.appendChild(this.el);
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ isMounted: true });
   }
 
   componentWillUnmount() {
@@ -27,6 +26,12 @@ export default class EditorPortal extends React.Component {
   }
 
   render() {
+    // Don't render the portal until the component has mounted,
+    // So the portal can safely access the DOM.
+    if (!this.state.isMounted) {
+      return null;
+    }
+
     return ReactDOM.createPortal(
       this.props.children,
       this.el,

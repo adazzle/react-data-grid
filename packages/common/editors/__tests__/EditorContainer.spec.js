@@ -5,7 +5,6 @@ import { mount } from 'enzyme';
 const EditorContainer = require('../EditorContainer');
 const SimpleTextEditor = require('../SimpleTextEditor');
 const EditorBase = require('../EditorBase');
-import EditorPortal from '../EditorPortal';
 
 function DefaultEditor() {
   return (
@@ -46,7 +45,6 @@ const setup = (extraProps, container) => {
     height: 50,
     onCommit: jasmine.createSpy(),
     onCommitCancel: jasmine.createSpy(),
-    editorPortalTarget: document.body,
     ...extraProps
   };
   const wrapper = mount(<EditorContainer {...props} />, container);
@@ -156,12 +154,7 @@ describe('Editor Container Tests', () => {
 
     class PortalTestEditor extends EditorBase {
       render() {
-        return (
-          <EditorPortal
-            target={document.body}>
-            <DefaultEditor />
-          </EditorPortal>
-        );
+        return React.createPortal(<DefaultEditor />, document.body);
       }
     }
 

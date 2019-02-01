@@ -6,7 +6,6 @@ import SimpleTextEditor from './SimpleTextEditor';
 import { isFunction } from 'common/utils';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import * as zIndexes from 'common/constants/zIndexes';
-import EditorPortal from './EditorPortal';
 import ClickOutside from './ClickOutside';
 
 require('../../../themes/react-data-grid-core.css');
@@ -28,8 +27,7 @@ class EditorContainer extends React.Component {
     onCommitCancel: PropTypes.func,
     firstEditorKeyPress: PropTypes.string,
     scrollLeft: PropTypes.number,
-    scrollTop: PropTypes.number,
-    editorPortalTarget: PropTypes.node.isRequired
+    scrollTop: PropTypes.number
   };
 
   state = { isInvalid: false };
@@ -309,20 +307,17 @@ class EditorContainer extends React.Component {
     const { width, height, left, top } = this.props;
     const style = { position: 'absolute', height, width, left, top, zIndex: zIndexes.EDITOR_CONTAINER };
     return (
-      <EditorPortal
-        target={this.props.editorPortalTarget}>
-        <ClickOutside onClickOutside={this.commit}>
-          <div
-            style={style}
-            className={this.getContainerClass()}
-            onKeyDown={this.onKeyDown}
-            onContextMenu={this.handleRightClick}
-          >
-            {this.createEditor()}
-            {this.renderStatusIcon()}
-          </div>
-        </ClickOutside>
-      </EditorPortal>
+      <ClickOutside onClickOutside={this.commit}>
+        <div
+          style={style}
+          className={this.getContainerClass()}
+          onKeyDown={this.onKeyDown}
+          onContextMenu={this.handleRightClick}
+        >
+          {this.createEditor()}
+          {this.renderStatusIcon()}
+        </div>
+      </ClickOutside>
     );
   }
 }

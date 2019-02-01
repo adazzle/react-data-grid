@@ -7,6 +7,7 @@ import CopyMask from './CopyMask';
 import DragMask from './DragMask';
 import DragHandle from './DragHandle';
 import EditorContainer from 'common/editors/EditorContainer';
+import EditorPortal from 'common/editors/EditorPortal';
 import { UpdateActions } from 'common/constants';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import {
@@ -73,7 +74,7 @@ class InteractionMasks extends React.Component {
     getRowHeight: PropTypes.func.isRequired,
     getRowTop: PropTypes.func.isRequired,
     getRowColumns: PropTypes.func.isRequired,
-    editorPortalTarget: PropTypes.node.isRequired
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   state = {
@@ -720,22 +721,24 @@ class InteractionMasks extends React.Component {
           this.renderCellRangeSelectView()
         }
         {isEditorEnabled && (
-          <EditorContainer
-            firstEditorKeyPress={firstEditorKeyPress}
-            onCommit={this.onCommit}
-            onCommitCancel={this.onCommitCancel}
-            rowIdx={selectedPosition.rowIdx}
-            value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
-            rowData={rowData}
-            column={getSelectedColumn({ selectedPosition, columns })}
-            scrollLeft={scrollLeft}
-            scrollTop={scrollTop}
-            editorPortalTarget={this.props.editorPortalTarget}
-            {...{
-              ...this.getSelectedDimensions(selectedPosition),
-              ...this.state.editorPosition
-            }}
-          />
+          <EditorPortal target={this.props.editorPortalTarget}>
+            <EditorContainer
+              firstEditorKeyPress={firstEditorKeyPress}
+              onCommit={this.onCommit}
+              onCommitCancel={this.onCommitCancel}
+              rowIdx={selectedPosition.rowIdx}
+              value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+              rowData={rowData}
+              column={getSelectedColumn({ selectedPosition, columns })}
+              scrollLeft={scrollLeft}
+              scrollTop={scrollTop}
+              editorPortalTarget={this.props.editorPortalTarget}
+              {...{
+                ...this.getSelectedDimensions(selectedPosition),
+                ...this.state.editorPosition
+              }}
+            />
+          </EditorPortal>
         )}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>

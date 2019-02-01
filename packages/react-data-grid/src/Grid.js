@@ -72,7 +72,7 @@ class Grid extends React.Component {
     onScroll: PropTypes.func,
     scrollLeft: PropTypes.number,
     RowsContainer: PropTypes.node,
-    editorPortalTarget: PropTypes.node.isRequired
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   static defaultProps = {

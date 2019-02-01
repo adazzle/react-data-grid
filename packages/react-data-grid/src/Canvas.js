@@ -78,7 +78,7 @@ class Canvas extends React.PureComponent {
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired,
-    editorPortalTarget: PropTypes.node.isRequired
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   static defaultProps = {
