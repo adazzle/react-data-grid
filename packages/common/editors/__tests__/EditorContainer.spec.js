@@ -1,5 +1,6 @@
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 
 const EditorContainer = require('../EditorContainer');
@@ -154,7 +155,7 @@ describe('Editor Container Tests', () => {
 
     class PortalTestEditor extends EditorBase {
       render() {
-        return React.createPortal(<DefaultEditor />, document.body);
+        return ReactDOM.createPortal(<DefaultEditor />, document.body);
       }
     }
 
