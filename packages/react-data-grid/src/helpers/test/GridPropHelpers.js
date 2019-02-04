@@ -1,4 +1,4 @@
-let _rows = [];
+const _rows = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
@@ -6,7 +6,7 @@ for (let i = 0; i < 1000; i++) {
     count: i * 1000
   });
 }
-module.exports = {
+export default {
   columns: [{
     key: 'id',
     name: 'ID',
@@ -35,3 +35,17 @@ module.exports = {
     copied: null
   }
 };
+
+export const fakeCellMetaData = {
+  rowKey: 'id',
+  onCellClick: () => null,
+  onCellMouseDown: () => null,
+  onColumnEvent: () => null,
+  onCellExpand: () => null,
+  onCellMouseEnter: () => null,
+  onCellContextMenu: () => null,
+  onRowExpandToggle: () => null,
+  onCellDoubleClick: () => null,
+  onDragEnter: () => null
+};
+

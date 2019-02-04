@@ -1,19 +1,11 @@
-import OverflowCell from './OverflowCell';
-import rowComparer from './RowComparer';
-const React = require('react');
+import rowComparer from 'common/utils/RowComparer';
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses = require('classnames');
-const Cell = require('./Cell');
-const columnUtils = require('./ColumnUtils');
-const cellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const createObjectWithProperties = require('./createObjectWithProperties');
+import joinClasses from 'classnames';
+import Cell from './Cell';
+import createObjectWithProperties from './createObjectWithProperties';
+import { isFrozen } from './ColumnUtils';
 require('../../../themes/react-data-grid-row.css');
-
-class CellExpander extends React.Component {
-  render() {
-    return (<Cell {...this.props} />);
-  }
-}
 
 // The list of the propTypes that we want to include in the Row div
 const knownDivPropertyKeys = ['height'];
@@ -22,23 +14,44 @@ class Row extends React.Component {
   static displayName = 'Row';
 
   static propTypes = {
+    /** The height of the row in pixels */
     height: PropTypes.number.isRequired,
+    /** Array of columns to render */
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
-    row: PropTypes.any.isRequired,
+    /** JS object represeting row data */
+    row: PropTypes.object.isRequired,
+    /** React component used to render cell content */
     cellRenderer: PropTypes.func,
-    cellMetaData: PropTypes.shape(cellMetaDataShape),
+    /** Object used to listen for cell events */
+    cellMetaData: PropTypes.object,
+    /** Determines whether row is selected or not */
     isSelected: PropTypes.bool,
+    /** The index of the row in the grid */
     idx: PropTypes.number.isRequired,
+    /** Array of all rows that have been expanded */
     expandedRows: PropTypes.arrayOf(PropTypes.object),
+    /** Space separated list of extra css classes to apply to row */
     extraClasses: PropTypes.string,
+    /** Will force an update to the row if true */
     forceUpdate: PropTypes.bool,
+    /** */
     subRowDetails: PropTypes.object,
+    /** Determines whether row is hovered or not */
     isRowHovered: PropTypes.bool,
-    colVisibleStart: PropTypes.number.isRequired,
-    colVisibleEnd: PropTypes.number.isRequired,
-    colDisplayStart: PropTypes.number.isRequired,
-    colDisplayEnd: PropTypes.number.isRequired,
-    isScrolling: PropTypes.bool.isRequired
+    /** The index of the first visible column on the grid */
+    colVisibleStartIdx: PropTypes.number.isRequired,
+    /** The index of the last visible column on the grid */
+    colVisibleEndIdx: PropTypes.number.isRequired,
+    /** The index of the first overscan column on the grid */
+    colOverscanStartIdx: PropTypes.number.isRequired,
+    /** The index of the last overscan column on the grid */
+    colOverscanEndIdx: PropTypes.number.isRequired,
+    /** Flag to determine whether the grid is being scrolled */
+    isScrolling: PropTypes.bool.isRequired,
+    /** scrollLeft in pixels */
+    scrollLeft: PropTypes.number,
+    /** Index of last frozen column index */
+    lastFrozenColumnIndex: PropTypes.number
   };
 
   static defaultProps = {
@@ -51,81 +64,65 @@ class Row extends React.Component {
     return rowComparer(nextProps, this.props);
   }
 
-  handleDragEnter = () => {
-    let handleDragEnterRow = this.props.cellMetaData.handleDragEnterRow;
-    if (handleDragEnterRow) {
-      handleDragEnterRow(this.props.idx);
-    }
+  handleDragEnter = (e) => {
+    // Prevent default to allow drop
+    e.preventDefault();
+    const { idx, cellMetaData: { onDragEnter } } = this.props;
+    onDragEnter({ overRowIdx: idx });
   };
 
-  getSelectedColumn = () => {
-    if (this.props.cellMetaData) {
-      let selected = this.props.cellMetaData.selected;
-      if (selected && selected.idx) {
-        return columnUtils.getColumn(this.props.columns, selected.idx);
-      }
-    }
+  handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
   };
 
-  getCellRenderer = (columnKey) => {
-    let CellRenderer = this.props.cellRenderer;
-    if (this.props.subRowDetails && this.props.subRowDetails.field === columnKey) {
-      return CellExpander;
-    }
-    return CellRenderer;
+  handleDrop = (e) => {
+    // The default in Firefox is to treat data in dataTransfer as a URL and perform navigation on it, even if the data type used is 'text'
+    // To bypass this, we need to capture and prevent the drop event.
+    e.preventDefault();
   };
 
-  getCell = (column, i, selectedColumn) => {
-    let CellRenderer = this.props.cellRenderer;
-    const { colVisibleStart, colVisibleEnd, idx, cellMetaData } = this.props;
-    const { key, formatter, locked } = column;
-    const baseCellProps = { key: `${key}-${idx}`, idx: i, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
+  getCell = (column) => {
+    const CellRenderer = this.props.cellRenderer;
+    const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
+    const { key, formatter } = column;
+    const baseCellProps = { key: `${key}-${idx}`, idx: column.idx, rowIdx: idx, height: this.getRowHeight(), column, cellMetaData };
 
-    if ((i < colVisibleStart || i > colVisibleEnd) && !locked) {
-      return <OverflowCell ref={(node) => this[key] = node} {...baseCellProps} />;
-    }
-
-    const { row, isSelected } = this.props;
     const cellProps = {
-      ref: (node) => this[key] = node,
-      value: this.getCellValue(key || i),
+      ref: (node) => {
+        this[key] = node;
+      },
+      value: this.getCellValue(key || column.idx),
       rowData: row,
       isRowSelected: isSelected,
       expandableOptions: this.getExpandableOptions(key),
-      selectedColumn,
       formatter,
-      isScrolling: this.props.isScrolling
+      isScrolling,
+      scrollLeft,
+      lastFrozenColumnIndex
     };
 
     return <CellRenderer {...baseCellProps} {...cellProps} />;
   };
 
   getCells = () => {
-    let cells = [];
-    let lockedCells = [];
-    let selectedColumn = this.getSelectedColumn();
-    let lastColumnIdx = this.props.columns.size - 1;
-    if (this.props.columns) {
-      this.props.columns.forEach((column, i) => {
-        if (i === lastColumnIdx) {
-          column.isLastColumn = true;
-        }
-        let cell = this.getCell(column, i, selectedColumn);
-        if (column.locked) {
-          lockedCells.push(cell);
-        } else {
-          cells.push(cell);
-        }
-      });
-    }
+    const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
+    const frozenColumns = columns.filter(c => isFrozen(c));
+    const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
+    return nonFrozenColumn.concat(frozenColumns)
+      .map(column => this.getCell(column));
+  };
 
-    return cells.concat(lockedCells);
+  getRowTop = () => {
+    if (this.row) {
+      return this.row.offsetTop;
+    }
   };
 
   getRowHeight = () => {
-    let rows = this.props.expandedRows || null;
+    const rows = this.props.expandedRows || null;
     if (rows && this.props.idx) {
-      let row = rows[this.props.idx] || null;
+      const row = rows[this.props.idx] || null;
       if (row) {
         return row.height;
       }
@@ -145,18 +142,8 @@ class Row extends React.Component {
     return val;
   };
 
-  isContextMenuDisplayed = () => {
-    if (this.props.cellMetaData) {
-      let selected = this.props.cellMetaData.selected;
-      if (selected && selected.contextMenuDisplayed && selected.rowIdx === this.props.idx) {
-        return true;
-      }
-    }
-    return false;
-  };
-
   getExpandableOptions = (columnKey) => {
-    let subRowDetails = this.props.subRowDetails;
+    const subRowDetails = this.props.subRowDetails;
     if (subRowDetails) {
       return { canExpand: subRowDetails && subRowDetails.field === columnKey && ((subRowDetails.children && subRowDetails.children.length > 0) || subRowDetails.group === true), field: subRowDetails.field, expanded: subRowDetails && subRowDetails.expanded, children: subRowDetails && subRowDetails.children, treeDepth: subRowDetails ? subRowDetails.treeDepth : 0, subRowDetails: subRowDetails };
     }
@@ -165,55 +152,54 @@ class Row extends React.Component {
 
   setScrollLeft = (scrollLeft) => {
     this.props.columns.forEach((column) => {
-      if (column.locked) {
+      if (isFrozen(column)) {
         if (!this[column.key]) return;
         this[column.key].setScrollLeft(scrollLeft);
       }
     });
   };
 
+  setRowRef = el => {
+    this.row = el;
+  };
+
   getKnownDivProps = () => {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
 
-  renderCell = (props) => {
-    if (typeof this.props.cellRenderer === 'function') {
-      this.props.cellRenderer.call(this, props);
-    }
-    if (React.isValidElement(this.props.cellRenderer)) {
-      return React.cloneElement(this.props.cellRenderer, props);
-    }
-
-    return this.props.cellRenderer(props);
-  };
-
   render() {
-    let className = joinClasses(
+    const className = joinClasses(
       'react-grid-Row',
       `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
       {
-        'row-selected': this.props.isSelected,
-        'row-context-menu': this.isContextMenuDisplayed()
+        'row-selected': this.props.isSelected
       },
-      this.props.extraClasses
+      this.props.extraClasses,
+      { 'rdg-scrolling': this.props.isScrolling }
     );
 
-    let style = {
+    const style = {
       height: this.getRowHeight(this.props),
-      overflow: 'hidden',
-      contain: 'layout'
+      overflow: 'hidden'
     };
 
-    let cells = this.getCells();
+    const cells = this.getCells();
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style} onDragEnter={this.handleDragEnter} >
+      <div
+        {...this.getKnownDivProps()}
+        ref={this.setRowRef}
+        className={className}
+        style={style}
+        onDragEnter={this.handleDragEnter}
+        onDragOver={this.handleDragOver}
+        onDrop={this.handleDrop}
+      >
         {
-          React.isValidElement(this.props.row) ?
-            this.props.row : cells
+          this.getCells()
         }
       </div >
     );
   }
 }
 
-module.exports = Row;
+export default Row;

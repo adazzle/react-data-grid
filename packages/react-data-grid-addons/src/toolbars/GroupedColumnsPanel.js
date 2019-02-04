@@ -1,10 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { DropTarget } from 'react-dnd';
 import GroupedColumnButton from './GroupedColumnButton';
-import { _constants } from 'react-data-grid';
-const { DragItemTypes } = _constants;
+import { DragItemTypes } from 'common/constants';
 
 const propTypes = {
   isOver: PropTypes.bool.isRequired,
@@ -22,12 +21,8 @@ const defaultProps = {
 };
 
 class GroupedColumnsPanel extends Component {
-  constructor() {
-    super();
-  }
-
   getPanelInstructionMessage() {
-    let {groupBy} = this.props;
+    const { groupBy } = this.props;
     return groupBy && groupBy.length > 0 ? this.props.panelDescription : this.props.noColumnsSelectedMessage;
   }
 
@@ -59,7 +54,7 @@ class GroupedColumnsPanel extends Component {
   }
 
   render() {
-    const { connectDropTarget, isOver, canDrop} = this.props;
+    const { connectDropTarget, isOver, canDrop } = this.props;
     return connectDropTarget(
       <div style={{ padding: '2px', position: 'relative', margin: '-10px', display: 'inline-block', border: '1px solid #eee' }}>
         {this.renderGroupedColumns()} <span>{this.getPanelInstructionMessage()}</span>
@@ -75,7 +70,7 @@ GroupedColumnsPanel.propTypes = propTypes;
 const columnTarget = {
   drop(props, monitor) {
     // Obtain the dragged item
-    let item = monitor.getItem();
+    const item = monitor.getItem();
     if (typeof props.onColumnGroupAdded === 'function') {
       props.onColumnGroupAdded(item.key);
     }

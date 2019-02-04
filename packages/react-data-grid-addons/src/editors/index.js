@@ -1,9 +1,10 @@
-const { editors: { SimpleTextEditor, CheckboxEditor } } = require('react-data-grid');
+import { SimpleTextEditor, CheckboxEditor } from 'common/editors';
+import ContainerEditorWrapper from './ContainerEditorWrapper';
 
 const Editors = {
   AutoComplete: require('./AutoCompleteEditor'),
   DropDownEditor: require('./DropDownEditor'),
-  ContainerEditorWrapper: require('./ContainerEditorWrapper'),
+  ContainerEditorWrapper,
   SimpleTextEditor,
   CheckboxEditor
 };

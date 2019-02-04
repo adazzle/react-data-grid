@@ -16,7 +16,6 @@ class ApiReference extends React.Component {
         </div>
         <div className="code-block flow">
           <pre>
-            /* @flow */
             <br />
             <code>{GridRowsUpdateEvent}</code>
           </pre>

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
-import { HeaderCell } from 'react-data-grid';
 
 class DraggableHeaderCell extends React.Component {
   render() {
@@ -26,7 +25,7 @@ class DraggableHeaderCell extends React.Component {
           style={{ width: 0, cursor: 'move', opacity }}
           className={isOver && canDrop ? 'rdg-can-drop' : ''}
         >
-          <HeaderCell {...this.props} />
+          {this.props.children}
         </div>
       )
     );
@@ -61,8 +60,8 @@ const headerCellSource = {
 // drop target
 const target = {
   drop(props, monitor) {
-    let source = monitor.getItem().key;
-    let targetKey = props.column.key;
+    const source = monitor.getItem().key;
+    const targetKey = props.column.key;
     return {
       source: source,
       target: targetKey
@@ -84,14 +83,12 @@ DraggableHeaderCell.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
   isOver: PropTypes.bool,
-  canDrop: PropTypes.bool
+  canDrop: PropTypes.bool,
+  children: PropTypes.element.isRequired
 };
 
-DraggableHeaderCell = DropTarget('Column', target, targetCollect)(
-  DraggableHeaderCell
+export default DragSource('Column', headerCellSource, collect)(
+  DropTarget('Column', target, targetCollect)(
+    DraggableHeaderCell
+  )
 );
-DraggableHeaderCell = DragSource('Column', headerCellSource, collect)(
-  DraggableHeaderCell
-);
-
-export default DraggableHeaderCell;

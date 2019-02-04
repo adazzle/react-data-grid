@@ -1,6 +1,6 @@
-function shallowCloneObject(obj: any): any {
-  let result = {};
-  for (let k in obj) {
+function shallowCloneObject(obj) {
+  const result = {};
+  for (const k in obj) {
     if (obj.hasOwnProperty(k)) {
       result[k] = obj[k];
     }

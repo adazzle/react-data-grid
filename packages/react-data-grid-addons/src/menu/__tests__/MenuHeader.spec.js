@@ -14,7 +14,7 @@ describe('Context Menu Header', () => {
   });
 
   it('should have class "react-context-menu-header"', () => {
-    let header = TestUtils.findRenderedDOMComponentWithClass(contextMenuHeader, 'react-context-menu-header');
+    const header = TestUtils.findRenderedDOMComponentWithClass(contextMenuHeader, 'react-context-menu-header');
     expect(header).toBeDefined();
   });
 });

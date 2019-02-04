@@ -3,13 +3,10 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 const {
-  ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
   Data: { Selectors },
-  Draggable: { Container: DraggableContainer },
   Formatters: { ImageFormatter }
 } = require('react-data-grid-addons');
 
-import PropTypes from 'prop-types';
 
 faker.locale = 'en_GB';
 
@@ -50,107 +47,78 @@ const columns = [
     key: 'avartar',
     name: 'Avartar',
     width: 60,
-    formatter: ImageFormatter,
-    draggable: true
+    formatter: ImageFormatter
   },
   {
     key: 'county',
     name: 'County',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'title',
     name: 'Title',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'firstName',
     name: 'First Name',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'lastName',
     name: 'Last Name',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'email',
     name: 'Email',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'street',
     name: 'Street',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'zipCode',
     name: 'ZipCode',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'date',
     name: 'Date',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'bs',
     name: 'bs',
-    draggable: true,
     width: 200
   },
   {
     key: 'catchPhrase',
     name: 'Catch Phrase',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'companyName',
     name: 'Company Name',
-    width: 200,
-    draggable: true
+    width: 200
   },
   {
     key: 'sentence',
     name: 'Sentence',
-    width: 200,
-    draggable: true
+    width: 200
   }
 ];
-
-class CustomToolbar extends React.Component {
-  static propTypes = {
-    groupBy: PropTypes.array.isRequired,
-    onColumnGroupAdded: PropTypes.func.isRequired,
-    onColumnGroupDeleted: PropTypes.func.isRequired
-  };
-
-  render() {
-    return (<Toolbar>
-      <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>
-      </Toolbar>);
-  }
-}
 
 class Example extends React.Component {
   constructor(props) {
     super(props);
-    let fakeRows = createRows(2000);
-    this.state = {rows: fakeRows, groupBy: [], expandedRows: {}};
+    this.state = { rows: createRows(2000) };
   }
 
   getRows = () => {
-    let rows = Selectors.getRows(this.state);
-    return rows;
+    return Selectors.getRows(this.state);
   };
 
   getRowAt = (index) => {
@@ -160,31 +128,6 @@ class Example extends React.Component {
 
   getSize = () => {
     return this.getRows().length;
-  };
-
-  onColumnGroupAdded = (colName) => {
-    let columnGroups = this.state.groupBy.slice(0);
-    let activeColumn = columns.find((c) => c.key === colName)
-    let isNotInGroups = columnGroups.find((c) => activeColumn.key === c.name) == null;
-    if (isNotInGroups) {
-      columnGroups.push({key: activeColumn.key, name: activeColumn.name});
-    }
-
-    this.setState({groupBy: columnGroups});
-  };
-
-  onColumnGroupDeleted = (name) => {
-    let columnGroups = this.state.groupBy.filter(function(g){
-      return typeof g === 'string' ? g !== name : g.key !== name;
-    });
-    this.setState({groupBy: columnGroups});
-  };
-
-  onRowExpandToggle = ({ columnGroupName, name, shouldExpand }) => {
-    let expandedRows = Object.assign({}, this.state.expandedRows);
-    expandedRows[columnGroupName] = Object.assign({}, expandedRows[columnGroupName]);
-    expandedRows[columnGroupName][name] = {isExpanded: shouldExpand};
-    this.setState({expandedRows: expandedRows});
   };
 
   getCellActions(column, row) {
@@ -213,20 +156,15 @@ class Example extends React.Component {
 
   render() {
     return (
-      <DraggableContainer>
-          <ReactDataGrid
-            ref={ node => this.grid = node }
-            enableCellSelect={true}
-            enableDragAndDrop={true}
-            columns={columns}
-            rowGetter={this.getRowAt}
-            rowsCount={this.getSize()}
-            onRowExpandToggle={this.onRowExpandToggle}
-            toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted}/>}
-            rowHeight={50}
-            minHeight={600}
-            getCellActions={this.getCellActions} />
-      </DraggableContainer>
+      <ReactDataGrid
+        ref={ node => this.grid = node }
+        enableCellSelect={true}
+        columns={columns}
+        rowGetter={this.getRowAt}
+        rowsCount={this.getSize()}
+        rowHeight={55}
+        minHeight={600}
+        getCellActions={this.getCellActions} />
     );
   }
 }
@@ -246,6 +184,5 @@ module.exports = exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Cell Actions Example',
   exampleDescription,
-  examplePath: './scripts/example27-cell-actions.js',
-  examplePlaygroundLink: undefined
+  examplePath: './scripts/example27-cell-actions.js'
 });

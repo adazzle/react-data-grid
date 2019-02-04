@@ -1,27 +1,9 @@
-const webpack = require('webpack');
+const path = require('path');
 const argv = require('minimist')(process.argv.slice(2));
 const RELEASE = argv.release;
 
-function getPlugins() {
-  const nodeEnv = RELEASE ? '"production"' : '"development"';
-  var pluginsBase =  [
-    new webpack.DefinePlugin({'process.env.NODE_ENV': nodeEnv, 'global': 'window'})
-  ];
-
-  if (RELEASE) {
-    pluginsBase.push(new webpack.optimize.DedupePlugin());
-    pluginsBase.push(new webpack.optimize.OccurenceOrderPlugin());
-    pluginsBase.push(new webpack.optimize.AggressiveMergingPlugin());
-    pluginsBase.push(new webpack.optimize.UglifyJsPlugin({
-      include: /\.min\.js$/,
-      compress: { warnings: false }
-    }));
-  }
-  return pluginsBase;
-}
-
 const config = {
-  debug: !RELEASE,
+  mode: RELEASE ? 'production' : 'development',
   externals: {
     react: {
       root: 'React',
@@ -35,22 +17,35 @@ const config = {
       commonjs2: 'react-dom',
       amd: 'react-dom'
     },
-    'react/addons': 'React',
-    moment: 'moment'
+   'react/addons': 'React',
+    moment: 'moment',
+    immutable: {
+      root: 'Immutable',
+      commonjs: 'immutable',
+      commonjs2: 'immutable'
+    }
   },
   module: {
-    loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
-      { test: /\.css$/, loader: 'style-loader!css-loader' }
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: ['babel-loader']
+      },
+      {
+        test: /\.css$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' }
+        ]
+      }
     ]
   },
-  plugins: getPlugins(),
-  postLoaders: [
-    {
-      test: /\.js$/,
-      exclude: /node_modules|testData/,
-      loader: 'jshint'
-    }]
+  resolve: {
+    alias: {
+      common: path.resolve('packages/common/')
+    }
+  }
 };
 
 

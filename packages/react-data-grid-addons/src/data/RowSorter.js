@@ -1,7 +1,6 @@
-import { utils } from 'react-data-grid';
-const { getMixedTypeValueRetriever, isImmutableCollection } = utils;
+import { getMixedTypeValueRetriever, isImmutableCollection } from 'common/utils';
 
-const comparer = (a, b) => {
+export const comparer = (a, b) => {
   if (a > b) {
     return 1;
   } else if (a < b) {
@@ -12,8 +11,8 @@ const comparer = (a, b) => {
 
 const sortRows = (rows, sortColumn, sortDirection) => {
   const retriever = getMixedTypeValueRetriever(isImmutableCollection(rows));
-  let sortDirectionSign = sortDirection === 'ASC' ? 1 : -1;
-  let rowComparer = (a, b) => {
+  const sortDirectionSign = sortDirection === 'ASC' ? 1 : -1;
+  const rowComparer = (a, b) => {
     return sortDirectionSign * comparer(retriever.getValue(a, sortColumn), retriever.getValue(b, sortColumn));
   };
   if (sortDirection === 'NONE') {
@@ -22,5 +21,6 @@ const sortRows = (rows, sortColumn, sortDirection) => {
   return rows.slice().sort(rowComparer);
 };
 
-module.exports = sortRows;
-module.exports.comparer = comparer;
+export default sortRows;
+
+

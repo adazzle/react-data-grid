@@ -1,13 +1,11 @@
-const rewire = require('rewire');
-const Selectors = rewire('../Selectors');
-
-let originalFilter = Selectors.__get__('filterRows');
-let originalGroupBy = Selectors.__get__('groupRows');
+import Selectors from '../Selectors';
+import * as filterRows from '../RowFilterer';
+import * as groupRows from '../RowGrouper';
 let filterSpy;
 let groupRowsSpy;
 
 function createRows() {
-  let rows = [];
+  const rows = [];
   for (let i = 0; i < 3; i++) {
     rows.push({ id: i, title: 'Title ' + i, count: i * 1000 });
   }
@@ -15,21 +13,14 @@ function createRows() {
 }
 
 function setupSpies() {
-  filterSpy = jasmine.createSpy();
-  groupRowsSpy = jasmine.createSpy();
-  Selectors.__set__('filterRows', filterSpy);
-  Selectors.__set__('groupRows', groupRowsSpy);
-}
-
-function resetSpies() {
-  Selectors.__set__('filterRows', originalFilter);
-  Selectors.__set__('groupRows', originalGroupBy);
+  filterSpy = spyOn(filterRows, 'default');
+  groupRowsSpy = spyOn(groupRows, 'default');
 }
 
 function selectPerRow(rows, options) {
   for (let i = 0; i < rows.length; i++) {
-    let filters = options.filters;
-    let groupBy = options.groupBy;
+    const filters = options.filters;
+    const groupBy = options.groupBy;
     Selectors.getRows({ rows, filters, groupBy });
   }
 }
@@ -37,23 +28,23 @@ function selectPerRow(rows, options) {
 
 function executeSpyTests(fn) {
   describe('When filters are defined', () => {
-    let options = { filters: { title: { filterTerm: '1' } } };
+    const options = { filters: { title: { filterTerm: '1' } } };
 
     it('should call filterRows the correct number of times', () => {
-      let expectedComputations = fn(options);
+      const expectedComputations = fn(options);
       expect(filterSpy.calls.count()).toBe(expectedComputations);
     });
 
     it('should have filterTerm in every filter object', () => {
-      let filters = options.filters;
+      const filters = options.filters;
       for (let i = 0; i < filters.length; i++) {
-        expect(filter.filterTerm).toBeDefined();
+        expect(filters[i].filterTerm).toBeDefined();
       }
     });
   });
 
   describe('When filters are undefined', () => {
-    let options = {};
+    const options = {};
 
     it('should not call filterRows', () => {
       fn(options);
@@ -62,7 +53,7 @@ function executeSpyTests(fn) {
   });
 
   describe('When filters are an empty object', () => {
-    let options = { filters: {} };
+    const options = { filters: {} };
 
     it('should not call filterRows', () => {
       fn(options);
@@ -71,26 +62,26 @@ function executeSpyTests(fn) {
   });
 
   describe('When groupBy is defined', () => {
-    let options = { groupBy: ['title'] };
+    const options = { groupBy: ['title'] };
 
     it('should call groupBy only once', () => {
-      let expectedComputations = fn(options);
+      const expectedComputations = fn(options);
       expect(groupRowsSpy.calls.count()).toBe(expectedComputations);
     });
   });
 
   describe('When groupBy is defined as an array of objects', () => {
-    let options = { groupBy: [{key: 'title', name: 'Title'}] };
+    const options = { groupBy: [{ key: 'title', name: 'Title' }] };
 
     it('should call groupBy only once', () => {
-      let expectedComputations = fn(options);
+      const expectedComputations = fn(options);
       expect(groupRowsSpy.calls.count()).toBe(expectedComputations);
     });
   });
 
 
   describe('When groupBy is undefined', () => {
-    let options = {};
+    const options = {};
 
     it('should not call groupBy', () => {
       fn(options);
@@ -99,7 +90,7 @@ function executeSpyTests(fn) {
   });
 
   describe('When groupBy is an empty object', () => {
-    let options = { groupBy: {} };
+    const options = { groupBy: {} };
 
     it('should not call groupBy', () => {
       fn(options);
@@ -108,7 +99,7 @@ function executeSpyTests(fn) {
   });
 
   describe('When groupBy is an empty array', () => {
-    let options = { groupBy: [] };
+    const options = { groupBy: [] };
 
     it('should not call groupBy', () => {
       fn(options);
@@ -126,13 +117,9 @@ describe('Grid Selectors', () => {
       rows = createRows();
     });
 
-    afterEach(() => {
-      resetSpies();
-    });
-
     describe('Calling getRows multiple times for the same array of rows', () => {
       const testSelectRows = (options) => {
-        let expectedComputations = 1;
+        const expectedComputations = 1;
         selectPerRow(rows, options);
         return expectedComputations;
       };
@@ -145,7 +132,7 @@ describe('Grid Selectors', () => {
         let expectedComputations = 1;
         selectPerRow(rows, options);
         // do not mutate state
-        let newRows = rows.slice(0);
+        const newRows = rows.slice(0);
         newRows.push({ id: 3, title: 'Title 3', count: 3000 });
         expectedComputations++;
         selectPerRow(newRows, options);
@@ -159,7 +146,7 @@ describe('Grid Selectors', () => {
       const testAfterRemoveRows = (options) => {
         let expectedComputations = 1;
         selectPerRow(rows, options);
-        let newRows = rows.slice(0);
+        const newRows = rows.slice(0);
         newRows.pop();
         expectedComputations++;
         selectPerRow(newRows, options);
@@ -173,7 +160,7 @@ describe('Grid Selectors', () => {
       const testAfterRemoveRows = (options) => {
         let expectedComputations = 1;
         selectPerRow(rows, options);
-        let newRows = rows.slice(0);
+        const newRows = rows.slice(0);
         newRows[1].count = 400;
         expectedComputations++;
         selectPerRow(newRows, options);
@@ -190,22 +177,22 @@ describe('Grid Selectors', () => {
     });
 
     it('can filter on a single column', () => {
-      let filters = { title: { filterTerm: '1' } };
-      let computedRows = Selectors.getRows({ rows, filters });
+      const filters = { title: { filterTerm: '1' } };
+      const computedRows = Selectors.getRows({ rows, filters });
       expect(computedRows.length).toBe(1);
       expect(computedRows[0].title).toBe('Title 1');
     });
 
     it('can filter on multiple columns', () => {
-      let filters = { title: { filterTerm: 'title' }, count: { filterTerm: '2000' } };
-      let computedRows = Selectors.getRows({ rows, filters });
+      const filters = { title: { filterTerm: 'title' }, count: { filterTerm: '2000' } };
+      const computedRows = Selectors.getRows({ rows, filters });
       expect(computedRows.length).toBe(1);
       expect(computedRows[0].count).toBe(2000);
     });
 
     it('can group by a single column', () => {
-      let groupBy = ['title'];
-      let computedRows = Selectors.getRows({ rows, groupBy });
+      const groupBy = ['title'];
+      const computedRows = Selectors.getRows({ rows, groupBy });
       expect(computedRows.length).toBe(6);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[0].name).toEqual('Title 0');
@@ -217,8 +204,8 @@ describe('Grid Selectors', () => {
     });
 
     it('can group by multiple columns', () => {
-      let groupBy = ['title', 'count', 'id'];
-      let computedRows = Selectors.getRows({ rows, groupBy });
+      const groupBy = ['title', 'count', 'id'];
+      const computedRows = Selectors.getRows({ rows, groupBy });
       expect(computedRows.length).toBe(12);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[1].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'count', isExpanded: true, isGroup: true, treeDepth: 1 }));
@@ -227,9 +214,9 @@ describe('Grid Selectors', () => {
     });
 
     it('can filter and then group by column', () => {
-      let filters = { title: { filterTerm: '1' } };
-      let groupBy = ['title'];
-      let computedRows = Selectors.getRows({ rows, filters, groupBy });
+      const filters = { title: { filterTerm: '1' } };
+      const groupBy = ['title'];
+      const computedRows = Selectors.getRows({ rows, filters, groupBy });
       expect(computedRows.length).toBe(2);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[0].name).toEqual('Title 1');
@@ -237,8 +224,8 @@ describe('Grid Selectors', () => {
     });
 
     it('can group by a single column when groupBy is an object array', () => {
-      let groupBy = [{key: 'title', name: 'title'}];
-      let computedRows = Selectors.getRows({ rows, groupBy });
+      const groupBy = [{ key: 'title', name: 'title' }];
+      const computedRows = Selectors.getRows({ rows, groupBy });
       expect(computedRows.length).toBe(6);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[0].name).toEqual('Title 0');
@@ -250,8 +237,8 @@ describe('Grid Selectors', () => {
     });
 
     it('can group by multiple columns when groupBy is an object array', () => {
-      let groupBy = [{key: 'title', name: 'title'}, {key: 'count', name: 'count'}, {key: 'id', name: 'id'}];
-      let computedRows = Selectors.getRows({ rows, groupBy });
+      const groupBy = [{ key: 'title', name: 'title' }, { key: 'count', name: 'count' }, { key: 'id', name: 'id' }];
+      const computedRows = Selectors.getRows({ rows, groupBy });
       expect(computedRows.length).toBe(12);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[1].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'count', isExpanded: true, isGroup: true, treeDepth: 1 }));
@@ -260,9 +247,9 @@ describe('Grid Selectors', () => {
     });
 
     it('can filter and then group by column when groupBy is an object array', () => {
-      let filters = { title: { filterTerm: '1' } };
-      let groupBy = [{key: 'title', name: 'title'}];
-      let computedRows = Selectors.getRows({ rows, filters, groupBy });
+      const filters = { title: { filterTerm: '1' } };
+      const groupBy = [{ key: 'title', name: 'title' }];
+      const computedRows = Selectors.getRows({ rows, filters, groupBy });
       expect(computedRows.length).toBe(2);
       expect(computedRows[0].__metaData).toEqual(jasmine.objectContaining({ columnGroupName: 'title', isExpanded: true, isGroup: true, treeDepth: 0 }));
       expect(computedRows[0].name).toEqual('Title 1');

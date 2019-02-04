@@ -1,9 +1,8 @@
 import { createSelector } from 'reselect';
-import { utils } from 'react-data-grid';
-const { isEmptyArray, isEmptyObject } = utils;
-const groupRows = require('./RowGrouper');
-const filterRows = require('./RowFilterer');
-const sortRows = require('./RowSorter');
+import { isEmptyObject, isEmptyArray } from 'common/utils';
+import groupRows from './RowGrouper';
+import filterRows from './RowFilterer';
+import sortRows from './RowSorter';
 
 const getInputRows = (state) => state.rows;
 const getFilters = (state) => state.filters;
@@ -46,4 +45,4 @@ const Selectors = {
   getRows: getFlattenedGroupedRows,
   getSelectedRowsByKey: getSelectedRowsByKey
 };
-module.exports = Selectors;
+export default Selectors;

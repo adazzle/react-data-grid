@@ -9,7 +9,18 @@ Props
 ### `cellNavigationMode`
 
 type: `enum('none'|'loopOverRow'|'changeRow')`
-defaultValue: `'none'`
+defaultValue: `CellNavigationMode.NONE`
+
+
+### `cellRangeSelection`
+
+type: `shape[object Object]`
+
+
+### `columnEquality`
+
+type: `func`
+defaultValue: `ColumnMetrics.sameColumn`
 
 
 ### `columns` (required)
@@ -46,8 +57,13 @@ type: `bool`
 
 ### `enableRowSelect`
 
-type: `union(bool|string)`
+type: `custom`
 defaultValue: `false`
+
+
+### `getCellActions`
+
+type: `func`
 
 
 ### `getValidFilterValues`
@@ -55,12 +71,24 @@ defaultValue: `false`
 type: `func`
 
 
+### `headerFiltersHeight`
+
+type: `number`
+defaultValue: `45`
+
+
 ### `headerRowHeight`
 
 type: `number`
 
 
-### `minHeight` (required)
+### `minColumnWidth`
+
+type: `number`
+defaultValue: `80`
+
+
+### `minHeight`
 
 type: `number`
 defaultValue: `350`
@@ -76,9 +104,20 @@ type: `number`
 type: `func`
 
 
-### `onCellCopyPaste`
+### `onAddSubRow`
 
 type: `func`
+
+
+### `onBeforeEdit`
+
+type: `func`
+defaultValue: `() => {}`
+
+
+### `onCellCopyPaste`
+
+type: `custom`
 
 
 ### `onCellDeSelected`
@@ -98,7 +137,7 @@ type: `func`
 
 ### `onCellsDragged`
 
-type: `func`
+type: `custom`
 
 
 ### `onCheckCellIsEditable`
@@ -111,9 +150,19 @@ type: `func`
 type: `func`
 
 
-### `onDragHandleDoubleClick`
+### `onColumnResize`
 
 type: `func`
+
+
+### `onDeleteSubRow`
+
+type: `func`
+
+
+### `onDragHandleDoubleClick`
+
+type: `custom`
 
 
 ### `onFilter`
@@ -146,6 +195,11 @@ type: `func`
 type: `func`
 
 
+### `onRowDoubleClick`
+
+type: `func`
+
+
 ### `onRowExpandToggle`
 
 type: `func`
@@ -158,6 +212,11 @@ type: `func`
 
 ### `onRowUpdated`
 
+type: `custom`
+
+
+### `onScroll`
+
 type: `func`
 
 
@@ -165,10 +224,10 @@ type: `func`
 
 type: `object`
 defaultValue: `{
-  colsStart: 5,
-  colsEnd: 5,
-  rowsStart: 5,
-  rowsEnd: 5
+  colsStart: 2,
+  colsEnd: 2,
+  rowsStart: 2,
+  rowsEnd: 2
 }`
 
 
@@ -187,7 +246,7 @@ type: `func`
 type: `func`
 
 
-### `rowHeight` (required)
+### `rowHeight`
 
 type: `number`
 defaultValue: `35`
@@ -201,7 +260,7 @@ defaultValue: `'id'`
 
 ### `rowScrollTimeout`
 
-type: `number`
+type: `custom`
 defaultValue: `0`
 
 
@@ -215,9 +274,25 @@ type: `shape[object Object]`
 type: `number`
 
 
-### `tabIndex`
+### `scrollToRowIndex`
 
-defaultValue: `-1`
+type: `number`
+defaultValue: `0`
+
+
+### `selectAllRenderer`
+
+type: `object`
+
+
+### `sortColumn`
+
+type: `string`
+
+
+### `sortDirection`
+
+type: `enumObject.keys(DEFINE_SORT)`
 
 
 ### `toolbar`

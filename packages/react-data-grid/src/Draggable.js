@@ -1,6 +1,6 @@
-const React         = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const createObjectWithProperties = require('./createObjectWithProperties');
+import createObjectWithProperties from './createObjectWithProperties';
 require('../../../themes/react-data-grid-header.css');
 
 // The list of the propTypes that we want to include in the Draggable div
@@ -21,7 +21,7 @@ class Draggable extends React.Component {
     onDrag: () => {}
   };
 
-  state: {drag: ?any} = {
+  state = {
     drag: null
   };
 
@@ -29,8 +29,8 @@ class Draggable extends React.Component {
     this.cleanUp();
   }
 
-  onMouseDown = (e: SyntheticMouseEvent) => {
-    let drag = this.props.onDragStart(e);
+  onMouseDown = (e) => {
+    const drag = this.props.onDragStart(e);
     if (e.preventDefault) {
       e.preventDefault();
     }
@@ -44,10 +44,10 @@ class Draggable extends React.Component {
     window.addEventListener('touchend', this.onMouseUp);
     window.addEventListener('touchmove', this.onMouseMove);
 
-    this.setState({drag});
+    this.setState({ drag });
   };
 
-  onMouseMove = (e: SyntheticEvent) => {
+  onMouseMove = (e) => {
     if (this.state.drag === null) {
       return;
     }
@@ -59,10 +59,10 @@ class Draggable extends React.Component {
     this.props.onDrag(e);
   };
 
-  onMouseUp = (e: SyntheticEvent) => {
+  onMouseUp = (e) => {
     this.cleanUp();
     this.props.onDragEnd(e, this.state.drag);
-    this.setState({drag: null});
+    this.setState({ drag: null });
   };
 
   cleanUp = () => {
@@ -76,7 +76,7 @@ class Draggable extends React.Component {
     return createObjectWithProperties(this.props, knownDivPropertyKeys);
   };
 
-  render(): ?ReactElement {
+  render() {
     return (
       <div {...this.getKnownDivProps()}
         onMouseDown={this.onMouseDown}

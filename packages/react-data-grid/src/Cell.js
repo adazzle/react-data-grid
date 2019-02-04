@@ -1,54 +1,49 @@
-import _ from 'underscore';
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses = require('classnames');
-const EditorContainer = require('./editors/EditorContainer');
-const ExcelColumn = require('./PropTypeShapes/ExcelColumn');
-const isFunction = require('./utils/isFunction');
-const CellMetaDataShape = require('./PropTypeShapes/CellMetaDataShape');
-const SimpleCellFormatter = require('./formatters/SimpleCellFormatter');
-const ColumnUtils = require('./ColumnUtils');
-const createObjectWithProperties = require('./createObjectWithProperties');
+import joinClasses from 'classnames';
+import { isFunction } from 'common/utils';
+import SimpleCellFormatter from './formatters/SimpleCellFormatter';
+import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';
-import CellExpand from './CellExpand';
+import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
+import { isFrozen } from './ColumnUtils';
 require('../../../themes/react-data-grid-cell.css');
 
 // The list of the propTypes that we want to include in the Cell div
-const knownDivPropertyKeys = ['height', 'tabIndex', 'value'];
+const knownDivPropertyKeys = ['height', 'value'];
 
-class Cell extends React.Component {
+class Cell extends React.PureComponent {
   static propTypes = {
     rowIdx: PropTypes.number.isRequired,
     idx: PropTypes.number.isRequired,
-    selected: PropTypes.shape({
-      idx: PropTypes.number.isRequired
-    }),
+    isSelected: PropTypes.bool,
+    wasPreviouslySelected: PropTypes.bool,
+    isEditorEnabled: PropTypes.bool,
     selectedColumn: PropTypes.object,
     height: PropTypes.number,
-    tabIndex: PropTypes.number,
-    column: PropTypes.shape(ExcelColumn).isRequired,
+    column: PropTypes.object.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]),
     isExpanded: PropTypes.bool,
     isRowSelected: PropTypes.bool,
-    cellMetaData: PropTypes.shape(CellMetaDataShape).isRequired,
+    cellMetaData: PropTypes.object.isRequired,
     handleDragStart: PropTypes.func,
     className: PropTypes.string,
     cellControls: PropTypes.any,
     rowData: PropTypes.object.isRequired,
     forceUpdate: PropTypes.bool,
     expandableOptions: PropTypes.object.isRequired,
-    isScrolling: PropTypes.bool.isRequired,
     tooltip: PropTypes.string,
+    isScrolling: PropTypes.bool,
     isCellValueChanging: PropTypes.func,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ])
+    ]),
+    scrollLeft: PropTypes.number.isRequired
   };
 
   static defaultProps = {
-    tabIndex: 0,
     isExpanded: false,
     value: '',
     isCellValueChanging: (value, nextValue) => value !== nextValue
@@ -59,82 +54,62 @@ class Cell extends React.Component {
     isLockChanging: false
   };
 
-  componentDidMount() {
-    this.checkFocus();
-  }
-
   componentWillReceiveProps(nextProps) {
     this.setState({
       isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
-      isLockChanging: this.props.column.locked !== nextProps.column.locked
+      isLockChanging: isFrozen(this.props.column) !== isFrozen(nextProps.column)
     });
   }
 
+  componentDidMount() {
+    this.checkScroll();
+  }
+
   componentDidUpdate() {
-    this.checkFocus();
-    let dragged = this.props.cellMetaData.dragged;
-    if (dragged && dragged.complete === true) {
-      this.props.cellMetaData.handleTerminateDrag();
-    }
-    if (this.state.isCellValueChanging && this.props.selectedColumn != null) {
-      this.applyUpdateClass();
-    }
-    if (this.state.isLockChanging && !this.props.column.locked) {
+    if (this.state.isLockChanging && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
   }
 
-  shouldComponentUpdate(nextProps: any): boolean {
-    let shouldUpdate = this.props.column.width !== nextProps.column.width
-      || this.props.column.left !== nextProps.column.left
-      || this.props.column.cellClass !== nextProps.column.cellClass
-      || this.props.height !== nextProps.height
-      || this.props.rowIdx !== nextProps.rowIdx
-      || this.isCellSelectionChanging(nextProps)
-      || this.isDraggedCellChanging(nextProps)
-      || this.isCopyCellChanging(nextProps)
-      || this.props.isRowSelected !== nextProps.isRowSelected
-      || this.isSelected()
-      || this.props.isCellValueChanging(this.props.value, nextProps.value)
-      || this.props.forceUpdate === true
-      || this.props.className !== nextProps.className
-      || this.props.expandableOptions !== nextProps.expandableOptions
-      || this.hasChangedDependentValues(nextProps)
-      || this.props.column.locked !== nextProps.column.locked;
-    return shouldUpdate;
-  }
-
-  onCellClick = (e) => {
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellClick && typeof (meta.onCellClick) === 'function') {
-      meta.onCellClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
+  onCellClick = () => {
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellClick)) {
+      cellMetaData.onCellClick({ idx, rowIdx });
     }
   };
 
-  onCellFocus = () => {
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellFocus && typeof (meta.onCellFocus) === 'function') {
-      meta.onCellFocus({ rowIdx: this.props.rowIdx, idx: this.props.idx });
+  onCellMouseDown = () => {
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellMouseDown)) {
+      cellMetaData.onCellMouseDown({ idx, rowIdx });
+    }
+  };
+
+  onCellMouseEnter = () => {
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellMouseEnter)) {
+      cellMetaData.onCellMouseEnter({ idx, rowIdx });
     }
   };
 
   onCellContextMenu = () => {
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellContextMenu && typeof (meta.onCellContextMenu) === 'function') {
-      meta.onCellContextMenu({ rowIdx: this.props.rowIdx, idx: this.props.idx });
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellContextMenu)) {
+      cellMetaData.onCellContextMenu({ idx, rowIdx });
     }
   };
 
   onCellDoubleClick = (e) => {
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellDoubleClick && typeof (meta.onCellDoubleClick) === 'function') {
-      meta.onCellDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx }, e);
+    e.stopPropagation();
+    const { idx, rowIdx, cellMetaData } = this.props;
+    if (isFunction(cellMetaData.onCellDoubleClick)) {
+      cellMetaData.onCellDoubleClick({ idx, rowIdx });
     }
   };
 
   onCellExpand = (e) => {
     e.stopPropagation();
-    let meta = this.props.cellMetaData;
+    const meta = this.props.cellMetaData;
     if (meta != null && meta.onCellExpand != null) {
       meta.onCellExpand({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expandArgs: this.props.expandableOptions });
     }
@@ -147,17 +122,9 @@ class Cell extends React.Component {
   };
 
   onDeleteSubRow = () => {
-    let meta = this.props.cellMetaData;
+    const meta = this.props.cellMetaData;
     if (meta != null && meta.onDeleteSubRow != null) {
       meta.onDeleteSubRow({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.props.rowData, expandArgs: this.props.expandableOptions });
-    }
-  };
-
-  onDragHandleDoubleClick = (e) => {
-    e.stopPropagation();
-    let meta = this.props.cellMetaData;
-    if (meta != null && meta.onDragHandleDoubleClick && typeof (meta.onDragHandleDoubleClick) === 'function') {
-      meta.onDragHandleDoubleClick({ rowIdx: this.props.rowIdx, idx: this.props.idx, rowData: this.getRowData(), e });
     }
   };
 
@@ -166,22 +133,16 @@ class Cell extends React.Component {
   };
 
   getStyle = () => {
-    let style = {
+    const style = {
       position: 'absolute',
       width: this.props.column.width,
       height: this.props.height,
-      left: this.props.column.left,
-      contain: 'layout'
+      left: this.props.column.left
     };
     return style;
   };
 
   getFormatter = () => {
-    let col = this.props.column;
-    if (this.isActive()) {
-      return <EditorContainer rowData={this.getRowData()} rowIdx={this.props.rowIdx} value={this.props.value} idx={this.props.idx} cellMetaData={this.props.cellMetaData} column={col} height={this.props.height} />;
-    }
-
     return this.props.column.formatter;
   };
 
@@ -192,25 +153,26 @@ class Cell extends React.Component {
   getFormatterDependencies = () => {
     // convention based method to get corresponding Id or Name of any Name or Id property
     if (typeof this.props.column.getRowMetaData === 'function') {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
+      }
       return this.props.column.getRowMetaData(this.getRowData(), this.props.column);
     }
   };
 
   getCellClass = () => {
-    let className = joinClasses(
+    const { idx, lastFrozenColumnIndex } = this.props;
+    const className = joinClasses(
       this.props.column.cellClass,
       'react-grid-Cell',
       this.props.className,
-      this.props.column.locked ? 'react-grid-Cell--locked' : null
+      isFrozen(this.props.column) ? 'react-grid-Cell--frozen' : null,
+      lastFrozenColumnIndex === idx ? 'rdg-last--frozen' : null
     );
-    let extraClasses = joinClasses({
+    const extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
-      editing: this.isActive(),
-      copied: this.isCopied() || this.wasDraggedOver() || this.isDraggedOverUpwards() || this.isDraggedOverDownwards(),
-      'is-dragged-over-up': this.isDraggedOverUpwards(),
-      'is-dragged-over-down': this.isDraggedOverDownwards(),
-      'was-dragged-over': this.wasDraggedOver(),
-      'cell-tooltip': this.props.tooltip ? true : false,
+      editing: this.isEditorEnabled(),
+      'has-tooltip': this.props.tooltip ? true : false,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn
     });
@@ -223,191 +185,34 @@ class Cell extends React.Component {
       : '';
   };
 
-  isColumnSelected = () => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-
-    return (
-      meta.selected
-      && meta.selected.idx === this.props.idx
-    );
+  isEditorEnabled = () => {
+    return this.props.isEditorEnabled === true;
   };
 
-  isSelected = () => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-
-    return (
-      meta.selected
-      && meta.selected.rowIdx === this.props.rowIdx
-      && meta.selected.idx === this.props.idx
-    );
-  };
-
-  isActive = () => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-    return this.isSelected() && meta.selected.active === true;
-  };
-
-  isCellSelectionChanging = (nextProps: { idx: number; cellMetaData: { selected: { idx: number } } }): boolean => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-    let nextSelected = nextProps.cellMetaData.selected;
-    if (meta.selected && nextSelected) {
-      return this.props.idx === nextSelected.idx || this.props.idx === meta.selected.idx;
+  checkScroll() {
+    const { scrollLeft, column } = this.props;
+    const node = this.node;
+    if (isFrozen(column) && node && node.style.transform != null) {
+      this.setScrollLeft(scrollLeft);
     }
+  }
 
-    return true;
-  };
-
-  isCellSelectEnabled = () => {
-    let meta = this.props.cellMetaData;
-    if (meta == null) { return false; }
-    return meta.enableCellSelect;
-  };
-
-  hasChangedDependentValues = (nextProps) => {
-    let currentColumn = this.props.column;
-    let hasChangedDependentValues = false;
-
-    if (currentColumn.getRowMetaData) {
-      let currentRowMetaData = currentColumn.getRowMetaData(this.getRowData(), currentColumn);
-      let nextColumn = nextProps.column;
-      let nextRowMetaData = nextColumn.getRowMetaData(this.getRowData(nextProps), nextColumn);
-
-      hasChangedDependentValues = !_.isEqual(currentRowMetaData, nextRowMetaData);
-    }
-
-    return hasChangedDependentValues;
-  };
-
-  applyUpdateClass = () => {
-    let updateCellClass = this.getUpdateCellClass();
-    // -> removing the class
-    if (updateCellClass != null && updateCellClass !== '') {
-      let cellDOMNode = this.node;
-      if (cellDOMNode.classList) {
-        cellDOMNode.classList.remove(updateCellClass);
-        // -> and re-adding the class
-        cellDOMNode.classList.add(updateCellClass);
-      } else if (cellDOMNode.className.indexOf(updateCellClass) === -1) {
-        // IE9 doesn't support classList, nor (I think) altering element.className
-        // without replacing it wholesale.
-        cellDOMNode.className = cellDOMNode.className + ' ' + updateCellClass;
-      }
-    }
-  };
-
-  setScrollLeft = (scrollLeft: number) => {
-    let node = this.node;
+  setScrollLeft = (scrollLeft) => {
+    const node = this.node;
     if (node) {
-      let transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
+      const transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
       node.style.webkitTransform = transform;
       node.style.transform = transform;
     }
   };
 
+
   removeScroll = () => {
-    let node = this.node;
+    const node = this.node;
     if (node) {
       node.style.webkitTransform = null;
       node.style.transform = null;
     }
-  };
-
-  isCopied = (): boolean => {
-    let copied = this.props.cellMetaData.copied;
-    return (
-      copied
-      && copied.rowIdx === this.props.rowIdx
-      && copied.idx === this.props.idx
-    );
-  };
-
-  isDraggedOver = (): boolean => {
-    let dragged = this.props.cellMetaData.dragged;
-    return (
-      dragged &&
-      dragged.overRowIdx === this.props.rowIdx
-      && dragged.idx === this.props.idx
-    );
-  };
-
-  wasDraggedOver = (): boolean => {
-    let dragged = this.props.cellMetaData.dragged;
-    return (
-      dragged
-      && ((dragged.overRowIdx < this.props.rowIdx && this.props.rowIdx < dragged.rowIdx)
-        || (dragged.overRowIdx > this.props.rowIdx && this.props.rowIdx > dragged.rowIdx))
-      && dragged.idx === this.props.idx
-    );
-  };
-
-  isDraggedCellChanging = (nextProps: any): boolean => {
-    let isChanging;
-    let dragged = this.props.cellMetaData.dragged;
-    let nextDragged = nextProps.cellMetaData.dragged;
-    if (dragged) {
-      isChanging = (nextDragged && this.props.idx === nextDragged.idx)
-        || (dragged && this.props.idx === dragged.idx);
-      return isChanging;
-    }
-
-    return false;
-  };
-
-  isCopyCellChanging = (nextProps: any): boolean => {
-    let isChanging;
-    let copied = this.props.cellMetaData.copied;
-    let nextCopied = nextProps.cellMetaData.copied;
-    if (copied) {
-      isChanging = (nextCopied && this.props.idx === nextCopied.idx)
-        || (copied && this.props.idx === copied.idx);
-      return isChanging;
-    }
-    return false;
-  };
-
-  isDraggedOverUpwards = (): boolean => {
-    let dragged = this.props.cellMetaData.dragged;
-    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx < dragged.rowIdx;
-  };
-
-  isDraggedOverDownwards = (): boolean => {
-    let dragged = this.props.cellMetaData.dragged;
-    return !this.isSelected() && this.isDraggedOver() && this.props.rowIdx > dragged.rowIdx;
-  };
-
-  isFocusedOnBody = () => {
-    return document.activeElement == null || (document.activeElement.nodeName && typeof document.activeElement.nodeName === 'string' && document.activeElement.nodeName.toLowerCase() === 'body');
-  };
-
-  isFocusedOnCell = () => {
-    return document.activeElement && document.activeElement.className.indexOf('react-grid-Cell') !== -1;
-  };
-
-  checkFocus = () => {
-    if (this.isSelected() && !this.isActive()) {
-      if (this.props.isScrolling && !this.props.cellMetaData.isScrollingVerticallyWithKeyboard && !this.props.cellMetaData.isScrollingHorizontallyWithKeyboard) {
-        return;
-      }
-      // If the enableCellAutoFocus is set in the ReactDataGrid props, it will allow the cell to take focus when the browser is focused on the body.
-      // Otherwise, only focus to the current cell if the currently active node in the document is within the data grid.
-      // Meaning focus should not be stolen from elements that the grid doesnt control.
-      const cellAutoFocusEnabled = this.props.cellMetaData && this.props.cellMetaData.enableCellAutoFocus;
-      let dataGridDOMNode = this.props.cellMetaData && this.props.cellMetaData.getDataGridDOMNode ? this.props.cellMetaData.getDataGridDOMNode() : null;
-      if (this.isFocusedOnCell() || (cellAutoFocusEnabled && this.isFocusedOnBody()) || (dataGridDOMNode && dataGridDOMNode.contains(document.activeElement))) {
-        let cellDOMNode = this.node;
-        if (cellDOMNode) {
-          cellDOMNode.focus();
-        }
-      }
-    }
-  };
-
-  canEdit = () => {
-    return (this.props.column.editor != null) || this.props.column.editable;
   };
 
   canExpand = () => {
@@ -428,16 +233,15 @@ class Cell extends React.Component {
   };
 
   createEventDTO = (gridEvents, columnEvents, onColumnEvent) => {
-    let allEvents = Object.assign({}, gridEvents);
+    const allEvents = Object.assign({}, gridEvents);
 
-    for (let eventKey in columnEvents) {
+    for (const eventKey in columnEvents) {
       if (columnEvents.hasOwnProperty(eventKey)) {
-        let event = columnEvents[event];
-        let eventInfo = { idx: this.props.idx, rowIdx: this.props.rowIdx, rowId: this.props.rowData[this.props.cellMetaData.rowKey], name: eventKey };
-        let eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
+        const eventInfo = { idx: this.props.idx, rowIdx: this.props.rowIdx, rowId: this.props.rowData[this.props.cellMetaData.rowKey], name: eventKey };
+        const eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
 
         if (allEvents.hasOwnProperty(eventKey)) {
-          let currentEvent = allEvents[eventKey];
+          const currentEvent = allEvents[eventKey];
           allEvents[eventKey] = this.createCellEventCallBack(currentEvent, eventCallback);
         } else {
           allEvents[eventKey] = eventCallback;
@@ -449,11 +253,12 @@ class Cell extends React.Component {
   };
 
   getEvents = () => {
-    let columnEvents = this.props.column ? Object.assign({}, this.props.column.events) : undefined;
-    let onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
-    let gridEvents = {
+    const columnEvents = this.props.column ? Object.assign({}, this.props.column.events) : undefined;
+    const onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
+    const gridEvents = {
       onClick: this.onCellClick,
-      onFocus: this.onCellFocus,
+      onMouseDown: this.onCellMouseDown,
+      onMouseEnter: this.onCellMouseEnter,
       onDoubleClick: this.onCellDoubleClick,
       onContextMenu: this.onCellContextMenu,
       onDragOver: this.onDragOver
@@ -471,11 +276,11 @@ class Cell extends React.Component {
   };
 
   getCellActions() {
-    const {cellMetaData, column, rowData} = this.props;
+    const { cellMetaData, column, rowData } = this.props;
     if (cellMetaData && cellMetaData.getCellActions) {
-      const cellActions = cellMetaData.getCellActions(column, rowData);
-      if (cellActions && cellActions.length) {
-        return cellActions.map((action, index) => {
+      const cellActionButtons = cellMetaData.getCellActions(column, rowData);
+      if (cellActionButtons && cellActionButtons.length) {
+        return cellActionButtons.map((action, index) => {
           return <CellAction key={index} action={action} isFirst={index === 0} />;
         });
       }
@@ -484,32 +289,48 @@ class Cell extends React.Component {
     return null;
   }
 
+  setCellRef = (node) => {
+    this.node = node;
+  };
+
+
   renderCellContent = (props) => {
     let CellContent;
-    let Formatter = this.getFormatter();
+    const Formatter = this.getFormatter();
     if (React.isValidElement(Formatter)) {
-      props.dependentValues = this.getFormatterDependencies();
-      CellContent = React.cloneElement(Formatter, props);
+      CellContent = React.cloneElement(Formatter, { ...props, dependentValues: this.getFormatterDependencies(), row: this.getRowData() });
     } else if (isFunction(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} />;
+      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling} row={this.getRowData()}/>;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
-    let isExpandCell = this.props.expandableOptions ? this.props.expandableOptions.field === this.props.column.key : false;
-    let treeDepth = this.props.expandableOptions ? this.props.expandableOptions.treeDepth : 0;
-    let marginLeft = this.props.expandableOptions && isExpandCell ? (this.props.expandableOptions.treeDepth * 30) : 0;
-    let cellExpander;
-    let cellDeleter;
-    if (this.canExpand()) {
-      cellExpander = <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
-    }
+    const isExpandCell = this.props.expandableOptions ? this.props.expandableOptions.field === this.props.column.key : false;
+    const treeDepth = this.props.expandableOptions ? this.props.expandableOptions.treeDepth : 0;
+    const marginLeft = this.props.expandableOptions && isExpandCell ? (this.props.expandableOptions.treeDepth * 30) : 0;
 
-    let isDeleteSubRowEnabled = this.props.cellMetaData.onDeleteSubRow ? true : false;
+    let cellDeleter;
+
+    const isDeleteSubRowEnabled = this.props.cellMetaData.onDeleteSubRow ? true : false;
 
     if (treeDepth > 0 && isExpandCell) {
       cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow} isDeleteSubRowEnabled={isDeleteSubRowEnabled} />;
     }
-    return (<div className="react-grid-Cell__value">{cellDeleter}<div style={{ marginLeft: marginLeft }}><span>{CellContent}</span> {this.props.cellControls} {cellExpander}</div></div>);
+
+    const tooltip = this.props.tooltip && (<span className="cell-tooltip-text">{this.props.tooltip}</span>);
+    const classes = joinClasses('react-grid-Cell__value',
+      { 'cell-tooltip': this.props.tooltip ? true : false }
+    );
+
+    return (
+      <div className={classes}>
+        {cellDeleter}
+        <div style={{ marginLeft, position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
+          <span>{CellContent}</span>
+          {this.props.cellControls}
+        </div>
+        {tooltip}
+      </div>
+    );
   };
 
   render() {
@@ -517,33 +338,40 @@ class Cell extends React.Component {
       return null;
     }
 
-    let style = this.getStyle();
+    const style = this.getStyle();
 
-    let className = this.getCellClass();
+    const className = this.getCellClass();
 
-    const cellActions = this.getCellActions();
-
+    const cellActionButtons = this.getCellActions();
+    const { value, column, rowIdx, isExpanded, isScrolling } = this.props;
     const cellContent = this.props.children || this.renderCellContent({
-      value: this.props.value,
-      column: this.props.column,
-      rowIdx: this.props.rowIdx,
-      isExpanded: this.props.isExpanded
+      value,
+      column,
+      rowIdx,
+      isExpanded,
+      isScrolling
     });
 
-    let dragHandle = (!this.isActive() && ColumnUtils.canEdit(this.props.column, this.props.rowData, this.props.cellMetaData.enableCellSelect)) ? <div className="drag-handle" draggable="true" onDoubleClick={this.onDragHandleDoubleClick}><span style={{ display: 'none' }}></span></div> : null;
-    let events = this.getEvents();
-    const tooltip = this.props.tooltip ? (<span className="cell-tooltip-text">{this.props.tooltip}</span>) : null;
+    const events = this.getEvents();
 
+    const cellExpander =  this.canExpand() && (
+      <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />
+    );
 
     return (
-      <div {...this.getKnownDivProps() } className={className} style={style} {...events} ref={(node) => { this.node = node; }}>
-        {cellActions}
+      <div
+        {...this.getKnownDivProps()}
+        className={className}
+        style={style}
+        {...events}
+        ref={this.setCellRef}
+      >
+        {cellActionButtons}
+        {cellExpander}
         {cellContent}
-        {dragHandle}
-        {tooltip}
       </div>
     );
   }
 }
 
-module.exports = Cell;
+export default Cell;

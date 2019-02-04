@@ -2,12 +2,12 @@ import '../../../../themes/react-data-grid-drop-target.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropTarget } from 'react-dnd';
-import { RowComparer as shouldRowUpdate } from 'react-data-grid';
+import rowComparer from 'common/utils/RowComparer';
 
-let rowDropTarget = (Row) => class extends React.Component {
+const rowDropTarget = (Row) => class extends React.Component {
 
   shouldComponentUpdate(nextProps) {
-    return shouldRowUpdate(nextProps, this.props);
+    return rowComparer(nextProps, this.props);
   }
 
   moveRow() {
@@ -15,18 +15,13 @@ let rowDropTarget = (Row) => class extends React.Component {
   }
 
   render() {
-    const { connectDropTarget, isOver, canDrop} = this.props;
-    let overlayTop = this.props.idx * this.props.height;
+    const { connectDropTarget, isOver, canDrop } = this.props;
+    const overlayTop = this.props.idx * this.props.height;
     return connectDropTarget(<div>
       <Row ref={(node) => this.row = node} {...this.props}/>
-      {isOver && canDrop && <div style={{
-        position: 'absolute',
+      {isOver && canDrop && <div className="rowDropTarget" style={{
         top: overlayTop,
-        left: 0,
-        height: this.props.height,
-        width: '100%',
-        zIndex: 1,
-        borderBottom: '1px solid black'
+        height: this.props.height
       }} /> }
     </div>);
   }
@@ -36,8 +31,8 @@ const target = {
   drop(props, monitor, component) {
     // Obtain the dragged item
     component.moveRow();
-    let rowSource = monitor.getItem();
-    let rowTarget = { idx: props.idx, data: props.row };
+    const rowSource = monitor.getItem();
+    const rowTarget = { idx: props.idx, data: props.row };
     props.onRowDrop({ rowSource, rowTarget });
   }
 };
@@ -51,4 +46,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default (Row) => DropTarget('Row', target, collect, {arePropsEqual: (nextProps, currentProps) => !shouldRowUpdate(nextProps, currentProps)})(rowDropTarget(Row));
+export default (Row) => DropTarget('Row', target, collect, { arePropsEqual: (nextProps, currentProps) => !rowComparer(nextProps, currentProps) })(rowDropTarget(Row));

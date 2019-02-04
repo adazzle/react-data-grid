@@ -1,0 +1,63 @@
+{
+  "docs": {
+    "Getting Started": ["quick-start", "addons"],
+    "API": ["ReactDataGrid", "Row" ,"Cell"],
+    "Contributing": ["contributing", "codebase-overview", "implementation-notes"],
+    "Migrations": ["migrations/v1-v2", "migrations/v2-v3", "migrations/v3-v4"]
+  },
+  "Changelog": {
+    "Changelog": ["changelog"]
+  },
+  "examples/simple-grid": {
+    "Examples": ["examples/simple-grid", "examples/cell-formatting",
+      {
+        "type": "subcategory",
+        "label": "Cell Editing",
+        "ids": [
+          "examples/default-editor", "examples/dropdown-editor", "examples/custom-editors"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Column Configuration",
+        "ids": [
+          "examples/column-resizing", "examples/frozen-columns", "examples/column-events", "examples/cell-actions", "examples/reordering-columns"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Sorting and Filtering",
+        "ids": [
+          "examples/column-sorting", "examples/column-filtering", "examples/advanced-filtering"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Row Rendering",
+        "ids": [
+          "examples/row-renderer", "examples/render-base-row", "examples/empty-rows"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Grouping",
+        "ids": [
+          "examples/basic-grouping", "examples/drag-cols-to-group"
+        ]
+      }, 
+      {
+        "type": "subcategory",
+        "label": "Selection",
+        "ids": [
+          "examples/row-selection", "examples/cell-range-selection"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Miscellaneous",
+        "ids": [
+          "examples/tree-view", "examples/isScrolling", "examples/context-menu",  "examples/row-reordering"
+        ]
+      }]
+  }
+}

@@ -1,18 +1,18 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 
 class SimpleCellFormatter extends React.Component {
   static propTypes = {
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]).isRequired
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool])
   };
 
-  shouldComponentUpdate(nextProps: any): boolean {
+  shouldComponentUpdate(nextProps) {
     return nextProps.value !== this.props.value;
   }
 
-  render(): ?ReactElement {
+  render() {
     return <div title={this.props.value}>{this.props.value}</div>;
   }
 }
 
-module.exports = SimpleCellFormatter;
+export default SimpleCellFormatter;

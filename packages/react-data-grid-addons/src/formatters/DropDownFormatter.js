@@ -18,20 +18,20 @@ class DropDownFormatter extends React.Component {
     value: PropTypes.string.isRequired
   };
 
-  shouldComponentUpdate(nextProps: any): boolean {
+  shouldComponentUpdate(nextProps) {
     return nextProps.value !== this.props.value;
   }
 
-  render(): ?ReactElement {
-    let value = this.props.value;
+  render() {
+    const value = this.props.value;
     let option = this.props.options.filter(function(v) {
       return v === value || v.value === value;
     })[0];
     if (!option) {
       option = value;
     }
-    let title = option.title || option.value || option;
-    let text = option.text || option.value || option;
+    const title = option.title || option.value || option;
+    const text = option.text || option.value || option;
     return <div title={title}>{text}</div>;
   }
 }

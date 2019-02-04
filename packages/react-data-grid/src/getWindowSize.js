@@ -4,7 +4,7 @@
  * @return {Object} height and width of the window
  */
 
-function getWindowSize(): {width: number; height: number} {
+function getWindowSize() {
   let width = window.innerWidth;
   let height = window.innerHeight;
 
@@ -18,7 +18,7 @@ function getWindowSize(): {width: number; height: number} {
     height = document.body.clientHeight;
   }
 
-  return {width, height};
+  return { width, height };
 }
 
 module.exports = getWindowSize;

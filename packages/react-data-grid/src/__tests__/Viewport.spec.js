@@ -1,15 +1,18 @@
 import React from 'react';
 import Viewport from '../Viewport';
-import { shallow} from 'enzyme';
+import Canvas from '../Canvas';
+import { shallow } from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
+import { SCROLL_DIRECTION } from '../utils/viewportUtils';
 
-let viewportProps = {
+const viewportProps = {
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {
     columns: helpers.columns,
     minColumnWidth: 80,
     totalWidth: 2600,
+    totalColumnWidth: 2600,
     width: 2600
   },
   rowGetter: () => { },
@@ -37,7 +40,7 @@ let viewportProps = {
   rowKey: 'Id'
 };
 
-let viewportPropsNoColumns = {  // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
+const viewportPropsNoColumns = {  // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {
@@ -74,80 +77,86 @@ let viewportPropsNoColumns = {  // when creating anew plan copying from an exist
 describe('<Viewport />', () => {
   it('renders a Canvas component', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
-    let Canvas = wrapper.find('Canvas');
-    expect(Canvas).toBeDefined();
+    const canvas = wrapper.find(Canvas);
+    expect(canvas).toBeDefined();
   });
 
-  it('should updated scroll state onScroll', () => {
-    let scrollLeft = 0;
-    let scrollTop = 200;
+  it('should update scroll state onScroll', () => {
+    const scrollLeft = 0;
+    const scrollTop = 200;
     const wrapper = shallow(<Viewport {...viewportProps} />);
-    let Canvas = wrapper.find('Canvas');
-    Canvas.props().onScroll({ scrollTop, scrollLeft});
+    const canvas = wrapper.find(Canvas);
+    canvas.props().onScroll({ scrollTop, scrollLeft });
     expect(wrapper.state()).toEqual({
-      colDisplayEnd: 3,
-      colDisplayStart: 0,
-      colVisibleEnd: 3,
-      colVisibleStart: 0,
-      displayEnd: 25,
-      displayStart: 0,
+      colOverscanEndIdx: helpers.columns.length,
+      colOverscanStartIdx: 0,
+      colVisibleEndIdx: helpers.columns.length,
+      colVisibleStartIdx: 0,
+      rowOverscanEndIdx: 23,
+      rowOverscanStartIdx: 6,
       height: viewportProps.minHeight,
       scrollLeft: scrollLeft,
       scrollTop: scrollTop,
-      visibleEnd: 20,
-      visibleStart: 5,
-      isScrolling: true
+      rowVisibleEndIdx: 21,
+      rowVisibleStartIdx: 6,
+      isScrolling: true,
+      lastFrozenColumnIndex: -1,
+      scrollDirection: SCROLL_DIRECTION.DOWN
     });
   });
 
   it('should set the max number of columns when column rendered are zeroed', () => {
     const wrapper = shallow(<Viewport {...viewportPropsNoColumns} />);
-    expect(wrapper.state().colVisibleEnd).toEqual(helpers.columns.length);
+    expect(wrapper.state().colVisibleEndIdx).toEqual(helpers.columns.length);
   });
 
   it('should update when given different number of columns', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
-    let extraColumn = {
+    const extraColumn = {
       key: 'description',
       name: 'Description',
       width: 100
     };
-    let updatedColumns = helpers.columns.concat(extraColumn);
-    let newProps = Object.assign({}, viewportProps, {columnMetrics: Object.assign({}, viewportProps.columnMetrics, {columns: updatedColumns})});
+    const updatedColumns = helpers.columns.concat(extraColumn);
+    const newProps = Object.assign({}, viewportProps, { columnMetrics: Object.assign({}, viewportProps.columnMetrics, { columns: updatedColumns }) });
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
-      colDisplayEnd: updatedColumns.length,
-      colDisplayStart: 0,
-      colVisibleEnd: updatedColumns.length,
-      colVisibleStart: 0,
-      displayEnd: 50,
-      displayStart: 0,
+      colOverscanEndIdx: updatedColumns.length,
+      colOverscanStartIdx: 0,
+      colVisibleEndIdx: updatedColumns.length,
+      colVisibleStartIdx: 0,
+      rowOverscanEndIdx: 28,
+      rowOverscanStartIdx: 0,
       height: viewportProps.minHeight,
       scrollLeft: 0,
       scrollTop: 0,
-      visibleEnd: 50,
-      visibleStart: 0
+      rowVisibleEndIdx: 14,
+      rowVisibleStartIdx: 0,
+      lastFrozenColumnIndex: 0,
+      isScrolling: false
     });
   });
 
   it('should update when given height changed', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
     const newHeight = 1000;
-    let newProps = Object.assign({}, viewportProps, {minHeight: newHeight});
+    const newProps = Object.assign({}, viewportProps, { minHeight: newHeight });
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
-      colDisplayEnd: helpers.columns.length,
-      colDisplayStart: 0,
-      colVisibleEnd: helpers.columns.length,
-      colVisibleStart: 0,
-      displayEnd: 34,
-      displayStart: 0,
+      colOverscanEndIdx: helpers.columns.length,
+      colOverscanStartIdx: 0,
+      colVisibleEndIdx: helpers.columns.length,
+      colVisibleStartIdx: 0,
+      rowOverscanEndIdx: 29,
+      rowOverscanStartIdx: 0,
       height: newHeight,
       scrollLeft: 0,
       scrollTop: 0,
-      visibleEnd: 29,
-      visibleStart: 0,
-      isScrolling: true
+      rowVisibleEndIdx: 29,
+      rowVisibleStartIdx: 0,
+      isScrolling: true,
+      scrollDirection: SCROLL_DIRECTION.NONE,
+      lastFrozenColumnIndex: -1
     });
   });
 });

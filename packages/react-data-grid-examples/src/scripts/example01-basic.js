@@ -2,47 +2,23 @@ const ReactDataGrid = require('react-data-grid');
 const exampleWrapper = require('../components/exampleWrapper');
 const React = require('react');
 
-class Example extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    this.createRows();
-    this._columns = [
-      { key: 'id', name: 'ID' },
-      { key: 'title', name: 'Title' },
-      { key: 'count', name: 'Count' } ];
+const columns = [
+  { key: 'id', name: 'ID' },
+  { key: 'title', name: 'Title' },
+  { key: 'count', name: 'Count' } ];
 
-    this.state = null;
-  }
+const rows = [{id: 0, title: 'row1', count: 20}, {id: 1, title: 'row1', count: 40}, {id: 2, title: 'row1', count: 60}];
 
-  createRows = () => {
-    let rows = [];
-    for (let i = 1; i < 1000; i++) {
-      rows.push({
-        id: i,
-        title: 'Title ' + i,
-        count: i * 1000
-      });
-    }
-
-    this._rows = rows;
-  };
-
-  rowGetter = (i) => {
-    return this._rows[i];
-  };
-
-  render() {
-    return  (
-      <ReactDataGrid
-        columns={this._columns}
-        rowGetter={this.rowGetter}
-        rowsCount={this._rows.length}
-        minHeight={500} />);
-  }
+function HelloWorld() {
+  return (<ReactDataGrid
+  columns={columns}
+  rowGetter={i => rows[i]}
+  rowsCount={3}
+  minHeight={150} />);
 }
 
 module.exports = exampleWrapper({
-  WrappedComponent: Example,
+  WrappedComponent: HelloWorld,
   exampleName: 'Basic Example',
   exampleDescription: 'A display only grid.',
   examplePath: './scripts/example01-basic.js',

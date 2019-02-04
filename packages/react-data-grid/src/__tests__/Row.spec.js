@@ -1,66 +1,66 @@
 import React from 'react';
 import TestUtils from 'react-dom/test-utils';
 import Row from '../Row';
+import Cell from '../Cell';
 import { shallow } from 'enzyme';
-import * as helpers from '../helpers/test/GridPropHelpers';
+import { createColumns } from '../__tests__/utils/createColumns';
 
 describe('Row', () => {
-  let fakeProps = {
+  const fakeProps = {
     height: 35,
     columns: [],
     row: [],
     idx: 0
   };
 
-  it('should import Row', () => {
-    expect(Row).toBeDefined();
-  });
-
   it('should create an instance of Row', () => {
-    let component = TestUtils.renderIntoDocument(<Row {...fakeProps} />);
+    const component = TestUtils.renderIntoDocument(<Row {...fakeProps} />);
     expect(component).toBeDefined();
   });
 
   describe('with extra classes', () => {
-    let fakeExtraClasses = ['row-extra-class', 'row-extra-extra-class'];
+    const fakeExtraClasses = ['row-extra-class', 'row-extra-extra-class'];
 
     it('should have extra classes', () => {
-      let newProps = Object.assign({}, fakeProps, {extraClasses: fakeExtraClasses.join(' ')});
-      let component = TestUtils.renderIntoDocument(<Row {...newProps} />);
+      const newProps = Object.assign({}, fakeProps, { extraClasses: fakeExtraClasses.join(' ') });
+      const component = TestUtils.renderIntoDocument(<Row {...newProps} />);
 
-      let row = TestUtils.findRenderedDOMComponentWithClass(component, 'react-grid-Row');
+      const row = TestUtils.findRenderedDOMComponentWithClass(component, 'react-grid-Row');
       fakeExtraClasses.forEach((c) => {
-        let containsExtraClass = row.className.indexOf(c) > -1;
+        const containsExtraClass = row.className.indexOf(c) > -1;
         expect(containsExtraClass).toBe(true);
       });
     });
   });
 
   describe('Rendering Row component', () => {
-    const renderComponent = (props) => {
+    const COLUMN_COUNT = 50;
+
+    const setup = (props) => {
       const wrapper = shallow(<Row {...props} />);
-      return wrapper;
+      const cells = wrapper.find(Cell);
+      return { wrapper, cells };
     };
 
     const requiredProperties = {
       height: 30,
-      columns: helpers.columns,
-      row: {key: 'value'},
+      columns: createColumns(COLUMN_COUNT),
+      row: { key: 'value' },
       idx: 17,
-      colVisibleStart: 1,
-      colVisibleEnd: 2,
-      colDisplayStart: 3,
-      colDisplayEnd: 4,
+      colVisibleStartIdx: 2,
+      colVisibleEndIdx: 20,
+      colOverscanStartIdx: 0,
+      colOverscanEndIdx: 20,
       isScrolling: true
     };
 
     const allProperties = {
       height: 35,
-      columns: helpers.columns,
-      row: {key: 'value', name: 'name'},
+      columns: createColumns(COLUMN_COUNT),
+      row: { key: 'value', name: 'name' },
       cellRenderer: jasmine.createSpy(),
       cellMetaData: {
-        selected: {idx: 2, rowIdx: 3},
+        selected: { idx: 2, rowIdx: 3 },
         dragged: null,
         onCellClick: jasmine.createSpy(),
         onCellContextMenu: jasmine.createSpy(),
@@ -74,40 +74,35 @@ describe('Row', () => {
       },
       isSelected: false,
       idx: 18,
-      expandedRows: [{key: 'one'}, {key: 'two'}],
+      expandedRows: [{ key: 'one' }, { key: 'two' }],
       extraClasses: 'extra-classes',
       forceUpdate: false,
-      subRowDetails: {name: 'subrowname'},
+      subRowDetails: { name: 'subrowname' },
       isRowHovered: false,
-      colVisibleStart: 0,
-      colVisibleEnd: 1,
-      colDisplayStart: 2,
-      colDisplayEnd: 3,
+      colVisibleStartIdx: 0,
+      colVisibleEndIdx: 1,
+      colOverscanStartIdx: 2,
+      colOverscanEndIdx: 3,
       isScrolling: false
     };
 
     it('passes classname property', () => {
-      const wrapper = renderComponent(requiredProperties);
+      const { wrapper } = setup(requiredProperties);
       const draggableDiv = wrapper.find('div').at(0);
       expect(draggableDiv.hasClass('react-grid-Row'));
     });
     it('passes style property', () => {
-      const wrapper = renderComponent(requiredProperties);
+      const { wrapper } = setup(requiredProperties);
       const draggableDiv = wrapper.find('div').at(0);
       expect(draggableDiv.props().style).toBeDefined();
     });
-    it('passes onDragEnter property', () => {
-      const wrapper = renderComponent(requiredProperties);
-      const draggableDiv = wrapper.find('div');
-      expect(draggableDiv.props().onDragEnter).toBeDefined();
-    });
     it('passes height property', () => {
-      const wrapper = renderComponent(requiredProperties);
+      const { wrapper } = setup(requiredProperties);
       const draggableDiv = wrapper.find('div').at(0);
       expect(draggableDiv.props().height).toBe(30);
     });
     it('does not pass unknown properties to the div', () => {
-      const wrapper = renderComponent(allProperties);
+      const { wrapper } = setup(allProperties);
       const draggableDiv = wrapper.find('div').at(0);
       expect(draggableDiv.props().columns).toBeUndefined();
       expect(draggableDiv.props().row).toBeUndefined();
@@ -120,11 +115,59 @@ describe('Row', () => {
       expect(draggableDiv.props().forceUpdate).toBeUndefined();
       expect(draggableDiv.props().subRowDetails).toBeUndefined();
       expect(draggableDiv.props().isRowHovered).toBeUndefined();
-      expect(draggableDiv.props().colVisibleStart).toBeUndefined();
-      expect(draggableDiv.props().colVisibleEnd).toBeUndefined();
-      expect(draggableDiv.props().colDisplayStart).toBeUndefined();
-      expect(draggableDiv.props().colDisplayEnd).toBeUndefined();
+      expect(draggableDiv.props().colVisibleStartIdx).toBeUndefined();
+      expect(draggableDiv.props().colVisibleEndIdx).toBeUndefined();
+      expect(draggableDiv.props().colOverscanStartIdx).toBeUndefined();
+      expect(draggableDiv.props().colOverscanEndIdx).toBeUndefined();
       expect(draggableDiv.props().isScrolling).toBeUndefined();
+    });
+
+    describe('Cell rendering', () => {
+      describe('When using frozen columns', () => {
+        const LAST_LOCKED_CELL_IDX = 5;
+
+        const lockColumns = () => createColumns(COLUMN_COUNT).map((c, idx) => {
+          return idx <= LAST_LOCKED_CELL_IDX ? { ...c, frozen: true } : c;
+        });
+
+        it('should render all frozen and visible and overscan cells', () => {
+          const columns = lockColumns(LAST_LOCKED_CELL_IDX);
+          const { cells } = setup({ ...requiredProperties, columns });
+          const { colOverscanStartIdx, colOverscanEndIdx } = requiredProperties;
+          const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
+          expect(cells.length).toBe(renderedRange);
+        });
+
+        it('first frozen cell should be rendered after the unfrozen cells', () => {
+          const columns = lockColumns(LAST_LOCKED_CELL_IDX);
+          const { cells } = setup({ ...requiredProperties, columns });
+          const firstFrozenColumn = columns.filter(c => c.frozen === true)[0];
+          expect(cells.at(cells.length - LAST_LOCKED_CELL_IDX - 1).props().column).toBe(firstFrozenColumn);
+        });
+      });
+
+      describe('When not using frozen columns', ()  => {
+        it('should render all visible and overscan cells', () => {
+          const { cells } = setup(requiredProperties);
+          const { colOverscanStartIdx, colOverscanEndIdx } = requiredProperties;
+          const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
+          expect(cells.length).toBe(renderedRange);
+        });
+
+        it('first rendered cell index should be colOverscanStartIdx', () => {
+          const { cells } = setup(requiredProperties);
+          const { columns, colOverscanStartIdx } = requiredProperties;
+          const expectedFirstColumn = columns[colOverscanStartIdx];
+          expect(cells.first().props().column).toBe(expectedFirstColumn);
+        });
+
+        it('last rendered cell index should be colOverscanEndIdx', () => {
+          const { cells } = setup(requiredProperties);
+          const { columns, colOverscanEndIdx } = requiredProperties;
+          const expectedLastColumn = columns[colOverscanEndIdx];
+          expect(cells.last().props().column).toBe(expectedLastColumn);
+        });
+      });
     });
   });
 });
