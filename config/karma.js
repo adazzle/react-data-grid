@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 require('airbnb-browser-shims');
 var webpackConfig = require('./webpack.common.config.js');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
 var RELEASE = !!argv.release;
@@ -73,17 +74,38 @@ module.exports = function (config) {
       module: {
         rules: [
           {
-            test: /\.(js|jsx)$/,
+            test: /\.js$/,
             exclude: /node_modules/,
-            use: [
-              { loader: 'babel-loader', options: { envName: 'test' } }
-            ]
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                ['@babel/preset-env', {
+                  targets: {
+                    browsers: ['> 1%', 'last 2 versions']
+                  },
+                  useBuiltIns: 'entry'
+                }],
+                '@babel/react'
+              ],
+              plugins: [
+                ['transform-react-remove-prop-types', {
+                  mode: 'wrap',
+                  ignoreFilenames: ['node_modules']
+                }],
+                '@babel/plugin-proposal-class-properties',
+                '@babel/plugin-transform-property-literals',
+                '@babel/plugin-transform-member-expression-literals',
+                '@babel/plugin-transform-runtime'
+              ],
+              sourceType: 'unambiguous',
+              envName: 'test'
+            }
           },
           {
             test: /\.css$/,
             use: [
-              { loader: 'style-loader' },
-              { loader: 'css-loader' }
+              RELEASE ? MiniCssExtractPlugin.loader : 'style-loader',
+              'css-loader'
             ]
           }
         ]

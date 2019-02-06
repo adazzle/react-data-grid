@@ -1,13 +1,12 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const faker = require('faker');
-const Immutable = require('immutable');
-const {
-  ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
-  Data: { Selectors },
-  Draggable: { Container: DraggableContainer }
- } = require('react-data-grid-addons');
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
+import faker from 'faker';
+import Immutable from 'immutable';
+import { ToolsPanel, Data, Draggable } from 'react-data-grid-addons';
+const { Toolbar, GroupedColumnsPanel } = ToolsPanel;
+const { Selectors } = Data;
+const { DraggableContainer } = Draggable;
 
 import PropTypes from 'prop-types';
 

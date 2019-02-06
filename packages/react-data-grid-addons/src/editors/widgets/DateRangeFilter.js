@@ -1,10 +1,8 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
 import moment from 'moment';
-
-const ReactDOM = require('react-dom');
-const Moment 		 = require('moment');
-const $					 = require('jquery');
+import $ from 'jquery';
 
 const DateRangePicker = function(element, options, cb) {
 	// by default, the daterangepicker element is placed at the bottom of HTML body
@@ -100,8 +98,8 @@ DateRangePicker.prototype = {
   constructor: DateRangePicker,
 
   setOptions: function(options, callback) {
-    this.startDate = new Moment().startOf('day');
-    this.endDate = new Moment().endOf('day');
+    this.startDate = new moment().startOf('day');
+    this.endDate = new moment().endOf('day');
     this.minDate = false;
     this.maxDate = false;
     this.dateLimit = false;
@@ -133,9 +131,9 @@ DateRangePicker.prototype = {
       toLabel: 'To',
       weekLabel: 'W',
       customRangeLabel: 'Custom Range',
-      daysOfWeek: Moment.weekdaysMin(),
-      monthNames: Moment.monthsShort(),
-      firstDay: Moment.localeData()._week.dow
+      daysOfWeek: moment.weekdaysMin(),
+      monthNames: moment.monthsShort(),
+      firstDay: moment.localeData()._week.dow
     };
 
     this.cb = function() { };
@@ -153,31 +151,31 @@ DateRangePicker.prototype = {
     }
 
     if (typeof options.endDate === 'string') {
-      this.endDate = new Moment(options.endDate, this.format);
+      this.endDate = new moment(options.endDate, this.format);
     }
 
     if (typeof options.minDate === 'string') {
-      this.minDate = new Moment(options.minDate, this.format);
+      this.minDate = new moment(options.minDate, this.format);
     }
 
     if (typeof options.maxDate === 'string') {
-      this.maxDate = new Moment(options.maxDate, this.format);
+      this.maxDate = new moment(options.maxDate, this.format);
     }
 
     if (typeof options.startDate === 'object') {
-      this.startDate = new Moment(options.startDate);
+      this.startDate = new moment(options.startDate);
     }
 
     if (typeof options.endDate === 'object') {
-      this.endDate = new Moment(options.endDate);
+      this.endDate = new moment(options.endDate);
     }
 
     if (typeof options.minDate === 'object') {
-      this.minDate = new Moment(options.minDate);
+      this.minDate = new moment(options.minDate);
     }
 
     if (typeof options.maxDate === 'object') {
-      this.maxDate = new Moment(options.maxDate);
+      this.maxDate = new moment(options.maxDate);
     }
 
     if (typeof options.applyClass === 'string') {
@@ -1199,4 +1197,4 @@ class DateRangeFilter extends React.Component {
   }
 }
 
-module.exports = DateRangeFilter;
+export default DateRangeFilter;

@@ -1,7 +1,7 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const Moment = require('moment');
-const DateRangeFilter = require('./widgets/DateRangeFilter');
+import Moment from 'moment';
+import DateRangeFilter from './widgets/DateRangeFilter';
 
 class DateRangeEditor extends React.Component {
   static displayName = 'DateRangeEditor';
@@ -46,4 +46,4 @@ class DateRangeEditor extends React.Component {
   }
 }
 
-module.exports = DateRangeEditor;
+export default DateRangeEditor;

@@ -1,5 +1,5 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 const Grid = require('react-data-grid');
 const { editors: { CheckboxEditor } } = Grid;
 const TestUtils = require('react-dom/test-utils');

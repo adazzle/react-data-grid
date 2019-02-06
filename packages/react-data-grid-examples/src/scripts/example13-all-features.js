@@ -1,10 +1,10 @@
-const faker = require('faker');
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const { Editors, Toolbar, Formatters } = require('react-data-grid-addons');
+import faker from 'faker';
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
+import { Editors, Toolbar, Formatters } from 'react-data-grid-addons';
 import update from 'immutability-helper';
-const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
+const { AutoComplete, DropDownEditor } = Editors;
 const { ImageFormatter } = Formatters;
 
 faker.locale = 'en_GB';
@@ -75,7 +75,7 @@ class Example extends React.Component {
       {
         key: 'county',
         name: 'County',
-        editor: <AutoCompleteEditor options={counties}/>,
+        editor: <AutoComplete options={counties}/>,
         width: 200,
         resizable: true
       },

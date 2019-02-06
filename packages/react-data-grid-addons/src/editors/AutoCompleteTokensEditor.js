@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import ReactDOM from 'react-dom';
-import 'react-select/dist/react-select.css';
 
 const Column = {
   name: PropTypes.string.isRequired,

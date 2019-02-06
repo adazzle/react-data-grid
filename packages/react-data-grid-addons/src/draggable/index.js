@@ -3,4 +3,17 @@ import DraggableHeaderCell from './DraggableHeaderCell';
 import RowActionsCell from './RowActionsCell';
 import DropTargetRowContainer from './DropTargetRowContainer';
 
-module.exports = { Container, DraggableHeaderCell, RowActionsCell, DropTargetRowContainer };
+const Draggable = {
+    Container,
+    DraggableHeaderCell,
+    RowActionsCell,
+    DropTargetRowContainer
+};
+
+export default Draggable;
+export {
+    Container,
+    DraggableHeaderCell,
+    RowActionsCell,
+    DropTargetRowContainer
+};

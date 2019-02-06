@@ -1,6 +1,10 @@
 let size;
 
 export default function getScrollbarSize() {
+  if (typeof document === 'undefined') {
+    return 100;
+  }
+
   if (size === undefined) {
     const outer = document.createElement('div');
     outer.style.width = '50px';

@@ -95,4 +95,4 @@ function generateMarkdown(name, reactAPI) {
   return markdownString;
 }
 
-module.exports = generateMarkdown;
+export default generateMarkdown;

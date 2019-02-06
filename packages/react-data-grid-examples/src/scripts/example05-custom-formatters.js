@@ -1,7 +1,6 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 // Custom Formatter component

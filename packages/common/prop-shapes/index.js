@@ -1,3 +1,6 @@
 import Column from './Column';
 
-export default { Column };
+export default Column;
+export {
+    Column
+};

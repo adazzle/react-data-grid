@@ -1,4 +1,4 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 import { EditorBase } from 'common/editors';
 import ReactDOM from 'react-dom';
@@ -49,4 +49,4 @@ DropDownEditor.propTypes = {
   ])).isRequired
 };
 
-module.exports = DropDownEditor;
+export default DropDownEditor;

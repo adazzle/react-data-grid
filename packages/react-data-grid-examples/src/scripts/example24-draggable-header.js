@@ -1,9 +1,7 @@
-const React = require('react');
+import React from 'react';
 import ReactDataGrid from 'react-data-grid';
-const exampleWrapper = require('../components/exampleWrapper');
-const {
-  DraggableHeader: { DraggableContainer }
-} = require('react-data-grid-addons');
+import exampleWrapper from '../components/exampleWrapper';
+import { Draggable } from 'react-data-grid-addons';
 
 class Example extends React.Component {
   createRows = () => {
@@ -75,7 +73,7 @@ class Example extends React.Component {
 
   render() {
     return (
-      <DraggableContainer
+      <Draggable
         onHeaderDrop={this.onHeaderDrop}>
         <ReactDataGrid
           columns={this.state.columns}
@@ -83,7 +81,7 @@ class Example extends React.Component {
           rowsCount={this.state.rows.length}
           minHeight={500}
         />
-      </DraggableContainer>
+      </Draggable>
     );
   }
 }

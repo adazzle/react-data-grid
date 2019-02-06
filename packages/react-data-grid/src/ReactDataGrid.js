@@ -1,3 +1,5 @@
+const document = require('global/document');
+const window = require('global/window');
 import React from 'react';
 import PropTypes from 'prop-types';
 import { deprecate } from 'react-is-deprecated';
@@ -8,13 +10,13 @@ import { getColumn, getSize } from './ColumnUtils';
 import KeyCodes from './KeyCodes';
 import { isFunction } from 'common/utils';
 import SelectAll from './formatters/SelectAll';
-import { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
-const ColumnMetrics = require('./ColumnMetrics');
+import { DefineSort } from 'common/constants';
+import ColumnMetrics from './ColumnMetrics';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType } from 'common/constants';
 import { EventBus } from './masks';
 
-require('../../../themes/react-data-grid-core.css');
-require('../../../themes/react-data-grid-checkbox.css');
+import '../../../themes/react-data-grid-core.css';
+import '../../../themes/react-data-grid-checkbox.css';
 
 if (!Object.assign) {
   Object.assign = require('object-assign');
@@ -112,7 +114,7 @@ class ReactDataGrid extends React.Component {
     /** The key of the column which is currently being sorted */
     sortColumn: PropTypes.string,
     /** The direction to sort the sortColumn*/
-    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
+    sortDirection: PropTypes.oneOf(Object.keys(DefineSort)),
     /** Deprecated: Function called when grid is updated via double clicking the cell drag handle. Use onGridRowsUpdated instead*/
     onDragHandleDoubleClick: deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated')),
     /**
@@ -872,4 +874,4 @@ class ReactDataGrid extends React.Component {
   }
 }
 
-module.exports = ReactDataGrid;
+export default ReactDataGrid;

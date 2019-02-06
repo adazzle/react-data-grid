@@ -1,6 +1,6 @@
 // Used for displaying the value of a dropdown (using DropDownEditor) when not editing it.
 // Accepts the same parameters as the DropDownEditor.
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 
 class DropDownFormatter extends React.Component {
@@ -36,4 +36,4 @@ class DropDownFormatter extends React.Component {
   }
 }
 
-module.exports = DropDownFormatter;
+export default DropDownFormatter;

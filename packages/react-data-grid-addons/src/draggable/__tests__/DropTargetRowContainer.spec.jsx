@@ -4,8 +4,7 @@ import TestBackend from 'react-dnd-test-backend';
 import { DragDropContext } from 'react-dnd';
 import dropTargetRowContainer from '../DropTargetRowContainer';
 import { DragTestSource } from './TestDragSources';
-import { _helpers } from 'react-data-grid';
-const { test: { GridPropHelpers } } = _helpers;
+import GridPropHelpers from '../helpers/test/GridPropHelpers';
 
 class fakeRow extends Component {
   render() {

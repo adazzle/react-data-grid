@@ -1,3 +1,4 @@
+const window = require('global/window');
 import React from 'react';
 import Canvas from './Canvas';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
@@ -315,4 +316,4 @@ class Viewport extends React.Component {
   }
 }
 
-module.exports = Viewport;
+export default Viewport;

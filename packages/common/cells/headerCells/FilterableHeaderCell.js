@@ -36,4 +36,4 @@ class FilterableHeaderCell extends React.Component {
   }
 }
 
-module.exports = FilterableHeaderCell;
+export default FilterableHeaderCell;

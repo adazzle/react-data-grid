@@ -1,1 +1,3 @@
-module.exports = require('./src');
+import ReactDataGrid from './src';
+
+export default ReactDataGrid;

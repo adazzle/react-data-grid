@@ -10,10 +10,12 @@ const config =  {
     'react-data-grid-examples/dist/index': [path.resolve('packages/react-data-grid-examples/src')]
   },
   output: {
-    path: path.resolve('packages'),
+    path: path.resolve(__dirname, '../packages'),
     filename: '[name].js',
-    library: ['ReactDataGrid'],
-    libraryTarget: 'umd'
+    library: '[ReactDataGrid]',
+    libraryTarget: 'umd',
+    globalObject: 'this',
+    umdNamedDefine: true
   }
 };
 

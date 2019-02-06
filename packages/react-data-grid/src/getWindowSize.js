@@ -1,3 +1,6 @@
+const document = require('global/document');
+const window = require('global/window');
+
 /**
  * Return window's height and width
  *
@@ -21,4 +24,4 @@ function getWindowSize() {
   return { width, height };
 }
 
-module.exports = getWindowSize;
+export default getWindowSize;

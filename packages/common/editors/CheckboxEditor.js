@@ -1,6 +1,6 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-require('../../../themes/react-data-grid-checkbox.css');
+import '../../../themes/react-data-grid-checkbox.css';
 
 class CheckboxEditor extends React.Component {
   static propTypes = {
@@ -28,4 +28,4 @@ class CheckboxEditor extends React.Component {
   }
 }
 
-module.exports = CheckboxEditor;
+export default CheckboxEditor;

@@ -94,4 +94,4 @@ const siteConfig = {
   repoUrl: 'https://github.com/adazzle/react-data-grid',
 };
 
-module.exports = siteConfig;
+export default siteConfig;

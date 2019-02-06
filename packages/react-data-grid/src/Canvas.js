@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Row from './Row';
 import DefaultRowsContainer from './RowsContainer';
 import cellMetaDataShape from 'common/prop-shapes/CellActionShape';
@@ -10,7 +9,7 @@ import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 import { isFunction } from 'common/utils';
 import { EventTypes } from 'common/constants';
-require('../../../themes/react-data-grid-core.css');
+import '../../../themes/react-data-grid-core.css';
 
 class Canvas extends React.PureComponent {
 
@@ -437,4 +436,4 @@ class Canvas extends React.PureComponent {
   }
 }
 
-module.exports = Canvas;
+export default Canvas;

@@ -1,6 +1,6 @@
+const document = require('global/document');
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import SimpleTextEditor from './SimpleTextEditor';
@@ -9,7 +9,7 @@ import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import * as zIndexes from 'common/constants/zIndexes';
 import EditorPortal from './EditorPortal';
 
-require('../../../themes/react-data-grid-core.css');
+import '../../../themes/react-data-grid-core.css';
 
 class EditorContainer extends React.Component {
   static displayName = 'EditorContainer';
@@ -350,4 +350,4 @@ class EditorContainer extends React.Component {
   }
 }
 
-module.exports = EditorContainer;
+export default EditorContainer;

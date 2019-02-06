@@ -4,10 +4,16 @@ import MultiSelectFilter from './MultiSelectFilter';
 import SingleSelectFilter from './SingleSelectFilter';
 
 const Filters = {
-  NumericFilter: NumericFilter,
-  AutoCompleteFilter: AutoCompleteFilter,
-  MultiSelectFilter: MultiSelectFilter,
-  SingleSelectFilter: SingleSelectFilter
+  NumericFilter,
+  AutoCompleteFilter,
+  MultiSelectFilter,
+  SingleSelectFilter
 };
 
-module.exports = Filters;
+export default Filters;
+export {
+  NumericFilter,
+  AutoCompleteFilter,
+  MultiSelectFilter,
+  SingleSelectFilter
+};

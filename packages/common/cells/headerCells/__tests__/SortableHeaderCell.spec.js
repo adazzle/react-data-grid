@@ -1,5 +1,6 @@
 import React from 'react';
-import SortableHeaderCell, { DEFINE_SORT } from '../SortableHeaderCell';
+import SortableHeaderCell from '../SortableHeaderCell';
+import { DefineSort } from 'common/constants';
 import { shallow } from 'enzyme';
 
 const defaultProps = {
@@ -9,7 +10,7 @@ const defaultProps = {
     key: 'col1'
   },
   onSort: jasmine.createSpy(),
-  sortDirection: DEFINE_SORT.NONE
+  sortDirection: DefineSort.NONE
 };
 
 describe('<SortableHeaderCell/>', () => {
@@ -26,14 +27,14 @@ describe('<SortableHeaderCell/>', () => {
   it('should toggle sort direction when clicked', () => {
     const { wrapper, props } = setup();
     wrapper.simulate('click');
-    expect(props.onSort).toHaveBeenCalledWith(props.columnKey, DEFINE_SORT.ASC);
+    expect(props.onSort).toHaveBeenCalledWith(props.columnKey, DefineSort.ASC);
   });
 
   describe('When sortDescendingFirst is true', () => {
     it('should set sort descending first when clicked', () => {
       const { wrapper, props } = setup({ sortDescendingFirst: true });
       wrapper.simulate('click');
-      expect(props.onSort).toHaveBeenCalledWith(props.columnKey, DEFINE_SORT.DESC);
+      expect(props.onSort).toHaveBeenCalledWith(props.columnKey, DefineSort.DESC);
     });
   });
 

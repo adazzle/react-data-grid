@@ -4,14 +4,24 @@ import Cell from './Cell';
 import Row from './Row';
 import EmptyChildRow from './EmptyChildRow';
 
-module.exports = Grid;
-module.exports.Row = Row;
-module.exports.Cell = Cell;
-module.exports.HeaderCell = require('./HeaderCell');
-module.exports.RowComparer = RowComparer;
-module.exports.EmptyChildRow = EmptyChildRow;
-module.exports.editors = require('common/editors');
-module.exports.formatters = require('./formatters');
-module.exports.shapes = require('common/prop-shapes');
-module.exports._constants = require('common/constants');
-module.exports._helpers = require('./helpers');
+import HeaderCell from './HeaderCell';
+import editors from 'common/editors';
+import formatters from './formatters';
+import shapes from 'common/prop-shapes';
+import _constants from 'common/constants';
+import _helpers from './helpers';
+
+export default Grid;
+export {
+    Row,
+    Cell,
+    HeaderCell,
+    RowComparer,
+    EmptyChildRow,
+    editors,
+    formatters,
+    shapes,
+    _constants,
+    _helpers
+};
+

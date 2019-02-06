@@ -5,7 +5,7 @@ import joinClasses from 'classnames';
 import Cell from './Cell';
 import createObjectWithProperties from './createObjectWithProperties';
 import { isFrozen } from './ColumnUtils';
-require('../../../themes/react-data-grid-row.css');
+import '../../../themes/react-data-grid-row.css';
 
 // The list of the propTypes that we want to include in the Row div
 const knownDivPropertyKeys = ['height'];

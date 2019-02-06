@@ -1,6 +1,7 @@
 import * as CellNavigationMode from './CellNavigationMode';
 import * as EventTypes from './EventTypes';
 import * as HeaderRowType from './HeaderRowType';
+import DefineSort from './DefineSort';
 import keyMirror from 'keymirror';
 
 
@@ -20,9 +21,20 @@ const CellExpand = {
   RIGHT_TRIANGLE: String.fromCharCode(9654)
 };
 
+const constants = {
+  CellNavigationMode,
+  DefineSort,
+  EventTypes,
+  HeaderRowType,
+  UpdateActions,
+  CellExpand,
+  DragItemTypes
+};
 
+export default constants;
 export {
   CellNavigationMode,
+  DefineSort,
   EventTypes,
   HeaderRowType,
   UpdateActions,

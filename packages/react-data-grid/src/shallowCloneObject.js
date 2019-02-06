@@ -8,4 +8,4 @@ function shallowCloneObject(obj) {
   return result;
 }
 
-module.exports = shallowCloneObject;
+export default shallowCloneObject;

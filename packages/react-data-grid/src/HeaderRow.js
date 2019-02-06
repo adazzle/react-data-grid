@@ -4,6 +4,7 @@ import BaseHeaderCell from './HeaderCell';
 import getScrollbarSize from './getScrollbarSize';
 import { getColumn, getSize, isFrozen } from './ColumnUtils';
 import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
+import { DefineSort } from 'common/constants';
 import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
 import HeaderCellType from './HeaderCellType';
 import createObjectWithProperties from './createObjectWithProperties';
@@ -34,7 +35,7 @@ class HeaderRow extends React.Component {
     onColumnResizeEnd: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle),
     sortColumn: PropTypes.string,
-    sortDirection: PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sortDirection: PropTypes.oneOf(Object.keys(DefineSort)),
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
@@ -78,7 +79,7 @@ class HeaderRow extends React.Component {
   };
 
   getSortableHeaderCell = (column) => {
-    const sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+    const sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : DefineSort.NONE;
     const sortDescendingFirst = (column.sortDescendingFirst === undefined) ? false : column.sortDescendingFirst;
     return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst} headerRenderer={column.headerRenderer} />;
   };
@@ -178,4 +179,4 @@ class HeaderRow extends React.Component {
   }
 }
 
-module.exports = HeaderRow;
+export default HeaderRow;

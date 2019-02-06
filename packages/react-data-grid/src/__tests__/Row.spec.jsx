@@ -3,7 +3,7 @@ import TestUtils from 'react-dom/test-utils';
 import Row from '../Row';
 import Cell from '../Cell';
 import { shallow } from 'enzyme';
-import { createColumns } from '../__tests__/utils/createColumns';
+import { createColumns } from './utils/createColumns';
 
 describe('Row', () => {
   const fakeProps = {

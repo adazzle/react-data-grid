@@ -1,6 +1,6 @@
-const React = require('react');
-const ReactDataGrid = require('react-data-grid');
-const createRowData = require(`${process.cwd()}/core/createFakeData`);
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+import createRowData from `${process.cwd()}/core/createFakeData`;
 
 const defaultColumnProperties = {
   width: 160
@@ -84,5 +84,5 @@ function Example() {
   );
 }
 
-module.exports = Example;
+export default Example;
 

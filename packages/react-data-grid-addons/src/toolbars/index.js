@@ -1,4 +1,13 @@
 import AdvancedToolbar from './AdvancedToolbar';
 import GroupedColumnsPanel from './GroupedColumnsPanel';
 
-module.exports = { AdvancedToolbar, GroupedColumnsPanel };
+const ToolsPanel = {
+    AdvancedToolbar,
+    GroupedColumnsPanel
+};
+
+export default ToolsPanel;
+export {
+    AdvancedToolbar,
+    GroupedColumnsPanel
+};

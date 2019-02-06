@@ -14,4 +14,4 @@ function RowsDescription() {
   );
 }
 
-module.exports = RowsDescription;
+export default RowsDescription;

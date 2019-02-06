@@ -11,4 +11,4 @@ function RenderGrid() {
   );
 }
 
-module.exports = RenderGrid;
+export default RenderGrid;

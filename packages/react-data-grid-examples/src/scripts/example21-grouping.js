@@ -1,13 +1,12 @@
-const faker = require('faker');
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const {
-  ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
-  Data: { Selectors },
-  Draggable: { Container: DraggableContainer },
-  Formatters: { ImageFormatter }
-} = require('react-data-grid-addons');
+import faker from 'faker';
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
+import { ToolsPanel, Data, Draggable, Formatters } from 'react-data-grid-addons';
+const { Toolbar, GroupedColumnsPanel } = ToolsPanel;
+const { Selectors } = Data;
+const { DraggableContainer } = Draggable;
+const { ImageFormatter } = Formatters;
 
 import PropTypes from 'prop-types';
 

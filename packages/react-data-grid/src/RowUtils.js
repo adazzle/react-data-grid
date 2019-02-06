@@ -18,4 +18,11 @@ const RowUtils = {
   }
 };
 
-module.exports = RowUtils;
+const get = RowUtils.get;
+const isRowSelected = RowUtils.isRowSelected;
+
+export default RowUtils;
+export {
+  get,
+  isRowSelected
+};

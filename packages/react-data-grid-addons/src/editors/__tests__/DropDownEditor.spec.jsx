@@ -1,4 +1,4 @@
-const React          = require('react');
+import React from 'react';
 const TestUtils      = require('react-dom/test-utils');
 const DropDownEditor = require('../DropDownEditor');
 

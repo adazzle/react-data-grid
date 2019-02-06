@@ -1,4 +1,4 @@
-const React            = require('react');
+import React from 'react';
 const SimpleTextEditor = require('../SimpleTextEditor');
 const { mount } = require('enzyme');
 

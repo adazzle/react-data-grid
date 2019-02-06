@@ -146,4 +146,12 @@ function sameColumns(prevColumns, nextColumns, isSameColumn) {
   return compareEachColumn(prevColumns, nextColumns, isSameColumn);
 }
 
-module.exports = { recalculate, resizeColumn, sameColumn, sameColumns };
+const ColumnMetrics = {
+  recalculate,
+  resizeColumn,
+  sameColumn,
+  sameColumns
+};
+
+export default ColumnMetrics;
+export { recalculate, resizeColumn, sameColumn, sameColumns };

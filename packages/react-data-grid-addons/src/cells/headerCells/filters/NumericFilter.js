@@ -138,4 +138,4 @@ NumericFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
   column: PropTypes.shape(Column)
 };
-module.exports = NumericFilter;
+export default NumericFilter;

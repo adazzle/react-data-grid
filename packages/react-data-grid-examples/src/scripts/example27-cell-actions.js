@@ -1,12 +1,10 @@
-const faker = require('faker');
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const {
-  Data: { Selectors },
-  Formatters: { ImageFormatter }
-} = require('react-data-grid-addons');
-
+import faker from 'faker';
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
+import { Data, Formatters } from 'react-data-grid-addons';
+const { Selectors } = Data;
+const { ImageFormatter } = Formatters;
 
 faker.locale = 'en_GB';
 

@@ -1,8 +1,8 @@
-const React                   = require('react');
-const ReactDOM                = require('react-dom');
-const ReactAutocomplete       = require('ron-react-autocomplete');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactAutocomplete from 'ron-react-autocomplete';
 import { Column } from 'common/prop-shapes';
-require('../../../../themes/ron-react-autocomplete.css');
+import '../../../../themes/ron-react-autocomplete.css';
 import PropTypes from 'prop-types';
 
 const optionPropType = PropTypes.shape({
@@ -107,4 +107,4 @@ class AutoCompleteEditor extends React.Component {
   }
 }
 
-module.exports = AutoCompleteEditor;
+export default AutoCompleteEditor;

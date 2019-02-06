@@ -1,8 +1,8 @@
 import React from 'react';
 
-const ColsDescription = require('./ColsDescription');
-const RowsDescription = require('./RowsDescription');
-const RenderGridDescription = require('./RenderGrid');
+import ColsDescription from './ColsDescription';
+import RowsDescription from './RowsDescription';
+import RenderGridDescription from './RenderGrid';
 
 function BasicExample() {
   return (
@@ -17,4 +17,4 @@ function BasicExample() {
   );
 }
 
-module.exports = BasicExample;
+export default BasicExample;

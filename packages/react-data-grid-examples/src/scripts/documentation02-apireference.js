@@ -25,4 +25,7 @@ class ApiReference extends React.Component {
   }
 }
 
-module.exports = ApiReference;
+export default ApiReference;
+export {
+  ApiReference,
+};

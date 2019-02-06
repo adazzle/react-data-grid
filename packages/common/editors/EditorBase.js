@@ -1,5 +1,5 @@
-const React                   = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 import Column from 'common/prop-shapes/Column';
 import PropTypes from 'prop-types';
 
@@ -40,5 +40,5 @@ EditorBase.propTypes = {
   commit: PropTypes.func.isRequired
 };
 
-module.exports = EditorBase;
+export default EditorBase;
 

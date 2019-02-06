@@ -68,7 +68,14 @@ var renderGrid = function(args) {
     return ReactDOM.render(getGrid(args),
       document.getElementById(args.containerId));
 };
-module.exports = {
-  getGrid: getGrid,
-  renderGrid: renderGrid
+
+const helpers = {
+  getGrid,
+  renderGrid
+};
+
+export default helpers;
+export {
+  getGrid,
+  renderGrid
 };

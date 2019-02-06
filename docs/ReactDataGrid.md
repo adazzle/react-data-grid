@@ -445,7 +445,7 @@ The key of the column which is currently being sorted
 
 The direction to sort the sortColumn
 
-**type:** enum Object.keys(DEFINE_SORT) 
+**type:** enum Object.keys(DefineSort) 
 
 
 ### `toolbar`

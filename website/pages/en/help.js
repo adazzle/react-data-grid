@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
+import React from 'react';
 
 const CompLibrary = require('../../core/CompLibrary.js');
 

@@ -44,4 +44,4 @@ class PropTestUtils {
 
 }
 
-module.exports = PropTestUtils;
+export default PropTestUtils;

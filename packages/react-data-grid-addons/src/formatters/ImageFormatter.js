@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-require('../../../../themes/react-data-grid-image.css');
+import '../../../../themes/react-data-grid-image.css';
 
 const PendingPool = {};
 const ReadyPool = {};

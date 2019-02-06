@@ -1,8 +1,9 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const { Editors: { DropDownEditor } } = require('react-data-grid-addons');
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
 import update from 'immutability-helper';
+import { Editors } from 'react-data-grid-addons';
+const { DropDownEditor } = Editors;
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 

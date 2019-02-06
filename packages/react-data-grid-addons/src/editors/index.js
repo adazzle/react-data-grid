@@ -1,12 +1,21 @@
 import { SimpleTextEditor, CheckboxEditor } from 'common/editors';
 import ContainerEditorWrapper from './ContainerEditorWrapper';
+import AutoComplete from './AutoCompleteEditor';
+import DropDownEditor from './DropDownEditor';
 
 const Editors = {
-  AutoComplete: require('./AutoCompleteEditor'),
-  DropDownEditor: require('./DropDownEditor'),
+  AutoComplete,
+  DropDownEditor,
   ContainerEditorWrapper,
   SimpleTextEditor,
   CheckboxEditor
 };
 
-module.exports = Editors;
+export default Editors;
+export {
+  AutoComplete,
+  DropDownEditor,
+  ContainerEditorWrapper,
+  SimpleTextEditor,
+  CheckboxEditor
+};

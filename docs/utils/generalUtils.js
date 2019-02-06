@@ -43,8 +43,8 @@ function getComponentName(filepath) {
   return name;
 }
 
-module.exports = {
-  writeError: writeError,
-  traverseDir: traverseDir,
-  getComponentName: getComponentName
+export {
+  writeError,
+  traverseDir,
+  getComponentName
 };

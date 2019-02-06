@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import createObjectWithProperties from'./createObjectWithProperties';
 import cellMetaDataShape    from'common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from 'common/constants';
-require('../../../themes/react-data-grid-header.css');
+import '../../../themes/react-data-grid-header.css';
 
 
 // The list of the propTypes that we want to include in the Header div
@@ -207,4 +207,4 @@ class Header extends React.Component {
   }
 }
 
-module.exports = Header;
+export default Header;

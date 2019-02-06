@@ -21,7 +21,7 @@ function createFakeRow(index) {
   };
 }
 
-module.exports = function createRowData(count) {
+export default function createRowData(count) {
   return [...Array(count).keys()].map(i => {
     return { ...createFakeRow(i), teamMembers: [] };
   });

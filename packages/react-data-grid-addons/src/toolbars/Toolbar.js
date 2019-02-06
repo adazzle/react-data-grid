@@ -1,5 +1,5 @@
-const React = require('react');
-require('../../../../themes/react-data-grid-toolbar.css');
+import React from 'react';
+import '../../../../themes/react-data-grid-toolbar.css';
 import PropTypes from 'prop-types';
 
 class Toolbar extends React.Component {
@@ -53,4 +53,4 @@ class Toolbar extends React.Component {
   }
 }
 
-module.exports = Toolbar;
+export default Toolbar;

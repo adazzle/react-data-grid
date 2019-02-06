@@ -1,4 +1,4 @@
-const React = require('react');
+import React from 'react';
 const CompLibrary = require('../../core/CompLibrary.js');
 
 const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
@@ -199,4 +199,4 @@ class Index extends React.Component {
   }
 }
 
-module.exports = Index;
+export default Index;

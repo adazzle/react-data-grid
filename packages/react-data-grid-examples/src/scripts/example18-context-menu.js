@@ -1,9 +1,9 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const { Menu: { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } } = require('react-data-grid-addons');
-
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
 import PropTypes from 'prop-types';
+import Menu from 'react-data-grid-addons';
+const { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } = Menu;
 
 class Example extends React.Component {
   constructor(props) {

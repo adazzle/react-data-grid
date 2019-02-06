@@ -1,3 +1,4 @@
+const document = require('global/document');
 import React, { isValidElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 
@@ -21,7 +22,7 @@ import {
 } from '../utils/SelectedCellUtils';
 import { isFunction } from 'common/utils';
 import { getSize, getColumn, isFrozen } from '../ColumnUtils';
-import * as keyCodes from '../KeyCodes';
+import keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from 'common/constants';
 
 require('../../../../themes/interaction-masks.css');

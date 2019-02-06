@@ -37,4 +37,7 @@ class GettingStarted extends React.Component {
   }
 }
 
-module.exports = GettingStarted;
+export default GettingStarted;
+export {
+  GettingStarted
+};

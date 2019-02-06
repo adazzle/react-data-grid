@@ -1308,7 +1308,7 @@
         "type": {
           "name": "enum",
           "computed": true,
-          "value": "Object.keys(DEFINE_SORT)"
+          "value": "Object.keys(DefineSort)"
         },
         "required": false,
         "description": "The direction to sort the sortColumn"

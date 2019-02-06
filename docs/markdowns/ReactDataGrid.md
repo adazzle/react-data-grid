@@ -292,7 +292,7 @@ type: `string`
 
 ### `sortDirection`
 
-type: `enumObject.keys(DEFINE_SORT)`
+type: `enumObject.keys(DefineSort)`
 
 
 ### `toolbar`

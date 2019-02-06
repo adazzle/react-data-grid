@@ -27,4 +27,4 @@ QuickStartDescription.propTypes = {
   title: PropTypes.string
 };
 
-module.exports = QuickStartDescription;
+export default QuickStartDescription;

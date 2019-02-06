@@ -1,17 +1,13 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const FakeObjectDataStore = require('./FakeObjectDataStore');
-const Immutable = require('immutable');
-const {
-  Editors:
-    { AutoComplete: AutoCompleteEditor, DropDownEditor },
-  Toolbar,
-  Menu:
-    { ContextMenu, MenuItem },
-  Formatters:
-    { ImageFormatter }} = require('react-data-grid-addons');
-const faker = require('faker');
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
+import FakeObjectDataStore from './FakeObjectDataStore';
+import Immutable from 'immutable';
+import { Editors, Toolbar, Menu, Formatters } from 'react-data-grid-addons';
+const { AutoComplete, DropDownEditor } = Editors;
+const { ContextMenu, MenuItem } = Menu;
+const { ImageFormatter } = Formatters;
+import faker from 'faker';
 
 import PropTypes from 'prop-types';
 
@@ -78,7 +74,7 @@ const columns = [
   {
     key: 'county',
     name: 'County',
-    editor: <AutoCompleteEditor options={counties}/>,
+    editor: <AutoComplete options={counties}/>,
     width: 200,
     resizable: true
   },

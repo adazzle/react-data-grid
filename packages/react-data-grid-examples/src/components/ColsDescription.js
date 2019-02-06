@@ -12,4 +12,4 @@ function ColsDescription() {
   );
 }
 
-module.exports = ColsDescription;
+export default ColsDescription;

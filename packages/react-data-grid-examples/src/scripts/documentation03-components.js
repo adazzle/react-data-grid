@@ -90,4 +90,7 @@ class ComponentDocs extends React.Component {
 }
 
 
-module.exports = ComponentDocs;
+export default ComponentDocs;
+export {
+  ComponentDocs,
+};

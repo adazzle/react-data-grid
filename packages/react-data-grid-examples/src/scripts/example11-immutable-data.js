@@ -1,7 +1,7 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const Immutable = require('immutable');
+import ReactDataGrid from 'react-data-grid';
+import exampleWrapper from '../components/exampleWrapper';
+import React from 'react';
+import Immutable from 'immutable';
 
 class Example extends React.Component {
   constructor(props, context) {

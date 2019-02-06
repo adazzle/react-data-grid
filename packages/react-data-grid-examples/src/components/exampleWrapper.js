@@ -1,4 +1,4 @@
-const React = require('react');
+import React from 'react';
 const classNames = require('classnames');
 require('../assets/css/exampleWrapper.css');
 
@@ -35,4 +35,4 @@ const exampleWrapper = ({
   };
 };
 
-module.exports = exampleWrapper;
+export default exampleWrapper;

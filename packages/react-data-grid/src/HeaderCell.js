@@ -5,9 +5,10 @@ import classNames from 'classnames';
 import Column from 'common/prop-shapes/Column';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from 'common/constants';
-const ResizeHandle   = require('./ResizeHandle');
+import ResizeHandle from './ResizeHandle';
+import '../../../themes/react-data-grid-header.css';
 
-require('../../../themes/react-data-grid-header.css');
+import '../../../themes/react-data-grid-header.css';
 
 function SimpleCellRenderer(objArgs) {
   const headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
@@ -141,4 +142,4 @@ class HeaderCell extends React.Component {
   }
 }
 
-module.exports = HeaderCell;
+export default HeaderCell;

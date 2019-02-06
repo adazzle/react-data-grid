@@ -1,6 +1,6 @@
 
-const React          = require('react');
-const moment         = require('moment');
+import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 
 class DateRangeFormatter extends React.Component {
@@ -34,4 +34,4 @@ class DateRangeFormatter extends React.Component {
   }
 }
 
-module.exports = DateRangeFormatter;
+export default DateRangeFormatter;

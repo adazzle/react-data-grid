@@ -1,3 +1,8 @@
 import DraggableContainer from './DraggableContainer';
 
-module.exports = { DraggableContainer };
+const DraggableHeader = {
+    DraggableContainer
+};
+
+export default DraggableHeader;
+export { DraggableContainer };

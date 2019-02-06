@@ -1,18 +1,14 @@
-const React              = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses         = require('classnames');
-const DEFINE_SORT = {
-  ASC: 'ASC',
-  DESC: 'DESC',
-  NONE: 'NONE'
-};
+import joinClasses from 'classnames';
+import { DefineSort } from 'common/constants';
 
 class SortableHeaderCell extends React.Component {
   static propTypes = {
     columnKey: PropTypes.string.isRequired,
     column: PropTypes.shape({ name: PropTypes.node }),
     onSort: PropTypes.func.isRequired,
-    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
+    sortDirection: PropTypes.oneOf(Object.keys(DefineSort)),
     headerRenderer: PropTypes.node,
     sortDescendingFirst: PropTypes.bool
   };
@@ -24,14 +20,14 @@ class SortableHeaderCell extends React.Component {
     default:
     case null:
     case undefined:
-    case DEFINE_SORT.NONE:
-      direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
+    case DefineSort.NONE:
+      direction = sortDescendingFirst ? DefineSort.DESC : DefineSort.ASC;
       break;
-    case DEFINE_SORT.ASC:
-      direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
+    case DefineSort.ASC:
+      direction = sortDescendingFirst ? DefineSort.NONE : DefineSort.DESC;
       break;
-    case DEFINE_SORT.DESC:
-      direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
+    case DefineSort.DESC:
+      direction = sortDescendingFirst ? DefineSort.ASC : DefineSort.NONE;
       break;
     }
     this.props.onSort(
@@ -65,5 +61,4 @@ class SortableHeaderCell extends React.Component {
   }
 }
 
-module.exports = SortableHeaderCell;
-module.exports.DEFINE_SORT = DEFINE_SORT;
+export default SortableHeaderCell;
