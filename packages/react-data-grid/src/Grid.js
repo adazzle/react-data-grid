@@ -71,7 +71,8 @@ class Grid extends React.Component {
     onCommit: PropTypes.func.isRequired,
     onScroll: PropTypes.func,
     scrollLeft: PropTypes.number,
-    RowsContainer: PropTypes.node
+    RowsContainer: PropTypes.node,
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   static defaultProps = {
@@ -208,6 +209,7 @@ class Grid extends React.Component {
                   onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
                   onCommit={this.props.onCommit}
                   RowsContainer={this.props.RowsContainer}
+                  editorPortalTarget={this.props.editorPortalTarget}
                 />
             </div>
         :

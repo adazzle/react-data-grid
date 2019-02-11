@@ -13,6 +13,7 @@ import { EventTypes } from 'common/constants';
 require('../../../themes/react-data-grid-core.css');
 
 class Canvas extends React.PureComponent {
+  static displayName = 'Canvas';
 
   static propTypes = {
     rowRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
@@ -76,7 +77,8 @@ class Canvas extends React.PureComponent {
     onCellRangeSelectionStarted: PropTypes.func,
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
-    onCommit: PropTypes.func.isRequired
+    onCommit: PropTypes.func.isRequired,
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   static defaultProps = {
@@ -428,6 +430,7 @@ class Canvas extends React.PureComponent {
           getRowHeight={this.getRowHeight}
           getRowTop={this.getRowTop}
           getRowColumns={this.getRowColumns}
+          editorPortalTarget={this.props.editorPortalTarget}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           <div style={{ width: totalColumnWidth }}>{rows}</div>
