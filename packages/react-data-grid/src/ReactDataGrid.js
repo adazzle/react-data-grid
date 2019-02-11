@@ -181,7 +181,7 @@ class ReactDataGrid extends React.Component {
           keys: PropTypes.shape({
             /** The selected unique ids of each row */
             values: PropTypes.array.isRequired,
-            /** The name of the unoque id property of each row */
+            /** The name of the unique id property of each row */
             rowKey: PropTypes.string.isRequired
           }).isRequired
         })
