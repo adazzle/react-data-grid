@@ -18,24 +18,25 @@ Props
 An array of objects representing each column on the grid.
 Can also be an ImmutableJS object
 
-**type:** arrayOf 
-  | Name | Type | Required | Description
-  | --------- | ---- | ---- | ----------------------------------
-  |name | node | true | The name of the column. By default it will be displayed in the header cell| 
-key | string | true | A unique key to distinguish each column| 
-width | number | false | Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns| 
-filterable | bool | false | Enable filtering of a column| 
-filterRenderer | node | false | Component to be used to filter the data of the column| 
-resizable | bool | false | Enable resizing of a column| 
-sortable | bool | false | Enable sorting of a column| 
-sortDescendingFirst | bool | false | Sets the column sort order to be descending instead of ascending the first time the column is sorted| 
-dragable | bool | false | Enable dragging of a column| 
-editable | node | false | Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor| 
-editor | node | false | Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable| 
-formatter | node | false | Formatter to be used to render the cell content| 
-headerRenderer | node | false | Header renderer for each header cell| 
-frozen | bool | false | Determines whether column is frozen or not| 
-events | object | false | By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column| 
+**type:** arrayOf
+ 
+  | Name | Type | Required | Description |
+  | --------- | ---- | ---- | ---------------------------------- |
+  | name | node | true | The name of the column. By default it will be displayed in the header cell| 
+  | key | string | true | A unique key to distinguish each column| 
+  | width | number | false | Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns| 
+  | filterable | bool | false | Enable filtering of a column| 
+  | filterRenderer | node | false | Component to be used to filter the data of the column| 
+  | resizable | bool | false | Enable resizing of a column| 
+  | sortable | bool | false | Enable sorting of a column| 
+  | sortDescendingFirst | bool | false | Sets the column sort order to be descending instead of ascending the first time the column is sorted| 
+  | dragable | bool | false | Enable dragging of a column| 
+  | editable | node | false | Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor| 
+  | editor | node | false | Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable| 
+  | formatter | node | false | Formatter to be used to render the cell content| 
+  | headerRenderer | node | false | Header renderer for each header cell| 
+  | frozen | bool | false | Determines whether column is frozen or not| 
+  | events | object | false | By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column| 
  
 
 
@@ -65,11 +66,12 @@ The number of rows to be rendered
 Object used to configure cell range selection
 
 **type:** shape 
+
   | Name | Type | Required | Description
-  | --------- | ---- | ---- | ----------------------------------
-  |onStart | func | false | Function called whenever cell range selection begins| 
-onUpdate | func | false | Function called whenever cell selection range is updated| 
-onComplete | func | false | Function called whenever cell selection range has been completed| 
+  | --------- | ---- | ---- | ----------------------------------|
+  | onStart | func | false | Function called whenever cell range selection begins| 
+  | onUpdate | func | false | Function called whenever cell selection range is updated| 
+  | onComplete | func | false | Function called whenever cell selection range has been completed| 
  
 
 
@@ -408,13 +410,14 @@ Deprecated
 ### `rowSelection`
 
 **type:** shape 
-  | Name | Type | Required | Description
-  | --------- | ---- | ---- | ----------------------------------
-  |enableShiftSelect | bool | false | undefined| 
-onRowsSelected | func | false | Function called whenever rows are selected| 
-onRowsDeselected | func | false | Function called whenever rows are deselected| 
-showCheckbox | bool | false | toggle whether to show a checkbox in first column to select rows| 
-selectBy | union | true | Method by which rows should be selected| 
+
+  | Name | Type | Required | Description |
+  | --------- | ---- | ---- | ---------------------------------- |
+  | enableShiftSelect | bool | false | undefined| 
+  | onRowsSelected | func | false | Function called whenever rows are selected| 
+  | onRowsDeselected | func | false | Function called whenever rows are deselected| 
+  | showCheckbox | bool | false | toggle whether to show a checkbox in first column to select rows| 
+  | selectBy | union | true | Method by which rows should be selected| 
  
 
 
