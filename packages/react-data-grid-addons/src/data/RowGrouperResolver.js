@@ -1,4 +1,3 @@
-import { List } from 'immutable';
 import groupBy from 'lodash/groupBy';
 import { isImmutableMap, getMixedTypeValueRetriever } from 'common/utils';
 
@@ -10,7 +9,7 @@ export default class RowGrouperResolver {
   }
 
   initRowsCollection() {
-    return this.isImmutable ? new List() : [];
+    return this.isImmutable ? new Immutable.List() : [];
   }
 
   getGroupedRows(rows, columnName) {
