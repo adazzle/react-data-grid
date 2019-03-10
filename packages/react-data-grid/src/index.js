@@ -1,24 +1,3 @@
-// import Grid from './ReactDataGrid';
-// import * as formatters from './formatters';
-// import * as editors from 'common/editors';
-// import * as shapes from 'common/prop-shapes';
-// import * as _constants from 'common/constants';
-// import * as _helpers from './helpers';
-
-// export default Grid;
-// export { default as RowComparer } from 'common/utils/RowComparer';
-// export { default as Cell } from './Cell';
-// export { default as Row } from './Row';
-// export { default as EmptyChildRow } from './EmptyChildRow';
-// export { default as HeaderCell } from './HeaderCell';
-// export {
-//   formatters,
-//   editors,
-//   shapes,
-//   _constants,
-//   _helpers
-// };
-
 import Grid from './ReactDataGrid';
 import RowComparer from 'common/utils/RowComparer';
 import Cell from './Cell';
