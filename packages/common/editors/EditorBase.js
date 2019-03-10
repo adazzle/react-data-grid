@@ -1,9 +1,10 @@
-const React                   = require('react');
-const ReactDOM = require('react-dom');
-import Column from 'common/prop-shapes/Column';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-class EditorBase extends React.Component {
+import Column from 'common/prop-shapes/Column';
+
+export default class EditorBase extends React.Component {
 
   getStyle() {
     return {
@@ -39,6 +40,4 @@ EditorBase.propTypes = {
   column: PropTypes.shape(Column).isRequired,
   commit: PropTypes.func.isRequired
 };
-
-module.exports = EditorBase;
 

@@ -3,9 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 
-const EditorContainer = require('../EditorContainer');
-const SimpleTextEditor = require('../SimpleTextEditor');
-const EditorBase = require('../EditorBase');
+import EditorContainer from '../EditorContainer';
+import SimpleTextEditor from '../SimpleTextEditor';
+import EditorBase from '../EditorBase';
 
 function DefaultEditor() {
   return (
