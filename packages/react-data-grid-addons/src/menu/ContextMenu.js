@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { ContextMenu } from 'react-contextmenu';
 
-class ReactDataGridContextMenu extends React.Component {
+export default class ReactDataGridContextMenu extends React.Component {
   render() {
     return (
       <ContextMenu identifier="reactDataGridContextMenu">
@@ -16,5 +16,3 @@ class ReactDataGridContextMenu extends React.Component {
 ReactDataGridContextMenu.propTypes = {
   children: PropTypes.node
 };
-
-export default ReactDataGridContextMenu;

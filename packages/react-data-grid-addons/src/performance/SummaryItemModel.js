@@ -2,7 +2,7 @@ const OWNER_COMPONENT_KEY = 'Owner > component';
 const WASTED_TIME_KEY = 'Wasted time (ms)';
 const WASTED_INSTANCES_KEY = 'Instances';
 
-class SummaryItemModel {
+export default class SummaryItemModel {
   constructor(summary) {
     if (typeof summary === 'object') {
       this._createModel(summary);
@@ -36,5 +36,3 @@ class SummaryItemModel {
     };
   }
 }
-
-export default SummaryItemModel;

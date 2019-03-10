@@ -41,8 +41,7 @@ const getSelectedRowsByKey = createSelector([getRowKey, getSelectedKeys, getInpu
   });
 });
 
-const Selectors = {
-  getRows: getFlattenedGroupedRows,
-  getSelectedRowsByKey: getSelectedRowsByKey
+export {
+  getFlattenedGroupedRows as getRows,
+  getSelectedRowsByKey
 };
-export default Selectors;

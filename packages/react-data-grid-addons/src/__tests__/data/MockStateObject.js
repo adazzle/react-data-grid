@@ -1,4 +1,4 @@
-module.exports = function(stateValues, events) {
+export default function(stateValues, events) {
   return Object.assign({
     columnMetrics: {
       columns: [{
@@ -42,4 +42,4 @@ module.exports = function(stateValues, events) {
     scrollOffset: 0,
     lastRowIdxUiSelected: -1
   }, stateValues);
-};
+}

@@ -11,7 +11,7 @@ const Column = {
   filterable: PropTypes.bool
 };
 
-class AutoCompleteTokensEditor extends Component {
+export default class AutoCompleteTokensEditor extends Component {
 
   static propTypes = {
     options: PropTypes.array.isRequired,
@@ -56,5 +56,3 @@ class AutoCompleteTokensEditor extends Component {
     );
   }
 }
-
-export default AutoCompleteTokensEditor;

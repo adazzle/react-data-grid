@@ -5,7 +5,7 @@ require('../../../../themes/react-data-grid-image.css');
 const PendingPool = {};
 const ReadyPool = {};
 
-class ImageFormatter extends React.Component {
+export default class ImageFormatter extends React.Component {
   static propTypes = {
     value: PropTypes.string.isRequired
   };
@@ -72,6 +72,3 @@ class ImageFormatter extends React.Component {
     return <div className="react-grid-image" style={style} />;
   }
 }
-
-
-export default ImageFormatter;

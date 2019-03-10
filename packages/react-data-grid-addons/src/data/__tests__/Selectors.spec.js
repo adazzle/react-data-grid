@@ -1,4 +1,4 @@
-import Selectors from '../Selectors';
+import * as Selectors from '../Selectors';
 import * as filterRows from '../RowFilterer';
 import * as groupRows from '../RowGrouper';
 let filterSpy;

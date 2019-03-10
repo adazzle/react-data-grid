@@ -2,10 +2,11 @@ import 'react-select/dist/react-select.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+
 import { isEmptyArray } from 'common/utils';
 import Column from 'common/prop-shapes/Column';
 
-class AutoCompleteFilter extends React.Component {
+export default class AutoCompleteFilter extends React.Component {
   constructor(props) {
     super(props);
     this.getOptions = this.getOptions.bind(this);
@@ -83,5 +84,3 @@ AutoCompleteFilter.propTypes = {
   getValidFilterValues: PropTypes.func,
   multiSelection: PropTypes.bool
 };
-
-export default AutoCompleteFilter;

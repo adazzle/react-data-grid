@@ -1,6 +1,7 @@
-const React          = require('react');
-const TestUtils      = require('react-dom/test-utils');
-const DropDownEditor = require('../DropDownEditor');
+import React from 'react';
+import TestUtils from 'react-dom/test-utils';
+
+import DropDownEditor from '../DropDownEditor';
 
 describe('DropDownEditor', () => {
   let component;
@@ -16,7 +17,7 @@ describe('DropDownEditor', () => {
         options={fakeOptions}
         value={'option2'}
         onCommit={fakeCommitCb}
-        column={fakeColumn}/>);
+        column={fakeColumn} />);
     });
 
     it('should create a new DropDownEditor instance', () => {
@@ -69,7 +70,7 @@ describe('DropDownEditor', () => {
         options={fakeOptions}
         value={'Choose a thing'}
         onCommit={fakeCommitCb}
-        column={fakeColumn}/>);
+        column={fakeColumn} />);
     });
 
     it('should display value unless text is specified', () => {

@@ -11,7 +11,7 @@ const defaultProps = {
   enableAddRow: true
 };
 
-class AdvancedToolbar extends Component {
+export default class AdvancedToolbar extends Component {
   render() {
     return (
       <div className="react-grid-Toolbar">
@@ -25,5 +25,3 @@ class AdvancedToolbar extends Component {
 
 AdvancedToolbar.defaultProps = defaultProps;
 AdvancedToolbar.propTypes = propTypes;
-
-export default AdvancedToolbar;

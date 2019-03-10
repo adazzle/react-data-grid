@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import Column from 'common/prop-shapes/Column';
 
 const RuleType = {
@@ -9,7 +10,7 @@ const RuleType = {
   LessThen: 4
 };
 
-class NumericFilter extends React.Component {
+export default class NumericFilter extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -138,4 +139,3 @@ NumericFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
   column: PropTypes.shape(Column)
 };
-module.exports = NumericFilter;
