@@ -1,3 +1,3 @@
 export default function RowsContainer({ children }) {
-  return children
-};
+  return children;
+}
