@@ -29,7 +29,7 @@ require('../../../../themes/interaction-masks.css');
 
 const SCROLL_CELL_BUFFER = 2;
 
-class InteractionMasks extends React.Component {
+export default class InteractionMasks extends React.Component {
   static dispplayName = 'InteractionMasks';
 
   static propTypes = {
@@ -745,5 +745,3 @@ class InteractionMasks extends React.Component {
     );
   }
 }
-
-export default InteractionMasks;

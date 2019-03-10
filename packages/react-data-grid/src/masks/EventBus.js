@@ -1,4 +1,4 @@
-class EventBus {
+export default class EventBus {
   subscribers = {};
 
   subscribe(type, handler) {
@@ -24,5 +24,3 @@ class EventBus {
     }
   }
 }
-
-export default EventBus;

@@ -1,8 +1,9 @@
 import React from 'react';
+import { shallow } from 'enzyme';
 import TestUtils from 'react-dom/test-utils';
+
 import Row from '../Row';
 import Cell from '../Cell';
-import { shallow } from 'enzyme';
 import { createColumns } from '../__tests__/utils/createColumns';
 
 describe('Row', () => {

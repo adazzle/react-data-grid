@@ -4,7 +4,7 @@
  * @return {Object} height and width of the window
  */
 
-function getWindowSize() {
+export default function getWindowSize() {
   let width = window.innerWidth;
   let height = window.innerHeight;
 
@@ -20,5 +20,3 @@ function getWindowSize() {
 
   return { width, height };
 }
-
-module.exports = getWindowSize;

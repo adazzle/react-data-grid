@@ -1,6 +1,7 @@
 import React from 'react';
-import ChildRowDeleteButton from '../ChildRowDeleteButton';
 import { mount } from 'enzyme';
+
+import ChildRowDeleteButton from '../ChildRowDeleteButton';
 
 describe('ChildRowDeleteButton', () => {
   let testElement;

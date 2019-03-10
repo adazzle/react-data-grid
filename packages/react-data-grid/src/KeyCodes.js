@@ -1,4 +1,4 @@
-module.exports = {
+const keyCodes = {
   Backspace: 8,
   Tab: 9,
   Enter: 13,
@@ -98,3 +98,4 @@ module.exports = {
   SingleQuote: 222
 };
 
+export default keyCodes;

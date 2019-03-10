@@ -1,4 +1,2 @@
-import EventBus from './EventBus';
-import InteractionMasks from './InteractionMasks';
-
-export { EventBus, InteractionMasks };
+export { default as EventBus } from './EventBus';
+export { default as InteractionMasks } from './InteractionMasks';

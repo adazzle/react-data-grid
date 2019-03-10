@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { getSize, getColumn, getValue } from './ColumnUtils';
 
-class EmptyChildRow extends React.Component {
+export default class EmptyChildRow extends React.Component {
   onAddSubRow = () => {
     this.props.onAddSubRow(this.props.parentRowId);
   }
@@ -55,5 +56,3 @@ EmptyChildRow.propTypes = {
   columns: PropTypes.array.isRequired,
   expandColumnKey: PropTypes.string.isRequired
 };
-
-export default EmptyChildRow;

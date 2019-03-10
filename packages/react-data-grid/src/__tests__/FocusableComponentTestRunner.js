@@ -1,9 +1,10 @@
 import React from 'react';
 import { mount } from 'enzyme';
+
 const COMPONENT_DID_MOUNT_SOURCE = 'CDM';
 const COMPONENT_DID_UPDATE_SOURCE = 'CDU';
 
-class FocusableComponentTestRunner {
+export default class FocusableComponentTestRunner {
   constructor({ Component, props, getNewSelection }) {
     this._Component = Component;
     this._props = props;
@@ -134,5 +135,3 @@ class FocusableComponentTestRunner {
     });
   }
 }
-
-export default FocusableComponentTestRunner;

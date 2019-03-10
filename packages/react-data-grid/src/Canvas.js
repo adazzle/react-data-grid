@@ -12,7 +12,7 @@ import { isFunction } from 'common/utils';
 import { EventTypes } from 'common/constants';
 require('../../../themes/react-data-grid-core.css');
 
-class Canvas extends React.PureComponent {
+export default class Canvas extends React.PureComponent {
   static displayName = 'Canvas';
 
   static propTypes = {
@@ -439,5 +439,3 @@ class Canvas extends React.PureComponent {
     );
   }
 }
-
-module.exports = Canvas;

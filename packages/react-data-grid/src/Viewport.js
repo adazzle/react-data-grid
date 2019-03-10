@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Canvas from './Canvas';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-import PropTypes from 'prop-types';
 import { getSize } from './ColumnUtils';
 import {
   getGridState,
@@ -16,7 +17,7 @@ import {
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
 
-class Viewport extends React.Component {
+export default class Viewport extends React.Component {
   static displayName = 'Viewport';
 
   static propTypes = {
@@ -316,5 +317,3 @@ class Viewport extends React.Component {
     );
   }
 }
-
-module.exports = Viewport;

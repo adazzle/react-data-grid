@@ -1,9 +1,10 @@
 import React from 'react';
 import shallowEqual from 'shallowequal';
+
 import BaseHeaderCell from './HeaderCell';
 import getScrollbarSize from './getScrollbarSize';
 import { getColumn, getSize, isFrozen } from './ColumnUtils';
-import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
+import SortableHeaderCell, { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
 import HeaderCellType from './HeaderCellType';
 import createObjectWithProperties from './createObjectWithProperties';
@@ -22,7 +23,7 @@ const HeaderRowStyle = {
 // The list of the propTypes that we want to include in the HeaderRow div
 const knownDivPropertyKeys = ['width', 'height', 'style', 'onScroll'];
 
-class HeaderRow extends React.Component {
+export default class HeaderRow extends React.Component {
   static displayName = 'HeaderRow';
 
   static propTypes = {
@@ -34,7 +35,7 @@ class HeaderRow extends React.Component {
     onColumnResizeEnd: PropTypes.func,
     style: PropTypes.shape(HeaderRowStyle),
     sortColumn: PropTypes.string,
-    sortDirection: PropTypes.oneOf(Object.keys(SortableHeaderCell.DEFINE_SORT)),
+    sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
     cellRenderer: PropTypes.func,
     headerCellRenderer: PropTypes.func,
     filterable: PropTypes.bool,
@@ -78,7 +79,7 @@ class HeaderRow extends React.Component {
   };
 
   getSortableHeaderCell = (column) => {
-    const sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : SortableHeaderCell.DEFINE_SORT.NONE;
+    const sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : DEFINE_SORT.NONE;
     const sortDescendingFirst = (column.sortDescendingFirst === undefined) ? false : column.sortDescendingFirst;
     return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst} headerRenderer={column.headerRenderer} />;
   };
@@ -177,5 +178,3 @@ class HeaderRow extends React.Component {
     );
   }
 }
-
-module.exports = HeaderRow;

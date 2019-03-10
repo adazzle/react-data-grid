@@ -1,7 +1,8 @@
 import React from 'react';
 // import ReactDOM from 'react-dom';
-import ReactDataGrid from '../ReactDataGrid';
 import { shallow } from 'enzyme';
+
+import ReactDataGrid from '../ReactDataGrid';
 import helpers from '../helpers/test/GridPropHelpers';
 
 function shallowRenderGrid({

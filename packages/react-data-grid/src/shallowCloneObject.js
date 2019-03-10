@@ -1,4 +1,4 @@
-function shallowCloneObject(obj) {
+export default function shallowCloneObject(obj) {
   const result = {};
   for (const k in obj) {
     if (obj.hasOwnProperty(k)) {
@@ -7,5 +7,3 @@ function shallowCloneObject(obj) {
   }
   return result;
 }
-
-module.exports = shallowCloneObject;

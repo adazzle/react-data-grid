@@ -2,10 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+
 import Column from 'common/prop-shapes/Column';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from 'common/constants';
-const ResizeHandle   = require('./ResizeHandle');
+import ResizeHandle from './ResizeHandle';
 
 require('../../../themes/react-data-grid-header.css');
 
@@ -14,7 +15,7 @@ function SimpleCellRenderer(objArgs) {
   return <div className="widget-HeaderCell__value">{headerText}</div>;
 }
 
-class HeaderCell extends React.Component {
+export default class HeaderCell extends React.Component {
   static propTypes = {
     renderer: PropTypes.oneOfType([PropTypes.func, PropTypes.element]).isRequired,
     column: PropTypes.shape(Column).isRequired,
@@ -140,5 +141,3 @@ class HeaderCell extends React.Component {
     return cell;
   }
 }
-
-module.exports = HeaderCell;

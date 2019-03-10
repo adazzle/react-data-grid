@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-const ChildRowDeleteButton = ({ treeDepth, cellHeight, siblingIndex, numberSiblings, onDeleteSubRow, isDeleteSubRowEnabled, allowAddChildRow = true }) => {
+export default function ChildRowDeleteButton({ treeDepth, cellHeight, siblingIndex, numberSiblings, onDeleteSubRow, isDeleteSubRowEnabled, allowAddChildRow = true }) {
   const lastSibling = siblingIndex === numberSiblings - 1;
   const className = classNames(
     { 'rdg-child-row-action-cross': allowAddChildRow === true || !lastSibling },
@@ -17,5 +17,3 @@ const ChildRowDeleteButton = ({ treeDepth, cellHeight, siblingIndex, numberSibli
       <div className="glyphicon glyphicon-remove-sign"></div>
     </div>}</div>);
 };
-
-export default ChildRowDeleteButton;

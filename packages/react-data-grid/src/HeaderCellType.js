@@ -5,4 +5,4 @@ const HeaderCellType = {
   CHECKBOX: 3
 };
 
-module.exports = HeaderCellType;
+export default HeaderCellType;

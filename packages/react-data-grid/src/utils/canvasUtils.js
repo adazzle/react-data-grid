@@ -1,6 +1,6 @@
 import { getColumn, isFrozen } from '../ColumnUtils';
 
-function getColumnScrollPosition(columns, idx, currentScrollLeft, currentClientWidth) {
+export function getColumnScrollPosition(columns, idx, currentScrollLeft, currentClientWidth) {
   let left = 0;
   let frozen = 0;
 
@@ -29,7 +29,3 @@ function getColumnScrollPosition(columns, idx, currentScrollLeft, currentClientW
     }
   }
 }
-
-export {
-  getColumnScrollPosition
-};
