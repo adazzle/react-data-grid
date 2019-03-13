@@ -89,6 +89,7 @@
     "semver": "^5.0.3",
     "sinon": "^4.5.0",
     "style-loader": "^0.13.1",
+    "terser-webpack-plugin": "^1.2.3",
     "vinyl-source-stream": "^0.1.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
