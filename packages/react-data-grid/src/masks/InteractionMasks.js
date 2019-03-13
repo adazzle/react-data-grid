@@ -450,14 +450,19 @@ class InteractionMasks extends React.Component {
   }
 
   onSelectCellRangeStarted = (selectedPosition) => {
-    this.setState({
-      selectedRange: this.createSingleCellSelectedRange(selectedPosition, true),
-      selectedPosition
-    }, () => {
-      if (isFunction(this.props.onCellRangeSelectionStarted)) {
-        this.props.onCellRangeSelectionStarted(this.state.selectedRange);
-      }
-    });
+    this.setState(
+      {isEditorEnabled: false},
+      () => {
+        this.setState({
+            selectedRange: this.createSingleCellSelectedRange(selectedPosition, true),
+            selectedPosition
+          },
+          () => {
+            if (isFunction(this.props.onCellRangeSelectionStarted)) {
+              this.props.onCellRangeSelectionStarted(this.state.selectedRange);
+            }
+          });
+      });
   };
 
   onSelectCellRangeUpdated = (cellPosition, isFromKeyboard, callback) => {
