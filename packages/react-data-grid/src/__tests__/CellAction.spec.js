@@ -1,5 +1,4 @@
 import React from 'react';
-import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
 import CellAction from '../CellAction';
@@ -8,7 +7,7 @@ const setup = (overriderProps = {}) => {
   const props = Object.assign({
     action: {
       icon: 'glyphicon glyphicon-link',
-      callback: sinon.spy()
+      callback: jasmine.createSpy()
     },
     isFirst: true
   }, overriderProps);
@@ -32,7 +31,7 @@ describe('Cell Action Tests', () => {
 
       renderedActionButton.simulate('click');
 
-      expect(props.action.callback.called).toBeTruthy();
+      expect(props.action.callback).toHaveBeenCalled();
 
       expect(renderedActionMenu.length).toBe(0);
     });
@@ -46,11 +45,11 @@ describe('Cell Action Tests', () => {
           actions: [
             {
               text: 'Test Action 1',
-              callback: sinon.spy()
+              callback: jasmine.createSpy()
             },
             {
               text: 'Test Action 1',
-              callback: sinon.spy()
+              callback: jasmine.createSpy()
             }
           ]
         }
@@ -75,9 +74,9 @@ describe('Cell Action Tests', () => {
       expect(renderedActionMenu.length).toBe(1);
       expect(renderedActionMenuProps.children.length).toBe(props.action.actions.length);
 
-      expect(props.action.actions[0].callback.called).toBeFalsy();
+      expect(props.action.actions[0].callback).not.toHaveBeenCalled();
       renderedActionMenu.childAt(0).simulate('click');
-      expect(props.action.actions[0].callback.called).toBeTruthy();
+      expect(props.action.actions[0].callback).toHaveBeenCalled();
     });
   });
 

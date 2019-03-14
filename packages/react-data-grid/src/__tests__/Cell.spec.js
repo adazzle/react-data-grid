@@ -212,7 +212,7 @@ describe('Cell Tests', () => {
 
     describe('when getCellActions is in cellMetadata', () => {
       it('should render some CellActions', () => {
-        const action = { icon: 'glpyhicon glyphicon-link', callback: sinon.spy() };
+        const action = { icon: 'glpyhicon glyphicon-link', callback: jasmine.createSpy() };
         const { wrapper } = setup({
           cellMetaData: {
             selected: { idx: 2, rowIdx: 3 },
@@ -227,7 +227,7 @@ describe('Cell Tests', () => {
             handleDragEnterRow: jasmine.createSpy(),
             handleTerminateDrag: jasmine.createSpy(),
             onColumnEvent: jasmine.createSpy(),
-            getCellActions: sinon.stub().returns([action])
+            getCellActions: jasmine.createSpy().and.returnValue([action])
           }
         });
 

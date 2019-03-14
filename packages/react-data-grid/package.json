@@ -19,5 +19,13 @@
   "peerDependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
+  },
+  "devDependencies": {
+    "react-contextmenu": "^2.10.0"
+  },
+  "dependencies": {
+    "object-assign": "^4.1.1",
+    "react-is-deprecated": "^0.1.2",
+    "shallowequal": "^1.1.0"
   }
 }
