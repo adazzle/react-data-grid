@@ -15,10 +15,8 @@
   "author": "Adazzle",
   "license": "MIT",
   "devDependencies": {
-    "jquery": "^2.1.1",
     "lodash": "^4.13.1",
     "lodash.groupby": "^4.5.1",
-    "moment": "^2.22.2",
     "react-data-grid": "^6.0.1",
     "react-dnd-test-backend": "^2.6.0",
     "underscore": "^1.9.1"
