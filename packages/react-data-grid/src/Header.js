@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
-
-import shallowCloneObject from './shallowCloneObject';
 import * as ColumnMetrics from './ColumnMetrics';
 import { getColumn } from './ColumnUtils';
 import HeaderRow from './HeaderRow';
@@ -57,7 +55,7 @@ export default class Header extends React.Component {
 
     if (pos != null) {
       const resizing = {
-        columnMetrics: shallowCloneObject(state.columnMetrics)
+        columnMetrics: { ...state.columnMetrics }
       };
       resizing.columnMetrics = ColumnMetrics.resizeColumn(
           resizing.columnMetrics, pos, width);

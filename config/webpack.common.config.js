@@ -19,7 +19,6 @@ module.exports = {
       amd: 'react-dom'
     },
     'react/addons': 'React',
-    moment: 'moment',
     immutable: {
       root: 'Immutable',
       commonjs: 'immutable',
