@@ -25,7 +25,8 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-data-grid": "^6.0.1"
   },
   "dependencies": {
     "react-contextmenu": "^2.10.0",
