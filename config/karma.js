@@ -24,7 +24,7 @@ module.exports = function (config) {
       return BROWSERS.split(',');
     }
     if(RELEASE){
-      browsers = ['Chrome','Firefox', 'IE']
+      browsers = ['Chrome','Firefox']
     }else if(DEBUG){
       browsers = ['ChromeDebugging'];
     }
@@ -153,7 +153,6 @@ module.exports = function (config) {
     plugins: [
       'karma-chrome-launcher',
       'karma-firefox-launcher',
-      'karma-ie-launcher',
       'karma-jasmine',
       'karma-jasmine-matchers',
       'karma-webpack',
@@ -162,14 +161,6 @@ module.exports = function (config) {
     ],
 
     customLaunchers: {
-      IE9: {
-        base: 'IE',
-        'x-ua-compatible': 'IE=EmulateIE9'
-      },
-      IE8: {
-        base: 'IE',
-        'x-ua-compatible': 'IE=EmulateIE8'
-      },
       ChromeDebugging: {
         base: 'Chrome',
         flags: [ '--remote-debugging-port=9333' ],
