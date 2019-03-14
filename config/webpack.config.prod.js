@@ -1,7 +1,7 @@
 const webpackCommon = require('./webpack.common.config');
 const path = require('path');
 
-const config =  {
+const config = {
   entry: {
     'react-data-grid/dist/react-data-grid': [path.resolve('packages/react-data-grid/src')],
     'react-data-grid-addons/dist/react-data-grid-addons': [path.resolve('packages/react-data-grid-addons/src')],
@@ -17,4 +17,4 @@ const config =  {
   }
 };
 
-module.exports = Object.assign({ }, webpackCommon, config);
+module.exports = { ...webpackCommon, ...config };
