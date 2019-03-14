@@ -33,7 +33,7 @@
     "es5-shim": "^4.0.3",
     "fs-extra": "^0.30.0",
     "keymirror": "^0.1.1",
-    "prop-types": "^15.6.2"
+    "prop-types": "^15.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -80,10 +80,10 @@
     "mkdirp": "^0.5.1",
     "node-dir": "^0.1.12",
     "open": "0.0.5",
-    "react": "^16.4.2",
+    "react": "^16.8.4",
     "react-docgen": "^2.21.0",
-    "react-dom": "^16.4.2",
-    "react-test-renderer": "^16.4.2",
+    "react-dom": "^16.8.4",
+    "react-test-renderer": "^16.8.4",
     "run-sequence": "^1.2.2",
     "semver": "^5.0.3",
     "style-loader": "^0.13.1",
