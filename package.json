@@ -63,7 +63,6 @@
     "gulp-concat": "^2.3.4",
     "gulp-util": "^3.0.0",
     "immutable": "^3.7.3",
-    "istanbul-instrumenter-loader": "^0.1.2",
     "jasmine-core": "^3.3.0",
     "karma": "^4.0.1",
     "karma-chrome-launcher": "^2.2.0",
