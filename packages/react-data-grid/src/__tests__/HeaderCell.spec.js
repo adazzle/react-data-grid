@@ -6,19 +6,22 @@ import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
 import ResizeHandle from '../ResizeHandle';
 
 describe('Header Cell Tests', () => {
-  const testProps = {
-    rowType: 'header',
-    column: {
-      width: 150,
-      left: 300,
-      name: 'bla',
-      key: 'bla'
-    },
-    onResize: jasmine.createSpy(),
-    onResizeEnd: jasmine.createSpy(),
-    height: 50,
-    name: 'bla'
-  };
+  let testProps;
+  beforeEach(() => {
+    testProps = {
+      rowType: 'header',
+      column: {
+        width: 150,
+        left: 300,
+        name: 'bla',
+        key: 'bla'
+      },
+      onResize: jasmine.createSpy(),
+      onResizeEnd: jasmine.createSpy(),
+      height: 50,
+      name: 'bla'
+    };
+  });
 
   function setup(overrideProps = {}) {
     const props = { ...testProps, ...overrideProps };
@@ -93,7 +96,7 @@ describe('Header Cell Tests', () => {
       const wrapper = mount(<HeaderCell  {...testProps}/>);
       const resizeHandle = wrapper.find(ResizeHandle);
       const fakeEvent = { pageX: 250 };
-      resizeHandle.props().onDrag(fakeEvent);
+      resizeHandle.props().onDragEnd(fakeEvent);
       expect(testProps.onResizeEnd).toHaveBeenCalled();
       expect(testProps.onResizeEnd.calls.mostRecent().args[0]).toEqual(testProps.column);
       expect(testProps.onResizeEnd.calls.mostRecent().args[1]).toEqual(250);

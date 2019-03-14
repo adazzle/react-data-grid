@@ -18,62 +18,66 @@ const render = function(element, mountPoint) {
 
 
 describe('ColumnUtils tests', () => {
-  const testProps = {
-    col: {
-      editable: true,
-      editor: {},
-      filterable: true,
-      formatOptions: '',
-      formula: '',
-      getRowMetaData: undefined,
-      key: 'PlacementType',
-      left: 460,
-      name: 'Adserver Placement Type',
-      options: [
-        'Tracking',
-        'Display'
-      ],
-      required: false,
-      resizable: true,
-      width: 150
-    },
-    rowData: {
-      CostModel: 'CPM',
-      Dimensions: '468x60',
-      EndDate: '17 Apr 16',
-      ExternalSiteName: 'Crimtan',
-      FloodlightActivityId: null,
-      FloodlightActivityName: null,
-      FormatAdditionalInfo: '',
-      FormatBasicDescription: 'Banner - Standard (468x60)',
-      InactivePlacementId: 'False',
-      NumberOfUnits: '147223',
-      PackageId: '522140',
-      PackageName: 'BannerFull (468x60), Leaderboard (728x90), Mpu (300x250)',
-      PlacementId: '11212201702442',
-      PlacementType: 'Display',
-      RowState: 0,
-      Section: 'Run of Site',
-      SentToAdserver: 'True',
-      StartDate: '14 Mar 16',
-      SupplierId: '20966',
-      SupplierName: 'CrimTan',
-      TotalCost: '0',
-      UnitCost: '0',
-      adServingFormat: 'VAST',
-      additionalPlacementInfo: '1',
-      addtlUnitDimensions: '15s',
-      deviceType: 'D',
-      executionId: '502859',
-      isSiteMatched: 'True',
-      os: 'IOS',
-      placementName: 'CrimTan>>RunofSite>>468x60>>15s>> >>D>>CPM>>AUT>>W>>IOS>>VAST>> >>1',
-      targetAudienceType: 'AUT',
-      techType: 'Serving',
-      webOrApp: 'W'
-    },
-    enableCellSelect: true
-  };
+  let testProps;
+
+  beforeEach(() => {
+    testProps = {
+      col: {
+        editable: true,
+        editor: {},
+        filterable: true,
+        formatOptions: '',
+        formula: '',
+        getRowMetaData: undefined,
+        key: 'PlacementType',
+        left: 460,
+        name: 'Adserver Placement Type',
+        options: [
+          'Tracking',
+          'Display'
+        ],
+        required: false,
+        resizable: true,
+        width: 150
+      },
+      rowData: {
+        CostModel: 'CPM',
+        Dimensions: '468x60',
+        EndDate: '17 Apr 16',
+        ExternalSiteName: 'Crimtan',
+        FloodlightActivityId: null,
+        FloodlightActivityName: null,
+        FormatAdditionalInfo: '',
+        FormatBasicDescription: 'Banner - Standard (468x60)',
+        InactivePlacementId: 'False',
+        NumberOfUnits: '147223',
+        PackageId: '522140',
+        PackageName: 'BannerFull (468x60), Leaderboard (728x90), Mpu (300x250)',
+        PlacementId: '11212201702442',
+        PlacementType: 'Display',
+        RowState: 0,
+        Section: 'Run of Site',
+        SentToAdserver: 'True',
+        StartDate: '14 Mar 16',
+        SupplierId: '20966',
+        SupplierName: 'CrimTan',
+        TotalCost: '0',
+        UnitCost: '0',
+        adServingFormat: 'VAST',
+        additionalPlacementInfo: '1',
+        addtlUnitDimensions: '15s',
+        deviceType: 'D',
+        executionId: '502859',
+        isSiteMatched: 'True',
+        os: 'IOS',
+        placementName: 'CrimTan>>RunofSite>>468x60>>15s>> >>D>>CPM>>AUT>>W>>IOS>>VAST>> >>1',
+        targetAudienceType: 'AUT',
+        techType: 'Serving',
+        webOrApp: 'W'
+      },
+      enableCellSelect: true
+    };
+  });
 
   describe('canEdit tests', () => {
     describe('canEdit tests using undefineds', () => {
@@ -220,6 +224,7 @@ describe('ColumnUtils tests', () => {
         // Arrange
         testProps.col.editable = false;
         testProps.enableCellSelect = true;
+        testProps.col.editor = undefined;
 
         // Act
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
@@ -235,6 +240,7 @@ describe('ColumnUtils tests', () => {
         // Arrange
         testProps.col.editable = true;
         testProps.enableCellSelect = false;
+        testProps.col.editor = undefined;
 
         // Act
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
