@@ -45,7 +45,6 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.4",
     "airbnb-browser-shims": "^3.2.1",
-    "avcoveralls": "^1.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^7.1.1",
