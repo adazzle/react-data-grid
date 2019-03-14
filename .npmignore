@@ -6,7 +6,6 @@ LICENSE
 test
 gulp
 examples
-coveralls.yml
 gulpfile.js
 config
 .npmrc
