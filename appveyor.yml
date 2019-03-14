@@ -1,7 +1,9 @@
-version: 1.0.{build}
-# Fix line endings in Windows. (runs before repo cloning)
-init:
-  - git config --global core.autocrlf input
+shallow_clone: true
+image: Visual Studio 2017
+branches:
+  only:
+    - master
+    - next
 environment:
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
