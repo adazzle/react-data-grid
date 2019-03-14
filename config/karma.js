@@ -75,16 +75,11 @@ module.exports = function (config) {
           {
             test: /\.(js|jsx)$/,
             exclude: /node_modules/,
-            use: [
-              { loader: 'babel-loader', options: { envName: 'test' } }
-            ]
+            use: [{ loader: 'babel-loader', options: { envName: 'test' } }]
           },
           {
             test: /\.css$/,
-            use: [
-              { loader: 'style-loader' },
-              { loader: 'css-loader' }
-            ]
+            use: ['style-loader', 'css-loader']
           }
         ]
       },
