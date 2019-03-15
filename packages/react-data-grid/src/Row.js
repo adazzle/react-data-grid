@@ -4,13 +4,9 @@ import joinClasses from 'classnames';
 
 import rowComparer from 'common/utils/RowComparer';
 import Cell from './Cell';
-import createObjectWithProperties from './createObjectWithProperties';
 import { isFrozen } from './ColumnUtils';
 
 import '../../../themes/react-data-grid-row.css';
-
-// The list of the propTypes that we want to include in the Row div
-const knownDivPropertyKeys = ['height'];
 
 export default class Row extends React.Component {
   static displayName = 'Row';
@@ -165,10 +161,6 @@ export default class Row extends React.Component {
     this.row = el;
   };
 
-  getKnownDivProps = () => {
-    return createObjectWithProperties(this.props, knownDivPropertyKeys);
-  };
-
   render() {
     const className = joinClasses(
       'react-grid-Row',
@@ -185,10 +177,9 @@ export default class Row extends React.Component {
       overflow: 'hidden'
     };
 
-    const cells = this.getCells();
     return (
       <div
-        {...this.getKnownDivProps()}
+        height={this.props.height}
         ref={this.setRowRef}
         className={className}
         style={style}

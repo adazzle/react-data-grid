@@ -4,16 +4,12 @@ import joinClasses from 'classnames';
 
 import { isFunction } from 'common/utils';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
-import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 import { isFrozen } from './ColumnUtils';
 
 import '../../../themes/react-data-grid-cell.css';
-
-// The list of the propTypes that we want to include in the Cell div
-const knownDivPropertyKeys = ['height', 'value'];
 
 export default class Cell extends React.PureComponent {
   static propTypes = {
@@ -273,10 +269,6 @@ export default class Cell extends React.PureComponent {
     return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
   };
 
-  getKnownDivProps = () => {
-    return createObjectWithProperties(this.props, knownDivPropertyKeys);
-  };
-
   getCellActions() {
     const { cellMetaData, column, rowData } = this.props;
     if (cellMetaData && cellMetaData.getCellActions) {
@@ -345,7 +337,7 @@ export default class Cell extends React.PureComponent {
     const className = this.getCellClass();
 
     const cellActionButtons = this.getCellActions();
-    const { value, column, rowIdx, isExpanded, isScrolling } = this.props;
+    const { value, column, rowIdx, isExpanded, isScrolling, height } = this.props;
     const cellContent = this.props.children || this.renderCellContent({
       value,
       column,
@@ -362,7 +354,7 @@ export default class Cell extends React.PureComponent {
 
     return (
       <div
-        {...this.getKnownDivProps()}
+        height={height}
         className={className}
         style={style}
         {...events}
