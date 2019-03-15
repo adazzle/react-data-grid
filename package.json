@@ -10,7 +10,6 @@
     "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
     "postinstall": "lerna bootstrap",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
-    "dev-server": "node webpack-dev-server.js",
     "beforepublish": "lerna run beforepublish",
     "eslint": "eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/** packages/common/**",
     "fix-eslint": "eslint --fix -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/** packages/common/**",
@@ -86,8 +85,7 @@
     "terser-webpack-plugin": "^1.2.3",
     "vinyl-source-stream": "^0.1.1",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^1.16.2"
+    "webpack-cli": "^3.2.3"
   },
   "author": "adazzle",
   "license": "MIT",
