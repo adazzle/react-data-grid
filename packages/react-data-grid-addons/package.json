@@ -39,7 +39,6 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-data-grid": "^6.1.0-0",
     "react-dom": "^16.0.0"
   }
 }
