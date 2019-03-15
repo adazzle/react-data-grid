@@ -9,7 +9,8 @@ import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 import { isFrozen } from './ColumnUtils';
-require('../../../themes/react-data-grid-cell.css');
+
+import '../../../themes/react-data-grid-cell.css';
 
 // The list of the propTypes that we want to include in the Cell div
 const knownDivPropertyKeys = ['height', 'value'];

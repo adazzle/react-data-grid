@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-require('../assets/css/exampleWrapper.css');
+import '../assets/css/exampleWrapper.css';
 
 const emptyAction = () => { };
 const disableLink = (e) => e.stopPropagation();

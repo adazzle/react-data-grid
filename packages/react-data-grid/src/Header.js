@@ -9,7 +9,8 @@ import getScrollbarSize  from './getScrollbarSize';
 import createObjectWithProperties from'./createObjectWithProperties';
 import cellMetaDataShape from'common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from 'common/constants';
-require('../../../themes/react-data-grid-header.css');
+
+import '../../../themes/react-data-grid-header.css';
 
 
 // The list of the propTypes that we want to include in the Header div

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-require('../../../../themes/react-data-grid-toolbar.css');
+import '../../../../themes/react-data-grid-toolbar.css';
 
 export default class Toolbar extends React.Component {
   static propTypes = {

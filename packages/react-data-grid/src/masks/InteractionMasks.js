@@ -25,7 +25,7 @@ import { getSize, getColumn, isFrozen } from '../ColumnUtils';
 import keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from 'common/constants';
 
-require('../../../../themes/interaction-masks.css');
+import '../../../../themes/interaction-masks.css';
 
 const SCROLL_CELL_BUFFER = 2;
 

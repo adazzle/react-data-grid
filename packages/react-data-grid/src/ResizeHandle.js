@@ -1,7 +1,8 @@
 import React from 'react';
 
 import Draggable from './Draggable';
-require('../../../themes/react-data-grid-header.css');
+
+import '../../../themes/react-data-grid-header.css';
 
 const style = {
   position: 'absolute',

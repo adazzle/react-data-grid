@@ -10,7 +10,8 @@ import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 import { isFunction } from 'common/utils';
 import { EventTypes } from 'common/constants';
-require('../../../themes/react-data-grid-core.css');
+
+import '../../../themes/react-data-grid-core.css';
 
 export default class Canvas extends React.PureComponent {
   static displayName = 'Canvas';
