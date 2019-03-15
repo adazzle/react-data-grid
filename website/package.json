@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "docs": "gulp docs:create",
+    "docs": "node docs/utils/docsGen.js",
     "examples": "docusaurus-examples",
     "start": "npm run docs && docusaurus-start",
     "build": "npm run docs && docusaurus-build",

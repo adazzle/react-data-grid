@@ -1,11 +1,9 @@
-const gulp = require('gulp');
-const fs = require('fs-extra');
-const generateMarkdown = require('../../docs/utils/generateMarkdown');
+const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
-const generalUtils = require('../../docs/utils/generalUtils');
 const del = require('del');
-const runSequence = require('run-sequence');
+const generateMarkdown = require('./generateMarkdown');
+const generalUtils = require('./generalUtils');
 
 // Configuration.
 const apiDocsDir = './docs/api/';
@@ -51,34 +49,17 @@ function copyDocsToExamples() {
   });
 }
 
-// Tasks.
-let task = gulp.task('docs:markdown', function(done) {
+async function main() {
+  // API
+  await new Promise(function(resolve) {
+    const res = {};
+    generalUtils.traverseDir('packages/react-data-grid/src', res, function() {
+      mkdirp.sync(path.dirname(conf.apiDocsFilePath));
+      fs.writeFile(conf.apiDocsFilePath, JSON.stringify(res, null, 2), resolve);
+    }, conf.publicAPI, conf.ignoreDir);
+  });
+
   buildDocs(JSON.parse(fs.readFileSync(conf.apiDocsFilePath)));
-  done();
-});
+}
 
-task = gulp.task('docs:api', function(done) {
-  const res = {};
-  generalUtils.traverseDir('packages/react-data-grid/src', res, function() {
-    mkdirp.sync(path.dirname(conf.apiDocsFilePath));
-    fs.writeFile(conf.apiDocsFilePath, JSON.stringify(res, null, 2), done);
-  }, conf.publicAPI, conf.ignoreDir);
-});
-
-task = gulp.task('docs:create', ['docs:api'], function(done) {
-  runSequence(['docs:markdown'], function() {
-    done();
-  });
-});
-
-const docsToClean = [conf.apiDocsDir, conf.markdownDir];
-task = gulp.task('docs:clean',  del.bind(null, docsToClean));
-
-task = gulp.task('docs:regenerate', ['docs:clean'], function(done) {
-  runSequence(['docs:create'], function() {
-    done();
-    copyDocsToExamples();
-  });
-});
-
-module.exports = task;
+main();
