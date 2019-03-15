@@ -12,4 +12,4 @@ import * as performance from './performance';
 const Utils = { rowComparer, performance };
 
 window.ReactDataGridPlugins = { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils };
-module.exports = { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils };
+export { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils };

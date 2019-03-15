@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDataGrid from 'react-data-grid';
+import ReactDataGrid, { Row } from 'react-data-grid';
 import { Draggable, Data } from 'react-data-grid-addons';
 
 import exampleWrapper from '../components/exampleWrapper';
 
 const { Container: DraggableContainer, RowActionsCell, DropTargetRowContainer } = Draggable;
 const { Selectors } = Data;
-const RowRenderer = DropTargetRowContainer(ReactDataGrid.Row);
+const RowRenderer = DropTargetRowContainer(Row);
 
 class Example extends React.Component {
   static propTypes = {
