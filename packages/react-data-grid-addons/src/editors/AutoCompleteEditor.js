@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import ReactAutocomplete from 'ron-react-autocomplete';
-import { Column } from 'common/prop-shapes';
+
+import Column from 'common/prop-shapes/Column';
 require('../../../../themes/ron-react-autocomplete.css');
 
 const optionPropType = PropTypes.shape({
