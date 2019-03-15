@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import _ from 'underscore';
+import _ from 'lodash';
 import React, { Component } from 'react';
 
 const isRequiredUpdateObject = o => Array.isArray(o) || (o && o.constructor === Object.prototype.constructor);

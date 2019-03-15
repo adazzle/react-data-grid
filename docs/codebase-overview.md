@@ -23,8 +23,7 @@ After cloning the ReactDataGrid repository, you will see a few top-level folders
 
 - [**ci**](https://github.com/adazzle/react-data-grid/tree/master/ci) - Contains scripts for continuous integration processes like building and publishing
 - [**config**](https://github.com/adazzle/react-data-grid/tree/master/config) - Contains Webpack config files for building the project, and Karma config files for configuring testing.
-- [**gulp**](https://github.com/adazzle/react-data-grid/tree/master/gulp) - There are some legacy build processes using Gulp that are still in use such as a gulp task to autogenerate documentation.
-- [**packages**](https://github.com/adazzle/react-data-grid/tree/master/gulp) - Contains metadata (such as package.json) and the source code (src subdirectory) for all packages in the ReactDataGrid repository. If your change is related to the code, the src subdirectory of each package is where you’ll spend most of your time.
+- [**packages**](https://github.com/adazzle/react-data-grid/tree/master/packages) - Contains metadata (such as package.json) and the source code (src subdirectory) for all packages in the ReactDataGrid repository. If your change is related to the code, the src subdirectory of each package is where you’ll spend most of your time.
 - [**themes**](https://github.com/adazzle/react-data-grid/tree/master/themes) - Contains styles that are imported to the various component using CSS loader.
 - [**website**](https://github.com/adazzle/react-data-grid/tree/master/website) - Our public documentation site built with [Docusaurus](https://docusaurus.io)
 

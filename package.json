@@ -2,9 +2,20 @@
   "name": "react-data-grid",
   "private": true,
   "description": "Data grid for React",
-  "main": "src/index.js",
+  "author": "Adazzle",
+  "license": "MIT",
+  "repository": "adazzle/react-data-grid",
+  "homepage": "https://github.com/adazzle/react-data-grid",
+  "bugs": {
+    "url": "https://github.com/adazzle/react-data-grid/issues"
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "react-component"
+  ],
   "scripts": {
-    "docs": "gulp docs:create",
+    "docs": "node docs/utils/docsGen.js",
     "pretest": "npm run eslint",
     "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
     "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
@@ -18,20 +29,9 @@
     "web": "cd website && npm run start",
     "web-publish": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./ci/publish/publish-web.ps1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/adazzle/react-data-grid.git"
-  },
-  "keywords": [
-    "react",
-    "grid",
-    "react-component"
-  ],
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "classnames": "^2.2.6",
-    "es5-shim": "^4.0.3",
-    "fs-extra": "^0.30.0",
     "keymirror": "^0.1.1",
     "prop-types": "^15.7.2"
   },
@@ -42,23 +42,16 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.4",
-    "airbnb-browser-shims": "^3.2.1",
-    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "copy-dir": "^0.3.0",
-    "core-js": "^2.6.5",
     "css-loader": "^2.1.1",
-    "del": "^1.2.1",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.10.0",
     "eslint": "^5.15.1",
     "eslint-plugin-react": "^7.12.4",
     "faker": "^3.0.1",
     "gh-pages": "^2.0.1",
-    "gulp": "^3.8.7",
-    "gulp-concat": "^2.3.4",
-    "gulp-util": "^3.0.0",
     "immutable": "^3.7.3",
     "jasmine-core": "^3.3.0",
     "karma": "^4.0.1",
@@ -73,26 +66,16 @@
     "karma-webpack": "^3.0.5",
     "lerna": "^3.5.0",
     "minimist": "^1.1.0",
-    "mkdirp": "^0.5.1",
     "node-dir": "^0.1.12",
     "open": "0.0.5",
     "react": "^16.8.4",
     "react-docgen": "^2.21.0",
     "react-dom": "^16.8.4",
-    "react-test-renderer": "^16.8.4",
-    "run-sequence": "^1.2.2",
     "semver": "^5.0.3",
     "style-loader": "^0.23.1",
     "terser-webpack-plugin": "^1.2.3",
-    "vinyl-source-stream": "^0.1.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^1.16.2"
-  },
-  "author": "adazzle",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/adazzle/react-data-grid/issues"
-  },
-  "homepage": "https://github.com/adazzle/react-data-grid"
+  }
 }
