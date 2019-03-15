@@ -64,7 +64,7 @@
     "karma-junit-reporter": "^1.2.0",
     "karma-mocha-reporter": "^2.2.5",
     "karma-webpack": "^3.0.5",
-    "lerna": "^3.5.0",
+    "lerna": "^3.13.1",
     "minimist": "^1.1.0",
     "node-dir": "^0.1.12",
     "open": "0.0.5",
