@@ -1,5 +1,4 @@
-import Grid from './ReactDataGrid';
-export default Grid;
+export { default } from './ReactDataGrid';
 export { default as RowComparer } from 'common/utils/RowComparer';
 export { default as  Cell } from './Cell';
 export { default as  Row } from './Row';
