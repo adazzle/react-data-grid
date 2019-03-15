@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 import TestUtils from 'react-dom/test-utils';
 
-import Grid from 'react-data-grid';
+import Grid, { editors } from 'react-data-grid';
 import StubComponent from '../../../../test/StubComponent';
 import mockStateObject from './data/MockStateObject';
 
-const { editors: { CheckboxEditor } } = Grid;
+const { CheckboxEditor } = editors;
 
 describe('Grid', function() {
   beforeEach(function() {
