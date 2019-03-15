@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import Column from 'common/prop-shapes/Column';
+import Column from './common/prop-shapes/Column';
 import { isFrozen } from './ColumnUtils';
-import { HeaderRowType } from 'common/constants';
+import { HeaderRowType } from './common/constants';
 import ResizeHandle from './ResizeHandle';
 
 import '../../../themes/react-data-grid-header.css';

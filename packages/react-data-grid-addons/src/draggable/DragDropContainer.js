@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { _utils } from 'react-data-grid';
 
 import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
-import { isColumnsImmutable } from 'common/utils';
+
+const { isColumnsImmutable } = _utils;
 
 class DraggableContainer extends Component {
   getRows(rowsCount, rowGetter) {

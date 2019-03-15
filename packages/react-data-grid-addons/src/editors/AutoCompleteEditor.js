@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import ReactAutocomplete from 'ron-react-autocomplete';
+import { shapes } from 'react-data-grid';
 
-import Column from 'common/prop-shapes/Column';
 import '../../../../themes/ron-react-autocomplete.css';
 
 const optionPropType = PropTypes.shape({
@@ -19,7 +19,7 @@ export default class AutoCompleteEditor extends React.Component {
     value: PropTypes.any,
     height: PropTypes.number,
     valueParams: PropTypes.arrayOf(PropTypes.string),
-    column: PropTypes.shape(Column),
+    column: PropTypes.shape(shapes.Column),
     resultIdentifier: PropTypes.string,
     search: PropTypes.string,
     onKeyDown: PropTypes.func,

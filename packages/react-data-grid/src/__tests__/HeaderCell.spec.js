@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 
 import HeaderCell from '../HeaderCell';
-import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
+import SortableHeaderCell from '../common/cells/headerCells/SortableHeaderCell';
 import ResizeHandle from '../ResizeHandle';
 
 describe('Header Cell Tests', () => {

@@ -1,4 +1,6 @@
-import { isImmutableCollection, getMixedTypeValueRetriever } from 'common/utils';
+import { _utils } from 'react-data-grid';
+
+const { isImmutableCollection, getMixedTypeValueRetriever } = _utils;
 
 const filterRows = (filters, rows = []) => {
   return rows.filter(r => {

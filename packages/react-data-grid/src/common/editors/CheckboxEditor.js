@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import '../../../themes/react-data-grid-checkbox.css';
+import '../../../../../themes/react-data-grid-checkbox.css';
 
 export default class CheckboxEditor extends React.Component {
   static propTypes = {

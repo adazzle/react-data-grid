@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import * as zIndexes from 'common/constants/zIndexes';
+import * as zIndexes from '../../common/constants/zIndexes';
 import { sel } from '../../__tests__/utils';
 import CellMask from '../CellMask';
 

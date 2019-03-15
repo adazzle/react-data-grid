@@ -4,8 +4,8 @@ import { shallow } from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
 import HeaderRow from '../HeaderRow';
 import HeaderCell from '../HeaderCell';
-import SortableHeaderCell from 'common/cells/headerCells/SortableHeaderCell';
-import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
+import SortableHeaderCell from '../common/cells/headerCells/SortableHeaderCell';
+import FilterableHeaderCell from '../common/cells/headerCells/FilterableHeaderCell';
 
 describe('Header Row Unit Tests', () => {
   const defaultProps = {

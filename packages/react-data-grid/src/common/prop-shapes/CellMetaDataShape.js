@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const CellMetaDataShape = {
+export default PropTypes.shape({
   rowKey: PropTypes.string.isRequired,
   onCellClick: PropTypes.func.isRequired,
   onCellMouseDown: PropTypes.func.isRequired,
@@ -14,6 +14,4 @@ const CellMetaDataShape = {
   onColumnEvent: PropTypes.func.isRequired,
   onCellExpand: PropTypes.func.isRequired,
   getCellActions: PropTypes.func
-};
-
-export default CellMetaDataShape;
+});

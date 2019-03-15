@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { last } from 'common/utils';
-import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-import { EventTypes } from 'common/constants';
+import { last } from './common/utils';
+import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
+import { EventTypes } from './common/constants';
 
 import '../../../themes/react-data-grid-row.css';
 

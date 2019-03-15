@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 
-import { isFunction } from 'common/utils';
+import { isFunction } from './common/utils';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
 import createObjectWithProperties from './createObjectWithProperties';
 import CellAction from './CellAction';

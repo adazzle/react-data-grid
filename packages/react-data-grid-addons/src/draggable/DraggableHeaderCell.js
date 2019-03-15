@@ -1,8 +1,9 @@
 import { DragSource } from 'react-dnd';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { _constants } from 'react-data-grid';
 
-import { DragItemTypes } from 'common/constants';
+const { DragItemTypes } = _constants;
 
 class DraggableHeaderCell extends Component {
   componentDidMount() {

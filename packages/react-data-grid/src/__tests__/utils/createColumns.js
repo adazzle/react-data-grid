@@ -1,4 +1,3 @@
-
 export const createColumn = (index, props) => {
   const key = `Column${index}`;
   return {

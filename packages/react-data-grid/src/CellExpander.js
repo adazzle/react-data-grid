@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { CellExpand } from 'common/constants';
+import { CellExpand } from './common/constants';
 
 export default class CellExpander extends React.Component {
   static propTypes = {

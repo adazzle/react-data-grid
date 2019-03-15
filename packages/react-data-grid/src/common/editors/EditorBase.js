@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-import Column from 'common/prop-shapes/Column';
+import Column from '../prop-shapes/Column';
 
 export default class EditorBase extends React.Component {
 
@@ -40,4 +40,3 @@ EditorBase.propTypes = {
   column: PropTypes.shape(Column).isRequired,
   commit: PropTypes.func.isRequired
 };
-

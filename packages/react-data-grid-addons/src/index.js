@@ -7,7 +7,7 @@ import * as Menu from './menu';
 import * as Draggable from './draggable';
 import * as DraggableHeader from './draggable-header';
 import * as Filters from './cells/headerCells/filters';
-import rowComparer from 'common/utils/RowComparer';
+import { rowComparer } from 'react-data-grid';
 import * as performance from './performance';
 const Utils = { rowComparer, performance };
 

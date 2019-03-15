@@ -75,10 +75,7 @@ module.exports = function (config) {
         ]
       },
       resolve: {
-        extensions: ['.webpack.js', '.web.js', '.js', '.jsx'],
-        alias: {
-          common: path.resolve('packages/common/')
-        }
+        extensions: ['.webpack.js', '.web.js', '.js', '.jsx']
       },
       externals: {
         'cheerio': 'window',

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import CellMask from '../CellMask';
 import SelectionRangeMask from '../SelectionRangeMask';
-import * as zIndexes from 'common/constants/zIndexes';
+import * as zIndexes from '../../common/constants/zIndexes';
 
 describe('SelectionRangeMask', () => {
   const setup = (propsOverride = {}) => {
