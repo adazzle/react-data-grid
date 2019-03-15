@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 
-import ExampleGrid from '../scripts/example14-all-features-immutable';
+import { Component as ExampleGrid } from '../scripts/example14-all-features-immutable';
 
 export default class GridRunner {
   /* =====
