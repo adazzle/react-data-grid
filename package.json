@@ -67,7 +67,6 @@
     "karma-webpack": "^3.0.5",
     "lerna": "^3.5.0",
     "minimist": "^1.1.0",
-    "mkdirp": "^0.5.1",
     "node-dir": "^0.1.12",
     "open": "0.0.5",
     "react": "^16.8.4",
