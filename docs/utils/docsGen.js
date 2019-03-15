@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const del = require('del');
 const generateMarkdown = require('./generateMarkdown');
 const generalUtils = require('./generalUtils');
 

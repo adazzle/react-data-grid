@@ -46,7 +46,6 @@
     "babel-loader": "^8.0.5",
     "copy-dir": "^0.3.0",
     "css-loader": "^2.1.1",
-    "del": "^1.2.1",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.10.0",
     "eslint": "^5.15.1",
