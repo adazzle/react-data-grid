@@ -1,9 +1,10 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const Immutable = require('immutable');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+import Immutable from 'immutable';
 
-class Example extends React.Component {
+import exampleWrapper from '../components/exampleWrapper';
+
+export class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
     this._columns = this.createColumns();
@@ -51,12 +52,10 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Immutable Data Example',
   exampleDescription: 'Data Grid using immutable data',
   examplePath: './scripts/example11-immutable-data.js',
   examplePlaygroundLink: undefined
 });
-
-module.exports.Component = Example;

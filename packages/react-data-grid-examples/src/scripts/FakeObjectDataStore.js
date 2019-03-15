@@ -1,4 +1,4 @@
-var faker = require('faker');
+import faker from 'faker';
 faker.locale = 'en_GB';
 var SIZE = 2000;
 var _cache = [];
@@ -49,4 +49,5 @@ var FakeObjectDataListStore = {
   getSize     : getSize,
   createRows  : createRows
 };
-module.exports = FakeObjectDataListStore;
+
+export default FakeObjectDataListStore;

@@ -1,8 +1,9 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const { Editors, Formatters } = require('react-data-grid-addons');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+import { Editors, Formatters } from 'react-data-grid-addons';
 import update from 'immutability-helper';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
 const { DropDownFormatter } = Formatters;
@@ -98,7 +99,7 @@ class Example extends React.Component {
 const exampleDescription = (
   <p>This example uses the built in <strong>Autocomplete</strong> editor for the priorities column and the <strong>DropdownEditor</strong> for the IssueType column. <strong>You must include the <code>react-data-grid.ui-plugins.js</code> package to use the built in editors.</strong></p>);
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Built-In Cell Editor Example',
   exampleDescription,

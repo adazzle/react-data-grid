@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import ExampleList from './ExampleList';
 
-function Home() {
+export default function Home() {
   return (
     <div>
       <header id="head">
@@ -137,5 +137,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;

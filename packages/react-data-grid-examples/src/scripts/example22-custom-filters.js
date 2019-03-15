@@ -1,7 +1,11 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const { Toolbar, Filters: { NumericFilter, AutoCompleteFilter, MultiSelectFilter, SingleSelectFilter }, Data: { Selectors } } = require('react-data-grid-addons');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+import { Toolbar, Filters, Data } from 'react-data-grid-addons';
+
+import exampleWrapper from '../components/exampleWrapper';
+
+const { NumericFilter, AutoCompleteFilter, MultiSelectFilter, SingleSelectFilter } = Filters;
+const { Selectors } = Data;
 
 class Example extends React.Component {
   constructor(props, context) {
@@ -126,7 +130,7 @@ const exampleDescription = (
   allow having a Numeric Filter.</p>
 );
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Custom Filters Example',
   exampleDescription,

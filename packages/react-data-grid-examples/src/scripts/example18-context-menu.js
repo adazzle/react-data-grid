@@ -1,9 +1,11 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const { Menu: { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } } = require('react-data-grid-addons');
-
+import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDataGrid from 'react-data-grid';
+import { Menu } from 'react-data-grid-addons';
+
+import exampleWrapper from '../components/exampleWrapper';
+
+const { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } = Menu;
 
 class Example extends React.Component {
   constructor(props) {
@@ -125,7 +127,7 @@ const exampleDescription = (
   </div>
 );
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Context Menu Example',
   exampleDescription,

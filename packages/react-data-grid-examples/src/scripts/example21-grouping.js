@@ -1,15 +1,15 @@
-const faker = require('faker');
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const {
-  ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
-  Data: { Selectors },
-  Draggable: { Container: DraggableContainer },
-  Formatters: { ImageFormatter }
-} = require('react-data-grid-addons');
-
+import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDataGrid from 'react-data-grid';
+import { ToolsPanel, Data, Draggable, Formatters } from 'react-data-grid-addons';
+import faker from 'faker';
+
+import exampleWrapper from '../components/exampleWrapper';
+
+const { AdvancedToolbar: Toolbar, GroupedColumnsPanel } = ToolsPanel;
+const { Selectors } = Data;
+const { Container: DraggableContainer } = Draggable;
+const { ImageFormatter } = Formatters;
 
 faker.locale = 'en_GB';
 
@@ -169,7 +169,7 @@ class Example extends React.Component {
     if (isNotInGroups) {
       columnGroups.push({key: activeColumn.key, name: activeColumn.name});
     }
-   
+
     this.setState({groupBy: columnGroups});
   };
 
@@ -217,7 +217,7 @@ const exampleDescription = (
   </div>
 );
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Row Grouping Example',
   exampleDescription,

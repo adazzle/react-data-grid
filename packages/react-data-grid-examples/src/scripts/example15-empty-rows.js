@@ -1,6 +1,7 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 class EmptyRowsView extends React.Component {
   render() {
@@ -35,7 +36,7 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Empty rows grid',
   exampleDescription: 'A grid with a empty rows view',

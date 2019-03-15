@@ -1,6 +1,6 @@
 import React from 'react';
 
-function RenderGrid() {
+export default function RenderGrid() {
   return (
     <div>
       <p>Now simply invoke ReactDOM.render(..):</p>
@@ -10,5 +10,3 @@ function RenderGrid() {
     </div>
   );
 }
-
-module.exports = RenderGrid;

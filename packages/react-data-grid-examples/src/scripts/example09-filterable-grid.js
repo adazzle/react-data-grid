@@ -1,7 +1,8 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
 import { Toolbar, Data } from 'react-data-grid-addons';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 const Selectors = Data.Selectors;
 
@@ -116,7 +117,7 @@ class Example extends React.Component {
 const exampleDescription = (
   <p>While ReactDataGrid doesn't not provide the ability to filter directly, it does provide hooks that allow you to provide your own filter function. This is done via the <code>onAddFilter</code> prop. To enable filtering for a given column, set <code>column.filterable = true</code> for that column. Now when the header cell has a new filter value entered for that column, <code>onAddFilter</code> will be triggered passing the filter key and value.</p>);
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Filterable Columns Example',
   exampleDescription,

@@ -6,7 +6,7 @@ import GettingStarted from '../scripts/documentation01-gettingstarted';
 import ApiReference from '../scripts/documentation02-apireference';
 import ComponentsDocs from '../scripts/documentation03-components';
 
-function Documentation({ match: { url, path } }) {
+export default function Documentation({ match: { url, path } }) {
   return (
     <div className="container-fluid top-space">
       <div className="row">
@@ -38,5 +38,3 @@ Documentation.propTypes = {
     path: PropTypes.string
   })
 };
-
-export default Documentation;

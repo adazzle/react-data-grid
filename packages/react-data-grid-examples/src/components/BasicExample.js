@@ -1,10 +1,10 @@
 import React from 'react';
 
-const ColsDescription = require('./ColsDescription');
-const RowsDescription = require('./RowsDescription');
-const RenderGridDescription = require('./RenderGrid');
+import ColsDescription from './ColsDescription';
+import RowsDescription from './RowsDescription';
+import RenderGridDescription from './RenderGrid';
 
-function BasicExample() {
+export default function BasicExample() {
   return (
     <div>
       <h3 id="js-basic-example">A Simple Example</h3>
@@ -16,5 +16,3 @@ function BasicExample() {
     </div>
   );
 }
-
-module.exports = BasicExample;

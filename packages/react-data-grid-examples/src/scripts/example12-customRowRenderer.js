@@ -1,8 +1,8 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-
+import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDataGrid from 'react-data-grid';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 class RowRenderer extends React.Component {
   static propTypes = {
@@ -117,7 +117,7 @@ const exampleDescription = (
     <p>NOTE: if you want to use fixed columns as well, make sure you implement and pass through the call to setScrollLeft</p>
   </div>);
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Overriding the row renderer',
   exampleDescription,

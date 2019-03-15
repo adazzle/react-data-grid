@@ -1,13 +1,12 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const {
-   Draggable: { Container: DraggableContainer, RowActionsCell, DropTargetRowContainer },
-   Data: { Selectors }
-} = require('react-data-grid-addons');
-
+import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDataGrid from 'react-data-grid';
+import { Draggable, Data } from 'react-data-grid-addons';
 
+import exampleWrapper from '../components/exampleWrapper';
+
+const { Container: DraggableContainer, RowActionsCell, DropTargetRowContainer } = Draggable;
+const { Selectors } = Data;
 const RowRenderer = DropTargetRowContainer(ReactDataGrid.Row);
 
 class Example extends React.Component {
@@ -117,7 +116,7 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Row Reordering',
   exampleDescription: 'This examples demonstrates how single or multiple rows can be dragged to a different positions using components from Draggable React Addons',

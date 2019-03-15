@@ -1,9 +1,7 @@
-'use strict';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-var React    = require('react');
-var ReactDOM = require('react-dom');
-
-class PropTestUtils {
+export default class PropTestUtils {
 
   constructor(klass, props, container, callback) {
     this.klass = klass;
@@ -43,5 +41,3 @@ class PropTestUtils {
   }
 
 }
-
-module.exports = PropTestUtils;

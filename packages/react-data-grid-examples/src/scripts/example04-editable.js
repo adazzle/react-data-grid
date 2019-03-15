@@ -1,7 +1,8 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
 import update from 'immutability-helper';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 class Example extends React.Component {
   constructor(props, context) {
@@ -98,7 +99,7 @@ class Example extends React.Component {
 const exampleDescription = (
   <p>To make a given column editable set <code>column.editable</code> and create a <code>onGridRowsUpdated</code> handler. Note that you will need to store your rows in state and update that state when a cell value changes.</p>);
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Editable Example',
   exampleDescription,

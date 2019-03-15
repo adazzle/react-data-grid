@@ -1,6 +1,6 @@
 import React from 'react';
 
-class GettingStarted extends React.Component {
+export default class GettingStarted extends React.Component {
   render() {
     return (
       <div>
@@ -12,14 +12,14 @@ class GettingStarted extends React.Component {
         <p>Once downloaded, require both React and React Grid and you should be good to go</p>
         <div className="code-block js">
           <pre>
-            var React = require('react');
+            import React from 'react';
             <br />
-            var ReactDataGrid = require('react-data-grid');
+            import ReactDataGrid from 'react-data-grid';
           </pre>
         </div>
         <p>If you want to use extra features such as built in editors, formatters, toolbars and other plugins, you need to require the addons module instead</p>
         <div className="code-block js">
-          <pre>var ReactDataGrid = require('react-data-grid/addons');</pre>
+          <pre>import ReactDataGrid from 'react-data-grid-addons';</pre>
         </div>
         <br />
         <h4>Using Distribution Scripts</h4>
@@ -36,5 +36,3 @@ class GettingStarted extends React.Component {
     );
   }
 }
-
-module.exports = GettingStarted;

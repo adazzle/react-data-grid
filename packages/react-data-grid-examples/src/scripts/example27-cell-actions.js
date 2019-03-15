@@ -1,12 +1,12 @@
-const faker = require('faker');
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const {
-  Data: { Selectors },
-  Formatters: { ImageFormatter }
-} = require('react-data-grid-addons');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+import { Data, Formatters } from 'react-data-grid-addons';
+import faker from 'faker';
 
+import exampleWrapper from '../components/exampleWrapper';
+
+const { Selectors } = Data;
+const { ImageFormatter } = Formatters;
 
 faker.locale = 'en_GB';
 
@@ -180,7 +180,7 @@ const exampleDescription = (
   </div>
 );
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Cell Actions Example',
   exampleDescription,
