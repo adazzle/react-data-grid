@@ -195,11 +195,11 @@ class ReactDataGrid extends React.Component {
     onGridKeyUp: PropTypes.func,
     /** Function called whenever keyboard key is pressed down */
     onGridKeyDown: PropTypes.func,
-    /** Function called whenever keyboard key is pressed down */
+    /** Component to custom render row */
     rowGroupRenderer: PropTypes.func,
     /** Component to render row actions cell when present */
     rowActionsCell: PropTypes.func,
-    /** called before cell is set active, returns a boolean to determine whether cell is editable */
+    /** Called before cell is set active, returns a boolean to determine whether cell is editable */
     onCheckCellIsEditable: PropTypes.func,
     /** Called whenever a sub row is deleted from the grid */
     onDeleteSubRow: PropTypes.func,
