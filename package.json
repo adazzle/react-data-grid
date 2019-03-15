@@ -17,8 +17,8 @@
   "scripts": {
     "docs": "node docs/utils/docsGen.js",
     "pretest": "npm run eslint",
-    "test": "./node_modules/.bin/karma start ./config/karma.js --singleRun true --release true",
-    "dev-test": "./node_modules/.bin/karma start ./config/karma.dev.js --singleRun false --debug true",
+    "test": "karma start ./config/karma.js --singleRun true --release true",
+    "dev-test": "karma start ./config/karma.dev.js --singleRun false --debug true",
     "postinstall": "lerna bootstrap --no-ci",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "node webpack-dev-server.js",
@@ -30,7 +30,6 @@
     "web-publish": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./ci/publish/publish-web.ps1"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.2.5",
     "classnames": "^2.2.6",
     "keymirror": "^0.1.1",
     "prop-types": "^15.7.2"
@@ -39,6 +38,7 @@
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-transform-runtime": "^7.3.4",
+    "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.4",
