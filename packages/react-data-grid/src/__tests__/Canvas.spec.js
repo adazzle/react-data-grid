@@ -2,12 +2,10 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
-
 import Canvas from '../Canvas';
 import RowsContainer from '../RowsContainer';
 
 const noop = () => null;
-
 const getRows = wrp => wrp.find(RowsContainer).props().children.props.children;
 
 const testProps = {

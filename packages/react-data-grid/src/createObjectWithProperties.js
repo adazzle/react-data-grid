@@ -1,4 +1,4 @@
-function createObjectWithProperties(originalObj, properties) {
+export default function createObjectWithProperties(originalObj, properties) {
   return properties.reduce((result, property) => {
     if (property in originalObj) {
       result[property] = originalObj[property];
@@ -6,5 +6,3 @@ function createObjectWithProperties(originalObj, properties) {
     return result;
   }, {});
 }
-
-export default createObjectWithProperties;

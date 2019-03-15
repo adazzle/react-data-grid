@@ -1,13 +1,14 @@
-const React              = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-const joinClasses         = require('classnames');
-const DEFINE_SORT = {
+import classNames from 'classnames';
+
+export const DEFINE_SORT = {
   ASC: 'ASC',
   DESC: 'DESC',
   NONE: 'NONE'
 };
 
-class SortableHeaderCell extends React.Component {
+export default class SortableHeaderCell extends React.Component {
   static propTypes = {
     columnKey: PropTypes.string.isRequired,
     column: PropTypes.shape({ name: PropTypes.node }),
@@ -21,18 +22,18 @@ class SortableHeaderCell extends React.Component {
     let direction;
     const { sortDirection, sortDescendingFirst } = this.props;
     switch (sortDirection) {
-    default:
-    case null:
-    case undefined:
-    case DEFINE_SORT.NONE:
-      direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
-      break;
-    case DEFINE_SORT.ASC:
-      direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
-      break;
-    case DEFINE_SORT.DESC:
-      direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
-      break;
+      default:
+      case null:
+      case undefined:
+      case DEFINE_SORT.NONE:
+        direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
+        break;
+      case DEFINE_SORT.ASC:
+        direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
+        break;
+      case DEFINE_SORT.DESC:
+        direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
+        break;
     }
     this.props.onSort(
       this.props.columnKey,
@@ -48,12 +49,12 @@ class SortableHeaderCell extends React.Component {
   };
 
   render() {
-    const className = joinClasses({
+    const className = classNames({
       'react-grid-HeaderCell-sortable': true,
       'react-grid-HeaderCell-sortable--ascending': this.props.sortDirection === 'ASC',
       'react-grid-HeaderCell-sortable--descending': this.props.sortDirection === 'DESC'
     });
-    const content = this.props.headerRenderer ? React.cloneElement(this.props.headerRenderer, this.props) :  this.props.column.name;
+    const content = this.props.headerRenderer ? React.cloneElement(this.props.headerRenderer, this.props) : this.props.column.name;
     return (
       <div className={className}
         onClick={this.onClick}
@@ -64,6 +65,3 @@ class SortableHeaderCell extends React.Component {
     );
   }
 }
-
-module.exports = SortableHeaderCell;
-module.exports.DEFINE_SORT = DEFINE_SORT;

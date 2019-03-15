@@ -300,13 +300,6 @@
         "required": false,
         "description": ""
       },
-      "column": {
-        "type": {
-          "name": "object"
-        },
-        "required": true,
-        "description": ""
-      },
       "isEditorEnabled": {
         "type": {
           "name": "bool"
@@ -326,6 +319,13 @@
           "name": "number"
         },
         "required": false,
+        "description": ""
+      },
+      "column": {
+        "type": {
+          "name": "object"
+        },
+        "required": true,
         "description": ""
       },
       "value": {
@@ -1543,7 +1543,7 @@
                         },
                         "rowKey": {
                           "name": "string",
-                          "description": "The name of the unoque id property of each row",
+                          "description": "The name of the unique id property of each row",
                           "required": true
                         }
                       },
@@ -1641,7 +1641,7 @@
         "required": false,
         "description": "Called just before a cell is about to be edited",
         "defaultValue": {
-          "value": "() => {}",
+          "value": "() => { }",
           "computed": false
         }
       },
@@ -1676,6 +1676,18 @@
         },
         "required": false,
         "description": "Called when the grid is scrolled"
+      },
+      "editorPortalTarget": {
+        "type": {
+          "name": "instanceOf",
+          "value": "Element"
+        },
+        "required": false,
+        "description": "The node where the editor portal should mount.",
+        "defaultValue": {
+          "value": "document.body",
+          "computed": true
+        }
       },
       "overScan": {
         "defaultValue": {
@@ -1753,6 +1765,13 @@
         "returns": null
       },
       {
+        "name": "getRowTop",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
         "name": "getRowHeight",
         "docblock": null,
         "modifiers": [],
@@ -1790,6 +1809,18 @@
         "params": [
           {
             "name": "scrollLeft",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "setRowRef",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "el",
             "type": null
           }
         ],

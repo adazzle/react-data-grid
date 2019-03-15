@@ -1,7 +1,2 @@
-import SimpleCellFormatter from './SimpleCellFormatter';
-import SelectAll from './SelectAll';
-
-module.exports = {
-  SimpleCellFormatter,
-  SelectAll
-};
+export { default as SimpleCellFormatter } from './SimpleCellFormatter';
+export { default as SelectAll } from './SelectAll';

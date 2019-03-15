@@ -1,6 +1,7 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 const columns = [
   { key: 'id', name: 'ID' },
@@ -17,7 +18,7 @@ function HelloWorld() {
   minHeight={150} />);
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: HelloWorld,
   exampleName: 'Basic Example',
   exampleDescription: 'A display only grid.',

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
+
 import { isFunction } from 'common/utils';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
 import createObjectWithProperties from './createObjectWithProperties';
@@ -8,12 +9,13 @@ import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 import { isFrozen } from './ColumnUtils';
-require('../../../themes/react-data-grid-cell.css');
+
+import '../../../themes/react-data-grid-cell.css';
 
 // The list of the propTypes that we want to include in the Cell div
 const knownDivPropertyKeys = ['height', 'value'];
 
-class Cell extends React.PureComponent {
+export default class Cell extends React.PureComponent {
   static propTypes = {
     rowIdx: PropTypes.number.isRequired,
     idx: PropTypes.number.isRequired,
@@ -373,5 +375,3 @@ class Cell extends React.PureComponent {
     );
   }
 }
-
-export default Cell;

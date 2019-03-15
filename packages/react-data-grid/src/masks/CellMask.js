@@ -13,16 +13,18 @@ const setMaskStyle = ({ left, top, width, height, zIndex }) => {
   };
 };
 
-const CellMask = ({ width, height, top, left, zIndex, children, innerRef, ...rest }) => (
-  <div
-    style={setMaskStyle({ left, top, width, height, zIndex })}
-    data-test="cell-mask"
-    ref={innerRef}
-    {...rest}
-  >
-    {children}
-  </div>
-);
+export default function CellMask({ width, height, top, left, zIndex, children, innerRef, ...rest }) {
+  return (
+    <div
+      style={setMaskStyle({ left, top, width, height, zIndex })}
+      data-test="cell-mask"
+      ref={innerRef}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+}
 
 CellMask.propTypes = {
   width: PropTypes.number.isRequired,
@@ -33,5 +35,3 @@ CellMask.propTypes = {
   children: PropTypes.node,
   innerRef: PropTypes.func
 };
-
-export default CellMask;

@@ -1,6 +1,7 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 class Example extends React.Component {
   constructor(props, context) {
@@ -58,7 +59,7 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Programmatic Scrolling Example',
   exampleDescription: <p>To programmatically set the vertical scrolling offset, specify the <code>scrollToRowIndex</code> property.</p>,

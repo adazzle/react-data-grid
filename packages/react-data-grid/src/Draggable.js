@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import createObjectWithProperties from './createObjectWithProperties';
-require('../../../themes/react-data-grid-header.css');
+
+import '../../../themes/react-data-grid-header.css';
 
 // The list of the propTypes that we want to include in the Draggable div
 const knownDivPropertyKeys = ['onDragStart', 'onDragEnd', 'onDrag', 'style'];
 
-class Draggable extends React.Component {
+export default class Draggable extends React.Component {
   static propTypes = {
     onDragStart: PropTypes.func,
     onDragEnd: PropTypes.func,
@@ -85,5 +87,3 @@ class Draggable extends React.Component {
     );
   }
 }
-
-module.exports = Draggable;

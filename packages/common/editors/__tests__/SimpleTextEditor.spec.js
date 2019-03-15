@@ -1,6 +1,7 @@
-const React            = require('react');
-const SimpleTextEditor = require('../SimpleTextEditor');
-const { mount } = require('enzyme');
+import React from 'react';
+import { mount } from 'enzyme';
+
+import SimpleTextEditor from '../SimpleTextEditor';
 
 describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
@@ -16,7 +17,7 @@ describe('SimpleTextEditor', () => {
         onKeyDown={fakeFunction}
         commit={fakeFunction}
         column={fakeColumn}
-        />).instance();
+      />).instance();
     });
 
     it('should create a new SimpleTextEditor instance', () => {

@@ -1,6 +1,7 @@
 import { DragSource } from 'react-dnd';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { DragItemTypes } from 'common/constants';
 
 class DraggableHeaderCell extends Component {

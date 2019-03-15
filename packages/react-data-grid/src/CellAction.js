@@ -1,9 +1,10 @@
 import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import CellActionShape  from 'common/prop-shapes/CellActionShape';
 
-class CellAction extends React.Component {
+export default class CellAction extends React.Component {
   static propTypes = {
     action: PropTypes.shape(CellActionShape).isRequired,
     isFirst: PropTypes.bool.isRequired
@@ -72,5 +73,3 @@ class CellAction extends React.Component {
     );
   }
 }
-
-export default CellAction;

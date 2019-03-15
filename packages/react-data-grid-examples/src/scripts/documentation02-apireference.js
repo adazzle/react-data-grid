@@ -2,7 +2,7 @@ import React from 'react';
 
 const GridRowsUpdateEvent = 'type GridRowsUpdateEvent = {\n\tcellKey: string,\n\tfromRow: number,\n\ttoRow: number,\n\trowIds: array,\n\tupdated: object,\n\taction: string\n}';
 
-class ApiReference extends React.Component {
+export default class ApiReference extends React.Component {
   render() {
     return (
       <div>
@@ -24,5 +24,3 @@ class ApiReference extends React.Component {
     );
   }
 }
-
-module.exports = ApiReference;

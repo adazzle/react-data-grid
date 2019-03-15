@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import Header from './Header';
 import Viewport from './Viewport';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import { isFrozen } from './ColumnUtils';
-require('../../../themes/react-data-grid-core.css');
 
-class Grid extends React.Component {
+import '../../../themes/react-data-grid-core.css';
+
+export default class Grid extends React.Component {
   static displayName = 'Grid';
 
   static propTypes = {
@@ -71,7 +73,8 @@ class Grid extends React.Component {
     onCommit: PropTypes.func.isRequired,
     onScroll: PropTypes.func,
     scrollLeft: PropTypes.number,
-    RowsContainer: PropTypes.node
+    RowsContainer: PropTypes.node,
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   static defaultProps = {
@@ -208,6 +211,7 @@ class Grid extends React.Component {
                   onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
                   onCommit={this.props.onCommit}
                   RowsContainer={this.props.RowsContainer}
+                  editorPortalTarget={this.props.editorPortalTarget}
                 />
             </div>
         :
@@ -219,5 +223,3 @@ class Grid extends React.Component {
     );
   }
 }
-
-export default Grid;

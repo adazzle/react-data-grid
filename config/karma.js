@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-require('airbnb-browser-shims');
 var webpackConfig = require('./webpack.common.config.js');
 var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
@@ -24,7 +23,7 @@ module.exports = function (config) {
       return BROWSERS.split(',');
     }
     if(RELEASE){
-      browsers = ['Chrome','Firefox', 'IE']
+      browsers = ['Chrome','Firefox']
     }else if(DEBUG){
       browsers = ['ChromeDebugging'];
     }
@@ -32,19 +31,11 @@ module.exports = function (config) {
   };
 
   function getFiles() {
-    var files = [
-     'node_modules/es5-shim/es5-shim.js',
-     'node_modules/es5-shim/es5-sham.js',
-     'node_modules/es6-shim/es6-shim.js',
-     'node_modules/es6-sham/es6-sham.js'
-    ];
-    if(RELEASE === true ||  DEBUG === true) {
-      files.push('test/FullTests.jsx');
-    } else {
-      // TODO: cleanup tests
-      files.push('test/unitTests.jsx');
+    if (RELEASE === true || DEBUG === true) {
+      return ['test/FullTests.jsx'];
     }
-    return files;
+    // TODO: cleanup tests
+    return ['test/unitTests.jsx'];
   }
 
   function getPreprocessors() {
@@ -75,16 +66,11 @@ module.exports = function (config) {
           {
             test: /\.(js|jsx)$/,
             exclude: /node_modules/,
-            use: [
-              { loader: 'babel-loader', options: { envName: 'test' } }
-            ]
+            use: [{ loader: 'babel-loader', options: { envName: 'test' } }]
           },
           {
             test: /\.css$/,
-            use: [
-              { loader: 'style-loader' },
-              { loader: 'css-loader' }
-            ]
+            use: ['style-loader', 'css-loader']
           }
         ]
       },
@@ -153,7 +139,6 @@ module.exports = function (config) {
     plugins: [
       'karma-chrome-launcher',
       'karma-firefox-launcher',
-      'karma-ie-launcher',
       'karma-jasmine',
       'karma-jasmine-matchers',
       'karma-webpack',
@@ -162,14 +147,6 @@ module.exports = function (config) {
     ],
 
     customLaunchers: {
-      IE9: {
-        base: 'IE',
-        'x-ua-compatible': 'IE=EmulateIE9'
-      },
-      IE8: {
-        base: 'IE',
-        'x-ua-compatible': 'IE=EmulateIE8'
-      },
       ChromeDebugging: {
         base: 'Chrome',
         flags: [ '--remote-debugging-port=9333' ],

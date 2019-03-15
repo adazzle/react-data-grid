@@ -1,7 +1,6 @@
 import { isImmutableCollection } from 'common/utils';
 import Resolver from './RowGrouperResolver';
 
-
 class RowGrouper {
 
   constructor(columns, expandedRows, isImmutable = false) {

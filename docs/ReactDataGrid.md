@@ -93,6 +93,15 @@ Component used to render a draggable header cell
 **type:** func  
 
 
+### `editorPortalTarget`
+
+The node where the editor portal should mount.
+
+**type:** instanceOf Element 
+
+ **defaultValue:** `document.body`
+
+
 ### `enableCellAutoFocus`
 
 Toggles whether cells should be autofocused
@@ -200,7 +209,7 @@ Called just before a cell is about to be edited
 
 **type:** func  
 
- **defaultValue:** `() => {}`
+ **defaultValue:** `() => { }`
 
 
 ### `onCellCopyPaste`

@@ -1,6 +1,7 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 class Example extends React.Component {
   constructor(props, context) {
@@ -80,7 +81,7 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this._rows.length}
         minHeight={500}
-        minColumnWidth={120} 
+        minColumnWidth={120}
       />);
   }
 }
@@ -93,7 +94,7 @@ const exampleDescription = (
     the component is initialized, by setting <code>width</code> key in each column.</p>
   </div>);
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Resizable Columns Example',
   exampleDescription,

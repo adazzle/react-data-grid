@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Canvas from './Canvas';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
-import PropTypes from 'prop-types';
 import { getSize } from './ColumnUtils';
 import {
   getGridState,
@@ -16,7 +17,7 @@ import {
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
 
-class Viewport extends React.Component {
+export default class Viewport extends React.Component {
   static displayName = 'Viewport';
 
   static propTypes = {
@@ -67,7 +68,8 @@ class Viewport extends React.Component {
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired,
-    RowsContainer: PropTypes.node
+    RowsContainer: PropTypes.node,
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   static defaultProps = {
@@ -309,10 +311,9 @@ class Viewport extends React.Component {
           RowsContainer={this.props.RowsContainer}
           prevScrollLeft={this.state.prevScrollLeft}
           prevScrollTop={this.state.prevScrollTop}
+          editorPortalTarget={this.props.editorPortalTarget}
         />
       </div>
     );
   }
 }
-
-module.exports = Viewport;

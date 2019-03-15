@@ -1,9 +1,10 @@
-const React = require('react');
+import React from 'react';
 import ReactDataGrid from 'react-data-grid';
-const exampleWrapper = require('../components/exampleWrapper');
-const {
-  DraggableHeader: { DraggableContainer }
-} = require('react-data-grid-addons');
+import { DraggableHeader } from 'react-data-grid-addons';
+
+import exampleWrapper from '../components/exampleWrapper';
+
+const { DraggableContainer } = DraggableHeader;
 
 class Example extends React.Component {
   createRows = () => {
@@ -88,7 +89,7 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Drag Columns to Reorder',
   exampleDescription: 'Drag Columns to Reorder',

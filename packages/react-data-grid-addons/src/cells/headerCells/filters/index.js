@@ -1,13 +1,4 @@
-import NumericFilter from './NumericFilter';
-import AutoCompleteFilter from './AutoCompleteFilter';
-import MultiSelectFilter from './MultiSelectFilter';
-import SingleSelectFilter from './SingleSelectFilter';
-
-const Filters = {
-  NumericFilter: NumericFilter,
-  AutoCompleteFilter: AutoCompleteFilter,
-  MultiSelectFilter: MultiSelectFilter,
-  SingleSelectFilter: SingleSelectFilter
-};
-
-module.exports = Filters;
+export { default as NumericFilter } from './NumericFilter';
+export { default as AutoCompleteFilter } from './AutoCompleteFilter';
+export { default as MultiSelectFilter } from './MultiSelectFilter';
+export { default as SingleSelectFilter } from './SingleSelectFilter';

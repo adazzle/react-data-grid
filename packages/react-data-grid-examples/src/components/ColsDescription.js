@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ColsDescription() {
+export default function ColsDescription() {
   return (
     <div>
       <p>The columns property is an array of objects that has at a minimum key and name properties</p>
@@ -11,5 +11,3 @@ function ColsDescription() {
     </div>
   );
 }
-
-module.exports = ColsDescription;

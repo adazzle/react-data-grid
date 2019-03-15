@@ -1,7 +1,7 @@
 import ReactDataGrid from 'react-data-grid';
 import exampleWrapper from '../components/exampleWrapper';
 import React from 'react';
-import {AreaChart, Area} from 'Recharts';
+import { AreaChart, Area } from 'Recharts';
 
 const getRandom = (min, max) => {
   min = Math.ceil(min);
@@ -61,7 +61,7 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Efficient windowing demonstration',
   exampleDescription: 'For formatters that are expensive to render it is possible to render a simple placeholder when scrolling to improve scroll performance',

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { CellExpand } from 'common/constants';
 
-class CellExpander extends React.Component {
+export default class CellExpander extends React.Component {
   static propTypes = {
     expandableOptions: PropTypes.object.isRequired,
     onCellExpand: PropTypes.func.isRequired
@@ -36,5 +37,3 @@ class CellExpander extends React.Component {
     );
   }
 }
-
-export default CellExpander;

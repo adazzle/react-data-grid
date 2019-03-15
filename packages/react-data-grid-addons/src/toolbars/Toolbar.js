@@ -1,8 +1,9 @@
-const React = require('react');
-require('../../../../themes/react-data-grid-toolbar.css');
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class Toolbar extends React.Component {
+import '../../../../themes/react-data-grid-toolbar.css';
+
+export default class Toolbar extends React.Component {
   static propTypes = {
     onAddRow: PropTypes.func,
     onToggleFilter: PropTypes.func,
@@ -52,5 +53,3 @@ class Toolbar extends React.Component {
       </div>);
   }
 }
-
-module.exports = Toolbar;

@@ -2,11 +2,13 @@
   "name": "react-data-grid-examples",
   "version": "6.0.1",
   "description": "A set of examples for the grid",
-  "main": "main.js",
-  "scripts": {
-    "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples true",
-    "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples",
-    "test": "npm test"
+  "author": "Adazzle",
+  "license": "MIT",
+  "main": "index.js",
+  "repository": "adazzle/react-data-grid",
+  "homepage": "https://github.com/adazzle/react-data-grid",
+  "bugs": {
+    "url": "https://github.com/adazzle/react-data-grid/issues"
   },
   "keywords": [
     "react",
@@ -14,8 +16,11 @@
     "examples",
     "react-data-grid-addons"
   ],
-  "author": "Adazzle",
-  "license": "MIT",
+  "scripts": {
+    "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples true",
+    "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid-examples",
+    "test": "npm test"
+  },
   "dependencies": {
     "immutability-helper": "^2.7.0",
     "react-data-grid": "^6.0.1",
@@ -25,9 +30,7 @@
   "devDependencies": {
     "bootstrap": "^3.2.0",
     "jquery": "^2.1.1",
-    "lodash": "^4.13.1",
-    "lodash.groupby": "^4.5.1",
     "markdown": "^0.5.0",
-    "tape": "^4.9.1"
+    "recharts": "^1.5.0"
   }
 }

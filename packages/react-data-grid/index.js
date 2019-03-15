@@ -1,1 +1,2 @@
-module.exports = require('./src');
+export { default } from './src';
+export * from './src';

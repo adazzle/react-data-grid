@@ -1,11 +1,13 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const Grid = require('react-data-grid');
-const { editors: { CheckboxEditor } } = Grid;
-const TestUtils = require('react-dom/test-utils');
-const StubComponent = require('../../../../test/StubComponent');
-const mockStateObject = require('./data/MockStateObject');
-const { mount } = require('enzyme');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { mount } from 'enzyme';
+import TestUtils from 'react-dom/test-utils';
+
+import Grid, { editors } from 'react-data-grid';
+import StubComponent from '../../../../test/StubComponent';
+import mockStateObject from './data/MockStateObject';
+
+const { CheckboxEditor } = editors;
 
 describe('Grid', function() {
   beforeEach(function() {

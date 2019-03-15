@@ -1,5 +1,3 @@
 import GridPropHelpers from './test/GridPropHelpers';
 
-module.exports = {
-  test: { GridPropHelpers }
-};
+export const test = { GridPropHelpers };

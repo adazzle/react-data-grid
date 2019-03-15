@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import ExampleList from './ExampleList';
 
-class Navbar extends React.Component {
+export default class Navbar extends React.Component {
   render() {
     return (
       <div className="navbar navbar-fixed-top headroom" >
@@ -44,5 +44,3 @@ class Navbar extends React.Component {
     );
   }
 }
-
-export default Navbar;

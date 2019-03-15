@@ -1,6 +1,6 @@
 import React from 'react';
 
-function RowsDescription() {
+export default function RowsDescription() {
   return (
     <div>
       <p>The rows property should be an array of objects whose property names match the key property of each column</p>
@@ -13,5 +13,3 @@ function RowsDescription() {
     </div>
   );
 }
-
-module.exports = RowsDescription;

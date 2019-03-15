@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import CellMask from './CellMask';
 
-function CopyMask({ copiedPosition, innerRef, getSelectedDimensions }) {
+export default function CopyMask({ copiedPosition, innerRef, getSelectedDimensions }) {
   const dimensions = getSelectedDimensions(copiedPosition);
   return (
     <CellMask
@@ -19,5 +19,3 @@ CopyMask.propTypes = {
   getSelectedDimensions: PropTypes.func.isRequired,
   innerRef: PropTypes.func.isRequired
 };
-
-export default CopyMask;

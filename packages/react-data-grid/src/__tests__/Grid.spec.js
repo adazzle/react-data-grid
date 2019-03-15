@@ -1,8 +1,9 @@
 import React from 'react';
+import { ContextMenu } from 'react-contextmenu';
+import { shallow } from 'enzyme';
+
 import Grid from '../Grid';
 import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
-import { shallow } from 'enzyme';
-import { ContextMenu } from 'react-contextmenu';
 
 describe('Empty Grid Tests', () => {
   class EmptyRowsView extends React.Component {

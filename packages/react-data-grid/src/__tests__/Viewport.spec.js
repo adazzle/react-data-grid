@@ -1,7 +1,8 @@
 import React from 'react';
+import { shallow } from 'enzyme';
+
 import Viewport from '../Viewport';
 import Canvas from '../Canvas';
-import { shallow } from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
 import { SCROLL_DIRECTION } from '../utils/viewportUtils';
 

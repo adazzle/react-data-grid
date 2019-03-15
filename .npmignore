@@ -4,10 +4,7 @@ webpack.config.js
 LICENSE
 .eslintrc
 test
-gulp
 examples
-coveralls.yml
-gulpfile.js
 config
 .npmrc
 .npmrc.enc

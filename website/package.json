@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "docs": "gulp docs:create",
+    "docs": "node docs/utils/docsGen.js",
     "examples": "docusaurus-examples",
     "start": "npm run docs && docusaurus-start",
     "build": "npm run docs && docusaurus-build",
@@ -9,10 +9,10 @@
     "version": "docusaurus-version",
     "rename-version": "docusaurus-rename-version"
   },
-  "devDependencies": {
-    "docusaurus": "^1.5.0"
-  },
   "dependencies": {
     "recast": "^0.16.0"
+  },
+  "devDependencies": {
+    "docusaurus": "^1.5.0"
   }
 }
