@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-require('airbnb-browser-shims');
 var webpackConfig = require('./webpack.common.config.js');
 var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));

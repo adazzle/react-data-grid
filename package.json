@@ -42,7 +42,6 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.4",
-    "airbnb-browser-shims": "^3.2.1",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "copy-dir": "^0.3.0",
