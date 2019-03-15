@@ -6,8 +6,7 @@ const config = {
     'react-data-grid/dist/react-data-grid': [path.resolve('packages/react-data-grid/src')],
     'react-data-grid-addons/dist/react-data-grid-addons': [path.resolve('packages/react-data-grid-addons/src')],
     'react-data-grid/dist/react-data-grid.min': [path.resolve('packages/react-data-grid/src')],
-    'react-data-grid-addons/dist/react-data-grid-addons.min': [path.resolve('packages/react-data-grid-addons/src')],
-    'react-data-grid-examples/dist/index': [path.resolve('packages/react-data-grid-examples/src')]
+    'react-data-grid-addons/dist/react-data-grid-addons.min': [path.resolve('packages/react-data-grid-addons/src')]
   },
   output: {
     path: path.resolve('packages'),
