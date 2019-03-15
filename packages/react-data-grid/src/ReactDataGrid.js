@@ -16,10 +16,6 @@ import { EventBus } from './masks';
 require('../../../themes/react-data-grid-core.css');
 require('../../../themes/react-data-grid-checkbox.css');
 
-if (!Object.assign) {
-  Object.assign = require('object-assign');
-}
-
 const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;
 
 /** Main API Component to render a data grid of rows and columns

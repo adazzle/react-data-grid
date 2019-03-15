@@ -22,7 +22,6 @@
     "test": "npm test"
   },
   "dependencies": {
-    "object-assign": "^4.1.1",
     "react-is-deprecated": "^0.1.2",
     "shallowequal": "^1.1.0"
   },
