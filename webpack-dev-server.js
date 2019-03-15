@@ -1,7 +1,6 @@
 const webpackCommon = require('./config/webpack.common.config');
 const WebpackDevServer = require('webpack-dev-server');
 const webpack = require('webpack');
-const path = require('path');
 
 const specificConfig = {
   entry: {
@@ -18,10 +17,7 @@ const specificConfig = {
     libraryTarget: 'umd'
   },
   resolve: {
-    alias: {
-      'react-data-grid': path.resolve('packages/react-data-grid/src'),
-      'react-data-grid-addons': path.resolve('packages/react-data-grid-addons/src')
-    }
+    symlinks: false
   },
   externals: {
     faker: 'faker'
