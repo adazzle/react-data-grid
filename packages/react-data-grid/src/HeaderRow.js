@@ -7,7 +7,6 @@ import { getColumn, getSize, isFrozen } from './ColumnUtils';
 import SortableHeaderCell, { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
 import HeaderCellType from './HeaderCellType';
-import createObjectWithProperties from './createObjectWithProperties';
 import { HeaderRowType } from 'common/constants';
 import '../../../themes/react-data-grid-header.css';
 
@@ -19,9 +18,6 @@ const HeaderRowStyle = {
   height: PropTypes.number,
   position: PropTypes.string
 };
-
-// The list of the propTypes that we want to include in the HeaderRow div
-const knownDivPropertyKeys = ['width', 'height', 'style', 'onScroll'];
 
 export default class HeaderRow extends React.Component {
   static displayName = 'HeaderRow';
@@ -155,10 +151,6 @@ export default class HeaderRow extends React.Component {
     });
   };
 
-  getKnownDivProps = () => {
-    return createObjectWithProperties(this.props, knownDivPropertyKeys);
-  };
-
   render() {
     const cellsStyle = {
       width: this.props.width ? (this.props.width + getScrollbarSize()) : '100%',
@@ -168,9 +160,16 @@ export default class HeaderRow extends React.Component {
       overflowY: 'hidden'
     };
 
+    const { width, height, style, onScroll } = this.props;
     const cells = this.getCells();
     return (
-      <div {...this.getKnownDivProps()} className="react-grid-HeaderRow">
+      <div
+        width={width}
+        height={height}
+        style={style}
+        onScroll={onScroll}
+        className="react-grid-HeaderRow"
+      >
         <div style={cellsStyle}>
           {cells}
         </div>

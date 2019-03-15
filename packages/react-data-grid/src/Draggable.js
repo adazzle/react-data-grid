@@ -1,12 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import createObjectWithProperties from './createObjectWithProperties';
-
 import '../../../themes/react-data-grid-header.css';
-
-// The list of the propTypes that we want to include in the Draggable div
-const knownDivPropertyKeys = ['onDragStart', 'onDragEnd', 'onDrag', 'style'];
 
 export default class Draggable extends React.Component {
   static propTypes = {
@@ -74,13 +69,14 @@ export default class Draggable extends React.Component {
     window.removeEventListener('touchmove', this.onMouseMove);
   };
 
-  getKnownDivProps = () => {
-    return createObjectWithProperties(this.props, knownDivPropertyKeys);
-  };
-
   render() {
+    const { style, onDragStart, onDrag, onDragEnd } = this.props;
     return (
-      <div {...this.getKnownDivProps()}
+      <div
+        style={style}
+        onDragStart={onDragStart}
+        onDrag={onDrag}
+        onDragEnd={onDragEnd}
         onMouseDown={this.onMouseDown}
         onTouchStart={this.onMouseDown}
         className="react-grid-HeaderCell__draggable" />
