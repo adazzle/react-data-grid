@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import AutoCompleteEditor from '../AutoCompleteEditor';
 import ReactAutocomplete from 'ron-react-autocomplete';
+
+import AutoCompleteEditor from '../AutoCompleteEditor';
 
 describe('AutoCompleteEditor', () => {
   function fakeCb() { return true; }

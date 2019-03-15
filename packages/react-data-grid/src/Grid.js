@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import Header from './Header';
 import Viewport from './Viewport';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import { isFrozen } from './ColumnUtils';
-require('../../../themes/react-data-grid-core.css');
 
-class Grid extends React.Component {
+import '../../../themes/react-data-grid-core.css';
+
+export default class Grid extends React.Component {
   static displayName = 'Grid';
 
   static propTypes = {
@@ -221,5 +223,3 @@ class Grid extends React.Component {
     );
   }
 }
-
-export default Grid;

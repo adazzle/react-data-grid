@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { last } from 'common/utils';
 import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
 import { EventTypes } from 'common/constants';
 
 import '../../../themes/react-data-grid-row.css';
 
-class RowGroup extends Component {
+export default class RowGroup extends Component {
   onRowExpandToggle = (expand) => {
     const shouldExpand = expand == null ? !this.props.isExpanded : expand;
     const meta = this.props.cellMetaData;
@@ -116,5 +117,3 @@ Defaultbase.propTypes = {
 RowGroup.defaultProps = {
   renderer: Defaultbase
 };
-
-export default RowGroup;

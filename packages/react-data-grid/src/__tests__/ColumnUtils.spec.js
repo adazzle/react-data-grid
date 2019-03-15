@@ -1,7 +1,7 @@
 import React from 'react';
-import { canEdit } from '../ColumnUtils';
 import ReactDOM from 'react-dom';
-const cloneElement = React.cloneElement;
+
+import { canEdit } from '../ColumnUtils';
 
 const render = function(element, mountPoint) {
   const mount = mountPoint || document.createElement('div');
@@ -10,7 +10,7 @@ const render = function(element, mountPoint) {
   if (!instance.renderWithProps) {
     instance.renderWithProps = function(newProps) {
       return render(
-       cloneElement(element, newProps), mount);
+       React.cloneElement(element, newProps), mount);
     };
   }
   return instance;

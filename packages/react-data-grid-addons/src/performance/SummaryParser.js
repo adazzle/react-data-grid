@@ -1,6 +1,6 @@
 import SummaryItemModel from './SummaryItemModel';
 
-class SummaryParser {
+export default class SummaryParser {
   constructor(summary) {
     this._summary = this._parseSummary(summary);
     this.getByOwner = this.getByOwner.bind(this);
@@ -44,5 +44,3 @@ class SummaryParser {
     return componentSummaryItem[0];
   }
 }
-
-export default SummaryParser;

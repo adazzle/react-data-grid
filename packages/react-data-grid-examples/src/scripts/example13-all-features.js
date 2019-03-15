@@ -1,9 +1,11 @@
-const faker = require('faker');
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const { Editors, Toolbar, Formatters } = require('react-data-grid-addons');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+import { Editors, Toolbar, Formatters } from 'react-data-grid-addons';
 import update from 'immutability-helper';
+import faker from 'faker';
+
+import exampleWrapper from '../components/exampleWrapper';
+
 const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
 const { ImageFormatter } = Formatters;
 
@@ -261,7 +263,7 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'All the features grid',
   exampleDescription: 'This example demonstrates all the features from the previous examples.',

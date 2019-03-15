@@ -1,15 +1,15 @@
-const Editors = require('./editors');
-const Formatters = require('./formatters');
-const Toolbar = require('./toolbars/Toolbar');
-const ToolsPanel = require('./toolbars');
-const Data = require('./data');
-const Menu = require('./menu');
-const Draggable = require('./draggable');
-const DraggableHeader = require('./draggable-header');
-const Filters = require('./cells/headerCells/filters');
+import * as Editors from './editors';
+import * as Formatters from './formatters';
+import Toolbar from './toolbars/Toolbar';
+import * as ToolsPanel from './toolbars';
+import * as Data from './data';
+import * as Menu from './menu';
+import * as Draggable from './draggable';
+import * as DraggableHeader from './draggable-header';
+import * as Filters from './cells/headerCells/filters';
 import rowComparer from 'common/utils/RowComparer';
-const performance = require('./performance');
+import * as performance from './performance';
 const Utils = { rowComparer, performance };
 
 window.ReactDataGridPlugins = { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils };
-module.exports = { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils };
+export { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters, Utils };

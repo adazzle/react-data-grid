@@ -1,9 +1,11 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const { Editors: { DropDownEditor } } = require('react-data-grid-addons');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+import { Editors } from 'react-data-grid-addons';
 import update from 'immutability-helper';
 
+import exampleWrapper from '../components/exampleWrapper';
+
+const { DropDownEditor } = Editors;
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
 class Example extends React.Component {
@@ -115,7 +117,7 @@ const exampleDescription = (
   </div>
 );
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Column Events Example',
   exampleDescription,

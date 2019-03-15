@@ -1,6 +1,8 @@
-const React = require('react');
-const Draggable = require('./Draggable');
-require('../../../themes/react-data-grid-header.css');
+import React from 'react';
+
+import Draggable from './Draggable';
+
+import '../../../themes/react-data-grid-header.css';
 
 const style = {
   position: 'absolute',
@@ -10,7 +12,7 @@ const style = {
   height: '100%'
 };
 
-class ResizeHandle extends React.Component {
+export default class ResizeHandle extends React.Component {
   render() {
     return (
       <Draggable {...this.props}
@@ -20,5 +22,3 @@ class ResizeHandle extends React.Component {
     );
   }
 }
-
-module.exports = ResizeHandle;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function DragHandle({ onDragStart, onDragEnd, onDoubleClick }) {
+export default function DragHandle({ onDragStart, onDragEnd, onDoubleClick }) {
   return (
     <div
       className="drag-handle"
@@ -18,5 +18,3 @@ DragHandle.propTypes = {
   onDragEnd: PropTypes.func.isRequired,
   onDoubleClick: PropTypes.func.isRequired
 };
-
-export default DragHandle;

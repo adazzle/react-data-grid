@@ -1,5 +1,6 @@
-import sortRows, { comparer } from '../RowSorter';
 import Immutable from 'immutable';
+
+import sortRows, { comparer } from '../RowSorter';
 
 describe('RowSorter', () => {
   const rows = [

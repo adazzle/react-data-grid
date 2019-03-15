@@ -1,16 +1,18 @@
-import rowComparer from 'common/utils/RowComparer';
 import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
+
+import rowComparer from 'common/utils/RowComparer';
 import Cell from './Cell';
 import createObjectWithProperties from './createObjectWithProperties';
 import { isFrozen } from './ColumnUtils';
-require('../../../themes/react-data-grid-row.css');
+
+import '../../../themes/react-data-grid-row.css';
 
 // The list of the propTypes that we want to include in the Row div
 const knownDivPropertyKeys = ['height'];
 
-class Row extends React.Component {
+export default class Row extends React.Component {
   static displayName = 'Row';
 
   static propTypes = {
@@ -201,5 +203,3 @@ class Row extends React.Component {
     );
   }
 }
-
-export default Row;

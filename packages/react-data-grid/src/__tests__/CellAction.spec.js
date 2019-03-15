@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+
 import CellAction from '../CellAction';
 
 const setup = (overriderProps = {}) => {

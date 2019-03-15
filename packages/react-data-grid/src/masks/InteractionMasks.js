@@ -22,14 +22,14 @@ import {
 } from '../utils/SelectedCellUtils';
 import { isFunction } from 'common/utils';
 import { getSize, getColumn, isFrozen } from '../ColumnUtils';
-import * as keyCodes from '../KeyCodes';
+import keyCodes from '../KeyCodes';
 import { CellNavigationMode, EventTypes } from 'common/constants';
 
-require('../../../../themes/interaction-masks.css');
+import '../../../../themes/interaction-masks.css';
 
 const SCROLL_CELL_BUFFER = 2;
 
-class InteractionMasks extends React.Component {
+export default class InteractionMasks extends React.Component {
   static dispplayName = 'InteractionMasks';
 
   static propTypes = {
@@ -745,5 +745,3 @@ class InteractionMasks extends React.Component {
     );
   }
 }
-
-export default InteractionMasks;

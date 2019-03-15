@@ -1,7 +1,8 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
 import update from 'immutability-helper';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 class Example extends React.Component {
   constructor(props, context) {
@@ -80,7 +81,7 @@ const exampleDescription = (
     <p>Alternatively by double clicking on the drag handle, you can update all the cells underneath the active cell.</p>
   </div>);
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Cell Drag Down Example',
   exampleDescription,

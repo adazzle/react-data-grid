@@ -1,3 +1,3 @@
-import Selectors from './Selectors';
+import * as Selectors from './Selectors';
 export { Selectors };
 

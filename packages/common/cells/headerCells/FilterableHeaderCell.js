@@ -1,8 +1,9 @@
 import React from 'react';
-import Column from 'common/prop-shapes/Column';
 import PropTypes from 'prop-types';
 
-class FilterableHeaderCell extends React.Component {
+import Column from 'common/prop-shapes/Column';
+
+export default class FilterableHeaderCell extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     column: PropTypes.shape(Column)
@@ -18,11 +19,11 @@ class FilterableHeaderCell extends React.Component {
 
   renderInput = () => {
     if (this.props.column.filterable === false) {
-      return <span/>;
+      return <span />;
     }
 
     const inputKey = 'header-filter-' + this.props.column.key;
-    return (<input key={inputKey} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange}/>);
+    return (<input key={inputKey} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange} />);
   };
 
   render() {
@@ -35,5 +36,3 @@ class FilterableHeaderCell extends React.Component {
     );
   }
 }
-
-module.exports = FilterableHeaderCell;

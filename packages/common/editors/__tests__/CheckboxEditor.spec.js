@@ -1,15 +1,16 @@
-const React          = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils      = require('react-dom/test-utils');
-const { mount } = require('enzyme');
-const CheckboxEditor = require('../CheckboxEditor');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-dom/test-utils';
+import { mount } from 'enzyme';
+
+import CheckboxEditor from '../CheckboxEditor';
 
 describe('CheckboxEditor', () => {
   let component;
   let componentWrapper;
   const testColumn = {
     key: 'columnKey',
-    onCellChange: function() {}
+    onCellChange: function() { }
   };
 
   describe('Basic tests', () => {
@@ -19,7 +20,7 @@ describe('CheckboxEditor', () => {
       componentWrapper = mount(<CheckboxEditor
         value={true}
         rowIdx={1}
-        column={testColumn}/>);
+        column={testColumn} />);
       component = componentWrapper.instance();
     });
 

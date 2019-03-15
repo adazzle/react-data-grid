@@ -1,6 +1,6 @@
-const isValidElement = require('react').isValidElement;
+import { isValidElement } from 'react';
 
-module.exports = function sameColumn(a, b) {
+export function sameColumn(a, b) {
   let k;
 
   for (k in a) {
@@ -21,4 +21,4 @@ module.exports = function sameColumn(a, b) {
   }
 
   return true;
-};
+}

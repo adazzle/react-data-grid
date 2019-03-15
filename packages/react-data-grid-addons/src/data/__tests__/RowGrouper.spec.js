@@ -1,5 +1,6 @@
-import groupRows from '../RowGrouper';
 import Immutable from 'immutable';
+
+import groupRows from '../RowGrouper';
 
 const rows = [{ colOne: 'v1', colTwo: 'b1' },
               { colOne: 'v2', colTwo: 'b2' },

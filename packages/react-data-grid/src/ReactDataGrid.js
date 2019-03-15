@@ -1,20 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { deprecate } from 'react-is-deprecated';
+
 import BaseGrid from './Grid';
 import CheckboxEditor from 'common/editors/CheckboxEditor';
-import RowUtils from './RowUtils';
+import * as RowUtils from './RowUtils';
 import { getColumn, getSize } from './ColumnUtils';
 import KeyCodes from './KeyCodes';
 import { isFunction } from 'common/utils';
 import SelectAll from './formatters/SelectAll';
 import { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
-const ColumnMetrics = require('./ColumnMetrics');
+import * as ColumnMetrics from './ColumnMetrics';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType } from 'common/constants';
 import { EventBus } from './masks';
 
-require('../../../themes/react-data-grid-core.css');
-require('../../../themes/react-data-grid-checkbox.css');
+import '../../../themes/react-data-grid-core.css';
+import '../../../themes/react-data-grid-checkbox.css';
 
 const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;
 
@@ -30,7 +31,7 @@ const deprecationWarning = (propName, alternative) => `${propName} has been depr
  *   rowsCount={3} />
  * ```
 */
-class ReactDataGrid extends React.Component {
+export default class ReactDataGrid extends React.Component {
   static displayName = 'ReactDataGrid';
 
   static propTypes = {
@@ -871,5 +872,3 @@ class ReactDataGrid extends React.Component {
     );
   }
 }
-
-module.exports = ReactDataGrid;

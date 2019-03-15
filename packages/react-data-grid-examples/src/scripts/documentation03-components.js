@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-const markdown = require('markdown');
+import markdown from 'markdown';
 
 class DocumentContainer extends React.Component {
   static propTypes = {
@@ -28,7 +27,7 @@ class DocumentContainer extends React.Component {
   }
 }
 
-class ComponentDocs extends React.Component {
+export default class ComponentDocs extends React.Component {
   state = { selectedDocumentIndex: 0, documentContent: '' };
 
   componentDidMount() {
@@ -88,6 +87,3 @@ class ComponentDocs extends React.Component {
     );
   }
 }
-
-
-module.exports = ComponentDocs;

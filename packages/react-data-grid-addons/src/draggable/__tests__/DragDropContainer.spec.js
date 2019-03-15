@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+
 import DragDropContainer from '../DragDropContainer';
 import RowDragLayer from '../RowDragLayer';
 import DraggableHeaderCell from '../DraggableHeaderCell';

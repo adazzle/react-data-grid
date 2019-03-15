@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import CellMask from './CellMask';
 
-function DragMask({ draggedPosition, getSelectedDimensions }) {
+export default function DragMask({ draggedPosition, getSelectedDimensions }) {
   const { overRowIdx, idx, rowIdx } = draggedPosition;
   if (overRowIdx != null && rowIdx !== overRowIdx) {
     const isDraggedOverDown = rowIdx < overRowIdx;
@@ -31,5 +31,3 @@ DragMask.propTypes = {
   draggedPosition: PropTypes.object.isRequired,
   getSelectedDimensions: PropTypes.func.isRequired
 };
-
-export default DragMask;

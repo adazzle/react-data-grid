@@ -1,4 +1,4 @@
-const RowUtils = require('../RowUtils');
+import * as RowUtils from '../RowUtils';
 
 describe('RowUtils Tests', () => {
   describe('isRowSelected', () => {

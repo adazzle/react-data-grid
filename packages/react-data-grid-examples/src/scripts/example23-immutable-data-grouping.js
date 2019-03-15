@@ -1,15 +1,15 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const faker = require('faker');
-const Immutable = require('immutable');
-const {
-  ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
-  Data: { Selectors },
-  Draggable: { Container: DraggableContainer }
- } = require('react-data-grid-addons');
-
+import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDataGrid from 'react-data-grid';
+import { ToolsPanel, Data, Draggable } from 'react-data-grid-addons';
+import faker from 'faker';
+import Immutable from 'immutable';
+
+import exampleWrapper from '../components/exampleWrapper';
+
+const { AdvancedToolbar: Toolbar, GroupedColumnsPanel } = ToolsPanel;
+const { Selectors } = Data;
+const { Container: DraggableContainer } = Draggable;
 
 faker.locale = 'en_GB';
 
@@ -105,7 +105,7 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Row Grouping (immutable collection input) Example',
   examplePath: './scripts/example23-immutable-data-grouping.js'

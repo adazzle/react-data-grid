@@ -1,16 +1,17 @@
-const React                   = require('react');
-const ReactDOM                = require('react-dom');
-const ReactAutocomplete       = require('ron-react-autocomplete');
-import { Column } from 'common/prop-shapes';
-require('../../../../themes/ron-react-autocomplete.css');
+import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import ReactAutocomplete from 'ron-react-autocomplete';
+
+import Column from 'common/prop-shapes/Column';
+import '../../../../themes/ron-react-autocomplete.css';
 
 const optionPropType = PropTypes.shape({
   id: PropTypes.required,
   title: PropTypes.string
 });
 
-class AutoCompleteEditor extends React.Component {
+export default class AutoCompleteEditor extends React.Component {
   static propTypes = {
     onCommit: PropTypes.func,
     options: PropTypes.arrayOf(optionPropType),
@@ -103,8 +104,6 @@ class AutoCompleteEditor extends React.Component {
     const label = this.props.label != null ? this.props.label : 'title';
     return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
       <ReactAutocomplete search={this.props.search} ref={this.setAutocompleteRef} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
-      </div>);
+    </div>);
   }
 }
-
-module.exports = AutoCompleteEditor;

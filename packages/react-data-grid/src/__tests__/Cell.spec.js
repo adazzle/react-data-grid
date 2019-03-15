@@ -1,6 +1,7 @@
 import React from 'react';
-import Cell from '../Cell';
 import { shallow } from 'enzyme';
+
+import Cell from '../Cell';
 import helpers from '../helpers/test/GridPropHelpers';
 import CellAction from '../CellAction';
 import SimpleCellFormatter from '../formatters/SimpleCellFormatter';

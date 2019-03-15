@@ -8,9 +8,9 @@ import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import * as zIndexes from 'common/constants/zIndexes';
 import ClickOutside from './ClickOutside';
 
-require('../../../themes/react-data-grid-core.css');
+import '../../../themes/react-data-grid-core.css';
 
-class EditorContainer extends React.Component {
+export default class EditorContainer extends React.Component {
   static displayName = 'EditorContainer';
 
   static propTypes = {
@@ -321,5 +321,3 @@ class EditorContainer extends React.Component {
     );
   }
 }
-
-module.exports = EditorContainer;

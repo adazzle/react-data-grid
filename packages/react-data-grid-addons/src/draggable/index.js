@@ -1,6 +1,4 @@
-import Container from './DragDropContainer';
-import DraggableHeaderCell from './DraggableHeaderCell';
-import RowActionsCell from './RowActionsCell';
-import DropTargetRowContainer from './DropTargetRowContainer';
-
-module.exports = { Container, DraggableHeaderCell, RowActionsCell, DropTargetRowContainer };
+export { default as Container } from './DragDropContainer';
+export { default as DraggableHeaderCell } from './DraggableHeaderCell';
+export { default as RowActionsCell } from './RowActionsCell';
+export { default as DropTargetRowContainer } from './DropTargetRowContainer';

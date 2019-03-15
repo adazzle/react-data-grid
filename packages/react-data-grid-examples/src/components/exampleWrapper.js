@@ -1,16 +1,17 @@
-const React = require('react');
-const classNames = require('classnames');
-require('../assets/css/exampleWrapper.css');
+import React from 'react';
+import classNames from 'classnames';
+
+import '../assets/css/exampleWrapper.css';
 
 const emptyAction = () => { };
 const disableLink = (e) => e.stopPropagation();
 
-const exampleWrapper = ({
+export default function exampleWrapper({
   WrappedComponent,
   exampleName,
   examplePath,
   examplePlaygroundLink,
-  exampleDescription }) => {
+  exampleDescription }) {
   const doesExamplePlayGroundLinkExist = examplePlaygroundLink === undefined ? false : true;
   const playgroundLinkClass = classNames({
     'disabled-link': !doesExamplePlayGroundLinkExist
@@ -33,6 +34,4 @@ const exampleWrapper = ({
       );
     }
   };
-};
-
-module.exports = exampleWrapper;
+}

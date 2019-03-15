@@ -3,7 +3,6 @@ import * as EventTypes from './EventTypes';
 import * as HeaderRowType from './HeaderRowType';
 import keyMirror from 'keymirror';
 
-
 const UpdateActions = keyMirror({
   CELL_UPDATE: null,
   COLUMN_FILL: null,
@@ -19,7 +18,6 @@ const CellExpand = {
   DOWN_TRIANGLE: String.fromCharCode(9660),
   RIGHT_TRIANGLE: String.fromCharCode(9654)
 };
-
 
 export {
   CellNavigationMode,

@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
+
 import getScrollbarSize from '../getScrollbarSize';
-const ColumnMetrics = require('../ColumnMetrics');
+import * as ColumnMetrics from '../ColumnMetrics';
 
 const getAvailableWidthPerColumn = (totalWidth, consumedWidth, numberOfcolumns) => {
   let availableWidth = totalWidth - getScrollbarSize() - consumedWidth;
@@ -46,9 +47,9 @@ describe('Column Metrics Tests', () => {
       });
 
       it('should shift all frozen columns to the start of column metrics array', () => {
-        const firstFrozenColumn =  { key: 'frozenColumn1', name: 'frozenColumn1', frozen: true };
-        const secondFrozenColumn =  { key: 'frozenColumn2', name: 'frozenColumn2', frozen: true };
-        const thirdFrozenColumn =  { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
+        const firstFrozenColumn = { key: 'frozenColumn1', name: 'frozenColumn1', frozen: true };
+        const secondFrozenColumn = { key: 'frozenColumn2', name: 'frozenColumn2', frozen: true };
+        const thirdFrozenColumn = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
         const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
         columns.splice(2, 0, firstFrozenColumn);
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });

@@ -1,11 +1,11 @@
 import React from 'react';
 import Immutable from 'immutable';
+import { shallow } from 'enzyme';
 
 import Header from '../Header';
 import HeaderRow from '../HeaderRow';
 import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
 import * as GetScrollbarSize from '../getScrollbarSize';
-import { shallow } from 'enzyme';
 const SCROLL_BAR_SIZE = 17;
 
 describe('Header Unit Tests', () => {

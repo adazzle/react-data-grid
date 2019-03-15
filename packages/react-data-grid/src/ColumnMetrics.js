@@ -1,4 +1,4 @@
-import sameColumn from './ColumnComparer';
+import { sameColumn } from './ColumnComparer';
 import { getSize, getColumn, isFrozen, spliceColumn } from './ColumnUtils';
 import getScrollbarSize from './getScrollbarSize';
 import { isColumnsImmutable } from 'common/utils';
@@ -46,8 +46,7 @@ function setColumnOffsets(columns) {
 
 const getTotalColumnWidth = columns => columns.reduce((acc, c) => acc + c.width, 0);
 
-
-function recalculate(metrics) {
+export function recalculate(metrics) {
   // compute width for columns which specify width
   let columns = setColumnWidths(metrics.columns, metrics.totalWidth);
 
@@ -84,7 +83,7 @@ function recalculate(metrics) {
  * @param {Column} column
  * @param {number} width
  */
-function resizeColumn(metrics, index, width) {
+export function resizeColumn(metrics, index, width) {
   const column = getColumn(metrics.columns, index);
   let metricsClone = { ...metrics };
   metricsClone.columns = metrics.columns.slice(0);
@@ -137,7 +136,7 @@ function compareEachColumn(prevColumns, nextColumns, isSameColumn) {
   return true;
 }
 
-function sameColumns(prevColumns, nextColumns, isSameColumn) {
+export function sameColumns(prevColumns, nextColumns, isSameColumn) {
   if (areColumnsImmutable(prevColumns, nextColumns)) {
     return prevColumns === nextColumns;
   }
@@ -145,4 +144,4 @@ function sameColumns(prevColumns, nextColumns, isSameColumn) {
   return compareEachColumn(prevColumns, nextColumns, isSameColumn);
 }
 
-module.exports = { recalculate, resizeColumn, sameColumn, sameColumns };
+export { sameColumn };

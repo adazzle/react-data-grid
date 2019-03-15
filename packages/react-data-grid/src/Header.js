@@ -1,21 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
-import ColumnMetrics from './ColumnMetrics';
+import * as ColumnMetrics from './ColumnMetrics';
 import { getColumn } from './ColumnUtils';
 import HeaderRow from './HeaderRow';
 import getScrollbarSize  from './getScrollbarSize';
-import PropTypes from 'prop-types';
 import createObjectWithProperties from'./createObjectWithProperties';
-import cellMetaDataShape    from'common/prop-shapes/CellMetaDataShape';
+import cellMetaDataShape from'common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from 'common/constants';
-require('../../../themes/react-data-grid-header.css');
+
+import '../../../themes/react-data-grid-header.css';
 
 
 // The list of the propTypes that we want to include in the Header div
 const knownDivPropertyKeys = ['height', 'onScroll'];
 
-class Header extends React.Component {
+export default class Header extends React.Component {
   static propTypes = {
     columnMetrics: PropTypes.shape({  width: PropTypes.number.isRequired, columns: PropTypes.any }).isRequired,
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -205,5 +206,3 @@ class Header extends React.Component {
     );
   }
 }
-
-module.exports = Header;

@@ -1,7 +1,8 @@
-const React              = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils          = require('react-dom/test-utils');
-const AutoCompleteEditor = require('../AutoCompleteEditor');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-dom/test-utils';
+
+import AutoCompleteEditor from '../AutoCompleteEditor';
 
 describe('AutoCompleteEditor integration', () => {
   let component;
@@ -15,13 +16,13 @@ describe('AutoCompleteEditor integration', () => {
     component = ReactDOM.render(<AutoCompleteEditor
       onCommit={commitSpy}
       options={fakeOptions}
-      label= "title"
+      label="title"
       valueParams={fakeParams}
-      value= "value"
+      value="value"
       column={fakeColumn}
       resultIdentifier="id"
       height={30}
-      onKeyDown={fakeCb}/>, document.body);
+      onKeyDown={fakeCb} />, document.body);
   });
 
   afterEach(() => {

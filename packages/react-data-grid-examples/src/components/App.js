@@ -6,7 +6,7 @@ import Home from './Home';
 import Examples from './Examples';
 import Documentation from './Documentation';
 
-class App extends React.Component {
+export default class App extends React.Component {
   render() {
     return (
       <div>
@@ -18,5 +18,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default App;

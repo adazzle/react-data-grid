@@ -1,8 +1,9 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-require('../../../themes/react-data-grid-checkbox.css');
 
-class CheckboxEditor extends React.Component {
+import '../../../themes/react-data-grid-checkbox.css';
+
+export default class CheckboxEditor extends React.Component {
   static propTypes = {
     value: PropTypes.bool,
     rowIdx: PropTypes.number,
@@ -22,10 +23,8 @@ class CheckboxEditor extends React.Component {
     const checkboxName = 'checkbox' + this.props.rowIdx;
     return (
       <div className="react-grid-checkbox-container checkbox-align" onClick={this.handleChange}>
-          <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} readOnly />
-          <label htmlFor={checkboxName} className="react-grid-checkbox-label"></label>
+        <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} readOnly />
+        <label htmlFor={checkboxName} className="react-grid-checkbox-label"></label>
       </div>);
   }
 }
-
-module.exports = CheckboxEditor;

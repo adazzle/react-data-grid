@@ -1,3 +1,1 @@
-import DraggableContainer from './DraggableContainer';
-
-module.exports = { DraggableContainer };
+export { default as DraggableContainer } from './DraggableContainer';

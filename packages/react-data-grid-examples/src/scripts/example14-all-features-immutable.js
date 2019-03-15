@@ -1,19 +1,16 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
-const FakeObjectDataStore = require('./FakeObjectDataStore');
-const Immutable = require('immutable');
-const {
-  Editors:
-    { AutoComplete: AutoCompleteEditor, DropDownEditor },
-  Toolbar,
-  Menu:
-    { ContextMenu, MenuItem },
-  Formatters:
-    { ImageFormatter }} = require('react-data-grid-addons');
-const faker = require('faker');
-
+import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDataGrid from 'react-data-grid';
+import { Editors, Toolbar, Menu, Formatters } from 'react-data-grid-addons';
+import Immutable from 'immutable';
+import faker from 'faker';
+
+import exampleWrapper from '../components/exampleWrapper';
+import FakeObjectDataStore from './FakeObjectDataStore';
+
+const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
+const { ImageFormatter } = Formatters;
+const { ContextMenu, MenuItem } = Menu;
 
 const counties = [
   { id: 0, title: 'Bedfordshire'},
@@ -184,7 +181,7 @@ class MyContextMenu extends React.Component {
   }
 }
 
-class Component extends React.Component {
+export class Component extends React.Component {
   static propTypes = {
     handleCellDrag: PropTypes.func.isRequired
   };
@@ -250,12 +247,10 @@ class Component extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Component,
   exampleName: 'All the features grid with immutable data',
   exampleDescription: 'This example demonstrates all the features from the previous examples using immutable.',
   examplePath: './scripts/example14-all-features-immutable.js',
   examplePlaygroundLink: undefined
 });
-
-module.exports.Component = Component;

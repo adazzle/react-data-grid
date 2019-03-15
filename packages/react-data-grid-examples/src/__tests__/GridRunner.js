@@ -1,8 +1,9 @@
-const React        = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils    = require('react-dom/test-utils');
-const { Component: ExampleGrid } = require('../scripts/example14-all-features-immutable');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-dom/test-utils';
 import { mount } from 'enzyme';
+
+import { Component as ExampleGrid } from '../scripts/example14-all-features-immutable';
 
 export default class GridRunner {
   /* =====

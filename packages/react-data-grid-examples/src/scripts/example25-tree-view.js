@@ -1,6 +1,7 @@
-const ReactDataGrid = require('react-data-grid');
-const exampleWrapper = require('../components/exampleWrapper');
-const React = require('react');
+import React from 'react';
+import ReactDataGrid from 'react-data-grid';
+
+import exampleWrapper from '../components/exampleWrapper';
 
 function createRows() {
   let rows = [];
@@ -138,7 +139,7 @@ class Example extends React.Component {
   }
 }
 
-module.exports = exampleWrapper({
+export default exampleWrapper({
   WrappedComponent: Example,
   exampleName: 'Tree View',
   exampleDescription: 'This examples demonstrates how a nested JSON data structure can be passed as row data in order to display a tree view',
