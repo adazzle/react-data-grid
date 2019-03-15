@@ -1,8 +1,9 @@
 const webpackCommon = require('./config/webpack.common.config');
 const WebpackDevServer = require('webpack-dev-server');
 const webpack = require('webpack');
+const path = require('path');
 
-const specificConfig =  {
+const specificConfig = {
   entry: {
     index: ['./packages/react-data-grid-examples/src']
   },
@@ -12,6 +13,12 @@ const specificConfig =  {
     library: ['ReactDataGrid'],
     libraryTarget: 'umd'
   },
+  resolve: {
+    alias: {
+      'react-data-grid': path.resolve('packages/react-data-grid/src'),
+      'react-data-grid-addons': path.resolve('packages/react-data-grid-addons/src')
+    }
+  },
   externals: {
     faker: 'faker'
   },
@@ -20,7 +27,10 @@ const specificConfig =  {
   ]
 };
 
-const config =  Object.assign({ }, webpackCommon, specificConfig);
+const config = {
+  ...webpackCommon,
+  ...specificConfig
+};
 
 config.entry.index.unshift('webpack-dev-server/client?http://localhost:8080/', 'webpack/hot/dev-server');
 
