@@ -4,7 +4,7 @@
   "description": "Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like",
   "author": "Adazzle",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/react-data-grid.js",
   "files": [
     "dist"
   ],
@@ -19,10 +19,6 @@
     "data-grid",
     "core"
   ],
-  "scripts": {
-    "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid true",
-    "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid"
-  },
   "dependencies": {
     "react-is-deprecated": "^0.1.2",
     "shallowequal": "^1.1.0"

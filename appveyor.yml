@@ -41,5 +41,4 @@ build: off
 
 on_success:
   # If merging to next branch, publish with 'next' tag
-  - npm run beforepublish
   - powershell ./ci/publish/publishNext.ps1

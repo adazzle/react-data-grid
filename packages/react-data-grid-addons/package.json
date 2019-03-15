@@ -4,7 +4,7 @@
   "description": "A set of addons for react-data-grid",
   "author": "Adazzle",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/react-data-grid-addons.js",
   "files": [
     "dist"
   ],
@@ -18,10 +18,6 @@
     "react-data-grid",
     "react-data-grid-addons"
   ],
-  "scripts": {
-    "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid-addons true",
-    "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid-addons"
-  },
   "dependencies": {
     "lodash": "^4.17.11",
     "react-contextmenu": "^2.10.0",
