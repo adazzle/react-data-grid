@@ -149,11 +149,6 @@ describe('Cell Tests', () => {
       const cellDiv = wrapper.find('div').at(0);
       expect(cellDiv.props().height).toBeUndefined();
     });
-    it('passes value property', () => {
-      const wrapper = shallowRenderComponent(requiredProperties);
-      const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.props().value).toBe('requiredValue');
-    });
     it('does not pass unknown properties to the div', () => {
       const wrapper = shallowRenderComponent(allProperties);
       const cellDiv = wrapper.find('div').at(0);
