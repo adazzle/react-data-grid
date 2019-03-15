@@ -1,5 +1,9 @@
 /* eslint-disable no-console */
-import _ from 'lodash';
+import isEqual from 'lodash/isEqual';
+import isFunction from 'lodash/isFunction';
+import isObject from 'lodash/isObject';
+import _keys from 'lodash/keys';
+import union from 'lodash/union';
 import React, { Component } from 'react';
 
 const isRequiredUpdateObject = o => Array.isArray(o) || (o && o.constructor === Object.prototype.constructor);
@@ -16,14 +20,14 @@ const deepDiff = (o1, o2, p, notifyLevel) => {
     }
   };
 
-  if (!_.isEqual(o1, o2)) {
+  if (!isEqual(o1, o2)) {
     console.group(p);
-    if ([o1, o2].every(_.isFunction)) {
+    if ([o1, o2].every(isFunction)) {
       notify('avoidable?', NOTIFY_LEVELS.WARNING);
     } else if (![o1, o2].every(isRequiredUpdateObject)) {
       notify('required.', NOTIFY_LEVELS.DEBUG);
     } else {
-      const keys = _.union(_.keys(o1), _.keys(o2));
+      const keys = union(_keys(o1), _keys(o2));
       for (const key of keys) {
         deepDiff(o1[key], o2[key], key);
       }
@@ -33,8 +37,8 @@ const deepDiff = (o1, o2, p, notifyLevel) => {
   } else if (o1 !== o2) {
     console.group(p);
     notify('avoidable!', NOTIFY_LEVELS.WARNING);
-    if (_.isObject(o1) && _.isObject(o2)) {
-      const keys = _.union(_.keys(o1), _.keys(o2));
+    if (isObject(o1) && isObject(o2)) {
+      const keys = union(_keys(o1), _keys(o2));
       for (const key of keys) {
         deepDiff(o1[key], o2[key], key);
       }
