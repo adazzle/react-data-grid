@@ -32,19 +32,11 @@ module.exports = function (config) {
   };
 
   function getFiles() {
-    var files = [
-     'node_modules/es5-shim/es5-shim.js',
-     'node_modules/es5-shim/es5-sham.js',
-     'node_modules/es6-shim/es6-shim.js',
-     'node_modules/es6-sham/es6-sham.js'
-    ];
-    if(RELEASE === true ||  DEBUG === true) {
-      files.push('test/FullTests.jsx');
-    } else {
-      // TODO: cleanup tests
-      files.push('test/unitTests.jsx');
+    if (RELEASE === true || DEBUG === true) {
+      return ['test/FullTests.jsx'];
     }
-    return files;
+    // TODO: cleanup tests
+    return ['test/unitTests.jsx'];
   }
 
   function getPreprocessors() {
