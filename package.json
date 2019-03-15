@@ -28,11 +28,6 @@
     "web": "cd website && npm run start",
     "web-publish": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./ci/publish/publish-web.ps1"
   },
-  "dependencies": {
-    "classnames": "^2.2.6",
-    "keymirror": "^0.1.1",
-    "prop-types": "^15.7.2"
-  },
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.3.4",

@@ -1,5 +1,5 @@
 export default function(stateValues, events) {
-  return Object.assign({
+  return {
     columnMetrics: {
       columns: [{
         idx: 0,
@@ -40,6 +40,7 @@ export default function(stateValues, events) {
     sortDirection: null,
     sortColumn: null,
     scrollOffset: 0,
-    lastRowIdxUiSelected: -1
-  }, stateValues);
+    lastRowIdxUiSelected: -1,
+    ...stateValues
+  };
 }

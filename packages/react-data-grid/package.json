@@ -20,6 +20,9 @@
     "core"
   ],
   "dependencies": {
+    "classnames": "^2.2.6",
+    "keymirror": "^0.1.1",
+    "prop-types": "^15.7.2",
     "react-is-deprecated": "^0.1.2",
     "shallowequal": "^1.1.0"
   },
