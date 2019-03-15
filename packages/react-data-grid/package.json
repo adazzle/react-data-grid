@@ -5,6 +5,7 @@
   "author": "Adazzle",
   "license": "MIT",
   "main": "index.js",
+  "files": ["dist"],
   "repository": "adazzle/react-data-grid",
   "homepage": "https://github.com/adazzle/react-data-grid",
   "bugs": {
