@@ -31,8 +31,7 @@
   "devDependencies": {
     "lodash": "^4.13.1",
     "react-data-grid": "^6.0.1",
-    "react-dnd-test-backend": "^2.6.0",
-    "underscore": "^1.9.1"
+    "react-dnd-test-backend": "^2.6.0"
   },
   "peerDependencies": {
     "react": "^16.0.0",
