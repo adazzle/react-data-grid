@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
+import { isElement, isValidElementType } from 'react-is';
 
 import SimpleTextEditor from './SimpleTextEditor';
 import { isFunction } from 'common/utils';
@@ -107,10 +108,10 @@ export default class EditorContainer extends React.Component {
 
     const CustomEditor = this.props.column.editor;
     // return custom column editor or SimpleEditor if none specified
-    if (React.isValidElement(CustomEditor)) {
+    if (isElement(CustomEditor)) {
       return React.cloneElement(CustomEditor, editorProps);
     }
-    if (isFunction(CustomEditor)) {
+    if (isValidElementType(CustomEditor)) {
       return <CustomEditor ref={this.setEditorRef} {...editorProps} />;
     }
 

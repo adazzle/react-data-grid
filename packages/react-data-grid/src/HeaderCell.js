@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { isElement } from 'react-is';
 
 import Column from 'common/prop-shapes/Column';
 import { isFrozen } from './ColumnUtils';
@@ -66,14 +67,14 @@ export default class HeaderCell extends React.Component {
 
   getCell = () => {
     const { height, column, renderer } = this.props;
-    if (React.isValidElement(renderer)) {
+    if (isElement(renderer)) {
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
       if (typeof this.props.renderer.type === 'string') {
         return React.cloneElement(renderer, { height });
       }
       return React.cloneElement(renderer, { column, height });
     }
-    return this.props.renderer({ column });
+    return renderer({ column });
   };
 
   getStyle = () => {
