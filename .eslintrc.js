@@ -51,7 +51,7 @@ const rules = {
   'curly': [2, 'multi-line'],
   'default-case': 0,
   'dot-location': [1, 'property'],
-  'dot-notation': 0,
+  'dot-notation': 1,
   'eqeqeq': 0,
   'guard-for-in': 0,
   'max-classes-per-file': 0,
