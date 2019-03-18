@@ -63,7 +63,7 @@ const rules = {
   'no-empty-function': 0,
   'no-empty-pattern': 2,
   'no-eq-null': 0,
-  'no-eval': 0,
+  'no-eval': 2,
   'no-extend-native': 0,
   'no-extra-bind': 0,
   'no-extra-label': 0,
