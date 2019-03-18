@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isElement, isValidElementType } from 'react-is';
 
 import Row from './Row';
 import DefaultRowsContainer from './RowsContainer';
@@ -286,10 +287,10 @@ export default class Canvas extends React.PureComponent {
       // In the case where Row is specified as the custom render, ensure the correct ref is passed
       return <Row {...props} />;
     }
-    if (isFunction(CustomRowRenderer)) {
+    if (isValidElementType(CustomRowRenderer)) {
       return <CustomRowRenderer {...customRowRendererProps} />;
     }
-    if (React.isValidElement(CustomRowRenderer)) {
+    if (isElement(CustomRowRenderer)) {
       return React.cloneElement(CustomRowRenderer, customRowRendererProps);
     }
   }
