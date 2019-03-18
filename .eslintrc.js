@@ -216,7 +216,7 @@ const rules = {
   'nonblock-statement-body-position': 0,
   'object-curly-newline': [1, { consistent: true, multiline: true }],
   'object-curly-spacing': [1, 'always'],
-  'object-property-newline': 0,
+  'object-property-newline': [1, { allowAllPropertiesOnSameLine: true }],
   'one-var': [1, 'never'],
   'one-var-declaration-per-line': 0,
   'operator-assignment': 0,

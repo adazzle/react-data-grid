@@ -9,7 +9,8 @@ const setup = (overriderProps = {}) => {
       icon: 'glyphicon glyphicon-link',
       callback: jasmine.createSpy()
     },
-    isFirst: true, ...overriderProps
+    isFirst: true,
+    ...overriderProps
   };
   const wrapper = shallow(<CellAction {...props} />);
   return {
