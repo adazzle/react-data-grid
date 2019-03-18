@@ -56,7 +56,7 @@ const rules = {
   'guard-for-in': 0,
   'max-classes-per-file': 0,
   'no-alert': 0,
-  'no-caller': 0,
+  'no-caller': 2,
   'no-case-declarations': 0,
   'no-div-regex': 0,
   'no-else-return': 0,
