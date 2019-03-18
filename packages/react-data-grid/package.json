@@ -26,11 +26,6 @@
     "react-is-deprecated": "^0.1.2",
     "shallowequal": "^1.1.0"
   },
-  "devDependencies": {
-    "react": "^16.8.4",
-    "react-contextmenu": "^2.10.0",
-    "react-dom": "^16.8.4"
-  },
   "peerDependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
