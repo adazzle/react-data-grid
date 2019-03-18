@@ -79,7 +79,7 @@ class Example extends React.Component {
     const rowIndex = rows.indexOf(args.rowData);
     const subRows = args.expandArgs.children;
 
-    const expanded = Object.assign({}, this.state.expanded);
+    const expanded = { ...this.state.expanded };
     if (expanded && !expanded[rowKey]) {
       expanded[rowKey] = true;
       this.updateSubRowDetails(subRows, args.rowData.treeDepth);

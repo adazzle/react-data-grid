@@ -54,7 +54,7 @@ export default class FocusableComponentTestRunner {
     it('component should update when the element is about to be selected', () => {
       // Arange.
       const originalSelection = this._props.cellMetaData.selected;
-      const newSelection = Object.assign({ }, originalSelection, this._getNewSelection(this._props));
+      const newSelection = { ...originalSelection, ...this._getNewSelection(this._props) };
       const newCellMetaData = { selected: newSelection };
 
       // Act.
@@ -68,7 +68,7 @@ export default class FocusableComponentTestRunner {
     it('component should not update when the element is neither selected or about to be selected', () => {
       // Arange.
       const selection = this._getNewSelection(this._props);
-      const newSelection = Object.assign({ }, this._props.cellMetaData.selected, selection);
+      const newSelection = { ...this._props.cellMetaData.selected, ...selection };
       const newCellMetaData = { selected: newSelection };
 
       // Act.

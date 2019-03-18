@@ -119,7 +119,7 @@ describe('<Viewport />', () => {
       width: 100
     };
     const updatedColumns = helpers.columns.concat(extraColumn);
-    const newProps = Object.assign({}, viewportProps, { columnMetrics: Object.assign({}, viewportProps.columnMetrics, { columns: updatedColumns }) });
+    const newProps = { ...viewportProps, columnMetrics: { ...viewportProps.columnMetrics, columns: updatedColumns } };
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: updatedColumns.length,
@@ -141,7 +141,7 @@ describe('<Viewport />', () => {
   it('should update when given height changed', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
     const newHeight = 1000;
-    const newProps = Object.assign({}, viewportProps, { minHeight: newHeight });
+    const newProps = { ...viewportProps, minHeight: newHeight };
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: helpers.columns.length,

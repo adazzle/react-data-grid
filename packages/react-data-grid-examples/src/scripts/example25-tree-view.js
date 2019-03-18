@@ -79,7 +79,7 @@ class Example extends React.Component {
     const rowIndex = rows.indexOf(args.rowData);
     const subRows = args.expandArgs.children;
 
-    const expanded = Object.assign({}, this.state.expanded);
+    const expanded = { ...this.state.expanded };
     if (expanded && !expanded[rowKey]) {
       expanded[rowKey] = true;
       this.updateSubRowDetails(subRows, args.rowData.treeDepth);
@@ -113,7 +113,7 @@ class Example extends React.Component {
           this.updateSubRowDetails(children, r.treeDepth);
         }
       }
-      return Object.assign({}, r, { children });
+      return { ...r, children };
     });
     // Remove sub row from flattened rows.
     rows = rows.filter(r => r.id !== idToDelete);

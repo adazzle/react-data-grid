@@ -223,7 +223,7 @@ const rules = {
   'operator-linebreak': [1, 'before', { overrides: { '=': 'after' } }],
   'padded-blocks': [0, 'never'],
   'padding-line-between-statements': 0,
-  'prefer-object-spread': 0,
+  'prefer-object-spread': 1,
   'quote-props': [1, 'as-needed'],
   'quotes': [1, 'single', { avoidEscape: true }],
   'semi': 1,

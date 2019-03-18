@@ -4,13 +4,11 @@ import { shallow } from 'enzyme';
 import CellAction from '../CellAction';
 
 const setup = (overriderProps = {}) => {
-  const props = Object.assign({
-    action: {
-      icon: 'glyphicon glyphicon-link',
-      callback: jasmine.createSpy()
-    },
-    isFirst: true
-  }, overriderProps);
+  const props = { action: {
+    icon: 'glyphicon glyphicon-link',
+    callback: jasmine.createSpy()
+  },
+  isFirst: true, ...overriderProps };
   const wrapper = shallow(<CellAction {...props} />);
   return {
     props,

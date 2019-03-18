@@ -4,18 +4,16 @@ describe('viewportUtils', () => {
   const getColumns = () => [{ width: 100, left: 0 }, { width: 100, left: 200 }, { width: 100, left: 300 }, { width: 100, left: 400 }, { width: 100, left: 500 }, { width: 100, left: 600 }];
   describe('getGridState', () => {
     const getState = (propsOverrides = {}) => {
-      const props = Object.assign({
-        columnMetrics: {
-          columns: [
-            { key: 'col1' },
-            { key: 'col2' }
-          ]
-        },
-        minHeight: 100,
-        rowOffsetHeight: 5,
-        rowHeight: 20,
-        rowsCount: 100
-      }, propsOverrides);
+      const props = { columnMetrics: {
+        columns: [
+          { key: 'col1' },
+          { key: 'col2' }
+        ]
+      },
+      minHeight: 100,
+      rowOffsetHeight: 5,
+      rowHeight: 20,
+      rowsCount: 100, ...propsOverrides };
       const state = getGridState(props);
 
       return { props, state };

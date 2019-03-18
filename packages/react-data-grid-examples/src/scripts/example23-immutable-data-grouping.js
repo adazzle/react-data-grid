@@ -80,8 +80,8 @@ class Example extends React.Component {
   };
 
   onRowExpandToggle = (args) => {
-    const expandedRows = Object.assign({}, this.state.expandedRows);
-    expandedRows[args.columnGroupName] = Object.assign({}, expandedRows[args.columnGroupName]);
+    const expandedRows = { ...this.state.expandedRows };
+    expandedRows[args.columnGroupName] = { ...expandedRows[args.columnGroupName] };
     expandedRows[args.columnGroupName][args.name] = { isExpanded: args.shouldExpand };
     this.setState({ expandedRows });
   };

@@ -172,8 +172,7 @@ describe('Cell Tests', () => {
 
   describe('CellActions', () => {
     const setup = (propsOverride = {}) => {
-      const props = Object.assign({}, {
-        rowIdx: 18,
+      const props = { rowIdx: 18,
         idx: 19,
         column: helpers.columns[0],
         row: { key: 'value' },
@@ -194,8 +193,7 @@ describe('Cell Tests', () => {
         },
         rowData: helpers.rowGetter(11),
         expandableOptions: { key: 'reqValue' },
-        isScrolling: false
-      }, propsOverride);
+        isScrolling: false, ...propsOverride };
 
       const wrapper = shallow(<Cell {...props} />);
       return {

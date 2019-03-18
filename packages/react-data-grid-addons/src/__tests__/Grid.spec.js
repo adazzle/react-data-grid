@@ -47,19 +47,15 @@ describe('Grid', function() {
     };
 
     this.buildFakeEvent = (addedData) => {
-      return Object.assign({}, {
-        preventDefault: this.noop,
-        stopPropagation: this.noop
-      }, addedData);
+      return { preventDefault: this.noop,
+        stopPropagation: this.noop, ...addedData };
     };
 
     this.buildFakeCellUodate = (addedData) => {
-      return Object.assign({}, {
-        cellKey: 'title',
+      return { cellKey: 'title',
         rowIdx: 0,
         updated: { title: 'some new title' },
-        key: 'Enter'
-      }, addedData);
+        key: 'Enter', ...addedData };
     };
 
     this.getBaseGrid = () => this.component.base;
@@ -82,7 +78,7 @@ describe('Grid', function() {
       this.getBaseGrid().props.onViewportKeydown(fakeEvent);
     };
 
-    const buildProps = (addedProps) => Object.assign({}, this.testProps, addedProps);
+    const buildProps = (addedProps) => ({ ...this.testProps, ...addedProps });
     this.createComponent = (addedProps) => {
       return mount(<Grid {...buildProps(addedProps)} />);
     };
@@ -424,8 +420,8 @@ describe('Grid', function() {
   describe('changes to non metric column data', function() {
     beforeEach(function() {
       const wrapper = this.createComponent();
-      this.originalMetrics = Object.assign({}, this.component.state.columnMetrics);
-      const editableColumn = Object.assign({ editable: true }, this.columns[0]);
+      this.originalMetrics = { ...this.component.state.columnMetrics };
+      const editableColumn = { editable: true, ...this.columns[0] };
       this.columns[0] = editableColumn;
       wrapper.setProps({ columns: this.columns });
       this.component = wrapper.instance();

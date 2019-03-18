@@ -232,7 +232,7 @@ export default class Cell extends React.PureComponent {
   };
 
   createEventDTO = (gridEvents, columnEvents, onColumnEvent) => {
-    const allEvents = Object.assign({}, gridEvents);
+    const allEvents = { ...gridEvents };
 
     for (const eventKey in columnEvents) {
       if (columnEvents.hasOwnProperty(eventKey)) {
@@ -252,7 +252,7 @@ export default class Cell extends React.PureComponent {
   };
 
   getEvents = () => {
-    const columnEvents = this.props.column ? Object.assign({}, this.props.column.events) : undefined;
+    const columnEvents = this.props.column ? ({ ...this.props.column.events }) : undefined;
     const onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
     const gridEvents = {
       onClick: this.onCellClick,

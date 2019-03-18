@@ -15,7 +15,7 @@ const defaultProps = {
 
 describe('<SortableHeaderCell/>', () => {
   const setup = overrideProps => {
-    const props = Object.assign({}, defaultProps, overrideProps);
+    const props = { ...defaultProps, ...overrideProps };
     const wrapper = shallow(<SortableHeaderCell {...props} />);
     return { wrapper, props };
   };

@@ -5,7 +5,7 @@ import { isColumnsImmutable } from './common/utils';
 
 function setColumnWidths(columns, totalWidth) {
   return columns.map(column => {
-    const colInfo = Object.assign({}, column);
+    const colInfo = { ...column };
     if (column.width) {
       if (/^([0-9]+)%$/.exec(column.width.toString())) {
         colInfo.width = Math.floor(

@@ -86,7 +86,7 @@ class Example extends React.Component {
   };
 
   handleFilterChange = (filter) => {
-    const newFilters = Object.assign({}, this.state.filters);
+    const newFilters = { ...this.state.filters };
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
     } else {

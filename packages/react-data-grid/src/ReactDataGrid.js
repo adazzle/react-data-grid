@@ -670,7 +670,7 @@ export default class ReactDataGrid extends React.Component {
     } else {
       const selectedRows = [];
       for (let i = 0; i < this.props.rowsCount; i++) {
-        const row = Object.assign({}, this.props.rowGetter(i), { isSelected: allRowsSelected });
+        const row = { ...this.props.rowGetter(i), isSelected: allRowsSelected };
         selectedRows.push(row);
       }
       this.setState({ selectedRows });
