@@ -65,7 +65,7 @@ const rules = {
   'no-eq-null': 0,
   'no-eval': 2,
   'no-extend-native': 1,
-  'no-extra-bind': 0,
+  'no-extra-bind': 1,
   'no-extra-label': 0,
   'no-fallthrough': 0,
   'no-floating-decimal': 0,
