@@ -47,15 +47,19 @@ describe('Grid', function() {
     };
 
     this.buildFakeEvent = (addedData) => {
-      return { preventDefault: this.noop,
-        stopPropagation: this.noop, ...addedData };
+      return {
+        preventDefault: this.noop,
+        stopPropagation: this.noop, ...addedData
+      };
     };
 
     this.buildFakeCellUodate = (addedData) => {
-      return { cellKey: 'title',
+      return {
+        cellKey: 'title',
         rowIdx: 0,
         updated: { title: 'some new title' },
-        key: 'Enter', ...addedData };
+        key: 'Enter', ...addedData
+      };
     };
 
     this.getBaseGrid = () => this.component.base;
@@ -290,14 +294,17 @@ describe('Grid', function() {
       const rowGetter = function(i) {
         return self.rows[i];
       };
-      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter, columns, rowSelection: { enableShiftSelect: true, selectBy: { isSelectedKey: 'isSelected' },
-        onRowsSelected(selectedRows) {
-          self._selectedRows = selectedRows;
-        },
-        onRowsDeselected(deselectedRows) {
-          self._deselectedRows = deselectedRows;
+      this.component = this.createComponent({
+        rowsCount: this.rows.length, rowGetter, columns, rowSelection: {
+          enableShiftSelect: true, selectBy: { isSelectedKey: 'isSelected' },
+          onRowsSelected(selectedRows) {
+            self._selectedRows = selectedRows;
+          },
+          onRowsDeselected(deselectedRows) {
+            self._deselectedRows = deselectedRows;
+          }
         }
-      } }).instance();
+      }).instance();
       this.baseGrid = this.getBaseGrid();
       this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
     });
@@ -351,14 +358,17 @@ describe('Grid', function() {
         const rowGetter = function(i) {
           return self.rows[i];
         };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter, columns, rowSelection: { selectBy: { indexes: [] },
-          onRowsSelected(selectedRows) {
-            self._selectedRows = selectedRows;
-          },
-          onRowsDeselected(deselectedRows) {
-            self._deselectedRows = deselectedRows;
+        this.component = this.createComponent({
+          enableRowSelect: true, rowsCount: this.rows.length, rowGetter, columns, rowSelection: {
+            selectBy: { indexes: [] },
+            onRowsSelected(selectedRows) {
+              self._selectedRows = selectedRows;
+            },
+            onRowsDeselected(deselectedRows) {
+              self._deselectedRows = deselectedRows;
+            }
           }
-        } }).instance();
+        }).instance();
 
         this.baseGrid = this.getBaseGrid();
         this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -388,14 +398,17 @@ describe('Grid', function() {
         const rowGetter = function(i) {
           return self.rows[i];
         };
-        this.component = this.createComponent({ enableRowSelect: true, rowsCount: this.rows.length, rowGetter, columns, rowSelection: { selectBy: { indexes: [0, 1] },
-          onRowsSelected(selectedRows) {
-            self._selectedRows = selectedRows;
-          },
-          onRowsDeselected(deselectedRows) {
-            self._deselectedRows = deselectedRows;
+        this.component = this.createComponent({
+          enableRowSelect: true, rowsCount: this.rows.length, rowGetter, columns, rowSelection: {
+            selectBy: { indexes: [0, 1] },
+            onRowsSelected(selectedRows) {
+              self._selectedRows = selectedRows;
+            },
+            onRowsDeselected(deselectedRows) {
+              self._deselectedRows = deselectedRows;
+            }
           }
-        } }).instance();
+        }).instance();
 
         this.baseGrid = this.getBaseGrid();
         this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
@@ -474,10 +487,12 @@ describe('Grid', function() {
       this.rowClicked = {};
       this.rowClicks = 0;
 
-      this.component = this.createComponent({ rowsCount: this.rows.length, rowGetter, columns, onRowClick(rowIdx, row, column) {
-        self.rowClicked = { row, column };
-        self.rowClicks++;
-      } }).instance();
+      this.component = this.createComponent({
+        rowsCount: this.rows.length, rowGetter, columns, onRowClick(rowIdx, row, column) {
+          self.rowClicked = { row, column };
+          self.rowClicks++;
+        }
+      }).instance();
     });
 
     it('calls handler when row (cell) clicked', function() {

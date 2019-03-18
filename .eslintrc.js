@@ -214,7 +214,7 @@ const rules = {
   'no-unneeded-ternary': [1, { defaultAssignment: false }],
   'no-whitespace-before-property': 1,
   'nonblock-statement-body-position': 0,
-  'object-curly-newline': 0,
+  'object-curly-newline': [1, { consistent: true, multiline: true }],
   'object-curly-spacing': [1, 'always'],
   'object-property-newline': 0,
   'one-var': [1, 'never'],
