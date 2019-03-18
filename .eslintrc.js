@@ -235,7 +235,7 @@ const rules = {
   'space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }],
   'space-in-parens': 1,
   'space-infix-ops': 1,
-  'space-unary-ops': 0,
+  'space-unary-ops': 1,
   'spaced-comment': 0,
   'switch-colon-spacing': 1,
   'template-tag-spacing': 1,
