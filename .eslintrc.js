@@ -152,7 +152,7 @@ const rules = {
   // https://eslint.org/docs/rules/#stylistic-issues
   'array-bracket-newline': [1, 'consistent'],
   'array-bracket-spacing': 1,
-  'array-element-newline': 0,
+  'array-element-newline': [1, 'consistent'],
   'block-spacing': 1,
   'brace-style': [1, '1tbs', { allowSingleLine: true }],
   'camelcase': 0,
