@@ -60,7 +60,8 @@ describe('Editor Container Tests', () => {
       const isTextSelected = (input) => {
         if (typeof input.selectionStart === 'number') {
           return input.selectionStart === 0 && input.selectionEnd === input.value.length;
-        } else if (typeof document.selection !== 'undefined') {
+        }
+        if (typeof document.selection !== 'undefined') {
           input.focus();
           return document.selection.createRange().text === input.value;
         }

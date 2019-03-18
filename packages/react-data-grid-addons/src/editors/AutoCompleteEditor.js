@@ -70,7 +70,8 @@ export default class AutoCompleteEditor extends React.Component {
     const label = this.props.label != null ? this.props.label : 'title';
     if (typeof label === 'function') {
       return label(item);
-    } else if (typeof label === 'string') {
+    }
+    if (typeof label === 'string') {
       return item[label];
     }
   };

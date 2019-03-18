@@ -783,7 +783,8 @@ export default class ReactDataGrid extends React.Component {
     const toolBarProps = { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount };
     if (isElement(Toolbar)) {
       return (React.cloneElement(Toolbar, toolBarProps));
-    } else if (isValidElementType(Toolbar)) {
+    }
+    if (isValidElementType(Toolbar)) {
       return <Toolbar {...toolBarProps} />;
     }
   };

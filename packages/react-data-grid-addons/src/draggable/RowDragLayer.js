@@ -68,7 +68,7 @@ class CustomDragLayer extends Component {
   renderDraggedCells(item, rowIdx, columns) {
     const cells = [];
     if (item != null) {
-      columns.forEach( c => {
+      columns.forEach(c => {
         if (item.hasOwnProperty(c.key)) {
           if (c.formatter) {
             const Formatter = c.formatter;
@@ -91,7 +91,7 @@ class CustomDragLayer extends Component {
     const draggedRows = this.renderDraggedRows();
     return (
       <div style={layerStyles} className="rdg-dragging">
-        <div style={getItemStyles(this.props) } className="rdg-dragging">
+        <div style={getItemStyles(this.props)} className="rdg-dragging">
           <table><tbody>{draggedRows}</tbody></table>
         </div>
       </div>

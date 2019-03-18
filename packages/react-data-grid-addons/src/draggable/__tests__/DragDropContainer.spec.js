@@ -13,12 +13,12 @@ describe('<DragDropContainer />', () => {
     rowGetter: index => index
   };
 
-  const GridStub = () => <div/>;
+  const GridStub = () => <div />;
 
   function render(props = {}) {
     const ComponentUnderTest = DragDropContainer.DecoratedComponent;
     wrapper = shallow(
-      <ComponentUnderTest {...props} >
+      <ComponentUnderTest {...props}>
         <GridStub {...childProps} />
       </ComponentUnderTest>
     );
@@ -45,6 +45,6 @@ describe('<DragDropContainer />', () => {
     render(props);
     const rowDragLayer = wrapper.find(RowDragLayer);
     expect(rowDragLayer.length).toBe(1);
-    expect(rowDragLayer.props().rows).toEqual( ['0a', '1a']);
+    expect(rowDragLayer.props().rows).toEqual(['0a', '1a']);
   });
 });

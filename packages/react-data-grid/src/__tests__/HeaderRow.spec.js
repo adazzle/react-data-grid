@@ -22,7 +22,7 @@ describe('Header Row Unit Tests', () => {
 
   const setup = (testProps) => {
     const props = { ...defaultProps, ...testProps };
-    const wrapper = shallow(<HeaderRow {...props}/>);
+    const wrapper = shallow(<HeaderRow {...props} />);
     const headerCells = wrapper.find(HeaderCell);
     return { wrapper, headerCells, props };
   };
@@ -158,7 +158,7 @@ describe('Header Row Unit Tests', () => {
       onFilterChange: jasmine.createSpy(),
       resizing: { key: 'value' },
       onScroll,
-      draggableHeaderCell: () => <div/>
+      draggableHeaderCell: () => <div />
     };
 
     it('passes classname property', () => {

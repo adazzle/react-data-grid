@@ -21,7 +21,7 @@ export default class DropDownEditor extends EditorBase {
 
   render() {
     return (
-      <select style={this.getStyle()} defaultValue={this.props.value} onBlur={this.props.onBlur} onChange={this.onChange} >
+      <select style={this.getStyle()} defaultValue={this.props.value} onBlur={this.props.onBlur} onChange={this.onChange}>
         {this.renderOptions()}
       </select>);
   }
@@ -29,10 +29,10 @@ export default class DropDownEditor extends EditorBase {
   renderOptions() {
     const options = [];
     this.props.options.forEach(function(name) {
-      if (typeof(name) === 'string') {
+      if (typeof (name) === 'string') {
         options.push(<option key={name} value={name}>{name}</option>);
       } else {
-        options.push(<option key={name.id} value={name.value} title={name.title}  >{name.text || name.value}</option>);
+        options.push(<option key={name.id} value={name.value} title={name.title}>{name.text || name.value}</option>);
       }
     }, this);
     return options;

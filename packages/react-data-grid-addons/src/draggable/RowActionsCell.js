@@ -25,7 +25,7 @@ class RowActionsCell extends React.Component {
         <div className="rdg-drag-row-handle" style={rowHandleStyle}></div>
         {!isSelected ? this.renderRowIndex() : null}
         {rowSelection != null && <div className={editorClass}>
-          <CheckboxEditor column={this.props.column} rowIdx={this.props.rowIdx} dependentValues={this.props.dependentValues} value={this.props.value}/>
+          <CheckboxEditor column={this.props.column} rowIdx={this.props.rowIdx} dependentValues={this.props.dependentValues} value={this.props.value} />
         </div>}
       </div>);
   }

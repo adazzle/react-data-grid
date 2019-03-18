@@ -40,7 +40,7 @@ describe('Empty Grid Tests', () => {
   };
 
   it('should not have any viewport', () => {
-    const wrapper = shallow(<Grid {...testProps}/>);
+    const wrapper = shallow(<Grid {...testProps} />);
     expect(wrapper.find(EmptyRowsView).exists());
   });
 });

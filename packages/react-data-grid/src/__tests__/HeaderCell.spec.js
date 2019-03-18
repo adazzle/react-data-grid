@@ -25,7 +25,7 @@ describe('Header Cell Tests', () => {
 
   function setup(overrideProps = {}) {
     const props = { ...testProps, ...overrideProps };
-    const wrapper = shallow(<HeaderCell  {...props}/>);
+    const wrapper = shallow(<HeaderCell {...props} />);
     return { wrapper, props };
   }
 
@@ -39,13 +39,13 @@ describe('Header Cell Tests', () => {
   describe('When custom render is supplied', () => {
     it('will render', () => {
       const CustomRenderer = () => <div>Custom</div>;
-      const { wrapper } = setup({ renderer: <CustomRenderer/> });
+      const { wrapper } = setup({ renderer: <CustomRenderer /> });
       expect(wrapper.find(CustomRenderer).length).toBe(1);
     });
 
     it('will have height passed in props', () => {
       const CustomRenderer = () => <div>Custom</div>;
-      const { wrapper } = setup({ renderer: <CustomRenderer/> });
+      const { wrapper } = setup({ renderer: <CustomRenderer /> });
       expect(wrapper.find(CustomRenderer).props().height).toBe(testProps.height);
     });
   });
@@ -74,7 +74,7 @@ describe('Header Cell Tests', () => {
 
     it('dragging handle should call onResize callback with width and column', () => {
       const dragLength = 200;
-      const wrapper = mount(<HeaderCell  {...testProps}/>);
+      const wrapper = mount(<HeaderCell {...testProps} />);
       const resizeHandle = wrapper.find(ResizeHandle);
       const fakeEvent = { pageX: dragLength };
       resizeHandle.props().onDrag(fakeEvent);
@@ -84,7 +84,7 @@ describe('Header Cell Tests', () => {
     });
 
     it('finish dragging should reset resizing state', () => {
-      const wrapper = mount(<HeaderCell  {...testProps}/>);
+      const wrapper = mount(<HeaderCell {...testProps} />);
       wrapper.setState({ resizing: true });
       const fakeEvent = { pageX: 250 };
       const resizeHandle = wrapper.find(ResizeHandle);
@@ -93,7 +93,7 @@ describe('Header Cell Tests', () => {
     });
 
     it('finish dragging should call onResizeEnd with correct params', () => {
-      const wrapper = mount(<HeaderCell  {...testProps}/>);
+      const wrapper = mount(<HeaderCell {...testProps} />);
       const resizeHandle = wrapper.find(ResizeHandle);
       const fakeEvent = { pageX: 250 };
       resizeHandle.props().onDragEnd(fakeEvent);

@@ -88,11 +88,11 @@ class Defaultbase extends Component {
     };
 
     return (
-      <div style={style} onKeyDown={this.onKeyDown} tabIndex={0} ref={rowRef} >
+      <div style={style} onKeyDown={this.onKeyDown} tabIndex={0} ref={rowRef}>
         <span
           className="row-expand-icon"
           style={{ float: 'left', marginLeft, cursor: 'pointer' }}
-          onClick={onRowExpandClick} >
+          onClick={onRowExpandClick}>
           {isExpanded ? String.fromCharCode(9660) : String.fromCharCode(9658)}
         </span>
         <strong>{columnGroupDisplayName}: {name}</strong>

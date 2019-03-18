@@ -214,7 +214,7 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(typeof(testProps.col.editable)).toBe('boolean');
+        expect(typeof (testProps.col.editable)).toBe('boolean');
         expect(testProps.col.editable).toBe(true);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(true);
@@ -230,7 +230,7 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(typeof(testProps.col.editable)).toBe('boolean');
+        expect(typeof (testProps.col.editable)).toBe('boolean');
         expect(testProps.col.editable).toBe(false);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(false);
@@ -246,7 +246,7 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(typeof(testProps.col.editable)).toBe('boolean');
+        expect(typeof (testProps.col.editable)).toBe('boolean');
         expect(testProps.col.editable).toBe(true);
         expect(testProps.enableCellSelect).toBe(false);
         expect(result).toBe(false);
@@ -261,7 +261,7 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(typeof(testProps.col.editable)).toBe('boolean');
+        expect(typeof (testProps.col.editable)).toBe('boolean');
         expect(testProps.col.editable).toBe(false);
         expect(testProps.enableCellSelect).toBe(false);
         expect(result).toBe(false);
@@ -278,7 +278,7 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(typeof(testProps.col.editable)).toBe('function');
+        expect(typeof (testProps.col.editable)).toBe('function');
         expect(testProps.col.editable()).toBe(true);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(true);
@@ -293,7 +293,7 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(typeof(testProps.col.editable)).toBe('function');
+        expect(typeof (testProps.col.editable)).toBe('function');
         expect(testProps.col.editable()).toBe(false);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(false);
@@ -308,7 +308,7 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(typeof(testProps.col.editable)).toBe('function');
+        expect(typeof (testProps.col.editable)).toBe('function');
         expect(testProps.col.editable()).toBe(true);
         expect(testProps.enableCellSelect).toBe(false);
         expect(result).toBe(false);
@@ -323,7 +323,7 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(typeof(testProps.col.editable)).toBe('function');
+        expect(typeof (testProps.col.editable)).toBe('function');
         expect(testProps.col.editable()).toBe(false);
         expect(testProps.enableCellSelect).toBe(false);
         expect(result).toBe(false);
