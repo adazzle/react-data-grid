@@ -15,7 +15,8 @@ const style = {
 export default class ResizeHandle extends React.Component {
   render() {
     return (
-      <Draggable {...this.props}
+      <Draggable
+        {...this.props}
         className="react-grid-HeaderCell__resizeHandle"
         style={style}
       />

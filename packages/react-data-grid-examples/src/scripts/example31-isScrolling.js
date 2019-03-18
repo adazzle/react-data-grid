@@ -15,7 +15,8 @@ const ExpensiveFormatter = ({ isScrolling }) => {
   }
   const items = [...Array(1000).keys()].map(i => ({ name: `Page ${i}`, uv: getRandom(0, 4000), pv: getRandom(0, 4000), amt: getRandom(0, 4000) })).slice(0, 50);
   return (
-    <AreaChart width={500}
+    <AreaChart
+      width={500}
       height={50}
       data={items}
       margin={{ top: 5, right: 0, left: 0, bottom: 5 }}

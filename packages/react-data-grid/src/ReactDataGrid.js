@@ -822,7 +822,8 @@ export default class ReactDataGrid extends React.Component {
       gridWidth = '100%';
     }
     return (
-      <div className="react-grid-Container"
+      <div
+        className="react-grid-Container"
         style={{ width: containerWidth }}
         ref={this.setGridRef}
       >

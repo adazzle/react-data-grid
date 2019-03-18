@@ -334,7 +334,7 @@ const rules = {
   'react/jsx-curly-spacing': 1,
   'react/jsx-equals-spacing': 1,
   'react/jsx-filename-extension': [1, { extensions: ['js'] }],
-  'react/jsx-first-prop-new-line': 0,
+  'react/jsx-first-prop-new-line': 1,
   'react/jsx-handler-names': 0,
   'react/jsx-indent': [1, 2],
   'react/jsx-indent-props': [1, 2],

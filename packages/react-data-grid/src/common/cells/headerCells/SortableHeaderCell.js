@@ -56,7 +56,8 @@ export default class SortableHeaderCell extends React.Component {
     });
     const content = this.props.headerRenderer ? React.cloneElement(this.props.headerRenderer, this.props) : this.props.column.name;
     return (
-      <div className={className}
+      <div
+        className={className}
         onClick={this.onClick}
         style={{ cursor: 'pointer' }}
       >
