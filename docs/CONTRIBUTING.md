@@ -99,6 +99,8 @@ All contributions are encouraged and most of all we hope you will have some fun 
 
 ### Release process
 
+For maintainers only.
+
 - Install dependencies, bootstrap lerna:
   - `npm i`
 - Build the release bundles:
