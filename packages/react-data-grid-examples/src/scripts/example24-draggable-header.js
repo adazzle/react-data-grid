@@ -8,7 +8,7 @@ const { DraggableContainer } = DraggableHeader;
 
 class Example extends React.Component {
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,

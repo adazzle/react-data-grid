@@ -9,7 +9,7 @@ const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
 const { DropDownFormatter } = Formatters;
 
 // options for priorities autocomplete editor
-const priorities = [{ id: 0, title: 'Critical' }, { id: 1, title: 'High' }, { id: 2, title: 'Medium' }, { id: 3, title: 'Low'} ];
+const priorities = [{ id: 0, title: 'Critical' }, { id: 1, title: 'High' }, { id: 2, title: 'Medium' }, { id: 3, title: 'Low' }];
 const PrioritiesEditor = <AutoCompleteEditor options={priorities} />;
 
 // options for IssueType dropdown editor
@@ -20,9 +20,9 @@ const issueTypes = [
   { id: 'epic', value: 'epic', text: 'Epic', title: 'Epic' },
   { id: 'story', value: 'story', text: 'Story', title: 'Story' }
 ];
-const IssueTypesEditor = <DropDownEditor options={issueTypes}/>;
+const IssueTypesEditor = <DropDownEditor options={issueTypes} />;
 
-const IssueTypesFormatter = <DropDownFormatter options={issueTypes} value="bug"/>;
+const IssueTypesFormatter = <DropDownFormatter options={issueTypes} value="bug" />;
 
 class Example extends React.Component {
   constructor(props, context) {
@@ -55,13 +55,13 @@ class Example extends React.Component {
   }
 
   createRows = (numberOfRows) => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < numberOfRows; i++) {
       rows.push({
         id: i,
         task: 'Task ' + i,
         priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
-        issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],
+        issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)]
       });
     }
 
@@ -73,11 +73,11 @@ class Example extends React.Component {
   };
 
   handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-    let rows = this.state.rows.slice();
+    const rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
-      let rowToUpdate = rows[i];
-      let updatedRow = update(rowToUpdate, {$merge: updated});
+      const rowToUpdate = rows[i];
+      const updatedRow = update(rowToUpdate, { $merge: updated });
       rows[i] = updatedRow;
     }
 

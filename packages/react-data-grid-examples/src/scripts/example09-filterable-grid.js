@@ -56,7 +56,7 @@ class Example extends React.Component {
   };
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -81,12 +81,12 @@ class Example extends React.Component {
   };
 
   rowGetter = (rowIdx) => {
-    let rows = this.getRows();
+    const rows = this.getRows();
     return rows[rowIdx];
   };
 
   handleFilterChange = (filter) => {
-    let newFilters = Object.assign({}, this.state.filters);
+    const newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
     } else {
@@ -97,7 +97,7 @@ class Example extends React.Component {
 
   onClearFilters = () => {
     // all filters removed
-    this.setState({filters: {} });
+    this.setState({ filters: {} });
   };
 
   render() {
@@ -108,7 +108,7 @@ class Example extends React.Component {
         enableCellSelect={true}
         rowsCount={this.getSize()}
         minHeight={500}
-        toolbar={<Toolbar enableFilter={true}/>}
+        toolbar={<Toolbar enableFilter={true} />}
         onAddFilter={this.handleFilterChange}
         onClearFilters={this.onClearFilters} />);
   }

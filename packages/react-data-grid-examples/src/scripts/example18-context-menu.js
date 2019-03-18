@@ -16,7 +16,7 @@ class Example extends React.Component {
       { key: 'count', name: 'Count' }
     ];
 
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -34,7 +34,7 @@ class Example extends React.Component {
 
   deleteRow = (e, { rowIdx }) => {
     this.state.rows.splice(rowIdx, 1);
-    this.setState({rows: this.state.rows});
+    this.setState({ rows: this.state.rows });
   };
 
   insertRowAbove = (e, { rowIdx }) => {
@@ -52,7 +52,7 @@ class Example extends React.Component {
       count: 0
     };
 
-    let rows = [...this.state.rows];
+    const rows = [...this.state.rows];
     rows.splice(rowIdx, 0, newRow);
 
     this.setState({ rows });
@@ -84,19 +84,19 @@ class MyContextMenu extends React.Component {
   };
 
   onRowDelete = (e, data) => {
-    if (typeof(this.props.onRowDelete) === 'function') {
+    if (typeof (this.props.onRowDelete) === 'function') {
       this.props.onRowDelete(e, data);
     }
   };
 
   onRowInsertAbove = (e, data) => {
-    if (typeof(this.props.onRowInsertAbove) === 'function') {
+    if (typeof (this.props.onRowInsertAbove) === 'function') {
       this.props.onRowInsertAbove(e, data);
     }
   };
 
   onRowInsertBelow = (e, data) => {
-    if (typeof(this.props.onRowInsertBelow) === 'function') {
+    if (typeof (this.props.onRowInsertBelow) === 'function') {
       this.props.onRowInsertBelow(e, data);
     }
   };

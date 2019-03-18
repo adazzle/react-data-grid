@@ -12,46 +12,46 @@ const { ImageFormatter } = Formatters;
 faker.locale = 'en_GB';
 
 const counties = [
-  { id: 0, title: 'Bedfordshire'},
-  { id: 1, title: 'Berkshire'},
-  { id: 2, title: 'Buckinghamshire'},
-  { id: 3, title: 'Cambridgeshire'},
-  { id: 4, title: 'Cheshire'},
-  { id: 5, title: 'Cornwall'},
-  { id: 6, title: 'Cumbria, (Cumberland)'},
-  { id: 7, title: 'Derbyshire'},
-  { id: 8, title: 'Devon'},
-  { id: 9, title: 'Dorset'},
-  { id: 10, title: 'Durham'},
-  { id: 11, title: 'Essex'},
-  { id: 12, title: 'Gloucestershire'},
-  { id: 13, title: 'Hampshire'},
-  { id: 14, title: 'Hertfordshire'},
-  { id: 15, title: 'Huntingdonshire'},
-  { id: 16, title: 'Kent'},
-  { id: 17, title: 'Lancashire'},
-  { id: 18, title: 'Leicestershire'},
-  { id: 19, title: 'Lincolnshire'},
-  { id: 20, title: 'Middlesex'},
-  { id: 21, title: 'Norfolk'},
-  { id: 22, title: 'Northamptonshire'},
-  { id: 23, title: 'Northumberland'},
-  { id: 24, title: 'Nottinghamshire'},
-  { id: 25, title: 'Northamptonshire'},
-  { id: 26, title: 'Oxfordshire'},
-  { id: 27, title: 'Northamptonshire'},
-  { id: 28, title: 'Rutland'},
-  { id: 29, title: 'Shropshire'},
-  { id: 30, title: 'Somerset'},
-  { id: 31, title: 'Staffordshire'},
-  { id: 32, title: 'Suffolk'},
-  { id: 33, title: 'Surrey'},
-  { id: 34, title: 'Sussex'},
-  { id: 35, title: 'Warwickshire'},
-  { id: 36, title: 'Westmoreland'},
-  { id: 37, title: 'Wiltshire'},
-  { id: 38, title: 'Worcestershire'},
-  { id: 39, title: 'Yorkshire'}
+  { id: 0, title: 'Bedfordshire' },
+  { id: 1, title: 'Berkshire' },
+  { id: 2, title: 'Buckinghamshire' },
+  { id: 3, title: 'Cambridgeshire' },
+  { id: 4, title: 'Cheshire' },
+  { id: 5, title: 'Cornwall' },
+  { id: 6, title: 'Cumbria, (Cumberland)' },
+  { id: 7, title: 'Derbyshire' },
+  { id: 8, title: 'Devon' },
+  { id: 9, title: 'Dorset' },
+  { id: 10, title: 'Durham' },
+  { id: 11, title: 'Essex' },
+  { id: 12, title: 'Gloucestershire' },
+  { id: 13, title: 'Hampshire' },
+  { id: 14, title: 'Hertfordshire' },
+  { id: 15, title: 'Huntingdonshire' },
+  { id: 16, title: 'Kent' },
+  { id: 17, title: 'Lancashire' },
+  { id: 18, title: 'Leicestershire' },
+  { id: 19, title: 'Lincolnshire' },
+  { id: 20, title: 'Middlesex' },
+  { id: 21, title: 'Norfolk' },
+  { id: 22, title: 'Northamptonshire' },
+  { id: 23, title: 'Northumberland' },
+  { id: 24, title: 'Nottinghamshire' },
+  { id: 25, title: 'Northamptonshire' },
+  { id: 26, title: 'Oxfordshire' },
+  { id: 27, title: 'Northamptonshire' },
+  { id: 28, title: 'Rutland' },
+  { id: 29, title: 'Shropshire' },
+  { id: 30, title: 'Somerset' },
+  { id: 31, title: 'Staffordshire' },
+  { id: 32, title: 'Suffolk' },
+  { id: 33, title: 'Surrey' },
+  { id: 34, title: 'Sussex' },
+  { id: 35, title: 'Warwickshire' },
+  { id: 36, title: 'Westmoreland' },
+  { id: 37, title: 'Wiltshire' },
+  { id: 38, title: 'Worcestershire' },
+  { id: 39, title: 'Yorkshire' }
 ];
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
@@ -77,14 +77,14 @@ class Example extends React.Component {
       {
         key: 'county',
         name: 'County',
-        editor: <AutoCompleteEditor options={counties}/>,
+        editor: <AutoCompleteEditor options={counties} />,
         width: 200,
         resizable: true
       },
       {
         key: 'title',
         name: 'Title',
-        editor: <DropDownEditor options={titles}/>,
+        editor: <DropDownEditor options={titles} />,
         width: 200,
         resizable: true,
         events: {
@@ -169,7 +169,7 @@ class Example extends React.Component {
   }
 
   createRows = (numberOfRows) => {
-    let rows = [];
+    const rows = [];
     for (let i = 0; i < numberOfRows; i++) {
       rows[i] = this.createFakeRowObjectData(i);
     }
@@ -197,7 +197,7 @@ class Example extends React.Component {
   };
 
   getColumns = () => {
-    let clonedColumns = this._columns.slice();
+    const clonedColumns = this._columns.slice();
     clonedColumns[2].events = {
       onClick: (ev, args) => {
         const idx = args.idx;
@@ -210,11 +210,11 @@ class Example extends React.Component {
   };
 
   handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-    let rows = this.state.rows.slice();
+    const rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
-      let rowToUpdate = rows[i];
-      let updatedRow = update(rowToUpdate, {$merge: updated});
+      const rowToUpdate = rows[i];
+      const updatedRow = update(rowToUpdate, { $merge: updated });
       rows[i] = updatedRow;
     }
 
@@ -230,7 +230,7 @@ class Example extends React.Component {
     };
 
     let rows = this.state.rows.slice();
-    rows = update(rows, {$push: [newRow]});
+    rows = update(rows, { $push: [newRow] });
     this.setState({ rows });
   };
 
@@ -249,13 +249,13 @@ class Example extends React.Component {
   render() {
     return (
       <ReactDataGrid
-        ref={ node => this.grid = node }
+        ref={node => this.grid = node}
         enableCellSelect={true}
         columns={this.getColumns()}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}
         onGridRowsUpdated={this.handleGridRowsUpdated}
-        toolbar={<Toolbar onAddRow={this.handleAddRow}/>}
+        toolbar={<Toolbar onAddRow={this.handleAddRow} />}
         enableRowSelect={true}
         rowHeight={50}
         minHeight={600}
