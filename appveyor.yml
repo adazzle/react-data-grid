@@ -15,6 +15,9 @@ install:
   - npm --version
   - npm install
 
+before_build:
+  - npm run eslint
+
 build_script:
   - npm run build
 

@@ -4,14 +4,13 @@
   "license": "MIT",
   "scripts": {
     "docs": "node docs/utils/docsGen.js",
-    "pretest": "npm run eslint",
     "test": "karma start ./config/karma.js --singleRun true --release true",
     "dev-test": "karma start ./config/karma.dev.js --singleRun false --debug true",
     "postinstall": "lerna bootstrap --no-ci",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "node webpack-dev-server.js",
-    "eslint": "eslint -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
-    "fix-eslint": "eslint --fix -f unix packages/react-data-grid/src/** packages/react-data-grid-addons/src/**",
+    "eslint": "eslint --ext js,jsx --max-warnings 0 -f codeframe --cache --color packages/react-data-grid{-addons,}/src/**",
+    "fix-eslint": "eslint --fix --ext js,jsx --max-warnings 0 -f codeframe --cache --color packages/react-data-grid{-addons,}/src/**",
     "web": "cd website && npm run start"
   },
   "devDependencies": {
