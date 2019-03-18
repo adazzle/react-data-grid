@@ -135,7 +135,8 @@ class Example extends React.Component {
       onDeleteSubRow={this.onDeleteSubRow}
       minHeight={500}
       onCellExpand={this.onCellExpand}
-      onAddSubRow={this.onAddSubRow} />);
+      onAddSubRow={this.onAddSubRow}
+            />);
   }
 }
 

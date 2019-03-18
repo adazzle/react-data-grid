@@ -22,7 +22,8 @@ const rowDropTarget = (Row) => class extends React.Component {
       {isOver && canDrop && <div className="rowDropTarget" style={{
         top: overlayTop,
         height: this.props.height
-      }} /> }
+      }}
+                            /> }
     </div>);
   }
 };

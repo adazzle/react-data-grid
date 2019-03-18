@@ -201,7 +201,7 @@ class Example extends React.Component {
             toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
             rowHeight={50}
             minHeight={600}
-            />
+          />
       </DraggableContainer>
     );
   }

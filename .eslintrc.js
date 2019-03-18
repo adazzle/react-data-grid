@@ -329,7 +329,7 @@ const rules = {
   // https://github.com/yannickcr/eslint-plugin-react#jsx-specific-rules
   'react/jsx-boolean-value': 0,
   'react/jsx-child-element-spacing': 0,
-  'react/jsx-closing-bracket-location': 0,
+  'react/jsx-closing-bracket-location': 1,
   'react/jsx-closing-tag-location': 0,
   'react/jsx-curly-spacing': 1,
   'react/jsx-equals-spacing': 1,

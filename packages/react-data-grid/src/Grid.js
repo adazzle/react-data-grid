@@ -164,13 +164,13 @@ export default class Grid extends React.Component {
           onHeaderDrop={this.props.onHeaderDrop}
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}
-          />
+        />
           {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
             <div
               ref={this.setViewportContainerRef}
               onKeyDown={this.props.onViewportKeydown}
               onKeyUp={this.props.onViewportKeyup}
-              >
+            >
                 <Viewport
                   {...this.props}
                   ref={this.setViewportRef}

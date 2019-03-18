@@ -242,7 +242,8 @@ export class Component extends React.Component {
         onGridRowsUpdated={this.handleGridRowsUpdated}
         toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={() => {}} numberOfRows={this.getSize()} />}
         rowHeight={50}
-        minHeight={600} />
+        minHeight={600}
+      />
       );
   }
 }

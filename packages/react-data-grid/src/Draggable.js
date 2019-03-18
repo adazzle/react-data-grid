@@ -79,7 +79,8 @@ export default class Draggable extends React.Component {
         onDragEnd={onDragEnd}
         onMouseDown={this.onMouseDown}
         onTouchStart={this.onMouseDown}
-        className="react-grid-HeaderCell__draggable" />
+        className="react-grid-HeaderCell__draggable"
+      />
     );
   }
 }

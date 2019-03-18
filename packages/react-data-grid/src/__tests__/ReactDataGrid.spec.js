@@ -20,7 +20,7 @@ function shallowRenderGrid({
     cellNavigationMode={cellNavigationMode}
     onCellSelected={onCellSelected}
     onCellDeSelected={onCellDeSelected}
-  />);
+                          />);
   return {
     wrapper
   };

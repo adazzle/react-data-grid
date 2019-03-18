@@ -49,7 +49,8 @@ class GroupedColumnsPanel extends Component {
         zIndex: 1,
         opacity: 0.5,
         backgroundColor: color
-      }} />
+      }}
+      />
     );
   }
 

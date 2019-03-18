@@ -17,7 +17,8 @@ describe('DropDownEditor', () => {
         options={fakeOptions}
         value={'option2'}
         onCommit={fakeCommitCb}
-        column={fakeColumn} />);
+        column={fakeColumn}
+                                               />);
     });
 
     it('should create a new DropDownEditor instance', () => {
@@ -70,7 +71,8 @@ describe('DropDownEditor', () => {
         options={fakeOptions}
         value={'Choose a thing'}
         onCommit={fakeCommitCb}
-        column={fakeColumn} />);
+        column={fakeColumn}
+                                               />);
     });
 
     it('should display value unless text is specified', () => {

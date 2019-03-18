@@ -20,7 +20,8 @@ describe('CheckboxEditor', () => {
       componentWrapper = mount(<CheckboxEditor
         value={true}
         rowIdx={1}
-        column={testColumn} />);
+        column={testColumn}
+                               />);
       component = componentWrapper.instance();
     });
 

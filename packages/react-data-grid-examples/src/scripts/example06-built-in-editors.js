@@ -92,7 +92,8 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        onGridRowsUpdated={this.handleGridRowsUpdated} />);
+        onGridRowsUpdated={this.handleGridRowsUpdated}
+      />);
   }
 }
 

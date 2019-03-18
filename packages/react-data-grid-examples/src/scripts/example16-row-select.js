@@ -64,7 +64,8 @@ class Example extends React.Component {
             selectBy: {
               indexes: this.state.selectedIndexes
             }
-          }} />
+          }}
+        />
       </div>);
   }
 }

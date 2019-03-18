@@ -394,7 +394,8 @@ export default class Canvas extends React.PureComponent {
         ref={this.setCanvasRef}
         style={style}
         onScroll={this.onScroll}
-        className="react-grid-Canvas">
+        className="react-grid-Canvas"
+      >
         <InteractionMasks
           ref={this.setInteractionMasksRef}
           rowGetter={rowGetter}

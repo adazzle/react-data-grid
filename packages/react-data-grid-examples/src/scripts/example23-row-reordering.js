@@ -111,7 +111,8 @@ class Example extends React.Component {
             selectBy: {
               keys: { rowKey: this.props.rowKey, values: this.state.selectedIds }
             }
-          }} />
+          }}
+        />
       </DraggableContainer>);
   }
 }

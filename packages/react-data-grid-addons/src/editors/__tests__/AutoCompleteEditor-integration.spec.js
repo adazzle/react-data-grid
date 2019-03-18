@@ -22,7 +22,8 @@ describe('AutoCompleteEditor integration', () => {
       column={fakeColumn}
       resultIdentifier="id"
       height={30}
-      onKeyDown={fakeCb} />, document.body);
+      onKeyDown={fakeCb}
+                                />, document.body);
   });
 
   afterEach(() => {

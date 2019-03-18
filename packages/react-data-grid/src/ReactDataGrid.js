@@ -823,7 +823,8 @@ export default class ReactDataGrid extends React.Component {
     }
     return (
       <div className="react-grid-Container" style={{ width: containerWidth }}
-        ref={this.setGridRef}>
+        ref={this.setGridRef}
+      >
         {toolbar}
         <div className="react-grid-Main">
           <BaseGrid

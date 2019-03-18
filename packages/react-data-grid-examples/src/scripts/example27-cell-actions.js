@@ -164,7 +164,8 @@ class Example extends React.Component {
         rowsCount={this.getSize()}
         rowHeight={55}
         minHeight={600}
-        getCellActions={this.getCellActions} />
+        getCellActions={this.getCellActions}
+      />
     );
   }
 }

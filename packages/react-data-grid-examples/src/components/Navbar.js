@@ -12,7 +12,8 @@ export default class Navbar extends React.Component {
             <a href="https://github.com/adazzle/react-data-grid/fork">
               <img className="github-ribbon"
                 src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png"
-                alt="Fork me on GitHub">
+                alt="Fork me on GitHub"
+              >
               </img>
             </a>
 

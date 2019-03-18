@@ -109,7 +109,8 @@ class Example extends React.Component {
       rowsCount={this.state.rows.length}
       getSubRowDetails={this.getSubRowDetails}
       minHeight={500}
-      onCellExpand={this.onCellExpand} />);
+      onCellExpand={this.onCellExpand}
+            />);
   }
 }
 

@@ -15,7 +15,8 @@ function HelloWorld() {
   columns={columns}
   rowGetter={i => rows[i]}
   rowsCount={3}
-  minHeight={150} />);
+  minHeight={150}
+          />);
 }
 
 export default exampleWrapper({

@@ -60,7 +60,8 @@ class Example extends React.Component {
           onRowSelect={this.onRowSelect}
           enableCellSelect={true}
           onCellSelected={this.onCellSelected}
-          onCellDeSelected={this.onCellDeSelected} />
+          onCellDeSelected={this.onCellDeSelected}
+        />
       </div>);
   }
 }

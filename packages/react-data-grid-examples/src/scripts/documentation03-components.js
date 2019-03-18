@@ -82,7 +82,8 @@ export default class ComponentDocs extends React.Component {
         <DocumentContainer
           documentContent={this.state.documentContent}
           documentName={generatedDocs[selectedDocumentIndex].name}
-          documentPath={generatedDocs[selectedDocumentIndex].path} />
+          documentPath={generatedDocs[selectedDocumentIndex].path}
+        />
       </div>
     );
   }

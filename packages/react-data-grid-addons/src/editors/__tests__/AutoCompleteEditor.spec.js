@@ -23,7 +23,8 @@ describe('AutoCompleteEditor', () => {
           resultIdentifier="id"
           search="test"
           height={30}
-          onKeyDown={fakeCb} />);
+          onKeyDown={fakeCb}
+                                />);
         const autocomplete = wrapper.find(ReactAutocomplete);
         return { wrapper, autocomplete };
       }

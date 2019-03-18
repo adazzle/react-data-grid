@@ -119,7 +119,8 @@ class Example extends React.Component {
         minHeight={500}
         toolbar={<Toolbar enableFilter={true} />}
         onAddFilter={this.handleFilterChange}
-        onClearFilters={this.onClearFilters} />);
+        onClearFilters={this.onClearFilters}
+      />);
   }
 }
 

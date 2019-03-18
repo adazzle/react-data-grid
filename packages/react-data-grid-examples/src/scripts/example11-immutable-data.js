@@ -48,7 +48,8 @@ export class Example extends React.Component {
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.size}
-        minHeight={1200} />);
+        minHeight={1200}
+      />);
   }
 }
 

@@ -259,7 +259,8 @@ class Example extends React.Component {
         enableRowSelect={true}
         rowHeight={50}
         minHeight={600}
-        rowScrollTimeout={200} />);
+        rowScrollTimeout={200}
+      />);
   }
 }
 
