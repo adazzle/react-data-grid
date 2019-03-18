@@ -74,77 +74,77 @@ describe('AutoCompleteFilter', () => {
       });
 
       it('should filter valid values', () => {
-        const columnFilter = { filterTerm: [ { value: '1' } ] };
+        const columnFilter = { filterTerm: [{ value: '1' }] };
         const request = filterValues(columnFilter);
         expect(request).toBeTruthy();
       });
 
       it('should handle invalid values', () => {
-        const columnFilter = { filterTerm: [ { value: '3' } ] };
+        const columnFilter = { filterTerm: [{ value: '3' }] };
         const request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
 
       it('should handle empty values', () => {
-        const columnFilter = { filterTerm: [ { value: '' } ] };
+        const columnFilter = { filterTerm: [{ value: '' }] };
         const request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
 
       it('should be a full match when filter match is the first word', () => {
-        const columnFilter = { filterTerm: [ { value: 'Title 1' } ] };
+        const columnFilter = { filterTerm: [{ value: 'Title 1' }] };
         const request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
 
       it('should transform Integers into string to compare', () => {
-        const columnFilter = { filterTerm: [ { value: 1 } ] };
+        const columnFilter = { filterTerm: [{ value: 1 }] };
         const request = filterValues(columnFilter);
         expect(request).toBeTruthy();
       });
 
       it('should transform Float into string to compare', () => {
-        const columnFilter = { filterTerm: [ { value: 1.1 } ] };
+        const columnFilter = { filterTerm: [{ value: 1.1 }] };
         const request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
 
       it('should transform row values into string to compare data (returns true)', () => {
         rows = [{ id: 1, title: 0.15, count: 1 }];
-        const columnFilter = { filterTerm: [ { value: '0.15' } ] };
+        const columnFilter = { filterTerm: [{ value: '0.15' }] };
         const request = filterValues(columnFilter);
         expect(request).toBeTruthy();
       });
 
       it('should transform row values into string to compare data (returns false)', () => {
         rows = [{ id: 1, title: 0.15, count: 1 }];
-        const columnFilter = { filterTerm: [ { value: '0.10' } ] };
+        const columnFilter = { filterTerm: [{ value: '0.10' }] };
         const request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
 
       it('should transform row and filter values into string to compare data', () => {
         rows = [{ id: 1, title: 0.15, count: 1 }];
-        const columnFilter = { filterTerm: [ { value: 0.15 } ] };
+        const columnFilter = { filterTerm: [{ value: 0.15 }] };
         const request = filterValues(columnFilter);
         expect(request).toBeTruthy();
       });
 
       it('should trim spaces of the filterTerm values', () => {
-        const columnFilter = { filterTerm: [ { value: '   1   ' } ] };
+        const columnFilter = { filterTerm: [{ value: '   1   ' }] };
         const request = filterValues(columnFilter);
         expect(request).toBeTruthy();
       });
 
       it('should handle undefined row values', () => {
         rows = [{ id: 1, title: undefined, count: 1 }];
-        const columnFilter = { filterTerm: [ { value: 1 } ] };
+        const columnFilter = { filterTerm: [{ value: 1 }] };
         const request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
 
       it('should handle undefined filter values', () => {
-        const columnFilter = { filterTerm: [ { value: undefined } ] };
+        const columnFilter = { filterTerm: [{ value: undefined }] };
         const request = filterValues(columnFilter);
         expect(request).toBeFalsy();
       });
