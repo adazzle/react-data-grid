@@ -175,7 +175,7 @@ const rules = {
   'indent': 0,
   'jsx-quotes': 1,
   'key-spacing': 1,
-  'keyword-spacing': 0,
+  'keyword-spacing': 1,
   'line-comment-position': 0,
   'linebreak-style': 0,
   'lines-around-comment': 0,
