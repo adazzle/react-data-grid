@@ -99,13 +99,14 @@ All contributions are encouraged and most of all we hope you will have some fun 
 
 ### Release process
 
-- Install dependencies, bootstrap lerna
+- Install dependencies, bootstrap lerna:
   - `npm i`
-- Build the release bundles
+- Build the release bundles:
   - `npm run build`
-- Update the docs
+- Update the docs:
   - `npm run docs`
-- Update the changelog, if necessary
+- Update the changelog, if necessary.
 - Commit your changes, if any.
 - Publish the update with lerna:
-  - `npx lerna publish [major | minor | patch | premajor | preminor | prepatch | prerelease]`
+  - On the `master` branch: `npx lerna publish`
+  - On the `next` branch: `npx lerna publish --dist-tag next`
