@@ -355,7 +355,12 @@ const rules = {
   'react/jsx-sort-default-props': 0,
   'react/jsx-sort-props': 0,
   'react/jsx-space-before-closing': 1,
-  'react/jsx-tag-spacing': 0,
+  'react/jsx-tag-spacing': [1, {
+    closingSlash: 'never',
+    beforeSelfClosing: 'always',
+    afterOpening: 'never',
+    beforeClosing: 'never'
+  }],
   'react/jsx-uses-react': 1,
   'react/jsx-uses-vars': 1,
   'react/jsx-wrap-multilines': [0, {

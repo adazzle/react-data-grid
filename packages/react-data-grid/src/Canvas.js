@@ -335,7 +335,7 @@ export default class Canvas extends React.PureComponent {
             (column, idx) => <div style={{ width: column.width }} key={idx} />
           )
         }
-      </div >
+      </div>
     );
   };
 

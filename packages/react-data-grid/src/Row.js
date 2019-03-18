@@ -190,7 +190,7 @@ export default class Row extends React.Component {
         {
           this.getCells()
         }
-      </div >
+      </div>
     );
   }
 }
