@@ -45,6 +45,6 @@ describe('<DragDropContainer />', () => {
     render(props);
     const rowDragLayer = wrapper.find(RowDragLayer);
     expect(rowDragLayer.length).toBe(1);
-    expect(rowDragLayer.props().rows).toEqual( ['0a', '1a']);
+    expect(rowDragLayer.props().rows).toEqual(['0a', '1a']);
   });
 });

@@ -68,7 +68,7 @@ class CustomDragLayer extends Component {
   renderDraggedCells(item, rowIdx, columns) {
     const cells = [];
     if (item != null) {
-      columns.forEach( c => {
+      columns.forEach(c => {
         if (item.hasOwnProperty(c.key)) {
           if (c.formatter) {
             const Formatter = c.formatter;

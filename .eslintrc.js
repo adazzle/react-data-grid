@@ -233,7 +233,7 @@ const rules = {
   'sort-vars': 0,
   'space-before-blocks': 1,
   'space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }],
-  'space-in-parens': 0,
+  'space-in-parens': 1,
   'space-infix-ops': 1,
   'space-unary-ops': 0,
   'spaced-comment': 0,

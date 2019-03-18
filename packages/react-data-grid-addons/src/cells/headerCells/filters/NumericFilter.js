@@ -48,7 +48,7 @@ export default class NumericFilter extends React.Component {
         }
         break;
       case RuleType.Range:
-        if (rule.begin <= value && rule.end >= value ) {
+        if (rule.begin <= value && rule.end >= value) {
           result = true;
         }
         break;

@@ -27,7 +27,7 @@ export default class Toolbar extends React.Component {
   };
 
   renderAddRowButton = () => {
-    if (this.props.onAddRow ) {
+    if (this.props.onAddRow) {
       return (<button type="button" className="btn" onClick={this.onAddRow}>
         {this.props.addRowButtonText}
       </button>);
