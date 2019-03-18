@@ -337,7 +337,7 @@ const rules = {
   'react/jsx-first-prop-new-line': 0,
   'react/jsx-handler-names': 0,
   'react/jsx-indent': [1, 2],
-  'react/jsx-indent-props': 0,
+  'react/jsx-indent-props': [1, 2],
   'react/jsx-key': 0,
   'react/jsx-max-depth': 0,
   'react/jsx-max-props-per-line': 0,

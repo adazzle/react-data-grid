@@ -37,9 +37,9 @@ describe('AutoCompleteFilter', () => {
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
         <AutoCompleteFilter
-        onChange={fakeOnChange}
-        column={fakeColumn}
-        getValidFilterValues={fakeGetValidFilterValues}
+          onChange={fakeOnChange}
+          column={fakeColumn}
+          getValidFilterValues={fakeGetValidFilterValues}
         />);
       rows = createRows();
     });

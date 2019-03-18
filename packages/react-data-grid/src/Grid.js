@@ -167,51 +167,51 @@ export default class Grid extends React.Component {
         />
         {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
           <div
-              ref={this.setViewportContainerRef}
-              onKeyDown={this.props.onViewportKeydown}
-              onKeyUp={this.props.onViewportKeyup}
+            ref={this.setViewportContainerRef}
+            onKeyDown={this.props.onViewportKeydown}
+            onKeyUp={this.props.onViewportKeyup}
           >
             <Viewport
-                  {...this.props}
-                  ref={this.setViewportRef}
-                  rowKey={this.props.rowKey}
-                  width={this.props.columnMetrics.width}
-                  rowHeight={this.props.rowHeight}
-                  rowRenderer={this.props.rowRenderer}
-                  rowGetter={this.props.rowGetter}
-                  rowsCount={this.props.rowsCount}
-                  selectedRows={this.props.selectedRows}
-                  expandedRows={this.props.expandedRows}
-                  columnMetrics={this.props.columnMetrics}
-                  totalWidth={this.props.totalWidth}
-                  onScroll={this.onScroll}
-                  onRows={this.props.onRows}
-                  cellMetaData={this.props.cellMetaData}
-                  rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
-                  minHeight={this.props.minHeight}
-                  rowScrollTimeout={this.props.rowScrollTimeout}
-                  scrollToRowIndex={this.props.scrollToRowIndex}
-                  contextMenu={this.props.contextMenu}
-                  rowSelection={this.props.rowSelection}
-                  getSubRowDetails={this.props.getSubRowDetails}
-                  rowGroupRenderer={this.props.rowGroupRenderer}
-                  overScan={this.props.overScan}
-                  enableCellSelect={this.props.enableCellSelect}
-                  enableCellAutoFocus={this.props.enableCellAutoFocus}
-                  cellNavigationMode={this.props.cellNavigationMode}
-                  eventBus={this.props.eventBus}
-                  onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-                  onCellCopyPaste={this.props.onCellCopyPaste}
-                  onGridRowsUpdated={this.props.onGridRowsUpdated}
-                  onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-                  onCellSelected={this.props.onCellSelected}
-                  onCellDeSelected={this.props.onCellDeSelected}
-                  onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
-                  onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
-                  onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
-                  onCommit={this.props.onCommit}
-                  RowsContainer={this.props.RowsContainer}
-                  editorPortalTarget={this.props.editorPortalTarget}
+              {...this.props}
+              ref={this.setViewportRef}
+              rowKey={this.props.rowKey}
+              width={this.props.columnMetrics.width}
+              rowHeight={this.props.rowHeight}
+              rowRenderer={this.props.rowRenderer}
+              rowGetter={this.props.rowGetter}
+              rowsCount={this.props.rowsCount}
+              selectedRows={this.props.selectedRows}
+              expandedRows={this.props.expandedRows}
+              columnMetrics={this.props.columnMetrics}
+              totalWidth={this.props.totalWidth}
+              onScroll={this.onScroll}
+              onRows={this.props.onRows}
+              cellMetaData={this.props.cellMetaData}
+              rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
+              minHeight={this.props.minHeight}
+              rowScrollTimeout={this.props.rowScrollTimeout}
+              scrollToRowIndex={this.props.scrollToRowIndex}
+              contextMenu={this.props.contextMenu}
+              rowSelection={this.props.rowSelection}
+              getSubRowDetails={this.props.getSubRowDetails}
+              rowGroupRenderer={this.props.rowGroupRenderer}
+              overScan={this.props.overScan}
+              enableCellSelect={this.props.enableCellSelect}
+              enableCellAutoFocus={this.props.enableCellAutoFocus}
+              cellNavigationMode={this.props.cellNavigationMode}
+              eventBus={this.props.eventBus}
+              onCheckCellIsEditable={this.props.onCheckCellIsEditable}
+              onCellCopyPaste={this.props.onCellCopyPaste}
+              onGridRowsUpdated={this.props.onGridRowsUpdated}
+              onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
+              onCellSelected={this.props.onCellSelected}
+              onCellDeSelected={this.props.onCellDeSelected}
+              onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
+              onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
+              onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
+              onCommit={this.props.onCommit}
+              RowsContainer={this.props.RowsContainer}
+              editorPortalTarget={this.props.editorPortalTarget}
             />
           </div>
         :

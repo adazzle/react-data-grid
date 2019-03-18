@@ -12,10 +12,10 @@ const rows = [{ id: 0, title: 'row1', count: 20 }, { id: 1, title: 'row1', count
 
 function HelloWorld() {
   return (<ReactDataGrid
-  columns={columns}
-  rowGetter={i => rows[i]}
-  rowsCount={3}
-  minHeight={150}
+    columns={columns}
+    rowGetter={i => rows[i]}
+    rowsCount={3}
+    minHeight={150}
           />);
 }
 
