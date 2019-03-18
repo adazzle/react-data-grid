@@ -153,7 +153,7 @@ const rules = {
   'array-bracket-newline': 0,
   'array-bracket-spacing': 1,
   'array-element-newline': 0,
-  'block-spacing': 0,
+  'block-spacing': 1,
   'brace-style': [1, '1tbs', { allowSingleLine: true }],
   'camelcase': 0,
   'capitalized-comments': 0,
