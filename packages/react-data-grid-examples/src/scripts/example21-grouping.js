@@ -186,7 +186,7 @@ class Example extends React.Component {
     const expandedRows = Object.assign({}, this.state.expandedRows);
     expandedRows[columnGroupName] = Object.assign({}, expandedRows[columnGroupName]);
     expandedRows[columnGroupName][name] = { isExpanded: shouldExpand };
-    this.setState({ expandedRows: expandedRows });
+    this.setState({ expandedRows });
   };
 
   render() {

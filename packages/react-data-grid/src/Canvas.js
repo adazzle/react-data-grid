@@ -84,7 +84,7 @@ export default class Canvas extends React.PureComponent {
   };
 
   static defaultProps = {
-    onRows: () => { },
+    onRows() { },
     selectedRows: [],
     rowScrollTimeout: 0,
     scrollToRowIndex: 0,

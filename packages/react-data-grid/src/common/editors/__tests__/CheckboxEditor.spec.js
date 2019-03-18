@@ -10,7 +10,7 @@ describe('CheckboxEditor', () => {
   let componentWrapper;
   const testColumn = {
     key: 'columnKey',
-    onCellChange: function() { }
+    onCellChange() { }
   };
 
   describe('Basic tests', () => {

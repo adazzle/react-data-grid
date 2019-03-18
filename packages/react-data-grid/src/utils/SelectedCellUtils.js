@@ -105,7 +105,7 @@ export const getNextSelectedCellPosition = ({ cellNavigationMode, columns, rowsC
         }
       } else if (cellNavigationMode === CellNavigationMode.LOOP_OVER_ROW) {
         return {
-          rowIdx: rowIdx,
+          rowIdx,
           idx: columns.length - 1,
           changeRowOrColumn: true
         };

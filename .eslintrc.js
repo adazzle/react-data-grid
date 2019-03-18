@@ -261,7 +261,7 @@ const rules = {
   'no-useless-constructor': 0,
   'no-useless-rename': 0,
   'no-var': 2,
-  'object-shorthand': 0,
+  'object-shorthand': [1, 'always', { avoidExplicitReturnArrows: true }],
   'prefer-arrow-callback': 0,
   'prefer-const': 2,
   'prefer-destructuring': 0,

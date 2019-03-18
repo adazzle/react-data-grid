@@ -90,7 +90,7 @@ class Example extends React.Component {
   };
 
   handleGridSort = (sortColumn, sortDirection) => {
-    this.setState({ sortColumn: sortColumn, sortDirection: sortDirection });
+    this.setState({ sortColumn, sortDirection });
   };
 
   handleFilterChange = (filter) => {

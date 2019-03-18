@@ -358,7 +358,7 @@ export default class InteractionMasks extends React.Component {
       ArrowRight: {
         getNext: current => ({ ...current, idx: current.idx + 1 }),
         isCellAtBoundary: isCellAtRightBoundary,
-        onHitBoundary: (next) => {
+        onHitBoundary(next) {
           onHitRightBoundary(next);
           // Selected cell can hit the bottom boundary when the cellNavigationMode is 'changeRow'
           if (isCellAtBottomBoundary(next)) {
@@ -369,7 +369,7 @@ export default class InteractionMasks extends React.Component {
       ArrowLeft: {
         getNext: current => ({ ...current, idx: current.idx - 1 }),
         isCellAtBoundary: isCellAtLeftBoundary,
-        onHitBoundary: (next) => {
+        onHitBoundary(next) {
           onHitLeftBoundary(next);
           // Selected cell can hit the top boundary when the cellNavigationMode is 'changeRow'
           if (isCellAtTopBoundary(next)) {

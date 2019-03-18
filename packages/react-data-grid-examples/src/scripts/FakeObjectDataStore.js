@@ -45,9 +45,9 @@ function createRows(numberOfRows) {
 }
 
 const FakeObjectDataListStore = {
-  getObjectAt: getObjectAt,
-  getSize: getSize,
-  createRows: createRows
+  getObjectAt,
+  getSize,
+  createRows
 };
 
 export default FakeObjectDataListStore;

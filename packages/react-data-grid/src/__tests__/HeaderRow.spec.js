@@ -11,13 +11,13 @@ describe('Header Row Unit Tests', () => {
   const defaultProps = {
     rowType: 'header',
     columns: helpers.columns,
-    onColumnResize: function() {},
-    onColumnResizeEnd: () => {},
+    onColumnResize() {},
+    onColumnResizeEnd() {},
     onSort: jasmine.createSpy(),
     sortDirection: 'NONE',
     sortColumn: null,
     height: 35,
-    onFilterChange: () => {}
+    onFilterChange() {}
   };
 
   const setup = (testProps) => {

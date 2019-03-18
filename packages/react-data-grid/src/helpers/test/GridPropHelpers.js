@@ -22,10 +22,10 @@ export default {
     name: 'Count',
     width: 100
   }],
-  rowGetter: function(i) {
+  rowGetter(i) {
     return _rows[i];
   },
-  rowsCount: function() {
+  rowsCount() {
     return _rows.length;
   },
   cellMetaData: {

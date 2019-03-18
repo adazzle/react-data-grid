@@ -11,25 +11,25 @@ const expandedRows = [{ key: 'col1' }, { key: 'col2' }];
 describe('RowComparer shouldRowUpdate', () => {
   it('same props should not cause an update', () => {
     const currentProps = {
-      columns: columns,
-      cellMetaData: cellMetaData
+      columns,
+      cellMetaData
     };
     const nextProps = {
-      columns: columns,
-      cellMetaData: cellMetaData
+      columns,
+      cellMetaData
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(false);
   });
 
   it('forceUpdate should cause update', () => {
     const currentProps = {
-      columns: columns,
-      cellMetaData: cellMetaData,
+      columns,
+      cellMetaData,
       forceUpdate: true
     };
     const nextProps = {
-      columns: columns,
-      cellMetaData: cellMetaData
+      columns,
+      cellMetaData
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
   });
@@ -38,24 +38,24 @@ describe('RowComparer shouldRowUpdate', () => {
     const newColumns = columns.slice(0);
     newColumns.push({ id: 3, key: 'col3, width: 100' });
     const currentProps = {
-      columns: columns,
-      cellMetaData: cellMetaData
+      columns,
+      cellMetaData
     };
     const nextProps = {
       columns: newColumns,
-      cellMetaData: cellMetaData
+      cellMetaData
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
   });
 
   it('expanded rows should cause update', () => {
     const currentProps = {
-      columns: columns,
-      cellMetaData: cellMetaData
+      columns,
+      cellMetaData
     };
     const nextProps = {
-      columns: columns,
-      cellMetaData: cellMetaData,
+      columns,
+      cellMetaData,
       expandedRows
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
@@ -63,26 +63,26 @@ describe('RowComparer shouldRowUpdate', () => {
 
   it('un-expanding rows should cause update', () => {
     const currentProps = {
-      columns: columns,
-      cellMetaData: cellMetaData,
+      columns,
+      cellMetaData,
       expandedRows
     };
     const nextProps = {
-      columns: columns,
-      cellMetaData: cellMetaData
+      columns,
+      cellMetaData
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
   });
 
   it('same expanded rows should not cause update', () => {
     const currentProps = {
-      columns: columns,
-      cellMetaData: cellMetaData,
+      columns,
+      cellMetaData,
       expandedRows
     };
     const nextProps = {
-      columns: columns,
-      cellMetaData: cellMetaData,
+      columns,
+      cellMetaData,
       expandedRows
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(false);
@@ -90,13 +90,13 @@ describe('RowComparer shouldRowUpdate', () => {
 
   it('changing row extraClasses should cause update', () => {
     const currentProps = {
-      columns: columns,
-      cellMetaData: cellMetaData,
+      columns,
+      cellMetaData,
       extraClasses: 'row-added'
     };
     const nextProps = {
-      columns: columns,
-      cellMetaData: cellMetaData,
+      columns,
+      cellMetaData,
       extraClasses: 'row-deleted'
     };
 

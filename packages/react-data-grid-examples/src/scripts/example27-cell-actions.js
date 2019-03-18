@@ -135,18 +135,18 @@ class Example extends React.Component {
       return [
         {
           icon: <span className="glyphicon glyphicon-remove" />,
-          callback: () => { alert('Deleting'); }
+          callback() { alert('Deleting'); }
         },
         {
           icon: 'glyphicon glyphicon-link',
           actions: [
             {
               text: 'Campaign Linking',
-              callback: () => { alert('Navigating to camapign linking'); }
+              callback() { alert('Navigating to camapign linking'); }
             },
             {
               text: 'Option 2',
-              callback: () => { alert('Navigating to camapign linking'); }
+              callback() { alert('Navigating to camapign linking'); }
             }
           ]
         }

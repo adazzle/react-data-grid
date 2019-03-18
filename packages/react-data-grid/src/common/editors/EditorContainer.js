@@ -237,7 +237,7 @@ export default class EditorContainer extends React.Component {
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       const cellKey = this.props.column.key;
-      onCommit({ cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key });
+      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated, key: opts.key });
     }
   };
 

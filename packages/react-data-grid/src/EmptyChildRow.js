@@ -40,7 +40,7 @@ export default class EmptyChildRow extends React.Component {
         <div className="react-grid-Cell" style={{ position: 'absolute', height: cellHeight, width: '100%', left: cellLeft }}>
           <div className="rdg-empty-child-row" style={{ marginLeft: '30px', lineHeight: `${cellHeight}px` }}>
             <div className="'rdg-child-row-action-cross rdg-child-row-action-cross-last" />
-            <div style={{ left: left, top: top, width: width, height: height }} className="rdg-child-row-btn" onClick={this.onAddSubRow}>
+            <div style={{ left, top, width, height }} className="rdg-child-row-btn" onClick={this.onAddSubRow}>
               <div className="glyphicon glyphicon-plus-sign" />
             </div>
           </div>
