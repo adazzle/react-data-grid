@@ -10,7 +10,7 @@ class Example extends React.Component {
     this._columns = [
       { key: 'id', name: 'ID' },
       { key: 'title', name: 'Title' },
-      { key: 'count', name: 'Count' } ];
+      { key: 'count', name: 'Count' }];
 
     this.state = {
       value: 10,
@@ -19,7 +19,7 @@ class Example extends React.Component {
   }
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -38,16 +38,16 @@ class Example extends React.Component {
   render() {
     return (
       <div>
-        <div style={{display: 'flex', marginBottom: '10px', alignItems: 'center'}}>
-          <span style={{marginRight: '10px'}}>Row Index: </span>
+        <div style={{ display: 'flex', marginBottom: '10px', alignItems: 'center' }}>
+          <span style={{ marginRight: '10px' }}>Row Index: </span>
           <input
-            style={{marginRight: '10px', border: '1px outset lightgray', padding: '3px'}}
-            type='text'
+            style={{ marginRight: '10px', border: '1px outset lightgray', padding: '3px' }}
+            type="text"
             value={this.state.value}
-            onChange={(event) => { this.setState({value: event.target.value})}} />
+            onChange={(event) => { this.setState({ value: event.target.value }); }} />
           <button
-            style={{padding: '5px'}}
-            onClick={() => this.setState({scrollToRowIndex: this.state.value})}>Scroll to row</button>
+            style={{ padding: '5px' }}
+            onClick={() => this.setState({ scrollToRowIndex: this.state.value })}>Scroll to row</button>
         </div>
         <ReactDataGrid
           columns={this._columns}

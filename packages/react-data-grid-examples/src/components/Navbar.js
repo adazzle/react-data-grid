@@ -6,7 +6,7 @@ import ExampleList from './ExampleList';
 export default class Navbar extends React.Component {
   render() {
     return (
-      <div className="navbar navbar-fixed-top headroom" >
+      <div className="navbar navbar-fixed-top headroom">
         <div className="container">
           <div className="navbar-header">
             <a href="https://github.com/adazzle/react-data-grid/fork">
@@ -40,7 +40,7 @@ export default class Navbar extends React.Component {
             </ul>
           </div>
         </div>
-      </div >
+      </div>
     );
   }
 }

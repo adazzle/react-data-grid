@@ -19,7 +19,7 @@ class Example extends React.Component {
   }
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000000; i++) {
       rows.push({
         id: i,
@@ -38,7 +38,7 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
         columns={this._columns}
         rowGetter={this.rowGetter}

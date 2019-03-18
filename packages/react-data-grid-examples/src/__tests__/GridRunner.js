@@ -9,7 +9,7 @@ export default class GridRunner {
   /* =====
   SETUP
   ======== */
-  constructor({renderIntoBody = false, GridUnderTest = ExampleGrid}) {
+  constructor({ renderIntoBody = false, GridUnderTest = ExampleGrid }) {
     this.renderIntoBody = renderIntoBody;
     this.example = GridUnderTest;
     this.gridWrapper = this._renderGrid(renderIntoBody);
@@ -17,10 +17,10 @@ export default class GridRunner {
   }
 
   _renderGrid(intoBody) {
-    let Example = this.example;
+    const Example = this.example;
     this.handleCellDragSpy = jasmine.createSpy('handleCellDrag');
-    let options = intoBody ? { attachTo: document.body } : { };
-    let gridWrapper = mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
+    const options = intoBody ? { attachTo: document.body } : { };
+    const gridWrapper = mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
 
     return gridWrapper;
   }
@@ -37,8 +37,8 @@ export default class GridRunner {
   ======== */
   // Helpers - these are just wrappers to run several steps
   // NOTE: these are 'final' functions, ie they call dispose at the end
-  changeCell({select: {cell: selectCell, row: selectRow}, val, ev, expectToSelect: {row: expectRow, cell: expectCell}}) {
-    const coords = {cellIdx: selectCell, rowIdx: selectRow};
+  changeCell({ select: { cell: selectCell, row: selectRow }, val, ev, expectToSelect: { row: expectRow, cell: expectCell } }) {
+    const coords = { cellIdx: selectCell, rowIdx: selectRow };
     this
       .clickIntoEditor(coords)
       .resetCell(coords)
@@ -48,20 +48,20 @@ export default class GridRunner {
       .resetCell(coords)
       .hasCommitted(val)
       .resetCell(coords)
-      .hasSelected({cellIdx: expectCell, rowIdx: expectRow})
+      .hasSelected({ cellIdx: expectCell, rowIdx: expectRow })
       .dispose();
   }
 
   /* =====
   ACTIONS
   ======== */
-  resetCell({cellIdx, rowIdx}) {
+  resetCell({ cellIdx, rowIdx }) {
     // Caching components do not work in V3 so find the cell again after each operation
     this.cell = this.getCell({ cellIdx, rowIdx });
     return this;
   }
 
-  rightClickCell({cellIdx, rowIdx}) {
+  rightClickCell({ cellIdx, rowIdx }) {
     this.row = this.getRow(rowIdx);
     this.cell = this.getCell({ cellIdx, rowIdx });
     this.cell.simulate('contextMenu');
@@ -69,12 +69,12 @@ export default class GridRunner {
   }
 
   getContextMenu() {
-    let menus = document.getElementsByClassName('react-context-menu');
+    const menus = document.getElementsByClassName('react-context-menu');
     return menus.length > 0 ? menus[menus.length - 1] : undefined;
   }
 
   getContextMenuItem() {
-    let menuItems = document.getElementsByClassName('react-context-menu-link');
+    const menuItems = document.getElementsByClassName('react-context-menu-link');
     return menuItems.length > 0 ? menuItems[menuItems.length - 1] : undefined;
   }
 
@@ -100,10 +100,10 @@ export default class GridRunner {
     return { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx };
   }
 
-  getRealPosition(originalCellIdx, originalRowIdx ) {
+  getRealPosition(originalCellIdx, originalRowIdx) {
     const { rowOverscanStartIdx, colOverscanStartIdx } = this.getDisplayInfo();
-    let relativeCellIdx = originalCellIdx - colOverscanStartIdx;
-    let relativeRowIdx = originalRowIdx - rowOverscanStartIdx;
+    const relativeCellIdx = originalCellIdx - colOverscanStartIdx;
+    const relativeRowIdx = originalRowIdx - rowOverscanStartIdx;
 
     return { relativeCellIdx, relativeRowIdx };
   }
@@ -123,10 +123,10 @@ export default class GridRunner {
     return this.getRenderedRows().at(relativeRowIdx);
   }
 
-  getCell({cellIdx, rowIdx}) {
+  getCell({ cellIdx, rowIdx }) {
     const { relativeCellIdx } = this.getRealPosition(cellIdx, rowIdx);
 
-    let row = this.getRow(rowIdx);
+    const row = this.getRow(rowIdx);
     return this.getCellsFromRow(row).at(relativeCellIdx);
   }
 
@@ -135,8 +135,8 @@ export default class GridRunner {
   }
 
   getCells(row) {
-    let allCells = this.getCellsFromRow(row);
-    let cells = [];
+    const allCells = this.getCellsFromRow(row);
+    const cells = [];
 
     for (let i = 0; i < allCells.length; i++) {
       cells[i] = allCells[i];
@@ -145,10 +145,10 @@ export default class GridRunner {
     return cells;
   }
 
-  clickIntoEditor({cellIdx, rowIdx}) {
+  clickIntoEditor({ cellIdx, rowIdx }) {
     // activate it
     // have to do click then doubleClick as thast what the browser would actually emit
-    this.selectCell({cellIdx, rowIdx});
+    this.selectCell({ cellIdx, rowIdx });
     this.cell.simulate('doubleClick');
     return this;
   }
@@ -176,32 +176,32 @@ export default class GridRunner {
   }
 
   copy() {
-    this.keyDown({keyCode: 67, ctrlKey: true}, this.cell);
+    this.keyDown({ keyCode: 67, ctrlKey: true }, this.cell);
     return this;
   }
 
-  drag({from, to, col, beforeDragEnter = null, beforeDragEnd = null}) {
-    this.selectCell({cellIdx: col - 1, rowIdx: from});
-    let over = [];
+  drag({ from, to, col, beforeDragEnter = null, beforeDragEnd = null }) {
+    this.selectCell({ cellIdx: col - 1, rowIdx: from });
+    const over = [];
     over.push(this.cell);
     let fromIterator = from;
 
     for (let i = fromIterator++; i < to; i++) {
-      over.push(this.getCell({cellIdx: col, rowIdx: i}));
+      over.push(this.getCell({ cellIdx: col, rowIdx: i }));
     }
-    const toCell = this.getCell({cellIdx: col, rowIdx: to});
+    const toCell = this.getCell({ cellIdx: col, rowIdx: to });
     over.push(toCell);
 
     // Act
     // do the drag
     // Important: we need dragStart / dragEnter / dragEnd
     this.cell.simulate('dragStart');
-    if (beforeDragEnter) {beforeDragEnter();}
+    if (beforeDragEnter) { beforeDragEnter(); }
 
     over.forEach((cell) => {
       cell.simulate('dragEnter');
     });
-    if (beforeDragEnd) {beforeDragEnd();}
+    if (beforeDragEnd) { beforeDragEnd(); }
     toCell.simulate('dragEnd');
 
     return this;
@@ -215,32 +215,32 @@ export default class GridRunner {
     return this;
   }
   isNotEditable() {
-    let editor = this.cell.find('input');
+    const editor = this.cell.find('input');
     expect(editor.length === 0).toBe(true);
     return this;
   }
   isEditable() {
-    let editor = this.cell.find('input');
+    const editor = this.cell.find('input');
     expect(editor.length > 0).toBe(true);
     return this;
   }
-  hasSelected({rowIdx, cellIdx}) {
+  hasSelected({ rowIdx, cellIdx }) {
     // and should move to the appropriate cell/row
-    let cell = this.getCell({cellIdx, rowIdx});
+    const cell = this.getCell({ cellIdx, rowIdx });
     expect(cell.instance().isSelected()).toBe(true);
     return this;
   }
-  hasCopied({cellIdx, rowIdx}) {
-    let baseGrid = this.grid.reactDataGrid;
+  hasCopied({ cellIdx, rowIdx }) {
+    const baseGrid = this.grid.reactDataGrid;
     expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
     expect(ReactDOM.findDOMNode(this.cell.instance()).className.indexOf('copied') > -1).toBe(true);
   }
-  hasDragged({from, to, col, cellKey}) {
+  hasDragged({ from, to, col, cellKey }) {
     // check onCellDrag called with correct data
     expect(this.handleCellDragSpy).toHaveBeenCalled();
     // Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
-    let expected = this.cell.props().value;
+    const expected = this.cell.props().value;
     // check our event returns the right data
     const args = this.handleCellDragSpy.calls.first().args[0];
     expect(args.cellKey).toEqual(cellKey);
@@ -248,7 +248,7 @@ export default class GridRunner {
     expect(args.toRow).toEqual(to);
     expect(args.updated[args.cellKey]).toEqual(expected);
     for (let i = from, end = to; i <= end; i++) {
-      const toCell = this.getCell({cellIdx: col - 1, rowIdx: i});
+      const toCell = this.getCell({ cellIdx: col - 1, rowIdx: i });
       // First the component
       expect(toCell.props().value).toEqual(expected);
       // and finally the rendered data

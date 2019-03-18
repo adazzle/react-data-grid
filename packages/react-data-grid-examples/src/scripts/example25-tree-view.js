@@ -4,10 +4,10 @@ import ReactDataGrid from 'react-data-grid';
 import exampleWrapper from '../components/exampleWrapper';
 
 function createRows() {
-  let rows = [];
+  const rows = [];
   for (let i = 0; i < 100; i++) {
-    let price = Math.random() * 30;
-    let row = {
+    const price = Math.random() * 30;
+    const row = {
       id: 'row' + i,
       name: 'supplier ' + i,
       format: 'package ' + i,
@@ -25,7 +25,7 @@ function createRows() {
 }
 
 
-let columns = [
+const columns = [
   {
     key: 'id',
     name: 'id',
@@ -52,7 +52,7 @@ let columns = [
 class Example extends React.Component {
   constructor(props) {
     super(props);
-    let rows = createRows();
+    const rows = createRows();
     this.state = { expanded: {}, rows: rows };
   }
 
@@ -61,7 +61,7 @@ class Example extends React.Component {
   };
 
   getSubRowDetails = (rowItem) => {
-    let isExpanded = this.state.expanded[rowItem.name] ? this.state.expanded[rowItem.name] : false;
+    const isExpanded = this.state.expanded[rowItem.name] ? this.state.expanded[rowItem.name] : false;
     return {
       group: rowItem.children && rowItem.children.length > 0,
       expanded: isExpanded,
@@ -74,12 +74,12 @@ class Example extends React.Component {
   };
 
   onCellExpand = (args) => {
-    let rows = this.state.rows.slice(0);
-    let rowKey = args.rowData.name;
-    let rowIndex = rows.indexOf(args.rowData);
-    let subRows = args.expandArgs.children;
+    const rows = this.state.rows.slice(0);
+    const rowKey = args.rowData.name;
+    const rowIndex = rows.indexOf(args.rowData);
+    const subRows = args.expandArgs.children;
 
-    let expanded = Object.assign({}, this.state.expanded);
+    const expanded = Object.assign({}, this.state.expanded);
     if (expanded && !expanded[rowKey]) {
       expanded[rowKey] = true;
       this.updateSubRowDetails(subRows, args.rowData.treeDepth);
@@ -93,7 +93,7 @@ class Example extends React.Component {
   };
 
   updateSubRowDetails = (subRows, parentTreeDepth) => {
-    let treeDepth = parentTreeDepth || 0;
+    const treeDepth = parentTreeDepth || 0;
     subRows.forEach((sr, i) => {
       sr.treeDepth = treeDepth + 1;
       sr.siblingIndex = i;
@@ -102,7 +102,7 @@ class Example extends React.Component {
   };
 
   onDeleteSubRow = (args) => {
-    let idToDelete = args.rowData.id;
+    const idToDelete = args.rowData.id;
     let rows = this.state.rows.slice(0);
     // Remove sub row from parent row.
     rows = rows.map(r => {

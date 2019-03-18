@@ -20,7 +20,7 @@ class Example extends React.Component {
       {
         key: 'title',
         name: 'Title',
-        editor: <DropDownEditor options={titles}/>,
+        editor: <DropDownEditor options={titles} />,
         resizable: true,
         events: {
           onDoubleClick: function(ev, args) {
@@ -49,7 +49,7 @@ class Example extends React.Component {
       }
     ];
 
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -67,15 +67,15 @@ class Example extends React.Component {
   };
 
   handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-    let rows = this.state.rows.slice();
+    const rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
-      let rowToUpdate = rows[i];
-      const updatedRow = update(rowToUpdate, {$merge: updated});
+      const rowToUpdate = rows[i];
+      const updatedRow = update(rowToUpdate, { $merge: updated });
       rows[i] = updatedRow;
     }
 
-    this.setState({rows: rows});
+    this.setState({ rows: rows });
   };
 
   cellEditWithOneClick = (ev, { idx, rowIdx }) => {
@@ -83,7 +83,7 @@ class Example extends React.Component {
   };
 
   getColumns = () => {
-    let clonedColumns = this._columns.slice();
+    const clonedColumns = this._columns.slice();
     clonedColumns[3].events = {
       onClick: this.cellEditWithOneClick
     };
@@ -94,7 +94,7 @@ class Example extends React.Component {
   render() {
     return (
       <ReactDataGrid
-        ref={ (node) => this.grid = node }
+        ref={(node) => this.grid = node}
         columns={this.getColumns()}
         enableCellSelect={true}
         rowGetter={this.rowGetter}

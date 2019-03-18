@@ -67,7 +67,7 @@ class Example extends React.Component {
   };
 
   createRows = (numberOfRows) => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < numberOfRows; i++) {
       rows.push({
         id: i,
@@ -92,7 +92,7 @@ class Example extends React.Component {
   };
 
   handleFilterChange = (filter) => {
-    let newFilters = Object.assign({}, this.state.filters);
+    const newFilters = Object.assign({}, this.state.filters);
     if (filter.filterTerm) {
       newFilters[filter.column.key] = filter;
     } else {
@@ -102,7 +102,7 @@ class Example extends React.Component {
   };
 
   getValidFilterValues = (columnId) => {
-    let values = this.state.rows.map(r => r[columnId]);
+    const values = this.state.rows.map(r => r[columnId]);
     return values.filter((item, i, a) => { return i === a.indexOf(item); });
   };
 
@@ -111,14 +111,14 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
         enableCellSelect={true}
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.rowsCount()}
         minHeight={500}
-        toolbar={<Toolbar enableFilter={true}/>}
+        toolbar={<Toolbar enableFilter={true} />}
         onAddFilter={this.handleFilterChange}
         getValidFilterValues={this.getValidFilterValues}
         onClearFilters={this.handleOnClearFilters} />);

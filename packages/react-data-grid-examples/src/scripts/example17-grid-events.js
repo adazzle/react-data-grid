@@ -25,7 +25,7 @@ class Example extends React.Component {
   }
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -43,8 +43,8 @@ class Example extends React.Component {
   };
 
   onRowClick = (rowIdx, row) => {
-    let rows = this.state.rows.slice();
-    rows[rowIdx] = Object.assign({}, row, {isSelected: !row.isSelected});
+    const rows = this.state.rows.slice();
+    rows[rowIdx] = Object.assign({}, row, { isSelected: !row.isSelected });
     this.setState({ rows });
   };
 
@@ -52,9 +52,9 @@ class Example extends React.Component {
     if (e.ctrlKey && e.keyCode === 65) {
       e.preventDefault();
 
-      let rows = [];
-      this.state.rows.forEach((r) =>{
-        rows.push(Object.assign({}, r, {isSelected: true}));
+      const rows = [];
+      this.state.rows.forEach((r) => {
+        rows.push(Object.assign({}, r, { isSelected: true }));
       });
 
       this.setState({ rows });
@@ -62,7 +62,7 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
         rowKey="id"
         columns={this._columns}

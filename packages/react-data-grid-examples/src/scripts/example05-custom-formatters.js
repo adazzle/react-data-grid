@@ -14,7 +14,7 @@ class PercentCompleteFormatter extends React.Component {
     const percentComplete = this.props.value + '%';
     return (
       <div className="progress">
-        <div className="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{width: percentComplete}}>
+        <div className="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{ width: percentComplete }}>
           {percentComplete}
         </div>
       </div>);
@@ -66,7 +66,7 @@ class Example extends React.Component {
   };
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 100; i++) {
       rows.push({
         id: i,
@@ -87,7 +87,7 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
         columns={this._columns}
         rowGetter={this.rowGetter}

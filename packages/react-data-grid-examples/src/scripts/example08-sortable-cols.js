@@ -50,8 +50,8 @@ class Example extends React.Component {
       }
     ];
 
-    let originalRows = this.createRows(1000);
-    let rows = originalRows.slice(0);
+    const originalRows = this.createRows(1000);
+    const rows = originalRows.slice(0);
     this.state = { originalRows, rows };
   }
 
@@ -60,7 +60,7 @@ class Example extends React.Component {
   };
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -80,7 +80,7 @@ class Example extends React.Component {
     const comparer = (a, b) => {
       if (sortDirection === 'ASC') {
         return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
-      } else if (sortDirection === 'DESC') {
+      } if (sortDirection === 'DESC') {
         return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
       }
     };
@@ -95,7 +95,7 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
         onGridSort={this.handleGridSort}
         columns={this._columns}

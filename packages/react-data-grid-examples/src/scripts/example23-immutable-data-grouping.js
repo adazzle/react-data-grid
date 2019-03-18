@@ -13,15 +13,15 @@ const { Container: DraggableContainer } = Draggable;
 
 faker.locale = 'en_GB';
 
-let _rows = [];
-let _cols = [];
+const _rows = [];
+const _cols = [];
 
 for (let j = 0; j < 50; j++) {
-  _cols.push({key: 'col' + j, name: 'col' + j, width: 150, draggable: true});
+  _cols.push({ key: 'col' + j, name: 'col' + j, width: 150, draggable: true });
 }
 
 for (let rowIdx = 1; rowIdx < 100; rowIdx++) {
-  let row = {};
+  const row = {};
   _cols.forEach((c, colIdx) => {
     row[c.key] = '(' + colIdx + ',' + rowIdx + ')';
   });
@@ -38,7 +38,7 @@ class CustomToolbar extends React.Component {
   render() {
     return (
       <Toolbar>
-        <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted}/>
+        <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
       </Toolbar>);
   }
 }
@@ -52,12 +52,12 @@ class Example extends React.Component {
   };
 
   getRows = () => {
-    let rows = Selectors.getRows(this.state);
+    const rows = Selectors.getRows(this.state);
     return rows;
   };
 
   getRowAt = (index) => {
-    let rows = this.getRows();
+    const rows = this.getRows();
     return rows.get(index);
   };
 
@@ -66,7 +66,7 @@ class Example extends React.Component {
   };
 
   onColumnGroupAdded = (colName) => {
-    let columnGroups = this.state.groupBy.slice(0);
+    const columnGroups = this.state.groupBy.slice(0);
     if (columnGroups.indexOf(colName) === -1) {
       columnGroups.push(colName);
     }
@@ -74,29 +74,29 @@ class Example extends React.Component {
   };
 
   onColumnGroupDeleted = (name) => {
-    let columnGroups = this.state.groupBy.filter(function(g) {return g !== name;});
+    const columnGroups = this.state.groupBy.filter(function(g) { return g !== name; });
     this.setState({ groupBy: columnGroups });
   };
 
   onRowExpandToggle = (args) => {
-    let expandedRows = Object.assign({}, this.state.expandedRows);
+    const expandedRows = Object.assign({}, this.state.expandedRows);
     expandedRows[args.columnGroupName] = Object.assign({}, expandedRows[args.columnGroupName]);
     expandedRows[args.columnGroupName][args.name] = { isExpanded: args.shouldExpand };
-    this.setState({expandedRows: expandedRows});
+    this.setState({ expandedRows: expandedRows });
   };
 
   render() {
     return (
       <DraggableContainer>
           <ReactDataGrid
-            ref={ node => this.grid = node }
+            ref={node => this.grid = node}
             enableCellSelect={true}
             enableDragAndDrop={true}
             columns={_cols}
             rowGetter={this.getRowAt}
             rowsCount={this.getSize()}
             onRowExpandToggle={this.onRowExpandToggle}
-            toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted}/>}
+            toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
             rowHeight={50}
             minHeight={600}
             />

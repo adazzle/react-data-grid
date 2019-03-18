@@ -25,7 +25,7 @@ class Example extends React.Component {
   }
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -62,11 +62,11 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <div>
         <textarea
           ref={(element) => this.textarea = element}
-          style={{width: '100%', marginBottom: '1em', padding: '0.5em', border: '1px solid black' }}
+          style={{ width: '100%', marginBottom: '1em', padding: '0.5em', border: '1px solid black' }}
           rows={5}
         />
         <ReactDataGrid

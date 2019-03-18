@@ -45,7 +45,7 @@ class Example extends React.Component {
   };
 
   createRows = (numberOfRows) => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < numberOfRows; i++) {
       rows.push({
         id: i,
@@ -66,34 +66,34 @@ class Example extends React.Component {
 
   isDraggedRowSelected = (selectedRows, rowDragSource) => {
     if (selectedRows && selectedRows.length > 0) {
-      let key = this.props.rowKey;
+      const key = this.props.rowKey;
       return selectedRows.filter(r => r[key] === rowDragSource.data[key]).length > 0;
     }
     return false;
   };
 
   reorderRows = (e) => {
-    let selectedRows = Selectors.getSelectedRowsByKey({rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows});
-    let draggedRows = this.isDraggedRowSelected(selectedRows, e.rowSource) ? selectedRows : [e.rowSource.data];
-    let undraggedRows = this.state.rows.filter(function(r) {
+    const selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows });
+    const draggedRows = this.isDraggedRowSelected(selectedRows, e.rowSource) ? selectedRows : [e.rowSource.data];
+    const undraggedRows = this.state.rows.filter(function(r) {
       return draggedRows.indexOf(r) === -1;
     });
-    let args = [e.rowTarget.idx, 0].concat(draggedRows);
+    const args = [e.rowTarget.idx, 0].concat(draggedRows);
     Array.prototype.splice.apply(undraggedRows, args);
-    this.setState({rows: undraggedRows});
+    this.setState({ rows: undraggedRows });
   };
 
   onRowsSelected = (rows) => {
-    this.setState({selectedIds: this.state.selectedIds.concat(rows.map(r => r.row[this.props.rowKey]))});
+    this.setState({ selectedIds: this.state.selectedIds.concat(rows.map(r => r.row[this.props.rowKey])) });
   };
 
   onRowsDeselected = (rows) => {
-    let rowIds = rows.map(r =>  r.row[this.props.rowKey]);
-    this.setState({selectedIds: this.state.selectedIds.filter(i => rowIds.indexOf(i) === -1 )});
+    const rowIds = rows.map(r => r.row[this.props.rowKey]);
+    this.setState({ selectedIds: this.state.selectedIds.filter(i => rowIds.indexOf(i) === -1) });
   };
 
   render() {
-    return  (
+    return (
       <DraggableContainer>
         <ReactDataGrid
           enableCellSelection={true}
@@ -102,16 +102,16 @@ class Example extends React.Component {
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={500}
-          rowRenderer={<RowRenderer onRowDrop={this.reorderRows}/>}
+          rowRenderer={<RowRenderer onRowDrop={this.reorderRows} />}
           rowSelection={{
             showCheckbox: true,
             enableShiftSelect: true,
             onRowsSelected: this.onRowsSelected,
             onRowsDeselected: this.onRowsDeselected,
             selectBy: {
-              keys: {rowKey: this.props.rowKey, values: this.state.selectedIds}
+              keys: { rowKey: this.props.rowKey, values: this.state.selectedIds }
             }
-          }}/>
+          }} />
       </DraggableContainer>);
   }
 }

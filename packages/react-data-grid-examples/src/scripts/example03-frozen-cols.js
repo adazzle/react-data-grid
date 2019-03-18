@@ -8,7 +8,7 @@ class Example extends React.Component {
     super(props, context);
     this.createRows();
 
-    const extraColumns = [...Array(50).keys()].map(i => ({key: `col${i}`, name: `col${i}`}));
+    const extraColumns = [...Array(50).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
     const columns = [
       {
         key: 'id',
@@ -59,7 +59,7 @@ class Example extends React.Component {
   };
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -80,7 +80,7 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
         columns={this._columns}
         rowGetter={this.rowGetter}
@@ -89,7 +89,7 @@ class Example extends React.Component {
   }
 }
 
-const exampleDescription = <p>To make a given column locked, set <code>column.locked = true</code>. In this example, the ID columns has been locked and will remain in position as you scroll horizontally</p>
+const exampleDescription = <p>To make a given column locked, set <code>column.locked = true</code>. In this example, the ID columns has been locked and will remain in position as you scroll horizontally</p>;
 
 export default exampleWrapper({
   WrappedComponent: Example,

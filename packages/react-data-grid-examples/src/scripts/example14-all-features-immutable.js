@@ -13,46 +13,46 @@ const { ImageFormatter } = Formatters;
 const { ContextMenu, MenuItem } = Menu;
 
 const counties = [
-  { id: 0, title: 'Bedfordshire'},
-  { id: 1, title: 'Berkshire'},
-  { id: 2, title: 'Buckinghamshire'},
-  { id: 3, title: 'Cambridgeshire'},
-  { id: 4, title: 'Cheshire'},
-  { id: 5, title: 'Cornwall'},
-  { id: 6, title: 'Cumbria, (Cumberland)'},
-  { id: 7, title: 'Derbyshire'},
-  { id: 8, title: 'Devon'},
-  { id: 9, title: 'Dorset'},
-  { id: 10, title: 'Durham'},
-  { id: 11, title: 'Essex'},
-  { id: 12, title: 'Gloucestershire'},
-  { id: 13, title: 'Hampshire'},
-  { id: 14, title: 'Hertfordshire'},
-  { id: 15, title: 'Huntingdonshire'},
-  { id: 16, title: 'Kent'},
-  { id: 17, title: 'Lancashire'},
-  { id: 18, title: 'Leicestershire'},
-  { id: 19, title: 'Lincolnshire'},
-  { id: 20, title: 'Middlesex'},
-  { id: 21, title: 'Norfolk'},
-  { id: 22, title: 'Northamptonshire'},
-  { id: 23, title: 'Northumberland'},
-  { id: 24, title: 'Nottinghamshire'},
-  { id: 25, title: 'Northamptonshire'},
-  { id: 26, title: 'Oxfordshire'},
-  { id: 27, title: 'Northamptonshire'},
-  { id: 28, title: 'Rutland'},
-  { id: 29, title: 'Shropshire'},
-  { id: 30, title: 'Somerset'},
-  { id: 31, title: 'Staffordshire'},
-  { id: 32, title: 'Suffolk'},
-  { id: 33, title: 'Surrey'},
-  { id: 34, title: 'Sussex'},
-  { id: 35, title: 'Warwickshire'},
-  { id: 36, title: 'Westmoreland'},
-  { id: 37, title: 'Wiltshire'},
-  { id: 38, title: 'Worcestershire'},
-  { id: 39, title: 'Yorkshire'}
+  { id: 0, title: 'Bedfordshire' },
+  { id: 1, title: 'Berkshire' },
+  { id: 2, title: 'Buckinghamshire' },
+  { id: 3, title: 'Cambridgeshire' },
+  { id: 4, title: 'Cheshire' },
+  { id: 5, title: 'Cornwall' },
+  { id: 6, title: 'Cumbria, (Cumberland)' },
+  { id: 7, title: 'Derbyshire' },
+  { id: 8, title: 'Devon' },
+  { id: 9, title: 'Dorset' },
+  { id: 10, title: 'Durham' },
+  { id: 11, title: 'Essex' },
+  { id: 12, title: 'Gloucestershire' },
+  { id: 13, title: 'Hampshire' },
+  { id: 14, title: 'Hertfordshire' },
+  { id: 15, title: 'Huntingdonshire' },
+  { id: 16, title: 'Kent' },
+  { id: 17, title: 'Lancashire' },
+  { id: 18, title: 'Leicestershire' },
+  { id: 19, title: 'Lincolnshire' },
+  { id: 20, title: 'Middlesex' },
+  { id: 21, title: 'Norfolk' },
+  { id: 22, title: 'Northamptonshire' },
+  { id: 23, title: 'Northumberland' },
+  { id: 24, title: 'Nottinghamshire' },
+  { id: 25, title: 'Northamptonshire' },
+  { id: 26, title: 'Oxfordshire' },
+  { id: 27, title: 'Northamptonshire' },
+  { id: 28, title: 'Rutland' },
+  { id: 29, title: 'Shropshire' },
+  { id: 30, title: 'Somerset' },
+  { id: 31, title: 'Staffordshire' },
+  { id: 32, title: 'Suffolk' },
+  { id: 33, title: 'Surrey' },
+  { id: 34, title: 'Sussex' },
+  { id: 35, title: 'Warwickshire' },
+  { id: 36, title: 'Westmoreland' },
+  { id: 37, title: 'Wiltshire' },
+  { id: 38, title: 'Worcestershire' },
+  { id: 39, title: 'Yorkshire' }
 ];
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
@@ -75,14 +75,14 @@ const columns = [
   {
     key: 'county',
     name: 'County',
-    editor: <AutoCompleteEditor options={counties}/>,
+    editor: <AutoCompleteEditor options={counties} />,
     width: 200,
     resizable: true
   },
   {
     key: 'title',
     name: 'Title',
-    editor: <DropDownEditor options={titles}/>,
+    editor: <DropDownEditor options={titles} />,
     width: 200,
     resizable: true,
     events: {
@@ -175,7 +175,7 @@ class MyContextMenu extends React.Component {
   render() {
     return (
       <ContextMenu>
-        <MenuItem data={{rowIdx: this.props.rowIdx, idx: this.props.idx}} onClick={this.onItemClick}>{this.props.rowIdx},{this.props.idx}</MenuItem>
+        <MenuItem data={{ rowIdx: this.props.rowIdx, idx: this.props.idx }} onClick={this.onItemClick}>{this.props.rowIdx},{this.props.idx}</MenuItem>
       </ContextMenu>
     );
   }
@@ -189,7 +189,7 @@ export class Component extends React.Component {
   constructor(props) {
     super(props);
     const fakeRows = FakeObjectDataStore.createRows(100);
-    this.state = { rows: Immutable.fromJS(fakeRows)};
+    this.state = { rows: Immutable.fromJS(fakeRows) };
   }
 
   handleGridRowsUpdated = (e) => {
@@ -240,7 +240,7 @@ export class Component extends React.Component {
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}
         onGridRowsUpdated={this.handleGridRowsUpdated}
-        toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={()=>{}} numberOfRows={this.getSize()}/>}
+        toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={() => {}} numberOfRows={this.getSize()} />}
         rowHeight={50}
         minHeight={600} />
       );

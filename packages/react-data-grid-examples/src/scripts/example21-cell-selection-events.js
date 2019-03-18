@@ -12,7 +12,7 @@ class Example extends React.Component {
       { key: 'count', name: 'Count' }
     ];
 
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -40,17 +40,17 @@ class Example extends React.Component {
   };
 
   onCellDeSelected = ({ rowIdx, idx }) => {
-    this.setState({alert: `The editor for cell ${idx}, ${rowIdx} should have just closed`});
+    this.setState({ alert: `The editor for cell ${idx}, ${rowIdx} should have just closed` });
   };
 
   render() {
     const rowText = this.state.selectedRows.length === 1 ? 'row' : 'rows';
-    return  (
+    return (
       <div>
         <span>{this.state.selectedRows.length} {rowText} selected</span>
         {this.state.alert && <div className="alert alert-info" role="alert">{this.state.alert}</div>}
         <ReactDataGrid
-          ref={ node => this.grid = node }
+          ref={node => this.grid = node}
           rowKey="id"
           columns={this._columns}
           rowGetter={this.rowGetter}
