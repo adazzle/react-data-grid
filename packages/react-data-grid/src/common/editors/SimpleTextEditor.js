@@ -10,7 +10,8 @@ export default class SimpleTextEditor extends EditorBase {
     return (
       <input
         ref={this.setInputRef}
-        type="text" onBlur={this.props.onBlur}
+        type="text"
+        onBlur={this.props.onBlur}
         className="form-control"
         defaultValue={this.props.value}
       />

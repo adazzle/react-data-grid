@@ -340,7 +340,7 @@ const rules = {
   'react/jsx-indent-props': [1, 2],
   'react/jsx-key': 0,
   'react/jsx-max-depth': 0,
-  'react/jsx-max-props-per-line': 0,
+  'react/jsx-max-props-per-line': [1, { when: 'multiline' }],
   'react/jsx-no-bind': 0,
   'react/jsx-no-comment-textnodes': 1,
   'react/jsx-no-duplicate-props': 0,

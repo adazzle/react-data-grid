@@ -196,7 +196,8 @@ export default class Header extends React.Component {
         height={height}
         onScroll={onScroll}
         style={this.getStyle()}
-        className={className} onClick={this.onHeaderClick}
+        className={className}
+        onClick={this.onHeaderClick}
       >
         {headerRows}
       </div>
