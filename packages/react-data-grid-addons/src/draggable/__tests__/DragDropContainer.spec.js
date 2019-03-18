@@ -13,7 +13,7 @@ describe('<DragDropContainer />', () => {
     rowGetter: index => index
   };
 
-  const GridStub = () => <div/>;
+  const GridStub = () => <div />;
 
   function render(props = {}) {
     const ComponentUnderTest = DragDropContainer.DecoratedComponent;

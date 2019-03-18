@@ -124,7 +124,7 @@ export default class NumericFilter extends React.Component {
     return (
       <div>
         <div style={columnStyle}>
-          <input key={inputKey} type="text" placeholder="e.g. 3,10-15,>20" className="form-control input-sm" onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
+          <input key={inputKey} type="text" placeholder="e.g. 3,10-15,>20" className="form-control input-sm" onChange={this.handleChange} onKeyPress={this.handleKeyPress} />
         </div>
         <div className="input-sm">
           <span className="badge" style={badgeStyle} title={tooltipText}>?</span>

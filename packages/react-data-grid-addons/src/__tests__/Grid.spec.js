@@ -84,7 +84,7 @@ describe('Grid', function() {
 
     const buildProps = (addedProps) => Object.assign({}, this.testProps, addedProps);
     this.createComponent = (addedProps) => {
-      return mount(<Grid {...buildProps(addedProps)}/>);
+      return mount(<Grid {...buildProps(addedProps)} />);
     };
 
     this.componentWrapper = this.createComponent();
