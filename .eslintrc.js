@@ -211,7 +211,7 @@ const rules = {
   'no-ternary': 0,
   'no-trailing-spaces': 1,
   'no-underscore-dangle': 0,
-  'no-unneeded-ternary': 0,
+  'no-unneeded-ternary': [1, { defaultAssignment: false }],
   'no-whitespace-before-property': 1,
   'nonblock-statement-body-position': 0,
   'object-curly-newline': 0,

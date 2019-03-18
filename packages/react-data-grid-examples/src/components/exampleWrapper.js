@@ -12,7 +12,7 @@ export default function exampleWrapper({
   examplePath,
   examplePlaygroundLink,
   exampleDescription }) {
-  const doesExamplePlayGroundLinkExist = examplePlaygroundLink === undefined ? false : true;
+  const doesExamplePlayGroundLinkExist = examplePlaygroundLink !== undefined;
   const playgroundLinkClass = classNames({
     'disabled-link': !doesExamplePlayGroundLinkExist
   });
