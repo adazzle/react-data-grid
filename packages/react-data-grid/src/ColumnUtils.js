@@ -1,7 +1,8 @@
 export function getColumn(columns, idx) {
   if (Array.isArray(columns)) {
     return columns[idx];
-  } if (typeof Immutable !== 'undefined') {
+  }
+  if (typeof Immutable !== 'undefined') {
     return columns.get(idx);
   }
 }
@@ -18,7 +19,8 @@ export function spliceColumn(metrics, idx, column) {
 export function getSize(columns) {
   if (Array.isArray(columns)) {
     return columns.length;
-  } if (typeof Immutable !== 'undefined') {
+  }
+  if (typeof Immutable !== 'undefined') {
     return columns.size;
   }
 }

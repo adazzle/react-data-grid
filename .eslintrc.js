@@ -354,7 +354,6 @@ const rules = {
   'react/jsx-props-no-multi-spaces': 1,
   'react/jsx-sort-default-props': 0,
   'react/jsx-sort-props': 0,
-  'react/jsx-space-before-closing': 1,
   'react/jsx-tag-spacing': [1, {
     closingSlash: 'never',
     beforeSelfClosing: 'always',

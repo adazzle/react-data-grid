@@ -23,7 +23,8 @@ export function getColumnScrollPosition(columns, idx, currentScrollLeft, current
 
     if (scrollLeft < 0) {
       return scrollLeft;
-    } if (scrollRight > currentClientWidth) {
+    }
+    if (scrollRight > currentClientWidth) {
       const scrollAmount = scrollRight - currentClientWidth;
       return scrollAmount;
     }
