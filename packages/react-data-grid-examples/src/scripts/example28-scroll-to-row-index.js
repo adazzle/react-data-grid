@@ -49,7 +49,8 @@ class Example extends React.Component {
           <button
             style={{ padding: '5px' }}
             onClick={() => this.setState({ scrollToRowIndex: this.state.value })}
-          >Scroll to row</button>
+          >Scroll to row
+          </button>
         </div>
         <ReactDataGrid
           columns={this._columns}

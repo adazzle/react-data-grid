@@ -129,7 +129,8 @@ class Example extends React.Component {
 
 const exampleDescription = (
   <p>Using the same approach as regular Filters setting <code>column.filterable = true</code>, Custom Filters can be implemented and applied as below. Add the attribute <code>code.filterRenderer = NumberFilterableHeaderCell</code> to the column object will
-  allow having a Numeric Filter.</p>
+  allow having a Numeric Filter.
+  </p>
 );
 
 export default exampleWrapper({

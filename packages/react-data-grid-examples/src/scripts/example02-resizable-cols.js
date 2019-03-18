@@ -92,7 +92,8 @@ const exampleDescription = (
     <p>To make a given column resizable, set <code>column.resizable = true</code></p>
     <p>If you need to know when a column has been resized, use the <code>onColumnResize</code> prop. This will be triggered when a column is
     resized and will report the column index and its new width. These can be saved on the back-end and used to restore column widths when
-    the component is initialized, by setting <code>width</code> key in each column.</p>
+    the component is initialized, by setting <code>width</code> key in each column.
+    </p>
   </div>
 );
 
