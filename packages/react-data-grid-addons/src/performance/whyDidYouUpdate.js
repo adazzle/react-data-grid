@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 const isRequiredUpdateObject = o => Array.isArray(o) || (o && o.constructor === Object.prototype.constructor);
 const NOTIFY_LEVELS = { DEBUG: 0, WARNING: 1, NONE: 2 };
 const isLogEnabled = lvl => lvl !== NOTIFY_LEVELS.NONE;
-const isStatusTypeLoggable = (s, lvl) =>  s <= lvl;
+const isStatusTypeLoggable = (s, lvl) => s <= lvl;
 
 const deepDiff = (o1, o2, p, notifyLevel) => {
   const notify = (status, statusType) => {

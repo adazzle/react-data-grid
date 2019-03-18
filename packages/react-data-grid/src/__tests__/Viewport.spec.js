@@ -41,7 +41,7 @@ const viewportProps = {
   rowKey: 'Id'
 };
 
-const viewportPropsNoColumns = {  // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
+const viewportPropsNoColumns = { // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {

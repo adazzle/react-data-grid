@@ -349,7 +349,7 @@ export default class Cell extends React.PureComponent {
 
     const events = this.getEvents();
 
-    const cellExpander =  this.canExpand() && (
+    const cellExpander = this.canExpand() && (
       <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />
     );
 

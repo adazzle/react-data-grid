@@ -89,17 +89,17 @@ export const getNonFrozenRenderedColumnCount = (columnMetrics, viewportDomWidth,
   const firstColumn = getColumn(columnMetrics.columns, colVisibleStartIdx);
   // calculate the portion width of first column hidden behind frozen columns
   const scrolledFrozenWidth = totalFrozenColumnWidth + scrollLeft;
-  const firstColumnHiddenWidth = scrolledFrozenWidth  > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;
+  const firstColumnHiddenWidth = scrolledFrozenWidth > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;
   const initialWidth = viewportWidth - totalFrozenColumnWidth + firstColumnHiddenWidth;
-  const { count } = getColumnCountForWidth(columnMetrics.columns, initialWidth,  colVisibleStartIdx);
+  const { count } = getColumnCountForWidth(columnMetrics.columns, initialWidth, colVisibleStartIdx);
   return count;
 };
 
 export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, rowsCount) => {
   const renderedRowsCount = ceil(gridHeight / rowHeight);
   const rowVisibleStartIdx = max(0, Math.round(scrollTop / rowHeight));
-  const rowVisibleEndIdx  = min(rowVisibleStartIdx  + renderedRowsCount, rowsCount);
-  return { rowVisibleStartIdx, rowVisibleEndIdx  };
+  const rowVisibleEndIdx = min(rowVisibleStartIdx + renderedRowsCount, rowsCount);
+  return { rowVisibleStartIdx, rowVisibleEndIdx };
 };
 
 

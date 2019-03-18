@@ -32,7 +32,7 @@ export default class DropDownEditor extends EditorBase {
       if (typeof(name) === 'string') {
         options.push(<option key={name} value={name}>{name}</option>);
       } else {
-        options.push(<option key={name.id} value={name.value} title={name.title}  >{name.text || name.value}</option>);
+        options.push(<option key={name.id} value={name.value} title={name.title} >{name.text || name.value}</option>);
       }
     }, this);
     return options;

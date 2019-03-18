@@ -79,7 +79,7 @@ const rules = {
   'no-lone-blocks': 0,
   'no-loop-func': 0,
   'no-magic-numbers': 0,
-  'no-multi-spaces': 0,
+  'no-multi-spaces': 1,
   'no-multi-str': 2,
   'no-new': 0,
   'no-new-func': 0,

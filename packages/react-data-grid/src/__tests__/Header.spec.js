@@ -75,7 +75,7 @@ describe('Header Unit Tests', () => {
     shouldTriggerOnColumnResize();
   });
 
-  describe('When columns are immutable',  () => {
+  describe('When columns are immutable', () => {
     beforeEach(() => {
       testProps.columnMetrics.columns = new Immutable.List(helpers.columns);
     });

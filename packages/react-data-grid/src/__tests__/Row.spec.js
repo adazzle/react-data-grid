@@ -147,7 +147,7 @@ describe('Row', () => {
         });
       });
 
-      describe('When not using frozen columns', ()  => {
+      describe('When not using frozen columns', () => {
         it('should render all visible and overscan cells', () => {
           const { cells } = setup(requiredProperties);
           const { colOverscanStartIdx, colOverscanEndIdx } = requiredProperties;

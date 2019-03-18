@@ -41,7 +41,7 @@ describe('<DropTargetRowContainer />', () => {
 
   beforeEach(() => {
     ComponentUnderTest = wrapInTestContext(dropTargetRowContainer(fakeRow));
-    wrapper = mount(<ComponentUnderTest {...props}  />);
+    wrapper = mount(<ComponentUnderTest {...props} />);
     manager = wrapper.instance().getManager();
     backend = manager.getBackend();
     registry = manager.getRegistry();
