@@ -23,7 +23,7 @@ module.exports = function (config) {
       return BROWSERS.split(',');
     }
     if(RELEASE){
-      browsers = ['Chrome','Firefox']
+      browsers = ['Chrome','Firefox', 'IE']
     }else if(DEBUG){
       browsers = ['ChromeDebugging'];
     }
@@ -136,6 +136,7 @@ module.exports = function (config) {
     plugins: [
       'karma-chrome-launcher',
       'karma-firefox-launcher',
+      'karma-ie-launcher',
       'karma-jasmine',
       'karma-jasmine-matchers',
       'karma-webpack',
