@@ -4,7 +4,6 @@ import Resolver from './RowGrouperResolver';
 const { isImmutableCollection } = _utils;
 
 class RowGrouper {
-
   constructor(columns, expandedRows, isImmutable = false) {
     this.columns = columns.slice(0);
     this.expandedRows = expandedRows;

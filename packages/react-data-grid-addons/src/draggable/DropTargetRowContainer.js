@@ -5,7 +5,6 @@ import { DropTarget } from 'react-dnd';
 import { rowComparer } from 'react-data-grid';
 
 const rowDropTarget = (Row) => class extends React.Component {
-
   shouldComponentUpdate(nextProps) {
     return rowComparer(nextProps, this.props);
   }

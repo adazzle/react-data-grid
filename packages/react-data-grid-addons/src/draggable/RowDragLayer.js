@@ -34,7 +34,6 @@ function getItemStyles(props) {
 }
 
 class CustomDragLayer extends Component {
-
   isDraggedRowSelected(selectedRows) {
     const { item, rowSelection } = this.props;
     if (selectedRows && selectedRows.length > 0) {

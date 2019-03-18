@@ -221,7 +221,7 @@ const rules = {
   'one-var-declaration-per-line': 0,
   'operator-assignment': 0,
   'operator-linebreak': [1, 'before', { overrides: { '=': 'after' } }],
-  'padded-blocks': [0, 'never'],
+  'padded-blocks': [1, 'never'],
   'padding-line-between-statements': 0,
   'prefer-object-spread': 1,
   'quote-props': [1, 'as-needed'],

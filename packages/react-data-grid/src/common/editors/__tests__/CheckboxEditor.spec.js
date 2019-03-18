@@ -14,7 +14,6 @@ describe('CheckboxEditor', () => {
   };
 
   describe('Basic tests', () => {
-
     beforeEach(() => {
       spyOn(testColumn, 'onCellChange');
       componentWrapper = mount(
