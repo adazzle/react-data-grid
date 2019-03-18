@@ -18,7 +18,7 @@ describe('CheckboxEditor', () => {
     beforeEach(() => {
       spyOn(testColumn, 'onCellChange');
       componentWrapper = mount(<CheckboxEditor
-        value={true}
+        value
         rowIdx={1}
         column={testColumn}
                                />);

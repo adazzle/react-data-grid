@@ -158,7 +158,7 @@ class Example extends React.Component {
     return (
       <ReactDataGrid
         ref={node => this.grid = node}
-        enableCellSelect={true}
+        enableCellSelect
         columns={columns}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}

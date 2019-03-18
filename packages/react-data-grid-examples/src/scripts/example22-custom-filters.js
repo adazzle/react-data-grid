@@ -113,12 +113,12 @@ class Example extends React.Component {
   render() {
     return (
       <ReactDataGrid
-        enableCellSelect={true}
+        enableCellSelect
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.rowsCount()}
         minHeight={500}
-        toolbar={<Toolbar enableFilter={true} />}
+        toolbar={<Toolbar enableFilter />}
         onAddFilter={this.handleFilterChange}
         getValidFilterValues={this.getValidFilterValues}
         onClearFilters={this.handleOnClearFilters}

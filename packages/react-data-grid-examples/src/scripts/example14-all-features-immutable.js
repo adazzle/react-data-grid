@@ -235,7 +235,7 @@ export class Component extends React.Component {
       <ReactDataGrid
         contextMenu={<MyContextMenu />}
         ref={(node) => this.reactDataGrid = node}
-        enableCellSelect={true}
+        enableCellSelect
         columns={columns}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}

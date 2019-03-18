@@ -103,7 +103,7 @@ class Example extends React.Component {
 
   render() {
     return (<ReactDataGrid
-      enableCellSelect={true}
+      enableCellSelect
       columns={columns}
       rowGetter={this.getRows}
       rowsCount={this.state.rows.length}

@@ -80,7 +80,7 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this._rows.length}
         minHeight={500}
-        enableCellSelect={true}
+        enableCellSelect
         cellNavigationMode="changeRow"
       />);
   }

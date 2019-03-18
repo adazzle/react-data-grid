@@ -58,7 +58,7 @@ class Example extends React.Component {
           enableRowSelect="multi"
           minHeight={500}
           onRowSelect={this.onRowSelect}
-          enableCellSelect={true}
+          enableCellSelect
           onCellSelected={this.onCellSelected}
           onCellDeSelected={this.onCellDeSelected}
         />

@@ -90,8 +90,8 @@ class Example extends React.Component {
       <DraggableContainer>
         <ReactDataGrid
           ref={node => this.grid = node}
-          enableCellSelect={true}
-          enableDragAndDrop={true}
+          enableCellSelect
+          enableDragAndDrop
           columns={_cols}
           rowGetter={this.getRowAt}
           rowsCount={this.getSize()}
