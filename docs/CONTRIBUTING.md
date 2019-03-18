@@ -112,3 +112,6 @@ For maintainers only.
 - Publish the update with lerna:
   - On the `master` branch: `npx lerna publish`
   - On the `next` branch: `npx lerna publish --dist-tag next`
+  - Relevant Lerna docs:
+    - https://github.com/lerna/lerna/blob/master/commands/version/README.md
+    - https://github.com/lerna/lerna/blob/master/commands/publish/README.md
