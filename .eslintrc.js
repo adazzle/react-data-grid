@@ -215,7 +215,7 @@ const rules = {
   'no-whitespace-before-property': 1,
   'nonblock-statement-body-position': 0,
   'object-curly-newline': 0,
-  'object-curly-spacing': 0,
+  'object-curly-spacing': [1, 'always'],
   'object-property-newline': 0,
   'one-var': [1, 'never'],
   'one-var-declaration-per-line': 0,
