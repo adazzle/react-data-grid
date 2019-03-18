@@ -91,7 +91,7 @@ class CustomDragLayer extends Component {
     const draggedRows = this.renderDraggedRows();
     return (
       <div style={layerStyles} className="rdg-dragging">
-        <div style={getItemStyles(this.props) } className="rdg-dragging">
+        <div style={getItemStyles(this.props)} className="rdg-dragging">
           <table><tbody>{draggedRows}</tbody></table>
         </div>
       </div>

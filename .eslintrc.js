@@ -331,7 +331,7 @@ const rules = {
   'react/jsx-child-element-spacing': 0,
   'react/jsx-closing-bracket-location': 0,
   'react/jsx-closing-tag-location': 0,
-  'react/jsx-curly-spacing': 0,
+  'react/jsx-curly-spacing': 1,
   'react/jsx-equals-spacing': 1,
   'react/jsx-filename-extension': [1, { extensions: ['js'] }],
   'react/jsx-first-prop-new-line': 0,
