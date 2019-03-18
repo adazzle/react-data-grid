@@ -132,7 +132,7 @@ export default class Row extends React.Component {
     let val;
     if (key === 'select-row') {
       return this.props.isSelected;
-    } else if (typeof this.props.row.get === 'function') {
+    } if (typeof this.props.row.get === 'function') {
       val = this.props.row.get(key);
     } else {
       val = this.props.row[key];

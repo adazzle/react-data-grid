@@ -59,7 +59,7 @@ const rules = {
   'no-caller': 2,
   'no-case-declarations': 0,
   'no-div-regex': 0,
-  'no-else-return': 0,
+  'no-else-return': [1, { allowElseIf: false }],
   'no-empty-function': 0,
   'no-empty-pattern': 0,
   'no-eq-null': 0,
