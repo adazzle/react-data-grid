@@ -11,7 +11,7 @@ const { ImageFormatter } = Formatters;
 faker.locale = 'en_GB';
 
 const createFakeRowObjectData = (index) => ({
-  id: 'id_' + index,
+  id: `id_${index}`,
   avartar: faker.image.avatar(),
   county: faker.address.county(),
   email: faker.internet.email(),

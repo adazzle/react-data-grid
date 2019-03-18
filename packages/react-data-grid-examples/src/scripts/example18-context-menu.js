@@ -20,7 +20,7 @@ class Example extends React.Component {
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
-        title: 'Title ' + i,
+        title: `Title ${i}`,
         count: i * 1000
       });
     }
@@ -48,7 +48,7 @@ class Example extends React.Component {
   insertRow = (rowIdx) => {
     const newRow = {
       id: 0,
-      title: 'New at ' + (rowIdx + 1),
+      title: `New at ${rowIdx + 1}`,
       count: 0
     };
 

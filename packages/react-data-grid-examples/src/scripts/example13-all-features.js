@@ -178,7 +178,7 @@ class Example extends React.Component {
 
   createFakeRowObjectData = (index) => {
     return {
-      id: 'id_' + index,
+      id: `id_${index}`,
       avartar: faker.image.avatar(),
       county: faker.address.county(),
       email: faker.internet.email(),

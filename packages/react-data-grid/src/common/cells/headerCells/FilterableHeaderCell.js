@@ -22,7 +22,7 @@ export default class FilterableHeaderCell extends React.Component {
       return <span />;
     }
 
-    const inputKey = 'header-filter-' + this.props.column.key;
+    const inputKey = `header-filter-${this.props.column.key}`;
     return (<input key={inputKey} type="text" className="form-control input-sm" placeholder="Search" value={this.state.filterTerm} onChange={this.handleChange} />);
   };
 

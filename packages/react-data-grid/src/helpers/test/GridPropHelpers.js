@@ -2,7 +2,7 @@ const _rows = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
-    title: 'Title ' + i,
+    title: `Title ${i}`,
     count: i * 1000
   });
 }

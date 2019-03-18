@@ -268,7 +268,7 @@ const rules = {
   'prefer-numeric-literals': 1,
   'prefer-rest-params': 2,
   'prefer-spread': 0,
-  'prefer-template': 0,
+  'prefer-template': 1,
   'require-yield': 0,
   'rest-spread-spacing': 1,
   'sort-imports': 0,

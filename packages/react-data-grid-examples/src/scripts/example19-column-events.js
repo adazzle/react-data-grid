@@ -24,7 +24,7 @@ class Example extends React.Component {
         resizable: true,
         events: {
           onDoubleClick(ev, args) {
-            console.log('The user entered edit mode on title column with rowIdx: ' + args.rowIdx + ' & rowId: ' + args.rowId);
+            console.log(`The user entered edit mode on title column with rowIdx: ${args.rowIdx} & rowId: ${args.rowId}`);
           }
         }
       },
@@ -54,7 +54,7 @@ class Example extends React.Component {
       rows.push({
         id: i,
         title: titles[Math.floor((Math.random() * 4))],
-        name: 'Name ' + i,
+        name: `Name ${i}`,
         age: Math.floor((Math.random() * 100) + 1)
       });
     }
