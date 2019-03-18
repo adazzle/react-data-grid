@@ -214,7 +214,7 @@ export default class Grid extends React.Component {
               editorPortalTarget={this.props.editorPortalTarget}
             />
           </div>
-        :
+          :
           <div ref={this.setEmptyViewRef} className="react-grid-Empty">
             <EmptyRowsView />
           </div>

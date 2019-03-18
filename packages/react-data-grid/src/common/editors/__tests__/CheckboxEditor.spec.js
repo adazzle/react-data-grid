@@ -17,11 +17,13 @@ describe('CheckboxEditor', () => {
 
     beforeEach(() => {
       spyOn(testColumn, 'onCellChange');
-      componentWrapper = mount(<CheckboxEditor
-        value
-        rowIdx={1}
-        column={testColumn}
-                               />);
+      componentWrapper = mount(
+        <CheckboxEditor
+          value
+          rowIdx={1}
+          column={testColumn}
+        />
+      );
       component = componentWrapper.instance();
     });
 

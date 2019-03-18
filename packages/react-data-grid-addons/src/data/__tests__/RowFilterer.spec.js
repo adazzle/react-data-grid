@@ -6,8 +6,8 @@ import filterRows from '../RowFilterer';
 import AutoCompleteFilter from '../../cells/headerCells/filters/AutoCompleteFilter';
 
 const rows = [{ colOne: 'v1', colTwo: 'b1' },
-              { colOne: 'v2', colTwo: 'b2' },
-              { colOne: 'v3', colTwo: 'b3' }];
+  { colOne: 'v2', colTwo: 'b2' },
+  { colOne: 'v3', colTwo: 'b3' }];
 const filters = { colOne: { filterTerm: 'v1' } };
 
 const fakeColumn = { name: 'Col One', key: 'colOne', width: 100 };

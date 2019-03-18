@@ -11,7 +11,7 @@ class FakeComponent extends React.Component {
 }
 
 class FakeContainer extends React.Component {
-    render() { return (<FakeComponent ref={this.props.refCallback} />); }
+  render() { return (<FakeComponent ref={this.props.refCallback} />); }
 }
 
 FakeContainer.propTypes = {

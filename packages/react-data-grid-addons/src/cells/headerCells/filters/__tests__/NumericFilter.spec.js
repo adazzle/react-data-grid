@@ -21,9 +21,9 @@ describe('NumericFilter', () => {
     it('When using numbers with , as separator', () => {
       const request = component.getRules('1,3,4,10');
       const result = [{ type: 1, value: 1 },
-      { type: 1, value: 3 },
-      { type: 1, value: 4 },
-      { type: 1, value: 10 }];
+        { type: 1, value: 3 },
+        { type: 1, value: 4 },
+        { type: 1, value: 10 }];
       expect(request).toEqual(result);
     });
 
@@ -48,11 +48,11 @@ describe('NumericFilter', () => {
     it('When using mixed filters', () => {
       const request = component.getRules('61,72,33-53,<6,>900,10');
       const result = [{ type: 1, value: 61 },
-      { type: 1, value: 72 },
-      { type: 2, begin: 33, end: 53 },
-      { type: 4, value: 6 },
-      { type: 3, value: 900 },
-      { type: 1, value: 10 }];
+        { type: 1, value: 72 },
+        { type: 2, begin: 33, end: 53 },
+        { type: 4, value: 6 },
+        { type: 3, value: 900 },
+        { type: 1, value: 10 }];
       expect(request).toEqual(result);
     });
 

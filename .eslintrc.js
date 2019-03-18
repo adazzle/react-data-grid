@@ -172,7 +172,7 @@ const rules = {
   'id-length': 0,
   'id-match': 0,
   'implicit-arrow-linebreak': 0,
-  'indent': 0,
+  'indent': [1, 2],
   'jsx-quotes': 1,
   'key-spacing': 1,
   'keyword-spacing': 1,

@@ -244,7 +244,7 @@ export class Component extends React.Component {
         rowHeight={50}
         minHeight={600}
       />
-      );
+    );
   }
 }
 

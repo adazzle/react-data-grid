@@ -126,17 +126,19 @@ class Example extends React.Component {
   };
 
   render() {
-    return (<ReactDataGrid
-      enableCellSelect
-      columns={columns}
-      rowGetter={this.getRows}
-      rowsCount={this.state.rows.length}
-      getSubRowDetails={this.getSubRowDetails}
-      onDeleteSubRow={this.onDeleteSubRow}
-      minHeight={500}
-      onCellExpand={this.onCellExpand}
-      onAddSubRow={this.onAddSubRow}
-            />);
+    return (
+      <ReactDataGrid
+        enableCellSelect
+        columns={columns}
+        rowGetter={this.getRows}
+        rowsCount={this.state.rows.length}
+        getSubRowDetails={this.getSubRowDetails}
+        onDeleteSubRow={this.onDeleteSubRow}
+        minHeight={500}
+        onCellExpand={this.onCellExpand}
+        onAddSubRow={this.onAddSubRow}
+      />
+    );
   }
 }
 
