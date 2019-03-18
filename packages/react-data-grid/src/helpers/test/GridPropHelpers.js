@@ -47,4 +47,3 @@ export const fakeCellMetaData = {
   onCellDoubleClick: () => null,
   onDragEnter: () => null
 };
-

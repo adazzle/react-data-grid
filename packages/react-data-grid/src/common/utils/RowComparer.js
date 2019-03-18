@@ -14,4 +14,3 @@ export default function shouldRowUpdate(nextProps, currentProps) {
     || currentProps.forceUpdate === true
     || currentProps.extraClasses !== nextProps.extraClasses;
 }
-

@@ -201,7 +201,7 @@ const rules = {
   'no-mixed-operators': 0,
   'no-mixed-spaces-and-tabs': 1,
   'no-multi-assign': 0,
-  'no-multiple-empty-lines': [0, { max: 2, maxEOF: 0, maxBOF: 0 }],
+  'no-multiple-empty-lines': [1, { max: 2, maxEOF: 0, maxBOF: 0 }],
   'no-negated-condition': 0,
   'no-nested-ternary': 0,
   'no-new-object': 0,

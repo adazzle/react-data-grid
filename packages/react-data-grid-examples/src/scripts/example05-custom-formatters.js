@@ -109,4 +109,3 @@ export default exampleWrapper({
   examplePath: './scripts/example05-custom-formatters.js',
   examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/7/'
 });
-
