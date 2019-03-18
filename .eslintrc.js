@@ -50,7 +50,7 @@ const rules = {
   'consistent-return': 0,
   'curly': [2, 'multi-line'],
   'default-case': 0,
-  'dot-location': 0,
+  'dot-location': [1, 'property'],
   'dot-notation': 0,
   'eqeqeq': 0,
   'guard-for-in': 0,
