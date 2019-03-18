@@ -225,7 +225,7 @@ const rules = {
   'padding-line-between-statements': 0,
   'prefer-object-spread': 0,
   'quote-props': [1, 'as-needed'],
-  'quotes': 0,
+  'quotes': [1, 'single', { avoidEscape: true }],
   'semi': 1,
   'semi-spacing': 1,
   'semi-style': 1,

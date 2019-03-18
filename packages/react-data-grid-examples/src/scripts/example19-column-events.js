@@ -54,7 +54,7 @@ class Example extends React.Component {
       rows.push({
         id: i,
         title: titles[Math.floor((Math.random() * 4))],
-        name: "Name " + i,
+        name: 'Name ' + i,
         age: Math.floor((Math.random() * 100) + 1)
       });
     }
