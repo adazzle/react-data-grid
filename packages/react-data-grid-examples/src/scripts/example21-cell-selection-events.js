@@ -62,7 +62,8 @@ class Example extends React.Component {
           onCellSelected={this.onCellSelected}
           onCellDeSelected={this.onCellDeSelected}
         />
-      </div>);
+      </div>
+    );
   }
 }
 

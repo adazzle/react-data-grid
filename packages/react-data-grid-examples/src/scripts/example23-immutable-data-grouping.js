@@ -39,7 +39,8 @@ class CustomToolbar extends React.Component {
     return (
       <Toolbar>
         <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
-      </Toolbar>);
+      </Toolbar>
+    );
   }
 }
 

@@ -17,7 +17,8 @@ export default class AdvancedToolbar extends Component {
       <div className="react-grid-Toolbar">
         {this.props.children}
         <div className="tools" />
-      </div>);
+      </div>
+    );
   }
 }
 

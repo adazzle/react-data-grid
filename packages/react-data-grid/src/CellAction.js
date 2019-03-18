@@ -64,11 +64,11 @@ export default class CellAction extends React.Component {
         </div>
         {
           isActionMenu &&
-          this.state.isMenuOpen &&
-          <div className="rdg-cell-action-menu">
-            {this.onGetMenuOptions()}
-          </div>
-        }
+          this.state.isMenuOpen && (
+            <div className="rdg-cell-action-menu">
+              {this.onGetMenuOptions()}
+            </div>
+          )}
       </div>
     );
   }

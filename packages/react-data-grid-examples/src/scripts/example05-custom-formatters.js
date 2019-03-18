@@ -17,7 +17,8 @@ class PercentCompleteFormatter extends React.Component {
         <div className="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{ width: percentComplete }}>
           {percentComplete}
         </div>
-      </div>);
+      </div>
+    );
   }
 }
 
@@ -93,7 +94,8 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this._rows.length}
         minHeight={500}
-      />);
+      />
+    );
   }
 }
 

@@ -33,7 +33,8 @@ class Example extends React.Component {
         rowsCount={this._rows.length}
         minHeight={500}
         emptyRowsView={EmptyRowsView}
-      />);
+      />
+    );
   }
 }
 

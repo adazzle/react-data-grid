@@ -23,7 +23,8 @@ export default class DropDownEditor extends EditorBase {
     return (
       <select style={this.getStyle()} defaultValue={this.props.value} onBlur={this.props.onBlur} onChange={this.onChange}>
         {this.renderOptions()}
-      </select>);
+      </select>
+    );
   }
 
   renderOptions() {

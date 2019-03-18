@@ -58,7 +58,8 @@ class Example extends React.Component {
           minHeight={500}
           scrollToRowIndex={+this.state.scrollToRowIndex}
         />
-      </div>);
+      </div>
+    );
   }
 }
 

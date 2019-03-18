@@ -113,7 +113,8 @@ class Example extends React.Component {
             }
           }}
         />
-      </DraggableContainer>);
+      </DraggableContainer>
+    );
   }
 }
 

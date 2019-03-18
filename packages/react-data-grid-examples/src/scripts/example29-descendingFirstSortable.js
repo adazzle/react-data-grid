@@ -103,7 +103,8 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-      />);
+      />
+    );
   }
 }
 

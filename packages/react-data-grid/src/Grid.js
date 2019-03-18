@@ -165,7 +165,7 @@ export default class Grid extends React.Component {
           getValidFilterValues={this.props.getValidFilterValues}
           cellMetaData={this.props.cellMetaData}
         />
-        {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ?
+        {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ? (
           <div
             ref={this.setViewportContainerRef}
             onKeyDown={this.props.onViewportKeydown}
@@ -214,11 +214,11 @@ export default class Grid extends React.Component {
               editorPortalTarget={this.props.editorPortalTarget}
             />
           </div>
-          :
+        ) : (
           <div ref={this.setEmptyViewRef} className="react-grid-Empty">
             <EmptyRowsView />
           </div>
-        }
+        )}
       </div>
     );
   }

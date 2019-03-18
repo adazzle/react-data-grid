@@ -120,7 +120,8 @@ class Example extends React.Component {
         toolbar={<Toolbar enableFilter />}
         onAddFilter={this.handleFilterChange}
         onClearFilters={this.onClearFilters}
-      />);
+      />
+    );
   }
 }
 

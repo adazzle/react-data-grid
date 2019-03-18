@@ -82,7 +82,8 @@ class Example extends React.Component {
         minHeight={500}
         enableCellSelect
         cellNavigationMode="changeRow"
-      />);
+      />
+    );
   }
 }
 

@@ -66,7 +66,8 @@ class Example extends React.Component {
             }
           }}
         />
-      </div>);
+      </div>
+    );
   }
 }
 

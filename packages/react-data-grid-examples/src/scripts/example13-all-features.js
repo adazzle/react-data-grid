@@ -260,7 +260,8 @@ class Example extends React.Component {
         rowHeight={50}
         minHeight={600}
         rowScrollTimeout={200}
-      />);
+      />
+    );
   }
 }
 

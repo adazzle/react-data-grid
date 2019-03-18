@@ -77,7 +77,8 @@ class Example extends React.Component {
         }}
         onRowClick={this.onRowClick}
         onGridKeyDown={this.onKeyDown}
-      />);
+      />
+    );
   }
 }
 

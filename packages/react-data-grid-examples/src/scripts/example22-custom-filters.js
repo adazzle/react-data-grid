@@ -122,7 +122,8 @@ class Example extends React.Component {
         onAddFilter={this.handleFilterChange}
         getValidFilterValues={this.getValidFilterValues}
         onClearFilters={this.handleOnClearFilters}
-      />);
+      />
+    );
   }
 }
 

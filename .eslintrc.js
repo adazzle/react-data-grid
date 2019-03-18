@@ -362,7 +362,7 @@ const rules = {
   }],
   'react/jsx-uses-react': 1,
   'react/jsx-uses-vars': 1,
-  'react/jsx-wrap-multilines': [0, {
+  'react/jsx-wrap-multilines': [1, {
     declaration: 'parens-new-line',
     assignment: 'parens-new-line',
     return: 'parens-new-line',
