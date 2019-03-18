@@ -15,8 +15,12 @@ const ExpensiveFormatter = ({ isScrolling }) => {
   }
   const items = [...Array(1000).keys()].map(i => ({ name: `Page ${i}`, uv: getRandom(0, 4000), pv: getRandom(0, 4000), amt: getRandom(0, 4000) })).slice(0, 50);
   return (
-    <AreaChart width={500} height={50} data={items}
-          margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
+    <AreaChart
+      width={500}
+      height={50}
+      data={items}
+      margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
+    >
       <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
     </AreaChart>
   );
@@ -57,7 +61,8 @@ class Example extends React.Component {
           rowsCount={this.state.rows.length}
           minHeight={800}
           onScroll={this.onScroll}
-        /></div>);
+        /></div>
+    );
   }
 }
 

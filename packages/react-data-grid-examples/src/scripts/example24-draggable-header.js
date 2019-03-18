@@ -77,7 +77,8 @@ class Example extends React.Component {
   render() {
     return (
       <DraggableContainer
-        onHeaderDrop={this.onHeaderDrop}>
+        onHeaderDrop={this.onHeaderDrop}
+      >
         <ReactDataGrid
           columns={this.state.columns}
           rowGetter={this.rowGetter}

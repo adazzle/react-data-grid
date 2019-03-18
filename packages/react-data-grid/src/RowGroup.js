@@ -92,7 +92,8 @@ class Defaultbase extends Component {
         <span
           className="row-expand-icon"
           style={{ float: 'left', marginLeft, cursor: 'pointer' }}
-          onClick={onRowExpandClick}>
+          onClick={onRowExpandClick}
+        >
           {isExpanded ? String.fromCharCode(9660) : String.fromCharCode(9658)}
         </span>
         <strong>{columnGroupDisplayName}: {name}</strong>

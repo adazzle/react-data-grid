@@ -44,18 +44,22 @@ class Example extends React.Component {
             style={{ marginRight: '10px', border: '1px outset lightgray', padding: '3px' }}
             type="text"
             value={this.state.value}
-            onChange={(event) => { this.setState({ value: event.target.value }); }} />
+            onChange={(event) => { this.setState({ value: event.target.value }); }}
+          />
           <button
             style={{ padding: '5px' }}
-            onClick={() => this.setState({ scrollToRowIndex: this.state.value })}>Scroll to row</button>
+            onClick={() => this.setState({ scrollToRowIndex: this.state.value })}
+          >Scroll to row</button>
         </div>
         <ReactDataGrid
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}
           minHeight={500}
-          scrollToRowIndex={+this.state.scrollToRowIndex} />
-      </div>);
+          scrollToRowIndex={+this.state.scrollToRowIndex}
+        />
+      </div>
+    );
   }
 }
 

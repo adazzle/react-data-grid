@@ -135,9 +135,11 @@ class CustomToolbar extends React.Component {
   };
 
   render() {
-    return (<Toolbar>
-      <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
-      </Toolbar>);
+    return (
+      <Toolbar>
+        <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
+      </Toolbar>
+    );
   }
 }
 
@@ -190,18 +192,18 @@ class Example extends React.Component {
   render() {
     return (
       <DraggableContainer>
-          <ReactDataGrid
-            ref={node => this.grid = node}
-            enableCellSelect={true}
-            enableDragAndDrop={true}
-            columns={columns}
-            rowGetter={this.getRowAt}
-            rowsCount={this.getSize()}
-            onRowExpandToggle={this.onRowExpandToggle}
-            toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
-            rowHeight={50}
-            minHeight={600}
-            />
+        <ReactDataGrid
+          ref={node => this.grid = node}
+          enableCellSelect
+          enableDragAndDrop
+          columns={columns}
+          rowGetter={this.getRowAt}
+          rowsCount={this.getSize()}
+          onRowExpandToggle={this.onRowExpandToggle}
+          toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
+          rowHeight={50}
+          minHeight={600}
+        />
       </DraggableContainer>
     );
   }

@@ -66,12 +66,14 @@ class Example extends React.Component {
   render() {
     return (
       <ReactDataGrid
-        enableCellSelect={true}
+        enableCellSelect
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        onGridRowsUpdated={this.handleGridRowsUpdated} />);
+        onGridRowsUpdated={this.handleGridRowsUpdated}
+      />
+    );
   }
 }
 
@@ -79,7 +81,8 @@ const exampleDescription = (
   <div>
     <p>This example demonstrates how you can easily update multiple cells by dragging from the drag handle of an editable cell.</p>
     <p>Alternatively by double clicking on the drag handle, you can update all the cells underneath the active cell.</p>
-  </div>);
+  </div>
+);
 
 export default exampleWrapper({
   WrappedComponent: Example,

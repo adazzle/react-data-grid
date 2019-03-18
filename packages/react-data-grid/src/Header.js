@@ -54,7 +54,7 @@ export default class Header extends React.Component {
         columnMetrics: { ...state.columnMetrics }
       };
       resizing.columnMetrics = ColumnMetrics.resizeColumn(
-          resizing.columnMetrics, pos, width);
+        resizing.columnMetrics, pos, width);
 
       // we don't want to influence scrollLeft while resizing
       if (resizing.columnMetrics.totalWidth < state.columnMetrics.totalWidth) {
@@ -196,7 +196,8 @@ export default class Header extends React.Component {
         height={height}
         onScroll={onScroll}
         style={this.getStyle()}
-        className={className} onClick={this.onHeaderClick}
+        className={className}
+        onClick={this.onHeaderClick}
       >
         {headerRows}
       </div>

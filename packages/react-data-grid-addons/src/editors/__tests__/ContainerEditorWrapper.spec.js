@@ -7,11 +7,11 @@ import ContainerEditorWrapper from '../ContainerEditorWrapper';
 class FakeComponent extends React.Component {
     getValue = jasmine.createSpy()
     getInputNode = jasmine.createSpy()
-    render() { return (<div></div>); }
+    render() { return (<div />); }
 }
 
 class FakeContainer extends React.Component {
-    render() { return (<FakeComponent ref={this.props.refCallback} />); }
+  render() { return (<FakeComponent ref={this.props.refCallback} />); }
 }
 
 FakeContainer.propTypes = {

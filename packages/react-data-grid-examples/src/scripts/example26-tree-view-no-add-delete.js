@@ -102,14 +102,17 @@ class Example extends React.Component {
   };
 
   render() {
-    return (<ReactDataGrid
-      enableCellSelect={true}
-      columns={columns}
-      rowGetter={this.getRows}
-      rowsCount={this.state.rows.length}
-      getSubRowDetails={this.getSubRowDetails}
-      minHeight={500}
-      onCellExpand={this.onCellExpand} />);
+    return (
+      <ReactDataGrid
+        enableCellSelect
+        columns={columns}
+        rowGetter={this.getRows}
+        rowsCount={this.state.rows.length}
+        getSubRowDetails={this.getSubRowDetails}
+        minHeight={500}
+        onCellExpand={this.onCellExpand}
+      />
+    );
   }
 }
 

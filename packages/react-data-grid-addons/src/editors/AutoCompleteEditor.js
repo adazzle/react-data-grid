@@ -103,8 +103,10 @@ export default class AutoCompleteEditor extends React.Component {
 
   render() {
     const label = this.props.label != null ? this.props.label : 'title';
-    return (<div height={this.props.height} onKeyDown={this.props.onKeyDown}>
-      <ReactAutocomplete search={this.props.search} ref={this.setAutocompleteRef} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
-    </div>);
+    return (
+      <div height={this.props.height} onKeyDown={this.props.onKeyDown}>
+        <ReactAutocomplete search={this.props.search} ref={this.setAutocompleteRef} label={label} onChange={this.handleChange} onFocus={this.props.onFocus} resultIdentifier={this.props.resultIdentifier} options={this.props.options} value={this.getEditorDisplayValue()} />
+      </div>
+    );
   }
 }

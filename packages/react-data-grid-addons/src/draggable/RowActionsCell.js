@@ -9,9 +9,11 @@ const { CheckboxEditor } = editors;
 class RowActionsCell extends React.Component {
 
   renderRowIndex() {
-    return (<div className="rdg-row-index">
-      { this.props.rowIdx + 1 }
-    </div>);
+    return (
+      <div className="rdg-row-index">
+        { this.props.rowIdx + 1 }
+      </div>
+    );
   }
 
   render() {
@@ -22,11 +24,13 @@ class RowActionsCell extends React.Component {
 
     return connectDragSource(
       <div>
-        <div className="rdg-drag-row-handle" style={rowHandleStyle}></div>
+        <div className="rdg-drag-row-handle" style={rowHandleStyle} />
         {!isSelected ? this.renderRowIndex() : null}
-        {rowSelection != null && <div className={editorClass}>
-          <CheckboxEditor column={this.props.column} rowIdx={this.props.rowIdx} dependentValues={this.props.dependentValues} value={this.props.value} />
-        </div>}
+        {rowSelection != null && (
+          <div className={editorClass}>
+            <CheckboxEditor column={this.props.column} rowIdx={this.props.rowIdx} dependentValues={this.props.dependentValues} value={this.props.value} />
+          </div>
+        )}
       </div>);
   }
 }

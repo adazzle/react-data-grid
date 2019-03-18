@@ -11,9 +11,13 @@ export default function ChildRowDeleteButton({ treeDepth, cellHeight, siblingInd
   const width = 12;
   const left = treeDepth * 15;
   const top = (cellHeight - 12) / 2;
-  return (<div>
-    <div className={className} />
-    {isDeleteSubRowEnabled && <div style={{ left: left, top: top, width: width, height: height }} className="rdg-child-row-btn" onClick={onDeleteSubRow}>
-      <div className="glyphicon glyphicon-remove-sign"></div>
-    </div>}</div>);
+  return (
+    <div>
+      <div className={className} />
+      {isDeleteSubRowEnabled && (
+        <div style={{ left: left, top: top, width: width, height: height }} className="rdg-child-row-btn" onClick={onDeleteSubRow}>
+          <div className="glyphicon glyphicon-remove-sign" />
+        </div>
+      )}</div>
+  );
 }

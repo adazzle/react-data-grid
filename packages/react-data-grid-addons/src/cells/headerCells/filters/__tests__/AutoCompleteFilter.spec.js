@@ -37,9 +37,9 @@ describe('AutoCompleteFilter', () => {
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
         <AutoCompleteFilter
-        onChange={fakeOnChange}
-        column={fakeColumn}
-        getValidFilterValues={fakeGetValidFilterValues}
+          onChange={fakeOnChange}
+          column={fakeColumn}
+          getValidFilterValues={fakeGetValidFilterValues}
         />);
       rows = createRows();
     });
@@ -57,8 +57,8 @@ describe('AutoCompleteFilter', () => {
     it('When options are valid', () => {
       const request = component.getOptions();
       const result = [
-         { label: 'Title 1', value: 1 },
-         { label: 'Title 2', value: 2 }
+        { label: 'Title 1', value: 1 },
+        { label: 'Title 2', value: 2 }
       ];
       expect(request).toEqual(result);
     });

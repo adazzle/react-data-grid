@@ -10,7 +10,7 @@ const render = function(element, mountPoint) {
   if (!instance.renderWithProps) {
     instance.renderWithProps = function(newProps) {
       return render(
-       React.cloneElement(element, newProps), mount);
+        React.cloneElement(element, newProps), mount);
     };
   }
   return instance;

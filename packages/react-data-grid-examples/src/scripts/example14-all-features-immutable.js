@@ -235,15 +235,16 @@ export class Component extends React.Component {
       <ReactDataGrid
         contextMenu={<MyContextMenu />}
         ref={(node) => this.reactDataGrid = node}
-        enableCellSelect={true}
+        enableCellSelect
         columns={columns}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}
         onGridRowsUpdated={this.handleGridRowsUpdated}
         toolbar={<Toolbar onAddRow={this.handleAddRow} onToggleFilter={() => {}} numberOfRows={this.getSize()} />}
         rowHeight={50}
-        minHeight={600} />
-      );
+        minHeight={600}
+      />
+    );
   }
 }
 

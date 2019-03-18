@@ -96,11 +96,12 @@ class Example extends React.Component {
       <ReactDataGrid
         ref={(node) => this.grid = node}
         columns={this.getColumns()}
-        enableCellSelect={true}
+        enableCellSelect
         rowGetter={this.rowGetter}
         onGridRowsUpdated={this.handleGridRowsUpdated}
         rowsCount={this.state.rows.length}
-        minHeight={500} />
+        minHeight={500}
+      />
     );
   }
 }

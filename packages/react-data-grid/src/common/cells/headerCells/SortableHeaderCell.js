@@ -22,18 +22,18 @@ export default class SortableHeaderCell extends React.Component {
     let direction;
     const { sortDirection, sortDescendingFirst } = this.props;
     switch (sortDirection) {
-      default:
-      case null:
-      case undefined:
-      case DEFINE_SORT.NONE:
-        direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
-        break;
-      case DEFINE_SORT.ASC:
-        direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
-        break;
-      case DEFINE_SORT.DESC:
-        direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
-        break;
+    default:
+    case null:
+    case undefined:
+    case DEFINE_SORT.NONE:
+      direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
+      break;
+    case DEFINE_SORT.ASC:
+      direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
+      break;
+    case DEFINE_SORT.DESC:
+      direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
+      break;
     }
     this.props.onSort(
       this.props.columnKey,
@@ -56,9 +56,11 @@ export default class SortableHeaderCell extends React.Component {
     });
     const content = this.props.headerRenderer ? React.cloneElement(this.props.headerRenderer, this.props) : this.props.column.name;
     return (
-      <div className={className}
+      <div
+        className={className}
         onClick={this.onClick}
-        style={{ cursor: 'pointer' }}>
+        style={{ cursor: 'pointer' }}
+      >
         <span className="pull-right">{this.getSortByText()}</span>
         {content}
       </div>

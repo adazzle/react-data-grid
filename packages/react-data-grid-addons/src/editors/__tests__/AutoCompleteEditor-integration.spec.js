@@ -13,16 +13,18 @@ describe('AutoCompleteEditor integration', () => {
   const commitSpy = jasmine.createSpy();
 
   beforeEach(() => {
-    component = ReactDOM.render(<AutoCompleteEditor
-      onCommit={commitSpy}
-      options={fakeOptions}
-      label="title"
-      valueParams={fakeParams}
-      value="value"
-      column={fakeColumn}
-      resultIdentifier="id"
-      height={30}
-      onKeyDown={fakeCb} />, document.body);
+    component = ReactDOM.render(
+      <AutoCompleteEditor
+        onCommit={commitSpy}
+        options={fakeOptions}
+        label="title"
+        valueParams={fakeParams}
+        value="value"
+        column={fakeColumn}
+        resultIdentifier="id"
+        height={30}
+        onKeyDown={fakeCb}
+      />, document.body);
   });
 
   afterEach(() => {

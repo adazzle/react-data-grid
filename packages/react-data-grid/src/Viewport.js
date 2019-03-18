@@ -260,7 +260,8 @@ export default class Viewport extends React.Component {
       <div
         className="react-grid-Viewport"
         style={style}
-        ref={this.setViewportRef}>
+        ref={this.setViewportRef}
+      >
         <Canvas
           ref={this.setCanvasRef}
           rowKey={this.props.rowKey}

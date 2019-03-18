@@ -71,9 +71,10 @@ export default class AutoCompleteFilter extends React.Component {
         options={this.state.options}
         placeholder={this.state.placeholder}
         onChange={this.handleChange}
-        escapeClearsValue={true}
+        escapeClearsValue
         multi={this.props.multiSelection !== undefined && this.props.multiSelection !== null ? this.props.multiSelection : true}
-        value={this.state.filters} />
+        value={this.state.filters}
+      />
     );
   }
 }

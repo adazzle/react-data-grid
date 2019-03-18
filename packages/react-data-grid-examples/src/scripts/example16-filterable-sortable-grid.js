@@ -112,14 +112,16 @@ class Example extends React.Component {
     return (
       <ReactDataGrid
         onGridSort={this.handleGridSort}
-        enableCellSelect={true}
+        enableCellSelect
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.getSize()}
         minHeight={500}
-        toolbar={<Toolbar enableFilter={true} />}
+        toolbar={<Toolbar enableFilter />}
         onAddFilter={this.handleFilterChange}
-        onClearFilters={this.onClearFilters} />);
+        onClearFilters={this.onClearFilters}
+      />
+    );
   }
 }
 

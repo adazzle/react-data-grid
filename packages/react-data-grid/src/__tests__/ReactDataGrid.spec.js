@@ -11,16 +11,18 @@ function shallowRenderGrid({
   numRows = helpers.rowsCount(),
   onCellSelected, onCellDeSelected
 }) {
-  const wrapper = shallow(<ReactDataGrid
-    columns={helpers.columns}
-    rowGetter={helpers.rowGetter}
-    rowsCount={numRows}
-    enableCellSelect
-    enableCellAutoFocus={enableCellAutoFocus}
-    cellNavigationMode={cellNavigationMode}
-    onCellSelected={onCellSelected}
-    onCellDeSelected={onCellDeSelected}
-  />);
+  const wrapper = shallow(
+    <ReactDataGrid
+      columns={helpers.columns}
+      rowGetter={helpers.rowGetter}
+      rowsCount={numRows}
+      enableCellSelect
+      enableCellAutoFocus={enableCellAutoFocus}
+      cellNavigationMode={cellNavigationMode}
+      onCellSelected={onCellSelected}
+      onCellDeSelected={onCellDeSelected}
+    />
+  );
   return {
     wrapper
   };

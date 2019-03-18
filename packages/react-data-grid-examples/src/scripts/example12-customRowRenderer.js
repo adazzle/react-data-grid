@@ -106,7 +106,9 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this._rows.length}
         minHeight={500}
-        rowRenderer={RowRenderer} />);
+        rowRenderer={RowRenderer}
+      />
+    );
   }
 }
 
@@ -115,7 +117,8 @@ const exampleDescription = (
     <p>This shows how you can easily override the default row renderer</p>
     <p>Here we are just using that to wrap the default renderer, and then going back into the 'normal' flow, just changing the text colour</p>
     <p>NOTE: if you want to use fixed columns as well, make sure you implement and pass through the call to setScrollLeft</p>
-  </div>);
+  </div>
+);
 
 export default exampleWrapper({
   WrappedComponent: Example,

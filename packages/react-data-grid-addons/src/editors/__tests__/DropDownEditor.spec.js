@@ -12,12 +12,15 @@ describe('DropDownEditor', () => {
     function fakeCommitCb() { return true; }
 
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<DropDownEditor
-        name={'DropDownEditor'}
-        options={fakeOptions}
-        value={'option2'}
-        onCommit={fakeCommitCb}
-        column={fakeColumn} />);
+      component = TestUtils.renderIntoDocument(
+        <DropDownEditor
+          name="DropDownEditor"
+          options={fakeOptions}
+          value="option2"
+          onCommit={fakeCommitCb}
+          column={fakeColumn}
+        />
+      );
     });
 
     it('should create a new DropDownEditor instance', () => {
@@ -65,12 +68,15 @@ describe('DropDownEditor', () => {
     function fakeCommitCb() { return true; }
 
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<DropDownEditor
-        name={'DropDownEditor'}
-        options={fakeOptions}
-        value={'Choose a thing'}
-        onCommit={fakeCommitCb}
-        column={fakeColumn} />);
+      component = TestUtils.renderIntoDocument(
+        <DropDownEditor
+          name="DropDownEditor"
+          options={fakeOptions}
+          value="Choose a thing"
+          onCommit={fakeCommitCb}
+          column={fakeColumn}
+        />
+      );
     });
 
     it('should display value unless text is specified', () => {

@@ -6,8 +6,10 @@ export default class GroupedColumnButton extends Component {
     return (
       <div className="grouped-col-btn btn btn-sm">
         <span className="grouped-col-btn__name">{this.props.name}</span>
-        <span className="grouped-col-btn__remove glyphicon glyphicon-trash"
-              onClick={this.props.onColumnGroupDeleted.bind(null, this.props.columnKey)} />
+        <span
+          className="grouped-col-btn__remove glyphicon glyphicon-trash"
+          onClick={this.props.onColumnGroupDeleted.bind(null, this.props.columnKey)}
+        />
       </div>
     );
   }

@@ -96,7 +96,7 @@ class Example extends React.Component {
     return (
       <DraggableContainer>
         <ReactDataGrid
-          enableCellSelection={true}
+          enableCellSelection
           rowActionsCell={RowActionsCell}
           columns={this._columns}
           rowGetter={this.rowGetter}
@@ -111,8 +111,10 @@ class Example extends React.Component {
             selectBy: {
               keys: { rowKey: this.props.rowKey, values: this.state.selectedIds }
             }
-          }} />
-      </DraggableContainer>);
+          }}
+        />
+      </DraggableContainer>
+    );
   }
 }
 

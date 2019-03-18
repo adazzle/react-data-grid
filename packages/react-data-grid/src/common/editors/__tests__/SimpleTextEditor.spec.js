@@ -11,13 +11,15 @@ describe('SimpleTextEditor', () => {
     function fakeBlurCb() { return true; }
     function fakeFunction() { }
     beforeEach(() => {
-      component = mount(<SimpleTextEditor
-        value={'This is a test'}
-        onBlur={fakeBlurCb}
-        onKeyDown={fakeFunction}
-        commit={fakeFunction}
-        column={fakeColumn}
-      />).instance();
+      component = mount(
+        <SimpleTextEditor
+          value="This is a test"
+          onBlur={fakeBlurCb}
+          onKeyDown={fakeFunction}
+          commit={fakeFunction}
+          column={fakeColumn}
+        />
+      ).instance();
     });
 
     it('should create a new SimpleTextEditor instance', () => {

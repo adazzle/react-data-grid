@@ -250,16 +250,18 @@ class Example extends React.Component {
     return (
       <ReactDataGrid
         ref={node => this.grid = node}
-        enableCellSelect={true}
+        enableCellSelect
         columns={this.getColumns()}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}
         onGridRowsUpdated={this.handleGridRowsUpdated}
         toolbar={<Toolbar onAddRow={this.handleAddRow} />}
-        enableRowSelect={true}
+        enableRowSelect
         rowHeight={50}
         minHeight={600}
-        rowScrollTimeout={200} />);
+        rowScrollTimeout={200}
+      />
+    );
   }
 }
 

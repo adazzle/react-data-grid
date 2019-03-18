@@ -13,17 +13,20 @@ describe('AutoCompleteEditor', () => {
   describe('Unit Tests', () => {
     describe('Basic tests', () => {
       function setup() {
-        const wrapper = shallow(<AutoCompleteEditor
-          onCommit={fakeCb}
-          options={fakeOptions}
-          label="title"
-          value="value"
-          valueParams={fakeParams}
-          column={fakeColumn}
-          resultIdentifier="id"
-          search="test"
-          height={30}
-          onKeyDown={fakeCb} />);
+        const wrapper = shallow(
+          <AutoCompleteEditor
+            onCommit={fakeCb}
+            options={fakeOptions}
+            label="title"
+            value="value"
+            valueParams={fakeParams}
+            column={fakeColumn}
+            resultIdentifier="id"
+            search="test"
+            height={30}
+            onKeyDown={fakeCb}
+          />
+        );
         const autocomplete = wrapper.find(ReactAutocomplete);
         return { wrapper, autocomplete };
       }
