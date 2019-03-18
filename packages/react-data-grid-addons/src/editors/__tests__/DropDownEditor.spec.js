@@ -13,9 +13,9 @@ describe('DropDownEditor', () => {
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(<DropDownEditor
-        name={'DropDownEditor'}
+        name="DropDownEditor"
         options={fakeOptions}
-        value={'option2'}
+        value="option2"
         onCommit={fakeCommitCb}
         column={fakeColumn}
                                                />);
@@ -67,9 +67,9 @@ describe('DropDownEditor', () => {
 
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(<DropDownEditor
-        name={'DropDownEditor'}
+        name="DropDownEditor"
         options={fakeOptions}
-        value={'Choose a thing'}
+        value="Choose a thing"
         onCommit={fakeCommitCb}
         column={fakeColumn}
                                                />);

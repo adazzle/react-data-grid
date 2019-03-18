@@ -12,7 +12,7 @@ describe('SimpleTextEditor', () => {
     function fakeFunction() { }
     beforeEach(() => {
       component = mount(<SimpleTextEditor
-        value={'This is a test'}
+        value="This is a test"
         onBlur={fakeBlurCb}
         onKeyDown={fakeFunction}
         commit={fakeFunction}
