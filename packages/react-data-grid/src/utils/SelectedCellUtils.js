@@ -133,6 +133,6 @@ export function canExitGrid(e, { cellNavigationMode, columns, rowsCount, selecte
 }
 
 export function selectedRangeIsSingleCell(selectedRange) {
-  return selectedRange.topLeft.idx === selectedRange.bottomRight.idx &&
-    selectedRange.topLeft.rowIdx === selectedRange.bottomRight.rowIdx;
+  return selectedRange.topLeft.idx === selectedRange.bottomRight.idx
+    && selectedRange.topLeft.rowIdx === selectedRange.bottomRight.rowIdx;
 }

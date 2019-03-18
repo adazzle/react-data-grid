@@ -390,9 +390,9 @@ export default class InteractionMasks extends React.Component {
     const isShift = e.shiftKey;
 
     if (isTab) {
-      const cellNavigationMode = this.props.cellNavigationMode === CellNavigationMode.NONE ?
-        CellNavigationMode.CHANGE_ROW :
-        this.props.cellNavigationMode;
+      const cellNavigationMode = this.props.cellNavigationMode === CellNavigationMode.NONE
+        ? CellNavigationMode.CHANGE_ROW
+        : this.props.cellNavigationMode;
       this.changeCellFromKeyAction(e, cellNavigationMode);
     } else if (isShift) {
       this.changeSelectedRangeFromArrowKeyAction(e);
@@ -717,9 +717,9 @@ export default class InteractionMasks extends React.Component {
             getSelectedDimensions={this.getSelectedDimensions}
           />
         )}
-        {selectedRangeIsSingleCell(this.state.selectedRange) ?
-          this.renderSingleCellSelectView() :
-          this.renderCellRangeSelectView()
+        {selectedRangeIsSingleCell(this.state.selectedRange)
+          ? this.renderSingleCellSelectView()
+          : this.renderCellRangeSelectView()
         }
         {isEditorEnabled && (
           <EditorPortal target={this.props.editorPortalTarget}>

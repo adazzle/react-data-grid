@@ -220,7 +220,7 @@ const rules = {
   'one-var': [1, 'never'],
   'one-var-declaration-per-line': 0,
   'operator-assignment': 0,
-  'operator-linebreak': 0,
+  'operator-linebreak': [1, 'before', { overrides: { '=': 'after' } }],
   'padded-blocks': [0, 'never'],
   'padding-line-between-statements': 0,
   'prefer-object-spread': 0,
