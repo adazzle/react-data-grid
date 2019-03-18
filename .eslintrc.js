@@ -179,7 +179,7 @@ const rules = {
   'line-comment-position': 0,
   'linebreak-style': 0,
   'lines-around-comment': 0,
-  'lines-between-class-members': 0,
+  'lines-between-class-members': [1, 'always', { exceptAfterSingleLine: true }],
   'max-depth': 0,
   'max-len': 0,
   'max-lines': 0,
