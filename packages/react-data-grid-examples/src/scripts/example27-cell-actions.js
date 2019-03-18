@@ -29,7 +29,7 @@ const createFakeRowObjectData = (index) => ({
 });
 
 const createRows = (numberOfRows) => {
-  let rows = [];
+  const rows = [];
   for (let i = 0; i < numberOfRows; i++) {
     rows[i] = createFakeRowObjectData(i);
   }
@@ -122,7 +122,7 @@ class Example extends React.Component {
   };
 
   getRowAt = (index) => {
-    let rows = this.getRows();
+    const rows = this.getRows();
     return rows[index];
   };
 
@@ -134,7 +134,7 @@ class Example extends React.Component {
     if (column.key === 'county' && row.id === 'id_0') {
       return [
         {
-          icon: <span className="glyphicon glyphicon-remove"></span>,
+          icon: <span className="glyphicon glyphicon-remove" />,
           callback: () => { alert('Deleting'); }
         },
         {
@@ -157,14 +157,15 @@ class Example extends React.Component {
   render() {
     return (
       <ReactDataGrid
-        ref={ node => this.grid = node }
-        enableCellSelect={true}
+        ref={node => this.grid = node}
+        enableCellSelect
         columns={columns}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}
         rowHeight={55}
         minHeight={600}
-        getCellActions={this.getCellActions} />
+        getCellActions={this.getCellActions}
+      />
     );
   }
 }

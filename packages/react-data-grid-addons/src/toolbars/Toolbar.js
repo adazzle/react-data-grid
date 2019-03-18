@@ -27,18 +27,22 @@ export default class Toolbar extends React.Component {
   };
 
   renderAddRowButton = () => {
-    if (this.props.onAddRow ) {
-      return (<button type="button" className="btn" onClick={this.onAddRow}>
-        {this.props.addRowButtonText}
-      </button>);
+    if (this.props.onAddRow) {
+      return (
+        <button type="button" className="btn" onClick={this.onAddRow}>
+          {this.props.addRowButtonText}
+        </button>
+      );
     }
   };
 
   renderToggleFilterButton = () => {
     if (this.props.enableFilter) {
-      return (<button type="button" className="btn" onClick={this.props.onToggleFilter}>
-      {this.props.filterRowsButtonText}
-    </button>);
+      return (
+        <button type="button" className="btn" onClick={this.props.onToggleFilter}>
+          {this.props.filterRowsButtonText}
+        </button>
+      );
     }
   };
 
@@ -50,6 +54,7 @@ export default class Toolbar extends React.Component {
           {this.renderToggleFilterButton()}
           {this.props.children}
         </div>
-      </div>);
+      </div>
+    );
   }
 }

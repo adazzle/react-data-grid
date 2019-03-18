@@ -1,7 +1,7 @@
 import faker from 'faker';
 faker.locale = 'en_GB';
-var SIZE = 2000;
-var _cache = [];
+const SIZE = 2000;
+const _cache = [];
 
 function createFakeRowObjectData(/*number*/ index) {
   return {
@@ -24,7 +24,7 @@ function createFakeRowObjectData(/*number*/ index) {
 }
 
 function getObjectAt(/*number*/ index) /*?object*/ {
-  if (index < 0 || index > SIZE){
+  if (index < 0 || index > SIZE) {
     return undefined;
   }
   if (_cache[index] === undefined) {
@@ -37,17 +37,17 @@ function getSize() {
   return SIZE;
 }
 
-function createRows(numberOfRows){
-  for (var i = 0; i < numberOfRows; i++){
+function createRows(numberOfRows) {
+  for (let i = 0; i < numberOfRows; i++) {
     _cache[i] = createFakeRowObjectData(i);
   }
   return _cache;
 }
 
-var FakeObjectDataListStore = {
-  getObjectAt : getObjectAt,
-  getSize     : getSize,
-  createRows  : createRows
+const FakeObjectDataListStore = {
+  getObjectAt: getObjectAt,
+  getSize: getSize,
+  createRows: createRows
 };
 
 export default FakeObjectDataListStore;

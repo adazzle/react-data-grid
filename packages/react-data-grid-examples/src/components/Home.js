@@ -9,7 +9,7 @@ export default function Home() {
       <header id="head">
         <div className="container">
           <div className="row">
-            <div className="main-logo"></div>
+            <div className="main-logo" />
             <h1 className="lead">React Data Grid </h1>
             <p className="tagline">Excel-like grid component built with React</p>
             <p>
@@ -24,25 +24,25 @@ export default function Home() {
         <div className="container">
           <div className="row" id="demo">
             <div className="col-md-3 col-sm-6">
-              <div className="h-caption"><h4><i className="fa fa-flash fa-5"></i>Lightning Fast Rendering</h4></div>
+              <div className="h-caption"><h4><i className="fa fa-flash fa-5" />Lightning Fast Rendering</h4></div>
               <div className="h-body text-center">
                 <p>Combines the performance power of React as well as partial rendering techniques in order to smoothly scroll though hundreds of thousands of rows.</p>
               </div>
             </div>
             <div className="col-md-3 col-sm-6">
-              <div className="h-caption"><h4><i className="fa fa-edit fa-5"></i>Rich Editing and Formatting</h4></div>
+              <div className="h-caption"><h4><i className="fa fa-edit fa-5" />Rich Editing and Formatting</h4></div>
               <div className="h-body text-center">
                 <p>View and edit cells using a wide range of formatters and editors. If these don't suit your needs, you can easily create and plugin your own</p>
               </div>
             </div>
             <div className="col-md-3 col-sm-6">
-              <div className="h-caption"><h4><i className="fa fa-cogs fa-5"></i>Configurable & Customizable</h4></div>
+              <div className="h-caption"><h4><i className="fa fa-cogs fa-5" />Configurable & Customizable</h4></div>
               <div className="h-body text-center">
                 <p>Quickly configure and customise features such as grid and column properties, row and cell renderers. As the Grid is a React component it is easy to extend and add custom functionality.</p>
               </div>
             </div>
             <div className="col-md-3 col-sm-6">
-              <div className="h-caption"><h4><i className="fa fa-file-excel-o fa-5"></i>Packed full of Excel Features</h4></div>
+              <div className="h-caption"><h4><i className="fa fa-file-excel-o fa-5" />Packed full of Excel Features</h4></div>
               <div className="h-body text-center">
                 <p>Full keyboard navigation, cell copy & paste, cell drag down, frozen columns, column resizing, sorting, filtering and many more features on the way.</p>
               </div>
@@ -103,10 +103,7 @@ export default function Home() {
 
         <div className="footer1">
           <div className="container">
-            <div className="row">
-
-
-            </div>
+            <div className="row" />
           </div>
         </div>
 
@@ -116,16 +113,12 @@ export default function Home() {
 
               <div className="col-md-6 widget">
                 <div className="widget-body">
-                  <p className="simplenav">
-
-                  </p>
+                  <p className="simplenav" />
                 </div>
               </div>
 
               <div className="col-md-6 widget">
-                <div className="widget-body">
-
-                </div>
+                <div className="widget-body" />
               </div>
 
             </div>

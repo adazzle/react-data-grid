@@ -17,7 +17,7 @@ class RowRenderer extends React.Component {
   };
 
   getRowBackground = () => {
-    return this.props.idx % 2 ?  'green' : 'blue';
+    return this.props.idx % 2 ? 'green' : 'blue';
   };
 
   render() {
@@ -79,7 +79,7 @@ class Example extends React.Component {
   };
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
@@ -100,13 +100,15 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this._rows.length}
         minHeight={500}
-        rowRenderer={RowRenderer} />);
+        rowRenderer={RowRenderer}
+      />
+    );
   }
 }
 
@@ -115,7 +117,8 @@ const exampleDescription = (
     <p>This shows how you can easily override the default row renderer</p>
     <p>Here we are just using that to wrap the default renderer, and then going back into the 'normal' flow, just changing the text colour</p>
     <p>NOTE: if you want to use fixed columns as well, make sure you implement and pass through the call to setScrollLeft</p>
-  </div>);
+  </div>
+);
 
 export default exampleWrapper({
   WrappedComponent: Example,

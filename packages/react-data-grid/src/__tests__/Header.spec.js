@@ -29,12 +29,12 @@ describe('Header Unit Tests', () => {
   };
 
   function shouldRenderDefaultHeaderRow() {
-    const wrapper = shallow(<Header {...testProps}/>);
+    const wrapper = shallow(<Header {...testProps} />);
     expect(wrapper.find(HeaderRow).length).toBe(1);
   }
 
   function shouldSetResizeState() {
-    const wrapper = shallow(<Header {...testProps}/>);
+    const wrapper = shallow(<Header {...testProps} />);
     const resizeColIdx = 2;
     const newWidth = 350;
     const headerRow = wrapper.find(HeaderRow);
@@ -45,7 +45,7 @@ describe('Header Unit Tests', () => {
 
   function shouldTriggerOnColumnResize() {
     const resizeColIdx = 1;
-    const wrapper = shallow(<Header {...testProps}/>);
+    const wrapper = shallow(<Header {...testProps} />);
     const headerRow = wrapper.find(HeaderRow);
     headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
     expect(testProps.onColumnResize).toHaveBeenCalled();
@@ -58,12 +58,12 @@ describe('Header Unit Tests', () => {
   });
 
   it('should initialize the state correctly', () => {
-    const wrapper = shallow(<Header {...testProps}/>);
+    const wrapper = shallow(<Header {...testProps} />);
     expect(wrapper.state().resizing).toEqual(null);
   });
 
   it('should render a default header row', () => {
-    const wrapper = shallow(<Header {...testProps}/>);
+    const wrapper = shallow(<Header {...testProps} />);
     expect(wrapper.find(HeaderRow).length).toBe(1);
   });
 
@@ -75,7 +75,7 @@ describe('Header Unit Tests', () => {
     shouldTriggerOnColumnResize();
   });
 
-  describe('When columns are immutable',  () => {
+  describe('When columns are immutable', () => {
     beforeEach(() => {
       testProps.columnMetrics.columns = new Immutable.List(helpers.columns);
     });

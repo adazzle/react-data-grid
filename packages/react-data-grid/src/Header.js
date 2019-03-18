@@ -5,7 +5,7 @@ import joinClasses from 'classnames';
 import * as ColumnMetrics from './ColumnMetrics';
 import { getColumn } from './ColumnUtils';
 import HeaderRow from './HeaderRow';
-import getScrollbarSize  from './getScrollbarSize';
+import getScrollbarSize from './getScrollbarSize';
 import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from './common/constants';
 
@@ -13,7 +13,7 @@ import '../../../themes/react-data-grid-header.css';
 
 export default class Header extends React.Component {
   static propTypes = {
-    columnMetrics: PropTypes.shape({  width: PropTypes.number.isRequired, columns: PropTypes.any }).isRequired,
+    columnMetrics: PropTypes.shape({ width: PropTypes.number.isRequired, columns: PropTypes.any }).isRequired,
     totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.number.isRequired,
     headerRows: PropTypes.array.isRequired,
@@ -35,7 +35,7 @@ export default class Header extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const update =  !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
+    const update = !(ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn))
     || this.props.totalWidth !== nextProps.totalWidth
     || (this.props.headerRows.length !== nextProps.headerRows.length)
     || (this.state.resizing !== nextState.resizing)
@@ -54,7 +54,7 @@ export default class Header extends React.Component {
         columnMetrics: { ...state.columnMetrics }
       };
       resizing.columnMetrics = ColumnMetrics.resizeColumn(
-          resizing.columnMetrics, pos, width);
+        resizing.columnMetrics, pos, width);
 
       // we don't want to influence scrollLeft while resizing
       if (resizing.columnMetrics.totalWidth < state.columnMetrics.totalWidth) {
@@ -196,7 +196,8 @@ export default class Header extends React.Component {
         height={height}
         onScroll={onScroll}
         style={this.getStyle()}
-        className={className} onClick={this.onHeaderClick}
+        className={className}
+        onClick={this.onHeaderClick}
       >
         {headerRows}
       </div>

@@ -19,9 +19,9 @@ class DocumentContainer extends React.Component {
 
   render() {
     return (
-      <div className={'pull-left'} style={{ marginLeft: '100px' }}>
+      <div className="pull-left" style={{ marginLeft: '100px' }}>
         <h3>{this.props.documentName}</h3>
-        <div dangerouslySetInnerHTML={this.getHtml()}></div>
+        <div dangerouslySetInnerHTML={this.getHtml()} />
       </div>
     );
   }
@@ -82,7 +82,8 @@ export default class ComponentDocs extends React.Component {
         <DocumentContainer
           documentContent={this.state.documentContent}
           documentName={generatedDocs[selectedDocumentIndex].name}
-          documentPath={generatedDocs[selectedDocumentIndex].path} />
+          documentPath={generatedDocs[selectedDocumentIndex].path}
+        />
       </div>
     );
   }

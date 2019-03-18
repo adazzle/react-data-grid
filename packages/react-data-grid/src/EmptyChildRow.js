@@ -35,16 +35,18 @@ export default class EmptyChildRow extends React.Component {
     const expandColumn = getColumn(this.props.columns.filter(c => c.key === this.props.expandColumnKey), 0);
 
     const cellLeft = expandColumn ? expandColumn.left : 0;
-    return (<div className="react-grid-Row rdg-add-child-row-container" style={style}>
-      <div className="react-grid-Cell" style={{ position: 'absolute', height: cellHeight, width: '100%', left: cellLeft }}>
-        <div className="rdg-empty-child-row" style={{ marginLeft: '30px', lineHeight: `${cellHeight}px` }}>
-          <div className="'rdg-child-row-action-cross rdg-child-row-action-cross-last" />
-          <div style={{ left: left, top: top, width: width, height: height }} className="rdg-child-row-btn" onClick={this.onAddSubRow}>
-            <div className="glyphicon glyphicon-plus-sign"></div>
+    return (
+      <div className="react-grid-Row rdg-add-child-row-container" style={style}>
+        <div className="react-grid-Cell" style={{ position: 'absolute', height: cellHeight, width: '100%', left: cellLeft }}>
+          <div className="rdg-empty-child-row" style={{ marginLeft: '30px', lineHeight: `${cellHeight}px` }}>
+            <div className="'rdg-child-row-action-cross rdg-child-row-action-cross-last" />
+            <div style={{ left: left, top: top, width: width, height: height }} className="rdg-child-row-btn" onClick={this.onAddSubRow}>
+              <div className="glyphicon glyphicon-plus-sign" />
+            </div>
           </div>
         </div>
       </div>
-    </div>);
+    );
   }
 }
 

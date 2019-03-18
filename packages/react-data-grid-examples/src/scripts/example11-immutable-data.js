@@ -18,7 +18,7 @@ export class Example extends React.Component {
   };
 
   createColumns = () => {
-    let cols = [];
+    const cols = [];
     for (let j = 0; j < 50; j++) {
       cols.push({ key: 'col' + j, name: 'col' + j, width: 150 });
     }
@@ -27,9 +27,9 @@ export class Example extends React.Component {
   };
 
   createRows = () => {
-    let rows = [];
+    const rows = [];
     for (let rowIdx = 1; rowIdx < 300; rowIdx++) {
-      let row = {};
+      const row = {};
       this._columns.forEach((c, colIdx) => row[c.key] = '(' + colIdx + ',' + rowIdx + ')');
       rows.push(row);
     }
@@ -42,13 +42,15 @@ export class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
-        enableCellSelect={true}
+        enableCellSelect
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.size}
-        minHeight={1200} />);
+        minHeight={1200}
+      />
+    );
   }
 }
 

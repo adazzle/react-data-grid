@@ -84,7 +84,7 @@ describe('Grid', function() {
 
     const buildProps = (addedProps) => Object.assign({}, this.testProps, addedProps);
     this.createComponent = (addedProps) => {
-      return mount(<Grid {...buildProps(addedProps)}/>);
+      return mount(<Grid {...buildProps(addedProps)} />);
     };
 
     this.componentWrapper = this.createComponent();
@@ -250,7 +250,7 @@ describe('Grid', function() {
       beforeEach(function() {
         this.component.setState({ selectedRows: [{ id: 0, isSelected: false }, { id: 1, isSelected: false }, { id: 2, isSelected: false }, { id: 3, isSelected: false }] });
         const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-        selectRowCol.onCellChange(3, 'select-row',  this._rows[3], this.buildFakeEvent());
+        selectRowCol.onCellChange(3, 'select-row', this._rows[3], this.buildFakeEvent());
       });
 
       it('should be able to select an individual row', function() {
@@ -307,14 +307,14 @@ describe('Grid', function() {
     });
 
     it('should call rowSelection.onRowsSelected when row selected', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      this.selectRowCol.onCellChange(1, '', this.rows[1], this.buildFakeEvent());
       expect(this._selectedRows.length).toBe(1);
       expect(this._selectedRows[0].rowIdx).toBe(1);
       expect(this._selectedRows[0].row).toBe(this.rows[1]);
     });
 
     it('should call rowSelection.onRowsDeselected when row de-selected', function() {
-      this.selectRowCol.onCellChange(0, '',  this.rows[0], this.buildFakeEvent());
+      this.selectRowCol.onCellChange(0, '', this.rows[0], this.buildFakeEvent());
       expect(this._deselectedRows.length).toBe(1);
       expect(this._deselectedRows[0].rowIdx).toBe(0);
       expect(this._deselectedRows[0].row).toBe(this.rows[0]);
@@ -322,25 +322,25 @@ describe('Grid', function() {
 
 
     it('should set lastRowIdxUiSelected state', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      this.selectRowCol.onCellChange(1, '', this.rows[1], this.buildFakeEvent());
       expect(this.component.state.lastRowIdxUiSelected).toEqual(1);
     });
 
 
     it('should select range when shift selecting below selected row', function() {
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      this.selectRowCol.onCellChange(1, '', this.rows[1], this.buildFakeEvent());
       expect(this._selectedRows.length).toEqual(1);
       this.simulateGridKeyDownWithKeyCode(16);
-      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
+      this.selectRowCol.onCellChange(3, '', this.rows[3], this.buildFakeEvent());
       expect(this._selectedRows.length).toEqual(2);
     });
 
 
     it('should select range when shift selecting above selected row', function() {
-      this.selectRowCol.onCellChange(3, '',  this.rows[3], this.buildFakeEvent());
+      this.selectRowCol.onCellChange(3, '', this.rows[3], this.buildFakeEvent());
       expect(this._selectedRows.length).toEqual(1);
       this.simulateGridKeyDownWithKeyCode(16);
-      this.selectRowCol.onCellChange(1, '',  this.rows[1], this.buildFakeEvent());
+      this.selectRowCol.onCellChange(1, '', this.rows[1], this.buildFakeEvent());
       expect(this._selectedRows.length).toEqual(2);
     });
 

@@ -25,7 +25,7 @@ export default class FocusableComponentTestRunner {
 
       expect(componentDidMount.calls.count()).toBe(1);
       expect(checkFocus.calls.count()).toBe(1);
-      expect(checkFocus.calls.first().args).toEqual([ COMPONENT_DID_MOUNT_SOURCE ]);
+      expect(checkFocus.calls.first().args).toEqual([COMPONENT_DID_MOUNT_SOURCE]);
     });
   }
 
@@ -38,7 +38,7 @@ export default class FocusableComponentTestRunner {
 
       expect(componentDidUpdate.calls.count()).toBe(1);
       expect(checkFocus.calls.count()).toBe(1);
-      expect(checkFocus.calls.first().args).toEqual([ COMPONENT_DID_UPDATE_SOURCE ]);
+      expect(checkFocus.calls.first().args).toEqual([COMPONENT_DID_UPDATE_SOURCE]);
     });
   }
 

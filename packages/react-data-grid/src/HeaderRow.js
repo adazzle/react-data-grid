@@ -111,7 +111,7 @@ export default class HeaderRow extends React.Component {
 
     for (let i = 0, len = getSize(columns); i < len; i++) {
       const column = { rowType, ...getColumn(columns, i) };
-      const _renderer = column.key === 'select-row' && rowType === HeaderRowType.FILTER ? <div></div> : this.getHeaderRenderer(column);
+      const _renderer = column.key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
 
       const cell = (
         <BaseHeaderCell

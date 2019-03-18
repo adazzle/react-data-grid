@@ -34,7 +34,7 @@ class Example extends React.Component {
   }
 
   createRows = (numberOfRows) => {
-    let rows = [];
+    const rows = [];
     for (let i = 1; i < numberOfRows; i++) {
       rows.push({
         id: i,
@@ -52,11 +52,11 @@ class Example extends React.Component {
   };
 
   handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-    let rows = this.state.rows.slice();
+    const rows = this.state.rows.slice();
 
     for (let i = fromRow; i <= toRow; i++) {
-      let rowToUpdate = rows[i];
-      let updatedRow = update(rowToUpdate, {$merge: updated});
+      const rowToUpdate = rows[i];
+      const updatedRow = update(rowToUpdate, { $merge: updated });
       rows[i] = updatedRow;
     }
 
@@ -64,14 +64,16 @@ class Example extends React.Component {
   };
 
   render() {
-    return  (
+    return (
       <ReactDataGrid
-        enableCellSelect={true}
+        enableCellSelect
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        onGridRowsUpdated={this.handleGridRowsUpdated} />);
+        onGridRowsUpdated={this.handleGridRowsUpdated}
+      />
+    );
   }
 }
 
@@ -79,7 +81,8 @@ const exampleDescription = (
   <div>
     <p>This example demonstrates how you can easily update multiple cells by dragging from the drag handle of an editable cell.</p>
     <p>Alternatively by double clicking on the drag handle, you can update all the cells underneath the active cell.</p>
-  </div>);
+  </div>
+);
 
 export default exampleWrapper({
   WrappedComponent: Example,

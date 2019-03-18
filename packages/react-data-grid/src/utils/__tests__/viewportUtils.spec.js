@@ -81,7 +81,7 @@ describe('viewportUtils', () => {
       // 10 px of first non frozen column are hidden, with remaining 10 px visible
       const scrollLeft = 50;
       // This means that there are 10px of extra space to fill with columns
-      const columns =  getCols();
+      const columns = getCols();
       columns[1].frozen = true;
       const count = verifyNonFrozenRenderedColumnCount(100, columns, scrollLeft);
       expect(count).toBe(5); // col5, col6, col7, col8, col9

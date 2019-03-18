@@ -215,7 +215,8 @@ export default class EditorContainer extends React.Component {
     const { firstEditorKeyPress: key, value } = this.props;
     if (key === 'Delete' || key === 'Backspace') {
       return '';
-    } else if (key === 'Enter') {
+    }
+    if (key === 'Enter') {
       return value;
     }
 
@@ -300,7 +301,7 @@ export default class EditorContainer extends React.Component {
 
   renderStatusIcon = () => {
     if (this.state.isInvalid === true) {
-      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>;
+      return <span className="glyphicon glyphicon-remove form-control-feedback" />;
     }
   };
 

@@ -34,7 +34,7 @@ class GroupedColumnsPanel extends Component {
         onColumnGroupDeleted: this.props.onColumnGroupDeleted,
         key: typeof c === 'string' ? c : c.key
       };
-      return (<GroupedColumnButton {...groupedColumnButtonProps}/>);
+      return (<GroupedColumnButton {...groupedColumnButtonProps} />);
     });
   }
 
@@ -49,7 +49,8 @@ class GroupedColumnsPanel extends Component {
         zIndex: 1,
         opacity: 0.5,
         backgroundColor: color
-      }} />
+      }}
+      />
     );
   }
 
