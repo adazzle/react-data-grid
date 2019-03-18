@@ -37,8 +37,8 @@ export default class Toolbar extends React.Component {
   renderToggleFilterButton = () => {
     if (this.props.enableFilter) {
       return (<button type="button" className="btn" onClick={this.props.onToggleFilter}>
-      {this.props.filterRowsButtonText}
-    </button>);
+        {this.props.filterRowsButtonText}
+      </button>);
     }
   };
 

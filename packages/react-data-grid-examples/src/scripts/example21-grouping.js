@@ -137,7 +137,7 @@ class CustomToolbar extends React.Component {
   render() {
     return (<Toolbar>
       <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
-      </Toolbar>);
+    </Toolbar>);
   }
 }
 
@@ -190,7 +190,7 @@ class Example extends React.Component {
   render() {
     return (
       <DraggableContainer>
-          <ReactDataGrid
+        <ReactDataGrid
             ref={node => this.grid = node}
             enableCellSelect={true}
             enableDragAndDrop={true}
@@ -201,7 +201,7 @@ class Example extends React.Component {
             toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
             rowHeight={50}
             minHeight={600}
-          />
+        />
       </DraggableContainer>
     );
   }

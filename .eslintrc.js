@@ -336,7 +336,7 @@ const rules = {
   'react/jsx-filename-extension': [1, { extensions: ['js'] }],
   'react/jsx-first-prop-new-line': 0,
   'react/jsx-handler-names': 0,
-  'react/jsx-indent': 0,
+  'react/jsx-indent': [1, 2],
   'react/jsx-indent-props': 0,
   'react/jsx-key': 0,
   'react/jsx-max-depth': 0,
