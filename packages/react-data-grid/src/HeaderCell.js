@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { isElement } from 'react-is';
 
-import Column from 'common/prop-shapes/Column';
+import Column from './common/prop-shapes/Column';
 import { isFrozen } from './ColumnUtils';
-import { HeaderRowType } from 'common/constants';
+import { HeaderRowType } from './common/constants';
 import ResizeHandle from './ResizeHandle';
 
 import '../../../themes/react-data-grid-header.css';

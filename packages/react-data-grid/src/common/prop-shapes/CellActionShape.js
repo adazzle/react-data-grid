@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const CellActionShape = {
+export default PropTypes.shape({
   icon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   callback: PropTypes.func,
   actions: PropTypes.arrayOf(
@@ -9,6 +9,4 @@ const CellActionShape = {
       callback: PropTypes.func
     })
   )
-};
-
-export default CellActionShape;
+});

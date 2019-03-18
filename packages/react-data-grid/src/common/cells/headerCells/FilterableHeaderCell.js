@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Column from 'common/prop-shapes/Column';
+import Column from '../../prop-shapes/Column';
 
 export default class FilterableHeaderCell extends React.Component {
   static propTypes = {

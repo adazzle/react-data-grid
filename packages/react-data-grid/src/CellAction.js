@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import CellActionShape  from 'common/prop-shapes/CellActionShape';
+import CellActionShape  from './common/prop-shapes/CellActionShape';
 
 export default class CellAction extends React.Component {
   static propTypes = {

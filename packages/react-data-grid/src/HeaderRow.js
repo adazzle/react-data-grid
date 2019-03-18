@@ -4,10 +4,10 @@ import shallowEqual from 'shallowequal';
 import BaseHeaderCell from './HeaderCell';
 import getScrollbarSize from './getScrollbarSize';
 import { getColumn, getSize, isFrozen } from './ColumnUtils';
-import SortableHeaderCell, { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
-import FilterableHeaderCell from 'common/cells/headerCells/FilterableHeaderCell';
+import SortableHeaderCell, { DEFINE_SORT } from './common/cells/headerCells/SortableHeaderCell';
+import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
 import HeaderCellType from './HeaderCellType';
-import { HeaderRowType } from 'common/constants';
+import { HeaderRowType } from './common/constants';
 import '../../../themes/react-data-grid-header.css';
 
 import PropTypes from 'prop-types';

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { isFunction } from 'common/utils';
+import { isFunction } from './common/utils';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';

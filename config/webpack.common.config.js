@@ -1,4 +1,3 @@
-const path = require('path');
 const argv = require('minimist')(process.argv.slice(2));
 const RELEASE = argv.release;
 const TerserPlugin = require('terser-webpack-plugin');
@@ -6,6 +5,12 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
   mode: RELEASE ? 'production' : 'development',
   externals: {
+    'react-data-grid': {
+      root: 'ReactDataGrid',
+      commonjs: 'react-data-grid',
+      commonjs2: 'react-data-grid',
+      amd: 'react-data-grid'
+    },
     react: {
       root: 'React',
       commonjs: 'react',
@@ -37,11 +42,6 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       }
     ]
-  },
-  resolve: {
-    alias: {
-      common: path.resolve('packages/common/')
-    }
   },
   optimization: {
     minimizer: [

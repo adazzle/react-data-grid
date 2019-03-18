@@ -1,10 +1,13 @@
 {
   "name": "react-data-grid",
-  "version": "6.0.1",
+  "version": "6.1.0-0",
   "description": "Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like",
   "author": "Adazzle",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/react-data-grid.js",
+  "files": [
+    "dist"
+  ],
   "repository": "adazzle/react-data-grid",
   "homepage": "https://github.com/adazzle/react-data-grid",
   "bugs": {
@@ -16,17 +19,13 @@
     "data-grid",
     "core"
   ],
-  "scripts": {
-    "beforepublish": "node ../../ci/publish/replacePackageEntry react-data-grid true",
-    "postpublish": "node ../../ci/publish/replacePackageEntry react-data-grid",
-    "test": "npm test"
-  },
   "dependencies": {
+    "classnames": "^2.2.6",
+    "keymirror": "^0.1.1",
+    "prop-types": "^15.7.2",
+    "react-is": "^16.8.4",
     "react-is-deprecated": "^0.1.2",
     "shallowequal": "^1.1.0"
-  },
-  "devDependencies": {
-    "react-contextmenu": "^2.10.0"
   },
   "peerDependencies": {
     "react": "^16.0.0",

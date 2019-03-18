@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { _constants } from 'react-data-grid';
 import { DropTarget } from 'react-dnd';
+
 import GroupedColumnButton from './GroupedColumnButton';
-import { DragItemTypes } from 'common/constants';
 
 const propTypes = {
   isOver: PropTypes.bool.isRequired,
@@ -86,4 +86,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default DropTarget(DragItemTypes.Column, columnTarget, collect)(GroupedColumnsPanel);
+export default DropTarget(_constants.DragItemTypes.Column, columnTarget, collect)(GroupedColumnsPanel);

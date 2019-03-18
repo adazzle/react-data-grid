@@ -2,8 +2,7 @@ import '../../../../themes/react-data-grid-drop-target.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropTarget } from 'react-dnd';
-
-import rowComparer from 'common/utils/RowComparer';
+import { rowComparer } from 'react-data-grid';
 
 const rowDropTarget = (Row) => class extends React.Component {
 

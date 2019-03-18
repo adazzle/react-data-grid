@@ -1,8 +1,10 @@
+import { _utils } from 'react-data-grid';
 import { createSelector } from 'reselect';
-import { isEmptyObject, isEmptyArray } from 'common/utils';
 import groupRows from './RowGrouper';
 import filterRows from './RowFilterer';
 import sortRows from './RowSorter';
+
+const { isEmptyObject, isEmptyArray } = _utils;
 
 const getInputRows = (state) => state.rows;
 const getFilters = (state) => state.filters;

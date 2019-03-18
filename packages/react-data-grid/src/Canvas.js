@@ -4,13 +4,13 @@ import { isElement, isValidElementType } from 'react-is';
 
 import Row from './Row';
 import DefaultRowsContainer from './RowsContainer';
-import cellMetaDataShape from 'common/prop-shapes/CellActionShape';
+import cellMetaDataShape from './common/prop-shapes/CellActionShape';
 import * as rowUtils from './RowUtils';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
-import { isFunction } from 'common/utils';
-import { EventTypes } from 'common/constants';
+import { isFunction } from './common/utils';
+import { EventTypes } from './common/constants';
 
 import '../../../themes/react-data-grid-core.css';
 

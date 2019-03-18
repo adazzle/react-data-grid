@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
 
-import rowComparer from 'common/utils/RowComparer';
+import rowComparer from './common/utils/RowComparer';
 import Cell from './Cell';
 import { isFrozen } from './ColumnUtils';
 

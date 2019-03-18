@@ -6,8 +6,8 @@ import * as ColumnMetrics from './ColumnMetrics';
 import { getColumn } from './ColumnUtils';
 import HeaderRow from './HeaderRow';
 import getScrollbarSize  from './getScrollbarSize';
-import cellMetaDataShape from'common/prop-shapes/CellMetaDataShape';
-import { HeaderRowType } from 'common/constants';
+import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
+import { HeaderRowType } from './common/constants';
 
 import '../../../themes/react-data-grid-header.css';
 

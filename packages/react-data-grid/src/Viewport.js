@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Canvas from './Canvas';
-import cellMetaDataShape from 'common/prop-shapes/CellMetaDataShape';
+import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
 import { getSize } from './ColumnUtils';
 import {
   getGridState,

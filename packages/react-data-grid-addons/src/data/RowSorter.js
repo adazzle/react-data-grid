@@ -1,4 +1,6 @@
-import { getMixedTypeValueRetriever, isImmutableCollection } from 'common/utils';
+import { _utils } from 'react-data-grid';
+
+const { getMixedTypeValueRetriever, isImmutableCollection } = _utils;
 
 export const comparer = (a, b) => {
   if (a > b) {
@@ -22,5 +24,3 @@ const sortRows = (rows, sortColumn, sortDirection) => {
 };
 
 export default sortRows;
-
-

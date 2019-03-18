@@ -4,12 +4,12 @@ import joinClasses from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
 import SimpleTextEditor from './SimpleTextEditor';
-import { isFunction } from 'common/utils';
-import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
-import * as zIndexes from 'common/constants/zIndexes';
+import { isFunction } from '../utils';
+import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
+import * as zIndexes from '../constants/zIndexes';
 import ClickOutside from './ClickOutside';
 
-import '../../../themes/react-data-grid-core.css';
+import '../../../../../themes/react-data-grid-core.css';
 
 export default class EditorContainer extends React.Component {
   static displayName = 'EditorContainer';

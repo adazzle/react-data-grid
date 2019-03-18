@@ -1,7 +1,12 @@
 {
-  "lerna": "2.8.0",
   "version": "6.1.0-0",
-  "packages": [
-    "packages/*"
-  ]
+  "command": {
+    "publish": {
+      "ignoreChanges": ["*.spec.*", "*.md"],
+      "message": "Publish %s"
+    },
+    "bootstrap": {
+      "npmClientArgs": ["--no-package-lock"]
+    }
+  }
 }

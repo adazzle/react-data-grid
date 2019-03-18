@@ -2,8 +2,9 @@ import '../../../../themes/react-data-grid-row.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragSource } from 'react-dnd';
+import { editors } from 'react-data-grid';
 
-import { CheckboxEditor } from 'common/editors';
+const { CheckboxEditor } = editors;
 
 class RowActionsCell extends React.Component {
 

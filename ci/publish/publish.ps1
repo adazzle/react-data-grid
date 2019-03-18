@@ -76,7 +76,6 @@ npm run build
 if($?)
 {
   $versionBumpMessage = "Version bump to $nextVersion [ci skip]"
-  npm run beforepublish
   ./node_modules/.bin/lerna publish --repo-version $nextVersion  --skip-git --yes
   git add .
   git commit -m $versionBumpMessage

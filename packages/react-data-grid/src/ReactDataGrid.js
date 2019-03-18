@@ -4,15 +4,15 @@ import { isElement, isValidElementType } from 'react-is';
 import { deprecate } from 'react-is-deprecated';
 
 import BaseGrid from './Grid';
-import CheckboxEditor from 'common/editors/CheckboxEditor';
+import CheckboxEditor from './common/editors/CheckboxEditor';
 import * as RowUtils from './RowUtils';
 import { getColumn, getSize } from './ColumnUtils';
 import KeyCodes from './KeyCodes';
-import { isFunction } from 'common/utils';
+import { isFunction } from './common/utils';
 import SelectAll from './formatters/SelectAll';
-import { DEFINE_SORT } from 'common/cells/headerCells/SortableHeaderCell';
+import { DEFINE_SORT } from './common/cells/headerCells/SortableHeaderCell';
 import * as ColumnMetrics from './ColumnMetrics';
-import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType } from 'common/constants';
+import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType } from './common/constants';
 import { EventBus } from './masks';
 
 import '../../../themes/react-data-grid-core.css';

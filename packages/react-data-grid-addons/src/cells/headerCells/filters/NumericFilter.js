@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import Column from 'common/prop-shapes/Column';
+import { shapes } from 'react-data-grid';
 
 const RuleType = {
   Number: 1,
@@ -137,5 +136,5 @@ export default class NumericFilter extends React.Component {
 
 NumericFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
-  column: PropTypes.shape(Column)
+  column: PropTypes.shape(shapes.Column)
 };
