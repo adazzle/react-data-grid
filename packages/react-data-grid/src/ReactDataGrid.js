@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isElement, isValidElementType } from 'react-is';
 import { deprecate } from 'react-is-deprecated';
 
 import BaseGrid from './Grid';
@@ -780,9 +781,9 @@ export default class ReactDataGrid extends React.Component {
   renderToolbar = () => {
     const Toolbar = this.props.toolbar;
     const toolBarProps = { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount };
-    if (React.isValidElement(Toolbar)) {
+    if (isElement(Toolbar)) {
       return (React.cloneElement(Toolbar, toolBarProps));
-    } else if (isFunction(Toolbar)) {
+    } else if (isValidElementType(Toolbar)) {
       return <Toolbar {...toolBarProps} />;
     }
   };

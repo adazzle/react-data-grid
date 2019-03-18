@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import joinClasses from 'classnames';
+import { isElement, isValidElementType } from 'react-is';
 
 import { isFunction } from 'common/utils';
 import SimpleCellFormatter from './formatters/SimpleCellFormatter';
@@ -291,9 +292,9 @@ export default class Cell extends React.PureComponent {
   renderCellContent = (props) => {
     let CellContent;
     const Formatter = this.getFormatter();
-    if (React.isValidElement(Formatter)) {
+    if (isElement(Formatter)) {
       CellContent = React.cloneElement(Formatter, { ...props, dependentValues: this.getFormatterDependencies(), row: this.getRowData() });
-    } else if (isFunction(Formatter)) {
+    } else if (isValidElementType(Formatter)) {
       CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling} row={this.getRowData()}/>;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;

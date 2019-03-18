@@ -1,5 +1,6 @@
-import React, { isValidElement, cloneElement } from 'react';
+import React, { cloneElement } from 'react';
 import PropTypes from 'prop-types';
+import { isElement } from 'react-is';
 
 import SelectionMask from './SelectionMask';
 import SelectionRangeMask from './SelectionRangeMask';
@@ -740,7 +741,7 @@ export default class InteractionMasks extends React.Component {
             />
           </EditorPortal>
         )}
-        {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
+        {isElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>
     );
   }
