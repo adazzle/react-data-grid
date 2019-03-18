@@ -14,6 +14,6 @@ export default function ChildRowDeleteButton({ treeDepth, cellHeight, siblingInd
   return (<div>
     <div className={className} />
     {isDeleteSubRowEnabled && <div style={{ left: left, top: top, width: width, height: height }} className="rdg-child-row-btn" onClick={onDeleteSubRow}>
-      <div className="glyphicon glyphicon-remove-sign"></div>
+      <div className="glyphicon glyphicon-remove-sign" />
     </div>}</div>);
 }

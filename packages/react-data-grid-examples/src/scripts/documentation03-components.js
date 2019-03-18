@@ -21,7 +21,7 @@ class DocumentContainer extends React.Component {
     return (
       <div className={'pull-left'} style={{ marginLeft: '100px' }}>
         <h3>{this.props.documentName}</h3>
-        <div dangerouslySetInnerHTML={this.getHtml()}></div>
+        <div dangerouslySetInnerHTML={this.getHtml()} />
       </div>
     );
   }

@@ -301,7 +301,7 @@ export default class EditorContainer extends React.Component {
 
   renderStatusIcon = () => {
     if (this.state.isInvalid === true) {
-      return <span className="glyphicon glyphicon-remove form-control-feedback"></span>;
+      return <span className="glyphicon glyphicon-remove form-control-feedback" />;
     }
   };
 

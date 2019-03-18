@@ -134,7 +134,7 @@ class Example extends React.Component {
     if (column.key === 'county' && row.id === 'id_0') {
       return [
         {
-          icon: <span className="glyphicon glyphicon-remove"></span>,
+          icon: <span className="glyphicon glyphicon-remove" />,
           callback: () => { alert('Deleting'); }
         },
         {

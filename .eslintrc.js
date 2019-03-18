@@ -319,7 +319,7 @@ const rules = {
   'react/require-default-props': 0,
   'react/require-optimization': 0,
   'react/require-render-return': 0,
-  'react/self-closing-comp': 0,
+  'react/self-closing-comp': 1,
   'react/sort-comp': 0,
   'react/sort-prop-types': 0,
   'react/style-prop-object': 0,
