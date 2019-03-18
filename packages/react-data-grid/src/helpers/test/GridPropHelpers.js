@@ -21,8 +21,7 @@ export default {
     key: 'count',
     name: 'Count',
     width: 100
-  }
-  ],
+  }],
   rowGetter: function(i) {
     return _rows[i];
   },

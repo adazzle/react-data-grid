@@ -10,7 +10,8 @@ class Example extends React.Component {
     this._columns = [
       { key: 'id', name: 'ID' },
       { key: 'title', name: 'Title' },
-      { key: 'count', name: 'Count' }];
+      { key: 'count', name: 'Count' }
+    ];
 
     this.state = {
       value: 10,

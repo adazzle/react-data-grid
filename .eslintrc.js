@@ -150,7 +150,7 @@ const rules = {
 
   // Stylistic Issues
   // https://eslint.org/docs/rules/#stylistic-issues
-  'array-bracket-newline': 0,
+  'array-bracket-newline': [1, 'consistent'],
   'array-bracket-spacing': 1,
   'array-element-newline': 0,
   'block-spacing': 1,

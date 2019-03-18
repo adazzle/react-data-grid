@@ -48,7 +48,8 @@ class Example extends React.Component {
         name: 'Expected Complete',
         width: 200
       },
-      ...extraColumns];
+      ...extraColumns
+    ];
 
     this._columns = columns;
     this.state = null;
