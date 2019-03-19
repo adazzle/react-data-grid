@@ -5,6 +5,7 @@
   "scripts": {
     "docs": "node docs/utils/docsGen.js",
     "test": "jest",
+    "test-dev": "jest --watchAll",
     "postinstall": "lerna bootstrap --no-ci",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "node webpack-dev-server.js",
@@ -30,7 +31,6 @@
     "eslint-plugin-react": "^7.12.4",
     "faker": "^4.1.0",
     "immutable": "^3.7.3",
-    "jasmine-core": "^3.3.0",
     "jest": "^24.5.0",
     "lerna": "^3.13.1",
     "minimist": "^1.1.0",
