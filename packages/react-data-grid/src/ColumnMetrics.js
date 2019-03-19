@@ -101,9 +101,6 @@ function areColumnsImmutable(prevColumns, nextColumns) {
 }
 
 function compareEachColumn(prevColumns, nextColumns, isSameColumn) {
-  let i;
-  let len;
-  let column;
   const prevColumnsByKey = {};
   const nextColumnsByKey = {};
 
@@ -112,13 +109,13 @@ function compareEachColumn(prevColumns, nextColumns, isSameColumn) {
     return false;
   }
 
-  for (i = 0, len = getSize(prevColumns); i < len; i++) {
-    column = prevColumns[i];
+  for (let i = 0, len = getSize(prevColumns); i < len; i++) {
+    const column = prevColumns[i];
     prevColumnsByKey[column.key] = column;
   }
 
-  for (i = 0, len = getSize(nextColumns); i < len; i++) {
-    column = nextColumns[i];
+  for (let i = 0, len = getSize(nextColumns); i < len; i++) {
+    const column = nextColumns[i];
     nextColumnsByKey[column.key] = column;
     const prevColumn = prevColumnsByKey[column.key];
     if (prevColumn === undefined || !isSameColumn(prevColumn, column)) {
@@ -126,8 +123,8 @@ function compareEachColumn(prevColumns, nextColumns, isSameColumn) {
     }
   }
 
-  for (i = 0, len = getSize(prevColumns); i < len; i++) {
-    column = prevColumns[i];
+  for (let i = 0, len = getSize(prevColumns); i < len; i++) {
+    const column = prevColumns[i];
     const nextColumn = nextColumnsByKey[column.key];
     if (nextColumn === undefined) {
       return false;

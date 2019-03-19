@@ -207,7 +207,7 @@ const rules = {
   'no-nested-ternary': 0,
   'no-new-object': 1,
   'no-plusplus': 0,
-  'no-restricted-syntax': 0,
+  'no-restricted-syntax': [2, 'SequenceExpression'],
   'no-tabs': 1,
   'no-ternary': 0,
   'no-trailing-spaces': 1,
