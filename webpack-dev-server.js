@@ -15,9 +15,7 @@ const config = {
   resolve: {
     symlinks: false
   },
-  externals: {
-    faker: 'faker'
-  },
+  externals: {},
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ]

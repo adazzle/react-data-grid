@@ -44,7 +44,7 @@
     "enzyme-adapter-react-16": "^1.10.0",
     "eslint": "^5.15.1",
     "eslint-plugin-react": "^7.12.4",
-    "faker": "^3.0.1",
+    "faker": "^4.1.0",
     "gh-pages": "^2.0.1",
     "immutable": "^3.7.3",
     "jasmine-core": "^3.3.0",
