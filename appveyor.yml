@@ -1,44 +1,25 @@
+# https://www.appveyor.com/docs/appveyor-yml/
 shallow_clone: true
 image: Visual Studio 2017
 branches:
   only:
     - master
     - next
+
 environment:
   nodejs_version: "11"
-  access_token:
-    secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
-  npmrc_token:
-    secure: +0xEbrDGXwT78XtVnyF0CQcqiKZCgQSVq9DZaIH2YhI=
 
-
-# Install scripts. (runs after repo cloning)
 install:
   - ps: Install-Product node $env:nodejs_version x64
-  # Output useful info for debugging.
   - node --version
   - npm --version
-  # Decrypt .npmrc.enc file for publishing purposes if not pull request build and not scheduled build
-  # Lerna needs to have a npmrc for each package folder as it does not use the root npmrc https://github.com/lerna/lerna/issues/296#issuecomment-261080345
-  - ps: >-
-      if(!$env:APPVEYOR_SCHEDULED_BUILD -and !$env:appveyor_pull_request_number -and $env:APPVEYOR_REPO_BRANCH -eq 'next') {
-        ./ci/publish/decrypt-npmrc.ps1
-        ./ci/publish/copy-npmrc.ps1
-      }
-  - set PATH=%APPDATA%\npm;%PATH%
   - npm install
-  - ps: ./ci/buildScripts/build.ps1
 
-# Post-install test scripts.
+before_build:
+  - npm run eslint
+
+build_script:
+  - npm run build
+
 test_script:
-  # run tests
   - npm test
-  - ps: ./test/uploadResults.ps1
-
-
-# Don't run MS build step
-build: off
-
-on_success:
-  # If merging to next branch, publish with 'next' tag
-  - powershell ./ci/publish/publishNext.ps1

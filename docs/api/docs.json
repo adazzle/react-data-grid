@@ -233,13 +233,6 @@
         "returns": null
       },
       {
-        "name": "getKnownDivProps",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
         "name": "getCellActions",
         "docblock": null,
         "modifiers": [],
@@ -1824,13 +1817,6 @@
             "type": null
           }
         ],
-        "returns": null
-      },
-      {
-        "name": "getKnownDivProps",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
         "returns": null
       }
     ],

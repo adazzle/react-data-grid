@@ -1,12 +1,10 @@
 node_modules
-lib
-**/build
-test/reports
-test/coverage
-dist
-.npmrc
+/packages/*/dist
+/test/reports
+/test/coverage
 npm-debug.log
 lerna-debug.log
 **.orig
 .vscode
 package-lock.json
+/.eslintcache
