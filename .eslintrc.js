@@ -198,7 +198,7 @@ const rules = {
   'no-bitwise': 0,
   'no-continue': 0,
   'no-inline-comments': 0,
-  'no-lonely-if': 0,
+  'no-lonely-if': 1,
   'no-mixed-operators': 0,
   'no-mixed-spaces-and-tabs': 1,
   'no-multi-assign': 0,
