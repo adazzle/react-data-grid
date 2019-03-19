@@ -10,7 +10,8 @@ class Example extends React.Component {
     this._columns = [
       { key: 'id', name: 'ID' },
       { key: 'title', name: 'Title' },
-      { key: 'count', name: 'Count' }];
+      { key: 'count', name: 'Count' }
+    ];
 
     this.state = {
       value: 10,
@@ -23,7 +24,7 @@ class Example extends React.Component {
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
-        title: 'Title ' + i,
+        title: `Title ${i}`,
         count: i * 1000
       });
     }
@@ -49,7 +50,8 @@ class Example extends React.Component {
           <button
             style={{ padding: '5px' }}
             onClick={() => this.setState({ scrollToRowIndex: this.state.value })}
-          >Scroll to row</button>
+          >Scroll to row
+          </button>
         </div>
         <ReactDataGrid
           columns={this._columns}

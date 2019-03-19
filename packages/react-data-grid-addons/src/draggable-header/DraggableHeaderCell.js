@@ -63,7 +63,7 @@ const target = {
     const source = monitor.getItem().key;
     const targetKey = props.column.key;
     return {
-      source: source,
+      source,
       target: targetKey
     };
   }

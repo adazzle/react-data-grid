@@ -45,4 +45,3 @@ describe('RowUtils Tests', () => {
     });
   });
 });
-

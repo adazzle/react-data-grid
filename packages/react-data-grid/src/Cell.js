@@ -171,7 +171,7 @@ export default class Cell extends React.PureComponent {
     const extraClasses = joinClasses({
       'row-selected': this.props.isRowSelected,
       editing: this.isEditorEnabled(),
-      'has-tooltip': this.props.tooltip ? true : false,
+      'has-tooltip': !!this.props.tooltip,
       'rdg-child-cell': this.props.expandableOptions && this.props.expandableOptions.subRowDetails && this.props.expandableOptions.treeDepth > 0,
       'last-column': this.props.column.isLastColumn
     });
@@ -232,7 +232,7 @@ export default class Cell extends React.PureComponent {
   };
 
   createEventDTO = (gridEvents, columnEvents, onColumnEvent) => {
-    const allEvents = Object.assign({}, gridEvents);
+    const allEvents = { ...gridEvents };
 
     for (const eventKey in columnEvents) {
       if (columnEvents.hasOwnProperty(eventKey)) {
@@ -252,7 +252,7 @@ export default class Cell extends React.PureComponent {
   };
 
   getEvents = () => {
-    const columnEvents = this.props.column ? Object.assign({}, this.props.column.events) : undefined;
+    const columnEvents = this.props.column ? ({ ...this.props.column.events }) : undefined;
     const onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
     const gridEvents = {
       onClick: this.onCellClick,
@@ -305,7 +305,7 @@ export default class Cell extends React.PureComponent {
 
     let cellDeleter;
 
-    const isDeleteSubRowEnabled = this.props.cellMetaData.onDeleteSubRow ? true : false;
+    const isDeleteSubRowEnabled = !!this.props.cellMetaData.onDeleteSubRow;
 
     if (treeDepth > 0 && isExpandCell) {
       cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow} isDeleteSubRowEnabled={isDeleteSubRowEnabled} />;
@@ -313,7 +313,7 @@ export default class Cell extends React.PureComponent {
 
     const tooltip = this.props.tooltip && (<span className="cell-tooltip-text">{this.props.tooltip}</span>);
     const classes = joinClasses('react-grid-Cell__value',
-      { 'cell-tooltip': this.props.tooltip ? true : false }
+      { 'cell-tooltip': !!this.props.tooltip }
     );
 
     return (

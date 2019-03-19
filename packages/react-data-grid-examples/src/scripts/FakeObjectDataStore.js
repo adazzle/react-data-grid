@@ -5,7 +5,7 @@ const _cache = [];
 
 function createFakeRowObjectData(/*number*/ index) {
   return {
-    id: 'id_' + index,
+    id: `id_${index}`,
     avartar: faker.image.avatar(),
     county: faker.address.county(),
     email: faker.internet.email(),
@@ -45,9 +45,9 @@ function createRows(numberOfRows) {
 }
 
 const FakeObjectDataListStore = {
-  getObjectAt: getObjectAt,
-  getSize: getSize,
-  createRows: createRows
+  getObjectAt,
+  getSize,
+  createRows
 };
 
 export default FakeObjectDataListStore;

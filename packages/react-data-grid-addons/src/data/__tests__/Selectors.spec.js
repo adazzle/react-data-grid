@@ -7,7 +7,7 @@ let groupRowsSpy;
 function createRows() {
   const rows = [];
   for (let i = 0; i < 3; i++) {
-    rows.push({ id: i, title: 'Title ' + i, count: i * 1000 });
+    rows.push({ id: i, title: `Title ${i}`, count: i * 1000 });
   }
   return rows;
 }

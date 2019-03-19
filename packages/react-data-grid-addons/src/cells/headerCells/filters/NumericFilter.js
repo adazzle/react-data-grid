@@ -78,7 +78,7 @@ export default class NumericFilter extends React.Component {
         if (obj.indexOf('-') > 0) { // handle dash
           const begin = parseInt(obj.split('-')[0], 10);
           const end = parseInt(obj.split('-')[1], 10);
-          rules.push({ type: RuleType.Range, begin: begin, end: end });
+          rules.push({ type: RuleType.Range, begin, end });
         } else if (obj.indexOf('>') > -1) { // handle greater then
           const begin = parseInt(obj.split('>')[1], 10);
           rules.push({ type: RuleType.GreaterThen, value: begin });
@@ -109,7 +109,7 @@ export default class NumericFilter extends React.Component {
   }
 
   render() {
-    const inputKey = 'header-filter-' + this.props.column.key;
+    const inputKey = `header-filter-${this.props.column.key}`;
     const columnStyle = {
       float: 'left',
       marginRight: 5,

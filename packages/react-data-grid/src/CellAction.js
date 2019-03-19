@@ -63,8 +63,8 @@ export default class CellAction extends React.Component {
           { typeof (this.props.action.icon) === 'string' ? <span className={this.props.action.icon} /> : this.props.action.icon }
         </div>
         {
-          isActionMenu &&
-          this.state.isMenuOpen && (
+          isActionMenu
+          && this.state.isMenuOpen && (
             <div className="rdg-cell-action-menu">
               {this.onGetMenuOptions()}
             </div>

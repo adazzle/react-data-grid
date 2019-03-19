@@ -28,13 +28,12 @@ function getItemStyles(props) {
   const { x, y } = currentOffset;
   const transform = `translate(${x}px, ${y}px)`;
   return {
-    transform: transform,
+    transform,
     WebkitTransform: transform
   };
 }
 
 class CustomDragLayer extends Component {
-
   isDraggedRowSelected(selectedRows) {
     const { item, rowSelection } = this.props;
     if (selectedRows && selectedRows.length > 0) {
@@ -50,7 +49,7 @@ class CustomDragLayer extends Component {
     if (rowSelection && rowSelection.selectBy.keys) {
       const rows = this.props.rows;
       const { rowKey, values } = rowSelection.selectBy.keys;
-      const selectedRows = Selectors.getSelectedRowsByKey({ rowKey: rowKey, selectedKeys: values, rows: rows });
+      const selectedRows = Selectors.getSelectedRowsByKey({ rowKey, selectedKeys: values, rows });
       draggedRows = this.isDraggedRowSelected(selectedRows) ? selectedRows : [this.props.rows[this.props.item.idx]];
     } else {
       draggedRows = [this.props.rows[this.props.item.idx]];

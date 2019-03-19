@@ -6,7 +6,6 @@ import { editors } from 'react-data-grid';
 const { EditorBase } = editors;
 
 export default class DropDownEditor extends EditorBase {
-
   getInputNode() {
     return ReactDOM.findDOMNode(this);
   }

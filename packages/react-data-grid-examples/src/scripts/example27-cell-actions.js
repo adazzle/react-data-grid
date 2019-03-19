@@ -11,7 +11,7 @@ const { ImageFormatter } = Formatters;
 faker.locale = 'en_GB';
 
 const createFakeRowObjectData = (index) => ({
-  id: 'id_' + index,
+  id: `id_${index}`,
   avartar: faker.image.avatar(),
   county: faker.address.county(),
   email: faker.internet.email(),
@@ -135,18 +135,18 @@ class Example extends React.Component {
       return [
         {
           icon: <span className="glyphicon glyphicon-remove" />,
-          callback: () => { alert('Deleting'); }
+          callback() { alert('Deleting'); }
         },
         {
           icon: 'glyphicon glyphicon-link',
           actions: [
             {
               text: 'Campaign Linking',
-              callback: () => { alert('Navigating to camapign linking'); }
+              callback() { alert('Navigating to camapign linking'); }
             },
             {
               text: 'Option 2',
-              callback: () => { alert('Navigating to camapign linking'); }
+              callback() { alert('Navigating to camapign linking'); }
             }
           ]
         }
@@ -176,8 +176,8 @@ const exampleDescription = (
     <p>This feature was designed in such a way that one can decide which combination of row/columns should have actions on them.</p>
     <p>To use the cell action simply create a function called <code>getCellActions</code> which will be passed to your react data grid instance</p>
     <p>The function is called by react data grid for each cell with a column and row object, you can then create any condition you deem fit and return an array of objects to be rendered</p>
-    <p><code>{"[{actionIcon, actionCallback}]"}</code> will render an action button</p>
-    <p><code>{"[{actionIcon, actions: [{actionIcon, actionText, actionCallback}]}]"}</code> will render an action menu with the button opening a dropdown of actions</p>
+    <p><code>{'[{actionIcon, actionCallback}]'}</code> will render an action button</p>
+    <p><code>{'[{actionIcon, actions: [{actionIcon, actionText, actionCallback}]}]'}</code> will render an action menu with the button opening a dropdown of actions</p>
   </div>
 );
 

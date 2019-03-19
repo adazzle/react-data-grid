@@ -11,13 +11,13 @@ describe('Header Row Unit Tests', () => {
   const defaultProps = {
     rowType: 'header',
     columns: helpers.columns,
-    onColumnResize: function() {},
-    onColumnResizeEnd: () => {},
+    onColumnResize() {},
+    onColumnResizeEnd() {},
     onSort: jasmine.createSpy(),
     sortDirection: 'NONE',
     sortColumn: null,
     height: 35,
-    onFilterChange: () => {}
+    onFilterChange() {}
   };
 
   const setup = (testProps) => {
@@ -145,7 +145,8 @@ describe('Header Row Unit Tests', () => {
       onColumnResize: jasmine.createSpy(),
       onColumnResizeEnd: jasmine.createSpy(),
       width: 200,
-      style: { overflow: 'scroll',
+      style: {
+        overflow: 'scroll',
         width: 201,
         height: 36,
         position: 'relative'

@@ -11,7 +11,7 @@ class PercentCompleteFormatter extends React.Component {
   };
 
   render() {
-    const percentComplete = this.props.value + '%';
+    const percentComplete = `${this.props.value}%`;
     return (
       <div className="progress">
         <div className="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{ width: percentComplete }}>
@@ -71,7 +71,7 @@ class Example extends React.Component {
     for (let i = 1; i < 100; i++) {
       rows.push({
         id: i,
-        task: 'Task ' + i,
+        task: `Task ${i}`,
         complete: Math.min(100, Math.round(Math.random() * 110)),
         priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
         issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],
@@ -109,4 +109,3 @@ export default exampleWrapper({
   examplePath: './scripts/example05-custom-formatters.js',
   examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/7/'
 });
-

@@ -9,16 +9,16 @@ import SimpleCellFormatter from '../formatters/SimpleCellFormatter';
 const testCellMetaData = {
   selected: { idx: 2, rowIdx: 3 },
   dragged: null,
-  onCellClick: function() {},
-  onCellFocus: function() {},
-  onCellContextMenu: function() {},
-  onCellDoubleClick: function() {},
-  onCommit: function() {},
-  onCommitCancel: function() {},
+  onCellClick() {},
+  onCellFocus() {},
+  onCellContextMenu() {},
+  onCellDoubleClick() {},
+  onCommit() {},
+  onCommitCancel() {},
   copied: null,
-  handleDragEnterRow: function() {},
-  handleTerminateDrag: function() {},
-  onColumnEvent: function() {}
+  handleDragEnterRow() {},
+  handleTerminateDrag() {},
+  onColumnEvent() {}
 };
 
 const testProps = {
@@ -29,7 +29,7 @@ const testProps = {
   isExpanded: false,
   expandableOption: {},
   cellMetaData: testCellMetaData,
-  handleDragStart: () => {},
+  handleDragStart() {},
   rowData: { name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Absolutely' },
   height: 40,
   name: 'JT'
@@ -99,7 +99,7 @@ describe('Cell Tests', () => {
       idx: 21,
       selected: { idx: 18 },
       height: 35,
-      ref: () => {},
+      ref() {},
       column: helpers.columns[1],
       value: 'allValue',
       isExpanded: true,
@@ -172,7 +172,7 @@ describe('Cell Tests', () => {
 
   describe('CellActions', () => {
     const setup = (propsOverride = {}) => {
-      const props = Object.assign({}, {
+      const props = {
         rowIdx: 18,
         idx: 19,
         column: helpers.columns[0],
@@ -194,8 +194,8 @@ describe('Cell Tests', () => {
         },
         rowData: helpers.rowGetter(11),
         expandableOptions: { key: 'reqValue' },
-        isScrolling: false
-      }, propsOverride);
+        isScrolling: false, ...propsOverride
+      };
 
       const wrapper = shallow(<Cell {...props} />);
       return {

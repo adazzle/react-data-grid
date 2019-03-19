@@ -48,7 +48,8 @@ class Example extends React.Component {
         name: 'Expected Complete',
         width: 200
       },
-      ...extraColumns];
+      ...extraColumns
+    ];
 
     this._columns = columns;
     this.state = null;
@@ -63,7 +64,7 @@ class Example extends React.Component {
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
-        task: 'Task ' + i,
+        task: `Task ${i}`,
         complete: Math.min(100, Math.round(Math.random() * 110)),
         priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
         issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],

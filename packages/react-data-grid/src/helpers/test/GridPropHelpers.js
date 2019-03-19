@@ -2,7 +2,7 @@ const _rows = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
-    title: 'Title ' + i,
+    title: `Title ${i}`,
     count: i * 1000
   });
 }
@@ -21,12 +21,11 @@ export default {
     key: 'count',
     name: 'Count',
     width: 100
-  }
-  ],
-  rowGetter: function(i) {
+  }],
+  rowGetter(i) {
     return _rows[i];
   },
-  rowsCount: function() {
+  rowsCount() {
     return _rows.length;
   },
   cellMetaData: {
@@ -48,4 +47,3 @@ export const fakeCellMetaData = {
   onCellDoubleClick: () => null,
   onDragEnter: () => null
 };
-

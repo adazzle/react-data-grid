@@ -16,10 +16,10 @@ const viewportProps = {
     totalColumnWidth: 2600,
     width: 2600
   },
-  rowGetter: () => { },
+  rowGetter() { },
   rowsCount: 50,
   rowHeight: 35,
-  onScroll: () => { },
+  onScroll() { },
   minHeight: 500,
   overScan: {
     colsStart: 5,
@@ -30,13 +30,13 @@ const viewportProps = {
   cellMetaData: {
     selected: {},
     dragged: {},
-    onCellClick: () => { },
-    onCellDoubleClick: () => { },
-    onCommit: () => { },
-    onCommitCancel: () => { },
+    onCellClick() { },
+    onCellDoubleClick() { },
+    onCommit() { },
+    onCommitCancel() { },
     copied: {},
-    handleDragEnterRow: () => { },
-    handleTerminateDrag: () => { }
+    handleDragEnterRow() { },
+    handleTerminateDrag() { }
   },
   rowKey: 'Id'
 };
@@ -50,10 +50,10 @@ const viewportPropsNoColumns = { // when creating anew plan copying from an exis
     totalWidth: 0,
     width: 2010
   },
-  rowGetter: () => { },
+  rowGetter() { },
   rowsCount: 50,
   rowHeight: 35,
-  onScroll: () => { },
+  onScroll() { },
   minHeight: 500,
   overScan: {
     colsStart: 5,
@@ -64,13 +64,13 @@ const viewportPropsNoColumns = { // when creating anew plan copying from an exis
   cellMetaData: {
     selected: {},
     dragged: {},
-    onCellClick: () => { },
-    onCellDoubleClick: () => { },
-    onCommit: () => { },
-    onCommitCancel: () => { },
+    onCellClick() { },
+    onCellDoubleClick() { },
+    onCommit() { },
+    onCommitCancel() { },
     copied: {},
-    handleDragEnterRow: () => { },
-    handleTerminateDrag: () => { }
+    handleDragEnterRow() { },
+    handleTerminateDrag() { }
   },
   rowKey: 'Id'
 };
@@ -96,8 +96,8 @@ describe('<Viewport />', () => {
       rowOverscanEndIdx: 23,
       rowOverscanStartIdx: 6,
       height: viewportProps.minHeight,
-      scrollLeft: scrollLeft,
-      scrollTop: scrollTop,
+      scrollLeft,
+      scrollTop,
       rowVisibleEndIdx: 21,
       rowVisibleStartIdx: 6,
       isScrolling: true,
@@ -119,7 +119,7 @@ describe('<Viewport />', () => {
       width: 100
     };
     const updatedColumns = helpers.columns.concat(extraColumn);
-    const newProps = Object.assign({}, viewportProps, { columnMetrics: Object.assign({}, viewportProps.columnMetrics, { columns: updatedColumns }) });
+    const newProps = { ...viewportProps, columnMetrics: { ...viewportProps.columnMetrics, columns: updatedColumns } };
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: updatedColumns.length,
@@ -141,7 +141,7 @@ describe('<Viewport />', () => {
   it('should update when given height changed', () => {
     const wrapper = shallow(<Viewport {...viewportProps} />);
     const newHeight = 1000;
-    const newProps = Object.assign({}, viewportProps, { minHeight: newHeight });
+    const newProps = { ...viewportProps, minHeight: newHeight };
     wrapper.setProps(newProps);
     expect(wrapper.state()).toEqual({
       colOverscanEndIdx: helpers.columns.length,

@@ -86,7 +86,7 @@ const columns = [
     width: 200,
     resizable: true,
     events: {
-      onDoubleClick: function() {
+      onDoubleClick() {
         console.log('The user double clicked on title column');
       }
     }

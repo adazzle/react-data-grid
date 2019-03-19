@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Column from '../prop-shapes/Column';
 
 export default class EditorBase extends React.Component {
-
   getStyle() {
     return {
       width: '100%'
@@ -30,7 +29,6 @@ export default class EditorBase extends React.Component {
   inheritContainerStyles() {
     return true;
   }
-
 }
 
 EditorBase.propTypes = {

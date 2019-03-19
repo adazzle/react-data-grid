@@ -23,7 +23,7 @@ class Example extends React.Component {
     for (let i = 1; i < 1000000; i++) {
       rows.push({
         id: i,
-        task: 'Task ' + i,
+        task: `Task ${i}`,
         complete: 'a',
         priority: 'b',
         issueType: 'c'

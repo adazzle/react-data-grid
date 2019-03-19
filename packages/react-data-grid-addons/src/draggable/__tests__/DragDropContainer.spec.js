@@ -40,7 +40,7 @@ describe('<DragDropContainer />', () => {
 
   it('getDragPreviewRow should override rowGetter to provide rows to rowDragLayer', () => {
     const props = {
-      getDragPreviewRow: index => index + 'a'
+      getDragPreviewRow: index => `${index}a`
     };
     render(props);
     const rowDragLayer = wrapper.find(RowDragLayer);

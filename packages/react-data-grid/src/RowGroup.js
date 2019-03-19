@@ -12,7 +12,7 @@ export default class RowGroup extends Component {
     const shouldExpand = expand == null ? !this.props.isExpanded : expand;
     const meta = this.props.cellMetaData;
     if (meta != null && typeof meta.onRowExpandToggle === 'function') {
-      meta.onRowExpandToggle({ rowIdx: this.props.idx, shouldExpand: shouldExpand, columnGroupName: this.props.columnGroupName, name: this.props.name });
+      meta.onRowExpandToggle({ rowIdx: this.props.idx, shouldExpand, columnGroupName: this.props.columnGroupName, name: this.props.name });
     }
   }
 

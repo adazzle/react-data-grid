@@ -29,7 +29,7 @@ class Example extends React.Component {
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
-        title: 'Title ' + i,
+        title: `Title ${i}`,
         count: i * 1000,
         isSelected: false
       });
@@ -44,7 +44,7 @@ class Example extends React.Component {
 
   onRowClick = (rowIdx, row) => {
     const rows = this.state.rows.slice();
-    rows[rowIdx] = Object.assign({}, row, { isSelected: !row.isSelected });
+    rows[rowIdx] = { ...row, isSelected: !row.isSelected };
     this.setState({ rows });
   };
 
@@ -54,7 +54,7 @@ class Example extends React.Component {
 
       const rows = [];
       this.state.rows.forEach((r) => {
-        rows.push(Object.assign({}, r, { isSelected: true }));
+        rows.push({ ...r, isSelected: true });
       });
 
       this.setState({ rows });

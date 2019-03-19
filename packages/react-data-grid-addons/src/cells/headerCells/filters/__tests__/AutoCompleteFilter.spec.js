@@ -15,7 +15,7 @@ function createRows() {
 function fakeGetValidFilterValues() {
   const options = [];
   for (let i = 1; i <= 2; i++) {
-    options.push({ label: 'Title ' + i, value: i });
+    options.push({ label: `Title ${i}`, value: i });
   }
   return options;
 }

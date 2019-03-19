@@ -152,14 +152,17 @@ export default class GridRunner {
     this.cell.simulate('doubleClick');
     return this;
   }
+
   getEditor() {
     return this.cell.find('input');
   }
+
   setValue(val) {
     this.getEditor().instance().value = val;
     // remember to set the value via the dom node, not the component!
     return this;
   }
+
   // you MUST have set the grid to render into body to use this
   // chrome (et al) dont do cursor positions unless you are properly visibile
   setCursor(start, end = start) {
@@ -170,6 +173,7 @@ export default class GridRunner {
             You need to specify renderIntoBody:true in the constructor for GridRunner`);
     return this;
   }
+
   keyDown(ev, element = this.getEditor()) {
     element.simulate('keyDown', ev);
     return this;
@@ -214,28 +218,33 @@ export default class GridRunner {
     expect(this.cell.props().value).toEqual(val);
     return this;
   }
+
   isNotEditable() {
     const editor = this.cell.find('input');
     expect(editor.length === 0).toBe(true);
     return this;
   }
+
   isEditable() {
     const editor = this.cell.find('input');
     expect(editor.length > 0).toBe(true);
     return this;
   }
+
   hasSelected({ rowIdx, cellIdx }) {
     // and should move to the appropriate cell/row
     const cell = this.getCell({ cellIdx, rowIdx });
     expect(cell.instance().isSelected()).toBe(true);
     return this;
   }
+
   hasCopied({ cellIdx, rowIdx }) {
     const baseGrid = this.grid.reactDataGrid;
     expect(baseGrid.state.copied.idx).toEqual(cellIdx); // increment by 1 due to checckbox col
     expect(baseGrid.state.copied.rowIdx).toEqual(rowIdx);
     expect(ReactDOM.findDOMNode(this.cell.instance()).className.indexOf('copied') > -1).toBe(true);
   }
+
   hasDragged({ from, to, col, cellKey }) {
     // check onCellDrag called with correct data
     expect(this.handleCellDragSpy).toHaveBeenCalled();
