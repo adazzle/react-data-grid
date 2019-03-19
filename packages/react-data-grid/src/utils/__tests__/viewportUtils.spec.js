@@ -14,7 +14,8 @@ describe('viewportUtils', () => {
         minHeight: 100,
         rowOffsetHeight: 5,
         rowHeight: 20,
-        rowsCount: 100, ...propsOverrides
+        rowsCount: 100,
+        ...propsOverrides
       };
       const state = getGridState(props);
 

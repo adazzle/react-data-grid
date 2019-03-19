@@ -50,7 +50,7 @@ export default class ReactDataGrid extends React.Component {
     enableRowSelect: deprecate(PropTypes.func, deprecationWarning('enableRowSelect', 'rowSelection')),
     /** Deprecated: Function called when grid is updated via a cell commit. Use onGridRowsUpdated instead*/
     onRowUpdated: deprecate(PropTypes.func, deprecationWarning('onRowUpdated', 'onGridRowsUpdated')),
-    /** 	A function called for each rendered row that should return a plain key/value pair object */
+    /** A function called for each rendered row that should return a plain key/value pair object */
     rowGetter: PropTypes.func.isRequired,
     /** The number of rows to be rendered */
     rowsCount: PropTypes.number.isRequired,

@@ -143,10 +143,8 @@ export default class HeaderRow extends React.Component {
     this.props.columns.forEach((column, i) => {
       if (isFrozen(column)) {
         this.cells[i].setScrollLeft(scrollLeft);
-      } else {
-        if (this.cells[i] && this.cells[i].removeScroll) {
-          this.cells[i].removeScroll();
-        }
+      } else if (this.cells[i] && this.cells[i].removeScroll) {
+        this.cells[i].removeScroll();
       }
     });
   };

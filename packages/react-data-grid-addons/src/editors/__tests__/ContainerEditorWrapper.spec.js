@@ -15,7 +15,7 @@ class FakeContainer extends React.Component {
 }
 
 FakeContainer.propTypes = {
-  refCallback: PropTypes.func.IsRequired
+  refCallback: PropTypes.func.isRequired
 };
 
 describe('ContainerEditorWrapper', () => {

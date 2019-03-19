@@ -194,7 +194,8 @@ describe('Cell Tests', () => {
         },
         rowData: helpers.rowGetter(11),
         expandableOptions: { key: 'reqValue' },
-        isScrolling: false, ...propsOverride
+        isScrolling: false,
+        ...propsOverride
       };
 
       const wrapper = shallow(<Cell {...props} />);
