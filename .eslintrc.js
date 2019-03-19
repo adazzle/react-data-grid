@@ -254,7 +254,7 @@ const rules = {
   'no-confusing-arrow': 0,
   'no-const-assign': 0,
   'no-dupe-class-members': 0,
-  'no-duplicate-imports': 0,
+  'no-duplicate-imports': 1,
   'no-new-symbol': 0,
   'no-restricted-imports': 0,
   'no-this-before-super': 0,
