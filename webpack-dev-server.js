@@ -19,9 +19,7 @@ const specificConfig = {
   resolve: {
     symlinks: false
   },
-  externals: {
-    faker: 'faker'
-  },
+  externals: {},
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ]
