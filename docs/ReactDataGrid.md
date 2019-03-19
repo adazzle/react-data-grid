@@ -209,7 +209,7 @@ Called just before a cell is about to be edited
 
 **type:** func  
 
- **defaultValue:** `() => { }`
+ **defaultValue:** `function() { }`
 
 
 ### `onCellCopyPaste`
