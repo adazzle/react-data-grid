@@ -1,8 +1,12 @@
 {
   "version": "6.1.0-0",
+  "ignoreChanges": [
+    "*.spec.*",
+    "*.md"
+  ],
   "command": {
     "publish": {
-      "ignoreChanges": ["*.spec.*", "*.md"],
+      "allowBranch": ["master", "next"],
       "message": "Publish %s"
     },
     "bootstrap": {

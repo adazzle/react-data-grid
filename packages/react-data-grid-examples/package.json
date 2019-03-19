@@ -1,20 +1,7 @@
 {
   "name": "react-data-grid-examples",
-  "version": "6.1.0-0",
-  "description": "A set of examples for the grid",
-  "author": "Adazzle",
+  "private": true,
   "license": "MIT",
-  "repository": "adazzle/react-data-grid",
-  "homepage": "https://github.com/adazzle/react-data-grid",
-  "bugs": {
-    "url": "https://github.com/adazzle/react-data-grid/issues"
-  },
-  "keywords": [
-    "react",
-    "react-data-grid",
-    "examples",
-    "react-data-grid-addons"
-  ],
   "dependencies": {
     "immutability-helper": "^2.7.0",
     "react-data-grid": "^6.1.0-0",
