@@ -19,15 +19,15 @@ describe('Empty Grid Tests', () => {
     headerRows: [],
     rowsCount: 0,
     rowOffsetHeight: 50,
-    rowGetter: function() {
+    rowGetter() {
       return [];
     },
     minHeight: 600,
     emptyRowsView: EmptyRowsView,
-    onViewportKeydown: () => {},
-    onViewportDragStart: () => {},
-    onViewportDragEnd: () => {},
-    onViewportDoubleClick: () => {},
+    onViewportKeydown() {},
+    onViewportDragStart() {},
+    onViewportDragEnd() {},
+    onViewportDoubleClick() {},
     cellMetaData: fakeCellMetaData,
     rowKey: 'id',
     enableCellSelect: true,

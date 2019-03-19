@@ -192,8 +192,8 @@ export default class Viewport extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { rowHeight, rowsCount } = nextProps;
-    if (this.props.rowHeight !== nextProps.rowHeight ||
-      this.props.minHeight !== nextProps.minHeight) {
+    if (this.props.rowHeight !== nextProps.rowHeight
+      || this.props.minHeight !== nextProps.minHeight) {
       const { scrollTop, scrollLeft, height } = getGridState(nextProps);
       this.updateScroll({
         scrollTop,

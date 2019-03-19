@@ -29,7 +29,7 @@ class Example extends React.Component {
     for (let i = 1; i < 1000; i++) {
       rows.push({
         id: i,
-        title: 'Title ' + i,
+        title: `Title ${i}`,
         count: i * 1000,
         isSelected: false
       });
@@ -43,16 +43,16 @@ class Example extends React.Component {
   };
 
   onStart = (selectedRange) => {
-    this.textarea.value += 'START: ' +
-      `(${selectedRange.topLeft.idx}, ${selectedRange.topLeft.rowIdx}) -> ` +
-      `(${selectedRange.bottomRight.idx}, ${selectedRange.bottomRight.rowIdx})\n`;
+    this.textarea.value += 'START: '
+      + `(${selectedRange.topLeft.idx}, ${selectedRange.topLeft.rowIdx}) -> `
+      + `(${selectedRange.bottomRight.idx}, ${selectedRange.bottomRight.rowIdx})\n`;
     this.textarea.scrollTop = this.textarea.scrollHeight;
   };
 
   onUpdate = (selectedRange) => {
-    this.textarea.value += 'UPDATE: ' +
-      `(${selectedRange.topLeft.idx}, ${selectedRange.topLeft.rowIdx}) -> ` +
-      `(${selectedRange.bottomRight.idx}, ${selectedRange.bottomRight.rowIdx})\n`;
+    this.textarea.value += 'UPDATE: '
+      + `(${selectedRange.topLeft.idx}, ${selectedRange.topLeft.rowIdx}) -> `
+      + `(${selectedRange.bottomRight.idx}, ${selectedRange.bottomRight.rowIdx})\n`;
     this.textarea.scrollTop = this.textarea.scrollHeight;
   };
 

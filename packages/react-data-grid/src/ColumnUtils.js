@@ -48,4 +48,3 @@ export function getValue(column, property) {
 export function isFrozen(column) {
   return column.locked === true || column.frozen === true;
 }
-

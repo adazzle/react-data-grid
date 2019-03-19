@@ -14,7 +14,7 @@ const { ImageFormatter } = Formatters;
 faker.locale = 'en_GB';
 
 const createFakeRowObjectData = (index) => ({
-  id: 'id_' + index,
+  id: `id_${index}`,
   avartar: faker.image.avatar(),
   county: faker.address.county(),
   email: faker.internet.email(),
@@ -183,10 +183,10 @@ class Example extends React.Component {
   };
 
   onRowExpandToggle = ({ columnGroupName, name, shouldExpand }) => {
-    const expandedRows = Object.assign({}, this.state.expandedRows);
-    expandedRows[columnGroupName] = Object.assign({}, expandedRows[columnGroupName]);
+    const expandedRows = { ...this.state.expandedRows };
+    expandedRows[columnGroupName] = { ...expandedRows[columnGroupName] };
     expandedRows[columnGroupName][name] = { isExpanded: shouldExpand };
-    this.setState({ expandedRows: expandedRows });
+    this.setState({ expandedRows });
   };
 
   render() {

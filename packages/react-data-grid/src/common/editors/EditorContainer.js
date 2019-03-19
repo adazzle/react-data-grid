@@ -41,7 +41,7 @@ export default class EditorContainer extends React.Component {
       this.setTextInputFocus();
       if (!this.getEditor().disableContainerStyles) {
         inputNode.className += ' editor-main';
-        inputNode.style.height = this.props.height - 1 + 'px';
+        inputNode.style.height = `${this.props.height - 1}px`;
       }
     }
   }
@@ -59,7 +59,7 @@ export default class EditorContainer extends React.Component {
   }
 
   isKeyExplicitlyHandled = (key) => {
-    return isFunction(this['onPress' + key]);
+    return isFunction(this[`onPress${key}`]);
   };
 
   checkAndCall = (methodName, args) => {
@@ -73,7 +73,7 @@ export default class EditorContainer extends React.Component {
       this.checkAndCall('onPressKeyWithCtrl', e);
     } else if (this.isKeyExplicitlyHandled(e.key)) {
       // break up individual keyPress events to have their own specific callbacks
-      const callBack = 'onPress' + e.key;
+      const callBack = `onPress${e.key}`;
       this.checkAndCall(callBack, e);
     } else if (isKeyPrintable(e.keyCode)) {
       e.stopPropagation();
@@ -237,7 +237,7 @@ export default class EditorContainer extends React.Component {
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       const cellKey = this.props.column.key;
-      onCommit({ cellKey: cellKey, rowIdx: this.props.rowIdx, updated: updated, key: opts.key });
+      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated, key: opts.key });
     }
   };
 

@@ -23,8 +23,8 @@ class Example extends React.Component {
         editor: <DropDownEditor options={titles} />,
         resizable: true,
         events: {
-          onDoubleClick: function(ev, args) {
-            console.log('The user entered edit mode on title column with rowIdx: ' + args.rowIdx + ' & rowId: ' + args.rowId);
+          onDoubleClick(ev, args) {
+            console.log(`The user entered edit mode on title column with rowIdx: ${args.rowIdx} & rowId: ${args.rowId}`);
           }
         }
       },
@@ -34,7 +34,7 @@ class Example extends React.Component {
         editable: true,
         resizable: true,
         events: {
-          onKeyDown: function(ev) {
+          onKeyDown(ev) {
             if (ev.key === 'Enter') {
               alert('Thanks for commiting a result with Enter');
             }
@@ -54,7 +54,7 @@ class Example extends React.Component {
       rows.push({
         id: i,
         title: titles[Math.floor((Math.random() * 4))],
-        name: "Name " + i,
+        name: `Name ${i}`,
         age: Math.floor((Math.random() * 100) + 1)
       });
     }
@@ -75,7 +75,7 @@ class Example extends React.Component {
       rows[i] = updatedRow;
     }
 
-    this.setState({ rows: rows });
+    this.setState({ rows });
   };
 
   cellEditWithOneClick = (ev, { idx, rowIdx }) => {

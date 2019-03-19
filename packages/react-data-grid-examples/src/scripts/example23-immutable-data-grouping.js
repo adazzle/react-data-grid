@@ -17,13 +17,13 @@ const _rows = [];
 const _cols = [];
 
 for (let j = 0; j < 50; j++) {
-  _cols.push({ key: 'col' + j, name: 'col' + j, width: 150, draggable: true });
+  _cols.push({ key: `col${j}`, name: `col${j}`, width: 150, draggable: true });
 }
 
 for (let rowIdx = 1; rowIdx < 100; rowIdx++) {
   const row = {};
   _cols.forEach((c, colIdx) => {
-    row[c.key] = '(' + colIdx + ',' + rowIdx + ')';
+    row[c.key] = `(${colIdx},${rowIdx})`;
   });
   _rows.push(row);
 }
@@ -80,10 +80,10 @@ class Example extends React.Component {
   };
 
   onRowExpandToggle = (args) => {
-    const expandedRows = Object.assign({}, this.state.expandedRows);
-    expandedRows[args.columnGroupName] = Object.assign({}, expandedRows[args.columnGroupName]);
+    const expandedRows = { ...this.state.expandedRows };
+    expandedRows[args.columnGroupName] = { ...expandedRows[args.columnGroupName] };
     expandedRows[args.columnGroupName][args.name] = { isExpanded: args.shouldExpand };
-    this.setState({ expandedRows: expandedRows });
+    this.setState({ expandedRows });
   };
 
   render() {

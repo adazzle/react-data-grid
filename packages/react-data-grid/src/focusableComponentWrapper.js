@@ -12,7 +12,7 @@ export default function focusableComponentWrapper(WrappedComponent) {
     componentWillReceiveProps(nextProps) {
       const isScrolling = WrappedComponent.isScrolling(nextProps);
       if (isScrolling && !this.state.isScrolling) {
-        this.setState({ isScrolling: isScrolling });
+        this.setState({ isScrolling });
       }
     }
 

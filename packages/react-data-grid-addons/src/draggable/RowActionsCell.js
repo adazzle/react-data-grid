@@ -7,7 +7,6 @@ import { editors } from 'react-data-grid';
 const { CheckboxEditor } = editors;
 
 class RowActionsCell extends React.Component {
-
   renderRowIndex() {
     return (
       <div className="rdg-row-index">

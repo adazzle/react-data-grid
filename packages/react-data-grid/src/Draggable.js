@@ -14,8 +14,8 @@ export default class Draggable extends React.Component {
 
   static defaultProps = {
     onDragStart: () => true,
-    onDragEnd: () => {},
-    onDrag: () => {}
+    onDragEnd() {},
+    onDrag() {}
   };
 
   state = {

@@ -23,7 +23,7 @@ describe('Row', () => {
     const fakeExtraClasses = ['row-extra-class', 'row-extra-extra-class'];
 
     it('should have extra classes', () => {
-      const newProps = Object.assign({}, fakeProps, { extraClasses: fakeExtraClasses.join(' ') });
+      const newProps = { ...fakeProps, extraClasses: fakeExtraClasses.join(' ') };
       const component = TestUtils.renderIntoDocument(<Row {...newProps} />);
 
       const row = TestUtils.findRenderedDOMComponentWithClass(component, 'react-grid-Row');

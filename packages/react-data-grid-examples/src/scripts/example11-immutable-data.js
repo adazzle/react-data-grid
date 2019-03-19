@@ -20,7 +20,7 @@ export class Example extends React.Component {
   createColumns = () => {
     const cols = [];
     for (let j = 0; j < 50; j++) {
-      cols.push({ key: 'col' + j, name: 'col' + j, width: 150 });
+      cols.push({ key: `col${j}`, name: `col${j}`, width: 150 });
     }
 
     return cols;
@@ -30,7 +30,7 @@ export class Example extends React.Component {
     const rows = [];
     for (let rowIdx = 1; rowIdx < 300; rowIdx++) {
       const row = {};
-      this._columns.forEach((c, colIdx) => row[c.key] = '(' + colIdx + ',' + rowIdx + ')');
+      this._columns.forEach((c, colIdx) => row[c.key] = `(${colIdx},${rowIdx})`);
       rows.push(row);
     }
 

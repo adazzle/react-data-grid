@@ -66,9 +66,9 @@ export default class ImageFormatter extends React.Component {
   };
 
   render() {
-    const style = this.state.value ?
-      { backgroundImage: 'url(' + this.state.value + ')' } :
-      undefined;
+    const style = this.state.value
+      ? { backgroundImage: `url(${this.state.value})` }
+      : undefined;
 
     return <div className="react-grid-image" style={style} />;
   }

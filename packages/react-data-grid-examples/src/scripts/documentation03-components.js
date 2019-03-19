@@ -39,7 +39,7 @@ export default class ComponentDocs extends React.Component {
     $.ajax({
       url: documentPath,
       success: (documentContent) => {
-        this.setState({ documentContent: documentContent, selectedDocumentIndex: key });
+        this.setState({ documentContent, selectedDocumentIndex: key });
       }
     });
   };

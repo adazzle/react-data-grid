@@ -236,7 +236,7 @@ export default class ReactDataGrid extends React.Component {
       rowsEnd: 2
     },
     enableCellAutoFocus: true,
-    onBeforeEdit: () => { },
+    onBeforeEdit() { },
     minColumnWidth: 80,
     columnEquality: ColumnMetrics.sameColumn,
     editorPortalTarget: document.body
@@ -272,10 +272,10 @@ export default class ReactDataGrid extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.columns) {
-      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality) ||
-        nextProps.minWidth !== this.props.minWidth) {
+      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
+        || nextProps.minWidth !== this.props.minWidth) {
         const columnMetrics = this.createColumnMetrics(nextProps);
-        this.setState({ columnMetrics: columnMetrics });
+        this.setState({ columnMetrics });
       }
     }
   }
@@ -318,7 +318,7 @@ export default class ReactDataGrid extends React.Component {
     const totalWidth = metrics.totalWidth || this.getTotalWidth();
     const currentMetrics = {
       columns: metrics.columns,
-      totalWidth: totalWidth,
+      totalWidth,
       minColumnWidth: metrics.minColumnWidth
     };
     const updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
@@ -594,7 +594,7 @@ export default class ReactDataGrid extends React.Component {
     const { keys, indexes, isSelectedKey } = this.props.rowSelection.selectBy;
     const isPreviouslySelected = RowUtils.isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
 
-    this.setState({ lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: { rowIdx: rowIdx, idx: 0 } });
+    this.setState({ lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx, selected: { rowIdx, idx: 0 } });
 
     if (isPreviouslySelected && typeof this.props.rowSelection.onRowsDeselected === 'function') {
       this.props.rowSelection.onRowsDeselected([{ rowIdx, row: rowData }]);
@@ -625,7 +625,7 @@ export default class ReactDataGrid extends React.Component {
         rowData.isSelected = true;
         selectedRows.push(rowData);
       }
-      this.setState({ selectedRows: selectedRows, selected: { rowIdx: rowIdx, idx: 0 } });
+      this.setState({ selectedRows, selected: { rowIdx, idx: 0 } });
       if (this.props.onRowSelect) {
         this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
       }
@@ -670,10 +670,10 @@ export default class ReactDataGrid extends React.Component {
     } else {
       const selectedRows = [];
       for (let i = 0; i < this.props.rowsCount; i++) {
-        const row = Object.assign({}, this.props.rowGetter(i), { isSelected: allRowsSelected });
+        const row = { ...this.props.rowGetter(i), isSelected: allRowsSelected };
         selectedRows.push(row);
       }
-      this.setState({ selectedRows: selectedRows });
+      this.setState({ selectedRows });
       if (typeof this.props.onRowSelect === 'function') {
         this.props.onRowSelect(selectedRows.filter(r => r.isSelected === true));
       }
@@ -756,7 +756,7 @@ export default class ReactDataGrid extends React.Component {
         formatter: <Formatter rowSelection={this.props.rowSelection} />,
         onCellChange: this.handleRowSelect,
         filterable: false,
-        headerRenderer: headerRenderer,
+        headerRenderer,
         width: 60,
         frozen: true,
         getRowMetaData: (rowData) => rowData,

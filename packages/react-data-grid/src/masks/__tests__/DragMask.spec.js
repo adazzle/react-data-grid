@@ -7,7 +7,7 @@ import DragMask from '../DragMask';
 describe('DragMask', () => {
   const setup = (propsOverride = {}) => {
     const props = {
-      getSelectedDimensions: ({ rowIdx }) => {
+      getSelectedDimensions({ rowIdx }) {
         const { [rowIdx]: height } = {
           2: 20,
           3: 30,

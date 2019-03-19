@@ -8,15 +8,15 @@ function createRows() {
   for (let i = 0; i < 100; i++) {
     const price = Math.random() * 30;
     const row = {
-      id: 'row' + i,
-      name: 'supplier ' + i,
-      format: 'package ' + i,
+      id: `row${i}`,
+      name: `supplier ${i}`,
+      format: `package ${i}`,
       position: 'Run of site',
-      price: price,
+      price,
       children: [
-        { id: 'row' + i + '-0', name: 'supplier ' + i, format: '728x90', position: 'run of site', price: price / 2 },
-        { id: 'row' + i + '-1', name: 'supplier ' + i, format: '480x600', position: 'run of site', price: price * 0.25 },
-        { id: 'row' + i + '-2', name: 'supplier ' + i, format: '328x70', position: 'run of site', price: price * 0.25 }
+        { id: `row${i}-0`, name: `supplier ${i}`, format: '728x90', position: 'run of site', price: price / 2 },
+        { id: `row${i}-1`, name: `supplier ${i}`, format: '480x600', position: 'run of site', price: price * 0.25 },
+        { id: `row${i}-2`, name: `supplier ${i}`, format: '328x70', position: 'run of site', price: price * 0.25 }
       ]
     };
     rows.push(row);
@@ -53,7 +53,7 @@ class Example extends React.Component {
   constructor(props) {
     super(props);
     const rows = createRows();
-    this.state = { expanded: {}, rows: rows };
+    this.state = { expanded: {}, rows };
   }
 
   getRows = (i) => {
@@ -79,7 +79,7 @@ class Example extends React.Component {
     const rowIndex = rows.indexOf(args.rowData);
     const subRows = args.expandArgs.children;
 
-    const expanded = Object.assign({}, this.state.expanded);
+    const expanded = { ...this.state.expanded };
     if (expanded && !expanded[rowKey]) {
       expanded[rowKey] = true;
       this.updateSubRowDetails(subRows, args.rowData.treeDepth);
@@ -89,7 +89,7 @@ class Example extends React.Component {
       rows.splice(rowIndex + 1, subRows.length);
     }
 
-    this.setState({ expanded: expanded, rows: rows });
+    this.setState({ expanded, rows });
   };
 
   updateSubRowDetails = (subRows, parentTreeDepth) => {

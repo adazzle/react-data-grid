@@ -12,7 +12,7 @@ export default class CellExpander extends React.Component {
   constructor(props) {
     super(props);
     const expanded = props.expandableOptions && props.expandableOptions.expanded;
-    this.state = { expanded: expanded };
+    this.state = { expanded };
   }
 
   componentWillReceiveProps(nextProps) {

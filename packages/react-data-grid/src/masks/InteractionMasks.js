@@ -358,7 +358,7 @@ export default class InteractionMasks extends React.Component {
       ArrowRight: {
         getNext: current => ({ ...current, idx: current.idx + 1 }),
         isCellAtBoundary: isCellAtRightBoundary,
-        onHitBoundary: (next) => {
+        onHitBoundary(next) {
           onHitRightBoundary(next);
           // Selected cell can hit the bottom boundary when the cellNavigationMode is 'changeRow'
           if (isCellAtBottomBoundary(next)) {
@@ -369,7 +369,7 @@ export default class InteractionMasks extends React.Component {
       ArrowLeft: {
         getNext: current => ({ ...current, idx: current.idx - 1 }),
         isCellAtBoundary: isCellAtLeftBoundary,
-        onHitBoundary: (next) => {
+        onHitBoundary(next) {
           onHitLeftBoundary(next);
           // Selected cell can hit the top boundary when the cellNavigationMode is 'changeRow'
           if (isCellAtTopBoundary(next)) {
@@ -390,9 +390,9 @@ export default class InteractionMasks extends React.Component {
     const isShift = e.shiftKey;
 
     if (isTab) {
-      const cellNavigationMode = this.props.cellNavigationMode === CellNavigationMode.NONE ?
-        CellNavigationMode.CHANGE_ROW :
-        this.props.cellNavigationMode;
+      const cellNavigationMode = this.props.cellNavigationMode === CellNavigationMode.NONE
+        ? CellNavigationMode.CHANGE_ROW
+        : this.props.cellNavigationMode;
       this.changeCellFromKeyAction(e, cellNavigationMode);
     } else if (isShift) {
       this.changeSelectedRangeFromArrowKeyAction(e);
@@ -717,9 +717,9 @@ export default class InteractionMasks extends React.Component {
             getSelectedDimensions={this.getSelectedDimensions}
           />
         )}
-        {selectedRangeIsSingleCell(this.state.selectedRange) ?
-          this.renderSingleCellSelectView() :
-          this.renderCellRangeSelectView()
+        {selectedRangeIsSingleCell(this.state.selectedRange)
+          ? this.renderSingleCellSelectView()
+          : this.renderCellRangeSelectView()
         }
         {isEditorEnabled && (
           <EditorPortal target={this.props.editorPortalTarget}>
