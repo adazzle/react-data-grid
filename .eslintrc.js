@@ -220,7 +220,7 @@ const rules = {
   'object-property-newline': [1, { allowAllPropertiesOnSameLine: true }],
   'one-var': [1, 'never'],
   'one-var-declaration-per-line': 0,
-  'operator-assignment': 0,
+  'operator-assignment': 1,
   'operator-linebreak': [1, 'before', { overrides: { '=': 'after' } }],
   'padded-blocks': [1, 'never'],
   'padding-line-between-statements': 0,
