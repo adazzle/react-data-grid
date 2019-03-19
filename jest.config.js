@@ -8,6 +8,9 @@ module.exports = {
   moduleNameMapper: {
     '\\.css$': '<rootDir>/test/fileMock.js'
   },
+  modulePathIgnorePatterns: [
+    '<rootDir>/package.json'
+  ],
   setupFiles: ['<rootDir>/test/setupTests.js'],
   testEnvironment: 'jsdom',
   testMatch: [
