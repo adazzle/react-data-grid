@@ -304,7 +304,7 @@ const rules = {
   'react/no-redundant-should-component-update': 2,
   'react/no-render-return-value': 0,
   'react/no-set-state': 0,
-  'react/no-typos': 0,
+  'react/no-typos': 2,
   'react/no-string-refs': 2,
   'react/no-this-in-sfc': 0,
   'react/no-unescaped-entities': 0,
