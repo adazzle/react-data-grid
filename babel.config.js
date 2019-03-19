@@ -13,13 +13,12 @@ module.exports = {
     test: {
       presets: [
         ['@babel/env', {
-          modules: 'commonjs',
           useBuiltIns: 'entry'
         }],
         '@babel/react'
       ],
       plugins: [
-        ['@babel/transform-runtime', { useESModules: true }],
+        ['@babel/transform-runtime', { useESModules: false }],
         '@babel/proposal-class-properties'
       ]
     }
