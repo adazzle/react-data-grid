@@ -28,7 +28,7 @@
     "enzyme-adapter-react-16": "^1.10.0",
     "eslint": "^5.15.1",
     "eslint-plugin-react": "^7.12.4",
-    "faker": "^3.0.1",
+    "faker": "^4.1.0",
     "immutable": "^3.7.3",
     "jasmine-core": "^3.3.0",
     "karma": "^4.0.1",
@@ -44,7 +44,7 @@
     "lerna": "^3.13.1",
     "minimist": "^1.1.0",
     "node-dir": "^0.1.12",
-    "open": "0.0.5",
+    "opn": "^5.5.0",
     "react": "^16.8.4",
     "react-contextmenu": "^2.10.0",
     "react-dnd-test-backend": "^2.6.0",
@@ -54,6 +54,6 @@
     "terser-webpack-plugin": "^1.2.3",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^1.16.2"
+    "webpack-dev-server": "^3.2.1"
   }
 }
