@@ -280,7 +280,7 @@ const rules = {
   // React rules
   // https://github.com/yannickcr/eslint-plugin-react#list-of-supported-rules
   'react/boolean-prop-naming': 0,
-  'react/button-has-type': 0,
+  'react/button-has-type': 2,
   'react/default-props-match-prop-types': 0,
   'react/destructuring-assignment': 0,
   'react/display-name': 0,
@@ -289,12 +289,12 @@ const rules = {
   'react/forbid-elements': 0,
   'react/forbid-prop-types': 0,
   'react/forbid-foreign-prop-types': 0,
-  'react/no-access-state-in-setstate': 0,
+  'react/no-access-state-in-setstate': 0, // TODO
   'react/no-array-index-key': 0,
   'react/no-children-prop': 0,
-  'react/no-danger': 0,
+  'react/no-danger': 0, // TODO
   'react/no-danger-with-children': 2,
-  'react/no-deprecated': 0,
+  'react/no-deprecated': 0, // TODO
   'react/no-did-mount-set-state': 2,
   'react/no-did-update-set-state': 2,
   'react/no-direct-mutation-state': 2,
