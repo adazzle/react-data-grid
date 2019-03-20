@@ -374,7 +374,12 @@ const rules = {
     condition: 'parens-new-line',
     logical: 'parens-new-line',
     prop: 'parens-new-line'
-  }]
+  }],
+
+  // React Hooks
+  // https://github.com/facebook/react/tree/master/packages/eslint-plugin-react-hooks
+  'react-hooks/rules-of-hooks': 2,
+  'react-hooks/exhaustive-deps': 1
 };
 
 module.exports = {
@@ -384,7 +389,8 @@ module.exports = {
     es6: true
   },
   plugins: [
-    'react'
+    'react',
+    'react-hooks'
   ],
   rules
 };
