@@ -132,7 +132,7 @@ const rules = {
   'no-undef': 0,
   'no-undef-init': 1,
   'no-undefined': 0,
-  'no-unused-vars': 0,
+  'no-unused-vars': [1, { ignoreRestSiblings: true }],
   'no-use-before-define': 0,
 
   // Node.js and CommonJS

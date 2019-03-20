@@ -1,21 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
 import { canEdit } from '../ColumnUtils';
-
-const render = function(element, mountPoint) {
-  const mount = mountPoint || document.createElement('div');
-  const instance = ReactDOM.render(element, mount);
-
-  if (!instance.renderWithProps) {
-    instance.renderWithProps = function(newProps) {
-      return render(
-        React.cloneElement(element, newProps), mount);
-    };
-  }
-  return instance;
-};
-
 
 describe('ColumnUtils tests', () => {
   let testProps;

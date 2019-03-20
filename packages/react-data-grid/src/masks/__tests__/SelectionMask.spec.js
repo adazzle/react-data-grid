@@ -5,7 +5,6 @@ import CellMask from '../CellMask';
 import SelectionMask from '../SelectionMask';
 
 describe('SelectionMask', () => {
-  const ROW_HEIGHT = 50;
   const setup = (propsOverride = {}) => {
     const props = {
       selectedPosition: { idx: 0, rowIdx: 3 },
