@@ -101,6 +101,9 @@ All contributions are encouraged and most of all we hope you will have some fun 
 
 For maintainers only.
 
+- `cd` to the root of the repo.
+- Checkout the branch you wish to publish. `master` or `next`
+- Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
 - Install dependencies, bootstrap lerna:
   - `npm i`
 - Build the release bundles:
