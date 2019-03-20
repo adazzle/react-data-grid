@@ -103,7 +103,7 @@ const rules = {
   'no-useless-call': 2,
   'no-useless-catch': 2,
   'no-useless-concat': 1,
-  'no-useless-escape': 0,
+  'no-useless-escape': 1,
   'no-useless-return': 1,
   'no-void': 1,
   'no-warning-comments': 0,
