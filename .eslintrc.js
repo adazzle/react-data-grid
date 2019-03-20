@@ -347,7 +347,7 @@ const rules = {
   'react/jsx-no-duplicate-props': 0,
   'react/jsx-no-literals': 0,
   'react/jsx-no-target-blank': 0,
-  'react/jsx-no-undef': 0,
+  'react/jsx-no-undef': 2,
   'react/jsx-one-expression-per-line': 0,
   'react/jsx-curly-brace-presence': 1,
   'react/jsx-fragments': 1,
