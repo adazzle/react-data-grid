@@ -133,7 +133,7 @@ const rules = {
   'no-undef-init': 1,
   'no-undefined': 0,
   'no-unused-vars': [1, { ignoreRestSiblings: true }],
-  'no-use-before-define': 0,
+  'no-use-before-define': [2, { functions: false, classes: false, variables: false }],
 
   // Node.js and CommonJS
   // https://eslint.org/docs/rules/#nodejs-and-commonjs
