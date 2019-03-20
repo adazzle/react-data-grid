@@ -196,9 +196,9 @@ describe('<InteractionMasks/>', () => {
         const { props, wrapper } = setup(undefined, undefined, mount);
         props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
         const { selectionMask } = wrapper.instance();
-        spyOn(selectionMask, 'focus');
+        spyOn(InteractionMasks.prototype, 'focus');
         props.eventBus.dispatch(EventTypes.SELECT_END);
-        expect(selectionMask.focus).toHaveBeenCalled();
+        expect(InteractionMasks.prototype.focus).toHaveBeenCalled();
       });
     });
   });

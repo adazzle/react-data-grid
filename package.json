@@ -5,7 +5,7 @@
   "scripts": {
     "docs": "node docs/utils/docsGen.js",
     "test": "jest",
-    "test-dev": "jest --watchAll",
+    "test-dev": "jest --watch",
     "postinstall": "lerna bootstrap --no-ci",
     "build": "webpack --config ./config/webpack.config.prod.js --release true",
     "dev-server": "node webpack-dev-server.js",

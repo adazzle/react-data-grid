@@ -453,11 +453,11 @@ export default class InteractionMasks extends React.Component {
     return document.activeElement === document.body;
   };
 
-  focus = () => {
+  focus() {
     if (this.selectionMask && !this.isFocused()) {
       this.selectionMask.focus();
     }
-  };
+  }
 
   selectFirstCell = () => {
     this.selectCell({ rowIdx: 0, idx: 0 });
