@@ -86,12 +86,12 @@ export default class HeaderRow extends React.Component {
     }
     const headerCellType = this.getHeaderCellType(column);
     switch (headerCellType) {
-    case HeaderCellType.SORTABLE:
-      return this.getSortableHeaderCell(column);
-    case HeaderCellType.FILTERABLE:
-      return this.getFilterableHeaderCell(column);
-    default:
-      return undefined;
+      case HeaderCellType.SORTABLE:
+        return this.getSortableHeaderCell(column);
+      case HeaderCellType.FILTERABLE:
+        return this.getFilterableHeaderCell(column);
+      default:
+        return undefined;
     }
   };
 
