@@ -20,7 +20,10 @@ const rules = {
   'no-empty-character-class': 2,
   'no-ex-assign': 2,
   'no-extra-boolean-cast': 2,
-  'no-extra-parens': 0, // buggy with `(x as T).prop`
+  'no-extra-parens': [1, 'all', {
+    nestedBinaryExpressions: false,
+    ignoreJSX: 'multi-line'
+  }],
   'no-extra-semi': 2,
   'no-func-assign': 2,
   'no-inner-declarations': 0,

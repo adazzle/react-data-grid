@@ -40,7 +40,7 @@ describe('<SortableHeaderCell/>', () => {
 
   describe('When headerRenderer of column is set', () => {
     it('should render the header renderer', () => {
-      const HeaderRenderer = () => (<span>Custom</span>);
+      const HeaderRenderer = () => <span>Custom</span>;
       const { wrapper } = setup({ headerRenderer: <HeaderRenderer /> });
       expect(wrapper.find(HeaderRenderer).length).toBe(1);
     });

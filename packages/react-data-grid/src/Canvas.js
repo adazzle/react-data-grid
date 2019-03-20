@@ -159,7 +159,7 @@ export default class Canvas extends React.PureComponent {
   onHitTopCanvas = () => {
     const { rowHeight } = this.props;
     const node = this.canvas;
-    node.scrollTop -= (rowHeight - this.getClientScrollTopOffset(node));
+    node.scrollTop -= rowHeight - this.getClientScrollTopOffset(node);
   }
 
   scrollToColumn = (idx) => {

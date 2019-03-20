@@ -29,7 +29,7 @@ export function getSize(columns) {
 // this allows us to deicde whether we can be edting from a cell level
 export function canEdit(col, rowData, enableCellSelect) {
   if (!col) return false;
-  if (col.editable != null && typeof (col.editable) === 'function') {
+  if (col.editable != null && typeof col.editable === 'function') {
     return enableCellSelect === true && col.editable(rowData);
   }
   return enableCellSelect === true && (!!col.editor || !!col.editable);

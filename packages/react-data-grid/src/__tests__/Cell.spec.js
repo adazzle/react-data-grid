@@ -59,7 +59,7 @@ describe('Cell Tests', () => {
   });
 
   it('should render children when those are passed', () => {
-    const wrapper = renderComponent({ children: (<div>Child</div>) });
+    const wrapper = renderComponent({ children: <div>Child</div> });
     expect(wrapper.children().text()).toBe('Child');
   });
 
