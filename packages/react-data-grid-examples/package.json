@@ -4,8 +4,8 @@
   "license": "MIT",
   "dependencies": {
     "immutability-helper": "^2.7.0",
-    "react-data-grid": "^6.1.0-0",
-    "react-data-grid-addons": "^6.1.0-0",
+    "react-data-grid": "^7.0.0-alpha.0",
+    "react-data-grid-addons": "^7.0.0-alpha.0",
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
