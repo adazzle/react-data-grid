@@ -194,7 +194,7 @@ const rules = {
   'new-cap': 0,
   'new-parens': 1,
   'newline-per-chained-call': 0,
-  'no-array-constructor': 0,
+  'no-array-constructor': 2,
   'no-bitwise': 0,
   'no-continue': 0,
   'no-inline-comments': 0,
