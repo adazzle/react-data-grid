@@ -20,7 +20,10 @@ const rules = {
   'no-empty-character-class': 2,
   'no-ex-assign': 2,
   'no-extra-boolean-cast': 2,
-  'no-extra-parens': 0, // buggy with `(x as T).prop`
+  'no-extra-parens': [1, 'all', {
+    nestedBinaryExpressions: false,
+    ignoreJSX: 'multi-line'
+  }],
   'no-extra-semi': 2,
   'no-func-assign': 2,
   'no-inner-declarations': 0,
@@ -103,7 +106,7 @@ const rules = {
   'no-useless-call': 2,
   'no-useless-catch': 2,
   'no-useless-concat': 1,
-  'no-useless-escape': 0,
+  'no-useless-escape': 1,
   'no-useless-return': 1,
   'no-void': 1,
   'no-warning-comments': 0,
@@ -132,8 +135,8 @@ const rules = {
   'no-undef': 0,
   'no-undef-init': 1,
   'no-undefined': 0,
-  'no-unused-vars': 0,
-  'no-use-before-define': 0,
+  'no-unused-vars': [1, { ignoreRestSiblings: true }],
+  'no-use-before-define': [2, { functions: false, classes: false, variables: false }],
 
   // Node.js and CommonJS
   // https://eslint.org/docs/rules/#nodejs-and-commonjs
@@ -173,7 +176,7 @@ const rules = {
   'id-length': 0,
   'id-match': 0,
   'implicit-arrow-linebreak': 0,
-  'indent': [1, 2],
+  'indent': [1, 2, { SwitchCase: 1 }],
   'jsx-quotes': 1,
   'key-spacing': 1,
   'keyword-spacing': 1,
@@ -194,7 +197,7 @@ const rules = {
   'new-cap': 0,
   'new-parens': 1,
   'newline-per-chained-call': 0,
-  'no-array-constructor': 0,
+  'no-array-constructor': 2,
   'no-bitwise': 0,
   'no-continue': 0,
   'no-inline-comments': 0,
@@ -248,18 +251,18 @@ const rules = {
   'arrow-body-style': 0,
   'arrow-parens': 0,
   'arrow-spacing': 1,
-  'constructor-super': 0,
+  'constructor-super': 2,
   'generator-star-spacing': 0,
-  'no-class-assign': 0,
+  'no-class-assign': 2,
   'no-confusing-arrow': 0,
-  'no-const-assign': 0,
-  'no-dupe-class-members': 0,
+  'no-const-assign': 2,
+  'no-dupe-class-members': 2,
   'no-duplicate-imports': 1,
-  'no-new-symbol': 0,
+  'no-new-symbol': 2,
   'no-restricted-imports': 0,
-  'no-this-before-super': 0,
+  'no-this-before-super': 2,
   'no-useless-computed-key': 1,
-  'no-useless-constructor': 0,
+  'no-useless-constructor': 1,
   'no-useless-rename': 1,
   'no-var': 2,
   'object-shorthand': [1, 'always', { avoidExplicitReturnArrows: true }],
@@ -268,7 +271,7 @@ const rules = {
   'prefer-destructuring': 0,
   'prefer-numeric-literals': 1,
   'prefer-rest-params': 2,
-  'prefer-spread': 0,
+  'prefer-spread': 1,
   'prefer-template': 1,
   'require-yield': 2,
   'rest-spread-spacing': 1,
@@ -280,7 +283,7 @@ const rules = {
   // React rules
   // https://github.com/yannickcr/eslint-plugin-react#list-of-supported-rules
   'react/boolean-prop-naming': 0,
-  'react/button-has-type': 0,
+  'react/button-has-type': 2,
   'react/default-props-match-prop-types': 0,
   'react/destructuring-assignment': 0,
   'react/display-name': 0,
@@ -289,12 +292,12 @@ const rules = {
   'react/forbid-elements': 0,
   'react/forbid-prop-types': 0,
   'react/forbid-foreign-prop-types': 0,
-  'react/no-access-state-in-setstate': 0,
+  'react/no-access-state-in-setstate': 0, // TODO
   'react/no-array-index-key': 0,
   'react/no-children-prop': 0,
-  'react/no-danger': 0,
+  'react/no-danger': 0, // TODO
   'react/no-danger-with-children': 2,
-  'react/no-deprecated': 0,
+  'react/no-deprecated': 0, // TODO
   'react/no-did-mount-set-state': 2,
   'react/no-did-update-set-state': 2,
   'react/no-direct-mutation-state': 2,
@@ -344,10 +347,10 @@ const rules = {
   'react/jsx-max-props-per-line': [1, { when: 'multiline' }],
   'react/jsx-no-bind': 0,
   'react/jsx-no-comment-textnodes': 1,
-  'react/jsx-no-duplicate-props': 0,
+  'react/jsx-no-duplicate-props': 2,
   'react/jsx-no-literals': 0,
   'react/jsx-no-target-blank': 0,
-  'react/jsx-no-undef': 0,
+  'react/jsx-no-undef': 2,
   'react/jsx-one-expression-per-line': 0,
   'react/jsx-curly-brace-presence': 1,
   'react/jsx-fragments': 1,
@@ -371,7 +374,12 @@ const rules = {
     condition: 'parens-new-line',
     logical: 'parens-new-line',
     prop: 'parens-new-line'
-  }]
+  }],
+
+  // React Hooks
+  // https://github.com/facebook/react/tree/master/packages/eslint-plugin-react-hooks
+  'react-hooks/rules-of-hooks': 2,
+  'react-hooks/exhaustive-deps': 1
 };
 
 module.exports = {
@@ -381,7 +389,8 @@ module.exports = {
     es6: true
   },
   plugins: [
-    'react'
+    'react',
+    'react-hooks'
   ],
   rules
 };

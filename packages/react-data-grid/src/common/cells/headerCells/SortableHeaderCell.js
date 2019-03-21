@@ -22,18 +22,18 @@ export default class SortableHeaderCell extends React.Component {
     let direction;
     const { sortDirection, sortDescendingFirst } = this.props;
     switch (sortDirection) {
-    default:
-    case null:
-    case undefined:
-    case DEFINE_SORT.NONE:
-      direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
-      break;
-    case DEFINE_SORT.ASC:
-      direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
-      break;
-    case DEFINE_SORT.DESC:
-      direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
-      break;
+      default:
+      case null:
+      case undefined:
+      case DEFINE_SORT.NONE:
+        direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
+        break;
+      case DEFINE_SORT.ASC:
+        direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
+        break;
+      case DEFINE_SORT.DESC:
+        direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
+        break;
     }
     this.props.onSort(
       this.props.columnKey,

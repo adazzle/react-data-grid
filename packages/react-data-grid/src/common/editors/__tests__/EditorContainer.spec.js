@@ -178,7 +178,6 @@ describe('Editor Container Tests', () => {
     });
 
     it('should not commit if any element inside the editor is clicked that stops the event propagation', () => {
-      const editor = wrapper.find(PortalTestEditor);
       wrapper.find('#button1').simulate('click');
       wrapper.find('#button2').simulate('click');
 

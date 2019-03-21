@@ -252,7 +252,7 @@ export default class Cell extends React.PureComponent {
   };
 
   getEvents = () => {
-    const columnEvents = this.props.column ? ({ ...this.props.column.events }) : undefined;
+    const columnEvents = this.props.column ? { ...this.props.column.events } : undefined;
     const onColumnEvent = this.props.cellMetaData ? this.props.cellMetaData.onColumnEvent : undefined;
     const gridEvents = {
       onClick: this.onCellClick,
@@ -301,7 +301,7 @@ export default class Cell extends React.PureComponent {
     }
     const isExpandCell = this.props.expandableOptions ? this.props.expandableOptions.field === this.props.column.key : false;
     const treeDepth = this.props.expandableOptions ? this.props.expandableOptions.treeDepth : 0;
-    const marginLeft = this.props.expandableOptions && isExpandCell ? (this.props.expandableOptions.treeDepth * 30) : 0;
+    const marginLeft = this.props.expandableOptions && isExpandCell ? this.props.expandableOptions.treeDepth * 30 : 0;
 
     let cellDeleter;
 
@@ -311,7 +311,7 @@ export default class Cell extends React.PureComponent {
       cellDeleter = <ChildRowDeleteButton treeDepth={treeDepth} cellHeight={this.props.height} siblingIndex={this.props.expandableOptions.subRowDetails.siblingIndex} numberSiblings={this.props.expandableOptions.subRowDetails.numberSiblings} onDeleteSubRow={this.onDeleteSubRow} isDeleteSubRowEnabled={isDeleteSubRowEnabled} />;
     }
 
-    const tooltip = this.props.tooltip && (<span className="cell-tooltip-text">{this.props.tooltip}</span>);
+    const tooltip = this.props.tooltip && <span className="cell-tooltip-text">{this.props.tooltip}</span>;
     const classes = joinClasses('react-grid-Cell__value',
       { 'cell-tooltip': !!this.props.tooltip }
     );
@@ -349,10 +349,8 @@ export default class Cell extends React.PureComponent {
 
     const events = this.getEvents();
 
-    const cellExpander = this.canExpand() && (
-      <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />
-    );
-
+    const cellExpander = this.canExpand()
+      && <CellExpand expandableOptions={this.props.expandableOptions} onCellExpand={this.onCellExpand} />;
     return (
       <div
         height={height}

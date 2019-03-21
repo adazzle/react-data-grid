@@ -20,7 +20,7 @@ export default function ContainerEditorFunc(ContainerEditor) {
     }
 
     render() {
-      return (<ContainerEditor refCallback={this.createRef} {...this.props} />);
+      return <ContainerEditor refCallback={this.createRef} {...this.props} />;
     }
   };
 }

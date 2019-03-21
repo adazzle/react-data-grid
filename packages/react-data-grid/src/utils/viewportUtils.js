@@ -124,7 +124,7 @@ export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCoun
 
 export const getColOverscanStartIdx = (scrollDirection, colVisibleStartIdx, lastFrozenColumnIdx) => {
   const leftMostBoundIdx = lastFrozenColumnIdx > -1 ? lastFrozenColumnIdx + 1 : 0;
-  return (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) ? leftMostBoundIdx : colVisibleStartIdx;
+  return scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT ? leftMostBoundIdx : colVisibleStartIdx;
 };
 
 export const getColOverscanEndIdx = (scrollDirection, colVisibleEndIdx, totalNumberColumns) => {

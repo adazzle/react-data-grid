@@ -11,7 +11,7 @@ describe('Row Grouper', () => {
   it('It can group an array of rows (one grouping column) - correct number of header elements', () => {
     const groupingResult = groupRows(rows, grpDetails.oneCol, grpDetails.expRows);
 
-    expect((groupingResult.filter(x => x.__metaData)).length).toBe(2);
+    expect(groupingResult.filter(x => x.__metaData).length).toBe(2);
   });
   it('It can group an array of rows (one grouping column) - correct total of elements', () => {
     const groupingResult = groupRows(rows, grpDetails.oneCol, grpDetails.expRows);

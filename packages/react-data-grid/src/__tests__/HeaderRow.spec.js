@@ -41,7 +41,7 @@ describe('Header Row Unit Tests', () => {
     it('should provide column with a sortableHeaderRenderer', () => {
       const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key });
       const renderer = headerCells.at(sortableColIdx).props().renderer;
-      expect(renderer.type).toBe((SortableHeaderCell));
+      expect(renderer.type).toBe(SortableHeaderCell);
     });
 
     it('should pass sort direction as props to headerRenderer when column is sortColumn', () => {

@@ -75,8 +75,8 @@ export default class HeaderRow extends React.Component {
   };
 
   getSortableHeaderCell = (column) => {
-    const sortDirection = (this.props.sortColumn === column.key) ? this.props.sortDirection : DEFINE_SORT.NONE;
-    const sortDescendingFirst = (column.sortDescendingFirst === undefined) ? false : column.sortDescendingFirst;
+    const sortDirection = this.props.sortColumn === column.key ? this.props.sortDirection : DEFINE_SORT.NONE;
+    const sortDescendingFirst = column.sortDescendingFirst === undefined ? false : column.sortDescendingFirst;
     return <SortableHeaderCell columnKey={column.key} onSort={this.props.onSort} sortDirection={sortDirection} sortDescendingFirst={sortDescendingFirst} headerRenderer={column.headerRenderer} />;
   };
 
@@ -86,12 +86,12 @@ export default class HeaderRow extends React.Component {
     }
     const headerCellType = this.getHeaderCellType(column);
     switch (headerCellType) {
-    case HeaderCellType.SORTABLE:
-      return this.getSortableHeaderCell(column);
-    case HeaderCellType.FILTERABLE:
-      return this.getFilterableHeaderCell(column);
-    default:
-      return undefined;
+      case HeaderCellType.SORTABLE:
+        return this.getSortableHeaderCell(column);
+      case HeaderCellType.FILTERABLE:
+        return this.getFilterableHeaderCell(column);
+      default:
+        return undefined;
     }
   };
 
@@ -151,7 +151,7 @@ export default class HeaderRow extends React.Component {
 
   render() {
     const cellsStyle = {
-      width: this.props.width ? (this.props.width + getScrollbarSize()) : '100%',
+      width: this.props.width ? this.props.width + getScrollbarSize() : '100%',
       height: this.props.height,
       whiteSpace: 'nowrap',
       overflowX: 'hidden',
