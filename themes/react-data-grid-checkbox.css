@@ -36,8 +36,12 @@
 .react-grid-HeaderCell input[type='checkbox'] {
   z-index: 99999;
 }
+
+.react-grid-checkbox-container {
+    display: block;
+    margin: 0;
+}
 .react-grid-HeaderCell > .react-grid-checkbox-container {
-    padding: 0px 10px;
     height: 100%
 }
 
