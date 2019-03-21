@@ -132,7 +132,7 @@ const rules = {
   'no-restricted-globals': 0,
   'no-shadow': 0,
   'no-shadow-restricted-names': 2,
-  'no-undef': 0,
+  'no-undef': 2,
   'no-undef-init': 1,
   'no-undefined': 0,
   'no-unused-vars': [1, { ignoreRestSiblings: true }],
@@ -392,5 +392,21 @@ module.exports = {
     'react',
     'react-hooks'
   ],
-  rules
+  rules,
+  overrides: [{
+    files: ['packages/*/src/**/*'],
+    env: {
+      browser: true
+    },
+    globals: {
+      process: 'readable',
+      Immutable: 'readable'
+    }
+  }, {
+    files: ['packages/*/src/**/__tests__/**/*'],
+    env: {
+      jest: true,
+      jasmine: true
+    }
+  }]
 };
