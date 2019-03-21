@@ -48,6 +48,7 @@ class Example extends React.Component {
             onChange={(event) => { this.setState({ value: event.target.value }); }}
           />
           <button
+            type="button"
             style={{ padding: '5px' }}
             onClick={() => this.setState({ scrollToRowIndex: this.state.value })}
           >Scroll to row

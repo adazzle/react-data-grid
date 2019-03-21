@@ -5,7 +5,7 @@ import exampleWrapper from '../components/exampleWrapper';
 
 class EmptyRowsView extends React.Component {
   render() {
-    return (<div>Nothing to show</div>);
+    return <div>Nothing to show</div>;
   }
 }
 

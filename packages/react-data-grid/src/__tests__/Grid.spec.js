@@ -8,7 +8,7 @@ import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
 describe('Empty Grid Tests', () => {
   class EmptyRowsView extends React.Component {
     render() {
-      return (<div>Nothing to show</div>);
+      return <div>Nothing to show</div>;
     }
   }
 

@@ -99,8 +99,8 @@ class Example extends React.Component {
   }
 }
 
-const exampleDescription = (
-  <p>Its possible to create your own formatters for a given column by setting its <code>formatter</code> property. Here a React component is used to format the %complete column. A custom formatter will always receive a <code>value</code> prop, the value of the cell and this can be used however needed. Here we render a progress bar based on the <code>props.value</code></p>);
+const exampleDescription =
+  <p>Its possible to create your own formatters for a given column by setting its <code>formatter</code> property. Here a React component is used to format the %complete column. A custom formatter will always receive a <code>value</code> prop, the value of the cell and this can be used however needed. Here we render a progress bar based on the <code>props.value</code></p>;
 
 export default exampleWrapper({
   WrappedComponent: Example,

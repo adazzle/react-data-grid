@@ -79,9 +79,9 @@ class Example extends React.Component {
   handleGridSort = (sortColumn, sortDirection) => {
     const comparer = (a, b) => {
       if (sortDirection === 'ASC') {
-        return (a[sortColumn] > b[sortColumn]) ? 1 : -1;
+        return a[sortColumn] > b[sortColumn] ? 1 : -1;
       } if (sortDirection === 'DESC') {
-        return (a[sortColumn] < b[sortColumn]) ? 1 : -1;
+        return a[sortColumn] < b[sortColumn] ? 1 : -1;
       }
     };
 
@@ -107,7 +107,7 @@ class Example extends React.Component {
   }
 }
 
-const exampleDescription = (<p>While ReactDataGrid does not provide the ability to sort directly, it does provide hooks that allow you to provide your own sort function. This is done via the <code>onGridSort</code> prop. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Now when the header cell is clicked for that column, <code>onGridSort</code> will be triggered passing the column name and the sort direction.</p>);
+const exampleDescription = <p>While ReactDataGrid does not provide the ability to sort directly, it does provide hooks that allow you to provide your own sort function. This is done via the <code>onGridSort</code> prop. To enable sorting for a given column, set <code>column.sortable = true</code> for that column. Now when the header cell is clicked for that column, <code>onGridSort</code> will be triggered passing the column name and the sort direction.</p>;
 
 export default exampleWrapper({
   WrappedComponent: Example,

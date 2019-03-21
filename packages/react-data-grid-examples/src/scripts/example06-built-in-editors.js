@@ -98,8 +98,8 @@ class Example extends React.Component {
   }
 }
 
-const exampleDescription = (
-  <p>This example uses the built in <strong>Autocomplete</strong> editor for the priorities column and the <strong>DropdownEditor</strong> for the IssueType column. <strong>You must include the <code>react-data-grid.ui-plugins.js</code> package to use the built in editors.</strong></p>);
+const exampleDescription =
+  <p>This example uses the built in <strong>Autocomplete</strong> editor for the priorities column and the <strong>DropdownEditor</strong> for the IssueType column. <strong>You must include the <code>react-data-grid.ui-plugins.js</code> package to use the built in editors.</strong></p>;
 
 export default exampleWrapper({
   WrappedComponent: Example,

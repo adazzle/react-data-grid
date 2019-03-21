@@ -239,7 +239,7 @@ export default class Cell extends React.PureComponent {
 
   getEvents() {
     const { column, cellMetaData } = this.props;
-    const columnEvents = column ? ({ ...column.events }) : undefined;
+    const columnEvents = column ? { ...column.events } : undefined;
     const onColumnEvent = cellMetaData ? cellMetaData.onColumnEvent : undefined;
     const gridEvents = {
       onClick: this.handleCellClick,
@@ -310,7 +310,7 @@ export default class Cell extends React.PureComponent {
       />
     );
 
-    const cellTooltip = tooltip && (<span className="cell-tooltip-text">{tooltip}</span>);
+    const cellTooltip = tooltip && <span className="cell-tooltip-text">{tooltip}</span>;
     const classes = classNames('react-grid-Cell__value',
       { 'cell-tooltip': !!tooltip }
     );

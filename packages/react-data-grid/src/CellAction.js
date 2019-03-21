@@ -60,7 +60,7 @@ export default class CellAction extends React.Component {
     return (
       <div className={cellActionClasses} onMouseLeave={this.onActionButtonBlur}>
         <div className={actionButtonClasses} onClick={this.onActionIconClick}>
-          { typeof (this.props.action.icon) === 'string' ? <span className={this.props.action.icon} /> : this.props.action.icon }
+          { typeof this.props.action.icon === 'string' ? <span className={this.props.action.icon} /> : this.props.action.icon }
         </div>
         {
           isActionMenu

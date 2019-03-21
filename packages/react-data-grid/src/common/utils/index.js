@@ -46,5 +46,5 @@ export const last = arrayOrList => {
     return arrayOrList[arrayOrList.length - 1];
   }
 
-  throw new Error(`Cant get last of: ${typeof (arrayOrList)}`);
+  throw new Error(`Cant get last of: ${typeof arrayOrList}`);
 };
