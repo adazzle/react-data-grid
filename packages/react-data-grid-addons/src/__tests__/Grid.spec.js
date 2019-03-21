@@ -4,26 +4,23 @@ import { mount } from 'enzyme';
 import TestUtils from 'react-dom/test-utils';
 
 import Grid, { editors } from 'react-data-grid';
-import StubComponent from '../../../../test/StubComponent';
 import mockStateObject from './data/MockStateObject';
 
 const { CheckboxEditor } = editors;
 
 describe('Grid', function() {
-  beforeEach(function() {
-    this.columns = [
+  const setup = (extraProps) => {
+    const columns = [
       { key: 'id', name: 'ID', width: 100, events: { onClick() {} } },
       { key: 'title', name: 'Title', width: 100 },
       { key: 'count', name: 'Count', width: 100 },
       { key: 'country', name: 'Country', width: 100, events: { onClick() {}, onDoubleClick() {}, onDragOver() {} } }
     ];
 
-    this._rows = [];
-    this._selectedRows = [];
-    this.rowGetter = (i) => this._rows[i];
+    const rows = [];
 
     for (let i = 0; i < 1000; i++) {
-      this._rows.push({
+      rows.push({
         id: i,
         title: `Title ${i}`,
         count: i * 1000,
@@ -31,203 +28,191 @@ describe('Grid', function() {
       });
     }
 
-    this.noop = function() {};
-    this.testProps = {
+    const props = {
       enableCellSelect: true,
-      columns: this.columns,
-      rowGetter: this.rowGetter,
-      rowsCount: this._rows.length,
+      columns,
+      rowGetter(i) { return rows[i]; },
+      rowsCount: rows.length,
       width: 300,
-      onRowUpdated: this.noop,
-      onCellCopyPaste: this.noop,
-      onCellsDragged: this.noop,
-      onGridSort: this.noop,
+      onRowUpdated() {},
+      onCellCopyPaste() {},
+      onCellsDragged() {},
+      onGridSort() {},
       onAddFilter() {},
-      rowKey: 'id'
+      rowKey: 'id',
+      ...extraProps
     };
 
-    this.buildFakeEvent = (addedData) => {
-      return {
-        preventDefault: this.noop,
-        stopPropagation: this.noop,
-        ...addedData
-      };
+    const wrapper = mount(<Grid {...props} />);
+
+    return { wrapper, props, columns, rows };
+  };
+
+  const getBaseGrid = (wrapper) => {
+    return wrapper.instance().base;
+  };
+
+  const buildFakeEvent = (addedData) => {
+    return {
+      preventDefault() {},
+      stopPropagation() {},
+      ...addedData
     };
+  };
 
-    this.buildFakeCellUodate = (addedData) => {
-      return {
-        cellKey: 'title',
-        rowIdx: 0,
-        updated: { title: 'some new title' },
-        key: 'Enter',
-        ...addedData
-      };
-    };
-
-    this.getBaseGrid = () => this.component.base;
-
-    this.getCellMetaData = () => this.getBaseGrid().props.cellMetaData;
-
-    this.simulateGridKeyDown = (key, ctrlKey) => {
-      const fakeEvent = this.buildFakeEvent({
-        key,
-        keyCode: key,
-        ctrlKey
-      });
-      this.getBaseGrid().props.onViewportKeydown(fakeEvent);
-    };
-
-    this.simulateGridKeyDownWithKeyCode = (keyCode) => {
-      const fakeEvent = this.buildFakeEvent({
-        keyCode
-      });
-      this.getBaseGrid().props.onViewportKeydown(fakeEvent);
-    };
-
-    const buildProps = (addedProps) => ({ ...this.testProps, ...addedProps });
-    this.createComponent = (addedProps) => {
-      return mount(<Grid {...buildProps(addedProps)} />);
-    };
-
-    this.componentWrapper = this.createComponent();
-    this.component = this.componentWrapper.instance();
-  });
+  const simulateGridKeyDownWithKeyCode = (wrapper, keyCode) => {
+    getBaseGrid(wrapper).props.onViewportKeydown(buildFakeEvent({ keyCode }));
+  };
 
   it('should create a new instance of Grid', function() {
-    expect(this.component).toBeDefined();
+    const { wrapper } = setup();
+    expect(wrapper.instance()).toBeDefined();
   });
 
   it('should render a BaseGrid stub', function() {
-    expect(this.getBaseGrid()).toBeDefined();
+    expect(getBaseGrid(setup().wrapper)).toBeDefined();
   });
 
   it('should be initialized with correct state', function() {
-    const events = [this.columns[0].events, this.columns[1].events, this.columns[2].events, this.columns[3].events];
-    expect(this.component.state).toEqual(mockStateObject({
-      selectedRows: this._selectedRows
+    const { wrapper, columns } = setup();
+    const events = [columns[0].events, columns[1].events, columns[2].events, columns[3].events];
+    expect(wrapper.instance().state).toEqual(mockStateObject({
+      selectedRows: []
     }, events));
   });
 
   // Set of tests for the props that defined the height of our rows
   describe('when defininig heigths on props', function() {
+    const ToolBarStub = () => null;
+
     describe('for defaults props', function() {
+      let wrapper;
+
       beforeEach(function() {
-        const ToolBarStub = new StubComponent('Toolbar');
-        this.component = this.createComponent({ toolbar: <ToolBarStub /> }).instance();
-        this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
-        this.toolbarInstance.props.onToggleFilter();
-        this.baseGrid = this.getBaseGrid();
+        wrapper = setup({ toolbar: <ToolBarStub /> }).wrapper;
+        wrapper.find(ToolBarStub).props().onToggleFilter();
       });
 
       it('uses the appropriate default for the grid row height', function() {
-        expect(this.baseGrid.props.rowHeight).toEqual(35);
+        expect(getBaseGrid(wrapper).props.rowHeight).toEqual(35);
       });
 
       it('uses the appropriate default for the header row height', function() {
-        expect(this.baseGrid.props.headerRows[0].height).toEqual(35);
+        expect(getBaseGrid(wrapper).props.headerRows[0].height).toEqual(35);
       });
 
       it('uses the appropriate default for the header filter row height', function() {
-        expect(this.baseGrid.props.headerRows[1].height).toEqual(45);
+        expect(getBaseGrid(wrapper).props.headerRows[1].height).toEqual(45);
       });
     });
 
     describe('for a given row height prop', function() {
+      let wrapper;
+
       beforeEach(function() {
-        const ToolBarStub = new StubComponent('Toolbar');
-        this.component = this.createComponent({ toolbar: <ToolBarStub />, rowHeight: 40 }).instance();
-        this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
-        this.toolbarInstance.props.onToggleFilter();
-        this.baseGrid = this.getBaseGrid();
+        wrapper = setup({ toolbar: <ToolBarStub />, rowHeight: 40 }).wrapper;
+        wrapper.find(ToolBarStub).props().onToggleFilter();
       });
 
       it('passes the correct heigth to the grid rows', function() {
-        expect(this.baseGrid.props.rowHeight).toEqual(40);
+        expect(getBaseGrid(wrapper).props.rowHeight).toEqual(40);
       });
 
       it('passes the grid row heigth to the header row when no height to the specific header row is provided', function() {
-        expect(this.baseGrid.props.headerRows[0].height).toEqual(40);
+        expect(getBaseGrid(wrapper).props.headerRows[0].height).toEqual(40);
       });
 
       it('uses the default prop height for the filter row when none is provided', function() {
-        expect(this.baseGrid.props.headerRows[1].height).toEqual(45);
+        expect(getBaseGrid(wrapper).props.headerRows[1].height).toEqual(45);
       });
     });
 
     describe('for given row and header height props', function() {
+      let wrapper;
+
       beforeEach(function() {
-        const ToolBarStub = new StubComponent('Toolbar');
-        this.component = this.createComponent({ toolbar: <ToolBarStub />, rowHeight: 40, headerRowHeight: 50, headerFiltersHeight: 60 }).instance();
-        this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
-        this.toolbarInstance.props.onToggleFilter();
-        this.baseGrid = this.getBaseGrid();
+        wrapper = setup({
+          toolbar: <ToolBarStub />,
+          rowHeight: 40,
+          headerRowHeight: 50,
+          headerFiltersHeight: 60
+        }).wrapper;
+        wrapper.find(ToolBarStub).props().onToggleFilter();
       });
 
       it('passes the correct heigth to the grid rows', function() {
-        expect(this.baseGrid.props.rowHeight).toEqual(40);
+        expect(getBaseGrid(wrapper).props.rowHeight).toEqual(40);
       });
 
       it('passes the correct heigth to the header row', function() {
-        expect(this.baseGrid.props.headerRows[0].height).toEqual(50);
+        expect(getBaseGrid(wrapper).props.headerRows[0].height).toEqual(50);
       });
 
       it('passes the correct heigth to the header filter row', function() {
-        expect(this.baseGrid.props.headerRows[1].height).toEqual(60);
+        expect(getBaseGrid(wrapper).props.headerRows[1].height).toEqual(60);
       });
     });
   });
 
   describe('if passed in as props to grid', function() {
+    const ToolBarStub = () => null;
+    let wrapper;
+
     beforeEach(function() {
-      const ToolBarStub = new StubComponent('Toolbar');
-      this.component = this.createComponent({ toolbar: <ToolBarStub /> }).instance();
-      this.toolbarInstance = TestUtils.findRenderedComponentWithType(this.component, ToolBarStub);
+      wrapper = setup({ toolbar: <ToolBarStub /> }).wrapper;
     });
 
     it('should render a Toolbar', function() {
-      expect(this.toolbarInstance).toBeDefined();
+      expect(wrapper.find(ToolBarStub).instance()).toBeDefined();
     });
 
     describe('onToggleFilter trigger of Toolbar', function() {
       beforeEach(function() {
-        this.toolbarInstance.props.onToggleFilter();
-        this.baseGrid = this.getBaseGrid();
+        wrapper.find(ToolBarStub).props().onToggleFilter();
       });
 
       it('should set filter state of grid and render a filterable header row', function() {
-        expect(this.component.state.canFilter).toBe(true);
-        expect(this.baseGrid.props.headerRows.length).toEqual(2);
+        expect(wrapper.instance().state.canFilter).toBe(true);
+        expect(getBaseGrid(wrapper).props.headerRows.length).toEqual(2);
       });
     });
   });
 
   describe('When row selection enabled', function() {
+    let wrapper;
+    let columns;
+    let rows;
+    let selectRowCol;
+
     beforeEach(function() {
-      this.component = this.createComponent({ enableRowSelect: true }).instance();
-      this.baseGrid = this.getBaseGrid();
-      this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+      ({ wrapper, columns, rows } = setup({ enableRowSelect: true }));
+      selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
     });
 
     it('should render an additional Select Row column', function() {
-      expect(this.baseGrid.props.columnMetrics.columns.length).toEqual(this.columns.length + 1);
-      expect(this.selectRowCol.key).toEqual('select-row');
-      expect(TestUtils.isElementOfType(this.selectRowCol.formatter, CheckboxEditor)).toBe(true);
+      expect(getBaseGrid(wrapper).props.columnMetrics.columns.length).toEqual(columns.length + 1);
+      expect(selectRowCol.key).toEqual('select-row');
+      expect(TestUtils.isElementOfType(selectRowCol.formatter, CheckboxEditor)).toBe(true);
     });
 
     describe('checking header checkbox', function() {
+      let checkbox;
+      let selectAllWrapper;
+      let fakeEvent;
+
       beforeEach(function() {
         const checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
-        this.checkbox = checkboxWrapper.querySelector('input');
-        const SelectAll = this.selectRowCol.headerRenderer;
-        this.selectAllWrapper = mount(SelectAll);
-        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        this.selectAllWrapper.props().onChange(this.fakeEvent);
+        checkbox = checkboxWrapper.querySelector('input');
+        const SelectAll = selectRowCol.headerRenderer;
+        selectAllWrapper = mount(SelectAll);
+        fakeEvent = buildFakeEvent({ currentTarget: checkbox });
+        selectAllWrapper.props().onChange(fakeEvent);
       });
 
       it('should select all rows', function() {
-        const selectedRows = this.component.state.selectedRows;
-        expect(selectedRows.length).toEqual(this._rows.length);
+        const selectedRows = wrapper.instance().state.selectedRows;
+        expect(selectedRows.length).toEqual(rows.length);
 
         expect(selectedRows.length).toBeGreaterThan(1);
         selectedRows.forEach((selected) => expect(selected.isSelected).toBe(true));
@@ -235,12 +220,12 @@ describe('Grid', function() {
 
       describe('and then unchecking header checkbox', function() {
         beforeEach(function() {
-          this.checkbox.checked = false;
-          this.selectAllWrapper.props().onChange(this.fakeEvent);
+          checkbox.checked = false;
+          selectAllWrapper.props().onChange(fakeEvent);
         });
 
         it('should deselect all rows', function() {
-          const selectedRows = this.component.state.selectedRows;
+          const selectedRows = wrapper.instance().state.selectedRows;
 
           expect(selectedRows.length).toBeGreaterThan(1);
           selectedRows.forEach((selected) => expect(selected.isSelected).toBe(false));
@@ -250,274 +235,231 @@ describe('Grid', function() {
 
     describe('when selected is false', function() {
       beforeEach(function() {
-        this.component.setState({ selectedRows: [{ id: 0, isSelected: false }, { id: 1, isSelected: false }, { id: 2, isSelected: false }, { id: 3, isSelected: false }] });
-        const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-        selectRowCol.onCellChange(3, 'select-row', this._rows[3], this.buildFakeEvent());
+        wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: false }, { id: 1, isSelected: false }, { id: 2, isSelected: false }, { id: 3, isSelected: false }] });
+        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+        selectRowCol.onCellChange(3, 'select-row', rows[3], buildFakeEvent());
       });
 
       it('should be able to select an individual row', function() {
-        expect(this.component.state.selectedRows[3].isSelected).toBe(true);
+        expect(wrapper.instance().state.selectedRows[3].isSelected).toBe(true);
       });
     });
 
     describe('when selected is null', function() {
       beforeEach(function() {
-        this.component.setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: null }, { id: 2, isSelected: null }, { id: 3, isSelected: null }] });
-        const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-        selectRowCol.onCellChange(2, 'select-row', this._rows[2], this.buildFakeEvent());
+        wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: null }, { id: 2, isSelected: null }, { id: 3, isSelected: null }] });
+        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+        selectRowCol.onCellChange(2, 'select-row', rows[2], buildFakeEvent());
       });
 
       it('should be able to select an individual row', function() {
-        expect(this.component.state.selectedRows[2].isSelected).toBe(true);
+        expect(wrapper.instance().state.selectedRows[2].isSelected).toBe(true);
       });
     });
 
     describe('when selected is true', function() {
       beforeEach(function() {
-        this.component.setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: true }, { id: 2, isSelected: true }, { id: 3, isSelected: true }] });
-        const selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
-        selectRowCol.onCellChange(3, 'select-row', this._rows[3], this.buildFakeEvent());
+        wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: true }, { id: 2, isSelected: true }, { id: 3, isSelected: true }] });
+        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+        selectRowCol.onCellChange(3, 'select-row', rows[3], buildFakeEvent());
       });
 
       it('should be able to unselect an individual row ', function() {
-        expect(this.component.state.selectedRows[3].isSelected).toBe(false);
+        expect(wrapper.instance().state.selectedRows[3].isSelected).toBe(false);
       });
     });
   });
 
-
   describe('When selection enabled and using rowSelection props', function() {
+    let selectRowCol;
+    let rows;
+    let _selectedRows;
+    let _deselectedRows;
+    let wrapper;
+
     beforeEach(function() {
-      const self = this;
-      this._selectedRows = [];
-      this._deselectedRows = [];
-      this.rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }, { id: '3', isSelected: false }, { id: '4', isSelected: false }];
+      _deselectedRows = [];
+      rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }, { id: '3', isSelected: false }, { id: '4', isSelected: false }];
       const columns = [{ name: 'Id', key: 'id' }];
-      const rowGetter = function(i) {
-        return self.rows[i];
-      };
-      this.component = this.createComponent({
-        rowsCount: this.rows.length,
-        rowGetter,
+      wrapper = setup({
+        rowsCount: rows.length,
+        rowGetter(i) { return rows[i]; },
         columns,
         rowSelection: {
           enableShiftSelect: true,
           selectBy: { isSelectedKey: 'isSelected' },
           onRowsSelected(selectedRows) {
-            self._selectedRows = selectedRows;
+            _selectedRows = selectedRows;
           },
           onRowsDeselected(deselectedRows) {
-            self._deselectedRows = deselectedRows;
+            _deselectedRows = deselectedRows;
           }
         }
-      }).instance();
-      this.baseGrid = this.getBaseGrid();
-      this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+      }).wrapper;
+      selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
     });
 
     it('should call rowSelection.onRowsSelected when row selected', function() {
-      this.selectRowCol.onCellChange(1, '', this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toBe(1);
-      expect(this._selectedRows[0].rowIdx).toBe(1);
-      expect(this._selectedRows[0].row).toBe(this.rows[1]);
+      selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
+      expect(_selectedRows.length).toBe(1);
+      expect(_selectedRows[0].rowIdx).toBe(1);
+      expect(_selectedRows[0].row).toBe(rows[1]);
     });
 
     it('should call rowSelection.onRowsDeselected when row de-selected', function() {
-      this.selectRowCol.onCellChange(0, '', this.rows[0], this.buildFakeEvent());
-      expect(this._deselectedRows.length).toBe(1);
-      expect(this._deselectedRows[0].rowIdx).toBe(0);
-      expect(this._deselectedRows[0].row).toBe(this.rows[0]);
+      selectRowCol.onCellChange(0, '', rows[0], buildFakeEvent());
+      expect(_deselectedRows.length).toBe(1);
+      expect(_deselectedRows[0].rowIdx).toBe(0);
+      expect(_deselectedRows[0].row).toBe(rows[0]);
     });
-
 
     it('should set lastRowIdxUiSelected state', function() {
-      this.selectRowCol.onCellChange(1, '', this.rows[1], this.buildFakeEvent());
-      expect(this.component.state.lastRowIdxUiSelected).toEqual(1);
+      selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
+      expect(wrapper.instance().state.lastRowIdxUiSelected).toEqual(1);
     });
-
 
     it('should select range when shift selecting below selected row', function() {
-      this.selectRowCol.onCellChange(1, '', this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(1);
-      this.simulateGridKeyDownWithKeyCode(16);
-      this.selectRowCol.onCellChange(3, '', this.rows[3], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(2);
+      selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
+      expect(_selectedRows.length).toEqual(1);
+      simulateGridKeyDownWithKeyCode(wrapper, 16);
+      selectRowCol.onCellChange(3, '', rows[3], buildFakeEvent());
+      expect(_selectedRows.length).toEqual(2);
     });
-
 
     it('should select range when shift selecting above selected row', function() {
-      this.selectRowCol.onCellChange(3, '', this.rows[3], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(1);
-      this.simulateGridKeyDownWithKeyCode(16);
-      this.selectRowCol.onCellChange(1, '', this.rows[1], this.buildFakeEvent());
-      expect(this._selectedRows.length).toEqual(2);
+      selectRowCol.onCellChange(3, '', rows[3], buildFakeEvent());
+      expect(_selectedRows.length).toEqual(1);
+      simulateGridKeyDownWithKeyCode(wrapper, 16);
+      selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
+      expect(_selectedRows.length).toEqual(2);
     });
 
-
     describe('checking header checkbox', function() {
-      beforeEach(function() {
-        const self = this;
-        this._selectedRows = [];
-        this._deselectedRows = [];
-        this.rows = [{ id: '1' }, { id: '2' }];
+      it('should call rowSelection.onRowsSelected with all rows', function() {
+        let _selectedRows = [];
+        const rows = [{ id: '1' }, { id: '2' }];
         const columns = [{ name: 'Id', key: 'id' }];
-        const rowGetter = function(i) {
-          return self.rows[i];
-        };
-        this.component = this.createComponent({
+        const { wrapper } = setup({
           enableRowSelect: true,
-          rowsCount: this.rows.length,
-          rowGetter,
+          rowsCount: rows.length,
+          rowGetter(i) { return rows[i]; },
           columns,
           rowSelection: {
             selectBy: { indexes: [] },
             onRowsSelected(selectedRows) {
-              self._selectedRows = selectedRows;
-            },
-            onRowsDeselected(deselectedRows) {
-              self._deselectedRows = deselectedRows;
+              _selectedRows = selectedRows;
             }
           }
-        }).instance();
+        });
 
-        this.baseGrid = this.getBaseGrid();
-        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
 
         // header checkbox
         const checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
-        this.checkbox = checkboxWrapper.querySelector('input');
-        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        const SelectAll = this.selectRowCol.headerRenderer;
-        this.selectAllWrapper = mount(SelectAll);
-        this.selectAllWrapper.props().onChange(this.fakeEvent);
-      });
+        const checkbox = checkboxWrapper.querySelector('input');
+        const fakeEvent = buildFakeEvent({ currentTarget: checkbox });
+        const SelectAll = selectRowCol.headerRenderer;
+        const selectAllWrapper = mount(SelectAll);
+        selectAllWrapper.props().onChange(fakeEvent);
 
-      it('should call rowSelection.onRowsSelected with all rows', function() {
-        expect(this._selectedRows.length).toBe(2);
+        expect(_selectedRows.length).toBe(2);
       });
     });
 
     describe('un-checking header checkbox', function() {
-      beforeEach(function() {
-        const self = this;
-        this._selectedRows = [];
-        this._deselectedRows = [];
-        this.rows = [{ id: '1' }, { id: '2' }];
+      it('then unchecking should call rowSelection.onRowsDeselected with all rows', function() {
+        let _deselectedRows = [];
+        const rows = [{ id: '1' }, { id: '2' }];
         const columns = [{ name: 'Id', key: 'id' }];
-        const rowGetter = function(i) {
-          return self.rows[i];
-        };
-        this.component = this.createComponent({
+        const { wrapper } = setup({
           enableRowSelect: true,
-          rowsCount: this.rows.length,
-          rowGetter,
+          rowsCount: rows.length,
+          rowGetter(i) { return rows[i]; },
           columns,
           rowSelection: {
             selectBy: { indexes: [0, 1] },
-            onRowsSelected(selectedRows) {
-              self._selectedRows = selectedRows;
-            },
             onRowsDeselected(deselectedRows) {
-              self._deselectedRows = deselectedRows;
+              _deselectedRows = deselectedRows;
             }
           }
-        }).instance();
+        });
 
-        this.baseGrid = this.getBaseGrid();
-        this.selectRowCol = this.baseGrid.props.columnMetrics.columns[0];
+        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
 
         // header checkbox
         const checkboxWrapper = document.createElement('div');
         checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
-        this.checkbox = checkboxWrapper.querySelector('input');
-        const SelectAll = this.selectRowCol.headerRenderer;
-        this.selectAllWrapper = mount(SelectAll);
-      });
+        const checkbox = checkboxWrapper.querySelector('input');
+        const SelectAll = selectRowCol.headerRenderer;
+        const selectAllWrapper = mount(SelectAll);
 
-      it('then unchecking should call rowSelection.onRowsDeselected with all rows', function() {
-        this.checkbox.checked = false;
-        this.fakeEvent = this.buildFakeEvent({ currentTarget: this.checkbox });
-        this.selectAllWrapper.props().onChange(this.fakeEvent);
-        expect(this._deselectedRows.length).toBe(2);
+        checkbox.checked = false;
+        const fakeEvent = buildFakeEvent({ currentTarget: checkbox });
+        selectAllWrapper.props().onChange(fakeEvent);
+
+        expect(_deselectedRows.length).toBe(2);
       });
     });
   });
 
   describe('changes to non metric column data', function() {
-    beforeEach(function() {
-      const wrapper = this.createComponent();
-      this.originalMetrics = { ...this.component.state.columnMetrics };
-      const editableColumn = { editable: true, ...this.columns[0] };
-      this.columns[0] = editableColumn;
-      wrapper.setProps({ columns: this.columns });
-      this.component = wrapper.instance();
-    });
-
     it('should keep original metric information', function() {
-      const columnMetrics = this.component.state.columnMetrics;
+      const { wrapper, columns } = setup();
+      const component = wrapper.instance();
+      const originalMetrics = { ...component.state.columnMetrics };
+      columns[0].editable = true;
+      wrapper.setProps({ columns });
+      const { columnMetrics } = component.state;
+
       expect(columnMetrics.columns.length).toBeGreaterThan(1);
       columnMetrics.columns.forEach((column, index) => {
-        expect(column.width).toEqual(this.originalMetrics.columns[index].width);
-        expect(column.left).toEqual(this.originalMetrics.columns[index].left);
+        expect(column.width).toEqual(originalMetrics.columns[index].width);
+        expect(column.left).toEqual(originalMetrics.columns[index].left);
       });
     });
   });
 
   describe('Table width', function() {
-    let wrapper;
-
-    beforeEach(function() {
-      wrapper = this.createComponent();
-      this.component = wrapper.instance();
-      this.tableElement = ReactDOM.findDOMNode(this.component);
-    });
-
     it('should generate the width based on the container size', function() {
-      expect(this.tableElement.style.width).toEqual('100%');
+      const { wrapper } = setup();
+      const tableElement = ReactDOM.findDOMNode(wrapper.instance());
+      expect(tableElement.style.width).toEqual('100%');
     });
 
     describe('providing table width as prop', function() {
-      beforeEach(function() {
-        wrapper.setProps({ minWidth: 900 });
-        this.component = wrapper.instance();
-      });
-
       it('should set the width of the table', function() {
-        expect(this.tableElement.style.width).toEqual('900px');
+        const { wrapper } = setup();
+        wrapper.setProps({ minWidth: 900 });
+        const tableElement = ReactDOM.findDOMNode(wrapper.instance());
+        expect(tableElement.style.width).toEqual('900px');
       });
     });
   });
 
   describe('onRowClick handler', function() {
-    beforeEach(function() {
-      const self = this;
-      this.rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }];
+    it('calls handler when row (cell) clicked', function() {
+      const rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }];
       const columns = [{ name: 'Id', key: 'id' }, { name: 'Title', key: 'title', width: 100 }];
-      const rowGetter = function(i) {
-        return self.rows[i];
-      };
 
-      this.rowClicked = {};
-      this.rowClicks = 0;
+      let rowClicked = {};
+      let rowClicks = 0;
 
-      this.component = this.createComponent({
-        rowsCount: this.rows.length,
-        rowGetter,
+      const { wrapper } = setup({
+        rowsCount: rows.length,
+        rowGetter(i) { return rows[i]; },
         columns,
         onRowClick(rowIdx, row, column) {
-          self.rowClicked = { row, column };
-          self.rowClicks++;
+          rowClicked = { row, column };
+          rowClicks++;
         }
-      }).instance();
-    });
+      });
 
-    it('calls handler when row (cell) clicked', function() {
-      this.getCellMetaData().onCellClick({ idx: 1, rowIdx: 1 });
-      expect(this.rowClicks).toBe(1);
-      const { row, column } = this.rowClicked;
-      expect(row).toEqual(jasmine.objectContaining(this.rows[1]));
-      expect(column).toEqual(jasmine.objectContaining(this.columns[1]));
+      getBaseGrid(wrapper).props.cellMetaData.onCellClick({ idx: 1, rowIdx: 1 });
+      expect(rowClicks).toBe(1);
+      const { row, column } = rowClicked;
+      expect(row).toEqual(jasmine.objectContaining(rows[1]));
+      expect(column).toEqual(jasmine.objectContaining(columns[1]));
     });
   });
 });

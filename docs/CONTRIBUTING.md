@@ -59,7 +59,6 @@ This will open your default browser at `http://localhost:8080/webpack-dev-server
 HMR is enabled, that means you won't need to reload the page wherever you make a change, webpack-dev-server will watch for any changes in the source code.
 
 ### Testing
-We use [karma](https://karma-runner.github.io/1.0/index.html) as our test runner combined with [Phantom JS](http://phantomjs.org/) and [jasmine](https://jasmine.github.io/). You can run your test in debug or release mode.
 To run tests in release and dev mode you just need to run:
 `npm test` for release
 `npm dev-test` for debug

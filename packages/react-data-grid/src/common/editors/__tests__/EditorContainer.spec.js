@@ -181,7 +181,6 @@ describe('Editor Container Tests', () => {
       wrapper.find('#button1').simulate('click');
       wrapper.find('#button2').simulate('click');
 
-
       expect(props.onCommit.calls.count()).toEqual(0);
     });
 
@@ -192,39 +191,38 @@ describe('Editor Container Tests', () => {
   });
 
   describe('Events', () => {
-    let container;
     let wrapper;
     let props;
 
     beforeEach(() => {
-      container = document.createElement('div');
-      document.body.appendChild(container);
-      ({ wrapper, props } = setup({}, { attachTo: container }));
+      ({ wrapper, props } = setup());
     });
 
     afterEach(() => {
-      document.body.removeChild(container);
+      if (wrapper.exists()) {
+        wrapper.unmount();
+      }
     });
 
     it('hitting enter should call commit only once', () => {
       const editor = wrapper.find(SimpleTextEditor);
       editor.simulate('keydown', { key: 'Enter' });
 
-      expect(props.onCommit.calls.count()).toEqual(1);
+      expect(props.onCommit).toHaveBeenCalledTimes(1);
     });
 
     it('hitting tab should call commit only once', () => {
       const editor = wrapper.find(SimpleTextEditor);
       editor.simulate('keydown', { key: 'Tab' });
 
-      expect(props.onCommit.calls.count()).toEqual(1);
+      expect(props.onCommit).toHaveBeenCalledTimes(1);
     });
 
     it('hitting escape should call commitCancel only once', () => {
       const editor = wrapper.find(SimpleTextEditor);
       editor.simulate('keydown', { key: 'Escape' });
 
-      expect(props.onCommitCancel.calls.count()).toEqual(1);
+      expect(props.onCommitCancel).toHaveBeenCalledTimes(1);
     });
 
     it('hitting escape should not call commit changes on componentWillUnmount', () => {
