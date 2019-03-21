@@ -193,9 +193,8 @@ describe('<InteractionMasks/>', () => {
 
       it('should give focus to InteractionMasks once a selection has ended', () => {
         // We have to use mount, rather than shallow, so that InteractionMasks has a ref to it's node, used for focusing
-        const { props, wrapper } = setup(undefined, undefined, mount);
+        const { props } = setup(undefined, undefined, mount);
         props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-        const { selectionMask } = wrapper.instance();
         spyOn(InteractionMasks.prototype, 'focus');
         props.eventBus.dispatch(EventTypes.SELECT_END);
         expect(InteractionMasks.prototype.focus).toHaveBeenCalled();
