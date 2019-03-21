@@ -32,29 +32,29 @@ export default class NumericFilter extends React.Component {
       const rule = columnFilter.filterTerm[ruleKey];
 
       switch (rule.type) {
-      case RuleType.Number:
-        if (rule.value === value) {
-          result = true;
-        }
-        break;
-      case RuleType.GreaterThen:
-        if (rule.value <= value) {
-          result = true;
-        }
-        break;
-      case RuleType.LessThen:
-        if (rule.value >= value) {
-          result = true;
-        }
-        break;
-      case RuleType.Range:
-        if (rule.begin <= value && rule.end >= value) {
-          result = true;
-        }
-        break;
-      default:
-        // do nothing
-        break;
+        case RuleType.Number:
+          if (rule.value === value) {
+            result = true;
+          }
+          break;
+        case RuleType.GreaterThen:
+          if (rule.value <= value) {
+            result = true;
+          }
+          break;
+        case RuleType.LessThen:
+          if (rule.value >= value) {
+            result = true;
+          }
+          break;
+        case RuleType.Range:
+          if (rule.begin <= value && rule.end >= value) {
+            result = true;
+          }
+          break;
+        default:
+          // do nothing
+          break;
       }
     }
     return result;
@@ -105,7 +105,7 @@ export default class NumericFilter extends React.Component {
   handleChange(e) {
     const value = e.target.value;
     const filters = this.getRules(value);
-    this.props.onChange({ filterTerm: (filters.length > 0 ? filters : null), column: this.props.column, rawValue: value, filterValues: this.filterValues });
+    this.props.onChange({ filterTerm: filters.length > 0 ? filters : null, column: this.props.column, rawValue: value, filterValues: this.filterValues });
   }
 
   render() {

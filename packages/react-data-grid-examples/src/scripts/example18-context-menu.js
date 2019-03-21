@@ -85,19 +85,19 @@ class MyContextMenu extends React.Component {
   };
 
   onRowDelete = (e, data) => {
-    if (typeof (this.props.onRowDelete) === 'function') {
+    if (typeof this.props.onRowDelete === 'function') {
       this.props.onRowDelete(e, data);
     }
   };
 
   onRowInsertAbove = (e, data) => {
-    if (typeof (this.props.onRowInsertAbove) === 'function') {
+    if (typeof this.props.onRowInsertAbove === 'function') {
       this.props.onRowInsertAbove(e, data);
     }
   };
 
   onRowInsertBelow = (e, data) => {
-    if (typeof (this.props.onRowInsertBelow) === 'function') {
+    if (typeof this.props.onRowInsertBelow === 'function') {
       this.props.onRowInsertBelow(e, data);
     }
   };

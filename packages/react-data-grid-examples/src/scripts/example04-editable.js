@@ -98,8 +98,8 @@ class Example extends React.Component {
   }
 }
 
-const exampleDescription = (
-  <p>To make a given column editable set <code>column.editable</code> and create a <code>onGridRowsUpdated</code> handler. Note that you will need to store your rows in state and update that state when a cell value changes.</p>);
+const exampleDescription =
+  <p>To make a given column editable set <code>column.editable</code> and create a <code>onGridRowsUpdated</code> handler. Note that you will need to store your rows in state and update that state when a cell value changes.</p>;
 
 export default exampleWrapper({
   WrappedComponent: Example,

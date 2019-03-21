@@ -142,7 +142,7 @@ describe('Canvas Tests', () => {
 
     it('can render a custom renderer if __metadata property exists', () => {
       const EmptyChildRow = () => {
-        return (<div className="test-row-renderer" />);
+        return <div className="test-row-renderer" />;
       };
       const rowGetter = () => { return { id: 0, __metaData: { getRowRenderer: EmptyChildRow } }; };
       const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, columns: COLUMNS, rowGetter, rowsCount: 1, getSubRowDetails: getFakeSubRowDetails(1) };

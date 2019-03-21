@@ -1634,7 +1634,7 @@
         "required": false,
         "description": "Called just before a cell is about to be edited",
         "defaultValue": {
-          "value": "() => { }",
+          "value": "function() { }",
           "computed": false
         }
       },

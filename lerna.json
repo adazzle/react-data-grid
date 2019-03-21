@@ -1,16 +1,21 @@
 {
-  "version": "6.1.0-0",
+  "version": "7.0.0-alpha.0",
   "ignoreChanges": [
     "*.spec.*",
     "*.md"
   ],
   "command": {
     "publish": {
-      "allowBranch": ["master", "next"],
+      "allowBranch": [
+        "master",
+        "next"
+      ],
       "message": "Publish %s"
     },
     "bootstrap": {
-      "npmClientArgs": ["--no-package-lock"]
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
     }
   }
 }

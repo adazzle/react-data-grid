@@ -24,7 +24,7 @@ class RowRenderer extends React.Component {
     // here we are just changing the style
     // but we could replace this with anything we liked, cards, images, etc
     // usually though it will just be a matter of wrapping a div, and then calling back through to the grid
-    return (<div style={this.getRowStyle()}>{this.props.renderBaseRow(this.props)}</div>);
+    return <div style={this.getRowStyle()}>{this.props.renderBaseRow(this.props)}</div>;
   }
 }
 

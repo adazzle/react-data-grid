@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "6.1.0-0",
+  "version": "7.0.0-alpha.0",
   "description": "Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like",
   "author": "Adazzle",
   "license": "MIT",
