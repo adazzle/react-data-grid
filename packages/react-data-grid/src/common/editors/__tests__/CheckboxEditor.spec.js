@@ -26,13 +26,6 @@ describe('CheckboxEditor', () => {
       component = componentWrapper.instance();
     });
 
-    it('should have a readOnly flag set', () => {
-      const Input = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
-      const checkboxNode = ReactDOM.findDOMNode(Input);
-      expect(checkboxNode.readOnly).toBe(true);
-    });
-
-
     it('should create a new CheckboxEditor instance', () => {
       expect(component).toBeDefined();
     });
