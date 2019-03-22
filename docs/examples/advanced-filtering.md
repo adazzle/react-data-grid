@@ -9,11 +9,12 @@ You can see the code by clicking the blue rectangular Show Editor View button ab
 
 Overview
 -----
-The above example makes use of some of the built in column filters provided in the `react-data-grid-addons` package.
+The above example makes use of some of the built in column filters provided in the `react-data-grid-addons` package. 
 
 ### Available Editors
 * [Numeric filter](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid-addons/src/cells/headerCells/filters/NumericFilter.js) - Used here in the ID column to filter columns of numberic values.
-* [Multi-Select Filter](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid-addons/src/cells/headerCells/filters/MultiSelectFilter.js) - Used here in the Job Title column. Can be used to easily filter multiple values.
+* [Autocomplete Filter](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid-addons/src/cells/headerCells/filters/AutoCompleteFilter.js) - Used here in the First and Last Name columns. Used to quickly search from the possible values of the rows 
+* [Multi-Select Filter](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid-addons/src/cells/headerCells/filters/MultiSelectFilter.js) - Used here in the Job Title column. Can be used to easily filter multiple values. 
 * [Single-Select Filter](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid-addons/src/cells/headerCells/filters/SingleSelectFilter.js) - Used here in the Job Area column. Allows filtering by only a single value.
 
 
@@ -27,4 +28,15 @@ For example
     name: "ID",
     filterRenderer: NumericFilter
   }
+```
+
+### Configuring the autocomplete filter results
+This function determines the values that will be displayed in the editors that display a list eg. the Autocomplete Editor.
+
+```javascript
+/**
+ * @param string columnKey - Key property of the column being filtered
+ * @returns Array with list of valid filter values
+ */
+function getValidFilterValues(columnKey)
 ```
