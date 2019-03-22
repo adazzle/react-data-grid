@@ -9,7 +9,7 @@ const config = {
     index: [
       'webpack-dev-server/client?http://localhost:8080/',
       'webpack/hot/dev-server',
-      './packages/react-data-grid-examples/src'
+      './examples'
     ]
   },
   resolve: {
@@ -24,7 +24,7 @@ const config = {
 const compiler = webpack(config);
 const server = new WebpackDevServer(compiler, {
   hot: true,
-  contentBase: 'packages/react-data-grid-examples/src'
+  contentBase: 'examples'
 });
 
 server.listen(8080, 'localhost', () => {
