@@ -7,7 +7,7 @@ const setup = (overriderProps = {}) => {
   const props = {
     action: {
       icon: 'glyphicon glyphicon-link',
-      callback: jasmine.createSpy()
+      callback: jest.fn()
     },
     isFirst: true,
     ...overriderProps
@@ -46,11 +46,11 @@ describe('Cell Action Tests', () => {
           actions: [
             {
               text: 'Test Action 1',
-              callback: jasmine.createSpy()
+              callback: jest.fn()
             },
             {
               text: 'Test Action 1',
-              callback: jasmine.createSpy()
+              callback: jest.fn()
             }
           ]
         }

@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import ContainerEditorWrapper from '../ContainerEditorWrapper';
 
 class FakeComponent extends React.Component {
-    getValue = jasmine.createSpy()
-    getInputNode = jasmine.createSpy()
+    getValue = jest.fn()
+    getInputNode = jest.fn()
     render() { return <div />; }
 }
 

@@ -53,9 +53,9 @@ describe('Column Metrics Tests', () => {
         const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
         columns.splice(2, 0, firstFrozenColumn);
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
-        expect(metrics.columns[0]).toEqual(jasmine.objectContaining(firstFrozenColumn));
-        expect(metrics.columns[1]).toEqual(jasmine.objectContaining(secondFrozenColumn));
-        expect(metrics.columns[2]).toEqual(jasmine.objectContaining(thirdFrozenColumn));
+        expect(metrics.columns[0]).toMatchObject(firstFrozenColumn);
+        expect(metrics.columns[1]).toMatchObject(secondFrozenColumn);
+        expect(metrics.columns[2]).toMatchObject(thirdFrozenColumn);
       });
 
       describe('When column data is immutable js object', () => {

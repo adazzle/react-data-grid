@@ -31,14 +31,12 @@ describe('SelectionRangeMask', () => {
   it('should render the CellMask component with correct position for the selected cells (topLeft->bottomRight)', () => {
     const mask = setup();
 
-    expect(mask.props()).toEqual(
-      jasmine.objectContaining({
-        height: 60, // = rowHeight * 2
-        width: 90, // = columns[0].width + columns[1].width
-        left: 5, // = left of leftmost column
-        top: 90, // = rowHeight * rowIdx of topmost column
-        zIndex: zIndexes.CELL_MASK
-      })
-    );
+    expect(mask.props()).toMatchObject({
+      height: 60, // = rowHeight * 2
+      width: 90, // = columns[0].width + columns[1].width
+      left: 5, // = left of leftmost column
+      top: 90, // = rowHeight * rowIdx of topmost column
+      zIndex: zIndexes.CELL_MASK
+    });
   });
 });

@@ -32,18 +32,18 @@ describe('<InteractionMasks/>', () => {
       columns,
       rowHeight: 30,
       rowsCount: ROWS_COUNT,
-      editCell: jasmine.createSpy(),
-      selectCell: jasmine.createSpy(),
-      onHitBottomBoundary: jasmine.createSpy(),
-      onHitTopBoundary: jasmine.createSpy(),
-      onHitRightBoundary: jasmine.createSpy(),
-      onHitLeftBoundary: jasmine.createSpy(),
-      onCellSelected: jasmine.createSpy(),
-      onCellDeSelected: jasmine.createSpy(),
-      onCellRangeSelectionStarted: jasmine.createSpy(),
-      onCellRangeSelectionUpdated: jasmine.createSpy(),
-      onCellRangeSelectionCompleted: jasmine.createSpy(),
-      onGridRowsUpdated: jasmine.createSpy(),
+      editCell: jest.fn(),
+      selectCell: jest.fn(),
+      onHitBottomBoundary: jest.fn(),
+      onHitTopBoundary: jest.fn(),
+      onHitRightBoundary: jest.fn(),
+      onHitLeftBoundary: jest.fn(),
+      onCellSelected: jest.fn(),
+      onCellDeSelected: jest.fn(),
+      onCellRangeSelectionStarted: jest.fn(),
+      onCellRangeSelectionUpdated: jest.fn(),
+      onCellRangeSelectionCompleted: jest.fn(),
+      onGridRowsUpdated: jest.fn(),
       isEditorEnabled: false,
       rowGetter,
       enableCellSelect: true,
@@ -57,7 +57,7 @@ describe('<InteractionMasks/>', () => {
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
     wrapper.setState(initialState);
-    props.onCellSelected.calls.reset();
+    props.onCellSelected.mockReset();
     return { wrapper, props };
   };
 
@@ -195,7 +195,7 @@ describe('<InteractionMasks/>', () => {
         // We have to use mount, rather than shallow, so that InteractionMasks has a ref to it's node, used for focusing
         const { props } = setup(undefined, undefined, mount);
         props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-        spyOn(InteractionMasks.prototype, 'focus');
+        jest.spyOn(InteractionMasks.prototype, 'focus').mockImplementation(() => {});
         props.eventBus.dispatch(EventTypes.SELECT_END);
         expect(InteractionMasks.prototype.focus).toHaveBeenCalled();
       });
@@ -549,7 +549,7 @@ describe('<InteractionMasks/>', () => {
 
       const tabCell = (props, shiftKey, state = {}) => {
         const { wrapper } = setup(props, state);
-        const preventDefaultSpy = jasmine.createSpy();
+        const preventDefaultSpy = jest.fn();
         simulateTab(wrapper, shiftKey, preventDefaultSpy);
         return { wrapper, preventDefaultSpy };
       };
@@ -739,7 +739,7 @@ describe('<InteractionMasks/>', () => {
 
     it('should render the DragMask component on cell drag', () => {
       const { wrapper } = setupDrag();
-      const setData = jasmine.createSpy();
+      const setData = jest.fn();
       wrapper.find(DragHandle).simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
@@ -751,7 +751,7 @@ describe('<InteractionMasks/>', () => {
 
     it('should update the dragged over cells on drag end', () => {
       const { wrapper, props } = setupDrag();
-      const setData = jasmine.createSpy();
+      const setData = jest.fn();
       wrapper.find(DragHandle).simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
