@@ -55,8 +55,8 @@ describe('Header Row Unit Tests', () => {
       const renderer = headerCells.at(sortableColIdx).props().renderer;
       renderer.props.onSort('title', 'DESC');
       expect(props.onSort).toHaveBeenCalled();
-      expect(props.onSort.calls[0][0]).toEqual('title');
-      expect(props.onSort.calls[0][0]).toEqual('DESC');
+      expect(props.onSort.mock.calls[0][0]).toEqual('title');
+      expect(props.onSort.mock.calls[0][1]).toEqual('DESC');
     });
   });
 

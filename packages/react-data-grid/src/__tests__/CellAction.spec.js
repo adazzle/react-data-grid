@@ -28,7 +28,7 @@ describe('Cell Action Tests', () => {
       const renderedActionMenu = wrapper.find('.rdg-cell-action-menu');
 
       expect(renderedActionButton.length).toBe(1);
-      expect(renderedActionButtonProps.onClick).toEqual(jasmine.any(Function));
+      expect(renderedActionButtonProps.onClick).toEqual(expect.any(Function));
 
       renderedActionButton.simulate('click');
 
@@ -61,7 +61,7 @@ describe('Cell Action Tests', () => {
       let renderedActionMenu = wrapper.find('.rdg-cell-action-menu');
 
       expect(renderedActionButton.length).toBe(1);
-      expect(renderedActionButtonProps.onClick).toEqual(jasmine.any(Function));
+      expect(renderedActionButtonProps.onClick).toEqual(expect.any(Function));
       expect(wrapperState.isMenuOpen).toBeFalsy();
       expect(renderedActionMenu.length).toBe(0);
 

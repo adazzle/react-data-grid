@@ -49,8 +49,8 @@ describe('Header Unit Tests', () => {
     const headerRow = wrapper.find(HeaderRow);
     headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
     expect(testProps.onColumnResize).toHaveBeenCalled();
-    expect(testProps.onColumnResize.calls[0][0]).toEqual(resizeColIdx);
-    expect(testProps.onColumnResize.calls[0][1]).toEqual(200);
+    expect(testProps.onColumnResize.mock.calls[0][0]).toEqual(resizeColIdx);
+    expect(testProps.onColumnResize.mock.calls[0][1]).toEqual(200);
   }
 
   it('should render a default header row', () => {
@@ -179,7 +179,7 @@ describe('Header Unit Tests', () => {
       const headerDiv = wrapper.find('div');
       headerDiv.simulate('click');
       expect(testAllProps.cellMetaData.onCellClick).toHaveBeenCalled();
-      expect(testAllProps.cellMetaData.onCellClick.calls[0][0]).toEqual({ rowIdx: -1, idx: -1 });
+      expect(testAllProps.cellMetaData.onCellClick.mock.calls[0][0]).toEqual({ rowIdx: -1, idx: -1 });
     });
   });
 });
