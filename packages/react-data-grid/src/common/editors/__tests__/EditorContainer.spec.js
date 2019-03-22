@@ -43,8 +43,8 @@ const setup = (extraProps, container) => {
     column: fakeColumn,
     value: 'Adwolf',
     height: 50,
-    onCommit: jasmine.createSpy(),
-    onCommitCancel: jasmine.createSpy(),
+    onCommit: jest.fn(),
+    onCommitCancel: jest.fn(),
     ...extraProps
   };
   const wrapper = mount(<EditorContainer {...props} />, container);
@@ -119,14 +119,14 @@ describe('Editor Container Tests', () => {
       wrapper.find('#input1').simulate('click');
       wrapper.find('#input2').simulate('click');
 
-      expect(props.onCommit.calls.count()).toEqual(0);
+      expect(props.onCommit.mock.calls.length).toEqual(0);
     });
 
     it('should not commit if any element inside the editor is clicked that stops the event propagation', () => {
       wrapper.find('#button1').simulate('click');
       wrapper.find('#button2').simulate('click');
 
-      expect(props.onCommit.calls.count()).toEqual(0);
+      expect(props.onCommit.mock.calls.length).toEqual(0);
     });
 
     it('should call onCommitCancel when editor cancels editing', () => {
@@ -134,7 +134,7 @@ describe('Editor Container Tests', () => {
 
       editor.props().onCommitCancel();
 
-      expect(props.onCommitCancel.calls.count()).toEqual(1);
+      expect(props.onCommitCancel.mock.calls.length).toEqual(1);
       expect(props.onCommit).not.toHaveBeenCalled();
     });
 
@@ -174,14 +174,14 @@ describe('Editor Container Tests', () => {
       editor.find('#input1').simulate('click');
       editor.find('#input2').simulate('click');
 
-      expect(props.onCommit.calls.count()).toEqual(0);
+      expect(props.onCommit.mock.calls.length).toEqual(0);
     });
 
     it('should not commit if any element inside the editor is clicked that stops the event propagation', () => {
       wrapper.find('#button1').simulate('click');
       wrapper.find('#button2').simulate('click');
 
-      expect(props.onCommit.calls.count()).toEqual(0);
+      expect(props.onCommit.mock.calls.length).toEqual(0);
     });
 
     it('should commit if any element outside the editor is clicked', () => {

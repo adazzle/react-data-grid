@@ -24,15 +24,13 @@ describe('SelectionMask', () => {
   it('should render the CellMask component with correct position for the selected cell', () => {
     const mask = setup();
 
-    expect(mask.props()).toEqual(
-      jasmine.objectContaining({
-        height: 30,
-        width: 50,
-        left: 5,
-        top: 90,
-        className: 'rdg-selected',
-        children: undefined
-      })
-    );
+    expect(mask.props()).toMatchObject({
+      height: 30,
+      width: 50,
+      left: 5,
+      top: 90,
+      className: 'rdg-selected',
+      children: undefined
+    });
   });
 });

@@ -405,8 +405,7 @@ module.exports = {
   }, {
     files: ['packages/*/src/**/__tests__/**/*'],
     env: {
-      jest: true,
-      jasmine: true
+      jest: true
     }
   }]
 };

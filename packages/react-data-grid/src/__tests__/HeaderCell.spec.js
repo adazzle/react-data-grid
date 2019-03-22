@@ -16,8 +16,8 @@ describe('Header Cell Tests', () => {
         name: 'bla',
         key: 'bla'
       },
-      onResize: jasmine.createSpy(),
-      onResizeEnd: jasmine.createSpy(),
+      onResize: jest.fn(),
+      onResizeEnd: jest.fn(),
       height: 50,
       name: 'bla'
     };
@@ -79,8 +79,8 @@ describe('Header Cell Tests', () => {
       const fakeEvent = { pageX: dragLength };
       resizeHandle.props().onDrag(fakeEvent);
       expect(testProps.onResize).toHaveBeenCalled();
-      expect(testProps.onResize.calls.mostRecent().args[0]).toEqual(testProps.column);
-      expect(testProps.onResize.calls.mostRecent().args[1]).toEqual(dragLength);
+      expect(testProps.onResize.mock.calls[0][0]).toEqual(testProps.column);
+      expect(testProps.onResize.mock.calls[0][1]).toEqual(dragLength);
     });
 
     it('finish dragging should reset resizing state', () => {
@@ -98,16 +98,16 @@ describe('Header Cell Tests', () => {
       const fakeEvent = { pageX: 250 };
       resizeHandle.props().onDragEnd(fakeEvent);
       expect(testProps.onResizeEnd).toHaveBeenCalled();
-      expect(testProps.onResizeEnd.calls.mostRecent().args[0]).toEqual(testProps.column);
-      expect(testProps.onResizeEnd.calls.mostRecent().args[1]).toEqual(250);
+      expect(testProps.onResizeEnd.mock.calls[0][0]).toEqual(testProps.column);
+      expect(testProps.onResizeEnd.mock.calls[0][1]).toEqual(250);
     });
   });
 
   describe('getCell method', () => {
     it('pass the column as property to cell renderer if it is a function', () => {
-      const rendererFunction = jasmine.createSpy();
+      const rendererFunction = jest.fn();
       const { props } = setup({ renderer: rendererFunction });
-      expect(rendererFunction.calls.argsFor(0)[0]).toEqual({ column: props.column });
+      expect(rendererFunction.mock.calls[0][0]).toEqual({ column: props.column });
     });
     it('should not pass the column as property to cell renderer if it is an HTML element', () => {
       const renderer = <div>Value</div>;
@@ -116,7 +116,7 @@ describe('Header Cell Tests', () => {
       expect(cell.props.column).toBeUndefined();
     });
     it('should pass the column as property to cell renderer if it is a React class', () => {
-      const renderer = <SortableHeaderCell columnKey="colKey" onSort={jasmine.createSpy()} />;
+      const renderer = <SortableHeaderCell columnKey="colKey" onSort={jest.fn()} />;
       const { wrapper, props } = setup({ renderer });
       const cell = wrapper.instance().getCell();
       expect(cell.props.column).toBe(props.column);

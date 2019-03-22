@@ -17,8 +17,6 @@ const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
 const columns = createColumns(NUMBER_OF_COLUMNS);
 
-const objectMatching = jasmine.objectContaining;
-
 describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
@@ -32,18 +30,18 @@ describe('<InteractionMasks/>', () => {
       columns,
       rowHeight: 30,
       rowsCount: ROWS_COUNT,
-      editCell: jasmine.createSpy(),
-      selectCell: jasmine.createSpy(),
-      onHitBottomBoundary: jasmine.createSpy(),
-      onHitTopBoundary: jasmine.createSpy(),
-      onHitRightBoundary: jasmine.createSpy(),
-      onHitLeftBoundary: jasmine.createSpy(),
-      onCellSelected: jasmine.createSpy(),
-      onCellDeSelected: jasmine.createSpy(),
-      onCellRangeSelectionStarted: jasmine.createSpy(),
-      onCellRangeSelectionUpdated: jasmine.createSpy(),
-      onCellRangeSelectionCompleted: jasmine.createSpy(),
-      onGridRowsUpdated: jasmine.createSpy(),
+      editCell: jest.fn(),
+      selectCell: jest.fn(),
+      onHitBottomBoundary: jest.fn(),
+      onHitTopBoundary: jest.fn(),
+      onHitRightBoundary: jest.fn(),
+      onHitLeftBoundary: jest.fn(),
+      onCellSelected: jest.fn(),
+      onCellDeSelected: jest.fn(),
+      onCellRangeSelectionStarted: jest.fn(),
+      onCellRangeSelectionUpdated: jest.fn(),
+      onCellRangeSelectionCompleted: jest.fn(),
+      onGridRowsUpdated: jest.fn(),
       isEditorEnabled: false,
       rowGetter,
       enableCellSelect: true,
@@ -57,7 +55,7 @@ describe('<InteractionMasks/>', () => {
     };
     const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
     wrapper.setState(initialState);
-    props.onCellSelected.calls.reset();
+    props.onCellSelected.mockReset();
     return { wrapper, props };
   };
 
@@ -195,7 +193,7 @@ describe('<InteractionMasks/>', () => {
         // We have to use mount, rather than shallow, so that InteractionMasks has a ref to it's node, used for focusing
         const { props } = setup(undefined, undefined, mount);
         props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-        spyOn(InteractionMasks.prototype, 'focus');
+        jest.spyOn(InteractionMasks.prototype, 'focus').mockImplementation(() => {});
         props.eventBus.dispatch(EventTypes.SELECT_END);
         expect(InteractionMasks.prototype.focus).toHaveBeenCalled();
       });
@@ -224,37 +222,37 @@ describe('<InteractionMasks/>', () => {
         it('should shrink the selection upwards on Shift+Up', () => {
           pressKey(wrapper, 'ArrowUp', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
-          expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
-          expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 3, rowIdx: 2 }));
-          expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 3, rowIdx: 2 }));
-          expect(selectedRange.startCell).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
+          expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toMatchObject({ idx: 3, rowIdx: 2 });
+          expect(selectedRange.cursorCell).toMatchObject({ idx: 3, rowIdx: 2 });
+          expect(selectedRange.startCell).toMatchObject({ idx: 2, rowIdx: 2 });
         });
 
         it('should shrink the selection leftwards on Shift+Left', () => {
           pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
-          expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
-          expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 2, rowIdx: 3 }));
-          expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 2, rowIdx: 3 }));
-          expect(selectedRange.startCell).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
+          expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toMatchObject({ idx: 2, rowIdx: 3 });
+          expect(selectedRange.cursorCell).toMatchObject({ idx: 2, rowIdx: 3 });
+          expect(selectedRange.startCell).toMatchObject({ idx: 2, rowIdx: 2 });
         });
 
         it('should grow the selection downwards on Shift+Down', () => {
           pressKey(wrapper, 'ArrowDown', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
-          expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
-          expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 3, rowIdx: 4 }));
-          expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 3, rowIdx: 4 }));
-          expect(selectedRange.startCell).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
+          expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toMatchObject({ idx: 3, rowIdx: 4 });
+          expect(selectedRange.cursorCell).toMatchObject({ idx: 3, rowIdx: 4 });
+          expect(selectedRange.startCell).toMatchObject({ idx: 2, rowIdx: 2 });
         });
 
         it('should grow the selection rightwards on Shift+Right', () => {
           pressKey(wrapper, 'ArrowRight', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
-          expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
-          expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 4, rowIdx: 3 }));
-          expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 4, rowIdx: 3 }));
-          expect(selectedRange.startCell).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
+          expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
+          expect(selectedRange.bottomRight).toMatchObject({ idx: 4, rowIdx: 3 });
+          expect(selectedRange.cursorCell).toMatchObject({ idx: 4, rowIdx: 3 });
+          expect(selectedRange.startCell).toMatchObject({ idx: 2, rowIdx: 2 });
         });
       });
 
@@ -264,7 +262,7 @@ describe('<InteractionMasks/>', () => {
           selectRange(wrapper, props, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
           pressKey(wrapper, 'ArrowUp', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
-          expect(selectedRange.cursorCell).toEqual(jasmine.objectContaining({ idx: 0, rowIdx: 0 }));
+          expect(selectedRange.cursorCell).toMatchObject({ idx: 0, rowIdx: 0 });
         });
 
         it('should not grow the selection on Shift+Left', () => {
@@ -309,37 +307,37 @@ describe('<InteractionMasks/>', () => {
       it('should grow the selection range left on Shift+Left', () => {
         pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
-        expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 1, rowIdx: 2 }));
-        expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
-        expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 1, rowIdx: 2 }));
-        expect(selectedRange.startCell).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
+        expect(selectedRange.topLeft).toMatchObject({ idx: 1, rowIdx: 2 });
+        expect(selectedRange.bottomRight).toMatchObject({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.cursorCell).toMatchObject({ idx: 1, rowIdx: 2 });
+        expect(selectedRange.startCell).toMatchObject({ idx: 2, rowIdx: 2 });
       });
 
       it('should grow the selection range right on Shift+Right', () => {
         pressKey(wrapper, 'ArrowRight', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
-        expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
-        expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 3, rowIdx: 2 }));
-        expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 3, rowIdx: 2 }));
-        expect(selectedRange.startCell).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
+        expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.bottomRight).toMatchObject({ idx: 3, rowIdx: 2 });
+        expect(selectedRange.cursorCell).toMatchObject({ idx: 3, rowIdx: 2 });
+        expect(selectedRange.startCell).toMatchObject({ idx: 2, rowIdx: 2 });
       });
 
       it('should grow the selection range up on Shift+Up', () => {
         pressKey(wrapper, 'ArrowUp', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
-        expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 1 }));
-        expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
-        expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 2, rowIdx: 1 }));
-        expect(selectedRange.startCell).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
+        expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 1 });
+        expect(selectedRange.bottomRight).toMatchObject({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.cursorCell).toMatchObject({ idx: 2, rowIdx: 1 });
+        expect(selectedRange.startCell).toMatchObject({ idx: 2, rowIdx: 2 });
       });
 
       it('should grow the selection range down on Shift+Down', () => {
         pressKey(wrapper, 'ArrowDown', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
-        expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
-        expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 2, rowIdx: 3 }));
-        expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 2, rowIdx: 3 }));
-        expect(selectedRange.startCell).toEqual(objectMatching({ idx: 2, rowIdx: 2 }));
+        expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
+        expect(selectedRange.bottomRight).toMatchObject({ idx: 2, rowIdx: 3 });
+        expect(selectedRange.cursorCell).toMatchObject({ idx: 2, rowIdx: 3 });
+        expect(selectedRange.startCell).toMatchObject({ idx: 2, rowIdx: 2 });
       });
     });
 
@@ -355,19 +353,19 @@ describe('<InteractionMasks/>', () => {
       it('should grow the selection range right on Shift+Right', () => {
         pressKey(wrapper, 'ArrowRight', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
-        expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 0, rowIdx: 0 }));
-        expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 1, rowIdx: 0 }));
-        expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 1, rowIdx: 0 }));
-        expect(selectedRange.startCell).toEqual(objectMatching({ idx: 0, rowIdx: 0 }));
+        expect(selectedRange.topLeft).toMatchObject({ idx: 0, rowIdx: 0 });
+        expect(selectedRange.bottomRight).toMatchObject({ idx: 1, rowIdx: 0 });
+        expect(selectedRange.cursorCell).toMatchObject({ idx: 1, rowIdx: 0 });
+        expect(selectedRange.startCell).toMatchObject({ idx: 0, rowIdx: 0 });
       });
 
       it('should grow the selection range down on Shift+Down', () => {
         pressKey(wrapper, 'ArrowDown', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
-        expect(selectedRange.topLeft).toEqual(objectMatching({ idx: 0, rowIdx: 0 }));
-        expect(selectedRange.bottomRight).toEqual(objectMatching({ idx: 0, rowIdx: 1 }));
-        expect(selectedRange.cursorCell).toEqual(objectMatching({ idx: 0, rowIdx: 1 }));
-        expect(selectedRange.startCell).toEqual(objectMatching({ idx: 0, rowIdx: 0 }));
+        expect(selectedRange.topLeft).toMatchObject({ idx: 0, rowIdx: 0 });
+        expect(selectedRange.bottomRight).toMatchObject({ idx: 0, rowIdx: 1 });
+        expect(selectedRange.cursorCell).toMatchObject({ idx: 0, rowIdx: 1 });
+        expect(selectedRange.startCell).toMatchObject({ idx: 0, rowIdx: 0 });
       });
     });
   });
@@ -376,7 +374,7 @@ describe('<InteractionMasks/>', () => {
     it('should fire onCellRangeSelectionStarted on starting a selection', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-      expect(props.onCellRangeSelectionStarted).toHaveBeenCalledWith(jasmine.objectContaining({
+      expect(props.onCellRangeSelectionStarted).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 2, rowIdx: 2 },
         bottomRight: { idx: 2, rowIdx: 2 }
       }));
@@ -386,7 +384,7 @@ describe('<InteractionMasks/>', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
       props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
-      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(jasmine.objectContaining({
+      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 2, rowIdx: 2 },
         bottomRight: { idx: 3, rowIdx: 3 }
       }));
@@ -404,7 +402,7 @@ describe('<InteractionMasks/>', () => {
       const currentCell = { idx: 0, rowIdx: 0 };
       const { wrapper, props } = setup({}, { selectedPosition: currentCell });
       pressKey(wrapper, 'ArrowRight', { shiftKey: true });
-      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(jasmine.objectContaining({
+      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 0, rowIdx: 0 },
         bottomRight: { idx: 1, rowIdx: 0 }
       }));
@@ -424,42 +422,42 @@ describe('<InteractionMasks/>', () => {
         const currentCell = { idx: 0, rowIdx: 0 };
         const { wrapper } = setup({}, { selectedPosition: currentCell });
         pressKey(wrapper, 'ArrowRight');
-        expect(wrapper.state().selectedPosition).toEqual(objectMatching({ idx: 1, rowIdx: 0 }));
+        expect(wrapper.state().selectedPosition).toMatchObject({ idx: 1, rowIdx: 0 });
       });
 
       it('Press arrow right should move right', () => {
         const currentCell = { idx: 0, rowIdx: 0 };
         const { wrapper } = setup({}, { selectedPosition: currentCell });
         pressKey(wrapper, 'ArrowRight');
-        expect(wrapper.state().selectedPosition).toEqual(objectMatching({ idx: 1, rowIdx: 0 }));
+        expect(wrapper.state().selectedPosition).toMatchObject({ idx: 1, rowIdx: 0 });
       });
 
       it('Press arrow down should move down', () => {
         const currentCell = { idx: 0, rowIdx: 0 };
         const { wrapper } = setup({}, { selectedPosition: currentCell });
         pressKey(wrapper, 'ArrowDown');
-        expect(wrapper.state().selectedPosition).toEqual(objectMatching({ idx: 0, rowIdx: 1 }));
+        expect(wrapper.state().selectedPosition).toMatchObject({ idx: 0, rowIdx: 1 });
       });
 
       it('Press arrow left should move left', () => {
         const currentCell = { idx: 1, rowIdx: 0 };
         const { wrapper } = setup({}, { selectedPosition: currentCell });
         pressKey(wrapper, 'ArrowLeft');
-        expect(wrapper.state().selectedPosition).toEqual(objectMatching({ idx: 0, rowIdx: 0 }));
+        expect(wrapper.state().selectedPosition).toMatchObject({ idx: 0, rowIdx: 0 });
       });
 
       it('Press tab should move right', () => {
         const currentCell = { idx: 0, rowIdx: 0 };
         const { wrapper } = setup({}, { selectedPosition: currentCell });
         pressKey(wrapper, 'Tab', { keyCode: keyCodes.Tab });
-        expect(wrapper.state().selectedPosition).toEqual(objectMatching({ idx: 1, rowIdx: 0 }));
+        expect(wrapper.state().selectedPosition).toMatchObject({ idx: 1, rowIdx: 0 });
       });
 
       it('Press shiftKey + tab should move left', () => {
         const currentCell = { idx: 1, rowIdx: 0 };
         const { wrapper } = setup({}, { selectedPosition: currentCell });
         pressKey(wrapper, 'Tab', { keyCode: keyCodes.Tab, shiftKey: true });
-        expect(wrapper.state().selectedPosition).toEqual(objectMatching({ idx: 0, rowIdx: 0 }));
+        expect(wrapper.state().selectedPosition).toMatchObject({ idx: 0, rowIdx: 0 });
       });
     });
 
@@ -505,7 +503,7 @@ describe('<InteractionMasks/>', () => {
             it('selection handler should have been called when moving to the next cell', () => {
               const { wrapper, props } = setupCellSelectionTest();
               simulateTab(wrapper);
-              expect(props.onCellSelected).toHaveBeenCalledWith(objectMatching({ rowIdx: 2, idx: 3 }));
+              expect(props.onCellSelected).toHaveBeenCalledWith(expect.objectContaining({ rowIdx: 2, idx: 3 }));
             });
           });
 
@@ -549,7 +547,7 @@ describe('<InteractionMasks/>', () => {
 
       const tabCell = (props, shiftKey, state = {}) => {
         const { wrapper } = setup(props, state);
-        const preventDefaultSpy = jasmine.createSpy();
+        const preventDefaultSpy = jest.fn();
         simulateTab(wrapper, shiftKey, preventDefaultSpy);
         return { wrapper, preventDefaultSpy };
       };
@@ -585,7 +583,7 @@ describe('<InteractionMasks/>', () => {
         it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
           const selectedPosition = { rowIdx: 3, idx: 3 };
           assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-            .toEqual(objectMatching({ rowIdx: 3, idx: 4, changeRowOrColumn: false }));
+            .toMatchObject({ rowIdx: 3, idx: 4, changeRowOrColumn: false });
         });
         it('goes to the beginning of the next row when the user presses Tab and they are at the end of a row', () => {
           const selectedPosition = { rowIdx: 2, idx: NUMBER_OF_COLUMNS - 1 };
@@ -628,17 +626,17 @@ describe('<InteractionMasks/>', () => {
         it('goes to the first cell of the next row when they press Tab and they are at the end of a row', () => {
           const selectedPosition = { rowIdx: 3, idx: NUMBER_OF_COLUMNS - 1 };
           assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-            .toEqual(objectMatching({ rowIdx: 4, idx: 0 }));
+            .toMatchObject({ rowIdx: 4, idx: 0 });
         });
         it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
           const selectedPosition = { rowIdx: 2, idx: 2 };
           assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-            .toEqual(objectMatching({ rowIdx: 2, idx: 1 }));
+            .toMatchObject({ rowIdx: 2, idx: 1 });
         });
         it('goes to the last cell of the previous row when they press Shift+Tab and they are at the beginning of a row', () => {
           const selectedPosition = { rowIdx: 3, idx: 0 };
           assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-            .toEqual(objectMatching({ rowIdx: 2, idx: NUMBER_OF_COLUMNS - 1 }));
+            .toMatchObject({ rowIdx: 2, idx: NUMBER_OF_COLUMNS - 1 });
         });
       });
 
@@ -653,7 +651,7 @@ describe('<InteractionMasks/>', () => {
         it('goes to the first cell in the row when the user presses Tab and they are at the end of a row', () => {
           const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
           assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-            .toEqual(objectMatching({ rowIdx: ROWS_COUNT - 1, idx: 0 }));
+            .toMatchObject({ rowIdx: ROWS_COUNT - 1, idx: 0 });
         });
         it('goes to the last cell in the row when the user presses Shift+Tab and they are at the beginning of a row', () => {
           const selectedPosition = { rowIdx: 0, idx: 0 };
@@ -668,7 +666,7 @@ describe('<InteractionMasks/>', () => {
         it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
           const selectedPosition = { rowIdx: 2, idx: 2 };
           assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-            .toEqual(objectMatching({ rowIdx: 2, idx: 1 }));
+            .toMatchObject({ rowIdx: 2, idx: 1 });
         });
       });
     });
@@ -739,7 +737,7 @@ describe('<InteractionMasks/>', () => {
 
     it('should render the DragMask component on cell drag', () => {
       const { wrapper } = setupDrag();
-      const setData = jasmine.createSpy();
+      const setData = jest.fn();
       wrapper.find(DragHandle).simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
@@ -751,7 +749,7 @@ describe('<InteractionMasks/>', () => {
 
     it('should update the dragged over cells on drag end', () => {
       const { wrapper, props } = setupDrag();
-      const setData = jasmine.createSpy();
+      const setData = jest.fn();
       wrapper.find(DragHandle).simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
@@ -769,7 +767,7 @@ describe('<InteractionMasks/>', () => {
       const { wrapper } = setup({ contextMenu: FakeContextMenu }, { selectedPosition: { idx: 1, rowIdx: 2 } });
 
       expect(wrapper.find(sel('context-menu')).props())
-        .toEqual(jasmine.objectContaining({ idx: 1, rowIdx: 2 }));
+        .toMatchObject({ idx: 1, rowIdx: 2 });
     });
   });
 });

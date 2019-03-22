@@ -23,14 +23,12 @@ describe('CopyMask', () => {
   it('should render the CellMask component with correct position for the copied cell', () => {
     const mask = setup({ copiedPosition: { idx: 0, rowIdx: 3 } });
 
-    expect(mask.props()).toEqual(
-      jasmine.objectContaining({
-        height: 30,
-        width: 50,
-        left: 5,
-        top: 90,
-        className: 'react-grid-cell-copied'
-      })
-    );
+    expect(mask.props()).toMatchObject({
+      height: 30,
+      width: 50,
+      left: 5,
+      top: 90,
+      className: 'react-grid-cell-copied'
+    });
   });
 });

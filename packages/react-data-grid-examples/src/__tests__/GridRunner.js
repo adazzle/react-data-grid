@@ -18,7 +18,7 @@ export default class GridRunner {
 
   _renderGrid(intoBody) {
     const Example = this.example;
-    this.handleCellDragSpy = jasmine.createSpy('handleCellDrag');
+    this.handleCellDragSpy = jest.fn();
     const options = intoBody ? { attachTo: document.body } : { };
     const gridWrapper = mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
 
@@ -251,7 +251,7 @@ export default class GridRunner {
     // Note - fake date is random, so need to test vs the assigned value as it WILL change (and bust the test)
     const expected = this.cell.props().value;
     // check our event returns the right data
-    const args = this.handleCellDragSpy.calls.first().args[0];
+    const args = this.handleCellDragSpy.mock.calls[0][0];
     expect(args.cellKey).toEqual(cellKey);
     expect(args.fromRow).toEqual(from);
     expect(args.toRow).toEqual(to);

@@ -8,10 +8,10 @@ const renderComponent = (props) => {
   return wrapper;
 };
 
-const onDragStart = jasmine.createSpy();
-const onDragEnd = jasmine.createSpy();
-const onDrag = jasmine.createSpy();
-const component = jasmine.createSpy();
+const onDragStart = jest.fn();
+const onDragEnd = jest.fn();
+const onDrag = jest.fn();
+const component = jest.fn();
 
 const allProperties = {
   onDragStart,

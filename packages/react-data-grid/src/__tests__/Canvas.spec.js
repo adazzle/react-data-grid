@@ -61,25 +61,25 @@ describe('Canvas Tests', () => {
   });
 
   it('Should not call setScroll on render', () => {
-    spyOn(testElementNode, 'setScrollLeft');
+    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => {});
     expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
   });
 
   it('Should not call setScroll on update', () => {
-    spyOn(testElementNode, 'setScrollLeft');
+    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => {});
     testElementNode.componentDidUpdate(testProps);
     expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
   });
 
   it('Should render the InteractionMasks component', () => {
-    expect(wrapper.find(InteractionMasks).props()).toEqual(jasmine.objectContaining({
+    expect(wrapper.find(InteractionMasks).props()).toMatchObject({
       rowHeight: 25,
       rowsCount: 1,
       rowVisibleStartIdx: 0,
       rowVisibleEndIdx: 10,
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 100
-    }));
+    });
   });
 
   describe('Row Selection', () => {

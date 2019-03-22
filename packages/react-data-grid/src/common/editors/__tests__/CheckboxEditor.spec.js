@@ -15,7 +15,7 @@ describe('CheckboxEditor', () => {
 
   describe('Basic tests', () => {
     beforeEach(() => {
-      spyOn(testColumn, 'onCellChange');
+      jest.spyOn(testColumn, 'onCellChange').mockImplementation(() => {});
       componentWrapper = mount(
         <CheckboxEditor
           value

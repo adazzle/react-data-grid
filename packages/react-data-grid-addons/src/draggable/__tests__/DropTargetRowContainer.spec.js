@@ -32,7 +32,7 @@ describe('<DropTargetRowContainer />', () => {
   let registry;
   let manager;
   const props = {
-    onRowDrop: jasmine.createSpy(),
+    onRowDrop: jest.fn(),
     idx: 1,
     row: { id: 5, country: 'England' },
     columns: GridPropHelpers.columns,
@@ -60,9 +60,9 @@ describe('<DropTargetRowContainer />', () => {
     backend.simulateHover([rowTargetId]);
     backend.simulateDrop();
     expect(props.onRowDrop).toHaveBeenCalled();
-    expect(props.onRowDrop.calls.count()).toEqual(1);
-    const rowSource = props.onRowDrop.calls.first().args[0].rowSource;
-    const rowTarget = props.onRowDrop.calls.first().args[0].rowTarget;
+    expect(props.onRowDrop.mock.calls.length).toEqual(1);
+    const rowSource = props.onRowDrop.mock.calls[0][0].rowSource;
+    const rowTarget = props.onRowDrop.mock.calls[0][0].rowTarget;
     expect(rowSource).toEqual(draggedRowItem);
     expect(rowTarget.idx).toEqual(1);
     expect(rowTarget.data).toEqual(props.row);

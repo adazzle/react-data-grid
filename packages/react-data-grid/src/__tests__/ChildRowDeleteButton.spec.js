@@ -6,7 +6,7 @@ import ChildRowDeleteButton from '../ChildRowDeleteButton';
 describe('ChildRowDeleteButton', () => {
   let testElement;
   const getFakeProps = (isLastSibling) => {
-    const onDeleteSubRow = jasmine.createSpy();
+    const onDeleteSubRow = jest.fn();
     const siblingIndex = isLastSibling ? 1 : 0;
     return {
       treeDepth: 2,
@@ -57,6 +57,6 @@ describe('ChildRowDeleteButton', () => {
     const button = testElement.find('div.rdg-child-row-btn');
     button.simulate('click');
     expect(fakeProps.onDeleteSubRow).toHaveBeenCalled();
-    expect(fakeProps.onDeleteSubRow.calls.count()).toEqual(1);
+    expect(fakeProps.onDeleteSubRow.mock.calls.length).toEqual(1);
   });
 });

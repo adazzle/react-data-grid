@@ -5,9 +5,9 @@ import DragHandle from '../DragHandle';
 
 describe('DragHandle', () => {
   const setup = () => {
-    const onDragStart = jasmine.createSpy();
-    const onDragEnd = jasmine.createSpy();
-    const onDoubleClick = jasmine.createSpy();
+    const onDragStart = jest.fn();
+    const onDragEnd = jest.fn();
+    const onDoubleClick = jest.fn();
     const props = { onDragStart, onDragEnd, onDoubleClick };
     const wrapper = shallow(<DragHandle {...props} />);
 
