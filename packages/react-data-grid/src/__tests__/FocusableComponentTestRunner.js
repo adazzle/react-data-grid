@@ -25,7 +25,7 @@ export default class FocusableComponentTestRunner {
 
       expect(componentDidMount.mock.calls.length).toBe(1);
       expect(checkFocus.mock.calls.length).toBe(1);
-      expect(checkFocus.calls.first().args).toEqual([COMPONENT_DID_MOUNT_SOURCE]);
+      expect(checkFocus.mock.calls[0].args).toEqual([COMPONENT_DID_MOUNT_SOURCE]);
     });
   }
 
