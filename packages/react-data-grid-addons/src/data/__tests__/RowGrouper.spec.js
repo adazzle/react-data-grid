@@ -52,7 +52,7 @@ describe('Row Grouper', () => {
       .every(x => x.__metaData)).toBe(true);
   });
   it('It can group an Immutable List (not list of immutable maps)', () => {
-    const immutableList = Immutable.List(rows); // eslint-disable-line new-cap
+    const immutableList = Immutable.List(rows);
     const groupingResult = groupRows(immutableList, grpDetails.multiCol, grpDetails.expRows);
 
     expect(groupingResult
