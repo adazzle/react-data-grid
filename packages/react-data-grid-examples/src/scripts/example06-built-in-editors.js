@@ -5,12 +5,8 @@ import update from 'immutability-helper';
 
 import exampleWrapper from '../components/exampleWrapper';
 
-const { AutoComplete: AutoCompleteEditor, DropDownEditor } = Editors;
+const { DropDownEditor } = Editors;
 const { DropDownFormatter } = Formatters;
-
-// options for priorities autocomplete editor
-const priorities = [{ id: 0, title: 'Critical' }, { id: 1, title: 'High' }, { id: 2, title: 'Medium' }, { id: 3, title: 'Low' }];
-const PrioritiesEditor = <AutoCompleteEditor options={priorities} />;
 
 // options for IssueType dropdown editor
 // these can either be an array of strings, or an object that matches the schema below.
@@ -39,11 +35,6 @@ class Example extends React.Component {
         editable: true
       },
       {
-        key: 'priority',
-        name: 'Priority',
-        editor: PrioritiesEditor
-      },
-      {
         key: 'issueType',
         name: 'Issue Type',
         editor: IssueTypesEditor,
@@ -60,7 +51,6 @@ class Example extends React.Component {
       rows.push({
         id: i,
         task: `Task ${i}`,
-        priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
         issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)]
       });
     }
@@ -99,7 +89,7 @@ class Example extends React.Component {
 }
 
 const exampleDescription =
-  <p>This example uses the built in <strong>Autocomplete</strong> editor for the priorities column and the <strong>DropdownEditor</strong> for the IssueType column. <strong>You must include the <code>react-data-grid.ui-plugins.js</code> package to use the built in editors.</strong></p>;
+  <p>This example uses the built-in <strong>DropdownEditor</strong> for the IssueType column. <strong>You must include the <code>react-data-grid.ui-plugins.js</code> package to use the built in editors.</strong></p>;
 
 export default exampleWrapper({
   WrappedComponent: Example,

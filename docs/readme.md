@@ -16,7 +16,6 @@
 - [DraggableHeaderCell](/docs/markdowns/DraggableHeaderCell.md)
 - [RowActionsCell](/docs/markdowns/RowActionsCell.md)
 - [RowDragLayer](/docs/markdowns/RowDragLayer.md)
-- [AutoCompleteEditor](/docs/markdowns/AutoCompleteEditor.md)
 - [CheckboxEditor](/docs/markdowns/CheckboxEditor.md)
 - [DropDownEditor](/docs/markdowns/DropDownEditor.md)
 - [EditorBase](/docs/markdowns/EditorBase.md)
