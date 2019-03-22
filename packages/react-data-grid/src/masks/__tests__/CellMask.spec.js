@@ -22,14 +22,12 @@ describe('CellMask', () => {
   it('should render the mask with correct style', () => {
     const mask = setup();
 
-    expect(mask.prop('style')).toEqual(
-      jasmine.objectContaining({
-        height: 30,
-        width: 50,
-        zIndex: zIndexes.CELL_MASK,
-        transform: 'translate(5px, 10px)'
-      })
-    );
+    expect(mask.prop('style')).toMatchObject({
+      height: 30,
+      width: 50,
+      zIndex: zIndexes.CELL_MASK,
+      transform: 'translate(5px, 10px)'
+    });
   });
 
   it('should render any children', () => {

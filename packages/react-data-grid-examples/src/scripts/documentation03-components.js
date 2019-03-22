@@ -35,8 +35,8 @@ export default class ComponentDocs extends React.Component {
   }
 
   getDocumentContent = (key) => {
-    const documentPath = generatedDocs[key].path;
-    $.ajax({
+    const documentPath = window.generatedDocs[key].path;
+    window.$.ajax({
       url: documentPath,
       success: (documentContent) => {
         this.setState({ documentContent, selectedDocumentIndex: key });
@@ -51,10 +51,10 @@ export default class ComponentDocs extends React.Component {
 
   getComponentDocs() {
     const docsToRender = [];
-    for (const key in generatedDocs) {
-      if (generatedDocs.hasOwnProperty(key)) {
+    for (const key in window.generatedDocs) {
+      if (window.generatedDocs.hasOwnProperty(key)) {
         const className = key === this.state.selectedDocumentIndex ? 'active' : '';
-        const doc = generatedDocs[key];
+        const doc = window.generatedDocs[key];
         docsToRender.push(
           <li key={key} role="presentation" className={className}>
             <a href="#" onClick={function(index, e) { this.onNavBarClicked(index, e); }.bind(this, key)}>{doc.name}</a>
@@ -81,8 +81,8 @@ export default class ComponentDocs extends React.Component {
         {this.renderNavBar()}
         <DocumentContainer
           documentContent={this.state.documentContent}
-          documentName={generatedDocs[selectedDocumentIndex].name}
-          documentPath={generatedDocs[selectedDocumentIndex].path}
+          documentName={window.generatedDocs[selectedDocumentIndex].name}
+          documentPath={window.generatedDocs[selectedDocumentIndex].path}
         />
       </div>
     );

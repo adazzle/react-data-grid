@@ -9,7 +9,7 @@ const defaultProps = {
     name: 'col1',
     key: 'col1'
   },
-  onSort: jasmine.createSpy(),
+  onSort: jest.fn(),
   sortDirection: DEFINE_SORT.NONE
 };
 

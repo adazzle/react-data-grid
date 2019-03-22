@@ -22,8 +22,8 @@ class Example extends React.Component {
     this.state = null;
   }
 
-  rowGetter = () => {
-    return _rows[i];
+  rowGetter = (i) => {
+    return this._rows[i];
   };
 
   render() {

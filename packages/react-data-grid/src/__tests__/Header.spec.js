@@ -9,24 +9,24 @@ import * as GetScrollbarSize from '../getScrollbarSize';
 const SCROLL_BAR_SIZE = 17;
 
 describe('Header Unit Tests', () => {
+  let testProps;
   beforeEach(() => {
-    spyOn(GetScrollbarSize, 'default').and.returnValue(SCROLL_BAR_SIZE);
+    jest.spyOn(GetScrollbarSize, 'default').mockReturnValue(SCROLL_BAR_SIZE);
+    testProps = {
+      columnMetrics: {
+        columns: helpers.columns,
+        minColumnWidth: 80,
+        totalWidth: true,
+        width: 2600
+      },
+      cellMetaData: fakeCellMetaData,
+      totalWidth: 1000,
+      height: 50,
+      headerRows: [{ height: 50, ref: 'row' }],
+      onColumnResize: jest.fn(),
+      onSort: () => null
+    };
   });
-
-  const testProps = {
-    columnMetrics: {
-      columns: helpers.columns,
-      minColumnWidth: 80,
-      totalWidth: true,
-      width: 2600
-    },
-    cellMetaData: fakeCellMetaData,
-    totalWidth: 1000,
-    height: 50,
-    headerRows: [{ height: 50, ref: 'row' }],
-    onColumnResize: jasmine.createSpy(),
-    onSort: () => null
-  };
 
   function shouldRenderDefaultHeaderRow() {
     const wrapper = shallow(<Header {...testProps} />);
@@ -49,8 +49,8 @@ describe('Header Unit Tests', () => {
     const headerRow = wrapper.find(HeaderRow);
     headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
     expect(testProps.onColumnResize).toHaveBeenCalled();
-    expect(testProps.onColumnResize.calls.mostRecent().args[0]).toEqual(resizeColIdx);
-    expect(testProps.onColumnResize.calls.mostRecent().args[1]).toEqual(200);
+    expect(testProps.onColumnResize.mock.calls[0][0]).toEqual(resizeColIdx);
+    expect(testProps.onColumnResize.mock.calls[0][1]).toEqual(200);
   }
 
   it('should render a default header row', () => {
@@ -107,7 +107,7 @@ describe('Header Unit Tests', () => {
       },
       height: 51,
       headerRows: [{ height: 51, ref: 'row' }],
-      onSort: jasmine.createSpy()
+      onSort: jest.fn()
     };
     const testAllProps = {
       columnMetrics: {
@@ -121,11 +121,11 @@ describe('Header Unit Tests', () => {
       headerRows: [{ height: 50, ref: 'row' }],
       sortColumn: 'sortColumnValue',
       sortDirection: 'DESC',
-      onSort: jasmine.createSpy(),
-      onColumnResize: jasmine.createSpy(),
-      onScroll: jasmine.createSpy(),
-      draggableHeaderCell: jasmine.createSpy(),
-      getValidFilterValues: jasmine.createSpy(),
+      onSort: jest.fn(),
+      onColumnResize: jest.fn(),
+      onScroll: jest.fn(),
+      draggableHeaderCell: jest.fn(),
+      getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData
     };
     it('passes classname property', () => {
@@ -174,12 +174,12 @@ describe('Header Unit Tests', () => {
     });
 
     it('execute onCellClick event on cellMetaData and rowIdx & idx = -1', () => {
-      spyOn(testAllProps.cellMetaData, 'onCellClick');
+      jest.spyOn(testAllProps.cellMetaData, 'onCellClick').mockImplementation(() => {});
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
       headerDiv.simulate('click');
       expect(testAllProps.cellMetaData.onCellClick).toHaveBeenCalled();
-      expect(testAllProps.cellMetaData.onCellClick.calls.mostRecent().args[0]).toEqual({ rowIdx: -1, idx: -1 });
+      expect(testAllProps.cellMetaData.onCellClick.mock.calls[0][0]).toEqual({ rowIdx: -1, idx: -1 });
     });
   });
 });

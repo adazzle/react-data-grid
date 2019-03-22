@@ -78,16 +78,16 @@ describe('Cell Tests', () => {
       cellMetaData: {
         selected: { idx: 2, rowIdx: 3 },
         dragged: null,
-        onCellClick: jasmine.createSpy(),
-        onCellFocus: jasmine.createSpy(),
-        onCellContextMenu: jasmine.createSpy(),
-        onCellDoubleClick: jasmine.createSpy(),
-        onCommit: jasmine.createSpy(),
-        onCommitCancel: jasmine.createSpy(),
+        onCellClick: jest.fn(),
+        onCellFocus: jest.fn(),
+        onCellContextMenu: jest.fn(),
+        onCellDoubleClick: jest.fn(),
+        onCommit: jest.fn(),
+        onCommitCancel: jest.fn(),
         copied: null,
-        handleDragEnterRow: jasmine.createSpy(),
-        handleTerminateDrag: jasmine.createSpy(),
-        onColumnEvent: jasmine.createSpy()
+        handleDragEnterRow: jest.fn(),
+        handleTerminateDrag: jest.fn(),
+        onColumnEvent: jest.fn()
       },
       rowData: helpers.rowGetter(11),
       expandableOptions: { key: 'reqValue' },
@@ -107,18 +107,18 @@ describe('Cell Tests', () => {
       cellMetaData: {
         selected: { idx: 2, rowIdx: 3 },
         dragged: null,
-        onCellClick: jasmine.createSpy(),
-        onCellFocus: jasmine.createSpy(),
-        onCellContextMenu: jasmine.createSpy(),
-        onCellDoubleClick: jasmine.createSpy(),
-        onCommit: jasmine.createSpy(),
-        onCommitCancel: jasmine.createSpy(),
+        onCellClick: jest.fn(),
+        onCellFocus: jest.fn(),
+        onCellContextMenu: jest.fn(),
+        onCellDoubleClick: jest.fn(),
+        onCommit: jest.fn(),
+        onCommitCancel: jest.fn(),
         copied: null,
-        handleDragEnterRow: jasmine.createSpy(),
-        handleTerminateDrag: jasmine.createSpy(),
-        onColumnEvent: jasmine.createSpy()
+        handleDragEnterRow: jest.fn(),
+        handleTerminateDrag: jest.fn(),
+        onColumnEvent: jest.fn()
       },
-      handleDragStart: jasmine.createSpy(),
+      handleDragStart: jest.fn(),
       className: 'a-class-name',
       cellControls: 'something',
       rowData: helpers.rowGetter(10),
@@ -181,16 +181,16 @@ describe('Cell Tests', () => {
         cellMetaData: {
           selected: { idx: 2, rowIdx: 3 },
           dragged: null,
-          onCellClick: jasmine.createSpy(),
-          onCellFocus: jasmine.createSpy(),
-          onCellContextMenu: jasmine.createSpy(),
-          onCellDoubleClick: jasmine.createSpy(),
-          onCommit: jasmine.createSpy(),
-          onCommitCancel: jasmine.createSpy(),
+          onCellClick: jest.fn(),
+          onCellFocus: jest.fn(),
+          onCellContextMenu: jest.fn(),
+          onCellDoubleClick: jest.fn(),
+          onCommit: jest.fn(),
+          onCommitCancel: jest.fn(),
           copied: null,
-          handleDragEnterRow: jasmine.createSpy(),
-          handleTerminateDrag: jasmine.createSpy(),
-          onColumnEvent: jasmine.createSpy()
+          handleDragEnterRow: jest.fn(),
+          handleTerminateDrag: jest.fn(),
+          onColumnEvent: jest.fn()
         },
         rowData: helpers.rowGetter(11),
         expandableOptions: { key: 'reqValue' },
@@ -207,22 +207,22 @@ describe('Cell Tests', () => {
 
     describe('when getCellActions is in cellMetadata', () => {
       it('should render some CellActions', () => {
-        const action = { icon: 'glpyhicon glyphicon-link', callback: jasmine.createSpy() };
+        const action = { icon: 'glpyhicon glyphicon-link', callback: jest.fn() };
         const { wrapper } = setup({
           cellMetaData: {
             selected: { idx: 2, rowIdx: 3 },
             dragged: null,
-            onCellClick: jasmine.createSpy(),
-            onCellFocus: jasmine.createSpy(),
-            onCellContextMenu: jasmine.createSpy(),
-            onCellDoubleClick: jasmine.createSpy(),
-            onCommit: jasmine.createSpy(),
-            onCommitCancel: jasmine.createSpy(),
+            onCellClick: jest.fn(),
+            onCellFocus: jest.fn(),
+            onCellContextMenu: jest.fn(),
+            onCellDoubleClick: jest.fn(),
+            onCommit: jest.fn(),
+            onCommitCancel: jest.fn(),
             copied: null,
-            handleDragEnterRow: jasmine.createSpy(),
-            handleTerminateDrag: jasmine.createSpy(),
-            onColumnEvent: jasmine.createSpy(),
-            getCellActions: jasmine.createSpy().and.returnValue([action])
+            handleDragEnterRow: jest.fn(),
+            handleTerminateDrag: jest.fn(),
+            onColumnEvent: jest.fn(),
+            getCellActions: jest.fn().mockReturnValue([action])
           }
         });
 

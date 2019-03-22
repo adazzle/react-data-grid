@@ -23,22 +23,22 @@ export default class FocusableComponentTestRunner {
     it('checkFocus gets called correctly on componentDidMount', () => {
       const { componentDidMount, checkFocus } = this.componentPrototype;
 
-      expect(componentDidMount.calls.count()).toBe(1);
-      expect(checkFocus.calls.count()).toBe(1);
-      expect(checkFocus.calls.first().args).toEqual([COMPONENT_DID_MOUNT_SOURCE]);
+      expect(componentDidMount.mock.calls.length).toBe(1);
+      expect(checkFocus.mock.calls.length).toBe(1);
+      expect(checkFocus.mock.calls[0].args).toEqual([COMPONENT_DID_MOUNT_SOURCE]);
     });
   }
 
   _assertComponentDidUpdate() {
     it('checkFocus gets called on componentDidUpdate', () => {
       const { componentDidUpdate, checkFocus } = this.componentPrototype;
-      checkFocus.calls.reset();
+      checkFocus.mockReset();
 
       this._componentWrapper.setProps({ idx: this._props.idx + 1 });
 
-      expect(componentDidUpdate.calls.count()).toBe(1);
-      expect(checkFocus.calls.count()).toBe(1);
-      expect(checkFocus.calls.first().args).toEqual([COMPONENT_DID_UPDATE_SOURCE]);
+      expect(componentDidUpdate.mock.calls.length).toBe(1);
+      expect(checkFocus.mock.calls.length).toBe(1);
+      expect(checkFocus.calls[0]).toEqual([COMPONENT_DID_UPDATE_SOURCE]);
     });
   }
 
@@ -48,7 +48,7 @@ export default class FocusableComponentTestRunner {
       const selected = this._getNewSelection(this._props);
 
       this._componentWrapper.setProps({ cellMetaData: { selected } });
-      expect(componentDidUpdate.calls.count()).toBe(1);
+      expect(componentDidUpdate.mock.calls.length).toBe(1);
     });
 
     it('component should update when the element is about to be selected', () => {
@@ -62,7 +62,7 @@ export default class FocusableComponentTestRunner {
       this._componentWrapper.setProps({ cellMetaData: originalSelection });
 
       // Assert.
-      expect(this.componentPrototype.componentDidUpdate.calls.count()).toBe(1);
+      expect(this.componentPrototype.componentDidUpdate.mock.calls.length).toBe(1);
     });
 
     it('component should not update when the element is neither selected or about to be selected', () => {
@@ -82,9 +82,9 @@ export default class FocusableComponentTestRunner {
 
   _addLifeCycleMethodsBeforeEach() {
     beforeEach(() => {
-      spyOn(this.componentPrototype, 'checkFocus');
-      spyOn(this.componentPrototype, 'componentDidMount').and.callFake(() => this.componentPrototype.checkFocus(COMPONENT_DID_MOUNT_SOURCE));
-      spyOn(this.componentPrototype, 'componentDidUpdate').and.callFake(() => this.componentPrototype.checkFocus(COMPONENT_DID_UPDATE_SOURCE));
+      jest.spyOn(this.componentPrototype, 'checkFocus').mockImplementation(() => {});
+      jest.spyOn(this.componentPrototype, 'componentDidMount').mockImplementation(() => this.componentPrototype.checkFocus(COMPONENT_DID_MOUNT_SOURCE));
+      jest.spyOn(this.componentPrototype, 'componentDidUpdate').mockImplementation(() => this.componentPrototype.checkFocus(COMPONENT_DID_UPDATE_SOURCE));
       this._componentWrapper = mount(<this._Component {...this._props} />);
     });
   }
@@ -117,7 +117,7 @@ export default class FocusableComponentTestRunner {
 
   _addFocusBeforeEach() {
     beforeEach(() => {
-      spyOn(this.componentPrototype, 'focus');
+      jest.spyOn(this.componentPrototype, 'focus').mockImplementation(() => {});
     });
   }
 

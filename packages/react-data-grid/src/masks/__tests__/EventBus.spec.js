@@ -3,9 +3,9 @@ import EventBus from '../EventBus';
 describe('EventBus', () => {
   it('should call registered event handlers when event is dispatched', () => {
     const eventBus = new EventBus();
-    const eventAHandler1 = jasmine.createSpy();
-    const eventAHandler2 = jasmine.createSpy();
-    const eventBHandler = jasmine.createSpy();
+    const eventAHandler1 = jest.fn();
+    const eventAHandler2 = jest.fn();
+    const eventBHandler = jest.fn();
 
     eventBus.subscribe('eventA', eventAHandler1);
     eventBus.subscribe('eventA', eventAHandler2);
@@ -20,8 +20,8 @@ describe('EventBus', () => {
 
   it('should not call unsubscribed event handlers when event is dispatched', () => {
     const eventBus = new EventBus();
-    const eventAHandler1 = jasmine.createSpy();
-    const eventAHandler2 = jasmine.createSpy();
+    const eventAHandler1 = jest.fn();
+    const eventAHandler2 = jest.fn();
 
     eventBus.subscribe('eventA', eventAHandler1);
     const unsubscribeEventAHandler2 = eventBus.subscribe('eventA', eventAHandler2);

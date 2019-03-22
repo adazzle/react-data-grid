@@ -39,26 +39,22 @@ describe('DragMask', () => {
   it('should render the CellMask component with correct position for the dragged down cell', () => {
     const mask = setup({ draggedPosition: { idx: 0, rowIdx: 2, overRowIdx: 4 } });
 
-    expect(mask.props()).toEqual(
-      jasmine.objectContaining({
-        height: 70,
-        width: 50,
-        left: 5,
-        top: 90
-      })
-    );
+    expect(mask.props()).toMatchObject({
+      height: 70,
+      width: 50,
+      left: 5,
+      top: 90
+    });
   });
 
   it('should render the CellMask component with correct position for the dragged up cell', () => {
     const mask = setup({ draggedPosition: { idx: 0, rowIdx: 6, overRowIdx: 4 } });
 
-    expect(mask.props()).toEqual(
-      jasmine.objectContaining({
-        height: 90,
-        width: 50,
-        left: 5,
-        top: 90
-      })
-    );
+    expect(mask.props()).toMatchObject({
+      height: 90,
+      width: 50,
+      left: 5,
+      top: 90
+    });
   });
 });

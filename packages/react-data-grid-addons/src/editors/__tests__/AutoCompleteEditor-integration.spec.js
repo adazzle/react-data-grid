@@ -10,7 +10,7 @@ describe('AutoCompleteEditor integration', () => {
   const fakeOptions = [{ id: 1, title: 'test-result1' }, { id: 2, title: 'test-result2' }];
   const fakeParams = ['param1', 'param2', 'param3'];
   const fakeColumn = { key: 'autocomplete', name: 'name', width: 0 };
-  const commitSpy = jasmine.createSpy();
+  const commitSpy = jest.fn();
 
   beforeEach(() => {
     component = ReactDOM.render(
@@ -41,7 +41,7 @@ describe('AutoCompleteEditor integration', () => {
       TestUtils.Simulate.click(textInputEle.nextSibling.children[0]);
       // Expect value to have been committed
       expect(commitSpy).toHaveBeenCalled();
-      expect(commitSpy.calls.count()).toEqual(1);
+      expect(commitSpy.mock.calls.length).toEqual(1);
     });
   });
 });

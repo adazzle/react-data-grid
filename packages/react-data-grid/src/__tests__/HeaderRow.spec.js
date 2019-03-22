@@ -13,7 +13,7 @@ describe('Header Row Unit Tests', () => {
     columns: helpers.columns,
     onColumnResize() {},
     onColumnResizeEnd() {},
-    onSort: jasmine.createSpy(),
+    onSort: jest.fn(),
     sortDirection: 'NONE',
     sortColumn: null,
     height: 35,
@@ -55,8 +55,8 @@ describe('Header Row Unit Tests', () => {
       const renderer = headerCells.at(sortableColIdx).props().renderer;
       renderer.props.onSort('title', 'DESC');
       expect(props.onSort).toHaveBeenCalled();
-      expect(props.onSort.calls.mostRecent().args[0]).toEqual('title');
-      expect(props.onSort.calls.mostRecent().args[1]).toEqual('DESC');
+      expect(props.onSort.mock.calls[0][0]).toEqual('title');
+      expect(props.onSort.mock.calls[0][1]).toEqual('DESC');
     });
   });
 
@@ -127,23 +127,23 @@ describe('Header Row Unit Tests', () => {
       return wrapper;
     };
 
-    const onScroll = jasmine.createSpy();
+    const onScroll = jest.fn();
     const requiredProps = {
       height: 35,
       columns: helpers.columns,
-      onSort: jasmine.createSpy(),
+      onSort: jest.fn(),
       rowType: 'rowTypeValue',
-      onColumnResize: jasmine.createSpy(),
-      onColumnResizeEnd: jasmine.createSpy()
+      onColumnResize: jest.fn(),
+      onColumnResizeEnd: jest.fn()
     };
 
     const allProperties = {
       height: 35,
       columns: helpers.columns,
-      onSort: jasmine.createSpy(),
+      onSort: jest.fn(),
       rowType: 'rowTypeValue',
-      onColumnResize: jasmine.createSpy(),
-      onColumnResizeEnd: jasmine.createSpy(),
+      onColumnResize: jest.fn(),
+      onColumnResizeEnd: jest.fn(),
       width: 200,
       style: {
         overflow: 'scroll',
@@ -153,10 +153,10 @@ describe('Header Row Unit Tests', () => {
       },
       sortColumn: 'sortColumnValue',
       sortDirection: 'NONE',
-      cellRenderer: jasmine.createSpy(),
-      headerCellRenderer: jasmine.createSpy(),
+      cellRenderer: jest.fn(),
+      headerCellRenderer: jest.fn(),
       filterable: true,
-      onFilterChange: jasmine.createSpy(),
+      onFilterChange: jest.fn(),
       resizing: { key: 'value' },
       onScroll,
       draggableHeaderCell: () => <div />

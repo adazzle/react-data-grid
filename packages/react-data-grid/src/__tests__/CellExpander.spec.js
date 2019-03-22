@@ -10,7 +10,7 @@ const setup = (overrideExpandableOptions = {}) => {
       expanded: true,
       ...overrideExpandableOptions
     },
-    onCellExpand: jasmine.createSpy()
+    onCellExpand: jest.fn()
   };
 
   return {
@@ -32,7 +32,7 @@ describe('CellExpand', () => {
 
     wrapper.find('span').simulate('click');
 
-    expect(props.onCellExpand.calls.count()).toEqual(1);
+    expect(props.onCellExpand.mock.calls.length).toEqual(1);
     expect(wrapper.find('span').text()).toBe(CellExpand.DOWN_TRIANGLE);
   });
 });
