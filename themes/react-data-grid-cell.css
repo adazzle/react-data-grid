@@ -4,15 +4,18 @@
   padding-right: 8px;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #dddddd;
+  box-sizing: border-box;
 }
 
 .rdg-selected {
   border: 2px solid #66afe9;
+  box-sizing: border-box;
 }
 
 .rdg-selected-range {
   border: 1px solid #66afe9;
   background-color: #66afe930;
+  box-sizing: border-box;
 }
 
 .moving-element {

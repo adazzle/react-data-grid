@@ -21,6 +21,7 @@
   font-weight: bold;
   border-right: 1px solid #dddddd;
   border-bottom: 1px solid #dddddd;
+  box-sizing: border-box;
 }
 .react-grid-HeaderCell__value {
   white-space: nowrap;
