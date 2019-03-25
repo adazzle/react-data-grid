@@ -15,9 +15,6 @@ import * as ColumnMetrics from './ColumnMetrics';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType } from './common/constants';
 import { EventBus } from './masks';
 
-import '../../../themes/react-data-grid-core.css';
-import '../../../themes/react-data-grid-checkbox.css';
-
 const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;
 
 /** Main API Component to render a data grid of rows and columns

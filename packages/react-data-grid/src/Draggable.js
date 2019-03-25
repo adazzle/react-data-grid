@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import '../../../themes/react-data-grid-header.css';
-
 export default class Draggable extends React.Component {
   static propTypes = {
     onDragStart: PropTypes.func,

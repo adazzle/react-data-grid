@@ -1,4 +1,3 @@
-import '../../../../themes/react-data-grid-row.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragSource } from 'react-dnd';

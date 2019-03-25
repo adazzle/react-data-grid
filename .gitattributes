@@ -4,4 +4,5 @@
 *.jsx text eol=lf
 *.json text eol=lf
 *.css text eol=lf
+*.less text eol=lf
 *.md text eol=lf
