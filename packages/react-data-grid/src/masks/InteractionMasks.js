@@ -77,6 +77,26 @@ class InteractionMasks extends React.Component {
     editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
+  static getDerivedStateFromProps(nextProps) {
+    if(nextProps.columns === undefined || nextProps.columns.length === 0) {
+      return ({
+        selectedPosition: {
+          idx: -1,
+          rowIdx: -1
+        },
+        selectedRange: {
+          topLeft: {
+            idx: -1, rowIdx: -1
+          },
+          bottomRight: {
+            idx: -1, rowIdx: -1
+          }
+        }
+      });
+    }
+    return null;
+  }
+
   state = {
     selectedPosition: {
       idx: -1,
