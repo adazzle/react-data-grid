@@ -225,10 +225,8 @@ class ReactDataGrid extends React.Component {
     enableCellSelect: false,
     rowHeight: 35,
     headerFiltersHeight: 45,
-    enableRowSelect: false,
     minHeight: 350,
     rowKey: 'id',
-    rowScrollTimeout: 0,
     scrollToRowIndex: 0,
     cellNavigationMode: CellNavigationMode.NONE,
     overScan: {
