@@ -5,8 +5,6 @@ import { last } from './common/utils';
 import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
 import { EventTypes } from './common/constants';
 
-import '../../../themes/react-data-grid-row.css';
-
 export default class RowGroup extends Component {
   onRowExpandToggle = (expand) => {
     const shouldExpand = expand == null ? !this.props.isExpanded : expand;

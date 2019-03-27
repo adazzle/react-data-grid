@@ -9,7 +9,27 @@ const config = {
     index: [
       'webpack-dev-server/client?http://localhost:8080/',
       'webpack/hot/dev-server',
-      './packages/react-data-grid-examples/src'
+      './packages/react-data-grid-examples/src',
+      './packages/react-data-grid/style/react-data-grid.less',
+      './packages/react-data-grid-addons/style/react-data-grid-addons.less',
+      './packages/react-data-grid-addons/node_modules/react-select/dist/react-select.css'
+    ]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: ['babel-loader']
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.less$/,
+        use: ['style-loader', 'css-loader', 'less-loader']
+      }
     ]
   },
   resolve: {

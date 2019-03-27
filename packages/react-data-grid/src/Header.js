@@ -9,8 +9,6 @@ import getScrollbarSize from './getScrollbarSize';
 import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from './common/constants';
 
-import '../../../themes/react-data-grid-header.css';
-
 export default class Header extends React.Component {
   static propTypes = {
     columnMetrics: PropTypes.shape({ width: PropTypes.number.isRequired, columns: PropTypes.any }).isRequired,

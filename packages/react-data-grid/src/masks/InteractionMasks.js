@@ -25,8 +25,6 @@ import { isFunction } from '../common/utils';
 import { getSize, getColumn, isFrozen } from '../ColumnUtils';
 import keyCodes from '../KeyCodes';
 
-import '../../../../themes/interaction-masks.css';
-
 const SCROLL_CELL_BUFFER = 2;
 
 export default class InteractionMasks extends React.Component {
