@@ -6,8 +6,6 @@ import Viewport from './Viewport';
 import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
 import { isFrozen } from './ColumnUtils';
 
-import '../../../themes/react-data-grid-core.css';
-
 export default class Grid extends React.Component {
   static displayName = 'Grid';
 

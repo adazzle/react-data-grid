@@ -9,8 +9,6 @@ import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from './common/constants';
 import ResizeHandle from './ResizeHandle';
 
-import '../../../themes/react-data-grid-header.css';
-
 function SimpleCellRenderer(objArgs) {
   const headerText = objArgs.column.rowType === 'header' ? objArgs.column.name : '';
   return <div className="widget-HeaderCell__value">{headerText}</div>;
