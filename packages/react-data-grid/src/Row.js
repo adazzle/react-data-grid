@@ -6,8 +6,6 @@ import rowComparer from './common/utils/RowComparer';
 import Cell from './Cell';
 import { isFrozen } from './ColumnUtils';
 
-import '../../../themes/react-data-grid-row.css';
-
 export default class Row extends React.Component {
   static displayName = 'Row';
 

@@ -258,7 +258,6 @@ export default class Viewport extends React.Component {
     };
     return (
       <div
-        className="react-grid-Viewport"
         style={style}
         ref={this.setViewportRef}
       >

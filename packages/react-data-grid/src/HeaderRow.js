@@ -8,7 +8,6 @@ import SortableHeaderCell, { DEFINE_SORT } from './common/cells/headerCells/Sort
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
 import HeaderCellType from './HeaderCellType';
 import { HeaderRowType } from './common/constants';
-import '../../../themes/react-data-grid-header.css';
 
 import PropTypes from 'prop-types';
 

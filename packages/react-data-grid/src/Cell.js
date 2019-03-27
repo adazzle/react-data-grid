@@ -10,8 +10,6 @@ import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 import { isFrozen } from './ColumnUtils';
 
-import '../../../themes/react-data-grid-cell.css';
-
 export default class Cell extends React.PureComponent {
   static propTypes = {
     rowIdx: PropTypes.number.isRequired,

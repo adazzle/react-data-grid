@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import '../../../../themes/react-data-grid-toolbar.css';
-
 export default class Toolbar extends React.Component {
   static propTypes = {
     onAddRow: PropTypes.func,
