@@ -44,7 +44,6 @@ export default class Viewport extends React.Component {
     rowRenderer: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     rowsCount: PropTypes.number.isRequired,
     rowHeight: PropTypes.number.isRequired,
-    onRows: PropTypes.func,
     onScroll: PropTypes.func,
     minHeight: PropTypes.number,
     cellMetaData: PropTypes.shape(cellMetaDataShape),
@@ -286,7 +285,6 @@ export default class Viewport extends React.Component {
           height={this.state.height}
           rowHeight={this.props.rowHeight}
           onScroll={this.onScroll}
-          onRows={this.props.onRows}
           rowScrollTimeout={this.props.rowScrollTimeout}
           scrollToRowIndex={this.props.scrollToRowIndex}
           contextMenu={this.props.contextMenu}
