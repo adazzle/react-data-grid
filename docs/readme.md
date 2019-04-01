@@ -18,7 +18,6 @@
 - [RowDragLayer](/docs/markdowns/RowDragLayer.md)
 - [CheckboxEditor](/docs/markdowns/CheckboxEditor.md)
 - [DropDownEditor](/docs/markdowns/DropDownEditor.md)
-- [EditorBase](/docs/markdowns/EditorBase.md)
 - [EditorContainer](/docs/markdowns/EditorContainer.md)
 - [DropDownFormatter](/docs/markdowns/DropDownFormatter.md)
 - [ImageFormatter](/docs/markdowns/ImageFormatter.md)

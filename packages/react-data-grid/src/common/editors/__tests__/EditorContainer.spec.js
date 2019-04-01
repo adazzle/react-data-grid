@@ -4,7 +4,6 @@ import { mount } from 'enzyme';
 
 import EditorContainer from '../EditorContainer';
 import SimpleTextEditor from '../SimpleTextEditor';
-import EditorBase from '../EditorBase';
 
 function DefaultEditor() {
   return (
@@ -93,7 +92,15 @@ describe('Editor Container Tests', () => {
     let props;
     let wrapper;
 
-    class TestEditor extends EditorBase {
+    class TestEditor extends React.Component {
+      getValue() {
+        return undefined;
+      }
+
+      getInputNode() {
+        return undefined;
+      }
+
       render() {
         return <DefaultEditor />;
       }
@@ -153,7 +160,15 @@ describe('Editor Container Tests', () => {
     let wrapper;
     let props;
 
-    class PortalTestEditor extends EditorBase {
+    class PortalTestEditor extends React.Component {
+      getValue() {
+        return undefined;
+      }
+
+      getInputNode() {
+        return undefined;
+      }
+
       render() {
         return ReactDOM.createPortal(<DefaultEditor />, document.body);
       }

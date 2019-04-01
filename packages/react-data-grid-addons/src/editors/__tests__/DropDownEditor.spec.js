@@ -23,14 +23,6 @@ describe('DropDownEditor', () => {
       );
     });
 
-    it('should create a new DropDownEditor instance', () => {
-      expect(component).toBeDefined();
-    });
-
-    it('should return 100% as its width', () => {
-      expect(component.getStyle().width).toBe('100%');
-    });
-
     it('should pass width=100% to the select node as an inline style', () => {
       const Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
       expect(Select.style.width).toBe('100%');
