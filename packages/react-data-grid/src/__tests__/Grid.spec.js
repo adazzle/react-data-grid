@@ -94,7 +94,6 @@ describe('Rendering Grid component', () => {
         onColumnEvent: jest.fn()
       },
       rowKey: 'rowKeyValue',
-      rowScrollTimeout: 300,
       contextMenu: <ContextMenu />,
       getSubRowDetails: jest.fn(),
       draggableHeaderCell: jest.fn(),
@@ -141,7 +140,6 @@ describe('Rendering Grid component', () => {
     expect(draggableDiv.props().onSort).toBeUndefined();
     expect(draggableDiv.props().cellMetaData).toBeUndefined();
     expect(draggableDiv.props().rowKey).toBeUndefined();
-    expect(draggableDiv.props().rowScrollTimeout).toBeUndefined();
     expect(draggableDiv.props().contextMenu).toBeUndefined();
     expect(draggableDiv.props().getSubRowDetails).toBeUndefined();
     expect(draggableDiv.props().draggableHeaderCell).toBeUndefined();
