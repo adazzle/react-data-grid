@@ -123,8 +123,6 @@ export default class ReactDataGrid extends React.Component {
     onRowSelect: PropTypes.func,
     /** The primary key property of each row */
     rowKey: PropTypes.string,
-    /** Deprecated */
-    rowScrollTimeout: deprecate(PropTypes.number),
     /** When set, grid will scroll to this row index */
     scrollToRowIndex: PropTypes.number,
     /** Function called whenever filters are cleared */
@@ -223,7 +221,6 @@ export default class ReactDataGrid extends React.Component {
     enableRowSelect: false,
     minHeight: 350,
     rowKey: 'id',
-    rowScrollTimeout: 0,
     scrollToRowIndex: 0,
     cellNavigationMode: CellNavigationMode.NONE,
     overScan: {
@@ -848,7 +845,6 @@ export default class ReactDataGrid extends React.Component {
             onViewportKeydown={this.onKeyDown}
             onViewportKeyup={this.onKeyUp}
             onColumnResize={this.onColumnResize}
-            rowScrollTimeout={this.props.rowScrollTimeout}
             scrollToRowIndex={this.props.scrollToRowIndex}
             contextMenu={this.props.contextMenu}
             overScan={this.props.overScan}
