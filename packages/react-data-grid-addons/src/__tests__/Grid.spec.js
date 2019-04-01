@@ -35,7 +35,6 @@ describe('Grid', () => {
       rowsCount: rows.length,
       width: 300,
       onCellCopyPaste() {},
-      onCellsDragged() {},
       onGridSort() {},
       onAddFilter() {},
       rowKey: 'id',

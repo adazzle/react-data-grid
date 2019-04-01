@@ -94,8 +94,6 @@ export default class ReactDataGrid extends React.Component {
     onFilter: PropTypes.func,
     /** Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead*/
     onCellCopyPaste: deprecate(PropTypes.func, deprecationWarning('onCellCopyPaste', 'onGridRowsUpdated')),
-    /** Deprecated: Function called when grid is updated via a cell drag. Use onGridRowsUpdated instead*/
-    onCellsDragged: deprecate(PropTypes.func, deprecationWarning('onCellsDragged', 'onGridRowsUpdated')),
     /** Function called on each cell render to render a list of actions for each cell */
     getCellActions: PropTypes.func,
     /**  Callback */
