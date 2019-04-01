@@ -106,8 +106,6 @@ export default class ReactDataGrid extends React.Component {
     sortColumn: PropTypes.string,
     /** The direction to sort the sortColumn*/
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
-    /** Deprecated: Function called when grid is updated via double clicking the cell drag handle. Use onGridRowsUpdated instead*/
-    onDragHandleDoubleClick: deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated')),
     /**
      * Callback called whenever row data is updated
      * When editing is enabled, this callback will be called for the following scenarios
@@ -439,10 +437,6 @@ export default class ReactDataGrid extends React.Component {
   };
 
   onDragHandleDoubleClick = (e) => {
-    if (this.props.onDragHandleDoubleClick) {
-      this.props.onDragHandleDoubleClick(e);
-    }
-
     if (this.props.onGridRowsUpdated) {
       const cellKey = this.getColumn(e.idx).key;
       this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
