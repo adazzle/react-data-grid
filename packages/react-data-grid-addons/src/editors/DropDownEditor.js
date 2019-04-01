@@ -1,41 +1,67 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
-import { editors } from 'react-data-grid';
 
-const { EditorBase } = editors;
+import { shapes } from 'react-data-grid';
 
-export default class DropDownEditor extends EditorBase {
+const { Column } = shapes;
+
+export default class DropDownEditor extends React.Component {
+  static propTypes = {
+    value: PropTypes.any.isRequired,
+    onBlur: PropTypes.func.isRequired,
+    column: PropTypes.shape(Column).isRequired
+  };
+
   getInputNode() {
-    return ReactDOM.findDOMNode(this);
+    return this.select;
   }
 
-  onClick() {
-    this.getInputNode().focus();
+  getValue() {
+    return {
+      [this.props.column.key]: this.select.value
+    };
   }
 
-  onDoubleClick() {
-    this.getInputNode().focus();
+  setSelectRef = (select) => {
+    this.select = select;
+  };
+
+  renderOptions() {
+    return this.props.options.map(name => {
+      if (typeof name === 'string') {
+        return (
+          <option
+            key={name}
+            value={name}
+          >
+            {name}
+          </option>
+        );
+      }
+
+      return (
+        <option
+          key={name.id}
+          value={name.value}
+          title={name.title}
+        >
+          {name.text || name.value}
+        </option>
+      );
+    });
   }
 
   render() {
     return (
-      <select style={this.getStyle()} defaultValue={this.props.value} onBlur={this.props.onBlur} onChange={this.onChange}>
+      <select
+        ref={this.setSelectRef}
+        style={{ width: '100%' }}
+        defaultValue={this.props.value}
+        onBlur={this.props.onBlur}
+      >
         {this.renderOptions()}
       </select>
     );
-  }
-
-  renderOptions() {
-    const options = [];
-    this.props.options.forEach(function(name) {
-      if (typeof name === 'string') {
-        options.push(<option key={name} value={name}>{name}</option>);
-      } else {
-        options.push(<option key={name.id} value={name.value} title={name.title}>{name.text || name.value}</option>);
-      }
-    }, this);
-    return options;
   }
 }
 
