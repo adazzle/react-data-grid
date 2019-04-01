@@ -69,7 +69,6 @@ describe('Rendering Grid component', () => {
       selectedRows: jest.fn(),
       rowSelection: { isSelectedKey: 'selectedKey' },
       rowsCount: 14,
-      onRows: jest.fn(),
       sortColumn: 'sortColumn',
       sortDirection: 'ASC',
       tabIndex: -1,
@@ -130,7 +129,6 @@ describe('Rendering Grid component', () => {
     expect(draggableDiv.props().selectedRows).toBeUndefined();
     expect(draggableDiv.props().rowSelection).toBeUndefined();
     expect(draggableDiv.props().rowsCount).toBeUndefined();
-    expect(draggableDiv.props().onRows).toBeUndefined();
     expect(draggableDiv.props().sortColumn).toBeUndefined();
     expect(draggableDiv.props().sortDirection).toBeUndefined();
     expect(draggableDiv.props().rowOffsetHeight).toBeUndefined();
