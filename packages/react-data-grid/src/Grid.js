@@ -46,7 +46,6 @@ export default class Grid extends React.Component {
     onSort: PropTypes.func,
     onHeaderDrop: PropTypes.func,
     rowKey: PropTypes.string.isRequired,
-    rowScrollTimeout: PropTypes.number,
     scrollToRowIndex: PropTypes.number,
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
@@ -185,7 +184,6 @@ export default class Grid extends React.Component {
               cellMetaData={this.props.cellMetaData}
               rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
               minHeight={this.props.minHeight}
-              rowScrollTimeout={this.props.rowScrollTimeout}
               scrollToRowIndex={this.props.scrollToRowIndex}
               contextMenu={this.props.contextMenu}
               rowSelection={this.props.rowSelection}

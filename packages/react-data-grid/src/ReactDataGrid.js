@@ -45,8 +45,6 @@ export default class ReactDataGrid extends React.Component {
     minWidth: PropTypes.number,
     /** Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead*/
     enableRowSelect: deprecate(PropTypes.func, deprecationWarning('enableRowSelect', 'rowSelection')),
-    /** Deprecated: Function called when grid is updated via a cell commit. Use onGridRowsUpdated instead*/
-    onRowUpdated: deprecate(PropTypes.func, deprecationWarning('onRowUpdated', 'onGridRowsUpdated')),
     /** A function called for each rendered row that should return a plain key/value pair object */
     rowGetter: PropTypes.func.isRequired,
     /** The number of rows to be rendered */
@@ -96,8 +94,6 @@ export default class ReactDataGrid extends React.Component {
     onFilter: PropTypes.func,
     /** Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead*/
     onCellCopyPaste: deprecate(PropTypes.func, deprecationWarning('onCellCopyPaste', 'onGridRowsUpdated')),
-    /** Deprecated: Function called when grid is updated via a cell drag. Use onGridRowsUpdated instead*/
-    onCellsDragged: deprecate(PropTypes.func, deprecationWarning('onCellsDragged', 'onGridRowsUpdated')),
     /** Function called on each cell render to render a list of actions for each cell */
     getCellActions: PropTypes.func,
     /**  Callback */
@@ -108,8 +104,6 @@ export default class ReactDataGrid extends React.Component {
     sortColumn: PropTypes.string,
     /** The direction to sort the sortColumn*/
     sortDirection: PropTypes.oneOf(Object.keys(DEFINE_SORT)),
-    /** Deprecated: Function called when grid is updated via double clicking the cell drag handle. Use onGridRowsUpdated instead*/
-    onDragHandleDoubleClick: deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated')),
     /**
      * Callback called whenever row data is updated
      * When editing is enabled, this callback will be called for the following scenarios
@@ -123,8 +117,6 @@ export default class ReactDataGrid extends React.Component {
     onRowSelect: PropTypes.func,
     /** The primary key property of each row */
     rowKey: PropTypes.string,
-    /** Deprecated */
-    rowScrollTimeout: deprecate(PropTypes.number),
     /** When set, grid will scroll to this row index */
     scrollToRowIndex: PropTypes.number,
     /** Function called whenever filters are cleared */
@@ -223,7 +215,6 @@ export default class ReactDataGrid extends React.Component {
     enableRowSelect: false,
     minHeight: 350,
     rowKey: 'id',
-    rowScrollTimeout: 0,
     scrollToRowIndex: 0,
     cellNavigationMode: CellNavigationMode.NONE,
     overScan: {
@@ -444,10 +435,6 @@ export default class ReactDataGrid extends React.Component {
   };
 
   onDragHandleDoubleClick = (e) => {
-    if (this.props.onDragHandleDoubleClick) {
-      this.props.onDragHandleDoubleClick(e);
-    }
-
     if (this.props.onGridRowsUpdated) {
       const cellKey = this.getColumn(e.idx).key;
       this.onGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
@@ -484,11 +471,6 @@ export default class ReactDataGrid extends React.Component {
  */
   onGridRowsUpdated = (cellKey, fromRow, toRow, updated, action, originRow) => {
     const { rowGetter, rowKey, onGridRowsUpdated } = this.props;
-    // Deprecated prop
-    // to be removed in next major release
-    if (isFunction(this.props.onRowUpdated)) {
-      this.props.onRowUpdated({ updated, rowIdx: fromRow, cellKey, value: updated[cellKey] });
-    }
     if (!isFunction(onGridRowsUpdated)) {
       return;
     }
@@ -848,7 +830,6 @@ export default class ReactDataGrid extends React.Component {
             onViewportKeydown={this.onKeyDown}
             onViewportKeyup={this.onKeyUp}
             onColumnResize={this.onColumnResize}
-            rowScrollTimeout={this.props.rowScrollTimeout}
             scrollToRowIndex={this.props.scrollToRowIndex}
             contextMenu={this.props.contextMenu}
             overScan={this.props.overScan}
