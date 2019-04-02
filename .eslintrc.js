@@ -394,7 +394,10 @@ module.exports = {
   ],
   rules,
   overrides: [{
-    files: ['packages/*/src/**/*'],
+    files: [
+      'packages/*/src/**/*',
+      'examples/**/*'
+    ],
     env: {
       browser: true
     },
@@ -403,7 +406,10 @@ module.exports = {
       Immutable: 'readable'
     }
   }, {
-    files: ['packages/*/src/**/__tests__/**/*'],
+    files: [
+      'packages/*/src/**/__tests__/**/*',
+      'examples/**/__tests__/**/*'
+    ],
     env: {
       jest: true
     }

@@ -1,8 +1,6 @@
 module.exports = {
   presets: [
-    ['@babel/env', {
-      useBuiltIns: 'entry'
-    }],
+    '@babel/env',
     '@babel/react'
   ],
   plugins: [
@@ -12,9 +10,7 @@ module.exports = {
   env: {
     test: {
       presets: [
-        ['@babel/env', {
-          useBuiltIns: 'entry'
-        }],
+        '@babel/env',
         '@babel/react'
       ],
       plugins: [

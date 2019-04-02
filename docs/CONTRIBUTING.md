@@ -36,14 +36,14 @@ You can start coding in 5 minutes.
 git clone https://github.com/adazzle/react-data-grid.git
 cd react-data-grid
 npm install
-npm run dev-server
+npm start
 ```
 
 command                | outcome                                                                                               |
 -----------------------|-------------------------------------------------------------------------------------------------------|
 npm test               | runs tests in release mode                                                                            |
 npm run dev-test       | runs tests in debug mode                                                                              |
-npm run dev-server     | starts webpack dev server                                                                             |
+npm start              | starts webpack dev server                                                                             |
 npm run eslint         | runs the eslint task (runs automatically before npm test)                                             |
 npm run build          | build the project in release mode                                                                     |
 npm run web  | builds and runs a local copy of the public RDG Site   |
@@ -53,7 +53,7 @@ npm run web  | builds and runs a local copy of the public RDG Site   |
 We use webpack-dev-server for development. If you're fancy about knowing the tools you’re working with you can find the details about this awesome tool [in here](https://webpack.github.io/docs/webpack-dev-server.html).
 To run webpack-dev-server all you need to do is to run the following command:
 ```sh
-npm run dev-server
+npm start
 ```
 This will open your default browser at `http://localhost:8080/webpack-dev-server/` an you can navigate in our examples from there.
 HMR is enabled, that means you won't need to reload the page wherever you make a change, webpack-dev-server will watch for any changes in the source code.

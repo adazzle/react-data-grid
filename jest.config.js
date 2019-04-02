@@ -14,6 +14,7 @@ module.exports = {
   setupFiles: ['<rootDir>/test/setupTests.js'],
   testEnvironment: 'jsdom',
   testMatch: [
-    '<rootDir>/packages/*/src/**/*.spec.js'
+    '<rootDir>/packages/*/src/**/*.spec.js',
+    '<rootDir>/examples/**/*.spec.js'
   ]
 };
