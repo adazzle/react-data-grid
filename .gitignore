@@ -1,7 +1,5 @@
 node_modules
 /packages/*/dist
-/test/reports
-/test/coverage
 npm-debug.log
 lerna-debug.log
 **.orig

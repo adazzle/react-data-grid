@@ -79,10 +79,6 @@ Features
 - [Association of events of individual columns](http://adazzle.github.io/react-data-grid/#/examples/column-events)
 
 
-Check out the `examples` directory to see how simple previously complex UI
-and workflows are to create.
-
-
 Contributing
 ------------
 
