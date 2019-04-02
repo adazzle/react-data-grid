@@ -3,6 +3,39 @@ id: changelog
 title: Changelog
 ---
 
+## 7.0.0 (next)
+
+### react-data-grid
+
+- **Breaking**: the stylesheets are now bundled separately:
+  - `react-data-grid/dist/react-data-grid.css`
+- **Breaking**: removed:
+  - `ContainerEditorWrapper`
+  - `EditorBase`
+  - `onCellsDragged` prop
+  - `onDragHandleDoubleClick` prop
+  - `onRows` prop
+  - `onRowUpdated` prop
+  - `rowScrollTimeout` prop
+- **Feature**: Added support for `forwardRef`
+- **TechDebt**: Dependency updates
+
+### react-data-grid-addons
+
+- **Breaking**: react-data-grid-addons has no default export anymore
+  - Use `import * as ReactDataGridAddons from 'react-data-grid-addons';` instead
+- **Breaking**: the stylesheets are now bundled separately:
+  - `react-data-grid-addons/dist/react-data-grid-addons.css`
+- **Breaking**: removed:
+  - `AutoComplete` editor
+  - `Utils`
+- **TechDebt**: Dependency updates
+
+### react-data-grid-examples
+
+- **Breaking**: stopped publishing this package
+  - Use the website as reference, or clone the repo locally and run `npm install` + `npm start`.
+
 ## 5.0.5 (Dec 6, 2018)
 - **Bugfix:** fix: draggable resizing col jumps to right ([1421](https://github.com/adazzle/react-data-grid/pull/1421))
 - **Bugfix:** Cell Tooltip - Focus Issues ([1422](https://github.com/adazzle/react-data-grid/pull/1422))
