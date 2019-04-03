@@ -646,9 +646,9 @@ class InteractionMasks extends React.Component {
     this.copyMask = node;
   };
 
-  getSelectedDimensions = (selectedPosition) => {
-    const { scrollLeft, getRowHeight, getRowTop, getRowColumns } = this.props;
-    const columns = getRowColumns(selectedPosition.rowIdx);
+  getSelectedDimensions = (selectedPosition, useGridColumns) => {
+    const { scrollLeft, getRowHeight, getRowTop, getRowColumns, columns: gridColumns } = this.props;
+    const columns = useGridColumns ? gridColumns : getRowColumns(selectedPosition.rowIdx);
     const top = getRowTop(selectedPosition.rowIdx);
     const rowHeight = getRowHeight(selectedPosition.rowIdx);
     return { ...getSelectedDimensions({ selectedPosition, columns, scrollLeft, rowHeight }), top };
