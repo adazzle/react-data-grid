@@ -111,6 +111,8 @@ For maintainers only.
   - `npm run docs`
 - Update the changelog, if necessary.
 - Commit your changes, if any.
+- Login to the `adazzle` npm account if you haven't already done so:
+  - `npm login`
 - Publish the update with lerna:
   - On the `master` branch: `npx lerna publish`
   - On the `next` branch: `npx lerna publish --dist-tag next`
