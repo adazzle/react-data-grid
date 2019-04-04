@@ -341,7 +341,7 @@ class InteractionMasks extends React.Component {
     const isCellAtBottomBoundary = cell => cell.rowIdx >= rowVisibleEndIdx - SCROLL_CELL_BUFFER;
     const isCellAtTopBoundary = cell => cell.rowIdx !== 0 && cell.rowIdx <= rowVisibleStartIdx - 1;
     const isCellAtRightBoundary = cell => cell.idx !== 0 && cell.idx >= colVisibleEndIdx - 1;
-    const isCellAtLeftBoundary = cell => cell.idx !== 0 && cell.idx <= colVisibleStartIdx + 1;
+    const isCellAtLeftBoundary = cell => cell.idx <= colVisibleStartIdx + 1;
 
     const keyNavActions = {
       ArrowDown: {
