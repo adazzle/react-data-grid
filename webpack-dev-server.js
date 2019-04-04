@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
-const open = require('opn');
+const open = require('open');
 const webpackCommon = require('./config/webpack.common.config');
 
 const config = {
