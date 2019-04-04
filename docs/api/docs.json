@@ -1119,14 +1119,6 @@
           "computed": false
         }
       },
-      "onRowUpdated": {
-        "type": {
-          "name": "custom",
-          "raw": "deprecate(PropTypes.func, deprecationWarning('onRowUpdated', 'onGridRowsUpdated'))"
-        },
-        "required": false,
-        "description": "Deprecated: Function called when grid is updated via a cell commit. Use onGridRowsUpdated instead"
-      },
       "rowGetter": {
         "type": {
           "name": "func"
@@ -1261,14 +1253,6 @@
         "required": false,
         "description": "Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead"
       },
-      "onCellsDragged": {
-        "type": {
-          "name": "custom",
-          "raw": "deprecate(PropTypes.func, deprecationWarning('onCellsDragged', 'onGridRowsUpdated'))"
-        },
-        "required": false,
-        "description": "Deprecated: Function called when grid is updated via a cell drag. Use onGridRowsUpdated instead"
-      },
       "getCellActions": {
         "type": {
           "name": "func"
@@ -1306,14 +1290,6 @@
         "required": false,
         "description": "The direction to sort the sortColumn"
       },
-      "onDragHandleDoubleClick": {
-        "type": {
-          "name": "custom",
-          "raw": "deprecate(PropTypes.func, deprecationWarning('onDragHandleDoubleClick', 'onGridRowsUpdated'))"
-        },
-        "required": false,
-        "description": "Deprecated: Function called when grid is updated via double clicking the cell drag handle. Use onGridRowsUpdated instead"
-      },
       "onGridRowsUpdated": {
         "type": {
           "name": "func"
@@ -1336,18 +1312,6 @@
         "description": "The primary key property of each row",
         "defaultValue": {
           "value": "'id'",
-          "computed": false
-        }
-      },
-      "rowScrollTimeout": {
-        "type": {
-          "name": "custom",
-          "raw": "deprecate(PropTypes.number)"
-        },
-        "required": false,
-        "description": "Deprecated",
-        "defaultValue": {
-          "value": "0",
           "computed": false
         }
       },
