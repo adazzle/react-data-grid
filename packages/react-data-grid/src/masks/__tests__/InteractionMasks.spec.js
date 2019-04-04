@@ -651,6 +651,20 @@ describe('<InteractionMasks/>', () => {
         it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
           assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
         });
+        it('hits boundary when the user presses Shift+Tab and the cell is at a left boundary', () => {
+          const selectedPosition = { rowIdx: 1, idx: 1 };
+          const { wrapper, props } = setup({ cellNavigationMode }, { selectedPosition });
+          const preventDefaultSpy = jasmine.createSpy();
+           simulateTab(wrapper, true, preventDefaultSpy);
+           expect(props.onHitLeftBoundary).toHaveBeenCalled();
+        });
+        it('does not hit boundary when the user presses Shift+Tab and the cell is not at a left boundary ', () => {
+          const selectedPosition = { rowIdx: 1, idx: 3 };
+          const { wrapper, props } = setup({ cellNavigationMode }, { selectedPosition });
+          const preventDefaultSpy = jasmine.createSpy();
+           simulateTab(wrapper, true, preventDefaultSpy);
+           expect(props.onHitLeftBoundary).not.toHaveBeenCalled();
+        });
         it('goes to the first cell in the row when the user presses Tab and they are at the end of a row', () => {
           const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
           assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
