@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import CellMask from './CellMask';
 
-function SelectionMask({ selectedPosition, innerRef, getSelectedDimensions, children }) {
+export default function SelectionMask({ selectedPosition, innerRef, getSelectedDimensions, children }) {
   const dimensions = getSelectedDimensions(selectedPosition, true);
   return (
     <CellMask
