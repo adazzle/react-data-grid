@@ -8,5 +8,4 @@ import * as Draggable from './draggable';
 import * as DraggableHeader from './draggable-header';
 import * as Filters from './cells/headerCells/filters';
 
-window.ReactDataGridPlugins = { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters };
 export { Editors, Formatters, Toolbar, Menu, Data, ToolsPanel, Draggable, DraggableHeader, Filters };

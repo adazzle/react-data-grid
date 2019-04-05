@@ -1,0 +1,6 @@
+{
+  "references": [
+    { "path": "packages/react-data-grid" },
+    { "path": "packages/react-data-grid-addons" }
+  ]
+}
