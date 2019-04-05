@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import Cell from '../Cell';
 import helpers from '../helpers/test/GridPropHelpers';
 import CellAction from '../CellAction';
-import SimpleCellFormatter from '../formatters/SimpleCellFormatter';
+import { SimpleCellFormatter } from '../formatters';
 
 const testCellMetaData = {
   selected: { idx: 2, rowIdx: 3 },
