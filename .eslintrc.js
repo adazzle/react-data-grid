@@ -135,7 +135,7 @@ const rules = {
   'no-undef': 2,
   'no-undef-init': 1,
   'no-undefined': 0,
-  'no-unused-vars': [1, { ignoreRestSiblings: true }],
+  'no-unused-vars': 0,
   'no-use-before-define': [2, { functions: false, classes: false, variables: false }],
 
   // Node.js and CommonJS
@@ -176,7 +176,7 @@ const rules = {
   'id-length': 0,
   'id-match': 0,
   'implicit-arrow-linebreak': 0,
-  'indent': [1, 2, { SwitchCase: 1 }],
+  'indent': 0,
   'jsx-quotes': 1,
   'key-spacing': 1,
   'keyword-spacing': 1,
@@ -262,7 +262,7 @@ const rules = {
   'no-restricted-imports': 0,
   'no-this-before-super': 2,
   'no-useless-computed-key': 1,
-  'no-useless-constructor': 1,
+  'no-useless-constructor': 0,
   'no-useless-rename': 1,
   'no-var': 2,
   'object-shorthand': [1, 'always', { avoidExplicitReturnArrows: true }],
@@ -337,7 +337,7 @@ const rules = {
   'react/jsx-closing-tag-location': 1,
   'react/jsx-curly-spacing': 1,
   'react/jsx-equals-spacing': 1,
-  'react/jsx-filename-extension': [1, { extensions: ['.js'] }],
+  'react/jsx-filename-extension': [1, { extensions: ['.js', '.tsx'] }],
   'react/jsx-first-prop-new-line': 1,
   'react/jsx-handler-names': 0,
   'react/jsx-indent': [1, 2],
@@ -379,18 +379,69 @@ const rules = {
   // React Hooks
   // https://github.com/facebook/react/tree/master/packages/eslint-plugin-react-hooks
   'react-hooks/rules-of-hooks': 2,
-  'react-hooks/exhaustive-deps': 1
+  'react-hooks/exhaustive-deps': 1,
+
+  // @typescript-eslint/eslint-plugin rules
+  // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules
+  '@typescript-eslint/adjacent-overload-signatures': 1,
+  '@typescript-eslint/array-type': 0,
+  '@typescript-eslint/ban-ts-ignore': 1,
+  '@typescript-eslint/ban-types': 2,
+  '@typescript-eslint/camelcase': 0,
+  '@typescript-eslint/class-name-casing': 0,
+  '@typescript-eslint/explicit-function-return-type': 0,
+  '@typescript-eslint/explicit-member-accessibility': 0,
+  '@typescript-eslint/generic-type-naming': 0,
+  '@typescript-eslint/indent': [1, 2, { SwitchCase: 1 }],
+  '@typescript-eslint/interface-name-prefix': 0,
+  '@typescript-eslint/member-delimiter-style': 1,
+  '@typescript-eslint/member-naming': 0,
+  '@typescript-eslint/member-ordering': 0,
+  '@typescript-eslint/no-angle-bracket-type-assertion': 2,
+  '@typescript-eslint/no-array-constructor': 2,
+  '@typescript-eslint/no-empty-interface': 2,
+  '@typescript-eslint/no-explicit-any': 2,
+  '@typescript-eslint/no-extraneous-class': 2,
+  '@typescript-eslint/no-for-in-array': 0,
+  '@typescript-eslint/no-inferrable-types': 0,
+  '@typescript-eslint/no-misused-new': 2,
+  '@typescript-eslint/no-namespace': 2,
+  '@typescript-eslint/no-non-null-assertion': 0,
+  '@typescript-eslint/no-object-literal-type-assertion': 0, // https://github.com/typescript-eslint/typescript-eslint/issues/166
+  '@typescript-eslint/no-parameter-properties': 0,
+  '@typescript-eslint/no-require-imports': 1,
+  '@typescript-eslint/no-this-alias': 0,
+  '@typescript-eslint/no-triple-slash-reference': 2,
+  '@typescript-eslint/no-type-alias': 0,
+  '@typescript-eslint/no-unnecessary-qualifier': 0,
+  '@typescript-eslint/no-unnecessary-type-assertion': 0,
+  '@typescript-eslint/no-unused-vars': [1, { ignoreRestSiblings: true }],
+  '@typescript-eslint/no-use-before-define': 0,
+  '@typescript-eslint/no-useless-constructor': 1,
+  '@typescript-eslint/no-var-requires': 0,
+  '@typescript-eslint/prefer-function-type': 1,
+  '@typescript-eslint/prefer-interface': 1,
+  '@typescript-eslint/prefer-namespace-keyword': 0,
+  '@typescript-eslint/promise-function-async': 0,
+  '@typescript-eslint/require-array-sort-compare': 0,
+  '@typescript-eslint/restrict-plus-operands': 0,
+  '@typescript-eslint/type-annotation-spacing': 1,
+  '@typescript-eslint/unified-signatures': 0
 };
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    sourceType: 'module'
+  },
   env: {
     es6: true
   },
   plugins: [
     'react',
-    'react-hooks'
+    'react-hooks',
+    '@typescript-eslint'
   ],
   rules,
   overrides: [{
@@ -412,6 +463,15 @@ module.exports = {
     ],
     env: {
       jest: true
+    }
+  }, {
+    files: [
+      '*.js'
+    ],
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true
+      }
     }
   }]
 };
