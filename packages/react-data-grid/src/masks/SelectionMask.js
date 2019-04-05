@@ -9,7 +9,7 @@ export default function SelectionMask({ selectedPosition, innerRef, getSelectedD
     <CellMask
       {...dimensions}
       className="rdg-selected"
-      innerRef={innerRef}
+      ref={innerRef}
       tabIndex="0"
     >
       {children}

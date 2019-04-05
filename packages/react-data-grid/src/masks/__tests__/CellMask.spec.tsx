@@ -6,7 +6,7 @@ import { sel } from '../../__tests__/utils';
 import CellMask from '../CellMask';
 
 describe('CellMask', () => {
-  const setup = (children) => {
+  const setup = (children?: JSX.Element) => {
     const props = {
       height: 30,
       width: 50,
