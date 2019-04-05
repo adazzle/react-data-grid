@@ -9,6 +9,7 @@
     "dist",
     "lib"
   ],
+  "sideEffects": false,
   "repository": "adazzle/react-data-grid",
   "homepage": "https://github.com/adazzle/react-data-grid",
   "bugs": {
