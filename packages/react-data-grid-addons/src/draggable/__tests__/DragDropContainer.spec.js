@@ -5,9 +5,7 @@ import DragDropContainer from '../DragDropContainer';
 import RowDragLayer from '../RowDragLayer';
 import DraggableHeaderCell from '../DraggableHeaderCell';
 
-xdescribe('<DragDropContainer />', () => {
-  let wrapper;
-
+describe('<DragDropContainer />', () => {
   const childProps = {
     rowsCount: 2,
     rowGetter: index => index
@@ -17,22 +15,22 @@ xdescribe('<DragDropContainer />', () => {
 
   function render(props = {}) {
     const ComponentUnderTest = DragDropContainer.DecoratedComponent;
-    wrapper = shallow(
+    return shallow(
       <ComponentUnderTest {...props}>
         <GridStub {...childProps} />
       </ComponentUnderTest>
     );
   }
 
-  beforeEach(render);
-
   it('should render a RowDragLayer', () => {
+    const wrapper = render();
     const rowDragLayer = wrapper.find(RowDragLayer);
     expect(rowDragLayer.length).toBe(1);
     expect(rowDragLayer.props().rows).toEqual([0, 1]);
   });
 
   it('should correctly render child grid component when passed in', () => {
+    const wrapper = render();
     const gridStub = wrapper.find(GridStub);
     expect(gridStub.length).toBe(1);
     expect(gridStub.props().draggableHeaderCell).toBe(DraggableHeaderCell);
@@ -42,7 +40,7 @@ xdescribe('<DragDropContainer />', () => {
     const props = {
       getDragPreviewRow: index => `${index}a`
     };
-    render(props);
+    const wrapper = render(props);
     const rowDragLayer = wrapper.find(RowDragLayer);
     expect(rowDragLayer.length).toBe(1);
     expect(rowDragLayer.props().rows).toEqual(['0a', '1a']);
