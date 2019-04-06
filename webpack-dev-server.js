@@ -30,12 +30,12 @@ const config = {
         test: /\.less$/,
         use: ['style-loader', 'css-loader', 'less-loader']
       }
-    ]
+    ],
+    strictExportPresence: true
   },
   resolve: {
     symlinks: false
   },
-  externals: {},
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ]

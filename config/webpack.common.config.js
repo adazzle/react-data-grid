@@ -4,42 +4,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   mode: RELEASE ? 'production' : 'development',
-  externals: {
-    'react-data-grid': {
-      root: 'ReactDataGrid',
-      commonjs: 'react-data-grid',
-      commonjs2: 'react-data-grid',
-      amd: 'react-data-grid'
-    },
-    react: {
-      root: 'React',
-      commonjs: 'react',
-      commonjs2: 'react',
-      amd: 'react'
-    },
-    'react-dom': {
-      root: 'ReactDOM',
-      commonjs: 'react-dom',
-      commonjs2: 'react-dom',
-      amd: 'react-dom'
-    },
-    'react/addons': 'React',
-    immutable: {
-      root: 'Immutable',
-      commonjs: 'immutable',
-      commonjs2: 'immutable'
-    }
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader']
-      }
-    ],
-    strictExportPresence: true
-  },
   optimization: {
     minimizer: [
       new TerserPlugin({
