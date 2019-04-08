@@ -1,8 +1,9 @@
-node_modules
+/.eslintcache
 /packages/*/dist
+/packages/*/lib
+
+node_modules
 npm-debug.log
 lerna-debug.log
 **.orig
-.vscode
 package-lock.json
-/.eslintcache

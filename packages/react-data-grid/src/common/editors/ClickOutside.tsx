@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 /**
  * Detecting outside click on a react component is surprisingly hard.
@@ -50,12 +49,12 @@ import PropTypes from 'prop-types';
  * To solve this issue onClickCapture event is used.
  */
 
-export default class ClickOutside extends React.Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    onClickOutside: PropTypes.func.isRequired
-  };
+interface Props {
+  children: React.ReactElement;
+  onClickOutside(): void;
+}
 
+export default class ClickOutside extends React.Component<Props> {
   isClickedInside = false;
 
   componentDidMount() {
@@ -66,13 +65,12 @@ export default class ClickOutside extends React.Component {
     document.removeEventListener('click', this.handleDocumentClick);
   }
 
-  handleDocumentClick = (e) => {
+  handleDocumentClick = () => {
     if (this.isClickedInside) {
       this.isClickedInside = false;
-      return;
+    } else {
+      this.props.onClickOutside();
     }
-
-    this.props.onClickOutside(e);
   };
 
   handleClick = () => {

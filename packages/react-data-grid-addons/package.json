@@ -4,10 +4,12 @@
   "description": "A set of addons for react-data-grid",
   "author": "Adazzle",
   "license": "MIT",
-  "main": "dist/react-data-grid-addons.js",
+  "main": "lib/index.js",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
+  "sideEffects": false,
   "repository": "adazzle/react-data-grid",
   "homepage": "https://github.com/adazzle/react-data-grid",
   "bugs": {
@@ -18,6 +20,9 @@
     "react-data-grid",
     "react-data-grid-addons"
   ],
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
@@ -26,10 +31,11 @@
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",
     "react-select": "^1.3.0",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0",
+    "tslib": "^1.9.3"
   },
   "peerDependencies": {
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react": "^16.8",
+    "react-dom": "^16.8"
   }
 }

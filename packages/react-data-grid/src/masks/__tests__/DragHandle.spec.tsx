@@ -20,7 +20,7 @@ describe('DragHandle', () => {
   it('should render a draggable component', () => {
     const { dragHandle } = setup();
 
-    expect(dragHandle.prop('draggable')).toBe('true');
+    expect(dragHandle.prop('draggable')).toBe(true);
   });
 
   it('should call the drag start handler on drag start', () => {

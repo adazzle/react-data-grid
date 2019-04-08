@@ -1,24 +1,27 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import SortableHeaderCell, { DEFINE_SORT } from '../SortableHeaderCell';
-
-const defaultProps = {
-  columnKey: 'col1',
-  column: {
-    name: 'col1',
-    key: 'col1'
-  },
-  onSort: jest.fn(),
-  sortDirection: DEFINE_SORT.NONE
-};
+import SortableHeaderCell, { DEFINE_SORT, Props } from '../SortableHeaderCell';
 
 describe('<SortableHeaderCell/>', () => {
-  const setup = overrideProps => {
-    const props = { ...defaultProps, ...overrideProps };
+  const setup = (overrideProps?: Partial<Props>) => {
+    const props: Props = {
+      columnKey: 'col1',
+      column: {
+        name: 'col1',
+        key: 'col1',
+        width: 100,
+        filterable: false,
+        onCellChange() {}
+      },
+      onSort: jest.fn(),
+      sortDirection: DEFINE_SORT.NONE,
+      ...overrideProps
+    };
     const wrapper = shallow(<SortableHeaderCell {...props} />);
     return { wrapper, props };
   };
+
   it('should render', () => {
     const { wrapper } = setup();
     expect(wrapper.exists()).toBe(true);

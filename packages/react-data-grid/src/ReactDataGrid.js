@@ -9,7 +9,7 @@ import * as RowUtils from './RowUtils';
 import { getColumn, getSize } from './ColumnUtils';
 import KeyCodes from './KeyCodes';
 import { isFunction } from './common/utils';
-import SelectAll from './formatters/SelectAll';
+import { SelectAll } from './formatters';
 import { DEFINE_SORT } from './common/cells/headerCells/SortableHeaderCell';
 import * as ColumnMetrics from './ColumnMetrics';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType } from './common/constants';
@@ -726,7 +726,7 @@ export default class ReactDataGrid extends React.Component {
     let unshiftedCols = {};
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
-      const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} inputRef={grid => this.selectAllCheckbox = grid} />;
+      const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} ref={grid => this.selectAllCheckbox = grid} />;
       const headerRenderer = props.enableRowSelect === 'single' ? null : SelectAllRenderer;
       const Formatter = this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor;
       const selectColumn = {

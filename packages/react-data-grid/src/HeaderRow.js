@@ -66,10 +66,7 @@ export default class HeaderRow extends React.Component {
   };
 
   getFilterableHeaderCell = (column) => {
-    let FilterRenderer = FilterableHeaderCell;
-    if (column.filterRenderer !== undefined) {
-      FilterRenderer = column.filterRenderer;
-    }
+    const FilterRenderer = column.filterRenderer || FilterableHeaderCell;
     return <FilterRenderer {...this.props} onChange={this.props.onFilterChange} />;
   };
 
