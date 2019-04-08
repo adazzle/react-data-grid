@@ -1,4 +1,4 @@
-export interface Column<T = void> {
+export interface Column<T = unknown> {
   name: string;
   key: string;
   width: number;

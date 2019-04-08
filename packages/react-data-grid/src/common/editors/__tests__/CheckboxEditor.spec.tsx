@@ -1,11 +1,15 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import CheckboxEditor from '../CheckboxEditor';
+import { Column } from '../../types';
 
 describe('CheckboxEditor', () => {
   function setup(value = true) {
-    const testColumn = {
+    const testColumn: Column = {
+      name: 'columnKey',
       key: 'columnKey',
+      width: 100,
+      filterable: false,
       onCellChange() {}
     };
 
