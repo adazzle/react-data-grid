@@ -1,8 +1,8 @@
 enum HeaderCellType {
-  SORTABLE = 0,
-  FILTERABLE = 1,
-  NONE = 2,
-  CHECKBOX = 3
+  SORTABLE = 'SORTABLE',
+  FILTERABLE = 'FILTERABLE',
+  NONE = 'NONE',
+  CHECKBOX = 'CHECKBOX'
 }
 
 export default HeaderCellType;

@@ -3,10 +3,10 @@ import * as EventTypes from './EventTypes';
 import * as HeaderRowType from './HeaderRowType';
 
 enum UpdateActions {
-  CELL_UPDATE,
-  COLUMN_FILL,
-  COPY_PASTE,
-  CELL_DRAG
+  CELL_UPDATE = 'CELL_UPDATE',
+  COLUMN_FILL = 'COLUMN_FILL',
+  COPY_PASTE = 'COPY_PASTE',
+  CELL_DRAG = 'CELL_DRAG'
 }
 
 enum DragItemTypes {
