@@ -1,9 +1,5 @@
 import React from 'react';
-
-interface Column<T> {
-  key: string;
-  onCellChange(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
-}
+import { Column } from '../types';
 
 interface Props<T> {
   value?: boolean;
