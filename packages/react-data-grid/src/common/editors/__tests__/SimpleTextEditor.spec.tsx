@@ -1,37 +1,35 @@
 import React from 'react';
 import { mount } from 'enzyme';
-
 import SimpleTextEditor from '../SimpleTextEditor';
+import { Column } from '../../types';
 
 describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
-    let component;
-
-    const fakeColumn = { key: 'text', name: 'name', width: 0 };
+    const fakeColumn: Column = {
+      key: 'text',
+      name: 'name',
+      width: 0,
+      filterable: false,
+      onCellChange() {}
+    };
     function fakeBlurCb() { return true; }
-    function fakeFunction() { }
-    beforeEach(() => {
-      component = mount(
+
+    function setup() {
+      return mount<SimpleTextEditor>(
         <SimpleTextEditor
           value="This is a test"
           onBlur={fakeBlurCb}
-          onKeyDown={fakeFunction}
-          commit={fakeFunction}
           column={fakeColumn}
         />
-      ).instance();
-    });
-
-    it('should create a new SimpleTextEditor instance', () => {
-      expect(component).toBeDefined();
-    });
+      );
+    }
 
     it('should pass the onBlur fuction down to the input as a prop', () => {
-      expect(component.props.onBlur()).toBe(true);
+      expect(setup().prop('onBlur')).toBe(fakeBlurCb);
     });
 
     it('should return the value when getValue is called', () => {
-      expect(component.getValue().text).toBe('This is a test');
+      expect(setup().instance().getValue().text).toBe('This is a test');
     });
   });
 });

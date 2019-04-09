@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 
-export default class EditorPortal extends React.Component {
-  static propTypes = {
-    children: PropTypes.node.isRequired,
-    target: PropTypes.instanceOf(Element).isRequired
-  };
+interface Props {
+  children: React.ReactNode;
+  target: Node;
+}
 
+interface State {
+  isMounted: boolean;
+}
+
+export default class EditorPortal extends React.Component<Props, State> {
   // Keep track of when the modal element is added to the DOM
-  state = {
+  readonly state: Readonly<State> = {
     isMounted: false
   };
 
@@ -34,7 +37,7 @@ export default class EditorPortal extends React.Component {
 
     return ReactDOM.createPortal(
       this.props.children,
-      this.el,
+      this.el
     );
   }
 }

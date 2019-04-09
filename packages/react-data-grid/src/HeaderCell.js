@@ -33,7 +33,7 @@ export default class HeaderCell extends React.Component {
 
   state = { resizing: false };
 
-  headerCellRef = (node) => this.headerCell = node;
+  headerCell = React.createRef();
 
   onDragStart = (e) => {
     this.setState({ resizing: true });
@@ -59,7 +59,7 @@ export default class HeaderCell extends React.Component {
 
   getWidthFromMouseEvent = (e) => {
     const right = e.pageX || (e.touches && e.touches[0] && e.touches[0].pageX) || (e.changedTouches && e.changedTouches[e.changedTouches.length - 1].pageX);
-    const left = ReactDOM.findDOMNode(this).getBoundingClientRect().left;
+    const left = this.headerCell.current ? this.headerCell.current.getBoundingClientRect().left : 0;
     return right - left;
   };
 
@@ -120,7 +120,7 @@ export default class HeaderCell extends React.Component {
       'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
     const cell = (
-      <div ref={this.headerCellRef} className={className} style={this.getStyle()}>
+      <div ref={this.headerCell} className={className} style={this.getStyle()}>
         {this.getCell()}
         {resizeHandle}
       </div>
