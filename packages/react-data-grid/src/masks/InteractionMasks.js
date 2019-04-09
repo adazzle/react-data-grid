@@ -653,9 +653,8 @@ export default class InteractionMasks extends React.Component {
     return (
       !this.state.isEditorEnabled && this.isGridSelected() && (
         <SelectionMask
-          selectedPosition={selectedPosition}
-          innerRef={this.setSelectionMaskRef}
-          getSelectedDimensions={this.getSelectedDimensions}
+          {...this.getSelectedDimensions(selectedPosition, true)}
+          ref={this.setSelectionMaskRef}
         >
           {this.isDragEnabled() && (
             <DragHandle
@@ -671,20 +670,19 @@ export default class InteractionMasks extends React.Component {
 
   renderCellRangeSelectView = () => {
     const { columns, rowHeight } = this.props;
-    return [
-      <SelectionRangeMask
-        key="range-mask"
-        selectedRange={this.state.selectedRange}
-        columns={columns}
-        rowHeight={rowHeight}
-      />,
-      <SelectionMask
-        key="selection-mask"
-        selectedPosition={this.state.selectedRange.startCell}
-        innerRef={this.setSelectionMaskRef}
-        getSelectedDimensions={this.getSelectedDimensions}
-      />
-    ];
+    return (
+      <>
+        <SelectionRangeMask
+          selectedRange={this.state.selectedRange}
+          columns={columns}
+          rowHeight={rowHeight}
+        />
+        <SelectionMask
+          {...this.getSelectedDimensions(this.state.selectedRange.startCell, true)}
+          ref={this.setSelectionMaskRef}
+        />
+      </>
+    );
   };
 
   render() {
@@ -699,9 +697,8 @@ export default class InteractionMasks extends React.Component {
       >
         {copiedPosition && (
           <CopyMask
-            copiedPosition={copiedPosition}
-            innerRef={this.setCopyMaskRef}
-            getSelectedDimensions={this.getSelectedDimensions}
+            {...this.getSelectedDimensions(copiedPosition)}
+            ref={this.setCopyMaskRef}
           />
         )}
         {draggedPosition && (
