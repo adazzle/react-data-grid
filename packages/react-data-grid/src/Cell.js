@@ -290,10 +290,15 @@ export default class Cell extends React.PureComponent {
   renderCellContent = (props) => {
     let CellContent;
     const Formatter = this.getFormatter();
+    const formatterProps = {
+      ...props,
+      dependentValues: this.getFormatterDependencies(),
+      row: this.getRowData()
+    }
     if (isElement(Formatter)) {
-      CellContent = React.cloneElement(Formatter, { ...props, dependentValues: this.getFormatterDependencies(), row: this.getRowData() });
+      CellContent = React.cloneElement(Formatter, formatterProps);
     } else if (isValidElementType(Formatter)) {
-      CellContent = <Formatter value={this.props.value} dependentValues={this.getFormatterDependencies()} isScrolling={this.props.isScrolling} row={this.getRowData()} />;
+      CellContent = <Formatter {...formatterProps} />;
     } else {
       CellContent = <SimpleCellFormatter value={this.props.value} />;
     }
