@@ -1,30 +1,32 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { CellExpand } from './common/constants';
 
-export default class CellExpander extends React.Component {
-  static propTypes = {
-    expandableOptions: PropTypes.object.isRequired,
-    onCellExpand: PropTypes.func.isRequired
+interface Props {
+  expandableOptions?: { expanded?: boolean };
+  onCellExpand: () => void;
+}
+
+interface State {
+  expanded?: boolean;
+}
+
+export default class CellExpander extends React.Component<Props, State> {
+  readonly state: Readonly<State> = {
+    expanded: this.props.expandableOptions && this.props.expandableOptions.expanded
   };
 
-  constructor(props) {
-    super(props);
-    const expanded = props.expandableOptions && props.expandableOptions.expanded;
-    this.state = { expanded };
-  }
-
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     const expanded = nextProps.expandableOptions && nextProps.expandableOptions.expanded;
     if (this.state.expanded !== expanded) {
       this.setState({ expanded });
     }
   }
 
-  onCellExpand = (e) => {
+  onCellExpand = (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.stopPropagation();
     this.setState({ expanded: !this.state.expanded });
-    this.props.onCellExpand(e);
+    this.props.onCellExpand();
   };
 
   render() {

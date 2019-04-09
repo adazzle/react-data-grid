@@ -103,8 +103,7 @@ export default class Cell extends React.PureComponent {
     }
   };
 
-  handleCellExpand = (e) => {
-    e.stopPropagation();
+  handleCellExpand = () => {
     const meta = this.props.cellMetaData;
     if (meta != null && meta.onCellExpand != null) {
       meta.onCellExpand({
