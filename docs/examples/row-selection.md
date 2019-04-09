@@ -21,4 +21,14 @@ onRowsSelected | func | false | Function called whenever rows are selected|
 onRowsDeselected | func | false | Function called whenever rows are deselected| 
 showCheckbox | bool | false | toggle whether to show a checkbox in first column to select rows| 
 selectBy | union | true | Method by which rows should be selected| 
+
+#### selectBy options
+
+There are 3 ways to keep track of selected rows. 
+
+|Name | Type | Description|
+|----|---|---|
+|indexes|array|List of indexes of selected rows (doesn't work well with sorting and filtering)|
+|isSelectedKey|string|Name of property of row object which determines whether row is selected|
+|keys|object|values: The selected unique ids of each row <br />rowKey: The name of the unique id property of each row|
  
