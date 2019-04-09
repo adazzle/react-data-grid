@@ -10,6 +10,8 @@ import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 import { isFrozen } from './ColumnUtils';
 
+const getSubRowOptions = ({ rowIdx, idx, rowData, expandableOptions: expandArgs }) => ({ rowIdx, idx, rowData, expandArgs });
+
 export default class Cell extends React.PureComponent {
   static propTypes = {
     rowIdx: PropTypes.number.isRequired,
@@ -44,6 +46,8 @@ export default class Cell extends React.PureComponent {
     value: '',
     isCellValueChanging: (value, nextValue) => value !== nextValue
   };
+
+  cell = React.createRef();
 
   state = {
     isCellValueChanging: false,
@@ -105,25 +109,15 @@ export default class Cell extends React.PureComponent {
 
   handleCellExpand = () => {
     const meta = this.props.cellMetaData;
-    if (meta != null && meta.onCellExpand != null) {
-      meta.onCellExpand({
-        rowIdx: this.props.rowIdx,
-        idx: this.props.idx,
-        rowData: this.props.rowData,
-        expandArgs: this.props.expandableOptions
-      });
+    if (meta != null && isFunction(meta.onCellExpand)) {
+      meta.onCellExpand(getSubRowOptions(this.props));
     }
   };
 
   handleDeleteSubRow = () => {
     const meta = this.props.cellMetaData;
-    if (meta != null && meta.onDeleteSubRow != null) {
-      meta.onDeleteSubRow({
-        rowIdx: this.props.rowIdx,
-        idx: this.props.idx,
-        rowData: this.props.rowData,
-        expandArgs: this.props.expandableOptions
-      });
+    if (meta != null && isFunction(meta.onDeleteSubRow)) {
+      meta.onDeleteSubRow(getSubRowOptions(this.props));
     }
   };
 
@@ -147,7 +141,7 @@ export default class Cell extends React.PureComponent {
   getFormatterDependencies() {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = this.props.column;
-    if (typeof getRowMetaData === 'function') {
+    if (isFunction(getRowMetaData)) {
       if (process.env.NODE_ENV === 'development') {
         console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
       }
@@ -173,25 +167,22 @@ export default class Cell extends React.PureComponent {
 
   checkScroll() {
     const { scrollLeft, column } = this.props;
-    const node = this.node;
+    const node = this.cell.current;
     if (isFrozen(column) && node && node.style.transform != null) {
       this.setScrollLeft(scrollLeft);
     }
   }
 
   setScrollLeft = (scrollLeft) => {
-    const node = this.node;
+    const node = this.cell.current;
     if (node) {
-      const transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
-      node.style.webkitTransform = transform;
-      node.style.transform = transform;
+      node.style.transform = `translate3d(${scrollLeft}px, 0px, 0px)`;
     }
   };
 
   removeScroll = () => {
-    const node = this.node;
+    const node = this.cell.current;
     if (node) {
-      node.style.webkitTransform = null;
       node.style.transform = null;
     }
   };
@@ -256,7 +247,7 @@ export default class Cell extends React.PureComponent {
 
   getCellActions() {
     const { cellMetaData, column, rowData } = this.props;
-    if (typeof cellMetaData.getCellActions === 'function') {
+    if (isFunction(cellMetaData.getCellActions)) {
       const cellActionButtons = cellMetaData.getCellActions(column, rowData);
       if (cellActionButtons && cellActionButtons.length > 0) {
         return cellActionButtons.map((action, index) => {
@@ -266,10 +257,6 @@ export default class Cell extends React.PureComponent {
     }
     return null;
   }
-
-  setCellRef = (node) => {
-    this.node = node;
-  };
 
   renderCellContent() {
     let cellContent;
@@ -344,7 +331,7 @@ export default class Cell extends React.PureComponent {
 
     return (
       <div
-        ref={this.setCellRef}
+        ref={this.cell}
         height={height}
         className={className}
         style={style}
