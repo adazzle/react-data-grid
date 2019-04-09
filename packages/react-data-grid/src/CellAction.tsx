@@ -1,16 +1,23 @@
 import classNames from 'classnames';
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactElement } from 'react';
 
-import CellActionShape from './common/prop-shapes/CellActionShape';
+interface Action {
+  icon: string | ReactElement;
+  callback: () => void;
+  actions: Array<{ text: string; callback: () => void }>;
+}
 
-export default class CellAction extends React.Component {
-  static propTypes = {
-    action: PropTypes.shape(CellActionShape).isRequired,
-    isFirst: PropTypes.bool.isRequired
-  }
+interface Props {
+  action: Action;
+  isFirst: boolean;
+}
 
-  state = { isMenuOpen: false };
+interface State {
+  isMenuOpen: boolean;
+}
+
+export default class CellAction extends React.Component<Props, State> {
+  readonly state: Readonly<State> = { isMenuOpen: false };
 
   onToggleMenu = () => {
     this.setState((prevState) => {
@@ -60,7 +67,7 @@ export default class CellAction extends React.Component {
     return (
       <div className={cellActionClasses} onMouseLeave={this.onActionButtonBlur}>
         <div className={actionButtonClasses} onClick={this.onActionIconClick}>
-          { typeof this.props.action.icon === 'string' ? <span className={this.props.action.icon} /> : this.props.action.icon }
+          {typeof this.props.action.icon === 'string' ? <span className={this.props.action.icon} /> : this.props.action.icon}
         </div>
         {
           isActionMenu
