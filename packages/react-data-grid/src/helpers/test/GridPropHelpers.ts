@@ -1,4 +1,4 @@
-const _rows = [];
+const _rows: Array<{ id: number; title: string; count: number }> = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
@@ -6,6 +6,7 @@ for (let i = 0; i < 1000; i++) {
     count: i * 1000
   });
 }
+
 export default {
   columns: [{
     key: 'id',
@@ -22,7 +23,7 @@ export default {
     name: 'Count',
     width: 100
   }],
-  rowGetter(i) {
+  rowGetter(i: number) {
     return _rows[i];
   },
   rowsCount() {
