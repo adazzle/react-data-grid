@@ -90,7 +90,8 @@ describe('<InteractionMasks/>', () => {
           selectedPosition: { idx: 0, rowIdx: 0 },
           selectedRange: {
             topLeft: { idx: 0, rowIdx: 0 },
-            bottomRight: { idx: 1, rowIdx: 1 }
+            bottomRight: { idx: 1, rowIdx: 1 },
+            startCell: { idx: 0, rowIdx: 0 }
           }
         });
         expect(wrapper.find(SelectionRangeMask).length).toBe(1);
@@ -106,7 +107,7 @@ describe('<InteractionMasks/>', () => {
           }
         });
         expect(wrapper.find(SelectionMask).length).toBe(1);
-        expect(wrapper.find(SelectionMask).props().selectedPosition).toEqual({ idx: 0, rowIdx: 0 });
+        expect(wrapper.find(SelectionMask).props()).toEqual({ height: 50, left: 0, top: 0, width: 100, zIndex: 1 });
       });
     });
   });
