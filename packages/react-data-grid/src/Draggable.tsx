@@ -30,21 +30,29 @@ export default function Draggable({ onDrag, onDragEnd, ...props }: Props) {
   }
 
   function onTouchStart(event: React.TouchEvent) {
+    function getTouch(event: TouchEvent) {
+      return Array.from(event.changedTouches).find(t => t.identifier === identifier);
+    }
+
     function onTouchMove(event: TouchEvent) {
-      const touch = event.touches[0];
-      onDrag(touch.clientX, touch.clientY);
+      const touch = getTouch(event);
+      if (touch) {
+        onDrag(touch.clientX, touch.clientY);
+      }
     }
 
     function onTouchEnd(event: TouchEvent) {
+      const touch = getTouch(event);
+      if (!touch) return;
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
-      const touch = event.touches[0];
       onDragEnd(touch.clientX, touch.clientY);
     }
 
     window.addEventListener('touchmove', onTouchMove);
     window.addEventListener('touchend', onTouchEnd);
-    const touch = event.touches[0];
+    const touch = event.changedTouches[0];
+    const { identifier } = touch;
     onDrag(touch.clientX, touch.clientY);
   }
 
