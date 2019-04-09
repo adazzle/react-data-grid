@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import CellAction from '../CellAction';
+import CellAction, { CellActionProps } from '../CellAction';
 
-const setup = (overriderProps = {}) => {
+const setup = (overriderProps: Partial<CellActionProps> = {}) => {
   const props = {
     action: {
       icon: 'glyphicon glyphicon-link',
@@ -11,7 +11,7 @@ const setup = (overriderProps = {}) => {
     },
     isFirst: true,
     ...overriderProps
-  };
+  } as CellActionProps;
   const wrapper = shallow(<CellAction {...props} />);
   return {
     props,
@@ -24,16 +24,13 @@ describe('Cell Action Tests', () => {
     it('will render a button action and hook up the callback function', () => {
       const { wrapper, props } = setup();
       const renderedActionButton = wrapper.find('.rdg-cell-action-button');
-      const renderedActionButtonProps = renderedActionButton.props();
       const renderedActionMenu = wrapper.find('.rdg-cell-action-menu');
 
       expect(renderedActionButton.length).toBe(1);
-      expect(renderedActionButtonProps.onClick).toEqual(expect.any(Function));
 
       renderedActionButton.simulate('click');
 
       expect(props.action.callback).toHaveBeenCalled();
-
       expect(renderedActionMenu.length).toBe(0);
     });
   });
@@ -55,25 +52,19 @@ describe('Cell Action Tests', () => {
           ]
         }
       });
-      let wrapperState = wrapper.state();
       const renderedActionButton = wrapper.find('.rdg-cell-action-button');
-      const renderedActionButtonProps = renderedActionButton.props();
       let renderedActionMenu = wrapper.find('.rdg-cell-action-menu');
 
       expect(renderedActionButton.length).toBe(1);
-      expect(renderedActionButtonProps.onClick).toEqual(expect.any(Function));
-      expect(wrapperState.isMenuOpen).toBeFalsy();
-      expect(renderedActionMenu.length).toBe(0);
+      expect(wrapper.find('.rdg-cell-action-menu').length).toBe(0);
 
       renderedActionButton.simulate('click');
 
-      wrapperState = wrapper.state();
       renderedActionMenu = wrapper.find('.rdg-cell-action-menu');
       const renderedActionMenuProps = renderedActionMenu.props();
 
-      expect(wrapperState.isMenuOpen).toBeTruthy();
-      expect(renderedActionMenu.length).toBe(1);
-      expect(renderedActionMenuProps.children.length).toBe(props.action.actions.length);
+      expect(wrapper.find('.rdg-cell-action-menu').length).toBe(1);
+      expect(React.Children.count(renderedActionMenuProps.children)).toBe(props.action.actions.length);
 
       expect(props.action.actions[0].callback).not.toHaveBeenCalled();
       renderedActionMenu.childAt(0).simulate('click');
@@ -85,20 +76,14 @@ describe('Cell Action Tests', () => {
     describe('when isFirst is true', () => {
       it('will render a button action with cell-action-last class on it', () => {
         const { wrapper } = setup({ isFirst: true });
-        const wrapperProps = wrapper.props();
-
-        expect(wrapper.length).toBe(1);
-        expect(wrapperProps.className).toBe('rdg-cell-action rdg-cell-action-last');
+        expect(wrapper.hasClass('rdg-cell-action-last')).toBe(true);
       });
     });
 
     describe('when isFirst is false', () => {
       it('will render a button action without cell-action-last class on it', () => {
         const { wrapper } = setup({ isFirst: false });
-        const wrapperProps = wrapper.props();
-
-        expect(wrapper.length).toBe(1);
-        expect(wrapperProps.className).toBe('rdg-cell-action');
+        expect(wrapper.hasClass('rdg-cell-action-last')).toBe(false);
       });
     });
   });

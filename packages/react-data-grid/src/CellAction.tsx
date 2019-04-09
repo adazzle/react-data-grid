@@ -3,11 +3,11 @@ import React, { ReactElement } from 'react';
 
 interface Action {
   icon: string | ReactElement;
-  callback: () => void;
   actions: Array<{ text: string; callback: () => void }>;
+  callback?: () => void;
 }
 
-interface Props {
+export interface CellActionProps {
   action: Action;
   isFirst: boolean;
 }
@@ -16,7 +16,7 @@ interface State {
   isMenuOpen: boolean;
 }
 
-export default class CellAction extends React.Component<Props, State> {
+export default class CellAction extends React.Component<CellActionProps, State> {
   readonly state: Readonly<State> = { isMenuOpen: false };
 
   onToggleMenu = () => {
@@ -47,7 +47,7 @@ export default class CellAction extends React.Component<Props, State> {
 
   onActionIconClick = () => {
     if (!this.isActionMenu()) {
-      this.props.action.callback();
+      this.props.action.callback!();
     } else if (this.props.action.actions && this.props.action.actions.length) {
       this.onToggleMenu();
     }
