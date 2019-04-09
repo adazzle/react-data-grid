@@ -18,10 +18,7 @@ export default function DragMask({ draggedPosition, getSelectedDimensions }) {
     }
 
     return (
-      <CellMask
-        {...dimensions}
-        className={className}
-      />
+      <CellMask {...dimensions} className={className} />
     );
   }
   return null;

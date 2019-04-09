@@ -96,6 +96,6 @@ const keyCodes = {
   BackSlash: 220,
   CloseBracket: 221,
   SingleQuote: 222
-};
+} as const;
 
 export default keyCodes;

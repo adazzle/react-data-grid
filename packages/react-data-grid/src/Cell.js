@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
 import { isFunction } from './common/utils';
-import SimpleCellFormatter from './formatters/SimpleCellFormatter';
+import { SimpleCellFormatter } from './formatters';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';

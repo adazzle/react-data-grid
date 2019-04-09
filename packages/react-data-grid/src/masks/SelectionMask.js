@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import CellMask from './CellMask';
 
 export default function SelectionMask({ selectedPosition, innerRef, getSelectedDimensions, children }) {
-  const dimensions = getSelectedDimensions(selectedPosition);
+  const dimensions = getSelectedDimensions(selectedPosition, true);
   return (
     <CellMask
       {...dimensions}
       className="rdg-selected"
-      innerRef={innerRef}
+      ref={innerRef}
       tabIndex="0"
     >
       {children}

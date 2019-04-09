@@ -9,7 +9,7 @@ export default function CopyMask({ copiedPosition, innerRef, getSelectedDimensio
     <CellMask
       {...dimensions}
       className="react-grid-cell-copied"
-      innerRef={innerRef}
+      ref={innerRef}
     />
   );
 }

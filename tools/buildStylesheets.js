@@ -1,6 +1,7 @@
-'use strict'
+'use strict';
 
 const fs = require('fs').promises;
+const { dirname } = require('path');
 const less = require('less');
 const CleanCSS = require('clean-css');
 
@@ -21,7 +22,8 @@ async function buildStylesheet(path) {
     const { css } = await less.render(buf.toString(), { filename: path });
     const { styles } = await cleanCSS.minify(css);
     const dest = path.replace('/style/', '/dist/').replace('.less', '.css');
-    fs.writeFile(dest, styles);
+    await fs.mkdir(dirname(dest), { recursive: true });
+    await fs.writeFile(dest, styles);
   } catch (err) {
     console.error(err.message || err);
     process.exitCode = 1;
