@@ -699,9 +699,8 @@ export default class InteractionMasks extends React.Component {
       >
         {copiedPosition && (
           <CopyMask
-            copiedPosition={copiedPosition}
-            innerRef={this.setCopyMaskRef}
-            getSelectedDimensions={this.getSelectedDimensions}
+            {...this.getSelectedDimensions(copiedPosition)}
+            ref={this.setCopyMaskRef}
           />
         )}
         {draggedPosition && (

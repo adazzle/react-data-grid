@@ -693,7 +693,7 @@ describe('<InteractionMasks/>', () => {
     it('should render a CopyMask component when a cell is copied', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
-      expect(wrapper.find(CopyMask).props().copiedPosition).toEqual({ idx: 1, rowIdx: 2, value: '3' });
+      expect(wrapper.find(CopyMask).props()).toEqual({ height: 50, left: 100, top: 0, width: 100, zIndex: 1 });
     });
 
     it('should remove the CopyMask component on escape', () => {
