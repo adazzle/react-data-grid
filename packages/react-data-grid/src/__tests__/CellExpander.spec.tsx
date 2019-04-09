@@ -1,11 +1,11 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import CellExpander from '../CellExpander';
+import CellExpander, { CellExpanderProps } from '../CellExpander';
 import { CellExpand } from '../common/constants';
 
 const setup = (overrideExpandableOptions = {}) => {
-  const props = {
+  const props: CellExpanderProps = {
     expandableOptions: {
       expanded: true,
       ...overrideExpandableOptions
@@ -32,7 +32,7 @@ describe('CellExpand', () => {
 
     wrapper.find('span').simulate('click');
 
-    expect(props.onCellExpand.mock.calls.length).toEqual(1);
+    expect(props.onCellExpand).toHaveBeenCalledTimes(1);
     expect(wrapper.find('span').text()).toBe(CellExpand.DOWN_TRIANGLE);
   });
 });

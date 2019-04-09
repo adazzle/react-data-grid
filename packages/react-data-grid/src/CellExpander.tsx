@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CellExpand } from './common/constants';
 
-interface Props {
+export interface CellExpanderProps {
   expandableOptions?: { expanded?: boolean };
   onCellExpand: () => void;
 }
@@ -11,12 +11,12 @@ interface State {
   expanded?: boolean;
 }
 
-export default class CellExpander extends React.Component<Props, State> {
+export default class CellExpander extends React.Component<CellExpanderProps, State> {
   readonly state: Readonly<State> = {
     expanded: this.props.expandableOptions && this.props.expandableOptions.expanded
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: CellExpanderProps) {
     const expanded = nextProps.expandableOptions && nextProps.expandableOptions.expanded;
     if (this.state.expanded !== expanded) {
       this.setState({ expanded });
