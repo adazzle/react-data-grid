@@ -7,14 +7,13 @@ import { HeaderRowType } from './common/enums';
 import { Column } from './common/types';
 
 function SimpleCellRenderer({ column }: { column: Column }) {
-  const headerText = column.rowType === 'header' ? column.name : '';
+  const headerText = column.rowType === HeaderRowType.HEADER ? column.name : '';
   return <div>{headerText}</div>;
 }
 
 interface Props {
   renderer?: React.ReactElement | React.FunctionComponent<{ column: Column }>;
   column: Column;
-  rowType: HeaderRowType;
   height: number;
   onResize(column: Column, width: number): void;
   onResizeEnd(column: Column, width: number): void;
@@ -74,7 +73,7 @@ export default class HeaderCell extends React.Component<Props> {
   }
 
   render() {
-    const { column, rowType, height } = this.props;
+    const { column, height } = this.props;
 
     const className = classNames('react-grid-HeaderCell', {
       'react-grid-HeaderCell--frozen': isFrozen(column)
@@ -99,7 +98,7 @@ export default class HeaderCell extends React.Component<Props> {
       </div>
     );
 
-    if (rowType === HeaderRowType.HEADER && column.draggable) {
+    if (column.rowType === HeaderRowType.HEADER && column.draggable) {
       const DraggableHeaderCell = this.props.draggableHeaderCell;
       return (
         <DraggableHeaderCell

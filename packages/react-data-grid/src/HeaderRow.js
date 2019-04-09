@@ -114,7 +114,6 @@ export default class HeaderRow extends React.Component {
           key={column.key}
           ref={(node) => this.cells[i] = node}
           column={column}
-          rowType={rowType}
           height={this.props.height}
           renderer={_renderer}
           resizing={this.props.resizing === column}
