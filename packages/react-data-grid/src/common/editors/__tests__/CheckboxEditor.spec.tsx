@@ -9,7 +9,7 @@ describe('CheckboxEditor', () => {
       name: 'columnKey',
       key: 'columnKey',
       width: 100,
-      filterable: false,
+      left: 0,
       onCellChange() {}
     };
 

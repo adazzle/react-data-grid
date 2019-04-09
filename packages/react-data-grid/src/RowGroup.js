@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { last } from './common/utils';
 import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
-import { EventTypes } from './common/constants';
+import { EventTypes } from './common/enums';
 
 export default class RowGroup extends Component {
   onRowExpandToggle = (expand) => {

@@ -207,7 +207,6 @@ export default class Cell extends React.PureComponent {
   removeScroll = () => {
     const node = this.node;
     if (node) {
-      node.style.webkitTransform = null;
       node.style.transform = null;
     }
   };

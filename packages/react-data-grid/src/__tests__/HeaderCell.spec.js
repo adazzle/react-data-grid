@@ -3,7 +3,7 @@ import { shallow, mount } from 'enzyme';
 
 import HeaderCell from '../HeaderCell';
 import SortableHeaderCell from '../common/cells/headerCells/SortableHeaderCell';
-import ResizeHandle from '../ResizeHandle';
+import Draggable from '../Draggable';
 
 describe('Header Cell Tests', () => {
   let testProps;
@@ -29,13 +29,6 @@ describe('Header Cell Tests', () => {
     return { wrapper, props };
   }
 
-  it('should initialize the state correctly', () => {
-    const { wrapper } = setup();
-    expect(wrapper.state()).toEqual(
-      { resizing: false }
-    );
-  });
-
   describe('When custom render is supplied', () => {
     it('will render', () => {
       const CustomRenderer = () => <div>Custom</div>;
@@ -59,44 +52,25 @@ describe('Header Cell Tests', () => {
       testProps.column.resizable = false;
     });
 
-    it('should render a resize handle', () => {
+    it('should render a Draggable', () => {
       const { wrapper } = setup();
-      const resizeHandle = wrapper.find(ResizeHandle);
-      expect(resizeHandle.length).toBe(1);
-    });
-
-    it('start dragging handle should set resizing state to be true', () => {
-      const { wrapper } = setup();
-      const resizeHandle = wrapper.find(ResizeHandle);
-      resizeHandle.props().onDragStart();
-      expect(wrapper.state().resizing).toBe(true);
+      const draggable = wrapper.find(Draggable);
+      expect(draggable.length).toBe(1);
     });
 
     it('dragging handle should call onResize callback with width and column', () => {
-      const dragLength = 200;
       const wrapper = mount(<HeaderCell {...testProps} />);
-      const resizeHandle = wrapper.find(ResizeHandle);
-      const fakeEvent = { pageX: dragLength };
-      resizeHandle.props().onDrag(fakeEvent);
+      const draggable = wrapper.find(Draggable);
+      draggable.props().onDrag(200, 0);
       expect(testProps.onResize).toHaveBeenCalled();
       expect(testProps.onResize.mock.calls[0][0]).toEqual(testProps.column);
-      expect(testProps.onResize.mock.calls[0][1]).toEqual(dragLength);
-    });
-
-    it('finish dragging should reset resizing state', () => {
-      const wrapper = mount(<HeaderCell {...testProps} />);
-      wrapper.setState({ resizing: true });
-      const fakeEvent = { pageX: 250 };
-      const resizeHandle = wrapper.find(ResizeHandle);
-      resizeHandle.props().onDragEnd(fakeEvent);
-      expect(wrapper.state().resizing).toBe(false);
+      expect(testProps.onResize.mock.calls[0][1]).toEqual(200);
     });
 
     it('finish dragging should call onResizeEnd with correct params', () => {
       const wrapper = mount(<HeaderCell {...testProps} />);
-      const resizeHandle = wrapper.find(ResizeHandle);
-      const fakeEvent = { pageX: 250 };
-      resizeHandle.props().onDragEnd(fakeEvent);
+      const draggable = wrapper.find(Draggable);
+      draggable.props().onDragEnd(250, 0);
       expect(testProps.onResizeEnd).toHaveBeenCalled();
       expect(testProps.onResizeEnd.mock.calls[0][0]).toEqual(testProps.column);
       expect(testProps.onResizeEnd.mock.calls[0][1]).toEqual(250);

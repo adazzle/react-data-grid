@@ -1,0 +1,116 @@
+import React from 'react';
+import classNames from 'classnames';
+import { isElement } from 'react-is';
+import Draggable from './Draggable';
+import { isFrozen } from './ColumnUtils';
+import { HeaderRowType } from './common/enums';
+import { Column } from './common/types';
+
+function SimpleCellRenderer({ column }: { column: Column }) {
+  const headerText = column.rowType === 'header' ? column.name : '';
+  return <div>{headerText}</div>;
+}
+
+interface Props {
+  renderer?: React.ReactElement | React.FunctionComponent<{ column: Column }>;
+  column: Column;
+  rowType: HeaderRowType;
+  height: number;
+  onResize(column: Column, width: number): void;
+  onResizeEnd(column: Column, width: number): void;
+  onHeaderDrop(): void;
+  draggableHeaderCell: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
+  className?: string;
+}
+
+export default class HeaderCell extends React.Component<Props> {
+  headerCell = React.createRef<HTMLDivElement>();
+
+  onDrag = (x: number) => {
+    const { onResize } = this.props;
+    if (onResize) {
+      const width = this.getWidthFromMouseEvent(x);
+      if (width > 0) {
+        onResize(this.props.column, width);
+      }
+    }
+  };
+
+  onDragEnd = (x: number) => {
+    const width = this.getWidthFromMouseEvent(x);
+    this.props.onResizeEnd(this.props.column, width);
+  };
+
+  getWidthFromMouseEvent(x: number): number {
+    const left = this.headerCell.current!.getBoundingClientRect().left;
+    return x - left;
+  }
+
+  getCell() {
+    const { height, column } = this.props;
+    const renderer = this.props.renderer || SimpleCellRenderer;
+    if (isElement(renderer)) {
+      // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
+      if (typeof renderer.type === 'string') {
+        return React.cloneElement(renderer, { height });
+      }
+      return React.cloneElement(renderer, { column, height });
+    }
+    return renderer({ column });
+  }
+
+  setScrollLeft(scrollLeft: number) {
+    const node = this.headerCell.current;
+    if (node) {
+      node.style.transform = `translate(${scrollLeft}px, 0)`;
+    }
+  }
+
+  removeScroll() {
+    const node = this.headerCell.current;
+    if (node) {
+      node.style.transform = null;
+    }
+  }
+
+  render() {
+    const { column, rowType, height } = this.props;
+
+    const className = classNames('react-grid-HeaderCell', {
+      'react-grid-HeaderCell--frozen': isFrozen(column)
+    }, this.props.className, column.cellClass);
+
+    const style: React.CSSProperties = {
+      width: column.width,
+      left: column.left,
+      height
+    };
+
+    const cell = (
+      <div ref={this.headerCell} className={className} style={style}>
+        {this.getCell()}
+        {column.resizable && (
+          <Draggable
+            className="react-grid-HeaderCell__resizeHandle"
+            onDrag={this.onDrag}
+            onDragEnd={this.onDragEnd}
+          />
+        )}
+      </div>
+    );
+
+    if (rowType === HeaderRowType.HEADER && column.draggable) {
+      const DraggableHeaderCell = this.props.draggableHeaderCell;
+      return (
+        <DraggableHeaderCell
+          column={column}
+          onHeaderDrop={this.props.onHeaderDrop}
+        >
+          {cell}
+        </DraggableHeaderCell>
+      );
+    }
+
+    return cell;
+  }
+}
