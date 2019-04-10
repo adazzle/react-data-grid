@@ -3,6 +3,7 @@ import { mount } from 'enzyme';
 
 import HeaderCell from '../HeaderCell';
 import Draggable from '../Draggable';
+import { HeaderRowType } from '../common/enums';
 
 describe('Header Cell Tests', () => {
   function setup(overrideProps = {}, resizable?: boolean) {
@@ -15,6 +16,7 @@ describe('Header Cell Tests', () => {
         resizable,
         onCellChange() {}
       },
+      rowType: HeaderRowType.HEADER,
       onResize: jest.fn(),
       onResizeEnd: jest.fn(),
       height: 50,
@@ -65,7 +67,7 @@ describe('Header Cell Tests', () => {
     it('pass the column as property to cell renderer if it is a function', () => {
       const rendererFunction = jest.fn();
       const { props } = setup({ renderer: rendererFunction });
-      expect(rendererFunction.mock.calls[0][0]).toEqual({ column: props.column });
+      expect(rendererFunction.mock.calls[0][0]).toEqual({ column: props.column, rowType: HeaderRowType.HEADER });
     });
 
     it('should not pass the column as property to cell renderer if it is a jsx object', () => {

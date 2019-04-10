@@ -1,11 +1,8 @@
-import { HeaderRowType } from './enums';
-
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<T = unknown> {
   name: string;
   key: string;
-  rowType?: HeaderRowType;
   width: number;
   left: number;
   cellClass?: string;

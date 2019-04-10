@@ -6,14 +6,15 @@ import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from './common/enums';
 import { Column } from './common/types';
 
-function SimpleCellRenderer({ column }: { column: Column }) {
-  const headerText = column.rowType === HeaderRowType.HEADER ? column.name : '';
+function SimpleCellRenderer({ column, rowType }: { column: Column; rowType: HeaderRowType }) {
+  const headerText = rowType === HeaderRowType.HEADER ? column.name : '';
   return <div>{headerText}</div>;
 }
 
 interface Props {
   renderer?: React.ReactElement | React.FunctionComponent<{ column: Column }>;
   column: Column;
+  rowType: HeaderRowType;
   height: number;
   onResize(column: Column, width: number): void;
   onResizeEnd(column: Column, width: number): void;
@@ -46,7 +47,7 @@ export default class HeaderCell extends React.Component<Props> {
   }
 
   getCell() {
-    const { height, column } = this.props;
+    const { height, column, rowType } = this.props;
     const renderer = this.props.renderer || SimpleCellRenderer;
     if (isElement(renderer)) {
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
@@ -55,7 +56,7 @@ export default class HeaderCell extends React.Component<Props> {
       }
       return React.cloneElement(renderer, { column, height });
     }
-    return renderer({ column });
+    return renderer({ column, rowType });
   }
 
   setScrollLeft(scrollLeft: number) {
@@ -73,7 +74,7 @@ export default class HeaderCell extends React.Component<Props> {
   }
 
   render() {
-    const { column, height } = this.props;
+    const { column, rowType, height } = this.props;
 
     const className = classNames('react-grid-HeaderCell', {
       'react-grid-HeaderCell--frozen': isFrozen(column)
@@ -98,7 +99,7 @@ export default class HeaderCell extends React.Component<Props> {
       </div>
     );
 
-    if (column.rowType === HeaderRowType.HEADER && column.draggable) {
+    if (rowType === HeaderRowType.HEADER && column.draggable) {
       const DraggableHeaderCell = this.props.draggableHeaderCell;
       return (
         <DraggableHeaderCell
