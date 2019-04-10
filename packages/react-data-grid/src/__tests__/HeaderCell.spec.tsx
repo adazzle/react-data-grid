@@ -65,9 +65,9 @@ describe('Header Cell Tests', () => {
 
   describe('getCell method', () => {
     it('pass the column as property to cell renderer if it is a function', () => {
-      const rendererFunction = jest.fn();
+      const rendererFunction = jest.fn(() => <div>Custom</div>);
       const { props } = setup({ renderer: rendererFunction });
-      expect(rendererFunction.mock.calls[0][0]).toEqual({ column: props.column, rowType: HeaderRowType.HEADER });
+      expect(rendererFunction).toHaveBeenCalledWith({ column: props.column, rowType: HeaderRowType.HEADER }, {});
     });
 
     it('should not pass the column as property to cell renderer if it is a jsx object', () => {
