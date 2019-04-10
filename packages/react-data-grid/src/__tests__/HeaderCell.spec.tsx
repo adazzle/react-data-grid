@@ -6,15 +6,19 @@ import Draggable from '../Draggable';
 import { HeaderRowType } from '../common/enums';
 
 describe('Header Cell Tests', () => {
-  function setup(overrideProps = {}, resizable?: boolean) {
+  function DraggableHeaderCell() {
+    return <div />;
+  }
+
+  function setup(overrideProps = {}, columnProps = {}) {
     const props = {
       column: {
         key: 'bla',
         name: 'bla',
         width: 150,
         left: 300,
-        resizable,
-        onCellChange() {}
+        onCellChange() {},
+        ...columnProps
       },
       rowType: HeaderRowType.HEADER,
       onResize: jest.fn(),
@@ -22,7 +26,7 @@ describe('Header Cell Tests', () => {
       height: 50,
       name: 'bla',
       onHeaderDrop() {},
-      draggableHeaderCell() { return null; },
+      draggableHeaderCell: DraggableHeaderCell,
       ...overrideProps
     };
     const wrapper = mount<HeaderCell>(<HeaderCell {...props} />);
@@ -39,13 +43,13 @@ describe('Header Cell Tests', () => {
 
   describe('When column is resizable', () => {
     it('should render a Draggable', () => {
-      const { wrapper } = setup({}, true);
+      const { wrapper } = setup({}, { resizable: true });
       const draggable = wrapper.find(Draggable);
       expect(draggable.length).toBe(1);
     });
 
     it('dragging handle should call onResize callback with width and column', () => {
-      const { wrapper, props } = setup({}, true);
+      const { wrapper, props } = setup({}, { resizable: true });
       const draggable = wrapper.find(Draggable);
       draggable.props().onDrag(200, 0);
       expect(props.onResize).toHaveBeenCalled();
@@ -54,7 +58,7 @@ describe('Header Cell Tests', () => {
     });
 
     it('finish dragging should call onResizeEnd with correct params', () => {
-      const { wrapper, props } = setup({}, true);
+      const { wrapper, props } = setup({}, { resizable: true });
       const draggable = wrapper.find(Draggable);
       draggable.props().onDragEnd(250, 0);
       expect(props.onResizeEnd).toHaveBeenCalled();
@@ -75,6 +79,18 @@ describe('Header Cell Tests', () => {
       const { wrapper } = setup({ renderer });
       const cell = wrapper.instance().getCell();
       expect(cell!.props.column).toBeUndefined();
+    });
+  });
+
+  describe('Render draggableHeaderCell', () => {
+    it('should not render DraggableHeaderCell when draggable is false', () => {
+      const { wrapper } = setup({}, { draggable: false });
+      expect(wrapper.find(DraggableHeaderCell).length).toBe(0);
+    });
+
+    it('should not render DraggableHeaderCell when draggable is true', () => {
+      const { wrapper } = setup({}, { draggable: true });
+      expect(wrapper.find(DraggableHeaderCell).length).toBe(1);
     });
   });
 });
