@@ -18,19 +18,23 @@ const setup = (overrideExpandableOptions = {}) => {
 };
 
 describe('CellExpand', () => {
-  it('should create an instance of CellExpand', () => {
+  it('should show the collapse icon when row is collapsed', () => {
     const { wrapper } = setup({ expanded: false });
+    expect(wrapper.text()).toContain(CellExpand.RIGHT_TRIANGLE);
+    wrapper.unmount();
+  });
 
-    expect(wrapper.find('.rdg-cell-expand').length).toBe(1);
-    expect(wrapper.find('span').text()).toBe(CellExpand.RIGHT_TRIANGLE);
+  it('should show the expand icon when row is expanded', () => {
+    const { wrapper } = setup({ expanded: true });
+    expect(wrapper.text()).toContain(CellExpand.DOWN_TRIANGLE);
+    wrapper.unmount();
   });
 
   it('should call onCellExpand when clicked', () => {
-    const { wrapper, props } = setup({ expanded: false });
-
-    wrapper.find('span').simulate('click');
+    const { wrapper, props } = setup({ expanded: true });
+    wrapper.find('span').simulate('click', { stopPropagation() { } });
 
     expect(props.onCellExpand).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('span').text()).toBe(CellExpand.DOWN_TRIANGLE);
+    wrapper.unmount();
   });
 });

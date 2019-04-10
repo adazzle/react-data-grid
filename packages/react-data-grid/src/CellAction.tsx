@@ -28,7 +28,7 @@ export default function CellAction({ icon, actions, callback, isFirst }: CellAct
       callback();
     }
 
-    if (Array.isArray(actions) && actions.length > 0) {
+    if (actions && actions.length > 0) {
       setIsOpen(!isOpen);
     }
   }
@@ -39,7 +39,7 @@ export default function CellAction({ icon, actions, callback, isFirst }: CellAct
         {icon}
       </div>
       {
-        Array.isArray(actions) && actions.length && isOpen && (
+        isOpen && actions && actions.length && (
           <div className="rdg-cell-action-menu">
             {actions.map((action, index) => <span key={index} onClick={action.callback}>{action.text}</span>)}
           </div>
