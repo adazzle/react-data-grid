@@ -230,7 +230,7 @@ describe('Cell Tests', () => {
 
         expect(renderedCellActions.length).toBe(1);
         expect(renderedCellActions.props()).toEqual({
-          action,
+          ...action,
           isFirst: true
         });
       });
