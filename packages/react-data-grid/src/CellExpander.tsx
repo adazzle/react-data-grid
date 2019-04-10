@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CellExpand } from './common/constants';
+import { CellExpand } from './common/enums';
 
 export interface CellExpanderProps {
   expanded: boolean;

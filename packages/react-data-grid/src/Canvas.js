@@ -10,7 +10,7 @@ import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 import { isFunction } from './common/utils';
-import { EventTypes } from './common/constants';
+import { EventTypes } from './common/enums';
 
 export default class Canvas extends React.PureComponent {
   static displayName = 'Canvas';

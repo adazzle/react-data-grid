@@ -9,7 +9,7 @@ describe('SimpleTextEditor', () => {
       key: 'text',
       name: 'name',
       width: 0,
-      filterable: false,
+      left: 0,
       onCellChange() {}
     };
     function fakeBlurCb() { return true; }

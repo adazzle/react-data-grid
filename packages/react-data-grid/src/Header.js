@@ -7,7 +7,7 @@ import { getColumn } from './ColumnUtils';
 import HeaderRow from './HeaderRow';
 import getScrollbarSize from './getScrollbarSize';
 import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
-import { HeaderRowType } from './common/constants';
+import { HeaderRowType } from './common/enums';
 
 export default class Header extends React.Component {
   static propTypes = {

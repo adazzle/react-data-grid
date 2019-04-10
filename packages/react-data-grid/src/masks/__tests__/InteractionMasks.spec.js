@@ -11,7 +11,7 @@ import EventBus from '../EventBus';
 import EditorContainer from '../../common/editors/EditorContainer';
 import { sel, createColumns } from '../../__tests__/utils';
 import keyCodes from '../../KeyCodes';
-import { CellNavigationMode, EventTypes, UpdateActions } from '../../common/constants';
+import { CellNavigationMode, EventTypes, UpdateActions } from '../../common/enums';
 
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;

@@ -11,7 +11,7 @@ describe('<SortableHeaderCell/>', () => {
         name: 'col1',
         key: 'col1',
         width: 100,
-        filterable: false,
+        left: 0,
         onCellChange() {}
       },
       onSort: jest.fn(),

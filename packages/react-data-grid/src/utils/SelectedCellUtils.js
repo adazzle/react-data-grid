@@ -1,4 +1,4 @@
-import { CellNavigationMode } from '../common/constants';
+import { CellNavigationMode } from '../common/enums';
 import { isFunction } from '../common/utils';
 import * as rowUtils from '../RowUtils';
 import { getColumn, isFrozen, canEdit } from '../ColumnUtils';
