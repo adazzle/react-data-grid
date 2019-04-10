@@ -9,7 +9,7 @@ import DragMask from './DragMask';
 import DragHandle from './DragHandle';
 import EditorContainer from '../common/editors/EditorContainer';
 import EditorPortal from '../common/editors/EditorPortal';
-import { UpdateActions, CellNavigationMode, EventTypes } from '../common/constants';
+import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../common/utils/keyboardUtils';
 import {
   getSelectedDimensions,

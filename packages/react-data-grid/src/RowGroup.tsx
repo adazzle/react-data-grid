@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { last } from './common/utils';
-import { EventTypes } from './common/constants';
+import { EventTypes } from './common/enums';
 import { Column, CellMetaData } from './common/types';
 import EventBus from './masks/EventBus';
 

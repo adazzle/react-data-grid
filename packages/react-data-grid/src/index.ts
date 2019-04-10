@@ -7,7 +7,7 @@ import * as formatters from './formatters';
 import * as editors from './common/editors';
 import * as shapes from './common/prop-shapes';
 import * as _utils from './common/utils';
-import * as _constants from './common/constants';
+import * as _constants from './common/enums';
 import * as _helpers from './helpers';
 export {
   formatters,

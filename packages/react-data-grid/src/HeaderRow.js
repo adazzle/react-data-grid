@@ -1,13 +1,13 @@
 import React from 'react';
 import shallowEqual from 'shallowequal';
 
-import BaseHeaderCell from './HeaderCell';
+import HeaderCell from './HeaderCell';
 import getScrollbarSize from './getScrollbarSize';
 import { getColumn, getSize, isFrozen } from './ColumnUtils';
 import SortableHeaderCell, { DEFINE_SORT } from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
 import HeaderCellType from './HeaderCellType';
-import { HeaderRowType } from './common/constants';
+import { HeaderRowType } from './common/enums';
 
 import PropTypes from 'prop-types';
 
@@ -106,11 +106,11 @@ export default class HeaderRow extends React.Component {
     const { columns, rowType } = this.props;
 
     for (let i = 0, len = getSize(columns); i < len; i++) {
-      const column = { rowType, ...getColumn(columns, i) };
+      const column = getColumn(columns, i);
       const _renderer = column.key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
 
       const cell = (
-        <BaseHeaderCell
+        <HeaderCell
           key={column.key}
           ref={(node) => this.cells[i] = node}
           column={column}

@@ -12,15 +12,20 @@
   user-select: none;
 }
 .react-grid-HeaderCell {
+  display: inline-block;
+  position: absolute;
+  padding: 8px;
+  margin: 0;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: #f9f9f9;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background: #f9f9f9;
-  padding: 8px;
-  font-weight: bold;
-  border-right: 1px solid #dddddd;
-  border-bottom: 1px solid #dddddd;
 }
 .react-grid-HeaderCell__value {
   white-space: nowrap;
@@ -30,18 +35,18 @@
   top: 50%;
   transform: translateY(-50%);
 }
-.react-grid-HeaderCell__resizeHandle:hover {
-  cursor: ew-resize;
-  background: #dddddd;
+
+.react-grid-HeaderCell__resizeHandle {
+  cursor: col-resize;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 6px;
 }
+
 .react-grid-HeaderCell--frozen:last-of-type {
     box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
-}
-.react-grid-HeaderCell--resizing .react-grid-HeaderCell__resizeHandle {
-  background: #dddddd;
-}
-.react-grid-HeaderCell__draggable {
-    cursor: col-resize
 }
 .rdg-can-drop > .react-grid-HeaderCell {
   background: #ececec;
@@ -129,4 +134,3 @@
 .react-grid-HeaderCell .Select-menu-outer .Select-menu .Select-option.is-focused {
     color: #555555;
 }
-
