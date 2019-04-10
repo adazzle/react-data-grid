@@ -6,7 +6,7 @@ export interface ChildRowDeleteButtonProps {
   cellHeight: number;
   siblingIndex: number;
   numberSiblings: number;
-  onDeleteSubRow: () => void;
+  onDeleteSubRow(): void;
   isDeleteSubRowEnabled: boolean;
   allowAddChildRow?: boolean;
 }

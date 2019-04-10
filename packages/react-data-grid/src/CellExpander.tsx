@@ -4,7 +4,7 @@ import { CellExpand } from './common/constants';
 
 export interface CellExpanderProps {
   expandableOptions?: { expanded?: boolean };
-  onCellExpand: () => void;
+  onCellExpand(): void;
 }
 
 interface State {

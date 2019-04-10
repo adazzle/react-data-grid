@@ -4,7 +4,7 @@ import React, { ReactElement } from 'react';
 interface Action {
   icon: string | ReactElement;
   actions: Array<{ text: string; callback: () => void }>;
-  callback?: () => void;
+  callback(): void;
 }
 
 export interface CellActionProps {
