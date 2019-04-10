@@ -1,82 +1,49 @@
 import classNames from 'classnames';
-import React, { ReactElement } from 'react';
+import React, { useState, ReactNode } from 'react';
 
 interface Action {
-  icon: string | ReactElement;
-  actions: Array<{ text: string; callback: () => void }>;
+  text: ReactNode;
   callback(): void;
 }
 
 export interface CellActionProps {
-  action: Action;
+  icon: ReactNode;
+  actions?: Action[];
+  callback?(): void;
   isFirst: boolean;
 }
 
-interface State {
-  isMenuOpen: boolean;
-}
+export default function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
+  const [isOpen, setIsOpen] = useState(false);
 
-export default class CellAction extends React.Component<CellActionProps, State> {
-  readonly state: Readonly<State> = { isMenuOpen: false };
+  const cellActionClasses = classNames('rdg-cell-action', {
+    'rdg-cell-action-last': isFirst
+  });
+  const actionButtonClasses = classNames('rdg-cell-action-button', {
+    'rdg-cell-action-button-toggled': isOpen
+  });
 
-  onToggleMenu = () => {
-    this.setState((prevState) => {
-      return { isMenuOpen: !prevState.isMenuOpen };
-    });
-  }
+  function onActionIconClick() {
+    if (typeof callback === 'function') {
+      callback();
+    }
 
-  onHideMenu = () => {
-    this.setState({ isMenuOpen: false });
-  }
-
-  onGetMenuOptions = () => {
-    return this.props.action.actions.map((action, index) => {
-      return <span key={index} onClick={action.callback}>{action.text}</span>;
-    });
-  }
-
-  isActionMenu = () => {
-    return !this.props.action.callback && (this.props.action.actions && this.props.action.actions.length);
-  }
-
-  onActionButtonBlur = () => {
-    if (this.isActionMenu()) {
-      this.onHideMenu();
+    if (Array.isArray(actions) && actions.length > 0) {
+      setIsOpen(!isOpen);
     }
   }
 
-  onActionIconClick = () => {
-    if (!this.isActionMenu()) {
-      this.props.action.callback!();
-    } else if (this.props.action.actions && this.props.action.actions.length) {
-      this.onToggleMenu();
-    }
-  }
-
-  render() {
-    const isActionMenu = this.isActionMenu();
-
-    const cellActionClasses = classNames('rdg-cell-action', {
-      'rdg-cell-action-last': this.props.isFirst
-    });
-
-    const actionButtonClasses = classNames('rdg-cell-action-button', {
-      'rdg-cell-action-button-toggled': this.state.isMenuOpen
-    });
-
-    return (
-      <div className={cellActionClasses} onMouseLeave={this.onActionButtonBlur}>
-        <div className={actionButtonClasses} onClick={this.onActionIconClick}>
-          {typeof this.props.action.icon === 'string' ? <span className={this.props.action.icon} /> : this.props.action.icon}
-        </div>
-        {
-          isActionMenu
-          && this.state.isMenuOpen && (
-            <div className="rdg-cell-action-menu">
-              {this.onGetMenuOptions()}
-            </div>
-          )}
+  return (
+    <div className={cellActionClasses} onMouseLeave={() => setIsOpen(false)}>
+      <div className={actionButtonClasses} onClick={onActionIconClick}>
+        {icon}
       </div>
-    );
-  }
+      {
+        Array.isArray(actions) && actions.length && isOpen && (
+          <div className="rdg-cell-action-menu">
+            {actions.map((action, index) => <span key={index} onClick={action.callback}>{action.text}</span>)}
+          </div>
+        )}
+    </div>
+  );
 }

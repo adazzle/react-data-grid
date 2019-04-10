@@ -5,13 +5,11 @@ import CellAction, { CellActionProps } from '../CellAction';
 
 const setup = (overriderProps: Partial<CellActionProps> = {}) => {
   const props = {
-    action: {
-      icon: 'glyphicon glyphicon-link',
-      callback: jest.fn()
-    },
+    icon: 'glyphicon glyphicon-link',
+    callback: jest.fn(),
     isFirst: true,
     ...overriderProps
-  } as CellActionProps;
+  };
   const wrapper = shallow(<CellAction {...props} />);
   return {
     props,
@@ -30,7 +28,7 @@ describe('Cell Action Tests', () => {
 
       renderedActionButton.simulate('click');
 
-      expect(props.action.callback).toHaveBeenCalled();
+      expect(props.callback).toHaveBeenCalled();
       expect(renderedActionMenu.length).toBe(0);
     });
   });
@@ -38,19 +36,17 @@ describe('Cell Action Tests', () => {
   describe('when a menu action is passed', () => {
     it('will render a toggle button which will hide/show the menu of actions', () => {
       const { wrapper, props } = setup({
-        action: {
-          icon: 'glyphicon glyphicon-link',
-          actions: [
-            {
-              text: 'Test Action 1',
-              callback: jest.fn()
-            },
-            {
-              text: 'Test Action 1',
-              callback: jest.fn()
-            }
-          ]
-        }
+        icon: 'glyphicon glyphicon-link',
+        actions: [
+          {
+            text: 'Test Action 1',
+            callback: jest.fn()
+          },
+          {
+            text: 'Test Action 1',
+            callback: jest.fn()
+          }
+        ]
       });
       const renderedActionButton = wrapper.find('.rdg-cell-action-button');
       let renderedActionMenu = wrapper.find('.rdg-cell-action-menu');
@@ -64,11 +60,11 @@ describe('Cell Action Tests', () => {
       const renderedActionMenuProps = renderedActionMenu.props();
 
       expect(wrapper.find('.rdg-cell-action-menu').length).toBe(1);
-      expect(React.Children.count(renderedActionMenuProps.children)).toBe(props.action.actions.length);
+      expect(React.Children.count(renderedActionMenuProps.children)).toBe(props.actions.length);
 
-      expect(props.action.actions[0].callback).not.toHaveBeenCalled();
+      expect(props.actions[0].callback).not.toHaveBeenCalled();
       renderedActionMenu.childAt(0).simulate('click');
-      expect(props.action.actions[0].callback).toHaveBeenCalled();
+      expect(props.actions[0].callback).toHaveBeenCalled();
     });
   });
 

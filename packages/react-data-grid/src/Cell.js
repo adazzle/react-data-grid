@@ -187,11 +187,6 @@ export default class Cell extends React.PureComponent {
     }
   };
 
-  canExpand() {
-    const { expandableOptions } = this.props;
-    return expandableOptions && expandableOptions.canExpand;
-  }
-
   createColumEventCallBack(onColumnEvent, info) {
     return (e) => {
       onColumnEvent(e, info);
@@ -251,7 +246,7 @@ export default class Cell extends React.PureComponent {
       const cellActionButtons = cellMetaData.getCellActions(column, rowData);
       if (cellActionButtons && cellActionButtons.length > 0) {
         return cellActionButtons.map((action, index) => {
-          return <CellAction key={index} action={action} isFirst={index === 0} />;
+          return <CellAction key={index} isFirst={index === 0} {...action} />;
         });
       }
     }
@@ -312,7 +307,7 @@ export default class Cell extends React.PureComponent {
   }
 
   render() {
-    const { column, height, children } = this.props;
+    const { column, height, children, expandableOptions } = this.props;
     if (column.hidden) {
       return null;
     }
@@ -322,9 +317,9 @@ export default class Cell extends React.PureComponent {
     const cellActionButtons = this.getCellActions();
     const cellContent = children || this.renderCellContent();
     const events = this.getEvents();
-    const cellExpander = this.canExpand() && (
+    const cellExpander = expandableOptions && expandableOptions.canExpand && (
       <CellExpand
-        expandableOptions={this.props.expandableOptions}
+        expanded={expandableOptions.expanded}
         onCellExpand={this.handleCellExpand}
       />
     );

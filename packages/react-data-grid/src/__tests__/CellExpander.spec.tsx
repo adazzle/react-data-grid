@@ -6,11 +6,9 @@ import { CellExpand } from '../common/constants';
 
 const setup = (overrideExpandableOptions = {}) => {
   const props: CellExpanderProps = {
-    expandableOptions: {
-      expanded: true,
-      ...overrideExpandableOptions
-    },
-    onCellExpand: jest.fn()
+    expanded: true,
+    onCellExpand: jest.fn(),
+    ...overrideExpandableOptions
   };
 
   return {

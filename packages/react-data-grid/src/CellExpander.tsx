@@ -3,39 +3,21 @@ import React from 'react';
 import { CellExpand } from './common/constants';
 
 export interface CellExpanderProps {
-  expandableOptions?: { expanded?: boolean };
+  expanded: boolean;
   onCellExpand(): void;
 }
 
-interface State {
-  expanded?: boolean;
-}
-
-export default class CellExpander extends React.Component<CellExpanderProps, State> {
-  readonly state: Readonly<State> = {
-    expanded: this.props.expandableOptions && this.props.expandableOptions.expanded
-  };
-
-  componentWillReceiveProps(nextProps: CellExpanderProps) {
-    const expanded = nextProps.expandableOptions && nextProps.expandableOptions.expanded;
-    if (this.state.expanded !== expanded) {
-      this.setState({ expanded });
-    }
-  }
-
-  onCellExpand = (e: React.MouseEvent<HTMLSpanElement>) => {
+export default function CellExpander({ expanded, onCellExpand }: CellExpanderProps) {
+  function handleCellExpand(e: React.MouseEvent<HTMLSpanElement>) {
     e.stopPropagation();
-    this.setState({ expanded: !this.state.expanded });
-    this.props.onCellExpand();
-  };
-
-  render() {
-    return (
-      <div className="rdg-cell-expand">
-        <span onClick={this.onCellExpand}>
-          {this.state.expanded ? CellExpand.DOWN_TRIANGLE : CellExpand.RIGHT_TRIANGLE}
-        </span>
-      </div>
-    );
+    onCellExpand();
   }
+
+  return (
+    <div className="rdg-cell-expand">
+      <span onClick={handleCellExpand}>
+        {expanded ? CellExpand.DOWN_TRIANGLE : CellExpand.RIGHT_TRIANGLE}
+      </span>
+    </div>
+  );
 }

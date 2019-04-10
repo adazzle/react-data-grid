@@ -138,15 +138,15 @@ class Example extends React.Component {
           callback() { alert('Deleting'); }
         },
         {
-          icon: 'glyphicon glyphicon-link',
+          icon: <span className="glyphicon glyphicon-link" />,
           actions: [
             {
-              text: 'Campaign Linking',
-              callback() { alert('Navigating to camapign linking'); }
+              text: 'Edit Cell',
+              callback() { alert('Edit Cell'); }
             },
             {
-              text: 'Option 2',
-              callback() { alert('Navigating to camapign linking'); }
+              text: <><span className="fa fa-copy" /> Copy Cell</>,
+              callback() { alert('Copied'); }
             }
           ]
         }
