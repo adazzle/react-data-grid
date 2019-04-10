@@ -4,35 +4,35 @@
     "displayName": "Cell",
     "methods": [
       {
-        "name": "onCellClick",
+        "name": "handleCellClick",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "onCellMouseDown",
+        "name": "handleCellMouseDown",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "onCellMouseEnter",
+        "name": "handleCellMouseEnter",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "onCellContextMenu",
+        "name": "handleCellContextMenu",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "onCellDoubleClick",
+        "name": "handleCellDoubleClick",
         "docblock": null,
         "modifiers": [],
         "params": [
@@ -44,38 +44,21 @@
         "returns": null
       },
       {
-        "name": "onCellExpand",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onCellKeyDown",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "e",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
-        "name": "onDeleteSubRow",
+        "name": "handleCellExpand",
         "docblock": null,
         "modifiers": [],
         "params": [],
         "returns": null
       },
       {
-        "name": "onDragOver",
+        "name": "handleDeleteSubRow",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "handleDragOver",
         "docblock": null,
         "modifiers": [],
         "params": [
@@ -88,13 +71,6 @@
       },
       {
         "name": "getStyle",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "getFormatter",
         "docblock": null,
         "modifiers": [],
         "params": [],
@@ -127,20 +103,6 @@
         "returns": null
       },
       {
-        "name": "getUpdateCellClass",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "isEditorEnabled",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
         "name": "checkScroll",
         "docblock": null,
         "modifiers": [],
@@ -161,13 +123,6 @@
       },
       {
         "name": "removeScroll",
-        "docblock": null,
-        "modifiers": [],
-        "params": [],
-        "returns": null
-      },
-      {
-        "name": "canExpand",
         "docblock": null,
         "modifiers": [],
         "params": [],
@@ -240,27 +195,10 @@
         "returns": null
       },
       {
-        "name": "setCellRef",
-        "docblock": null,
-        "modifiers": [],
-        "params": [
-          {
-            "name": "node",
-            "type": null
-          }
-        ],
-        "returns": null
-      },
-      {
         "name": "renderCellContent",
         "docblock": null,
         "modifiers": [],
-        "params": [
-          {
-            "name": "props",
-            "type": null
-          }
-        ],
+        "params": [],
         "returns": null
       }
     ],
@@ -287,13 +225,6 @@
         "description": ""
       },
       "wasPreviouslySelected": {
-        "type": {
-          "name": "bool"
-        },
-        "required": false,
-        "description": ""
-      },
-      "isEditorEnabled": {
         "type": {
           "name": "bool"
         },
