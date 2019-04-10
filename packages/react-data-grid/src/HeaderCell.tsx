@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { isElement } from 'react-is';
 import Draggable from './Draggable';
@@ -24,8 +25,6 @@ interface Props {
 }
 
 export default class HeaderCell extends React.Component<Props> {
-  headerCell = React.createRef<HTMLDivElement>();
-
   onDrag = (x: number) => {
     const { onResize } = this.props;
     if (onResize) {
@@ -42,7 +41,8 @@ export default class HeaderCell extends React.Component<Props> {
   };
 
   getWidthFromMouseEvent(x: number): number {
-    const left = this.headerCell.current!.getBoundingClientRect().left;
+    const node = ReactDOM.findDOMNode(this) as Element;
+    const left = node.getBoundingClientRect().left;
     return x - left;
   }
 
@@ -60,14 +60,14 @@ export default class HeaderCell extends React.Component<Props> {
   }
 
   setScrollLeft(scrollLeft: number) {
-    const node = this.headerCell.current;
+    const node = ReactDOM.findDOMNode(this) as HTMLElement | null;
     if (node) {
       node.style.transform = `translate(${scrollLeft}px, 0)`;
     }
   }
 
   removeScroll() {
-    const node = this.headerCell.current;
+    const node = ReactDOM.findDOMNode(this) as HTMLElement | null;
     if (node) {
       node.style.transform = null;
     }
@@ -87,7 +87,7 @@ export default class HeaderCell extends React.Component<Props> {
     };
 
     const cell = (
-      <div ref={this.headerCell} className={className} style={style}>
+      <div className={className} style={style}>
         {this.getCell()}
         {column.resizable && (
           <Draggable
