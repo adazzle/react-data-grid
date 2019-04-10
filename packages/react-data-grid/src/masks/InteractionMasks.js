@@ -15,6 +15,7 @@ import {
   getSelectedDimensions,
   getSelectedCellValue,
   getSelectedRow,
+  getSelectedRangeDimensions,
   getSelectedColumn,
   getNextSelectedCellPosition,
   canExitGrid,
@@ -673,9 +674,7 @@ export default class InteractionMasks extends React.Component {
     return (
       <>
         <SelectionRangeMask
-          selectedRange={this.state.selectedRange}
-          columns={columns}
-          rowHeight={rowHeight}
+          {...getSelectedRangeDimensions({ selectedRange: this.state.selectedRange, columns, rowHeight })}
         />
         <SelectionMask
           {...this.getSelectedDimensions(this.state.selectedRange.startCell, true)}
