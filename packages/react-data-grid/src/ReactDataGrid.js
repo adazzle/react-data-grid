@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isElement, isValidElementType } from 'react-is';
 import { deprecate } from 'react-is-deprecated';
 
 import BaseGrid from './Grid';
+import ToolbarContainer from './ToolbarContainer';
 import CheckboxEditor from './common/editors/CheckboxEditor';
 import * as RowUtils from './RowUtils';
 import { getColumn, getSize } from './ColumnUtils';
@@ -757,17 +757,6 @@ export default class ReactDataGrid extends React.Component {
     this.base = base;
   };
 
-  renderToolbar = () => {
-    const Toolbar = this.props.toolbar;
-    const toolBarProps = { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount };
-    if (isElement(Toolbar)) {
-      return React.cloneElement(Toolbar, toolBarProps);
-    }
-    if (isValidElementType(Toolbar)) {
-      return <Toolbar {...toolBarProps} />;
-    }
-  };
-
   render() {
     const cellMetaData = {
       rowKey: this.props.rowKey,
@@ -787,7 +776,6 @@ export default class ReactDataGrid extends React.Component {
       cellMetaData.onCellMouseEnter = this.onCellMouseEnter;
     }
 
-    const toolbar = this.renderToolbar();
     let containerWidth = this.props.minWidth || this.gridWidth();
     let gridWidth = containerWidth - this.state.scrollOffset;
 
@@ -806,7 +794,12 @@ export default class ReactDataGrid extends React.Component {
         style={{ width: containerWidth }}
         ref={this.setGridRef}
       >
-        {toolbar}
+        <ToolbarContainer
+          toolbar={this.props.toolbar}
+          columns={this.props.columns}
+          rowsCount={this.props.rowsCount}
+          onToggleFilter={this.onToggleFilter}
+        />
         <div className="react-grid-Main">
           <BaseGrid
             ref={this.setBaseGridRef}
