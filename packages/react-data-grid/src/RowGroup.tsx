@@ -58,12 +58,12 @@ const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref)
 
 export default RowGroup;
 
-interface DefaultBase extends Props {
+interface DefaultBaseProps extends Props {
   onRowExpandClick(): void;
   onRowExpandToggle(expand?: boolean): void;
 }
 
-const DefaultBase = forwardRef<HTMLDivElement, DefaultBase>(function DefaultBase(props, ref) {
+const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function DefaultBase(props, ref) {
   function onKeyDown({ key }: React.KeyboardEvent) {
     const { onRowExpandToggle } = props;
     if (key === 'ArrowLeft') {

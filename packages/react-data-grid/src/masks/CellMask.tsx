@@ -1,14 +1,7 @@
 import React, { forwardRef } from 'react';
+import { Dimension } from '../common/types';
 
-export interface CellMaskDimensions {
-  width: number;
-  height: number;
-  top: number;
-  left: number;
-  zIndex: number;
-}
-
-function setMaskStyle({ left, top, width, height, zIndex }: CellMaskDimensions): React.CSSProperties {
+function setMaskStyle({ left, top, width, height, zIndex }: Dimension): React.CSSProperties {
   return {
     height,
     width,
@@ -20,7 +13,7 @@ function setMaskStyle({ left, top, width, height, zIndex }: CellMaskDimensions):
   };
 }
 
-export type CellMaskProps = React.HTMLAttributes<HTMLDivElement> & CellMaskDimensions;
+export type CellMaskProps = React.HTMLAttributes<HTMLDivElement> & Dimension;
 
 const CellMask = forwardRef<HTMLDivElement, CellMaskProps>(function CellMask({ width, height, top, left, zIndex, ...props }, ref) {
   return (

@@ -422,8 +422,9 @@ export default class InteractionMasks extends React.Component {
     return getNextSelectedCellPosition({
       columns,
       rowsCount,
-      cellNavigationMode
-    }, nextPosition);
+      cellNavigationMode,
+      nextPosition
+    });
   }
 
   checkIsAtGridBoundary(keyNavAction, next) {

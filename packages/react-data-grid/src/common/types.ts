@@ -29,3 +29,23 @@ export interface CellMetaData {
   onCellExpand(): void;
   getCellActions?(): void;
 }
+
+export interface Position {
+  idx: number;
+  rowIdx: number;
+}
+
+export interface Range {
+  topLeft: Position;
+  bottomRight: Position;
+}
+
+export interface Dimension {
+  width: number;
+  height: number;
+  top: number;
+  left: number;
+  zIndex: number;
+}
+
+export type RowGetter = (rowIdx: number) => unknown;
