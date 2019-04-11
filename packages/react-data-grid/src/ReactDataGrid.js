@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { deprecate } from 'react-is-deprecated';
 
-import BaseGrid from './Grid';
+import Grid from './Grid';
 import ToolbarContainer from './ToolbarContainer';
 import CheckboxEditor from './common/editors/CheckboxEditor';
 import * as RowUtils from './RowUtils';
@@ -800,50 +800,48 @@ export default class ReactDataGrid extends React.Component {
           rowsCount={this.props.rowsCount}
           onToggleFilter={this.onToggleFilter}
         />
-        <div className="react-grid-Main">
-          <BaseGrid
-            ref={this.setBaseGridRef}
-            {...this.props}
-            rowKey={this.props.rowKey}
-            headerRows={this.getHeaderRows()}
-            columnMetrics={this.state.columnMetrics}
-            rowGetter={this.props.rowGetter}
-            rowsCount={this.props.rowsCount}
-            rowHeight={this.props.rowHeight}
-            cellMetaData={cellMetaData}
-            selectedRows={this.getSelectedRows()}
-            rowSelection={this.getRowSelectionProps()}
-            expandedRows={this.state.expandedRows}
-            rowOffsetHeight={this.getRowOffsetHeight()}
-            sortColumn={this.state.sortColumn}
-            sortDirection={this.state.sortDirection}
-            onSort={this.handleSort}
-            minHeight={this.props.minHeight}
-            totalWidth={gridWidth}
-            onViewportKeydown={this.onKeyDown}
-            onViewportKeyup={this.onKeyUp}
-            onColumnResize={this.onColumnResize}
-            scrollToRowIndex={this.props.scrollToRowIndex}
-            contextMenu={this.props.contextMenu}
-            overScan={this.props.overScan}
-            enableCellSelect={this.props.enableCellSelect}
-            enableCellAutoFocus={this.props.enableCellAutoFocus}
-            cellNavigationMode={this.props.cellNavigationMode}
-            eventBus={this.eventBus}
-            onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-            onCellCopyPaste={this.props.onCellCopyPaste}
-            onGridRowsUpdated={this.onGridRowsUpdated}
-            onDragHandleDoubleClick={this.onDragHandleDoubleClick}
-            onCellSelected={this.props.onCellSelected}
-            onCellDeSelected={this.props.onCellDeSelected}
-            onCellRangeSelectionStarted={this.props.cellRangeSelection && this.props.cellRangeSelection.onStart}
-            onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
-            onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
-            onCommit={this.onCommit}
-            onScroll={this.onScroll}
-            editorPortalTarget={this.props.editorPortalTarget}
-          />
-        </div>
+        <Grid
+          ref={this.setBaseGridRef}
+          {...this.props}
+          rowKey={this.props.rowKey}
+          headerRows={this.getHeaderRows()}
+          columnMetrics={this.state.columnMetrics}
+          rowGetter={this.props.rowGetter}
+          rowsCount={this.props.rowsCount}
+          rowHeight={this.props.rowHeight}
+          cellMetaData={cellMetaData}
+          selectedRows={this.getSelectedRows()}
+          rowSelection={this.getRowSelectionProps()}
+          expandedRows={this.state.expandedRows}
+          rowOffsetHeight={this.getRowOffsetHeight()}
+          sortColumn={this.state.sortColumn}
+          sortDirection={this.state.sortDirection}
+          onSort={this.handleSort}
+          minHeight={this.props.minHeight}
+          totalWidth={gridWidth}
+          onViewportKeydown={this.onKeyDown}
+          onViewportKeyup={this.onKeyUp}
+          onColumnResize={this.onColumnResize}
+          scrollToRowIndex={this.props.scrollToRowIndex}
+          contextMenu={this.props.contextMenu}
+          overScan={this.props.overScan}
+          enableCellSelect={this.props.enableCellSelect}
+          enableCellAutoFocus={this.props.enableCellAutoFocus}
+          cellNavigationMode={this.props.cellNavigationMode}
+          eventBus={this.eventBus}
+          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
+          onCellCopyPaste={this.props.onCellCopyPaste}
+          onGridRowsUpdated={this.onGridRowsUpdated}
+          onDragHandleDoubleClick={this.onDragHandleDoubleClick}
+          onCellSelected={this.props.onCellSelected}
+          onCellDeSelected={this.props.onCellDeSelected}
+          onCellRangeSelectionStarted={this.props.cellRangeSelection && this.props.cellRangeSelection.onStart}
+          onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
+          onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
+          onCommit={this.onCommit}
+          onScroll={this.onScroll}
+          editorPortalTarget={this.props.editorPortalTarget}
+        />
       </div>
     );
   }
