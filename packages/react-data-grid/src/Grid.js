@@ -132,14 +132,6 @@ export default class Grid extends React.Component {
     this.viewport = viewport;
   };
 
-  setViewportContainerRef = (viewportContainer) => {
-    this.viewPortContainer = viewportContainer;
-  };
-
-  setEmptyViewRef = (emptyView) => {
-    this.emptyView = emptyView;
-  };
-
   render() {
     const { headerRows } = this.props;
     const EmptyRowsView = this.props.emptyRowsView;
@@ -163,7 +155,6 @@ export default class Grid extends React.Component {
         />
         {this.props.rowsCount >= 1 || (this.props.rowsCount === 0 && !this.props.emptyRowsView) ? (
           <div
-            ref={this.setViewportContainerRef}
             onKeyDown={this.props.onViewportKeydown}
             onKeyUp={this.props.onViewportKeyup}
           >
@@ -209,7 +200,7 @@ export default class Grid extends React.Component {
             />
           </div>
         ) : (
-          <div ref={this.setEmptyViewRef} className="react-grid-Empty">
+          <div className="react-grid-Empty">
             <EmptyRowsView />
           </div>
         )}

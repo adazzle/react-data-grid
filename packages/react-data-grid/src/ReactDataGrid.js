@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isElement, isValidElementType } from 'react-is';
 import { deprecate } from 'react-is-deprecated';
 
-import BaseGrid from './Grid';
+import Grid from './Grid';
+import ToolbarContainer from './ToolbarContainer';
 import CheckboxEditor from './common/editors/CheckboxEditor';
 import * as RowUtils from './RowUtils';
 import { getColumn, getSize } from './ColumnUtils';
@@ -757,17 +757,6 @@ export default class ReactDataGrid extends React.Component {
     this.base = base;
   };
 
-  renderToolbar = () => {
-    const Toolbar = this.props.toolbar;
-    const toolBarProps = { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount };
-    if (isElement(Toolbar)) {
-      return React.cloneElement(Toolbar, toolBarProps);
-    }
-    if (isValidElementType(Toolbar)) {
-      return <Toolbar {...toolBarProps} />;
-    }
-  };
-
   render() {
     const cellMetaData = {
       rowKey: this.props.rowKey,
@@ -787,7 +776,6 @@ export default class ReactDataGrid extends React.Component {
       cellMetaData.onCellMouseEnter = this.onCellMouseEnter;
     }
 
-    const toolbar = this.renderToolbar();
     let containerWidth = this.props.minWidth || this.gridWidth();
     let gridWidth = containerWidth - this.state.scrollOffset;
 
@@ -806,51 +794,54 @@ export default class ReactDataGrid extends React.Component {
         style={{ width: containerWidth }}
         ref={this.setGridRef}
       >
-        {toolbar}
-        <div className="react-grid-Main">
-          <BaseGrid
-            ref={this.setBaseGridRef}
-            {...this.props}
-            rowKey={this.props.rowKey}
-            headerRows={this.getHeaderRows()}
-            columnMetrics={this.state.columnMetrics}
-            rowGetter={this.props.rowGetter}
-            rowsCount={this.props.rowsCount}
-            rowHeight={this.props.rowHeight}
-            cellMetaData={cellMetaData}
-            selectedRows={this.getSelectedRows()}
-            rowSelection={this.getRowSelectionProps()}
-            expandedRows={this.state.expandedRows}
-            rowOffsetHeight={this.getRowOffsetHeight()}
-            sortColumn={this.state.sortColumn}
-            sortDirection={this.state.sortDirection}
-            onSort={this.handleSort}
-            minHeight={this.props.minHeight}
-            totalWidth={gridWidth}
-            onViewportKeydown={this.onKeyDown}
-            onViewportKeyup={this.onKeyUp}
-            onColumnResize={this.onColumnResize}
-            scrollToRowIndex={this.props.scrollToRowIndex}
-            contextMenu={this.props.contextMenu}
-            overScan={this.props.overScan}
-            enableCellSelect={this.props.enableCellSelect}
-            enableCellAutoFocus={this.props.enableCellAutoFocus}
-            cellNavigationMode={this.props.cellNavigationMode}
-            eventBus={this.eventBus}
-            onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-            onCellCopyPaste={this.props.onCellCopyPaste}
-            onGridRowsUpdated={this.onGridRowsUpdated}
-            onDragHandleDoubleClick={this.onDragHandleDoubleClick}
-            onCellSelected={this.props.onCellSelected}
-            onCellDeSelected={this.props.onCellDeSelected}
-            onCellRangeSelectionStarted={this.props.cellRangeSelection && this.props.cellRangeSelection.onStart}
-            onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
-            onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
-            onCommit={this.onCommit}
-            onScroll={this.onScroll}
-            editorPortalTarget={this.props.editorPortalTarget}
-          />
-        </div>
+        <ToolbarContainer
+          toolbar={this.props.toolbar}
+          columns={this.props.columns}
+          rowsCount={this.props.rowsCount}
+          onToggleFilter={this.onToggleFilter}
+        />
+        <Grid
+          ref={this.setBaseGridRef}
+          {...this.props}
+          rowKey={this.props.rowKey}
+          headerRows={this.getHeaderRows()}
+          columnMetrics={this.state.columnMetrics}
+          rowGetter={this.props.rowGetter}
+          rowsCount={this.props.rowsCount}
+          rowHeight={this.props.rowHeight}
+          cellMetaData={cellMetaData}
+          selectedRows={this.getSelectedRows()}
+          rowSelection={this.getRowSelectionProps()}
+          expandedRows={this.state.expandedRows}
+          rowOffsetHeight={this.getRowOffsetHeight()}
+          sortColumn={this.state.sortColumn}
+          sortDirection={this.state.sortDirection}
+          onSort={this.handleSort}
+          minHeight={this.props.minHeight}
+          totalWidth={gridWidth}
+          onViewportKeydown={this.onKeyDown}
+          onViewportKeyup={this.onKeyUp}
+          onColumnResize={this.onColumnResize}
+          scrollToRowIndex={this.props.scrollToRowIndex}
+          contextMenu={this.props.contextMenu}
+          overScan={this.props.overScan}
+          enableCellSelect={this.props.enableCellSelect}
+          enableCellAutoFocus={this.props.enableCellAutoFocus}
+          cellNavigationMode={this.props.cellNavigationMode}
+          eventBus={this.eventBus}
+          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
+          onCellCopyPaste={this.props.onCellCopyPaste}
+          onGridRowsUpdated={this.onGridRowsUpdated}
+          onDragHandleDoubleClick={this.onDragHandleDoubleClick}
+          onCellSelected={this.props.onCellSelected}
+          onCellDeSelected={this.props.onCellDeSelected}
+          onCellRangeSelectionStarted={this.props.cellRangeSelection && this.props.cellRangeSelection.onStart}
+          onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
+          onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
+          onCommit={this.onCommit}
+          onScroll={this.onScroll}
+          editorPortalTarget={this.props.editorPortalTarget}
+        />
       </div>
     );
   }

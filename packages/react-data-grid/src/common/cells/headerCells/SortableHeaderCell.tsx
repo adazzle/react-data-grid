@@ -1,7 +1,6 @@
 import React from 'react';
 import { Column } from '../../types';
 
-// TODO: remove string values, and use the enum keys exclusively
 export enum DEFINE_SORT {
   ASC = 'ASC',
   DESC = 'DESC',
