@@ -2,11 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CellMask from './CellMask';
-import { isFrozen, getColumn } from '../ColumnUtils';
-import zIndexes from 'common/constants/zIndexes';
 
 function SelectionMask({ selectedPosition, innerRef, getSelectedDimensions, children }) {
-  const dimensions = getSelectedDimensions(selectedPosition);
+  const dimensions = getSelectedDimensions(selectedPosition, true);
   return (
     <CellMask
       {...dimensions}

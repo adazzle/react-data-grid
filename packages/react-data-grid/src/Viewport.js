@@ -67,7 +67,8 @@ class Viewport extends React.Component {
     onCellRangeSelectionUpdated: PropTypes.func,
     onCellRangeSelectionCompleted: PropTypes.func,
     onCommit: PropTypes.func.isRequired,
-    RowsContainer: PropTypes.node
+    RowsContainer: PropTypes.node,
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   static defaultProps = {
@@ -309,6 +310,7 @@ class Viewport extends React.Component {
           RowsContainer={this.props.RowsContainer}
           prevScrollLeft={this.state.prevScrollLeft}
           prevScrollTop={this.state.prevScrollTop}
+          editorPortalTarget={this.props.editorPortalTarget}
         />
       </div>
     );

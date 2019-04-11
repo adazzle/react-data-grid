@@ -7,6 +7,7 @@ import CopyMask from './CopyMask';
 import DragMask from './DragMask';
 import DragHandle from './DragHandle';
 import EditorContainer from 'common/editors/EditorContainer';
+import EditorPortal from 'common/editors/EditorPortal';
 import { UpdateActions } from 'common/constants';
 import { isKeyPrintable, isCtrlKeyHeldDown } from 'common/utils/keyboardUtils';
 import {
@@ -72,7 +73,8 @@ class InteractionMasks extends React.Component {
     rows: PropTypes.array.isRequired,
     getRowHeight: PropTypes.func.isRequired,
     getRowTop: PropTypes.func.isRequired,
-    getRowColumns: PropTypes.func.isRequired
+    getRowColumns: PropTypes.func.isRequired,
+    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
   };
 
   state = {
@@ -114,7 +116,6 @@ class InteractionMasks extends React.Component {
 
     if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
       this.focus();
-      this.saveEditorPosition();
     }
   }
 
@@ -139,11 +140,24 @@ class InteractionMasks extends React.Component {
     this.unsubscribeDragEnter();
   }
 
-  saveEditorPosition = () => {
+  getEditorPosition = () => {
     if (this.selectionMask) {
-      const { left, top } = this.selectionMask.getBoundingClientRect();
-      const { scrollLeft, scrollTop } = document.documentElement;
-      this.editorPosition = { left: left + scrollLeft, top: top + scrollTop };
+      const { editorPortalTarget } = this.props;
+      const { left: selectionMaskLeft, top: selectionMaskTop } = this.selectionMask.getBoundingClientRect();
+      if (editorPortalTarget === document.body) {
+        const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
+        return {
+          left: selectionMaskLeft + scrollLeft,
+          top: selectionMaskTop + scrollTop
+        };
+      }
+
+      const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
+      const { scrollLeft, scrollTop } = editorPortalTarget;
+      return {
+        left: selectionMaskLeft - portalTargetLeft + scrollLeft,
+        top: selectionMaskTop - portalTargetTop + scrollTop
+      };
     }
   };
 
@@ -201,7 +215,8 @@ class InteractionMasks extends React.Component {
     if (this.isSelectedCellEditable() && !this.state.isEditorEnabled) {
       this.setState({
         isEditorEnabled: true,
-        firstEditorKeyPress: key
+        firstEditorKeyPress: key,
+        editorPosition: this.getEditorPosition()
       });
     }
   };
@@ -209,7 +224,8 @@ class InteractionMasks extends React.Component {
   closeEditor = () => {
     this.setState({
       isEditorEnabled: false,
-      firstEditorKeyPress: null
+      firstEditorKeyPress: null,
+      editorPosition: null
     });
   };
 
@@ -454,6 +470,10 @@ class InteractionMasks extends React.Component {
 
   selectCell = (cell, openEditor) => {
     const callback = openEditor ? this.openEditor : () => null;
+    // Close the editor to commit any pending changes
+    if (this.state.isEditorEnabled) {
+      this.closeEditor();
+    }
     this.setState(prevState => {
       const next = { ...prevState.selectedPosition, ...cell };
       if (this.isCellWithinBounds(next)) {
@@ -626,9 +646,9 @@ class InteractionMasks extends React.Component {
     this.copyMask = node;
   };
 
-  getSelectedDimensions = (selectedPosition) => {
-    const { scrollLeft, getRowHeight, getRowTop, getRowColumns } = this.props;
-    const columns = getRowColumns(selectedPosition.idx);
+  getSelectedDimensions = (selectedPosition, useGridColumns) => {
+    const { scrollLeft, getRowHeight, getRowTop, getRowColumns, columns: gridColumns } = this.props;
+    const columns = useGridColumns ? gridColumns : getRowColumns(selectedPosition.rowIdx);
     const top = getRowTop(selectedPosition.rowIdx);
     const rowHeight = getRowHeight(selectedPosition.rowIdx);
     return { ...getSelectedDimensions({ selectedPosition, columns, scrollLeft, rowHeight }), top };
@@ -701,21 +721,24 @@ class InteractionMasks extends React.Component {
           this.renderCellRangeSelectView()
         }
         {isEditorEnabled && (
-          <EditorContainer
-            firstEditorKeyPress={firstEditorKeyPress}
-            onCommit={this.onCommit}
-            onCommitCancel={this.onCommitCancel}
-            rowIdx={selectedPosition.rowIdx}
-            value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
-            rowData={rowData}
-            column={getSelectedColumn({ selectedPosition, columns })}
-            scrollLeft={scrollLeft}
-            scrollTop={scrollTop}
-            {...{
-              ...this.getSelectedDimensions(selectedPosition),
-              ...this.editorPosition
-            }}
-          />
+          <EditorPortal target={this.props.editorPortalTarget}>
+            <EditorContainer
+              firstEditorKeyPress={firstEditorKeyPress}
+              onCommit={this.onCommit}
+              onCommitCancel={this.onCommitCancel}
+              rowIdx={selectedPosition.rowIdx}
+              value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+              rowData={rowData}
+              column={getSelectedColumn({ selectedPosition, columns })}
+              scrollLeft={scrollLeft}
+              scrollTop={scrollTop}
+              editorPortalTarget={this.props.editorPortalTarget}
+              {...{
+                ...this.getSelectedDimensions(selectedPosition),
+                ...this.state.editorPosition
+              }}
+            />
+          </EditorPortal>
         )}
         {isValidElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
       </div>

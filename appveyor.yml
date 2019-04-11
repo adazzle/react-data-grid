@@ -1,14 +1,10 @@
-version: 1.0.{build}
-# Fix line endings in Windows. (runs before repo cloning)
-init:
-  - git config --global core.autocrlf input
+shallow_clone: true
+image: Visual Studio 2017
+branches:
+  only:
+    - master
+    - next
 environment:
-  COVERALLS_REPO_TOKEN: 9RRu36GLfbnk5Ri6Y6FpoZU10CW6dlIfy
-  COVERALLS_SERVICE_NAME: appveyor
-  COVERALLS_GIT_COMMIT: $(APPVEYOR_REPO_COMMIT)
-  COVERALLS_GIT_BRANCH : $(APPVEYOR_REPO_BRANCH)
-  COVERALLS_SERVICE_JOB_ID  : $(APPVEYOR_BUILD_ID)
-  COVERALLS_SERVICE_PULL_REQUEST : $(APPVEYOR_PULL_REQUEST_NUMBER)
   access_token:
     secure: dHfUgllfTEAqpcoz3iQj8TO0DGh8n90Coqf0+IXT0bIRNSIxGTDu991X+FStY613
   npmrc_token:
@@ -37,7 +33,6 @@ test_script:
   # run tests
   - npm test
   - ps: ./test/uploadResults.ps1
-  - gulp coveralls
 
 
 # Don't run MS build step

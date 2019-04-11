@@ -1,11 +1,32 @@
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 
-const EditorContainer = require('../EditorContainer.js');
+const EditorContainer = require('../EditorContainer');
 const SimpleTextEditor = require('../SimpleTextEditor');
 const EditorBase = require('../EditorBase');
-import EditorPortal from '../EditorPortal';
+
+function DefaultEditor() {
+  return (
+    <div>
+      <input type="text" id="input1" />
+      <div>
+        <input type="text" id="input2" />
+        <button
+          type="button"
+          id="button1"
+          onClick={e => e.stopPropagation()}
+        />
+        <button
+          type="button"
+          id="button2"
+          onClickCapture={e => e.stopPropagation()}
+        />
+      </div>
+    </div>
+  );
+}
 
 const fakeColumn = {
   name: 'col1',
@@ -69,22 +90,14 @@ describe('Editor Container Tests', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends EditorBase {
-      render() {
-        return (
-          <div>
-            <input type="text" id="testpassed" />
-            <div>
-              <input type="text" id="input2" />
-              <button id="test-button" />
-            </div>
-          </div>
-        );
-      }
-    }
-
     let props;
     let wrapper;
+
+    class TestEditor extends EditorBase {
+      render() {
+        return <DefaultEditor />;
+      }
+    }
 
     beforeEach(() => {
       ({ wrapper, props } = setup({
@@ -97,23 +110,21 @@ describe('Editor Container Tests', () => {
       const editor = wrapper.find(TestEditor);
 
       expect(editor.length).toBe(1);
-      expect(editor.props().value).toBeDefined();
+      expect(editor.props().value).toBe('SupernaviX');
       expect(editor.props().onCommit).toBeDefined();
       expect(editor.props().onCommitCancel).toBeDefined();
     });
 
-    it('should render component custom editors', () => {
-      wrapper.setProps({ column: { ...fakeColumn, editor: TestEditor } });
-      const editor = wrapper.find(TestEditor);
+    it('should not commit if any element inside the editor is clicked', () => {
+      wrapper.find('#input1').simulate('click');
+      wrapper.find('#input2').simulate('click');
 
-      expect(editor.length).toBe(1);
-      expect(editor.props().value).toBeDefined();
-      expect(editor.props().onCommit).toBeDefined();
+      expect(props.onCommit.calls.count()).toEqual(0);
     });
 
-    it('should not commit if any element inside the editor is clicked', () => {
-      const editor = wrapper.find(TestEditor);
-      editor.simulate('click');
+    it('should not commit if any element inside the editor is clicked that stops the event propagation', () => {
+      wrapper.find('#button1').simulate('click');
+      wrapper.find('#button2').simulate('click');
 
       expect(props.onCommit.calls.count()).toEqual(0);
     });
@@ -123,7 +134,6 @@ describe('Editor Container Tests', () => {
 
       editor.props().onCommitCancel();
 
-      expect(props.onCommitCancel).toHaveBeenCalled();
       expect(props.onCommitCancel.calls.count()).toEqual(1);
       expect(props.onCommit).not.toHaveBeenCalled();
     });
@@ -138,32 +148,21 @@ describe('Editor Container Tests', () => {
     });
   });
 
-  describe('Portal editors', () => {
+  describe('Custom Portal editors', () => {
     let container;
     let wrapper;
     let props;
 
-    class TestEditor extends EditorBase {
+    class PortalTestEditor extends EditorBase {
       render() {
-        return (
-          <EditorPortal>
-            <div>
-              <input type="text" id="testpassed" />
-              <div>
-                <input type="text" id="input2" />
-                <button id="test-button" />
-              </div>
-            </div>
-          </EditorPortal>
-        );
+        return ReactDOM.createPortal(<DefaultEditor />, document.body);
       }
     }
 
     beforeEach(() => {
       container = document.createElement('div');
-      container.className = 'container';
       document.body.appendChild(container);
-      ({ wrapper, props } = setup({ column: { ...fakeColumn, editor: <TestEditor /> } }, { attachTo: container }));
+      ({ wrapper, props } = setup({ column: { ...fakeColumn, editor: <PortalTestEditor /> } }, { attachTo: container }));
     });
 
     afterEach(() => {
@@ -171,15 +170,24 @@ describe('Editor Container Tests', () => {
     });
 
     it('should not commit if any element inside the editor is clicked', () => {
-      const editor = wrapper.find(TestEditor);
-      editor.simulate('click');
+      const editor = wrapper.find(PortalTestEditor);
+      editor.find('#input1').simulate('click');
+      editor.find('#input2').simulate('click');
+
+      expect(props.onCommit.calls.count()).toEqual(0);
+    });
+
+    it('should not commit if any element inside the editor is clicked that stops the event propagation', () => {
+      const editor = wrapper.find(PortalTestEditor);
+      wrapper.find('#button1').simulate('click');
+      wrapper.find('#button2').simulate('click');
+
 
       expect(props.onCommit.calls.count()).toEqual(0);
     });
 
     it('should commit if any element outside the editor is clicked', () => {
-      document.querySelector('.container').click();
-
+      document.body.click();
       expect(props.onCommit).toHaveBeenCalled();
     });
   });
@@ -191,7 +199,6 @@ describe('Editor Container Tests', () => {
 
     beforeEach(() => {
       container = document.createElement('div');
-      container.className = 'container';
       document.body.appendChild(container);
       ({ wrapper, props } = setup({}, { attachTo: container }));
     });
@@ -204,7 +211,13 @@ describe('Editor Container Tests', () => {
       const editor = wrapper.find(SimpleTextEditor);
       editor.simulate('keydown', { key: 'Enter' });
 
-      expect(props.onCommit).toHaveBeenCalled();
+      expect(props.onCommit.calls.count()).toEqual(1);
+    });
+
+    it('hitting tab should call commit only once', () => {
+      const editor = wrapper.find(SimpleTextEditor);
+      editor.simulate('keydown', { key: 'Tab' });
+
       expect(props.onCommit.calls.count()).toEqual(1);
     });
 
@@ -212,20 +225,19 @@ describe('Editor Container Tests', () => {
       const editor = wrapper.find(SimpleTextEditor);
       editor.simulate('keydown', { key: 'Escape' });
 
-      expect(props.onCommitCancel).toHaveBeenCalled();
       expect(props.onCommitCancel.calls.count()).toEqual(1);
     });
 
     it('hitting escape should not call commit changes on componentWillUnmount', () => {
       const editor = wrapper.find(SimpleTextEditor);
       editor.simulate('keydown', { key: 'Escape' });
+      wrapper.unmount();
 
       expect(props.onCommit).not.toHaveBeenCalled();
     });
 
     it('should commit if any element outside the editor is clicked', () => {
-      document.querySelector('.container').click();
-
+      document.body.click();
       expect(props.onCommit).toHaveBeenCalled();
     });
   });

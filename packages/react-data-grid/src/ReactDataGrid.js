@@ -179,9 +179,9 @@ class ReactDataGrid extends React.Component {
         }),
         PropTypes.shape({
           keys: PropTypes.shape({
-             /** The selected unique ids of each row */
+            /** The selected unique ids of each row */
             values: PropTypes.array.isRequired,
-             /** The name of the unoque id property of each row */
+            /** The name of the unique id property of each row */
             rowKey: PropTypes.string.isRequired
           }).isRequired
         })
@@ -216,7 +216,9 @@ class ReactDataGrid extends React.Component {
     /** Called when a column is resized */
     onColumnResize: PropTypes.func,
     /** Called when the grid is scrolled */
-    onScroll: PropTypes.func
+    onScroll: PropTypes.func,
+    /** The node where the editor portal should mount. */
+    editorPortalTarget: PropTypes.instanceOf(Element)
   };
 
   static defaultProps = {
@@ -236,9 +238,10 @@ class ReactDataGrid extends React.Component {
       rowsEnd: 2
     },
     enableCellAutoFocus: true,
-    onBeforeEdit: () => {},
+    onBeforeEdit: () => { },
     minColumnWidth: 80,
-    columnEquality: ColumnMetrics.sameColumn
+    columnEquality: ColumnMetrics.sameColumn,
+    editorPortalTarget: document.body
   };
 
   constructor(props, context) {
@@ -272,7 +275,7 @@ class ReactDataGrid extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.columns) {
       if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality) ||
-          nextProps.minWidth !== this.props.minWidth) {
+        nextProps.minWidth !== this.props.minWidth) {
         const columnMetrics = this.createColumnMetrics(nextProps);
         this.setState({ columnMetrics: columnMetrics });
       }
@@ -681,7 +684,7 @@ class ReactDataGrid extends React.Component {
 
   getRowOffsetHeight = () => {
     let offsetHeight = 0;
-    this.getHeaderRows().forEach((row) => offsetHeight += parseFloat(row.height, 10) );
+    this.getHeaderRows().forEach((row) => offsetHeight += parseFloat(row.height, 10));
     return offsetHeight;
   };
 
@@ -752,7 +755,7 @@ class ReactDataGrid extends React.Component {
       const selectColumn = {
         key: 'select-row',
         name: '',
-        formatter: <Formatter rowSelection={this.props.rowSelection}/>,
+        formatter: <Formatter rowSelection={this.props.rowSelection} />,
         onCellChange: this.handleRowSelect,
         filterable: false,
         headerRenderer: headerRenderer,
@@ -779,11 +782,11 @@ class ReactDataGrid extends React.Component {
 
   renderToolbar = () => {
     const Toolbar = this.props.toolbar;
-    const toolBarProps =  { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount };
+    const toolBarProps = { columns: this.props.columns, onToggleFilter: this.onToggleFilter, numberOfRows: this.props.rowsCount };
     if (React.isValidElement(Toolbar)) {
-      return ( React.cloneElement(Toolbar, toolBarProps));
+      return (React.cloneElement(Toolbar, toolBarProps));
     } else if (isFunction(Toolbar)) {
-      return <Toolbar {...toolBarProps}/>;
+      return <Toolbar {...toolBarProps} />;
     }
   };
 
@@ -865,6 +868,7 @@ class ReactDataGrid extends React.Component {
             onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
             onCommit={this.onCommit}
             onScroll={this.onScroll}
+            editorPortalTarget={this.props.editorPortalTarget}
           />
         </div>
       </div>

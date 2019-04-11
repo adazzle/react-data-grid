@@ -12,17 +12,12 @@ describe('NumericFilter', () => {
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
         <NumericFilter
-        onChange={fakeOnChange}
-        column={fakeColumn}
-        />);
+          onChange={fakeOnChange}
+          column={fakeColumn}
+        />
+      );
     });
 
-    it('should create a new NumericFilter instance', () => {
-      expect(component).toBeDefined();
-    });
-  });
-
-  describe('Functional tests', () => {
     it('When using numbers with , as separator', () => {
       const request = component.getRules('1,3,4,10');
       const result = [{ type: 1, value: 1 },

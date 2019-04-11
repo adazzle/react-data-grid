@@ -1,7 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import DragDropContainer from '../DragDropContainer';
-import jasmineEnzyme from 'jasmine-enzyme';
 import RowDragLayer from '../RowDragLayer';
 import DraggableHeaderCell from '../DraggableHeaderCell';
 
@@ -24,10 +23,7 @@ describe('<DragDropContainer />', () => {
     );
   }
 
-  beforeEach(() => {
-    jasmineEnzyme();
-    render();
-  });
+  beforeEach(render);
 
   it('should render a RowDragLayer', () => {
     const rowDragLayer = wrapper.find(RowDragLayer);
