@@ -1,7 +1,6 @@
-import { CellNavigationMode } from '../common/enums';
+import { CellNavigationMode, Z_INDEXES } from '../common/enums';
 import * as rowUtils from '../RowUtils';
 import { getColumn, isFrozen, canEdit } from '../ColumnUtils';
-import * as zIndexes from '../common/constants/zIndexes';
 import { Column, Position, Range, Dimension, RowGetter } from '../common/types';
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
@@ -31,7 +30,7 @@ export function getSelectedDimensions({ selectedPosition: { idx, rowIdx }, colum
   const { width } = column;
   const left = frozen ? column.left + scrollLeft : column.left;
   const top = getRowTop(rowIdx, rowHeight);
-  const zIndex = frozen ? zIndexes.FROZEN_CELL_MASK : zIndexes.CELL_MASK;
+  const zIndex = frozen ? Z_INDEXES.FROZEN_CELL_MASK : Z_INDEXES.CELL_MASK;
   return { width, left, top, height: rowHeight, zIndex };
 }
 
@@ -43,7 +42,7 @@ interface getSelectedRangeDimensionsOpts {
 
 export function getSelectedRangeDimensions({ selectedRange: { topLeft, bottomRight }, columns, rowHeight }: getSelectedRangeDimensionsOpts): Dimension {
   if (topLeft.idx < 0) {
-    return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: zIndexes.CELL_MASK };
+    return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: Z_INDEXES.CELL_MASK };
   }
 
   let width = 0;
@@ -57,7 +56,7 @@ export function getSelectedRangeDimensions({ selectedRange: { topLeft, bottomRig
   const { left } = getColumn(columns, topLeft.idx);
   const top = getRowTop(topLeft.rowIdx, rowHeight);
   const height = (bottomRight.rowIdx - topLeft.rowIdx + 1) * rowHeight;
-  const zIndex = anyColFrozen ? zIndexes.FROZEN_CELL_MASK : zIndexes.CELL_MASK;
+  const zIndex = anyColFrozen ? Z_INDEXES.FROZEN_CELL_MASK : Z_INDEXES.CELL_MASK;
 
   return { width, left, top, height, zIndex };
 }

@@ -6,7 +6,7 @@ import { isElement, isValidElementType } from 'react-is';
 import SimpleTextEditor from './SimpleTextEditor';
 import { isFunction } from '../utils';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
-import * as zIndexes from '../constants/zIndexes';
+import { Z_INDEXES } from '../enums';
 import ClickOutside from './ClickOutside';
 
 export default class EditorContainer extends React.Component {
@@ -305,7 +305,7 @@ export default class EditorContainer extends React.Component {
 
   render() {
     const { width, height, left, top } = this.props;
-    const style = { position: 'absolute', height, width, left, top, zIndex: zIndexes.EDITOR_CONTAINER };
+    const style = { position: 'absolute', height, width, left, top, zIndex: Z_INDEXES.EDITOR_CONTAINER };
     return (
       <ClickOutside onClickOutside={this.commit}>
         <div
