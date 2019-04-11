@@ -283,7 +283,7 @@ export default class Canvas extends React.PureComponent {
       <RowGroup
         {...rowGroupProps}
         {...props.row.__metaData}
-        rowRef={props.ref}
+        ref={props.ref}
         name={props.row.name}
         eventBus={this.props.eventBus}
         renderer={this.props.rowGroupRenderer}
