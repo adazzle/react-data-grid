@@ -28,7 +28,6 @@
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
     "react-is": "^16.8.4",
-    "react-is-deprecated": "^0.1.2",
     "shallowequal": "^1.1.0",
     "tslib": "^1.9.3"
   },
