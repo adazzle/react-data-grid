@@ -151,8 +151,7 @@ describe('<Viewport />', () => {
       key: 'description',
       name: 'Description',
       width: 100,
-      left: 0,
-      onCellChange() {}
+      left: 0
     };
     const updatedColumns = helpers.columns.concat(extraColumn);
     const newProps = { ...viewportProps, columnMetrics: { ...viewportProps.columnMetrics, columns: updatedColumns } };

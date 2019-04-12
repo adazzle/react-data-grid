@@ -12,7 +12,7 @@ export interface Column<T = unknown> {
   frozen?: boolean;
   resizable?: boolean;
 
-  onCellChange(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
+  onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
 }
 
 export interface ColumnMetrics {

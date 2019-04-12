@@ -10,7 +10,9 @@ interface Props<T> {
 
 export default function CheckboxEditor<T>({ value, rowIdx, column, dependentValues }: Props<T>) {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    column.onCellChange(rowIdx, column.key, dependentValues, event);
+    if (column.onCellChange) {
+      column.onCellChange(rowIdx, column.key, dependentValues, event);
+    }
   }
 
   return (

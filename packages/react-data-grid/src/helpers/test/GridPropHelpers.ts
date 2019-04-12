@@ -4,20 +4,17 @@ const columns: Column[] = [{
   key: 'id',
   name: 'ID',
   width: 100,
-  left: 0,
-  onCellChange() {}
+  left: 0
 }, {
   key: 'title',
   name: 'Title',
   width: 100,
-  left: 100,
-  onCellChange() {}
+  left: 100
 }, {
   key: 'count',
   name: 'Count',
   width: 100,
-  left: 200,
-  onCellChange() {}
+  left: 200
 }];
 
 const _rows: Array<{ id: number; title: string; count: number }> = [];
