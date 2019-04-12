@@ -9,9 +9,16 @@ export interface Column<T = unknown> {
 
   draggable?: boolean;
   filterable?: boolean;
+  frozen?: boolean;
   resizable?: boolean;
 
-  onCellChange(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
+  onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
+}
+
+export interface ColumnMetrics {
+  columns: Column[];
+  width: number;
+  totalColumnWidth: number;
 }
 
 export interface CellMetaData {
@@ -29,3 +36,23 @@ export interface CellMetaData {
   onCellExpand(): void;
   getCellActions?(): void;
 }
+
+export interface Position {
+  idx: number;
+  rowIdx: number;
+}
+
+export interface Range {
+  topLeft: Position;
+  bottomRight: Position;
+}
+
+export interface Dimension {
+  width: number;
+  height: number;
+  top: number;
+  left: number;
+  zIndex: number;
+}
+
+export type RowGetter = (rowIdx: number) => unknown;

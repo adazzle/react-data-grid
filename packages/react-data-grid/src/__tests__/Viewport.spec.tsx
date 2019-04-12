@@ -4,7 +4,8 @@ import { shallow } from 'enzyme';
 import Viewport from '../Viewport';
 import Canvas from '../Canvas';
 import helpers from '../helpers/test/GridPropHelpers';
-import { SCROLL_DIRECTION } from '../utils/viewportUtils';
+import { SCROLL_DIRECTION, CellNavigationMode } from '../common/enums';
+import EventBus from '../masks/EventBus';
 
 const viewportProps = {
   rowOffsetHeight: 0,
@@ -36,9 +37,25 @@ const viewportProps = {
     onCommitCancel() { },
     copied: {},
     handleDragEnterRow() { },
-    handleTerminateDrag() { }
+    handleTerminateDrag() { },
+    rowKey: 'row key',
+    onCellMouseDown() {},
+    onCellMouseEnter() {},
+    onCellContextMenu() {},
+    onDragEnter() {},
+    onRowExpandToggle() {},
+    onColumnEvent() {},
+    onCellExpand() {}
   },
-  rowKey: 'Id'
+  rowKey: 'Id',
+  enableCellSelect: true,
+  enableCellAutoFocus: true,
+  cellNavigationMode: CellNavigationMode.NONE,
+  eventBus: new EventBus(),
+  onGridRowsUpdated() {},
+  onDragHandleDoubleClick() {},
+  onCommit() {},
+  editorPortalTarget: document.body
 };
 
 const viewportPropsNoColumns = { // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
@@ -47,6 +64,7 @@ const viewportPropsNoColumns = { // when creating anew plan copying from an exis
   columnMetrics: {
     columns: helpers.columns,
     minColumnWidth: 80,
+    totalColumnWidth: 0,
     totalWidth: 0,
     width: 2010
   },
@@ -70,9 +88,25 @@ const viewportPropsNoColumns = { // when creating anew plan copying from an exis
     onCommitCancel() { },
     copied: {},
     handleDragEnterRow() { },
-    handleTerminateDrag() { }
+    handleTerminateDrag() { },
+    rowKey: 'row key',
+    onCellMouseDown() {},
+    onCellMouseEnter() {},
+    onCellContextMenu() {},
+    onDragEnter() {},
+    onRowExpandToggle() {},
+    onColumnEvent() {},
+    onCellExpand() {}
   },
-  rowKey: 'Id'
+  rowKey: 'Id',
+  enableCellSelect: true,
+  enableCellAutoFocus: true,
+  cellNavigationMode: CellNavigationMode.NONE,
+  eventBus: new EventBus(),
+  onGridRowsUpdated() {},
+  onDragHandleDoubleClick() {},
+  onCommit() {},
+  editorPortalTarget: document.body
 };
 
 describe('<Viewport />', () => {
@@ -107,7 +141,7 @@ describe('<Viewport />', () => {
   });
 
   it('should set the max number of columns when column rendered are zeroed', () => {
-    const wrapper = shallow(<Viewport {...viewportPropsNoColumns} />);
+    const wrapper = shallow<Viewport>(<Viewport {...viewportPropsNoColumns} />);
     expect(wrapper.state().colVisibleEndIdx).toEqual(helpers.columns.length);
   });
 
@@ -116,7 +150,8 @@ describe('<Viewport />', () => {
     const extraColumn = {
       key: 'description',
       name: 'Description',
-      width: 100
+      width: 100,
+      left: 0
     };
     const updatedColumns = helpers.columns.concat(extraColumn);
     const newProps = { ...viewportProps, columnMetrics: { ...viewportProps.columnMetrics, columns: updatedColumns } };

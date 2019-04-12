@@ -1,3 +1,22 @@
+import { Column } from '../../common/types';
+
+const columns: Column[] = [{
+  key: 'id',
+  name: 'ID',
+  width: 100,
+  left: 0
+}, {
+  key: 'title',
+  name: 'Title',
+  width: 100,
+  left: 100
+}, {
+  key: 'count',
+  name: 'Count',
+  width: 100,
+  left: 200
+}];
+
 const _rows: Array<{ id: number; title: string; count: number }> = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
@@ -8,21 +27,7 @@ for (let i = 0; i < 1000; i++) {
 }
 
 export default {
-  columns: [{
-    key: 'id',
-    name: 'ID',
-    width: 100
-  },
-  {
-    key: 'title',
-    name: 'Title',
-    width: 100
-  },
-  {
-    key: 'count',
-    name: 'Count',
-    width: 100
-  }],
+  columns,
   rowGetter(i: number) {
     return _rows[i];
   },

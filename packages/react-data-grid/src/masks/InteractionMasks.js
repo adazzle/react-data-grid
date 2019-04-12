@@ -29,7 +29,7 @@ import keyCodes from '../KeyCodes';
 const SCROLL_CELL_BUFFER = 2;
 
 export default class InteractionMasks extends React.Component {
-  static dispplayName = 'InteractionMasks';
+  static displayName = 'InteractionMasks';
 
   static propTypes = {
     colVisibleStartIdx: PropTypes.number.isRequired,
@@ -422,8 +422,9 @@ export default class InteractionMasks extends React.Component {
     return getNextSelectedCellPosition({
       columns,
       rowsCount,
-      cellNavigationMode
-    }, nextPosition);
+      cellNavigationMode,
+      nextPosition
+    });
   }
 
   checkIsAtGridBoundary(keyNavAction, next) {

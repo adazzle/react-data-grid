@@ -17,7 +17,6 @@ describe('Header Cell Tests', () => {
         name: 'bla',
         width: 150,
         left: 300,
-        onCellChange() {},
         ...columnProps
       },
       rowType: HeaderRowType.HEADER,

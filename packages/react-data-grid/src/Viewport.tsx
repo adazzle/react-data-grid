@@ -1,8 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import Canvas from './Canvas';
-import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
 import { getSize } from './ColumnUtils';
 import {
   getGridState,
@@ -16,67 +14,101 @@ import {
   getNonFrozenRenderedColumnCount,
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
+import EventBus from './masks/EventBus';
+import { ColumnMetrics, CellMetaData, RowGetter } from './common/types';
+import { SCROLL_DIRECTION } from './common/enums';
 
-export default class Viewport extends React.Component {
+interface ScrollParams {
+  height: number;
+  scrollTop: number;
+  scrollLeft: number;
+  rowsCount: number;
+  rowHeight: number;
+}
+
+interface ScrollState {
+  height: number;
+  scrollTop: number;
+  scrollLeft: number;
+  rowVisibleStartIdx: number;
+  rowVisibleEndIdx: number;
+  rowOverscanStartIdx: number;
+  rowOverscanEndIdx: number;
+  colVisibleStartIdx: number;
+  colVisibleEndIdx: number;
+  colOverscanStartIdx: number;
+  colOverscanEndIdx: number;
+  scrollDirection: SCROLL_DIRECTION;
+  lastFrozenColumnIndex: number;
+  isScrolling: boolean;
+}
+
+interface Props {
+  rowOffsetHeight: number;
+  totalWidth: number | string;
+  columnMetrics: ColumnMetrics;
+  rowGetter: RowGetter;
+  selectedRows?: unknown[];
+  rowSelection?: { indexes: number[] } | { isSelectedKey: string } | { keys: { values: unknown[]; rowKey: string } };
+  expandedRows?: unknown[];
+  rowRenderer?: React.ReactElement | React.ComponentType;
+  rowsCount: number;
+  rowHeight: number;
+  onScroll?(scrollState: ScrollState): void;
+  minHeight: number;
+  cellMetaData?: CellMetaData;
+  rowKey: string;
+  scrollToRowIndex?: number;
+  contextMenu?: React.ReactElement | React.ComponentType;
+  getSubRowDetails?(): void;
+  rowGroupRenderer?(): void;
+  enableCellSelect: boolean;
+  enableCellAutoFocus: boolean;
+  cellNavigationMode: string;
+  eventBus: EventBus;
+  onCheckCellIsEditable?(): void;
+  onCellCopyPaste?(): void;
+  onGridRowsUpdated(): void;
+  onDragHandleDoubleClick(): void;
+  onCellSelected?(): void;
+  onCellDeSelected?(): void;
+  onCellRangeSelectionStarted?(): void;
+  onCellRangeSelectionUpdated?(): void;
+  onCellRangeSelectionCompleted?(): void;
+  onCommit(): void;
+  RowsContainer?: React.ReactElement;
+  editorPortalTarget: Element;
+}
+
+interface State {
+  rowOverscanStartIdx: number;
+  rowOverscanEndIdx: number;
+  rowVisibleStartIdx: number;
+  rowVisibleEndIdx: number;
+  height: number;
+  scrollTop: number;
+  scrollLeft: number;
+  colVisibleStartIdx: number;
+  colVisibleEndIdx: number;
+  colOverscanStartIdx: number;
+  colOverscanEndIdx: number;
+  isScrolling: boolean;
+  lastFrozenColumnIndex: number;
+}
+
+export default class Viewport extends React.Component<Props, State> {
   static displayName = 'Viewport';
-
-  static propTypes = {
-    rowOffsetHeight: PropTypes.number.isRequired,
-    totalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-    columnMetrics: PropTypes.object.isRequired,
-    rowGetter: PropTypes.oneOfType([PropTypes.array, PropTypes.func]).isRequired,
-    selectedRows: PropTypes.array,
-    rowSelection: PropTypes.oneOfType([
-      PropTypes.shape({
-        indexes: PropTypes.arrayOf(PropTypes.number).isRequired
-      }),
-      PropTypes.shape({
-        isSelectedKey: PropTypes.string.isRequired
-      }),
-      PropTypes.shape({
-        keys: PropTypes.shape({
-          values: PropTypes.array.isRequired,
-          rowKey: PropTypes.string.isRequired
-        }).isRequired
-      })
-    ]),
-    expandedRows: PropTypes.array,
-    rowRenderer: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
-    rowsCount: PropTypes.number.isRequired,
-    rowHeight: PropTypes.number.isRequired,
-    onScroll: PropTypes.func,
-    minHeight: PropTypes.number,
-    cellMetaData: PropTypes.shape(cellMetaDataShape),
-    rowKey: PropTypes.string.isRequired,
-    scrollToRowIndex: PropTypes.number,
-    contextMenu: PropTypes.element,
-    getSubRowDetails: PropTypes.func,
-    rowGroupRenderer: PropTypes.func,
-    enableCellSelect: PropTypes.bool.isRequired,
-    enableCellAutoFocus: PropTypes.bool.isRequired,
-    cellNavigationMode: PropTypes.string.isRequired,
-    eventBus: PropTypes.object.isRequired,
-    onCheckCellIsEditable: PropTypes.func,
-    onCellCopyPaste: PropTypes.func,
-    onGridRowsUpdated: PropTypes.func.isRequired,
-    onDragHandleDoubleClick: PropTypes.func.isRequired,
-    onCellSelected: PropTypes.func,
-    onCellDeSelected: PropTypes.func,
-    onCellRangeSelectionStarted: PropTypes.func,
-    onCellRangeSelectionUpdated: PropTypes.func,
-    onCellRangeSelectionCompleted: PropTypes.func,
-    onCommit: PropTypes.func.isRequired,
-    RowsContainer: PropTypes.node,
-    editorPortalTarget: PropTypes.instanceOf(Element).isRequired
-  };
 
   static defaultProps = {
     rowHeight: 30
   };
 
-  state = getGridState(this.props);
+  readonly state: Readonly<State> = getGridState(this.props);
+  private readonly canvas = React.createRef<Canvas>();
+  private readonly viewport = React.createRef<HTMLDivElement>();
+  private resetScrollStateTimeoutId: number | null = null;
 
-  onScroll = ({ scrollTop, scrollLeft }) => {
+  onScroll = ({ scrollTop, scrollLeft }: { scrollTop: number; scrollLeft: number }) => {
     const { rowHeight, rowsCount, onScroll } = this.props;
     const nextScrollState = this.updateScroll({
       scrollTop,
@@ -91,25 +123,25 @@ export default class Viewport extends React.Component {
     }
   };
 
-  getScroll = () => {
-    return this.canvas.getScroll();
-  };
+  getScroll() {
+    return this.canvas.current!.getScroll();
+  }
 
-  setScrollLeft = (scrollLeft) => {
-    this.canvas.setScrollLeft(scrollLeft);
-  };
+  setScrollLeft(scrollLeft: number) {
+    this.canvas.current!.setScrollLeft(scrollLeft);
+  }
 
-  getDOMNodeOffsetWidth = () => {
-    return this.viewport ? this.viewport.offsetWidth : 0;
-  };
+  getDOMNodeOffsetWidth() {
+    return this.viewport.current ? this.viewport.current.offsetWidth : 0;
+  }
 
-  clearScrollTimer = () => {
-    if (this.resetScrollStateTimeoutId) {
-      clearTimeout(this.resetScrollStateTimeoutId);
+  clearScrollTimer() {
+    if (this.resetScrollStateTimeoutId !== null) {
+      window.clearTimeout(this.resetScrollStateTimeoutId);
     }
-  };
+  }
 
-  getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount }) {
+  getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount }: ScrollParams): ScrollState {
     const isScrolling = true;
     const { columns } = this.props.columnMetrics;
     const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);
@@ -141,31 +173,33 @@ export default class Viewport extends React.Component {
     };
   }
 
-  resetScrollStateAfterDelay = () => {
+  resetScrollStateAfterDelay() {
     this.clearScrollTimer();
-    this.resetScrollStateTimeoutId = setTimeout(
+    this.resetScrollStateTimeoutId = window.setTimeout(
       this.resetScrollStateAfterDelayCallback,
       500
     );
-  };
+  }
 
   resetScrollStateAfterDelayCallback = () => {
     this.resetScrollStateTimeoutId = null;
-    this.setState({
-      isScrolling: false
-    });
+    this.setState({ isScrolling: false });
   };
 
-  updateScroll = (scrollParams) => {
+  updateScroll(scrollParams: ScrollParams) {
     this.resetScrollStateAfterDelay();
     const nextScrollState = this.getNextScrollState(scrollParams);
     this.setState(nextScrollState);
     return nextScrollState;
-  };
+  }
 
   metricsUpdated = () => {
-    const height = this.viewportHeight();
-    const width = this.viewportWidth();
+    if (!this.viewport.current) {
+      return;
+    }
+
+    const { height } = this.viewport.current.getBoundingClientRect();
+
     if (height) {
       const { scrollTop, scrollLeft } = this.state;
       const { rowHeight, rowsCount } = this.props;
@@ -174,21 +208,12 @@ export default class Viewport extends React.Component {
         scrollLeft,
         height,
         rowHeight,
-        rowsCount,
-        width
+        rowsCount
       });
     }
   };
 
-  viewportHeight = () => {
-    return this.viewport ? this.viewport.offsetHeight : 0;
-  };
-
-  viewportWidth = () => {
-    return this.viewport ? this.viewport.offsetWidth : 0;
-  };
-
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     const { rowHeight, rowsCount } = nextProps;
     if (this.props.rowHeight !== nextProps.rowHeight
       || this.props.minHeight !== nextProps.minHeight) {
@@ -236,16 +261,8 @@ export default class Viewport extends React.Component {
     this.clearScrollTimer();
   }
 
-  setViewportRef = (viewport) => {
-    this.viewport = viewport;
-  };
-
-  setCanvasRef = (canvas) => {
-    this.canvas = canvas;
-  };
-
   render() {
-    const style = {
+    const style: React.CSSProperties = {
       padding: 0,
       bottom: 0,
       left: 0,
@@ -257,10 +274,10 @@ export default class Viewport extends React.Component {
     return (
       <div
         style={style}
-        ref={this.setViewportRef}
+        ref={this.viewport}
       >
         <Canvas
-          ref={this.setCanvasRef}
+          ref={this.canvas}
           rowKey={this.props.rowKey}
           totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}
@@ -305,8 +322,6 @@ export default class Viewport extends React.Component {
           onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           onCommit={this.props.onCommit}
           RowsContainer={this.props.RowsContainer}
-          prevScrollLeft={this.state.prevScrollLeft}
-          prevScrollTop={this.state.prevScrollTop}
           editorPortalTarget={this.props.editorPortalTarget}
         />
       </div>
