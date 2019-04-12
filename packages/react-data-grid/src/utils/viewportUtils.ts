@@ -85,7 +85,7 @@ export function getNonFrozenRenderedColumnCount(columnMetrics: ColumnMetrics, vi
   return getColumnCountForWidth(columns, initialWidth, colVisibleStartIdx);
 }
 
-interface VisibleBoundaries {
+export interface VisibleBoundaries {
   rowVisibleStartIdx: number;
   rowVisibleEndIdx: number;
 }

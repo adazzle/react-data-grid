@@ -1,16 +1,38 @@
-import { getGridState, getNonFrozenRenderedColumnCount, getVisibleBoundaries, getNonFrozenVisibleColStartIdx, getScrollDirection, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
+import {
+  getGridState,
+  getNonFrozenRenderedColumnCount,
+  getVisibleBoundaries,
+  getNonFrozenVisibleColStartIdx,
+  getScrollDirection,
+  getRowOverscanStartIdx,
+  getRowOverscanEndIdx,
+  OVERSCAN_ROWS,
+  getColOverscanStartIdx,
+  getColOverscanEndIdx,
+  VisibleBoundaries
+} from '../viewportUtils';
 import { SCROLL_DIRECTION } from '../../common/enums';
+import { Column } from '../../common/types';
 
 describe('viewportUtils', () => {
-  const getColumns = () => [{ width: 100, left: 0 }, { width: 100, left: 200 }, { width: 100, left: 300 }, { width: 100, left: 400 }, { width: 100, left: 500 }, { width: 100, left: 600 }];
+  const getColumns = (): Column[] => [
+    { key: 'col1', name: 'col1', width: 100, left: 0, onCellChange() {} },
+    { key: 'col2', name: 'col2', width: 100, left: 200, onCellChange() {} },
+    { key: 'col3', name: 'col3', width: 100, left: 300, onCellChange() {} },
+    { key: 'col4', name: 'col4', width: 100, left: 400, onCellChange() {} },
+    { key: 'col5', name: 'col5', width: 100, left: 500, onCellChange() {} },
+    { key: 'col6', name: 'col6', width: 100, left: 600, onCellChange() {} }
+  ];
+
   describe('getGridState', () => {
     const getState = (propsOverrides = {}) => {
       const props = {
         columnMetrics: {
           columns: [
-            { key: 'col1' },
-            { key: 'col2' }
-          ]
+            { key: 'col1', name: 'col1', width: 100, left: 0, onCellChange() {} },
+            { key: 'col2', name: 'col2', width: 100, left: 100, onCellChange() {} }
+          ],
+          totalColumnWidth: 0
         },
         minHeight: 100,
         rowOffsetHeight: 5,
@@ -47,22 +69,22 @@ describe('viewportUtils', () => {
   describe('getNonFrozenRenderedColumnCount', () => {
     const viewportWidth = 100;
 
-    const getCols = () => [
-      { key: 'col1', width: 20, left: 0 },
-      { key: 'col2', width: 20, left: 20 },
-      { key: 'col3', width: 20, left: 40 },
-      { key: 'col4', width: 20, left: 60 },
-      { key: 'col5', width: 20, left: 80 },
-      { key: 'col6', width: 1, left: 100 },
-      { key: 'col7', width: 1, left: 101 },
-      { key: 'col8', width: 1, left: 102 },
-      { key: 'col9', width: 1, left: 103 }
+    const getCols = (): Column[] => [
+      { key: 'col1', name: 'col1', width: 20, left: 0, onCellChange() {} },
+      { key: 'col2', name: 'col2', width: 20, left: 20, onCellChange() {} },
+      { key: 'col3', name: 'col3', width: 20, left: 40, onCellChange() {} },
+      { key: 'col4', name: 'col4', width: 20, left: 60, onCellChange() {} },
+      { key: 'col5', name: 'col5', width: 20, left: 80, onCellChange() {} },
+      { key: 'col6', name: 'col6', width: 1, left: 100, onCellChange() {} },
+      { key: 'col7', name: 'col7', width: 1, left: 101, onCellChange() {} },
+      { key: 'col8', name: 'col8', width: 1, left: 102, onCellChange() {} },
+      { key: 'col9', name: 'col9', width: 1, left: 103, onCellChange() {} }
     ];
 
     const verifyNonFrozenRenderedColumnCount = (width = viewportWidth, columns = getCols(), scrollLeft = 0) => {
       const columnMetrics = {
         columns,
-        totalWidth: 0
+        totalColumnWidth: 0
       };
       return getNonFrozenRenderedColumnCount(columnMetrics, width, scrollLeft);
     };
@@ -111,7 +133,7 @@ describe('viewportUtils', () => {
     });
 
     describe('When scrolling', () => {
-      const scrollDown = (getScrollTop, assert) => {
+      const scrollDown = (getScrollTop: (n: number) => number, assert: (n: number, boundaries: VisibleBoundaries) => void) => {
         const NUMBER_OF_TESTS = 10;
         for (let n = 1; n < NUMBER_OF_TESTS; n++) {
           const boundaries = getVisibleBoundaries(GRID_HEIGHT, ROW_HEIGHT, getScrollTop(n), TOTAL_ROWS);
@@ -120,14 +142,14 @@ describe('viewportUtils', () => {
       };
       describe('When incrementing scroll by n*rowHeight', () => {
         it('should increase rowVisibleStartIdx by n rows', () => {
-          const getScrollTop = n => n * ROW_HEIGHT;
+          const getScrollTop = (n: number) => n * ROW_HEIGHT;
           scrollDown(getScrollTop, (n, { rowVisibleStartIdx }) => {
             expect(rowVisibleStartIdx).toBe(n);
           });
         });
 
         it('should increase rowVisibleEndIdx by (n + total rendered rows)', () => {
-          const getScrollTop = n => n * ROW_HEIGHT;
+          const getScrollTop = (n: number) => n * ROW_HEIGHT;
           scrollDown(getScrollTop, (n, { rowVisibleEndIdx }) => {
             expect(rowVisibleEndIdx).toBe(EXPECTED_NUMBER_VISIBLE_ROWS + n);
           });
@@ -137,7 +159,7 @@ describe('viewportUtils', () => {
       describe('When incrementing scroll by a decimal number within 0.5 buffer of n*rowHeight', () => {
         it('should increase rowVisibleEndIdx by (n + total rendered rows)', () => {
           const clientScrollError = 0.5;
-          const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
+          const getScrollTop = (n: number) => (n * ROW_HEIGHT) - clientScrollError;
           scrollDown(getScrollTop, (n, { rowVisibleEndIdx }) => {
             expect(rowVisibleEndIdx).toBe(EXPECTED_NUMBER_VISIBLE_ROWS + n);
           });
@@ -145,7 +167,7 @@ describe('viewportUtils', () => {
 
         it('should increase rowVisibleEndIdx by n rows', () => {
           const clientScrollError = 0.5;
-          const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
+          const getScrollTop = (n: number) => (n * ROW_HEIGHT) - clientScrollError;
           scrollDown(getScrollTop, (n, { rowVisibleStartIdx }) => {
             expect(rowVisibleStartIdx).toBe(n);
           });
@@ -178,7 +200,7 @@ describe('viewportUtils', () => {
         expect(colVisibleStartIdx).toBe(1);
       });
 
-      const expectIdxWhenColumsFrozen = (scrollLeft) => {
+      const expectIdxWhenColumsFrozen = (scrollLeft: number) => {
         const columns = getColumns();
         columns[1].frozen = true;
         const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);

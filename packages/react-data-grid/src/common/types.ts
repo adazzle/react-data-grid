@@ -9,6 +9,7 @@ export interface Column<T = unknown> {
 
   draggable?: boolean;
   filterable?: boolean;
+  frozen?: boolean;
   resizable?: boolean;
 
   onCellChange(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
