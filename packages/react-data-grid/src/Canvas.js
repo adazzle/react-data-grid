@@ -149,7 +149,7 @@ export default class Canvas extends React.PureComponent {
     const { scrollLeft, clientWidth } = this.canvas;
     const newScrollLeft = getColumnScrollPosition(this.props.columns, idx, scrollLeft, clientWidth);
 
-    if (newScrollLeft != null) {
+    if (newScrollLeft !== 0) {
       this.canvas.scrollLeft = scrollLeft + newScrollLeft;
     }
   }

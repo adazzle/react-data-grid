@@ -37,12 +37,12 @@ describe('canvasUtils', () => {
       });
     });
 
-    it('should not calculate the scroll position for the selected column when client width is greater than the scroll width', () => {
+    it('should calculate the scroll position for the selected column when client width is greater than the scroll width', () => {
       const columns = createColumns(10);
       columns[0].frozen = true;
       columns[1].frozen = true;
       const scrollPosition = getColumnScrollPosition(columns, 7, 500, 400);
-      expect(scrollPosition).toBeUndefined();
+      expect(scrollPosition).toBe(0);
     });
   });
 });

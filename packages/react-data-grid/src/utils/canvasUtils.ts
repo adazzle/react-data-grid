@@ -1,11 +1,12 @@
 import { getColumn, isFrozen } from '../ColumnUtils';
+import { Column } from '../common/types';
 
-export function getColumnScrollPosition(columns, idx, currentScrollLeft, currentClientWidth) {
+export function getColumnScrollPosition(columns: Column[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;
   let frozen = 0;
 
   for (let i = 0; i < idx; i++) {
-    const column = getColumn(columns, i);
+    const column: Column = getColumn(columns, i);
     if (column) {
       if (column.width) {
         left += column.width;
@@ -25,8 +26,9 @@ export function getColumnScrollPosition(columns, idx, currentScrollLeft, current
       return scrollLeft;
     }
     if (scrollRight > currentClientWidth) {
-      const scrollAmount = scrollRight - currentClientWidth;
-      return scrollAmount;
+      return scrollRight - currentClientWidth;
     }
   }
+
+  return 0;
 }
