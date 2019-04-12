@@ -14,6 +14,11 @@ export interface Column<T = unknown> {
   onCellChange(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
 }
 
+export interface ColumnMetrics {
+  columns: Column[];
+  totalColumnWidth: number;
+}
+
 export interface CellMetaData {
   rowKey: string;
   onCellClick(): void;
