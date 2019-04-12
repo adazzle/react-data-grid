@@ -1,14 +1,7 @@
 import { getSize, getColumn, isFrozen } from '../ColumnUtils';
+import { SCROLL_DIRECTION } from '../common/enums';
 
 export const OVERSCAN_ROWS = 2;
-
-export const SCROLL_DIRECTION = {
-  UP: 'upwards',
-  DOWN: 'downwards',
-  LEFT: 'left',
-  RIGHT: 'right',
-  NONE: 'none'
-};
 
 const min = Math.min;
 const max = Math.max;

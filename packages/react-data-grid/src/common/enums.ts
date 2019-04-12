@@ -34,6 +34,14 @@ export enum UpdateActions {
   CELL_DRAG = 'CELL_DRAG'
 }
 
+export enum SCROLL_DIRECTION {
+  UP = 'upwards',
+  DOWN = 'downwards',
+  LEFT = 'left',
+  RIGHT = 'right',
+  NONE = 'none'
+}
+
 export enum Z_INDEXES {
   /**
    * CellMasks should render in front of the cells.

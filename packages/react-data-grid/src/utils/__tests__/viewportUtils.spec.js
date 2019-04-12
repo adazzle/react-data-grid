@@ -1,4 +1,5 @@
-import { getGridState, getNonFrozenRenderedColumnCount, getVisibleBoundaries, getNonFrozenVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
+import { getGridState, getNonFrozenRenderedColumnCount, getVisibleBoundaries, getNonFrozenVisibleColStartIdx, getScrollDirection, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
+import { SCROLL_DIRECTION } from '../../common/enums';
 
 describe('viewportUtils', () => {
   const getColumns = () => [{ width: 100, left: 0 }, { width: 100, left: 200 }, { width: 100, left: 300 }, { width: 100, left: 400 }, { width: 100, left: 500 }, { width: 100, left: 600 }];
