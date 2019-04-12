@@ -17,6 +17,7 @@ export interface Column<T = unknown> {
 
 export interface ColumnMetrics {
   columns: Column[];
+  width: number;
   totalColumnWidth: number;
 }
 

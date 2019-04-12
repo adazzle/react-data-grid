@@ -32,6 +32,7 @@ describe('viewportUtils', () => {
             { key: 'col1', name: 'col1', width: 100, left: 0, onCellChange() {} },
             { key: 'col2', name: 'col2', width: 100, left: 100, onCellChange() {} }
           ],
+          width: 0,
           totalColumnWidth: 0
         },
         minHeight: 100,
@@ -84,6 +85,7 @@ describe('viewportUtils', () => {
     const verifyNonFrozenRenderedColumnCount = (width = viewportWidth, columns = getCols(), scrollLeft = 0) => {
       const columnMetrics = {
         columns,
+        width: 0,
         totalColumnWidth: 0
       };
       return getNonFrozenRenderedColumnCount(columnMetrics, width, scrollLeft);
