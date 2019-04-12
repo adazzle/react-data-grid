@@ -130,7 +130,7 @@ class Example extends React.Component {
     return this.getRows().length;
   };
 
-  getCellActions(column, row) {
+  getCellActions(column, row, rowIdx) {
     if (column.key === 'county' && row.id === 'id_0') {
       return [
         {

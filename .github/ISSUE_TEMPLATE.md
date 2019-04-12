@@ -41,7 +41,7 @@
 > 👋 Need general support? Not sure about how to use React itself, or how to get started with the Grid?
 > Please do not submit support request here. Instead see
 
-> https://github.com/adazzle/react-data-grid/blob/master/CONTRIBUTING.md
+> https://github.com/adazzle/react-data-grid/blob/master/docs/CONTRIBUTING.md
 
 ---
 
