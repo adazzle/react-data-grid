@@ -46,7 +46,7 @@ const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref)
   }
 
   const lastColumn = last(props.columns);
-  const style = { width: lastColumn.left + lastColumn.width };
+  const style = { width: lastColumn!.left + lastColumn!.width };
   const Renderer = props.renderer || DefaultBase;
 
   return (

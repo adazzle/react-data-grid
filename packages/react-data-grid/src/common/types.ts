@@ -1,3 +1,5 @@
+import { List } from 'immutable';
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<T = unknown> {
@@ -7,16 +9,20 @@ export interface Column<T = unknown> {
   left: number;
   cellClass?: string;
 
+  editable?: boolean | ((rowData: unknown) => boolean);
   draggable?: boolean;
   filterable?: boolean;
   frozen?: boolean;
+  locked?: boolean;
   resizable?: boolean;
+
+  editor?: unknown;
 
   onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
 }
 
 export interface ColumnMetrics {
-  columns: Column[];
+  columns: Column[] | List<Column>;
   width: number;
   totalColumnWidth: number;
 }
