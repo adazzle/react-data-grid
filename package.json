@@ -38,7 +38,7 @@
     "eslint-plugin-react-hooks": "^1.6.0",
     "faker": "^4.1.0",
     "immutability-helper": "^3.0.0",
-    "immutable": "^3.7.3",
+    "immutable": "^3.8.2",
     "jest": "^24.7.1",
     "lerna": "^3.13.1",
     "less": "^3.9.0",

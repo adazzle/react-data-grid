@@ -176,7 +176,7 @@ export default class Cell extends React.PureComponent {
   setScrollLeft = (scrollLeft) => {
     const node = this.cell.current;
     if (node) {
-      node.style.transform = `translate(${scrollLeft}px, 0)`;
+      node.style.transform = `translateX(${scrollLeft}px)`;
     }
   };
 

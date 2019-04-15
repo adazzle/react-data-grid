@@ -62,7 +62,7 @@ export default class HeaderCell extends React.Component<Props> {
   setScrollLeft(scrollLeft: number) {
     const node = ReactDOM.findDOMNode(this) as HTMLElement | null;
     if (node) {
-      node.style.transform = `translate(${scrollLeft}px, 0)`;
+      node.style.transform = `translateX(${scrollLeft}px)`;
     }
   }
 

@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
+    "immutable": "^3.8.2",
     "prop-types": "^15.7.2",
     "react-is": "^16.8.4",
     "react-is-deprecated": "^0.1.2",
