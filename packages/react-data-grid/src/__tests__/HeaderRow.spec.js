@@ -167,20 +167,10 @@ describe('Header Row Unit Tests', () => {
       const headerRowDiv = wrapper.find('div').at(0);
       expect(headerRowDiv.hasClass('react-grid-HeaderRow'));
     });
-    it('passes width if available from props', () => {
-      const wrapper = renderComponent(allProperties);
-      const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().width).toBe(200);
-    });
     it('does not pass width if not available from props', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
       expect(headerRowDiv.props().width).toBeUndefined();
-    });
-    it('passes height property', () => {
-      const wrapper = renderComponent(allProperties);
-      const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().height).toBe(35);
     });
     it('passes style property, if available from props', () => {
       const wrapper = renderComponent(allProperties);

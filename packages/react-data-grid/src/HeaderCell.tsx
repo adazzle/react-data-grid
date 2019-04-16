@@ -13,7 +13,7 @@ function SimpleCellRenderer({ column, rowType }: { column: Column; rowType: Head
 }
 
 interface Props {
-  renderer?: React.ReactElement | React.ComponentType<{ column: Column; rowType: HeaderRowType }>;
+  renderer?: Column['headerRenderer'];
   column: Column;
   rowType: HeaderRowType;
   height: number;
