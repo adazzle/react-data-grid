@@ -4,9 +4,9 @@ import shallowEqual from 'shallowequal';
 import HeaderCell from './HeaderCell';
 import getScrollbarSize from './getScrollbarSize';
 import { getColumn, getSize, isFrozen } from './ColumnUtils';
-import SortableHeaderCell, { DEFINE_SORT } from './common/cells/headerCells/SortableHeaderCell';
+import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
-import { HeaderRowType, HeaderCellType } from './common/enums';
+import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { Column, ColumnList } from './common/types';
 
 export interface Props {

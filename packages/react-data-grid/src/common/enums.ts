@@ -49,6 +49,12 @@ export enum SCROLL_DIRECTION {
   NONE = 'none'
 }
 
+export enum DEFINE_SORT {
+  ASC = 'ASC',
+  DESC = 'DESC',
+  NONE = 'NONE'
+}
+
 export enum Z_INDEXES {
   /**
    * CellMasks should render in front of the cells.

@@ -4,9 +4,9 @@ import { shallow } from 'enzyme';
 import helpers from '../helpers/test/GridPropHelpers';
 import HeaderRow, { Props } from '../HeaderRow';
 import HeaderCell from '../HeaderCell';
-import SortableHeaderCell, { DEFINE_SORT } from '../common/cells/headerCells/SortableHeaderCell';
+import SortableHeaderCell from '../common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from '../common/cells/headerCells/FilterableHeaderCell';
-import { HeaderRowType } from '../common/enums';
+import { HeaderRowType, DEFINE_SORT } from '../common/enums';
 
 describe('Header Row Unit Tests', () => {
   const defaultProps = {

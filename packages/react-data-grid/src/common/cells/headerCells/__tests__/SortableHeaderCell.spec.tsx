@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import SortableHeaderCell, { DEFINE_SORT, Props } from '../SortableHeaderCell';
-import { HeaderRowType } from '../../../enums';
+import SortableHeaderCell, { Props } from '../SortableHeaderCell';
+import { HeaderRowType, DEFINE_SORT } from '../../../enums';
 import { Column } from '../../../types';
 
 describe('<SortableHeaderCell/>', () => {

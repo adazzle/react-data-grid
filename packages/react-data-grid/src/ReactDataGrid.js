@@ -10,9 +10,8 @@ import { getColumn, getSize } from './ColumnUtils';
 import KeyCodes from './KeyCodes';
 import { isFunction } from './common/utils';
 import { SelectAll } from './formatters';
-import { DEFINE_SORT } from './common/cells/headerCells/SortableHeaderCell';
 import * as ColumnMetrics from './ColumnMetrics';
-import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType } from './common/enums';
+import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import { EventBus } from './masks';
 
 const deprecationWarning = (propName, alternative) => `${propName} has been deprecated and will be removed in a future version. Please use ${alternative} instead`;

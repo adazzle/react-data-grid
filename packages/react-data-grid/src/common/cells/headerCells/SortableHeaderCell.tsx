@@ -1,13 +1,7 @@
 import React from 'react';
 import { isElement } from 'react-is';
-import { HeaderRowType } from '../../enums';
+import { HeaderRowType, DEFINE_SORT } from '../../enums';
 import { Column } from '../../types';
-
-export enum DEFINE_SORT {
-  ASC = 'ASC',
-  DESC = 'DESC',
-  NONE = 'NONE'
-}
 
 const SORT_TEXT = {
   [DEFINE_SORT.ASC]: '\u25B2',
