@@ -27,6 +27,13 @@ export enum HeaderRowType {
   FILTER = 'filter'
 }
 
+export enum HeaderCellType {
+  SORTABLE = 'SORTABLE',
+  FILTERABLE = 'FILTERABLE',
+  NONE = 'NONE',
+  CHECKBOX = 'CHECKBOX'
+}
+
 export enum UpdateActions {
   CELL_UPDATE = 'CELL_UPDATE',
   COLUMN_FILL = 'COLUMN_FILL',

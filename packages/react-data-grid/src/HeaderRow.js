@@ -6,8 +6,7 @@ import getScrollbarSize from './getScrollbarSize';
 import { getColumn, getSize, isFrozen } from './ColumnUtils';
 import SortableHeaderCell, { DEFINE_SORT } from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
-import HeaderCellType from './HeaderCellType';
-import { HeaderRowType } from './common/enums';
+import { HeaderRowType, HeaderCellType } from './common/enums';
 
 import PropTypes from 'prop-types';
 
