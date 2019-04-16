@@ -36,5 +36,5 @@ export function canEdit(column: Column, rowData: unknown, enableCellSelect?: boo
 }
 
 export function isFrozen(column: Column): boolean {
-  return column.locked === true || column.frozen === true;
+  return column.frozen === true;
 }

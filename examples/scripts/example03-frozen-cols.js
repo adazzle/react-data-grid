@@ -13,25 +13,25 @@ class Example extends React.Component {
       {
         key: 'id',
         name: 'ID',
-        locked: true
+        frozen: true
       },
       {
         key: 'task',
         name: 'Title',
         width: 200,
-        locked: true
+        frozen: true
       },
       {
         key: 'priority',
         name: 'Priority',
         width: 200,
-        locked: true
+        frozen: true
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         width: 200,
-        locked: true
+        frozen: true
       },
       {
         key: 'complete',
@@ -92,7 +92,7 @@ class Example extends React.Component {
   }
 }
 
-const exampleDescription = <p>To make a given column locked, set <code>column.locked = true</code>. In this example, the ID columns has been locked and will remain in position as you scroll horizontally</p>;
+const exampleDescription = <p>To make a given column locked, set <code>column.frozen = true</code>. In this example, the ID columns has been locked and will remain in position as you scroll horizontally</p>;
 
 export default exampleWrapper({
   WrappedComponent: Example,

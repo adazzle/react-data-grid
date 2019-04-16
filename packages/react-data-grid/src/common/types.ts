@@ -14,7 +14,6 @@ export interface Column<T = unknown> {
   draggable?: boolean;
   filterable?: boolean;
   frozen?: boolean;
-  locked?: boolean;
   resizable?: boolean;
   sortable?: boolean;
   sortDescendingFirst?: boolean;
