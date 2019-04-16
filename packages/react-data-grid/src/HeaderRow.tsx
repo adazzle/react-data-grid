@@ -25,6 +25,7 @@ export interface Props {
   rowType: HeaderRowType;
   draggableHeaderCell: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
   onHeaderDrop(): void;
+  getValidFilterValues?(): void;
 }
 
 export default class HeaderRow extends React.Component<Props> {
@@ -57,7 +58,13 @@ export default class HeaderRow extends React.Component<Props> {
 
   getFilterableHeaderCell(column: Column) {
     const FilterRenderer = column.filterRenderer || FilterableHeaderCell;
-    return <FilterRenderer column={column} onChange={this.props.onFilterChange} />;
+    return (
+      <FilterRenderer
+        column={column}
+        onChange={this.props.onFilterChange}
+        getValidFilterValues={this.props.getValidFilterValues}
+      />
+    );
   }
 
   getSortableHeaderCell(column: Column) {
