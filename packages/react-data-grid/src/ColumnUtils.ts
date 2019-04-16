@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
-import { Column, ColumnMetrics } from './common/types';
+import { Column, ColumnList, ColumnMetrics } from './common/types';
 
-export function getColumn<T>(columns: Column<T>[] | Immutable.List<Column<T>>, idx: number): Column<T> {
+export function getColumn(columns: ColumnList, idx: number): Column {
   if (Array.isArray(columns)) {
     return columns[idx];
   }

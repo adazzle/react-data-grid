@@ -21,8 +21,10 @@ export interface Column<T = unknown> {
   onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
 }
 
+export type ColumnList = Column[] | List<Column>;
+
 export interface ColumnMetrics {
-  columns: Column[] | List<Column>;
+  columns: ColumnList;
   width: number;
   totalColumnWidth: number;
 }

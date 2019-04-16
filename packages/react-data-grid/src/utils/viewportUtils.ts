@@ -1,6 +1,6 @@
 import { getSize, getColumn, isFrozen } from '../ColumnUtils';
 import { SCROLL_DIRECTION } from '../common/enums';
-import { Column, ColumnMetrics } from '../common/types';
+import { Column, ColumnList, ColumnMetrics } from '../common/types';
 
 export const OVERSCAN_ROWS = 2;
 
@@ -29,11 +29,11 @@ export function getGridState(props: { columnMetrics: ColumnMetrics; rowsCount: n
   };
 }
 
-export function findLastFrozenColumnIndex(columns: Column[]): number {
-  return columns.findIndex(c => isFrozen(c));
+export function findLastFrozenColumnIndex(columns: ColumnList): number {
+  return columns.findIndex((c?: Column) => isFrozen(c!));
 }
 
-function getTotalFrozenColumnWidth(columns: Column[]): number {
+function getTotalFrozenColumnWidth(columns: ColumnList): number {
   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
   if (lastFrozenColumnIndex === -1) {
     return 0;
@@ -42,24 +42,26 @@ function getTotalFrozenColumnWidth(columns: Column[]): number {
   return lastFrozenColumn.left + lastFrozenColumn.width;
 }
 
-function getColumnCountForWidth(columns: Column[], initialWidth: number, colVisibleStartIdx: number): number {
+function getColumnCountForWidth(columns: ColumnList, initialWidth: number, colVisibleStartIdx: number): number {
   let width = initialWidth;
   let count = 0;
 
-  for (const column of columns.slice(colVisibleStartIdx)) {
-    width -= column.width;
-    if (width >= 0) {
-      count++;
+  columns.forEach((column?: Column, idx?: number) => {
+    if (idx! >= colVisibleStartIdx) {
+      width -= column!.width;
+      if (width >= 0) {
+        count++;
+      }
     }
-  }
+  });
 
   return count;
 }
 
-export function getNonFrozenVisibleColStartIdx(columns: Column[], scrollLeft: number): number {
+export function getNonFrozenVisibleColStartIdx(columns: ColumnList, scrollLeft: number): number {
   let remainingScroll = scrollLeft;
   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
-  const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
+  const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1) as ColumnList;
   let columnIndex = lastFrozenColumnIndex;
   while (remainingScroll >= 0 && columnIndex < getSize(nonFrozenColumns)) {
     columnIndex++;
