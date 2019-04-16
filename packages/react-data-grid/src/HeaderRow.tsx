@@ -9,7 +9,7 @@ import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCel
 import { HeaderRowType, HeaderCellType } from './common/enums';
 import { Column, ColumnList } from './common/types';
 
-interface Props {
+export interface Props {
   width?: number;
   height: number;
   columns: ColumnList;
