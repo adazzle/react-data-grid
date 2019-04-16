@@ -19,11 +19,8 @@ interface Props {
   style?: React.CSSProperties;
   sortColumn?: string;
   sortDirection?: DEFINE_SORT;
-  cellRenderer?(): void;
-  headerCellRenderer?(): void;
   filterable?: boolean;
   onFilterChange(): void;
-  resizing?: unknown;
   onScroll?(): void;
   rowType: HeaderRowType;
   draggableHeaderCell: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
