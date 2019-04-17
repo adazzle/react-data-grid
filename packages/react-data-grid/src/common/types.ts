@@ -1,3 +1,6 @@
+import { List } from 'immutable';
+import { HeaderRowType } from './enums';
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<T = unknown> {
@@ -7,16 +10,25 @@ export interface Column<T = unknown> {
   left: number;
   cellClass?: string;
 
+  editable?: boolean | ((rowData: unknown) => boolean);
   draggable?: boolean;
   filterable?: boolean;
   frozen?: boolean;
   resizable?: boolean;
+  sortable?: boolean;
+  sortDescendingFirst?: boolean;
+
+  editor?: unknown;
+  headerRenderer?: React.ReactElement | React.ComponentType<{ column: Column; rowType: HeaderRowType }>;
+  filterRenderer?: React.ComponentType;
 
   onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
 }
 
+export type ColumnList = Column[] | List<Column>;
+
 export interface ColumnMetrics {
-  columns: Column[];
+  columns: ColumnList;
   width: number;
   totalColumnWidth: number;
 }

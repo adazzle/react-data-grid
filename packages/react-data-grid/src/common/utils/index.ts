@@ -1,51 +1,53 @@
-// eslint-disable-next-line
-declare var Immutable: any;
+import Immutable from 'immutable';
 
-const isImmutableLoaded = () => typeof Immutable !== 'undefined';
+export function isColumnsImmutable(columns: unknown): columns is Immutable.List<unknown> {
+  return Immutable.List.isList(columns);
+}
 
-export const isColumnsImmutable = <T>(columns: T) => {
-  return isImmutableLoaded() && columns instanceof Immutable.List;
-};
-
-export const isEmptyArray = <T>(obj: T) => {
+export function isEmptyArray(obj: unknown): boolean {
   return Array.isArray(obj) && obj.length === 0;
-};
+}
 
-export const isFunction = <T>(functionToCheck: T) => {
+export function isFunction<T>(functionToCheck: T): boolean {
   return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
-};
+}
 
-export const isEmptyObject = <T>(obj: T) => {
+export function isEmptyObject<T>(obj: T): boolean {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
-};
+}
 
-export const isImmutableCollection = <T>(objToVerify: T) => {
-  return isImmutableLoaded() && Immutable.Iterable.isIterable(objToVerify);
-};
+export function isImmutableCollection<T>(objToVerify: T): boolean {
+  return Immutable.Iterable.isIterable(objToVerify);
+}
 
-export const getMixedTypeValueRetriever = (isImmutable: boolean) => {
+export function getMixedTypeValueRetriever(isImmutable: boolean) {
   return {
     getValue: isImmutable
-      ? (immutable: typeof Immutable, key: string) => immutable.get(key)
-      : <T>(item: T, key: keyof T) => item[key]
+      ? (immutable: Immutable.Map<string, unknown>, key: string) => immutable.get(key)
+      : <T>(item: T, key: keyof T): T[typeof key] => item[key]
   };
-};
+}
 
-export const isImmutableMap = isImmutableLoaded() ? Immutable.Map.isMap : () => false;
+export const isImmutableMap = Immutable.Map.isMap;
 
-export const last = <T>(arrayOrList: T) => {
+export function last<T>(arrayOrList: T[] | Immutable.List<T>): T | null {
   if (arrayOrList == null) {
     throw new Error('arrayOrCollection is null');
   }
 
   if (Array.isArray(arrayOrList)) {
+    if (arrayOrList.length === 0) {
+      return null;
+    }
     return arrayOrList[arrayOrList.length - 1];
   }
 
-  if (isImmutableLoaded() && Immutable.List.isList(arrayOrList)) {
-    const list: typeof Immutable = arrayOrList;
-    return list.last();
+  if (Immutable.List.isList(arrayOrList)) {
+    if (arrayOrList.size === 0) {
+      return null;
+    }
+    return arrayOrList.last();
   }
 
   throw new Error(`Cant get last of: ${typeof arrayOrList}`);
-};
+}

@@ -4,6 +4,8 @@ import { Column } from '../../types';
 interface Props {
   column: Column;
   onChange(change: { filterTerm: string; column: Column }): void;
+  /** TODO: remove */
+  getValidFilterValues?(): void;
 }
 
 export default function FilterableHeaderCell({ column, onChange }: Props) {

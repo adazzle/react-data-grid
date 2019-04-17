@@ -1,29 +1,22 @@
 import { canEdit } from '../ColumnUtils';
+import { Column, Omit } from '../common/types';
 
 describe('ColumnUtils tests', () => {
-  let testProps;
+  function setup() {
+    const col: Column = {
+      editable: true,
+      editor: {},
+      filterable: true,
+      key: 'PlacementType',
+      left: 460,
+      name: 'Adserver Placement Type',
+      resizable: true,
+      width: 150
+    };
 
-  beforeEach(() => {
-    testProps = {
-      col: {
-        editable: true,
-        editor: {},
-        filterable: true,
-        formatOptions: '',
-        formula: '',
-        getRowMetaData: undefined,
-        key: 'PlacementType',
-        left: 460,
-        name: 'Adserver Placement Type',
-        options: [
-          'Tracking',
-          'Display'
-        ],
-        required: false,
-        resizable: true,
-        width: 150
-      },
-      rowData: {
+    return {
+      col,
+      RowData: {
         CostModel: 'CPM',
         Dimensions: '468x60',
         EndDate: '17 Apr 16',
@@ -60,6 +53,12 @@ describe('ColumnUtils tests', () => {
       },
       enableCellSelect: true
     };
+  }
+
+  let testProps: Omit<ReturnType<typeof setup>, 'enableCellSelect'> & { enableCellSelect?: boolean } = setup();
+
+  afterEach(() => {
+    testProps = setup();
   });
 
   describe('canEdit tests', () => {
@@ -128,7 +127,7 @@ describe('ColumnUtils tests', () => {
     describe('canEdit tests using nulls', () => {
       it('CanEdit returns true when col.editable is null but col.editor is defined and enableCellSelect is true', () => {
         // Arrange
-        testProps.col.editable = null;
+        testProps.col.editable = undefined;
         testProps.col.editor = {};
         testProps.enableCellSelect = true;
 
@@ -137,14 +136,14 @@ describe('ColumnUtils tests', () => {
 
         // Assert
         expect(testProps.col.editor).not.toBe(null);
-        expect(testProps.col.editable).toBe(null);
+        expect(testProps.col.editable).toBe(undefined);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(true);
       });
 
       it('CanEdit returns false when col.editable is null, col.editor is null and enableCellSelect is true', () => {
         // Arrange
-        testProps.col.editable = null;
+        testProps.col.editable = undefined;
         testProps.col.editor = null;
         testProps.enableCellSelect = true;
 
@@ -153,7 +152,7 @@ describe('ColumnUtils tests', () => {
 
         // Assert
         expect(testProps.col.editor).toBe(null);
-        expect(testProps.col.editable).toBe(null);
+        expect(testProps.col.editable).toBe(undefined);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(false);
       });
@@ -161,28 +160,28 @@ describe('ColumnUtils tests', () => {
       it('CanEdit returns false when col.editable is true and enableCellSelect is null', () => {
         // Arrange
         testProps.col.editable = true;
-        testProps.enableCellSelect = null;
+        testProps.enableCellSelect = undefined;
 
         // Act
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
         expect(testProps.col.editable).toBe(true);
-        expect(testProps.enableCellSelect).toBe(null);
+        expect(testProps.enableCellSelect).toBe(undefined);
         expect(result).toBe(false);
       });
 
       it('CanEdit returns false when col.editable is null and enableCellSelect is null', () => {
         // Arrange
-        testProps.col.editable = null;
-        testProps.enableCellSelect = null;
+        testProps.col.editable = undefined;
+        testProps.enableCellSelect = undefined;
 
         // Act
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(testProps.col.editable).toBe(null);
-        expect(testProps.enableCellSelect).toBe(null);
+        expect(testProps.col.editable).toBe(undefined);
+        expect(testProps.enableCellSelect).toBe(undefined);
         expect(result).toBe(false);
       });
     });
@@ -262,7 +261,7 @@ describe('ColumnUtils tests', () => {
 
         // Assert
         expect(typeof testProps.col.editable).toBe('function');
-        expect(testProps.col.editable()).toBe(true);
+        expect(testProps.col.editable({})).toBe(true);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(true);
       });
@@ -277,7 +276,7 @@ describe('ColumnUtils tests', () => {
 
         // Assert
         expect(typeof testProps.col.editable).toBe('function');
-        expect(testProps.col.editable()).toBe(false);
+        expect(testProps.col.editable({})).toBe(false);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(false);
       });
@@ -292,7 +291,7 @@ describe('ColumnUtils tests', () => {
 
         // Assert
         expect(typeof testProps.col.editable).toBe('function');
-        expect(testProps.col.editable()).toBe(true);
+        expect(testProps.col.editable({})).toBe(true);
         expect(testProps.enableCellSelect).toBe(false);
         expect(result).toBe(false);
       });
@@ -307,7 +306,7 @@ describe('ColumnUtils tests', () => {
 
         // Assert
         expect(typeof testProps.col.editable).toBe('function');
-        expect(testProps.col.editable()).toBe(false);
+        expect(testProps.col.editable({})).toBe(false);
         expect(testProps.enableCellSelect).toBe(false);
         expect(result).toBe(false);
       });

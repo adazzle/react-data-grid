@@ -1,20 +1,23 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-
-import SortableHeaderCell, { DEFINE_SORT, Props } from '../SortableHeaderCell';
+import SortableHeaderCell, { Props } from '../SortableHeaderCell';
+import { HeaderRowType, DEFINE_SORT } from '../../../enums';
+import { Column } from '../../../types';
 
 describe('<SortableHeaderCell/>', () => {
-  const setup = (overrideProps?: Partial<Props>) => {
+  const setup = (overrideProps?: Partial<Props>, overrideColumn?: Partial<Column>) => {
     const props: Props = {
-      columnKey: 'col1',
       column: {
         name: 'col1',
         key: 'col1',
         width: 100,
-        left: 0
+        left: 0,
+        ...overrideColumn
       },
+      rowType: HeaderRowType.HEADER,
       onSort: jest.fn(),
       sortDirection: DEFINE_SORT.NONE,
+      sortDescendingFirst: false,
       ...overrideProps
     };
     const wrapper = shallow(<SortableHeaderCell {...props} />);
@@ -29,21 +32,21 @@ describe('<SortableHeaderCell/>', () => {
   it('should toggle sort direction when clicked', () => {
     const { wrapper, props } = setup();
     wrapper.simulate('click');
-    expect(props.onSort).toHaveBeenCalledWith(props.columnKey, DEFINE_SORT.ASC);
+    expect(props.onSort).toHaveBeenCalledWith(props.column.key, DEFINE_SORT.ASC);
   });
 
   describe('When sortDescendingFirst is true', () => {
     it('should set sort descending first when clicked', () => {
       const { wrapper, props } = setup({ sortDescendingFirst: true });
       wrapper.simulate('click');
-      expect(props.onSort).toHaveBeenCalledWith(props.columnKey, DEFINE_SORT.DESC);
+      expect(props.onSort).toHaveBeenCalledWith(props.column.key, DEFINE_SORT.DESC);
     });
   });
 
   describe('When headerRenderer of column is set', () => {
     it('should render the header renderer', () => {
       const HeaderRenderer = () => <span>Custom</span>;
-      const { wrapper } = setup({ headerRenderer: <HeaderRenderer /> });
+      const { wrapper } = setup({}, { headerRenderer: <HeaderRenderer /> });
       expect(wrapper.find(HeaderRenderer).length).toBe(1);
     });
   });

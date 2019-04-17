@@ -13,7 +13,7 @@ function SimpleCellRenderer({ column, rowType }: { column: Column; rowType: Head
 }
 
 interface Props {
-  renderer?: React.ReactElement | React.ComponentType<{ column: Column; rowType: HeaderRowType }>;
+  renderer?: Column['headerRenderer'];
   column: Column;
   rowType: HeaderRowType;
   height: number;
@@ -62,7 +62,7 @@ export default class HeaderCell extends React.Component<Props> {
   setScrollLeft(scrollLeft: number) {
     const node = ReactDOM.findDOMNode(this) as HTMLElement | null;
     if (node) {
-      node.style.transform = `translate(${scrollLeft}px, 0)`;
+      node.style.transform = `translateX(${scrollLeft}px)`;
     }
   }
 

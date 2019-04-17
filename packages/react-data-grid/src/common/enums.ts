@@ -27,6 +27,13 @@ export enum HeaderRowType {
   FILTER = 'filter'
 }
 
+export enum HeaderCellType {
+  SORTABLE = 'SORTABLE',
+  FILTERABLE = 'FILTERABLE',
+  NONE = 'NONE',
+  CHECKBOX = 'CHECKBOX'
+}
+
 export enum UpdateActions {
   CELL_UPDATE = 'CELL_UPDATE',
   COLUMN_FILL = 'COLUMN_FILL',
@@ -40,6 +47,12 @@ export enum SCROLL_DIRECTION {
   LEFT = 'left',
   RIGHT = 'right',
   NONE = 'none'
+}
+
+export enum DEFINE_SORT {
+  ASC = 'ASC',
+  DESC = 'DESC',
+  NONE = 'NONE'
 }
 
 export enum Z_INDEXES {
