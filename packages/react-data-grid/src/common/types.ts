@@ -23,6 +23,7 @@ export interface Column<T = unknown> {
   filterRenderer?: React.ComponentType;
 
   onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
+  getRowMetaData?(rowData: unknown, column: Column<T>): unknown;
 }
 
 export type ColumnList = Column[] | List<Column>;
@@ -68,3 +69,12 @@ export interface Dimension {
 }
 
 export type RowGetter = (rowIdx: number) => unknown;
+
+export interface Editor {
+  getInputNode(): Element | Text | undefined | null;
+  getValue(): unknown;
+  hasResults?(): boolean;
+  isSelectOpen?(): boolean;
+  validate?(value: unknown): boolean;
+  readonly disableContainerStyles?: boolean;
+}
