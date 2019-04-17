@@ -1,4 +1,5 @@
 import EventBus from '../EventBus';
+import { EventTypes } from '../../common/enums';
 
 describe('EventBus', () => {
   it('should call registered event handlers when event is dispatched', () => {
@@ -7,14 +8,14 @@ describe('EventBus', () => {
     const eventAHandler2 = jest.fn();
     const eventBHandler = jest.fn();
 
-    eventBus.subscribe('eventA', eventAHandler1);
-    eventBus.subscribe('eventA', eventAHandler2);
-    eventBus.subscribe('eventB', eventBHandler);
+    eventBus.subscribe(EventTypes.SELECT_CELL, eventAHandler1);
+    eventBus.subscribe(EventTypes.SELECT_CELL, eventAHandler2);
+    eventBus.subscribe(EventTypes.SELECT_START, eventBHandler);
 
-    eventBus.dispatch('eventA', 1, 2, 3);
+    eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 }, true);
 
-    expect(eventAHandler1).toHaveBeenCalledWith(1, 2, 3);
-    expect(eventAHandler2).toHaveBeenCalledWith(1, 2, 3);
+    expect(eventAHandler1).toHaveBeenCalledWith({ idx: 1, rowIdx: 2 }, true);
+    expect(eventAHandler2).toHaveBeenCalledWith({ idx: 1, rowIdx: 2 }, true);
     expect(eventBHandler).not.toHaveBeenCalled();
   });
 
@@ -23,13 +24,13 @@ describe('EventBus', () => {
     const eventAHandler1 = jest.fn();
     const eventAHandler2 = jest.fn();
 
-    eventBus.subscribe('eventA', eventAHandler1);
-    const unsubscribeEventAHandler2 = eventBus.subscribe('eventA', eventAHandler2);
+    eventBus.subscribe(EventTypes.SELECT_CELL, eventAHandler1);
+    const unsubscribeEventAHandler2 = eventBus.subscribe(EventTypes.SELECT_CELL, eventAHandler2);
     unsubscribeEventAHandler2();
 
-    eventBus.dispatch('eventA', 1, 2, 3);
+    eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 }, true);
 
-    expect(eventAHandler1).toHaveBeenCalledWith(1, 2, 3);
+    expect(eventAHandler1).toHaveBeenCalledWith({ idx: 1, rowIdx: 2 }, true);
     expect(eventAHandler2).not.toHaveBeenCalled();
   });
 });
