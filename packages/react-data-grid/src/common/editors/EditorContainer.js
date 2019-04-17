@@ -254,20 +254,6 @@ export default class EditorContainer extends React.Component {
     return true;
   };
 
-  setCaretAtEndOfInput = () => {
-    const input = this.getInputNode();
-    // taken from http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-    const txtLength = input.value.length;
-    if (input.setSelectionRange) {
-      input.setSelectionRange(txtLength, txtLength);
-    } else if (input.createTextRange) {
-      const fieldRange = input.createTextRange();
-      fieldRange.moveStart('character', txtLength);
-      fieldRange.collapse();
-      fieldRange.select();
-    }
-  };
-
   isCaretAtBeginningOfInput = () => {
     const inputNode = this.getInputNode();
     return inputNode.selectionStart === inputNode.selectionEnd
