@@ -14,21 +14,20 @@ interface Props {
 
 export default function DragMask({ draggedPosition, getSelectedDimensions }: Props) {
   const { overRowIdx, idx, rowIdx } = draggedPosition;
-  if (overRowIdx != null && rowIdx !== overRowIdx) {
-    const isDraggedOverDown = rowIdx < overRowIdx;
-    const startRowIdx = isDraggedOverDown ? rowIdx + 1 : overRowIdx;
-    const endRowIdx = isDraggedOverDown ? overRowIdx : rowIdx - 1;
-    const className = isDraggedOverDown ? 'react-grid-cell-dragged-over-down' : 'react-grid-cell-dragged-over-up';
+  if (rowIdx === overRowIdx) return null;
 
-    const dimensions = getSelectedDimensions({ idx, rowIdx: startRowIdx });
-    for (let currentRowIdx = startRowIdx + 1; currentRowIdx <= endRowIdx; currentRowIdx++) {
-      const { height } = getSelectedDimensions({ idx, rowIdx: currentRowIdx });
-      dimensions.height += height;
-    }
+  const isDraggedOverDown = rowIdx < overRowIdx;
+  const startRowIdx = isDraggedOverDown ? rowIdx + 1 : overRowIdx;
+  const endRowIdx = isDraggedOverDown ? overRowIdx : rowIdx - 1;
+  const className = isDraggedOverDown ? 'react-grid-cell-dragged-over-down' : 'react-grid-cell-dragged-over-up';
 
-    return (
-      <CellMask {...dimensions} className={className} />
-    );
+  const dimensions = getSelectedDimensions({ idx, rowIdx: startRowIdx });
+  for (let currentRowIdx = startRowIdx + 1; currentRowIdx <= endRowIdx; currentRowIdx++) {
+    const { height } = getSelectedDimensions({ idx, rowIdx: currentRowIdx });
+    dimensions.height += height;
   }
-  return null;
+
+  return (
+    <CellMask {...dimensions} className={className} />
+  );
 }
