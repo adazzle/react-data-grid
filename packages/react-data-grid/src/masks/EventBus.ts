@@ -1,9 +1,7 @@
-type Handler = (...args: unknown[]) => void;
-
 export default class EventBus {
-  readonly subscribers = new Map<string, Set<Handler>>();
+  readonly subscribers = new Map<string, Set<Function>>();
 
-  subscribe(type: string, handler: Handler) {
+  subscribe(type: string, handler: Function) {
     if (!this.subscribers.has(type)) {
       this.subscribers.set(type, new Set());
     }

@@ -10,7 +10,7 @@ export interface Column<T = unknown> {
   left: number;
   cellClass?: string;
 
-  editable?: boolean | ((rowData: RowData) => boolean);
+  editable?: boolean | ((rowData: unknown) => boolean);
   draggable?: boolean;
   filterable?: boolean;
   frozen?: boolean;
@@ -31,12 +31,6 @@ export interface ColumnMetrics {
   columns: ColumnList;
   width: number;
   totalColumnWidth: number;
-}
-
-export interface RowData {
-  __metaData?: {
-    isGroup: boolean;
-  };
 }
 
 export interface CellMetaData {
@@ -73,4 +67,4 @@ export interface Dimension {
   zIndex: number;
 }
 
-export type RowGetter = (rowIdx: number) => RowData;
+export type RowGetter = (rowIdx: number) => unknown;

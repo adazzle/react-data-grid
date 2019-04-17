@@ -1,7 +1,7 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
 import * as rowUtils from '../RowUtils';
-import { getColumn, isFrozen, canEdit } from '../ColumnUtils';
-import { Column, ColumnList, Position, Range, Dimension, RowGetter, RowData } from '../common/types';
+import { getColumn, isFrozen, canEdit, getSize } from '../ColumnUtils';
+import { Column, ColumnList, Position, Range, Dimension, RowGetter } from '../common/types';
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
 
@@ -10,13 +10,13 @@ interface getSelectedRowOpts {
   rowGetter: RowGetter;
 }
 
-export function getSelectedRow({ selectedPosition, rowGetter }: getSelectedRowOpts): RowData {
+export function getSelectedRow({ selectedPosition, rowGetter }: getSelectedRowOpts): unknown {
   return rowGetter(selectedPosition.rowIdx);
 }
 
 interface getSelectedDimensionsOpts {
   selectedPosition: Position;
-  columns: Column[];
+  columns: ColumnList;
   rowHeight: number;
   scrollLeft: number;
 }
@@ -36,7 +36,7 @@ export function getSelectedDimensions({ selectedPosition: { idx, rowIdx }, colum
 
 interface getSelectedRangeDimensionsOpts {
   selectedRange: Range;
-  columns: Column[];
+  columns: ColumnList;
   rowHeight: number;
 }
 
@@ -105,14 +105,15 @@ interface getNextSelectedCellPositionOpts {
   nextPosition: Position;
 }
 
-interface NextSelectedCellPosition extends Position {
+export interface NextSelectedCellPosition extends Position {
   changeRowOrColumn: boolean;
 }
 
 export function getNextSelectedCellPosition({ cellNavigationMode, columns, rowsCount, nextPosition }: getNextSelectedCellPositionOpts): NextSelectedCellPosition {
   if (cellNavigationMode !== CellNavigationMode.NONE) {
     const { idx, rowIdx } = nextPosition;
-    const isAfterLastColumn = idx === columns.length;
+    const columnsCount = getSize(columns);
+    const isAfterLastColumn = idx === columnsCount;
     const isBeforeFirstColumn = idx === -1;
 
     if (isAfterLastColumn) {
@@ -138,14 +139,14 @@ export function getNextSelectedCellPosition({ cellNavigationMode, columns, rowsC
         if (!isFirstRow) {
           return {
             rowIdx: rowIdx - 1,
-            idx: columns.length - 1,
+            idx: columnsCount - 1,
             changeRowOrColumn: true
           };
         }
       } else if (cellNavigationMode === CellNavigationMode.LOOP_OVER_ROW) {
         return {
           rowIdx,
-          idx: columns.length - 1,
+          idx: columnsCount - 1,
           changeRowOrColumn: true
         };
       }
@@ -166,7 +167,7 @@ export function canExitGrid(event: React.KeyboardEvent, { cellNavigationMode, co
   // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
   // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
   if (cellNavigationMode === CellNavigationMode.NONE || cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
-    const atLastCellInRow = idx === columns.length - 1;
+    const atLastCellInRow = idx === getSize(columns) - 1;
     const atFirstCellInRow = idx === 0;
     const atLastRow = rowIdx === rowsCount - 1;
     const atFirstRow = rowIdx === 0;
