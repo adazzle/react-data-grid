@@ -610,7 +610,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
     }
   };
 
-  handleDragEnter = ({ overRowIdx }: DraggedPosition): void => {
+  handleDragEnter = ({ overRowIdx }: { overRowIdx: number }): void => {
     this.setState(({ draggedPosition }) => {
       if (draggedPosition) {
         return { draggedPosition: { ...draggedPosition, overRowIdx } };
