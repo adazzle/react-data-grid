@@ -283,6 +283,20 @@ export default class EditorContainer extends React.Component {
     e.stopPropagation();
   };
 
+  setTextInputFocus = () => {
+    const keyCode = this.props.firstEditorKeyPress;
+    const inputNode = this.getInputNode();
+    inputNode.focus();
+    if (inputNode.tagName === 'INPUT') {
+      if (!isKeyPrintable(keyCode)) {
+        inputNode.focus();
+        inputNode.select();
+      } else {
+        inputNode.select();
+      }
+    }
+  };
+
   renderStatusIcon = () => {
     if (this.state.isInvalid === true) {
       return <span className="glyphicon glyphicon-remove form-control-feedback" />;
