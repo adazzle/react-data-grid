@@ -1,4 +1,4 @@
-import { RefObject, KeyboardEvent } from 'react';
+import { KeyboardEvent } from 'react';
 import { List } from 'immutable';
 import { HeaderRowType } from './enums';
 
@@ -20,8 +20,8 @@ export interface Column<T = unknown> {
   sortable?: boolean;
   sortDescendingFirst?: boolean;
 
-  editor?: React.ComponentType<EditorProps>;
-  headerRenderer?: React.ReactElement | React.ComponentType<{ column: Column; rowType: HeaderRowType }>;
+  editor?: unknown;
+  headerRenderer?: React.ReactElement | React.ComponentType<{ column: Column<T>; rowType: HeaderRowType }>;
   filterRenderer?: React.ComponentType;
 
   onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
@@ -82,7 +82,6 @@ export interface Editor {
 }
 
 export interface EditorProps<V = unknown, C = unknown, R = unknown> {
-  ref: RefObject<Editor>;
   column: Column<C>;
   value: V;
   rowMetaData: unknown;

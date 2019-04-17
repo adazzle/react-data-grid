@@ -34,7 +34,7 @@ export default class EditorContainer extends React.Component<Props, State> {
   changeCommitted = false;
   changeCanceled = false;
 
-  editor = React.createRef<Editor>();
+  private readonly editor = React.createRef<Editor>();
   readonly state: Readonly<State> = { isInvalid: false };
 
   componentDidMount() {
@@ -96,7 +96,7 @@ export default class EditorContainer extends React.Component<Props, State> {
   };
 
   createEditor() {
-    const editorProps: EditorProps = {
+    const editorProps: EditorProps & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
       column: this.props.column,
       value: this.getInitialValue(),
@@ -182,19 +182,13 @@ export default class EditorContainer extends React.Component<Props, State> {
   };
 
   editorHasResults = () => {
-    if (this.getEditor().hasResults) {
-      return this.getEditor().hasResults!();
-    }
-
-    return false;
+    const { hasResults } = this.getEditor();
+    return hasResults ? hasResults() : false;
   };
 
   editorIsSelectOpen = () => {
-    if (this.getEditor().isSelectOpen) {
-      return this.getEditor().isSelectOpen!();
-    }
-
-    return false;
+    const { isSelectOpen } = this.getEditor();
+    return isSelectOpen ? isSelectOpen() : false;
   };
 
   getRowMetaData() {
@@ -247,8 +241,9 @@ export default class EditorContainer extends React.Component<Props, State> {
   };
 
   isNewValueValid = (value: unknown) => {
-    if (this.getEditor().validate) {
-      const isValid = this.getEditor().validate!(value);
+    const { validate } = this.getEditor();
+    if (validate) {
+      const isValid = validate(value);
       this.setState({ isInvalid: !isValid });
       return isValid;
     }
@@ -258,20 +253,15 @@ export default class EditorContainer extends React.Component<Props, State> {
 
   isCaretAtBeginningOfInput = () => {
     const inputNode = this.getInputNode();
-    if (inputNode instanceof HTMLInputElement) {
-      return inputNode.selectionStart === inputNode.selectionEnd
-        && inputNode.selectionStart === 0;
-    }
-    return false;
+    return inputNode instanceof HTMLInputElement
+      && inputNode.selectionEnd === 0;
   };
 
   isCaretAtEndOfInput = () => {
     const inputNode = this.getInputNode();
-    if (inputNode instanceof HTMLInputElement) {
-      return inputNode.selectionStart === inputNode.value.length;
-    }
-    return false;
-  };
+    return inputNode instanceof HTMLInputElement
+      && inputNode.selectionStart === inputNode.value.length;
+  }
 
   handleRightClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
