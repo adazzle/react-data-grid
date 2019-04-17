@@ -1,11 +1,7 @@
 import React from 'react';
-import { Column, Editor } from '../types';
+import { Editor, EditorProps } from '../types';
 
-interface Props {
-  value: string;
-  onBlur: React.FocusEventHandler<HTMLInputElement>;
-  column: Column;
-}
+type Props = Pick<EditorProps<string>, 'value' | 'column' | 'onBlur'>;
 
 export default class SimpleTextEditor extends React.Component<Props> implements Editor {
   input = React.createRef<HTMLInputElement>();
@@ -25,8 +21,8 @@ export default class SimpleTextEditor extends React.Component<Props> implements 
       <input
         className="form-control"
         ref={this.input}
-        onBlur={this.props.onBlur}
         defaultValue={this.props.value}
+        onBlur={this.props.onBlur}
       />
     );
   }

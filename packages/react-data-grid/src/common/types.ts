@@ -1,3 +1,4 @@
+import { RefObject, KeyboardEvent } from 'react';
 import { List } from 'immutable';
 import { HeaderRowType } from './enums';
 
@@ -18,7 +19,7 @@ export interface Column<T = unknown> {
   sortable?: boolean;
   sortDescendingFirst?: boolean;
 
-  editor?: unknown;
+  editor?: React.ComponentType<EditorProps>;
   headerRenderer?: React.ReactElement | React.ComponentType<{ column: Column; rowType: HeaderRowType }>;
   filterRenderer?: React.ComponentType;
 
@@ -77,4 +78,17 @@ export interface Editor {
   isSelectOpen?(): boolean;
   validate?(value: unknown): boolean;
   readonly disableContainerStyles?: boolean;
+}
+
+export interface EditorProps<V = unknown, C = unknown, R = unknown> {
+  ref: RefObject<Editor>;
+  column: Column<C>;
+  value: V;
+  rowMetaData: unknown;
+  rowData: R;
+  height: number;
+  onCommit(args?: { key?: string }): void;
+  onCommitCancel(): void;
+  onBlur(): void;
+  onOverrideKeyDown(e: KeyboardEvent): void;
 }

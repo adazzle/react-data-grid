@@ -2,7 +2,7 @@ import React, { MouseEvent, KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { Column, Editor } from '../types';
+import { Column, Editor, EditorProps } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import { Z_INDEXES } from '../enums';
 import ClickOutside from './ClickOutside';
@@ -39,12 +39,15 @@ export default class EditorContainer extends React.Component<Props, State> {
 
   componentDidMount() {
     const inputNode = this.getInputNode();
-    this.setTextInputFocus();
-    if (!this.getEditor().disableContainerStyles) {
-      if (inputNode instanceof HTMLElement) {
+    if (inputNode instanceof HTMLElement) {
+      inputNode.focus();
+      if (!this.getEditor().disableContainerStyles) {
         inputNode.className += ' editor-main';
         inputNode.style.height = `${this.props.height - 1}px`;
       }
+    }
+    if (inputNode instanceof HTMLInputElement) {
+      inputNode.select();
     }
   }
 
@@ -93,16 +96,16 @@ export default class EditorContainer extends React.Component<Props, State> {
   };
 
   createEditor() {
-    const editorProps = {
+    const editorProps: EditorProps = {
       ref: this.editor,
       column: this.props.column,
       value: this.getInitialValue(),
       rowMetaData: this.getRowMetaData(),
       rowData: this.props.rowData,
       height: this.props.height,
-      onBlur: this.commit,
       onCommit: this.commit,
       onCommitCancel: this.commitCancel,
+      onBlur: this.commit,
       onOverrideKeyDown: this.onKeyDown
     };
 
@@ -120,7 +123,7 @@ export default class EditorContainer extends React.Component<Props, State> {
         ref={this.editor as React.RefObject<SimpleTextEditor>}
         column={this.props.column}
         value={this.getInitialValue() as string}
-        onBlur={() => this.commit()}
+        onBlur={this.commit}
       />
     );
   }
@@ -272,16 +275,6 @@ export default class EditorContainer extends React.Component<Props, State> {
 
   handleRightClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-  };
-
-  setTextInputFocus = () => {
-    const inputNode = this.getInputNode();
-    if (inputNode instanceof HTMLElement) {
-      inputNode.focus();
-    }
-    if (inputNode instanceof HTMLInputElement) {
-      inputNode.select();
-    }
   };
 
   renderStatusIcon() {
