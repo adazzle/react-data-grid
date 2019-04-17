@@ -1,7 +1,7 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
 import * as rowUtils from '../RowUtils';
 import { getColumn, isFrozen, canEdit } from '../ColumnUtils';
-import { Column, Position, Range, Dimension, RowGetter } from '../common/types';
+import { Column, ColumnList, Position, Range, Dimension, RowGetter, RowData } from '../common/types';
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
 
@@ -10,7 +10,7 @@ interface getSelectedRowOpts {
   rowGetter: RowGetter;
 }
 
-export function getSelectedRow({ selectedPosition, rowGetter }: getSelectedRowOpts) {
+export function getSelectedRow({ selectedPosition, rowGetter }: getSelectedRowOpts): RowData {
   return rowGetter(selectedPosition.rowIdx);
 }
 
@@ -63,7 +63,7 @@ export function getSelectedRangeDimensions({ selectedRange: { topLeft, bottomRig
 
 interface getSelectedColumnOpts {
   selectedPosition: Position;
-  columns: Column[];
+  columns: ColumnList;
 }
 
 export function getSelectedColumn({ selectedPosition, columns }: getSelectedColumnOpts): Column {
@@ -72,7 +72,7 @@ export function getSelectedColumn({ selectedPosition, columns }: getSelectedColu
 
 interface getSelectedCellValueOpts {
   selectedPosition: Position;
-  columns: Column[];
+  columns: ColumnList;
   rowGetter: RowGetter;
 }
 
@@ -86,7 +86,7 @@ export function getSelectedCellValue({ selectedPosition, columns, rowGetter }: g
 interface isSelectedCellEditableOpts {
   enableCellSelect: boolean;
   selectedPosition: Position;
-  columns: Column[];
+  columns: ColumnList;
   rowGetter: RowGetter;
   onCheckCellIsEditable?(arg: { row: unknown; column: Column } & Position): boolean;
 }
@@ -100,7 +100,7 @@ export function isSelectedCellEditable({ enableCellSelect, selectedPosition, col
 
 interface getNextSelectedCellPositionOpts {
   cellNavigationMode: CellNavigationMode;
-  columns: Column[];
+  columns: ColumnList;
   rowsCount: number;
   nextPosition: Position;
 }
@@ -157,7 +157,7 @@ export function getNextSelectedCellPosition({ cellNavigationMode, columns, rowsC
 
 interface canExitGridOpts {
   cellNavigationMode: CellNavigationMode;
-  columns: Column[];
+  columns: ColumnList;
   rowsCount: number;
   selectedPosition: Position;
 }
