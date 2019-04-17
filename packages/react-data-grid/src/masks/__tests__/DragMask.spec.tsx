@@ -9,7 +9,7 @@ describe('DragMask', () => {
   const setup = (draggedPosition: DraggedPosition) => {
     const props = {
       getSelectedDimensions({ rowIdx }: Position) {
-        const heights = {
+        const heights: { [key: number]: number } = {
           2: 20,
           3: 30,
           4: 40,
