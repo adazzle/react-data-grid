@@ -1,9 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import { Position, Dimension } from '../common/types';
 import CellMask from './CellMask';
 
-export default function DragMask({ draggedPosition, getSelectedDimensions }) {
+export interface DraggedPosition extends Position {
+  overRowIdx: number;
+}
+
+interface Props {
+  draggedPosition: DraggedPosition;
+  getSelectedDimensions(position: Position): Dimension;
+}
+
+export default function DragMask({ draggedPosition, getSelectedDimensions }: Props) {
   const { overRowIdx, idx, rowIdx } = draggedPosition;
   if (overRowIdx != null && rowIdx !== overRowIdx) {
     const isDraggedOverDown = rowIdx < overRowIdx;
@@ -23,8 +32,3 @@ export default function DragMask({ draggedPosition, getSelectedDimensions }) {
   }
   return null;
 }
-
-DragMask.propTypes = {
-  draggedPosition: PropTypes.object.isRequired,
-  getSelectedDimensions: PropTypes.func.isRequired
-};
