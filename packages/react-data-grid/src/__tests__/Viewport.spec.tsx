@@ -17,7 +17,7 @@ const viewportProps = {
     totalColumnWidth: 2600,
     width: 2600
   },
-  rowGetter() { },
+  rowGetter() { return {}; },
   rowsCount: 50,
   rowHeight: 35,
   onScroll() { },
@@ -67,7 +67,7 @@ const viewportPropsNoColumns = { // when creating anew plan copying from an exis
     totalWidth: 0,
     width: 2010
   },
-  rowGetter() { },
+  rowGetter() { return {}; },
   rowsCount: 50,
   rowHeight: 35,
   onScroll() { },
