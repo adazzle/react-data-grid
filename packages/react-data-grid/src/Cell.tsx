@@ -1,131 +1,98 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { isFunction } from './common/utils';
+import { Column, CellMetaData, ExpandableOptions, RowData, SubRowOptions, FormatterProps, CellEventInfo } from './common/types';
 import { SimpleCellFormatter } from './formatters';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
 import ChildRowDeleteButton from './ChildRowDeleteButton';
 import { isFrozen } from './ColumnUtils';
 
-const getSubRowOptions = ({ rowIdx, idx, rowData, expandableOptions: expandArgs }) => ({ rowIdx, idx, rowData, expandArgs });
+const getSubRowOptions = ({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props): SubRowOptions => ({ rowIdx, idx, rowData, expandArgs });
 
-export default class Cell extends React.PureComponent {
-  static propTypes = {
-    rowIdx: PropTypes.number.isRequired,
-    idx: PropTypes.number.isRequired,
-    isSelected: PropTypes.bool,
-    wasPreviouslySelected: PropTypes.bool,
-    selectedColumn: PropTypes.object,
-    height: PropTypes.number,
-    column: PropTypes.object.isRequired,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object, PropTypes.bool]),
-    isExpanded: PropTypes.bool,
-    isRowSelected: PropTypes.bool,
-    cellMetaData: PropTypes.object.isRequired,
-    handleDragStart: PropTypes.func,
-    className: PropTypes.string,
-    cellControls: PropTypes.any,
-    rowData: PropTypes.object.isRequired,
-    forceUpdate: PropTypes.bool,
-    expandableOptions: PropTypes.object.isRequired,
-    tooltip: PropTypes.string,
-    isScrolling: PropTypes.bool,
-    isCellValueChanging: PropTypes.func,
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node
-    ]),
-    scrollLeft: PropTypes.number.isRequired
-  };
+interface Props {
+  rowIdx: number;
+  idx: number;
+  height: number;
+  column: Column;
+  value: unknown;
+  isExpanded?: boolean;
+  isRowSelected?: object;
+  cellMetaData: CellMetaData;
+  handleDragStart(): void;
+  className?: string;
+  cellControls?: unknown;
+  rowData: RowData;
+  expandableOptions?: ExpandableOptions;
+  tooltip?: string;
+  isScrolling?: boolean;
+  scrollLeft: number;
+  lastFrozenColumnIndex?: number;
+}
 
+export default class Cell extends React.PureComponent<Props> {
   static defaultProps = {
     isExpanded: false,
-    value: '',
-    isCellValueChanging: (value, nextValue) => value !== nextValue
+    value: ''
   };
 
-  cell = React.createRef();
-
-  state = {
-    isCellValueChanging: false,
-    isLockChanging: false
-  };
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      isCellValueChanging: this.props.isCellValueChanging(this.props.value, nextProps.value),
-      isLockChanging: isFrozen(this.props.column) !== isFrozen(nextProps.column)
-    });
-  }
+  cell = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
     this.checkScroll();
   }
 
-  componentDidUpdate() {
-    if (this.state.isLockChanging && !isFrozen(this.props.column)) {
+  componentDidUpdate(prevProps: Props) {
+    const { column } = this.props;
+    if (isFrozen(prevProps.column) !== isFrozen(column) && !isFrozen(column)) {
       this.removeScroll();
     }
   }
 
   handleCellClick = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
-    if (isFunction(cellMetaData.onCellClick)) {
-      cellMetaData.onCellClick({ idx, rowIdx });
-    }
+    cellMetaData.onCellClick({ idx, rowIdx });
   };
 
   handleCellMouseDown = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
-    if (isFunction(cellMetaData.onCellMouseDown)) {
-      cellMetaData.onCellMouseDown({ idx, rowIdx });
-    }
+    cellMetaData.onCellMouseDown({ idx, rowIdx });
   };
 
   handleCellMouseEnter = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
-    if (isFunction(cellMetaData.onCellMouseEnter)) {
-      cellMetaData.onCellMouseEnter({ idx, rowIdx });
-    }
+    cellMetaData.onCellMouseEnter({ idx, rowIdx });
   };
 
   handleCellContextMenu = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
-    if (isFunction(cellMetaData.onCellContextMenu)) {
-      cellMetaData.onCellContextMenu({ idx, rowIdx });
-    }
+    cellMetaData.onCellContextMenu({ idx, rowIdx });
   };
 
-  handleCellDoubleClick = (e) => {
+  handleCellDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const { idx, rowIdx, cellMetaData } = this.props;
-    if (isFunction(cellMetaData.onCellDoubleClick)) {
-      cellMetaData.onCellDoubleClick({ idx, rowIdx });
-    }
+    cellMetaData.onCellDoubleClick({ idx, rowIdx });
   };
 
   handleCellExpand = () => {
     const meta = this.props.cellMetaData;
-    if (meta != null && isFunction(meta.onCellExpand)) {
-      meta.onCellExpand(getSubRowOptions(this.props));
-    }
+    meta.onCellExpand(getSubRowOptions(this.props));
   };
 
   handleDeleteSubRow = () => {
     const meta = this.props.cellMetaData;
-    if (meta != null && isFunction(meta.onDeleteSubRow)) {
+    if (meta.onDeleteSubRow) {
       meta.onDeleteSubRow(getSubRowOptions(this.props));
     }
   };
 
-  handleDragOver = (e) => {
+  handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 
-  getStyle() {
+  getStyle(): React.CSSProperties {
     return {
       position: 'absolute',
       width: this.props.column.width,
@@ -141,7 +108,7 @@ export default class Cell extends React.PureComponent {
   getFormatterDependencies() {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = this.props.column;
-    if (isFunction(getRowMetaData)) {
+    if (getRowMetaData) {
       if (process.env.NODE_ENV === 'development') {
         console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
       }
@@ -159,8 +126,7 @@ export default class Cell extends React.PureComponent {
         'rdg-last--frozen': lastFrozenColumnIndex === idx,
         'row-selected': isRowSelected,
         'has-tooltip': !!tooltip,
-        'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0,
-        'last-column': column.isLastColumn
+        'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }
     );
   }
@@ -173,7 +139,7 @@ export default class Cell extends React.PureComponent {
     }
   }
 
-  setScrollLeft = (scrollLeft) => {
+  setScrollLeft = (scrollLeft: number) => {
     const node = this.cell.current;
     if (node) {
       node.style.transform = `translateX(${scrollLeft}px)`;
@@ -187,25 +153,44 @@ export default class Cell extends React.PureComponent {
     }
   };
 
-  createColumEventCallBack(onColumnEvent, info) {
-    return (e) => {
+  createColumEventCallBack(onColumnEvent: (e: Event, info: CellEventInfo) => void, info: CellEventInfo) {
+    return (e: Event) => {
       onColumnEvent(e, info);
     };
   }
 
-  createCellEventCallBack(gridEvent, columnEvent) {
-    return (e) => {
+  createCellEventCallBack(gridEvent: (e: Event) => void, columnEvent: (e: Event) => void) {
+    return (e: Event) => {
       gridEvent(e);
       columnEvent(e);
     };
   }
 
-  createEventDTO(gridEvents, columnEvents, onColumnEvent) {
-    const allEvents = { ...gridEvents };
+  getEvents() {
+    const { column, cellMetaData } = this.props;
+    const columnEvents = column.events;
+    const onColumnEvent = cellMetaData ? cellMetaData.onColumnEvent : undefined;
+    const allEvents: { [key: string]: unknown } = {
+      onClick: this.handleCellClick,
+      onMouseDown: this.handleCellMouseDown,
+      onMouseEnter: this.handleCellMouseEnter,
+      onDoubleClick: this.handleCellDoubleClick,
+      onContextMenu: this.handleCellContextMenu,
+      onDragOver: this.handleDragOver
+    };
+
+    if (!columnEvents || !onColumnEvent) {
+      return allEvents;
+    }
 
     for (const eventKey in columnEvents) {
       if (columnEvents.hasOwnProperty(eventKey)) {
-        const eventInfo = { idx: this.props.idx, rowIdx: this.props.rowIdx, rowId: this.props.rowData[this.props.cellMetaData.rowKey], name: eventKey };
+        const eventInfo: CellEventInfo = {
+          idx: this.props.idx,
+          rowIdx: this.props.rowIdx,
+          rowId: this.props.rowData[this.props.cellMetaData.rowKey],
+          name: eventKey
+        };
         const eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
 
         if (allEvents.hasOwnProperty(eventKey)) {
@@ -220,29 +205,9 @@ export default class Cell extends React.PureComponent {
     return allEvents;
   }
 
-  getEvents() {
-    const { column, cellMetaData } = this.props;
-    const columnEvents = column ? { ...column.events } : undefined;
-    const onColumnEvent = cellMetaData ? cellMetaData.onColumnEvent : undefined;
-    const gridEvents = {
-      onClick: this.handleCellClick,
-      onMouseDown: this.handleCellMouseDown,
-      onMouseEnter: this.handleCellMouseEnter,
-      onDoubleClick: this.handleCellDoubleClick,
-      onContextMenu: this.handleCellContextMenu,
-      onDragOver: this.handleDragOver
-    };
-
-    if (!columnEvents || !onColumnEvent) {
-      return gridEvents;
-    }
-
-    return this.createEventDTO(gridEvents, columnEvents, onColumnEvent);
-  }
-
   getCellActions() {
     const { cellMetaData, column, rowData } = this.props;
-    if (isFunction(cellMetaData.getCellActions)) {
+    if (cellMetaData.getCellActions) {
       const cellActionButtons = cellMetaData.getCellActions(column, rowData);
       if (cellActionButtons && cellActionButtons.length > 0) {
         return cellActionButtons.map((action, index) => {
@@ -257,7 +222,7 @@ export default class Cell extends React.PureComponent {
     let cellContent;
     const { value, column, height, tooltip, isScrolling, isExpanded, expandableOptions, cellMetaData } = this.props;
     const Formatter = column.formatter;
-    const cellProps = {
+    const cellProps: FormatterProps = {
       value,
       isScrolling,
       isExpanded,
@@ -271,14 +236,14 @@ export default class Cell extends React.PureComponent {
     } else if (isValidElementType(Formatter)) {
       cellContent = <Formatter {...cellProps} />;
     } else {
-      cellContent = <SimpleCellFormatter value={value} />;
+      cellContent = <SimpleCellFormatter value={value as string} />;
     }
     const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
     const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
     const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
 
     const isDeleteSubRowEnabled = !!cellMetaData.onDeleteSubRow;
-    const cellDeleter = treeDepth > 0 && isExpandCell && (
+    const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
       <ChildRowDeleteButton
         treeDepth={treeDepth}
         cellHeight={height}
@@ -307,7 +272,7 @@ export default class Cell extends React.PureComponent {
   }
 
   render() {
-    const { column, height, children, expandableOptions } = this.props;
+    const { column, children, expandableOptions } = this.props;
     if (column.hidden) {
       return null;
     }
@@ -327,7 +292,6 @@ export default class Cell extends React.PureComponent {
     return (
       <div
         ref={this.cell}
-        height={height}
         className={className}
         style={style}
         {...events}

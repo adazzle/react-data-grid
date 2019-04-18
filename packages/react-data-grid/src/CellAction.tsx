@@ -1,15 +1,9 @@
 import classNames from 'classnames';
-import React, { useState, ReactNode } from 'react';
+import React, { useState } from 'react';
 
-interface Action {
-  text: ReactNode;
-  callback(): void;
-}
+import { CellActionButton } from './common/types';
 
-export interface CellActionProps {
-  icon: ReactNode;
-  actions?: Action[];
-  callback?(): void;
+export interface CellActionProps extends CellActionButton {
   isFirst: boolean;
 }
 
