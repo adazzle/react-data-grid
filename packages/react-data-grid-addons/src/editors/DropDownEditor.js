@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { shapes } from 'react-data-grid';
-
-const { Column } = shapes;
-
 export default class DropDownEditor extends React.Component {
   static propTypes = {
     value: PropTypes.any.isRequired,
-    onBlur: PropTypes.func.isRequired,
-    column: PropTypes.shape(Column).isRequired
+    onBlur: PropTypes.func.isRequired
+    // column: PropTypes.shape(Column).isRequired
   };
 
   getInputNode() {

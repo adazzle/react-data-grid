@@ -4,7 +4,6 @@ import { isElement, isValidElementType } from 'react-is';
 
 import Row from './Row';
 import DefaultRowsContainer from './RowsContainer';
-import cellMetaDataShape from './common/prop-shapes/CellActionShape';
 import * as rowUtils from './RowUtils';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
@@ -39,7 +38,7 @@ export default class Canvas extends React.PureComponent {
     expandedRows: PropTypes.array,
     onScroll: PropTypes.func,
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
-    cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
+    // cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
     selectedRows: PropTypes.array,
     rowKey: PropTypes.string,
     scrollToRowIndex: PropTypes.number,
