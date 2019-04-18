@@ -6,7 +6,6 @@ import * as ColumnMetrics from './ColumnMetrics';
 import { getColumn } from './ColumnUtils';
 import HeaderRow from './HeaderRow';
 import getScrollbarSize from './getScrollbarSize';
-import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
 import { HeaderRowType } from './common/enums';
 
 export default class Header extends React.Component {
@@ -22,8 +21,8 @@ export default class Header extends React.Component {
     onScroll: PropTypes.func,
     onHeaderDrop: PropTypes.func,
     draggableHeaderCell: PropTypes.func,
-    getValidFilterValues: PropTypes.func,
-    cellMetaData: PropTypes.shape(cellMetaDataShape)
+    getValidFilterValues: PropTypes.func
+    // cellMetaData: PropTypes.shape(cellMetaDataShape)
   };
 
   state = { resizing: null };

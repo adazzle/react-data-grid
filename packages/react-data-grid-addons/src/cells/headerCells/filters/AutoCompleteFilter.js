@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { shapes, _utils } from 'react-data-grid';
+import { _utils } from 'react-data-grid';
 
 const { isEmptyArray } = _utils;
 
@@ -80,7 +80,7 @@ export default class AutoCompleteFilter extends React.Component {
 
 AutoCompleteFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
-  column: PropTypes.shape(shapes.Column),
+  // column: PropTypes.shape(shapes.Column),
   getValidFilterValues: PropTypes.func,
   multiSelection: PropTypes.bool
 };

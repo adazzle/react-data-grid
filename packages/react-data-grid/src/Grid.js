@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import Header from './Header';
 import Viewport from './Viewport';
-import cellMetaDataShape from './common/prop-shapes/CellMetaDataShape';
 import { isFrozen } from './ColumnUtils';
 
 export default class Grid extends React.Component {
@@ -37,7 +36,7 @@ export default class Grid extends React.Component {
     ]),
     rowsCount: PropTypes.number,
     sortColumn: PropTypes.string,
-    cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
+    // cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
     sortDirection: PropTypes.oneOf(['ASC', 'DESC', 'NONE']),
     rowOffsetHeight: PropTypes.number.isRequired,
     onViewportKeydown: PropTypes.func.isRequired,

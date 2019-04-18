@@ -5,14 +5,12 @@ export { default as Row } from './Row';
 export { default as HeaderCell } from './HeaderCell';
 import * as formatters from './formatters';
 import * as editors from './common/editors';
-import * as shapes from './common/prop-shapes';
 import * as _utils from './common/utils';
 import * as _constants from './common/enums';
 import * as _helpers from './helpers';
 export {
   formatters,
   editors,
-  shapes,
   _utils,
   _constants,
   _helpers
