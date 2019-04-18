@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 
-import InteractionMasks from '../InteractionMasks';
+import InteractionMasks, { Props, State } from '../InteractionMasks';
 import SelectionMask from '../SelectionMask';
 import SelectionRangeMask from '../SelectionRangeMask';
 import CopyMask from '../CopyMask';
@@ -12,6 +12,7 @@ import EditorContainer from '../../common/editors/EditorContainer';
 import { sel, createColumns } from '../../__tests__/utils';
 import keyCodes from '../../KeyCodes';
 import { CellNavigationMode, EventTypes, UpdateActions } from '../../common/enums';
+import { Position } from '../../common/types';
 
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
@@ -20,9 +21,9 @@ const columns = createColumns(NUMBER_OF_COLUMNS);
 describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
-  const setup = (overrideProps, initialState, render = shallow) => {
-    const eventBus = new EventBus();
-    const props = {
+  function setup<K extends keyof State>(overrideProps?: Partial<Props>, initialState?: Pick<State, K>, isMount = false) {
+    const onCellSelected = jest.fn();
+    const props: Props = {
       rowVisibleStartIdx: 0,
       rowVisibleEndIdx: 10,
       colVisibleStartIdx: 0,
@@ -30,40 +31,50 @@ describe('<InteractionMasks/>', () => {
       columns,
       rowHeight: 30,
       rowsCount: ROWS_COUNT,
-      editCell: jest.fn(),
-      selectCell: jest.fn(),
       onHitBottomBoundary: jest.fn(),
       onHitTopBoundary: jest.fn(),
       onHitRightBoundary: jest.fn(),
       onHitLeftBoundary: jest.fn(),
-      onCellSelected: jest.fn(),
+      onCellSelected,
       onCellDeSelected: jest.fn(),
       onCellRangeSelectionStarted: jest.fn(),
       onCellRangeSelectionUpdated: jest.fn(),
       onCellRangeSelectionCompleted: jest.fn(),
       onGridRowsUpdated: jest.fn(),
-      isEditorEnabled: false,
+      onDragHandleDoubleClick() {},
+      onCommit() {},
       rowGetter,
       enableCellSelect: true,
+      enableCellAutoFocus: false,
       cellNavigationMode: CellNavigationMode.NONE,
-      eventBus,
+      eventBus: new EventBus(),
       getRowColumns: () => columns,
       getRowHeight: () => 50,
       getRowTop: () => 0,
       editorPortalTarget: document.body,
+      scrollLeft: 0,
+      scrollTop: 0,
       ...overrideProps
     };
-    const wrapper = render(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
-    wrapper.setState(initialState);
-    props.onCellSelected.mockReset();
-    return { wrapper, props };
-  };
 
-  const pressKey = (wrapper, key, eventData) => {
+    if (isMount) {
+      const wrapper = mount<InteractionMasks>(<InteractionMasks {...props} />);
+      initialState && wrapper.setState(initialState);
+      onCellSelected.mockReset();
+      return { wrapper, props };
+    }
+
+    const wrapper = shallow<InteractionMasks>(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
+    initialState && wrapper.setState(initialState);
+    onCellSelected.mockReset();
+    return { wrapper, props };
+  }
+
+  const pressKey = (wrapper: ReturnType<typeof setup>['wrapper'], key: string, eventData?: Partial<React.KeyboardEvent>) => {
     wrapper.simulate('keydown', { key, preventDefault: () => null, ...eventData });
   };
 
-  const simulateTab = (wrapper, shiftKey = false, preventDefault = () => { }) => {
+  const simulateTab = (wrapper: ReturnType<typeof setup>['wrapper'], shiftKey = false, preventDefault = () => {}) => {
     pressKey(wrapper, 'Tab', { keyCode: keyCodes.Tab, shiftKey, preventDefault });
   };
 
@@ -91,7 +102,9 @@ describe('<InteractionMasks/>', () => {
           selectedRange: {
             topLeft: { idx: 0, rowIdx: 0 },
             bottomRight: { idx: 1, rowIdx: 1 },
-            startCell: { idx: 0, rowIdx: 0 }
+            startCell: { idx: 0, rowIdx: 0 },
+            cursorCell: null,
+            isDragging: false
           }
         });
         expect(wrapper.find(SelectionRangeMask).length).toBe(1);
@@ -103,7 +116,9 @@ describe('<InteractionMasks/>', () => {
           selectedRange: {
             topLeft: { idx: 0, rowIdx: 0 },
             bottomRight: { idx: 1, rowIdx: 1 },
-            startCell: { idx: 0, rowIdx: 0 }
+            startCell: { idx: 0, rowIdx: 0 },
+            cursorCell: null,
+            isDragging: false
           }
         });
         expect(wrapper.find(SelectionMask).length).toBe(1);
@@ -131,15 +146,14 @@ describe('<InteractionMasks/>', () => {
       });
 
       describe('moving the cursor to a new cell, mid-select', () => {
-        let props;
-        let wrapper;
-
-        beforeEach(() => {
-          ({ props, wrapper } = setup());
+        function innerSetup() {
+          const { props, wrapper } = setup();
           props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-        });
+          return { props, wrapper };
+        }
 
         it('should update topLeft (and cursor) when moving left', () => {
+          const { props, wrapper } = innerSetup();
           props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 1, rowIdx: 2 });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toEqual({ idx: 1, rowIdx: 2 });
@@ -149,6 +163,7 @@ describe('<InteractionMasks/>', () => {
         });
 
         it('should update topLeft (and cursor) when moving up', () => {
+          const { props, wrapper } = innerSetup();
           props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 2, rowIdx: 1 });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 1 });
@@ -158,6 +173,7 @@ describe('<InteractionMasks/>', () => {
         });
 
         it('should update bottomRight (and cursor) when moving right', () => {
+          const { props, wrapper } = innerSetup();
           props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 2 });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
@@ -167,6 +183,7 @@ describe('<InteractionMasks/>', () => {
         });
 
         it('should update bottomRight (and cursor) when moving down', () => {
+          const { props, wrapper } = innerSetup();
           props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 2, rowIdx: 3 });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toEqual({ idx: 2, rowIdx: 2 });
@@ -179,20 +196,20 @@ describe('<InteractionMasks/>', () => {
       it('should not update state when moving the cursor but not mid-select', () => {
         const { props, wrapper } = setup();
         props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 2, rowIdx: 2 });
-        expect(wrapper.state('selectedRange').startCell).toBeUndefined();
+        expect(wrapper.state('selectedRange').startCell).toBeNull();
       });
 
       it('should not update state when moving the cursor after a selection has ended', () => {
         const { props, wrapper } = setup();
         props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-        props.eventBus.dispatch(EventTypes.SELECT_END, { idx: 2, rowIdx: 2 });
+        props.eventBus.dispatch(EventTypes.SELECT_END);
         props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
         expect(wrapper.state('selectedRange').cursorCell).toEqual({ idx: 2, rowIdx: 2 });
       });
 
       it('should give focus to InteractionMasks once a selection has ended', () => {
         // We have to use mount, rather than shallow, so that InteractionMasks has a ref to it's node, used for focusing
-        const { props } = setup(undefined, undefined, mount);
+        const { props } = setup(undefined, undefined, true);
         props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
         jest.spyOn(InteractionMasks.prototype, 'focus').mockImplementation(() => {});
         props.eventBus.dispatch(EventTypes.SELECT_END);
@@ -202,25 +219,22 @@ describe('<InteractionMasks/>', () => {
   });
 
   describe('Keyboard range selection functionality', () => {
-    const selectRange = (wrapper, props, from, to) => {
-      props.eventBus.dispatch(EventTypes.SELECT_START, from);
-      props.eventBus.dispatch(EventTypes.SELECT_UPDATE, to);
-      props.eventBus.dispatch(EventTypes.SELECT_END);
+    const selectRange = (eventBus: EventBus, from: Position, to: Position) => {
+      eventBus.dispatch(EventTypes.SELECT_START, from);
+      eventBus.dispatch(EventTypes.SELECT_UPDATE, to);
+      eventBus.dispatch(EventTypes.SELECT_END);
     };
 
     describe('when a range is already selected', () => {
       describe('when the cursor cell is not in outer bounds', () => {
-        let props;
-        let wrapper;
-
-        beforeEach(() => {
+        function innerSetup() {
           const setupResult = setup();
-          props = setupResult.props;
-          wrapper = setupResult.wrapper;
-          selectRange(wrapper, props, { idx: 2, rowIdx: 2 }, { idx: 3, rowIdx: 3 });
-        });
+          selectRange(setupResult.props.eventBus, { idx: 2, rowIdx: 2 }, { idx: 3, rowIdx: 3 });
+          return setupResult;
+        }
 
         it('should shrink the selection upwards on Shift+Up', () => {
+          const { wrapper } = innerSetup();
           pressKey(wrapper, 'ArrowUp', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
@@ -230,6 +244,7 @@ describe('<InteractionMasks/>', () => {
         });
 
         it('should shrink the selection leftwards on Shift+Left', () => {
+          const { wrapper } = innerSetup();
           pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
@@ -239,6 +254,7 @@ describe('<InteractionMasks/>', () => {
         });
 
         it('should grow the selection downwards on Shift+Down', () => {
+          const { wrapper } = innerSetup();
           pressKey(wrapper, 'ArrowDown', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
@@ -248,6 +264,7 @@ describe('<InteractionMasks/>', () => {
         });
 
         it('should grow the selection rightwards on Shift+Right', () => {
+          const { wrapper } = innerSetup();
           pressKey(wrapper, 'ArrowRight', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
@@ -260,7 +277,7 @@ describe('<InteractionMasks/>', () => {
       describe('when the next cell is out of bounds', () => {
         it('should not grow the selection on Shift+Up', () => {
           const { props, wrapper } = setup();
-          selectRange(wrapper, props, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
+          selectRange(props.eventBus, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
           pressKey(wrapper, 'ArrowUp', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.cursorCell).toMatchObject({ idx: 0, rowIdx: 0 });
@@ -268,7 +285,7 @@ describe('<InteractionMasks/>', () => {
 
         it('should not grow the selection on Shift+Left', () => {
           const { props, wrapper } = setup();
-          selectRange(wrapper, props, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
+          selectRange(props.eventBus, { idx: 1, rowIdx: 1 }, { idx: 0, rowIdx: 0 });
           pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.cursorCell).toEqual({ idx: 0, rowIdx: 0 });
@@ -276,7 +293,7 @@ describe('<InteractionMasks/>', () => {
 
         it('should not grow the selection on Shift+Right', () => {
           const { props, wrapper } = setup();
-          selectRange(wrapper, props, { idx: 2, rowIdx: 2 }, { idx: NUMBER_OF_COLUMNS - 1, rowIdx: 3 });
+          selectRange(props.eventBus, { idx: 2, rowIdx: 2 }, { idx: NUMBER_OF_COLUMNS - 1, rowIdx: 3 });
           pressKey(wrapper, 'ArrowRight', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.cursorCell).toEqual({ idx: NUMBER_OF_COLUMNS - 1, rowIdx: 3 });
@@ -284,7 +301,7 @@ describe('<InteractionMasks/>', () => {
 
         it('should not grow the selection on Shift+Down', () => {
           const { props, wrapper } = setup();
-          selectRange(wrapper, props, { idx: 2, rowIdx: 2 }, { idx: 2, rowIdx: ROWS_COUNT - 1 });
+          selectRange(props.eventBus, { idx: 2, rowIdx: 2 }, { idx: 2, rowIdx: ROWS_COUNT - 1 });
           pressKey(wrapper, 'ArrowDown', { shiftKey: true });
           const selectedRange = wrapper.state('selectedRange');
           expect(selectedRange.cursorCell).toEqual({ idx: 2, rowIdx: ROWS_COUNT - 1 });
@@ -293,19 +310,16 @@ describe('<InteractionMasks/>', () => {
     });
 
     describe('when only a single cell is selected', () => {
-      let props;
-      let wrapper;
-
-      beforeEach(() => {
+      function innerSetup() {
         const currentCell = { idx: 2, rowIdx: 2 };
         const setupResult = setup({}, { selectedPosition: currentCell });
-        props = setupResult.props;
-        wrapper = setupResult.wrapper;
-        props.eventBus.dispatch(EventTypes.SELECT_START, currentCell);
-        props.eventBus.dispatch(EventTypes.SELECT_END);
-      });
+        setupResult.props.eventBus.dispatch(EventTypes.SELECT_START, currentCell);
+        setupResult.props.eventBus.dispatch(EventTypes.SELECT_END);
+        return setupResult;
+      }
 
       it('should grow the selection range left on Shift+Left', () => {
+        const { wrapper } = innerSetup();
         pressKey(wrapper, 'ArrowLeft', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toMatchObject({ idx: 1, rowIdx: 2 });
@@ -315,6 +329,7 @@ describe('<InteractionMasks/>', () => {
       });
 
       it('should grow the selection range right on Shift+Right', () => {
+        const { wrapper } = innerSetup();
         pressKey(wrapper, 'ArrowRight', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
@@ -324,6 +339,7 @@ describe('<InteractionMasks/>', () => {
       });
 
       it('should grow the selection range up on Shift+Up', () => {
+        const { wrapper } = innerSetup();
         pressKey(wrapper, 'ArrowUp', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 1 });
@@ -333,6 +349,7 @@ describe('<InteractionMasks/>', () => {
       });
 
       it('should grow the selection range down on Shift+Down', () => {
+        const { wrapper } = innerSetup();
         pressKey(wrapper, 'ArrowDown', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toMatchObject({ idx: 2, rowIdx: 2 });
@@ -343,15 +360,13 @@ describe('<InteractionMasks/>', () => {
     });
 
     describe('when no range has ever been selected', () => {
-      let wrapper;
-
-      beforeEach(() => {
+      function innerSetup() {
         const currentCell = { idx: 0, rowIdx: 0 };
-        const setupResult = setup({}, { selectedPosition: currentCell });
-        wrapper = setupResult.wrapper;
-      });
+        return setup({}, { selectedPosition: currentCell });
+      }
 
       it('should grow the selection range right on Shift+Right', () => {
+        const { wrapper } = innerSetup();
         pressKey(wrapper, 'ArrowRight', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toMatchObject({ idx: 0, rowIdx: 0 });
@@ -361,6 +376,7 @@ describe('<InteractionMasks/>', () => {
       });
 
       it('should grow the selection range down on Shift+Down', () => {
+        const { wrapper } = innerSetup();
         pressKey(wrapper, 'ArrowDown', { shiftKey: true });
         const selectedRange = wrapper.state('selectedRange');
         expect(selectedRange.topLeft).toMatchObject({ idx: 0, rowIdx: 0 });
@@ -487,10 +503,10 @@ describe('<InteractionMasks/>', () => {
 
     describe('Full render tests', () => {
       describe('Cell Selection/DeSelection handlers', () => {
-        const setupCellSelectionTest = (initialCell = { rowIdx: 2, idx: 2 }) => {
+        const setupCellSelectionTest = (initialCell: Position = { rowIdx: 2, idx: 2 }) => {
           return {
-            ...setup({}, { selectedPosition: initialCell }, mount),
-            ...{ initialCell }
+            ...setup({}, { selectedPosition: initialCell }, true),
+            initialCell
           };
         };
 
@@ -542,24 +558,24 @@ describe('<InteractionMasks/>', () => {
       // enzyme doesn't allow dom keyboard navigation, but we can assume that if
       // prevent default isn't called, it lets the dom do normal navigation
 
-      const assertGridWasExited = (wrapper) => {
+      const assertGridWasExited = (wrapper: ReturnType<typeof setup>['wrapper']) => {
         expect(wrapper.state().selectedPosition).toEqual({ idx: -1, rowIdx: -1 });
       };
 
-      const tabCell = (props, shiftKey, state = {}) => {
+      const tabCell = <K extends keyof State>(props: Partial<Props>, shiftKey?: boolean, state?: Pick<State, K>) => {
         const { wrapper } = setup(props, state);
         const preventDefaultSpy = jest.fn();
         simulateTab(wrapper, shiftKey, preventDefaultSpy);
         return { wrapper, preventDefaultSpy };
       };
 
-      const assertExitGridOnTab = (props, shiftKey, state = {}) => {
+      const assertExitGridOnTab = <K extends keyof State>(props: Partial<Props>, shiftKey?: boolean, state?: Pick<State, K>) => {
         const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
         expect(preventDefaultSpy).not.toHaveBeenCalled();
         assertGridWasExited(wrapper);
       };
 
-      const assertSelectedCellOnTab = (props, shiftKey, state = {}) => {
+      const assertSelectedCellOnTab = <K extends keyof State>(props: Partial<Props>, shiftKey?: boolean, state?: Pick<State, K>) => {
         const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
         expect(preventDefaultSpy).toHaveBeenCalled();
         return expect(wrapper.state().selectedPosition);
@@ -642,7 +658,7 @@ describe('<InteractionMasks/>', () => {
       });
 
       describe('when cellNavigationMode is loopOverRow', () => {
-        const cellNavigationMode = 'loopOverRow';
+        const cellNavigationMode = CellNavigationMode.LOOP_OVER_ROW;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
           assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
         });
@@ -682,7 +698,7 @@ describe('<InteractionMasks/>', () => {
         { Column1: '3' }
       ];
       return setup({
-        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter(rowIdx)
+        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter()
       }, { selectedPosition });
     };
 
@@ -726,7 +742,7 @@ describe('<InteractionMasks/>', () => {
         { Column1: '3' }
       ];
       return setup({
-        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter(rowIdx)
+        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter()
       }, { selectedPosition });
     };
 
