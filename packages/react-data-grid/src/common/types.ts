@@ -1,4 +1,4 @@
-import { KeyboardEvent } from 'react';
+import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
 import { HeaderRowType } from './enums';
 
@@ -10,9 +10,14 @@ export interface Column<T = unknown> {
   //FIXME: width and left should be optional
   width: number;
   left: number;
+  hidden?: boolean;
   cellClass?: string;
+  events?: {
+    [key: string]: undefined | ((e: Event, info: ColumnEventInfo) => void);
+  };
 
-  editable?: boolean | ((rowData: unknown) => boolean);
+  formatter?: React.ReactElement | React.ComponentType<FormatterProps>;
+  editable?: boolean | ((rowData: RowData) => boolean);
   draggable?: boolean;
   filterable?: boolean;
   frozen?: boolean;
@@ -25,7 +30,7 @@ export interface Column<T = unknown> {
   filterRenderer?: React.ComponentType;
 
   onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
-  getRowMetaData?(rowData: unknown, column: Column<T>): unknown;
+  getRowMetaData?(rowData: RowData, column: Column<T>): unknown;
 }
 
 export type ColumnList = Column[] | List<Column>;
@@ -36,20 +41,23 @@ export interface ColumnMetrics {
   totalColumnWidth: number;
 }
 
+export interface RowData {
+  [key: string]: unknown;
+}
+
 export interface CellMetaData {
   rowKey: string;
-  onCellClick(): void;
-  onCellMouseDown(): void;
-  onCellMouseEnter(): void;
-  onCellContextMenu(): void;
-  onCellDoubleClick(): void;
+  onCellClick(position: Position): void;
+  onCellContextMenu(position: Position): void;
+  onCellDoubleClick(position: Position): void;
   onDragEnter(): void;
+  onCellExpand(options: SubRowOptions): void;
   onRowExpandToggle(data: { rowIdx: number; shouldExpand: boolean; columnGroupName: string; name: string }): void;
-  onDeleteSubRow?(): void;
+  onCellMouseDown?(position: Position): void;
+  onCellMouseEnter?(position: Position): void;
   onAddSubRow?(): void;
-  onColumnEvent(): void;
-  onCellExpand(): void;
-  getCellActions?(): void;
+  onDeleteSubRow?(options: SubRowOptions): void;
+  getCellActions?(column: Column, rowData: RowData): CellActionButton[] | undefined;
 }
 
 export interface Position {
@@ -70,7 +78,7 @@ export interface Dimension {
   zIndex: number;
 }
 
-export type RowGetter = (rowIdx: number) => unknown;
+export type RowGetter = (rowIdx: number) => RowData;
 
 export interface Editor {
   getInputNode(): Element | Text | undefined | null;
@@ -81,14 +89,65 @@ export interface Editor {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface EditorProps<V = unknown, C = unknown, R = unknown> {
+export interface FormatterProps {
+  value: unknown;
+  column: Column;
+  row: RowData;
+  isScrolling?: boolean;
+  isExpanded?: boolean;
+  dependentValues?: unknown;
+}
+
+export interface EditorProps<V = unknown, C = unknown> {
   column: Column<C>;
   value: V;
   rowMetaData: unknown;
-  rowData: R;
+  rowData: RowData;
   height: number;
   onCommit(args?: { key?: string }): void;
   onCommitCancel(): void;
   onBlur(): void;
   onOverrideKeyDown(e: KeyboardEvent): void;
+}
+
+interface SubRowDetails {
+  canExpand: boolean;
+  field: string;
+  expanded: boolean;
+  children: unknown;
+  treeDepth: number;
+  siblingIndex: number;
+  numberSiblings: number;
+}
+
+export interface SubRowOptions {
+  rowIdx: number;
+  idx: number;
+  rowData: RowData;
+  expandArgs?: ExpandableOptions;
+}
+
+export interface ExpandableOptions {
+  canExpand: boolean;
+  field: string;
+  expanded: boolean;
+  children: unknown;
+  treeDepth: number;
+  subRowDetails: SubRowDetails;
+}
+
+interface Action {
+  text: ReactNode;
+  callback(): void;
+}
+
+export interface CellActionButton {
+  icon: ReactNode;
+  actions?: Action[];
+  callback?(): void;
+}
+
+export interface ColumnEventInfo extends Position {
+  rowId: unknown;
+  column: Column;
 }

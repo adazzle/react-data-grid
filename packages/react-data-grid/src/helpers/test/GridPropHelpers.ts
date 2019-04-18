@@ -45,7 +45,6 @@ export const fakeCellMetaData = {
   rowKey: 'id',
   onCellClick: () => null,
   onCellMouseDown: () => null,
-  onColumnEvent: () => null,
   onCellExpand: () => null,
   onCellMouseEnter: () => null,
   onCellContextMenu: () => null,

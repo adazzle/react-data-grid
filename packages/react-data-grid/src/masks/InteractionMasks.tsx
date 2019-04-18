@@ -29,7 +29,7 @@ import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { Column, ColumnList, Position, Range, RowGetter, Dimension } from '../common/types';
+import { Column, RowData, ColumnList, Position, Range, RowGetter, Dimension } from '../common/types';
 import EventBus from './EventBus';
 
 const SCROLL_CELL_BUFFER = 2;
@@ -80,7 +80,7 @@ export interface Props {
   onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
   onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
   onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onDragHandleDoubleClick(data: Position & { rowData: unknown }): void;
+  onDragHandleDoubleClick(data: Position & { rowData: RowData }): void;
   scrollLeft: number;
   scrollTop: number;
   getRowHeight(rowIdx: number): number;

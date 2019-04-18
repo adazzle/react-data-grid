@@ -2,14 +2,14 @@ import React, { MouseEvent, KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { Column, Editor, EditorProps } from '../types';
+import { Column, Editor, EditorProps, RowData } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import { Z_INDEXES } from '../enums';
 import ClickOutside from './ClickOutside';
 
 interface Props {
   rowIdx: number;
-  rowData: unknown;
+  rowData: RowData;
   value: unknown;
   column: Column;
   width: number;

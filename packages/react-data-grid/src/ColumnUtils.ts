@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { Column, ColumnList, ColumnMetrics } from './common/types';
+import { Column, ColumnList, ColumnMetrics, RowData } from './common/types';
 
 export function getColumn(columns: ColumnList, idx: number): Column {
   if (Array.isArray(columns)) {
@@ -28,7 +28,7 @@ export function getSize<T>(columns: T[] | Immutable.List<T>): number {
 
 // Logic extented to allow for functions to be passed down in column.editable
 // this allows us to deicde whether we can be editing from a cell level
-export function canEdit(column: Column, rowData: unknown, enableCellSelect?: boolean): boolean {
+export function canEdit(column: Column, rowData: RowData, enableCellSelect?: boolean): boolean {
   if (typeof column.editable === 'function') {
     return enableCellSelect === true && column.editable(rowData);
   }

@@ -11,7 +11,6 @@ export default PropTypes.shape({
   onRowExpandToggle: PropTypes.func.isRequired,
   onDeleteSubRow: PropTypes.func,
   onAddSubRow: PropTypes.func,
-  onColumnEvent: PropTypes.func.isRequired,
   onCellExpand: PropTypes.func.isRequired,
   getCellActions: PropTypes.func
 });
