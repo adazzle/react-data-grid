@@ -1,16 +1,14 @@
 # https://www.appveyor.com/docs/appveyor-yml/
 shallow_clone: true
-image: Visual Studio 2017
+image: ubuntu
 branches:
   only:
     - master
     - next
 
-environment:
-  nodejs_version: "11"
+stack: node 11
 
 install:
-  - ps: Install-Product node $env:nodejs_version x64
   - node --version
   - npm --version
   - npm install
