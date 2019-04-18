@@ -13,7 +13,7 @@ export interface Column<T = unknown> {
   hidden?: boolean;
   cellClass?: string;
   events?: {
-    [key: string]: (e: Event, info: ColumnEventInfo) => void;
+    [key: string]: undefined | ((e: Event, info: ColumnEventInfo) => void);
   };
 
   formatter?: React.ReactElement | React.ComponentType<FormatterProps>;

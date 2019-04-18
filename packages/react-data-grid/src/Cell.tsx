@@ -174,7 +174,8 @@ export default class Cell extends React.PureComponent<Props> {
     }
 
     for (const event in columnEvents) {
-      if (columnEvents.hasOwnProperty(event)) {
+      const columnEventHandler = columnEvents[event];
+      if (columnEventHandler) {
         const eventInfo: ColumnEventInfo = {
           idx,
           rowIdx,
@@ -185,11 +186,11 @@ export default class Cell extends React.PureComponent<Props> {
           const existingEvent = allEvents[event];
           allEvents[event] = (e: Event) => {
             existingEvent(e);
-            columnEvents[event](e, eventInfo);
+            columnEventHandler(e, eventInfo);
           };
         } else {
           allEvents[event] = (e: Event) => {
-            columnEvents[event](e, eventInfo);
+            columnEventHandler(e, eventInfo);
           };
         }
       }
