@@ -179,7 +179,7 @@ describe('<InteractionMasks/>', () => {
       it('should not update state when moving the cursor but not mid-select', () => {
         const { props, wrapper } = setup();
         props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 2, rowIdx: 2 });
-        expect(wrapper.state('selectedRange').startCell).toBeUndefined();
+        expect(wrapper.state('selectedRange').startCell).toBeNull();
       });
 
       it('should not update state when moving the cursor after a selection has ended', () => {

@@ -735,7 +735,6 @@ export default class InteractionMasks extends React.Component<Props, State> {
               column={getSelectedColumn({ selectedPosition, columns })}
               scrollLeft={scrollLeft}
               scrollTop={scrollTop}
-              editorPortalTarget={this.props.editorPortalTarget}
               {...this.getSelectedDimensions(selectedPosition)}
               {...this.state.editorPosition}
             />

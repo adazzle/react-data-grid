@@ -9,7 +9,7 @@ import ClickOutside from './ClickOutside';
 
 interface Props {
   rowIdx: number;
-  rowData: { [key: number]: unknown };
+  rowData: unknown;
   value: unknown;
   column: Column;
   width: number;
@@ -19,7 +19,7 @@ interface Props {
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(args: unknown): void;
   onCommitCancel(): void;
-  firstEditorKeyPress?: string;
+  firstEditorKeyPress: string | null;
   scrollLeft: number;
   scrollTop: number;
 }
