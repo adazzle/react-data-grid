@@ -37,7 +37,7 @@ export default class Cell extends React.PureComponent<Props> {
     value: ''
   };
 
-  cell = React.createRef<HTMLDivElement>();
+  private readonly cell = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
     this.checkScroll();
@@ -45,7 +45,7 @@ export default class Cell extends React.PureComponent<Props> {
 
   componentDidUpdate(prevProps: Props) {
     const { column } = this.props;
-    if (isFrozen(prevProps.column) !== isFrozen(column) && !isFrozen(column)) {
+    if (isFrozen(prevProps.column) && !isFrozen(column)) {
       this.removeScroll();
     }
   }

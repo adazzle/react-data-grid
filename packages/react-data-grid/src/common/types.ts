@@ -111,7 +111,7 @@ export interface EditorProps<V = unknown, C = unknown> {
 }
 
 interface SubRowDetails {
-  anExpand: boolean;
+  canExpand: boolean;
   field: string;
   expanded: boolean;
   children: unknown;
