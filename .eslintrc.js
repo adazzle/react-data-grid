@@ -20,10 +20,7 @@ const rules = {
   'no-empty-character-class': 2,
   'no-ex-assign': 2,
   'no-extra-boolean-cast': 2,
-  'no-extra-parens': [1, 'all', {
-    nestedBinaryExpressions: false,
-    ignoreJSX: 'multi-line'
-  }],
+  'no-extra-parens': 0,
   'no-extra-semi': 2,
   'no-func-assign': 2,
   'no-inner-declarations': 0,
@@ -429,6 +426,13 @@ const rules = {
   '@typescript-eslint/unified-signatures': 0
 };
 
+const jsRules = {
+  'no-extra-parens': [1, 'all', {
+    nestedBinaryExpressions: false,
+    ignoreJSX: 'multi-line'
+  }]
+};
+
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
@@ -472,6 +476,7 @@ module.exports = {
       ecmaFeatures: {
         jsx: true
       }
-    }
+    },
+    rules: jsRules
   }]
 };
