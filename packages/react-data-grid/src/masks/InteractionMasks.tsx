@@ -132,11 +132,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
   private readonly selectionMask = React.createRef<HTMLDivElement>();
   private readonly copyMask = React.createRef<HTMLDivElement>();
 
-  private unsubscribeSelectCell: null | (() => void) = null;
-  private unsubscribeSelectStart: null | (() => void) = null;
-  private unsubscribeSelectUpdate: null | (() => void) = null;
-  private unsubscribeSelectEnd: null | (() => void) = null;
-  private unsubscribeDragEnter: null | (() => void) = null;
+  private unsubscribeEventHandlers: Array<() => void> = [];
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     const { selectedPosition, isEditorEnabled } = this.state;
@@ -163,11 +159,14 @@ export default class InteractionMasks extends React.Component<Props, State> {
 
   componentDidMount() {
     const { eventBus, enableCellAutoFocus } = this.props;
-    this.unsubscribeSelectCell = eventBus.subscribe(EventTypes.SELECT_CELL, this.selectCell);
-    this.unsubscribeSelectStart = eventBus.subscribe(EventTypes.SELECT_START, this.onSelectCellRangeStarted);
-    this.unsubscribeSelectUpdate = eventBus.subscribe(EventTypes.SELECT_UPDATE, this.onSelectCellRangeUpdated);
-    this.unsubscribeSelectEnd = eventBus.subscribe(EventTypes.SELECT_END, this.onSelectCellRangeEnded);
-    this.unsubscribeDragEnter = eventBus.subscribe(EventTypes.DRAG_ENTER, this.handleDragEnter);
+
+    this.unsubscribeEventHandlers = [
+      eventBus.subscribe(EventTypes.SELECT_CELL, this.selectCell),
+      eventBus.subscribe(EventTypes.SELECT_START, this.onSelectCellRangeStarted),
+      eventBus.subscribe(EventTypes.SELECT_UPDATE, this.onSelectCellRangeUpdated),
+      eventBus.subscribe(EventTypes.SELECT_END, this.onSelectCellRangeEnded),
+      eventBus.subscribe(EventTypes.DRAG_ENTER, this.handleDragEnter)
+    ];
 
     if (enableCellAutoFocus && this.isFocusedOnBody()) {
       this.selectFirstCell();
@@ -175,11 +174,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    this.unsubscribeSelectCell!();
-    this.unsubscribeSelectStart!();
-    this.unsubscribeSelectUpdate!();
-    this.unsubscribeSelectEnd!();
-    this.unsubscribeDragEnter!();
+    this.unsubscribeEventHandlers.forEach(h => h());
   }
 
   getEditorPosition() {
@@ -605,7 +600,10 @@ export default class InteractionMasks extends React.Component<Props, State> {
         e.dataTransfer.setData('text', transferData);
       }
       this.setState({
-        draggedPosition: selectedPosition
+        draggedPosition: {
+          ...selectedPosition,
+          overRowIdx: selectedPosition.rowIdx
+        }
       });
     }
   };
@@ -692,7 +690,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
           {...getSelectedRangeDimensions({ selectedRange: this.state.selectedRange, columns, rowHeight })}
         />
         <SelectionMask
-          {...this.getSelectedDimensions(this.state.selectedRange.startCell, true)}
+          {...this.getSelectedDimensions(this.state.selectedPosition, true)}
           ref={this.selectionMask}
         />
       </>

@@ -42,7 +42,7 @@ const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref)
   }
 
   function onClick() {
-    props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: props.idx });
+    props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: props.idx, idx: 0 });
   }
 
   const lastColumn = last(props.columns);
