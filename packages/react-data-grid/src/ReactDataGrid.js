@@ -371,25 +371,6 @@ export default class ReactDataGrid extends React.Component {
     return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
   };
 
-  onColumnEvent = (ev, columnEvent) => {
-    const { idx, name } = columnEvent;
-
-    if (name && typeof idx !== 'undefined') {
-      const column = this.getColumn(idx);
-
-      if (column && column.events && isFunction(column.events[name])) {
-        const eventArgs = {
-          idx,
-          rowIdx: columnEvent.rowIdx,
-          rowId: columnEvent.rowId,
-          column
-        };
-
-        column.events[name](ev, eventArgs);
-      }
-    }
-  };
-
   onCellClick = ({ rowIdx, idx }) => {
     const { onRowClick, rowGetter } = this.props;
     this.selectCell({ rowIdx, idx });
@@ -762,7 +743,6 @@ export default class ReactDataGrid extends React.Component {
       onCellClick: this.onCellClick,
       onCellContextMenu: this.onCellContextMenu,
       onCellDoubleClick: this.onCellDoubleClick,
-      onColumnEvent: this.onColumnEvent,
       onCellExpand: this.onCellExpand,
       onRowExpandToggle: this.onRowExpandToggle,
       getCellActions: this.props.getCellActions,

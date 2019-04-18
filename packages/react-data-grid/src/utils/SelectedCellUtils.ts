@@ -1,7 +1,7 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
 import * as rowUtils from '../RowUtils';
 import { getColumn, isFrozen, canEdit, getSize } from '../ColumnUtils';
-import { Column, ColumnList, Position, Range, Dimension, RowGetter } from '../common/types';
+import { Column, ColumnList, Position, Range, Dimension, RowGetter, RowData } from '../common/types';
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
 
@@ -10,7 +10,7 @@ interface getSelectedRowOpts {
   rowGetter: RowGetter;
 }
 
-export function getSelectedRow({ selectedPosition, rowGetter }: getSelectedRowOpts): unknown {
+export function getSelectedRow({ selectedPosition, rowGetter }: getSelectedRowOpts): RowData {
   return rowGetter(selectedPosition.rowIdx);
 }
 

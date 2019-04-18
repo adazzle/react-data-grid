@@ -44,7 +44,6 @@ const viewportProps = {
     onCellContextMenu() {},
     onDragEnter() {},
     onRowExpandToggle() {},
-    onColumnEvent() {},
     onCellExpand() {}
   },
   rowKey: 'Id',
@@ -95,7 +94,6 @@ const viewportPropsNoColumns = { // when creating anew plan copying from an exis
     onCellContextMenu() {},
     onDragEnter() {},
     onRowExpandToggle() {},
-    onColumnEvent() {},
     onCellExpand() {}
   },
   rowKey: 'Id',

@@ -17,8 +17,7 @@ const testCellMetaData = {
   onCommitCancel() {},
   copied: null,
   handleDragEnterRow() {},
-  handleTerminateDrag() {},
-  onColumnEvent() {}
+  handleTerminateDrag() {}
 };
 
 const testProps = {
@@ -86,8 +85,7 @@ describe('Cell Tests', () => {
         onCommitCancel: jest.fn(),
         copied: null,
         handleDragEnterRow: jest.fn(),
-        handleTerminateDrag: jest.fn(),
-        onColumnEvent: jest.fn()
+        handleTerminateDrag: jest.fn()
       },
       rowData: helpers.rowGetter(11),
       expandableOptions: { key: 'reqValue' },
@@ -115,8 +113,7 @@ describe('Cell Tests', () => {
         onCommitCancel: jest.fn(),
         copied: null,
         handleDragEnterRow: jest.fn(),
-        handleTerminateDrag: jest.fn(),
-        onColumnEvent: jest.fn()
+        handleTerminateDrag: jest.fn()
       },
       handleDragStart: jest.fn(),
       className: 'a-class-name',
@@ -138,11 +135,6 @@ describe('Cell Tests', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
       const cellDiv = wrapper.find('div').at(0);
       expect(cellDiv.props().style).toBeDefined();
-    });
-    it('passes height property if available from props', () => {
-      const wrapper = shallowRenderComponent(allProperties);
-      const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.props().height).toBe(35);
     });
     it('does not pass height property if not available from props', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
@@ -189,8 +181,7 @@ describe('Cell Tests', () => {
           onCommitCancel: jest.fn(),
           copied: null,
           handleDragEnterRow: jest.fn(),
-          handleTerminateDrag: jest.fn(),
-          onColumnEvent: jest.fn()
+          handleTerminateDrag: jest.fn()
         },
         rowData: helpers.rowGetter(11),
         expandableOptions: { key: 'reqValue' },
@@ -221,7 +212,6 @@ describe('Cell Tests', () => {
             copied: null,
             handleDragEnterRow: jest.fn(),
             handleTerminateDrag: jest.fn(),
-            onColumnEvent: jest.fn(),
             getCellActions: jest.fn().mockReturnValue([action])
           }
         });

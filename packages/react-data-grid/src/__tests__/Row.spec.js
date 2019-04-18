@@ -70,8 +70,7 @@ describe('Row', () => {
         onCommitCancel: jest.fn(),
         copied: null,
         handleDragEnterRow: jest.fn(),
-        handleTerminateDrag: jest.fn(),
-        onColumnEvent: jest.fn()
+        handleTerminateDrag: jest.fn()
       },
       isSelected: false,
       idx: 18,

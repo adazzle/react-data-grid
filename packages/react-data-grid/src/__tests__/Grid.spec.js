@@ -90,8 +90,7 @@ describe('Rendering Grid component', () => {
         onCommitCancel: jest.fn(),
         copied: null,
         handleDragEnterRow: jest.fn(),
-        handleTerminateDrag: jest.fn(),
-        onColumnEvent: jest.fn()
+        handleTerminateDrag: jest.fn()
       },
       rowKey: 'rowKeyValue',
       contextMenu: <ContextMenu />,

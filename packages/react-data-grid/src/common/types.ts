@@ -1,4 +1,4 @@
-import { KeyboardEvent, Event, ReactNode } from 'react';
+import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
 import { HeaderRowType } from './enums';
 
@@ -13,7 +13,7 @@ export interface Column<T = unknown> {
   hidden?: boolean;
   cellClass?: string;
   events?: {
-    [key: string]: (e: Event, info: CellEventInfo) => void;
+    [key: string]: (e: Event, info: ColumnEventInfo) => void;
   };
 
   formatter?: React.ReactElement | React.ComponentType<FormatterProps>;
@@ -48,16 +48,15 @@ export interface RowData {
 export interface CellMetaData {
   rowKey: string;
   onCellClick(position: Position): void;
-  onCellMouseDown(position: Position): void;
-  onCellMouseEnter(position: Position): void;
   onCellContextMenu(position: Position): void;
   onCellDoubleClick(position: Position): void;
   onDragEnter(): void;
-  onRowExpandToggle(data: { rowIdx: number; shouldExpand: boolean; columnGroupName: string; name: string }): void;
-  onDeleteSubRow?(options: SubRowOptions): void;
-  onAddSubRow?(): void;
-  onColumnEvent(): void;
   onCellExpand(options: SubRowOptions): void;
+  onRowExpandToggle(data: { rowIdx: number; shouldExpand: boolean; columnGroupName: string; name: string }): void;
+  onCellMouseDown?(position: Position): void;
+  onCellMouseEnter?(position: Position): void;
+  onAddSubRow?(): void;
+  onDeleteSubRow?(options: SubRowOptions): void;
   getCellActions?(column: Column, rowData: RowData): CellActionButton[] | undefined;
 }
 
@@ -79,7 +78,7 @@ export interface Dimension {
   zIndex: number;
 }
 
-export type RowGetter = (rowIdx: number) => unknown;
+export type RowGetter = (rowIdx: number) => RowData;
 
 export interface Editor {
   getInputNode(): Element | Text | undefined | null;
@@ -148,7 +147,7 @@ export interface CellActionButton {
   callback?(): void;
 }
 
-export interface CellEventInfo extends Position {
+export interface ColumnEventInfo extends Position {
   rowId: unknown;
-  name: string;
+  column: Column;
 }

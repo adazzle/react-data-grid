@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { Column, CellMetaData, ExpandableOptions, RowData, SubRowOptions, FormatterProps, CellEventInfo } from './common/types';
+import { Column, CellMetaData, ExpandableOptions, RowData, SubRowOptions, FormatterProps, ColumnEventInfo } from './common/types';
 import { SimpleCellFormatter } from './formatters';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
@@ -57,12 +57,16 @@ export default class Cell extends React.PureComponent<Props> {
 
   handleCellMouseDown = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
-    cellMetaData.onCellMouseDown({ idx, rowIdx });
+    if (cellMetaData.onCellMouseDown) {
+      cellMetaData.onCellMouseDown({ idx, rowIdx });
+    }
   };
 
   handleCellMouseEnter = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
-    cellMetaData.onCellMouseEnter({ idx, rowIdx });
+    if (cellMetaData.onCellMouseEnter) {
+      cellMetaData.onCellMouseEnter({ idx, rowIdx });
+    }
   };
 
   handleCellContextMenu = () => {
@@ -102,7 +106,7 @@ export default class Cell extends React.PureComponent<Props> {
   }
 
   getRowData = (props = this.props) => {
-    return props.rowData.toJSON ? props.rowData.toJSON() : props.rowData;
+    return typeof props.rowData.toJSON === 'function' ? props.rowData.toJSON() : props.rowData;
   };
 
   getFormatterDependencies() {
@@ -153,24 +157,10 @@ export default class Cell extends React.PureComponent<Props> {
     }
   };
 
-  createColumEventCallBack(onColumnEvent: (e: Event, info: CellEventInfo) => void, info: CellEventInfo) {
-    return (e: Event) => {
-      onColumnEvent(e, info);
-    };
-  }
-
-  createCellEventCallBack(gridEvent: (e: Event) => void, columnEvent: (e: Event) => void) {
-    return (e: Event) => {
-      gridEvent(e);
-      columnEvent(e);
-    };
-  }
-
   getEvents() {
-    const { column, cellMetaData } = this.props;
+    const { column, cellMetaData, idx, rowIdx, rowData } = this.props;
     const columnEvents = column.events;
-    const onColumnEvent = cellMetaData ? cellMetaData.onColumnEvent : undefined;
-    const allEvents: { [key: string]: unknown } = {
+    const allEvents: { [key: string]: Function } = {
       onClick: this.handleCellClick,
       onMouseDown: this.handleCellMouseDown,
       onMouseEnter: this.handleCellMouseEnter,
@@ -179,25 +169,28 @@ export default class Cell extends React.PureComponent<Props> {
       onDragOver: this.handleDragOver
     };
 
-    if (!columnEvents || !onColumnEvent) {
+    if (!columnEvents) {
       return allEvents;
     }
 
-    for (const eventKey in columnEvents) {
-      if (columnEvents.hasOwnProperty(eventKey)) {
-        const eventInfo: CellEventInfo = {
-          idx: this.props.idx,
-          rowIdx: this.props.rowIdx,
-          rowId: this.props.rowData[this.props.cellMetaData.rowKey],
-          name: eventKey
+    for (const event in columnEvents) {
+      if (columnEvents.hasOwnProperty(event)) {
+        const eventInfo: ColumnEventInfo = {
+          idx,
+          rowIdx,
+          column,
+          rowId: rowData[cellMetaData.rowKey]
         };
-        const eventCallback = this.createColumEventCallBack(onColumnEvent, eventInfo);
-
-        if (allEvents.hasOwnProperty(eventKey)) {
-          const currentEvent = allEvents[eventKey];
-          allEvents[eventKey] = this.createCellEventCallBack(currentEvent, eventCallback);
+        if (allEvents.hasOwnProperty(event)) {
+          const existingEvent = allEvents[event];
+          allEvents[event] = (e: Event) => {
+            existingEvent(e);
+            columnEvents[event](e, eventInfo);
+          };
         } else {
-          allEvents[eventKey] = eventCallback;
+          allEvents[event] = (e: Event) => {
+            columnEvents[event](e, eventInfo);
+          };
         }
       }
     }
