@@ -3,7 +3,7 @@ import { Position } from '../common/types';
 interface EventMap {
   SELECT_CELL(cell: Position, openEditor?: boolean): void;
   SELECT_START(selectedPosition: Position): void;
-  SELECT_UPDATE(cellPosition: Position, isFromKeyboard: boolean, callback?: () => void): void;
+  SELECT_UPDATE(cellPosition: Position, isFromKeyboard?: boolean, callback?: () => void): void;
   SELECT_END(): void;
   DRAG_ENTER(arg: { overRowIdx: number }): void;
 }

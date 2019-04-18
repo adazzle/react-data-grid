@@ -46,14 +46,12 @@ interface SelectedRange extends Range {
   isDragging: boolean;
 }
 
-interface Props {
+export interface Props {
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
   rowVisibleStartIdx: number;
   rowVisibleEndIdx: number;
-  rowOverscanStartIdx: number;
   columns: ColumnList;
-  width?: number;
   rowHeight: number;
   rowGetter: RowGetter;
   rowsCount: number;
@@ -77,7 +75,6 @@ interface Props {
   onHitRightBoundary(position: Position): void;
   onHitLeftBoundary(position: Position): void;
   onCommit(...args: unknown[]): void;
-  onCommitCancel?(): void;
   onCellSelected?(position: Position): void;
   onCellDeSelected?(position: Position): void;
   onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
@@ -86,14 +83,13 @@ interface Props {
   onDragHandleDoubleClick(data: Position & { rowData: unknown }): void;
   scrollLeft: number;
   scrollTop: number;
-  rows: unknown[];
   getRowHeight(rowIdx: number): number;
   getRowTop(rowIdx: number): number;
   getRowColumns(rowIdx: number): ColumnList;
   editorPortalTarget: Element;
 }
 
-interface State {
+export interface State {
   selectedPosition: Position;
   selectedRange: SelectedRange;
   copiedPosition: Position & { value: unknown } | null;
@@ -537,7 +533,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
     });
   };
 
-  onSelectCellRangeUpdated = (cellPosition: Position, isFromKeyboard: boolean, callback?: () => void): void => {
+  onSelectCellRangeUpdated = (cellPosition: Position, isFromKeyboard?: boolean, callback?: () => void): void => {
     if (!this.state.selectedRange.isDragging && !isFromKeyboard || !this.isCellWithinBounds(cellPosition)) {
       return;
     }
