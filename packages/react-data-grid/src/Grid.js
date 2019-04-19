@@ -18,7 +18,6 @@ export default class Grid extends React.Component {
     rowHeight: PropTypes.number,
     rowRenderer: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     emptyRowsView: PropTypes.func,
-    expandedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     selectedRows: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
     rowSelection: PropTypes.oneOfType([
       PropTypes.shape({
@@ -167,7 +166,6 @@ export default class Grid extends React.Component {
               rowGetter={this.props.rowGetter}
               rowsCount={this.props.rowsCount}
               selectedRows={this.props.selectedRows}
-              expandedRows={this.props.expandedRows}
               columnMetrics={this.props.columnMetrics}
               totalWidth={this.props.totalWidth}
               onScroll={this.onScroll}

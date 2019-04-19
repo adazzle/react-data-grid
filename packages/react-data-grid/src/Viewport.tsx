@@ -50,7 +50,6 @@ interface Props {
   rowGetter: RowGetter;
   selectedRows?: unknown[];
   rowSelection?: { indexes: number[] } | { isSelectedKey: string } | { keys: { values: unknown[]; rowKey: string } };
-  expandedRows?: unknown[];
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowsCount: number;
   rowHeight: number;
@@ -285,7 +284,6 @@ export default class Viewport extends React.Component<Props, State> {
           rowGetter={this.props.rowGetter}
           rowsCount={this.props.rowsCount}
           selectedRows={this.props.selectedRows}
-          expandedRows={this.props.expandedRows}
           columns={this.props.columnMetrics.columns}
           rowRenderer={this.props.rowRenderer}
           rowOverscanStartIdx={this.state.rowOverscanStartIdx}

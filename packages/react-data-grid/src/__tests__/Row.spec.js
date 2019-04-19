@@ -74,7 +74,6 @@ describe('Row', () => {
       },
       isSelected: false,
       idx: 18,
-      expandedRows: [{ key: 'one' }, { key: 'two' }],
       extraClasses: 'extra-classes',
       forceUpdate: false,
       subRowDetails: { name: 'subrowname' },
@@ -105,7 +104,6 @@ describe('Row', () => {
       expect(draggableDiv.props().cellMetaData).toBeUndefined();
       expect(draggableDiv.props().isSelected).toBeUndefined();
       expect(draggableDiv.props().idx).toBeUndefined();
-      expect(draggableDiv.props().expandedRows).toBeUndefined();
       expect(draggableDiv.props().extraClasses).toBeUndefined();
       expect(draggableDiv.props().forceUpdate).toBeUndefined();
       expect(draggableDiv.props().subRowDetails).toBeUndefined();

@@ -133,7 +133,6 @@ export interface RowRendererProps {
   cellMetaData: CellMetaData;
   isSelected?: boolean;
   idx: number;
-  expandedRows: unknown[];
   extraClasses?: string;
   subRowDetails: SubRowDetails;
   colOverscanStartIdx: number;

@@ -8,6 +8,5 @@ export default function shouldRowUpdate(nextProps: RowRendererProps, currentProp
     || currentProps.isSelected !== nextProps.isSelected
     || currentProps.isScrolling !== nextProps.isScrolling
     || nextProps.height !== currentProps.height
-    || currentProps.expandedRows !== nextProps.expandedRows
     || currentProps.extraClasses !== nextProps.extraClasses;
 }

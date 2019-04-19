@@ -81,13 +81,6 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
   }
 
   getRowHeight(): number {
-    const rows = this.props.expandedRows || null;
-    if (rows && this.props.idx) {
-      const row = rows[this.props.idx] || null;
-      if (row) {
-        return (row as { height: number }).height;
-      }
-    }
     return this.props.height;
   }
 
