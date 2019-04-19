@@ -50,12 +50,12 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
       ref: (cell) => {
         this.cells[key] = cell;
       },
-      idx: column.idx,
+      idx: column.idx!, // TODO: fix idx type
       rowIdx: idx,
       height: this.getRowHeight(),
       column,
       cellMetaData,
-      value: this.getCellValue(key || column.idx.toString()),
+      value: this.getCellValue(key || String(column.idx)), // TODO: fix idx type
       rowData: row,
       isRowSelected: isSelected,
       expandableOptions: this.getExpandableOptions(key),

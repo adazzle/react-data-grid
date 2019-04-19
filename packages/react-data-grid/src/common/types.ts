@@ -5,7 +5,7 @@ import { HeaderRowType } from './enums';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<T = unknown> {
-  idx: number; // Set by column metrics
+  idx?: number; // Set by column metrics
   name: string;
   key: string;
   //FIXME: width and left should be optional
