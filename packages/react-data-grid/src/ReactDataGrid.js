@@ -283,8 +283,8 @@ export default class ReactDataGrid extends React.Component {
     this.eventBus.dispatch(EventTypes.SELECT_END);
   };
 
-  handleDragEnter = ({ overRowIdx }) => {
-    this.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx });
+  handleDragEnter = (overRowIdx) => {
+    this.eventBus.dispatch(EventTypes.DRAG_ENTER, overRowIdx);
   };
 
   gridWidth = () => {

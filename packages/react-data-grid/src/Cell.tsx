@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { Column, CellMetaData, ExpandableOptions, RowData, SubRowOptions, FormatterProps, ColumnEventInfo } from './common/types';
+import { SubRowOptions, FormatterProps, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
 import { SimpleCellFormatter } from './formatters';
 import CellAction from './CellAction';
 import CellExpand from './CellExpander';
@@ -11,29 +11,15 @@ import { isFrozen } from './ColumnUtils';
 
 const getSubRowOptions = ({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props): SubRowOptions => ({ rowIdx, idx, rowData, expandArgs });
 
-interface Props {
-  rowIdx: number;
-  idx: number;
-  height: number;
-  column: Column;
-  value: unknown;
-  isExpanded?: boolean;
-  isRowSelected?: object;
-  cellMetaData: CellMetaData;
-  handleDragStart(): void;
+interface Props extends CellRendererProps {
+  // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
-  cellControls?: unknown;
-  rowData: RowData;
-  expandableOptions?: ExpandableOptions;
   tooltip?: string;
-  isScrolling?: boolean;
-  scrollLeft: number;
-  lastFrozenColumnIndex?: number;
+  cellControls?: unknown;
 }
 
-export default class Cell extends React.PureComponent<Props> {
+export default class Cell extends React.PureComponent<Props> implements CellRenderer {
   static defaultProps = {
-    isExpanded: false,
     value: ''
   };
 
@@ -105,9 +91,10 @@ export default class Cell extends React.PureComponent<Props> {
     };
   }
 
-  getRowData = (props = this.props) => {
-    return typeof props.rowData.toJSON === 'function' ? props.rowData.toJSON() : props.rowData;
-  };
+  getRowData() {
+    const { rowData } = this.props;
+    return typeof rowData.toJSON === 'function' ? rowData.toJSON() : rowData;
+  }
 
   getFormatterDependencies() {
     // convention based method to get corresponding Id or Name of any Name or Id property
@@ -143,19 +130,19 @@ export default class Cell extends React.PureComponent<Props> {
     }
   }
 
-  setScrollLeft = (scrollLeft: number) => {
+  setScrollLeft(scrollLeft: number) {
     const node = this.cell.current;
     if (node) {
       node.style.transform = `translateX(${scrollLeft}px)`;
     }
-  };
+  }
 
-  removeScroll = () => {
+  removeScroll() {
     const node = this.cell.current;
     if (node) {
       node.style.transform = null;
     }
-  };
+  }
 
   getEvents() {
     const { column, cellMetaData, idx, rowIdx, rowData } = this.props;
@@ -214,12 +201,11 @@ export default class Cell extends React.PureComponent<Props> {
 
   renderCellContent() {
     let cellContent;
-    const { value, column, height, tooltip, isScrolling, isExpanded, expandableOptions, cellMetaData } = this.props;
+    const { value, column, height, tooltip, isScrolling, expandableOptions, cellMetaData } = this.props;
     const Formatter = column.formatter;
     const cellProps: FormatterProps = {
       value,
       isScrolling,
-      isExpanded,
       column,
       row: this.getRowData(),
       dependentValues: this.getFormatterDependencies()

@@ -41,8 +41,8 @@ describe('<InteractionMasks/>', () => {
       onCellRangeSelectionUpdated: jest.fn(),
       onCellRangeSelectionCompleted: jest.fn(),
       onGridRowsUpdated: jest.fn(),
-      onDragHandleDoubleClick() {},
-      onCommit() {},
+      onDragHandleDoubleClick() { },
+      onCommit() { },
       rowGetter,
       enableCellSelect: true,
       enableCellAutoFocus: false,
@@ -74,7 +74,7 @@ describe('<InteractionMasks/>', () => {
     wrapper.simulate('keydown', { key, preventDefault: () => null, ...eventData });
   };
 
-  const simulateTab = (wrapper: ReturnType<typeof setup>['wrapper'], shiftKey = false, preventDefault = () => {}) => {
+  const simulateTab = (wrapper: ReturnType<typeof setup>['wrapper'], shiftKey = false, preventDefault = () => { }) => {
     pressKey(wrapper, 'Tab', { keyCode: keyCodes.Tab, shiftKey, preventDefault });
   };
 
@@ -211,7 +211,7 @@ describe('<InteractionMasks/>', () => {
         // We have to use mount, rather than shallow, so that InteractionMasks has a ref to it's node, used for focusing
         const { props } = setup(undefined, undefined, true);
         props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-        jest.spyOn(InteractionMasks.prototype, 'focus').mockImplementation(() => {});
+        jest.spyOn(InteractionMasks.prototype, 'focus').mockImplementation(() => { });
         props.eventBus.dispatch(EventTypes.SELECT_END);
         expect(InteractionMasks.prototype.focus).toHaveBeenCalled();
       });
@@ -771,7 +771,7 @@ describe('<InteractionMasks/>', () => {
         target: { className: 'test' },
         dataTransfer: { setData }
       });
-      props.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx: 6 });
+      props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
       wrapper.find(DragHandle).simulate('dragEnd');
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, UpdateActions.CELL_DRAG);

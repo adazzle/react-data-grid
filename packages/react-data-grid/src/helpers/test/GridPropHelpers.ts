@@ -1,16 +1,19 @@
 import { Column } from '../../common/types';
 
 const columns: Column[] = [{
+  idx: 0,
   key: 'id',
   name: 'ID',
   width: 100,
   left: 0
 }, {
+  idx: 1,
   key: 'title',
   name: 'Title',
   width: 100,
   left: 100
 }, {
+  idx: 2,
   key: 'count',
   name: 'Count',
   width: 100,

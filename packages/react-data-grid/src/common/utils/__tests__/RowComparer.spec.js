@@ -21,19 +21,6 @@ describe('RowComparer shouldRowUpdate', () => {
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(false);
   });
 
-  it('forceUpdate should cause update', () => {
-    const currentProps = {
-      columns,
-      cellMetaData,
-      forceUpdate: true
-    };
-    const nextProps = {
-      columns,
-      cellMetaData
-    };
-    expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
-  });
-
   it('different columns should cause update', () => {
     const newColumns = columns.slice(0);
     newColumns.push({ id: 3, key: 'col3, width: 100' });
