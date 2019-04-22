@@ -46,7 +46,6 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
     const { key } = column;
 
     const cellProps: CellRendererProps & { ref: (cell: CellRenderer | null) => void } = {
-      // key: `${key}-${idx}`,
       ref: (cell) => {
         this.cells[key] = cell;
       },
@@ -64,7 +63,7 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
       lastFrozenColumnIndex
     };
 
-    return <Renderer {...cellProps} />;
+    return <Renderer key={`${key}-${idx}`} {...cellProps} />;
   }
 
   getCells() {
