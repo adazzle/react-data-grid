@@ -232,7 +232,7 @@ export default class ReactDataGrid extends React.Component {
   constructor(props, context) {
     super(props, context);
     const columnMetrics = this.createColumnMetrics();
-    const initialState = { columnMetrics, selectedRows: [], expandedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, scrollOffset: 0, lastRowIdxUiSelected: -1 };
+    const initialState = { columnMetrics, selectedRows: [], canFilter: false, columnFilters: {}, sortDirection: null, sortColumn: null, scrollOffset: 0, lastRowIdxUiSelected: -1 };
     if (this.props.sortColumn && this.props.sortDirection) {
       initialState.sortColumn = this.props.sortColumn;
       initialState.sortDirection = this.props.sortDirection;
@@ -283,8 +283,8 @@ export default class ReactDataGrid extends React.Component {
     this.eventBus.dispatch(EventTypes.SELECT_END);
   };
 
-  handleDragEnter = ({ overRowIdx }) => {
-    this.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx });
+  handleDragEnter = (overRowIdx) => {
+    this.eventBus.dispatch(EventTypes.DRAG_ENTER, overRowIdx);
   };
 
   gridWidth = () => {
@@ -791,7 +791,6 @@ export default class ReactDataGrid extends React.Component {
           cellMetaData={cellMetaData}
           selectedRows={this.getSelectedRows()}
           rowSelection={this.getRowSelectionProps()}
-          expandedRows={this.state.expandedRows}
           rowOffsetHeight={this.getRowOffsetHeight()}
           sortColumn={this.state.sortColumn}
           sortDirection={this.state.sortDirection}

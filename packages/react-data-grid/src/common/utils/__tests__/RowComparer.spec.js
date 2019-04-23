@@ -6,7 +6,6 @@ const cellMetaData = {
   dragged: null,
   copied: null
 };
-const expandedRows = [{ key: 'col1' }, { key: 'col2' }];
 
 describe('RowComparer shouldRowUpdate', () => {
   it('same props should not cause an update', () => {
@@ -19,19 +18,6 @@ describe('RowComparer shouldRowUpdate', () => {
       cellMetaData
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(false);
-  });
-
-  it('forceUpdate should cause update', () => {
-    const currentProps = {
-      columns,
-      cellMetaData,
-      forceUpdate: true
-    };
-    const nextProps = {
-      columns,
-      cellMetaData
-    };
-    expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
   });
 
   it('different columns should cause update', () => {
@@ -48,42 +34,14 @@ describe('RowComparer shouldRowUpdate', () => {
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
   });
 
-  it('expanded rows should cause update', () => {
-    const currentProps = {
-      columns,
-      cellMetaData
-    };
-    const nextProps = {
-      columns,
-      cellMetaData,
-      expandedRows
-    };
-    expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
-  });
-
-  it('un-expanding rows should cause update', () => {
-    const currentProps = {
-      columns,
-      cellMetaData,
-      expandedRows
-    };
-    const nextProps = {
-      columns,
-      cellMetaData
-    };
-    expect(shouldRowUpdate(nextProps, currentProps)).toBe(true);
-  });
-
   it('same expanded rows should not cause update', () => {
     const currentProps = {
       columns,
-      cellMetaData,
-      expandedRows
+      cellMetaData
     };
     const nextProps = {
       columns,
-      cellMetaData,
-      expandedRows
+      cellMetaData
     };
     expect(shouldRowUpdate(nextProps, currentProps)).toBe(false);
   });

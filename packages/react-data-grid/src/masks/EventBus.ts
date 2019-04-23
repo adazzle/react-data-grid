@@ -5,7 +5,7 @@ interface EventMap {
   SELECT_START(selectedPosition: Position): void;
   SELECT_UPDATE(cellPosition: Position, isFromKeyboard?: boolean, callback?: () => void): void;
   SELECT_END(): void;
-  DRAG_ENTER(arg: { overRowIdx: number }): void;
+  DRAG_ENTER(overRowIdx: number): void;
 }
 
 type EventName = keyof EventMap;

@@ -74,7 +74,6 @@ describe('Row', () => {
       },
       isSelected: false,
       idx: 18,
-      expandedRows: [{ key: 'one' }, { key: 'two' }],
       extraClasses: 'extra-classes',
       forceUpdate: false,
       subRowDetails: { name: 'subrowname' },
@@ -96,11 +95,6 @@ describe('Row', () => {
       const draggableDiv = wrapper.find('div').at(0);
       expect(draggableDiv.props().style).toBeDefined();
     });
-    it('passes height property', () => {
-      const { wrapper } = setup(requiredProperties);
-      const draggableDiv = wrapper.find('div').at(0);
-      expect(draggableDiv.props().height).toBe(30);
-    });
     it('does not pass unknown properties to the div', () => {
       const { wrapper } = setup(allProperties);
       const draggableDiv = wrapper.find('div').at(0);
@@ -110,7 +104,6 @@ describe('Row', () => {
       expect(draggableDiv.props().cellMetaData).toBeUndefined();
       expect(draggableDiv.props().isSelected).toBeUndefined();
       expect(draggableDiv.props().idx).toBeUndefined();
-      expect(draggableDiv.props().expandedRows).toBeUndefined();
       expect(draggableDiv.props().extraClasses).toBeUndefined();
       expect(draggableDiv.props().forceUpdate).toBeUndefined();
       expect(draggableDiv.props().subRowDetails).toBeUndefined();

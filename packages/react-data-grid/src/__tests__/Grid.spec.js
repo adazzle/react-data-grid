@@ -65,7 +65,6 @@ describe('Rendering Grid component', () => {
       rowHeight: 50,
       rowRenderer: jest.fn(),
       emptyRowsView: jest.fn(),
-      expandedRows: jest.fn(),
       selectedRows: jest.fn(),
       rowSelection: { isSelectedKey: 'selectedKey' },
       rowsCount: 14,
@@ -123,7 +122,6 @@ describe('Rendering Grid component', () => {
     expect(draggableDiv.props().rowHeight).toBeUndefined();
     expect(draggableDiv.props().rowRenderer).toBeUndefined();
     expect(draggableDiv.props().emptyRowsView).toBeUndefined();
-    expect(draggableDiv.props().expandedRows).toBeUndefined();
     expect(draggableDiv.props().selectedRows).toBeUndefined();
     expect(draggableDiv.props().rowSelection).toBeUndefined();
     expect(draggableDiv.props().rowsCount).toBeUndefined();

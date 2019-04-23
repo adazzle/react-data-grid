@@ -5,6 +5,7 @@ import { HeaderRowType } from './enums';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<T = unknown> {
+  idx?: number; // Set by column metrics
   name: string;
   key: string;
   //FIXME: width and left should be optional
@@ -50,7 +51,7 @@ export interface CellMetaData {
   onCellClick(position: Position): void;
   onCellContextMenu(position: Position): void;
   onCellDoubleClick(position: Position): void;
-  onDragEnter(): void;
+  onDragEnter(overRowIdx: number): void;
   onCellExpand(options: SubRowOptions): void;
   onRowExpandToggle(data: { rowIdx: number; shouldExpand: boolean; columnGroupName: string; name: string }): void;
   onCellMouseDown?(position: Position): void;
@@ -94,7 +95,6 @@ export interface FormatterProps {
   column: Column;
   row: RowData;
   isScrolling?: boolean;
-  isExpanded?: boolean;
   dependentValues?: unknown;
 }
 
@@ -110,14 +110,47 @@ export interface EditorProps<V = unknown, C = unknown> {
   onOverrideKeyDown(e: KeyboardEvent): void;
 }
 
-interface SubRowDetails {
+export interface CellRendererProps {
+  idx: number;
+  rowIdx: number;
+  height: number;
+  value: unknown;
+  column: Column;
+  rowData: RowData;
+  cellMetaData: CellMetaData;
+  isScrolling: boolean;
+  scrollLeft: number;
+  isRowSelected?: boolean;
+  expandableOptions?: ExpandableOptions;
+  lastFrozenColumnIndex?: number;
+}
+
+export interface RowRendererProps {
+  height: number;
+  columns: ColumnList;
+  row: RowData;
+  cellRenderer: React.ComponentType<CellRendererProps>;
+  cellMetaData: CellMetaData;
+  isSelected?: boolean;
+  idx: number;
+  extraClasses?: string;
+  subRowDetails: SubRowDetails;
+  colOverscanStartIdx: number;
+  colOverscanEndIdx: number;
+  isScrolling: boolean;
+  scrollLeft: number;
+  lastFrozenColumnIndex?: number;
+}
+
+export interface SubRowDetails {
   canExpand: boolean;
   field: string;
   expanded: boolean;
-  children: unknown;
+  children: unknown[];
   treeDepth: number;
   siblingIndex: number;
   numberSiblings: number;
+  group?: boolean;
 }
 
 export interface SubRowOptions {
@@ -150,4 +183,12 @@ export interface CellActionButton {
 export interface ColumnEventInfo extends Position {
   rowId: unknown;
   column: Column;
+}
+
+export interface CellRenderer {
+  setScrollLeft(scrollLeft: number): void;
+}
+
+export interface RowRenderer {
+  setScrollLeft(scrollLeft: number): void;
 }

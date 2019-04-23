@@ -35,7 +35,6 @@ export default class Canvas extends React.PureComponent {
       PropTypes.func.isRequired,
       PropTypes.array.isRequired
     ]),
-    expandedRows: PropTypes.array,
     onScroll: PropTypes.func,
     columns: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     // cellMetaData: PropTypes.shape(cellMetaDataShape).isRequired,
@@ -321,7 +320,7 @@ export default class Canvas extends React.PureComponent {
   };
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, expandedRows, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, RowsContainer, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, RowsContainer, contextMenu } = this.props;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map((r, idx) => {
@@ -338,7 +337,6 @@ export default class Canvas extends React.PureComponent {
           onMouseOver: this.onMouseOver,
           columns,
           isSelected: this.isRowSelected(rowIdx, r.row, rowOverscanStartIdx, rowOverscanEndIdx),
-          expandedRows,
           cellMetaData,
           subRowDetails: r.subRowDetails,
           colVisibleStartIdx,
