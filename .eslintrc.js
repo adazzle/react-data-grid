@@ -417,7 +417,7 @@ const rules = {
   '@typescript-eslint/no-use-before-define': 0,
   '@typescript-eslint/no-useless-constructor': 1,
   '@typescript-eslint/no-var-requires': 0,
-  '@typescript-eslint/prefer-for-of': 0,
+  '@typescript-eslint/prefer-for-of': 1,
   '@typescript-eslint/prefer-function-type': 1,
   '@typescript-eslint/prefer-interface': 1,
   '@typescript-eslint/prefer-namespace-keyword': 0,
