@@ -24,6 +24,7 @@ export default function Draggable({ onDrag, onDragEnd, ...props }: Props) {
       onDragEnd(event.clientX, event.clientY);
     }
 
+    event.preventDefault();
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
     onDrag(event.clientX, event.clientY);
@@ -49,6 +50,7 @@ export default function Draggable({ onDrag, onDragEnd, ...props }: Props) {
       onDragEnd(touch.clientX, touch.clientY);
     }
 
+    event.preventDefault();
     window.addEventListener('touchmove', onTouchMove);
     window.addEventListener('touchend', onTouchEnd);
     const touch = event.changedTouches[0];
