@@ -382,8 +382,9 @@ const rules = {
   // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules
   '@typescript-eslint/adjacent-overload-signatures': 1,
   '@typescript-eslint/array-type': 0,
-  '@typescript-eslint/ban-ts-ignore': 1,
+  '@typescript-eslint/await-thenable': 0,
   '@typescript-eslint/ban-types': 2,
+  '@typescript-eslint/ban-ts-ignore': 1,
   '@typescript-eslint/camelcase': 0,
   '@typescript-eslint/class-name-casing': 0,
   '@typescript-eslint/explicit-function-return-type': 0,
@@ -404,7 +405,7 @@ const rules = {
   '@typescript-eslint/no-misused-new': 2,
   '@typescript-eslint/no-namespace': 2,
   '@typescript-eslint/no-non-null-assertion': 0,
-  '@typescript-eslint/no-object-literal-type-assertion': 0, // https://github.com/typescript-eslint/typescript-eslint/issues/166
+  '@typescript-eslint/no-object-literal-type-assertion': 1,
   '@typescript-eslint/no-parameter-properties': 0,
   '@typescript-eslint/no-require-imports': 1,
   '@typescript-eslint/no-this-alias': 0,
@@ -416,6 +417,7 @@ const rules = {
   '@typescript-eslint/no-use-before-define': 0,
   '@typescript-eslint/no-useless-constructor': 1,
   '@typescript-eslint/no-var-requires': 0,
+  '@typescript-eslint/prefer-for-of': 0,
   '@typescript-eslint/prefer-function-type': 1,
   '@typescript-eslint/prefer-interface': 1,
   '@typescript-eslint/prefer-namespace-keyword': 0,
@@ -423,6 +425,7 @@ const rules = {
   '@typescript-eslint/require-array-sort-compare': 0,
   '@typescript-eslint/restrict-plus-operands': 0,
   '@typescript-eslint/type-annotation-spacing': 1,
+  '@typescript-eslint/unbound-method': 0,
   '@typescript-eslint/unified-signatures': 0
 };
 
