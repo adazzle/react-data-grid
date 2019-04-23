@@ -6,7 +6,7 @@ branches:
     - master
     - next
 
-stack: node 11
+stack: node 12
 
 install:
   - node --version
