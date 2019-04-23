@@ -16,7 +16,7 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
   };
 
   private readonly row = React.createRef<HTMLDivElement>();
-  private readonly cells: { [key: string]: CellRenderer | null } = {};
+  private readonly cells = new Map<string, CellRenderer | null>();
 
   shouldComponentUpdate(nextProps: RowRendererProps) {
     return rowComparer(nextProps, this.props);
@@ -47,7 +47,7 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
 
     const cellProps: CellRendererProps & { ref: (cell: CellRenderer | null) => void } = {
       ref: (cell) => {
-        this.cells[key] = cell;
+        this.cells.set(key, cell);
       },
       idx: column.idx!, // TODO: fix idx type
       rowIdx: idx,
@@ -84,16 +84,16 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
   }
 
   getCellValue(key: string) {
-    let val;
+    const { isSelected, row } = this.props;
     if (key === 'select-row') {
-      return this.props.isSelected;
+      return isSelected;
     }
-    if (typeof this.props.row.get === 'function') {
-      val = this.props.row.get(key);
-    } else {
-      val = this.props.row[key];
+
+    if (typeof row.get === 'function') {
+      return row.get(key);
     }
-    return val;
+
+    return row[key];
   }
 
   getExpandableOptions(columnKey: string) {
@@ -114,7 +114,7 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
   setScrollLeft(scrollLeft: number) {
     this.props.columns.forEach(((column?: Column) => {
       if (column && isFrozen(column)) {
-        const cell = this.cells[column.key];
+        const cell = this.cells.get(column.key);
         if (!cell) return;
         cell.setScrollLeft(scrollLeft);
       }
