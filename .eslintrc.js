@@ -399,6 +399,7 @@ const rules = {
   '@typescript-eslint/no-array-constructor': 2,
   '@typescript-eslint/no-empty-interface': 2,
   '@typescript-eslint/no-explicit-any': 2,
+  '@typescript-eslint/no-extra-parens': 0, // https://github.com/typescript-eslint/typescript-eslint/issues/460
   '@typescript-eslint/no-extraneous-class': 2,
   '@typescript-eslint/no-for-in-array': 0,
   '@typescript-eslint/no-inferrable-types': 0,
