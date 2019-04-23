@@ -16,7 +16,7 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
   };
 
   private readonly row = React.createRef<HTMLDivElement>();
-  private readonly cells = new Map<string, CellRenderer | null>();
+  private readonly cells = new Map<string, CellRenderer>();
 
   shouldComponentUpdate(nextProps: RowRendererProps) {
     return rowComparer(nextProps, this.props);
@@ -47,7 +47,11 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
 
     const cellProps: CellRendererProps & { ref: (cell: CellRenderer | null) => void } = {
       ref: (cell) => {
-        this.cells.set(key, cell);
+        if (cell) {
+          this.cells.set(key, cell);
+        } else {
+          this.cells.delete(key);
+        }
       },
       idx: column.idx!, // TODO: fix idx type
       rowIdx: idx,
@@ -113,10 +117,9 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
 
   setScrollLeft(scrollLeft: number) {
     this.props.columns.forEach(((column?: Column) => {
-      if (column && isFrozen(column)) {
-        const cell = this.cells.get(column.key);
-        if (!cell) return;
-        cell.setScrollLeft(scrollLeft);
+      const { key } = column!;
+      if (isFrozen(column!) && this.cells.has(key)) {
+        this.cells.get(key)!.setScrollLeft(scrollLeft);
       }
     }));
   }

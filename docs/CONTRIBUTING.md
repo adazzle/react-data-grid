@@ -105,8 +105,9 @@ For maintainers only.
 - Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
 - Install dependencies, bootstrap lerna:
   - `npm i`
-- Build the release bundles:
+- Build the release files:
   - `npm run build`
+  - `npm run build-umd`
 - Update the docs:
   - `npm run docs`
 - Update the changelog, if necessary.

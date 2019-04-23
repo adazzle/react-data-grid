@@ -4,10 +4,12 @@
   "description": "A set of addons for react-data-grid",
   "author": "Adazzle",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "umd/index.js",
+  "module": "lib/index.js",
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "umd"
   ],
   "sideEffects": false,
   "repository": "adazzle/react-data-grid",
@@ -21,7 +23,8 @@
     "react-data-grid-addons"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build-umd": "tsc --module umd --outdir umd --esModuleInterop"
   },
   "dependencies": {
     "lodash": "^4.17.11",

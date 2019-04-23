@@ -5,8 +5,17 @@
 
 module.exports = {
   preset: 'ts-jest/presets/js-with-ts',
+  globals: {
+    'ts-jest': {
+      tsConfig: {
+        esModuleInterop: true
+      }
+    }
+  },
   clearMocks: true,
   moduleNameMapper: {
+    '^react-data-grid$': '<rootDir>/packages/react-data-grid/src/',
+    '^react-data-grid-addons$': '<rootDir>/packages/react-data-grid-addons/src/',
     '\\.css$': '<rootDir>/test/fileMock.js'
   },
   modulePathIgnorePatterns: [
