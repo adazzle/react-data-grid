@@ -8,6 +8,7 @@
     "postinstall": "lerna bootstrap --no-ci",
     "prebuild": "node tools/buildStylesheets.js",
     "build": "lerna run build",
+    "build-umd": "lerna run build-umd",
     "start": "node webpack-dev-server.js",
     "eslint": "eslint --ext js,ts,tsx --max-warnings 0 -f codeframe --cache --color packages/react-data-grid/src packages/react-data-grid-addons/src examples",
     "fix-eslint": "npm run eslint -- --fix",

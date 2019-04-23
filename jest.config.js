@@ -5,6 +5,13 @@
 
 module.exports = {
   preset: 'ts-jest/presets/js-with-ts',
+  globals: {
+    'ts-jest': {
+      tsConfig: {
+        esModuleInterop: true
+      }
+    }
+  },
   clearMocks: true,
   moduleNameMapper: {
     '\\.css$': '<rootDir>/test/fileMock.js'
