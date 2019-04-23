@@ -22,9 +22,10 @@ export default function FilterableHeaderCell({ column, onChange }: Props) {
   }
 
   return (
-    <div>
+    <div className="form-group">
       <input
         key={`header-filter-${column.key}`}
+        className="form-control input-sm"
         placeholder="Search"
         value={filterTerm}
         onChange={handleChange}

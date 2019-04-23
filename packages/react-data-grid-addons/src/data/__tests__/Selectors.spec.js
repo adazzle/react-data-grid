@@ -18,7 +18,7 @@ function setupSpies() {
 }
 
 function selectPerRow(rows, options) {
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 0; i < 10; i++) {
     const filters = options.filters;
     const groupBy = options.groupBy;
     Selectors.getRows({ rows, filters, groupBy });
@@ -37,8 +37,8 @@ function executeSpyTests(fn) {
 
     it('should have filterTerm in every filter object', () => {
       const filters = options.filters;
-      for (let i = 0; i < filters.length; i++) {
-        expect(filters[i].filterTerm).toBeDefined();
+      for (const filter of filters) {
+        expect(filter.filterTerm).toBeDefined();
       }
     });
   });

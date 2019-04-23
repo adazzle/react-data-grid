@@ -27,8 +27,7 @@ class RowGrouper {
     const keys = this.resolver.getGroupKeys(groupedRows);
     let dataviewRows = this.resolver.initRowsCollection();
 
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
+    for (const key of keys) {
       const isExpanded = this.isRowExpanded(columnName, key);
       const rowGroupHeader = { name: key, __metaData: { isGroup: true, treeDepth: columnIndex, isExpanded, columnGroupName: columnName, columnGroupDisplayName } };
 
