@@ -247,12 +247,11 @@ export default class Canvas extends React.PureComponent<Props> {
     const CustomRowRenderer = this.props.rowRenderer!;
     const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps) => <Row ref={ref} {...p} /> };
 
-    if (CustomRowRenderer.type === Row) {
-      // In the case where Row is specified as the custom render, ensure the correct ref is passed
-      return <Row {...props} />;
-    }
-
     if (isElement(CustomRowRenderer)) {
+      if (CustomRowRenderer.type === Row) {
+        // In the case where Row is specified as the custom render, ensure the correct ref is passed
+        return <Row {...props} />;
+      }
       return React.cloneElement(CustomRowRenderer, customRowRendererProps);
     }
 
