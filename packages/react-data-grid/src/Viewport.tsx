@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Canvas from './Canvas';
+import { RowsContainerProps } from './RowsContainer';
 import { getSize } from './ColumnUtils';
 import {
   getGridState,
@@ -15,8 +16,8 @@ import {
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
 import EventBus from './masks/EventBus';
-import { ColumnMetrics, CellMetaData, RowGetter } from './common/types';
-import { SCROLL_DIRECTION } from './common/enums';
+import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, Column, Position, SharedEvents } from './common/types';
+import { SCROLL_DIRECTION, CellNavigationMode } from './common/enums';
 
 interface ScrollParams {
   height: number;
@@ -43,39 +44,29 @@ interface ScrollState {
   isScrolling: boolean;
 }
 
-interface Props {
+interface Props extends SharedEvents {
   rowOffsetHeight: number;
   totalWidth: number | string;
   columnMetrics: ColumnMetrics;
   rowGetter: RowGetter;
-  selectedRows?: unknown[];
+  selectedRows: RowData[];
   rowSelection?: { indexes: number[] } | { isSelectedKey: string } | { keys: { values: unknown[]; rowKey: string } };
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowsCount: number;
   rowHeight: number;
   onScroll?(scrollState: ScrollState): void;
   minHeight: number;
-  cellMetaData?: CellMetaData;
+  cellMetaData: CellMetaData;
   rowKey: string;
   scrollToRowIndex?: number;
-  contextMenu?: React.ReactElement | React.ComponentType;
-  getSubRowDetails?(): void;
+  contextMenu?: React.ReactElement;
+  getSubRowDetails?(): SubRowDetails;
   rowGroupRenderer?(): void;
   enableCellSelect: boolean;
   enableCellAutoFocus: boolean;
-  cellNavigationMode: string;
+  cellNavigationMode: CellNavigationMode;
   eventBus: EventBus;
-  onCheckCellIsEditable?(): void;
-  onCellCopyPaste?(): void;
-  onGridRowsUpdated(): void;
-  onDragHandleDoubleClick(): void;
-  onCellSelected?(): void;
-  onCellDeSelected?(): void;
-  onCellRangeSelectionStarted?(): void;
-  onCellRangeSelectionUpdated?(): void;
-  onCellRangeSelectionCompleted?(): void;
-  onCommit(): void;
-  RowsContainer?: React.ReactElement;
+  RowsContainer?: React.ComponentType<RowsContainerProps>;
   editorPortalTarget: Element;
 }
 

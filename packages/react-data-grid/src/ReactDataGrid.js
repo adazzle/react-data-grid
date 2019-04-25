@@ -214,7 +214,6 @@ export default class ReactDataGrid extends React.Component {
     enableRowSelect: false,
     minHeight: 350,
     rowKey: 'id',
-    scrollToRowIndex: 0,
     cellNavigationMode: CellNavigationMode.NONE,
     overScan: {
       colsStart: 2,
@@ -656,14 +655,6 @@ export default class ReactDataGrid extends React.Component {
       });
     }
     return rows;
-  };
-
-  getInitialSelectedRows = () => {
-    const selectedRows = [];
-    for (let i = 0; i < this.props.rowsCount; i++) {
-      selectedRows.push(false);
-    }
-    return selectedRows;
   };
 
   getRowSelectionProps = () => {

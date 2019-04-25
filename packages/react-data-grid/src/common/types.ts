@@ -1,6 +1,6 @@
 import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
-import { HeaderRowType } from './enums';
+import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -69,6 +69,12 @@ export interface Position {
 export interface Range {
   topLeft: Position;
   bottomRight: Position;
+}
+
+export interface SelectedRange extends Range {
+  startCell: Position | null;
+  cursorCell: Position | null;
+  isDragging: boolean;
 }
 
 export interface Dimension {
@@ -191,4 +197,35 @@ export interface CellRenderer {
 
 export interface RowRenderer {
   setScrollLeft(scrollLeft: number): void;
+}
+
+export interface ScrollPosition {
+  scrollLeft: number;
+  scrollTop: number;
+}
+
+export interface SharedEvents {
+  onCheckCellIsEditable?(arg: { row: unknown; column: Column } & Position): boolean;
+  onCellCopyPaste?(arg: {
+    cellKey: string;
+    rowIdx: number;
+    fromRow: number;
+    toRow: number;
+    value: unknown;
+  }): void;
+  onGridRowsUpdated(
+    cellKey: string,
+    toRow1: number,
+    toRow2: number,
+    data: { [key: string]: unknown },
+    updateAction: UpdateActions,
+    fromRow?: number
+  ): void;
+  onDragHandleDoubleClick(data: Position & { rowData: RowData }): void;
+  onCellSelected?(position: Position): void;
+  onCellDeSelected?(position: Position): void;
+  onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
+  onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
+  onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
+  onCommit(...args: unknown[]): void;
 }
