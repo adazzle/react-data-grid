@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { Column, ColumnList, ColumnMetrics, RowData } from './common/types';
+import { Column, ColumnList, RowData } from './common/types';
 
 export function getColumn(columns: ColumnList, idx: number): Column {
   if (Array.isArray(columns)) {
@@ -9,7 +9,7 @@ export function getColumn(columns: ColumnList, idx: number): Column {
   return columns.get(idx);
 }
 
-export function spliceColumn(metrics: ColumnMetrics, idx: number, column: Column): ColumnMetrics {
+export function spliceColumn<T extends { columns: ColumnList }>(metrics: T, idx: number, column: Column): T {
   if (Array.isArray(metrics.columns)) {
     metrics.columns.splice(idx, 1, column);
   } else {
