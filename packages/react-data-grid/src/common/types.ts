@@ -40,6 +40,8 @@ export interface ColumnMetrics {
   columns: ColumnList;
   width: number;
   totalColumnWidth: number;
+  totalWidth: number;
+  minColumnWidth: number;
 }
 
 export interface RowData {

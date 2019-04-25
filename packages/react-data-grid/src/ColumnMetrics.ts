@@ -2,13 +2,7 @@ export { sameColumn } from './ColumnComparer';
 import { getSize, getColumn, isFrozen, spliceColumn } from './ColumnUtils';
 import getScrollbarSize from './getScrollbarSize';
 import { isColumnsImmutable } from './common/utils';
-import { Column, ColumnList } from './common/types';
-
-interface Metrics {
-  columns: ColumnList;
-  totalWidth: number;
-  minColumnWidth: number;
-}
+import { Column, ColumnList, ColumnMetrics } from './common/types';
 
 function cloneColumns(columns: ColumnList): Column[] {
   if (Array.isArray(columns)) {
@@ -50,7 +44,7 @@ function setColumnOffsets(columns: Column[]): void {
 
 const getTotalColumnWidth = (columns: Column[]): number => columns.reduce((acc, c) => acc + (c.width || 0), 0);
 
-export function recalculate(metrics: Metrics) {
+export function recalculate(metrics: ColumnMetrics) {
   // clone columns so we can safely edit them:
   let columns = cloneColumns(metrics.columns);
   // compute width for columns which specify width
@@ -81,7 +75,7 @@ export function recalculate(metrics: Metrics) {
 /**
  * Update column metrics calculation by resizing a column.
  */
-export function resizeColumn(metrics: Metrics, index: number, width: number) {
+export function resizeColumn(metrics: ColumnMetrics, index: number, width: number) {
   const column = getColumn(metrics.columns, index);
   const metricsClone = { ...metrics };
   metricsClone.columns = cloneColumns(metrics.columns);

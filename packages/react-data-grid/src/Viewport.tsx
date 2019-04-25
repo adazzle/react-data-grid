@@ -44,12 +44,12 @@ interface ScrollState {
   isScrolling: boolean;
 }
 
-interface Props {
+export interface ViewportProps {
   rowOffsetHeight: number;
   totalWidth: number | string;
   columnMetrics: ColumnMetrics;
   rowGetter: RowGetter;
-  selectedRows: RowData[];
+  selectedRows?: RowData[];
   rowSelection?: { indexes: number[] } | { isSelectedKey: string } | { keys: { values: unknown[]; rowKey: string } };
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowsCount: number;
@@ -87,7 +87,7 @@ interface State {
   lastFrozenColumnIndex: number;
 }
 
-export default class Viewport extends React.Component<Props, State> {
+export default class Viewport extends React.Component<ViewportProps, State> {
   static displayName = 'Viewport';
 
   static defaultProps = {
@@ -204,7 +204,7 @@ export default class Viewport extends React.Component<Props, State> {
     }
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: ViewportProps) {
     const { rowHeight, rowsCount } = nextProps;
     if (this.props.rowHeight !== nextProps.rowHeight
       || this.props.minHeight !== nextProps.minHeight) {

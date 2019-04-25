@@ -30,7 +30,7 @@ interface Props {
   rowGetter: RowGetter;
   columns: ColumnList;
   cellMetaData: CellMetaData;
-  selectedRows: RowData[];
+  selectedRows?: RowData[];
   rowKey: string;
   scrollToRowIndex?: number;
   contextMenu?: React.ReactElement;
@@ -47,7 +47,7 @@ interface Props {
   lastFrozenColumnIndex?: number;
   totalColumnWidth: number;
   interactionMasksMetaData: InteractionMasksMetaData;
-  onScroll?(position: ScrollPosition): void;
+  onScroll(position: ScrollPosition): void;
   getSubRowDetails?(rowIdx: RowData): SubRowDetails;
 }
 
@@ -178,7 +178,7 @@ export default class Canvas extends React.PureComponent<Props> {
 
   isRowSelected(idx: number, row: RowData) {
     // Use selectedRows if set
-    if (this.props.selectedRows !== null) {
+    if (this.props.selectedRows) {
       const selectedRows = this.props.selectedRows.filter(r => {
         const rowKeyValue = typeof row.get === 'function' ? row.get(this.props.rowKey) : row[this.props.rowKey];
         return r[this.props.rowKey] === rowKeyValue;
