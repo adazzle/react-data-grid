@@ -46,13 +46,7 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
     const { key } = column;
 
     const cellProps: CellRendererProps & { ref: (cell: CellRenderer | null) => void } = {
-      ref: (cell) => {
-        if (cell) {
-          this.cells.set(key, cell);
-        } else {
-          this.cells.delete(key);
-        }
-      },
+      ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
       idx: column.idx!, // TODO: fix idx type
       rowIdx: idx,
       height: this.getRowHeight(),

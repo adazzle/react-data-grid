@@ -31,7 +31,7 @@ export interface Props {
 export default class HeaderRow extends React.Component<Props> {
   static displayName = 'HeaderRow';
 
-  private readonly cells: Array<HeaderCell | null> = [];
+  private readonly cells = new Map<string, HeaderCell>();
 
   shouldComponentUpdate(nextProps: Props) {
     return (
@@ -42,6 +42,10 @@ export default class HeaderRow extends React.Component<Props> {
       || this.props.sortColumn !== nextProps.sortColumn
       || this.props.sortDirection !== nextProps.sortDirection
     );
+  }
+
+  getHeaderCellKey(column: Column): string {
+    return `headercell-${column.key}`;
   }
 
   getHeaderCellType(column: Column): HeaderCellType {
@@ -103,11 +107,13 @@ export default class HeaderRow extends React.Component<Props> {
 
     for (let i = 0, len = getSize(columns); i < len; i++) {
       const column = getColumn(columns, i);
+      const key = this.getHeaderCellKey(column);
       const renderer = column.key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
 
       const cell = (
         <HeaderCell
-          ref={node => this.cells[i] = node}
+          key={key}
+          ref={node => node ? this.cells.set(key, node) : this.cells.delete(key)}
           column={column}
           rowType={rowType}
           height={this.props.height}
@@ -130,9 +136,10 @@ export default class HeaderRow extends React.Component<Props> {
   }
 
   setScrollLeft(scrollLeft: number): void {
-    this.props.columns.forEach((column?: Column, i?: number) => {
-      const cell = this.cells[i!];
-      if (!cell) return;
+    this.props.columns.forEach((column?: Column) => {
+      const key = this.getHeaderCellKey(column!);
+      if (!this.cells.has(key)) return;
+      const cell = this.cells.get(key)!;
       if (isFrozen(column!)) {
         cell.setScrollLeft(scrollLeft);
       } else {
