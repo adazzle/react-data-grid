@@ -44,10 +44,6 @@ export default class HeaderRow extends React.Component<Props> {
     );
   }
 
-  getHeaderCellKey(column: Column): string {
-    return `headercell-${column.key}`;
-  }
-
   getHeaderCellType(column: Column): HeaderCellType {
     if (column.filterable && this.props.filterable) {
       return HeaderCellType.FILTERABLE;
@@ -107,8 +103,8 @@ export default class HeaderRow extends React.Component<Props> {
 
     for (let i = 0, len = getSize(columns); i < len; i++) {
       const column = getColumn(columns, i);
-      const key = this.getHeaderCellKey(column);
-      const renderer = column.key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
+      const { key } = column;
+      const renderer = key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
 
       const cell = (
         <HeaderCell
@@ -137,7 +133,7 @@ export default class HeaderRow extends React.Component<Props> {
 
   setScrollLeft(scrollLeft: number): void {
     this.props.columns.forEach((column?: Column) => {
-      const key = this.getHeaderCellKey(column!);
+      const { key } = column!;
       if (!this.cells.has(key)) return;
       const cell = this.cells.get(key)!;
       if (isFrozen(column!)) {
