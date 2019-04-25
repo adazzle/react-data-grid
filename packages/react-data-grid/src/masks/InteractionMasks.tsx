@@ -148,7 +148,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
       }
     }
 
-    if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
+    if (this.isCellWithinBounds(selectedPosition) || isEditorClosed) {
       this.focus();
     }
   }
@@ -497,7 +497,8 @@ export default class InteractionMasks extends React.Component<Props, State> {
       this.closeEditor();
     }
     this.setState(() => {
-      if (!this.isCellWithinBounds(cell)) return null;
+      const inBoundary = this.isCellWithinBounds(cell);
+      if (!inBoundary) return null;
 
       return {
         selectedPosition: cell,
