@@ -29,7 +29,7 @@ import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { ColumnList, Position, SelectedRange, RowGetter, Dimension, SharedEvents } from '../common/types';
+import { ColumnList, Position, SelectedRange, RowGetter, Dimension, InteractionMasksMetaData } from '../common/types';
 import EventBus from './EventBus';
 
 const SCROLL_CELL_BUFFER = 2;
@@ -40,7 +40,7 @@ interface NavAction {
   onHitBoundary(next: Position): void;
 }
 
-export interface Props extends SharedEvents {
+export interface Props extends InteractionMasksMetaData {
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
   rowVisibleStartIdx: number;

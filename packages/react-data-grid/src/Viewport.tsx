@@ -16,7 +16,7 @@ import {
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
 import EventBus from './masks/EventBus';
-import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, Column, Position, SharedEvents } from './common/types';
+import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, InteractionMasksMetaData } from './common/types';
 import { SCROLL_DIRECTION, CellNavigationMode } from './common/enums';
 
 interface ScrollParams {
@@ -44,7 +44,7 @@ interface ScrollState {
   isScrolling: boolean;
 }
 
-interface Props extends SharedEvents {
+interface Props {
   rowOffsetHeight: number;
   totalWidth: number | string;
   columnMetrics: ColumnMetrics;
@@ -61,13 +61,14 @@ interface Props extends SharedEvents {
   scrollToRowIndex?: number;
   contextMenu?: React.ReactElement;
   getSubRowDetails?(): SubRowDetails;
-  rowGroupRenderer?(): void;
+  rowGroupRenderer?: React.ComponentType;
   enableCellSelect: boolean;
   enableCellAutoFocus: boolean;
   cellNavigationMode: CellNavigationMode;
   eventBus: EventBus;
   RowsContainer?: React.ComponentType<RowsContainerProps>;
   editorPortalTarget: Element;
+  interactionMasksMetaData: InteractionMasksMetaData;
 }
 
 interface State {
@@ -300,18 +301,9 @@ export default class Viewport extends React.Component<Props, State> {
           enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}
           eventBus={this.props.eventBus}
-          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-          onCellCopyPaste={this.props.onCellCopyPaste}
-          onGridRowsUpdated={this.props.onGridRowsUpdated}
-          onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-          onCellSelected={this.props.onCellSelected}
-          onCellDeSelected={this.props.onCellDeSelected}
-          onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
-          onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
-          onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
-          onCommit={this.props.onCommit}
           RowsContainer={this.props.RowsContainer}
           editorPortalTarget={this.props.editorPortalTarget}
+          interactionMasksMetaData={this.props.interactionMasksMetaData}
         />
       </div>
     );

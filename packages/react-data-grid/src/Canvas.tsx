@@ -1,5 +1,5 @@
 import React from 'react';
-import { isElement, isValidElementType } from 'react-is';
+import { isElement } from 'react-is';
 
 import Row from './Row';
 import RowsContainer, { RowsContainerProps } from './RowsContainer';
@@ -7,22 +7,10 @@ import RowGroup from './RowGroup';
 import { InteractionMasks, EventBus } from './masks';
 import { isRowSelected } from './RowUtils';
 import { getColumnScrollPosition } from './utils/canvasUtils';
-import { isFunction } from './common/utils';
 import { EventTypes, CellNavigationMode } from './common/enums';
-import {
-  Column,
-  RowData,
-  ColumnList,
-  Position,
-  RowGetter,
-  CellMetaData,
-  ScrollPosition,
-  SubRowDetails,
-  RowRenderer,
-  SharedEvents
-} from './common/types';
+import { Column, RowData, ColumnList, Position, RowGetter, CellMetaData, ScrollPosition, SubRowDetails, RowRenderer, InteractionMasksMetaData, RowRendererProps } from './common/types';
 
-interface Props extends SharedEvents {
+interface Props {
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowHeight: number;
   height: number;
@@ -47,8 +35,8 @@ interface Props extends SharedEvents {
   scrollToRowIndex?: number;
   contextMenu?: React.ReactElement;
   rowSelection?: { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };
-  rowGroupRenderer: unknown;
-  isScrolling?: boolean;
+  rowGroupRenderer?: React.ComponentType;
+  isScrolling: boolean;
   length?: number;
   enableCellSelect: boolean;
   enableCellAutoFocus: boolean;
@@ -58,9 +46,21 @@ interface Props extends SharedEvents {
   RowsContainer: React.ComponentType<RowsContainerProps>;
   lastFrozenColumnIndex?: number;
   totalColumnWidth: number;
+  interactionMasksMetaData: InteractionMasksMetaData;
   onScroll?(position: ScrollPosition): void;
   getSubRowDetails?(rowIdx: RowData): SubRowDetails;
 }
+
+type RendererProps = Pick<Props, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
+  ref(row: (RowRenderer & React.Component<RowRendererProps>) | null): void;
+  key: number;
+  idx: number;
+  row: RowData;
+  subRowDetails?: SubRowDetails;
+  height: number;
+  isSelected: boolean;
+  scrollLeft: number;
+};
 
 export default class Canvas extends React.PureComponent<Props> {
   static displayName = 'Canvas';
@@ -71,10 +71,8 @@ export default class Canvas extends React.PureComponent<Props> {
 
   private readonly canvas = React.createRef<HTMLDivElement>();
   private readonly interactionMasks = React.createRef<InteractionMasks>();
+  private readonly rows = new Map<number, RowRenderer & React.Component<RowRendererProps>>();
   unsubscribeScrollToColumn?(): void;
-
-  // rows = [];
-  private readonly rows = new Map<number, RowRenderer>();
   _scroll = { scrollTop: 0, scrollLeft: 0 };
 
   componentDidMount() {
@@ -83,7 +81,6 @@ export default class Canvas extends React.PureComponent<Props> {
 
   componentWillUnmount() {
     this._scroll = { scrollTop: 0, scrollLeft: 0 };
-    // this.rows = [];
     this.rows.clear();
     this.unsubscribeScrollToColumn!();
   }
@@ -151,9 +148,9 @@ export default class Canvas extends React.PureComponent<Props> {
   }
 
   getRows(rowOverscanStartIdx: number, rowOverscanEndIdx: number) {
-    if (Array.isArray(this.props.rowGetter)) {
-      return this.props.rowGetter.slice(rowOverscanStartIdx, rowOverscanEndIdx);
-    }
+    // if (Array.isArray(this.props.rowGetter)) {
+    //   return this.props.rowGetter.slice(rowOverscanStartIdx, rowOverscanEndIdx);
+    // }
     const rows = [];
     let i = rowOverscanStartIdx;
     while (i < rowOverscanEndIdx) {
@@ -191,7 +188,7 @@ export default class Canvas extends React.PureComponent<Props> {
 
     // Else use new rowSelection props
     if (this.props.rowSelection) {
-      const { keys, indexes, isSelectedKey } = this.props.rowSelection;
+      const { keys, indexes, isSelectedKey } = this.props.rowSelection as { [key: string]: unknown };
       return isRowSelected(keys, indexes, isSelectedKey, row, idx);
     }
 
@@ -214,19 +211,19 @@ export default class Canvas extends React.PureComponent<Props> {
 
   getRowByRef = (i: number) => {
     // check if wrapped with React DND drop target
-    if (this.rows.has(i)) {
-      const row = this.rows.get(i)!;
-      const wrappedRow = row && row.getDecoratedComponentInstance ? row.getDecoratedComponentInstance(i) : null;
-      if (wrappedRow) {
-        return wrappedRow.row;
-      }
-      return row;
+    if (!this.rows.has(i)) return;
+
+    const row = this.rows.get(i)!;
+    const wrappedRow = row && row.getDecoratedComponentInstance ? row.getDecoratedComponentInstance(i) : null;
+    if (wrappedRow) {
+      return wrappedRow.row;
     }
+    return row;
   };
 
   getRowTop = (rowIdx: number) => {
     const row = this.getRowByRef(rowIdx);
-    if (row && isFunction(row.getRowTop)) {
+    if (row && row.getRowTop) {
       return row.getRowTop();
     }
     return this.props.rowHeight * rowIdx;
@@ -234,7 +231,7 @@ export default class Canvas extends React.PureComponent<Props> {
 
   getRowHeight = (rowIdx: number) => {
     const row = this.getRowByRef(rowIdx);
-    if (row && isFunction(row.getRowHeight)) {
+    if (row && row.getRowHeight) {
       return row.getRowHeight();
     }
     return this.props.rowHeight;
@@ -245,45 +242,47 @@ export default class Canvas extends React.PureComponent<Props> {
     return row && row.props ? row.props.columns : this.props.columns;
   };
 
-  renderCustomRowRenderer(props) {
+  renderCustomRowRenderer(props: RendererProps) {
     const { ref, ...otherProps } = props;
-    const CustomRowRenderer = this.props.rowRenderer;
-    const customRowRendererProps = { ...otherProps, renderBaseRow: (p) => <Row ref={ref} {...p} /> };
+    const CustomRowRenderer = this.props.rowRenderer!;
+    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps) => <Row ref={ref} {...p} /> };
+
     if (CustomRowRenderer.type === Row) {
       // In the case where Row is specified as the custom render, ensure the correct ref is passed
       return <Row {...props} />;
     }
-    if (isValidElementType(CustomRowRenderer)) {
-      return <CustomRowRenderer {...customRowRendererProps} />;
-    }
+
     if (isElement(CustomRowRenderer)) {
       return React.cloneElement(CustomRowRenderer, customRowRendererProps);
     }
+
+    return <CustomRowRenderer {...customRowRendererProps} />;
   }
 
-  renderGroupRow(props) {
+  renderGroupRow(props: RendererProps) {
     const { ref, ...rowGroupProps } = props;
     return (
       <RowGroup
         {...rowGroupProps}
-        {...props.row.__metaData}
-        ref={props.ref}
-        name={props.row.name}
+        {...props.row.__metaData!}
+        name={props.row.name as string}
         eventBus={this.props.eventBus}
         renderer={this.props.rowGroupRenderer}
-        renderBaseRow={(p) => <Row ref={ref} {...p} />}
+        renderBaseRow={(p: RowRendererProps) => <Row ref={ref} {...p} />}
       />
     );
   }
 
-  renderRow(props) {
+  renderRow(props: RendererProps) {
     const { row } = props;
+
     if (row.__metaData && row.__metaData.getRowRenderer) {
       return row.__metaData.getRowRenderer(this.props, props.idx);
     }
     if (row.__metaData && row.__metaData.isGroup) {
       return this.renderGroupRow(props);
     }
+
     if (this.props.rowRenderer) {
       return this.renderCustomRowRenderer(props);
     }
@@ -294,7 +293,6 @@ export default class Canvas extends React.PureComponent<Props> {
   renderPlaceholder(key: string, height: number) {
     // just renders empty cells
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
-    const a = this.props.columns.map(x => x);
     return (
       <div key={key} style={{ height }}>
         {
@@ -310,27 +308,26 @@ export default class Canvas extends React.PureComponent<Props> {
     const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, RowsContainer, contextMenu } = this.props;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
-      .map((r, idx) => {
+      .map(({ row, subRowDetails }, idx) => {
         const rowIdx = rowOverscanStartIdx + idx;
-        const key = `row-${rowIdx}`;
-        return r.row && this.renderRow({
-          key,
-          ref(row: RowRenderer | null) {
+        return row && this.renderRow({
+          key: rowIdx,
+          ref: (row: (RowRenderer & React.Component<RowRendererProps>) | null) => {
             if (row) {
-              this.rows.add(rowIdx, row);
+              this.rows.set(rowIdx, row);
             } else {
-              this.row.remove(rowIdx);
+              this.rows.delete(rowIdx);
             }
           },
           idx: rowIdx,
           rowVisibleStartIdx: this.props.rowVisibleStartIdx,
           rowVisibleEndIdx: this.props.rowVisibleEndIdx,
-          row: r.row,
+          row,
           height: rowHeight,
           columns,
-          isSelected: this.isRowSelected(rowIdx, r.row),
+          isSelected: this.isRowSelected(rowIdx, row),
           cellMetaData,
-          subRowDetails: r.subRowDetails,
+          subRowDetails,
           colVisibleStartIdx,
           colVisibleEndIdx,
           colOverscanStartIdx,
@@ -385,22 +382,13 @@ export default class Canvas extends React.PureComponent<Props> {
           onHitTopBoundary={this.onHitTopCanvas}
           onHitLeftBoundary={this.onHitLeftCanvas}
           onHitRightBoundary={this.onHitRightCanvas}
-          onCommit={this.props.onCommit}
-          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-          onCellCopyPaste={this.props.onCellCopyPaste}
-          onGridRowsUpdated={this.props.onGridRowsUpdated}
-          onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-          onCellSelected={this.props.onCellSelected}
-          onCellDeSelected={this.props.onCellDeSelected}
-          onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
-          onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
-          onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
           scrollLeft={this._scroll.scrollLeft}
           scrollTop={this._scroll.scrollTop}
           getRowHeight={this.getRowHeight}
           getRowTop={this.getRowTop}
           getRowColumns={this.getRowColumns}
           editorPortalTarget={this.props.editorPortalTarget}
+          {...this.props.interactionMasksMetaData}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           <div style={{ width: totalColumnWidth }}>{rows}</div>

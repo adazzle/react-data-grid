@@ -1,18 +1,17 @@
 import React, { forwardRef } from 'react';
 import { last } from './common/utils';
 import { EventTypes } from './common/enums';
-import { Column, CellMetaData } from './common/types';
+import { CellMetaData, RowRendererProps, ColumnList } from './common/types';
 import EventBus from './masks/EventBus';
 
 interface Props {
   height: number;
-  columns: Column[];
+  columns: ColumnList;
   row: unknown;
   cellRenderer?(): void;
   cellMetaData: CellMetaData;
   isSelected?: boolean;
   idx: number;
-  expandedRows: unknown[];
   extraClasses?: string;
   forceUpdate?: boolean;
   subRowDetails?: unknown;
@@ -29,6 +28,7 @@ interface Props {
   name: string;
   renderer?: React.ComponentType;
   eventBus: EventBus;
+  renderBaseRow(p: RowRendererProps): React.ReactElement;
 }
 
 const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref) {

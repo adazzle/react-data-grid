@@ -43,6 +43,7 @@ export interface ColumnMetrics {
 }
 
 export interface RowData {
+  __metaData?: RowGroupMetaData;
   [key: string]: unknown;
 }
 
@@ -100,7 +101,7 @@ export interface FormatterProps {
   value: unknown;
   column: Column;
   row: RowData;
-  isScrolling?: boolean;
+  isScrolling: boolean;
   dependentValues?: unknown;
 }
 
@@ -140,7 +141,7 @@ export interface RowRendererProps {
   isSelected?: boolean;
   idx: number;
   extraClasses?: string;
-  subRowDetails: SubRowDetails;
+  subRowDetails?: SubRowDetails;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   isScrolling: boolean;
@@ -197,6 +198,9 @@ export interface CellRenderer {
 
 export interface RowRenderer {
   setScrollLeft(scrollLeft: number): void;
+  getRowTop?(): number;
+  getRowHeight?(): number;
+  getDecoratedComponentInstance?(idx: number): { row: RowRenderer & React.Component<RowRendererProps> } | undefined;
 }
 
 export interface ScrollPosition {
@@ -204,7 +208,7 @@ export interface ScrollPosition {
   scrollTop: number;
 }
 
-export interface SharedEvents {
+export interface InteractionMasksMetaData {
   onCheckCellIsEditable?(arg: { row: unknown; column: Column } & Position): boolean;
   onCellCopyPaste?(arg: {
     cellKey: string;
@@ -228,4 +232,13 @@ export interface SharedEvents {
   onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
   onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
   onCommit(...args: unknown[]): void;
+}
+
+export interface RowGroupMetaData {
+  isGroup: boolean;
+  treeDepth: number;
+  isExpanded: boolean;
+  columnGroupName: string;
+  columnGroupDisplayName: string;
+  getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
 }

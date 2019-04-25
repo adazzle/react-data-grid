@@ -746,6 +746,19 @@ export default class ReactDataGrid extends React.Component {
       cellMetaData.onCellMouseEnter = this.onCellMouseEnter;
     }
 
+    const interactionMasksMetaData = {
+      onCheckCellIsEditable: this.props.onCheckCellIsEditable,
+      onCellCopyPaste: this.props.onCellCopyPaste,
+      onGridRowsUpdated: this.onGridRowsUpdated,
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
+      onCellSelected: this.props.onCellSelected,
+      onCellDeSelected: this.props.onCellDeSelected,
+      onCellRangeSelectionStarted: this.props.cellRangeSelection && this.props.cellRangeSelection.onStart,
+      onCellRangeSelectionUpdated: this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate,
+      onCellRangeSelectionCompleted: this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete,
+      onCommit: this.onCommit
+    };
+
     let containerWidth = this.props.minWidth || this.gridWidth();
     let gridWidth = containerWidth - this.state.scrollOffset;
 
@@ -798,18 +811,9 @@ export default class ReactDataGrid extends React.Component {
           enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}
           eventBus={this.eventBus}
-          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-          onCellCopyPaste={this.props.onCellCopyPaste}
-          onGridRowsUpdated={this.onGridRowsUpdated}
-          onDragHandleDoubleClick={this.onDragHandleDoubleClick}
-          onCellSelected={this.props.onCellSelected}
-          onCellDeSelected={this.props.onCellDeSelected}
-          onCellRangeSelectionStarted={this.props.cellRangeSelection && this.props.cellRangeSelection.onStart}
-          onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
-          onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
-          onCommit={this.onCommit}
           onScroll={this.onScroll}
           editorPortalTarget={this.props.editorPortalTarget}
+          interactionMasksMetaData={interactionMasksMetaData}
         />
       </div>
     );
