@@ -497,8 +497,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
       this.closeEditor();
     }
     this.setState(() => {
-      const inBoundary = this.isCellWithinBounds(cell);
-      if (!inBoundary) return null;
+      if (!this.isCellWithinBounds(cell)) return null;
 
       return {
         selectedPosition: cell,
