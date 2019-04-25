@@ -118,7 +118,7 @@ function compareEachColumn(prevColumns: Column[], nextColumns: Column[], isSameC
     if (!prevColumnsMap.has(key) || !nextColumnsMap.has(key)) return false;
     const prevColumn = prevColumnsMap.get(key)!;
     const nextColumn = nextColumnsMap.get(key)!;
-    if (isSameColumn(prevColumn, nextColumn)) return false;
+    if (!isSameColumn(prevColumn, nextColumn)) return false;
   }
 
   return true;
