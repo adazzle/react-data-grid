@@ -1,6 +1,6 @@
 import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
-import { HeaderRowType } from './enums';
+import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -40,10 +40,13 @@ export interface ColumnMetrics {
   columns: ColumnList;
   width: number;
   totalColumnWidth: number;
+  totalWidth: number;
+  minColumnWidth: number;
 }
 
 export interface RowData {
   get?(key: string): unknown;
+  __metaData?: RowGroupMetaData;
   [key: string]: unknown;
 }
 
@@ -72,6 +75,12 @@ export interface Range {
   bottomRight: Position;
 }
 
+export interface SelectedRange extends Range {
+  startCell: Position | null;
+  cursorCell: Position | null;
+  isDragging: boolean;
+}
+
 export interface Dimension {
   width: number;
   height: number;
@@ -92,10 +101,11 @@ export interface Editor {
 }
 
 export interface FormatterProps {
+  rowIdx: number;
   value: unknown;
   column: Column;
   row: RowData;
-  isScrolling?: boolean;
+  isScrolling: boolean;
   dependentValues?: unknown;
 }
 
@@ -135,7 +145,7 @@ export interface RowRendererProps {
   isSelected?: boolean;
   idx: number;
   extraClasses?: string;
-  subRowDetails: SubRowDetails;
+  subRowDetails?: SubRowDetails;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   isScrolling: boolean;
@@ -192,4 +202,49 @@ export interface CellRenderer {
 
 export interface RowRenderer {
   setScrollLeft(scrollLeft: number): void;
+  getRowTop?(): number;
+  getRowHeight?(): number;
+  getDecoratedComponentInstance?(idx: number): { row: RowRenderer & React.Component<RowRendererProps> } | undefined;
 }
+
+export interface ScrollPosition {
+  scrollLeft: number;
+  scrollTop: number;
+}
+
+export interface InteractionMasksMetaData {
+  onCheckCellIsEditable?(arg: { row: unknown; column: Column } & Position): boolean;
+  onCellCopyPaste?(arg: {
+    cellKey: string;
+    rowIdx: number;
+    fromRow: number;
+    toRow: number;
+    value: unknown;
+  }): void;
+  onGridRowsUpdated(
+    cellKey: string,
+    toRow1: number,
+    toRow2: number,
+    data: { [key: string]: unknown },
+    updateAction: UpdateActions,
+    fromRow?: number
+  ): void;
+  onDragHandleDoubleClick(data: Position & { rowData: RowData }): void;
+  onCellSelected?(position: Position): void;
+  onCellDeSelected?(position: Position): void;
+  onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
+  onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
+  onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
+  onCommit(...args: unknown[]): void;
+}
+
+export interface RowGroupMetaData {
+  isGroup: boolean;
+  treeDepth: number;
+  isExpanded: boolean;
+  columnGroupName: string;
+  columnGroupDisplayName: string;
+  getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
+}
+
+export type RowSelection = { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };

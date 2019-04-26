@@ -6,6 +6,7 @@ interface EventMap {
   SELECT_UPDATE(cellPosition: Position, isFromKeyboard?: boolean, callback?: () => void): void;
   SELECT_END(): void;
   DRAG_ENTER(overRowIdx: number): void;
+  SCROLL_TO_COLUMN(idx: number): void;
 }
 
 type EventName = keyof EventMap;

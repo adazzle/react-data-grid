@@ -33,7 +33,9 @@ describe('viewportUtils', () => {
             { key: 'col2', name: 'col2', width: 100, left: 100 }
           ],
           width: 0,
-          totalColumnWidth: 0
+          totalColumnWidth: 0,
+          totalWidth: 0,
+          minColumnWidth: 0
         },
         minHeight: 100,
         rowOffsetHeight: 5,
@@ -86,7 +88,9 @@ describe('viewportUtils', () => {
       const columnMetrics = {
         columns,
         width: 0,
-        totalColumnWidth: 0
+        totalColumnWidth: 0,
+        totalWidth: 0,
+        minColumnWidth: 0
       };
       return getNonFrozenRenderedColumnCount(columnMetrics, width, scrollLeft);
     };
