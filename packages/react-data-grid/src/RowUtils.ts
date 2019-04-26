@@ -14,9 +14,9 @@ interface Keys {
 }
 
 export function isRowSelected<T, K extends keyof T>(
-  keys?: Keys,
-  indexes?: number[],
-  isSelectedKey?: string,
+  keys?: Keys | null,
+  indexes?: number[] | null,
+  isSelectedKey?: string | null,
   rowData?: T,
   rowIdx?: number
 ): boolean {
