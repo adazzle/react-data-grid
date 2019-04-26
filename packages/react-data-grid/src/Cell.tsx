@@ -201,9 +201,10 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
 
   renderCellContent() {
     let cellContent;
-    const { value, column, height, tooltip, isScrolling, expandableOptions, cellMetaData } = this.props;
+    const { value, column, height, tooltip, isScrolling, expandableOptions, cellMetaData, rowIdx } = this.props;
     const Formatter = column.formatter;
     const cellProps: FormatterProps = {
+      rowIdx,
       value,
       isScrolling,
       column,

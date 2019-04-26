@@ -101,6 +101,7 @@ export interface Editor {
 }
 
 export interface FormatterProps {
+  rowIdx: number;
   value: unknown;
   column: Column;
   row: RowData;
