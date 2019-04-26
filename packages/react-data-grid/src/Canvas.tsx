@@ -169,11 +169,11 @@ export default class Canvas extends React.PureComponent<Props> {
   isRowSelected(idx: number, row: RowData) {
     // Use selectedRows if set
     if (this.props.selectedRows) {
-      const selectedRows = this.props.selectedRows.filter(r => {
+      const selectedRow = this.props.selectedRows.find(r => {
         const rowKeyValue = typeof row.get === 'function' ? row.get(this.props.rowKey) : row[this.props.rowKey];
         return r[this.props.rowKey] === rowKeyValue;
       });
-      return selectedRows.length > 0 && !!selectedRows[0].isSelected;
+      return !!(selectedRow && selectedRow.isSelected);
     }
 
     // Else use new rowSelection props
