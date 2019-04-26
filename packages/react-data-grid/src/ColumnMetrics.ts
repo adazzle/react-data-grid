@@ -2,13 +2,9 @@ export { sameColumn } from './ColumnComparer';
 import { getSize, getColumn, isFrozen, spliceColumn } from './ColumnUtils';
 import getScrollbarSize from './getScrollbarSize';
 import { isColumnsImmutable } from './common/utils';
-import { Column, ColumnList } from './common/types';
+import { Column, ColumnList, ColumnMetrics } from './common/types';
 
-interface Metrics {
-  columns: ColumnList;
-  totalWidth: number;
-  minColumnWidth: number;
-}
+type Metrics = Pick<ColumnMetrics, 'columns' | 'totalWidth' | 'minColumnWidth'>;
 
 function cloneColumns(columns: ColumnList): Column[] {
   if (Array.isArray(columns)) {
@@ -81,7 +77,7 @@ export function recalculate(metrics: Metrics) {
 /**
  * Update column metrics calculation by resizing a column.
  */
-export function resizeColumn(metrics: Metrics, index: number, width: number) {
+export function resizeColumn(metrics: ColumnMetrics, index: number, width: number) {
   const column = getColumn(metrics.columns, index);
   const metricsClone = { ...metrics };
   metricsClone.columns = cloneColumns(metrics.columns);

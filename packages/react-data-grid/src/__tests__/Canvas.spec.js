@@ -24,26 +24,24 @@ const testProps = {
   selectedRows: null,
   rowGetter() { return []; },
   cellMetaData: {
-    selected: {},
-    dragged: {},
-    onCellClick() {},
-    onCellDoubleClick() {},
-    onCommit() {},
-    onCommitCancel() {},
-    copied: {},
-    handleDragEnterRow() {},
-    handleTerminateDrag() {},
-    onAddSubRow() {}
+    onCellClick() { },
+    onCellDoubleClick() { },
+    handleDragEnterRow() { },
+    handleTerminateDrag() { },
+    onAddSubRow() { }
+  },
+  interactionMasksMetaData: {
+    onCommit() { },
+    onCheckCellIsEditable: noop,
+    onCellCopyPaste: noop,
+    onGridRowsUpdated: noop,
+    onDragHandleDoubleClick: noop
   },
   rowGroupRenderer: null,
   isScrolling: false,
   length: 1000,
   enableCellSelect: true,
-  onCheckCellIsEditable: noop,
-  onCellCopyPaste: noop,
-  onGridRowsUpdated: noop,
   cellNavigationMode: 'none',
-  onDragHandleDoubleClick: noop,
   eventBus: {}
 };
 
@@ -61,12 +59,12 @@ describe('Canvas Tests', () => {
   });
 
   it('Should not call setScroll on render', () => {
-    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => {});
+    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => { });
     expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
   });
 
   it('Should not call setScroll on update', () => {
-    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => {});
+    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => { });
     testElementNode.componentDidUpdate(testProps);
     expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
   });
