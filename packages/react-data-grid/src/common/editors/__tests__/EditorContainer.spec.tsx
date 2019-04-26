@@ -88,7 +88,7 @@ describe('Editor Container Tests', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component {
+    class TestEditor extends React.Component<Props> {
       getValue() {
         return undefined;
       }
@@ -105,7 +105,7 @@ describe('Editor Container Tests', () => {
     function innerSetup() {
       return setup({
         value: 'SupernaviX',
-        column: { ...fakeColumn, editor: <TestEditor /> }
+        column: { ...fakeColumn, editor: TestEditor }
       });
     }
 
@@ -139,7 +139,7 @@ describe('Editor Container Tests', () => {
       const { wrapper, props } = innerSetup();
       const editor = wrapper.find(TestEditor);
 
-      (editor.props() as Props).onCommitCancel();
+      editor.props().onCommitCancel();
 
       expect(props.onCommitCancel).toHaveBeenCalledTimes(1);
       expect(props.onCommit).not.toHaveBeenCalled();
@@ -149,7 +149,7 @@ describe('Editor Container Tests', () => {
       const { wrapper, props } = innerSetup();
       const editor = wrapper.find(TestEditor);
 
-      (editor.props() as Props).onCommitCancel();
+      editor.props().onCommitCancel();
       wrapper.unmount();
 
       expect(props.onCommit).not.toHaveBeenCalled();
