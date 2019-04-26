@@ -11,7 +11,7 @@ import { isFrozen } from './ColumnUtils';
 
 const getSubRowOptions = ({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props): SubRowOptions => ({ rowIdx, idx, rowData, expandArgs });
 
-interface Props extends CellRendererProps {
+export interface Props extends CellRendererProps {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
   tooltip?: string;
