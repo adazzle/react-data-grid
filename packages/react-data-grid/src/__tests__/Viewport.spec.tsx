@@ -1,13 +1,13 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import Viewport from '../Viewport';
+import Viewport, { ViewportProps } from '../Viewport';
 import Canvas from '../Canvas';
 import helpers from '../helpers/test/GridPropHelpers';
 import { SCROLL_DIRECTION, CellNavigationMode } from '../common/enums';
 import EventBus from '../masks/EventBus';
 
-const viewportProps = {
+const viewportProps: ViewportProps = {
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {
@@ -22,42 +22,31 @@ const viewportProps = {
   rowHeight: 35,
   onScroll() { },
   minHeight: 500,
-  overScan: {
-    colsStart: 5,
-    colsEnd: 5,
-    rowsStart: 5,
-    rowsEnd: 5
-  },
   cellMetaData: {
-    selected: {},
-    dragged: {},
     onCellClick() { },
     onCellDoubleClick() { },
-    onCommit() { },
-    onCommitCancel() { },
-    copied: {},
-    handleDragEnterRow() { },
-    handleTerminateDrag() { },
     rowKey: 'row key',
-    onCellMouseDown() {},
-    onCellMouseEnter() {},
-    onCellContextMenu() {},
-    onDragEnter() {},
-    onRowExpandToggle() {},
-    onCellExpand() {}
+    onCellMouseDown() { },
+    onCellMouseEnter() { },
+    onCellContextMenu() { },
+    onDragEnter() { },
+    onRowExpandToggle() { },
+    onCellExpand() { }
+  },
+  interactionMasksMetaData: {
+    onGridRowsUpdated() { },
+    onDragHandleDoubleClick() { },
+    onCommit() { }
   },
   rowKey: 'Id',
   enableCellSelect: true,
   enableCellAutoFocus: true,
   cellNavigationMode: CellNavigationMode.NONE,
   eventBus: new EventBus(),
-  onGridRowsUpdated() {},
-  onDragHandleDoubleClick() {},
-  onCommit() {},
   editorPortalTarget: document.body
 };
 
-const viewportPropsNoColumns = { // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
+const viewportPropsNoColumns: ViewportProps = { // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {
@@ -72,38 +61,27 @@ const viewportPropsNoColumns = { // when creating anew plan copying from an exis
   rowHeight: 35,
   onScroll() { },
   minHeight: 500,
-  overScan: {
-    colsStart: 5,
-    colsEnd: 5,
-    rowsStart: 5,
-    rowsEnd: 5
-  },
   cellMetaData: {
-    selected: {},
-    dragged: {},
     onCellClick() { },
     onCellDoubleClick() { },
-    onCommit() { },
-    onCommitCancel() { },
-    copied: {},
-    handleDragEnterRow() { },
-    handleTerminateDrag() { },
     rowKey: 'row key',
-    onCellMouseDown() {},
-    onCellMouseEnter() {},
-    onCellContextMenu() {},
-    onDragEnter() {},
-    onRowExpandToggle() {},
-    onCellExpand() {}
+    onCellMouseDown() { },
+    onCellMouseEnter() { },
+    onCellContextMenu() { },
+    onDragEnter() { },
+    onRowExpandToggle() { },
+    onCellExpand() { }
+  },
+  interactionMasksMetaData: {
+    onGridRowsUpdated() { },
+    onDragHandleDoubleClick() { },
+    onCommit() { }
   },
   rowKey: 'Id',
   enableCellSelect: true,
   enableCellAutoFocus: true,
   cellNavigationMode: CellNavigationMode.NONE,
   eventBus: new EventBus(),
-  onGridRowsUpdated() {},
-  onDragHandleDoubleClick() {},
-  onCommit() {},
   editorPortalTarget: document.body
 };
 
@@ -144,7 +122,7 @@ describe('<Viewport />', () => {
   });
 
   it('should update when given different number of columns', () => {
-    const wrapper = shallow(<Viewport {...viewportProps} />);
+    const wrapper = shallow<ViewportProps>(<Viewport {...viewportProps} />);
     const extraColumn = {
       key: 'description',
       name: 'Description',
@@ -172,7 +150,7 @@ describe('<Viewport />', () => {
   });
 
   it('should update when given height changed', () => {
-    const wrapper = shallow(<Viewport {...viewportProps} />);
+    const wrapper = shallow<ViewportProps>(<Viewport {...viewportProps} />);
     const newHeight = 1000;
     const newProps = { ...viewportProps, minHeight: newHeight };
     wrapper.setProps(newProps);

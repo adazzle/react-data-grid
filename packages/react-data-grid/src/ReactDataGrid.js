@@ -214,7 +214,6 @@ export default class ReactDataGrid extends React.Component {
     enableRowSelect: false,
     minHeight: 350,
     rowKey: 'id',
-    scrollToRowIndex: 0,
     cellNavigationMode: CellNavigationMode.NONE,
     overScan: {
       colsStart: 2,
@@ -308,8 +307,7 @@ export default class ReactDataGrid extends React.Component {
       totalWidth,
       minColumnWidth: metrics.minColumnWidth
     };
-    const updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
-    return updatedMetrics;
+    return ColumnMetrics.recalculate(currentMetrics);
   };
 
   getColumn = (idx) => {
@@ -658,14 +656,6 @@ export default class ReactDataGrid extends React.Component {
     return rows;
   };
 
-  getInitialSelectedRows = () => {
-    const selectedRows = [];
-    for (let i = 0; i < this.props.rowsCount; i++) {
-      selectedRows.push(false);
-    }
-    return selectedRows;
-  };
-
   getRowSelectionProps = () => {
     if (this.props.rowSelection) {
       return this.props.rowSelection.selectBy;
@@ -755,6 +745,19 @@ export default class ReactDataGrid extends React.Component {
       cellMetaData.onCellMouseEnter = this.onCellMouseEnter;
     }
 
+    const interactionMasksMetaData = {
+      onCheckCellIsEditable: this.props.onCheckCellIsEditable,
+      onCellCopyPaste: this.props.onCellCopyPaste,
+      onGridRowsUpdated: this.onGridRowsUpdated,
+      onDragHandleDoubleClick: this.onDragHandleDoubleClick,
+      onCellSelected: this.props.onCellSelected,
+      onCellDeSelected: this.props.onCellDeSelected,
+      onCellRangeSelectionStarted: this.props.cellRangeSelection && this.props.cellRangeSelection.onStart,
+      onCellRangeSelectionUpdated: this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate,
+      onCellRangeSelectionCompleted: this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete,
+      onCommit: this.onCommit
+    };
+
     let containerWidth = this.props.minWidth || this.gridWidth();
     let gridWidth = containerWidth - this.state.scrollOffset;
 
@@ -807,18 +810,9 @@ export default class ReactDataGrid extends React.Component {
           enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}
           eventBus={this.eventBus}
-          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-          onCellCopyPaste={this.props.onCellCopyPaste}
-          onGridRowsUpdated={this.onGridRowsUpdated}
-          onDragHandleDoubleClick={this.onDragHandleDoubleClick}
-          onCellSelected={this.props.onCellSelected}
-          onCellDeSelected={this.props.onCellDeSelected}
-          onCellRangeSelectionStarted={this.props.cellRangeSelection && this.props.cellRangeSelection.onStart}
-          onCellRangeSelectionUpdated={this.props.cellRangeSelection && this.props.cellRangeSelection.onUpdate}
-          onCellRangeSelectionCompleted={this.props.cellRangeSelection && this.props.cellRangeSelection.onComplete}
-          onCommit={this.onCommit}
           onScroll={this.onScroll}
           editorPortalTarget={this.props.editorPortalTarget}
+          interactionMasksMetaData={interactionMasksMetaData}
         />
       </div>
     );

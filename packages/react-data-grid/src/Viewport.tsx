@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Canvas from './Canvas';
+import { RowsContainerProps } from './RowsContainer';
 import { getSize } from './ColumnUtils';
 import {
   getGridState,
@@ -15,8 +16,8 @@ import {
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
 import EventBus from './masks/EventBus';
-import { ColumnMetrics, CellMetaData, RowGetter } from './common/types';
-import { SCROLL_DIRECTION } from './common/enums';
+import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, InteractionMasksMetaData, RowSelection } from './common/types';
+import { SCROLL_DIRECTION, CellNavigationMode } from './common/enums';
 
 interface ScrollParams {
   height: number;
@@ -43,40 +44,31 @@ interface ScrollState {
   isScrolling: boolean;
 }
 
-interface Props {
+export interface ViewportProps {
   rowOffsetHeight: number;
   totalWidth: number | string;
   columnMetrics: ColumnMetrics;
   rowGetter: RowGetter;
-  selectedRows?: unknown[];
-  rowSelection?: { indexes: number[] } | { isSelectedKey: string } | { keys: { values: unknown[]; rowKey: string } };
+  selectedRows?: RowData[];
+  rowSelection?: RowSelection;
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowsCount: number;
   rowHeight: number;
   onScroll?(scrollState: ScrollState): void;
   minHeight: number;
-  cellMetaData?: CellMetaData;
+  cellMetaData: CellMetaData;
   rowKey: string;
   scrollToRowIndex?: number;
-  contextMenu?: React.ReactElement | React.ComponentType;
-  getSubRowDetails?(): void;
-  rowGroupRenderer?(): void;
+  contextMenu?: React.ReactElement;
+  getSubRowDetails?(): SubRowDetails;
+  rowGroupRenderer?: React.ComponentType;
   enableCellSelect: boolean;
   enableCellAutoFocus: boolean;
-  cellNavigationMode: string;
+  cellNavigationMode: CellNavigationMode;
   eventBus: EventBus;
-  onCheckCellIsEditable?(): void;
-  onCellCopyPaste?(): void;
-  onGridRowsUpdated(): void;
-  onDragHandleDoubleClick(): void;
-  onCellSelected?(): void;
-  onCellDeSelected?(): void;
-  onCellRangeSelectionStarted?(): void;
-  onCellRangeSelectionUpdated?(): void;
-  onCellRangeSelectionCompleted?(): void;
-  onCommit(): void;
-  RowsContainer?: React.ReactElement;
+  RowsContainer?: React.ComponentType<RowsContainerProps>;
   editorPortalTarget: Element;
+  interactionMasksMetaData: InteractionMasksMetaData;
 }
 
 interface State {
@@ -95,7 +87,7 @@ interface State {
   lastFrozenColumnIndex: number;
 }
 
-export default class Viewport extends React.Component<Props, State> {
+export default class Viewport extends React.Component<ViewportProps, State> {
   static displayName = 'Viewport';
 
   static defaultProps = {
@@ -212,7 +204,7 @@ export default class Viewport extends React.Component<Props, State> {
     }
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: ViewportProps) {
     const { rowHeight, rowsCount } = nextProps;
     if (this.props.rowHeight !== nextProps.rowHeight
       || this.props.minHeight !== nextProps.minHeight) {
@@ -309,18 +301,9 @@ export default class Viewport extends React.Component<Props, State> {
           enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}
           eventBus={this.props.eventBus}
-          onCheckCellIsEditable={this.props.onCheckCellIsEditable}
-          onCellCopyPaste={this.props.onCellCopyPaste}
-          onGridRowsUpdated={this.props.onGridRowsUpdated}
-          onDragHandleDoubleClick={this.props.onDragHandleDoubleClick}
-          onCellSelected={this.props.onCellSelected}
-          onCellDeSelected={this.props.onCellDeSelected}
-          onCellRangeSelectionStarted={this.props.onCellRangeSelectionStarted}
-          onCellRangeSelectionUpdated={this.props.onCellRangeSelectionUpdated}
-          onCellRangeSelectionCompleted={this.props.onCellRangeSelectionCompleted}
-          onCommit={this.props.onCommit}
           RowsContainer={this.props.RowsContainer}
           editorPortalTarget={this.props.editorPortalTarget}
+          interactionMasksMetaData={this.props.interactionMasksMetaData}
         />
       </div>
     );

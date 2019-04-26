@@ -29,7 +29,7 @@ import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { Column, RowData, ColumnList, Position, Range, RowGetter, Dimension } from '../common/types';
+import { ColumnList, Position, SelectedRange, RowGetter, Dimension, InteractionMasksMetaData } from '../common/types';
 import EventBus from './EventBus';
 
 const SCROLL_CELL_BUFFER = 2;
@@ -40,13 +40,7 @@ interface NavAction {
   onHitBoundary(next: Position): void;
 }
 
-interface SelectedRange extends Range {
-  startCell: Position | null;
-  cursorCell: Position | null;
-  isDragging: boolean;
-}
-
-export interface Props {
+export interface Props extends InteractionMasksMetaData {
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
   rowVisibleStartIdx: number;
@@ -60,27 +54,10 @@ export interface Props {
   cellNavigationMode: CellNavigationMode;
   eventBus: EventBus;
   contextMenu?: React.ReactElement;
-  onCheckCellIsEditable?(arg: { row: unknown; column: Column } & Position): boolean;
-  onCellCopyPaste?(arg: { cellKey: string; rowIdx: number; fromRow: number; toRow: number; value: unknown }): void;
-  onGridRowsUpdated(
-    cellKey: string,
-    toRow1: number,
-    toRow2: number,
-    data: { [key: string]: unknown },
-    updateAction: UpdateActions,
-    fromRow?: number
-  ): void;
   onHitBottomBoundary(position: Position): void;
   onHitTopBoundary(position: Position): void;
   onHitRightBoundary(position: Position): void;
   onHitLeftBoundary(position: Position): void;
-  onCommit(...args: unknown[]): void;
-  onCellSelected?(position: Position): void;
-  onCellDeSelected?(position: Position): void;
-  onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
-  onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
-  onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onDragHandleDoubleClick(data: Position & { rowData: RowData }): void;
   scrollLeft: number;
   scrollTop: number;
   getRowHeight(rowIdx: number): number;
