@@ -10,7 +10,7 @@ import { getColumnScrollPosition } from './utils/canvasUtils';
 import { EventTypes, CellNavigationMode } from './common/enums';
 import { Column, RowData, ColumnList, Position, RowGetter, CellMetaData, ScrollPosition, SubRowDetails, RowRenderer, InteractionMasksMetaData, RowRendererProps, RowSelection } from './common/types';
 
-interface Props {
+export interface Props {
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowHeight: number;
   height: number;
