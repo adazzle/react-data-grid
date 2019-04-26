@@ -7,7 +7,7 @@ import SimpleTextEditor from './SimpleTextEditor';
 import { Z_INDEXES } from '../enums';
 import ClickOutside from './ClickOutside';
 
-interface Props {
+export interface Props {
   rowIdx: number;
   rowData: RowData;
   value: unknown;
