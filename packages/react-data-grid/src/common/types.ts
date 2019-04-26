@@ -43,6 +43,7 @@ export interface ColumnMetrics {
 }
 
 export interface RowData {
+  get?(key: string): unknown;
   [key: string]: unknown;
 }
 
