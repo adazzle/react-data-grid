@@ -4,6 +4,8 @@ import getScrollbarSize from './getScrollbarSize';
 import { isColumnsImmutable } from './common/utils';
 import { Column, ColumnList, ColumnMetrics } from './common/types';
 
+type Metrics = Pick<ColumnMetrics, 'columns' | 'totalWidth' | 'minColumnWidth'>;
+
 function cloneColumns(columns: ColumnList): Column[] {
   if (Array.isArray(columns)) {
     return columns.map(c => ({ ...c }));
@@ -44,7 +46,7 @@ function setColumnOffsets(columns: Column[]): void {
 
 const getTotalColumnWidth = (columns: Column[]): number => columns.reduce((acc, c) => acc + (c.width || 0), 0);
 
-export function recalculate(metrics: ColumnMetrics) {
+export function recalculate(metrics: Metrics) {
   // clone columns so we can safely edit them:
   let columns = cloneColumns(metrics.columns);
   // compute width for columns which specify width

@@ -307,8 +307,7 @@ export default class ReactDataGrid extends React.Component {
       totalWidth,
       minColumnWidth: metrics.minColumnWidth
     };
-    const updatedMetrics = ColumnMetrics.recalculate(currentMetrics);
-    return updatedMetrics;
+    return ColumnMetrics.recalculate(currentMetrics);
   };
 
   getColumn = (idx) => {
