@@ -8,7 +8,7 @@ import { InteractionMasks, EventBus } from './masks';
 import { isRowSelected } from './RowUtils';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 import { EventTypes, CellNavigationMode } from './common/enums';
-import { Column, RowData, ColumnList, Position, RowGetter, CellMetaData, ScrollPosition, SubRowDetails, RowRenderer, InteractionMasksMetaData, RowRendererProps } from './common/types';
+import { Column, RowData, ColumnList, Position, RowGetter, CellMetaData, ScrollPosition, SubRowDetails, RowRenderer, InteractionMasksMetaData, RowRendererProps, RowSelection } from './common/types';
 
 interface Props {
   rowRenderer?: React.ReactElement | React.ComponentType;
@@ -34,7 +34,7 @@ interface Props {
   rowKey: string;
   scrollToRowIndex?: number;
   contextMenu?: React.ReactElement;
-  rowSelection?: { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };
+  rowSelection?: RowSelection;
   rowGroupRenderer?: React.ComponentType;
   isScrolling: boolean;
   length?: number;
@@ -91,14 +91,10 @@ export default class Canvas extends React.PureComponent<Props> {
   }
 
   handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    if (this.canvas.current !== e.target) {
-      return;
-    }
-    const { scrollLeft, scrollTop } = e.target as HTMLElement;
-    const scroll = { scrollTop, scrollLeft };
-    this._scroll = scroll;
+    const { scrollLeft, scrollTop } = e.currentTarget;
+    this._scroll = { scrollTop, scrollLeft };
     if (this.props.onScroll) {
-      this.props.onScroll(scroll);
+      this.props.onScroll(this._scroll);
     }
   };
 
@@ -208,7 +204,7 @@ export default class Canvas extends React.PureComponent<Props> {
     if (!this.rows.has(i)) return;
 
     const row = this.rows.get(i)!;
-    const wrappedRow = row && row.getDecoratedComponentInstance ? row.getDecoratedComponentInstance(i) : null;
+    const wrappedRow = row.getDecoratedComponentInstance ? row.getDecoratedComponentInstance(i) : null;
     return wrappedRow ? wrappedRow.row : row;
   };
 

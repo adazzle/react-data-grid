@@ -246,3 +246,5 @@ export interface RowGroupMetaData {
   columnGroupDisplayName: string;
   getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
 }
+
+export type RowSelection = { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };

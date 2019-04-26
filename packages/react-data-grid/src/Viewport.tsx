@@ -16,7 +16,7 @@ import {
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
 import EventBus from './masks/EventBus';
-import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, InteractionMasksMetaData } from './common/types';
+import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, InteractionMasksMetaData, RowSelection } from './common/types';
 import { SCROLL_DIRECTION, CellNavigationMode } from './common/enums';
 
 interface ScrollParams {
@@ -50,7 +50,7 @@ export interface ViewportProps {
   columnMetrics: ColumnMetrics;
   rowGetter: RowGetter;
   selectedRows?: RowData[];
-  rowSelection?: { indexes: number[] } | { isSelectedKey: string } | { keys: { values: unknown[]; rowKey: string } };
+  rowSelection?: RowSelection;
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowsCount: number;
   rowHeight: number;
