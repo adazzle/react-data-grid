@@ -72,16 +72,14 @@ export default class Canvas extends React.PureComponent<Props> {
   private readonly canvas = React.createRef<HTMLDivElement>();
   private readonly interactionMasks = React.createRef<InteractionMasks>();
   private readonly rows = new Map<number, RowRenderer & React.Component<RowRendererProps>>();
-  unsubscribeScrollToColumn?(): void;
-  _scroll = { scrollTop: 0, scrollLeft: 0 };
+  private unsubscribeScrollToColumn?(): void;
+  private _scroll = { scrollTop: 0, scrollLeft: 0 };
 
   componentDidMount() {
     this.unsubscribeScrollToColumn = this.props.eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, this.scrollToColumn);
   }
 
   componentWillUnmount() {
-    this._scroll = { scrollTop: 0, scrollLeft: 0 };
-    this.rows.clear();
     this.unsubscribeScrollToColumn!();
   }
 
@@ -106,23 +104,19 @@ export default class Canvas extends React.PureComponent<Props> {
 
   onHitBottomCanvas = () => {
     const { current } = this.canvas;
-    if (current != null) {
+    if (current) {
       current.scrollTop += this.props.rowHeight + this.getClientScrollTopOffset(current);
     }
   };
 
   onHitTopCanvas = () => {
     const { current } = this.canvas;
-    if (current != null) {
+    if (current) {
       current.scrollTop -= this.props.rowHeight - this.getClientScrollTopOffset(current);
     }
   };
 
-  onHitLeftCanvas = ({ idx }: Position) => {
-    this.scrollToColumn(idx);
-  };
-
-  onHitRightCanvas = ({ idx }: Position) => {
+  handleHitColummBoundary = ({ idx }: Position) => {
     this.scrollToColumn(idx);
   };
 
@@ -183,13 +177,13 @@ export default class Canvas extends React.PureComponent<Props> {
         const rowKeyValue = typeof row.get === 'function' ? row.get(this.props.rowKey) : row[this.props.rowKey];
         return r[this.props.rowKey] === rowKeyValue;
       });
-      return selectedRows.length > 0 && selectedRows[0].isSelected;
+      return selectedRows.length > 0 && !!selectedRows[0].isSelected;
     }
 
     // Else use new rowSelection props
     if (this.props.rowSelection) {
       const { keys, indexes, isSelectedKey } = this.props.rowSelection as { [key: string]: unknown };
-      return isRowSelected(keys, indexes, isSelectedKey, row, idx);
+      return isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, row, idx);
     }
 
     return false;
@@ -197,7 +191,7 @@ export default class Canvas extends React.PureComponent<Props> {
 
   setScrollLeft(scrollLeft: number) {
     const { current } = this.interactionMasks;
-    if (current && current.setScrollLeft) {
+    if (current) {
       current.setScrollLeft(scrollLeft);
     }
 
@@ -215,10 +209,7 @@ export default class Canvas extends React.PureComponent<Props> {
 
     const row = this.rows.get(i)!;
     const wrappedRow = row && row.getDecoratedComponentInstance ? row.getDecoratedComponentInstance(i) : null;
-    if (wrappedRow) {
-      return wrappedRow.row;
-    }
-    return row;
+    return wrappedRow ? wrappedRow.row : row;
   };
 
   getRowTop = (rowIdx: number) => {
@@ -296,7 +287,7 @@ export default class Canvas extends React.PureComponent<Props> {
       <div key={key} style={{ height }}>
         {
           (this.props.columns as Column[]).map(
-            (column, idx) => <div style={{ width: column.width }} key={idx} />
+            (column) => <div style={{ width: column.width }} key={column.key} />
           )
         }
       </div>
@@ -379,8 +370,8 @@ export default class Canvas extends React.PureComponent<Props> {
           contextMenu={this.props.contextMenu}
           onHitBottomBoundary={this.onHitBottomCanvas}
           onHitTopBoundary={this.onHitTopCanvas}
-          onHitLeftBoundary={this.onHitLeftCanvas}
-          onHitRightBoundary={this.onHitRightCanvas}
+          onHitLeftBoundary={this.handleHitColummBoundary}
+          onHitRightBoundary={this.handleHitColummBoundary}
           scrollLeft={this._scroll.scrollLeft}
           scrollTop={this._scroll.scrollTop}
           getRowHeight={this.getRowHeight}
