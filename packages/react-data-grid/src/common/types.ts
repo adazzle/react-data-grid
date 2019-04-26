@@ -45,6 +45,7 @@ export interface ColumnMetrics {
 }
 
 export interface RowData {
+  get?(key: string): unknown;
   __metaData?: RowGroupMetaData;
   [key: string]: unknown;
 }
