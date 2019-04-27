@@ -34,13 +34,6 @@ function executeSpyTests(fn) {
       const expectedComputations = fn(options);
       expect(filterSpy.mock.calls.length).toBe(expectedComputations);
     });
-
-    it('should have filterTerm in every filter object', () => {
-      const filters = options.filters;
-      for (const filter of filters) {
-        expect(filter.filterTerm).toBeDefined();
-      }
-    });
   });
 
   describe('When filters are undefined', () => {
