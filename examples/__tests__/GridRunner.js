@@ -20,9 +20,7 @@ export default class GridRunner {
     const Example = this.example;
     this.handleCellDragSpy = jest.fn();
     const options = intoBody ? { attachTo: document.body } : { };
-    const gridWrapper = mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
-
-    return gridWrapper;
+    return mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
   }
 
   dispose() {
