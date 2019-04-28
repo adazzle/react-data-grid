@@ -27,7 +27,7 @@ interface ScrollParams {
   rowHeight: number;
 }
 
-interface ScrollState {
+export interface ScrollState {
   height: number;
   scrollTop: number;
   scrollLeft: number;
@@ -54,7 +54,7 @@ export interface ViewportProps {
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowsCount: number;
   rowHeight: number;
-  onScroll?(scrollState: ScrollState): void;
+  onScroll(scrollState: ScrollState): void;
   minHeight: number;
   cellMetaData: CellMetaData;
   rowKey: string;
@@ -109,9 +109,7 @@ export default class Viewport extends React.Component<ViewportProps, State> {
       rowsCount
     });
 
-    if (onScroll) {
-      onScroll(nextScrollState);
-    }
+    onScroll(nextScrollState);
   };
 
   getScroll() {

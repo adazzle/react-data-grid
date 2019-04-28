@@ -204,7 +204,10 @@ export default class ReactDataGrid extends React.Component {
     /** Called when the grid is scrolled */
     onScroll: PropTypes.func,
     /** The node where the editor portal should mount. */
-    editorPortalTarget: PropTypes.instanceOf(Element)
+    editorPortalTarget: PropTypes.instanceOf(Element),
+    RowsContainer: PropTypes.func,
+    emptyRowsView: PropTypes.func,
+    onHeaderDrop: PropTypes.func
   };
 
   static defaultProps = {
