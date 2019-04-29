@@ -26,7 +26,7 @@ type SharedHeaderRowProps = Pick<HeaderRowProps,
 
 export interface Props extends SharedHeaderRowProps {
   columnMetrics: ColumnMetrics;
-  totalWidth: number | 'string';
+  totalWidth: number | string;
   height: number;
   headerRows: HeaderRowData[];
   onColumnResize(pos: number, width: number): void;
