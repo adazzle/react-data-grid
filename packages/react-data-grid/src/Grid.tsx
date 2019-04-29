@@ -2,51 +2,26 @@ import React from 'react';
 import { isValidElementType } from 'react-is';
 
 import Header from './Header';
-import Viewport, { ScrollState } from './Viewport';
+import Viewport, { ViewportProps, ScrollState } from './Viewport';
 import { isFrozen } from './ColumnUtils';
-import EventBus from './masks/EventBus';
-import { RowsContainerProps } from './RowsContainer';
-import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, InteractionMasksMetaData, RowSelection, Column } from './common/types';
-import { SCROLL_DIRECTION, CellNavigationMode, DEFINE_SORT } from './common/enums';
+import { Column } from './common/types';
+import { SCROLL_DIRECTION, DEFINE_SORT } from './common/enums';
 
-interface Props {
-  rowGetter: RowGetter;
-  columnMetrics: ColumnMetrics;
+interface Props extends ViewportProps {
   columns: Column[];
-  minHeight: number;
-  totalWidth: number | string;
   headerRows: unknown[] | Function;
-  rowHeight: number;
-  rowRenderer?: React.ReactElement | React.ComponentType;
   emptyRowsView?: React.ComponentType;
-  selectedRows?: RowData[];
-  rowSelection?: RowSelection;
-  rowsCount: number;
   sortColumn?: string;
-  cellMetaData: CellMetaData;
   sortDirection: SCROLL_DIRECTION;
   rowOffsetHeight: number;
+  draggableHeaderCell?: React.ComponentType;
+  scrollLeft?: number;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(index: number, width: number): void;
   onSort(columnKey: string, direction: DEFINE_SORT): void;
-  onHeaderDrop?: Function;
-  rowKey: string;
-  scrollToRowIndex?: number;
-  contextMenu?: React.ReactElement;
-  getSubRowDetails?(): SubRowDetails;
-  draggableHeaderCell?: React.ComponentType;
-  getValidFilterValues?: Function;
-  rowGroupRenderer?: React.ComponentType;
-  enableCellSelect: boolean;
-  enableCellAutoFocus: boolean;
-  cellNavigationMode: CellNavigationMode;
-  eventBus: EventBus;
-  interactionMasksMetaData: InteractionMasksMetaData;
-  RowsContainer?: React.ComponentType<RowsContainerProps>;
-  editorPortalTarget: Element;
-  scrollLeft?: number;
-  onScroll(scrollState: unknown): void;
+  getValidFilterValues?(): unknown;
+  onHeaderDrop?(): void;
 }
 
 export default class Grid extends React.Component<Props> {
@@ -65,14 +40,14 @@ export default class Grid extends React.Component<Props> {
     };
   }
 
-  _onScroll = () => {
+  _onScroll() {
     if (this._scrollLeft !== undefined) {
       this.header.current!.setScrollLeft(this._scrollLeft);
       if (this.viewport.current) {
         this.viewport.current.setScrollLeft(this._scrollLeft);
       }
     }
-  };
+  }
 
   areFrozenColumnsScrolledLeft(scrollLeft: number) {
     return scrollLeft > 0 && this.props.columns.some(c => isFrozen(c));
@@ -94,10 +69,6 @@ export default class Grid extends React.Component<Props> {
 
   componentDidUpdate() {
     this._onScroll();
-  }
-
-  componentWillUnmount() {
-    this._scrollLeft = undefined;
   }
 
   render() {
