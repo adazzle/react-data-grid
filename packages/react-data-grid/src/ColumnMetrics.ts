@@ -109,8 +109,7 @@ function compareEachColumn(prevColumns: Column[], nextColumns: Column[], isSameC
 
   if (keys.size > prevColumnsMap.size) return false;
 
-  // We shouldn't need Array.from(), but TS complains
-  for (const key of Array.from(keys)) {
+  for (const key of keys) {
     if (!prevColumnsMap.has(key) || !nextColumnsMap.has(key)) return false;
     const prevColumn = prevColumnsMap.get(key)!;
     const nextColumn = nextColumnsMap.get(key)!;
