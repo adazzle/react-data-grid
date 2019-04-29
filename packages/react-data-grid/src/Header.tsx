@@ -52,8 +52,7 @@ export default class Header extends React.Component<Props, State> {
 
     if (pos === null) return;
 
-    const state = this.state.resizing || this.props;
-    const prevColumnMetrics = this.props.columnMetrics || state.columnMetrics;
+    const prevColumnMetrics = this.state.resizing ? this.state.resizing.columnMetrics : this.props.columnMetrics;
     const columnMetrics = resizeColumn({ ...prevColumnMetrics }, pos, width);
 
     // we don't want to influence scrollLeft while resizing
