@@ -1,27 +1,31 @@
 import React from 'react';
 import { isValidElementType } from 'react-is';
 
-import Header from './Header';
+import Header, { HeaderProps } from './Header';
 import Viewport, { ViewportProps, ScrollState } from './Viewport';
 import { isFrozen } from './ColumnUtils';
 import { Column } from './common/types';
-import { SCROLL_DIRECTION, DEFINE_SORT } from './common/enums';
+import { DEFINE_SORT } from './common/enums';
 
-interface Props extends ViewportProps {
+type SharedHeaderProps = Pick<HeaderProps,
+'headerRows'
+| 'onColumnResize'
+| 'draggableHeaderCell'
+| 'getValidFilterValues'
+| 'sortDirection'
+| 'sortColumn'
+| 'onHeaderDrop'
+| 'onSort'
+>;
+
+
+interface Props extends ViewportProps, SharedHeaderProps {
   columns: Column[];
-  headerRows: unknown[] | Function;
   emptyRowsView?: React.ComponentType;
-  sortColumn?: string;
-  sortDirection: SCROLL_DIRECTION;
-  rowOffsetHeight: number;
-  draggableHeaderCell?: React.ComponentType;
   scrollLeft?: number;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
-  onColumnResize(index: number, width: number): void;
   onSort(columnKey: string, direction: DEFINE_SORT): void;
-  getValidFilterValues?(): unknown;
-  onHeaderDrop?(): void;
 }
 
 export default class Grid extends React.Component<Props> {
