@@ -38,6 +38,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.12.4",
     "eslint-plugin-react-hooks": "^1.6.0",
+    "eslint-plugin-sonarjs": "^0.3.0",
     "faker": "^4.1.0",
     "immutability-helper": "^3.0.0",
     "immutable": "^3.8.2",
