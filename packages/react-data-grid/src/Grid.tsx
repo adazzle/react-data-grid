@@ -27,8 +27,8 @@ interface Props extends ViewportProps {
 export default class Grid extends React.Component<Props> {
   static displayName = 'Grid';
 
-  private header = React.createRef<Header>();
-  private viewport = React.createRef<Viewport>();
+  private readonly header = React.createRef<Header>();
+  private readonly viewport = React.createRef<Viewport>();
   private _scrollLeft?: number = undefined;
 
   getStyle(): React.CSSProperties {
