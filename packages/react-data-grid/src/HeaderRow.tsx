@@ -13,7 +13,7 @@ export interface HeaderRowProps {
   width?: number;
   height: number;
   columns: ColumnList;
-  onSort(): void;
+  onSort(columnKey: string, direction: DEFINE_SORT): void;
   onColumnResize(column: Column, width: number): void;
   onColumnResizeEnd(column: Column, width: number): void;
   style?: React.CSSProperties;
@@ -21,10 +21,9 @@ export interface HeaderRowProps {
   sortDirection?: DEFINE_SORT;
   filterable?: boolean;
   onFilterChange(): void;
-  onScroll?(): void;
   rowType: HeaderRowType;
-  draggableHeaderCell: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
-  onHeaderDrop(): void;
+  draggableHeaderCell?: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
+  onHeaderDrop?(): void;
   getValidFilterValues?(): void;
 }
 
@@ -155,7 +154,6 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     return (
       <div
         style={this.props.style}
-        onScroll={this.props.onScroll}
         className="react-grid-HeaderRow"
       >
         <div style={cellsStyle}>

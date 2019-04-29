@@ -18,8 +18,8 @@ interface Props {
   height: number;
   onResize(column: Column, width: number): void;
   onResizeEnd(column: Column, width: number): void;
-  onHeaderDrop(): void;
-  draggableHeaderCell: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
+  onHeaderDrop?(): void;
+  draggableHeaderCell?: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
   className?: string;
 }
 
@@ -99,12 +99,12 @@ export default class HeaderCell extends React.Component<Props> {
       </div>
     );
 
-    if (rowType === HeaderRowType.HEADER && column.draggable) {
-      const DraggableHeaderCell = this.props.draggableHeaderCell;
+    const DraggableHeaderCell = this.props.draggableHeaderCell;
+    if (rowType === HeaderRowType.HEADER && column.draggable && DraggableHeaderCell) {
       return (
         <DraggableHeaderCell
           column={column}
-          onHeaderDrop={this.props.onHeaderDrop}
+          onHeaderDrop={this.props.onHeaderDrop!}
         >
           {cell}
         </DraggableHeaderCell>

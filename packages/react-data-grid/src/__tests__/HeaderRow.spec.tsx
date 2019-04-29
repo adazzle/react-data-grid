@@ -127,7 +127,6 @@ describe('Header Row Unit Tests', () => {
       return shallow(<HeaderRow {...props} />);
     };
 
-    const onScroll = jest.fn();
     const requiredProps: HeaderRowProps = {
       height: 35,
       columns: helpers.columns,
@@ -159,7 +158,6 @@ describe('Header Row Unit Tests', () => {
       filterable: true,
       onFilterChange() {},
       onHeaderDrop() {},
-      onScroll,
       draggableHeaderCell: () => <div />
     };
 
@@ -182,11 +180,6 @@ describe('Header Row Unit Tests', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
       expect(headerRowDiv.props().style).toBeUndefined();
-    });
-    it('passes onScroll property, if available from props', () => {
-      const wrapper = renderComponent(allProperties);
-      const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().onScroll).toBe(onScroll);
     });
   });
 });

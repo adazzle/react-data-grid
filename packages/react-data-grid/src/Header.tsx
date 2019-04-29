@@ -21,10 +21,9 @@ type SharedHeaderRowProps = Pick<HeaderRowProps,
 | 'sortColumn'
 | 'onHeaderDrop'
 | 'onSort'
-| 'onScroll'
 >;
 
-export interface Props extends SharedHeaderRowProps {
+export interface HeaderProps extends SharedHeaderRowProps {
   columnMetrics: ColumnMetrics;
   totalWidth: number | string;
   height: number;
@@ -37,7 +36,7 @@ interface State {
   resizing: { column: Column; columnMetrics: ColumnMetrics } | null;
 }
 
-export default class Header extends React.Component<Props, State> {
+export default class Header extends React.Component<HeaderProps, State> {
   readonly state: Readonly<State> = { resizing: null };
 
   private readonly row = React.createRef<HeaderRow>();
@@ -112,7 +111,6 @@ export default class Header extends React.Component<Props, State> {
           sortColumn={this.props.sortColumn}
           sortDirection={this.props.sortDirection}
           onSort={this.props.onSort}
-          onScroll={this.props.onScroll}
           getValidFilterValues={this.props.getValidFilterValues}
         />
       );
@@ -164,7 +162,6 @@ export default class Header extends React.Component<Props, State> {
     const className = classNames('react-grid-Header', {
       'react-grid-Header--resizing': !!this.state.resizing
     });
-    const { onScroll } = this.props;
     const style: React.CSSProperties = {
       position: 'relative',
       height: this.getCombinedHeaderHeights()
@@ -172,7 +169,6 @@ export default class Header extends React.Component<Props, State> {
 
     return (
       <div
-        onScroll={onScroll}
         style={style}
         className={className}
         onClick={this.onHeaderClick}
