@@ -95,8 +95,7 @@ describe('Header Unit Tests', () => {
 
   describe('Rendering Header component', () => {
     const renderComponent = (props) => {
-      const wrapper = shallow(<Header {...props} />);
-      return wrapper;
+      return shallow(<Header {...props} />);
     };
     const testRequiredProps = {
       columnMetrics: {
