@@ -32,13 +32,12 @@ export default class Header extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const update = !ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn)
+    return !ColumnMetrics.sameColumns(this.props.columnMetrics.columns, nextProps.columnMetrics.columns, ColumnMetrics.sameColumn)
     || this.props.totalWidth !== nextProps.totalWidth
     || (this.props.headerRows.length !== nextProps.headerRows.length)
     || (this.state.resizing !== nextState.resizing)
     || this.props.sortColumn !== nextProps.sortColumn
     || this.props.sortDirection !== nextProps.sortDirection;
-    return update;
   }
 
   onColumnResize = (column, width) => {

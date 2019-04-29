@@ -47,8 +47,7 @@ describe('Empty Grid Tests', () => {
 
 describe('Rendering Grid component', () => {
   const renderComponent = (props) => {
-    const wrapper = shallow(<Grid {...props} />);
-    return wrapper;
+    return shallow(<Grid {...props} />);
   };
 
   const allProperties = () => {
