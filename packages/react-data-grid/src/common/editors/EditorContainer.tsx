@@ -74,11 +74,9 @@ export default class EditorContainer extends React.Component<Props, State> {
       case 'Escape':
         this.onPressEscape(e);
         break;
-      case 'ArrowDown':
-        this.onPressArrowDown(e);
-        break;
       case 'ArrowUp':
-        this.onPressArrowUp(e);
+      case 'ArrowDown':
+        this.onPressArrowUpOrDown(e);
         break;
       case 'ArrowLeft':
         this.onPressArrowLeft(e);
@@ -145,16 +143,7 @@ export default class EditorContainer extends React.Component<Props, State> {
     }
   };
 
-  onPressArrowDown = (e: KeyboardEvent) => {
-    if (this.editorHasResults()) {
-      // dont want to propogate as that then moves us round the grid
-      e.stopPropagation();
-    } else {
-      this.commit(e);
-    }
-  };
-
-  onPressArrowUp = (e: KeyboardEvent) => {
+  onPressArrowUpOrDown = (e: KeyboardEvent) => {
     if (this.editorHasResults()) {
       // dont want to propogate as that then moves us round the grid
       e.stopPropagation();

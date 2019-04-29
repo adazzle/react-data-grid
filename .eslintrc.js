@@ -378,6 +378,29 @@ const rules = {
   'react-hooks/rules-of-hooks': 2,
   'react-hooks/exhaustive-deps': 1,
 
+  // SonarJS rules
+  // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
+  'sonarjs/no-all-duplicated-branches': 2,
+  'sonarjs/no-element-overwrite': 2,
+  'sonarjs/no-extra-arguments': 0,
+  'sonarjs/no-identical-conditions': 2,
+  'sonarjs/no-identical-expressions': 2,
+  'sonarjs/no-one-iteration-loop': 2,
+  'sonarjs/no-use-of-empty-return-value': 2,
+  'sonarjs/cognitive-complexity': 0,
+  'sonarjs/max-switch-cases': 0,
+  'sonarjs/no-duplicate-string': 0,
+  'sonarjs/no-duplicated-branches': 1,
+  'sonarjs/no-identical-functions': 1,
+  'sonarjs/no-inverted-boolean-check': 1,
+  'sonarjs/no-redundant-boolean': 1,
+  'sonarjs/no-small-switch': 1,
+  'sonarjs/no-useless-catch': 1,
+  'sonarjs/prefer-immediate-return': 1,
+  'sonarjs/prefer-object-literal': 1,
+  'sonarjs/prefer-single-boolean-return': 1,
+  'sonarjs/prefer-while': 1,
+
   // @typescript-eslint/eslint-plugin rules
   // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules
   '@typescript-eslint/adjacent-overload-signatures': 1,
@@ -451,6 +474,7 @@ module.exports = {
   plugins: [
     'react',
     'react-hooks',
+    'sonarjs',
     '@typescript-eslint'
   ],
   rules,
@@ -473,6 +497,9 @@ module.exports = {
     ],
     env: {
       jest: true
+    },
+    rules: {
+      'sonarjs/no-identical-functions': 0
     }
   }, {
     files: [
