@@ -26,10 +26,10 @@ type SharedHeaderRowProps = Pick<HeaderRowProps,
 
 export interface Props extends SharedHeaderRowProps {
   columnMetrics: ColumnMetrics;
-  totalWidth?: number;
+  totalWidth: number | 'string';
   height: number;
   headerRows: HeaderRowData[];
-  onColumnResize?(pos: number, width: number): void;
+  onColumnResize(pos: number, width: number): void;
   cellMetaData: CellMetaData;
 }
 
@@ -48,16 +48,17 @@ export default class Header extends React.Component<Props, State> {
   }
 
   onColumnResize = (column: Column, width: number): void => {
-    const state = this.state.resizing || this.props;
     const pos = this.getColumnPosition(column);
 
     if (pos === null) return;
 
-    const columnMetrics = resizeColumn({ ...state.columnMetrics }, pos, width);
+    const state = this.state.resizing || this.props;
+    const prevColumnMetrics = this.props.columnMetrics || state.columnMetrics;
+    const columnMetrics = resizeColumn({ ...prevColumnMetrics }, pos, width);
 
     // we don't want to influence scrollLeft while resizing
-    if (columnMetrics.totalWidth < state.columnMetrics.totalWidth) {
-      columnMetrics.totalWidth = state.columnMetrics.totalWidth;
+    if (columnMetrics.totalWidth < prevColumnMetrics.totalWidth) {
+      columnMetrics.totalWidth = prevColumnMetrics.totalWidth;
     }
 
     this.setState({
@@ -69,7 +70,6 @@ export default class Header extends React.Component<Props, State> {
   };
 
   onColumnResizeEnd = (column: Column, width: number): void => {
-    if (!this.props.onColumnResize) return;
     const pos = this.getColumnPosition(column);
     if (pos === null) return;
     this.props.onColumnResize(pos, width || column.width);

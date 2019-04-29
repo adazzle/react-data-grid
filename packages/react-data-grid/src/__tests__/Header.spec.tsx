@@ -98,6 +98,7 @@ describe('Header Unit Tests', () => {
         width: 2601
       },
       height: 51,
+      totalWidth: 2600,
       headerRows: [{
         height: 51,
         rowType: HeaderRowType.HEADER,
@@ -106,7 +107,8 @@ describe('Header Unit Tests', () => {
       onSort: jest.fn(),
       onHeaderDrop() {},
       cellMetaData: fakeCellMetaData,
-      draggableHeaderCell: () => null
+      draggableHeaderCell: () => null,
+      onColumnResize() {}
     };
     const testAllProps: Props = {
       columnMetrics: {
@@ -147,7 +149,7 @@ describe('Header Unit Tests', () => {
     it('should account for scrollbar size in header', () => {
       const wrapper = renderComponent(testAllProps);
       const headerRow = wrapper.find('.react-grid-Header').childAt(0);
-      expect(headerRow.props().style.width).toBe(testAllProps.totalWidth! - SCROLL_BAR_SIZE);
+      expect(headerRow.props().style.width).toBe(testAllProps.totalWidth as number - SCROLL_BAR_SIZE);
     });
     it('passes onScroll property, if available from props', () => {
       const wrapper = renderComponent(testAllProps);
