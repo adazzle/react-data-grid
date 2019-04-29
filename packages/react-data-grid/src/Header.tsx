@@ -15,12 +15,12 @@ interface HeaderRowData extends Pick<HeaderRowProps, 'filterable' | 'onFilterCha
 }
 
 type SharedHeaderRowProps = Pick<HeaderRowProps,
-  'draggableHeaderCell'
-  | 'getValidFilterValues'
-  | 'sortDirection'
-  | 'sortColumn'
-  | 'onHeaderDrop'
-  | 'onSort'
+'draggableHeaderCell'
+| 'getValidFilterValues'
+| 'sortDirection'
+| 'sortColumn'
+| 'onHeaderDrop'
+| 'onSort'
 >;
 
 export interface HeaderProps extends SharedHeaderRowProps {
