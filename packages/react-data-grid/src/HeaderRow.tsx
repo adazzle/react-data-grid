@@ -9,7 +9,7 @@ import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCel
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { Column, ColumnList } from './common/types';
 
-export interface Props {
+export interface HeaderRowProps {
   width?: number;
   height: number;
   columns: ColumnList;
@@ -28,12 +28,12 @@ export interface Props {
   getValidFilterValues?(): void;
 }
 
-export default class HeaderRow extends React.Component<Props> {
+export default class HeaderRow extends React.Component<HeaderRowProps> {
   static displayName = 'HeaderRow';
 
   private readonly cells = new Map<string, HeaderCell>();
 
-  shouldComponentUpdate(nextProps: Props) {
+  shouldComponentUpdate(nextProps: HeaderRowProps) {
     return (
       nextProps.width !== this.props.width
       || nextProps.height !== this.props.height
