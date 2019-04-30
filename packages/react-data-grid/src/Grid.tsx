@@ -35,15 +35,6 @@ export default class Grid extends React.Component<Props> {
   private readonly viewport = React.createRef<Viewport>();
   private _scrollLeft?: number = undefined;
 
-  getStyle(): React.CSSProperties {
-    return {
-      overflow: 'hidden',
-      outline: 0,
-      position: 'relative',
-      minHeight: this.props.minHeight
-    };
-  }
-
   _onScroll() {
     if (this._scrollLeft !== undefined) {
       this.header.current!.setScrollLeft(this._scrollLeft);
@@ -80,7 +71,7 @@ export default class Grid extends React.Component<Props> {
     const EmptyRowsView = this.props.emptyRowsView;
 
     return (
-      <div style={this.getStyle()} className="react-grid-Grid">
+      <div className="react-grid-Grid" style={{ minHeight: this.props.minHeight }}>
         <Header
           ref={this.header}
           columnMetrics={this.props.columnMetrics}

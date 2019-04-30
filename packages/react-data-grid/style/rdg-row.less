@@ -1,3 +1,7 @@
+.react-grid-Row {
+  overflow: hidden;
+}
+
 .react-grid-Row:hover .react-grid-Cell,
 .react-grid-Row.row-context-menu .react-grid-Cell {
   background-color: #f9f9f9;
@@ -14,8 +18,6 @@
 .react-grid-Row:hover .rdg-drag-row-handle {
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
   width: 12px;
   height: 30px;
   margin-left: 0px;
@@ -23,11 +25,11 @@
   background-repeat: no-repeat;
 }
 
-.react-grid-Row.row-selected{
+.react-grid-Row.row-selected {
  background-color: #DBECFA;
 }
 
-.react-grid-Row .row-selected{
+.react-grid-Row .row-selected {
  background-color: #DBECFA;
 }
 
@@ -63,10 +65,7 @@
 }
 
 .rdg-dragging {
-    /*cursor: url(http://www.google.com/intl/en_ALL/mapfiles/closedhand.cur);*/
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
-    cursor: grabbing;
+  cursor: grabbing;
 }
 
 .rdg-dragged-row {
@@ -75,4 +74,10 @@
 
 .rdg-scrolling {
   pointer-events: none;
+}
+
+.rdg-row-group-default {
+  padding-top: 15px;
+  padding-left: 5px;
+  border: 1px solid #ddd;
 }

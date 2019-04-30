@@ -127,16 +127,11 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
       { 'rdg-scrolling': this.props.isScrolling }
     );
 
-    const style = {
-      height: this.getRowHeight(),
-      overflow: 'hidden'
-    };
-
     return (
       <div
         ref={this.row}
         className={className}
-        style={style}
+        style={{ height: this.getRowHeight() }}
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}

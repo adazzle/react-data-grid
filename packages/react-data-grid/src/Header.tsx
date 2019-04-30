@@ -85,11 +85,8 @@ export default class Header extends React.Component<HeaderProps, State> {
         ? this.props.totalWidth - scrollbarSize
         : this.props.totalWidth;
       const headerRowStyle: React.CSSProperties = {
-        position: 'absolute',
         top: this.getCombinedHeaderHeights(index),
-        left: 0,
         width: updatedWidth,
-        overflowX: 'hidden',
         minHeight: rowHeight
       };
 
@@ -162,14 +159,10 @@ export default class Header extends React.Component<HeaderProps, State> {
     const className = classNames('react-grid-Header', {
       'react-grid-Header--resizing': !!this.state.resizing
     });
-    const style: React.CSSProperties = {
-      position: 'relative',
-      height: this.getCombinedHeaderHeights()
-    };
 
     return (
       <div
-        style={style}
+        style={{ height: this.getCombinedHeaderHeights() }}
         className={className}
         onClick={this.onHeaderClick}
       >
