@@ -17,7 +17,7 @@ export interface Props {
   left: number;
   top: number;
   onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(args: unknown): void;
+  onCommit(args: { cellKey: string; rowIdx: number; updated: { [key: string]: unknown }; key?: string }): void;
   onCommitCancel(): void;
   firstEditorKeyPress: string | null;
   scrollLeft: number;

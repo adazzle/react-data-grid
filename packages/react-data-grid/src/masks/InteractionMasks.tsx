@@ -617,8 +617,8 @@ export default class InteractionMasks extends React.Component<Props, State> {
     onDragHandleDoubleClick({ idx, rowIdx, rowData });
   };
 
-  onCommit = (...args: unknown[]): void => {
-    this.props.onCommit(...args);
+  onCommit: InteractionMasksMetaData['onCommit'] = (args): void => {
+    this.props.onCommit(args);
     this.closeEditor();
   };
 

@@ -1,14 +1,14 @@
 import React from 'react';
 import { Column } from '../types';
 
-interface Props<T> {
+export interface CheckboxEditorProps {
   value?: boolean;
   rowIdx: number;
-  column: Column<T>;
-  dependentValues: T;
+  column: Column;
+  dependentValues: unknown;
 }
 
-export default function CheckboxEditor<T>({ value, rowIdx, column, dependentValues }: Props<T>) {
+export default function CheckboxEditor({ value, rowIdx, column, dependentValues }: CheckboxEditorProps) {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (column.onCellChange) {
       column.onCellChange(rowIdx, column.key, dependentValues, event);
