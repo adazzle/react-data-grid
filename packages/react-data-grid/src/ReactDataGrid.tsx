@@ -152,6 +152,8 @@ interface State {
   lastRowIdxUiSelected: number;
   selectedRows: RowData[];
   canFilter?: boolean;
+  sortColumn?: string;
+  sortDirection?: DEFINE_SORT;
 }
 
 function isRowSelected(keys: unknown, indexes: unknown, isSelectedKey: unknown, rowData: RowData, rowIdx: number) {
@@ -200,12 +202,18 @@ export default class ReactDataGrid extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = {
+    const initialState: State = {
       columnMetrics: this.createColumnMetrics(),
       selectedRows: [],
       canFilter: false,
       lastRowIdxUiSelected: -1
     };
+
+    if (this.props.sortColumn && this.props.sortDirection) {
+      initialState.sortColumn = this.props.sortColumn;
+      initialState.sortDirection = this.props.sortDirection;
+    }
+    this.state = initialState;
   }
 
   componentDidMount() {
@@ -396,11 +404,13 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     this.handleGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
   };
 
-  handleSort = (columnKey: string, direction: DEFINE_SORT) => {
-    const { onGridSort } = this.props;
-    if (onGridSort) {
-      onGridSort(columnKey, direction);
-    }
+  handleSort = (sortColumn: string, sortDirection: DEFINE_SORT) => {
+    this.setState({ sortColumn, sortDirection }, () => {
+      const { onGridSort } = this.props;
+      if (onGridSort) {
+        onGridSort(sortColumn, sortDirection);
+      }
+    });
   };
 
   getSelectedRow(rows: RowData[], key: unknown) {
@@ -703,8 +713,8 @@ export default class ReactDataGrid extends React.Component<Props, State> {
           selectedRows={this.getSelectedRows()}
           rowSelection={this.getRowSelectionProps()}
           rowOffsetHeight={this.getRowOffsetHeight()}
-          sortColumn={this.props.sortColumn}
-          sortDirection={this.props.sortDirection}
+          sortColumn={this.state.sortColumn}
+          sortDirection={this.state.sortDirection}
           onSort={this.handleSort}
           minHeight={this.props.minHeight}
           totalWidth={gridWidth}
