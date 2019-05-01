@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "umd/index.js",
   "module": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "dist",
     "lib",
@@ -37,6 +38,11 @@
     "tslib": "^1.9.3"
   },
   "peerDependencies": {
+    "@types/classnames": "^2.2",
+    "@types/react": "^16.8",
+    "@types/react-dom": "^16.8",
+    "@types/react-is": "^16.7",
+    "@types/shallowequal": "^1.1",
     "react": "^16.8",
     "react-dom": "^16.8"
   }
