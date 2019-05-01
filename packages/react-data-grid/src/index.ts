@@ -8,6 +8,7 @@ import * as editors from './common/editors';
 import * as _utils from './common/utils';
 import * as _constants from './common/enums';
 import * as _helpers from './helpers';
+export * from './common/types';
 export {
   formatters,
   editors,
