@@ -138,9 +138,6 @@ export default class Canvas extends React.PureComponent<Props> {
   }
 
   getRows(rowOverscanStartIdx: number, rowOverscanEndIdx: number) {
-    if (Array.isArray(this.props.rowGetter)) {
-      return this.props.rowGetter.slice(rowOverscanStartIdx, rowOverscanEndIdx);
-    }
     const rows = [];
     let i = rowOverscanStartIdx;
     while (i < rowOverscanEndIdx) {

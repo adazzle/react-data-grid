@@ -6,30 +6,44 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<T = unknown> {
   idx?: number; // Set by column metrics
+  /** The name of the column. By default it will be displayed in the header cell */
   name: string;
+  /** A unique key to distinguish each column */
   key: string;
   //FIXME: width and left should be optional
+  /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width: number;
   left: number;
   hidden?: boolean;
   cellClass?: string;
+  /** By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column */
   events?: {
     [key: string]: undefined | ((e: Event, info: ColumnEventInfo) => void);
   };
-
+  /** Formatter to be used to render the cell content */
   formatter?: React.ReactElement | React.ComponentType<FormatterProps>;
+  /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((rowData: RowData) => boolean);
+  /** Enable dragging of a column */
   draggable?: boolean;
+  /** Enable filtering of a column */
   filterable?: boolean;
+  /** Determines whether column is frozen or not */
   frozen?: boolean;
+  /** Enable resizing of a column */
   resizable?: boolean;
+  /** Enable sorting of a column */
   sortable?: boolean;
+  /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
-
+  /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: unknown;
+  /** Header renderer for each header cell */
   headerRenderer?: React.ReactElement | React.ComponentType<{ column: Column<T>; rowType: HeaderRowType }>;
+  /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType;
 
+  // TODO: these props are only used by checkbox editor and we should remove them
   onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
   getRowMetaData?(rowData: RowData, column: Column<T>): unknown;
 }
@@ -56,8 +70,8 @@ export interface CellMetaData {
   onCellContextMenu(position: Position): void;
   onCellDoubleClick(position: Position): void;
   onDragEnter(overRowIdx: number): void;
-  onCellExpand(options: SubRowOptions): void;
-  onRowExpandToggle(data: { rowIdx: number; shouldExpand: boolean; columnGroupName: string; name: string }): void;
+  onCellExpand?(options: SubRowOptions): void;
+  onRowExpandToggle?(data: { rowIdx: number; shouldExpand: boolean; columnGroupName: string; name: string }): void;
   onCellMouseDown?(position: Position): void;
   onCellMouseEnter?(position: Position): void;
   onAddSubRow?(): void;
@@ -93,7 +107,7 @@ export type RowGetter = (rowIdx: number) => RowData;
 
 export interface Editor {
   getInputNode(): Element | Text | undefined | null;
-  getValue(): unknown;
+  getValue(): { [key: string]: unknown };
   hasResults?(): boolean;
   isSelectOpen?(): boolean;
   validate?(value: unknown): boolean;
@@ -235,7 +249,7 @@ export interface InteractionMasksMetaData {
   onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
   onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
   onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onCommit(...args: unknown[]): void;
+  onCommit(args: CommitArgs): void;
 }
 
 export interface RowGroupMetaData {
@@ -248,3 +262,22 @@ export interface RowGroupMetaData {
 }
 
 export type RowSelection = { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };
+
+export interface HeaderRowData {
+  rowType: HeaderRowType;
+  height: number;
+  filterable?: boolean;
+  onFilterChange?(args: FilterArgs): void;
+}
+
+export interface FilterArgs {
+  filterTerm: string;
+  column: Column;
+}
+
+export interface CommitArgs {
+  cellKey: string;
+  rowIdx: number;
+  updated: { [key: string]: unknown };
+  key?: string;
+}

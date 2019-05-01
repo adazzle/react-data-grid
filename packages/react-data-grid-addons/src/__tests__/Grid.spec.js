@@ -47,7 +47,7 @@ describe('Grid', () => {
   };
 
   const getBaseGrid = (wrapper) => {
-    return wrapper.instance().base;
+    return wrapper.instance().base.current;
   };
 
   const buildFakeEvent = (addedData) => {

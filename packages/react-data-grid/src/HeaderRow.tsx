@@ -2,12 +2,12 @@ import React from 'react';
 import shallowEqual from 'shallowequal';
 
 import HeaderCell from './HeaderCell';
-import getScrollbarSize from './getScrollbarSize';
-import { getColumn, getSize, isFrozen } from './ColumnUtils';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
+import getScrollbarSize from './getScrollbarSize';
+import { getColumn, getSize, isFrozen } from './ColumnUtils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
-import { Column, ColumnList } from './common/types';
+import { Column, ColumnList, FilterArgs } from './common/types';
 
 export interface HeaderRowProps {
   width?: number;
@@ -20,7 +20,7 @@ export interface HeaderRowProps {
   sortColumn?: string;
   sortDirection?: DEFINE_SORT;
   filterable?: boolean;
-  onFilterChange(): void;
+  onFilterChange?(args: FilterArgs): void;
   rowType: HeaderRowType;
   draggableHeaderCell?: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
   onHeaderDrop?(): void;

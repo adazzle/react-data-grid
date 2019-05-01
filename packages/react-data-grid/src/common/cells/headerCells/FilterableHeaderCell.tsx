@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Column } from '../../types';
 
+import { FilterArgs } from '../../../common/types';
+
 interface Props {
   column: Column;
-  onChange(change: { filterTerm: string; column: Column }): void;
+  onChange?(args: FilterArgs): void;
   /** TODO: remove */
   getValidFilterValues?(): void;
 }
@@ -14,7 +16,9 @@ export default function FilterableHeaderCell({ column, onChange }: Props) {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
     setFilterTerm(value);
-    onChange({ filterTerm: value, column });
+    if (onChange) {
+      onChange({ filterTerm: value, column });
+    }
   }
 
   if (column.filterable === false) {

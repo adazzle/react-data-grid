@@ -2,17 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
+import HeaderRow, { HeaderRowProps } from './HeaderRow';
 import { resizeColumn } from './ColumnMetrics';
 import { getColumn } from './ColumnUtils';
-import HeaderRow, { HeaderRowProps } from './HeaderRow';
 import getScrollbarSize from './getScrollbarSize';
 import { HeaderRowType } from './common/enums';
-import { Column, ColumnMetrics, CellMetaData } from './common/types';
-
-interface HeaderRowData extends Pick<HeaderRowProps, 'filterable' | 'onFilterChange'> {
-  height?: number;
-  rowType: HeaderRowType;
-}
+import { Column, ColumnMetrics, CellMetaData, HeaderRowData } from './common/types';
 
 type SharedHeaderRowProps = Pick<HeaderRowProps,
 'draggableHeaderCell'
