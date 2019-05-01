@@ -2,7 +2,7 @@ import React, { MouseEvent, KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { Column, Editor, EditorProps, RowData } from '../types';
+import { Column, Editor, EditorProps, RowData, CommitArgs } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import { Z_INDEXES } from '../enums';
 import ClickOutside from './ClickOutside';
@@ -17,7 +17,7 @@ export interface Props {
   left: number;
   top: number;
   onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(args: unknown): void;
+  onCommit(args: CommitArgs): void;
   onCommitCancel(): void;
   firstEditorKeyPress: string | null;
   scrollLeft: number;

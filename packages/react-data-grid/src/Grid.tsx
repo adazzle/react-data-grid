@@ -4,7 +4,7 @@ import { isValidElementType } from 'react-is';
 import Header, { HeaderProps } from './Header';
 import Viewport, { ViewportProps, ScrollState } from './Viewport';
 import { isFrozen } from './ColumnUtils';
-import { Column } from './common/types';
+import { Column, Omit } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 
 type SharedHeaderProps = Pick<HeaderProps,
@@ -15,20 +15,20 @@ type SharedHeaderProps = Pick<HeaderProps,
 | 'sortDirection'
 | 'sortColumn'
 | 'onHeaderDrop'
-| 'onSort'
 >;
 
 
-interface Props extends ViewportProps, SharedHeaderProps {
+export interface GridProps extends Omit<ViewportProps, 'onScroll'>, SharedHeaderProps {
   columns: Column[];
   emptyRowsView?: React.ComponentType;
   scrollLeft?: number;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onSort(columnKey: string, direction: DEFINE_SORT): void;
+  onScroll?(scrollState: ScrollState): void;
 }
 
-export default class Grid extends React.Component<Props> {
+export default class Grid extends React.Component<GridProps> {
   static displayName = 'Grid';
 
   private readonly header = React.createRef<Header>();
@@ -58,7 +58,9 @@ export default class Grid extends React.Component<Props> {
   }
 
   onScroll = (scrollState: ScrollState) => {
-    this.props.onScroll(scrollState);
+    if (this.props.onScroll) {
+      this.props.onScroll(scrollState);
+    }
     const { scrollLeft } = scrollState;
     if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsScrolledLeft(scrollLeft)) {
       this._scrollLeft = scrollLeft;

@@ -67,8 +67,10 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
   };
 
   handleCellExpand = () => {
-    const meta = this.props.cellMetaData;
-    meta.onCellExpand(getSubRowOptions(this.props));
+    const { onCellExpand } = this.props.cellMetaData;
+    if (onCellExpand) {
+      onCellExpand(getSubRowOptions(this.props));
+    }
   };
 
   handleDeleteSubRow = () => {

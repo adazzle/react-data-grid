@@ -90,10 +90,6 @@ interface State {
 export default class Viewport extends React.Component<ViewportProps, State> {
   static displayName = 'Viewport';
 
-  static defaultProps = {
-    rowHeight: 30
-  };
-
   readonly state: Readonly<State> = getGridState(this.props);
   private readonly canvas = React.createRef<Canvas>();
   private readonly viewport = React.createRef<HTMLDivElement>();

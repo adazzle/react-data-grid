@@ -33,8 +33,11 @@ interface Props {
 
 const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref) {
   function onRowExpandToggle(expand?: boolean) {
-    const shouldExpand = expand == null ? !props.isExpanded : expand;
-    props.cellMetaData.onRowExpandToggle({ rowIdx: props.idx, shouldExpand, columnGroupName: props.columnGroupName, name: props.name });
+    const { onRowExpandToggle } = props.cellMetaData;
+    if (onRowExpandToggle) {
+      const shouldExpand = expand == null ? !props.isExpanded : expand;
+      onRowExpandToggle({ rowIdx: props.idx, shouldExpand, columnGroupName: props.columnGroupName, name: props.name });
+    }
   }
 
   function onRowExpandClick() {

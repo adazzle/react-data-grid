@@ -93,7 +93,7 @@ export default class GridRunner {
   }
 
   getDisplayInfo() {
-    const { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx } = this.grid.reactDataGrid.base.viewport.current.state;
+    const { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx } = this.grid.reactDataGrid.base.current.viewport.current.state;
 
     return { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx };
   }
