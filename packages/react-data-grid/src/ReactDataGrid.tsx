@@ -107,9 +107,7 @@ interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMa
   onClearFilters?(): void;
   /** Function called whenever grid is sorted*/
   onGridSort?: GridProps['onSort'];
-  /** Function called whenever keyboard key is released */
   onGridKeyUp?(e: React.KeyboardEvent<HTMLDivElement>): void;
-  /** Function called whenever keyboard key is pressed down */
   onGridKeyDown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelect?(rowData: RowData[]): void;
   columnEquality(c1: Column, c2: Column): boolean;

@@ -15,9 +15,7 @@ type SharedHeaderProps = Pick<HeaderProps,
 | 'sortDirection'
 | 'sortColumn'
 | 'onHeaderDrop'
-> & {
-  onScroll?(scrollState: ScrollState): void;
-};
+>;
 
 
 export interface GridProps extends Omit<ViewportProps, 'onScroll'>, SharedHeaderProps {
@@ -27,6 +25,7 @@ export interface GridProps extends Omit<ViewportProps, 'onScroll'>, SharedHeader
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onSort(columnKey: string, direction: DEFINE_SORT): void;
+  onScroll?(scrollState: ScrollState): void;
 }
 
 export default class Grid extends React.Component<GridProps> {
