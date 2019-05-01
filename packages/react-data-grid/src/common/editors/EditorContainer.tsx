@@ -1,4 +1,4 @@
-import React, { MouseEvent, KeyboardEvent } from 'react';
+import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
@@ -245,7 +245,7 @@ export default class EditorContainer extends React.Component<Props, State> {
       && inputNode.selectionStart === inputNode.value.length;
   }
 
-  handleRightClick = (e: MouseEvent<HTMLDivElement>) => {
+  handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
 
