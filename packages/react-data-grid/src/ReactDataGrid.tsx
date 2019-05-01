@@ -685,9 +685,9 @@ export default class ReactDataGrid extends React.Component<Props, State> {
           onToggleFilter={this.handleToggleFilter}
         />
         <Grid
-          {...this.props}
           ref={this.base}
           rowKey={this.props.rowKey}
+          columns={this.props.columns}
           headerRows={this.getHeaderRows()}
           draggableHeaderCell={this.props.draggableHeaderCell}
           getValidFilterValues={this.props.getValidFilterValues}
