@@ -147,6 +147,21 @@ interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMa
   }): void;
 }
 
+type DefaultProps = Pick<Props,
+'enableCellSelect'
+| 'rowHeight'
+| 'headerFiltersHeight'
+| 'enableRowSelect'
+| 'minHeight'
+| 'rowKey'
+| 'cellNavigationMode'
+| 'enableCellAutoFocus'
+| 'minColumnWidth'
+| 'columnEquality'
+| 'editorPortalTarget'
+>;
+
+
 interface State {
   columnMetrics: ColumnMetrics;
   lastRowIdxUiSelected: number;
@@ -175,7 +190,7 @@ function isRowSelected(keys: unknown, indexes: unknown, isSelectedKey: unknown, 
 export default class ReactDataGrid extends React.Component<Props, State> {
   static displayName = 'ReactDataGrid';
 
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     enableCellSelect: false,
     rowHeight: 35,
     headerFiltersHeight: 45,
