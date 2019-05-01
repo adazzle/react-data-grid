@@ -7,10 +7,10 @@ import { SelectAll } from './formatters';
 import * as rowUtils from './RowUtils';
 import { getColumn, getSize } from './ColumnUtils';
 import KeyCodes from './KeyCodes';
-import * as ColumnMetrics from './ColumnMetrics';
+import { sameColumn, sameColumns, recalculate, resizeColumn } from './ColumnMetrics';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import { EventBus } from './masks';
-import { Position, Column, CellMetaData, InteractionMasksMetaData, ColumnMetrics as ColumnMetricsType, RowData, SelectedRange, RowSelection, HeaderRowData, FilterArgs, ColumnList } from './common/types';
+import { Position, Column, CellMetaData, InteractionMasksMetaData, ColumnMetrics, RowData, SelectedRange, RowSelection, HeaderRowData, FilterArgs, ColumnList, CommitArgs } from './common/types';
 
 type SharedGridProps = Pick<GridProps,
 /** The primary key property of each row */
@@ -148,7 +148,7 @@ interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMa
 }
 
 interface State {
-  columnMetrics: ColumnMetricsType;
+  columnMetrics: ColumnMetrics;
   lastRowIdxUiSelected: number;
   selectedRows: RowData[];
   canFilter?: boolean;
@@ -185,7 +185,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     cellNavigationMode: CellNavigationMode.NONE,
     enableCellAutoFocus: true,
     minColumnWidth: 80,
-    columnEquality: ColumnMetrics.sameColumn,
+    columnEquality: sameColumn,
     editorPortalTarget: document.body
   };
 
@@ -196,7 +196,6 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   private readonly _keysDown: { [key: number]: boolean } = {};
   private _cachedColumns?: Column[];
   private _cachedComputedColumns?: ColumnList;
-  private _mounted = false;
 
   readonly state: Readonly<State>;
 
@@ -217,7 +216,6 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this._mounted = true;
     window.addEventListener('resize', this.metricsUpdated);
     if (this.props.cellRangeSelection) {
       window.addEventListener('mouseup', this.handleWindowMouseUp);
@@ -226,14 +224,13 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    this._mounted = false;
     window.removeEventListener('resize', this.metricsUpdated);
     window.removeEventListener('mouseup', this.handleWindowMouseUp);
   }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.columns) {
-      if (!ColumnMetrics.sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
+      if (!sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
         || nextProps.minWidth !== this.props.minWidth) {
         const columnMetrics = this.createColumnMetrics(nextProps);
         this.setState({ columnMetrics });
@@ -251,20 +248,18 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   }
 
   getTotalWidth() {
-    if (this._mounted) {
+    if (this.grid && this.grid.current) {
       return this.gridWidth();
     }
     return getSize(this.props.columns) * this.props.minColumnWidth;
   }
 
   getColumn(idx: number) {
-    const { columns } = this.state.columnMetrics;
-    return getColumn(columns, idx);
+    return getColumn(this.state.columnMetrics.columns, idx);
   }
 
   getSize() {
-    const { columns } = this.state.columnMetrics;
-    return getSize(columns);
+    return getSize(this.state.columnMetrics.columns);
   }
 
   metricsUpdated = () => {
@@ -279,7 +274,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
       minColumnWidth: this.props.minColumnWidth,
       totalWidth: this.props.minWidth || this.getTotalWidth()
     };
-    return ColumnMetrics.recalculate(metrics);
+    return recalculate(metrics);
   }
 
   isSingleKeyDown(keyCode: number) {
@@ -287,7 +282,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   }
 
   handleColumnResize = (index: number, width: number) => {
-    const columnMetrics = ColumnMetrics.resizeColumn(this.state.columnMetrics, index, width);
+    const columnMetrics = resizeColumn(this.state.columnMetrics, index, width);
     this.setState({ columnMetrics });
     if (this.props.onColumnResize) {
       this.props.onColumnResize(index, width);
@@ -354,7 +349,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   handleToggleFilter = () => {
     // setState() does not immediately mutate this.state but creates a pending state transition.
     // Therefore if you want to do something after the state change occurs, pass it in as a callback function.
-    this.setState({ canFilter: !this.state.canFilter }, () => {
+    this.setState((prevState) => ({ canFilter: !prevState.canFilter }), () => {
       if (this.state.canFilter === false && this.props.onClearFilters) {
         this.props.onClearFilters();
       }
@@ -399,7 +394,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action, fromRowData });
   };
 
-  handleCommit: InteractionMasksMetaData['onCommit'] = (commit) => {
+  handleCommit = (commit: CommitArgs) => {
     const targetRow = commit.rowIdx;
     this.handleGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
   };
@@ -519,14 +514,8 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     }
   };
 
-  handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let allRowsSelected;
-    if (e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked === true) {
-      allRowsSelected = true;
-    } else {
-      allRowsSelected = false;
-    }
-
+  handleCheckboxChange = (e: React.ChangeEvent<HTMLElement>) => {
+    const allRowsSelected = e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked;
     const { rowSelection } = this.props;
     if (rowSelection && this.useNewRowSelection()) {
       const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
@@ -570,19 +559,18 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   };
 
   getRowOffsetHeight() {
-    let offsetHeight = 0;
-    this.getHeaderRows().forEach((row) => offsetHeight += row.height);
-    return offsetHeight;
+    return this.getHeaderRows().reduce((offsetHeight, row) => offsetHeight += row.height, 0);
   }
 
   getHeaderRows() {
-    const rows: HeaderRowData[] = [{ height: this.props.headerRowHeight || this.props.rowHeight, rowType: HeaderRowType.HEADER }];
+    const { headerRowHeight, rowHeight, onAddFilter, headerFiltersHeight } = this.props;
+    const rows: HeaderRowData[] = [{ height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER }];
     if (this.state.canFilter === true) {
       rows.push({
         rowType: HeaderRowType.FILTER,
         filterable: true,
-        onFilterChange: this.props.onAddFilter,
-        height: this.props.headerFiltersHeight
+        onFilterChange: onAddFilter,
+        height: headerFiltersHeight
       });
     }
     return rows;

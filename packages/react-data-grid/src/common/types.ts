@@ -249,7 +249,7 @@ export interface InteractionMasksMetaData {
   onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
   onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
   onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onCommit(args: { cellKey: string; rowIdx: number; updated: { [key: string]: unknown }; key?: string }): void;
+  onCommit(args: CommitArgs): void;
 }
 
 export interface RowGroupMetaData {
@@ -263,14 +263,21 @@ export interface RowGroupMetaData {
 
 export type RowSelection = { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };
 
-export interface FilterArgs {
-  filterTerm: string;
-  column: Column;
-}
-
 export interface HeaderRowData {
   rowType: HeaderRowType;
   height: number;
   filterable?: boolean;
   onFilterChange?(args: FilterArgs): void;
+}
+
+export interface FilterArgs {
+  filterTerm: string;
+  column: Column;
+}
+
+export interface CommitArgs {
+  cellKey: string;
+  rowIdx: number;
+  updated: { [key: string]: unknown };
+  key?: string;
 }
