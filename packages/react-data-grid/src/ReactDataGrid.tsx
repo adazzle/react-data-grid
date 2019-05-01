@@ -661,7 +661,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     // depending on the current lifecycle stage, gridWidth() may not initialize correctly
     // this also handles cases where it always returns undefined -- such as when inside a div with display:none
     // eg Bootstrap tabs and collapses
-    if (typeof Number.isNaN(containerWidth) || containerWidth === 0) {
+    if (Number.isNaN(containerWidth) || containerWidth === 0) {
       containerWidth = '100%';
       gridWidth = '100%';
     }
