@@ -87,7 +87,7 @@ interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMa
   /** The height of the header filter row in pixels */
   headerFiltersHeight: number;
   /** Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead*/
-  enableRowSelect?: string | number;
+  enableRowSelect?: boolean | string;
   /** Component used to render toolbar above the grid */
   toolbar?: React.ReactElement;
   cellRangeSelection?: {
@@ -107,7 +107,7 @@ interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMa
   onClearFilters?(): void;
   /** Function called whenever grid is sorted*/
   onGridSort?: GridProps['onSort'];
-  /** Function called whenever keyboard key is pressed up */
+  /** Function called whenever keyboard key is released */
   onGridKeyUp?(e: React.KeyboardEvent<HTMLDivElement>): void;
   /** Function called whenever keyboard key is pressed down */
   onGridKeyDown?(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -193,11 +193,9 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   private readonly base = React.createRef<Grid>();
   private readonly selectAllCheckbox = React.createRef<HTMLInputElement>();
   private readonly eventBus = new EventBus();
-  private readonly _keysDown: { [key: number]: boolean } = {};
+  private readonly _keysDown = new Set<number>();
   private _cachedColumns?: Column[];
   private _cachedComputedColumns?: ColumnList;
-
-  readonly state: Readonly<State>;
 
   constructor(props: Props) {
     super(props);
@@ -248,7 +246,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   }
 
   getTotalWidth() {
-    if (this.grid && this.grid.current) {
+    if (this.grid.current) {
       return this.gridWidth();
     }
     return getSize(this.props.columns) * this.props.minColumnWidth;
@@ -278,7 +276,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   }
 
   isSingleKeyDown(keyCode: number) {
-    return keyCode in this._keysDown && Object.keys(this._keysDown).length === 1;
+    return this._keysDown.has(keyCode) && this._keysDown.size === 1;
   }
 
   handleColumnResize = (index: number, width: number) => {
@@ -295,7 +293,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
 
   handleViewportKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     // Track which keys are currently down for shift clicking etc
-    this._keysDown[e.keyCode] = true;
+    this._keysDown.add(e.keyCode);
 
     const { onGridKeyDown } = this.props;
     if (onGridKeyDown) {
@@ -305,7 +303,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
 
   handleViewportKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
     // Track which keys are currently down for shift clicking etc
-    delete this._keysDown[e.keyCode];
+    this._keysDown.delete(e.keyCode);
 
     const { onGridKeyUp } = this.props;
     if (onGridKeyUp) {
@@ -361,22 +359,6 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     this.handleGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
   };
 
-  /**
- * onGridRowsUpdated will be called for the following update scenarios
- * - Whenever a single cell is updated
- * - Whenever the value of a cell is copy/pasted to another cell
- * - Whenever multiple cells of a column are updated by dragging the fill handle of another cell
- * - Whenever multiple cells of a column are updated by double clicking the fill handle of another cell
- * @param {object} updated Updated key/value pairs that should be applied to each row to update
- * @param {number} toRow The index of the destination row being to be updated
- * @param {number} toRowId The unique id of the destination row to be updated
- * @param {string} action The action that triggered the update. Can be one of [CELL_UPDATE, COLUMN_FILL, COPY_PASTE, CELL_DRAG]
- * @returns {object} fromRowData The row data of the origin row
- * The following are optional arguments that apply when editing multiple rows or copying from one cell to another
- * @param {array} rowIds The unique id of each row to be updated
- * @param {number} fromRowId The unique id property of the source row
- * @param {number} fromRow The index of the source row
- */
   handleGridRowsUpdated: InteractionMasksMetaData['onGridRowsUpdated'] = (cellKey, fromRow, toRow, updated, action, originRow) => {
     const { rowGetter, rowKey, onGridRowsUpdated } = this.props;
     if (!onGridRowsUpdated) {
@@ -475,11 +457,9 @@ export default class ReactDataGrid extends React.Component<Props, State> {
       const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
 
       this.setState({ lastRowIdxUiSelected: isPreviouslySelected ? -1 : rowIdx });
-
-      if (isPreviouslySelected && typeof rowSelection.onRowsDeselected === 'function') {
-        rowSelection.onRowsDeselected([{ rowIdx, row: rowData }]);
-      } else if (!isPreviouslySelected && typeof rowSelection.onRowsSelected === 'function') {
-        rowSelection.onRowsSelected([{ rowIdx, row: rowData }]);
+      const cb = isPreviouslySelected ? rowSelection.onRowsDeselected : rowSelection.onRowsSelected;
+      if (typeof cb === 'function') {
+        cb([{ rowIdx, row: rowData }]);
       }
     }
   };
@@ -499,7 +479,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
         this.handleNewRowSelect(rowIdx, rowData);
       }
     } else { // Fallback to old onRowSelect handler
-      const selectedRows = this.props.enableRowSelect === 'single' ? [] : this.state.selectedRows.slice(0);
+      const selectedRows = this.props.enableRowSelect === 'single' ? [] : [...this.state.selectedRows];
       const selectedRow = this.getSelectedRow(selectedRows, rowData[this.props.rowKey]);
       if (selectedRow) {
         selectedRow.isSelected = !selectedRow.isSelected;
@@ -604,7 +584,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
 
     this._cachedColumns = columns;
 
-    const cols = columns.slice(0);
+    const cols = [...columns];
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
       const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} ref={this.selectAllCheckbox} />;
@@ -666,12 +646,11 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     // depending on the current lifecycle stage, gridWidth() may not initialize correctly
     // this also handles cases where it always returns undefined -- such as when inside a div with display:none
     // eg Bootstrap tabs and collapses
-    if (typeof containerWidth === 'undefined' || isNaN(containerWidth) || containerWidth === 0) {
+    if (typeof Number.isNaN(containerWidth) || containerWidth === 0) {
       containerWidth = '100%';
-    }
-    if (typeof gridWidth === 'undefined' || isNaN(gridWidth) || gridWidth === 0) {
       gridWidth = '100%';
     }
+
     return (
       <div
         className="react-grid-Container"

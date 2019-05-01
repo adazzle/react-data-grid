@@ -32,9 +32,9 @@ export interface Column<T = unknown> {
   frozen?: boolean;
   /** Enable resizing of a column */
   resizable?: boolean;
-  /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
+  /** Enable sorting of a column */
   sortable?: boolean;
-  /** Enable dragging of a column */
+  /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: unknown;
