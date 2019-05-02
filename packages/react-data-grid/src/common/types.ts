@@ -5,15 +5,12 @@ import { HeaderRowType, UpdateActions } from './enums';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<T = unknown> {
-  idx?: number; // Set by column metrics
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
   key: string;
-  //FIXME: width and left should be optional
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
-  width: number;
-  left: number;
+  width?: number;
   hidden?: boolean;
   cellClass?: string;
   /** By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column */
@@ -39,19 +36,25 @@ export interface Column<T = unknown> {
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: unknown;
   /** Header renderer for each header cell */
-  headerRenderer?: React.ReactElement | React.ComponentType<{ column: Column<T>; rowType: HeaderRowType }>;
+  headerRenderer?: React.ReactElement | React.ComponentType<{ column: CalculatedColumn<T>; rowType: HeaderRowType }>;
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType;
 
   // TODO: these props are only used by checkbox editor and we should remove them
   onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
-  getRowMetaData?(rowData: RowData, column: Column<T>): unknown;
+  getRowMetaData?(rowData: RowData, column: CalculatedColumn<T>): unknown;
+}
+
+export interface CalculatedColumn<T = unknown> extends Column<T> {
+  idx: number;
+  width: number;
+  left: number;
 }
 
 export type ColumnList = Column[] | List<Column>;
 
 export interface ColumnMetrics {
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   width: number;
   totalColumnWidth: number;
   totalWidth: number;
@@ -76,7 +79,7 @@ export interface CellMetaData {
   onCellMouseEnter?(position: Position): void;
   onAddSubRow?(): void;
   onDeleteSubRow?(options: SubRowOptions): void;
-  getCellActions?(column: Column, rowData: RowData): CellActionButton[] | undefined;
+  getCellActions?(column: CalculatedColumn, rowData: RowData): CellActionButton[] | undefined;
 }
 
 export interface Position {
@@ -117,14 +120,14 @@ export interface Editor {
 export interface FormatterProps {
   rowIdx: number;
   value: unknown;
-  column: Column;
+  column: CalculatedColumn;
   row: RowData;
   isScrolling: boolean;
   dependentValues?: unknown;
 }
 
 export interface EditorProps<V = unknown, C = unknown> {
-  column: Column<C>;
+  column: CalculatedColumn<C>;
   value: V;
   rowMetaData: unknown;
   rowData: RowData;
@@ -140,7 +143,7 @@ export interface CellRendererProps {
   rowIdx: number;
   height: number;
   value: unknown;
-  column: Column;
+  column: CalculatedColumn;
   rowData: RowData;
   cellMetaData: CellMetaData;
   isScrolling: boolean;
@@ -152,7 +155,7 @@ export interface CellRendererProps {
 
 export interface RowRendererProps {
   height: number;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   row: RowData;
   cellRenderer: React.ComponentType<CellRendererProps>;
   cellMetaData: CellMetaData;
@@ -207,7 +210,7 @@ export interface CellActionButton {
 
 export interface ColumnEventInfo extends Position {
   rowId: unknown;
-  column: Column;
+  column: CalculatedColumn;
 }
 
 export interface CellRenderer {

@@ -5,12 +5,14 @@
 }
 
 .react-grid-Grid {
+  position: relative;
+  overflow: hidden;
+  outline: none;
   clear : both;
   padding: 0;
   background-color: #fff;
   color: inherit;
   border: 1px solid #ddd;
-  outline: 1px solid #e7eaec;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -20,5 +22,10 @@
 }
 
 .react-grid-Canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-x: auto;
+  overflow-y: scroll;
   background-color: #fff;
 }

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Column } from '../types';
+import { CalculatedColumn } from '../types';
 
 export interface CheckboxEditorProps {
   value?: boolean;
   rowIdx: number;
-  column: Column;
+  column: CalculatedColumn;
   dependentValues: unknown;
 }
 

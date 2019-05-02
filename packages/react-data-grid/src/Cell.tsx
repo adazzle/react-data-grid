@@ -30,8 +30,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { column } = this.props;
-    if (isFrozen(prevProps.column) && !isFrozen(column)) {
+    if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
   }
@@ -86,7 +85,6 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
 
   getStyle(): React.CSSProperties {
     return {
-      position: 'absolute',
       width: this.props.column.width,
       height: this.props.height,
       left: this.props.column.left
@@ -245,7 +243,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     return (
       <div className={classes}>
         {cellDeleter}
-        <div style={{ marginLeft, position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
+        <div className="react-grid-Cell__container" style={{ marginLeft }}>
           <span>{cellContent}</span>
           {this.props.cellControls}
         </div>

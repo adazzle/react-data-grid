@@ -24,12 +24,12 @@ import {
   selectedRangeIsSingleCell,
   NextSelectedCellPosition
 } from '../utils/SelectedCellUtils';
-import { getSize, getColumn, isFrozen } from '../ColumnUtils';
+import { isFrozen } from '../ColumnUtils';
 import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { ColumnList, Position, SelectedRange, RowGetter, Dimension, InteractionMasksMetaData, CommitArgs } from '../common/types';
+import { CalculatedColumn, Position, SelectedRange, RowGetter, Dimension, InteractionMasksMetaData, CommitArgs } from '../common/types';
 import EventBus from './EventBus';
 
 const SCROLL_CELL_BUFFER = 2;
@@ -45,7 +45,7 @@ export interface Props extends InteractionMasksMetaData {
   colVisibleEndIdx: number;
   rowVisibleStartIdx: number;
   rowVisibleEndIdx: number;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   rowHeight: number;
   rowGetter: RowGetter;
   rowsCount: number;
@@ -62,7 +62,7 @@ export interface Props extends InteractionMasksMetaData {
   scrollTop: number;
   getRowHeight(rowIdx: number): number;
   getRowTop(rowIdx: number): number;
-  getRowColumns(rowIdx: number): ColumnList;
+  getRowColumns(rowIdx: number): CalculatedColumn[];
   editorPortalTarget: Element;
 }
 
@@ -177,7 +177,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
     const { idx, rowIdx } = position;
     if (!(idx >= 0 && rowIdx >= 0)) return;
 
-    const column = getColumn(this.props.columns, idx);
+    const column = this.props.columns[idx];
     if (!isFrozen(column)) return;
 
     const top = this.props.getRowTop(rowIdx);
@@ -442,7 +442,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
 
   isCellWithinBounds({ idx, rowIdx }: Position): boolean {
     const { columns, rowsCount } = this.props;
-    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < getSize(columns);
+    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columns.length;
   }
 
   isGridSelected(): boolean {

@@ -2,7 +2,6 @@ import React from 'react';
 
 import Canvas from './Canvas';
 import { RowsContainerProps } from './RowsContainer';
-import { getSize } from './ColumnUtils';
 import {
   getGridState,
   getColOverscanEndIdx,
@@ -133,7 +132,7 @@ export default class Viewport extends React.Component<ViewportProps, State> {
     const { rowVisibleStartIdx, rowVisibleEndIdx } = getVisibleBoundaries(height, rowHeight, scrollTop, rowsCount);
     const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
     const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, rowsCount);
-    const totalNumberColumns = getSize(columns);
+    const totalNumberColumns = columns.length;
     const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
     const nonFrozenColVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);
     const nonFrozenRenderedColumnCount = getNonFrozenRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth(), scrollLeft);
@@ -210,7 +209,7 @@ export default class Viewport extends React.Component<ViewportProps, State> {
         rowHeight,
         rowsCount
       });
-    } else if (getSize(this.props.columnMetrics.columns) !== getSize(nextProps.columnMetrics.columns)) {
+    } else if (this.props.columnMetrics.columns.length !== nextProps.columnMetrics.columns.length) {
       this.setState(getGridState(nextProps));
     } else if (this.props.rowsCount !== nextProps.rowsCount) {
       const { scrollTop, scrollLeft, height } = this.state;
@@ -247,18 +246,10 @@ export default class Viewport extends React.Component<ViewportProps, State> {
   }
 
   render() {
-    const style: React.CSSProperties = {
-      padding: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      overflow: 'hidden',
-      position: 'absolute',
-      top: this.props.rowOffsetHeight
-    };
     return (
       <div
-        style={style}
+        className="rdg-viewport"
+        style={{ top: this.props.rowOffsetHeight }}
         ref={this.viewport}
       >
         <Canvas

@@ -1,15 +1,25 @@
 .react-grid-Header {
-  box-shadow: 0px 0px 4px 0px #dddddd;
+  position: relative;
+  box-shadow: 0 0 4px 0 #ddd;
   background: #f9f9f9;
 }
 .react-grid-Header--resizing {
   cursor: ew-resize;
 }
 .react-grid-HeaderRow {
+  position: absolute;
+  left: 0;
+  overflow-x: hidden;
+
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+
+  > div {
+    white-space: nowrap;
+    overflow: hidden;
+  }
 }
 .react-grid-HeaderCell {
   display: inline-block;
@@ -133,4 +143,8 @@
 
 .react-grid-HeaderCell .Select-menu-outer .Select-menu .Select-option.is-focused {
     color: #555555;
+}
+
+.rdg-sortable-header-cell {
+  cursor: pointer;
 }

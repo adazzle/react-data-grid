@@ -1,9 +1,10 @@
 import { canEdit } from '../ColumnUtils';
-import { Column, Omit } from '../common/types';
+import { CalculatedColumn, Omit } from '../common/types';
 
 describe('ColumnUtils tests', () => {
   function setup() {
-    const col: Column = {
+    const col: CalculatedColumn = {
+      idx: 0,
       editable: true,
       editor: {},
       filterable: true,

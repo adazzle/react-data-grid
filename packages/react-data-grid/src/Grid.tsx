@@ -4,7 +4,7 @@ import { isValidElementType } from 'react-is';
 import Header, { HeaderProps } from './Header';
 import Viewport, { ViewportProps, ScrollState } from './Viewport';
 import { isFrozen } from './ColumnUtils';
-import { Column, Omit } from './common/types';
+import { Omit } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 
 type SharedHeaderProps = Pick<HeaderProps,
@@ -19,7 +19,6 @@ type SharedHeaderProps = Pick<HeaderProps,
 
 
 export interface GridProps extends Omit<ViewportProps, 'onScroll'>, SharedHeaderProps {
-  columns: Column[];
   emptyRowsView?: React.ComponentType;
   scrollLeft?: number;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -35,15 +34,6 @@ export default class Grid extends React.Component<GridProps> {
   private readonly viewport = React.createRef<Viewport>();
   private _scrollLeft?: number = undefined;
 
-  getStyle(): React.CSSProperties {
-    return {
-      overflow: 'hidden',
-      outline: 0,
-      position: 'relative',
-      minHeight: this.props.minHeight
-    };
-  }
-
   _onScroll() {
     if (this._scrollLeft !== undefined) {
       this.header.current!.setScrollLeft(this._scrollLeft);
@@ -54,7 +44,7 @@ export default class Grid extends React.Component<GridProps> {
   }
 
   areFrozenColumnsScrolledLeft(scrollLeft: number) {
-    return scrollLeft > 0 && this.props.columns.some(c => isFrozen(c));
+    return scrollLeft > 0 && this.props.columnMetrics.columns.some(c => isFrozen(c));
   }
 
   onScroll = (scrollState: ScrollState) => {
@@ -82,7 +72,7 @@ export default class Grid extends React.Component<GridProps> {
     const EmptyRowsView = this.props.emptyRowsView;
 
     return (
-      <div style={this.getStyle()} className="react-grid-Grid">
+      <div className="react-grid-Grid" style={{ minHeight: this.props.minHeight }}>
         <Header
           ref={this.header}
           columnMetrics={this.props.columnMetrics}

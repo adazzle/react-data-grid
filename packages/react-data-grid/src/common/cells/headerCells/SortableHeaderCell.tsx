@@ -1,7 +1,7 @@
 import React from 'react';
 import { isElement } from 'react-is';
 import { HeaderRowType, DEFINE_SORT } from '../../enums';
-import { Column } from '../../types';
+import { CalculatedColumn } from '../../types';
 
 const SORT_TEXT = {
   [DEFINE_SORT.ASC]: '\u25B2',
@@ -10,7 +10,7 @@ const SORT_TEXT = {
 } as const;
 
 export interface Props {
-  column: Column;
+  column: CalculatedColumn;
   rowType: HeaderRowType;
   onSort(columnKey: string, direction: DEFINE_SORT): void;
   sortDirection: DEFINE_SORT;
@@ -43,7 +43,7 @@ export default function SortableHeaderCell(props: Props) {
       : React.createElement(headerRenderer, { column, rowType });
 
   return (
-    <div onClick={onClick} style={{ cursor: 'pointer' }}>
+    <div className="rdg-sortable-header-cell" onClick={onClick}>
       <span className="pull-right">{SORT_TEXT[sortDirection]}</span>
       {content}
     </div>

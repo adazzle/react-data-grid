@@ -1,12 +1,11 @@
 import React, { forwardRef } from 'react';
-import { last } from './common/utils';
 import { EventTypes } from './common/enums';
-import { CellMetaData, RowRendererProps, ColumnList } from './common/types';
+import { CellMetaData, RowRendererProps, CalculatedColumn } from './common/types';
 import EventBus from './masks/EventBus';
 
 interface Props {
   height: number;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   row: unknown;
   cellRenderer?(): void;
   cellMetaData: CellMetaData;
@@ -48,7 +47,7 @@ const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref)
     props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: props.idx, idx: 0 });
   }
 
-  const lastColumn = last(props.columns);
+  const lastColumn = props.columns[props.columns.length - 1];
   const style = { width: lastColumn!.left + lastColumn!.width };
   const Renderer = props.renderer || DefaultBase;
 
@@ -82,15 +81,15 @@ const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function Defaul
 
   const { treeDepth = 0, height, onRowExpandClick, isExpanded, columnGroupDisplayName, name } = props;
   const marginLeft = treeDepth * 20;
-  const style = {
-    height,
-    border: '1px solid #ddd',
-    paddingTop: '15px',
-    paddingLeft: '5px'
-  };
 
   return (
-    <div style={style} onKeyDown={onKeyDown} tabIndex={0} ref={ref}>
+    <div
+      className="rdg-row-group-default"
+      style={{ height }}
+      onKeyDown={onKeyDown}
+      tabIndex={0}
+      ref={ref}
+    >
       <span
         className="row-expand-icon"
         style={{ marginLeft }}
