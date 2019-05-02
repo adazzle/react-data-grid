@@ -3,10 +3,8 @@ import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 import TestUtils from 'react-dom/test-utils';
 
-import Grid, { editors } from 'react-data-grid';
+import Grid, { CheckboxEditor } from 'react-data-grid';
 import mockStateObject from './data/MockStateObject';
-
-const { CheckboxEditor } = editors;
 
 describe('Grid', () => {
   const setup = (extraProps) => {
