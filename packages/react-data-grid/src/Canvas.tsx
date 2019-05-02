@@ -8,7 +8,7 @@ import { InteractionMasks, EventBus } from './masks';
 import { isRowSelected } from './RowUtils';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 import { EventTypes, CellNavigationMode } from './common/enums';
-import { Column, RowData, ColumnList, Position, RowGetter, CellMetaData, ScrollPosition, SubRowDetails, RowRenderer, InteractionMasksMetaData, RowRendererProps, RowSelection } from './common/types';
+import { CalculatedColumn, RowData, Position, RowGetter, CellMetaData, ScrollPosition, SubRowDetails, RowRenderer, InteractionMasksMetaData, RowRendererProps, RowSelection } from './common/types';
 
 export interface Props {
   rowRenderer?: React.ReactElement | React.ComponentType;
@@ -28,7 +28,7 @@ export interface Props {
   colOverscanEndIdx: number;
   rowsCount: number;
   rowGetter: RowGetter;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   cellMetaData: CellMetaData;
   selectedRows?: RowData[];
   rowKey: string;
@@ -278,11 +278,7 @@ export default class Canvas extends React.PureComponent<Props> {
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
     return (
       <div key={key} style={{ height }}>
-        {
-          (this.props.columns as Column[]).map(
-            (column) => <div style={{ width: column.width }} key={column.key} />
-          )
-        }
+        {this.props.columns.map(column => <div style={{ width: column.width }} key={column.key} />)}
       </div>
     );
   }

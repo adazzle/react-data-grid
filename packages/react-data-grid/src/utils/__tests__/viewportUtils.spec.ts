@@ -12,16 +12,16 @@ import {
   VisibleBoundaries
 } from '../viewportUtils';
 import { SCROLL_DIRECTION } from '../../common/enums';
-import { Column } from '../../common/types';
+import { CalculatedColumn } from '../../common/types';
 
 describe('viewportUtils', () => {
-  const getColumns = (): Column[] => [
-    { key: 'col1', name: 'col1', width: 100, left: 0 },
-    { key: 'col2', name: 'col2', width: 100, left: 200 },
-    { key: 'col3', name: 'col3', width: 100, left: 300 },
-    { key: 'col4', name: 'col4', width: 100, left: 400 },
-    { key: 'col5', name: 'col5', width: 100, left: 500 },
-    { key: 'col6', name: 'col6', width: 100, left: 600 }
+  const getColumns = (): CalculatedColumn[] => [
+    { idx: 0, key: 'col1', name: 'col1', width: 100, left: 0 },
+    { idx: 1, key: 'col2', name: 'col2', width: 100, left: 200 },
+    { idx: 2, key: 'col3', name: 'col3', width: 100, left: 300 },
+    { idx: 3, key: 'col4', name: 'col4', width: 100, left: 400 },
+    { idx: 4, key: 'col5', name: 'col5', width: 100, left: 500 },
+    { idx: 5, key: 'col6', name: 'col6', width: 100, left: 600 }
   ];
 
   describe('getGridState', () => {
@@ -29,8 +29,8 @@ describe('viewportUtils', () => {
       const props = {
         columnMetrics: {
           columns: [
-            { key: 'col1', name: 'col1', width: 100, left: 0 },
-            { key: 'col2', name: 'col2', width: 100, left: 100 }
+            { idx: 0, key: 'col1', name: 'col1', width: 100, left: 0 },
+            { idx: 1, key: 'col2', name: 'col2', width: 100, left: 100 }
           ],
           width: 0,
           totalColumnWidth: 0,
@@ -72,16 +72,16 @@ describe('viewportUtils', () => {
   describe('getNonFrozenRenderedColumnCount', () => {
     const viewportWidth = 100;
 
-    const getCols = (): Column[] => [
-      { key: 'col1', name: 'col1', width: 20, left: 0 },
-      { key: 'col2', name: 'col2', width: 20, left: 20 },
-      { key: 'col3', name: 'col3', width: 20, left: 40 },
-      { key: 'col4', name: 'col4', width: 20, left: 60 },
-      { key: 'col5', name: 'col5', width: 20, left: 80 },
-      { key: 'col6', name: 'col6', width: 1, left: 100 },
-      { key: 'col7', name: 'col7', width: 1, left: 101 },
-      { key: 'col8', name: 'col8', width: 1, left: 102 },
-      { key: 'col9', name: 'col9', width: 1, left: 103 }
+    const getCols = (): CalculatedColumn[] => [
+      { idx: 0, key: 'col1', name: 'col1', width: 20, left: 0 },
+      { idx: 1, key: 'col2', name: 'col2', width: 20, left: 20 },
+      { idx: 2, key: 'col3', name: 'col3', width: 20, left: 40 },
+      { idx: 3, key: 'col4', name: 'col4', width: 20, left: 60 },
+      { idx: 4, key: 'col5', name: 'col5', width: 20, left: 80 },
+      { idx: 5, key: 'col6', name: 'col6', width: 1, left: 100 },
+      { idx: 6, key: 'col7', name: 'col7', width: 1, left: 101 },
+      { idx: 7, key: 'col8', name: 'col8', width: 1, left: 102 },
+      { idx: 8, key: 'col9', name: 'col9', width: 1, left: 103 }
     ];
 
     const verifyNonFrozenRenderedColumnCount = (width = viewportWidth, columns = getCols(), scrollLeft = 0) => {

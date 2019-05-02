@@ -13,7 +13,7 @@ describe('Column Metrics Tests', () => {
   describe('Creating metrics', () => {
     describe('When column width not set for all columns', () => {
       const totalWidth = 300;
-      const getInitialColumns = () => [{
+      const getInitialColumns = (): Column[] => [{
         key: 'id',
         name: 'ID',
         width: 60
@@ -26,9 +26,9 @@ describe('Column Metrics Tests', () => {
       }];
 
       it('should set the unset column widths based on the total width', () => {
-        const columns = getInitialColumns() as Column[];
+        const columns = getInitialColumns();
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
-        const expectedCalculatedWidth = getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+        const expectedCalculatedWidth = getAvailableWidthPerColumn(totalWidth, columns[0].width!, 2);
 
         expect(metrics.columns[0].width).toEqual(60);
         expect(metrics.columns[1].width).toEqual(expectedCalculatedWidth);
@@ -36,9 +36,9 @@ describe('Column Metrics Tests', () => {
       });
 
       it('should set the column left based on the column widths', () => {
-        const columns = getInitialColumns() as Column[];
+        const columns = getInitialColumns();
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
-        const expectedLeftValue = columns[0].width + getAvailableWidthPerColumn(totalWidth, columns[0].width, 2);
+        const expectedLeftValue = columns[0].width! + getAvailableWidthPerColumn(totalWidth, columns[0].width!, 2);
 
         expect(metrics.columns[0].left).toEqual(0);
         expect(metrics.columns[1].left).toEqual(columns[0].width);
@@ -49,8 +49,8 @@ describe('Column Metrics Tests', () => {
         const firstFrozenColumn = { key: 'frozenColumn1', name: 'frozenColumn1', frozen: true };
         const secondFrozenColumn = { key: 'frozenColumn2', name: 'frozenColumn2', frozen: true };
         const thirdFrozenColumn = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
-        const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn] as Column[];
-        columns.splice(2, 0, firstFrozenColumn as Column);
+        const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
+        columns.splice(2, 0, firstFrozenColumn);
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
         expect(metrics.columns[0]).toMatchObject(firstFrozenColumn);
         expect(metrics.columns[1]).toMatchObject(secondFrozenColumn);

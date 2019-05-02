@@ -126,6 +126,7 @@ describe('<Viewport />', () => {
     const extraColumn = {
       key: 'description',
       name: 'Description',
+      idx: 3,
       width: 100,
       left: 0
     };

@@ -1,11 +1,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import SimpleTextEditor from '../SimpleTextEditor';
-import { Column } from '../../types';
+import { CalculatedColumn } from '../../types';
 
 describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
-    const fakeColumn: Column = {
+    const fakeColumn: CalculatedColumn = {
+      idx: 0,
       key: 'text',
       name: 'name',
       width: 0,

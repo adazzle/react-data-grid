@@ -29,25 +29,3 @@ export function getMixedTypeValueRetriever(isImmutable: boolean) {
 }
 
 export const isImmutableMap = Immutable.Map.isMap;
-
-export function last<T>(arrayOrList: T[] | Immutable.List<T>): T | null {
-  if (arrayOrList == null) {
-    throw new Error('arrayOrCollection is null');
-  }
-
-  if (Array.isArray(arrayOrList)) {
-    if (arrayOrList.length === 0) {
-      return null;
-    }
-    return arrayOrList[arrayOrList.length - 1];
-  }
-
-  if (Immutable.List.isList(arrayOrList)) {
-    if (arrayOrList.size === 0) {
-      return null;
-    }
-    return arrayOrList.last();
-  }
-
-  throw new Error(`Cant get last of: ${typeof arrayOrList}`);
-}

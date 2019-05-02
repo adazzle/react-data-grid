@@ -5,7 +5,7 @@ import Cell, { Props } from '../Cell';
 import helpers from '../helpers/test/GridPropHelpers';
 import CellAction from '../CellAction';
 import { SimpleCellFormatter } from '../formatters';
-import { Column, CellMetaData } from '../common/types';
+import { CalculatedColumn, CellMetaData } from '../common/types';
 
 const testCellMetaData: CellMetaData = {
   rowKey: 'row',
@@ -34,7 +34,7 @@ const expandableOptions = {
   }
 };
 
-const defaultColumn: Column = { key: 'col1', name: 'col1', width: 100, left: 0 };
+const defaultColumn: CalculatedColumn = { idx: 0, key: 'col1', name: 'col1', width: 100, left: 0 };
 
 const testProps: Props = {
   rowIdx: 0,

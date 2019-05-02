@@ -1,9 +1,9 @@
 import React from 'react';
 import { isElement, isValidElementType } from 'react-is';
-import { Column } from './common/types';
+import { ColumnList } from './common/types';
 
 interface ToolbarProps {
-  columns: Column[];
+  columns: ColumnList;
   rowsCount: number;
   onToggleFilter(): void;
 }
