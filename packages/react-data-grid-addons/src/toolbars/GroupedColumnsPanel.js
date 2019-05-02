@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { _constants } from 'react-data-grid';
+import { DragItemTypes } from 'react-data-grid';
 import { DropTarget } from 'react-dnd';
 
 import GroupedColumnButton from './GroupedColumnButton';
@@ -87,4 +87,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default DropTarget(_constants.DragItemTypes.Column, columnTarget, collect)(GroupedColumnsPanel);
+export default DropTarget(DragItemTypes.Column, columnTarget, collect)(GroupedColumnsPanel);

@@ -40,5 +40,4 @@ HeaderCell             | [HeaderCell](./src/HeaderCell.js)       |
 editors                | [Editors](./src/editors)                |
 formatters             | [Formatters](./src/formatters)          |
 shapes                 | [shapes](./src/PropTypeShapes)          |
-_constants             | [_constants](./src/AppConstants.js)     |
 _helpers               | [_helpers](./src/helpers)               |
