@@ -6,13 +6,12 @@ export { default as HeaderCell } from './HeaderCell';
 import * as formatters from './formatters';
 import * as editors from './common/editors';
 import * as _utils from './common/utils';
-import * as _constants from './common/enums';
 import * as _helpers from './helpers';
+export * from './common/enums';
 export * from './common/types';
 export {
   formatters,
   editors,
   _utils,
-  _constants,
   _helpers
 };
