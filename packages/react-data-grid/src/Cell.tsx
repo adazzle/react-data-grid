@@ -30,8 +30,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { column } = this.props;
-    if (isFrozen(prevProps.column) && !isFrozen(column)) {
+    if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
   }

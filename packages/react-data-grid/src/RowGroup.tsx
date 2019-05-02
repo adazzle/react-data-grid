@@ -1,12 +1,11 @@
 import React, { forwardRef } from 'react';
-import { last } from './common/utils';
 import { EventTypes } from './common/enums';
-import { CellMetaData, RowRendererProps, ColumnList } from './common/types';
+import { CellMetaData, RowRendererProps, CalculatedColumn } from './common/types';
 import EventBus from './masks/EventBus';
 
 interface Props {
   height: number;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   row: unknown;
   cellRenderer?(): void;
   cellMetaData: CellMetaData;
@@ -48,7 +47,7 @@ const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref)
     props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: props.idx, idx: 0 });
   }
 
-  const lastColumn = last(props.columns);
+  const lastColumn = props.columns[props.columns.length - 1];
   const style = { width: lastColumn!.left + lastColumn!.width };
   const Renderer = props.renderer || DefaultBase;
 

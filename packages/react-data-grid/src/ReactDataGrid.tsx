@@ -5,12 +5,12 @@ import ToolbarContainer from './ToolbarContainer';
 import CheckboxEditor, { CheckboxEditorProps } from './common/editors/CheckboxEditor';
 import { SelectAll } from './formatters';
 import * as rowUtils from './RowUtils';
-import { getColumn, getSize } from './ColumnUtils';
+import { getSize } from './ColumnUtils';
 import KeyCodes from './KeyCodes';
 import { sameColumn, sameColumns, recalculate, resizeColumn } from './ColumnMetrics';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import { EventBus } from './masks';
-import { Position, Column, CellMetaData, InteractionMasksMetaData, ColumnMetrics, RowData, SelectedRange, RowSelection, HeaderRowData, FilterArgs, ColumnList, CommitArgs } from './common/types';
+import { Position, Column, CalculatedColumn, CellMetaData, InteractionMasksMetaData, ColumnMetrics, RowData, SelectedRange, RowSelection, HeaderRowData, FilterArgs, ColumnList, CommitArgs } from './common/types';
 
 type SharedGridProps = Pick<GridProps,
 /** The primary key property of each row */
@@ -99,9 +99,9 @@ interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMa
   /** Component to render the UI in the header row for selecting all rows  */
   selectAllRenderer?: React.ComponentType;
   /** Function called whenever row is clicked */
-  onRowClick?(rowIdx: number, rowData: RowData, column: Column): void;
+  onRowClick?(rowIdx: number, rowData: RowData, column: CalculatedColumn): void;
   /** Function called whenever row is double clicked */
-  onRowDoubleClick?(rowIdx: number, rowData: RowData, column: Column): void;
+  onRowDoubleClick?(rowIdx: number, rowData: RowData, column: CalculatedColumn): void;
   onAddFilter?(args: FilterArgs): void;
   onClearFilters?(): void;
   /** Function called whenever grid is sorted*/
@@ -208,7 +208,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   private readonly selectAllCheckbox = React.createRef<HTMLInputElement>();
   private readonly eventBus = new EventBus();
   private readonly _keysDown = new Set<number>();
-  private _cachedColumns?: Column[];
+  private _cachedColumns?: ColumnList;
   private _cachedComputedColumns?: ColumnList;
 
   constructor(props: Props) {
@@ -267,11 +267,11 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   }
 
   getColumn(idx: number) {
-    return getColumn(this.state.columnMetrics.columns, idx);
+    return this.state.columnMetrics.columns[idx];
   }
 
   getSize() {
-    return getSize(this.state.columnMetrics.columns);
+    return this.state.columnMetrics.columns.length;
   }
 
   metricsUpdated = () => {
@@ -590,21 +590,21 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     this.eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
   }
 
-  setupGridColumns(props = this.props) {
+  setupGridColumns(props = this.props): ColumnList {
     const { columns } = props;
     if (this._cachedColumns === columns) {
       return this._cachedComputedColumns!;
     }
 
     this._cachedColumns = columns;
+    this._cachedComputedColumns = columns;
 
-    const cols = [...columns];
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
       const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} ref={this.selectAllCheckbox} />;
-      const headerRenderer = props.enableRowSelect === 'single' ? null : SelectAllRenderer;
+      const headerRenderer = props.enableRowSelect === 'single' ? undefined : SelectAllRenderer;
       const Formatter = (this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor) as unknown as React.ComponentClass<{ rowSelection: unknown }>;
-      const selectColumn = {
+      const selectColumn: Column = {
         key: 'select-row',
         name: '',
         formatter: <Formatter rowSelection={this.props.rowSelection} />,
@@ -616,9 +616,13 @@ export default class ReactDataGrid extends React.Component<Props, State> {
         getRowMetaData: (rowData: RowData) => rowData,
         cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''
       };
-      cols.unshift(selectColumn as unknown as Column);
+
+      if (Array.isArray(columns)) {
+        this._cachedComputedColumns = [selectColumn, ...columns];
+      } else {
+        this._cachedComputedColumns = columns.unshift(selectColumn);
+      }
     }
-    this._cachedComputedColumns = cols;
 
     return this._cachedComputedColumns;
   }

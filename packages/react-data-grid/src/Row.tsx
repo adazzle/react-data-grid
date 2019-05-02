@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import rowComparer from './common/utils/RowComparer';
 import Cell from './Cell';
 import { isFrozen } from './ColumnUtils';
-import { Column, RowRenderer, RowRendererProps, CellRenderer, CellRendererProps } from './common/types';
+import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
 export default class Row extends React.Component<RowRendererProps> implements RowRenderer {
   static displayName = 'Row';
@@ -40,14 +40,14 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
     e.preventDefault();
   };
 
-  getCell(column: Column) {
+  getCell(column: CalculatedColumn) {
     const Renderer = this.props.cellRenderer;
     const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key } = column;
 
     const cellProps: CellRendererProps & { ref: (cell: CellRenderer | null) => void } = {
       ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
-      idx: column.idx!, // TODO: fix idx type
+      idx: column.idx,
       rowIdx: idx,
       height: this.getRowHeight(),
       column,
@@ -66,10 +66,9 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
 
   getCells() {
     const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
-    const frozenColumns = columns.filter((c?: Column) => isFrozen(c!)) as Column[];
-    const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter((c?: Column) => !isFrozen(c!)) as Column[];
-    return nonFrozenColumn.concat(frozenColumns)
-      .map((c?: Column) => this.getCell(c!));
+    const frozenColumns = columns.filter(c => isFrozen(c));
+    const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
+    return nonFrozenColumn.concat(frozenColumns).map(c => this.getCell(c));
   }
 
   getRowTop(): number {
@@ -110,12 +109,12 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
   }
 
   setScrollLeft(scrollLeft: number) {
-    this.props.columns.forEach(((column?: Column) => {
-      const { key } = column!;
-      if (isFrozen(column!) && this.cells.has(key)) {
+    for (const column of this.props.columns) {
+      const { key } = column;
+      if (isFrozen(column) && this.cells.has(key)) {
         this.cells.get(key)!.setScrollLeft(scrollLeft);
       }
-    }));
+    }
   }
 
   render() {

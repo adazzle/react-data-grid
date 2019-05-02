@@ -1,11 +1,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import CheckboxEditor from '../CheckboxEditor';
-import { Column } from '../../types';
+import { CalculatedColumn } from '../../types';
 
 describe('CheckboxEditor', () => {
   function setup(value = true) {
-    const testColumn: Column = {
+    const testColumn: CalculatedColumn = {
+      idx: 0,
       name: 'columnKey',
       key: 'columnKey',
       width: 100,

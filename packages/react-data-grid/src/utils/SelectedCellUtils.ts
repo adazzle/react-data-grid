@@ -1,7 +1,7 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
 import * as rowUtils from '../RowUtils';
-import { getColumn, isFrozen, canEdit, getSize } from '../ColumnUtils';
-import { Column, ColumnList, Position, Range, Dimension, RowGetter, RowData } from '../common/types';
+import { isFrozen, canEdit } from '../ColumnUtils';
+import { CalculatedColumn, Position, Range, Dimension, RowGetter, RowData } from '../common/types';
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
 
@@ -16,7 +16,7 @@ export function getSelectedRow({ selectedPosition, rowGetter }: getSelectedRowOp
 
 interface getSelectedDimensionsOpts {
   selectedPosition: Position;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   rowHeight: number;
   scrollLeft: number;
 }
@@ -25,7 +25,7 @@ export function getSelectedDimensions({ selectedPosition: { idx, rowIdx }, colum
   if (idx < 0) {
     return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
   }
-  const column = getColumn(columns, idx);
+  const column = columns[idx];
   const frozen = isFrozen(column);
   const { width } = column;
   const left = frozen ? column.left + scrollLeft : column.left;
@@ -36,7 +36,7 @@ export function getSelectedDimensions({ selectedPosition: { idx, rowIdx }, colum
 
 interface getSelectedRangeDimensionsOpts {
   selectedRange: Range;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   rowHeight: number;
 }
 
@@ -48,12 +48,12 @@ export function getSelectedRangeDimensions({ selectedRange: { topLeft, bottomRig
   let width = 0;
   let anyColFrozen = false;
   for (let i = topLeft.idx; i <= bottomRight.idx; i++) {
-    const column = getColumn(columns, i);
+    const column = columns[i];
     width += column.width;
     anyColFrozen = anyColFrozen || isFrozen(column);
   }
 
-  const { left } = getColumn(columns, topLeft.idx);
+  const { left } = columns[topLeft.idx];
   const top = getRowTop(topLeft.rowIdx, rowHeight);
   const height = (bottomRight.rowIdx - topLeft.rowIdx + 1) * rowHeight;
   const zIndex = anyColFrozen ? Z_INDEXES.FROZEN_CELL_MASK : Z_INDEXES.CELL_MASK;
@@ -63,16 +63,16 @@ export function getSelectedRangeDimensions({ selectedRange: { topLeft, bottomRig
 
 interface getSelectedColumnOpts {
   selectedPosition: Position;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
 }
 
-export function getSelectedColumn({ selectedPosition, columns }: getSelectedColumnOpts): Column {
-  return getColumn(columns, selectedPosition.idx);
+export function getSelectedColumn({ selectedPosition, columns }: getSelectedColumnOpts): CalculatedColumn {
+  return columns[selectedPosition.idx];
 }
 
 interface getSelectedCellValueOpts {
   selectedPosition: Position;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   rowGetter: RowGetter;
 }
 
@@ -86,9 +86,9 @@ export function getSelectedCellValue({ selectedPosition, columns, rowGetter }: g
 interface isSelectedCellEditableOpts {
   enableCellSelect: boolean;
   selectedPosition: Position;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   rowGetter: RowGetter;
-  onCheckCellIsEditable?(arg: { row: unknown; column: Column } & Position): boolean;
+  onCheckCellIsEditable?(arg: { row: unknown; column: CalculatedColumn } & Position): boolean;
 }
 
 export function isSelectedCellEditable({ enableCellSelect, selectedPosition, columns, rowGetter, onCheckCellIsEditable }: isSelectedCellEditableOpts): boolean {
@@ -100,7 +100,7 @@ export function isSelectedCellEditable({ enableCellSelect, selectedPosition, col
 
 interface getNextSelectedCellPositionOpts {
   cellNavigationMode: CellNavigationMode;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   rowsCount: number;
   nextPosition: Position;
 }
@@ -112,7 +112,7 @@ export interface NextSelectedCellPosition extends Position {
 export function getNextSelectedCellPosition({ cellNavigationMode, columns, rowsCount, nextPosition }: getNextSelectedCellPositionOpts): NextSelectedCellPosition {
   if (cellNavigationMode !== CellNavigationMode.NONE) {
     const { idx, rowIdx } = nextPosition;
-    const columnsCount = getSize(columns);
+    const columnsCount = columns.length;
     const isAfterLastColumn = idx === columnsCount;
     const isBeforeFirstColumn = idx === -1;
 
@@ -158,7 +158,7 @@ export function getNextSelectedCellPosition({ cellNavigationMode, columns, rowsC
 
 interface canExitGridOpts {
   cellNavigationMode: CellNavigationMode;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   rowsCount: number;
   selectedPosition: Position;
 }
@@ -167,7 +167,7 @@ export function canExitGrid(event: React.KeyboardEvent, { cellNavigationMode, co
   // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
   // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
   if (cellNavigationMode === CellNavigationMode.NONE || cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
-    const atLastCellInRow = idx === getSize(columns) - 1;
+    const atLastCellInRow = idx === columns.length - 1;
     const atFirstCellInRow = idx === 0;
     const atLastRow = rowIdx === rowsCount - 1;
     const atFirstRow = rowIdx === 0;

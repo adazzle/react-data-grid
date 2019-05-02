@@ -4,7 +4,7 @@ import { mount, MountRendererProps } from 'enzyme';
 
 import EditorContainer, { Props } from '../EditorContainer';
 import SimpleTextEditor from '../SimpleTextEditor';
-import { Column } from '../../types';
+import { CalculatedColumn } from '../../types';
 
 function DefaultEditor() {
   return (
@@ -27,7 +27,8 @@ function DefaultEditor() {
   );
 }
 
-const fakeColumn: Column = {
+const fakeColumn: CalculatedColumn = {
+  idx: 0,
   name: 'col1',
   key: 'col1',
   width: 100,
