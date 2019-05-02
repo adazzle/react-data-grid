@@ -1,12 +1,13 @@
 import React, { forwardRef } from 'react';
+import classNames from 'classnames';
 import { Dimension } from '../common/types';
 
 export type CellMaskProps = React.HTMLAttributes<HTMLDivElement> & Dimension;
 
-const CellMask = forwardRef<HTMLDivElement, CellMaskProps>(function CellMask({ width, height, top, left, zIndex, ...props }, ref) {
+const CellMask = forwardRef<HTMLDivElement, CellMaskProps>(function CellMask({ width, height, top, left, zIndex, className, ...props }, ref) {
   return (
     <div
-      className="rdg-cell-mask"
+      className={classNames('rdg-cell-mask', className)}
       style={{
         height,
         width,
