@@ -597,7 +597,6 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     }
 
     this._cachedColumns = columns;
-    this._cachedComputedColumns = columns;
 
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
@@ -617,11 +616,11 @@ export default class ReactDataGrid extends React.Component<Props, State> {
         cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''
       };
 
-      if (Array.isArray(columns)) {
-        this._cachedComputedColumns = [selectColumn, ...columns];
-      } else {
-        this._cachedComputedColumns = columns.unshift(selectColumn);
-      }
+      this._cachedComputedColumns = Array.isArray(columns)
+        ? [selectColumn, ...columns]
+        : columns.unshift(selectColumn);
+    } else {
+      this._cachedComputedColumns = columns.slice(0) as ColumnList;
     }
 
     return this._cachedComputedColumns;

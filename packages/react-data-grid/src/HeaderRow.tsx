@@ -131,7 +131,7 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
 
   setScrollLeft(scrollLeft: number): void {
     this.props.columns.forEach(column => {
-      const { key } = column!;
+      const { key } = column;
       if (!this.cells.has(key)) return;
       const cell = this.cells.get(key)!;
       if (isFrozen(column)) {
