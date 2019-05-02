@@ -40,8 +40,6 @@ type SharedGridProps = Pick<GridProps,
 | 'sortColumn'
 /** The direction to sort the sortColumn*/
 | 'sortDirection'
-/** Called when a column is resized */
-| 'onColumnResize'
 /** Called when the grid is scrolled */
 | 'onScroll'
 /** Component used to render a draggable header cell */
@@ -134,6 +132,8 @@ export interface ReactDataGridProps extends SharedGridProps, SharedCellMetaData,
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
   onGridRowsUpdated?(event: GridRowsUpdatedEvent): void;
+  /** Called when a column is resized */
+  onColumnResize?(idx: number, width: number): void;
 }
 
 type DefaultProps = Pick<ReactDataGridProps,
@@ -283,11 +283,11 @@ export default class ReactDataGrid extends React.Component<ReactDataGridProps, S
     return this._keysDown.has(keyCode) && this._keysDown.size === 1;
   }
 
-  handleColumnResize = (index: number, width: number) => {
-    const columnMetrics = resizeColumn(this.state.columnMetrics, index, width);
+  handleColumnResize = (idx: number, width: number) => {
+    const columnMetrics = resizeColumn(this.state.columnMetrics, idx, width);
     this.setState({ columnMetrics });
     if (this.props.onColumnResize) {
-      this.props.onColumnResize(index, width);
+      this.props.onColumnResize(idx, width);
     }
   };
 
