@@ -146,11 +146,10 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
   render() {
     const cellsStyle: React.CSSProperties = {
       width: this.props.width ? this.props.width + getScrollbarSize() : '100%',
-      height: this.props.height,
-      whiteSpace: 'nowrap',
-      overflow: 'hidden'
+      height: this.props.height
     };
 
+    // FIXME: do we need 2 wrapping divs?
     return (
       <div
         style={this.props.style}

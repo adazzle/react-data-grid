@@ -4,7 +4,6 @@ import { isElement, isValidElementType } from 'react-is';
 
 import { Column, Editor, EditorProps, RowData, CommitArgs } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
-import { Z_INDEXES } from '../enums';
 import ClickOutside from './ClickOutside';
 
 export interface Props {
@@ -208,12 +207,6 @@ export default class EditorContainer extends React.Component<Props, State> {
     return key || value;
   }
 
-  getContainerClass() {
-    return classNames('rdg-editor-container', {
-      'has-error': this.state.isInvalid === true
-    });
-  }
-
   commit = (args: { key?: string } = {}) => {
     const { onCommit } = this.props;
     const updated = this.getEditor().getValue();
@@ -263,12 +256,15 @@ export default class EditorContainer extends React.Component<Props, State> {
 
   render() {
     const { width, height, left, top } = this.props;
-    const style: React.CSSProperties = { position: 'absolute', height, width, left, top, zIndex: Z_INDEXES.EDITOR_CONTAINER };
+    const className = classNames('rdg-editor-container', {
+      'has-error': this.state.isInvalid === true
+    });
+
     return (
       <ClickOutside onClickOutside={this.commit}>
         <div
-          style={style}
-          className={this.getContainerClass()}
+          className={className}
+          style={{ height, width, left, top }}
           onKeyDown={this.onKeyDown}
           onContextMenu={this.handleRightClick}
         >

@@ -247,18 +247,10 @@ export default class Viewport extends React.Component<ViewportProps, State> {
   }
 
   render() {
-    const style: React.CSSProperties = {
-      padding: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      overflow: 'hidden',
-      position: 'absolute',
-      top: this.props.rowOffsetHeight
-    };
     return (
       <div
-        style={style}
+        className="rdg-viewport"
+        style={{ top: this.props.rowOffsetHeight }}
         ref={this.viewport}
       >
         <Canvas

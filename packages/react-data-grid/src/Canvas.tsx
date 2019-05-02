@@ -329,22 +329,12 @@ export default class Canvas extends React.PureComponent<Props> {
       rows.push(this.renderPlaceholder('bottom', (rowsCount - rowOverscanEndIdx) * rowHeight));
     }
 
-    const style: React.CSSProperties = {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      overflowX: 'auto',
-      overflowY: 'scroll',
-      width: totalWidth,
-      height
-    };
-
     return (
       <div
-        ref={this.canvas}
-        style={style}
-        onScroll={this.handleScroll}
         className="react-grid-Canvas"
+        style={{ width: totalWidth, height }}
+        ref={this.canvas}
+        onScroll={this.handleScroll}
       >
         <InteractionMasks
           ref={this.interactionMasks}

@@ -43,7 +43,7 @@ export default function SortableHeaderCell(props: Props) {
       : React.createElement(headerRenderer, { column, rowType });
 
   return (
-    <div onClick={onClick} style={{ cursor: 'pointer' }}>
+    <div className="rdg-sortable-header-cell" onClick={onClick}>
       <span className="pull-right">{SORT_TEXT[sortDirection]}</span>
       {content}
     </div>
