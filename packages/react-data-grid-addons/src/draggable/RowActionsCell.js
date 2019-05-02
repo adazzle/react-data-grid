@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragSource } from 'react-dnd';
-import { editors } from 'react-data-grid';
-
-const { CheckboxEditor } = editors;
+import { CheckboxEditor } from 'react-data-grid';
 
 class RowActionsCell extends React.Component {
   renderRowIndex() {
