@@ -15,8 +15,6 @@ import { Position, Column, CalculatedColumn, CellMetaData, InteractionMasksMetaD
 type SharedGridProps = Pick<GridProps,
 /** The primary key property of each row */
 'rowKey'
-/** An array of objects representing each column on the grid. Can also be an ImmutableJS object */
-| 'columns'
 /** The height of each row in pixels */
 | 'rowHeight'
 | 'rowRenderer'
@@ -79,6 +77,8 @@ type SharedInteractionMasksMetaData = Pick<InteractionMasksMetaData,
 >;
 
 interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMasksMetaData {
+  /** An array of objects representing each column on the grid. Can also be an ImmutableJS object */
+  columns: ColumnList;
   /** The minimum width of the grid in pixels */
   minWidth?: number;
   /** The height of the header row in pixels */
@@ -683,7 +683,6 @@ export default class ReactDataGrid extends React.Component<Props, State> {
         <Grid
           ref={this.base}
           rowKey={this.props.rowKey}
-          columns={this.props.columns}
           headerRows={this.getHeaderRows()}
           draggableHeaderCell={this.props.draggableHeaderCell}
           getValidFilterValues={this.props.getValidFilterValues}
