@@ -8,6 +8,7 @@ describe('<SortableHeaderCell/>', () => {
   const setup = (overrideProps?: Partial<Props>, overrideColumn?: Partial<Column>) => {
     const props: Props = {
       column: {
+        idx: 0,
         name: 'col1',
         key: 'col1',
         width: 100,

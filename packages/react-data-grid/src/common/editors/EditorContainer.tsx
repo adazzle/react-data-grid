@@ -2,7 +2,7 @@ import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { Column, Editor, EditorProps, RowData, CommitArgs } from '../types';
+import { CalculatedColumn, Editor, EditorProps, RowData, CommitArgs } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 
@@ -10,7 +10,7 @@ export interface Props {
   rowIdx: number;
   rowData: RowData;
   value: unknown;
-  column: Column;
+  column: CalculatedColumn;
   width: number;
   height: number;
   left: number;

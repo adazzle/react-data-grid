@@ -4,10 +4,9 @@ import classNames from 'classnames';
 
 import HeaderRow, { HeaderRowProps } from './HeaderRow';
 import { resizeColumn } from './ColumnMetrics';
-import { getColumn } from './ColumnUtils';
 import getScrollbarSize from './getScrollbarSize';
 import { HeaderRowType } from './common/enums';
-import { Column, ColumnMetrics, CellMetaData, HeaderRowData } from './common/types';
+import { CalculatedColumn, ColumnMetrics, CellMetaData, HeaderRowData } from './common/types';
 
 type SharedHeaderRowProps = Pick<HeaderRowProps,
 'draggableHeaderCell'
@@ -28,7 +27,7 @@ export interface HeaderProps extends SharedHeaderRowProps {
 }
 
 interface State {
-  resizing: { column: Column; columnMetrics: ColumnMetrics } | null;
+  resizing: { column: CalculatedColumn; columnMetrics: ColumnMetrics } | null;
 }
 
 export default class Header extends React.Component<HeaderProps, State> {
@@ -41,7 +40,7 @@ export default class Header extends React.Component<HeaderProps, State> {
     this.setState({ resizing: null });
   }
 
-  onColumnResize = (column: Column, width: number): void => {
+  onColumnResize = (column: CalculatedColumn, width: number): void => {
     const pos = this.getColumnPosition(column);
 
     if (pos === null) return;
@@ -56,13 +55,13 @@ export default class Header extends React.Component<HeaderProps, State> {
 
     this.setState({
       resizing: {
-        column: getColumn(columnMetrics.columns, pos),
+        column: columnMetrics.columns[pos],
         columnMetrics
       }
     });
   };
 
-  onColumnResizeEnd = (column: Column, width: number): void => {
+  onColumnResizeEnd = (column: CalculatedColumn, width: number): void => {
     const pos = this.getColumnPosition(column);
     if (pos === null) return;
     this.props.onColumnResize(pos, width || column.width);
@@ -116,9 +115,9 @@ export default class Header extends React.Component<HeaderProps, State> {
     return this.props.columnMetrics;
   }
 
-  getColumnPosition(column: Column): number | null {
+  getColumnPosition(column: CalculatedColumn): number | null {
     const { columns } = this.getColumnMetrics();
-    const idx = (columns as Column[]).findIndex(c => c.key === column.key);
+    const idx = columns.findIndex(c => c.key === column.key);
     return idx === -1 ? null : idx;
   }
 

@@ -5,24 +5,24 @@ import HeaderCell from './HeaderCell';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
 import getScrollbarSize from './getScrollbarSize';
-import { getColumn, getSize, isFrozen } from './ColumnUtils';
+import { isFrozen } from './ColumnUtils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
-import { Column, ColumnList, FilterArgs } from './common/types';
+import { CalculatedColumn, FilterArgs } from './common/types';
 
 export interface HeaderRowProps {
   width?: number;
   height: number;
-  columns: ColumnList;
+  columns: CalculatedColumn[];
   onSort(columnKey: string, direction: DEFINE_SORT): void;
-  onColumnResize(column: Column, width: number): void;
-  onColumnResizeEnd(column: Column, width: number): void;
+  onColumnResize(column: CalculatedColumn, width: number): void;
+  onColumnResizeEnd(column: CalculatedColumn, width: number): void;
   style?: React.CSSProperties;
   sortColumn?: string;
   sortDirection?: DEFINE_SORT;
   filterable?: boolean;
   onFilterChange?(args: FilterArgs): void;
   rowType: HeaderRowType;
-  draggableHeaderCell?: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
+  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn; onHeaderDrop(): void }>;
   onHeaderDrop?(): void;
   getValidFilterValues?(): void;
 }
@@ -43,7 +43,7 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     );
   }
 
-  getHeaderCellType(column: Column): HeaderCellType {
+  getHeaderCellType(column: CalculatedColumn): HeaderCellType {
     if (column.filterable && this.props.filterable) {
       return HeaderCellType.FILTERABLE;
     }
@@ -55,7 +55,7 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     return HeaderCellType.NONE;
   }
 
-  getFilterableHeaderCell(column: Column) {
+  getFilterableHeaderCell(column: CalculatedColumn) {
     const FilterRenderer = column.filterRenderer || FilterableHeaderCell;
     return (
       <FilterRenderer
@@ -66,7 +66,7 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     );
   }
 
-  getSortableHeaderCell(column: Column) {
+  getSortableHeaderCell(column: CalculatedColumn) {
     const sortDirection = this.props.sortColumn === column.key && this.props.sortDirection || DEFINE_SORT.NONE;
     const sortDescendingFirst = column.sortDescendingFirst || false;
     return (
@@ -80,7 +80,7 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     );
   }
 
-  getHeaderRenderer(column: Column) {
+  getHeaderRenderer(column: CalculatedColumn) {
     if (column.headerRenderer && !column.sortable && !this.props.filterable) {
       return column.headerRenderer;
     }
@@ -100,8 +100,7 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     const frozenCells = [];
     const { columns, rowType } = this.props;
 
-    for (let i = 0, len = getSize(columns); i < len; i++) {
-      const column = getColumn(columns, i);
+    for (const column of columns) {
       const { key } = column;
       const renderer = key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
 
@@ -131,11 +130,11 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
   }
 
   setScrollLeft(scrollLeft: number): void {
-    this.props.columns.forEach((column?: Column) => {
-      const { key } = column!;
+    this.props.columns.forEach(column => {
+      const { key } = column;
       if (!this.cells.has(key)) return;
       const cell = this.cells.get(key)!;
-      if (isFrozen(column!)) {
+      if (isFrozen(column)) {
         cell.setScrollLeft(scrollLeft);
       } else {
         cell.removeScroll();

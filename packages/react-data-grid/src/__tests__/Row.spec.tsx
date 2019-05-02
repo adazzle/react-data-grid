@@ -4,7 +4,6 @@ import { shallow } from 'enzyme';
 import Row from '../Row';
 import Cell from '../Cell';
 import { createColumns } from './utils';
-import { getColumn } from '../ColumnUtils';
 import { RowRendererProps, CellMetaData } from '../common/types';
 
 describe('Row', () => {
@@ -18,12 +17,12 @@ describe('Row', () => {
 
   const testCellMetaData: CellMetaData = {
     rowKey: 'row',
-    onCellClick() {},
-    onCellContextMenu() {},
-    onCellDoubleClick() {},
-    onDragEnter() {},
-    onCellExpand() {},
-    onRowExpandToggle() {}
+    onCellClick() { },
+    onCellContextMenu() { },
+    onCellDoubleClick() { },
+    onDragEnter() { },
+    onCellExpand() { },
+    onRowExpandToggle() { }
   };
 
   const requiredProperties: RowRendererProps = {
@@ -96,14 +95,14 @@ describe('Row', () => {
       it('first rendered cell index should be colOverscanStartIdx', () => {
         const { cells } = setup(requiredProperties);
         const { columns, colOverscanStartIdx } = requiredProperties;
-        const expectedFirstColumn = getColumn(columns, colOverscanStartIdx);
+        const expectedFirstColumn = columns[colOverscanStartIdx];
         expect(cells.first().props().column).toBe(expectedFirstColumn);
       });
 
       it('last rendered cell index should be colOverscanEndIdx', () => {
         const { cells } = setup(requiredProperties);
         const { columns, colOverscanEndIdx } = requiredProperties;
-        const expectedLastColumn = getColumn(columns, colOverscanEndIdx);
+        const expectedLastColumn = columns[colOverscanEndIdx];
         expect(cells.last().props().column).toBe(expectedLastColumn);
       });
     });

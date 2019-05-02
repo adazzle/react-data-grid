@@ -1,10 +1,12 @@
 export { sameColumn } from './ColumnComparer';
-import { getSize, getColumn, isFrozen, spliceColumn } from './ColumnUtils';
+import { getSize, isFrozen } from './ColumnUtils';
 import getScrollbarSize from './getScrollbarSize';
 import { isColumnsImmutable } from './common/utils';
-import { Column, ColumnList, ColumnMetrics } from './common/types';
+import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/types';
 
-type Metrics = Pick<ColumnMetrics, 'columns' | 'totalWidth' | 'minColumnWidth'>;
+type Metrics = Pick<ColumnMetrics, 'totalWidth' | 'minColumnWidth'> & {
+  columns: ColumnList;
+};
 
 function cloneColumns(columns: ColumnList): Column[] {
   if (Array.isArray(columns)) {
@@ -23,7 +25,7 @@ function setColumnWidths(columns: Column[], totalWidth: number): void {
 
 function setDefferedColumnWidths(columns: Column[], unallocatedWidth: number, minColumnWidth: number): void {
   const defferedColumns = columns.filter(c => !c.width);
-  const columnWidth = Math.floor(unallocatedWidth / getSize(defferedColumns));
+  const columnWidth = Math.floor(unallocatedWidth / defferedColumns.length);
 
   for (const column of columns) {
     if (column.width) continue;
@@ -38,7 +40,7 @@ function setDefferedColumnWidths(columns: Column[], unallocatedWidth: number, mi
 
 function setColumnOffsets(columns: Column[]): void {
   let left = 0;
-  for (const column of columns) {
+  for (const column of columns as CalculatedColumn[]) {
     column.left = left;
     left += column.width;
   }
@@ -46,9 +48,9 @@ function setColumnOffsets(columns: Column[]): void {
 
 const getTotalColumnWidth = (columns: Column[]): number => columns.reduce((acc, c) => acc + (c.width || 0), 0);
 
-export function recalculate(metrics: Metrics) {
+export function recalculate(metrics: Metrics): ColumnMetrics {
   // clone columns so we can safely edit them:
-  let columns = cloneColumns(metrics.columns);
+  const columns = cloneColumns(metrics.columns);
   // compute width for columns which specify width
   setColumnWidths(columns, metrics.totalWidth);
 
@@ -63,11 +65,11 @@ export function recalculate(metrics: Metrics) {
 
   const frozenColumns = columns.filter(c => isFrozen(c));
   const nonFrozenColumns = columns.filter(c => !isFrozen(c));
-  columns = frozenColumns.concat(nonFrozenColumns);
-  columns.forEach((c, i) => c.idx = i);
+  const calculatedColumns = frozenColumns.concat(nonFrozenColumns) as CalculatedColumn[];
+  calculatedColumns.forEach((c, i) => c.idx = i);
   return {
-    columns,
     width,
+    columns: calculatedColumns,
     totalWidth: metrics.totalWidth,
     totalColumnWidth: getTotalColumnWidth(columns),
     minColumnWidth: metrics.minColumnWidth
@@ -77,20 +79,19 @@ export function recalculate(metrics: Metrics) {
 /**
  * Update column metrics calculation by resizing a column.
  */
-export function resizeColumn(metrics: ColumnMetrics, index: number, width: number) {
-  const column = getColumn(metrics.columns, index);
-  const metricsClone = { ...metrics };
-  metricsClone.columns = cloneColumns(metrics.columns);
-
-  const updatedColumn = { ...column };
+export function resizeColumn(metrics: ColumnMetrics, index: number, width: number): ColumnMetrics {
+  const updatedColumn = { ...metrics.columns[index] };
   updatedColumn.width = Math.max(width, metrics.minColumnWidth);
+  const updatedMetrics = { ...metrics };
+  updatedMetrics.columns = [...metrics.columns];
+  updatedMetrics.columns.splice(index, 1, updatedColumn);
 
-  return recalculate(spliceColumn(metricsClone, index, updatedColumn));
+  return recalculate(updatedMetrics);
 }
 
 type ColumnComparer = (colA: Column, colB: Column) => boolean;
 
-function compareEachColumn(prevColumns: Column[], nextColumns: Column[], isSameColumn: ColumnComparer): boolean {
+function compareEachColumn(prevColumns: ColumnList, nextColumns: ColumnList, isSameColumn: ColumnComparer): boolean {
   if (getSize(prevColumns) !== getSize(nextColumns)) return false;
 
   const keys = new Set<string>();
@@ -124,5 +125,5 @@ export function sameColumns(prevColumns: ColumnList, nextColumns: ColumnList, is
     return prevColumns === nextColumns;
   }
 
-  return compareEachColumn(prevColumns as Column[], nextColumns as Column[], isSameColumn);
+  return compareEachColumn(prevColumns, nextColumns, isSameColumn);
 }

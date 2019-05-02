@@ -4,22 +4,22 @@ import { isElement } from 'react-is';
 import Draggable from './Draggable';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from './common/enums';
-import { Column } from './common/types';
+import { CalculatedColumn } from './common/types';
 
-function SimpleCellRenderer({ column, rowType }: { column: Column; rowType: HeaderRowType }) {
+function SimpleCellRenderer({ column, rowType }: { column: CalculatedColumn; rowType: HeaderRowType }) {
   const headerText = rowType === HeaderRowType.HEADER ? column.name : '';
   return <div>{headerText}</div>;
 }
 
 interface Props {
-  renderer?: Column['headerRenderer'];
-  column: Column;
+  renderer?: CalculatedColumn['headerRenderer'];
+  column: CalculatedColumn;
   rowType: HeaderRowType;
   height: number;
-  onResize(column: Column, width: number): void;
-  onResizeEnd(column: Column, width: number): void;
+  onResize(column: CalculatedColumn, width: number): void;
+  onResizeEnd(column: CalculatedColumn, width: number): void;
   onHeaderDrop?(): void;
-  draggableHeaderCell?: React.ComponentType<{ column: Column; onHeaderDrop(): void }>;
+  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn; onHeaderDrop(): void }>;
   className?: string;
 }
 
