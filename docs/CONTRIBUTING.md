@@ -106,12 +106,10 @@ For maintainers only.
 - Build the release files:
   - `npm run build`
   - `npm run build-commonjs`
-- Update the docs:
-  - `npm run docs`
-- Update the changelog, if necessary.
-- Commit your changes, if any.
+- Update the changelog, if necessary, and commit.
 - Login to the `adazzle` npm account if you haven't already done so:
   - `npm login`
+  - You can use `npm whoami` to check who you are logged in as.
 - Publish the update with lerna:
   - To release a stable version: `npx lerna publish`
   - To release an unstable version: `npx lerna publish --dist-tag next`
