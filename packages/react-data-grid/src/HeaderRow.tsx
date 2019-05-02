@@ -7,7 +7,7 @@ import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCel
 import getScrollbarSize from './getScrollbarSize';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
-import { CalculatedColumn, FilterArgs } from './common/types';
+import { CalculatedColumn, AddFilterEvent } from './common/types';
 
 export interface HeaderRowProps {
   width?: number;
@@ -20,7 +20,7 @@ export interface HeaderRowProps {
   sortColumn?: string;
   sortDirection?: DEFINE_SORT;
   filterable?: boolean;
-  onFilterChange?(args: FilterArgs): void;
+  onFilterChange?(args: AddFilterEvent): void;
   rowType: HeaderRowType;
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn; onHeaderDrop(): void }>;
   onHeaderDrop?(): void;
