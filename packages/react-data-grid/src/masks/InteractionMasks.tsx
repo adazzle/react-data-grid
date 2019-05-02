@@ -29,7 +29,7 @@ import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { CalculatedColumn, Position, SelectedRange, RowGetter, Dimension, InteractionMasksMetaData, CommitArgs } from '../common/types';
+import { CalculatedColumn, Position, SelectedRange, RowGetter, Dimension, InteractionMasksMetaData, CommitEvent } from '../common/types';
 import EventBus from './EventBus';
 
 const SCROLL_CELL_BUFFER = 2;
@@ -617,7 +617,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
     onDragHandleDoubleClick({ idx, rowIdx, rowData });
   };
 
-  onCommit = (args: CommitArgs): void => {
+  onCommit = (args: CommitEvent): void => {
     this.props.onCommit(args);
     this.closeEditor();
   };
