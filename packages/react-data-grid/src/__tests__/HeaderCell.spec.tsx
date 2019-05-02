@@ -13,6 +13,7 @@ describe('Header Cell Tests', () => {
   function setup(overrideProps = {}, columnProps = {}) {
     const props = {
       column: {
+        idx: 0,
         key: 'bla',
         name: 'bla',
         width: 150,
@@ -24,7 +25,7 @@ describe('Header Cell Tests', () => {
       onResizeEnd: jest.fn(),
       height: 50,
       name: 'bla',
-      onHeaderDrop() {},
+      onHeaderDrop() { },
       draggableHeaderCell: DraggableHeaderCell,
       ...overrideProps
     };

@@ -87,7 +87,7 @@ describe('Canvas Tests', () => {
   });
 
   describe('Row Selection', () => {
-    const COLUMNS = [{ key: 'id', name: 'ID' }];
+    const COLUMNS = [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }];
 
     describe('selectBy index', () => {
       it('renders row selected', () => {

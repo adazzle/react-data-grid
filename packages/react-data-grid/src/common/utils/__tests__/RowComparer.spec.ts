@@ -46,7 +46,7 @@ describe('RowComparer shouldRowUpdate', () => {
   it('different columns should cause update', () => {
     const newColumns = [
       ...columns,
-      { key: 'col3', name: 'col3', width: 100, left: 200 }
+      { idx: 1, key: 'col3', name: 'col3', width: 100, left: 200 }
     ];
     const currentProps = { ...defaultProps };
     const nextProps = {
