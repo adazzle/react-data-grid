@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export default class GroupedColumnButton extends Component {
+  static propTypes = {
+    name: PropTypes.string.isRequired,
+    onColumnGroupDeleted: PropTypes.func,
+    columnKey: PropTypes.string.isRequired
+  };
+
   render() {
     return (
       <div className="grouped-col-btn btn btn-sm">
@@ -14,9 +20,3 @@ export default class GroupedColumnButton extends Component {
     );
   }
 }
-
-GroupedColumnButton.propTypes = {
-  name: PropTypes.string.isRequired,
-  onColumnGroupDeleted: PropTypes.func,
-  columnKey: PropTypes.string.isRequired
-};
