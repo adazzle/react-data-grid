@@ -5,7 +5,7 @@ import { CalculatedColumn } from '../../types';
 
 describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
-    const fakeColumn: CalculatedColumn = {
+    const fakeColumn: CalculatedColumn<string> = {
       idx: 0,
       key: 'text',
       name: 'name',
