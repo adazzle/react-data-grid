@@ -3,6 +3,15 @@ import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
 
 class DraggableHeaderCell extends React.Component {
+  static propTypes = {
+    connectDragSource: PropTypes.func.isRequired,
+    connectDropTarget: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired,
+    isOver: PropTypes.bool,
+    canDrop: PropTypes.bool,
+    children: PropTypes.element.isRequired
+  };
+
   render() {
     const {
       connectDragSource,
@@ -77,15 +86,6 @@ function targetCollect(connect, monitor) {
     draggedHeader: monitor.getItem()
   };
 }
-
-DraggableHeaderCell.propTypes = {
-  connectDragSource: PropTypes.func.isRequired,
-  connectDropTarget: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired,
-  isOver: PropTypes.bool,
-  canDrop: PropTypes.bool,
-  children: PropTypes.element.isRequired
-};
 
 export default DragSource('Column', headerCellSource, collect)(
   DropTarget('Column', target, targetCollect)(

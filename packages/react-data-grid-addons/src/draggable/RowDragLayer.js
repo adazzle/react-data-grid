@@ -32,6 +32,19 @@ function getItemStyles(props) {
 }
 
 class CustomDragLayer extends Component {
+  static propTypes = {
+    item: PropTypes.object,
+    itemType: PropTypes.string,
+    currentOffset: PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired
+    }),
+    isDragging: PropTypes.bool.isRequired,
+    rowSelection: PropTypes.object,
+    rows: PropTypes.array.isRequired,
+    columns: PropTypes.array.isRequired
+  };
+
   isDraggedRowSelected(selectedRows) {
     const { item, rowSelection } = this.props;
     if (selectedRows && selectedRows.length > 0) {
@@ -95,19 +108,6 @@ class CustomDragLayer extends Component {
     );
   }
 }
-
-CustomDragLayer.propTypes = {
-  item: PropTypes.object,
-  itemType: PropTypes.string,
-  currentOffset: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired
-  }),
-  isDragging: PropTypes.bool.isRequired,
-  rowSelection: PropTypes.object,
-  rows: PropTypes.array.isRequired,
-  columns: PropTypes.array.isRequired
-};
 
 function collect(monitor) {
   return {

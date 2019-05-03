@@ -5,6 +5,10 @@ import RowsDescription from './RowsDescription';
 import ColsDescription from './ColsDescription';
 
 export default class QuickStartDescription extends React.Component {
+  static propTypes = {
+    title: PropTypes.string
+  };
+
   render() {
     return (
       <div>
@@ -22,7 +26,3 @@ export default class QuickStartDescription extends React.Component {
     );
   }
 }
-
-QuickStartDescription.propTypes = {
-  title: PropTypes.string
-};
