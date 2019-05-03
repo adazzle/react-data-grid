@@ -45,7 +45,6 @@ export interface ScrollState {
 
 export interface ViewportProps {
   rowOffsetHeight: number;
-  totalWidth: number | string;
   columnMetrics: ColumnMetrics;
   rowGetter: RowGetter;
   selectedRows?: RowData[];
@@ -255,7 +254,6 @@ export default class Viewport extends React.Component<ViewportProps, State> {
         <Canvas
           ref={this.canvas}
           rowKey={this.props.rowKey}
-          totalWidth={this.props.totalWidth}
           width={this.props.columnMetrics.width}
           totalColumnWidth={this.props.columnMetrics.totalColumnWidth}
           rowGetter={this.props.rowGetter}
@@ -281,7 +279,7 @@ export default class Viewport extends React.Component<ViewportProps, State> {
           rowSelection={this.props.rowSelection}
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
-          isScrolling={this.state.isScrolling || false}
+          isScrolling={this.state.isScrolling}
           enableCellSelect={this.props.enableCellSelect}
           enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}

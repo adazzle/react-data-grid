@@ -15,7 +15,6 @@ export interface Props {
   rowHeight: number;
   height: number;
   width?: number;
-  totalWidth?: number | string;
   style?: string;
   className?: string;
   rowOverscanStartIdx: number;
@@ -284,7 +283,7 @@ export default class Canvas extends React.PureComponent<Props> {
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, RowsContainer, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, rowGetter, RowsContainer, contextMenu } = this.props;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map(({ row, subRowDetails }, idx) => {
@@ -328,7 +327,6 @@ export default class Canvas extends React.PureComponent<Props> {
     return (
       <div
         className="react-grid-Canvas"
-        style={{ width: totalWidth, height }}
         ref={this.canvas}
         onScroll={this.handleScroll}
       >

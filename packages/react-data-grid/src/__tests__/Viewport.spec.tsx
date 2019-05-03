@@ -9,7 +9,6 @@ import EventBus from '../masks/EventBus';
 
 const viewportProps: ViewportProps = {
   rowOffsetHeight: 0,
-  totalWidth: 400,
   columnMetrics: {
     columns: helpers.columns,
     minColumnWidth: 80,
@@ -48,7 +47,6 @@ const viewportProps: ViewportProps = {
 
 const viewportPropsNoColumns: ViewportProps = { // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
   rowOffsetHeight: 0,
-  totalWidth: 400,
   columnMetrics: {
     columns: helpers.columns,
     minColumnWidth: 80,

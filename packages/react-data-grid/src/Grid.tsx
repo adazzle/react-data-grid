@@ -20,6 +20,7 @@ type SharedHeaderProps = Pick<HeaderProps,
 
 export interface GridProps extends Omit<ViewportProps, 'onScroll'>, SharedHeaderProps {
   emptyRowsView?: React.ComponentType;
+  totalWidth: number | string;
   scrollLeft?: number;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -106,7 +107,6 @@ export default class Grid extends React.Component<GridProps> {
               rowsCount={this.props.rowsCount}
               selectedRows={this.props.selectedRows}
               columnMetrics={this.props.columnMetrics}
-              totalWidth={this.props.totalWidth}
               onScroll={this.onScroll}
               cellMetaData={this.props.cellMetaData}
               rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
