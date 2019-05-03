@@ -107,7 +107,7 @@ export default class HeaderCell extends React.Component<Props> {
     return x - this.cell.current!.getBoundingClientRect().left;
   }
 
-  private getCell() {
+  getCell() {
     const { height, column, rowType } = this.props;
     const renderer = this.props.renderer || SimpleCellRenderer;
     if (isElement(renderer)) {

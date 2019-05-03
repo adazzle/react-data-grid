@@ -2,7 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import HeaderCell from '../HeaderCell';
-import Draggable from '../Draggable';
 import { HeaderRowType } from '../common/enums';
 
 describe('Header Cell Tests', () => {
@@ -42,28 +41,18 @@ describe('Header Cell Tests', () => {
   });
 
   describe('When column is resizable', () => {
-    it('should render a Draggable', () => {
-      const { wrapper } = setup({}, { resizable: true });
-      const draggable = wrapper.find(Draggable);
-      expect(draggable.length).toBe(1);
-    });
-
     it('dragging handle should call onResize callback with width and column', () => {
       const { wrapper, props } = setup({}, { resizable: true });
-      const draggable = wrapper.find(Draggable);
-      draggable.props().onDrag(200, 0);
-      expect(props.onResize).toHaveBeenCalled();
-      expect(props.onResize.mock.calls[0][0]).toEqual(props.column);
-      expect(props.onResize.mock.calls[0][1]).toEqual(200);
+      wrapper.simulate('mousedown', { button: 0, clientX: 0 });
+      window.dispatchEvent(new MouseEvent('mousemove', { clientX: 200 }));
+      expect(props.onResize).toHaveBeenCalledWith(props.column, 200);
     });
 
     it('finish dragging should call onResizeEnd with correct params', () => {
       const { wrapper, props } = setup({}, { resizable: true });
-      const draggable = wrapper.find(Draggable);
-      draggable.props().onDragEnd(250, 0);
-      expect(props.onResizeEnd).toHaveBeenCalled();
-      expect(props.onResizeEnd.mock.calls[0][0]).toEqual(props.column);
-      expect(props.onResizeEnd.mock.calls[0][1]).toEqual(250);
+      wrapper.simulate('mousedown', { button: 0, clientX: 0 });
+      window.dispatchEvent(new MouseEvent('mouseup', { clientX: 250 }));
+      expect(props.onResizeEnd).toHaveBeenCalledWith(props.column, 250);
     });
   });
 
