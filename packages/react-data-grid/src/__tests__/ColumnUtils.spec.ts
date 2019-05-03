@@ -6,7 +6,7 @@ describe('ColumnUtils tests', () => {
     const col: CalculatedColumn = {
       idx: 0,
       editable: true,
-      editor: {},
+      editor: () => null,
       filterable: true,
       key: 'PlacementType',
       left: 460,
@@ -67,7 +67,7 @@ describe('ColumnUtils tests', () => {
       it('CanEdit returns true when col.editable is undefined but col.editor is defined and enableCellSelect is true', () => {
         // Arrange
         testProps.col.editable = undefined;
-        testProps.col.editor = {};
+        testProps.col.editor = () => null;
         testProps.enableCellSelect = true;
 
         // Act
@@ -129,7 +129,7 @@ describe('ColumnUtils tests', () => {
       it('CanEdit returns true when col.editable is null but col.editor is defined and enableCellSelect is true', () => {
         // Arrange
         testProps.col.editable = undefined;
-        testProps.col.editor = {};
+        testProps.col.editor = () => null;
         testProps.enableCellSelect = true;
 
         // Act
@@ -142,17 +142,17 @@ describe('ColumnUtils tests', () => {
         expect(result).toBe(true);
       });
 
-      it('CanEdit returns false when col.editable is null, col.editor is null and enableCellSelect is true', () => {
+      it('CanEdit returns false when col.editable is null, col.editor is undefined and enableCellSelect is true', () => {
         // Arrange
         testProps.col.editable = undefined;
-        testProps.col.editor = null;
+        testProps.col.editor = undefined;
         testProps.enableCellSelect = true;
 
         // Act
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(testProps.col.editor).toBe(null);
+        expect(testProps.col.editor).toBe(undefined);
         expect(testProps.col.editable).toBe(undefined);
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(false);

@@ -305,7 +305,7 @@ const rules = {
   'react/no-render-return-value': 0,
   'react/no-set-state': 0,
   'react/no-typos': 2,
-  'react/no-string-refs': 2,
+  'react/no-string-refs': [2, { noTemplateLiterals: true }],
   'react/no-this-in-sfc': 0,
   'react/no-unescaped-entities': 0,
   'react/no-unknown-property': 2,
@@ -323,6 +323,8 @@ const rules = {
   'react/self-closing-comp': 1,
   'react/sort-comp': 0,
   'react/sort-prop-types': 0,
+  'react/state-in-constructor': 0,
+  'react/static-property-placement': 1,
   'react/style-prop-object': 2,
   'react/void-dom-elements-no-children': 2,
 
@@ -353,6 +355,7 @@ const rules = {
   'react/jsx-fragments': 1,
   'react/jsx-pascal-case': 1,
   'react/jsx-props-no-multi-spaces': 1,
+  'react/jsx-props-no-spreading': 0,
   'react/jsx-sort-default-props': 0,
   'react/jsx-sort-props': 0,
   'react/jsx-tag-spacing': [1, {
