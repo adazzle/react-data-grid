@@ -118,7 +118,7 @@ export default class EditorContainer extends React.Component<Props, State> {
     return (
       <SimpleTextEditor
         ref={this.editor as React.RefObject<SimpleTextEditor>}
-        column={this.props.column}
+        column={this.props.column as CalculatedColumn<string>}
         value={this.getInitialValue() as string}
         onBlur={this.commit}
       />
