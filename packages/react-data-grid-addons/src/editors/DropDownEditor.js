@@ -3,6 +3,18 @@ import PropTypes from 'prop-types';
 
 export default class DropDownEditor extends React.Component {
   static propTypes = {
+    options: PropTypes.arrayOf(PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({
+        id: PropTypes.string,
+        title: PropTypes.string,
+        value: PropTypes.string,
+        text: PropTypes.string
+      })
+    ])).isRequired
+  };
+
+  static propTypes = {
     value: PropTypes.any.isRequired,
     onBlur: PropTypes.func.isRequired
     // column: PropTypes.shape(Column).isRequired
@@ -60,15 +72,3 @@ export default class DropDownEditor extends React.Component {
     );
   }
 }
-
-DropDownEditor.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-      value: PropTypes.string,
-      text: PropTypes.string
-    })
-  ])).isRequired
-};

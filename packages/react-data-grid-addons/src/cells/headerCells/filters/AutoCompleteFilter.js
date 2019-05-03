@@ -6,6 +6,13 @@ import { _utils } from 'react-data-grid';
 const { isEmptyArray } = _utils;
 
 export default class AutoCompleteFilter extends React.Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    // column: PropTypes.shape(shapes.Column),
+    getValidFilterValues: PropTypes.func,
+    multiSelection: PropTypes.bool
+  };
+
   constructor(props) {
     super(props);
     this.getOptions = this.getOptions.bind(this);
@@ -77,10 +84,3 @@ export default class AutoCompleteFilter extends React.Component {
     );
   }
 }
-
-AutoCompleteFilter.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  // column: PropTypes.shape(shapes.Column),
-  getValidFilterValues: PropTypes.func,
-  multiSelection: PropTypes.bool
-};
