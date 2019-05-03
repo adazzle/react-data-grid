@@ -74,7 +74,7 @@ export interface CellMetaData {
   onCellDoubleClick(position: Position): void;
   onDragEnter(overRowIdx: number): void;
   onCellExpand?(options: SubRowOptions): void;
-  onRowExpandToggle?(data: { rowIdx: number; shouldExpand: boolean; columnGroupName: string; name: string }): void;
+  onRowExpandToggle?(e: RowExpandToggleEvent): void;
   onCellMouseDown?(position: Position): void;
   onCellMouseEnter?(position: Position): void;
   onAddSubRow?(): void;
@@ -230,14 +230,8 @@ export interface ScrollPosition {
 }
 
 export interface InteractionMasksMetaData {
-  onCheckCellIsEditable?(arg: { row: unknown; column: Column } & Position): boolean;
-  onCellCopyPaste?(arg: {
-    cellKey: string;
-    rowIdx: number;
-    fromRow: number;
-    toRow: number;
-    value: unknown;
-  }): void;
+  onCheckCellIsEditable?(e: CheckCellIsEditableEvent): boolean;
+  onCellCopyPaste?(e: CellCopyPasteEvent): void;
   onGridRowsUpdated(
     cellKey: string,
     toRow1: number,
@@ -252,7 +246,7 @@ export interface InteractionMasksMetaData {
   onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
   onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
   onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onCommit(args: CommitArgs): void;
+  onCommit(e: CommitEvent): void;
 }
 
 export interface RowGroupMetaData {
@@ -270,17 +264,54 @@ export interface HeaderRowData {
   rowType: HeaderRowType;
   height: number;
   filterable?: boolean;
-  onFilterChange?(args: FilterArgs): void;
+  onFilterChange?(args: AddFilterEvent): void;
 }
 
-export interface FilterArgs {
+export interface AddFilterEvent {
   filterTerm: string;
   column: Column;
 }
 
-export interface CommitArgs {
+export interface CommitEvent {
   cellKey: string;
   rowIdx: number;
   updated: { [key: string]: unknown };
   key?: string;
+}
+
+export interface RowExpandToggleEvent {
+  rowIdx: number;
+  shouldExpand: boolean;
+  columnGroupName: string;
+  name: string;
+}
+
+export interface GridRowsUpdatedEvent {
+  cellKey: string;
+  fromRow: number;
+  toRow: number;
+  fromRowId: unknown;
+  toRowId: unknown;
+  rowIds: unknown[];
+  updated: { [key: string]: unknown };
+  action: UpdateActions;
+  fromRowData: RowData;
+}
+
+export interface CellCopyPasteEvent {
+  cellKey: string;
+  rowIdx: number;
+  fromRow: number;
+  toRow: number;
+  value: unknown;
+}
+
+export interface CheckCellIsEditableEvent extends Position {
+  row: unknown;
+  column: Column;
+}
+
+export interface RowSelectionParams {
+  rowIdx: number;
+  row: RowData;
 }

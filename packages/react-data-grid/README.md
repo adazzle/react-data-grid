@@ -37,7 +37,5 @@ RowsContainer          | [RowsContainer](./src/RowsContainer.js) |
 Row                    | [Row](./src/Row.js)                     |
 Cell                   | [Cell](./src/Cell.js)                   |
 HeaderCell             | [HeaderCell](./src/HeaderCell.js)       |
-editors                | [Editors](./src/editors)                |
-formatters             | [Formatters](./src/formatters)          |
 shapes                 | [shapes](./src/PropTypeShapes)          |
 _helpers               | [_helpers](./src/helpers)               |

@@ -22,7 +22,7 @@ export interface HeaderProps extends SharedHeaderRowProps {
   totalWidth: number | string;
   height: number;
   headerRows: HeaderRowData[];
-  onColumnResize(pos: number, width: number): void;
+  onColumnResize(idx: number, width: number): void;
   cellMetaData: CellMetaData;
 }
 
