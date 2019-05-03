@@ -273,23 +273,13 @@ export default class Canvas extends React.PureComponent<Props> {
     return <Row {...props} />;
   }
 
-  renderPlaceholder(key: string, height: number) {
-    // just renders empty cells
-    // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
-    return (
-      <div key={key} style={{ height }}>
-        {this.props.columns.map(column => <div style={{ width: column.width }} key={column.key} />)}
-      </div>
-    );
-  }
-
   render() {
     const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, RowsContainer, contextMenu } = this.props;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map(({ row, subRowDetails }, idx) => {
         const rowIdx = rowOverscanStartIdx + idx;
-        return row && this.renderRow({
+        return this.renderRow({
           key: rowIdx,
           ref: (row: (RowRenderer & React.Component<RowRendererProps>) | null) => {
             if (row) {
@@ -317,13 +307,11 @@ export default class Canvas extends React.PureComponent<Props> {
         });
       });
 
-    if (rowOverscanStartIdx > 0) {
-      rows.unshift(this.renderPlaceholder('top', rowOverscanStartIdx * rowHeight));
-    }
-
-    if (rowsCount - rowOverscanEndIdx > 0) {
-      rows.push(this.renderPlaceholder('bottom', (rowsCount - rowOverscanEndIdx) * rowHeight));
-    }
+    const containerStyle: React.CSSProperties = {
+      width: totalColumnWidth,
+      height: rowsCount * rowHeight,
+      paddingTop: rowOverscanStartIdx * rowHeight
+    };
 
     return (
       <div
@@ -360,7 +348,7 @@ export default class Canvas extends React.PureComponent<Props> {
           {...this.props.interactionMasksMetaData}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-          <div style={{ width: totalColumnWidth }}>{rows}</div>
+          <div style={containerStyle}>{rows}</div>
         </RowsContainer>
       </div>
     );

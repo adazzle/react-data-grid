@@ -281,7 +281,7 @@ export default class Viewport extends React.Component<ViewportProps, State> {
           rowSelection={this.props.rowSelection}
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
-          isScrolling={this.state.isScrolling || false}
+          isScrolling={this.state.isScrolling}
           enableCellSelect={this.props.enableCellSelect}
           enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}
