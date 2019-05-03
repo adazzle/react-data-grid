@@ -324,7 +324,7 @@ const rules = {
   'react/sort-comp': 0,
   'react/sort-prop-types': 0,
   'react/state-in-constructor': 0,
-  'react/static-property-placement': 0,
+  'react/static-property-placement': 1,
   'react/style-prop-object': 2,
   'react/void-dom-elements-no-children': 2,
 

@@ -4,6 +4,22 @@ import { DragSource } from 'react-dnd';
 import { CheckboxEditor } from 'react-data-grid';
 
 class RowActionsCell extends React.Component {
+  static propTypes = {
+    rowIdx: PropTypes.number.isRequired,
+    connectDragSource: PropTypes.func.isRequired,
+    connectDragPreview: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired,
+    isRowHovered: PropTypes.bool,
+    column: PropTypes.object,
+    dependentValues: PropTypes.object,
+    value: PropTypes.bool,
+    rowSelection: PropTypes.object.isRequired
+  };
+
+  static defaultProps = {
+    rowIdx: 0
+  };
+
   renderRowIndex() {
     return (
       <div className="rdg-row-index">
@@ -35,22 +51,6 @@ class RowActionsCell extends React.Component {
       </div>);
   }
 }
-
-RowActionsCell.propTypes = {
-  rowIdx: PropTypes.number.isRequired,
-  connectDragSource: PropTypes.func.isRequired,
-  connectDragPreview: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired,
-  isRowHovered: PropTypes.bool,
-  column: PropTypes.object,
-  dependentValues: PropTypes.object,
-  value: PropTypes.bool,
-  rowSelection: PropTypes.object.isRequired
-};
-
-RowActionsCell.defaultProps = {
-  rowIdx: 0
-};
 
 function collect(connect, monitor) {
   return {

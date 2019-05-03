@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const propTypes = {
-  children: PropTypes.array
-};
-
-const defaultProps = {
-  enableAddRow: true
-};
-
 export default class AdvancedToolbar extends Component {
+  static defaultProps = {
+    children: PropTypes.array
+  };
+
+  static propTypes = {
+    enableAddRow: true
+  };
+
   render() {
     return (
       <div className="react-grid-Toolbar">
@@ -19,6 +19,3 @@ export default class AdvancedToolbar extends Component {
     );
   }
 }
-
-AdvancedToolbar.defaultProps = defaultProps;
-AdvancedToolbar.propTypes = propTypes;

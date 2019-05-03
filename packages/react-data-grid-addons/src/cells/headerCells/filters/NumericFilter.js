@@ -9,6 +9,11 @@ const RuleType = {
 };
 
 export default class NumericFilter extends React.Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired
+    // column: PropTypes.shape(shapes.Column)
+  };
+
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -132,8 +137,3 @@ export default class NumericFilter extends React.Component {
     );
   }
 }
-
-NumericFilter.propTypes = {
-  onChange: PropTypes.func.isRequired
-  // column: PropTypes.shape(shapes.Column)
-};
