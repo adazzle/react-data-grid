@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 
 /**
  * Detecting outside click on a react component is surprisingly hard.
@@ -54,34 +54,29 @@ interface Props {
   onClickOutside(): void;
 }
 
-export default class ClickOutside extends React.Component<Props> {
-  isClickedInside = false;
+export default function ClickOutside({ onClickOutside, children }: Props) {
+  const isClickedInside = useRef(false);
 
-  componentDidMount() {
-    document.addEventListener('click', this.handleDocumentClick);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.handleDocumentClick);
-  }
-
-  handleDocumentClick = () => {
-    if (this.isClickedInside) {
-      this.isClickedInside = false;
-    } else {
-      this.props.onClickOutside();
-    }
-  };
-
-  handleClick = () => {
-    this.isClickedInside = true;
-  };
-
-  render() {
-    return React.cloneElement(
-      React.Children.only(this.props.children), {
-        onClickCapture: this.handleClick
+  useEffect(() => {
+    function handleDocumentClick() {
+      if (isClickedInside.current) {
+        isClickedInside.current = false;
+      } else {
+        onClickOutside();
       }
-    );
-  }
+    }
+
+    document.addEventListener('click', handleDocumentClick);
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [onClickOutside]);
+
+  return React.cloneElement(
+    React.Children.only(children), {
+      onClickCapture() {
+        isClickedInside.current = true;
+      }
+    }
+  );
 }
