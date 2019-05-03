@@ -4,7 +4,7 @@ import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface Column<T = unknown> {
+export interface Column<V = unknown, DV = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -18,7 +18,7 @@ export interface Column<T = unknown> {
     [key: string]: undefined | ((e: Event, info: ColumnEventInfo) => void);
   };
   /** Formatter to be used to render the cell content */
-  formatter?: React.ReactElement | React.ComponentType<FormatterProps>;
+  formatter?: React.ReactElement | React.ComponentType<FormatterProps<V, DV>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((rowData: RowData) => boolean);
   /** Enable dragging of a column */
@@ -34,18 +34,18 @@ export interface Column<T = unknown> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: unknown;
+  editor?: React.ReactElement | React.ComponentType<EditorProps<V, DV>>;
   /** Header renderer for each header cell */
-  headerRenderer?: React.ReactElement | React.ComponentType<{ column: CalculatedColumn<T>; rowType: HeaderRowType }>;
+  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<V, DV>>;
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType;
 
   // TODO: these props are only used by checkbox editor and we should remove them
-  onCellChange?(rowIdx: number, key: string, dependentValues: T, event: React.ChangeEvent<HTMLInputElement>): void;
-  getRowMetaData?(rowData: RowData, column: CalculatedColumn<T>): unknown;
+  onCellChange?(rowIdx: number, key: string, dependentValues: DV, event: React.ChangeEvent<HTMLInputElement>): void;
+  getRowMetaData?(rowData: RowData, column: CalculatedColumn<V, DV>): unknown;
 }
 
-export interface CalculatedColumn<T = unknown> extends Column<T> {
+export interface CalculatedColumn<V = unknown, DV = unknown> extends Column<V, DV> {
   idx: number;
   width: number;
   left: number;
@@ -117,25 +117,30 @@ export interface Editor {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps {
+export interface FormatterProps<V, DV = unknown> {
   rowIdx: number;
-  value: unknown;
+  value: V;
   column: CalculatedColumn;
   row: RowData;
   isScrolling: boolean;
-  dependentValues?: unknown;
+  dependentValues?: DV;
 }
 
-export interface EditorProps<V = unknown, C = unknown> {
-  column: CalculatedColumn<C>;
+export interface EditorProps<V = unknown, DV = unknown> {
+  column: CalculatedColumn<V, DV>;
   value: V;
-  rowMetaData: unknown;
+  rowMetaData?: unknown;
   rowData: RowData;
   height: number;
   onCommit(args?: { key?: string }): void;
   onCommitCancel(): void;
   onBlur(): void;
   onOverrideKeyDown(e: KeyboardEvent): void;
+}
+
+export interface HeaderRowProps<V, DV> {
+  column: CalculatedColumn<V, DV>;
+  rowType: HeaderRowType;
 }
 
 export interface CellRendererProps {
