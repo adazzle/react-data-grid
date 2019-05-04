@@ -12,6 +12,10 @@ module.exports = {
       }
     }
   },
+  collectCoverage: process.env.CI === 'true',
+  collectCoverageFrom: [
+    'packages/*/src/**/*.{ts,tsx}'
+  ],
   clearMocks: true,
   moduleNameMapper: {
     '^react-data-grid$': '<rootDir>/packages/react-data-grid/src/',
