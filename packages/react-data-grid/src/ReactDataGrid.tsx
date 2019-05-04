@@ -84,7 +84,7 @@ interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMa
   /** The height of the header filter row in pixels */
   headerFiltersHeight: number;
   /** Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead*/
-  enableRowSelect?: boolean | string;
+  enableRowSelect: boolean | string;
   /** Component used to render toolbar above the grid */
   toolbar?: React.ReactElement;
   cellRangeSelection?: {
