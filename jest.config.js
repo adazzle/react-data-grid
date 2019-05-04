@@ -4,7 +4,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
-  preset: 'ts-jest/presets/js-with-ts',
+  preset: 'ts-jest',
   globals: {
     'ts-jest': {
       tsConfig: {
@@ -15,16 +15,11 @@ module.exports = {
   clearMocks: true,
   moduleNameMapper: {
     '^react-data-grid$': '<rootDir>/packages/react-data-grid/src/',
-    '^react-data-grid-addons$': '<rootDir>/packages/react-data-grid-addons/src/',
-    '\\.css$': '<rootDir>/test/fileMock.js'
+    '^react-data-grid-addons$': '<rootDir>/packages/react-data-grid-addons/src/'
   },
-  modulePathIgnorePatterns: [
-    '<rootDir>/package.json'
-  ],
-  setupFiles: ['<rootDir>/test/setupTests.js'],
+  setupFilesAfterEnv: ['react-testing-library/cleanup-after-each'],
   testEnvironment: 'jsdom',
   testMatch: [
-    '<rootDir>/packages/*/src/**/*.spec.(js|ts|tsx)',
-    '<rootDir>/examples/**/*.spec.(js|ts|tsx)'
+    '<rootDir>/tests/**/*.test.(ts|tsx)'
   ]
 };
