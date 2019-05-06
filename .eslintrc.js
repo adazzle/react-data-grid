@@ -496,7 +496,8 @@ module.exports = {
   }, {
     files: [
       'packages/*/src/**/__tests__/**/*',
-      'examples/**/__tests__/**/*'
+      'examples/**/__tests__/**/*',
+      'tests/**/*'
     ],
     env: {
       jest: true
