@@ -14,7 +14,7 @@ module.exports = {
   },
   collectCoverage: process.env.CI === 'true',
   collectCoverageFrom: [
-    'packages/*/src/**/*.{ts,tsx}'
+    'packages/*/src/**/*.{js,jsx,ts,tsx}'
   ],
   restoreMocks: true,
   moduleNameMapper: {
