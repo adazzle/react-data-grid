@@ -1,10 +1,10 @@
 # react-data-grid [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![codecov-badge]][codecov-url]
 
-[npm-badge]: https://img.shields.io/npm/v/react-data-grid/next.svg
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid.svg
 [npm-url]: https://www.npmjs.com/package/react-data-grid
-[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid/next.svg
-[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid@next
-[codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid/next.svg
+[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid.svg
+[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid
+[codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid.svg
 [codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
 
 ## Install

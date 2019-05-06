@@ -1,10 +1,10 @@
 # react-data-grid-addons [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![codecov-badge]][codecov-url]
 
-[npm-badge]: https://img.shields.io/npm/v/react-data-grid-addons/next.svg
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid-addons.svg
 [npm-url]: https://www.npmjs.com/package/react-data-grid-addons
-[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid-addons/next.svg
-[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid-addons@next
-[codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid/next.svg
+[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid-addons.svg
+[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid-addons
+[codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid.svg
 [codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
 
 A set of addons for react-data-grid with things like editors, formatters, toolbars, filters..
