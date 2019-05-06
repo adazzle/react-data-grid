@@ -495,10 +495,15 @@ module.exports = {
     }
   }, {
     files: [
+      'packages/*/src/**/__tests__/**/*',
+      'examples/**/__tests__/**/*',
       'tests/**/*'
     ],
     env: {
       jest: true
+    },
+    rules: {
+      'sonarjs/no-identical-functions': 0
     }
   }, {
     files: [
