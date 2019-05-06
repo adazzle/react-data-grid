@@ -1,8 +1,11 @@
-# React Data Grid
+# React Data Grid [![npm-badge]][npm-url] [![appveyor-badge]][appveyor-url] [![codecov-badge]][codecov-url]
 
-[![npm version](https://img.shields.io/npm/v/react-data-grid.svg)](https://www.npmjs.com/package/react-data-grid)
-[![Build status](https://img.shields.io/appveyor/ci/adazzle/react-data-grid.svg)](https://ci.appveyor.com/project/adazzle/react-data-grid)
-[![codecov](https://img.shields.io/codecov/c/github/adazzle/react-data-grid.svg)](https://codecov.io/gh/adazzle/react-data-grid)
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid/next.svg
+[npm-url]: https://www.npmjs.com/package/react-data-grid
+[appveyor-badge]: https://img.shields.io/appveyor/ci/adazzle/react-data-grid.svg
+[appveyor-url]: https://ci.appveyor.com/project/adazzle/react-data-grid
+[codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid/next.svg
+[codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
 
 Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like
 
@@ -23,7 +26,7 @@ npm install react-data-grid
 ```
 
 You can then import react-data-grid in your application as follows:
-```typescript
+```js
 import ReactDataGrid from 'react-data-grid';
 ```
 
@@ -44,11 +47,11 @@ Themes
 ------
 We use [Bootstrap](https://github.com/twbs/bootstrap). If you want your Grid to get the "default" styling like the picture above, you'll need to include it separately.
 
-```
+```sh
 npm install bootstrap
 ```
 and then import the css from the dist folder when bootstrapping your application
-```
+```js
 import 'bootstrap/dist/css/bootstrap.css';
 ```
 
