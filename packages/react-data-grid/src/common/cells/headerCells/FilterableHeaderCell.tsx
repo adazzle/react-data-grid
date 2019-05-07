@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
-import { CalculatedColumn } from '../../types';
+import { FilterRendererProps } from '../../types';
 
-import { AddFilterEvent } from '../../../common/types';
-
-interface Props {
-  column: CalculatedColumn;
-  onChange?(e: AddFilterEvent): void;
-  /** TODO: remove */
-  getValidFilterValues?(): void;
-}
-
-export default function FilterableHeaderCell({ column, onChange }: Props) {
+export default function FilterableHeaderCell({ column, onChange }: FilterRendererProps) {
   const [filterTerm, setFilterTerm] = useState('');
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {

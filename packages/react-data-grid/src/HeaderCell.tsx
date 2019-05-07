@@ -1,7 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
 import { isElement } from 'react-is';
-import Draggable from './Draggable';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from './common/enums';
 import { CalculatedColumn } from './common/types';
@@ -26,7 +25,70 @@ interface Props {
 export default class HeaderCell extends React.Component<Props> {
   private readonly cell = React.createRef<HTMLDivElement>();
 
-  onDrag = (x: number) => {
+  private onMouseDown = (event: React.MouseEvent) => {
+    if (event.button !== 0) {
+      return;
+    }
+
+    const { right } = event.currentTarget.getBoundingClientRect();
+    const offset = right - event.clientX;
+
+    if (offset > 11) { // +1px to account for the border size
+      return;
+    }
+
+    const onMouseMove = (event: MouseEvent) => {
+      this.onResize(event.clientX + offset);
+    };
+
+    const onMouseUp = (event: MouseEvent) => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      this.onResizeEnd(event.clientX + offset);
+    };
+
+    event.preventDefault();
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  }
+
+  private onTouchStart = (event: React.TouchEvent) => {
+    const touch = event.changedTouches[0];
+    const { identifier } = touch;
+    const { right } = event.currentTarget.getBoundingClientRect();
+    const offset = right - touch.clientX;
+
+    if (offset > 11) { // +1px to account for the border size
+      return;
+    }
+
+    function getTouch(event: TouchEvent) {
+      for (const touch of event.changedTouches) {
+        if (touch.identifier === identifier) return touch;
+      }
+      return null;
+    }
+
+    const onTouchMove = (event: TouchEvent) => {
+      const touch = getTouch(event);
+      if (touch) {
+        this.onResize(touch.clientX + offset);
+      }
+    };
+
+    const onTouchEnd = (event: TouchEvent) => {
+      const touch = getTouch(event);
+      if (!touch) return;
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+      this.onResizeEnd(touch.clientX + offset);
+    };
+
+    window.addEventListener('touchmove', onTouchMove);
+    window.addEventListener('touchend', onTouchEnd);
+  }
+
+  private onResize(x: number) {
     const { onResize } = this.props;
     if (onResize) {
       const width = this.getWidthFromMouseEvent(x);
@@ -34,16 +96,15 @@ export default class HeaderCell extends React.Component<Props> {
         onResize(this.props.column, width);
       }
     }
-  };
+  }
 
-  onDragEnd = (x: number) => {
+  private onResizeEnd(x: number) {
     const width = this.getWidthFromMouseEvent(x);
     this.props.onResizeEnd(this.props.column, width);
-  };
+  }
 
-  getWidthFromMouseEvent(x: number): number {
-    const { left } = this.cell.current!.getBoundingClientRect();
-    return x - left;
+  private getWidthFromMouseEvent(x: number): number {
+    return x - this.cell.current!.getBoundingClientRect().left;
   }
 
   getCell() {
@@ -77,6 +138,7 @@ export default class HeaderCell extends React.Component<Props> {
     const { column, rowType, height } = this.props;
 
     const className = classNames('react-grid-HeaderCell', {
+      'rdg-header-cell-resizable': column.resizable,
       'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
 
@@ -87,15 +149,14 @@ export default class HeaderCell extends React.Component<Props> {
     };
 
     const cell = (
-      <div className={className} style={style} ref={this.cell}>
+      <div
+        className={className}
+        style={style}
+        ref={this.cell}
+        onMouseDown={column.resizable ? this.onMouseDown : undefined}
+        onTouchStart={column.resizable ? this.onTouchStart : undefined}
+      >
         {this.getCell()}
-        {column.resizable && (
-          <Draggable
-            className="react-grid-HeaderCell__resizeHandle"
-            onDrag={this.onDrag}
-            onDragEnd={this.onDragEnd}
-          />
-        )}
       </div>
     );
 

@@ -46,13 +46,14 @@
   transform: translateY(-50%);
 }
 
-.react-grid-HeaderCell__resizeHandle {
+.rdg-header-cell-resizable::after {
+  content: "";
   cursor: col-resize;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 6px;
+  width: 10px;
 }
 
 .react-grid-HeaderCell--frozen:last-of-type {
