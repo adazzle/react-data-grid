@@ -38,10 +38,10 @@ export interface Column<V = unknown, DV = unknown> {
   /** Header renderer for each header cell */
   headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<V, DV>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType;
+  filterRenderer?: React.ComponentType<FilterRendererProps<V, DV>>;
 
   // TODO: these props are only used by checkbox editor and we should remove them
-  onCellChange?(rowIdx: number, key: string, dependentValues: DV, event: React.ChangeEvent<HTMLInputElement>): void;
+  onCellChange?(rowIdx: number, key: string, dependentValues: DV, event: React.SyntheticEvent): void;
   getRowMetaData?(rowData: RowData, column: CalculatedColumn<V, DV>): unknown;
 }
 
@@ -143,12 +143,12 @@ export interface HeaderRowProps<V, DV> {
   rowType: HeaderRowType;
 }
 
-export interface CellRendererProps {
+export interface CellRendererProps<V = unknown, DV = unknown> {
   idx: number;
   rowIdx: number;
   height: number;
-  value: unknown;
-  column: CalculatedColumn;
+  value: V;
+  column: CalculatedColumn<V, DV>;
   rowData: RowData;
   cellMetaData: CellMetaData;
   isScrolling: boolean;
@@ -158,11 +158,11 @@ export interface CellRendererProps {
   lastFrozenColumnIndex?: number;
 }
 
-export interface RowRendererProps {
+export interface RowRendererProps<V = unknown, DV = unknown> {
   height: number;
-  columns: CalculatedColumn[];
+  columns: CalculatedColumn<V, DV>[];
   row: RowData;
-  cellRenderer: React.ComponentType<CellRendererProps>;
+  cellRenderer: React.ComponentType<CellRendererProps<V, DV>>;
   cellMetaData: CellMetaData;
   isSelected?: boolean;
   idx: number;
@@ -173,6 +173,13 @@ export interface RowRendererProps {
   isScrolling: boolean;
   scrollLeft: number;
   lastFrozenColumnIndex?: number;
+}
+
+export interface FilterRendererProps<V = unknown, DV = unknown> {
+  column: CalculatedColumn<V, DV>;
+  onChange?(event: AddFilterEvent): void;
+  /** TODO: remove */
+  getValidFilterValues?(): void;
 }
 
 export interface SubRowDetails {

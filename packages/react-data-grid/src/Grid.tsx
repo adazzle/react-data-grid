@@ -19,7 +19,7 @@ type SharedHeaderProps = Pick<HeaderProps,
 
 
 export interface GridProps extends Omit<ViewportProps, 'onScroll'>, SharedHeaderProps {
-  emptyRowsView?: React.ComponentType;
+  emptyRowsView?: React.ComponentType<{}>;
   scrollLeft?: number;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
