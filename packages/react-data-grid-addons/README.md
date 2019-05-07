@@ -1,17 +1,23 @@
-# react-data-grid-addons
+# react-data-grid-addons [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![codecov-badge]][codecov-url]
 
-> A set of addons for react-data-grid with things like editors, formatters, toolbars, filters..
- 
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid-addons/next.svg
+[npm-url]: https://www.npmjs.com/package/react-data-grid-addons
+[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid-addons/next.svg
+[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid-addons@next
+[codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid/next.svg
+[codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
+
+A set of addons for react-data-grid with things like editors, formatters, toolbars, filters..
 
 ## Install
 
 ```sh
-npm install --save react-data-grid-addons
+npm install react-data-grid-addons
 ```
 
-## Usage 
+## Usage
 
-```sh
+```jsx
 import { Editors, Formatters } from 'react-data-grid-addons';
 const { DropDownEditor } = Editors;
 const { DropDownFormatter } = Formatters;
@@ -19,11 +25,11 @@ const { DropDownFormatter } = Formatters;
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 const columns = [
   ...
-  { 
+  {
     key: 'titles',
     name: 'Titles',
     editor: <DropDownEditor options={titles} />,
-    formatter: DropDownFormatter 
+    formatter: DropDownFormatter
   },
   ...
 ];
