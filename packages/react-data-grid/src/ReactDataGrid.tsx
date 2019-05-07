@@ -74,7 +74,7 @@ type SharedInteractionMasksMetaData = Pick<InteractionMasksMetaData,
 | 'onCheckCellIsEditable'
 >;
 
-export interface ReactDataGridProps extends SharedGridProps, SharedCellMetaData, SharedInteractionMasksMetaData {
+interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMasksMetaData {
   /** An array of objects representing each column on the grid. Can also be an ImmutableJS object */
   columns: ColumnList;
   /** The minimum width of the grid in pixels */
@@ -84,7 +84,7 @@ export interface ReactDataGridProps extends SharedGridProps, SharedCellMetaData,
   /** The height of the header filter row in pixels */
   headerFiltersHeight: number;
   /** Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead*/
-  enableRowSelect?: boolean | string;
+  enableRowSelect: boolean | string;
   /** Component used to render toolbar above the grid */
   toolbar?: React.ReactElement;
   cellRangeSelection?: {
@@ -136,7 +136,7 @@ export interface ReactDataGridProps extends SharedGridProps, SharedCellMetaData,
   onColumnResize?(idx: number, width: number): void;
 }
 
-type DefaultProps = Pick<ReactDataGridProps,
+type DefaultProps = Pick<Props,
 'enableCellSelect'
 | 'rowHeight'
 | 'headerFiltersHeight'
@@ -176,7 +176,7 @@ function isRowSelected(keys: unknown, indexes: unknown, isSelectedKey: unknown, 
  *   rowsCount={3} />
  * ```
 */
-export default class ReactDataGrid extends React.Component<ReactDataGridProps, State> {
+export default class ReactDataGrid extends React.Component<Props, State> {
   static displayName = 'ReactDataGrid';
 
   static defaultProps: DefaultProps = {
@@ -201,7 +201,7 @@ export default class ReactDataGrid extends React.Component<ReactDataGridProps, S
   private _cachedColumns?: ColumnList;
   private _cachedComputedColumns?: ColumnList;
 
-  constructor(props: ReactDataGridProps) {
+  constructor(props: Props) {
     super(props);
     const initialState: State = {
       columnMetrics: this.createColumnMetrics(),
@@ -230,7 +230,7 @@ export default class ReactDataGrid extends React.Component<ReactDataGridProps, S
     window.removeEventListener('mouseup', this.handleWindowMouseUp);
   }
 
-  componentWillReceiveProps(nextProps: ReactDataGridProps) {
+  componentWillReceiveProps(nextProps: Props) {
     if (nextProps.columns) {
       if (!sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
         || nextProps.minWidth !== this.props.minWidth) {
@@ -712,3 +712,5 @@ export default class ReactDataGrid extends React.Component<ReactDataGridProps, S
     );
   }
 }
+
+export type ReactDataGridProps = JSX.LibraryManagedAttributes<typeof ReactDataGrid, Props>;

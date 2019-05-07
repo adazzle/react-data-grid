@@ -63,8 +63,6 @@ To run tests in release and dev mode you just need to run:
 `npm test` for release
 `npm dev-test` for debug
 
-When testing react components we encourage the use of [enzyme](https://github.com/airbnb/enzyme) as it presents a clean and descriptive interface for component testing.
-
 We want to keep our test coverage high, so when contributing you will need to test the changes you’re making and all the tests need to run successfully.
 
 Any file inside a `__tests__` subfolder in the packages folder that looks like `*.spec.js` will be picked up an executed by the test runner.

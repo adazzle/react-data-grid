@@ -1,4 +1,5 @@
 /.eslintcache
+/coverage
 /packages/*/dist
 /packages/*/lib
 /packages/*/umd
