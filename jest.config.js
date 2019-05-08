@@ -17,7 +17,7 @@ module.exports = {
     'packages/*/src/**/*.{js,jsx,ts,tsx}'
   ],
   coverageReporters: [
-    'json', 'lcov', 'text', 'clover', 'cobertura'
+    'cobertura'
   ],
   restoreMocks: true,
   moduleNameMapper: {
