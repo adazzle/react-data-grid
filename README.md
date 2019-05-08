@@ -1,11 +1,10 @@
-# React Data Grid [![npm-badge]][npm-url] [![azure-badge]][azure-url] [![codecov-badge]][codecov-url]
+# React Data Grid [![npm-badge]][npm-url] [![azure-badge]][azure-url] [![coverage-badge]][azure-url]
 
 [npm-badge]: https://img.shields.io/npm/v/react-data-grid/next.svg
 [npm-url]: https://www.npmjs.com/package/react-data-grid
-[azure-badge]: https://dev.azure.com/nstepi181/react-data-grid/_apis/build/status/adazzle.react-data-grid?branchName=next
+[azure-badge]: https://img.shields.io/azure-devops/build/nstepi181/e5b746e6-be62-4d36-896f-1e636f889cdc/1/next.svg?logo=pipelines&style=flat-square
+[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/next.svg?style=flat-square
 [azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=next
-[codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid/next.svg
-[codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
 
 Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like
 
