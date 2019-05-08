@@ -1,9 +1,9 @@
-# React Data Grid [![npm-badge]][npm-url] [![appveyor-badge]][appveyor-url] [![codecov-badge]][codecov-url]
+# React Data Grid [![npm-badge]][npm-url] [![azure-badge]][azure-url] [![codecov-badge]][codecov-url]
 
 [npm-badge]: https://img.shields.io/npm/v/react-data-grid/next.svg
 [npm-url]: https://www.npmjs.com/package/react-data-grid
-[appveyor-badge]: https://img.shields.io/appveyor/ci/adazzle/react-data-grid.svg
-[appveyor-url]: https://ci.appveyor.com/project/adazzle/react-data-grid
+[azure-badge]: https://dev.azure.com/nstepi181/nstepi181/_apis/build/status/adazzle.react-data-grid?branchName=next
+[azure-url]: https://dev.azure.com/nstepi181/nstepi181/_build/latest?definitionId=1&branchName=next
 [codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid/next.svg
 [codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
 
