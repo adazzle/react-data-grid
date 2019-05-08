@@ -1,0 +1,20 @@
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+- next
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.x'
+  displayName: 'Install Node.js'
+
+- script: npm install
+- script: npm run eslint
+- script: npm run build
+- script: npm test
+- script: npx codecov
