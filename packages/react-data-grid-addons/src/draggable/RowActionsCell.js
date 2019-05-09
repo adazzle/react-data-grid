@@ -1,11 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragSource } from 'react-dnd';
-import { editors } from 'react-data-grid';
-
-const { CheckboxEditor } = editors;
+import { CheckboxEditor } from 'react-data-grid';
 
 class RowActionsCell extends React.Component {
+  static propTypes = {
+    rowIdx: PropTypes.number.isRequired,
+    connectDragSource: PropTypes.func.isRequired,
+    connectDragPreview: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired,
+    isRowHovered: PropTypes.bool,
+    column: PropTypes.object,
+    dependentValues: PropTypes.object,
+    value: PropTypes.bool,
+    rowSelection: PropTypes.object.isRequired
+  };
+
+  static defaultProps = {
+    rowIdx: 0
+  };
+
   renderRowIndex() {
     return (
       <div className="rdg-row-index">
@@ -26,28 +40,17 @@ class RowActionsCell extends React.Component {
         {!isSelected ? this.renderRowIndex() : null}
         {rowSelection != null && (
           <div className={editorClass}>
-            <CheckboxEditor column={this.props.column} rowIdx={this.props.rowIdx} dependentValues={this.props.dependentValues} value={this.props.value} />
+            <CheckboxEditor
+              column={this.props.column}
+              rowIdx={this.props.rowIdx}
+              dependentValues={this.props.dependentValues}
+              value={this.props.value}
+            />
           </div>
         )}
       </div>);
   }
 }
-
-RowActionsCell.propTypes = {
-  rowIdx: PropTypes.number.isRequired,
-  connectDragSource: PropTypes.func.isRequired,
-  connectDragPreview: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired,
-  isRowHovered: PropTypes.bool,
-  column: PropTypes.object,
-  dependentValues: PropTypes.object,
-  value: PropTypes.bool,
-  rowSelection: PropTypes.object.isRequired
-};
-
-RowActionsCell.defaultProps = {
-  rowIdx: 0
-};
 
 function collect(connect, monitor) {
   return {

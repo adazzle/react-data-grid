@@ -1,8 +1,11 @@
-node_modules
+/.eslintcache
+/coverage
 /packages/*/dist
+/packages/*/lib
+/packages/*/umd
+
+node_modules
 npm-debug.log
 lerna-debug.log
 **.orig
-.vscode
 package-lock.json
-/.eslintcache

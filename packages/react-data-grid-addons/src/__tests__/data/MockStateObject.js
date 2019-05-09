@@ -35,11 +35,6 @@ export default function(stateValues, events) {
     },
     selectedRows: [],
     canFilter: false,
-    expandedRows: [],
-    columnFilters: {},
-    sortDirection: null,
-    sortColumn: null,
-    scrollOffset: 0,
     lastRowIdxUiSelected: -1,
     ...stateValues
   };

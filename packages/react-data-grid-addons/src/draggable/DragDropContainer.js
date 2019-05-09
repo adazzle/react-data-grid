@@ -9,6 +9,11 @@ import RowDragLayer from './RowDragLayer';
 const { isColumnsImmutable } = _utils;
 
 class DraggableContainer extends Component {
+  static propTypes = {
+    children: PropTypes.element.isRequired,
+    getDragPreviewRow: PropTypes.func
+  };
+
   getRows(rowsCount, rowGetter) {
     const rows = [];
     for (let j = 0; j < rowsCount; j++) {
@@ -43,10 +48,5 @@ class DraggableContainer extends Component {
     );
   }
 }
-
-DraggableContainer.propTypes = {
-  children: PropTypes.element.isRequired,
-  getDragPreviewRow: PropTypes.func
-};
 
 export default html5DragDropContext(DraggableContainer);

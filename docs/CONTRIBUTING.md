@@ -63,8 +63,6 @@ To run tests in release and dev mode you just need to run:
 `npm test` for release
 `npm dev-test` for debug
 
-When testing react components we encourage the use of [enzyme](https://github.com/airbnb/enzyme) as it presents a clean and descriptive interface for component testing.
-
 We want to keep our test coverage high, so when contributing you will need to test the changes you’re making and all the tests need to run successfully.
 
 Any file inside a `__tests__` subfolder in the packages folder that looks like `*.spec.js` will be picked up an executed by the test runner.
@@ -105,12 +103,15 @@ For maintainers only.
 - Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
 - Install dependencies, bootstrap lerna:
   - `npm i`
-- Build the release bundles:
+- Build the release files:
   - `npm run build`
+  - `npm run build-umd`
 - Update the docs:
   - `npm run docs`
 - Update the changelog, if necessary.
 - Commit your changes, if any.
+- Login to the `adazzle` npm account if you haven't already done so:
+  - `npm login`
 - Publish the update with lerna:
   - On the `master` branch: `npx lerna publish`
   - On the `next` branch: `npx lerna publish --dist-tag next`

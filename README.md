@@ -1,11 +1,10 @@
-# React Data Grid
+# React Data Grid [![npm-badge]][npm-url] [![azure-badge]][azure-url] [![coverage-badge]][azure-url]
 
-[logo]: https://user-images.githubusercontent.com/1432798/48616964-077b9400-e98d-11e8-9b56-f70e0722b83d.png "ReactDataGrid"
-
-[![Build status](https://ci.appveyor.com/api/projects/status/smciktvlkvp6r8w7/branch/master?svg=true)](https://ci.appveyor.com/project/adazzle/react-data-grid/branch/master)
-[![npm version](https://badge.fury.io/js/react-data-grid.svg)](http://badge.fury.io/js/react-data-grid)
-![npm dependencies](https://david-dm.org/adazzle/react-data-grid.svg)
-[![CDNJS](https://img.shields.io/cdnjs/v/react-data-grid.svg)](https://cdnjs.com/libraries/react-data-grid)
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid/next.svg
+[npm-url]: https://www.npmjs.com/package/react-data-grid
+[azure-badge]: https://img.shields.io/azure-devops/build/nstepi181/e5b746e6-be62-4d36-896f-1e636f889cdc/1/next.svg?logo=pipelines&style=flat-square
+[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/next.svg?style=flat-square
+[azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=next
 
 Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like
 
@@ -26,7 +25,7 @@ npm install react-data-grid
 ```
 
 You can then import react-data-grid in your application as follows:
-```typescript
+```js
 import ReactDataGrid from 'react-data-grid';
 ```
 
@@ -47,11 +46,11 @@ Themes
 ------
 We use [Bootstrap](https://github.com/twbs/bootstrap). If you want your Grid to get the "default" styling like the picture above, you'll need to include it separately.
 
-```
+```sh
 npm install bootstrap
 ```
 and then import the css from the dist folder when bootstrapping your application
-```
+```js
 import 'bootstrap/dist/css/bootstrap.css';
 ```
 

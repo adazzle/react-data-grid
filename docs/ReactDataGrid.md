@@ -240,13 +240,6 @@ Function called whenever a cell is selected
 **type:** func  
 
 
-### `onCellsDragged`
-
-Deprecated: Function called when grid is updated via a cell drag. Use onGridRowsUpdated instead
-
-**type:** custom  
-
-
 ### `onCheckCellIsEditable`
 
 called before cell is set active, returns a boolean to determine whether cell is editable
@@ -273,13 +266,6 @@ Called when a column is resized
 Called whenever a sub row is deleted from the grid
 
 **type:** func  
-
-
-### `onDragHandleDoubleClick`
-
-Deprecated: Function called when grid is updated via double clicking the cell drag handle. Use onGridRowsUpdated instead
-
-**type:** custom  
 
 
 ### `onFilter`
@@ -348,13 +334,6 @@ Function called whenever row is selected
 **type:** func  
 
 
-### `onRowUpdated`
-
-Deprecated: Function called when grid is updated via a cell commit. Use onGridRowsUpdated instead
-
-**type:** custom  
-
-
 ### `onScroll`
 
 Called when the grid is scrolled
@@ -403,15 +382,6 @@ The primary key property of each row
 **type:** string  
 
  **defaultValue:** `'id'`
-
-
-### `rowScrollTimeout`
-
-Deprecated
-
-**type:** custom  
-
- **defaultValue:** `0`
 
 
 ### `rowSelection`

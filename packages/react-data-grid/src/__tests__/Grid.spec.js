@@ -47,14 +47,12 @@ describe('Empty Grid Tests', () => {
 
 describe('Rendering Grid component', () => {
   const renderComponent = (props) => {
-    const wrapper = shallow(<Grid {...props} />);
-    return wrapper;
+    return shallow(<Grid {...props} />);
   };
 
   const allProperties = () => {
     return {
       rowGetter: jest.fn(),
-      columns: helpers.columns,
       columnMetrics: {
         columns: helpers.columns,
         width: 1200
@@ -65,7 +63,6 @@ describe('Rendering Grid component', () => {
       rowHeight: 50,
       rowRenderer: jest.fn(),
       emptyRowsView: jest.fn(),
-      expandedRows: jest.fn(),
       selectedRows: jest.fn(),
       rowSelection: { isSelectedKey: 'selectedKey' },
       rowsCount: 14,
@@ -90,8 +87,7 @@ describe('Rendering Grid component', () => {
         onCommitCancel: jest.fn(),
         copied: null,
         handleDragEnterRow: jest.fn(),
-        handleTerminateDrag: jest.fn(),
-        onColumnEvent: jest.fn()
+        handleTerminateDrag: jest.fn()
       },
       rowKey: 'rowKeyValue',
       contextMenu: <ContextMenu />,
@@ -116,7 +112,6 @@ describe('Rendering Grid component', () => {
     const wrapper = renderComponent(allProperties());
     const draggableDiv = wrapper.find('div').at(0);
     expect(draggableDiv.props().rowGetter).toBeUndefined();
-    expect(draggableDiv.props().columns).toBeUndefined();
     expect(draggableDiv.props().columnMetrics).toBeUndefined();
     expect(draggableDiv.props().minHeight).toBeUndefined();
     expect(draggableDiv.props().totalWidth).toBeUndefined();
@@ -124,7 +119,6 @@ describe('Rendering Grid component', () => {
     expect(draggableDiv.props().rowHeight).toBeUndefined();
     expect(draggableDiv.props().rowRenderer).toBeUndefined();
     expect(draggableDiv.props().emptyRowsView).toBeUndefined();
-    expect(draggableDiv.props().expandedRows).toBeUndefined();
     expect(draggableDiv.props().selectedRows).toBeUndefined();
     expect(draggableDiv.props().rowSelection).toBeUndefined();
     expect(draggableDiv.props().rowsCount).toBeUndefined();
