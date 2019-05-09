@@ -1,11 +1,11 @@
-# react-data-grid [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![codecov-badge]][codecov-url]
+# react-data-grid [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![coverage-badge]][azure-url]
 
 [npm-badge]: https://img.shields.io/npm/v/react-data-grid/next.svg
 [npm-url]: https://www.npmjs.com/package/react-data-grid
 [bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid/next.svg
 [bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid@next
-[codecov-badge]: https://img.shields.io/codecov/c/github/adazzle/react-data-grid/next.svg
-[codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
+[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/next.svg?style=flat-square
+[azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=next
 
 ## Install
 

@@ -108,9 +108,11 @@ export interface Dimension {
 
 export type RowGetter = (rowIdx: number) => RowData;
 
+type EditorValue = { [key: string]: unknown } | string | null;
+
 export interface Editor {
   getInputNode(): Element | Text | undefined | null;
-  getValue(): { [key: string]: unknown };
+  getValue(): EditorValue;
   hasResults?(): boolean;
   isSelectOpen?(): boolean;
   validate?(value: unknown): boolean;
@@ -182,29 +184,29 @@ export interface FilterRendererProps<V = unknown, DV = unknown> {
   getValidFilterValues?(): void;
 }
 
-export interface SubRowDetails {
+export interface SubRowDetails<C = unknown> {
   canExpand: boolean;
   field: string;
   expanded: boolean;
-  children: unknown[];
+  children: C[];
   treeDepth: number;
   siblingIndex: number;
   numberSiblings: number;
   group?: boolean;
 }
 
-export interface SubRowOptions {
+export interface SubRowOptions<C = unknown> {
   rowIdx: number;
   idx: number;
   rowData: RowData;
-  expandArgs?: ExpandableOptions;
+  expandArgs?: ExpandableOptions<C>;
 }
 
-export interface ExpandableOptions {
+export interface ExpandableOptions<C = unknown> {
   canExpand: boolean;
   field: string;
   expanded: boolean;
-  children: unknown;
+  children: C[];
   treeDepth: number;
   subRowDetails: SubRowDetails;
 }
@@ -248,7 +250,7 @@ export interface InteractionMasksMetaData {
     cellKey: string,
     toRow1: number,
     toRow2: number,
-    data: { [key: string]: unknown },
+    data: EditorValue,
     updateAction: UpdateActions,
     fromRow?: number
   ): void;
@@ -287,7 +289,7 @@ export interface AddFilterEvent {
 export interface CommitEvent {
   cellKey: string;
   rowIdx: number;
-  updated: { [key: string]: unknown };
+  updated: EditorValue;
   key?: string;
 }
 
@@ -305,7 +307,7 @@ export interface GridRowsUpdatedEvent {
   fromRowId: unknown;
   toRowId: unknown;
   rowIds: unknown[];
-  updated: { [key: string]: unknown };
+  updated: EditorValue;
   action: UpdateActions;
   fromRowData: RowData;
 }
