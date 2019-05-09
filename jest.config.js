@@ -16,6 +16,9 @@ module.exports = {
   collectCoverageFrom: [
     'packages/*/src/**/*.{js,jsx,ts,tsx}'
   ],
+  coverageReporters: [
+    'cobertura'
+  ],
   restoreMocks: true,
   moduleNameMapper: {
     '^react-data-grid$': '<rootDir>/packages/react-data-grid/src/',
