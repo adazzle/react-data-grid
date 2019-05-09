@@ -5,6 +5,10 @@ import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
 
 class DraggableContainer extends React.Component {
+  static propTypes = {
+    children: PropTypes.element.isRequired
+  };
+
   render() {
     return React.cloneElement(
       React.Children.only(this.props.children), {
@@ -14,9 +18,5 @@ class DraggableContainer extends React.Component {
     );
   }
 }
-
-DraggableContainer.propTypes = {
-  children: PropTypes.element.isRequired
-};
 
 export default html5DragDropContext(DraggableContainer);

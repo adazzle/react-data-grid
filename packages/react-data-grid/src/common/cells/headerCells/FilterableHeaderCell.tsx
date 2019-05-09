@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
-import { Column } from '../../types';
+import { FilterRendererProps } from '../../types';
 
-interface Props {
-  column: Column;
-  onChange(change: { filterTerm: string; column: Column }): void;
-  /** TODO: remove */
-  getValidFilterValues?(): void;
-}
-
-export default function FilterableHeaderCell({ column, onChange }: Props) {
+export default function FilterableHeaderCell({ column, onChange }: FilterRendererProps) {
   const [filterTerm, setFilterTerm] = useState('');
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
     setFilterTerm(value);
-    onChange({ filterTerm: value, column });
+    if (onChange) {
+      onChange({ filterTerm: value, column });
+    }
   }
 
   if (column.filterable === false) {

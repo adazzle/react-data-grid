@@ -4,7 +4,7 @@ import { mount, MountRendererProps } from 'enzyme';
 
 import EditorContainer, { Props } from '../EditorContainer';
 import SimpleTextEditor from '../SimpleTextEditor';
-import { Column } from '../../types';
+import { CalculatedColumn, EditorProps } from '../../types';
 
 function DefaultEditor() {
   return (
@@ -27,7 +27,8 @@ function DefaultEditor() {
   );
 }
 
-const fakeColumn: Column = {
+const fakeColumn: CalculatedColumn = {
+  idx: 0,
   name: 'col1',
   key: 'col1',
   width: 100,
@@ -88,7 +89,7 @@ describe('Editor Container Tests', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<Props> {
+    class TestEditor extends React.Component<EditorProps> {
       getValue() {
         return undefined;
       }

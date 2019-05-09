@@ -1,23 +1,22 @@
-import React, { MouseEvent, KeyboardEvent } from 'react';
+import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { Column, Editor, EditorProps, RowData } from '../types';
+import { CalculatedColumn, Editor, EditorProps, RowData, CommitEvent } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
-import { Z_INDEXES } from '../enums';
 import ClickOutside from './ClickOutside';
 
 export interface Props {
   rowIdx: number;
   rowData: RowData;
   value: unknown;
-  column: Column;
+  column: CalculatedColumn;
   width: number;
   height: number;
   left: number;
   top: number;
   onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(args: unknown): void;
+  onCommit(e: CommitEvent): void;
   onCommitCancel(): void;
   firstEditorKeyPress: string | null;
   scrollLeft: number;
@@ -74,11 +73,9 @@ export default class EditorContainer extends React.Component<Props, State> {
       case 'Escape':
         this.onPressEscape(e);
         break;
-      case 'ArrowDown':
-        this.onPressArrowDown(e);
-        break;
       case 'ArrowUp':
-        this.onPressArrowUp(e);
+      case 'ArrowDown':
+        this.onPressArrowUpOrDown(e);
         break;
       case 'ArrowLeft':
         this.onPressArrowLeft(e);
@@ -121,7 +118,7 @@ export default class EditorContainer extends React.Component<Props, State> {
     return (
       <SimpleTextEditor
         ref={this.editor as React.RefObject<SimpleTextEditor>}
-        column={this.props.column}
+        column={this.props.column as CalculatedColumn<string>}
         value={this.getInitialValue() as string}
         onBlur={this.commit}
       />
@@ -145,16 +142,7 @@ export default class EditorContainer extends React.Component<Props, State> {
     }
   };
 
-  onPressArrowDown = (e: KeyboardEvent) => {
-    if (this.editorHasResults()) {
-      // dont want to propogate as that then moves us round the grid
-      e.stopPropagation();
-    } else {
-      this.commit(e);
-    }
-  };
-
-  onPressArrowUp = (e: KeyboardEvent) => {
+  onPressArrowUpOrDown = (e: KeyboardEvent) => {
     if (this.editorHasResults()) {
       // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
@@ -219,12 +207,6 @@ export default class EditorContainer extends React.Component<Props, State> {
     return key || value;
   }
 
-  getContainerClass() {
-    return classNames('rdg-editor-container', {
-      'has-error': this.state.isInvalid === true
-    });
-  }
-
   commit = (args: { key?: string } = {}) => {
     const { onCommit } = this.props;
     const updated = this.getEditor().getValue();
@@ -263,7 +245,7 @@ export default class EditorContainer extends React.Component<Props, State> {
       && inputNode.selectionStart === inputNode.value.length;
   }
 
-  handleRightClick = (e: MouseEvent<HTMLDivElement>) => {
+  handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
 
@@ -274,12 +256,15 @@ export default class EditorContainer extends React.Component<Props, State> {
 
   render() {
     const { width, height, left, top } = this.props;
-    const style: React.CSSProperties = { position: 'absolute', height, width, left, top, zIndex: Z_INDEXES.EDITOR_CONTAINER };
+    const className = classNames('rdg-editor-container', {
+      'has-error': this.state.isInvalid === true
+    });
+
     return (
       <ClickOutside onClickOutside={this.commit}>
         <div
-          style={style}
-          className={this.getContainerClass()}
+          className={className}
+          style={{ height, width, left, top }}
           onKeyDown={this.onKeyDown}
           onContextMenu={this.handleRightClick}
         >

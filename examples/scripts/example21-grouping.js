@@ -151,8 +151,7 @@ class Example extends React.Component {
   }
 
   getRows = () => {
-    const rows = Selectors.getRows(this.state);
-    return rows;
+    return Selectors.getRows(this.state);
   };
 
   getRowAt = (index) => {

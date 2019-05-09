@@ -20,9 +20,7 @@ export default class GridRunner {
     const Example = this.example;
     this.handleCellDragSpy = jest.fn();
     const options = intoBody ? { attachTo: document.body } : { };
-    const gridWrapper = mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
-
-    return gridWrapper;
+    return mount(<Example handleCellDrag={this.handleCellDragSpy} />, options);
   }
 
   dispose() {
@@ -95,7 +93,7 @@ export default class GridRunner {
   }
 
   getDisplayInfo() {
-    const { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx } = this.grid.reactDataGrid.base.viewport.state;
+    const { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx } = this.grid.reactDataGrid.base.current.viewport.current.state;
 
     return { rowOverscanStartIdx, colOverscanStartIdx, rowOverscanEndIdx, colOverscanEndIdx };
   }

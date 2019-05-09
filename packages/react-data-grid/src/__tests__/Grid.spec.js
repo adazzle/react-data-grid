@@ -47,14 +47,12 @@ describe('Empty Grid Tests', () => {
 
 describe('Rendering Grid component', () => {
   const renderComponent = (props) => {
-    const wrapper = shallow(<Grid {...props} />);
-    return wrapper;
+    return shallow(<Grid {...props} />);
   };
 
   const allProperties = () => {
     return {
       rowGetter: jest.fn(),
-      columns: helpers.columns,
       columnMetrics: {
         columns: helpers.columns,
         width: 1200
@@ -114,7 +112,6 @@ describe('Rendering Grid component', () => {
     const wrapper = renderComponent(allProperties());
     const draggableDiv = wrapper.find('div').at(0);
     expect(draggableDiv.props().rowGetter).toBeUndefined();
-    expect(draggableDiv.props().columns).toBeUndefined();
     expect(draggableDiv.props().columnMetrics).toBeUndefined();
     expect(draggableDiv.props().minHeight).toBeUndefined();
     expect(draggableDiv.props().totalWidth).toBeUndefined();

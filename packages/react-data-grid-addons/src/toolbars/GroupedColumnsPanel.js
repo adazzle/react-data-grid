@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { _constants } from 'react-data-grid';
+import { DragItemTypes } from 'react-data-grid';
 import { DropTarget } from 'react-dnd';
 
 import GroupedColumnButton from './GroupedColumnButton';
 
-const propTypes = {
-  isOver: PropTypes.bool.isRequired,
-  connectDropTarget: PropTypes.func,
-  canDrop: PropTypes.bool.isRequired,
-  groupBy: PropTypes.array,
-  noColumnsSelectedMessage: PropTypes.string,
-  panelDescription: PropTypes.string,
-  onColumnGroupDeleted: PropTypes.func
-};
-
-const defaultProps = {
-  noColumnsSelectedMessage: 'Drag a column header here to group by that column',
-  panelDescription: 'Drag a column header here to group by that column'
-};
-
 class GroupedColumnsPanel extends Component {
+  static propTypes = {
+    isOver: PropTypes.bool.isRequired,
+    connectDropTarget: PropTypes.func,
+    canDrop: PropTypes.bool.isRequired,
+    groupBy: PropTypes.array,
+    noColumnsSelectedMessage: PropTypes.string,
+    panelDescription: PropTypes.string,
+    onColumnGroupDeleted: PropTypes.func
+  };
+
+  static defaultProps = {
+    noColumnsSelectedMessage: 'Drag a column header here to group by that column',
+    panelDescription: 'Drag a column header here to group by that column'
+  };
+
   getPanelInstructionMessage() {
     const { groupBy } = this.props;
     return groupBy && groupBy.length > 0 ? this.props.panelDescription : this.props.noColumnsSelectedMessage;
@@ -65,9 +65,6 @@ class GroupedColumnsPanel extends Component {
   }
 }
 
-GroupedColumnsPanel.defaultProps = defaultProps;
-GroupedColumnsPanel.propTypes = propTypes;
-
 const columnTarget = {
   drop(props, monitor) {
     // Obtain the dragged item
@@ -87,4 +84,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default DropTarget(_constants.DragItemTypes.Column, columnTarget, collect)(GroupedColumnsPanel);
+export default DropTarget(DragItemTypes.Column, columnTarget, collect)(GroupedColumnsPanel);

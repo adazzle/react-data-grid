@@ -1,10 +1,11 @@
-const argv = require('minimist')(process.argv.slice(2));
+'use strict';
+
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const WebpackDevServer = require('webpack-dev-server');
 const open = require('open');
 
-const RELEASE = argv.release;
+const RELEASE = process.argv.slice(2).includes('--release');
 
 const config = {
   mode: RELEASE ? 'production' : 'development',

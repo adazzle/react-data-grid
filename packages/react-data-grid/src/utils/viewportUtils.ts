@@ -1,13 +1,13 @@
-import { getSize, getColumn, isFrozen } from '../ColumnUtils';
+import { isFrozen } from '../ColumnUtils';
 import { SCROLL_DIRECTION } from '../common/enums';
-import { Column, ColumnList, ColumnMetrics } from '../common/types';
+import { CalculatedColumn, ColumnMetrics } from '../common/types';
 
 export const OVERSCAN_ROWS = 2;
 
 const { min, max, ceil, round } = Math;
 
 export function getGridState(props: { columnMetrics: ColumnMetrics; rowsCount: number; minHeight: number; rowHeight: number; rowOffsetHeight: number }) {
-  const totalNumberColumns = getSize(props.columnMetrics.columns);
+  const totalNumberColumns = props.columnMetrics.columns.length;
   const canvasHeight = props.minHeight - props.rowOffsetHeight;
   const renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
   const rowOverscanEndIdx = min(props.rowsCount, renderedRowsCount * 2);
@@ -29,26 +29,26 @@ export function getGridState(props: { columnMetrics: ColumnMetrics; rowsCount: n
   };
 }
 
-export function findLastFrozenColumnIndex(columns: ColumnList): number {
-  return columns.findIndex((c?: Column) => isFrozen(c!));
+export function findLastFrozenColumnIndex(columns: CalculatedColumn[]): number {
+  return columns.findIndex(c => isFrozen(c));
 }
 
-function getTotalFrozenColumnWidth(columns: ColumnList): number {
+function getTotalFrozenColumnWidth(columns: CalculatedColumn[]): number {
   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
   if (lastFrozenColumnIndex === -1) {
     return 0;
   }
-  const lastFrozenColumn = getColumn(columns, lastFrozenColumnIndex);
+  const lastFrozenColumn = columns[lastFrozenColumnIndex];
   return lastFrozenColumn.left + lastFrozenColumn.width;
 }
 
-function getColumnCountForWidth(columns: ColumnList, initialWidth: number, colVisibleStartIdx: number): number {
+function getColumnCountForWidth(columns: CalculatedColumn[], initialWidth: number, colVisibleStartIdx: number): number {
   let width = initialWidth;
   let count = 0;
 
-  columns.forEach((column?: Column, idx?: number) => {
+  columns.forEach((column, idx) => {
     if (idx! >= colVisibleStartIdx) {
-      width -= column!.width;
+      width -= column.width;
       if (width >= 0) {
         count++;
       }
@@ -58,14 +58,14 @@ function getColumnCountForWidth(columns: ColumnList, initialWidth: number, colVi
   return count;
 }
 
-export function getNonFrozenVisibleColStartIdx(columns: ColumnList, scrollLeft: number): number {
+export function getNonFrozenVisibleColStartIdx(columns: CalculatedColumn[], scrollLeft: number): number {
   let remainingScroll = scrollLeft;
   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
-  const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1) as ColumnList;
+  const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
   let columnIndex = lastFrozenColumnIndex;
-  while (remainingScroll >= 0 && columnIndex < getSize(nonFrozenColumns)) {
+  while (remainingScroll >= 0 && columnIndex < nonFrozenColumns.length) {
     columnIndex++;
-    const column = getColumn(columns, columnIndex);
+    const column = columns[columnIndex];
     remainingScroll -= column ? column.width : 0;
   }
   return max(columnIndex, 0);
@@ -73,13 +73,13 @@ export function getNonFrozenVisibleColStartIdx(columns: ColumnList, scrollLeft: 
 
 export function getNonFrozenRenderedColumnCount(columnMetrics: ColumnMetrics, viewportDomWidth: number, scrollLeft: number): number {
   const { columns, totalColumnWidth } = columnMetrics;
-  if (getSize(columns) === 0) {
+  if (columns.length === 0) {
     return 0;
   }
   const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns);
   const viewportWidth = viewportDomWidth > 0 ? viewportDomWidth : totalColumnWidth;
-  const firstColumn = getColumn(columns, colVisibleStartIdx);
+  const firstColumn = columns[colVisibleStartIdx];
   // calculate the portion width of first column hidden behind frozen columns
   const scrolledFrozenWidth = totalFrozenColumnWidth + scrollLeft;
   const firstColumnHiddenWidth = scrolledFrozenWidth > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;

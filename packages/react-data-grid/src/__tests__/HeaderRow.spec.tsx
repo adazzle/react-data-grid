@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import helpers from '../helpers/test/GridPropHelpers';
-import HeaderRow, { Props } from '../HeaderRow';
+import HeaderRow, { HeaderRowProps } from '../HeaderRow';
 import HeaderCell from '../HeaderCell';
 import SortableHeaderCell from '../common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from '../common/cells/headerCells/FilterableHeaderCell';
@@ -22,8 +22,8 @@ describe('Header Row Unit Tests', () => {
     draggableHeaderCell: () => <div />
   };
 
-  const setup = (testProps?: Partial<Props>) => {
-    const props: Props = { ...defaultProps, ...testProps };
+  const setup = (testProps?: Partial<HeaderRowProps>) => {
+    const props: HeaderRowProps = { ...defaultProps, ...testProps };
     const wrapper = shallow(<HeaderRow {...props} />);
     const headerCells = wrapper.find(HeaderCell);
     return { wrapper, headerCells, props };
@@ -123,12 +123,11 @@ describe('Header Row Unit Tests', () => {
   });
 
   describe('Rendering HeaderRow component', () => {
-    const renderComponent = (props: Props) => {
+    const renderComponent = (props: HeaderRowProps) => {
       return shallow(<HeaderRow {...props} />);
     };
 
-    const onScroll = jest.fn();
-    const requiredProps: Props = {
+    const requiredProps: HeaderRowProps = {
       height: 35,
       columns: helpers.columns,
       onSort: jest.fn(),
@@ -140,7 +139,7 @@ describe('Header Row Unit Tests', () => {
       draggableHeaderCell: () => <div />
     };
 
-    const allProperties: Props = {
+    const allProperties: HeaderRowProps = {
       height: 35,
       columns: helpers.columns,
       onSort: jest.fn(),
@@ -159,7 +158,6 @@ describe('Header Row Unit Tests', () => {
       filterable: true,
       onFilterChange() {},
       onHeaderDrop() {},
-      onScroll,
       draggableHeaderCell: () => <div />
     };
 
@@ -182,11 +180,6 @@ describe('Header Row Unit Tests', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
       expect(headerRowDiv.props().style).toBeUndefined();
-    });
-    it('passes onScroll property, if available from props', () => {
-      const wrapper = renderComponent(allProperties);
-      const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().onScroll).toBe(onScroll);
     });
   });
 });

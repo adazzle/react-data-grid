@@ -305,7 +305,7 @@ const rules = {
   'react/no-render-return-value': 0,
   'react/no-set-state': 0,
   'react/no-typos': 2,
-  'react/no-string-refs': 2,
+  'react/no-string-refs': [2, { noTemplateLiterals: true }],
   'react/no-this-in-sfc': 0,
   'react/no-unescaped-entities': 0,
   'react/no-unknown-property': 2,
@@ -323,6 +323,8 @@ const rules = {
   'react/self-closing-comp': 1,
   'react/sort-comp': 0,
   'react/sort-prop-types': 0,
+  'react/state-in-constructor': 0,
+  'react/static-property-placement': 1,
   'react/style-prop-object': 2,
   'react/void-dom-elements-no-children': 2,
 
@@ -353,6 +355,7 @@ const rules = {
   'react/jsx-fragments': 1,
   'react/jsx-pascal-case': 1,
   'react/jsx-props-no-multi-spaces': 1,
+  'react/jsx-props-no-spreading': 0,
   'react/jsx-sort-default-props': 0,
   'react/jsx-sort-props': 0,
   'react/jsx-tag-spacing': [1, {
@@ -377,6 +380,29 @@ const rules = {
   // https://github.com/facebook/react/tree/master/packages/eslint-plugin-react-hooks
   'react-hooks/rules-of-hooks': 2,
   'react-hooks/exhaustive-deps': 1,
+
+  // SonarJS rules
+  // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
+  'sonarjs/no-all-duplicated-branches': 2,
+  'sonarjs/no-element-overwrite': 2,
+  'sonarjs/no-extra-arguments': 0,
+  'sonarjs/no-identical-conditions': 2,
+  'sonarjs/no-identical-expressions': 2,
+  'sonarjs/no-one-iteration-loop': 2,
+  'sonarjs/no-use-of-empty-return-value': 2,
+  'sonarjs/cognitive-complexity': 0,
+  'sonarjs/max-switch-cases': 0,
+  'sonarjs/no-duplicate-string': 0,
+  'sonarjs/no-duplicated-branches': 1,
+  'sonarjs/no-identical-functions': 1,
+  'sonarjs/no-inverted-boolean-check': 1,
+  'sonarjs/no-redundant-boolean': 1,
+  'sonarjs/no-small-switch': 1,
+  'sonarjs/no-useless-catch': 1,
+  'sonarjs/prefer-immediate-return': 1,
+  'sonarjs/prefer-object-literal': 1,
+  'sonarjs/prefer-single-boolean-return': 1,
+  'sonarjs/prefer-while': 1,
 
   // @typescript-eslint/eslint-plugin rules
   // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#supported-rules
@@ -451,6 +477,7 @@ module.exports = {
   plugins: [
     'react',
     'react-hooks',
+    'sonarjs',
     '@typescript-eslint'
   ],
   rules,
@@ -469,10 +496,14 @@ module.exports = {
   }, {
     files: [
       'packages/*/src/**/__tests__/**/*',
-      'examples/**/__tests__/**/*'
+      'examples/**/__tests__/**/*',
+      'tests/**/*'
     ],
     env: {
       jest: true
+    },
+    rules: {
+      'sonarjs/no-identical-functions': 0
     }
   }, {
     files: [
