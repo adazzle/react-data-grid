@@ -1,0 +1,34 @@
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+- next
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.x'
+  displayName: 'Install Node.js'
+
+- script: npm install
+  displayName: 'npm install'
+
+- script: npm run eslint
+  displayName: 'ESLint'
+
+- script: npm run build
+  displayName: 'Build'
+
+- script: npm test
+  displayName: 'Test'
+  env: { 'CI': 'true' }
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish Code Coverage Results'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+    failIfCoverageEmpty: true
