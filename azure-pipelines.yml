@@ -13,16 +13,16 @@ steps:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
 
-- script: npm install
+- bash: npm install
   displayName: 'npm install'
 
-- script: npm run eslint
+- bash: npm run eslint
   displayName: 'ESLint'
 
-- script: npm run build
+- bash: npm run build
   displayName: 'Build'
 
-- script: npm test
+- bash: npm test
   displayName: 'Test'
   env: { 'CI': 'true' }
 
