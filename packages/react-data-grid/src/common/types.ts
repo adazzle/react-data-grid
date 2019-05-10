@@ -4,7 +4,7 @@ import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface Column<V = unknown, DV = unknown> {
+export interface Column<V = unknown, DV = undefined> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -45,7 +45,7 @@ export interface Column<V = unknown, DV = unknown> {
   getRowMetaData?(rowData: RowData, column: CalculatedColumn<V, DV>): unknown;
 }
 
-export interface CalculatedColumn<V = unknown, DV = unknown> extends Column<V, DV> {
+export interface CalculatedColumn<V = unknown, DV = undefined> extends Column<V, DV> {
   idx: number;
   width: number;
   left: number;
@@ -119,7 +119,7 @@ export interface Editor {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<V, DV = unknown> {
+export interface FormatterProps<V, DV = undefined> {
   rowIdx: number;
   value: V;
   column: CalculatedColumn;
@@ -128,7 +128,7 @@ export interface FormatterProps<V, DV = unknown> {
   dependentValues?: DV;
 }
 
-export interface EditorProps<V = unknown, DV = unknown> {
+export interface EditorProps<V = unknown, DV = undefined> {
   column: CalculatedColumn<V, DV>;
   value: V;
   rowMetaData?: unknown;
@@ -145,7 +145,7 @@ export interface HeaderRowProps<V, DV> {
   rowType: HeaderRowType;
 }
 
-export interface CellRendererProps<V = unknown, DV = unknown> {
+export interface CellRendererProps<V = unknown, DV = undefined> {
   idx: number;
   rowIdx: number;
   height: number;
@@ -160,7 +160,7 @@ export interface CellRendererProps<V = unknown, DV = unknown> {
   lastFrozenColumnIndex?: number;
 }
 
-export interface RowRendererProps<V = unknown, DV = unknown> {
+export interface RowRendererProps<V = unknown, DV = undefined> {
   height: number;
   columns: CalculatedColumn<V, DV>[];
   row: RowData;
@@ -177,7 +177,7 @@ export interface RowRendererProps<V = unknown, DV = unknown> {
   lastFrozenColumnIndex?: number;
 }
 
-export interface FilterRendererProps<V = unknown, DV = unknown> {
+export interface FilterRendererProps<V = unknown, DV = undefined> {
   column: CalculatedColumn<V, DV>;
   onChange?(event: AddFilterEvent): void;
   /** TODO: remove */
