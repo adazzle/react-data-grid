@@ -93,7 +93,7 @@ export default class EditorContainer extends React.Component<Props, State> {
   };
 
   createEditor() {
-    const editorProps: EditorProps & { ref: React.RefObject<Editor> } = {
+    const editorProps: EditorProps<unknown, unknown> & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
       column: this.props.column,
       value: this.getInitialValue(),

@@ -203,7 +203,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     let cellContent;
     const { value, column, height, tooltip, isScrolling, expandableOptions, cellMetaData, rowIdx } = this.props;
     const Formatter = column.formatter;
-    const cellProps: FormatterProps<unknown> = {
+    const cellProps: FormatterProps<unknown, unknown> = {
       rowIdx,
       value,
       isScrolling,

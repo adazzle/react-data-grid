@@ -4,7 +4,7 @@ import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface Column<V = unknown, DV = undefined> {
+export interface Column<V = unknown, DV = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -17,8 +17,6 @@ export interface Column<V = unknown, DV = undefined> {
   events?: {
     [key: string]: undefined | ((e: Event, info: ColumnEventInfo) => void);
   };
-  /** Formatter to be used to render the cell content */
-  formatter?: React.ReactElement | React.ComponentType<FormatterProps<V, DV>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((rowData: RowData) => boolean);
   /** Enable dragging of a column */
@@ -33,6 +31,8 @@ export interface Column<V = unknown, DV = undefined> {
   sortable?: boolean;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
+  /** Formatter to be used to render the cell content */
+  formatter?: React.ReactElement | React.ComponentType<FormatterProps<V, DV>>;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ReactElement | React.ComponentType<EditorProps<V, DV>>;
   /** Header renderer for each header cell */
@@ -42,10 +42,10 @@ export interface Column<V = unknown, DV = undefined> {
 
   // TODO: these props are only used by checkbox editor and we should remove them
   onCellChange?(rowIdx: number, key: string, dependentValues: DV, event: React.SyntheticEvent): void;
-  getRowMetaData?(rowData: RowData, column: CalculatedColumn<V, DV>): unknown;
+  getRowMetaData?(rowData: RowData, column: CalculatedColumn<V, DV>): DV;
 }
 
-export interface CalculatedColumn<V = unknown, DV = undefined> extends Column<V, DV> {
+export interface CalculatedColumn<V = unknown, DV = unknown> extends Column<V, DV> {
   idx: number;
   width: number;
   left: number;
@@ -123,13 +123,13 @@ export interface FormatterProps<V, DV = undefined> {
   column: CalculatedColumn;
   row: RowData;
   isScrolling: boolean;
-  dependentValues?: DV;
+  dependentValues: DV;
 }
 
 export interface EditorProps<V = unknown, DV = undefined> {
   column: CalculatedColumn<V, DV>;
   value: V;
-  rowMetaData?: unknown;
+  rowMetaData: DV;
   rowData: RowData;
   height: number;
   onCommit(args?: { key?: string }): void;
@@ -143,7 +143,7 @@ export interface HeaderRowProps<V, DV> {
   rowType: HeaderRowType;
 }
 
-export interface CellRendererProps<V = unknown, DV = undefined> {
+export interface CellRendererProps<V = unknown, DV = unknown> {
   idx: number;
   rowIdx: number;
   height: number;
@@ -158,7 +158,7 @@ export interface CellRendererProps<V = unknown, DV = undefined> {
   lastFrozenColumnIndex?: number;
 }
 
-export interface RowRendererProps<V = unknown, DV = undefined> {
+export interface RowRendererProps<V = unknown, DV = unknown> {
   height: number;
   columns: CalculatedColumn<V, DV>[];
   row: RowData;
@@ -175,7 +175,7 @@ export interface RowRendererProps<V = unknown, DV = undefined> {
   lastFrozenColumnIndex?: number;
 }
 
-export interface FilterRendererProps<V = unknown, DV = undefined> {
+export interface FilterRendererProps<V = unknown, DV = unknown> {
   column: CalculatedColumn<V, DV>;
   onChange?(event: AddFilterEvent): void;
   /** TODO: remove */
