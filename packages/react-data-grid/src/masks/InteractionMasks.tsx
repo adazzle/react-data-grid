@@ -588,7 +588,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
       }
       return null;
     });
-  }
+  };
 
   handleDragEnd = () => {
     const { draggedPosition } = this.state;
