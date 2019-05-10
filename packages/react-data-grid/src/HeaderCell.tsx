@@ -50,7 +50,7 @@ export default class HeaderCell extends React.Component<Props> {
     event.preventDefault();
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
-  }
+  };
 
   private onTouchStart = (event: React.TouchEvent) => {
     const touch = event.changedTouches[0];
@@ -86,7 +86,7 @@ export default class HeaderCell extends React.Component<Props> {
 
     window.addEventListener('touchmove', onTouchMove);
     window.addEventListener('touchend', onTouchEnd);
-  }
+  };
 
   private onResize(x: number) {
     const { onResize } = this.props;

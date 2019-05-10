@@ -108,11 +108,9 @@ export interface Dimension {
 
 export type RowGetter = (rowIdx: number) => RowData;
 
-type EditorValue = { [key: string]: unknown } | string | null;
-
-export interface Editor {
+export interface Editor<V = never> {
   getInputNode(): Element | Text | undefined | null;
-  getValue(): EditorValue;
+  getValue(): V;
   hasResults?(): boolean;
   isSelectOpen?(): boolean;
   validate?(value: unknown): boolean;
@@ -250,7 +248,7 @@ export interface InteractionMasksMetaData {
     cellKey: string,
     toRow1: number,
     toRow2: number,
-    data: EditorValue,
+    data: { [key: string]: unknown },
     updateAction: UpdateActions,
     fromRow?: number
   ): void;
@@ -286,10 +284,10 @@ export interface AddFilterEvent {
   column: Column;
 }
 
-export interface CommitEvent {
+export interface CommitEvent<V = never> {
   cellKey: string;
   rowIdx: number;
-  updated: EditorValue;
+  updated: V;
   key?: string;
 }
 
@@ -300,14 +298,14 @@ export interface RowExpandToggleEvent {
   name: string;
 }
 
-export interface GridRowsUpdatedEvent {
+export interface GridRowsUpdatedEvent<V = never> {
   cellKey: string;
   fromRow: number;
   toRow: number;
   fromRowId: unknown;
   toRowId: unknown;
   rowIds: unknown[];
-  updated: EditorValue;
+  updated: V;
   action: UpdateActions;
   fromRowData: RowData;
 }
