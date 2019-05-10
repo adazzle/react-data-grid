@@ -2,7 +2,7 @@
 /coverage
 /packages/*/dist
 /packages/*/lib
-/packages/*/umd
+/packages/*/commonjs
 
 node_modules
 npm-debug.log
