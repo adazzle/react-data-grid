@@ -3,7 +3,7 @@ import { Editor, EditorProps } from '../types';
 
 type Props = Pick<EditorProps<string>, 'value' | 'column' | 'onBlur'>;
 
-export default class SimpleTextEditor extends React.Component<Props> implements Editor {
+export default class SimpleTextEditor extends React.Component<Props> implements Editor<{ [key: string]: string }> {
   private readonly input = React.createRef<HTMLInputElement>();
 
   getInputNode() {
