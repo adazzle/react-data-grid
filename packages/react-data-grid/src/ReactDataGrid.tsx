@@ -131,7 +131,7 @@ interface Props extends SharedGridProps, SharedCellMetaData, SharedInteractionMa
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onGridRowsUpdated?(event: GridRowsUpdatedEvent): void;
+  onGridRowsUpdated?<V>(event: GridRowsUpdatedEvent<V>): void;
   /** Called when a column is resized */
   onColumnResize?(idx: number, width: number): void;
 }
