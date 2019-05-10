@@ -243,7 +243,7 @@ export default class EditorContainer extends React.Component<Props, State> {
     const inputNode = this.getInputNode();
     return inputNode instanceof HTMLInputElement
       && inputNode.selectionStart === inputNode.value.length;
-  }
+  };
 
   handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
