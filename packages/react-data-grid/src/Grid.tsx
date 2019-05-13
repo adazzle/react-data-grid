@@ -38,7 +38,7 @@ type SharedDataGridState = Pick<DataGridState,
 | 'sortDirection'
 >;
 
-interface GridProps extends SharedDataGridProps, SharedDataGridState {
+export interface GridProps extends SharedDataGridProps, SharedDataGridState {
   headerRows: HeaderRowData[];
   cellMetaData: CellMetaData;
   selectedRows?: RowData[];
@@ -103,7 +103,7 @@ export default class Grid extends React.Component<GridProps> {
           ref={this.header}
           columnMetrics={this.props.columnMetrics}
           onColumnResize={this.props.onColumnResize}
-          height={this.props.rowHeight}
+          rowHeight={this.props.rowHeight}
           totalWidth={this.props.totalWidth}
           headerRows={headerRows}
           sortColumn={this.props.sortColumn}
