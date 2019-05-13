@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Canvas from './Canvas';
-import { RowsContainerProps } from './RowsContainer';
 import {
   getGridState,
   getColOverscanEndIdx,
@@ -14,9 +13,8 @@ import {
   getNonFrozenRenderedColumnCount,
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
-import EventBus from './masks/EventBus';
-import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, InteractionMasksMetaData, RowSelection } from './common/types';
-import { SCROLL_DIRECTION, CellNavigationMode } from './common/enums';
+import { SCROLL_DIRECTION } from './common/enums';
+import { GridProps } from './Grid';
 
 interface ScrollParams {
   height: number;
@@ -43,31 +41,34 @@ export interface ScrollState {
   isScrolling: boolean;
 }
 
-export interface ViewportProps {
-  rowOffsetHeight: number;
-  totalWidth: number | string;
-  columnMetrics: ColumnMetrics;
-  rowGetter: RowGetter;
-  selectedRows?: RowData[];
-  rowSelection?: RowSelection;
-  rowRenderer?: React.ReactElement | React.ComponentType;
-  rowsCount: number;
-  rowHeight: number;
+type SharedGridProps = Pick<GridProps,
+'rowKey'
+| 'rowHeight'
+| 'rowRenderer'
+| 'rowGetter'
+| 'rowsCount'
+| 'selectedRows'
+| 'columnMetrics'
+| 'totalWidth'
+| 'cellMetaData'
+| 'rowOffsetHeight'
+| 'minHeight'
+| 'scrollToRowIndex'
+| 'contextMenu'
+| 'rowSelection'
+| 'getSubRowDetails'
+| 'rowGroupRenderer'
+| 'enableCellSelect'
+| 'enableCellAutoFocus'
+| 'cellNavigationMode'
+| 'eventBus'
+| 'interactionMasksMetaData'
+| 'RowsContainer'
+| 'editorPortalTarget'
+>;
+
+export interface ViewportProps extends SharedGridProps {
   onScroll(scrollState: ScrollState): void;
-  minHeight: number;
-  cellMetaData: CellMetaData;
-  rowKey: string;
-  scrollToRowIndex?: number;
-  contextMenu?: React.ReactElement;
-  getSubRowDetails?(): SubRowDetails;
-  rowGroupRenderer?: React.ComponentType;
-  enableCellSelect: boolean;
-  enableCellAutoFocus: boolean;
-  cellNavigationMode: CellNavigationMode;
-  eventBus: EventBus;
-  RowsContainer?: React.ComponentType<RowsContainerProps>;
-  editorPortalTarget: Element;
-  interactionMasksMetaData: InteractionMasksMetaData;
 }
 
 interface State {
