@@ -94,7 +94,7 @@ export interface DataGridProps {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onGridRowsUpdated?<V>(event: GridRowsUpdatedEvent<V>): void;
+  onGridRowsUpdated?<E extends GridRowsUpdatedEvent>(event: E): void;
   /** Called when a column is resized */
   onColumnResize?(idx: number, width: number): void;
 
