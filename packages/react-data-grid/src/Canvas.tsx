@@ -48,14 +48,14 @@ type SharedViewportState = Pick<ViewportState,
 | 'isScrolling'
 >;
 
-export interface Props extends SharedViewportProps, SharedViewportState {
+export interface CanvasProps extends SharedViewportProps, SharedViewportState {
   columns: CalculatedColumn[];
   width: number;
   totalColumnWidth: number;
   onScroll(position: ScrollPosition): void;
 }
 
-type RendererProps = Pick<Props, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
+type RendererProps = Pick<CanvasProps, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
   ref(row: (RowRenderer & React.Component<RowRendererProps>) | null): void;
   key: number;
   idx: number;
@@ -66,7 +66,7 @@ type RendererProps = Pick<Props, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'co
   scrollLeft: number;
 };
 
-export default class Canvas extends React.PureComponent<Props> {
+export default class Canvas extends React.PureComponent<CanvasProps> {
   static displayName = 'Canvas';
 
   private readonly canvas = React.createRef<HTMLDivElement>();
@@ -83,7 +83,7 @@ export default class Canvas extends React.PureComponent<Props> {
     this.unsubscribeScrollToColumn!();
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: CanvasProps) {
     const { scrollToRowIndex } = this.props;
     if (scrollToRowIndex && prevProps.scrollToRowIndex !== scrollToRowIndex) {
       this.scrollToRow(scrollToRowIndex);

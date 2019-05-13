@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
-import Canvas, { Props } from '../Canvas';
+import Canvas, { CanvasProps } from '../Canvas';
 import RowsContainer from '../RowsContainer';
 import EventBus from '../masks/EventBus';
 import { CellNavigationMode } from '../common/enums';
@@ -10,7 +10,7 @@ import { CellNavigationMode } from '../common/enums';
 const noop = () => null;
 const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find(RowsContainer).children().props().children;
 
-const testProps: Props = {
+const testProps: CanvasProps = {
   rowKey: 'row',
   rowHeight: 25,
   height: 200,
@@ -50,10 +50,10 @@ const testProps: Props = {
   totalColumnWidth: 1000,
   onScroll() {},
   lastFrozenColumnIndex: 0,
-  RowsContainer: RowsContainer as Props['RowsContainer']
+  RowsContainer: RowsContainer as CanvasProps['RowsContainer']
 };
 
-function renderComponent(extraProps?: Partial<Props>) {
+function renderComponent(extraProps?: Partial<CanvasProps>) {
   return shallow<Canvas>(<Canvas {...testProps} {...extraProps} />);
 }
 
