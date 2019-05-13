@@ -2,7 +2,7 @@ import React from 'react';
 import { isElement, isValidElementType } from 'react-is';
 import { ColumnList } from './common/types';
 
-interface ToolbarProps {
+export interface ToolbarProps {
   columns: ColumnList;
   rowsCount: number;
   onToggleFilter(): void;

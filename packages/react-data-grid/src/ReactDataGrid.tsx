@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Grid from './Grid';
-import ToolbarContainer from './ToolbarContainer';
+import ToolbarContainer, { ToolbarProps } from './ToolbarContainer';
 import CheckboxEditor, { CheckboxEditorProps } from './common/editors/CheckboxEditor';
 import { SelectAll } from './formatters';
 import * as rowUtils from './RowUtils';
@@ -49,7 +49,7 @@ interface Props {
   /** Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead*/
   enableRowSelect: boolean | string;
   /** Component used to render toolbar above the grid */
-  toolbar?: React.ReactElement;
+  toolbar?: React.ReactElement<ToolbarProps> | React.ComponentType<ToolbarProps>;
   cellRangeSelection?: {
     onStart(selectedRange: SelectedRange): void;
     onUpdate?(selectedRange: SelectedRange): void;
