@@ -392,7 +392,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     const fromRowData = rowGetter(action === UpdateActions.COPY_PASTE ? originRow! : fromRow);
     const fromRowId = fromRowData[rowKey];
     const toRowId = rowGetter(toRow)[rowKey];
-    onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated, action, fromRowData });
+    onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated: updated as never, action, fromRowData });
   };
 
   handleCommit = (commit: CommitEvent) => {
