@@ -134,7 +134,7 @@ export interface DataGridProps {
   RowsContainer?: React.ComponentType<RowsContainerProps>;
   emptyRowsView?: React.ComponentType<{}>;
   onHeaderDrop?(): void;
-  getSubRowDetails?(): SubRowDetails;
+  getSubRowDetails?(row: RowData): SubRowDetails;
 
   /** CellMetaData */
   getCellActions?(column: CalculatedColumn, rowData: RowData): CellActionButton[] | undefined;

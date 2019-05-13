@@ -13,8 +13,9 @@ import {
   getNonFrozenRenderedColumnCount,
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
-import { SCROLL_DIRECTION } from './common/enums';
 import { GridProps } from './Grid';
+import { ScrollPosition } from './common/types';
+import { SCROLL_DIRECTION } from './common/enums';
 
 interface ScrollParams {
   height: number;
@@ -71,7 +72,7 @@ export interface ViewportProps extends SharedGridProps {
   onScroll(scrollState: ScrollState): void;
 }
 
-interface State {
+export interface ViewportState {
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
   rowVisibleStartIdx: number;
@@ -87,15 +88,15 @@ interface State {
   lastFrozenColumnIndex: number;
 }
 
-export default class Viewport extends React.Component<ViewportProps, State> {
+export default class Viewport extends React.Component<ViewportProps, ViewportState> {
   static displayName = 'Viewport';
 
-  readonly state: Readonly<State> = getGridState(this.props);
+  readonly state: Readonly<ViewportState> = getGridState(this.props);
   private readonly canvas = React.createRef<Canvas>();
   private readonly viewport = React.createRef<HTMLDivElement>();
   private resetScrollStateTimeoutId: number | null = null;
 
-  onScroll = ({ scrollTop, scrollLeft }: { scrollTop: number; scrollLeft: number }) => {
+  onScroll = ({ scrollTop, scrollLeft }: ScrollPosition) => {
     const { rowHeight, rowsCount, onScroll } = this.props;
     const nextScrollState = this.updateScroll({
       scrollTop,
@@ -282,7 +283,7 @@ export default class Viewport extends React.Component<ViewportProps, State> {
           rowSelection={this.props.rowSelection}
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
-          isScrolling={this.state.isScrolling || false}
+          isScrolling={this.state.isScrolling}
           enableCellSelect={this.props.enableCellSelect}
           enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}
