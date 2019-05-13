@@ -1,19 +1,19 @@
-.react-grid-checkbox, .radio-custom {
+.react-grid-checkbox {
     opacity: 0;
     position: absolute;
 }
 
-.react-grid-checkbox, .react-grid-checkbox-label, .radio-custom, .radio-custom-label {
+.react-grid-checkbox, .react-grid-checkbox-label {
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
 }
 
-.react-grid-checkbox-label, .radio-custom-label {
+.react-grid-checkbox-label {
     position: relative;
 }
 
-.react-grid-checkbox + .react-grid-checkbox-label:before, .radio-custom + .radio-custom-label:before {
+.react-grid-checkbox + .react-grid-checkbox-label:before {
     content: '';
     background: #fff;
     border: 2px solid #ddd;
@@ -29,7 +29,7 @@
     box-shadow: inset 0px 0px 0px 4px #fff;
 }
 
-.react-grid-checkbox:focus + .react-grid-checkbox-label, .radio-custom:focus + .radio-custom-label {
+.react-grid-checkbox:focus + .react-grid-checkbox-label {
   outline: 1px solid #ddd; /* focus style */
 }
 
@@ -51,14 +51,6 @@
    position: relative;
    top: 50%;
    transform: translateY(-50%);
-}
-.radio-custom + .radio-custom-label:before {
-    border-radius: 50%;
-}
-
-.radio-custom:checked + .radio-custom-label:before {
-    background: #ccc;
-    box-shadow: inset 0px 0px 0px 4px #fff;
 }
 
 .checkbox-align {
