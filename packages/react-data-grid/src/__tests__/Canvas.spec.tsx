@@ -8,7 +8,7 @@ import EventBus from '../masks/EventBus';
 import { CellNavigationMode } from '../common/enums';
 
 const noop = () => null;
-const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find(RowsContainer).props().children.props.children;
+const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find(RowsContainer).children().props().children;
 
 const testProps: Props = {
   rowKey: 'row',
@@ -40,14 +40,16 @@ const testProps: Props = {
     onDragHandleDoubleClick: noop
   },
   isScrolling: false,
-  length: 1000,
   enableCellSelect: true,
   enableCellAutoFocus: false,
   cellNavigationMode: CellNavigationMode.NONE,
   eventBus: new EventBus(),
   editorPortalTarget: document.body,
+  width: 1000,
+  totalWidth: 1000,
   totalColumnWidth: 1000,
   onScroll() {},
+  lastFrozenColumnIndex: 0,
   RowsContainer: RowsContainer as Props['RowsContainer']
 };
 
