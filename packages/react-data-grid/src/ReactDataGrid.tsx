@@ -37,7 +37,7 @@ import {
   SubRowOptions
 } from './common/types';
 
-interface Props {
+export interface DataGridProps {
   /** An array of objects representing each column on the grid. Can also be an ImmutableJS object */
   columns: ColumnList;
   /** The minimum width of the grid in pixels */
@@ -157,7 +157,7 @@ interface Props {
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent): boolean;
 }
 
-type DefaultProps = Pick<Props,
+type DefaultProps = Pick<DataGridProps,
 'enableCellSelect'
 | 'rowHeight'
 | 'headerFiltersHeight'
@@ -171,7 +171,7 @@ type DefaultProps = Pick<Props,
 | 'editorPortalTarget'
 >;
 
-interface State {
+export interface DataGridState {
   columnMetrics: ColumnMetrics;
   lastRowIdxUiSelected: number;
   selectedRows: RowData[];
@@ -191,7 +191,7 @@ function isRowSelected(keys: unknown, indexes: unknown, isSelectedKey: unknown, 
  *
  * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-export default class ReactDataGrid extends React.Component<Props, State> {
+export default class ReactDataGrid extends React.Component<DataGridProps, DataGridState> {
   static displayName = 'ReactDataGrid';
 
   static defaultProps: DefaultProps = {
@@ -216,9 +216,9 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   private _cachedColumns?: ColumnList;
   private _cachedComputedColumns?: ColumnList;
 
-  constructor(props: Props) {
+  constructor(props: DataGridProps) {
     super(props);
-    const initialState: State = {
+    const initialState: DataGridState = {
       columnMetrics: this.createColumnMetrics(),
       selectedRows: [],
       canFilter: false,
@@ -245,7 +245,7 @@ export default class ReactDataGrid extends React.Component<Props, State> {
     window.removeEventListener('mouseup', this.handleWindowMouseUp);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: DataGridProps) {
     if (nextProps.columns) {
       if (!sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
         || nextProps.minWidth !== this.props.minWidth) {
@@ -728,4 +728,4 @@ export default class ReactDataGrid extends React.Component<Props, State> {
   }
 }
 
-export type ReactDataGridProps = JSX.LibraryManagedAttributes<typeof ReactDataGrid, Props>;
+export type ReactDataGridProps = JSX.LibraryManagedAttributes<typeof ReactDataGrid, DataGridProps>;
