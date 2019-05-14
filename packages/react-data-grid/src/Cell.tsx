@@ -223,13 +223,12 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
     const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
 
-    const isDeleteSubRowEnabled = !!cellMetaData.onDeleteSubRow;
     const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
       <ChildRowDeleteButton
         treeDepth={treeDepth}
         cellHeight={height}
         onDeleteSubRow={this.handleDeleteSubRow}
-        isDeleteSubRowEnabled={isDeleteSubRowEnabled}
+        isDeleteSubRowEnabled={!!cellMetaData.onDeleteSubRow}
       />
     );
 
