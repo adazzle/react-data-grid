@@ -228,8 +228,6 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
       <ChildRowDeleteButton
         treeDepth={treeDepth}
         cellHeight={height}
-        siblingIndex={expandableOptions.subRowDetails.siblingIndex}
-        numberSiblings={expandableOptions.subRowDetails.numberSiblings}
         onDeleteSubRow={this.handleDeleteSubRow}
         isDeleteSubRowEnabled={isDeleteSubRowEnabled}
       />
