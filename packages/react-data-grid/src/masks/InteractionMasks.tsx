@@ -57,7 +57,7 @@ type SharedCanvasProps = Pick<CanvasProps,
 | 'editorPortalTarget'
 >;
 
-export interface Props extends SharedCanvasProps, InteractionMasksMetaData {
+export interface InteractionMasksProps extends SharedCanvasProps, InteractionMasksMetaData {
   onHitTopBoundary(): void;
   onHitBottomBoundary(): void;
   onHitLeftBoundary(position: Position): void;
@@ -69,7 +69,7 @@ export interface Props extends SharedCanvasProps, InteractionMasksMetaData {
   getRowColumns(rowIdx: number): CalculatedColumn[];
 }
 
-export interface State {
+export interface InteractionMasksState {
   selectedPosition: Position;
   selectedRange: SelectedRange;
   copiedPosition: Position & { value: unknown } | null;
@@ -79,10 +79,10 @@ export interface State {
   firstEditorKeyPress: string | null;
 }
 
-export default class InteractionMasks extends React.Component<Props, State> {
+export default class InteractionMasks extends React.Component<InteractionMasksProps, InteractionMasksState> {
   static displayName = 'InteractionMasks';
 
-  readonly state: Readonly<State> = {
+  readonly state: Readonly<InteractionMasksState> = {
     selectedPosition: {
       idx: -1,
       rowIdx: -1
@@ -110,7 +110,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
 
   private unsubscribeEventHandlers: Array<() => void> = [];
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps: InteractionMasksProps, prevState: InteractionMasksState) {
     const { selectedPosition, isEditorEnabled } = this.state;
     const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
     const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx);
