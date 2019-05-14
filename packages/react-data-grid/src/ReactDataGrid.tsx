@@ -57,8 +57,8 @@ export interface DataGridProps {
   };
   /** Minimum column width in pixels */
   minColumnWidth: number;
-  /** Component to render the UI in the header row for selecting all rows  */
-  selectAllRenderer?: React.ComponentType;
+  /** Component to render the UI in the header row for selecting all rows */
+  selectAllRenderer: React.ForwardRefExoticComponent<React.ComponentProps<typeof SelectAll>>;
   /** Function called whenever row is clicked */
   onRowClick?(rowIdx: number, rowData: RowData, column: CalculatedColumn): void;
   /** Function called whenever row is double clicked */
@@ -159,6 +159,7 @@ export interface DataGridProps {
 
 type DefaultProps = Pick<DataGridProps,
 'enableCellSelect'
+| 'selectAllRenderer'
 | 'rowHeight'
 | 'headerFiltersHeight'
 | 'enableRowSelect'
@@ -204,6 +205,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     cellNavigationMode: CellNavigationMode.NONE,
     enableCellAutoFocus: true,
     minColumnWidth: 80,
+    selectAllRenderer: SelectAll,
     columnEquality: sameColumn,
     editorPortalTarget: document.body
   };
@@ -513,8 +515,8 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     }
   };
 
-  handleCheckboxChange = (e: React.ChangeEvent<HTMLElement>) => {
-    const allRowsSelected = e.currentTarget instanceof HTMLInputElement && e.currentTarget.checked;
+  handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const allRowsSelected = e.currentTarget.checked;
     const { rowSelection } = this.props;
     if (rowSelection && this.useNewRowSelection()) {
       const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
@@ -604,9 +606,10 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     this._cachedColumns = columns;
 
     if (this.props.rowActionsCell || (props.enableRowSelect && !this.props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
-      const SelectAllComponent = this.props.selectAllRenderer || SelectAll;
-      const SelectAllRenderer = <SelectAllComponent onChange={this.handleCheckboxChange} ref={this.selectAllCheckbox} />;
-      const headerRenderer = props.enableRowSelect === 'single' ? undefined : SelectAllRenderer;
+      const SelectAllComponent = this.props.selectAllRenderer;
+      const headerRenderer = props.enableRowSelect === 'single'
+        ? undefined
+        : <SelectAllComponent onChange={this.handleCheckboxChange} ref={this.selectAllCheckbox} />;
       const Formatter = (this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor) as unknown as React.ComponentClass<{ rowSelection: unknown }>;
       const selectColumn: Column = {
         key: 'select-row',
