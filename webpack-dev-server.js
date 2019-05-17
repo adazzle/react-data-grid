@@ -3,7 +3,6 @@
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const WebpackDevServer = require('webpack-dev-server');
-const open = require('open');
 
 const RELEASE = process.argv.slice(2).includes('--release');
 
@@ -90,9 +89,8 @@ const config = {
 const compiler = webpack(config);
 const server = new WebpackDevServer(compiler, {
   hot: true,
+  open: true,
   contentBase: 'examples'
 });
 
-server.listen(8080, 'localhost', () => {
-  open('http://localhost:8080/webpack-dev-server/');
-});
+server.listen(8080, 'localhost');
