@@ -16,9 +16,6 @@
   background-color: #66afe930;
 }
 
-.moving-element {
-  will-change: transform;
-}
 .react-grid-Cell--frozen {
   /* Should have a higher value than 1 to show in front of cell masks */
   z-index: 2;
@@ -131,10 +128,6 @@
     border-color: transparent transparent black transparent;
 }
 
-.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
-    visibility: hidden;
-}
-
 .rdg-cell-expand {
     float: right;
     display: table;
@@ -200,14 +193,6 @@
   margin-top:-10px;
   margin-left:-10px;
 
-}
-
-.rdg-empty-child-row:hover .glyphicon-plus-sign {
-  color: green;
-}
-
-.rdg-empty-child-row:hover a {
-  color: green;
 }
 
 .rdg-child-row-btn .glyphicon-remove-sign:hover {
