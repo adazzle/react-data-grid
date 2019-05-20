@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { StrictMode } from 'react';
 import { render } from 'react-testing-library';
 import ReactDataGrid, { ReactDataGridProps, RowData } from '../packages/react-data-grid/src';
 
@@ -24,6 +24,10 @@ export function getProps(extraProps?: Partial<ReactDataGridProps>): ReactDataGri
 export function setup(props: ReactDataGridProps = getProps()) {
   return {
     props,
-    ...render(<ReactDataGrid {...props} />)
+    ...render(
+      <StrictMode>
+        <ReactDataGrid {...props} />
+      </StrictMode>
+    )
   };
 }
