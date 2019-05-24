@@ -5,8 +5,8 @@ interface Props {
   onToggleFilter?(): void;
   enableFilter?: boolean;
   numberOfRows: number;
-  addRowButtonText: string;
-  filterRowsButtonText: string;
+  addRowButtonText?: string;
+  filterRowsButtonText?: string;
   children: React.ReactNode;
 }
 
@@ -20,12 +20,12 @@ export default function Toolbar(props: Props) {
       <div className="tools">
         {props.onAddRow && (
           <button type="button" className="btn" onClick={onAddRow}>
-            {props.addRowButtonText}
+            {props.addRowButtonText || 'Add Row'}
           </button>
         )}
         {props.enableFilter && (
           <button type="button" className="btn" onClick={props.onToggleFilter}>
-            {props.filterRowsButtonText}
+            {props.filterRowsButtonText || 'Filter Rows'}
           </button>
         )}
         {props.children}
@@ -33,8 +33,3 @@ export default function Toolbar(props: Props) {
     </div>
   );
 }
-
-Toolbar.defaultProps = {
-  addRowButtonText: 'Add Row',
-  filterRowsButtonText: 'Filter Rows'
-};

@@ -34,7 +34,7 @@ export default function NumericFilter({ column, onChange }: Props) {
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const value = event.target.value;
+    const { value } = event.target;
     const filters = getRules(value);
     onChange({
       filterTerm: filters.length > 0 ? filters : null,
