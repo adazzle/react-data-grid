@@ -199,39 +199,40 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     return null;
   }
 
-  renderCellContent() {
-    let cellContent;
-    const { value, column, height, tooltip, isScrolling, expandableOptions, cellMetaData, rowIdx } = this.props;
-    const Formatter = column.formatter;
-    const cellProps: FormatterProps<unknown> = {
-      rowIdx,
-      value,
-      isScrolling,
-      column,
+  getFormatterProps(): FormatterProps<unknown> {
+    return {
+      rowIdx: this.props.rowIdx,
+      value: this.props.value,
+      isScrolling: this.props.isScrolling,
+      column: this.props.column,
       row: this.getRowData(),
       dependentValues: this.getFormatterDependencies()
     };
+  }
+
+  getCellContent() {
+    const Formatter = this.props.column.formatter;
 
     if (isElement(Formatter)) {
-      cellContent = React.cloneElement(Formatter, cellProps);
-    } else if (isValidElementType(Formatter)) {
-      cellContent = <Formatter {...cellProps} />;
-    } else {
-      cellContent = <SimpleCellFormatter value={value as string} />;
+      return React.cloneElement(Formatter, this.getFormatterProps());
+    } if (isValidElementType(Formatter)) {
+      return <Formatter {...this.getFormatterProps()} />;
     }
+    return <SimpleCellFormatter value={this.props.value as string} />;
+  }
+
+  renderCellContent() {
+    const { column, tooltip, expandableOptions } = this.props;
     const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
     const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
     const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
 
-    const isDeleteSubRowEnabled = !!cellMetaData.onDeleteSubRow;
     const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
       <ChildRowDeleteButton
         treeDepth={treeDepth}
-        cellHeight={height}
-        siblingIndex={expandableOptions.subRowDetails.siblingIndex}
-        numberSiblings={expandableOptions.subRowDetails.numberSiblings}
+        cellHeight={this.props.height}
         onDeleteSubRow={this.handleDeleteSubRow}
-        isDeleteSubRowEnabled={isDeleteSubRowEnabled}
+        isDeleteSubRowEnabled={!!this.props.cellMetaData.onDeleteSubRow}
       />
     );
 
@@ -244,7 +245,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
       <div className={classes}>
         {cellDeleter}
         <div className="react-grid-Cell__container" style={{ marginLeft }}>
-          <span>{cellContent}</span>
+          <span>{this.getCellContent()}</span>
           {this.props.cellControls}
         </div>
         {cellTooltip}

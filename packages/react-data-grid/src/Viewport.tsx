@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Canvas from './Canvas';
-import { RowsContainerProps } from './RowsContainer';
 import {
   getGridState,
   getColOverscanEndIdx,
@@ -14,9 +13,9 @@ import {
   getNonFrozenRenderedColumnCount,
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
-import EventBus from './masks/EventBus';
-import { ColumnMetrics, CellMetaData, RowGetter, RowData, SubRowDetails, InteractionMasksMetaData, RowSelection } from './common/types';
-import { SCROLL_DIRECTION, CellNavigationMode } from './common/enums';
+import { GridProps } from './Grid';
+import { ScrollPosition } from './common/types';
+import { SCROLL_DIRECTION } from './common/enums';
 
 interface ScrollParams {
   height: number;
@@ -43,34 +42,37 @@ export interface ScrollState {
   isScrolling: boolean;
 }
 
-export interface ViewportProps {
-  rowOffsetHeight: number;
-  totalWidth: number | string;
-  columnMetrics: ColumnMetrics;
-  rowGetter: RowGetter;
-  selectedRows?: RowData[];
-  rowSelection?: RowSelection;
-  rowRenderer?: React.ReactElement | React.ComponentType;
-  rowsCount: number;
-  rowHeight: number;
+type SharedGridProps = Pick<GridProps,
+'rowKey'
+| 'rowHeight'
+| 'rowRenderer'
+| 'rowGetter'
+| 'rowsCount'
+| 'selectedRows'
+| 'columnMetrics'
+| 'totalWidth'
+| 'cellMetaData'
+| 'rowOffsetHeight'
+| 'minHeight'
+| 'scrollToRowIndex'
+| 'contextMenu'
+| 'rowSelection'
+| 'getSubRowDetails'
+| 'rowGroupRenderer'
+| 'enableCellSelect'
+| 'enableCellAutoFocus'
+| 'cellNavigationMode'
+| 'eventBus'
+| 'interactionMasksMetaData'
+| 'RowsContainer'
+| 'editorPortalTarget'
+>;
+
+export interface ViewportProps extends SharedGridProps {
   onScroll(scrollState: ScrollState): void;
-  minHeight: number;
-  cellMetaData: CellMetaData;
-  rowKey: string;
-  scrollToRowIndex?: number;
-  contextMenu?: React.ReactElement;
-  getSubRowDetails?(): SubRowDetails;
-  rowGroupRenderer?: React.ComponentType;
-  enableCellSelect: boolean;
-  enableCellAutoFocus: boolean;
-  cellNavigationMode: CellNavigationMode;
-  eventBus: EventBus;
-  RowsContainer?: React.ComponentType<RowsContainerProps>;
-  editorPortalTarget: Element;
-  interactionMasksMetaData: InteractionMasksMetaData;
 }
 
-interface State {
+export interface ViewportState {
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
   rowVisibleStartIdx: number;
@@ -86,15 +88,15 @@ interface State {
   lastFrozenColumnIndex: number;
 }
 
-export default class Viewport extends React.Component<ViewportProps, State> {
+export default class Viewport extends React.Component<ViewportProps, ViewportState> {
   static displayName = 'Viewport';
 
-  readonly state: Readonly<State> = getGridState(this.props);
+  readonly state: Readonly<ViewportState> = getGridState(this.props);
   private readonly canvas = React.createRef<Canvas>();
   private readonly viewport = React.createRef<HTMLDivElement>();
   private resetScrollStateTimeoutId: number | null = null;
 
-  onScroll = ({ scrollTop, scrollLeft }: { scrollTop: number; scrollLeft: number }) => {
+  onScroll = ({ scrollTop, scrollLeft }: ScrollPosition) => {
     const { rowHeight, rowsCount, onScroll } = this.props;
     const nextScrollState = this.updateScroll({
       scrollTop,
@@ -281,7 +283,7 @@ export default class Viewport extends React.Component<ViewportProps, State> {
           rowSelection={this.props.rowSelection}
           getSubRowDetails={this.props.getSubRowDetails}
           rowGroupRenderer={this.props.rowGroupRenderer}
-          isScrolling={this.state.isScrolling || false}
+          isScrolling={this.state.isScrolling}
           enableCellSelect={this.props.enableCellSelect}
           enableCellAutoFocus={this.props.enableCellAutoFocus}
           cellNavigationMode={this.props.cellNavigationMode}

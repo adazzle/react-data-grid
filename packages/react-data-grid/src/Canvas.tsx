@@ -2,56 +2,60 @@ import React from 'react';
 import { isElement } from 'react-is';
 
 import Row from './Row';
-import RowsContainer, { RowsContainerProps } from './RowsContainer';
+import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
-import { InteractionMasks, EventBus } from './masks';
+import { InteractionMasks } from './masks';
 import { isRowSelected } from './RowUtils';
 import { getColumnScrollPosition } from './utils/canvasUtils';
-import { EventTypes, CellNavigationMode } from './common/enums';
-import { CalculatedColumn, RowData, Position, RowGetter, CellMetaData, ScrollPosition, SubRowDetails, RowRenderer, InteractionMasksMetaData, RowRendererProps, RowSelection } from './common/types';
+import { EventTypes } from './common/enums';
+import { CalculatedColumn, RowData, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps } from './common/types';
+import { ViewportProps, ViewportState } from './Viewport';
 
-export interface Props {
-  rowRenderer?: React.ReactElement | React.ComponentType;
-  rowHeight: number;
-  height: number;
-  width?: number;
-  totalWidth?: number | string;
-  style?: string;
-  className?: string;
-  rowOverscanStartIdx: number;
-  rowOverscanEndIdx: number;
-  rowVisibleStartIdx: number;
-  rowVisibleEndIdx: number;
-  colVisibleStartIdx: number;
-  colVisibleEndIdx: number;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
-  rowsCount: number;
-  rowGetter: RowGetter;
+type SharedViewportProps = Pick<ViewportProps,
+'rowKey'
+| 'totalWidth'
+| 'rowGetter'
+| 'rowsCount'
+| 'selectedRows'
+| 'rowRenderer'
+| 'cellMetaData'
+| 'rowHeight'
+| 'scrollToRowIndex'
+| 'contextMenu'
+| 'rowSelection'
+| 'getSubRowDetails'
+| 'rowGroupRenderer'
+| 'enableCellSelect'
+| 'enableCellAutoFocus'
+| 'cellNavigationMode'
+| 'eventBus'
+| 'RowsContainer'
+| 'editorPortalTarget'
+| 'interactionMasksMetaData'
+>;
+
+type SharedViewportState = Pick<ViewportState,
+'rowOverscanStartIdx'
+| 'rowOverscanEndIdx'
+| 'rowVisibleStartIdx'
+| 'rowVisibleEndIdx'
+| 'colVisibleStartIdx'
+| 'colVisibleEndIdx'
+| 'colOverscanStartIdx'
+| 'colOverscanEndIdx'
+| 'lastFrozenColumnIndex'
+| 'height'
+| 'isScrolling'
+>;
+
+export interface CanvasProps extends SharedViewportProps, SharedViewportState {
   columns: CalculatedColumn[];
-  cellMetaData: CellMetaData;
-  selectedRows?: RowData[];
-  rowKey: string;
-  scrollToRowIndex?: number;
-  contextMenu?: React.ReactElement;
-  rowSelection?: RowSelection;
-  rowGroupRenderer?: React.ComponentType;
-  isScrolling: boolean;
-  length?: number;
-  enableCellSelect: boolean;
-  enableCellAutoFocus: boolean;
-  cellNavigationMode: CellNavigationMode;
-  eventBus: EventBus;
-  editorPortalTarget: Element;
-  RowsContainer: React.ComponentType<RowsContainerProps>;
-  lastFrozenColumnIndex?: number;
+  width: number;
   totalColumnWidth: number;
-  interactionMasksMetaData: InteractionMasksMetaData;
   onScroll(position: ScrollPosition): void;
-  getSubRowDetails?(rowIdx: RowData): SubRowDetails;
 }
 
-type RendererProps = Pick<Props, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
+type RendererProps = Pick<CanvasProps, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
   ref(row: (RowRenderer & React.Component<RowRendererProps>) | null): void;
   key: number;
   idx: number;
@@ -62,12 +66,8 @@ type RendererProps = Pick<Props, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'co
   scrollLeft: number;
 };
 
-export default class Canvas extends React.PureComponent<Props> {
+export default class Canvas extends React.PureComponent<CanvasProps> {
   static displayName = 'Canvas';
-
-  static defaultProps = {
-    RowsContainer
-  };
 
   private readonly canvas = React.createRef<HTMLDivElement>();
   private readonly interactionMasks = React.createRef<InteractionMasks>();
@@ -83,7 +83,7 @@ export default class Canvas extends React.PureComponent<Props> {
     this.unsubscribeScrollToColumn!();
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: CanvasProps) {
     const { scrollToRowIndex } = this.props;
     if (scrollToRowIndex && prevProps.scrollToRowIndex !== scrollToRowIndex) {
       this.scrollToRow(scrollToRowIndex);
@@ -284,7 +284,8 @@ export default class Canvas extends React.PureComponent<Props> {
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, RowsContainer, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, contextMenu } = this.props;
+    const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map(({ row, subRowDetails }, idx) => {

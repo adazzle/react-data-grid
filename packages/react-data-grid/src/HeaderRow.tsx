@@ -8,23 +8,27 @@ import getScrollbarSize from './getScrollbarSize';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, AddFilterEvent } from './common/types';
+import { HeaderProps } from './Header';
 
-export interface HeaderRowProps {
+type SharedHeaderProps = Pick<HeaderProps,
+'draggableHeaderCell'
+| 'onHeaderDrop'
+| 'sortColumn'
+| 'sortDirection'
+| 'onSort'
+| 'getValidFilterValues'
+>;
+
+export interface HeaderRowProps extends SharedHeaderProps {
   width?: number;
   height: number;
   columns: CalculatedColumn[];
-  onSort(columnKey: string, direction: DEFINE_SORT): void;
   onColumnResize(column: CalculatedColumn, width: number): void;
   onColumnResizeEnd(column: CalculatedColumn, width: number): void;
   style?: React.CSSProperties;
-  sortColumn?: string;
-  sortDirection?: DEFINE_SORT;
   filterable?: boolean;
   onFilterChange?(args: AddFilterEvent): void;
   rowType: HeaderRowType;
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn; onHeaderDrop(): void }>;
-  onHeaderDrop?(): void;
-  getValidFilterValues?(): void;
 }
 
 export default class HeaderRow extends React.Component<HeaderRowProps> {

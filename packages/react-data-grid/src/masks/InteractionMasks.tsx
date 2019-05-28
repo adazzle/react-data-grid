@@ -29,8 +29,8 @@ import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { CalculatedColumn, Position, SelectedRange, RowGetter, Dimension, InteractionMasksMetaData, CommitEvent } from '../common/types';
-import EventBus from './EventBus';
+import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent } from '../common/types';
+import { CanvasProps } from '../Canvas';
 
 const SCROLL_CELL_BUFFER = 2;
 
@@ -40,33 +40,36 @@ interface NavAction {
   onHitBoundary(next: Position): void;
 }
 
-export interface Props extends InteractionMasksMetaData {
-  colVisibleStartIdx: number;
-  colVisibleEndIdx: number;
-  rowVisibleStartIdx: number;
-  rowVisibleEndIdx: number;
-  columns: CalculatedColumn[];
-  rowHeight: number;
-  rowGetter: RowGetter;
-  rowsCount: number;
-  enableCellSelect: boolean;
-  enableCellAutoFocus: boolean;
-  cellNavigationMode: CellNavigationMode;
-  eventBus: EventBus;
-  contextMenu?: React.ReactElement;
-  onHitBottomBoundary(position: Position): void;
-  onHitTopBoundary(position: Position): void;
-  onHitRightBoundary(position: Position): void;
+type SharedCanvasProps = Pick<CanvasProps,
+'rowGetter'
+| 'rowsCount'
+| 'rowHeight'
+| 'columns'
+| 'rowVisibleStartIdx'
+| 'rowVisibleEndIdx'
+| 'colVisibleStartIdx'
+| 'colVisibleEndIdx'
+| 'enableCellSelect'
+| 'enableCellAutoFocus'
+| 'cellNavigationMode'
+| 'eventBus'
+| 'contextMenu'
+| 'editorPortalTarget'
+>;
+
+export interface InteractionMasksProps extends SharedCanvasProps, InteractionMasksMetaData {
+  onHitTopBoundary(): void;
+  onHitBottomBoundary(): void;
   onHitLeftBoundary(position: Position): void;
+  onHitRightBoundary(position: Position): void;
   scrollLeft: number;
   scrollTop: number;
   getRowHeight(rowIdx: number): number;
   getRowTop(rowIdx: number): number;
   getRowColumns(rowIdx: number): CalculatedColumn[];
-  editorPortalTarget: Element;
 }
 
-export interface State {
+export interface InteractionMasksState {
   selectedPosition: Position;
   selectedRange: SelectedRange;
   copiedPosition: Position & { value: unknown } | null;
@@ -76,10 +79,10 @@ export interface State {
   firstEditorKeyPress: string | null;
 }
 
-export default class InteractionMasks extends React.Component<Props, State> {
+export default class InteractionMasks extends React.Component<InteractionMasksProps, InteractionMasksState> {
   static displayName = 'InteractionMasks';
 
-  readonly state: Readonly<State> = {
+  readonly state: Readonly<InteractionMasksState> = {
     selectedPosition: {
       idx: -1,
       rowIdx: -1
@@ -107,7 +110,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
 
   private unsubscribeEventHandlers: Array<() => void> = [];
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps: InteractionMasksProps, prevState: InteractionMasksState) {
     const { selectedPosition, isEditorEnabled } = this.state;
     const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
     const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx);
@@ -353,7 +356,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
         onHitRightBoundary(next);
         // Selected cell can hit the bottom boundary when the cellNavigationMode is 'changeRow'
         if (isCellAtBottomBoundary(next)) {
-          onHitBottomBoundary(next);
+          onHitBottomBoundary();
         }
       }
     };
@@ -364,7 +367,7 @@ export default class InteractionMasks extends React.Component<Props, State> {
         onHitLeftBoundary(next);
         // Selected cell can hit the top boundary when the cellNavigationMode is 'changeRow'
         if (isCellAtTopBoundary(next)) {
-          onHitTopBoundary(next);
+          onHitTopBoundary();
         }
       }
     };
