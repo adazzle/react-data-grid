@@ -45,7 +45,7 @@
     "jest": "^24.8.0",
     "lerna": "^3.14.1",
     "less": "^3.9.0",
-    "less-loader": "^4.1.0",
+    "less-loader": "^5.0.0",
     "markdown": "^0.5.0",
     "node-dir": "^0.1.12",
     "react": "^16.8.6",
