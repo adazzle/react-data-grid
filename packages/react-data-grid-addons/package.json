@@ -29,7 +29,7 @@
   "dependencies": {
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
-    "react-contextmenu": "^2.10.0",
+    "react-contextmenu": "^2.11.0",
     "react-data-grid": "^7.0.0-alpha.12",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",
