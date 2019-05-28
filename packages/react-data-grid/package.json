@@ -4,13 +4,13 @@
   "description": "Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like",
   "author": "Adazzle",
   "license": "MIT",
-  "main": "umd/index.js",
+  "main": "commonjs/index.js",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
     "lib",
-    "umd"
+    "commonjs"
   ],
   "sideEffects": false,
   "repository": "adazzle/react-data-grid",
@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build-umd": "tsc --module umd --outdir umd --esModuleInterop"
+    "build-commonjs": "tsc --module commonjs --outdir commonjs --esModuleInterop"
   },
   "dependencies": {
     "classnames": "^2.2.6",

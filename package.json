@@ -8,7 +8,7 @@
     "postinstall": "lerna bootstrap --no-ci",
     "prebuild": "node tools/buildStylesheets.js",
     "build": "lerna run build",
-    "build-umd": "lerna run build-umd",
+    "build-commonjs": "lerna run build-commonjs",
     "start": "node webpack-dev-server.js",
     "eslint": "eslint --report-unused-disable-directives --ext js,ts,tsx --max-warnings 0 -f codeframe --cache --color packages/react-data-grid/src packages/react-data-grid-addons/src tests examples",
     "fix-eslint": "npm run eslint -- --fix",
@@ -48,7 +48,6 @@
     "less-loader": "^4.1.0",
     "markdown": "^0.5.0",
     "node-dir": "^0.1.12",
-    "open": "^6.0.0",
     "react": "^16.8.6",
     "react-contextmenu": "^2.10.0",
     "react-data-grid": "file:packages/react-data-grid",
@@ -64,6 +63,6 @@
     "ts-jest": "^24.0.1",
     "typescript": "~3.4.5",
     "webpack": "^4.29.6",
-    "webpack-dev-server": "^3.2.1"
+    "webpack-dev-server": "^3.4.1"
   }
 }

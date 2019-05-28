@@ -16,9 +16,6 @@
   background-color: #66afe930;
 }
 
-.moving-element {
-  will-change: transform;
-}
 .react-grid-Cell--frozen {
   /* Should have a higher value than 1 to show in front of cell masks */
   z-index: 2;
@@ -131,10 +128,6 @@
     border-color: transparent transparent black transparent;
 }
 
-.react-grid-Canvas.opaque .react-grid-Cell.cell-tooltip:hover .cell-tooltip-text {
-    visibility: hidden;
-}
-
 .rdg-cell-expand {
     float: right;
     display: table;
@@ -147,7 +140,7 @@
   cursor: pointer;
 }
 
-.rdg-child-row-action-cross:before, rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:before, rdg-child-row-action-cross-last:after {
+.rdg-child-row-action-cross:before, rdg-child-row-action-cross:after {
   content: "";
   position: absolute;
   background: grey;
@@ -160,12 +153,7 @@
   height: 100%;
 }
 
-.rdg-child-row-action-cross-last:before {
-  left: 21px;
-  width: 1px;
-}
-
-.rdg-child-row-action-cross:after, .rdg-child-row-action-cross-last:after {
+.rdg-child-row-action-cross:after {
   top: 50%;
   left:20px;
   height: 1px;
@@ -179,8 +167,10 @@
     background: red;
 }
 .rdg-child-row-btn {
-   position:absolute;
-   cursor:pointer;
+   position: absolute;
+   cursor: pointer;
+   height: 12px;
+   width: 12px;
    border:1px solid grey;
    border-radius:14px;
    z-index: 2;
@@ -200,14 +190,6 @@
   margin-top:-10px;
   margin-left:-10px;
 
-}
-
-.rdg-empty-child-row:hover .glyphicon-plus-sign {
-  color: green;
-}
-
-.rdg-empty-child-row:hover a {
-  color: green;
 }
 
 .rdg-child-row-btn .glyphicon-remove-sign:hover {

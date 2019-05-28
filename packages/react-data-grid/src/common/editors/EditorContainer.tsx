@@ -2,25 +2,22 @@ import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { CalculatedColumn, Editor, EditorProps, RowData, CommitEvent } from '../types';
+import { CalculatedColumn, Editor, EditorProps, RowData, CommitEvent, Dimension, Omit } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
+import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
 
-export interface Props {
+type SharedInteractionMasksProps = Pick<InteractionMasksProps, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
+
+export interface Props extends SharedInteractionMasksProps, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: RowData;
   value: unknown;
   column: CalculatedColumn;
-  width: number;
-  height: number;
-  left: number;
-  top: number;
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent): void;
   onCommitCancel(): void;
-  firstEditorKeyPress: string | null;
-  scrollLeft: number;
-  scrollTop: number;
 }
 
 interface State {
