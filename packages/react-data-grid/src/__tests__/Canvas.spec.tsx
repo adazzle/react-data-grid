@@ -46,7 +46,6 @@ const testProps: CanvasProps = {
   eventBus: new EventBus(),
   editorPortalTarget: document.body,
   width: 1000,
-  totalWidth: 1000,
   totalColumnWidth: 1000,
   onScroll() {},
   lastFrozenColumnIndex: 0,
