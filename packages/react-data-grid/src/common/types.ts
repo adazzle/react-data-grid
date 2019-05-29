@@ -108,7 +108,7 @@ export interface Dimension {
 
 export type RowGetter = (rowIdx: number) => RowData;
 
-export interface Editor<V = never> {
+export interface Editor<V = never> extends React.Component {
   getInputNode(): Element | Text | undefined | null;
   getValue(): V;
   hasResults?(): boolean;

@@ -1,6 +1,6 @@
 import { isElement } from 'react-is';
 
-export function sameColumn<A, B>(a: A, b: B): boolean {
+export function sameColumn<A extends {}, B extends {}>(a: A, b: B): boolean {
   for (const k in a) {
     if (a.hasOwnProperty(k)) {
       const valA = a[k] as unknown;
