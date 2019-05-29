@@ -105,7 +105,7 @@ For maintainers only.
   - `npm i`
 - Build the release files:
   - `npm run build`
-  - `npm run build-umd`
+  - `npm run build-commonjs`
 - Update the docs:
   - `npm run docs`
 - Update the changelog, if necessary.
@@ -113,8 +113,8 @@ For maintainers only.
 - Login to the `adazzle` npm account if you haven't already done so:
   - `npm login`
 - Publish the update with lerna:
-  - On the `master` branch: `npx lerna publish`
-  - On the `next` branch: `npx lerna publish --dist-tag next`
+  - To release a stable version: `npx lerna publish`
+  - To release an unstable version: `npx lerna publish --dist-tag next`
   - Relevant Lerna docs:
     - https://github.com/lerna/lerna/blob/master/commands/version/README.md
     - https://github.com/lerna/lerna/blob/master/commands/publish/README.md

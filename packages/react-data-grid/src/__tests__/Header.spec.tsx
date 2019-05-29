@@ -21,7 +21,7 @@ describe('Header Unit Tests', () => {
       },
       cellMetaData: fakeCellMetaData,
       totalWidth: 1000,
-      height: 50,
+      rowHeight: 50,
       headerRows: [{
         height: 50,
         rowType: HeaderRowType.HEADER,
@@ -97,7 +97,7 @@ describe('Header Unit Tests', () => {
         totalWidth: 2600,
         width: 2601
       },
-      height: 51,
+      rowHeight: 51,
       totalWidth: 2600,
       headerRows: [{
         height: 51,
@@ -119,7 +119,7 @@ describe('Header Unit Tests', () => {
         width: 2600
       },
       totalWidth: 1000,
-      height: 50,
+      rowHeight: 50,
       headerRows: [{
         height: 50,
         rowType: HeaderRowType.HEADER,

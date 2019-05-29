@@ -2,29 +2,29 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
-import HeaderRow, { HeaderRowProps } from './HeaderRow';
+import HeaderRow from './HeaderRow';
 import { resizeColumn } from './ColumnMetrics';
 import getScrollbarSize from './getScrollbarSize';
 import { HeaderRowType } from './common/enums';
-import { CalculatedColumn, ColumnMetrics, CellMetaData, HeaderRowData } from './common/types';
+import { CalculatedColumn, ColumnMetrics } from './common/types';
+import { GridProps } from './Grid';
 
-type SharedHeaderRowProps = Pick<HeaderRowProps,
-'draggableHeaderCell'
-| 'getValidFilterValues'
-| 'sortDirection'
+type SharedGridProps = Pick<GridProps,
+'columnMetrics'
+| 'onColumnResize'
+| 'rowHeight'
+| 'totalWidth'
+| 'headerRows'
 | 'sortColumn'
-| 'onHeaderDrop'
+| 'sortDirection'
+| 'draggableHeaderCell'
 | 'onSort'
+| 'onHeaderDrop'
+| 'getValidFilterValues'
+| 'cellMetaData'
 >;
 
-export interface HeaderProps extends SharedHeaderRowProps {
-  columnMetrics: ColumnMetrics;
-  totalWidth: number | string;
-  height: number;
-  headerRows: HeaderRowData[];
-  onColumnResize(idx: number, width: number): void;
-  cellMetaData: CellMetaData;
-}
+export type HeaderProps = SharedGridProps;
 
 interface State {
   resizing: { column: CalculatedColumn; columnMetrics: ColumnMetrics } | null;
@@ -93,7 +93,7 @@ export default class Header extends React.Component<HeaderProps, State> {
           onColumnResize={this.onColumnResize}
           onColumnResizeEnd={this.onColumnResizeEnd}
           width={columnMetrics.width}
-          height={row.height || this.props.height}
+          height={row.height || this.props.rowHeight}
           columns={columnMetrics.columns}
           draggableHeaderCell={this.props.draggableHeaderCell}
           filterable={row.filterable}
@@ -128,7 +128,7 @@ export default class Header extends React.Component<HeaderProps, State> {
 
     let height = 0;
     for (let index = 0; index < stopAt; index++) {
-      height += this.props.headerRows[index].height || this.props.height;
+      height += this.props.headerRows[index].height || this.props.rowHeight;
     }
     return height;
   }
