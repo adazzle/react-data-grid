@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 
-import { CellActionButton } from './common/types';
+import { CellActionButton } from '../common/types';
 
 export interface CellActionProps extends CellActionButton {
   isFirst: boolean;
