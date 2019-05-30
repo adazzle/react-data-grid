@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 
 import Cell, { Props } from '../Cell';
 import helpers from '../helpers/test/GridPropHelpers';
@@ -49,7 +49,7 @@ const testProps: Props = {
 };
 
 const renderComponent = (extraProps?: PropsWithChildren<Partial<Props>>) => {
-  return shallow<Cell>(<Cell {...testProps} {...extraProps} />);
+  return mount<Cell>(<Cell {...testProps} {...extraProps} />);
 };
 
 describe('Cell Tests', () => {
@@ -79,7 +79,7 @@ describe('Cell Tests', () => {
 
   describe('Rendering Cell component', () => {
     function shallowRenderComponent(props: Props) {
-      return shallow<Cell>(<Cell {...props} />);
+      return mount<Cell>(<Cell {...props} />);
     }
 
     const requiredProperties: Props = {
@@ -128,7 +128,7 @@ describe('Cell Tests', () => {
         ...propsOverride
       };
 
-      const wrapper = shallow<Cell>(<Cell {...props} />);
+      const wrapper = mount<Cell>(<Cell {...props} />);
       return {
         wrapper,
         props
