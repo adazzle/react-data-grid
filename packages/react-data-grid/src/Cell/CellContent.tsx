@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import classNames from 'classnames';
 
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
@@ -46,10 +46,11 @@ export default function CellContent({ idx, tooltip, expandableOptions, height, c
     />
   );
 
-  const cellTooltip = tooltip && <span className="cell-tooltip-text">{tooltip}</span>;
-  const classes = classNames('react-grid-Cell__value',
-    { 'cell-tooltip': !!tooltip }
-  );
+  const classes = useMemo(() => {
+    return classNames('react-grid-Cell__value',
+      { 'cell-tooltip': !!tooltip }
+    );
+  }, [tooltip]);
 
   return (
     <div className={classes}>
@@ -58,7 +59,7 @@ export default function CellContent({ idx, tooltip, expandableOptions, height, c
         <span><CellValue {...props} /></span>
         {cellControls}
       </div>
-      {cellTooltip}
+      {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
     </div>
   );
 }
