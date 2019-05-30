@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import Cell, { Props } from '../Cell';
 import helpers from '../helpers/test/GridPropHelpers';
-import CellAction from '../CellAction';
+import CellAction from '../Cell/CellAction';
 import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn, CellMetaData } from '../common/types';
 
