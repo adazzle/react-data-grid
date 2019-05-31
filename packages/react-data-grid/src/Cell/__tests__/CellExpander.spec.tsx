@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import CellExpander, { CellExpanderProps } from '../CellExpander';
-import { CellExpand } from '../common/enums';
+import { CellExpand } from '../../common/enums';
 
 const setup = (overrideExpandableOptions = {}) => {
   const props: CellExpanderProps = {
