@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 
-import InteractionMasks, { Props, State } from '../InteractionMasks';
+import InteractionMasks, { InteractionMasksProps, InteractionMasksState } from '../InteractionMasks';
 import SelectionMask from '../SelectionMask';
 import SelectionRangeMask from '../SelectionRangeMask';
 import CopyMask from '../CopyMask';
@@ -21,9 +21,9 @@ const columns = createColumns(NUMBER_OF_COLUMNS);
 describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
-  function setup<K extends keyof State>(overrideProps?: Partial<Props>, initialState?: Pick<State, K>, isMount = false) {
+  function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
     const onCellSelected = jest.fn();
-    const props: Props = {
+    const props: InteractionMasksProps = {
       rowVisibleStartIdx: 0,
       rowVisibleEndIdx: 10,
       colVisibleStartIdx: 0,
@@ -562,20 +562,20 @@ describe('<InteractionMasks/>', () => {
         expect(wrapper.state().selectedPosition).toEqual({ idx: -1, rowIdx: -1 });
       };
 
-      const tabCell = <K extends keyof State>(props: Partial<Props>, shiftKey?: boolean, state?: Pick<State, K>) => {
+      const tabCell = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
         const { wrapper } = setup(props, state);
         const preventDefaultSpy = jest.fn();
         simulateTab(wrapper, shiftKey, preventDefaultSpy);
         return { wrapper, preventDefaultSpy };
       };
 
-      const assertExitGridOnTab = <K extends keyof State>(props: Partial<Props>, shiftKey?: boolean, state?: Pick<State, K>) => {
+      const assertExitGridOnTab = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
         const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
         expect(preventDefaultSpy).not.toHaveBeenCalled();
         assertGridWasExited(wrapper);
       };
 
-      const assertSelectedCellOnTab = <K extends keyof State>(props: Partial<Props>, shiftKey?: boolean, state?: Pick<State, K>) => {
+      const assertSelectedCellOnTab = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
         const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
         expect(preventDefaultSpy).toHaveBeenCalled();
         return expect(wrapper.state().selectedPosition);

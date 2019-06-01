@@ -12,7 +12,7 @@ export function isFunction<T>(functionToCheck: T): boolean {
   return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }
 
-export function isEmptyObject<T>(obj: T): boolean {
+export function isEmptyObject<T extends {}>(obj: T): boolean {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
 }
 

@@ -1,7 +1,7 @@
-import classNames from 'classnames';
 import React, { useState } from 'react';
+import classNames from 'classnames';
 
-import { CellActionButton } from './common/types';
+import { CellActionButton } from '../common/types';
 
 export interface CellActionProps extends CellActionButton {
   isFirst: boolean;
@@ -13,6 +13,7 @@ export default function CellAction({ icon, actions, callback, isFirst }: CellAct
   const cellActionClasses = classNames('rdg-cell-action', {
     'rdg-cell-action-last': isFirst
   });
+
   const actionButtonClasses = classNames('rdg-cell-action-button', {
     'rdg-cell-action-button-toggled': isOpen
   });
