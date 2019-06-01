@@ -238,6 +238,9 @@ export default class ReactDataGrid extends React.Component<Props, State> {
         this.setState({ columnMetrics });
       }
     }
+    if (nextProps.sortDirection) {
+      this.setState({ sortDirection: nextProps.sortDirection });
+    }
   }
 
   selectCell({ idx, rowIdx }: Position, openEditor?: boolean) {
