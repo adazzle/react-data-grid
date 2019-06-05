@@ -1,7 +1,5 @@
 import { getSize, getColumn, isFrozen } from '../ColumnUtils';
 
-export const OVERSCAN_ROWS = 2;
-
 export const SCROLL_DIRECTION = {
   UP: 'upwards',
   DOWN: 'downwards',
@@ -113,12 +111,13 @@ export const getScrollDirection = (lastScroll, scrollTop, scrollLeft) => {
   return SCROLL_DIRECTION.NONE;
 };
 
-export const getRowOverscanStartIdx = (scrollDirection, rowVisibleStartIdx) => {
-  return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : max(0, rowVisibleStartIdx);
+export const getRowOverscanStartIdx = (scrollDirection, rowVisibleStartIdx, overScan) => {
+  const overscanBoundaryIdx = rowVisibleStartIdx - overScan.rowsStart;
+  return scrollDirection === SCROLL_DIRECTION.UP ? max(0, overscanBoundaryIdx) : max(0, rowVisibleStartIdx);
 };
 
-export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCount) => {
-  const overscanBoundaryIdx = rowVisibleEndIdx + OVERSCAN_ROWS;
+export const getRowOverscanEndIdx = (scrollDirection, rowVisibleEndIdx, rowsCount, overScan) => {
+  const overscanBoundaryIdx = rowVisibleEndIdx + overScan.rowsEnd;
   return scrollDirection === SCROLL_DIRECTION.DOWN ? min(overscanBoundaryIdx, rowsCount) : rowVisibleEndIdx;
 };
 

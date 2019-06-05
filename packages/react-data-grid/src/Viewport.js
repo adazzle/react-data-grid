@@ -53,6 +53,7 @@ class Viewport extends React.Component {
     contextMenu: PropTypes.element,
     getSubRowDetails: PropTypes.func,
     rowGroupRenderer: PropTypes.func,
+    overScan: PropTypes.object,
     enableCellSelect: PropTypes.bool.isRequired,
     enableCellAutoFocus: PropTypes.bool.isRequired,
     cellNavigationMode: PropTypes.string.isRequired,
@@ -115,8 +116,8 @@ class Viewport extends React.Component {
     const { columns } = this.props.columnMetrics;
     const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);
     const { rowVisibleStartIdx, rowVisibleEndIdx } = getVisibleBoundaries(height, rowHeight, scrollTop, rowsCount);
-    const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
-    const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, rowsCount);
+    const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx, this.props.overScan);
+    const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, rowsCount, this.props.overScan);
     const totalNumberColumns = getSize(columns);
     const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
     const nonFrozenColVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);

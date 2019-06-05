@@ -1,4 +1,4 @@
-import { getGridState, getNonFrozenRenderedColumnCount, getVisibleBoundaries, getNonFrozenVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, getRowOverscanEndIdx, OVERSCAN_ROWS, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
+import { getGridState, getNonFrozenRenderedColumnCount, getVisibleBoundaries, getNonFrozenVisibleColStartIdx, getScrollDirection, SCROLL_DIRECTION, getRowOverscanStartIdx, getRowOverscanEndIdx, getColOverscanStartIdx, getColOverscanEndIdx } from '../viewportUtils';
 
 describe('viewportUtils', () => {
   const getColumns = () => [{ width: 100, left: 0 }, { width: 100, left: 200 }, { width: 100, left: 300 }, { width: 100, left: 400 }, { width: 100, left: 500 }, { width: 100, left: 600 }];
@@ -14,7 +14,13 @@ describe('viewportUtils', () => {
         minHeight: 100,
         rowOffsetHeight: 5,
         rowHeight: 20,
-        rowsCount: 100
+        rowsCount: 100,
+        overScan: {
+          colsStart: 5,
+          colsEnd: 5,
+          rowsStart: 5,
+          rowsEnd: 5
+        },
       }, propsOverrides);
       const state = getGridState(props);
 
@@ -243,48 +249,60 @@ describe('viewportUtils', () => {
 
     describe('getRowOverscanStartIdx', () => {
       const rowVisibleStartIdx = 2;
-      it('should return rowVisibleStartIdx - OVERSCAN_ROWS if scroll direction is upwards', () => {
-        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.UP, rowVisibleStartIdx)).toBe(rowVisibleStartIdx - OVERSCAN_ROWS);
+      const overScan = {
+        colsStart: 5,
+        colsEnd: 5,
+        rowsStart: 5,
+        rowsEnd: 5
+      }
+      it('should return rowVisibleStartIdx - overScan.rowsStart (unless less than zero) if scroll direction is upwards', () => {
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.UP, rowVisibleStartIdx, overScan)).toBe(Math.max(0, rowVisibleStartIdx - overScan.rowsStart));
       });
 
       it('should return rowVisibleStartIdx if scroll direction is left', () => {
-        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.LEFT, rowVisibleStartIdx)).toBe(rowVisibleStartIdx);
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.LEFT, rowVisibleStartIdx, overScan)).toBe(rowVisibleStartIdx);
       });
 
       it('should return rowVisibleStartIdx if scroll direction is right', () => {
-        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.RIGHT, rowVisibleStartIdx)).toBe(rowVisibleStartIdx);
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.RIGHT, rowVisibleStartIdx, overScan)).toBe(rowVisibleStartIdx);
       });
 
       it('should return rowVisibleStartIdx if scroll direction is downwards', () => {
-        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.DOWN, rowVisibleStartIdx)).toBe(rowVisibleStartIdx);
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.DOWN, rowVisibleStartIdx, overScan)).toBe(rowVisibleStartIdx);
       });
 
       it('should return 0 if rowVisibleStartIdx negative', () => {
-        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.DOWN, -1)).toBe(0);
+        expect(getRowOverscanStartIdx(SCROLL_DIRECTION.DOWN, -1, overScan)).toBe(0);
       });
     });
 
     describe('getRowOverscanEndIdx', () => {
       const rowVisibleEndIdx = 20;
       const totalNumberOfRows = 30;
-      it('should return rowVisibleStartIdx + OVERSCAN_ROWS if scroll direction is downward', () => {
-        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.DOWN, rowVisibleEndIdx, totalNumberOfRows)).toBe(rowVisibleEndIdx + OVERSCAN_ROWS);
+      const overScan = {
+        colsStart: 5,
+        colsEnd: 5,
+        rowsStart: 5,
+        rowsEnd: 5
+      }
+      it('should return rowVisibleStartIdx + overScan.rowsEnd (unless greater than totalNumberOfRows), if scroll direction is downward', () => {
+        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.DOWN, rowVisibleEndIdx, totalNumberOfRows, overScan)).toBe(Math.min(totalNumberOfRows, rowVisibleEndIdx + overScan.rowsEnd));
       });
 
       it('should return totalNumberOfRows if scroll direction is downward and rowVisibleEndIdx == totalNumberRows', () => {
-        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.DOWN, totalNumberOfRows, totalNumberOfRows)).toBe(totalNumberOfRows);
+        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.DOWN, totalNumberOfRows, totalNumberOfRows, overScan)).toBe(totalNumberOfRows);
       });
 
       it('should return rowVisibleEndIdx if scroll direction is left', () => {
-        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.LEFT, rowVisibleEndIdx, totalNumberOfRows)).toBe(rowVisibleEndIdx);
+        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.LEFT, rowVisibleEndIdx, totalNumberOfRows, overScan)).toBe(rowVisibleEndIdx);
       });
 
       it('should return rowVisibleEndIdx if scroll direction is right', () => {
-        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.RIGHT, rowVisibleEndIdx, totalNumberOfRows)).toBe(rowVisibleEndIdx);
+        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.RIGHT, rowVisibleEndIdx, totalNumberOfRows, overScan)).toBe(rowVisibleEndIdx);
       });
 
       it('should return rowVisibleEndIdx if scroll direction is upwards', () => {
-        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.UP, rowVisibleEndIdx, totalNumberOfRows)).toBe(rowVisibleEndIdx);
+        expect(getRowOverscanEndIdx(SCROLL_DIRECTION.UP, rowVisibleEndIdx, totalNumberOfRows, overScan)).toBe(rowVisibleEndIdx);
       });
     });
 

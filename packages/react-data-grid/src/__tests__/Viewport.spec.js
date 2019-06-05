@@ -92,7 +92,7 @@ describe('<Viewport />', () => {
       colOverscanStartIdx: 0,
       colVisibleEndIdx: helpers.columns.length,
       colVisibleStartIdx: 0,
-      rowOverscanEndIdx: 23,
+      rowOverscanEndIdx: 26,
       rowOverscanStartIdx: 6,
       height: viewportProps.minHeight,
       scrollLeft: scrollLeft,
