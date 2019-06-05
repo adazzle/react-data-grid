@@ -17,8 +17,8 @@ The most important props that the Viewport passes to the Canvas are the followin
 - rowVisibleEndIdx - The index of the last visible row to be rendered to the canvas.
 - colVisibleStartIdx - The index of the first visible column to be rendered to the canvas.
 - colVisibleEndIdx - The index of the last visible column to be rendered to the canvas.
-- colOverscanStartIdx - The index of the first visible column to be rendered to the canvas.
-- colOverscanEndIdx - The index of the last visible column to be rendered to the canvas.
+- colOverscanStartIdx - The index of the first invisible column to be rendered to the canvas.
+- colOverscanEndIdx - The index of the last invisible column to be rendered to the canvas.
 
 ### Virtualization when scrolliing
 When the grid is being scrolled, it is important that only the minimal necessary amount of rows and columns are rendered to the canvas. One way that ReactDataGrid optimises this range, is using the scroll direction. See the diagrams below for an example of how the rendered rows are calculated on scrolling
