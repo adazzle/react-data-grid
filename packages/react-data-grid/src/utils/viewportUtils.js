@@ -13,6 +13,7 @@ export const SCROLL_DIRECTION = {
 const min = Math.min;
 const max = Math.max;
 const ceil = Math.ceil;
+const floor = Math.floor;
 
 export const getGridState = (props) => {
   const totalNumberColumns = getSize(props.columnMetrics.columns);
@@ -97,7 +98,7 @@ export const getNonFrozenRenderedColumnCount = (columnMetrics, viewportDomWidth,
 
 export const getVisibleBoundaries = (gridHeight, rowHeight, scrollTop, rowsCount) => {
   const renderedRowsCount = ceil(gridHeight / rowHeight);
-  const rowVisibleStartIdx = max(0, Math.round(scrollTop / rowHeight));
+  const rowVisibleStartIdx = max(0, floor(scrollTop / rowHeight));
   const rowVisibleEndIdx  = min(rowVisibleStartIdx  + renderedRowsCount, rowsCount);
   return { rowVisibleStartIdx, rowVisibleEndIdx  };
 };
