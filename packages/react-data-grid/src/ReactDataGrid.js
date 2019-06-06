@@ -153,6 +153,8 @@ class ReactDataGrid extends React.Component {
     }),
     /** Function called whenever a cell has been expanded */
     onCellExpand: PropTypes.func,
+    /** Object used to configure overscan indices */
+    overScan: PropTypes.object,
     /** Enables drag and drop on the grid */
     enableDragAndDrop: PropTypes.bool,
     onRowExpandToggle: PropTypes.func,

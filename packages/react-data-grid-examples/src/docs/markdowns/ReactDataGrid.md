@@ -159,10 +159,10 @@ type: `func`
 
 type: `object`
 defaultValue: `{
-  colsStart: 5,
-  colsEnd: 5,
-  rowsStart: 5,
-  rowsEnd: 5
+  colsStart: 2,
+  colsEnd: 2,
+  rowsStart: 2,
+  rowsEnd: 2
 }`
 
 
