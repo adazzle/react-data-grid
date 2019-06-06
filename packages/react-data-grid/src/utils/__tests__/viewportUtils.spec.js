@@ -20,7 +20,7 @@ describe('viewportUtils', () => {
           colsEnd: 5,
           rowsStart: 5,
           rowsEnd: 5
-        },
+        }
       }, propsOverrides);
       const state = getGridState(props);
 
@@ -254,7 +254,7 @@ describe('viewportUtils', () => {
         colsEnd: 5,
         rowsStart: 5,
         rowsEnd: 5
-      }
+      };
       it('should return rowVisibleStartIdx - overScan.rowsStart (unless less than zero) if scroll direction is upwards', () => {
         expect(getRowOverscanStartIdx(SCROLL_DIRECTION.UP, rowVisibleStartIdx, overScan)).toBe(Math.max(0, rowVisibleStartIdx - overScan.rowsStart));
       });
@@ -284,7 +284,7 @@ describe('viewportUtils', () => {
         colsEnd: 5,
         rowsStart: 5,
         rowsEnd: 5
-      }
+      };
       it('should return rowVisibleStartIdx + overScan.rowsEnd (unless greater than totalNumberOfRows), if scroll direction is downward', () => {
         expect(getRowOverscanEndIdx(SCROLL_DIRECTION.DOWN, rowVisibleEndIdx, totalNumberOfRows, overScan)).toBe(Math.min(totalNumberOfRows, rowVisibleEndIdx + overScan.rowsEnd));
       });
