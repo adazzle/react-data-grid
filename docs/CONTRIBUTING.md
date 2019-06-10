@@ -65,7 +65,7 @@ HMR is enabled, that means you won't need to reload the page wherever you make a
 We use [karma](https://karma-runner.github.io/1.0/index.html) as our test runner combined with [Phantom JS](http://phantomjs.org/) and [jasmine](https://jasmine.github.io/). You can run your test in debug or release mode.
 To run tests in release and dev mode you just need to run:
 `npm test` for release
-`npm dev-test` for debug
+`npm run dev-test` for debug
 
 When testing react components we encourage the use of [enzyme](https://github.com/airbnb/enzyme) as it presents a clean and descriptive interface for component testing.
 

@@ -133,19 +133,19 @@ describe('viewportUtils', () => {
       });
 
       describe('When incrementing scroll by a decimal number within 0.5 buffer of n*rowHeight', () => {
-        it('should increase rowVisibleEndIdx by (n + total rendered rows)', () => {
+        it('should increase rowVisibleEndIdx by ((n - 1) + total rendered rows)', () => {
           const clientScrollError = 0.5;
           const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
           scrollDown(getScrollTop, (n, { rowVisibleEndIdx }) => {
-            expect(rowVisibleEndIdx).toBe(EXPECTED_NUMBER_VISIBLE_ROWS + n);
+            expect(rowVisibleEndIdx).toBe(EXPECTED_NUMBER_VISIBLE_ROWS + (n - 1));
           });
         });
 
-        it('should increase rowVisibleEndIdx by n rows', () => {
+        it('should increase rowVisibleEndIdx by n - 1 rows', () => {
           const clientScrollError = 0.5;
           const getScrollTop = n => (n * ROW_HEIGHT) - clientScrollError;
           scrollDown(getScrollTop, (n, { rowVisibleStartIdx }) => {
-            expect(rowVisibleStartIdx).toBe(n);
+            expect(rowVisibleStartIdx).toBe(n - 1);
           });
         });
       });
