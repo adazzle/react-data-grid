@@ -13,7 +13,7 @@ export const SelectAll = forwardRef<HTMLInputElement, SelectAllProps>(function S
         ref={ref}
         onChange={onChange}
       />
-      <span className="react-grid-checkbox-label" />
+      <span className="react-grid-checkbox-label" title="Select all" />
     </label>
   );
 });
