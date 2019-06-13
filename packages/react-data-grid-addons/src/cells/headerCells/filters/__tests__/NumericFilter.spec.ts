@@ -19,6 +19,18 @@ describe('NumericFilter', () => {
       expect(request).toEqual(result);
     });
 
+    it('When using range filter with positive and negative numbers', () => {
+      const request = getRules('-7-3');
+      const result = [{ type: 2, begin: -7, end: 3 }];
+      expect(request).toEqual(result);
+    });
+
+    it('When using range filter with negative numbers', () => {
+      const request = getRules('-3--7');
+      const result = [{ type: 2, begin: -7, end: -3 }];
+      expect(request).toEqual(result);
+    });
+
     it('When using greater then filter', () => {
       const request = getRules('>7');
       const result = [{ type: 3, value: 7 }];

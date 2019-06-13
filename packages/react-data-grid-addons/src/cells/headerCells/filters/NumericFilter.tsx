@@ -122,10 +122,13 @@ export function getRules(value: string): Rule[] {
   // handle each value with comma
   return value.split(',').map((str): Rule => {
     // handle dash
-    const dashIdx = str.indexOf('-');
-    if (dashIdx > 0) {
-      const begin = parseInt(str.slice(0, dashIdx), 10);
-      const end = parseInt(str.slice(dashIdx + 1), 10);
+    const isRangeStr = /^-?\d+--?\d+$/.test(str);
+    if (isRangeStr) {
+      let begin = parseInt(str.match(/^-?\d+/)![0], 10);
+      let end = parseInt(str.match(/-+\d+$/)![0].slice(1), 10);
+      if (begin > end) {
+        end = [begin, begin = end][0]; // swap the values of Begin and End
+      }
       return { type: RuleType.Range, begin, end };
     }
 
