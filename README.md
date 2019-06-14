@@ -56,7 +56,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 Migrations
 --------
-If you intend to do a major release update for you react-data-grid check [the migration documents](migrations).
+If you intend to do a major release update for you react-data-grid check [the migration documents](docs/migrations).
 
 Features
 --------
@@ -81,7 +81,7 @@ Features
 Contributing
 ------------
 
-Please see [CONTRIBUTING](CONTRIBUTING.md)
+Please see [CONTRIBUTING](docs/CONTRIBUTING.md)
 
 Credits
 ------------
