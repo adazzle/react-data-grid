@@ -248,12 +248,14 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
   }
 
   componentWillReceiveProps(nextProps: DataGridProps) {
-    if (nextProps.columns) {
-      if (!sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
-        || nextProps.minWidth !== this.props.minWidth) {
-        const columnMetrics = this.createColumnMetrics(nextProps);
-        this.setState({ columnMetrics });
-      }
+    if (
+      nextProps.columns && (
+        !sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
+        || nextProps.minWidth !== this.props.minWidth
+      )
+    ) {
+      const columnMetrics = this.createColumnMetrics(nextProps);
+      this.setState({ columnMetrics });
     }
   }
 
