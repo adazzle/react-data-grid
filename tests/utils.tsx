@@ -1,5 +1,5 @@
 import React, { StrictMode } from 'react';
-import { render } from 'react-testing-library';
+import { render } from '@testing-library/react';
 import ReactDataGrid, { ReactDataGridProps, RowData } from '../packages/react-data-grid/src';
 
 export function getProps(extraProps?: Partial<ReactDataGridProps>): ReactDataGridProps {
