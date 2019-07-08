@@ -33,7 +33,7 @@
     "immutable": "^3.8.2",
     "react-is": "^16.8.4",
     "shallowequal": "^1.1.0",
-    "tslib": "^1.9.3"
+    "tslib": "^1.10.0"
   },
   "peerDependencies": {
     "@types/classnames": "^2.2",
