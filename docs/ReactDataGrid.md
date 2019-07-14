@@ -373,7 +373,7 @@ Component to render row actions cell when present
 
 ### `rowGroupRenderer`
 
-Function called whenever keyboard key is pressed down
+Component to override the default rendering for the row groups
 
 **type:** func  
 
