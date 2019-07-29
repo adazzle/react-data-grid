@@ -4,9 +4,9 @@ import classNames from 'classnames';
 import rowComparer from './common/utils/RowComparer';
 import Cell from './Cell';
 import { isFrozen } from './ColumnUtils';
-import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
+import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn, RowData } from './common/types';
 
-export default class Row extends React.Component<RowRendererProps> implements RowRenderer {
+export default class Row<R extends RowData> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
   static displayName = 'Row';
 
   static defaultProps = {
@@ -18,7 +18,7 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
   private readonly row = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<string, CellRenderer>();
 
-  shouldComponentUpdate(nextProps: RowRendererProps) {
+  shouldComponentUpdate(nextProps: RowRendererProps<R>) {
     return rowComparer(nextProps, this.props);
   }
 
@@ -40,12 +40,12 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
     e.preventDefault();
   };
 
-  getCell(column: CalculatedColumn) {
+  getCell(column: CalculatedColumn<R>) {
     const Renderer = this.props.cellRenderer;
     const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key } = column;
 
-    const cellProps: CellRendererProps & { ref: (cell: CellRenderer | null) => void } = {
+    const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
       ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
       idx: column.idx,
       rowIdx: idx,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FilterRendererProps } from '../../types';
 
-export default function FilterableHeaderCell({ column, onChange }: FilterRendererProps) {
+export default function FilterableHeaderCell<R>({ column, onChange }: FilterRendererProps<R>) {
   const [filterTerm, setFilterTerm] = useState('');
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {

@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { forwardRef } from 'react';
 import { EventTypes } from './common/enums';
 import { CellMetaData, RowRendererProps, CalculatedColumn } from './common/types';
 import EventBus from './masks/EventBus';
 
-interface Props {
+interface Props<R> {
   height: number;
-  columns: CalculatedColumn[];
+  columns: CalculatedColumn<R>[];
   row: unknown;
   cellRenderer?(): void;
-  cellMetaData: CellMetaData;
+  cellMetaData: CellMetaData<R>;
   isSelected?: boolean;
   idx: number;
   extraClasses?: string;
@@ -27,10 +28,10 @@ interface Props {
   name: string;
   renderer?: React.ComponentType;
   eventBus: EventBus;
-  renderBaseRow(p: RowRendererProps): React.ReactElement;
+  renderBaseRow(p: RowRendererProps<R>): React.ReactElement;
 }
 
-const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref) {
+const RowGroup = forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, ref) {
   function onRowExpandToggle(expand?: boolean) {
     const { onRowExpandToggle } = props.cellMetaData;
     if (onRowExpandToggle) {
@@ -60,7 +61,7 @@ const RowGroup = forwardRef<HTMLDivElement, Props>(function RowGroup(props, ref)
 
 export default RowGroup;
 
-interface DefaultBaseProps extends Props {
+interface DefaultBaseProps extends Props<any> {
   onRowExpandClick(): void;
   onRowExpandToggle(expand?: boolean): void;
 }

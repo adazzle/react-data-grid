@@ -29,7 +29,7 @@ import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent } from '../common/types';
+import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, RowData } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
 const SCROLL_CELL_BUFFER = 2;
@@ -40,7 +40,7 @@ interface NavAction {
   onHitBoundary(next: Position): void;
 }
 
-type SharedCanvasProps = Pick<CanvasProps,
+type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 'rowGetter'
 | 'rowsCount'
 | 'rowHeight'
@@ -57,7 +57,7 @@ type SharedCanvasProps = Pick<CanvasProps,
 | 'editorPortalTarget'
 >;
 
-export interface InteractionMasksProps extends SharedCanvasProps, InteractionMasksMetaData {
+export interface InteractionMasksProps<R> extends SharedCanvasProps<R>, InteractionMasksMetaData<R> {
   onHitTopBoundary(): void;
   onHitBottomBoundary(): void;
   onHitLeftBoundary(position: Position): void;
@@ -66,7 +66,7 @@ export interface InteractionMasksProps extends SharedCanvasProps, InteractionMas
   scrollTop: number;
   getRowHeight(rowIdx: number): number;
   getRowTop(rowIdx: number): number;
-  getRowColumns(rowIdx: number): CalculatedColumn[];
+  getRowColumns(rowIdx: number): CalculatedColumn<R>[];
 }
 
 export interface InteractionMasksState {
@@ -79,7 +79,7 @@ export interface InteractionMasksState {
   firstEditorKeyPress: string | null;
 }
 
-export default class InteractionMasks extends React.Component<InteractionMasksProps, InteractionMasksState> {
+export default class InteractionMasks<R extends RowData> extends React.Component<InteractionMasksProps<R>, InteractionMasksState> {
   static displayName = 'InteractionMasks';
 
   readonly state: Readonly<InteractionMasksState> = {
@@ -110,7 +110,7 @@ export default class InteractionMasks extends React.Component<InteractionMasksPr
 
   private unsubscribeEventHandlers: Array<() => void> = [];
 
-  componentDidUpdate(prevProps: InteractionMasksProps, prevState: InteractionMasksState) {
+  componentDidUpdate(prevProps: InteractionMasksProps<R>, prevState: InteractionMasksState) {
     const { selectedPosition, isEditorEnabled } = this.state;
     const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
     const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx);
@@ -217,7 +217,7 @@ export default class InteractionMasks extends React.Component<InteractionMasksPr
   isSelectedCellEditable(): boolean {
     const { enableCellSelect, columns, rowGetter, onCheckCellIsEditable } = this.props;
     const { selectedPosition } = this.state;
-    return isSelectedCellEditable({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
+    return isSelectedCellEditable<R>({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
   }
 
   openEditor = (event?: React.KeyboardEvent<HTMLDivElement>): void => {

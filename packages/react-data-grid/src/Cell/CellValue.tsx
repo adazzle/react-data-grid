@@ -5,7 +5,7 @@ import { FormatterProps, RowData } from '../common/types';
 import { SimpleCellFormatter } from '../formatters';
 import { CellContentProps } from './CellContent';
 
-type CellValueProps = Pick<CellContentProps,
+type CellValueProps<R> = Pick<CellContentProps<R>,
 'rowIdx'
 | 'rowData'
 | 'column'
@@ -13,8 +13,8 @@ type CellValueProps = Pick<CellContentProps,
 | 'isScrolling'
 >;
 
-export default function CellValue({ rowIdx, rowData, column, value, isScrolling }: CellValueProps) {
-  function getFormatterDependencies(row: RowData) {
+export default function CellValue<R extends RowData>({ rowIdx, rowData, column, value, isScrolling }: CellValueProps<R>) {
+  function getFormatterDependencies(row: R) {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
     if (getRowMetaData) {
@@ -25,7 +25,7 @@ export default function CellValue({ rowIdx, rowData, column, value, isScrolling 
     }
   }
 
-  function getFormatterProps(): FormatterProps<unknown> {
+  function getFormatterProps(): FormatterProps<R, unknown> {
     const row = typeof rowData.toJSON === 'function' ? rowData.toJSON() : rowData;
 
     return {

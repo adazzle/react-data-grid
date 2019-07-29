@@ -8,10 +8,10 @@ import { InteractionMasks } from './masks';
 import { isRowSelected } from './RowUtils';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, RowData, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps } from './common/types';
+import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
 import { ViewportProps, ViewportState } from './Viewport';
 
-type SharedViewportProps = Pick<ViewportProps,
+type SharedViewportProps<R> = Pick<ViewportProps<R>,
 'rowKey'
 | 'totalWidth'
 | 'rowGetter'
@@ -48,30 +48,30 @@ type SharedViewportState = Pick<ViewportState,
 | 'isScrolling'
 >;
 
-export interface CanvasProps extends SharedViewportProps, SharedViewportState {
-  columns: CalculatedColumn[];
+export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportState {
+  columns: CalculatedColumn<R>[];
   width: number;
   totalColumnWidth: number;
   onScroll(position: ScrollPosition): void;
 }
 
-type RendererProps = Pick<CanvasProps, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
-  ref(row: (RowRenderer & React.Component<RowRendererProps>) | null): void;
+type RendererProps<R> = Pick<CanvasProps<R>, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
+  ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
-  row: RowData;
+  row: R;
   subRowDetails?: SubRowDetails;
   height: number;
   isSelected: boolean;
   scrollLeft: number;
 };
 
-export default class Canvas extends React.PureComponent<CanvasProps> {
+export default class Canvas<R extends RowData> extends React.PureComponent<CanvasProps<R>> {
   static displayName = 'Canvas';
 
   private readonly canvas = React.createRef<HTMLDivElement>();
-  private readonly interactionMasks = React.createRef<InteractionMasks>();
-  private readonly rows = new Map<number, RowRenderer & React.Component<RowRendererProps>>();
+  private readonly interactionMasks = React.createRef<InteractionMasks<R>>();
+  private readonly rows = new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>();
   private unsubscribeScrollToColumn?(): void;
   private _scroll = { scrollTop: 0, scrollLeft: 0 };
 
@@ -83,7 +83,7 @@ export default class Canvas extends React.PureComponent<CanvasProps> {
     this.unsubscribeScrollToColumn!();
   }
 
-  componentDidUpdate(prevProps: CanvasProps) {
+  componentDidUpdate(prevProps: CanvasProps<R>) {
     const { scrollToRowIndex } = this.props;
     if (scrollToRowIndex && prevProps.scrollToRowIndex !== scrollToRowIndex) {
       this.scrollToRow(scrollToRowIndex);
@@ -163,7 +163,7 @@ export default class Canvas extends React.PureComponent<CanvasProps> {
     return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
   }
 
-  isRowSelected(idx: number, row: RowData) {
+  isRowSelected(idx: number, row: R) {
     // Use selectedRows if set
     if (this.props.selectedRows) {
       const selectedRow = this.props.selectedRows.find(r => {
@@ -226,15 +226,15 @@ export default class Canvas extends React.PureComponent<CanvasProps> {
     return row && row.props ? row.props.columns : this.props.columns;
   };
 
-  renderCustomRowRenderer(props: RendererProps) {
+  renderCustomRowRenderer(props: RendererProps<R>) {
     const { ref, ...otherProps } = props;
     const CustomRowRenderer = this.props.rowRenderer!;
-    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps) => <Row ref={ref} {...p} /> };
+    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps<R>) => <Row ref={ref} {...p} /> };
 
     if (isElement(CustomRowRenderer)) {
       if (CustomRowRenderer.type === Row) {
         // In the case where Row is specified as the custom render, ensure the correct ref is passed
-        return <Row {...props} />;
+        return <Row<R> {...props} />;
       }
       return React.cloneElement(CustomRowRenderer, customRowRendererProps);
     }
@@ -242,7 +242,7 @@ export default class Canvas extends React.PureComponent<CanvasProps> {
     return <CustomRowRenderer {...customRowRendererProps} />;
   }
 
-  renderGroupRow(props: RendererProps) {
+  renderGroupRow(props: RendererProps<R>) {
     const { ref, ...rowGroupProps } = props;
     return (
       <RowGroup
@@ -251,12 +251,12 @@ export default class Canvas extends React.PureComponent<CanvasProps> {
         name={props.row.name as string}
         eventBus={this.props.eventBus}
         renderer={this.props.rowGroupRenderer}
-        renderBaseRow={(p: RowRendererProps) => <Row ref={ref} {...p} />}
+        renderBaseRow={(p: RowRendererProps<R>) => <Row ref={ref} {...p} />}
       />
     );
   }
 
-  renderRow(props: RendererProps) {
+  renderRow(props: RendererProps<R>) {
     const { row } = props;
 
     if (row.__metaData && row.__metaData.getRowRenderer) {
@@ -292,7 +292,7 @@ export default class Canvas extends React.PureComponent<CanvasProps> {
         const rowIdx = rowOverscanStartIdx + idx;
         return row && this.renderRow({
           key: rowIdx,
-          ref: (row: (RowRenderer & React.Component<RowRendererProps>) | null) => {
+          ref: (row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null) => {
             if (row) {
               this.rows.set(rowIdx, row);
             } else {
@@ -333,7 +333,7 @@ export default class Canvas extends React.PureComponent<CanvasProps> {
         ref={this.canvas}
         onScroll={this.handleScroll}
       >
-        <InteractionMasks
+        <InteractionMasks<R>
           ref={this.interactionMasks}
           rowGetter={rowGetter}
           rowsCount={rowsCount}

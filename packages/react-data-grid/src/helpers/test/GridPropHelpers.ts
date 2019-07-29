@@ -1,6 +1,6 @@
 import { CalculatedColumn } from '../../common/types';
 
-const columns: CalculatedColumn[] = [{
+const columns: CalculatedColumn<unknown>[] = [{
   idx: 0,
   key: 'id',
   name: 'ID',

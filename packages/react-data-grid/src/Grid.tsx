@@ -9,7 +9,7 @@ import { DEFINE_SORT } from './common/enums';
 import { DataGridProps, DataGridState } from './ReactDataGrid';
 import { EventBus } from './masks';
 
-type SharedDataGridProps = Pick<DataGridProps,
+type SharedDataGridProps<R> = Pick<DataGridProps<R>,
 'rowKey'
 | 'draggableHeaderCell'
 | 'getValidFilterValues'
@@ -32,16 +32,16 @@ type SharedDataGridProps = Pick<DataGridProps,
 | 'editorPortalTarget'
 >;
 
-type SharedDataGridState = Pick<DataGridState,
+type SharedDataGridState<R> = Pick<DataGridState<R>,
 'columnMetrics'
 | 'sortColumn'
 | 'sortDirection'
 >;
 
-export interface GridProps extends SharedDataGridProps, SharedDataGridState {
-  headerRows: HeaderRowData[];
-  cellMetaData: CellMetaData;
-  selectedRows?: RowData[];
+export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridState<R> {
+  headerRows: HeaderRowData<R>[];
+  cellMetaData: CellMetaData<R>;
+  selectedRows?: R[];
   rowSelection?: RowSelection;
   rowOffsetHeight: number;
   onSort(columnKey: string, sortDirection: DEFINE_SORT): void;
@@ -50,14 +50,14 @@ export interface GridProps extends SharedDataGridProps, SharedDataGridState {
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
   eventBus: EventBus;
-  interactionMasksMetaData: InteractionMasksMetaData;
+  interactionMasksMetaData: InteractionMasksMetaData<R>;
 }
 
-export default class Grid extends React.Component<GridProps> {
+export default class Grid<R extends RowData> extends React.Component<GridProps<R>> {
   static displayName = 'Grid';
 
-  private readonly header = React.createRef<Header>();
-  private readonly viewport = React.createRef<Viewport>();
+  private readonly header = React.createRef<Header<R>>();
+  private readonly viewport = React.createRef<Viewport<R>>();
   private _scrollLeft?: number = undefined;
 
   _onScroll() {
@@ -99,7 +99,7 @@ export default class Grid extends React.Component<GridProps> {
 
     return (
       <div className="react-grid-Grid" style={{ minHeight: this.props.minHeight }}>
-        <Header
+        <Header<R>
           ref={this.header}
           columnMetrics={this.props.columnMetrics}
           onColumnResize={this.props.onColumnResize}
@@ -123,7 +123,7 @@ export default class Grid extends React.Component<GridProps> {
             onKeyDown={this.props.onViewportKeydown}
             onKeyUp={this.props.onViewportKeyup}
           >
-            <Viewport
+            <Viewport<R>
               ref={this.viewport}
               rowKey={this.props.rowKey}
               rowHeight={this.props.rowHeight}

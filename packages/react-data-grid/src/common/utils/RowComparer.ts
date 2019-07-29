@@ -1,6 +1,6 @@
 import { RowRendererProps } from '../types';
 
-export default function shouldRowUpdate(nextProps: RowRendererProps, currentProps: RowRendererProps) {
+export default function shouldRowUpdate<R>(nextProps: RowRendererProps<R>, currentProps: RowRendererProps<R>) {
   return currentProps.columns !== nextProps.columns
     || nextProps.row !== currentProps.row
     || currentProps.colOverscanStartIdx !== nextProps.colOverscanStartIdx

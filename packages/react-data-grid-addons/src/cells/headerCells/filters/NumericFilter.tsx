@@ -12,19 +12,19 @@ type Rule =
   | { type: RuleType.Range; begin: number; end: number }
   | { type: RuleType.GreaterThen | RuleType.LessThen | RuleType.Number; value: number };
 
-interface ChangeEvent {
+interface ChangeEvent<R> {
   filterTerm: Rule[] | null;
-  column: Column;
+  column: Column<R>;
   rawValue: string;
   filterValues: typeof filterValues;
 }
 
-interface Props {
-  column: Column;
-  onChange(event: ChangeEvent): void;
+interface Props<R> {
+  column: Column<R>;
+  onChange(event: ChangeEvent<R>): void;
 }
 
-export default function NumericFilter({ column, onChange }: Props) {
+export default function NumericFilter<R>({ column, onChange }: Props<R>) {
   /** Validates the input */
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
     const result = /[><,0-9-]/.test(event.key);
