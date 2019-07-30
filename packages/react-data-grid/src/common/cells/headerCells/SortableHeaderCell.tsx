@@ -12,7 +12,7 @@ const SORT_TEXT = {
 export interface Props<R> {
   column: CalculatedColumn<R>;
   rowType: HeaderRowType;
-  onSort(columnKey: string, direction: DEFINE_SORT): void;
+  onSort(columnKey: keyof R, direction: DEFINE_SORT): void;
   sortDirection: DEFINE_SORT;
   sortDescendingFirst: boolean;
 }

@@ -5,7 +5,7 @@ import Row from './Row';
 import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
-import { isRowSelected } from './RowUtils';
+import * as rowUtils from './RowUtils';
 import { getColumnScrollPosition } from './utils/canvasUtils';
 import { EventTypes } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
@@ -66,7 +66,7 @@ type RendererProps<R> = Pick<CanvasProps<R>, 'rowVisibleStartIdx' | 'rowVisibleE
   scrollLeft: number;
 };
 
-export default class Canvas<R extends RowData> extends React.PureComponent<CanvasProps<R>> {
+export default class Canvas<R extends {}> extends React.PureComponent<CanvasProps<R>> {
   static displayName = 'Canvas';
 
   private readonly canvas = React.createRef<HTMLDivElement>();
@@ -167,7 +167,7 @@ export default class Canvas<R extends RowData> extends React.PureComponent<Canva
     // Use selectedRows if set
     if (this.props.selectedRows) {
       const selectedRow = this.props.selectedRows.find(r => {
-        const rowKeyValue = typeof row.get === 'function' ? row.get(this.props.rowKey) : row[this.props.rowKey];
+        const rowKeyValue = rowUtils.get(row, this.props.rowKey);
         return r[this.props.rowKey] === rowKeyValue;
       });
       return !!(selectedRow && selectedRow.isSelected);
@@ -176,7 +176,7 @@ export default class Canvas<R extends RowData> extends React.PureComponent<Canva
     // Else use new rowSelection props
     if (this.props.rowSelection) {
       const { keys, indexes, isSelectedKey } = this.props.rowSelection as { [key: string]: unknown };
-      return isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, row, idx);
+      return rowUtils.isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, row, idx);
     }
 
     return false;
@@ -244,11 +244,13 @@ export default class Canvas<R extends RowData> extends React.PureComponent<Canva
 
   renderGroupRow(props: RendererProps<R>) {
     const { ref, ...rowGroupProps } = props;
+    const row = props.row as RowData;
+
     return (
       <RowGroup
         {...rowGroupProps}
-        {...props.row.__metaData!}
-        name={props.row.name as string}
+        {...row.__metaData!}
+        name={row.name!}
         eventBus={this.props.eventBus}
         renderer={this.props.rowGroupRenderer}
         renderBaseRow={(p: RowRendererProps<R>) => <Row ref={ref} {...p} />}
@@ -257,7 +259,7 @@ export default class Canvas<R extends RowData> extends React.PureComponent<Canva
   }
 
   renderRow(props: RendererProps<R>) {
-    const { row } = props;
+    const row = props.row as RowData;
 
     if (row.__metaData && row.__metaData.getRowRenderer) {
       return row.__metaData.getRowRenderer(this.props, props.idx);
@@ -278,7 +280,7 @@ export default class Canvas<R extends RowData> extends React.PureComponent<Canva
     // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
     return (
       <div key={key} style={{ height }}>
-        {this.props.columns.map(column => <div style={{ width: column.width }} key={column.key} />)}
+        {this.props.columns.map(column => <div style={{ width: column.width }} key={column.key as string} />)}
       </div>
     );
   }

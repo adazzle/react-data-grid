@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps, RowData } from './common/types';
+import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
@@ -18,7 +18,7 @@ export interface Props<R> extends CellRendererProps<R> {
   cellControls?: unknown;
 }
 
-export default class Cell<R extends RowData> extends React.PureComponent<Props<R>> implements CellRenderer {
+export default class Cell<R extends {}> extends React.PureComponent<Props<R>> implements CellRenderer {
   static defaultProps = {
     value: ''
   };

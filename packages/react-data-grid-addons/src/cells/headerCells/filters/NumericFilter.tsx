@@ -1,5 +1,5 @@
 import React from 'react';
-import { Column, RowData } from 'react-data-grid';
+import { Column } from 'react-data-grid';
 
 enum RuleType {
   Number = 1,
@@ -75,13 +75,13 @@ export default function NumericFilter<R>({ column, onChange }: Props<R>) {
 }
 
 
-function filterValues(row: RowData, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: string) {
+function filterValues<R extends {}>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
   if (columnFilter.filterTerm == null) {
     return true;
   }
 
   // implement default filter logic
-  const value = parseInt(row[columnKey] as string, 10);
+  const value = parseInt(row[columnKey] as unknown as string, 10);
   for (const ruleKey in columnFilter.filterTerm) {
     const rule = columnFilter.filterTerm[ruleKey];
 

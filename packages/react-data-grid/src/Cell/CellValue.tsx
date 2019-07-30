@@ -1,7 +1,7 @@
 import React from 'react';
 import { isElement, isValidElementType } from 'react-is';
 
-import { FormatterProps, RowData } from '../common/types';
+import { FormatterProps } from '../common/types';
 import { SimpleCellFormatter } from '../formatters';
 import { CellContentProps } from './CellContent';
 
@@ -13,7 +13,7 @@ type CellValueProps<R> = Pick<CellContentProps<R>,
 | 'isScrolling'
 >;
 
-export default function CellValue<R extends RowData>({ rowIdx, rowData, column, value, isScrolling }: CellValueProps<R>) {
+export default function CellValue<R extends {}>({ rowIdx, rowData, column, value, isScrolling }: CellValueProps<R>) {
   function getFormatterDependencies(row: R) {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
@@ -25,16 +25,14 @@ export default function CellValue<R extends RowData>({ rowIdx, rowData, column, 
     }
   }
 
-  function getFormatterProps(): FormatterProps<R, unknown> {
-    const row = typeof rowData.toJSON === 'function' ? rowData.toJSON() : rowData;
-
+  function getFormatterProps(): FormatterProps<R> {
     return {
       value,
       column,
       rowIdx,
       isScrolling,
-      row,
-      dependentValues: getFormatterDependencies(row)
+      row: rowData,
+      dependentValues: getFormatterDependencies(rowData)
     };
   }
 

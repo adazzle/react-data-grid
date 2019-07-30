@@ -34,7 +34,7 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
 export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
-  private readonly cells = new Map<string, HeaderCell<R>>();
+  private readonly cells = new Map<keyof R, HeaderCell<R>>();
 
   shouldComponentUpdate(nextProps: HeaderRowProps<R>) {
     return (
@@ -110,7 +110,7 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
 
       const cell = (
         <HeaderCell<R>
-          key={key}
+          key={key as string}
           ref={node => node ? this.cells.set(key, node) : this.cells.delete(key)}
           column={column}
           rowType={rowType}

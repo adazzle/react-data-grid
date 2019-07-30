@@ -1,6 +1,12 @@
 import { CalculatedColumn } from '../../common/types';
 
-const columns: CalculatedColumn<unknown>[] = [{
+export interface RowType {
+  id: number;
+  title: string;
+  count: number;
+}
+
+const columns: CalculatedColumn<RowType>[] = [{
   idx: 0,
   key: 'id',
   name: 'ID',
@@ -20,7 +26,7 @@ const columns: CalculatedColumn<unknown>[] = [{
   left: 200
 }];
 
-const _rows: Array<{ id: number; title: string; count: number }> = [];
+const _rows: RowType[] = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,

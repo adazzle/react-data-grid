@@ -4,11 +4,13 @@ import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+export type SelectedRow<R> = R & { isSelected: boolean };
+
 export interface Column<R, V = unknown, DV = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
-  key: string;
+  key: keyof R;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width?: number;
   hidden?: boolean;
@@ -41,7 +43,7 @@ export interface Column<R, V = unknown, DV = unknown> {
   filterRenderer?: React.ComponentType<FilterRendererProps<R, V, DV>>;
 
   // TODO: these props are only used by checkbox editor and we should remove them
-  onCellChange?(rowIdx: number, key: string, dependentValues: DV, event: React.SyntheticEvent): void;
+  onCellChange?(rowIdx: number, key: keyof R, dependentValues: DV, event: React.SyntheticEvent): void;
   getRowMetaData?(rowData: R, column: CalculatedColumn<R, V, DV>): unknown;
 }
 
@@ -62,13 +64,13 @@ export interface ColumnMetrics<R> {
 }
 
 export interface RowData {
-  [key: string]: unknown;
-  get?(key: string): unknown;
+  name?: string;
+  get?(key: string | number | symbol): unknown;
   __metaData?: RowGroupMetaData;
 }
 
 export interface CellMetaData<R> {
-  rowKey: string;
+  rowKey: keyof R;
   onCellClick(position: Position): void;
   onCellContextMenu(position: Position): void;
   onCellDoubleClick(position: Position): void;
@@ -117,7 +119,7 @@ export interface Editor<V = never> extends React.Component {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<R, V, DV = unknown> {
+export interface FormatterProps<R, V = unknown, DV = unknown> {
   rowIdx: number;
   value: V;
   column: CalculatedColumn<R, V, DV>;
@@ -129,7 +131,7 @@ export interface FormatterProps<R, V, DV = unknown> {
 export interface EditorProps<R, V = unknown, DV = unknown> {
   column: CalculatedColumn<R, V, DV>;
   value: V;
-  rowMetaData?: unknown;
+  rowMetaData?: DV;
   rowData: R;
   height: number;
   onCommit(args?: { key?: string }): void;
@@ -243,12 +245,12 @@ export interface ScrollPosition {
 
 export interface InteractionMasksMetaData<R> {
   onCheckCellIsEditable?(e: CheckCellIsEditableEvent<R>): boolean;
-  onCellCopyPaste?(e: CellCopyPasteEvent): void;
+  onCellCopyPaste?(e: CellCopyPasteEvent<R>): void;
   onGridRowsUpdated(
-    cellKey: string,
+    cellKey: keyof R,
     toRow1: number,
     toRow2: number,
-    data: { [key: string]: unknown },
+    data: { [key: string]: unknown }, // FIX ME: Use Pick<R, K>
     updateAction: UpdateActions,
     fromRow?: number
   ): void;
@@ -258,7 +260,7 @@ export interface InteractionMasksMetaData<R> {
   onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
   onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
   onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onCommit(e: CommitEvent): void;
+  onCommit(e: CommitEvent<R>): void;
 }
 
 export interface RowGroupMetaData {
@@ -284,8 +286,8 @@ export interface AddFilterEvent<R> {
   column: Column<R>;
 }
 
-export interface CommitEvent<V = never> {
-  cellKey: string;
+export interface CommitEvent<R, V = never> {
+  cellKey: keyof R;
   rowIdx: number;
   updated: V;
   key?: string;
@@ -299,7 +301,7 @@ export interface RowExpandToggleEvent {
 }
 
 export interface GridRowsUpdatedEvent<R, V = never> {
-  cellKey: string;
+  cellKey: keyof R;
   fromRow: number;
   toRow: number;
   fromRowId: unknown;
@@ -310,8 +312,8 @@ export interface GridRowsUpdatedEvent<R, V = never> {
   fromRowData: R;
 }
 
-export interface CellCopyPasteEvent {
-  cellKey: string;
+export interface CellCopyPasteEvent<R> {
+  cellKey: keyof R;
   rowIdx: number;
   fromRow: number;
   toRow: number;
@@ -319,7 +321,7 @@ export interface CellCopyPasteEvent {
 }
 
 export interface CheckCellIsEditableEvent<R> extends Position {
-  row: unknown;
+  row: R;
   column: Column<R>;
 }
 

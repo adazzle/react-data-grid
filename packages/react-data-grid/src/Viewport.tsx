@@ -14,7 +14,7 @@ import {
   findLastFrozenColumnIndex
 } from './utils/viewportUtils';
 import { GridProps } from './Grid';
-import { ScrollPosition, RowData } from './common/types';
+import { ScrollPosition } from './common/types';
 import { SCROLL_DIRECTION } from './common/enums';
 
 interface ScrollParams {
@@ -88,7 +88,7 @@ export interface ViewportState {
   lastFrozenColumnIndex: number;
 }
 
-export default class Viewport<R extends RowData> extends React.Component<ViewportProps<R>, ViewportState> {
+export default class Viewport<R extends {}> extends React.Component<ViewportProps<R>, ViewportState> {
   static displayName = 'Viewport';
 
   readonly state: Readonly<ViewportState> = getGridState(this.props);

@@ -29,7 +29,7 @@ import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, RowData } from '../common/types';
+import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
 const SCROLL_CELL_BUFFER = 2;
@@ -79,7 +79,7 @@ export interface InteractionMasksState {
   firstEditorKeyPress: string | null;
 }
 
-export default class InteractionMasks<R extends RowData> extends React.Component<InteractionMasksProps<R>, InteractionMasksState> {
+export default class InteractionMasks<R extends {}> extends React.Component<InteractionMasksProps<R>, InteractionMasksState> {
   static displayName = 'InteractionMasks';
 
   readonly state: Readonly<InteractionMasksState> = {
@@ -620,7 +620,7 @@ export default class InteractionMasks<R extends RowData> extends React.Component
     onDragHandleDoubleClick({ idx, rowIdx, rowData });
   };
 
-  onCommit = (args: CommitEvent): void => {
+  onCommit = (args: CommitEvent<R>): void => {
     this.props.onCommit(args);
     this.closeEditor();
   };

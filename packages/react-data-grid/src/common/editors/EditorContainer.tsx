@@ -16,7 +16,7 @@ export interface Props<R> extends SharedInteractionMasksProps<R>, SharedInteract
   value: unknown;
   column: CalculatedColumn<R>;
   onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(e: CommitEvent): void;
+  onCommit(e: CommitEvent<R>): void;
   onCommitCancel(): void;
 }
 

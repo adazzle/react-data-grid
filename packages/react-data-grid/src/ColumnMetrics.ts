@@ -96,9 +96,9 @@ type ColumnComparer<R> = (colA: Column<R>, colB: Column<R>) => boolean;
 function compareEachColumn<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
   if (getSize(prevColumns) !== getSize(nextColumns)) return false;
 
-  const keys = new Set<string>();
-  const prevColumnsMap = new Map<string, Column<R>>();
-  const nextColumnsMap = new Map<string, Column<R>>();
+  const keys = new Set<keyof R>();
+  const prevColumnsMap = new Map<keyof R, Column<R>>();
+  const nextColumnsMap = new Map<keyof R, Column<R>>();
 
   for (const column of prevColumns) {
     keys.add(column.key);

@@ -4,7 +4,7 @@ import { isValidElementType } from 'react-is';
 import Header from './Header';
 import Viewport, { ScrollState } from './Viewport';
 import { isFrozen } from './ColumnUtils';
-import { HeaderRowData, CellMetaData, RowData, RowSelection, InteractionMasksMetaData } from './common/types';
+import { HeaderRowData, CellMetaData, RowSelection, InteractionMasksMetaData, SelectedRow } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { DataGridProps, DataGridState } from './ReactDataGrid';
 import { EventBus } from './masks';
@@ -41,10 +41,10 @@ type SharedDataGridState<R> = Pick<DataGridState<R>,
 export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridState<R> {
   headerRows: HeaderRowData<R>[];
   cellMetaData: CellMetaData<R>;
-  selectedRows?: R[];
+  selectedRows?: SelectedRow<R>[];
   rowSelection?: RowSelection;
   rowOffsetHeight: number;
-  onSort(columnKey: string, sortDirection: DEFINE_SORT): void;
+  onSort(columnKey: keyof R, sortDirection: DEFINE_SORT): void;
   totalWidth: number | string;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -53,7 +53,7 @@ export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridStat
   interactionMasksMetaData: InteractionMasksMetaData<R>;
 }
 
-export default class Grid<R extends RowData> extends React.Component<GridProps<R>> {
+export default class Grid<R extends {}> extends React.Component<GridProps<R>> {
   static displayName = 'Grid';
 
   private readonly header = React.createRef<Header<R>>();

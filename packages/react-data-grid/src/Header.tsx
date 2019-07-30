@@ -6,7 +6,7 @@ import HeaderRow from './HeaderRow';
 import { resizeColumn } from './ColumnMetrics';
 import getScrollbarSize from './getScrollbarSize';
 import { HeaderRowType } from './common/enums';
-import { CalculatedColumn, ColumnMetrics, RowData } from './common/types';
+import { CalculatedColumn, ColumnMetrics } from './common/types';
 import { GridProps } from './Grid';
 
 type SharedGridProps<R> = Pick<GridProps<R>,
@@ -30,7 +30,7 @@ interface State<R> {
   resizing: { column: CalculatedColumn<R>; columnMetrics: ColumnMetrics<R> } | null;
 }
 
-export default class Header<R extends RowData> extends React.Component<HeaderProps<R>, State<R>> {
+export default class Header<R extends {}> extends React.Component<HeaderProps<R>, State<R>> {
   readonly state: Readonly<State<R>> = { resizing: null };
 
   private readonly row = React.createRef<HeaderRow<R>>();

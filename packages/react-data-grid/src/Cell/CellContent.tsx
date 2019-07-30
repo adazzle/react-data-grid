@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
 import { Props as CellProps } from '../Cell';
 import CellValue from './CellValue';
-import { RowData } from '../common/types';
 
 export type CellContentProps<R> = Pick<CellProps<R>,
 'idx'
@@ -21,7 +20,7 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 >;
 
 
-export default function CellContent<R extends RowData>({ idx, tooltip, expandableOptions, height, cellMetaData, cellControls, ...props }: CellContentProps<R>) {
+export default function CellContent<R extends {}>({ idx, tooltip, expandableOptions, height, cellMetaData, cellControls, ...props }: CellContentProps<R>) {
   const { column } = props;
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;

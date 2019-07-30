@@ -1,8 +1,8 @@
 import { RowData } from './common/types';
 
-export function get<R extends RowData>(row: R, property: string) {
-  if (typeof row.get === 'function') {
-    return row.get(property);
+export function get<R extends {}>(row: R, property: keyof R) {
+  if (typeof (row as RowData).get === 'function') {
+    return (row as RowData).get!(property);
   }
 
   return row[property];
