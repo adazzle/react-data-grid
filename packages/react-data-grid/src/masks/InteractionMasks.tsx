@@ -15,9 +15,7 @@ import { isKeyPrintable, isCtrlKeyHeldDown } from '../common/utils/keyboardUtils
 import {
   getSelectedDimensions,
   getSelectedCellValue,
-  getSelectedRow,
   getSelectedRangeDimensions,
-  getSelectedColumn,
   getNextSelectedCellPosition,
   canExitGrid,
   isSelectedCellEditable,
@@ -312,7 +310,7 @@ export default class InteractionMasks<R extends {}> extends React.Component<Inte
       return;
     }
 
-    const cellKey = getSelectedColumn({ selectedPosition, columns }).key;
+    const cellKey = columns[selectedPosition.idx].key;
     const { rowIdx: fromRow, value } = copiedPosition;
 
     if (onCellCopyPaste) {
@@ -599,7 +597,7 @@ export default class InteractionMasks<R extends {}> extends React.Component<Inte
 
     const { rowIdx, overRowIdx } = draggedPosition;
     const { columns, onGridRowsUpdated, rowGetter } = this.props;
-    const column = getSelectedColumn({ selectedPosition: draggedPosition, columns });
+    const column = columns[draggedPosition.idx];
     const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
     const cellKey = column.key;
     const fromRow = rowIdx < overRowIdx ? rowIdx : overRowIdx;
@@ -616,7 +614,7 @@ export default class InteractionMasks<R extends {}> extends React.Component<Inte
     const { onDragHandleDoubleClick, rowGetter } = this.props;
     const { selectedPosition } = this.state;
     const { idx, rowIdx } = selectedPosition;
-    const rowData = getSelectedRow({ selectedPosition, rowGetter });
+    const rowData = rowGetter(selectedPosition.rowIdx);
     onDragHandleDoubleClick({ idx, rowIdx, rowData });
   };
 
@@ -676,7 +674,7 @@ export default class InteractionMasks<R extends {}> extends React.Component<Inte
   render() {
     const { rowGetter, contextMenu, getRowColumns, scrollLeft, scrollTop } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
-    const rowData = getSelectedRow({ selectedPosition, rowGetter });
+    const rowData = rowGetter(selectedPosition.rowIdx);
     const columns = getRowColumns(selectedPosition.rowIdx);
     return (
       <div
@@ -701,14 +699,14 @@ export default class InteractionMasks<R extends {}> extends React.Component<Inte
         }
         {isEditorEnabled && (
           <EditorPortal target={this.props.editorPortalTarget}>
-            <EditorContainer
+            <EditorContainer<R>
               firstEditorKeyPress={firstEditorKeyPress}
               onCommit={this.onCommit}
               onCommitCancel={this.onCommitCancel}
               rowIdx={selectedPosition.rowIdx}
               value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
               rowData={rowData}
-              column={getSelectedColumn({ selectedPosition, columns })}
+              column={columns[selectedPosition.idx]}
               scrollLeft={scrollLeft}
               scrollTop={scrollTop}
               {...this.getSelectedDimensions(selectedPosition)}

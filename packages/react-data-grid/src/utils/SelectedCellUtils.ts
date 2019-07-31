@@ -5,15 +5,6 @@ import { CalculatedColumn, Position, Range, Dimension, RowGetter } from '../comm
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
 
-interface getSelectedRowOpts<R> {
-  selectedPosition: Position;
-  rowGetter: RowGetter<R>;
-}
-
-export function getSelectedRow<R>({ selectedPosition, rowGetter }: getSelectedRowOpts<R>): R {
-  return rowGetter(selectedPosition.rowIdx);
-}
-
 interface getSelectedDimensionsOpts<R> {
   selectedPosition: Position;
   columns: CalculatedColumn<R>[];
@@ -61,15 +52,6 @@ export function getSelectedRangeDimensions<R>({ selectedRange: { topLeft, bottom
   return { width, left, top, height, zIndex };
 }
 
-interface getSelectedColumnOpts<R> {
-  selectedPosition: Position;
-  columns: CalculatedColumn<R>[];
-}
-
-export function getSelectedColumn<R>({ selectedPosition, columns }: getSelectedColumnOpts<R>): CalculatedColumn<R> {
-  return columns[selectedPosition.idx];
-}
-
 interface getSelectedCellValueOpts<R> {
   selectedPosition: Position;
   columns: CalculatedColumn<R>[];
@@ -77,8 +59,8 @@ interface getSelectedCellValueOpts<R> {
 }
 
 export function getSelectedCellValue<R>({ selectedPosition, columns, rowGetter }: getSelectedCellValueOpts<R>) {
-  const column = getSelectedColumn({ selectedPosition, columns });
-  const row = getSelectedRow({ selectedPosition, rowGetter });
+  const column = columns[selectedPosition.idx];
+  const row = rowGetter(selectedPosition.rowIdx);
 
   return row && column ? rowUtils.get(row, column.key) : null;
 }
@@ -92,8 +74,8 @@ interface isSelectedCellEditableOpts<R> {
 }
 
 export function isSelectedCellEditable<R>({ enableCellSelect, selectedPosition, columns, rowGetter, onCheckCellIsEditable }: isSelectedCellEditableOpts<R>): boolean {
-  const column = getSelectedColumn({ selectedPosition, columns });
-  const row = getSelectedRow({ selectedPosition, rowGetter });
+  const column = columns[selectedPosition.idx];
+  const row = rowGetter(selectedPosition.idx);
   const isCellEditable = onCheckCellIsEditable ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
   return isCellEditable && canEdit<R>(column, row, enableCellSelect);
 }

@@ -44,7 +44,7 @@ export interface Column<R, V = unknown, DV = unknown> {
 
   // TODO: these props are only used by checkbox editor and we should remove them
   onCellChange?(rowIdx: number, key: keyof R, dependentValues: DV, event: React.SyntheticEvent): void;
-  getRowMetaData?(rowData: R, column: CalculatedColumn<R, V, DV>): unknown;
+  getRowMetaData?(rowData: R, column: CalculatedColumn<R, V, DV>): DV;
 }
 
 export interface CalculatedColumn<R, V = unknown, DV = unknown> extends Column<R, V, DV> {
