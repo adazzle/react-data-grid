@@ -181,7 +181,7 @@ export interface FilterRendererProps<R, V = unknown, DV = unknown> {
   column: CalculatedColumn<R, V, DV>;
   onChange?(event: AddFilterEvent<R>): void;
   /** TODO: remove */
-  getValidFilterValues?(): void;
+  getValidFilterValues?(columnKey: keyof R): unknown;
 }
 
 export interface SubRowDetails<C = unknown> {
