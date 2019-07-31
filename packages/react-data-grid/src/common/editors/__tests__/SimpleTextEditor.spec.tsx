@@ -3,9 +3,11 @@ import { mount } from 'enzyme';
 import SimpleTextEditor from '../SimpleTextEditor';
 import { CalculatedColumn } from '../../types';
 
+interface Row { text: string }
+
 describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
-    const fakeColumn: CalculatedColumn<string> = {
+    const fakeColumn: CalculatedColumn<Row, string> = {
       idx: 0,
       key: 'text',
       name: 'name',
@@ -15,7 +17,7 @@ describe('SimpleTextEditor', () => {
     function fakeBlurCb() { return true; }
 
     function setup() {
-      return mount<SimpleTextEditor>(
+      return mount<SimpleTextEditor<Row>>(
         <SimpleTextEditor
           value="This is a test"
           onBlur={fakeBlurCb}

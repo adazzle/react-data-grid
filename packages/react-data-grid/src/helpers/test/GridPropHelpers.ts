@@ -1,12 +1,13 @@
-import { CalculatedColumn } from '../../common/types';
+import { CalculatedColumn, CellMetaData } from '../../common/types';
 
-export interface RowType {
-  id: number;
-  title: string;
-  count: number;
+export interface Row {
+  id?: number;
+  title?: string;
+  count?: number;
+  description?: string;
 }
 
-const columns: CalculatedColumn<RowType>[] = [{
+const columns: CalculatedColumn<Row>[] = [{
   idx: 0,
   key: 'id',
   name: 'ID',
@@ -26,7 +27,7 @@ const columns: CalculatedColumn<RowType>[] = [{
   left: 200
 }];
 
-const _rows: RowType[] = [];
+const _rows: Row[] = [];
 for (let i = 0; i < 1000; i++) {
   _rows.push({
     id: i,
@@ -50,7 +51,7 @@ export default {
   }
 };
 
-export const fakeCellMetaData = {
+export const fakeCellMetaData: CellMetaData<Row> = {
   rowKey: 'id',
   onCellClick: () => null,
   onCellMouseDown: () => null,

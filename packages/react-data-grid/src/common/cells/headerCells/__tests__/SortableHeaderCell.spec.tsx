@@ -4,9 +4,11 @@ import SortableHeaderCell, { Props } from '../SortableHeaderCell';
 import { HeaderRowType, DEFINE_SORT } from '../../../enums';
 import { Column } from '../../../types';
 
+interface Row { col1: string }
+
 describe('<SortableHeaderCell/>', () => {
-  const setup = (overrideProps?: Partial<Props>, overrideColumn?: Partial<Column>) => {
-    const props: Props = {
+  const setup = (overrideProps?: Partial<Props<Row>>, overrideColumn?: Partial<Column<Row>>) => {
+    const props: Props<Row> = {
       column: {
         idx: 0,
         name: 'col1',

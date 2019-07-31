@@ -2,15 +2,15 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import Header, { HeaderProps } from '../Header';
-import HeaderRow from '../HeaderRow';
-import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
+import HeaderRow, { HeaderRowProps } from '../HeaderRow';
+import helpers, { fakeCellMetaData, Row } from '../helpers/test/GridPropHelpers';
 import * as GetScrollbarSize from '../getScrollbarSize';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
 
 const SCROLL_BAR_SIZE = 17;
 
 describe('Header Unit Tests', () => {
-  function getProps(): HeaderProps {
+  function getProps(): HeaderProps<Row> {
     return {
       columnMetrics: {
         columns: helpers.columns,
@@ -25,11 +25,11 @@ describe('Header Unit Tests', () => {
       headerRows: [{
         height: 50,
         rowType: HeaderRowType.HEADER,
-        onFilterChange() {}
+        onFilterChange() { }
       }],
       onColumnResize: jest.fn(),
       onSort: () => null,
-      onHeaderDrop() {},
+      onHeaderDrop() { },
       draggableHeaderCell: () => null
     };
   }
@@ -38,58 +38,31 @@ describe('Header Unit Tests', () => {
     jest.spyOn(GetScrollbarSize, 'default').mockReturnValue(SCROLL_BAR_SIZE);
   });
 
-  function shouldRenderDefaultHeaderRow() {
-    const wrapper = shallow(<Header {...getProps()} />);
-    expect(wrapper.find(HeaderRow).length).toBe(1);
-  }
-
-  function shouldSetResizeState() {
-    const wrapper = shallow<Header>(<Header {...getProps()} />);
-    const resizeColIdx = 2;
-    const newWidth = 350;
-    const headerRow = wrapper.find(HeaderRow);
-    headerRow.props().onColumnResize(helpers.columns[resizeColIdx], newWidth);
-    expect(wrapper.state().resizing!.column.width).toEqual(newWidth);
-    expect(wrapper.state().resizing!.column.key).toEqual(helpers.columns[resizeColIdx].key);
-  }
-
-  function shouldTriggerOnColumnResize() {
-    const resizeColIdx = 1;
-    const testProps = getProps();
-    const wrapper = shallow(<Header {...testProps} />);
-    const headerRow = wrapper.find(HeaderRow);
-    headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
-    expect(testProps.onColumnResize).toHaveBeenCalled();
-    expect(testProps.onColumnResize).toHaveBeenCalledWith(resizeColIdx, 200);
-  }
-
-  it('should render a default header row', () => {
-    shouldRenderDefaultHeaderRow();
-  });
-
-  it('should initialize the state correctly', () => {
-    const wrapper = shallow<Header>(<Header {...getProps()} />);
-    expect(wrapper.state().resizing).toEqual(null);
-  });
-
   it('should render a default header row', () => {
     const wrapper = shallow(<Header {...getProps()} />);
     expect(wrapper.find(HeaderRow).length).toBe(1);
   });
 
-  it('header row drag start should set resize column state ', () => {
-    shouldSetResizeState();
+  it('should render a default header row', () => {
+    const wrapper = shallow(<Header {...getProps()} />);
+    expect(wrapper.find(HeaderRow).length).toBe(1);
   });
 
   it('header row drag end should trigger onColumnResize callback', () => {
-    shouldTriggerOnColumnResize();
+    const resizeColIdx = 1;
+    const testProps = getProps();
+    const wrapper = shallow(<Header {...testProps} />);
+    const headerRow = wrapper.find<HeaderRowProps<Row>>(HeaderRow);
+    headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
+    expect(testProps.onColumnResize).toHaveBeenCalled();
+    expect(testProps.onColumnResize).toHaveBeenCalledWith(resizeColIdx, 200);
   });
 
   describe('Rendering Header component', () => {
-    function renderComponent(props: HeaderProps) {
-      return shallow<Header>(<Header {...props} />);
+    function renderComponent(props: HeaderProps<Row>) {
+      return shallow(<Header {...props} />);
     }
-    const testRequiredProps: HeaderProps = {
+    const testRequiredProps: HeaderProps<Row> = {
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 81,
@@ -102,15 +75,15 @@ describe('Header Unit Tests', () => {
       headerRows: [{
         height: 51,
         rowType: HeaderRowType.HEADER,
-        onFilterChange() {}
+        onFilterChange() { }
       }],
       onSort: jest.fn(),
-      onHeaderDrop() {},
+      onHeaderDrop() { },
       cellMetaData: fakeCellMetaData,
       draggableHeaderCell: () => null,
-      onColumnResize() {}
+      onColumnResize() { }
     };
-    const testAllProps: HeaderProps = {
+    const testAllProps: HeaderProps<Row> = {
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 80,
@@ -123,16 +96,16 @@ describe('Header Unit Tests', () => {
       headerRows: [{
         height: 50,
         rowType: HeaderRowType.HEADER,
-        onFilterChange() {}
+        onFilterChange() { }
       }],
-      sortColumn: 'sortColumnValue',
+      sortColumn: 'count',
       sortDirection: DEFINE_SORT.DESC,
       onSort: jest.fn(),
       onColumnResize: jest.fn(),
       draggableHeaderCell: jest.fn(),
       getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData,
-      onHeaderDrop() {}
+      onHeaderDrop() { }
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
@@ -157,7 +130,7 @@ describe('Header Unit Tests', () => {
     });
 
     it('execute onCellClick event on cellMetaData and rowIdx & idx = -1', () => {
-      jest.spyOn(testAllProps.cellMetaData, 'onCellClick').mockImplementation(() => {});
+      jest.spyOn(testAllProps.cellMetaData, 'onCellClick').mockImplementation(() => { });
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
       headerDiv.simulate('click');

@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import helpers from '../helpers/test/GridPropHelpers';
+import helpers, { Row } from '../helpers/test/GridPropHelpers';
 import HeaderRow, { HeaderRowProps } from '../HeaderRow';
 import HeaderCell from '../HeaderCell';
 import SortableHeaderCell from '../common/cells/headerCells/SortableHeaderCell';
@@ -12,18 +12,18 @@ describe('Header Row Unit Tests', () => {
   const defaultProps = {
     rowType: HeaderRowType.HEADER,
     columns: helpers.columns,
-    onColumnResize() {},
-    onColumnResizeEnd() {},
+    onColumnResize() { },
+    onColumnResizeEnd() { },
     onSort: jest.fn(),
     sortDirection: DEFINE_SORT.NONE,
     height: 35,
-    onFilterChange() {},
-    onHeaderDrop() {},
+    onFilterChange() { },
+    onHeaderDrop() { },
     draggableHeaderCell: () => <div />
   };
 
-  const setup = (testProps?: Partial<HeaderRowProps>) => {
-    const props: HeaderRowProps = { ...defaultProps, ...testProps };
+  const setup = (testProps?: Partial<HeaderRowProps<Row>>) => {
+    const props: HeaderRowProps<Row> = { ...defaultProps, ...testProps };
     const wrapper = shallow(<HeaderRow {...props} />);
     const headerCells = wrapper.find(HeaderCell);
     return { wrapper, headerCells, props };
@@ -123,23 +123,23 @@ describe('Header Row Unit Tests', () => {
   });
 
   describe('Rendering HeaderRow component', () => {
-    const renderComponent = (props: HeaderRowProps) => {
+    const renderComponent = (props: HeaderRowProps<Row>) => {
       return shallow(<HeaderRow {...props} />);
     };
 
-    const requiredProps: HeaderRowProps = {
+    const requiredProps: HeaderRowProps<Row> = {
       height: 35,
       columns: helpers.columns,
       onSort: jest.fn(),
       rowType: HeaderRowType.HEADER,
       onColumnResize: jest.fn(),
       onColumnResizeEnd: jest.fn(),
-      onFilterChange() {},
-      onHeaderDrop() {},
+      onFilterChange() { },
+      onHeaderDrop() { },
       draggableHeaderCell: () => <div />
     };
 
-    const allProperties: HeaderRowProps = {
+    const allProperties: HeaderRowProps<Row> = {
       height: 35,
       columns: helpers.columns,
       onSort: jest.fn(),
@@ -153,11 +153,11 @@ describe('Header Row Unit Tests', () => {
         height: 36,
         position: 'relative'
       },
-      sortColumn: 'sortColumnValue',
+      sortColumn: 'count',
       sortDirection: DEFINE_SORT.NONE,
       filterable: true,
-      onFilterChange() {},
-      onHeaderDrop() {},
+      onFilterChange() { },
+      onHeaderDrop() { },
       draggableHeaderCell: () => <div />
     };
 

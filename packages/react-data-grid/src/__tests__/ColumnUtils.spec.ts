@@ -1,9 +1,13 @@
 import { canEdit } from '../ColumnUtils';
 import { CalculatedColumn, Omit } from '../common/types';
 
+interface Row {
+  PlacementType?: string;
+}
+
 describe('ColumnUtils tests', () => {
   function setup() {
-    const col: CalculatedColumn = {
+    const col: CalculatedColumn<Row> = {
       idx: 0,
       editable: true,
       editor: () => null,
