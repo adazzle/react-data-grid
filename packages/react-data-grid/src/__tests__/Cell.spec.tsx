@@ -7,15 +7,6 @@ import CellAction from '../Cell/CellAction';
 import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn, CellMetaData } from '../common/types';
 
-// interface Row {
-//   row?: string;
-//   col1?: string;
-//   col2?: string;
-//   name?: string;
-//   location?: string;
-//   likesTesting?: string;
-// }
-
 const testCellMetaData: CellMetaData<Row> = {
   rowKey: 'id',
   onCellClick() {},

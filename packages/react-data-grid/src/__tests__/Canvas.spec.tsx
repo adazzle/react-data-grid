@@ -100,7 +100,7 @@ describe('Canvas Tests', () => {
 
     describe('selectBy index', () => {
       it('renders row selected', () => {
-        const rowGetter = () => { return { id: 1 }; };
+        const rowGetter = () => ({ id: 1 });
 
         const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
         const wrapper = renderComponent(props);
