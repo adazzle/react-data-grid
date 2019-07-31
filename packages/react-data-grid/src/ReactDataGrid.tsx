@@ -59,7 +59,7 @@ export interface DataGridProps<R extends {}> {
   /** Minimum column width in pixels */
   minColumnWidth: number;
   /** Component to render the UI in the header row for selecting all rows */
-  selectAllRenderer: React.ForwardRefExoticComponent<React.ComponentProps<typeof SelectAll>>;
+  selectAllRenderer: React.ComponentType<React.ComponentProps<typeof SelectAll>>;
   /** Function called whenever row is clicked */
   onRowClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
   /** Function called whenever row is double clicked */
