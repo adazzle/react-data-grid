@@ -2,13 +2,13 @@ import React, { PropsWithChildren } from 'react';
 import { mount } from 'enzyme';
 
 import Cell, { Props } from '../Cell';
-import helpers from '../helpers/test/GridPropHelpers';
+import helpers, { Row } from '../helpers/test/GridPropHelpers';
 import CellAction from '../Cell/CellAction';
 import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn, CellMetaData } from '../common/types';
 
-const testCellMetaData: CellMetaData = {
-  rowKey: 'row',
+const testCellMetaData: CellMetaData<Row> = {
+  rowKey: 'id',
   onCellClick() {},
   onCellContextMenu() {},
   onCellDoubleClick() {},
@@ -34,22 +34,22 @@ const expandableOptions = {
   }
 };
 
-const defaultColumn: CalculatedColumn = { idx: 0, key: 'col1', name: 'col1', width: 100, left: 0 };
+const defaultColumn: CalculatedColumn<Row> = { idx: 0, key: 'description', name: 'Desciption', width: 100, left: 0 };
 
-const testProps: Props = {
+const testProps: Props<Row> = {
   rowIdx: 0,
   idx: 1,
   column: defaultColumn,
   value: 'Wicklow',
   cellMetaData: testCellMetaData,
-  rowData: { name: 'Johnny Test', location: 'Wicklow', likesTesting: 'Absolutely' },
+  rowData: { id: 1, description: 'Wicklow' },
   height: 40,
   isScrolling: false,
   scrollLeft: 0
 };
 
-const renderComponent = (extraProps?: PropsWithChildren<Partial<Props>>) => {
-  return mount<Cell>(<Cell {...testProps} {...extraProps} />);
+const renderComponent = (extraProps?: PropsWithChildren<Partial<Props<Row>>>) => {
+  return mount(<Cell<Row> {...testProps} {...extraProps} />);
 };
 
 describe('Cell Tests', () => {
@@ -78,11 +78,11 @@ describe('Cell Tests', () => {
   });
 
   describe('Rendering Cell component', () => {
-    function shallowRenderComponent(props: Props) {
-      return mount<Cell>(<Cell {...props} />);
+    function shallowRenderComponent(props: Props<Row>) {
+      return mount(<Cell<Row> {...props} />);
     }
 
-    const requiredProperties: Props = {
+    const requiredProperties: Props<Row> = {
       rowIdx: 18,
       idx: 19,
       height: 60,
@@ -113,8 +113,8 @@ describe('Cell Tests', () => {
   });
 
   describe('CellActions', () => {
-    const setup = (propsOverride: Partial<Props> = {}) => {
-      const props: Props = {
+    const setup = (propsOverride: Partial<Props<Row>> = {}) => {
+      const props: Props<Row> = {
         rowIdx: 18,
         idx: 19,
         height: 60,
@@ -128,7 +128,7 @@ describe('Cell Tests', () => {
         ...propsOverride
       };
 
-      const wrapper = mount<Cell>(<Cell {...props} />);
+      const wrapper = mount(<Cell<Row> {...props} />);
       return {
         wrapper,
         props

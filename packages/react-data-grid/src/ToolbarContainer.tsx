@@ -3,15 +3,15 @@ import { isElement, isValidElementType } from 'react-is';
 import { ColumnList } from './common/types';
 import { ReactDataGridProps } from './ReactDataGrid';
 
-export interface ToolbarProps {
-  columns: ColumnList;
+export interface ToolbarProps<R> {
+  columns: ColumnList<R>;
   rowsCount: number;
   onToggleFilter(): void;
 }
 
-type ToolbarContainerProps = ToolbarProps & Pick<ReactDataGridProps, 'toolbar'>;
+type ToolbarContainerProps<R extends {}> = ToolbarProps<R> & Pick<ReactDataGridProps<R>, 'toolbar'>;
 
-export default function ToolbarContainer({ toolbar, columns, rowsCount, onToggleFilter }: ToolbarContainerProps) {
+export default function ToolbarContainer<R extends {}>({ toolbar, columns, rowsCount, onToggleFilter }: ToolbarContainerProps<R>) {
   if (!toolbar) {
     return null;
   }

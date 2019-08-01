@@ -1,7 +1,7 @@
 import { CalculatedColumn } from '../../common/types';
 
-function createColumn(index: number): CalculatedColumn {
-  const key = `Column${index}`;
+function createColumn(index: number): CalculatedColumn<{}> {
+  const key = `Column${index}` as keyof {};
   return {
     key,
     name: key,
@@ -12,7 +12,7 @@ function createColumn(index: number): CalculatedColumn {
   };
 }
 
-export const createColumns = (count: number): CalculatedColumn[] =>
+export const createColumns = (count: number): CalculatedColumn<{}>[] =>
   Array(count).fill(null).map((_, i) => createColumn(i));
 
 export const sel = (id: string): string => `[data-test="${id}"]`;

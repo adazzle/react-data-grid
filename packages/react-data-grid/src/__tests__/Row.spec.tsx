@@ -6,16 +6,21 @@ import Cell from '../Cell';
 import { createColumns } from './utils';
 import { RowRendererProps, CellMetaData } from '../common/types';
 
+interface RowType {
+  row?: string;
+  key?: string;
+}
+
 describe('Row', () => {
   const COLUMN_COUNT = 50;
 
-  function setup(props: RowRendererProps) {
-    const wrapper = shallow<Row>(<Row {...props} />);
+  function setup(props: RowRendererProps<RowType>) {
+    const wrapper = shallow<Row<RowType>>(<Row {...props} />);
     const cells = wrapper.find(Cell);
     return { wrapper, cells };
   }
 
-  const testCellMetaData: CellMetaData = {
+  const testCellMetaData: CellMetaData<RowType> = {
     rowKey: 'row',
     onCellClick() { },
     onCellContextMenu() { },
@@ -25,7 +30,7 @@ describe('Row', () => {
     onRowExpandToggle() { }
   };
 
-  const requiredProperties: RowRendererProps = {
+  const requiredProperties: RowRendererProps<RowType> = {
     height: 30,
     columns: createColumns(COLUMN_COUNT),
     row: { key: 'value' },

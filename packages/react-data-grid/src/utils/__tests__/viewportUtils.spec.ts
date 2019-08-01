@@ -14,8 +14,20 @@ import {
 import { SCROLL_DIRECTION } from '../../common/enums';
 import { CalculatedColumn } from '../../common/types';
 
+interface Row {
+  col1?: string;
+  col2?: string;
+  col3?: string;
+  col4?: string;
+  col5?: string;
+  col6?: string;
+  col7?: string;
+  col8?: string;
+  col9?: string;
+}
+
 describe('viewportUtils', () => {
-  const getColumns = (): CalculatedColumn[] => [
+  const getColumns = (): CalculatedColumn<Row>[] => [
     { idx: 0, key: 'col1', name: 'col1', width: 100, left: 0 },
     { idx: 1, key: 'col2', name: 'col2', width: 100, left: 200 },
     { idx: 2, key: 'col3', name: 'col3', width: 100, left: 300 },
@@ -72,7 +84,7 @@ describe('viewportUtils', () => {
   describe('getNonFrozenRenderedColumnCount', () => {
     const viewportWidth = 100;
 
-    const getCols = (): CalculatedColumn[] => [
+    const getCols = (): CalculatedColumn<Row>[] => [
       { idx: 0, key: 'col1', name: 'col1', width: 20, left: 0 },
       { idx: 1, key: 'col2', name: 'col2', width: 20, left: 20 },
       { idx: 2, key: 'col3', name: 'col3', width: 20, left: 40 },

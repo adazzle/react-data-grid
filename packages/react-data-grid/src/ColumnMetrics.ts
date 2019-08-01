@@ -4,18 +4,18 @@ import getScrollbarSize from './getScrollbarSize';
 import { isColumnsImmutable } from './common/utils';
 import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/types';
 
-type Metrics = Pick<ColumnMetrics, 'totalWidth' | 'minColumnWidth'> & {
-  columns: ColumnList;
+type Metrics<R> = Pick<ColumnMetrics<R>, 'totalWidth' | 'minColumnWidth'> & {
+  columns: ColumnList<R>;
 };
 
-function cloneColumns(columns: ColumnList): Column[] {
+function cloneColumns<R>(columns: ColumnList<R>): Column<R>[] {
   if (Array.isArray(columns)) {
     return columns.map(c => ({ ...c }));
   }
   return cloneColumns(columns.toArray());
 }
 
-function setColumnWidths(columns: Column[], totalWidth: number): void {
+function setColumnWidths<R>(columns: Column<R>[], totalWidth: number): void {
   for (const column of columns) {
     if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
       column.width = Math.floor(totalWidth * column.width / 100);
@@ -23,7 +23,7 @@ function setColumnWidths(columns: Column[], totalWidth: number): void {
   }
 }
 
-function setDefferedColumnWidths(columns: Column[], unallocatedWidth: number, minColumnWidth: number): void {
+function setDefferedColumnWidths<R>(columns: Column<R>[], unallocatedWidth: number, minColumnWidth: number): void {
   const defferedColumns = columns.filter(c => !c.width);
   const columnWidth = Math.floor(unallocatedWidth / defferedColumns.length);
 
@@ -38,17 +38,19 @@ function setDefferedColumnWidths(columns: Column[], unallocatedWidth: number, mi
   }
 }
 
-function setColumnOffsets(columns: Column[]): void {
+function setColumnOffsets<R>(columns: Column<R>[]): void {
   let left = 0;
-  for (const column of columns as CalculatedColumn[]) {
+  for (const column of columns as CalculatedColumn<R>[]) {
     column.left = left;
     left += column.width;
   }
 }
 
-const getTotalColumnWidth = (columns: Column[]): number => columns.reduce((acc, c) => acc + (c.width || 0), 0);
+function getTotalColumnWidth<R>(columns: Column<R>[]): number {
+  return columns.reduce((acc, c) => acc + (c.width || 0), 0);
+}
 
-export function recalculate(metrics: Metrics): ColumnMetrics {
+export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   // clone columns so we can safely edit them:
   const columns = cloneColumns(metrics.columns);
   // compute width for columns which specify width
@@ -65,7 +67,7 @@ export function recalculate(metrics: Metrics): ColumnMetrics {
 
   const frozenColumns = columns.filter(c => isFrozen(c));
   const nonFrozenColumns = columns.filter(c => !isFrozen(c));
-  const calculatedColumns = frozenColumns.concat(nonFrozenColumns) as CalculatedColumn[];
+  const calculatedColumns = frozenColumns.concat(nonFrozenColumns) as CalculatedColumn<R>[];
   calculatedColumns.forEach((c, i) => c.idx = i);
   return {
     width,
@@ -79,7 +81,7 @@ export function recalculate(metrics: Metrics): ColumnMetrics {
 /**
  * Update column metrics calculation by resizing a column.
  */
-export function resizeColumn(metrics: ColumnMetrics, index: number, width: number): ColumnMetrics {
+export function resizeColumn<R>(metrics: ColumnMetrics<R>, index: number, width: number): ColumnMetrics<R> {
   const updatedColumn = { ...metrics.columns[index] };
   updatedColumn.width = Math.max(width, metrics.minColumnWidth);
   const updatedMetrics = { ...metrics };
@@ -89,14 +91,14 @@ export function resizeColumn(metrics: ColumnMetrics, index: number, width: numbe
   return recalculate(updatedMetrics);
 }
 
-type ColumnComparer = (colA: Column, colB: Column) => boolean;
+type ColumnComparer<R> = (colA: Column<R>, colB: Column<R>) => boolean;
 
-function compareEachColumn(prevColumns: ColumnList, nextColumns: ColumnList, isSameColumn: ColumnComparer): boolean {
+function compareEachColumn<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
   if (getSize(prevColumns) !== getSize(nextColumns)) return false;
 
-  const keys = new Set<string>();
-  const prevColumnsMap = new Map<string, Column>();
-  const nextColumnsMap = new Map<string, Column>();
+  const keys = new Set<keyof R>();
+  const prevColumnsMap = new Map<keyof R, Column<R>>();
+  const nextColumnsMap = new Map<keyof R, Column<R>>();
 
   for (const column of prevColumns) {
     keys.add(column.key);
@@ -120,7 +122,7 @@ function compareEachColumn(prevColumns: ColumnList, nextColumns: ColumnList, isS
   return true;
 }
 
-export function sameColumns(prevColumns: ColumnList, nextColumns: ColumnList, isSameColumn: ColumnComparer): boolean {
+export function sameColumns<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
   if (isColumnsImmutable(prevColumns) && isColumnsImmutable(nextColumns)) {
     return prevColumns === nextColumns;
   }

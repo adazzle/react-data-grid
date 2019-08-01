@@ -9,7 +9,7 @@ import { HeaderRowType } from './common/enums';
 import { CalculatedColumn, ColumnMetrics } from './common/types';
 import { GridProps } from './Grid';
 
-type SharedGridProps = Pick<GridProps,
+type SharedGridProps<R> = Pick<GridProps<R>,
 'columnMetrics'
 | 'onColumnResize'
 | 'rowHeight'
@@ -24,23 +24,23 @@ type SharedGridProps = Pick<GridProps,
 | 'cellMetaData'
 >;
 
-export type HeaderProps = SharedGridProps;
+export type HeaderProps<R> = SharedGridProps<R>;
 
-interface State {
-  resizing: { column: CalculatedColumn; columnMetrics: ColumnMetrics } | null;
+interface State<R> {
+  resizing: { column: CalculatedColumn<R>; columnMetrics: ColumnMetrics<R> } | null;
 }
 
-export default class Header extends React.Component<HeaderProps, State> {
-  readonly state: Readonly<State> = { resizing: null };
+export default class Header<R extends {}> extends React.Component<HeaderProps<R>, State<R>> {
+  readonly state: Readonly<State<R>> = { resizing: null };
 
-  private readonly row = React.createRef<HeaderRow>();
-  private readonly filterRow = React.createRef<HeaderRow>();
+  private readonly row = React.createRef<HeaderRow<R>>();
+  private readonly filterRow = React.createRef<HeaderRow<R>>();
 
   componentWillReceiveProps(): void {
     this.setState({ resizing: null });
   }
 
-  onColumnResize = (column: CalculatedColumn, width: number): void => {
+  onColumnResize = (column: CalculatedColumn<R>, width: number): void => {
     const pos = this.getColumnPosition(column);
 
     if (pos === null) return;
@@ -61,7 +61,7 @@ export default class Header extends React.Component<HeaderProps, State> {
     });
   };
 
-  onColumnResizeEnd = (column: CalculatedColumn, width: number): void => {
+  onColumnResizeEnd = (column: CalculatedColumn<R>, width: number): void => {
     const pos = this.getColumnPosition(column);
     if (pos === null) return;
     this.props.onColumnResize(pos, width || column.width);
@@ -85,7 +85,7 @@ export default class Header extends React.Component<HeaderProps, State> {
       };
 
       return (
-        <HeaderRow
+        <HeaderRow<R>
           key={row.rowType}
           ref={isFilterRow ? this.filterRow : this.row}
           rowType={row.rowType}
@@ -108,14 +108,14 @@ export default class Header extends React.Component<HeaderProps, State> {
     });
   }
 
-  getColumnMetrics(): ColumnMetrics {
+  getColumnMetrics(): ColumnMetrics<R> {
     if (this.state.resizing) {
       return this.state.resizing.columnMetrics;
     }
     return this.props.columnMetrics;
   }
 
-  getColumnPosition(column: CalculatedColumn): number | null {
+  getColumnPosition(column: CalculatedColumn<R>): number | null {
     const { columns } = this.getColumnMetrics();
     const idx = columns.findIndex(c => c.key === column.key);
     return idx === -1 ? null : idx;

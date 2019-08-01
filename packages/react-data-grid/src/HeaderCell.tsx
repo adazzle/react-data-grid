@@ -5,24 +5,24 @@ import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from './common/enums';
 import { CalculatedColumn } from './common/types';
 
-function SimpleCellRenderer({ column, rowType }: { column: CalculatedColumn; rowType: HeaderRowType }) {
+function SimpleCellRenderer<R>({ column, rowType }: { column: CalculatedColumn<R>; rowType: HeaderRowType }) {
   const headerText = rowType === HeaderRowType.HEADER ? column.name : '';
   return <div>{headerText}</div>;
 }
 
-interface Props {
-  renderer?: CalculatedColumn['headerRenderer'];
-  column: CalculatedColumn;
+interface Props<R> {
+  renderer?: CalculatedColumn<R>['headerRenderer'];
+  column: CalculatedColumn<R>;
   rowType: HeaderRowType;
   height: number;
-  onResize(column: CalculatedColumn, width: number): void;
-  onResizeEnd(column: CalculatedColumn, width: number): void;
+  onResize(column: CalculatedColumn<R>, width: number): void;
+  onResizeEnd(column: CalculatedColumn<R>, width: number): void;
   onHeaderDrop?(): void;
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn; onHeaderDrop(): void }>;
+  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   className?: string;
 }
 
-export default class HeaderCell extends React.Component<Props> {
+export default class HeaderCell<R> extends React.Component<Props<R>> {
   private readonly cell = React.createRef<HTMLDivElement>();
 
   private onMouseDown = (event: React.MouseEvent) => {

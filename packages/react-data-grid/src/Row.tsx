@@ -4,9 +4,10 @@ import classNames from 'classnames';
 import rowComparer from './common/utils/RowComparer';
 import Cell from './Cell';
 import { isFrozen } from './ColumnUtils';
+import * as rowUtils from './RowUtils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
-export default class Row extends React.Component<RowRendererProps> implements RowRenderer {
+export default class Row<R extends {}> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
   static displayName = 'Row';
 
   static defaultProps = {
@@ -16,9 +17,9 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
   };
 
   private readonly row = React.createRef<HTMLDivElement>();
-  private readonly cells = new Map<string, CellRenderer>();
+  private readonly cells = new Map<keyof R, CellRenderer>();
 
-  shouldComponentUpdate(nextProps: RowRendererProps) {
+  shouldComponentUpdate(nextProps: RowRendererProps<R>) {
     return rowComparer(nextProps, this.props);
   }
 
@@ -40,19 +41,19 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
     e.preventDefault();
   };
 
-  getCell(column: CalculatedColumn) {
+  getCell(column: CalculatedColumn<R>) {
     const Renderer = this.props.cellRenderer;
     const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key } = column;
 
-    const cellProps: CellRendererProps & { ref: (cell: CellRenderer | null) => void } = {
+    const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
       ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
       idx: column.idx,
       rowIdx: idx,
       height: this.getRowHeight(),
       column,
       cellMetaData,
-      value: this.getCellValue(key || String(column.idx)), // TODO: fix idx type
+      value: this.getCellValue(key || String(column.idx) as keyof R), // TODO: fix idx type
       rowData: row,
       isRowSelected: isSelected,
       expandableOptions: this.getExpandableOptions(key),
@@ -80,20 +81,16 @@ export default class Row extends React.Component<RowRendererProps> implements Ro
     return this.props.height;
   }
 
-  getCellValue(key: string) {
+  getCellValue(key: keyof R) {
     const { isSelected, row } = this.props;
     if (key === 'select-row') {
       return isSelected;
     }
 
-    if (typeof row.get === 'function') {
-      return row.get(key);
-    }
-
-    return row[key];
+    return rowUtils.get(row, key);
   }
 
-  getExpandableOptions(columnKey: string) {
+  getExpandableOptions(columnKey: keyof R) {
     const { subRowDetails } = this.props;
     if (!subRowDetails) return;
 

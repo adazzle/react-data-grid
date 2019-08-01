@@ -34,12 +34,13 @@ import {
   RowSelectionParams,
   SelectedRange,
   SubRowDetails,
-  SubRowOptions
+  SubRowOptions,
+  SelectedRow
 } from './common/types';
 
-export interface DataGridProps {
+export interface DataGridProps<R extends {}> {
   /** An array of objects representing each column on the grid. Can also be an ImmutableJS object */
-  columns: ColumnList;
+  columns: ColumnList<R>;
   /** The minimum width of the grid in pixels */
   minWidth?: number;
   /** The height of the header row in pixels */
@@ -49,7 +50,7 @@ export interface DataGridProps {
   /** Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead*/
   enableRowSelect: boolean | string;
   /** Component used to render toolbar above the grid */
-  toolbar?: React.ReactElement<ToolbarProps> | React.ComponentType<ToolbarProps>;
+  toolbar?: React.ReactElement<ToolbarProps<R>> | React.ComponentType<ToolbarProps<R>>;
   cellRangeSelection?: {
     onStart(selectedRange: SelectedRange): void;
     onUpdate?(selectedRange: SelectedRange): void;
@@ -58,34 +59,34 @@ export interface DataGridProps {
   /** Minimum column width in pixels */
   minColumnWidth: number;
   /** Component to render the UI in the header row for selecting all rows */
-  selectAllRenderer: React.ForwardRefExoticComponent<React.ComponentProps<typeof SelectAll>>;
+  selectAllRenderer: React.ComponentType<React.ComponentProps<typeof SelectAll>>;
   /** Function called whenever row is clicked */
-  onRowClick?(rowIdx: number, rowData: RowData, column: CalculatedColumn): void;
+  onRowClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
   /** Function called whenever row is double clicked */
-  onRowDoubleClick?(rowIdx: number, rowData: RowData, column: CalculatedColumn): void;
-  onAddFilter?(event: AddFilterEvent): void;
+  onRowDoubleClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
+  onAddFilter?(event: AddFilterEvent<R>): void;
   onClearFilters?(): void;
   /** Function called whenever grid is sorted*/
-  onGridSort?(columnKey: string, direction: DEFINE_SORT): void;
+  onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   /** Function called whenever keyboard key is released */
   onGridKeyUp?(event: React.KeyboardEvent<HTMLDivElement>): void;
   /** Function called whenever keyboard key is pressed down */
   onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
-  onRowSelect?(rowData: RowData[]): void;
-  columnEquality(c1: Column, c2: Column): boolean;
+  onRowSelect?(rowData: R[]): void;
+  columnEquality(c1: Column<R>, c2: Column<R>): boolean;
   rowSelection?: {
     enableShiftSelect?: boolean;
     /** Function called whenever rows are selected */
-    onRowsSelected?(args: RowSelectionParams[]): void;
+    onRowsSelected?(args: RowSelectionParams<R>[]): void;
     /** Function called whenever rows are deselected */
-    onRowsDeselected?(args: RowSelectionParams[]): void;
+    onRowsDeselected?(args: RowSelectionParams<R>[]): void;
     /** toggle whether to show a checkbox in first column to select rows */
     showCheckbox?: boolean;
     /** Method by which rows should be selected */
     selectBy: RowSelection;
   };
   /** Custom checkbox formatter */
-  rowActionsCell?: React.ComponentType<CheckboxEditorProps>;
+  rowActionsCell?: React.ComponentType<CheckboxEditorProps<R>>;
   /**
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
@@ -94,19 +95,19 @@ export interface DataGridProps {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onGridRowsUpdated?<E extends GridRowsUpdatedEvent>(event: E): void;
+  onGridRowsUpdated?<E extends GridRowsUpdatedEvent<R>>(event: E): void;
   /** Called when a column is resized */
   onColumnResize?(idx: number, width: number): void;
 
   /** Grid Props */
   /** The primary key property of each row */
-  rowKey: string;
+  rowKey: keyof R;
   /** The height of each row in pixels */
   rowHeight: number;
   rowRenderer?: React.ReactElement | React.ComponentType;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
-  rowGetter: RowGetter;
+  rowGetter: RowGetter<R>;
   /** The number of rows to be rendered */
   rowsCount: number;
   /** The minimum height of the grid in pixels */
@@ -123,41 +124,41 @@ export interface DataGridProps {
   /** The node where the editor portal should mount. */
   editorPortalTarget: Element;
   /** The key of the column which is currently being sorted */
-  sortColumn?: string;
+  sortColumn?: keyof R;
   /** The direction to sort the sortColumn*/
   sortDirection?: DEFINE_SORT;
   /** Called when the grid is scrolled */
   onScroll?(scrollState: ScrollState): void;
   /** Component used to render a draggable header cell */
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn; onHeaderDrop(): void }>;
+  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   getValidFilterValues?(): void;
   RowsContainer?: React.ComponentType<RowsContainerProps>;
   emptyRowsView?: React.ComponentType<{}>;
   onHeaderDrop?(): void;
-  getSubRowDetails?(row: RowData): SubRowDetails;
+  getSubRowDetails?(row: R): SubRowDetails;
 
   /** CellMetaData */
-  getCellActions?(column: CalculatedColumn, rowData: RowData): CellActionButton[] | undefined;
+  getCellActions?(column: CalculatedColumn<R>, rowData: R): CellActionButton[] | undefined;
   /** Called whenever a sub row is deleted from the grid */
-  onDeleteSubRow?(options: SubRowOptions): void;
+  onDeleteSubRow?(options: SubRowOptions<R>): void;
   /** Called whenever a sub row is added to the grid */
   onAddSubRow?(): void;
   /** Function called whenever a cell has been expanded */
-  onCellExpand?(options: SubRowOptions): void;
+  onCellExpand?(options: SubRowOptions<R>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
 
   /** InteractionMasksMetaData */
   /** Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead*/
-  onCellCopyPaste?(event: CellCopyPasteEvent): void;
+  onCellCopyPaste?(event: CellCopyPasteEvent<R>): void;
   /** Function called whenever a cell is selected */
   onCellSelected?(position: Position): void;
   /** Function called whenever a cell is deselected */
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
-  onCheckCellIsEditable?(event: CheckCellIsEditableEvent): boolean;
+  onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
 }
 
-type DefaultProps = Pick<DataGridProps,
+type DefaultProps = Pick<DataGridProps<{ id?: unknown }>,
 'enableCellSelect'
 | 'selectAllRenderer'
 | 'rowHeight'
@@ -172,16 +173,16 @@ type DefaultProps = Pick<DataGridProps,
 | 'editorPortalTarget'
 >;
 
-export interface DataGridState {
-  columnMetrics: ColumnMetrics;
+export interface DataGridState<R> {
+  columnMetrics: ColumnMetrics<R>;
   lastRowIdxUiSelected: number;
-  selectedRows: RowData[];
+  selectedRows: SelectedRow<R>[];
   canFilter?: boolean;
-  sortColumn?: string;
+  sortColumn?: keyof R;
   sortDirection?: DEFINE_SORT;
 }
 
-function isRowSelected(keys: unknown, indexes: unknown, isSelectedKey: unknown, rowData: RowData, rowIdx: number) {
+function isRowSelected<R>(keys: unknown, indexes: unknown, isSelectedKey: unknown, rowData: R, rowIdx: number) {
   return rowUtils.isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, rowData, rowIdx);
 }
 
@@ -192,7 +193,7 @@ function isRowSelected(keys: unknown, indexes: unknown, isSelectedKey: unknown, 
  *
  * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-export default class ReactDataGrid extends React.Component<DataGridProps, DataGridState> {
+export default class ReactDataGrid<R extends {} = RowData> extends React.Component<DataGridProps<R>, DataGridState<R>> {
   static displayName = 'ReactDataGrid';
 
   static defaultProps: DefaultProps = {
@@ -211,16 +212,16 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
   };
 
   private readonly grid = React.createRef<HTMLDivElement>();
-  private readonly base = React.createRef<Grid>();
+  private readonly base = React.createRef<Grid<R>>();
   private readonly selectAllCheckbox = React.createRef<HTMLInputElement>();
   private readonly eventBus = new EventBus();
   private readonly _keysDown = new Set<number>();
-  private _cachedColumns?: ColumnList;
-  private _cachedComputedColumns?: ColumnList;
+  private _cachedColumns?: ColumnList<R>;
+  private _cachedComputedColumns?: ColumnList<R>;
 
-  constructor(props: DataGridProps) {
+  constructor(props: DataGridProps<R>) {
     super(props);
-    const initialState: DataGridState = {
+    const initialState: DataGridState<R> = {
       columnMetrics: this.createColumnMetrics(),
       selectedRows: [],
       canFilter: false,
@@ -247,7 +248,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     window.removeEventListener('mouseup', this.handleWindowMouseUp);
   }
 
-  componentWillReceiveProps(nextProps: DataGridProps) {
+  componentWillReceiveProps(nextProps: DataGridProps<R>) {
     if (
       nextProps.columns && (
         !sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
@@ -377,12 +378,12 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     });
   };
 
-  handleDragHandleDoubleClick: InteractionMasksMetaData['onDragHandleDoubleClick'] = (e) => {
+  handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
     const cellKey = this.getColumn(e.idx).key;
     this.handleGridRowsUpdated(cellKey, e.rowIdx, this.props.rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
   };
 
-  handleGridRowsUpdated: InteractionMasksMetaData['onGridRowsUpdated'] = (cellKey, fromRow, toRow, updated, action, originRow) => {
+  handleGridRowsUpdated: InteractionMasksMetaData<R>['onGridRowsUpdated'] = (cellKey, fromRow, toRow, updated, action, originRow) => {
     const { rowGetter, rowKey, onGridRowsUpdated } = this.props;
     if (!onGridRowsUpdated) {
       return;
@@ -399,12 +400,12 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated: updated as never, action, fromRowData });
   };
 
-  handleCommit = (commit: CommitEvent) => {
+  handleCommit = (commit: CommitEvent<R>) => {
     const targetRow = commit.rowIdx;
     this.handleGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
   };
 
-  handleSort = (sortColumn: string, sortDirection: DEFINE_SORT) => {
+  handleSort = (sortColumn: keyof R, sortDirection: DEFINE_SORT) => {
     this.setState({ sortColumn, sortDirection }, () => {
       const { onGridSort } = this.props;
       if (onGridSort) {
@@ -413,7 +414,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     });
   };
 
-  getSelectedRow(rows: RowData[], key: unknown) {
+  getSelectedRow(rows: SelectedRow<R>[], key: unknown) {
     return rows.find(r => r[this.props.rowKey] === key);
   }
 
@@ -468,7 +469,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     return false;
   };
 
-  handleNewRowSelect = (rowIdx: number, rowData: RowData) => {
+  handleNewRowSelect = (rowIdx: number, rowData: R) => {
     const { current } = this.selectAllCheckbox;
     if (current && current.checked === true) {
       current.checked = false;
@@ -489,7 +490,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
 
   // columnKey not used here as this function will select the whole row,
   // but needed to match the function signature in the CheckboxEditor
-  handleRowSelect = (rowIdx: number, columnKey: string, rowData: RowData, event: React.ChangeEvent<HTMLInputElement>) => {
+  handleRowSelect = (rowIdx: number, columnKey: keyof R, rowData: R, event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation();
     const { rowSelection } = this.props;
 
@@ -507,8 +508,8 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
       if (selectedRow) {
         selectedRow.isSelected = !selectedRow.isSelected;
       } else {
-        rowData.isSelected = true;
-        selectedRows.push(rowData);
+        (rowData as SelectedRow<R>).isSelected = true;
+        selectedRows.push(rowData as SelectedRow<R>);
       }
       this.setState({ selectedRows });
       if (this.props.onRowSelect) {
@@ -549,7 +550,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
         }
       }
     } else {
-      const selectedRows = [];
+      const selectedRows: SelectedRow<R>[] = [];
       for (let i = 0; i < this.props.rowsCount; i++) {
         const row = { ...this.props.rowGetter(i), isSelected: allRowsSelected };
         selectedRows.push(row);
@@ -567,7 +568,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
 
   getHeaderRows() {
     const { headerRowHeight, rowHeight, onAddFilter, headerFiltersHeight } = this.props;
-    const rows: HeaderRowData[] = [{ height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER }];
+    const rows: HeaderRowData<R>[] = [{ height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER }];
     if (this.state.canFilter === true) {
       rows.push({
         rowType: HeaderRowType.FILTER,
@@ -599,7 +600,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
     this.eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
   }
 
-  setupGridColumns(props = this.props): ColumnList {
+  setupGridColumns(props = this.props): ColumnList<R> {
     const { columns } = props;
     if (this._cachedColumns === columns) {
       return this._cachedComputedColumns!;
@@ -613,8 +614,8 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
         ? undefined
         : <SelectAllComponent onChange={this.handleCheckboxChange} ref={this.selectAllCheckbox} />;
       const Formatter = (this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor) as unknown as React.ComponentClass<{ rowSelection: unknown }>;
-      const selectColumn: Column = {
-        key: 'select-row',
+      const selectColumn: Column<R> = {
+        key: 'select-row' as keyof R,
         name: '',
         formatter: <Formatter rowSelection={this.props.rowSelection} />,
         onCellChange: this.handleRowSelect,
@@ -622,7 +623,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
         headerRenderer,
         width: 60,
         frozen: true,
-        getRowMetaData: (rowData: RowData) => rowData,
+        getRowMetaData: (rowData: R) => rowData,
         cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''
       };
 
@@ -630,14 +631,14 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
         ? [selectColumn, ...columns]
         : columns.unshift(selectColumn);
     } else {
-      this._cachedComputedColumns = columns.slice(0) as ColumnList;
+      this._cachedComputedColumns = columns.slice(0) as ColumnList<R>;
     }
 
     return this._cachedComputedColumns;
   }
 
   render() {
-    const cellMetaData: CellMetaData = {
+    const cellMetaData: CellMetaData<R> = {
       rowKey: this.props.rowKey,
       onCellClick: this.handlerCellClick,
       onCellContextMenu: this.handleCellContextMenu,
@@ -654,7 +655,7 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
       cellMetaData.onCellMouseEnter = this.handleCellMouseEnter;
     }
 
-    const interactionMasksMetaData: InteractionMasksMetaData = {
+    const interactionMasksMetaData: InteractionMasksMetaData<R> = {
       onCheckCellIsEditable: this.props.onCheckCellIsEditable,
       onCellCopyPaste: this.props.onCellCopyPaste,
       onGridRowsUpdated: this.handleGridRowsUpdated,
@@ -684,13 +685,13 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
         style={{ width: containerWidth }}
         ref={this.grid}
       >
-        <ToolbarContainer
+        <ToolbarContainer<R>
           toolbar={this.props.toolbar}
           columns={this.props.columns}
           rowsCount={this.props.rowsCount}
           onToggleFilter={this.handleToggleFilter}
         />
-        <Grid
+        <Grid<R>
           ref={this.base}
           rowKey={this.props.rowKey}
           headerRows={this.getHeaderRows()}
@@ -733,4 +734,4 @@ export default class ReactDataGrid extends React.Component<DataGridProps, DataGr
   }
 }
 
-export type ReactDataGridProps = JSX.LibraryManagedAttributes<typeof ReactDataGrid, DataGridProps>;
+export type ReactDataGridProps<R extends {} = RowData> = JSX.LibraryManagedAttributes<typeof ReactDataGrid, DataGridProps<R>>;

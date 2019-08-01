@@ -6,6 +6,12 @@ import EditorContainer, { Props } from '../EditorContainer';
 import SimpleTextEditor from '../SimpleTextEditor';
 import { CalculatedColumn, EditorProps } from '../../types';
 
+interface Row {
+  col1?: string;
+  col2?: string;
+  col3?: string;
+}
+
 function DefaultEditor() {
   return (
     <div>
@@ -27,7 +33,7 @@ function DefaultEditor() {
   );
 }
 
-const fakeColumn: CalculatedColumn = {
+const fakeColumn: CalculatedColumn<Row> = {
   idx: 0,
   name: 'col1',
   key: 'col1',
@@ -35,8 +41,8 @@ const fakeColumn: CalculatedColumn = {
   left: 0
 };
 
-const setup = (extraProps?: Partial<Props>, opts?: MountRendererProps) => {
-  const props: Props = {
+const setup = (extraProps?: Partial<Props<Row>>, opts?: MountRendererProps) => {
+  const props: Props<Row> = {
     rowIdx: 0,
     rowData: {
       col1: 'I',
@@ -56,7 +62,7 @@ const setup = (extraProps?: Partial<Props>, opts?: MountRendererProps) => {
     scrollTop: 0,
     ...extraProps
   };
-  const wrapper = mount<EditorContainer>(<EditorContainer {...props} />, opts);
+  const wrapper = mount<EditorContainer<Row>>(<EditorContainer {...props} />, opts);
 
   return { wrapper, props };
 };
@@ -89,7 +95,7 @@ describe('Editor Container Tests', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<EditorProps> {
+    class TestEditor extends React.Component<EditorProps<Row>> {
       getValue() {
         return undefined;
       }

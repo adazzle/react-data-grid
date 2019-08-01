@@ -5,7 +5,7 @@ import ChildRowDeleteButton from '../ChildRowDeleteButton';
 import { Props as CellProps } from '../Cell';
 import CellValue from './CellValue';
 
-export type CellContentProps = Pick<CellProps,
+export type CellContentProps<R> = Pick<CellProps<R>,
 'idx'
 | 'rowIdx'
 | 'rowData'
@@ -20,7 +20,7 @@ export type CellContentProps = Pick<CellProps,
 >;
 
 
-export default function CellContent({ idx, tooltip, expandableOptions, height, cellMetaData, cellControls, ...props }: CellContentProps) {
+export default function CellContent<R extends {}>({ idx, tooltip, expandableOptions, height, cellMetaData, cellControls, ...props }: CellContentProps<R>) {
   const { column } = props;
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
@@ -54,7 +54,7 @@ export default function CellContent({ idx, tooltip, expandableOptions, height, c
     <div className={classes}>
       {cellDeleter}
       <div className="react-grid-Cell__container" style={{ marginLeft }}>
-        <span><CellValue {...props} /></span>
+        <span><CellValue<R> {...props} /></span>
         {cellControls}
       </div>
       {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}

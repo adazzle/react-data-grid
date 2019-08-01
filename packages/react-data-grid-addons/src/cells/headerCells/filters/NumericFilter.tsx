@@ -1,5 +1,5 @@
 import React from 'react';
-import { Column, RowData } from 'react-data-grid';
+import { Column } from 'react-data-grid';
 
 enum RuleType {
   Number = 1,
@@ -12,19 +12,19 @@ type Rule =
   | { type: RuleType.Range; begin: number; end: number }
   | { type: RuleType.GreaterThen | RuleType.LessThen | RuleType.Number; value: number };
 
-interface ChangeEvent {
+interface ChangeEvent<R> {
   filterTerm: Rule[] | null;
-  column: Column;
+  column: Column<R>;
   rawValue: string;
   filterValues: typeof filterValues;
 }
 
-interface Props {
-  column: Column;
-  onChange(event: ChangeEvent): void;
+interface Props<R> {
+  column: Column<R>;
+  onChange(event: ChangeEvent<R>): void;
 }
 
-export default function NumericFilter({ column, onChange }: Props) {
+export default function NumericFilter<R>({ column, onChange }: Props<R>) {
   /** Validates the input */
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
     const result = /[><,0-9-]/.test(event.key);
@@ -75,13 +75,13 @@ export default function NumericFilter({ column, onChange }: Props) {
 }
 
 
-function filterValues(row: RowData, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: string) {
+function filterValues<R extends {}>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
   if (columnFilter.filterTerm == null) {
     return true;
   }
 
   // implement default filter logic
-  const value = parseInt(row[columnKey] as string, 10);
+  const value = parseInt(row[columnKey] as unknown as string, 10);
   for (const ruleKey in columnFilter.filterTerm) {
     const rule = columnFilter.filterTerm[ruleKey];
 

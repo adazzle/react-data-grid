@@ -1,8 +1,8 @@
 import { RowData } from './common/types';
 
-export function get(row: RowData, property: string) {
-  if (typeof row.get === 'function') {
-    return row.get(property);
+export function get<R extends {}>(row: R, property: keyof R) {
+  if (typeof (row as RowData).get === 'function') {
+    return (row as RowData).get!(property);
   }
 
   return row[property];
@@ -13,11 +13,11 @@ interface Keys {
   values?: string[];
 }
 
-export function isRowSelected<T, K extends keyof T>(
+export function isRowSelected<R, K extends keyof R>(
   keys?: Keys | null,
   indexes?: number[] | null,
   isSelectedKey?: string | null,
-  rowData?: T,
+  rowData?: R,
   rowIdx?: number
 ): boolean {
   if (Array.isArray(indexes) && typeof rowIdx === 'number') {
