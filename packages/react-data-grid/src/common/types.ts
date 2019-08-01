@@ -146,7 +146,7 @@ export interface HeaderRowProps<R, V, DV> {
   rowType: HeaderRowType;
 }
 
-export interface CellRendererProps<R, V = unknown, DV = unknown> {
+export interface CellRendererProps<V, DV = unknown, R = any> {
   idx: number;
   rowIdx: number;
   height: number;
@@ -165,7 +165,7 @@ export interface RowRendererProps<R, V = unknown, DV = unknown> {
   height: number;
   columns: CalculatedColumn<R, V, DV>[];
   row: R;
-  cellRenderer: React.ComponentType<CellRendererProps<R, V, DV>>;
+  cellRenderer: React.ComponentType<CellRendererProps<V, DV, R>>;
   cellMetaData: CellMetaData<R>;
   isSelected?: boolean;
   idx: number;
