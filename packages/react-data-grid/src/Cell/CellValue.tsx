@@ -25,7 +25,7 @@ export default function CellValue<R extends {}>({ rowIdx, rowData, column, value
     }
   }
 
-  function getFormatterProps(): FormatterProps<R> {
+  function getFormatterProps(): FormatterProps<unknown, unknown, R> {
     return {
       value,
       column,

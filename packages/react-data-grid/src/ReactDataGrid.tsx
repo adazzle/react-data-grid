@@ -131,7 +131,7 @@ export interface DataGridProps<R extends {}> {
   onScroll?(scrollState: ScrollState): void;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
-  getValidFilterValues?(): void;
+  getValidFilterValues?(columnKey: keyof R): unknown;
   RowsContainer?: React.ComponentType<RowsContainerProps>;
   emptyRowsView?: React.ComponentType<{}>;
   onHeaderDrop?(): void;

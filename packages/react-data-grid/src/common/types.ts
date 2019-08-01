@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
 import { HeaderRowType, UpdateActions } from './enums';
@@ -20,7 +21,7 @@ export interface Column<R, V = unknown, DV = unknown> {
     [key: string]: undefined | ((e: Event, info: ColumnEventInfo<R>) => void);
   };
   /** Formatter to be used to render the cell content */
-  formatter?: React.ReactElement | React.ComponentType<FormatterProps<R, V, DV>>;
+  formatter?: React.ReactElement | React.ComponentType<FormatterProps<V, DV, R>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((rowData: R) => boolean);
   /** Enable dragging of a column */
@@ -36,7 +37,7 @@ export interface Column<R, V = unknown, DV = unknown> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ReactElement | React.ComponentType<EditorProps<R, V, DV>>;
+  editor?: React.ReactElement | React.ComponentType<EditorProps<V, DV, R>>;
   /** Header renderer for each header cell */
   headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<R, V, DV>>;
   /** Component to be used to filter the data of the column */
@@ -119,7 +120,7 @@ export interface Editor<V = never> extends React.Component {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<R, V = unknown, DV = unknown> {
+export interface FormatterProps<V, DV = unknown, R = any> {
   rowIdx: number;
   value: V;
   column: CalculatedColumn<R, V, DV>;
@@ -128,7 +129,7 @@ export interface FormatterProps<R, V = unknown, DV = unknown> {
   dependentValues?: DV;
 }
 
-export interface EditorProps<R, V = unknown, DV = unknown> {
+export interface EditorProps<V, DV = unknown, R = any> {
   column: CalculatedColumn<R, V, DV>;
   value: V;
   rowMetaData?: DV;
