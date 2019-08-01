@@ -17,7 +17,7 @@ describe('SimpleTextEditor', () => {
     function fakeBlurCb() { return true; }
 
     function setup() {
-      return mount<SimpleTextEditor<Row>>(
+      return mount<SimpleTextEditor>(
         <SimpleTextEditor
           value="This is a test"
           onBlur={fakeBlurCb}
