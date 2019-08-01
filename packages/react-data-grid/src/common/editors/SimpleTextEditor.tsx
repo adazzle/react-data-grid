@@ -1,9 +1,9 @@
 import React from 'react';
 import { Editor, EditorProps } from '../types';
 
-type Props<R> = Pick<EditorProps<R, string>, 'value' | 'column' | 'onBlur'>;
+type Props = Pick<EditorProps<string>, 'value' | 'column' | 'onBlur'>;
 
-export default class SimpleTextEditor<R> extends React.Component<Props<R>> implements Editor<{ [key: string]: string }> {
+export default class SimpleTextEditor extends React.Component<Props> implements Editor<{ [key: string]: string }> {
   private readonly input = React.createRef<HTMLInputElement>();
 
   getInputNode() {

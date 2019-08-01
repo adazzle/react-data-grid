@@ -46,7 +46,7 @@ export default class Row<R extends {}> extends React.Component<RowRendererProps<
     const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key } = column;
 
-    const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
+    const cellProps: CellRendererProps<unknown, unknown, R> & { ref: (cell: CellRenderer | null) => void } = {
       ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
       idx: column.idx,
       rowIdx: idx,

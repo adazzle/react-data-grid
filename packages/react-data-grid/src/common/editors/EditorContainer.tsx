@@ -90,7 +90,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
   };
 
   createEditor() {
-    const editorProps: EditorProps<R> & { ref: React.RefObject<Editor> } = {
+    const editorProps: EditorProps<unknown, unknown, R> & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
       column: this.props.column,
       value: this.getInitialValue(),
@@ -114,7 +114,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
 
     return (
       <SimpleTextEditor
-        ref={this.editor as unknown as React.RefObject<SimpleTextEditor<R>>}
+        ref={this.editor as unknown as React.RefObject<SimpleTextEditor>}
         column={this.props.column as CalculatedColumn<R, string>}
         value={this.getInitialValue() as string}
         onBlur={this.commit}
