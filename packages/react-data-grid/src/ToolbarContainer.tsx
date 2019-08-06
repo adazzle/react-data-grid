@@ -9,9 +9,9 @@ export interface ToolbarProps<R> {
   onToggleFilter(): void;
 }
 
-type ToolbarContainerProps<R extends {}> = ToolbarProps<R> & Pick<ReactDataGridProps<R>, 'toolbar'>;
+type ToolbarContainerProps<R> = ToolbarProps<R> & Pick<ReactDataGridProps<R>, 'toolbar'>;
 
-export default function ToolbarContainer<R extends {}>({ toolbar, columns, rowsCount, onToggleFilter }: ToolbarContainerProps<R>) {
+export default function ToolbarContainer<R>({ toolbar, columns, rowsCount, onToggleFilter }: ToolbarContainerProps<R>) {
   if (!toolbar) {
     return null;
   }

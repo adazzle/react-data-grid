@@ -13,7 +13,7 @@ type CellValueProps<R> = Pick<CellContentProps<R>,
 | 'isScrolling'
 >;
 
-export default function CellValue<R extends {}>({ rowIdx, rowData, column, value, isScrolling }: CellValueProps<R>) {
+export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolling }: CellValueProps<R>) {
   function getFormatterDependencies(row: R) {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
@@ -25,7 +25,8 @@ export default function CellValue<R extends {}>({ rowIdx, rowData, column, value
     }
   }
 
-  function getFormatterProps(): FormatterProps<unknown, unknown, R> {
+  type P = FormatterProps<R[keyof R], unknown, R>;
+  function getFormatterProps(): P {
     return {
       value,
       column,
@@ -36,7 +37,7 @@ export default function CellValue<R extends {}>({ rowIdx, rowData, column, value
     };
   }
 
-  const Formatter = column.formatter;
+  const Formatter = column.formatter as React.ComponentType<P>;
 
   if (isElement(Formatter)) {
     return React.cloneElement(Formatter, getFormatterProps());
@@ -46,5 +47,5 @@ export default function CellValue<R extends {}>({ rowIdx, rowData, column, value
     return <Formatter {...getFormatterProps()} />;
   }
 
-  return <SimpleCellFormatter value={value as string} />;
+  return <SimpleCellFormatter value={value as unknown as string} />;
 }

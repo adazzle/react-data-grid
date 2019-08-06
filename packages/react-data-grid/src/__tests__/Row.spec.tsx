@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
 
@@ -6,10 +7,7 @@ import Cell from '../Cell';
 import { createColumns } from './utils';
 import { RowRendererProps, CellMetaData } from '../common/types';
 
-interface RowType {
-  row?: string;
-  key?: string;
-}
+type RowType = any;
 
 describe('Row', () => {
   const COLUMN_COUNT = 50;

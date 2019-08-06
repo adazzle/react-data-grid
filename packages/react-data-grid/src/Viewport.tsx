@@ -88,7 +88,7 @@ export interface ViewportState {
   lastFrozenColumnIndex: number;
 }
 
-export default class Viewport<R extends {}> extends React.Component<ViewportProps<R>, ViewportState> {
+export default class Viewport<R> extends React.Component<ViewportProps<R>, ViewportState> {
   static displayName = 'Viewport';
 
   readonly state: Readonly<ViewportState> = getGridState(this.props);

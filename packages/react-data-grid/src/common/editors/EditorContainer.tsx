@@ -10,10 +10,12 @@ import { InteractionMasksProps, InteractionMasksState } from '../../masks/Intera
 type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
 type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
 
+type ValueType<R> = R[keyof R];
+
 export interface Props<R> extends SharedInteractionMasksProps<R>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: R;
-  value: unknown;
+  value: ValueType<R>;
   column: CalculatedColumn<R>;
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent<R>): void;
@@ -90,7 +92,8 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
   };
 
   createEditor() {
-    const editorProps: EditorProps<unknown, unknown, R> & { ref: React.RefObject<Editor> } = {
+    type P = EditorProps<ValueType<R> | string, unknown, R>;
+    const editorProps: P & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
       column: this.props.column,
       value: this.getInitialValue(),
@@ -103,7 +106,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
       onOverrideKeyDown: this.onKeyDown
     };
 
-    const CustomEditor = this.props.column.editor;
+    const CustomEditor = this.props.column.editor as React.ComponentType<P>;
     // return custom column editor or SimpleEditor if none specified
     if (isElement(CustomEditor)) {
       return React.cloneElement(CustomEditor, editorProps);
@@ -115,7 +118,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
     return (
       <SimpleTextEditor
         ref={this.editor as unknown as React.RefObject<SimpleTextEditor>}
-        column={this.props.column as CalculatedColumn<R, string>}
+        column={this.props.column as CalculatedColumn<unknown>}
         value={this.getInitialValue() as string}
         onBlur={this.commit}
       />
@@ -192,7 +195,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
     return this.getEditor().getInputNode();
   };
 
-  getInitialValue() {
+  getInitialValue(): ValueType<R> | string {
     const { firstEditorKeyPress: key, value } = this.props;
     if (key === 'Delete' || key === 'Backspace') {
       return '';

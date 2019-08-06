@@ -20,7 +20,7 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 >;
 
 
-export default function CellContent<R extends {}>({ idx, tooltip, expandableOptions, height, cellMetaData, cellControls, ...props }: CellContentProps<R>) {
+export default function CellContent<R>({ idx, tooltip, expandableOptions, height, cellMetaData, cellControls, ...props }: CellContentProps<R>) {
   const { column } = props;
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;

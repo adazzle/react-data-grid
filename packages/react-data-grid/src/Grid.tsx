@@ -53,7 +53,7 @@ export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridStat
   interactionMasksMetaData: InteractionMasksMetaData<R>;
 }
 
-export default class Grid<R extends {}> extends React.Component<GridProps<R>> {
+export default class Grid<R> extends React.Component<GridProps<R>> {
   static displayName = 'Grid';
 
   private readonly header = React.createRef<Header<R>>();

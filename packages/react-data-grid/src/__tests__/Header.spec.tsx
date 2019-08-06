@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import Header, { HeaderProps } from '../Header';
-import HeaderRow, { HeaderRowProps } from '../HeaderRow';
+import HeaderRow from '../HeaderRow';
 import helpers, { fakeCellMetaData, Row } from '../helpers/test/GridPropHelpers';
 import * as GetScrollbarSize from '../getScrollbarSize';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
@@ -51,9 +51,9 @@ describe('Header Unit Tests', () => {
   it('header row drag end should trigger onColumnResize callback', () => {
     const resizeColIdx = 1;
     const testProps = getProps();
-    const wrapper = shallow(<Header {...testProps} />);
-    const headerRow = wrapper.find<HeaderRowProps<Row>>(HeaderRow);
-    headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx], 200);
+    const wrapper = shallow(<Header<Row> {...testProps} />);
+    const headerRow = wrapper.find(HeaderRow);
+    headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx] as never, 200);
     expect(testProps.onColumnResize).toHaveBeenCalled();
     expect(testProps.onColumnResize).toHaveBeenCalledWith(resizeColIdx, 200);
   });
