@@ -95,7 +95,7 @@ describe('Editor Container Tests', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<EditorProps<unknown, unknown, Row>> {
+    class TestEditor extends React.Component<EditorProps<Row[keyof Row]>> {
       getValue() {
         return undefined;
       }

@@ -30,7 +30,7 @@ interface State<R> {
   resizing: { column: CalculatedColumn<R>; columnMetrics: ColumnMetrics<R> } | null;
 }
 
-export default class Header<R extends {}> extends React.Component<HeaderProps<R>, State<R>> {
+export default class Header<R> extends React.Component<HeaderProps<R>, State<R>> {
   readonly state: Readonly<State<R>> = { resizing: null };
 
   private readonly row = React.createRef<HeaderRow<R>>();

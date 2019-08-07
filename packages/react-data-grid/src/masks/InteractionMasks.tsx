@@ -77,7 +77,7 @@ export interface InteractionMasksState {
   firstEditorKeyPress: string | null;
 }
 
-export default class InteractionMasks<R extends {}> extends React.Component<InteractionMasksProps<R>, InteractionMasksState> {
+export default class InteractionMasks<R> extends React.Component<InteractionMasksProps<R>, InteractionMasksState> {
   static displayName = 'InteractionMasks';
 
   readonly state: Readonly<InteractionMasksState> = {
@@ -704,7 +704,7 @@ export default class InteractionMasks<R extends {}> extends React.Component<Inte
               onCommit={this.onCommit}
               onCommitCancel={this.onCommitCancel}
               rowIdx={selectedPosition.rowIdx}
-              value={getSelectedCellValue({ selectedPosition, columns, rowGetter })}
+              value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
               rowData={rowData}
               column={columns[selectedPosition.idx]}
               scrollLeft={scrollLeft}

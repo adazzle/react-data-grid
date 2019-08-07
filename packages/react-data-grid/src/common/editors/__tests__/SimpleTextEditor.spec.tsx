@@ -7,7 +7,7 @@ interface Row { text: string }
 
 describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
-    const fakeColumn: CalculatedColumn<Row, string> = {
+    const fakeColumn: CalculatedColumn<Row, unknown, 'text'> = {
       idx: 0,
       key: 'text',
       name: 'name',

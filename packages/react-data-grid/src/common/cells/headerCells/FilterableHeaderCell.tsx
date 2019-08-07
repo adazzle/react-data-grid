@@ -19,7 +19,7 @@ export default function FilterableHeaderCell<R>({ column, onChange }: FilterRend
   return (
     <div className="form-group">
       <input
-        key={`header-filter-${column.key}`}
+        key={`header-filter-${column.key as keyof R}`}
         className="form-control input-sm"
         placeholder="Search"
         value={filterTerm}

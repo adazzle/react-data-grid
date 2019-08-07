@@ -44,7 +44,7 @@ export default function NumericFilter<R>({ column, onChange }: Props<R>) {
     });
   }
 
-  const inputKey = `header-filter-${column.key}`;
+  const inputKey = `header-filter-${column.key as keyof R}`;
   const columnStyle: React.CSSProperties = {
     float: 'left',
     marginRight: 5,
@@ -75,7 +75,7 @@ export default function NumericFilter<R>({ column, onChange }: Props<R>) {
 }
 
 
-function filterValues<R extends {}>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
+function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
   if (columnFilter.filterTerm == null) {
     return true;
   }

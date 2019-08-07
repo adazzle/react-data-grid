@@ -7,7 +7,7 @@ import { isFrozen } from './ColumnUtils';
 import * as rowUtils from './RowUtils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
-export default class Row<R extends {}> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
+export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
   static displayName = 'Row';
 
   static defaultProps = {
@@ -42,18 +42,18 @@ export default class Row<R extends {}> extends React.Component<RowRendererProps<
   };
 
   getCell(column: CalculatedColumn<R>) {
-    const Renderer = this.props.cellRenderer;
+    const Renderer = this.props.cellRenderer!;
     const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key } = column;
 
-    const cellProps: CellRendererProps<unknown, unknown, R> & { ref: (cell: CellRenderer | null) => void } = {
+    const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
       ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
       idx: column.idx,
       rowIdx: idx,
       height: this.getRowHeight(),
       column,
       cellMetaData,
-      value: this.getCellValue(key || String(column.idx) as keyof R), // TODO: fix idx type
+      value: this.getCellValue(key || String(column.idx) as keyof R) as R[keyof R], // FIXME: fix types
       rowData: row,
       isRowSelected: isSelected,
       expandableOptions: this.getExpandableOptions(key),
@@ -62,7 +62,7 @@ export default class Row<R extends {}> extends React.Component<RowRendererProps<
       lastFrozenColumnIndex
     };
 
-    return <Renderer key={`${key}-${idx}`} {...cellProps} />;
+    return <Renderer key={`${key as keyof R}-${idx}`} {...cellProps} />; // FIXME: fix key type
   }
 
   getCells() {

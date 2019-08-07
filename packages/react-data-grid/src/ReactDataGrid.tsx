@@ -27,7 +27,6 @@ import {
   HeaderRowData,
   InteractionMasksMetaData,
   Position,
-  RowData,
   RowExpandToggleEvent,
   RowGetter,
   RowSelection,
@@ -35,7 +34,8 @@ import {
   SelectedRange,
   SubRowDetails,
   SubRowOptions,
-  SelectedRow
+  SelectedRow,
+  RowRendererProps
 } from './common/types';
 
 export interface DataGridProps<R extends {}> {
@@ -104,7 +104,7 @@ export interface DataGridProps<R extends {}> {
   rowKey: keyof R;
   /** The height of each row in pixels */
   rowHeight: number;
-  rowRenderer?: React.ReactElement | React.ComponentType;
+  rowRenderer?: React.ReactElement | React.ComponentType<RowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
   rowGetter: RowGetter<R>;
@@ -193,7 +193,7 @@ function isRowSelected<R>(keys: unknown, indexes: unknown, isSelectedKey: unknow
  *
  * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-export default class ReactDataGrid<R extends {} = RowData> extends React.Component<DataGridProps<R>, DataGridState<R>> {
+export default class ReactDataGrid<R extends {}> extends React.Component<DataGridProps<R>, DataGridState<R>> {
   static displayName = 'ReactDataGrid';
 
   static defaultProps: DefaultProps = {
@@ -614,8 +614,8 @@ export default class ReactDataGrid<R extends {} = RowData> extends React.Compone
         ? undefined
         : <SelectAllComponent onChange={this.handleCheckboxChange} ref={this.selectAllCheckbox} />;
       const Formatter = (this.props.rowActionsCell ? this.props.rowActionsCell : CheckboxEditor) as unknown as React.ComponentClass<{ rowSelection: unknown }>;
-      const selectColumn: Column<R> = {
-        key: 'select-row' as keyof R,
+      const selectColumn = {
+        key: 'select-row',
         name: '',
         formatter: <Formatter rowSelection={this.props.rowSelection} />,
         onCellChange: this.handleRowSelect,
@@ -625,7 +625,7 @@ export default class ReactDataGrid<R extends {} = RowData> extends React.Compone
         frozen: true,
         getRowMetaData: (rowData: R) => rowData,
         cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''
-      };
+      } as unknown as Column<R>;
 
       this._cachedComputedColumns = Array.isArray(columns)
         ? [selectColumn, ...columns]
@@ -734,4 +734,4 @@ export default class ReactDataGrid<R extends {} = RowData> extends React.Compone
   }
 }
 
-export type ReactDataGridProps<R extends {} = RowData> = JSX.LibraryManagedAttributes<typeof ReactDataGrid, DataGridProps<R>>;
+export type ReactDataGridProps<R extends {}> = JSX.LibraryManagedAttributes<typeof ReactDataGrid, DataGridProps<R>>;

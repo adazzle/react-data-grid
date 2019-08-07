@@ -18,12 +18,16 @@ const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
 const columns = createColumns(NUMBER_OF_COLUMNS);
 
+interface Row {
+  [key: string]: unknown;
+}
+
 describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
-  function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps<{}>>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
+  function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps<Row>>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
     const onCellSelected = jest.fn();
-    const props: InteractionMasksProps<{}> = {
+    const props: InteractionMasksProps<Row> = {
       rowVisibleStartIdx: 0,
       rowVisibleEndIdx: 10,
       colVisibleStartIdx: 0,
@@ -58,13 +62,13 @@ describe('<InteractionMasks/>', () => {
     };
 
     if (isMount) {
-      const wrapper = mount<InteractionMasks<{}>>(<InteractionMasks {...props} />);
+      const wrapper = mount<InteractionMasks<Row>>(<InteractionMasks {...props} />);
       initialState && wrapper.setState(initialState);
       onCellSelected.mockReset();
       return { wrapper, props };
     }
 
-    const wrapper = shallow<InteractionMasks<{}>>(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
+    const wrapper = shallow<InteractionMasks<Row>>(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
     initialState && wrapper.setState(initialState);
     onCellSelected.mockReset();
     return { wrapper, props };

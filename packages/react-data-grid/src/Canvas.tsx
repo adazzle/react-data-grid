@@ -66,7 +66,7 @@ type RendererProps<R> = Pick<CanvasProps<R>, 'rowVisibleStartIdx' | 'rowVisibleE
   scrollLeft: number;
 };
 
-export default class Canvas<R extends {}> extends React.PureComponent<CanvasProps<R>> {
+export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   static displayName = 'Canvas';
 
   private readonly canvas = React.createRef<HTMLDivElement>();
@@ -243,13 +243,14 @@ export default class Canvas<R extends {}> extends React.PureComponent<CanvasProp
   }
 
   renderGroupRow(props: RendererProps<R>) {
-    const { ref, ...rowGroupProps } = props;
+    const { ref, columns, ...rowGroupProps } = props;
     const row = props.row as RowData;
 
     return (
       <RowGroup
         {...rowGroupProps}
         {...row.__metaData!}
+        columns={columns as CalculatedColumn<unknown>[]}
         name={row.name!}
         eventBus={this.props.eventBus}
         renderer={this.props.rowGroupRenderer}
@@ -272,7 +273,7 @@ export default class Canvas<R extends {}> extends React.PureComponent<CanvasProp
       return this.renderCustomRowRenderer(props);
     }
 
-    return <Row {...props} />;
+    return <Row<R> {...props} />;
   }
 
   renderPlaceholder(key: string, height: number) {

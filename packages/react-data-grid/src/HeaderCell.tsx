@@ -3,15 +3,15 @@ import classNames from 'classnames';
 import { isElement } from 'react-is';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from './common/enums';
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn, HeaderRowProps } from './common/types';
 
-function SimpleCellRenderer<R>({ column, rowType }: { column: CalculatedColumn<R>; rowType: HeaderRowType }) {
+function SimpleCellRenderer<R>({ column, rowType }: HeaderRowProps<R>) {
   const headerText = rowType === HeaderRowType.HEADER ? column.name : '';
   return <div>{headerText}</div>;
 }
 
 interface Props<R> {
-  renderer?: CalculatedColumn<R>['headerRenderer'];
+  renderer?: React.ReactElement | React.ComponentType<HeaderRowProps<R>>;
   column: CalculatedColumn<R>;
   rowType: HeaderRowType;
   height: number;

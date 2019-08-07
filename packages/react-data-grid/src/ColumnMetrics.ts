@@ -114,8 +114,8 @@ function compareEachColumn<R>(prevColumns: ColumnList<R>, nextColumns: ColumnLis
 
   for (const key of keys) {
     if (!prevColumnsMap.has(key) || !nextColumnsMap.has(key)) return false;
-    const prevColumn = prevColumnsMap.get(key)!;
-    const nextColumn = nextColumnsMap.get(key)!;
+    const prevColumn = prevColumnsMap.get(key) as Column<R>;
+    const nextColumn = nextColumnsMap.get(key) as Column<R>;
     if (!isSameColumn(prevColumn, nextColumn)) return false;
   }
 

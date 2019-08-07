@@ -11,14 +11,14 @@ function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandAr
   return { rowIdx, idx, rowData, expandArgs };
 }
 
-export interface Props<R> extends CellRendererProps<unknown, unknown, R> {
+export interface Props<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
   tooltip?: string;
   cellControls?: unknown;
 }
 
-export default class Cell<R extends {}> extends React.PureComponent<Props<R>> implements CellRenderer {
+export default class Cell<R> extends React.PureComponent<Props<R>> implements CellRenderer {
   static defaultProps = {
     value: ''
   };
@@ -187,7 +187,7 @@ export default class Cell<R extends {}> extends React.PureComponent<Props<R>> im
         style={style}
         {...events}
       >
-        <CellActions
+        <CellActions<R>
           column={column}
           rowData={rowData}
           cellMetaData={cellMetaData}
