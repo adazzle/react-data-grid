@@ -42,7 +42,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   };
 
   getCell(column: CalculatedColumn<R>) {
-    const Renderer = this.props.cellRenderer;
+    const Renderer = this.props.cellRenderer!;
     const { idx, cellMetaData, isScrolling, row, isSelected, scrollLeft, lastFrozenColumnIndex } = this.props;
     const { key } = column;
 
@@ -62,7 +62,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       lastFrozenColumnIndex
     };
 
-    return <Renderer key={`${key as keyof R}-${idx}`} {...cellProps} />; // FIXEME: fix key type
+    return <Renderer key={`${key as keyof R}-${idx}`} {...cellProps} />; // FIXME: fix key type
   }
 
   getCells() {

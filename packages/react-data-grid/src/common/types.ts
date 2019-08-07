@@ -7,7 +7,7 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export type SelectedRow<TRow> = TRow & { isSelected: boolean };
 
-interface ColumnValue<TRow, TDependentValue = any, TField extends keyof TRow = keyof TRow> {
+interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -48,10 +48,10 @@ interface ColumnValue<TRow, TDependentValue = any, TField extends keyof TRow = k
   getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
 }
 
-export type Column<TRow, TDependentValue = any, TField extends keyof TRow = keyof TRow> =
+export type Column<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
   TField extends keyof TRow ? ColumnValue<TRow, TDependentValue, TField> : never;
 
-export type CalculatedColumn<TRow, TDependentValue = any, TField extends keyof TRow = keyof TRow> =
+export type CalculatedColumn<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
   Column<TRow, TDependentValue, TField> & {
     idx: number;
     width: number;
@@ -70,7 +70,7 @@ export interface ColumnMetrics<TRow> {
 
 export interface RowData {
   name?: string;
-  get?(key: string | number | symbol): unknown;
+  get?(key: PropertyKey): unknown;
   __metaData?: RowGroupMetaData;
 }
 
@@ -124,7 +124,7 @@ export interface Editor<TValue = never> extends React.Component {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<TValue, TDependentValue = any, TRow = any> {
+export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   rowIdx: number;
   value: TValue;
   column: CalculatedColumn<TRow, TDependentValue>;
@@ -133,7 +133,7 @@ export interface FormatterProps<TValue, TDependentValue = any, TRow = any> {
   dependentValues?: TDependentValue;
 }
 
-export interface EditorProps<TValue, TDependentValue = any, TRow = any> {
+export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   column: CalculatedColumn<TRow, TDependentValue>;
   value: TValue;
   rowMetaData?: TDependentValue;
@@ -150,12 +150,12 @@ export interface HeaderRowProps<TRow> {
   rowType: HeaderRowType;
 }
 
-export interface CellRendererProps<TRow, TDependentValue = any> {
+export interface CellRendererProps<TRow, TValue = unknown> {
   idx: number;
   rowIdx: number;
   height: number;
-  value: TRow[keyof TRow];
-  column: CalculatedColumn<TRow, TDependentValue>;
+  value: TValue;
+  column: CalculatedColumn<TRow>;
   rowData: TRow;
   cellMetaData: CellMetaData<TRow>;
   isScrolling: boolean;
@@ -169,7 +169,7 @@ export interface RowRendererProps<TRow> {
   height: number;
   columns: CalculatedColumn<TRow>[];
   row: TRow;
-  cellRenderer: React.ComponentType<CellRendererProps<TRow>>;
+  cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   cellMetaData: CellMetaData<TRow>;
   isSelected?: boolean;
   idx: number;

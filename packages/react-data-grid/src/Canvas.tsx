@@ -273,7 +273,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
       return this.renderCustomRowRenderer(props);
     }
 
-    return <Row {...props} />;
+    return <Row<R> {...props} />;
   }
 
   renderPlaceholder(key: string, height: number) {

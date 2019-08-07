@@ -1,7 +1,6 @@
 import React from 'react';
 import { isElement, isValidElementType } from 'react-is';
 
-import { FormatterProps } from '../common/types';
 import { SimpleCellFormatter } from '../formatters';
 import { CellContentProps } from './CellContent';
 
@@ -25,8 +24,7 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
     }
   }
 
-  type P = FormatterProps<R[keyof R], unknown, R>;
-  function getFormatterProps(): P {
+  function getFormatterProps() {
     return {
       value,
       column,
@@ -37,15 +35,16 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
     };
   }
 
-  const Formatter = column.formatter as React.ComponentType<P>;
+  const { formatter } = column;
 
-  if (isElement(Formatter)) {
-    return React.cloneElement(Formatter, getFormatterProps());
+  if (isElement(formatter)) {
+    return React.cloneElement(formatter, getFormatterProps());
   }
 
-  if (isValidElementType(Formatter)) {
-    return <Formatter {...getFormatterProps()} />;
+  if (isValidElementType(formatter)) {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    return React.createElement(formatter, { ...getFormatterProps(), value: value as any }); //FIXME: fix value type
   }
 
-  return <SimpleCellFormatter value={value as unknown as string} />;
+  return <SimpleCellFormatter value={value as string} />;
 }

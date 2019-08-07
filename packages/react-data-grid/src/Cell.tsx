@@ -187,7 +187,7 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
         style={style}
         {...events}
       >
-        <CellActions
+        <CellActions<R>
           column={column}
           rowData={rowData}
           cellMetaData={cellMetaData}
