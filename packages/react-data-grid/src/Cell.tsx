@@ -14,7 +14,7 @@ function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandAr
 export interface Props<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
-  tooltip?: string;
+  tooltip?: string | null;
   cellControls?: unknown;
 }
 
