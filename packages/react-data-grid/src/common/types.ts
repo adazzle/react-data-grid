@@ -327,7 +327,7 @@ export interface CellCopyPasteEvent<TRow> {
 
 export interface CheckCellIsEditableEvent<TRow> extends Position {
   row: TRow;
-  column: Column<TRow>;
+  column: CalculatedColumn<TRow>;
 }
 
 export interface RowSelectionParams<TRow> {
