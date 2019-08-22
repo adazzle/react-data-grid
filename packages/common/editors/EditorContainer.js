@@ -231,7 +231,9 @@ class EditorContainer extends React.Component {
   commit = (args) => {
     const { onCommit } = this.props;
     const opts = args || {};
-    const updated = this.getEditor().getValue();
+    const editor = this.getEditor();
+    if (!editor) { return; }
+    const updated = editor.getValue();
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       const cellKey = this.props.column.key;
