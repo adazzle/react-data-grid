@@ -61,9 +61,9 @@ Name | Type | Description
 * User activates a cell by double clicking or pressing enter on the keyboard.
 * ReactDataGRid will check if a column has an `Editor` property set.
 * If editor is present, then the editor will be mounted and passed the value of the cell, as well as the above props.
-* The editor maintains its own separate state, and does not update the grid until the editor is committed. An editor is committed when either 
- * the user tabs out of the primary input node 
- - the user clicks enter on the primary input node
- - focus switches back to the data grid
- - onCommit is called manually
+* The editor maintains its own separate state, and does not update the grid until the editor is committed. An editor is committed when either:
+  - the user tabs out of the primary input node 
+  - the user clicks enter on the primary input node
+  - focus switches back to the data grid
+  - onCommit is called manually
 * If the user presses `escape`, then onCommitCancel is called, the editor is closed and the grid retains its original data before the editor was opened.
