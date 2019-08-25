@@ -17,9 +17,9 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
     if (getRowMetaData) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
-      }
+      // if (process.env.NODE_ENV === 'development') {
+      //   console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
+      // }
       return getRowMetaData(row, column);
     }
   }

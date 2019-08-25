@@ -25,9 +25,9 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
 
   private readonly cell = React.createRef<HTMLDivElement>();
 
-  componentDidMount() {
-    this.checkScroll();
-  }
+  // componentDidMount() {
+  //   this.checkScroll();
+  // }
 
   componentDidUpdate(prevProps: Props<R>) {
     if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
@@ -85,27 +85,26 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
   }
 
   getCellClass() {
-    const { idx, column, lastFrozenColumnIndex, isRowSelected, tooltip, expandableOptions } = this.props;
+    const { idx, column, lastFrozenColumnIndex, tooltip, expandableOptions } = this.props;
     return classNames(
       column.cellClass,
       'react-grid-Cell',
       this.props.className, {
         'react-grid-Cell--frozen': isFrozen(column),
         'rdg-last--frozen': lastFrozenColumnIndex === idx,
-        'row-selected': isRowSelected,
         'has-tooltip': !!tooltip,
         'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }
     );
   }
 
-  checkScroll() {
-    const { scrollLeft, column } = this.props;
-    const node = this.cell.current;
-    if (isFrozen(column) && node && node.style.transform != null) {
-      this.setScrollLeft(scrollLeft);
-    }
-  }
+  // checkScroll() {
+  //   const { scrollLeft, column } = this.props;
+  //   const node = this.cell.current;
+  //   if (isFrozen(column) && node && node.style.transform != null) {
+  //     this.setScrollLeft(scrollLeft);
+  //   }
+  // }
 
   setScrollLeft(scrollLeft: number) {
     const node = this.cell.current;
@@ -164,14 +163,28 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
   }
 
   render() {
-    const { column, children, expandableOptions, cellMetaData, rowData } = this.props;
+    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isScrolling } = this.props;
     if (column.hidden) {
       return null;
     }
 
     const style = this.getStyle();
     const className = this.getCellClass();
-    const cellContent = children || <CellContent<R> {...this.props} />;
+    const cellContent = children || (
+      <CellContent<R>
+        idx={idx}
+        rowIdx={rowIdx}
+        column={column}
+        rowData={rowData}
+        value={value}
+        tooltip={tooltip}
+        expandableOptions={expandableOptions}
+        height={height}
+        onDeleteSubRow={cellMetaData.onDeleteSubRow}
+        cellControls={cellControls}
+        isScrolling={isScrolling}
+      />
+    );
     const events = this.getEvents();
     const cellExpander = expandableOptions && expandableOptions.canExpand && (
       <CellExpand
@@ -190,7 +203,7 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
         <CellActions<R>
           column={column}
           rowData={rowData}
-          cellMetaData={cellMetaData}
+          getCellActions={cellMetaData.getCellActions}
         />
         {cellExpander}
         {cellContent}
