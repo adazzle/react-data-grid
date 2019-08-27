@@ -1,4 +1,4 @@
-import getScrollbarSize from '../getScrollbarSize';
+import { getScrollbarSize } from '../utils';
 import * as ColumnMetrics from '../ColumnMetrics';
 import { Column } from '../common/types';
 

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import HeaderRow from './HeaderRow';
 import { resizeColumn } from './ColumnMetrics';
-import getScrollbarSize from './getScrollbarSize';
+import { getScrollbarSize } from './utils';
 import { HeaderRowType } from './common/enums';
 import { CalculatedColumn, ColumnMetrics } from './common/types';
 import { GridProps } from './Grid';

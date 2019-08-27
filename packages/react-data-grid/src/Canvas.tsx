@@ -6,7 +6,7 @@ import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import * as rowUtils from './RowUtils';
-import { getColumnScrollPosition } from './utils/canvasUtils';
+import { getColumnScrollPosition, isPositionStickySupported } from './utils';
 import { EventTypes } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
 import { ViewportProps, ViewportState } from './Viewport';
@@ -93,9 +93,10 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollLeft, scrollTop } = e.currentTarget;
     this._scroll = { scrollTop, scrollLeft };
-    if (this.props.onScroll) {
-      this.props.onScroll(this._scroll);
+    if (!isPositionStickySupported()) {
+      this.setScrollLeft(scrollLeft);
     }
+    this.props.onScroll(this._scroll);
   };
 
   onHitBottomCanvas = () => {
@@ -150,11 +151,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
       i++;
     }
     return rows;
-  }
-
-  getScroll() {
-    const { scrollTop, scrollLeft } = this.canvas.current!;
-    return { scrollTop, scrollLeft };
   }
 
   getClientScrollTopOffset(node: HTMLDivElement) {

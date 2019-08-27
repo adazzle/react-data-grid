@@ -1,35 +1,47 @@
 import React from 'react';
 import classNames from 'classnames';
+import shallowEqual from 'shallowequal';
 
 import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
 import { isFrozen } from './ColumnUtils';
+import { isPositionStickySupported } from './utils';
 
-function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props<R>): SubRowOptions<R> {
+function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
 }
 
-export interface Props<R> extends CellRendererProps<R> {
+export interface CellProps<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
   tooltip?: string | null;
   cellControls?: unknown;
 }
 
-export default class Cell<R> extends React.PureComponent<Props<R>> implements CellRenderer {
+export default class Cell<R> extends React.Component<CellProps<R>> implements CellRenderer {
   static defaultProps = {
     value: ''
   };
 
   private readonly cell = React.createRef<HTMLDivElement>();
 
-  // componentDidMount() {
-  //   this.checkScroll();
-  // }
+  shouldComponentUpdate(nextProps: CellProps<R>) {
+    const { scrollLeft, ...rest } = this.props;
+    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
 
-  componentDidUpdate(prevProps: Props<R>) {
+    return !shallowEqual(rest, nextRest);
+  }
+
+  componentDidMount() {
+    const { scrollLeft } = this.props;
+    if (scrollLeft !== undefined) {
+      this.setScrollLeft(scrollLeft);
+    }
+  }
+
+  componentDidUpdate(prevProps: CellProps<R>) {
     if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
@@ -90,6 +102,7 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
       column.cellClass,
       'react-grid-Cell',
       this.props.className, {
+        'react-grid-Cell--sticky': isPositionStickySupported(),
         'react-grid-Cell--frozen': isFrozen(column),
         'rdg-last--frozen': lastFrozenColumnIndex === idx,
         'has-tooltip': !!tooltip,
@@ -97,14 +110,6 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
       }
     );
   }
-
-  // checkScroll() {
-  //   const { scrollLeft, column } = this.props;
-  //   const node = this.cell.current;
-  //   if (isFrozen(column) && node && node.style.transform != null) {
-  //     this.setScrollLeft(scrollLeft);
-  //   }
-  // }
 
   setScrollLeft(scrollLeft: number) {
     const node = this.cell.current;

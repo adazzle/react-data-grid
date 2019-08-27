@@ -34,6 +34,17 @@
   z-index: 3
 }
 
+.react-grid-Cell--sticky {
+  &.react-grid-Cell {
+    display: inline-block;
+  }
+
+  &.react-grid-Cell--frozen {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+}
+
 .react-contextmenu--visible {
   z-index: 1000;
 }

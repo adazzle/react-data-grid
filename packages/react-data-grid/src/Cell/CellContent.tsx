@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import { CellMetaData } from '../common/types';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
-import { Props as CellProps } from '../Cell';
+import { CellProps } from '../Cell';
 import CellValue from './CellValue';
 
 export type CellContentProps<R> = Pick<CellProps<R>,

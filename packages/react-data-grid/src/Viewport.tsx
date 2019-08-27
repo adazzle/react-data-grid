@@ -3,15 +3,9 @@ import React from 'react';
 import Canvas from './Canvas';
 import {
   getGridState,
-  getColOverscanEndIdx,
-  getVisibleBoundaries,
-  getScrollDirection,
-  getRowOverscanStartIdx,
-  getRowOverscanEndIdx,
-  getColOverscanStartIdx,
-  getNonFrozenVisibleColStartIdx,
-  getNonFrozenRenderedColumnCount,
-  findLastFrozenColumnIndex
+  getVerticalRangeToRender,
+  getHorizontalRangeToRender,
+  getScrollDirection
 } from './utils/viewportUtils';
 import { GridProps } from './Grid';
 import { ScrollPosition } from './common/types';
@@ -66,6 +60,9 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'interactionMasksMetaData'
 | 'RowsContainer'
 | 'editorPortalTarget'
+| 'overscanRowCount'
+| 'overscanColumnCount'
+| 'useIsScrolling'
 >;
 
 export interface ViewportProps<R> extends SharedGridProps<R> {
@@ -109,14 +106,6 @@ export default class Viewport<R> extends React.Component<ViewportProps<R>, Viewp
     onScroll(nextScrollState);
   };
 
-  getScroll() {
-    return this.canvas.current!.getScroll();
-  }
-
-  setScrollLeft(scrollLeft: number) {
-    this.canvas.current!.setScrollLeft(scrollLeft);
-  }
-
   getDOMNodeOffsetWidth() {
     return this.viewport.current ? this.viewport.current.offsetWidth : 0;
   }
@@ -128,19 +117,12 @@ export default class Viewport<R> extends React.Component<ViewportProps<R>, Viewp
   }
 
   getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount }: ScrollParams): ScrollState {
-    const isScrolling = true;
+    // const isScrolling = true;
     const { columns } = this.props.columnMetrics;
     const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);
-    const { rowVisibleStartIdx, rowVisibleEndIdx } = getVisibleBoundaries(height, rowHeight, scrollTop, rowsCount);
-    const rowOverscanStartIdx = getRowOverscanStartIdx(scrollDirection, rowVisibleStartIdx);
-    const rowOverscanEndIdx = getRowOverscanEndIdx(scrollDirection, rowVisibleEndIdx, rowsCount);
-    const totalNumberColumns = columns.length;
-    const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
-    const nonFrozenColVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);
-    const nonFrozenRenderedColumnCount = getNonFrozenRenderedColumnCount(this.props.columnMetrics, this.getDOMNodeOffsetWidth(), scrollLeft);
-    const colVisibleEndIdx = Math.min(nonFrozenColVisibleStartIdx + nonFrozenRenderedColumnCount, totalNumberColumns);
-    const colOverscanStartIdx = getColOverscanStartIdx(scrollDirection, nonFrozenColVisibleStartIdx, lastFrozenColumnIndex);
-    const colOverscanEndIdx = getColOverscanEndIdx(scrollDirection, colVisibleEndIdx, totalNumberColumns);
+    const { rowVisibleStartIdx, rowVisibleEndIdx, rowOverscanStartIdx, rowOverscanEndIdx } = getVerticalRangeToRender(height, rowHeight, scrollTop, rowsCount, scrollDirection);
+    const { colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, colOverscanStartIdx, colOverscanEndIdx } = getHorizontalRangeToRender(columns, scrollLeft, this.getDOMNodeOffsetWidth(), this.props.columnMetrics.totalColumnWidth, scrollDirection);
+
     return {
       height,
       scrollTop,
@@ -149,13 +131,13 @@ export default class Viewport<R> extends React.Component<ViewportProps<R>, Viewp
       rowVisibleEndIdx,
       rowOverscanStartIdx,
       rowOverscanEndIdx,
-      colVisibleStartIdx: nonFrozenColVisibleStartIdx,
+      colVisibleStartIdx,
       colVisibleEndIdx,
       colOverscanStartIdx,
       colOverscanEndIdx,
       scrollDirection,
       lastFrozenColumnIndex,
-      isScrolling
+      isScrolling: true
     };
   }
 

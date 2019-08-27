@@ -6,9 +6,9 @@ import exampleWrapper from '../components/exampleWrapper';
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.createRows();
+    const extraColumns = [...Array(500).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
+    this.createRows(extraColumns);
 
-    const extraColumns = [...Array(50).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
     const columns = [
       {
         key: 'id',
@@ -59,7 +59,7 @@ class Example extends React.Component {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
   };
 
-  createRows = () => {
+  createRows = (extraColumns) => {
     const rows = [];
     for (let i = 1; i < 1000; i++) {
       rows.push({
@@ -71,6 +71,10 @@ class Example extends React.Component {
         startDate: this.getRandomDate(new Date(2015, 3, 1), new Date()),
         completeDate: this.getRandomDate(new Date(), new Date(2016, 0, 1))
       });
+
+      for (const extraColumn of extraColumns) {
+        rows[rows.length - 1][extraColumn.key] = `${extraColumn.key}`;
+      }
     }
 
     this._rows = rows;

@@ -1,6 +1,7 @@
 let size: number | undefined;
+let positionSticky: boolean | undefined;
 
-export default function getScrollbarSize(): number {
+export function getScrollbarSize(): number {
   if (size === undefined) {
     const outer = document.createElement('div');
     outer.style.width = '50px';
@@ -26,4 +27,15 @@ export default function getScrollbarSize(): number {
   }
 
   return size;
+}
+
+export function isPositionStickySupported() {
+  if (positionSticky === undefined) {
+    const el = document.createElement('a');
+    const mStyle = el.style;
+    mStyle.cssText = 'position:-webkit-sticky;position:sticky';
+
+    positionSticky = mStyle.position ? mStyle.position.includes('sticky') : false;
+  }
+  return positionSticky;
 }

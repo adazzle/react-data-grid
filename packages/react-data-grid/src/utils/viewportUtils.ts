@@ -2,7 +2,8 @@ import { isFrozen } from '../ColumnUtils';
 import { SCROLL_DIRECTION } from '../common/enums';
 import { CalculatedColumn, ColumnMetrics } from '../common/types';
 
-export const OVERSCAN_ROWS = 2;
+export const OVERSCAN_ROWS = 6;
+export const OVERSCAN_COLUMNS = 6;
 
 const { min, max, ceil, round } = Math;
 
@@ -29,8 +30,17 @@ export function getGridState<R>(props: { columnMetrics: ColumnMetrics<R>; rowsCo
   };
 }
 
+function findLastIndex<T>(items: T[], predicate: (item: T) => boolean) {
+  for (let i = items.length - 1; i >= 0; i--) {
+    if (predicate(items[i])) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 export function findLastFrozenColumnIndex<R>(columns: CalculatedColumn<R>[]): number {
-  return columns.findIndex(c => isFrozen(c));
+  return findLastIndex(columns, c => isFrozen(c));
 }
 
 function getTotalFrozenColumnWidth<R>(columns: CalculatedColumn<R>[]): number {
@@ -58,45 +68,76 @@ function getColumnCountForWidth<R>(columns: CalculatedColumn<R>[], initialWidth:
   return count;
 }
 
-export function getNonFrozenVisibleColStartIdx<R>(columns: CalculatedColumn<R>[], scrollLeft: number): number {
+// export function getNonFrozenVisibleColStartIdx<R>(columns: CalculatedColumn<R>[], scrollLeft: number): number {
+//   let remainingScroll = scrollLeft;
+//   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
+//   const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
+//   let columnIndex = lastFrozenColumnIndex;
+//   while (remainingScroll >= 0 && columnIndex < nonFrozenColumns.length) {
+//     columnIndex++;
+//     const column = columns[columnIndex];
+//     remainingScroll -= column ? column.width : 0;
+//   }
+//   return max(columnIndex, 0);
+// }
+
+// export function getNonFrozenRenderedColumnCount<R>(columnMetrics: ColumnMetrics<R>, viewportDomWidth: number, scrollLeft: number): number {
+//   const { columns, totalColumnWidth } = columnMetrics;
+//   if (columns.length === 0) {
+//     return 0;
+//   }
+//   const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);
+//   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns);
+//   const viewportWidth = viewportDomWidth > 0 ? viewportDomWidth : totalColumnWidth;
+//   const firstColumn = columns[colVisibleStartIdx];
+//   // calculate the portion width of first column hidden behind frozen columns
+//   const scrolledFrozenWidth = totalFrozenColumnWidth + scrollLeft;
+//   const firstColumnHiddenWidth = scrolledFrozenWidth > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;
+//   const initialWidth = viewportWidth - totalFrozenColumnWidth + firstColumnHiddenWidth;
+//   return getColumnCountForWidth(columns, initialWidth, colVisibleStartIdx);
+// }
+
+// export interface VisibleBoundaries {
+//   rowVisibleStartIdx: number;
+//   rowVisibleEndIdx: number;
+//   rowOverscanStartIdx: number;
+//   rowOverscanEndIdx: number;
+// }
+
+export function getVerticalRangeToRender(gridHeight: number, rowHeight: number, scrollTop: number, rowsCount: number, scrollDirection: SCROLL_DIRECTION) {
+  const renderedRowsCount = ceil(gridHeight / rowHeight);
+  const rowVisibleStartIdx = max(0, round(scrollTop / rowHeight));
+  const rowVisibleEndIdx = min(rowsCount, rowVisibleStartIdx + renderedRowsCount);
+  const rowOverscanStartIdx = max(0, rowVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.UP ? OVERSCAN_ROWS : 1));
+  const rowOverscanEndIdx = min(rowsCount, rowVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.DOWN ? OVERSCAN_ROWS : 1));
+
+  return { rowVisibleStartIdx, rowVisibleEndIdx, rowOverscanStartIdx, rowOverscanEndIdx };
+}
+
+export function getHorizontalRangeToRender<R>(columns: CalculatedColumn<R>[], scrollLeft: number, viewportDomWidth: number, totalColumnWidth: number, scrollDirection: SCROLL_DIRECTION) {
   let remainingScroll = scrollLeft;
   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
-  const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
+  // const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
   let columnIndex = lastFrozenColumnIndex;
-  while (remainingScroll >= 0 && columnIndex < nonFrozenColumns.length) {
+  while (remainingScroll >= 0 && columnIndex < columns.length) {
     columnIndex++;
     const column = columns[columnIndex];
     remainingScroll -= column ? column.width : 0;
   }
-  return max(columnIndex, 0);
-}
+  const colVisibleStartIdx = max(columnIndex, 0);
 
-export function getNonFrozenRenderedColumnCount<R>(columnMetrics: ColumnMetrics<R>, viewportDomWidth: number, scrollLeft: number): number {
-  const { columns, totalColumnWidth } = columnMetrics;
-  if (columns.length === 0) {
-    return 0;
-  }
-  const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns);
   const viewportWidth = viewportDomWidth > 0 ? viewportDomWidth : totalColumnWidth;
-  const firstColumn = columns[colVisibleStartIdx];
-  // calculate the portion width of first column hidden behind frozen columns
-  const scrolledFrozenWidth = totalFrozenColumnWidth + scrollLeft;
-  const firstColumnHiddenWidth = scrolledFrozenWidth > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;
-  const initialWidth = viewportWidth - totalFrozenColumnWidth + firstColumnHiddenWidth;
-  return getColumnCountForWidth(columns, initialWidth, colVisibleStartIdx);
-}
+  // const firstColumn = columns[colVisibleStartIdx];
+  // const scrolledFrozenWidth = totalFrozenColumnWidth + scrollLeft;
+  // const firstColumnHiddenWidth = scrolledFrozenWidth > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;
+  const availableWidth = viewportWidth - totalFrozenColumnWidth; // + firstColumnHiddenWidth;
+  const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
+  const colVisibleEndIdx = min(columns.length, colVisibleStartIdx + nonFrozenRenderedColumnCount);
+  const colOverscanStartIdx = max(0, colVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.LEFT ? OVERSCAN_COLUMNS : 1));
+  const colOverscanEndIdx = min(columns.length, colVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.RIGHT ? OVERSCAN_COLUMNS : 1));
 
-export interface VisibleBoundaries {
-  rowVisibleStartIdx: number;
-  rowVisibleEndIdx: number;
-}
-
-export function getVisibleBoundaries(gridHeight: number, rowHeight: number, scrollTop: number, rowsCount: number): VisibleBoundaries {
-  const renderedRowsCount = ceil(gridHeight / rowHeight);
-  const rowVisibleStartIdx = max(0, round(scrollTop / rowHeight));
-  const rowVisibleEndIdx = min(rowVisibleStartIdx + renderedRowsCount, rowsCount);
-  return { rowVisibleStartIdx, rowVisibleEndIdx };
+  return { colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, colOverscanStartIdx, colOverscanEndIdx };
 }
 
 interface ScrollState {
@@ -114,28 +155,28 @@ export function getScrollDirection(lastScroll: ScrollState, scrollTop: number, s
   return SCROLL_DIRECTION.NONE;
 }
 
-export function getRowOverscanStartIdx(scrollDirection: SCROLL_DIRECTION, rowVisibleStartIdx: number): number {
-  return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : max(0, rowVisibleStartIdx);
-}
+// export function getRowOverscanStartIdx(scrollDirection: SCROLL_DIRECTION, rowVisibleStartIdx: number): number {
+//   return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : max(0, rowVisibleStartIdx);
+// }
 
-export function getRowOverscanEndIdx(scrollDirection: SCROLL_DIRECTION, rowVisibleEndIdx: number, rowsCount: number): number {
-  if (scrollDirection === SCROLL_DIRECTION.DOWN) {
-    const overscanBoundaryIdx = rowVisibleEndIdx + OVERSCAN_ROWS;
-    return min(overscanBoundaryIdx, rowsCount);
-  }
-  return rowVisibleEndIdx;
-}
+// export function getRowOverscanEndIdx(scrollDirection: SCROLL_DIRECTION, rowVisibleEndIdx: number, rowsCount: number): number {
+//   if (scrollDirection === SCROLL_DIRECTION.DOWN) {
+//     const overscanBoundaryIdx = rowVisibleEndIdx + OVERSCAN_ROWS;
+//     return min(overscanBoundaryIdx, rowsCount);
+//   }
+//   return rowVisibleEndIdx;
+// }
 
-export function getColOverscanStartIdx(scrollDirection: SCROLL_DIRECTION, colVisibleStartIdx: number, lastFrozenColumnIdx: number): number {
-  if (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) {
-    return lastFrozenColumnIdx > -1 ? lastFrozenColumnIdx + 1 : 0;
-  }
-  return colVisibleStartIdx;
-}
+// export function getColOverscanStartIdx(scrollDirection: SCROLL_DIRECTION, colVisibleStartIdx: number, lastFrozenColumnIdx: number): number {
+//   if (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) {
+//     return lastFrozenColumnIdx > -1 ? lastFrozenColumnIdx + 1 : 0;
+//   }
+//   return colVisibleStartIdx;
+// }
 
-export function getColOverscanEndIdx(scrollDirection: SCROLL_DIRECTION, colVisibleEndIdx: number, totalNumberColumns: number): number {
-  if (scrollDirection === SCROLL_DIRECTION.DOWN || scrollDirection === SCROLL_DIRECTION.UP) {
-    return colVisibleEndIdx;
-  }
-  return totalNumberColumns;
-}
+// export function getColOverscanEndIdx(scrollDirection: SCROLL_DIRECTION, colVisibleEndIdx: number, totalNumberColumns: number): number {
+//   if (scrollDirection === SCROLL_DIRECTION.DOWN || scrollDirection === SCROLL_DIRECTION.UP) {
+//     return colVisibleEndIdx;
+//   }
+//   return totalNumberColumns;
+// }

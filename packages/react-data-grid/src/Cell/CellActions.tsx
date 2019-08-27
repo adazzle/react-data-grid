@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CellMetaData } from '../common/types';
 import CellAction from './CellAction';
-import { Props as CellProps } from '../Cell';
+import { CellProps } from '../Cell';
 
 type CellActionsProps<R> = Pick<CellProps<R>, 'column' | 'rowData'> & Pick<CellMetaData<R>, 'getCellActions'>;
 

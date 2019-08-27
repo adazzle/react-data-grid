@@ -3,7 +3,6 @@ import { isValidElementType } from 'react-is';
 
 import Header from './Header';
 import Viewport, { ScrollState } from './Viewport';
-import { isFrozen } from './ColumnUtils';
 import { HeaderRowData, CellMetaData, RowSelection, InteractionMasksMetaData, SelectedRow } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { DataGridProps, DataGridState } from './ReactDataGrid';
@@ -30,6 +29,9 @@ type SharedDataGridProps<R> = Pick<DataGridProps<R>,
 | 'onHeaderDrop'
 | 'getSubRowDetails'
 | 'editorPortalTarget'
+| 'overscanRowCount'
+| 'overscanColumnCount'
+| 'useIsScrolling'
 >;
 
 type SharedDataGridState<R> = Pick<DataGridState<R>,
@@ -58,40 +60,13 @@ export default class Grid<R> extends React.Component<GridProps<R>> {
 
   private readonly header = React.createRef<Header<R>>();
   private readonly viewport = React.createRef<Viewport<R>>();
-  private _scrollLeft?: number = undefined;
-
-  _onScroll() {
-    if (this._scrollLeft !== undefined) {
-      this.header.current!.setScrollLeft(this._scrollLeft);
-      if (this.viewport.current) {
-        this.viewport.current.setScrollLeft(this._scrollLeft);
-      }
-    }
-  }
-
-  areFrozenColumnsScrolledLeft(scrollLeft: number) {
-    return scrollLeft > 0 && this.props.columnMetrics.columns.some(c => isFrozen(c));
-  }
 
   onScroll = (scrollState: ScrollState) => {
+    this.header.current!.setScrollLeft(scrollState.scrollLeft);
     if (this.props.onScroll) {
       this.props.onScroll(scrollState);
     }
-    const { scrollLeft } = scrollState;
-    if (this._scrollLeft !== scrollLeft || this.areFrozenColumnsScrolledLeft(scrollLeft)) {
-      this._scrollLeft = scrollLeft;
-      this._onScroll();
-    }
   };
-
-  componentDidMount() {
-    this._scrollLeft = this.viewport.current ? this.viewport.current.getScroll().scrollLeft : 0;
-    this._onScroll();
-  }
-
-  componentDidUpdate() {
-    this._onScroll();
-  }
 
   render() {
     const { headerRows } = this.props;
@@ -149,6 +124,9 @@ export default class Grid<R> extends React.Component<GridProps<R>> {
               interactionMasksMetaData={this.props.interactionMasksMetaData}
               RowsContainer={this.props.RowsContainer}
               editorPortalTarget={this.props.editorPortalTarget}
+              overscanRowCount={this.props.overscanRowCount}
+              overscanColumnCount={this.props.overscanColumnCount}
+              useIsScrolling={this.props.useIsScrolling}
             />
           </div>
         )}

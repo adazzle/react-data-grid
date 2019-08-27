@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import Header, { HeaderProps } from '../Header';
 import HeaderRow from '../HeaderRow';
 import helpers, { fakeCellMetaData, Row } from '../helpers/test/GridPropHelpers';
-import * as GetScrollbarSize from '../getScrollbarSize';
+import * as GetScrollbarSize from '../utils';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
 
 const SCROLL_BAR_SIZE = 17;
@@ -35,7 +35,7 @@ describe('Header Unit Tests', () => {
   }
 
   beforeEach(() => {
-    jest.spyOn(GetScrollbarSize, 'default').mockReturnValue(SCROLL_BAR_SIZE);
+    jest.spyOn(GetScrollbarSize, 'getScrollbarSize').mockReturnValue(SCROLL_BAR_SIZE);
   });
 
   it('should render a default header row', () => {

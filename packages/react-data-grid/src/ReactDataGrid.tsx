@@ -156,6 +156,10 @@ export interface DataGridProps<R extends {}> {
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
+
+  overscanRowCount?: number;
+  overscanColumnCount?: number;
+  useIsScrolling?: boolean;
 }
 
 type DefaultProps = Pick<DataGridProps<{ id?: unknown }>,
@@ -171,6 +175,9 @@ type DefaultProps = Pick<DataGridProps<{ id?: unknown }>,
 | 'minColumnWidth'
 | 'columnEquality'
 | 'editorPortalTarget'
+| 'overscanRowCount'
+| 'overscanColumnCount'
+| 'useIsScrolling'
 >;
 
 export interface DataGridState<R> {
@@ -208,7 +215,10 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
     minColumnWidth: 80,
     selectAllRenderer: SelectAll,
     columnEquality: sameColumn,
-    editorPortalTarget: document.body
+    editorPortalTarget: document.body,
+    overscanRowCount: 2,
+    overscanColumnCount: 2,
+    useIsScrolling: false
   };
 
   private readonly grid = React.createRef<HTMLDivElement>();
@@ -728,6 +738,9 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           getSubRowDetails={this.props.getSubRowDetails}
           editorPortalTarget={this.props.editorPortalTarget}
           interactionMasksMetaData={interactionMasksMetaData}
+          overscanRowCount={this.props.overscanRowCount}
+          overscanColumnCount={this.props.overscanColumnCount}
+          useIsScrolling={this.props.useIsScrolling}
         />
       </div>
     );

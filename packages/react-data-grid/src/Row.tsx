@@ -5,6 +5,7 @@ import rowComparer from './common/utils/RowComparer';
 import Cell from './Cell';
 import { isFrozen } from './ColumnUtils';
 import * as rowUtils from './RowUtils';
+import { isPositionStickySupported } from './utils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
 export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
@@ -43,7 +44,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   getCell(column: CalculatedColumn<R>) {
     const Renderer = this.props.cellRenderer!;
-    const { idx, cellMetaData, isScrolling, row, lastFrozenColumnIndex } = this.props;
+    const { idx, cellMetaData, isScrolling, row, lastFrozenColumnIndex, scrollLeft } = this.props;
     const { key } = column;
 
     const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
@@ -57,7 +58,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       rowData: row,
       expandableOptions: this.getExpandableOptions(key),
       isScrolling,
-      // scrollLeft,
+      scrollLeft: isFrozen(column) && !isPositionStickySupported() ? scrollLeft : undefined,
       lastFrozenColumnIndex
     };
 

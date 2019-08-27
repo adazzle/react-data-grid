@@ -1,6 +1,6 @@
 export { sameColumn } from './ColumnComparer';
 import { getSize, isFrozen } from './ColumnUtils';
-import getScrollbarSize from './getScrollbarSize';
+import { getScrollbarSize } from './utils';
 import { isColumnsImmutable } from './common/utils';
 import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/types';
 
