@@ -75,7 +75,7 @@ interface isSelectedCellEditableOpts<R> {
 
 export function isSelectedCellEditable<R>({ enableCellSelect, selectedPosition, columns, rowGetter, onCheckCellIsEditable }: isSelectedCellEditableOpts<R>): boolean {
   const column = columns[selectedPosition.idx];
-  const row = rowGetter(selectedPosition.idx);
+  const row = rowGetter(selectedPosition.rowIdx);
   const isCellEditable = onCheckCellIsEditable ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
   return isCellEditable && canEdit<R>(column, row, enableCellSelect);
 }
