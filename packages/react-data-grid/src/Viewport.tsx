@@ -17,7 +17,6 @@ export interface ScrollState {
   colVisibleEndIdx: number;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  lastFrozenColumnIndex: number;
   scrollDirection: SCROLL_DIRECTION;
 }
 
@@ -69,34 +68,10 @@ export default function Viewport<R>({
   const canvas = useRef<Canvas<R>>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const resetScrollStateTimeoutId = useRef<number | null>(null);
-  const firstRender = useRef(true);
+  const [scrollState, setScrollState] = useState<ScrollState | null>(null);
+  const [isScrolling, setIsScrolling] = useState<boolean | undefined>(undefined);
 
   const canvasHeight = minHeight - rowOffsetHeight;
-
-  const [scrollState, setScrollState] = useState<ScrollState>(() => {
-    return {
-      scrollLeft: 0,
-      scrollTop: 0,
-      scrollDirection: SCROLL_DIRECTION.NONE,
-      ...getVerticalRangeToRender({
-        height: canvasHeight,
-        rowHeight,
-        scrollTop: 0,
-        rowsCount,
-        scrollDirection: SCROLL_DIRECTION.NONE,
-        overscanRowCount
-      }),
-      ...getHorizontalRangeToRender({
-        columns: columnMetrics.columns,
-        scrollLeft: 0,
-        viewportWidth: getDOMNodeOffsetWidth(),
-        totalColumnWidth: columnMetrics.totalColumnWidth,
-        scrollDirection: SCROLL_DIRECTION.NONE,
-        overscanColumnCount
-      })
-    };
-  });
-  const [isScrolling, setIsScrolling] = useState<boolean | undefined>(undefined);
 
   function getDOMNodeOffsetWidth() {
     return viewport.current ? viewport.current.offsetWidth : 0;
@@ -128,7 +103,15 @@ export default function Viewport<R>({
       resetScrollStateAfterDelay();
     }
 
-    const scrollDirection = getScrollDirection(scrollState, { scrollLeft, scrollTop });
+    let previousScrollPosition: ScrollPosition | undefined;
+    if (scrollState !== null) {
+      previousScrollPosition = {
+        scrollLeft: scrollState.scrollLeft,
+        scrollTop: scrollState.scrollTop
+      };
+    }
+
+    const scrollDirection = getScrollDirection(previousScrollPosition, { scrollLeft, scrollTop });
     const nextScrollState = {
       scrollLeft,
       scrollTop,
@@ -142,10 +125,9 @@ export default function Viewport<R>({
         overscanRowCount
       }),
       ...getHorizontalRangeToRender({
-        columns: columnMetrics.columns,
+        columnMetrics,
         scrollLeft,
         viewportWidth: getDOMNodeOffsetWidth(),
-        totalColumnWidth: columnMetrics.totalColumnWidth,
         scrollDirection,
         overscanColumnCount
       })
@@ -156,33 +138,33 @@ export default function Viewport<R>({
   }
 
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
     const scrollDirection = SCROLL_DIRECTION.NONE;
-    setScrollState(({ scrollTop, scrollLeft }) => ({
-      scrollTop,
-      scrollLeft,
-      scrollDirection,
-      ...getVerticalRangeToRender({
-        height: canvasHeight,
-        rowHeight,
+    setScrollState(prevScrollState => {
+      const scrollTop = prevScrollState ? prevScrollState.scrollTop : 0;
+      const scrollLeft = prevScrollState ? prevScrollState.scrollLeft : 0;
+
+      return {
         scrollTop,
-        rowsCount,
-        scrollDirection,
-        overscanRowCount
-      }),
-      ...getHorizontalRangeToRender({
-        columns: columnMetrics.columns,
         scrollLeft,
-        viewportWidth: getDOMNodeOffsetWidth(),
-        totalColumnWidth: columnMetrics.totalColumnWidth,
         scrollDirection,
-        overscanColumnCount
-      })
-    }));
-  }, [canvasHeight, columnMetrics.columns, columnMetrics.totalColumnWidth, overscanColumnCount, overscanRowCount, rowHeight, rowsCount]);
+        ...getVerticalRangeToRender({
+          height: canvasHeight,
+          rowHeight,
+          scrollTop,
+          rowsCount,
+          scrollDirection,
+          overscanRowCount
+        }),
+        ...getHorizontalRangeToRender({
+          columnMetrics,
+          scrollLeft,
+          viewportWidth: getDOMNodeOffsetWidth(),
+          scrollDirection,
+          overscanColumnCount
+        })
+      };
+    });
+  }, [canvasHeight, columnMetrics, overscanColumnCount, overscanRowCount, rowHeight, rowsCount]);
 
   return (
     <div
@@ -190,46 +172,48 @@ export default function Viewport<R>({
       style={{ top: rowOffsetHeight }}
       ref={viewport}
     >
-      <Canvas<R>
-        ref={canvas}
-        rowKey={props.rowKey}
-        totalWidth={props.totalWidth}
-        width={columnMetrics.width}
-        totalColumnWidth={columnMetrics.totalColumnWidth}
-        rowGetter={props.rowGetter}
-        rowsCount={rowsCount}
-        selectedRows={props.selectedRows}
-        columns={columnMetrics.columns}
-        rowRenderer={props.rowRenderer}
-        scrollTop={scrollState.scrollTop}
-        scrollLeft={scrollState.scrollLeft}
-        rowOverscanStartIdx={scrollState.rowOverscanStartIdx}
-        rowOverscanEndIdx={scrollState.rowOverscanEndIdx}
-        rowVisibleStartIdx={scrollState.rowVisibleStartIdx}
-        rowVisibleEndIdx={scrollState.rowVisibleEndIdx}
-        colVisibleStartIdx={scrollState.colVisibleStartIdx}
-        colVisibleEndIdx={scrollState.colVisibleEndIdx}
-        colOverscanStartIdx={scrollState.colOverscanStartIdx}
-        colOverscanEndIdx={scrollState.colOverscanEndIdx}
-        lastFrozenColumnIndex={scrollState.lastFrozenColumnIndex}
-        cellMetaData={props.cellMetaData}
-        height={canvasHeight}
-        rowHeight={rowHeight}
-        onScroll={onScroll}
-        scrollToRowIndex={props.scrollToRowIndex}
-        contextMenu={props.contextMenu}
-        rowSelection={props.rowSelection}
-        getSubRowDetails={props.getSubRowDetails}
-        rowGroupRenderer={props.rowGroupRenderer}
-        isScrolling={isScrolling}
-        enableCellSelect={props.enableCellSelect}
-        enableCellAutoFocus={props.enableCellAutoFocus}
-        cellNavigationMode={props.cellNavigationMode}
-        eventBus={props.eventBus}
-        RowsContainer={props.RowsContainer}
-        editorPortalTarget={props.editorPortalTarget}
-        interactionMasksMetaData={props.interactionMasksMetaData}
-      />
+      {scrollState && (
+        <Canvas<R>
+          ref={canvas}
+          rowKey={props.rowKey}
+          totalWidth={props.totalWidth}
+          width={columnMetrics.width}
+          totalColumnWidth={columnMetrics.totalColumnWidth}
+          columns={columnMetrics.columns}
+          lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+          rowGetter={props.rowGetter}
+          rowsCount={rowsCount}
+          selectedRows={props.selectedRows}
+          rowRenderer={props.rowRenderer}
+          scrollTop={scrollState.scrollTop}
+          scrollLeft={scrollState.scrollLeft}
+          rowOverscanStartIdx={scrollState.rowOverscanStartIdx}
+          rowOverscanEndIdx={scrollState.rowOverscanEndIdx}
+          rowVisibleStartIdx={scrollState.rowVisibleStartIdx}
+          rowVisibleEndIdx={scrollState.rowVisibleEndIdx}
+          colVisibleStartIdx={scrollState.colVisibleStartIdx}
+          colVisibleEndIdx={scrollState.colVisibleEndIdx}
+          colOverscanStartIdx={scrollState.colOverscanStartIdx}
+          colOverscanEndIdx={scrollState.colOverscanEndIdx}
+          cellMetaData={props.cellMetaData}
+          height={canvasHeight}
+          rowHeight={rowHeight}
+          onScroll={onScroll}
+          scrollToRowIndex={props.scrollToRowIndex}
+          contextMenu={props.contextMenu}
+          rowSelection={props.rowSelection}
+          getSubRowDetails={props.getSubRowDetails}
+          rowGroupRenderer={props.rowGroupRenderer}
+          isScrolling={isScrolling}
+          enableCellSelect={props.enableCellSelect}
+          enableCellAutoFocus={props.enableCellAutoFocus}
+          cellNavigationMode={props.cellNavigationMode}
+          eventBus={props.eventBus}
+          RowsContainer={props.RowsContainer}
+          editorPortalTarget={props.editorPortalTarget}
+          interactionMasksMetaData={props.interactionMasksMetaData}
+        />
+      )}
     </div>
   );
 }

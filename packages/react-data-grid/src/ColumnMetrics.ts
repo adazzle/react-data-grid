@@ -72,6 +72,7 @@ export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   return {
     width,
     columns: calculatedColumns,
+    lastFrozenColumnIndex: frozenColumns.length - 1,
     totalWidth: metrics.totalWidth,
     totalColumnWidth: getTotalColumnWidth(columns),
     minColumnWidth: metrics.minColumnWidth

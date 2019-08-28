@@ -62,6 +62,7 @@ export type ColumnList<TRow> = Column<TRow>[] | List<Column<TRow>>;
 
 export interface ColumnMetrics<TRow> {
   columns: CalculatedColumn<TRow>[];
+  lastFrozenColumnIndex: number;
   width: number;
   totalColumnWidth: number;
   totalWidth: number;
@@ -161,7 +162,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   isScrolling?: boolean;
   scrollLeft?: number;
   expandableOptions?: ExpandableOptions;
-  lastFrozenColumnIndex?: number;
+  lastFrozenColumnIndex: number;
 }
 
 export interface RowRendererProps<TRow> {
@@ -178,7 +179,7 @@ export interface RowRendererProps<TRow> {
   colOverscanEndIdx: number;
   isScrolling?: boolean;
   scrollLeft: number;
-  lastFrozenColumnIndex?: number;
+  lastFrozenColumnIndex: number;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

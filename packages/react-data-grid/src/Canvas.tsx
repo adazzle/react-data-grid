@@ -45,7 +45,6 @@ type SharedViewportState = Pick<ScrollState,
 | 'colVisibleEndIdx'
 | 'colOverscanStartIdx'
 | 'colOverscanEndIdx'
-| 'lastFrozenColumnIndex'
 >;
 
 export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportState {
@@ -53,6 +52,7 @@ export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportSt
   height: number;
   width: number;
   totalColumnWidth: number;
+  lastFrozenColumnIndex: number;
   isScrolling?: boolean;
   onScroll(position: ScrollPosition): void;
 }

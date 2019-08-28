@@ -66,8 +66,8 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   }
 
   getCells() {
-    const { colOverscanStartIdx, colOverscanEndIdx, columns } = this.props;
-    const frozenColumns = columns.filter(c => isFrozen(c));
+    const { colOverscanStartIdx, colOverscanEndIdx, columns, lastFrozenColumnIndex } = this.props;
+    const frozenColumns = columns.slice(0, lastFrozenColumnIndex + 1);
     const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
     return nonFrozenColumn.concat(frozenColumns).map(c => this.getCell(c));
   }
