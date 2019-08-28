@@ -1,26 +1,12 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import Canvas from './Canvas';
-import {
-  getGridState,
-  getVerticalRangeToRender,
-  getHorizontalRangeToRender,
-  getScrollDirection
-} from './utils/viewportUtils';
+import { getVerticalRangeToRender, getHorizontalRangeToRender, getScrollDirection } from './utils/viewportUtils';
 import { GridProps } from './Grid';
 import { ScrollPosition } from './common/types';
 import { SCROLL_DIRECTION } from './common/enums';
 
-interface ScrollParams {
-  height: number;
-  scrollTop: number;
-  scrollLeft: number;
-  rowsCount: number;
-  rowHeight: number;
-}
-
 export interface ScrollState {
-  height: number;
   scrollTop: number;
   scrollLeft: number;
   rowVisibleStartIdx: number;
@@ -31,9 +17,8 @@ export interface ScrollState {
   colVisibleEndIdx: number;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  scrollDirection: SCROLL_DIRECTION;
   lastFrozenColumnIndex: number;
-  isScrolling: boolean;
+  scrollDirection: SCROLL_DIRECTION;
 }
 
 type SharedGridProps<R> = Pick<GridProps<R>,
@@ -69,212 +54,182 @@ export interface ViewportProps<R> extends SharedGridProps<R> {
   onScroll(scrollState: ScrollState): void;
 }
 
-export interface ViewportState {
-  rowOverscanStartIdx: number;
-  rowOverscanEndIdx: number;
-  rowVisibleStartIdx: number;
-  rowVisibleEndIdx: number;
-  height: number;
-  scrollTop: number;
-  scrollLeft: number;
-  colVisibleStartIdx: number;
-  colVisibleEndIdx: number;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
-  isScrolling: boolean;
-  lastFrozenColumnIndex: number;
-}
+export default function Viewport<R>({
+  minHeight,
+  rowHeight,
+  rowOffsetHeight,
+  rowsCount,
+  onScroll: handleScroll,
+  columnMetrics,
+  overscanRowCount,
+  overscanColumnCount,
+  useIsScrolling,
+  ...props
+}: ViewportProps<R>) {
+  const canvas = useRef<Canvas<R>>(null);
+  const viewport = useRef<HTMLDivElement>(null);
+  const resetScrollStateTimeoutId = useRef<number | null>(null);
+  const firstRender = useRef(true);
 
-export default class Viewport<R> extends React.Component<ViewportProps<R>, ViewportState> {
-  static displayName = 'Viewport';
+  const canvasHeight = minHeight - rowOffsetHeight;
 
-  readonly state: Readonly<ViewportState> = getGridState(this.props);
-  private readonly canvas = React.createRef<Canvas<R>>();
-  private readonly viewport = React.createRef<HTMLDivElement>();
-  private resetScrollStateTimeoutId: number | null = null;
+  const [scrollState, setScrollState] = useState<ScrollState>(() => {
+    return {
+      scrollLeft: 0,
+      scrollTop: 0,
+      scrollDirection: SCROLL_DIRECTION.NONE,
+      ...getVerticalRangeToRender({
+        height: canvasHeight,
+        rowHeight,
+        scrollTop: 0,
+        rowsCount,
+        scrollDirection: SCROLL_DIRECTION.NONE,
+        overscanRowCount
+      }),
+      ...getHorizontalRangeToRender({
+        columns: columnMetrics.columns,
+        scrollLeft: 0,
+        viewportWidth: getDOMNodeOffsetWidth(),
+        totalColumnWidth: columnMetrics.totalColumnWidth,
+        scrollDirection: SCROLL_DIRECTION.NONE,
+        overscanColumnCount
+      })
+    };
+  });
+  const [isScrolling, setIsScrolling] = useState<boolean | undefined>(undefined);
 
-  onScroll = ({ scrollTop, scrollLeft }: ScrollPosition) => {
-    const { rowHeight, rowsCount, onScroll } = this.props;
-    const nextScrollState = this.updateScroll({
-      scrollTop,
-      scrollLeft,
-      height: this.state.height,
-      rowHeight,
-      rowsCount
-    });
-
-    onScroll(nextScrollState);
-  };
-
-  getDOMNodeOffsetWidth() {
-    return this.viewport.current ? this.viewport.current.offsetWidth : 0;
+  function getDOMNodeOffsetWidth() {
+    return viewport.current ? viewport.current.offsetWidth : 0;
   }
 
-  clearScrollTimer() {
-    if (this.resetScrollStateTimeoutId !== null) {
-      window.clearTimeout(this.resetScrollStateTimeoutId);
+  function clearScrollTimer() {
+    if (resetScrollStateTimeoutId.current !== null) {
+      window.clearTimeout(resetScrollStateTimeoutId.current);
+      resetScrollStateTimeoutId.current = null;
     }
   }
 
-  getNextScrollState({ scrollTop, scrollLeft, height, rowHeight, rowsCount }: ScrollParams): ScrollState {
-    // const isScrolling = true;
-    const { columns } = this.props.columnMetrics;
-    const scrollDirection = getScrollDirection(this.state, scrollTop, scrollLeft);
-    const { rowVisibleStartIdx, rowVisibleEndIdx, rowOverscanStartIdx, rowOverscanEndIdx } = getVerticalRangeToRender(height, rowHeight, scrollTop, rowsCount, scrollDirection);
-    const { colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, colOverscanStartIdx, colOverscanEndIdx } = getHorizontalRangeToRender(columns, scrollLeft, this.getDOMNodeOffsetWidth(), this.props.columnMetrics.totalColumnWidth, scrollDirection);
-
-    return {
-      height,
-      scrollTop,
-      scrollLeft,
-      rowVisibleStartIdx,
-      rowVisibleEndIdx,
-      rowOverscanStartIdx,
-      rowOverscanEndIdx,
-      colVisibleStartIdx,
-      colVisibleEndIdx,
-      colOverscanStartIdx,
-      colOverscanEndIdx,
-      scrollDirection,
-      lastFrozenColumnIndex,
-      isScrolling: true
-    };
-  }
-
-  resetScrollStateAfterDelay() {
-    this.clearScrollTimer();
-    this.resetScrollStateTimeoutId = window.setTimeout(
-      this.resetScrollStateAfterDelayCallback,
-      500
+  function resetScrollStateAfterDelay() {
+    clearScrollTimer();
+    resetScrollStateTimeoutId.current = window.setTimeout(
+      resetScrollStateAfterDelayCallback,
+      150
     );
   }
 
-  resetScrollStateAfterDelayCallback = () => {
-    this.resetScrollStateTimeoutId = null;
-    this.setState({ isScrolling: false });
-  };
-
-  updateScroll(scrollParams: ScrollParams) {
-    this.resetScrollStateAfterDelay();
-    const nextScrollState = this.getNextScrollState(scrollParams);
-    this.setState(nextScrollState);
-    return nextScrollState;
+  function resetScrollStateAfterDelayCallback() {
+    resetScrollStateTimeoutId.current = null;
+    setIsScrolling(false);
   }
 
-  metricsUpdated = () => {
-    if (!this.viewport.current) {
+  function onScroll({ scrollLeft, scrollTop }: ScrollPosition) {
+    if (useIsScrolling) {
+      setIsScrolling(true);
+      resetScrollStateAfterDelay();
+    }
+
+    const scrollDirection = getScrollDirection(scrollState, { scrollLeft, scrollTop });
+    const nextScrollState = {
+      scrollLeft,
+      scrollTop,
+      scrollDirection,
+      ...getVerticalRangeToRender({
+        height: canvasHeight,
+        rowHeight,
+        scrollTop,
+        rowsCount,
+        scrollDirection,
+        overscanRowCount
+      }),
+      ...getHorizontalRangeToRender({
+        columns: columnMetrics.columns,
+        scrollLeft,
+        viewportWidth: getDOMNodeOffsetWidth(),
+        totalColumnWidth: columnMetrics.totalColumnWidth,
+        scrollDirection,
+        overscanColumnCount
+      })
+    };
+
+    setScrollState(nextScrollState);
+    handleScroll(nextScrollState);
+  }
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
       return;
     }
-
-    const { height } = this.viewport.current.getBoundingClientRect();
-
-    if (height) {
-      const { scrollTop, scrollLeft } = this.state;
-      const { rowHeight, rowsCount } = this.props;
-      this.updateScroll({
-        scrollTop,
-        scrollLeft,
-        height,
+    const scrollDirection = SCROLL_DIRECTION.NONE;
+    setScrollState(({ scrollTop, scrollLeft }) => ({
+      scrollTop,
+      scrollLeft,
+      scrollDirection,
+      ...getVerticalRangeToRender({
+        height: canvasHeight,
         rowHeight,
-        rowsCount
-      });
-    }
-  };
-
-  componentWillReceiveProps(nextProps: ViewportProps<R>) {
-    const { rowHeight, rowsCount } = nextProps;
-    if (this.props.rowHeight !== nextProps.rowHeight
-      || this.props.minHeight !== nextProps.minHeight) {
-      const { scrollTop, scrollLeft, height } = getGridState(nextProps);
-      this.updateScroll({
         scrollTop,
+        rowsCount,
+        scrollDirection,
+        overscanRowCount
+      }),
+      ...getHorizontalRangeToRender({
+        columns: columnMetrics.columns,
         scrollLeft,
-        height,
-        rowHeight,
-        rowsCount
-      });
-    } else if (this.props.columnMetrics.columns.length !== nextProps.columnMetrics.columns.length) {
-      this.setState(getGridState(nextProps));
-    } else if (this.props.rowsCount !== nextProps.rowsCount) {
-      const { scrollTop, scrollLeft, height } = this.state;
-      this.updateScroll({
-        scrollTop,
-        scrollLeft,
-        height,
-        rowHeight,
-        rowsCount
-      });
-      // Added to fix the hiding of the bottom scrollbar when showing the filters.
-    } else if (this.props.rowOffsetHeight !== nextProps.rowOffsetHeight) {
-      const { scrollTop, scrollLeft } = this.state;
-      // The value of height can be positive or negative and will be added to the current height to cater for changes in the header height (due to the filer)
-      const height = this.state.height + this.props.rowOffsetHeight - nextProps.rowOffsetHeight;
-      this.updateScroll({
-        scrollTop,
-        scrollLeft,
-        height,
-        rowHeight,
-        rowsCount
-      });
-    }
-  }
+        viewportWidth: getDOMNodeOffsetWidth(),
+        totalColumnWidth: columnMetrics.totalColumnWidth,
+        scrollDirection,
+        overscanColumnCount
+      })
+    }));
+  }, [canvasHeight, columnMetrics.columns, columnMetrics.totalColumnWidth, overscanColumnCount, overscanRowCount, rowHeight, rowsCount]);
 
-  componentDidMount() {
-    window.addEventListener('resize', this.metricsUpdated);
-    this.metricsUpdated();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.metricsUpdated);
-    this.clearScrollTimer();
-  }
-
-  render() {
-    return (
-      <div
-        className="rdg-viewport"
-        style={{ top: this.props.rowOffsetHeight }}
-        ref={this.viewport}
-      >
-        <Canvas<R>
-          ref={this.canvas}
-          rowKey={this.props.rowKey}
-          totalWidth={this.props.totalWidth}
-          width={this.props.columnMetrics.width}
-          totalColumnWidth={this.props.columnMetrics.totalColumnWidth}
-          rowGetter={this.props.rowGetter}
-          rowsCount={this.props.rowsCount}
-          selectedRows={this.props.selectedRows}
-          columns={this.props.columnMetrics.columns}
-          rowRenderer={this.props.rowRenderer}
-          rowOverscanStartIdx={this.state.rowOverscanStartIdx}
-          rowOverscanEndIdx={this.state.rowOverscanEndIdx}
-          rowVisibleStartIdx={this.state.rowVisibleStartIdx}
-          rowVisibleEndIdx={this.state.rowVisibleEndIdx}
-          colVisibleStartIdx={this.state.colVisibleStartIdx}
-          colVisibleEndIdx={this.state.colVisibleEndIdx}
-          colOverscanStartIdx={this.state.colOverscanStartIdx}
-          colOverscanEndIdx={this.state.colOverscanEndIdx}
-          lastFrozenColumnIndex={this.state.lastFrozenColumnIndex}
-          cellMetaData={this.props.cellMetaData}
-          height={this.state.height}
-          rowHeight={this.props.rowHeight}
-          onScroll={this.onScroll}
-          scrollToRowIndex={this.props.scrollToRowIndex}
-          contextMenu={this.props.contextMenu}
-          rowSelection={this.props.rowSelection}
-          getSubRowDetails={this.props.getSubRowDetails}
-          rowGroupRenderer={this.props.rowGroupRenderer}
-          isScrolling={this.state.isScrolling}
-          enableCellSelect={this.props.enableCellSelect}
-          enableCellAutoFocus={this.props.enableCellAutoFocus}
-          cellNavigationMode={this.props.cellNavigationMode}
-          eventBus={this.props.eventBus}
-          RowsContainer={this.props.RowsContainer}
-          editorPortalTarget={this.props.editorPortalTarget}
-          interactionMasksMetaData={this.props.interactionMasksMetaData}
-        />
-      </div>
-    );
-  }
+  return (
+    <div
+      className="rdg-viewport"
+      style={{ top: rowOffsetHeight }}
+      ref={viewport}
+    >
+      <Canvas<R>
+        ref={canvas}
+        rowKey={props.rowKey}
+        totalWidth={props.totalWidth}
+        width={columnMetrics.width}
+        totalColumnWidth={columnMetrics.totalColumnWidth}
+        rowGetter={props.rowGetter}
+        rowsCount={rowsCount}
+        selectedRows={props.selectedRows}
+        columns={columnMetrics.columns}
+        rowRenderer={props.rowRenderer}
+        scrollTop={scrollState.scrollTop}
+        scrollLeft={scrollState.scrollLeft}
+        rowOverscanStartIdx={scrollState.rowOverscanStartIdx}
+        rowOverscanEndIdx={scrollState.rowOverscanEndIdx}
+        rowVisibleStartIdx={scrollState.rowVisibleStartIdx}
+        rowVisibleEndIdx={scrollState.rowVisibleEndIdx}
+        colVisibleStartIdx={scrollState.colVisibleStartIdx}
+        colVisibleEndIdx={scrollState.colVisibleEndIdx}
+        colOverscanStartIdx={scrollState.colOverscanStartIdx}
+        colOverscanEndIdx={scrollState.colOverscanEndIdx}
+        lastFrozenColumnIndex={scrollState.lastFrozenColumnIndex}
+        cellMetaData={props.cellMetaData}
+        height={canvasHeight}
+        rowHeight={rowHeight}
+        onScroll={onScroll}
+        scrollToRowIndex={props.scrollToRowIndex}
+        contextMenu={props.contextMenu}
+        rowSelection={props.rowSelection}
+        getSubRowDetails={props.getSubRowDetails}
+        rowGroupRenderer={props.rowGroupRenderer}
+        isScrolling={isScrolling}
+        enableCellSelect={props.enableCellSelect}
+        enableCellAutoFocus={props.enableCellAutoFocus}
+        cellNavigationMode={props.cellNavigationMode}
+        eventBus={props.eventBus}
+        RowsContainer={props.RowsContainer}
+        editorPortalTarget={props.editorPortalTarget}
+        interactionMasksMetaData={props.interactionMasksMetaData}
+      />
+    </div>
+  );
 }

@@ -129,7 +129,7 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   value: TValue;
   column: CalculatedColumn<TRow, TDependentValue>;
   row: TRow;
-  isScrolling: boolean;
+  isScrolling?: boolean;
   dependentValues?: TDependentValue;
 }
 
@@ -158,7 +158,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   column: CalculatedColumn<TRow>;
   rowData: TRow;
   cellMetaData: CellMetaData<TRow>;
-  isScrolling: boolean;
+  isScrolling?: boolean;
   scrollLeft?: number;
   expandableOptions?: ExpandableOptions;
   lastFrozenColumnIndex?: number;
@@ -176,7 +176,7 @@ export interface RowRendererProps<TRow> {
   subRowDetails?: SubRowDetails;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  isScrolling: boolean;
+  isScrolling?: boolean;
   scrollLeft: number;
   lastFrozenColumnIndex?: number;
 }

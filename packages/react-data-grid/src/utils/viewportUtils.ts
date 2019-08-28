@@ -1,34 +1,8 @@
 import { isFrozen } from '../ColumnUtils';
 import { SCROLL_DIRECTION } from '../common/enums';
-import { CalculatedColumn, ColumnMetrics } from '../common/types';
-
-export const OVERSCAN_ROWS = 6;
-export const OVERSCAN_COLUMNS = 6;
+import { CalculatedColumn } from '../common/types';
 
 const { min, max, ceil, round } = Math;
-
-export function getGridState<R>(props: { columnMetrics: ColumnMetrics<R>; rowsCount: number; minHeight: number; rowHeight: number; rowOffsetHeight: number }) {
-  const totalNumberColumns = props.columnMetrics.columns.length;
-  const canvasHeight = props.minHeight - props.rowOffsetHeight;
-  const renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
-  const rowOverscanEndIdx = min(props.rowsCount, renderedRowsCount * 2);
-
-  return {
-    rowOverscanStartIdx: 0,
-    rowOverscanEndIdx,
-    rowVisibleStartIdx: 0,
-    rowVisibleEndIdx: renderedRowsCount,
-    height: canvasHeight,
-    scrollTop: 0,
-    scrollLeft: 0,
-    colVisibleStartIdx: 0,
-    colVisibleEndIdx: totalNumberColumns,
-    colOverscanStartIdx: 0,
-    colOverscanEndIdx: totalNumberColumns,
-    isScrolling: false,
-    lastFrozenColumnIndex: 0
-  };
-}
 
 function findLastIndex<T>(items: T[], predicate: (item: T) => boolean) {
   for (let i = items.length - 1; i >= 0; i--) {
@@ -68,56 +42,51 @@ function getColumnCountForWidth<R>(columns: CalculatedColumn<R>[], initialWidth:
   return count;
 }
 
-// export function getNonFrozenVisibleColStartIdx<R>(columns: CalculatedColumn<R>[], scrollLeft: number): number {
-//   let remainingScroll = scrollLeft;
-//   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
-//   const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
-//   let columnIndex = lastFrozenColumnIndex;
-//   while (remainingScroll >= 0 && columnIndex < nonFrozenColumns.length) {
-//     columnIndex++;
-//     const column = columns[columnIndex];
-//     remainingScroll -= column ? column.width : 0;
-//   }
-//   return max(columnIndex, 0);
-// }
+interface VerticalRangeToRenderParams {
+  height: number;
+  rowHeight: number;
+  scrollTop: number;
+  rowsCount: number;
+  scrollDirection: SCROLL_DIRECTION;
+  overscanRowCount?: number;
+}
 
-// export function getNonFrozenRenderedColumnCount<R>(columnMetrics: ColumnMetrics<R>, viewportDomWidth: number, scrollLeft: number): number {
-//   const { columns, totalColumnWidth } = columnMetrics;
-//   if (columns.length === 0) {
-//     return 0;
-//   }
-//   const colVisibleStartIdx = getNonFrozenVisibleColStartIdx(columns, scrollLeft);
-//   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns);
-//   const viewportWidth = viewportDomWidth > 0 ? viewportDomWidth : totalColumnWidth;
-//   const firstColumn = columns[colVisibleStartIdx];
-//   // calculate the portion width of first column hidden behind frozen columns
-//   const scrolledFrozenWidth = totalFrozenColumnWidth + scrollLeft;
-//   const firstColumnHiddenWidth = scrolledFrozenWidth > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;
-//   const initialWidth = viewportWidth - totalFrozenColumnWidth + firstColumnHiddenWidth;
-//   return getColumnCountForWidth(columns, initialWidth, colVisibleStartIdx);
-// }
-
-// export interface VisibleBoundaries {
-//   rowVisibleStartIdx: number;
-//   rowVisibleEndIdx: number;
-//   rowOverscanStartIdx: number;
-//   rowOverscanEndIdx: number;
-// }
-
-export function getVerticalRangeToRender(gridHeight: number, rowHeight: number, scrollTop: number, rowsCount: number, scrollDirection: SCROLL_DIRECTION) {
-  const renderedRowsCount = ceil(gridHeight / rowHeight);
+export function getVerticalRangeToRender({
+  height,
+  rowHeight,
+  scrollTop,
+  rowsCount,
+  scrollDirection,
+  overscanRowCount = 2
+}: VerticalRangeToRenderParams) {
+  const renderedRowsCount = ceil(height / rowHeight);
   const rowVisibleStartIdx = max(0, round(scrollTop / rowHeight));
   const rowVisibleEndIdx = min(rowsCount, rowVisibleStartIdx + renderedRowsCount);
-  const rowOverscanStartIdx = max(0, rowVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.UP ? OVERSCAN_ROWS : 1));
-  const rowOverscanEndIdx = min(rowsCount, rowVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.DOWN ? OVERSCAN_ROWS : 1));
+  const rowOverscanStartIdx = max(0, rowVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.UP ? overscanRowCount : 1));
+  const rowOverscanEndIdx = min(rowsCount, rowVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.DOWN ? overscanRowCount : 1));
 
   return { rowVisibleStartIdx, rowVisibleEndIdx, rowOverscanStartIdx, rowOverscanEndIdx };
 }
 
-export function getHorizontalRangeToRender<R>(columns: CalculatedColumn<R>[], scrollLeft: number, viewportDomWidth: number, totalColumnWidth: number, scrollDirection: SCROLL_DIRECTION) {
+interface HorizontalRangeToRenderParams<R> {
+  columns: CalculatedColumn<R>[];
+  viewportWidth: number;
+  totalColumnWidth: number;
+  scrollLeft: number;
+  scrollDirection: SCROLL_DIRECTION;
+  overscanColumnCount?: number;
+}
+
+export function getHorizontalRangeToRender<R>({
+  columns,
+  scrollLeft,
+  viewportWidth,
+  totalColumnWidth,
+  scrollDirection,
+  overscanColumnCount = 2
+}: HorizontalRangeToRenderParams<R>) {
   let remainingScroll = scrollLeft;
   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
-  // const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
   let columnIndex = lastFrozenColumnIndex;
   while (remainingScroll >= 0 && columnIndex < columns.length) {
     columnIndex++;
@@ -127,56 +96,27 @@ export function getHorizontalRangeToRender<R>(columns: CalculatedColumn<R>[], sc
   const colVisibleStartIdx = max(columnIndex, 0);
 
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns);
-  const viewportWidth = viewportDomWidth > 0 ? viewportDomWidth : totalColumnWidth;
-  // const firstColumn = columns[colVisibleStartIdx];
-  // const scrolledFrozenWidth = totalFrozenColumnWidth + scrollLeft;
-  // const firstColumnHiddenWidth = scrolledFrozenWidth > firstColumn.left ? scrolledFrozenWidth - firstColumn.left : 0;
-  const availableWidth = viewportWidth - totalFrozenColumnWidth; // + firstColumnHiddenWidth;
+  viewportWidth = viewportWidth > 0 ? viewportWidth : totalColumnWidth;
+  const availableWidth = viewportWidth - totalFrozenColumnWidth;
   const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
   const colVisibleEndIdx = min(columns.length, colVisibleStartIdx + nonFrozenRenderedColumnCount);
-  const colOverscanStartIdx = max(0, colVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.LEFT ? OVERSCAN_COLUMNS : 1));
-  const colOverscanEndIdx = min(columns.length, colVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.RIGHT ? OVERSCAN_COLUMNS : 1));
+  const colOverscanStartIdx = max(0, colVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.LEFT ? overscanColumnCount : 1));
+  const colOverscanEndIdx = min(columns.length, colVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.RIGHT ? overscanColumnCount : 1));
 
   return { colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, colOverscanStartIdx, colOverscanEndIdx };
 }
 
 interface ScrollState {
-  scrollTop?: number;
-  scrollLeft?: number;
+  scrollTop: number;
+  scrollLeft: number;
 }
 
-export function getScrollDirection(lastScroll: ScrollState, scrollTop: number, scrollLeft: number): SCROLL_DIRECTION {
-  if (scrollTop !== lastScroll.scrollTop && lastScroll.scrollTop !== undefined) {
-    return scrollTop - lastScroll.scrollTop >= 0 ? SCROLL_DIRECTION.DOWN : SCROLL_DIRECTION.UP;
+export function getScrollDirection(prevScroll: ScrollState, nextScroll: ScrollState): SCROLL_DIRECTION {
+  if (nextScroll.scrollTop !== prevScroll.scrollTop) {
+    return nextScroll.scrollTop - prevScroll.scrollTop >= 0 ? SCROLL_DIRECTION.DOWN : SCROLL_DIRECTION.UP;
   }
-  if (scrollLeft !== lastScroll.scrollLeft && lastScroll.scrollLeft !== undefined) {
-    return scrollLeft - lastScroll.scrollLeft >= 0 ? SCROLL_DIRECTION.RIGHT : SCROLL_DIRECTION.LEFT;
+  if (nextScroll.scrollLeft !== prevScroll.scrollLeft) {
+    return nextScroll.scrollLeft - prevScroll.scrollLeft >= 0 ? SCROLL_DIRECTION.RIGHT : SCROLL_DIRECTION.LEFT;
   }
   return SCROLL_DIRECTION.NONE;
 }
-
-// export function getRowOverscanStartIdx(scrollDirection: SCROLL_DIRECTION, rowVisibleStartIdx: number): number {
-//   return scrollDirection === SCROLL_DIRECTION.UP ? max(0, rowVisibleStartIdx - OVERSCAN_ROWS) : max(0, rowVisibleStartIdx);
-// }
-
-// export function getRowOverscanEndIdx(scrollDirection: SCROLL_DIRECTION, rowVisibleEndIdx: number, rowsCount: number): number {
-//   if (scrollDirection === SCROLL_DIRECTION.DOWN) {
-//     const overscanBoundaryIdx = rowVisibleEndIdx + OVERSCAN_ROWS;
-//     return min(overscanBoundaryIdx, rowsCount);
-//   }
-//   return rowVisibleEndIdx;
-// }
-
-// export function getColOverscanStartIdx(scrollDirection: SCROLL_DIRECTION, colVisibleStartIdx: number, lastFrozenColumnIdx: number): number {
-//   if (scrollDirection === SCROLL_DIRECTION.LEFT || scrollDirection === SCROLL_DIRECTION.RIGHT) {
-//     return lastFrozenColumnIdx > -1 ? lastFrozenColumnIdx + 1 : 0;
-//   }
-//   return colVisibleStartIdx;
-// }
-
-// export function getColOverscanEndIdx(scrollDirection: SCROLL_DIRECTION, colVisibleEndIdx: number, totalNumberColumns: number): number {
-//   if (scrollDirection === SCROLL_DIRECTION.DOWN || scrollDirection === SCROLL_DIRECTION.UP) {
-//     return colVisibleEndIdx;
-//   }
-//   return totalNumberColumns;
-// }

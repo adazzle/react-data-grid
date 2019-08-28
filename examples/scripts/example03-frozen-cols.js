@@ -6,7 +6,7 @@ import exampleWrapper from '../components/exampleWrapper';
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
-    const extraColumns = [...Array(500).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
+    const extraColumns = [...Array(50).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
     this.createRows(extraColumns);
 
     const columns = [

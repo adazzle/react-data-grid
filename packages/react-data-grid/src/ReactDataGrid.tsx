@@ -175,9 +175,6 @@ type DefaultProps = Pick<DataGridProps<{ id?: unknown }>,
 | 'minColumnWidth'
 | 'columnEquality'
 | 'editorPortalTarget'
-| 'overscanRowCount'
-| 'overscanColumnCount'
-| 'useIsScrolling'
 >;
 
 export interface DataGridState<R> {
@@ -215,14 +212,10 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
     minColumnWidth: 80,
     selectAllRenderer: SelectAll,
     columnEquality: sameColumn,
-    editorPortalTarget: document.body,
-    overscanRowCount: 2,
-    overscanColumnCount: 2,
-    useIsScrolling: false
+    editorPortalTarget: document.body
   };
 
   private readonly grid = React.createRef<HTMLDivElement>();
-  private readonly base = React.createRef<Grid<R>>();
   private readonly selectAllCheckbox = React.createRef<HTMLInputElement>();
   private readonly eventBus = new EventBus();
   private readonly _keysDown = new Set<number>();
@@ -702,7 +695,6 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           onToggleFilter={this.handleToggleFilter}
         />
         <Grid<R>
-          ref={this.base}
           rowKey={this.props.rowKey}
           headerRows={this.getHeaderRows()}
           draggableHeaderCell={this.props.draggableHeaderCell}

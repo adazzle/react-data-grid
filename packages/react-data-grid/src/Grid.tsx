@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, createElement } from 'react';
 import { isValidElementType } from 'react-is';
 
 import Header from './Header';
@@ -46,91 +46,83 @@ export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridStat
   selectedRows?: SelectedRow<R>[];
   rowSelection?: RowSelection;
   rowOffsetHeight: number;
-  onSort(columnKey: keyof R, sortDirection: DEFINE_SORT): void;
+  eventBus: EventBus;
   totalWidth: number | string;
+  interactionMasksMetaData: InteractionMasksMetaData<R>;
+  onSort(columnKey: keyof R, sortDirection: DEFINE_SORT): void;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
-  eventBus: EventBus;
-  interactionMasksMetaData: InteractionMasksMetaData<R>;
 }
 
-export default class Grid<R> extends React.Component<GridProps<R>> {
-  static displayName = 'Grid';
+export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridProps<R>) {
+  const header = useRef<Header<R>>(null);
 
-  private readonly header = React.createRef<Header<R>>();
-  private readonly viewport = React.createRef<Viewport<R>>();
-
-  onScroll = (scrollState: ScrollState) => {
-    this.header.current!.setScrollLeft(scrollState.scrollLeft);
-    if (this.props.onScroll) {
-      this.props.onScroll(scrollState);
+  function onScroll(scrollState: ScrollState) {
+    header.current!.setScrollLeft(scrollState.scrollLeft);
+    if (props.onScroll) {
+      props.onScroll(scrollState);
     }
-  };
-
-  render() {
-    const { headerRows } = this.props;
-    const EmptyRowsView = this.props.emptyRowsView;
-
-    return (
-      <div className="react-grid-Grid" style={{ minHeight: this.props.minHeight }}>
-        <Header<R>
-          ref={this.header}
-          columnMetrics={this.props.columnMetrics}
-          onColumnResize={this.props.onColumnResize}
-          rowHeight={this.props.rowHeight}
-          totalWidth={this.props.totalWidth}
-          headerRows={headerRows}
-          sortColumn={this.props.sortColumn}
-          sortDirection={this.props.sortDirection}
-          draggableHeaderCell={this.props.draggableHeaderCell}
-          onSort={this.props.onSort}
-          onHeaderDrop={this.props.onHeaderDrop}
-          getValidFilterValues={this.props.getValidFilterValues}
-          cellMetaData={this.props.cellMetaData}
-        />
-        {this.props.rowsCount === 0 && isValidElementType(EmptyRowsView) ? (
-          <div className="react-grid-Empty">
-            <EmptyRowsView />
-          </div>
-        ) : (
-          <div
-            onKeyDown={this.props.onViewportKeydown}
-            onKeyUp={this.props.onViewportKeyup}
-          >
-            <Viewport<R>
-              ref={this.viewport}
-              rowKey={this.props.rowKey}
-              rowHeight={this.props.rowHeight}
-              rowRenderer={this.props.rowRenderer}
-              rowGetter={this.props.rowGetter}
-              rowsCount={this.props.rowsCount}
-              selectedRows={this.props.selectedRows}
-              columnMetrics={this.props.columnMetrics}
-              totalWidth={this.props.totalWidth}
-              onScroll={this.onScroll}
-              cellMetaData={this.props.cellMetaData}
-              rowOffsetHeight={this.props.rowOffsetHeight || this.props.rowHeight * headerRows.length}
-              minHeight={this.props.minHeight}
-              scrollToRowIndex={this.props.scrollToRowIndex}
-              contextMenu={this.props.contextMenu}
-              rowSelection={this.props.rowSelection}
-              getSubRowDetails={this.props.getSubRowDetails}
-              rowGroupRenderer={this.props.rowGroupRenderer}
-              enableCellSelect={this.props.enableCellSelect}
-              enableCellAutoFocus={this.props.enableCellAutoFocus}
-              cellNavigationMode={this.props.cellNavigationMode}
-              eventBus={this.props.eventBus}
-              interactionMasksMetaData={this.props.interactionMasksMetaData}
-              RowsContainer={this.props.RowsContainer}
-              editorPortalTarget={this.props.editorPortalTarget}
-              overscanRowCount={this.props.overscanRowCount}
-              overscanColumnCount={this.props.overscanColumnCount}
-              useIsScrolling={this.props.useIsScrolling}
-            />
-          </div>
-        )}
-      </div>
-    );
   }
+
+
+  return (
+    <div className="react-grid-Grid" style={{ minHeight: props.minHeight }}>
+      <Header<R>
+        ref={header}
+        columnMetrics={props.columnMetrics}
+        onColumnResize={props.onColumnResize}
+        rowHeight={props.rowHeight}
+        totalWidth={props.totalWidth}
+        headerRows={headerRows}
+        sortColumn={props.sortColumn}
+        sortDirection={props.sortDirection}
+        draggableHeaderCell={props.draggableHeaderCell}
+        onSort={props.onSort}
+        onHeaderDrop={props.onHeaderDrop}
+        getValidFilterValues={props.getValidFilterValues}
+        cellMetaData={props.cellMetaData}
+      />
+      {props.rowsCount === 0 && isValidElementType(emptyRowsView) ? (
+        <div className="react-grid-Empty">
+          {createElement(emptyRowsView)}
+        </div>
+      ) : (
+        <div
+          onKeyDown={props.onViewportKeydown}
+          onKeyUp={props.onViewportKeyup}
+        >
+          <Viewport<R>
+            rowKey={props.rowKey}
+            rowHeight={props.rowHeight}
+            rowRenderer={props.rowRenderer}
+            rowGetter={props.rowGetter}
+            rowsCount={props.rowsCount}
+            selectedRows={props.selectedRows}
+            columnMetrics={props.columnMetrics}
+            totalWidth={props.totalWidth}
+            onScroll={onScroll}
+            cellMetaData={props.cellMetaData}
+            rowOffsetHeight={props.rowOffsetHeight || props.rowHeight * headerRows.length}
+            minHeight={props.minHeight}
+            scrollToRowIndex={props.scrollToRowIndex}
+            contextMenu={props.contextMenu}
+            rowSelection={props.rowSelection}
+            getSubRowDetails={props.getSubRowDetails}
+            rowGroupRenderer={props.rowGroupRenderer}
+            enableCellSelect={props.enableCellSelect}
+            enableCellAutoFocus={props.enableCellAutoFocus}
+            cellNavigationMode={props.cellNavigationMode}
+            eventBus={props.eventBus}
+            interactionMasksMetaData={props.interactionMasksMetaData}
+            RowsContainer={props.RowsContainer}
+            editorPortalTarget={props.editorPortalTarget}
+            overscanRowCount={props.overscanRowCount}
+            overscanColumnCount={props.overscanColumnCount}
+            useIsScrolling={props.useIsScrolling}
+          />
+        </div>
+      )}
+    </div>
+  );
 }

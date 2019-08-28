@@ -20,7 +20,7 @@ interface Props<R> {
   colVisibleEndIdx: number;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  isScrolling: boolean;
+  isScrolling?: boolean;
   columnGroupDisplayName: string;
   columnGroupName: string;
   isExpanded: boolean;
