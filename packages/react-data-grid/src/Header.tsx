@@ -77,13 +77,9 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
         key={row.rowType}
         ref={ref}
         rowType={row.rowType}
-        style={{
-          width: updatedWidth,
-          height: row.height
-        }}
         onColumnResize={this.onColumnResize}
         onColumnResizeEnd={this.onColumnResizeEnd}
-        width={columnMetrics.width}
+        width={updatedWidth}
         height={row.height}
         columns={columnMetrics.columns}
         draggableHeaderCell={this.props.draggableHeaderCell}
@@ -102,8 +98,7 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
     const { headerRows } = this.props;
     const rows = [this.getHeaderRow(headerRows[0], this.row)];
     if (headerRows[1]) {
-      // To allow header filters to be visible
-      rows.push(this.getHeaderRow({ ...headerRows[1], height: 500 }, this.filterRow));
+      rows.push(this.getHeaderRow(headerRows[1], this.filterRow));
     }
 
     return rows;

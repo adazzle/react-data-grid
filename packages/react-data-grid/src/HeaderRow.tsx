@@ -1,5 +1,4 @@
 import React from 'react';
-import shallowEqual from 'shallowequal';
 
 import HeaderCell from './HeaderCell';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
@@ -19,33 +18,21 @@ type SharedHeaderProps<R> = Pick<HeaderProps<R>,
 >;
 
 export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
-  width?: number;
+  width: number | string;
   height: number;
   columns: CalculatedColumn<R>[];
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
   onColumnResizeEnd(column: CalculatedColumn<R>, width: number): void;
-  style?: React.CSSProperties;
   filterable?: boolean;
   onFilterChange?(args: AddFilterEvent<R>): void;
   rowType: HeaderRowType;
 }
 
-export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
+export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
   private readonly headerRow = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<keyof R, HeaderCell<R>>();
-
-  shouldComponentUpdate(nextProps: HeaderRowProps<R>) {
-    return (
-      nextProps.width !== this.props.width
-      || nextProps.height !== this.props.height
-      || nextProps.columns !== this.props.columns
-      || !shallowEqual(nextProps.style, this.props.style)
-      || this.props.sortColumn !== nextProps.sortColumn
-      || this.props.sortDirection !== nextProps.sortDirection
-    );
-  }
 
   getHeaderCellType(column: CalculatedColumn<R>): HeaderCellType {
     if (column.filterable && this.props.filterable) {
@@ -148,10 +135,15 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   render() {
+    const { width, height, rowType } = this.props;
+
     return (
       <div
         ref={this.headerRow}
-        style={this.props.style}
+        style={{
+          width,
+          height: rowType === HeaderRowType.FILTER ? 500 : height
+        }}
         className="react-grid-HeaderRow"
       >
         {this.getCells()}
