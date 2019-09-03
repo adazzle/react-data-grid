@@ -565,22 +565,17 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
     }
   };
 
-  getRowOffsetHeight() {
-    return this.getHeaderRows().reduce((offsetHeight, row) => offsetHeight += row.height, 0);
-  }
-
-  getHeaderRows() {
+  getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
     const { headerRowHeight, rowHeight, onAddFilter, headerFiltersHeight } = this.props;
-    const rows: HeaderRowData<R>[] = [{ height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER }];
-    if (this.state.canFilter === true) {
-      rows.push({
+    return [
+      { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
+      this.state.canFilter ? {
         rowType: HeaderRowType.FILTER,
         filterable: true,
         onFilterChange: onAddFilter,
-        height: headerFiltersHeight
-      });
-    }
-    return rows;
+        height: headerFiltersHeight || headerRowHeight || rowHeight
+      } : undefined
+    ];
   }
 
   getRowSelectionProps() {
@@ -682,6 +677,9 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
       gridWidth = '100%';
     }
 
+    const headerRows = this.getHeaderRows();
+    const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
+
     return (
       <div
         className="react-grid-Container"
@@ -696,7 +694,7 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
         />
         <Grid<R>
           rowKey={this.props.rowKey}
-          headerRows={this.getHeaderRows()}
+          headerRows={headerRows}
           draggableHeaderCell={this.props.draggableHeaderCell}
           getValidFilterValues={this.props.getValidFilterValues}
           columnMetrics={this.state.columnMetrics}
@@ -708,7 +706,7 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           cellMetaData={cellMetaData}
           selectedRows={this.getSelectedRows()}
           rowSelection={this.getRowSelectionProps()}
-          rowOffsetHeight={this.getRowOffsetHeight()}
+          rowOffsetHeight={rowOffsetHeight}
           sortColumn={this.state.sortColumn}
           sortDirection={this.state.sortDirection}
           onSort={this.handleSort}

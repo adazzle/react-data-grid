@@ -1,5 +1,10 @@
+.user-select(@value: none) {
+  -webkit-user-select: @value;
+  -moz-user-select: @value;
+  -ms-user-select: @value;
+  user-select: @value;
+}
 .react-grid-Header {
-  position: relative;
   box-shadow: 0 0 4px 0 #ddd;
   background: #f9f9f9;
 }
@@ -7,22 +12,11 @@
   cursor: ew-resize;
 }
 .react-grid-HeaderRow {
-  position: absolute;
-  left: 0;
-  overflow-x: hidden;
-
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  > div {
-    white-space: nowrap;
-    overflow: hidden;
-  }
+  position: relative;
+  overflow: hidden;
+  .user-select();
 }
 .react-grid-HeaderCell {
-  display: inline-block;
   position: absolute;
   padding: 8px;
   margin: 0;
@@ -32,10 +26,7 @@
   background: #f9f9f9;
   border-right: 1px solid #dddddd;
   border-bottom: 1px solid #dddddd;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  .user-select();
 }
 
 .rdg-header-cell-resizable::after {

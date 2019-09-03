@@ -273,12 +273,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   renderPlaceholder(key: string, height: number) {
-    // just renders empty cells
-    // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
     return (
-      <div key={key} style={{ height }}>
-        {this.props.columns.map(column => <div style={{ width: column.width }} key={column.key as string} />)}
-      </div>
+      <div key={key} style={{ height }} />
     );
   }
 

@@ -41,7 +41,7 @@ type SharedDataGridState<R> = Pick<DataGridState<R>,
 >;
 
 export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridState<R> {
-  headerRows: HeaderRowData<R>[];
+  headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
   cellMetaData: CellMetaData<R>;
   selectedRows?: SelectedRow<R>[];
   rowSelection?: RowSelection;
@@ -57,9 +57,13 @@ export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridStat
 
 export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridProps<R>) {
   const header = useRef<Header<R>>(null);
+  const scrollLeft = useRef(0);
 
   function onScroll(scrollState: ScrollState) {
-    header.current!.setScrollLeft(scrollState.scrollLeft);
+    if (scrollLeft.current !== scrollState.scrollLeft) {
+      scrollLeft.current = scrollState.scrollLeft;
+      header.current!.setScrollLeft(scrollState.scrollLeft);
+    }
     if (props.onScroll) {
       props.onScroll(scrollState);
     }
@@ -72,9 +76,9 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
         ref={header}
         columnMetrics={props.columnMetrics}
         onColumnResize={props.onColumnResize}
-        rowHeight={props.rowHeight}
         totalWidth={props.totalWidth}
         headerRows={headerRows}
+        rowOffsetHeight={props.rowOffsetHeight}
         sortColumn={props.sortColumn}
         sortDirection={props.sortDirection}
         draggableHeaderCell={props.draggableHeaderCell}
@@ -103,7 +107,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
             totalWidth={props.totalWidth}
             onScroll={onScroll}
             cellMetaData={props.cellMetaData}
-            rowOffsetHeight={props.rowOffsetHeight || props.rowHeight * headerRows.length}
+            rowOffsetHeight={props.rowOffsetHeight}
             minHeight={props.minHeight}
             scrollToRowIndex={props.scrollToRowIndex}
             contextMenu={props.contextMenu}

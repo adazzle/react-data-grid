@@ -4,7 +4,6 @@ import shallowEqual from 'shallowequal';
 import HeaderCell from './HeaderCell';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
-import { getScrollbarSize } from './utils';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, AddFilterEvent } from './common/types';
@@ -34,6 +33,7 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
 export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
+  private readonly headerRow = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<keyof R, HeaderCell<R>>();
 
   shouldComponentUpdate(nextProps: HeaderRowProps<R>) {
@@ -134,6 +134,7 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   setScrollLeft(scrollLeft: number): void {
+    this.headerRow.current!.scrollLeft = scrollLeft;
     this.props.columns.forEach(column => {
       const { key } = column;
       if (!this.cells.has(key)) return;
@@ -147,20 +148,13 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   render() {
-    const cellsStyle: React.CSSProperties = {
-      width: this.props.width ? this.props.width + getScrollbarSize() : '100%',
-      height: this.props.height
-    };
-
-    // FIXME: do we need 2 wrapping divs?
     return (
       <div
+        ref={this.headerRow}
         style={this.props.style}
         className="react-grid-HeaderRow"
       >
-        <div style={cellsStyle}>
-          {this.getCells()}
-        </div>
+        {this.getCells()}
       </div>
     );
   }
