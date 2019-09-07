@@ -84,6 +84,8 @@ export interface DataGridProps<R extends {}> {
     showCheckbox?: boolean;
     /** Method by which rows should be selected */
     selectBy: RowSelection;
+    /** toggle whether to allow resizing of checkbox column to select rows */
+    resizable?: boolean;
   };
   /** Custom checkbox formatter */
   rowActionsCell?: React.ComponentType<CheckboxEditorProps<R>>;
@@ -622,6 +624,7 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
         filterable: false,
         headerRenderer,
         width: 60,
+        resizable: !!this.props.rowSelection && this.props.rowSelection.resizable !== false,
         frozen: true,
         getRowMetaData: (rowData: R) => rowData,
         cellClass: this.props.rowActionsCell ? 'rdg-row-actions-cell' : ''

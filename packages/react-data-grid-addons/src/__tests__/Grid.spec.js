@@ -284,6 +284,7 @@ describe('Grid', () => {
         rowSelection: {
           enableShiftSelect: true,
           selectBy: { isSelectedKey: 'isSelected' },
+          resizable: true,
           onRowsSelected(selectedRows) {
             _selectedRows = selectedRows;
           },
@@ -312,6 +313,11 @@ describe('Grid', () => {
     it('should set lastRowIdxUiSelected state', () => {
       selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
       expect(wrapper.instance().state.lastRowIdxUiSelected).toEqual(1);
+    });
+
+    it('should pass selectColumnProps resizable to the select column', () => {
+      expect(selectRowCol.key).toEqual('select-row');
+      expect(selectRowCol.resizable).toBe(true);
     });
 
     it('should select range when shift selecting below selected row', () => {
