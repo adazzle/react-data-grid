@@ -94,8 +94,6 @@ export function resizeColumn<R>(metrics: ColumnMetrics<R>, index: number, width:
 type ColumnComparer<R> = (colA: Column<R>, colB: Column<R>) => boolean;
 
 function compareEachColumn<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
-  if (getSize(prevColumns) !== getSize(nextColumns)) return false;
-
   const keys = new Set<keyof R>();
   const prevColumnsMap = new Map<keyof R, Column<R>>();
   const nextColumnsMap = new Map<keyof R, Column<R>>();
@@ -122,10 +120,29 @@ function compareEachColumn<R>(prevColumns: ColumnList<R>, nextColumns: ColumnLis
   return true;
 }
 
+function isColumnsOrderSame<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>): boolean {
+  const prevColumnKeys: Array<keyof R> = [];
+  const nextColumnKeys: Array<keyof R> = [];
+
+  for (const column of prevColumns) {
+    prevColumnKeys.push(column.key);
+  }
+
+  for (const column of nextColumns) {
+    nextColumnKeys.push(column.key);
+  }
+
+  return prevColumnKeys.every((key, index) => key === nextColumnKeys[index]);
+}
+
 export function sameColumns<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
+  if (getSize(prevColumns) !== getSize(nextColumns)) {
+    return false;
+  }
+
   if (isColumnsImmutable(prevColumns) && isColumnsImmutable(nextColumns)) {
     return prevColumns === nextColumns;
   }
 
-  return compareEachColumn(prevColumns, nextColumns, isSameColumn);
+  return isColumnsOrderSame(prevColumns, nextColumns) && compareEachColumn(prevColumns, nextColumns, isSameColumn);
 }
