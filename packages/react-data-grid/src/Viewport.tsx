@@ -45,7 +45,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'editorPortalTarget'
 | 'overscanRowCount'
 | 'overscanColumnCount'
-| 'useIsScrolling'
+| 'enableIsScrolling'
 | 'onViewportKeydown'
 | 'onViewportKeyup'
 >;
@@ -63,7 +63,7 @@ export default function Viewport<R>({
   columnMetrics,
   overscanRowCount,
   overscanColumnCount,
-  useIsScrolling,
+  enableIsScrolling,
   ...props
 }: ViewportProps<R>) {
   const canvas = useRef<Canvas<R>>(null);
@@ -99,7 +99,7 @@ export default function Viewport<R>({
   }
 
   function onScroll({ scrollLeft, scrollTop }: ScrollPosition) {
-    if (useIsScrolling) {
+    if (enableIsScrolling) {
       setIsScrolling(true);
       resetScrollStateAfterDelay();
     }

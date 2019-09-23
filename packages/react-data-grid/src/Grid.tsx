@@ -31,7 +31,7 @@ type SharedDataGridProps<R> = Pick<DataGridProps<R>,
 | 'editorPortalTarget'
 | 'overscanRowCount'
 | 'overscanColumnCount'
-| 'useIsScrolling'
+| 'enableIsScrolling'
 >;
 
 type SharedDataGridState<R> = Pick<DataGridState<R>,
@@ -115,7 +115,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
           editorPortalTarget={props.editorPortalTarget}
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
-          useIsScrolling={props.useIsScrolling}
+          enableIsScrolling={props.enableIsScrolling}
           onViewportKeydown={props.onViewportKeydown}
           onViewportKeyup={props.onViewportKeyup}
         />

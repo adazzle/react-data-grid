@@ -159,7 +159,7 @@ export interface DataGridProps<R extends {}> {
 
   overscanRowCount?: number;
   overscanColumnCount?: number;
-  useIsScrolling?: boolean;
+  enableIsScrolling?: boolean;
 }
 
 type DefaultProps = Pick<DataGridProps<{ id?: unknown }>,
@@ -711,7 +711,7 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           interactionMasksMetaData={interactionMasksMetaData}
           overscanRowCount={this.props.overscanRowCount}
           overscanColumnCount={this.props.overscanColumnCount}
-          useIsScrolling={this.props.useIsScrolling}
+          enableIsScrolling={this.props.enableIsScrolling}
         />
       </div>
     );
