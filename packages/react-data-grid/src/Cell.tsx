@@ -119,7 +119,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   removeScroll() {
     const node = this.cell.current;
     if (node) {
-      node.style.transform = null;
+      node.style.transform = 'none';
     }
   }
 
