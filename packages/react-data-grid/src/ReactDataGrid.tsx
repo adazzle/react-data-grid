@@ -156,9 +156,20 @@ export interface DataGridProps<R extends {}> {
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
-
+  /**
+   * The number of rows to render outside of the visible area
+   * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
+   */
   overscanRowCount?: number;
+  /**
+   * The number of columns to render outside of the visible area
+   * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
+   */
   overscanColumnCount?: number;
+  /**
+   * Provides an additional isScrolling parameter to formatters. This parameter can be used to show a placeholder row or column while the list is being scrolled.
+   * Note that using this parameter will result in an additional render call after scrolling has stopped (when isScrolling changes from true to false).
+   */
   enableIsScrolling?: boolean;
 }
 
