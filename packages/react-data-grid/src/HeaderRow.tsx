@@ -18,7 +18,6 @@ type SharedHeaderProps<R> = Pick<HeaderProps<R>,
 >;
 
 export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
-  width: number | string;
   height: number;
   columns: CalculatedColumn<R>[];
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
@@ -135,13 +134,12 @@ export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>>
   }
 
   render() {
-    const { width, height, rowType } = this.props;
+    const { height, rowType } = this.props;
 
     return (
       <div
         ref={this.headerRow}
         style={{
-          width,
           height: rowType === HeaderRowType.FILTER ? 500 : height
         }}
         className="react-grid-HeaderRow"

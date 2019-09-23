@@ -28,7 +28,6 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'rowsCount'
 | 'selectedRows'
 | 'columnMetrics'
-| 'totalWidth'
 | 'cellMetaData'
 | 'rowOffsetHeight'
 | 'minHeight'
@@ -47,6 +46,8 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'overscanRowCount'
 | 'overscanColumnCount'
 | 'useIsScrolling'
+| 'onViewportKeydown'
+| 'onViewportKeyup'
 >;
 
 export interface ViewportProps<R> extends SharedGridProps<R> {
@@ -168,15 +169,14 @@ export default function Viewport<R>({
 
   return (
     <div
-      className="rdg-viewport"
-      style={{ top: rowOffsetHeight }}
       ref={viewport}
+      onKeyDown={props.onViewportKeydown}
+      onKeyUp={props.onViewportKeyup}
     >
       {scrollState && (
         <Canvas<R>
           ref={canvas}
           rowKey={props.rowKey}
-          totalWidth={props.totalWidth}
           width={columnMetrics.width}
           totalColumnWidth={columnMetrics.totalColumnWidth}
           columns={columnMetrics.columns}

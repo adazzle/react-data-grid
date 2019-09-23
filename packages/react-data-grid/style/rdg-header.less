@@ -1,21 +1,20 @@
-.user-select(@value: none) {
-  -webkit-user-select: @value;
-  -moz-user-select: @value;
-  -ms-user-select: @value;
-  user-select: @value;
-}
+@import './variables.less';
+
 .react-grid-Header {
   box-shadow: 0 0 4px 0 #ddd;
   background: #f9f9f9;
 }
+
 .react-grid-Header--resizing {
   cursor: ew-resize;
 }
+
 .react-grid-HeaderRow {
   position: relative;
   overflow: hidden;
   .user-select();
 }
+
 .react-grid-HeaderCell {
   position: absolute;
   padding: 8px;
@@ -42,6 +41,7 @@
 .react-grid-HeaderCell--frozen:last-of-type {
     box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
 }
+
 .rdg-can-drop > .react-grid-HeaderCell {
   background: #ececec;
 }

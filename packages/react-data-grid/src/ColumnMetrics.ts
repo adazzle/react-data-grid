@@ -57,7 +57,8 @@ export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   setColumnWidths(columns, metrics.totalWidth);
 
   const width = getTotalColumnWidth(columns);
-  const unallocatedWidth = metrics.totalWidth - width - getScrollbarSize();
+  const borderWidth = 2;
+  const unallocatedWidth = metrics.totalWidth - width - getScrollbarSize() - borderWidth;
 
   // compute width for columns which doesn't specify width
   setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);

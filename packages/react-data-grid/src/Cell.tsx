@@ -7,7 +7,6 @@ import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
 import { isFrozen } from './ColumnUtils';
-import { isPositionStickySupported } from './utils';
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
@@ -102,7 +101,6 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
       column.cellClass,
       'react-grid-Cell',
       this.props.className, {
-        'react-grid-Cell--sticky': isPositionStickySupported(),
         'react-grid-Cell--frozen': isFrozen(column),
         'rdg-last--frozen': lastFrozenColumnIndex === idx,
         'has-tooltip': !!tooltip,

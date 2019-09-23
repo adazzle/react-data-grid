@@ -267,24 +267,16 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
     this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
   }
 
-  gridWidth() {
-    const { current } = this.grid;
-    return current && current.parentElement ? current.parentElement.offsetWidth : 0;
-  }
-
   getTotalWidth() {
-    if (this.grid.current) {
-      return this.gridWidth();
+    const { current } = this.grid;
+    if (current) {
+      return current.offsetWidth;
     }
     return getSize(this.props.columns) * this.props.minColumnWidth;
   }
 
   getColumn(idx: number) {
     return this.state.columnMetrics.columns[idx];
-  }
-
-  getSize() {
-    return this.state.columnMetrics.columns.length;
   }
 
   metricsUpdated = () => {
@@ -666,24 +658,14 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
       onCommit: this.handleCommit
     };
 
-    let containerWidth: string | number = this.props.minWidth || this.gridWidth();
-    let gridWidth: string | number = containerWidth;
-
-    // depending on the current lifecycle stage, gridWidth() may not initialize correctly
-    // this also handles cases where it always returns undefined -- such as when inside a div with display:none
-    // eg Bootstrap tabs and collapses
-    if (Number.isNaN(containerWidth) || containerWidth === 0) {
-      containerWidth = '100%';
-      gridWidth = '100%';
-    }
-
     const headerRows = this.getHeaderRows();
     const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
+    const style = this.props.minWidth ? { width: this.props.minWidth } : {};
 
     return (
       <div
         className="react-grid-Container"
-        style={{ width: containerWidth }}
+        style={style}
         ref={this.grid}
       >
         <ToolbarContainer<R>
@@ -711,7 +693,6 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           sortDirection={this.state.sortDirection}
           onSort={this.handleSort}
           minHeight={this.props.minHeight}
-          totalWidth={gridWidth}
           onViewportKeydown={this.handleViewportKeyDown}
           onViewportKeyup={this.handleViewportKeyUp}
           onColumnResize={this.handleColumnResize}

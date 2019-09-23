@@ -47,7 +47,6 @@ export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridStat
   rowSelection?: RowSelection;
   rowOffsetHeight: number;
   eventBus: EventBus;
-  totalWidth: number | string;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
   onSort(columnKey: keyof R, sortDirection: DEFINE_SORT): void;
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -69,14 +68,12 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
     }
   }
 
-
   return (
-    <div className="react-grid-Grid" style={{ minHeight: props.minHeight }}>
+    <div className="react-grid-Grid">
       <Header<R>
         ref={header}
         columnMetrics={props.columnMetrics}
         onColumnResize={props.onColumnResize}
-        totalWidth={props.totalWidth}
         headerRows={headerRows}
         rowOffsetHeight={props.rowOffsetHeight}
         sortColumn={props.sortColumn}
@@ -92,40 +89,36 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
           {createElement(emptyRowsView)}
         </div>
       ) : (
-        <div
-          onKeyDown={props.onViewportKeydown}
-          onKeyUp={props.onViewportKeyup}
-        >
-          <Viewport<R>
-            rowKey={props.rowKey}
-            rowHeight={props.rowHeight}
-            rowRenderer={props.rowRenderer}
-            rowGetter={props.rowGetter}
-            rowsCount={props.rowsCount}
-            selectedRows={props.selectedRows}
-            columnMetrics={props.columnMetrics}
-            totalWidth={props.totalWidth}
-            onScroll={onScroll}
-            cellMetaData={props.cellMetaData}
-            rowOffsetHeight={props.rowOffsetHeight}
-            minHeight={props.minHeight}
-            scrollToRowIndex={props.scrollToRowIndex}
-            contextMenu={props.contextMenu}
-            rowSelection={props.rowSelection}
-            getSubRowDetails={props.getSubRowDetails}
-            rowGroupRenderer={props.rowGroupRenderer}
-            enableCellSelect={props.enableCellSelect}
-            enableCellAutoFocus={props.enableCellAutoFocus}
-            cellNavigationMode={props.cellNavigationMode}
-            eventBus={props.eventBus}
-            interactionMasksMetaData={props.interactionMasksMetaData}
-            RowsContainer={props.RowsContainer}
-            editorPortalTarget={props.editorPortalTarget}
-            overscanRowCount={props.overscanRowCount}
-            overscanColumnCount={props.overscanColumnCount}
-            useIsScrolling={props.useIsScrolling}
-          />
-        </div>
+        <Viewport<R>
+          rowKey={props.rowKey}
+          rowHeight={props.rowHeight}
+          rowRenderer={props.rowRenderer}
+          rowGetter={props.rowGetter}
+          rowsCount={props.rowsCount}
+          selectedRows={props.selectedRows}
+          columnMetrics={props.columnMetrics}
+          onScroll={onScroll}
+          cellMetaData={props.cellMetaData}
+          rowOffsetHeight={props.rowOffsetHeight}
+          minHeight={props.minHeight}
+          scrollToRowIndex={props.scrollToRowIndex}
+          contextMenu={props.contextMenu}
+          rowSelection={props.rowSelection}
+          getSubRowDetails={props.getSubRowDetails}
+          rowGroupRenderer={props.rowGroupRenderer}
+          enableCellSelect={props.enableCellSelect}
+          enableCellAutoFocus={props.enableCellAutoFocus}
+          cellNavigationMode={props.cellNavigationMode}
+          eventBus={props.eventBus}
+          interactionMasksMetaData={props.interactionMasksMetaData}
+          RowsContainer={props.RowsContainer}
+          editorPortalTarget={props.editorPortalTarget}
+          overscanRowCount={props.overscanRowCount}
+          overscanColumnCount={props.overscanColumnCount}
+          useIsScrolling={props.useIsScrolling}
+          onViewportKeydown={props.onViewportKeydown}
+          onViewportKeyup={props.onViewportKeyup}
+        />
       )}
     </div>
   );

@@ -13,7 +13,6 @@ import { ViewportProps, ScrollState } from './Viewport';
 
 type SharedViewportProps<R> = Pick<ViewportProps<R>,
 'rowKey'
-| 'totalWidth'
 | 'rowGetter'
 | 'rowsCount'
 | 'selectedRows'
@@ -279,7 +278,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, height, rowGetter, contextMenu } = this.props;
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
@@ -322,7 +321,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return (
       <div
         className="react-grid-Canvas"
-        style={{ width: totalWidth, height }}
+        style={{ height }}
         ref={this.canvas}
         onScroll={this.handleScroll}
       >
@@ -354,7 +353,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           {...this.props.interactionMasksMetaData}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-          <div style={{ width: totalColumnWidth }}>{rows}</div>
+          <div style={{ width: totalColumnWidth, minHeight: 1 }}>{rows}</div>
         </RowsContainer>
       </div>
     );

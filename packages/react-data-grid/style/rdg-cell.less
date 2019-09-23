@@ -34,12 +34,9 @@
   z-index: 3
 }
 
-.react-grid-Cell--sticky {
-  &.react-grid-Cell {
+@supports (position: sticky) {
+  .react-grid-Cell--frozen {
     display: inline-block;
-  }
-
-  &.react-grid-Cell--frozen {
     position: -webkit-sticky;
     position: sticky;
   }

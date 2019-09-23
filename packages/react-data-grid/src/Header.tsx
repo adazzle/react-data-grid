@@ -10,7 +10,6 @@ import { GridProps } from './Grid';
 type SharedGridProps<R> = Pick<GridProps<R>,
 'columnMetrics'
 | 'onColumnResize'
-| 'totalWidth'
 | 'headerRows'
 | 'rowOffsetHeight'
 | 'sortColumn'
@@ -67,10 +66,6 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
 
   getHeaderRow = (row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) => {
     const columnMetrics = this.getColumnMetrics();
-    const scrollbarSize = getScrollbarSize() > 0 ? getScrollbarSize() : 0;
-    const updatedWidth = typeof this.props.totalWidth === 'number'
-      ? this.props.totalWidth - scrollbarSize
-      : this.props.totalWidth;
 
     return (
       <HeaderRow<R>
@@ -79,7 +74,6 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
         rowType={row.rowType}
         onColumnResize={this.onColumnResize}
         onColumnResizeEnd={this.onColumnResizeEnd}
-        width={updatedWidth}
         height={row.height}
         columns={columnMetrics.columns}
         draggableHeaderCell={this.props.draggableHeaderCell}
@@ -136,7 +130,10 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
 
     return (
       <div
-        style={{ height: this.props.rowOffsetHeight }}
+        style={{
+          height: this.props.rowOffsetHeight,
+          paddingRight: getScrollbarSize()
+        }}
         className={className}
         onClick={this.onHeaderClick}
       >

@@ -1,41 +1,32 @@
 let size: number | undefined;
-let positionSticky: boolean | undefined;
 
 export function getScrollbarSize(): number {
   if (size === undefined) {
-    const outer = document.createElement('div');
-    outer.style.width = '50px';
-    outer.style.height = '50px';
-    outer.style.position = 'absolute';
-    outer.style.top = '-200px';
-    outer.style.left = '-200px';
+    const scrollDiv = document.createElement('div');
 
-    const inner = document.createElement('div');
-    inner.style.height = '100px';
-    inner.style.width = '100%';
+    scrollDiv.style.position = 'absolute';
+    scrollDiv.style.top = '-9999px';
+    scrollDiv.style.width = '50px';
+    scrollDiv.style.height = '50px';
+    scrollDiv.style.overflow = 'scroll';
 
-    outer.appendChild(inner);
-    document.body.appendChild(outer);
-
-    const outerWidth = outer.clientWidth;
-    outer.style.overflowY = 'scroll';
-    const innerWidth = inner.clientWidth;
-
-    document.body.removeChild(outer);
-
-    size = outerWidth - innerWidth;
+    document.body.appendChild(scrollDiv);
+    size = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+    document.body.removeChild(scrollDiv);
   }
 
   return size;
 }
 
-export function isPositionStickySupported() {
+let positionSticky: boolean | undefined;
+
+export function isPositionStickySupported(): boolean {
   if (positionSticky === undefined) {
     const el = document.createElement('a');
-    const mStyle = el.style;
-    mStyle.cssText = 'position:-webkit-sticky;position:sticky';
+    const { style } = el;
+    style.cssText = 'position:-webkit-sticky;position:sticky';
 
-    positionSticky = mStyle.position ? mStyle.position.includes('sticky') : false;
+    positionSticky = style.position ? style.position.includes('sticky') : false;
   }
   return positionSticky;
 }
