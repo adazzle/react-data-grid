@@ -59,9 +59,9 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
   const scrollLeft = useRef(0);
 
   function onScroll(scrollState: ScrollState) {
-    if (scrollLeft.current !== scrollState.scrollLeft) {
+    if (header.current && scrollLeft.current !== scrollState.scrollLeft) {
       scrollLeft.current = scrollState.scrollLeft;
-      header.current!.setScrollLeft(scrollState.scrollLeft);
+      header.current.setScrollLeft(scrollState.scrollLeft);
     }
     if (props.onScroll) {
       props.onScroll(scrollState);
