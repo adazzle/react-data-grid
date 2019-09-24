@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { mount } from 'enzyme';
 
-import Cell, { Props } from '../Cell';
+import Cell, { CellProps } from '../Cell';
 import helpers, { Row } from '../helpers/test/GridPropHelpers';
 import CellAction from '../Cell/CellAction';
 import { SimpleCellFormatter } from '../formatters';
@@ -36,7 +36,7 @@ const expandableOptions = {
 
 const defaultColumn: CalculatedColumn<Row> = { idx: 0, key: 'description', name: 'Desciption', width: 100, left: 0 };
 
-const testProps: Props<Row> = {
+const testProps: CellProps<Row> = {
   rowIdx: 0,
   idx: 1,
   column: defaultColumn,
@@ -45,10 +45,11 @@ const testProps: Props<Row> = {
   rowData: { id: 1, description: 'Wicklow' },
   height: 40,
   isScrolling: false,
-  scrollLeft: 0
+  scrollLeft: 0,
+  lastFrozenColumnIndex: -1
 };
 
-const renderComponent = (extraProps?: PropsWithChildren<Partial<Props<Row>>>) => {
+const renderComponent = (extraProps?: PropsWithChildren<Partial<CellProps<Row>>>) => {
   return mount(<Cell<Row> {...testProps} {...extraProps} />);
 };
 
@@ -78,11 +79,11 @@ describe('Cell Tests', () => {
   });
 
   describe('Rendering Cell component', () => {
-    function shallowRenderComponent(props: Props<Row>) {
+    function shallowRenderComponent(props: CellProps<Row>) {
       return mount(<Cell<Row> {...props} />);
     }
 
-    const requiredProperties: Props<Row> = {
+    const requiredProperties: CellProps<Row> = {
       rowIdx: 18,
       idx: 19,
       height: 60,
@@ -92,7 +93,8 @@ describe('Cell Tests', () => {
       rowData: helpers.rowGetter(11),
       expandableOptions,
       isScrolling: false,
-      scrollLeft: 0
+      scrollLeft: 0,
+      lastFrozenColumnIndex: -1
     };
 
     it('passes classname property', () => {
@@ -113,8 +115,8 @@ describe('Cell Tests', () => {
   });
 
   describe('CellActions', () => {
-    const setup = (propsOverride: Partial<Props<Row>> = {}) => {
-      const props: Props<Row> = {
+    const setup = (propsOverride: Partial<CellProps<Row>> = {}) => {
+      const props: CellProps<Row> = {
         rowIdx: 18,
         idx: 19,
         height: 60,
@@ -125,6 +127,7 @@ describe('Cell Tests', () => {
         expandableOptions,
         isScrolling: false,
         scrollLeft: 0,
+        lastFrozenColumnIndex: -1,
         ...propsOverride
       };
 

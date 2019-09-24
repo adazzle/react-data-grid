@@ -14,7 +14,7 @@ function getColumnCountForWidth<R>(columns: CalculatedColumn<R>[], initialWidth:
   let count = 0;
 
   columns.forEach((column, idx) => {
-    if (idx! >= colVisibleStartIdx) {
+    if (idx >= colVisibleStartIdx) {
       width -= column.width;
       if (width >= 0) {
         count++;
@@ -25,7 +25,7 @@ function getColumnCountForWidth<R>(columns: CalculatedColumn<R>[], initialWidth:
   return count;
 }
 
-interface VerticalRangeToRenderParams {
+export interface VerticalRangeToRenderParams {
   height: number;
   rowHeight: number;
   scrollTop: number;
@@ -65,7 +65,7 @@ interface HorizontalRangeToRender {
   colOverscanEndIdx: number;
 }
 
-interface HorizontalRangeToRenderParams<R> {
+export interface HorizontalRangeToRenderParams<R> {
   columnMetrics: ColumnMetrics<R>;
   viewportWidth: number;
   scrollLeft: number;

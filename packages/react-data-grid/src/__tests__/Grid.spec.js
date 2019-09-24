@@ -103,11 +103,6 @@ describe('Rendering Grid component', () => {
     const draggableDiv = wrapper.find('div').at(0);
     expect(draggableDiv.hasClass('react-grid-Grid'));
   });
-  it('passes style property', () => {
-    const wrapper = renderComponent(allProperties());
-    const draggableDiv = wrapper.find('div').at(0);
-    expect(draggableDiv.props().style).toBeDefined();
-  });
   it('does not pass unknown properties to the div', () => {
     const wrapper = renderComponent(allProperties());
     const draggableDiv = wrapper.find('div').at(0);

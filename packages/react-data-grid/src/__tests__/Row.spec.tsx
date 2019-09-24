@@ -47,7 +47,8 @@ describe('Row', () => {
     colOverscanStartIdx: 0,
     colOverscanEndIdx: 20,
     isScrolling: true,
-    scrollLeft: 0
+    scrollLeft: 0,
+    lastFrozenColumnIndex: -1
   };
 
   it('passes classname property', () => {
@@ -73,7 +74,7 @@ describe('Row', () => {
 
       it('should render all frozen and visible and overscan cells', () => {
         const columns = lockColumns();
-        const { cells } = setup({ ...requiredProperties, columns });
+        const { cells } = setup({ ...requiredProperties, columns, lastFrozenColumnIndex: LAST_LOCKED_CELL_IDX });
         const { colOverscanStartIdx, colOverscanEndIdx } = requiredProperties;
         const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
         expect(cells.length).toBe(renderedRange);
@@ -81,7 +82,7 @@ describe('Row', () => {
 
       it('first frozen cell should be rendered after the unfrozen cells', () => {
         const columns = lockColumns();
-        const { cells } = setup({ ...requiredProperties, columns });
+        const { cells } = setup({ ...requiredProperties, columns, lastFrozenColumnIndex: LAST_LOCKED_CELL_IDX });
         const firstFrozenColumn = columns.filter(c => c.frozen === true)[0];
         expect(cells.at(cells.length - LAST_LOCKED_CELL_IDX - 1).props().column).toBe(firstFrozenColumn);
       });

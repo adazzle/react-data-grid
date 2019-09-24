@@ -4,7 +4,7 @@
   "scripts": {
     "docs": "node docs/utils/docsGen.js",
     "test": "jest",
-    "test-dev": "jest --watch",
+    "test:watch": "jest --watch",
     "postinstall": "lerna bootstrap --no-ci",
     "prebuild": "node tools/buildStylesheets.js",
     "build": "lerna run build",
