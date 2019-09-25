@@ -92,9 +92,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
 
   handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollLeft, scrollTop } = e.currentTarget;
-    if (!isPositionStickySupported()) {
-      this.setScrollLeft(scrollLeft);
-    }
+    this.freezeColumnsOnLegacyBrowsers(scrollLeft);
     this.props.onScroll({ scrollLeft, scrollTop });
   };
 
@@ -177,7 +175,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return false;
   }
 
-  setScrollLeft(scrollLeft: number) {
+  freezeColumnsOnLegacyBrowsers(scrollLeft: number) {
+    if (isPositionStickySupported()) return;
     const { current } = this.interactionMasks;
     if (current) {
       current.setScrollLeft(scrollLeft);
@@ -353,6 +352,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           {...this.props.interactionMasksMetaData}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
+          {/* Set minHeight to show horizontal scrollbar when there are no rows */}
           <div style={{ width: totalColumnWidth, minHeight: 1 }}>{rows}</div>
         </RowsContainer>
       </div>

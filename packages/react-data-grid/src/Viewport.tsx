@@ -66,7 +66,6 @@ export default function Viewport<R>({
   enableIsScrolling,
   ...props
 }: ViewportProps<R>) {
-  const canvas = useRef<Canvas<R>>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const resetScrollStateTimeoutId = useRef<number | null>(null);
   const [scrollState, setScrollState] = useState<ScrollState | null>(null);
@@ -175,7 +174,6 @@ export default function Viewport<R>({
     >
       {scrollState && (
         <Canvas<R>
-          ref={canvas}
           rowKey={props.rowKey}
           width={columnMetrics.width}
           totalColumnWidth={columnMetrics.totalColumnWidth}
