@@ -92,7 +92,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
 
   handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollLeft, scrollTop } = e.currentTarget;
-    this.freezeColumnsOnLegacyBrowsers(scrollLeft);
+    // Freeze columns on legacy browsers
+    this.setScrollLeft(scrollLeft);
     this.props.onScroll({ scrollLeft, scrollTop });
   };
 
@@ -175,7 +176,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return false;
   }
 
-  freezeColumnsOnLegacyBrowsers(scrollLeft: number) {
+  setScrollLeft(scrollLeft: number) {
     if (isPositionStickySupported()) return;
     const { current } = this.interactionMasks;
     if (current) {
