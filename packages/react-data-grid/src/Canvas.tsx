@@ -9,7 +9,8 @@ import * as rowUtils from './RowUtils';
 import { getColumnScrollPosition, isPositionStickySupported } from './utils';
 import { EventTypes } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
-import { ViewportProps, ScrollState } from './Viewport';
+import { ViewportProps } from './Viewport';
+import { HorizontalRangeToRender, VerticalRangeToRender } from './utils/viewportUtils';
 
 type SharedViewportProps<R> = Pick<ViewportProps<R>,
 'rowKey'
@@ -33,18 +34,7 @@ type SharedViewportProps<R> = Pick<ViewportProps<R>,
 | 'interactionMasksMetaData'
 >;
 
-type SharedViewportState = Pick<ScrollState,
-'scrollTop'
-| 'scrollLeft'
-| 'rowOverscanStartIdx'
-| 'rowOverscanEndIdx'
-| 'rowVisibleStartIdx'
-| 'rowVisibleEndIdx'
-| 'colVisibleStartIdx'
-| 'colVisibleEndIdx'
-| 'colOverscanStartIdx'
-| 'colOverscanEndIdx'
->;
+type SharedViewportState = ScrollPosition & HorizontalRangeToRender & VerticalRangeToRender;
 
 export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportState {
   columns: CalculatedColumn<R>[];

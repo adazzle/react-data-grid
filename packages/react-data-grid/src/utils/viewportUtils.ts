@@ -34,7 +34,7 @@ export interface VerticalRangeToRenderParams {
   overscanRowCount?: number;
 }
 
-interface VerticalRangeToRender {
+export interface VerticalRangeToRender {
   rowVisibleStartIdx: number;
   rowVisibleEndIdx: number;
   rowOverscanStartIdx: number;
@@ -58,7 +58,7 @@ export function getVerticalRangeToRender({
   return { rowVisibleStartIdx, rowVisibleEndIdx, rowOverscanStartIdx, rowOverscanEndIdx };
 }
 
-interface HorizontalRangeToRender {
+export interface HorizontalRangeToRender {
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
   colOverscanStartIdx: number;
@@ -102,14 +102,12 @@ export function getHorizontalRangeToRender<R>({
   return { colVisibleStartIdx, colVisibleEndIdx, colOverscanStartIdx, colOverscanEndIdx };
 }
 
-export function getScrollDirection(prevScroll: ScrollPosition | undefined, nextScroll: ScrollPosition): SCROLL_DIRECTION {
-  if (prevScroll !== undefined) {
-    if (nextScroll.scrollTop !== prevScroll.scrollTop) {
-      return nextScroll.scrollTop - prevScroll.scrollTop >= 0 ? SCROLL_DIRECTION.DOWN : SCROLL_DIRECTION.UP;
-    }
-    if (nextScroll.scrollLeft !== prevScroll.scrollLeft) {
-      return nextScroll.scrollLeft - prevScroll.scrollLeft >= 0 ? SCROLL_DIRECTION.RIGHT : SCROLL_DIRECTION.LEFT;
-    }
+export function getScrollDirection(prevScroll: ScrollPosition, nextScroll: ScrollPosition): SCROLL_DIRECTION {
+  if (nextScroll.scrollTop !== prevScroll.scrollTop) {
+    return nextScroll.scrollTop - prevScroll.scrollTop >= 0 ? SCROLL_DIRECTION.DOWN : SCROLL_DIRECTION.UP;
+  }
+  if (nextScroll.scrollLeft !== prevScroll.scrollLeft) {
+    return nextScroll.scrollLeft - prevScroll.scrollLeft >= 0 ? SCROLL_DIRECTION.RIGHT : SCROLL_DIRECTION.LEFT;
   }
   return SCROLL_DIRECTION.NONE;
 }

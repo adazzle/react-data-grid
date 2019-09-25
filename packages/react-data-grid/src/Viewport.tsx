@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 
 import Canvas from './Canvas';
 import { getVerticalRangeToRender, getHorizontalRangeToRender, getScrollDirection } from './utils/viewportUtils';
@@ -9,14 +9,6 @@ import { SCROLL_DIRECTION } from './common/enums';
 export interface ScrollState {
   scrollTop: number;
   scrollLeft: number;
-  rowVisibleStartIdx: number;
-  rowVisibleEndIdx: number;
-  rowOverscanStartIdx: number;
-  rowOverscanEndIdx: number;
-  colVisibleStartIdx: number;
-  colVisibleEndIdx: number;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
   scrollDirection: SCROLL_DIRECTION;
 }
 
@@ -52,6 +44,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 
 export interface ViewportProps<R> extends SharedGridProps<R> {
   onScroll(scrollState: ScrollState): void;
+  viewportWidth: number;
 }
 
 export default function Viewport<R>({
@@ -64,18 +57,16 @@ export default function Viewport<R>({
   overscanRowCount,
   overscanColumnCount,
   enableIsScrolling,
+  viewportWidth,
   ...props
 }: ViewportProps<R>) {
-  const viewport = useRef<HTMLDivElement>(null);
   const resetScrollStateTimeoutId = useRef<number | null>(null);
-  const [scrollState, setScrollState] = useState<ScrollState | null>(null);
+  const [scrollState, setScrollState] = useState<ScrollState>({
+    scrollLeft: 0,
+    scrollTop: 0,
+    scrollDirection: SCROLL_DIRECTION.NONE
+  });
   const [isScrolling, setIsScrolling] = useState<boolean | undefined>(undefined);
-
-  const canvasHeight = minHeight - rowOffsetHeight;
-
-  function getDOMNodeOffsetWidth() {
-    return viewport.current ? viewport.current.offsetWidth : 0;
-  }
 
   function clearScrollTimer() {
     if (resetScrollStateTimeoutId.current !== null) {
@@ -103,115 +94,79 @@ export default function Viewport<R>({
       resetScrollStateAfterDelay();
     }
 
-    let previousScrollPosition: ScrollPosition | undefined;
-    if (scrollState !== null) {
-      previousScrollPosition = {
-        scrollLeft: scrollState.scrollLeft,
-        scrollTop: scrollState.scrollTop
-      };
-    }
-
-    const scrollDirection = getScrollDirection(previousScrollPosition, { scrollLeft, scrollTop });
-    const nextScrollState = {
-      scrollLeft,
-      scrollTop,
-      scrollDirection,
-      ...getVerticalRangeToRender({
-        height: canvasHeight,
-        rowHeight,
-        scrollTop,
-        rowsCount,
-        scrollDirection,
-        overscanRowCount
-      }),
-      ...getHorizontalRangeToRender({
-        columnMetrics,
-        scrollLeft,
-        viewportWidth: getDOMNodeOffsetWidth(),
-        scrollDirection,
-        overscanColumnCount
-      })
-    };
-
-    setScrollState(nextScrollState);
-    handleScroll(nextScrollState);
+    const scrollDirection = getScrollDirection(scrollState, { scrollLeft, scrollTop });
+    const newScrollState = { scrollLeft, scrollTop, scrollDirection };
+    setScrollState(newScrollState);
+    handleScroll(newScrollState);
   }
 
-  useEffect(() => {
-    const scrollDirection = SCROLL_DIRECTION.NONE;
-    setScrollState(prevScrollState => {
-      const scrollTop = prevScrollState ? prevScrollState.scrollTop : 0;
-      const scrollLeft = prevScrollState ? prevScrollState.scrollLeft : 0;
+  const canvasHeight = minHeight - rowOffsetHeight;
+  const { scrollLeft, scrollTop, scrollDirection } = scrollState;
 
-      return {
-        scrollTop,
-        scrollLeft,
-        scrollDirection,
-        ...getVerticalRangeToRender({
-          height: canvasHeight,
-          rowHeight,
-          scrollTop,
-          rowsCount,
-          scrollDirection,
-          overscanRowCount
-        }),
-        ...getHorizontalRangeToRender({
-          columnMetrics,
-          scrollLeft,
-          viewportWidth: getDOMNodeOffsetWidth(),
-          scrollDirection,
-          overscanColumnCount
-        })
-      };
+  const verticalRangeToRender = useMemo(() => {
+    return getVerticalRangeToRender({
+      height: canvasHeight,
+      rowHeight,
+      scrollTop,
+      rowsCount,
+      scrollDirection,
+      overscanRowCount
     });
-  }, [canvasHeight, columnMetrics, overscanColumnCount, overscanRowCount, rowHeight, rowsCount]);
+  }, [canvasHeight, overscanRowCount, rowHeight, rowsCount, scrollDirection, scrollTop]);
+
+  const horizontalRangeToRender = useMemo(() => {
+    return getHorizontalRangeToRender({
+      columnMetrics,
+      scrollLeft,
+      viewportWidth,
+      scrollDirection,
+      overscanColumnCount
+    });
+  }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft, viewportWidth]);
 
   return (
     <div
-      ref={viewport}
       onKeyDown={props.onViewportKeydown}
       onKeyUp={props.onViewportKeyup}
     >
-      {scrollState && (
-        <Canvas<R>
-          rowKey={props.rowKey}
-          width={columnMetrics.width}
-          totalColumnWidth={columnMetrics.totalColumnWidth}
-          columns={columnMetrics.columns}
-          lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-          rowGetter={props.rowGetter}
-          rowsCount={rowsCount}
-          selectedRows={props.selectedRows}
-          rowRenderer={props.rowRenderer}
-          scrollTop={scrollState.scrollTop}
-          scrollLeft={scrollState.scrollLeft}
-          rowOverscanStartIdx={scrollState.rowOverscanStartIdx}
-          rowOverscanEndIdx={scrollState.rowOverscanEndIdx}
-          rowVisibleStartIdx={scrollState.rowVisibleStartIdx}
-          rowVisibleEndIdx={scrollState.rowVisibleEndIdx}
-          colVisibleStartIdx={scrollState.colVisibleStartIdx}
-          colVisibleEndIdx={scrollState.colVisibleEndIdx}
-          colOverscanStartIdx={scrollState.colOverscanStartIdx}
-          colOverscanEndIdx={scrollState.colOverscanEndIdx}
-          cellMetaData={props.cellMetaData}
-          height={canvasHeight}
-          rowHeight={rowHeight}
-          onScroll={onScroll}
-          scrollToRowIndex={props.scrollToRowIndex}
-          contextMenu={props.contextMenu}
-          rowSelection={props.rowSelection}
-          getSubRowDetails={props.getSubRowDetails}
-          rowGroupRenderer={props.rowGroupRenderer}
-          isScrolling={isScrolling}
-          enableCellSelect={props.enableCellSelect}
-          enableCellAutoFocus={props.enableCellAutoFocus}
-          cellNavigationMode={props.cellNavigationMode}
-          eventBus={props.eventBus}
-          RowsContainer={props.RowsContainer}
-          editorPortalTarget={props.editorPortalTarget}
-          interactionMasksMetaData={props.interactionMasksMetaData}
-        />
-      )}
+      <Canvas<R>
+        rowKey={props.rowKey}
+        width={columnMetrics.width}
+        totalColumnWidth={columnMetrics.totalColumnWidth}
+        columns={columnMetrics.columns}
+        lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+        rowGetter={props.rowGetter}
+        rowsCount={rowsCount}
+        selectedRows={props.selectedRows}
+        rowRenderer={props.rowRenderer}
+        scrollTop={scrollTop}
+        scrollLeft={scrollLeft}
+        rowOverscanStartIdx={verticalRangeToRender.rowOverscanStartIdx}
+        rowOverscanEndIdx={verticalRangeToRender.rowOverscanEndIdx}
+        rowVisibleStartIdx={verticalRangeToRender.rowVisibleStartIdx}
+        rowVisibleEndIdx={verticalRangeToRender.rowVisibleEndIdx}
+        colVisibleStartIdx={horizontalRangeToRender.colVisibleStartIdx}
+        colVisibleEndIdx={horizontalRangeToRender.colVisibleEndIdx}
+        colOverscanStartIdx={horizontalRangeToRender.colOverscanStartIdx}
+        colOverscanEndIdx={horizontalRangeToRender.colOverscanEndIdx}
+        cellMetaData={props.cellMetaData}
+        height={canvasHeight}
+        rowHeight={rowHeight}
+        onScroll={onScroll}
+        scrollToRowIndex={props.scrollToRowIndex}
+        contextMenu={props.contextMenu}
+        rowSelection={props.rowSelection}
+        getSubRowDetails={props.getSubRowDetails}
+        rowGroupRenderer={props.rowGroupRenderer}
+        isScrolling={isScrolling}
+        enableCellSelect={props.enableCellSelect}
+        enableCellAutoFocus={props.enableCellAutoFocus}
+        cellNavigationMode={props.cellNavigationMode}
+        eventBus={props.eventBus}
+        RowsContainer={props.RowsContainer}
+        editorPortalTarget={props.editorPortalTarget}
+        interactionMasksMetaData={props.interactionMasksMetaData}
+      />
     </div>
   );
 }
