@@ -195,7 +195,11 @@ export default function ReactDataGrid<R extends {}>({
   cellNavigationMode = CellNavigationMode.NONE,
   selectAllRenderer = SelectAll,
   editorPortalTarget = document.body,
+  columns,
+  rowsCount,
+  rowGetter,
   rowSelection,
+  cellRangeSelection,
   onRowSelect,
   ...props
 }: ReactDataGridProps<R>) {
@@ -240,7 +244,7 @@ export default function ReactDataGrid<R extends {}>({
   }, [minWidth]);
 
   useEffect(() => {
-    if (!props.cellRangeSelection) return;
+    if (!cellRangeSelection) return;
 
     function handleWindowMouseUp() {
       eventBus.dispatch(EventTypes.SELECT_END);
@@ -251,7 +255,7 @@ export default function ReactDataGrid<R extends {}>({
     return () => {
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [eventBus, props.cellRangeSelection]);
+  }, [eventBus, cellRangeSelection]);
 
   function selectCell({ idx, rowIdx }: Position, openEditor?: boolean) {
     eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
@@ -318,7 +322,7 @@ export default function ReactDataGrid<R extends {}>({
   }
 
   function handlerCellClick({ rowIdx, idx }: Position) {
-    const { onRowClick, rowGetter } = props;
+    const { onRowClick } = props;
     selectCell({ rowIdx, idx });
 
     if (onRowClick) {
@@ -339,7 +343,7 @@ export default function ReactDataGrid<R extends {}>({
   }
 
   function handleCellDoubleClick({ rowIdx, idx }: Position) {
-    const { onRowDoubleClick, rowGetter } = props;
+    const { onRowDoubleClick } = props;
     if (onRowDoubleClick) {
       onRowDoubleClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
     }
@@ -355,11 +359,11 @@ export default function ReactDataGrid<R extends {}>({
 
   const handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
     const cellKey = getColumn(e.idx).key;
-    handleGridRowsUpdated(cellKey, e.rowIdx, props.rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
+    handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
   };
 
   const handleGridRowsUpdated: InteractionMasksMetaData<R>['onGridRowsUpdated'] = (cellKey, fromRow, toRow, updated, action, originRow) => {
-    const { rowGetter, onGridRowsUpdated } = props;
+    const { onGridRowsUpdated } = props;
     if (!onGridRowsUpdated) {
       return;
     }
@@ -400,7 +404,7 @@ export default function ReactDataGrid<R extends {}>({
   function handleShiftSelect(rowIdx: number) {
     if (rowSelection && lastRowIdxUiSelected > -1 && isSingleKeyDown(KeyCodes.Shift)) {
       const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
-      const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, props.rowGetter(rowIdx), rowIdx);
+      const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, rowGetter(rowIdx), rowIdx);
 
       if (isPreviouslySelected) return false;
 
@@ -410,7 +414,7 @@ export default function ReactDataGrid<R extends {}>({
         const rowsSelected = [];
 
         for (let i = lastRowIdxUiSelected + 1; i <= rowIdx; i++) {
-          rowsSelected.push({ rowIdx: i, row: props.rowGetter(i) });
+          rowsSelected.push({ rowIdx: i, row: rowGetter(i) });
         }
 
         if (typeof rowSelection.onRowsSelected === 'function') {
@@ -422,7 +426,7 @@ export default function ReactDataGrid<R extends {}>({
         const rowsSelected = [];
 
         for (let i = rowIdx; i <= lastRowIdxUiSelected - 1; i++) {
-          rowsSelected.push({ rowIdx: i, row: props.rowGetter(i) });
+          rowsSelected.push({ rowIdx: i, row: rowGetter(i) });
         }
 
         if (typeof rowSelection.onRowsSelected === 'function') {
@@ -496,8 +500,8 @@ export default function ReactDataGrid<R extends {}>({
 
       if (allRowsSelected && typeof rowSelection.onRowsSelected === 'function') {
         const selectedRows = [];
-        for (let i = 0; i < props.rowsCount; i++) {
-          const rowData = props.rowGetter(i);
+        for (let i = 0; i < rowsCount; i++) {
+          const rowData = rowGetter(i);
           if (!isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
             selectedRows.push({ rowIdx: i, row: rowData });
           }
@@ -508,8 +512,8 @@ export default function ReactDataGrid<R extends {}>({
         }
       } else if (!allRowsSelected && typeof rowSelection.onRowsDeselected === 'function') {
         const deselectedRows = [];
-        for (let i = 0; i < props.rowsCount; i++) {
-          const rowData = props.rowGetter(i);
+        for (let i = 0; i < rowsCount; i++) {
+          const rowData = rowGetter(i);
           if (isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
             deselectedRows.push({ rowIdx: i, row: rowData });
           }
@@ -521,8 +525,8 @@ export default function ReactDataGrid<R extends {}>({
       }
     } else {
       const selectedRows: SelectedRow<R>[] = [];
-      for (let i = 0; i < props.rowsCount; i++) {
-        const row = { ...props.rowGetter(i), isSelected: allRowsSelected };
+      for (let i = 0; i < rowsCount; i++) {
+        const row = { ...rowGetter(i), isSelected: allRowsSelected };
         selectedRows.push(row);
       }
       setSelectedRows(selectedRows);
@@ -566,8 +570,6 @@ export default function ReactDataGrid<R extends {}>({
   // }
 
   function setupGridColumns(): ColumnList<R> {
-    const { columns } = props;
-
     if (props.rowActionsCell || (enableRowSelect && !rowSelection) || (rowSelection && rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = selectAllRenderer;
       const headerRenderer = enableRowSelect === 'single'
@@ -607,7 +609,7 @@ export default function ReactDataGrid<R extends {}>({
     onAddSubRow: props.onAddSubRow,
     onDragEnter: handleDragEnter
   };
-  if (props.cellRangeSelection) {
+  if (cellRangeSelection) {
     cellMetaData.onCellMouseDown = handleCellMouseDown;
     cellMetaData.onCellMouseEnter = handleCellMouseEnter;
   }
@@ -619,9 +621,9 @@ export default function ReactDataGrid<R extends {}>({
     onDragHandleDoubleClick: handleDragHandleDoubleClick,
     onCellSelected: props.onCellSelected,
     onCellDeSelected: props.onCellDeSelected,
-    onCellRangeSelectionStarted: props.cellRangeSelection && props.cellRangeSelection.onStart,
-    onCellRangeSelectionUpdated: props.cellRangeSelection && props.cellRangeSelection.onUpdate,
-    onCellRangeSelectionCompleted: props.cellRangeSelection && props.cellRangeSelection.onComplete,
+    onCellRangeSelectionStarted: cellRangeSelection && cellRangeSelection.onStart,
+    onCellRangeSelectionUpdated: cellRangeSelection && cellRangeSelection.onUpdate,
+    onCellRangeSelectionCompleted: cellRangeSelection && cellRangeSelection.onComplete,
     onCommit: handleCommit
   };
 
@@ -649,8 +651,8 @@ export default function ReactDataGrid<R extends {}>({
     >
       <ToolbarContainer<R>
         toolbar={props.toolbar}
-        columns={props.columns}
-        rowsCount={props.rowsCount}
+        columns={columns}
+        rowsCount={rowsCount}
         onToggleFilter={handleToggleFilter}
       />
       {columnMetrics && (
@@ -660,8 +662,8 @@ export default function ReactDataGrid<R extends {}>({
           draggableHeaderCell={props.draggableHeaderCell}
           getValidFilterValues={props.getValidFilterValues}
           columnMetrics={columnMetrics}
-          rowGetter={props.rowGetter}
-          rowsCount={props.rowsCount}
+          rowGetter={rowGetter}
+          rowsCount={rowsCount}
           rowHeight={rowHeight}
           rowRenderer={props.rowRenderer}
           rowGroupRenderer={props.rowGroupRenderer}
