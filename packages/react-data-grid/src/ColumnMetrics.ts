@@ -6,6 +6,7 @@ import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/ty
 
 type Metrics<R> = Pick<ColumnMetrics<R>, 'totalWidth' | 'minColumnWidth'> & {
   columns: ColumnList<R>;
+  columnResizes: Map<number, number>;
 };
 
 function cloneColumns<R>(columns: ColumnList<R>): Column<R>[] {
@@ -15,12 +16,14 @@ function cloneColumns<R>(columns: ColumnList<R>): Column<R>[] {
   return cloneColumns(columns.toArray());
 }
 
-function setColumnWidths<R>(columns: Column<R>[], totalWidth: number): void {
-  for (const column of columns) {
-    if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
+function setColumnWidths<R>(columns: Column<R>[], totalWidth: number, columnResizes: Map<number, number>): void {
+  columns.forEach((column, idx) => {
+    if (columnResizes.has(idx)) {
+      column.width = columnResizes.get(idx);
+    } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
       column.width = Math.floor(totalWidth * column.width / 100);
     }
-  }
+  });
 }
 
 function setDefferedColumnWidths<R>(columns: Column<R>[], unallocatedWidth: number, minColumnWidth: number): void {
@@ -29,11 +32,6 @@ function setDefferedColumnWidths<R>(columns: Column<R>[], unallocatedWidth: numb
 
   for (const column of columns) {
     if (column.width) continue;
-
-    if (unallocatedWidth <= 0) {
-      column.width = minColumnWidth;
-    }
-
     column.width = columnWidth < minColumnWidth ? minColumnWidth : columnWidth;
   }
 }
@@ -53,8 +51,8 @@ function getTotalColumnWidth<R>(columns: Column<R>[]): number {
 export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   // clone columns so we can safely edit them:
   const columns = cloneColumns(metrics.columns);
-  // compute width for columns which specify width
-  setColumnWidths(columns, metrics.totalWidth);
+  // compute width for columns which specify width in %
+  setColumnWidths(columns, metrics.totalWidth, metrics.columnResizes);
 
   const width = getTotalColumnWidth(columns);
   const borderWidth = 2;

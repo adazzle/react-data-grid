@@ -7,7 +7,7 @@ import { SelectAll } from './formatters';
 import * as rowUtils from './RowUtils';
 import { getSize } from './ColumnUtils';
 import KeyCodes from './KeyCodes';
-import { sameColumn, sameColumns, recalculate, resizeColumn } from './ColumnMetrics';
+import { sameColumn, recalculate } from './ColumnMetrics';
 import { ScrollState } from './Viewport';
 import { RowsContainerProps } from './RowsContainer';
 import { EventBus } from './masks';
@@ -209,34 +209,34 @@ function isRowSelected<R>(keys: unknown, indexes: unknown, isSelectedKey: unknow
  * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
 export default function ReactDataGrid<R extends {}>(props: DataGridProps<R>) {
-  const [columnMetrics, setColumnMetrics] = useState(createColumnMetrics);
   const [selectedRows, setSelectedRows] = useState<SelectedRow<R>[]>([]);
   const [canFilter, setCanFilter] = useState(false);
   const [lastRowIdxUiSelected, setLastRowIdxUiSelected] = useState(-1);
   const [sortColumn, setSortColumn] = useState(props.sortColumn);
   const [sortDirection, setSortDirection] = useState(props.sortDirection);
+  const [columnResizes, setColumnResizes] = useState(() => new Map<number, number>());
   const [eventBus] = useState(() => new EventBus());
   const [_keysDown] = useState(() => new Set<number>());
   const gridRef = useRef<HTMLDivElement>(null);
   const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
-  const _cachedColumnsRef = useRef<ColumnList<R> | null>(null);
-  const _cachedComputedColumnsRef = useRef<ColumnList<R> | null>(null);
 
-  function metricsUpdated() {
-    setColumnMetrics(createColumnMetrics());
-  }
+  // const [columnMetrics, setColumnMetrics] = useState(createColumnMetrics);
+  const columnMetrics = createColumnMetrics();
 
+  // Immediately re-render when the component is mounted to get valid columnMetrics.
+  const [, setIsMounted] = useState(false);
   useEffect(() => {
-    metricsUpdated();
-  }, [metricsUpdated]);
+    setIsMounted(true);
+  }, []);
 
-  useEffect(() => {
-    window.addEventListener('resize', metricsUpdated);
+  // useEffect(() => {
+  //   function onResize() {}
+  //   window.addEventListener('resize', onResize);
 
-    return () => {
-      window.removeEventListener('resize', metricsUpdated);
-    };
-  }, [metricsUpdated]);
+  //   return () => {
+  //     window.removeEventListener('resize', onResize);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (!props.cellRangeSelection) return;
@@ -252,18 +252,6 @@ export default function ReactDataGrid<R extends {}>(props: DataGridProps<R>) {
     };
   }, [eventBus, props.cellRangeSelection]);
 
-  // componentWillReceiveProps(nextProps: DataGridProps<R>) {
-  //   if (
-  //     nextProps.columns && (
-  //       !sameColumns(this.props.columns, nextProps.columns, this.props.columnEquality)
-  //       || nextProps.minWidth !== this.props.minWidth
-  //     )
-  //   ) {
-  //     const columnMetrics = this.createColumnMetrics(nextProps);
-  //     this.setState({ columnMetrics });
-  //   }
-  // }
-
   function selectCell({ idx, rowIdx }: Position, openEditor?: boolean) {
     eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
   }
@@ -271,7 +259,7 @@ export default function ReactDataGrid<R extends {}>(props: DataGridProps<R>) {
   function getTotalWidth() {
     const { current } = gridRef;
     if (current) {
-      return current.offsetWidth;
+      return current.getBoundingClientRect().width;
     }
     return getSize(props.columns) * props.minColumnWidth;
   }
@@ -280,14 +268,14 @@ export default function ReactDataGrid<R extends {}>(props: DataGridProps<R>) {
     return columnMetrics.columns[idx];
   }
 
-  function createColumnMetrics(p = props) {
-    const gridColumns = setupGridColumns(p);
-    const metrics = {
-      columns: gridColumns,
+  function createColumnMetrics() {
+    return recalculate({
+      // columns: setupGridColumns(),
+      columns: props.columns,
       minColumnWidth: props.minColumnWidth,
-      totalWidth: props.minWidth || getTotalWidth()
-    };
-    return recalculate(metrics);
+      totalWidth: props.minWidth || getTotalWidth(),
+      columnResizes
+    });
   }
 
   function isSingleKeyDown(keyCode: number) {
@@ -295,7 +283,10 @@ export default function ReactDataGrid<R extends {}>(props: DataGridProps<R>) {
   }
 
   function handleColumnResize(idx: number, width: number) {
-    setColumnMetrics(resizeColumn(columnMetrics, idx, width));
+    const newColumnResizes = new Map(columnResizes);
+    newColumnResizes.set(idx, width);
+    setColumnResizes(newColumnResizes);
+
     if (props.onColumnResize) {
       props.onColumnResize(idx, width);
     }
@@ -579,13 +570,8 @@ export default function ReactDataGrid<R extends {}>(props: DataGridProps<R>) {
     eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
   }
 
-  function setupGridColumns(p = props): ColumnList<R> {
-    const { columns } = p;
-    if (_cachedColumnsRef.current === columns) {
-      return _cachedComputedColumnsRef.current!;
-    }
-
-    _cachedColumnsRef.current = columns;
+  function setupGridColumns(): ColumnList<R> {
+    const { columns } = props;
 
     if (props.rowActionsCell || (props.enableRowSelect && !props.rowSelection) || (props.rowSelection && props.rowSelection.showCheckbox !== false)) {
       const SelectAllComponent = props.selectAllRenderer;
@@ -606,14 +592,12 @@ export default function ReactDataGrid<R extends {}>(props: DataGridProps<R>) {
         cellClass: props.rowActionsCell ? 'rdg-row-actions-cell' : ''
       } as unknown as Column<R>;
 
-      _cachedComputedColumnsRef.current = Array.isArray(columns)
+      return Array.isArray(columns)
         ? [selectColumn, ...columns]
         : columns.unshift(selectColumn);
-    } else {
-      _cachedComputedColumnsRef.current = columns.slice(0) as ColumnList<R>;
     }
 
-    return _cachedComputedColumnsRef.current;
+    return columns.slice(0) as ColumnList<R>;
   }
 
   const cellMetaData: CellMetaData<R> = {
