@@ -1,12 +1,11 @@
 export { sameColumn } from './ColumnComparer';
-import { getSize, isFrozen } from './ColumnUtils';
+import { isFrozen } from './ColumnUtils';
 import { getScrollbarSize } from './utils';
-import { isColumnsImmutable } from './common/utils';
 import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/types';
 
 type Metrics<R> = Pick<ColumnMetrics<R>, 'totalWidth' | 'minColumnWidth'> & {
   columns: ColumnList<R>;
-  columnResizes: Map<number, number>;
+  // columnResizes: Map<number, number>;
 };
 
 function cloneColumns<R>(columns: ColumnList<R>): Column<R>[] {
@@ -16,11 +15,12 @@ function cloneColumns<R>(columns: ColumnList<R>): Column<R>[] {
   return cloneColumns(columns.toArray());
 }
 
-function setColumnWidths<R>(columns: Column<R>[], totalWidth: number, columnResizes: Map<number, number>): void {
-  columns.forEach((column, idx) => {
-    if (columnResizes.has(idx)) {
+function setColumnWidths<R>(columns: Column<R>[], totalWidth: number/*, columnResizes: Map<number, number>*/): void {
+  columns.forEach((column/*, idx*/) => {
+    /*if (columnResizes.has(idx)) {
       column.width = columnResizes.get(idx);
-    } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
+    } else */
+    if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
       column.width = Math.floor(totalWidth * column.width / 100);
     }
   });
@@ -52,11 +52,10 @@ export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   // clone columns so we can safely edit them:
   const columns = cloneColumns(metrics.columns);
   // compute width for columns which specify width in %
-  setColumnWidths(columns, metrics.totalWidth, metrics.columnResizes);
+  setColumnWidths(columns, metrics.totalWidth/*, metrics.columnResizes*/);
 
   const width = getTotalColumnWidth(columns);
-  const borderWidth = 2;
-  const unallocatedWidth = metrics.totalWidth - width - getScrollbarSize() - borderWidth;
+  const unallocatedWidth = metrics.totalWidth - width - getScrollbarSize();
 
   // compute width for columns which doesn't specify width
   setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);
@@ -89,43 +88,4 @@ export function resizeColumn<R>(metrics: ColumnMetrics<R>, index: number, width:
   updatedMetrics.columns.splice(index, 1, updatedColumn);
 
   return recalculate(updatedMetrics);
-}
-
-type ColumnComparer<R> = (colA: Column<R>, colB: Column<R>) => boolean;
-
-function compareEachColumn<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
-  if (getSize(prevColumns) !== getSize(nextColumns)) return false;
-
-  const keys = new Set<keyof R>();
-  const prevColumnsMap = new Map<keyof R, Column<R>>();
-  const nextColumnsMap = new Map<keyof R, Column<R>>();
-
-  for (const column of prevColumns) {
-    keys.add(column.key);
-    prevColumnsMap.set(column.key, column);
-  }
-
-  for (const column of nextColumns) {
-    keys.add(column.key);
-    nextColumnsMap.set(column.key, column);
-  }
-
-  if (keys.size > prevColumnsMap.size) return false;
-
-  for (const key of keys) {
-    if (!prevColumnsMap.has(key) || !nextColumnsMap.has(key)) return false;
-    const prevColumn = prevColumnsMap.get(key) as Column<R>;
-    const nextColumn = nextColumnsMap.get(key) as Column<R>;
-    if (!isSameColumn(prevColumn, nextColumn)) return false;
-  }
-
-  return true;
-}
-
-export function sameColumns<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
-  if (isColumnsImmutable(prevColumns) && isColumnsImmutable(nextColumns)) {
-    return prevColumns === nextColumns;
-  }
-
-  return compareEachColumn(prevColumns, nextColumns, isSameColumn);
 }
