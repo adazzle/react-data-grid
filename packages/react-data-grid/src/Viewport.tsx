@@ -130,6 +130,8 @@ export default function Viewport<R>({
       onKeyUp={props.onViewportKeyup}
     >
       <Canvas<R>
+        {...verticalRangeToRender}
+        {...horizontalRangeToRender}
         rowKey={props.rowKey}
         width={columnMetrics.width}
         totalColumnWidth={columnMetrics.totalColumnWidth}
@@ -141,14 +143,6 @@ export default function Viewport<R>({
         rowRenderer={props.rowRenderer}
         scrollTop={scrollTop}
         scrollLeft={scrollLeft}
-        rowOverscanStartIdx={verticalRangeToRender.rowOverscanStartIdx}
-        rowOverscanEndIdx={verticalRangeToRender.rowOverscanEndIdx}
-        rowVisibleStartIdx={verticalRangeToRender.rowVisibleStartIdx}
-        rowVisibleEndIdx={verticalRangeToRender.rowVisibleEndIdx}
-        colVisibleStartIdx={horizontalRangeToRender.colVisibleStartIdx}
-        colVisibleEndIdx={horizontalRangeToRender.colVisibleEndIdx}
-        colOverscanStartIdx={horizontalRangeToRender.colOverscanStartIdx}
-        colOverscanEndIdx={horizontalRangeToRender.colOverscanEndIdx}
         cellMetaData={props.cellMetaData}
         height={canvasHeight}
         rowHeight={rowHeight}

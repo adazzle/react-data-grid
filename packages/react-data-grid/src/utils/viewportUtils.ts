@@ -103,11 +103,9 @@ export function getHorizontalRangeToRender<R>({
 }
 
 export function getScrollDirection(prevScroll: ScrollPosition, nextScroll: ScrollPosition): SCROLL_DIRECTION {
-  if (nextScroll.scrollTop !== prevScroll.scrollTop) {
-    return nextScroll.scrollTop - prevScroll.scrollTop >= 0 ? SCROLL_DIRECTION.DOWN : SCROLL_DIRECTION.UP;
-  }
-  if (nextScroll.scrollLeft !== prevScroll.scrollLeft) {
-    return nextScroll.scrollLeft - prevScroll.scrollLeft >= 0 ? SCROLL_DIRECTION.RIGHT : SCROLL_DIRECTION.LEFT;
-  }
+  if (nextScroll.scrollTop > prevScroll.scrollTop) return SCROLL_DIRECTION.DOWN;
+  if (nextScroll.scrollTop < prevScroll.scrollTop) return SCROLL_DIRECTION.UP;
+  if (nextScroll.scrollLeft > prevScroll.scrollLeft) return SCROLL_DIRECTION.RIGHT;
+  if (nextScroll.scrollLeft < prevScroll.scrollLeft) return SCROLL_DIRECTION.LEFT;
   return SCROLL_DIRECTION.NONE;
 }
