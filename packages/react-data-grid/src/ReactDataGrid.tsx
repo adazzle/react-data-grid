@@ -171,6 +171,8 @@ export interface DataGridProps<R extends {}> {
    * Note that using this parameter will result in an additional render call after scrolling has stopped (when isScrolling changes from true to false).
    */
   enableIsScrolling?: boolean;
+
+  pinnedRows?: R[];
 }
 
 type DefaultProps = Pick<DataGridProps<{ id?: unknown }>,
@@ -723,6 +725,7 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           overscanRowCount={this.props.overscanRowCount}
           overscanColumnCount={this.props.overscanColumnCount}
           enableIsScrolling={this.props.enableIsScrolling}
+          pinnedRows={this.props.pinnedRows}
         />
       </div>
     );

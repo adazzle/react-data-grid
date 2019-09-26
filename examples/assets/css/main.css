@@ -568,3 +568,7 @@ code.tab3{
 code.tab4{
 	margin-left:12px;
 }
+
+.bottom-pinned-rows .react-grid-checkbox-container {
+  display: none;
+}

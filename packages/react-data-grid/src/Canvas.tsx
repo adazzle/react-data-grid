@@ -44,6 +44,7 @@ export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportSt
   lastFrozenColumnIndex: number;
   isScrolling?: boolean;
   onScroll(position: ScrollPosition): void;
+  pinnedRows?: R[];
 }
 
 type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
@@ -268,7 +269,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, height, rowGetter, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, height, rowGetter, contextMenu, pinnedRows } = this.props;
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
@@ -344,8 +345,58 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           {/* Set minHeight to show horizontal scrollbar when there are no rows */}
-          <div style={{ width: totalColumnWidth, minHeight: 1 }}>{rows}</div>
+          <div style={{ width: totalColumnWidth, minHeight: 1 }}>
+            {rows}
+          </div>
         </RowsContainer>
+        {
+          pinnedRows && pinnedRows.length && (
+            <div
+              className="bottom-pinned-rows"
+              style={{
+                position: 'sticky',
+                bottom: 0,
+                zIndex: 99999
+              }}
+            >
+              <div
+                style={{
+                  width: totalColumnWidth,
+                  borderTop: '2px solid #ccc'
+                }}
+              >
+                {
+                  pinnedRows.map((row, idx) => {
+                    const rowIdx = rowsCount + 1 + idx;
+                    return row && this.renderRow({
+                      key: rowIdx,
+                      ref: (row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null) => {
+                        if (row) {
+                          this.rows.set(rowIdx, row);
+                        } else {
+                          this.rows.delete(rowIdx);
+                        }
+                      },
+                      idx: rowIdx,
+                      row,
+                      height: rowHeight,
+                      columns,
+                      isSelected: false,
+                      cellMetaData,
+                      colVisibleStartIdx,
+                      colVisibleEndIdx,
+                      colOverscanStartIdx,
+                      colOverscanEndIdx,
+                      lastFrozenColumnIndex,
+                      isScrolling: this.props.isScrolling,
+                      scrollLeft: this.props.scrollLeft
+                    });
+                  })
+                }
+              </div>
+            </div>
+          )
+        }
       </div>
     );
   }

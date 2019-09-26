@@ -52,6 +52,7 @@ export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridStat
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
+  pinnedRows?: R[];
 }
 
 export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridProps<R>) {
@@ -131,6 +132,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
             onViewportKeydown={props.onViewportKeydown}
             onViewportKeyup={props.onViewportKeyup}
             viewportWidth={grid.current ? grid.current.offsetWidth : 0}
+            pinnedRows={props.pinnedRows}
           />
         )
       )}

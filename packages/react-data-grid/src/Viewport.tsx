@@ -40,6 +40,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'enableIsScrolling'
 | 'onViewportKeydown'
 | 'onViewportKeyup'
+| 'pinnedRows'
 >;
 
 export interface ViewportProps<R> extends SharedGridProps<R> {
@@ -162,7 +163,16 @@ export default function Viewport<R>({
         RowsContainer={props.RowsContainer}
         editorPortalTarget={props.editorPortalTarget}
         interactionMasksMetaData={props.interactionMasksMetaData}
+        pinnedRows={props.pinnedRows}
       />
+      {/* <div style={{ width: columnMetrics.width, overflowX: 'scroll', overflow: 'hidden' }}>
+        <div style={{ width: columnMetrics.totalColumnWidth, height: 32 }}>
+          <TotalRow1 />
+        </div>
+      </div> */}
+      <div style={{ padding: '0 20px', lineHeight: '35px', textAlign: 'right', width: '100%', background: '#eee' }}>
+        <div>This is just a plain customized footer which renders next to the canvas. This area can potentially be used for pagination for example.</div>
+      </div>
     </div>
   );
 }
