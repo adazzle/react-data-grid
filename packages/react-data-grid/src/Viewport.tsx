@@ -61,11 +61,9 @@ export default function Viewport<R>({
   ...props
 }: ViewportProps<R>) {
   const resetScrollStateTimeoutId = useRef<number | null>(null);
-  const [scrollState, setScrollState] = useState<ScrollState>({
-    scrollLeft: 0,
-    scrollTop: 0,
-    scrollDirection: SCROLL_DIRECTION.NONE
-  });
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
   const [isScrolling, setIsScrolling] = useState<boolean | undefined>(undefined);
 
   function clearScrollTimer() {
@@ -88,20 +86,24 @@ export default function Viewport<R>({
     setIsScrolling(false);
   }
 
-  function onScroll({ scrollLeft, scrollTop }: ScrollPosition) {
+  function onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop }: ScrollPosition) {
     if (enableIsScrolling) {
       setIsScrolling(true);
       resetScrollStateAfterDelay();
     }
 
-    const scrollDirection = getScrollDirection(scrollState, { scrollLeft, scrollTop });
-    const newScrollState = { scrollLeft, scrollTop, scrollDirection };
-    setScrollState(newScrollState);
-    handleScroll(newScrollState);
+    const newScrollDirection = getScrollDirection({ scrollLeft, scrollTop }, { scrollLeft: newScrollLeft, scrollTop: newScrollTop });
+    setScrollLeft(newScrollLeft);
+    setScrollTop(newScrollTop);
+    setScrollDirection(newScrollDirection);
+    handleScroll({
+      scrollLeft: newScrollLeft,
+      scrollTop: newScrollTop,
+      scrollDirection: newScrollDirection
+    });
   }
 
   const canvasHeight = minHeight - rowOffsetHeight;
-  const { scrollLeft, scrollTop, scrollDirection } = scrollState;
 
   const verticalRangeToRender = useMemo(() => {
     return getVerticalRangeToRender({

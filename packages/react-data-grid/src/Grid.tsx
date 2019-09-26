@@ -1,4 +1,4 @@
-import React, { useRef, createElement } from 'react';
+import React, { useRef, createElement, useEffect } from 'react';
 import { isValidElementType } from 'react-is';
 
 import Header from './Header';
@@ -55,6 +55,7 @@ export interface GridProps<R> extends SharedDataGridProps<R>, SharedDataGridStat
 }
 
 export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridProps<R>) {
+  const isWidthInitialized = useRef(false);
   const grid = useRef<HTMLDivElement>(null);
   const header = useRef<Header<R>>(null);
   const scrollLeft = useRef(0);
@@ -68,6 +69,12 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
       props.onScroll(scrollState);
     }
   }
+
+  useEffect(() => {
+    // Delay rendering until width is initialized
+    // Width is needed to calculate the number of displayed columns
+    isWidthInitialized.current = true;
+  }, []);
 
   return (
     <div
@@ -93,7 +100,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
           {createElement(emptyRowsView)}
         </div>
       ) : (
-        grid.current && (
+        isWidthInitialized.current && (
           <Viewport<R>
             rowKey={props.rowKey}
             rowHeight={props.rowHeight}
@@ -123,7 +130,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
             enableIsScrolling={props.enableIsScrolling}
             onViewportKeydown={props.onViewportKeydown}
             onViewportKeyup={props.onViewportKeyup}
-            viewportWidth={grid.current.offsetWidth}
+            viewportWidth={grid.current ? grid.current.offsetWidth : 0}
           />
         )
       )}
