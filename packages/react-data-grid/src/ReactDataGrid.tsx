@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 
 import Grid from './Grid';
 import ToolbarContainer, { ToolbarProps } from './ToolbarContainer';
@@ -215,17 +215,6 @@ export default function ReactDataGrid<R extends {}>({
   const gridRef = useRef<HTMLDivElement>(null);
   const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
 
-  // const [columnMetrics, setColumnMetrics] = useState(null);
-  // const [columnMetrics, setColumnMetrics] = useState(createColumnMetrics);
-  // const columnMetrics = createColumnMetrics();
-
-  // Immediately re-render when the component is mounted to get valid columnMetrics.
-  // const [, setIsMounted] = useState(false);
-
-  // useEffect(() => {
-  //   // setIsMounted(true);
-  // }, []);
-
   useLayoutEffect(() => {
     // Do not calculate the width if minWidth is provided
     if (minWidth) return;
@@ -261,27 +250,9 @@ export default function ReactDataGrid<R extends {}>({
     eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
   }
 
-  // function getTotalWidth() {
-  //   const { current } = gridRef;
-  //   if (current) {
-  //     return current.getBoundingClientRect().width;
-  //   }
-  //   return getSize(props.columns) * minColumnWidth;
-  // }
-
   function getColumn(idx: number) {
     return columnMetrics!.columns[idx];
   }
-
-  // function createColumnMetrics() {
-  //   return recalculate({
-  //     // columns: setupGridColumns(),
-  //     columns: props.columns,
-  //     minColumnWidth,
-  //     totalWidth: minWidth || getTotalWidth(),
-  //     columnResizes
-  //   });
-  // }
 
   function isSingleKeyDown(keyCode: number) {
     return _keysDown.has(keyCode) && _keysDown.size === 1;
@@ -629,19 +600,21 @@ export default function ReactDataGrid<R extends {}>({
 
   const headerRows = getHeaderRows();
   const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
-  const style = minWidth ? { width: minWidth } : {};
+  const style = minWidth ? { width: minWidth } : undefined;
   const viewportWidth = (minWidth || gridWidth) - 2; // 2 for border width;
 
   // TODO: useMemo
-  const columnMetrics = (() => {
+  const gridColumns = setupGridColumns();
+
+  const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
 
     return recalculate<R>({
-      columns: setupGridColumns(),
+      columns: gridColumns,
       minColumnWidth,
       totalWidth: viewportWidth
     });
-  })();
+  }, [gridColumns, minColumnWidth, viewportWidth]);
 
   return (
     <div
