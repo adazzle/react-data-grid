@@ -1,9 +1,9 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React from 'react';
 import Canvas from './Canvas';
 import { SCROLL_DIRECTION } from './common/enums';
-import { RowRenderer, RowRendererProps, ScrollPosition } from './common/types';
+import { ScrollPosition } from './common/types';
 import { GridProps } from './Grid';
-import { getHorizontalRangeToRender, getScrollDirection, getVerticalRangeToRender } from './utils/viewportUtils';
+import { HorizontalRangeToRender, VerticalRangeToRender } from './utils/viewportUtils';
 
 export interface ScrollState {
   scrollTop: number;
@@ -41,10 +41,15 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'onViewportKeyup'
 >;
 
+// TODO: completely remove this layer
 export interface ViewportProps<R> extends SharedGridProps<R> {
   scrollLeft: number;
-  setScrollLeft(scrollLeft: number): void;
+  scrollTop: number;
   viewportWidth: number;
+  verticalRangeToRender: VerticalRangeToRender;
+  horizontalRangeToRender: HorizontalRangeToRender;
+  isScrolling?: boolean;
+  onVerticalScroll(position: ScrollPosition): void;
 }
 
 export default function Viewport<R>({
@@ -58,75 +63,14 @@ export default function Viewport<R>({
   enableIsScrolling,
   viewportWidth,
   scrollLeft,
-  setScrollLeft,
+  scrollTop,
+  verticalRangeToRender,
+  horizontalRangeToRender,
+  isScrolling,
+  onVerticalScroll,
   ...props
 }: ViewportProps<R>) {
-  const resetScrollStateTimeoutId = useRef<number | null>(null);
-  // const [scrollLeft, setScrollLeft] = useState(0);
-  const [scrollTop, setScrollTop] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
-  const [isScrolling, setIsScrolling] = useState<boolean | undefined>(undefined);
-
-  function clearScrollTimer() {
-    if (resetScrollStateTimeoutId.current !== null) {
-      window.clearTimeout(resetScrollStateTimeoutId.current);
-      resetScrollStateTimeoutId.current = null;
-    }
-  }
-
-  function resetScrollStateAfterDelay() {
-    clearScrollTimer();
-    resetScrollStateTimeoutId.current = window.setTimeout(
-      resetScrollStateAfterDelayCallback,
-      150
-    );
-  }
-
-  function resetScrollStateAfterDelayCallback() {
-    resetScrollStateTimeoutId.current = null;
-    setIsScrolling(false);
-  }
-
-  function onVerticalScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop }: ScrollPosition) {
-    if (enableIsScrolling) {
-      setIsScrolling(true);
-      resetScrollStateAfterDelay();
-    }
-
-    const newScrollDirection = getScrollDirection({ scrollLeft, scrollTop }, { scrollLeft: newScrollLeft, scrollTop: newScrollTop });
-    setScrollLeft(newScrollLeft);
-    setScrollTop(newScrollTop);
-    setScrollDirection(newScrollDirection);
-  }
-
   const canvasHeight = minHeight - rowOffsetHeight;
-
-  const verticalRangeToRender = useMemo(() => {
-    return getVerticalRangeToRender({
-      height: canvasHeight,
-      rowHeight,
-      scrollTop,
-      rowsCount,
-      scrollDirection,
-      overscanRowCount
-    });
-  }, [canvasHeight, overscanRowCount, rowHeight, rowsCount, scrollDirection, scrollTop]);
-
-  const horizontalRangeToRender = useMemo(() => {
-    return getHorizontalRangeToRender({
-      columnMetrics,
-      scrollLeft,
-      viewportWidth,
-      scrollDirection,
-      overscanColumnCount
-    });
-  }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft, viewportWidth]);
-
-  const pinnedRowsRef = useRef<Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>>();
-
-  if (!pinnedRowsRef.current) {
-    pinnedRowsRef.current = new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>();
-  }
 
   return (
     <div
@@ -150,7 +94,7 @@ export default function Viewport<R>({
         cellMetaData={props.cellMetaData}
         height={canvasHeight}
         rowHeight={rowHeight}
-        onScroll={onVerticalScroll}
+        onVerticalScroll={onVerticalScroll}
         scrollToRowIndex={props.scrollToRowIndex}
         contextMenu={props.contextMenu}
         rowSelection={props.rowSelection}

@@ -43,7 +43,7 @@ export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportSt
   totalColumnWidth: number;
   lastFrozenColumnIndex: number;
   isScrolling?: boolean;
-  onScroll(position: ScrollPosition): void;
+  onVerticalScroll(position: ScrollPosition): void;
 }
 
 export type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
@@ -55,6 +55,7 @@ export type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' |
   height: number;
   isSelected: boolean;
   scrollLeft: number;
+  totalColumnWidth: number;
 };
 
 export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
@@ -78,13 +79,17 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     if (scrollToRowIndex && prevProps.scrollToRowIndex !== scrollToRowIndex) {
       this.scrollToRow(scrollToRowIndex);
     }
+
+    // if (prevProps.scrollLeft !== scrollLeft) {
+    //   this.setScrollLeft(scrollLeft);
+    // }
   }
 
   handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollLeft, scrollTop } = e.currentTarget;
     // Freeze columns on legacy browsers
-    this.setScrollLeft(scrollLeft);
-    this.props.onScroll({ scrollLeft, scrollTop });
+    // this.setScrollLeft(scrollLeft);
+    this.props.onVerticalScroll({ scrollLeft, scrollTop });
   };
 
   onHitBottomCanvas = () => {
@@ -297,7 +302,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           colOverscanEndIdx,
           lastFrozenColumnIndex,
           isScrolling: this.props.isScrolling,
-          scrollLeft: this.props.scrollLeft
+          scrollLeft: this.props.scrollLeft,
+          totalColumnWidth
         });
       });
 

@@ -1,12 +1,12 @@
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 import shallowEqual from 'shallowequal';
-
-import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
-import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
+import CellExpand from './Cell/CellExpander';
 import { isFrozen } from './ColumnUtils';
+import { CellRenderer, CellRendererProps, ColumnEventInfo, SubRowOptions } from './common/types';
+
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
@@ -17,6 +17,7 @@ export interface CellProps<R> extends CellRendererProps<R> {
   className?: string;
   tooltip?: string | null;
   cellControls?: unknown;
+  scrollLeft: number;
 }
 
 export default class Cell<R> extends React.Component<CellProps<R>> implements CellRenderer {
@@ -27,10 +28,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   private readonly cell = React.createRef<HTMLDivElement>();
 
   shouldComponentUpdate(nextProps: CellProps<R>) {
-    const { scrollLeft, ...rest } = this.props;
-    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
-
-    return !shallowEqual(rest, nextRest);
+    return !shallowEqual(this.props, nextProps);
   }
 
   componentDidMount() {
@@ -88,11 +86,17 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   };
 
   getStyle(): React.CSSProperties {
-    return {
+    const style: React.CSSProperties = {
       width: this.props.column.width,
       height: this.props.height,
       left: this.props.column.left
     };
+
+    if (isFrozen(this.props.column)) {
+      style.transform = `translateX(${this.props.scrollLeft}px)`;
+    }
+
+    return style;
   }
 
   getCellClass() {
@@ -109,11 +113,12 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setScrollLeft(scrollLeft: number) {
-    const node = this.cell.current;
-    if (node) {
-      node.style.transform = `translateX(${scrollLeft}px)`;
-    }
+    // const node = this.cell.current;
+    // if (node) {
+    //   node.style.transform = `translateX(${scrollLeft}px)`;
+    // }
   }
 
   removeScroll() {
@@ -174,17 +179,17 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     const style = this.getStyle();
     const className = this.getCellClass();
     const cellContent = children || CellContent({
-      idx: idx,
-      rowIdx: rowIdx,
-      column: column,
-      rowData: rowData,
-      value: value,
-      tooltip: tooltip,
-      expandableOptions: expandableOptions,
-      height: height,
+      idx,
+      rowIdx,
+      column,
+      rowData,
+      value,
+      tooltip,
+      expandableOptions,
+      height,
       onDeleteSubRow: cellMetaData.onDeleteSubRow,
-      cellControls: cellControls,
-      isScrolling: isScrolling
+      cellControls,
+      isScrolling
     });
     const events = this.getEvents();
     const cellExpander = expandableOptions && expandableOptions.canExpand && (

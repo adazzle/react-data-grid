@@ -1,5 +1,5 @@
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 import { isElement } from 'react-is';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType } from './common/enums';
@@ -20,6 +20,7 @@ interface Props<R> {
   onHeaderDrop?(): void;
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   className?: string;
+  scrollLeft: number;
 }
 
 export default class HeaderCell<R> extends React.Component<Props<R>> {
@@ -147,6 +148,10 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
       left: column.left,
       height
     };
+
+    if (isFrozen(column)) {
+      style.transform = `translateX(${this.props.scrollLeft}px)`;
+    }
 
     const cell = (
       <div

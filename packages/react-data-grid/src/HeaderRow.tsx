@@ -25,6 +25,8 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
   filterable?: boolean;
   onFilterChange?(args: AddFilterEvent<R>): void;
   rowType: HeaderRowType;
+  scrollLeft: number;
+  totalColumnWidth: number;
 }
 
 export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>> {
@@ -106,6 +108,7 @@ export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>>
           onResizeEnd={this.props.onColumnResizeEnd}
           onHeaderDrop={this.props.onHeaderDrop}
           draggableHeaderCell={this.props.draggableHeaderCell}
+          scrollLeft={this.props.scrollLeft}
         />
       );
 
@@ -140,11 +143,18 @@ export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>>
       <div
         ref={this.headerRow}
         style={{
-          height: rowType === HeaderRowType.FILTER ? 500 : height
+          height: rowType === HeaderRowType.FILTER ? 500 : height,
+          overflow: 'hidden'
         }}
         className="react-grid-HeaderRow"
       >
-        {this.getCells()}
+        <div style={{
+          width: this.props.totalColumnWidth,
+          transform: `translateX(-${this.props.scrollLeft}px)`
+        }}
+        >
+          {this.getCells()}
+        </div>
       </div>
     );
   }

@@ -180,6 +180,7 @@ export interface RowRendererProps<TRow> {
   isScrolling?: boolean;
   scrollLeft: number;
   lastFrozenColumnIndex: number;
+  totalColumnWidth: number;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

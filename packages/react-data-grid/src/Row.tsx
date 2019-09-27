@@ -1,12 +1,11 @@
-import React from 'react';
 import classNames from 'classnames';
-
-import rowComparer from './common/utils/RowComparer';
+import React from 'react';
 import Cell from './Cell';
 import { isFrozen } from './ColumnUtils';
+import { CalculatedColumn, CellRenderer, CellRendererProps, RowRenderer, RowRendererProps } from './common/types';
+import rowComparer from './common/utils/RowComparer';
 import * as rowUtils from './RowUtils';
-import { isPositionStickySupported } from './utils';
-import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
+
 
 export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
   static displayName = 'Row';
@@ -58,7 +57,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       rowData: row,
       expandableOptions: this.getExpandableOptions(key),
       isScrolling,
-      scrollLeft: isFrozen(column) && !isPositionStickySupported() ? scrollLeft : undefined,
+      scrollLeft,
       lastFrozenColumnIndex
     };
 
@@ -127,12 +126,18 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       <div
         ref={this.row}
         className={className}
-        style={{ height: this.getRowHeight()/*, transform: `translateX(-${this.props.scrollLeft}px)`*/ }}
+        style={{ height: this.getRowHeight(), overflow: 'hidden' }}
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
       >
-        {this.getCells()}
+        <div style={{
+          width: this.props.totalColumnWidth,
+          transform: `translateX(-${this.props.scrollLeft}px)`
+        }}
+        >
+          {this.getCells()}
+        </div>
       </div>
     );
   }

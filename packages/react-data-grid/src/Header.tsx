@@ -92,6 +92,8 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
         sortDirection={this.props.sortDirection}
         onSort={this.props.onSort}
         getValidFilterValues={this.props.getValidFilterValues}
+        scrollLeft={this.props.scrollLeft}
+        totalColumnWidth={columnMetrics.totalColumnWidth}
       />
     );
   };
@@ -140,8 +142,7 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
       <div
         style={{
           height: this.props.rowOffsetHeight,
-          paddingRight: getScrollbarSize(),
-          transform: `translateX(-${this.props.scrollLeft}px)`
+          paddingRight: getScrollbarSize()
         }}
         className={className}
         onClick={this.onHeaderClick}

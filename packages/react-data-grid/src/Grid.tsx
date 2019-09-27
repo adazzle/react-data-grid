@@ -1,11 +1,12 @@
-import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
+import React, { createElement, useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { isValidElementType } from 'react-is';
-import { DEFINE_SORT } from './common/enums';
-import { CellMetaData, HeaderRowData, InteractionMasksMetaData, RowSelection, SelectedRow } from './common/types';
+import { DEFINE_SORT, SCROLL_DIRECTION } from './common/enums';
+import { CellMetaData, HeaderRowData, InteractionMasksMetaData, RowSelection, SelectedRow, ScrollPosition } from './common/types';
 import Header from './Header';
 import { EventBus } from './masks';
 import { DataGridProps, DataGridState } from './ReactDataGrid';
 import Viewport from './Viewport';
+import { getScrollDirection, getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
 
 type SharedDataGridProps<R> = Pick<DataGridProps<R>,
 'rowKey'
@@ -57,7 +58,12 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
   const isWidthInitialized = useRef(false);
   const grid = useRef<HTMLDivElement>(null);
   const header = useRef<Header<R>>(null);
-  const [scrollLeft, setScrollLeft] = useState<number>();
+
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+  // const resetScrollStateTimeoutId = useRef<number | null>(null);
+  const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
+  // const [isScrolling, setIsScrolling] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     // Delay rendering until width is initialized
@@ -65,10 +71,69 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
     isWidthInitialized.current = true;
   }, []);
 
-  const onBarScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const { scrollLeft: newScrollLeft } = e.currentTarget;
+  // function resetScrollStateAfterDelayCallback() {
+  //   resetScrollStateTimeoutId.current = null;
+  //   setIsScrolling(false);
+  // }
+
+  // function clearScrollTimer() {
+  //   if (resetScrollStateTimeoutId.current !== null) {
+  //     window.clearTimeout(resetScrollStateTimeoutId.current);
+  //     resetScrollStateTimeoutId.current = null;
+  //   }
+  // }
+
+  // const resetScrollStateAfterDelay = useCallback(() => {
+  //   clearScrollTimer();
+  //   resetScrollStateTimeoutId.current = window.setTimeout(
+  //     resetScrollStateAfterDelayCallback,
+  //     150
+  //   );
+  // }, []);
+
+  const onScroll = useCallback(({ scrollLeft: newScrollLeft, scrollTop: newScrollTop }: ScrollPosition) => {
+    // if (props.enableIsScrolling) {
+    //   setIsScrolling(true);
+    //   resetScrollStateAfterDelay();
+    // }
+
+    const newScrollDirection = getScrollDirection({ scrollLeft, scrollTop }, { scrollLeft: newScrollLeft, scrollTop: newScrollTop });
+    setScrollTop(newScrollTop);
     setScrollLeft(newScrollLeft);
-  }, []);
+    setScrollDirection(newScrollDirection);
+  }, [scrollLeft, scrollTop]);
+
+  const canvasHeight = props.minHeight - props.rowOffsetHeight;
+
+  const verticalRangeToRender = useMemo(() => {
+    return getVerticalRangeToRender({
+      height: canvasHeight,
+      rowHeight: props.rowHeight,
+      scrollTop,
+      rowsCount: props.rowsCount,
+      scrollDirection,
+      overscanRowCount: props.overscanRowCount
+    });
+  }, [canvasHeight, props.overscanRowCount, props.rowHeight, props.rowsCount, scrollDirection, scrollTop]);
+
+  const horizontalRangeToRender = useMemo(() => {
+    return getHorizontalRangeToRender({
+      columnMetrics: props.columnMetrics,
+      scrollLeft,
+      viewportWidth: grid.current ? grid.current.offsetWidth : 0,
+      scrollDirection,
+      overscanColumnCount: props.overscanColumnCount
+    });
+  }, [props.columnMetrics, props.overscanColumnCount, scrollDirection, scrollLeft]);
+
+  const onBarScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollLeft, scrollTop } = e.currentTarget;
+    onScroll({ scrollLeft, scrollTop });
+  }, [onScroll]);
+
+  const onVerticalScroll = useCallback(({ scrollTop }: ScrollPosition) => {
+    onScroll({ scrollLeft, scrollTop });
+  }, [onScroll, scrollLeft]);
 
   return (
     <div
@@ -97,8 +162,11 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
       ) : (
         isWidthInitialized.current && (
           <Viewport<R>
-            scrollLeft={scrollLeft || 0}
-            setScrollLeft={setScrollLeft}
+            onVerticalScroll={onVerticalScroll}
+            scrollTop={scrollTop}
+            scrollLeft={scrollLeft}
+            verticalRangeToRender={verticalRangeToRender}
+            horizontalRangeToRender={horizontalRangeToRender}
             rowKey={props.rowKey}
             rowHeight={props.rowHeight}
             rowRenderer={props.rowRenderer}
@@ -130,8 +198,9 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
           />
         )
       )}
+      <div style={{ height: 35, background: '#ddd' }}>This is a super long gap area that works as a static footer to split the viewport and bottom stand alone scroll bar</div>
       <div style={{ width: '100%', height: 17, overflowX: 'auto' }} onScroll={onBarScroll}>
-        <div style={{ width: props.columnMetrics.totalColumnWidth, height: 17 }}></div>
+        <div style={{ width: props.columnMetrics.totalColumnWidth, height: 17 }} />
       </div>
     </div>
   );
