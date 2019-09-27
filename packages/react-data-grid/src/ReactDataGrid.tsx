@@ -609,9 +609,10 @@ export default function ReactDataGrid<R extends {}>({
     return recalculate<R>({
       columns: gridColumns,
       minColumnWidth,
-      totalWidth: viewportWidth
+      totalWidth: viewportWidth,
+      columnResizes
     });
-  }, [gridColumns, minColumnWidth, viewportWidth]);
+  }, [columnResizes, gridColumns, minColumnWidth, viewportWidth]);
 
   return (
     <div

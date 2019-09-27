@@ -1,7 +1,7 @@
 import React, { useRef, createElement } from 'react';
 import { isValidElementType } from 'react-is';
 
-import Header from './Header';
+import Header, { HeaderHandle } from './Header';
 import Viewport, { ScrollState } from './Viewport';
 import { HeaderRowData, CellMetaData, RowSelection, InteractionMasksMetaData, SelectedRow, ColumnMetrics } from './common/types';
 import { DEFINE_SORT } from './common/enums';
@@ -55,7 +55,7 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
 }
 
 export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...props }: GridProps<R>) {
-  const header = useRef<Header<R>>(null);
+  const header = useRef<HeaderHandle>(null);
   const scrollLeft = useRef(0);
 
   function onScroll(scrollState: ScrollState) {
