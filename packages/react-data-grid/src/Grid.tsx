@@ -1,7 +1,7 @@
 import React, { useRef, createElement } from 'react';
 import { isValidElementType } from 'react-is';
 
-import Header, { HeaderHandle } from './Header';
+import Header, { HeaderHandle, HeaderProps } from './Header';
 import Viewport, { ScrollState } from './Viewport';
 import { HeaderRowData, CellMetaData, RowSelection, InteractionMasksMetaData, SelectedRow, ColumnMetrics } from './common/types';
 import { DEFINE_SORT } from './common/enums';
@@ -68,22 +68,26 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
     }
   }
 
+  type FullHeaderProps = HeaderProps<R> & React.RefAttributes<HeaderHandle>;
+
   return (
     <div className="react-grid-Grid">
-      <Header<R>
-        ref={header}
-        columnMetrics={props.columnMetrics}
-        onColumnResize={props.onColumnResize}
-        headerRows={headerRows}
-        rowOffsetHeight={props.rowOffsetHeight}
-        sortColumn={props.sortColumn}
-        sortDirection={props.sortDirection}
-        draggableHeaderCell={props.draggableHeaderCell}
-        onSort={props.onSort}
-        onHeaderDrop={props.onHeaderDrop}
-        getValidFilterValues={props.getValidFilterValues}
-        cellMetaData={props.cellMetaData}
-      />
+      {
+        React.createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
+          ref: header,
+          columnMetrics: props.columnMetrics,
+          onColumnResize: props.onColumnResize,
+          headerRows,
+          rowOffsetHeight: props.rowOffsetHeight,
+          sortColumn: props.sortColumn,
+          sortDirection: props.sortDirection,
+          draggableHeaderCell: props.draggableHeaderCell,
+          onSort: props.onSort,
+          onHeaderDrop: props.onHeaderDrop,
+          getValidFilterValues: props.getValidFilterValues,
+          cellMetaData: props.cellMetaData
+        })
+      }
       {props.rowsCount === 0 && isValidElementType(emptyRowsView) ? (
         <div className="react-grid-Empty">
           {createElement(emptyRowsView)}
