@@ -254,10 +254,6 @@ export default function ReactDataGrid<R extends {}>({
     return columnMetrics!.columns[idx];
   }
 
-  function isSingleKeyDown(keyCode: number) {
-    return _keysDown.has(keyCode) && _keysDown.size === 1;
-  }
-
   function handleColumnResize(idx: number, width: number) {
     const newColumnResizes = new Map(columnResizes);
     newColumnResizes.set(idx, width);
@@ -363,150 +359,6 @@ export default function ReactDataGrid<R extends {}>({
     }
   }
 
-  function getSelectedRow(rows: SelectedRow<R>[], key: unknown) {
-    return rows.find(r => r[rowKey] === key);
-  }
-
-  function canUseNewRowSelection() {
-    return rowSelection && rowSelection.selectBy;
-  }
-
-  // return false if not a shift select so can be handled as normal row selection
-  function handleShiftSelect(rowIdx: number) {
-    if (rowSelection && lastRowIdxUiSelected > -1 && isSingleKeyDown(KeyCodes.Shift)) {
-      const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
-      const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, rowGetter(rowIdx), rowIdx);
-
-      if (isPreviouslySelected) return false;
-
-      let handled = false;
-
-      if (rowIdx > lastRowIdxUiSelected) {
-        const rowsSelected = [];
-
-        for (let i = lastRowIdxUiSelected + 1; i <= rowIdx; i++) {
-          rowsSelected.push({ rowIdx: i, row: rowGetter(i) });
-        }
-
-        if (typeof rowSelection.onRowsSelected === 'function') {
-          rowSelection.onRowsSelected(rowsSelected);
-        }
-
-        handled = true;
-      } else if (rowIdx < lastRowIdxUiSelected) {
-        const rowsSelected = [];
-
-        for (let i = rowIdx; i <= lastRowIdxUiSelected - 1; i++) {
-          rowsSelected.push({ rowIdx: i, row: rowGetter(i) });
-        }
-
-        if (typeof rowSelection.onRowsSelected === 'function') {
-          rowSelection.onRowsSelected(rowsSelected);
-        }
-
-        handled = true;
-      }
-
-      if (handled) {
-        setLastRowIdxUiSelected(rowIdx);
-      }
-
-      return handled;
-    }
-
-    return false;
-  }
-
-  function handleNewRowSelect(rowIdx: number, rowData: R) {
-    const { current } = selectAllCheckboxRef;
-    if (current && current.checked === true) {
-      current.checked = false;
-    }
-
-    if (rowSelection) {
-      const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
-      const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
-
-      setLastRowIdxUiSelected(isPreviouslySelected ? -1 : rowIdx);
-      const cb = isPreviouslySelected ? rowSelection.onRowsDeselected : rowSelection.onRowsSelected;
-      if (typeof cb === 'function') {
-        cb([{ rowIdx, row: rowData }]);
-      }
-    }
-  }
-
-  // columnKey not used here as this function will select the whole row,
-  // but needed to match the function signature in the CheckboxEditor
-  function handleRowSelect(rowIdx: number, columnKey: keyof R, rowData: R, event: React.ChangeEvent<HTMLInputElement>) {
-    event.stopPropagation();
-
-    if (canUseNewRowSelection()) {
-      if (rowSelection && rowSelection.enableShiftSelect === true) {
-        if (!handleShiftSelect(rowIdx)) {
-          handleNewRowSelect(rowIdx, rowData);
-        }
-      } else {
-        handleNewRowSelect(rowIdx, rowData);
-      }
-    } else { // Fallback to old onRowSelect handler
-      const newSelectedRows = enableRowSelect === 'single' ? [] : [...selectedRows];
-      const selectedRow = getSelectedRow(newSelectedRows, rowData[rowKey]);
-      if (selectedRow) {
-        selectedRow.isSelected = !selectedRow.isSelected;
-      } else {
-        (rowData as SelectedRow<R>).isSelected = true;
-        newSelectedRows.push(rowData as SelectedRow<R>);
-      }
-      setSelectedRows(newSelectedRows);
-      if (onRowSelect) {
-        onRowSelect(newSelectedRows.filter(r => r.isSelected === true));
-      }
-    }
-  }
-
-  function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const allRowsSelected = e.currentTarget.checked;
-    if (rowSelection && canUseNewRowSelection()) {
-      const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
-
-      if (allRowsSelected && typeof rowSelection.onRowsSelected === 'function') {
-        const selectedRows = [];
-        for (let i = 0; i < rowsCount; i++) {
-          const rowData = rowGetter(i);
-          if (!isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
-            selectedRows.push({ rowIdx: i, row: rowData });
-          }
-        }
-
-        if (selectedRows.length > 0) {
-          rowSelection.onRowsSelected(selectedRows);
-        }
-      } else if (!allRowsSelected && typeof rowSelection.onRowsDeselected === 'function') {
-        const deselectedRows = [];
-        for (let i = 0; i < rowsCount; i++) {
-          const rowData = rowGetter(i);
-          if (isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
-            deselectedRows.push({ rowIdx: i, row: rowData });
-          }
-        }
-
-        if (deselectedRows.length > 0) {
-          rowSelection.onRowsDeselected(deselectedRows);
-        }
-      }
-    } else {
-      const selectedRows: SelectedRow<R>[] = [];
-      for (let i = 0; i < rowsCount; i++) {
-        const row = { ...rowGetter(i), isSelected: allRowsSelected };
-        selectedRows.push(row);
-      }
-      setSelectedRows(selectedRows);
-      if (typeof onRowSelect === 'function') {
-        onRowSelect(selectedRows.filter(r => r.isSelected === true));
-      }
-    }
-  }
-
   function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
     const { headerRowHeight, onAddFilter } = props;
     return [
@@ -539,34 +391,6 @@ export default function ReactDataGrid<R extends {}>({
   // function scrollToColumn(colIdx: number) {
   //   eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
   // }
-
-  function setupGridColumns(): ColumnList<R> {
-    if (props.rowActionsCell || (enableRowSelect && !rowSelection) || (rowSelection && rowSelection.showCheckbox !== false)) {
-      const SelectAllComponent = selectAllRenderer;
-      const headerRenderer = enableRowSelect === 'single'
-        ? undefined
-        : <SelectAllComponent onChange={handleCheckboxChange} ref={selectAllCheckboxRef} />;
-      const Formatter = (props.rowActionsCell ? props.rowActionsCell : CheckboxEditor) as unknown as React.ComponentClass<{ rowSelection: unknown }>;
-      const selectColumn = {
-        key: 'select-row',
-        name: '',
-        formatter: <Formatter rowSelection={rowSelection} />,
-        onCellChange: handleRowSelect,
-        filterable: false,
-        headerRenderer,
-        width: 60,
-        frozen: true,
-        getRowMetaData: (rowData: R) => rowData,
-        cellClass: props.rowActionsCell ? 'rdg-row-actions-cell' : ''
-      } as unknown as Column<R>;
-
-      return Array.isArray(columns)
-        ? [selectColumn, ...columns]
-        : columns.unshift(selectColumn);
-    }
-
-    return columns.slice(0) as ColumnList<R>;
-  }
 
   const cellMetaData: CellMetaData<R> = {
     rowKey,
@@ -603,8 +427,181 @@ export default function ReactDataGrid<R extends {}>({
   const style = minWidth ? { width: minWidth } : undefined;
   const viewportWidth = (minWidth || gridWidth) - 2; // 2 for border width;
 
-  // TODO: useMemo
-  const gridColumns = setupGridColumns();
+  const gridColumns = useMemo<ColumnList<R>>(() => {
+    function isSingleKeyDown(keyCode: number) {
+      return _keysDown.has(keyCode) && _keysDown.size === 1;
+    }
+
+    function getSelectedRow(rows: SelectedRow<R>[], key: unknown) {
+      return rows.find(r => r[rowKey] === key);
+    }
+
+    function canUseNewRowSelection() {
+      return rowSelection && rowSelection.selectBy;
+    }
+
+    // return false if not a shift select so can be handled as normal row selection
+    function handleShiftSelect(rowIdx: number) {
+      if (rowSelection && lastRowIdxUiSelected > -1 && isSingleKeyDown(KeyCodes.Shift)) {
+        const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
+        const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, rowGetter(rowIdx), rowIdx);
+
+        if (isPreviouslySelected) return false;
+
+        let handled = false;
+
+        if (rowIdx > lastRowIdxUiSelected) {
+          const rowsSelected = [];
+
+          for (let i = lastRowIdxUiSelected + 1; i <= rowIdx; i++) {
+            rowsSelected.push({ rowIdx: i, row: rowGetter(i) });
+          }
+
+          if (typeof rowSelection.onRowsSelected === 'function') {
+            rowSelection.onRowsSelected(rowsSelected);
+          }
+
+          handled = true;
+        } else if (rowIdx < lastRowIdxUiSelected) {
+          const rowsSelected = [];
+
+          for (let i = rowIdx; i <= lastRowIdxUiSelected - 1; i++) {
+            rowsSelected.push({ rowIdx: i, row: rowGetter(i) });
+          }
+
+          if (typeof rowSelection.onRowsSelected === 'function') {
+            rowSelection.onRowsSelected(rowsSelected);
+          }
+
+          handled = true;
+        }
+
+        if (handled) {
+          setLastRowIdxUiSelected(rowIdx);
+        }
+
+        return handled;
+      }
+
+      return false;
+    }
+
+    function handleNewRowSelect(rowIdx: number, rowData: R) {
+      const { current } = selectAllCheckboxRef;
+      if (current && current.checked === true) {
+        current.checked = false;
+      }
+
+      if (rowSelection) {
+        const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
+        const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
+
+        setLastRowIdxUiSelected(isPreviouslySelected ? -1 : rowIdx);
+        const cb = isPreviouslySelected ? rowSelection.onRowsDeselected : rowSelection.onRowsSelected;
+        if (typeof cb === 'function') {
+          cb([{ rowIdx, row: rowData }]);
+        }
+      }
+    }
+
+    // columnKey not used here as this function will select the whole row,
+    // but needed to match the function signature in the CheckboxEditor
+    function handleRowSelect(rowIdx: number, columnKey: keyof R, rowData: R, event: React.ChangeEvent<HTMLInputElement>) {
+      event.stopPropagation();
+
+      if (canUseNewRowSelection()) {
+        if (rowSelection && rowSelection.enableShiftSelect === true) {
+          if (!handleShiftSelect(rowIdx)) {
+            handleNewRowSelect(rowIdx, rowData);
+          }
+        } else {
+          handleNewRowSelect(rowIdx, rowData);
+        }
+      } else { // Fallback to old onRowSelect handler
+        const newSelectedRows = enableRowSelect === 'single' ? [] : [...selectedRows];
+        const selectedRow = getSelectedRow(newSelectedRows, rowData[rowKey]);
+        if (selectedRow) {
+          selectedRow.isSelected = !selectedRow.isSelected;
+        } else {
+          (rowData as SelectedRow<R>).isSelected = true;
+          newSelectedRows.push(rowData as SelectedRow<R>);
+        }
+        setSelectedRows(newSelectedRows);
+        if (onRowSelect) {
+          onRowSelect(newSelectedRows.filter(r => r.isSelected === true));
+        }
+      }
+    }
+
+    function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>) {
+      const allRowsSelected = e.currentTarget.checked;
+      if (rowSelection && canUseNewRowSelection()) {
+        const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
+
+        if (allRowsSelected && typeof rowSelection.onRowsSelected === 'function') {
+          const selectedRows = [];
+          for (let i = 0; i < rowsCount; i++) {
+            const rowData = rowGetter(i);
+            if (!isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
+              selectedRows.push({ rowIdx: i, row: rowData });
+            }
+          }
+
+          if (selectedRows.length > 0) {
+            rowSelection.onRowsSelected(selectedRows);
+          }
+        } else if (!allRowsSelected && typeof rowSelection.onRowsDeselected === 'function') {
+          const deselectedRows = [];
+          for (let i = 0; i < rowsCount; i++) {
+            const rowData = rowGetter(i);
+            if (isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
+              deselectedRows.push({ rowIdx: i, row: rowData });
+            }
+          }
+
+          if (deselectedRows.length > 0) {
+            rowSelection.onRowsDeselected(deselectedRows);
+          }
+        }
+      } else {
+        const selectedRows: SelectedRow<R>[] = [];
+        for (let i = 0; i < rowsCount; i++) {
+          const row = { ...rowGetter(i), isSelected: allRowsSelected };
+          selectedRows.push(row);
+        }
+        setSelectedRows(selectedRows);
+        if (typeof onRowSelect === 'function') {
+          onRowSelect(selectedRows.filter(r => r.isSelected === true));
+        }
+      }
+    }
+
+    if (props.rowActionsCell || (enableRowSelect && !rowSelection) || (rowSelection && rowSelection.showCheckbox !== false)) {
+      const SelectAllComponent = selectAllRenderer;
+      const headerRenderer = enableRowSelect === 'single'
+        ? undefined
+        : <SelectAllComponent onChange={handleCheckboxChange} ref={selectAllCheckboxRef} />;
+      const Formatter = (props.rowActionsCell ? props.rowActionsCell : CheckboxEditor) as unknown as React.ComponentClass<{ rowSelection: unknown }>;
+      const selectColumn = {
+        key: 'select-row',
+        name: '',
+        formatter: <Formatter rowSelection={rowSelection} />,
+        onCellChange: handleRowSelect,
+        filterable: false,
+        headerRenderer,
+        width: 60,
+        frozen: true,
+        getRowMetaData: (rowData: R) => rowData,
+        cellClass: props.rowActionsCell ? 'rdg-row-actions-cell' : ''
+      } as unknown as Column<R>;
+
+      return Array.isArray(columns)
+        ? [selectColumn, ...columns]
+        : columns.unshift(selectColumn);
+    }
+
+    return columns.slice(0) as ColumnList<R>;
+  }, [_keysDown, columns, enableRowSelect, lastRowIdxUiSelected, onRowSelect, props.rowActionsCell, rowGetter, rowKey, rowSelection, rowsCount, selectAllRenderer, selectedRows]);
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
