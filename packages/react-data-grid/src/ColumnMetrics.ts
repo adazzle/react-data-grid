@@ -5,73 +5,105 @@ import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/ty
 
 type Metrics<R> = Pick<ColumnMetrics<R>, 'totalWidth' | 'minColumnWidth'> & {
   columns: ColumnList<R>;
-  columnResizes: Map<number, number>;
+  columnWidths: Map<string, number>;
 };
 
-function cloneColumns<R>(columns: ColumnList<R>): Column<R>[] {
+function toArray<R>(columns: ColumnList<R>): Column<R>[] {
   if (Array.isArray(columns)) {
-    return columns.map(c => ({ ...c }));
+    return columns;
   }
-  return cloneColumns(columns.toArray());
+  return columns.toArray();
 }
 
-function setColumnWidths<R>(columns: Column<R>[], totalWidth: number, columnResizes: Map<number, number>): void {
-  columns.forEach((column, idx) => {
-    if (columnResizes.has(idx)) {
-      column.width = columnResizes.get(idx);
-    } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
-      column.width = Math.floor(totalWidth * column.width / 100);
-    }
-  });
-}
-
-function setDefferedColumnWidths<R>(columns: Column<R>[], unallocatedWidth: number, minColumnWidth: number): void {
-  const defferedColumns = columns.filter(c => !c.width);
-  const columnWidth = Math.floor(unallocatedWidth / defferedColumns.length);
-
-  for (const column of columns) {
-    if (column.width) continue;
-    column.width = columnWidth < minColumnWidth ? minColumnWidth : columnWidth;
-  }
-}
-
-function setColumnOffsets<R>(columns: Column<R>[]): void {
-  let left = 0;
-  for (const column of columns as CalculatedColumn<R>[]) {
-    column.left = left;
-    left += column.width;
-  }
-}
-
-function getTotalColumnWidth<R>(columns: Column<R>[]): number {
-  return columns.reduce((acc, c) => acc + (c.width || 0), 0);
-}
-
-export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
+export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   // clone columns so we can safely edit them:
-  const columns = cloneColumns(metrics.columns);
-  // compute width for columns which specify width in %
-  setColumnWidths(columns, metrics.totalWidth, metrics.columnResizes);
-
-  const width = getTotalColumnWidth(columns);
-  const unallocatedWidth = metrics.totalWidth - width - getScrollbarSize();
-
-  // compute width for columns which doesn't specify width
-  setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);
-
-  // compute left offset
-  setColumnOffsets(columns);
+  let left = 0;
+  let totalWidth = 0;
+  const columns: CalculatedColumn<R>[] = toArray(metrics.columns).map(column => {
+    const width = metrics.columnWidths.get(column.key as string)!;
+    const newColumn: CalculatedColumn<R> = {
+      ...column,
+      idx: 0,
+      width,
+      left
+    };
+    totalWidth += width;
+    left += width;
+    return newColumn;
+  });
 
   const frozenColumns = columns.filter(c => isFrozen(c));
   const nonFrozenColumns = columns.filter(c => !isFrozen(c));
-  const calculatedColumns = frozenColumns.concat(nonFrozenColumns) as CalculatedColumn<R>[];
+  const calculatedColumns = frozenColumns.concat(nonFrozenColumns);
   calculatedColumns.forEach((c, i) => c.idx = i);
   return {
-    width,
+    width: totalWidth,
     columns: calculatedColumns,
     lastFrozenColumnIndex: frozenColumns.length - 1,
     totalWidth: metrics.totalWidth,
-    totalColumnWidth: getTotalColumnWidth(columns),
-    minColumnWidth: metrics.minColumnWidth
+    totalColumnWidth: totalWidth,
+    minColumnWidth: metrics.minColumnWidth,
+    columnWidths: metrics.columnWidths
   };
+}
+
+function getTotalColumnWidth2<R>(columns: Column<R>[], columnWidths: ReadonlyMap<string, number>): number {
+  return columns.reduce((acc, c) => acc + (columnWidths.has(c.key as string) ? columnWidths.get(c.key as string)! : 0), 0);
+}
+
+function setColumnWidth<R>(
+  column: Column<R>,
+  columnWidths: Map<string, number>,
+  minColumnWidth: number,
+  width: number
+): void {
+  columnWidths.set(column.key as string, Math.max(width, minColumnWidth));
+}
+
+function setSpecifiedWidths<R>(
+  columns: Column<R>[],
+  columnWidths: Map<string, number>,
+  viewportWidth: number,
+  minColumnWidth: number
+): void {
+  for (const column of columns) {
+    if (columnWidths.has(column.key as string)) continue;
+
+    if (typeof column.width === 'number') {
+      setColumnWidth(column, columnWidths, minColumnWidth, column.width);
+    } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
+      setColumnWidth(column, columnWidths, minColumnWidth, Math.floor(viewportWidth * column.width / 100));
+    }
+  }
+}
+
+function setRemainingWidths<R>(
+  columns: Column<R>[],
+  columnWidths: Map<string, number>,
+  unallocatedWidth: number,
+  minColumnWidth: number
+) {
+  const unassignedColumns = columns.filter(c => !columnWidths.has(c.key as string));
+  const columnWidth = Math.floor(unallocatedWidth / unassignedColumns.length);
+
+  for (const column of unassignedColumns) {
+    setColumnWidth(column, columnWidths, minColumnWidth, columnWidth);
+  }
+}
+
+export function calculateColumnWidths<R>(
+  columns: ColumnList<R>,
+  columnWidths: ReadonlyMap<string, number>,
+  viewportWidth: number,
+  minColumnWidth: number
+): Map<string, number> {
+  columns = toArray(columns);
+  const newColumnWidths = new Map(columnWidths);
+  setSpecifiedWidths(columns, newColumnWidths, viewportWidth, minColumnWidth);
+
+  const allocatedWidths = getTotalColumnWidth2(columns, newColumnWidths);
+  const unallocatedWidth = viewportWidth - allocatedWidths - getScrollbarSize();
+
+  setRemainingWidths(columns, newColumnWidths, unallocatedWidth, minColumnWidth);
+  return newColumnWidths;
 }

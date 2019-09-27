@@ -2,7 +2,7 @@ import React, { forwardRef, useRef, useState, useMemo, useImperativeHandle } fro
 import classNames from 'classnames';
 
 import HeaderRow from './HeaderRow';
-import { recalculate } from './ColumnMetrics';
+import { getColumnMetrics } from './ColumnMetrics';
 import { getScrollbarSize } from './utils';
 import { CalculatedColumn, HeaderRowData } from './common/types';
 import { GridProps } from './Grid';
@@ -31,14 +31,17 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
   const rowRef = useRef<HeaderRow<R>>(null);
   const filterRowRef = useRef<HeaderRow<R>>(null);
 
-  const [resizing, setResizing] = useState<null | { pos: number; width: number }>(null);
+  const [resizing, setResizing] = useState<null | { column: CalculatedColumn<R>; width: number }>(null);
 
   const columnMetrics = useMemo(() => {
     if (resizing === null) return props.columnMetrics;
 
-    return recalculate({
+    return getColumnMetrics({
       ...props.columnMetrics,
-      columnResizes: new Map([[resizing.pos, resizing.width]])
+      columnWidths: new Map([
+        ...props.columnMetrics.columnWidths,
+        [resizing.column.key as string, resizing.width]
+      ])
     });
   }, [props.columnMetrics, resizing]);
 
@@ -52,9 +55,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
   }), []);
 
   function onColumnResize(column: CalculatedColumn<R>, width: number): void {
-    const pos = getColumnPosition(column);
-    if (pos === null) return;
-    setResizing({ pos, width: Math.max(width, columnMetrics.minColumnWidth) });
+    setResizing({ column, width: Math.max(width, columnMetrics.minColumnWidth) });
   }
 
   function onColumnResizeEnd(column: CalculatedColumn<R>, width: number): void {

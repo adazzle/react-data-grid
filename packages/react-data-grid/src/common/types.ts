@@ -67,6 +67,7 @@ export interface ColumnMetrics<TRow> {
   totalColumnWidth: number;
   totalWidth: number;
   minColumnWidth: number;
+  columnWidths: Map<string, number>;
 }
 
 export interface RowData {

@@ -6,7 +6,7 @@ import CheckboxEditor, { CheckboxEditorProps } from './common/editors/CheckboxEd
 import { SelectAll } from './formatters';
 import * as rowUtils from './RowUtils';
 import KeyCodes from './KeyCodes';
-import { recalculate } from './ColumnMetrics';
+import { calculateColumnWidths, getColumnMetrics } from './ColumnMetrics';
 import { ScrollState } from './Viewport';
 import { RowsContainerProps } from './RowsContainer';
 import { EventBus } from './masks';
@@ -188,7 +188,7 @@ export default function ReactDataGrid<R extends {}>({
   headerFiltersHeight = 45,
   minColumnWidth = 80,
   minHeight = 350,
-  minWidth,
+  minWidth: width,
   enableCellSelect = false,
   enableRowSelect = false,
   enableCellAutoFocus = true,
@@ -208,224 +208,13 @@ export default function ReactDataGrid<R extends {}>({
   const [lastRowIdxUiSelected, setLastRowIdxUiSelected] = useState(-1);
   const [sortColumn, setSortColumn] = useState(props.sortColumn);
   const [sortDirection, setSortDirection] = useState(props.sortDirection);
-  const [columnResizes, setColumnResizes] = useState(() => new Map<number, number>());
+  const [columnWidths, setColumnWidths] = useState(() => new Map<string, number>());
   const [eventBus] = useState(() => new EventBus());
   const [_keysDown] = useState(() => new Set<number>());
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
   const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
-
-  useLayoutEffect(() => {
-    // Do not calculate the width if minWidth is provided
-    if (minWidth) return;
-    function onResize() {
-      if (gridRef.current) {
-        // Immediately re-render when the component is mounted to get valid columnMetrics.
-        setGridWidth(gridRef.current.getBoundingClientRect().width);
-      }
-    }
-    onResize();
-
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, [minWidth]);
-
-  useEffect(() => {
-    if (!cellRangeSelection) return;
-
-    function handleWindowMouseUp() {
-      eventBus.dispatch(EventTypes.SELECT_END);
-    }
-
-    window.addEventListener('mouseup', handleWindowMouseUp);
-
-    return () => {
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    };
-  }, [eventBus, cellRangeSelection]);
-
-  function selectCell({ idx, rowIdx }: Position, openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
-  }
-
-  function getColumn(idx: number) {
-    return columnMetrics!.columns[idx];
-  }
-
-  function handleColumnResize(idx: number, width: number) {
-    const newColumnResizes = new Map(columnResizes);
-    newColumnResizes.set(idx, width);
-    setColumnResizes(newColumnResizes);
-
-    if (props.onColumnResize) {
-      props.onColumnResize(idx, width);
-    }
-  }
-
-  function handleDragEnter(overRowIdx: number) {
-    eventBus.dispatch(EventTypes.DRAG_ENTER, overRowIdx);
-  }
-
-  function handleViewportKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    // Track which keys are currently down for shift clicking etc
-    _keysDown.add(e.keyCode);
-
-    const { onGridKeyDown } = props;
-    if (onGridKeyDown) {
-      onGridKeyDown(e);
-    }
-  }
-
-  function handleViewportKeyUp(e: React.KeyboardEvent<HTMLDivElement>) {
-    // Track which keys are currently down for shift clicking etc
-    _keysDown.delete(e.keyCode);
-
-    const { onGridKeyUp } = props;
-    if (onGridKeyUp) {
-      onGridKeyUp(e);
-    }
-  }
-
-  function handlerCellClick({ rowIdx, idx }: Position) {
-    const { onRowClick } = props;
-    selectCell({ rowIdx, idx });
-
-    if (onRowClick) {
-      onRowClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
-    }
-  }
-
-  function handleCellMouseDown(position: Position) {
-    eventBus.dispatch(EventTypes.SELECT_START, position);
-  }
-
-  function handleCellMouseEnter(position: Position) {
-    eventBus.dispatch(EventTypes.SELECT_UPDATE, position);
-  }
-
-  function handleCellContextMenu(position: Position) {
-    selectCell(position);
-  }
-
-  function handleCellDoubleClick({ rowIdx, idx }: Position) {
-    const { onRowDoubleClick } = props;
-    if (onRowDoubleClick) {
-      onRowDoubleClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
-    }
-    openCellEditor(rowIdx, idx);
-  }
-
-  function handleToggleFilter() {
-    setCanFilter(canFilter => !canFilter);
-    if (props.onClearFilters) {
-      props.onClearFilters();
-    }
-  }
-
-  const handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
-    const cellKey = getColumn(e.idx).key;
-    handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
-  };
-
-  const handleGridRowsUpdated: InteractionMasksMetaData<R>['onGridRowsUpdated'] = (cellKey, fromRow, toRow, updated, action, originRow) => {
-    const { onGridRowsUpdated } = props;
-    if (!onGridRowsUpdated) {
-      return;
-    }
-
-    const rowIds = [];
-    for (let i = fromRow; i <= toRow; i++) {
-      rowIds.push(rowGetter(i)[rowKey]);
-    }
-
-    const fromRowData = rowGetter(action === UpdateActions.COPY_PASTE ? originRow! : fromRow);
-    const fromRowId = fromRowData[rowKey];
-    const toRowId = rowGetter(toRow)[rowKey];
-    onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated: updated as never, action, fromRowData });
-  };
-
-  function handleCommit(commit: CommitEvent<R>) {
-    const targetRow = commit.rowIdx;
-    handleGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
-  }
-
-  function handleSort(sortColumn: keyof R, sortDirection: DEFINE_SORT) {
-    setSortColumn(sortColumn);
-    setSortDirection(sortDirection);
-    if (props.onGridSort) {
-      props.onGridSort(sortColumn, sortDirection);
-    }
-  }
-
-  function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
-    const { headerRowHeight, onAddFilter } = props;
-    return [
-      { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
-      canFilter ? {
-        rowType: HeaderRowType.FILTER,
-        filterable: true,
-        onFilterChange: onAddFilter,
-        height: headerFiltersHeight || headerRowHeight || rowHeight
-      } : undefined
-    ];
-  }
-
-  function getRowSelectionProps() {
-    return rowSelection && rowSelection.selectBy;
-  }
-
-  function getSelectedRows() {
-    if (rowSelection) {
-      return;
-    }
-
-    return selectedRows.filter(r => r.isSelected === true);
-  }
-
-  function openCellEditor(rowIdx: number, idx: number) {
-    selectCell({ rowIdx, idx }, true);
-  }
-
-  // function scrollToColumn(colIdx: number) {
-  //   eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
-  // }
-
-  const cellMetaData: CellMetaData<R> = {
-    rowKey,
-    onCellClick: handlerCellClick,
-    onCellContextMenu: handleCellContextMenu,
-    onCellDoubleClick: handleCellDoubleClick,
-    onCellExpand: props.onCellExpand,
-    onRowExpandToggle: props.onRowExpandToggle,
-    getCellActions: props.getCellActions,
-    onDeleteSubRow: props.onDeleteSubRow,
-    onAddSubRow: props.onAddSubRow,
-    onDragEnter: handleDragEnter
-  };
-  if (cellRangeSelection) {
-    cellMetaData.onCellMouseDown = handleCellMouseDown;
-    cellMetaData.onCellMouseEnter = handleCellMouseEnter;
-  }
-
-  const interactionMasksMetaData: InteractionMasksMetaData<R> = {
-    onCheckCellIsEditable: props.onCheckCellIsEditable,
-    onCellCopyPaste: props.onCellCopyPaste,
-    onGridRowsUpdated: handleGridRowsUpdated,
-    onDragHandleDoubleClick: handleDragHandleDoubleClick,
-    onCellSelected: props.onCellSelected,
-    onCellDeSelected: props.onCellDeSelected,
-    onCellRangeSelectionStarted: cellRangeSelection && cellRangeSelection.onStart,
-    onCellRangeSelectionUpdated: cellRangeSelection && cellRangeSelection.onUpdate,
-    onCellRangeSelectionCompleted: cellRangeSelection && cellRangeSelection.onComplete,
-    onCommit: handleCommit
-  };
-
-  const headerRows = getHeaderRows();
-  const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
-  const style = minWidth ? { width: minWidth } : undefined;
-  const viewportWidth = (minWidth || gridWidth) - 2; // 2 for border width;
+  const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
 
   const gridColumns = useMemo<ColumnList<R>>(() => {
     function isSingleKeyDown(keyCode: number) {
@@ -606,13 +395,232 @@ export default function ReactDataGrid<R extends {}>({
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
 
-    return recalculate<R>({
+    return getColumnMetrics<R>({
       columns: gridColumns,
       minColumnWidth,
       totalWidth: viewportWidth,
-      columnResizes
+      columnWidths
     });
-  }, [columnResizes, gridColumns, minColumnWidth, viewportWidth]);
+  }, [columnWidths, gridColumns, minColumnWidth, viewportWidth]);
+
+  useLayoutEffect(() => {
+    // Do not calculate the width if minWidth is provided
+    if (width) return;
+    function onResize() {
+      // Immediately re-render when the component is mounted to get valid columnMetrics.
+      setGridWidth(gridRef.current!.getBoundingClientRect().width);
+    }
+    onResize();
+
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, [width]);
+
+  useLayoutEffect(() => {
+    if (viewportWidth <= 0) return;
+
+    const newColumnWidths = calculateColumnWidths(gridColumns, columnWidths, viewportWidth, minColumnWidth);
+    if (newColumnWidths.size > columnWidths.size) {
+      setColumnWidths(newColumnWidths);
+    }
+  }, [columnWidths, gridColumns, minColumnWidth, viewportWidth]);
+
+  useEffect(() => {
+    if (!cellRangeSelection) return;
+
+    function handleWindowMouseUp() {
+      eventBus.dispatch(EventTypes.SELECT_END);
+    }
+
+    window.addEventListener('mouseup', handleWindowMouseUp);
+
+    return () => {
+      window.removeEventListener('mouseup', handleWindowMouseUp);
+    };
+  }, [eventBus, cellRangeSelection]);
+
+  function selectCell({ idx, rowIdx }: Position, openEditor?: boolean) {
+    eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
+  }
+
+  function getColumn(idx: number) {
+    return columnMetrics!.columns[idx];
+  }
+
+  function handleColumnResize(idx: number, width: number) {
+    const newColumnWidths = new Map(columnWidths);
+    const columnKey = getColumn(idx).key as string;
+    newColumnWidths.set(columnKey, width);
+    setColumnWidths(newColumnWidths);
+
+    if (props.onColumnResize) {
+      props.onColumnResize(idx, width);
+    }
+  }
+
+  function handleDragEnter(overRowIdx: number) {
+    eventBus.dispatch(EventTypes.DRAG_ENTER, overRowIdx);
+  }
+
+  function handleViewportKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    // Track which keys are currently down for shift clicking etc
+    _keysDown.add(e.keyCode);
+
+    const { onGridKeyDown } = props;
+    if (onGridKeyDown) {
+      onGridKeyDown(e);
+    }
+  }
+
+  function handleViewportKeyUp(e: React.KeyboardEvent<HTMLDivElement>) {
+    // Track which keys are currently down for shift clicking etc
+    _keysDown.delete(e.keyCode);
+
+    const { onGridKeyUp } = props;
+    if (onGridKeyUp) {
+      onGridKeyUp(e);
+    }
+  }
+
+  function handlerCellClick({ rowIdx, idx }: Position) {
+    const { onRowClick } = props;
+    selectCell({ rowIdx, idx });
+
+    if (onRowClick) {
+      onRowClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
+    }
+  }
+
+  function handleCellMouseDown(position: Position) {
+    eventBus.dispatch(EventTypes.SELECT_START, position);
+  }
+
+  function handleCellMouseEnter(position: Position) {
+    eventBus.dispatch(EventTypes.SELECT_UPDATE, position);
+  }
+
+  function handleCellContextMenu(position: Position) {
+    selectCell(position);
+  }
+
+  function handleCellDoubleClick({ rowIdx, idx }: Position) {
+    const { onRowDoubleClick } = props;
+    if (onRowDoubleClick) {
+      onRowDoubleClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
+    }
+    openCellEditor(rowIdx, idx);
+  }
+
+  function handleToggleFilter() {
+    setCanFilter(canFilter => !canFilter);
+    if (props.onClearFilters) {
+      props.onClearFilters();
+    }
+  }
+
+  const handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
+    const cellKey = getColumn(e.idx).key;
+    handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
+  };
+
+  const handleGridRowsUpdated: InteractionMasksMetaData<R>['onGridRowsUpdated'] = (cellKey, fromRow, toRow, updated, action, originRow) => {
+    const { onGridRowsUpdated } = props;
+    if (!onGridRowsUpdated) {
+      return;
+    }
+
+    const rowIds = [];
+    for (let i = fromRow; i <= toRow; i++) {
+      rowIds.push(rowGetter(i)[rowKey]);
+    }
+
+    const fromRowData = rowGetter(action === UpdateActions.COPY_PASTE ? originRow! : fromRow);
+    const fromRowId = fromRowData[rowKey];
+    const toRowId = rowGetter(toRow)[rowKey];
+    onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated: updated as never, action, fromRowData });
+  };
+
+  function handleCommit(commit: CommitEvent<R>) {
+    const targetRow = commit.rowIdx;
+    handleGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
+  }
+
+  function handleSort(sortColumn: keyof R, sortDirection: DEFINE_SORT) {
+    setSortColumn(sortColumn);
+    setSortDirection(sortDirection);
+    if (props.onGridSort) {
+      props.onGridSort(sortColumn, sortDirection);
+    }
+  }
+
+  function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
+    const { headerRowHeight, onAddFilter } = props;
+    return [
+      { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
+      canFilter ? {
+        rowType: HeaderRowType.FILTER,
+        filterable: true,
+        onFilterChange: onAddFilter,
+        height: headerFiltersHeight || headerRowHeight || rowHeight
+      } : undefined
+    ];
+  }
+
+  function getRowSelectionProps() {
+    return rowSelection && rowSelection.selectBy;
+  }
+
+  function getSelectedRows() {
+    if (rowSelection) {
+      return;
+    }
+
+    return selectedRows.filter(r => r.isSelected === true);
+  }
+
+  function openCellEditor(rowIdx: number, idx: number) {
+    selectCell({ rowIdx, idx }, true);
+  }
+
+  // function scrollToColumn(colIdx: number) {
+  //   eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
+  // }
+
+  const cellMetaData: CellMetaData<R> = {
+    rowKey,
+    onCellClick: handlerCellClick,
+    onCellContextMenu: handleCellContextMenu,
+    onCellDoubleClick: handleCellDoubleClick,
+    onCellExpand: props.onCellExpand,
+    onRowExpandToggle: props.onRowExpandToggle,
+    getCellActions: props.getCellActions,
+    onDeleteSubRow: props.onDeleteSubRow,
+    onAddSubRow: props.onAddSubRow,
+    onDragEnter: handleDragEnter
+  };
+  if (cellRangeSelection) {
+    cellMetaData.onCellMouseDown = handleCellMouseDown;
+    cellMetaData.onCellMouseEnter = handleCellMouseEnter;
+  }
+
+  const interactionMasksMetaData: InteractionMasksMetaData<R> = {
+    onCheckCellIsEditable: props.onCheckCellIsEditable,
+    onCellCopyPaste: props.onCellCopyPaste,
+    onGridRowsUpdated: handleGridRowsUpdated,
+    onDragHandleDoubleClick: handleDragHandleDoubleClick,
+    onCellSelected: props.onCellSelected,
+    onCellDeSelected: props.onCellDeSelected,
+    onCellRangeSelectionStarted: cellRangeSelection && cellRangeSelection.onStart,
+    onCellRangeSelectionUpdated: cellRangeSelection && cellRangeSelection.onUpdate,
+    onCellRangeSelectionCompleted: cellRangeSelection && cellRangeSelection.onComplete,
+    onCommit: handleCommit
+  };
+
+  const headerRows = getHeaderRows();
+  const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
+  const style = width ? { width } : undefined;
 
   return (
     <div
