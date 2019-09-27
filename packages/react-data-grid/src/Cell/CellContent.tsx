@@ -63,19 +63,19 @@ export default function CellContent<R>({
     { 'cell-tooltip': !!tooltip }
   );
 
+  const cellValue = CellValue<R>({
+    rowIdx: rowIdx,
+    rowData: rowData,
+    column: column,
+    value: value,
+    isScrolling: isScrolling
+  });
+
   return (
     <div className={classes}>
       {cellDeleter}
       <div className="react-grid-Cell__container" style={{ marginLeft }}>
-        <span>
-          <CellValue<R>
-            rowIdx={rowIdx}
-            rowData={rowData}
-            column={column}
-            value={value}
-            isScrolling={isScrolling}
-          />
-        </span>
+        <span>{cellValue}</span>
         {cellControls}
       </div>
       {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}

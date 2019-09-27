@@ -127,7 +127,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       <div
         ref={this.row}
         className={className}
-        style={{ height: this.getRowHeight() }}
+        style={{ height: this.getRowHeight()/*, transform: `translateX(-${this.props.scrollLeft}px)`*/ }}
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}

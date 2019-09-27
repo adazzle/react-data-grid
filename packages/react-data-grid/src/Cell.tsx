@@ -173,21 +173,19 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
 
     const style = this.getStyle();
     const className = this.getCellClass();
-    const cellContent = children || (
-      <CellContent<R>
-        idx={idx}
-        rowIdx={rowIdx}
-        column={column}
-        rowData={rowData}
-        value={value}
-        tooltip={tooltip}
-        expandableOptions={expandableOptions}
-        height={height}
-        onDeleteSubRow={cellMetaData.onDeleteSubRow}
-        cellControls={cellControls}
-        isScrolling={isScrolling}
-      />
-    );
+    const cellContent = children || CellContent({
+      idx: idx,
+      rowIdx: rowIdx,
+      column: column,
+      rowData: rowData,
+      value: value,
+      tooltip: tooltip,
+      expandableOptions: expandableOptions,
+      height: height,
+      onDeleteSubRow: cellMetaData.onDeleteSubRow,
+      cellControls: cellControls,
+      isScrolling: isScrolling
+    });
     const events = this.getEvents();
     const cellExpander = expandableOptions && expandableOptions.canExpand && (
       <CellExpand

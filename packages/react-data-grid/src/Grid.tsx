@@ -1,12 +1,11 @@
-import React, { useRef, createElement, useEffect } from 'react';
+import React, { createElement, useCallback, useEffect, useRef, useState } from 'react';
 import { isValidElementType } from 'react-is';
-
-import Header from './Header';
-import Viewport, { ScrollState } from './Viewport';
-import { HeaderRowData, CellMetaData, RowSelection, InteractionMasksMetaData, SelectedRow } from './common/types';
 import { DEFINE_SORT } from './common/enums';
-import { DataGridProps, DataGridState } from './ReactDataGrid';
+import { CellMetaData, HeaderRowData, InteractionMasksMetaData, RowSelection, SelectedRow } from './common/types';
+import Header from './Header';
 import { EventBus } from './masks';
+import { DataGridProps, DataGridState } from './ReactDataGrid';
+import Viewport from './Viewport';
 
 type SharedDataGridProps<R> = Pick<DataGridProps<R>,
 'rowKey'
@@ -58,22 +57,17 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
   const isWidthInitialized = useRef(false);
   const grid = useRef<HTMLDivElement>(null);
   const header = useRef<Header<R>>(null);
-  const scrollLeft = useRef(0);
-
-  function onScroll(scrollState: ScrollState) {
-    if (header.current && scrollLeft.current !== scrollState.scrollLeft) {
-      scrollLeft.current = scrollState.scrollLeft;
-      header.current.setScrollLeft(scrollState.scrollLeft);
-    }
-    if (props.onScroll) {
-      props.onScroll(scrollState);
-    }
-  }
+  const [scrollLeft, setScrollLeft] = useState<number>();
 
   useEffect(() => {
     // Delay rendering until width is initialized
     // Width is needed to calculate the number of displayed columns
     isWidthInitialized.current = true;
+  }, []);
+
+  const onBarScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollLeft: newScrollLeft } = e.currentTarget;
+    setScrollLeft(newScrollLeft);
   }, []);
 
   return (
@@ -94,6 +88,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
         onHeaderDrop={props.onHeaderDrop}
         getValidFilterValues={props.getValidFilterValues}
         cellMetaData={props.cellMetaData}
+        scrollLeft={scrollLeft || 0}
       />
       {props.rowsCount === 0 && isValidElementType(emptyRowsView) ? (
         <div className="react-grid-Empty">
@@ -102,6 +97,8 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
       ) : (
         isWidthInitialized.current && (
           <Viewport<R>
+            scrollLeft={scrollLeft || 0}
+            setScrollLeft={setScrollLeft}
             rowKey={props.rowKey}
             rowHeight={props.rowHeight}
             rowRenderer={props.rowRenderer}
@@ -109,7 +106,6 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
             rowsCount={props.rowsCount}
             selectedRows={props.selectedRows}
             columnMetrics={props.columnMetrics}
-            onScroll={onScroll}
             cellMetaData={props.cellMetaData}
             rowOffsetHeight={props.rowOffsetHeight}
             minHeight={props.minHeight}
@@ -134,6 +130,9 @@ export default function Grid<R>({ emptyRowsView, headerRows, ...props }: GridPro
           />
         )
       )}
+      <div style={{ width: '100%', height: 17, overflowX: 'auto' }} onScroll={onBarScroll}>
+        <div style={{ width: props.columnMetrics.totalColumnWidth, height: 17 }}></div>
+      </div>
     </div>
   );
 }

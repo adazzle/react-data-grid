@@ -1,10 +1,9 @@
-import React, { useRef, useState, useMemo } from 'react';
-
+import React, { useMemo, useRef, useState } from 'react';
 import Canvas from './Canvas';
-import { getVerticalRangeToRender, getHorizontalRangeToRender, getScrollDirection } from './utils/viewportUtils';
-import { GridProps } from './Grid';
-import { ScrollPosition } from './common/types';
 import { SCROLL_DIRECTION } from './common/enums';
+import { RowRenderer, RowRendererProps, ScrollPosition } from './common/types';
+import { GridProps } from './Grid';
+import { getHorizontalRangeToRender, getScrollDirection, getVerticalRangeToRender } from './utils/viewportUtils';
 
 export interface ScrollState {
   scrollTop: number;
@@ -43,7 +42,8 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 >;
 
 export interface ViewportProps<R> extends SharedGridProps<R> {
-  onScroll(scrollState: ScrollState): void;
+  scrollLeft: number;
+  setScrollLeft(scrollLeft: number): void;
   viewportWidth: number;
 }
 
@@ -52,16 +52,17 @@ export default function Viewport<R>({
   rowHeight,
   rowOffsetHeight,
   rowsCount,
-  onScroll: handleScroll,
   columnMetrics,
   overscanRowCount,
   overscanColumnCount,
   enableIsScrolling,
   viewportWidth,
+  scrollLeft,
+  setScrollLeft,
   ...props
 }: ViewportProps<R>) {
   const resetScrollStateTimeoutId = useRef<number | null>(null);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  // const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
   const [isScrolling, setIsScrolling] = useState<boolean | undefined>(undefined);
@@ -86,7 +87,7 @@ export default function Viewport<R>({
     setIsScrolling(false);
   }
 
-  function onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop }: ScrollPosition) {
+  function onVerticalScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop }: ScrollPosition) {
     if (enableIsScrolling) {
       setIsScrolling(true);
       resetScrollStateAfterDelay();
@@ -96,11 +97,6 @@ export default function Viewport<R>({
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
     setScrollDirection(newScrollDirection);
-    handleScroll({
-      scrollLeft: newScrollLeft,
-      scrollTop: newScrollTop,
-      scrollDirection: newScrollDirection
-    });
   }
 
   const canvasHeight = minHeight - rowOffsetHeight;
@@ -126,6 +122,12 @@ export default function Viewport<R>({
     });
   }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft, viewportWidth]);
 
+  const pinnedRowsRef = useRef<Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>>();
+
+  if (!pinnedRowsRef.current) {
+    pinnedRowsRef.current = new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>();
+  }
+
   return (
     <div
       onKeyDown={props.onViewportKeydown}
@@ -148,7 +150,7 @@ export default function Viewport<R>({
         cellMetaData={props.cellMetaData}
         height={canvasHeight}
         rowHeight={rowHeight}
-        onScroll={onScroll}
+        onScroll={onVerticalScroll}
         scrollToRowIndex={props.scrollToRowIndex}
         contextMenu={props.contextMenu}
         rowSelection={props.rowSelection}

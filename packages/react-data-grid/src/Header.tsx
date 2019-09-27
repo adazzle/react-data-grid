@@ -21,7 +21,9 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'cellMetaData'
 >;
 
-export type HeaderProps<R> = SharedGridProps<R>;
+export interface HeaderProps<R> extends SharedGridProps<R> {
+  scrollLeft: number;
+}
 
 interface State<R> {
   resizing: { column: CalculatedColumn<R>; columnMetrics: ColumnMetrics<R> } | null;
@@ -36,6 +38,12 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
   componentWillReceiveProps(): void {
     this.setState({ resizing: null });
   }
+
+  // componentDidUpdate(prevProps: HeaderProps<R>): void {
+  //   if (this.props.scrollLeft !== prevProps.scrollLeft) {
+  //     this.setScrollLeft(this.props.scrollLeft);
+  //   }
+  // }
 
   onColumnResize = (column: CalculatedColumn<R>, width: number): void => {
     const pos = this.getColumnPosition(column);
@@ -132,7 +140,8 @@ export default class Header<R> extends React.Component<HeaderProps<R>, State<R>>
       <div
         style={{
           height: this.props.rowOffsetHeight,
-          paddingRight: getScrollbarSize()
+          paddingRight: getScrollbarSize(),
+          transform: `translateX(-${this.props.scrollLeft}px)`
         }}
         className={className}
         onClick={this.onHeaderClick}
