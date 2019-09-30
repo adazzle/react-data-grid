@@ -6,7 +6,7 @@ import CheckboxEditor, { CheckboxEditorProps } from './common/editors/CheckboxEd
 import { SelectAll } from './formatters';
 import * as rowUtils from './RowUtils';
 import KeyCodes from './KeyCodes';
-import { calculateColumnWidths, getColumnMetrics } from './ColumnMetrics';
+import { getColumnMetrics } from './ColumnMetrics';
 import { ScrollState } from './Viewport';
 import { RowsContainerProps } from './RowsContainer';
 import { EventBus } from './masks';
@@ -208,7 +208,7 @@ export default function ReactDataGrid<R extends {}>({
   const [lastRowIdxUiSelected, setLastRowIdxUiSelected] = useState(-1);
   const [sortColumn, setSortColumn] = useState(props.sortColumn);
   const [sortDirection, setSortDirection] = useState(props.sortDirection);
-  const [columnWidths, setColumnWidths] = useState(() => new Map<string, number>());
+  const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [_keysDown] = useState(() => new Set<number>());
   const [gridWidth, setGridWidth] = useState(0);
@@ -398,7 +398,7 @@ export default function ReactDataGrid<R extends {}>({
     return getColumnMetrics<R>({
       columns: gridColumns,
       minColumnWidth,
-      totalWidth: viewportWidth,
+      viewportWidth,
       columnWidths
     });
   }, [columnWidths, gridColumns, minColumnWidth, viewportWidth]);
@@ -417,15 +417,6 @@ export default function ReactDataGrid<R extends {}>({
       window.removeEventListener('resize', onResize);
     };
   }, [width]);
-
-  useLayoutEffect(() => {
-    if (viewportWidth <= 0) return;
-
-    const newColumnWidths = calculateColumnWidths(gridColumns, columnWidths, viewportWidth, minColumnWidth);
-    if (newColumnWidths.size > columnWidths.size) {
-      setColumnWidths(newColumnWidths);
-    }
-  }, [columnWidths, gridColumns, minColumnWidth, viewportWidth]);
 
   useEffect(() => {
     if (!cellRangeSelection) return;
@@ -451,7 +442,7 @@ export default function ReactDataGrid<R extends {}>({
 
   function handleColumnResize(idx: number, width: number) {
     const newColumnWidths = new Map(columnWidths);
-    const columnKey = getColumn(idx).key as string;
+    const columnKey = getColumn(idx).key;
     newColumnWidths.set(columnKey, width);
     setColumnWidths(newColumnWidths);
 

@@ -40,7 +40,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
       ...props.columnMetrics,
       columnWidths: new Map([
         ...props.columnMetrics.columnWidths,
-        [resizing.column.key as string, resizing.width]
+        [resizing.column.key, resizing.width]
       ])
     });
   }, [props.columnMetrics, resizing]);
@@ -58,11 +58,10 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     setResizing({ column, width: Math.max(width, columnMetrics.minColumnWidth) });
   }
 
-  function onColumnResizeEnd(column: CalculatedColumn<R>, width: number): void {
-    const pos = getColumnPosition(column);
-    if (pos === null) return;
+  function onColumnResizeEnd(): void {
+    if (resizing === null) return;
+    props.onColumnResize(resizing.column.idx, Math.max(resizing.width || resizing.column.width, columnMetrics.minColumnWidth));
     setResizing(null);
-    props.onColumnResize(pos, Math.max(width || column.width, columnMetrics.minColumnWidth));
   }
 
   function getHeaderRow(row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) {
@@ -95,11 +94,6 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     }
 
     return rows;
-  }
-
-  function getColumnPosition(column: CalculatedColumn<R>): number | null {
-    const idx = columnMetrics.columns.findIndex(c => c.key === column.key);
-    return idx === -1 ? null : idx;
   }
 
   // Set the cell selection to -1 x -1 when clicking on the header

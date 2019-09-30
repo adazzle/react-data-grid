@@ -135,8 +135,7 @@ export default function Viewport<R>({
         {...verticalRangeToRender}
         {...horizontalRangeToRender}
         rowKey={props.rowKey}
-        width={columnMetrics.width}
-        totalColumnWidth={columnMetrics.totalColumnWidth}
+        width={columnMetrics.totalColumnWidth}
         columns={columnMetrics.columns}
         lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
         rowGetter={props.rowGetter}
