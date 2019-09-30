@@ -1,4 +1,13 @@
-import React, { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
+import React, {
+  forwardRef,
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useCallback,
+  useImperativeHandle
+} from 'react';
 
 import Grid from './Grid';
 import ToolbarContainer, { ToolbarProps } from './ToolbarContainer';
@@ -71,7 +80,6 @@ export interface ReactDataGridProps<R extends {}> {
   /** Function called whenever keyboard key is pressed down */
   onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelect?(rowData: R[]): void;
-  // columnEquality(c1: Column<R>, c2: Column<R>): boolean;
   rowSelection?: {
     enableShiftSelect?: boolean;
     /** Function called whenever rows are selected */
@@ -171,6 +179,10 @@ export interface ReactDataGridProps<R extends {}> {
   enableIsScrolling?: boolean;
 }
 
+export interface ReactDataGridHandle {
+  scrollToColumn(colIdx: number): void;
+}
+
 function isRowSelected<R>(keys: unknown, indexes: unknown, isSelectedKey: unknown, rowData: R, rowIdx: number) {
   return rowUtils.isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, rowData, rowIdx);
 }
@@ -182,7 +194,7 @@ function isRowSelected<R>(keys: unknown, indexes: unknown, isSelectedKey: unknow
  *
  * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-export default function ReactDataGrid<R extends {}>({
+export default forwardRef(function ReactDataGrid<R extends {}>({
   rowKey = 'id' as keyof R,
   rowHeight = 35,
   headerFiltersHeight = 45,
@@ -201,8 +213,9 @@ export default function ReactDataGrid<R extends {}>({
   rowSelection,
   cellRangeSelection,
   onRowSelect,
+  onClearFilters,
   ...props
-}: ReactDataGridProps<R>) {
+}: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
   const [selectedRows, setSelectedRows] = useState<SelectedRow<R>[]>([]);
   const [canFilter, setCanFilter] = useState(false);
   const [lastRowIdxUiSelected, setLastRowIdxUiSelected] = useState(-1);
@@ -504,12 +517,12 @@ export default function ReactDataGrid<R extends {}>({
     openCellEditor(rowIdx, idx);
   }
 
-  function handleToggleFilter() {
+  const handleToggleFilter = useCallback(() => {
     setCanFilter(canFilter => !canFilter);
-    if (props.onClearFilters) {
-      props.onClearFilters();
+    if (onClearFilters) {
+      onClearFilters();
     }
-  }
+  }, [onClearFilters]);
 
   const handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
     const cellKey = getColumn(e.idx).key;
@@ -575,9 +588,12 @@ export default function ReactDataGrid<R extends {}>({
     selectCell({ rowIdx, idx }, true);
   }
 
-  // function scrollToColumn(colIdx: number) {
-  //   eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
-  // }
+  useImperativeHandle(ref, () => ({
+    scrollToColumn(colIdx: number) {
+      eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
+    },
+    handleToggleFilter
+  }), [eventBus, handleToggleFilter]);
 
   const cellMetaData: CellMetaData<R> = {
     rowKey,
@@ -669,4 +685,4 @@ export default function ReactDataGrid<R extends {}>({
       )}
     </div>
   );
-}
+});
