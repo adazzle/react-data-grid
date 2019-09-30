@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useCallback,
   useImperativeHandle
 } from 'react';
 
@@ -179,8 +178,12 @@ export interface ReactDataGridProps<R extends {}> {
   enableIsScrolling?: boolean;
 }
 
-export interface ReactDataGridHandle {
+export interface ReactDataGridHandle<R> {
   scrollToColumn(colIdx: number): void;
+  selectCell(position: Position, openEditor?: boolean): void;
+  handleToggleFilter(): void;
+  openCellEditor(rowIdx: number, colIdx: number): void;
+  getSelectedRows(): SelectedRow<R>[] | undefined;
 }
 
 function isRowSelected<R>(keys: unknown, indexes: unknown, isSelectedKey: unknown, rowData: R, rowIdx: number) {
@@ -194,7 +197,7 @@ function isRowSelected<R>(keys: unknown, indexes: unknown, isSelectedKey: unknow
  *
  * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-export default forwardRef(function ReactDataGrid<R extends {}>({
+const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   rowKey = 'id' as keyof R,
   rowHeight = 35,
   headerFiltersHeight = 45,
@@ -215,7 +218,7 @@ export default forwardRef(function ReactDataGrid<R extends {}>({
   onRowSelect,
   onClearFilters,
   ...props
-}: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
+}: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle<R>>) {
   const [selectedRows, setSelectedRows] = useState<SelectedRow<R>[]>([]);
   const [canFilter, setCanFilter] = useState(false);
   const [lastRowIdxUiSelected, setLastRowIdxUiSelected] = useState(-1);
@@ -517,12 +520,12 @@ export default forwardRef(function ReactDataGrid<R extends {}>({
     openCellEditor(rowIdx, idx);
   }
 
-  const handleToggleFilter = useCallback(() => {
+  function handleToggleFilter() {
     setCanFilter(canFilter => !canFilter);
     if (onClearFilters) {
       onClearFilters();
     }
-  }, [onClearFilters]);
+  }
 
   const handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
     const cellKey = getColumn(e.idx).key;
@@ -576,7 +579,7 @@ export default forwardRef(function ReactDataGrid<R extends {}>({
     return rowSelection && rowSelection.selectBy;
   }
 
-  function getSelectedRows() {
+  function getSelectedRows(): SelectedRow<R>[] | undefined {
     if (rowSelection) {
       return;
     }
@@ -588,12 +591,17 @@ export default forwardRef(function ReactDataGrid<R extends {}>({
     selectCell({ rowIdx, idx }, true);
   }
 
+  function scrollToColumn(colIdx: number) {
+    eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
+  }
+
   useImperativeHandle(ref, () => ({
-    scrollToColumn(colIdx: number) {
-      eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
-    },
-    handleToggleFilter
-  }), [eventBus, handleToggleFilter]);
+    scrollToColumn,
+    selectCell,
+    handleToggleFilter,
+    openCellEditor,
+    getSelectedRows
+  }));
 
   const cellMetaData: CellMetaData<R> = {
     rowKey,
@@ -686,3 +694,37 @@ export default forwardRef(function ReactDataGrid<R extends {}>({
     </div>
   );
 });
+
+// This is a temporary class to expose instance methods as ForwardRef does work well with generics
+export default class ReactDataGrid<R> extends React.Component<ReactDataGridProps<R>> implements ReactDataGridHandle<R> {
+  private readonly gridRef = React.createRef<ReactDataGridHandle<R>>();
+
+  selectCell(position: Position, openEditor?: boolean | undefined): void {
+    this.gridRef.current!.selectCell(position, openEditor);
+  }
+
+  handleToggleFilter(): void {
+    this.gridRef.current!.handleToggleFilter();
+  }
+
+  openCellEditor(rowIdx: number, colIdx: number): void {
+    this.gridRef.current!.openCellEditor(rowIdx, colIdx);
+  }
+
+  scrollToColumn(colIdx: number): void {
+    this.gridRef.current!.scrollToColumn(colIdx);
+  }
+
+  getSelectedRows(): SelectedRow<R>[] | undefined {
+    return this.gridRef.current!.getSelectedRows();
+  }
+
+  render() {
+    return (
+      <ReactDataGridBase
+        ref={this.gridRef}
+        {...this.props as unknown as ReactDataGridProps<{}>}
+      />
+    );
+  }
+}
