@@ -60,7 +60,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
 
   function onColumnResizeEnd(): void {
     if (resizing === null) return;
-    props.onColumnResize(resizing.column.idx, Math.max(resizing.width || resizing.column.width, columnMetrics.minColumnWidth));
+    props.onColumnResize(resizing.column.idx, resizing.width);
     setResizing(null);
   }
 

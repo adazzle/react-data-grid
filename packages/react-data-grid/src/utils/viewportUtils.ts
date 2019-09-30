@@ -84,15 +84,20 @@ export function getHorizontalRangeToRender<R>({
 
   let remainingScroll = scrollLeft;
   let columnIndex = lastFrozenColumnIndex;
+  let hiddenColumnsWidth = 0;
   while (remainingScroll >= 0 && columnIndex < columns.length) {
     columnIndex++;
     const column = columns[columnIndex];
-    remainingScroll -= column ? column.width : 0;
+    remainingScroll -= column.width;
+    if (remainingScroll >= 0) {
+      hiddenColumnsWidth += column.width;
+    }
   }
   const colVisibleStartIdx = Math.max(columnIndex, 0);
+  const firstVisibleColumnHiddenWidth = scrollLeft - hiddenColumnsWidth;
 
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns, lastFrozenColumnIndex);
-  viewportWidth = viewportWidth > 0 ? viewportWidth : totalColumnWidth;
+  viewportWidth = viewportWidth > 0 ? (viewportWidth + firstVisibleColumnHiddenWidth) : totalColumnWidth;
   const availableWidth = viewportWidth - totalFrozenColumnWidth;
   const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
   const colVisibleEndIdx = Math.min(columns.length, colVisibleStartIdx + nonFrozenRenderedColumnCount);
