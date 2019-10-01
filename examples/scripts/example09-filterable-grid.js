@@ -4,7 +4,7 @@ import { Toolbar, Data } from 'react-data-grid-addons';
 
 import exampleWrapper from '../components/exampleWrapper';
 
-const Selectors = Data.Selectors;
+const { Selectors } = Data;
 
 class Example extends React.Component {
   constructor(props, context) {

@@ -58,7 +58,7 @@ class CustomDragLayer extends Component {
     let draggedRows;
     const { rowSelection } = this.props;
     if (rowSelection && rowSelection.selectBy.keys) {
-      const rows = this.props.rows;
+      const { rows } = this.props;
       const { rowKey, values } = rowSelection.selectBy.keys;
       const selectedRows = Selectors.getSelectedRowsByKey({ rowKey, selectedKeys: values, rows });
       draggedRows = this.isDraggedRowSelected(selectedRows) ? selectedRows : [this.props.rows[this.props.item.idx]];
@@ -69,7 +69,7 @@ class CustomDragLayer extends Component {
   }
 
   renderDraggedRows() {
-    const columns = this.props.columns;
+    const { columns } = this.props;
     return this.getDraggedRows().map((r, i) => {
       return <tr key={`dragged-row-${i}`}>{this.renderDraggedCells(r, i, columns) }</tr>;
     });

@@ -105,7 +105,6 @@ For maintainers only.
   - `npm i`
 - Build the release files:
   - `npm run build`
-  - `npm run build-commonjs`
 - Update the docs:
   - `npm run docs`
 - Update the changelog, if necessary.
