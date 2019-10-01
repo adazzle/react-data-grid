@@ -31,7 +31,7 @@ describe('Grid', () => {
       columns,
       rowGetter(i) { return rows[i]; },
       rowsCount: rows.length,
-      width: 300,
+      minWidth: 300,
       onCellCopyPaste() {},
       onGridSort() {},
       onAddFilter() {},
