@@ -38,7 +38,8 @@ export default function CellAction({ icon, actions, callback, isFirst }: CellAct
           <div className="rdg-cell-action-menu">
             {actions.map((action, index) => <span key={index} onClick={action.callback}>{action.text}</span>)}
           </div>
-        )}
+        )
+      }
     </div>
   );
 }

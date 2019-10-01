@@ -97,7 +97,7 @@ export function getHorizontalRangeToRender<R>({
   const firstVisibleColumnHiddenWidth = scrollLeft - hiddenColumnsWidth;
 
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns, lastFrozenColumnIndex);
-  viewportWidth = viewportWidth > 0 ? (viewportWidth + firstVisibleColumnHiddenWidth) : totalColumnWidth;
+  viewportWidth = viewportWidth > 0 ? viewportWidth + firstVisibleColumnHiddenWidth : totalColumnWidth;
   const availableWidth = viewportWidth - totalFrozenColumnWidth;
   const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
   const colVisibleEndIdx = Math.min(columns.length, colVisibleStartIdx + nonFrozenRenderedColumnCount);

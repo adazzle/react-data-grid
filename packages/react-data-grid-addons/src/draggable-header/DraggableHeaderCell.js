@@ -59,8 +59,7 @@ const headerCellSource = {
   endDrag(props, monitor) {
     // check if drop was made in droppable zone
     if (monitor.didDrop()) {
-      const source = monitor.getDropResult().source;
-      const target = monitor.getDropResult().target;
+      const { source, target } = monitor.getDropResult();
       return props.onHeaderDrop(source, target);
     }
   }

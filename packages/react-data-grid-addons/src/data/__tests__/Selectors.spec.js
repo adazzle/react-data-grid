@@ -17,10 +17,8 @@ function setupSpies() {
   groupRowsSpy = jest.spyOn(groupRows, 'default');
 }
 
-function selectPerRow(rows, options) {
+function selectPerRow(rows, { filters, groupBy }) {
   for (let i = 0; i < 10; i++) {
-    const filters = options.filters;
-    const groupBy = options.groupBy;
     Selectors.getRows({ rows, filters, groupBy });
   }
 }

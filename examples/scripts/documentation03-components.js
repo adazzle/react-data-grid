@@ -74,7 +74,7 @@ export default class ComponentDocs extends React.Component {
   }
 
   render() {
-    const selectedDocumentIndex = this.state.selectedDocumentIndex;
+    const { selectedDocumentIndex } = this.state;
     return (
       <div>
         <h1 id="js-api-refernce">Components Docs</h1>

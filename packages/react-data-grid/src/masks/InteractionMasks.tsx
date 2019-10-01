@@ -695,8 +695,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
         )}
         {selectedRangeIsSingleCell(this.state.selectedRange)
           ? this.renderSingleCellSelectView()
-          : this.renderCellRangeSelectView()
-        }
+          : this.renderCellRangeSelectView()}
         {isEditorEnabled && (
           <EditorPortal target={this.props.editorPortalTarget}>
             <EditorContainer<R>
