@@ -40,7 +40,6 @@ export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportSt
   columns: CalculatedColumn<R>[];
   height: number;
   width: number;
-  totalColumnWidth: number;
   lastFrozenColumnIndex: number;
   isScrolling?: boolean;
   onScroll(position: ScrollPosition): void;
@@ -268,7 +267,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, height, rowGetter, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu } = this.props;
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
@@ -344,7 +343,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           {/* Set minHeight to show horizontal scrollbar when there are no rows */}
-          <div style={{ width: totalColumnWidth, minHeight: 1 }}>{rows}</div>
+          <div style={{ width, minHeight: 1 }}>{rows}</div>
         </RowsContainer>
       </div>
     );

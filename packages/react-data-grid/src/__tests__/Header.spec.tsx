@@ -16,9 +16,9 @@ describe('Header Unit Tests', () => {
         columns: helpers.columns,
         minColumnWidth: 80,
         totalColumnWidth: 2600,
-        totalWidth: 2600,
-        width: 2600,
-        lastFrozenColumnIndex: 0
+        viewportWidth: 2600,
+        lastFrozenColumnIndex: 0,
+        columnWidths: new Map()
       },
       cellMetaData: fakeCellMetaData,
       headerRows: [{
@@ -39,37 +39,37 @@ describe('Header Unit Tests', () => {
   });
 
   it('should render a default header row', () => {
-    const wrapper = shallow(<Header {...getProps()} />);
+    const wrapper = shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, getProps()));
     expect(wrapper.find(HeaderRow).length).toBe(1);
   });
 
   it('should render a default header row', () => {
-    const wrapper = shallow(<Header {...getProps()} />);
+    const wrapper = shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, getProps()));
     expect(wrapper.find(HeaderRow).length).toBe(1);
   });
 
   it('header row drag end should trigger onColumnResize callback', () => {
     const resizeColIdx = 1;
     const testProps = getProps();
-    const wrapper = shallow(<Header<Row> {...testProps} />);
-    const headerRow = wrapper.find(HeaderRow);
-    headerRow.props().onColumnResizeEnd(helpers.columns[resizeColIdx] as never, 200);
+    const wrapper = shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, testProps));
+    wrapper.find(HeaderRow).props().onColumnResize(helpers.columns[resizeColIdx] as never, 200);
+    wrapper.find(HeaderRow).props().onColumnResizeEnd();
     expect(testProps.onColumnResize).toHaveBeenCalled();
     expect(testProps.onColumnResize).toHaveBeenCalledWith(resizeColIdx, 200);
   });
 
   describe('Rendering Header component', () => {
     function renderComponent(props: HeaderProps<Row>) {
-      return shallow(<Header {...props} />);
+      return shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, props));
     }
     const testRequiredProps: HeaderProps<Row> = {
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 81,
         totalColumnWidth: 2600,
-        totalWidth: 2600,
-        width: 2601,
-        lastFrozenColumnIndex: 0
+        viewportWidth: 2600,
+        lastFrozenColumnIndex: 0,
+        columnWidths: new Map()
       },
       headerRows: [{
         height: 51,
@@ -88,9 +88,9 @@ describe('Header Unit Tests', () => {
         columns: helpers.columns,
         minColumnWidth: 80,
         totalColumnWidth: 2600,
-        totalWidth: 2600,
-        width: 2600,
-        lastFrozenColumnIndex: 0
+        viewportWidth: 2600,
+        lastFrozenColumnIndex: 0,
+        columnWidths: new Map()
       },
       headerRows: [{
         height: 50,

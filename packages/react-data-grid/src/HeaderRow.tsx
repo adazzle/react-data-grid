@@ -21,7 +21,7 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
   height: number;
   columns: CalculatedColumn<R>[];
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
-  onColumnResizeEnd(column: CalculatedColumn<R>, width: number): void;
+  onColumnResizeEnd(): void;
   filterable?: boolean;
   onFilterChange?(args: AddFilterEvent<R>): void;
   rowType: HeaderRowType;

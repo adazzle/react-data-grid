@@ -4,7 +4,6 @@ import { mount } from 'enzyme';
 import TestUtils from 'react-dom/test-utils';
 
 import Grid, { CheckboxEditor } from 'react-data-grid';
-import mockStateObject from './data/MockStateObject';
 
 describe('Grid', () => {
   const setup = (extraProps) => {
@@ -31,7 +30,7 @@ describe('Grid', () => {
       columns,
       rowGetter(i) { return rows[i]; },
       rowsCount: rows.length,
-      width: 300,
+      minWidth: 300,
       onCellCopyPaste() {},
       onGridSort() {},
       onAddFilter() {},
@@ -56,10 +55,6 @@ describe('Grid', () => {
     };
   };
 
-  const simulateGridKeyDownWithKeyCode = (wrapper, keyCode) => {
-    getBaseGrid(wrapper).props().onViewportKeydown(buildFakeEvent({ keyCode }));
-  };
-
   it('should create a new instance of Grid', () => {
     const { wrapper } = setup();
     expect(wrapper.instance()).toBeDefined();
@@ -67,14 +62,6 @@ describe('Grid', () => {
 
   it('should render a BaseGrid stub', () => {
     expect(getBaseGrid(setup().wrapper)).toBeDefined();
-  });
-
-  it('should be initialized with correct state', () => {
-    const { wrapper, columns } = setup();
-    const events = [columns[0].events, columns[1].events, columns[2].events, columns[3].events];
-    expect(wrapper.instance().state).toEqual(mockStateObject({
-      selectedRows: []
-    }, events));
   });
 
   // Set of tests for the props that defined the height of our rows
@@ -171,7 +158,6 @@ describe('Grid', () => {
       });
 
       it('should set filter state of grid and render a filterable header row', () => {
-        expect(wrapper.instance().state.canFilter).toBe(true);
         expect(getBaseGrid(wrapper).props().headerRows.length).toEqual(2);
       });
     });
@@ -180,92 +166,16 @@ describe('Grid', () => {
   describe('When row selection enabled', () => {
     let wrapper;
     let columns;
-    let rows;
     let selectRowCol;
 
     beforeEach(() => {
-      ({ wrapper, columns, rows } = setup({ enableRowSelect: true }));
+      ({ wrapper, columns } = setup({ enableRowSelect: true }));
       selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
     });
 
     it('should render an additional Select Row column', () => {
       expect(getBaseGrid(wrapper).props().columnMetrics.columns.length).toEqual(columns.length + 1);
-      expect(selectRowCol.key).toEqual('select-row');
       expect(TestUtils.isElementOfType(selectRowCol.formatter, CheckboxEditor)).toBe(true);
-    });
-
-    describe('checking header checkbox', () => {
-      let checkbox;
-      let selectAllWrapper;
-      let fakeEvent;
-
-      beforeEach(() => {
-        const checkboxWrapper = document.createElement('div');
-        checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
-        checkbox = checkboxWrapper.querySelector('input');
-        const SelectAll = selectRowCol.headerRenderer;
-        selectAllWrapper = mount(SelectAll);
-        fakeEvent = buildFakeEvent({ currentTarget: checkbox });
-        selectAllWrapper.props().onChange(fakeEvent);
-      });
-
-      it('should select all rows', () => {
-        const selectedRows = wrapper.instance().state.selectedRows;
-        expect(selectedRows.length).toEqual(rows.length);
-
-        expect(selectedRows.length).toBeGreaterThan(1);
-        selectedRows.forEach((selected) => expect(selected.isSelected).toBe(true));
-      });
-
-      describe('and then unchecking header checkbox', () => {
-        beforeEach(() => {
-          checkbox.checked = false;
-          selectAllWrapper.props().onChange(fakeEvent);
-        });
-
-        it('should deselect all rows', () => {
-          const selectedRows = wrapper.instance().state.selectedRows;
-
-          expect(selectedRows.length).toBeGreaterThan(1);
-          selectedRows.forEach((selected) => expect(selected.isSelected).toBe(false));
-        });
-      });
-    });
-
-    describe('when selected is false', () => {
-      beforeEach(() => {
-        wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: false }, { id: 1, isSelected: false }, { id: 2, isSelected: false }, { id: 3, isSelected: false }] });
-        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
-        selectRowCol.onCellChange(3, 'select-row', rows[3], buildFakeEvent());
-      });
-
-      it('should be able to select an individual row', () => {
-        expect(wrapper.instance().state.selectedRows[3].isSelected).toBe(true);
-      });
-    });
-
-    describe('when selected is null', () => {
-      beforeEach(() => {
-        wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: null }, { id: 2, isSelected: null }, { id: 3, isSelected: null }] });
-        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
-        selectRowCol.onCellChange(2, 'select-row', rows[2], buildFakeEvent());
-      });
-
-      it('should be able to select an individual row', () => {
-        expect(wrapper.instance().state.selectedRows[2].isSelected).toBe(true);
-      });
-    });
-
-    describe('when selected is true', () => {
-      beforeEach(() => {
-        wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: true }, { id: 2, isSelected: true }, { id: 3, isSelected: true }] });
-        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
-        selectRowCol.onCellChange(3, 'select-row', rows[3], buildFakeEvent());
-      });
-
-      it('should be able to unselect an individual row ', () => {
-        expect(wrapper.instance().state.selectedRows[3].isSelected).toBe(false);
-      });
     });
   });
 
@@ -310,27 +220,6 @@ describe('Grid', () => {
       expect(_deselectedRows.length).toBe(1);
       expect(_deselectedRows[0].rowIdx).toBe(0);
       expect(_deselectedRows[0].row).toBe(rows[0]);
-    });
-
-    it('should set lastRowIdxUiSelected state', () => {
-      selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
-      expect(wrapper.instance().state.lastRowIdxUiSelected).toEqual(1);
-    });
-
-    it('should select range when shift selecting below selected row', () => {
-      selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
-      expect(_selectedRows.length).toEqual(1);
-      simulateGridKeyDownWithKeyCode(wrapper, 16);
-      selectRowCol.onCellChange(3, '', rows[3], buildFakeEvent());
-      expect(_selectedRows.length).toEqual(2);
-    });
-
-    it('should select range when shift selecting above selected row', () => {
-      selectRowCol.onCellChange(3, '', rows[3], buildFakeEvent());
-      expect(_selectedRows.length).toEqual(1);
-      simulateGridKeyDownWithKeyCode(wrapper, 16);
-      selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
-      expect(_selectedRows.length).toEqual(2);
     });
 
     describe('checking header checkbox', () => {
@@ -398,23 +287,6 @@ describe('Grid', () => {
         selectAllWrapper.props().onChange(fakeEvent);
 
         expect(_deselectedRows.length).toBe(2);
-      });
-    });
-  });
-
-  describe('changes to non metric column data', () => {
-    it('should keep original metric information', () => {
-      const { wrapper, columns } = setup();
-      const component = wrapper.instance();
-      const originalMetrics = { ...component.state.columnMetrics };
-      columns[0].editable = true;
-      wrapper.setProps({ columns });
-      const { columnMetrics } = component.state;
-
-      expect(columnMetrics.columns.length).toBeGreaterThan(1);
-      columnMetrics.columns.forEach((column, index) => {
-        expect(column.width).toEqual(originalMetrics.columns[index].width);
-        expect(column.left).toEqual(originalMetrics.columns[index].left);
       });
     });
   });

@@ -63,10 +63,10 @@ export type ColumnList<TRow> = Column<TRow>[] | List<Column<TRow>>;
 export interface ColumnMetrics<TRow> {
   columns: CalculatedColumn<TRow>[];
   lastFrozenColumnIndex: number;
-  width: number;
+  viewportWidth: number;
   totalColumnWidth: number;
-  totalWidth: number;
   minColumnWidth: number;
+  columnWidths: Map<keyof TRow, number>;
 }
 
 export interface RowData {
