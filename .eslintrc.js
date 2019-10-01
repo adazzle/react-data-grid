@@ -269,7 +269,7 @@ const rules = {
   'object-shorthand': [1, 'always', { avoidExplicitReturnArrows: true }],
   'prefer-arrow-callback': 0,
   'prefer-const': 2,
-  'prefer-destructuring': [1, { array: false, object: true }],
+  'prefer-destructuring': 0, // TODO
   'prefer-numeric-literals': 1,
   'prefer-rest-params': 2,
   'prefer-spread': 1,
@@ -421,7 +421,7 @@ const rules = {
   '@typescript-eslint/brace-style': [1, '1tbs', { allowSingleLine: true }],
   '@typescript-eslint/camelcase': 0,
   '@typescript-eslint/class-name-casing': 0,
-  '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }],
+  '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'allow' }],
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
