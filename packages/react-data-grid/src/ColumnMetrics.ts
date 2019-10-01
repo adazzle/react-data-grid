@@ -8,10 +8,8 @@ type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'minColumnWidth' | 'c
 };
 
 function toArray<R>(columns: ColumnList<R>): Column<R>[] {
-  if (Array.isArray(columns)) {
-    return columns;
-  }
-  return columns.toArray();
+  columns = Array.isArray(columns) ? columns : columns.toArray();
+  return columns.map(c => ({ ...c }));
 }
 
 export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {

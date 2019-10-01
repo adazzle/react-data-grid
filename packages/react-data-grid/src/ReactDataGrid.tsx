@@ -405,7 +405,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
         : columns.unshift(selectColumn);
     }
 
-    return columns.slice(0) as ColumnList<R>;
+    return columns;
   }, [_keysDown, columns, enableRowSelect, lastRowIdxUiSelected, onRowSelect, props.rowActionsCell, rowGetter, rowKey, rowSelection, rowsCount, selectAllRenderer, selectedRows]);
 
   const columnMetrics = useMemo(() => {
