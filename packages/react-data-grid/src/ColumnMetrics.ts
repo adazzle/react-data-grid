@@ -1,133 +1,88 @@
 export { sameColumn } from './ColumnComparer';
-import { getSize, isFrozen } from './ColumnUtils';
+import { isFrozen } from './ColumnUtils';
 import { getScrollbarSize } from './utils';
-import { isColumnsImmutable } from './common/utils';
 import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/types';
 
-type Metrics<R> = Pick<ColumnMetrics<R>, 'totalWidth' | 'minColumnWidth'> & {
+type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'minColumnWidth' | 'columnWidths'> & {
   columns: ColumnList<R>;
 };
 
-function cloneColumns<R>(columns: ColumnList<R>): Column<R>[] {
-  if (Array.isArray(columns)) {
-    return columns.map(c => ({ ...c }));
-  }
-  return cloneColumns(columns.toArray());
+function toArray<R>(columns: ColumnList<R>): Column<R>[] {
+  columns = Array.isArray(columns) ? columns : columns.toArray();
+  return columns.map(c => ({ ...c }));
 }
 
-function setColumnWidths<R>(columns: Column<R>[], totalWidth: number): void {
-  for (const column of columns) {
-    if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
-      column.width = Math.floor(totalWidth * column.width / 100);
-    }
-  }
-}
-
-function setDefferedColumnWidths<R>(columns: Column<R>[], unallocatedWidth: number, minColumnWidth: number): void {
-  const defferedColumns = columns.filter(c => !c.width);
-  const columnWidth = Math.floor(unallocatedWidth / defferedColumns.length);
-
-  for (const column of columns) {
-    if (column.width) continue;
-
-    if (unallocatedWidth <= 0) {
-      column.width = minColumnWidth;
-    }
-
-    column.width = columnWidth < minColumnWidth ? minColumnWidth : columnWidth;
-  }
-}
-
-function setColumnOffsets<R>(columns: Column<R>[]): void {
+export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let left = 0;
-  for (const column of columns as CalculatedColumn<R>[]) {
-    column.left = left;
-    left += column.width;
-  }
-}
+  let totalWidth = 0;
 
-function getTotalColumnWidth<R>(columns: Column<R>[]): number {
-  return columns.reduce((acc, c) => acc + (c.width || 0), 0);
-}
+  const columns = toArray(metrics.columns);
+  setSpecifiedWidths(columns, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
 
-export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
-  // clone columns so we can safely edit them:
-  const columns = cloneColumns(metrics.columns);
-  // compute width for columns which specify width
-  setColumnWidths(columns, metrics.totalWidth);
+  const allocatedWidths = columns.map(c => c.width || 0).reduce((acc, w) => acc + w, 0);
+  const unallocatedWidth = metrics.viewportWidth - allocatedWidths - getScrollbarSize();
 
-  const width = getTotalColumnWidth(columns);
-  const borderWidth = 2;
-  const unallocatedWidth = metrics.totalWidth - width - getScrollbarSize() - borderWidth;
+  setRemainingWidths(columns, unallocatedWidth, metrics.minColumnWidth);
 
-  // compute width for columns which doesn't specify width
-  setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);
+  let calculatedColumns: CalculatedColumn<R>[] = columns.map(column => {
+    // Every column should have a valid width as this stage
+    const width = column.width as number;
+    const newColumn: CalculatedColumn<R> = {
+      ...column,
+      idx: 0,
+      width,
+      left
+    };
+    totalWidth += width;
+    left += width;
+    return newColumn;
+  });
 
-  // compute left offset
-  setColumnOffsets(columns);
-
-  const frozenColumns = columns.filter(c => isFrozen(c));
-  const nonFrozenColumns = columns.filter(c => !isFrozen(c));
-  const calculatedColumns = frozenColumns.concat(nonFrozenColumns) as CalculatedColumn<R>[];
+  const frozenColumns = calculatedColumns.filter(c => isFrozen(c));
+  const nonFrozenColumns = calculatedColumns.filter(c => !isFrozen(c));
+  calculatedColumns = frozenColumns.concat(nonFrozenColumns);
   calculatedColumns.forEach((c, i) => c.idx = i);
   return {
-    width,
     columns: calculatedColumns,
     lastFrozenColumnIndex: frozenColumns.length - 1,
-    totalWidth: metrics.totalWidth,
-    totalColumnWidth: getTotalColumnWidth(columns),
-    minColumnWidth: metrics.minColumnWidth
+    totalColumnWidth: totalWidth,
+    minColumnWidth: metrics.minColumnWidth,
+    columnWidths: metrics.columnWidths,
+    viewportWidth: metrics.viewportWidth
   };
 }
 
-/**
- * Update column metrics calculation by resizing a column.
- */
-export function resizeColumn<R>(metrics: ColumnMetrics<R>, index: number, width: number): ColumnMetrics<R> {
-  const updatedColumn = { ...metrics.columns[index] };
-  updatedColumn.width = Math.max(width, metrics.minColumnWidth);
-  const updatedMetrics = { ...metrics };
-  updatedMetrics.columns = [...metrics.columns];
-  updatedMetrics.columns.splice(index, 1, updatedColumn);
-
-  return recalculate(updatedMetrics);
+function setSpecifiedWidths<R>(
+  columns: Column<R>[],
+  columnWidths: Map<keyof R, number>,
+  viewportWidth: number,
+  minColumnWidth: number
+): void {
+  for (const column of columns) {
+    if (columnWidths.has(column.key)) {
+      // Use the resized width if available
+      column.width = columnWidths.get(column.key);
+    } else if (typeof column.width === 'number') {
+      // TODO: allow width to be less than minWidth?
+      column.width = Math.max(column.width, minColumnWidth);
+    } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
+      column.width = Math.max(Math.floor(viewportWidth * column.width / 100), minColumnWidth);
+    }
+  }
 }
 
-type ColumnComparer<R> = (colA: Column<R>, colB: Column<R>) => boolean;
+function setRemainingWidths<R>(
+  columns: Column<R>[],
+  unallocatedWidth: number,
+  minColumnWidth: number
+) {
+  const unassignedColumns = columns.filter(c => c.width === undefined);
+  const columnWidth = Math.max(
+    Math.floor(unallocatedWidth / unassignedColumns.length),
+    minColumnWidth
+  );
 
-function compareEachColumn<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
-  if (getSize(prevColumns) !== getSize(nextColumns)) return false;
-
-  const keys = new Set<keyof R>();
-  const prevColumnsMap = new Map<keyof R, Column<R>>();
-  const nextColumnsMap = new Map<keyof R, Column<R>>();
-
-  for (const column of prevColumns) {
-    keys.add(column.key);
-    prevColumnsMap.set(column.key, column);
+  for (const column of unassignedColumns) {
+    column.width = columnWidth;
   }
-
-  for (const column of nextColumns) {
-    keys.add(column.key);
-    nextColumnsMap.set(column.key, column);
-  }
-
-  if (keys.size > prevColumnsMap.size) return false;
-
-  for (const key of keys) {
-    if (!prevColumnsMap.has(key) || !nextColumnsMap.has(key)) return false;
-    const prevColumn = prevColumnsMap.get(key) as Column<R>;
-    const nextColumn = nextColumnsMap.get(key) as Column<R>;
-    if (!isSameColumn(prevColumn, nextColumn)) return false;
-  }
-
-  return true;
-}
-
-export function sameColumns<R>(prevColumns: ColumnList<R>, nextColumns: ColumnList<R>, isSameColumn: ColumnComparer<R>): boolean {
-  if (isColumnsImmutable(prevColumns) && isColumnsImmutable(nextColumns)) {
-    return prevColumns === nextColumns;
-  }
-
-  return compareEachColumn(prevColumns, nextColumns, isSameColumn);
 }

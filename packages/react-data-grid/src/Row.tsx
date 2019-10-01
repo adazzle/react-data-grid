@@ -74,7 +74,8 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   getRowTop(): number {
     const { current } = this.row;
-    return current ? current.offsetTop : 0;
+    if (!current) return 0;
+    return current.getBoundingClientRect().top - current.parentElement!.getBoundingClientRect().top;
   }
 
   getRowHeight(): number {
