@@ -52,9 +52,8 @@ describe('Header Unit Tests', () => {
     const resizeColIdx = 1;
     const testProps = getProps();
     const wrapper = shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, testProps));
-    const headerRow = wrapper.find(HeaderRow);
-    headerRow.props().onColumnResize(helpers.columns[resizeColIdx] as never, 200);
-    headerRow.props().onColumnResizeEnd();
+    wrapper.find(HeaderRow).props().onColumnResize(helpers.columns[resizeColIdx] as never, 200);
+    wrapper.find(HeaderRow).props().onColumnResizeEnd();
     expect(testProps.onColumnResize).toHaveBeenCalled();
     expect(testProps.onColumnResize).toHaveBeenCalledWith(resizeColIdx, 200);
   });
