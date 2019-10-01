@@ -483,14 +483,13 @@ const rules = {
 };
 
 const jsRules = {
-  'no-extra-parens': [1, 'all', {
-    nestedBinaryExpressions: false,
-    ignoreJSX: 'multi-line'
-  }]
+  'no-undef': 2,
+  'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
 };
 
 module.exports = {
   root: true,
+  reportUnusedDisableDirectives: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module'
@@ -531,7 +530,8 @@ module.exports = {
     }
   }, {
     files: [
-      '*.js'
+      '*.js',
+      '*.jsx'
     ],
     parserOptions: {
       ecmaFeatures: {
