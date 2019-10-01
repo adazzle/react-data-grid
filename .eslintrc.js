@@ -530,8 +530,7 @@ module.exports = {
     }
   }, {
     files: [
-      '*.js',
-      '*.jsx'
+      '*.js'
     ],
     parserOptions: {
       ecmaFeatures: {
