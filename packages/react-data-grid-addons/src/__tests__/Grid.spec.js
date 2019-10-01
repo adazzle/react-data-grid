@@ -4,7 +4,6 @@ import { mount } from 'enzyme';
 import TestUtils from 'react-dom/test-utils';
 
 import Grid, { CheckboxEditor } from 'react-data-grid';
-import mockStateObject from './data/MockStateObject';
 
 describe('Grid', () => {
   const setup = (extraProps) => {
@@ -54,10 +53,6 @@ describe('Grid', () => {
       stopPropagation() {},
       ...addedData
     };
-  };
-
-  const simulateGridKeyDownWithKeyCode = (wrapper, keyCode) => {
-    getBaseGrid(wrapper).props().onViewportKeydown(buildFakeEvent({ keyCode }));
   };
 
   it('should create a new instance of Grid', () => {
