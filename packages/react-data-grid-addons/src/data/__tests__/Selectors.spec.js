@@ -19,8 +19,8 @@ function setupSpies() {
 
 function selectPerRow(rows, options) {
   for (let i = 0; i < 10; i++) {
-    const filters = options.filters;
-    const groupBy = options.groupBy;
+    const { filters } = options;
+    const { groupBy } = options;
     Selectors.getRows({ rows, filters, groupBy });
   }
 }
