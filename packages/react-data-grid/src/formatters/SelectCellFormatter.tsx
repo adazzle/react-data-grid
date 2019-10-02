@@ -16,7 +16,7 @@ export default function SelectCellFormatter({ value, onChange }: SelectCellForma
         type="checkbox"
         className="react-grid-checkbox"
         onChange={handleChange}
-        checked={value === true}
+        checked={value}
       />
       <span className="react-grid-checkbox-label" />
     </label>
