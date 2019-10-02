@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid-addons",
-  "version": "7.0.0-alpha.18",
+  "version": "7.0.0-alpha.19",
   "description": "A set of addons for react-data-grid",
   "author": "Adazzle",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react-contextmenu": "^2.11.0",
-    "react-data-grid": "^7.0.0-alpha.18",
+    "react-data-grid": "^7.0.0-alpha.19",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",
     "react-select": "^1.3.0",
