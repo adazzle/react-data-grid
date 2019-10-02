@@ -37,7 +37,8 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TDependentValue, TRow>>;
   /** Header renderer for each header cell */
-  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
+  // TODO: finalize API
+  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>> | (() => React.ReactElement);
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TDependentValue>>;
 
