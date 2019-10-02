@@ -126,7 +126,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     );
   }
 
-  scrollToColumn(idx: number) {
+  scrollToColumn = (idx: number) => {
     const { current } = this.canvas;
     if (!current) return;
 
@@ -135,7 +135,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     if (newScrollLeft !== 0) {
       current.scrollLeft = scrollLeft + newScrollLeft;
     }
-  }
+  };
 
   getRows(rowOverscanStartIdx: number, rowOverscanEndIdx: number) {
     const rows = [];
