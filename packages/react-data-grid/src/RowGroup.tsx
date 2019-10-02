@@ -31,7 +31,7 @@ interface Props<R> {
   renderBaseRow(p: RowRendererProps<R>): React.ReactElement;
 }
 
-const RowGroup = forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, ref) {
+export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, ref) {
   function onRowExpandToggle(expand?: boolean) {
     const { onRowExpandToggle } = props.cellMetaData;
     if (onRowExpandToggle) {
@@ -58,8 +58,6 @@ const RowGroup = forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props,
     </div>
   );
 });
-
-export default RowGroup;
 
 interface DefaultBaseProps extends Props<any> {
   onRowExpandClick(): void;
