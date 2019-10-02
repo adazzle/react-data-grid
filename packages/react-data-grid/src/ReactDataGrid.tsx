@@ -80,7 +80,7 @@ export interface ReactDataGridProps<R extends {}> {
     selectedRows: Set<R[keyof R]>;
 
     /** Function called whenever row selection is changed */
-    onSelectedRowsChanged: (selectedRows: Set<R[keyof R]>) => void;
+    onSelectedRowsChange: (selectedRows: Set<R[keyof R]>) => void;
 
     /** Custom checkbox formatter */
     // TODO: fix types
@@ -225,7 +225,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     //   return _keysDown.has(KeyCodes.Shift) && _keysDown.size === 1;
     // }
 
-    const { selectedRows, onSelectedRowsChanged /*, enableShiftSelect*/ } = rowSelection;
+    const { selectedRows, onSelectedRowsChange /*, enableShiftSelect*/ } = rowSelection;
     // let lastSelectedRowIdx: number | undefined;
 
     function handleSelectionChange(rowIdx: number, row: R, value: boolean) {
@@ -248,7 +248,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
       } else {
         ids.forEach(id => newSelectedRows.delete(id));
       }
-      onSelectedRowsChanged(newSelectedRows);
+      onSelectedRowsChange(newSelectedRows);
     }
 
     function handleAllSelectionChange(value: boolean) {
@@ -258,7 +258,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           newSelectedRows.add(rowGetter(i)[rowKey]);
         }
       }
-      onSelectedRowsChanged(newSelectedRows);
+      onSelectedRowsChange(newSelectedRows);
     }
 
     // TODO: fix type

@@ -54,7 +54,7 @@ class Example extends React.Component {
             showCheckbox: true,
             enableShiftSelect: true,
             selectedRows: this.state.selectedRows,
-            onSelectedRowsChanged: (selectedRows) => {
+            onSelectedRowsChange: (selectedRows) => {
               this.setState({ selectedRows });
             }
           }}
