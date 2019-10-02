@@ -5,8 +5,6 @@ import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export type SelectedRow<TRow> = TRow & { isSelected: boolean };
-
 interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
@@ -43,8 +41,6 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TDependentValue>>;
 
-  // TODO: these props are only used by checkbox editor and we should remove them
-  onCellChange?(rowIdx: number, key: keyof TRow, dependentValues: TDependentValue, event: React.SyntheticEvent): void;
   getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
 }
 
@@ -277,8 +273,6 @@ export interface RowGroupMetaData {
   getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
 }
 
-export type RowSelection = { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };
-
 export interface HeaderRowData<TRow> {
   rowType: HeaderRowType;
   height: number;
@@ -328,9 +322,4 @@ export interface CellCopyPasteEvent<TRow> {
 export interface CheckCellIsEditableEvent<TRow> extends Position {
   row: TRow;
   column: CalculatedColumn<TRow>;
-}
-
-export interface RowSelectionParams<TRow> {
-  rowIdx: number;
-  row: TRow;
 }

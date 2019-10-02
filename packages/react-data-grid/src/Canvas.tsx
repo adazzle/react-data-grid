@@ -5,7 +5,6 @@ import Row from './Row';
 import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
-import * as rowUtils from './RowUtils';
 import { getColumnScrollPosition, isPositionStickySupported } from './utils';
 import { EventTypes } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
@@ -22,7 +21,6 @@ type SharedViewportProps<R> = Pick<ViewportProps<R>,
 | 'rowHeight'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'rowSelection'
 | 'getSubRowDetails'
 | 'rowGroupRenderer'
 | 'enableCellSelect'
@@ -147,19 +145,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   isRowSelected(idx: number, row: R) {
-    // Use selectedRows if set
     if (this.props.selectedRows) {
-      const selectedRow = this.props.selectedRows.find(r => {
-        const rowKeyValue = rowUtils.get(row, this.props.rowKey);
-        return r[this.props.rowKey] === rowKeyValue;
-      });
-      return !!(selectedRow && selectedRow.isSelected);
-    }
-
-    // Else use new rowSelection props
-    if (this.props.rowSelection) {
-      const { keys, indexes, isSelectedKey } = this.props.rowSelection as { [key: string]: unknown };
-      return rowUtils.isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, row, idx);
+      return this.props.selectedRows.has(row[this.props.rowKey]);
     }
 
     return false;

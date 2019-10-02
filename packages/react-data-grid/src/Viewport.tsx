@@ -25,7 +25,6 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'minHeight'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'rowSelection'
 | 'getSubRowDetails'
 | 'rowGroupRenderer'
 | 'enableCellSelect'
@@ -150,7 +149,6 @@ export default function Viewport<R>({
         onScroll={onScroll}
         scrollToRowIndex={props.scrollToRowIndex}
         contextMenu={props.contextMenu}
-        rowSelection={props.rowSelection}
         getSubRowDetails={props.getSubRowDetails}
         rowGroupRenderer={props.rowGroupRenderer}
         isScrolling={isScrolling}

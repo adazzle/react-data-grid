@@ -29,27 +29,21 @@ class Example extends React.Component {
         count: i * 1000
       });
     }
-    this.state = { rows, selectedIndexes: [] };
+    this.state = {
+      rows,
+      selectedRows: new Set()
+    };
   }
 
   rowGetter = (i) => {
     return this.state.rows[i];
   };
 
-  onRowsSelected = (rows) => {
-    this.setState({ selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx)) });
-  };
-
-  onRowsDeselected = (rows) => {
-    const rowIndexes = rows.map(r => r.rowIdx);
-    this.setState({ selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1) });
-  };
-
   render() {
-    const rowText = this.state.selectedIndexes.length === 1 ? 'row' : 'rows';
+    const rowText = this.state.selectedRows.size === 1 ? 'row' : 'rows';
     return (
       <div>
-        <span>{this.state.selectedIndexes.length} {rowText} selected</span>
+        <span>{this.state.selectedRows.size} {rowText} selected</span>
         <ReactDataGrid
           rowKey="id"
           columns={this._columns}
@@ -59,10 +53,9 @@ class Example extends React.Component {
           rowSelection={{
             showCheckbox: true,
             enableShiftSelect: true,
-            onRowsSelected: this.onRowsSelected,
-            onRowsDeselected: this.onRowsDeselected,
-            selectBy: {
-              indexes: this.state.selectedIndexes
+            selectedRows: this.state.selectedRows,
+            onSelectedRowsChanged: (selectedRows) => {
+              this.setState({ selectedRows });
             }
           }}
         />

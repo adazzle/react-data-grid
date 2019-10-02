@@ -10,10 +10,8 @@ import React, {
 
 import Grid from './Grid';
 import ToolbarContainer, { ToolbarProps } from './ToolbarContainer';
-import CheckboxEditor, { CheckboxEditorProps } from './common/editors/CheckboxEditor';
-import { SelectAll } from './formatters';
-import * as rowUtils from './RowUtils';
-import KeyCodes from './KeyCodes';
+import SelectCellFormatter from './formatters/SelectCellFormatter';
+// import KeyCodes from './KeyCodes';
 import { getColumnMetrics } from './ColumnMetrics';
 import { ScrollState } from './Viewport';
 import { RowsContainerProps } from './RowsContainer';
@@ -35,13 +33,11 @@ import {
   Position,
   RowExpandToggleEvent,
   RowGetter,
-  RowSelection,
-  RowSelectionParams,
   SelectedRange,
   SubRowDetails,
   SubRowOptions,
-  SelectedRow,
-  RowRendererProps
+  RowRendererProps,
+  FormatterProps
 } from './common/types';
 
 export interface ReactDataGridProps<R extends {}> {
@@ -53,8 +49,6 @@ export interface ReactDataGridProps<R extends {}> {
   headerRowHeight?: number;
   /** The height of the header filter row in pixels */
   headerFiltersHeight?: number;
-  /** Deprecated: Legacy prop to turn on row selection. Use rowSelection props instead*/
-  enableRowSelect?: boolean | string;
   /** Component used to render toolbar above the grid */
   toolbar?: React.ReactElement<ToolbarProps<R>> | React.ComponentType<ToolbarProps<R>>;
   cellRangeSelection?: {
@@ -64,8 +58,6 @@ export interface ReactDataGridProps<R extends {}> {
   };
   /** Minimum column width in pixels */
   minColumnWidth?: number;
-  /** Component to render the UI in the header row for selecting all rows */
-  selectAllRenderer?: React.ComponentType<React.ComponentProps<typeof SelectAll>>;
   /** Function called whenever row is clicked */
   onRowClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
   /** Function called whenever row is double clicked */
@@ -80,18 +72,21 @@ export interface ReactDataGridProps<R extends {}> {
   onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelect?(rowData: R[]): void;
   rowSelection?: {
-    enableShiftSelect?: boolean;
-    /** Function called whenever rows are selected */
-    onRowsSelected?(args: RowSelectionParams<R>[]): void;
-    /** Function called whenever rows are deselected */
-    onRowsDeselected?(args: RowSelectionParams<R>[]): void;
     /** toggle whether to show a checkbox in first column to select rows */
     showCheckbox?: boolean;
-    /** Method by which rows should be selected */
-    selectBy: RowSelection;
+    enableShiftSelect?: boolean;
+
+    /**  Selected rows Set<rowKey>(); */
+    selectedRows: Set<R[keyof R]>;
+
+    /** Function called whenever row selection is changed */
+    onSelectedRowsChanged: (selectedRows: Set<R[keyof R]>) => void;
+
+    /** Custom checkbox formatter */
+    // TODO: fix types
+    cellRenderer?: React.ReactElement;
+    headerCellRenderer?: React.ReactElement;
   };
-  /** Custom checkbox formatter */
-  rowActionsCell?: React.ComponentType<CheckboxEditorProps<R>>;
   /**
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
@@ -183,11 +178,6 @@ export interface ReactDataGridHandle<R> {
   selectCell(position: Position, openEditor?: boolean): void;
   handleToggleFilter(): void;
   openCellEditor(rowIdx: number, colIdx: number): void;
-  getSelectedRows(): SelectedRow<R>[] | undefined;
-}
-
-function isRowSelected<R>(keys: unknown, indexes: unknown, isSelectedKey: unknown, rowData: R, rowIdx: number) {
-  return rowUtils.isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, rowData, rowIdx);
 }
 
 /**
@@ -205,10 +195,8 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   minHeight = 350,
   minWidth: width,
   enableCellSelect = false,
-  enableRowSelect = false,
   enableCellAutoFocus = true,
   cellNavigationMode = CellNavigationMode.NONE,
-  selectAllRenderer = SelectAll,
   editorPortalTarget = document.body,
   columns,
   rowsCount,
@@ -219,9 +207,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   onClearFilters,
   ...props
 }: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle<R>>) {
-  const [selectedRows, setSelectedRows] = useState<SelectedRow<R>[]>([]);
   const [canFilter, setCanFilter] = useState(false);
-  const [lastRowIdxUiSelected, setLastRowIdxUiSelected] = useState(-1);
   const [sortColumn, setSortColumn] = useState(props.sortColumn);
   const [sortDirection, setSortDirection] = useState(props.sortDirection);
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
@@ -229,184 +215,72 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   const [_keysDown] = useState(() => new Set<number>());
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
-  const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
 
-  const gridColumns = useMemo<ColumnList<R>>(() => {
-    function isSingleKeyDown(keyCode: number) {
-      return _keysDown.has(keyCode) && _keysDown.size === 1;
-    }
+  const gridColumns = useMemo(() => {
+    // TODO: handle row selection without checkbox, i.e using row click
+    if (!rowSelection || !rowSelection.showCheckbox) return columns;
 
-    function getSelectedRow(rows: SelectedRow<R>[], key: unknown) {
-      return rows.find(r => r[rowKey] === key);
-    }
+    // function isShiftKeyPressed() {
+    //   return _keysDown.has(KeyCodes.Shift) && _keysDown.size === 1;
+    // }
 
-    function canUseNewRowSelection() {
-      return rowSelection && rowSelection.selectBy;
-    }
+    const { selectedRows, onSelectedRowsChanged /*, enableShiftSelect*/ } = rowSelection;
+    // let lastSelectedRowIdx: number | undefined;
 
-    // return false if not a shift select so can be handled as normal row selection
-    function handleShiftSelect(rowIdx: number) {
-      if (rowSelection && lastRowIdxUiSelected > -1 && isSingleKeyDown(KeyCodes.Shift)) {
-        const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
-        const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, rowGetter(rowIdx), rowIdx);
+    function handleSelectionChange(rowIdx: number, row: R, value: boolean) {
+      const newSelectedRows = new Set(selectedRows);
+      const ids = [row[rowKey]];
 
-        if (isPreviouslySelected) return false;
+      // TODO: handle shift select
+      // if (enableShiftSelect) {
+      //   if (typeof lastSelectedRowIdx === 'number' && ) {
+      //   } else if (isShiftKeyPressed) {
+      //     lastSelectedRowIdx = rowIdx;
+      //     ids.push(row[rowKey]);
+      //   } else { }
+      // } else {
+      //   ids.push(row[rowKey]);
+      // }
 
-        let handled = false;
-
-        if (rowIdx > lastRowIdxUiSelected) {
-          const rowsSelected = [];
-
-          for (let i = lastRowIdxUiSelected + 1; i <= rowIdx; i++) {
-            rowsSelected.push({ rowIdx: i, row: rowGetter(i) });
-          }
-
-          if (typeof rowSelection.onRowsSelected === 'function') {
-            rowSelection.onRowsSelected(rowsSelected);
-          }
-
-          handled = true;
-        } else if (rowIdx < lastRowIdxUiSelected) {
-          const rowsSelected = [];
-
-          for (let i = rowIdx; i <= lastRowIdxUiSelected - 1; i++) {
-            rowsSelected.push({ rowIdx: i, row: rowGetter(i) });
-          }
-
-          if (typeof rowSelection.onRowsSelected === 'function') {
-            rowSelection.onRowsSelected(rowsSelected);
-          }
-
-          handled = true;
-        }
-
-        if (handled) {
-          setLastRowIdxUiSelected(rowIdx);
-        }
-
-        return handled;
-      }
-
-      return false;
-    }
-
-    function handleNewRowSelect(rowIdx: number, rowData: R) {
-      const { current } = selectAllCheckboxRef;
-      if (current && current.checked === true) {
-        current.checked = false;
-      }
-
-      if (rowSelection) {
-        const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
-        const isPreviouslySelected = isRowSelected(keys, indexes, isSelectedKey, rowData, rowIdx);
-
-        setLastRowIdxUiSelected(isPreviouslySelected ? -1 : rowIdx);
-        const cb = isPreviouslySelected ? rowSelection.onRowsDeselected : rowSelection.onRowsSelected;
-        if (typeof cb === 'function') {
-          cb([{ rowIdx, row: rowData }]);
-        }
-      }
-    }
-
-    // columnKey not used here as this function will select the whole row,
-    // but needed to match the function signature in the CheckboxEditor
-    function handleRowSelect(rowIdx: number, columnKey: keyof R, rowData: R, event: React.ChangeEvent<HTMLInputElement>) {
-      event.stopPropagation();
-
-      if (canUseNewRowSelection()) {
-        if (rowSelection && rowSelection.enableShiftSelect === true) {
-          if (!handleShiftSelect(rowIdx)) {
-            handleNewRowSelect(rowIdx, rowData);
-          }
-        } else {
-          handleNewRowSelect(rowIdx, rowData);
-        }
-      } else { // Fallback to old onRowSelect handler
-        const newSelectedRows = enableRowSelect === 'single' ? [] : [...selectedRows];
-        const selectedRow = getSelectedRow(newSelectedRows, rowData[rowKey]);
-        if (selectedRow) {
-          selectedRow.isSelected = !selectedRow.isSelected;
-        } else {
-          (rowData as SelectedRow<R>).isSelected = true;
-          newSelectedRows.push(rowData as SelectedRow<R>);
-        }
-        setSelectedRows(newSelectedRows);
-        if (onRowSelect) {
-          onRowSelect(newSelectedRows.filter(r => r.isSelected === true));
-        }
-      }
-    }
-
-    function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>) {
-      const allRowsSelected = e.currentTarget.checked;
-      if (rowSelection && canUseNewRowSelection()) {
-        const { keys, indexes, isSelectedKey } = rowSelection.selectBy as { [key: string]: unknown };
-
-        if (allRowsSelected && typeof rowSelection.onRowsSelected === 'function') {
-          const selectedRows = [];
-          for (let i = 0; i < rowsCount; i++) {
-            const rowData = rowGetter(i);
-            if (!isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
-              selectedRows.push({ rowIdx: i, row: rowData });
-            }
-          }
-
-          if (selectedRows.length > 0) {
-            rowSelection.onRowsSelected(selectedRows);
-          }
-        } else if (!allRowsSelected && typeof rowSelection.onRowsDeselected === 'function') {
-          const deselectedRows = [];
-          for (let i = 0; i < rowsCount; i++) {
-            const rowData = rowGetter(i);
-            if (isRowSelected(keys, indexes, isSelectedKey, rowData, i)) {
-              deselectedRows.push({ rowIdx: i, row: rowData });
-            }
-          }
-
-          if (deselectedRows.length > 0) {
-            rowSelection.onRowsDeselected(deselectedRows);
-          }
-        }
+      if (value) {
+        ids.forEach(id => newSelectedRows.add(id));
       } else {
-        const selectedRows: SelectedRow<R>[] = [];
+        ids.forEach(id => newSelectedRows.delete(id));
+      }
+      onSelectedRowsChanged(newSelectedRows);
+    }
+
+    function handleAllSelectionChange(value: boolean) {
+      const newSelectedRows = new Set<R[keyof R]>();
+      if (value) {
         for (let i = 0; i < rowsCount; i++) {
-          const row = { ...rowGetter(i), isSelected: allRowsSelected };
-          selectedRows.push(row);
-        }
-        setSelectedRows(selectedRows);
-        if (typeof onRowSelect === 'function') {
-          onRowSelect(selectedRows.filter(r => r.isSelected === true));
+          newSelectedRows.add(rowGetter(i)[rowKey]);
         }
       }
+      onSelectedRowsChanged(newSelectedRows);
     }
 
-    if (props.rowActionsCell || (enableRowSelect && !rowSelection) || (rowSelection && rowSelection.showCheckbox !== false)) {
-      const SelectAllComponent = selectAllRenderer;
-      const headerRenderer = enableRowSelect === 'single'
-        ? undefined
-        : <SelectAllComponent onChange={handleCheckboxChange} ref={selectAllCheckboxRef} />;
-      const Formatter = (props.rowActionsCell ? props.rowActionsCell : CheckboxEditor) as unknown as React.ComponentClass<{ rowSelection: unknown }>;
-      const selectColumn = {
-        key: 'select-row',
-        name: '',
-        formatter: <Formatter rowSelection={rowSelection} />,
-        onCellChange: handleRowSelect,
-        filterable: false,
-        headerRenderer,
-        width: 60,
-        frozen: true,
-        getRowMetaData: (rowData: R) => rowData,
-        cellClass: props.rowActionsCell ? 'rdg-row-actions-cell' : ''
-      } as unknown as Column<R>;
+    // TODO: fix type
+    const selectColumn = {
+      key: 'select-row',
+      name: '',
+      formatter: (p: FormatterProps<unknown>) => (
+        <SelectCellFormatter
+          value={selectedRows.has(p.row[rowKey])}
+          onChange={(value) => handleSelectionChange(p.rowIdx, p.row, value)}
+        />
+      ),
+      filterable: false,
+      headerRenderer: <SelectCellFormatter value={selectedRows.size === rowsCount} onChange={(value) => handleAllSelectionChange(value)} />,
+      width: 60,
+      frozen: true
+    } as Column<R>;
 
-      return Array.isArray(columns)
-        ? [selectColumn, ...columns]
-        : columns.unshift(selectColumn);
-    }
-
-    return columns;
-  }, [_keysDown, columns, enableRowSelect, lastRowIdxUiSelected, onRowSelect, props.rowActionsCell, rowGetter, rowKey, rowSelection, rowsCount, selectAllRenderer, selectedRows]);
+    return Array.isArray(columns)
+      ? [selectColumn, ...columns]
+      : columns.unshift(selectColumn);
+  }, [columns, rowGetter, rowKey, rowSelection, rowsCount]);
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
@@ -575,18 +449,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     ];
   }
 
-  function getRowSelectionProps() {
-    return rowSelection && rowSelection.selectBy;
-  }
-
-  function getSelectedRows(): SelectedRow<R>[] | undefined {
-    if (rowSelection) {
-      return;
-    }
-
-    return selectedRows.filter(r => r.isSelected === true);
-  }
-
   function openCellEditor(rowIdx: number, idx: number) {
     selectCell({ rowIdx, idx }, true);
   }
@@ -599,8 +461,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     scrollToColumn,
     selectCell,
     handleToggleFilter,
-    openCellEditor,
-    getSelectedRows
+    openCellEditor
   }));
 
   const cellMetaData: CellMetaData<R> = {
@@ -662,8 +523,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           rowRenderer={props.rowRenderer}
           rowGroupRenderer={props.rowGroupRenderer}
           cellMetaData={cellMetaData}
-          selectedRows={getSelectedRows()}
-          rowSelection={getRowSelectionProps()}
+          selectedRows={rowSelection && rowSelection.selectedRows}
           rowOffsetHeight={rowOffsetHeight}
           sortColumn={sortColumn}
           sortDirection={sortDirection}
@@ -713,10 +573,6 @@ export default class ReactDataGrid<R> extends React.Component<ReactDataGridProps
 
   scrollToColumn(colIdx: number): void {
     this.gridRef.current!.scrollToColumn(colIdx);
-  }
-
-  getSelectedRows(): SelectedRow<R>[] | undefined {
-    return this.gridRef.current!.getSelectedRows();
   }
 
   render() {

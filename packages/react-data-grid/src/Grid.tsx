@@ -3,7 +3,7 @@ import { isValidElementType } from 'react-is';
 
 import Header, { HeaderHandle, HeaderProps } from './Header';
 import Viewport, { ScrollState } from './Viewport';
-import { HeaderRowData, CellMetaData, RowSelection, InteractionMasksMetaData, SelectedRow, ColumnMetrics } from './common/types';
+import { HeaderRowData, CellMetaData, InteractionMasksMetaData, ColumnMetrics } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { ReactDataGridProps } from './ReactDataGrid';
 import { EventBus } from './masks';
@@ -42,8 +42,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 export interface GridProps<R> extends SharedDataGridProps<R> {
   headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
   cellMetaData: CellMetaData<R>;
-  selectedRows?: SelectedRow<R>[];
-  rowSelection?: RowSelection;
+  selectedRows?: ReadonlySet<R[keyof R]>;
   rowOffsetHeight: number;
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
@@ -107,7 +106,6 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           minHeight={props.minHeight}
           scrollToRowIndex={props.scrollToRowIndex}
           contextMenu={props.contextMenu}
-          rowSelection={props.rowSelection}
           getSubRowDetails={props.getSubRowDetails}
           rowGroupRenderer={props.rowGroupRenderer}
           enableCellSelect={props.enableCellSelect}
