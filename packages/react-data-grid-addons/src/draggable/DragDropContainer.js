@@ -33,8 +33,7 @@ class DraggableContainer extends Component {
   render() {
     const grid = this.renderGrid();
     const rowGetter = this.props.getDragPreviewRow || grid.props.rowGetter;
-    const rowsCount = grid.props.rowsCount;
-    const columns = grid.props.columns;
+    const { rowsCount, columns } = grid.props;
     const rows = this.getRows(rowsCount, rowGetter);
     return (
       <div>

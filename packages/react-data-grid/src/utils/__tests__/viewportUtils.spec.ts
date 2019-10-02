@@ -85,9 +85,9 @@ describe('viewportUtils', () => {
       const columns = [...Array(500).keys()].map(i => ({ idx: i, key: `col${i}`, name: `col${i}`, width: 100, left: i * 100 }));
       return {
         columns,
-        width: 0,
+        viewportWidth: 0,
         totalColumnWidth: 200,
-        totalWidth: 0,
+        columnWidths: new Map(),
         minColumnWidth: 80,
         lastFrozenColumnIndex: -1
       };
@@ -109,6 +109,17 @@ describe('viewportUtils', () => {
         colVisibleEndIdx: 13,
         colOverscanStartIdx: 1,
         colOverscanEndIdx: 15
+      });
+    });
+
+    it('should use account for hidden width for large columns', () => {
+      const columnMetrics = getColumnMetrics();
+      columnMetrics.columns[0].width = 500;
+      expect(getRange({ scrollLeft: 400, columnMetrics })).toEqual({
+        colVisibleStartIdx: 0,
+        colVisibleEndIdx: 10,
+        colOverscanStartIdx: 0,
+        colOverscanEndIdx: 12
       });
     });
 

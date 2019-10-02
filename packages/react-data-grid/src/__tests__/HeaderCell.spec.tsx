@@ -52,11 +52,11 @@ describe('Header Cell Tests', () => {
       expect(props.onResize).toHaveBeenCalledWith(props.column, 200);
     });
 
-    it('finish dragging should call onResizeEnd with correct params', () => {
+    it('finish dragging should call onResizeEnd with no params', () => {
       const { wrapper, props } = setup({}, { resizable: true });
       wrapper.simulate('mousedown', { button: 0, clientX: 0 });
       window.dispatchEvent(new MouseEvent('mouseup', { clientX: 250 }));
-      expect(props.onResizeEnd).toHaveBeenCalledWith(props.column, 250);
+      expect(props.onResizeEnd).toHaveBeenCalledWith();
     });
   });
 

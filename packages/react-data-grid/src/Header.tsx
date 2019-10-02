@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { forwardRef, useRef, useState, useMemo, useImperativeHandle } from 'react';
 import classNames from 'classnames';
 
 import HeaderRow from './HeaderRow';
-import { resizeColumn } from './ColumnMetrics';
+import { getColumnMetrics } from './ColumnMetrics';
 import { getScrollbarSize } from './utils';
-import { CalculatedColumn, ColumnMetrics, HeaderRowData } from './common/types';
+import { CalculatedColumn, HeaderRowData } from './common/types';
 import { GridProps } from './Grid';
 
 type SharedGridProps<R> = Pick<GridProps<R>,
@@ -23,122 +23,98 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 
 export type HeaderProps<R> = SharedGridProps<R>;
 
-interface State<R> {
-  resizing: { column: CalculatedColumn<R>; columnMetrics: ColumnMetrics<R> } | null;
+export interface HeaderHandle {
+  setScrollLeft(scrollLeft: number): void;
 }
 
-export default class Header<R> extends React.Component<HeaderProps<R>, State<R>> {
-  readonly state: Readonly<State<R>> = { resizing: null };
+export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.Ref<HeaderHandle>) {
+  const rowRef = useRef<HeaderRow<R>>(null);
+  const filterRowRef = useRef<HeaderRow<R>>(null);
 
-  private readonly row = React.createRef<HeaderRow<R>>();
-  private readonly filterRow = React.createRef<HeaderRow<R>>();
+  const [resizing, setResizing] = useState<null | { column: CalculatedColumn<R>; width: number }>(null);
 
-  componentWillReceiveProps(): void {
-    this.setState({ resizing: null });
+  const columnMetrics = useMemo(() => {
+    if (resizing === null) return props.columnMetrics;
+
+    return getColumnMetrics({
+      ...props.columnMetrics,
+      columnWidths: new Map([
+        ...props.columnMetrics.columnWidths,
+        [resizing.column.key, resizing.width]
+      ])
+    });
+  }, [props.columnMetrics, resizing]);
+
+  useImperativeHandle(ref, () => ({
+    setScrollLeft(scrollLeft: number): void {
+      rowRef.current!.setScrollLeft(scrollLeft);
+      if (filterRowRef.current) {
+        filterRowRef.current.setScrollLeft(scrollLeft);
+      }
+    }
+  }), []);
+
+  function onColumnResize(column: CalculatedColumn<R>, width: number): void {
+    setResizing({ column, width: Math.max(width, columnMetrics.minColumnWidth) });
   }
 
-  onColumnResize = (column: CalculatedColumn<R>, width: number): void => {
-    const pos = this.getColumnPosition(column);
+  function onColumnResizeEnd(): void {
+    if (resizing === null) return;
+    props.onColumnResize(resizing.column.idx, resizing.width);
+    setResizing(null);
+  }
 
-    if (pos === null) return;
-
-    const prevColumnMetrics = this.state.resizing ? this.state.resizing.columnMetrics : this.props.columnMetrics;
-    const columnMetrics = resizeColumn({ ...prevColumnMetrics }, pos, width);
-
-    // we don't want to influence scrollLeft while resizing
-    if (columnMetrics.totalWidth < prevColumnMetrics.totalWidth) {
-      columnMetrics.totalWidth = prevColumnMetrics.totalWidth;
-    }
-
-    this.setState({
-      resizing: {
-        column: columnMetrics.columns[pos],
-        columnMetrics
-      }
-    });
-  };
-
-  onColumnResizeEnd = (column: CalculatedColumn<R>, width: number): void => {
-    const pos = this.getColumnPosition(column);
-    if (pos === null) return;
-    this.props.onColumnResize(pos, width || column.width);
-  };
-
-  getHeaderRow = (row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) => {
-    const columnMetrics = this.getColumnMetrics();
-
+  function getHeaderRow(row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) {
     return (
       <HeaderRow<R>
         key={row.rowType}
         ref={ref}
         rowType={row.rowType}
-        onColumnResize={this.onColumnResize}
-        onColumnResizeEnd={this.onColumnResizeEnd}
+        onColumnResize={onColumnResize}
+        onColumnResizeEnd={onColumnResizeEnd}
         height={row.height}
         columns={columnMetrics.columns}
-        draggableHeaderCell={this.props.draggableHeaderCell}
+        draggableHeaderCell={props.draggableHeaderCell}
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}
-        onHeaderDrop={this.props.onHeaderDrop}
-        sortColumn={this.props.sortColumn}
-        sortDirection={this.props.sortDirection}
-        onSort={this.props.onSort}
-        getValidFilterValues={this.props.getValidFilterValues}
+        onHeaderDrop={props.onHeaderDrop}
+        sortColumn={props.sortColumn}
+        sortDirection={props.sortDirection}
+        onSort={props.onSort}
+        getValidFilterValues={props.getValidFilterValues}
       />
     );
-  };
+  }
 
-  getHeaderRows() {
-    const { headerRows } = this.props;
-    const rows = [this.getHeaderRow(headerRows[0], this.row)];
+  function getHeaderRows() {
+    const { headerRows } = props;
+    const rows = [getHeaderRow(headerRows[0], rowRef)];
     if (headerRows[1]) {
-      rows.push(this.getHeaderRow(headerRows[1], this.filterRow));
+      rows.push(getHeaderRow(headerRows[1], filterRowRef));
     }
 
     return rows;
   }
 
-  getColumnMetrics(): ColumnMetrics<R> {
-    if (this.state.resizing) {
-      return this.state.resizing.columnMetrics;
-    }
-    return this.props.columnMetrics;
-  }
-
-  getColumnPosition(column: CalculatedColumn<R>): number | null {
-    const { columns } = this.getColumnMetrics();
-    const idx = columns.findIndex(c => c.key === column.key);
-    return idx === -1 ? null : idx;
-  }
-
-  setScrollLeft(scrollLeft: number): void {
-    this.row.current!.setScrollLeft(scrollLeft);
-    if (this.filterRow.current) {
-      this.filterRow.current.setScrollLeft(scrollLeft);
-    }
-  }
-
   // Set the cell selection to -1 x -1 when clicking on the header
-  onHeaderClick = (): void => {
-    this.props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
-  };
-
-  render() {
-    const className = classNames('react-grid-Header', {
-      'react-grid-Header--resizing': !!this.state.resizing
-    });
-
-    return (
-      <div
-        style={{
-          height: this.props.rowOffsetHeight,
-          paddingRight: getScrollbarSize()
-        }}
-        className={className}
-        onClick={this.onHeaderClick}
-      >
-        {this.getHeaderRows()}
-      </div>
-    );
+  function onHeaderClick(): void {
+    props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
   }
-}
+
+  const className = classNames('react-grid-Header', {
+    'react-grid-Header--resizing': resizing !== null
+  });
+
+  return (
+    <div
+      style={{
+        height: props.rowOffsetHeight,
+        paddingRight: getScrollbarSize()
+      }}
+      className={className}
+      onClick={onHeaderClick}
+    >
+      {getHeaderRows()}
+    </div>
+  );
+});

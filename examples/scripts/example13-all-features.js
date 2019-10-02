@@ -148,9 +148,7 @@ class Example extends React.Component {
   getColumns = () => {
     const clonedColumns = this._columns.slice();
     clonedColumns[2].events = {
-      onClick: (ev, args) => {
-        const idx = args.idx;
-        const rowIdx = args.rowIdx;
+      onClick: (ev, { idx, rowIdx }) => {
         this.grid.openCellEditor(rowIdx, idx);
       }
     };

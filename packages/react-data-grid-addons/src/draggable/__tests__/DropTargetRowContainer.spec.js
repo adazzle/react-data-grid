@@ -61,8 +61,7 @@ describe('<DropTargetRowContainer />', () => {
     backend.simulateDrop();
     expect(props.onRowDrop).toHaveBeenCalled();
     expect(props.onRowDrop.mock.calls.length).toEqual(1);
-    const rowSource = props.onRowDrop.mock.calls[0][0].rowSource;
-    const rowTarget = props.onRowDrop.mock.calls[0][0].rowTarget;
+    const { rowSource, rowTarget } = props.onRowDrop.mock.calls[0][0];
     expect(rowSource).toEqual(draggedRowItem);
     expect(rowTarget.idx).toEqual(1);
     expect(rowTarget.data).toEqual(props.row);

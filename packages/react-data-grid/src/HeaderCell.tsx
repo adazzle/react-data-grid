@@ -16,7 +16,7 @@ interface Props<R> {
   rowType: HeaderRowType;
   height: number;
   onResize(column: CalculatedColumn<R>, width: number): void;
-  onResizeEnd(column: CalculatedColumn<R>, width: number): void;
+  onResizeEnd(): void;
   onHeaderDrop?(): void;
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   className?: string;
@@ -41,10 +41,10 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
       this.onResize(event.clientX + offset);
     };
 
-    const onMouseUp = (event: MouseEvent) => {
+    const onMouseUp = () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
-      this.onResizeEnd(event.clientX + offset);
+      this.props.onResizeEnd();
     };
 
     event.preventDefault();
@@ -81,7 +81,7 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
       if (!touch) return;
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
-      this.onResizeEnd(touch.clientX + offset);
+      this.props.onResizeEnd();
     };
 
     window.addEventListener('touchmove', onTouchMove);
@@ -96,11 +96,6 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
         onResize(this.props.column, width);
       }
     }
-  }
-
-  private onResizeEnd(x: number) {
-    const width = this.getWidthFromMouseEvent(x);
-    this.props.onResizeEnd(this.props.column, width);
   }
 
   private getWidthFromMouseEvent(x: number): number {
