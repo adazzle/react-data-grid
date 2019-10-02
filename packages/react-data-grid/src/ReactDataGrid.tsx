@@ -11,7 +11,7 @@ import React, {
 import Grid from './Grid';
 import ToolbarContainer, { ToolbarProps } from './ToolbarContainer';
 import SelectCellFormatter from './formatters/SelectCellFormatter';
-// import KeyCodes from './KeyCodes';
+import KeyCodes from './KeyCodes';
 import { getColumnMetrics } from './ColumnMetrics';
 import { ScrollState } from './Viewport';
 import { RowsContainerProps } from './RowsContainer';
@@ -70,7 +70,6 @@ export interface ReactDataGridProps<R extends {}> {
   onGridKeyUp?(event: React.KeyboardEvent<HTMLDivElement>): void;
   /** Function called whenever keyboard key is pressed down */
   onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
-  onRowSelect?(rowData: R[]): void;
   rowSelection?: {
     /** toggle whether to show a checkbox in first column to select rows */
     showCheckbox?: boolean;
@@ -173,7 +172,7 @@ export interface ReactDataGridProps<R extends {}> {
   enableIsScrolling?: boolean;
 }
 
-export interface ReactDataGridHandle<R> {
+export interface ReactDataGridHandle {
   scrollToColumn(colIdx: number): void;
   selectCell(position: Position, openEditor?: boolean): void;
   handleToggleFilter(): void;
@@ -203,11 +202,11 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   rowGetter,
   rowSelection,
   cellRangeSelection,
-  onRowSelect,
   onClearFilters,
   ...props
-}: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle<R>>) {
+}: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
   const [canFilter, setCanFilter] = useState(false);
+  const [lastSelectedRowIdx, setLastSelectedRowIdx] = useState(-1);
   const [sortColumn, setSortColumn] = useState(props.sortColumn);
   const [sortDirection, setSortDirection] = useState(props.sortDirection);
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
@@ -221,32 +220,27 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     // TODO: handle row selection without checkbox, i.e using row click
     if (!rowSelection || !rowSelection.showCheckbox) return columns;
 
-    // function isShiftKeyPressed() {
-    //   return _keysDown.has(KeyCodes.Shift) && _keysDown.size === 1;
-    // }
+    function isShiftKeyPressed() {
+      return _keysDown.has(KeyCodes.Shift) && _keysDown.size === 1;
+    }
 
-    const { selectedRows, onSelectedRowsChange /*, enableShiftSelect*/ } = rowSelection;
-    // let lastSelectedRowIdx: number | undefined;
+    const { selectedRows, onSelectedRowsChange, enableShiftSelect } = rowSelection;
 
     function handleSelectionChange(rowIdx: number, row: R, value: boolean) {
       const newSelectedRows = new Set(selectedRows);
-      const ids = [row[rowKey]];
-
-      // TODO: handle shift select
-      // if (enableShiftSelect) {
-      //   if (typeof lastSelectedRowIdx === 'number' && ) {
-      //   } else if (isShiftKeyPressed) {
-      //     lastSelectedRowIdx = rowIdx;
-      //     ids.push(row[rowKey]);
-      //   } else { }
-      // } else {
-      //   ids.push(row[rowKey]);
-      // }
 
       if (value) {
-        ids.forEach(id => newSelectedRows.add(id));
+        newSelectedRows.add(row[rowKey]);
+        setLastSelectedRowIdx(rowIdx);
+        if (enableShiftSelect && lastSelectedRowIdx !== -1 && lastSelectedRowIdx !== rowIdx && isShiftKeyPressed()) {
+          const step = Math.sign(rowIdx - lastSelectedRowIdx);
+          for (let i = lastSelectedRowIdx + step; i !== rowIdx; i += step) {
+            newSelectedRows.add(rowGetter(i)[rowKey]);
+          }
+        }
       } else {
-        ids.forEach(id => newSelectedRows.delete(id));
+        newSelectedRows.delete(row[rowKey]);
+        setLastSelectedRowIdx(-1);
       }
       onSelectedRowsChange(newSelectedRows);
     }
@@ -258,6 +252,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           newSelectedRows.add(rowGetter(i)[rowKey]);
         }
       }
+      setLastSelectedRowIdx(-1);
       onSelectedRowsChange(newSelectedRows);
     }
 
@@ -280,7 +275,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     return Array.isArray(columns)
       ? [selectColumn, ...columns]
       : columns.unshift(selectColumn);
-  }, [columns, rowGetter, rowKey, rowSelection, rowsCount]);
+  }, [_keysDown, columns, lastSelectedRowIdx, rowGetter, rowKey, rowSelection, rowsCount]);
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
@@ -556,8 +551,8 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
 });
 
 // This is a temporary class to expose instance methods as ForwardRef does work well with generics
-export default class ReactDataGrid<R> extends React.Component<ReactDataGridProps<R>> implements ReactDataGridHandle<R> {
-  private readonly gridRef = React.createRef<ReactDataGridHandle<R>>();
+export default class ReactDataGrid<R> extends React.Component<ReactDataGridProps<R>> implements ReactDataGridHandle {
+  private readonly gridRef = React.createRef<ReactDataGridHandle>();
 
   selectCell(position: Position, openEditor?: boolean | undefined): void {
     this.gridRef.current!.selectCell(position, openEditor);
