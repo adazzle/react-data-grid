@@ -205,12 +205,12 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   ...props
 }: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
   const [canFilter, setCanFilter] = useState(false);
-  const [lastSelectedRowIdx, setLastSelectedRowIdx] = useState(-1);
   const [sortColumn, setSortColumn] = useState(props.sortColumn);
   const [sortDirection, setSortDirection] = useState(props.sortDirection);
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
+  const lastSelectedRowIdx = useRef(-1);
   const gridRef = useRef<HTMLDivElement>(null);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
 
@@ -225,16 +225,17 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
 
       if (value) {
         newSelectedRows.add(row[rowKey]);
-        setLastSelectedRowIdx(rowIdx);
-        if (enableShiftSelect && isShiftClick && lastSelectedRowIdx !== -1 && lastSelectedRowIdx !== rowIdx) {
-          const step = Math.sign(rowIdx - lastSelectedRowIdx);
-          for (let i = lastSelectedRowIdx + step; i !== rowIdx; i += step) {
+        const previousRowIdx = lastSelectedRowIdx.current;
+        lastSelectedRowIdx.current = rowIdx;
+        if (enableShiftSelect && isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+          const step = Math.sign(rowIdx - previousRowIdx);
+          for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
             newSelectedRows.add(rowGetter(i)[rowKey]);
           }
         }
       } else {
         newSelectedRows.delete(row[rowKey]);
-        setLastSelectedRowIdx(-1);
+        lastSelectedRowIdx.current = -1;
       }
       onSelectedRowsChange(newSelectedRows);
     }
@@ -246,7 +247,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           newSelectedRows.add(rowGetter(i)[rowKey]);
         }
       }
-      setLastSelectedRowIdx(-1);
+      lastSelectedRowIdx.current = -1;
       onSelectedRowsChange(newSelectedRows);
     }
 
