@@ -360,7 +360,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     }
   }
 
-  function handlerCellClick({ rowIdx, idx }: Position) {
+  function handleCellClick({ rowIdx, idx }: Position) {
     const { onRowClick } = props;
     selectCell({ rowIdx, idx });
 
@@ -461,7 +461,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
 
   const cellMetaData: CellMetaData<R> = {
     rowKey,
-    onCellClick: handlerCellClick,
+    onCellClick: handleCellClick,
     onCellContextMenu: handleCellContextMenu,
     onCellDoubleClick: handleCellDoubleClick,
     onCellExpand: props.onCellExpand,

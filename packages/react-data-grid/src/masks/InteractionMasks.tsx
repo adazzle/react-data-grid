@@ -458,18 +458,18 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
     return document.activeElement === document.body;
   }
 
-  focus(): void {
+  focus = (): void => {
     if (this.selectionMask.current && !this.isFocused()) {
       this.selectionMask.current.focus();
     }
-  }
+  };
 
   selectFirstCell(): void {
     this.selectCell({ rowIdx: 0, idx: 0 });
   }
 
   selectCell = (cell: Position, openEditor?: boolean): void => {
-    const callback = openEditor ? this.openEditor : undefined;
+    const callback = openEditor ? this.openEditor : this.focus;
     // Close the editor to commit any pending changes
     if (this.state.isEditorEnabled) {
       this.closeEditor();
