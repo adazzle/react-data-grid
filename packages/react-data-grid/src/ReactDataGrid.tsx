@@ -261,20 +261,20 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
       onSelectedRowsChange(newSelectedRows);
     }
 
-    // TODO: fix type
-    const selectColumn = {
+    // TODO: remove type assertion
+    const selectColumn: Column<R> = {
       key: 'select-row',
       name: '',
+      width: 60,
+      filterable: false,
+      frozen: true,
+      headerRenderer: <SelectCellFormatter value={selectedRows.size === rowsCount} onChange={handleAllSelectionChange} />,
       formatter: (p: FormatterProps<unknown>) => (
         <SelectCellFormatter
           value={selectedRows.has(p.row[rowKey])}
-          onChange={(value) => handleSelectionChange(p.rowIdx, p.row, value)}
+          onChange={value => handleSelectionChange(p.rowIdx, p.row, value)}
         />
-      ),
-      filterable: false,
-      headerRenderer: <SelectCellFormatter value={selectedRows.size === rowsCount} onChange={(value) => handleAllSelectionChange(value)} />,
-      width: 60,
-      frozen: true
+      )
     } as Column<R>;
 
     return Array.isArray(columns)
