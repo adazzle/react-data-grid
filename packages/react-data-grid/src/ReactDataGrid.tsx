@@ -11,7 +11,6 @@ import React, {
 import Grid from './Grid';
 import ToolbarContainer, { ToolbarProps } from './ToolbarContainer';
 import SelectCellFormatter from './formatters/SelectCellFormatter';
-import KeyCodes from './KeyCodes';
 import { getColumnMetrics } from './ColumnMetrics';
 import { ScrollState } from './Viewport';
 import { RowsContainerProps } from './RowsContainer';
@@ -211,7 +210,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   const [sortDirection, setSortDirection] = useState(props.sortDirection);
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
-  const [_keysDown] = useState(() => new Set<number>());
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
@@ -220,19 +218,15 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     // TODO: handle row selection without checkbox, i.e using row click
     if (!rowSelection || !rowSelection.showCheckbox) return columns;
 
-    function isShiftKeyPressed() {
-      return _keysDown.has(KeyCodes.Shift) && _keysDown.size === 1;
-    }
-
     const { selectedRows, onSelectedRowsChange, enableShiftSelect } = rowSelection;
 
-    function handleSelectionChange(rowIdx: number, row: R, value: boolean) {
+    function handleSelectionChange(rowIdx: number, row: R, value: boolean, isShiftClick: boolean) {
       const newSelectedRows = new Set(selectedRows);
 
       if (value) {
         newSelectedRows.add(row[rowKey]);
         setLastSelectedRowIdx(rowIdx);
-        if (enableShiftSelect && lastSelectedRowIdx !== -1 && lastSelectedRowIdx !== rowIdx && isShiftKeyPressed()) {
+        if (enableShiftSelect && isShiftClick && lastSelectedRowIdx !== -1 && lastSelectedRowIdx !== rowIdx) {
           const step = Math.sign(rowIdx - lastSelectedRowIdx);
           for (let i = lastSelectedRowIdx + step; i !== rowIdx; i += step) {
             newSelectedRows.add(rowGetter(i)[rowKey]);
@@ -267,7 +261,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
       formatter: (p: FormatterProps<unknown>) => (
         <SelectCellFormatter
           value={selectedRows.has(p.row[rowKey])}
-          onChange={value => handleSelectionChange(p.rowIdx, p.row, value)}
+          onChange={(value, isShiftClick) => handleSelectionChange(p.rowIdx, p.row, value, isShiftClick)}
         />
       )
     } as Column<R>;
@@ -275,7 +269,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     return Array.isArray(columns)
       ? [selectColumn, ...columns]
       : columns.unshift(selectColumn);
-  }, [_keysDown, columns, lastSelectedRowIdx, rowGetter, rowKey, rowSelection, rowsCount]);
+  }, [columns, lastSelectedRowIdx, rowGetter, rowKey, rowSelection, rowsCount]);
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
@@ -341,9 +335,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   }
 
   function handleViewportKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    // Track which keys are currently down for shift clicking etc
-    _keysDown.add(e.keyCode);
-
     const { onGridKeyDown } = props;
     if (onGridKeyDown) {
       onGridKeyDown(e);
@@ -351,9 +342,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   }
 
   function handleViewportKeyUp(e: React.KeyboardEvent<HTMLDivElement>) {
-    // Track which keys are currently down for shift clicking etc
-    _keysDown.delete(e.keyCode);
-
     const { onGridKeyUp } = props;
     if (onGridKeyUp) {
       onGridKeyUp(e);
