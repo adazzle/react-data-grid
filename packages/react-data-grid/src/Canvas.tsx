@@ -144,12 +144,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
   }
 
-  isRowSelected(idx: number, row: R) {
-    if (this.props.selectedRows) {
-      return this.props.selectedRows.has(row[this.props.rowKey]);
-    }
-
-    return false;
+  isRowSelected(row: R): boolean {
+    return this.props.selectedRows !== undefined && this.props.selectedRows.has(row[this.props.rowKey]);
   }
 
   setScrollLeft(scrollLeft: number) {
@@ -273,7 +269,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           row,
           height: rowHeight,
           columns,
-          isSelected: this.isRowSelected(rowIdx, row),
+          isSelected: this.isRowSelected(row),
           cellMetaData,
           subRowDetails,
           colVisibleStartIdx,
