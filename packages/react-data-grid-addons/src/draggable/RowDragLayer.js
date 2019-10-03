@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragLayer } from 'react-dnd';
 
-import * as Selectors from '../data/Selectors';
-
 const layerStyles = {
   cursor: '-webkit-grabbing',
   position: 'fixed',
@@ -40,28 +38,16 @@ class CustomDragLayer extends Component {
       y: PropTypes.number.isRequired
     }),
     isDragging: PropTypes.bool.isRequired,
-    rowSelection: PropTypes.object,
+    selectedRows: PropTypes.object,
     rows: PropTypes.array.isRequired,
     columns: PropTypes.array.isRequired
   };
 
-  isDraggedRowSelected(selectedRows) {
-    const { item, rowSelection } = this.props;
-    if (selectedRows && selectedRows.length > 0) {
-      const key = rowSelection.selectBy.keys.rowKey;
-      return selectedRows.filter(r => r[key] === item.data[key]).length > 0;
-    }
-    return false;
-  }
-
   getDraggedRows() {
     let draggedRows;
-    const { rowSelection } = this.props;
-    if (rowSelection && rowSelection.selectBy.keys) {
-      const { rows } = this.props;
-      const { rowKey, values } = rowSelection.selectBy.keys;
-      const selectedRows = Selectors.getSelectedRowsByKey({ rowKey, selectedKeys: values, rows });
-      draggedRows = this.isDraggedRowSelected(selectedRows) ? selectedRows : [this.props.rows[this.props.item.idx]];
+    const { selectedRows } = this.props;
+    if (selectedRows && selectedRows.size > 0) {
+      draggedRows = [...selectedRows];
     } else {
       draggedRows = [this.props.rows[this.props.item.idx]];
     }

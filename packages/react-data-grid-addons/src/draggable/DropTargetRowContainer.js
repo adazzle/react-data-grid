@@ -37,7 +37,7 @@ const target = {
     // Obtain the dragged item
     component.moveRow();
     const rowSource = monitor.getItem();
-    const rowTarget = { idx: props.idx, data: props.row };
+    const rowTarget = { idx: props.idx, data: props.row, isRowSelected: props.isRowSelected };
     props.onRowDrop({ rowSource, rowTarget });
   }
 };

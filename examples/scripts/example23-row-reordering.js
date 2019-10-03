@@ -5,7 +5,7 @@ import { Draggable, Data } from 'react-data-grid-addons';
 
 import exampleWrapper from '../components/exampleWrapper';
 
-const { Container: DraggableContainer, DropTargetRowContainer } = Draggable;
+const { Container: DraggableContainer, RowActionsCell, DropTargetRowContainer } = Draggable;
 const { Selectors } = Data;
 const RowRenderer = DropTargetRowContainer(Row);
 
@@ -19,7 +19,16 @@ class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
     this._columns = [
-      SelectColumn,
+      {
+        ...SelectColumn,
+        formatter(props) {
+          return (
+            <RowActionsCell isRowSelected={props.isRowSelected}>
+              {SelectColumn.formatter(props)}
+            </RowActionsCell>
+          );
+        }
+      },
       {
         key: 'id',
         name: 'ID'
@@ -68,19 +77,19 @@ class Example extends React.Component {
     return this.state.rows[i];
   };
 
-  isDraggedRowSelected = (selectedRows, rowDragSource) => {
-    if (selectedRows && selectedRows.length > 0) {
+  isDraggedRowSelected = (rowDragSource) => {
+    if (this.state.selectedRows && this.state.selectedRows.size > 0) {
       const key = this.props.rowKey;
-      return selectedRows.filter(r => r[key] === rowDragSource.data[key]).length > 0;
+      return this.state.selectedRows.has(rowDragSource.data[key]);
     }
     return false;
   };
 
   reorderRows = (e) => {
-    const selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows });
-    const draggedRows = this.isDraggedRowSelected(selectedRows, e.rowSource) ? selectedRows : [e.rowSource.data];
-    const undraggedRows = this.state.rows.filter(function(r) {
-      return draggedRows.indexOf(r) === -1;
+    // TODO: fix reordering logic
+    const draggedRows = this.isDraggedRowSelected(e.rowSource) ? [...this.state.selectedRows] : [e.rowSource.data];
+    const undraggedRows = this.state.rows.filter((r) => {
+      return draggedRows.includes(r[this.props.rowKey]);
     });
     const args = [e.rowTarget.idx, 0].concat(draggedRows);
     Array.prototype.splice.apply(undraggedRows, args);

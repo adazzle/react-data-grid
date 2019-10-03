@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DragSource } from 'react-dnd';
-import { CheckboxEditor } from 'react-data-grid';
 
 class RowActionsCell extends React.Component {
   static propTypes = {
@@ -11,44 +10,26 @@ class RowActionsCell extends React.Component {
     isDragging: PropTypes.bool.isRequired,
     isRowHovered: PropTypes.bool,
     column: PropTypes.object,
-    dependentValues: PropTypes.object,
-    value: PropTypes.bool,
-    rowSelection: PropTypes.object.isRequired
+    dependentValues: PropTypes.object
   };
 
   static defaultProps = {
     rowIdx: 0
   };
 
-  renderRowIndex() {
-    return (
-      <div className="rdg-row-index">
-        { this.props.rowIdx + 1 }
-      </div>
-    );
-  }
-
   render() {
-    const { connectDragSource, rowSelection } = this.props;
-    const rowHandleStyle = rowSelection != null ? { position: 'absolute', marginTop: '5px' } : {};
-    const isSelected = this.props.value;
-    const editorClass = isSelected ? 'rdg-actions-checkbox selected' : 'rdg-actions-checkbox';
+    const { connectDragSource } = this.props;
+    const rowHandleStyle = { position: 'absolute', marginTop: '5px' };
+    const editorClass = this.props.isRowSelected ? 'rdg-actions-checkbox selected' : 'rdg-actions-checkbox';
 
     return connectDragSource(
       <div>
         <div className="rdg-drag-row-handle" style={rowHandleStyle} />
-        {!isSelected ? this.renderRowIndex() : null}
-        {rowSelection != null && (
-          <div className={editorClass}>
-            <CheckboxEditor
-              column={this.props.column}
-              rowIdx={this.props.rowIdx}
-              dependentValues={this.props.dependentValues}
-              value={this.props.value}
-            />
-          </div>
-        )}
-      </div>);
+        <div className={editorClass}>
+          {this.props.children}
+        </div>
+      </div>
+    );
   }
 }
 
