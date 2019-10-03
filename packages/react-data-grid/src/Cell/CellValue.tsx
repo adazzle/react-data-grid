@@ -29,7 +29,7 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
   function getFormatterProps() {
     return {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      value: value as any,
+      value: value as any, //FIXME: fix value type
       column,
       rowIdx,
       isScrolling,
@@ -47,7 +47,7 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
   }
 
   if (isValidElementType(formatter)) {
-    return React.createElement(formatter, getFormatterProps()); //FIXME: fix value type
+    return React.createElement(formatter, getFormatterProps());
   }
 
   return <SimpleCellFormatter value={value as string} />;

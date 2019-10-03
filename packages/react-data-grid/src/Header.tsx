@@ -70,6 +70,8 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
   }
 
   function handleAllRowsSelectionChange(checked: boolean) {
+    if (!props.onSelectedRowsChange) return;
+
     const newSelectedRows = new Set<R[keyof R]>();
     if (checked) {
       for (let i = 0; i < props.rowsCount; i++) {
@@ -77,9 +79,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
       }
     }
 
-    if (props.onSelectedRowsChange) {
-      props.onSelectedRowsChange(newSelectedRows);
-    }
+    props.onSelectedRowsChange(newSelectedRows);
   }
 
   function getHeaderRow(row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) {
