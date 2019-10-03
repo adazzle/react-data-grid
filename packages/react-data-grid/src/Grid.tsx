@@ -25,6 +25,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'overscanRowCount'
 | 'overscanColumnCount'
 | 'enableIsScrolling'
+| 'selectedRows'
 > & Required<Pick<ReactDataGridProps<R>,
 | 'rowKey'
 | 'enableCellSelect'
@@ -42,7 +43,6 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 export interface GridProps<R> extends SharedDataGridProps<R> {
   headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
   cellMetaData: CellMetaData<R>;
-  selectedRows?: ReadonlySet<R[keyof R]>;
   rowOffsetHeight: number;
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
