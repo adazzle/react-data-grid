@@ -9,7 +9,7 @@ import { ReactDataGridProps } from './ReactDataGrid';
 import { EventBus } from './masks';
 
 type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
-'draggableHeaderCell'
+| 'draggableHeaderCell'
 | 'getValidFilterValues'
 | 'rowGetter'
 | 'rowsCount'
@@ -26,7 +26,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'overscanColumnCount'
 | 'enableIsScrolling'
 > & Required<Pick<ReactDataGridProps<R>,
-'rowKey'
+| 'rowKey'
 | 'enableCellSelect'
 | 'rowHeight'
 | 'minHeight'
@@ -50,6 +50,9 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
+  allRowsSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
+  onAllRowsSelectionChange(checked: boolean): void;
   viewportWidth: number;
 }
 
@@ -83,6 +86,9 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           draggableHeaderCell: props.draggableHeaderCell,
           onSort: props.onSort,
           onHeaderDrop: props.onHeaderDrop,
+          allRowsSelected: props.allRowsSelected,
+          onRowSelectionChange: props.onRowSelectionChange,
+          onAllRowsSelectionChange: props.onAllRowsSelectionChange,
           getValidFilterValues: props.getValidFilterValues,
           cellMetaData: props.cellMetaData
         })
@@ -118,6 +124,8 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
           enableIsScrolling={props.enableIsScrolling}
+          onRowSelectionChange={props.onRowSelectionChange}
+          onAllRowsSelectionChange={props.onAllRowsSelectionChange}
           onViewportKeydown={props.onViewportKeydown}
           onViewportKeyup={props.onViewportKeyup}
           viewportWidth={viewportWidth}

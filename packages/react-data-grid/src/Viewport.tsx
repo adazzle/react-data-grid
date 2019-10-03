@@ -13,7 +13,7 @@ export interface ScrollState {
 }
 
 type SharedGridProps<R> = Pick<GridProps<R>,
-'rowKey'
+| 'rowKey'
 | 'rowHeight'
 | 'rowRenderer'
 | 'rowGetter'
@@ -37,6 +37,8 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'overscanRowCount'
 | 'overscanColumnCount'
 | 'enableIsScrolling'
+| 'onRowSelectionChange'
+| 'onAllRowsSelectionChange'
 | 'onViewportKeydown'
 | 'onViewportKeyup'
 >;
@@ -140,6 +142,8 @@ export default function Viewport<R>({
         rowGetter={props.rowGetter}
         rowsCount={rowsCount}
         selectedRows={props.selectedRows}
+        onRowSelectionChange={props.onRowSelectionChange}
+        onAllRowsSelectionChange={props.onAllRowsSelectionChange}
         rowRenderer={props.rowRenderer}
         scrollTop={scrollTop}
         scrollLeft={scrollLeft}

@@ -127,6 +127,9 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   value: TValue;
   column: CalculatedColumn<TRow, TDependentValue>;
   row: TRow;
+  isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
+  onAllRowsSelectionChange(checked: boolean): void;
   isScrolling?: boolean;
   dependentValues?: TDependentValue;
 }
@@ -146,6 +149,9 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
 export interface HeaderRowProps<TRow> {
   column: CalculatedColumn<TRow>;
   rowType: HeaderRowType;
+  allRowsSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
+  onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export interface CellRendererProps<TRow, TValue = unknown> {
@@ -160,6 +166,9 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   scrollLeft?: number;
   expandableOptions?: ExpandableOptions;
   lastFrozenColumnIndex: number;
+  isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
+  onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export interface RowRendererProps<TRow> {
@@ -168,7 +177,6 @@ export interface RowRendererProps<TRow> {
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   cellMetaData: CellMetaData<TRow>;
-  isSelected?: boolean;
   idx: number;
   extraClasses?: string;
   subRowDetails?: SubRowDetails;
@@ -177,6 +185,9 @@ export interface RowRendererProps<TRow> {
   isScrolling?: boolean;
   scrollLeft: number;
   lastFrozenColumnIndex: number;
+  isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
+  onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

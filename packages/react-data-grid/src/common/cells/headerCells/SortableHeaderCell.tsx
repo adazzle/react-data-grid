@@ -15,10 +15,13 @@ export interface Props<R> {
   onSort(columnKey: keyof R, direction: DEFINE_SORT): void;
   sortDirection: DEFINE_SORT;
   sortDescendingFirst: boolean;
+  allRowsSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
+  onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export default function SortableHeaderCell<R>(props: Props<R>) {
-  const { column, rowType, onSort, sortDirection, sortDescendingFirst } = props;
+  const { column, rowType, onSort, sortDirection, sortDescendingFirst, allRowsSelected, onRowSelectionChange, onAllRowsSelectionChange } = props;
   function onClick() {
     let direction;
     switch (sortDirection) {
@@ -40,7 +43,13 @@ export default function SortableHeaderCell<R>(props: Props<R>) {
     ? column.name
     : isElement(headerRenderer)
       ? React.cloneElement(headerRenderer, { column })
-      : React.createElement(headerRenderer, { column, rowType });
+      : React.createElement(headerRenderer, {
+        column,
+        rowType,
+        allRowsSelected,
+        onRowSelectionChange,
+        onAllRowsSelectionChange
+      });
 
   return (
     <div className="rdg-sortable-header-cell" onClick={onClick}>

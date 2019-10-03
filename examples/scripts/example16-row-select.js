@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import ReactDataGrid, { SelectColumn } from 'react-data-grid';
 
 import exampleWrapper from '../components/exampleWrapper';
 
@@ -7,6 +7,7 @@ class Example extends React.Component {
   constructor(props) {
     super(props);
     this._columns = [
+      SelectColumn,
       {
         key: 'id',
         name: 'ID'
@@ -50,8 +51,6 @@ class Example extends React.Component {
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={500}
-          showCheckboxColumn
-          enableShiftSelect
           selectedRows={this.state.selectedRows}
           onSelectedRowsChange={selectedRows => this.setState({ selectedRows })}
         />

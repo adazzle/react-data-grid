@@ -186,6 +186,9 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
         onDeleteSubRow={cellMetaData.onDeleteSubRow}
         cellControls={cellControls}
         isScrolling={isScrolling}
+        isRowSelected={this.props.isRowSelected}
+        onRowSelectionChange={this.props.onRowSelectionChange}
+        onAllRowsSelectionChange={this.props.onAllRowsSelectionChange}
       />
     );
     const events = this.getEvents();

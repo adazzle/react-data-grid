@@ -8,13 +8,16 @@ import { CalculatedColumn, HeaderRowData } from './common/types';
 import { GridProps } from './Grid';
 
 type SharedGridProps<R> = Pick<GridProps<R>,
-'columnMetrics'
+| 'columnMetrics'
 | 'onColumnResize'
 | 'headerRows'
 | 'rowOffsetHeight'
 | 'sortColumn'
 | 'sortDirection'
 | 'draggableHeaderCell'
+| 'allRowsSelected'
+| 'onRowSelectionChange'
+| 'onAllRowsSelectionChange'
 | 'onSort'
 | 'onHeaderDrop'
 | 'getValidFilterValues'
@@ -78,6 +81,9 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}
         onHeaderDrop={props.onHeaderDrop}
+        allRowsSelected={props.allRowsSelected}
+        onRowSelectionChange={props.onRowSelectionChange}
+        onAllRowsSelectionChange={props.onAllRowsSelectionChange}
         sortColumn={props.sortColumn}
         sortDirection={props.sortDirection}
         onSort={props.onSort}
