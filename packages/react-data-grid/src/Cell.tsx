@@ -7,6 +7,7 @@ import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
 import { isFrozen } from './ColumnUtils';
+import { isPositionStickySupported } from './utils';
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
@@ -27,23 +28,10 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   private readonly cell = React.createRef<HTMLDivElement>();
 
   shouldComponentUpdate(nextProps: CellProps<R>) {
-    const { scrollLeft, ...rest } = this.props;
-    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
+    const { scrollLeft, cellMetaData, ...rest } = this.props;
+    const { scrollLeft: nextScrollLeft, cellMetaData: nextCellMetaData, ...nextRest } = nextProps;
 
     return !shallowEqual(rest, nextRest);
-  }
-
-  componentDidMount() {
-    const { scrollLeft } = this.props;
-    if (scrollLeft !== undefined) {
-      this.setScrollLeft(scrollLeft);
-    }
-  }
-
-  componentDidUpdate(prevProps: CellProps<R>) {
-    if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
-      this.removeScroll();
-    }
   }
 
   handleCellClick = () => {
@@ -91,7 +79,8 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     return {
       width: this.props.column.width,
       height: this.props.height,
-      left: this.props.column.left
+      left: this.props.column.left,
+      transform: !isPositionStickySupported() && isFrozen(this.props.column) ? `translateX(${this.props.scrollLeft}px)` : 'none'
     };
   }
 
