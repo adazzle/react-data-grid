@@ -79,11 +79,13 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   };
 
   getStyle(): React.CSSProperties {
+    const { column, height, scrollLeft } = this.props;
+
     return {
-      width: this.props.column.width,
-      height: this.props.height,
-      left: this.props.column.left,
-      transform: !isPositionStickySupported() && isFrozen(this.props.column) ? `translateX(${this.props.scrollLeft}px)` : 'none'
+      height,
+      width: column.width,
+      left: column.left,
+      transform: !isPositionStickySupported() && isFrozen(column) ? `translateX(${scrollLeft}px)` : 'none'
     };
   }
 
