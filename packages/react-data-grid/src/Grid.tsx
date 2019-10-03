@@ -51,11 +51,18 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   onViewportKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
-  allRowsSelected: boolean;
   viewportWidth: number;
 }
 
-export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...props }: GridProps<R>) {
+export default function Grid<R>({
+  rowKey,
+  rowsCount,
+  emptyRowsView,
+  headerRows,
+  viewportWidth,
+  selectedRows,
+  ...props
+}: GridProps<R>) {
   const header = useRef<HeaderHandle>(null);
   const scrollLeft = useRef(0);
 
@@ -75,9 +82,9 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
     <div className="react-grid-Grid">
       {
         React.createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
+          rowKey,
+          rowsCount,
           ref: header,
-          rowKey: props.rowKey,
-          rowsCount: props.rowsCount,
           rowGetter: props.rowGetter,
           columnMetrics: props.columnMetrics,
           onColumnResize: props.onColumnResize,
@@ -88,24 +95,24 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           draggableHeaderCell: props.draggableHeaderCell,
           onSort: props.onSort,
           onHeaderDrop: props.onHeaderDrop,
-          allRowsSelected: props.allRowsSelected,
+          allRowsSelected: selectedRows !== undefined && selectedRows.size === rowsCount,
           onSelectedRowsChange: props.onSelectedRowsChange,
           getValidFilterValues: props.getValidFilterValues,
           cellMetaData: props.cellMetaData
         })
       }
-      {props.rowsCount === 0 && isValidElementType(emptyRowsView) ? (
+      {rowsCount === 0 && isValidElementType(emptyRowsView) ? (
         <div className="react-grid-Empty">
           {createElement(emptyRowsView)}
         </div>
       ) : (
         <Viewport<R>
-          rowKey={props.rowKey}
+          rowKey={rowKey}
           rowHeight={props.rowHeight}
           rowRenderer={props.rowRenderer}
           rowGetter={props.rowGetter}
-          rowsCount={props.rowsCount}
-          selectedRows={props.selectedRows}
+          rowsCount={rowsCount}
+          selectedRows={selectedRows}
           onSelectedRowsChange={props.onSelectedRowsChange}
           columnMetrics={props.columnMetrics}
           onScroll={onScroll}

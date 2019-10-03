@@ -422,7 +422,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           rowGroupRenderer={props.rowGroupRenderer}
           cellMetaData={cellMetaData}
           selectedRows={selectedRows}
-          allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
           onSelectedRowsChange={onSelectedRowsChange}
           rowOffsetHeight={rowOffsetHeight}
           sortColumn={sortColumn}

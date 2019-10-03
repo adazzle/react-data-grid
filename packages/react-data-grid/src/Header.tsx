@@ -18,7 +18,6 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'sortColumn'
 | 'sortDirection'
 | 'draggableHeaderCell'
-| 'allRowsSelected'
 | 'onSelectedRowsChange'
 | 'onSort'
 | 'onHeaderDrop'
@@ -26,7 +25,9 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'cellMetaData'
 >;
 
-export type HeaderProps<R> = SharedGridProps<R>;
+export type HeaderProps<R> = SharedGridProps<R> & {
+  allRowsSelected: boolean;
+};
 
 export interface HeaderHandle {
   setScrollLeft(scrollLeft: number): void;

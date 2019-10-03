@@ -29,7 +29,7 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
   rowType: HeaderRowType;
 }
 
-export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>> {
+export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
   private readonly headerRow = React.createRef<HTMLDivElement>();
