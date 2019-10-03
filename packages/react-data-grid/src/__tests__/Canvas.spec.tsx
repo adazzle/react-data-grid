@@ -96,7 +96,7 @@ describe('Canvas Tests', () => {
   });
 
   describe('Row Selection', () => {
-    fit('renders row selected', () => {
+    it('renders row selected', () => {
       const rowGetter = () => ({ id: 1 });
 
       const wrapper = renderComponent({
@@ -110,7 +110,7 @@ describe('Canvas Tests', () => {
       });
       const rows = getRows(wrapper);
 
-      expect(rows[0].props.isSelected).toBe(true);
+      expect(rows[0].props.isRowSelected).toBe(true);
     });
   });
 

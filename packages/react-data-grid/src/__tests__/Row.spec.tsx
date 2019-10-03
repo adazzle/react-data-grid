@@ -48,7 +48,9 @@ describe('Row', () => {
     colOverscanEndIdx: 20,
     isScrolling: true,
     scrollLeft: 0,
-    lastFrozenColumnIndex: -1
+    lastFrozenColumnIndex: -1,
+    isRowSelected: false,
+    onRowSelectionChange() {}
   };
 
   it('passes classname property', () => {
