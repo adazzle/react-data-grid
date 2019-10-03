@@ -25,9 +25,9 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'cellMetaData'
 >;
 
-export type HeaderProps<R> = SharedGridProps<R> & {
+export interface HeaderProps<R> extends SharedGridProps<R> {
   allRowsSelected: boolean;
-};
+}
 
 export interface HeaderHandle {
   setScrollLeft(scrollLeft: number): void;

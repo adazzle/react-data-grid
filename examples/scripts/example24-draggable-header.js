@@ -25,29 +25,13 @@ class Example extends React.Component {
   };
 
   onHeaderDrop = (source, target) => {
-    const stateCopy = { ...this.state };
-    const columnSourceIndex = this.state.columns.findIndex(
-      i => i.key === source
-    );
-    const columnTargetIndex = this.state.columns.findIndex(
-      i => i.key === target
-    );
-
-    stateCopy.columns.splice(
-      columnTargetIndex,
-      0,
-      stateCopy.columns.splice(columnSourceIndex, 1)[0]
-    );
-
-    const emptyColumns = { ...this.state, columns: [] };
-    this.setState(
-      emptyColumns
-    );
-
-    const reorderedColumns = { ...this.state, columns: stateCopy.columns };
-    this.setState(
-      reorderedColumns
-    );
+    const columns = [...this.state.columns];
+    const columnSourceIndex = columns.findIndex(i => i.key === source);
+    const columnTargetIndex = columns.findIndex(i => i.key === target);
+    const temp = { ...columns[columnSourceIndex] };
+    columns[columnSourceIndex] = { ...columns[columnTargetIndex] };
+    columns[columnTargetIndex] = temp;
+    this.setState({ columns });
   };
 
   state = {
