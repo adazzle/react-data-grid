@@ -129,7 +129,6 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   row: TRow;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
-  onAllRowsSelectionChange(checked: boolean): void;
   isScrolling?: boolean;
   dependentValues?: TDependentValue;
 }
@@ -150,7 +149,6 @@ export interface HeaderRowProps<TRow> {
   column: CalculatedColumn<TRow>;
   rowType: HeaderRowType;
   allRowsSelected: boolean;
-  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
@@ -168,7 +166,6 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
-  onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export interface RowRendererProps<TRow> {
@@ -187,7 +184,6 @@ export interface RowRendererProps<TRow> {
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
-  onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

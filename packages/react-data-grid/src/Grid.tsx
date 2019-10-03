@@ -26,6 +26,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'overscanColumnCount'
 | 'enableIsScrolling'
 | 'selectedRows'
+| 'onSelectedRowsChange'
 > & Required<Pick<ReactDataGridProps<R>,
 | 'rowKey'
 | 'enableCellSelect'
@@ -51,8 +52,6 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
   allRowsSelected: boolean;
-  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
-  onAllRowsSelectionChange(checked: boolean): void;
   viewportWidth: number;
 }
 
@@ -77,6 +76,9 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
       {
         React.createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
           ref: header,
+          rowKey: props.rowKey,
+          rowsCount: props.rowsCount,
+          rowGetter: props.rowGetter,
           columnMetrics: props.columnMetrics,
           onColumnResize: props.onColumnResize,
           headerRows,
@@ -87,8 +89,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           onSort: props.onSort,
           onHeaderDrop: props.onHeaderDrop,
           allRowsSelected: props.allRowsSelected,
-          onRowSelectionChange: props.onRowSelectionChange,
-          onAllRowsSelectionChange: props.onAllRowsSelectionChange,
+          onSelectedRowsChange: props.onSelectedRowsChange,
           getValidFilterValues: props.getValidFilterValues,
           cellMetaData: props.cellMetaData
         })
@@ -105,6 +106,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           rowGetter={props.rowGetter}
           rowsCount={props.rowsCount}
           selectedRows={props.selectedRows}
+          onSelectedRowsChange={props.onSelectedRowsChange}
           columnMetrics={props.columnMetrics}
           onScroll={onScroll}
           cellMetaData={props.cellMetaData}
@@ -124,8 +126,6 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
           enableIsScrolling={props.enableIsScrolling}
-          onRowSelectionChange={props.onRowSelectionChange}
-          onAllRowsSelectionChange={props.onAllRowsSelectionChange}
           onViewportKeydown={props.onViewportKeydown}
           onViewportKeyup={props.onViewportKeyup}
           viewportWidth={viewportWidth}

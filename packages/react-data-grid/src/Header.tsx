@@ -8,6 +8,9 @@ import { CalculatedColumn, HeaderRowData } from './common/types';
 import { GridProps } from './Grid';
 
 type SharedGridProps<R> = Pick<GridProps<R>,
+| 'rowKey'
+| 'rowsCount'
+| 'rowGetter'
 | 'columnMetrics'
 | 'onColumnResize'
 | 'headerRows'
@@ -16,8 +19,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'sortDirection'
 | 'draggableHeaderCell'
 | 'allRowsSelected'
-| 'onRowSelectionChange'
-| 'onAllRowsSelectionChange'
+| 'onSelectedRowsChange'
 | 'onSort'
 | 'onHeaderDrop'
 | 'getValidFilterValues'
@@ -67,6 +69,19 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     setResizing(null);
   }
 
+  function handleAllRowsSelectionChange(checked: boolean) {
+    const newSelectedRows = new Set<R[keyof R]>();
+    if (checked) {
+      for (let i = 0; i < props.rowsCount; i++) {
+        newSelectedRows.add(props.rowGetter(i)[props.rowKey]);
+      }
+    }
+
+    if (props.onSelectedRowsChange) {
+      props.onSelectedRowsChange(newSelectedRows);
+    }
+  }
+
   function getHeaderRow(row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) {
     return (
       <HeaderRow<R>
@@ -82,8 +97,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
         onFilterChange={row.onFilterChange}
         onHeaderDrop={props.onHeaderDrop}
         allRowsSelected={props.allRowsSelected}
-        onRowSelectionChange={props.onRowSelectionChange}
-        onAllRowsSelectionChange={props.onAllRowsSelectionChange}
+        onAllRowsSelectionChange={handleAllRowsSelectionChange}
         sortColumn={props.sortColumn}
         sortDirection={props.sortDirection}
         onSort={props.onSort}

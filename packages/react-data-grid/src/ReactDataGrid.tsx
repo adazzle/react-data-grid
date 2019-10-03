@@ -197,7 +197,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
-  const lastSelectedRowIdx = useRef(-1);
   const gridRef = useRef<HTMLDivElement>(null);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
 
@@ -349,43 +348,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     }
   }
 
-  function handleRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) {
-    const newSelectedRows = new Set(selectedRows);
-
-    if (checked) {
-      newSelectedRows.add(row[rowKey]);
-      const previousRowIdx = lastSelectedRowIdx.current;
-      lastSelectedRowIdx.current = rowIdx;
-      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-        const step = Math.sign(rowIdx - previousRowIdx);
-        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-          newSelectedRows.add(rowGetter(i)[rowKey]);
-        }
-      }
-    } else {
-      newSelectedRows.delete(row[rowKey]);
-      lastSelectedRowIdx.current = -1;
-    }
-
-    if (onSelectedRowsChange) {
-      onSelectedRowsChange(newSelectedRows);
-    }
-  }
-
-  function handleAllRowsSelectionChange(checked: boolean) {
-    const newSelectedRows = new Set<R[keyof R]>();
-    if (checked) {
-      for (let i = 0; i < rowsCount; i++) {
-        newSelectedRows.add(rowGetter(i)[rowKey]);
-      }
-    }
-    lastSelectedRowIdx.current = -1;
-
-    if (onSelectedRowsChange) {
-      onSelectedRowsChange(newSelectedRows);
-    }
-  }
-
   function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
     const { headerRowHeight, onAddFilter } = props;
     return [
@@ -475,8 +437,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           cellMetaData={cellMetaData}
           selectedRows={selectedRows}
           allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
-          onRowSelectionChange={handleRowSelectionChange}
-          onAllRowsSelectionChange={handleAllRowsSelectionChange}
+          onSelectedRowsChange={onSelectedRowsChange}
           rowOffsetHeight={rowOffsetHeight}
           sortColumn={sortColumn}
           sortDirection={sortDirection}

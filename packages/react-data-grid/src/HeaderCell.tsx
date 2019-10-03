@@ -19,7 +19,6 @@ interface Props<R> {
   onResizeEnd(): void;
   onHeaderDrop?(): void;
   allRowsSelected: boolean;
-  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
   onAllRowsSelectionChange(checked: boolean): void;
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   className?: string;
@@ -106,7 +105,7 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
   }
 
   getCell() {
-    const { height, column, rowType, allRowsSelected, onRowSelectionChange, onAllRowsSelectionChange } = this.props;
+    const { height, column, rowType, allRowsSelected, onAllRowsSelectionChange } = this.props;
     const renderer = this.props.renderer || SimpleCellRenderer;
     if (isElement(renderer)) {
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
@@ -115,7 +114,7 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
       }
       return React.cloneElement(renderer, { column, height });
     }
-    return React.createElement(renderer, { column, rowType, allRowsSelected, onRowSelectionChange, onAllRowsSelectionChange });
+    return React.createElement(renderer, { column, rowType, allRowsSelected, onAllRowsSelectionChange });
   }
 
   setScrollLeft(scrollLeft: number) {

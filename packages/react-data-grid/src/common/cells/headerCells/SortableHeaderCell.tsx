@@ -16,12 +16,11 @@ export interface Props<R> {
   sortDirection: DEFINE_SORT;
   sortDescendingFirst: boolean;
   allRowsSelected: boolean;
-  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export default function SortableHeaderCell<R>(props: Props<R>) {
-  const { column, rowType, onSort, sortDirection, sortDescendingFirst, allRowsSelected, onRowSelectionChange, onAllRowsSelectionChange } = props;
+  const { column, rowType, onSort, sortDirection, sortDescendingFirst, allRowsSelected, onAllRowsSelectionChange } = props;
   function onClick() {
     let direction;
     switch (sortDirection) {
@@ -47,7 +46,6 @@ export default function SortableHeaderCell<R>(props: Props<R>) {
         column,
         rowType,
         allRowsSelected,
-        onRowSelectionChange,
         onAllRowsSelectionChange
       });
 

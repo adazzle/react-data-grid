@@ -19,6 +19,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'rowGetter'
 | 'rowsCount'
 | 'selectedRows'
+| 'onSelectedRowsChange'
 | 'columnMetrics'
 | 'cellMetaData'
 | 'rowOffsetHeight'
@@ -37,8 +38,6 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'overscanRowCount'
 | 'overscanColumnCount'
 | 'enableIsScrolling'
-| 'onRowSelectionChange'
-| 'onAllRowsSelectionChange'
 | 'onViewportKeydown'
 | 'onViewportKeyup'
 >;
@@ -142,8 +141,7 @@ export default function Viewport<R>({
         rowGetter={props.rowGetter}
         rowsCount={rowsCount}
         selectedRows={props.selectedRows}
-        onRowSelectionChange={props.onRowSelectionChange}
-        onAllRowsSelectionChange={props.onAllRowsSelectionChange}
+        onSelectedRowsChange={props.onSelectedRowsChange}
         rowRenderer={props.rowRenderer}
         scrollTop={scrollTop}
         scrollLeft={scrollLeft}

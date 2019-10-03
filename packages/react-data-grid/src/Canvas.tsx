@@ -16,8 +16,7 @@ type SharedViewportProps<R> = Pick<ViewportProps<R>,
 | 'rowGetter'
 | 'rowsCount'
 | 'selectedRows'
-| 'onRowSelectionChange'
-| 'onAllRowsSelectionChange'
+| 'onSelectedRowsChange'
 | 'rowRenderer'
 | 'cellMetaData'
 | 'rowHeight'
@@ -45,7 +44,7 @@ export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportSt
   onScroll(position: ScrollPosition): void;
 }
 
-type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling' | 'onRowSelectionChange' | 'onAllRowsSelectionChange'> & {
+type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
@@ -53,6 +52,7 @@ type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVi
   subRowDetails?: SubRowDetails;
   height: number;
   isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
   scrollLeft: number;
 };
 
@@ -62,6 +62,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   private readonly canvas = React.createRef<HTMLDivElement>();
   private readonly interactionMasks = React.createRef<InteractionMasks<R>>();
   private readonly rows = new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>();
+  private lastSelectedRowIdx = -1;
   private unsubscribeScrollToColumn?(): void;
 
   componentDidMount() {
@@ -149,6 +150,30 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   isRowSelected(row: R): boolean {
     return this.props.selectedRows !== undefined && this.props.selectedRows.has(row[this.props.rowKey]);
   }
+
+  handleRowSelectionChange = (rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) => {
+    const { rowKey } = this.props;
+    const newSelectedRows = new Set(this.props.selectedRows);
+
+    if (checked) {
+      newSelectedRows.add(row[rowKey]);
+      const previousRowIdx = this.lastSelectedRowIdx;
+      this.lastSelectedRowIdx = rowIdx;
+      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+        const step = Math.sign(rowIdx - previousRowIdx);
+        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+          newSelectedRows.add(this.props.rowGetter(i)[rowKey]);
+        }
+      }
+    } else {
+      newSelectedRows.delete(row[rowKey]);
+      this.lastSelectedRowIdx = -1;
+    }
+
+    if (this.props.onSelectedRowsChange) {
+      this.props.onSelectedRowsChange(newSelectedRows);
+    }
+  };
 
   setScrollLeft(scrollLeft: number) {
     if (isPositionStickySupported()) return;
@@ -252,7 +277,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu, isScrolling, scrollLeft, onRowSelectionChange, onAllRowsSelectionChange } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu, isScrolling, scrollLeft } = this.props;
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
@@ -272,8 +297,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           height: rowHeight,
           columns,
           isRowSelected: this.isRowSelected(row),
-          onRowSelectionChange,
-          onAllRowsSelectionChange,
+          onRowSelectionChange: this.handleRowSelectionChange,
           cellMetaData,
           subRowDetails,
           colVisibleStartIdx,
