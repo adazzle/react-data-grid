@@ -317,8 +317,9 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     const paddingTop = rowOverscanStartIdx > 0 ? rowOverscanStartIdx * rowHeight : 0;
     const paddingBottom = rowsCount - rowOverscanEndIdx > 0 ? (rowsCount - rowOverscanEndIdx) * rowHeight + pinnedRowsHeight : pinnedRowsHeight;
 
+    // Set minHeight to show horizontal scrollbar when there are no rows
     const scrollableRowsWrapperStyle: React.CSSProperties = { width, minHeight: 1, paddingTop, paddingBottom };
-    const pinnedRowsWrapperStyle: React.CSSProperties = { width, minHeight: 1 };
+    const pinnedRowsWrapperStyle: React.CSSProperties = { width };
     let ieStickyWrapperStyle: React.CSSProperties | undefined;
 
     if (isIEOrEdge()) {
@@ -368,7 +369,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           {...this.props.interactionMasksMetaData}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-          {/* Set minHeight to show horizontal scrollbar when there are no rows */}
           <div style={scrollableRowsWrapperStyle}>
             {this.getRowRendererDataList(rowOverscanStartIdx, rowOverscanEndIdx).map(this.mapToRowElement)}
           </div>
