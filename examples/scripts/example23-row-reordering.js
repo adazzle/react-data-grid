@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDataGrid, { Row } from 'react-data-grid';
+import ReactDataGrid, { Row, SelectColumn } from 'react-data-grid';
 import { Draggable, Data } from 'react-data-grid-addons';
 
 import exampleWrapper from '../components/exampleWrapper';
@@ -19,6 +19,7 @@ class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
     this._columns = [
+      SelectColumn,
       {
         key: 'id',
         name: 'ID'
@@ -37,7 +38,10 @@ class Example extends React.Component {
       }
     ];
 
-    this.state = { rows: this.createRows(1000), selectedIds: [1, 2] };
+    this.state = {
+      rows: this.createRows(1000),
+      selectedRows: new Set([1, 2])
+    };
   }
 
   getRandomDate = (start, end) => {
@@ -83,6 +87,10 @@ class Example extends React.Component {
     this.setState({ rows: undraggedRows });
   };
 
+  onSelectedRowsChange = (selectedRows) => {
+    this.setState({ selectedRows });
+  };
+
   render() {
     return (
       <DraggableContainer>
@@ -92,6 +100,8 @@ class Example extends React.Component {
           rowsCount={this.state.rows.length}
           minHeight={500}
           rowRenderer={<RowRenderer onRowDrop={this.reorderRows} />}
+          selectedRows={this.state.selectedRows}
+          onSelectedRowsChange={this.onSelectedRowsChange}
         />
       </DraggableContainer>
     );
