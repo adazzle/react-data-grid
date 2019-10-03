@@ -160,7 +160,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   rowData: TRow;
   cellMetaData: CellMetaData<TRow>;
   isScrolling?: boolean;
-  scrollLeft?: number;
+  scrollLeft: number;
   expandableOptions?: ExpandableOptions;
   lastFrozenColumnIndex: number;
 }
