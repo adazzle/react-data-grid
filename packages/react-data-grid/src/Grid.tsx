@@ -48,8 +48,8 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
   onSort(columnKey: keyof R, sortDirection: DEFINE_SORT): void;
-  onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
-  onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onViewportKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onViewportKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
   allRowsSelected: boolean;
   viewportWidth: number;

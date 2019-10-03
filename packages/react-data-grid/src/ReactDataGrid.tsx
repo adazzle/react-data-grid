@@ -263,20 +263,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     eventBus.dispatch(EventTypes.DRAG_ENTER, overRowIdx);
   }
 
-  function handleViewportKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    const { onGridKeyDown } = props;
-    if (onGridKeyDown) {
-      onGridKeyDown(e);
-    }
-  }
-
-  function handleViewportKeyUp(e: React.KeyboardEvent<HTMLDivElement>) {
-    const { onGridKeyUp } = props;
-    if (onGridKeyUp) {
-      onGridKeyUp(e);
-    }
-  }
-
   function handleCellClick({ rowIdx, idx }: Position) {
     const { onRowClick } = props;
     selectCell({ rowIdx, idx });
@@ -443,8 +429,8 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           sortDirection={sortDirection}
           onSort={handleSort}
           minHeight={minHeight}
-          onViewportKeydown={handleViewportKeyDown}
-          onViewportKeyup={handleViewportKeyUp}
+          onViewportKeydown={props.onGridKeyDown}
+          onViewportKeyup={props.onGridKeyUp}
           onColumnResize={handleColumnResize}
           scrollToRowIndex={props.scrollToRowIndex}
           contextMenu={props.contextMenu}
