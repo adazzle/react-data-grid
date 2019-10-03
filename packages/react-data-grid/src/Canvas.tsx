@@ -46,7 +46,7 @@ export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportSt
   pinnedRows?: R[];
 }
 
-type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
+type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
@@ -274,8 +274,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
       columns,
       colOverscanStartIdx,
       colOverscanEndIdx,
-      colVisibleStartIdx,
-      colVisibleEndIdx,
       lastFrozenColumnIndex,
       rowHeight,
       pinnedRows,
@@ -302,8 +300,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
       isSelected: this.isRowSelected(rowIdx, row),
       cellMetaData,
       subRowDetails,
-      colVisibleStartIdx,
-      colVisibleEndIdx,
       colOverscanStartIdx,
       colOverscanEndIdx,
       lastFrozenColumnIndex,
