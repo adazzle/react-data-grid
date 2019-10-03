@@ -28,11 +28,11 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   private readonly cell = React.createRef<HTMLDivElement>();
 
   shouldComponentUpdate(nextProps: CellProps<R>) {
+    // TODO: optimize cellMetatData as it is recreated whenever `ReactDataGrid` renders
     // On the modern browsers we are using position sticky so scrollLeft/setScrollLeft is not required
     // On the legacy browsers scrollLeft sets the initial position so it can be safely ignored in the subsequent renders. Scrolling is handled by the setScrollLeft method
-    // cellMetaData is an object with all the event handlers and it can also be safely ignored
-    const { scrollLeft, cellMetaData, ...rest } = this.props;
-    const { scrollLeft: nextScrollLeft, cellMetaData: nextCellMetaData, ...nextRest } = nextProps;
+    const { scrollLeft, ...rest } = this.props;
+    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
 
     return !shallowEqual(rest, nextRest);
   }

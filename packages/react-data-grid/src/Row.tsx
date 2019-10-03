@@ -20,8 +20,8 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   private readonly cells = new Map<keyof R, CellRenderer>();
 
   shouldComponentUpdate(nextProps: RowRendererProps<R>) {
-    const { scrollLeft, cellMetaData, ...rest } = this.props;
-    const { scrollLeft: nextScrollLeft, cellMetaData: nextCellMetaData, ...nextRest } = nextProps;
+    const { scrollLeft, ...rest } = this.props;
+    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
 
     return !shallowEqual(rest, nextRest);
   }
