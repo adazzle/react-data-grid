@@ -1,11 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
+import shallowEqual from 'shallowequal';
 
-import rowComparer from './common/utils/RowComparer';
 import Cell from './Cell';
 import { isFrozen } from './ColumnUtils';
 import * as rowUtils from './RowUtils';
-import { isPositionStickySupported } from './utils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
 export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
@@ -21,7 +20,10 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   private readonly cells = new Map<keyof R, CellRenderer>();
 
   shouldComponentUpdate(nextProps: RowRendererProps<R>) {
-    return rowComparer(nextProps, this.props);
+    const { scrollLeft, ...rest } = this.props;
+    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
+
+    return !shallowEqual(rest, nextRest);
   }
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -58,7 +60,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       rowData: row,
       expandableOptions: this.getExpandableOptions(key),
       isScrolling,
-      scrollLeft: isFrozen(column) && !isPositionStickySupported() ? scrollLeft : undefined,
+      scrollLeft,
       lastFrozenColumnIndex
     };
 

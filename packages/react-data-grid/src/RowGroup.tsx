@@ -16,8 +16,6 @@ interface Props<R> {
   forceUpdate?: boolean;
   subRowDetails?: unknown;
   isRowHovered?: boolean;
-  colVisibleStartIdx: number;
-  colVisibleEndIdx: number;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   isScrolling?: boolean;
