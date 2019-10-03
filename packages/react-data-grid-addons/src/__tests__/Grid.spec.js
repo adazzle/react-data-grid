@@ -169,7 +169,7 @@ describe('Grid', () => {
     let selectRowCol;
 
     beforeEach(() => {
-      ({ wrapper, columns } = setup({ enableRowSelect: true }));
+      ({ wrapper, columns } = setup());
       selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
     });
 
@@ -228,7 +228,6 @@ describe('Grid', () => {
         const rows = [{ id: '1' }, { id: '2' }];
         const columns = [{ name: 'Id', key: 'id' }];
         const { wrapper } = setup({
-          enableRowSelect: true,
           rowsCount: rows.length,
           rowGetter(i) { return rows[i]; },
           columns,
@@ -261,7 +260,6 @@ describe('Grid', () => {
         const rows = [{ id: '1' }, { id: '2' }];
         const columns = [{ name: 'Id', key: 'id' }];
         const { wrapper } = setup({
-          enableRowSelect: true,
           rowsCount: rows.length,
           rowGetter(i) { return rows[i]; },
           columns,

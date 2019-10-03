@@ -55,7 +55,6 @@ class Example extends React.Component {
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}
-          enableRowSelect="multi"
           minHeight={500}
           onRowSelect={this.onRowSelect}
           enableCellSelect

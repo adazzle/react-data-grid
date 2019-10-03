@@ -80,7 +80,6 @@ const exampleDescription = (
     <p>
       Allows a continuous range of rows to be selected by holding the shift key when clicking the row selection checkbox.
     </p>
-    <p><b>Note:</b> These props supercede the existing <code>enableRowSelect</code> and <code>onRowUpdated</code> props which will be removed in a later release.</p>
   </div>
 );
 

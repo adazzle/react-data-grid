@@ -203,7 +203,6 @@ class Example extends React.Component {
         rowsCount={this.getSize()}
         onGridRowsUpdated={this.handleGridRowsUpdated}
         toolbar={<Toolbar onAddRow={this.handleAddRow} />}
-        enableRowSelect
         rowHeight={50}
         minHeight={600}
       />
