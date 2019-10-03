@@ -16,7 +16,7 @@ const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this._columns = [
+    this.columns = [
       SelectColumn,
       {
         key: 'id',
@@ -39,8 +39,8 @@ class Example extends React.Component {
         width: 200,
         resizable: true,
         events: {
-          onDoubleClick() {
-            console.log('The user double clicked on title column');
+          onClick: (ev, { idx, rowIdx }) => {
+            this.grid.openCellEditor(rowIdx, idx);
           }
         }
       },
@@ -149,17 +149,6 @@ class Example extends React.Component {
     };
   };
 
-  getColumns = () => {
-    const clonedColumns = this._columns.slice();
-    clonedColumns[2].events = {
-      onClick: (ev, { idx, rowIdx }) => {
-        this.grid.openCellEditor(rowIdx, idx);
-      }
-    };
-
-    return clonedColumns;
-  };
-
   handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
     const rows = this.state.rows.slice();
 
@@ -206,7 +195,7 @@ class Example extends React.Component {
       <ReactDataGrid
         ref={node => this.grid = node}
         enableCellSelect
-        columns={this.getColumns()}
+        columns={this.columns}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}
         onGridRowsUpdated={this.handleGridRowsUpdated}
