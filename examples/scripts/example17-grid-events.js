@@ -69,12 +69,6 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        rowSelection={{
-          showCheckbox: false,
-          selectBy: {
-            isSelectedKey: 'isSelected'
-          }
-        }}
         onRowClick={this.onRowClick}
         onGridKeyDown={this.onKeyDown}
       />

@@ -5,7 +5,7 @@ import { Draggable, Data } from 'react-data-grid-addons';
 
 import exampleWrapper from '../components/exampleWrapper';
 
-const { Container: DraggableContainer, RowActionsCell, DropTargetRowContainer } = Draggable;
+const { Container: DraggableContainer, DropTargetRowContainer } = Draggable;
 const { Selectors } = Data;
 const RowRenderer = DropTargetRowContainer(Row);
 
@@ -83,35 +83,15 @@ class Example extends React.Component {
     this.setState({ rows: undraggedRows });
   };
 
-  onRowsSelected = (rows) => {
-    this.setState({ selectedIds: this.state.selectedIds.concat(rows.map(r => r.row[this.props.rowKey])) });
-  };
-
-  onRowsDeselected = (rows) => {
-    const rowIds = rows.map(r => r.row[this.props.rowKey]);
-    this.setState({ selectedIds: this.state.selectedIds.filter(i => rowIds.indexOf(i) === -1) });
-  };
-
   render() {
     return (
       <DraggableContainer>
         <ReactDataGrid
-          enableCellSelection
-          rowActionsCell={RowActionsCell}
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={500}
           rowRenderer={<RowRenderer onRowDrop={this.reorderRows} />}
-          rowSelection={{
-            showCheckbox: true,
-            enableShiftSelect: true,
-            onRowsSelected: this.onRowsSelected,
-            onRowsDeselected: this.onRowsDeselected,
-            selectBy: {
-              keys: { rowKey: this.props.rowKey, values: this.state.selectedIds }
-            }
-          }}
         />
       </DraggableContainer>
     );

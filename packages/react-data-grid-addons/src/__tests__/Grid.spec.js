@@ -193,17 +193,7 @@ describe('Grid', () => {
       wrapper = setup({
         rowsCount: rows.length,
         rowGetter(i) { return rows[i]; },
-        columns,
-        rowSelection: {
-          enableShiftSelect: true,
-          selectBy: { isSelectedKey: 'isSelected' },
-          onRowsSelected(selectedRows) {
-            _selectedRows = selectedRows;
-          },
-          onRowsDeselected(deselectedRows) {
-            _deselectedRows = deselectedRows;
-          }
-        }
+        columns
       }).wrapper;
       selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
     });
@@ -224,19 +214,13 @@ describe('Grid', () => {
 
     describe('checking header checkbox', () => {
       it('should call rowSelection.onRowsSelected with all rows', () => {
-        let _selectedRows = [];
+        const _selectedRows = [];
         const rows = [{ id: '1' }, { id: '2' }];
         const columns = [{ name: 'Id', key: 'id' }];
         const { wrapper } = setup({
           rowsCount: rows.length,
           rowGetter(i) { return rows[i]; },
-          columns,
-          rowSelection: {
-            selectBy: { indexes: [] },
-            onRowsSelected(selectedRows) {
-              _selectedRows = selectedRows;
-            }
-          }
+          columns
         });
 
         const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
@@ -256,19 +240,13 @@ describe('Grid', () => {
 
     describe('un-checking header checkbox', () => {
       it('then unchecking should call rowSelection.onRowsDeselected with all rows', () => {
-        let _deselectedRows = [];
+        const _deselectedRows = [];
         const rows = [{ id: '1' }, { id: '2' }];
         const columns = [{ name: 'Id', key: 'id' }];
         const { wrapper } = setup({
           rowsCount: rows.length,
           rowGetter(i) { return rows[i]; },
-          columns,
-          rowSelection: {
-            selectBy: { indexes: [0, 1] },
-            onRowsDeselected(deselectedRows) {
-              _deselectedRows = deselectedRows;
-            }
-          }
+          columns
         });
 
         const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
