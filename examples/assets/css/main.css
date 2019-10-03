@@ -174,9 +174,6 @@
 	margin-bottom: 20px;
 }
 
-.h-body {
-}
-
 body{
 	font-family: 'Roboto', sans-serif, Helvetica, Arial;
 }
@@ -264,10 +261,6 @@ img.pull-left {
 #social .wrapper {
 	width: 340px;
 	margin: 0 auto;
-}
-
-/* Main content block */
-.maincontent {
 }
 
 /* Sidebars */
@@ -369,7 +362,7 @@ img.pull-left {
 
 .demo-btn{
 	display:block;
-	margin-left:auto
+	margin-left:auto;
 	margin-right:auto;
 }
 
@@ -569,6 +562,11 @@ code.tab4{
 	margin-left:12px;
 }
 
-.bottom-pinned-rows .react-grid-checkbox-container {
+.rdg-bottom-pinned-rows-sticky-wrapper .react-grid-checkbox-container {
   display: none;
+}
+
+#grid-examples-div {
+  overflow-y: scroll;
+  max-height: calc(100vh - 200px);
 }

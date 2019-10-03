@@ -74,7 +74,7 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
   return (
     <div className="react-grid-Grid">
       {
-        React.createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
+        createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
           ref: header,
           columnMetrics: props.columnMetrics,
           onColumnResize: props.onColumnResize,

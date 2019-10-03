@@ -163,6 +163,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   scrollLeft?: number;
   expandableOptions?: ExpandableOptions;
   lastFrozenColumnIndex: number;
+  isBottomPinned?: boolean;
 }
 
 export interface RowRendererProps<TRow> {
@@ -180,6 +181,7 @@ export interface RowRendererProps<TRow> {
   isScrolling?: boolean;
   scrollLeft: number;
   lastFrozenColumnIndex: number;
+  isBottomPinned?: boolean;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

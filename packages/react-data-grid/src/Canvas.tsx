@@ -6,7 +6,7 @@ import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import * as rowUtils from './RowUtils';
-import { getColumnScrollPosition, isPositionStickySupported } from './utils';
+import { getColumnScrollPosition, isPositionStickySupported, isIEOrEdge } from './utils';
 import { EventTypes } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
 import { ViewportProps } from './Viewport';
@@ -55,7 +55,13 @@ type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVi
   height: number;
   isSelected: boolean;
   scrollLeft: number;
+  isBottomPinned?: boolean;
 };
+
+interface RowRendererData<R>{
+  row: R;
+  subRowDetails: SubRowDetails | undefined;
+}
 
 export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   static displayName = 'Canvas';
@@ -126,8 +132,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     }
   }
 
-  getRows(rowOverscanStartIdx: number, rowOverscanEndIdx: number) {
-    const rows = [];
+  getRowRendererDataList(rowOverscanStartIdx: number, rowOverscanEndIdx: number): RowRendererData<R>[] {
+    const rowRendererDataList: RowRendererData<R>[] = [];
     let i = rowOverscanStartIdx;
     while (i < rowOverscanEndIdx) {
       const row = this.props.rowGetter(i);
@@ -135,10 +141,10 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
       if (this.props.getSubRowDetails) {
         subRowDetails = this.props.getSubRowDetails(row);
       }
-      rows.push({ row, subRowDetails });
+      rowRendererDataList.push({ row, subRowDetails });
       i++;
     }
-    return rows;
+    return rowRendererDataList;
   }
 
   getClientScrollTopOffset(node: HTMLDivElement) {
@@ -261,51 +267,74 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return <Row<R> {...props} />;
   }
 
-  renderPlaceholder(key: string, height: number) {
-    return (
-      <div key={key} style={{ height }} />
-    );
+  mapToRowElement = ({ row, subRowDetails }: RowRendererData<R>, idx: number): JSX.Element => {
+    const {
+      rowOverscanStartIdx,
+      cellMetaData,
+      columns,
+      colOverscanStartIdx,
+      colOverscanEndIdx,
+      colVisibleStartIdx,
+      colVisibleEndIdx,
+      lastFrozenColumnIndex,
+      rowHeight,
+      pinnedRows,
+      rowsCount
+    } = this.props;
+
+    const isBottomPinned = pinnedRows && pinnedRows.includes(row);
+
+    const rowIdx = isBottomPinned ? rowsCount + 1 + idx : rowOverscanStartIdx + idx;
+
+    return row && this.renderRow({
+      key: rowIdx,
+      ref: (row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null) => {
+        if (row) {
+          this.rows.set(rowIdx, row);
+        } else {
+          this.rows.delete(rowIdx);
+        }
+      },
+      idx: rowIdx,
+      row,
+      height: rowHeight,
+      columns,
+      isSelected: this.isRowSelected(rowIdx, row),
+      cellMetaData,
+      subRowDetails,
+      colVisibleStartIdx,
+      colVisibleEndIdx,
+      colOverscanStartIdx,
+      colOverscanEndIdx,
+      lastFrozenColumnIndex,
+      isScrolling: this.props.isScrolling,
+      scrollLeft: this.props.scrollLeft,
+      isBottomPinned
+    });
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu, pinnedRows } = this.props;
+    const { scrollTop, rowOverscanStartIdx, rowOverscanEndIdx, columns, colVisibleStartIdx, colVisibleEndIdx, rowHeight, rowsCount, width, height, rowGetter, contextMenu, pinnedRows } = this.props;
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
-    const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
-      .map(({ row, subRowDetails }, idx) => {
-        const rowIdx = rowOverscanStartIdx + idx;
-        return row && this.renderRow({
-          key: rowIdx,
-          ref: (row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null) => {
-            if (row) {
-              this.rows.set(rowIdx, row);
-            } else {
-              this.rows.delete(rowIdx);
-            }
-          },
-          idx: rowIdx,
-          row,
-          height: rowHeight,
-          columns,
-          isSelected: this.isRowSelected(rowIdx, row),
-          cellMetaData,
-          subRowDetails,
-          colVisibleStartIdx,
-          colVisibleEndIdx,
-          colOverscanStartIdx,
-          colOverscanEndIdx,
-          lastFrozenColumnIndex,
-          isScrolling: this.props.isScrolling,
-          scrollLeft: this.props.scrollLeft
-        });
-      });
+    const pinnedRowsHeight = isIEOrEdge() && pinnedRows ? pinnedRows.length * rowHeight : 0;
+    const paddingTop = rowOverscanStartIdx > 0 ? rowOverscanStartIdx * rowHeight : 0;
+    const paddingBottom = rowsCount - rowOverscanEndIdx > 0 ? (rowsCount - rowOverscanEndIdx) * rowHeight + pinnedRowsHeight : pinnedRowsHeight;
 
-    if (rowOverscanStartIdx > 0) {
-      rows.unshift(this.renderPlaceholder('top', rowOverscanStartIdx * rowHeight));
-    }
+    const scrollableRowsWrapperStyle: React.CSSProperties = { width, minHeight: 1, paddingTop, paddingBottom };
+    const pinnedRowsWrapperStyle: React.CSSProperties = { width, minHeight: 1 };
+    let ieStickyWrapperStyle: React.CSSProperties | undefined;
 
-    if (rowsCount - rowOverscanEndIdx > 0) {
-      rows.push(this.renderPlaceholder('bottom', (rowsCount - rowOverscanEndIdx) * rowHeight));
+    if (isIEOrEdge()) {
+      pinnedRowsWrapperStyle.position ='absolute';
+      pinnedRowsWrapperStyle.bottom = 0;
+
+      ieStickyWrapperStyle = {
+        position: 'absolute',
+        top: 0,
+        height: height - 17, // IE scroll bar width
+        transform: `translateY(${scrollTop}px)`
+      };
     }
 
     return (
@@ -344,56 +373,17 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           {/* Set minHeight to show horizontal scrollbar when there are no rows */}
-          <div style={{ width, minHeight: 1 }}>{rows}</div>
+          <div style={scrollableRowsWrapperStyle}>
+            {this.getRowRendererDataList(rowOverscanStartIdx, rowOverscanEndIdx).map(this.mapToRowElement)}
+          </div>
         </RowsContainer>
-        {
-          pinnedRows && pinnedRows.length && (
-            <div
-              className="bottom-pinned-rows"
-              style={{
-                position: 'sticky',
-                bottom: 0,
-                zIndex: 99999
-              }}
-            >
-              <div
-                style={{
-                  width,
-                  borderTop: '2px solid #ccc'
-                }}
-              >
-                {
-                  pinnedRows.map((row, idx) => {
-                    const rowIdx = rowsCount + 1 + idx;
-                    return row && this.renderRow({
-                      key: rowIdx,
-                      ref: (row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null) => {
-                        if (row) {
-                          this.rows.set(rowIdx, row);
-                        } else {
-                          this.rows.delete(rowIdx);
-                        }
-                      },
-                      idx: rowIdx,
-                      row,
-                      height: rowHeight,
-                      columns,
-                      isSelected: false,
-                      cellMetaData,
-                      colVisibleStartIdx,
-                      colVisibleEndIdx,
-                      colOverscanStartIdx,
-                      colOverscanEndIdx,
-                      lastFrozenColumnIndex,
-                      isScrolling: this.props.isScrolling,
-                      scrollLeft: this.props.scrollLeft
-                    });
-                  })
-                }
-              </div>
+        {pinnedRows && pinnedRows.length && (
+          <div className="rdg-bottom-pinned-rows-sticky-wrapper" style={ieStickyWrapperStyle}>
+            <div className="rdg-bottom-pinned-rows" style={pinnedRowsWrapperStyle}>
+              {pinnedRows.map(((row, index) => this.mapToRowElement({ row, subRowDetails: undefined }, index)))}
             </div>
-          )
-        }
+          </div>
+        )}
       </div>
     );
   }

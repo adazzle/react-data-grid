@@ -166,7 +166,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   }
 
   render() {
-    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isScrolling } = this.props;
+    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isScrolling, isBottomPinned } = this.props;
     if (column.hidden) {
       return null;
     }
@@ -186,6 +186,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
         onDeleteSubRow={cellMetaData.onDeleteSubRow}
         cellControls={cellControls}
         isScrolling={isScrolling}
+        isBottomPinned={isBottomPinned}
       />
     );
     const events = this.getEvents();

@@ -13,8 +13,8 @@ const columns = [
     name: 'Title',
     width: 200,
     frozen: true,
-    formatter: ({value, row: {selectedIndexes, isTotal}}) => {
-      if (isTotal) {
+    formatter: ({ value, row: { selectedIndexes}, isBottomPinned }) => {
+      if (isBottomPinned) {
         return <strong>{ selectedIndexes ? `${selectedIndexes.length} rows selected` : 'Total'}</strong>;
       }
 
@@ -98,7 +98,6 @@ function Example() {
     const selectedIndexSet = new Set(selectedIndexes);
 
     const selectedTotalRow = {
-      isTotal: true,
       cost: 0,
       hours: 0,
       issueCount: 0,
@@ -106,7 +105,6 @@ function Example() {
     }
 
     const totalRow = {
-      isTotal: true,
       cost: 0,
       hours: 0,
       issueCount: 0
@@ -145,14 +143,29 @@ function Example() {
   }, [selectedIndexes]);
 
   return (
-    <ReactDataGrid
-      columns={columns}
-      rowGetter={rowGetter}
-      pinnedRows={pinnedRows}
-      rowsCount={rows.length}
-      minHeight={500}
-      rowSelection={rowSelection}
-    />
+    <>
+      <ReactDataGrid
+        columns={columns}
+        rowGetter={rowGetter}
+        pinnedRows={pinnedRows}
+        rowsCount={rows.length}
+        minHeight={500}
+        rowSelection={rowSelection}
+      />
+      <div
+        style={{
+          padding: '0 20px',
+          lineHeight: '35px',
+          textAlign: 'right',
+          width: '100%',
+          background: '#eee',
+          border: '1px solid #ddd',
+          borderTop: 'none'
+        }}
+      >
+        <div>This is just a plain customized footer which renders next to the canvas. This area can potentially be used for pagination for example.</div>
+      </div>
+    </>
   );
 }
 

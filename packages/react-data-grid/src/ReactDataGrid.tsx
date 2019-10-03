@@ -219,6 +219,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   cellRangeSelection,
   onRowSelect,
   onClearFilters,
+  pinnedRows,
   ...props
 }: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle<R>>) {
   const [selectedRows, setSelectedRows] = useState<SelectedRow<R>[]>([]);
@@ -691,6 +692,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           overscanColumnCount={props.overscanColumnCount}
           enableIsScrolling={props.enableIsScrolling}
           viewportWidth={viewportWidth}
+          pinnedRows={pinnedRows}
         />
       )}
     </div>

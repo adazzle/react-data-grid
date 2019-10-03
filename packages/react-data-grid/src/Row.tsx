@@ -44,7 +44,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   getCell(column: CalculatedColumn<R>) {
     const Renderer = this.props.cellRenderer!;
-    const { idx, cellMetaData, isScrolling, row, lastFrozenColumnIndex, scrollLeft } = this.props;
+    const { idx, cellMetaData, isScrolling, row, lastFrozenColumnIndex, scrollLeft, isBottomPinned } = this.props;
     const { key } = column;
 
     const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
@@ -59,7 +59,8 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       expandableOptions: this.getExpandableOptions(key),
       isScrolling,
       scrollLeft: isFrozen(column) && !isPositionStickySupported() ? scrollLeft : undefined,
-      lastFrozenColumnIndex
+      lastFrozenColumnIndex,
+      isBottomPinned
     };
 
     return <Renderer key={`${key as keyof R}-${idx}`} {...cellProps} />; // FIXME: fix key type
