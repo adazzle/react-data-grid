@@ -44,7 +44,7 @@ export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportSt
   onScroll(position: ScrollPosition): void;
 }
 
-type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
+type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
@@ -300,8 +300,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           onRowSelectionChange: this.handleRowSelectionChange,
           cellMetaData,
           subRowDetails,
-          colVisibleStartIdx,
-          colVisibleEndIdx,
           colOverscanStartIdx,
           colOverscanEndIdx,
           lastFrozenColumnIndex,

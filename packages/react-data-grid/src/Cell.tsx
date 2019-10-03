@@ -7,6 +7,7 @@ import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
 import { isFrozen } from './ColumnUtils';
+import { isPositionStickySupported } from './utils';
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
@@ -27,23 +28,13 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   private readonly cell = React.createRef<HTMLDivElement>();
 
   shouldComponentUpdate(nextProps: CellProps<R>) {
+    // TODO: optimize cellMetatData as it is recreated whenever `ReactDataGrid` renders
+    // On the modern browsers we are using position sticky so scrollLeft/setScrollLeft is not required
+    // On the legacy browsers scrollLeft sets the initial position so it can be safely ignored in the subsequent renders. Scrolling is handled by the setScrollLeft method
     const { scrollLeft, ...rest } = this.props;
     const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
 
     return !shallowEqual(rest, nextRest);
-  }
-
-  componentDidMount() {
-    const { scrollLeft } = this.props;
-    if (scrollLeft !== undefined) {
-      this.setScrollLeft(scrollLeft);
-    }
-  }
-
-  componentDidUpdate(prevProps: CellProps<R>) {
-    if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
-      this.removeScroll();
-    }
   }
 
   handleCellClick = () => {
@@ -88,10 +79,13 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   };
 
   getStyle(): React.CSSProperties {
+    const { column, height, scrollLeft } = this.props;
+
     return {
-      width: this.props.column.width,
-      height: this.props.height,
-      left: this.props.column.left
+      height,
+      width: column.width,
+      left: column.left,
+      transform: !isPositionStickySupported() && isFrozen(column) ? `translateX(${scrollLeft}px)` : 'none'
     };
   }
 
