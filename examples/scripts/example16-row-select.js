@@ -40,6 +40,10 @@ class Example extends React.Component {
     return this.state.rows[i];
   };
 
+  onSelectedRowsChange = (selectedRows) => {
+    this.setState({ selectedRows });
+  };
+
   render() {
     const rowText = this.state.selectedRows.size === 1 ? 'row' : 'rows';
     return (
@@ -52,7 +56,7 @@ class Example extends React.Component {
           rowsCount={this.state.rows.length}
           minHeight={500}
           selectedRows={this.state.selectedRows}
-          onSelectedRowsChange={selectedRows => this.setState({ selectedRows })}
+          onSelectedRowsChange={this.onSelectedRowsChange}
         />
       </div>
     );

@@ -152,6 +152,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   handleRowSelectionChange = (rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) => {
+    if (!this.props.onSelectedRowsChange) return;
+
     const { rowKey } = this.props;
     const newSelectedRows = new Set(this.props.selectedRows);
 
@@ -170,9 +172,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
       this.lastSelectedRowIdx = -1;
     }
 
-    if (this.props.onSelectedRowsChange) {
-      this.props.onSelectedRowsChange(newSelectedRows);
-    }
+    this.props.onSelectedRowsChange(newSelectedRows);
   };
 
   setScrollLeft(scrollLeft: number) {
