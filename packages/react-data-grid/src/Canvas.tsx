@@ -260,12 +260,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return <Row<R> {...props} />;
   }
 
-  renderPlaceholder(key: string, height: number) {
-    return (
-      <div key={key} style={{ height }} />
-    );
-  }
-
   render() {
     const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu } = this.props;
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
@@ -297,13 +291,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
         });
       });
 
-    if (rowOverscanStartIdx > 0) {
-      rows.unshift(this.renderPlaceholder('top', rowOverscanStartIdx * rowHeight));
-    }
-
-    if (rowsCount - rowOverscanEndIdx > 0) {
-      rows.push(this.renderPlaceholder('bottom', (rowsCount - rowOverscanEndIdx) * rowHeight));
-    }
+    const paddingTop = rowOverscanStartIdx * rowHeight;
+    const paddingBottom = (rowsCount - rowOverscanEndIdx) * rowHeight;
 
     return (
       <div
@@ -341,7 +330,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
           {/* Set minHeight to show horizontal scrollbar when there are no rows */}
-          <div style={{ width, minHeight: 1 }}>{rows}</div>
+          <div style={{ width, paddingTop, paddingBottom, minHeight: 1 }}>{rows}</div>
         </RowsContainer>
       </div>
     );
