@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
-import TestUtils from 'react-dom/test-utils';
 
 import Grid from 'react-data-grid';
 
@@ -45,14 +44,6 @@ describe('Grid', () => {
 
   const getBaseGrid = (wrapper) => {
     return wrapper.find('Grid');
-  };
-
-  const buildFakeEvent = (addedData) => {
-    return {
-      preventDefault() {},
-      stopPropagation() {},
-      ...addedData
-    };
   };
 
   it('should create a new instance of Grid', () => {
