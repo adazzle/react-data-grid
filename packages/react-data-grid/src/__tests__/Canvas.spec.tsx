@@ -21,16 +21,7 @@ const testProps: CanvasProps<Row> = {
   rowKey: 'row',
   rowHeight: 25,
   height: 200,
-  rowOverscanStartIdx: 1,
-  rowOverscanEndIdx: 10,
-  rowVisibleStartIdx: 0,
-  rowVisibleEndIdx: 10,
-  colVisibleStartIdx: 0,
-  colVisibleEndIdx: 100,
-  colOverscanStartIdx: 0,
-  colOverscanEndIdx: 100,
   rowsCount: 1,
-  columns: [],
   rowGetter() { return {}; },
   cellMetaData: {
     rowKey: 'row',
@@ -46,42 +37,31 @@ const testProps: CanvasProps<Row> = {
     onGridRowsUpdated: noop,
     onDragHandleDoubleClick: noop
   },
-  isScrolling: false,
   enableCellSelect: true,
   enableCellAutoFocus: false,
   cellNavigationMode: CellNavigationMode.NONE,
   eventBus: new EventBus(),
   editorPortalTarget: document.body,
-  width: 1000,
   onScroll() {},
-  lastFrozenColumnIndex: 0,
   RowsContainer: RowsContainer as CanvasProps<Row>['RowsContainer'],
-  scrollTop: 0,
-  scrollLeft: 0
+  viewportWidth: 1000,
+  columnMetrics: {
+    columns: [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }],
+    columnWidths: new Map(),
+    lastFrozenColumnIndex: -1,
+    minColumnWidth: 80,
+    totalColumnWidth: 0,
+    viewportWidth: 1000
+  },
+  onCanvasKeydown() {},
+  onCanvasKeyup() {}
 };
 
 function renderComponent(extraProps?: Partial<CanvasProps<Row>>) {
-  return shallow<Canvas<Row>>(<Canvas<Row> {...testProps} {...extraProps} />);
+  return shallow(<Canvas<Row> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas Tests', () => {
-  it('Should not call setScroll on render', () => {
-    const wrapper = renderComponent();
-    const testElementNode = wrapper.instance();
-
-    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => { });
-    expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
-  });
-
-  it('Should not call setScroll on update', () => {
-    const wrapper = renderComponent();
-    const testElementNode = wrapper.instance();
-
-    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => { });
-    testElementNode.componentDidUpdate(testProps);
-    expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
-  });
-
   it('Should render the InteractionMasks component', () => {
     const wrapper = renderComponent();
 
@@ -89,20 +69,18 @@ describe('Canvas Tests', () => {
       rowHeight: 25,
       rowsCount: 1,
       rowVisibleStartIdx: 0,
-      rowVisibleEndIdx: 10,
+      rowVisibleEndIdx: 1,
       colVisibleStartIdx: 0,
-      colVisibleEndIdx: 100
+      colVisibleEndIdx: 1
     });
   });
 
   describe('Row Selection', () => {
-    const COLUMNS = [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }];
-
     describe('selectBy index', () => {
       it('renders row selected', () => {
         const rowGetter = () => ({ id: 1 });
 
-        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
+        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
         const wrapper = renderComponent(props);
 
         const rows = getRows(wrapper);
@@ -114,7 +92,7 @@ describe('Canvas Tests', () => {
       it('renders row selected', () => {
         const rowGetter = () => { return { id: 1 }; };
 
-        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
+        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
         const wrapper = renderComponent(props);
 
         const rows = getRows(wrapper);
@@ -127,7 +105,7 @@ describe('Canvas Tests', () => {
       it('renders row selected', () => {
         const rowGetter = (i: number) => i === 0 ? { id: 1, isSelected: true } : {};
 
-        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected' } };
+        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected' } };
         const wrapper = renderComponent(props);
 
         const rows = getRows(wrapper);

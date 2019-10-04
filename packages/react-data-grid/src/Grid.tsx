@@ -48,8 +48,8 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
   onSort(columnKey: keyof R, sortDirection: DEFINE_SORT): void;
-  onViewportKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
-  onViewportKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeydown(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeyup(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
   viewportWidth: number;
 }
@@ -105,9 +105,6 @@ export default function Grid<R>({
           rowKey={props.rowKey}
           columnMetrics={columnMetrics}
           viewportWidth={viewportWidth}
-          width={columnMetrics.totalColumnWidth}
-          columns={columnMetrics.columns}
-          lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
           rowGetter={props.rowGetter}
           rowsCount={rowsCount}
           selectedRows={props.selectedRows}
@@ -129,8 +126,8 @@ export default function Grid<R>({
           RowsContainer={props.RowsContainer}
           editorPortalTarget={props.editorPortalTarget}
           interactionMasksMetaData={props.interactionMasksMetaData}
-          onViewportKeydown={props.onViewportKeydown}
-          onViewportKeyup={props.onViewportKeyup}
+          onCanvasKeydown={props.onCanvasKeydown}
+          onCanvasKeyup={props.onCanvasKeyup}
         />
       )}
     </div>

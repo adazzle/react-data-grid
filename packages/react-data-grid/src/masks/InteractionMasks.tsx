@@ -27,7 +27,7 @@ import keyCodes from '../KeyCodes';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent } from '../common/types';
+import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
 const SCROLL_CELL_BUFFER = 2;
@@ -39,17 +39,16 @@ interface NavAction {
 }
 
 type SharedCanvasProps<R> = Pick<CanvasProps<R>,
-'rowGetter'
+| 'rowGetter'
 | 'rowsCount'
 | 'rowHeight'
-| 'columns'
 | 'enableCellSelect'
 | 'enableCellAutoFocus'
 | 'cellNavigationMode'
 | 'eventBus'
 | 'contextMenu'
 | 'editorPortalTarget'
->;
+> & Pick<ColumnMetrics<R>, 'columns'>;
 
 export interface InteractionMasksProps<R> extends SharedCanvasProps<R>, InteractionMasksMetaData<R> {
   onHitTopBoundary(): void;

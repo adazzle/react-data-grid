@@ -37,22 +37,21 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'overscanRowCount'
 | 'overscanColumnCount'
 | 'enableIsScrolling'
-| 'onViewportKeydown'
-| 'onViewportKeyup'
+| 'onCanvasKeydown'
+| 'onCanvasKeyup'
 >;
 
 export interface CanvasProps<R> extends SharedGridProps<R> {
-  columns: CalculatedColumn<R>[];
   height: number;
-  width: number;
-  lastFrozenColumnIndex: number;
   onScroll(position: ScrollState): void;
 }
 
-type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'lastFrozenColumnIndex'> & {
+interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData'> {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
+  columns: CalculatedColumn<R>[];
+  lastFrozenColumnIndex: number;
   row: R;
   subRowDetails?: SubRowDetails;
   height: number;
@@ -61,13 +60,12 @@ type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'lastF
   isScrolling: boolean;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-};
+}
 
 export default function Canvas<R>({
   cellMetaData,
   cellNavigationMode,
   columnMetrics,
-  columns,
   contextMenu,
   editorPortalTarget,
   enableCellAutoFocus,
@@ -77,10 +75,9 @@ export default function Canvas<R>({
   getSubRowDetails,
   height,
   interactionMasksMetaData,
-  lastFrozenColumnIndex,
+  onCanvasKeydown,
+  onCanvasKeyup,
   onScroll,
-  onViewportKeydown,
-  onViewportKeyup,
   overscanColumnCount,
   overscanRowCount,
   rowGetter,
@@ -93,8 +90,7 @@ export default function Canvas<R>({
   rowSelection,
   scrollToRowIndex,
   selectedRows,
-  viewportWidth,
-  width
+  viewportWidth
 }: CanvasProps<R>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -127,8 +123,8 @@ export default function Canvas<R>({
   }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft, viewportWidth]);
 
   useEffect(() => {
-    return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columns));
-  }, [eventBus, columns]);
+    return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));
+  }, [columnMetrics.columns, eventBus]);
 
   useEffect(() => {
     if (scrollToRowIndex) {
@@ -191,7 +187,7 @@ export default function Canvas<R>({
   }
 
   function handleHitColummBoundary({ idx }: Position) {
-    scrollToColumn(idx, columns);
+    scrollToColumn(idx, columnMetrics.columns);
   }
 
   function scrollToRow(scrollToRowIndex: number) {
@@ -241,13 +237,13 @@ export default function Canvas<R>({
         idx: rowIdx,
         row,
         height: rowHeight,
-        columns,
+        columns: columnMetrics.columns,
         isSelected: isRowSelected(rowIdx, row),
         cellMetaData,
         subRowDetails,
         colOverscanStartIdx,
         colOverscanEndIdx,
-        lastFrozenColumnIndex,
+        lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
         isScrolling,
         scrollLeft
       });
@@ -320,7 +316,7 @@ export default function Canvas<R>({
 
   function getRowColumns(rowIdx: number) {
     const row = getRowByRef(rowIdx);
-    return row && row.props ? row.props.columns : columns;
+    return row && row.props ? row.props.columns : columnMetrics.columns;
   }
 
   function renderCustomRowRenderer(rowProps: RendererProps<R>) {
@@ -382,15 +378,15 @@ export default function Canvas<R>({
       style={{ height }}
       ref={canvas}
       onScroll={handleScroll}
-      onKeyDown={onViewportKeydown}
-      onKeyUp={onViewportKeyup}
+      onKeyDown={onCanvasKeydown}
+      onKeyUp={onCanvasKeyup}
     >
       <InteractionMasks<R>
         ref={interactionMasks}
         rowGetter={rowGetter}
         rowsCount={rowsCount}
         rowHeight={rowHeight}
-        columns={columns}
+        columns={columnMetrics.columns}
         rowVisibleStartIdx={rowVisibleStartIdx}
         rowVisibleEndIdx={rowVisibleEndIdx}
         colVisibleStartIdx={colVisibleStartIdx}
@@ -414,7 +410,7 @@ export default function Canvas<R>({
       />
       <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
         {/* Set minHeight to show horizontal scrollbar when there are no rows */}
-        <div style={{ width, paddingTop, paddingBottom, minHeight: 1 }}>
+        <div style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom, minHeight: 1 }}>
           {getRows(rowOverscanStartIdx, rowOverscanEndIdx)}
         </div>
       </RowsContainer>

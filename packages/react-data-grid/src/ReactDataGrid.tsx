@@ -471,7 +471,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     eventBus.dispatch(EventTypes.DRAG_ENTER, overRowIdx);
   }
 
-  function handleViewportKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+  function handleCanvasKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     // Track which keys are currently down for shift clicking etc
     _keysDown.add(e.keyCode);
 
@@ -481,7 +481,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     }
   }
 
-  function handleViewportKeyUp(e: React.KeyboardEvent<HTMLDivElement>) {
+  function handleCanvasKeyUp(e: React.KeyboardEvent<HTMLDivElement>) {
     // Track which keys are currently down for shift clicking etc
     _keysDown.delete(e.keyCode);
 
@@ -669,8 +669,8 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           sortDirection={sortDirection}
           onSort={handleSort}
           minHeight={minHeight}
-          onViewportKeydown={handleViewportKeyDown}
-          onViewportKeyup={handleViewportKeyUp}
+          onCanvasKeydown={handleCanvasKeyDown}
+          onCanvasKeyup={handleCanvasKeyUp}
           onColumnResize={handleColumnResize}
           scrollToRowIndex={props.scrollToRowIndex}
           contextMenu={props.contextMenu}
