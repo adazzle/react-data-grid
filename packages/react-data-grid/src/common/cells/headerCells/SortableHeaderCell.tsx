@@ -12,7 +12,7 @@ const SORT_TEXT = {
 export interface Props<R> {
   column: CalculatedColumn<R>;
   rowType: HeaderRowType;
-  onSort(columnKey: keyof R, direction: DEFINE_SORT): void;
+  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   sortDirection: DEFINE_SORT;
   sortDescendingFirst: boolean;
   allRowsSelected: boolean;
@@ -22,6 +22,7 @@ export interface Props<R> {
 export default function SortableHeaderCell<R>(props: Props<R>) {
   const { column, rowType, onSort, sortDirection, sortDescendingFirst, allRowsSelected, onAllRowsSelectionChange } = props;
   function onClick() {
+    if (!onSort) return;
     let direction;
     switch (sortDirection) {
       case DEFINE_SORT.ASC:
