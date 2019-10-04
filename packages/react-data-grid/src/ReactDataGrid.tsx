@@ -192,8 +192,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   ...props
 }: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
   const [canFilter, setCanFilter] = useState(false);
-  const [sortColumn, setSortColumn] = useState(props.sortColumn);
-  const [sortDirection, setSortDirection] = useState(props.sortDirection);
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
@@ -326,14 +324,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     handleGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
   }
 
-  function handleSort(sortColumn: keyof R, sortDirection: DEFINE_SORT) {
-    setSortColumn(sortColumn);
-    setSortDirection(sortDirection);
-    if (props.onGridSort) {
-      props.onGridSort(sortColumn, sortDirection);
-    }
-  }
-
   function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
     const { headerRowHeight, onAddFilter } = props;
     return [
@@ -424,9 +414,9 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           selectedRows={selectedRows}
           onSelectedRowsChange={onSelectedRowsChange}
           rowOffsetHeight={rowOffsetHeight}
-          sortColumn={sortColumn}
-          sortDirection={sortDirection}
-          onSort={handleSort}
+          sortColumn={props.sortColumn}
+          sortDirection={props.sortDirection}
+          onSort={props.onGridSort}
           minHeight={minHeight}
           onViewportKeydown={props.onGridKeyDown}
           onViewportKeyup={props.onGridKeyUp}

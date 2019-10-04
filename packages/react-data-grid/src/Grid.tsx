@@ -27,6 +27,8 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'enableIsScrolling'
 | 'selectedRows'
 | 'onSelectedRowsChange'
+| 'sortColumn'
+| 'sortDirection'
 > & Required<Pick<ReactDataGridProps<R>,
 | 'rowKey'
 | 'enableCellSelect'
@@ -35,19 +37,16 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'cellNavigationMode'
 | 'enableCellAutoFocus'
 | 'editorPortalTarget'
->> & {
-  sortColumn?: keyof R;
-  sortDirection?: DEFINE_SORT;
-  columnMetrics: ColumnMetrics<R>;
-};
+>>;
 
 export interface GridProps<R> extends SharedDataGridProps<R> {
+  columnMetrics: ColumnMetrics<R>;
   headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
   cellMetaData: CellMetaData<R>;
   rowOffsetHeight: number;
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
-  onSort(columnKey: keyof R, sortDirection: DEFINE_SORT): void;
+  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   onViewportKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onViewportKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;

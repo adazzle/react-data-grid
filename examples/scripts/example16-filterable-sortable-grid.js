@@ -112,6 +112,8 @@ class Example extends React.Component {
     return (
       <ReactDataGrid
         onGridSort={this.handleGridSort}
+        sortDirection={this.state.sortDirection}
+        sortColumn={this.state.sortColumn}
         enableCellSelect
         columns={this._columns}
         rowGetter={this.rowGetter}

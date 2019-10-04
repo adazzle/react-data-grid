@@ -88,7 +88,7 @@ class Example extends React.Component {
 
     const rows = sortDirection === 'NONE' ? this.state.originalRows.slice(0) : this.state.rows.sort(comparer);
 
-    this.setState({ rows });
+    this.setState({ rows, sortColumn, sortDirection });
   };
 
   rowGetter = (i) => {
@@ -102,6 +102,8 @@ class Example extends React.Component {
         columns={this._columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
+        sortDirection={this.state.sortDirection}
+        sortColumn={this.state.sortColumn}
         minHeight={500}
       />
     );
