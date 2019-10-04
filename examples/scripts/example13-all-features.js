@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import ReactDataGrid, { SelectColumn } from 'react-data-grid';
 import { Editors, Toolbar, Formatters } from 'react-data-grid-addons';
 import update from 'immutability-helper';
 import faker from 'faker';
@@ -16,7 +16,8 @@ const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this._columns = [
+    this.columns = [
+      SelectColumn,
       {
         key: 'id',
         name: 'ID',
@@ -38,8 +39,8 @@ class Example extends React.Component {
         width: 200,
         resizable: true,
         events: {
-          onDoubleClick() {
-            console.log('The user double clicked on title column');
+          onClick: (ev, { idx, rowIdx }) => {
+            this.grid.openCellEditor(rowIdx, idx);
           }
         }
       },
@@ -115,7 +116,10 @@ class Example extends React.Component {
       }
     ];
 
-    this.state = { rows: this.createRows(2000) };
+    this.state = {
+      rows: this.createRows(2000),
+      selectedRows: new Set()
+    };
   }
 
   createRows = (numberOfRows) => {
@@ -143,17 +147,6 @@ class Example extends React.Component {
       words: faker.lorem.words(),
       sentence: faker.lorem.sentence()
     };
-  };
-
-  getColumns = () => {
-    const clonedColumns = this._columns.slice();
-    clonedColumns[2].events = {
-      onClick: (ev, { idx, rowIdx }) => {
-        this.grid.openCellEditor(rowIdx, idx);
-      }
-    };
-
-    return clonedColumns;
   };
 
   handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
@@ -193,19 +186,24 @@ class Example extends React.Component {
     return this.state.rows.length;
   };
 
+  onSelectedRowsChange = (selectedRows) => {
+    this.setState({ selectedRows });
+  };
+
   render() {
     return (
       <ReactDataGrid
         ref={node => this.grid = node}
         enableCellSelect
-        columns={this.getColumns()}
+        columns={this.columns}
         rowGetter={this.getRowAt}
         rowsCount={this.getSize()}
         onGridRowsUpdated={this.handleGridRowsUpdated}
         toolbar={<Toolbar onAddRow={this.handleAddRow} />}
-        enableRowSelect
         rowHeight={50}
         minHeight={600}
+        selectedRows={this.state.selectedRows}
+        onSelectedRowsChange={this.onSelectedRowsChange}
       />
     );
   }

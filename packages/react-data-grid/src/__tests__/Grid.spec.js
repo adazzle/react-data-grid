@@ -64,7 +64,6 @@ describe('Rendering Grid component', () => {
       rowRenderer: jest.fn(),
       emptyRowsView: jest.fn(),
       selectedRows: jest.fn(),
-      rowSelection: { isSelectedKey: 'selectedKey' },
       rowsCount: 14,
       sortColumn: 'sortColumn',
       sortDirection: 'ASC',

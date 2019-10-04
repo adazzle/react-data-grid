@@ -31,10 +31,6 @@ class Example extends React.Component {
     return this._rows[index];
   };
 
-  onRowSelect = (rows) => {
-    this.setState({ selectedRows: rows });
-  };
-
   onCellSelected = ({ rowIdx, idx }) => {
     this.grid.openCellEditor(rowIdx, idx);
   };
@@ -55,9 +51,7 @@ class Example extends React.Component {
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}
-          enableRowSelect="multi"
           minHeight={500}
-          onRowSelect={this.onRowSelect}
           enableCellSelect
           onCellSelected={this.onCellSelected}
           onCellDeSelected={this.onCellDeSelected}

@@ -30,6 +30,8 @@ describe('Header Cell Tests', () => {
       name: 'bla',
       onHeaderDrop() { },
       draggableHeaderCell: DraggableHeaderCell,
+      allRowsSelected: false,
+      onAllRowsSelectionChange() {},
       ...overrideProps
     };
     const wrapper = mount<HeaderCell<Row>>(<HeaderCell {...props} />);
@@ -64,7 +66,12 @@ describe('Header Cell Tests', () => {
     it('pass the column as property to cell renderer if it is a function', () => {
       const rendererFunction = jest.fn(() => <div>Custom</div>);
       const { props } = setup({ renderer: rendererFunction });
-      expect(rendererFunction).toHaveBeenCalledWith({ column: props.column, rowType: HeaderRowType.HEADER }, {});
+      expect(rendererFunction).toHaveBeenCalledWith({
+        column: props.column,
+        rowType: HeaderRowType.HEADER,
+        allRowsSelected: false,
+        onAllRowsSelectionChange: expect.any(Function)
+      }, {});
     });
 
     it('should not pass the column as property to cell renderer if it is a jsx object', () => {

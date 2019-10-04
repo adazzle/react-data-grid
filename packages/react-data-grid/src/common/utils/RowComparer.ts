@@ -5,7 +5,7 @@ export default function shouldRowUpdate<R>(nextProps: RowRendererProps<R>, curre
     || nextProps.row !== currentProps.row
     || currentProps.colOverscanStartIdx !== nextProps.colOverscanStartIdx
     || currentProps.colOverscanEndIdx !== nextProps.colOverscanEndIdx
-    || currentProps.isSelected !== nextProps.isSelected
+    || currentProps.isRowSelected !== nextProps.isRowSelected
     || currentProps.isScrolling !== nextProps.isScrolling
     || nextProps.height !== currentProps.height
     || currentProps.extraClasses !== nextProps.extraClasses;

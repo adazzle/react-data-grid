@@ -39,7 +39,7 @@ class DraggableContainer extends Component {
       <div>
         {grid}
         <RowDragLayer
-          rowSelection={grid.props.rowSelection}
+          selectedRows={grid.props.selectedRows}
           rows={rows}
           columns={isColumnsImmutable(columns) ? columns.toArray() : columns}
         />

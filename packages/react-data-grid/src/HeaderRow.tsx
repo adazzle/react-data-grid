@@ -9,8 +9,9 @@ import { CalculatedColumn, AddFilterEvent } from './common/types';
 import { HeaderProps } from './Header';
 
 type SharedHeaderProps<R> = Pick<HeaderProps<R>,
-'draggableHeaderCell'
+| 'draggableHeaderCell'
 | 'onHeaderDrop'
+| 'allRowsSelected'
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
@@ -22,12 +23,13 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
   columns: CalculatedColumn<R>[];
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
   onColumnResizeEnd(): void;
+  onAllRowsSelectionChange(checked: boolean): void;
   filterable?: boolean;
   onFilterChange?(args: AddFilterEvent<R>): void;
   rowType: HeaderRowType;
 }
 
-export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>> {
+export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
   private readonly headerRow = React.createRef<HTMLDivElement>();
@@ -66,6 +68,8 @@ export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>>
         onSort={this.props.onSort}
         sortDirection={sortDirection}
         sortDescendingFirst={sortDescendingFirst}
+        allRowsSelected={this.props.allRowsSelected}
+        onAllRowsSelectionChange={this.props.onAllRowsSelectionChange}
       />
     );
   }
@@ -105,6 +109,8 @@ export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>>
           onResize={this.props.onColumnResize}
           onResizeEnd={this.props.onColumnResizeEnd}
           onHeaderDrop={this.props.onHeaderDrop}
+          allRowsSelected={this.props.allRowsSelected}
+          onAllRowsSelectionChange={this.props.onAllRowsSelectionChange}
           draggableHeaderCell={this.props.draggableHeaderCell}
         />
       );
