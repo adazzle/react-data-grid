@@ -191,18 +191,25 @@ class Example extends React.Component {
   render() {
     return (
       <DraggableContainer>
-        <ReactDataGrid
-          ref={node => this.grid = node}
-          enableCellSelect
-          enableDragAndDrop
-          columns={columns}
-          rowGetter={this.getRowAt}
-          rowsCount={this.getSize()}
-          onRowExpandToggle={this.onRowExpandToggle}
-          toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
-          rowHeight={50}
-          minHeight={600}
-        />
+        <>
+          <CustomToolbar
+            groupBy={this.state.groupBy}
+            onColumnGroupAdded={this.onColumnGroupAdded}
+            onColumnGroupDeleted={this.onColumnGroupDeleted}
+          />
+          <ReactDataGrid
+            ref={node => this.grid = node}
+            enableCellSelect
+            enableDragAndDrop
+            columns={columns}
+            rowGetter={this.getRowAt}
+            rowsCount={this.getSize()}
+            onRowExpandToggle={this.onRowExpandToggle}
+            toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
+            rowHeight={50}
+            minHeight={600}
+          />
+        </>
       </DraggableContainer>
     );
   }
