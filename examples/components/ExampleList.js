@@ -29,7 +29,6 @@ export default class ExampleList extends React.Component {
         <li><Link to="/examples/grouping">Grouping Example</Link></li>
         <li><Link to="/examples/custom-filters">Custom Filters Example</Link></li>
         <li><Link to="/examples/immutable-data-grouping">Immutable Data Grouping Example</Link></li>
-        <li><Link to="/examples/row-reordering">Row Reordering Example</Link></li>
         <li><Link to="/examples/draggable-header">Draggable Header Example</Link></li>
         <li><Link to="/examples/tree-view">Tree View Example</Link></li>
         <li><Link to="/examples/tree-view-no-add-delete">Tree View No Add Delete Example</Link></li>

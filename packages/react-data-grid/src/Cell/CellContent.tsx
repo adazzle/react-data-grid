@@ -7,7 +7,7 @@ import { CellProps } from '../Cell';
 import CellValue from './CellValue';
 
 export type CellContentProps<R> = Pick<CellProps<R>,
-'idx'
+| 'idx'
 | 'rowIdx'
 | 'rowData'
 | 'column'
@@ -17,10 +17,11 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 | 'tooltip'
 | 'height'
 | 'cellControls'
+| 'isRowSelected'
+| 'onRowSelectionChange'
 > & Pick<CellMetaData<R>,
 'onDeleteSubRow'
 >;
-
 
 export default function CellContent<R>({
   idx,
@@ -33,7 +34,9 @@ export default function CellContent<R>({
   height,
   onDeleteSubRow,
   cellControls,
-  isScrolling
+  isScrolling,
+  isRowSelected,
+  onRowSelectionChange
 }: CellContentProps<R>) {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
@@ -74,6 +77,8 @@ export default function CellContent<R>({
             column={column}
             value={value}
             isScrolling={isScrolling}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
           />
         </span>
         {cellControls}

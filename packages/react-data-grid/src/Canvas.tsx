@@ -5,7 +5,6 @@ import Row from './Row';
 import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
-import * as rowUtils from './RowUtils';
 import { getColumnScrollPosition, isPositionStickySupported } from './utils';
 import { EventTypes, SCROLL_DIRECTION } from './common/enums';
 import { CalculatedColumn, Position, ScrollState, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
@@ -16,14 +15,14 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'rowKey'
 | 'rowGetter'
 | 'rowsCount'
-| 'selectedRows'
 | 'columnMetrics'
+| 'selectedRows'
+| 'onSelectedRowsChange'
 | 'rowRenderer'
 | 'cellMetaData'
 | 'rowHeight'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'rowSelection'
 | 'getSubRowDetails'
 | 'rowGroupRenderer'
 | 'enableCellSelect'
@@ -55,7 +54,8 @@ interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData'> {
   row: R;
   subRowDetails?: SubRowDetails;
   height: number;
-  isSelected: boolean;
+  isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
   scrollLeft: number;
   isScrolling: boolean;
   colOverscanStartIdx: number;
@@ -78,6 +78,7 @@ export default function Canvas<R>({
   onCanvasKeydown,
   onCanvasKeyup,
   onScroll,
+  onSelectedRowsChange,
   overscanColumnCount,
   overscanRowCount,
   rowGetter,
@@ -87,7 +88,6 @@ export default function Canvas<R>({
   rowRenderer,
   RowsContainer = RowsContainerDefault,
   rowsCount,
-  rowSelection,
   scrollToRowIndex,
   selectedRows,
   viewportWidth
@@ -99,6 +99,7 @@ export default function Canvas<R>({
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const resetScrollStateTimeoutId = useRef<number | null>(null);
+  const lastSelectedRowIdx = useRef(-1);
   const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
 
   const { rowOverscanStartIdx, rowOverscanEndIdx, rowVisibleStartIdx, rowVisibleEndIdx } = useMemo(() => {
@@ -235,7 +236,8 @@ export default function Canvas<R>({
       row,
       height: rowHeight,
       columns: columnMetrics.columns,
-      isSelected: isRowSelected(idx, row),
+      isRowSelected: isRowSelected(row),
+      onRowSelectionChange: handleRowSelectionChange,
       cellMetaData,
       subRowDetails: getSubRowDetails ? getSubRowDetails(row) : undefined,
       colOverscanStartIdx,
@@ -267,23 +269,31 @@ export default function Canvas<R>({
     return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
   }
 
-  function isRowSelected(idx: number, row: R) {
-    // Use selectedRows if set
-    if (selectedRows) {
-      const selectedRow = selectedRows.find(r => {
-        const rowKeyValue = rowUtils.get(row, rowKey);
-        return r[rowKey] === rowKeyValue;
-      });
-      return !!(selectedRow && selectedRow.isSelected);
+  function isRowSelected(row: R): boolean {
+    return selectedRows !== undefined && selectedRows.has(row[rowKey]);
+  }
+
+  function handleRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) {
+    if (!onSelectedRowsChange) return;
+
+    const newSelectedRows = new Set(selectedRows);
+
+    if (checked) {
+      newSelectedRows.add(row[rowKey]);
+      const previousRowIdx = lastSelectedRowIdx.current;
+      lastSelectedRowIdx.current = rowIdx;
+      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+        const step = Math.sign(rowIdx - previousRowIdx);
+        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+          newSelectedRows.add(rowGetter(i)[rowKey]);
+        }
+      }
+    } else {
+      newSelectedRows.delete(row[rowKey]);
+      lastSelectedRowIdx.current = -1;
     }
 
-    // Else use new rowSelection props
-    if (rowSelection) {
-      const { keys, indexes, isSelectedKey } = rowSelection as { [key: string]: unknown };
-      return rowUtils.isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, row, idx);
-    }
-
-    return false;
+    onSelectedRowsChange(newSelectedRows);
   }
 
   function setComponentsScrollLeft(scrollLeft: number) {
