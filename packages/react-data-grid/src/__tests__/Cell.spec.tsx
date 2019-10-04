@@ -45,6 +45,8 @@ const testProps: CellProps<Row> = {
   rowData: { id: 1, description: 'Wicklow' },
   height: 40,
   isScrolling: false,
+  isRowSelected: false,
+  onRowSelectionChange() {},
   scrollLeft: 0,
   lastFrozenColumnIndex: -1
 };
@@ -93,6 +95,8 @@ describe('Cell Tests', () => {
       rowData: helpers.rowGetter(11),
       expandableOptions,
       isScrolling: false,
+      isRowSelected: false,
+      onRowSelectionChange() {},
       scrollLeft: 0,
       lastFrozenColumnIndex: -1
     };
@@ -126,6 +130,8 @@ describe('Cell Tests', () => {
         rowData: helpers.rowGetter(11),
         expandableOptions,
         isScrolling: false,
+        isRowSelected: false,
+        onRowSelectionChange() {},
         scrollLeft: 0,
         lastFrozenColumnIndex: -1,
         ...propsOverride

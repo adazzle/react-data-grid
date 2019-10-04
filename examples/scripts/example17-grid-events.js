@@ -21,7 +21,10 @@ class Example extends React.Component {
       }
     ];
 
-    this.state = { rows: this.createRows(1000) };
+    this.state = {
+      rows: this.createRows(),
+      selectedRows: new Set()
+    };
   }
 
   createRows = () => {
@@ -30,8 +33,7 @@ class Example extends React.Component {
       rows.push({
         id: i,
         title: `Title ${i}`,
-        count: i * 1000,
-        isSelected: false
+        count: i * 1000
       });
     }
 
@@ -43,22 +45,26 @@ class Example extends React.Component {
   };
 
   onRowClick = (rowIdx, row) => {
-    const rows = this.state.rows.slice();
-    rows[rowIdx] = { ...row, isSelected: !row.isSelected };
-    this.setState({ rows });
+    const newSelectedRows = new Set(this.state.selectedRows);
+    if (newSelectedRows.has(row.id)) {
+      newSelectedRows.delete(row.id);
+    } else {
+      newSelectedRows.add(row.id);
+    }
+    this.onSelectedRowsChange(newSelectedRows);
   };
 
   onKeyDown = (e) => {
     if (e.ctrlKey && e.keyCode === 65) {
       e.preventDefault();
-
-      const rows = [];
-      this.state.rows.forEach((r) => {
-        rows.push({ ...r, isSelected: true });
-      });
-
-      this.setState({ rows });
+      const newSelectedRows = new Set(this.state.selectedRows);
+      this.state.rows.forEach(row => newSelectedRows.add(row.id));
+      this.onSelectedRowsChange(newSelectedRows);
     }
+  };
+
+  onSelectedRowsChange = (selectedRows) => {
+    this.setState({ selectedRows });
   };
 
   render() {
@@ -69,14 +75,10 @@ class Example extends React.Component {
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
         minHeight={500}
-        rowSelection={{
-          showCheckbox: false,
-          selectBy: {
-            isSelectedKey: 'isSelected'
-          }
-        }}
         onRowClick={this.onRowClick}
         onGridKeyDown={this.onKeyDown}
+        selectedRows={this.state.selectedRows}
+        onSelectedRowsChange={this.onSelectedRowsChange}
       />
     );
   }

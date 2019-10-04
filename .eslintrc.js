@@ -357,7 +357,7 @@ const rules = {
   'react/jsx-no-undef': 0,
   'react/jsx-no-useless-fragment': 0,
   'react/jsx-one-expression-per-line': 0,
-  'react/jsx-curly-brace-presence': 0,
+  'react/jsx-curly-brace-presence': 1,
   'react/jsx-fragments': 1,
   'react/jsx-pascal-case': 1,
   'react/jsx-props-no-multi-spaces': 1,

@@ -5,7 +5,6 @@ import Row from './Row';
 import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
-import * as rowUtils from './RowUtils';
 import { getColumnScrollPosition, isPositionStickySupported } from './utils';
 import { EventTypes } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
@@ -13,16 +12,16 @@ import { ViewportProps } from './Viewport';
 import { HorizontalRangeToRender, VerticalRangeToRender } from './utils/viewportUtils';
 
 type SharedViewportProps<R> = Pick<ViewportProps<R>,
-'rowKey'
+| 'rowKey'
 | 'rowGetter'
 | 'rowsCount'
 | 'selectedRows'
+| 'onSelectedRowsChange'
 | 'rowRenderer'
 | 'cellMetaData'
 | 'rowHeight'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'rowSelection'
 | 'getSubRowDetails'
 | 'rowGroupRenderer'
 | 'enableCellSelect'
@@ -52,7 +51,8 @@ type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colOv
   row: R;
   subRowDetails?: SubRowDetails;
   height: number;
-  isSelected: boolean;
+  isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
   scrollLeft: number;
 };
 
@@ -62,6 +62,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   private readonly canvas = React.createRef<HTMLDivElement>();
   private readonly interactionMasks = React.createRef<InteractionMasks<R>>();
   private readonly rows = new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>();
+  private lastSelectedRowIdx = -1;
   private unsubscribeScrollToColumn?(): void;
 
   componentDidMount() {
@@ -146,24 +147,33 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
   }
 
-  isRowSelected(idx: number, row: R) {
-    // Use selectedRows if set
-    if (this.props.selectedRows) {
-      const selectedRow = this.props.selectedRows.find(r => {
-        const rowKeyValue = rowUtils.get(row, this.props.rowKey);
-        return r[this.props.rowKey] === rowKeyValue;
-      });
-      return !!(selectedRow && selectedRow.isSelected);
-    }
-
-    // Else use new rowSelection props
-    if (this.props.rowSelection) {
-      const { keys, indexes, isSelectedKey } = this.props.rowSelection as { [key: string]: unknown };
-      return rowUtils.isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, row, idx);
-    }
-
-    return false;
+  isRowSelected(row: R): boolean {
+    return this.props.selectedRows !== undefined && this.props.selectedRows.has(row[this.props.rowKey]);
   }
+
+  handleRowSelectionChange = (rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) => {
+    if (!this.props.onSelectedRowsChange) return;
+
+    const { rowKey } = this.props;
+    const newSelectedRows = new Set(this.props.selectedRows);
+
+    if (checked) {
+      newSelectedRows.add(row[rowKey]);
+      const previousRowIdx = this.lastSelectedRowIdx;
+      this.lastSelectedRowIdx = rowIdx;
+      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+        const step = Math.sign(rowIdx - previousRowIdx);
+        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+          newSelectedRows.add(this.props.rowGetter(i)[rowKey]);
+        }
+      }
+    } else {
+      newSelectedRows.delete(row[rowKey]);
+      this.lastSelectedRowIdx = -1;
+    }
+
+    this.props.onSelectedRowsChange(newSelectedRows);
+  };
 
   setScrollLeft(scrollLeft: number) {
     if (isPositionStickySupported()) return;
@@ -267,7 +277,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu, isScrolling, scrollLeft } = this.props;
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
@@ -286,14 +296,15 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           row,
           height: rowHeight,
           columns,
-          isSelected: this.isRowSelected(rowIdx, row),
+          isRowSelected: this.isRowSelected(row),
+          onRowSelectionChange: this.handleRowSelectionChange,
           cellMetaData,
           subRowDetails,
           colOverscanStartIdx,
           colOverscanEndIdx,
           lastFrozenColumnIndex,
-          isScrolling: this.props.isScrolling,
-          scrollLeft: this.props.scrollLeft
+          isScrolling,
+          scrollLeft
         });
       });
 
@@ -331,7 +342,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           onHitTopBoundary={this.onHitTopCanvas}
           onHitLeftBoundary={this.handleHitColummBoundary}
           onHitRightBoundary={this.handleHitColummBoundary}
-          scrollLeft={this.props.scrollLeft}
+          scrollLeft={scrollLeft}
           scrollTop={this.props.scrollTop}
           getRowHeight={this.getRowHeight}
           getRowTop={this.getRowTop}

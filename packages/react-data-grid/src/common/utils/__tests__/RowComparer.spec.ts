@@ -18,6 +18,8 @@ const defaultProps: RowRendererProps<Row> = {
   height: 60,
   columns,
   row: {},
+  isRowSelected: false,
+  onRowSelectionChange() {},
   colOverscanStartIdx: 0,
   colOverscanEndIdx: 1,
   isScrolling: false,

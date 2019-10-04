@@ -213,11 +213,11 @@ describe('<InteractionMasks/>', () => {
 
       it('should give focus to InteractionMasks once a selection has ended', () => {
         // We have to use mount, rather than shallow, so that InteractionMasks has a ref to it's node, used for focusing
-        const { props } = setup(undefined, undefined, true);
+        const { wrapper, props } = setup(undefined, undefined, true);
         props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-        jest.spyOn(InteractionMasks.prototype, 'focus').mockImplementation(() => { });
+        jest.spyOn(wrapper.instance(), 'focus').mockImplementation(() => { });
         props.eventBus.dispatch(EventTypes.SELECT_END);
-        expect(InteractionMasks.prototype.focus).toHaveBeenCalled();
+        expect(wrapper.instance().focus).toHaveBeenCalled();
       });
     });
   });

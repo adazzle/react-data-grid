@@ -96,43 +96,21 @@ describe('Canvas Tests', () => {
   });
 
   describe('Row Selection', () => {
-    const COLUMNS = [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }];
+    it('renders row selected', () => {
+      const rowGetter = () => ({ id: 1 });
 
-    describe('selectBy index', () => {
-      it('renders row selected', () => {
-        const rowGetter = () => ({ id: 1 });
-
-        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
-        const wrapper = renderComponent(props);
-
-        const rows = getRows(wrapper);
-        expect(rows[0].props.isSelected).toBe(true);
+      const wrapper = renderComponent({
+        rowOverscanStartIdx: 0,
+        rowOverscanEndIdx: 1,
+        columns: [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }],
+        rowGetter,
+        rowsCount: 1,
+        rowKey: 'id',
+        selectedRows: new Set([1])
       });
-    });
+      const rows = getRows(wrapper);
 
-    describe('selectBy keys', () => {
-      it('renders row selected', () => {
-        const rowGetter = () => { return { id: 1 }; };
-
-        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
-        const wrapper = renderComponent(props);
-
-        const rows = getRows(wrapper);
-        expect(rows[0].props.isSelected).toBe(true);
-      });
-    });
-
-
-    describe('selectBy `isSelectedKey`', () => {
-      it('renders row selected', () => {
-        const rowGetter = (i: number) => i === 0 ? { id: 1, isSelected: true } : {};
-
-        const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { isSelectedKey: 'isSelected' } };
-        const wrapper = renderComponent(props);
-
-        const rows = getRows(wrapper);
-        expect(rows[0].props.isSelected).toBe(true);
-      });
+      expect(rows[0].props.isRowSelected).toBe(true);
     });
   });
 

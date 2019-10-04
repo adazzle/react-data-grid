@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
-import TestUtils from 'react-dom/test-utils';
 
-import Grid, { CheckboxEditor } from 'react-data-grid';
+import Grid from 'react-data-grid';
 
 describe('Grid', () => {
   const setup = (extraProps) => {
@@ -45,14 +44,6 @@ describe('Grid', () => {
 
   const getBaseGrid = (wrapper) => {
     return wrapper.find('Grid');
-  };
-
-  const buildFakeEvent = (addedData) => {
-    return {
-      preventDefault() {},
-      stopPropagation() {},
-      ...addedData
-    };
   };
 
   it('should create a new instance of Grid', () => {
@@ -159,134 +150,6 @@ describe('Grid', () => {
 
       it('should set filter state of grid and render a filterable header row', () => {
         expect(getBaseGrid(wrapper).props().headerRows.length).toEqual(2);
-      });
-    });
-  });
-
-  describe('When row selection enabled', () => {
-    let wrapper;
-    let columns;
-    let selectRowCol;
-
-    beforeEach(() => {
-      ({ wrapper, columns } = setup({ enableRowSelect: true }));
-      selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
-    });
-
-    it('should render an additional Select Row column', () => {
-      expect(getBaseGrid(wrapper).props().columnMetrics.columns.length).toEqual(columns.length + 1);
-      expect(TestUtils.isElementOfType(selectRowCol.formatter, CheckboxEditor)).toBe(true);
-    });
-  });
-
-  describe('When selection enabled and using rowSelection props', () => {
-    let selectRowCol;
-    let rows;
-    let _selectedRows;
-    let _deselectedRows;
-    let wrapper;
-
-    beforeEach(() => {
-      _deselectedRows = [];
-      rows = [{ id: '1', isSelected: true }, { id: '2', isSelected: false }, { id: '3', isSelected: false }, { id: '4', isSelected: false }];
-      const columns = [{ name: 'Id', key: 'id' }];
-      wrapper = setup({
-        rowsCount: rows.length,
-        rowGetter(i) { return rows[i]; },
-        columns,
-        rowSelection: {
-          enableShiftSelect: true,
-          selectBy: { isSelectedKey: 'isSelected' },
-          onRowsSelected(selectedRows) {
-            _selectedRows = selectedRows;
-          },
-          onRowsDeselected(deselectedRows) {
-            _deselectedRows = deselectedRows;
-          }
-        }
-      }).wrapper;
-      selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
-    });
-
-    it('should call rowSelection.onRowsSelected when row selected', () => {
-      selectRowCol.onCellChange(1, '', rows[1], buildFakeEvent());
-      expect(_selectedRows.length).toBe(1);
-      expect(_selectedRows[0].rowIdx).toBe(1);
-      expect(_selectedRows[0].row).toBe(rows[1]);
-    });
-
-    it('should call rowSelection.onRowsDeselected when row de-selected', () => {
-      selectRowCol.onCellChange(0, '', rows[0], buildFakeEvent());
-      expect(_deselectedRows.length).toBe(1);
-      expect(_deselectedRows[0].rowIdx).toBe(0);
-      expect(_deselectedRows[0].row).toBe(rows[0]);
-    });
-
-    describe('checking header checkbox', () => {
-      it('should call rowSelection.onRowsSelected with all rows', () => {
-        let _selectedRows = [];
-        const rows = [{ id: '1' }, { id: '2' }];
-        const columns = [{ name: 'Id', key: 'id' }];
-        const { wrapper } = setup({
-          enableRowSelect: true,
-          rowsCount: rows.length,
-          rowGetter(i) { return rows[i]; },
-          columns,
-          rowSelection: {
-            selectBy: { indexes: [] },
-            onRowsSelected(selectedRows) {
-              _selectedRows = selectedRows;
-            }
-          }
-        });
-
-        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
-
-        // header checkbox
-        const checkboxWrapper = document.createElement('div');
-        checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
-        const checkbox = checkboxWrapper.querySelector('input');
-        const fakeEvent = buildFakeEvent({ currentTarget: checkbox });
-        const SelectAll = selectRowCol.headerRenderer;
-        const selectAllWrapper = mount(SelectAll);
-        selectAllWrapper.props().onChange(fakeEvent);
-
-        expect(_selectedRows.length).toBe(2);
-      });
-    });
-
-    describe('un-checking header checkbox', () => {
-      it('then unchecking should call rowSelection.onRowsDeselected with all rows', () => {
-        let _deselectedRows = [];
-        const rows = [{ id: '1' }, { id: '2' }];
-        const columns = [{ name: 'Id', key: 'id' }];
-        const { wrapper } = setup({
-          enableRowSelect: true,
-          rowsCount: rows.length,
-          rowGetter(i) { return rows[i]; },
-          columns,
-          rowSelection: {
-            selectBy: { indexes: [0, 1] },
-            onRowsDeselected(deselectedRows) {
-              _deselectedRows = deselectedRows;
-            }
-          }
-        });
-
-        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
-
-        // header checkbox
-        const checkboxWrapper = document.createElement('div');
-        checkboxWrapper.innerHTML = '<input type="checkbox" value="value" checked="true" />';
-        const checkbox = checkboxWrapper.querySelector('input');
-        const SelectAll = selectRowCol.headerRenderer;
-        const selectAllWrapper = mount(SelectAll);
-
-        checkbox.checked = false;
-        const fakeEvent = buildFakeEvent({ currentTarget: checkbox });
-        selectAllWrapper.props().onChange(fakeEvent);
-
-        expect(_deselectedRows.length).toBe(2);
       });
     });
   });

@@ -5,8 +5,6 @@ import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export type SelectedRow<TRow> = TRow & { isSelected: boolean };
-
 interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
@@ -39,12 +37,11 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TDependentValue, TRow>>;
   /** Header renderer for each header cell */
+  // TODO: finalize API
   headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TDependentValue>>;
 
-  // TODO: these props are only used by checkbox editor and we should remove them
-  onCellChange?(rowIdx: number, key: keyof TRow, dependentValues: TDependentValue, event: React.SyntheticEvent): void;
   getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
 }
 
@@ -130,6 +127,8 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   value: TValue;
   column: CalculatedColumn<TRow, TDependentValue>;
   row: TRow;
+  isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
   isScrolling?: boolean;
   dependentValues?: TDependentValue;
 }
@@ -149,6 +148,8 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
 export interface HeaderRowProps<TRow> {
   column: CalculatedColumn<TRow>;
   rowType: HeaderRowType;
+  allRowsSelected: boolean;
+  onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export interface CellRendererProps<TRow, TValue = unknown> {
@@ -163,6 +164,8 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   scrollLeft: number;
   expandableOptions?: ExpandableOptions;
   lastFrozenColumnIndex: number;
+  isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }
 
 export interface RowRendererProps<TRow> {
@@ -171,7 +174,6 @@ export interface RowRendererProps<TRow> {
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   cellMetaData: CellMetaData<TRow>;
-  isSelected?: boolean;
   idx: number;
   extraClasses?: string;
   subRowDetails?: SubRowDetails;
@@ -180,6 +182,8 @@ export interface RowRendererProps<TRow> {
   isScrolling?: boolean;
   scrollLeft: number;
   lastFrozenColumnIndex: number;
+  isRowSelected: boolean;
+  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
@@ -277,8 +281,6 @@ export interface RowGroupMetaData {
   getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
 }
 
-export type RowSelection = { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };
-
 export interface HeaderRowData<TRow> {
   rowType: HeaderRowType;
   height: number;
@@ -328,9 +330,4 @@ export interface CellCopyPasteEvent<TRow> {
 export interface CheckCellIsEditableEvent<TRow> extends Position {
   row: TRow;
   column: CalculatedColumn<TRow>;
-}
-
-export interface RowSelectionParams<TRow> {
-  rowIdx: number;
-  row: TRow;
 }

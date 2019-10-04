@@ -5,14 +5,16 @@ import { SimpleCellFormatter } from '../formatters';
 import { CellContentProps } from './CellContent';
 
 type CellValueProps<R> = Pick<CellContentProps<R>,
-'rowIdx'
+| 'rowIdx'
 | 'rowData'
 | 'column'
 | 'value'
 | 'isScrolling'
+| 'isRowSelected'
+| 'onRowSelectionChange'
 >;
 
-export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolling }: CellValueProps<R>) {
+export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolling, isRowSelected, onRowSelectionChange }: CellValueProps<R>) {
   function getFormatterDependencies(row: R) {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
@@ -26,11 +28,14 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
 
   function getFormatterProps() {
     return {
-      value,
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      value: value as any, //FIXME: fix value type
       column,
       rowIdx,
       isScrolling,
       row: rowData,
+      isRowSelected,
+      onRowSelectionChange,
       dependentValues: getFormatterDependencies(rowData)
     };
   }
@@ -42,8 +47,7 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
   }
 
   if (isValidElementType(formatter)) {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    return React.createElement(formatter, { ...getFormatterProps(), value: value as any }); //FIXME: fix value type
+    return React.createElement(formatter, getFormatterProps());
   }
 
   return <SimpleCellFormatter value={value as string} />;

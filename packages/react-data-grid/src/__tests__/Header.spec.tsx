@@ -12,6 +12,10 @@ const SCROLL_BAR_SIZE = 17;
 describe('Header Unit Tests', () => {
   function getProps(): HeaderProps<Row> {
     return {
+      rowKey: 'id',
+      rowsCount: 1,
+      rowGetter() { return {}; },
+      allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 80,
@@ -63,6 +67,10 @@ describe('Header Unit Tests', () => {
       return shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, props));
     }
     const testRequiredProps: HeaderProps<Row> = {
+      rowKey: 'id',
+      rowsCount: 1,
+      rowGetter() { return {}; },
+      allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 81,
@@ -84,6 +92,10 @@ describe('Header Unit Tests', () => {
       rowOffsetHeight: 30
     };
     const testAllProps: HeaderProps<Row> = {
+      rowKey: 'id',
+      rowsCount: 1,
+      rowGetter() { return {}; },
+      allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
         minColumnWidth: 80,
