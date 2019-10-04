@@ -7,16 +7,17 @@ import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import * as rowUtils from './RowUtils';
 import { getColumnScrollPosition, isPositionStickySupported } from './utils';
-import { EventTypes } from './common/enums';
+import { EventTypes, SCROLL_DIRECTION } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
 import { ViewportProps } from './Viewport';
-import { HorizontalRangeToRender, VerticalRangeToRender } from './utils/viewportUtils';
+import { getScrollDirection, getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
 
 type SharedViewportProps<R> = Pick<ViewportProps<R>,
-'rowKey'
+| 'rowKey'
 | 'rowGetter'
 | 'rowsCount'
 | 'selectedRows'
+| 'columnMetrics'
 | 'rowRenderer'
 | 'cellMetaData'
 | 'rowHeight'
@@ -32,20 +33,21 @@ type SharedViewportProps<R> = Pick<ViewportProps<R>,
 | 'RowsContainer'
 | 'editorPortalTarget'
 | 'interactionMasksMetaData'
+| 'viewportWidth'
+| 'overscanRowCount'
+| 'overscanColumnCount'
+| 'enableIsScrolling'
 >;
 
-type SharedViewportState = ScrollPosition & HorizontalRangeToRender & VerticalRangeToRender;
-
-export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportState {
+export interface CanvasProps<R> extends SharedViewportProps<R> {
   columns: CalculatedColumn<R>[];
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
-  isScrolling?: boolean;
   onScroll(position: ScrollPosition): void;
 }
 
-type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
+type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'lastFrozenColumnIndex'> & {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
@@ -54,14 +56,32 @@ type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colOv
   height: number;
   isSelected: boolean;
   scrollLeft: number;
+  isScrolling: boolean;
+  colOverscanStartIdx: number;
+  colOverscanEndIdx: number;
 };
 
-export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
+interface CanvasState {
+  scrollTop: number;
+  scrollLeft: number;
+  scrollDirection: SCROLL_DIRECTION;
+  isScrolling: boolean;
+}
+
+export default class Canvas<R> extends React.PureComponent<CanvasProps<R>, CanvasState> {
   static displayName = 'Canvas';
+
+  readonly state: Readonly<CanvasState> = {
+    scrollTop: 0,
+    scrollLeft: 0,
+    scrollDirection: SCROLL_DIRECTION.NONE,
+    isScrolling: false
+  };
 
   private readonly canvas = React.createRef<HTMLDivElement>();
   private readonly interactionMasks = React.createRef<InteractionMasks<R>>();
   private readonly rows = new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>();
+  private resetScrollStateTimeoutId: number | null = null;
   private unsubscribeScrollToColumn?(): void;
 
   componentDidMount() {
@@ -83,7 +103,39 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     const { scrollLeft, scrollTop } = e.currentTarget;
     // Freeze columns on legacy browsers
     this.setScrollLeft(scrollLeft);
-    this.props.onScroll({ scrollLeft, scrollTop });
+
+    if (this.props.enableIsScrolling) {
+      this.setState({ isScrolling: true });
+      this.resetScrollStateAfterDelay();
+    }
+
+    const scrollDirection = getScrollDirection(
+      this.state,
+      { scrollLeft, scrollTop }
+    );
+    const newState = { scrollLeft, scrollTop, scrollDirection };
+    this.setState(newState);
+    this.props.onScroll(newState);
+  };
+
+  private resetScrollStateAfterDelay() {
+    this.clearScrollTimer();
+    this.resetScrollStateTimeoutId = window.setTimeout(
+      this.resetScrollStateAfterDelayCallback,
+      150
+    );
+  }
+
+  private clearScrollTimer() {
+    if (this.resetScrollStateTimeoutId !== null) {
+      window.clearTimeout(this.resetScrollStateTimeoutId);
+      this.resetScrollStateTimeoutId = null;
+    }
+  }
+
+  private resetScrollStateAfterDelayCallback = () => {
+    this.resetScrollStateTimeoutId = null;
+    this.setState({ isScrolling: false });
   };
 
   onHitBottomCanvas = () => {
@@ -261,7 +313,25 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu } = this.props;
+    const { cellMetaData, columnMetrics, columns, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu, overscanRowCount, overscanColumnCount, viewportWidth } = this.props;
+
+    const { rowOverscanStartIdx, rowOverscanEndIdx, rowVisibleStartIdx, rowVisibleEndIdx } = getVerticalRangeToRender({
+      height,
+      rowHeight,
+      scrollTop: this.state.scrollTop,
+      rowsCount,
+      scrollDirection: this.state.scrollDirection,
+      overscanRowCount
+    });
+
+    const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = getHorizontalRangeToRender({
+      columnMetrics,
+      scrollLeft: this.state.scrollLeft,
+      viewportWidth,
+      scrollDirection: this.state.scrollDirection,
+      overscanColumnCount
+    });
+
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
@@ -286,8 +356,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           colOverscanStartIdx,
           colOverscanEndIdx,
           lastFrozenColumnIndex,
-          isScrolling: this.props.isScrolling,
-          scrollLeft: this.props.scrollLeft
+          isScrolling: this.state.isScrolling,
+          scrollLeft: this.state.scrollLeft
         });
       });
 
@@ -307,8 +377,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           rowsCount={rowsCount}
           rowHeight={rowHeight}
           columns={columns}
-          rowVisibleStartIdx={this.props.rowVisibleStartIdx}
-          rowVisibleEndIdx={this.props.rowVisibleEndIdx}
+          rowVisibleStartIdx={rowVisibleStartIdx}
+          rowVisibleEndIdx={rowVisibleEndIdx}
           colVisibleStartIdx={colVisibleStartIdx}
           colVisibleEndIdx={colVisibleEndIdx}
           enableCellSelect={this.props.enableCellSelect}
@@ -320,8 +390,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           onHitTopBoundary={this.onHitTopCanvas}
           onHitLeftBoundary={this.handleHitColummBoundary}
           onHitRightBoundary={this.handleHitColummBoundary}
-          scrollLeft={this.props.scrollLeft}
-          scrollTop={this.props.scrollTop}
+          scrollLeft={this.state.scrollLeft}
+          scrollTop={this.state.scrollTop}
           getRowHeight={this.getRowHeight}
           getRowTop={this.getRowTop}
           getRowColumns={this.getRowColumns}

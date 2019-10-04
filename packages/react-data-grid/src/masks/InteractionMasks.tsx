@@ -43,10 +43,6 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 | 'rowsCount'
 | 'rowHeight'
 | 'columns'
-| 'rowVisibleStartIdx'
-| 'rowVisibleEndIdx'
-| 'colVisibleStartIdx'
-| 'colVisibleEndIdx'
 | 'enableCellSelect'
 | 'enableCellAutoFocus'
 | 'cellNavigationMode'
@@ -65,6 +61,10 @@ export interface InteractionMasksProps<R> extends SharedCanvasProps<R>, Interact
   getRowHeight(rowIdx: number): number;
   getRowTop(rowIdx: number): number;
   getRowColumns(rowIdx: number): CalculatedColumn<R>[];
+  rowVisibleStartIdx: number;
+  rowVisibleEndIdx: number;
+  colVisibleStartIdx: number;
+  colVisibleEndIdx: number;
 }
 
 export interface InteractionMasksState {
