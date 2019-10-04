@@ -190,13 +190,15 @@ class Example extends React.Component {
 
   render() {
     return (
-      <DraggableContainer>
-        <>
+      <>
+        <DraggableContainer>
           <CustomToolbar
             groupBy={this.state.groupBy}
             onColumnGroupAdded={this.onColumnGroupAdded}
             onColumnGroupDeleted={this.onColumnGroupDeleted}
           />
+        </DraggableContainer>
+        <DraggableContainer>
           <ReactDataGrid
             ref={node => this.grid = node}
             enableCellSelect
@@ -209,8 +211,8 @@ class Example extends React.Component {
             rowHeight={50}
             minHeight={600}
           />
-        </>
-      </DraggableContainer>
+        </DraggableContainer>
+      </>
     );
   }
 }
