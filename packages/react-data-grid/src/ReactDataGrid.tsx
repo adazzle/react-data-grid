@@ -16,7 +16,6 @@ import * as rowUtils from './RowUtils';
 import KeyCodes from './KeyCodes';
 import { getColumnMetrics } from './ColumnMetrics';
 import { ScrollState } from './Viewport';
-import { RowsContainerProps } from './RowsContainer';
 import { EventBus } from './masks';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import {
@@ -33,6 +32,7 @@ import {
   HeaderRowData,
   InteractionMasksMetaData,
   Position,
+  RowsContainerProps,
   RowExpandToggleEvent,
   RowGetter,
   RowSelection,
