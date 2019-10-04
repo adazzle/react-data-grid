@@ -135,7 +135,7 @@ export default function Canvas<R>({
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft: newScrollLeft, scrollTop: newScrollTop } = e.currentTarget;
     // Freeze columns on legacy browsers
-    setComponentsScrollLeft(scrollLeft);
+    setComponentsScrollLeft(newScrollLeft);
 
     if (enableIsScrolling) {
       setIsScrolling(true);
@@ -149,7 +149,7 @@ export default function Canvas<R>({
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
     setScrollDirection(scrollDirection);
-    onScroll({ scrollLeft, scrollTop, scrollDirection });
+    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop, scrollDirection });
   }
 
   function resetScrollStateAfterDelay() {
