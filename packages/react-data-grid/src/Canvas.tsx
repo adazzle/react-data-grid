@@ -9,10 +9,10 @@ import * as rowUtils from './RowUtils';
 import { getColumnScrollPosition, isPositionStickySupported } from './utils';
 import { EventTypes, SCROLL_DIRECTION } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
-import { ViewportProps } from './Viewport';
+import { GridProps } from './Grid';
 import { getScrollDirection, getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
 
-type SharedViewportProps<R> = Pick<ViewportProps<R>,
+type SharedViewportProps<R> = Pick<GridProps<R>,
 | 'rowKey'
 | 'rowGetter'
 | 'rowsCount'

@@ -15,7 +15,6 @@ import { SelectAll } from './formatters';
 import * as rowUtils from './RowUtils';
 import KeyCodes from './KeyCodes';
 import { getColumnMetrics } from './ColumnMetrics';
-import { ScrollState } from './Viewport';
 import { RowsContainerProps } from './RowsContainer';
 import { EventBus } from './masks';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
@@ -41,7 +40,8 @@ import {
   SubRowDetails,
   SubRowOptions,
   SelectedRow,
-  RowRendererProps
+  RowRendererProps,
+  ScrollState
 } from './common/types';
 
 export interface ReactDataGridProps<R extends {}> {
