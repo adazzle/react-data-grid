@@ -192,19 +192,21 @@ class Example extends React.Component {
 
   render() {
     return (
-      <ReactDataGrid
-        ref={node => this.grid = node}
-        enableCellSelect
-        columns={this.columns}
-        rowGetter={this.getRowAt}
-        rowsCount={this.getSize()}
-        onGridRowsUpdated={this.handleGridRowsUpdated}
-        toolbar={<Toolbar onAddRow={this.handleAddRow} />}
-        rowHeight={50}
-        minHeight={600}
-        selectedRows={this.state.selectedRows}
-        onSelectedRowsChange={this.onSelectedRowsChange}
-      />
+      <>
+        <Toolbar onAddRow={this.handleAddRow} />
+        <ReactDataGrid
+          ref={node => this.grid = node}
+          enableCellSelect
+          columns={this.columns}
+          rowGetter={this.getRowAt}
+          rowsCount={this.getSize()}
+          onGridRowsUpdated={this.handleGridRowsUpdated}
+          rowHeight={50}
+          minHeight={600}
+          selectedRows={this.state.selectedRows}
+          onSelectedRowsChange={this.onSelectedRowsChange}
+        />
+      </>
     );
   }
 }
