@@ -17,4 +17,11 @@
   overflow-x: auto;
   overflow-y: scroll;
   background-color: #fff;
+  // will-change promotes the canvas to a new layer, improving scroll responsiveness
+  will-change: transform;
+}
+
+.rdg-rows-container {
+  // min-height is here to show the horizontal scrollbar when there are no rows
+  min-height: 1px;
 }

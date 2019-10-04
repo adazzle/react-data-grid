@@ -57,6 +57,7 @@
     "react-dom": "^16.10.1",
     "react-router-dom": "^5.1.2",
     "recharts": "^1.7.1",
+    "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
     "terser-webpack-plugin": "^2.1.2",
     "ts-jest": "^24.1.0",

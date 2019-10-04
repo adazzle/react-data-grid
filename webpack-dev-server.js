@@ -8,6 +8,7 @@ const RELEASE = process.argv.slice(2).includes('--release');
 
 const config = {
   mode: RELEASE ? 'production' : 'development',
+  devtool: 'eval-source-map',
   entry: {
     index: [
       'webpack-dev-server/client?http://localhost:8080/',
@@ -27,7 +28,12 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.js$/,
+        use: ['source-map-loader'],
+        enforce: 'pre'
+      },
+      {
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ['babel-loader']
       },
