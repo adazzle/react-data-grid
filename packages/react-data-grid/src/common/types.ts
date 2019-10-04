@@ -38,7 +38,7 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TDependentValue, TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
-  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>> | (() => React.ReactElement);
+  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TDependentValue>>;
 
