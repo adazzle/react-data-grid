@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { Fragment, useState, useRef, useEffect, useMemo } from 'react';
 import { isElement } from 'react-is';
 
 import Row from './Row';
-import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition, isPositionStickySupported } from './utils';
@@ -86,7 +85,7 @@ export default function Canvas<R>({
   rowHeight,
   rowKey,
   rowRenderer,
-  RowsContainer = RowsContainerDefault,
+  RowsContainer = Fragment,
   rowsCount,
   scrollToRowIndex,
   selectedRows,
@@ -414,8 +413,7 @@ export default function Canvas<R>({
         {...interactionMasksMetaData}
       />
       <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-        {/* Set minHeight to show horizontal scrollbar when there are no rows */}
-        <div style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom, minHeight: 1 }}>
+        <div className="rdg-rows-container" style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom }}>
           {getRows()}
         </div>
       </RowsContainer>

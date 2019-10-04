@@ -168,6 +168,11 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }
 
+export interface RowsContainerProps {
+  id: string;
+  children: React.ReactElement;
+}
+
 export interface RowRendererProps<TRow> {
   height: number;
   columns: CalculatedColumn<TRow>[];

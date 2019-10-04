@@ -11,7 +11,6 @@ import React, {
 import Grid from './Grid';
 import ToolbarContainer, { ToolbarProps } from './ToolbarContainer';
 import { getColumnMetrics } from './ColumnMetrics';
-import { RowsContainerProps } from './RowsContainer';
 import { EventBus } from './masks';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import {
@@ -27,6 +26,7 @@ import {
   HeaderRowData,
   InteractionMasksMetaData,
   Position,
+  RowsContainerProps,
   RowExpandToggleEvent,
   RowGetter,
   SelectedRange,
