@@ -2,7 +2,8 @@ import React, { useRef, createElement } from 'react';
 import { isValidElementType } from 'react-is';
 
 import Header, { HeaderHandle, HeaderProps } from './Header';
-import Viewport, { ScrollState } from './Viewport';
+import Canvas from './Canvas';
+import { ScrollState } from './Viewport';
 import { HeaderRowData, CellMetaData, RowSelection, InteractionMasksMetaData, SelectedRow, ColumnMetrics } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { ReactDataGridProps } from './ReactDataGrid';
@@ -54,7 +55,15 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   viewportWidth: number;
 }
 
-export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...props }: GridProps<R>) {
+export default function Grid<R>({
+  columnMetrics,
+  emptyRowsView,
+  headerRows,
+  rowOffsetHeight,
+  rowsCount,
+  viewportWidth,
+  ...props
+}: GridProps<R>) {
   const header = useRef<HeaderHandle>(null);
   const scrollLeft = useRef(0);
 
@@ -75,10 +84,10 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
       {
         React.createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
           ref: header,
-          columnMetrics: props.columnMetrics,
+          columnMetrics,
           onColumnResize: props.onColumnResize,
           headerRows,
-          rowOffsetHeight: props.rowOffsetHeight,
+          rowOffsetHeight,
           sortColumn: props.sortColumn,
           sortDirection: props.sortDirection,
           draggableHeaderCell: props.draggableHeaderCell,
@@ -88,23 +97,27 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           cellMetaData: props.cellMetaData
         })
       }
-      {props.rowsCount === 0 && isValidElementType(emptyRowsView) ? (
+      {rowsCount === 0 && isValidElementType(emptyRowsView) ? (
         <div className="react-grid-Empty">
           {createElement(emptyRowsView)}
         </div>
       ) : (
-        <Viewport<R>
+        <Canvas<R>
           rowKey={props.rowKey}
-          rowHeight={props.rowHeight}
-          rowRenderer={props.rowRenderer}
+          columnMetrics={columnMetrics}
+          viewportWidth={viewportWidth}
+          width={columnMetrics.totalColumnWidth}
+          columns={columnMetrics.columns}
+          lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
           rowGetter={props.rowGetter}
-          rowsCount={props.rowsCount}
+          rowsCount={rowsCount}
           selectedRows={props.selectedRows}
-          columnMetrics={props.columnMetrics}
-          onScroll={onScroll}
+          rowRenderer={props.rowRenderer}
+          enableIsScrolling={props.enableIsScrolling}
           cellMetaData={props.cellMetaData}
-          rowOffsetHeight={props.rowOffsetHeight}
-          minHeight={props.minHeight}
+          height={props.minHeight - rowOffsetHeight}
+          rowHeight={props.rowHeight}
+          onScroll={onScroll}
           scrollToRowIndex={props.scrollToRowIndex}
           contextMenu={props.contextMenu}
           rowSelection={props.rowSelection}
@@ -114,15 +127,11 @@ export default function Grid<R>({ emptyRowsView, headerRows, viewportWidth, ...p
           enableCellAutoFocus={props.enableCellAutoFocus}
           cellNavigationMode={props.cellNavigationMode}
           eventBus={props.eventBus}
-          interactionMasksMetaData={props.interactionMasksMetaData}
           RowsContainer={props.RowsContainer}
           editorPortalTarget={props.editorPortalTarget}
-          overscanRowCount={props.overscanRowCount}
-          overscanColumnCount={props.overscanColumnCount}
-          enableIsScrolling={props.enableIsScrolling}
+          interactionMasksMetaData={props.interactionMasksMetaData}
           onViewportKeydown={props.onViewportKeydown}
           onViewportKeyup={props.onViewportKeyup}
-          viewportWidth={viewportWidth}
         />
       )}
     </div>

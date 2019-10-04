@@ -37,6 +37,8 @@ type SharedViewportProps<R> = Pick<ViewportProps<R>,
 | 'overscanRowCount'
 | 'overscanColumnCount'
 | 'enableIsScrolling'
+| 'onViewportKeydown'
+| 'onViewportKeyup'
 >;
 
 export interface CanvasProps<R> extends SharedViewportProps<R> {
@@ -370,6 +372,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>, Canva
         style={{ height }}
         ref={this.canvas}
         onScroll={this.handleScroll}
+        onKeyDown={this.props.onViewportKeydown}
+        onKeyUp={this.props.onViewportKeyup}
       >
         <InteractionMasks<R>
           ref={this.interactionMasks}
