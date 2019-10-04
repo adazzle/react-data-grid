@@ -8,6 +8,7 @@ const RELEASE = process.argv.slice(2).includes('--release');
 
 const config = {
   mode: RELEASE ? 'production' : 'development',
+  devtool: 'eval-source-map',
   entry: {
     index: [
       'webpack-dev-server/client?http://localhost:8080/',
