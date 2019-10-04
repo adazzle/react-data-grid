@@ -28,7 +28,12 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.js$/,
+        use: ['source-map-loader'],
+        enforce: 'pre'
+      },
+      {
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ['babel-loader']
       },
