@@ -46,7 +46,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   getCell(column: CalculatedColumn<R>) {
     const Renderer = this.props.cellRenderer!;
-    const { idx, cellMetaData, isScrolling, row, lastFrozenColumnIndex, scrollLeft } = this.props;
+    const { idx, cellMetaData, isScrolling, row, lastFrozenColumnIndex, scrollLeft, isRowSelected, onRowSelectionChange } = this.props;
     const { key } = column;
 
     const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
@@ -61,7 +61,9 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       expandableOptions: this.getExpandableOptions(key),
       isScrolling,
       scrollLeft,
-      lastFrozenColumnIndex
+      lastFrozenColumnIndex,
+      isRowSelected,
+      onRowSelectionChange
     };
 
     return <Renderer key={`${key as keyof R}-${idx}`} {...cellProps} />; // FIXME: fix key type
@@ -85,9 +87,9 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   }
 
   getCellValue(key: keyof R) {
-    const { isSelected, row } = this.props;
+    const { isRowSelected, row } = this.props;
     if (key === 'select-row') {
-      return isSelected;
+      return isRowSelected;
     }
 
     return rowUtils.get(row, key);
@@ -121,7 +123,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
     const className = classNames(
       'react-grid-Row',
       `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
-      { 'row-selected': this.props.isSelected },
+      { 'row-selected': this.props.isRowSelected },
       this.props.extraClasses,
       { 'rdg-scrolling': this.props.isScrolling }
     );

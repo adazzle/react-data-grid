@@ -17,6 +17,8 @@ describe('Header Row Unit Tests', () => {
     onSort: jest.fn(),
     sortDirection: DEFINE_SORT.NONE,
     height: 35,
+    allRowsSelected: false,
+    onAllRowsSelectionChange() {},
     onFilterChange() { },
     onHeaderDrop() { },
     draggableHeaderCell: () => <div />
@@ -132,6 +134,8 @@ describe('Header Row Unit Tests', () => {
       columns: helpers.columns,
       onSort: jest.fn(),
       rowType: HeaderRowType.HEADER,
+      allRowsSelected: false,
+      onAllRowsSelectionChange() {},
       onColumnResize: jest.fn(),
       onColumnResizeEnd: jest.fn(),
       onFilterChange() { },

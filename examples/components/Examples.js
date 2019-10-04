@@ -28,7 +28,6 @@ import CellSelectionEvents from '../scripts/example21-cell-selection-events';
 import Grouping from '../scripts/example21-grouping';
 import CustomFilters from '../scripts/example22-custom-filters';
 import ImmutableDataGrouping from '../scripts/example23-immutable-data-grouping';
-import RowOrdering from '../scripts/example23-row-reordering';
 import DraggableHeader from '../scripts/example24-draggable-header';
 import TreeView from '../scripts/example25-tree-view';
 import TreeViewNoAddDelete from '../scripts/example26-tree-view-no-add-delete';
@@ -78,7 +77,6 @@ export default function Examples({ match }) {
               <Route path="/examples/grouping" component={Grouping} />
               <Route path="/examples/custom-filters" component={CustomFilters} />
               <Route path="/examples/immutable-data-grouping" component={ImmutableDataGrouping} />
-              <Route path="/examples/row-reordering" component={RowOrdering} />
               <Route path="/examples/draggable-header" component={DraggableHeader} />
               <Route path="/examples/tree-view" component={TreeView} />
               <Route path="/examples/tree-view-no-add-delete" component={TreeViewNoAddDelete} />

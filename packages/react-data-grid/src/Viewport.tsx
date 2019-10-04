@@ -13,19 +13,19 @@ export interface ScrollState {
 }
 
 type SharedGridProps<R> = Pick<GridProps<R>,
-'rowKey'
+| 'rowKey'
 | 'rowHeight'
 | 'rowRenderer'
 | 'rowGetter'
 | 'rowsCount'
 | 'selectedRows'
+| 'onSelectedRowsChange'
 | 'columnMetrics'
 | 'cellMetaData'
 | 'rowOffsetHeight'
 | 'minHeight'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'rowSelection'
 | 'getSubRowDetails'
 | 'rowGroupRenderer'
 | 'enableCellSelect'
@@ -141,6 +141,7 @@ export default function Viewport<R>({
         rowGetter={props.rowGetter}
         rowsCount={rowsCount}
         selectedRows={props.selectedRows}
+        onSelectedRowsChange={props.onSelectedRowsChange}
         rowRenderer={props.rowRenderer}
         scrollTop={scrollTop}
         scrollLeft={scrollLeft}
@@ -150,7 +151,6 @@ export default function Viewport<R>({
         onScroll={onScroll}
         scrollToRowIndex={props.scrollToRowIndex}
         contextMenu={props.contextMenu}
-        rowSelection={props.rowSelection}
         getSubRowDetails={props.getSubRowDetails}
         rowGroupRenderer={props.rowGroupRenderer}
         isScrolling={isScrolling}

@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import CellMask, { CellMaskProps } from './CellMask';
 
-const SelectionMask = forwardRef<HTMLDivElement, CellMaskProps>(function SelectionMask(props, ref) {
+export default forwardRef<HTMLDivElement, CellMaskProps>(function SelectionMask(props, ref) {
   return (
     <CellMask
       {...props}
@@ -11,5 +11,3 @@ const SelectionMask = forwardRef<HTMLDivElement, CellMaskProps>(function Selecti
     />
   );
 });
-
-export default SelectionMask;

@@ -21,6 +21,8 @@ describe('<SortableHeaderCell/>', () => {
       onSort: jest.fn(),
       sortDirection: DEFINE_SORT.NONE,
       sortDescendingFirst: false,
+      allRowsSelected: false,
+      onAllRowsSelectionChange() {},
       ...overrideProps
     };
     const wrapper = shallow(<SortableHeaderCell {...props} />);
