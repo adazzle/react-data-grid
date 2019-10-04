@@ -3,7 +3,6 @@ import { shallow } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
 import Canvas, { CanvasProps } from '../Canvas';
-import RowsContainer from '../RowsContainer';
 import EventBus from '../masks/EventBus';
 import { CellNavigationMode } from '../common/enums';
 import { CalculatedColumn } from '../common/types';
@@ -15,7 +14,7 @@ interface Row {
 }
 
 const noop = () => null;
-const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find(RowsContainer).children().props().children;
+const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find('.rdg-rows-container').props().children as JSX.Element[];
 
 const testProps: CanvasProps<Row> = {
   rowKey: 'row',
@@ -55,7 +54,6 @@ const testProps: CanvasProps<Row> = {
   width: 1000,
   onScroll() {},
   lastFrozenColumnIndex: 0,
-  RowsContainer: RowsContainer as CanvasProps<Row>['RowsContainer'],
   scrollTop: 0,
   scrollLeft: 0
 };

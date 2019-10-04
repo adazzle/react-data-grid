@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { isElement } from 'react-is';
 
 import Row from './Row';
-import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import { getColumnScrollPosition, isPositionStickySupported } from './utils';
@@ -278,7 +277,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
 
   render() {
     const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu, isScrolling, scrollLeft } = this.props;
-    const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
+    const RowsContainer = this.props.RowsContainer || Fragment;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
       .map(({ row, subRowDetails }, idx) => {
@@ -351,8 +350,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           {...this.props.interactionMasksMetaData}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-          {/* Set minHeight to show horizontal scrollbar when there are no rows */}
-          <div style={{ width, minHeight: 1 }}>{rows}</div>
+          <div className="rdg-rows-container" style={{ width }}>{rows}</div>
         </RowsContainer>
       </div>
     );
