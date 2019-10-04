@@ -210,44 +210,56 @@ export default function Canvas<R>({
     }
   }
 
-  // TODO: remove map so we only do 1 loop
-  function getRows(rowOverscanStartIdx: number, rowOverscanEndIdx: number) {
-    const rowsDivs = [];
-    let i = rowOverscanStartIdx;
-    while (i < rowOverscanEndIdx) {
-      const row = rowGetter(i);
-      let subRowDetails: SubRowDetails | undefined;
-      if (getSubRowDetails) {
-        subRowDetails = getSubRowDetails(row);
-      }
-      rowsDivs.push({ row, subRowDetails });
-      i++;
+  function getRows() {
+    const rows = [];
+
+    for (let idx = rowOverscanStartIdx; idx < rowOverscanEndIdx; idx++) {
+      rows.push(renderRow(idx));
     }
-    return rowsDivs.map(({ row, subRowDetails }, idx) => {
-      const rowIdx = rowOverscanStartIdx + idx;
-      return row && renderRow({
-        key: rowIdx,
-        ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null) {
-          if (row) {
-            rows.set(rowIdx, row);
-          } else {
-            rows.delete(rowIdx);
-          }
-        },
-        idx: rowIdx,
-        row,
-        height: rowHeight,
-        columns: columnMetrics.columns,
-        isSelected: isRowSelected(rowIdx, row),
-        cellMetaData,
-        subRowDetails,
-        colOverscanStartIdx,
-        colOverscanEndIdx,
-        lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
-        isScrolling,
-        scrollLeft
-      });
-    });
+
+    return rows;
+  }
+
+  function renderRow(idx: number) {
+    const row = rowGetter(idx);
+    const rendererProps: RendererProps<R> = {
+      key: idx,
+      ref(row) {
+        if (row) {
+          rows.set(idx, row);
+        } else {
+          rows.delete(idx);
+        }
+      },
+      idx,
+      row,
+      height: rowHeight,
+      columns: columnMetrics.columns,
+      isSelected: isRowSelected(idx, row),
+      cellMetaData,
+      subRowDetails: getSubRowDetails ? getSubRowDetails(row) : undefined,
+      colOverscanStartIdx,
+      colOverscanEndIdx,
+      lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
+      isScrolling,
+      scrollLeft
+    };
+    const { __metaData } = row as RowData;
+
+    if (__metaData) {
+      if (__metaData.getRowRenderer) {
+        return __metaData.getRowRenderer(rendererProps, idx);
+      }
+      if (__metaData.isGroup) {
+        return renderGroupRow(rendererProps);
+      }
+    }
+
+    if (rowRenderer) {
+      return renderCustomRowRenderer(rendererProps);
+    }
+
+    return <Row<R> {...rendererProps} />;
   }
 
   function getClientScrollTopOffset(node: HTMLDivElement) {
@@ -352,23 +364,6 @@ export default function Canvas<R>({
     );
   }
 
-  function renderRow(rendererProps: RendererProps<R>) {
-    const row = rendererProps.row as RowData;
-
-    if (row.__metaData && row.__metaData.getRowRenderer) {
-      return row.__metaData.getRowRenderer({}, rendererProps.idx);
-    }
-    if (row.__metaData && row.__metaData.isGroup) {
-      return renderGroupRow(rendererProps);
-    }
-
-    if (rowRenderer) {
-      return renderCustomRowRenderer(rendererProps);
-    }
-
-    return <Row<R> {...rendererProps} />;
-  }
-
   const paddingTop = rowOverscanStartIdx * rowHeight;
   const paddingBottom = (rowsCount - rowOverscanEndIdx) * rowHeight;
 
@@ -411,7 +406,7 @@ export default function Canvas<R>({
       <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
         {/* Set minHeight to show horizontal scrollbar when there are no rows */}
         <div style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom, minHeight: 1 }}>
-          {getRows(rowOverscanStartIdx, rowOverscanEndIdx)}
+          {getRows()}
         </div>
       </RowsContainer>
     </div>
