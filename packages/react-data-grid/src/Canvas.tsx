@@ -64,11 +64,38 @@ type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'lastF
 };
 
 export default function Canvas<R>({
+  cellMetaData,
+  cellNavigationMode,
+  columnMetrics,
+  columns,
+  contextMenu,
+  editorPortalTarget,
+  enableCellAutoFocus,
+  enableCellSelect,
+  enableIsScrolling,
   eventBus,
+  getSubRowDetails,
+  height,
+  interactionMasksMetaData,
+  lastFrozenColumnIndex,
+  onScroll,
+  onViewportKeydown,
+  onViewportKeyup,
+  overscanColumnCount,
+  overscanRowCount,
+  rowGetter,
+  rowGroupRenderer,
+  rowHeight,
+  rowKey,
+  rowRenderer,
+  RowsContainer = RowsContainerDefault,
+  rowsCount,
+  rowSelection,
   scrollToRowIndex,
-  ...props
+  selectedRows,
+  viewportWidth,
+  width
 }: CanvasProps<R>) {
-  const { cellMetaData, columnMetrics, columns, lastFrozenColumnIndex, rowHeight, rowsCount, width, height, rowGetter, contextMenu, overscanRowCount, overscanColumnCount, viewportWidth } = props;
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
@@ -100,21 +127,21 @@ export default function Canvas<R>({
   }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft, viewportWidth]);
 
   useEffect(() => {
-    return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, props.columns));
-  }, [eventBus, props.columns]);
+    return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columns));
+  }, [eventBus, columns]);
 
   useEffect(() => {
     if (scrollToRowIndex) {
       scrollToRow(scrollToRowIndex);
     }
-  }, [scrollToRow]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [scrollToRowIndex]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft: newScrollLeft, scrollTop: newScrollTop } = e.currentTarget;
     // Freeze columns on legacy browsers
     setComponentsScrollLeft(scrollLeft);
 
-    if (props.enableIsScrolling) {
+    if (enableIsScrolling) {
       setIsScrolling(true);
       resetScrollStateAfterDelay();
     }
@@ -126,7 +153,7 @@ export default function Canvas<R>({
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
     setScrollDirection(scrollDirection);
-    props.onScroll({ scrollLeft, scrollTop, scrollDirection });
+    onScroll({ scrollLeft, scrollTop, scrollDirection });
   }
 
   function resetScrollStateAfterDelay() {
@@ -152,25 +179,24 @@ export default function Canvas<R>({
   function onHitBottomCanvas() {
     const { current } = canvas;
     if (current) {
-      current.scrollTop += props.rowHeight + getClientScrollTopOffset(current);
+      current.scrollTop += rowHeight + getClientScrollTopOffset(current);
     }
   }
 
   function onHitTopCanvas() {
     const { current } = canvas;
     if (current) {
-      current.scrollTop -= props.rowHeight - getClientScrollTopOffset(current);
+      current.scrollTop -= rowHeight - getClientScrollTopOffset(current);
     }
   }
 
   function handleHitColummBoundary({ idx }: Position) {
-    scrollToColumn(idx, props.columns);
+    scrollToColumn(idx, columns);
   }
 
   function scrollToRow(scrollToRowIndex: number) {
     const { current } = canvas;
     if (!current) return;
-    const { rowHeight, rowsCount, height } = props;
     current.scrollTop = Math.min(
       scrollToRowIndex * rowHeight,
       rowsCount * rowHeight - height
@@ -193,10 +219,10 @@ export default function Canvas<R>({
     const rowsDivs = [];
     let i = rowOverscanStartIdx;
     while (i < rowOverscanEndIdx) {
-      const row = props.rowGetter(i);
+      const row = rowGetter(i);
       let subRowDetails: SubRowDetails | undefined;
-      if (props.getSubRowDetails) {
-        subRowDetails = props.getSubRowDetails(row);
+      if (getSubRowDetails) {
+        subRowDetails = getSubRowDetails(row);
       }
       rowsDivs.push({ row, subRowDetails });
       i++;
@@ -229,24 +255,23 @@ export default function Canvas<R>({
   }
 
   function getClientScrollTopOffset(node: HTMLDivElement) {
-    const { rowHeight } = props;
     const scrollVariation = node.scrollTop % rowHeight;
     return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
   }
 
   function isRowSelected(idx: number, row: R) {
     // Use selectedRows if set
-    if (props.selectedRows) {
-      const selectedRow = props.selectedRows.find(r => {
-        const rowKeyValue = rowUtils.get(row, props.rowKey);
-        return r[props.rowKey] === rowKeyValue;
+    if (selectedRows) {
+      const selectedRow = selectedRows.find(r => {
+        const rowKeyValue = rowUtils.get(row, rowKey);
+        return r[rowKey] === rowKeyValue;
       });
       return !!(selectedRow && selectedRow.isSelected);
     }
 
     // Else use new rowSelection props
-    if (props.rowSelection) {
-      const { keys, indexes, isSelectedKey } = props.rowSelection as { [key: string]: unknown };
+    if (rowSelection) {
+      const { keys, indexes, isSelectedKey } = rowSelection as { [key: string]: unknown };
       return rowUtils.isRowSelected(keys as { rowKey?: string; values?: string[] } | null, indexes as number[] | null, isSelectedKey as string | null, row, idx);
     }
 
@@ -282,7 +307,7 @@ export default function Canvas<R>({
     if (row && row.getRowTop) {
       return row.getRowTop();
     }
-    return props.rowHeight * rowIdx;
+    return rowHeight * rowIdx;
   }
 
   function getRowHeight(rowIdx: number) {
@@ -290,17 +315,17 @@ export default function Canvas<R>({
     if (row && row.getRowHeight) {
       return row.getRowHeight();
     }
-    return props.rowHeight;
+    return rowHeight;
   }
 
   function getRowColumns(rowIdx: number) {
     const row = getRowByRef(rowIdx);
-    return row && row.props ? row.props.columns : props.columns;
+    return row && row.props ? row.props.columns : columns;
   }
 
   function renderCustomRowRenderer(rowProps: RendererProps<R>) {
     const { ref, ...otherProps } = rowProps;
-    const CustomRowRenderer = props.rowRenderer!;
+    const CustomRowRenderer = rowRenderer!;
     const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps<R>) => <Row ref={ref} {...p} /> };
 
     if (isElement(CustomRowRenderer)) {
@@ -325,7 +350,7 @@ export default function Canvas<R>({
         columns={columns as CalculatedColumn<unknown>[]}
         name={row.name!}
         eventBus={eventBus}
-        renderer={props.rowGroupRenderer}
+        renderer={rowGroupRenderer}
         renderBaseRow={(p: RowRendererProps<R>) => <Row ref={ref} {...p} />}
       />
     );
@@ -335,20 +360,19 @@ export default function Canvas<R>({
     const row = rendererProps.row as RowData;
 
     if (row.__metaData && row.__metaData.getRowRenderer) {
-      return row.__metaData.getRowRenderer(props, rendererProps.idx);
+      return row.__metaData.getRowRenderer({}, rendererProps.idx);
     }
     if (row.__metaData && row.__metaData.isGroup) {
       return renderGroupRow(rendererProps);
     }
 
-    if (props.rowRenderer) {
+    if (rowRenderer) {
       return renderCustomRowRenderer(rendererProps);
     }
 
     return <Row<R> {...rendererProps} />;
   }
 
-  const RowsContainer = props.RowsContainer || RowsContainerDefault;
   const paddingTop = rowOverscanStartIdx * rowHeight;
   const paddingBottom = (rowsCount - rowOverscanEndIdx) * rowHeight;
 
@@ -358,8 +382,8 @@ export default function Canvas<R>({
       style={{ height }}
       ref={canvas}
       onScroll={handleScroll}
-      onKeyDown={props.onViewportKeydown}
-      onKeyUp={props.onViewportKeyup}
+      onKeyDown={onViewportKeydown}
+      onKeyUp={onViewportKeyup}
     >
       <InteractionMasks<R>
         ref={interactionMasks}
@@ -371,11 +395,11 @@ export default function Canvas<R>({
         rowVisibleEndIdx={rowVisibleEndIdx}
         colVisibleStartIdx={colVisibleStartIdx}
         colVisibleEndIdx={colVisibleEndIdx}
-        enableCellSelect={props.enableCellSelect}
-        enableCellAutoFocus={props.enableCellAutoFocus}
-        cellNavigationMode={props.cellNavigationMode}
+        enableCellSelect={enableCellSelect}
+        enableCellAutoFocus={enableCellAutoFocus}
+        cellNavigationMode={cellNavigationMode}
         eventBus={eventBus}
-        contextMenu={props.contextMenu}
+        contextMenu={contextMenu}
         onHitBottomBoundary={onHitBottomCanvas}
         onHitTopBoundary={onHitTopCanvas}
         onHitLeftBoundary={handleHitColummBoundary}
@@ -385,8 +409,8 @@ export default function Canvas<R>({
         getRowHeight={getRowHeight}
         getRowTop={getRowTop}
         getRowColumns={getRowColumns}
-        editorPortalTarget={props.editorPortalTarget}
-        {...props.interactionMasksMetaData}
+        editorPortalTarget={editorPortalTarget}
+        {...interactionMasksMetaData}
       />
       <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
         {/* Set minHeight to show horizontal scrollbar when there are no rows */}
