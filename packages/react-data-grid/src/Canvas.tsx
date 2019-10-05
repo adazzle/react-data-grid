@@ -100,12 +100,7 @@ export default function Canvas<R>({
   const resetScrollStateTimeoutId = useRef<number | null>(null);
   const lastSelectedRowIdx = useRef(-1);
   const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
-
-  const clientHeight = useMemo(() => {
-    if (canvas.current) return canvas.current.clientHeight;
-    const scrollbarSize = columnMetrics.totalColumnWidth > columnMetrics.viewportWidth ? getScrollbarSize() : 0;
-    return height - scrollbarSize;
-  }, [columnMetrics.totalColumnWidth, columnMetrics.viewportWidth, height]);
+  const clientHeight = getClientHeight();
 
   const { rowOverscanStartIdx, rowOverscanEndIdx } = useMemo(() => {
     return getVerticalRangeToRender({
@@ -176,6 +171,12 @@ export default function Canvas<R>({
   function resetScrollStateAfterDelayCallback() {
     resetScrollStateTimeoutId.current = null;
     setIsScrolling(false);
+  }
+
+  function getClientHeight() {
+    if (canvas.current) return canvas.current.clientHeight;
+    const scrollbarSize = columnMetrics.totalColumnWidth > columnMetrics.viewportWidth ? getScrollbarSize() : 0;
+    return height - scrollbarSize;
   }
 
   function onHitBottomCanvas({ rowIdx }: Position) {
