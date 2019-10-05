@@ -29,7 +29,7 @@ module.exports = {
     '<rootDir>/test/setupTests.js'
   ],
   setupFilesAfterEnv: [
-    'react-testing-library/cleanup-after-each'
+    '@testing-library/react/cleanup-after-each'
   ],
   testMatch: [
     '<rootDir>/packages/*/src/**/*.spec.(js|ts|tsx)',

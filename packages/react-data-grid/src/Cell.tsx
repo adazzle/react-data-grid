@@ -1,24 +1,24 @@
 import React from 'react';
 import classNames from 'classnames';
-import { isElement, isValidElementType } from 'react-is';
 
-import { SubRowOptions, FormatterProps, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
-import { SimpleCellFormatter } from './formatters';
-import CellAction from './CellAction';
-import CellExpand from './CellExpander';
-import ChildRowDeleteButton from './ChildRowDeleteButton';
+import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
+import CellActions from './Cell/CellActions';
+import CellExpand from './Cell/CellExpander';
+import CellContent from './Cell/CellContent';
 import { isFrozen } from './ColumnUtils';
 
-const getSubRowOptions = ({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props): SubRowOptions => ({ rowIdx, idx, rowData, expandArgs });
+function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props<R>): SubRowOptions<R> {
+  return { rowIdx, idx, rowData, expandArgs };
+}
 
-export interface Props extends CellRendererProps {
+export interface Props<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
-  tooltip?: string;
+  tooltip?: string | null;
   cellControls?: unknown;
 }
 
-export default class Cell extends React.PureComponent<Props> implements CellRenderer {
+export default class Cell<R> extends React.PureComponent<Props<R>> implements CellRenderer {
   static defaultProps = {
     value: ''
   };
@@ -29,7 +29,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     this.checkScroll();
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: Props<R>) {
     if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
@@ -72,13 +72,6 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     }
   };
 
-  handleDeleteSubRow = () => {
-    const meta = this.props.cellMetaData;
-    if (meta.onDeleteSubRow) {
-      meta.onDeleteSubRow(getSubRowOptions(this.props));
-    }
-  };
-
   handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
@@ -89,22 +82,6 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
       height: this.props.height,
       left: this.props.column.left
     };
-  }
-
-  getRowData() {
-    const { rowData } = this.props;
-    return typeof rowData.toJSON === 'function' ? rowData.toJSON() : rowData;
-  }
-
-  getFormatterDependencies() {
-    // convention based method to get corresponding Id or Name of any Name or Id property
-    const { getRowMetaData } = this.props.column;
-    if (getRowMetaData) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
-      }
-      return getRowMetaData(this.getRowData(), this.props.column);
-    }
   }
 
   getCellClass() {
@@ -140,7 +117,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
   removeScroll() {
     const node = this.cell.current;
     if (node) {
-      node.style.transform = null;
+      node.style.transform = 'none';
     }
   }
 
@@ -163,7 +140,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     for (const event in columnEvents) {
       const columnEventHandler = columnEvents[event];
       if (columnEventHandler) {
-        const eventInfo: ColumnEventInfo = {
+        const eventInfo: ColumnEventInfo<R> = {
           idx,
           rowIdx,
           column,
@@ -186,83 +163,15 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     return allEvents;
   }
 
-  getCellActions() {
-    const { cellMetaData, column, rowData } = this.props;
-    if (cellMetaData.getCellActions) {
-      const cellActionButtons = cellMetaData.getCellActions(column, rowData);
-      if (cellActionButtons && cellActionButtons.length > 0) {
-        return cellActionButtons.map((action, index) => {
-          return <CellAction key={index} isFirst={index === 0} {...action} />;
-        });
-      }
-    }
-    return null;
-  }
-
-  getFormatterProps(): FormatterProps<unknown> {
-    return {
-      rowIdx: this.props.rowIdx,
-      value: this.props.value,
-      isScrolling: this.props.isScrolling,
-      column: this.props.column,
-      row: this.getRowData(),
-      dependentValues: this.getFormatterDependencies()
-    };
-  }
-
-  getCellContent() {
-    const Formatter = this.props.column.formatter;
-
-    if (isElement(Formatter)) {
-      return React.cloneElement(Formatter, this.getFormatterProps());
-    } if (isValidElementType(Formatter)) {
-      return <Formatter {...this.getFormatterProps()} />;
-    }
-    return <SimpleCellFormatter value={this.props.value as string} />;
-  }
-
-  renderCellContent() {
-    const { column, tooltip, expandableOptions } = this.props;
-    const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
-    const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
-    const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
-
-    const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
-      <ChildRowDeleteButton
-        treeDepth={treeDepth}
-        cellHeight={this.props.height}
-        onDeleteSubRow={this.handleDeleteSubRow}
-        isDeleteSubRowEnabled={!!this.props.cellMetaData.onDeleteSubRow}
-      />
-    );
-
-    const cellTooltip = tooltip && <span className="cell-tooltip-text">{tooltip}</span>;
-    const classes = classNames('react-grid-Cell__value',
-      { 'cell-tooltip': !!tooltip }
-    );
-
-    return (
-      <div className={classes}>
-        {cellDeleter}
-        <div className="react-grid-Cell__container" style={{ marginLeft }}>
-          <span>{this.getCellContent()}</span>
-          {this.props.cellControls}
-        </div>
-        {cellTooltip}
-      </div>
-    );
-  }
-
   render() {
-    const { column, children, expandableOptions } = this.props;
+    const { column, children, expandableOptions, cellMetaData, rowData } = this.props;
     if (column.hidden) {
       return null;
     }
 
     const style = this.getStyle();
     const className = this.getCellClass();
-    const cellActionButtons = this.getCellActions();
-    const cellContent = children || this.renderCellContent();
+    const cellContent = children || <CellContent<R> {...this.props} />;
     const events = this.getEvents();
     const cellExpander = expandableOptions && expandableOptions.canExpand && (
       <CellExpand
@@ -278,7 +187,11 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
         style={style}
         {...events}
       >
-        {cellActionButtons}
+        <CellActions<R>
+          column={column}
+          rowData={rowData}
+          cellMetaData={cellMetaData}
+        />
         {cellExpander}
         {cellContent}
       </div>

@@ -1,26 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
 import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface Column<V = unknown, DV = unknown> {
+export type SelectedRow<TRow> = TRow & { isSelected: boolean };
+
+interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
-  key: string;
+  key: TField;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width?: number;
   hidden?: boolean;
   cellClass?: string;
   /** By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column */
   events?: {
-    [key: string]: undefined | ((e: Event, info: ColumnEventInfo) => void);
+    [key: string]: undefined | ((e: Event, info: ColumnEventInfo<TRow>) => void);
   };
   /** Formatter to be used to render the cell content */
-  formatter?: React.ReactElement | React.ComponentType<FormatterProps<V, DV>>;
+  formatter?: React.ReactElement | React.ComponentType<FormatterProps<TRow[TField], TDependentValue, TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
-  editable?: boolean | ((rowData: RowData) => boolean);
+  editable?: boolean | ((rowData: TRow) => boolean);
   /** Enable dragging of a column */
   draggable?: boolean;
   /** Enable filtering of a column */
@@ -34,27 +37,31 @@ export interface Column<V = unknown, DV = unknown> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ReactElement | React.ComponentType<EditorProps<V, DV>>;
+  editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TDependentValue, TRow>>;
   /** Header renderer for each header cell */
-  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<V, DV>>;
+  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<V, DV>>;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TDependentValue>>;
 
   // TODO: these props are only used by checkbox editor and we should remove them
-  onCellChange?(rowIdx: number, key: string, dependentValues: DV, event: React.SyntheticEvent): void;
-  getRowMetaData?(rowData: RowData, column: CalculatedColumn<V, DV>): unknown;
+  onCellChange?(rowIdx: number, key: keyof TRow, dependentValues: TDependentValue, event: React.SyntheticEvent): void;
+  getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
 }
 
-export interface CalculatedColumn<V = unknown, DV = unknown> extends Column<V, DV> {
-  idx: number;
-  width: number;
-  left: number;
-}
+export type Column<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
+  TField extends keyof TRow ? ColumnValue<TRow, TDependentValue, TField> : never;
 
-export type ColumnList = Column[] | List<Column>;
+export type CalculatedColumn<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
+  Column<TRow, TDependentValue, TField> & {
+    idx: number;
+    width: number;
+    left: number;
+  };
 
-export interface ColumnMetrics {
-  columns: CalculatedColumn[];
+export type ColumnList<TRow> = Column<TRow>[] | List<Column<TRow>>;
+
+export interface ColumnMetrics<TRow> {
+  columns: CalculatedColumn<TRow>[];
   width: number;
   totalColumnWidth: number;
   totalWidth: number;
@@ -62,24 +69,24 @@ export interface ColumnMetrics {
 }
 
 export interface RowData {
-  get?(key: string): unknown;
+  name?: string;
+  get?(key: PropertyKey): unknown;
   __metaData?: RowGroupMetaData;
-  [key: string]: unknown;
 }
 
-export interface CellMetaData {
-  rowKey: string;
+export interface CellMetaData<TRow> {
+  rowKey: keyof TRow;
   onCellClick(position: Position): void;
   onCellContextMenu(position: Position): void;
   onCellDoubleClick(position: Position): void;
   onDragEnter(overRowIdx: number): void;
-  onCellExpand?(options: SubRowOptions): void;
+  onCellExpand?(options: SubRowOptions<TRow>): void;
   onRowExpandToggle?(e: RowExpandToggleEvent): void;
   onCellMouseDown?(position: Position): void;
   onCellMouseEnter?(position: Position): void;
   onAddSubRow?(): void;
-  onDeleteSubRow?(options: SubRowOptions): void;
-  getCellActions?(column: CalculatedColumn, rowData: RowData): CellActionButton[] | undefined;
+  onDeleteSubRow?(options: SubRowOptions<TRow>): void;
+  getCellActions?(column: CalculatedColumn<TRow>, rowData: TRow): CellActionButton[] | undefined;
 }
 
 export interface Position {
@@ -106,31 +113,31 @@ export interface Dimension {
   zIndex: number;
 }
 
-export type RowGetter = (rowIdx: number) => RowData;
+export type RowGetter<TRow> = (rowIdx: number) => TRow;
 
-export interface Editor<V = never> {
+export interface Editor<TValue = never> extends React.Component {
   getInputNode(): Element | Text | undefined | null;
-  getValue(): V;
+  getValue(): TValue;
   hasResults?(): boolean;
   isSelectOpen?(): boolean;
   validate?(value: unknown): boolean;
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<V, DV = unknown> {
+export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   rowIdx: number;
-  value: V;
-  column: CalculatedColumn;
-  row: RowData;
+  value: TValue;
+  column: CalculatedColumn<TRow, TDependentValue>;
+  row: TRow;
   isScrolling: boolean;
-  dependentValues?: DV;
+  dependentValues?: TDependentValue;
 }
 
-export interface EditorProps<V = unknown, DV = unknown> {
-  column: CalculatedColumn<V, DV>;
-  value: V;
-  rowMetaData?: unknown;
-  rowData: RowData;
+export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
+  column: CalculatedColumn<TRow, TDependentValue>;
+  value: TValue;
+  rowMetaData?: TDependentValue;
+  rowData: TRow;
   height: number;
   onCommit(args?: { key?: string }): void;
   onCommitCancel(): void;
@@ -138,19 +145,19 @@ export interface EditorProps<V = unknown, DV = unknown> {
   onOverrideKeyDown(e: KeyboardEvent): void;
 }
 
-export interface HeaderRowProps<V, DV> {
-  column: CalculatedColumn<V, DV>;
+export interface HeaderRowProps<TRow> {
+  column: CalculatedColumn<TRow>;
   rowType: HeaderRowType;
 }
 
-export interface CellRendererProps<V = unknown, DV = unknown> {
+export interface CellRendererProps<TRow, TValue = unknown> {
   idx: number;
   rowIdx: number;
   height: number;
-  value: V;
-  column: CalculatedColumn<V, DV>;
-  rowData: RowData;
-  cellMetaData: CellMetaData;
+  value: TValue;
+  column: CalculatedColumn<TRow>;
+  rowData: TRow;
+  cellMetaData: CellMetaData<TRow>;
   isScrolling: boolean;
   scrollLeft: number;
   isRowSelected?: boolean;
@@ -158,12 +165,12 @@ export interface CellRendererProps<V = unknown, DV = unknown> {
   lastFrozenColumnIndex?: number;
 }
 
-export interface RowRendererProps<V = unknown, DV = unknown> {
+export interface RowRendererProps<TRow> {
   height: number;
-  columns: CalculatedColumn<V, DV>[];
-  row: RowData;
-  cellRenderer: React.ComponentType<CellRendererProps<V, DV>>;
-  cellMetaData: CellMetaData;
+  columns: CalculatedColumn<TRow>[];
+  row: TRow;
+  cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
+  cellMetaData: CellMetaData<TRow>;
   isSelected?: boolean;
   idx: number;
   extraClasses?: string;
@@ -175,36 +182,36 @@ export interface RowRendererProps<V = unknown, DV = unknown> {
   lastFrozenColumnIndex?: number;
 }
 
-export interface FilterRendererProps<V = unknown, DV = unknown> {
-  column: CalculatedColumn<V, DV>;
-  onChange?(event: AddFilterEvent): void;
+export interface FilterRendererProps<TRow, TFilterValue = unknown> {
+  column: CalculatedColumn<TRow>;
+  onChange?(event: AddFilterEvent<TRow>): void;
   /** TODO: remove */
-  getValidFilterValues?(): void;
+  getValidFilterValues?(columnKey: keyof TRow): TFilterValue;
 }
 
-export interface SubRowDetails<C = unknown> {
+export interface SubRowDetails<TChildRow = unknown> {
   canExpand: boolean;
   field: string;
   expanded: boolean;
-  children: C[];
+  children: TChildRow[];
   treeDepth: number;
   siblingIndex: number;
   numberSiblings: number;
   group?: boolean;
 }
 
-export interface SubRowOptions<C = unknown> {
+export interface SubRowOptions<TRow, TChildRow = unknown> {
   rowIdx: number;
   idx: number;
-  rowData: RowData;
-  expandArgs?: ExpandableOptions<C>;
+  rowData: TRow;
+  expandArgs?: ExpandableOptions<TChildRow>;
 }
 
-export interface ExpandableOptions<C = unknown> {
+export interface ExpandableOptions<TChildRow = unknown> {
   canExpand: boolean;
   field: string;
   expanded: boolean;
-  children: C[];
+  children: TChildRow[];
   treeDepth: number;
   subRowDetails: SubRowDetails;
 }
@@ -220,20 +227,20 @@ export interface CellActionButton {
   callback?(): void;
 }
 
-export interface ColumnEventInfo extends Position {
+export interface ColumnEventInfo<TRow> extends Position {
   rowId: unknown;
-  column: CalculatedColumn;
+  column: CalculatedColumn<TRow>;
 }
 
 export interface CellRenderer {
   setScrollLeft(scrollLeft: number): void;
 }
 
-export interface RowRenderer {
+export interface RowRenderer<TRow> {
   setScrollLeft(scrollLeft: number): void;
   getRowTop?(): number;
   getRowHeight?(): number;
-  getDecoratedComponentInstance?(idx: number): { row: RowRenderer & React.Component<RowRendererProps> } | undefined;
+  getDecoratedComponentInstance?(idx: number): { row: RowRenderer<TRow> & React.Component<RowRendererProps<TRow>> } | undefined;
 }
 
 export interface ScrollPosition {
@@ -241,24 +248,24 @@ export interface ScrollPosition {
   scrollTop: number;
 }
 
-export interface InteractionMasksMetaData {
-  onCheckCellIsEditable?(e: CheckCellIsEditableEvent): boolean;
-  onCellCopyPaste?(e: CellCopyPasteEvent): void;
+export interface InteractionMasksMetaData<TRow> {
+  onCheckCellIsEditable?(e: CheckCellIsEditableEvent<TRow>): boolean;
+  onCellCopyPaste?(e: CellCopyPasteEvent<TRow>): void;
   onGridRowsUpdated(
-    cellKey: string,
+    cellKey: keyof TRow,
     toRow1: number,
     toRow2: number,
-    data: { [key: string]: unknown },
+    data: { [key: string]: unknown }, // FIX ME: Use Pick<R, K>
     updateAction: UpdateActions,
     fromRow?: number
   ): void;
-  onDragHandleDoubleClick(data: Position & { rowData: RowData }): void;
+  onDragHandleDoubleClick(data: Position & { rowData: TRow }): void;
   onCellSelected?(position: Position): void;
   onCellDeSelected?(position: Position): void;
   onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
   onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
   onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onCommit(e: CommitEvent): void;
+  onCommit(e: CommitEvent<TRow>): void;
 }
 
 export interface RowGroupMetaData {
@@ -272,22 +279,22 @@ export interface RowGroupMetaData {
 
 export type RowSelection = { indexes?: number[] } | { isSelectedKey?: string } | { keys?: { values: unknown[]; rowKey: string } };
 
-export interface HeaderRowData {
+export interface HeaderRowData<TRow> {
   rowType: HeaderRowType;
   height: number;
   filterable?: boolean;
-  onFilterChange?(args: AddFilterEvent): void;
+  onFilterChange?(args: AddFilterEvent<TRow>): void;
 }
 
-export interface AddFilterEvent {
+export interface AddFilterEvent<TRow> {
   filterTerm: string;
-  column: Column;
+  column: Column<TRow>;
 }
 
-export interface CommitEvent<V = never> {
-  cellKey: string;
+export interface CommitEvent<TRow, TUpdatedValue = never> {
+  cellKey: keyof TRow;
   rowIdx: number;
-  updated: V;
+  updated: TUpdatedValue;
   key?: string;
 }
 
@@ -298,32 +305,32 @@ export interface RowExpandToggleEvent {
   name: string;
 }
 
-export interface GridRowsUpdatedEvent<V = never> {
-  cellKey: string;
+export interface GridRowsUpdatedEvent<TRow, TUpdatedValue = never> {
+  cellKey: keyof TRow;
   fromRow: number;
   toRow: number;
   fromRowId: unknown;
   toRowId: unknown;
   rowIds: unknown[];
-  updated: V;
+  updated: TUpdatedValue;
   action: UpdateActions;
-  fromRowData: RowData;
+  fromRowData: TRow;
 }
 
-export interface CellCopyPasteEvent {
-  cellKey: string;
+export interface CellCopyPasteEvent<TRow> {
+  cellKey: keyof TRow;
   rowIdx: number;
   fromRow: number;
   toRow: number;
   value: unknown;
 }
 
-export interface CheckCellIsEditableEvent extends Position {
-  row: unknown;
-  column: Column;
+export interface CheckCellIsEditableEvent<TRow> extends Position {
+  row: TRow;
+  column: CalculatedColumn<TRow>;
 }
 
-export interface RowSelectionParams {
+export interface RowSelectionParams<TRow> {
   rowIdx: number;
-  row: RowData;
+  row: TRow;
 }

@@ -3,11 +3,12 @@ import { shallow } from 'enzyme';
 
 import Viewport, { ViewportProps } from '../Viewport';
 import Canvas from '../Canvas';
-import helpers from '../helpers/test/GridPropHelpers';
+import helpers, { Row } from '../helpers/test/GridPropHelpers';
 import { SCROLL_DIRECTION, CellNavigationMode } from '../common/enums';
 import EventBus from '../masks/EventBus';
+import { CalculatedColumn } from '../common/types';
 
-const viewportProps: ViewportProps = {
+const viewportProps: ViewportProps<Row> = {
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {
@@ -25,7 +26,7 @@ const viewportProps: ViewportProps = {
   cellMetaData: {
     onCellClick() { },
     onCellDoubleClick() { },
-    rowKey: 'row key',
+    rowKey: 'id',
     onCellMouseDown() { },
     onCellMouseEnter() { },
     onCellContextMenu() { },
@@ -38,7 +39,7 @@ const viewportProps: ViewportProps = {
     onDragHandleDoubleClick() { },
     onCommit() { }
   },
-  rowKey: 'Id',
+  rowKey: 'id',
   enableCellSelect: true,
   enableCellAutoFocus: true,
   cellNavigationMode: CellNavigationMode.NONE,
@@ -46,7 +47,7 @@ const viewportProps: ViewportProps = {
   editorPortalTarget: document.body
 };
 
-const viewportPropsNoColumns: ViewportProps = { // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
+const viewportPropsNoColumns: ViewportProps<Row> = { // when creating anew plan copying from an existing one the viewport got initialised with 0 columns rendered
   rowOffsetHeight: 0,
   totalWidth: 400,
   columnMetrics: {
@@ -64,7 +65,7 @@ const viewportPropsNoColumns: ViewportProps = { // when creating anew plan copyi
   cellMetaData: {
     onCellClick() { },
     onCellDoubleClick() { },
-    rowKey: 'row key',
+    rowKey: 'id',
     onCellMouseDown() { },
     onCellMouseEnter() { },
     onCellContextMenu() { },
@@ -77,7 +78,7 @@ const viewportPropsNoColumns: ViewportProps = { // when creating anew plan copyi
     onDragHandleDoubleClick() { },
     onCommit() { }
   },
-  rowKey: 'Id',
+  rowKey: 'id',
   enableCellSelect: true,
   enableCellAutoFocus: true,
   cellNavigationMode: CellNavigationMode.NONE,
@@ -117,13 +118,13 @@ describe('<Viewport />', () => {
   });
 
   it('should set the max number of columns when column rendered are zeroed', () => {
-    const wrapper = shallow<Viewport>(<Viewport {...viewportPropsNoColumns} />);
+    const wrapper = shallow<Viewport<Row>>(<Viewport {...viewportPropsNoColumns} />);
     expect(wrapper.state().colVisibleEndIdx).toEqual(helpers.columns.length);
   });
 
   it('should update when given different number of columns', () => {
-    const wrapper = shallow<ViewportProps>(<Viewport {...viewportProps} />);
-    const extraColumn = {
+    const wrapper = shallow<ViewportProps<Row>>(<Viewport {...viewportProps} />);
+    const extraColumn: CalculatedColumn<Row> = {
       key: 'description',
       name: 'Description',
       idx: 3,
@@ -151,7 +152,7 @@ describe('<Viewport />', () => {
   });
 
   it('should update when given height changed', () => {
-    const wrapper = shallow<ViewportProps>(<Viewport {...viewportProps} />);
+    const wrapper = shallow<ViewportProps<Row>>(<Viewport {...viewportProps} />);
     const newHeight = 1000;
     const newProps = { ...viewportProps, minHeight: newHeight };
     wrapper.setProps(newProps);
