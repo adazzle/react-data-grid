@@ -462,7 +462,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
           enableIsScrolling={props.enableIsScrolling}
-          viewportWidth={viewportWidth}
         />
       )}
     </div>

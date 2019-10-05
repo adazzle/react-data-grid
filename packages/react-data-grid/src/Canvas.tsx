@@ -31,7 +31,6 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'RowsContainer'
 | 'editorPortalTarget'
 | 'interactionMasksMetaData'
-| 'viewportWidth'
 | 'overscanRowCount'
 | 'overscanColumnCount'
 | 'enableIsScrolling'
@@ -87,8 +86,7 @@ export default function Canvas<R>({
   RowsContainer = Fragment,
   rowsCount,
   scrollToRowIndex,
-  selectedRows,
-  viewportWidth
+  selectedRows
 }: CanvasProps<R>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -115,11 +113,10 @@ export default function Canvas<R>({
     return getHorizontalRangeToRender({
       columnMetrics,
       scrollLeft,
-      viewportWidth,
       scrollDirection,
       overscanColumnCount
     });
-  }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft, viewportWidth]);
+  }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft]);
 
   useEffect(() => {
     return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));

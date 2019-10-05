@@ -64,7 +64,6 @@ export interface HorizontalRangeToRender {
 
 export interface HorizontalRangeToRenderParams<R> {
   columnMetrics: ColumnMetrics<R>;
-  viewportWidth: number;
   scrollLeft: number;
   scrollDirection: SCROLL_DIRECTION;
   overscanColumnCount?: number;
@@ -73,11 +72,11 @@ export interface HorizontalRangeToRenderParams<R> {
 export function getHorizontalRangeToRender<R>({
   columnMetrics,
   scrollLeft,
-  viewportWidth,
   scrollDirection,
   overscanColumnCount = 2
 }: HorizontalRangeToRenderParams<R>): HorizontalRangeToRender {
   const { columns, totalColumnWidth, lastFrozenColumnIndex } = columnMetrics;
+  let { viewportWidth } = columnMetrics;
 
   let remainingScroll = scrollLeft;
   let columnIndex = lastFrozenColumnIndex;

@@ -43,7 +43,6 @@ const testProps: CanvasProps<Row> = {
   eventBus: new EventBus(),
   editorPortalTarget: document.body,
   onScroll() {},
-  viewportWidth: 1000,
   columnMetrics: {
     columns: [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }],
     columnWidths: new Map(),

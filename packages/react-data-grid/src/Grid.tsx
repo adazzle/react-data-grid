@@ -51,7 +51,6 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
-  viewportWidth: number;
 }
 
 export default function Grid<R>({
@@ -62,7 +61,6 @@ export default function Grid<R>({
   columnMetrics,
   emptyRowsView,
   headerRows,
-  viewportWidth,
   selectedRows,
   ...props
 }: GridProps<R>) {
@@ -137,7 +135,6 @@ export default function Grid<R>({
           enableIsScrolling={props.enableIsScrolling}
           onCanvasKeydown={props.onCanvasKeydown}
           onCanvasKeyup={props.onCanvasKeyup}
-          viewportWidth={viewportWidth}
         />
       )}
     </div>
