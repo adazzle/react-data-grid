@@ -30,8 +30,6 @@ import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
 import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
-const SCROLL_CELL_BUFFER = 2;
-
 interface NavAction {
   getNext(current: Position): Position;
   isCellAtBoundary(cell: Position): boolean;
@@ -51,17 +49,16 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 > & Pick<ColumnMetrics<R>, 'columns'>;
 
 export interface InteractionMasksProps<R> extends SharedCanvasProps<R>, InteractionMasksMetaData<R> {
-  onHitTopBoundary(): void;
-  onHitBottomBoundary(): void;
+  onHitTopBoundary(position: Position): void;
+  onHitBottomBoundary(position: Position): void;
   onHitLeftBoundary(position: Position): void;
   onHitRightBoundary(position: Position): void;
+  height: number;
   scrollLeft: number;
   scrollTop: number;
   getRowHeight(rowIdx: number): number;
   getRowTop(rowIdx: number): number;
   getRowColumns(rowIdx: number): CalculatedColumn<R>[];
-  rowVisibleStartIdx: number;
-  rowVisibleEndIdx: number;
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
 }
@@ -330,9 +327,13 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
   }
 
   getKeyNavActionFromEvent(e: React.KeyboardEvent<HTMLDivElement>): NavAction | null {
-    const { rowVisibleEndIdx, rowVisibleStartIdx, colVisibleEndIdx, colVisibleStartIdx, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary } = this.props;
-    const isCellAtBottomBoundary = (cell: Position): boolean => cell.rowIdx >= rowVisibleEndIdx - SCROLL_CELL_BUFFER;
-    const isCellAtTopBoundary = (cell: Position): boolean => cell.rowIdx !== 0 && cell.rowIdx <= rowVisibleStartIdx - 1;
+    const { colVisibleEndIdx, colVisibleStartIdx, onHitBottomBoundary, onHitRightBoundary, onHitLeftBoundary, onHitTopBoundary } = this.props;
+    const isCellAtBottomBoundary = (cell: Position): boolean => {
+      return (cell.rowIdx + 1) * this.props.rowHeight > this.props.scrollTop + this.props.height;
+    };
+    const isCellAtTopBoundary = (cell: Position): boolean => {
+      return cell.rowIdx * this.props.rowHeight < this.props.scrollTop;
+    };
     const isCellAtRightBoundary = (cell: Position): boolean => cell.idx !== 0 && cell.idx >= colVisibleEndIdx - 1;
     const isCellAtLeftBoundary = (cell: Position): boolean => cell.idx !== 0 && cell.idx <= colVisibleStartIdx + 1;
 
@@ -353,7 +354,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
         onHitRightBoundary(next);
         // Selected cell can hit the bottom boundary when the cellNavigationMode is 'changeRow'
         if (isCellAtBottomBoundary(next)) {
-          onHitBottomBoundary();
+          onHitBottomBoundary(next);
         }
       }
     };
@@ -364,7 +365,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
         onHitLeftBoundary(next);
         // Selected cell can hit the top boundary when the cellNavigationMode is 'changeRow'
         if (isCellAtTopBoundary(next)) {
-          onHitTopBoundary();
+          onHitTopBoundary(next);
         }
       }
     };

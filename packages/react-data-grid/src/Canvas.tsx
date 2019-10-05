@@ -4,7 +4,7 @@ import { isElement } from 'react-is';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
-import { getColumnScrollPosition, isPositionStickySupported } from './utils';
+import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize } from './utils';
 import { EventTypes, SCROLL_DIRECTION } from './common/enums';
 import { CalculatedColumn, Position, ScrollState, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
 import { GridProps } from './Grid';
@@ -101,16 +101,22 @@ export default function Canvas<R>({
   const lastSelectedRowIdx = useRef(-1);
   const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
 
-  const { rowOverscanStartIdx, rowOverscanEndIdx, rowVisibleStartIdx, rowVisibleEndIdx } = useMemo(() => {
+  const clientHeight = useMemo(() => {
+    if (canvas.current) return canvas.current.clientHeight;
+    const scrollbarSize = columnMetrics.totalColumnWidth > columnMetrics.viewportWidth ? getScrollbarSize() : 0;
+    return height - scrollbarSize;
+  }, [columnMetrics.totalColumnWidth, columnMetrics.viewportWidth, height]);
+
+  const { rowOverscanStartIdx, rowOverscanEndIdx } = useMemo(() => {
     return getVerticalRangeToRender({
-      height,
+      height: clientHeight,
       rowHeight,
       scrollTop,
       rowsCount,
       scrollDirection,
       overscanRowCount
     });
-  }, [height, overscanRowCount, rowHeight, rowsCount, scrollDirection, scrollTop]);
+  }, [clientHeight, overscanRowCount, rowHeight, rowsCount, scrollDirection, scrollTop]);
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
@@ -172,17 +178,17 @@ export default function Canvas<R>({
     setIsScrolling(false);
   }
 
-  function onHitBottomCanvas() {
+  function onHitBottomCanvas({ rowIdx }: Position) {
     const { current } = canvas;
     if (current) {
-      current.scrollTop += rowHeight + getClientScrollTopOffset(current);
+      current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
     }
   }
 
-  function onHitTopCanvas() {
+  function onHitTopCanvas({ rowIdx }: Position) {
     const { current } = canvas;
     if (current) {
-      current.scrollTop -= rowHeight - getClientScrollTopOffset(current);
+      current.scrollTop = rowIdx * rowHeight;
     }
   }
 
@@ -261,11 +267,6 @@ export default function Canvas<R>({
     }
 
     return <Row<R> {...rendererProps} />;
-  }
-
-  function getClientScrollTopOffset(node: HTMLDivElement) {
-    const scrollVariation = node.scrollTop % rowHeight;
-    return scrollVariation > 0 ? rowHeight - scrollVariation : 0;
   }
 
   function isRowSelected(row: R): boolean {
@@ -391,8 +392,7 @@ export default function Canvas<R>({
         rowsCount={rowsCount}
         rowHeight={rowHeight}
         columns={columnMetrics.columns}
-        rowVisibleStartIdx={rowVisibleStartIdx}
-        rowVisibleEndIdx={rowVisibleEndIdx}
+        height={clientHeight}
         colVisibleStartIdx={colVisibleStartIdx}
         colVisibleEndIdx={colVisibleEndIdx}
         enableCellSelect={enableCellSelect}

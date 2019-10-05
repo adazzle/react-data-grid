@@ -35,8 +35,6 @@ export interface VerticalRangeToRenderParams {
 }
 
 export interface VerticalRangeToRender {
-  rowVisibleStartIdx: number;
-  rowVisibleEndIdx: number;
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
 }
@@ -49,13 +47,12 @@ export function getVerticalRangeToRender({
   scrollDirection,
   overscanRowCount = 2
 }: VerticalRangeToRenderParams): VerticalRangeToRender {
-  const renderedRowsCount = Math.ceil(height / rowHeight);
-  const rowVisibleStartIdx = Math.max(0, Math.round(scrollTop / rowHeight));
-  const rowVisibleEndIdx = Math.min(rowsCount, rowVisibleStartIdx + renderedRowsCount);
+  const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
+  const rowVisibleEndIdx = Math.min(rowsCount - 1, Math.floor((scrollTop + height) / rowHeight));
   const rowOverscanStartIdx = Math.max(0, rowVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.UP ? overscanRowCount : 2));
-  const rowOverscanEndIdx = Math.min(rowsCount, rowVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.DOWN ? overscanRowCount : 2));
+  const rowOverscanEndIdx = Math.min(rowsCount - 1, rowVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.DOWN ? overscanRowCount : 2));
 
-  return { rowVisibleStartIdx, rowVisibleEndIdx, rowOverscanStartIdx, rowOverscanEndIdx };
+  return { rowOverscanStartIdx, rowOverscanEndIdx };
 }
 
 export interface HorizontalRangeToRender {
