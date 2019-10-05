@@ -28,8 +28,7 @@ describe('<InteractionMasks/>', () => {
   function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps<Row>>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
     const onCellSelected = jest.fn();
     const props: InteractionMasksProps<Row> = {
-      rowVisibleStartIdx: 0,
-      rowVisibleEndIdx: 10,
+      height: 100,
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 10,
       columns,

@@ -66,8 +66,6 @@ describe('Canvas Tests', () => {
     expect(wrapper.find(InteractionMasks).props()).toMatchObject({
       rowHeight: 25,
       rowsCount: 1,
-      rowVisibleStartIdx: 0,
-      rowVisibleEndIdx: 1,
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 1
     });
