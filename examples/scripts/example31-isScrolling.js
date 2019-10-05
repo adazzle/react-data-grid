@@ -1,6 +1,6 @@
+import React, { useRef, useState } from 'react';
 import ReactDataGrid from 'react-data-grid';
 import exampleWrapper from '../components/exampleWrapper';
-import React from 'react';
 import { AreaChart, Area } from 'Recharts';
 
 const getRandom = (min, max) => {
@@ -10,10 +10,17 @@ const getRandom = (min, max) => {
 };
 
 const ExpensiveFormatter = ({ isScrolling }) => {
-  if (isScrolling) {
+  const isReady = useRef(!isScrolling);
+  const [items] = useState(() => {
+    return [...Array(1000).keys()].map(i => ({ name: `Page ${i}`, uv: getRandom(0, 4000), pv: getRandom(0, 4000), amt: getRandom(0, 4000) })).slice(0, 50);
+  });
+
+  if (isScrolling && !isReady.current) {
     return <div>is scrolling</div>;
   }
-  const items = [...Array(1000).keys()].map(i => ({ name: `Page ${i}`, uv: getRandom(0, 4000), pv: getRandom(0, 4000), amt: getRandom(0, 4000) })).slice(0, 50);
+
+  isReady.current = true;
+
   return (
     <AreaChart
       width={500}
