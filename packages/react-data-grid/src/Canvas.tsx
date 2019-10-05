@@ -220,7 +220,7 @@ export default function Canvas<R>({
   function getRows() {
     const rows = [];
 
-    for (let idx = rowOverscanStartIdx; idx < rowOverscanEndIdx; idx++) {
+    for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
       rows.push(renderRow(idx));
     }
 
@@ -376,7 +376,7 @@ export default function Canvas<R>({
   }
 
   const paddingTop = rowOverscanStartIdx * rowHeight;
-  const paddingBottom = (rowsCount - rowOverscanEndIdx) * rowHeight;
+  const paddingBottom = (rowsCount - 1 - rowOverscanEndIdx) * rowHeight;
 
   return (
     <div
