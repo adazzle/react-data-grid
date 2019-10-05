@@ -36,6 +36,7 @@ const testProps: CanvasProps<Row> = {
     onGridRowsUpdated: noop,
     onDragHandleDoubleClick: noop
   },
+  onRowSelectionChange() {},
   enableCellSelect: true,
   enableCellAutoFocus: false,
   cellNavigationMode: CellNavigationMode.NONE,

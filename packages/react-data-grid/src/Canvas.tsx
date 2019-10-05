@@ -16,7 +16,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'rowsCount'
 | 'columnMetrics'
 | 'selectedRows'
-| 'onSelectedRowsChange'
+| 'onRowSelectionChange'
 | 'rowRenderer'
 | 'cellMetaData'
 | 'rowHeight'
@@ -44,7 +44,7 @@ export interface CanvasProps<R> extends SharedGridProps<R> {
   onScroll(position: ScrollState): void;
 }
 
-interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData'> {
+interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
@@ -54,7 +54,6 @@ interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData'> {
   subRowDetails?: SubRowDetails;
   height: number;
   isRowSelected: boolean;
-  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
   scrollLeft: number;
   isScrolling: boolean;
   colOverscanStartIdx: number;
@@ -76,8 +75,8 @@ export default function Canvas<R>({
   interactionMasksMetaData,
   onCanvasKeydown,
   onCanvasKeyup,
+  onRowSelectionChange,
   onScroll,
-  onSelectedRowsChange,
   overscanColumnCount,
   overscanRowCount,
   rowGetter,
@@ -98,7 +97,6 @@ export default function Canvas<R>({
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const resetScrollStateTimeoutId = useRef<number | null>(null);
-  const lastSelectedRowIdx = useRef(-1);
   const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
 
@@ -243,7 +241,7 @@ export default function Canvas<R>({
       height: rowHeight,
       columns: columnMetrics.columns,
       isRowSelected: isRowSelected(row),
-      onRowSelectionChange: handleRowSelectionChange,
+      onRowSelectionChange,
       cellMetaData,
       subRowDetails: getSubRowDetails ? getSubRowDetails(row) : undefined,
       colOverscanStartIdx,
@@ -272,29 +270,6 @@ export default function Canvas<R>({
 
   function isRowSelected(row: R): boolean {
     return selectedRows !== undefined && selectedRows.has(row[rowKey]);
-  }
-
-  function handleRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) {
-    if (!onSelectedRowsChange) return;
-
-    const newSelectedRows = new Set(selectedRows);
-
-    if (checked) {
-      newSelectedRows.add(row[rowKey]);
-      const previousRowIdx = lastSelectedRowIdx.current;
-      lastSelectedRowIdx.current = rowIdx;
-      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-        const step = Math.sign(rowIdx - previousRowIdx);
-        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-          newSelectedRows.add(rowGetter(i)[rowKey]);
-        }
-      }
-    } else {
-      newSelectedRows.delete(row[rowKey]);
-      lastSelectedRowIdx.current = -1;
-    }
-
-    onSelectedRowsChange(newSelectedRows);
   }
 
   function setComponentsScrollLeft(scrollLeft: number) {

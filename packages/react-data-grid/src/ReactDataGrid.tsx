@@ -196,6 +196,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
+  const lastSelectedRowIdx = useRef(-1);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
 
   const columnMetrics = useMemo(() => {
@@ -345,6 +346,29 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
   }
 
+  function handleRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) {
+    if (!onSelectedRowsChange) return;
+
+    const newSelectedRows = new Set(selectedRows);
+
+    if (checked) {
+      newSelectedRows.add(row[rowKey]);
+      const previousRowIdx = lastSelectedRowIdx.current;
+      lastSelectedRowIdx.current = rowIdx;
+      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+        const step = Math.sign(rowIdx - previousRowIdx);
+        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+          newSelectedRows.add(rowGetter(i)[rowKey]);
+        }
+      }
+    } else {
+      newSelectedRows.delete(row[rowKey]);
+      lastSelectedRowIdx.current = -1;
+    }
+
+    onSelectedRowsChange(newSelectedRows);
+  }
+
   useImperativeHandle(ref, () => ({
     scrollToColumn,
     selectCell,
@@ -412,6 +436,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           rowGroupRenderer={props.rowGroupRenderer}
           cellMetaData={cellMetaData}
           selectedRows={selectedRows}
+          onRowSelectionChange={handleRowSelectionChange}
           onSelectedRowsChange={onSelectedRowsChange}
           rowOffsetHeight={rowOffsetHeight}
           sortColumn={props.sortColumn}

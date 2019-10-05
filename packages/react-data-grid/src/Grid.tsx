@@ -50,6 +50,7 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
   viewportWidth: number;
 }
 
@@ -115,7 +116,7 @@ export default function Grid<R>({
           rowGetter={rowGetter}
           rowsCount={rowsCount}
           selectedRows={selectedRows}
-          onSelectedRowsChange={props.onSelectedRowsChange}
+          onRowSelectionChange={props.onRowSelectionChange}
           columnMetrics={columnMetrics}
           onScroll={onScroll}
           cellMetaData={props.cellMetaData}
