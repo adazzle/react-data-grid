@@ -42,7 +42,7 @@ export interface ScrollState {
   isScrolling: boolean;
 }
 
-type SharedGridProps = Pick<GridProps,
+type SharedGridProps<R> = Pick<GridProps<R>,
 'rowKey'
 | 'rowHeight'
 | 'rowRenderer'
@@ -67,7 +67,7 @@ type SharedGridProps = Pick<GridProps,
 | 'editorPortalTarget'
 >;
 
-export interface ViewportProps extends SharedGridProps {
+export interface ViewportProps<R> extends SharedGridProps<R> {
   onScroll(scrollState: ScrollState): void;
 }
 
@@ -87,11 +87,11 @@ export interface ViewportState {
   lastFrozenColumnIndex: number;
 }
 
-export default class Viewport extends React.Component<ViewportProps, ViewportState> {
+export default class Viewport<R> extends React.Component<ViewportProps<R>, ViewportState> {
   static displayName = 'Viewport';
 
   readonly state: Readonly<ViewportState> = getGridState(this.props);
-  private readonly canvas = React.createRef<Canvas>();
+  private readonly canvas = React.createRef<Canvas<R>>();
   private readonly viewport = React.createRef<HTMLDivElement>();
   private resetScrollStateTimeoutId: number | null = null;
 
@@ -198,7 +198,7 @@ export default class Viewport extends React.Component<ViewportProps, ViewportSta
     }
   };
 
-  componentWillReceiveProps(nextProps: ViewportProps) {
+  componentWillReceiveProps(nextProps: ViewportProps<R>) {
     const { rowHeight, rowsCount } = nextProps;
     if (this.props.rowHeight !== nextProps.rowHeight
       || this.props.minHeight !== nextProps.minHeight) {
@@ -253,7 +253,7 @@ export default class Viewport extends React.Component<ViewportProps, ViewportSta
         style={{ top: this.props.rowOffsetHeight }}
         ref={this.viewport}
       >
-        <Canvas
+        <Canvas<R>
           ref={this.canvas}
           rowKey={this.props.rowKey}
           width={this.props.columnMetrics.width}

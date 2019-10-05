@@ -6,7 +6,7 @@ export const OVERSCAN_ROWS = 2;
 
 const { min, max, ceil, round } = Math;
 
-export function getGridState(props: { columnMetrics: ColumnMetrics; rowsCount: number; minHeight: number; rowHeight: number; rowOffsetHeight: number }) {
+export function getGridState<R>(props: { columnMetrics: ColumnMetrics<R>; rowsCount: number; minHeight: number; rowHeight: number; rowOffsetHeight: number }) {
   const totalNumberColumns = props.columnMetrics.columns.length;
   const canvasHeight = props.minHeight - props.rowOffsetHeight;
   const renderedRowsCount = ceil((props.minHeight - props.rowHeight) / props.rowHeight);
@@ -29,11 +29,11 @@ export function getGridState(props: { columnMetrics: ColumnMetrics; rowsCount: n
   };
 }
 
-export function findLastFrozenColumnIndex(columns: CalculatedColumn[]): number {
+export function findLastFrozenColumnIndex<R>(columns: CalculatedColumn<R>[]): number {
   return columns.findIndex(c => isFrozen(c));
 }
 
-function getTotalFrozenColumnWidth(columns: CalculatedColumn[]): number {
+function getTotalFrozenColumnWidth<R>(columns: CalculatedColumn<R>[]): number {
   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
   if (lastFrozenColumnIndex === -1) {
     return 0;
@@ -42,7 +42,7 @@ function getTotalFrozenColumnWidth(columns: CalculatedColumn[]): number {
   return lastFrozenColumn.left + lastFrozenColumn.width;
 }
 
-function getColumnCountForWidth(columns: CalculatedColumn[], initialWidth: number, colVisibleStartIdx: number): number {
+function getColumnCountForWidth<R>(columns: CalculatedColumn<R>[], initialWidth: number, colVisibleStartIdx: number): number {
   let width = initialWidth;
   let count = 0;
 
@@ -58,7 +58,7 @@ function getColumnCountForWidth(columns: CalculatedColumn[], initialWidth: numbe
   return count;
 }
 
-export function getNonFrozenVisibleColStartIdx(columns: CalculatedColumn[], scrollLeft: number): number {
+export function getNonFrozenVisibleColStartIdx<R>(columns: CalculatedColumn<R>[], scrollLeft: number): number {
   let remainingScroll = scrollLeft;
   const lastFrozenColumnIndex = findLastFrozenColumnIndex(columns);
   const nonFrozenColumns = columns.slice(lastFrozenColumnIndex + 1);
@@ -71,7 +71,7 @@ export function getNonFrozenVisibleColStartIdx(columns: CalculatedColumn[], scro
   return max(columnIndex, 0);
 }
 
-export function getNonFrozenRenderedColumnCount(columnMetrics: ColumnMetrics, viewportDomWidth: number, scrollLeft: number): number {
+export function getNonFrozenRenderedColumnCount<R>(columnMetrics: ColumnMetrics<R>, viewportDomWidth: number, scrollLeft: number): number {
   const { columns, totalColumnWidth } = columnMetrics;
   if (columns.length === 0) {
     return 0;

@@ -5,7 +5,7 @@ import { CalculatedColumn } from '../../types';
 
 describe('CheckboxEditor', () => {
   function setup(value = true) {
-    const testColumn: CalculatedColumn = {
+    const testColumn: CalculatedColumn<{ columnKey?: string }> = {
       idx: 0,
       name: 'columnKey',
       key: 'columnKey',

@@ -392,6 +392,7 @@ const rules = {
   'sonarjs/no-use-of-empty-return-value': 2,
   'sonarjs/cognitive-complexity': 0,
   'sonarjs/max-switch-cases': 0,
+  'sonarjs/no-collapsible-if': 1,
   'sonarjs/no-duplicate-string': 0,
   'sonarjs/no-duplicated-branches': 1,
   'sonarjs/no-identical-functions': 1,

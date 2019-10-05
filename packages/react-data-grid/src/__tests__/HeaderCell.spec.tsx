@@ -4,6 +4,10 @@ import { mount } from 'enzyme';
 import HeaderCell from '../HeaderCell';
 import { HeaderRowType } from '../common/enums';
 
+interface Row {
+  bla?: string;
+}
+
 describe('Header Cell Tests', () => {
   function DraggableHeaderCell() {
     return <div />;
@@ -28,7 +32,7 @@ describe('Header Cell Tests', () => {
       draggableHeaderCell: DraggableHeaderCell,
       ...overrideProps
     };
-    const wrapper = mount<HeaderCell>(<HeaderCell {...props} />);
+    const wrapper = mount<HeaderCell<Row>>(<HeaderCell {...props} />);
     return { wrapper, props };
   }
 
