@@ -5,9 +5,9 @@ import HeaderRow from './HeaderRow';
 import { getColumnMetrics } from './ColumnMetrics';
 import { getScrollbarSize } from './utils';
 import { CalculatedColumn, HeaderRowData } from './common/types';
-import { GridProps } from './Grid';
+import { CanvasProps } from './Canvas';
 
-type SharedGridProps<R> = Pick<GridProps<R>,
+type SharedGridProps<R> = Pick<CanvasProps<R>,
 | 'rowKey'
 | 'rowsCount'
 | 'rowGetter'
@@ -19,7 +19,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'sortDirection'
 | 'draggableHeaderCell'
 | 'onSelectedRowsChange'
-| 'onSort'
+| 'onGridSort'
 | 'onHeaderDrop'
 | 'getValidFilterValues'
 | 'cellMetaData'
@@ -101,7 +101,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
         onAllRowsSelectionChange={handleAllRowsSelectionChange}
         sortColumn={props.sortColumn}
         sortDirection={props.sortDirection}
-        onSort={props.onSort}
+        onGridSort={props.onGridSort}
         getValidFilterValues={props.getValidFilterValues}
       />
     );
@@ -118,24 +118,26 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
   }
 
   // Set the cell selection to -1 x -1 when clicking on the header
-  function onHeaderClick(): void {
-    props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
-  }
+  // function onHeaderClick(): void {
+  //   props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
+  // }
 
-  const className = classNames('react-grid-Header', {
-    'react-grid-Header--resizing': resizing !== null
-  });
+  // const className = classNames('react-grid-Header', {
+  //   'react-grid-Header--resizing': resizing !== null
+  // });
 
-  return (
-    <div
-      style={{
-        height: props.rowOffsetHeight,
-        paddingRight: getScrollbarSize()
-      }}
-      className={className}
-      onClick={onHeaderClick}
-    >
-      {getHeaderRows()}
-    </div>
-  );
+  // return (
+  //   <div
+  //     style={{
+  //       height: props.rowOffsetHeight,
+  //       paddingRight: getScrollbarSize()
+  //     }}
+  //     className={className}
+  //     onClick={onHeaderClick}
+  //   >
+  //     {getHeaderRows()}
+  //   </div>
+  // );
+
+  return <>{getHeaderRows()}</>;
 });

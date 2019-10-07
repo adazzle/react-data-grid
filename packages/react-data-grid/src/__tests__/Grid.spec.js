@@ -97,11 +97,7 @@ describe('Rendering Grid component', () => {
       overScan: { key: 'value' }
     };
   };
-  it('passes classname property', () => {
-    const wrapper = renderComponent(allProperties());
-    const draggableDiv = wrapper.find('div').at(0);
-    expect(draggableDiv.hasClass('react-grid-Grid'));
-  });
+
   it('does not pass unknown properties to the div', () => {
     const wrapper = renderComponent(allProperties());
     const draggableDiv = wrapper.find('div').at(0);

@@ -14,7 +14,7 @@ type SharedHeaderProps<R> = Pick<HeaderProps<R>,
 | 'allRowsSelected'
 | 'sortColumn'
 | 'sortDirection'
-| 'onSort'
+| 'onGridSort'
 | 'getValidFilterValues'
 >;
 
@@ -65,7 +65,7 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
       <SortableHeaderCell<R>
         column={column}
         rowType={this.props.rowType}
-        onSort={this.props.onSort}
+        onSort={this.props.onGridSort}
         sortDirection={sortDirection}
         sortDescendingFirst={sortDescendingFirst}
         allRowsSelected={this.props.allRowsSelected}
@@ -122,7 +122,7 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
       }
     }
 
-    return cells.concat(frozenCells);
+    return frozenCells.concat(cells);
   }
 
   setScrollLeft(scrollLeft: number): void {

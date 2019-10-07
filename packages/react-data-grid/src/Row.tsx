@@ -120,9 +120,10 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   }
 
   render() {
+    const { idx, height, rowOffsetHeight } = this.props;
     const className = classNames(
       'react-grid-Row',
-      `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
+      `react-grid-Row--${idx % 2 === 0 ? 'even' : 'odd'}`,
       { 'row-selected': this.props.isRowSelected },
       this.props.extraClasses,
       { 'rdg-scrolling': this.props.isScrolling }
@@ -132,7 +133,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       <div
         ref={this.row}
         className={className}
-        style={{ height: this.getRowHeight() }}
+        style={{ height, top: rowOffsetHeight + idx * height }}
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}

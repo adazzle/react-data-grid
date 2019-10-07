@@ -174,6 +174,7 @@ export interface RowsContainerProps {
 }
 
 export interface RowRendererProps<TRow> {
+  rowOffsetHeight: number;
   height: number;
   columns: CalculatedColumn<TRow>[];
   row: TRow;

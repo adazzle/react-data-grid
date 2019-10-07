@@ -8,7 +8,7 @@ import React, {
   useImperativeHandle
 } from 'react';
 
-import Grid from './Grid';
+import Canvas from './Canvas';
 import { getColumnMetrics } from './ColumnMetrics';
 import { EventBus } from './masks';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
@@ -404,7 +404,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
       ref={gridRef}
     >
       {columnMetrics && (
-        <Grid<R>
+        <Canvas<R>
           rowKey={rowKey}
           headerRows={headerRows}
           draggableHeaderCell={props.draggableHeaderCell}
@@ -422,7 +422,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           rowOffsetHeight={rowOffsetHeight}
           sortColumn={props.sortColumn}
           sortDirection={props.sortDirection}
-          onSort={props.onGridSort}
+          onGridSort={props.onGridSort}
           minHeight={minHeight}
           onCanvasKeydown={props.onGridKeyDown}
           onCanvasKeyup={props.onGridKeyUp}

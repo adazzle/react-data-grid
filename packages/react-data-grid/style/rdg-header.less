@@ -10,12 +10,14 @@
 }
 
 .react-grid-HeaderRow {
-  position: relative;
-  overflow: hidden;
+  position: sticky;
+  z-index: 3;
+  top: 0;
   .user-select();
 }
 
 .react-grid-HeaderCell {
+  display: inline-block;
   position: absolute;
   padding: 8px;
   margin: 0;
@@ -36,6 +38,12 @@
   right: 0;
   bottom: 0;
   width: 10px;
+}
+
+.react-grid-HeaderCell--frozen {
+  position: sticky;
+  display: inline-block;
+  z-index: 1;
 }
 
 .react-grid-HeaderCell--frozen:last-of-type {

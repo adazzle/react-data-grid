@@ -1,49 +1,64 @@
-import React, { Fragment, useState, useRef, useEffect, useMemo } from 'react';
-import { isElement } from 'react-is';
+import React, { createElement, cloneElement, Fragment, useState, useRef, useEffect, useMemo } from 'react';
+import { isElement, isValidElementType } from 'react-is';
 
+import Header, { HeaderHandle, HeaderProps } from './Header';
 import Row from './Row';
 import RowGroup from './RowGroup';
-import { InteractionMasks } from './masks';
+import { InteractionMasks, EventBus } from './masks';
 import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize } from './utils';
 import { EventTypes, SCROLL_DIRECTION } from './common/enums';
-import { CalculatedColumn, Position, ScrollState, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
-import { GridProps } from './Grid';
+import { CalculatedColumn, Position, SubRowDetails, RowRenderer, RowRendererProps, RowData, CellMetaData, ColumnMetrics, HeaderRowData, InteractionMasksMetaData } from './common/types';
+import { ReactDataGridProps } from './ReactDataGrid';
 import { getScrollDirection, getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
 
-type SharedGridProps<R> = Pick<GridProps<R>,
-| 'rowKey'
+type FullHeaderProps<R> = HeaderProps<R> & React.RefAttributes<HeaderHandle>;
+
+type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
+| 'draggableHeaderCell'
+| 'getValidFilterValues'
 | 'rowGetter'
 | 'rowsCount'
-| 'columnMetrics'
-| 'selectedRows'
-| 'onRowSelectionChange'
 | 'rowRenderer'
-| 'cellMetaData'
-| 'rowHeight'
+| 'rowGroupRenderer'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'getSubRowDetails'
-| 'rowGroupRenderer'
-| 'enableCellSelect'
-| 'enableCellAutoFocus'
-| 'cellNavigationMode'
-| 'eventBus'
+| 'onScroll'
 | 'RowsContainer'
-| 'editorPortalTarget'
-| 'interactionMasksMetaData'
+| 'emptyRowsView'
+| 'onHeaderDrop'
+| 'getSubRowDetails'
 | 'overscanRowCount'
 | 'overscanColumnCount'
 | 'enableIsScrolling'
-| 'onCanvasKeydown'
-| 'onCanvasKeyup'
->;
+| 'selectedRows'
+| 'onSelectedRowsChange'
+| 'sortColumn'
+| 'sortDirection'
+| 'onGridSort'
+> & Required<Pick<ReactDataGridProps<R>,
+| 'rowKey'
+| 'enableCellSelect'
+| 'rowHeight'
+| 'minHeight'
+| 'cellNavigationMode'
+| 'enableCellAutoFocus'
+| 'editorPortalTarget'
+>>;
 
-export interface CanvasProps<R> extends SharedGridProps<R> {
-  height: number;
-  onScroll(position: ScrollState): void;
+export interface CanvasProps<R> extends SharedDataGridProps<R> {
+  cellMetaData: CellMetaData<R>;
+  columnMetrics: ColumnMetrics<R>;
+  eventBus: EventBus;
+  headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
+  interactionMasksMetaData: InteractionMasksMetaData<R>;
+  rowOffsetHeight: number;
+  onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onColumnResize(idx: number, width: number): void;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
-interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
+interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'rowOffsetHeight' | 'onRowSelectionChange'> {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
@@ -64,39 +79,52 @@ export default function Canvas<R>({
   cellNavigationMode,
   columnMetrics,
   contextMenu,
+  draggableHeaderCell,
   editorPortalTarget,
+  emptyRowsView,
   enableCellAutoFocus,
   enableCellSelect,
   enableIsScrolling,
   eventBus,
   getSubRowDetails,
-  height,
+  getValidFilterValues,
+  headerRows,
   interactionMasksMetaData,
+  minHeight,
   onCanvasKeydown,
   onCanvasKeyup,
+  onColumnResize,
+  onGridSort,
+  onHeaderDrop,
   onRowSelectionChange,
   onScroll,
+  onSelectedRowsChange,
   overscanColumnCount,
   overscanRowCount,
   rowGetter,
   rowGroupRenderer,
   rowHeight,
   rowKey,
+  rowOffsetHeight,
   rowRenderer,
   RowsContainer = Fragment,
   rowsCount,
   scrollToRowIndex,
-  selectedRows
+  selectedRows,
+  sortColumn,
+  sortDirection
 }: CanvasProps<R>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
   const [isScrolling, setIsScrolling] = useState(false);
   const canvas = useRef<HTMLDivElement>(null);
+  const header = useRef<HeaderHandle>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
   const resetScrollStateTimeoutId = useRef<number | null>(null);
   const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
+  const height = minHeight - rowOffsetHeight;
   const clientHeight = getClientHeight();
 
   const { rowOverscanStartIdx, rowOverscanEndIdx } = useMemo(() => {
@@ -149,7 +177,27 @@ export default function Canvas<R>({
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
     setScrollDirection(scrollDirection);
-    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop, scrollDirection });
+
+    // if (header.current) {
+    //   header.current.setScrollLeft(newScrollLeft);
+    // }
+    if (onScroll) {
+      onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop, scrollDirection });
+    }
+  }
+
+  function setComponentsScrollLeft(scrollLeft: number) {
+    if (isPositionStickySupported()) return;
+    const { current } = interactionMasks;
+    if (current) {
+      current.setScrollLeft(scrollLeft);
+    }
+
+    rows.forEach(row => {
+      if (row && row.setScrollLeft) {
+        row.setScrollLeft(scrollLeft);
+      }
+    });
   }
 
   function resetScrollStateAfterDelay() {
@@ -232,6 +280,7 @@ export default function Canvas<R>({
       idx,
       row,
       height: rowHeight,
+      rowOffsetHeight,
       columns: columnMetrics.columns,
       isRowSelected: isRowSelected(row),
       onRowSelectionChange,
@@ -265,20 +314,6 @@ export default function Canvas<R>({
     return selectedRows !== undefined && selectedRows.has(row[rowKey]);
   }
 
-  function setComponentsScrollLeft(scrollLeft: number) {
-    if (isPositionStickySupported()) return;
-    const { current } = interactionMasks;
-    if (current) {
-      current.setScrollLeft(scrollLeft);
-    }
-
-    rows.forEach(row => {
-      if (row && row.setScrollLeft) {
-        row.setScrollLeft(scrollLeft);
-      }
-    });
-  }
-
   function getRowTop(rowIdx: number) {
     const row = rows.get(rowIdx);
     if (row && row.getRowTop) {
@@ -310,7 +345,7 @@ export default function Canvas<R>({
         // In the case where Row is specified as the custom render, ensure the correct ref is passed
         return <Row<R> {...rowProps} />;
       }
-      return React.cloneElement(CustomRowRenderer, customRowRendererProps);
+      return cloneElement(CustomRowRenderer, customRowRendererProps);
     }
 
     return <CustomRowRenderer {...customRowRendererProps} />;
@@ -333,12 +368,9 @@ export default function Canvas<R>({
     );
   }
 
-  const paddingTop = rowOverscanStartIdx * rowHeight;
-  const paddingBottom = (rowsCount - 1 - rowOverscanEndIdx) * rowHeight;
-
   return (
     <div
-      className="react-grid-Canvas"
+      className="rdg-viewport"
       style={{ height }}
       ref={canvas}
       onScroll={handleScroll}
@@ -372,8 +404,33 @@ export default function Canvas<R>({
         {...interactionMasksMetaData}
       />
       <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-        <div className="rdg-rows-container" style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom }}>
-          {getRows()}
+        <div className="rdg-grid" style={{ width: columnMetrics.totalColumnWidth, height: rowOffsetHeight + rowsCount * rowHeight }}>
+          {
+            createElement<FullHeaderProps<R>>(Header as React.FunctionComponent<FullHeaderProps<R>>, {
+              rowKey,
+              rowsCount,
+              ref: header,
+              rowGetter,
+              columnMetrics,
+              onColumnResize,
+              headerRows,
+              rowOffsetHeight,
+              sortColumn,
+              sortDirection,
+              draggableHeaderCell,
+              onGridSort,
+              onHeaderDrop,
+              allRowsSelected: selectedRows !== undefined && selectedRows.size === rowsCount,
+              onSelectedRowsChange,
+              getValidFilterValues,
+              cellMetaData
+            })
+          }
+          {
+            rowsCount === 0 && isValidElementType(emptyRowsView)
+              ? <div className="react-grid-Empty">{createElement(emptyRowsView)}</div>
+              : getRows()
+          }
         </div>
       </RowsContainer>
     </div>
