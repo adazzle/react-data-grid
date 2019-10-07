@@ -59,7 +59,7 @@ class Example extends React.Component {
       }
     ];
 
-    this.state = { rows: this.createRows(1000), filters: {} };
+    this.state = { rows: this.createRows(1000), filters: {}, enableHeaderFilters: false };
   }
 
   getRandomDate = (start, end) => {
@@ -106,23 +106,39 @@ class Example extends React.Component {
     return values.filter((item, i, a) => { return i === a.indexOf(item); });
   };
 
-  handleOnClearFilters = () => {
-    this.setState({ filters: {} });
+  onToggleFilter = () => {
+    this.setState(prevState => {
+      const enableHeaderFilters = !prevState.enableHeaderFilters;
+
+      if (!enableHeaderFilters) {
+        return {
+          enableHeaderFilters,
+          filters: {}
+        };
+      }
+
+      return { enableHeaderFilters };
+    });
   };
 
   render() {
     return (
-      <ReactDataGrid
-        enableCellSelect
-        columns={this._columns}
-        rowGetter={this.rowGetter}
-        rowsCount={this.rowsCount()}
-        minHeight={500}
-        toolbar={<Toolbar enableFilter />}
-        onAddFilter={this.handleFilterChange}
-        getValidFilterValues={this.getValidFilterValues}
-        onClearFilters={this.handleOnClearFilters}
-      />
+      <>
+        <Toolbar
+          enableFilter
+          onToggleFilter={this.onToggleFilter}
+        />
+        <ReactDataGrid
+          enableCellSelect
+          columns={this._columns}
+          rowGetter={this.rowGetter}
+          rowsCount={this.rowsCount()}
+          minHeight={500}
+          enableHeaderFilters={this.state.enableHeaderFilters}
+          onAddFilter={this.handleFilterChange}
+          getValidFilterValues={this.getValidFilterValues}
+        />
+      </>
     );
   }
 }

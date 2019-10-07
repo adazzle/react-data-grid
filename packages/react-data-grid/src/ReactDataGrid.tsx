@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 
 import Grid from './Grid';
-import ToolbarContainer, { ToolbarProps } from './ToolbarContainer';
 import { getColumnMetrics } from './ColumnMetrics';
 import { EventBus } from './masks';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
@@ -45,8 +44,8 @@ export interface ReactDataGridProps<R extends {}> {
   headerRowHeight?: number;
   /** The height of the header filter row in pixels */
   headerFiltersHeight?: number;
-  /** Component used to render toolbar above the grid */
-  toolbar?: React.ReactElement<ToolbarProps<R>> | React.ComponentType<ToolbarProps<R>>;
+  /** Toggles whether filters row is displayed or not */
+  enableHeaderFilters?: boolean;
   cellRangeSelection?: {
     onStart(selectedRange: SelectedRange): void;
     onUpdate?(selectedRange: SelectedRange): void;
@@ -59,7 +58,6 @@ export interface ReactDataGridProps<R extends {}> {
   /** Function called whenever row is double clicked */
   onRowDoubleClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
   onAddFilter?(event: AddFilterEvent<R>): void;
-  onClearFilters?(): void;
   /** Function called whenever grid is sorted*/
   onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   /** Function called whenever keyboard key is released */
@@ -160,7 +158,6 @@ export interface ReactDataGridProps<R extends {}> {
 export interface ReactDataGridHandle {
   scrollToColumn(colIdx: number): void;
   selectCell(position: Position, openEditor?: boolean): void;
-  handleToggleFilter(): void;
   openCellEditor(rowIdx: number, colIdx: number): void;
 }
 
@@ -186,12 +183,10 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   rowsCount,
   rowGetter,
   cellRangeSelection,
-  onClearFilters,
   selectedRows,
   onSelectedRowsChange,
   ...props
 }: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
-  const [canFilter, setCanFilter] = useState(false);
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
@@ -291,13 +286,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     openCellEditor(rowIdx, idx);
   }
 
-  function handleToggleFilter() {
-    setCanFilter(canFilter => !canFilter);
-    if (onClearFilters) {
-      onClearFilters();
-    }
-  }
-
   const handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
     const cellKey = getColumn(e.idx).key;
     handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
@@ -329,7 +317,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     const { headerRowHeight, onAddFilter } = props;
     return [
       { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
-      canFilter ? {
+      props.enableHeaderFilters ? {
         rowType: HeaderRowType.FILTER,
         filterable: true,
         onFilterChange: onAddFilter,
@@ -372,7 +360,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   useImperativeHandle(ref, () => ({
     scrollToColumn,
     selectCell,
-    handleToggleFilter,
     openCellEditor
   }));
 
@@ -416,12 +403,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
       style={style}
       ref={gridRef}
     >
-      <ToolbarContainer<R>
-        toolbar={props.toolbar}
-        columns={columns}
-        rowsCount={rowsCount}
-        onToggleFilter={handleToggleFilter}
-      />
       {columnMetrics && (
         <Grid<R>
           rowKey={rowKey}
@@ -474,10 +455,6 @@ export default class ReactDataGrid<R> extends React.Component<ReactDataGridProps
 
   selectCell(position: Position, openEditor?: boolean | undefined): void {
     this.gridRef.current!.selectCell(position, openEditor);
-  }
-
-  handleToggleFilter(): void {
-    this.gridRef.current!.handleToggleFilter();
   }
 
   openCellEditor(rowIdx: number, colIdx: number): void {

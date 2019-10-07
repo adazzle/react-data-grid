@@ -25,8 +25,8 @@ class Example extends React.Component {
         resizable: true
       },
       {
-        key: 'avartar',
-        name: 'Avartar',
+        key: 'avatar',
+        name: 'Avatar',
         width: 60,
         formatter: ImageFormatter,
         resizable: true,
@@ -133,7 +133,7 @@ class Example extends React.Component {
   createFakeRowObjectData = (index) => {
     return {
       id: `id_${index}`,
-      avartar: faker.image.avatar(),
+      avatar: faker.image.avatar(),
       email: faker.internet.email(),
       title: faker.name.prefix(),
       firstName: faker.name.firstName(),
@@ -192,19 +192,21 @@ class Example extends React.Component {
 
   render() {
     return (
-      <ReactDataGrid
-        ref={node => this.grid = node}
-        enableCellSelect
-        columns={this.columns}
-        rowGetter={this.getRowAt}
-        rowsCount={this.getSize()}
-        onGridRowsUpdated={this.handleGridRowsUpdated}
-        toolbar={<Toolbar onAddRow={this.handleAddRow} />}
-        rowHeight={50}
-        minHeight={600}
-        selectedRows={this.state.selectedRows}
-        onSelectedRowsChange={this.onSelectedRowsChange}
-      />
+      <>
+        <Toolbar onAddRow={this.handleAddRow} />
+        <ReactDataGrid
+          ref={node => this.grid = node}
+          enableCellSelect
+          columns={this.columns}
+          rowGetter={this.getRowAt}
+          rowsCount={this.getSize()}
+          onGridRowsUpdated={this.handleGridRowsUpdated}
+          rowHeight={50}
+          minHeight={600}
+          selectedRows={this.state.selectedRows}
+          onSelectedRowsChange={this.onSelectedRowsChange}
+        />
+      </>
     );
   }
 }

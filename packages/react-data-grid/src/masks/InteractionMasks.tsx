@@ -469,7 +469,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
   }
 
   selectCell = (cell: Position, openEditor?: boolean): void => {
-    const callback = openEditor ? this.openEditor : this.focus;
+    const callback = openEditor ? this.openEditor : undefined;
     // Close the editor to commit any pending changes
     if (this.state.isEditorEnabled) {
       this.closeEditor();

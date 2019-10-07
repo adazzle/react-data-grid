@@ -53,7 +53,7 @@ class Example extends React.Component {
       }
     ];
 
-    this.state = { rows: this.createRows(1000), filters: {}, sortColumn: null, sortDirection: null };
+    this.state = { rows: this.createRows(1000), filters: {}, sortColumn: null, sortDirection: null, enableHeaderFilters: false };
   }
 
   getRandomDate = (start, end) => {
@@ -104,25 +104,41 @@ class Example extends React.Component {
     this.setState({ filters: newFilters });
   };
 
-  onClearFilters = () => {
-    this.setState({ filters: {} });
+  onToggleFilter = () => {
+    this.setState(prevState => {
+      const enableHeaderFilters = !prevState.enableHeaderFilters;
+
+      if (!enableHeaderFilters) {
+        return {
+          enableHeaderFilters,
+          filters: {}
+        };
+      }
+
+      return { enableHeaderFilters };
+    });
   };
 
   render() {
     return (
-      <ReactDataGrid
-        onGridSort={this.handleGridSort}
-        sortDirection={this.state.sortDirection}
-        sortColumn={this.state.sortColumn}
-        enableCellSelect
-        columns={this._columns}
-        rowGetter={this.rowGetter}
-        rowsCount={this.getSize()}
-        minHeight={500}
-        toolbar={<Toolbar enableFilter />}
-        onAddFilter={this.handleFilterChange}
-        onClearFilters={this.onClearFilters}
-      />
+      <>
+        <Toolbar
+          enableFilter
+          onToggleFilter={this.onToggleFilter}
+        />
+        <ReactDataGrid
+          onGridSort={this.handleGridSort}
+          sortDirection={this.state.sortDirection}
+          sortColumn={this.state.sortColumn}
+          enableCellSelect
+          columns={this._columns}
+          rowGetter={this.rowGetter}
+          rowsCount={this.getSize()}
+          minHeight={500}
+          enableHeaderFilters={this.state.enableHeaderFilters}
+          onAddFilter={this.handleFilterChange}
+        />
+      </>
     );
   }
 }

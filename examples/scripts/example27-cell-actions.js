@@ -12,7 +12,7 @@ faker.locale = 'en_GB';
 
 const createFakeRowObjectData = (index) => ({
   id: `id_${index}`,
-  avartar: faker.image.avatar(),
+  avatar: faker.image.avatar(),
   county: faker.address.county(),
   email: faker.internet.email(),
   title: faker.name.prefix(),
@@ -44,8 +44,8 @@ const columns = [
     resizable: true
   },
   {
-    key: 'avartar',
-    name: 'Avartar',
+    key: 'avatar',
+    name: 'Avatar',
     width: 60,
     formatter: ImageFormatter
   },
