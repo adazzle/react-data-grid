@@ -57,100 +57,73 @@ describe('Grid', () => {
 
   // Set of tests for the props that defined the height of our rows
   describe('when defininig heigths on props', () => {
-    const ToolBarStub = () => null;
-
     describe('for defaults props', () => {
-      let wrapper;
-
-      beforeEach(() => {
-        wrapper = setup({ toolbar: <ToolBarStub /> }).wrapper;
-        wrapper.find(ToolBarStub).props().onToggleFilter();
-        wrapper.update();
-      });
+      function innerSetup() {
+        const { wrapper } = setup({ enableHeaderFilters: true });
+        return getBaseGrid(wrapper);
+      }
 
       it('uses the appropriate default for the grid row height', () => {
-        expect(getBaseGrid(wrapper).props().rowHeight).toEqual(35);
+        expect(innerSetup().props().rowHeight).toEqual(35);
       });
 
       it('uses the appropriate default for the header row height', () => {
-        expect(getBaseGrid(wrapper).props().headerRows[0].height).toEqual(35);
+        expect(innerSetup().props().headerRows[0].height).toEqual(35);
       });
 
       it('uses the appropriate default for the header filter row height', () => {
-        expect(getBaseGrid(wrapper).props().headerRows[1].height).toEqual(45);
+        expect(innerSetup().props().headerRows[1].height).toEqual(45);
       });
     });
 
     describe('for a given row height prop', () => {
-      let wrapper;
-
-      beforeEach(() => {
-        wrapper = setup({ toolbar: <ToolBarStub />, rowHeight: 40 }).wrapper;
-        wrapper.find(ToolBarStub).props().onToggleFilter();
-        wrapper.update();
-      });
+      function innerSetup() {
+        const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
+        return getBaseGrid(wrapper);
+      }
 
       it('passes the correct heigth to the grid rows', () => {
-        expect(getBaseGrid(wrapper).props().rowHeight).toEqual(40);
+        expect(innerSetup().props().rowHeight).toEqual(40);
       });
 
       it('passes the grid row heigth to the header row when no height to the specific header row is provided', () => {
-        expect(getBaseGrid(wrapper).props().headerRows[0].height).toEqual(40);
+        expect(innerSetup().props().headerRows[0].height).toEqual(40);
       });
 
       it('uses the default prop height for the filter row when none is provided', () => {
-        expect(getBaseGrid(wrapper).props().headerRows[1].height).toEqual(45);
+        expect(innerSetup().props().headerRows[1].height).toEqual(45);
       });
     });
 
     describe('for given row and header height props', () => {
-      let wrapper;
-
-      beforeEach(() => {
-        wrapper = setup({
-          toolbar: <ToolBarStub />,
+      function innerSetup() {
+        const { wrapper } = setup({
+          enableHeaderFilters: true,
           rowHeight: 40,
           headerRowHeight: 50,
           headerFiltersHeight: 60
-        }).wrapper;
-        wrapper.find(ToolBarStub).props().onToggleFilter();
-        wrapper.update();
-      });
+        });
+        return getBaseGrid(wrapper);
+      }
 
       it('passes the correct heigth to the grid rows', () => {
-        expect(getBaseGrid(wrapper).props().rowHeight).toEqual(40);
+        expect(innerSetup().props().rowHeight).toEqual(40);
       });
 
       it('passes the correct heigth to the header row', () => {
-        expect(getBaseGrid(wrapper).props().headerRows[0].height).toEqual(50);
+        expect(innerSetup().props().headerRows[0].height).toEqual(50);
       });
 
       it('passes the correct heigth to the header filter row', () => {
-        expect(getBaseGrid(wrapper).props().headerRows[1].height).toEqual(60);
+        expect(innerSetup().props().headerRows[1].height).toEqual(60);
       });
     });
   });
 
   describe('if passed in as props to grid', () => {
-    const ToolBarStub = () => null;
-    let wrapper;
-
-    beforeEach(() => {
-      wrapper = setup({ toolbar: <ToolBarStub /> }).wrapper;
-    });
-
-    it('should render a Toolbar', () => {
-      expect(wrapper.find(ToolBarStub).instance()).toBeDefined();
-    });
-
-    describe('onToggleFilter trigger of Toolbar', () => {
-      beforeEach(() => {
-        wrapper.find(ToolBarStub).props().onToggleFilter();
-      });
-
-      it('should set filter state of grid and render a filterable header row', () => {
-        expect(getBaseGrid(wrapper).props().headerRows.length).toEqual(2);
-      });
+    it('should set filter state of grid and render a filterable header row', () => {
+      const { wrapper } = setup({ enableHeaderFilters: true });
+      expect(getBaseGrid(wrapper).props().headerRows.length).toEqual(2);
     });
   });
 
