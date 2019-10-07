@@ -44,7 +44,7 @@ export interface ReactDataGridProps<R extends {}> {
   headerRowHeight?: number;
   /** The height of the header filter row in pixels */
   headerFiltersHeight?: number;
-  // TODO: finalize prop name
+  /** Toggles whether filters row is displayed or not */
   enableHeaderFilters?: boolean;
   cellRangeSelection?: {
     onStart(selectedRange: SelectedRange): void;
