@@ -46,6 +46,7 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   rowOffsetHeight: number;
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
+  pinnedRows?: R[];
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -82,7 +83,7 @@ export default function Grid<R>({
   return (
     <div className="react-grid-Grid">
       {
-        React.createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
+        createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
           rowKey,
           rowsCount,
           ref: header,
@@ -135,6 +136,7 @@ export default function Grid<R>({
           enableIsScrolling={props.enableIsScrolling}
           onCanvasKeydown={props.onCanvasKeydown}
           onCanvasKeyup={props.onCanvasKeyup}
+          pinnedRows={props.pinnedRows}
         />
       )}
     </div>

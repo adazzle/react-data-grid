@@ -30,3 +30,8 @@ export function isPositionStickySupported(): boolean {
   }
   return positionSticky;
 }
+
+const userAgent = navigator.userAgent;
+export const isIE = userAgent.indexOf('MSIE ') > -1 || userAgent.indexOf('Trident/') > -1;
+export const isEdge = !isIE && !!window.StyleMedia;
+export const isIEOrEdge = isIE || isEdge;

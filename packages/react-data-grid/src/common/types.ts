@@ -164,6 +164,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   scrollLeft: number;
   expandableOptions?: ExpandableOptions;
   lastFrozenColumnIndex: number;
+  isBottomPinned?: boolean;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }
@@ -187,6 +188,7 @@ export interface RowRendererProps<TRow> {
   isScrolling?: boolean;
   scrollLeft: number;
   lastFrozenColumnIndex: number;
+  isBottomPinned?: boolean;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }

@@ -19,6 +19,7 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 | 'cellControls'
 | 'isRowSelected'
 | 'onRowSelectionChange'
+| 'isBottomPinned'
 > & Pick<CellMetaData<R>,
 'onDeleteSubRow'
 >;
@@ -36,7 +37,8 @@ export default function CellContent<R>({
   cellControls,
   isScrolling,
   isRowSelected,
-  onRowSelectionChange
+  onRowSelectionChange,
+  isBottomPinned
 }: CellContentProps<R>) {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
@@ -79,6 +81,7 @@ export default function CellContent<R>({
             isScrolling={isScrolling}
             isRowSelected={isRowSelected}
             onRowSelectionChange={onRowSelectionChange}
+            isBottomPinned={isBottomPinned}
           />
         </span>
         {cellControls}

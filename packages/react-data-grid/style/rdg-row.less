@@ -73,3 +73,19 @@
   padding-left: 5px;
   border: 1px solid #ddd;
 }
+
+.rdg-bottom-pinned-rows-sticky-wrapper {
+  z-index: 3; // same as the interaction mask
+}
+
+@supports (position: sticky) or (position: -webkit-sticky) {
+  .rdg-bottom-pinned-rows-sticky-wrapper {
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+  }
+}
+
+.rdg-bottom-pinned-rows {
+  border-top: 2px solid #ccc;
+}

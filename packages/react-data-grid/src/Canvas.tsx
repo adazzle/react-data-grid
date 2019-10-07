@@ -4,7 +4,7 @@ import { isElement } from 'react-is';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
-import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize } from './utils';
+import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize, isIEOrEdge } from './utils';
 import { EventTypes, SCROLL_DIRECTION } from './common/enums';
 import { CalculatedColumn, Position, ScrollState, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
 import { GridProps } from './Grid';
@@ -41,6 +41,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 export interface CanvasProps<R> extends SharedGridProps<R> {
   height: number;
   onScroll(position: ScrollState): void;
+  pinnedRows?: R[];
 }
 
 interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
@@ -57,6 +58,7 @@ interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowS
   isScrolling: boolean;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
+  isBottomPinned?: boolean;
 }
 
 export default function Canvas<R>({
@@ -86,7 +88,8 @@ export default function Canvas<R>({
   RowsContainer = Fragment,
   rowsCount,
   scrollToRowIndex,
-  selectedRows
+  selectedRows,
+  pinnedRows
 }: CanvasProps<R>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -212,14 +215,22 @@ export default function Canvas<R>({
     const rows = [];
 
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
-      rows.push(renderRow(idx));
+      const row = rowGetter(idx);
+      rows.push(renderRow(row, idx));
     }
 
     return rows;
   }
 
-  function renderRow(idx: number) {
-    const row = rowGetter(idx);
+  function getPinnedRows() {
+    if (!pinnedRows) {
+      return [];
+    }
+
+    return pinnedRows.map((row, idx) => renderRow(row, rowsCount + 1 + idx));
+  }
+
+  function renderRow(row: R, idx: number) {
     const rendererProps: RendererProps<R> = {
       key: idx,
       ref(row) {
@@ -241,7 +252,8 @@ export default function Canvas<R>({
       colOverscanEndIdx,
       lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
       isScrolling,
-      scrollLeft
+      scrollLeft,
+      isBottomPinned: pinnedRows && pinnedRows.includes(row)
     };
     const { __metaData } = row as RowData;
 
@@ -343,8 +355,27 @@ export default function Canvas<R>({
     );
   }
 
-  const paddingTop = rowOverscanStartIdx * rowHeight;
-  const paddingBottom = (rowsCount - 1 - rowOverscanEndIdx) * rowHeight;
+  const pinnedRowsHeight = isIEOrEdge && pinnedRows ? pinnedRows.length * rowHeight : 0;
+  const paddingTop = rowOverscanStartIdx > 0 ? rowOverscanStartIdx * rowHeight : 0;
+  const paddingBottom = rowsCount - rowOverscanEndIdx > 0 ? (rowsCount - 1 - rowOverscanEndIdx) * rowHeight + pinnedRowsHeight : pinnedRowsHeight;
+  const { totalColumnWidth: width } = columnMetrics;
+
+  // Set minHeight to show horizontal scrollbar when there are no rows
+  const scrollableRowsWrapperStyle: React.CSSProperties = { width, paddingTop, paddingBottom };
+  const pinnedRowsWrapperStyle: React.CSSProperties = { width };
+  let ieStickyWrapperStyle: React.CSSProperties | undefined;
+
+  if (isIEOrEdge) {
+    pinnedRowsWrapperStyle.position = 'absolute';
+    pinnedRowsWrapperStyle.bottom = 0;
+
+    ieStickyWrapperStyle = {
+      position: 'absolute',
+      top: 0,
+      height: height - 17, // IE scroll bar width
+      transform: `translateY(${scrollTop}px)`
+    };
+  }
 
   return (
     <div
@@ -382,10 +413,18 @@ export default function Canvas<R>({
         {...interactionMasksMetaData}
       />
       <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-        <div className="rdg-rows-container" style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom }}>
+        <div className="rdg-rows-container" style={scrollableRowsWrapperStyle}>
           {getRows()}
         </div>
       </RowsContainer>
+      {pinnedRows && pinnedRows.length && (
+        <div className="rdg-bottom-pinned-rows-sticky-wrapper" style={ieStickyWrapperStyle}>
+          <div className="rdg-bottom-pinned-rows" style={pinnedRowsWrapperStyle}>
+            {getPinnedRows()}
+            {/* {pinnedRows.map((row, index) => this.mapToRowElement({ row, subRowDetails: undefined }, index))} */}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
