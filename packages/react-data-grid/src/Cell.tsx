@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import shallowEqual from 'shallowequal';
 
 import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
@@ -7,29 +8,39 @@ import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
 import { isFrozen } from './ColumnUtils';
 
-function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props<R>): SubRowOptions<R> {
+function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
 }
 
-export interface Props<R> extends CellRendererProps<R> {
+export interface CellProps<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
   tooltip?: string | null;
   cellControls?: unknown;
 }
 
-export default class Cell<R> extends React.PureComponent<Props<R>> implements CellRenderer {
+export default class Cell<R> extends React.Component<CellProps<R>> implements CellRenderer {
   static defaultProps = {
     value: ''
   };
 
   private readonly cell = React.createRef<HTMLDivElement>();
 
-  componentDidMount() {
-    this.checkScroll();
+  shouldComponentUpdate(nextProps: CellProps<R>) {
+    const { scrollLeft, ...rest } = this.props;
+    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
+
+    return !shallowEqual(rest, nextRest);
   }
 
-  componentDidUpdate(prevProps: Props<R>) {
+  componentDidMount() {
+    const { scrollLeft } = this.props;
+    if (scrollLeft !== undefined) {
+      this.setScrollLeft(scrollLeft);
+    }
+  }
+
+  componentDidUpdate(prevProps: CellProps<R>) {
     if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
@@ -85,26 +96,17 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
   }
 
   getCellClass() {
-    const { idx, column, lastFrozenColumnIndex, isRowSelected, tooltip, expandableOptions } = this.props;
+    const { idx, column, lastFrozenColumnIndex, tooltip, expandableOptions } = this.props;
     return classNames(
       column.cellClass,
       'react-grid-Cell',
       this.props.className, {
         'react-grid-Cell--frozen': isFrozen(column),
         'rdg-last--frozen': lastFrozenColumnIndex === idx,
-        'row-selected': isRowSelected,
         'has-tooltip': !!tooltip,
         'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }
     );
-  }
-
-  checkScroll() {
-    const { scrollLeft, column } = this.props;
-    const node = this.cell.current;
-    if (isFrozen(column) && node && node.style.transform != null) {
-      this.setScrollLeft(scrollLeft);
-    }
   }
 
   setScrollLeft(scrollLeft: number) {
@@ -164,14 +166,28 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
   }
 
   render() {
-    const { column, children, expandableOptions, cellMetaData, rowData } = this.props;
+    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isScrolling } = this.props;
     if (column.hidden) {
       return null;
     }
 
     const style = this.getStyle();
     const className = this.getCellClass();
-    const cellContent = children || <CellContent<R> {...this.props} />;
+    const cellContent = children || (
+      <CellContent<R>
+        idx={idx}
+        rowIdx={rowIdx}
+        column={column}
+        rowData={rowData}
+        value={value}
+        tooltip={tooltip}
+        expandableOptions={expandableOptions}
+        height={height}
+        onDeleteSubRow={cellMetaData.onDeleteSubRow}
+        cellControls={cellControls}
+        isScrolling={isScrolling}
+      />
+    );
     const events = this.getEvents();
     const cellExpander = expandableOptions && expandableOptions.canExpand && (
       <CellExpand
@@ -190,7 +206,7 @@ export default class Cell<R> extends React.PureComponent<Props<R>> implements Ce
         <CellActions<R>
           column={column}
           rowData={rowData}
-          cellMetaData={cellMetaData}
+          getCellActions={cellMetaData.getCellActions}
         />
         {cellExpander}
         {cellContent}

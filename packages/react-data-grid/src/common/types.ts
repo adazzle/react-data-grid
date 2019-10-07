@@ -62,6 +62,7 @@ export type ColumnList<TRow> = Column<TRow>[] | List<Column<TRow>>;
 
 export interface ColumnMetrics<TRow> {
   columns: CalculatedColumn<TRow>[];
+  lastFrozenColumnIndex: number;
   width: number;
   totalColumnWidth: number;
   totalWidth: number;
@@ -129,7 +130,7 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   value: TValue;
   column: CalculatedColumn<TRow, TDependentValue>;
   row: TRow;
-  isScrolling: boolean;
+  isScrolling?: boolean;
   dependentValues?: TDependentValue;
 }
 
@@ -158,11 +159,10 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   column: CalculatedColumn<TRow>;
   rowData: TRow;
   cellMetaData: CellMetaData<TRow>;
-  isScrolling: boolean;
-  scrollLeft: number;
-  isRowSelected?: boolean;
+  isScrolling?: boolean;
+  scrollLeft?: number;
   expandableOptions?: ExpandableOptions;
-  lastFrozenColumnIndex?: number;
+  lastFrozenColumnIndex: number;
 }
 
 export interface RowRendererProps<TRow> {
@@ -177,9 +177,9 @@ export interface RowRendererProps<TRow> {
   subRowDetails?: SubRowDetails;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  isScrolling: boolean;
+  isScrolling?: boolean;
   scrollLeft: number;
-  lastFrozenColumnIndex?: number;
+  lastFrozenColumnIndex: number;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

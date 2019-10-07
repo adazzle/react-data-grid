@@ -45,7 +45,7 @@ describe('Grid', () => {
   };
 
   const getBaseGrid = (wrapper) => {
-    return wrapper.instance().base.current;
+    return wrapper.find('Grid');
   };
 
   const buildFakeEvent = (addedData) => {
@@ -57,7 +57,7 @@ describe('Grid', () => {
   };
 
   const simulateGridKeyDownWithKeyCode = (wrapper, keyCode) => {
-    getBaseGrid(wrapper).props.onViewportKeydown(buildFakeEvent({ keyCode }));
+    getBaseGrid(wrapper).props().onViewportKeydown(buildFakeEvent({ keyCode }));
   };
 
   it('should create a new instance of Grid', () => {
@@ -87,18 +87,19 @@ describe('Grid', () => {
       beforeEach(() => {
         wrapper = setup({ toolbar: <ToolBarStub /> }).wrapper;
         wrapper.find(ToolBarStub).props().onToggleFilter();
+        wrapper.update();
       });
 
       it('uses the appropriate default for the grid row height', () => {
-        expect(getBaseGrid(wrapper).props.rowHeight).toEqual(35);
+        expect(getBaseGrid(wrapper).props().rowHeight).toEqual(35);
       });
 
       it('uses the appropriate default for the header row height', () => {
-        expect(getBaseGrid(wrapper).props.headerRows[0].height).toEqual(35);
+        expect(getBaseGrid(wrapper).props().headerRows[0].height).toEqual(35);
       });
 
       it('uses the appropriate default for the header filter row height', () => {
-        expect(getBaseGrid(wrapper).props.headerRows[1].height).toEqual(45);
+        expect(getBaseGrid(wrapper).props().headerRows[1].height).toEqual(45);
       });
     });
 
@@ -108,18 +109,19 @@ describe('Grid', () => {
       beforeEach(() => {
         wrapper = setup({ toolbar: <ToolBarStub />, rowHeight: 40 }).wrapper;
         wrapper.find(ToolBarStub).props().onToggleFilter();
+        wrapper.update();
       });
 
       it('passes the correct heigth to the grid rows', () => {
-        expect(getBaseGrid(wrapper).props.rowHeight).toEqual(40);
+        expect(getBaseGrid(wrapper).props().rowHeight).toEqual(40);
       });
 
       it('passes the grid row heigth to the header row when no height to the specific header row is provided', () => {
-        expect(getBaseGrid(wrapper).props.headerRows[0].height).toEqual(40);
+        expect(getBaseGrid(wrapper).props().headerRows[0].height).toEqual(40);
       });
 
       it('uses the default prop height for the filter row when none is provided', () => {
-        expect(getBaseGrid(wrapper).props.headerRows[1].height).toEqual(45);
+        expect(getBaseGrid(wrapper).props().headerRows[1].height).toEqual(45);
       });
     });
 
@@ -134,18 +136,19 @@ describe('Grid', () => {
           headerFiltersHeight: 60
         }).wrapper;
         wrapper.find(ToolBarStub).props().onToggleFilter();
+        wrapper.update();
       });
 
       it('passes the correct heigth to the grid rows', () => {
-        expect(getBaseGrid(wrapper).props.rowHeight).toEqual(40);
+        expect(getBaseGrid(wrapper).props().rowHeight).toEqual(40);
       });
 
       it('passes the correct heigth to the header row', () => {
-        expect(getBaseGrid(wrapper).props.headerRows[0].height).toEqual(50);
+        expect(getBaseGrid(wrapper).props().headerRows[0].height).toEqual(50);
       });
 
       it('passes the correct heigth to the header filter row', () => {
-        expect(getBaseGrid(wrapper).props.headerRows[1].height).toEqual(60);
+        expect(getBaseGrid(wrapper).props().headerRows[1].height).toEqual(60);
       });
     });
   });
@@ -169,7 +172,7 @@ describe('Grid', () => {
 
       it('should set filter state of grid and render a filterable header row', () => {
         expect(wrapper.instance().state.canFilter).toBe(true);
-        expect(getBaseGrid(wrapper).props.headerRows.length).toEqual(2);
+        expect(getBaseGrid(wrapper).props().headerRows.length).toEqual(2);
       });
     });
   });
@@ -182,11 +185,11 @@ describe('Grid', () => {
 
     beforeEach(() => {
       ({ wrapper, columns, rows } = setup({ enableRowSelect: true }));
-      selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+      selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
     });
 
     it('should render an additional Select Row column', () => {
-      expect(getBaseGrid(wrapper).props.columnMetrics.columns.length).toEqual(columns.length + 1);
+      expect(getBaseGrid(wrapper).props().columnMetrics.columns.length).toEqual(columns.length + 1);
       expect(selectRowCol.key).toEqual('select-row');
       expect(TestUtils.isElementOfType(selectRowCol.formatter, CheckboxEditor)).toBe(true);
     });
@@ -232,7 +235,7 @@ describe('Grid', () => {
     describe('when selected is false', () => {
       beforeEach(() => {
         wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: false }, { id: 1, isSelected: false }, { id: 2, isSelected: false }, { id: 3, isSelected: false }] });
-        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
         selectRowCol.onCellChange(3, 'select-row', rows[3], buildFakeEvent());
       });
 
@@ -244,7 +247,7 @@ describe('Grid', () => {
     describe('when selected is null', () => {
       beforeEach(() => {
         wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: null }, { id: 2, isSelected: null }, { id: 3, isSelected: null }] });
-        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
         selectRowCol.onCellChange(2, 'select-row', rows[2], buildFakeEvent());
       });
 
@@ -256,7 +259,7 @@ describe('Grid', () => {
     describe('when selected is true', () => {
       beforeEach(() => {
         wrapper.instance().setState({ selectedRows: [{ id: 0, isSelected: null }, { id: 1, isSelected: true }, { id: 2, isSelected: true }, { id: 3, isSelected: true }] });
-        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
         selectRowCol.onCellChange(3, 'select-row', rows[3], buildFakeEvent());
       });
 
@@ -292,7 +295,7 @@ describe('Grid', () => {
           }
         }
       }).wrapper;
-      selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+      selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
     });
 
     it('should call rowSelection.onRowsSelected when row selected', () => {
@@ -348,7 +351,7 @@ describe('Grid', () => {
           }
         });
 
-        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
 
         // header checkbox
         const checkboxWrapper = document.createElement('div');
@@ -381,7 +384,7 @@ describe('Grid', () => {
           }
         });
 
-        const selectRowCol = getBaseGrid(wrapper).props.columnMetrics.columns[0];
+        const selectRowCol = getBaseGrid(wrapper).props().columnMetrics.columns[0];
 
         // header checkbox
         const checkboxWrapper = document.createElement('div');
@@ -417,12 +420,6 @@ describe('Grid', () => {
   });
 
   describe('Table width', () => {
-    it('should generate the width based on the container size', () => {
-      const { wrapper } = setup();
-      const tableElement = ReactDOM.findDOMNode(wrapper.instance());
-      expect(tableElement.style.width).toEqual('100%');
-    });
-
     describe('providing table width as prop', () => {
       it('should set the width of the table', () => {
         const { wrapper } = setup();
@@ -451,7 +448,7 @@ describe('Grid', () => {
         }
       });
 
-      getBaseGrid(wrapper).props.cellMetaData.onCellClick({ idx: 1, rowIdx: 1 });
+      getBaseGrid(wrapper).props().cellMetaData.onCellClick({ idx: 1, rowIdx: 1 });
       expect(rowClicks).toBe(1);
       const { row, column } = rowClicked;
       expect(row).toMatchObject(rows[1]);

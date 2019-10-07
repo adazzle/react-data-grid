@@ -53,11 +53,12 @@ const testProps: CanvasProps<Row> = {
   eventBus: new EventBus(),
   editorPortalTarget: document.body,
   width: 1000,
-  totalWidth: 1000,
   totalColumnWidth: 1000,
   onScroll() { },
   lastFrozenColumnIndex: 0,
-  RowsContainer: RowsContainer as CanvasProps<Row>['RowsContainer']
+  RowsContainer: RowsContainer as CanvasProps<Row>['RowsContainer'],
+  scrollTop: 0,
+  scrollLeft: 0
 };
 
 function renderComponent(extraProps?: Partial<CanvasProps<Row>>) {

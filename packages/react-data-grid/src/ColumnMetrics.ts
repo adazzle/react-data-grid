@@ -1,6 +1,6 @@
 export { sameColumn } from './ColumnComparer';
 import { getSize, isFrozen } from './ColumnUtils';
-import getScrollbarSize from './getScrollbarSize';
+import { getScrollbarSize } from './utils';
 import { isColumnsImmutable } from './common/utils';
 import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/types';
 
@@ -57,7 +57,8 @@ export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   setColumnWidths(columns, metrics.totalWidth);
 
   const width = getTotalColumnWidth(columns);
-  const unallocatedWidth = metrics.totalWidth - width - getScrollbarSize();
+  const borderWidth = 2;
+  const unallocatedWidth = metrics.totalWidth - width - getScrollbarSize() - borderWidth;
 
   // compute width for columns which doesn't specify width
   setDefferedColumnWidths(columns, unallocatedWidth, metrics.minColumnWidth);
@@ -72,6 +73,7 @@ export function recalculate<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   return {
     width,
     columns: calculatedColumns,
+    lastFrozenColumnIndex: frozenColumns.length - 1,
     totalWidth: metrics.totalWidth,
     totalColumnWidth: getTotalColumnWidth(columns),
     minColumnWidth: metrics.minColumnWidth

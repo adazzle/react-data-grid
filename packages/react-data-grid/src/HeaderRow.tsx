@@ -1,10 +1,8 @@
 import React from 'react';
-import shallowEqual from 'shallowequal';
 
 import HeaderCell from './HeaderCell';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
-import getScrollbarSize from './getScrollbarSize';
 import { isFrozen } from './ColumnUtils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, AddFilterEvent } from './common/types';
@@ -20,32 +18,20 @@ type SharedHeaderProps<R> = Pick<HeaderProps<R>,
 >;
 
 export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
-  width?: number;
   height: number;
   columns: CalculatedColumn<R>[];
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
   onColumnResizeEnd(column: CalculatedColumn<R>, width: number): void;
-  style?: React.CSSProperties;
   filterable?: boolean;
   onFilterChange?(args: AddFilterEvent<R>): void;
   rowType: HeaderRowType;
 }
 
-export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
+export default class HeaderRow<R> extends React.PureComponent<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
+  private readonly headerRow = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<keyof R, HeaderCell<R>>();
-
-  shouldComponentUpdate(nextProps: HeaderRowProps<R>) {
-    return (
-      nextProps.width !== this.props.width
-      || nextProps.height !== this.props.height
-      || nextProps.columns !== this.props.columns
-      || !shallowEqual(nextProps.style, this.props.style)
-      || this.props.sortColumn !== nextProps.sortColumn
-      || this.props.sortDirection !== nextProps.sortDirection
-    );
-  }
 
   getHeaderCellType(column: CalculatedColumn<R>): HeaderCellType {
     if (column.filterable && this.props.filterable) {
@@ -134,6 +120,7 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   setScrollLeft(scrollLeft: number): void {
+    this.headerRow.current!.scrollLeft = scrollLeft;
     this.props.columns.forEach(column => {
       const { key } = column;
       if (!this.cells.has(key)) return;
@@ -147,20 +134,17 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   render() {
-    const cellsStyle: React.CSSProperties = {
-      width: this.props.width ? this.props.width + getScrollbarSize() : '100%',
-      height: this.props.height
-    };
+    const { height, rowType } = this.props;
 
-    // FIXME: do we need 2 wrapping divs?
     return (
       <div
-        style={this.props.style}
+        ref={this.headerRow}
+        style={{
+          height: rowType === HeaderRowType.FILTER ? 500 : height
+        }}
         className="react-grid-HeaderRow"
       >
-        <div style={cellsStyle}>
-          {this.getCells()}
-        </div>
+        {this.getCells()}
       </div>
     );
   }

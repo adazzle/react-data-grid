@@ -31,7 +31,8 @@ export default function(stateValues, events) {
       width: 400,
       totalWidth: 0,
       totalColumnWidth: 400,
-      minColumnWidth: 80
+      minColumnWidth: 80,
+      lastFrozenColumnIndex: -1
     },
     selectedRows: [],
     canFilter: false,

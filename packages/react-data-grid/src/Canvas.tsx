@@ -6,14 +6,14 @@ import RowsContainerDefault from './RowsContainer';
 import RowGroup from './RowGroup';
 import { InteractionMasks } from './masks';
 import * as rowUtils from './RowUtils';
-import { getColumnScrollPosition } from './utils/canvasUtils';
+import { getColumnScrollPosition, isPositionStickySupported } from './utils';
 import { EventTypes } from './common/enums';
 import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
-import { ViewportProps, ViewportState } from './Viewport';
+import { ViewportProps } from './Viewport';
+import { HorizontalRangeToRender, VerticalRangeToRender } from './utils/viewportUtils';
 
 type SharedViewportProps<R> = Pick<ViewportProps<R>,
 'rowKey'
-| 'totalWidth'
 | 'rowGetter'
 | 'rowsCount'
 | 'selectedRows'
@@ -34,28 +34,19 @@ type SharedViewportProps<R> = Pick<ViewportProps<R>,
 | 'interactionMasksMetaData'
 >;
 
-type SharedViewportState = Pick<ViewportState,
-'rowOverscanStartIdx'
-| 'rowOverscanEndIdx'
-| 'rowVisibleStartIdx'
-| 'rowVisibleEndIdx'
-| 'colVisibleStartIdx'
-| 'colVisibleEndIdx'
-| 'colOverscanStartIdx'
-| 'colOverscanEndIdx'
-| 'lastFrozenColumnIndex'
-| 'height'
-| 'isScrolling'
->;
+type SharedViewportState = ScrollPosition & HorizontalRangeToRender & VerticalRangeToRender;
 
 export interface CanvasProps<R> extends SharedViewportProps<R>, SharedViewportState {
   columns: CalculatedColumn<R>[];
+  height: number;
   width: number;
   totalColumnWidth: number;
+  lastFrozenColumnIndex: number;
+  isScrolling?: boolean;
   onScroll(position: ScrollPosition): void;
 }
 
-type RendererProps<R> = Pick<CanvasProps<R>, 'rowVisibleStartIdx' | 'rowVisibleEndIdx' | 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
+type RendererProps<R> = Pick<CanvasProps<R>, 'columns' | 'cellMetaData' | 'colVisibleStartIdx' | 'colVisibleEndIdx' | 'colOverscanEndIdx' | 'colOverscanStartIdx' | 'lastFrozenColumnIndex' | 'isScrolling'> & {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
@@ -73,7 +64,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   private readonly interactionMasks = React.createRef<InteractionMasks<R>>();
   private readonly rows = new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>();
   private unsubscribeScrollToColumn?(): void;
-  private _scroll = { scrollTop: 0, scrollLeft: 0 };
 
   componentDidMount() {
     this.unsubscribeScrollToColumn = this.props.eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, this.scrollToColumn);
@@ -92,10 +82,9 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
 
   handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollLeft, scrollTop } = e.currentTarget;
-    this._scroll = { scrollTop, scrollLeft };
-    if (this.props.onScroll) {
-      this.props.onScroll(this._scroll);
-    }
+    // Freeze columns on legacy browsers
+    this.setScrollLeft(scrollLeft);
+    this.props.onScroll({ scrollLeft, scrollTop });
   };
 
   onHitBottomCanvas = () => {
@@ -152,11 +141,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return rows;
   }
 
-  getScroll() {
-    const { scrollTop, scrollLeft } = this.canvas.current!;
-    return { scrollTop, scrollLeft };
-  }
-
   getClientScrollTopOffset(node: HTMLDivElement) {
     const { rowHeight } = this.props;
     const scrollVariation = node.scrollTop % rowHeight;
@@ -183,6 +167,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   setScrollLeft(scrollLeft: number) {
+    if (isPositionStickySupported()) return;
     const { current } = this.interactionMasks;
     if (current) {
       current.setScrollLeft(scrollLeft);
@@ -277,17 +262,13 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
   }
 
   renderPlaceholder(key: string, height: number) {
-    // just renders empty cells
-    // if we wanted to show gridlines, we'd need classes and position as with renderScrollingPlaceholder
     return (
-      <div key={key} style={{ height }}>
-        {this.props.columns.map(column => <div style={{ width: column.width }} key={column.key as string} />)}
-      </div>
+      <div key={key} style={{ height }} />
     );
   }
 
   render() {
-    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, totalWidth, height, rowGetter, contextMenu } = this.props;
+    const { rowOverscanStartIdx, rowOverscanEndIdx, cellMetaData, columns, colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx, lastFrozenColumnIndex, rowHeight, rowsCount, totalColumnWidth, height, rowGetter, contextMenu } = this.props;
     const RowsContainer = this.props.RowsContainer || RowsContainerDefault;
 
     const rows = this.getRows(rowOverscanStartIdx, rowOverscanEndIdx)
@@ -303,8 +284,6 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
             }
           },
           idx: rowIdx,
-          rowVisibleStartIdx: this.props.rowVisibleStartIdx,
-          rowVisibleEndIdx: this.props.rowVisibleEndIdx,
           row,
           height: rowHeight,
           columns,
@@ -317,7 +296,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           colOverscanEndIdx,
           lastFrozenColumnIndex,
           isScrolling: this.props.isScrolling,
-          scrollLeft: this._scroll.scrollLeft
+          scrollLeft: this.props.scrollLeft
         });
       });
 
@@ -332,7 +311,7 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
     return (
       <div
         className="react-grid-Canvas"
-        style={{ width: totalWidth, height }}
+        style={{ height }}
         ref={this.canvas}
         onScroll={this.handleScroll}
       >
@@ -355,8 +334,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           onHitTopBoundary={this.onHitTopCanvas}
           onHitLeftBoundary={this.handleHitColummBoundary}
           onHitRightBoundary={this.handleHitColummBoundary}
-          scrollLeft={this._scroll.scrollLeft}
-          scrollTop={this._scroll.scrollTop}
+          scrollLeft={this.props.scrollLeft}
+          scrollTop={this.props.scrollTop}
           getRowHeight={this.getRowHeight}
           getRowTop={this.getRowTop}
           getRowColumns={this.getRowColumns}
@@ -364,7 +343,8 @@ export default class Canvas<R> extends React.PureComponent<CanvasProps<R>> {
           {...this.props.interactionMasksMetaData}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-          <div style={{ width: totalColumnWidth }}>{rows}</div>
+          {/* Set minHeight to show horizontal scrollbar when there are no rows */}
+          <div style={{ width: totalColumnWidth, minHeight: 1 }}>{rows}</div>
         </RowsContainer>
       </div>
     );

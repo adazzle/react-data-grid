@@ -1,3 +1,5 @@
+@import './variables.less';
+
 .react-grid-Container {
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal components don't render above external components.
@@ -6,26 +8,12 @@
 }
 
 .react-grid-Grid {
-  position: relative;
-  overflow: hidden;
-  outline: none;
-  clear : both;
-  padding: 0;
-  background-color: #fff;
-  color: inherit;
   border: 1px solid #ddd;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  .user-select();
 }
 
 .react-grid-Canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   overflow-x: auto;
   overflow-y: scroll;
   background-color: #fff;

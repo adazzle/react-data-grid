@@ -1,8 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { CellMetaData } from '../common/types';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
-import { Props as CellProps } from '../Cell';
+import { CellProps } from '../Cell';
 import CellValue from './CellValue';
 
 export type CellContentProps<R> = Pick<CellProps<R>,
@@ -16,22 +17,34 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 | 'tooltip'
 | 'height'
 | 'cellControls'
-| 'cellMetaData'
+> & Pick<CellMetaData<R>,
+'onDeleteSubRow'
 >;
 
 
-export default function CellContent<R>({ idx, tooltip, expandableOptions, height, cellMetaData, cellControls, ...props }: CellContentProps<R>) {
-  const { column } = props;
+export default function CellContent<R>({
+  idx,
+  rowIdx,
+  column,
+  rowData,
+  value,
+  tooltip,
+  expandableOptions,
+  height,
+  onDeleteSubRow,
+  cellControls,
+  isScrolling
+}: CellContentProps<R>) {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
   const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
 
   function handleDeleteSubRow() {
-    if (cellMetaData.onDeleteSubRow) {
-      cellMetaData.onDeleteSubRow({
+    if (onDeleteSubRow) {
+      onDeleteSubRow({
         idx,
-        rowIdx: props.rowIdx,
-        rowData: props.rowData,
+        rowIdx,
+        rowData,
         expandArgs: expandableOptions
       });
     }
@@ -42,7 +55,7 @@ export default function CellContent<R>({ idx, tooltip, expandableOptions, height
       treeDepth={treeDepth}
       cellHeight={height}
       onDeleteSubRow={handleDeleteSubRow}
-      isDeleteSubRowEnabled={!!cellMetaData.onDeleteSubRow}
+      isDeleteSubRowEnabled={!!onDeleteSubRow}
     />
   );
 
@@ -54,7 +67,15 @@ export default function CellContent<R>({ idx, tooltip, expandableOptions, height
     <div className={classes}>
       {cellDeleter}
       <div className="react-grid-Cell__container" style={{ marginLeft }}>
-        <span><CellValue<R> {...props} /></span>
+        <span>
+          <CellValue<R>
+            rowIdx={rowIdx}
+            rowData={rowData}
+            column={column}
+            value={value}
+            isScrolling={isScrolling}
+          />
+        </span>
         {cellControls}
       </div>
       {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}

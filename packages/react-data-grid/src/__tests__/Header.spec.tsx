@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import Header, { HeaderProps } from '../Header';
 import HeaderRow from '../HeaderRow';
 import helpers, { fakeCellMetaData, Row } from '../helpers/test/GridPropHelpers';
-import * as GetScrollbarSize from '../getScrollbarSize';
+import * as utils from '../utils';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
 
 const SCROLL_BAR_SIZE = 17;
@@ -17,25 +17,25 @@ describe('Header Unit Tests', () => {
         minColumnWidth: 80,
         totalColumnWidth: 2600,
         totalWidth: 2600,
-        width: 2600
+        width: 2600,
+        lastFrozenColumnIndex: 0
       },
       cellMetaData: fakeCellMetaData,
-      totalWidth: 1000,
-      rowHeight: 50,
       headerRows: [{
         height: 50,
         rowType: HeaderRowType.HEADER,
         onFilterChange() { }
-      }],
+      }, undefined],
       onColumnResize: jest.fn(),
       onSort: () => null,
       onHeaderDrop() { },
-      draggableHeaderCell: () => null
+      draggableHeaderCell: () => null,
+      rowOffsetHeight: 30
     };
   }
 
   beforeEach(() => {
-    jest.spyOn(GetScrollbarSize, 'default').mockReturnValue(SCROLL_BAR_SIZE);
+    jest.spyOn(utils, 'getScrollbarSize').mockReturnValue(SCROLL_BAR_SIZE);
   });
 
   it('should render a default header row', () => {
@@ -68,20 +68,20 @@ describe('Header Unit Tests', () => {
         minColumnWidth: 81,
         totalColumnWidth: 2600,
         totalWidth: 2600,
-        width: 2601
+        width: 2601,
+        lastFrozenColumnIndex: 0
       },
-      rowHeight: 51,
-      totalWidth: 2600,
       headerRows: [{
         height: 51,
         rowType: HeaderRowType.HEADER,
         onFilterChange() { }
-      }],
+      }, undefined],
       onSort: jest.fn(),
       onHeaderDrop() { },
       cellMetaData: fakeCellMetaData,
       draggableHeaderCell: () => null,
-      onColumnResize() { }
+      onColumnResize() { },
+      rowOffsetHeight: 30
     };
     const testAllProps: HeaderProps<Row> = {
       columnMetrics: {
@@ -89,15 +89,14 @@ describe('Header Unit Tests', () => {
         minColumnWidth: 80,
         totalColumnWidth: 2600,
         totalWidth: 2600,
-        width: 2600
+        width: 2600,
+        lastFrozenColumnIndex: 0
       },
-      totalWidth: 1000,
-      rowHeight: 50,
       headerRows: [{
         height: 50,
         rowType: HeaderRowType.HEADER,
         onFilterChange() { }
-      }],
+      }, undefined],
       sortColumn: 'count',
       sortDirection: DEFINE_SORT.DESC,
       onSort: jest.fn(),
@@ -105,7 +104,8 @@ describe('Header Unit Tests', () => {
       draggableHeaderCell: jest.fn(),
       getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData,
-      onHeaderDrop() { }
+      onHeaderDrop() { },
+      rowOffsetHeight: 30
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
@@ -120,8 +120,8 @@ describe('Header Unit Tests', () => {
 
     it('should account for scrollbar size in header', () => {
       const wrapper = renderComponent(testAllProps);
-      const headerRow = wrapper.find('.react-grid-Header').childAt(0);
-      expect(headerRow.props().style.width).toBe(testAllProps.totalWidth as number - SCROLL_BAR_SIZE);
+      const headerDiv = wrapper.find('div');
+      expect(headerDiv.props().style!.paddingRight).toBe(SCROLL_BAR_SIZE);
     });
     it('does not pass onScroll properties if it is not available from props', () => {
       const wrapper = renderComponent(testRequiredProps);

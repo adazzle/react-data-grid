@@ -61,6 +61,7 @@ class Example extends React.Component {
           rowsCount={this.state.rows.length}
           minHeight={800}
           onScroll={this.onScroll}
+          enableIsScrolling
         />
       </div>
     );

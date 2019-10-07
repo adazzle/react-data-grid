@@ -156,6 +156,21 @@ export interface DataGridProps<R extends {}> {
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
+  /**
+   * The number of rows to render outside of the visible area
+   * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
+   */
+  overscanRowCount?: number;
+  /**
+   * The number of columns to render outside of the visible area
+   * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
+   */
+  overscanColumnCount?: number;
+  /**
+   * Provides an additional isScrolling parameter to formatters. This parameter can be used to show a placeholder row or column while the list is being scrolled.
+   * Note that using this parameter will result in an additional render call after scrolling has stopped (when isScrolling changes from true to false).
+   */
+  enableIsScrolling?: boolean;
 }
 
 type DefaultProps = Pick<DataGridProps<{ id?: unknown }>,
@@ -212,7 +227,6 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
   };
 
   private readonly grid = React.createRef<HTMLDivElement>();
-  private readonly base = React.createRef<Grid<R>>();
   private readonly selectAllCheckbox = React.createRef<HTMLInputElement>();
   private readonly eventBus = new EventBus();
   private readonly _keysDown = new Set<number>();
@@ -264,24 +278,16 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
     this.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
   }
 
-  gridWidth() {
-    const { current } = this.grid;
-    return current && current.parentElement ? current.parentElement.offsetWidth : 0;
-  }
-
   getTotalWidth() {
-    if (this.grid.current) {
-      return this.gridWidth();
+    const { current } = this.grid;
+    if (current) {
+      return current.offsetWidth;
     }
     return getSize(this.props.columns) * this.props.minColumnWidth;
   }
 
   getColumn(idx: number) {
     return this.state.columnMetrics.columns[idx];
-  }
-
-  getSize() {
-    return this.state.columnMetrics.columns.length;
   }
 
   metricsUpdated = () => {
@@ -562,22 +568,17 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
     }
   };
 
-  getRowOffsetHeight() {
-    return this.getHeaderRows().reduce((offsetHeight, row) => offsetHeight += row.height, 0);
-  }
-
-  getHeaderRows() {
+  getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
     const { headerRowHeight, rowHeight, onAddFilter, headerFiltersHeight } = this.props;
-    const rows: HeaderRowData<R>[] = [{ height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER }];
-    if (this.state.canFilter === true) {
-      rows.push({
+    return [
+      { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
+      this.state.canFilter ? {
         rowType: HeaderRowType.FILTER,
         filterable: true,
         onFilterChange: onAddFilter,
-        height: headerFiltersHeight
-      });
-    }
-    return rows;
+        height: headerFiltersHeight || headerRowHeight || rowHeight
+      } : undefined
+    ];
   }
 
   getRowSelectionProps() {
@@ -668,21 +669,14 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
       onCommit: this.handleCommit
     };
 
-    let containerWidth: string | number = this.props.minWidth || this.gridWidth();
-    let gridWidth: string | number = containerWidth;
-
-    // depending on the current lifecycle stage, gridWidth() may not initialize correctly
-    // this also handles cases where it always returns undefined -- such as when inside a div with display:none
-    // eg Bootstrap tabs and collapses
-    if (Number.isNaN(containerWidth) || containerWidth === 0) {
-      containerWidth = '100%';
-      gridWidth = '100%';
-    }
+    const headerRows = this.getHeaderRows();
+    const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
+    const style = this.props.minWidth ? { width: this.props.minWidth } : {};
 
     return (
       <div
         className="react-grid-Container"
-        style={{ width: containerWidth }}
+        style={style}
         ref={this.grid}
       >
         <ToolbarContainer<R>
@@ -692,9 +686,8 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           onToggleFilter={this.handleToggleFilter}
         />
         <Grid<R>
-          ref={this.base}
           rowKey={this.props.rowKey}
-          headerRows={this.getHeaderRows()}
+          headerRows={headerRows}
           draggableHeaderCell={this.props.draggableHeaderCell}
           getValidFilterValues={this.props.getValidFilterValues}
           columnMetrics={this.state.columnMetrics}
@@ -706,12 +699,11 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           cellMetaData={cellMetaData}
           selectedRows={this.getSelectedRows()}
           rowSelection={this.getRowSelectionProps()}
-          rowOffsetHeight={this.getRowOffsetHeight()}
+          rowOffsetHeight={rowOffsetHeight}
           sortColumn={this.state.sortColumn}
           sortDirection={this.state.sortDirection}
           onSort={this.handleSort}
           minHeight={this.props.minHeight}
-          totalWidth={gridWidth}
           onViewportKeydown={this.handleViewportKeyDown}
           onViewportKeyup={this.handleViewportKeyUp}
           onColumnResize={this.handleColumnResize}
@@ -728,6 +720,9 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
           getSubRowDetails={this.props.getSubRowDetails}
           editorPortalTarget={this.props.editorPortalTarget}
           interactionMasksMetaData={interactionMasksMetaData}
+          overscanRowCount={this.props.overscanRowCount}
+          overscanColumnCount={this.props.overscanColumnCount}
+          enableIsScrolling={this.props.enableIsScrolling}
         />
       </div>
     );

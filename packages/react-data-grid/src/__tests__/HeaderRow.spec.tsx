@@ -139,28 +139,6 @@ describe('Header Row Unit Tests', () => {
       draggableHeaderCell: () => <div />
     };
 
-    const allProperties: HeaderRowProps<Row> = {
-      height: 35,
-      columns: helpers.columns,
-      onSort: jest.fn(),
-      rowType: HeaderRowType.HEADER,
-      onColumnResize: jest.fn(),
-      onColumnResizeEnd: jest.fn(),
-      width: 200,
-      style: {
-        overflow: 'scroll',
-        width: 201,
-        height: 36,
-        position: 'relative'
-      },
-      sortColumn: 'count',
-      sortDirection: DEFINE_SORT.NONE,
-      filterable: true,
-      onFilterChange() { },
-      onHeaderDrop() { },
-      draggableHeaderCell: () => <div />
-    };
-
     it('passes classname property', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
@@ -171,15 +149,10 @@ describe('Header Row Unit Tests', () => {
       const headerRowDiv = wrapper.find('div').at(0);
       expect(headerRowDiv.props().width).toBeUndefined();
     });
-    it('passes style property, if available from props', () => {
-      const wrapper = renderComponent(allProperties);
-      const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().style).toBe(allProperties.style);
-    });
-    it('does not pass style if not available from props', () => {
+    it('does pass the height if available from props', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().style).toBeUndefined();
+      expect(headerRowDiv.props().style).toEqual({ height: 35 });
     });
   });
 });

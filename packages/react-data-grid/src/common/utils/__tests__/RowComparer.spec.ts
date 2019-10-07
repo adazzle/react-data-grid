@@ -40,7 +40,8 @@ const defaultProps: RowRendererProps<Row> = {
     treeDepth: 0,
     siblingIndex: 0,
     numberSiblings: 0
-  }
+  },
+  lastFrozenColumnIndex: 0
 };
 
 describe('RowComparer shouldRowUpdate', () => {

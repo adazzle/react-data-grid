@@ -1,4 +1,4 @@
-import getScrollbarSize from '../getScrollbarSize';
+import { getScrollbarSize } from '../utils';
 import * as ColumnMetrics from '../ColumnMetrics';
 import { Column } from '../common/types';
 
@@ -12,7 +12,7 @@ interface Row {
 }
 
 function getAvailableWidthPerColumn(totalWidth: number, consumedWidth: number, numberOfcolumns: number): number {
-  let availableWidth = totalWidth - getScrollbarSize() - consumedWidth;
+  let availableWidth = totalWidth - getScrollbarSize() - consumedWidth - 2; // 2 for border width
   availableWidth = availableWidth % numberOfcolumns === 0 ? availableWidth : availableWidth - 1;
 
   return availableWidth / numberOfcolumns;
