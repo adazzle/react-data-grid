@@ -249,7 +249,6 @@ export interface RowRenderer<TRow> {
   setScrollLeft(scrollLeft: number): void;
   getRowTop?(): number;
   getRowHeight?(): number;
-  getDecoratedComponentInstance?(idx: number): { row: RowRenderer<TRow> & React.Component<RowRendererProps<TRow>> } | undefined;
 }
 
 export interface ScrollState {
