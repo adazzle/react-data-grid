@@ -111,8 +111,16 @@ For maintainers only.
   - `npm login`
   - You can use `npm whoami` to check who you are logged in as.
 - Publish the update with lerna:
-  - To release a stable version: `npx lerna publish`
-  - To release an unstable version: `npx lerna publish --dist-tag next`
+  - To release a stable version:
+    - `npx lerna publish`
+  - To release a `next` version:
+    - `npx lerna publish --dist-tag next`
+    - Select `Custom Prerelease`
+    - Type in `alpha` for the prerelease name.
+  - To release a `canary` version:
+    - `npx lerna publish --dist-tag canary`
+    - Select `Custom Prerelease`
+    - Type in `canary` for the prerelease name.
   - Relevant Lerna docs:
     - https://github.com/lerna/lerna/blob/master/commands/version/README.md
     - https://github.com/lerna/lerna/blob/master/commands/publish/README.md
