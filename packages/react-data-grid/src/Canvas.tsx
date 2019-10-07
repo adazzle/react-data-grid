@@ -123,8 +123,9 @@ export default function Canvas<R>({
   }, [columnMetrics.columns, eventBus]);
 
   useEffect(() => {
-    if (scrollToRowIndex) {
-      scrollToRow(scrollToRowIndex);
+    const { current } = canvas;
+    if (typeof scrollToRowIndex === 'number' && current) {
+      current.scrollTop = scrollToRowIndex * rowHeight;
     }
   }, [scrollToRowIndex]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -190,15 +191,6 @@ export default function Canvas<R>({
 
   function handleHitColummBoundary({ idx }: Position) {
     scrollToColumn(idx, columnMetrics.columns);
-  }
-
-  function scrollToRow(scrollToRowIndex: number) {
-    const { current } = canvas;
-    if (!current) return;
-    current.scrollTop = Math.min(
-      scrollToRowIndex * rowHeight,
-      rowsCount * rowHeight - height
-    );
   }
 
   function scrollToColumn(idx: number, columns: CalculatedColumn<R>[]) {
