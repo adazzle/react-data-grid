@@ -421,7 +421,6 @@ export default function Canvas<R>({
         <div className="rdg-bottom-pinned-rows-sticky-wrapper" style={ieStickyWrapperStyle}>
           <div className="rdg-bottom-pinned-rows" style={pinnedRowsWrapperStyle}>
             {getPinnedRows()}
-            {/* {pinnedRows.map((row, index) => this.mapToRowElement({ row, subRowDetails: undefined }, index))} */}
           </div>
         </div>
       )}

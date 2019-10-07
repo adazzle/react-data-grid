@@ -16,7 +16,7 @@ const columns = [
     frozen: true,
     formatter({ value, row: { selectedRowsCount }, isBottomPinned }) {
       if (isBottomPinned) {
-        return <strong>{ selectedRowsCount >= 0 ? `${selectedRowsCount} row${selectedRowsCount <= 1 ? 's' : ''} selected` : 'Total'}</strong>;
+        return <strong>{ selectedRowsCount >= 0 ? `${selectedRowsCount} row${selectedRowsCount > 1 ? 's' : ''} selected` : 'Total'}</strong>;
       }
 
       return <div>{value}</div>;
@@ -135,7 +135,7 @@ function Example() {
         rowGetter={rowGetter}
         pinnedRows={pinnedRows}
         rowsCount={rows.length}
-        minHeight={500}
+        minHeight={700}
         selectedRows={selectedRowIndexes}
         onSelectedRowsChange={setSelectedRowIndexes}
       />
