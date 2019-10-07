@@ -115,7 +115,7 @@ function Example() {
       totalRow.hours += row.hours;
       totalRow.issueCount += row.issueCount;
 
-      if (selectedRowIndexes.has(idx)) {
+      if (selectedRowIndexes.has(idx + 1)) {
         selectedTotalRow.cost += row.cost;
         selectedTotalRow.hours += row.hours;
         selectedTotalRow.issueCount += row.issueCount;
