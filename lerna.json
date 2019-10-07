@@ -8,7 +8,8 @@
     "publish": {
       "allowBranch": [
         "master",
-        "next"
+        "next",
+        "canary"
       ],
       "message": "Publish %s"
     },
