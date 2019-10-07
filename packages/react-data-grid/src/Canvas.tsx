@@ -178,6 +178,7 @@ export default function Canvas<R>({
   function onHitBottomCanvas({ rowIdx }: Position) {
     const { current } = canvas;
     if (current) {
+      // We do not need to check for the index being in range, as the scrollTop setter will adequately clamp the value.
       current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
     }
   }
