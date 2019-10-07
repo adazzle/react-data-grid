@@ -105,15 +105,21 @@ For maintainers only.
   - `npm i`
 - Build the release files:
   - `npm run build`
-- Update the docs:
-  - `npm run docs`
-- Update the changelog, if necessary.
-- Commit your changes, if any.
+- Update the changelog, if necessary, and commit.
 - Login to the `adazzle` npm account if you haven't already done so:
   - `npm login`
+  - You can use `npm whoami` to check who you are logged in as.
 - Publish the update with lerna:
-  - To release a stable version: `npx lerna publish`
-  - To release an unstable version: `npx lerna publish --dist-tag next`
+  - To release a stable version:
+    - `npx lerna publish`
+  - To release a `next` version:
+    - `npx lerna publish --dist-tag next`
+    - Select `Custom Prerelease`
+    - Type in `alpha` for the prerelease name.
+  - To release a `canary` version:
+    - `npx lerna publish --dist-tag canary`
+    - Select `Custom Prerelease`
+    - Type in `canary` for the prerelease name.
   - Relevant Lerna docs:
     - https://github.com/lerna/lerna/blob/master/commands/version/README.md
     - https://github.com/lerna/lerna/blob/master/commands/publish/README.md
