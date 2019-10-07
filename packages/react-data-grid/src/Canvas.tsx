@@ -94,6 +94,7 @@ export default function Canvas<R>({
   const [isScrolling, setIsScrolling] = useState(false);
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
+  const prevScrollToRowIndex = useRef<number | undefined>();
   const resetScrollStateTimeoutId = useRef<number | null>(null);
   const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
@@ -123,11 +124,13 @@ export default function Canvas<R>({
   }, [columnMetrics.columns, eventBus]);
 
   useEffect(() => {
+    if (prevScrollToRowIndex.current === scrollToRowIndex) return;
+    prevScrollToRowIndex.current = scrollToRowIndex;
     const { current } = canvas;
     if (typeof scrollToRowIndex === 'number' && current) {
       current.scrollTop = scrollToRowIndex * rowHeight;
     }
-  }, [scrollToRowIndex]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [rowHeight, scrollToRowIndex]);
 
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft: newScrollLeft, scrollTop: newScrollTop } = e.currentTarget;
