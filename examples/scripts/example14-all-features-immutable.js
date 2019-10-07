@@ -22,8 +22,8 @@ const columns = [
     resizable: true
   },
   {
-    key: 'avartar',
-    name: 'Avartar',
+    key: 'avatar',
+    name: 'Avatar',
     width: 60,
     formatter: ImageFormatter,
     resizable: true,

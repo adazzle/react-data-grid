@@ -6,7 +6,7 @@ const _cache = [];
 function createFakeRowObjectData(/*number*/ index) {
   return {
     id: `id_${index}`,
-    avartar: faker.image.avatar(),
+    avatar: faker.image.avatar(),
     county: faker.address.county(),
     email: faker.internet.email(),
     title: faker.name.prefix(),

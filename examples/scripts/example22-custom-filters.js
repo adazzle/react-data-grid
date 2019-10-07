@@ -106,10 +106,6 @@ class Example extends React.Component {
     return values.filter((item, i, a) => { return i === a.indexOf(item); });
   };
 
-  handleOnClearFilters = () => {
-    this.setState({ filters: {} });
-  };
-
   onToggleFilter = () => {
     this.setState(prevState => {
       const enableHeaderFilters = !prevState.enableHeaderFilters;

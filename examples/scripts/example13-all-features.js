@@ -25,8 +25,8 @@ class Example extends React.Component {
         resizable: true
       },
       {
-        key: 'avartar',
-        name: 'Avartar',
+        key: 'avatar',
+        name: 'Avatar',
         width: 60,
         formatter: ImageFormatter,
         resizable: true,
@@ -133,7 +133,7 @@ class Example extends React.Component {
   createFakeRowObjectData = (index) => {
     return {
       id: `id_${index}`,
-      avartar: faker.image.avatar(),
+      avatar: faker.image.avatar(),
       email: faker.internet.email(),
       title: faker.name.prefix(),
       firstName: faker.name.firstName(),
