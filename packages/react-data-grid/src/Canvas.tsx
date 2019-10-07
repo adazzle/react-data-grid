@@ -272,25 +272,15 @@ export default function Canvas<R>({
       current.setScrollLeft(scrollLeft);
     }
 
-    rows.forEach((r, idx) => {
-      const row = getRowByRef(idx);
+    rows.forEach(row => {
       if (row && row.setScrollLeft) {
         row.setScrollLeft(scrollLeft);
       }
     });
   }
 
-  function getRowByRef(i: number) {
-    // check if wrapped with React DND drop target
-    if (!rows.has(i)) return;
-
-    const row = rows.get(i)!;
-    const wrappedRow = row.getDecoratedComponentInstance ? row.getDecoratedComponentInstance(i) : null;
-    return wrappedRow ? wrappedRow.row : row;
-  }
-
   function getRowTop(rowIdx: number) {
-    const row = getRowByRef(rowIdx);
+    const row = rows.get(rowIdx);
     if (row && row.getRowTop) {
       return row.getRowTop();
     }
@@ -298,7 +288,7 @@ export default function Canvas<R>({
   }
 
   function getRowHeight(rowIdx: number) {
-    const row = getRowByRef(rowIdx);
+    const row = rows.get(rowIdx);
     if (row && row.getRowHeight) {
       return row.getRowHeight();
     }
@@ -306,7 +296,7 @@ export default function Canvas<R>({
   }
 
   function getRowColumns(rowIdx: number) {
-    const row = getRowByRef(rowIdx);
+    const row = rows.get(rowIdx);
     return row && row.props ? row.props.columns : columnMetrics.columns;
   }
 
