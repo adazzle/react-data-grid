@@ -27,8 +27,6 @@ describe('viewportUtils', () => {
 
     it('should use rowHeight to calculate the range', () => {
       expect(getRange({ rowHeight: 50 })).toEqual({
-        rowVisibleStartIdx: 4,
-        rowVisibleEndIdx: 14,
         rowOverscanStartIdx: 2,
         rowOverscanEndIdx: 16
       });
@@ -36,8 +34,6 @@ describe('viewportUtils', () => {
 
     it('should use height to calculate the range', () => {
       expect(getRange({ height: 250 })).toEqual({
-        rowVisibleStartIdx: 4,
-        rowVisibleEndIdx: 9,
         rowOverscanStartIdx: 2,
         rowOverscanEndIdx: 11
       });
@@ -45,8 +41,6 @@ describe('viewportUtils', () => {
 
     it('should use scrollTop to calculate the range', () => {
       expect(getRange({ scrollTop: 500 })).toEqual({
-        rowVisibleStartIdx: 10,
-        rowVisibleEndIdx: 20,
         rowOverscanStartIdx: 8,
         rowOverscanEndIdx: 22
       });
@@ -54,17 +48,13 @@ describe('viewportUtils', () => {
 
     it('should use rowsCount to calculate the range', () => {
       expect(getRange({ rowsCount: 5, scrollTop: 0 })).toEqual({
-        rowVisibleStartIdx: 0,
-        rowVisibleEndIdx: 5,
         rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 5
+        rowOverscanEndIdx: 4
       });
     });
 
     it('should use overscanRowCount to calculate the range', () => {
       expect(getRange({ overscanRowCount: 10 })).toEqual({
-        rowVisibleStartIdx: 4,
-        rowVisibleEndIdx: 14,
         rowOverscanStartIdx: 2,
         rowOverscanEndIdx: 24
       });
@@ -72,8 +62,6 @@ describe('viewportUtils', () => {
 
     it('should use scrollDirection to calculate the range', () => {
       expect(getRange({ overscanRowCount: 10, scrollDirection: SCROLL_DIRECTION.UP })).toEqual({
-        rowVisibleStartIdx: 4,
-        rowVisibleEndIdx: 14,
         rowOverscanStartIdx: 0,
         rowOverscanEndIdx: 16
       });
@@ -85,7 +73,7 @@ describe('viewportUtils', () => {
       const columns = [...Array(500).keys()].map(i => ({ idx: i, key: `col${i}`, name: `col${i}`, width: 100, left: i * 100 }));
       return {
         columns,
-        viewportWidth: 0,
+        viewportWidth: 1000,
         totalColumnWidth: 200,
         columnWidths: new Map(),
         minColumnWidth: 80,
@@ -97,7 +85,6 @@ describe('viewportUtils', () => {
       return getHorizontalRangeToRender({
         columnMetrics: getColumnMetrics(),
         scrollLeft: 200,
-        viewportWidth: 1000,
         scrollDirection: SCROLL_DIRECTION.RIGHT,
         ...overrides
       });
@@ -124,7 +111,13 @@ describe('viewportUtils', () => {
     });
 
     it('should use viewportWidth to calculate the range', () => {
-      expect(getRange({ viewportWidth: 500 })).toEqual({
+      const columnMetrics = getColumnMetrics();
+      columnMetrics.viewportWidth = 500;
+      expect(getHorizontalRangeToRender({
+        columnMetrics,
+        scrollLeft: 200,
+        scrollDirection: SCROLL_DIRECTION.RIGHT
+      })).toEqual({
         colVisibleStartIdx: 2,
         colVisibleEndIdx: 7,
         colOverscanStartIdx: 0,

@@ -2,8 +2,8 @@ import React, { useRef, createElement } from 'react';
 import { isValidElementType } from 'react-is';
 
 import Header, { HeaderHandle, HeaderProps } from './Header';
-import Viewport, { ScrollState } from './Viewport';
-import { HeaderRowData, CellMetaData, InteractionMasksMetaData, ColumnMetrics } from './common/types';
+import Canvas from './Canvas';
+import { HeaderRowData, CellMetaData, InteractionMasksMetaData, ColumnMetrics, ScrollState } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { ReactDataGridProps } from './ReactDataGrid';
 import { EventBus } from './masks';
@@ -47,18 +47,20 @@ export interface GridProps<R> extends SharedDataGridProps<R> {
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
-  onViewportKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
-  onViewportKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onColumnResize(idx: number, width: number): void;
-  viewportWidth: number;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
 export default function Grid<R>({
+  rowGetter,
   rowKey,
+  rowOffsetHeight,
   rowsCount,
+  columnMetrics,
   emptyRowsView,
   headerRows,
-  viewportWidth,
   selectedRows,
   ...props
 }: GridProps<R>) {
@@ -84,11 +86,11 @@ export default function Grid<R>({
           rowKey,
           rowsCount,
           ref: header,
-          rowGetter: props.rowGetter,
-          columnMetrics: props.columnMetrics,
+          rowGetter,
+          columnMetrics,
           onColumnResize: props.onColumnResize,
           headerRows,
-          rowOffsetHeight: props.rowOffsetHeight,
+          rowOffsetHeight,
           sortColumn: props.sortColumn,
           sortDirection: props.sortDirection,
           draggableHeaderCell: props.draggableHeaderCell,
@@ -105,19 +107,18 @@ export default function Grid<R>({
           {createElement(emptyRowsView)}
         </div>
       ) : (
-        <Viewport<R>
+        <Canvas<R>
           rowKey={rowKey}
           rowHeight={props.rowHeight}
           rowRenderer={props.rowRenderer}
-          rowGetter={props.rowGetter}
+          rowGetter={rowGetter}
           rowsCount={rowsCount}
           selectedRows={selectedRows}
-          onSelectedRowsChange={props.onSelectedRowsChange}
-          columnMetrics={props.columnMetrics}
+          onRowSelectionChange={props.onRowSelectionChange}
+          columnMetrics={columnMetrics}
           onScroll={onScroll}
           cellMetaData={props.cellMetaData}
-          rowOffsetHeight={props.rowOffsetHeight}
-          minHeight={props.minHeight}
+          height={props.minHeight - rowOffsetHeight}
           scrollToRowIndex={props.scrollToRowIndex}
           contextMenu={props.contextMenu}
           getSubRowDetails={props.getSubRowDetails}
@@ -132,9 +133,8 @@ export default function Grid<R>({
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
           enableIsScrolling={props.enableIsScrolling}
-          onViewportKeydown={props.onViewportKeydown}
-          onViewportKeyup={props.onViewportKeyup}
-          viewportWidth={viewportWidth}
+          onCanvasKeydown={props.onCanvasKeydown}
+          onCanvasKeyup={props.onCanvasKeyup}
         />
       )}
     </div>

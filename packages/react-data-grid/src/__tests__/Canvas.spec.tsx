@@ -20,16 +20,7 @@ const testProps: CanvasProps<Row> = {
   rowKey: 'row',
   rowHeight: 25,
   height: 200,
-  rowOverscanStartIdx: 1,
-  rowOverscanEndIdx: 10,
-  rowVisibleStartIdx: 0,
-  rowVisibleEndIdx: 10,
-  colVisibleStartIdx: 0,
-  colVisibleEndIdx: 100,
-  colOverscanStartIdx: 0,
-  colOverscanEndIdx: 100,
   rowsCount: 1,
-  columns: [],
   rowGetter() { return {}; },
   cellMetaData: {
     rowKey: 'row',
@@ -45,51 +36,38 @@ const testProps: CanvasProps<Row> = {
     onGridRowsUpdated: noop,
     onDragHandleDoubleClick: noop
   },
-  isScrolling: false,
+  onRowSelectionChange() {},
   enableCellSelect: true,
   enableCellAutoFocus: false,
   cellNavigationMode: CellNavigationMode.NONE,
   eventBus: new EventBus(),
   editorPortalTarget: document.body,
-  width: 1000,
   onScroll() {},
-  lastFrozenColumnIndex: 0,
-  scrollTop: 0,
-  scrollLeft: 0
+  columnMetrics: {
+    columns: [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }],
+    columnWidths: new Map(),
+    lastFrozenColumnIndex: -1,
+    minColumnWidth: 80,
+    totalColumnWidth: 0,
+    viewportWidth: 1000
+  },
+  onCanvasKeydown() {},
+  onCanvasKeyup() {}
 };
 
 function renderComponent(extraProps?: Partial<CanvasProps<Row>>) {
-  return shallow<Canvas<Row>>(<Canvas<Row> {...testProps} {...extraProps} />);
+  return shallow(<Canvas<Row> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas Tests', () => {
-  it('Should not call setScroll on render', () => {
-    const wrapper = renderComponent();
-    const testElementNode = wrapper.instance();
-
-    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => { });
-    expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
-  });
-
-  it('Should not call setScroll on update', () => {
-    const wrapper = renderComponent();
-    const testElementNode = wrapper.instance();
-
-    jest.spyOn(testElementNode, 'setScrollLeft').mockImplementation(() => { });
-    testElementNode.componentDidUpdate(testProps);
-    expect(testElementNode.setScrollLeft).not.toHaveBeenCalled();
-  });
-
   it('Should render the InteractionMasks component', () => {
     const wrapper = renderComponent();
 
     expect(wrapper.find(InteractionMasks).props()).toMatchObject({
       rowHeight: 25,
       rowsCount: 1,
-      rowVisibleStartIdx: 0,
-      rowVisibleEndIdx: 10,
       colVisibleStartIdx: 0,
-      colVisibleEndIdx: 100
+      colVisibleEndIdx: 1
     });
   });
 
@@ -98,9 +76,6 @@ describe('Canvas Tests', () => {
       const rowGetter = () => ({ id: 1 });
 
       const wrapper = renderComponent({
-        rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 1,
-        columns: [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }],
         rowGetter,
         rowsCount: 1,
         rowKey: 'id',

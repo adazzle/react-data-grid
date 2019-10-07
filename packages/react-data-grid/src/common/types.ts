@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
-import { HeaderRowType, UpdateActions } from './enums';
+import { HeaderRowType, UpdateActions, SCROLL_DIRECTION } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -250,6 +250,12 @@ export interface RowRenderer<TRow> {
   getRowTop?(): number;
   getRowHeight?(): number;
   getDecoratedComponentInstance?(idx: number): { row: RowRenderer<TRow> & React.Component<RowRendererProps<TRow>> } | undefined;
+}
+
+export interface ScrollState {
+  scrollTop: number;
+  scrollLeft: number;
+  scrollDirection: SCROLL_DIRECTION;
 }
 
 export interface ScrollPosition {
