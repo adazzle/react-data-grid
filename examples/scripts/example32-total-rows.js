@@ -100,7 +100,7 @@ function Example() {
       cost: 0,
       hours: 0,
       issueCount: 0,
-      selectedRowsCount: selectedRowIndexes.size || 0
+      selectedRowsCount: selectedRowIndexes.size
     };
 
     const totalRow = {
