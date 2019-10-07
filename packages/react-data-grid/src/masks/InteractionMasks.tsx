@@ -1,4 +1,5 @@
 import React, { cloneElement } from 'react';
+import { createPortal } from 'react-dom';
 import { isElement } from 'react-is';
 
 // Components
@@ -672,7 +673,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
   }
 
   render() {
-    const { rowGetter, contextMenu, getRowColumns, scrollLeft, scrollTop } = this.props;
+    const { rowGetter, contextMenu, getRowColumns, scrollLeft, scrollTop, editorPortalTarget } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = rowGetter(selectedPosition.rowIdx);
     const columns = getRowColumns(selectedPosition.rowIdx);
@@ -697,7 +698,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
           ? this.renderSingleCellSelectView()
           : this.renderCellRangeSelectView()}
         {isEditorEnabled && (
-          <EditorPortal target={this.props.editorPortalTarget}>
+          <EditorPortal target={editorPortalTarget}>
             <EditorContainer<R>
               firstEditorKeyPress={firstEditorKeyPress}
               onCommit={this.onCommit}
@@ -713,7 +714,10 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
             />
           </EditorPortal>
         )}
-        {isElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
+        {isElement(contextMenu) && createPortal(
+          cloneElement(contextMenu, { ...selectedPosition }),
+          editorPortalTarget
+        )}
       </div>
     );
   }
