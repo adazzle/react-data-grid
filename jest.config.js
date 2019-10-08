@@ -1,4 +1,4 @@
-'use strict';
+
 
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
@@ -30,7 +30,6 @@ module.exports = {
   ],
   testMatch: [
     '<rootDir>/packages/*/src/**/*.spec.(js|ts|tsx)',
-    '<rootDir>/examples/**/*.spec.(js|ts|tsx)',
     '<rootDir>/tests/**/*.test.(ts|tsx)'
   ]
 };
