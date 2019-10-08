@@ -4,7 +4,7 @@ import { isElement } from 'react-is';
 import { EventTypes, SCROLL_DIRECTION } from './common/enums';
 import { CalculatedColumn, Position, RowData, RowRenderer, RowRendererProps, ScrollState, SubRowDetails } from './common/types';
 import { GridProps } from './Grid';
-import { InteractionMasks } from './masks';
+import InteractionMasks from './masks/InteractionMasks';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { getColumnScrollPosition, getScrollbarSize, isIEOrEdge, isPositionStickySupported } from './utils';
