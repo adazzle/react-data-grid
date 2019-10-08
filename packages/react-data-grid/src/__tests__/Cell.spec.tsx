@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { mount } from 'enzyme';
 
 import Cell, { CellProps } from '../Cell';
-import helpers, { Row } from '../helpers/test/GridPropHelpers';
+import helpers, { Row } from './GridPropHelpers';
 import CellAction from '../Cell/CellAction';
 import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn, CellMetaData } from '../common/types';

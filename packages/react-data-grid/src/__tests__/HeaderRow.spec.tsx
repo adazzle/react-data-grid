@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import helpers, { Row } from '../helpers/test/GridPropHelpers';
+import helpers, { Row } from './GridPropHelpers';
 import HeaderRow, { HeaderRowProps } from '../HeaderRow';
 import HeaderCell from '../HeaderCell';
 import SortableHeaderCell from '../common/cells/headerCells/SortableHeaderCell';

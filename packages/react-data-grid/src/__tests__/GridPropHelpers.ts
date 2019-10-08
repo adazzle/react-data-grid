@@ -1,4 +1,4 @@
-import { CalculatedColumn, CellMetaData } from '../../common/types';
+import { CalculatedColumn, CellMetaData } from '../common/types';
 
 export interface Row {
   id?: number;
