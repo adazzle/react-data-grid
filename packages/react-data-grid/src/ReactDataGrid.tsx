@@ -399,7 +399,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
 
   return (
     <div
-      className="react-grid-Container"
+      className="rdg-root"
       style={style}
       ref={gridRef}
     >

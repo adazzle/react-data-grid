@@ -42,18 +42,6 @@ To install the latest **unstable** version, you can run
 npm install react-data-grid@next
 ```
 
-Themes
-------
-We use [Bootstrap](https://github.com/twbs/bootstrap). If you want your Grid to get the "default" styling like the picture above, you'll need to include it separately.
-
-```sh
-npm install bootstrap
-```
-and then import the css from the dist folder when bootstrapping your application
-```js
-import 'bootstrap/dist/css/bootstrap.css';
-```
-
 Migrations
 --------
 If you intend to do a major release update for you react-data-grid check [the migration documents](migrations).
