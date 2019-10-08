@@ -59,14 +59,16 @@ export default class extends React.Component {
 
   render() {
     return (
-      <ReactDataGrid
-        contextMenu={<MyContextMenu id="customizedContextMenu" onRowDelete={this.deleteRow} onRowInsertAbove={this.insertRowAbove} onRowInsertBelow={this.insertRowBelow} />}
-        columns={this._columns}
-        rowGetter={this.rowGetter}
-        rowsCount={this.state.rows.length}
-        minHeight={500}
-        RowsContainer={ContextMenuTrigger}
-      />
+      <Wrapper title="Context Menu Example">
+        <ReactDataGrid
+          contextMenu={<MyContextMenu id="customizedContextMenu" onRowDelete={this.deleteRow} onRowInsertAbove={this.insertRowAbove} onRowInsertBelow={this.insertRowBelow} />}
+          columns={this._columns}
+          rowGetter={this.rowGetter}
+          rowsCount={this.state.rows.length}
+          minHeight={500}
+          RowsContainer={ContextMenuTrigger}
+        />
+      </Wrapper>
     );
   }
 }
@@ -105,15 +107,13 @@ class MyContextMenu extends React.Component {
     const { idx, id, rowIdx } = this.props;
 
     return (
-      <Wrapper title="Context Menu Example">
-        <ContextMenu id={id}>
-          <MenuItem data={{ rowIdx, idx }} onClick={this.onRowDelete}>Delete Row</MenuItem>
-          <SubMenu title="Insert Row">
-            <MenuItem data={{ rowIdx, idx }} onClick={this.onRowInsertAbove}>Above</MenuItem>
-            <MenuItem data={{ rowIdx, idx }} onClick={this.onRowInsertBelow}>Below</MenuItem>
-          </SubMenu>
-        </ContextMenu>
-      </Wrapper>
+      <ContextMenu id={id}>
+        <MenuItem data={{ rowIdx, idx }} onClick={this.onRowDelete}>Delete Row</MenuItem>
+        <SubMenu title="Insert Row">
+          <MenuItem data={{ rowIdx, idx }} onClick={this.onRowInsertAbove}>Above</MenuItem>
+          <MenuItem data={{ rowIdx, idx }} onClick={this.onRowInsertBelow}>Below</MenuItem>
+        </SubMenu>
+      </ContextMenu>
     );
   }
 }
