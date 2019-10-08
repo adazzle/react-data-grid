@@ -1,5 +1,5 @@
 import { createColumns } from '../../__tests__/utils';
-import { getColumnScrollPosition } from '../canvasUtils';
+import { getColumnScrollPosition } from '../columnUtils';
 
 describe('canvasUtils', () => {
   describe('When canvas is scrolled left', () => {

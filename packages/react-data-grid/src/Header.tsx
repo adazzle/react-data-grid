@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import classNames from 'classnames';
 
 import HeaderRow from './HeaderRow';
-import { getColumnMetrics } from './ColumnMetrics';
+import { getColumnMetrics } from './utils/columnUtils';
 import { getScrollbarSize } from './utils';
 import { CalculatedColumn, HeaderRowData } from './common/types';
 import { CanvasProps } from './Canvas';

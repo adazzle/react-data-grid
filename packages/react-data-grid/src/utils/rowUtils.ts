@@ -1,4 +1,4 @@
-import { RowData } from './common/types';
+import { RowData } from '../common/types';
 
 export function get<R>(row: R, property: keyof R) {
   if (typeof (row as RowData).get === 'function') {

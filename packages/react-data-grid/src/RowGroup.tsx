@@ -1,7 +1,7 @@
 import React from 'react';
 import { EventTypes } from './common/enums';
 import { CellMetaData, RowRendererProps, CalculatedColumn } from './common/types';
-import EventBus from './masks/EventBus';
+import EventBus from './EventBus';
 
 interface Props<R> {
   height: number;

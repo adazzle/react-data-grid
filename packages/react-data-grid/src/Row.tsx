@@ -2,8 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 
 import Cell from './Cell';
-import { isFrozen } from './ColumnUtils';
-import * as rowUtils from './RowUtils';
+import { isFrozen } from './utils/columnUtils';
+import * as rowUtils from './utils/rowUtils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
 export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer {

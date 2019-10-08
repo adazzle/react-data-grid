@@ -3,7 +3,8 @@ import { isValidElementType } from 'react-is';
 
 import Header from './Header';
 import ActualRow from './ActualRow';
-import { InteractionMasks, EventBus } from './masks';
+import InteractionMasks from './masks/InteractionMasks';
+import EventBus from './EventBus';
 import { getColumnScrollPosition, getScrollbarSize } from './utils';
 import { EventTypes, SCROLL_DIRECTION } from './common/enums';
 import { CalculatedColumn, Position, CellMetaData, ColumnMetrics, HeaderRowData, InteractionMasksMetaData } from './common/types';

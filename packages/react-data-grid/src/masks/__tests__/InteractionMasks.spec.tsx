@@ -1,16 +1,15 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 
-import InteractionMasks, { InteractionMasksProps, InteractionMasksState } from '../InteractionMasks';
+import InteractionMasks, { InteractionMasksProps, InteractionMasksState, KeyCodes } from '../InteractionMasks';
 import SelectionMask from '../SelectionMask';
 import SelectionRangeMask from '../SelectionRangeMask';
 import CopyMask from '../CopyMask';
 import DragMask from '../DragMask';
 import DragHandle from '../DragHandle';
-import EventBus from '../EventBus';
+import EventBus from '../../EventBus';
 import EditorContainer from '../../common/editors/EditorContainer';
 import { sel, createColumns } from '../../__tests__/utils';
-import keyCodes from '../../KeyCodes';
 import { CellNavigationMode, EventTypes, UpdateActions } from '../../common/enums';
 import { Position } from '../../common/types';
 
@@ -78,7 +77,7 @@ describe('<InteractionMasks/>', () => {
   };
 
   const simulateTab = (wrapper: ReturnType<typeof setup>['wrapper'], shiftKey = false, preventDefault = () => { }) => {
-    pressKey(wrapper, 'Tab', { keyCode: keyCodes.Tab, shiftKey, preventDefault });
+    pressKey(wrapper, 'Tab', { keyCode: KeyCodes.Tab, shiftKey, preventDefault });
   };
 
   describe('Rendered masks', () => {
@@ -433,7 +432,7 @@ describe('<InteractionMasks/>', () => {
   describe('Keyboard navigation functionality', () => {
     it('Press enter should enable editing', () => {
       const { wrapper } = setup({}, { selectedPosition: { idx: 0, rowIdx: 0 } });
-      pressKey(wrapper, 'Enter', { keyCode: keyCodes.Enter });
+      pressKey(wrapper, 'Enter', { keyCode: KeyCodes.Enter });
       expect(wrapper.find(EditorContainer).length).toBe(1);
     });
 
@@ -469,14 +468,14 @@ describe('<InteractionMasks/>', () => {
       it('Press tab should move right', () => {
         const currentCell = { idx: 0, rowIdx: 0 };
         const { wrapper } = setup({}, { selectedPosition: currentCell });
-        pressKey(wrapper, 'Tab', { keyCode: keyCodes.Tab });
+        pressKey(wrapper, 'Tab', { keyCode: KeyCodes.Tab });
         expect(wrapper.state().selectedPosition).toMatchObject({ idx: 1, rowIdx: 0 });
       });
 
       it('Press shiftKey + tab should move left', () => {
         const currentCell = { idx: 1, rowIdx: 0 };
         const { wrapper } = setup({}, { selectedPosition: currentCell });
-        pressKey(wrapper, 'Tab', { keyCode: keyCodes.Tab, shiftKey: true });
+        pressKey(wrapper, 'Tab', { keyCode: KeyCodes.Tab, shiftKey: true });
         expect(wrapper.state().selectedPosition).toMatchObject({ idx: 0, rowIdx: 0 });
       });
     });
@@ -712,25 +711,25 @@ describe('<InteractionMasks/>', () => {
 
     it('should render a CopyMask component when a cell is copied', () => {
       const { wrapper } = setupCopy();
-      pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
+      pressKey(wrapper, 'c', { keyCode: KeyCodes.c, ctrlKey: true });
       expect(wrapper.find(CopyMask).props()).toEqual({ height: 50, left: 100, top: 0, width: 100, zIndex: 1 });
     });
 
     it('should remove the CopyMask component on escape', () => {
       const { wrapper } = setupCopy();
-      pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
-      pressKey(wrapper, 'Escape', { keyCode: keyCodes.Escape });
+      pressKey(wrapper, 'c', { keyCode: KeyCodes.c, ctrlKey: true });
+      pressKey(wrapper, 'Escape', { keyCode: KeyCodes.Escape });
       expect(wrapper.find(CopyMask).length).toBe(0);
     });
 
     it('should update the selected cell with the copied value on paste', () => {
       const { wrapper, props } = setupCopy();
       // Copy selected cell
-      pressKey(wrapper, 'c', { keyCode: keyCodes.c, ctrlKey: true });
+      pressKey(wrapper, 'c', { keyCode: KeyCodes.c, ctrlKey: true });
       // Move up
       pressKey(wrapper, 'ArrowUp');
       // Paste copied cell
-      pressKey(wrapper, 'v', { keyCode: keyCodes.v, ctrlKey: true });
+      pressKey(wrapper, 'v', { keyCode: KeyCodes.v, ctrlKey: true });
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 1, 1, { Column1: '3' }, UpdateActions.COPY_PASTE, 2);
     });

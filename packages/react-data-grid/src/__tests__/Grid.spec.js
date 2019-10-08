@@ -3,7 +3,7 @@ import { ContextMenu } from 'react-contextmenu';
 import { shallow } from 'enzyme';
 
 import Grid from '../Grid';
-import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
+import helpers, { fakeCellMetaData } from './GridPropHelpers';
 
 describe('Empty Grid Tests', () => {
   class EmptyRowsView extends React.Component {
