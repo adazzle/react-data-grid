@@ -30,7 +30,7 @@ import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
 import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
-enum KeyCodes {
+export enum KeyCodes {
   Backspace = 8,
   Tab = 9,
   Enter = 13,
