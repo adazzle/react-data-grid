@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import ReactDataGrid, { SelectColumn } from 'react-data-grid';
-import exampleWrapper from '../components/exampleWrapper';
+import Wrapper from './Wrapper';
 
 function DecimalFormatter({ value, isSummaryRow, maximumFractionDigits }) {
   const text = value.toLocaleString('en-US', maximumFractionDigits == null ? { maximumFractionDigits: 2 } : { maximumFractionDigits: 0 });
@@ -82,7 +82,7 @@ function getRandomDate(start, end) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
 }
 
-function Example() {
+export default function Example() {
   const [selectedRowIndexes, setSelectedRowIndexes] = useState(new Set([]));
 
   const rows = useMemo(() => {
@@ -139,7 +139,7 @@ function Example() {
   const rowGetter = useCallback((i) => rows[i], [rows]);
 
   return (
-    <>
+    <Wrapper title="Summary rows">
       <ReactDataGrid
         rowKey="id"
         columns={columns}
@@ -163,16 +163,6 @@ function Example() {
       >
         <div>This is just a plain customized footer which renders next to the canvas. This area can potentially be used for pagination for example.</div>
       </div>
-    </>
+    </Wrapper>
   );
 }
-
-const exampleDescription = <></>;
-
-export default exampleWrapper({
-  WrappedComponent: Example,
-  exampleName: 'Total row(s) Example',
-  exampleDescription,
-  examplePath: './scripts/example32-total-rows.js',
-  examplePlaygroundLink: 'https://jsfiddle.net/k7tfnw1n/5/'
-});
