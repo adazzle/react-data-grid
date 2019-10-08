@@ -1,13 +1,4 @@
-import Immutable from 'immutable';
 import { Column, CalculatedColumn } from '../common/types';
-
-export function getSize<T>(columns: T[] | Immutable.List<T>): number {
-  if (Array.isArray(columns)) {
-    return columns.length;
-  }
-
-  return columns.size;
-}
 
 // Logic extented to allow for functions to be passed down in column.editable
 // this allows us to deicde whether we can be editing from a cell level
