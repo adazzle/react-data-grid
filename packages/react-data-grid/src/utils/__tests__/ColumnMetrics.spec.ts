@@ -1,5 +1,5 @@
-import { getColumnMetrics } from '../ColumnMetrics';
-import { Column } from '../common/types';
+import { getColumnMetrics } from '../ColumnUtils';
+import { Column } from '../../common/types';
 
 interface Row {
   id?: number;
