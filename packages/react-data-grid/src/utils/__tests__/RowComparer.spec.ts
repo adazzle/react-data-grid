@@ -1,5 +1,5 @@
 import shouldRowUpdate from '../RowComparer';
-import { CalculatedColumn, RowRendererProps } from '../../types';
+import { CalculatedColumn, RowRendererProps } from '../../common/types';
 
 interface Row {
   col1?: string;

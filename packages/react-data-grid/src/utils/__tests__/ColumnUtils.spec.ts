@@ -1,5 +1,5 @@
 import { canEdit } from '../ColumnUtils';
-import { CalculatedColumn, Omit } from '../common/types';
+import { CalculatedColumn, Omit } from '../../common/types';
 
 interface Row {
   PlacementType?: string;

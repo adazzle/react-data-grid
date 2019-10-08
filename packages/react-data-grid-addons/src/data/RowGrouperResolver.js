@@ -1,7 +1,5 @@
-import { _utils } from 'react-data-grid';
 import groupBy from 'lodash/groupBy';
-
-const { isImmutableMap, getMixedTypeValueRetriever } = _utils;
+import { isImmutableMap, getMixedTypeValueRetriever } from '../utils';
 
 export default class RowGrouperResolver {
   constructor(isImmutable) {

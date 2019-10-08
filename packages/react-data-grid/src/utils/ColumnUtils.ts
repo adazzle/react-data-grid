@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { Column, CalculatedColumn } from './common/types';
+import { Column, CalculatedColumn } from '../common/types';
 
 export function getSize<T>(columns: T[] | Immutable.List<T>): number {
   if (Array.isArray(columns)) {

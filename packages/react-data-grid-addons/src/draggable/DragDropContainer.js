@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { _utils } from 'react-data-grid';
 
 import html5DragDropContext from '../shared/html5DragDropContext';
 import DraggableHeaderCell from './DraggableHeaderCell';
 import RowDragLayer from './RowDragLayer';
-
-const { isColumnsImmutable } = _utils;
+import { isColumnsImmutable } from '../utils';
 
 class DraggableContainer extends Component {
   static propTypes = {

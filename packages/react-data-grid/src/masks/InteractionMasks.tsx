@@ -12,7 +12,7 @@ import EditorContainer from '../common/editors/EditorContainer';
 import EditorPortal from '../common/editors/EditorPortal';
 
 // Utils
-import { isKeyPrintable, isCtrlKeyHeldDown } from '../common/utils/keyboardUtils';
+import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 import {
   getSelectedDimensions,
   getSelectedCellValue,
@@ -23,7 +23,7 @@ import {
   selectedRangeIsSingleCell,
   NextSelectedCellPosition
 } from '../utils/SelectedCellUtils';
-import { isFrozen } from '../ColumnUtils';
+import { isFrozen } from '../utils/ColumnUtils';
 import keyCodes from '../KeyCodes';
 
 // Types

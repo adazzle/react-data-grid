@@ -1,4 +1,4 @@
-import { RowRendererProps } from '../types';
+import { RowRendererProps } from '../common/types';
 
 export default function shouldRowUpdate<R>(nextProps: RowRendererProps<R>, currentProps: RowRendererProps<R>) {
   return currentProps.columns !== nextProps.columns
