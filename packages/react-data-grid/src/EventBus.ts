@@ -1,4 +1,4 @@
-import { Position } from '../common/types';
+import { Position } from './common/types';
 
 interface EventMap {
   SELECT_CELL(cell: Position, openEditor?: boolean): void;

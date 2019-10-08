@@ -6,7 +6,7 @@ import Canvas from './Canvas';
 import { HeaderRowData, CellMetaData, InteractionMasksMetaData, ColumnMetrics, ScrollState } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { ReactDataGridProps } from './ReactDataGrid';
-import { EventBus } from './masks';
+import EventBus from './EventBus';
 
 type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'draggableHeaderCell'

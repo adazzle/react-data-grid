@@ -1,5 +1,5 @@
 import EventBus from '../EventBus';
-import { EventTypes } from '../../common/enums';
+import { EventTypes } from '../common/enums';
 
 describe('EventBus', () => {
   it('should call registered event handlers when event is dispatched', () => {

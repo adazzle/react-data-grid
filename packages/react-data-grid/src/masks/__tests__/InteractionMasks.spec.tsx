@@ -7,7 +7,7 @@ import SelectionRangeMask from '../SelectionRangeMask';
 import CopyMask from '../CopyMask';
 import DragMask from '../DragMask';
 import DragHandle from '../DragHandle';
-import EventBus from '../EventBus';
+import EventBus from '../../EventBus';
 import EditorContainer from '../../common/editors/EditorContainer';
 import { sel, createColumns } from '../../__tests__/utils';
 import keyCodes from '../../KeyCodes';
