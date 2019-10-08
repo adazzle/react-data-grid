@@ -131,6 +131,7 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
   isScrolling?: boolean;
   dependentValues?: TDependentValue;
+  isSummaryRow?: boolean;
 }
 
 export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {

@@ -155,7 +155,6 @@ export default function Example() {
           padding: '0 20px',
           lineHeight: '35px',
           textAlign: 'right',
-          width: '100%',
           background: '#eee',
           border: '1px solid #ddd',
           borderTop: 'none'
