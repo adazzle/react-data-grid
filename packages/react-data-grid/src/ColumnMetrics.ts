@@ -1,4 +1,3 @@
-export { sameColumn } from './ColumnComparer';
 import { isFrozen } from './utils/ColumnUtils';
 import { getScrollbarSize } from './utils';
 import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/types';

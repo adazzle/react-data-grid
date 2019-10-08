@@ -1,4 +1,4 @@
-const keyCodes = {
+export default {
   Backspace: 8,
   Tab: 9,
   Enter: 13,
@@ -97,5 +97,3 @@ const keyCodes = {
   CloseBracket: 221,
   SingleQuote: 222
 } as const;
-
-export default keyCodes;
