@@ -46,7 +46,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   getCell(column: CalculatedColumn<R>) {
     const Renderer = this.props.cellRenderer!;
-    const { idx, cellMetaData, isScrolling, row, lastFrozenColumnIndex, scrollLeft, isRowSelected, onRowSelectionChange, isBottomPinned } = this.props;
+    const { idx, cellMetaData, isScrolling, row, lastFrozenColumnIndex, scrollLeft, isRowSelected, onRowSelectionChange, isSummaryRow } = this.props;
     const { key } = column;
 
     const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
@@ -58,13 +58,13 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       cellMetaData,
       value: this.getCellValue(key || String(column.idx) as keyof R) as R[keyof R], // FIXME: fix types
       rowData: row,
-      expandableOptions: this.getExpandableOptions(key),
+      expandableOptions: isSummaryRow ? undefined : this.getExpandableOptions(key),
       isScrolling,
       scrollLeft,
       lastFrozenColumnIndex,
       isRowSelected,
       onRowSelectionChange,
-      isBottomPinned
+      isSummaryRow
     };
 
     return <Renderer key={`${key as keyof R}-${idx}`} {...cellProps} />; // FIXME: fix key type
@@ -121,22 +121,26 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   }
 
   render() {
+    const { idx, isRowSelected, extraClasses, isScrolling, isSummaryRow } = this.props;
     const className = classNames(
       'react-grid-Row',
-      `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
-      { 'row-selected': this.props.isRowSelected },
-      this.props.extraClasses,
-      { 'rdg-scrolling': this.props.isScrolling }
+      `react-grid-Row--${idx % 2 === 0 ? 'even' : 'odd'}`,
+      { 'row-selected': isRowSelected, 'rdg-scrolling': isScrolling },
+      extraClasses
     );
+
+    const events = !isSummaryRow && {
+      onDragEnter: this.handleDragEnter,
+      onDragOver: this.handleDragOver,
+      onDrop: this.handleDrop
+    };
 
     return (
       <div
         ref={this.row}
         className={className}
         style={{ height: this.getRowHeight() }}
-        onDragEnter={this.handleDragEnter}
-        onDragOver={this.handleDragOver}
-        onDrop={this.handleDrop}
+        {...events}
       >
         {this.getCells()}
       </div>

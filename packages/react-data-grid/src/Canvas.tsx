@@ -41,7 +41,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 export interface CanvasProps<R> extends SharedGridProps<R> {
   height: number;
   onScroll(position: ScrollState): void;
-  pinnedRows?: R[];
+  summaryRows?: R[];
 }
 
 interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
@@ -58,7 +58,7 @@ interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowS
   isScrolling: boolean;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  isBottomPinned?: boolean;
+  isSummaryRow?: boolean;
 }
 
 export default function Canvas<R>({
@@ -89,7 +89,7 @@ export default function Canvas<R>({
   rowsCount,
   scrollToRowIndex,
   selectedRows,
-  pinnedRows
+  summaryRows
 }: CanvasProps<R>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -222,24 +222,44 @@ export default function Canvas<R>({
     return rows;
   }
 
-  function getPinnedRows() {
-    if (!pinnedRows) {
+  function getSummaryRows() {
+    if (!summaryRows) {
       return [];
     }
 
-    return pinnedRows.map((row, idx) => renderRow(row, rowsCount + 1 + idx));
+    return summaryRows.map((row, idx) => renderSummaryRow(row, rowsCount + 1 + idx));
+  }
+
+  function renderSummaryRow(row: R, idx: number) {
+    const rendererProps: RendererProps<R> = {
+      key: idx,
+      ref: getRowRef(row, idx),
+      idx,
+      row,
+      height: rowHeight,
+      columns: columnMetrics.columns,
+      isRowSelected: false,
+      onRowSelectionChange,
+      cellMetaData,
+      colOverscanStartIdx,
+      colOverscanEndIdx,
+      lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
+      isScrolling,
+      scrollLeft,
+      isSummaryRow: summaryRows && summaryRows.includes(row)
+    };
+
+    if (rowRenderer) {
+      return renderCustomRowRenderer(rendererProps);
+    }
+
+    return <Row<R> {...rendererProps} />;
   }
 
   function renderRow(row: R, idx: number) {
     const rendererProps: RendererProps<R> = {
       key: idx,
-      ref(row) {
-        if (row) {
-          rows.set(idx, row);
-        } else {
-          rows.delete(idx);
-        }
-      },
+      ref: getRowRef(row, idx),
       idx,
       row,
       height: rowHeight,
@@ -253,7 +273,7 @@ export default function Canvas<R>({
       lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
       isScrolling,
       scrollLeft,
-      isBottomPinned: pinnedRows && pinnedRows.includes(row)
+      isSummaryRow: summaryRows && summaryRows.includes(row)
     };
     const { __metaData } = row as RowData;
 
@@ -271,6 +291,16 @@ export default function Canvas<R>({
     }
 
     return <Row<R> {...rendererProps} />;
+  }
+
+  function getRowRef(row: R, idx: number) {
+    return (rowRef: RowRenderer<R> & React.Component<RowRendererProps<R>>) => {
+      if (row) {
+        rows.set(idx, rowRef);
+      } else {
+        rows.delete(idx);
+      }
+    };
   }
 
   function isRowSelected(row: R): boolean {
@@ -355,19 +385,19 @@ export default function Canvas<R>({
     );
   }
 
-  const pinnedRowsHeight = isIEOrEdge && pinnedRows ? pinnedRows.length * rowHeight : 0;
-  const paddingTop = rowOverscanStartIdx > 0 ? rowOverscanStartIdx * rowHeight : 0;
-  const paddingBottom = rowsCount - rowOverscanEndIdx > 0 ? (rowsCount - 1 - rowOverscanEndIdx) * rowHeight + pinnedRowsHeight : pinnedRowsHeight;
+  const summaryRowsHeight = isIEOrEdge && summaryRows ? summaryRows.length * rowHeight : 0;
+  const paddingTop = rowOverscanStartIdx * rowHeight;
+  const paddingBottom = rowsCount - rowOverscanEndIdx > 0 ? (rowsCount - 1 - rowOverscanEndIdx) * rowHeight + summaryRowsHeight : summaryRowsHeight;
   const { totalColumnWidth: width } = columnMetrics;
 
   // Set minHeight to show horizontal scrollbar when there are no rows
   const scrollableRowsWrapperStyle: React.CSSProperties = { width, paddingTop, paddingBottom };
-  const pinnedRowsWrapperStyle: React.CSSProperties = { width };
+  const summaryRowsWrapperStyle: React.CSSProperties = { width };
   let ieStickyWrapperStyle: React.CSSProperties | undefined;
 
   if (isIEOrEdge) {
-    pinnedRowsWrapperStyle.position = 'absolute';
-    pinnedRowsWrapperStyle.bottom = 0;
+    summaryRowsWrapperStyle.position = 'absolute';
+    summaryRowsWrapperStyle.bottom = 0;
 
     ieStickyWrapperStyle = {
       position: 'absolute',
@@ -417,10 +447,10 @@ export default function Canvas<R>({
           {getRows()}
         </div>
       </RowsContainer>
-      {pinnedRows && pinnedRows.length && (
+      {summaryRows && summaryRows.length && (
         <div className="rdg-bottom-pinned-rows-sticky-wrapper" style={ieStickyWrapperStyle}>
-          <div className="rdg-bottom-pinned-rows" style={pinnedRowsWrapperStyle}>
-            {getPinnedRows()}
+          <div className="rdg-bottom-pinned-rows" style={summaryRowsWrapperStyle}>
+            {getSummaryRows()}
           </div>
         </div>
       )}

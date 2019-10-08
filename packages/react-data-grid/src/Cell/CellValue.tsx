@@ -12,10 +12,10 @@ type CellValueProps<R> = Pick<CellContentProps<R>,
 | 'isScrolling'
 | 'isRowSelected'
 | 'onRowSelectionChange'
-| 'isBottomPinned'
+| 'isSummaryRow'
 >;
 
-export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolling, isRowSelected, onRowSelectionChange, isBottomPinned }: CellValueProps<R>) {
+export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolling, isRowSelected, onRowSelectionChange, isSummaryRow }: CellValueProps<R>) {
   function getFormatterDependencies(row: R) {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
@@ -38,7 +38,7 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
       isRowSelected,
       onRowSelectionChange,
       dependentValues: getFormatterDependencies(rowData),
-      isBottomPinned
+      isSummaryRow
     };
   }
 

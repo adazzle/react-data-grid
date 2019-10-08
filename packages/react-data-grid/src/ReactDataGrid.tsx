@@ -154,11 +154,10 @@ export interface ReactDataGridProps<R extends {}> {
    */
   enableIsScrolling?: boolean;
   /**
-   * Rows to be pinned at the bottom of the rows view, the vertical scroll bar will not scroll these rows.
-   * The rows can be used as total rows to display some summary information.
+   * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  pinnedRows?: R[];
+  summaryRows?: R[];
 }
 
 export interface ReactDataGridHandle {
@@ -191,7 +190,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   cellRangeSelection,
   selectedRows,
   onSelectedRowsChange,
-  pinnedRows,
+  summaryRows,
   ...props
 }: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
@@ -450,7 +449,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
           enableIsScrolling={props.enableIsScrolling}
-          pinnedRows={pinnedRows}
+          summaryRows={summaryRows}
         />
       )}
     </div>

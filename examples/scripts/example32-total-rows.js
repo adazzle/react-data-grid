@@ -2,6 +2,23 @@ import React, { useCallback, useMemo, useState } from 'react';
 import ReactDataGrid, { SelectColumn } from 'react-data-grid';
 import exampleWrapper from '../components/exampleWrapper';
 
+function DecimalFormatter({ value, isSummaryRow, maximumFractionDigits }) {
+  const text = value.toLocaleString('en-US', maximumFractionDigits == null ? { maximumFractionDigits: 2 } : { maximumFractionDigits: 0 });
+  return isSummaryRow ? <strong>{text}</strong> : <div>{text}</div>;
+}
+
+function IntegerFormatter(props) {
+  return <DecimalFormatter {...props} maximumFractionDigits={0} />;
+}
+
+function TitleFormatter({ value, row: { selectedRowsCount }, isSummaryRow }) {
+  if (isSummaryRow) {
+    return <strong>{ selectedRowsCount >= 0 ? `${selectedRowsCount} row${selectedRowsCount > 1 ? 's' : ''} selected` : 'Total'}</strong>;
+  }
+
+  return <div>{value}</div>;
+}
+
 const columns = [
   SelectColumn,
   {
@@ -14,13 +31,7 @@ const columns = [
     name: 'Title',
     width: 200,
     frozen: true,
-    formatter({ value, row: { selectedRowsCount }, isBottomPinned }) {
-      if (isBottomPinned) {
-        return <strong>{ selectedRowsCount >= 0 ? `${selectedRowsCount} row${selectedRowsCount > 1 ? 's' : ''} selected` : 'Total'}</strong>;
-      }
-
-      return <div>{value}</div>;
-    }
+    formatter: TitleFormatter
   },
   {
     key: 'priority',
@@ -51,19 +62,19 @@ const columns = [
     key: 'cost',
     name: 'Resource cost (USD)',
     width: 200,
-    formatter: ({ value }) => <div>{ value.toLocaleString('en-US') }</div>
+    formatter: DecimalFormatter
   },
   {
     key: 'hours',
     name: '# of working hours',
     width: 200,
-    formatter: ({ value }) => <div>{ value.toLocaleString('en-US', { maximumFractionDigits: 0 }) }</div>
+    formatter: IntegerFormatter
   },
   {
     key: 'issueCount',
     name: '# of issues',
     width: 200,
-    formatter: ({ value }) => <div>{ value.toLocaleString('en-US', { maximumFractionDigits: 0 }) }</div>
+    formatter: IntegerFormatter
   }
 ];
 
@@ -95,7 +106,7 @@ function Example() {
     return rows;
   }, []);
 
-  const pinnedRows = useMemo(() => {
+  const summaryRows = useMemo(() => {
     const selectedTotalRow = {
       cost: 0,
       hours: 0,
@@ -133,7 +144,7 @@ function Example() {
         rowKey="id"
         columns={columns}
         rowGetter={rowGetter}
-        pinnedRows={pinnedRows}
+        summaryRows={summaryRows}
         rowsCount={rows.length}
         minHeight={700}
         selectedRows={selectedRowIndexes}

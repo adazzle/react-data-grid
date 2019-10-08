@@ -5,9 +5,10 @@ import shallowEqual from 'shallowequal';
 import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
-import CellContent from './Cell/CellContent';
 import { isFrozen } from './ColumnUtils';
 import { isPositionStickySupported } from './utils';
+import CellValue from './Cell/CellValue';
+import ChildRowDeleteButton from './ChildRowDeleteButton';
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
@@ -159,32 +160,96 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     return allEvents;
   }
 
+  handleDeleteSubRow = (): void => {
+    const { idx, rowIdx, expandableOptions, cellMetaData, rowData } = this.props;
+
+    const { onDeleteSubRow } = cellMetaData;
+
+    if (onDeleteSubRow) {
+      onDeleteSubRow({
+        idx,
+        rowIdx,
+        rowData,
+        expandArgs: expandableOptions
+      });
+    }
+  }
+
   render() {
-    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isScrolling, isBottomPinned } = this.props;
+    const { rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isScrolling, isSummaryRow } = this.props;
     if (column.hidden) {
       return null;
     }
 
     const style = this.getStyle();
-    const className = this.getCellClass();
-    const cellContent = children || (
-      <CellContent<R>
-        idx={idx}
-        rowIdx={rowIdx}
-        column={column}
-        rowData={rowData}
-        value={value}
-        tooltip={tooltip}
-        expandableOptions={expandableOptions}
-        height={height}
-        onDeleteSubRow={cellMetaData.onDeleteSubRow}
-        cellControls={cellControls}
-        isScrolling={isScrolling}
-        isRowSelected={this.props.isRowSelected}
-        onRowSelectionChange={this.props.onRowSelectionChange}
-        isBottomPinned={isBottomPinned}
+    const cellClassName = this.getCellClass();
+    const cellValueClassName = classNames('react-grid-Cell__value', { 'cell-tooltip': !!tooltip });
+
+    if (isSummaryRow) {
+      return (
+        <div
+          ref={this.cell}
+          className={cellClassName}
+          style={style}
+        >
+          <div className={cellValueClassName}>
+            <div className="react-grid-Cell__container">
+              <span>
+                <CellValue<R>
+                  rowIdx={rowIdx}
+                  rowData={rowData}
+                  column={column}
+                  value={value}
+                  isScrolling={isScrolling}
+                  isRowSelected={this.props.isRowSelected}
+                  onRowSelectionChange={this.props.onRowSelectionChange}
+                  isSummaryRow={isSummaryRow}
+                />
+              </span>
+            </div>
+            {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
+          </div>
+        </div>
+      );
+    }
+
+    const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
+    const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
+    const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
+
+    const { onDeleteSubRow } = cellMetaData;
+
+    const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
+      <ChildRowDeleteButton
+        treeDepth={treeDepth}
+        cellHeight={height}
+        onDeleteSubRow={this.handleDeleteSubRow}
+        isDeleteSubRowEnabled={!!onDeleteSubRow}
       />
     );
+
+    const cellContent = children || (
+      <div className={cellValueClassName}>
+        {cellDeleter}
+        <div className="react-grid-Cell__container" style={{ marginLeft }}>
+          <span>
+            <CellValue<R>
+              rowIdx={rowIdx}
+              rowData={rowData}
+              column={column}
+              value={value}
+              isScrolling={isScrolling}
+              isRowSelected={this.props.isRowSelected}
+              onRowSelectionChange={this.props.onRowSelectionChange}
+              isSummaryRow={isSummaryRow}
+            />
+          </span>
+          {cellControls}
+        </div>
+        {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
+      </div>
+    );
+
     const events = this.getEvents();
     const cellExpander = expandableOptions && expandableOptions.canExpand && (
       <CellExpand
@@ -196,7 +261,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     return (
       <div
         ref={this.cell}
-        className={className}
+        className={cellClassName}
         style={style}
         {...events}
       >
