@@ -1,6 +1,6 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
-import * as rowUtils from '../RowUtils';
-import { isFrozen, canEdit } from '../ColumnUtils';
+import * as rowUtils from './rowUtils';
+import { isFrozen, canEdit } from './columnUtils';
 import { CalculatedColumn, Position, Range, Dimension, RowGetter } from '../common/types';
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;

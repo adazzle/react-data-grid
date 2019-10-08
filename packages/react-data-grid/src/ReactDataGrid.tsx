@@ -9,8 +9,8 @@ import React, {
 } from 'react';
 
 import Grid from './Grid';
-import { getColumnMetrics } from './ColumnMetrics';
-import { EventBus } from './masks';
+import { getColumnMetrics } from './utils/columnUtils';
+import EventBus from './EventBus';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import {
   AddFilterEvent,

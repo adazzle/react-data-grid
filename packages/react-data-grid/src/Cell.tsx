@@ -6,7 +6,7 @@ import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from 
 import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
-import { isFrozen } from './ColumnUtils';
+import { isFrozen } from './utils/columnUtils';
 import { isPositionStickySupported } from './utils';
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {

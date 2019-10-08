@@ -1,7 +1,5 @@
-export { sameColumn } from './ColumnComparer';
-import { isFrozen } from './ColumnUtils';
-import { getScrollbarSize } from './utils';
-import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from './common/types';
+import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from '../common/types';
+import { getScrollbarSize } from './domUtils';
 
 type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'minColumnWidth' | 'columnWidths'> & {
   columns: ColumnList<R>;
@@ -85,4 +83,49 @@ function setRemainingWidths<R>(
   for (const column of unassignedColumns) {
     column.width = columnWidth;
   }
+}
+
+// Logic extented to allow for functions to be passed down in column.editable
+// this allows us to deicde whether we can be editing from a cell level
+export function canEdit<R>(column: CalculatedColumn<R>, rowData: R, enableCellSelect?: boolean): boolean {
+  if (typeof column.editable === 'function') {
+    return enableCellSelect === true && column.editable(rowData);
+  }
+  return enableCellSelect === true && (!!column.editor || !!column.editable);
+}
+
+export function isFrozen<R>(column: Column<R> | CalculatedColumn<R>): boolean {
+  return column.frozen === true;
+}
+
+export function getColumnScrollPosition<R>(columns: CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
+  let left = 0;
+  let frozen = 0;
+
+  for (let i = 0; i < idx; i++) {
+    const column = columns[i];
+    if (column) {
+      if (column.width) {
+        left += column.width;
+      }
+      if (isFrozen(column)) {
+        frozen += column.width;
+      }
+    }
+  }
+
+  const selectedColumn = columns[idx];
+  if (selectedColumn) {
+    const scrollLeft = left - frozen - currentScrollLeft;
+    const scrollRight = left + selectedColumn.width - currentScrollLeft;
+
+    if (scrollLeft < 0) {
+      return scrollLeft;
+    }
+    if (scrollRight > currentClientWidth) {
+      return scrollRight - currentClientWidth;
+    }
+  }
+
+  return 0;
 }

@@ -42,4 +42,3 @@ Row                    | [Row](./src/Row.js)                     |
 Cell                   | [Cell](./src/Cell.js)                   |
 HeaderCell             | [HeaderCell](./src/HeaderCell.js)       |
 shapes                 | [shapes](./src/PropTypeShapes)          |
-_helpers               | [_helpers](./src/helpers)               |

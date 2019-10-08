@@ -3,7 +3,7 @@ import { isElement } from 'react-is';
 
 import Row from './Row';
 import RowGroup from './RowGroup';
-import { InteractionMasks } from './masks';
+import InteractionMasks from './masks/InteractionMasks';
 import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize } from './utils';
 import { EventTypes, SCROLL_DIRECTION } from './common/enums';
 import { CalculatedColumn, Position, ScrollState, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
