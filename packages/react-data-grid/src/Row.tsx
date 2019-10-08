@@ -7,7 +7,7 @@ import { isFrozen } from './ColumnUtils';
 import * as rowUtils from './RowUtils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
-export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
+export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer {
   static displayName = 'Row';
 
   static defaultProps = {
@@ -108,15 +108,6 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       treeDepth,
       subRowDetails
     };
-  }
-
-  setScrollLeft(scrollLeft: number) {
-    for (const column of this.props.columns) {
-      const { key } = column;
-      if (isFrozen(column) && this.cells.has(key)) {
-        this.cells.get(key)!.setScrollLeft(scrollLeft);
-      }
-    }
   }
 
   render() {

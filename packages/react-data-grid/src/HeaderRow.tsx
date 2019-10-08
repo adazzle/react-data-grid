@@ -32,9 +32,6 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
 export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
-  private readonly headerRow = React.createRef<HTMLDivElement>();
-  private readonly cells = new Map<keyof R, HeaderCell<R>>();
-
   getHeaderCellType(column: CalculatedColumn<R>): HeaderCellType {
     if (column.filterable && this.props.filterable) {
       return HeaderCellType.FILTERABLE;
@@ -101,7 +98,6 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
       const cell = (
         <HeaderCell<R>
           key={key as string}
-          ref={node => node ? this.cells.set(key, node) : this.cells.delete(key)}
           column={column}
           rowType={rowType}
           height={this.props.height}
@@ -125,26 +121,11 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
     return frozenCells.concat(cells);
   }
 
-  setScrollLeft(scrollLeft: number): void {
-    this.headerRow.current!.scrollLeft = scrollLeft;
-    this.props.columns.forEach(column => {
-      const { key } = column;
-      if (!this.cells.has(key)) return;
-      const cell = this.cells.get(key)!;
-      if (isFrozen(column)) {
-        cell.setScrollLeft(scrollLeft);
-      } else {
-        cell.removeScroll();
-      }
-    });
-  }
-
   render() {
     const { height, rowType } = this.props;
 
     return (
       <div
-        ref={this.headerRow}
         style={{
           height: rowType === HeaderRowType.FILTER ? 500 : height
         }}

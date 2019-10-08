@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useState, useMemo, useImperativeHandle } from 'react';
+import React, { useState, useMemo } from 'react';
 import classNames from 'classnames';
 
 import HeaderRow from './HeaderRow';
@@ -29,14 +29,7 @@ export interface HeaderProps<R> extends SharedGridProps<R> {
   allRowsSelected: boolean;
 }
 
-export interface HeaderHandle {
-  setScrollLeft(scrollLeft: number): void;
-}
-
-export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.Ref<HeaderHandle>) {
-  const rowRef = useRef<HeaderRow<R>>(null);
-  const filterRowRef = useRef<HeaderRow<R>>(null);
-
+export default function Header<R>(props: HeaderProps<R>) {
   const [resizing, setResizing] = useState<null | { column: CalculatedColumn<R>; width: number }>(null);
 
   const columnMetrics = useMemo(() => {
@@ -50,15 +43,6 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
       ])
     });
   }, [props.columnMetrics, resizing]);
-
-  useImperativeHandle(ref, () => ({
-    setScrollLeft(scrollLeft: number): void {
-      rowRef.current!.setScrollLeft(scrollLeft);
-      if (filterRowRef.current) {
-        filterRowRef.current.setScrollLeft(scrollLeft);
-      }
-    }
-  }), []);
 
   function onColumnResize(column: CalculatedColumn<R>, width: number): void {
     setResizing({ column, width: Math.max(width, columnMetrics.minColumnWidth) });
@@ -83,11 +67,10 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     props.onSelectedRowsChange(newSelectedRows);
   }
 
-  function getHeaderRow(row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) {
+  function getHeaderRow(row: HeaderRowData<R>) {
     return (
       <HeaderRow<R>
         key={row.rowType}
-        ref={ref}
         rowType={row.rowType}
         onColumnResize={onColumnResize}
         onColumnResizeEnd={onColumnResizeEnd}
@@ -109,9 +92,9 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
 
   function getHeaderRows() {
     const { headerRows } = props;
-    const rows = [getHeaderRow(headerRows[0], rowRef)];
+    const rows = [getHeaderRow(headerRows[0])];
     if (headerRows[1]) {
-      rows.push(getHeaderRow(headerRows[1], filterRowRef));
+      rows.push(getHeaderRow(headerRows[1]));
     }
 
     return rows;
@@ -140,4 +123,4 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
   // );
 
   return <>{getHeaderRows()}</>;
-});
+}

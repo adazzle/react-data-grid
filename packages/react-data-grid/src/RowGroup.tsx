@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { EventTypes } from './common/enums';
 import { CellMetaData, RowRendererProps, CalculatedColumn } from './common/types';
 import EventBus from './masks/EventBus';
@@ -29,7 +28,7 @@ interface Props<R> {
   renderBaseRow(p: RowRendererProps<R>): React.ReactElement;
 }
 
-export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, ref) {
+export default function RowGroup<R>(props: Props<R>) {
   function onRowExpandToggle(expand?: boolean) {
     const { onRowExpandToggle } = props.cellMetaData;
     if (onRowExpandToggle) {
@@ -52,17 +51,17 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
 
   return (
     <div className="react-grid-row-group" style={style} onClick={onClick}>
-      <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
+      <Renderer {...props} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
-});
+}
 
-interface DefaultBaseProps extends Props<any> {
+interface DefaultBaseProps<R> extends Props<R> {
   onRowExpandClick(): void;
   onRowExpandToggle(expand?: boolean): void;
 }
 
-const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function DefaultBase(props, ref) {
+function DefaultBase<R>(props: DefaultBaseProps<R>) {
   function onKeyDown({ key }: React.KeyboardEvent) {
     const { onRowExpandToggle } = props;
     if (key === 'ArrowLeft') {
@@ -85,7 +84,6 @@ const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function Defaul
       style={{ height }}
       onKeyDown={onKeyDown}
       tabIndex={0}
-      ref={ref}
     >
       <span
         className="row-expand-icon"
@@ -97,4 +95,4 @@ const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function Defaul
       <strong>{columnGroupDisplayName}: {name}</strong>
     </div>
   );
-});
+}

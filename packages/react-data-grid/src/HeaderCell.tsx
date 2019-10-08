@@ -117,20 +117,6 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
     return React.createElement(renderer, { column, rowType, allRowsSelected, onAllRowsSelectionChange });
   }
 
-  setScrollLeft(scrollLeft: number) {
-    const node = this.cell.current;
-    if (node) {
-      node.style.transform = `translateX(${scrollLeft}px)`;
-    }
-  }
-
-  removeScroll() {
-    const node = this.cell.current;
-    if (node) {
-      node.style.transform = 'none';
-    }
-  }
-
   render() {
     const { column, rowType, height } = this.props;
 

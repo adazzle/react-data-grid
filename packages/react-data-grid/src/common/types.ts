@@ -243,11 +243,9 @@ export interface ColumnEventInfo<TRow> extends Position {
 }
 
 export interface CellRenderer {
-  setScrollLeft(scrollLeft: number): void;
 }
 
-export interface RowRenderer<TRow> {
-  setScrollLeft(scrollLeft: number): void;
+export interface RowRenderer {
   getRowTop?(): number;
   getRowHeight?(): number;
 }
