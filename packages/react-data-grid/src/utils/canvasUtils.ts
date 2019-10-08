@@ -1,4 +1,4 @@
-import { isFrozen } from './ColumnUtils';
+import { isFrozen } from './columnUtils';
 import { CalculatedColumn } from '../common/types';
 
 export function getColumnScrollPosition<R>(columns: CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import shallowEqual from 'shallowequal';
 
 import Cell from './Cell';
-import { isFrozen } from './utils/ColumnUtils';
+import { isFrozen } from './utils/columnUtils';
 import * as rowUtils from './utils/rowUtils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 

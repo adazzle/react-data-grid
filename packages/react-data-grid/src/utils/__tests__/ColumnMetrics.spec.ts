@@ -1,4 +1,4 @@
-import { getColumnMetrics } from '../ColumnUtils';
+import { getColumnMetrics } from '../columnUtils';
 import { Column } from '../../common/types';
 
 interface Row {

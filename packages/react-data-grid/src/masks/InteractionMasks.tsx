@@ -22,8 +22,8 @@ import {
   isSelectedCellEditable,
   selectedRangeIsSingleCell,
   NextSelectedCellPosition
-} from '../utils/SelectedCellUtils';
-import { isFrozen } from '../utils/ColumnUtils';
+} from '../utils/selectedCellUtils';
+import { isFrozen } from '../utils/columnUtils';
 import keyCodes from '../KeyCodes';
 
 // Types

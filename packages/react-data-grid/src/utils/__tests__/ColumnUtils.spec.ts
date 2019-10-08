@@ -1,4 +1,4 @@
-import { canEdit } from '../ColumnUtils';
+import { canEdit } from '../columnUtils';
 import { CalculatedColumn, Omit } from '../../common/types';
 
 interface Row {
