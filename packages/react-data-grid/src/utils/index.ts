@@ -1,2 +1,2 @@
 export * from './domUtils';
-export * from './canvasUtils';
+export * from './columnUtils';
