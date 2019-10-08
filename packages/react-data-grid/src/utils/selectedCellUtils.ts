@@ -1,5 +1,5 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
-import * as rowUtils from '../utils/rowUtils';
+import * as rowUtils from './rowUtils';
 import { isFrozen, canEdit } from './columnUtils';
 import { CalculatedColumn, Position, Range, Dimension, RowGetter } from '../common/types';
 
