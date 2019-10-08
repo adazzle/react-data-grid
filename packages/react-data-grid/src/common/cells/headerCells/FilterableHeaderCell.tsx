@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FilterRendererProps } from '../../types';
 
-export default function FilterableHeaderCell({ column, onChange }: FilterRendererProps) {
+export default function FilterableHeaderCell<R>({ column, onChange }: FilterRendererProps<R>) {
   const [filterTerm, setFilterTerm] = useState('');
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -19,7 +19,7 @@ export default function FilterableHeaderCell({ column, onChange }: FilterRendere
   return (
     <div className="form-group">
       <input
-        key={`header-filter-${column.key}`}
+        key={`header-filter-${column.key as keyof R}`}
         className="form-control input-sm"
         placeholder="Search"
         value={filterTerm}

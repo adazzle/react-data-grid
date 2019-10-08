@@ -2,21 +2,23 @@ import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 
-import { CalculatedColumn, Editor, EditorProps, RowData, CommitEvent, Dimension, Omit } from '../types';
+import { CalculatedColumn, Editor, EditorProps, CommitEvent, Dimension, Omit } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
 
-type SharedInteractionMasksProps = Pick<InteractionMasksProps, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
 type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
 
-export interface Props extends SharedInteractionMasksProps, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
+type ValueType<R> = R[keyof R];
+
+export interface Props<R> extends SharedInteractionMasksProps<R>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
-  rowData: RowData;
-  value: unknown;
-  column: CalculatedColumn;
+  rowData: R;
+  value: ValueType<R>;
+  column: CalculatedColumn<R>;
   onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(e: CommitEvent): void;
+  onCommit(e: CommitEvent<R>): void;
   onCommitCancel(): void;
 }
 
@@ -24,7 +26,7 @@ interface State {
   isInvalid: boolean;
 }
 
-export default class EditorContainer extends React.Component<Props, State> {
+export default class EditorContainer<R> extends React.Component<Props<R>, State> {
   static displayName = 'EditorContainer';
 
   changeCommitted = false;
@@ -47,7 +49,7 @@ export default class EditorContainer extends React.Component<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: Props<R>) {
     if (prevProps.scrollLeft !== this.props.scrollLeft || prevProps.scrollTop !== this.props.scrollTop) {
       this.commitCancel();
     }
@@ -90,7 +92,8 @@ export default class EditorContainer extends React.Component<Props, State> {
   };
 
   createEditor() {
-    const editorProps: EditorProps & { ref: React.RefObject<Editor> } = {
+    type P = EditorProps<ValueType<R> | string, unknown, R>;
+    const editorProps: P & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
       column: this.props.column,
       value: this.getInitialValue(),
@@ -103,7 +106,7 @@ export default class EditorContainer extends React.Component<Props, State> {
       onOverrideKeyDown: this.onKeyDown
     };
 
-    const CustomEditor = this.props.column.editor;
+    const CustomEditor = this.props.column.editor as React.ComponentType<P>;
     // return custom column editor or SimpleEditor if none specified
     if (isElement(CustomEditor)) {
       return React.cloneElement(CustomEditor, editorProps);
@@ -115,7 +118,7 @@ export default class EditorContainer extends React.Component<Props, State> {
     return (
       <SimpleTextEditor
         ref={this.editor as unknown as React.RefObject<SimpleTextEditor>}
-        column={this.props.column as CalculatedColumn<string>}
+        column={this.props.column as CalculatedColumn<unknown>}
         value={this.getInitialValue() as string}
         onBlur={this.commit}
       />
@@ -192,7 +195,7 @@ export default class EditorContainer extends React.Component<Props, State> {
     return this.getEditor().getInputNode();
   };
 
-  getInitialValue() {
+  getInitialValue(): ValueType<R> | string {
     const { firstEditorKeyPress: key, value } = this.props;
     if (key === 'Delete' || key === 'Backspace') {
       return '';

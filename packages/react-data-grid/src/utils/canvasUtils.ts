@@ -1,12 +1,12 @@
 import { isFrozen } from '../ColumnUtils';
 import { CalculatedColumn } from '../common/types';
 
-export function getColumnScrollPosition(columns: CalculatedColumn[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
+export function getColumnScrollPosition<R>(columns: CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;
   let frozen = 0;
 
   for (let i = 0; i < idx; i++) {
-    const column: CalculatedColumn = columns[i];
+    const column = columns[i];
     if (column) {
       if (column.width) {
         left += column.width;

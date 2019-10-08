@@ -3,13 +3,13 @@ import React from 'react';
 import CellAction from './CellAction';
 import { Props as CellProps } from '../Cell';
 
-type CellActionsProps = Pick<CellProps,
+type CellActionsProps<R> = Pick<CellProps<R>,
 'cellMetaData'
 | 'column'
 | 'rowData'
 >;
 
-export default function CellActions({ cellMetaData, column, rowData }: CellActionsProps) {
+export default function CellActions<R>({ cellMetaData, column, rowData }: CellActionsProps<R>) {
   if (cellMetaData.getCellActions) {
     const cellActionButtons = cellMetaData.getCellActions(column, rowData);
     if (cellActionButtons && cellActionButtons.length > 0) {

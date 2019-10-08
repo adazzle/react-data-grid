@@ -6,11 +6,18 @@ import Canvas, { CanvasProps } from '../Canvas';
 import RowsContainer from '../RowsContainer';
 import EventBus from '../masks/EventBus';
 import { CellNavigationMode } from '../common/enums';
+import { CalculatedColumn } from '../common/types';
+
+interface Row {
+  id?: number;
+  row?: string;
+  __metaData?: unknown;
+}
 
 const noop = () => null;
 const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find(RowsContainer).children().props().children;
 
-const testProps: CanvasProps = {
+const testProps: CanvasProps<Row> = {
   rowKey: 'row',
   rowHeight: 25,
   height: 200,
@@ -27,15 +34,15 @@ const testProps: CanvasProps = {
   rowGetter() { return {}; },
   cellMetaData: {
     rowKey: 'row',
-    onCellClick() {},
-    onCellContextMenu() {},
-    onCellDoubleClick() {},
-    onDragEnter() {},
-    onCellExpand() {},
-    onRowExpandToggle() {}
+    onCellClick() { },
+    onCellContextMenu() { },
+    onCellDoubleClick() { },
+    onDragEnter() { },
+    onCellExpand() { },
+    onRowExpandToggle() { }
   },
   interactionMasksMetaData: {
-    onCommit() {},
+    onCommit() { },
     onGridRowsUpdated: noop,
     onDragHandleDoubleClick: noop
   },
@@ -48,13 +55,13 @@ const testProps: CanvasProps = {
   width: 1000,
   totalWidth: 1000,
   totalColumnWidth: 1000,
-  onScroll() {},
+  onScroll() { },
   lastFrozenColumnIndex: 0,
-  RowsContainer: RowsContainer as CanvasProps['RowsContainer']
+  RowsContainer: RowsContainer as CanvasProps<Row>['RowsContainer']
 };
 
-function renderComponent(extraProps?: Partial<CanvasProps>) {
-  return shallow<Canvas>(<Canvas {...testProps} {...extraProps} />);
+function renderComponent(extraProps?: Partial<CanvasProps<Row>>) {
+  return shallow<Canvas<Row>>(<Canvas<Row> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas Tests', () => {
@@ -93,7 +100,7 @@ describe('Canvas Tests', () => {
 
     describe('selectBy index', () => {
       it('renders row selected', () => {
-        const rowGetter = () => { return { id: 1 }; };
+        const rowGetter = () => ({ id: 1 });
 
         const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { indexes: [0] } };
         const wrapper = renderComponent(props);
@@ -105,7 +112,7 @@ describe('Canvas Tests', () => {
 
     describe('selectBy keys', () => {
       it('renders row selected', () => {
-        const rowGetter = () => ({ id: 1 });
+        const rowGetter = () => { return { id: 1 }; };
 
         const props = { rowOverscanStartIdx: 0, rowOverscanEndIdx: 1, COLUMNS, rowGetter, rowsCount: 1, rowSelection: { keys: { rowKey: 'id', values: [1] } } };
         const wrapper = renderComponent(props);
@@ -130,7 +137,7 @@ describe('Canvas Tests', () => {
   });
 
   describe('Tree View', () => {
-    const COLUMNS = [{ idx: 0, key: 'id', name: 'ID', width: 100, left: 100 }];
+    const COLUMNS: CalculatedColumn<Row>[] = [{ idx: 0, key: 'id', name: 'ID', width: 100, left: 100 }];
 
     it('can render a custom renderer if __metadata property exists', () => {
       const EmptyChildRow = (props: unknown, rowIdx: number) => {

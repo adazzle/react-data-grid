@@ -2,6 +2,15 @@ import getScrollbarSize from '../getScrollbarSize';
 import * as ColumnMetrics from '../ColumnMetrics';
 import { Column } from '../common/types';
 
+interface Row {
+  id?: number;
+  title?: string;
+  count?: string;
+  frozenColumn1?: string;
+  frozenColumn2?: string;
+  frozenColumn3?: string;
+}
+
 function getAvailableWidthPerColumn(totalWidth: number, consumedWidth: number, numberOfcolumns: number): number {
   let availableWidth = totalWidth - getScrollbarSize() - consumedWidth;
   availableWidth = availableWidth % numberOfcolumns === 0 ? availableWidth : availableWidth - 1;
@@ -13,7 +22,7 @@ describe('Column Metrics Tests', () => {
   describe('Creating metrics', () => {
     describe('When column width not set for all columns', () => {
       const totalWidth = 300;
-      const getInitialColumns = (): Column[] => [{
+      const getInitialColumns = (): Column<Row>[] => [{
         key: 'id',
         name: 'ID',
         width: 60
@@ -46,9 +55,9 @@ describe('Column Metrics Tests', () => {
       });
 
       it('should shift all frozen columns to the start of column metrics array', () => {
-        const firstFrozenColumn = { key: 'frozenColumn1', name: 'frozenColumn1', frozen: true };
-        const secondFrozenColumn = { key: 'frozenColumn2', name: 'frozenColumn2', frozen: true };
-        const thirdFrozenColumn = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
+        const firstFrozenColumn: Column<Row> = { key: 'frozenColumn1', name: 'frozenColumn1', frozen: true };
+        const secondFrozenColumn: Column<Row> = { key: 'frozenColumn2', name: 'frozenColumn2', frozen: true };
+        const thirdFrozenColumn: Column<Row> = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
         const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
         columns.splice(2, 0, firstFrozenColumn);
         const metrics = ColumnMetrics.recalculate({ columns, totalWidth, minColumnWidth: 50 });
