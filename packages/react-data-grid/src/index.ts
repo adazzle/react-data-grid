@@ -1,5 +1,4 @@
 export { default, ReactDataGridProps } from './ReactDataGrid';
-export { default as rowComparer } from './utils/RowComparer';
 export { default as Cell } from './Cell';
 export { default as Row } from './Row';
 export { default as HeaderCell } from './HeaderCell';
