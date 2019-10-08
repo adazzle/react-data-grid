@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
 import Canvas, { CanvasProps } from '../Canvas';
-import EventBus from '../masks/EventBus';
+import EventBus from '../EventBus';
 import { CellNavigationMode } from '../common/enums';
 import { CalculatedColumn } from '../common/types';
 

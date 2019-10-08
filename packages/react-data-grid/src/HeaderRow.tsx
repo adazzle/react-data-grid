@@ -3,7 +3,7 @@ import React from 'react';
 import HeaderCell from './HeaderCell';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
-import { isFrozen } from './ColumnUtils';
+import { isFrozen } from './utils/columnUtils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, AddFilterEvent } from './common/types';
 import { HeaderProps } from './Header';

@@ -538,5 +538,27 @@ module.exports = {
       }
     },
     rules: jsRules
+  }, {
+    files: [
+      'babel.config.js',
+      'jest.config.js',
+      'webpack-dev-server.js',
+      'tools/**/*.js'
+    ],
+    parserOptions: {
+      sourceType: 'script'
+    },
+    env: {
+      node: true
+    },
+    rules: {
+      'no-console': 0,
+      'default-param-last': 2,
+      'global-require': 1,
+      'no-buffer-constructor': 2,
+      'no-new-require': 2,
+      'no-path-concat': 1,
+      '@typescript-eslint/no-require-imports': 0
+    }
   }]
 };

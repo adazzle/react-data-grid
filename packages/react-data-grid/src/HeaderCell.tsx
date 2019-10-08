@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { isElement } from 'react-is';
-import { isFrozen } from './ColumnUtils';
+import { isFrozen } from './utils/columnUtils';
 import { HeaderRowType } from './common/enums';
 import { CalculatedColumn, HeaderRowProps } from './common/types';
 

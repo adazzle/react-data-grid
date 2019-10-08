@@ -1,7 +1,5 @@
-import { _utils } from 'react-data-grid';
 import Resolver from './RowGrouperResolver';
-
-const { isImmutableCollection } = _utils;
+import { isImmutableCollection } from '../utils';
 
 class RowGrouper {
   constructor(columns, expandedRows, isImmutable = false) {

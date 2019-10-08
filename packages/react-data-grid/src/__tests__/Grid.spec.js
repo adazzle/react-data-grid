@@ -3,7 +3,7 @@ import { ContextMenu } from 'react-contextmenu';
 import { shallow } from 'enzyme';
 
 import Grid from '../Grid';
-import helpers, { fakeCellMetaData } from '../helpers/test/GridPropHelpers';
+import helpers, { fakeCellMetaData } from './GridPropHelpers';
 
 describe('Empty Grid Tests', () => {
   class EmptyRowsView extends React.Component {
@@ -100,7 +100,7 @@ describe('Rendering Grid component', () => {
   it('passes classname property', () => {
     const wrapper = renderComponent(allProperties());
     const draggableDiv = wrapper.find('div').at(0);
-    expect(draggableDiv.hasClass('react-grid-Grid'));
+    expect(draggableDiv.hasClass('rdg-root'));
   });
   it('does not pass unknown properties to the div', () => {
     const wrapper = renderComponent(allProperties());

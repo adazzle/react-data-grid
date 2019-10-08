@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import Header, { HeaderProps } from '../Header';
 import HeaderRow from '../HeaderRow';
-import helpers, { fakeCellMetaData, Row } from '../helpers/test/GridPropHelpers';
+import helpers, { fakeCellMetaData, Row } from './GridPropHelpers';
 import * as utils from '../utils';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
 

@@ -5,7 +5,7 @@ import shallowEqual from 'shallowequal';
 import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
-import { isFrozen } from './ColumnUtils';
+import { isFrozen } from './utils/columnUtils';
 import { isPositionStickySupported } from './utils';
 import CellValue from './Cell/CellValue';
 import ChildRowDeleteButton from './ChildRowDeleteButton';

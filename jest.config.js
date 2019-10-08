@@ -30,7 +30,6 @@ module.exports = {
   ],
   testMatch: [
     '<rootDir>/packages/*/src/**/*.spec.(js|ts|tsx)',
-    '<rootDir>/examples/**/*.spec.(js|ts|tsx)',
     '<rootDir>/tests/**/*.test.(ts|tsx)'
   ]
 };

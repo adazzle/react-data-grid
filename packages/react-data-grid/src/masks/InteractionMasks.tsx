@@ -1,4 +1,5 @@
 import React, { cloneElement } from 'react';
+import { createPortal } from 'react-dom';
 import { isElement } from 'react-is';
 
 // Components
@@ -11,7 +12,7 @@ import EditorContainer from '../common/editors/EditorContainer';
 import EditorPortal from '../common/editors/EditorPortal';
 
 // Utils
-import { isKeyPrintable, isCtrlKeyHeldDown } from '../common/utils/keyboardUtils';
+import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 import {
   getSelectedDimensions,
   getSelectedCellValue,
@@ -21,14 +22,23 @@ import {
   isSelectedCellEditable,
   selectedRangeIsSingleCell,
   NextSelectedCellPosition
-} from '../utils/SelectedCellUtils';
-import { isFrozen } from '../ColumnUtils';
-import keyCodes from '../KeyCodes';
+} from '../utils/selectedCellUtils';
+import { isFrozen } from '../utils/columnUtils';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
 import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
+
+export enum KeyCodes {
+  Backspace = 8,
+  Tab = 9,
+  Enter = 13,
+  Escape = 27,
+  Delete = 46,
+  c = 67,
+  v = 86
+}
 
 interface NavAction {
   getNext(current: Position): Position;
@@ -197,13 +207,13 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
   onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
     if (isCtrlKeyHeldDown(e)) {
       this.onPressKeyWithCtrl(e);
-    } else if (e.keyCode === keyCodes.Escape) {
+    } else if (e.keyCode === KeyCodes.Escape) {
       this.onPressEscape();
-    } else if (e.keyCode === keyCodes.Tab) {
+    } else if (e.keyCode === KeyCodes.Tab) {
       this.onPressTab(e);
     } else if (this.isKeyboardNavigationEvent(e)) {
       this.changeCellFromEvent(e);
-    } else if (isKeyPrintable(e.keyCode) || ([keyCodes.Backspace, keyCodes.Delete, keyCodes.Enter] as number[]).includes(e.keyCode)) {
+    } else if (isKeyPrintable(e.keyCode) || ([KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter] as number[]).includes(e.keyCode)) {
       this.openEditor(e);
     }
   };
@@ -234,12 +244,12 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
 
   onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
     if (this.copyPasteEnabled()) {
-      if (keyCode === keyCodes.c) {
+      if (keyCode === KeyCodes.c) {
         const { columns, rowGetter } = this.props;
         const { selectedPosition } = this.state;
         const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
         this.handleCopy(value);
-      } else if (keyCode === keyCodes.v) {
+      } else if (keyCode === KeyCodes.v) {
         this.handlePaste();
       }
     }
@@ -370,7 +380,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
       }
     };
 
-    if (e.keyCode === keyCodes.Tab) {
+    if (e.keyCode === KeyCodes.Tab) {
       return e.shiftKey === true ? ArrowLeft : ArrowRight;
     }
 
@@ -385,7 +395,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
 
   changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
     e.preventDefault();
-    const isTab = e.keyCode === keyCodes.Tab;
+    const isTab = e.keyCode === KeyCodes.Tab;
     const isShift = e.shiftKey;
 
     if (isTab) {
@@ -672,7 +682,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
   }
 
   render() {
-    const { rowGetter, contextMenu, getRowColumns, scrollLeft, scrollTop } = this.props;
+    const { rowGetter, contextMenu, getRowColumns, scrollLeft, scrollTop, editorPortalTarget } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = rowGetter(selectedPosition.rowIdx);
     const columns = getRowColumns(selectedPosition.rowIdx);
@@ -697,7 +707,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
           ? this.renderSingleCellSelectView()
           : this.renderCellRangeSelectView()}
         {isEditorEnabled && (
-          <EditorPortal target={this.props.editorPortalTarget}>
+          <EditorPortal target={editorPortalTarget}>
             <EditorContainer<R>
               firstEditorKeyPress={firstEditorKeyPress}
               onCommit={this.onCommit}
@@ -713,7 +723,10 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
             />
           </EditorPortal>
         )}
-        {isElement(contextMenu) && cloneElement(contextMenu, { ...selectedPosition })}
+        {isElement(contextMenu) && createPortal(
+          cloneElement(contextMenu, { ...selectedPosition }),
+          editorPortalTarget
+        )}
       </div>
     );
   }

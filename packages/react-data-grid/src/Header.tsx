@@ -2,7 +2,7 @@ import React, { forwardRef, useRef, useState, useMemo, useImperativeHandle } fro
 import classNames from 'classnames';
 
 import HeaderRow from './HeaderRow';
-import { getColumnMetrics } from './ColumnMetrics';
+import { getColumnMetrics } from './utils/columnUtils';
 import { getScrollbarSize } from './utils';
 import { CalculatedColumn, HeaderRowData } from './common/types';
 import { GridProps } from './Grid';

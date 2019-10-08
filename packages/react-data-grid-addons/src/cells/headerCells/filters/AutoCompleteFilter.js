@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { _utils } from 'react-data-grid';
 
-const { isEmptyArray } = _utils;
+import { isEmptyArray } from '../../../utils';
 
 export default class AutoCompleteFilter extends React.Component {
   static propTypes = {
