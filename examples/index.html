@@ -5,6 +5,53 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>rdg</title>
+  <style>
+    body, html {
+      padding: 0;
+      margin: 0;
+      font-family: sans-serif;
+      color: #333;
+      background-color: #fff;
+    }
+
+    #root {
+      display: flex;
+    }
+
+    .nav {
+      margin: 0;
+      padding: 8px 16px;
+      list-style: none;
+      white-space: nowrap;
+    }
+
+    .nav a {
+      color: #777;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 2em;
+      text-decoration: none;
+      transition: all 0.1s;
+    }
+
+    .nav a:hover {
+      color: #000;
+      text-decoration: underline;
+    }
+
+    .nav a.active {
+      color: #0053BB;
+    }
+
+    .example {
+      overflow: auto;
+      flex-grow: 1;
+    }
+
+    h1 {
+      color: #555;
+    }
+  </style>
   <script defer src="https://unpkg.com/core-js-bundle/minified.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.8.2/immutable.min.js"></script>
   <script defer src="./index.js"></script>
