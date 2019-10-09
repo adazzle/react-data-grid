@@ -4,6 +4,7 @@ import HeaderCell from './HeaderCell';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
 import { isFrozen } from './utils/columnUtils';
+import { isPositionStickySupported } from './utils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, AddFilterEvent } from './common/types';
 import { HeaderProps } from './Header';
@@ -93,6 +94,7 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
     const cells = [];
     const frozenCells = [];
     const { columns, rowType } = this.props;
+    const setRef = !isPositionStickySupported();
 
     for (const column of columns) {
       const { key } = column;
@@ -101,7 +103,9 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
       const cell = (
         <HeaderCell<R>
           key={key as string}
-          ref={node => node ? this.cells.set(key, node) : this.cells.delete(key)}
+          ref={setRef
+            ? node => node ? this.cells.set(key, node) : this.cells.delete(key)
+            : undefined}
           column={column}
           rowType={rowType}
           height={this.props.height}
@@ -127,6 +131,7 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
 
   setScrollLeft(scrollLeft: number): void {
     this.headerRow.current!.scrollLeft = scrollLeft;
+    if (isPositionStickySupported()) return;
     this.props.columns.forEach(column => {
       const { key } = column;
       if (!this.cells.has(key)) return;
