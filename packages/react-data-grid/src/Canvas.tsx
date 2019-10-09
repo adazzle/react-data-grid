@@ -223,14 +223,6 @@ export default function Canvas<R>({
     return rows;
   }
 
-  function getSummaryRows() {
-    if (!summaryRows) {
-      return [];
-    }
-
-    return summaryRows.map((row, idx) => renderSummaryRow(row, rowsCount + 1 + idx));
-  }
-
   function getBaseRendererProps(row: R, idx: number): Omit<RendererProps<R>, 'ref'> {
     const { columns, lastFrozenColumnIndex } = columnMetrics;
     return {
@@ -443,7 +435,7 @@ export default function Canvas<R>({
       {summaryRows && summaryRows.length && (
         <div className="rdg-summary-rows-sticky-wrapper" style={ieStickyWrapperStyle}>
           <div className="rdg-summary-rows" style={summaryRowsWrapperStyle}>
-            {getSummaryRows()}
+            {summaryRows.map(renderSummaryRow)}
           </div>
         </div>
       )}
