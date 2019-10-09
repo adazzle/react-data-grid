@@ -33,8 +33,7 @@ describe('Header Unit Tests', () => {
       onColumnResize: jest.fn(),
       onSort: () => null,
       onHeaderDrop() { },
-      draggableHeaderCell: () => null,
-      rowOffsetHeight: 30
+      draggableHeaderCell: () => null
     };
   }
 
@@ -88,8 +87,7 @@ describe('Header Unit Tests', () => {
       onHeaderDrop() { },
       cellMetaData: fakeCellMetaData,
       draggableHeaderCell: () => null,
-      onColumnResize() { },
-      rowOffsetHeight: 30
+      onColumnResize() { }
     };
     const testAllProps: HeaderProps<Row> = {
       rowKey: 'id',
@@ -116,8 +114,7 @@ describe('Header Unit Tests', () => {
       draggableHeaderCell: jest.fn(),
       getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData,
-      onHeaderDrop() { },
-      rowOffsetHeight: 30
+      onHeaderDrop() { }
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
