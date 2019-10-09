@@ -27,22 +27,22 @@ describe('viewportUtils', () => {
 
     it('should use rowHeight to calculate the range', () => {
       expect(getRange({ rowHeight: 50 })).toEqual({
-        rowOverscanStartIdx: 2,
-        rowOverscanEndIdx: 16
+        rowOverscanStartIdx: 0,
+        rowOverscanEndIdx: 24
       });
     });
 
     it('should use height to calculate the range', () => {
       expect(getRange({ height: 250 })).toEqual({
-        rowOverscanStartIdx: 2,
-        rowOverscanEndIdx: 11
+        rowOverscanStartIdx: 0,
+        rowOverscanEndIdx: 16
       });
     });
 
     it('should use scrollTop to calculate the range', () => {
       expect(getRange({ scrollTop: 500 })).toEqual({
-        rowOverscanStartIdx: 8,
-        rowOverscanEndIdx: 22
+        rowOverscanStartIdx: 0,
+        rowOverscanEndIdx: 24
       });
     });
 
@@ -55,15 +55,8 @@ describe('viewportUtils', () => {
 
     it('should use overscanRowCount to calculate the range', () => {
       expect(getRange({ overscanRowCount: 10 })).toEqual({
-        rowOverscanStartIdx: 2,
-        rowOverscanEndIdx: 24
-      });
-    });
-
-    it('should use scrollDirection to calculate the range', () => {
-      expect(getRange({ overscanRowCount: 10, scrollDirection: SCROLL_DIRECTION.UP })).toEqual({
         rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 16
+        rowOverscanEndIdx: 24
       });
     });
   });
