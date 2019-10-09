@@ -1,12 +1,9 @@
 @import './variables.less';
 
-.react-grid-Header {
-  box-shadow: 0 0 4px 0 #ddd;
-  background: #f9f9f9;
-}
+@headerBg: #f9f9f9;
 
-.react-grid-Header--resizing {
-  cursor: ew-resize;
+.rdg-header {
+  background: @headerBg;
 }
 
 .react-grid-HeaderRow {
@@ -23,8 +20,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   background: #f9f9f9;
-  border-right: 1px solid #dddddd;
-  border-bottom: 1px solid #dddddd;
+  border-right: 1px solid @borderColor;
+  border-bottom: 1px solid @borderColor;
   .user-select();
 }
 

@@ -122,7 +122,7 @@ describe('Header Unit Tests', () => {
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
-      expect(headerDiv.hasClass('react-grid-Header'));
+      expect(headerDiv.hasClass('rdg-header'));
     });
     it('passes style property', () => {
       const wrapper = renderComponent(testAllProps);

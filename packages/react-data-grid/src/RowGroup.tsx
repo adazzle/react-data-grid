@@ -51,7 +51,7 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
   const Renderer = props.renderer || DefaultBase;
 
   return (
-    <div className="react-grid-row-group" style={style} onClick={onClick}>
+    <div style={style} onClick={onClick}>
       <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
@@ -81,14 +81,14 @@ const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function Defaul
 
   return (
     <div
-      className="rdg-row-group-default"
+      className="rdg-row-group"
       style={{ height }}
       onKeyDown={onKeyDown}
       tabIndex={0}
       ref={ref}
     >
       <span
-        className="row-expand-icon"
+        className="rdg-row-expand-icon"
         style={{ marginLeft }}
         onClick={onRowExpandClick}
       >

@@ -1,5 +1,4 @@
 import React, { forwardRef, useRef, useState, useMemo, useImperativeHandle } from 'react';
-import classNames from 'classnames';
 
 import HeaderRow from './HeaderRow';
 import { getColumnMetrics } from './utils/columnUtils';
@@ -122,17 +121,13 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
   }
 
-  const className = classNames('react-grid-Header', {
-    'react-grid-Header--resizing': resizing !== null
-  });
-
   return (
     <div
+      className="rdg-header"
       style={{
         height: props.rowOffsetHeight,
         paddingRight: getScrollbarSize()
       }}
-      className={className}
       onClick={onHeaderClick}
     >
       {getHeaderRows()}

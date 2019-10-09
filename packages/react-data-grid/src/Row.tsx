@@ -120,11 +120,13 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   render() {
     const className = classNames(
-      'react-grid-Row',
-      `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
-      { 'row-selected': this.props.isRowSelected },
-      this.props.extraClasses,
-      { 'rdg-scrolling': this.props.isScrolling }
+      'rdg-row',
+      `rdg-row-${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
+      {
+        'rdg-row-selected': this.props.isRowSelected,
+        'rdg-scrolling': this.props.isScrolling
+      },
+      this.props.extraClasses
     );
 
     return (
