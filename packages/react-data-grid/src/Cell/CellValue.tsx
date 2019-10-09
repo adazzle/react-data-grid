@@ -1,10 +1,10 @@
-import React, { createElement, cloneElement } from 'react';
+import React, { cloneElement, createElement } from 'react';
 import { isElement, isValidElementType } from 'react-is';
 
+import { CellProps } from '../Cell';
 import { SimpleCellFormatter } from '../formatters';
-import { CellContentProps } from './CellContent';
 
-type CellValueProps<R> = Pick<CellContentProps<R>,
+type CellValueProps<R> = Pick<CellProps<R>,
 | 'rowIdx'
 | 'rowData'
 | 'column'
