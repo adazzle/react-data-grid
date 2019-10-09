@@ -1,19 +1,12 @@
 .react-grid-Cell {
+  display: inline-flex;
+  align-items: center;
   position: absolute;
-  padding-left: 8px;
-  padding-right: 8px;
+  height: inherit;
+  padding: 0 8px;
   border-right: 1px solid #eee;
   border-bottom: 1px solid @borderColor;
   background-color: inherit;
-}
-
-.rdg-selected {
-  border: 2px solid #66afe9;
-}
-
-.rdg-selected-range {
-  border: 1px solid #66afe9;
-  background-color: #66afe930;
 }
 
 .react-grid-Cell--frozen {
@@ -36,7 +29,6 @@
 
 @supports (position: sticky) or (position: -webkit-sticky) {
   .react-grid-Cell--frozen {
-    display: inline-block;
     position: -webkit-sticky;
     position: sticky;
   }
@@ -50,7 +42,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  height: inherit;
 }
 
 .react-grid-Cell.readonly {
@@ -86,12 +77,6 @@
 
 .react-grid-Cell__value .btn-sm {
   padding: 0;
-}
-
-.react-grid-Cell__container {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .cell-tooltip .cell-tooltip-text {

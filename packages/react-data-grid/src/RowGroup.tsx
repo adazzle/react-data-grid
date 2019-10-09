@@ -46,12 +46,10 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
     props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: props.idx, idx: 0 });
   }
 
-  const lastColumn = props.columns[props.columns.length - 1];
-  const style = { width: lastColumn!.left + lastColumn!.width };
   const Renderer = props.renderer || DefaultBase;
 
   return (
-    <div style={style} onClick={onClick}>
+    <div onClick={onClick}>
       <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
