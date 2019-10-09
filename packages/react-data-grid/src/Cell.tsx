@@ -161,11 +161,10 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   }
 
   handleDeleteSubRow = (): void => {
-    const { idx, rowIdx, expandableOptions, cellMetaData, rowData } = this.props;
-
-    const { onDeleteSubRow } = cellMetaData;
+    const { cellMetaData: { onDeleteSubRow } } = this.props;
 
     if (onDeleteSubRow) {
+      const { idx, rowIdx, expandableOptions, rowData } = this.props;
       onDeleteSubRow({
         idx,
         rowIdx,
@@ -176,7 +175,8 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   };
 
   render() {
-    const { rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isScrolling, isSummaryRow } = this.props;
+    const { rowIdx, column, value, tooltip, rowData, isScrolling, isSummaryRow } = this.props;
+
     if (column.hidden) {
       return null;
     }
@@ -207,7 +207,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
         >
           <div className={cellValueClassName}>
             <div className="react-grid-Cell__container">
-              <span>{cellValue}</span>
+              {cellValue}
             </div>
             {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
           </div>
@@ -215,24 +215,37 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
       );
     }
 
+    const { children, height, cellControls, expandableOptions, cellMetaData } = this.props;
     const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
     const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
     const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
+    const { onDeleteSubRow, getCellActions } = cellMetaData;
 
-    const { onDeleteSubRow } = cellMetaData;
+    const cellActions = (
+      <CellActions<R>
+        column={column}
+        rowData={rowData}
+        getCellActions={getCellActions}
+      />
+    );
 
-    const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
-      <ChildRowDeleteButton
-        treeDepth={treeDepth}
-        cellHeight={height}
-        onDeleteSubRow={this.handleDeleteSubRow}
-        isDeleteSubRowEnabled={!!onDeleteSubRow}
+    const cellExpander = expandableOptions && expandableOptions.canExpand && (
+      <CellExpand
+        expanded={expandableOptions.expanded}
+        onCellExpand={this.handleCellExpand}
       />
     );
 
     const cellContent = children || (
       <div className={cellValueClassName}>
-        {cellDeleter}
+        {expandableOptions && treeDepth > 0 && isExpandCell && (
+          <ChildRowDeleteButton
+            treeDepth={treeDepth}
+            cellHeight={height}
+            onDeleteSubRow={this.handleDeleteSubRow}
+            isDeleteSubRowEnabled={!!onDeleteSubRow}
+          />
+        )}
         <div className="react-grid-Cell__container" style={{ marginLeft }}>
           <span>{cellValue}</span>
           {cellControls}
@@ -242,12 +255,6 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     );
 
     const events = this.getEvents();
-    const cellExpander = expandableOptions && expandableOptions.canExpand && (
-      <CellExpand
-        expanded={expandableOptions.expanded}
-        onCellExpand={this.handleCellExpand}
-      />
-    );
 
     return (
       <div
@@ -256,11 +263,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
         style={style}
         {...events}
       >
-        <CellActions<R>
-          column={column}
-          rowData={rowData}
-          getCellActions={cellMetaData.getCellActions}
-        />
+        {cellActions}
         {cellExpander}
         {cellContent}
       </div>
