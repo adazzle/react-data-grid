@@ -58,7 +58,7 @@ interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowS
   isScrolling: boolean;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  isSummaryRow?: boolean;
+  isSummaryRow: boolean;
 }
 
 export default function Canvas<R>({
@@ -99,7 +99,8 @@ export default function Canvas<R>({
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
   const resetScrollStateTimeoutId = useRef<number | null>(null);
-  const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
+  const [rowRefs] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
+  const [summaryRowRefs] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
 
   const { rowOverscanStartIdx, rowOverscanEndIdx } = useMemo(() => {
@@ -230,23 +231,37 @@ export default function Canvas<R>({
     return summaryRows.map((row, idx) => renderSummaryRow(row, rowsCount + 1 + idx));
   }
 
-  function renderSummaryRow(row: R, idx: number) {
-    const rendererProps: RendererProps<R> = {
+  function getBaseRendererProps(row: R, idx: number): Omit<RendererProps<R>, 'ref'> {
+    const { columns, lastFrozenColumnIndex } = columnMetrics;
+    return {
       key: idx,
-      ref: getRowRef(row, idx),
       idx,
       row,
       height: rowHeight,
-      columns: columnMetrics.columns,
+      columns,
       isRowSelected: false,
       onRowSelectionChange,
       cellMetaData,
       colOverscanStartIdx,
       colOverscanEndIdx,
-      lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
+      lastFrozenColumnIndex,
       isScrolling,
       scrollLeft,
-      isSummaryRow: summaryRows && summaryRows.includes(row)
+      isSummaryRow: false
+    };
+  }
+
+  function renderSummaryRow(row: R, idx: number) {
+    const rendererProps: RendererProps<R> = {
+      ...getBaseRendererProps(row, idx),
+      ref(rowRef) {
+        if (rowRef) {
+          summaryRowRefs.set(idx, rowRef);
+        } else {
+          summaryRowRefs.delete(idx);
+        }
+      },
+      isSummaryRow: true
     };
 
     if (rowRenderer) {
@@ -258,22 +273,16 @@ export default function Canvas<R>({
 
   function renderRow(row: R, idx: number) {
     const rendererProps: RendererProps<R> = {
-      key: idx,
-      ref: getRowRef(row, idx),
-      idx,
-      row,
-      height: rowHeight,
-      columns: columnMetrics.columns,
+      ...getBaseRendererProps(row, idx),
+      ref(rowRef) {
+        if (rowRef) {
+          rowRefs.set(idx, rowRef);
+        } else {
+          rowRefs.delete(idx);
+        }
+      },
       isRowSelected: isRowSelected(row),
-      onRowSelectionChange,
-      cellMetaData,
-      subRowDetails: getSubRowDetails ? getSubRowDetails(row) : undefined,
-      colOverscanStartIdx,
-      colOverscanEndIdx,
-      lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
-      isScrolling,
-      scrollLeft,
-      isSummaryRow: summaryRows && summaryRows.includes(row)
+      subRowDetails: getSubRowDetails ? getSubRowDetails(row) : undefined
     };
     const { __metaData } = row as RowData;
 
@@ -293,36 +302,30 @@ export default function Canvas<R>({
     return <Row<R> {...rendererProps} />;
   }
 
-  function getRowRef(row: R, idx: number) {
-    return (rowRef: RowRenderer<R> & React.Component<RowRendererProps<R>>) => {
-      if (row) {
-        rows.set(idx, rowRef);
-      } else {
-        rows.delete(idx);
-      }
-    };
-  }
-
   function isRowSelected(row: R): boolean {
     return selectedRows !== undefined && selectedRows.has(row[rowKey]);
   }
 
   function setComponentsScrollLeft(scrollLeft: number) {
     if (isPositionStickySupported()) return;
+
     const { current } = interactionMasks;
     if (current) {
       current.setScrollLeft(scrollLeft);
     }
 
-    rows.forEach(row => {
-      if (row && row.setScrollLeft) {
-        row.setScrollLeft(scrollLeft);
-      }
-    });
+    rowRefs.forEach(setRowScrollLeft);
+    summaryRowRefs.forEach(setRowScrollLeft);
+  }
+
+  function setRowScrollLeft(row: RowRenderer<R> & React.Component<RowRendererProps<R>>) {
+    if (row.setScrollLeft) {
+      row.setScrollLeft(scrollLeft);
+    }
   }
 
   function getRowTop(rowIdx: number) {
-    const row = rows.get(rowIdx);
+    const row = rowRefs.get(rowIdx);
     if (row && row.getRowTop) {
       return row.getRowTop();
     }
@@ -330,7 +333,7 @@ export default function Canvas<R>({
   }
 
   function getRowHeight(rowIdx: number) {
-    const row = rows.get(rowIdx);
+    const row = rowRefs.get(rowIdx);
     if (row && row.getRowHeight) {
       return row.getRowHeight();
     }
@@ -338,7 +341,7 @@ export default function Canvas<R>({
   }
 
   function getRowColumns(rowIdx: number) {
-    const row = rows.get(rowIdx);
+    const row = rowRefs.get(rowIdx);
     return row && row.props ? row.props.columns : columnMetrics.columns;
   }
 
@@ -438,8 +441,8 @@ export default function Canvas<R>({
         </div>
       </RowsContainer>
       {summaryRows && summaryRows.length && (
-        <div className="rdg-bottom-pinned-rows-sticky-wrapper" style={ieStickyWrapperStyle}>
-          <div className="rdg-bottom-pinned-rows" style={summaryRowsWrapperStyle}>
+        <div className="rdg-summary-rows-sticky-wrapper" style={ieStickyWrapperStyle}>
+          <div className="rdg-summary-rows" style={summaryRowsWrapperStyle}>
             {getSummaryRows()}
           </div>
         </div>

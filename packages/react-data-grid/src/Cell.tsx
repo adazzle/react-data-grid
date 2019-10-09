@@ -173,7 +173,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
         expandArgs: expandableOptions
       });
     }
-  }
+  };
 
   render() {
     const { rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isScrolling, isSummaryRow } = this.props;
@@ -185,6 +185,19 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     const cellClassName = this.getCellClass();
     const cellValueClassName = classNames('react-grid-Cell__value', { 'cell-tooltip': !!tooltip });
 
+    const cellValue = (
+      <CellValue<R>
+        rowIdx={rowIdx}
+        rowData={rowData}
+        column={column}
+        value={value}
+        isScrolling={isScrolling}
+        isRowSelected={this.props.isRowSelected}
+        onRowSelectionChange={this.props.onRowSelectionChange}
+        isSummaryRow={isSummaryRow}
+      />
+    );
+
     if (isSummaryRow) {
       return (
         <div
@@ -194,18 +207,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
         >
           <div className={cellValueClassName}>
             <div className="react-grid-Cell__container">
-              <span>
-                <CellValue<R>
-                  rowIdx={rowIdx}
-                  rowData={rowData}
-                  column={column}
-                  value={value}
-                  isScrolling={isScrolling}
-                  isRowSelected={this.props.isRowSelected}
-                  onRowSelectionChange={this.props.onRowSelectionChange}
-                  isSummaryRow={isSummaryRow}
-                />
-              </span>
+              <span>{cellValue}</span>
             </div>
             {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
           </div>
@@ -232,18 +234,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
       <div className={cellValueClassName}>
         {cellDeleter}
         <div className="react-grid-Cell__container" style={{ marginLeft }}>
-          <span>
-            <CellValue<R>
-              rowIdx={rowIdx}
-              rowData={rowData}
-              column={column}
-              value={value}
-              isScrolling={isScrolling}
-              isRowSelected={this.props.isRowSelected}
-              onRowSelectionChange={this.props.onRowSelectionChange}
-              isSummaryRow={isSummaryRow}
-            />
-          </span>
+          <span>{cellValue}</span>
           {cellControls}
         </div>
         {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}

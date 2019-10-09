@@ -57,7 +57,6 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       cellMetaData,
       value: this.getCellValue(key || String(column.idx) as keyof R) as R[keyof R], // FIXME: fix types
       rowData: row,
-      expandableOptions: isSummaryRow ? undefined : this.getExpandableOptions(key),
       isScrolling,
       scrollLeft,
       lastFrozenColumnIndex,
@@ -65,6 +64,10 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       onRowSelectionChange,
       isSummaryRow
     };
+
+    if (!isSummaryRow) {
+      cellProps.expandableOptions = this.getExpandableOptions(key);
+    }
 
     return <Renderer key={`${key as keyof R}-${idx}`} {...cellProps} />; // FIXME: fix key type
   }
