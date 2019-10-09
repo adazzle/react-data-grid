@@ -13,7 +13,6 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'columnMetrics'
 | 'onColumnResize'
 | 'headerRows'
-| 'rowOffsetHeight'
 | 'sortColumn'
 | 'sortDirection'
 | 'draggableHeaderCell'
@@ -125,7 +124,6 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     <div
       className="rdg-header"
       style={{
-        height: props.rowOffsetHeight,
         paddingRight: getScrollbarSize()
       }}
       onClick={onHeaderClick}

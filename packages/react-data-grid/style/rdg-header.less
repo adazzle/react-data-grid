@@ -1,27 +1,14 @@
 @import './variables.less';
 
-@headerBg: #f9f9f9;
-
 .rdg-header {
-  background: @headerBg;
+  background: #f9f9f9;
+  font-weight: bold;
 }
 
-.react-grid-HeaderRow {
+.rdg-header-row {
   position: relative;
   overflow: hidden;
-  .user-select();
-}
-
-.react-grid-HeaderCell {
-  position: absolute;
-  padding: 8px;
-  margin: 0;
-  font-weight: bold;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  background: #f9f9f9;
-  border-right: 1px solid @borderColor;
-  border-bottom: 1px solid @borderColor;
+  background-color: inherit;
   .user-select();
 }
 

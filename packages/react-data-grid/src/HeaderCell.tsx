@@ -132,24 +132,21 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
   }
 
   render() {
-    const { column, rowType, height } = this.props;
+    const { column, rowType } = this.props;
 
-    const className = classNames('react-grid-HeaderCell', {
+    const className = classNames('react-grid-Cell', {
       'rdg-header-cell-resizable': column.resizable,
       'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
 
-    const style: React.CSSProperties = {
-      width: column.width,
-      left: column.left,
-      height
-    };
-
     const cell = (
       <div
-        className={className}
-        style={style}
         ref={this.cell}
+        className={className}
+        style={{
+          width: column.width,
+          left: column.left
+        }}
         onMouseDown={column.resizable ? this.onMouseDown : undefined}
         onTouchStart={column.resizable ? this.onTouchStart : undefined}
       >

@@ -4,9 +4,16 @@
   position: absolute;
   height: inherit;
   padding: 0 8px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid @borderColor;
   border-bottom: 1px solid @borderColor;
   background-color: inherit;
+
+  // FIXME: needs a better selector
+  > div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .react-grid-Cell--frozen {
@@ -36,12 +43,6 @@
 
 .react-contextmenu--visible {
   z-index: 1000;
-}
-
-.react-grid-Cell:not(.editing) .react-grid-Cell__value {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
 }
 
 .react-grid-Cell.readonly {

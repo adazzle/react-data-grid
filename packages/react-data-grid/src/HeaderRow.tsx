@@ -145,10 +145,10 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
     return (
       <div
         ref={this.headerRow}
+        className="rdg-header-row"
         style={{
           height: rowType === HeaderRowType.FILTER ? 500 : height
         }}
-        className="react-grid-HeaderRow"
       >
         {this.getCells()}
       </div>

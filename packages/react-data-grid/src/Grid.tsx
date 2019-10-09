@@ -87,7 +87,6 @@ export default function Grid<R>({
         columnMetrics={columnMetrics}
         onColumnResize={props.onColumnResize}
         headerRows={headerRows}
-        rowOffsetHeight={rowOffsetHeight}
         sortColumn={props.sortColumn}
         sortDirection={props.sortDirection}
         draggableHeaderCell={props.draggableHeaderCell}
