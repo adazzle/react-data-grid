@@ -68,7 +68,6 @@ export interface ColumnMetrics<TRow> {
 
 export interface RowData {
   name?: string;
-  get?(key: PropertyKey): unknown;
   __metaData?: RowGroupMetaData;
 }
 
