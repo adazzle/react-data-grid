@@ -338,7 +338,7 @@ export default function Canvas<R>({
 
   return (
     <div
-      className="react-grid-Canvas"
+      className="rdg-viewport"
       style={{ height }}
       ref={canvas}
       onScroll={handleScroll}
@@ -372,7 +372,7 @@ export default function Canvas<R>({
         {...interactionMasksMetaData}
       />
       <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-        <div className="rdg-rows-container" style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom }}>
+        <div className="rdg-grid" style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom }}>
           {getRows()}
         </div>
       </RowsContainer>

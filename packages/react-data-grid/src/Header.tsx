@@ -138,4 +138,4 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
       {getHeaderRows()}
     </div>
   );
-});
+}) as <R>(props: HeaderProps<R> & { ref?: React.Ref<HeaderHandle> }) => JSX.Element;

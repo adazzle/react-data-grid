@@ -14,7 +14,7 @@ interface Row {
 }
 
 const noop = () => null;
-const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find('.rdg-rows-container').props().children as JSX.Element[];
+const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find('.rdg-grid').props().children as JSX.Element[];
 
 const testProps: CanvasProps<Row> = {
   rowKey: 'row',

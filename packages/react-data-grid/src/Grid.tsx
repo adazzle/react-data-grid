@@ -1,7 +1,7 @@
 import React, { useRef, createElement } from 'react';
 import { isValidElementType } from 'react-is';
 
-import Header, { HeaderHandle, HeaderProps } from './Header';
+import Header, { HeaderHandle } from './Header';
 import Canvas from './Canvas';
 import { HeaderRowData, CellMetaData, InteractionMasksMetaData, ColumnMetrics, ScrollState } from './common/types';
 import { DEFINE_SORT } from './common/enums';
@@ -77,36 +77,28 @@ export default function Grid<R>({
     }
   }
 
-  type FullHeaderProps = HeaderProps<R> & React.RefAttributes<HeaderHandle>;
-
   return (
     <div className="react-grid-Grid">
-      {
-        React.createElement<FullHeaderProps>(Header as React.FunctionComponent<FullHeaderProps>, {
-          rowKey,
-          rowsCount,
-          ref: header,
-          rowGetter,
-          columnMetrics,
-          onColumnResize: props.onColumnResize,
-          headerRows,
-          rowOffsetHeight,
-          sortColumn: props.sortColumn,
-          sortDirection: props.sortDirection,
-          draggableHeaderCell: props.draggableHeaderCell,
-          onSort: props.onSort,
-          onHeaderDrop: props.onHeaderDrop,
-          allRowsSelected: selectedRows !== undefined && selectedRows.size === rowsCount,
-          onSelectedRowsChange: props.onSelectedRowsChange,
-          getValidFilterValues: props.getValidFilterValues,
-          cellMetaData: props.cellMetaData
-        })
-      }
-      {rowsCount === 0 && isValidElementType(emptyRowsView) ? (
-        <div className="react-grid-Empty">
-          {createElement(emptyRowsView)}
-        </div>
-      ) : (
+      <Header<R>
+        rowKey={rowKey}
+        rowsCount={rowsCount}
+        ref={header}
+        rowGetter={rowGetter}
+        columnMetrics={columnMetrics}
+        onColumnResize={props.onColumnResize}
+        headerRows={headerRows}
+        rowOffsetHeight={rowOffsetHeight}
+        sortColumn={props.sortColumn}
+        sortDirection={props.sortDirection}
+        draggableHeaderCell={props.draggableHeaderCell}
+        onSort={props.onSort}
+        onHeaderDrop={props.onHeaderDrop}
+        allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
+        onSelectedRowsChange={props.onSelectedRowsChange}
+        getValidFilterValues={props.getValidFilterValues}
+        cellMetaData={props.cellMetaData}
+      />
+      {rowsCount === 0 && isValidElementType(emptyRowsView) ? createElement(emptyRowsView) : (
         <Canvas<R>
           rowKey={rowKey}
           rowHeight={props.rowHeight}
