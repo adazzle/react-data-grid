@@ -30,7 +30,6 @@ export interface VerticalRangeToRenderParams {
   rowHeight: number;
   scrollTop: number;
   rowsCount: number;
-  scrollDirection: SCROLL_DIRECTION;
   overscanRowCount?: number;
 }
 
@@ -44,13 +43,13 @@ export function getVerticalRangeToRender({
   rowHeight,
   scrollTop,
   rowsCount,
-  scrollDirection,
-  overscanRowCount = 2
+  overscanRowCount = 4
 }: VerticalRangeToRenderParams): VerticalRangeToRender {
+  const batchSize = 8;
   const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
   const rowVisibleEndIdx = Math.min(rowsCount - 1, Math.floor((scrollTop + height) / rowHeight));
-  const rowOverscanStartIdx = Math.max(0, rowVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.UP ? overscanRowCount : 2));
-  const rowOverscanEndIdx = Math.min(rowsCount - 1, rowVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.DOWN ? overscanRowCount : 2));
+  const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanRowCount) / batchSize) * batchSize);
+  const rowOverscanEndIdx = Math.min(rowsCount - 1, Math.ceil((rowVisibleEndIdx + overscanRowCount) / batchSize) * batchSize);
 
   return { rowOverscanStartIdx, rowOverscanEndIdx };
 }

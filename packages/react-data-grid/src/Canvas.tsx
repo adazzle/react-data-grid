@@ -105,10 +105,9 @@ export default function Canvas<R>({
       rowHeight,
       scrollTop,
       rowsCount,
-      scrollDirection,
       overscanRowCount
     });
-  }, [clientHeight, overscanRowCount, rowHeight, rowsCount, scrollDirection, scrollTop]);
+  }, [clientHeight, overscanRowCount, rowHeight, rowsCount, scrollTop]);
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
