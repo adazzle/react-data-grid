@@ -4,7 +4,6 @@ import shallowEqual from 'shallowequal';
 
 import Cell from './Cell';
 import { isFrozen } from './utils/columnUtils';
-import * as rowUtils from './utils/rowUtils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
 export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
@@ -92,7 +91,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       return isRowSelected;
     }
 
-    return rowUtils.get(row, key);
+    return row[key];
   }
 
   getExpandableOptions(columnKey: keyof R) {

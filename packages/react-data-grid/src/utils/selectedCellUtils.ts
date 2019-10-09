@@ -1,5 +1,4 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
-import * as rowUtils from './rowUtils';
 import { isFrozen, canEdit } from './columnUtils';
 import { CalculatedColumn, Position, Range, Dimension, RowGetter } from '../common/types';
 
@@ -62,7 +61,7 @@ export function getSelectedCellValue<R>({ selectedPosition, columns, rowGetter }
   const column = columns[selectedPosition.idx];
   const row = rowGetter(selectedPosition.rowIdx);
 
-  return row && column ? rowUtils.get(row, column.key) : null;
+  return row && column ? row[column.key] : null;
 }
 
 interface isSelectedCellEditableOpts<R> {
