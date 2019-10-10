@@ -41,14 +41,6 @@ export enum UpdateActions {
   CELL_DRAG = 'CELL_DRAG'
 }
 
-export enum SCROLL_DIRECTION {
-  UP = 'upwards',
-  DOWN = 'downwards',
-  LEFT = 'left',
-  RIGHT = 'right',
-  NONE = 'none'
-}
-
 export enum DEFINE_SORT {
   ASC = 'ASC',
   DESC = 'DESC',

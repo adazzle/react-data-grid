@@ -12,7 +12,6 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 | 'rowData'
 | 'column'
 | 'value'
-| 'isScrolling'
 | 'expandableOptions'
 | 'tooltip'
 | 'height'
@@ -34,7 +33,6 @@ export default function CellContent<R>({
   height,
   onDeleteSubRow,
   cellControls,
-  isScrolling,
   isRowSelected,
   onRowSelectionChange
 }: CellContentProps<R>) {
@@ -76,7 +74,6 @@ export default function CellContent<R>({
             rowData={rowData}
             column={column}
             value={value}
-            isScrolling={isScrolling}
             isRowSelected={isRowSelected}
             onRowSelectionChange={onRowSelectionChange}
           />
