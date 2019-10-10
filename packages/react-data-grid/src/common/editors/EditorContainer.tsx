@@ -39,10 +39,6 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
     const inputNode = this.getInputNode();
     if (inputNode instanceof HTMLElement) {
       inputNode.focus();
-      if (!this.getEditor().disableContainerStyles) {
-        inputNode.className += ' editor-main';
-        inputNode.style.height = `${this.props.height - 1}px`;
-      }
     }
     if (inputNode instanceof HTMLInputElement) {
       inputNode.select();
@@ -257,7 +253,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
   render() {
     const { width, height, left, top } = this.props;
     const className = classNames('rdg-editor-container', {
-      'has-error': this.state.isInvalid === true
+      'has-error': this.state.isInvalid
     });
 
     return (

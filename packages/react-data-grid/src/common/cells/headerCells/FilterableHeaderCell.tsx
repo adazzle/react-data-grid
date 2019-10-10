@@ -12,19 +12,13 @@ export default function FilterableHeaderCell<R>({ column, onChange }: FilterRend
     }
   }
 
-  if (column.filterable === false) {
-    return <div />;
-  }
-
   return (
-    <div className="form-group">
-      <input
-        key={`header-filter-${column.key as keyof R}`}
-        className="form-control input-sm"
-        placeholder="Search"
-        value={filterTerm}
-        onChange={handleChange}
-      />
-    </div>
+    <input
+      key={`header-filter-${column.key as keyof R}`}
+      className="rdg-filter"
+      placeholder="Search"
+      value={filterTerm}
+      onChange={handleChange}
+    />
   );
 }
