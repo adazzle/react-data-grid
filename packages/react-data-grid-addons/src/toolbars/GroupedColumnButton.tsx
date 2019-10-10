@@ -15,7 +15,7 @@ export default function GroupedColumnButton({ name, columnKey, onColumnGroupDele
   return (
     <div className="grouped-col-btn btn btn-sm">
       <span className="grouped-col-btn__name">{name}</span>
-      <span className="grouped-col-btn__remove glyphicon glyphicon-trash" onClick={onClick} />
+      <span className="grouped-col-btn__remove glyphicon glyphicon-trash" onClick={onClick}>×</span>
     </div>
   );
 }

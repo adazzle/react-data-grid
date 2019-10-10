@@ -23,7 +23,7 @@ class DraggableHeaderCell extends Component {
     if (isDragging) {
       return null;
     }
-    return connectDragSource(<div style={{ cursor: 'move' }}>{this.props.children}</div>);
+    return connectDragSource(<div className="rdg-draggable-header-cell">{this.props.children}</div>);
   }
 }
 
