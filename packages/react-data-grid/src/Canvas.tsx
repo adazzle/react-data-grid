@@ -1,14 +1,14 @@
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { isElement } from 'react-is';
 
-import { EventTypes, SCROLL_DIRECTION } from './common/enums';
-import { CalculatedColumn, Position, RowData, RowRenderer, RowRendererProps, ScrollState, SubRowDetails } from './common/types';
+import { EventTypes } from './common/enums';
+import { CalculatedColumn, Position, RowData, RowRenderer, RowRendererProps, ScrollPosition, SubRowDetails } from './common/types';
 import { GridProps } from './Grid';
 import InteractionMasks from './masks/InteractionMasks';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { getColumnScrollPosition, getScrollbarSize, isIEOrEdge, isPositionStickySupported } from './utils';
-import { getHorizontalRangeToRender, getScrollDirection, getVerticalRangeToRender } from './utils/viewportUtils';
+import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
 
 type SharedGridProps<R> = Pick<GridProps<R>,
 | 'rowKey'
@@ -31,15 +31,13 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'RowsContainer'
 | 'editorPortalTarget'
 | 'interactionMasksMetaData'
-| 'overscanRowCount'
-| 'overscanColumnCount'
 | 'onCanvasKeydown'
 | 'onCanvasKeyup'
 >;
 
 export interface CanvasProps<R> extends SharedGridProps<R> {
   height: number;
-  onScroll(position: ScrollState): void;
+  onScroll(position: ScrollPosition): void;
   summaryRows?: R[];
 }
 
@@ -75,8 +73,6 @@ export default function Canvas<R>({
   onCanvasKeyup,
   onRowSelectionChange,
   onScroll,
-  overscanColumnCount,
-  overscanRowCount,
   rowGetter,
   rowGroupRenderer,
   rowHeight,
@@ -90,7 +86,6 @@ export default function Canvas<R>({
 }: CanvasProps<R>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
@@ -105,20 +100,16 @@ export default function Canvas<R>({
       height: clientHeight,
       rowHeight,
       scrollTop,
-      rowsCount,
-      scrollDirection,
-      overscanRowCount
+      rowsCount
     });
-  }, [clientHeight, overscanRowCount, rowHeight, rowsCount, scrollDirection, scrollTop]);
+  }, [clientHeight, rowHeight, rowsCount, scrollTop]);
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
       columnMetrics,
-      scrollLeft,
-      scrollDirection,
-      overscanColumnCount
+      scrollLeft
     });
-  }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft]);
+  }, [columnMetrics, scrollLeft]);
 
   useEffect(() => {
     return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));
@@ -138,14 +129,9 @@ export default function Canvas<R>({
     // Freeze columns on legacy browsers
     setComponentsScrollLeft(newScrollLeft);
 
-    const scrollDirection = getScrollDirection(
-      { scrollLeft, scrollTop },
-      { scrollLeft: newScrollLeft, scrollTop: newScrollTop }
-    );
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
-    setScrollDirection(scrollDirection);
-    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop, scrollDirection });
+    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
   }
 
   function getClientHeight() {
