@@ -56,8 +56,8 @@ describe('viewportUtils', () => {
         rowOverscanStartIdx: 0,
         rowOverscanEndIdx: 16
       });
-      expect(getRange({ renderBatchSize: 4, scrollTop: 50 * 1000 })).toEqual({
-        rowOverscanStartIdx: 996,
+      expect(getRange({ renderBatchSize: 4, scrollTop: 50 * 1000 - 500 /* max scroll top */ })).toEqual({
+        rowOverscanStartIdx: 984,
         rowOverscanEndIdx: 999
       });
       expect(getRange({ renderBatchSize: 4, scrollTop: 2350 })).toEqual({
