@@ -33,7 +33,6 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'interactionMasksMetaData'
 | 'overscanRowCount'
 | 'overscanColumnCount'
-| 'enableIsScrolling'
 | 'onCanvasKeydown'
 | 'onCanvasKeyup'
 >;
@@ -54,7 +53,6 @@ interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowS
   height: number;
   isRowSelected: boolean;
   scrollLeft: number;
-  isScrolling: boolean;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
 }
@@ -67,7 +65,6 @@ export default function Canvas<R>({
   editorPortalTarget,
   enableCellAutoFocus,
   enableCellSelect,
-  enableIsScrolling,
   eventBus,
   getSubRowDetails,
   height,
@@ -91,11 +88,9 @@ export default function Canvas<R>({
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
-  const [isScrolling, setIsScrolling] = useState(false);
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
-  const resetScrollStateTimeoutId = useRef<number | null>(null);
   const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
 
@@ -137,11 +132,6 @@ export default function Canvas<R>({
     // Freeze columns on legacy browsers
     setComponentsScrollLeft(newScrollLeft);
 
-    if (enableIsScrolling) {
-      setIsScrolling(true);
-      resetScrollStateAfterDelay();
-    }
-
     const scrollDirection = getScrollDirection(
       { scrollLeft, scrollTop },
       { scrollLeft: newScrollLeft, scrollTop: newScrollTop }
@@ -150,26 +140,6 @@ export default function Canvas<R>({
     setScrollTop(newScrollTop);
     setScrollDirection(scrollDirection);
     onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop, scrollDirection });
-  }
-
-  function resetScrollStateAfterDelay() {
-    clearScrollTimer();
-    resetScrollStateTimeoutId.current = window.setTimeout(
-      resetScrollStateAfterDelayCallback,
-      150
-    );
-  }
-
-  function clearScrollTimer() {
-    if (resetScrollStateTimeoutId.current !== null) {
-      window.clearTimeout(resetScrollStateTimeoutId.current);
-      resetScrollStateTimeoutId.current = null;
-    }
-  }
-
-  function resetScrollStateAfterDelayCallback() {
-    resetScrollStateTimeoutId.current = null;
-    setIsScrolling(false);
   }
 
   function getClientHeight() {
@@ -240,7 +210,6 @@ export default function Canvas<R>({
       colOverscanStartIdx,
       colOverscanEndIdx,
       lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
-      isScrolling,
       scrollLeft
     };
     const { __metaData } = row as RowData;
