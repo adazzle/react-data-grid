@@ -149,11 +149,6 @@ export interface ReactDataGridProps<R extends {}> {
    */
   overscanColumnCount?: number;
   /**
-   * Provides an additional isScrolling parameter to formatters. This parameter can be used to show a placeholder row or column while the list is being scrolled.
-   * Note that using this parameter will result in an additional render call after scrolling has stopped (when isScrolling changes from true to false).
-   */
-  enableIsScrolling?: boolean;
-  /**
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
@@ -448,7 +443,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           interactionMasksMetaData={interactionMasksMetaData}
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
-          enableIsScrolling={props.enableIsScrolling}
           summaryRows={summaryRows}
         />
       )}

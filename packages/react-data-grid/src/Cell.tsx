@@ -175,7 +175,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   };
 
   render() {
-    const { rowIdx, column, value, tooltip, rowData, isScrolling, isSummaryRow } = this.props;
+    const { rowIdx, column, value, tooltip, rowData, isSummaryRow } = this.props;
 
     if (column.hidden) {
       return null;
@@ -191,7 +191,6 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
         rowData={rowData}
         column={column}
         value={value}
-        isScrolling={isScrolling}
         isRowSelected={this.props.isRowSelected}
         onRowSelectionChange={this.props.onRowSelectionChange}
         isSummaryRow={isSummaryRow}

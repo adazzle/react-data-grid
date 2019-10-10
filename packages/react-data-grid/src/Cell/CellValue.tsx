@@ -9,13 +9,12 @@ type CellValueProps<R> = Pick<CellProps<R>,
 | 'rowData'
 | 'column'
 | 'value'
-| 'isScrolling'
 | 'isRowSelected'
 | 'onRowSelectionChange'
 | 'isSummaryRow'
 >;
 
-export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolling, isRowSelected, onRowSelectionChange, isSummaryRow }: CellValueProps<R>) {
+export default function CellValue<R>({ rowIdx, rowData, column, value, isRowSelected, onRowSelectionChange, isSummaryRow }: CellValueProps<R>) {
   function getFormatterDependencies(row: R) {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
@@ -33,7 +32,6 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolli
       value: value as any, //FIXME: fix value type
       column,
       rowIdx,
-      isScrolling,
       row: rowData,
       isRowSelected,
       onRowSelectionChange,
