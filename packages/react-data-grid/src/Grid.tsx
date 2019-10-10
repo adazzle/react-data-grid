@@ -3,7 +3,7 @@ import { isValidElementType } from 'react-is';
 
 import Header, { HeaderHandle, HeaderProps } from './Header';
 import Canvas from './Canvas';
-import { HeaderRowData, CellMetaData, InteractionMasksMetaData, ColumnMetrics, ScrollState } from './common/types';
+import { HeaderRowData, CellMetaData, InteractionMasksMetaData, ColumnMetrics, ScrollPosition } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { ReactDataGridProps } from './ReactDataGrid';
 import EventBus from './EventBus';
@@ -22,8 +22,6 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'emptyRowsView'
 | 'onHeaderDrop'
 | 'getSubRowDetails'
-| 'overscanRowCount'
-| 'overscanColumnCount'
 | 'selectedRows'
 | 'onSelectedRowsChange'
 | 'sortColumn'
@@ -66,13 +64,13 @@ export default function Grid<R>({
   const header = useRef<HeaderHandle>(null);
   const scrollLeft = useRef(0);
 
-  function onScroll(scrollState: ScrollState) {
-    if (header.current && scrollLeft.current !== scrollState.scrollLeft) {
-      scrollLeft.current = scrollState.scrollLeft;
-      header.current.setScrollLeft(scrollState.scrollLeft);
+  function onScroll(scrollPosition: ScrollPosition) {
+    if (header.current && scrollLeft.current !== scrollPosition.scrollLeft) {
+      scrollLeft.current = scrollPosition.scrollLeft;
+      header.current.setScrollLeft(scrollPosition.scrollLeft);
     }
     if (props.onScroll) {
-      props.onScroll(scrollState);
+      props.onScroll(scrollPosition);
     }
   }
 
@@ -129,8 +127,6 @@ export default function Grid<R>({
           interactionMasksMetaData={props.interactionMasksMetaData}
           RowsContainer={props.RowsContainer}
           editorPortalTarget={props.editorPortalTarget}
-          overscanRowCount={props.overscanRowCount}
-          overscanColumnCount={props.overscanColumnCount}
           onCanvasKeydown={props.onCanvasKeydown}
           onCanvasKeyup={props.onCanvasKeyup}
         />

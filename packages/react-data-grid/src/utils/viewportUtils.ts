@@ -1,5 +1,4 @@
-import { SCROLL_DIRECTION } from '../common/enums';
-import { CalculatedColumn, ScrollPosition, ColumnMetrics } from '../common/types';
+import { CalculatedColumn, ColumnMetrics } from '../common/types';
 
 function getTotalFrozenColumnWidth<R>(columns: CalculatedColumn<R>[], lastFrozenColumnIndex: number): number {
   if (lastFrozenColumnIndex === -1) {
@@ -30,8 +29,6 @@ export interface VerticalRangeToRenderParams {
   rowHeight: number;
   scrollTop: number;
   rowsCount: number;
-  scrollDirection: SCROLL_DIRECTION;
-  overscanRowCount?: number;
 }
 
 export interface VerticalRangeToRender {
@@ -43,14 +40,12 @@ export function getVerticalRangeToRender({
   height,
   rowHeight,
   scrollTop,
-  rowsCount,
-  scrollDirection,
-  overscanRowCount = 2
+  rowsCount
 }: VerticalRangeToRenderParams): VerticalRangeToRender {
   const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
   const rowVisibleEndIdx = Math.min(rowsCount - 1, Math.floor((scrollTop + height) / rowHeight));
-  const rowOverscanStartIdx = Math.max(0, rowVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.UP ? overscanRowCount : 2));
-  const rowOverscanEndIdx = Math.min(rowsCount - 1, rowVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.DOWN ? overscanRowCount : 2));
+  const rowOverscanStartIdx = Math.max(0, rowVisibleStartIdx - 2);
+  const rowOverscanEndIdx = Math.min(rowsCount - 1, rowVisibleEndIdx + 2);
 
   return { rowOverscanStartIdx, rowOverscanEndIdx };
 }
@@ -65,15 +60,11 @@ export interface HorizontalRangeToRender {
 export interface HorizontalRangeToRenderParams<R> {
   columnMetrics: ColumnMetrics<R>;
   scrollLeft: number;
-  scrollDirection: SCROLL_DIRECTION;
-  overscanColumnCount?: number;
 }
 
 export function getHorizontalRangeToRender<R>({
   columnMetrics,
-  scrollLeft,
-  scrollDirection,
-  overscanColumnCount = 2
+  scrollLeft
 }: HorizontalRangeToRenderParams<R>): HorizontalRangeToRender {
   const { columns, totalColumnWidth, lastFrozenColumnIndex } = columnMetrics;
   let { viewportWidth } = columnMetrics;
@@ -97,16 +88,8 @@ export function getHorizontalRangeToRender<R>({
   const availableWidth = viewportWidth - totalFrozenColumnWidth;
   const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
   const colVisibleEndIdx = Math.min(columns.length, colVisibleStartIdx + nonFrozenRenderedColumnCount);
-  const colOverscanStartIdx = Math.max(0, colVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.LEFT ? overscanColumnCount : 2));
-  const colOverscanEndIdx = Math.min(columns.length, colVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.RIGHT ? overscanColumnCount : 2));
+  const colOverscanStartIdx = Math.max(0, colVisibleStartIdx - 2);
+  const colOverscanEndIdx = Math.min(columns.length, colVisibleEndIdx + 2);
 
   return { colVisibleStartIdx, colVisibleEndIdx, colOverscanStartIdx, colOverscanEndIdx };
-}
-
-export function getScrollDirection(prevScroll: ScrollPosition, nextScroll: ScrollPosition): SCROLL_DIRECTION {
-  if (nextScroll.scrollTop > prevScroll.scrollTop) return SCROLL_DIRECTION.DOWN;
-  if (nextScroll.scrollTop < prevScroll.scrollTop) return SCROLL_DIRECTION.UP;
-  if (nextScroll.scrollLeft > prevScroll.scrollLeft) return SCROLL_DIRECTION.RIGHT;
-  if (nextScroll.scrollLeft < prevScroll.scrollLeft) return SCROLL_DIRECTION.LEFT;
-  return SCROLL_DIRECTION.NONE;
 }
