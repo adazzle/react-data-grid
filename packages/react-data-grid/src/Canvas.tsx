@@ -28,6 +28,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'cellNavigationMode'
 | 'enableCellAutoFocus'
 | 'editorPortalTarget'
+| 'renderBatchSize'
 >>;
 
 export interface CanvasProps<R> extends SharedDataGridProps<R> {
@@ -73,6 +74,7 @@ export default function Canvas<R>({
   onCanvasKeyup,
   onRowSelectionChange,
   onScroll,
+  renderBatchSize,
   rowGetter,
   rowGroupRenderer,
   rowHeight,
@@ -96,9 +98,10 @@ export default function Canvas<R>({
       height: clientHeight,
       rowHeight,
       scrollTop,
-      rowsCount
+      rowsCount,
+      renderBatchSize
     });
-  }, [clientHeight, rowHeight, rowsCount, scrollTop]);
+  }, [clientHeight, renderBatchSize, rowHeight, rowsCount, scrollTop]);
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({

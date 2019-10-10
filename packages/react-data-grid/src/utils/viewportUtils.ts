@@ -29,6 +29,7 @@ export interface VerticalRangeToRenderParams {
   rowHeight: number;
   scrollTop: number;
   rowsCount: number;
+  renderBatchSize: number;
 }
 
 export interface VerticalRangeToRender {
@@ -40,12 +41,14 @@ export function getVerticalRangeToRender({
   height,
   rowHeight,
   scrollTop,
-  rowsCount
+  rowsCount,
+  renderBatchSize
 }: VerticalRangeToRenderParams): VerticalRangeToRender {
+  const overscanThreshold = 4;
   const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
   const rowVisibleEndIdx = Math.min(rowsCount - 1, Math.floor((scrollTop + height) / rowHeight));
-  const rowOverscanStartIdx = Math.max(0, rowVisibleStartIdx - 2);
-  const rowOverscanEndIdx = Math.min(rowsCount - 1, rowVisibleEndIdx + 2);
+  const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / renderBatchSize) * renderBatchSize);
+  const rowOverscanEndIdx = Math.min(rowsCount - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / renderBatchSize) * renderBatchSize);
 
   return { rowOverscanStartIdx, rowOverscanEndIdx };
 }
@@ -88,8 +91,8 @@ export function getHorizontalRangeToRender<R>({
   const availableWidth = viewportWidth - totalFrozenColumnWidth;
   const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
   const colVisibleEndIdx = Math.min(columns.length, colVisibleStartIdx + nonFrozenRenderedColumnCount);
-  const colOverscanStartIdx = Math.max(0, colVisibleStartIdx - 2);
-  const colOverscanEndIdx = Math.min(columns.length, colVisibleEndIdx + 2);
+  const colOverscanStartIdx = Math.max(0, colVisibleStartIdx - 1);
+  const colOverscanEndIdx = Math.min(columns.length, colVisibleEndIdx + 1);
 
   return { colVisibleStartIdx, colVisibleEndIdx, colOverscanStartIdx, colOverscanEndIdx };
 }

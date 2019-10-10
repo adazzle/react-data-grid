@@ -51,6 +51,7 @@ const testProps: CanvasProps<Row> = {
     totalColumnWidth: 0,
     viewportWidth: 1000
   },
+  renderBatchSize: 8,
   onCanvasKeydown() {},
   onCanvasKeyup() {}
 };

@@ -141,6 +141,8 @@ export interface ReactDataGridProps<R extends {}> {
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
+  /** Control how big render row batches will be. */
+  renderBatchSize?: number;
 }
 
 export interface ReactDataGridHandle {
@@ -167,6 +169,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   enableCellAutoFocus = true,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
+  renderBatchSize = 8,
   columns,
   rowsCount,
   rowGetter,
@@ -454,6 +457,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
               editorPortalTarget={editorPortalTarget}
               onCanvasKeydown={props.onGridKeyDown}
               onCanvasKeyup={props.onGridKeyUp}
+              renderBatchSize={renderBatchSize}
             />
           )}
         </>
