@@ -23,11 +23,6 @@ describe('DropDownEditor', () => {
       );
     });
 
-    it('should pass width=100% to the select node as an inline style', () => {
-      const Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
-      expect(Select.style.width).toBe('100%');
-    });
-
     it('should pass the value to the select node as an inline value', () => {
       const Select = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
       expect(Select.value).toBe('option2');
