@@ -50,6 +50,45 @@ describe('viewportUtils', () => {
         rowOverscanEndIdx: 4
       });
     });
+
+    it('should use renderBatchSize to calculate the range', () => {
+      expect(getRange({ renderBatchSize: 4, scrollTop: 0 })).toEqual({
+        rowOverscanStartIdx: 0,
+        rowOverscanEndIdx: 16
+      });
+      expect(getRange({ renderBatchSize: 4, scrollTop: 50 * 1000 })).toEqual({
+        rowOverscanStartIdx: 996,
+        rowOverscanEndIdx: 999
+      });
+      expect(getRange({ renderBatchSize: 4, scrollTop: 2350 })).toEqual({
+        rowOverscanStartIdx: 40,
+        rowOverscanEndIdx: 64
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2350 })).toEqual({
+        rowOverscanStartIdx: 36,
+        rowOverscanEndIdx: 72
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2550 })).toEqual({
+        rowOverscanStartIdx: 36,
+        rowOverscanEndIdx: 72
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2850 })).toEqual({
+        rowOverscanStartIdx: 48,
+        rowOverscanEndIdx: 72
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950 })).toEqual({
+        rowOverscanStartIdx: 48,
+        rowOverscanEndIdx: 84
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 200 })).toEqual({
+        rowOverscanStartIdx: 48,
+        rowOverscanEndIdx: 72
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 800 })).toEqual({
+        rowOverscanStartIdx: 48,
+        rowOverscanEndIdx: 84
+      });
+    });
   });
 
   describe('getHorizontalRangeToRender', () => {
