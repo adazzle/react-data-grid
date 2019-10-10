@@ -87,8 +87,8 @@ describe('viewportUtils', () => {
       expect(getRange({ scrollLeft: 300 })).toEqual({
         colVisibleStartIdx: 3,
         colVisibleEndIdx: 13,
-        colOverscanStartIdx: 1,
-        colOverscanEndIdx: 15
+        colOverscanStartIdx: 2,
+        colOverscanEndIdx: 14
       });
     });
 
@@ -99,7 +99,7 @@ describe('viewportUtils', () => {
         colVisibleStartIdx: 0,
         colVisibleEndIdx: 10,
         colOverscanStartIdx: 0,
-        colOverscanEndIdx: 12
+        colOverscanEndIdx: 11
       });
     });
 
@@ -113,8 +113,8 @@ describe('viewportUtils', () => {
       })).toEqual({
         colVisibleStartIdx: 2,
         colVisibleEndIdx: 7,
-        colOverscanStartIdx: 0,
-        colOverscanEndIdx: 9
+        colOverscanStartIdx: 1,
+        colOverscanEndIdx: 8
       });
     });
 
@@ -122,7 +122,7 @@ describe('viewportUtils', () => {
       expect(getRange({ overscanColumnCount: 5 })).toEqual({
         colVisibleStartIdx: 2,
         colVisibleEndIdx: 12,
-        colOverscanStartIdx: 0,
+        colOverscanStartIdx: 1,
         colOverscanEndIdx: 17
       });
     });
@@ -132,7 +132,7 @@ describe('viewportUtils', () => {
         colVisibleStartIdx: 10,
         colVisibleEndIdx: 20,
         colOverscanStartIdx: 5,
-        colOverscanEndIdx: 22
+        colOverscanEndIdx: 21
       });
     });
 
@@ -146,8 +146,8 @@ describe('viewportUtils', () => {
       expect(getRange({ scrollLeft: 500, columnMetrics })).toEqual({
         colVisibleStartIdx: 8,
         colVisibleEndIdx: 15,
-        colOverscanStartIdx: 6,
-        colOverscanEndIdx: 17
+        colOverscanStartIdx: 7,
+        colOverscanEndIdx: 16
       });
     });
   });

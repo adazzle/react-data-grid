@@ -72,7 +72,7 @@ export function getHorizontalRangeToRender<R>({
   columnMetrics,
   scrollLeft,
   scrollDirection,
-  overscanColumnCount = 2
+  overscanColumnCount = 1
 }: HorizontalRangeToRenderParams<R>): HorizontalRangeToRender {
   const { columns, totalColumnWidth, lastFrozenColumnIndex } = columnMetrics;
   let { viewportWidth } = columnMetrics;
@@ -96,8 +96,8 @@ export function getHorizontalRangeToRender<R>({
   const availableWidth = viewportWidth - totalFrozenColumnWidth;
   const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
   const colVisibleEndIdx = Math.min(columns.length, colVisibleStartIdx + nonFrozenRenderedColumnCount);
-  const colOverscanStartIdx = Math.max(0, colVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.LEFT ? overscanColumnCount : 2));
-  const colOverscanEndIdx = Math.min(columns.length, colVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.RIGHT ? overscanColumnCount : 2));
+  const colOverscanStartIdx = Math.max(0, colVisibleStartIdx - (scrollDirection === SCROLL_DIRECTION.LEFT ? overscanColumnCount : 1));
+  const colOverscanEndIdx = Math.min(columns.length, colVisibleEndIdx + (scrollDirection === SCROLL_DIRECTION.RIGHT ? overscanColumnCount : 1));
 
   return { colVisibleStartIdx, colVisibleEndIdx, colOverscanStartIdx, colOverscanEndIdx };
 }
