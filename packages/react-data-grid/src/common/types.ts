@@ -145,7 +145,6 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   onBlur(): void;
   onOverrideKeyDown(e: KeyboardEvent): void;
 
-  inputRef: React.RefObject<HTMLInputElement>;
   onChange(value: TValue): void;
 }
 
