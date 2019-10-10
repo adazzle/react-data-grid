@@ -48,7 +48,8 @@ const testProps: CellProps<Row> = {
   isRowSelected: false,
   onRowSelectionChange() {},
   scrollLeft: 0,
-  lastFrozenColumnIndex: -1
+  lastFrozenColumnIndex: -1,
+  isSummaryRow: false
 };
 
 const renderComponent = (extraProps?: PropsWithChildren<Partial<CellProps<Row>>>) => {
@@ -98,7 +99,8 @@ describe('Cell Tests', () => {
       isRowSelected: false,
       onRowSelectionChange() {},
       scrollLeft: 0,
-      lastFrozenColumnIndex: -1
+      lastFrozenColumnIndex: -1,
+      isSummaryRow: false
     };
 
     it('passes classname property', () => {
@@ -134,6 +136,7 @@ describe('Cell Tests', () => {
         onRowSelectionChange() {},
         scrollLeft: 0,
         lastFrozenColumnIndex: -1,
+        isSummaryRow: false,
         ...propsOverride
       };
 
