@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { AreaChart, Area } from 'Recharts';
 import Wrapper from './Wrapper';
@@ -9,17 +9,21 @@ const getRandom = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min; // The maximum is exclusive and the minimum is inclusive
 };
 
-const ExpensiveFormatter = ({ isScrolling }) => {
-  const isReady = useRef(!isScrolling);
+function ExpensiveFormatter() {
+  const [isReady, setReady] = useState(false);
   const [items] = useState(() => {
     return [...Array(1000).keys()].map(i => ({ name: `Page ${i}`, uv: getRandom(0, 4000), pv: getRandom(0, 4000), amt: getRandom(0, 4000) })).slice(0, 50);
   });
 
-  if (isScrolling && !isReady.current) {
-    return <div>is scrolling</div>;
-  }
+  useEffect(() => {
+    const handle = window.requestIdleCallback(() => setReady(true), { timeout: 300 });
 
-  isReady.current = true;
+    return () => {
+      window.cancelIdleCallback(handle);
+    };
+  }, []);
+
+  if (!isReady) return <div>delayed rendering...</div>;
 
   return (
     <AreaChart
@@ -31,7 +35,7 @@ const ExpensiveFormatter = ({ isScrolling }) => {
       <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
     </AreaChart>
   );
-};
+}
 
 const createColumns = (numberCols) => [...Array(numberCols).keys()].map(i => {
   const column = {
@@ -67,8 +71,6 @@ export default class extends React.Component {
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={800}
-          onScroll={this.onScroll}
-          enableIsScrolling
         />
       </Wrapper>
     );

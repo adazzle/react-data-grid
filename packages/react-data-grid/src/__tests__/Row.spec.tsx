@@ -46,7 +46,6 @@ describe('Row', () => {
     },
     colOverscanStartIdx: 0,
     colOverscanEndIdx: 20,
-    isScrolling: true,
     scrollLeft: 0,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,

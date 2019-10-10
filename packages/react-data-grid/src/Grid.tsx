@@ -24,7 +24,6 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'getSubRowDetails'
 | 'overscanRowCount'
 | 'overscanColumnCount'
-| 'enableIsScrolling'
 | 'selectedRows'
 | 'onSelectedRowsChange'
 | 'sortColumn'
@@ -132,7 +131,6 @@ export default function Grid<R>({
           editorPortalTarget={props.editorPortalTarget}
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
-          enableIsScrolling={props.enableIsScrolling}
           onCanvasKeydown={props.onCanvasKeydown}
           onCanvasKeyup={props.onCanvasKeyup}
         />
