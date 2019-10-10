@@ -94,6 +94,8 @@ export default function Canvas<R>({
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
+  // https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
+  // The reason that we didn't choose to use useRef was due to the lazy initialization was only supported by useState() at the moment.
   const [rowRefs] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
   const [summaryRowRefs] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
