@@ -143,6 +143,8 @@ export interface ReactDataGridProps<R extends {}> {
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
   summaryRows?: R[];
+  /** Control how big render row batches will be. */
+  renderBatchSize?: number;
 }
 
 export interface ReactDataGridHandle {
@@ -169,6 +171,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   enableCellAutoFocus = true,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
+  renderBatchSize = 8,
   columns,
   rowsCount,
   rowGetter,
@@ -432,6 +435,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           editorPortalTarget={editorPortalTarget}
           interactionMasksMetaData={interactionMasksMetaData}
           summaryRows={summaryRows}
+          renderBatchSize={renderBatchSize}
         />
       )}
     </div>

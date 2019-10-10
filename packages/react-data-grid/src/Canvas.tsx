@@ -31,6 +31,7 @@ type SharedGridProps<R> = Pick<GridProps<R>,
 | 'RowsContainer'
 | 'editorPortalTarget'
 | 'interactionMasksMetaData'
+| 'renderBatchSize'
 | 'onCanvasKeydown'
 | 'onCanvasKeyup'
 >;
@@ -73,6 +74,7 @@ export default function Canvas<R>({
   onCanvasKeyup,
   onRowSelectionChange,
   onScroll,
+  renderBatchSize,
   rowGetter,
   rowGroupRenderer,
   rowHeight,
@@ -100,9 +102,10 @@ export default function Canvas<R>({
       height: clientHeight,
       rowHeight,
       scrollTop,
-      rowsCount
+      rowsCount,
+      renderBatchSize
     });
-  }, [clientHeight, rowHeight, rowsCount, scrollTop]);
+  }, [clientHeight, renderBatchSize, rowHeight, rowsCount, scrollTop]);
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
