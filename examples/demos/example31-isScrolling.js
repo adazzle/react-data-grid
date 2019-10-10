@@ -3,6 +3,8 @@ import ReactDataGrid from 'react-data-grid';
 import { AreaChart, Area } from 'Recharts';
 import Wrapper from './Wrapper';
 
+const supportsIdleCallback = typeof window.requestIdleCallback === 'function';
+
 const getRandom = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -15,13 +17,21 @@ function ExpensiveFormatter() {
     return [...Array(1000).keys()].map(i => ({ name: `Page ${i}`, uv: getRandom(0, 4000), pv: getRandom(0, 4000), amt: getRandom(0, 4000) })).slice(0, 50);
   });
 
-  useEffect(() => {
-    const handle = window.requestIdleCallback(() => setReady(true), { timeout: 300 });
+  useEffect(supportsIdleCallback
+    ? () => {
+      const handle = window.requestIdleCallback(() => setReady(true), { timeout: 300 });
 
-    return () => {
-      window.cancelIdleCallback(handle);
-    };
-  }, []);
+      return () => {
+        window.cancelIdleCallback(handle);
+      };
+    }
+    : () => {
+      const handle = window.setTimeout(() => setReady(true), 1000);
+
+      return () => {
+        window.clearTimeout(handle);
+      };
+    }, [isReady]);
 
   if (!isReady) return <div>delayed rendering...</div>;
 
