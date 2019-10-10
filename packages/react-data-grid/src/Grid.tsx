@@ -34,6 +34,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'cellNavigationMode'
 | 'enableCellAutoFocus'
 | 'editorPortalTarget'
+| 'renderBatchSize'
 >>;
 
 export interface GridProps<R> extends SharedDataGridProps<R> {
@@ -127,6 +128,7 @@ export default function Grid<R>({
           interactionMasksMetaData={props.interactionMasksMetaData}
           RowsContainer={props.RowsContainer}
           editorPortalTarget={props.editorPortalTarget}
+          renderBatchSize={props.renderBatchSize}
           onCanvasKeydown={props.onCanvasKeydown}
           onCanvasKeyup={props.onCanvasKeyup}
         />

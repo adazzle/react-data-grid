@@ -18,6 +18,7 @@ describe('viewportUtils', () => {
         rowHeight: 50,
         scrollTop: 200,
         rowsCount: 1000,
+        renderBatchSize: 8,
         ...overrides
       });
     }
