@@ -32,7 +32,7 @@ import {
   SubRowDetails,
   SubRowOptions,
   RowRendererProps,
-  ScrollState
+  ScrollPosition
 } from './common/types';
 
 export interface ReactDataGridProps<R extends {}> {
@@ -110,7 +110,7 @@ export interface ReactDataGridProps<R extends {}> {
   /** The direction to sort the sortColumn*/
   sortDirection?: DEFINE_SORT;
   /** Called when the grid is scrolled */
-  onScroll?(scrollState: ScrollState): void;
+  onScroll?(scrollPosition: ScrollPosition): void;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   getValidFilterValues?(columnKey: keyof R): unknown;
@@ -138,16 +138,6 @@ export interface ReactDataGridProps<R extends {}> {
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
-  /**
-   * The number of rows to render outside of the visible area
-   * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
-   */
-  overscanRowCount?: number;
-  /**
-   * The number of columns to render outside of the visible area
-   * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
-   */
-  overscanColumnCount?: number;
 }
 
 export interface ReactDataGridHandle {
@@ -435,8 +425,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           getSubRowDetails={props.getSubRowDetails}
           editorPortalTarget={editorPortalTarget}
           interactionMasksMetaData={interactionMasksMetaData}
-          overscanRowCount={props.overscanRowCount}
-          overscanColumnCount={props.overscanColumnCount}
         />
       )}
     </div>
