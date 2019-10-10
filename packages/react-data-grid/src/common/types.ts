@@ -43,6 +43,8 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TDependentValue>>;
 
   getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
+
+  enableNewEditor?: boolean;
 }
 
 export type Column<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
@@ -142,6 +144,9 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   onCommitCancel(): void;
   onBlur(): void;
   onOverrideKeyDown(e: KeyboardEvent): void;
+
+  inputRef: React.RefObject<HTMLInputElement>;
+  onChange(value: TValue): void;
 }
 
 export interface HeaderRowProps<TRow> {

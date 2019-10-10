@@ -15,7 +15,8 @@ export default class extends React.Component {
       {
         key: 'task',
         name: 'Title',
-        editable: true
+        editable: true,
+        enableNewEditor: true
       },
       {
         key: 'priority',

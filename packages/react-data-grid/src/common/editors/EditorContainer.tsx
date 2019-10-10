@@ -33,6 +33,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
   changeCanceled = false;
 
   private readonly editor = React.createRef<Editor>();
+  private readonly inputRef = React.createRef<HTMLInputElement>();
   readonly state: Readonly<State> = { isInvalid: false };
 
   componentDidMount() {
@@ -95,8 +96,10 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
     type P = EditorProps<ValueType<R> | string, unknown, R>;
     const editorProps: P & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
+      inputRef: this.inputRef,
       column: this.props.column,
       value: this.getInitialValue(),
+      onChange: () => undefined,
       rowMetaData: this.getRowMetaData(),
       rowData: this.props.rowData,
       height: this.props.height,
