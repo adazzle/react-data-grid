@@ -18,7 +18,6 @@ interface Props<R> {
   isRowHovered?: boolean;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  isScrolling?: boolean;
   columnGroupDisplayName: string;
   columnGroupName: string;
   isExpanded: boolean;

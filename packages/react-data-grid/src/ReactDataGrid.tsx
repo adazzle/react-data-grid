@@ -148,11 +148,6 @@ export interface ReactDataGridProps<R extends {}> {
    * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
    */
   overscanColumnCount?: number;
-  /**
-   * Provides an additional isScrolling parameter to formatters. This parameter can be used to show a placeholder row or column while the list is being scrolled.
-   * Note that using this parameter will result in an additional render call after scrolling has stopped (when isScrolling changes from true to false).
-   */
-  enableIsScrolling?: boolean;
 }
 
 export interface ReactDataGridHandle {
@@ -442,7 +437,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
           interactionMasksMetaData={interactionMasksMetaData}
           overscanRowCount={props.overscanRowCount}
           overscanColumnCount={props.overscanColumnCount}
-          enableIsScrolling={props.enableIsScrolling}
         />
       )}
     </div>
