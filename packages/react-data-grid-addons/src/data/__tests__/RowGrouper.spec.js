@@ -1,5 +1,3 @@
-import Immutable from 'immutable';
-
 import groupRows from '../RowGrouper';
 
 const rows = [{ colOne: 'v1', colTwo: 'b1' },
@@ -19,12 +17,6 @@ describe('Row Grouper', () => {
     // we should have 5 elements -> 2 group headers + all of the original ones
     expect(groupingResult.length).toBe(5);
   });
-  it('It can group an immutable js list of rows (one grouping column)', () => {
-    const immutableList = Immutable.fromJS(rows);
-    const groupingResult = groupRows(immutableList, grpDetails.oneCol, grpDetails.expRows);
-
-    expect(groupingResult.size).toBe(5);
-  });
   it('It can group an array of rows (two grouping columns) - correct number of first nested header elements', () => {
     const groupingResult = groupRows(rows, grpDetails.multiCol, grpDetails.expRows);
 
@@ -36,27 +28,5 @@ describe('Row Grouper', () => {
     const groupingResult = groupRows(rows, grpDetails.multiCol, grpDetails.expRows);
 
     expect(groupingResult.length).toBe(8);
-  });
-  it('It can group an immutable js list of rows (two grouping columns)', () => {
-    const immutableList = Immutable.fromJS(rows);
-    const groupingResult = groupRows(immutableList, grpDetails.multiCol, grpDetails.expRows);
-
-    expect(groupingResult.size).toBe(8);
-  });
-  it('It can group an immutable js list of rows (two grouping columns) - correct number of first nested header elements', () => {
-    const immutableList = Immutable.fromJS(rows);
-    const groupingResult = groupRows(immutableList, grpDetails.multiCol, grpDetails.expRows);
-
-    expect(groupingResult
-      .slice(0, grpDetails.multiCol.length)
-      .every(x => x.__metaData)).toBe(true);
-  });
-  it('It can group an Immutable List (not list of immutable maps)', () => {
-    const immutableList = Immutable.List(rows);
-    const groupingResult = groupRows(immutableList, grpDetails.multiCol, grpDetails.expRows);
-
-    expect(groupingResult
-      .slice(0, grpDetails.multiCol.length)
-      .every(x => x.__metaData)).toBe(true);
   });
 });

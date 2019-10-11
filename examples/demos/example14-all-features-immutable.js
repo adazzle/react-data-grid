@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDataGrid from 'react-data-grid';
 import { Editors, Toolbar, Menu, Formatters } from 'react-data-grid-addons';
-import Immutable from 'immutable';
 import faker from 'faker';
 import Wrapper from './Wrapper';
 import FakeObjectDataStore from './FakeObjectDataStore';
@@ -138,15 +137,15 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const fakeRows = FakeObjectDataStore.createRows(100);
-    this.state = { rows: Immutable.fromJS(fakeRows) };
+    this.state = { rows: fakeRows };
   }
 
   handleGridRowsUpdated = (e) => {
     const { fromRow, toRow, updated } = e;
-    let rows = this.state.rows.slice();
+    const rows = [...this.state.rows];
 
     for (let i = fromRow; i <= toRow; i++) {
-      rows = rows.update(i, r => r.merge(updated));
+      rows[i] = { ...rows[i], ...updated };
     }
 
     if (this.props.handleCellDrag) {
@@ -163,20 +162,18 @@ export default class extends React.Component {
       lastName: ''
     };
 
-    let rows = this.state.rows.slice();
-    rows = rows.push(Immutable.fromJS(newRow));
-    this.setState({ rows });
+    this.setState({ rows: [...this.state.rows, newRow] });
   };
 
   getRowAt = (index) => {
     if (index < 0 || index > this.getSize()) {
       return undefined;
     }
-    return this.state.rows.get(index);
+    return this.state.rows[index];
   };
 
   getSize = () => {
-    return this.state.rows.size;
+    return this.state.rows.length;
   };
 
   render() {

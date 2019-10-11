@@ -40,7 +40,6 @@
     "eslint-plugin-sonarjs": "^0.4.0",
     "faker": "^4.1.0",
     "immutability-helper": "^3.0.1",
-    "immutable": "^3.8.2",
     "jest": "^24.9.0",
     "lerna": "^3.15.0",
     "less": "^3.10.3",

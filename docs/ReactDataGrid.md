@@ -16,7 +16,6 @@ Props
 ### `columns` (required)
 
 An array of objects representing each column on the grid.
-Can also be an ImmutableJS object
 
 **type:** arrayOf 
   | Name | Type | Required | Description
