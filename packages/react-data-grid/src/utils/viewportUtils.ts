@@ -32,25 +32,20 @@ export interface VerticalRangeToRenderParams {
   renderBatchSize: number;
 }
 
-export interface VerticalRangeToRender {
-  rowOverscanStartIdx: number;
-  rowOverscanEndIdx: number;
-}
-
 export function getVerticalRangeToRender({
   height,
   rowHeight,
   scrollTop,
   rowsCount,
   renderBatchSize
-}: VerticalRangeToRenderParams): VerticalRangeToRender {
+}: VerticalRangeToRenderParams) {
   const overscanThreshold = 4;
   const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
   const rowVisibleEndIdx = Math.min(rowsCount - 1, Math.floor((scrollTop + height) / rowHeight));
   const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / renderBatchSize) * renderBatchSize);
   const rowOverscanEndIdx = Math.min(rowsCount - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / renderBatchSize) * renderBatchSize);
 
-  return { rowOverscanStartIdx, rowOverscanEndIdx };
+  return [rowOverscanStartIdx, rowOverscanEndIdx] as const;
 }
 
 export interface HorizontalRangeToRender {

@@ -93,15 +93,13 @@ export default function Canvas<R>({
   const [rows] = useState(() => new Map<number, RowRenderer>());
   const clientHeight = getClientHeight();
 
-  const { rowOverscanStartIdx, rowOverscanEndIdx } = useMemo(() => {
-    return getVerticalRangeToRender({
-      height: clientHeight,
-      rowHeight,
-      scrollTop,
-      rowsCount,
-      renderBatchSize
-    });
-  }, [clientHeight, renderBatchSize, rowHeight, rowsCount, scrollTop]);
+  const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender({
+    height: clientHeight,
+    rowHeight,
+    scrollTop,
+    rowsCount,
+    renderBatchSize
+  });
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
