@@ -5,45 +5,46 @@ import Row from './Row';
 import RowGroup from './RowGroup';
 import InteractionMasks from './masks/InteractionMasks';
 import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize } from './utils';
-import { EventTypes, SCROLL_DIRECTION } from './common/enums';
-import { CalculatedColumn, Position, ScrollState, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
-import { GridProps } from './Grid';
-import { getScrollDirection, getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
+import { EventTypes } from './common/enums';
+import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData, ColumnMetrics, CellMetaData, InteractionMasksMetaData } from './common/types';
+import { ReactDataGridProps } from './ReactDataGrid';
+import EventBus from './EventBus';
+import { getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
 
-type SharedGridProps<R> = Pick<GridProps<R>,
-| 'rowKey'
+type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'rowGetter'
 | 'rowsCount'
-| 'columnMetrics'
-| 'selectedRows'
-| 'onRowSelectionChange'
 | 'rowRenderer'
-| 'cellMetaData'
-| 'rowHeight'
+| 'rowGroupRenderer'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'getSubRowDetails'
-| 'rowGroupRenderer'
-| 'enableCellSelect'
-| 'enableCellAutoFocus'
-| 'cellNavigationMode'
-| 'eventBus'
 | 'RowsContainer'
+| 'getSubRowDetails'
+| 'selectedRows'
+> & Required<Pick<ReactDataGridProps<R>,
+| 'rowKey'
+| 'enableCellSelect'
+| 'rowHeight'
+| 'cellNavigationMode'
+| 'enableCellAutoFocus'
 | 'editorPortalTarget'
-| 'interactionMasksMetaData'
-| 'overscanRowCount'
-| 'overscanColumnCount'
-| 'onCanvasKeydown'
-| 'onCanvasKeyup'
->;
+| 'renderBatchSize'
+>>;
 
-export interface CanvasProps<R> extends SharedGridProps<R> {
+export interface CanvasProps<R> extends SharedDataGridProps<R> {
+  columnMetrics: ColumnMetrics<R>;
+  cellMetaData: CellMetaData<R>;
   height: number;
-  onScroll(position: ScrollState): void;
+  eventBus: EventBus;
+  interactionMasksMetaData: InteractionMasksMetaData<R>;
+  onScroll(position: ScrollPosition): void;
+  onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
 interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
-  ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
+  ref(row: (RowRenderer & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
   columns: CalculatedColumn<R>[];
@@ -73,8 +74,7 @@ export default function Canvas<R>({
   onCanvasKeyup,
   onRowSelectionChange,
   onScroll,
-  overscanColumnCount,
-  overscanRowCount,
+  renderBatchSize,
   rowGetter,
   rowGroupRenderer,
   rowHeight,
@@ -87,32 +87,26 @@ export default function Canvas<R>({
 }: CanvasProps<R>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
-  const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
+  const [rows] = useState(() => new Map<number, RowRenderer & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
 
-  const { rowOverscanStartIdx, rowOverscanEndIdx } = useMemo(() => {
-    return getVerticalRangeToRender({
-      height: clientHeight,
-      rowHeight,
-      scrollTop,
-      rowsCount,
-      scrollDirection,
-      overscanRowCount
-    });
-  }, [clientHeight, overscanRowCount, rowHeight, rowsCount, scrollDirection, scrollTop]);
+  const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
+    clientHeight,
+    rowHeight,
+    scrollTop,
+    rowsCount,
+    renderBatchSize
+  );
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
       columnMetrics,
-      scrollLeft,
-      scrollDirection,
-      overscanColumnCount
+      scrollLeft
     });
-  }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft]);
+  }, [columnMetrics, scrollLeft]);
 
   useEffect(() => {
     return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));
@@ -132,14 +126,9 @@ export default function Canvas<R>({
     // Freeze columns on legacy browsers
     setComponentsScrollLeft(newScrollLeft);
 
-    const scrollDirection = getScrollDirection(
-      { scrollLeft, scrollTop },
-      { scrollLeft: newScrollLeft, scrollTop: newScrollTop }
-    );
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
-    setScrollDirection(scrollDirection);
-    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop, scrollDirection });
+    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
   }
 
   function getClientHeight() {
@@ -248,22 +237,6 @@ export default function Canvas<R>({
     });
   }
 
-  function getRowTop(rowIdx: number) {
-    const row = rows.get(rowIdx);
-    if (row && row.getRowTop) {
-      return row.getRowTop();
-    }
-    return rowHeight * rowIdx;
-  }
-
-  function getRowHeight(rowIdx: number) {
-    const row = rows.get(rowIdx);
-    if (row && row.getRowHeight) {
-      return row.getRowHeight();
-    }
-    return rowHeight;
-  }
-
   function getRowColumns(rowIdx: number) {
     const row = rows.get(rowIdx);
     return row && row.props ? row.props.columns : columnMetrics.columns;
@@ -348,8 +321,6 @@ export default function Canvas<R>({
         onHitRightBoundary={handleHitColummBoundary}
         scrollLeft={scrollLeft}
         scrollTop={scrollTop}
-        getRowHeight={getRowHeight}
-        getRowTop={getRowTop}
         getRowColumns={getRowColumns}
         editorPortalTarget={editorPortalTarget}
         {...interactionMasksMetaData}

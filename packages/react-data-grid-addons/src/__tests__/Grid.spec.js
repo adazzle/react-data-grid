@@ -42,8 +42,13 @@ describe('Grid', () => {
     return { wrapper, props, columns, rows };
   };
 
-  const getBaseGrid = (wrapper) => {
-    return wrapper.find('Grid');
+  const getBaseHeader = (wrapper) => {
+    // console.log(wrapper.debug());
+    return wrapper.find('ForwardRef(Header)');
+  };
+
+  const getBaseCanvas = (wrapper) => {
+    return wrapper.find('Canvas');
   };
 
   it('should create a new instance of Grid', () => {
@@ -52,20 +57,16 @@ describe('Grid', () => {
   });
 
   it('should render a BaseGrid stub', () => {
-    expect(getBaseGrid(setup().wrapper)).toBeDefined();
+    expect(getBaseCanvas(setup().wrapper)).toBeDefined();
   });
 
   // Set of tests for the props that defined the height of our rows
-  describe('when defininig heigths on props', () => {
+  describe('when defininig heights on props', () => {
     describe('for defaults props', () => {
       function innerSetup() {
         const { wrapper } = setup({ enableHeaderFilters: true });
-        return getBaseGrid(wrapper);
+        return getBaseHeader(wrapper);
       }
-
-      it('uses the appropriate default for the grid row height', () => {
-        expect(innerSetup().props().rowHeight).toEqual(35);
-      });
 
       it('uses the appropriate default for the header row height', () => {
         expect(innerSetup().props().headerRows[0].height).toEqual(35);
@@ -79,14 +80,10 @@ describe('Grid', () => {
     describe('for a given row height prop', () => {
       function innerSetup() {
         const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
-        return getBaseGrid(wrapper);
+        return getBaseHeader(wrapper);
       }
 
-      it('passes the correct heigth to the grid rows', () => {
-        expect(innerSetup().props().rowHeight).toEqual(40);
-      });
-
-      it('passes the grid row heigth to the header row when no height to the specific header row is provided', () => {
+      it('passes the grid row height to the header row when no height to the specific header row is provided', () => {
         expect(innerSetup().props().headerRows[0].height).toEqual(40);
       });
 
@@ -103,18 +100,14 @@ describe('Grid', () => {
           headerRowHeight: 50,
           headerFiltersHeight: 60
         });
-        return getBaseGrid(wrapper);
+        return getBaseHeader(wrapper);
       }
 
-      it('passes the correct heigth to the grid rows', () => {
-        expect(innerSetup().props().rowHeight).toEqual(40);
-      });
-
-      it('passes the correct heigth to the header row', () => {
+      it('passes the correct height to the header row', () => {
         expect(innerSetup().props().headerRows[0].height).toEqual(50);
       });
 
-      it('passes the correct heigth to the header filter row', () => {
+      it('passes the correct height to the header filter row', () => {
         expect(innerSetup().props().headerRows[1].height).toEqual(60);
       });
     });
@@ -123,7 +116,7 @@ describe('Grid', () => {
   describe('if passed in as props to grid', () => {
     it('should set filter state of grid and render a filterable header row', () => {
       const { wrapper } = setup({ enableHeaderFilters: true });
-      expect(getBaseGrid(wrapper).props().headerRows.length).toEqual(2);
+      expect(getBaseHeader(wrapper).props().headerRows.length).toEqual(2);
     });
   });
 
@@ -156,7 +149,7 @@ describe('Grid', () => {
         }
       });
 
-      getBaseGrid(wrapper).props().cellMetaData.onCellClick({ idx: 1, rowIdx: 1 });
+      getBaseCanvas(wrapper).props().cellMetaData.onCellClick({ idx: 1, rowIdx: 1 });
       expect(rowClicks).toBe(1);
       const { row, column } = rowClicked;
       expect(row).toMatchObject(rows[1]);

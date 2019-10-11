@@ -5,10 +5,13 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useImperativeHandle
+  useImperativeHandle,
+  createElement
 } from 'react';
+import { isValidElementType } from 'react-is';
 
-import Grid from './Grid';
+import Header, { HeaderHandle } from './Header';
+import Canvas from './Canvas';
 import { getColumnMetrics } from './utils/columnUtils';
 import EventBus from './EventBus';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
@@ -32,7 +35,7 @@ import {
   SubRowDetails,
   SubRowOptions,
   RowRendererProps,
-  ScrollState
+  ScrollPosition
 } from './common/types';
 
 export interface ReactDataGridProps<R extends {}> {
@@ -110,7 +113,7 @@ export interface ReactDataGridProps<R extends {}> {
   /** The direction to sort the sortColumn*/
   sortDirection?: DEFINE_SORT;
   /** Called when the grid is scrolled */
-  onScroll?(scrollState: ScrollState): void;
+  onScroll?(scrollPosition: ScrollPosition): void;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   getValidFilterValues?(columnKey: keyof R): unknown;
@@ -138,16 +141,8 @@ export interface ReactDataGridProps<R extends {}> {
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
-  /**
-   * The number of rows to render outside of the visible area
-   * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
-   */
-  overscanRowCount?: number;
-  /**
-   * The number of columns to render outside of the visible area
-   * Note that overscanning too much can negatively impact performance. By default, grid overscans by two items.
-   */
-  overscanColumnCount?: number;
+  /** Control how big render row batches will be. */
+  renderBatchSize?: number;
 }
 
 export interface ReactDataGridHandle {
@@ -174,6 +169,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   enableCellAutoFocus = true,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
+  renderBatchSize = 8,
   columns,
   rowsCount,
   rowGetter,
@@ -186,8 +182,10 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HeaderHandle>(null);
   const lastSelectedRowIdx = useRef(-1);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
+  const scrollLeft = useRef(0);
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
@@ -245,6 +243,16 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
 
     if (props.onColumnResize) {
       props.onColumnResize(idx, width);
+    }
+  }
+
+  function handleScroll(scrollPosition: ScrollPosition) {
+    if (headerRef.current && scrollLeft.current !== scrollPosition.scrollLeft) {
+      scrollLeft.current = scrollPosition.scrollLeft;
+      headerRef.current.setScrollLeft(scrollPosition.scrollLeft);
+    }
+    if (props.onScroll) {
+      props.onScroll(scrollPosition);
     }
   }
 
@@ -399,45 +407,55 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
       ref={gridRef}
     >
       {columnMetrics && (
-        <Grid<R>
-          rowKey={rowKey}
-          headerRows={headerRows}
-          draggableHeaderCell={props.draggableHeaderCell}
-          getValidFilterValues={props.getValidFilterValues}
-          columnMetrics={columnMetrics}
-          rowGetter={rowGetter}
-          rowsCount={rowsCount}
-          rowHeight={rowHeight}
-          rowRenderer={props.rowRenderer}
-          rowGroupRenderer={props.rowGroupRenderer}
-          cellMetaData={cellMetaData}
-          selectedRows={selectedRows}
-          onRowSelectionChange={handleRowSelectionChange}
-          onSelectedRowsChange={onSelectedRowsChange}
-          rowOffsetHeight={rowOffsetHeight}
-          sortColumn={props.sortColumn}
-          sortDirection={props.sortDirection}
-          onSort={props.onGridSort}
-          minHeight={minHeight}
-          onCanvasKeydown={props.onGridKeyDown}
-          onCanvasKeyup={props.onGridKeyUp}
-          onColumnResize={handleColumnResize}
-          scrollToRowIndex={props.scrollToRowIndex}
-          contextMenu={props.contextMenu}
-          enableCellSelect={enableCellSelect}
-          enableCellAutoFocus={enableCellAutoFocus}
-          cellNavigationMode={cellNavigationMode}
-          eventBus={eventBus}
-          onScroll={props.onScroll}
-          RowsContainer={props.RowsContainer}
-          emptyRowsView={props.emptyRowsView}
-          onHeaderDrop={props.onHeaderDrop}
-          getSubRowDetails={props.getSubRowDetails}
-          editorPortalTarget={editorPortalTarget}
-          interactionMasksMetaData={interactionMasksMetaData}
-          overscanRowCount={props.overscanRowCount}
-          overscanColumnCount={props.overscanColumnCount}
-        />
+        <>
+          <Header<R>
+            ref={headerRef}
+            rowKey={rowKey}
+            rowsCount={rowsCount}
+            rowGetter={rowGetter}
+            columnMetrics={columnMetrics}
+            onColumnResize={handleColumnResize}
+            headerRows={headerRows}
+            sortColumn={props.sortColumn}
+            sortDirection={props.sortDirection}
+            draggableHeaderCell={props.draggableHeaderCell}
+            onSort={props.onGridSort}
+            onHeaderDrop={props.onHeaderDrop}
+            allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
+            onSelectedRowsChange={onSelectedRowsChange}
+            getValidFilterValues={props.getValidFilterValues}
+            cellMetaData={cellMetaData}
+          />
+          {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
+            <Canvas<R>
+              rowKey={rowKey}
+              rowHeight={rowHeight}
+              rowRenderer={props.rowRenderer}
+              rowGetter={rowGetter}
+              rowsCount={rowsCount}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
+              columnMetrics={columnMetrics}
+              onScroll={handleScroll}
+              cellMetaData={cellMetaData}
+              height={minHeight - rowOffsetHeight}
+              scrollToRowIndex={props.scrollToRowIndex}
+              contextMenu={props.contextMenu}
+              getSubRowDetails={props.getSubRowDetails}
+              rowGroupRenderer={props.rowGroupRenderer}
+              enableCellSelect={enableCellSelect}
+              enableCellAutoFocus={enableCellAutoFocus}
+              cellNavigationMode={cellNavigationMode}
+              eventBus={eventBus}
+              interactionMasksMetaData={interactionMasksMetaData}
+              RowsContainer={props.RowsContainer}
+              editorPortalTarget={editorPortalTarget}
+              onCanvasKeydown={props.onGridKeyDown}
+              onCanvasKeyup={props.onGridKeyUp}
+              renderBatchSize={renderBatchSize}
+            />
+          )}
+        </>
       )}
     </div>
   );

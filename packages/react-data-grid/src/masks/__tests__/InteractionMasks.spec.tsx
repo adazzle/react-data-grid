@@ -51,8 +51,6 @@ describe('<InteractionMasks/>', () => {
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus: new EventBus(),
       getRowColumns: () => columns,
-      getRowHeight: () => 50,
-      getRowTop: () => 0,
       editorPortalTarget: document.body,
       scrollLeft: 0,
       scrollTop: 0,
@@ -124,7 +122,7 @@ describe('<InteractionMasks/>', () => {
           }
         });
         expect(wrapper.find(SelectionMask).length).toBe(1);
-        expect(wrapper.find(SelectionMask).props()).toEqual({ height: 50, left: 0, top: 0, width: 100, zIndex: 1 });
+        expect(wrapper.find(SelectionMask).props()).toEqual({ height: 30, left: 0, top: 0, width: 100, zIndex: 1 });
       });
     });
   });
@@ -712,7 +710,7 @@ describe('<InteractionMasks/>', () => {
     it('should render a CopyMask component when a cell is copied', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, 'c', { keyCode: KeyCodes.c, ctrlKey: true });
-      expect(wrapper.find(CopyMask).props()).toEqual({ height: 50, left: 100, top: 0, width: 100, zIndex: 1 });
+      expect(wrapper.find(CopyMask).props()).toEqual({ height: 30, left: 100, top: 60, width: 100, zIndex: 1 });
     });
 
     it('should remove the CopyMask component on escape', () => {

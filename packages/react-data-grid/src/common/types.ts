@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
-import { HeaderRowType, UpdateActions, SCROLL_DIRECTION } from './enums';
+import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -241,16 +241,8 @@ export interface CellRenderer {
   setScrollLeft(scrollLeft: number): void;
 }
 
-export interface RowRenderer<TRow> {
+export interface RowRenderer {
   setScrollLeft(scrollLeft: number): void;
-  getRowTop?(): number;
-  getRowHeight?(): number;
-}
-
-export interface ScrollState {
-  scrollTop: number;
-  scrollLeft: number;
-  scrollDirection: SCROLL_DIRECTION;
 }
 
 export interface ScrollPosition {
