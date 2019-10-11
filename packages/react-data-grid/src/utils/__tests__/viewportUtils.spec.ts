@@ -1,6 +1,5 @@
 import {
   getVerticalRangeToRender,
-  VerticalRangeToRenderParams,
   getHorizontalRangeToRender,
   HorizontalRangeToRenderParams
 } from '../viewportUtils';
@@ -10,17 +9,24 @@ interface Row {
   [key: string]: unknown;
 }
 
+interface VerticalRangeToRenderParams {
+  height: number;
+  rowHeight: number;
+  scrollTop: number;
+  rowsCount: number;
+  renderBatchSize: number;
+}
+
 describe('viewportUtils', () => {
   describe('getVerticalRangeToRender', () => {
-    function getRange<K extends keyof VerticalRangeToRenderParams>(overrides: Pick<VerticalRangeToRenderParams, K>) {
-      return getVerticalRangeToRender({
-        height: 500,
-        rowHeight: 50,
-        scrollTop: 200,
-        rowsCount: 1000,
-        renderBatchSize: 8,
-        ...overrides
-      });
+    function getRange({
+      height = 500,
+      rowHeight = 50,
+      scrollTop = 200,
+      rowsCount = 1000,
+      renderBatchSize = 8
+    }: Partial<VerticalRangeToRenderParams>) {
+      return getVerticalRangeToRender(height, rowHeight, scrollTop, rowsCount, renderBatchSize);
     }
 
     it('should use rowHeight to calculate the range', () => {

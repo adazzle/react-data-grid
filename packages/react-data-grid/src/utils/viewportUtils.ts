@@ -24,21 +24,13 @@ function getColumnCountForWidth<R>(columns: CalculatedColumn<R>[], initialWidth:
   return count;
 }
 
-export interface VerticalRangeToRenderParams {
-  height: number;
-  rowHeight: number;
-  scrollTop: number;
-  rowsCount: number;
-  renderBatchSize: number;
-}
-
-export function getVerticalRangeToRender({
-  height,
-  rowHeight,
-  scrollTop,
-  rowsCount,
-  renderBatchSize
-}: VerticalRangeToRenderParams) {
+export function getVerticalRangeToRender(
+  height: number,
+  rowHeight: number,
+  scrollTop: number,
+  rowsCount: number,
+  renderBatchSize: number
+) {
   const overscanThreshold = 4;
   const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
   const rowVisibleEndIdx = Math.min(rowsCount - 1, Math.floor((scrollTop + height) / rowHeight));
