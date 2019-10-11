@@ -239,27 +239,6 @@ export default function Canvas<R>({
     });
   }
 
-  function getRowTop(rowIdx: number) {
-    const row = rows.get(rowIdx);
-    if (row && row.getRowTop) {
-      return row.getRowTop();
-    }
-    return rowHeight * rowIdx;
-  }
-
-  function getRowHeight(rowIdx: number) {
-    const row = rows.get(rowIdx);
-    if (row && row.getRowHeight) {
-      return row.getRowHeight();
-    }
-    return rowHeight;
-  }
-
-  function getRowColumns(rowIdx: number) {
-    const row = rows.get(rowIdx);
-    return row && row.props ? row.props.columns : columnMetrics.columns;
-  }
-
   function renderCustomRowRenderer(rowProps: RendererProps<R>) {
     const { ref, ...otherProps } = rowProps;
     const CustomRowRenderer = rowRenderer!;
@@ -325,9 +304,6 @@ export default function Canvas<R>({
         onHitRightBoundary={handleHitColummBoundary}
         scrollLeft={scrollLeft}
         scrollTop={scrollTop}
-        getRowHeight={getRowHeight}
-        getRowTop={getRowTop}
-        getRowColumns={getRowColumns}
         editorPortalTarget={editorPortalTarget}
         {...interactionMasksMetaData}
       />
