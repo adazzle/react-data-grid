@@ -5,42 +5,42 @@ import Row from './Row';
 import RowGroup from './RowGroup';
 import InteractionMasks from './masks/InteractionMasks';
 import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize } from './utils';
-import { EventTypes, SCROLL_DIRECTION } from './common/enums';
-import { CalculatedColumn, Position, ScrollState, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
-import { GridProps } from './Grid';
-import { getScrollDirection, getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
+import { EventTypes } from './common/enums';
+import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData, ColumnMetrics, CellMetaData, InteractionMasksMetaData } from './common/types';
+import { ReactDataGridProps } from './ReactDataGrid';
+import EventBus from './EventBus';
+import { getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
 
-type SharedGridProps<R> = Pick<GridProps<R>,
-| 'rowKey'
+type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'rowGetter'
 | 'rowsCount'
-| 'columnMetrics'
-| 'selectedRows'
-| 'onRowSelectionChange'
 | 'rowRenderer'
-| 'cellMetaData'
-| 'rowHeight'
+| 'rowGroupRenderer'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'getSubRowDetails'
-| 'rowGroupRenderer'
-| 'enableCellSelect'
-| 'enableCellAutoFocus'
-| 'cellNavigationMode'
-| 'eventBus'
 | 'RowsContainer'
+| 'getSubRowDetails'
+| 'selectedRows'
+> & Required<Pick<ReactDataGridProps<R>,
+| 'rowKey'
+| 'enableCellSelect'
+| 'rowHeight'
+| 'cellNavigationMode'
+| 'enableCellAutoFocus'
 | 'editorPortalTarget'
-| 'interactionMasksMetaData'
-| 'overscanRowCount'
-| 'overscanColumnCount'
-| 'enableIsScrolling'
-| 'onCanvasKeydown'
-| 'onCanvasKeyup'
->;
+| 'renderBatchSize'
+>>;
 
-export interface CanvasProps<R> extends SharedGridProps<R> {
+export interface CanvasProps<R> extends SharedDataGridProps<R> {
+  columnMetrics: ColumnMetrics<R>;
+  cellMetaData: CellMetaData<R>;
   height: number;
-  onScroll(position: ScrollState): void;
+  eventBus: EventBus;
+  interactionMasksMetaData: InteractionMasksMetaData<R>;
+  onScroll(position: ScrollPosition): void;
+  onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
 interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
@@ -54,7 +54,6 @@ interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowS
   height: number;
   isRowSelected: boolean;
   scrollLeft: number;
-  isScrolling: boolean;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
 }
@@ -67,7 +66,6 @@ export default function Canvas<R>({
   editorPortalTarget,
   enableCellAutoFocus,
   enableCellSelect,
-  enableIsScrolling,
   eventBus,
   getSubRowDetails,
   height,
@@ -76,8 +74,7 @@ export default function Canvas<R>({
   onCanvasKeyup,
   onRowSelectionChange,
   onScroll,
-  overscanColumnCount,
-  overscanRowCount,
+  renderBatchSize,
   rowGetter,
   rowGroupRenderer,
   rowHeight,
@@ -90,12 +87,9 @@ export default function Canvas<R>({
 }: CanvasProps<R>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState(SCROLL_DIRECTION.NONE);
-  const [isScrolling, setIsScrolling] = useState(false);
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
-  const resetScrollStateTimeoutId = useRef<number | null>(null);
   const [rows] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
 
@@ -105,19 +99,16 @@ export default function Canvas<R>({
       rowHeight,
       scrollTop,
       rowsCount,
-      scrollDirection,
-      overscanRowCount
+      renderBatchSize
     });
-  }, [clientHeight, overscanRowCount, rowHeight, rowsCount, scrollDirection, scrollTop]);
+  }, [clientHeight, renderBatchSize, rowHeight, rowsCount, scrollTop]);
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
       columnMetrics,
-      scrollLeft,
-      scrollDirection,
-      overscanColumnCount
+      scrollLeft
     });
-  }, [columnMetrics, overscanColumnCount, scrollDirection, scrollLeft]);
+  }, [columnMetrics, scrollLeft]);
 
   useEffect(() => {
     return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));
@@ -137,39 +128,9 @@ export default function Canvas<R>({
     // Freeze columns on legacy browsers
     setComponentsScrollLeft(newScrollLeft);
 
-    if (enableIsScrolling) {
-      setIsScrolling(true);
-      resetScrollStateAfterDelay();
-    }
-
-    const scrollDirection = getScrollDirection(
-      { scrollLeft, scrollTop },
-      { scrollLeft: newScrollLeft, scrollTop: newScrollTop }
-    );
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
-    setScrollDirection(scrollDirection);
-    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop, scrollDirection });
-  }
-
-  function resetScrollStateAfterDelay() {
-    clearScrollTimer();
-    resetScrollStateTimeoutId.current = window.setTimeout(
-      resetScrollStateAfterDelayCallback,
-      150
-    );
-  }
-
-  function clearScrollTimer() {
-    if (resetScrollStateTimeoutId.current !== null) {
-      window.clearTimeout(resetScrollStateTimeoutId.current);
-      resetScrollStateTimeoutId.current = null;
-    }
-  }
-
-  function resetScrollStateAfterDelayCallback() {
-    resetScrollStateTimeoutId.current = null;
-    setIsScrolling(false);
+    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
   }
 
   function getClientHeight() {
@@ -240,7 +201,6 @@ export default function Canvas<R>({
       colOverscanStartIdx,
       colOverscanEndIdx,
       lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
-      isScrolling,
       scrollLeft
     };
     const { __metaData } = row as RowData;

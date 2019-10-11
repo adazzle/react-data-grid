@@ -4,29 +4,31 @@ import classNames from 'classnames';
 import HeaderRow from './HeaderRow';
 import { getColumnMetrics } from './utils/columnUtils';
 import { getScrollbarSize } from './utils';
-import { CalculatedColumn, HeaderRowData } from './common/types';
-import { GridProps } from './Grid';
+import { CalculatedColumn, HeaderRowData, ColumnMetrics, CellMetaData } from './common/types';
+import { DEFINE_SORT } from './common/enums';
+import { ReactDataGridProps } from './ReactDataGrid';
 
-type SharedGridProps<R> = Pick<GridProps<R>,
-| 'rowKey'
-| 'rowsCount'
+type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
+| 'draggableHeaderCell'
+| 'getValidFilterValues'
 | 'rowGetter'
-| 'columnMetrics'
-| 'onColumnResize'
-| 'headerRows'
-| 'rowOffsetHeight'
+| 'rowsCount'
+| 'onHeaderDrop'
+| 'onSelectedRowsChange'
 | 'sortColumn'
 | 'sortDirection'
-| 'draggableHeaderCell'
-| 'onSelectedRowsChange'
-| 'onSort'
-| 'onHeaderDrop'
-| 'getValidFilterValues'
-| 'cellMetaData'
->;
+> & Required<Pick<ReactDataGridProps<R>,
+| 'rowKey'
+>>;
 
-export interface HeaderProps<R> extends SharedGridProps<R> {
+export interface HeaderProps<R> extends SharedDataGridProps<R> {
   allRowsSelected: boolean;
+  columnMetrics: ColumnMetrics<R>;
+  headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
+  cellMetaData: CellMetaData<R>;
+  rowOffsetHeight: number;
+  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
+  onColumnResize(idx: number, width: number): void;
 }
 
 export interface HeaderHandle {
@@ -138,4 +140,4 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
       {getHeaderRows()}
     </div>
   );
-});
+}) as <R>(props: HeaderProps<R> & { ref?: React.Ref<HeaderHandle> }) => JSX.Element;

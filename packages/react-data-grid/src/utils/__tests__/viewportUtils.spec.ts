@@ -1,11 +1,9 @@
 import {
-  getScrollDirection,
   getVerticalRangeToRender,
   VerticalRangeToRenderParams,
   getHorizontalRangeToRender,
   HorizontalRangeToRenderParams
 } from '../viewportUtils';
-import { SCROLL_DIRECTION } from '../../common/enums';
 import { ColumnMetrics } from '../../common/types';
 
 interface Row {
@@ -20,29 +18,29 @@ describe('viewportUtils', () => {
         rowHeight: 50,
         scrollTop: 200,
         rowsCount: 1000,
-        scrollDirection: SCROLL_DIRECTION.DOWN,
+        renderBatchSize: 8,
         ...overrides
       });
     }
 
     it('should use rowHeight to calculate the range', () => {
       expect(getRange({ rowHeight: 50 })).toEqual({
-        rowOverscanStartIdx: 2,
-        rowOverscanEndIdx: 16
+        rowOverscanStartIdx: 0,
+        rowOverscanEndIdx: 24
       });
     });
 
     it('should use height to calculate the range', () => {
       expect(getRange({ height: 250 })).toEqual({
-        rowOverscanStartIdx: 2,
-        rowOverscanEndIdx: 11
+        rowOverscanStartIdx: 0,
+        rowOverscanEndIdx: 16
       });
     });
 
     it('should use scrollTop to calculate the range', () => {
       expect(getRange({ scrollTop: 500 })).toEqual({
-        rowOverscanStartIdx: 8,
-        rowOverscanEndIdx: 22
+        rowOverscanStartIdx: 0,
+        rowOverscanEndIdx: 24
       });
     });
 
@@ -53,17 +51,42 @@ describe('viewportUtils', () => {
       });
     });
 
-    it('should use overscanRowCount to calculate the range', () => {
-      expect(getRange({ overscanRowCount: 10 })).toEqual({
-        rowOverscanStartIdx: 2,
-        rowOverscanEndIdx: 24
-      });
-    });
-
-    it('should use scrollDirection to calculate the range', () => {
-      expect(getRange({ overscanRowCount: 10, scrollDirection: SCROLL_DIRECTION.UP })).toEqual({
+    it('should use renderBatchSize to calculate the range', () => {
+      expect(getRange({ renderBatchSize: 4, scrollTop: 0 })).toEqual({
         rowOverscanStartIdx: 0,
         rowOverscanEndIdx: 16
+      });
+      expect(getRange({ renderBatchSize: 4, scrollTop: 50 * 1000 - 500 /* max scroll top */ })).toEqual({
+        rowOverscanStartIdx: 984,
+        rowOverscanEndIdx: 999
+      });
+      expect(getRange({ renderBatchSize: 4, scrollTop: 2350 })).toEqual({
+        rowOverscanStartIdx: 40,
+        rowOverscanEndIdx: 64
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2350 })).toEqual({
+        rowOverscanStartIdx: 36,
+        rowOverscanEndIdx: 72
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2550 })).toEqual({
+        rowOverscanStartIdx: 36,
+        rowOverscanEndIdx: 72
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2850 })).toEqual({
+        rowOverscanStartIdx: 48,
+        rowOverscanEndIdx: 72
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950 })).toEqual({
+        rowOverscanStartIdx: 48,
+        rowOverscanEndIdx: 84
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 200 })).toEqual({
+        rowOverscanStartIdx: 48,
+        rowOverscanEndIdx: 72
+      });
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 800 })).toEqual({
+        rowOverscanStartIdx: 48,
+        rowOverscanEndIdx: 84
       });
     });
   });
@@ -85,7 +108,6 @@ describe('viewportUtils', () => {
       return getHorizontalRangeToRender({
         columnMetrics: getColumnMetrics(),
         scrollLeft: 200,
-        scrollDirection: SCROLL_DIRECTION.RIGHT,
         ...overrides
       });
     }
@@ -94,8 +116,8 @@ describe('viewportUtils', () => {
       expect(getRange({ scrollLeft: 300 })).toEqual({
         colVisibleStartIdx: 3,
         colVisibleEndIdx: 13,
-        colOverscanStartIdx: 1,
-        colOverscanEndIdx: 15
+        colOverscanStartIdx: 2,
+        colOverscanEndIdx: 14
       });
     });
 
@@ -106,7 +128,7 @@ describe('viewportUtils', () => {
         colVisibleStartIdx: 0,
         colVisibleEndIdx: 10,
         colOverscanStartIdx: 0,
-        colOverscanEndIdx: 12
+        colOverscanEndIdx: 11
       });
     });
 
@@ -115,31 +137,12 @@ describe('viewportUtils', () => {
       columnMetrics.viewportWidth = 500;
       expect(getHorizontalRangeToRender({
         columnMetrics,
-        scrollLeft: 200,
-        scrollDirection: SCROLL_DIRECTION.RIGHT
+        scrollLeft: 200
       })).toEqual({
         colVisibleStartIdx: 2,
         colVisibleEndIdx: 7,
-        colOverscanStartIdx: 0,
-        colOverscanEndIdx: 9
-      });
-    });
-
-    it('should use overscanColumnCount to calculate the range', () => {
-      expect(getRange({ overscanColumnCount: 5 })).toEqual({
-        colVisibleStartIdx: 2,
-        colVisibleEndIdx: 12,
-        colOverscanStartIdx: 0,
-        colOverscanEndIdx: 17
-      });
-    });
-
-    it('should use overscanColumnCount to calculate the range', () => {
-      expect(getRange({ overscanColumnCount: 5, scrollDirection: SCROLL_DIRECTION.LEFT, scrollLeft: 1000 })).toEqual({
-        colVisibleStartIdx: 10,
-        colVisibleEndIdx: 20,
-        colOverscanStartIdx: 5,
-        colOverscanEndIdx: 22
+        colOverscanStartIdx: 1,
+        colOverscanEndIdx: 8
       });
     });
 
@@ -153,32 +156,9 @@ describe('viewportUtils', () => {
       expect(getRange({ scrollLeft: 500, columnMetrics })).toEqual({
         colVisibleStartIdx: 8,
         colVisibleEndIdx: 15,
-        colOverscanStartIdx: 6,
-        colOverscanEndIdx: 17
+        colOverscanStartIdx: 7,
+        colOverscanEndIdx: 16
       });
-    });
-  });
-
-  describe('getScrollDirection', () => {
-    const prevScroll = { scrollTop: 100, scrollLeft: 100 };
-    it('should return SCROLL_DIRECTION.DOWN iF previous scrollTop is less than current scrollTop', () => {
-      expect(getScrollDirection(prevScroll, { ...prevScroll, scrollTop: 101 })).toBe(SCROLL_DIRECTION.DOWN);
-    });
-
-    it('should return SCROLL_DIRECTION.UP iF previous scrollTop is greater than current scrollTop', () => {
-      expect(getScrollDirection(prevScroll, { ...prevScroll, scrollTop: 99 })).toBe(SCROLL_DIRECTION.UP);
-    });
-
-    it('should return SCROLL_DIRECTION.RIGHT iF previous scrollLeft is less than current scrollLeft', () => {
-      expect(getScrollDirection(prevScroll, { ...prevScroll, scrollLeft: 101 })).toBe(SCROLL_DIRECTION.RIGHT);
-    });
-
-    it('should return SCROLL_DIRECTION.LEFT iF previous scrollLeft is greater than current scrollLeft', () => {
-      expect(getScrollDirection(prevScroll, { ...prevScroll, scrollLeft: 99 })).toBe(SCROLL_DIRECTION.LEFT);
-    });
-
-    it('should return SCROLL_DIRECTION.NONE if current scroll is equal to previous scroll', () => {
-      expect(getScrollDirection(prevScroll, { ...prevScroll })).toBe(SCROLL_DIRECTION.NONE);
     });
   });
 });

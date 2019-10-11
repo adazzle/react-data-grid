@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent, ReactNode } from 'react';
 import { List } from 'immutable';
-import { HeaderRowType, UpdateActions, SCROLL_DIRECTION } from './enums';
+import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -130,7 +130,6 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   row: TRow;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
-  isScrolling?: boolean;
   dependentValues?: TDependentValue;
 }
 
@@ -163,7 +162,6 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   column: CalculatedColumn<TRow>;
   rowData: TRow;
   cellMetaData: CellMetaData<TRow>;
-  isScrolling?: boolean;
   scrollLeft: number;
   expandableOptions?: ExpandableOptions;
   lastFrozenColumnIndex: number;
@@ -187,7 +185,6 @@ export interface RowRendererProps<TRow> {
   subRowDetails?: SubRowDetails;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  isScrolling?: boolean;
   scrollLeft: number;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
@@ -252,12 +249,6 @@ export interface RowRenderer<TRow> {
   setScrollLeft(scrollLeft: number): void;
   getRowTop?(): number;
   getRowHeight?(): number;
-}
-
-export interface ScrollState {
-  scrollTop: number;
-  scrollLeft: number;
-  scrollDirection: SCROLL_DIRECTION;
 }
 
 export interface ScrollPosition {
