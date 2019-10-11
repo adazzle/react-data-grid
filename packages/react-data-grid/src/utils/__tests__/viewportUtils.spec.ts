@@ -1,6 +1,5 @@
 import {
   getVerticalRangeToRender,
-  VerticalRangeToRenderParams,
   getHorizontalRangeToRender,
   HorizontalRangeToRenderParams
 } from '../viewportUtils';
@@ -10,84 +9,61 @@ interface Row {
   [key: string]: unknown;
 }
 
+interface VerticalRangeToRenderParams {
+  height: number;
+  rowHeight: number;
+  scrollTop: number;
+  rowsCount: number;
+  renderBatchSize: number;
+}
+
 describe('viewportUtils', () => {
   describe('getVerticalRangeToRender', () => {
-    function getRange<K extends keyof VerticalRangeToRenderParams>(overrides: Pick<VerticalRangeToRenderParams, K>) {
-      return getVerticalRangeToRender({
-        height: 500,
-        rowHeight: 50,
-        scrollTop: 200,
-        rowsCount: 1000,
-        renderBatchSize: 8,
-        ...overrides
-      });
+    function getRange({
+      height = 500,
+      rowHeight = 50,
+      scrollTop = 200,
+      rowsCount = 1000,
+      renderBatchSize = 8
+    }: Partial<VerticalRangeToRenderParams>) {
+      return getVerticalRangeToRender(height, rowHeight, scrollTop, rowsCount, renderBatchSize);
     }
 
     it('should use rowHeight to calculate the range', () => {
-      expect(getRange({ rowHeight: 50 })).toEqual({
-        rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 24
-      });
+      expect(getRange({ rowHeight: 50 })).toEqual([0, 24]);
     });
 
     it('should use height to calculate the range', () => {
-      expect(getRange({ height: 250 })).toEqual({
-        rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 16
-      });
+      expect(getRange({ height: 250 })).toEqual([0, 16]);
     });
 
     it('should use scrollTop to calculate the range', () => {
-      expect(getRange({ scrollTop: 500 })).toEqual({
-        rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 24
-      });
+      expect(getRange({ scrollTop: 500 })).toEqual([0, 24]);
     });
 
     it('should use rowsCount to calculate the range', () => {
-      expect(getRange({ rowsCount: 5, scrollTop: 0 })).toEqual({
-        rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 4
-      });
+      expect(getRange({ rowsCount: 5, scrollTop: 0 })).toEqual([0, 4]);
     });
 
     it('should use renderBatchSize to calculate the range', () => {
-      expect(getRange({ renderBatchSize: 4, scrollTop: 0 })).toEqual({
-        rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 16
-      });
-      expect(getRange({ renderBatchSize: 4, scrollTop: 50 * 1000 - 500 /* max scroll top */ })).toEqual({
-        rowOverscanStartIdx: 984,
-        rowOverscanEndIdx: 999
-      });
-      expect(getRange({ renderBatchSize: 4, scrollTop: 2350 })).toEqual({
-        rowOverscanStartIdx: 40,
-        rowOverscanEndIdx: 64
-      });
-      expect(getRange({ renderBatchSize: 12, scrollTop: 2350 })).toEqual({
-        rowOverscanStartIdx: 36,
-        rowOverscanEndIdx: 72
-      });
-      expect(getRange({ renderBatchSize: 12, scrollTop: 2550 })).toEqual({
-        rowOverscanStartIdx: 36,
-        rowOverscanEndIdx: 72
-      });
-      expect(getRange({ renderBatchSize: 12, scrollTop: 2850 })).toEqual({
-        rowOverscanStartIdx: 48,
-        rowOverscanEndIdx: 72
-      });
-      expect(getRange({ renderBatchSize: 12, scrollTop: 2950 })).toEqual({
-        rowOverscanStartIdx: 48,
-        rowOverscanEndIdx: 84
-      });
-      expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 200 })).toEqual({
-        rowOverscanStartIdx: 48,
-        rowOverscanEndIdx: 72
-      });
-      expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 800 })).toEqual({
-        rowOverscanStartIdx: 48,
-        rowOverscanEndIdx: 84
-      });
+      expect(getRange({ renderBatchSize: 4, scrollTop: 0 }))
+        .toEqual([0, 16]);
+      expect(getRange({ renderBatchSize: 4, scrollTop: 50 * 1000 - 500 /* max scroll top */ }))
+        .toEqual([984, 999]);
+      expect(getRange({ renderBatchSize: 4, scrollTop: 2350 }))
+        .toEqual([40, 64]);
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2350 }))
+        .toEqual([36, 72]);
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2550 }))
+        .toEqual([36, 72]);
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2850 }))
+        .toEqual([48, 72]);
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950 }))
+        .toEqual([48, 84]);
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 200 }))
+        .toEqual([48, 72]);
+      expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 800 }))
+        .toEqual([48, 84]);
     });
   });
 
