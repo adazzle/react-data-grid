@@ -513,8 +513,7 @@ module.exports = {
       browser: true
     },
     globals: {
-      process: 'readable',
-      Immutable: 'readable'
+      process: 'readable'
     }
   }, {
     files: [
