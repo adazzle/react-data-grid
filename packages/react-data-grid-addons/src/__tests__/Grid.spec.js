@@ -43,7 +43,6 @@ describe('Grid', () => {
   };
 
   const getBaseHeader = (wrapper) => {
-    // console.log(wrapper.debug());
     return wrapper.find('ForwardRef(Header)');
   };
 

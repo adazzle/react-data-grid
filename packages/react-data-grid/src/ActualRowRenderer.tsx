@@ -48,14 +48,7 @@ interface RendererProps<R> extends SharedActualRowRendererProps<R> {
   isRowSelected: boolean;
 }
 
-function propsAreEqual<R>(prevProps: ActualRowRendererProps<R>, nextProps: ActualRowRendererProps<R>) {
-  const { scrollLeft, ...rest } = prevProps;
-  const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
-
-  return shallowEqual(rest, nextRest);
-}
-
-export default memo(function ActualRowRenderer<R>({
+function ActualRowRenderer<R>({
   cellMetaData,
   colOverscanEndIdx,
   colOverscanStartIdx,
@@ -142,4 +135,13 @@ export default memo(function ActualRowRenderer<R>({
   }
 
   return <Row<R> {...rendererProps} />;
-}, propsAreEqual) as <R>(props: ActualRowRendererProps<R>) => JSX.Element;
+}
+
+function propsAreEqual<R>(prevProps: ActualRowRendererProps<R>, nextProps: ActualRowRendererProps<R>) {
+  const { scrollLeft, ...rest } = prevProps;
+  const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
+
+  return shallowEqual(rest, nextRest);
+}
+
+export default memo(ActualRowRenderer, propsAreEqual) as <R>(props: ActualRowRendererProps<R>) => JSX.Element;
