@@ -298,7 +298,7 @@ const rules = {
   'react/no-children-prop': 0,
   'react/no-danger': 2,
   'react/no-danger-with-children': 2,
-  'react/no-deprecated': 0, // TODO
+  'react/no-deprecated': 2,
   'react/no-did-mount-set-state': 2,
   'react/no-did-update-set-state': 2,
   'react/no-direct-mutation-state': 2,
