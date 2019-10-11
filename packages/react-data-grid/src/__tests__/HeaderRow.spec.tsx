@@ -156,7 +156,7 @@ describe('Header Row Unit Tests', () => {
     it('does pass the height if available from props', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().style).toEqual({ height: 35 });
+      expect(headerRowDiv.props().style).toEqual({ height: 35, lineHeight: '35px' });
     });
   });
 });
