@@ -208,7 +208,6 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
             <div className="react-grid-Cell__container">
               {cellValue}
             </div>
-            {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
           </div>
         </div>
       );

@@ -349,7 +349,7 @@ export default function Canvas<R>({
     ieStickyWrapperStyle = {
       position: 'absolute',
       top: 0,
-      height: height - 17, // IE scroll bar width
+      height: height - getScrollbarSize(),
       transform: `translateY(${scrollTop}px)`
     };
   }
