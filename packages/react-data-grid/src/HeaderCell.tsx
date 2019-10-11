@@ -7,7 +7,7 @@ import { CalculatedColumn, HeaderRowProps } from './common/types';
 
 function SimpleCellRenderer<R>({ column, rowType }: HeaderRowProps<R>) {
   const headerText = rowType === HeaderRowType.HEADER ? column.name : '';
-  return <div>{headerText}</div>;
+  return <>{headerText}</>;
 }
 
 interface Props<R> {

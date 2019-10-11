@@ -1,6 +1,5 @@
 .react-grid-Cell {
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
   position: absolute;
   height: inherit;
   padding: 0 8px;
@@ -8,12 +7,9 @@
   border-bottom: 1px solid @borderColor;
   background-color: inherit;
 
-  // FIXME: needs a better selector
-  > div {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .react-grid-Cell--frozen {
@@ -251,7 +247,12 @@
   padding: 4px;
 }
 
+.rdg-numeric-filter {
+  display: flex;
+  align-items: center;
+}
+
 .rdg-filter-badge {
   cursor: help;
-  margin-left: 2px;
+  padding-left: 4px;
 }
