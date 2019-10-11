@@ -2,44 +2,46 @@ import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { isElement } from 'react-is';
 
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, Position, RowData, RowRenderer, RowRendererProps, ScrollPosition, SubRowDetails } from './common/types';
-import { GridProps } from './Grid';
+import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, RowData, RowRenderer, RowRendererProps, ScrollPosition, SubRowDetails } from './common/types';
+import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
+import { ReactDataGridProps } from './ReactDataGrid';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { getColumnScrollPosition, getScrollbarSize, isIEOrEdge, isPositionStickySupported } from './utils';
 import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
 
-type SharedGridProps<R> = Pick<GridProps<R>,
-| 'rowKey'
+type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'rowGetter'
 | 'rowsCount'
-| 'columnMetrics'
-| 'selectedRows'
-| 'onRowSelectionChange'
 | 'rowRenderer'
-| 'cellMetaData'
-| 'rowHeight'
+| 'rowGroupRenderer'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'getSubRowDetails'
-| 'rowGroupRenderer'
-| 'enableCellSelect'
-| 'enableCellAutoFocus'
-| 'cellNavigationMode'
-| 'eventBus'
 | 'RowsContainer'
+| 'getSubRowDetails'
+| 'selectedRows'
+> & Required<Pick<ReactDataGridProps<R>,
+| 'rowKey'
+| 'enableCellSelect'
+| 'rowHeight'
+| 'cellNavigationMode'
+| 'enableCellAutoFocus'
 | 'editorPortalTarget'
-| 'interactionMasksMetaData'
 | 'renderBatchSize'
-| 'onCanvasKeydown'
-| 'onCanvasKeyup'
->;
+>>;
 
-export interface CanvasProps<R> extends SharedGridProps<R> {
+export interface CanvasProps<R> extends SharedDataGridProps<R> {
+  columnMetrics: ColumnMetrics<R>;
+  cellMetaData: CellMetaData<R>;
   height: number;
+  eventBus: EventBus;
+  interactionMasksMetaData: InteractionMasksMetaData<R>;
   onScroll(position: ScrollPosition): void;
   summaryRows?: R[];
+  onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
 interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
