@@ -108,7 +108,6 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   }
 
   render() {
-    const { height } = this.props;
     const className = classNames(
       'rdg-row',
       `rdg-row-${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
@@ -120,7 +119,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       <div
         ref={this.row}
         className={className}
-        style={{ height, lineHeight: `${height}px` }}
+        style={{ height: this.props.height }}
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}

@@ -398,12 +398,11 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
 
   const headerRows = getHeaderRows();
   const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
-  const style = width ? { width } : undefined;
 
   return (
     <div
       className="rdg-root"
-      style={style}
+      style={{ width, lineHeight: `${rowHeight}px` }}
       ref={gridRef}
     >
       {columnMetrics && (

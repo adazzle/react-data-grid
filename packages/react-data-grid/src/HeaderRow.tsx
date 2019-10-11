@@ -145,12 +145,11 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   render() {
-    const { height } = this.props;
     return (
       <div
         ref={this.headerRow}
         className="rdg-header-row"
-        style={{ height, lineHeight: `${height}px` }}
+        style={{ height: this.props.height }}
       >
         {this.getCells()}
       </div>
