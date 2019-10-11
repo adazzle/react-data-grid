@@ -50,6 +50,7 @@ describe('<InteractionMasks/>', () => {
       enableCellAutoFocus: false,
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus: new EventBus(),
+      getRowColumns: () => columns,
       editorPortalTarget: document.body,
       scrollLeft: 0,
       scrollTop: 0,

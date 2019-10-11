@@ -44,7 +44,7 @@ export interface CanvasProps<R> extends SharedDataGridProps<R> {
 }
 
 interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
-  ref(row: RowRenderer | null): void;
+  ref(row: (RowRenderer & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
   columns: CalculatedColumn<R>[];
@@ -90,7 +90,7 @@ export default function Canvas<R>({
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
-  const [rows] = useState(() => new Map<number, RowRenderer>());
+  const [rows] = useState(() => new Map<number, RowRenderer & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
