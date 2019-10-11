@@ -33,10 +33,10 @@ class RowGrouper {
       if (isExpanded) {
         nextColumnIndex = columnIndex + 1;
         if (this.columns.length > nextColumnIndex) {
-          dataviewRows = dataviewRows.concat(this.groupRowsByColumn(this.resolver.getRowObj(groupedRows, key), nextColumnIndex));
+          dataviewRows = dataviewRows.concat(this.groupRowsByColumn(groupedRows[key], nextColumnIndex));
           nextColumnIndex = columnIndex - 1;
         } else {
-          dataviewRows = dataviewRows.concat(this.resolver.getRowObj(groupedRows, key));
+          dataviewRows = dataviewRows.concat(groupedRows[key]);
         }
       }
     }
