@@ -6,39 +6,41 @@ import RowGroup from './RowGroup';
 import InteractionMasks from './masks/InteractionMasks';
 import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize } from './utils';
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData } from './common/types';
-import { GridProps } from './Grid';
+import { CalculatedColumn, Position, ScrollPosition, SubRowDetails, RowRenderer, RowRendererProps, RowData, ColumnMetrics, CellMetaData, InteractionMasksMetaData } from './common/types';
+import { ReactDataGridProps } from './ReactDataGrid';
+import EventBus from './EventBus';
 import { getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
 
-type SharedGridProps<R> = Pick<GridProps<R>,
-| 'rowKey'
+type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'rowGetter'
 | 'rowsCount'
-| 'columnMetrics'
-| 'selectedRows'
-| 'onRowSelectionChange'
 | 'rowRenderer'
-| 'cellMetaData'
-| 'rowHeight'
+| 'rowGroupRenderer'
 | 'scrollToRowIndex'
 | 'contextMenu'
-| 'getSubRowDetails'
-| 'rowGroupRenderer'
-| 'enableCellSelect'
-| 'enableCellAutoFocus'
-| 'cellNavigationMode'
-| 'eventBus'
 | 'RowsContainer'
+| 'getSubRowDetails'
+| 'selectedRows'
+> & Required<Pick<ReactDataGridProps<R>,
+| 'rowKey'
+| 'enableCellSelect'
+| 'rowHeight'
+| 'cellNavigationMode'
+| 'enableCellAutoFocus'
 | 'editorPortalTarget'
-| 'interactionMasksMetaData'
 | 'renderBatchSize'
-| 'onCanvasKeydown'
-| 'onCanvasKeyup'
->;
+>>;
 
-export interface CanvasProps<R> extends SharedGridProps<R> {
+export interface CanvasProps<R> extends SharedDataGridProps<R> {
+  columnMetrics: ColumnMetrics<R>;
+  cellMetaData: CellMetaData<R>;
   height: number;
+  eventBus: EventBus;
+  interactionMasksMetaData: InteractionMasksMetaData<R>;
   onScroll(position: ScrollPosition): void;
+  onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
+  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
 interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {

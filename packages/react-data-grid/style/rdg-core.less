@@ -5,17 +5,14 @@
   // We set a stacking context so internal components don't render above external components.
   position: relative;
   z-index: 0;
+  border: 1px solid #ddd;
+  .user-select();
 
   *,
   *::before,
   *::after {
     box-sizing: border-box;
   }
-}
-
-.react-grid-Grid {
-  border: 1px solid #ddd;
-  .user-select();
 }
 
 .react-grid-Canvas {
