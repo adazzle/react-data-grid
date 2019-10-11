@@ -102,7 +102,7 @@ describe('Cell Tests', () => {
     it('passes classname property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
       const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.hasClass('react-grid-Cell'));
+      expect(cellDiv.hasClass('rdg-cell'));
     });
     it('passes style property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);

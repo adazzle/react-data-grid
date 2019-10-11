@@ -134,7 +134,7 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
   render() {
     const { column, rowType } = this.props;
 
-    const className = classNames('react-grid-Cell', {
+    const className = classNames('rdg-cell', {
       'rdg-header-cell-resizable': column.resizable,
       'react-grid-HeaderCell--frozen': isFrozen(column)
     }, this.props.className, column.cellClass);

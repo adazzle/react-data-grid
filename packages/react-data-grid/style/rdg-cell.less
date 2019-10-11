@@ -1,4 +1,4 @@
-.react-grid-Cell {
+.rdg-cell {
   display: inline-block;
   position: absolute;
   height: inherit;
@@ -12,7 +12,7 @@
   text-overflow: ellipsis;
 }
 
-.react-grid-Cell--frozen {
+.rdg-cell-frozen {
   /* Should have a higher value than 1 to show in front of cell masks */
   z-index: 2;
 }
@@ -22,16 +22,16 @@
 }
 
 /* cell which have tooltips need to have a higher z-index on hover so that the tooltip appears above the other cells*/
-.react-grid-Cell.has-tooltip:hover {
+.rdg-cell.has-tooltip:hover {
   z-index: 1;
 }
 
-.react-grid-Cell.react-grid-Cell--frozen.has-tooltip:hover  {
+.rdg-cell.rdg-cell-frozen.has-tooltip:hover  {
   z-index: 3
 }
 
 @supports (position: sticky) or (position: -webkit-sticky) {
-  .react-grid-Cell--frozen {
+  .rdg-cell-frozen {
     position: -webkit-sticky;
     position: sticky;
   }
@@ -41,11 +41,11 @@
   z-index: 1000;
 }
 
-.react-grid-Cell.readonly {
+.rdg-cell.readonly {
   background-color : black;
 }
 
-.react-grid-cell .form-control-feedback {
+.rdg-cell .form-control-feedback {
   color: #a94442;
   position: absolute;
   top: 0px;
@@ -56,27 +56,27 @@
   height: 34px;
 }
 
-.react-grid-Cell.editing {
+.rdg-cell.editing {
   padding: 0;
   overflow: visible !important;
 }
 
-.react-grid-Cell.editing .has-error input {
+.rdg-cell.editing .has-error input {
   border: 2px red solid !important;
   border-radius: 2px !important;
 }
 
-.react-grid-Cell__value ul {
+.rdg-cell-value ul {
   margin-top: 0;
   margin-bottom: 0;
   display: inline-block;
 }
 
-.react-grid-Cell__value .btn-sm {
+.rdg-cell-value .btn-sm {
   padding: 0;
 }
 
-.cell-tooltip .cell-tooltip-text {
+.rdg-cell-tooltip .rdg-cell-tooltip-text {
     white-space: normal;
     visibility: hidden;
     width: 150px;
@@ -93,12 +93,12 @@
     margin-left: -75px
 }
 
-.cell-tooltip:hover .cell-tooltip-text {
+.rdg-cell-tooltip:hover .rdg-cell-tooltip-text {
     visibility: visible;
     opacity: 0.8;
 }
 
-.cell-tooltip .cell-tooltip-text::after {
+.rdg-cell-tooltip .rdg-cell-tooltip-text::after {
     content: " ";
     position: absolute;
     bottom: 100%;  /* At the top of the tooltip */

@@ -60,8 +60,8 @@ export default function CellContent<R>({
     />
   );
 
-  const classes = classNames('react-grid-Cell__value',
-    { 'cell-tooltip': !!tooltip }
+  const classes = classNames('rdg-cell-value',
+    { 'rdg-cell-tooltip': !!tooltip }
   );
 
   return (
@@ -78,7 +78,7 @@ export default function CellContent<R>({
         />
         {cellControls}
       </div>
-      {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
+      {tooltip && <span className="rdg-cell-tooltip-text">{tooltip}</span>}
     </div>
   );
 }
