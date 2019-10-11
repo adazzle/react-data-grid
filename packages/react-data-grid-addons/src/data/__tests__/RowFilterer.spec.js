@@ -1,5 +1,4 @@
 import React from 'react';
-import { fromJS } from 'immutable';
 import TestUtils from 'react-dom/test-utils';
 
 import filterRows from '../RowFilterer';
@@ -27,11 +26,6 @@ describe('Row Filterer', () => {
     expect(filterResult.length).toBe(1);
   });
 
-  it('It can filter an immutable js list of rows', () => {
-    const immutableList = fromJS(rows);
-    const filterResult = filterRows(filters, immutableList);
-    expect(filterResult.size).toBe(1);
-  });
   it('It can filter a normal array of rows with AutoCompleteFilter', () => {
     const filterResult = filterRows(acFilters, rows);
     expect(filterResult.length).toBe(2);

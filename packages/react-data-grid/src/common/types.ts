@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent, ReactNode } from 'react';
-import { List } from 'immutable';
 import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -56,8 +55,6 @@ export type CalculatedColumn<TRow, TDependentValue = unknown, TField extends key
     width: number;
     left: number;
   };
-
-export type ColumnList<TRow> = Column<TRow>[] | List<Column<TRow>>;
 
 export interface ColumnMetrics<TRow> {
   columns: CalculatedColumn<TRow>[];
@@ -245,10 +242,8 @@ export interface CellRenderer {
   setScrollLeft(scrollLeft: number): void;
 }
 
-export interface RowRenderer<TRow> {
+export interface RowRenderer {
   setScrollLeft(scrollLeft: number): void;
-  getRowTop?(): number;
-  getRowHeight?(): number;
 }
 
 export interface ScrollPosition {

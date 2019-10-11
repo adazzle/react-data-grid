@@ -6,7 +6,7 @@ import Cell from './Cell';
 import { isFrozen } from './utils/columnUtils';
 import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
-export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
+export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer {
   static displayName = 'Row';
 
   static defaultProps = {
@@ -52,7 +52,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
       idx: column.idx,
       rowIdx: idx,
-      height: this.getRowHeight(),
+      height: this.props.height,
       column,
       cellMetaData,
       value: this.getCellValue(key || String(column.idx) as keyof R) as R[keyof R], // FIXME: fix types
@@ -72,16 +72,6 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
     const frozenColumns = columns.slice(0, lastFrozenColumnIndex + 1);
     const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
     return nonFrozenColumn.concat(frozenColumns).map(c => this.getCell(c));
-  }
-
-  getRowTop(): number {
-    const { current } = this.row;
-    if (!current) return 0;
-    return current.getBoundingClientRect().top - current.parentElement!.getBoundingClientRect().top;
-  }
-
-  getRowHeight(): number {
-    return this.props.height;
   }
 
   getCellValue(key: keyof R) {
@@ -129,7 +119,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       <div
         ref={this.row}
         className={className}
-        style={{ height: this.getRowHeight() }}
+        style={{ height: this.props.height }}
         onDragEnter={this.handleDragEnter}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}

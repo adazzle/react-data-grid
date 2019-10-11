@@ -20,6 +20,8 @@ export default class AutoCompleteFilter extends React.Component {
     this.state = { options: this.getOptions(), rawValue: '', placeholder: 'Search' };
   }
 
+  // FIXME
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(newProps) {
     this.setState({ options: this.getOptions(newProps) });
   }

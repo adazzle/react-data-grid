@@ -1,11 +1,10 @@
 import Resolver from './RowGrouperResolver';
-import { isImmutableCollection } from '../utils';
 
 class RowGrouper {
-  constructor(columns, expandedRows, isImmutable = false) {
+  constructor(columns, expandedRows) {
     this.columns = columns.slice(0);
     this.expandedRows = expandedRows;
-    this.resolver = new Resolver(isImmutable);
+    this.resolver = new Resolver();
   }
 
   isRowExpanded(columnName, name) {
@@ -34,10 +33,10 @@ class RowGrouper {
       if (isExpanded) {
         nextColumnIndex = columnIndex + 1;
         if (this.columns.length > nextColumnIndex) {
-          dataviewRows = dataviewRows.concat(this.groupRowsByColumn(this.resolver.getRowObj(groupedRows, key), nextColumnIndex));
+          dataviewRows = dataviewRows.concat(this.groupRowsByColumn(groupedRows[key], nextColumnIndex));
           nextColumnIndex = columnIndex - 1;
         } else {
-          dataviewRows = dataviewRows.concat(this.resolver.getRowObj(groupedRows, key));
+          dataviewRows = dataviewRows.concat(groupedRows[key]);
         }
       }
     }
@@ -46,7 +45,7 @@ class RowGrouper {
 }
 
 const groupRows = (rows, groupedColumns, expandedRows) => {
-  const rowGrouper = new RowGrouper(groupedColumns, expandedRows, isImmutableCollection(rows));
+  const rowGrouper = new RowGrouper(groupedColumns, expandedRows);
   return rowGrouper.groupRowsByColumn(rows, 0);
 };
 
