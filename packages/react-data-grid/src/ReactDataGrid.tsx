@@ -22,7 +22,7 @@ import {
   CellCopyPasteEvent,
   CellMetaData,
   CheckCellIsEditableEvent,
-  ColumnList,
+  Column,
   CommitEvent,
   GridRowsUpdatedEvent,
   HeaderRowData,
@@ -39,8 +39,8 @@ import {
 } from './common/types';
 
 export interface ReactDataGridProps<R extends {}> {
-  /** An array of objects representing each column on the grid. Can also be an ImmutableJS object */
-  columns: ColumnList<R>;
+  /** An array of objects representing each column on the grid */
+  columns: Column<R>[];
   /** The minimum width of the grid in pixels */
   minWidth?: number;
   /** The height of the header row in pixels */

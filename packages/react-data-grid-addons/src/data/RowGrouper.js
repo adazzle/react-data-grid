@@ -1,11 +1,10 @@
 import Resolver from './RowGrouperResolver';
-import { isImmutableCollection } from '../utils';
 
 class RowGrouper {
-  constructor(columns, expandedRows, isImmutable = false) {
+  constructor(columns, expandedRows) {
     this.columns = columns.slice(0);
     this.expandedRows = expandedRows;
-    this.resolver = new Resolver(isImmutable);
+    this.resolver = new Resolver();
   }
 
   isRowExpanded(columnName, name) {
@@ -46,7 +45,7 @@ class RowGrouper {
 }
 
 const groupRows = (rows, groupedColumns, expandedRows) => {
-  const rowGrouper = new RowGrouper(groupedColumns, expandedRows, isImmutableCollection(rows));
+  const rowGrouper = new RowGrouper(groupedColumns, expandedRows);
   return rowGrouper.groupRowsByColumn(rows, 0);
 };
 

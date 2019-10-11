@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactDataGrid from 'react-data-grid';
 import { ToolsPanel, Data, Draggable } from 'react-data-grid-addons';
 import faker from 'faker';
-import Immutable from 'immutable';
 import Wrapper from './Wrapper';
 
 const { AdvancedToolbar: Toolbar, GroupedColumnsPanel } = ToolsPanel;
@@ -45,8 +44,8 @@ class CustomToolbar extends React.Component {
 
 export default class extends React.Component {
   state = {
-    rows: new Immutable.fromJS(_rows),
-    cols: new Immutable.List(_cols),
+    rows: _rows,
+    cols: _cols,
     groupBy: [],
     expandedRows: {}
   };
@@ -57,11 +56,11 @@ export default class extends React.Component {
 
   getRowAt = (index) => {
     const rows = this.getRows();
-    return rows.get(index);
+    return rows[index];
   };
 
   getSize = () => {
-    return this.getRows().size;
+    return this.getRows().length;
   };
 
   onColumnGroupAdded = (colName) => {

@@ -1,4 +1,4 @@
-import { getMixedTypeValueRetriever, isImmutableCollection } from '../utils';
+import { getMixedTypeValueRetriever } from '../utils';
 
 export const comparer = (a, b) => {
   if (a > b) {
@@ -11,7 +11,7 @@ export const comparer = (a, b) => {
 };
 
 const sortRows = (rows, sortColumn, sortDirection) => {
-  const retriever = getMixedTypeValueRetriever(isImmutableCollection(rows));
+  const retriever = getMixedTypeValueRetriever();
   const sortDirectionSign = sortDirection === 'ASC' ? 1 : -1;
   const rowComparer = (a, b) => {
     return sortDirectionSign * comparer(retriever.getValue(a, sortColumn), retriever.getValue(b, sortColumn));

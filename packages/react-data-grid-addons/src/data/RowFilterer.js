@@ -1,8 +1,8 @@
-import { isImmutableCollection, getMixedTypeValueRetriever } from '../utils';
+import { getMixedTypeValueRetriever } from '../utils';
 
 const filterRows = (filters, rows = []) => {
   return rows.filter(r => {
-    const retriever = getMixedTypeValueRetriever(isImmutableCollection(r));
+    const retriever = getMixedTypeValueRetriever();
     let include = true;
     for (const columnKey in filters) {
       if (filters.hasOwnProperty(columnKey)) {
