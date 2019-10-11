@@ -241,10 +241,8 @@ export interface CellRenderer {
   setScrollLeft(scrollLeft: number): void;
 }
 
-export interface RowRenderer<TRow> {
+export interface RowRenderer {
   setScrollLeft(scrollLeft: number): void;
-  getRowTop?(): number;
-  getRowHeight?(): number;
 }
 
 export interface ScrollPosition {
