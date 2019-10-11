@@ -26,7 +26,7 @@ interface ActualRowRendererProps<R> extends SharedCanvasProps<R> {
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   scrollLeft: number;
-  rowRefs: Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>;
+  rowRefs: Map<number, RowRenderer & React.Component<RowRendererProps<R>>>;
 }
 
 type SharedActualRowRendererProps<R> = Pick<ActualRowRendererProps<R>,
@@ -39,7 +39,7 @@ type SharedActualRowRendererProps<R> = Pick<ActualRowRendererProps<R>,
 >;
 
 interface RendererProps<R> extends SharedActualRowRendererProps<R> {
-  ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
+  ref(row: (RowRenderer & React.Component<RowRendererProps<R>>) | null): void;
   row: R;
   columns: CalculatedColumn<R>[];
   lastFrozenColumnIndex: number;

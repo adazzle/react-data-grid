@@ -73,18 +73,16 @@ export default function Canvas<R>({
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
-  const [rowRefs] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
+  const [rowRefs] = useState(() => new Map<number, RowRenderer & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
 
-  const { rowOverscanStartIdx, rowOverscanEndIdx } = useMemo(() => {
-    return getVerticalRangeToRender({
-      height: clientHeight,
-      rowHeight,
-      scrollTop,
-      rowsCount,
-      renderBatchSize
-    });
-  }, [clientHeight, renderBatchSize, rowHeight, rowsCount, scrollTop]);
+  const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
+    clientHeight,
+    rowHeight,
+    scrollTop,
+    rowsCount,
+    renderBatchSize
+  );
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
@@ -197,22 +195,6 @@ export default function Canvas<R>({
     });
   }
 
-  function getRowTop(rowIdx: number) {
-    const row = rowRefs.get(rowIdx);
-    if (row && row.getRowTop) {
-      return row.getRowTop();
-    }
-    return rowHeight * rowIdx;
-  }
-
-  function getRowHeight(rowIdx: number) {
-    const row = rowRefs.get(rowIdx);
-    if (row && row.getRowHeight) {
-      return row.getRowHeight();
-    }
-    return rowHeight;
-  }
-
   function getRowColumns(rowIdx: number) {
     const row = rowRefs.get(rowIdx);
     return row && row.props ? row.props.columns : columnMetrics.columns;
@@ -250,8 +232,6 @@ export default function Canvas<R>({
         onHitRightBoundary={handleHitColummBoundary}
         scrollLeft={scrollLeft}
         scrollTop={scrollTop}
-        getRowHeight={getRowHeight}
-        getRowTop={getRowTop}
         getRowColumns={getRowColumns}
         editorPortalTarget={editorPortalTarget}
         {...interactionMasksMetaData}
