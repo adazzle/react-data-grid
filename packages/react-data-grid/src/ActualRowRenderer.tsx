@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { isElement } from 'react-is';
+import shallowEqual from 'shallowequal';
 
 import Row from './Row';
 import RowGroup from './RowGroup';
@@ -39,7 +40,6 @@ type SharedActualRowRendererProps<R> = Pick<ActualRowRendererProps<R>,
 
 interface RendererProps<R> extends SharedActualRowRendererProps<R> {
   ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
-  key: number;
   row: R;
   columns: CalculatedColumn<R>[];
   lastFrozenColumnIndex: number;
@@ -48,7 +48,14 @@ interface RendererProps<R> extends SharedActualRowRendererProps<R> {
   isRowSelected: boolean;
 }
 
-export default function ActualRowRenderer<R>({
+function propsAreEqual<R>(prevProps: ActualRowRendererProps<R>, nextProps: ActualRowRendererProps<R>) {
+  const { scrollLeft, ...rest } = prevProps;
+  const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
+
+  return shallowEqual(rest, nextRest);
+}
+
+export default memo(function ActualRowRenderer<R>({
   cellMetaData,
   colOverscanEndIdx,
   colOverscanStartIdx,
@@ -66,42 +73,8 @@ export default function ActualRowRenderer<R>({
   scrollLeft,
   selectedRows
 }: ActualRowRendererProps<R>) {
-  function renderCustomRowRenderer(rowProps: RendererProps<R>) {
-    const { ref, ...otherProps } = rowProps;
-    const CustomRowRenderer = rowRenderer!;
-    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps<R>) => <Row ref={ref} {...p} /> };
-
-    if (isElement(CustomRowRenderer)) {
-      if (CustomRowRenderer.type === Row) {
-        // In the case where Row is specified as the custom render, ensure the correct ref is passed
-        return <Row<R> {...rowProps} />;
-      }
-      return React.cloneElement(CustomRowRenderer, customRowRendererProps);
-    }
-
-    return <CustomRowRenderer {...customRowRendererProps} />;
-  }
-
-  function renderGroupRow(groupRowProps: RendererProps<R>) {
-    const { ref, columns, ...rowGroupProps } = groupRowProps;
-    const row = groupRowProps.row as RowData;
-
-    return (
-      <RowGroup
-        {...rowGroupProps}
-        {...row.__metaData!}
-        columns={columns as CalculatedColumn<unknown>[]}
-        name={row.name!}
-        eventBus={eventBus}
-        renderer={rowGroupRenderer}
-        renderBaseRow={(p: RowRendererProps<R>) => <Row ref={ref} {...p} />}
-      />
-    );
-  }
-
-
+  const { __metaData } = rowData as RowData;
   const rendererProps: RendererProps<R> = {
-    key: idx,
     ref(row) {
       if (row) {
         rowRefs.set(idx, row);
@@ -122,20 +95,51 @@ export default function ActualRowRenderer<R>({
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
     scrollLeft
   };
-  const { __metaData } = rowData as RowData;
+
+  function renderCustomRowRenderer() {
+    const { ref, ...otherProps } = rendererProps;
+    const CustomRowRenderer = rowRenderer!;
+    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps<R>) => <Row ref={ref} {...p} /> };
+
+    if (isElement(CustomRowRenderer)) {
+      if (CustomRowRenderer.type === Row) {
+        // In the case where Row is specified as the custom render, ensure the correct ref is passed
+        return <Row<R> {...rendererProps} />;
+      }
+      return React.cloneElement(CustomRowRenderer, customRowRendererProps);
+    }
+
+    return <CustomRowRenderer {...customRowRendererProps} />;
+  }
+
+  function renderGroupRow() {
+    const { ref, columns, ...rowGroupProps } = rendererProps;
+
+    return (
+      <RowGroup
+        {...rowGroupProps}
+        {...__metaData!}
+        columns={columns as CalculatedColumn<unknown>[]}
+        name={(rowData as RowData).name!}
+        eventBus={eventBus}
+        renderer={rowGroupRenderer}
+        renderBaseRow={(p: RowRendererProps<R>) => <Row ref={ref} {...p} />}
+      />
+    );
+  }
 
   if (__metaData) {
     if (__metaData.getRowRenderer) {
       return __metaData.getRowRenderer(rendererProps, idx);
     }
     if (__metaData.isGroup) {
-      return renderGroupRow(rendererProps);
+      return renderGroupRow();
     }
   }
 
   if (rowRenderer) {
-    return renderCustomRowRenderer(rendererProps);
+    return renderCustomRowRenderer();
   }
 
   return <Row<R> {...rendererProps} />;
-}
+}, propsAreEqual) as <R>(props: ActualRowRendererProps<R>) => JSX.Element;

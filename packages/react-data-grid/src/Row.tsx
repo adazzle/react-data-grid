@@ -1,6 +1,5 @@
 import React from 'react';
 import classNames from 'classnames';
-import shallowEqual from 'shallowequal';
 
 import Cell from './Cell';
 import { isFrozen } from './utils/columnUtils';
@@ -17,13 +16,6 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   private readonly row = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<keyof R, CellRenderer>();
-
-  shouldComponentUpdate(nextProps: RowRendererProps<R>) {
-    const { scrollLeft, ...rest } = this.props;
-    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
-
-    return !shallowEqual(rest, nextRest);
-  }
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     // Prevent default to allow drop
