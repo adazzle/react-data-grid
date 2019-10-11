@@ -1,20 +1,15 @@
-import { Column, CalculatedColumn, ColumnList, ColumnMetrics } from '../common/types';
+import { Column, CalculatedColumn, ColumnMetrics } from '../common/types';
 import { getScrollbarSize } from './domUtils';
 
 type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'minColumnWidth' | 'columnWidths'> & {
-  columns: ColumnList<R>;
+  columns: Column<R>[];
 };
-
-function toArray<R>(columns: ColumnList<R>): Column<R>[] {
-  columns = Array.isArray(columns) ? columns : columns.toArray();
-  return columns.map(c => ({ ...c }));
-}
 
 export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let left = 0;
   let totalWidth = 0;
 
-  const columns = toArray(metrics.columns);
+  const columns = metrics.columns.map(c => ({ ...c }));
   setSpecifiedWidths(columns, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
 
   const allocatedWidths = columns.map(c => c.width || 0).reduce((acc, w) => acc + w, 0);
