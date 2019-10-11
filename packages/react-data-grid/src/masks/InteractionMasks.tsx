@@ -688,6 +688,19 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = rowGetter(selectedPosition.rowIdx);
     const columns = getRowColumns(selectedPosition.rowIdx);
+    const editorContainerProps = () => ({
+      rowData,
+      scrollLeft,
+      scrollTop,
+      firstEditorKeyPress,
+      onCommit: this.onCommit,
+      onCommitCancel: this.onCommitCancel,
+      rowIdx: selectedPosition.rowIdx,
+      value: getSelectedCellValue({ selectedPosition, columns, rowGetter })!,
+      column: columns[selectedPosition.idx],
+      ...this.getSelectedDimensions(selectedPosition),
+      ...this.state.editorPosition
+    });
     return (
       <div
         onKeyDown={this.onKeyDown}
@@ -711,36 +724,8 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
         {isEditorEnabled && (
           <EditorPortal target={editorPortalTarget}>
             {columns[selectedPosition.idx].enableNewEditor
-              ? (
-                <EditorContainerNew<R>
-                  firstEditorKeyPress={firstEditorKeyPress}
-                  onCommit={this.onCommit}
-                  onCommitCancel={this.onCommitCancel}
-                  rowIdx={selectedPosition.rowIdx}
-                  value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
-                  rowData={rowData}
-                  column={columns[selectedPosition.idx]}
-                  scrollLeft={scrollLeft}
-                  scrollTop={scrollTop}
-                  {...this.getSelectedDimensions(selectedPosition)}
-                  {...this.state.editorPosition}
-                />
-              )
-              : (
-                <EditorContainer<R>
-                  firstEditorKeyPress={firstEditorKeyPress}
-                  onCommit={this.onCommit}
-                  onCommitCancel={this.onCommitCancel}
-                  rowIdx={selectedPosition.rowIdx}
-                  value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
-                  rowData={rowData}
-                  column={columns[selectedPosition.idx]}
-                  scrollLeft={scrollLeft}
-                  scrollTop={scrollTop}
-                  {...this.getSelectedDimensions(selectedPosition)}
-                  {...this.state.editorPosition}
-                />
-              )}
+              ? <EditorContainerNew<R> {...editorContainerProps()} />
+              : <EditorContainer<R> {...editorContainerProps()} />}
           </EditorPortal>
         )}
         {isElement(contextMenu) && createPortal(

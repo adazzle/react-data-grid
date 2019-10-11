@@ -132,7 +132,6 @@ export default function EditorContainer<R>({
     height,
     onCommit,
     onCommitCancel,
-    onBlur: onCommit,
     onChange: setValue,
     rowMetaData: getRowMetaData(),
     onOverrideKeyDown: onKeyDown
@@ -149,7 +148,7 @@ export default function EditorContainer<R>({
       <SimpleTextEditorNew
         value={value as unknown as string}
         onChange={setValue}
-        onBlur={onCommit}
+        onCommit={onCommit}
       />
     );
   }

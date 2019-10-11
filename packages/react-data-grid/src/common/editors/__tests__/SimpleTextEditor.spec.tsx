@@ -20,7 +20,7 @@ describe('SimpleTextEditor', () => {
       return mount<SimpleTextEditor>(
         <SimpleTextEditor
           value="This is a test"
-          onBlur={fakeBlurCb}
+          onCommit={fakeBlurCb}
           column={fakeColumn}
         />
       );

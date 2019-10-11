@@ -103,7 +103,6 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
       height: this.props.height,
       onCommit: this.commit,
       onCommitCancel: this.commitCancel,
-      onBlur: this.commit,
       onOverrideKeyDown: this.onKeyDown
     };
 
@@ -121,7 +120,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
         ref={this.editor as unknown as React.RefObject<SimpleTextEditor>}
         column={this.props.column as CalculatedColumn<unknown>}
         value={this.getInitialValue() as string}
-        onBlur={this.commit}
+        onCommit={this.commit}
       />
     );
   }
@@ -176,6 +175,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
   };
 
   editorIsSelectOpen = () => {
+    console.log('editorIsSelectOpen');
     const { isSelectOpen } = this.getEditor();
     return isSelectOpen ? isSelectOpen() : false;
   };

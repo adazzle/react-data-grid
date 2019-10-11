@@ -16,8 +16,7 @@ export default class DropDownEditor extends React.Component {
 
   static propTypes = {
     value: PropTypes.any.isRequired,
-    onBlur: PropTypes.func.isRequired
-    // column: PropTypes.shape(Column).isRequired
+    onCommit: PropTypes.func.isRequired
   };
 
   getInputNode() {
@@ -65,7 +64,7 @@ export default class DropDownEditor extends React.Component {
         ref={this.setSelectRef}
         style={{ width: '100%' }}
         defaultValue={this.props.value}
-        onBlur={this.props.onBlur}
+        onBlur={() => this.props.onCommit()}
       >
         {this.renderOptions()}
       </select>

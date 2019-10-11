@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { EditorProps } from '../types';
 
-type Props = Pick<EditorProps<string>, 'value' | 'onBlur' | 'onChange'>;
+type Props = Pick<EditorProps<string>, 'value' | 'onChange' | 'onCommit'>;
 
 export default function SimpleTextEditorNew({
   value,
   onChange,
-  onBlur
+  onCommit
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,7 +33,7 @@ export default function SimpleTextEditorNew({
       value={value}
       onChange={e => onChange(e.target.value)}
       onKeyDown={onKeyDown}
-      onBlur={onBlur}
+      onBlur={() => onCommit()}
     />
   );
 }

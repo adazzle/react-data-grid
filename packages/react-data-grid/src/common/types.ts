@@ -138,7 +138,6 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   height: number;
   onCommit(args?: { key?: string }): void;
   onCommitCancel(): void;
-  onBlur(): void;
   onOverrideKeyDown(e: KeyboardEvent): void;
 
   onChange(value: TValue): void;
