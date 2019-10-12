@@ -296,9 +296,9 @@ const rules = {
   'react/no-access-state-in-setstate': 0, // TODO
   'react/no-array-index-key': 0,
   'react/no-children-prop': 0,
-  'react/no-danger': 0, // TODO
+  'react/no-danger': 2,
   'react/no-danger-with-children': 2,
-  'react/no-deprecated': 0, // TODO
+  'react/no-deprecated': 2,
   'react/no-did-mount-set-state': 2,
   'react/no-did-update-set-state': 2,
   'react/no-direct-mutation-state': 2,
