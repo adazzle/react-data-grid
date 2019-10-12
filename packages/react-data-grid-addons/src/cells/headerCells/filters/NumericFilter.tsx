@@ -49,7 +49,7 @@ export default function NumericFilter<R>({ column, onChange }: Props<R>) {
   const tooltipText = 'Input Methods: Range (x-y), Greater Then (>x), Less Then (<y)';
 
   return (
-    <div className="rdg-numeric-filter">
+    <div className="rdg-filter-container">
       <input
         key={inputKey}
         className="rdg-filter"

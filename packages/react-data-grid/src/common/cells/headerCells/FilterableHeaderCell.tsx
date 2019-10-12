@@ -13,12 +13,14 @@ export default function FilterableHeaderCell<R>({ column, onChange }: FilterRend
   }
 
   return (
-    <input
-      key={`header-filter-${column.key as keyof R}`}
-      className="rdg-filter"
-      placeholder="Search"
-      value={filterTerm}
-      onChange={handleChange}
-    />
+    <div className="rdg-filter-container">
+      <input
+        key={`header-filter-${column.key as keyof R}`}
+        className="rdg-filter"
+        placeholder="Search"
+        value={filterTerm}
+        onChange={handleChange}
+      />
+    </div>
   );
 }
