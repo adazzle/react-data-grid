@@ -8,7 +8,7 @@ import InteractionMasks from './masks/InteractionMasks';
 import { ReactDataGridProps } from './ReactDataGrid';
 import Row from './Row';
 import RowGroup from './RowGroup';
-import { getColumnScrollPosition, getScrollbarSize, isIEOrEdge, isPositionStickySupported } from './utils';
+import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported } from './utils';
 import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
 
 type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
@@ -335,14 +335,16 @@ export default function Canvas<R>({
     );
   }
 
-  const summaryRowsHeight = isIEOrEdge && summaryRows ? summaryRows.length * rowHeight : 0;
-  const paddingTop = rowOverscanStartIdx * rowHeight;
-  const paddingBottom = rowsCount - rowOverscanEndIdx > 0 ? (rowsCount - 1 - rowOverscanEndIdx) * rowHeight + summaryRowsHeight : summaryRowsHeight;
-  const { totalColumnWidth: width } = columnMetrics;
-
-  // Set minHeight to show horizontal scrollbar when there are no rows
-  const scrollableRowsWrapperStyle: React.CSSProperties = { width, paddingTop, paddingBottom };
-  const summaryRowsWrapperStyle: React.CSSProperties = { paddingRight: getScrollbarSize() };
+  const scrollBarSize = getScrollbarSize();
+  const scrollableRowsWrapperStyle: React.CSSProperties = {
+    width: columnMetrics.totalColumnWidth,
+    paddingTop: rowOverscanStartIdx * rowHeight,
+    paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
+  };
+  const summaryRowsWrapperStyle: React.CSSProperties | undefined = scrollBarSize > 0 ? {
+    marginRight: scrollBarSize - 1,
+    borderRight: '1px solid #d3d3d3'
+  } : undefined;
 
   return (
     <>

@@ -71,9 +71,15 @@
 }
 
 .rdg-summary-rows {
-  border-top: 2px solid #ccc;
+  width: 100%;
 
   .react-grid-Row {
     overflow: hidden;
+
+    &:last-child {
+      .react-grid-Cell {
+        border-bottom: none;
+      }
+    }
   }
 }

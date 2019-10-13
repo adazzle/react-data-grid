@@ -5,6 +5,7 @@ import shallowEqual from 'shallowequal';
 import Cell from './Cell';
 import { CalculatedColumn, CellRenderer, CellRendererProps, RowRenderer, RowRendererProps } from './common/types';
 import { isFrozen } from './utils/columnUtils';
+import { isPositionStickySupported } from './utils';
 
 export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
   static displayName = 'Row';
@@ -115,9 +116,8 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   setScrollLeft(scrollLeft: number) {
     if (this.props.isSummaryRow) {
       this.row.current!.scrollLeft = scrollLeft;
-      return;
+      if (isPositionStickySupported()) return;
     }
-
 
     for (const column of this.props.columns) {
       const { key } = column;
