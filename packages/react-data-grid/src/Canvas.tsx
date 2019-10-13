@@ -137,6 +137,12 @@ export default function Canvas<R>({
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
     onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
+
+    summaryRowRefs.forEach(row => {
+      if (row.setScrollLeft) {
+        row.setScrollLeft(newScrollLeft);
+      }
+    });
   }
 
   function getClientHeight() {
@@ -268,14 +274,11 @@ export default function Canvas<R>({
       current.setScrollLeft(scrollLeft);
     }
 
-    rowRefs.forEach(setRowScrollLeft);
-    summaryRowRefs.forEach(setRowScrollLeft);
-  }
-
-  function setRowScrollLeft(row: RowRenderer<R> & React.Component<RowRendererProps<R>>) {
-    if (row.setScrollLeft) {
-      row.setScrollLeft(scrollLeft);
-    }
+    rowRefs.forEach(row => {
+      if (row.setScrollLeft) {
+        row.setScrollLeft(scrollLeft);
+      }
+    });
   }
 
   function getRowTop(rowIdx: number) {
@@ -339,68 +342,55 @@ export default function Canvas<R>({
 
   // Set minHeight to show horizontal scrollbar when there are no rows
   const scrollableRowsWrapperStyle: React.CSSProperties = { width, paddingTop, paddingBottom };
-  const summaryRowsWrapperStyle: React.CSSProperties = { width };
-  let ieStickyWrapperStyle: React.CSSProperties | undefined;
-
-  if (isIEOrEdge) {
-    summaryRowsWrapperStyle.position = 'absolute';
-    summaryRowsWrapperStyle.bottom = 0;
-
-    ieStickyWrapperStyle = {
-      position: 'absolute',
-      top: 0,
-      height: height - getScrollbarSize(),
-      transform: `translateY(${scrollTop}px)`
-    };
-  }
+  const summaryRowsWrapperStyle: React.CSSProperties = { paddingRight: getScrollbarSize() };
 
   return (
-    <div
-      className="react-grid-Canvas"
-      style={{ height }}
-      ref={canvas}
-      onScroll={handleScroll}
-      onKeyDown={onCanvasKeydown}
-      onKeyUp={onCanvasKeyup}
-    >
-      <InteractionMasks<R>
-        ref={interactionMasks}
-        rowGetter={rowGetter}
-        rowsCount={rowsCount}
-        rowHeight={rowHeight}
-        columns={columnMetrics.columns}
-        height={clientHeight}
-        colVisibleStartIdx={colVisibleStartIdx}
-        colVisibleEndIdx={colVisibleEndIdx}
-        enableCellSelect={enableCellSelect}
-        enableCellAutoFocus={enableCellAutoFocus}
-        cellNavigationMode={cellNavigationMode}
-        eventBus={eventBus}
-        contextMenu={contextMenu}
-        onHitBottomBoundary={onHitBottomCanvas}
-        onHitTopBoundary={onHitTopCanvas}
-        onHitLeftBoundary={handleHitColummBoundary}
-        onHitRightBoundary={handleHitColummBoundary}
-        scrollLeft={scrollLeft}
-        scrollTop={scrollTop}
-        getRowHeight={getRowHeight}
-        getRowTop={getRowTop}
-        getRowColumns={getRowColumns}
-        editorPortalTarget={editorPortalTarget}
-        {...interactionMasksMetaData}
-      />
-      <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-        <div className="rdg-rows-container" style={scrollableRowsWrapperStyle}>
-          {getRows()}
-        </div>
-      </RowsContainer>
-      {summaryRows && summaryRows.length && (
-        <div className="rdg-summary-rows-sticky-wrapper" style={ieStickyWrapperStyle}>
-          <div className="rdg-summary-rows" style={summaryRowsWrapperStyle}>
-            {summaryRows.map(renderSummaryRow)}
+    <>
+      <div
+        className="react-grid-Canvas"
+        style={{ height }}
+        ref={canvas}
+        onScroll={handleScroll}
+        onKeyDown={onCanvasKeydown}
+        onKeyUp={onCanvasKeyup}
+      >
+        <InteractionMasks<R>
+          ref={interactionMasks}
+          rowGetter={rowGetter}
+          rowsCount={rowsCount}
+          rowHeight={rowHeight}
+          columns={columnMetrics.columns}
+          height={clientHeight}
+          colVisibleStartIdx={colVisibleStartIdx}
+          colVisibleEndIdx={colVisibleEndIdx}
+          enableCellSelect={enableCellSelect}
+          enableCellAutoFocus={enableCellAutoFocus}
+          cellNavigationMode={cellNavigationMode}
+          eventBus={eventBus}
+          contextMenu={contextMenu}
+          onHitBottomBoundary={onHitBottomCanvas}
+          onHitTopBoundary={onHitTopCanvas}
+          onHitLeftBoundary={handleHitColummBoundary}
+          onHitRightBoundary={handleHitColummBoundary}
+          scrollLeft={scrollLeft}
+          scrollTop={scrollTop}
+          getRowHeight={getRowHeight}
+          getRowTop={getRowTop}
+          getRowColumns={getRowColumns}
+          editorPortalTarget={editorPortalTarget}
+          {...interactionMasksMetaData}
+        />
+        <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
+          <div className="rdg-rows-container" style={scrollableRowsWrapperStyle}>
+            {getRows()}
           </div>
+        </RowsContainer>
+      </div>
+      {summaryRows && summaryRows.length && (
+        <div className="rdg-summary-rows" style={summaryRowsWrapperStyle}>
+          {summaryRows.map(renderSummaryRow)}
         </div>
       )}
-    </div>
+    </>
   );
 }

@@ -1,10 +1,10 @@
-import React from 'react';
 import classNames from 'classnames';
-import shallowEqual from 'shallowequal';
+import React from 'react';
 
+import shallowEqual from 'shallowequal';
 import Cell from './Cell';
+import { CalculatedColumn, CellRenderer, CellRendererProps, RowRenderer, RowRendererProps } from './common/types';
 import { isFrozen } from './utils/columnUtils';
-import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
 export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer<R> {
   static displayName = 'Row';
@@ -113,6 +113,12 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
   }
 
   setScrollLeft(scrollLeft: number) {
+    if (this.props.isSummaryRow) {
+      this.row.current!.scrollLeft = scrollLeft;
+      return;
+    }
+
+
     for (const column of this.props.columns) {
       const { key } = column;
       if (isFrozen(column) && this.cells.has(key)) {

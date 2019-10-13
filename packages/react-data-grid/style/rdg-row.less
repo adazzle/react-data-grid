@@ -70,18 +70,10 @@
   border: 1px solid #ddd;
 }
 
-.rdg-summary-rows-sticky-wrapper {
-  z-index: 3; // same as the interaction mask
-}
-
-@supports (position: sticky) or (position: -webkit-sticky) {
-  .rdg-summary-rows-sticky-wrapper {
-    position: -webkit-sticky;
-    position: sticky;
-    bottom: 0;
-  }
-}
-
 .rdg-summary-rows {
   border-top: 2px solid #ccc;
+
+  .react-grid-Row {
+    overflow: hidden;
+  }
 }
