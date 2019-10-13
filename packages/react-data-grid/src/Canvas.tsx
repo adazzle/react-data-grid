@@ -45,7 +45,7 @@ export interface CanvasProps<R> extends SharedDataGridProps<R> {
 }
 
 interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
-  ref(row: (RowRenderer<R> & React.Component<RowRendererProps<R>>) | null): void;
+  ref(row: (RowRenderer & React.Component<RowRendererProps<R>>) | null): void;
   key: number;
   idx: number;
   columns: CalculatedColumn<R>[];
@@ -95,19 +95,17 @@ export default function Canvas<R>({
   const prevScrollToRowIndex = useRef<number | undefined>();
   // https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
   // The reason that we didn't choose to use useRef was due to the lazy initialization was only supported by useState() at the moment.
-  const [rowRefs] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
-  const [summaryRowRefs] = useState(() => new Map<number, RowRenderer<R> & React.Component<RowRendererProps<R>>>());
+  const [rowRefs] = useState(() => new Map<number, RowRenderer & React.Component<RowRendererProps<R>>>());
+  const [summaryRowRefs] = useState(() => new Map<number, RowRenderer & React.Component<RowRendererProps<R>>>());
   const clientHeight = getClientHeight();
 
-  const { rowOverscanStartIdx, rowOverscanEndIdx } = useMemo(() => {
-    return getVerticalRangeToRender({
-      height: clientHeight,
-      rowHeight,
-      scrollTop,
-      rowsCount,
-      renderBatchSize
-    });
-  }, [clientHeight, renderBatchSize, rowHeight, rowsCount, scrollTop]);
+  const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
+    clientHeight,
+    rowHeight,
+    scrollTop,
+    rowsCount,
+    renderBatchSize
+  );
 
   const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
     return getHorizontalRangeToRender({
@@ -281,22 +279,6 @@ export default function Canvas<R>({
     });
   }
 
-  function getRowTop(rowIdx: number) {
-    const row = rowRefs.get(rowIdx);
-    if (row && row.getRowTop) {
-      return row.getRowTop();
-    }
-    return rowHeight * rowIdx;
-  }
-
-  function getRowHeight(rowIdx: number) {
-    const row = rowRefs.get(rowIdx);
-    if (row && row.getRowHeight) {
-      return row.getRowHeight();
-    }
-    return rowHeight;
-  }
-
   function getRowColumns(rowIdx: number) {
     const row = rowRefs.get(rowIdx);
     return row && row.props ? row.props.columns : columnMetrics.columns;
@@ -376,8 +358,6 @@ export default function Canvas<R>({
           onHitRightBoundary={handleHitColummBoundary}
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
-          getRowHeight={getRowHeight}
-          getRowTop={getRowTop}
           getRowColumns={getRowColumns}
           editorPortalTarget={editorPortalTarget}
           {...interactionMasksMetaData}

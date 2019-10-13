@@ -223,9 +223,9 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
   };
 
   isNewValueValid = (value: unknown) => {
-    const { validate } = this.getEditor();
-    if (validate) {
-      const isValid = validate(value);
+    const editor = this.getEditor();
+    if (editor.validate) {
+      const isValid = editor.validate(value);
       this.setState({ isInvalid: !isValid });
       return isValid;
     }

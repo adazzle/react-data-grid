@@ -1,15 +1,13 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
-import Immutable from 'immutable';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
   constructor(props, context) {
     super(props, context);
     this._columns = this.createColumns();
-    this._rows = this.createRows();
 
-    this.state = { rows: new Immutable.fromJS(this._rows) };
+    this.state = { rows: this.createRows() };
   }
 
   getRandomDate = (start, end) => {
@@ -37,7 +35,7 @@ export default class extends React.Component {
   };
 
   rowGetter = (rowIdx) => {
-    return this.state.rows.get(rowIdx);
+    return this.state.rows[rowIdx];
   };
 
   render() {
@@ -47,7 +45,7 @@ export default class extends React.Component {
           enableCellSelect
           columns={this._columns}
           rowGetter={this.rowGetter}
-          rowsCount={this.state.rows.size}
+          rowsCount={this.state.rows.length}
           minHeight={1200}
         />
       </Wrapper>
