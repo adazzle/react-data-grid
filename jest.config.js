@@ -23,6 +23,7 @@ module.exports = {
   moduleNameMapper: {
     '^react-data-grid$': '<rootDir>/packages/react-data-grid/src/',
     '^react-data-grid-addons$': '<rootDir>/packages/react-data-grid-addons/src/',
+    '^@material-ui/icons$': '<rootDir>/test/iconsMock.ts',
     '\\.css$': '<rootDir>/test/fileMock.js'
   },
   setupFiles: [
